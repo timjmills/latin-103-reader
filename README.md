@@ -100,12 +100,19 @@ highlights along.
 
 ### 8. Deploy the app shell
 
-1. Create a GitHub repository and push this folder to its `main` branch.
-2. In the repository: **Settings → Pages → Build and deployment → Source:
-   GitHub Actions**.
-3. Every push to `main` runs `.github/workflows/deploy.yml`, which publishes
-   the `app/` folder (only that folder) to
-   `https://<your-github-name>.github.io/latin-103-reader/`.
+The shell is already live at **https://timjmills.github.io/latin-103-reader/**
+(GitHub Pages, served from the `gh-pages` branch, which holds only the
+contents of `app/`). After changing anything under `app/`, publish it with:
+
+```bash
+git subtree push --prefix app origin gh-pages
+```
+
+Optional: `deploy/pages-workflow.yml` is a GitHub Actions workflow that does
+the same on every push to `main`. To use it, refresh the CLI token with the
+`workflow` scope (`gh auth refresh -h github.com -s workflow`), move the file
+to `.github/workflows/deploy.yml`, push, and switch **Settings → Pages →
+Source** to *GitHub Actions*.
 
 Open that address on each device, sign in, and add it to the home screen
 (Share → *Add to Home Screen* on iPhone; the install prompt on Android and
@@ -153,8 +160,7 @@ installed copies pick up the new files.
 - The Latin (Ørberg, Miraglia) and the recordings are copyrighted; your
   translations and notes are yours. **None of it is ever in the git
   repository or on GitHub Pages.** `source/`, `data/build/`, `audio/` and
-  the per-week data files are gitignored, and the deploy workflow refuses to
-  publish if any slip into `app/`.
+  the per-week data files are gitignored, and only `app/` is ever published.
 - Texts, notes, highlights, progress and settings live in Supabase tables
   that every row of is stamped with your user id. Row-level security
   policies mean the database returns nothing to anyone who is not you — even
