@@ -1,0 +1,20 @@
+{
+  "name": "Latin 103 Reader",
+  "short_name": "Latin 103",
+  "description": "Private reader for Familia Romana, Fabulae Syrae and Fabellae Latinae — Latin with your own translations, notes, and recordings.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "en",
+  "background_color": "#fbfaf8",
+  "theme_color": "#9b3a32",
+  "categories": ["education", "books"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

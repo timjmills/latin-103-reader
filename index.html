@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" data-size="3" data-face="serif">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Latin 103 Reader</title>
+  <script>
+    // Apply persisted reading settings before CSS paints (no theme/size flash).
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem('latin103.settings') || '{}');
+        var h = document.documentElement;
+        h.dataset.size = s.size || 3;
+        h.dataset.face = s.face || 'serif';
+        if (s.theme && s.theme !== 'system') h.dataset.theme = s.theme;
+        if (s.compact) h.dataset.compact = '1';
+      } catch (e) {}
+    })();
+  </script>
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f8f7f6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1e1c1b" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/reader.css">
+  <link rel="stylesheet" href="css/panels.css">
+</head>
+<body>
+  <a class="skip" href="#reader">Skip to the text</a>
+
+  <div id="app">
+    <header class="bar">
+      <div class="bar__main">
+        <label class="week">
+          <span class="visually-hidden">Week</span>
+          <select id="week-select" class="week__select"></select>
+        </label>
+        <div class="seg" role="group" aria-label="View">
+          <button type="button" class="seg__btn" data-view="passage" aria-pressed="true">Passage</button>
+          <button type="button" class="seg__btn" data-view="sentence" aria-pressed="false">Sentence</button>
+        </div>
+        <div class="bar__tools" role="group" aria-label="Display">
+          <button type="button" class="toggle" data-toggle="english" aria-pressed="false" aria-keyshortcuts="e" title="Show the translation (e)">
+            <span class="toggle__label" data-short="En">Translation</span>
+          </button>
+          <button type="button" class="toggle" data-toggle="highlights" aria-pressed="true" aria-keyshortcuts="h" title="Grammar focus (h)">
+            <span class="toggle__label" data-short="Focus">Grammar focus</span>
+          </button>
+          <button type="button" class="toggle" data-toggle="underlines" aria-pressed="true" title="Underline looked-up words">
+            <span class="toggle__label" data-short="Marks">Underlines</span>
+          </button>
+        </div>
+        <button type="button" class="btn btn--icon" id="settings-btn" aria-haspopup="dialog" aria-label="Reading settings">
+          <span aria-hidden="true" class="btn__aa">Aa</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="layout" data-panel="closed">
+      <main id="main">
+        <article id="reader" class="reader" data-view="passage" data-english="hidden" data-highlights="on" data-underlines="on" aria-label="Reading">
+          <p class="reader__loading">Loading the text…</p>
+        </article>
+      </main>
+      <aside id="panel" class="panel" aria-label="Word and note panel">
+        <div class="panel__empty">
+          <p>Tap any word to see what it means, how it is formed, and its full paradigm.</p>
+          <p>The <span class="panel__mark">†</span> after a sentence opens its grammar note.</p>
+        </div>
+      </aside>
+    </div>
+
+    <div id="transport" class="transport" hidden>
+      <p class="transport__text"><span class="transport__title">Playing chapter</span> <span class="transport__pos" data-transport-pos></span></p>
+      <div class="transport__btns">
+        <button type="button" class="btn btn--quiet" data-transport="pause">Pause</button>
+        <button type="button" class="btn btn--quiet" data-transport="stop">Stop</button>
+      </div>
+    </div>
+    <p id="notice" class="notice" hidden></p>
+    <p id="live" class="visually-hidden" aria-live="polite" aria-atomic="true"></p>
+    <p id="boot-error" class="boot-error" hidden>Could not start the reader: <code></code></p>
+  </div>
+
+  <dialog id="popup" class="popup" aria-label="Word"></dialog>
+
+  <dialog id="settings" class="settings" aria-labelledby="settings-title">
+    <div class="settings__body">
+      <div class="settings__head">
+        <h2 id="settings-title" class="settings__title">Reading</h2>
+        <button type="button" class="panel__close" data-action="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+
+      <div class="settings__row" role="group" aria-labelledby="size-label">
+        <span id="size-label" class="settings__label">Type size</span>
+        <div class="stepper">
+          <button type="button" class="btn btn--icon" data-size-step="-1" aria-label="Smaller text"><span aria-hidden="true" class="stepper__a stepper__a--sm">A</span></button>
+          <span class="size-dots" aria-hidden="true">
+            <span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span>
+          </span>
+          <button type="button" class="btn btn--icon" data-size-step="1" aria-label="Larger text"><span aria-hidden="true" class="stepper__a stepper__a--lg">A</span></button>
+          <span class="size-value visually-hidden" aria-live="polite">3 of 5</span>
+        </div>
+      </div>
+
+      <fieldset class="settings__row">
+        <legend class="settings__label">Typeface</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="face" value="serif"><span class="choice__serif">Serif</span></label>
+          <label class="choice"><input type="radio" name="face" value="sans"><span class="choice__sans">Sans</span></label>
+          <label class="choice"><input type="radio" name="face" value="dyslexic"><span class="choice__dys">Dyslexia-friendly</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="settings__row">
+        <legend class="settings__label">Theme</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="theme" value="system"><span>System</span></label>
+          <label class="choice"><input type="radio" name="theme" value="light"><span>Light</span></label>
+          <label class="choice"><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+        </div>
+      </fieldset>
+
+      <div class="settings__row">
+        <label class="check">
+          <input type="checkbox" name="compact">
+          <span>Compact grammar labels <small>(gen. sg. instead of genitive singular)</small></span>
+        </label>
+      </div>
+
+      <section class="settings__row settings__audio" data-audio aria-labelledby="audio-label" hidden>
+        <h3 id="audio-label" class="settings__label">Audio · <span data-audio-week>this week</span></h3>
+        <p class="audio__state" data-audio-state>No recording for this week yet.</p>
+        <div class="audio__actions">
+          <label class="btn btn--quiet audio__upload">
+            <input type="file" accept="audio/*,.mp3,.m4a" class="visually-hidden" data-audio-file>
+            <span data-audio-upload-label>Upload chapter MP3…</span>
+          </label>
+          <button type="button" class="btn btn--quiet" data-action="align">Align audio…</button>
+        </div>
+        <div class="audio__play">
+          <button type="button" class="btn" data-action="play">Play chapter</button>
+          <button type="button" class="btn btn--quiet" data-action="stop" hidden>Stop</button>
+        </div>
+        <p class="audio__msg" data-audio-msg role="status"></p>
+      </section>
+
+      <div class="settings__tools">
+        <p class="settings__keys">Keys: <kbd>e</kbd> translation · <kbd>h</kbd> grammar focus · <kbd>j</kbd>/<kbd>k</kbd> next / previous sentence</p>
+        <button type="button" class="btn btn--quiet" data-action="signout">Sign out</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
