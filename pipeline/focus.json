@@ -1,0 +1,299 @@
+[
+  {
+    "n": 1,
+    "key": "deponent",
+    "label": "Deponent verbs",
+    "blurb": "Verbs that look passive but mean active, especially their imperatives in -re (singular) and -minī (plural).",
+    "what_to_mark": [
+      "Deponent imperatives: singular in -re (sequere, opperīre, revertere, oblīvīscere, proficīscere) and plural in -minī (laetāminī, intuēminī, sequiminī).",
+      "Deponent finite forms in every tense: present and future (polliceor, pollicentur, loquor, revertar), perfect (profectus est, secūta est, oblīta sum), pluperfect (pollicitus erat, oblītus erat).",
+      "Deponent infinitives in -ī / -rī (loquī, oblīvīscī).",
+      "Deponent perfect participles with active meaning (locūta, secūtus, arbitrātus).",
+      "Do not mark true passives of ordinary verbs (mittēbantur, vorābantur, necātus est) or the passive-of-faciō fīō (factus est); the note may contrast them.",
+      "Optional preview: ad + gerund purpose phrases (ad nāvigandum, ad fugiendum) labelled 'gerund of purpose (preview)'."
+    ],
+    "seed_patterns": [
+      "(?i)\\b[A-Z]?\\w+mini\\b",
+      "(?i)\\b\\w+(are|ere|ire|ari|eri|iri|i)\\b(?=[^.!?]*!)",
+      "(?i)\\b\\w+(or|eor|ior|aris|eris|iris|ere|atur|etur|itur|amur|emur|imur|antur|entur|untur|iuntur)\\b",
+      "(?i)\\b\\w+(tus|ta|tum|ti|tae|sus|sa|sum|si|sae)\\s+(sum|es|est|sumus|estis|sunt|eram|eras|erat|eramus|eratis|erant|ero|eris|erit)\\b",
+      "(?i)\\b(laet|intu|sequ|secut|profic|profect|opper|revert|revers|obliv|oblit|pollic|loqu|locut|arbitr|hort|con|mor|mortu|pat|pass|ut|fru|fung|ver|nasc|nat|ori|ort|egred|egress|ingred|ingress|regred|progred|coll|complect|amplect|precor|precat|querer|quest|imit|comit|admir|mir|solat|tuor|vide|vereor|verit)\\w*"
+    ]
+  },
+  {
+    "n": 2,
+    "key": "gerund",
+    "label": "Gerund",
+    "blurb": "The verb used as a noun: ad + -ndum for purpose, -ndī with a noun or causā, -ndō for means.",
+    "what_to_mark": [
+      "ad + gerund expressing purpose (ad nāvigandum, ad volandum).",
+      "Genitive gerund in -ndī after a noun or adjective (ars volandī, cupidus discendī) and with causā/grātiā.",
+      "Ablative gerund in -ndō for means or with in/dē/ab (volandō, in scrībendō).",
+      "Gerund with an object (ad ālās faciendum) — note in the tag that Ørberg keeps the gerund + accusative rather than the gerundive here.",
+      "Do not mark gerundives (adjective-shaped -ndus/-nda, agreeing with a noun); they are Week 9. Do not mark secundum, nondum, or the noun-forms in -ndum that are not verbal."
+    ],
+    "seed_patterns": [
+      "(?i)\\bad\\s+\\w+ndum\\b",
+      "(?i)\\b\\w+nd(um|i|o)\\b",
+      "(?i)\\b\\w+ndi\\s+(causa|gratia)\\b",
+      "(?i)\\b(in|de|ab|ex|a|e|cum|pro)\\s+\\w+ndo\\b",
+      "(?i)\\b(ars|artem|artis|arte|cupidus|cupida|studiosus|tempus|locus|facultas|occasio|finis|modus|spes|causa|consilium)\\s+\\w+ndi\\b"
+    ]
+  },
+  {
+    "n": 3,
+    "key": "pres-subj-supine",
+    "label": "Present subjunctive and supine",
+    "blurb": "Indirect commands with ut/nē + present subjunctive, plus the supine in -um (after motion) and -ū (with adjectives).",
+    "what_to_mark": [
+      "Present subjunctive in ut/nē clauses after verbs of asking, ordering, persuading (imperat ut veniat; ōrat nē discēdat).",
+      "Present subjunctive in purpose clauses (ut videat) and after verbs of fearing (timet nē).",
+      "Hortatory/jussive present subjunctive in main clauses (eāmus, nē timeat).",
+      "Supine in -um after a verb of motion to express purpose (dormītum it, spectātum vēnērunt).",
+      "Supine in -ū with an adjective (mīrābile dictū, facile factū).",
+      "Distinguish future indicative of 3rd/4th conjugation (-et/-ent, -iet) from present subjunctive of 1st conjugation (-et/-ent): mark only the subjunctives; the note can point out the look-alike."
+    ],
+    "seed_patterns": [
+      "(?i)\\b(ut|ne|uti|utinam)\\b",
+      "(?i)\\b\\w+(em|es|et|emus|etis|ent)\\b",
+      "(?i)\\b\\w+(am|as|at|amus|atis|ant)\\b",
+      "(?i)\\b\\w+(er|eris|etur|emur|emini|entur|ar|aris|atur|amur|amini|antur)\\b",
+      "(?i)\\b(sim|sis|sit|simus|sitis|sint|possim|possis|possit|possint|velim|velis|velit|nolim|nolit|malim|eam|eas|eat|eamus|eatis|eant|feram|feras|ferat|ferant)\\b",
+      "(?i)\\b(it|eunt|eo|ibat|ibant|ire|ivit|iit|ierunt|venit|veniunt|venerunt|venire|mittit|misit|missus|abit|abiit|exit|redit|ducit|duxit|proficiscitur|profectus)\\s+\\w+(tum|sum)\\b",
+      "(?i)\\b(facile|difficile|mirabile|incredibile|horribile|iucundum|optimum|turpe|honestum|dignum|utile|fas|nefas)\\s+\\w+(tu|su)\\b"
+    ]
+  },
+  {
+    "n": 4,
+    "key": "pres-subj",
+    "label": "Present subjunctive",
+    "blurb": "Present subjunctive across all conjugations, in ut/nē clauses of purpose and indirect command and in main-clause wishes and exhortations.",
+    "what_to_mark": [
+      "Every present subjunctive verb form, active and passive, including irregulars (sim, possim, velim, eam, feram).",
+      "The ut/nē that introduces it, in the same highlight when adjacent, so the learner sees the pair (ut … veniat).",
+      "Indirect command after imperō, ōrō, rogō, moneō, hortor, persuādeō, cūrō, cavē (nē).",
+      "Purpose clauses (ut … videat), including relative purpose (quī … faciat).",
+      "Main-clause subjunctives: hortatory (eāmus), jussive (veniat), prohibitive with nē.",
+      "Note in the tag how the tense of the main verb is present/future (primary sequence) — this sets up Weeks 5–6."
+    ],
+    "seed_patterns": [
+      "(?i)\\b(ut|ne|uti|quo|quominus|quin)\\b",
+      "(?i)\\b\\w+(em|es|et|emus|etis|ent)\\b",
+      "(?i)\\b\\w+(am|as|at|amus|atis|ant)\\b",
+      "(?i)\\b\\w+(iam|ias|iat|iamus|iatis|iant)\\b",
+      "(?i)\\b\\w+(er|eris|etur|emur|emini|entur|ar|aris|atur|amur|amini|antur|iar|iatur|iantur)\\b",
+      "(?i)\\b(sim|sis|sit|simus|sitis|sint|possim|possis|possit|possimus|possitis|possint|velim|velis|velit|velimus|velint|nolim|nolis|nolit|nolint|malim|malit|eam|eas|eat|eamus|eatis|eant|feram|feras|ferat|feramus|ferant)\\b",
+      "(?i)\\b(imper|ora|rog|mone|hort|persuade|cur|cav|pet|postul|iube|licet|oportet|necesse|vol|nol)\\w*\\b"
+    ]
+  },
+  {
+    "n": 5,
+    "key": "impf-subj",
+    "label": "Imperfect subjunctive",
+    "blurb": "Imperfect subjunctive (infinitive + endings) after a past main verb: result, purpose, indirect command, indirect question.",
+    "what_to_mark": [
+      "Every imperfect subjunctive form, active (-rem, -rēs, -ret, -rēmus, -rētis, -rent: the infinitive plus endings) and passive (-rer, -rēris, -rētur, -rēmur, -rēminī, -rentur), including essem, possem, vellem, īrem, ferrem.",
+      "Result clauses signalled by tam, tantus, ita, sīc, adeō, tot, tālis + ut … (nōn).",
+      "Purpose clauses ut/nē + imperfect subjunctive after a past main verb.",
+      "Indirect commands after past verbs of asking or ordering (imperāvit ut … mitterent).",
+      "Indirect questions introduced by quis, quid, cūr, quōmodo, ubi, unde, num, utrum … an, after verbs of asking, knowing, telling.",
+      "In each note name the introducing word and the past main verb that makes the tense imperfect (function before form)."
+    ],
+    "seed_patterns": [
+      "(?i)\\b\\w+(rem|res|ret|remus|retis|rent)\\b",
+      "(?i)\\b\\w+(rer|reris|retur|remur|remini|rentur)\\b",
+      "(?i)\\b(essem|esses|esset|essemus|essetis|essent|possem|posses|posset|possent|vellem|velles|vellet|vellent|nollem|nollet|mallem|irem|iret|irent|ferrem|ferret|ferrent|fierem|fieret|fierent)\\b",
+      "(?i)\\b(ut|ne|uti|quo|quin|quominus)\\b",
+      "(?i)\\b(tam|tantus|tanta|tantum|tanti|tantae|ita|sic|adeo|tot|talis|tale|tales|talem|eo|usque)\\b",
+      "(?i)\\b(quis|quid|cur|quomodo|quare|ubi|unde|quo|quando|num|utrum|an|quot|quotus|quam|quantus|quanta|quantum|qualis|quale|uter|quin)\\b"
+    ]
+  },
+  {
+    "n": 6,
+    "key": "impf-subj-sequence",
+    "label": "Imperfect subjunctive and sequence of tenses",
+    "blurb": "Imperfect subjunctive again, now watching the main verb: present/future main verb takes present subjunctive, past main verb takes imperfect.",
+    "what_to_mark": [
+      "Every imperfect subjunctive form (see Week 5 patterns) and every present subjunctive in the same passage, labelled so the learner can compare them.",
+      "The main verb that governs each subordinate subjunctive; mention its tense in the note ('rogābat (past) so the clause takes imperfect subjunctive').",
+      "Indirect questions after past verbs (nesciēbat ubi esset), and any indirect question with present subjunctive after a present verb (nesciō ubi sit) for contrast.",
+      "Purpose and indirect command after past verbs (vēnit ut … vidēret; imperāvit nē … abīrent).",
+      "cum + imperfect subjunctive ('when/since', circumstantial) if it appears, labelled as a preview of Week 7."
+    ],
+    "seed_patterns": [
+      "(?i)\\b\\w+(rem|res|ret|remus|retis|rent|rer|reris|retur|remur|remini|rentur)\\b",
+      "(?i)\\b(essem|esset|essent|possem|posset|possent|vellem|vellet|vellent|nollet|irem|iret|ferret)\\b",
+      "(?i)\\b\\w+(em|es|et|emus|etis|ent|am|as|at|amus|atis|ant|iam|iat|iant)\\b",
+      "(?i)\\b(ut|ne|uti|cum|quo|quin|quominus)\\b",
+      "(?i)\\b(quis|quid|cur|quomodo|quare|ubi|unde|quo|quando|num|utrum|an|quot|quam|quantus|qualis|uter)\\b",
+      "(?i)\\b(rog|quaer|interrog|nesci|sci|dubit|imper|iube|ora|pet|postul|mone|hort|persuade|cur|tim|metu|vere|effic|fac)\\w*\\b"
+    ]
+  },
+  {
+    "n": 7,
+    "key": "ut-ne-cum",
+    "label": "ut/nē clauses, deliberative subjunctive, cum clauses",
+    "blurb": "Telling apart indirect command, purpose and result after ut/nē; questions of 'what am I to do?'; cum with the subjunctive.",
+    "what_to_mark": [
+      "Every ut/nē clause, labelled by function: indirect command (after verbs of ordering/asking), purpose ('in order to'), result (after tam/ita/tantus, negative ut nōn), fearing (timeō nē).",
+      "Deliberative subjunctive in a question, usually first person (quid faciam? quō eāmus?), including negative quid nōn faciam.",
+      "cum + subjunctive: circumstantial ('when'), causal ('since'), concessive ('although', often with tamen). Distinguish from cum + ablative ('with') and cum + indicative for a definite time.",
+      "Subjunctive after nē alone in prohibitions or after verbs of fearing; ut nōn in result clauses.",
+      "In the note, name the test the learner can apply: is there an ordering verb (command)? a 'so … that' word (result)? could you add 'in order' (purpose)?"
+    ],
+    "seed_patterns": [
+      "(?i)\\b(ut|ne|uti|ut\\s+non|quin|quominus)\\b",
+      "(?i)\\bcum\\b",
+      "(?i)\\b(quid|quo|quomodo|quem|quam|cur|ubi|unde|utrum|num)\\s+(\\w+\\s+){0,3}\\w+(am|em|iam|amus|emus|iamus)\\b\\s*\\?",
+      "(?i)\\b(tam|tantus|tanta|tantum|ita|sic|adeo|tot|talis|tantopere|tamen)\\b",
+      "(?i)\\b(tim|metu|vere|imper|iube|ora|rog|pet|postul|mone|hort|persuade|cur|effic|accid|fit|fieri|licet|oportet|necesse)\\w*\\b",
+      "(?i)\\b\\w+(em|es|et|emus|etis|ent|am|as|at|amus|atis|ant|rem|ret|rent|retur|rentur|erim|erit|erint|issem|isset|issent)\\b"
+    ]
+  },
+  {
+    "n": 8,
+    "key": "fut-perf",
+    "label": "Future perfect",
+    "blurb": "The future perfect in sī/cum/antequam/postquam/ubi clauses: 'when you (will) have done X, Y will happen'.",
+    "what_to_mark": [
+      "Every future perfect form: active -erō, -eris, -erit, -erimus, -eritis, -erint (perfect stem) and passive perfect participle + erō/eris/erit.",
+      "The conjunction that introduces it: sī, nisi, cum, antequam, priusquam, ubi, postquam, simul atque, dum.",
+      "The future main verb it pairs with, so the note can say 'the sail will be changed (future) once the Minotaur has been killed (future perfect)'.",
+      "Watch look-alikes: -eris/-erit/-erint are also perfect subjunctive (Week 10); -erō/-erimus are unambiguous. Mark by sense (indicative in a time/condition clause) and mention the ambiguity in the note where the form is shared.",
+      "Also mark fuerō/fuerit and potuerō/potuerit, and voluerit, ierit if present."
+    ],
+    "seed_patterns": [
+      "(?i)\\b\\w+(ero|eris|erit|erimus|eritis|erint)\\b",
+      "(?i)\\b\\w+(tus|ta|tum|ti|tae|sus|sa|sum|si|sae)\\s+(ero|eris|erit|erimus|eritis|erunt)\\b",
+      "(?i)\\b(si|nisi|sin|cum|antequam|priusquam|ubi|postquam|simulatque|simul|dum|quando|ut|quotiens)\\b",
+      "(?i)\\b(fuero|fueris|fuerit|fuerimus|fueritis|fuerint|potuero|potuerit|potuerint|voluero|voluerit|iero|ierit|ierint|dedero|dederit)\\b",
+      "(?i)\\b\\w+(bo|bis|bit|bimus|bitis|bunt|am|es|et|emus|etis|ent|iam|ies|iet|ient)\\b"
+    ]
+  },
+  {
+    "n": 9,
+    "key": "gerundive",
+    "label": "Gerundive and passive periphrastic",
+    "blurb": "The -ndus adjective: with sum it says what must be done, and the person who must do it goes into the dative.",
+    "what_to_mark": [
+      "Gerundive + form of sum (passive periphrastic): laudandus est, vīnum bibendum est, dormiendum est (impersonal). Include the sum form in the span when adjacent.",
+      "The dative of agent that goes with it (mihi, tibi, nōbīs, servīs, or a noun in -ō/-ī/-ibus), labelled 'dative of agent' with a note 'the person who must do it'.",
+      "Gerundive used attributively or after ad in place of ad + gerund + object (ad epistulam scrībendam, in place of ad epistulam scrībendum), agreeing with its noun.",
+      "Impersonal periphrastic with an intransitive verb (eundum est, pugnandum est).",
+      "Do not mark gerunds (Week 2) unless directly contrasted; -ndum with sum or agreeing with a noun is a gerundive."
+    ],
+    "seed_patterns": [
+      "(?i)\\b\\w+nd(us|a|um|i|ae|o|os|as|is|orum|arum)\\b\\s*,?\\s*(sum|es|est|sumus|estis|sunt|eram|eras|erat|erant|ero|eris|erit|erunt|esse|sit|sint|esset|essent|fuit|fuerat)\\b",
+      "(?i)\\b(sum|es|est|sumus|estis|sunt|erat|erant|erit|erunt|esse|sit|sint|esset)\\s+\\w+nd(us|a|um|i|ae|o|os|as|is|orum|arum)\\b",
+      "(?i)\\b\\w+nd(us|a|um|i|ae|o|os|as|is|orum|arum)\\b",
+      "(?i)\\bad\\s+\\w+\\s+\\w+nd(um|am|os|as)\\b",
+      "(?i)\\b(mihi|tibi|sibi|nobis|vobis|ei|eis|iis|cui|cuique|omnibus|nemini|homini|hominibus|servo|servis|puero|pueris|domino|militibus|discipulo|discipulis|magistro|patri|matri|filio|filiis)\\b"
+    ]
+  },
+  {
+    "n": 10,
+    "key": "perf-subj",
+    "label": "Perfect subjunctive",
+    "blurb": "Perfect subjunctive (-erim, -eris, -erit …): nē + perfect subjunctive for 'don't', and indirect questions about the past after a present verb.",
+    "what_to_mark": [
+      "Every perfect subjunctive form: active -erim, -eris, -erit, -erimus, -eritis, -erint; passive perfect participle + sim/sīs/sit/sīmus/sītis/sint; fuerim, potuerim.",
+      "Prohibitions nē + perfect subjunctive (nē timueris, nē dīxerītis), labelled 'prohibition' with a note comparing nōlī + infinitive.",
+      "Indirect questions about a past event after a present main verb (nesciō quid fēcerit; rogat cūr vēnerint), with the question word in the note.",
+      "Perfect subjunctive in primary-sequence result or consecutive clauses if any (rare).",
+      "Look-alikes: -eris/-erit/-erint also future perfect (Week 8). In a nē-prohibition or an indirect question it is subjunctive; in a sī/cum time clause with a future main verb it is future perfect."
+    ],
+    "seed_patterns": [
+      "(?i)\\b\\w+(erim|eris|erit|erimus|eritis|erint)\\b",
+      "(?i)\\b\\w+(tus|ta|tum|ti|tae|sus|sa|sum|si|sae)\\s+(sim|sis|sit|simus|sitis|sint)\\b",
+      "(?i)\\bne\\s+(\\w+\\s+){0,2}\\w+(eris|eritis)\\b",
+      "(?i)\\b(fuerim|fueris|fuerit|fuerimus|fueritis|fuerint|potuerim|potuerit|potuerint|voluerit|ierit|ierint|dederit|fecerit|fecerint|dixerit|dixerint|venerit|venerint)\\b",
+      "(?i)\\b(quis|quid|cur|quomodo|quare|ubi|unde|quo|quando|num|utrum|an|quot|quam|quantus|qualis|uter|quin)\\b",
+      "(?i)\\b(nesci|sci|rog|quaer|interrog|dubit|mir|dic|narr|audi|vide|cogit|intelleg)\\w*\\b"
+    ]
+  },
+  {
+    "n": 11,
+    "key": "perf-subj-optative",
+    "label": "Perfect subjunctive and wishes with utinam",
+    "blurb": "More perfect subjunctive, plus utinam (nē) + subjunctive for wishes: present for the future, imperfect and pluperfect for wishes that cannot come true.",
+    "what_to_mark": [
+      "Every perfect subjunctive form (see Week 10), in indirect questions and prohibitions.",
+      "utinam / utinam nē + subjunctive: present subjunctive for a wish still possible ('may he come'), imperfect for a present unreal wish ('if only he were here'), pluperfect for a past unreal wish ('if only he had come'). Label the tense and say in the note whether the wish can still come true.",
+      "Wishes without utinam if the subjunctive stands alone in a main clause with wish sense (dī tē servent, valeant).",
+      "The negative nē (not nōn) in a wish or prohibition."
+    ],
+    "seed_patterns": [
+      "(?i)\\butinam\\b(\\s+ne)?",
+      "(?i)\\b\\w+(erim|eris|erit|erimus|eritis|erint)\\b",
+      "(?i)\\b\\w+(tus|ta|tum|ti|tae|sus|sa|sum|si|sae)\\s+(sim|sis|sit|simus|sitis|sint)\\b",
+      "(?i)\\b\\w+(rem|res|ret|remus|retis|rent|issem|isses|isset|issemus|issetis|issent)\\b",
+      "(?i)\\b\\w+(em|es|et|emus|etis|ent|am|as|at|amus|atis|ant|iam|iat|iant)\\b",
+      "(?i)\\b(di|dii|dei|deus|iuppiter|fortuna)\\s+(\\w+\\s+){0,2}\\w+(ent|ant|et|at|int)\\b",
+      "(?i)\\b(vale|valeas|valeat|valeant|vivas|vivat|vivant|servent|servet|faxit|amet|ament)\\b"
+    ]
+  },
+  {
+    "n": 12,
+    "key": "plup-subj-fut-imper",
+    "label": "Pluperfect subjunctive and future imperative",
+    "blurb": "Pluperfect subjunctive (-issem …) in 'if X had happened, Y would have happened' and past wishes; the future imperative (estō, mementō) for standing orders.",
+    "what_to_mark": [
+      "Every pluperfect subjunctive form: active -issem, -issēs, -isset, -issēmus, -issētis, -issent (perfect stem); passive perfect participle + essem/essēs/esset/essent; fuissem, potuissem.",
+      "Contrary-to-fact conditions: sī + pluperfect subjunctive in the if-clause, pluperfect (or imperfect) subjunctive in the main clause. Mark both halves; say in the note which part is the condition and that neither happened.",
+      "Imperfect subjunctive in present contrary-to-fact conditions (sī habērem, darem) for contrast.",
+      "Past wishes utinam + pluperfect subjunctive (utinam vēnisset).",
+      "cum + pluperfect subjunctive ('when he had …') in narrative.",
+      "Future imperative in -tō/-tōte/-ntō: estō, estōte, mementō, scītō, and any 2nd-person -tō forms in rules or laws; note that it gives an order for the future or a general rule."
+    ],
+    "seed_patterns": [
+      "(?i)\\b\\w+(issem|isses|isset|issemus|issetis|issent)\\b",
+      "(?i)\\b\\w+(tus|ta|tum|ti|tae|sus|sa|sum|si|sae)\\s+(essem|esses|esset|essemus|essetis|essent)\\b",
+      "(?i)\\b(fuissem|fuisses|fuisset|fuissent|potuissem|potuisset|potuissent|voluisset|noluisset|ivisset|iisset|dedisset|fecisset|venisset|dixisset)\\b",
+      "(?i)\\b(si|nisi|sin|utinam|cum|quasi|tamquam|velut)\\b",
+      "(?i)\\b\\w+(rem|res|ret|remus|retis|rent)\\b",
+      "(?i)\\b(esto|estote|sunto|memento|mementote|scito|scitote|habeto|habetote|facito|dato|datote)\\b",
+      "(?i)\\b\\w+(to|tote|nto)\\b"
+    ]
+  },
+  {
+    "n": 13,
+    "key": "poetry-dative",
+    "label": "Poetry: elegiac couplet and hendecasyllable; dummodo; dative verbs",
+    "blurb": "First verse: the elegiac couplet (hexameter + pentameter) and the hendecasyllable; dummodo 'provided that' + subjunctive; verbs whose object is in the dative.",
+    "what_to_mark": [
+      "Verse units: label each couplet or line by metre ('elegiac couplet: hexameter line', 'pentameter line', 'hendecasyllable') from the unit_type/verse position rather than a regex; the note names the poet (Ovid, Catullus, Martial) and the metre.",
+      "dummodo (and modo / dum in the sense 'provided that') + subjunctive, with the note 'a condition that must hold: provided that'.",
+      "Verbs that take a dative object: pāreō, placeō, displiceō, noceō, persuādeō, imperō, serviō, studeō, faveō, crēdō, ignōscō, invideō, resistō, and compounds of sum (adsum, dēsum, prōsum). Mark the verb and its dative in one span when adjacent; note 'the dative is the object here, where English uses a direct object'.",
+      "Poetic word order worth a note: adjective separated from its noun across the line, verb at the end, postponed conjunctions.",
+      "Ōdī et amō (Catullus 85) stays in Week 13; Week 14 starts at Hīs versibus recitātīs."
+    ],
+    "seed_patterns": [
+      "(?i)\\b(dummodo|modo|dum)\\b",
+      "(?i)\\b(pare|paru|place|placu|displice|noce|nocu|persuade|persuas|imper|servi|stude|studu|fave|fav|cred|ignosc|ignov|invide|invid|resist|restit|obedi|succurr|subveni|parc|peperc|indulge|nub|nups|confid|diffid|adsum|ades|adest|adsunt|desum|dees|deest|desunt|prosum|prodes|prodest|prosunt|obsum|obest|intersum|interest|licet|libet|placet)\\w*\\b",
+      "(?i)\\b(mihi|tibi|sibi|nobis|vobis|ei|eis|iis|cui|quibus|illi|illis|huic|his|puellae|amicae|amico|dominae|domino|patri|matri|fratri|deo|dis|diis)\\b",
+      "(?i)\\b(odi|odisti|odit|amo|amas|amat|excrucior|nescio|requiris|fieri|sentio)\\b",
+      "(?i)\\b(versus|versibus|carmen|carmina|poeta|hexameter|pentameter|hendecasyllabus|syllaba|syllabae|pes|pedes|longa|brevis)\\b"
+    ]
+  },
+  {
+    "n": 14,
+    "key": "poetry-prosody",
+    "label": "Poetry: prosody, elision, scansion; Martial",
+    "blurb": "Reading verse aloud: long and short syllables, elision when a vowel or -m meets a following vowel, scanning the hexameter and pentameter; Martial's epigrams and their final point.",
+    "what_to_mark": [
+      "Elision sites: a word ending in a vowel or -m followed by a word beginning with a vowel or h- (e.g. 'Ōdī et amō' becomes ōd(ī) et amō). Mark the two-word span; the note says which vowel drops.",
+      "Syllables long by position (vowel before two consonants) where a learner would guess short, and diphthongs; mark a word and explain the quantity in the note.",
+      "The caesura in the hexameter and the fixed second half of the pentameter, marked on the line unit with a note on where the pause falls.",
+      "Each Martial epigram's turn or point (the last line), labelled 'epigram: the point' with the joke explained in plain English.",
+      "Any remaining Week 13 constructions (dative verbs, dummodo) if they recur, using the Week 13 labels.",
+      "Scansion itself is not regex-able: the unit_type 'verse' and line position decide which units get metre labels."
+    ],
+    "seed_patterns": [
+      "(?i)\\b\\w*[aeiouy]m?\\s+h?[aeiouy]\\w*",
+      "(?i)\\b\\w*(ae|au|oe|ei|eu|ui)\\w*\\b",
+      "(?i)\\b\\w*[aeiou][bcdfglmnprstx][bcdfglmnprstx]\\w*\\b",
+      "(?i)\\b(ai|hei|ecce|en|o|ah|heu|eheu)\\b",
+      "(?i)\\b(versus|versibus|recitat|recitatis|carmen|carmina|epigramma|epigrammata|poeta|martialis|catullus|ovidius|syllaba|pes|pedes|longa|brevis|elisio|hexameter|pentameter)\\b"
+    ]
+  }
+]

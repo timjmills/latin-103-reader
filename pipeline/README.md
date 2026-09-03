@@ -1,0 +1,189 @@
+# pipeline/ — week documents → aligned units
+
+Workstream A. Turns `source/week-NN.md` (your Latin + literal English) into
+`data/build/week-NN.json` in the shape agreed in `CONTRACT.md`, one unit per
+sentence / verse line / speaker turn, with a mismatch report next to it.
+
+```
+python -m pip install -r pipeline/requirements.txt   # once: pypdf, pytest
+python pipeline/build_week.py 1                      # one week
+python pipeline/build_week.py all                    # every week that has a source file
+python -m pytest pipeline -q                         # tests
+```
+
+Files:
+
+| file | what |
+| --- | --- |
+| `build_week.py` | the builder (CLI + importable `build_from_text`) |
+| `weeks.py` | the 14-week table: titles, sources, chapters, grammar focus, week 13/14 overlap rule |
+| `merges.py` | per-week alignment fixes (`MERGES`) and block-type overrides (`OVERRIDES`) |
+| `recover_lines.py` | proposes textbook line numbers from a scan for weeks without `[n]` markers |
+| `test_build_week.py` | pytest: Week 1 end to end + synthetic fixtures for every format path |
+| `parse_week_reference.py` | the original one-off parser; kept for its format notes, not used |
+
+Everything under `data/build/` is gitignored (copyrighted text).
+
+## Dropping in weeks 02–14
+
+1. Save the document as `source/week-NN.md` (two digits: `week-02.md`).
+2. Optional per-sentence notes: `data/grammar-notes-weekNN.json` (or
+   `grammar-notes-week-NN.json`), keys `"line.sentence"` → note text, exactly
+   like Week 1. Keys may also carry the week prefix (`"w07:b3.2"`).
+3. `python pipeline/build_week.py NN`, then open `data/build/week-NN.report.md`.
+4. If the report says **NEEDS REVIEW**, fix the mismatches (below) and rebuild.
+5. For weeks 3, 5, 7–13 (no `[n]` markers) put the scan at
+   `scans/Week-NN-*.pdf` and run `recover_lines.py` (below).
+
+### What the document needs to look like
+
+The builder finds every *part* by its pair of headings — a heading containing
+"Textus" (or exactly "Latin") followed by a heading containing "English" or
+"Translation" — and names the part after the nearest heading above them:
+
+```markdown
+## Pars I (Lines 1–41)            ← "(Lines …)" optional; any heading text works
+### Textus Latīnus
+[1] Latin block …
+[4] Latin block …
+### Literal English Translation
+[1] English block …
+[4] English block …
+```
+
+Grammatica, Pēnsa and front matter are ignored automatically (they have no
+Latin/English pair). Blank lines separate blocks.
+
+Four block formats are recognised; a document may mix them:
+
+| format | how to write it | what you get |
+| --- | --- | --- |
+| **`[n]` blocks** | `[8] Puella in hortō sedet. …` in both Latin and English, same numbers | sentences; ids `w01:8.1`, `w01:8.2`; `line_no` 8 |
+| **plain paragraphs** | no markers; Latin paragraphs and English paragraphs in the same order | sentences; ids `w07:b3.1` (b3 = 3rd block of the week); `line_no` null until recovered |
+| **dialogue** | unmarked paragraphs starting `Dāvus: …` (one or two capitalised words + colon). Several turns may share a paragraph if each label follows a full stop | one unit per turn, `unit_type: "turn"`, `speaker` filled, the `Name:` prefix removed from `la`/`en` |
+| **verse** | one verse line per physical line, each starting with a capital; English the same way, line for line | one unit per line, `unit_type: "verse"`, never split at full stops inside the poem |
+
+`[n]` blocks that begin with a speaker label (`[4] Syra: "Quam fābulam…"`) stay
+sentences with the label in the text — that is how Week 1's notes are keyed.
+To force a block's type use `OVERRIDES` in `merges.py`.
+
+**Multi-text weeks (3, 5, 10).** Give each story its own part heading naming
+its source, e.g. `## Fabulae Syrae 1: Mīnōs (Lines 1–34)` and
+`## Fabellae Latīnae 66: Dāvus et Mēdus`. The heading decides the part's
+`source` (FS / FL) and a slug that goes into the ids so two stories that both
+start at line 1 cannot collide: `w03:minos:1.1`, `w03:fl-66:b7.1`. Notes for
+those weeks are keyed `"minos:1.1"`. The report's *Parts* table shows the slug
+and source it chose for every part — check it.
+
+**Weeks 13–14.** The six overlapping lines (*Ōdī et amō*) stay in Week 13;
+Week 14 starts at *Hīs versibus recitātīs*. `weeks.py` carries this rule and
+the builder drops the overlapping blocks (listed in the report). If the
+phrase is not at the start of a block it warns instead — split the block.
+
+### English bracket tags
+
+Tags in the English are stripped from `en` (kept in `en_raw`) and collected in
+`tags`:
+
+- `[imperfect subjunctive: mitterent]` → `{"label": "imperfect subjunctive", "la": "mitterent", "kind": "construction"}`
+- `[Ablative Absolute]` → `{"label": "ablative absolute", "la": null, "kind": "construction"}`
+- `[He]`, `[Why]`, `[echoed]`, `[With Quintus being silent]` → `kind: "gloss"`
+
+A tag with a colon is always a construction. Without one it is a construction
+only if it names a grammatical term (case names, moods, "gerund", "ablative
+absolute", "dative of agent", "purpose clause", …); everything else is a gloss.
+When you want a construction recognised for certain, write the colon form.
+
+## Reading the report and fixing mismatches
+
+`data/build/week-NN.report.md` starts with a status line:
+
+- **OK** — every block's Latin and English counts agree, no warnings.
+- **OK WITH WARNINGS** — counts agree; read the warnings (text before the
+  first marker was ignored, an English block has no Latin partner, …).
+- **NEEDS REVIEW** — at least one block where the counts differ. Units were
+  still written (Latin sentences without a partner have `en: null`), but the
+  translation is misaligned from that block on, so fix it before reading.
+
+Each mismatch shows both lists numbered from 0, side by side:
+
+```
+### Block `91` (Pars III, sentence): 8 Latin vs 9 English sentences
+| # | Latin | # | English |
+| 0 | Syra: "Thēseus ē labyrinthō exiēns 'Mīnōtaurus necātus est' inquit, 'Laetāminī, cīvēs meī! | 0 | Syra: "Theseus, exiting out of the labyrinth, said: 'The Minotaur has been killed! |
+| 1 | Intuēminī gladium meum cruentum! | 1 | Rejoice, my citizens! |
+…
+```
+
+Here English 0 and 1 belong to Latin 0 (the Latin runs on with `inquit`).
+The fix goes in `pipeline/merges.py`:
+
+```python
+MERGES = {
+    1: {"en": {91: [(0, 1)], 101: [(4, 5)]}},   # week 1: join English 0+1 in block 91, 4+5 in block 101
+    7: {"la": {"b3": [(1, 2)]}},                 # week 7: the translator rendered Latin 1 and 2 as one sentence
+}
+```
+
+- Block key: the line number for `[n]` blocks, `"b3"` for unmarked blocks,
+  `"minos:12"` / `"fl-66:b2"` in multi-text weeks — the report prints the exact
+  key next to each mismatch.
+- `(a, b)` joins sentences `a..b` into one. Indices refer to the list as it
+  stands when that merge runs; merges for a block apply in the order listed.
+- Merge English (`"en"`) when one Latin sentence became two English ones;
+  merge Latin (`"la"`) when two Latin sentences became one English one.
+- Verse mismatch: make the English block have one line per Latin line.
+  Dialogue mismatch: check the speaker labels on both sides.
+
+Rebuild; the report lists the merges it applied. The builder never guesses
+an alignment on its own.
+
+### Sentence splitting rules (Latin)
+
+Split after `.` `!` `?` `…` (optionally followed by a closing quote) when the
+next word starts with a capital or an opening quote; also before a lowercase
+`an` after `?` (second half of a double question). Consequences:
+
+- `"Nōlī" inquit "mē relinquere!` is one sentence — `inquit` inside a quotation
+  never splits it.
+- `'Thēseu! Thēseu! Revertere ad mē!' neque ūllum respōnsum…` — three
+  exclamations, but the last runs on with lowercase `neque`, so it stays with
+  the narrative.
+- `possum...' 'Deī' inquit` splits after the ellipsis; the quotes stay on
+  their sentences (text is verbatim apart from whitespace).
+- Abbreviations with a full stop before a capital (`M. Tullius`) would split;
+  the Ørberg/Miraglia texts do not use them.
+
+## Recovering line numbers from a scan
+
+For weeks whose document has no `[n]` markers:
+
+```
+python pipeline/build_week.py 7                 # first: units exist with line_no null
+python pipeline/recover_lines.py 7              # reads scans/Week-07-*.pdf → data/build/week-07.lines.md + .lines.json
+#   … review week-07.lines.md; edit line_no values in week-07.lines.json if needed …
+python pipeline/recover_lines.py 7 --apply      # writes line_no into every unit of each block
+python pipeline/recover_lines.py --selftest     # proves the tool on a generated PDF
+```
+
+The tool reads the PDF text layer (pypdf), uses the marginal numbers on the
+odd pages as anchors, counts lines on the even pages, and matches the first
+words of every block to propose the line where it starts. Every proposal
+carries a confidence and the physical line it matched; **review each one
+against the book** — OCR of macron vowels is unreliable and an unnoticed
+running head shifts an even page by one line. Ids stay block-based
+(`w07:b3.2`) after `--apply` so notes and highlights keyed to them survive;
+only `line_no` changes. Fabellae Latinae parts are skipped (no line numbers
+in the book). Full limitations in the docstring of `recover_lines.py`.
+
+## Output
+
+- `data/build/week-NN.json` — `{ week, units }` exactly as in `CONTRACT.md`.
+  Additions: every unit and every entry of `week.parts` carries `source`
+  (`FR`/`FS`/`FL`) so mixed weeks can be rendered per source; `week.source` is
+  `"FS+FL"` for those weeks; multi-text parts also carry `slug`.
+- `data/build/week-NN.report.md` — status, parts table, merges applied,
+  warnings, mismatches side by side, the construction tags found (seed list
+  for the highlight workstream), note coverage.
+- `data/build/weeks.json` — index of the `week` objects for every week whose
+  build exists (plus `unit_count`), refreshed on every run.

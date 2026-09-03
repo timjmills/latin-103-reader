@@ -1,0 +1,23 @@
+# Copyrighted course material — never commit
+source/
+scans/*
+!scans/.keep
+audio/
+data/build/
+data/week*
+data/grammar-notes-*
+data/highlights-*
+data/supplement-*
+data/syllabus.md
+data/*.pdf
+
+# local
+.env
+.env.*
+node_modules/
+__pycache__/
+.pytest_cache/
+*.pyc
+QA-REPORT.md
+qa/
+.DS_Store

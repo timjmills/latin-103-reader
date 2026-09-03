@@ -1,0 +1,52 @@
+# Core forms always included in the glossary build, one per line (# = comment).
+# These are the citation forms and paradigm examples the tests and the paradigm
+# generator rely on (Ørberg's model words), plus a few forms that occur in the
+# course but not in week 1. Spelling: macrons optional, v allowed.
+puella puellae puellam puellā puellārum puellīs puellās
+servus servī servō servum serve servōrum servīs servōs
+puer puerī puerō puerum puerōrum
+ager agrī agrō agrum agrōrum
+verbum verbī verbō verba verbōrum verbīs
+rēx rēgis rēgī rēgem rēge rēgēs rēgum rēgibus
+corpus corporis corporī corpore corpora corporum corporibus
+mare maris marī maria marium maribus
+urbs urbis urbī urbem urbe urbēs urbium urbibus
+manus manūs manuī manum manū manuum manibus
+cornū cornūs cornua cornuum cornibus
+diēs diēī diem diē diērum diēbus
+rēs reī rem rē rērum rēbus
+bonus bona bonum bonī bonae bonō bonam bonā bonōrum bonārum bonīs bonōs bonās bone
+melior melius meliōris meliōrem meliōrēs meliōra optimus optima optimum
+ācer ācris ācre ācrem ācrī ācrēs ācria ācrium ācrior ācerrimus
+fēlīx fēlīcis fēlīcī fēlīcem fēlīcēs fēlīcia fēlīcium fēlīcior fēlīcissimus
+ingēns ingentis ingentī ingentem ingentēs ingentia ingentium
+amō amās amat amāmus amātis amant amāre amāvī amātum amābam amābō amem amārem amor amātur amātus amāns amandus amandī
+moneō monēs monet monēmus monētis monent monēre monuī monitum monēbam monēbō moneam monērem monētur monitus monēns monendus
+regō regis regit regimus regitis regunt regere rēxī rēctum regēbam regam regerem regitur rēctus regēns regendus
+capiō capis capit capimus capitis capiunt capere cēpī captum capiēbam capiam caperem capitur captus capiēns capiendus
+audiō audīs audit audīmus audītis audiunt audīre audīvī audītum audiēbam audiam audīrem audītur audītus audiēns audiendus
+sequor sequeris sequitur sequimur sequiminī sequuntur sequī secūtus secūtus sequēbar sequar sequerer sequere sequēns sequendus
+loquor loqueris loquitur loquimur loquiminī loquuntur loquī locūtus loquere loquēns
+proficīscor proficīsceris proficīscitur proficīscuntur proficīscī profectus proficīscere proficīscēns
+sum es est sumus estis sunt eram erō fuī fueram fuerō sim essem fuerim fuissem esse fuisse futūrus este
+possum potes potest possumus potestis possunt poteram poterō potuī possim possem posse potuisse
+eō īs it īmus ītis eunt ībam ībō iī iit iērunt eam īrem īre ī īte iēns eundī itum
+ferō fers fert ferimus fertis ferunt ferēbam feram tulī lātum feror fertur ferrem ferre ferrī fer ferte ferēns lātus ferendus
+volō vīs vult volumus vultis volunt volēbam volam voluī velim vellem velle volēns
+nōlō nōn nōlumus nōlunt nōlēbam nōluī nōlim nōllem nōlle nōlī nōlīte
+mālō māvīs māvult mālumus mālunt māluī mālim māllem mālle
+fīō fīs fit fīmus fītis fīunt fīēbam fīam factus fierem fierī
+mittō mittis mittit mittimus mittitis mittunt mittere mīsī missum mittēbam mittam mitterem mittitur missus mittēns mittendus mittendum mittendī mittendō
+absum abes abest aberat abesse āfuit
+abeō abīs abit abiit abīre abī
+īdem eadem idem eiusdem eīdem eundem eandem eōdem eādem
+hic haec hoc huius huic hunc hanc hōc hāc hī hae hōrum hārum hīs hōs hās
+ille illa illud illīus illī illum illam illō illā illae illōrum illārum illīs illōs illās
+ipse ipsa ipsum ipsīus ipsī ipsō ipsā ipsōrum
+is ea id eius eī eum eam eō eā iī eae eōrum eārum iīs eōs eās
+quī quae quod cuius cui quem quam quō quā quōrum quārum quibus quōs quās
+quis quid
+ego meī mihi mē nōs nostrum nōbīs tū tuī tibi tē vōs vestrum vōbīs suī sibi sē sēsē
+suus sua suum suī suae suō suam suā suōrum suārum suīs suōs suās
+Rōma Rōmae Rōmam Rōmā domus domī domum domō
+labyrinthus labyrinthī labyrinthō labyrinthum labyrinthusque
