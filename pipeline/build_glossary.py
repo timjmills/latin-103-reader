@@ -125,7 +125,7 @@ QUE_COMPOUNDS = {
 PREFERRED = {
     ("vir", "N"), ("dux", "N"), ("caelum", "N"), ("aurum", "N"), ("deus", "N"),
     ("male", "ADV"), ("bene", "ADV"), ("qui", "PRON"), ("is", "PRON"), ("hic", "PRON"),
-    ("reperio", "V"), ("proficiscor", "V"), ("sequor", "V"), ("volo", "V"),
+    ("reperio", "V"), ("proficiscor", "V"), ("sequor", "V"), ("volo", "V"), ("forte", "ADV"),
     ("paucus", "ADJ"), ("multus", "ADJ"), ("magnus", "ADJ"), ("bonus", "ADJ"),
 }
 PREFERRED_BONUS = 1.0  # one frequency step: enough to lift proficīscor (B) over proficiō (A)

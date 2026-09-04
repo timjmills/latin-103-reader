@@ -693,6 +693,8 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       else if (!state.playing) api.scrollToCurrent();
     },
     getView: () => state.view,
+    /** The unit the reader is on (sentence view's sentence; the last tapped/played one in passage view). */
+    getCurrentUnit: () => state.units[state.current] ?? null,
     goTo(order) {
       if (order < 0 || order >= state.units.length) return;
       state.current = order;
@@ -755,6 +757,11 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     wordTexts(unitId) {
       const u = state.byId.get(unitId);
       return u ? tokensFor(u).filter((t) => t.isWord).map((t) => t.text) : [];
+    },
+    /** The unit's word tokens with their lookup form and character offset, in text order. */
+    wordTokens(unitId) {
+      const u = state.byId.get(unitId);
+      return u ? tokensFor(u).filter((t) => t.isWord).map((t) => ({ text: t.text, form: t.form, start: t.start })) : [];
     },
     /** Show per-unit play buttons: false, true (all units) or a Set of aligned unit ids. */
     setAudioAvailable(flag) {
