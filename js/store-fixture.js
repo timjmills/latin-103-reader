@@ -9,7 +9,7 @@ const LS_ALIGN = 'l103.align.';
 
 export const DEFAULT_SETTINGS = Object.freeze({
   size: 3, face: 'serif', theme: 'system', compact: false,
-  showEnglish: 'hidden', showHighlights: true, showUnderlines: true,
+  showEnglish: 'hidden', showHighlights: true, showUnderlines: true, showMargin: true, panelWidth: null,
 });
 
 const base = new URL('../../data/build/', import.meta.url);
@@ -30,10 +30,24 @@ async function fetchJSON(name) {
 function emit(kind) { for (const cb of listeners) cb(kind); }
 const pad = (n) => String(n).padStart(2, '0');
 
+// ?margins=demo — a handful of invented Ørberg-style glosses on week 1, in
+// memory only, so the margin-notes UI can be exercised before the
+// extraction pipeline has produced data/build/margin-week-NN.json.
+const DEMO_MARGIN = {
+  'w01:1.1': [{ line: 1, la: 'facta -ōrum n pl = rēs gestae' }],
+  'w01:4.1': [{ line: 4, la: 'fābula -ae f = nārrātiō' }, { line: 5, la: 'agnus -ī m = ovis parva' }],
+  'w01:29.1': [{ line: 29, la: 'frequēns -entis = crēber' }],
+  'w01:60.1': [{ line: 60, la: 'virgō -inis f = puella innūpta' }],
+};
+const demoMargins = () => {
+  try { return new URLSearchParams(location.search).get('margins') === 'demo'; } catch { return false; }
+};
+
 async function loadWeek(weekN) {
   if (!cache.units.has(weekN)) {
     const data = await fetchJSON(`week-${pad(weekN)}.json`);
-    cache.units.set(weekN, data.units);
+    const demo = weekN === 1 && demoMargins();
+    cache.units.set(weekN, data.units.map((u) => ({ ...u, margin: demo && DEMO_MARGIN[u.id] ? DEMO_MARGIN[u.id] : (u.margin ?? []) })));
     if (!cache.weeks) cache.weeks = [data.week];
   }
   return cache.units.get(weekN);

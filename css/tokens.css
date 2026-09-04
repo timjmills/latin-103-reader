@@ -45,7 +45,7 @@
   --face-ui: var(--face-sans);
   --face-mono: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
 
-  --reading-scale: 1.25;                    /* size step 3 of 5 */
+  --reading-scale: 1.25;                    /* size step 3 of 8 (20px) */
   --reading-size: calc(1rem * var(--reading-scale));
   --reading-leading: 1.55;
   --measure: 34em;                          /* ≈ 65–70 ch in the serif */
@@ -63,13 +63,19 @@
   --s-5: 1.5rem;
   --s-6: 2rem;
   --s-7: 3rem;
-  --gutter: 3.25rem;                        /* line-number margin */
+  --gutter: max(3.25rem, 2.4em);            /* line-number margin; grows with the reading size (capped on phones, reader.css) */
+  --margin-col: 14rem;                      /* margin-notes gutter: tablet; 15rem from 1100px (reader.css) */
+  --margin-gap: 1.25rem;
+  --panel-default: 24rem;                   /* side panel: desktop width when the divider has not been moved */
+  --panel-min: 18rem;                       /* side panel: resizable between these (read by main.js) */
+  --panel-max: 60vw;
   --tap: 44px;
 
   --radius-sm: 4px;
   --radius: 8px;
   --radius-lg: 12px;
   --shadow-pop: 0 1px 2px oklch(0 0 0 / 0.08), 0 6px 18px oklch(0 0 0 / 0.14);
+  --scroll-shade: oklch(0 0 0 / 0.14);      /* edge fade on a box that scrolls sideways (paradigm tables) */
 
   /* Motion */
   --t-fast: 120ms;
@@ -83,12 +89,15 @@
   --z-tooltip: 40;
 }
 
-/* Reading size: five steps */
+/* Reading size: eight steps — 16 18 20 23 27 32 38 44 px */
 html[data-size="1"] { --reading-scale: 1; }
 html[data-size="2"] { --reading-scale: 1.125; }
 html[data-size="3"] { --reading-scale: 1.25; }
-html[data-size="4"] { --reading-scale: 1.45; }
-html[data-size="5"] { --reading-scale: 1.7; }
+html[data-size="4"] { --reading-scale: 1.4375; }
+html[data-size="5"] { --reading-scale: 1.6875; }
+html[data-size="6"] { --reading-scale: 2; }
+html[data-size="7"] { --reading-scale: 2.375; }
+html[data-size="8"] { --reading-scale: 2.75; }
 
 /* Reading face */
 html[data-face="serif"] { --face-reading: var(--face-serif); }
@@ -123,6 +132,7 @@ html[data-face="dyslexic"] {
     --danger: oklch(0.72 0.15 25);
     --success: oklch(0.75 0.12 150);
     --shadow-pop: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px oklch(0 0 0 / 0.5);
+    --scroll-shade: oklch(0 0 0 / 0.5);
   }
 }
 :root[data-theme="dark"] {
@@ -147,8 +157,14 @@ html[data-face="dyslexic"] {
   --danger: oklch(0.72 0.15 25);
   --success: oklch(0.75 0.12 150);
   --shadow-pop: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px oklch(0 0 0 / 0.5);
+  --scroll-shade: oklch(0 0 0 / 0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root { --t-fast: 0ms; --t-base: 0ms; }
 }
+
+/* Registered so getComputedStyle() returns the panel bounds in px (main.js
+   reads them for the divider); the :root values above are the real ones. */
+@property --panel-min { syntax: "<length>"; inherits: true; initial-value: 0px; }
+@property --panel-max { syntax: "<length>"; inherits: true; initial-value: 0px; }

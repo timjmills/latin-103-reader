@@ -1,7 +1,7 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
-import { initSettings, applyToDocument } from './settings.js';
+import { initSettings, applyToDocument, clampPanelWidth } from './settings.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const LS_WEEK = 'l103.week';
@@ -147,6 +147,16 @@ async function boot() {
     const b = e.target.closest('.weeks__row'); if (!b || b.disabled) return;
     weeksDialog.close(); loadWeek(Number(b.dataset.n));
   });
+  // Arrow keys move between the rows (Home/End to the first/last); Tab still works.
+  weeksList.addEventListener('keydown', (e) => {
+    const rows = [...weeksList.querySelectorAll('.weeks__row')];
+    const i = rows.indexOf(e.target);
+    if (i < 0) return;
+    const next = { ArrowDown: Math.min(rows.length - 1, i + 1), ArrowUp: Math.max(0, i - 1), Home: 0, End: rows.length - 1 }[e.key];
+    if (next == null) return;
+    e.preventDefault();
+    rows[next].focus();
+  });
   let weekN = Number(localStorage.getItem(LS_WEEK)) || weeks[0]?.n || 1;
   if (!weeks.some((w) => w.n === weekN)) weekN = weeks[0]?.n ?? 1;
   let units = [];
@@ -246,15 +256,132 @@ async function boot() {
     english: { get: () => settings.showEnglish === 'interleaved', set: (on) => ({ showEnglish: on ? 'interleaved' : 'hidden' }) },
     highlights: { get: () => !!settings.showHighlights, set: (on) => ({ showHighlights: on }) },
     underlines: { get: () => !!settings.showUnderlines, set: (on) => ({ showUnderlines: on }) },
+    margin: { get: () => settings.showMargin !== false, set: (on) => ({ showMargin: on }) },
   };
   function applyDisplay() {
     readerEl.dataset.english = settings.showEnglish;
     readerEl.dataset.highlights = settings.showHighlights ? 'on' : 'off';
     readerEl.dataset.underlines = settings.showUnderlines ? 'on' : 'off';
+    readerEl.dataset.margin = settings.showMargin !== false ? 'on' : 'off';
     for (const [k, t] of Object.entries(toggles)) $(`[data-toggle="${k}"]`)?.setAttribute('aria-pressed', String(t.get()));
+    applyPanelWidth(settings.panelWidth);
+    reader.reflow();
+  }
+
+  /* ---------------------------------------------- side panel width */
+  // The divider between the text and the panel: pointer drag or arrow keys.
+  // The chosen width is clamped to [--panel-min, --panel-max] (tokens.css)
+  // and stored in settings.panelWidth (px); null keeps the CSS default.
+  const divider = $('#divider');
+  const panelEl = $('#panel');
+  const remPx = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  // --panel-min / --panel-max are registered <length> properties, so their
+  // computed values come back in px; the unit parse covers browsers without
+  // @property, where the declared value ("18rem", "60vw") is returned as is.
+  function cssPx(name, fallback) {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const m = /^(-?\d*\.?\d+)(px|rem|em|vw|vh)?$/.exec(v);
+    if (!m) return fallback;
+    const n = parseFloat(m[1]);
+    switch (m[2] || 'px') {
+      case 'px': return n;
+      case 'vw': return n * window.innerWidth / 100;
+      case 'vh': return n * window.innerHeight / 100;
+      default: return n * remPx();
+    }
+  }
+  const panelBounds = () => ({
+    min: Math.round(cssPx('--panel-min', 18 * remPx())),
+    max: Math.round(cssPx('--panel-max', window.innerWidth * 0.6)),
+  });
+  function applyPanelWidth(px) {
+    const { min, max } = panelBounds();
+    const w = clampPanelWidth(px, min, max);
+    if (w == null) layout.style.removeProperty('--panel-w');
+    else layout.style.setProperty('--panel-w', `${w}px`);
+    const now = w ?? (Math.round(panelEl.getBoundingClientRect().width) || min);
+    divider.setAttribute('aria-valuemin', String(min));
+    divider.setAttribute('aria-valuemax', String(max));
+    divider.setAttribute('aria-valuenow', String(now));
+    divider.setAttribute('aria-valuetext', `Panel ${now} pixels wide`);
+  }
+  let panelSaveTimer = 0;
+  let drag = null;   // the pointer drag in progress on the divider, if any
+  // While a drag or its debounced save is still in flight, the live width
+  // beats whatever (older) panelWidth a store round-trip hands back.
+  const panelBusy = () => !!drag || !!panelSaveTimer;
+  function setPanelWidth(px, { persist = true } = {}) {
+    const { min, max } = panelBounds();
+    const w = clampPanelWidth(px, min, max);
+    settings = { ...settings, panelWidth: w };
+    applyPanelWidth(w);
+    reader.reflow();
+    if (!persist) return;
+    clearTimeout(panelSaveTimer);
+    panelSaveTimer = setTimeout(() => { panelSaveTimer = 0; saveSettings({ panelWidth: w }); }, 250);
+  }
+  if (divider) {
+    divider.addEventListener('pointerdown', (e) => {
+      if (e.button != null && e.button !== 0) return;
+      drag = { id: e.pointerId, x: e.clientX, w: panelEl.getBoundingClientRect().width, prev: settings.panelWidth };
+      try { divider.setPointerCapture(e.pointerId); } catch { /* no capturable pointer: moves still arrive while over the divider */ }
+      divider.classList.add('is-dragging');
+      document.body.classList.add('is-resizing');
+      e.preventDefault();
+    });
+    divider.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      // Past the right edge the width goes to zero or below; that is "as narrow
+      // as it gets", never the reset that clampPanelWidth() reads a null as.
+      setPanelWidth(Math.max(panelBounds().min, drag.w + (drag.x - e.clientX)), { persist: false });
+    });
+    const endDrag = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      drag = null;
+      divider.classList.remove('is-dragging');
+      document.body.classList.remove('is-resizing');
+      setPanelWidth(panelEl.getBoundingClientRect().width);
+      if (live) live.textContent = divider.getAttribute('aria-valuetext');
+    };
+    divider.addEventListener('pointerup', endDrag);
+    divider.addEventListener('pointercancel', endDrag);
+    divider.addEventListener('lostpointercapture', endDrag);
+    // Escape abandons a pointer drag and puts the width back where it started.
+    const cancelDrag = () => {
+      if (!drag) return;
+      const { id, prev } = drag;
+      drag = null;
+      divider.classList.remove('is-dragging');
+      document.body.classList.remove('is-resizing');
+      try { divider.releasePointerCapture(id); } catch { /* already released */ }
+      setPanelWidth(prev, { persist: false });
+      if (live) live.textContent = 'Resize cancelled.';
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drag) { e.preventDefault(); e.stopPropagation(); cancelDrag(); }
+    }, true);
+    // APG window-splitter keys: Right/Up widen the panel, Left/Down narrow it,
+    // Home = narrowest, End = widest. Handled keys stop here so sentence view
+    // never also treats them as navigation.
+    divider.addEventListener('keydown', (e) => {
+      const cur = panelEl.getBoundingClientRect().width;
+      const { min, max } = panelBounds();
+      const step = e.shiftKey ? 64 : 16;
+      const next = { ArrowRight: cur + step, ArrowUp: cur + step, ArrowLeft: cur - step, ArrowDown: cur - step, Home: min, End: max }[e.key];
+      if (next == null) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setPanelWidth(next);
+      if (live) live.textContent = divider.getAttribute('aria-valuetext');
+    });
+    divider.addEventListener('dblclick', () => { setPanelWidth(null); if (live) live.textContent = `Panel width reset. ${divider.getAttribute('aria-valuetext')}`; });
+    window.addEventListener('resize', () => applyPanelWidth(settings.panelWidth));
   }
   async function saveSettings(patch) {
-    settings = { ...settings, ...(await store.setSettings(patch)) ?? patch };
+    const saved = (await store.setSettings(patch)) ?? patch;
+    const livePanel = settings.panelWidth;
+    settings = { ...settings, ...saved };
+    if (panelBusy()) settings.panelWidth = livePanel;
     mirror(settings);
     applyToDocument(settings);
     applyDisplay();
@@ -300,7 +427,12 @@ async function boot() {
   // Sync from another device / tab
   onRemoteChange = async (kind) => {
     if (kind === 'lookups') { lookups = await store.getLookups(); reader.setLookups(lookups); panel.refresh(); }
-    if (kind === 'settings') { settings = await store.getSettings(); mirror(settings); applyToDocument(settings); applyDisplay(); settingsUI.render(settings); }
+    if (kind === 'settings') {
+      const livePanel = settings.panelWidth;
+      settings = await store.getSettings();
+      if (panelBusy()) settings = { ...settings, panelWidth: livePanel };
+      mirror(settings); applyToDocument(settings); applyDisplay(); settingsUI.render(settings);
+    }
     if (kind === 'alignments') { audio?.invalidate?.(weekN); refreshAudioAvailability(); }
   };
   // Anything that arrived during boot (settings/lookups are re-read below via loadWeek + the synced read above).
@@ -319,6 +451,7 @@ async function boot() {
     }
     if (e.key === 'e') saveSettings(toggles.english.set(!toggles.english.get()));
     if (e.key === 'h') saveSettings(toggles.highlights.set(!toggles.highlights.get()));
+    if (e.key === 'm') saveSettings(toggles.margin.set(!toggles.margin.get()));
   });
 
   applyDisplay();

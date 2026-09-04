@@ -278,7 +278,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
         // Tapping a yellow (looked-up, not yet learned) word clears its underline
         // everywhere: the second look is the learner saying "I know this now".
         const rec = getLookupRecord(form);
-        if (rec && !rec.learned_at) await store.markLearned(form);
+        if (rec && !rec.learned_at) { await store.markLearned(form); if (live) live.textContent = `${text} marked as learned. Unlearn is in the panel.`; }
         else await store.addLookup(form, unitId);
         await onLookupsChanged();
       }

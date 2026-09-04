@@ -53,7 +53,9 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
   padding: 0 max(var(--s-3), env(safe-area-inset-left)) 0 max(var(--s-3), env(safe-area-inset-right));
 }
 .bar__main {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "week view" "tools settings";
+  /* Phones: week | view switch, then the four display toggles | settings. The
+     settings button gets its own narrow column so the toggles keep one row. */
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "week view view" "tools tools settings";
   align-items: center; gap: var(--s-1) var(--s-2); padding: var(--s-1) 0;
 }
 .week { grid-area: week; min-width: 0; display: flex; flex: 1 1 auto; }
@@ -71,7 +73,7 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 .week__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .week__num { color: var(--ink-3); white-space: nowrap; }
 .week__title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-#settings-btn { grid-area: settings; }
+#settings-btn { grid-area: settings; justify-self: end; }
 .seg {
   grid-area: view; display: inline-flex; justify-self: start;
   border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; background: var(--bg-raised);
@@ -100,6 +102,7 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 .toggle[data-toggle="english"][aria-pressed="true"]::before { background: var(--ink); }
 .toggle[data-toggle="highlights"][aria-pressed="true"]::before { background: var(--glow-bg); border-color: var(--glow-ink); box-shadow: 0 0 4px 1px var(--glow-ring); }
 .toggle[data-toggle="underlines"][aria-pressed="true"]::before { background: var(--underline); border-color: var(--underline); height: 0.35em; border-radius: 1px; }
+.toggle[data-toggle="margin"][aria-pressed="true"]::before { background: var(--ink-3); border-color: var(--ink-3); width: 0.5em; }
 .toggle:hover { color: var(--ink); background: var(--bg-raised); }
 /* Phones: two rows — week + view switch, then the display toggles (short labels) + settings. */
 @media (max-width: 767.98px) {
@@ -120,43 +123,110 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 }
 
 /* ---------------------------------------------------------- layout */
+/* --gutter-r: the line-number gutter resolved at the reading size once, so
+   the part title (0.95em) and the prose share the same left edge. */
+@property --gutter-r { syntax: "<length>"; inherits: true; initial-value: 0px; }
 .layout { display: block; }
-#main { min-width: 0; }
+#main { min-width: 0; overflow-x: clip; }
+/* The two largest sizes: a 13-letter word can be wider than a phone column; break it rather than pan the page. */
+html[data-size="7"] .la, html[data-size="8"] .la, html[data-size="7"] .sentence__la, html[data-size="8"] .sentence__la { overflow-wrap: anywhere; hyphens: manual; }
 .reader {
+  --gutter-r: var(--gutter);
   font-family: var(--face-reading);
   font-size: var(--reading-size);
   line-height: var(--reading-leading);
   padding: var(--s-5) var(--s-4) calc(var(--s-7) + env(safe-area-inset-bottom));
-  max-width: calc(var(--measure) + var(--gutter) + 2rem);
+  max-width: calc(var(--measure) + var(--gutter-r) + 2rem);
   margin-inline: auto;
   text-wrap: pretty;
   hanging-punctuation: first;
 }
+/* Phones: the line-number gutter stops growing at 14vw so the largest sizes keep a readable column. */
+@media (max-width: 767.98px) { .reader { --gutter-r: min(var(--gutter), 14vw); } }
+/* With the gutter in use the text column narrows to the book's own proportion
+   (Ørberg sets ~55 characters beside a wide margin): the glosses then keep
+   pace with the lines instead of stacking below them. */
+.reader[data-margin="on"][data-margin-mode="gutter"] { --measure: 26em; max-width: calc(var(--measure) + var(--gutter-r) + 2rem + var(--margin-col) + var(--margin-gap)); }
 .reader__loading, .empty { color: var(--ink-3); font-family: var(--face-ui); font-size: var(--ui-md); }
 .boot-error { margin: var(--s-6); color: var(--danger); font-family: var(--face-ui); }
 
+/* The side panel column (tablet: only while open; desktop: always) with a
+   draggable divider in between. --panel-w is set by main.js from settings. */
+.divider { display: none; }
 @media (min-width: 768px) {
   .reader { padding: var(--s-6) var(--s-6) var(--s-7); }
 }
+/* Tablet only: the panel column exists while the panel is open. Bounded above
+   so the desktop column below keeps one width whether the panel is open or not. */
+@media (min-width: 768px) and (max-width: 1099.98px) {
+  .layout[data-panel="open"] { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, var(--panel-w, min(22rem, 44vw))); align-items: start; }
+  .layout[data-panel="open"] .divider { display: block; }
+}
 @media (min-width: 1100px) {
-  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 24rem; align-items: start; }
+  .reader { --margin-col: max(15rem, 11em); }   /* grows with the type so the column keeps pace at sizes 4–5 */
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, var(--panel-w, var(--panel-default))); align-items: start; }
+  .layout .divider { display: block; }
   .reader { padding-inline: var(--s-7); }
 }
+.divider {
+  position: sticky; top: var(--bar-h, 0px); align-self: start;
+  width: 14px; height: calc(100dvh - var(--bar-h, 0px)); margin-inline: -1px;
+  cursor: col-resize; touch-action: none; user-select: none; -webkit-user-select: none;
+  background: transparent; border: 0; padding: 0; border-radius: 0;
+  z-index: 1;
+}
+.divider::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; margin-left: -0.5px;
+  background: var(--line); transition: background-color var(--t-fast) var(--ease-out), width var(--t-fast) var(--ease-out), margin var(--t-fast) var(--ease-out);
+}
+.divider:hover::before, .divider.is-dragging::before { width: 3px; margin-left: -1.5px; background: var(--line-strong); }
+.divider:focus-visible { outline: none; }
+.divider:focus-visible::before { width: 3px; margin-left: -1.5px; background: var(--focus); }
+body.is-resizing { cursor: col-resize; user-select: none; -webkit-user-select: none; }
+body.is-resizing .panel { pointer-events: none; }
+
+/* ---------------------------------------------------------- margin notes */
+/* Ørberg's marginal glosses. Two copies are rendered per unit: .mnotes inside
+   the sentence (phones, or a tablet with no room) and .mnote in the .margin
+   gutter beside the prose (positioned by reader.js). CSS shows one of them. */
+.margin-probe { position: absolute; visibility: hidden; height: 0; width: calc(var(--margin-col) + var(--margin-gap)); }
+.mnotes, .mnote {
+  font-family: var(--face-serif); font-style: normal; color: var(--ink-3);
+  font-size: 0.78em; line-height: 1.45; text-wrap: pretty;
+}
+.mnotes { display: block; margin: 0.2em 0 0.35em; }
+.mnotes__item { display: block; padding-left: 1.15em; text-indent: -1.15em; }
+.mnotes__mark { display: inline-block; width: 1.15em; text-indent: 0; color: var(--ink-3); opacity: 0.7; }
+.mnote .mnotes__mark { display: none; }
+.mnotes__line { font-family: var(--face-ui); font-size: 0.78em; color: var(--ink-3); font-variant-numeric: tabular-nums; margin-right: 0.45em; }
+.mnotes .w, .mnote .w { color: var(--ink-2); padding-block: 0.3em; }   /* ≥ 24px tap height at the smallest note size */
+.mnotes--sentence { margin: calc(-1 * var(--s-2)) 0 var(--s-4); font-size: 0.9em; }
+.reader[data-margin="off"] .mnotes, .reader[data-margin="off"] .margin { display: none; }
+/* Each .part carries its own data-margin-mode (reader.js): a part too dense for the column is inline while its neighbours keep the gutter. */
+.part[data-margin-mode="gutter"] .mnotes { display: none; }
+.part:not([data-margin-mode="gutter"]) .unit.has-margin { display: block; margin-bottom: var(--s-3); }
+.margin { display: none; }
+.reader[data-margin="on"] .part[data-margin-mode="gutter"] .prose { padding-right: calc(var(--margin-col) + var(--margin-gap)); }
+.reader[data-margin="on"] .part[data-margin-mode="gutter"] .margin {
+  display: block; position: absolute; top: 0; right: 0; bottom: 0; width: var(--margin-col); pointer-events: none;
+}
+.mnote { position: absolute; left: 0; width: 100%; pointer-events: auto; line-height: 1.25; }   /* tight leading: a two-line gloss stays inside 1.3 text lines */
+.mnote .mnotes__item { padding-left: 0; text-indent: 0; }
 
 /* ---------------------------------------------------------- passage */
 .part + .part { margin-top: var(--s-7); }
 .part__title {
   font-family: var(--face-serif); font-weight: 400; font-size: 0.95em; letter-spacing: 0.01em;
-  color: var(--ink-2); margin: 0 0 var(--s-4) var(--gutter);
+  color: var(--ink-2); margin: 0 0 var(--s-4) var(--gutter-r);
   border-bottom: 1px solid var(--line); padding-bottom: var(--s-2);
 }
 .part__lines { color: var(--ink-3); font-size: 0.85em; }
-.prose { position: relative; padding-left: var(--gutter); margin: 0; }
+.prose { position: relative; padding-left: var(--gutter-r); margin: 0; }
 .unit { position: static; }
 .lineno--dup { visibility: hidden; }
 .lineno {
-  position: absolute; left: 0; width: calc(var(--gutter) - 0.75rem);
-  text-align: right; font-family: var(--face-ui); font-size: 0.62em; line-height: inherit;
+  position: absolute; left: 0; width: calc(var(--gutter-r) - 0.75rem);
+  text-align: right; font-family: var(--face-ui); font-size: max(0.62em, 0.7rem); line-height: inherit;
   color: var(--ink-3); font-variant-numeric: tabular-nums; padding-top: 0.42em; user-select: none;
 }
 .speaker { font-variant: small-caps; letter-spacing: 0.04em; color: var(--ink-2); }
@@ -167,7 +237,7 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 .reader[data-english="interleaved"] .unit { display: block; margin-bottom: var(--s-4); }
 .reader[data-english="interleaved"] .unit .en {
   display: block; margin-top: 0.15em;
-  font-family: var(--face-ui); font-size: 0.78em; line-height: 1.5; color: var(--ink-2);
+  font-family: var(--face-ui); font-size: clamp(0.9rem, 0.78em, 1.75rem); line-height: 1.5; color: var(--ink-2);
 }
 .unit--verse { display: block; }
 .unit--turn { display: block; margin-bottom: var(--s-3); }
@@ -199,7 +269,7 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
   font: 0.6em var(--face-serif); line-height: 1; color: var(--ink-3);
   background: transparent; border: 0; padding: 0 0.1em; margin-left: 0.1em; border-radius: 2px;
 }
-.notemark::after { content: ""; position: absolute; inset: -0.7rem -0.2rem -0.7rem -0.6rem; }   /* bigger target, but never over the play button that follows */
+.notemark::after { content: ""; position: absolute; inset: -0.7rem -0.3rem -0.7rem -0.8rem; }   /* bigger target, but never over the play button that follows */
 .notemark:hover { color: var(--rubric-ink); background: var(--rubric-soft); }
 
 /* Audio (E toggles .is-playing via reader.setPlayingUnit) */
@@ -244,8 +314,8 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 .sentence { max-width: var(--measure); scroll-margin-top: calc(var(--bar-h, 0px) + var(--s-5)); outline: none; }
 .unit, .part__title { scroll-margin-top: calc(var(--bar-h, 0px) + var(--s-5)); }
 .sentence__meta { font-family: var(--face-ui); font-size: var(--ui-sm); color: var(--ink-3); margin: 0 0 var(--s-4); }
-.sentence__la { font-size: 1.3em; line-height: 1.45; margin: 0 0 var(--s-4); text-wrap: pretty; }
-.sentence__en { font-family: var(--face-ui); font-size: 0.85em; line-height: 1.55; color: var(--ink-2); margin: 0 0 var(--s-5); }
+.sentence__la { font-size: clamp(1em, 1.3em, 1em + 0.5rem); line-height: 1.45; margin: 0 0 var(--s-4); text-wrap: pretty; }
+.sentence__en { font-family: var(--face-ui); font-size: clamp(0.9rem, 0.85em, 1.75rem); line-height: 1.55; color: var(--ink-2); margin: 0 0 var(--s-5); }
 .sentence__h { font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); margin: 0 0 var(--s-2); }
 .sentence__note { margin: 0 0 var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line); }
 .sentence__note p { font-family: var(--face-ui); font-size: 0.8em; line-height: 1.55; color: var(--ink); margin: 0; }
