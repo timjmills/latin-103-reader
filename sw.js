@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v15';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 

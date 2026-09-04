@@ -56,18 +56,42 @@
             <span class="toggle__label" data-short="Marks">Underlines</span>
           </button>
           <button type="button" class="toggle" data-toggle="margin" aria-pressed="true" aria-keyshortcuts="m" title="Margin notes (m)">
-            <span class="toggle__label" data-short="&para; Notes">Margin notes</span>
+            <span class="toggle__label" data-short="Notes">Margin notes</span>
+          </button>
+          <button type="button" class="toggle" data-toggle="audio" aria-pressed="true" aria-keyshortcuts="a" title="Audio: play buttons and follow-along (a)">
+            <span class="toggle__label" data-short="&#9834;">Audio</span>
           </button>
         </div>
         <button type="button" class="btn btn--icon" id="settings-btn" aria-haspopup="dialog" aria-label="Reading settings">
           <span aria-hidden="true" class="btn__aa">Aa</span>
         </button>
       </div>
+      <!-- First run only (localStorage l103.hint.translation), while the translation is hidden. A row of the header under the toolbar (it pushes the text down, never covers it); main.js sets its left offset and caret under the Translation toggle. -->
+      <div id="hint-translation" class="hint" role="status" hidden>
+        <p class="hint__text">Tap <b>Translation</b> to show the English under each sentence.</p>
+        <button type="button" class="hint__ok" data-hint-dismiss>Got it</button>
+      </div>
     </header>
 
     <div class="layout" data-panel="closed">
       <main id="main">
-        <article id="reader" class="reader" data-view="passage" data-english="hidden" data-highlights="on" data-underlines="on" data-margin="on" aria-label="Reading">
+        <article id="reader" class="reader" data-view="passage" data-english="hidden" data-highlights="on" data-underlines="on" data-margin="on" data-audio="on" data-summaries="on" data-gloss-en="off" aria-label="Reading">
+          <!-- The listen bar. reader.js moves it into every render (top of the passage / above the sentence); main.js paints it. -->
+          <div id="listen" class="listen" role="group" aria-label="Listen to the text" data-state="quiet" hidden>
+            <div class="listen__main">
+              <button type="button" class="btn btn--primary listen__play" data-listen="play"><span class="listen__tri" aria-hidden="true"></span><span data-listen-label>Play passage</span></button>
+              <button type="button" class="btn btn--quiet" data-listen="from" hidden>Play from here</button>
+              <button type="button" class="btn" data-listen="pause" hidden>Pause</button>
+              <button type="button" class="btn btn--quiet" data-listen="stop" hidden>Stop</button>
+              <button type="button" class="btn btn--quiet listen__rate" data-listen="rate" aria-expanded="false" aria-controls="listen-rates" aria-label="Playback speed 1.0×"><span data-rate-value>1.0×</span></button>
+              <p class="listen__status" data-listen-status></p>
+            </div>
+            <!-- The same chips as Settings → Audio → Speed and the transport (settings.js renders all three from RATE_STEPS). -->
+            <div id="listen-rates" class="listen__rates rate-chips" role="group" aria-label="Playback speed" data-rate-chips hidden></div>
+            <!-- Rows with synth: true (a synthesised voice reads the unit): main.js shows a quiet line for the sentence / the week. -->
+            <p class="listen__synth" data-listen-synth hidden></p>
+            <p class="listen__quiet" data-listen-quiet></p>
+          </div>
           <p class="reader__loading">Loading the text…</p>
         </article>
       </main>
@@ -81,11 +105,16 @@
     </div>
 
     <div id="transport" class="transport" hidden>
-      <p class="transport__text"><span class="transport__title">Playing chapter</span> <span class="transport__pos" data-transport-pos></span></p>
-      <div class="transport__btns">
-        <button type="button" class="btn btn--quiet" data-transport="pause">Pause</button>
-        <button type="button" class="btn btn--quiet" data-transport="stop">Stop</button>
+      <div class="transport__main">
+        <p class="transport__text"><span class="transport__title">Playing chapter</span> <span class="transport__pos" data-transport-pos></span></p>
+        <div class="transport__btns">
+          <button type="button" class="btn btn--quiet transport__rate" data-transport="rate" aria-expanded="false" aria-controls="transport-rates" aria-label="Playback speed 1.0×"><span data-rate-value>1.0×</span></button>
+          <button type="button" class="btn btn--quiet" data-transport="pause">Pause</button>
+          <button type="button" class="btn btn--quiet" data-transport="stop">Stop</button>
+        </div>
       </div>
+      <!-- The same chips as Settings → Audio → Speed (settings.js renders both from RATE_STEPS). -->
+      <div id="transport-rates" class="transport__rates rate-chips" role="group" aria-label="Playback speed" data-rate-chips hidden></div>
     </div>
     <p id="notice" class="notice" hidden></p>
     <p id="live" class="visually-hidden" aria-live="polite" aria-atomic="true"></p>
@@ -106,7 +135,7 @@
     <dialog id="settings" class="settings" aria-labelledby="settings-title">
     <div class="settings__body">
       <div class="settings__head">
-        <h2 id="settings-title" class="settings__title">Reading</h2>
+        <h2 id="settings-title" class="settings__title">Settings</h2>
         <button type="button" class="panel__close" data-action="close" aria-label="Close"><span aria-hidden="true">×</span></button>
       </div>
 
@@ -147,8 +176,56 @@
         </label>
       </div>
 
+      <!-- The five toolbar toggles again, as switches, plus Section summaries (settings-only); all share settings (main.js `toggles`). -->
+      <fieldset class="settings__row settings__reading" data-reading>
+        <legend class="settings__label">Reading</legend>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="english">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Translation <small>English under each sentence</small></span>
+          <kbd class="switch__key" aria-label="shortcut e">e</kbd>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="highlights">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Grammar focus <small data-focus-desc>This week's grammar, highlighted</small></span>
+          <kbd class="switch__key" aria-label="shortcut h">h</kbd>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="underlines">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Underlines <small>Words you have looked up</small></span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="margin">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Margin notes <small>Glosses beside the text</small></span>
+          <kbd class="switch__key" aria-label="shortcut m">m</kbd>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="glossEnglish">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">English under margin notes <small>Always shown, instead of the small “en” button</small></span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="audio">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Audio <small>Play buttons and follow-along</small></span>
+          <kbd class="switch__key" aria-label="shortcut a">a</kbd>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="summaries">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Section summaries <small>A short summary under each part heading</small></span>
+        </label>
+      </fieldset>
+
       <section class="settings__row settings__audio" data-audio aria-labelledby="audio-label" hidden>
         <h3 id="audio-label" class="settings__label">Audio · <span data-audio-week>this week</span></h3>
+        <div class="audio__speed" role="group" aria-labelledby="speed-label">
+          <span id="speed-label" class="audio__speed-label">Speed <span class="audio__speed-value" data-rate-value aria-hidden="true">1.0×</span></span>
+          <div class="rate-chips" data-rate-chips></div>
+        </div>
         <p class="audio__state" data-audio-state>No recording for this week yet.</p>
         <div class="audio__actions">
           <label class="btn btn--quiet audio__upload">
@@ -165,7 +242,7 @@
       </section>
 
       <div class="settings__tools">
-        <p class="settings__keys">Keys: <kbd>e</kbd> translation · <kbd>h</kbd> grammar focus · <kbd>m</kbd> margin notes · <kbd>j</kbd>/<kbd>k</kbd> next / previous sentence</p>
+        <p class="settings__keys">Keys: <kbd>j</kbd>/<kbd>k</kbd> next / previous sentence · the letters above switch the reading options</p>
         <button type="button" class="btn btn--quiet" data-action="signout">Sign out</button>
       </div>
     </div>

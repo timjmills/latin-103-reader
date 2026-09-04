@@ -15,6 +15,7 @@ import { auth, getClient } from './auth.js';
 import {
   mergeRows, applyRealtime, coalesceOutbox, makeLookup, patchLookup,
   patchSettings, normaliseSettings, lookupsView, weekTag, staleWeeks, isNewer,
+  cleanWords, normaliseAlignmentRows,
 } from './sync.js';
 
 export const SETTINGS_LS_KEY = 'latin103.settings';
@@ -371,7 +372,12 @@ async function getUnits(weekN) {
   if (!state.units.has(n)) {
     const rows = (await db.byIndex('units', 'week_n', n)).sort((a, b) => a.order - b.order);
     // Rows cached before migration 0004 have no `margin`; the UI expects an array.
-    state.units.set(n, rows.map(({ user_id, ...u }) => ({ ...u, margin: Array.isArray(u.margin) ? u.margin : [] })));
+    // The plain-words layer (CONTRACT.md): `note_simple` and `margin[].en` ride along, missing → null.
+    state.units.set(n, rows.map(({ user_id, ...u }) => ({
+      ...u,
+      note_simple: typeof u.note_simple === 'string' ? u.note_simple : null,
+      margin: Array.isArray(u.margin) ? u.margin.map((m) => (m && typeof m === 'object' ? { ...m, en: typeof m.en === 'string' ? m.en : null } : m)) : [],
+    })));
   }
   return state.units.get(n);
 }
@@ -381,7 +387,7 @@ async function getHighlights(weekN) {
   const n = Number(weekN);
   if (!state.highlights.has(n)) {
     const rows = await db.byIndex('highlights', 'week_n', n);
-    state.highlights.set(n, rows.map(({ user_id, ...h }) => h));
+    state.highlights.set(n, rows.map(({ user_id, ...h }) => ({ ...h, simple: typeof h.simple === 'string' ? h.simple : null })));
   }
   return state.highlights.get(n);
 }
@@ -441,19 +447,20 @@ async function setSettings(patch) {
 async function getAlignment(weekN) {
   await ready();
   const n = Number(weekN);
-  return [...state.alignments.values()]
-    .filter((r) => r.week_n === n)
-    .sort((a, b) => a.start_ms - b.start_ms)
-    .map((r) => ({ unit_id: r.unit_id, start_ms: r.start_ms }));
+  // `words` ([{t, s, e}], absolute ms) come from the pipeline's Whisper / TTS
+  // alignment; manual alignments have none → [] (cleanWords). `end_ms` and
+  // `synth` are normalised too: rows cached before migration 0007 → null / false.
+  return normaliseAlignmentRows([...state.alignments.values()].filter((r) => r.week_n === n));
 }
 
 async function saveAlignment(weekN, rows) {
   await ready();
   const n = Number(weekN);
   const at = nowIso();
-  const clean = (rows || [])
-    .filter((r) => r && r.unit_id && Number.isFinite(Number(r.start_ms)))
-    .map((r) => ({ week_n: n, unit_id: String(r.unit_id), start_ms: Math.max(0, Math.round(Number(r.start_ms))), updated_at: at }));
+  // end_ms (null: until the next row) and synth ride along; a manual
+  // alignment from the overlay has neither → null / false (migration 0007).
+  const clean = normaliseAlignmentRows(rows)
+    .map((r) => ({ week_n: n, unit_id: r.unit_id, start_ms: r.start_ms, end_ms: r.end_ms, synth: r.synth, words: cleanWords(r.words), updated_at: at }));
   for (const k of [...state.alignments.keys()]) if (k.startsWith(`${n}|`)) state.alignments.delete(k);
   for (const r of clean) state.alignments.set(alignKey(r), r);
   await db.replaceWeek('alignments', n, clean);

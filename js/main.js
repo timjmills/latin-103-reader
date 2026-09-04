@@ -1,10 +1,12 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
-import { initSettings, applyToDocument, clampPanelWidth } from './settings.js';
+import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText } from './settings.js';
+import { clampRate } from './sync.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const LS_WEEK = 'l103.week';
+const LS_HINT_TRANSLATION = 'l103.hint.translation';   // "1" once the first-run Translation hint has been shown
 const NOTICE_MS = 5000;
 
 async function pickStore() {
@@ -91,7 +93,10 @@ async function boot() {
     return dict.describe(entry, { compact: !!settings.compact, form });
   };
 
-  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, live });
+  // "In plain words" under every note: settings.plainOpen is the learner's last
+  // choice, so the disclosures stay open once one has been opened.
+  const plain = { get: () => !!settings.plainOpen, set: (on) => { if (!!settings.plainOpen !== !!on) saveSettings({ plainOpen: !!on }); } };
+  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, live, listen: $('#listen'), plain });
   const panel = createWordPanel({
     dialog: $('#popup'), aside: $('#panel'), layout,
     lookup: dict.lookup, describe: dict.describe, paradigm: par.paradigm, store,
@@ -99,12 +104,16 @@ async function boot() {
     getLookupRecord: (form) => lookups.get(form),
     entryIndex: { get: (form) => chosenEntry.get(form), set: (form, i) => { chosenEntry.set(form, i); if (reader.getView() === 'sentence') reader.rerender(); } },
     onLookupsChanged: async () => { lookups = await store.getLookups(); reader.setLookups(lookups); },
+    onWord: (w) => panel.showWord(w),   // a Latin word tapped inside a section summary shown in the panel
     live,
+    plain,
   });
   window.latinReader = { reader, panel, store, audio };   // documented hooks (see README-ui.md)
 
   reader.on('word', (w) => panel.showWord(w));
   reader.on('note', (n) => panel.showNote(n));
+  // Sentence view's "Section summary" button: the part's summary in the panel / popup.
+  reader.on('summary', ({ part, unitId, el, body }) => panel.showSummary({ part: part.part, body, unitId, el }));
 
   /* ------------------------------------------------------ header */
   const weeks = await store.getWeeks();
@@ -160,6 +169,7 @@ async function boot() {
   let weekN = Number(localStorage.getItem(LS_WEEK)) || weeks[0]?.n || 1;
   if (!weeks.some((w) => w.n === weekN)) weekN = weeks[0]?.n ?? 1;
   let units = [];
+  let unitsWeek = null;   // the week `units` belongs to
   let settingsUI = null;
 
   /* ------------------------------------------------------- audio */
@@ -168,23 +178,56 @@ async function boot() {
     const [url, rows, us] = await Promise.all([
       Promise.resolve(store.getAudioUrl(n)).catch(() => null),
       Promise.resolve(store.getAlignment(n)).catch(() => []),
-      n === weekN && units.length ? units : store.getUnits(n),
+      n === unitsWeek ? units : store.getUnits(n),   // `units` may still be the previous week's while a new one loads
     ]);
-    return { hasAudio: !!url, alignedCount: rows.length, total: us.length, alignedIds: new Set(rows.map((r) => r.unit_id)) };
+    return {
+      hasAudio: !!url, alignedCount: rows.length, total: us.length, alignedIds: new Set(rows.map((r) => r.unit_id)),
+      synthIds: new Set(rows.filter((r) => r.synth).map((r) => r.unit_id)),   // units read by a synthesised voice (the listen bar says so)
+      durationMs: audio?.alignmentEndMs?.(rows) ?? 0,   // from the alignment, so the listen bar can say "14 min" before the file is fetched
+    };
   }
-  // Which units get a play button: only aligned ones, only when there is a recording.
-  const playable = (info) => (audio && info.hasAudio && info.alignedCount > 0 ? info.alignedIds : false);
+  // Which units get a play button: only aligned ones, only when there is a
+  // recording, and only while the Audio toggle (settings.showAudio) is on.
+  const audioOn = () => settings.showAudio !== false;
+  const playable = (info) => (audio && audioOn() && info.hasAudio && info.alignedCount > 0 ? info.alignedIds : false);
+  let audioState = null;   // the current week's audioInfo(), re-read on every week load / upload / alignment
 
   async function refreshAudioAvailability() {
     const n = weekN;
     const info = await audioInfo(n);
-    if (n === weekN) reader.setAudioAvailable(playable(info));
+    if (n !== weekN) return;
+    audioState = info;
+    reader.setAudioAvailable(playable(info));
     settingsUI?.refreshAudio();
+    paintListen();
   }
 
   const transport = $('#transport');
   const transportPos = $('[data-transport-pos]');
   const transportPause = $('[data-transport="pause"]');
+  // While the (fixed) transport is shown, #main gets that much bottom padding
+  // (reader.css reads --transport-h + html[data-transport]) so the last
+  // sentence and sentence view's Next stay reachable underneath it.
+  const setTransportHeight = () => {
+    const h = transport.hidden ? 0 : Math.round(transport.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--transport-h', `${h}px`);
+    document.documentElement.dataset.transport = transport.hidden ? 'off' : 'on';
+  };
+  new ResizeObserver(setTransportHeight).observe(transport);
+  // Playback speed: the "1.0×" buttons in the transport and the listen bar
+  // open the same chip row as Settings → Audio (rateMenu() in settings.js);
+  // all three write settings.audioRate and paintRate() keeps them in step.
+  const pickRate = (r) => saveSettings({ audioRate: r });
+  const transportRate = rateMenu({ btn: $('[data-transport="rate"]'), row: $('#transport-rates'), scope: transport, onPick: pickRate });
+  const listen = $('#listen');
+  const listenRate = rateMenu({ btn: $('[data-listen="rate"]'), row: $('#listen-rates'), scope: listen, onPick: pickRate });
+  const rate = () => clampRate(settings.audioRate);
+  function paintRate() {
+    const r = rate();
+    audio?.setRate?.(r);
+    transportRate?.paint(r);
+    listenRate?.paint(r);
+  }
   function paintTransport(st) {
     const active = st.mode === 'all';
     if (active) {
@@ -194,24 +237,102 @@ async function boot() {
     }
     if (transport.hidden !== !active) {
       transport.hidden = !active;
-      if (active && live) live.textContent = 'Playing the chapter. Pause and Stop are at the bottom of the page.';
+      setTransportHeight();
+      if (!active) transportRate?.close();
+      if (active && live) live.textContent = `Playing chapter at ${fmtRate(rate())}.`;   // once, at the start; the sentences are not read out as they play
     }
   }
   if (audio) {
-    audio.attach({ setPlayingUnit: (id) => reader.setPlayingUnit(id) }, store);
+    audio.attach({
+      setPlayingUnit: (id) => reader.setPlayingUnit(id),
+      setPlayingWord: (id, i) => reader.setPlayingWord(id, i),
+      wordTexts: (id) => reader.wordTexts(id),
+    }, store);
     let lastError = null;
+    let lastMode = 'idle';
     audio.onState?.((st) => {
       paintTransport(st);
+      paintListen(st);
+      if (st.mode === 'idle' && lastMode !== 'idle') listenRate?.close();   // playback over: the speed row folds away too
+      lastMode = st.mode;
       if (st.error !== lastError) { lastError = st.error; if (st.error) notify(st.error); }
     });
     transportPause.addEventListener('click', () => { if (audio.status().playing) audio.pause(); else audio.resume(); });
-    $('[data-transport="stop"]').addEventListener('click', () => audio.stop());
+    // Stop hides the transport under the keyboard: focus goes to the listen bar's Play button (the bar is painted synchronously by stop()).
+    $('[data-transport="stop"]').addEventListener('click', () => { audio.stop(); if (!listenPlay.hidden && !listen.hidden) listenPlay.focus(); });
   }
   reader.on('play', ({ unitId, weekN: n }) => {
     document.dispatchEvent(new CustomEvent('latin-reader:play-unit', { detail: { unitId, weekN: n } }));
     if (!audio) { notify('Audio playback is not available.'); return; }
     audio.playUnit(unitId).catch((e) => notify(e?.message || 'Could not play this sentence.'));
   });
+
+  /* ------------------------------------------------- listen bar (in the text) */
+  // #listen sits at the top of the passage / above the sentence (reader.js moves
+  // it into every render): "Play passage" or "Play sentence" + "Play from here",
+  // Pause / Stop while anything plays, the speed menu (the same chips as the
+  // transport and Settings → Audio) and a status line. With nothing to play, or
+  // the Audio toggle off, it shows one quiet line instead of disappearing.
+  const listenPlay = $('[data-listen="play"]');
+  const listenFrom = $('[data-listen="from"]');
+  const listenPause = $('[data-listen="pause"]');
+  const listenStop = $('[data-listen="stop"]');
+  const listenStatus = $('[data-listen-status]');
+  const listenSynth = $('[data-listen-synth]');
+  const listenQuiet = $('[data-listen-quiet]');
+  function paintListen(st = audio?.status?.() ?? { mode: 'idle', playing: false }) {
+    if (!listen) return;
+    const focused = document.activeElement;   // read before anything is hidden: hiding the focused button blurs it
+    listen.hidden = !units.length;
+    const info = audioState;
+    let quiet = '';
+    if (!audio) quiet = 'Audio playback is not available in this build.';
+    else if (!info) quiet = 'Checking for a recording…';
+    else if (!info.hasAudio) quiet = 'No recording for this week yet';
+    else if (!info.alignedCount) quiet = 'Recording uploaded — align it in Settings → Audio to listen';
+    else if (!audioOn()) quiet = 'Audio is off — turn it on in the toolbar';
+    const active = st.mode === 'all' || st.mode === 'unit';
+    listen.dataset.state = quiet ? 'quiet' : active ? 'playing' : 'ready';
+    listenQuiet.textContent = quiet;
+    if (quiet) { listenRate?.close(); return; }
+    const sentence = reader.getView() === 'sentence';
+    const unit = reader.currentUnit();
+    const aligned = !sentence || !!(unit && info.alignedIds.has(unit.id));
+    listenPlay.hidden = active;
+    listenPlay.disabled = !aligned;
+    listenPlay.querySelector('[data-listen-label]').textContent = sentence ? 'Play sentence' : 'Play passage';
+    listenFrom.hidden = active || !sentence;
+    listenFrom.disabled = !aligned;
+    listenPause.hidden = !active;
+    listenPause.textContent = st.playing ? 'Pause' : 'Resume';
+    listenStop.hidden = !active;
+    const index = st.mode === 'all' ? units.findIndex((u) => u.id === st.currentUnit) : -1;
+    // The element's duration only once it holds *this* week's file (after a
+    // week switch it is still the previous recording's until the next play);
+    // otherwise the alignment's own end — also the right figure when two weeks
+    // share one recording.
+    const durationMs = st.weekN === weekN && st.durationMs > 0 ? st.durationMs : info.durationMs;
+    listenStatus.textContent = aligned
+      ? listenStatusText({ ...info, durationMs }, st, { index })
+      : 'This sentence has not been aligned yet';
+    const synth = synthHintText({ sentence, unitSynth: !!(unit && info.synthIds?.has(unit.id)), anySynth: (info.synthIds?.size ?? 0) > 0 });
+    listenSynth.textContent = synth;
+    listenSynth.hidden = !synth;
+    // Play → Pause (and back) swaps the button under the keyboard: keep focus in the bar.
+    if (focused && listen.contains(focused) && focused.hidden) (active ? listenPause : listenPlay).focus({ preventScroll: true });
+  }
+  if (listen && audio) {
+    const tryPlay = (p) => p.catch((e) => notify(e?.message || 'Could not play the recording.'));
+    listenPlay.addEventListener('click', () => {
+      const u = reader.currentUnit();
+      if (reader.getView() === 'sentence' && u) tryPlay(audio.playUnit(u.id));
+      else tryPlay(audio.playAll(units[0]?.id ?? null));   // the whole passage, from its first sentence (playAll needs a unit to know the week)
+    });
+    listenFrom.addEventListener('click', () => { const u = reader.currentUnit(); if (u) tryPlay(audio.playAll(u.id)); });
+    listenPause.addEventListener('click', () => { if (audio.status().playing) audio.pause(); else audio.resume(); });
+    listenStop.addEventListener('click', () => audio.stop());
+  }
+  reader.on('render', () => paintListen());
 
   async function loadWeek(n) {
     weekN = n;
@@ -232,6 +353,8 @@ async function boot() {
     const [us, highlights, info] = await Promise.all([store.getUnits(n), store.getHighlights(n), audioInfo(n)]);
     if (n !== weekN) return;   // the user moved on while this loaded
     units = us;
+    unitsWeek = n;
+    audioState = info;
     document.title = `Week ${n} · ${week?.title ?? ''} — Latin 103`;
     const focusBtn = $('[data-toggle="highlights"] .toggle__label');
     focusBtn.textContent = week?.focus?.label ?? 'Grammar focus';
@@ -240,6 +363,7 @@ async function boot() {
     reader.setWeek(week, units, highlights, { audio: playable(info), lookups });
     panel.close();
     settingsUI?.refreshAudio();
+    settingsUI?.render(settings);   // the Grammar focus switch names this week's focus
   }
 
   // View toggle
@@ -251,18 +375,30 @@ async function boot() {
   }
   viewBtns.forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
 
-  // Display toggles → settings
+  // Display toggles → settings. The same map drives the toolbar buttons, the
+  // letter keys and the Reading switches in the settings dialog.
   const toggles = {
-    english: { get: () => settings.showEnglish === 'interleaved', set: (on) => ({ showEnglish: on ? 'interleaved' : 'hidden' }) },
-    highlights: { get: () => !!settings.showHighlights, set: (on) => ({ showHighlights: on }) },
-    underlines: { get: () => !!settings.showUnderlines, set: (on) => ({ showUnderlines: on }) },
-    margin: { get: () => settings.showMargin !== false, set: (on) => ({ showMargin: on }) },
+    english: { get: (s = settings) => s.showEnglish === 'interleaved', set: (on) => ({ showEnglish: on ? 'interleaved' : 'hidden' }) },
+    highlights: { get: (s = settings) => !!s.showHighlights, set: (on) => ({ showHighlights: on }) },
+    underlines: { get: (s = settings) => !!s.showUnderlines, set: (on) => ({ showUnderlines: on }) },
+    margin: { get: (s = settings) => s.showMargin !== false, set: (on) => ({ showMargin: on }) },
+    audio: { get: (s = settings) => s.showAudio !== false, set: (on) => ({ showAudio: on }) },
+    summaries: { get: (s = settings) => s.showSummaries !== false, set: (on) => ({ showSummaries: on }) },   // settings-only: no toolbar button
+    glossEnglish: { get: (s = settings) => !!s.showGlossEnglish, set: (on) => ({ showGlossEnglish: on }) },   // settings-only: the English under every margin gloss
   };
   function applyDisplay() {
+    paintRate();
     readerEl.dataset.english = settings.showEnglish;
     readerEl.dataset.highlights = settings.showHighlights ? 'on' : 'off';
     readerEl.dataset.underlines = settings.showUnderlines ? 'on' : 'off';
     readerEl.dataset.margin = settings.showMargin !== false ? 'on' : 'off';
+    readerEl.dataset.summaries = toggles.summaries.get() ? 'on' : 'off';   // hides the Summary disclosures and sentence view's button
+    readerEl.dataset.glossEn = toggles.glossEnglish.get() ? 'on' : 'off';   // every gloss's English shown, the per-gloss "en" chips hidden
+    // Audio off: no play buttons, no cursor, no transport — playback stops (stop() clears the highlight and hides #transport).
+    readerEl.dataset.audio = audioOn() ? 'on' : 'off';
+    if (!audioOn() && audio && audio.status().mode !== 'idle') audio.stop();
+    if (audioState) reader.setAudioAvailable(playable(audioState));
+    paintListen();
     for (const [k, t] of Object.entries(toggles)) $(`[data-toggle="${k}"]`)?.setAttribute('aria-pressed', String(t.get()));
     applyPanelWidth(settings.panelWidth);
     reader.reflow();
@@ -385,11 +521,50 @@ async function boot() {
     mirror(settings);
     applyToDocument(settings);
     applyDisplay();
+    settingsUI?.render(settings);   // the dialog mirrors every control that lives elsewhere (toolbar toggles, transport speed)
+    if ('audioRate' in patch && live) live.textContent = fmtRate(settings.audioRate);   // just the new rate; the chip's aria-pressed says the rest
+    if ('showEnglish' in patch) dismissHint();
     return settings;
   }
   for (const [k, t] of Object.entries(toggles)) {
     $(`[data-toggle="${k}"]`)?.addEventListener('click', () => saveSettings(t.set(!t.get())));
   }
+
+  /* ------------------------------------------ first-run hint (translation) */
+  // Shown once, under the Translation toggle, while the translation is hidden;
+  // dismissed by "Got it" or by switching the translation on. Never again after.
+  const hint = $('#hint-translation');
+  const hintFor = $('[data-toggle="english"]');
+  function placeHint() {
+    if (!hint || hint.hidden) return;
+    // The hint is a row of the header (it pushes the text down rather than
+    // covering the part heading): its left edge sits under the toggle, kept
+    // inside the header's content box, and the caret points at the toggle's centre.
+    const r = hintFor.getBoundingClientRect();
+    const box = bar.querySelector('.bar__main').getBoundingClientRect();
+    const w = hint.offsetWidth;
+    const left = Math.max(0, Math.min(r.left - box.left, box.width - w));
+    hint.style.marginLeft = `${Math.round(left)}px`;
+    const caret = Math.max(14, Math.min(w - 14, r.left + r.width / 2 - (box.left + left)));
+    hint.style.setProperty('--hint-caret', `${Math.round(caret)}px`);
+  }
+  function dismissHint() {
+    if (!hint || hint.hidden) return;
+    hint.hidden = true;
+    window.removeEventListener('resize', placeHint);
+  }
+  function maybeShowHint() {
+    if (!hint || toggles.english.get()) return;
+    let seen = '1';
+    try { seen = localStorage.getItem(LS_HINT_TRANSLATION) ?? ''; } catch { /* no storage: the hint is skipped rather than shown every time */ }
+    if (seen) return;
+    try { localStorage.setItem(LS_HINT_TRANSLATION, '1'); } catch { return; }
+    hint.hidden = false;
+    placeHint();
+    window.addEventListener('resize', placeHint);
+    if (live) live.textContent = hint.querySelector('.hint__text').textContent;
+  }
+  hint?.querySelector('[data-hint-dismiss]').addEventListener('click', () => { dismissHint(); hintFor.focus(); });
 
   // Settings dialog (+ the Audio section for the current week)
   const settingsDialog = $('#settings');
@@ -398,6 +573,8 @@ async function boot() {
     get: () => settings,
     set: saveSettings,
     onChange: (s, patch) => { if ('compact' in patch) { panel.refresh(); if (reader.getView() === 'sentence') reader.rerender(); } },
+    toggles,
+    focusLabel: () => weeks.find((w) => w.n === weekN)?.focus?.label ?? outline.find((w) => w.n === weekN)?.focus?.label ?? '',
     audio: audio ? {
       weekLabel: () => `week ${weekN}`,
       info: () => audioInfo(),
@@ -414,7 +591,8 @@ async function boot() {
           .catch((e) => notify(e?.message || 'Alignment failed.'))
           .finally(() => settingsBtn.focus());
       },
-      play: () => audio.playAll(reader.currentUnit()?.id ?? null),
+      // "Play chapter" from the menu turns the toolbar Audio toggle back on first: playback without its cursor would be a puzzle.
+      play: async () => { if (!audioOn()) await saveSettings({ showAudio: true }); return audio.playAll(reader.currentUnit()?.id ?? null); },
       pause: () => audio.pause(),
       resume: () => audio.resume(),
       stop: () => audio.stop(),
@@ -445,6 +623,7 @@ async function boot() {
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
     if (e.key === 'Escape') { if (panel.isOpen()) { e.preventDefault(); panel.close(); } return; }
     if ($('#popup').open || settingsDialog.open || weeksDialog.open) return;
+    if (audio?.status?.().mode === 'align') return;   // the alignment overlay owns the keyboard (it also stops propagation)
     if (reader.getView() === 'sentence') {
       if (e.key === 'j' || e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); reader.next(); return; }
       if (e.key === 'k' || e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); reader.prev(); return; }
@@ -452,12 +631,14 @@ async function boot() {
     if (e.key === 'e') saveSettings(toggles.english.set(!toggles.english.get()));
     if (e.key === 'h') saveSettings(toggles.highlights.set(!toggles.highlights.get()));
     if (e.key === 'm') saveSettings(toggles.margin.set(!toggles.margin.get()));
+    if (e.key === 'a') saveSettings(toggles.audio.set(!toggles.audio.get()));
   });
 
   applyDisplay();
   await loadWeek(weekN);
   setView(localStorage.getItem('l103.view') === 'sentence' ? 'sentence' : 'passage');
   document.documentElement.dataset.ready = '1';
+  maybeShowHint();
   if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));
 }
 

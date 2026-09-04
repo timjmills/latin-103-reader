@@ -84,11 +84,16 @@ export function unitRef(unitId) {
   return m ? { line: Number(m[1]), n: Number(m[2]) } : null;
 }
 
-/** Margin notes of a unit, always an array of {line, la} with a non-empty `la`. */
+/** Margin notes of a unit, always an array of {line, la, en} with a non-empty `la`; `en` (the English rendering) is a trimmed string or null. */
 export function marginNotes(unit) {
   const rows = Array.isArray(unit?.margin) ? unit.margin : [];
   return rows.filter((m) => m && typeof m.la === 'string' && m.la.trim())
-    .map((m) => ({ line: m.line != null && Number.isFinite(Number(m.line)) ? Number(m.line) : null, la: m.la.trim() }));
+    .map((m) => ({ line: m.line != null && Number.isFinite(Number(m.line)) ? Number(m.line) : null, la: m.la.trim(), en: plainWords(m.en) }));
+}
+
+/** A plain-words text (`unit.note_simple`, `highlight.simple`, `margin[].en`): the trimmed string, or null when absent/blank. Pure. */
+export function plainWords(text) {
+  return typeof text === 'string' && text.trim() ? text.trim() : null;
 }
 
 /**
@@ -157,7 +162,43 @@ export function marginTop({ contentTop, textSize, noteSize, noteLineHeight, asce
   return Math.round(contentTop + ascent * (textSize - noteSize) - halfLeading);
 }
 
+/**
+ * A part's section summary: `{ en, la }` (trimmed strings, '' when missing),
+ * or null when the part carries neither `summary_en` nor `summary_la`.
+ */
+export function partSummary(part) {
+  const pick = (v) => (typeof v === 'string' ? v.trim() : '');
+  const en = pick(part?.summary_en);
+  const la = pick(part?.summary_la);
+  return en || la ? { en, la } : null;
+}
+
+/**
+ * localStorage key remembering whether a part's summary disclosure is open:
+ * `l103.summary.<week id>.<part slug>`. Pure.
+ */
+export function summaryStorageKey(weekId, part) {
+  const slug = String(part ?? '').trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '') || 'part';
+  return `l103.summary.${weekId || 'week'}.${slug}`;
+}
+
 /* ------------------------------------------------------------------ DOM */
+
+/**
+ * "In plain words": a native disclosure under a grammar note holding its
+ * simpler second layer (CONTRACT.md "Plain-words layer"). Null without text.
+ * `plain` is `{ get() → bool, set(bool) }` for settings.plainOpen — the
+ * learner's last choice, so once opened it stays open on every note.
+ */
+export function plainDisclosure(text, plain = null) {
+  const body = plainWords(text);
+  if (!body) return null;
+  const details = h('details', { class: 'plain', open: !!plain?.get?.() },
+    h('summary', { class: 'plain__toggle' }, h('span', { class: 'plain__word', text: 'In plain words' })),
+    h('p', { class: 'plain__text', lang: 'en', text: body }));
+  details.addEventListener('toggle', () => { if (plain?.set && details.open !== !!plain.get?.()) plain.set(details.open); });
+  return details;
+}
 
 const h = (tag, attrs = {}, ...children) => {
   const el = document.createElement(tag);
@@ -178,8 +219,11 @@ const h = (tag, attrs = {}, ...children) => {
  * @param {Function}    o.tokenize   B's tokenize(la)
  * @param {Function}    o.describeForm  form → {meaning, parse, lemma} | null (for the sentence-view list)
  * @param {HTMLElement} o.live       aria-live region for navigation announcements
+ * @param {HTMLElement} [o.listen]   the listen bar (#listen, owned by main.js): moved into every render —
+ *                                   top of the passage (under the first part title) / above the sentence
+ * @param {object}      [o.plain]    `{ get() → bool, set(bool) }` for settings.plainOpen (the "In plain words" disclosures)
  */
-export function createReader({ root, tokenize, describeForm, live }) {
+export function createReader({ root, tokenize, describeForm, live, listen = null, plain = null }) {
   const listeners = {};
   const on = (ev, cb) => { (listeners[ev] ??= []).push(cb); };
   const emit = (ev, detail) => { for (const cb of listeners[ev] ?? []) cb(detail); };
@@ -187,7 +231,8 @@ export function createReader({ root, tokenize, describeForm, live }) {
   const state = {
     week: null, units: [], byId: new Map(), hl: new Map(),
     lookups: new Map(), seen: new Set(), view: 'passage', current: 0,
-    audio: false, playing: null, tokens: new Map(), marginTokens: new Map(),
+    audio: false, playing: null, playingWord: null, tokens: new Map(), marginTokens: new Map(), summaryTokens: new Map(),
+    glossOpen: new Set(),   // margin glosses whose English is shown ("<unit id>#<index>"), across re-renders and both copies
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -205,7 +250,7 @@ export function createReader({ root, tokenize, describeForm, live }) {
     const groups = segmentUnit(tokens, ranges);
     for (const g of groups) {
       const parent = g.range
-        ? h('span', { class: 'hl', 'data-hl-label': g.range.label, 'data-hl-note': g.range.note, 'data-hl-text': g.range.text })
+        ? h('span', { class: 'hl', 'data-hl-label': g.range.label, 'data-hl-note': g.range.note, 'data-hl-text': g.range.text, 'data-hl-simple': plainWords(g.range.simple) })
         : frag;
       for (const t of g.tokens) {
         if (!t.isWord) { parent.append(t.text); continue; }
@@ -245,13 +290,78 @@ export function createReader({ root, tokenize, describeForm, live }) {
     const notes = marginTokensFor(unit);
     if (!notes.length) return null;
     const block = h('span', { class: cls, lang: 'la', 'data-for': unit.id, 'data-order': String(unit.order), role: 'group', 'aria-label': 'Margin notes' });
-    for (const m of notes) {
-      block.append(h('span', { class: 'mnotes__item' },
+    notes.forEach((m, i) => {
+      // A gloss with an English rendering gets a small "en" chip after the
+      // Latin; a tap shows the English beneath (settings.showGlossEnglish shows
+      // every one and hides the chips — CSS on <article data-gloss-en>).
+      const key = `${unit.id}#${i}`;
+      const open = !!m.en && state.glossOpen.has(key);
+      block.append(h('span', { class: 'mnotes__item' + (open ? ' is-en-open' : ''), 'data-gloss': m.en ? key : null },
         h('span', { class: 'mnotes__mark', 'aria-hidden': 'true', text: '\u00b6' }),
         m.line != null && state.week?.has_line_numbers ? h('span', { class: 'mnotes__line', text: String(m.line) }) : null,
-        renderTokens(m.tokens, [])));
-    }
+        renderTokens(m.tokens, []),
+        m.en ? h('button', { type: 'button', class: 'mnotes__en-btn', 'data-gloss-toggle': key, 'aria-expanded': String(open), 'aria-label': 'In English' }, h('span', { 'aria-hidden': 'true', text: 'en' })) : null,
+        m.en ? h('span', { class: 'mnotes__en', lang: 'en', text: m.en }) : null));
+    });
     return block;
+  }
+  /** Show / hide one gloss's English in every copy of its block (gutter and inline). */
+  function toggleGloss(key) {
+    const open = !state.glossOpen.has(key);
+    if (open) state.glossOpen.add(key); else state.glossOpen.delete(key);
+    for (const item of root.querySelectorAll(`[data-gloss="${CSS.escape(key)}"]`)) {
+      item.classList.toggle('is-en-open', open);
+      item.querySelector('.mnotes__en-btn')?.setAttribute('aria-expanded', String(open));
+    }
+    scheduleReflow();   // the gutter blocks change height
+  }
+
+  /* --- section summaries ------------------------------------------- */
+  // week.parts[].summary_en / summary_la (CONTRACT.md "Section summaries").
+  // The Latin is tokenised once per part and rendered as tappable words like
+  // the reading text; the block carries the part's first unit (`data-for` /
+  // `data-order`) so a lookup inside it is recorded against that sentence.
+  function summaryTokensFor(part) {
+    const key = part.part ?? '';
+    if (!state.summaryTokens.has(key)) state.summaryTokens.set(key, tokenize(partSummary(part)?.la ?? ''));
+    return state.summaryTokens.get(key);
+  }
+  function firstUnitOf(part) {
+    return state.units.find((u) => (part.part ? u.part === part.part : true)) ?? null;
+  }
+  /** The part's Latin summary as tappable words, in a `lang="la"` span; null without one. */
+  function summaryLatin(part) {
+    const s = partSummary(part);
+    if (!s?.la) return null;
+    const first = firstUnitOf(part);
+    return h('span', { class: 'summary__la', lang: 'la', 'data-part': part.part ?? '', 'data-for': first?.id, 'data-order': first ? String(first.order) : null },
+      renderTokens(summaryTokensFor(part), []));
+  }
+  /** English paragraph, "In Latin" sub-heading, Latin — the same body in the passage disclosure and the panel. */
+  function summaryBody(part) {
+    const s = partSummary(part);
+    if (!s) return null;
+    const la = summaryLatin(part);
+    return h('div', { class: 'summary__body' },
+      s.en ? h('p', { class: 'summary__en', lang: 'en', text: s.en }) : null,
+      la ? h('h3', { class: 'summary__h', text: 'In Latin' }) : null,
+      la ? h('p', { class: 'summary__p' }, la) : null);
+  }
+  const rememberOpen = (key) => { try { return localStorage.getItem(key) === '1'; } catch { return false; } };
+  function summaryBlock(part) {
+    const body = summaryBody(part);
+    if (!body) return null;
+    const key = summaryStorageKey(state.week?.id, part.part);
+    const details = h('details', { class: 'summary', open: rememberOpen(key) },
+      h('summary', { class: 'summary__toggle' },
+        h('span', { class: 'summary__word', text: 'Summary' }),
+        part.part ? h('span', { class: 'visually-hidden', text: ` of ${part.part}` }) : null),
+      body);
+    details.addEventListener('toggle', () => {
+      try { localStorage.setItem(key, details.open ? '1' : '0'); } catch { /* ignore */ }
+      scheduleReflow();
+    });
+    return details;
   }
 
   /* --- passage view ------------------------------------------------ */
@@ -266,6 +376,9 @@ export function createReader({ root, tokenize, describeForm, live }) {
         section.append(h('h2', { class: 'part__title' },
           p.part, p.lines ? h('span', { class: 'part__lines', text: ` · lines ${p.lines}` }) : null));
       }
+      const summary = summaryBlock(p);
+      if (summary) section.append(summary);
+      if (listen && !container.childElementCount) section.append(listen);   // the listen bar: under the first part's title, above its first sentence
       const prose = h('div', { class: 'prose' });
       units.forEach((u, i) => {
         const unitEl = h('span', {
@@ -279,7 +392,10 @@ export function createReader({ root, tokenize, describeForm, live }) {
         const la = h('span', { class: 'la', lang: 'la' }, renderLatin(u));
         const margin = marginBlock(u, 'mnotes');
         if (margin) unitEl.classList.add('has-margin');
-        unitEl.append(...[la, noteMark(u), playButton(u), margin, h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
+        // Dagger + play button stay on the sentence's last line, together: a
+        // word joiner glues them to the text and .marks does not wrap inside.
+        const marks = [noteMark(u), playButton(u)].filter(Boolean);
+        unitEl.append(...[la, marks.length ? h('span', { class: 'marks' }, '⁠', ...marks) : null, margin, h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
         prose.append(unitEl);
         if (i < units.length - 1) prose.append(' ');
       });
@@ -300,17 +416,24 @@ export function createReader({ root, tokenize, describeForm, live }) {
     const wrap = h('div', { class: 'sentence' + (state.playing === u.id ? ' is-playing' : ''), 'data-id': u.id, tabindex: '-1' });
     const meta = [u.part, u.line_no != null && state.week?.has_line_numbers ? `line ${u.line_no}` : null, `${state.current + 1} of ${state.units.length}`]
       .filter(Boolean).join(' · ');
-    wrap.append(h('p', { class: 'sentence__meta', text: meta }));
+    const part = state.week?.parts?.find((p) => p.part && p.part === u.part) ?? null;
+    const metaEl = h('p', { class: 'sentence__meta' }, h('span', { text: meta }));
+    if (part && partSummary(part)) {
+      metaEl.append(h('span', { class: 'sentence__meta-sep', 'aria-hidden': 'true', text: ' · ' }),
+        h('button', { type: 'button', class: 'sentence__summary', 'data-summary': part.part, 'aria-label': `Section summary: ${part.part}` }, 'Section summary'));
+    }
+    wrap.append(metaEl);
+    if (listen) wrap.append(listen);   // "Play sentence" / "Play from here" live in the bar; no inline play button here
     const la = h('div', { class: 'sentence__la', lang: 'la' });
     if (u.unit_type === 'turn' && u.speaker) la.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
-    la.append(...[renderLatin(u), playButton(u)].filter(Boolean));
+    la.append(renderLatin(u));
     wrap.append(la);
     const margin = marginBlock(u, 'mnotes mnotes--sentence');
     if (margin) wrap.append(margin);
     wrap.append(h('p', { class: 'sentence__en en', lang: 'en', text: u.en }));
     if (u.note) {
       wrap.append(h('section', { class: 'sentence__note', 'aria-label': 'Grammar note' },
-        h('h3', { class: 'sentence__h', text: 'Note' }), h('p', { text: u.note })));
+        h('h3', { class: 'sentence__h', text: 'Note' }), h('p', { text: u.note }), plainDisclosure(u.note_simple, plain)));
     }
     const looked = unitLookups(u.id, tokensFor(u), state.lookups);
     const list = h('section', { class: 'sentence__lookups', 'aria-label': 'Words you looked up in this sentence' },
@@ -343,7 +466,25 @@ export function createReader({ root, tokenize, describeForm, live }) {
   function render() {
     root.replaceChildren(state.view === 'passage' ? renderPassage() : renderSentence());
     root.dataset.view = state.view;
+    wordEls = { unitId: null, els: [] };
+    applyPlayingWord();
     reflow();
+    emit('render', { view: state.view, unit: state.units[state.current] ?? null });   // main.js repaints the listen bar
+  }
+
+  // The spoken-word cursor (audio.js → setPlayingWord): the unit's word
+  // tokens in text order, margin notes and the lookups list excluded. The
+  // element list is kept for the unit under the cursor and rebuilt per render.
+  let wordEls = { unitId: null, els: [] };
+  function applyPlayingWord() {
+    root.querySelector('.w--now')?.classList.remove('w--now');
+    const pw = state.playingWord;
+    if (!pw) return;
+    if (wordEls.unitId !== pw.unitId || !wordEls.els.length || !wordEls.els[0].isConnected) {
+      const unitEl = root.querySelector(`[data-id="${CSS.escape(pw.unitId)}"]`);
+      wordEls = { unitId: pw.unitId, els: unitEl ? [...unitEl.querySelectorAll('.la .w, .sentence__la .w')] : [] };
+    }
+    wordEls.els[pw.idx]?.classList.add('w--now');
   }
 
   function reflow() {
@@ -466,16 +607,24 @@ export function createReader({ root, tokenize, describeForm, live }) {
     return {
       form: el.dataset.form, text: el.textContent, el,
       unitId: unitEl?.dataset.id ?? unitEl?.dataset.for ?? state.units[state.current]?.id,
-      hl: hlEl ? { label: hlEl.dataset.hlLabel, note: hlEl.dataset.hlNote, text: hlEl.dataset.hlText } : null,
+      hl: hlEl ? { label: hlEl.dataset.hlLabel, note: hlEl.dataset.hlNote, text: hlEl.dataset.hlText, simple: hlEl.dataset.hlSimple ?? null } : null,
     };
   }
   root.addEventListener('click', (e) => {
     const w = e.target.closest('.w');
     if (w) { setCurrentFrom(w); emit('word', wordFrom(w)); return; }
+    const gt = e.target.closest('[data-gloss-toggle]');
+    if (gt) { toggleGloss(gt.dataset.glossToggle); return; }
     const nm = e.target.closest('.notemark');
     if (nm) { setCurrentFrom(nm); emit('note', { unit: state.byId.get(nm.dataset.noteFor), el: nm }); return; }
     const pb = e.target.closest('.playbtn');
     if (pb) { emit('play', { unitId: pb.dataset.play, weekN: state.week?.n }); return; }
+    const sb = e.target.closest('[data-summary]');
+    if (sb) {
+      const part = state.week?.parts?.find((p) => p.part === sb.dataset.summary);
+      if (part) emit('summary', { part, unitId: firstUnitOf(part)?.id ?? null, el: sb, body: summaryBody(part) });
+      return;
+    }
     const nav = e.target.closest('[data-nav]');
     if (nav) { api.goTo(state.current + Number(nav.dataset.nav)); }
   });
@@ -514,6 +663,8 @@ export function createReader({ root, tokenize, describeForm, live }) {
       state.byId = new Map(state.units.map((u) => [u.id, u]));
       state.tokens.clear();
       state.marginTokens.clear();
+      state.summaryTokens.clear();
+      state.glossOpen.clear();
       state.hl.clear();
       const byUnit = new Map();
       for (const hl of highlights ?? []) (byUnit.get(hl.unit_id) ?? byUnit.set(hl.unit_id, []).get(hl.unit_id)).push(hl);
@@ -537,8 +688,9 @@ export function createReader({ root, tokenize, describeForm, live }) {
       if (view === state.view) return;
       state.view = view;
       render();
+      if (state.playing) api.setPlayingUnit(state.playing);   // sentence view moves to the playing sentence; passage view scrolls to it
       if (view === 'sentence') announce();
-      else api.scrollToCurrent();
+      else if (!state.playing) api.scrollToCurrent();
     },
     getView: () => state.view,
     goTo(order) {
@@ -563,13 +715,46 @@ export function createReader({ root, tokenize, describeForm, live }) {
       const el = root.querySelector(`[data-order="${state.current}"]`);
       el?.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'auto' : 'smooth' });
     },
-    /** E's hook: mark the unit now playing (null clears). */
+    /**
+     * Audio hook: mark the unit now playing (null clears). Sentence view
+     * follows along to that sentence *silently* — the recording is what the
+     * user is attending to, so unlike goTo() this neither announces the
+     * sentence in the live region nor moves keyboard focus: a focus inside
+     * the listen bar (Pause, the speed) stays on that control across the
+     * re-render, and a focus on the old sentence moves to the new one without
+     * scrolling.
+     */
     setPlayingUnit(unitId) {
       state.playing = unitId;
       root.querySelector('.is-playing')?.classList.remove('is-playing');
-      if (!unitId) return;
+      if (!unitId) { if (state.playingWord) { state.playingWord = null; applyPlayingWord(); } return; }
+      if (state.view === 'sentence') {
+        const u = state.byId.get(unitId);
+        if (u && u.order !== state.current) {
+          state.current = u.order;
+          const focused = document.activeElement;
+          const inListen = !!(listen && focused && listen.contains(focused));
+          const inRoot = !inListen && !!(focused && root.contains(focused));
+          render();   // re-renders with .is-playing; moves #listen (which blurs whatever it held)
+          if (inListen && focused.isConnected && !focused.hidden) focused.focus({ preventScroll: true });
+          else if (inListen || inRoot) root.querySelector('.sentence')?.focus({ preventScroll: true });
+          root.querySelector('.sentence')?.scrollIntoView({ block: 'start', behavior: reduced.matches ? 'auto' : 'smooth' });
+          emit('navigate', { unit: u, order: u.order });
+          return;
+        }
+      }
       const el = root.querySelector(`[data-id="${CSS.escape(unitId)}"]`);
       if (el) { el.classList.add('is-playing'); el.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'auto' : 'smooth' }); }
+    },
+    /** Audio hook: the word being spoken — `idx` counts the unit's word tokens (wordTexts) in text order; null clears. */
+    setPlayingWord(unitId, idx) {
+      state.playingWord = unitId != null && idx != null && idx >= 0 ? { unitId, idx } : null;
+      applyPlayingWord();
+    },
+    /** The unit's word tokens as rendered, in text order (what setPlayingWord's index counts). */
+    wordTexts(unitId) {
+      const u = state.byId.get(unitId);
+      return u ? tokensFor(u).filter((t) => t.isWord).map((t) => t.text) : [];
     },
     /** Show per-unit play buttons: false, true (all units) or a Set of aligned unit ids. */
     setAudioAvailable(flag) {
@@ -579,6 +764,8 @@ export function createReader({ root, tokenize, describeForm, live }) {
       render();
     },
     rerender: render,
+    /** A part's summary (English, "In Latin", tappable Latin) as a fresh element for the panel; null without one. */
+    summaryBody: (part) => summaryBody(part),
     /** Re-measure margin notes and line numbers (after a display toggle or font change). */
     reflow: scheduleReflow,
     unitElement: (unitId) => root.querySelector(`[data-id="${CSS.escape(unitId)}"]`),
