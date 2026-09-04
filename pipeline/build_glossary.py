@@ -129,6 +129,9 @@ PREFERRED = {
     ("paucus", "ADJ"), ("multus", "ADJ"), ("magnus", "ADJ"), ("bonus", "ADJ"),
 }
 PREFERRED_BONUS = 1.0  # one frequency step: enough to lift proficīscor (B) over proficiō (A)
+# Per-form overrides: this reading of exactly this form goes first, whatever the
+# frequencies say (forte in Ørberg is nearly always the adverb "by chance").
+FORM_FIRST = {"forte": ("forte", "ADV")}
 
 # English for numerals by value: cardinal, ordinal, distributive, adverb.
 NUM_ENGLISH = {
@@ -950,12 +953,12 @@ def supine_entries(entries: list[dict], form: str) -> list[dict]:
 # ranking / merging
 
 
-def rank_and_filter(recs: list[Rec], entries: list[dict]) -> list[dict]:
+def rank_and_filter(recs: list[Rec], entries: list[dict], form: str | None = None) -> list[dict]:
     scored = []
     for rec, e in zip(recs, entries):
         if e is None:
             continue
-        score = freq_rank(rec) - POS_BONUS.get(e["pos"], 0) - (PREFERRED_BONUS if ((e["h"], e["pos"]) in PREFERRED or (e["pos"] == "VPAR" and (e["h"], "V") in PREFERRED)) else 0)
+        score = freq_rank(rec) - (5.0 if form and FORM_FIRST.get(form) == (e["h"], e["pos"]) else 0) - POS_BONUS.get(e["pos"], 0) - (PREFERRED_BONUS if ((e["h"], e["pos"]) in PREFERRED or (e["pos"] == "VPAR" and (e["h"], "V") in PREFERRED)) else 0)
         # tie-break identical frequencies: Whitaker's hand-listed irregular forms
         # (sum, vult, vīs) first, then the longer first root (sequor over the stray "secor")
         rootlen = -1000 if rec.unique else (-len(rec.roots[0]) if rec.roots else 0)
@@ -1396,7 +1399,7 @@ def main() -> None:
     for form in sorted(form_set):
         recs = analyses[form]
         entries = [build_entry(r, speller) for r in recs]
-        ranked = rank_and_filter(recs, entries)
+        ranked = rank_and_filter(recs, entries, form)
         ranked += supine_entries(ranked, form)
         if form in SUM_FORMS and not any(e["h"] == "sum" and e["pos"] in ("V", "VPAR") for e in ranked):
             ranked.insert(0, sum_entry(form))
