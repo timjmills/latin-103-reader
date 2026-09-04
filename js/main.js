@@ -110,6 +110,9 @@ async function boot() {
     // The side panel's stack names its sentence and seeds the note row from the unit itself.
     getUnit: (id) => units.find((u) => u.id === id) ?? null,
     getWeek: () => weeks.find((w) => w.n === weekN) ?? null,
+    // …and its word rows from the words already looked up in that sentence.
+    getTokens: (id) => reader.wordTokens(id),
+    getLookups: () => lookups,
   });
   window.latinReader = { reader, panel, store, audio };   // documented hooks (see README-ui.md)
 
@@ -118,7 +121,8 @@ async function boot() {
   // Sentence view's "Section summary" button: the part's summary in the panel / popup.
   reader.on('summary', ({ part, unitId, el, body }) => panel.showSummary({ part: part.part, body, unitId, el }));
   // Sentence view moved on (Next / Previous, j / k, chapter playback): an open side-panel stack follows the sentence.
-  reader.on('navigate', ({ unit }) => { if (unit) panel.showSentence(unit.id); });
+  // Sentence view always shows the current sentence's stack; passage view only follows once the panel is open.
+  reader.on('navigate', ({ unit }) => { if (unit) panel.showSentence(unit.id, { open: reader.getView() === 'sentence' }); });
 
   /* ------------------------------------------------------ header */
   const weeks = await store.getWeeks();
@@ -377,6 +381,8 @@ async function boot() {
     reader.setView(v);
     viewBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
     try { localStorage.setItem('l103.view', v); } catch { /* ignore */ }
+    // Entering sentence view: the panel shows that sentence's stack straight away.
+    if (v === 'sentence') { const cur = reader.getCurrentUnit?.(); if (cur) panel.showSentence(cur.id, { open: true }); }
   }
   viewBtns.forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
 

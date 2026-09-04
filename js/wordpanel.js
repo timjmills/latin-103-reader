@@ -136,7 +136,7 @@ export function renderParadigm(p) {
  * `getUnit(unitId)` / `getWeek()` (optional) let the stack name its sentence
  * and seed the note row before the † has been tapped.
  */
-export function createWordPanel({ dialog, aside, layout, lookup, describe, paradigm, store, getSettings, getLookupRecord, entryIndex, onLookupsChanged, onWord, live, plain = null, getUnit = null, getWeek = null }) {
+export function createWordPanel({ dialog, aside, layout, lookup, describe, paradigm, store, getSettings, getLookupRecord, entryIndex, onLookupsChanged, onWord, live, plain = null, getUnit = null, getWeek = null, getTokens = null, getLookups = null }) {
   const wide = matchMedia('(min-width: 768px)');
   let anchor = null;
   // The one thing the popup shows (phones), or a temporary single view in the
@@ -373,7 +373,32 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       const unit = getUnit?.(unitId);
       stacks.set(unitId, unit?.note ? [{ kind: 'note', unit }] : []);
     }
+    seedStack(unitId);
     return stacks.get(unitId);
+  }
+  /**
+   * The stack already holds every word of this sentence the learner has looked
+   * up and not yet marked learned (in sentence order), so the panel is
+   * populated the moment a sentence becomes current — nothing needs re-tapping.
+   */
+  function seedStack(unitId) {
+    const toks = getTokens?.(unitId);
+    const map = getLookups?.();
+    if (!toks?.length || !map?.size) return;
+    let cur = stacks.get(unitId) ?? [];
+    const seen = new Set();
+    for (const t of toks) {
+      if (!t.form || seen.has(t.form)) continue;
+      const rec = map.get(t.form);
+      if (!rec || rec.learned_at) continue;
+      seen.add(t.form);
+      const result = lookup(t.form);
+      if (!result.entries.length) continue;
+      const remembered = entryIndex?.get?.(t.form);
+      cur = stackWith(cur, { kind: 'word', form: t.form, text: t.text, unitId, hl: null, result, pos: t.start,
+                             index: remembered != null && result.entries[remembered] ? remembered : 0 });
+    }
+    stacks.set(unitId, cur);
   }
   function addRows(unitId, rows) {
     let cur = ensureStack(unitId);
@@ -654,9 +679,10 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       open(content(), el, current.title);
     },
     /** Sentence view moved to another sentence: an open stack follows it (a closed panel stays closed). */
-    showSentence(unitId) {
-      if (!isWide() || !asideOpen() || unitId == null) return;
-      if (unitId === stackUnit && !current) return;
+    showSentence(unitId, { open = false } = {}) {
+      if (!isWide() || unitId == null) return;
+      if (!asideOpen() && !open) return;          // in passage view a closed panel stays closed
+      if (unitId === stackUnit && !current && asideOpen()) return;
       showStack(unitId);
     },
     /** Escape: a temporary view goes back to the stack, an expanded row collapses, then the panel closes (focus back in the text). */
