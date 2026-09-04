@@ -5,28 +5,40 @@ Workstream A. Turns `source/week-NN.md` (your Latin + literal English) into
 sentence / verse line / speaker turn, with a mismatch report next to it.
 
 ```
-python -m pip install -r pipeline/requirements.txt   # once: pypdf, pytest
+python -m pip install -r pipeline/requirements.txt   # once: pypdf, pytest, python-docx
+python pipeline/docx_to_md.py "source/docx/*.docx"   # Word documents → source/week-NN.md
 python pipeline/build_week.py 1                      # one week
 python pipeline/build_week.py all                    # every week that has a source file
 python -m pytest pipeline -q                         # tests
 ```
 
+(Set `PYTHONIOENCODING=utf-8` on Windows.)
+
 Files:
 
 | file | what |
 | --- | --- |
+| `docx_to_md.py` | the user's Word documents → `source/week-NN.md` (week number from the file name) |
 | `build_week.py` | the builder (CLI + importable `build_from_text`) |
 | `weeks.py` | the 14-week table: titles, sources, chapters, grammar focus, week 13/14 overlap rule |
 | `merges.py` | per-week alignment fixes (`MERGES`) and block-type overrides (`OVERRIDES`) |
 | `recover_lines.py` | proposes textbook line numbers from a scan for weeks without `[n]` markers |
 | `test_build_week.py` | pytest: Week 1 end to end + synthetic fixtures for every format path |
+| `test_docx_to_md.py` | pytest: synthetic Word documents through the converter and the builder; Week 1 docx = week-01.md |
 | `parse_week_reference.py` | the original one-off parser; kept for its format notes, not used |
 
 Everything under `data/build/` is gitignored (copyrighted text).
 
 ## Dropping in weeks 02–14
 
-1. Save the document as `source/week-NN.md` (two digits: `week-02.md`).
+1. Put the Word document in `source/docx/` (name starting `Week N …`) and run
+   `python pipeline/docx_to_md.py "source/docx/*.docx"`; it writes
+   `source/week-NN.md` and prints, per file, the parts it found with their Latin
+   / English paragraph counts (a `<--` marks a count difference — look at it
+   before building). Or write `source/week-NN.md` by hand in the format below.
+   The converter keeps only the readings: Grammatica, Metrica and Pēnsa sections
+   and every table are dropped; verse lines (indented paragraphs in the
+   documents) are written as one block with a `\` hard break on every line.
 2. Optional per-sentence notes: `data/grammar-notes-weekNN.json` (or
    `grammar-notes-week-NN.json`), keys `"line.sentence"` → note text, exactly
    like Week 1. Keys may also carry the week prefix (`"w07:b3.2"`).
@@ -60,16 +72,26 @@ Four block formats are recognised; a document may mix them:
 | --- | --- | --- |
 | **`[n]` blocks** | `[8] Puella in hortō sedet. …` in both Latin and English, same numbers | sentences; ids `w01:8.1`, `w01:8.2`; `line_no` 8 |
 | **plain paragraphs** | no markers; Latin paragraphs and English paragraphs in the same order | sentences; ids `w07:b3.1` (b3 = 3rd block of the week); `line_no` null until recovered |
-| **dialogue** | unmarked paragraphs starting `Dāvus: …` (one or two capitalised words + colon). Several turns may share a paragraph if each label follows a full stop | one unit per turn, `unit_type: "turn"`, `speaker` filled, the `Name:` prefix removed from `la`/`en` |
-| **verse** | one verse line per physical line, each starting with a capital; English the same way, line for line | one unit per line, `unit_type: "verse"`, never split at full stops inside the poem |
+| **dialogue** | unmarked paragraphs starting `Dāvus: …` (one or two capitalised words + colon) **in a Fabellae Latīnae part**. Several turns may share a paragraph if each label follows a full stop | one unit per turn, `unit_type: "turn"`, `speaker` filled, the `Name:` prefix removed from `la`/`en` |
+| **verse** | one verse line per physical line, every line ending in a Markdown hard break `\` (what `docx_to_md.py` writes; lower-case pentameters and one-line poems work), or — without breaks — ≥ 2 lines each starting with a capital; English the same way, line for line | one unit per line, `unit_type: "verse"`, never split at full stops inside the poem |
 
-`[n]` blocks that begin with a speaker label (`[4] Syra: "Quam fābulam…"`) stay
-sentences with the label in the text — that is how Week 1's notes are keyed.
-To force a block's type use `OVERRIDES` in `merges.py`.
+Blocks that begin with a speaker label but are not Fabellae Latīnae — Week 1's
+`[4] Syra: "Quam fābulam…"` and the unmarked `Iūlius: "…"` paragraphs of the
+later Familia Romana chapters — stay sentences with the label in the text,
+which is how Week 1's notes are keyed and keeps the chapters consistent. To
+force a block's type use `OVERRIDES` in `merges.py` (`"verse"`, `"prose"`,
+`"dialogue"`); `"latin_only"` accepts a block that has no English by design
+(Week 9's Pompeian graffito) and `"skip"` leaves a block out.
+
+The first block of an unmarked part whose heading says `(Lines 60–126)` gets
+`line_no` 60 (the part starts there); the other blocks stay null until
+`recover_lines.py` fills them. Ids are block-based (`w07:b3.2`) either way.
 
 **Multi-text weeks (3, 5, 10).** Give each story its own part heading naming
-its source, e.g. `## Fabulae Syrae 1: Mīnōs (Lines 1–34)` and
-`## Fabellae Latīnae 66: Dāvus et Mēdus`. The heading decides the part's
+its source, e.g. `## Fabulae Syrae 1: Mīnōs (Lines 1–49)` and
+`## Fabellae Latīnae 66: Dāvus et Mēdus` (`docx_to_md.py` writes exactly these,
+taking a Fabulae Syrae range from the document's "Readings:" list when the
+heading has none). The heading decides the part's
 `source` (FS / FL) and a slug that goes into the ids so two stories that both
 start at line 1 cannot collide: `w03:minos:1.1`, `w03:fl-66:b7.1`. Notes for
 those weeks are keyed `"minos:1.1"`. The report's *Parts* table shows the slug
@@ -77,8 +99,10 @@ and source it chose for every part — check it.
 
 **Weeks 13–14.** The six overlapping lines (*Ōdī et amō*) stay in Week 13;
 Week 14 starts at *Hīs versibus recitātīs*. `weeks.py` carries this rule and
-the builder drops the overlapping blocks (listed in the report). If the
-phrase is not at the start of a block it warns instead — split the block.
+the builder drops the overlapping blocks (listed in the report); the first
+kept block of Week 14 gets `line_no` 139 from `weeks.py`. If the phrase is
+not at the start of a block it warns instead — split the block. A Week 13
+document that already ends before the phrase gets a note, not a warning.
 
 ### English bracket tags
 
@@ -88,6 +112,11 @@ Tags in the English are stripped from `en` (kept in `en_raw`) and collected in
 - `[imperfect subjunctive: mitterent]` → `{"label": "imperfect subjunctive", "la": "mitterent", "kind": "construction"}`
 - `[Ablative Absolute]` → `{"label": "ablative absolute", "la": null, "kind": "construction"}`
 - `[He]`, `[Why]`, `[echoed]`, `[With Quintus being silent]` → `kind: "gloss"`
+- `[Martial 7.3; negative purpose: nē mittās]` → two tags, split at `;`
+
+A bracket standing alone after a sentence (`…with me! [optative: essem].`) is
+not a sentence of its own: it is glued to the sentence before it and the
+dangling full stop is dropped from `en`.
 
 A tag with a colon is always a construction. Without one it is a construction
 only if it names a grammatical term (case names, moods, "gerund", "ablative

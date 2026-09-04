@@ -450,3 +450,129 @@ def test_recover_lines_apply(tmp_path):
     assert data["units"][0]["id"] == "w07:b1.1"
     # non-start units inherit their block's line
     assert all(u["line_no"] is not None for u in data["units"])
+
+
+# ----------------------------------------------------------------------------- explicit verse (docx_to_md.py output)
+
+EXPLICIT_VERSE_MD = r"""## Pars II: Dē Poētīs (Lines 59–70)
+
+### Textus Latīnus
+
+Tum Iūlius "Ecce" inquit "versūs:
+
+Nōn ego nōbilium sedeō studiōsus equōrum;\
+cui tamen ipsa favēs vincat ut ille precor.\
+
+Spectātum veniunt, veniunt spectentur ut ipsae!"\
+
+Fabia: "Et virī veniunt ut bellās fēminās spectent!"
+
+### Literal English Translation
+
+Then Julius says: "Behold the verses:
+
+Not I sit eager for noble horses;\
+yet that he whom thou thyself favorest may win, I pray.\
+
+They come to watch, they come that they may be watched!" [supine of purpose: spectātum; Ovid, Ars 1.99]\
+
+Fabia: "And men come that they may watch pretty women!"
+"""
+
+
+def test_explicit_hard_break_verse_lowercase_lines_and_one_line_poem():
+    data, report = bw.build_from_text(13, EXPLICIT_VERSE_MD)
+    us = data["units"]
+    assert report["mismatches"] == [] and report["warnings"] == []
+    assert [u["id"] for u in us] == ["w13:b1.1", "w13:b2.1", "w13:b2.2", "w13:b3.1", "w13:b4.1"]
+    assert [u["unit_type"] for u in us] == ["sentence", "verse", "verse", "verse", "sentence"]
+    assert us[2]["la"] == "cui tamen ipsa favēs vincat ut ille precor."     # lowercase pentameter kept as a line
+    assert us[3]["la"] == 'Spectātum veniunt, veniunt spectentur ut ipsae!"'
+    assert us[3]["en"] == 'They come to watch, they come that they may be watched!"'
+    assert us[3]["tags"] == [{"label": "supine of purpose", "la": "spectātum", "kind": "construction"},
+                             {"label": "Ovid, Ars 1.99", "la": None, "kind": "gloss"}]
+    # the first block of a part with "(Lines 59–70)" starts at line 59; the rest stay unknown
+    assert [u["line_no"] for u in us] == [59, None, None, None, None]
+    # the unmarked FR paragraph with a speaker label is a sentence, label kept (like Week 1)
+    assert us[4]["speaker"] is None and us[4]["la"].startswith('Fabia: "')
+    assert data["week"]["parts"] == [{"part": "Pars II: Dē Poētīs", "lines": "59–70", "source": "FR"}]
+
+
+def test_verse_detection_explicit_and_implicit():
+    assert bw.has_hard_breaks("Arma virumque canō,\\\nTrōiae quī prīmus.\\")
+    assert bw.looks_like_verse("Ōdī et amō.\\")                              # one explicit line is a poem
+    assert bw.looks_like_verse("arma virumque canō,\\\ntrōiae quī prīmus.\\")  # lowercase but explicit
+    assert bw.looks_like_verse("Arma virumque canō,\\\ntrōiae quī prīmus.") is False   # last line has no break
+    assert bw.looks_like_verse("Ōdī et amō.") is False
+
+
+def test_fl_dialogue_is_turns_but_fr_dialogue_stays_sentences():
+    fl = "## Fabellae Latīnae 66: Puer\n### Textus Latīnus\nDāvus: \"Salvē! Quid agis?\"\n### Literal English Translation\nDavus: \"Hello! How are you?\"\n"
+    d, r = bw.build_from_text(5, fl)
+    assert [(u["unit_type"], u["speaker"], u["la"]) for u in d["units"]] == [("turn", "Dāvus", '"Salvē! Quid agis?"')]
+    fr = "## Pars I (Lines 1–3)\n### Textus Latīnus\nIūlius: \"Salvē! Quid agis?\"\n### Literal English Translation\nJulius: \"Hello! How are you?\"\n"
+    d, r = bw.build_from_text(8, fr)
+    assert [(u["unit_type"], u["speaker"], u["la"]) for u in d["units"]] == [
+        ("sentence", None, 'Iūlius: "Salvē!'), ("sentence", None, 'Quid agis?"')]
+    assert d["units"][0]["line_no"] == 1 and d["units"][1]["line_no"] == 1
+    # OVERRIDES can still force turns for an FR block
+    bw.OVERRIDES[8] = {"dialogue": ["b1"]}
+    try:
+        d, r = bw.build_from_text(8, fr)
+        assert [u["unit_type"] for u in d["units"]] == ["turn"] and d["units"][0]["speaker"] == "Iūlius"
+    finally:
+        del bw.OVERRIDES[8]
+
+
+def test_tag_only_english_fragment_glues_to_previous_sentence():
+    md = ("## Pars I\n### Textus Latīnus\nUtinam Rōmae essem! Nunc absum.\n"
+          "### Literal English Translation\nWould that I were at Rome [locative: Rōmae]! [optative: essem]. Now I am absent.\n")
+    d, r = bw.build_from_text(12, md)
+    assert r["mismatches"] == []
+    u = d["units"][0]
+    assert u["en"] == "Would that I were at Rome!"
+    assert u["en_raw"] == "Would that I were at Rome [locative: Rōmae]! [optative: essem]."
+    assert [t["la"] for t in u["tags"]] == ["Rōmae", "essem"]
+    assert d["units"][1]["en"] == "Now I am absent."
+    assert bw.split_sentences("He left. [gloss]. [x: y]. She stayed.") == ["He left. [gloss]. [x: y].", "She stayed."]
+
+
+def test_semicolon_separated_tags_and_dangling_stop():
+    en, tags = bw.extract_tags('Lest thou send to me, Pontilianus, thine! [Martial 7.3; negative purpose: nē mittās].')
+    assert en == "Lest thou send to me, Pontilianus, thine!"
+    assert tags == [{"label": "Martial 7.3", "la": None, "kind": "gloss"},
+                    {"label": "negative purpose", "la": "nē mittās", "kind": "construction"}]
+    assert bw.extract_tags('me!" [x].')[0] == 'me!"'
+    assert bw.extract_tags("a. d. VII [note] kal.")[0] == "a. d. VII kal."
+
+
+def test_latin_only_and_skip_overrides():
+    md = ("## Pars III (Lines 132–204)\n### Textus Latīnus\nOrontēs cantat.\n\n(Graffītum:)\n\nQVISQVIS AMAT VALEAT\\\n\n"
+          "### Literal English Translation\nOrontes sings.\n")
+    bw.OVERRIDES[9] = {"skip": ["b2"], "latin_only": ["b3"]}
+    try:
+        d, r = bw.build_from_text(9, md)
+    finally:
+        del bw.OVERRIDES[9]
+    assert r["mismatches"] == [] and r["warnings"] == []
+    assert [u["id"] for u in d["units"]] == ["w09:b1.1", "w09:b3.1"]
+    assert d["units"][1]["en"] is None and d["units"][1]["unit_type"] == "verse"
+    assert r["en_missing"] == 1 and r["skipped"] == ["block 'b2': (Graffītum:)…"]
+    assert "Blocks skipped" in bw.render_report(r)
+
+
+def test_week13_document_that_already_ends_before_the_overlap_is_ok():
+    md = "## Pars I (Lines 1–3)\n### Textus Latīnus\nMārcus rīdet.\n### Literal English Translation\nMarcus laughs.\n"
+    d, r = bw.build_from_text(13, md)
+    assert r["warnings"] == [] and r["trimmed"] == []
+    assert len(r["info"]) == 1 and "already ends before it" in r["info"][0]
+    assert bw.render_report(r).startswith("# Week 13 build report — OK")
+
+
+def test_week14_first_kept_block_gets_the_week_start_line():
+    md = ("## Pars I: Catullus (Lines 133–175)\n### Textus Latīnus\nŌdī et amō.\\\n\nHīs versibus recitātīs plaudunt.\n\nTum Paula rīdet.\n"
+          "### Literal English Translation\nI hate and I love.\\\n\nThese verses recited, they applaud.\n\nThen Paula laughs.\n")
+    d, r = bw.build_from_text(14, md)
+    assert [u["id"] for u in d["units"]] == ["w14:b1.1", "w14:b2.1"]
+    assert [u["line_no"] for u in d["units"]] == [139, None]
+    assert len(r["trimmed"]) == 1

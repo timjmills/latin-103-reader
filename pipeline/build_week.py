@@ -29,16 +29,23 @@ Four kinds of block are recognised, in this order of precedence:
 
   (a) [n]-marked blocks   → sentences; ids  w01:1.1, w01:1.2 …; line_no = n
   (b) unmarked paragraphs → Latin and English paragraphs paired in order;
-                            ids w07:b3.2 (b = block index in the week); line_no null
-  (d) verse               → a block whose physical lines each start with a capital
-                            (≥ 2 lines) is a poem: one unit per line, unit_type
-                            "verse", never sentence-split
-  (c) speaker turns       → an *unmarked* paragraph beginning "Dāvus: …" is
-                            dialogue: one unit per turn, unit_type "turn",
-                            `speaker` filled, the "Name:" prefix removed.
-                            ([n]-marked blocks that begin "Syra: …" stay as
-                            sentences with the label in the text — that is what
-                            Week 1's notes are keyed to.)
+                            ids w07:b3.2 (b = block index in the week). line_no is
+                            null, except that the first block of a part whose
+                            heading gives "(Lines a–b)" gets a (the part starts
+                            there); later blocks stay null until recover_lines.py.
+  (d) verse               → a block whose physical lines all end in a Markdown
+                            hard break "\" (docx_to_md.py writes verse that way),
+                            or whose ≥ 2 lines each start with a capital, is a
+                            poem: one unit per line, unit_type "verse", never
+                            sentence-split
+  (c) speaker turns       → an *unmarked* paragraph beginning "Dāvus: …" in a
+                            Fabellae Latīnae part is dialogue: one unit per turn,
+                            unit_type "turn", `speaker` filled, the "Name:" prefix
+                            removed. Familia Romana / Fabulae Syrae paragraphs
+                            with a label ("Iūlius: …") stay sentences with the
+                            label in the text, like Week 1's [n] blocks (whose
+                            notes are keyed that way). OVERRIDES in merges.py
+                            forces either.
 
 Sentence splitting (Latin) splits after . ! ? … (optionally followed by a
 closing quote) when the next token starts with a capital or an opening quote /
@@ -120,10 +127,24 @@ _LA_SPLIT = re.compile(
 _EN_SPLIT = re.compile(rf"{_AFTER_TERM}\s+(?=[{OPEN_Q}{CAP}])")
 
 
+_TAG_ONLY = re.compile(r"^(?:\s*\[[^\[\]]*\]\s*[.,;:!?]*\s*)+$")
+
+
 def split_sentences(text: str, latin: bool = False) -> list[str]:
     text = norm_ws(text)
     pat = _LA_SPLIT if latin else _EN_SPLIT
-    return [s.strip() for s in pat.split(text) if s and s.strip()]
+    out = [s.strip() for s in pat.split(text) if s and s.strip()]
+    if not latin:
+        # "…with me! [optative subjunctive: essem]." — a bracket tag on its own is
+        # not a sentence; it belongs to the sentence before it.
+        glued: list[str] = []
+        for piece in out:
+            if glued and _TAG_ONLY.match(piece):
+                glued[-1] = glued[-1] + " " + piece
+            else:
+                glued.append(piece)
+        out = glued
+    return out
 
 
 # --------------------------------------------------------------------------- bracket tags
@@ -163,13 +184,21 @@ def classify_tag(inner: str) -> dict:
     return {"label": inner, "la": None, "kind": "gloss"}
 
 
+def _tag_pieces(inner: str) -> list[str]:
+    """"[Martial 7.3; negative purpose: nē mittās]" carries two tags."""
+    pieces = [p for p in inner.split(";") if p.strip()]
+    return pieces if len(pieces) > 1 else [inner]
+
+
 def extract_tags(en_raw: str | None) -> tuple[str | None, list[dict]]:
     """→ (clean English, tags). Collapses the double spaces the brackets leave."""
     if en_raw is None:
         return None, []
-    tags = [classify_tag(m.group(1)) for m in _BRACKET.finditer(en_raw) if m.group(1).strip()]
+    tags = [classify_tag(piece) for m in _BRACKET.finditer(en_raw) if m.group(1).strip()
+            for piece in _tag_pieces(m.group(1))]
     clean = _BRACKET.sub("", en_raw)
     clean = re.sub(r"\s+([,.;:!?])", r"\1", clean)
+    clean = re.sub(r"([.!?…])([\"'”’]?)\.(?=\s|$)", r"\1\2", clean)
     return norm_ws(clean), tags
 
 
@@ -190,9 +219,19 @@ def physical_lines(text: str) -> list[str]:
     return out
 
 
+def has_hard_breaks(text: str) -> bool:
+    """Every non-empty line ends in a Markdown backslash hard break — the explicit
+    verse form docx_to_md.py writes (a one-line poem is possible)."""
+    raw = [l.rstrip() for l in re.sub(r"<br\s*/?>", "\n", text, flags=re.I).split("\n") if l.strip()]
+    return bool(raw) and all(l.endswith("\\") for l in raw)
+
+
 def looks_like_verse(text: str) -> bool:
-    """≥ 2 physical lines, every one starting with a capital (after an optional
-    quote/dash). Prose paragraphs in these documents are single physical lines."""
+    """Explicit: every line ends in "\\". Implicit: ≥ 2 physical lines, every one
+    starting with a capital (after an optional quote/dash) — prose paragraphs in
+    these documents are single physical lines."""
+    if has_hard_breaks(text):
+        return True
     lines = physical_lines(text)
     return len(lines) >= 2 and all(_LINE_START_CAP.match(l) for l in lines)
 
@@ -343,11 +382,9 @@ def apply_merges(sents: list[str], merges: list[tuple[int, int]], where: str, re
 # --------------------------------------------------------------------------- building
 
 def _merge_key(block: Block, slug: str | None):
-    """Key the user writes in merges.py for this block."""
-    base = block.line_no if block.line_no is not None else block.key
-    if slug:
-        return f"{slug}:{base}"
-    return base
+    """Key the user writes in merges.py for this block: the line number for [n]
+    blocks, "bN" for unmarked ones (even when a line number is known for it)."""
+    return f"{slug}:{block.key}" if slug else block.key
 
 
 def _lookup_merges(table: dict, key) -> list:
@@ -360,17 +397,21 @@ def _lookup_merges(table: dict, key) -> list:
     return []
 
 
-def _mode_for(block: Block, marked: bool, week_n: int, mkey) -> str:
-    ov = OVERRIDES.get(week_n, {})
-    if mkey in ov.get("prose", []) or str(mkey) in map(str, ov.get("prose", [])):
+def _overridden(week_n: int, kind: str, mkey) -> bool:
+    keys = OVERRIDES.get(week_n, {}).get(kind, [])
+    return mkey in keys or str(mkey) in map(str, keys)
+
+
+def _mode_for(block: Block, marked: bool, week_n: int, mkey, source: str = "FR") -> str:
+    if _overridden(week_n, "prose", mkey):
         return "sentence"
-    if mkey in ov.get("verse", []) or str(mkey) in map(str, ov.get("verse", [])):
+    if _overridden(week_n, "verse", mkey):
         return "verse"
-    if mkey in ov.get("dialogue", []) or str(mkey) in map(str, ov.get("dialogue", [])):
+    if _overridden(week_n, "dialogue", mkey):
         return "turn"
     if looks_like_verse(block.text):
         return "verse"
-    if not marked and is_dialogue(block.text):
+    if not marked and source == "FL" and is_dialogue(block.text):
         return "turn"
     return "sentence"
 
@@ -386,6 +427,12 @@ def _pieces(block_text: str | None, mode: str, latin: bool) -> list[tuple[str | 
     return [(None, s) for s in split_sentences(block_text, latin=latin)]
 
 
+def _range_start(lines: str | None) -> int | None:
+    """'60–126' → 60; None when there is no range."""
+    m = re.match(r"\s*(\d+)", lines or "")
+    return int(m.group(1)) if m else None
+
+
 def _trim_blocks(la_blocks, en_blocks, marked, trim: dict, report: dict):
     """Week 13/14 overlap rule. Returns the (possibly shortened) block lists."""
     if not trim:
@@ -393,8 +440,7 @@ def _trim_blocks(la_blocks, en_blocks, marked, trim: dict, report: dict):
     phrase = fold(trim.get("end_before") or trim.get("start_at"))
     idx = next((i for i, (_, t) in enumerate(la_blocks) if phrase in fold(t)), None)
     if idx is None:
-        report["warnings"].append(f"trim phrase {phrase!r} not found in any Latin block — nothing trimmed")
-        return la_blocks, en_blocks
+        return la_blocks, en_blocks          # not in this part; reported after the last part
     if not fold(la_blocks[idx][1]).startswith(phrase):
         report["warnings"].append(
             f"trim phrase {phrase!r} is inside block #{idx + 1}, not at its start — nothing trimmed; split the block in the source")
@@ -422,7 +468,7 @@ def build_from_text(n: int, md: str, notes: dict | None = None, merges: dict | N
     report = {
         "week": n, "id": wid, "source_file": source_name,
         "built_at": _dt.datetime.now().isoformat(timespec="seconds"),
-        "parts": [], "mismatches": [], "warnings": [], "merges_applied": [], "trimmed": [],
+        "parts": [], "mismatches": [], "warnings": [], "info": [], "merges_applied": [], "trimmed": [], "skipped": [],
         "units": 0, "blocks": 0, "by_type": {"sentence": 0, "verse": 0, "turn": 0},
         "notes_matched": 0, "notes_missing": [], "notes_orphans": [],
         "tags": {"construction": {}, "gloss": 0},
@@ -477,6 +523,12 @@ def build_from_text(n: int, md: str, notes: dict | None = None, merges: dict | N
                 block_counter += 1
                 en_t = en_blocks[i][1] if i < len(en_blocks) else None
                 pairs.append((Block(f"b{block_counter}", None, t, block_counter), en_t))
+            # the part heading says where the part starts: "(Lines 60–126)" → first block is line 60
+            start = _range_start(part["lines"])
+            if k == 0 and report["trimmed"] and "start_at" in (trim or {}):
+                start = _range_start(week.get("lines"))
+            if pairs and start is not None:
+                pairs[0][0].line_no = start
             if len(en_blocks) > len(la_blocks):
                 extra = [t[:80] for _, t in en_blocks[len(la_blocks):]]
                 report["warnings"].append(
@@ -491,7 +543,14 @@ def build_from_text(n: int, md: str, notes: dict | None = None, merges: dict | N
 
         for block, en_text in pairs:
             mkey = _merge_key(block, slug)
-            mode = _mode_for(block, marked, n, mkey)
+            if _overridden(n, "skip", mkey):
+                report["skipped"].append(f"block {mkey!r}: {block.text[:60]}…")
+                continue
+            latin_only = _overridden(n, "latin_only", mkey)
+            if latin_only and en_text is not None:
+                report["warnings"].append(f"block {mkey!r} is listed as latin_only but has English text — the English is kept")
+                latin_only = False
+            mode = _mode_for(block, marked, n, mkey, source)
             part_stats["modes"][mode] += 1
             la_pieces = _pieces(block.text, mode, latin=True)
             en_pieces = _pieces(en_text, mode, latin=False)
@@ -500,12 +559,12 @@ def build_from_text(n: int, md: str, notes: dict | None = None, merges: dict | N
                 en_s = apply_merges([t for _, t in en_pieces], _lookup_merges(merges.get("en", {}), mkey), "en", report, mkey)
                 la_pieces = [(None, s) for s in la_s]
                 en_pieces = [(None, s) for s in en_s]
-            if len(la_pieces) != len(en_pieces):
+            if len(la_pieces) != len(en_pieces) and not latin_only:
                 report["mismatches"].append({
                     "part": part["name"], "key": mkey, "mode": mode, "line_no": block.line_no,
                     "la": [t for _, t in la_pieces], "en": [t for _, t in en_pieces],
                 })
-            id_base = f"{wid}:{slug + ':' if slug else ''}{block.line_no if block.line_no is not None else block.key}"
+            id_base = f"{wid}:{slug + ':' if slug else ''}{block.key}"
             for i, (spk, la) in enumerate(la_pieces):
                 en_raw = en_pieces[i][1] if i < len(en_pieces) else None
                 if mode == "turn" and en_raw is not None and en_pieces[i][0] is None and spk is not None:
@@ -537,6 +596,13 @@ def build_from_text(n: int, md: str, notes: dict | None = None, merges: dict | N
                         report["tags"]["gloss"] += 1
         report["parts"].append(part_stats)
         report["blocks"] += len(pairs)
+
+    if trim and not report["trimmed"] and parts:
+        phrase = trim.get("end_before") or trim.get("start_at")
+        if "end_before" in trim:
+            report["info"].append(f"overlap rule: {phrase!r} is not in this document — it already ends before it, nothing to trim")
+        else:
+            report["warnings"].append(f"trim phrase {phrase!r} not found in any Latin block — nothing trimmed")
 
     # notes: keys "line.sentence" | "w01:line.sentence" | "slug:line.sentence"
     if notes:
@@ -594,9 +660,17 @@ def render_report(r: dict) -> str:
         L.append("## Blocks dropped by the week 13/14 overlap rule\n")
         L += [f"- {t}" for t in r["trimmed"]]
         L.append("")
+    if r["skipped"]:
+        L.append("## Blocks skipped (OVERRIDES \"skip\" in pipeline/merges.py)\n")
+        L += [f"- {t}" for t in r["skipped"]]
+        L.append("")
     if r["warnings"]:
         L.append("## Warnings\n")
         L += [f"- {w}" for w in r["warnings"]]
+        L.append("")
+    if r.get("info"):
+        L.append("## Notes\n")
+        L += [f"- {w}" for w in r["info"]]
         L.append("")
 
     L.append("## Mismatches\n")

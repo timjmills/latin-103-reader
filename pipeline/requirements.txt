@@ -1,3 +1,4 @@
 # Python 3.13. Install with:  python -m pip install -r pipeline/requirements.txt
 pypdf>=4.0      # text-layer extraction for recover_lines.py
 pytest>=8.0     # python -m pytest pipeline -q
+python-docx>=1.1  # docx_to_md.py

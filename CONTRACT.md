@@ -197,3 +197,21 @@ export function paradigm(entry, parse)  // → Paradigm | null
 - Multi-text weeks (3, 5, 10) carry a part slug in ids: `w03:minos:1.1`, `w05:fl-66:b2.1`; `week.parts[]` entries there carry `slug`. Notes for those weeks are keyed `"minos:1.1"`.
 - `weeks.json` entries add `unit_count`; `week` may carry `lines` (weeks 13/14).
 - `recover_lines.py --apply` sets only `line_no`; block-based ids (`w07:b3.2`) stay stable so notes/highlights keyed to them never break.
+
+## Margin notes (added 2026-09-04)
+
+Ørberg's/Miraglia's marginal glosses (the Latin-only explanations printed in
+the book margin, e.g. `immortālēs -ium m pl = diī`) are kept. Shape:
+
+- `unit.margin: [{ "line": 45, "la": "immortālēs -ium m pl = diī" }]` — the
+  glosses printed beside the lines this unit covers (attached to the unit whose
+  block contains that line; `line` is the book line the gloss sits against, or
+  null for Fabellae Latinae). Empty array when none.
+- Supabase: `units.margin jsonb not null default '[]'` (migration 0004).
+- Source: `data/build/margin-week-NN.json` = `[{ "line": n, "la": "…" }]` per
+  week, extracted from `scans/*.pdf` text layers by `pipeline/extract_margins.py`,
+  merged into the week JSON by `build_week.py` when present.
+- UI: a "Margin notes" toggle (default on). Desktop/tablet: a right-hand
+  gutter column aligned with the sentence, small serif, dimmed. Phone: shown
+  beneath the sentence, above its translation, prefixed with a small "¶"
+  marker. Words inside margin notes are tappable like reading text.
