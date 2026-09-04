@@ -337,10 +337,16 @@ def process(n: int, model: str, src: Path | None, do_upload: bool, user_id: str 
     if not dest.exists():
         raise FileNotFoundError(f"{dest} not found — pass --audio <file> or put the recording there")
 
+    # Once tts_audio.py has joined synthesised parts onto the recording, the
+    # untouched original lives at week-NN.real.mp3 — always align against that,
+    # never against a file that already contains synthesised speech.
+    real = AUDIO_DIR / f"week-{n:02d}.real.mp3"
+    source_audio = real if real.exists() else dest
+
     data = json.loads((BUILD / f"week-{n:02d}.json").read_text(encoding="utf-8"))
     week, units = data["week"], data["units"]
     if not quiet:
-        print(f"week {n:02d}: {week['title']} — {len(units)} sentences, {dest.name} ({duration_s(dest)} s)")
+        print(f"week {n:02d}: {week['title']} — {len(units)} sentences, {source_audio.name} ({duration_s(source_audio)} s)")
 
     raw = OUT_DIR / f"week-{n:02d}.transcript.json"
     if raw.exists() and not retranscribe:
@@ -349,7 +355,7 @@ def process(n: int, model: str, src: Path | None, do_upload: bool, user_id: str 
         if not quiet:
             print(f"  using cached transcript ({len(words)} words); pass --retranscribe to run Whisper again")
     else:
-        words, info = transcribe(dest, model, quiet)
+        words, info = transcribe(source_audio, model, quiet)
         raw.write_text(json.dumps({"words": words, "info": info}, ensure_ascii=False), encoding="utf-8")
     al = align(units, words)
     passage_view, sentence_view = build_views(week, units, al)
@@ -364,9 +370,10 @@ def process(n: int, model: str, src: Path | None, do_upload: bool, user_id: str 
         "week": {"n": n, "id": week["id"], "title": week["title"]},
         "audio": {
             "local_file": str(dest.relative_to(ROOT)).replace("\\", "/"),
+            "aligned_against": str(source_audio.relative_to(ROOT)).replace("\\", "/"),
             "private_path": f"audio/{user_id or '{user_id}'}/week-{n:02d}.mp3",
             "served_via": "Supabase Storage signed URL (store.getAudioUrl) — never a public URL",
-            "duration_s": duration_s(dest),
+            "duration_s": duration_s(source_audio),
         },
         "transcription": info,
         "alignment": {"sentences": len(units), "matched": matched, "interpolated": len(units) - matched,
