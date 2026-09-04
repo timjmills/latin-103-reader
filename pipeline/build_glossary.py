@@ -131,6 +131,10 @@ NUM_KIND_INDEX = {"card": 0, "ord": 1, "dist": 2, "adv": 3}
 
 # Learner senses for the words Whitaker glosses least helpfully.
 SENSE_OVERRIDES = {
+    ("N", "cohors"): ["cohort (a tenth of a legion, about 480 men)", "company, troop", "courtyard, enclosure"],
+    ("N", "castra"): ["camp (military)", "the army in camp"],
+    ("N", "castrum"): ["camp (military; usually plural castra)", "fort"],
+    ("N", "libellus"): ["little book, booklet", "pamphlet, notice"],
     ("V", "sum"): ["be, exist", "there is / there are (est, sunt)", "with a dative: have (mihi est = I have)"],
     ("V", "nolo"): ["not want, be unwilling", "nōlī / nōlīte + infinitive = do not …"],
     ("V", "volo"): ["want, wish, be willing"],
@@ -507,7 +511,7 @@ def noun_lemma(roots: list[str], cat: list, gender: str | None, proper: bool) ->
         elif v == 3:
             lemma = f"{r0} {r1}ī {g}".strip() if r1 != r0 else f"{r0} -ī {g}".strip()
         elif v == 4:
-            lemma = hy("us", "ī")
+            lemma = hy("um", "ī") if gender == "n" else hy("us", "ī")  # cōnsilium, not "cōnsilius"
         elif v == 5:
             lemma = f"{r0}um -ī {g}".strip() if gender == "n" else f"{r0}us -ī {g}".strip()
         elif v == 6:
@@ -785,6 +789,10 @@ def build_entry(rec: Rec, speller: Speller) -> dict | None:
         proper = ntype in ("N", "L", "G")
         # Whitaker offers a locative for every noun; learners only meet it with
         # place names (Rōmae, Athēnīs, domī) — keep it only for place nouns.
+        # -ius/-ium nouns: Whitaker rates the genitive in -iī below the
+        # locative, so the ending filter left only "locative" for imperiī, ōtiī …
+        if cat and cat[:2] == [2, 4] and any(p.get("case") == "loc" for p in parses)                 and not any(p.get("case") == "gen" and p.get("number") == "sg" for p in parses):
+            parses.append({"case": "gen", "number": "sg", **({"gender": gender} if gender else {})})
         if ntype not in ("L", "W"):
             non_loc = [p for p in parses if p.get("case") != "loc"]
             if non_loc:
@@ -1207,6 +1215,8 @@ def supplement_entry(form: str, s: dict) -> dict | None:
             cat, roots = [1, 1], [head[:-2], head[:-2], "-", "-"]
         elif "-e" in rest and hc.endswith("is"):
             cat, roots = [3, 2], [head[:-2], head[:-2], "-", "-"]
+        elif "(indeclinable)" in hstr:
+            cat, roots = [9, 1], [head, head, "-", "-"]  # necesse, quot, nēquam
     elif pos == "V":
         hc = canonical(head)
         dep = "deponent" in hstr or hc.endswith("or")

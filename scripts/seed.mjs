@@ -63,6 +63,12 @@ function validate({ n, week, units, highlights }) {
     if (!h.text || !u.la.includes(h.text)) warn(`week ${n}: highlight "${h.text}" is not a substring of ${h.unit_id} — the UI will not find it`);
     if (!h.label) problems.push(`highlight #${i} (${h.unit_id}) has no label`);
   });
+  // Margin glosses are merged into week-NN.json by pipeline/attach_margins.py;
+  // a margin file with nothing attached means that step was skipped.
+  const marginFile = `margin-week-${pad2(n)}.json`;
+  if (existsSync(join(BUILD, marginFile)) && !units.some((u) => Array.isArray(u.margin) && u.margin.length)) {
+    warn(`week ${n}: ${marginFile} exists but no unit carries a margin gloss — run pipeline/attach_margins.py before seeding`);
+  }
   return problems;
 }
 
@@ -77,6 +83,7 @@ function rowsFor({ n, week, units, highlights }, uid) {
     line_no: u.line_no ?? null, block_start: Boolean(u.block_start),
     unit_type: u.unit_type || 'sentence', speaker: u.speaker ?? null,
     la: u.la, en: u.en ?? '', en_raw: u.en_raw ?? null, note: u.note ?? null, tags: u.tags ?? [],
+    margin: Array.isArray(u.margin) ? u.margin : [],
   }));
   const hlRows = highlights.map((h) => ({
     user_id: uid, week_n: n, unit_id: h.unit_id, text: h.text,

@@ -799,6 +799,20 @@ def main(argv: list[str] | None = None) -> int:
         except FileNotFoundError as e:
             print(str(e), file=sys.stderr)
             rc = 1
+            continue
+        # A rebuild starts from the source document, so re-attach the
+        # scan-derived line numbers and marginal glosses when they exist
+        # (CONTRACT.md "Margin notes"); otherwise the week would silently
+        # lose them.
+        if (build_dir(root) / f"margin-week-{n:02d}.json").exists() or (build_dir(root) / f"lines-week-{n:02d}.json").exists():
+            try:
+                from attach_margins import process_week as _attach
+                _attach(n, root)
+                if not a.quiet:
+                    print(f"week {n:02d}: margins re-attached")
+            except Exception as e:  # never lose the build over the attach step
+                print(f"week {n:02d}: margin attach failed: {e}", file=sys.stderr)
+                rc = 1
     idx = write_weeks_index(root)
     if not a.quiet:
         print(f"index -> {idx.relative_to(root)}")
