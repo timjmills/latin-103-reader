@@ -56,18 +56,21 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
   display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "week view" "tools settings";
   align-items: center; gap: var(--s-1) var(--s-2); padding: var(--s-1) 0;
 }
-.week { grid-area: week; min-width: 0; display: flex; }
-.week__select {
-  appearance: none; -webkit-appearance: none;
-  width: 100%; min-height: var(--tap); padding: 0 1.8rem 0 var(--s-2);
+.week { grid-area: week; min-width: 0; display: flex; flex: 1 1 auto; }
+.week__btn {
+  flex: 1 1 auto; width: 100%;
+  display: flex; align-items: baseline; gap: 0.5em; min-width: 0; max-width: 100%;
+  min-height: var(--tap); padding: 0 1.8rem 0 var(--s-2);
   background: transparent; border: 1px solid transparent; border-radius: var(--radius);
-  font-family: var(--face-serif); font-size: var(--ui-lg); color: var(--ink);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: var(--face-serif); font-size: var(--ui-lg); color: var(--ink); cursor: pointer; text-align: left;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
   background-position: calc(100% - 0.95rem) 50%, calc(100% - 0.65rem) 50%;
   background-size: 0.3rem 0.3rem; background-repeat: no-repeat;
 }
-.week__select:hover { border-color: var(--line-strong); background-color: var(--bg-raised); }
+.week__btn:hover { border-color: var(--line-strong); background-color: var(--bg-raised); }
+.week__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.week__num { color: var(--ink-3); white-space: nowrap; }
+.week__title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 #settings-btn { grid-area: settings; }
 .seg {
   grid-area: view; display: inline-flex; justify-self: start;
@@ -112,7 +115,7 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
     grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "week view settings" "tools tools tools";
     gap: var(--s-1) var(--s-4); padding: var(--s-2) 0;
   }
-  .week__select { max-width: 32rem; }
+  .week__btn { max-width: 32rem; }
   .bar__tools { gap: 0 var(--s-2); padding-bottom: var(--s-1); }
 }
 

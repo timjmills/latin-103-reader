@@ -185,3 +185,41 @@
 @media (prefers-reduced-motion: reduce) {
   .popup[open], .layout[data-panel="open"] .panel { animation: none; }
 }
+
+/* ---------------------------------------------------------- weeks menu */
+.weeks {
+  margin: auto; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--bg-raised); color: var(--ink); box-shadow: var(--shadow-pop);
+  width: min(34rem, calc(100vw - 2rem)); max-height: min(80dvh, 44rem);
+}
+.weeks::backdrop { background: oklch(0 0 0 / 0.25); }
+.weeks__head { display: flex; align-items: center; justify-content: space-between; padding: var(--s-4) var(--s-3) 0 var(--s-5); }
+.weeks__head .panel__close { position: static; }
+.weeks__title { font-family: var(--face-serif); font-weight: 400; font-size: 1.3rem; margin: 0; }
+.weeks__hint { margin: var(--s-1) var(--s-5) var(--s-3); font-size: var(--ui-sm); color: var(--ink-3); }
+.weeks__list { list-style: none; margin: 0; padding: 0 var(--s-3) var(--s-3); }
+.weeks__item { border-top: 1px solid var(--line); }
+.weeks__item:first-child { border-top: 0; }
+.weeks__row {
+  display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto; column-gap: var(--s-3); align-items: baseline;
+  width: 100%; min-height: var(--tap); padding: var(--s-3) var(--s-2); text-align: left;
+  background: none; border: 0; border-radius: var(--radius); color: inherit; font: inherit; cursor: pointer;
+}
+.weeks__row:hover { background: var(--bg-chrome); }
+.weeks__row:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.weeks__row[aria-current="true"] .weeks__name { color: var(--rubric-ink); }
+.weeks__row[disabled] { cursor: default; }
+.weeks__row[disabled]:hover { background: none; }
+.weeks__n { font-family: var(--face-serif); font-size: var(--ui-lg); color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.weeks__name { font-family: var(--face-serif); font-size: var(--ui-lg); line-height: 1.3; }
+.weeks__row[disabled] .weeks__name { color: var(--ink-3); }
+.weeks__meta { grid-column: 2; font-size: var(--ui-sm); color: var(--ink-2); line-height: 1.4; margin-top: 2px; }
+.weeks__row[disabled] .weeks__meta { color: var(--ink-3); }
+.weeks__state { grid-column: 3; grid-row: 1; font-size: var(--ui-xs); color: var(--ink-3); white-space: nowrap; }
+@media (max-width: 479.98px) {
+  .weeks { width: calc(100vw - 1rem); max-height: 88dvh; }
+  .weeks__row { grid-template-columns: 2.2rem minmax(0, 1fr); }
+  .weeks__state { grid-column: 2; grid-row: 3; }
+}
+.weeks[open] { animation: pop var(--t-base) var(--ease-out); }
+@media (prefers-reduced-motion: reduce) { .weeks[open] { animation: none; } }

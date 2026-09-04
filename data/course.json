@@ -1,0 +1,184 @@
+[
+ {
+  "n": 1,
+  "id": "w01",
+  "title": "Thēseus et Mīnōtaurus",
+  "source": "FR",
+  "chapter": "XXV",
+  "reading": "Familia Romana cap. XXV",
+  "focus": {
+   "key": "deponent",
+   "label": "Deponent verbs",
+   "blurb": "Verbs that look passive but mean something active — watch especially the commands ending in -re and -minī."
+  }
+ },
+ {
+  "n": 2,
+  "id": "w02",
+  "title": "Daedalus et Īcarus",
+  "source": "FR",
+  "chapter": "XXVI",
+  "reading": "Familia Romana cap. XXVI",
+  "focus": {
+   "key": "gerund",
+   "label": "Gerund",
+   "blurb": "The verb turned into a noun for 'doing' something: -ndum after ad for purpose, -ndī with a noun, -ndō for 'by doing'."
+  }
+ },
+ {
+  "n": 3,
+  "id": "w03",
+  "title": "Mīnōs · Corōnis · Fabellae LXIII–LXV",
+  "source": "FS+FL",
+  "chapter": "XXVII (FS 1, 5); FL 63–65",
+  "reading": "Fabulae Syrae cap. XXVII, 1 · Fabulae Syrae cap. XXVII, 5 · Fabellae Latinae 63–65",
+  "focus": {
+   "key": "pres-subj-supine",
+   "label": "Present subjunctive · supine",
+   "blurb": "After ut or nē a verb in the present subjunctive tells what someone wants done; the supine (-um, -ū) names the purpose of going or the respect in which something is so."
+  }
+ },
+ {
+  "n": 4,
+  "id": "w04",
+  "title": "Rēs Rūsticae",
+  "source": "FR",
+  "chapter": "XXVII",
+  "reading": "Familia Romana cap. XXVII",
+  "focus": {
+   "key": "pres-subj",
+   "label": "Present subjunctive",
+   "blurb": "The present subjunctive's forms (-e- for the 1st conjugation, -a- for the rest) and the ut/nē clauses that use them for wishes, commands and purposes."
+  }
+ },
+ {
+  "n": 5,
+  "id": "w05",
+  "title": "Coriolānus · Nausicaa · Fabellae LXVI–LXVIII",
+  "source": "FS+FL",
+  "chapter": "XXVIII (FS 3); FL 66–68",
+  "reading": "Fabulae Syrae, Coriolanus (end) · Fabulae Syrae cap. XXVIII, 3 · Fabellae Latinae 66–68",
+  "focus": {
+   "key": "impf-subj",
+   "label": "Imperfect subjunctive",
+   "blurb": "When the main verb is past, the subjunctive after ut/nē goes into the imperfect: for results, purposes, commands and questions reported inside the story."
+  }
+ },
+ {
+  "n": 6,
+  "id": "w06",
+  "title": "Perīcula Maris",
+  "source": "FR",
+  "chapter": "XXVIII",
+  "reading": "Familia Romana cap. XXVIII",
+  "focus": {
+   "key": "impf-subj-sequence",
+   "label": "Imperfect subjunctive · sequence of tenses",
+   "blurb": "A past main verb pulls the subjunctive in its clause into the imperfect — the tense of the subjunctive follows the tense of the verb that introduces it."
+  }
+ },
+ {
+  "n": 7,
+  "id": "w07",
+  "title": "Nāvigāre Necesse Est",
+  "source": "FR",
+  "chapter": "XXIX",
+  "reading": "Familia Romana cap. XXIX",
+  "focus": {
+   "key": "ut-ne-cum",
+   "label": "ut/nē clauses · deliberative · cum",
+   "blurb": "The same ut can report a command, state a purpose or describe a result; the subjunctive alone can ask 'what am I to do?'; and cum with the subjunctive sets the scene ('when/since')."
+  }
+ },
+ {
+  "n": 8,
+  "id": "w08",
+  "title": "Convīvium",
+  "source": "FR",
+  "chapter": "XXX",
+  "reading": "Familia Romana cap. XXX",
+  "focus": {
+   "key": "fut-perf",
+   "label": "Future perfect",
+   "blurb": "'Will have done': the tense Latin uses after sī, cum and antequam for something that must be finished before the main future event."
+  }
+ },
+ {
+  "n": 9,
+  "id": "w09",
+  "title": "Inter Pōcula",
+  "source": "FR",
+  "chapter": "XXXI",
+  "reading": "Familia Romana cap. XXXI",
+  "focus": {
+   "key": "gerundive",
+   "label": "Gerundive · passive periphrastic · dative of agent",
+   "blurb": "The -ndus adjective says something 'must be done', and the person who must do it goes into the dative instead of ā/ab with the ablative."
+  }
+ },
+ {
+  "n": 10,
+  "id": "w10",
+  "title": "Arachnē · Fabellae LXIX–LXXIV",
+  "source": "FS+FL",
+  "chapter": "XXXII (FS 2); FL 69–74",
+  "reading": "Fabulae Syrae cap. XXXII, 2 · Fabellae Latinae 69–74",
+  "focus": {
+   "key": "perf-subj",
+   "label": "Perfect subjunctive",
+   "blurb": "Used for 'don't' commands (nē + perfect subjunctive) and for questions reported after a present main verb about something already done."
+  }
+ },
+ {
+  "n": 11,
+  "id": "w11",
+  "title": "Classis Rōmāna",
+  "source": "FR",
+  "chapter": "XXXII",
+  "reading": "Familia Romana cap. XXXII",
+  "focus": {
+   "key": "perf-subj-optative",
+   "label": "Perfect subjunctive · utinam",
+   "blurb": "More perfect subjunctives, plus utinam ('if only!') for wishes — present subjunctive for a wish that can still come true, imperfect for one that cannot."
+  }
+ },
+ {
+  "n": 12,
+  "id": "w12",
+  "title": "Exercitus Rōmānus",
+  "source": "FR",
+  "chapter": "XXXIII",
+  "reading": "Familia Romana cap. XXXIII",
+  "focus": {
+   "key": "plup-subj-fut-imper",
+   "label": "Pluperfect subjunctive · future imperative",
+   "blurb": "'If X had happened, Y would have happened' and 'if only it had…' use the pluperfect subjunctive; the future imperative (-tō, -tōte) gives orders for later."
+  }
+ },
+ {
+  "n": 13,
+  "id": "w13",
+  "title": "Dē Arte Poēticā (I)",
+  "source": "FR",
+  "chapter": "XXXIV",
+  "reading": "Familia Romana cap. XXXIV, 1–138",
+  "focus": {
+   "key": "poetry-dative",
+   "label": "Poetry: elegiac couplet, hendecasyllable · dummodo · dative verbs",
+   "blurb": "First verse: a long line paired with a shorter one (the elegiac couplet) and Catullus' eleven-syllable line; dummodo ('provided that') takes the subjunctive, and some verbs take a dative object."
+  }
+ },
+ {
+  "n": 14,
+  "id": "w14",
+  "title": "Dē Arte Poēticā (II)",
+  "source": "FR",
+  "chapter": "XXXIV",
+  "reading": "Familia Romana cap. XXXIV, 139–217",
+  "focus": {
+   "key": "poetry-prosody",
+   "label": "Poetry: prosody, elision, scansion · Martial",
+   "blurb": "How to hear a line: long and short syllables, a final vowel swallowed before the next word (elision), and marking the feet — practised on Martial's short, pointed epigrams."
+  }
+ }
+]
