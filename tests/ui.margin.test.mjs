@@ -5,12 +5,13 @@ import { marginNotes, marginMode, stackMargin, marginTop } from '../app/js/reade
 import { clampPanelWidth, SIZE_MAX, clampSize } from '../app/js/settings.js';
 import { DEFAULT_SETTINGS, normaliseSettings, patchSettings } from '../app/js/sync.js';
 
-test('marginNotes: missing → [], blanks dropped, line coerced or null', () => {
+test('marginNotes: missing → [], blanks dropped, line coerced or null, en trimmed or null', () => {
+  assert.deepEqual(marginNotes({ margin: [{ line: 1, la: 'a', en: '  an invented gloss ' }] }), [{ line: 1, la: 'a', en: 'an invented gloss' }]);
   assert.deepEqual(marginNotes({}), []);
   assert.deepEqual(marginNotes({ margin: null }), []);
   // An invented gloss, not one from the book.
   assert.deepEqual(marginNotes({ margin: [{ line: '45', la: ' exemplum -ī n = rēs ficta ' }, { line: 3, la: '' }, null, { la: 'x', line: null }] }),
-    [{ line: 45, la: 'exemplum -ī n = rēs ficta' }, { line: null, la: 'x' }]);
+    [{ line: 45, la: 'exemplum -ī n = rēs ficta', en: null }, { line: null, la: 'x', en: null }]);
 });
 
 test('marginMode: phones are always inline; the gutter needs room for a readable prose column', () => {

@@ -23,3 +23,5 @@ qa/
 .DS_Store
 supabase/.temp/
 supabase/.branches/
+data/summaries-*
+data/gloss-abbreviations.json

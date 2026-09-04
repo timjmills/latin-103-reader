@@ -11,8 +11,78 @@ export const DEFAULT_SETTINGS = Object.freeze({
   showHighlights: true,
   showUnderlines: true,
   showMargin: true,
+  showAudio: true,         // toolbar "Audio" toggle (`a`): play buttons, transport, follow-along cursor
+  showSummaries: true,     // Settings → Reading: the "Summary" disclosure under each part heading
+  plainOpen: false,        // "In plain words" under a note: stays open once the learner has opened one
+  showGlossEnglish: false, // Settings → Reading: the English under every margin gloss, always shown
+  audioRate: 1,            // playback speed, one of RATE_STEPS (0.5–1.2); pitch is preserved
   panelWidth: null,        // px, chosen with the divider; null = the CSS default
 });
+
+export const RATE_MIN = 0.5;
+export const RATE_MAX = 1.2;
+/** The playback speeds offered (one decimal, 0.5–1.2). */
+export const RATE_STEPS = Object.freeze([0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2]);
+
+/**
+ * Playback speed as a number in [RATE_MIN, RATE_MAX], rounded to one decimal
+ * so it always lands on a RATE_STEPS value. Numbers and numeric strings are
+ * accepted; anything else (null, '', booleans, NaN) → `fallback`. Pure.
+ */
+export function clampRate(value, fallback = DEFAULT_SETTINGS.audioRate) {
+  if (value == null || value === '' || typeof value === 'boolean') return fallback;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.round(Math.min(RATE_MAX, Math.max(RATE_MIN, n)) * 10) / 10;
+}
+
+/**
+ * Timed words of one alignment row as the UI expects them: `[{t, s, e}]` in
+ * text order, absolute ms, bad entries dropped. Anything that is not an
+ * array (older rows, manual alignments) → []. Pure.
+ */
+export function cleanWords(words) {
+  if (!Array.isArray(words)) return [];
+  const out = [];
+  for (const w of words) {
+    if (!w || typeof w.t !== 'string' || !w.t.trim()) continue;
+    const s = Number(w.s), e = Number(w.e);
+    if (!Number.isFinite(s) || !Number.isFinite(e)) continue;
+    const start = Math.max(0, Math.round(s));
+    out.push({ t: w.t, s: start, e: Math.max(start, Math.round(e)) });
+  }
+  return out;
+}
+
+/**
+ * Where a row's audio ends, or null: `end_ms` must be a finite number no
+ * earlier than `start_ms`; anything else (absent — a manual alignment or a row
+ * cached before the field existed — null, NaN, a string) → null, which means
+ * "until the next row starts". Pure.
+ */
+export function cleanEndMs(end, start = 0) {
+  if (end == null || end === '' || typeof end === 'boolean') return null;
+  const n = Number(end);
+  if (!Number.isFinite(n)) return null;
+  return Math.max(Math.max(0, Math.round(start)), Math.round(n));
+}
+
+/**
+ * Alignment rows as `store.getAlignment()` hands them out: `{unit_id,
+ * start_ms, end_ms, synth, words}` in start_ms order — `words` normalised
+ * with cleanWords(), `end_ms` with cleanEndMs() (null when absent), `synth`
+ * a boolean (true only when the row says so: a synthesised voice reads this
+ * unit). Rows without a unit id or a numeric start are dropped. Pure.
+ */
+export function normaliseAlignmentRows(rows) {
+  return (rows || [])
+    .filter((r) => r && r.unit_id && Number.isFinite(Number(r.start_ms)))
+    .map((r) => {
+      const start_ms = Math.max(0, Math.round(Number(r.start_ms)));
+      return { unit_id: String(r.unit_id), start_ms, end_ms: cleanEndMs(r.end_ms, start_ms), synth: r.synth === true, words: cleanWords(r.words) };
+    })
+    .sort((a, b) => a.start_ms - b.start_ms);
+}
 
 export const SIZE_MIN = 1;
 export const SIZE_MAX = 8;
@@ -27,7 +97,29 @@ export function clampSize(value, fallback = DEFAULT_SETTINGS.size) {
   if (!Number.isFinite(n)) return fallback;
   return Math.min(SIZE_MAX, Math.max(SIZE_MIN, n));
 }
-const withSize = (data) => ({ ...data, size: clampSize(data.size) });
+/**
+ * A boolean setting from any source: booleans pass, "true"/"1"/1 → true,
+ * "false"/"0"/0/"" → false (case- and space-insensitive), anything else →
+ * `fallback`. A row hand-edited or written by an older client must never
+ * read "false" as on. Pure.
+ */
+export function clampBool(value, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (value === 1 || value === 0) return value === 1;
+  if (typeof value === 'string') {
+    const v = value.trim().toLowerCase();
+    if (v === 'true' || v === '1') return true;
+    if (v === 'false' || v === '0' || v === '') return false;
+  }
+  return fallback;
+}
+/** Every boolean in DEFAULT_SETTINGS — coerced with clampBool() wherever settings are read or patched. */
+export const BOOL_SETTINGS = Object.freeze(Object.keys(DEFAULT_SETTINGS).filter((k) => typeof DEFAULT_SETTINGS[k] === 'boolean'));
+const withSize = (data) => {
+  const out = { ...data, size: clampSize(data.size), audioRate: clampRate(data.audioRate) };
+  for (const k of BOOL_SETTINGS) out[k] = clampBool(data[k], DEFAULT_SETTINGS[k]);
+  return out;
+};
 
 /** Timestamp → epoch ms (0 for missing / unparsable). */
 export function ts(value) {
@@ -134,7 +226,7 @@ export function patchSettings(current, patch, now = new Date().toISOString()) {
   return { data, updated_at: now };
 }
 
-/** Normalise a settings row from any source into { data, updated_at }; `size` is clamped to 1–8. */
+/** Normalise a settings row from any source into { data, updated_at }; `size` is clamped to 1–8, `audioRate` to 0.5–1.2, every boolean coerced (clampBool). */
 export function normaliseSettings(row) {
   if (!row) return { data: { ...DEFAULT_SETTINGS }, updated_at: null };
   return { data: withSize({ ...DEFAULT_SETTINGS, ...(row.data || {}) }), updated_at: row.updated_at || null };

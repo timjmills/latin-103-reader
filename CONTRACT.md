@@ -107,9 +107,9 @@ The UI resolves `text` → char offsets at load time. Function before form in `n
 ```jsonc
 { "mitterent": [
     { "lemma": "mittō, mittere, mīsī, missum",   // learner citation form, with macrons where derivable
-      "h": "mittō", "pos": "V",                   // N ADJ V VPAR PRON ADV CONJ PREP NUM INTERJ
+      "h": "mittō", "pos": "V",                   // N ADJ V VPAR PRON ADV CONJ PREP NUM INTERJ (gloss abbreviations: ABBR ENDING PREFIX STEM)
       "cat": [3, 1],                              // Whitaker category codes (decl/conj + variant)
-      "gender": null,                             // N only: m | f | n | c
+      "gender": null,                             // N only: m | f | n | c; `cat` and `gender` are omitted when null
       "roots": ["mitt", "mitt", "mis", "miss"],   // Whitaker stems, used by paradigms.js
       "parses": [ { "tense": "impf", "voice": "act", "mood": "subj", "person": 3, "number": "pl" } ],
       "senses": ["send", "throw, hurl", "let go, release"],   // learner English, most common first
@@ -215,3 +215,30 @@ the book margin, e.g. `immortālēs -ium m pl = diī`) are kept. Shape:
   gutter column aligned with the sentence, small serif, dimmed. Phone: shown
   beneath the sentence, above its translation, prefixed with a small "¶"
   marker. Words inside margin notes are tappable like reading text.
+
+## Audio alignment rows (2026-09-04)
+
+`audio_alignments` rows are `{ unit_id, start_ms, words }` where `words` is
+`[{ "t": "text", "s": start_ms, "e": end_ms }]` — absolute milliseconds in the
+week's recording, from Whisper word timestamps (real recordings, produced by
+`pipeline/align_audio.py`) or from Edge TTS word boundaries (synthesised parts,
+`pipeline/tts_audio.py`). `store.getAlignment(weekN)` returns them in
+`start_ms` order with `words` normalised to `[]`. The UI maps words to the
+unit's tokens by order after macron/case/v-u normalisation; unmatched words
+are skipped, never guessed. Settings gain `showAudio: true` (toggle + `a`).
+
+## Section summaries (2026-09-04)
+
+`data/summaries-week-NN.json` — `{ "<slug or part name>": { "en": "English summary", "la": "Latin summary" } }`.
+`build_week.py` copies them onto `week.parts[]` as `summary_en` / `summary_la`
+(stored in `weeks.parts` jsonb; no schema change). The UI shows a collapsible
+"Summary" under each part heading: English first, then the Latin.
+
+## Plain-words layer (2026-09-04)
+
+For struggling learners every note gets a simpler second layer:
+- `data/grammar-notes-simple-week-NN.json` — `{unit_id: "plain-words explanation"}` → `unit.note_simple` (column `units.note_simple`).
+- `data/build/highlights-week-NN.json` entries gain `"simple"` → column `highlights.simple`.
+- `data/build/margin-week-NN.json` entries gain `"en"` (short English rendering of Ørberg's Latin gloss) → carried into `unit.margin[].en`.
+UI: an "In plain words" disclosure under each note (sentence note, highlight note) and the English shown beneath a margin gloss when tapped/expanded.
+- (2026-09-04, later) alignment rows also carry `end_ms` (int|null; the last unit of a shared recording needs it) and `synth` (bool). `words` now has one entry per token of the unit (`t` = the unit's own word text), with times interpolated between confidently matched anchors; interpolated entries carry `"i": true`.

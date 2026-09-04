@@ -200,6 +200,8 @@ def process_week(n: int, root: Path, check: bool = False) -> dict | None:
 
     for g in margins:
         entry = {"line": g.get("line"), "la": g["la"]}
+        if g.get("en"):
+            entry["en"] = g["en"]
         if g.get("line") is None:
             # FL: anchor words → unit whose Latin contains them
             want = toks(g.get("anchor", ""))

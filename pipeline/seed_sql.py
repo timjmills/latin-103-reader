@@ -42,23 +42,23 @@ values ({USER}, {n}, {q(wk['id'])}, {q(wk['title'])}, {q(wk['source'])}, {q(wk.g
         {q(wk.get('has_line_numbers', True))}, {q(wk.get('focus'))}, {q(wk.get('parts', []))});
 """]
     head = ('insert into public.units (user_id, id, week_n, "order", part, line_no, block_start, '
-            'unit_type, speaker, la, en, en_raw, note, tags, margin) values\n')
+            'unit_type, speaker, la, en, en_raw, note, tags, margin, note_simple) values\n')
     rows = [
         f"({USER}, {q(u['id'])}, {n}, {u['order']}, {q(u.get('part'))}, {q(u.get('line_no'))}, "
         f"{q(bool(u.get('block_start')))}, {q(u.get('unit_type', 'sentence'))}, {q(u.get('speaker'))}, "
         f"{q(u['la'])}, {q(u.get('en') or '')}, {q(u.get('en_raw'))}, {q(u.get('note'))}, {q(u.get('tags', []))}, "
-        f"{q(u.get('margin') or [])})"
+        f"{q(u.get('margin') or [])}, {q(u.get('note_simple'))})"
         for u in units
     ]
     for i in range(0, len(rows), CHUNK):
         parts.append(head + ",\n".join(rows[i:i + CHUNK]) + ";\n")
     if hl:
         hrows = [
-            f"({USER}, {n}, {q(h['unit_id'])}, {q(h['text'])}, {h.get('occurrence', 1)}, {q(h['label'])}, {q(h['note'])})"
+            f"({USER}, {n}, {q(h['unit_id'])}, {q(h['text'])}, {h.get('occurrence', 1)}, {q(h['label'])}, {q(h['note'])}, {q(h.get('simple'))})"
             for h in hl
         ]
         for i in range(0, len(hrows), CHUNK):
-            parts.append("insert into public.highlights (user_id, week_n, unit_id, text, occurrence, label, note) values\n"
+            parts.append("insert into public.highlights (user_id, week_n, unit_id, text, occurrence, label, note, simple) values\n"
                          + ",\n".join(hrows[i:i + CHUNK]) + ";\n")
     return parts
 

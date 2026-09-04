@@ -755,6 +755,22 @@ def build_week_file(n: int, root: Path = ROOT, source: Path | None = None, quiet
     np_ = notes_path(n, root)
     notes = json.loads(np_.read_text(encoding="utf-8")) if np_ else {}
     data, report = build_from_text(n, md, notes=notes, source_name=str(src.relative_to(root) if src.is_relative_to(root) else src))
+    # Section summaries (data/summaries-week-NN.json: {slug-or-part-name: {"en": …, "la": …}})
+    # ride on week.parts as summary_en / summary_la when present.
+    sp = root / "data" / f"summaries-week-{n:02d}.json"
+    if sp.exists():
+        summ = json.loads(sp.read_text(encoding="utf-8"))
+        for pentry in data["week"]["parts"]:
+            hit = summ.get(pentry.get("slug") or "") or summ.get(pentry["part"]) or summ.get(pentry["part"].split(":")[0].strip())
+            if hit:
+                pentry["summary_en"] = hit.get("en")
+                pentry["summary_la"] = hit.get("la")
+    # Plain-words explanations (data/grammar-notes-simple-week-NN.json: {unit_id: text}).
+    simp = root / "data" / f"grammar-notes-simple-week-{n:02d}.json"
+    if simp.exists():
+        simple = json.loads(simp.read_text(encoding="utf-8"))
+        for u in data["units"]:
+            u["note_simple"] = simple.get(u["id"])
     out = build_dir(root) / f"week-{n:02d}.json"
     rep = build_dir(root) / f"week-{n:02d}.report.md"
     out.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")

@@ -137,6 +137,15 @@
 .popup .pt tbody th { font-size: var(--ui-xs); white-space: normal; text-wrap: pretty; max-width: 9em; }   /* long row labels wrap before the table scrolls */
 .pt__cell { font-family: var(--face-reading); font-size: 1.05em; }
 @media (min-width: 768px) { .panel .pt { font-size: var(--ui-sm); } }   /* one step smaller in the side panel so most tables fit its default width */
+/* The tablet column is narrower still (min(22rem, 44vw)): one more step down,
+   the reading-face cells at the table's own size and tighter cell padding,
+   so the 15 nārrō tables fit the box without scrolling. */
+@media (min-width: 768px) and (max-width: 1099.98px) {
+  .panel .pt { font-size: var(--ui-xs); }
+  .panel .pt tbody th { font-size: var(--ui-xs); }
+  .panel .pt th, .panel .pt td { padding-inline: var(--s-1); }
+  .panel .pt__cell { font-size: 1em; }
+}
 .pt__stem { color: var(--ink-2); }
 .pt__ending { color: var(--ink); font-weight: 600; }
 .pt__stem::after { content: "‑"; color: var(--ink-3); font-weight: 400; margin: 0 0.02em; }
@@ -148,6 +157,38 @@
 .note__meta { margin: 0 var(--tap) var(--s-2) 0; font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
 .note__la { margin: 0 0 var(--s-3); overflow-wrap: anywhere; font-family: var(--face-reading); font-size: 1.05rem; line-height: 1.45; color: var(--ink-2); }
 .note__text { margin: 0; font-size: var(--ui-md); line-height: 1.55; }
+/* "In plain words": the simpler second layer under a grammar note — the
+   sentence note (panel / popup and sentence view) and the grammar-focus note.
+   A native disclosure in the summary-toggle idiom (chevron, quiet label);
+   settings.plainOpen keeps the learner's last choice, so once opened it stays
+   open on every note. No box: the plain text simply follows the note. */
+.plain { margin: var(--s-2) 0 0; font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.55; color: var(--ink-2); }
+.plain__toggle {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  min-height: 32px; margin-left: calc(-1 * var(--s-2)); padding: 0 var(--s-2); border-radius: var(--radius-sm);
+  color: var(--ink-2); font-weight: 600; letter-spacing: 0.01em; cursor: pointer; list-style: none; user-select: none; -webkit-user-select: none;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.plain__toggle::-webkit-details-marker { display: none; }
+.plain__toggle::before {
+  content: ""; flex: none; width: 0.4em; height: 0.4em; margin-top: -0.15em;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg); transition: transform var(--t-fast) var(--ease-out);
+}
+.plain[open] .plain__toggle::before { transform: rotate(45deg); margin-top: -0.3em; }
+.plain__toggle:hover { color: var(--ink); background: var(--bg-chrome); }
+.plain__toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+.plain__text { margin: var(--s-1) 0 var(--s-1); max-width: 60ch; color: var(--ink); text-wrap: pretty; animation: rise-down var(--t-base) var(--ease-out); }
+.focus .plain { margin-top: var(--s-1); }
+.focus .plain__toggle { color: var(--glow-ink); }
+.focus .plain__toggle:hover { background: var(--glow-ring); color: var(--glow-ink); }
+.focus .plain__text { color: var(--glow-ink); }
+@media (prefers-reduced-motion: reduce) { .plain__text { animation: none; } }
+/* Section summary in the panel: the same .summary__* body as the passage disclosure (reader.css), at the panel's UI size. */
+.note--summary { font-size: var(--ui-md); line-height: 1.55; }
+.note--summary .summary__body { padding: 0; max-width: none; animation: none; }
+.note--summary .summary__en { color: var(--ink); }
+.note--summary .summary__p { font-size: 1.05rem; line-height: 1.5; }
 
 /* ---------------------------------------------------------- settings */
 .settings {
@@ -180,8 +221,38 @@
 .check { display: flex; align-items: flex-start; gap: var(--s-3); min-height: var(--tap); font-size: var(--ui-md); line-height: 1.4; cursor: pointer; }
 .check input { width: 1.1rem; height: 1.1rem; margin: 0.15rem 0 0; accent-color: var(--ink); flex: none; }
 .check small { display: block; color: var(--ink-3); font-size: var(--ui-xs); }
+/* Reading: the toolbar toggles again, as labelled switches (a native checkbox
+   with role="switch"; .switch__ui draws the track + knob from :checked). */
+.settings__reading { padding-top: var(--s-3); border-top: 1px solid var(--line); gap: 0; }
+.settings__reading legend { float: left; width: 100%; margin-bottom: var(--s-1); }   /* float: the legend joins the grid flow */
+.switch { display: flex; align-items: center; gap: var(--s-3); min-height: var(--tap); cursor: pointer; font-size: var(--ui-md); line-height: 1.3; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.switch__ui {
+  position: relative; flex: none; width: 2.4rem; height: 1.4rem; border-radius: 999px;
+  border: 1.5px solid var(--ink-3); background: transparent;
+  transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.switch__ui::after {
+  content: ""; position: absolute; top: 50%; left: 0.2rem; width: 0.85rem; height: 0.85rem; border-radius: 50%;
+  background: var(--ink-3); transform: translateY(-50%);
+  transition: transform var(--t-base) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.switch:has(input:checked) .switch__ui { background: var(--ink); border-color: var(--ink); }
+.switch:has(input:checked) .switch__ui::after { background: var(--bg); transform: translate(1rem, -50%); }
+.switch:has(input:focus-visible) .switch__ui { outline: 2px solid var(--focus); outline-offset: 2px; }
+.switch:hover .switch__ui { border-color: var(--ink); }
+.switch:hover:has(input:checked) .switch__ui { border-color: var(--ink); }
+.switch__text { flex: 1 1 auto; min-width: 0; color: var(--ink); }
+.switch__text small { display: block; color: var(--ink-3); font-size: var(--ui-xs); line-height: 1.35; }
+.switch__key { flex: none; font-family: var(--face-mono); font-size: var(--ui-xs); color: var(--ink-2); border: 1px solid var(--line-strong); border-radius: 3px; padding: 0 0.4em; line-height: 1.5; }
+@media (hover: none) and (pointer: coarse) { .switch__key { display: none; } }
+@media (prefers-reduced-motion: reduce) { .switch__ui::after { transition: none; } }
+
 .settings__audio { padding-top: var(--s-3); border-top: 1px solid var(--line); }
 .settings__audio .settings__label { margin: 0; }
+.audio__speed { display: grid; gap: var(--s-2); }
+.audio__speed-label { font-size: var(--ui-md); color: var(--ink); }
+.audio__speed-value { color: var(--ink-3); font-variant-numeric: tabular-nums; margin-left: 0.35em; }
 .audio__state { margin: 0; font-size: var(--ui-md); line-height: 1.45; color: var(--ink); }
 .audio__state[data-state="none"] { color: var(--ink-2); }
 .audio__actions { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-inline: calc(-1 * var(--s-3)); }

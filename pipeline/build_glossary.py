@@ -17,9 +17,22 @@ port; they become `enc`. Whitaker "packons" (quis-que, quī-dam, quis-quam,
 -cumque) and the tackons -dem/-cum are folded into the headword instead
 (quisque, īdem, sēcum) because the learner should see them as one word.
 
+Gloss abbreviations
+-------------------
+data/gloss-abbreviations.json (same shape as a supplement) covers the
+abbreviations and fragments of Ørberg's margin glosses that the reader can
+tap: `m`, `pl`, `abl`, `comp` … and hyphenated pieces such as `-ōrum`,
+`-ātis`, `-uisse`, `cōn-`, `-ficere`. The tokeniser keeps only letters, so
+`-ōrum` is looked up as `orum`; the file is keyed on that bare form and the
+`h` carries the hyphen for display. `t` is ABBR, ENDING, PREFIX or STEM (the
+app shows it lowercased as the category). Entries go before Whitaker's
+readings unless flagged `"last": true` (forms that are also real words: dat,
+a, ī, is …), in which case they follow them.
+
 Ranking of the entries under one form (lower sorts first)
 ---------------------------------------------------------
-1. Supplement entries (data/supplement-week*.json) always come first.
+1. Supplement entries (data/supplement-week*.json) always come first, then
+   gloss abbreviations (unless `last`).
 2. Frequency rank of the lexeme: Very Frequent 0, Frequent 1, Common 2,
    Uncommon 3, Rare 4, Very Rare 5, inscription/graffiti/Pliny-only 6.
    Whitaker's "unique" irregular forms (sum, est, vult…) count as 0.
@@ -43,7 +56,8 @@ their textbook macrons (-ō, -āre, -ārum, …).
 
 Outputs
 -------
-app/data/glossary.json                 CONTRACT shape
+app/data/glossary.json                 CONTRACT shape; `cat` and `gender`
+                                       are omitted when null
 data/build/glossary-misses-week-NN.txt forms Whitaker could not parse and no
                                        supplement covers, with source spellings
 """
@@ -75,6 +89,7 @@ DATA_DIR = ROOT / "data"
 BUILD_DIR = DATA_DIR / "build"
 OUT_PATH = ROOT / "app" / "data" / "glossary.json"
 OLD_GLOSSARY = DATA_DIR / "whitaker-glossary-all-weeks.json"
+ABBREVIATIONS = DATA_DIR / "gloss-abbreviations.json"
 
 WORD_RE = re.compile(r"[A-Za-zĀĒĪŌŪȲāēīōūȳ̄]+")
 SECTION_RE = re.compile(r"###\s*Textus Lat[īi]nus\s*\n(.*?)(?=\n##|\Z)", re.S)
@@ -209,6 +224,16 @@ def collect_tokens() -> dict[int, collections.Counter]:
         if not text:
             print(f"warning: no Latin section found in {path}", file=sys.stderr)
         out[week_number(path)] = collections.Counter(WORD_RE.findall(text))
+    # Words the reader can also tap: Ørberg's margin glosses (data/build/margin-week-NN.json)
+    # and the Latin section summaries (data/summaries-week-NN.json).
+    for path in sorted(glob.glob(str(ROOT / "data" / "build" / "margin-week-*.json"))) +             sorted(glob.glob(str(DATA_DIR / "summaries-week-*.json"))):
+        n = week_number(path)
+        try:
+            j = json.load(open(path, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        texts = [g.get("la", "") for g in j] if isinstance(j, list) else [v.get("la", "") for v in j.values()]
+        out.setdefault(n, collections.Counter()).update(WORD_RE.findall(" ".join(texts)))
     return out
 
 
@@ -1294,6 +1319,28 @@ def load_supplements() -> tuple[dict[str, list[dict]], dict[str, str]]:
     return out, keys
 
 
+def load_abbreviations() -> tuple[dict[str, list[dict]], dict[str, list[dict]], dict[str, str]]:
+    """data/gloss-abbreviations.json → (first, last, display keys), keyed on the
+    canonical bare form (`-ōrum` → `orum`); `last` entries follow Whitaker's."""
+    first: dict[str, list[dict]] = collections.defaultdict(list)
+    last: dict[str, list[dict]] = collections.defaultdict(list)
+    keys: dict[str, str] = {}
+    if not ABBREVIATIONS.exists():
+        return first, last, keys
+    data = json.load(open(ABBREVIATIONS, encoding="utf-8"))
+    for form, items in data.items():
+        key = canonical(form.lstrip("-"))
+        keys.setdefault(key, strip_macrons(form.lstrip("-")).lower())
+        for s in items:
+            e = supplement_entry(key, s)
+            if e is None:
+                continue
+            bucket = last if s.get("last") else first
+            if e not in bucket[key]:
+                bucket[key].append(e)
+    return first, last, keys
+
+
 # ---------------------------------------------------------------------------
 # main
 
@@ -1302,6 +1349,7 @@ def main() -> None:
     weeks = collect_tokens()
     old = json.load(open(OLD_GLOSSARY, encoding="utf-8")) if OLD_GLOSSARY.exists() else {}
     supplements, sup_keys = load_supplements()
+    abbr_first, abbr_last, abbr_keys = load_abbreviations()
 
     speller = Speller()
     form_set: set[str] = set()
@@ -1314,7 +1362,7 @@ def main() -> None:
     for k in old:
         form_set.add(canonical(k))
         display_key.setdefault(canonical(k), strip_macrons(k).lower())
-    for k, disp in sup_keys.items():
+    for k, disp in list(sup_keys.items()) + list(abbr_keys.items()):
         form_set.add(k)
         display_key.setdefault(k, disp)
     if SEED_FORMS.exists():
@@ -1356,7 +1404,7 @@ def main() -> None:
         # a supplement entry replaces Whitaker's reading of the same word
         sup_hp = {(e["h"], e["pos"]) for e in sup}
         ranked = [e for e in ranked if (e["h"], e["pos"]) not in sup_hp]
-        merged = sup + ranked
+        merged = sup + abbr_first.get(form, []) + ranked + abbr_last.get(form, [])
         if merged:
             glossary[display_key[form]] = merged
             if ranked:
@@ -1381,6 +1429,13 @@ def main() -> None:
                 fh.write(f"{key}\t{spell}\n")
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    # null `cat` / `gender` are omitted (the app reads them with `||`; ~100 KB);
+    # `enc` stays, the tests compare it with null
+    for entries in glossary.values():
+        for e in entries:
+            for k in ("cat", "gender"):
+                if k in e and e[k] is None:
+                    del e[k]
     text = json.dumps(glossary, ensure_ascii=False, separators=(",", ":"))
     size = len(text.encode("utf-8"))
     if size > 3_000_000:

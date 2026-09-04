@@ -216,3 +216,41 @@ in the book). Full limitations in the docstring of `recover_lines.py`.
   for the highlight workstream), note coverage.
 - `data/build/weeks.json` — index of the `week` objects for every week whose
   build exists (plus `unit_count`), refreshed on every run.
+
+## Audio: aligning recordings and synthesising the rest
+
+Requirements (free, local): `pip install faster-whisper imageio-ffmpeg edge-tts gTTS`.
+FFmpeg is bundled by `imageio-ffmpeg`; nothing is installed system-wide.
+
+1. Put each week's recording at `audio/week-NN.mp3` (gitignored). Weeks that
+   share one chapter recording (13 and 14) use the same file twice; a week
+   with two recordings (week 3: Mīnōs + Corōnis) is joined first with ffmpeg.
+2. `python pipeline/align_audio.py all` transcribes with Whisper (CPU, model
+   `small`) and aligns the word stream to `data/build/week-NN.json`. Output:
+   `data/build/audio/week-NN.alignment.json` (passage_view / sentence_view /
+   app_rows with word timings), `data/build/sql/audio-wNN.sql`, and a cached
+   transcript `week-NN.transcript.json` so the alignment can be redone without
+   Whisper (`--retranscribe` to force it). The log names every sentence that
+   had to be interpolated.
+3. Stories with no recording (week 10; the Fabellae in weeks 3 and 5; the
+   Coriolānus ending in week 5): `python pipeline/tts_audio.py 10` for a whole
+   week, or `python pipeline/tts_audio.py 3 5 --fill-missing` after step 2 to
+   synthesise only the parts the recording lacks and lay them out in reading
+   order around it. Default voice: Edge `it-IT-DiegoNeural` (church-style
+   Latin); `--engine google` uses Google's Latin voice. Word timings come from
+   the engine's word boundaries.
+4. Upload: `--upload --user-id <auth user uuid>` on either script pushes the
+   rows (`audio_alignments`, including `words`) with the Supabase CLI and the
+   MP3 to the private bucket `audio/{user}/week-NN.mp3`. The app's own
+   "Align audio" mode still works for a manual pass.
+
+## Section summaries and the plain-words layer
+
+- `data/summaries-week-NN.json` — `{slug-or-part: {en, la}}`; merged onto
+  `week.parts[].summary_en/summary_la` by `build_week.py`.
+- `data/grammar-notes-simple-week-NN.json` — `{unit_id: text}` → `unit.note_simple`.
+- `simple` on each highlight in `data/build/highlights-week-NN.json`; `en` on
+  each gloss in `data/build/margin-week-NN.json` (copied in by `attach_margins.py`).
+- Writing guides: `pipeline/NOTES-GUIDE.md`, `pipeline/PLAIN-GUIDE.md`.
+- After any of these change: `python pipeline/build_week.py all`, then
+  `python pipeline/seed_sql.py all` and run the SQL files with the CLI.

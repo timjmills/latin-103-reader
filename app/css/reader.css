@@ -39,7 +39,7 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 }
 .btn:hover:not(:disabled) { border-color: var(--ink-3); }
 .btn:active:not(:disabled) { background: var(--bg-chrome); }
-.btn--primary { background: var(--rubric); border-color: var(--rubric); color: oklch(0.99 0 0); }
+.btn--primary { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }   /* page colour on the rubric: ≥ 6:1 in both palettes */
 .btn--primary:hover:not(:disabled) { border-color: var(--rubric-ink); background: var(--rubric-ink); }
 .btn--quiet { background: transparent; border-color: transparent; color: var(--ink-2); }
 .btn--quiet:hover:not(:disabled) { background: var(--bg-chrome); border-color: transparent; color: var(--ink); }
@@ -53,7 +53,7 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
   padding: 0 max(var(--s-3), env(safe-area-inset-left)) 0 max(var(--s-3), env(safe-area-inset-right));
 }
 .bar__main {
-  /* Phones: week | view switch, then the four display toggles | settings. The
+  /* Phones: week | view switch, then the five display toggles | settings. The
      settings button gets its own narrow column so the toggles keep one row. */
   display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "week view view" "tools tools settings";
   align-items: center; gap: var(--s-1) var(--s-2); padding: var(--s-1) 0;
@@ -87,30 +87,81 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 .seg__btn:focus-visible { outline-offset: -3px; border-radius: 0; }
 
 .bar__tools { grid-area: tools; display: flex; flex-wrap: wrap; gap: 0 var(--s-1); min-width: 0; margin-left: calc(-1 * var(--s-2)); }
+/* Display toggles: a small switch (track + knob) before the label, the same
+   for all five, so on/off reads at a glance. --toggle-pad places the knob. */
 .toggle {
-  display: inline-flex; align-items: center; gap: var(--s-2);
-  min-height: 40px; padding: 0 var(--s-2); background: transparent; border: 0; border-radius: var(--radius);
+  --toggle-pad: var(--s-2);
+  position: relative; display: inline-flex; align-items: center; gap: var(--s-2);
+  min-height: 40px; padding: 0 var(--toggle-pad); background: transparent; border: 0; border-radius: var(--radius);
   color: var(--ink-2); font-size: var(--ui-sm);
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
 }
 .toggle::before {
-  content: ""; width: 0.8em; height: 0.8em; border-radius: 2px; flex: none;
+  content: ""; width: 1.75em; height: 1em; border-radius: 999px; flex: none;
   border: 1.5px solid var(--ink-3); background: transparent;
   transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
 }
+.toggle::after {
+  content: ""; position: absolute; top: 50%; left: calc(var(--toggle-pad) + 0.25em);
+  width: 0.55em; height: 0.55em; border-radius: 50%; background: var(--ink-3);
+  transform: translateY(-50%);
+  transition: transform var(--t-base) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
 .toggle[aria-pressed="true"] { color: var(--ink); }
 .toggle[aria-pressed="true"]::before { background: var(--ink); border-color: var(--ink); }
-.toggle[data-toggle="english"][aria-pressed="true"]::before { background: var(--ink); }
-.toggle[data-toggle="highlights"][aria-pressed="true"]::before { background: var(--glow-bg); border-color: var(--glow-ink); box-shadow: 0 0 4px 1px var(--glow-ring); }
-.toggle[data-toggle="underlines"][aria-pressed="true"]::before { background: var(--underline); border-color: var(--underline); height: 0.35em; border-radius: 1px; }
-.toggle[data-toggle="margin"][aria-pressed="true"]::before { background: var(--ink-3); border-color: var(--ink-3); width: 0.5em; }
+.toggle[aria-pressed="true"]::after { background: var(--bg); transform: translate(0.72em, -50%); }
 .toggle:hover { color: var(--ink); background: var(--bg-raised); }
-/* Phones: two rows — week + view switch, then the display toggles (short labels) + settings. */
+/* Phones and small tablets: short labels — except Translation, which keeps its
+   full name from 480px up (the one toggle a first-time reader must find). */
 @media (max-width: 767.98px) {
   .toggle__label { font-size: 0; }
   .toggle__label::after { content: attr(data-short); font-size: var(--ui-sm); }
   .seg__btn { padding-inline: var(--s-3); }
+  /* A slightly smaller switch and tighter padding so the five toggles keep one row from 360px up. */
+  .toggle { --toggle-pad: 5px; gap: 5px; }
+  .toggle::before { width: 1.5em; height: 0.9em; }
+  .toggle::after { width: 0.5em; height: 0.5em; left: calc(var(--toggle-pad) + 0.2em); }
+  .toggle[aria-pressed="true"]::after { transform: translate(0.6em, -50%); }
+  .bar__tools { gap: 0 2px; }
 }
-@media (max-width: 420px) { .toggle { padding-inline: 6px; gap: 5px; } .bar__tools { gap: 0 2px; } .seg__btn { padding-inline: var(--s-2); } }
+@media (min-width: 480px) and (max-width: 767.98px) {
+  .toggle[data-toggle="english"] .toggle__label { font-size: var(--ui-sm); }
+  .toggle[data-toggle="english"] .toggle__label::after { content: none; }
+}
+@media (max-width: 479.98px) {
+  .toggle { --toggle-pad: 4px; gap: 4px; }
+  .toggle::before { width: 1.35em; height: 0.85em; }
+  .toggle::after { width: 0.45em; height: 0.45em; }
+  .toggle[aria-pressed="true"]::after { transform: translate(0.5em, -50%); }
+}
+@media (max-width: 420px) { .seg__btn { padding-inline: var(--s-2); } }
+@media (prefers-reduced-motion: reduce) { .toggle::after { transition: none; } }
+
+/* First-run hint under the Translation toggle: a row of the (sticky) header,
+   so it pushes the text down instead of covering the part heading; main.js
+   sets margin-left + --hint-caret so the caret points at the toggle. */
+.hint {
+  position: relative; margin: var(--s-1) 0 var(--s-2);
+  display: flex; align-items: center; gap: var(--s-3); width: max-content;
+  max-width: min(22rem, 100%); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
+  background: var(--ink); color: var(--bg); border-radius: var(--radius); box-shadow: var(--shadow-pop);
+  font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.4; text-wrap: pretty;
+  animation: rise-down var(--t-base) var(--ease-out);
+}
+.hint::before {
+  content: ""; position: absolute; top: -6px; left: calc(var(--hint-caret, 1.5rem) - 6px);
+  border: 6px solid transparent; border-top: 0; border-bottom-color: var(--ink);
+}
+.hint__text { margin: 0; }
+.hint__text b { font-weight: 600; }
+.hint__ok {
+  flex: none; min-height: 32px; padding: 0 var(--s-3); border-radius: var(--radius-sm);
+  background: var(--bg); color: var(--ink); border: 0; font-size: var(--ui-sm); font-weight: 600;
+}
+.hint__ok:hover { background: var(--bg-chrome); }
+.hint__ok:focus-visible { outline-color: var(--bg); }
+@keyframes rise-down { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hint { animation: none; } }
 
 @media (min-width: 768px) {
   .bar { padding-inline: var(--s-5); }
@@ -212,6 +263,36 @@ body.is-resizing .panel { pointer-events: none; }
 }
 .mnote { position: absolute; left: 0; width: 100%; pointer-events: auto; line-height: 1.25; }   /* tight leading: a two-line gloss stays inside 1.3 text lines */
 .mnote .mnotes__item { padding-left: 0; text-indent: 0; }
+/* A gloss with an English rendering (margin[].en): a small "en" chip after the
+   Latin opens the English beneath it, in the UI face. The button itself is
+   the target (≥ 24px either way; negative block margins keep it out of the
+   line box) and the pill is drawn inside it (::before), small enough for the
+   gutter. Settings → Reading "English under margin notes" shows every
+   rendering and drops the chips. */
+.mnotes__en-btn {
+  position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+  min-width: 24px; height: 24px; margin: -6px 0 -6px 0.4em; padding: 0 0.5em; text-indent: 0;
+  font: 600 0.68rem/1 var(--face-ui); letter-spacing: 0.05em;
+  color: var(--ink-3); background: transparent; border: 0; border-radius: 999px;
+  transition: color var(--t-fast) var(--ease-out);
+}
+.mnotes__en-btn::before {
+  content: ""; position: absolute; inset: 4px 0; z-index: -1;
+  border: 1px solid var(--line-strong); border-radius: 999px;
+  transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.mnotes__en-btn:hover { color: var(--ink); }
+.mnotes__en-btn:hover::before { border-color: var(--ink-3); }
+.mnotes__en-btn[aria-expanded="true"] { color: var(--bg); }
+.mnotes__en-btn[aria-expanded="true"]::before { background: var(--ink-2); border-color: var(--ink-2); }
+.mnotes__en-btn:focus-visible { outline-offset: 0; }
+.mnotes__en {
+  display: none; margin: 0.15em 0 0.2em; text-indent: 0;
+  font-family: var(--face-ui); font-size: 0.92em; line-height: 1.4; color: var(--ink-2); text-wrap: pretty;
+}
+.mnotes__item.is-en-open .mnotes__en, .reader[data-gloss-en="on"] .mnotes__en { display: block; }
+.reader[data-gloss-en="on"] .mnotes__en-btn { display: none; }
+.mnotes--sentence .mnotes__en { font-size: 0.95em; }
 
 /* ---------------------------------------------------------- passage */
 .part + .part { margin-top: var(--s-7); }
@@ -221,6 +302,40 @@ body.is-resizing .panel { pointer-events: none; }
   border-bottom: 1px solid var(--line); padding-bottom: var(--s-2);
 }
 .part__lines { color: var(--ink-3); font-size: 0.85em; }
+
+/* Section summary: a disclosure under the part heading (week.parts[].summary_en
+   / summary_la). Closed by default; reader.js remembers open/closed per week
+   and part. The Latin inside is tokenised like the text, so its words open the
+   panel and take the yellow underline. Hidden by Settings → Reading. */
+.summary {
+  margin: calc(-1 * var(--s-2)) 0 var(--s-4) var(--gutter-r);
+  font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.5; color: var(--ink-2);
+  hanging-punctuation: none;
+}
+.reader[data-margin="on"] .part[data-margin-mode="gutter"] .summary { margin-right: calc(var(--margin-col) + var(--margin-gap)); }   /* keeps to the text column */
+.summary__toggle {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  min-height: 36px; margin-left: calc(-1 * var(--s-2)); padding: 0 var(--s-2); border-radius: var(--radius-sm);
+  color: var(--ink-3); cursor: pointer; list-style: none; user-select: none; -webkit-user-select: none;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.summary__toggle::-webkit-details-marker { display: none; }
+.summary__toggle::before {
+  content: ""; flex: none; width: 0.4em; height: 0.4em; margin-top: -0.15em;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg); transition: transform var(--t-fast) var(--ease-out);
+}
+.summary[open] .summary__toggle::before { transform: rotate(45deg); margin-top: -0.3em; }
+.summary__toggle:hover { color: var(--ink); background: var(--bg-raised); }
+.summary[open] .summary__toggle { color: var(--ink-2); }
+.summary__toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+.summary__body { padding: var(--s-1) 0 var(--s-2); max-width: 60ch; animation: rise-down var(--t-base) var(--ease-out); }
+.summary__en { margin: 0 0 var(--s-3); color: var(--ink); text-wrap: pretty; }
+.summary__h { font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); margin: 0 0 var(--s-1); }
+.summary__p { margin: 0; font-family: var(--face-reading); font-size: 1rem; line-height: 1.5; color: var(--ink); text-wrap: pretty; }
+.summary__p .w { padding-block: 0.2em; }   /* ≥ 24px tap height at the UI size */
+.reader[data-summaries="off"] .summary, .reader[data-summaries="off"] .sentence__summary, .reader[data-summaries="off"] .sentence__meta-sep { display: none; }
+@media (prefers-reduced-motion: reduce) { .summary__body { animation: none; } }
 .prose { position: relative; padding-left: var(--gutter-r); margin: 0; }
 .unit { position: static; }
 .lineno--dup { visibility: hidden; }
@@ -250,7 +365,7 @@ body.is-resizing .panel { pointer-events: none; }
 }
 .w:hover { background: var(--rubric-soft); }
 .w:focus-visible { outline-offset: 1px; }
-.reader[data-underlines="on"] .w--seen, .lookups .w--seen {
+.reader[data-underlines="on"] .w--seen, .lookups .w--seen, .note--summary .w--seen {
   text-decoration: underline; text-decoration-color: var(--underline);
   text-decoration-thickness: 0.16em; text-underline-offset: 0.14em;
 }
@@ -263,41 +378,111 @@ body.is-resizing .panel { pointer-events: none; }
 }
 .reader[data-highlights="on"] .hl .w:hover { background: var(--glow-ring); }
 
-/* Note marker: a dagger, like a footnote sign; hit area enlarged invisibly. */
+/* Note marker: a dagger, like a footnote sign. The button itself is the target
+   (≥ 24px either way; the negative block margins keep it out of the line box)
+   with the glyph raised inside it, so it and the play button that may follow
+   never share a pixel. */
 .notemark {
-  position: relative; display: inline-block; vertical-align: super;
+  display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+  min-width: 24px; height: 24px; margin: -8px 0 -8px 0.15em; padding: 0 0.2em;
   font: 0.6em var(--face-serif); line-height: 1; color: var(--ink-3);
-  background: transparent; border: 0; padding: 0 0.1em; margin-left: 0.1em; border-radius: 2px;
+  background: transparent; border: 0; border-radius: var(--radius-sm);
 }
-.notemark::after { content: ""; position: absolute; inset: -0.7rem -0.3rem -0.7rem -0.8rem; }   /* bigger target, but never over the play button that follows */
+.notemark > span { transform: translateY(-0.4em); }
+.marks { white-space: nowrap; }   /* the dagger and the play button never split across lines */
 .notemark:hover { color: var(--rubric-ink); background: var(--rubric-soft); }
 
 /* Audio (E toggles .is-playing via reader.setPlayingUnit) */
+/* The per-sentence play button: a circle that grows with the type (24–44px;
+   32px from size 3 up) and stands 0.6em clear of a dagger before it. */
 .playbtn {
+  --playbtn-size: clamp(24px, 1.6em, 2.75rem);
   display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
-  width: 1.4em; height: 1.4em; margin-left: 0.2em; border-radius: 50%;
-  background: transparent; border: 1px solid var(--line-strong); color: var(--ink-2); padding: 0; position: relative;
+  width: var(--playbtn-size); height: var(--playbtn-size); margin: -0.3em 0 -0.3em 0.35em; border-radius: 50%;
+  background: transparent; border: 1px solid var(--line-strong); color: var(--ink-2); padding: 0;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
-.playbtn::after { content: ""; position: absolute; inset: -0.5rem -0.5rem -0.5rem 0; }   /* no left extension: the note marker sits there */
-.playbtn::before { content: ""; width: 0; height: 0; margin-left: 0.12em; border-left: 0.42em solid currentColor; border-block: 0.28em solid transparent; }   /* the triangle */
-.playbtn:hover { border-color: var(--ink); color: var(--ink); }
+.notemark + .playbtn { margin-left: 0.6em; }
+.playbtn::before { content: ""; width: 0; height: 0; margin-left: 0.1em; border-left: 0.42em solid currentColor; border-block: 0.28em solid transparent; }   /* the triangle */
+.playbtn:hover { border-color: var(--ink); color: var(--ink); background: var(--rubric-soft); }
+.unit.is-playing .playbtn { border-color: var(--rubric); color: var(--rubric-ink); }
 .unit.is-playing .la, .sentence.is-playing .sentence__la { background: var(--rubric-soft); border-radius: 3px; box-decoration-break: clone; }
+/* The word being spoken (audio.js → reader.setPlayingWord): a deeper wash of
+   the playing sentence's rubric plus a rule under the word — distinct from the
+   yellow lookup underline and the blue grammar glow, and it wins inside both. */
+.reader .w--now, .reader[data-highlights="on"] .hl .w--now {
+  background: var(--cursor-bg); box-shadow: 0 0.12em 0 0 var(--cursor-line); border-radius: 2px 2px 0 0;
+}
+/* Audio toggle off: nothing audio-related in the text (main.js also stops playback, which drops the highlight, and removes the buttons). */
+.reader[data-audio="off"] .playbtn { display: none; }
+
+/* ---------------------------------------------------------- listen bar */
+/* "Play passage" / "Play sentence", the speed and a status line, in the text
+   itself: reader.js places #listen under the first part title (passage view)
+   and above the sentence (sentence view); main.js paints it. Not sticky. With
+   nothing to play, or Audio off, one quiet line takes its place. */
+.listen {
+  display: grid; gap: var(--s-2);
+  margin: 0 0 var(--s-5) var(--gutter-r);
+  font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.4; color: var(--ink-2);
+  hanging-punctuation: none;
+}
+.reader[data-margin="on"] .part[data-margin-mode="gutter"] .listen { margin-right: calc(var(--margin-col) + var(--margin-gap)); }   /* keeps to the text column */
+.sentence .listen { margin-left: 0; margin-bottom: var(--s-4); }
+.listen__main { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.listen .btn { min-height: 36px; font-size: var(--ui-sm); }
+@media (pointer: coarse) { .listen .btn { min-height: var(--tap); } }   /* a finger needs the full 44px */
+.listen__play { gap: 0.55em; padding-inline: var(--s-3) var(--s-4); font-weight: 600; }
+.listen__tri { width: 0; height: 0; border-left: 0.6em solid currentColor; border-block: 0.38em solid transparent; }
+.listen__rate { font-variant-numeric: tabular-nums; min-width: 3.4em; padding-inline: var(--s-2); }
+.listen__rate[aria-expanded="true"] { background: var(--bg-chrome); color: var(--ink); }
+.listen__status { margin: 0; color: var(--ink-3); font-variant-numeric: tabular-nums; text-wrap: pretty; }
+.listen__status:empty { display: none; }
+.listen__rates { padding-bottom: var(--s-2); border-bottom: 1px solid var(--line); }
+.listen__synth { margin: calc(-1 * var(--s-1)) 0 0; color: var(--ink-3); font-size: var(--ui-xs); }   /* "…read by a synthesised voice" (rows with synth: true) */
+.listen__quiet { margin: 0; color: var(--ink-3); }
+.listen[data-state="quiet"] .listen__main, .listen[data-state="quiet"] .listen__rates { display: none; }
+.listen:not([data-state="quiet"]) .listen__quiet { display: none; }
+
+/* While the transport is shown (main.js: html[data-transport="on"] + --transport-h,
+   its measured height) the text gets that much room at the bottom, so the last
+   sentence and sentence view's Next / Previous are never under it — and a
+   scrollIntoView() of the playing sentence lands above it too. */
+html[data-transport="on"] #main { padding-bottom: calc(var(--transport-h, 0px) + var(--s-4) + max(var(--s-4), env(safe-area-inset-bottom))); }
+html[data-transport="on"] { scroll-padding-bottom: calc(var(--transport-h, 0px) + var(--s-6)); }
 
 /* Chapter playback bar: only while a whole chapter plays. */
 .transport {
   position: fixed; left: 50%; bottom: max(var(--s-4), env(safe-area-inset-bottom)); transform: translateX(-50%);
-  z-index: var(--z-popover); display: flex; align-items: center; gap: var(--s-3);
+  z-index: var(--z-popover); display: grid; gap: var(--s-2);
   width: max-content; max-width: calc(100vw - 2 * var(--s-4)); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
   background: var(--bg-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-pop); font-family: var(--face-ui); font-size: var(--ui-sm); color: var(--ink);
   animation: rise var(--t-base) var(--ease-out);
 }
+.transport__main { display: flex; align-items: center; gap: var(--s-3); min-width: 0; }
 .transport__text { margin: 0; line-height: 1.3; min-width: 0; }
 .transport__title { font-weight: 600; }
 .transport__pos { color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .transport__pos:not(:empty)::before { content: "· "; }
 .transport__btns { display: flex; gap: var(--s-1); flex: none; }
+.transport__rate { font-variant-numeric: tabular-nums; min-width: 3.4em; padding-inline: var(--s-2); }
+.transport__rate[aria-expanded="true"] { background: var(--bg-chrome); color: var(--ink); }
+/* The speed row opens above the buttons (the same chips as Settings → Audio). */
+.transport__rates { order: -1; padding-bottom: var(--s-2); margin-right: var(--s-2); border-bottom: 1px solid var(--line); }
 @keyframes rise { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translateX(-50%); } }
+
+/* Playback-speed chips (transport + Settings → Audio): 0.5 … 1.2, one pressed. */
+.rate-chips { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+.rate-chip {
+  min-width: 2.4em; min-height: 32px; padding: 0 var(--s-2); border-radius: 999px;
+  border: 1px solid var(--line-strong); background: transparent; color: var(--ink-2);
+  font-size: var(--ui-sm); font-variant-numeric: tabular-nums; line-height: 1;
+  transition: background-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.rate-chip:hover { border-color: var(--ink-3); color: var(--ink); }
+.rate-chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+@media (max-width: 420px) { .rate-chip { min-width: 2.1em; padding-inline: 5px; } .transport { padding-left: var(--s-3); } }
 
 /* Short status line (play errors and the like); mirrored to #live for screen readers. */
 .notice {
@@ -314,11 +499,22 @@ body.is-resizing .panel { pointer-events: none; }
 .sentence { max-width: var(--measure); scroll-margin-top: calc(var(--bar-h, 0px) + var(--s-5)); outline: none; }
 .unit, .part__title { scroll-margin-top: calc(var(--bar-h, 0px) + var(--s-5)); }
 .sentence__meta { font-family: var(--face-ui); font-size: var(--ui-sm); color: var(--ink-3); margin: 0 0 var(--s-4); }
+/* "Section summary" in the meta line: a quiet text button, styled like a link, opening the part's summary in the panel. */
+.sentence__summary {
+  display: inline; min-height: 0; padding: 0.35em 0; margin: -0.35em 0;   /* the block padding makes the target ≥ 24px without moving the line */
+  background: transparent; border: 0; border-radius: var(--radius-sm);
+  color: var(--rubric-ink); font-size: inherit; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.15em;
+  transition: text-decoration-color var(--t-fast) var(--ease-out);
+}
+.sentence__summary:hover { text-decoration-color: currentColor; }
 .sentence__la { font-size: clamp(1em, 1.3em, 1em + 0.5rem); line-height: 1.45; margin: 0 0 var(--s-4); text-wrap: pretty; }
 .sentence__en { font-family: var(--face-ui); font-size: clamp(0.9rem, 0.85em, 1.75rem); line-height: 1.55; color: var(--ink-2); margin: 0 0 var(--s-5); }
 .sentence__h { font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); margin: 0 0 var(--s-2); }
 .sentence__note { margin: 0 0 var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line); }
 .sentence__note p { font-family: var(--face-ui); font-size: 0.8em; line-height: 1.55; color: var(--ink); margin: 0; }
+/* The "In plain words" disclosure (panels.css) at the note's own size. */
+.sentence__note .plain { font-size: 0.8em; margin-top: var(--s-2); }
+.sentence__note .plain__text { font-size: 1em; margin: var(--s-1) 0 0; }
 .sentence__lookups { margin: 0 0 var(--s-6); padding-top: var(--s-4); border-top: 1px solid var(--line); font-family: var(--face-ui); font-size: 0.78em; line-height: 1.5; }
 .sentence__hint { color: var(--ink-3); margin: 0; }
 .lookups { list-style: none; margin: 0; padding: 0; }

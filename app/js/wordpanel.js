@@ -3,6 +3,8 @@
 // per-sentence notes. One <dialog> (modal, focus-trapped, Esc closes) and
 // one <aside>; which one is used depends on the viewport.
 
+import { plainDisclosure } from './reader.js';
+
 const ENCLITIC = { que: '-que "and" is attached to the end', ne: '-ne turns the sentence into a yes/no question', ve: '-ve "or" is attached to the end' };
 
 const h = (tag, attrs = {}, ...children) => {
@@ -68,10 +70,15 @@ export function renderParadigm(p) {
   return details;
 }
 
-export function createWordPanel({ dialog, aside, layout, lookup, describe, paradigm, store, getSettings, getLookupRecord, entryIndex, onLookupsChanged, live }) {
+/**
+ * `plain` — `{ get() → bool, set(bool) }` for settings.plainOpen: whether the
+ * "In plain words" disclosure under a note (sentence note, grammar-focus
+ * note) starts open. Every disclosure writes the learner's last choice back.
+ */
+export function createWordPanel({ dialog, aside, layout, lookup, describe, paradigm, store, getSettings, getLookupRecord, entryIndex, onLookupsChanged, onWord, live, plain = null }) {
   const wide = matchMedia('(min-width: 768px)');
   let anchor = null;
-  let current = null;           // { kind:'word', form, text, unitId, hl, result, index } | { kind:'note', unit }
+  let current = null;           // { kind:'word', form, text, unitId, hl, result, index } | { kind:'note', unit } | { kind:'summary', title, body, unitId }
   const emptyState = aside.firstElementChild?.cloneNode(true) ?? document.createElement('div');
   const resetAside = () => aside.replaceChildren(emptyState.cloneNode(true));
 
@@ -153,7 +160,8 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     if (!hl) return null;
     return h('section', { class: 'focus', 'aria-label': 'Grammar focus' },
       h('p', { class: 'focus__label', text: hl.label }),
-      h('p', { class: 'focus__note', text: hl.note }));
+      h('p', { class: 'focus__note', text: hl.note }),
+      plainDisclosure(hl.simple, plain));
   }
 
   function actions(form) {
@@ -226,13 +234,34 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     root.append(h('p', { class: 'note__meta', text: title }));
     root.append(h('p', { class: 'note__la', lang: 'la', text: unit.la }));
     root.append(h('p', { class: 'note__text', text: unit.note }));
+    const pd = plainDisclosure(unit.note_simple, plain);
+    if (pd) root.append(pd);
     return root;
+  }
+
+  /* ------------------------------------------------- section summary */
+  // The same content as the passage-view disclosure (reader.summaryBody):
+  // English, "In Latin", the Latin as tappable words. A tap on one of those
+  // words hands the lookup back through `onWord` (anchored on the button that
+  // opened the summary, so the phone popup stays put).
+  function summaryContent(title, body) {
+    const root = h('div', { class: 'panel__content note note--summary', tabindex: '-1' });
+    root.append(closeButton());
+    root.append(h('p', { class: 'note__meta', text: title }));
+    root.append(body);
+    return root;
+  }
+  function summaryWord(w) {
+    if (!w || current?.kind !== 'summary' || !onWord) return false;
+    onWord({ form: w.dataset.form, text: w.textContent, unitId: current.unitId ?? null, el: anchor, hl: null });
+    return true;
   }
 
   /* --------------------------------------------------------- events */
   function handle(e) {
     const t = e.target;
     if (t.closest('.panel__close')) { close(); return; }
+    if (summaryWord(t.closest('.w'))) return;
     const alt = t.closest('[data-alt]');
     if (alt && current?.kind === 'word') { current.index = Number(alt.dataset.alt); entryIndex?.set?.(current.form, current.index); rerender(); return; }
     const act = t.closest('[data-act]');
@@ -248,25 +277,36 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   }
   dialog.addEventListener('click', handle);
   aside.addEventListener('click', handle);
+  const keyHandle = (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('.w') && summaryWord(e.target)) e.preventDefault();
+  };
+  dialog.addEventListener('keydown', keyHandle);
+  aside.addEventListener('keydown', keyHandle);
 
+  function content() {
+    if (current.kind === 'word') return entryContent();
+    if (current.kind === 'summary') return summaryContent(current.title, current.body);
+    return noteContent(current.unit, current.title);
+  }
   function rerender(keepFocus = false) {
     if (!current) return;
     const focused = document.activeElement?.dataset?.act;
-    const content = current.kind === 'word' ? entryContent() : noteContent(current.unit, current.title);
-    hostEl().replaceChildren(content);
+    const content_ = content();
+    hostEl().replaceChildren(content_);
     place(anchor);
-    if (keepFocus && focused) (content.querySelector('[data-act]') ?? content).focus();
-    else content.focus({ preventScroll: true });
+    if (keepFocus && focused) (content_.querySelector('[data-act]') ?? content_).focus();
+    else content_.focus({ preventScroll: true });
   }
+  const label = () => (current.kind === 'word' ? `Word: ${current.text}` : current.kind === 'summary' ? current.title : 'Grammar note');
 
   // Re-home content if the viewport crosses the breakpoint while open.
   wide.addEventListener('change', () => {
     if (!current) return;
-    const content = current.kind === 'word' ? entryContent() : noteContent(current.unit, current.title);
+    const next = content();
     if (dialog.open) dialog.close();
     layout.dataset.panel = 'closed';
     resetAside();
-    open(content, anchor, current.kind === 'word' ? `Word: ${current.text}` : 'Grammar note');
+    open(next, anchor, label());
   });
 
   return {
@@ -279,7 +319,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
         // everywhere: the second look is the learner saying "I know this now".
         const rec = getLookupRecord(form);
         if (rec && !rec.learned_at) { await store.markLearned(form); if (live) live.textContent = `${text} marked as learned. Unlearn is in the panel.`; }
-        else await store.addLookup(form, unitId);
+        else await store.addLookup(form, unitId ?? null);   // a word outside any sentence (a section summary) records no unit
         await onLookupsChanged();
       }
       if (!current || current.form !== form) return;   // closed meanwhile
@@ -289,6 +329,12 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       const ref = /:(\d+)\.(\d+)$/.exec(unit.id);
       current = { kind: 'note', unit, title: ref ? `Note · line ${unit.line_no ?? ref[1]}, sentence ${ref[2]}` : 'Note' };
       open(noteContent(unit, current.title), el, 'Grammar note');
+    },
+    /** A part's section summary. `body` is reader.summaryBody(part); `unitId` (may be null) is the part's first sentence, for lookups made inside. */
+    showSummary({ part, body, unitId = null, el }) {
+      if (!body) return;
+      current = { kind: 'summary', title: part ? `${part} · Summary` : 'Section summary', body, unitId };
+      open(summaryContent(current.title, body), el, current.title);
     },
     refresh() { if (current?.kind === 'word') rerender(true); },
     close,
