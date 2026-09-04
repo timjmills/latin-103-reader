@@ -107,6 +107,9 @@ async function boot() {
     onWord: (w) => panel.showWord(w),   // a Latin word tapped inside a section summary shown in the panel
     live,
     plain,
+    // The side panel's stack names its sentence and seeds the note row from the unit itself.
+    getUnit: (id) => units.find((u) => u.id === id) ?? null,
+    getWeek: () => weeks.find((w) => w.n === weekN) ?? null,
   });
   window.latinReader = { reader, panel, store, audio };   // documented hooks (see README-ui.md)
 
@@ -114,6 +117,8 @@ async function boot() {
   reader.on('note', (n) => panel.showNote(n));
   // Sentence view's "Section summary" button: the part's summary in the panel / popup.
   reader.on('summary', ({ part, unitId, el, body }) => panel.showSummary({ part: part.part, body, unitId, el }));
+  // Sentence view moved on (Next / Previous, j / k, chapter playback): an open side-panel stack follows the sentence.
+  reader.on('navigate', ({ unit }) => { if (unit) panel.showSentence(unit.id); });
 
   /* ------------------------------------------------------ header */
   const weeks = await store.getWeeks();
@@ -621,7 +626,7 @@ async function boot() {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     const tag = e.target.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
-    if (e.key === 'Escape') { if (panel.isOpen()) { e.preventDefault(); panel.close(); } return; }
+    if (e.key === 'Escape') { if (panel.isOpen()) { e.preventDefault(); panel.escape(); } return; }   // stack: back / collapse the open row / close
     if ($('#popup').open || settingsDialog.open || weeksDialog.open) return;
     if (audio?.status?.().mode === 'align') return;   // the alignment overlay owns the keyboard (it also stops propagation)
     if (reader.getView() === 'sentence') {

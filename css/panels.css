@@ -184,6 +184,63 @@
 .focus .plain__toggle:hover { background: var(--glow-ring); color: var(--glow-ink); }
 .focus .plain__text { color: var(--glow-ink); }
 @media (prefers-reduced-motion: reduce) { .plain__text { animation: none; } }
+/* ---------------------------------------------------------- stack */
+/* Tablet + desktop: the side panel holds the current sentence's stack — its
+   grammar note (†), the grammar-focus spans tapped in it and every word looked
+   up in it, newest last. Each row is a button collapsed to one quiet line
+   (form — meaning) that expands in place; one row is open at a time. The
+   header names the sentence. Phones keep the popup and never see this. */
+.stack { padding-bottom: var(--s-6); }
+.stack__title {
+  margin: 0 var(--tap) var(--s-3) 0; padding-top: var(--s-1);
+  font-family: var(--face-serif); font-size: 1rem; line-height: 1.35; color: var(--ink-2); text-wrap: balance;
+}
+.stack__hint { margin: 0; font-size: var(--ui-sm); line-height: 1.5; color: var(--ink-3); max-width: 26rem; }
+.stack__list { list-style: none; margin: 0 calc(-1 * var(--s-3)); padding: 0; border-top: 1px solid var(--line); }
+.stack__row { border-bottom: 1px solid var(--line); }
+.stack__btn {
+  position: relative; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.35em; row-gap: 0;
+  width: 100%; min-height: var(--tap); padding: var(--s-2) calc(var(--s-3) + 1.4em) var(--s-2) var(--s-3);
+  background: transparent; border: 0; border-radius: 0; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+  line-height: 1.4; overflow-wrap: anywhere;
+  transition: background-color var(--t-fast) var(--ease-out);
+}
+.stack__btn:hover { background: var(--bg-chrome); }
+@media (min-width: 1100px) { .layout:not([data-panel="open"]) .stack__btn:hover { background: var(--bg-raised); } }
+.stack__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--radius-sm); }
+/* The disclosure chevron, at the row's right end (the marks — †, the glow — keep the left). */
+.stack__btn::after {
+  content: ""; position: absolute; right: var(--s-3); top: 50%; width: 0.42em; height: 0.42em; margin-top: -0.35em;
+  border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3);
+  transform: rotate(45deg); transition: transform var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.stack__row.is-open > .stack__btn::after { transform: rotate(-135deg); margin-top: -0.1em; border-color: var(--ink); }
+.stack__body { padding: 0 var(--s-3) var(--s-4); animation: rise-down var(--t-base) var(--ease-out); }
+/* Word rows: the form in the reading face, then the plain meaning line ("to/for the labyrinth · in/by the labyrinth"). */
+.stack__form { font-family: var(--face-reading); font-size: 1.1rem; color: var(--ink); }
+.stack__sep { color: var(--ink-3); }
+.stack__meaning { font-size: var(--ui-sm); color: var(--ink-2); }
+.stack__meaning--miss { color: var(--ink-3); font-style: italic; }
+.stack__learned { flex: none; margin-left: 0.2em; font-size: var(--ui-xs); color: var(--success); }
+.stack__row.is-learned .stack__form { color: var(--ink-2); }
+/* The note row: the dagger and the first line, cut at the row's edge until pressed. */
+.stack__row--note .stack__btn { flex-wrap: nowrap; }
+.stack__mark { flex: none; font-family: var(--face-serif); color: var(--rubric); }
+.stack__line { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--ui-sm); color: var(--ink-2); }
+.stack__row--note.is-open .stack__line { color: var(--ink-3); }   /* the body below carries the whole note; the head stays one line */
+/* The highlight row: the glowed words as they are in the text, then the label. */
+.stack__glow {
+  font-family: var(--face-reading); font-size: 1.05rem; color: var(--glow-ink);
+  background: var(--glow-bg); box-shadow: 0 0 0 0.15em var(--glow-bg); border-radius: 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.stack__label { font-size: var(--ui-sm); color: var(--ink-2); }
+.stack__body .note__la { margin-top: var(--s-1); }
+.stack__body .focus { margin-bottom: 0; }
+.stack__body .entry__actions { margin-top: var(--s-3); }
+/* "Back to the sentence" over the temporary section-summary view. */
+.stack__back { min-height: 36px; margin: 0 0 var(--s-2) calc(-1 * var(--s-3)); padding-inline: var(--s-3); font-size: var(--ui-sm); }
+@media (prefers-reduced-motion: reduce) { .stack__body { animation: none; } }
+
 /* Section summary in the panel: the same .summary__* body as the passage disclosure (reader.css), at the panel's UI size. */
 .note--summary { font-size: var(--ui-md); line-height: 1.55; }
 .note--summary .summary__body { padding: 0; max-width: none; animation: none; }
