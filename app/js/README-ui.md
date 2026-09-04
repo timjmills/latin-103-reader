@@ -295,6 +295,51 @@ or returns null.
   chips are hidden. With every gloss doubled in height the density check
   usually moves a part to the inline presentation — expected.
 
+## Side panel: the sentence stack (tablet + desktop)
+
+From 768px the `<aside id="panel">` no longer shows one entry at a time: it
+holds a **stack for the current sentence** (`wordpanel.js`, `panels.css`
+"stack"). Phones (< 768px) keep the anchored `<dialog id="popup">` for words
+and notes, unchanged.
+
+- Rows, top to bottom: the sentence's † grammar note (if any) collapsed to
+  its first line; each grammar-focus highlight tapped in the sentence (the
+  glowed text + its label); every word looked up in the sentence (`form —
+  meaning`), in tap order, newest last. `stackWith()` / `stackWithout()` /
+  `rowKey()` (pure, `tests/ui.stack.test.mjs`) keep that order; `sentenceTitle()`
+  names the sentence in the header ("Pars I · line 4, sentence 2", or the id
+  tail for block ids).
+- Rows are buttons (`.stack__btn`, `aria-expanded`, `aria-controls`) that
+  expand in place to the full content — words: enclitic, entry switch, parse,
+  dictionary form + category, senses, usage, gloss terms, the paradigm
+  disclosure, Learned / Unlearn / Forget; notes: the Latin, the note, "In
+  plain words"; highlights: the focus note + "In plain words". One row is
+  open at a time. A tapped word is added **collapsed**, scrolled into view and
+  focused — it stays quiet until pressed. The † opens its row (the one tap
+  that does). Keys: Enter / Space toggle, ArrowUp / ArrowDown (Home / End)
+  move between rows (stopped in the aside so sentence view's arrows never
+  also fire), Escape → `panel.escape()`: a temporary view goes back to the
+  stack, then the open row collapses, then the panel closes and focus returns
+  to the text (`focusText()`: the tapped element, or the same word after a
+  sentence-view re-render).
+- The stack belongs to the current sentence. A word or † in another sentence
+  (passage view) switches it; sentence view's `reader.on('navigate')` →
+  `panel.showSentence(unitId)` switches an *open* panel (a closed one stays
+  closed). Every sentence's rows are kept for the session (`stacks`, keyed by
+  unit id), so coming back restores them; a sentence with a note starts with
+  the note row (`getUnit` from `main.js`). Sentence view's "Words you looked
+  up in this sentence" list is hidden from 768px (reader.css) — the stack
+  replaces it; phones keep it.
+- "Section summary" (sentence view) still opens in the panel, as a temporary
+  view with a "Back to the sentence" control (`[data-back]`) when a stack
+  exists; a word tapped inside it joins that sentence's stack as before.
+- Underlines are untouched: `showWord` still records the lookup / marks a
+  yellow word learned before the row is added, and Learned / Unlearn / Forget
+  in a row go through `onLookupsChanged` as they did (Forget removes the
+  row). `panel.refresh()` re-renders the rows on a remote lookups change.
+- Crossing 768px while open: the popup's entry joins its sentence's stack;
+  the stack's open row (or the summary) becomes the popup.
+
 ## Side panel width
 
 `#divider` (role="separator", between `#main` and `#panel`) resizes the panel

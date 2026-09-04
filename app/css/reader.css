@@ -515,7 +515,10 @@ html[data-transport="on"] { scroll-padding-bottom: calc(var(--transport-h, 0px) 
 /* The "In plain words" disclosure (panels.css) at the note's own size. */
 .sentence__note .plain { font-size: 0.8em; margin-top: var(--s-2); }
 .sentence__note .plain__text { font-size: 1em; margin: var(--s-1) 0 0; }
+/* "Words you looked up in this sentence": phones only — from 768px the side
+   panel's stack for the sentence (panels.css "stack") replaces the list. */
 .sentence__lookups { margin: 0 0 var(--s-6); padding-top: var(--s-4); border-top: 1px solid var(--line); font-family: var(--face-ui); font-size: 0.78em; line-height: 1.5; }
+@media (min-width: 768px) { .sentence__lookups { display: none; } }
 .sentence__hint { color: var(--ink-3); margin: 0; }
 .lookups { list-style: none; margin: 0; padding: 0; }
 .lookups__item { display: grid; grid-template-columns: auto 1fr; gap: 0 var(--s-3); padding: var(--s-2) 0; border-top: 1px dotted var(--line); align-items: baseline; }
