@@ -758,6 +758,10 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       const u = state.byId.get(unitId);
       return u ? tokensFor(u).filter((t) => t.isWord).map((t) => t.text) : [];
     },
+    /** The unit's resolved grammar-focus highlights ({text, label, note, simple, start, end}), in text order. */
+    highlightsOf(unitId) {
+      return [...(state.hl.get(unitId) ?? [])].sort((a, b) => a.start - b.start);
+    },
     /** The unit's word tokens with their lookup form and character offset, in text order. */
     wordTokens(unitId) {
       const u = state.byId.get(unitId);
