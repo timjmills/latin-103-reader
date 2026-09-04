@@ -107,11 +107,46 @@ async function boot() {
   reader.on('note', (n) => panel.showNote(n));
 
   /* ------------------------------------------------------ header */
-  const weekSelect = $('#week-select');
   const weeks = await store.getWeeks();
-  for (const w of weeks) {
-    weekSelect.append(Object.assign(document.createElement('option'), { value: String(w.n), textContent: `Week ${w.n} · ${w.title}` }));
+  // Public course outline (all 14 weeks) — merged with what the library holds.
+  let course = [];
+  try { course = await (await fetch('./data/course.json')).json(); } catch { /* fall back to library weeks only */ }
+  const outline = course.length ? course : weeks;
+  const weekBtn = $('#week-btn');
+  const weeksDialog = $('#weeks');
+  const weeksList = $('#weeks-list');
+  function renderWeeksMenu(currentN) {
+    weeksList.replaceChildren(...outline.map((c) => {
+      const lib = weeks.find((w) => w.n === c.n);
+      const li = document.createElement('li');
+      li.className = 'weeks__item';
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'weeks__row'; b.dataset.n = String(c.n);
+      if (!lib) b.disabled = true;
+      if (c.n === currentN) b.setAttribute('aria-current', 'true');
+      const n = document.createElement('span'); n.className = 'weeks__n'; n.textContent = String(c.n);
+      const name = document.createElement('span'); name.className = 'weeks__name'; name.lang = 'la'; name.textContent = lib?.title ?? c.title;
+      const meta = document.createElement('span'); meta.className = 'weeks__meta';
+      meta.textContent = [c.reading, c.focus?.label].filter(Boolean).join(' — ');
+      const state = document.createElement('span'); state.className = 'weeks__state';
+      state.textContent = lib ? (c.n === currentN ? 'Reading now' : '') : 'Not added yet';
+      b.append(n, name, meta, state);
+      li.append(b);
+      return li;
+    }));
   }
+  function setWeekButton(n) {
+    const c = outline.find((w) => w.n === n) || weeks.find((w) => w.n === n);
+    weekBtn.querySelector('.week__num').textContent = `Week ${n}`;
+    weekBtn.querySelector('.week__title').textContent = c?.title ?? '';
+  }
+  weekBtn.addEventListener('click', () => { renderWeeksMenu(weekN); weeksDialog.showModal(); weeksList.querySelector('[aria-current="true"]')?.focus(); });
+  weeksDialog.querySelector('[data-close="weeks"]').addEventListener('click', () => weeksDialog.close());
+  weeksDialog.addEventListener('click', (e) => { if (e.target === weeksDialog) weeksDialog.close(); });
+  weeksList.addEventListener('click', (e) => {
+    const b = e.target.closest('.weeks__row'); if (!b || b.disabled) return;
+    weeksDialog.close(); loadWeek(Number(b.dataset.n));
+  });
   let weekN = Number(localStorage.getItem(LS_WEEK)) || weeks[0]?.n || 1;
   if (!weeks.some((w) => w.n === weekN)) weekN = weeks[0]?.n ?? 1;
   let units = [];
@@ -170,7 +205,7 @@ async function boot() {
 
   async function loadWeek(n) {
     weekN = n;
-    weekSelect.value = String(n);
+    setWeekButton(n);
     try { localStorage.setItem(LS_WEEK, String(n)); } catch { /* ignore */ }
     audio?.stop?.();
     const week = weeks.find((w) => w.n === n);
@@ -186,7 +221,6 @@ async function boot() {
     panel.close();
     settingsUI?.refreshAudio();
   }
-  weekSelect.addEventListener('change', () => loadWeek(Number(weekSelect.value)));
 
   // View toggle
   const viewBtns = [...document.querySelectorAll('.seg__btn[data-view]')];
@@ -268,7 +302,7 @@ async function boot() {
     const tag = e.target.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
     if (e.key === 'Escape') { if (panel.isOpen()) { e.preventDefault(); panel.close(); } return; }
-    if ($('#popup').open || settingsDialog.open) return;
+    if ($('#popup').open || settingsDialog.open || weeksDialog.open) return;
     if (reader.getView() === 'sentence') {
       if (e.key === 'j' || e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); reader.next(); return; }
       if (e.key === 'k' || e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); reader.prev(); return; }

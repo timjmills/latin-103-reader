@@ -33,10 +33,12 @@
   <div id="app">
     <header class="bar">
       <div class="bar__main">
-        <label class="week">
-          <span class="visually-hidden">Week</span>
-          <select id="week-select" class="week__select"></select>
-        </label>
+        <div class="week">
+          <button type="button" id="week-btn" class="week__btn" aria-haspopup="dialog" aria-controls="weeks" title="Choose a week">
+            <span class="week__num">Week 1</span>
+            <span class="week__title">Loading…</span>
+          </button>
+        </div>
         <div class="seg" role="group" aria-label="View">
           <button type="button" class="seg__btn" data-view="passage" aria-pressed="true">Passage</button>
           <button type="button" class="seg__btn" data-view="sentence" aria-pressed="false">Sentence</button>
@@ -86,7 +88,16 @@
 
   <dialog id="popup" class="popup" aria-label="Word"></dialog>
 
-  <dialog id="settings" class="settings" aria-labelledby="settings-title">
+  <dialog id="weeks" class="weeks" aria-labelledby="weeks-title">
+      <div class="weeks__head">
+        <h2 id="weeks-title" class="weeks__title">Latin 103 · Fall 2026</h2>
+        <button type="button" class="panel__close" data-close="weeks" aria-label="Close">×</button>
+      </div>
+      <p class="weeks__hint">Fourteen weeks. Greyed weeks have not been added to your library yet.</p>
+      <ol id="weeks-list" class="weeks__list"></ol>
+    </dialog>
+
+    <dialog id="settings" class="settings" aria-labelledby="settings-title">
     <div class="settings__body">
       <div class="settings__head">
         <h2 id="settings-title" class="settings__title">Reading</h2>
