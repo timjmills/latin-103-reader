@@ -1,14 +1,17 @@
 /* Word popup / side panel, entry layout, paradigm tables, settings dialog. */
 
 /* ---------------------------------------------------------- hosts */
+/* The grid columns (reader | divider | panel) live in reader.css "layout". The
+   panel is its own scroll box: long entries scroll inside it, wide paradigm
+   tables scroll inside .pt__scroll, and nothing may widen the column. */
 .panel { display: none; }
+.panel, .popup { min-width: 0; max-width: 100%; overflow-x: hidden; overflow-wrap: anywhere; }
 @media (min-width: 768px) and (max-width: 1099.98px) {
   /* Tablet: the panel takes its own column so it never covers the text. */
-  .layout[data-panel="open"] { display: grid; grid-template-columns: minmax(0, 1fr) min(22rem, 44vw); align-items: start; }
   .layout[data-panel="open"] .panel {
     display: block; position: sticky; top: var(--bar-h, 0px); align-self: start;
     height: calc(100dvh - var(--bar-h, 0px)); overflow-y: auto; overscroll-behavior: contain;
-    background: var(--bg-raised); border-left: 1px solid var(--line);
+    background: var(--bg-raised);
     animation: slide-in var(--t-base) var(--ease-out);
   }
   .layout[data-panel="open"] .reader { padding-inline: var(--s-5); }
@@ -17,7 +20,7 @@
   .panel {
     display: block; position: sticky; top: var(--bar-h, 0px); align-self: start;
     height: calc(100dvh - var(--bar-h, 0px)); overflow-y: auto; overscroll-behavior: contain;
-    border-left: 1px solid var(--line); background: var(--bg-chrome);
+    background: var(--bg-chrome);
   }
   .layout[data-panel="open"] .panel { background: var(--bg-raised); }
 }
@@ -39,7 +42,7 @@
 @keyframes pop { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 /* ---------------------------------------------------------- content */
-.panel__content { position: relative; padding: var(--s-4) var(--s-5) var(--s-5); outline: none; }
+.panel__content { position: relative; padding: var(--s-4) var(--s-5) var(--s-5); outline: none; min-width: 0; max-width: 100%; }
 .panel__content:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .panel__close {
   position: absolute; top: var(--s-2); right: var(--s-2);
@@ -57,19 +60,19 @@
 .focus__note { margin: 0; }
 
 .entry__form {
-  font-family: var(--face-reading); font-weight: 400; font-size: 1.2rem;
+  font-family: var(--face-reading); font-weight: 400; font-size: 1.2rem; overflow-wrap: anywhere;
   margin: 0 var(--tap) var(--s-1) 0; color: var(--ink-2);
 }
 .entry__enclitic { margin: 0 0 var(--s-2); font-size: var(--ui-sm); color: var(--ink-2); }
 .entry__switch { display: flex; flex-wrap: wrap; gap: var(--s-1); margin: 0 0 var(--s-3); }
 .entry__alt {
-  min-height: 36px; padding: 0 var(--s-3); border-radius: 999px;
+  min-height: 36px; max-width: 100%; white-space: normal; text-align: left; padding: 0 var(--s-3); border-radius: 999px;
   border: 1px solid var(--line-strong); background: transparent; color: var(--ink-2); font-size: var(--ui-sm);
 }
 .entry__alt[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 
 .entry__meaning {
-  font-family: var(--face-reading); font-size: 1.45rem; line-height: 1.3;
+  font-family: var(--face-reading); font-size: 1.45rem; line-height: 1.3; overflow-wrap: anywhere;
   margin: 0 0 var(--s-2); color: var(--ink); text-wrap: balance;
 }
 .entry__meaning--miss { color: var(--ink-2); font-style: italic; font-size: 1.2rem; }
@@ -92,7 +95,7 @@
 .term__btn:hover, .term__btn.is-open { color: var(--rubric-ink); text-decoration-color: currentColor; }
 .term__tip {
   display: none; position: absolute; left: 0; top: calc(100% + 0.35em); z-index: var(--z-tooltip);
-  min-width: 12rem; max-width: 18rem; padding: var(--s-2) var(--s-3);
+  min-width: min(12rem, 60vw); max-width: min(18rem, calc(100vw - 3rem)); padding: var(--s-2) var(--s-3);
   background: var(--ink); color: var(--bg); border-radius: var(--radius-sm);
   font-size: var(--ui-sm); line-height: 1.45; text-wrap: pretty; box-shadow: var(--shadow-pop);
 }
@@ -100,7 +103,7 @@
 @media (hover: none) { .term:hover .term__tip { display: none; } .term__btn.is-open + .term__tip { display: block; } }
 
 /* Paradigm */
-.paradigm { margin: 0 0 var(--s-2); border: 1px solid var(--line); border-radius: var(--radius); }
+.paradigm { margin: 0 0 var(--s-2); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; max-width: 100%; overflow: hidden; }
 .paradigm__summary { min-height: var(--tap); display: flex; align-items: center; gap: var(--s-2); padding: var(--s-2) var(--s-3); cursor: pointer; font-size: var(--ui-md); color: var(--ink); list-style: none; line-height: 1.3; }
 .paradigm__label { flex: 1; min-width: 0; text-wrap: pretty; }
 .paradigm__summary::-webkit-details-marker { display: none; }
@@ -108,12 +111,24 @@
 .paradigm[open] .paradigm__summary::before { transform: rotate(45deg); }
 .paradigm__title { color: var(--ink-2); font-family: var(--face-reading); }
 .paradigm__note { margin: 0; padding: 0 var(--s-3) var(--s-2); font-size: var(--ui-sm); color: var(--ink-2); }
-.pt__scroll { overflow-x: auto; padding: 0 var(--s-2) var(--s-2); }   /* last resort: a wide table scrolls, never clips */
+/* Last resort: a wide table scrolls inside the panel, never the page. The
+   right-edge fade (a scroll-attached shade, hidden by content-attached covers
+   at either end) says there is more without a scrollbar. */
+.pt__scroll {
+  overflow-x: auto; max-width: 100%; padding: 0 var(--s-2) var(--s-2); overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+  --pt-bg: var(--bg-raised);
+  background:
+    linear-gradient(to right, var(--pt-bg) 40%, transparent) left / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--pt-bg) 40%, transparent) right / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--scroll-shade), transparent) right / 1.5rem 100% no-repeat scroll,
+    linear-gradient(to right, var(--scroll-shade), transparent) left / 1.5rem 100% no-repeat scroll;
+}
+@media (min-width: 1100px) { .layout:not([data-panel="open"]) .pt__scroll { --pt-bg: var(--bg-chrome); } }
 .pt { border-collapse: collapse; width: 100%; font-size: var(--ui-md); table-layout: auto; }
 .pt + .pt { margin-top: var(--s-2); }
 .pt__caption { text-align: left; caption-side: top; padding: var(--s-2) var(--s-2) var(--s-1); font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
 .pt th, .pt td { padding: 0.3em var(--s-2); text-align: left; border-top: 1px solid var(--line); vertical-align: baseline; }
-.pt thead th { border-top: 0; font-weight: 500; color: var(--ink-3); font-size: var(--ui-xs); white-space: normal; text-wrap: pretty; min-width: 5em; }
+.pt thead th { border-top: 0; font-weight: 500; color: var(--ink-3); font-size: var(--ui-xs); white-space: nowrap; overflow-wrap: normal; hyphens: manual; min-width: 0; }   /* never "deponen / t": the box scrolls instead */
 .pt tbody th { font-weight: 400; color: var(--ink-2); font-size: var(--ui-sm); width: 1%; white-space: nowrap; padding-right: var(--s-3); }
 .pt td { white-space: nowrap; }
 .pt__alt { color: var(--ink-2); }
@@ -121,6 +136,7 @@
 .popup .pt { font-size: var(--ui-sm); }
 .popup .pt tbody th { font-size: var(--ui-xs); white-space: normal; text-wrap: pretty; max-width: 9em; }   /* long row labels wrap before the table scrolls */
 .pt__cell { font-family: var(--face-reading); font-size: 1.05em; }
+@media (min-width: 768px) { .panel .pt { font-size: var(--ui-sm); } }   /* one step smaller in the side panel so most tables fit its default width */
 .pt__stem { color: var(--ink-2); }
 .pt__ending { color: var(--ink); font-weight: 600; }
 .pt__stem::after { content: "‑"; color: var(--ink-3); font-weight: 400; margin: 0 0.02em; }
@@ -130,7 +146,7 @@
 
 /* Notes */
 .note__meta { margin: 0 var(--tap) var(--s-2) 0; font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
-.note__la { margin: 0 0 var(--s-3); font-family: var(--face-reading); font-size: 1.05rem; line-height: 1.45; color: var(--ink-2); }
+.note__la { margin: 0 0 var(--s-3); overflow-wrap: anywhere; font-family: var(--face-reading); font-size: 1.05rem; line-height: 1.45; color: var(--ink-2); }
 .note__text { margin: 0; font-size: var(--ui-md); line-height: 1.55; }
 
 /* ---------------------------------------------------------- settings */

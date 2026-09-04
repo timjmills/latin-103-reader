@@ -370,7 +370,8 @@ async function getUnits(weekN) {
   const n = Number(weekN);
   if (!state.units.has(n)) {
     const rows = (await db.byIndex('units', 'week_n', n)).sort((a, b) => a.order - b.order);
-    state.units.set(n, rows.map(({ user_id, ...u }) => u));
+    // Rows cached before migration 0004 have no `margin`; the UI expects an array.
+    state.units.set(n, rows.map(({ user_id, ...u }) => ({ ...u, margin: Array.isArray(u.margin) ? u.margin : [] })));
   }
   return state.units.get(n);
 }

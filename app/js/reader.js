@@ -84,6 +84,79 @@ export function unitRef(unitId) {
   return m ? { line: Number(m[1]), n: Number(m[2]) } : null;
 }
 
+/** Margin notes of a unit, always an array of {line, la} with a non-empty `la`. */
+export function marginNotes(unit) {
+  const rows = Array.isArray(unit?.margin) ? unit.margin : [];
+  return rows.filter((m) => m && typeof m.la === 'string' && m.la.trim())
+    .map((m) => ({ line: m.line != null && Number.isFinite(Number(m.line)) ? Number(m.line) : null, la: m.la.trim() }));
+}
+
+/**
+ * Gutter or inline presentation for margin notes. The gutter needs room for
+ * the notes column *and* a readable prose column beside it.
+ * @param {object} o
+ * @param {boolean} o.wide       viewport >= 768px
+ * @param {number}  o.available  width of the reading column's container, minus the reader's padding (px)
+ * @param {number}  o.colPx      margin column + gap (px)
+ * @param {number}  o.gutterPx   line-number gutter (px)
+ * @param {number}  o.em         reading font size (px)
+ * @param {number}  [o.minEm]    narrowest acceptable prose column, in reading ems
+ */
+export function marginMode({ wide, available, colPx, gutterPx, em, minEm = 18 }) {
+  if (!wide) return 'inline';
+  if (!(available > 0) || !(em > 0)) return 'inline';
+  return available - colPx - gutterPx >= minEm * em ? 'gutter' : 'inline';
+}
+
+/**
+ * Stack absolutely positioned margin blocks so none overlaps the one above.
+ * `items` are in document order with the `top` they want (level with the
+ * sentence's first line) and their measured `height`; returns the tops to use.
+ * Pass 1 pushes a block down under the one above. Pass 2 (`maxUp` > 0) pulls
+ * every run of touching blocks back up so its largest push and its smallest
+ * are split evenly (the run's worst error is halved and shared between its
+ * ends) — as far as the gap above the run allows and never more than `maxUp`
+ * above a block's own sentence.
+ */
+export function stackMargin(items, gap = 0, { maxUp = 0 } = {}) {
+  const tops = [];
+  let floor = -Infinity;
+  for (const it of items) {
+    const top = Math.max(it.top, floor);
+    tops.push(top);
+    floor = top + it.height + gap;
+  }
+  if (!(maxUp > 0)) return tops;
+  let prevBottom = 0;                                        // nothing is pulled above the column's top
+  let i = 0;
+  while (i < tops.length) {
+    // A run: consecutive blocks each resting on the one above.
+    let j = i;
+    while (j + 1 < tops.length && tops[j + 1] <= tops[j] + items[j].height + gap + 0.5) j++;
+    let lo = Infinity, hi = -Infinity;
+    for (let k = i; k <= j; k++) { const p = tops[k] - items[k].top; lo = Math.min(lo, p); hi = Math.max(hi, p); }
+    const room = tops[i] - prevBottom;                       // gap above the run
+    const shift = Math.max(0, Math.min(Math.round((lo + hi) / 2), maxUp, room));
+    for (let k = i; k <= j; k++) tops[k] -= shift;
+    prevBottom = tops[j] + items[j].height + gap;
+    i = j + 1;
+  }
+  return tops;
+}
+
+/**
+ * Offset that puts a smaller note's first baseline on the sentence's first
+ * baseline. `contentTop` is the content-area top of the sentence's first text
+ * box (the first client rect of its Latin, relative to the .prose — the same
+ * for inline and block units); the note sits in line boxes of `noteLineHeight`. Same family
+ * for both, so the ascent scales with the font size (`ascent` ~ 0.72 for the
+ * serif stack).
+ */
+export function marginTop({ contentTop, textSize, noteSize, noteLineHeight, ascent = 0.72 }) {
+  const halfLeading = (noteLineHeight - noteSize) / 2;
+  return Math.round(contentTop + ascent * (textSize - noteSize) - halfLeading);
+}
+
 /* ------------------------------------------------------------------ DOM */
 
 const h = (tag, attrs = {}, ...children) => {
@@ -114,7 +187,7 @@ export function createReader({ root, tokenize, describeForm, live }) {
   const state = {
     week: null, units: [], byId: new Map(), hl: new Map(),
     lookups: new Map(), seen: new Set(), view: 'passage', current: 0,
-    audio: false, playing: null, tokens: new Map(),
+    audio: false, playing: null, tokens: new Map(), marginTokens: new Map(),
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -125,8 +198,11 @@ export function createReader({ root, tokenize, describeForm, live }) {
 
   /* --- Latin text → spans ------------------------------------------ */
   function renderLatin(unit) {
+    return renderTokens(tokensFor(unit), state.hl.get(unit.id) ?? []);
+  }
+  function renderTokens(tokens, ranges) {
     const frag = document.createDocumentFragment();
-    const groups = segmentUnit(tokensFor(unit), state.hl.get(unit.id) ?? []);
+    const groups = segmentUnit(tokens, ranges);
     for (const g of groups) {
       const parent = g.range
         ? h('span', { class: 'hl', 'data-hl-label': g.range.label, 'data-hl-note': g.range.note, 'data-hl-text': g.range.text })
@@ -156,6 +232,28 @@ export function createReader({ root, tokenize, describeForm, live }) {
     return h('button', { type: 'button', class: 'playbtn', 'data-play': unit.id, 'aria-label': 'Play this sentence' });
   }
 
+  /* --- margin notes ------------------------------------------------ */
+  // One block per unit: each gloss on its own line, the book line number in
+  // front when the text has them. Words are tokenised and tappable like the
+  // reading text; `data-for`/`data-order` let the delegated handlers find the unit.
+  // Notes are tokenised once per unit (both copies, every render) and dropped with the week.
+  function marginTokensFor(unit) {
+    if (!state.marginTokens.has(unit.id)) state.marginTokens.set(unit.id, marginNotes(unit).map((m) => ({ ...m, tokens: tokenize(m.la) })));
+    return state.marginTokens.get(unit.id);
+  }
+  function marginBlock(unit, cls) {
+    const notes = marginTokensFor(unit);
+    if (!notes.length) return null;
+    const block = h('span', { class: cls, lang: 'la', 'data-for': unit.id, 'data-order': String(unit.order), role: 'group', 'aria-label': 'Margin notes' });
+    for (const m of notes) {
+      block.append(h('span', { class: 'mnotes__item' },
+        h('span', { class: 'mnotes__mark', 'aria-hidden': 'true', text: '\u00b6' }),
+        m.line != null && state.week?.has_line_numbers ? h('span', { class: 'mnotes__line', text: String(m.line) }) : null,
+        renderTokens(m.tokens, [])));
+    }
+    return block;
+  }
+
   /* --- passage view ------------------------------------------------ */
   function renderPassage() {
     const container = h('div', { class: 'passage' });
@@ -179,10 +277,15 @@ export function createReader({ root, tokenize, describeForm, live }) {
         }
         if (u.unit_type === 'turn' && u.speaker) unitEl.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
         const la = h('span', { class: 'la', lang: 'la' }, renderLatin(u));
-        unitEl.append(...[la, noteMark(u), playButton(u), h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
+        const margin = marginBlock(u, 'mnotes');
+        if (margin) unitEl.classList.add('has-margin');
+        unitEl.append(...[la, noteMark(u), playButton(u), margin, h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
         prose.append(unitEl);
         if (i < units.length - 1) prose.append(' ');
       });
+      // The gutter copy: hidden by CSS in the inline mode, positioned by positionMargin().
+      const gutter = h('div', { class: 'margin' }, units.map((u) => marginBlock(u, 'mnote')));
+      if (gutter.childElementCount) prose.append(gutter);
       section.append(prose);
       container.append(section);
     }
@@ -202,6 +305,8 @@ export function createReader({ root, tokenize, describeForm, live }) {
     if (u.unit_type === 'turn' && u.speaker) la.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
     la.append(...[renderLatin(u), playButton(u)].filter(Boolean));
     wrap.append(la);
+    const margin = marginBlock(u, 'mnotes mnotes--sentence');
+    if (margin) wrap.append(margin);
     wrap.append(h('p', { class: 'sentence__en en', lang: 'en', text: u.en }));
     if (u.note) {
       wrap.append(h('section', { class: 'sentence__note', 'aria-label': 'Grammar note' },
@@ -238,7 +343,91 @@ export function createReader({ root, tokenize, describeForm, live }) {
   function render() {
     root.replaceChildren(state.view === 'passage' ? renderPassage() : renderSentence());
     root.dataset.view = state.view;
+    reflow();
+  }
+
+  function reflow() {
+    layoutMargin();
     dedupeLineNumbers();
+  }
+
+  // Gutter vs inline margin notes: first the room beside the prose
+  // (marginMode), then, part by part, the density of the glosses — a part
+  // whose stacked notes would still sit more than ~a line below their
+  // sentences after the pull-up is shown inline instead. <article data-margin-mode> carries the
+  // overall answer (gutter while any part keeps the gutter), every .part its own.
+  const DRIFT_LINES = 0.9;   // same bound as the pull-up: a note stays within a text line of its sentence either way
+  const probe = h('span', { class: 'margin-probe', 'aria-hidden': 'true' });
+  function layoutMargin() {
+    if (state.view !== 'passage') { delete root.dataset.marginMode; return; }
+    const prose = root.querySelector('.prose');
+    if (!prose) return;
+    if (!probe.isConnected) root.append(probe);
+    const rs = getComputedStyle(root);
+    const main = root.parentElement ?? root;
+    const available = main.clientWidth - parseFloat(rs.paddingLeft) - parseFloat(rs.paddingRight);
+    const em = parseFloat(rs.fontSize);
+    let mode = marginMode({
+      wide: wide.matches, available, em,
+      colPx: probe.offsetWidth, gutterPx: parseFloat(getComputedStyle(prose).paddingLeft),
+    });
+    const parts = [...root.querySelectorAll('.part')];
+    if (mode === 'gutter' && root.dataset.margin !== 'off') {
+      if (root.dataset.marginMode !== 'gutter') root.dataset.marginMode = 'gutter';   // measure with the column in place
+      const lineHeight = parseFloat(rs.lineHeight) || em * 1.55;
+      if (!positionMargin(parts, em, lineHeight)) mode = 'inline';
+    } else {
+      for (const p of parts) { p.dataset.marginMode = 'inline'; for (const pr of p.querySelectorAll('.prose')) pr.style.removeProperty('min-height'); }
+    }
+    if (root.dataset.marginMode !== mode) root.dataset.marginMode = mode;
+  }
+  // Content-area top of a unit's first text box, relative to its .prose. A
+  // Range over the Latin finds the first line whatever the unit's display
+  // (inline, verse/turn blocks, interleaved translation); offsetTop would be
+  // the line-box top for block units and sit the note too high.
+  function firstLineTop(unit, proseTop) {
+    const la = unit.querySelector('.la') ?? unit;
+    try {
+      const range = document.createRange();
+      range.selectNodeContents(la);
+      for (const r of range.getClientRects()) if (r.height > 0) return r.top - proseTop;
+    } catch { /* fall through */ }
+    return unit.offsetTop;
+  }
+  /** Lay every part out as a gutter, keep the ones whose notes stay beside their sentences. Returns whether any did. */
+  function positionMargin(parts, textSize, textLineHeight) {
+    let anyGutter = false;
+    for (const part of parts) part.dataset.marginMode = 'gutter';
+    for (const part of parts) {
+      const gutter = part.querySelector('.margin');
+      if (!gutter) continue;                       // nothing to place: follows the article
+      const prose = gutter.parentElement;
+      prose.style.removeProperty('min-height');
+      const blocks = [...gutter.children];
+      if (!blocks.length) continue;
+      const proseTop = prose.getBoundingClientRect().top;
+      const ns = getComputedStyle(blocks[0]);
+      const noteSize = parseFloat(ns.fontSize);
+      const noteLineHeight = parseFloat(ns.lineHeight) || noteSize * 1.3;
+      const items = blocks.map((el) => {
+        const unit = prose.querySelector(`.unit[data-id="${CSS.escape(el.dataset.for)}"]`);
+        const contentTop = unit ? firstLineTop(unit, proseTop) : 0;
+        return { el, top: marginTop({ contentTop, textSize, noteSize, noteLineHeight }), height: el.offsetHeight };
+      });
+      const tops = stackMargin(items, Math.round(noteLineHeight * 0.4), { maxUp: Math.round(textLineHeight * 0.9) });   // pulled up, but never a full line above its sentence
+      const drift = Math.max(...items.map((it, i) => tops[i] - it.top));
+      if (drift > DRIFT_LINES * textLineHeight) {
+        // Too dense for the column here: glosses go under their sentences.
+        part.dataset.marginMode = 'inline';
+        continue;
+      }
+      let bottom = 0;
+      items.forEach((it, i) => { it.el.style.top = `${tops[i]}px`; bottom = Math.max(bottom, tops[i] + it.height); });
+      // Reserve the height the stack ends up needing so the last notes never paint over the next part.
+      prose.style.minHeight = `${Math.ceil(bottom)}px`;
+      anyGutter = true;
+    }
+    return anyGutter;
   }
 
   // Two blocks that start on the same visual line would print two margin
@@ -253,10 +442,16 @@ export function createReader({ root, tokenize, describeForm, live }) {
       else prevTop = top;
     }
   }
-  let reflow = 0;
+  const wide = matchMedia('(min-width: 768px)');
+  let reflowRaf = 0;
+  const scheduleReflow = () => { cancelAnimationFrame(reflowRaf); reflowRaf = requestAnimationFrame(reflow); };
   if (typeof ResizeObserver === 'function') {
-    new ResizeObserver(() => { cancelAnimationFrame(reflow); reflow = requestAnimationFrame(dedupeLineNumbers); }).observe(root);
+    const ro = new ResizeObserver(scheduleReflow);
+    ro.observe(root);
+    if (root.parentElement) ro.observe(root.parentElement);
   }
+  wide.addEventListener('change', scheduleReflow);
+  if (document.fonts?.ready) document.fonts.ready.then(scheduleReflow);
 
   function announce() {
     const u = state.units[state.current];
@@ -266,11 +461,11 @@ export function createReader({ root, tokenize, describeForm, live }) {
 
   /* --- events (delegated) ----------------------------------------- */
   function wordFrom(el) {
-    const unitEl = el.closest('[data-id]');
+    const unitEl = el.closest('[data-id], [data-for]');
     const hlEl = el.closest('.hl');
     return {
       form: el.dataset.form, text: el.textContent, el,
-      unitId: unitEl?.dataset.id ?? state.units[state.current]?.id,
+      unitId: unitEl?.dataset.id ?? unitEl?.dataset.for ?? state.units[state.current]?.id,
       hl: hlEl ? { label: hlEl.dataset.hlLabel, note: hlEl.dataset.hlNote, text: hlEl.dataset.hlText } : null,
     };
   }
@@ -318,6 +513,7 @@ export function createReader({ root, tokenize, describeForm, live }) {
       state.units = [...units].sort((a, b) => a.order - b.order);
       state.byId = new Map(state.units.map((u) => [u.id, u]));
       state.tokens.clear();
+      state.marginTokens.clear();
       state.hl.clear();
       const byUnit = new Map();
       for (const hl of highlights ?? []) (byUnit.get(hl.unit_id) ?? byUnit.set(hl.unit_id, []).get(hl.unit_id)).push(hl);
@@ -383,6 +579,8 @@ export function createReader({ root, tokenize, describeForm, live }) {
       render();
     },
     rerender: render,
+    /** Re-measure margin notes and line numbers (after a display toggle or font change). */
+    reflow: scheduleReflow,
     unitElement: (unitId) => root.querySelector(`[data-id="${CSS.escape(unitId)}"]`),
   };
   return api;

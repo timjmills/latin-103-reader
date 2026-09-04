@@ -1,11 +1,18 @@
-// Settings: type size (5 steps), face, theme, compact labels, plus the
+// Settings: type size (8 steps, 16–44px), face, theme, compact labels, plus the
 // tools that live in the same menu (the Audio section for the current
 // week — upload, align, play chapter — and Sign out).
 // The inline script in index.html applies the localStorage mirror before
 // first paint; this module keeps <html> attributes + the store in step.
 
-export const SIZE_MIN = 1;
-export const SIZE_MAX = 5;
+import { SIZE_MIN, SIZE_MAX, clampSize } from './sync.js';
+export { SIZE_MIN, SIZE_MAX, clampSize };
+
+/** Side-panel width in px kept inside [min, max]; null/invalid → null (the CSS default). Pure. */
+export function clampPanelWidth(px, min, max) {
+  const n = Number(px);
+  if (px == null || !Number.isFinite(n) || n <= 0) return null;
+  return Math.round(Math.min(Math.max(n, min), Math.max(min, max)));
+}
 export const FACES = [
   { value: 'serif', label: 'Serif' },
   { value: 'sans', label: 'Sans' },
@@ -19,7 +26,7 @@ export const THEMES = [
 
 /** Apply theme/size/face to <html> so CSS tokens pick them up. */
 export function applyToDocument(settings, root = document.documentElement) {
-  root.dataset.size = String(settings.size ?? 3);
+  root.dataset.size = String(clampSize(settings.size));
   root.dataset.face = settings.face ?? 'serif';
   if (settings.theme && settings.theme !== 'system') root.dataset.theme = settings.theme;
   else delete root.dataset.theme;
@@ -58,10 +65,11 @@ export function initSettings(dialog, opts) {
   const signOut = $('[data-action="signout"]');
 
   function render(s) {
-    sizeDown.disabled = s.size <= SIZE_MIN;
-    sizeUp.disabled = s.size >= SIZE_MAX;
-    sizeDots.forEach((d, i) => d.classList.toggle('is-on', i < s.size));
-    $('.size-value').textContent = `${s.size} of ${SIZE_MAX}`;
+    const size = clampSize(s.size);
+    sizeDown.disabled = size <= SIZE_MIN;
+    sizeUp.disabled = size >= SIZE_MAX;
+    sizeDots.forEach((d, i) => d.classList.toggle('is-on', i < size));
+    $('.size-value').textContent = `${size} of ${SIZE_MAX}`;
     faceInputs.forEach((i) => { i.checked = i.value === s.face; });
     themeInputs.forEach((i) => { i.checked = i.value === s.theme; });
     compact.checked = !!s.compact;
@@ -74,8 +82,17 @@ export function initSettings(dialog, opts) {
     opts.onChange?.(next, patch);
   }
 
-  sizeDown.addEventListener('click', () => update({ size: Math.max(SIZE_MIN, opts.get().size - 1) }));
-  sizeUp.addEventListener('click', () => update({ size: Math.min(SIZE_MAX, opts.get().size + 1) }));
+  // The size a click steps from: the last one asked for, so a second click
+  // before the first save resolves still moves one more step.
+  let sizeAsked = null;
+  function stepSize(dir) {
+    const size = clampSize((sizeAsked ?? clampSize(opts.get().size)) + dir);
+    sizeAsked = size;
+    render({ ...opts.get(), size });
+    update({ size }).finally(() => { if (sizeAsked === size) sizeAsked = null; });
+  }
+  sizeDown.addEventListener('click', () => stepSize(-1));
+  sizeUp.addEventListener('click', () => stepSize(1));
   faceInputs.forEach((i) => i.addEventListener('change', () => i.checked && update({ face: i.value })));
   themeInputs.forEach((i) => i.addEventListener('change', () => i.checked && update({ theme: i.value })));
   compact.addEventListener('change', () => update({ compact: compact.checked }));

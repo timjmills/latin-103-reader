@@ -10,7 +10,9 @@
       try {
         var s = JSON.parse(localStorage.getItem('latin103.settings') || '{}');
         var h = document.documentElement;
-        h.dataset.size = s.size || 3;
+        // Same clamp as clampSize() in sync.js: integer 1–8, anything else → 3.
+        var n = (s.size == null || s.size === '' || typeof s.size === 'boolean') ? NaN : Math.round(Number(s.size));
+        h.dataset.size = isFinite(n) ? Math.min(8, Math.max(1, n)) : 3;
         h.dataset.face = s.face || 'serif';
         if (s.theme && s.theme !== 'system') h.dataset.theme = s.theme;
         if (s.compact) h.dataset.compact = '1';
@@ -53,6 +55,9 @@
           <button type="button" class="toggle" data-toggle="underlines" aria-pressed="true" title="Underline looked-up words">
             <span class="toggle__label" data-short="Marks">Underlines</span>
           </button>
+          <button type="button" class="toggle" data-toggle="margin" aria-pressed="true" aria-keyshortcuts="m" title="Margin notes (m)">
+            <span class="toggle__label" data-short="&para; Notes">Margin notes</span>
+          </button>
         </div>
         <button type="button" class="btn btn--icon" id="settings-btn" aria-haspopup="dialog" aria-label="Reading settings">
           <span aria-hidden="true" class="btn__aa">Aa</span>
@@ -62,10 +67,11 @@
 
     <div class="layout" data-panel="closed">
       <main id="main">
-        <article id="reader" class="reader" data-view="passage" data-english="hidden" data-highlights="on" data-underlines="on" aria-label="Reading">
+        <article id="reader" class="reader" data-view="passage" data-english="hidden" data-highlights="on" data-underlines="on" data-margin="on" aria-label="Reading">
           <p class="reader__loading">Loading the text…</p>
         </article>
       </main>
+      <div id="divider" class="divider" role="separator" aria-orientation="vertical" aria-label="Resize the side panel" aria-controls="panel" tabindex="0" title="Drag to resize the panel"></div>
       <aside id="panel" class="panel" aria-label="Word and note panel">
         <div class="panel__empty">
           <p>Tap any word to see what it means, how it is formed, and its full paradigm.</p>
@@ -109,10 +115,10 @@
         <div class="stepper">
           <button type="button" class="btn btn--icon" data-size-step="-1" aria-label="Smaller text"><span aria-hidden="true" class="stepper__a stepper__a--sm">A</span></button>
           <span class="size-dots" aria-hidden="true">
-            <span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span>
+            <span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span><span class="size-dot"></span>
           </span>
           <button type="button" class="btn btn--icon" data-size-step="1" aria-label="Larger text"><span aria-hidden="true" class="stepper__a stepper__a--lg">A</span></button>
-          <span class="size-value visually-hidden" aria-live="polite">3 of 5</span>
+          <span class="size-value visually-hidden" aria-live="polite">3 of 8</span>
         </div>
       </div>
 
@@ -159,7 +165,7 @@
       </section>
 
       <div class="settings__tools">
-        <p class="settings__keys">Keys: <kbd>e</kbd> translation · <kbd>h</kbd> grammar focus · <kbd>j</kbd>/<kbd>k</kbd> next / previous sentence</p>
+        <p class="settings__keys">Keys: <kbd>e</kbd> translation · <kbd>h</kbd> grammar focus · <kbd>m</kbd> margin notes · <kbd>j</kbd>/<kbd>k</kbd> next / previous sentence</p>
         <button type="button" class="btn btn--quiet" data-action="signout">Sign out</button>
       </div>
     </div>
