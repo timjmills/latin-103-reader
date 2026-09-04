@@ -206,6 +206,16 @@ async function boot() {
   async function loadWeek(n) {
     weekN = n;
     setWeekButton(n);
+    if (!weeks.length) {
+      // Signed in, but nothing seeded yet: say so instead of showing a blank page.
+      readerEl.replaceChildren(Object.assign(document.createElement('div'), { className: 'empty-library' }));
+      const box = readerEl.firstChild;
+      box.innerHTML = '<h2>Your library is empty</h2>'
+        + '<p>You are signed in, but no weeks have been loaded into your account yet.</p>'
+        + '<p>On your computer, open the project folder and run <code>node scripts/seed.mjs</code> (see README, step 5). Then reload this page.</p>';
+      document.title = 'Latin 103 Reader';
+      return;
+    }
     try { localStorage.setItem(LS_WEEK, String(n)); } catch { /* ignore */ }
     audio?.stop?.();
     const week = weeks.find((w) => w.n === n);

@@ -263,3 +263,8 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 .sentence__nav { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); font-family: var(--face-ui); font-size: var(--ui-md); }
 .sentence__keys { color: var(--ink-3); font-size: var(--ui-xs); font-family: var(--face-mono); }
 @media (hover: none) { .sentence__keys { visibility: hidden; } }
+
+/* Signed in, nothing seeded */
+.empty-library { max-width: 34rem; margin: var(--s-7) auto; padding: 0 var(--s-4); font-family: var(--face-ui); color: var(--ink-2); line-height: 1.55; }
+.empty-library h2 { font-family: var(--face-serif); font-weight: 400; font-size: 1.4rem; color: var(--ink); margin: 0 0 var(--s-3); }
+.empty-library code { font-size: 0.95em; background: var(--bg-chrome); padding: 0.1em 0.4em; border-radius: var(--radius-sm); }
