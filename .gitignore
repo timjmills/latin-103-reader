@@ -21,3 +21,5 @@ __pycache__/
 QA-REPORT.md
 qa/
 .DS_Store
+supabase/.temp/
+supabase/.branches/
