@@ -113,6 +113,7 @@ async function boot() {
     // …and its word rows from the words already looked up in that sentence.
     getTokens: (id) => reader.wordTokens(id),
     getLookups: () => lookups,
+    getHighlights: (id) => reader.highlightsOf(id),
   });
   window.latinReader = { reader, panel, store, audio };   // documented hooks (see README-ui.md)
 

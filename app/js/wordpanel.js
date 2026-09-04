@@ -136,7 +136,7 @@ export function renderParadigm(p) {
  * `getUnit(unitId)` / `getWeek()` (optional) let the stack name its sentence
  * and seed the note row before the † has been tapped.
  */
-export function createWordPanel({ dialog, aside, layout, lookup, describe, paradigm, store, getSettings, getLookupRecord, entryIndex, onLookupsChanged, onWord, live, plain = null, getUnit = null, getWeek = null, getTokens = null, getLookups = null }) {
+export function createWordPanel({ dialog, aside, layout, lookup, describe, paradigm, store, getSettings, getLookupRecord, entryIndex, onLookupsChanged, onWord, live, plain = null, getUnit = null, getWeek = null, getTokens = null, getLookups = null, getHighlights = null }) {
   const wide = matchMedia('(min-width: 768px)');
   let anchor = null;
   // The one thing the popup shows (phones), or a temporary single view in the
@@ -144,7 +144,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   let current = null;           // { kind:'word', form, text, unitId, hl, result, index } | { kind:'note', unit, title } | { kind:'summary', title, body, unitId }
   const stacks = new Map();     // unitId → rows[] — every sentence's rows, for the session
   let stackUnit = null;         // the sentence whose stack the aside shows
-  let expandedKey = null;       // the one expanded row (rowKey), if any
+  const expanded = new Set();   // expanded rows (rowKey) — several may be open; rows never fold on their own
   let seq = 0;                  // ids for aria-controls
   let switching = false;        // the breakpoint handler closes the dialog itself
   const emptyState = aside.firstElementChild?.cloneNode(true) ?? document.createElement('div');
@@ -216,7 +216,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       resetAside();
       current = null;
       stackUnit = null;
-      expandedKey = null;
+      expanded.clear();
       focusText();
     }
   }
@@ -382,10 +382,15 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
    * populated the moment a sentence becomes current — nothing needs re-tapping.
    */
   function seedStack(unitId) {
+    let cur = stacks.get(unitId) ?? [];
+    // Every grammar-focus highlight in the sentence, in text order.
+    for (const h of getHighlights?.(unitId) ?? []) {
+      cur = stackWith(cur, { kind: 'hl', hl: { label: h.label, note: h.note, text: h.text, simple: h.simple ?? null, start: h.start } });
+    }
+    stacks.set(unitId, cur);
     const toks = getTokens?.(unitId);
     const map = getLookups?.();
     if (!toks?.length || !map?.size) return;
-    let cur = stacks.get(unitId) ?? [];
     const seen = new Set();
     for (const t of toks) {
       if (!t.form || seen.has(t.form)) continue;
@@ -445,7 +450,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   }
   function renderRow(row) {
     const key = rowKey(row);
-    const open = expandedKey === key;
+    const open = expanded.has(key);
     const id = `stack-row-${++seq}`;
     const learned = row.kind === 'word' && !!getLookupRecord(row.form)?.learned_at;
     return h('li', { class: `stack__row stack__row--${row.kind}` + (open ? ' is-open' : '') + (learned ? ' is-learned' : ''), 'data-row': key },
@@ -470,8 +475,8 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   function showStack(unitId, { focus = null, expand = null } = {}) {
     const inside = aside.contains(document.activeElement);
     current = null;
-    if (unitId !== stackUnit) expandedKey = null;   // another sentence: its rows start collapsed
-    if (expand) expandedKey = expand;
+    if (unitId !== stackUnit) expanded.clear();   // another sentence: its rows start collapsed
+    if (expand) expanded.add(expand);
     stackUnit = unitId;
     ensureStack(unitId);
     const content = stackContent();
@@ -500,11 +505,9 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     return fresh;
   }
   function toggleRow(key) {
-    const prev = expandedKey;
-    expandedKey = prev === key ? null : key;
+    if (expanded.has(key)) expanded.delete(key); else expanded.add(key);   // other rows stay as they are
     const li = swapRow(key);
-    if (prev && prev !== key) swapRow(prev);   // one row open at a time
-    if (expandedKey && li) li.scrollIntoView({ block: 'nearest' });
+    if (expanded.has(key) && li) li.scrollIntoView({ block: 'nearest' });
   }
   function refreshStack() {
     if (!isWide() || !asideOpen() || current || stackUnit == null) return;
@@ -512,7 +515,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   }
   function removeRow(key) {
     stacks.set(stackUnit, stackWithout(stacks.get(stackUnit) ?? [], key));
-    if (expandedKey === key) expandedKey = null;
+    expanded.delete(key);
     const old = rowEl(key);
     if (!old) return;
     const inside = old.contains(document.activeElement);
@@ -614,11 +617,12 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       return;
     }
     if (!asideOpen()) return;
-    const item = current ?? (expandedKey ? rowByKey(expandedKey) : null);
+    const last = [...expanded].pop();
+    const item = current ?? (last ? rowByKey(last) : null);
     layout.dataset.panel = 'closed';
     resetAside();
     stackUnit = null;
-    expandedKey = null;
+    expanded.clear();
     current = item?.kind === 'note' ? { kind: 'note', unit: item.unit, title: noteTitle(item.unit) } : item?.kind === 'hl' ? null : item;
     if (current) open(content(), anchor, label());
   });
@@ -660,7 +664,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
         // The † is a toggle: it opens the note row in the sentence's stack, and a
         // second tap on the same † folds it back up (the panel stays).
         anchor = el ?? anchor;
-        if (asideOpen() && !current && stackUnit === unit.id && expandedKey === 'note') {
+        if (asideOpen() && !current && stackUnit === unit.id && expanded.has('note')) {
           toggleRow('note');
           if (live) live.textContent = 'Grammar note collapsed.';
           return;
@@ -692,11 +696,12 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
         if (stackUnit != null) showStack(stackUnit, { focus: 'root' }); else close();
         return;
       }
-      if (expandedKey) {
-        const key = expandedKey;
+      if (expanded.size) {
+        const keys = [...expanded];
         const inside = aside.contains(document.activeElement);
-        expandedKey = null;
-        const li = swapRow(key);
+        expanded.clear();
+        let li = null;
+        for (const key of keys) li = swapRow(key) ?? li;
         if (inside) li?.querySelector('.stack__btn')?.focus({ preventScroll: true });
         return;
       }
