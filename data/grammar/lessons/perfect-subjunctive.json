@@ -1,0 +1,70 @@
+{
+  "skill": "perfect-subjunctive",
+  "core": [
+    {
+      "type": "p",
+      "text": "**the perfect subjunctive (the 'have done' form: nescio quid fecerit; ne timueris = don't be afraid)** is the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) for something already completed when the main verb is present: *nesciō quid fēcerit* — I don't know what he did. Forms: perfect stem + *-erim, -eris, -erit, -erimus, -eritis, -erint*; passive: perfect participle + *sim, sīs, sit* (*captus sit*). *nē* + perfect subjunctive is a sharp 'don't': *nē timuerīs!* Latin name: *coniunctivus perfecti*."
+    },
+    {
+      "type": "english",
+      "text": "English 'did' in a report: *I wonder why you didn't tell me*. The telling is earlier than the wondering; Latin marks that gap."
+    },
+    {
+      "type": "rule",
+      "text": "Present main verb + a finished action in the clause → perfect subjunctive. nē + perfect subjunctive = don't (like nōlī + infinitive)."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "tense": "perf",
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w11:b30.1",
+        "w11:b21.1",
+        "w11:b36.5",
+        "w11:b48.2"
+      ],
+      "invented": [
+        {
+          "la": "Rogō quid puer dīxerit.",
+          "en": "I ask what the boy said.",
+          "focus": "dīxerit"
+        },
+        {
+          "la": "Nē mē relīquerīs!",
+          "en": "Don't leave me!",
+          "focus": "relīquerīs"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "future-perfect",
+      "text": "Same endings except the first singular (*-erim* against *-erō*). The job decides: *sī vēnerit, gaudēbō* looks ahead to a future event — the future perfect (the 'will have done' tense); *nesciō an vēnerit* reports a past one; *nē vēnerīs* forbids. Signals for the subjunctive: *nē*, or a question word after a verb of knowing or asking."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: two ways to say 'don't' — *nōlī* + infinitive (*nōlī timēre*), gentle and the usual one in prose; *nē* + perfect subjunctive (*nē timuerīs*), brisker. Both are orders, not wishes."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes: the perfect subjunctive replaces the present whenever a sense of completion is needed; 2nd stem + *-eri-* + the plain endings *-m, -s, -t, -mus, -tis, -nt* (*cēperim*); passive from the 3rd stem + *sim, sīs, sit* (*captus sim*). It appears in wishes and 'might' statements, but mostly after causal *cum* and in indirect questions: *nōn possum exīre cum aliquis portam clauserit* (I cannot go out since someone has shut the gate); *dīc mihi quandō advēnerīs!*; *sciō quandō nātus sīs* (I know when you were born)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 32: *Iūlius dubitat num magister Mārcum laudāverit* — the doubting is now, the praising was earlier; *pater dubitat num fīlius laudātus sit*; and the prohibition *nē dubitāverīs dē verbīs meīs!* Irregulars: *fuerim, potuerim, voluerim, ierim*. In the sequence of tenses the perfect subjunctive is the 'before' partner of the present subjunctive; after a past main verb its place is taken by the pluperfect subjunctive (Week 12)."
+    }
+  ],
+  "sources": [
+    "notes p115",
+    "Ørberg cap. XXXII Grammatica Latina",
+    "A&G §184, §450, §485c"
+  ]
+}

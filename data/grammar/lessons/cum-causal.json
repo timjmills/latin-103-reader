@@ -1,0 +1,62 @@
+{
+  "skill": "cum-causal",
+  "core": [
+    {
+      "type": "p",
+      "text": "**cum + subjunctive meaning 'since' (or, with tamen, 'although')** gives the reason for the main clause: *plōrō, cum mortua sit* — I weep, since she is dead. Unlike the story-telling *cum*, it works in any tense: the present subjunctive (the 'may / let' form) after a present main verb, the imperfect after a past one. With *tamen* (nevertheless) in the main clause it is a concession: *cum dīves sit, tamen miser est* — although he is rich, he is unhappy. Latin name: *cum causale et concessivum*."
+    },
+    {
+      "type": "english",
+      "text": "*Since* and *because* give a reason; *although* admits something and then goes against it. In Latin one small word does both jobs; the subjunctive marks it."
+    },
+    {
+      "type": "rule",
+      "text": "cum + subjunctive = since / because; cum … tamen = although; quippe quī + subjunctive = 'as one who', another way of giving a reason."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w07:b34.1",
+        "w11:b13.3",
+        "w12:b9.1",
+        "w07:b19.1"
+      ],
+      "invented": [
+        {
+          "la": "Cum pecūniam nōn habeam, pānem emere nōn possum.",
+          "en": "Since I have no money, I cannot buy bread.",
+          "focus": "habeam"
+        },
+        {
+          "la": "Cum servus sit, tamen līber esse vidētur.",
+          "en": "Although he is a slave, he nevertheless seems free.",
+          "focus": "sit"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "cum-narrative",
+      "text": "Story *cum* appears only with the imperfect or pluperfect in a past narrative and tells you *when*. If the cum verb is present or perfect subjunctive, or the clause answers *why*, it is causal. Test by translating 'since': if it fits, causal."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: *cum* followed by a noun in the ablative (the 'by/with/from' form) is just 'with' — *cum Dāvō ambulat*. A causal *cum* has its own verb in the subjunctive."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes: the causal subjunctive is usually introduced by *cum*, 'effectively making it mean since or because' — *audīmus, cum ipse loquāris* (we listen, because you yourself are speaking), *ambulāmus, cum nōn sit nōbīs equus*. A relative clause can do it too, often with *quippe* to make it clear: *sitiō quippe quī nūllam aquam habeam* — I am thirsty, as one who has no water."
+    },
+    {
+      "type": "p",
+      "text": "For a finished reason after a present verb the perfect subjunctive is used (Week 10): *nōn possum exīre cum aliquis portam clauserit* — I cannot go out since someone has shut the gate; after a past verb the pluperfect: *nōn poteram exīre cum … clausisset*. *cum* + indicative still means plain 'when(ever)': *gaudeō cum dē līberīs cōgitō*. Ørberg writes 'although' with *quamquam* + indicative (*quamquam valdē dolēbat, tamen …*); *cum … tamen* is the subjunctive version of the same idea."
+    }
+  ],
+  "sources": [
+    "notes p109",
+    "Ørberg cap. XXIX",
+    "A&G §549"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "skill": "accusative-object",
+  "core": [
+    {
+      "type": "p",
+      "text": "When a verb does something to someone or something, the receiver of the action takes **the accusative (the object form)**, *cāsus accūsātīvus*: *Mārcus Iūliam pulsat* = Marcus hits Julia. The ending, not the position, tells you who is on the receiving end; *Iūliam Mārcus pulsat* means the same. The same form follows most prepositions (*ad*, *ante*, *post*, *per* …)."
+    },
+    {
+      "type": "english",
+      "text": "The object is what the verb acts on: *she hits him*. English shows it only in pronouns (*he / him*, *they / them*) and otherwise by putting the object after the verb. Latin marks every noun."
+    },
+    {
+      "type": "rule",
+      "text": "Singular adds -m (-am, -um, -em); plural adds -s (-ās, -ōs, -ēs). Neuter nouns keep their nominative shape: *oppidum* / *oppida* as object too."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl1",
+      "highlight": {
+        "case": "acc"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "acc"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r03:8.1",
+        "r03:11.2",
+        "r05:2.2",
+        "r04:4.1"
+      ],
+      "invented": [
+        {
+          "la": "Māter fīliōs vocat.",
+          "en": "The mother calls her sons.",
+          "focus": "fīliōs"
+        },
+        {
+          "la": "Pāstor lupum videt.",
+          "en": "The shepherd sees the wolf.",
+          "focus": "lupum"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "nominative-subject",
+      "text": "*Puer puellam videt*: the word with -m is the one being seen. Swap the endings, *puerum puella videt*, and the girl is doing the seeing, whatever the English word order suggests. Neuter nouns are the one place the ending cannot help (*oppidum* is both); there the verb and common sense decide."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: a case is a form of a noun or pronoun that fixes its job in the sentence; English keeps cases only in pronouns (*I / me*, *who / whom*), Latin in nearly every noun. The nominative forms met so far (-a, -ae; -us, -ī; -um, -a; -is, -ēs) can only be subjects or rename a subject; masculine and feminine nouns make the accusative by adding -m in the singular and -s in the plural (*ūvam*, *ūvās*; *caseum*, *caseōs*; *pānem*, *pānēs*), neuters by changing nothing. The notes' examples with prepositions: *super petram* (on the rock), *contrā petram* (against the rock)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. III gives -um / -am with the question *quem?* (whom?), and cap. V the plurals -ōs / -ās / -a. Pronouns: *mē*, *tē*, *eum*, *eam*, *eōs*, *eās*. The accusative also measures time and distance (*trēs hōrās* — for three hours) and, with towns and *domum*, says where to; some verbs take two accusatives (*mē rogat sententiam* — he asks me my opinion). A&G §387, §423."
+    }
+  ],
+  "sources": [
+    "notes p10–11",
+    "Ørberg cap. III & V Grammatica Latina",
+    "A&G §387, §423"
+  ]
+}

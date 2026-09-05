@@ -1,0 +1,62 @@
+{
+  "skill": "perfect-active",
+  "core": [
+    {
+      "type": "p",
+      "text": "Latin's ordinary past for a finished action is **the perfect (the 'did / has done' tense)**: *pulsāvit* — he hit, or he has hit. It is built on the perfect stem (the third principal part minus -ī) with its own set of endings, used nowhere else: -ī, -istī, -it, -imus, -istis, -ērunt. Latin name: *perfectum indicativi activi*."
+    },
+    {
+      "type": "english",
+      "text": "English keeps two tenses apart: *I ate* (simple past) and *I have eaten* (still matters now). Latin uses one form for both; the sentence tells you which fits."
+    },
+    {
+      "type": "rule",
+      "text": "Perfect stem + -ī, -istī, -it, -imus, -istis, -ērunt. Nothing changes between stem and ending."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "perf",
+        "mood": "ind",
+        "voice": "act"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r21:11.1",
+        "r21:41.1",
+        "r21:42.1",
+        "r21:21.1"
+      ],
+      "invented": [
+        {
+          "la": "Herī Iūlia rosās in hortō carpsit.",
+          "en": "Yesterday Julia picked roses in the garden.",
+          "focus": "carpsit"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperfect-active",
+      "text": "Both are past, but **the imperfect (the 'was doing' tense)** paints a scene going on (*dormiēbat* — he was sleeping); the perfect reports one thing that happened (*dormīvit* — he slept). The -bā- / -ēbā- marker means imperfect; a changed stem plus -it / -ērunt means perfect."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 21) stress that 'perfect' means completed, and that Latin's perfect doubles as the English simple past: *cibum comēdī* is 'I have eaten' or 'I ate' as the story needs."
+    },
+    {
+      "type": "p",
+      "text": "Stem changes to know by heart: *sum → fuī*, *eō → iī* (*iit*, *iērunt*), *ferō → tulī*, *dō → dedī*, *faciō → fēcī*, *videō → vīdī*, *veniō → vēnī*. In verse and speech -ēre can replace -ērunt (*pulsāvēre*)."
+    }
+  ],
+  "sources": [
+    "notes p78–79",
+    "Ørberg cap. XXI Grammatica Latina",
+    "A&G §473"
+  ]
+}

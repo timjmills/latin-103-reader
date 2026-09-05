@@ -1,0 +1,70 @@
+{
+  "skill": "pluperfect-subjunctive",
+  "core": [
+    {
+      "type": "p",
+      "text": "**the pluperfect subjunctive (the 'had / would have' form: cum venisset = when he had come)** is the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) for an action already finished before a past main verb. Build it from the perfect infinitive (the 'to have done' form: *vēnisse*) plus the personal endings: *vēnisse-m, vēnissē-s, vēnisse-t, vēnissē-mus, vēnissē-tis, vēnisse-nt*; passive: perfect participle + *essem, essēs, esset* (*captus esset*). Latin name: *coniunctivus plusquamperfecti*."
+    },
+    {
+      "type": "english",
+      "text": "English 'had done' in a story: *when he had said this, he left*; and 'would have' in unreal pasts: *if he had drunk, he would not have died*."
+    },
+    {
+      "type": "rule",
+      "text": "Perfect infinitive + endings (-issem … -issent). Use it after a past main verb for what had already happened: cum clauses, indirect questions, past wishes, unreal past conditions."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "tense": "plupf",
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w12:b19.1",
+        "w12:b13.8",
+        "w13:b3.2",
+        "w12:b17.1"
+      ],
+      "invented": [
+        {
+          "la": "Cum cēnāvissent, dormītum iērunt.",
+          "en": "When they had dined, they went to bed.",
+          "focus": "cēnāvissent"
+        },
+        {
+          "la": "Nesciēbam quis vēnisset.",
+          "en": "I did not know who had come.",
+          "focus": "vēnisset"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperfect-subjunctive",
+      "text": "Both follow a past main verb. The imperfect subjunctive (present infinitive + endings: *venīret*) is for something going on at the same time — 'while he was coming'; the pluperfect (perfect infinitive + endings: *vēnisset*) is for something already over — 'after he had come'. Look for -isse- inside the word."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: *vēnisse* on its own is the perfect infinitive, used in reported statements — *dīcit eum vēnisse*, he says that he came. Add -m, -s, -t and it becomes the pluperfect subjunctive. Same stem, different job: infinitive after 'says / thinks', subjunctive after cum / sī / utinam / a question word."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes: just as the perfect subjunctive stands in for the present, the pluperfect stands in for the imperfect to add a sense of completion; 2nd stem + *-isse-* + *-m, -s, -t, -mus, -tis, -nt* (*cēpissem*), looking exactly like the perfect infinitive with endings; passive 3rd stem + *essem, essēs, esset* (*captus essem*). Uses: causal (*nōn poteram exīre cum aliquis portam clausisset* — I could not go out since someone had shut the gate), indirect question (*nesciēbam quis advēnisset*), and narrative (*hōc cum dīxisset, profectus est* — after he had said this, he left; *cum multitūdinem piscium cēpissent, ad lītus rediērunt*)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 33: *Iūlius dubitābat num magister Mārcum laudāvisset*, and the unreal past *sī bonus discipulus fuissēs, magister tē laudāvisset* — if you had been a good pupil, the teacher would have praised you. Irregulars: *fuissem, potuissem, voluissem, īssem*. The passive uses *essem*, the imperfect subjunctive of *sum*: *laudātus essem* is 'I had been praised / I would have been praised', never 'I was being praised'."
+    }
+  ],
+  "sources": [
+    "notes p116–117",
+    "Ørberg cap. XXXIII Grammatica Latina",
+    "A&G §184, §546, §517"
+  ]
+}

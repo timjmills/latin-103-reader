@@ -1,0 +1,60 @@
+{
+  "skill": "ablative-agent",
+  "core": [
+    {
+      "type": "p",
+      "text": "When a verb is passive, the person who actually does the action is named with *ā/ab* and **the ablative (the 'by' form after a/ab)**, *ablātīvus auctōris*: *dominus ā servō timētur* = the master is feared by the slave. *Ā* stands before a consonant, *ab* before a vowel (*ab Ursō*) and often elsewhere too. The doer need not be mentioned at all: *dominus timētur* = the master is feared."
+    },
+    {
+      "type": "english",
+      "text": "In *the goat is led by the boy*, *by the boy* names the doer, the agent. English *by* also does other jobs (*by a stone*, *by the river*), which Latin keeps apart."
+    },
+    {
+      "type": "rule",
+      "text": "Passive verb + *ā/ab* + ablative of a living being = the agent, the 'by whom'. A lifeless thing used takes the plain ablative instead."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "abl"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r06:73.1",
+        "r06:62.1",
+        "r06:77.1",
+        "r10:125.1"
+      ],
+      "invented": [
+        {
+          "la": "Ovis ā cane servātur.",
+          "en": "The sheep is saved by the dog.",
+          "focus": "cane"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-means",
+      "text": "*Goliath ā Dāvide lapide percutitur* — struck by David (agent: *ā* + ablative) with a stone (means: bare ablative). The rule is about life: people, gods and animals doing something take *ā/ab*; tools, weapons and body parts do not. *Ab* + a thing means 'from', not 'by'."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: with an active verb the agent is simply the subject; with a passive verb it may be dropped or added with *ab*. Latin treats the agent as a kind of origin — the leading 'comes from' the boy — which is why the 'from' preposition is used, though it can never be translated 'from'. The notes' pair: *Goliath ā Dāvide lapide percutitur*; *servus ā dominō oculīs vidētur* — seen by his master (agent) with his eyes (means)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VI and VIII: *ā quō?* — *ab eō / ab illō servō*; *saccus ā servō portātur*. With no passive verb, *ā/ab* is plain origin: *ā vīllā venit*. Later, the gerundive (the 'must be done' adjective) names its doer with the dative instead (dative of agent). A&G §405."
+    }
+  ],
+  "sources": [
+    "notes p22",
+    "Ørberg cap. VI Grammatica Latina",
+    "A&G §405"
+  ]
+}

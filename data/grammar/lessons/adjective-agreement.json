@@ -1,0 +1,57 @@
+{
+  "skill": "adjective-agreement",
+  "core": [
+    {
+      "type": "p",
+      "text": "A describing word like *magnus* (big) or *bonus* (good) has no shape of its own: it copies the noun it goes with. That copying is **an adjective agreeing with its noun (same gender, number and case)**, *adiectīvum cum substantīvō congruēns*. Ørberg lists an adjective as *magnus -a -um*: three shapes, one per gender, each declining like the matching noun. The adjective may stand before or after its noun."
+    },
+    {
+      "type": "english",
+      "text": "English adjectives never change: *big river*, *big rivers*, *big island*. Latin's do, and the change is how you know which noun an adjective belongs to when the two are far apart."
+    },
+    {
+      "type": "rule",
+      "text": "Find the noun's gender, number and case and give the adjective the same three. The endings often rhyme (*puella bona*) but need not (*vir bonus*, *puer bonus*)."
+    },
+    {
+      "type": "paradigm",
+      "key": "adj12"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r01:29.1",
+        "r01:36.2",
+        "r03:29.2",
+        "r05:14.1"
+      ],
+      "invented": [
+        {
+          "la": "Pāstor bonus ovem parvam videt.",
+          "en": "The good shepherd sees the small sheep.",
+          "focus": "bonus"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "noun-gender",
+      "text": "*Puer* (boy) has no -us and *ovis* (sheep) no -a, yet *puer bonus* and *ovis parva* are right: agreement copies the noun's gender, not its letters. Ask what the noun is (masculine, feminine or neuter), then pick the adjective's form; never just match the sound of the ending."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes (weeks 1 and 3): an adjective takes on the gender of its noun, then its number, and — once the accusative (the object form) is learned — its case as well. Because -us -a -um adjectives use the us-noun, a-noun and um-noun endings, there are no new forms to learn: accusative -um / -am / -um, plural -ōs / -ās / -a. Where the noun has a different pattern the endings stop rhyming: *propheta malus*, *domus mala*, *pānēs bonī*, *carnēs bonae*."
+    },
+    {
+      "type": "p",
+      "text": "Adjectives in -er drop the e in the other forms (*pulcher, pulchra, pulchrum*; *niger, nigra, nigrum*) though a few keep it (*miser, misera*). An adjective after *est* agrees with the subject (*Iūlia laeta est*). Used alone, an adjective becomes a noun: *multī* = many people, *pauca* = few things; and *mālum* (apple, long a) is a different word from *malum* (a bad thing). Adjectives of the third declension (*fortis*, *brevis*) come later. Ørberg cap. I–V; A&G §286."
+    }
+  ],
+  "sources": [
+    "notes p4, p12",
+    "Ørberg cap. I–V Grammatica Latina",
+    "A&G §286"
+  ]
+}

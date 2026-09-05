@@ -1,0 +1,74 @@
+{
+  "skill": "infinitive",
+  "core": [
+    {
+      "type": "p",
+      "text": "Latin's 'to' form is **the infinitive (the 'to' form)**, *modus īnfīnītīvus*: *volāre* = to fly, *vidēre* = to see, *pōnere* = to put, *audīre* = to hear. It ends in -re in the active and -rī (3rd conjugation just -ī) in the passive (the 'is done' form): *vidērī* = to be seen, *pōnī* = to be put. It has no person and no number, and it hangs on *potest* (can), *vult* (wants), *audet* (dares), *dēbet* (ought) and *necesse est* (it is necessary)."
+    },
+    {
+      "type": "english",
+      "text": "*To fly*, *to be seen*: the plain verb with *to*, or without it after *can* and *must*. It names the action without saying who or when."
+    },
+    {
+      "type": "rule",
+      "text": "Active: stem + -re (-āre, -ēre, -ere, -īre). Passive: -ārī, -ērī, -ī, -īrī. Irregular: *esse* (to be), *posse* (to be able), *velle* (to want), *ferre* (to carry), *īre* (to go)."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "mood": "inf",
+        "tense": "pres"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "inf",
+        "tense": "pres"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r10:21.1",
+        "r10:38.2",
+        "r10:58.1",
+        "r10:96.1"
+      ],
+      "invented": [
+        {
+          "la": "Puella cantāre vult, sed nōn potest.",
+          "en": "The girl wants to sing but cannot.",
+          "focus": "cantāre"
+        },
+        {
+          "la": "Servī dominum portāre dēbent.",
+          "en": "The slaves have to carry the master.",
+          "focus": "portāre"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperative",
+      "text": "In the 2nd conjugation the infinitive and the command look alike: *vidēre* (to see) beside *vidē!* (look!); in the 3rd, *pōnere* beside *pōne!*. The infinitive always ends in -re or -rī and leans on a verb like *potest* or *vult*; the command stands on its own, often with a name and an exclamation mark."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: the infinitive is a mood, like the indicative and the imperative, that works as a noun in the sentence (the object of *want*, *can*, *dare*, *ought*) yet can still take its own object. The active ending is -(e)re, the e dropping after a vowel stem but staying in weak i-stems (*percutere*, not *percutire*); the passive -(r)ī drops its r in consonant and (i)-stems (*frangī*, *percutī*). *Esse*, *posse*, *velle*, *ferre* double a consonant instead of using a variable vowel; only *ferre* has a passive, *ferrī*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. X: -re / -rī; *necesse est* + infinitive; *vult*, *potest*, *audet*. The infinitive with an accusative as its own subject — *Quīntum vīvum esse vident* (they see that Quintus is alive, r10:122.2) — is the next skill, the accusative and infinitive. Perfect (*vēnisse*) and future (*ventūrum esse*) infinitives come later. A&G §451–456."
+    }
+  ],
+  "sources": [
+    "notes p30–31",
+    "Ørberg cap. X Grammatica Latina",
+    "A&G §451–456"
+  ]
+}

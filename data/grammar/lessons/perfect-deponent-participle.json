@@ -1,0 +1,58 @@
+{
+  "skill": "perfect-deponent-participle",
+  "core": [
+    {
+      "type": "p",
+      "text": "Deponents build their participle like everyone else, but it means the opposite: **the perfect participle of a deponent verb (active meaning: locutus = having spoken)**. *Haec locūta, Ariadna …* — having said this, Ariadne …; *fīlum secūtus* — having followed the thread. This is the only 'having done' participle Latin has, so writers use it constantly to tell what someone did just before the main verb. Latin name: *participium perfecti verbi deponentis*."
+    },
+    {
+      "type": "english",
+      "text": "English says *having spoken*, *having set out* — a participle for an action the same person finished first."
+    },
+    {
+      "type": "rule",
+      "text": "Participle stem + -us -a -um, agreeing with the person who did the action; translate 'having …-ed'."
+    },
+    {
+      "type": "paradigm",
+      "key": "adj12",
+      "highlight": null
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w01:63.10",
+        "w10:fl-72:b29.1",
+        "w01:81.2",
+        "w07:b31.5"
+      ],
+      "invented": [
+        {
+          "la": "Puer ē lectō lāpsus flet.",
+          "en": "The boy, having slipped from the bed, cries.",
+          "focus": "lāpsus"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-passive-participle",
+      "text": "*Locūtus* and *laudātus* look identical, but **the perfect participle (the 'having been done' word: laudatus = praised)** of an ordinary verb is passive. Check the dictionary form: a verb whose infinitive ends in -ī / -ārī / -ērī / -īrī is deponent, and its participle is active — *profecta* is 'having set out', not 'having been set out'."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 22) set out the gap: ordinary verbs have a present active and a perfect passive participle only; deponents have present active (*loquēns*) and perfect active (*locūtus*). Their examples: *puer lāpsus* (the boy having slipped), *fēmina profecta*, *canēs secūtī*, *virōs operātōs*."
+    },
+    {
+      "type": "p",
+      "text": "Common ones to know: *locūtus* (spoken), *secūtus* (followed), *profectus* (set out), *cōnātus* (tried), *lāpsus* (slipped), *ūsus* (used), *mortuus* (died), *oblītus* (forgotten), *passus* (suffered), *veritus* (feared)."
+    }
+  ],
+  "sources": [
+    "notes p86",
+    "Ørberg cap. XXII (verba)",
+    "A&G §190, §491"
+  ]
+}

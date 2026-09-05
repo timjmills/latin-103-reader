@@ -1,0 +1,62 @@
+{
+  "skill": "third-declension",
+  "core": [
+    {
+      "type": "p",
+      "text": "Most Latin nouns that do not end in -a, -us or -um belong to the third declension: **a 3rd-declension noun (the -is / -es pattern: pastor, pastoris)**, *dēclīnātiō tertia*. Its first form can end in almost anything — *pāstor*, *ovis*, *rēx*, *homō* — so the form to remember is the genitive (the 'of' form) in -is, which shows the stem: *pāstor, pāstōr-is*; *rēx, rēg-is*. Every other ending goes onto that stem: *pāstōrem*, *pāstōrī*, *pāstōre*; plural *pāstōrēs*, *pāstōrum*, *pāstōribus*."
+    },
+    {
+      "type": "english",
+      "text": "A few English nouns change their stem in the plural (*mouse / mice*, *foot / feet*). Latin third-declension nouns change it in every form but the first, so they are learned in pairs."
+    },
+    {
+      "type": "rule",
+      "text": "Learn nominative, genitive and gender together (*ovis, ovis f*). Endings: -em, -is, -ī, -e; plural -ēs, -um / -ium, -ibus. Masculine and feminine share them all."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl3"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r09:4.1",
+        "r09:12.1",
+        "r09:16.1",
+        "r09:17.1"
+      ],
+      "invented": [
+        {
+          "la": "Canis ovēs ā lupō servat.",
+          "en": "The dog keeps the sheep safe from the wolf.",
+          "focus": "ovēs"
+        },
+        {
+          "la": "Rēx mīlitibus pecūniam dat.",
+          "en": "The king gives the soldiers money.",
+          "focus": "mīlitibus"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "third-declension-neuter",
+      "text": "Neuter third-declension nouns (*flūmen*, *mare*, *animal*) use the same endings but, like every neuter, keep nominative = accusative and take -a (or -ia) in the plural: *flūmina*, *maria*. A word in -ēs or -em used as the object is masculine or feminine; a neuter object never ends in -em."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: the course calls these is-nouns; some (*carō*, *rēx*) have a stem change that must be memorised, and the endings are always added to the changed stem (*carnem*, *rēgem*); the genitive plural is -(i)um, the ablative singular -e (occasionally -ī). The is-noun pattern is only masculine or feminine; neuters follow their own pattern. Genders must be committed to memory: *pānis* m, *carō* f."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. IX declines the three declensions side by side: *īnsula*, *servus*, *pāstor* / *ovis*. A nominative in -s often hides a consonant: *rēx* = *rēg-s*, *pēs, pedis*, *vōx, vōcis*; *homō, hominis*. Genitive plural -ium belongs to nouns like *ovis, ovium* and *collis, collium*; -um to *pāstor, pāstōrum* and *homō, hominum*. Rules of thumb: -or and -ō are masculine (*pāstor*, *timor*, *homō*; but *carō* f), -is and -ēs mostly feminine (but *pānis*, *canis*, *collis*, *mōns* m). Beware -is: *ovis* is nominative or genitive singular, while *servīs* is dative or ablative plural of the 2nd declension. A&G §64–72."
+    }
+  ],
+  "sources": [
+    "notes p29",
+    "Ørberg cap. IX Grammatica Latina",
+    "A&G §64–72"
+  ]
+}

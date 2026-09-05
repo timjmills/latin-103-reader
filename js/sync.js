@@ -626,10 +626,38 @@ export function lookupsView(map) {
   return out;
 }
 
-/** Week number from a unit id like "w07:12.3" → 7 (null if not parsable). */
+/**
+ * Week number from a unit id: "w07:12.3" → 7; a review-shelf id "r07:46.1"
+ * (GRAMMAR-CONTRACT.md "Review shelf": chapters I–XXIV as weeks n = 100 +
+ * chapter) → 107. null if not parsable.
+ */
 export function weekOfUnit(unitId) {
-  const m = /^w(\d+):/.exec(unitId || '');
-  return m ? Number(m[1]) : null;
+  const m = /^([wr])(\d+):/.exec(unitId || '');
+  if (!m) return null;
+  return m[1] === 'r' ? SHELF_BASE + Number(m[2]) : Number(m[2]);
+}
+
+/* ------------------------------------------------------------ review shelf */
+// Familia Romana I–XXIV sit in `weeks` as n = 100 + chapter, ids r01–r24,
+// Latin only. The 14 course weeks are n ≤ 14; everything the study log's
+// pace and per-week table say is about those.
+export const SHELF_BASE = 100;
+/** True for a review-shelf week number (101–124). Pure. */
+export function isShelfWeek(n) {
+  const x = Number(n);
+  return Number.isFinite(x) && x > SHELF_BASE;
+}
+/** The Familia Romana chapter of a shelf week (107 → 7), null for a course week. Pure. */
+export function shelfChapter(n) {
+  return isShelfWeek(n) ? Number(n) - SHELF_BASE : null;
+}
+/** Roman numeral (7 → "VII"; 0 or junk → "—"). Pure. */
+export function roman(n) {
+  const t = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+  let out = '';
+  let x = Math.max(0, Math.round(Number(n) || 0));
+  for (const [v, s] of t) while (x >= v) { out += s; x -= v; }
+  return out || '—';
 }
 
 /** Zero-padded week tag: 3 → "week-03". */

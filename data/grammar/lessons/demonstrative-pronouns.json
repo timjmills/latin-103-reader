@@ -1,0 +1,57 @@
+{
+  "skill": "demonstrative-pronouns",
+  "core": [
+    {
+      "type": "p",
+      "text": "Latin has no separate words for *he, she, it, they*. It uses a pointing word without a noun: **a demonstrative used as a pronoun (is = he, ea = she, id = it)**, *prōnōmina dēmōnstrātīva substantīva*. *Is multōs servōs habet* = he has many slaves; *ea* = she; *id* = it; *iī / eae / ea* = they. *Hic* (this one) and *ille* (that one) do the same job with more point. The gender follows the noun replaced, not real sex: cheese is *caseus*, so 'it' is *is*."
+    },
+    {
+      "type": "english",
+      "text": "A pronoun stands in for a noun: *Marcus laughs; he is happy*. English picks *he / she / it* by real sex; Latin by the gender of the noun replaced."
+    },
+    {
+      "type": "rule",
+      "text": "A form of *is*, *hic* or *ille* with no noun beside it is a pronoun: he / she / it / they (or this one / that one), matching the noun it refers back to."
+    },
+    {
+      "type": "paradigm",
+      "key": "is"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r05:5.2",
+        "r05:7.1",
+        "r05:33.1",
+        "r03:27.1"
+      ],
+      "invented": [
+        {
+          "la": "Ecce caseus! Is malus est.",
+          "en": "Look at the cheese! It is bad.",
+          "focus": "Is"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "demonstratives",
+      "text": "The same word, two jobs. *Is servus dormit* — that slave sleeps (pointing word with a noun). *Is dormit* — he sleeps (pronoun, no noun). Look for a noun beside it matching in gender, number and case; if there is none, read he / she / it. Neuter *id* alone is 'it'."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: a pronoun takes the place of a noun; any demonstrative can be used 'substantively' (standing alone), and *is, ea, id* is by far the commonest. Masculine for male persons and animals, feminine for female, neuter for everything else — but once a thing has a name, the pronoun takes the name's gender: *Ecce caseus! Is malus est*; *Aqua eius vītam nōn dat* (its water). *Huic malum dat, illī bonum* — he gives something bad to this one, something good to that one."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VIII: *eum / illum*, *eius*, *eī*, *eō*; *eam* from cap. III, *eōrum / eārum* from cap. V. The genitive *eius* means his / her / its when the owner is someone other than the subject (*sacculus eius*); for the subject's own, Latin uses *suus* (*sacculum suum pōnit*, r04:61.1). *Ille* can mean 'the famous', and *hic … ille* = the latter … the former. The true personal pronouns *ego*, *tū*, *nōs*, *vōs* have their own lesson. A&G §295–297."
+    }
+  ],
+  "sources": [
+    "notes p26",
+    "Ørberg cap. VIII Grammatica Latina",
+    "A&G §295–297"
+  ]
+}

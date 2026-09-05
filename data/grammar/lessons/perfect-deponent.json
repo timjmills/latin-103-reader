@@ -1,0 +1,62 @@
+{
+  "skill": "perfect-deponent",
+  "core": [
+    {
+      "type": "p",
+      "text": "Deponents make their past with **the perfect of a deponent verb (locutus est = he spoke)**: the deponent participle plus the present of *sum*. *Ariadna Thēseum secūta est* — Ariadne followed Theseus; *profectī sunt* — they set out. The shape is exactly a perfect passive; the meaning is plain active past, because deponents always mean active. Latin name: *perfectum verbi deponentis*."
+    },
+    {
+      "type": "english",
+      "text": "Think of it as one verb, *followed*, even though Latin spells it with two words."
+    },
+    {
+      "type": "rule",
+      "text": "Participle (agreeing with the subject) + sum, es, est, sumus, estis, sunt = 'did'. Never translate with 'was' or 'been'."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "perf",
+        "mood": "ind",
+        "voice": "pass"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w01:89.2",
+        "w05:fl-66:b35.1",
+        "r24:80.1",
+        "w10:fl-69:b12.4"
+      ],
+      "invented": [
+        {
+          "la": "Mēdus Rōmam profectus est.",
+          "en": "Medus set out for Rome.",
+          "focus": "profectus est"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-passive",
+      "text": "*Laudātus est* and *locūtus est* are built the same way, but **the perfect passive (the 'was done / has been done' form: laudatus est)** means 'he was praised' while the deponent means 'he spoke'. The verb decides, not the form: look it up and see whether its infinitive ends in -ī."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 22) admit this form 'looks even more passive' to an English speaker because of the helping verb, and insist the translation is always active: *puer lāpsus est* — the boy slipped; *canis eum secūtus est* — the dog followed him."
+    },
+    {
+      "type": "p",
+      "text": "Semi-deponents are active in the present but deponent in the perfect: *audeō, ausus sum* (dare), *gaudeō, gāvīsus sum* (rejoice), *soleō, solitus sum* (be used to). The pluperfect swaps in *erat*: *profectī erant* — they had set out."
+    }
+  ],
+  "sources": [
+    "notes p87",
+    "Ørberg cap. XXII (verba)",
+    "A&G §190"
+  ]
+}

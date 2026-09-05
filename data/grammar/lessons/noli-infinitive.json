@@ -1,0 +1,60 @@
+{
+  "skill": "noli-infinitive",
+  "core": [
+    {
+      "type": "p",
+      "text": "The everyday way to tell someone *not* to do something is **noli / nolite + infinitive (the polite 'don't …')**. *Nōlī* is the command form of *nōlō* (I do not want), so *Nōlī timēre!* is literally 'don't want to fear' — 'don't be afraid'. To several people say *nōlīte*. The verb after it is the plain infinitive (the 'to' form), so deponents keep their -ī / -ārī / -ērī infinitive: *Nōlī imitārī!* Latin name: *prohibitio: noli cum infinitivo*."
+    },
+    {
+      "type": "english",
+      "text": "English makes a negative command with *don't* plus the verb: *don't go*. Latin does the same job with a helping verb, 'be unwilling to go'."
+    },
+    {
+      "type": "rule",
+      "text": "nōlī (to one person) or nōlīte (to several) + infinitive = 'do not …'."
+    },
+    {
+      "type": "paradigm",
+      "key": "nolo",
+      "highlight": {
+        "mood": "imper"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w01:63.11",
+        "w06:94.6",
+        "r20:69.1",
+        "w02:130.4"
+      ],
+      "invented": [
+        {
+          "la": "Nōlīte clāmāre, puerī!",
+          "en": "Don't shout, boys!",
+          "focus": "Nōlīte clāmāre"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperative",
+      "text": "*Nōlī* is itself **the imperative (the command form)** of *nōlō*; the real action is the infinitive that follows. So *Nōlī abīre!* pairs with the positive *Abī!* (go away!), not with *nōn abī*, which Latin never says."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 20) call this a 'polite prohibition' and note that *nē* + imperative (*nē timē*) exists but is rare, mostly in poetry. Prose also uses *nē* with **the perfect subjunctive (the 'have done' form: nescio quid fecerit; ne timueris = don't be afraid)**: *nē timuerīs!* — the same meaning, a shade more urgent (chapter XXXII)."
+    },
+    {
+      "type": "p",
+      "text": "Other polite refusals use *cavē* (beware) + subjunctive: *cavē cadās* — mind you don't fall."
+    }
+  ],
+  "sources": [
+    "notes p73",
+    "Ørberg cap. XX",
+    "A&G §450"
+  ]
+}

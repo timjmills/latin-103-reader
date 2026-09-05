@@ -1,0 +1,60 @@
+{
+  "skill": "genitive-of",
+  "core": [
+    {
+      "type": "p",
+      "text": "Besides owners, **the genitive (the 'of' form)** — here *genitīvus dēscrīptīvus et partītīvus* — does nearly everything English does with *of*: it says what a thing contains, what it is made of, or what a number or amount is a number of. *Numerus servōrum* = the number of slaves; *saccus plēnus mālōrum* = a sack full of apples. A few adjectives, above all *plēnus* (full), want a genitive to finish their sense."
+    },
+    {
+      "type": "english",
+      "text": "In *a cup of wine* or *a crowd of people*, *of* is not about owning; it links two nouns, or an adjective and a noun (*full of apples*). Latin drops the *of* and changes the ending instead."
+    },
+    {
+      "type": "rule",
+      "text": "Where English says *of* after a noun of amount, part or contents, or after *plēnus*, Latin uses the genitive with no preposition."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "gen"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r02:43.1",
+        "r02:55.1",
+        "r07:43.1",
+        "r07:79.1"
+      ],
+      "invented": [
+        {
+          "la": "Pōculum vīnī in mēnsā est.",
+          "en": "A cup of wine is on the table.",
+          "focus": "vīnī"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "genitive-possession",
+      "text": "Same ending, different question. *Servus Iūliī* answers 'whose?': the slave belongs to Julius. *Numerus servōrum* answers 'a number of what?': the slaves own nothing. The Latin does not change, only the sense, and the book uses both freely. When 'whose?' makes no sense, read it as plain *of*."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes (weeks 2): the descriptive genitive does in Latin what *of* does in English (*a herd of goats*, *a ring of gold*, *vir Deī* — a man of God, *multitūdō fīliōrum* — a large number of sons); grammarians divide it into partitive, objective, material, qualitative and other kinds, useful for close reading but not needed to understand a sentence. The genitive with an adjective: *pōculum plēnum vīnī*, *canistrum plēnum caseōrum*; also *cupidus* (desirous of) and *studiōsus* (keen on)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VII: *saccus plēnus mālōrum est*, *oculī plēnī lacrimārum*. For 'one of the slaves' or 'many of the children' Latin can say *ūnus servōrum*, *multī līberōrum*, but with numbers it usually prefers *ex* + ablative: *ūnus ex servīs*. Later authors also use *plēnus* with the ablative. A&G §345 (quality), §346 (partitive), §349 (with adjectives)."
+    }
+  ],
+  "sources": [
+    "notes p6–7",
+    "Ørberg cap. VII Grammatica Latina",
+    "A&G §345–349"
+  ]
+}

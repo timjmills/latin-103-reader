@@ -1,0 +1,69 @@
+{
+  "skill": "passive-periphrastic",
+  "core": [
+    {
+      "type": "p",
+      "text": "Put the gerundive (the '-nd-' adjective, 'to be done') next to a form of *sum* (to be) and you get **the gerundive with sum (the 'must be done' pattern: liber legendus est = the book must be read)**. *Cibus comedendus est* — the food must be eaten; *tacendum est* — one must be silent (no subject, so the neuter *-um*). The tense of *sum* moves the duty in time: *pūniendus erat* — had to be punished. Latin name: *coniugatio periphrastica passiva*."
+    },
+    {
+      "type": "english",
+      "text": "English: *the food is to be eaten*, *it must be eaten*. Think 'has to be done', then say it naturally: *we have to eat the food*."
+    },
+    {
+      "type": "rule",
+      "text": "Gerundive agreeing with the subject + sum = must / ought to be; neuter -ndum est with no subject = one must; in reported speech -ndum esse."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "gerundive"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w09:b46.8",
+        "w09:b47.1",
+        "w09:b36.1",
+        "w11:b36.3"
+      ],
+      "invented": [
+        {
+          "la": "Epistula hodiē scrībenda est.",
+          "en": "The letter must be written today.",
+          "focus": "scrībenda"
+        },
+        {
+          "la": "Nunc dormiendum est.",
+          "en": "Now one must sleep.",
+          "focus": "dormiendum"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-passive",
+      "text": "*laudātus est* (the perfect passive, the 'was done' tense: he was praised) and *laudandus est* (he must be praised) share the shape participle + *est*. Look at the participle: *-tus / -sus* is the perfect passive participle (done); *-ndus* is the gerundive (to be done). *victus est* = was beaten; *vincendus est* = must be beaten."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The person who must do it is added in the dative (the 'to/for' form), not with ā/ab: *liber mihi legendus est* — I must read the book. See the dative of agent lesson."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes: the future passive participle is commonly joined with a form of *sum* to make a short sentence about what needs to be done (*aqua bibenda est*, the water needs drinking), and just as often sits inside an accusative + infinitive clause with *esse*: *sciō cibum comedendum esse* — I know the food needs eating; *intellegis vōcem audiendam esse*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 31: *discipulus industrius magistrō laudandus est; discipulus piger reprehendendus et pūniendus est; tacendum est; Lingua Latīna vōbīs discenda est; quidquid magister imperāvit discipulō faciendum est; dominus dīcit ovēs bene cūrandās esse.* With a verb that takes no object the pattern is always the impersonal neuter: *eundum est* (one must go), *pugnandum est*, *dēspērandum nōn est*. The Latin name means 'the roundabout passive conjugation'; Cato's *Carthāgō dēlenda est* (Carthage must be destroyed) is the famous case."
+    }
+  ],
+  "sources": [
+    "notes p114",
+    "Ørberg cap. XXXI Grammatica Latina",
+    "A&G §194, §500.2"
+  ]
+}

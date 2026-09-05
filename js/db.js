@@ -11,12 +11,15 @@
 //   pictures     keyPath id            index week_n   (+ url / url_exp: the last signed URL, so offline shows what the browser cached)
 //   progress     keyPath unit_id       index week_n   (reading_progress: one row per sentence read)
 //   study_rows   keyPath key           (study_days: one row per (day, device), key = studyKey(day, device) in sync.js — active reading time per local day per device, CONTRACT.md "Study log merge")
+//   skill_state  keyPath skill         (grammar: one row per skill — GRAMMAR-CONTRACT.md)
+//   drill_attempts keyPath id          index skill   (grammar: append-only attempt log, id made on the device)
+//   confusions   keyPath key           (grammar: `${skill_a}|${skill_b}` → count)
 //   meta         keyPath key           (user_id, user_email, texts_synced_at …)
 //   outbox       keyPath seq (auto)    queued writes while offline
 
 export const DB_NAME = 'latin103';
-export const DB_VERSION = 5;   // 2: pictures; 3: progress; 4: study_days; 5: study_rows (per device) replaces study_days
-export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'study_rows', 'meta', 'outbox'];
+export const DB_VERSION = 6;   // 2: pictures; 3: progress; 4: study_days; 5: study_rows (per device) replaces study_days; 6: grammar (skill_state, drill_attempts, confusions)
+export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'study_rows', 'skill_state', 'drill_attempts', 'confusions', 'meta', 'outbox'];
 
 let dbPromise = null;
 
@@ -37,6 +40,10 @@ function upgrade(idb) {
   // v5: study rows are per (day, device); the v4 day-keyed store goes (its rows were this device's totals, still on the server under device 'main' — the next pull brings them back).
   if (idb.objectStoreNames.contains('study_days')) idb.deleteObjectStore('study_days');
   mk('study_rows', { keyPath: 'key' });
+  // v6: the grammar section (GRAMMAR-CONTRACT.md) — local-first like progress.
+  mk('skill_state', { keyPath: 'skill' });
+  mk('drill_attempts', { keyPath: 'id' }, [['skill', 'skill']]);
+  mk('confusions', { keyPath: 'key' });
   mk('meta', { keyPath: 'key' });
   mk('outbox', { keyPath: 'seq', autoIncrement: true });
 }

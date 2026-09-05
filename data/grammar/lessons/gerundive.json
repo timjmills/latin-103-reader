@@ -1,0 +1,70 @@
+{
+  "skill": "gerundive",
+  "core": [
+    {
+      "type": "p",
+      "text": "**the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk)** is a verb turned into an adjective: stem + *-nd-* + *-us, -a, -um*, agreeing with its noun like *bonus*. It says what should be done to the noun: *cibus comedendus* — food to be eaten, food that needs eating; *vōx audienda* — a voice that must be heard. Latin name: *gerundivum (participium futuri passivi)*, the 'future passive participle' of the learner's notes."
+    },
+    {
+      "type": "english",
+      "text": "English has the *to be* idea: *a book to be read*, *a name to be remembered*. The Latin word carries the 'ought' itself."
+    },
+    {
+      "type": "rule",
+      "text": "Stem + -nd- + adjective endings, agreeing with a noun. After ad, or with causā, it replaces gerund + object: ad litterās scrībendās = for writing letters (literally: for letters to-be-written)."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "gerundive"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w12:b13.5",
+        "w12:b11.4",
+        "w09:b46.4",
+        "w10:fl-71:b22.4"
+      ],
+      "invented": [
+        {
+          "la": "Puer ad librōs legendōs parātus est.",
+          "en": "The boy is ready for reading the books.",
+          "focus": "legendōs"
+        },
+        {
+          "la": "Aqua bibenda frīgida est.",
+          "en": "The water to be drunk is cold.",
+          "focus": "bibenda"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "gerund",
+      "text": "The gerund (the verb-as-noun, '-ing') is a noun: singular only, endings *-ndī, -ndō, -ndum*, and it can take an object — *ad ālās faciendum* (for making wings). The gerundive is an adjective with any ending and agrees with a noun: *ad litterās scrībendās*. Agrees with a noun → gerundive; stands alone or has its own object → gerund."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: the future participle in *-ūrus* (about to do: *moritūrus*, about to die) is active and looks forward; the gerundive in *-ndus* is passive and means 'ought to be'. *laudātūrus* = going to praise; *laudandus* = to be praised."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (Week 31) call it the future passive participle: *-(e)nd* + *-us -a -um*, matching its noun in case, number and gender; despite its name it rarely says what *will* happen and almost always what *should* happen — *cibus comedendus* is food that needs eating, not food that will be eaten. Their Week 33 page then narrows 'gerundive' to the same form in cases other than the nominative, with no sense of need, standing where a gerund with an object would have stood: *vās ad aquam bibendam* (a vessel for drinking water) beside the gerund *vās ad bibendum*. The tip: if a gerund would have made sense there, translate with an English -ing and its object."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 31: *laudandus -a -um* is an adjective of the first and second declension; joined to *esse* it means what ought to be done (see the next lesson). Chapter 26 keeps gerund + accusative (*ad ālās faciendum*); from chapter 31 the book prefers the gerundive (*ad castra dēfendenda*, *ad eōs persequendōs*). A few gerundives have become plain words: *secundus* (following), *agenda* (things to be done), the names *Amanda* and *Miranda*."
+    }
+  ],
+  "sources": [
+    "notes p114",
+    "notes p120",
+    "Ørberg cap. XXXI Grammatica Latina",
+    "A&G §500, §503"
+  ]
+}

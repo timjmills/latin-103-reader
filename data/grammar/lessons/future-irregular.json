@@ -1,0 +1,61 @@
+{
+  "skill": "future-irregular",
+  "core": [
+    {
+      "type": "p",
+      "text": "Three common verbs make **the future of the irregular verbs (ero = I will be, potero = I will be able, ibo = I will go)** their own way. *Sum* uses a special stem *er-* with the ordinary endings: *erō, eris, erit, erimus, eritis, erunt*. *Possum* is just *pot-* + that: *poterō, poteris, poterit*. *Eō* keeps its stem *ī-* and takes the -b- future: *ībō, ībis, ībit, ībimus, ībitis, ībunt*. Latin name: *futurum verborum anomalorum*."
+    },
+    {
+      "type": "english",
+      "text": "The future in English is *will* + verb: *I will be, I will be able, I will go*."
+    },
+    {
+      "type": "rule",
+      "text": "erō / poterō like the present endings of sum on er-; ībō like laudābō. Volō, nōlō, mālō and ferō are regular third-conjugation futures: volet, nōlet, mālet, feret."
+    },
+    {
+      "type": "paradigm",
+      "key": "sum",
+      "highlight": {
+        "tense": "fut",
+        "mood": "ind"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r20:21.1",
+        "r20:56.2",
+        "w10:fl-69:b12.7",
+        "r20:129.1"
+      ],
+      "invented": [
+        {
+          "la": "Crās Rōmam ībimus et amīcōs vidēbimus.",
+          "en": "Tomorrow we will go to Rome and see our friends.",
+          "focus": "ībimus"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "future-perfect",
+      "text": "*erit* (will be) looks like the ending of **the future perfect (the 'will have done' tense)**: *laudāverit* (will have praised). If *er-* stands alone it is the future of *sum*; if it is glued to a perfect stem (*laudāv-erit*) it is the future perfect."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes (week 20): compounds of *sum* follow it (*aderō* I will be present, *aberit* he will be away), and compounds of *eō* follow *eō* (*redībit* he will return, *exībit* he will go out)."
+    },
+    {
+      "type": "p",
+      "text": "Watch the two imperfects that rhyme with these futures: *eram* (I was) versus *erō* (I will be); *ībam* (I was going) versus *ībō*. The vowel after the stem decides."
+    }
+  ],
+  "sources": [
+    "notes p74",
+    "Ørberg cap. XX Grammatica Latina",
+    "A&G §170, §203"
+  ]
+}

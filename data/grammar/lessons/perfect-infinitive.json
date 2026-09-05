@@ -1,0 +1,61 @@
+{
+  "skill": "perfect-infinitive",
+  "core": [
+    {
+      "type": "p",
+      "text": "To show that the action in an infinitive happened *earlier*, Latin uses **the perfect infinitive (the 'to have done' form)**. Active: perfect stem + -isse, *dormīvisse* — to have slept. Passive: perfect participle + *esse*, *raptam esse* — to have been taken. You meet it mostly after verbs of saying and knowing: *dīcit tē dormīvisse* — he says that you slept. Latin name: *infinitivus perfecti*."
+    },
+    {
+      "type": "english",
+      "text": "In *she says that he slept*, the sleeping came before the saying. Latin shows that time difference on the infinitive itself."
+    },
+    {
+      "type": "rule",
+      "text": "Active: perfect stem + -isse. Passive: participle (agreeing with its subject) + esse. Both mean 'earlier than the main verb'."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "mood": "inf",
+        "tense": "perf"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r21:99.2",
+        "r23:79.1",
+        "w03:fl-64:b16.2",
+        "w04:128.4"
+      ],
+      "invented": [
+        {
+          "la": "Mārcus dīcit sē epistulam scrīpsisse.",
+          "en": "Marcus says that he wrote the letter.",
+          "focus": "scrīpsisse"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "infinitive",
+      "text": "Plain **the infinitive (the 'to' form)** means 'at the same time': *dīcit Mārcum dormīre* — he says Marcus is sleeping. The -isse form pushes it back: *dīcit Mārcum dormīvisse* — he says Marcus slept (or has slept)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 21) remember -isse as a squeezed *esse*, and note that in the accusative + infinitive the passive participle agrees with the accusative subject: *vīdī eās relictās esse* — I saw that they had been left. Deponents use the passive shape with active sense: *audīvimus tē profectum esse* — we heard you had set out."
+    },
+    {
+      "type": "p",
+      "text": "Some perfect infinitives stand for a present because the verb has no present: *meminisse* (to remember), *nōvisse* (to know), *ōdisse* (to hate)."
+    }
+  ],
+  "sources": [
+    "notes p83",
+    "Ørberg cap. XXI Grammatica Latina",
+    "A&G §584"
+  ]
+}

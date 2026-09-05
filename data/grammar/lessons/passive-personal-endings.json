@@ -1,0 +1,18 @@
+{
+  "skill": "passive-personal-endings",
+  "core": [
+    { "type": "p", "text": "The passive has its own six endings, one for each person: **the passive person endings (I am …-ed, you are …-ed …)**. *-or* I am, *-ris* you are, *-tur* he is, *-mur* we are, *-minī* you all are, *-ntur* they are. *Ego ā magistrō laudor* — I am praised by the teacher; *tū laudāris, nōs laudāmur, vōs laudāminī*. Each matches an active ending: *-ō → -or, -s → -ris, -t → -tur, -mus → -mur, -tis → -minī, -nt → -ntur*. The 3rd conjugation shows *-eris, -imur, -iminī, -untur*. The same set serves the deponents (passive-looking, active meaning): *sequor, sequeris, sequitur, sequimur, sequiminī, sequuntur*. Latin name: dēsinentiae persōnālēs passīvae." },
+    { "type": "english", "text": "Passive means the subject receives the action: *I am praised*, not *I praise*. English needs *am / are / is* plus *-ed*; Latin folds it into the ending." },
+    { "type": "rule", "text": "-or, -ris, -tur, -mur, -minī, -ntur — the r-endings; -minī is the odd one out." },
+    { "type": "paradigm", "key": "conj1", "highlight": { "tense": "pres", "mood": "ind", "voice": "pass" } },
+    { "type": "paradigm", "key": "conj3", "highlight": { "tense": "pres", "mood": "ind", "voice": "pass" } },
+    { "type": "examples", "units": ["r17:70.1", "r17:71.1", "r17:75.1", "r17:77.1"], "invented": [ { "la": "Ā patre amāmur.", "en": "We are loved by our father.", "focus": "amāmur" } ] },
+    { "type": "confusion", "with": "active-personal-endings", "text": "Active and passive differ only in the ending: *laudās* — you praise; *laudāris* — you are praised. One look-alike: 3rd-conjugation *-eris* is present passive (*mergeris*), while the future has long *-ēris*. Read the *r*: it marks the passive, or a deponent." }
+  ],
+  "more": [
+    { "type": "p", "text": "The 1st-conjugation *a* drops before *-or* just as before *-ō*: *iactō / iactor*. Outside the present the first person ends in *-r* instead of *-or*: *laudābar* (I was praised), *laudābor* (I shall be praised), *lauder*. The agent goes with *ā / ab* + ablative: *ā magistrō laudor*." },
+    { "type": "p", "text": "Your notes: the passive / deponent endings are *-or / -r, -(e)ris, -(i)tur, -(i)mur, -(i)minī, -(u)ntur*, with the variable vowels working as in the active (*frang-eris, frang-imur, frang-iminī*); *-r* is the alternative to *-or* just as *-m* is to *-ō*, and is not used in the present indicative; the *a* of *a-*stems drops in the first person singular (*oper-or*) — with the active *-ō*, the only place in the whole verb system where a fixed stem vowel is lost." },
+    { "type": "p", "text": "Ørberg (chapter XVII): *laudor laudāmur, videor vidēmur, mergor mergimur, audior audīmur*; the deponents *laetor, vereor, sequor, partior* follow the same four patterns; *-iō* verbs go *capior, capiuntur* and *ēgredior, ēgrediuntur*; *ā magistrō laudor = magister mē laudat*." }
+  ],
+  "sources": ["notes p57–58", "Ørberg cap. XVII Grammatica Latina", "A&G §163, §184"]
+}

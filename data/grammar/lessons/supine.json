@@ -1,0 +1,60 @@
+{
+  "skill": "supine",
+  "core": [
+    {
+      "type": "p",
+      "text": "To say what you go *to do*, Latin has **the supine (the special purpose form after a verb of going: dormitum it = goes to sleep)**: the participle stem with -um, used after *īre*, *venīre*, *mittere* and other verbs of moving: *ambulātum exit* — he goes out to walk; *salūtātum veniō* — I come to greet you. It can take an object like a verb: *amīcum salūtātum īvit*. Latin name: *supinum*."
+    },
+    {
+      "type": "english",
+      "text": "English uses a plain *to* here: *he went out to walk*, *they come to watch*."
+    },
+    {
+      "type": "rule",
+      "text": "Verb of motion + supine in -um = 'to do X'. A second supine in -ū follows facilis / difficilis: facile dictū — easy to say."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "mood": "supine"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r22:54.1",
+        "w04:1.3",
+        "r22:43.1",
+        "w13:b15.1"
+      ],
+      "invented": [
+        {
+          "la": "Puerī fessī dormītum eunt.",
+          "en": "The tired boys go to sleep.",
+          "focus": "dormītum"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-passive-participle",
+      "text": "*Salūtātum* is also the neuter of **the perfect participle (the 'having been done' word: laudatus = praised)**. Ask what it is doing: after a verb of going with no noun to agree with, it is the supine ('to greet'); agreeing with a noun (*oppidum salūtātum*) it is the participle."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 22) call it the third verbal noun beside infinitive and gerund, with only two jobs: -um after motion for purpose, -ū to pin down an adjective. Deponents form it the same way: *venī mēcum locūtum* — come and talk with me."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (cap. XXII) lists everyday supines: *lavātum īre*, *dormītum īre*, *cubitum īre*. Supine + *īrī* makes the rare future passive infinitive (*laudātum īrī*, cap. XXIII). For purpose in general Latin prefers *ut* + subjunctive or *ad* + gerund; the supine stays with going and sending."
+    }
+  ],
+  "sources": [
+    "notes p84",
+    "Ørberg cap. XXII Grammatica Latina",
+    "A&G §509–510"
+  ]
+}

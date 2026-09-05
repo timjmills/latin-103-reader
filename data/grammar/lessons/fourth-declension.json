@@ -1,0 +1,18 @@
+{
+  "skill": "fourth-declension",
+  "core": [
+    { "type": "p", "text": "A small family of nouns runs on the vowel *u*: **a 4th-declension noun (the u-pattern: manus, manus)**. The dictionary shows the pair *-us, -ūs*; the second form is the genitive (the 'of' form), and that long *-ūs* is what tells you the noun is 4th, not 2nd. Singular: *exercitus, exercitum, exercitūs, exercituī, exercitū*; plural: *exercitūs, exercitūs, exercituum, exercitibus, exercitibus*. Most are masculine — *exercitus* (army), *arcus* (bow), *passus* (pace), *metus* (fear), *impetus* (attack); *manus* (hand) is feminine; *cornū* (horn) is neuter. Latin name: dēclīnātiō quārta." },
+    { "type": "english", "text": "A declension is a family of nouns that share one set of endings. English has none; the nearest thing is the plural pattern *ox / oxen* against *box / boxes*." },
+    { "type": "rule", "text": "Genitive singular -ūs marks the family: -us, -um, -ūs, -uī, -ū; plural -ūs, -ūs, -uum, -ibus, -ibus." },
+    { "type": "paradigm", "key": "decl4", "highlight": { "case": "gen" } },
+    { "type": "paradigm", "key": "domus" },
+    { "type": "examples", "units": ["r12:81.1", "r12:77.1", "r12:119.1", "w04:12.5"], "invented": [ { "la": "Mīles manū gladium tenet.", "en": "The soldier holds his sword in his hand.", "focus": "manū" } ] },
+    { "type": "confusion", "with": "third-declension", "text": "Both families have *-ibus* in the plural, and an *-us* nominative can belong to either (*tempus* is 3rd, *exercitus* 4th). The genitive settles it: *temporis* (3rd) against *exercitūs* (4th). The 2nd declension has *-us* too — *servus, servī* — but its genitive is *-ī*, never *-ūs*." }
+  ],
+  "more": [
+    { "type": "p", "text": "*Domus* (house) mixes the 4th and the 2nd: *domus, domum, domūs, domuī, domō*; plural *domūs, domōs, domuum* (or *domōrum*), *domibus*. It keeps three special forms: *domī* (at home), *domum* (homewards), *domō* (from home)." },
+    { "type": "p", "text": "Your notes: the dative and ablative plural is *-ibus*, not the *-ubus* you might expect (the old *-ubus* survives in a few words such as *artubus*, *tribubus*); the nominative singular *-us* is short, while the genitive singular and the nominative and accusative plural have long *-ūs*. Almost all are masculine; the feminine exceptions such as *manus* are flagged in the vocabulary. The rare neuters (*cornū*, *genū* knee) run *-ū, -ū, -ūs, -ū, -ū; -ua, -ua, -uum, -ibus, -ibus*." },
+    { "type": "p", "text": "Ørberg (chapter XII) declines *exercitus* and lists *arcus, passus, equitātus* (cavalry), *impetus, metus, versus* (line of verse), with feminine *manus*. *Mīlle passūs* — a thousand paces — is the Roman mile; *duo mīlia passuum* shows the genitive plural." }
+  ],
+  "sources": ["notes p38", "Ørberg cap. XII Grammatica Latina", "A&G §88–93"]
+}

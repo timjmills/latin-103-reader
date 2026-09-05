@@ -1,0 +1,18 @@
+{
+  "skill": "third-declension-neuter",
+  "core": [
+    { "type": "p", "text": "Every neuter noun in Latin keeps one habit: its object form is the same as its subject form. So **a 3rd-declension neuter noun (corpus, mare: nominative = accusative, plural in -a / -ia)** never takes *-em*: *caput* (head) is both *the head hurts* and *washes the head*. The plural subject and object end in *-a* (*capita*, *corpora*), or in *-ia* for nouns in *-e, -al, -ar* (*maria* seas, *animālia* animals); that group also has *-ium* in the genitive plural and *-ī* in the ablative singular (*in marī*). Latin name: dēclīnātiō tertia, genus neutrum." },
+    { "type": "english", "text": "Neuter means 'neither masculine nor feminine' — a grammar label, not a fact about the thing. English has no such endings." },
+    { "type": "rule", "text": "Neuter: nominative = accusative; plural in -a; the -e / -al / -ar group adds i (-ia, -ium, ablative -ī)." },
+    { "type": "paradigm", "key": "decl3n", "highlight": { "case": ["nom", "acc"] } },
+    { "type": "paradigm", "key": "decl3in", "highlight": { "case": ["nom", "acc", "abl"] } },
+    { "type": "examples", "units": ["r11:5.1", "r11:1.1", "r10:55.1", "r11:18.3"], "invented": [ { "la": "Pāstor animal in flūmine videt.", "en": "The shepherd sees an animal in the river.", "focus": "animal" } ] },
+    { "type": "confusion", "with": "third-declension", "text": "A masculine or feminine 3rd-declension noun changes for the object — *pāstor → pāstōrem* — and its plural ends in *-ēs*. A neuter one does not change (*caput → caput*) and its plural ends in *-a*. So a bare *corpus* can be the object: *Mārcus corpus lavat* — Marcus washes his body. Check the verb before calling it the subject." }
+  ],
+  "more": [
+    { "type": "p", "text": "The dative and ablative are the same as for the other 3rd-declension nouns: *capitī, capite; capitibus*. The genitive singular shows the stem — *caput, capitis; corpus, corporis; flūmen, flūminis; ōs, ōris* (mouth); *cor, cordis* (heart) — so learn each noun with its genitive." },
+    { "type": "p", "text": "Your notes: neuter 3rd-declension nouns behave like the *is*-nouns except in two points — the accusative singular equals the nominative, and the plural nominative and accusative end in *-a* (sometimes *-ia*). Because the nominative can look like anything (*caput, corpus, cor, mel, nōmen, lac*), a form without *-m* can still be an object; only context decides. The *-āre, -ar, -āle, -al* nouns were once 3rd-declension adjectives and keep the adjective's extra *i* (*maria, marium*); watch the ablative *-ī* (*marī*), which is easy to mistake for the dative." },
+    { "type": "p", "text": "Ørberg's chapter XI list: *flūmen, ōs, crūs* (leg), *corpus, caput, cor, pectus* (chest), *iecur* (liver); *mare, animal*; and *viscera* (organs), plural only. A&G: the *-e, -al, -ar* nouns are i-stems, which is why they take *-ium* and *-ī*; poetry sometimes shows *mare* as an ablative, but the pattern above holds in prose." }
+  ],
+  "sources": ["notes p34–35", "Ørberg cap. XI Grammatica Latina", "A&G §64–68"]
+}

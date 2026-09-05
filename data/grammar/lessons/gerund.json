@@ -1,0 +1,60 @@
+{
+  "skill": "gerund",
+  "core": [
+    {
+      "type": "p",
+      "text": "A verb turned into a noun, so it can take a case or follow a preposition, is **the gerund (the '-ing' noun form: ad bibendum = for drinking)**: *tempus dormiendī* — time for sleeping; *parātus ad audiendum* — ready for listening; *fessus audiendō* — tired from listening. It is the present stem + -nd- with neuter endings. Latin name: *gerundium*."
+    },
+    {
+      "type": "english",
+      "text": "*Running is fun*, *shoes for running*: here *running* is a noun, a gerund. In *the running man* it is a participle, an adjective."
+    },
+    {
+      "type": "rule",
+      "text": "Stem + -ndum (after ad: purpose), -ndī ('of …-ing' after a noun or adjective), -ndō (means, or after in / dē / ab). First conjugation -andum, the rest -endum."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "mood": "gerund"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w02:121.2",
+        "w02:12.4",
+        "w02:70.3",
+        "w02:121.3"
+      ],
+      "invented": [
+        {
+          "la": "Puerī ad lūdendum in hortum currunt.",
+          "en": "The boys run into the garden to play.",
+          "focus": "ad lūdendum"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "gerundive",
+      "text": "The same -nd- makes **the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk)**. The gerund is a neuter noun standing alone (*ad bibendum* — for drinking); the gerundive agrees with a noun (*ad aquam bibendam* — for drinking water, *bibendum est* — one must drink). A noun to agree with means gerundive."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 26) list the uses: *ad* + accusative for purpose (*vās ad bibendum*), genitive after a noun (*tempus veniendī, ars scrībendī*) or an adjective (*studiōsus discendī*), *in* + ablative for time (*in ambulandō* — while walking), *ab / dē / ex* + ablative (*dē amandō*), and the bare ablative for means (*ambulandō* — by walking). With *causā* after a genitive it means 'for the sake of': *dēlectandī causā*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (cap. XXVI) declines it: *nārrandum, nārrandī, nārrandō*; deponents form it the same way (*loquendī*). It has no nominative — as a subject Latin uses the infinitive (*dormīre iuvat* — sleeping is pleasant) — and the dative (-ndō) is rare. A gerund with a direct object is usually replaced by the gerundive: *ad flōrēs carpendōs* rather than *ad carpendum flōrēs*."
+    }
+  ],
+  "sources": [
+    "notes p94–95",
+    "Ørberg cap. XXVI Grammatica Latina",
+    "A&G §501–507"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "skill": "sequence-of-tenses",
+  "core": [
+    {
+      "type": "p",
+      "text": "Which tense of the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) goes inside an *ut*, *nē*, *cum* or question clause depends on the main verb. That pairing is **the sequence of tenses (a present main verb takes the present subjunctive, a past one the imperfect)**: *imperat ut veniās* (he orders you to come) but *imperāvit ut venīrēs* (he ordered you to come). Latin name: *consecutio temporum*."
+    },
+    {
+      "type": "english",
+      "text": "English shifts too: he says he *is* coming; he said he *was* coming. The tense of the report follows the tense of the main verb."
+    },
+    {
+      "type": "rule",
+      "text": "Main verb present or future → present subjunctive; main verb imperfect, perfect or pluperfect → imperfect subjunctive. The same rule covers purpose, result, indirect command, cum clauses and indirect questions."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "subj",
+        "tense": [
+          "pres",
+          "impf"
+        ]
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w04:74.7",
+        "w10:fl-69:b14.8",
+        "w13:b16.1",
+        "w12:b15.3"
+      ],
+      "invented": [
+        {
+          "la": "Rogat ut maneam. — Rogāvit ut manērem.",
+          "en": "He asks me to stay. — He asked me to stay.",
+          "focus": "manērem"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperfect-subjunctive",
+      "text": "The imperfect subjunctive is not 'past meaning' but 'past setting': in *vēnit ut vidēret* the seeing is still ahead from his point of view. Choose the tense by the main verb, then translate the clause naturally ('to see', 'to stay')."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes list five dependent uses and shift each one: *imperō / imperābō ut veniās* but *imperāvī ut venīrēs*; *veniō ut doceam* but *vēnī ut docērem*; *ita clāmō ut proximōs suscitem* but *clāmāvī ut suscitārem*; *bibō cum sitiam* (I drink because I am thirsty) but *bibēbam cum sitīrem*; *nesciō quid videam* but *nesciēbam quid vidērem*."
+    },
+    {
+      "type": "p",
+      "text": "Two more tenses fill in 'already finished': after a present main verb the perfect subjunctive (Week 10: *nesciō quid fēcerit*, I don't know what he did), after a past main verb the pluperfect subjunctive (Week 12: *nesciēbam quid fēcisset*). So each main-verb group has a 'same time' tense and a 'before' tense."
+    },
+    {
+      "type": "p",
+      "text": "In a present-tense story (the historic present) a writer may still use the imperfect: *rogat ut manēret*; the story is past even if the verb is present. Ørberg's chapter 28 drills the pair with *monet ut pāreat* / *monēbat, monuit ut pārēret*; chapter 29 sets *tempus praesēns* against *tempus praeteritum* for purpose and result alike."
+    }
+  ],
+  "sources": [
+    "notes p105–106",
+    "Ørberg cap. XXVIII–XXIX Grammatica Latina",
+    "A&G §482–485"
+  ]
+}

@@ -6,7 +6,9 @@
 // The inline script in index.html applies the localStorage mirror before
 // first paint; this module keeps <html> attributes + the store in step.
 
-import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs, lastReadOf, readsOf } from './sync.js';
+import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs, lastReadOf, readsOf, isShelfWeek, shelfChapter, roman } from './sync.js';
+
+export { isShelfWeek, shelfChapter, roman };
 
 export { readsOf };   // the one `reads` coercion (sync.js), re-exported for the study-log callers and tests
 export { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate };
@@ -131,8 +133,8 @@ export function applyToDocument(settings, root = document.documentElement) {
 }
 
 /** One plain sentence for the Audio section. Pure. */
-export function audioStateText({ hasAudio, alignedCount = 0, total = 0 } = {}) {
-  if (!hasAudio) return 'No recording for this week yet.';
+export function audioStateText({ hasAudio, alignedCount = 0, total = 0 } = {}, { unit = 'week' } = {}) {
+  if (!hasAudio) return `No recording for this ${unit} yet.`;   // "chapter" on the review shelf
   if (!alignedCount) return 'Recording uploaded — not aligned yet.';
   if (total && alignedCount >= total) return `Aligned — all ${total} sentences.`;
   return `Aligned ${alignedCount} of ${total} sentences.`;
@@ -195,6 +197,42 @@ export function progressStateText(read, total) {
   return `${r} of ${t} sentences read.`;
 }
 
+/* ---------------------------------------------------------- week labels */
+// The 14 course weeks are "Week 3"; the review shelf (GRAMMAR-CONTRACT.md
+// "Review shelf": Familia Romana I–XXIV as n = 100 + chapter) is named by its
+// chapter everywhere — never "Week 107".
+
+/** "Week 3" / "Cap. VII" — the header button, the document title, the menu. Pure. */
+export function weekNumberLabel(n) {
+  const c = shelfChapter(n);
+  return c != null ? `Cap. ${roman(c)}` : `Week ${n}`;
+}
+/** "week 3" / "chapter VII" — inside a sentence ("Progress · week 3"). Pure. */
+export function weekPhrase(n) {
+  const c = shelfChapter(n);
+  return c != null ? `chapter ${roman(c)}` : `week ${n}`;
+}
+/** "Week 3 · Daedalus et Īcarus" / "Cap. VII · Puella et Rosa". Pure. */
+export function weekTitleLabel(n, title) {
+  return title ? `${weekNumberLabel(n)} · ${title}` : weekNumberLabel(n);
+}
+
+/**
+ * The weeks menu's two groups: the course outline (every outline week, with
+ * its library row when there is one) and the review shelf (library weeks
+ * n > 100, chapter order, each with `chapter` and `numeral`). `outline` is
+ * course.json (or the library's own course weeks when it is missing). Pure.
+ */
+export function groupWeeks(outline, weeks) {
+  const lib = (weeks || []).filter((w) => w && Number.isFinite(Number(w.n)));
+  const courseOutline = (outline || []).filter((c) => c && !isShelfWeek(c.n));
+  const course = (courseOutline.length ? courseOutline : lib.filter((w) => !isShelfWeek(w.n)))
+    .map((c) => ({ n: Number(c.n), outline: c, lib: lib.find((w) => Number(w.n) === Number(c.n)) ?? null }));
+  const shelf = lib.filter((w) => isShelfWeek(w.n)).sort((a, b) => a.n - b.n)
+    .map((w) => ({ n: Number(w.n), outline: null, lib: w, chapter: shelfChapter(w.n), numeral: roman(shelfChapter(w.n)) }));
+  return { course, shelf };
+}
+
 /* ------------------------------------------------------------ study log */
 // CONTRACT.md "Study log": sentences per local day come from the progress
 // Map's read_at (first passes only); reviews (CONTRACT.md "Reviews") from
@@ -213,10 +251,11 @@ export function readAtOf(value) {
   return value && typeof value === 'object' ? value.read_at ?? null : typeof value === 'string' ? value : null;
 }
 
-/** Sentences read (first passes) per local day: Map day → count, from a progress Map (unit_id → row | read_at). Pure. */
-export function sentencesPerDay(progress) {
+/** Sentences read (first passes) per local day: Map day → count, from a progress Map (unit_id → row | read_at); `include(unit_id)` narrows it. Pure. */
+export function sentencesPerDay(progress, include = null) {
   const out = new Map();
-  for (const v of progress?.values?.() ?? []) {
+  for (const [id, v] of progress?.entries?.() ?? []) {
+    if (include && !include(id)) continue;
     const day = localDay(readAtOf(v));
     if (day) out.set(day, (out.get(day) ?? 0) + 1);
   }
@@ -318,15 +357,19 @@ export function lastDays(now = new Date(), span = 14) {
  * sentences whose latest pass (reads > 1) fell on the day (CONTRACT.md
  * "Reviews"). Pure.
  */
-export function studyLog({ progress, studyDays, now = new Date(), span = 14 } = {}) {
+export function studyLog({ progress, studyDays, now = new Date(), span = 14, isCourse = (n) => !isShelfWeek(n) } = {}) {
   const perDay = sentencesPerDay(progress);
+  // The pace is the 103 reading's (CONTRACT / GRAMMAR-CONTRACT "Review shelf"): a shelf chapter's
+  // sentences count in the day's minutes and its "N read", never in the pace or the per-week table.
+  const courseId = (id) => isCourse(weekOfUnit(id));
+  const perDayCourse = sentencesPerDay(progress, courseId);
   const reviewed = reviewsPerDay(progress);
   const byWeek = sentencesPerDayByWeek(progress);
   const passes = passesByWeek(progress);
   const dayKeys = new Set([...perDay.keys(), ...reviewed.keys(), ...(studyDays?.keys?.() ?? [])]);
-  const all = [...dayKeys].map((day) => ({ day, ms: cleanMs(studyDays?.get?.(day)), sentences: perDay.get(day) ?? 0, reviews: reviewed.get(day) ?? 0 }));
-  const rowOf = (d) => ({ ...d, pace: paceRate(d.sentences, d.ms) });
-  const blank = (day) => ({ day, ms: 0, sentences: 0, reviews: 0 });
+  const all = [...dayKeys].map((day) => ({ day, ms: cleanMs(studyDays?.get?.(day)), sentences: perDay.get(day) ?? 0, course: perDayCourse.get(day) ?? 0, reviews: reviewed.get(day) ?? 0 }));
+  const rowOf = ({ course, ...d }) => ({ ...d, pace: paceRate(course ?? d.sentences, d.ms) });
+  const blank = (day) => ({ day, ms: 0, sentences: 0, course: 0, reviews: 0 });
   const byDay = new Map(all.map((d) => [d.day, d]));
   const today = localDay(now);
   const days = lastDays(now, span).map((day) => rowOf(byDay.get(day) ?? blank(day)));
@@ -335,19 +378,20 @@ export function studyLog({ progress, studyDays, now = new Date(), span = 14 } = 
     const wk = byWeek.get(d.day);
     if (!wk) continue;
     for (const [n, count] of wk) {
+      if (!isCourse(n)) continue;
       const w = weeks.get(n) ?? { n, ms: 0, sentences: 0, passes: passes.get(n) ?? 1 };
       w.sentences += count;
       w.ms += d.sentences ? (d.ms * count) / d.sentences : 0;
       weeks.set(n, w);
     }
   }
-  const overall = all.reduce((acc, d) => ({ ms: acc.ms + d.ms, sentences: acc.sentences + d.sentences, reviews: acc.reviews + d.reviews }), { ms: 0, sentences: 0, reviews: 0 });
+  const overall = all.reduce((acc, d) => ({ ms: acc.ms + d.ms, sentences: acc.sentences + d.sentences, course: acc.course + d.course, reviews: acc.reviews + d.reviews }), { ms: 0, sentences: 0, course: 0, reviews: 0 });
   return {
     today: rowOf(byDay.get(today) ?? blank(today)),
     days,
     weeks: [...weeks.values()].sort((a, b) => a.n - b.n).map((w) => rowOf({ ...w, ms: Math.round(w.ms) })),
-    pace: paceOf(all),
-    overall: { ...overall, pace: paceRate(overall.sentences, overall.ms) },
+    pace: paceOf(all.map((d) => ({ ...d, sentences: d.course }))),
+    overall: { ms: overall.ms, sentences: overall.sentences, reviews: overall.reviews, pace: paceRate(overall.course, overall.ms) },
   };
 }
 
@@ -449,6 +493,11 @@ function fmtSize(bytes) {
   return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} kB`;
 }
 
+/** The Translation switch's description: the usual line, or why there is nothing to show (the review shelf is Latin only). Pure. */
+export function translationDesc(hasTranslation, usual = 'English under each sentence') {
+  return hasTranslation ? usual : 'No English for this chapter — the review shelf is Latin only';
+}
+
 /** The Book lines switch's description: what it does, or why it can do nothing this week. Pure. */
 export function bookLinesDesc(hasLines) {
   return hasLines ? 'One printed line per line, every line numbered' : "This week's text has no printed line numbers";
@@ -461,6 +510,9 @@ export function bookLinesDesc(hasLines) {
  *   margin|audio: { get(settings) → bool, set(on) → patch } }`, the same map
  *   the toolbar toggles use so the two stay in step. `opts.focusLabel()` (optional)
  *   names this week's grammar focus under the Grammar focus switch.
+ * `opts.hasTranslation()` (optional) says whether the current week has English:
+ *   when not (the review shelf), the Translation switch is disabled with the
+ *   hint "No English for this chapter" (translationDesc()); the setting is kept.
  * `opts.hasLines()` (optional) says whether the current week carries printed-line
  *   data: when not, the Book lines switch's description becomes the hint
  *   "This week's text has no printed line numbers" (the setting still saves).
@@ -486,6 +538,10 @@ export function initSettings(dialog, opts) {
   const switches = [...dialog.querySelectorAll('input[data-setting-toggle]')].filter((i) => toggles[i.dataset.settingToggle]);
   const focusDesc = $('[data-focus-desc]');
   const linesDesc = $('[data-lines-desc]');
+  // The Translation switch on a review-shelf chapter (Latin only): disabled, its hint saying why; the setting itself is kept.
+  const englishSwitch = switches.find((i) => i.dataset.settingToggle === 'english') ?? null;
+  const englishDesc = englishSwitch?.closest('.switch')?.querySelector('.switch__text small') ?? null;
+  const englishDescText = englishDesc?.textContent ?? '';
   const speed = rateMenu({ row: $('[data-audio] [data-rate-chips]'), value: $('[data-audio] [data-rate-value]'), onPick: (r) => update({ audioRate: r }) });
 
   function render(s) {
@@ -494,6 +550,11 @@ export function initSettings(dialog, opts) {
     themeInputs.forEach((i) => { i.checked = i.value === s.theme; });
     compact.checked = !!s.compact;
     for (const i of switches) i.checked = !!toggles[i.dataset.settingToggle].get(s);
+    if (englishSwitch) {
+      const has = opts.hasTranslation ? !!opts.hasTranslation() : true;
+      englishSwitch.disabled = !has;
+      if (englishDesc) { englishDesc.textContent = translationDesc(has, englishDescText); englishDesc.classList.toggle('switch__hint', !has); }
+    }
     const focus = opts.focusLabel?.();
     if (focusDesc) focusDesc.textContent = focus ? `This week: ${focus}` : "This week's grammar, highlighted";
     if (linesDesc) {
@@ -616,7 +677,7 @@ function initProgressSection(dialog, progress) {
   }
   async function reset(what) {
     const question = what === 'week'
-      ? `Reset this week's reading progress? The ${info.read === 1 ? 'sentence' : `${info.read} sentences`} marked read will be unmarked. Looked-up words are kept.`
+      ? `Reset the reading progress for ${progress.weekLabel?.() ?? 'this week'}? The ${info.read === 1 ? 'sentence' : `${info.read} sentences`} marked read will be unmarked. Looked-up words are kept.`
       : `Reset all reading progress, every week? Looked-up words are kept.`;
     if (!window.confirm(question)) return;
     say('');
@@ -763,7 +824,7 @@ function initAudioSection(dialog, audio) {
 
   function paint() {
     weekEl.textContent = audio.weekLabel?.() ?? 'this week';
-    stateEl.textContent = audioStateText(info);
+    stateEl.textContent = audioStateText(info, { unit: (audio.weekLabel?.() ?? 'week').split(' ')[0] });
     stateEl.dataset.state = !info.hasAudio ? 'none' : info.alignedCount ? 'aligned' : 'uploaded';
     uploadLabel.textContent = info.hasAudio ? 'Replace recording…' : 'Upload chapter MP3…';
     alignBtn.disabled = !info.hasAudio;

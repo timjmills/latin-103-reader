@@ -1,0 +1,60 @@
+{
+  "skill": "ablative-comparison",
+  "core": [
+    {
+      "type": "p",
+      "text": "After a comparative you can drop *quam* (than) and put the thing compared in the ablative: **the ablative of comparison (the 'than' form: illo fortior = braver than he)**. *Canis lupō ferōcior est* — the dog is fiercer than a wolf; *nihil melle dulcius est* — nothing is sweeter than honey. The ablative usually stands right before the comparative. Latin name: *ablativus comparationis*."
+    },
+    {
+      "type": "english",
+      "text": "*Than* in English introduces the second half of a comparison: *braver than he*. Latin can leave the word out and let the case say it."
+    },
+    {
+      "type": "rule",
+      "text": "Comparative + ablative = 'than …'. With quam the two things are in the same case: *canis ferōcior est quam lupus*."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "abl"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r24:90.1",
+        "w08:b32.4",
+        "w11:b15.1",
+        "r24:115.1"
+      ],
+      "invented": [
+        {
+          "la": "Mārcus Quīntō maior est.",
+          "en": "Marcus is bigger than Quintus.",
+          "focus": "Quīntō"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-degree",
+      "text": "Two ablatives can sit around one comparative: *multō maior frātre* — bigger than his brother by much. The person is the ablative of comparison; **the ablative of degree (the 'by how much' form: multo maior = bigger by much)** is the measure (*multō, paulō, nihilō*)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 24) give *hic illō fortior est*, *haec illīs meliōra sunt*, *nihil hōc peius esse potest*. Ørberg glosses it in cap. XXIV: *melior frātre meō = melior quam frāter meus*; *stultior vōbīs = stultior quam vōs*."
+    },
+    {
+      "type": "p",
+      "text": "The ablative is used only when the first thing compared is nominative or accusative; otherwise Latin keeps *quam*. It is the normal choice after negatives and in set phrases: *lūce clārius* (clearer than daylight), *opīniōne celerius* (faster than expected), *plūs aequō* (more than fair). Comparative adverbs take it too: *ventō celerius* — faster than the wind."
+    }
+  ],
+  "sources": [
+    "notes p92",
+    "Ørberg cap. XXIV (margin)",
+    "A&G §406"
+  ]
+}

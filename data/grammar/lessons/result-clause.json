@@ -1,0 +1,62 @@
+{
+  "skill": "result-clause",
+  "core": [
+    {
+      "type": "p",
+      "text": "When something is *so* big, *so* fast, *so* foolish *that* something follows, Latin uses **ut + subjunctive after tam / ita / tantus (the 'so … that' clause)**. A signal word — *tam* (so, before an adjective or adverb), *ita* or *sīc* (in such a way), *tantus* (so big), *tālis* (of such a kind), *tot* (so many) — is answered by *ut* and a verb in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). Latin name: *coniunctivus consecutivus*."
+    },
+    {
+      "type": "english",
+      "text": "English: she was *so* tired *that* she fell asleep. The *so … that* pair is the whole idea; Latin only adds a special verb form in the *that* part."
+    },
+    {
+      "type": "rule",
+      "text": "Signal word (tam, ita, sīc, tantus, tālis, tot) + ut + subjunctive = result. The negative is ut nōn, not nē."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w07:b17.3",
+        "w11:b13.2",
+        "w10:fl-73:b31.2",
+        "w06:90.1"
+      ],
+      "invented": [
+        {
+          "la": "Puer tam fessus erat ut statim dormīret.",
+          "en": "The boy was so tired that he fell asleep at once.",
+          "focus": "dormīret"
+        },
+        {
+          "la": "Tanta erat tempestās ut nāvis nōn movērētur.",
+          "en": "The storm was so great that the ship did not move.",
+          "focus": "movērētur"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "purpose-clause",
+      "text": "Purpose also uses *ut*, but has no signal word and its negative is *nē*. Test: can you add 'in order'? *vēnit ut vidēret* = came in order to see (purpose); *tam fessus erat ut dormīret* = so tired that he slept (result). *ut nōn* is always result."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes sort the signal words by what is measured: *tam* for the degree of an adjective (*tam fortis est ut …*), *tantus* for the size of a thing, *tālis* for its kind, *ita* for the manner of an action (*ita clāmat ut audiātur*, he shouts so that he is heard), *tot* for a number. Sometimes the signal word is left out; then only sense decides — a purpose is intended but not necessarily achieved, a result is achieved but not necessarily intended."
+    },
+    {
+      "type": "p",
+      "text": "The tense follows the sequence of tenses: *ita clāmō ut proximōs suscitem* (I shout so as to wake the neighbours) but *ita clāmāvī ut … suscitārem*. Ørberg's chapter 29: *Dāvus ita clāmat ut puerum excitet*; *Syra tam quiēta erat ut puellam nōn excitāret*."
+    },
+    {
+      "type": "p",
+      "text": "Also easy to confuse: an indirect command, *ut* after a verb of ordering or asking (*imperat ut taceat*, orders him to be quiet) — no signal word, negative *nē*. And verbs meaning 'bring it about' take a result-style clause: *faciam ut tergum eī doleat* — I will see to it that his back hurts (Week 4)."
+    }
+  ],
+  "sources": [
+    "notes p104",
+    "Ørberg cap. XXIX Grammatica Latina",
+    "A&G §537"
+  ]
+}

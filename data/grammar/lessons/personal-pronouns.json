@@ -1,0 +1,19 @@
+{
+  "skill": "personal-pronouns",
+  "core": [
+    { "type": "p", "text": "*I, you, we, you all* have their own small tables: **the personal pronouns (I, you, we, you all) and the reflexive se ('-self')**. *ego* (I): *mē, meī, mihi, mē*; *tū* (you): *tē, tuī, tibi, tē*; *nōs* (we): *nōs, nostrum, nōbīs, nōbīs*; *vōs* (you all): *vōs, vestrum, vōbīs, vōbīs*. *sē* (himself, herself, themselves) points back to the subject and has no nominative: *sē, suī, sibi, sē*. For *my, your, his own* Latin uses adjectives (*meus, tuus, suus*). Latin name: prōnōmina persōnālia et reflexīvum." },
+    { "type": "english", "text": "*I / me* is the same idea: the form changes with the job — *I* is the subject form, *me* the object form. A reflexive points back to the subject: *he sees himself*." },
+    { "type": "rule", "text": "Subject ego / tū / nōs / vōs appears only for emphasis; sē means the subject itself, never someone else." },
+    { "type": "paradigm", "key": "ego" },
+    { "type": "paradigm", "key": "tu" },
+    { "type": "paradigm", "key": "se" },
+    { "type": "examples", "units": ["r15:70.2", "r15:88.1", "r15:120.1", "w01:4.1"], "invented": [ { "la": "Dā mihi librum tuum!", "en": "Give me your book!", "focus": "mihi" } ] },
+    { "type": "confusion", "with": "demonstrative-pronouns", "text": "*He, she, it* are not personal pronouns in Latin; they are *is, ea, id*, a demonstrative used as a pronoun (is = he, ea = she, id = it). *eum* is someone else, *sē* the subject itself: *Quīntus dīcit sē aegrum esse* — Quintus says that he himself is ill; *eum aegrum esse* — that another person is." }
+  ],
+  "more": [
+    { "type": "p", "text": "With *cum* (with) the pronouns glue together: *mēcum, tēcum, sēcum, nōbīscum* — with me, with you, with himself, with us. The genitives *meī, tuī, suī, nostrum, vestrum* never mean *my, your*; they do other genitive jobs — as a partitive (*nēmō nostrum* — none of us) or with words like *memor* (mindful of). *Nostrī / vestrī* go with feelings: *amor nostrī* — love of us. *suus* is reflexive like *sē*: *Iūlius fīlium suum vocat* — his own son; for someone else's son, *fīlium eius*." },
+    { "type": "p", "text": "Your notes: first person includes the speaker, second the audience, third neither; Latin has *ego / nōs* and *tū / vōs*, and any demonstrative serves as a third-person pronoun. The five-case tables are *ego, mē, meī, mihi, mē*; *tū, tē, tuī, tibi, tē*; *nōs, nōs, nostrum, nōbīs, nōbīs*; *vōs, vōs, vestrum, vōbīs, vōbīs*. The reflexive exists only in the third person, with one set of forms for singular and plural and no nominative (*sē, suī, sibi, sē*); the four pronouns look alike case by case (*mē / tē / sē*, *mihi / tibi / sibi*); possession uses *meus, tuus, suus, noster, vester*." },
+    { "type": "p", "text": "Ørberg (chapter XV): *nōs* and *vōs* are the same in the nominative and the accusative; *ego nōn rīdeō, quia vōs mē rīdētis*. A&G add the emphatic forms *egomet* (I myself), *tūte*, and *sēsē* for *sē*." }
+  ],
+  "sources": ["notes p47–49", "Ørberg cap. XV Grammatica Latina", "A&G §142–145, §299–302"]
+}

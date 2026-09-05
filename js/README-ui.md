@@ -796,3 +796,50 @@ http://localhost:8000/app/?fixture=1   # add &margins=demo for sample margin not
 node tests/make-fixture.mjs           # regenerates data/build/*.json for week 1 (dev only; A/C output wins)
 node --test "tests/*.test.mjs"
 ```
+
+## Grammar section (GRAMMAR-CONTRACT.md, workstream D)
+
+`app/js/grammar/index.js` is mounted once from `main.js` at the end of boot
+(`mountGrammar({ store, dict, par, reader, settings, saveSettings })`). It binds
+the header's Read / Grammar control (`.seg--section`, `[data-section]`) and the
+`<section id="grammar" hidden>` mount; while Grammar is open `<html
+data-section="grammar">` hides the reader's `.layout` (`hidden`), the View
+switch, the toolbar toggles and the translation hint (`grammar.css`), and every
+keydown inside the section stops before the reader's letter shortcuts. Nothing
+loads until Grammar is first opened (or the device last left it open,
+`localStorage['l103.section']`): then the skill map (`data/grammar/skills.json`,
+falling back to `skills.sample.json`), every week's units from the store, and
+the grammar store (`store-grammar.js`: IndexedDB v6 stores + `store.js`'s
+`grammarHooks` outbox / realtime with the real store; localStorage
+`l103.grammar.*` with the fixture). Views: skill map, lesson, Learn flow,
+Practice setup, session runner, stats — all in `ui.js`; the pure parts
+(`scheduler.js`, `items.js`, `stats.js`, `session.js`'s `judge`) are tested
+under `tests/grammar.*.test.mjs`. `window.latinGrammar` is the section's
+context (`.current` = the item on screen) for tests and debugging.
+
+## Review shelf (2026-09-05)
+
+Familia Romana I–XXIV as library weeks n = 100 + chapter (`r01`–`r24`, Latin
+only). See `docs/GRAMMAR-CONTRACT.md` "Review shelf in the reader" for the
+helpers; in the UI:
+
+- `main.js` builds the weeks menu from `groupWeeks(outline, weeks)`
+  (`settings.js`): the course rows as before, then a `.weeks__group`
+  disclosure (`.weeks__group-btn[aria-expanded]` + `ol#weeks-shelf`) with one
+  `.weeks__row[data-shelf]` per chapter (numeral in `.weeks__n`, title, focus
+  label, progress count, no time-left). `settings.shelfOpen` remembers it;
+  arrow keys move over the heading and the visible rows.
+- `weekNumberLabel(n)` / `weekTitleLabel()` name the header button and the
+  document title ("Cap. VII · Puella et Rosa"); `weekPhrase(n)` ("chapter VII")
+  feeds Settings → Audio / Progress, the reset confirm and messages, the
+  listen bar's "No recording for this chapter yet".
+- `paintTranslation()` (with every week load and display change) hides the
+  Translation toggle and forces `#reader[data-english="hidden"]` on a shelf
+  week; `initSettings({ hasTranslation })` disables the switch with the hint
+  from `translationDesc(false)`. `reader.js` skips the `.en` row for a unit
+  whose `en` is empty (both views).
+- `timeLeftFor(read, total, n)` returns '' for a shelf week; `studyLog()` keeps
+  the pace / per-week table about the course weeks.
+- `store-fixture.js` carries chapters I and VII (invented sentences) so the
+  shelf can be tried with `?fixture=1`; every other shelf fetch is
+  short-circuited (no 404s).

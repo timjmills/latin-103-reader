@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/reader.css">
   <link rel="stylesheet" href="css/panels.css">
+  <link rel="stylesheet" href="css/grammar.css">
 </head>
 <body>
   <a class="skip" href="#reader">Skip to the text</a>
@@ -44,7 +45,12 @@
             <span class="week__title">Loading…</span>
           </button>
         </div>
-        <div class="seg" role="group" aria-label="View">
+        <!-- Grammar section (GRAMMAR-CONTRACT.md): Read / Grammar. app/js/grammar/index.js binds it; grammar.css places it. -->
+        <div class="seg seg--section" role="group" aria-label="Section">
+          <button type="button" class="seg__btn" data-section="read" aria-pressed="true">Read</button>
+          <button type="button" class="seg__btn" data-section="grammar" aria-pressed="false">Grammar</button>
+        </div>
+        <div class="seg seg--view" role="group" aria-label="View">
           <button type="button" class="seg__btn" data-view="passage" aria-pressed="true">Passage</button>
           <button type="button" class="seg__btn" data-view="sentence" aria-pressed="false">Sentence</button>
         </div>
@@ -114,6 +120,9 @@
       </aside>
     </div>
 
+    <!-- Grammar section mount (GRAMMAR-CONTRACT.md): shown instead of .layout while the header's Section control says Grammar. -->
+    <section id="grammar" class="grammar" aria-label="Grammar" hidden></section>
+
     <div id="transport" class="transport" hidden>
       <div class="transport__main">
         <p class="transport__text"><span class="transport__title">Playing chapter</span> <span class="transport__pos" data-transport-pos></span></p>
@@ -138,7 +147,7 @@
         <h2 id="weeks-title" class="weeks__title">Latin 103 · Fall 2026</h2>
         <button type="button" class="panel__close" data-close="weeks" aria-label="Close">×</button>
       </div>
-      <p class="weeks__hint">Fourteen weeks. Greyed weeks have not been added to your library yet.</p>
+      <p class="weeks__hint">Fourteen weeks, then the review shelf. Greyed weeks have not been added to your library yet.</p>
       <ol id="weeks-list" class="weeks__list"></ol>
     </dialog>
 

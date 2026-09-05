@@ -1,0 +1,73 @@
+{
+  "skill": "present-indicative-3rd",
+  "core": [
+    {
+      "type": "p",
+      "text": "A Latin verb is a stem plus an ending, and the ending says who is doing it. The first endings to learn are those of **the present tense, 3rd person (-t 'he does', -nt 'they do')**, *praesēns indicātīvī, tertia persōna*: *cantat* = she sings, *cantant* = they sing. No pronoun is needed; the ending carries 'he / she / it / they'. The vowel before the ending shows the verb's family: *canta-t*, *vide-t*, *pōn-i-t*, *audi-t*."
+    },
+    {
+      "type": "english",
+      "text": "The 3rd person is anyone you talk about rather than to: he, she, it, they. English adds -s for one person only (*she sings* / *they sing*); Latin changes the ending for both."
+    },
+    {
+      "type": "rule",
+      "text": "One doer: stem + -t. Several: stem + -nt (-unt, -iunt in the 3rd and 4th conjugations). *Est* / *sunt* (is / are) and *it* / *eunt* (goes / go) are the irregular pair to learn."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "pres",
+        "mood": "ind",
+        "voice": "act",
+        "person": 3
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "tense": "pres",
+        "mood": "ind",
+        "voice": "act",
+        "person": 3
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r03:3.1",
+        "r03:66.2",
+        "r05:37.1",
+        "r05:79.1"
+      ],
+      "invented": [
+        {
+          "la": "Servī labōrant, dominus dormit.",
+          "en": "The slaves work, the master sleeps.",
+          "focus": "labōrant"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperative",
+      "text": "*Vocat* (he calls) and *vocā!* (call!) are one letter apart. A verb with -t states a fact and has a subject you can point to; without the -t, usually with an exclamation mark or a name being addressed, it is an order: *Mēdus Dāvum vocat.* — *Dāvum vocā!*"
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes sort verbs by the last letter of the stem instead of by conjugation: a-stems (*flat, flant*), e-stems (*videt, vident*), consonant- or u-stems (*pōnit, pōnunt*; *exstruit, exstruunt*), weak i-stems (*accipit, accipiunt*) and strong i-stems (*venit, veniunt*). The notes treat the i and u of -(i)t and -(u)nt as 'variable vowels' that drop after another vowel — which is why it is *cantat*, not *cantait* — but both stay when i meets u (*accipiunt*, *veniunt*). Irregular *est / sunt* and *it / eunt* take prefixes: *abest*, *adest*, *abit*, *exit*."
+    },
+    {
+      "type": "p",
+      "text": "The indicative (*indicātīvus*) is the mood of facts: statements and questions about what is so. Ørberg cap. IV contrasts indicātīvus -at, -et, -it, -it with imperātīvus -ā, -ē, -e, -ī. The other persons (-ō, -s, -mus, -tis) arrive in cap. XV. A&G §170, §174."
+    }
+  ],
+  "sources": [
+    "notes p8–9",
+    "Ørberg cap. III–IV Grammatica Latina",
+    "A&G §170, §174"
+  ]
+}

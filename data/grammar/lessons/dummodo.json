@@ -1,0 +1,61 @@
+{
+  "skill": "dummodo",
+  "core": [
+    {
+      "type": "p",
+      "text": "**dummodo + subjunctive (the 'provided that / as long as' condition)** states the one thing that must hold for the main clause to be true: *Quidquid vīs, estō — dummodo nīl recitēs!* — be whatever you like, provided you recite nothing. The verb is the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do): present after a present main verb, imperfect after a past one; the negative is *dummodo nē*. *Modo* and *dum* alone can do the same job: *ōderint, dum metuant* — let them hate, as long as they fear. Latin name: *dummodo cum coniunctivo*."
+    },
+    {
+      "type": "english",
+      "text": "English: *provided that*, *as long as*, *so long as*, *only if*: you can go out, *as long as you're back by ten*. A condition with a warning finger raised."
+    },
+    {
+      "type": "rule",
+      "text": "dummodo / modo / dum + subjunctive = provided that; negative dummodo nē."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w14:b9.6",
+        "w13:b6.1",
+        "w13:b8.1"
+      ],
+      "invented": [
+        {
+          "la": "Manē, dummodo taceās.",
+          "en": "Stay, provided you keep quiet.",
+          "focus": "taceās"
+        },
+        {
+          "la": "Exspectābō, dummodo nē sērō veniās.",
+          "en": "I will wait, as long as you do not come late.",
+          "focus": "veniās"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "conditions-contrary-to-fact",
+      "text": "*sī* + subjunctive imagines something untrue; *dummodo* + subjunctive lays down a real requirement. *Sī tacērēs, manērem* (if you were quiet — you aren't); *manēbō, dummodo taceās* (I'll stay, as long as you keep quiet — and you can)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: *dum* + present indicative is 'while' in a story — *dum gubernātor loquitur, altera nāvis appāret* (Week 7); *dum / dummodo* + subjunctive is 'provided that'. The verb form tells you which *dum* you have."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes have no page on *dummodo*; the three sentences in the texts are all in Weeks 13–14 (Cornelius on the games, Fabia on Sextus's fighting, Martial's *Quidquid vīs, estō*). Allen & Greenough treat it under clauses of proviso: *dum*, *modo*, *dummodo*, and *tantum ut* take the subjunctive, with *nē* as the negative, and often carry a wish along with the condition — *modo nē lūdat* (only let him not play about)."
+    },
+    {
+      "type": "p",
+      "text": "Related uses of *dum* with the subjunctive: 'until' when there is waiting or intention (*exspectā dum veniat* — wait until he comes), and 'while' + subjunctive for background in some writers. With the indicative *dum* is plain 'while' or 'as long as' (*dōnec ego vīvam*, Week 11, is the same idea with *dōnec*)."
+    }
+  ],
+  "sources": [
+    "Ørberg cap. XXXIV (text)",
+    "A&G §528",
+    "(no notes page)"
+  ]
+}

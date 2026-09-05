@@ -1,0 +1,60 @@
+{
+  "skill": "ablative-origin",
+  "core": [
+    {
+      "type": "p",
+      "text": "To say where something comes from, or what it is parted from, Latin uses *ā/ab* (from, away from), *ē/ex* (out of) or *dē* (down from) with **the ablative (the 'from' form)**, *ablātīvus sēparātīvus*: *ex ātriō veniunt* = they come out of the hall; *ab Aemiliā discēdit* = she goes away from Aemilia. *Ā* and *ē* stand before consonants, *ab* and *ex* before vowels (and often before consonants as well). *Sine* (without) belongs to the same family."
+    },
+    {
+      "type": "english",
+      "text": "*From*, *out of*, *off*, *away from* all point at a starting point: *he came from the mountain*, *the cup fell off the table*. Latin bundles them into three prepositions plus the ablative."
+    },
+    {
+      "type": "rule",
+      "text": "*Ā/ab*, *ē/ex*, *dē*, *sine* always take the ablative, whatever they mean in the sentence: *dē Deō* (about God) is still ablative."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2n",
+      "highlight": {
+        "case": "abl"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r05:79.1",
+        "r06:34.3",
+        "r05:48.1",
+        "r05:83.1"
+      ],
+      "invented": [
+        {
+          "la": "Servus ē vīllā ad oppidum currit.",
+          "en": "The slave runs out of the villa to the town.",
+          "focus": "vīllā"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-place",
+      "text": "Same ending, opposite ideas: *in hortō* (in the garden) is where something is; *ex hortō* (out of the garden) is where it comes from. The ablative does not choose; the preposition does. Read the little word first, then the ending."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: origin may be physical (from the mountain), logical (disaster came from his foolishness) or in time (from April to June); the 'from' prepositions are so tied to the ablative that they keep it even when their sense has drifted — *dē* is literally 'down from' but usually means 'concerning' (*hominēs dē Deō dīcunt*). *Ā/ab* and *sine* also mark what something is separated from: *vir sine fēminā*."
+    },
+    {
+      "type": "p",
+      "text": "Names of towns and small islands, and *domō* (from home), stand in the ablative with no preposition: *Rōmā venit*, *Tusculō venit* (r06:53.2), the question being *unde?* (from where?). *Procul ab* = far from (r06:9.1). The same *ā/ab* + ablative names the doer of a passive verb — the ablative of agent — because Latin sees the doer as the action's source. Ørberg cap. VI; A&G §401–403, §428."
+    }
+  ],
+  "sources": [
+    "notes p17",
+    "Ørberg cap. VI Grammatica Latina",
+    "A&G §401–403, §428"
+  ]
+}

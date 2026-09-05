@@ -1,0 +1,61 @@
+{
+  "skill": "deponent-imperatives",
+  "core": [
+    {
+      "type": "p",
+      "text": "Deponents give orders with **the deponent command forms (sequere! = follow!, sequimini! = follow, all of you!)**. To one person the command ends in -re: *sequere!* (follow!), *laetāre!* (rejoice!), *intuēre!* (look!). To several it ends in -minī: *sequiminī!*, *laetāminī!*, *intuēminī!* — the same as the passive 'you all' ending. Latin name: *imperativus verborum deponentium*."
+    },
+    {
+      "type": "english",
+      "text": "A command in English is the bare verb: *follow me!* Latin needs the right ending for one listener or many."
+    },
+    {
+      "type": "rule",
+      "text": "Singular: present stem + -re (laetāre, intuēre, sequere, partīre). Plural: present stem + -minī (laetāminī, intuēminī, sequiminī, partīminī)."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "imper",
+        "voice": "pass"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w02:75.4",
+        "w01:91.3",
+        "r24:40.1",
+        "r24:28.1"
+      ],
+      "invented": [
+        {
+          "la": "Proficīsciminī statim, nautae!",
+          "en": "Set out at once, sailors!",
+          "focus": "Proficīsciminī"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "infinitive",
+      "text": "*Sequere* looks like an active **the infinitive (the 'to' form)** of a third-conjugation verb (*legere*), but *sequī* is deponent and its infinitive is *sequī*; so *sequere* can only be a command. Rule of thumb: if the dictionary form ends in -ī, a form in -re is 'do it!', not 'to do'."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 25 review) put it as: the deponent infinitive-lookalike is the singular command (*intuērī → intuēre*, *cōnsōlārī → cōnsōlāre*, *cōnfitērī → cōnfitēre*), the plural uses -minī (*intuēminī, sequiminī, laetēminī*)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (cap. XXV) lines them up against active commands: *laetāre! = gaudē!*, *intuēre! = spectā!*, *revertere! = redī!*, *partīre! = dīvide!*. For 'don't', use *nōlī / nōlīte* + deponent infinitive: *nōlī mīrārī!*"
+    }
+  ],
+  "sources": [
+    "notes p93",
+    "Ørberg cap. XXV Grammatica Latina",
+    "A&G §190"
+  ]
+}

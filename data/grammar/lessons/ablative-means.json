@@ -1,0 +1,60 @@
+{
+  "skill": "ablative-means",
+  "core": [
+    {
+      "type": "p",
+      "text": "The tool or thing something is done with goes into **the ablative (the 'by/with' form)**, *ablātīvus īnstrūmentī*, with no preposition at all: *baculō verberat* = he beats with a stick; *equō vehitur* = he rides (is carried) on a horse; *oculīs videt* = he sees with his eyes. English needs *with* or *by*; Latin needs only the ending."
+    },
+    {
+      "type": "english",
+      "text": "*With* has two jobs in English: the thing you use (*he cut it with a knife*) and the person you are alongside (*he sat with a friend*). Latin gives each its own grammar."
+    },
+    {
+      "type": "rule",
+      "text": "A thing used = plain ablative, no preposition. *Cum* + ablative is only for company (*cum amīcō*), never for tools."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2n",
+      "highlight": {
+        "case": "abl"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r06:40.1",
+        "r06:68.1",
+        "r08:73.1",
+        "r08:23.1"
+      ],
+      "invented": [
+        {
+          "la": "Pāstor lupum baculō pulsat.",
+          "en": "The shepherd hits the wolf with his stick.",
+          "focus": "baculō"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-agent",
+      "text": "English *by* covers both *struck by David* and *struck by a stone*; Latin does not. A person who does it takes *ā/ab* + ablative: *ā Dāvide*. A thing used takes the bare ablative: *lapide*. Test: if it could have done it on purpose, use *ab*; if it is a tool, leave the preposition out."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: 'means' is how something gets done — grammarians split it into instrument, method and degree, the course treats them as one. English speakers reach for *cum* because it is the nearest word to *with*, but *cum* only ever means 'together with': *vir gladiō percutit* — he strikes with (using) the sword; *vir cum gladiō stat* — a man with (carrying) a sword stands there."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VI: *Lydia verbīs Mēdī dēlectātur* = *verba Mēdī Lydiam dēlectant*. The same plain ablative gives the price (*centum nummīs cōnstat* — costs a hundred coins, r08:59.1), the road travelled (*viā Latīnā*, r06:51.1) and, with an adjective, the manner (*magnā vōce clāmat* — shouts in a loud voice, r10:111.2). A&G §409 (means), §413 (accompaniment), §416 (price)."
+    }
+  ],
+  "sources": [
+    "notes p19",
+    "Ørberg cap. VI Grammatica Latina",
+    "A&G §409, §413, §416"
+  ]
+}

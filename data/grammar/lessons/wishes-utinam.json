@@ -1,0 +1,69 @@
+{
+  "skill": "wishes-utinam",
+  "core": [
+    {
+      "type": "p",
+      "text": "A wish is **utinam + subjunctive (the 'if only …' wish; the tense says whether it can still come true)**. *Utinam veniat!* — may he come, if only he comes (still possible: present subjunctive). *Utinam venīret!* — if only he were coming (he isn't: imperfect subjunctive). *Utinam vēnisset!* — if only he had come (he didn't: pluperfect subjunctive). The negative is *utinam nē*. Latin name: *coniunctivus optativus cum utinam*."
+    },
+    {
+      "type": "english",
+      "text": "English: *may you be happy* (possible); *if only I were rich* (I'm not); *if only I had known* (I didn't). English also steps back in time to say 'impossible': *were*, *had*."
+    },
+    {
+      "type": "rule",
+      "text": "utinam (nē) + present = a hope; + imperfect = an impossible wish about now; + pluperfect = an impossible wish about the past."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj4",
+      "highlight": {
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w11:b32.7",
+        "w11:b36.2",
+        "w12:b8.2",
+        "w12:b17.1"
+      ],
+      "invented": [
+        {
+          "la": "Utinam pater mox veniat!",
+          "en": "May father come soon!",
+          "focus": "veniat"
+        },
+        {
+          "la": "Utinam tēcum essem!",
+          "en": "If only I were with you!",
+          "focus": "essem"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "conditions-contrary-to-fact",
+      "text": "The same imperfect and pluperfect subjunctive appear in 'if I were …, I would …' sentences. The difference is *utinam* (or a bare wish) against *sī* plus a second clause that draws the consequence: *utinam Rōmae essem* (wish) but *sī Rōmae essem, laetus essem* (condition)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: *vīvāmus, amēmus* (let us live, let us love) and *valeat* (may he fare well) are wishes and exhortations in the present subjunctive without *utinam*. *Utinam* only makes the wish explicit; the imperfect and pluperfect never appear in the 'let us / let him' type."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (Week 33, 'Contrafactual Optative'): a present optative is a wish about the future that is technically possible even if unlikely (*amīcī veniant!* would that my friends came!); an imperfect optative is a wish about the present that is contrary to fact, and *utinam* is used especially then (*utinam ambulāre possem!* would that I could walk!; *utinam tempus esset discēdendī!*); a pluperfect optative is a contrary-to-fact wish about the past (*utinam numquam nātus essem!*, *utinam nē vēnissem!*)."
+    },
+    {
+      "type": "p",
+      "text": "Softer wishes use *velim* (I would like) and *vellem* (I wish, I would have liked): *vellem sī magis esset anus* — I'd wish it, if she were more of an old woman (Martial, Week 14). Ørberg's chapter 32 gives Medus's *utinam salvī in Graeciam perveniant!* and Lydia's *utinam aliquandō līber patriam videam!*; chapter 33 turns to the impossible: *utinam ego Rōmae essem!*"
+    }
+  ],
+  "sources": [
+    "notes p118",
+    "Ørberg cap. XXXII–XXXIII",
+    "A&G §441–442"
+  ]
+}
