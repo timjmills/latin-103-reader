@@ -265,7 +265,7 @@
 .settings {
   margin: auto; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: var(--bg-raised); color: var(--ink); box-shadow: var(--shadow-pop);
-  width: min(26rem, calc(100vw - 2rem));
+  width: min(26rem, calc(100vw - 2rem)); box-sizing: border-box; overflow-x: hidden;
 }
 .settings::backdrop { background: oklch(0 0 0 / 0.25); }
 .settings__body { padding: var(--s-4) var(--s-5) var(--s-5); display: grid; gap: var(--s-4); }
@@ -363,6 +363,7 @@
 .study__table thead th { border-top: 0; padding-top: 0; font-weight: 500; font-size: var(--ui-xs); color: var(--ink-3); }
 .study__table tbody th { font-weight: 400; color: var(--ink-2); white-space: nowrap; }
 .study__table .study__num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.study__table .study__nil { color: var(--ink-3); }   /* a day with nothing reviewed: a quiet dash */
 .study__table tbody tr:first-child td, .study__table tbody tr:first-child th { border-top-color: var(--line-strong); }
 .study__table + .study__table { margin-top: var(--s-2); }   /* the days and the weeks are two tables, not one */
 .study__pace { margin: 0; font-size: var(--ui-sm); line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
@@ -424,3 +425,6 @@
 }
 .weeks[open] { animation: pop var(--t-base) var(--ease-out); }
 @media (prefers-reduced-motion: reduce) { .weeks[open] { animation: none; } }
+
+/* 3+-column paradigm tables on tablets: one notch smaller so the superlative fits the panel */
+@media (min-width: 768px) and (max-width: 1099.98px) { .panel .pt--wide { font-size: 0.72rem; } .panel .pt--wide td, .panel .pt--wide th { padding-inline: 0.2em; } }

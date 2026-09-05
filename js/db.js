@@ -10,13 +10,13 @@
 //   alignments   keyPath [week_n, unit_id]   index week_n
 //   pictures     keyPath id            index week_n   (+ url / url_exp: the last signed URL, so offline shows what the browser cached)
 //   progress     keyPath unit_id       index week_n   (reading_progress: one row per sentence read)
-//   study_days   keyPath day           (active reading time per local day, CONTRACT.md "Study log")
+//   study_rows   keyPath key           (study_days: one row per (day, device), key = studyKey(day, device) in sync.js — active reading time per local day per device, CONTRACT.md "Study log merge")
 //   meta         keyPath key           (user_id, user_email, texts_synced_at …)
 //   outbox       keyPath seq (auto)    queued writes while offline
 
 export const DB_NAME = 'latin103';
-export const DB_VERSION = 4;   // 2: pictures; 3: progress; 4: study_days
-export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'study_days', 'meta', 'outbox'];
+export const DB_VERSION = 5;   // 2: pictures; 3: progress; 4: study_days; 5: study_rows (per device) replaces study_days
+export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'study_rows', 'meta', 'outbox'];
 
 let dbPromise = null;
 
@@ -34,7 +34,9 @@ function upgrade(idb) {
   mk('alignments', { keyPath: ['week_n', 'unit_id'] }, [['week_n', 'week_n']]);
   mk('pictures', { keyPath: 'id' }, [['week_n', 'week_n']]);
   mk('progress', { keyPath: 'unit_id' }, [['week_n', 'week_n']]);
-  mk('study_days', { keyPath: 'day' });
+  // v5: study rows are per (day, device); the v4 day-keyed store goes (its rows were this device's totals, still on the server under device 'main' — the next pull brings them back).
+  if (idb.objectStoreNames.contains('study_days')) idb.deleteObjectStore('study_days');
+  mk('study_rows', { keyPath: 'key' });
   mk('meta', { keyPath: 'key' });
   mk('outbox', { keyPath: 'seq', autoIncrement: true });
 }

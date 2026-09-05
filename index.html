@@ -280,30 +280,32 @@
         <p class="progress-set__note">Looked-up words are kept separately and are never reset here.</p>
         <p class="audio__msg" data-progress-msg role="status"></p>
 
-        <!-- Study log (CONTRACT.md "Study log"): active time per day from store.getStudyDays(), sentences per day from the progress map; settings.js paints it (studyLog()). Reset progress leaves it alone; "Clear study log" is its own. -->
+        <!-- Study log (CONTRACT.md "Study log" / "Reviews"): active time per day from store.getStudyDays(), sentences and reviews per day from the progress rows; settings.js paints it (studyLog()). Reset progress leaves it alone; "Clear study log" is its own. -->
         <div class="study" data-study hidden>
           <h4 class="study__h" id="study-label">Study log</h4>
           <p class="study__today" data-study-today>Nothing yet today.</p>
           <figure class="study__spark" data-study-spark>
-            <svg class="study__svg" viewBox="0 0 160 32" width="160" height="32" role="img" aria-labelledby="study-spark-title" focusable="false">
-              <title id="study-spark-title">Minutes per day over the last 14 days</title>
+            <svg class="study__svg" viewBox="0 0 160 32" width="160" height="32" role="img" aria-labelledby="study-spark-title" aria-describedby="study-spark-desc" focusable="false">
+              <title id="study-spark-title">Minutes of reading per day over the last 14 days</title>
+              <desc id="study-spark-desc" data-spark-desc>No reading time in the last 14 days.</desc>
               <path class="study__line" data-spark-line d="" fill="none"></path>
               <circle class="study__dot" data-spark-dot r="4" cx="0" cy="0"></circle>
             </svg>
             <figcaption class="study__cap" data-spark-cap>Minutes per day · last 14 days</figcaption>
+            <p class="visually-hidden" data-spark-text>No reading time in the last 14 days.</p>
           </figure>
           <table class="study__table" data-study-days hidden>
             <caption class="visually-hidden">The last 14 days</caption>
-            <thead><tr><th scope="col">Day</th><th scope="col" class="study__num">Min</th><th scope="col" class="study__num">Sentences</th><th scope="col" class="study__num">Pace</th></tr></thead>
+            <thead><tr><th scope="col">Day</th><th scope="col" class="study__num">Min</th><th scope="col" class="study__num">Read</th><th scope="col" class="study__num">Reviewed</th><th scope="col" class="study__num">Pace</th></tr></thead>
             <tbody></tbody>
           </table>
           <table class="study__table" data-study-weeks hidden>
             <caption class="visually-hidden">By week</caption>
-            <thead><tr><th scope="col">Week</th><th scope="col" class="study__num">Min</th><th scope="col" class="study__num">Sentences</th><th scope="col" class="study__num">Pace</th></tr></thead>
+            <thead><tr><th scope="col">Week</th><th scope="col" class="study__num">Min</th><th scope="col" class="study__num">Read</th><th scope="col" class="study__num">Passes</th><th scope="col" class="study__num">Pace</th></tr></thead>
             <tbody></tbody>
           </table>
           <p class="study__pace" data-study-pace></p>
-          <p class="progress-set__note">Pace is sentences per active hour. A week's minutes are each day's minutes shared out by the sentences read in each week that day, so they are an estimate.</p>
+          <p class="progress-set__note">Pace is sentences per active hour, first reads only. A sentence met again half an hour or more after its last pass counts as reviewed; a week's passes is how many times its most-read sentence has been covered. A week's minutes are each day's minutes shared out by the sentences read in each week that day, so they are an estimate.</p>
           <div class="progress-set__actions">
             <button type="button" class="btn btn--quiet" data-action="clear-study">Clear study log</button>
           </div>

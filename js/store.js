@@ -16,10 +16,11 @@ import {
   mergeRows, applyRealtime, coalesceOutbox, makeLookup, patchLookup,
   patchSettings, normaliseSettings, lookupsView, weekTag, staleWeeks,
   cleanWords, normaliseAlignmentRows, normalisePictureRows, makeProgressRows,
-  mergeProgress, patchLastPosition, mergeSettings, addStudyMs, mergeStudyDays, studyDaysView, cleanMs, isDayKey,
+  mergeProgress, normaliseProgressRow, applyProgressRealtime, patchLastPosition, mergeSettings, addStudyMs, mergeStudyDays, studyDaysView, normaliseStudyRow, studyKey, cleanDevice, cleanMs,
 } from './sync.js';
 
 export const SETTINGS_LS_KEY = 'latin103.settings';
+export const DEVICE_LS_KEY = 'l103.device';   // this device's study-log id (CONTRACT.md "Study log merge"): random, made once, never synced
 const PAGE = 1000;
 const SIGNED_URL_TTL_S = 3600;
 const SIGNED_URL_REUSE_MS = 50 * 60 * 1000;
@@ -35,7 +36,7 @@ const state = {
   settings: normaliseSettings(null),
   alignments: new Map(),   // `${week_n}|${unit_id}` → row
   progress: new Map(),     // unit_id → reading_progress row (CONTRACT.md "Reading progress")
-  studyDays: new Map(),    // day → study_days row (CONTRACT.md "Study log": active reading time per local day)
+  studyRows: new Map(),    // studyKey(day, device) → study_days row (CONTRACT.md "Study log merge": active reading time per local day, one row per device)
   pictures: new Map(),     // weekN → raw picture rows (+ url / url_exp once signed)
   signedUrls: new Map(),   // weekN → { url, exp }
   channel: null,
@@ -44,6 +45,7 @@ const state = {
   progressGen: 0,          // bumped by every local progress write; a pull that started before one does not merge over it
   progressEmit: 0,         // timer coalescing a burst of realtime progress events into one emit('progress')
   studyGen: 0,             // bumped by every local study_days write, like progressGen
+  device: null,            // this device's study-log id (deviceId())
   studyEmit: 0,            // timer coalescing realtime study_days events into one emit('study')
   studyClearing: false,    // a clearStudyLog() not yet on the server: realtime DELETEs are its own echo, not news
   syncing: null,
@@ -53,6 +55,19 @@ const listeners = new Set();
 const PROGRESS_EMIT_MS = 100;
 
 const online = () => typeof navigator === 'undefined' || navigator.onLine !== false;
+
+/** This device's study-log id: read from localStorage, made once (random) when missing; a browser without storage gets a per-session id. */
+function deviceId() {
+  if (state.device) return state.device;
+  let id = null;
+  try { id = localStorage.getItem(DEVICE_LS_KEY); } catch { /* no storage */ }
+  if (!id) {
+    id = typeof crypto?.randomUUID === 'function' ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+    try { localStorage.setItem(DEVICE_LS_KEY, id); } catch { /* keep it for this session only */ }
+  }
+  state.device = cleanDevice(id);
+  return state.device;
+}
 const nowIso = () => new Date().toISOString();
 const alignKey = (r) => `${r.week_n}|${r.unit_id}`;
 
@@ -109,8 +124,9 @@ async function loadLocal() {
   state.lookups = new Map((await db.getAll('lookups')).map((r) => [r.form, r]));
   state.settings = normaliseSettings(await db.get('settings', 'settings'));
   state.alignments = new Map((await db.getAll('alignments')).map((r) => [alignKey(r), r]));
-  state.progress = new Map((await db.getAll('progress')).map((r) => [r.unit_id, r]));
-  state.studyDays = new Map((await db.getAll('study_days')).map((r) => [r.day, r]));
+  // Rows cached before migration 0011 lack reads / last_read_at: normalised here (reads 1, last_read_at = read_at), no DB version bump needed.
+  state.progress = new Map((await db.getAll('progress')).map((r) => [r.unit_id, normaliseProgressRow(r)]));
+  state.studyRows = new Map((await db.getAll('study_rows')).map((r) => normaliseStudyRow(r)).filter(Boolean).map((r) => [r.key, r]));
   state.units.clear();
   state.highlights.clear();
   state.pictures.clear();
@@ -155,7 +171,7 @@ async function teardown() {
   state.lookups.clear();
   state.alignments.clear();
   state.progress.clear();
-  state.studyDays.clear();
+  state.studyRows.clear();
   state.pictures.clear();
   state.signedUrls.clear();
   state.settings = normaliseSettings(null);
@@ -299,11 +315,12 @@ async function pullProgress() {
   await pullStudyDays(sb);
 }
 
-// The study log (table `study_days`, migration 0010): per day the larger of
-// the two totals stands (mergeStudyDays). Nothing is merged while a day's
-// total or a clear is still in the outbox, or when one landed locally while
-// the rows were in flight. A library without the table (seeded before the
-// migration) just goes without.
+// The study log (table `study_days`, migrations 0010 / 0012): one row per
+// (day, device); per row the larger of the two totals stands
+// (mergeStudyDays). Nothing is merged while a day's total or a clear is
+// still in the outbox, or when one landed locally while the rows were in
+// flight. A library without the table (seeded before the migration) just
+// goes without.
 async function pullStudyDays(sb) {
   const gen = state.studyGen;
   let remote;
@@ -314,11 +331,11 @@ async function pullStudyDays(sb) {
     return;
   }
   if (gen !== state.studyGen) return;
-  const r = mergeStudyDays(state.studyDays, remote, await db.getAll('outbox'));
+  const r = mergeStudyDays(state.studyRows, remote, await db.getAll('outbox'));
   if (r.skipped || (!r.changed.length && !r.removed)) return;
-  state.studyDays = r.merged;
-  await db.clear('study_days');
-  await db.putMany('study_days', [...r.merged.values()]);
+  state.studyRows = r.merged;
+  await db.clear('study_rows');
+  await db.putMany('study_rows', [...r.merged.values()]);
   emit('study');
 }
 
@@ -376,8 +393,10 @@ async function onAlignmentEvent(payload) {
 
 // A reset on another device arrives as one DELETE per row: the map is
 // patched per event, the listeners hear about the burst once (PROGRESS_EMIT_MS).
+// An INSERT / UPDATE (a read or a review elsewhere) merges field by field —
+// reads = max, last_read_at = max, read_at = min — so an own echo is a no-op.
 async function onProgressEvent(payload) {
-  const r = applyRealtime(state.progress, payload, (row) => row.unit_id);
+  const r = applyProgressRealtime(state.progress, payload);
   if (!r.changed) return;
   state.progress = r.map;
   if (payload.eventType === 'DELETE') await db.del('progress', r.key);
@@ -386,23 +405,24 @@ async function onProgressEvent(payload) {
   state.progressEmit = setTimeout(() => { state.progressEmit = 0; emit('progress'); }, PROGRESS_EMIT_MS);
 }
 
-// Another device's day total (the larger figure wins) or a clear elsewhere
-// (one DELETE per day, heard once). While our own clear is still unsent the
-// DELETEs are its echo; a larger local total in the outbox is sent right after.
+// Another device's row for a day (one row per device; the larger figure for
+// that row wins — an own echo is never larger) or a clear elsewhere (one
+// DELETE per row, heard once; the pk (user_id, day, device) rides in `old`).
+// While our own clear is still unsent the DELETEs are its echo; a larger
+// local total in the outbox is sent right after.
 async function onStudyEvent(payload) {
   if (payload.eventType === 'DELETE') {
-    const day = payload.old?.day;
-    if (!isDayKey(day) || !state.studyDays.has(day) || state.studyClearing) return;
-    state.studyDays.delete(day);
-    await db.del('study_days', day);
+    const key = studyKey(payload.old?.day, payload.old?.device);
+    if (!key || !state.studyRows.has(key) || state.studyClearing) return;
+    state.studyRows.delete(key);
+    await db.del('study_rows', key);
   } else {
-    const row = payload.new;
-    if (!row || !isDayKey(row.day)) return;
-    const cur = state.studyDays.get(row.day);
-    if (cur && cleanMs(cur.active_ms) >= cleanMs(row.active_ms)) return;
-    const next = { day: row.day, active_ms: cleanMs(row.active_ms), updated_at: row.updated_at ?? null };
-    state.studyDays.set(row.day, next);
-    await db.put('study_days', next);
+    const row = normaliseStudyRow(payload.new);
+    if (!row) return;
+    const cur = state.studyRows.get(row.key);
+    if (cur && cur.active_ms >= row.active_ms) return;
+    state.studyRows.set(row.key, row);
+    await db.put('study_rows', row);
   }
   clearTimeout(state.studyEmit);
   state.studyEmit = setTimeout(() => { state.studyEmit = 0; emit('study'); }, PROGRESS_EMIT_MS);
@@ -472,7 +492,11 @@ async function sendOp(sb, op) {
       break;
     }
     case 'reading_progress:upsert_many':
-      res = await sb.from('reading_progress').upsert(op.rows.map((r) => ({ ...r, user_id: uid })), { onConflict: 'user_id,unit_id' });
+      // The rows go as they are: the server merges them with its copy in a
+      // before-update trigger (migration 0012: reads = max, last_read_at =
+      // max, read_at = min), atomically, so a review from another device is
+      // never undone — one request per batch, no read-merge-write window.
+      res = await sb.from('reading_progress').upsert(op.rows.map((r) => ({ ...normaliseProgressRow(r), user_id: uid })), { onConflict: 'user_id,unit_id' });
       break;
     case 'reading_progress:delete': {
       let q = sb.from('reading_progress').delete().eq('user_id', uid);
@@ -481,11 +505,13 @@ async function sendOp(sb, op) {
       break;
     }
     case 'study_days:upsert': {
-      // Additive-max: the server keeps the larger of its total and ours.
-      const { data: cur, error } = await sb.from('study_days').select('active_ms').eq('user_id', uid).eq('day', op.row.day).maybeSingle();
-      if (error) { res = { error }; break; }
-      const active_ms = Math.max(cleanMs(cur?.active_ms), cleanMs(op.row.active_ms));
-      res = await sb.from('study_days').upsert({ user_id: uid, day: op.row.day, active_ms, updated_at: op.row.updated_at }, { onConflict: 'user_id,day' });
+      // This device's running total for the day, under its own device id; the
+      // server keeps max(server, ours) per (day, device) in a before-update
+      // trigger (migration 0012). An op queued before the per-device change
+      // names no device: it was the baseline's ('main') total.
+      const row = normaliseStudyRow(op.row);
+      if (!row) { res = { error: new Error(`bad study row ${JSON.stringify(op.row)}`) }; break; }
+      res = await sb.from('study_days').upsert({ user_id: uid, day: row.day, device: row.device, active_ms: row.active_ms, updated_at: op.row.updated_at ?? nowIso() }, { onConflict: 'user_id,day,device' });
       break;
     }
     case 'study_days:delete':
@@ -626,18 +652,29 @@ async function saveAlignment(weekN, rows) {
 }
 
 // ---------------------------------------------------------------------------
-// Reading progress (CONTRACT.md "Reading progress"): local-first like lookups.
-// markRead() is idempotent (ids already read are skipped); every batch is its
-// own outbox entry (unique key, so coalescing never drops one) and a reset is
-// one delete — for a week or for everything. Realtime keeps a second device
-// in step (emit('progress')). Lookups are never touched here.
+// Reading progress (CONTRACT.md "Reading progress" / "Reviews"): local-first
+// like lookups. markRead() splits its ids locally (makeProgressRows in
+// sync.js): a first read is a new row, a sentence read again ≥ 30 min after
+// its last pass is a review (reads + 1, last_read_at = now, read_at kept),
+// one within 30 min is skipped — so it is idempotent within a session. Every
+// batch is its own outbox entry (unique key, so coalescing never drops one)
+// and a reset is one delete — for a week or for everything, reviews
+// included. Realtime keeps a second device in step (emit('progress')).
+// Lookups are never touched here.
 // ---------------------------------------------------------------------------
 
 let markSeq = 0;
 
+/** unit_id → read_at (the first pass): what counts, Continue and the weeks menu read this. */
 async function getProgress() {
   await ready();
   return new Map([...state.progress.values()].map((r) => [r.unit_id, r.read_at]));
+}
+
+/** unit_id → the whole row { unit_id, week_n, read_at, reads, last_read_at, updated_at }: the reader's timers and the study log's review figures read this. */
+async function getProgressRows() {
+  await ready();
+  return new Map([...state.progress].map(([id, r]) => [id, { ...r }]));
 }
 
 async function markRead(unitIds) {
@@ -661,34 +698,37 @@ async function resetProgress(weekN = null) {
 }
 
 // ---------------------------------------------------------------------------
-// Study log (CONTRACT.md "Study log"): active reading time per local day.
-// addActiveTime() adds to the day's local total at once and queues that
-// total (one outbox key per day, so a burst of flushes coalesces into the
-// latest figure); the server keeps max(server, local). clearStudyLog() is one
-// delete. Reading progress and lookups are never touched here.
+// Study log (CONTRACT.md "Study log" / "Study log merge"): active reading
+// time per local day, one row per (day, device). addActiveTime() adds to
+// this device's local total for the day at once and queues that total (one
+// outbox key per day and device, so a burst of flushes coalesces into the
+// latest figure); the server keeps max per row. getStudyDays() sums the
+// devices' rows per day. clearStudyLog() is one delete of every row of the
+// user's, every device's. Reading progress and lookups are never touched here.
 // ---------------------------------------------------------------------------
 
 async function getStudyDays() {
   await ready();
-  return studyDaysView(state.studyDays);
+  return studyDaysView(state.studyRows);
 }
 
 async function addActiveTime(day, ms) {
   await ready();
-  const row = addStudyMs(state.studyDays.get(day), day, ms, nowIso());
+  const device = deviceId();
+  const row = addStudyMs(state.studyRows.get(studyKey(day, device)), day, ms, nowIso(), device);
   if (!row || !cleanMs(ms)) return;
   state.studyGen += 1;
-  state.studyDays.set(day, row);
-  await db.put('study_days', row);
-  await enqueue({ table: 'study_days', key: `day:${day}`, op: 'upsert', row });
+  state.studyRows.set(row.key, row);
+  await db.put('study_rows', row);
+  await enqueue({ table: 'study_days', key: `day:${day}:${device}`, op: 'upsert', row });
 }
 
 async function clearStudyLog() {
   await ready();
   state.studyGen += 1;
   state.studyClearing = true;
-  state.studyDays.clear();
-  await db.clear('study_days');
+  state.studyRows.clear();
+  await db.clear('study_rows');
   await enqueue({ table: 'study_days', key: `clear:${Date.now()}`, op: 'delete' });
 }
 
@@ -789,7 +829,7 @@ export const store = {
   getAlignment, saveAlignment,
   getAudioUrl, uploadAudio,
   getPictures,
-  getProgress, markRead, resetProgress,
+  getProgress, getProgressRows, markRead, resetProgress,
   getStudyDays, addActiveTime, clearStudyLog,
   onChange, sync,
 };

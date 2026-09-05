@@ -3,12 +3,12 @@
 // UI's persistence paths are exercised. Chosen by main.js when ?fixture=1 or
 // when app/config.js is missing / has no SUPABASE_URL.
 
-import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, weekOfUnit, isDayKey, cleanMs } from './sync.js';
+import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs } from './sync.js';
 
 const LS_LOOKUPS = 'l103.lookups';
 const LS_SETTINGS = 'latin103.settings';
 const LS_ALIGN = 'l103.align.';
-const LS_PROGRESS = 'l103.progress';   // { unit_id: read_at } — reading progress (CONTRACT.md), kept apart from the lookups
+const LS_PROGRESS = 'l103.progress';   // { unit_id: { week_n, read_at, reads, last_read_at } } — reading progress (CONTRACT.md "Reviews"), kept apart from the lookups; an older bare read_at value is one pass
 const LS_STUDY = 'l103.study';         // { "YYYY-MM-DD": active_ms } — the study log (CONTRACT.md "Study log")
 
 // The one list of defaults (sync.js): the fixture never drifts from the real store.
@@ -38,6 +38,15 @@ async function fetchJSON(name) {
   return res.json();
 }
 function emit(kind) { for (const cb of listeners) cb(kind); }
+/** The progress rows in localStorage as a Map unit_id → full row (a bare read_at string from before reviews is one pass). */
+function progressRows(all = readJSON(LS_PROGRESS, {})) {
+  const out = new Map();
+  for (const [id, v] of Object.entries(all || {})) {
+    const row = normaliseProgressRow(typeof v === 'string' ? { unit_id: id, week_n: weekOfUnit(id), read_at: v } : { unit_id: id, week_n: weekOfUnit(id), ...v });
+    if (row?.read_at) out.set(id, row);
+  }
+  return out;
+}
 const pad = (n) => String(n).padStart(2, '0');
 
 async function pipelineAlignment(n) {
@@ -233,12 +242,14 @@ export const store = {
     return this.setSettings({ lastPosition });
   },
   // Reading progress (CONTRACT.md "Reading progress"): localStorage-backed like the lookups, and never mixed with them.
-  async getProgress() { return new Map(Object.entries(readJSON(LS_PROGRESS, {}))); },
+  async getProgress() { return new Map([...progressRows()].map(([id, r]) => [id, r.read_at])); },
+  async getProgressRows() { return progressRows(); },
+  // A first read is a new row; a sentence met again ≥ 30 min after its last pass is a review (reads + 1) — the split is makeProgressRows() in sync.js, as in store.js.
   async markRead(unitIds) {
     const all = readJSON(LS_PROGRESS, {});
-    const rows = makeProgressRows(unitIds, new Set(Object.keys(all)));
+    const rows = makeProgressRows(unitIds, progressRows(all), new Date().toISOString());
     if (!rows.length) return;
-    for (const r of rows) all[r.unit_id] = r.read_at;
+    for (const r of rows) all[r.unit_id] = { week_n: r.week_n, read_at: r.read_at, reads: r.reads, last_read_at: r.last_read_at };
     writeJSON(LS_PROGRESS, all);
   },
   async resetProgress(weekN = null) {
