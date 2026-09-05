@@ -38,23 +38,117 @@ export function normaliseLastPosition(value) {
   return { week_n, unit_id, view, at };
 }
 
+/* --------------------------------------------------- reading progress */
+// CONTRACT.md "Reading progress" / "Reviews": one row per sentence,
+// { unit_id, week_n, read_at (the first pass), reads, last_read_at (the latest
+// pass), updated_at }. A sentence read again ≥ REVIEW_GAP_MS after its
+// last_read_at is a review (reads + 1, last_read_at = now; read_at never
+// moves); within the gap it is the same session and nothing changes. Rows
+// merge field by field wherever two copies meet (mergeProgressRow): reads =
+// max, last_read_at = max, read_at = min — so a review made on either device
+// stands and nothing is ever undone by a stale copy.
+
+export const REVIEW_GAP_MS = 30 * 60 * 1000;
+
+/** How many passes a progress Map value records: a row's `reads` as a whole number ≥ 1; anything else (a bare read_at, `true`, junk) is one pass. Pure. */
+export function readsOf(value) {
+  return value && typeof value === 'object' ? Math.max(1, Math.floor(Number(value.reads)) || 1) : 1;
+}
+
+/** A progress row with every field present: reads ≥ 1 (default 1), last_read_at (default read_at). Pure. */
+export function normaliseProgressRow(row) {
+  if (!row || typeof row !== 'object') return null;
+  const read_at = row.read_at || row.last_read_at || null;
+  const reads = readsOf(row);
+  const last_read_at = ts(row.last_read_at) ? row.last_read_at : read_at;
+  return { ...row, read_at, reads, last_read_at, updated_at: row.updated_at || last_read_at };
+}
+
 /**
- * Rows for `reading_progress` from the unit ids to mark read: one per id
- * not already in `existing` (Map / Set of unit ids), de-duplicated, with
- * `week_n` from the id (ids of no week are dropped). Pure — markRead() is
- * idempotent because of this.
+ * The latest pass over a sentence, from a progress Map value: a row
+ * (last_read_at, else read_at), a bare read_at string (the getProgress() view)
+ * or `true` (a Set entry: read, time unknown). null for nothing. Pure.
  */
-export function makeProgressRows(unitIds, existing, now = new Date().toISOString()) {
+export function lastReadOf(value) {
+  if (value == null || value === false) return null;
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') return value.last_read_at || value.read_at || null;
+  return null;
+}
+
+/**
+ * True when the sentence counts as read *for now*: it has a value and its
+ * latest pass is within `gapMs` of `now` (or has no usable time — a Set entry,
+ * a bad timestamp — which is taken as read for good). False for an unread
+ * sentence and for one whose next pass would be a review. Pure.
+ */
+export function readSettled(value, now = Date.now(), gapMs = REVIEW_GAP_MS) {
+  if (value == null || value === false) return false;
+  const at = ts(lastReadOf(value));
+  if (!at) return true;
+  return ts(now) - at < gapMs;
+}
+
+/**
+ * Rows for `reading_progress` from the unit ids that met the read rule:
+ * a first read (a new row, reads 1) for an id not in `existing` (a Map of
+ * unit_id → row, or a Set of ids), a review (reads + 1, last_read_at = now,
+ * read_at kept) for a row whose last pass is ≥ `gapMs` before `now`, and
+ * nothing for one read within the gap (or a Set entry). De-duplicated;
+ * `week_n` from the id (ids of no week are dropped). Pure — markRead() is
+ * idempotent within a session because of this.
+ */
+export function makeProgressRows(unitIds, existing, now = new Date().toISOString(), gapMs = REVIEW_GAP_MS) {
   const out = [];
   const seen = new Set();
+  const nowMs = ts(now);
   for (const id of unitIds || []) {
-    if (typeof id !== 'string' || !id || seen.has(id) || existing?.has?.(id)) continue;
+    if (typeof id !== 'string' || !id || seen.has(id)) continue;
     const week_n = weekOfUnit(id);
     if (week_n == null) continue;
+    const cur = existing?.get?.(id) ?? (existing?.has?.(id) ? true : null);
+    if (cur == null) {
+      seen.add(id);
+      out.push({ unit_id: id, week_n, read_at: now, reads: 1, last_read_at: now, updated_at: now });
+      continue;
+    }
+    if (readSettled(cur, nowMs, gapMs) || typeof cur !== 'object') continue;
+    const row = normaliseProgressRow(cur);
     seen.add(id);
-    out.push({ unit_id: id, week_n, read_at: now, updated_at: now });
+    out.push({ ...row, unit_id: id, week_n: row.week_n ?? week_n, reads: row.reads + 1, last_read_at: now, updated_at: now });
   }
   return out;
+}
+
+/**
+ * Two copies of one sentence's row → the one that stands: reads = max,
+ * last_read_at = max, read_at = min, updated_at = max. Either side may be
+ * missing (the other comes back normalised). Pure.
+ */
+export function mergeProgressRow(a, b) {
+  const x = normaliseProgressRow(a);
+  const y = normaliseProgressRow(b);
+  if (!x) return y;
+  if (!y) return x;
+  const later = (p, q) => (ts(q) > ts(p) ? q : p);
+  const earlier = (p, q) => (p && q ? (ts(q) < ts(p) ? q : p) : p || q);
+  return {
+    ...x, ...y,
+    unit_id: x.unit_id ?? y.unit_id,
+    week_n: x.week_n ?? y.week_n,
+    read_at: earlier(x.read_at, y.read_at),
+    reads: Math.max(x.reads, y.reads),
+    last_read_at: later(x.last_read_at, y.last_read_at),
+    updated_at: later(x.updated_at, y.updated_at),
+  };
+}
+
+/** True when two rows say the same about a sentence (reads, read_at, last_read_at). Pure. */
+export function sameProgressRow(a, b) {
+  if (!a || !b) return !a && !b;
+  const x = normaliseProgressRow(a);
+  const y = normaliseProgressRow(b);
+  return x.reads === y.reads && ts(x.read_at) === ts(y.read_at) && ts(x.last_read_at) === ts(y.last_read_at);
 }
 
 /** True when the outbox still holds a `reading_progress` op (a markRead batch or a reset not yet on the server). Pure. */
@@ -67,18 +161,49 @@ export function progressPending(ops) {
  * row). While any reading_progress op is still in the outbox (`ops`) nothing
  * is merged — a pull that overlaps a reset must not resurrect the rows the
  * reset just deleted locally (`skipped: true`, the local Map comes back as
- * is). With an empty outbox rows the server no longer has are pruned too.
- * Pure.
+ * is). Rows meet field by field (mergeProgressRow: reads = max, last_read_at
+ * = max, read_at = min); `changed` lists the ids whose row differs after it.
+ * With an empty outbox rows the server no longer has are pruned too. Pure.
  */
 export function mergeProgress(localMap, remoteRows, ops) {
   if (progressPending(ops)) return { merged: localMap, changed: [], removed: 0, skipped: true };
-  const { merged, changed } = mergeRows(localMap, remoteRows, (r) => r.unit_id);
+  const merged = new Map(localMap);
+  const changed = [];
+  for (const row of remoteRows || []) {
+    if (!row || !row.unit_id) continue;
+    const cur = merged.get(row.unit_id);
+    const next = mergeProgressRow(cur, row);
+    if (cur && sameProgressRow(cur, next)) continue;
+    merged.set(row.unit_id, next);
+    changed.push(row.unit_id);
+  }
   let removed = 0;
   if (!(ops || []).length) {
-    const remoteIds = new Set((remoteRows || []).map((r) => r.unit_id));
+    const remoteIds = new Set((remoteRows || []).map((r) => r?.unit_id));
     for (const k of [...merged.keys()]) if (!remoteIds.has(k)) { merged.delete(k); removed += 1; }
   }
   return { merged, changed, removed, skipped: false };
+}
+
+/**
+ * One realtime `postgres_changes` payload on `reading_progress` applied to
+ * the Map (unit_id → row): a DELETE drops the row; an INSERT / UPDATE is
+ * merged field by field (mergeProgressRow), so an own echo or a stale copy
+ * changes nothing. Same shape as applyRealtime(). Pure.
+ */
+export function applyProgressRealtime(map, payload) {
+  const type = payload?.eventType;
+  if (type === 'DELETE') return applyRealtime(map, payload, (row) => row.unit_id);
+  if (type !== 'INSERT' && type !== 'UPDATE') return { map, changed: false, key: null };
+  const row = payload.new;
+  const key = row?.unit_id ?? null;
+  if (key == null) return { map, changed: false, key };
+  const cur = map.get(key);
+  const next = mergeProgressRow(cur, row);
+  if (cur && sameProgressRow(cur, next)) return { map, changed: false, key };
+  const out = new Map(map);
+  out.set(key, next);
+  return { map: out, changed: true, key };
 }
 
 /** Read sentences per week: Map week_n → count, from a progress Map keyed by unit id (the week comes from the id). Pure. */
@@ -93,10 +218,14 @@ export function progressByWeek(progress) {
 }
 
 /* ------------------------------------------------------------------ study log */
-// CONTRACT.md "Study log": table `study_days` (day, active_ms) — active reading
-// time per local calendar day. Local-first like progress; the merge is additive-
-// max: whichever side holds the larger figure for a day wins (the outbox sends
-// a day's local total; the server keeps max(server, local)).
+// CONTRACT.md "Study log" / "Study log merge": table `study_days` (day,
+// device, active_ms) — active reading time per local calendar day, one row
+// per device (`device` = a random id kept in localStorage, `main` for the
+// baseline backfilled by migration 0012). Local-first like progress. Each
+// device sends its *own* running total for the day and the server keeps the
+// max per (day, device) row (a re-sent total is harmless, two tabs of one
+// device share a row and never double-count); on read the devices' rows are
+// summed per day (studyDaysView), so a phone and a laptop add up.
 
 /** The local calendar day of `value` (Date | epoch ms | ISO string; default now) as "YYYY-MM-DD". Pure. */
 export function localDay(value = new Date()) {
@@ -114,14 +243,38 @@ export function cleanMs(value) {
   return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
+/** The device id of the baseline rows (migration 0012's default) and of any row that names no device. */
+export const STUDY_MAIN_DEVICE = 'main';
+/** Joins day and device into one study-row key: "YYYY-MM-DD␟device" (U+241F, never in a day or a device id). */
+export const STUDY_KEY_SEP = '␟';
+
+/** A non-empty device id, else STUDY_MAIN_DEVICE. Pure. */
+export function cleanDevice(device) {
+  const d = String(device ?? '').trim();
+  return d && !d.includes(STUDY_KEY_SEP) ? d : STUDY_MAIN_DEVICE;
+}
+
+/** The key a study row is kept under locally (the IndexedDB `study_rows` store and the in-memory Map): `day␟device`; null for a bad day. Pure. */
+export function studyKey(day, device) {
+  return isDayKey(day) ? `${day}${STUDY_KEY_SEP}${cleanDevice(device)}` : null;
+}
+
+/** A study row from a server / realtime / cached row: { key, day, device, active_ms, updated_at }; null for a bad day. Pure. */
+export function normaliseStudyRow(row) {
+  if (!row || !isDayKey(row.day)) return null;
+  const device = cleanDevice(row.device);
+  return { key: studyKey(row.day, device), day: row.day, device, active_ms: cleanMs(row.active_ms), updated_at: row.updated_at ?? null };
+}
+
 /**
- * A `study_days` row after `ms` more active time on `day`: the existing
- * total plus `ms` (nothing negative, nothing fractional), with a fresh
- * updated_at. `existing` may be null. Pure.
+ * This device's `study_days` row after `ms` more active time on `day`: the
+ * existing total plus `ms` (nothing negative, nothing fractional), with a
+ * fresh updated_at. `existing` may be null. Pure.
  */
-export function addStudyMs(existing, day, ms, now = new Date().toISOString()) {
+export function addStudyMs(existing, day, ms, now = new Date().toISOString(), device = STUDY_MAIN_DEVICE) {
   if (!isDayKey(day)) return null;
-  return { day, active_ms: cleanMs(existing?.active_ms) + cleanMs(ms), updated_at: now };
+  const dev = cleanDevice(device);
+  return { key: studyKey(day, dev), day, device: dev, active_ms: cleanMs(existing?.active_ms) + cleanMs(ms), updated_at: now };
 }
 
 /** True when the outbox still holds a `study_days` op (a day's total or a clear not yet on the server). Pure. */
@@ -130,37 +283,48 @@ export function studyPending(ops) {
 }
 
 /**
- * Merge the server's `study_days` rows into the local Map (day → row) with
- * the additive-max rule: per day the larger active_ms stands. While a
- * study_days op is still in the outbox nothing is merged (`skipped: true`) — a
- * pull overlapping a clear must not bring the cleared days back; with an
- * empty outbox days the server no longer has are dropped too. Pure.
+ * Merge the server's `study_days` rows into the local Map (key → row, key =
+ * studyKey(day, device)): per row the larger active_ms stands (the server
+ * keeps the max too, so nothing is ever lowered). While a study_days op is
+ * still in the outbox nothing is merged (`skipped: true`) — a pull
+ * overlapping a clear must not bring the cleared days back; with an empty
+ * outbox rows the server no longer has are dropped too. `changed` lists the
+ * keys that moved. Pure.
  */
 export function mergeStudyDays(localMap, remoteRows, ops) {
   if (studyPending(ops)) return { merged: localMap, changed: [], removed: 0, skipped: true };
   const merged = new Map(localMap);
   const changed = [];
-  for (const row of remoteRows || []) {
-    if (!row || !isDayKey(row.day)) continue;
-    const cur = merged.get(row.day);
-    const remote = cleanMs(row.active_ms);
-    if (!cur || remote > cleanMs(cur.active_ms)) {
-      merged.set(row.day, { day: row.day, active_ms: remote, updated_at: row.updated_at ?? cur?.updated_at ?? null });
-      changed.push(row.day);
+  const remoteKeys = new Set();
+  for (const raw of remoteRows || []) {
+    const row = normaliseStudyRow(raw);
+    if (!row) continue;
+    remoteKeys.add(row.key);
+    const cur = merged.get(row.key);
+    if (!cur || row.active_ms > cleanMs(cur.active_ms)) {
+      merged.set(row.key, { ...row, updated_at: row.updated_at ?? cur?.updated_at ?? null });
+      changed.push(row.key);
     }
   }
   let removed = 0;
   if (!(ops || []).length) {
-    const remoteDays = new Set((remoteRows || []).map((r) => r?.day));
-    for (const k of [...merged.keys()]) if (!remoteDays.has(k)) { merged.delete(k); removed += 1; }
+    for (const k of [...merged.keys()]) if (!remoteKeys.has(k)) { merged.delete(k); removed += 1; }
   }
   return { merged, changed, removed, skipped: false };
 }
 
-/** Public shape for store.getStudyDays(): Map day → active_ms (integer ms). Pure. */
+/**
+ * Public shape for store.getStudyDays(): Map day → active_ms (integer ms),
+ * the devices' rows summed per day. Takes the store's Map (key → row) or a
+ * plain day → ms Map (the fixture store). Pure.
+ */
 export function studyDaysView(map) {
   const out = new Map();
-  for (const [day, row] of map || []) if (isDayKey(day)) out.set(day, cleanMs(row?.active_ms ?? row));
+  for (const [key, row] of map || []) {
+    const day = row && typeof row === 'object' && row.day != null ? row.day : String(key).split(STUDY_KEY_SEP)[0];
+    if (!isDayKey(day)) continue;
+    out.set(day, (out.get(day) ?? 0) + cleanMs(row && typeof row === 'object' ? row.active_ms : row));
+  }
   return out;
 }
 

@@ -2,7 +2,7 @@
 import { createReader, firstUnread, queueReads, playbackRead } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
 import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice } from './settings.js';
-import { clampRate, normaliseLastPosition, progressByWeek, localDay } from './sync.js';
+import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const LS_WEEK = 'l103.week';
@@ -79,9 +79,17 @@ async function boot() {
   setBarHeight();
   const readerEl = $('#reader');
   let lookups = await store.getLookups();
-  // Reading progress (CONTRACT.md): unit id → read_at. Kept apart from the lookups; never reset with them.
+  // Reading progress (CONTRACT.md): `progressRows` unit id → the row (read_at, reads, last_read_at — the reader's
+  // timers, the read batching and the study log's review figures), `progress` unit id → read_at (counts, Continue,
+  // the weeks menu: first reads only). Kept apart from the lookups; never reset with them.
   const hasProgress = typeof store.getProgress === 'function';
-  let progress = hasProgress ? await store.getProgress() : new Map();
+  let progressRows = new Map();
+  let progress = new Map();
+  async function loadProgress() {
+    progressRows = await (store.getProgressRows?.() ?? store.getProgress());
+    progress = new Map([...progressRows].map(([id, r]) => [id, r && typeof r === 'object' ? r.read_at : r]));
+  }
+  if (hasProgress) await loadProgress();
   // Study log (CONTRACT.md): active ms per local day. Feeds the time-left estimates and Settings → Progress.
   const hasStudy = hasProgress && typeof store.getStudyDays === 'function';
   let studyDays = hasStudy ? await store.getStudyDays() : new Map();
@@ -110,7 +118,7 @@ async function boot() {
   // "In plain words" under every note: settings.plainOpen is the learner's last
   // choice, so the disclosures stay open once one has been opened.
   const plain = { get: () => !!settings.plainOpen, set: (on) => { if (!!settings.plainOpen !== !!on) saveSettings({ plainOpen: !!on }); } };
-  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, live, listen: $('#listen'), plain, progressBar: $('#progress') });
+  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, live, listen: $('#listen'), plain, progressBar: $('#progress'), readSettled });
   const panel = createWordPanel({
     dialog: $('#popup'), aside: $('#panel'), layout,
     lookup: dict.lookup, describe: dict.describe, paradigm: par.paradigm, store,
@@ -404,11 +412,12 @@ async function boot() {
   // ran to its end (playbackRead() in reader.js; a Stop partway or a jump
   // never counts, paused time does not count). Ids are batched (queueReads,
   // READ_FLUSH_MS) into one store.markRead(); nothing is ever un-marked
-  // automatically.
+  // automatically. A sentence read ≥ 30 min ago (readSettled) is queued
+  // again — the store counts that pass as a review (CONTRACT.md "Reviews").
   const readQueue = new Set();
   let readTimer = 0;
   function noteRead(ids) {
-    if (!hasProgress || !queueReads(readQueue, ids, progress).length) return;
+    if (!hasProgress || !queueReads(readQueue, ids, progressRows, readSettled).length) return;
     if (!readTimer) readTimer = setTimeout(flushReads, READ_FLUSH_MS);
   }
   // A reset drops whatever was noticed but not yet saved, so nothing marked a moment before comes back after it.
@@ -424,7 +433,7 @@ async function boot() {
     readQueue.clear();
     if (!ids.length) return;
     try { await store.markRead(ids); } catch (e) { console.warn('[progress] not saved', e?.message || e); }
-    progress = await store.getProgress();
+    await loadProgress();
     paintProgress();
   }
   reader.on('read', ({ unitIds }) => noteRead(unitIds));
@@ -464,10 +473,10 @@ async function boot() {
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const readInWeek = () => units.reduce((n, u) => n + (progress.has(u.id) ? 1 : 0), 0);
   // "about 45 min left" for a week: unread ÷ pace (CONTRACT.md "Estimated time left"); '' when finished or without the study log.
-  const timeLeftFor = (read, total) => (hasStudy && total > 0 && read < total ? timeLeftText(total - read, (stats ??= studyLog({ progress, studyDays })).pace) : '');
+  const timeLeftFor = (read, total) => (hasStudy && total > 0 && read < total ? timeLeftText(total - read, (stats ??= studyLog({ progress: progressRows, studyDays })).pace) : '');
   function paintProgress() {
-    reader.setProgress?.(progress);
-    stats = hasStudy ? studyLog({ progress, studyDays }) : null;
+    reader.setProgress?.(progressRows);
+    stats = hasStudy ? studyLog({ progress: progressRows, studyDays }) : null;
     if (!progressEl) return;
     progressEl.hidden = !hasProgress || !units.length;
     if (progressEl.hidden) return;
@@ -488,7 +497,7 @@ async function boot() {
   // written every minute — store.addActiveTime(day, ms), day = the local
   // date — and at once when the tab hides or the page is left; a day change
   // mid-session flushes to the day that is ending first.
-  let lastActivity = Date.now();
+  let lastActivity = 0;                 // nothing counts until the learner actually does something
   let lastTick = Date.now();
   let lastFlush = Date.now();
   let banked = { day: localDay(), ms: 0 };
@@ -513,12 +522,20 @@ async function boot() {
     banked.ms += activeSlice({ visible: closing || document.visibilityState === 'visible', now, lastActivity, playing: !!audio?.status?.().playing, dt, idleMs: ACTIVE_IDLE_MS, tickMs: ACTIVE_TICK_MS });
     if (now - lastFlush >= ACTIVE_FLUSH_MS) flushActive();
   }
+  // The bank is emptied for the ticks that land during the await and put
+  // back if the store fails (quota, private mode): the minutes wait for the
+  // next flush instead of vanishing. (A day boundary crossed during a failed
+  // await leaves them under the new day: a slice of seconds, at most.)
   async function flushActive() {
     lastFlush = Date.now();
     const { day, ms } = banked;
-    banked = { day, ms: 0 };
     if (!hasStudy || ms <= 0) return;
-    try { await store.addActiveTime(day, Math.round(ms)); } catch (e) { console.warn('[study] not saved', e?.message || e); return; }
+    banked = { day, ms: 0 };
+    try { await store.addActiveTime(day, Math.round(ms)); } catch (e) {
+      console.warn('[study] not saved', e?.message || e);
+      banked.ms += ms;
+      return;
+    }
     studyDays = await store.getStudyDays();
     paintProgress();
   }
@@ -617,7 +634,7 @@ async function boot() {
     focusBtn.textContent = week?.focus?.label ?? 'Grammar focus';
     focusBtn.closest('button').setAttribute('aria-label', week?.focus?.label ? `Grammar focus: ${week.focus.label}` : 'Grammar focus');
     // One render: audio availability, lookups, pictures and the reading progress ride along with the week.
-    reader.setWeek(week, units, highlights, { audio: playable(info), lookups, pictures, progress });
+    reader.setWeek(week, units, highlights, { audio: playable(info), lookups, pictures, progress: progressRows });
     panel.close({ user: false });   // a week change, not the learner's choice: sentence view may open the stack again
     paintProgress();
     settingsUI?.refreshAudio();
@@ -875,20 +892,20 @@ async function boot() {
         const n = weekN;
         dropReads();
         await store.resetProgress(n);
-        progress = await store.getProgress();
+        await loadProgress();
         paintProgress();
         return `Week ${n}: reading progress reset. Looked-up words are untouched.`;
       },
       async resetAll() {
         dropReads();
         await store.resetProgress(null);
-        progress = await store.getProgress();
+        await loadProgress();
         paintProgress();
         return 'All reading progress reset. Looked-up words are untouched.';
       },
       // The study log (CONTRACT.md): the figures the dialog draws, and its own clear — reading progress stays.
       study: hasStudy ? {
-        log: () => stats ?? (stats = studyLog({ progress, studyDays })),
+        log: () => stats ?? (stats = studyLog({ progress: progressRows, studyDays })),
         async clear() {
           banked = { day: localDay(), ms: 0 };
           await store.clearStudyLog();
@@ -913,7 +930,7 @@ async function boot() {
       mirror(settings); applyToDocument(settings); applyDisplay(); settingsUI.render(settings);
     }
     if (kind === 'alignments') { audio?.invalidate?.(weekN); refreshAudioAvailability(); }
-    if (kind === 'progress' && hasProgress) { progress = await store.getProgress(); paintProgress(); }
+    if (kind === 'progress' && hasProgress) { await loadProgress(); paintProgress(); }
     if (kind === 'study' && hasStudy) { studyDays = await store.getStudyDays(); paintProgress(); }
   };
   // Anything that arrived during boot (settings/lookups are re-read below via loadWeek + the synced read above).

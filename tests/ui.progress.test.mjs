@@ -3,10 +3,22 @@
 // "current sentence while scrolling" rule, the in-view rule and the texts.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { firstUnread, queueReads, nearestUnit, inViewEnough, unitEndMs, playbackRead } from '../app/js/reader.js';
+import { firstUnread, queueReads, progressValueOf, readTickText, nearestUnit, inViewEnough, unitEndMs, playbackRead, nextCounts, READ_DWELL_MS } from '../app/js/reader.js';
+import { readSettled } from '../app/js/sync.js';
 import { progressText, progressStateText } from '../app/js/settings.js';
 
 const units = [{ id: 'w01:1.1', order: 0 }, { id: 'w01:2.1', order: 1 }, { id: 'w01:3.1', order: 2 }];
+
+test('nextCounts: Next / j counts a first read at once, a review only after the dwell, a settled sentence never', () => {
+  const row = { unit_id: 'w01:1.1', week_n: 1, read_at: '2026-09-05T10:00:00.000Z', reads: 1, last_read_at: '2026-09-05T10:00:00.000Z' };
+  assert.equal(READ_DWELL_MS, 2000);
+  assert.equal(nextCounts({ value: null, settled: false, heldMs: 0 }), true, 'a first read: moved past with Next counts, no dwell (CONTRACT.md)');
+  assert.equal(nextCounts({ value: row, settled: false, heldMs: 300 }), false, 'hammering j through a read week is not a review');
+  assert.equal(nextCounts({ value: row, settled: false, heldMs: 2000 }), true, 'current for the dwell: a review');
+  assert.equal(nextCounts({ value: row, settled: true, heldMs: 60000 }), false, 'read within the last 30 min: nothing');
+  assert.equal(nextCounts({ value: null, settled: false, heldMs: 0, dwellMs: 0 }), true);
+  assert.equal(nextCounts({ value: row, settled: false, heldMs: 5, dwellMs: 0 }), true);
+});
 
 test('queueReads: adds what is neither read nor queued, once; says what it added', () => {
   const queue = new Set();
@@ -15,6 +27,33 @@ test('queueReads: adds what is neither read nor queued, once; says what it added
   assert.deepEqual(queueReads(queue, ['w01:2.1', 'w01:3.1', '', null], progress), ['w01:3.1'], 'a queued id is not added twice');
   assert.deepEqual([...queue], ['w01:2.1', 'w01:3.1']);
   assert.deepEqual(queueReads(queue, null, progress), []);
+});
+
+test('queueReads with readSettled: a sentence read ≥ 30 min ago is queued again (a review), one read just now is not', () => {
+  const MIN = 60 * 1000;
+  const now = Date.parse('2026-09-05T11:00:00.000Z');
+  const rows = new Map([
+    ['w01:1.1', { unit_id: 'w01:1.1', week_n: 1, read_at: '2026-09-05T10:00:00.000Z', reads: 1, last_read_at: '2026-09-05T10:00:00.000Z' }],   // an hour ago
+    ['w01:2.1', { unit_id: 'w01:2.1', week_n: 1, read_at: '2026-09-05T10:00:00.000Z', reads: 2, last_read_at: '2026-09-05T10:50:00.000Z' }],   // reviewed 10 min ago
+  ]);
+  const settled = (v) => readSettled(v, now);
+  const queue = new Set();
+  assert.deepEqual(queueReads(queue, ['w01:1.1', 'w01:2.1', 'w01:3.1'], rows, settled), ['w01:1.1', 'w01:3.1']);
+  assert.deepEqual(queueReads(new Set(), ['w01:1.1'], rows, (v) => readSettled(v, now - 40 * MIN)), [], '20 min after the read: nothing yet');
+  assert.deepEqual(queueReads(new Set(), ['w01:1.1'], rows), [], 'without the rule any entry is settled (the old behaviour)');
+  assert.equal(progressValueOf(rows, 'w01:1.1'), rows.get('w01:1.1'));
+  assert.equal(progressValueOf(new Set(['w01:1.1']), 'w01:1.1'), true);
+  assert.equal(progressValueOf(new Set(), 'w01:1.1'), null);
+  assert.equal(progressValueOf(null, 'w01:1.1'), null);
+});
+
+test('readTickText: "read", then "read · reviewed", "read · reviewed ×2" as the passes mount', () => {
+  assert.equal(readTickText(null), 'read');
+  assert.equal(readTickText('2026-09-05T10:00:00.000Z'), 'read');
+  assert.equal(readTickText({ reads: 1 }), 'read');
+  assert.equal(readTickText({ reads: 2 }), 'read · reviewed');
+  assert.equal(readTickText({ reads: 3 }), 'read · reviewed ×2');
+  assert.equal(readTickText({ reads: 'x' }), 'read');
 });
 
 test('firstUnread: the first sentence in order not in the progress map; null once all are read', () => {

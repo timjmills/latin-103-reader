@@ -362,21 +362,52 @@ and renders, off drops the rows.
 
 ## Reading progress and last position (CONTRACT.md "Reading progress")
 
-Store: `store.getProgress()` → `Map<unit_id, read_at>`; `store.markRead(unitIds)`
-(idempotent: ids already read are skipped — `makeProgressRows()` in `sync.js`);
-`store.resetProgress(weekN | null)`. `store.js` keeps table `reading_progress`
-in IndexedDB (`progress` store, DB version 3), local-first through the outbox
-(`reading_progress:upsert_many` per batch, `reading_progress:delete` per reset)
-with a realtime subscription, so `onChange('progress')` fires when another
-device reads. The fixture store keeps `localStorage['l103.progress']`. Lookups
+Store: `store.getProgress()` → `Map<unit_id, read_at>` (first reads: what
+counts, Continue, the weeks menu); `store.getProgressRows()` → `Map<unit_id,
+{ unit_id, week_n, read_at, reads, last_read_at, updated_at }>` (the reader's
+timers, the read batching, the study log's review figures);
+`store.markRead(unitIds)`; `store.resetProgress(weekN | null)`. `store.js`
+keeps table `reading_progress` in IndexedDB (`progress` store, DB version 3;
+rows cached before migration 0011 are normalised on load —
+`normaliseProgressRow()`: reads 1, last_read_at = read_at — no version
+bump), local-first through the outbox (`reading_progress:upsert_many` per
+batch, `reading_progress:delete` per reset) with a realtime subscription, so
+`onChange('progress')` fires when another device reads. The fixture store
+keeps `localStorage['l103.progress']` as `{ unit_id: { week_n, read_at,
+reads, last_read_at } }` (an older bare `read_at` value is one pass). Lookups
 are a separate table / key and are never touched by any of this.
+
+Reviews (CONTRACT.md "Reviews"): `markRead()` splits its ids locally with
+`makeProgressRows(ids, rows, now)` in `sync.js` (pure,
+`tests/store.progress.test.mjs`) — an id with no row is a first read (a new
+row, `reads` 1, `last_read_at` = `read_at`); one whose `last_read_at` is
+≥ 30 min (`REVIEW_GAP_MS`) before `now` is a review (`reads + 1`,
+`last_read_at` = now, `read_at` kept); one covered within 30 min is skipped,
+so a batch is idempotent within a session. `readSettled(value, now)` is that
+rule on one progress value (a row, a bare `read_at`, or `true` for a Set
+entry, which is read for good). Wherever two copies of a row meet they merge
+field by field — `mergeProgressRow()`: `reads` = max, `last_read_at` = max,
+`read_at` = min, `updated_at` = max — in `mergeProgress()` (a pull) and
+`applyProgressRealtime()` (an INSERT / UPDATE from another device; an own
+echo is no change); on the server the same merge is a `before update`
+trigger (migration 0012, `reading_progress_merge`), so `sendOp()`'s
+`upsert_many` just sends the batch's rows as they are (`onConflict:
+user_id,unit_id`, one request, no read-merge-write window) and a review made
+on either device stands. `readsOf()` in `sync.js` is the one `reads`
+coercion (`settings.js` re-exports it; `reader.js`, which imports nothing,
+keeps a private copy). A reset clears the rows, reviews included.
 
 What counts as read — the reader only *notices* (`reader.on('read', { unitIds,
 why })`), `main.js` batches (`queueReads()` in `reader.js`, `READ_FLUSH_MS`)
 into one `markRead()` and repaints (`paintProgress()`):
 
 - Sentence view: the sentence shown, after 2 s (`READ_DWELL_MS`), or at once
-  when moved past with Next / `j` (`goTo` forward).
+  when moved past with Next / `j` (`goTo` forward) — for a *first* read. A
+  review by Next needs the same 2 s: `nextCounts()` (pure,
+  `tests/ui.progress.test.mjs`) counts a sentence that already has a row only
+  when it has been current for `READ_DWELL_MS` (`state.currentSince`, set in
+  `render()` when the current order changes), so hammering `j` through a read
+  week pages through it without logging 93 instant reviews.
 - Passage view: a unit whose element has been ≥ 80% in view for 2 s — an
   IntersectionObserver below the sticky header (`rootMargin: -bar-h`,
   `inViewEnough()`: 80% of the unit, or of the viewport for a taller unit)
@@ -399,6 +430,18 @@ into one `markRead()` and repaints (`paintProgress()`):
   seconds later; `main.js` also drops the reads batched but not yet saved
   (`dropReads()`), and the reset line is shown inside the (modal) Settings
   dialog (`say()`), not in `#notice` behind its backdrop.
+- Reviews: the reader is handed the rows (`setWeek(…, { progress: rows })`,
+  `setProgress(rows)`) and `readSettled` from `sync.js` (injected as
+  `createReader({ readSettled })`, so `reader.js` still has no static import
+  of B's modules; default: any entry is settled). `settled(id)` gates every
+  timer where `progress.has(id)` used to: a sentence read within the last
+  30 min gets none; one read earlier is timed / observed again (the passage
+  observer now watches every unit and `armUnit()` judges it when it comes
+  into view, so a page left open past the gap works too) and moving past it
+  with Next counts again once it has been current for 2 s (`nextCounts()`).
+  `queueReads(queue, ids, rows, readSettled)` in
+  `main.js` applies the same rule, and the store tells a review from a first
+  read. Playback reads go through the same queue.
 - Store side (`store.js`): `pullProgress()` merges nothing while a
   `reading_progress` op is still in the outbox or a local write landed while
   the rows were in flight (`mergeProgress()` in `sync.js`, `progressGen`), so
@@ -417,7 +460,10 @@ Settings → Progress: "N of M sentences read.", **Reset this week** / **Reset
 all progress** (native `confirm()` first, `initProgressSection()`), and the
 line "Looked-up words are kept separately and are never reset here." Read
 sentences carry no mark in the text; sentence view's meta line shows a faint
-"read ✓" (`.sentence__read`, `reader.setProgress(map)` patches it in place).
+"read ✓" — "read · reviewed ✓" / "read · reviewed ×2 ✓" once later passes
+have covered it (`readTickText(row)`, pure; `[data-read-label]` inside
+`.sentence__read`, `reader.setProgress(rows)` → `paintReadTick()` patches
+both the visibility and the label in place).
 
 Last position: `settings.lastPosition = { week_n, unit_id, view, at }`
 (`normaliseLastPosition()` in `sync.js`; default null). The reader emits
@@ -441,22 +487,36 @@ Switching views keeps the sentence: passage → sentence opens the current
 (scroll-tracked) sentence; sentence → passage `scrollToCurrent()` puts it on
 the same top-third line.
 
-## Study log and time left (CONTRACT.md "Study log")
+## Study log and time left (CONTRACT.md "Study log" / "Study log merge")
 
 Store: `store.getStudyDays()` → `Map<day, active_ms>` (day = local
 `YYYY-MM-DD`, `localDay()` in `sync.js`); `store.addActiveTime(day, ms)`;
-`store.clearStudyLog()`. `store.js` keeps table `study_days` in IndexedDB
-(`study_days` store, DB version 4), local-first through the outbox — one
-`study_days:upsert` per day key (the day's running total, so a burst of
-flushes coalesces to the latest figure) and one `study_days:delete` for a
-clear — with the **additive-max** rule on both sides: `sendOp()` reads the
-server's total and upserts `max(server, local)`; `mergeStudyDays()` (pure,
-`tests/study.test.mjs`) keeps the larger figure per day on a pull and, like
-progress, merges nothing while a study op is still in the outbox (a pull
-overlapping a clear must not bring the days back). A realtime subscription
-on `study_days` → `onChange('study')`. The fixture store keeps
-`localStorage['l103.study']`. A library without the table (seeded before
-migration 0010) logs a warning and goes without.
+`store.clearStudyLog()`. Table `study_days` holds **one row per (day,
+device)** (migration 0012: pk `user_id, day, device`; the rows from before
+it sit under device `main`). The device id is `localStorage['l103.device']`
+(`DEVICE_LS_KEY`, `deviceId()` in `store.js`: a random UUID made once, never
+synced; two tabs of one browser share it, so they share a row and never
+double-count). Each device sends its *own* running total for the day and
+the server keeps `max` per row in a `before update` trigger
+(`study_days_merge`), so a re-sent total is harmless; on read
+`studyDaysView()` **sums the devices' rows per day**, so a phone at
+breakfast and a laptop at lunch add up. `store.js` keeps the rows in
+IndexedDB (`study_rows` store, DB version 5 — the v4 day-keyed `study_days`
+store is dropped on upgrade and the next pull refills from the server; key =
+`studyKey(day, device)` = `day␟device`, U+241F), local-first through the
+outbox — one `study_days:upsert` per `day:${day}:${device}` key (this
+device's running total, so a burst of flushes coalesces to the latest
+figure; `sendOp()` upserts it with `onConflict: user_id,day,device`, no
+select first) and one `study_days:delete` (every row of the user's, every
+device's) for a clear. `mergeStudyDays()` / `normaliseStudyRow()` /
+`studyKey()` (pure, `tests/study.test.mjs`) keep the larger figure per row
+on a pull and, like progress, merge nothing while a study op is still in the
+outbox (a pull overlapping a clear must not bring the days back). A realtime
+subscription on `study_days` (in the publication since 0012) applies each
+row → `onChange('study')`. The fixture store keeps
+`localStorage['l103.study']` as a plain day → ms map (one device). A library
+without the table (seeded before migration 0010) logs a warning and goes
+without.
 
 Active time (`main.js`): a 15 s ticker (`ACTIVE_TICK_MS`) banks its length
 while the tab is visible and there was pointer / key / wheel / scroll / touch
@@ -466,19 +526,32 @@ banks at most two ticks. The bank is flushed every minute
 (`ACTIVE_FLUSH_MS`), at once on `visibilitychange` → hidden and `pagehide`,
 and before a day boundary (to the day that is ending); coming back to a
 hidden tab resets the tick clock, so time away is never banked. Each flush
-re-reads the map and repaints.
+re-reads the map and repaints; when the store throws (quota, private mode)
+the minutes go back into the bank for the next flush instead of vanishing.
+Minutes in the Settings dialog count as active though reads are paused
+there — a long browse of the dialog lowers the pace a little; accepted.
 
 Stats (`settings.js`, pure): `sentencesPerDay()` / `sentencesPerDayByWeek()`
-group the progress map's `read_at` by local day; `studyLog({ progress,
+group the progress map's `read_at` (first passes only) by local day — the
+map's values may be whole rows (`store.getProgressRows()`, what `main.js`
+passes) or bare `read_at` strings (`readAtOf()` / `readsOf()` take either);
+`reviewsPerDay()` counts the rows with `reads > 1` on the local day of
+their `last_read_at` (a sentence once per day, however many passes);
+`passesByWeek()` is the largest `reads` per week. `studyLog({ progress,
 studyDays, now })` → `{ today, days (the last 14, oldest first, each
-{ day, ms, sentences, pace }), weeks ({ n, ms, sentences, pace }), pace,
-overall }`. A week's minutes are each day's minutes **shared out by the
-sentences read in each week that day** (the table has no per-week column; a
-day with time but no sentences is counted in no week) — the dialog says so.
-`paceOf()`: sentences per active hour over the last 7 active days
-(`basis: 'recent'`), else over every active day (`'overall'`), else
-`ROUGH_PACE` = 60/h (`'rough'`); a pace needs `PACE_MIN_MS` (2 min) of time
-behind it. `timeLeftText(unread, pace)` → "about 45 min left" (5-minute
+{ day, ms, sentences, reviews, pace }), weeks ({ n, ms, sentences, passes,
+pace }), pace, overall ({ ms, sentences, reviews, pace }) }` — counts, pace
+and time left are first reads only, reviews ride along. A week's minutes are
+each day's minutes **shared out by the sentences read in each week that day**
+(the table has no per-week column; a day with time but no sentences is
+counted in no week) — the dialog says so.
+`paceOf()`: sentences per active hour over the last 7 **reading days** — days
+with active time *and* first reads (`basis: 'recent'`) — else over every
+reading day (`'overall'`), else `ROUGH_PACE` = 60/h (`'rough'`); a pace
+needs `PACE_MIN_MS` (2 min) of time behind it. A review-only day (an hour of
+revision, no first reads) is in the totals, the table and the sparkline but
+never in the pace, so it cannot inflate "time left" (CONTRACT.md "Study log
+merge"). `timeLeftText(unread, pace)` → "about 45 min left" (5-minute
 steps from a quarter-hour up, halves of an hour from one hour up: "about 1½
 h left"), "finished", "(rough estimate)" appended on the rough pace.
 
@@ -488,13 +561,26 @@ library week gets `.weeks__left` ("· about 2 h left") after its count.
 `paintProgress()` recomputes `stats` on every progress or study change
 (`timeLeftFor()` in `main.js`). Settings → Progress → **Study log**
 (`initStudyLog()` in `settings.js`, `[data-study]` in index.html): today's
-line (minutes · sentences · pace), an inline SVG sparkline of minutes per
-day over the last 14 (`sparklinePath()`, pure; one series in `--ink-3`, the
-last point in `--rubric` with a 2 px surface ring — tokens, so both themes),
-the active days of those 14 as a table (day · min · sentences · pace, newest
-first), the per-week rows, the pace line naming its basis, the apportioning
-hint, and **Clear study log** (native `confirm()`; the line is shown inside
-the dialog). Reset progress leaves the study log alone and the clear leaves
+line ("Today · 12 min · 14 read · 58 reviewed · 70 / h", `todayLineText()`,
+pure — minutes and reads always, reviews and pace only when there are any),
+an inline SVG sparkline of minutes per day over the last 14
+(`sparklinePath()`, pure; one series in `--ink-3`, the last point in
+`--rubric` with a 2 px surface ring — tokens, so both themes; `role="img"`
+with a `<title>` and a `<desc>` that `sparklineSummary()` fills — "5 active
+days of the last 14; peak 42 min on Tue 2 Sep." — repeated once as a
+visually-hidden sentence after the figure, so the 14 values reach a screen
+reader; the end dot is hidden by attribute, an SVG element having no
+`hidden` property), the active days of those 14 as a table (Day · Min ·
+Read · Reviewed · Pace, newest first; a day with nothing reviewed shows a
+quiet dash, `.study__nil`, `aria-label="none"`; a day with only reviews is
+listed too; "Reviewed" is the sentences whose *latest* pass fell on the day,
+so an earlier review day loses its count when the sentence is reviewed
+again — a known limit of the one-row-per-sentence schema), the per-week
+rows (Week · Min · Read · Passes · Pace — "93 read · 2 passes"), the pace
+line naming its basis ("over the last 5 days with new sentences"; "; N
+reviewed" appended overall), the apportioning hint
+(which also says what a review and a pass are), and **Clear study log**
+(native `confirm()`; the line is shown inside the dialog). Reset progress leaves the study log alone and the clear leaves
 progress and lookups alone.
 
 Escape: `main.js`'s keydown returns early while the Settings or weeks

@@ -237,16 +237,53 @@ export function firstUnread(units, progress) {
   return null;
 }
 
+/** What a progress Map / Set holds for a unit: the row (or read_at string), `true` for a Set entry, null for unread. Pure. */
+export function progressValueOf(progress, id) {
+  return progress?.get?.(id) ?? (progress?.has?.(id) ? true : null);
+}
+
+/** How many passes a progress value records (the same rule as readsOf() in sync.js, which this module does not import). Pure. */
+const readsOf = (value) => (value && typeof value === 'object' ? Math.max(1, Math.floor(Number(value.reads)) || 1) : 1);
+
+/**
+ * The faint tick in sentence view's meta line for a read sentence: "read",
+ * or "read · reviewed" / "read · reviewed ×2" once later passes have covered
+ * it (`value` a progress row with `reads`, or anything else = one pass). Pure.
+ */
+export function readTickText(value) {
+  const reviews = readsOf(value) - 1;
+  return reviews <= 0 ? 'read' : reviews === 1 ? 'read · reviewed' : `read · reviewed ×${reviews}`;
+}
+
+/** Sentence view: the current sentence counts as read after this long, and a *review* by Next / j needs it too (nextCounts). */
+export const READ_DWELL_MS = 2000;
+
+/**
+ * Whether moving past the current sentence with Next / j counts it as read:
+ * a first read (`value` null: no row yet) counts at once, as CONTRACT.md
+ * says; a review (`value` a row, not settled) only after the sentence has
+ * been current for `dwellMs` — hammering j through a read week is paging,
+ * not re-reading. `settled` is readSettled(value). Pure.
+ */
+export function nextCounts({ value, settled, heldMs, dwellMs = READ_DWELL_MS } = {}) {
+  if (settled) return false;
+  if (value == null || value === false) return true;
+  return heldMs >= dwellMs;
+}
+
 /**
  * Read-batching: adds to `queue` (a Set) every id in `ids` that is neither
- * already read (`progress`, a Map / Set) nor queued, and returns the ids it
- * added. main.js fills the queue from the reader's `read` events and flushes
- * it to store.markRead() in one call. Pure apart from the queue it fills.
+ * settled nor queued, and returns the ids it added. `isSettled(value)` judges
+ * the progress value (progressValueOf): by default any entry is settled (read
+ * for good); main.js passes readSettled() from sync.js, so a sentence read
+ * ≥ 30 min ago is queued again as a review (CONTRACT.md "Reviews"). main.js
+ * fills the queue from the reader's `read` events and flushes it to
+ * store.markRead() in one call. Pure apart from the queue it fills.
  */
-export function queueReads(queue, ids, progress) {
+export function queueReads(queue, ids, progress, isSettled = (value) => value != null) {
   const added = [];
   for (const id of ids || []) {
-    if (typeof id !== 'string' || !id || queue.has(id) || progress?.has?.(id)) continue;
+    if (typeof id !== 'string' || !id || queue.has(id) || isSettled(progressValueOf(progress, id))) continue;
     queue.add(id);
     added.push(id);
   }
@@ -362,9 +399,10 @@ const h = (tag, attrs = {}, ...children) => {
  *                                   top of the passage (under the first part title) / above the sentence
  * @param {object}      [o.plain]    `{ get() → bool, set(bool) }` for settings.plainOpen (the "In plain words" disclosures)
  * @param {HTMLElement} [o.progressBar]  the reading-progress line (#progress, owned by main.js): moved into every render
+ * @param {Function}    [o.readSettled]  progress value → true when the sentence needs no timer now (sync.js readSettled: read within 30 min; default: any entry)
  *                                   like the listen bar — above it in passage view, under the meta line in sentence view
  */
-export function createReader({ root, tokenize, describeForm, live, listen = null, plain = null, progressBar = null }) {
+export function createReader({ root, tokenize, describeForm, live, listen = null, plain = null, progressBar = null, readSettled = (value) => value != null }) {
   const listeners = {};
   const on = (ev, cb) => { (listeners[ev] ??= []).push(cb); };
   const emit = (ev, detail) => { for (const cb of listeners[ev] ?? []) cb(detail); };
@@ -384,9 +422,12 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     skipped: new Set(),     // units in view at a reset: not timed until they have left and come back (whatever pauses and resumes meanwhile)
     scrollRaf: 0,
     settleUntil: 0,         // ignore scroll tracking until then (a programmatic scroll is in flight)
+    shownOrder: -1,         // the order last rendered as current, and since when (currentSince): a review by Next needs READ_DWELL_MS of it
+    currentSince: 0,
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const READ_DWELL_MS = 2000;
+  // A sentence read within the last 30 min gets no timer; one read earlier is watched again for a review (CONTRACT.md "Reviews").
+  const settled = (id) => readSettled(progressValueOf(state.progress, id));
 
   function tokensFor(unit) {
     if (!state.tokens.has(unit.id)) state.tokens.set(unit.id, tokenize(unit.la));
@@ -690,7 +731,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     const metaEl = h('p', { class: 'sentence__meta' }, h('span', { text: meta }));
     // A faint "read" tick once the sentence counts as read (kept in step by paintReadTick()).
     metaEl.append(h('span', { class: 'sentence__read', hidden: !state.progress.has(u.id) },
-      h('span', { class: 'sentence__meta-sep', 'aria-hidden': 'true', text: ' · ' }), h('span', { text: 'read' }), h('span', { 'aria-hidden': 'true', text: ' ✓' })));
+      h('span', { class: 'sentence__meta-sep', 'aria-hidden': 'true', text: ' · ' }), h('span', { 'data-read-label': '', text: readTickText(progressValueOf(state.progress, u.id)) }), h('span', { 'aria-hidden': 'true', text: ' ✓' })));
     if (part && partSummary(part)) {
       metaEl.append(h('span', { class: 'sentence__meta-sep', 'aria-hidden': 'true', text: ' · ' }),
         h('button', { type: 'button', class: 'sentence__summary', 'data-summary': part.part, 'aria-label': `Section summary: ${part.part}` }, 'Section summary'));
@@ -740,6 +781,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
 
   function render() {
     clearReadTimers();
+    if (state.current !== state.shownOrder) { state.shownOrder = state.current; state.currentSince = Date.now(); }
     root.replaceChildren(state.view === 'passage' ? renderPassage() : renderSentence());
     root.dataset.view = state.view;
     wordEls = { unitId: null, els: [] };
@@ -756,7 +798,9 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   // (READ_DWELL_MS), or at once when moved past with Next / j (goTo). Passage
   // view: a unit that has been ≥ 80% in view for 2 s (an IntersectionObserver
   // below the sticky header + a timer per unit). Nothing counts while the tab
-  // is hidden; nothing is ever un-marked. Playback is main.js's (audio state).
+  // is hidden; nothing is ever un-marked. A sentence read ≥ 30 min ago is
+  // timed again (settled()): that pass is a review, main.js / the store tell
+  // it apart. Playback is main.js's (audio state).
   function emitRead(id, why) { emit('read', { unitIds: [id], why }); }
   function clearReadTimers() {
     clearTimeout(state.readTimer);
@@ -780,7 +824,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     clearTimeout(state.readTimer);
     state.readTimer = 0;
     const u = state.units[state.current];
-    if (!u || state.progress.has(u.id) || readsPaused()) return;
+    if (!u || settled(u.id) || readsPaused()) return;
     state.readTimer = setTimeout(() => { state.readTimer = 0; if (state.units[state.current]?.id === u.id && !readsPaused()) emitRead(u.id, 'dwell'); }, READ_DWELL_MS);
   }
   function barHeight() {
@@ -806,13 +850,13 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
         else { state.inView.delete(id); state.skipped.delete(id); disarmUnit(id); }
       }
     }, { rootMargin: `-${barH}px 0px 0px 0px`, threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] });
-    for (const el of root.querySelectorAll('.unit')) if (!state.progress.has(el.dataset.id)) state.io.observe(el);
+    for (const el of root.querySelectorAll('.unit')) state.io.observe(el);   // every unit: a read one becomes reviewable after 30 min, armUnit() judges it then
   }
   function armUnit(id) {
-    if (state.ioTimers.has(id) || state.progress.has(id) || state.skipped.has(id) || readsPaused()) return;
+    if (state.ioTimers.has(id) || settled(id) || state.skipped.has(id) || readsPaused()) return;
     state.ioTimers.set(id, setTimeout(() => {
       state.ioTimers.delete(id);
-      if (state.inView.has(id) && !readsPaused() && !state.progress.has(id)) emitRead(id, 'view');
+      if (state.inView.has(id) && !readsPaused() && !settled(id)) emitRead(id, 'view');
     }, READ_DWELL_MS));
   }
   function disarmUnit(id) {
@@ -841,7 +885,10 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   function paintReadTick() {
     const el = root.querySelector('.sentence__read');
     const u = state.units[state.current];
-    if (el && u) el.hidden = !state.progress.has(u.id);
+    if (!el || !u) return;
+    el.hidden = !state.progress.has(u.id);
+    const label = el.querySelector('[data-read-label]');
+    if (label) label.textContent = readTickText(progressValueOf(state.progress, u.id));
   }
 
   /* --- the current sentence (last position) ------------------------- */
@@ -1101,13 +1148,13 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       if (newWeek && state.view === 'passage') window.scrollTo({ top: 0, behavior: 'auto' });   // a fresh week opens at its head (goToUnit() may then move on)
       render();
     },
-    /** The sentences already read (store.getProgress()): the tick in sentence view, and no timers for them. */
+    /** The sentences already read (store.getProgressRows(): unit id → row): the tick in sentence view, and no timers for the settled ones. */
     setProgress(map) {
       const prev = state.progress;
       state.progress = map ?? new Map();
-      for (const id of [...state.inView]) if (state.progress.has(id)) { disarmUnit(id); state.inView.delete(id); }
+      for (const id of [...state.inView]) if (settled(id)) { disarmUnit(id); state.inView.delete(id); }
       const u = state.units[state.current];
-      if (state.view === 'sentence' && u && state.progress.has(u.id)) { clearTimeout(state.readTimer); state.readTimer = 0; }
+      if (state.view === 'sentence' && u && settled(u.id)) { clearTimeout(state.readTimer); state.readTimer = 0; }
       // A reset (ids gone from the map): passage view watches those units again — except the ones in view right now.
       if (state.view === 'passage' && [...prev.keys()].some((id) => !state.progress.has(id))) observeUnits(true);
       paintReadTick();
@@ -1131,9 +1178,9 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     getCurrentUnit: () => state.units[state.current] ?? null,
     goTo(order) {
       if (order < 0 || order >= state.units.length) return;
-      if (state.view === 'sentence' && order > state.current) {   // moved past with Next / j: the sentence left behind counts as read
+      if (state.view === 'sentence' && order > state.current) {   // moved past with Next / j: the sentence left behind counts as read (a review only after READ_DWELL_MS: nextCounts)
         const prev = state.units[state.current];
-        if (prev && !state.progress.has(prev.id)) emitRead(prev.id, 'next');
+        if (prev && nextCounts({ value: progressValueOf(state.progress, prev.id), settled: settled(prev.id), heldMs: Date.now() - state.currentSince })) emitRead(prev.id, 'next');
       }
       state.current = order;
       if (state.view === 'sentence') {

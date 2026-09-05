@@ -6,7 +6,9 @@
 // The inline script in index.html applies the localStorage mirror before
 // first paint; this module keeps <html> attributes + the store in step.
 
-import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs } from './sync.js';
+import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs, lastReadOf, readsOf } from './sync.js';
+
+export { readsOf };   // the one `reads` coercion (sync.js), re-exported for the study-log callers and tests
 export { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate };
 
 /** "0.8×" — one decimal, always. Pure. */
@@ -195,28 +197,63 @@ export function progressStateText(read, total) {
 
 /* ------------------------------------------------------------ study log */
 // CONTRACT.md "Study log": sentences per local day come from the progress
-// Map's read_at; minutes per day from store.getStudyDays(). Everything here
-// is pure (tests/study.test.mjs); main.js feeds it and paints the results.
+// Map's read_at (first passes only); reviews (CONTRACT.md "Reviews") from
+// rows with reads > 1, on the day of their last_read_at; minutes per day
+// from store.getStudyDays(). The progress Map's values may be whole rows
+// (store.getProgressRows()) or bare read_at strings (store.getProgress():
+// one pass each). Everything here is pure (tests/study.test.mjs); main.js
+// feeds it and paints the results.
 
 export const ROUGH_PACE = 60;              // sentences per active hour assumed before there is any data
 export const PACE_MIN_MS = 2 * 60 * 1000;  // a pace is only trusted once this much active time stands behind it
 const HOUR_MS = 3600 * 1000;
 
-/** Sentences read per local day: Map day → count, from a progress Map (unit_id → read_at). Pure. */
+/** The first pass over a sentence from a progress Map value (a row or a bare read_at). Pure. */
+export function readAtOf(value) {
+  return value && typeof value === 'object' ? value.read_at ?? null : typeof value === 'string' ? value : null;
+}
+
+/** Sentences read (first passes) per local day: Map day → count, from a progress Map (unit_id → row | read_at). Pure. */
 export function sentencesPerDay(progress) {
   const out = new Map();
-  for (const at of progress?.values?.() ?? []) {
-    const day = localDay(at);
+  for (const v of progress?.values?.() ?? []) {
+    const day = localDay(readAtOf(v));
     if (day) out.set(day, (out.get(day) ?? 0) + 1);
   }
   return out;
 }
 
-/** Sentences read per local day and week: Map day → Map week_n → count. Pure. */
+/**
+ * Sentences reviewed per local day: Map day → count of the rows with
+ * reads > 1 whose last_read_at falls on that day — each sentence once per
+ * day, whatever its number of passes. Pure.
+ */
+export function reviewsPerDay(progress) {
+  const out = new Map();
+  for (const v of progress?.values?.() ?? []) {
+    if (readsOf(v) < 2) continue;
+    const day = localDay(lastReadOf(v));
+    if (day) out.set(day, (out.get(day) ?? 0) + 1);
+  }
+  return out;
+}
+
+/** Passes per week: Map week_n → the largest `reads` among its sentences (1 = read once). Pure. */
+export function passesByWeek(progress) {
+  const out = new Map();
+  for (const [id, v] of progress?.entries?.() ?? []) {
+    const n = weekOfUnit(id);
+    if (n == null) continue;
+    out.set(n, Math.max(out.get(n) ?? 0, readsOf(v)));
+  }
+  return out;
+}
+
+/** Sentences read (first passes) per local day and week: Map day → Map week_n → count. Pure. */
 export function sentencesPerDayByWeek(progress) {
   const out = new Map();
-  for (const [id, at] of progress?.entries?.() ?? []) {
-    const day = localDay(at);
+  for (const [id, v] of progress?.entries?.() ?? []) {
+    const day = localDay(readAtOf(v));
     const n = weekOfUnit(id);
     if (!day || n == null) continue;
     if (!out.has(day)) out.set(day, new Map());
@@ -234,12 +271,14 @@ export function paceRate(sentences, ms, minMs = PACE_MIN_MS) {
 
 /**
  * The pace the estimates use: sentences per active hour over the last
- * `recent` active days (days with any active time), else over every active
- * day, else ROUGH_PACE (`basis: 'rough'`). `days` are [{ day, ms, sentences }]
- * in any order. Pure.
+ * `recent` reading days, else over every reading day, else ROUGH_PACE
+ * (`basis: 'rough'`). A reading day has active time *and* first reads
+ * (CONTRACT.md "Study log merge"): a review-only day adds its minutes to the
+ * totals but never to the pace, so a revision day cannot drag the estimates
+ * down. `days` are [{ day, ms, sentences }] in any order. Pure.
  */
 export function paceOf(days, { recent = 7, minMs = PACE_MIN_MS } = {}) {
-  const active = (days || []).filter((d) => d && d.ms > 0).sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
+  const active = (days || []).filter((d) => d && d.ms > 0 && d.sentences > 0).sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
   const sum = (list) => list.reduce((acc, d) => ({ ms: acc.ms + d.ms, sentences: acc.sentences + (d.sentences || 0) }), { ms: 0, sentences: 0 });
   const last = sum(active.slice(-recent));
   let rate = paceRate(last.sentences, last.ms, minMs);
@@ -264,46 +303,62 @@ export function lastDays(now = new Date(), span = 14) {
 }
 
 /**
- * Everything the Study log shows, from the progress Map and the study-days
- * Map (day → active_ms):
- *   today   { day, ms, sentences }
- *   days    the last `span` days, oldest first: { day, ms, sentences, pace }
- *   weeks   per week with any reading: { n, ms, sentences, pace } — the
- *           week's minutes are each day's minutes shared out by the sentences
- *           read in each week that day (a day with time but no sentences is
- *           counted in no week); `n` ascending
- *   pace    paceOf() over every day
- *   overall { ms, sentences, pace } over every day
- * Pure.
+ * Everything the Study log shows, from the progress Map (unit_id → row |
+ * read_at) and the study-days Map (day → active_ms):
+ *   today   { day, ms, sentences, reviews }
+ *   days    the last `span` days, oldest first: { day, ms, sentences, reviews, pace }
+ *   weeks   per week with any reading: { n, ms, sentences, passes, pace } —
+ *           the week's minutes are each day's minutes shared out by the
+ *           sentences read in each week that day (a day with time but no
+ *           sentences is counted in no week); `passes` = the largest `reads`
+ *           in the week; `n` ascending
+ *   pace    paceOf() over every day (only the days with first reads count)
+ *   overall { ms, sentences, reviews, pace } over every day
+ * `sentences` and every pace are first reads only; `reviews` counts the
+ * sentences whose latest pass (reads > 1) fell on the day (CONTRACT.md
+ * "Reviews"). Pure.
  */
 export function studyLog({ progress, studyDays, now = new Date(), span = 14 } = {}) {
   const perDay = sentencesPerDay(progress);
+  const reviewed = reviewsPerDay(progress);
   const byWeek = sentencesPerDayByWeek(progress);
-  const dayKeys = new Set([...perDay.keys(), ...(studyDays?.keys?.() ?? [])]);
-  const all = [...dayKeys].map((day) => ({ day, ms: cleanMs(studyDays?.get?.(day)), sentences: perDay.get(day) ?? 0 }));
+  const passes = passesByWeek(progress);
+  const dayKeys = new Set([...perDay.keys(), ...reviewed.keys(), ...(studyDays?.keys?.() ?? [])]);
+  const all = [...dayKeys].map((day) => ({ day, ms: cleanMs(studyDays?.get?.(day)), sentences: perDay.get(day) ?? 0, reviews: reviewed.get(day) ?? 0 }));
   const rowOf = (d) => ({ ...d, pace: paceRate(d.sentences, d.ms) });
+  const blank = (day) => ({ day, ms: 0, sentences: 0, reviews: 0 });
   const byDay = new Map(all.map((d) => [d.day, d]));
   const today = localDay(now);
-  const days = lastDays(now, span).map((day) => rowOf(byDay.get(day) ?? { day, ms: 0, sentences: 0 }));
+  const days = lastDays(now, span).map((day) => rowOf(byDay.get(day) ?? blank(day)));
   const weeks = new Map();
   for (const d of all) {
     const wk = byWeek.get(d.day);
     if (!wk) continue;
     for (const [n, count] of wk) {
-      const w = weeks.get(n) ?? { n, ms: 0, sentences: 0 };
+      const w = weeks.get(n) ?? { n, ms: 0, sentences: 0, passes: passes.get(n) ?? 1 };
       w.sentences += count;
       w.ms += d.sentences ? (d.ms * count) / d.sentences : 0;
       weeks.set(n, w);
     }
   }
-  const overall = all.reduce((acc, d) => ({ ms: acc.ms + d.ms, sentences: acc.sentences + d.sentences }), { ms: 0, sentences: 0 });
+  const overall = all.reduce((acc, d) => ({ ms: acc.ms + d.ms, sentences: acc.sentences + d.sentences, reviews: acc.reviews + d.reviews }), { ms: 0, sentences: 0, reviews: 0 });
   return {
-    today: rowOf(byDay.get(today) ?? { day: today, ms: 0, sentences: 0 }),
+    today: rowOf(byDay.get(today) ?? blank(today)),
     days,
     weeks: [...weeks.values()].sort((a, b) => a.n - b.n).map((w) => rowOf({ ...w, ms: Math.round(w.ms) })),
     pace: paceOf(all),
     overall: { ...overall, pace: paceRate(overall.sentences, overall.ms) },
   };
+}
+
+/** Today's study-log line: "Today · 12 min · 14 read · 58 reviewed · 70/h" — minutes and reads always, reviews and the pace only when there are any; "Nothing yet today." when all is zero. Pure. */
+export function todayLineText(today) {
+  const t = today || {};
+  if (!(t.ms > 0 || t.sentences > 0 || t.reviews > 0)) return 'Nothing yet today.';
+  const parts = ['Today', fmtActive(t.ms), `${t.sentences ?? 0} read`];
+  if (t.reviews > 0) parts.push(`${t.reviews} reviewed`);
+  if (t.pace) parts.push(fmtPace(t.pace));
+  return parts.join(' · ');
 }
 
 /** Milliseconds of reading left for `unread` sentences at `pace` (paceOf() shape or a number per hour). Pure. */
@@ -350,6 +405,19 @@ export function fmtPace(perHour) {
  * Sparkline geometry for `values` (numbers, oldest first) in a `w` × `h`
  * box: `d` is the SVG path (a flat baseline when every value is 0), `last`
  * the final point, `max` the top of the scale. Pure.
+ */
+export function sparklineSummary(days, today = localDay()) {
+  const list = days || [];
+  const active = list.filter((d) => d && d.ms > 0);
+  if (!active.length) return `No reading time in the last ${list.length} days.`;
+  const peak = active.reduce((best, d) => (d.ms > best.ms ? d : best), active[0]);
+  const n = active.length;
+  return `${n} active ${n === 1 ? 'day' : 'days'} of the last ${list.length}; peak ${Math.round(peak.ms / 60000)} min on ${fmtDay(peak.day, today)}.`;
+}
+
+/**
+ * Sparkline geometry for `values` (minutes per day, oldest first): the path
+ * `d`, the last point and the peak, for a `w` × `h` box with `pad`. Pure.
  */
 export function sparklinePath(values, { w = 140, h = 28, pad = 2 } = {}) {
   const vs = (values || []).map((v) => (Number.isFinite(Number(v)) && v > 0 ? Number(v) : 0));
@@ -585,6 +653,8 @@ function initStudyLog(section, study) {
   const sparkLine = $('[data-spark-line]');
   const sparkDot = $('[data-spark-dot]');
   const sparkCap = $('[data-spark-cap]');
+  const sparkDesc = $('[data-spark-desc]');
+  const sparkText = $('[data-spark-text]');
   const daysTable = $('[data-study-days]');
   const weeksTable = $('[data-study-weeks]');
   const paceEl = $('[data-study-pace]');
@@ -594,12 +664,15 @@ function initStudyLog(section, study) {
     msgEl.textContent = text || '';
     if (tone) msgEl.dataset.tone = tone; else delete msgEl.dataset.tone;
   };
-  const cell = (tag, text, num = false) => { const el = document.createElement(tag); el.textContent = text; if (num) el.className = 'study__num'; return el; };
-  const row = (label, r, { head = false } = {}) => {
+  const cell = (tag, text, num = false, nil = false) => { const el = document.createElement(tag); el.textContent = text; if (num) el.className = nil ? 'study__num study__nil' : 'study__num'; return el; };
+  // Day · Min · Read · Reviewed · Pace, or Week · Min · Read · Passes · Pace ("93 read · 2 passes"); a day without reviews shows a dash.
+  const row = (label, r, { head = false, passes = false } = {}) => {
     const tr = document.createElement('tr');
     const first = cell(head ? 'th' : 'td', label);
     if (head) first.scope = 'row';
-    tr.append(first, cell('td', String(Math.round(r.ms / 60000)), true), cell('td', String(r.sentences), true), cell('td', fmtPace(r.pace), true));
+    const extra = passes ? cell('td', String(r.passes ?? 1), true) : cell('td', r.reviews > 0 ? String(r.reviews) : '–', true, !(r.reviews > 0));
+    if (!passes && !(r.reviews > 0)) extra.setAttribute('aria-label', 'none');   // the quiet dash reads as "none", not "dash" or nothing
+    tr.append(first, cell('td', r.ms <= 0 ? '0' : r.ms < 60000 ? '<1' : String(Math.round(r.ms / 60000)), true), cell('td', String(r.sentences), true), extra, cell('td', fmtPace(r.pace), true));
     return tr;
   };
   function paint() {
@@ -607,29 +680,31 @@ function initStudyLog(section, study) {
     try { log = study.log(); } catch (e) { say(e?.message || 'Could not read the study log.', 'error'); return; }
     if (!log) return;
     const { today, days, weeks, pace, overall } = log;
-    const any = overall.ms > 0 || overall.sentences > 0;
-    todayEl.textContent = today.ms || today.sentences
-      ? `Today · ${fmtActive(today.ms)} · ${today.sentences} ${today.sentences === 1 ? 'sentence' : 'sentences'}${today.pace ? ` · ${fmtPace(today.pace)}` : ''}`
-      : 'Nothing yet today.';
+    const any = overall.ms > 0 || overall.sentences > 0 || overall.reviews > 0;
+    todayEl.textContent = todayLineText(today);
     // Sparkline: minutes per day, oldest → today; the last point in the accent (dataviz: current period), the line in the de-emphasis ink.
     const mins = days.map((d) => d.ms / 60000);
     const { d, last, max } = sparklinePath(mins, { w: 160, h: 32, pad: 4 });
     spark.hidden = !any;
     sparkLine.setAttribute('d', d);
     if (last) { sparkDot.setAttribute('cx', String(last.x)); sparkDot.setAttribute('cy', String(last.y)); }
-    sparkDot.hidden = !last;
+    if (last) sparkDot.removeAttribute('hidden'); else sparkDot.setAttribute('hidden', '');   // an SVG element has no `hidden` IDL property: the attribute is what [hidden] { display: none } matches
     sparkCap.textContent = max > 0 ? `Minutes per day · last ${days.length} days · peak ${Math.round(max)} min` : `Minutes per day · last ${days.length} days`;
+    // What the picture says, for a screen reader: the <desc> the SVG is described by, and the same text once as a visually-hidden sentence after the figure.
+    const summary = sparklineSummary(days, today.day);
+    if (sparkDesc) sparkDesc.textContent = summary;
+    if (sparkText) sparkText.textContent = summary;
     // The table lists only the days with anything in them, newest first.
-    const active = days.filter((r) => r.ms > 0 || r.sentences > 0).reverse();
+    const active = days.filter((r) => r.ms > 0 || r.sentences > 0 || r.reviews > 0).reverse();
     daysTable.hidden = !active.length;
     daysTable.tBodies[0].replaceChildren(...active.map((r) => row(fmtDay(r.day, today.day), r, { head: true })));
     weeksTable.hidden = !weeks.length;
-    weeksTable.tBodies[0].replaceChildren(...weeks.map((w) => row(`Week ${w.n}`, w, { head: true })));
+    weeksTable.tBodies[0].replaceChildren(...weeks.map((w) => row(`Week ${w.n}`, w, { head: true, passes: true })));
     if (!any) paceEl.textContent = `No study time recorded yet — estimates assume ${ROUGH_PACE} sentences an hour until there is.`;
-    else if (pace.basis === 'rough') paceEl.textContent = `Too little time recorded for a pace yet — estimates assume ${ROUGH_PACE} sentences an hour. Overall: ${overall.sentences} sentences in ${fmtActive(overall.ms)}.`;
+    else if (pace.basis === 'rough') paceEl.textContent = `Too little reading time for a pace yet — estimates assume ${ROUGH_PACE} sentences an hour. Overall: ${overall.sentences} sentences in ${fmtActive(overall.ms)}.`;
     else {
-      const basis = pace.basis === 'recent' ? `over the last ${pace.days === 1 ? 'active day' : `${pace.days} active days`}` : 'over every active day';
-      paceEl.textContent = `Pace: ${Math.round(pace.perHour)} sentences an hour ${basis}. Overall: ${overall.sentences} sentences in ${fmtActive(overall.ms)}${overall.pace ? ` (${fmtPace(overall.pace)})` : ''}.`;
+      const basis = pace.basis === 'recent' ? `over the last ${pace.days === 1 ? 'day with new sentences' : `${pace.days} days with new sentences`}` : 'over every day with new sentences';
+      paceEl.textContent = `Pace: ${Math.round(pace.perHour)} sentences an hour ${basis}. Overall: ${overall.sentences} sentences in ${fmtActive(overall.ms)}${overall.pace ? ` (${fmtPace(overall.pace)})` : ''}${overall.reviews > 0 ? `; ${overall.reviews} reviewed` : ''}.`;
     }
     clearBtn.disabled = !any;
   }
