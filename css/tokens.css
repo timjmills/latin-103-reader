@@ -57,6 +57,17 @@
   --ui-md: 0.9375rem;
   --ui-lg: 1.0625rem;
 
+  /* Notes size (Settings → Type "Notes", data-note-size on <html>): one
+     factor over everything note-like — margin glosses, captions, the
+     panel's rows and note bodies, "In plain words", the summaries' English —
+     never the reading text or the chrome. Step 4 = 1: today's look. The
+     --note-* tokens are the --ui-* steps under that factor; em-sized notes
+     in the text multiply the factor in themselves. */
+  --note-scale: 1;
+  --note-xs: calc(var(--ui-xs) * var(--note-scale));
+  --note-sm: calc(var(--ui-sm) * var(--note-scale));
+  --note-md: calc(var(--ui-md) * var(--note-scale));
+
   /* Space */
   --s-1: 0.25rem;
   --s-2: 0.5rem;
@@ -100,6 +111,15 @@ html[data-size="5"] { --reading-scale: 1.6875; }
 html[data-size="6"] { --reading-scale: 2; }
 html[data-size="7"] { --reading-scale: 2.375; }
 html[data-size="8"] { --reading-scale: 2.75; }
+
+/* Notes size: seven steps in finer increments than the reading scale (~8% apart) */
+html[data-note-size="1"] { --note-scale: 0.76; }
+html[data-note-size="2"] { --note-scale: 0.84; }
+html[data-note-size="3"] { --note-scale: 0.92; }
+html[data-note-size="4"] { --note-scale: 1; }
+html[data-note-size="5"] { --note-scale: 1.09; }
+html[data-note-size="6"] { --note-scale: 1.19; }
+html[data-note-size="7"] { --note-scale: 1.3; }
 
 /* Reading face */
 html[data-face="serif"] { --face-reading: var(--face-serif); }

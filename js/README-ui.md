@@ -179,14 +179,26 @@ open entry; `cb('settings')` re-applies theme/size/face/toggles;
 
 ## Settings shape
 
-`{ size:1-8, face:'serif'|'sans'|'dyslexic', theme:'system'|'light'|'dark',
+`{ size:1-8, noteSize:1-7, face:'serif'|'sans'|'dyslexic', theme:'system'|'light'|'dark',
 compact:false, showEnglish:'hidden'|'interleaved', showHighlights:true,
 showUnderlines:true, showMargin:true, showAudio:true, showSummaries:true,
-plainOpen:false, showGlossEnglish:false, audioRate:0.5–1.2,
+plainOpen:false, showGlossEnglish:false, showPictures:true, audioRate:0.5–1.2,
 panelWidth:null|px }` — mirrored to `localStorage['latin103.settings']`
 (same key as E's `store.js`), read by the inline script in `index.html` before
 first paint. `l103.week`, `l103.view` and `l103.hint.translation` also live in
 localStorage (UI-only).
+
+Notes size (`noteSize`, default 4 = today's look; `clampNoteSize()` in
+`sync.js`, Settings → Type "Notes", a second stepper with its own "4 of 7"
+live line): `<html data-note-size="1–7">` sets `--note-scale` (0.76 … 1.3,
+tokens.css) — one factor over everything note-like and nothing else. The
+`--note-xs/sm/md` tokens are the `--ui-*` steps under that factor (panel
+stack rows, note bodies, entry text, "In plain words", the grammar-focus
+note); em-sized notes in the text multiply the factor themselves
+(`.mnotes`/`.mnote`, captions, `.sentence__note`, `.summary__en`). The
+reading text, the Latin summary and the toolbar / header / dialog chrome
+keep `--ui-*`. A change runs through `saveSettings()` → `applyDisplay()` →
+`reader.reflow()`, so the gutter re-stacks at the new note size.
 
 ## Dictionary API consumed (B)
 
@@ -294,6 +306,140 @@ or returns null.
   data-gloss-en="on|off">`: on, every English rendering is shown and the
   chips are hidden. With every gloss doubled in height the density check
   usually moves a part to the inline presentation — expected.
+
+## Pictures (CONTRACT.md "Pictures")
+
+The textbook's illustrations beside the sentence they stand next to.
+`store.getPictures(weekN)` → `[{ id, unit_id, url, caption, caption_en,
+page, width, height, sort }]`: `store.js` keeps the rows of table `pictures`
+in IndexedDB (`pictures` store, DB version 2; pulled per week with the units)
+and signs `url` lazily from the private bucket `pictures` (object
+`{uid}/{path}`, 1 h TTL, re-signed after 50 min) in batches of 25 with
+`createSignedUrls()` — the signed URL rides on the cached row, so an offline
+reload still has one (stale → the browser cache, or the alt text). The fixture
+store reads `data/build/pictures-week-NN.json` and serves the images from
+`data/build/pictures/week-NN/<file>`; without the file, week 1 gets two drawn
+placeholders (an SVG data URL, not the book's art) on `w01:29.1` — beside
+dense margin notes — and `w01:60.1` (portrait).
+
+`main.js` loads them with the week (`loadPictures()`, only while
+`settings.showPictures` is on) and hands them to `reader.setWeek(week, units,
+highlights, { audio, lookups, pictures })`; `reader.setPictures(rows)`
+replaces them. `settings.showPictures` (default true; Settings → Reading
+"Pictures", `toggles.pictures`, no toolbar button) → `<article
+data-pictures="on|off">`; switching on re-asks the store (fresh signatures)
+and renders, off drops the rows.
+
+- **Passage view** — like the margin notes, two copies per unit
+  (`pictureFigure()`; `groupPictures()` is the pure grouping, `sort` order):
+  `.pic--inline` in the prose just before the unit (not inside it, so the
+  line number stays beside the text; 60% of the column, centred) and `.mpic` in
+  the `.margin` gutter, placed *before* the unit's `.mnote` so
+  `positionMargin()` stacks the notes beneath the illustration. Picture
+  blocks are `pinned` items: their `top` is the sentence's first line, and
+  `marginDrift()` (pure, `tests/ui.pictures.test.mjs`) measures a note that
+  rests under a picture — or on a note that does, while each rests on the
+  one above — from the block above it rather than from its own sentence:
+  glosses flowing under the plate are the book's own arrangement, not
+  crowding. The chain ends at the first note placed at its own sentence;
+  notes crowding notes still send the part inline exactly as before. Hidden
+  blocks (pictures off) take no room.
+- **Sentence view** — `.pic--sentence` above the Latin.
+- The `<img>` is `loading="lazy"`, `decoding="async"`, with `width` /
+  `height` from the row (no layout shift) and `alt` = the caption or
+  "Illustration from the textbook" (`pictureAlt()`). A load error swaps it for
+  `.pic__missing` (the alt text in the frame).
+- Caption (`.pic__cap`): the Latin tokenised as `.w` words (`data-for` /
+  `data-order` on the figure → lookups are recorded against the sentence);
+  `caption_en` behind the same `.mnotes__en-btn` "en" chip as a margin gloss
+  (`data-gloss="pic:<id>"`, `toggleGloss()` keeps both copies in step;
+  `settings.showGlossEnglish` shows it outright).
+- Tap the image (`.pic__btn`, `data-pic-open`) → `openPicture()`: one native
+  `<dialog class="lightbox">` appended to `<body>` on first use, the image at
+  full size with the caption, English and page. Escape (the dialog's own
+  cancel), the backdrop or × closes it; focus returns to the button that
+  opened it. Keydown inside it does not reach the reader's letter shortcuts.
+
+## Reading progress and last position (CONTRACT.md "Reading progress")
+
+Store: `store.getProgress()` → `Map<unit_id, read_at>`; `store.markRead(unitIds)`
+(idempotent: ids already read are skipped — `makeProgressRows()` in `sync.js`);
+`store.resetProgress(weekN | null)`. `store.js` keeps table `reading_progress`
+in IndexedDB (`progress` store, DB version 3), local-first through the outbox
+(`reading_progress:upsert_many` per batch, `reading_progress:delete` per reset)
+with a realtime subscription, so `onChange('progress')` fires when another
+device reads. The fixture store keeps `localStorage['l103.progress']`. Lookups
+are a separate table / key and are never touched by any of this.
+
+What counts as read — the reader only *notices* (`reader.on('read', { unitIds,
+why })`), `main.js` batches (`queueReads()` in `reader.js`, `READ_FLUSH_MS`)
+into one `markRead()` and repaints (`paintProgress()`):
+
+- Sentence view: the sentence shown, after 2 s (`READ_DWELL_MS`), or at once
+  when moved past with Next / `j` (`goTo` forward).
+- Passage view: a unit whose element has been ≥ 80% in view for 2 s — an
+  IntersectionObserver below the sticky header (`rootMargin: -bar-h`,
+  `inViewEnough()`: 80% of the unit, or of the viewport for a taller unit)
+  plus a timer per unit. Nothing counts while the tab is hidden or while a
+  modal dialog (Settings, the weeks menu, the word popup, the lightbox)
+  covers the text (`readsPaused()`): timers are dropped on
+  `visibilitychange` / a dialog opening and re-armed for the units still in
+  view when the tab is back / the dialog closes.
+- Playback (`main.js` `trackPlayback()` from `audio.onState`, the rule in
+  `playbackRead()` in `reader.js`): a sentence chapter playback moved past
+  to the *next aligned* sentence, or one whose own playback ran to its end
+  (`unitEndMs()`: its `end_ms`, else the next row's start, else the
+  recording's length; the element's time within 400 ms of it). A Stop
+  partway, a tap on another sentence, an error: never. Either way the time
+  actually played must reach 1.5 s (`PLAYED_MIN_MS`) or 80% of a shorter
+  sentence — paused stretches are not counted.
+- Never un-marked automatically. After a reset the passage observer watches
+  the units again but skips the ones in view at that moment
+  (`observeUnits(true)`), so a reset is never followed by "1 of 93" two
+  seconds later; `main.js` also drops the reads batched but not yet saved
+  (`dropReads()`), and the reset line is shown inside the (modal) Settings
+  dialog (`say()`), not in `#notice` behind its backdrop.
+- Store side (`store.js`): `pullProgress()` merges nothing while a
+  `reading_progress` op is still in the outbox or a local write landed while
+  the rows were in flight (`mergeProgress()` in `sync.js`, `progressGen`), so
+  a pull overlapping a reset cannot resurrect the deleted rows; `flushOutbox()`
+  chains a caller that arrives mid-flush instead of dropping it; a realtime
+  DELETE storm (a reset elsewhere) is one `emit('progress')` (100 ms).
+
+UI: the weeks menu rows get a hairline bar + "42 of 93 sentences" / "not
+started" / "finished ✓" (`progressText()` in `settings.js`; totals from
+`weeks[].unit_count` or `store.getUnits(n).length`, read once on the first
+open). `#progress` ("42 of 93 read · Continue →") is moved by `reader.js` like
+the listen bar — under the first part title above the listen bar, and under
+sentence view's meta line; **Continue** → `firstUnread(units, progress)` (falls
+back to the last position, then the first sentence) → `reader.goToUnit(id)`.
+Settings → Progress: "N of M sentences read.", **Reset this week** / **Reset
+all progress** (native `confirm()` first, `initProgressSection()`), and the
+line "Looked-up words are kept separately and are never reset here." Read
+sentences carry no mark in the text; sentence view's meta line shows a faint
+"read ✓" (`.sentence__read`, `reader.setProgress(map)` patches it in place).
+
+Last position: `settings.lastPosition = { week_n, unit_id, view, at }`
+(`normaliseLastPosition()` in `sync.js`; default null). The reader emits
+`position` whenever its current sentence changes — sentence view's sentence,
+passage view's tapped / played one or, while scrolling, the unit nearest the
+top third of the viewport (`nearestUnit()`, rAF-throttled; ignored while a
+programmatic scroll settles or the chapter plays) — and `main.js` writes it 1 s
+after the last change (`POSITION_SAVE_MS`) through `store.setLastPosition()`
+(no shell repaint) — only when the place really changed (`positionKey` starts
+as the loaded position) and only once boot is over (`positionArmed`: the boot
+render and the resume never write, so a saved place this library lacks is
+kept for the device that has it). `setLastPosition()` patches the settings
+blob without bumping the row's `updated_at` (`patchLastPosition()`): the
+position carries its own clock, `lastPosition.at`, and `mergeSettings()` in
+`sync.js` merges it on that clock whichever row was newer, so a device that
+only scrolls never outranks one that changed a real setting. On boot the week
+comes from `lastPosition.week_n` (over `l103.week`), the view from `l103.view`
+(the device's own), and `reader.goToUnit(unit_id, { quiet: true })` opens that
+sentence in sentence view or scrolls it to the top third in passage view.
+Switching views keeps the sentence: passage → sentence opens the current
+(scroll-tracked) sentence; sentence → passage `scrollToCurrent()` puts it on
+the same top-third line.
 
 ## Side panel: the sentence stack (tablet + desktop)
 

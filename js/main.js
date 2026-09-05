@@ -1,13 +1,17 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
-import { createReader } from './reader.js';
+import { createReader, firstUnread, queueReads, playbackRead } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
-import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText } from './settings.js';
-import { clampRate } from './sync.js';
+import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText } from './settings.js';
+import { clampRate, normaliseLastPosition, progressByWeek } from './sync.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const LS_WEEK = 'l103.week';
 const LS_HINT_TRANSLATION = 'l103.hint.translation';   // "1" once the first-run Translation hint has been shown
 const NOTICE_MS = 5000;
+const READ_FLUSH_MS = 500;       // reader `read` events are batched this long before one store.markRead()
+const POSITION_SAVE_MS = 1000;   // settings.lastPosition is written this long after the current sentence last changed
+const PLAYED_MIN_MS = 1500;      // playback counts a sentence as read only after this much actual playing (or 80% of a shorter one) — see playbackRead()
+const PICTURE_REFRESH_MS = 5 * 60 * 1000;   // how often a long session asks the store for the week's picture URLs (re-signed past 50 min, swapped in place)
 
 async function pickStore() {
   const params = new URLSearchParams(location.search);
@@ -54,7 +58,7 @@ async function boot() {
   mirror(settings);
   function mirror(s) { try { localStorage.setItem('latin103.settings', JSON.stringify(s)); } catch { /* ignore */ } }
 
-  const remote = { lookups: false, settings: false, alignments: false, weeks: false };
+  const remote = { lookups: false, settings: false, alignments: false, weeks: false, progress: false };
   let onRemoteChange = (kind) => { remote[kind] = true; };   // buffered until the UI exists
   store.onChange?.((kind) => onRemoteChange(kind));
 
@@ -72,6 +76,9 @@ async function boot() {
   setBarHeight();
   const readerEl = $('#reader');
   let lookups = await store.getLookups();
+  // Reading progress (CONTRACT.md): unit id → read_at. Kept apart from the lookups; never reset with them.
+  const hasProgress = typeof store.getProgress === 'function';
+  let progress = hasProgress ? await store.getProgress() : new Map();
 
   // Short visible status line + the live region (play errors and the like).
   const noticeEl = $('#notice');
@@ -96,7 +103,7 @@ async function boot() {
   // "In plain words" under every note: settings.plainOpen is the learner's last
   // choice, so the disclosures stay open once one has been opened.
   const plain = { get: () => !!settings.plainOpen, set: (on) => { if (!!settings.plainOpen !== !!on) saveSettings({ plainOpen: !!on }); } };
-  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, live, listen: $('#listen'), plain });
+  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, live, listen: $('#listen'), plain, progressBar: $('#progress') });
   const panel = createWordPanel({
     dialog: $('#popup'), aside: $('#panel'), layout,
     lookup: dict.lookup, describe: dict.describe, paradigm: par.paradigm, store,
@@ -134,7 +141,19 @@ async function boot() {
   const weekBtn = $('#week-btn');
   const weeksDialog = $('#weeks');
   const weeksList = $('#weeks-list');
+  // Sentences per week, for the menu's "42 of 93 sentences": the row's
+  // unit_count when the library carries it, else the cached units' length
+  // (read once per week, on the first open of the menu).
+  const weekTotals = new Map();
+  async function ensureWeekTotals() {
+    await Promise.all(weeks.map(async (w) => {
+      if (weekTotals.has(w.n)) return;
+      if (Number.isFinite(Number(w.unit_count)) && w.unit_count > 0) { weekTotals.set(w.n, Number(w.unit_count)); return; }
+      try { weekTotals.set(w.n, (await store.getUnits(w.n)).length); } catch { /* the row stays without a count */ }
+    }));
+  }
   function renderWeeksMenu(currentN) {
+    const byWeek = progressByWeek(progress);
     weeksList.replaceChildren(...outline.map((c) => {
       const lib = weeks.find((w) => w.n === c.n);
       const li = document.createElement('li');
@@ -150,6 +169,19 @@ async function boot() {
       const state = document.createElement('span'); state.className = 'weeks__state';
       state.textContent = lib ? (c.n === currentN ? 'Reading now' : '') : 'Not added yet';
       b.append(n, name, meta, state);
+      // A thin bar and "42 of 93 sentences" / "not started" / "finished ✓" for every week in the library.
+      const total = weekTotals.get(c.n) ?? 0;
+      if (lib && hasProgress && total > 0) {
+        const read = Math.min(total, byWeek.get(c.n) ?? 0);
+        const prog = document.createElement('span'); prog.className = 'weeks__progress';
+        prog.dataset.state = read === 0 ? 'none' : read >= total ? 'done' : 'part';
+        const bar = document.createElement('span'); bar.className = 'weeks__bar'; bar.setAttribute('aria-hidden', 'true');
+        const fill = document.createElement('span'); fill.className = 'weeks__bar-fill'; fill.style.width = `${Math.round((read / total) * 100)}%`;
+        bar.append(fill);
+        const count = document.createElement('span'); count.className = 'weeks__count'; count.textContent = progressText(read, total);
+        prog.append(bar, count);
+        b.append(prog);
+      }
       li.append(b);
       return li;
     }));
@@ -159,7 +191,12 @@ async function boot() {
     weekBtn.querySelector('.week__num').textContent = `Week ${n}`;
     weekBtn.querySelector('.week__title').textContent = c?.title ?? '';
   }
-  weekBtn.addEventListener('click', () => { renderWeeksMenu(weekN); weeksDialog.showModal(); weeksList.querySelector('[aria-current="true"]')?.focus(); });
+  weekBtn.addEventListener('click', async () => {
+    await ensureWeekTotals();
+    renderWeeksMenu(weekN);
+    if (!weeksDialog.open) weeksDialog.showModal();
+    weeksList.querySelector('[aria-current="true"]')?.focus();
+  });
   weeksDialog.querySelector('[data-close="weeks"]').addEventListener('click', () => weeksDialog.close());
   weeksDialog.addEventListener('click', (e) => { if (e.target === weeksDialog) weeksDialog.close(); });
   weeksList.addEventListener('click', (e) => {
@@ -176,7 +213,10 @@ async function boot() {
     e.preventDefault();
     rows[next].focus();
   });
+  // The week to open: the last position (synced through settings) beats the device's own last week.
+  const lastPos = normaliseLastPosition(settings.lastPosition);
   let weekN = Number(localStorage.getItem(LS_WEEK)) || weeks[0]?.n || 1;
+  if (lastPos && weeks.some((w) => w.n === lastPos.week_n)) weekN = lastPos.week_n;
   if (!weeks.some((w) => w.n === weekN)) weekN = weeks[0]?.n ?? 1;
   let units = [];
   let unitsWeek = null;   // the week `units` belongs to
@@ -192,6 +232,7 @@ async function boot() {
     ]);
     return {
       hasAudio: !!url, alignedCount: rows.length, total: us.length, alignedIds: new Set(rows.map((r) => r.unit_id)),
+      rows,   // the alignment itself (start_ms order): trackPlayback() reads where each sentence ends and which comes next
       synthIds: new Set(rows.filter((r) => r.synth).map((r) => r.unit_id)),   // units read by a synthesised voice (the listen bar says so)
       durationMs: audio?.alignmentEndMs?.(rows) ?? 0,   // from the alignment, so the listen bar can say "14 min" before the file is fetched
     };
@@ -266,6 +307,7 @@ async function boot() {
       if (st.mode === 'idle' && lastMode !== 'idle') listenRate?.close();   // playback over: the speed row folds away too
       lastMode = st.mode;
       if (st.error !== lastError) { lastError = st.error; if (st.error) notify(st.error); }
+      trackPlayback(st);
     });
     transportPause.addEventListener('click', () => { if (audio.status().playing) audio.pause(); else audio.resume(); });
     // Stop hides the transport under the keyboard: focus goes to the listen bar's Play button (the bar is painted synchronously by stop()).
@@ -344,6 +386,150 @@ async function boot() {
   }
   reader.on('render', () => paintListen());
 
+  /* ------------------------------------------- reading progress */
+  // What counts as read (CONTRACT.md "Reading progress"): the reader says
+  // when a sentence has been shown / in view long enough or moved past
+  // (`read` events); playback is judged here from audio.onState — a sentence
+  // chapter playback moved past to the next one, or one whose own playback
+  // ran to its end (playbackRead() in reader.js; a Stop partway or a jump
+  // never counts, paused time does not count). Ids are batched (queueReads,
+  // READ_FLUSH_MS) into one store.markRead(); nothing is ever un-marked
+  // automatically.
+  const readQueue = new Set();
+  let readTimer = 0;
+  function noteRead(ids) {
+    if (!hasProgress || !queueReads(readQueue, ids, progress).length) return;
+    if (!readTimer) readTimer = setTimeout(flushReads, READ_FLUSH_MS);
+  }
+  // A reset drops whatever was noticed but not yet saved, so nothing marked a moment before comes back after it.
+  function dropReads() {
+    clearTimeout(readTimer);
+    readTimer = 0;
+    readQueue.clear();
+  }
+  async function flushReads() {
+    clearTimeout(readTimer);
+    readTimer = 0;
+    const ids = [...readQueue];
+    readQueue.clear();
+    if (!ids.length) return;
+    try { await store.markRead(ids); } catch (e) { console.warn('[progress] not saved', e?.message || e); }
+    progress = await store.getProgress();
+    paintProgress();
+  }
+  reader.on('read', ({ unitIds }) => noteRead(unitIds));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushReads(); });   // a tab closed mid-batch keeps its reads
+  // The sentence under the cursor and how long it has actually played
+  // (`ms`, paused stretches left out: `since` is only set while playing).
+  let played = { id: null, playing: false, since: 0, ms: 0 };
+  function trackPlayback(st) {
+    const now = Date.now();
+    const cur = st.mode === 'idle' || st.mode === 'align' ? null : st.currentUnit;
+    if (cur === played.id) {   // the same sentence: only the clock moves (a pause stops it)
+      if (st.playing && !played.playing) played.since = now;
+      else if (!st.playing && played.playing) played.ms += now - played.since;
+      played.playing = !!st.playing;
+      return;
+    }
+    const prev = played;
+    if (prev.playing) prev.ms += now - prev.since;
+    played = { id: cur, playing: !!st.playing, since: now, ms: 0 };
+    if (!prev.id) return;
+    const read = playbackRead({
+      prevId: prev.id, nextId: cur, playedMs: prev.ms, atMs: st.currentTimeMs, error: st.error,
+      rows: audioState?.rows ?? [], durationMs: st.durationMs, minMs: PLAYED_MIN_MS,
+    });
+    if (read) noteRead([prev.id]);
+  }
+
+  // The progress line ("42 of 93 read · Continue →") that reader.js keeps
+  // under the first part title / the sentence meta line, the weeks menu's
+  // rows and Settings → Progress all read the same map; paintProgress() is
+  // the one repaint after a batch, a reset or a change from another device.
+  const progressEl = $('#progress');
+  const progressTextEl = $('[data-progress-text]');
+  const progressContinue = $('[data-progress-continue]');
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const readInWeek = () => units.reduce((n, u) => n + (progress.has(u.id) ? 1 : 0), 0);
+  function paintProgress() {
+    reader.setProgress?.(progress);
+    if (!progressEl) return;
+    progressEl.hidden = !hasProgress || !units.length;
+    if (progressEl.hidden) return;
+    const read = readInWeek();
+    progressEl.dataset.state = read === 0 ? 'none' : read >= units.length ? 'done' : 'part';
+    progressTextEl.textContent = cap(progressText(read, units.length, { noun: 'read' }));
+    progressContinue.hidden = read >= units.length;
+    if (weeksDialog.open) renderWeeksMenu(weekN);
+    settingsUI?.refreshProgress?.();
+  }
+  // Continue: the first sentence not yet read, else the last position, else the first sentence.
+  progressContinue?.addEventListener('click', () => {
+    const target = firstUnread(units, progress)
+      ?? units.find((u) => u.id === settings.lastPosition?.unit_id)
+      ?? units[0];
+    if (target) reader.goToUnit(target.id);
+  });
+
+  /* ---------------------------------------------- last position */
+  // settings.lastPosition = { week_n, unit_id, view, at }: written (debounced)
+  // whenever the reader's current sentence changes in either view — through
+  // store.setLastPosition() (its own patch: no shell repaint, and the settings
+  // row's updated_at is not bumped), only when the place really changed
+  // (positionKey starts as the loaded position), and only once boot is over
+  // (positionArmed): the boot render and the resume never write, so a saved
+  // place the library no longer has is kept for the device that has it.
+  let positionTimer = 0;
+  let positionArmed = false;
+  const posKey = (lp) => (lp ? `${lp.week_n}|${lp.unit_id}|${lp.view}` : null);
+  let positionKey = posKey(lastPos);   // `${week}|${unit}|${view}` last written / loaded, so the same place is not written twice
+  reader.on('position', ({ unit, view }) => {
+    if (!positionArmed || !unit || unitsWeek !== weekN) return;
+    const lp = { week_n: weekN, unit_id: unit.id, view, at: new Date().toISOString() };
+    clearTimeout(positionTimer);
+    if (posKey(lp) === positionKey) { positionTimer = 0; return; }
+    positionTimer = setTimeout(() => { positionTimer = 0; savePosition(lp); }, POSITION_SAVE_MS);
+  });
+  async function savePosition(lp) {
+    if (posKey(lp) === positionKey) return;
+    positionKey = posKey(lp);
+    try {
+      const saved = await (store.setLastPosition ? store.setLastPosition(lp) : store.setSettings({ lastPosition: lp }));
+      settings = { ...settings, lastPosition: saved?.lastPosition ?? lp };
+      mirror(settings);
+    } catch (e) {
+      console.warn('[position] not saved', e?.message || e);
+    }
+  }
+
+  /* ---------------------------------------------------- pictures */
+  // The textbook's illustrations (CONTRACT.md "Pictures"): loaded with the
+  // week while settings.showPictures is on — the store signs their URLs then,
+  // in batches — and re-asked of the store when the setting comes back on, so
+  // a signature that expired meanwhile is fresh. Off → nothing is fetched.
+  const picturesOn = () => settings.showPictures !== false;
+  async function loadPictures(n) {
+    if (!picturesOn() || typeof store.getPictures !== 'function') return [];
+    try { return (await store.getPictures(n)) ?? []; }
+    catch (e) { console.warn('[pictures] not loaded for week', n, e?.message || e); return []; }
+  }
+  let picturesShown = picturesOn();   // what the current render was made with
+  let pictureRows = [];               // what the reader was last given, to see whether a refresh changed any URL
+  const pictureUrls = (rows) => rows.map((p) => `${p.id}=${p.url ?? ''}`).join('\n');
+  async function refreshPictures() {
+    const n = weekN;
+    const rows = await loadPictures(n);
+    if (n !== weekN || n !== unitsWeek) return;
+    if (pictureUrls(rows) === pictureUrls(pictureRows)) return;   // nothing re-signed: the page is left alone
+    pictureRows = rows;
+    reader.setPictures(rows);   // the same pictures with new URLs are swapped into the <img>s in place
+  }
+  // Signed URLs last an hour: a long session asks the store again every few
+  // minutes and when the tab comes back, so a re-render after the hour never
+  // refetches an expired URL (the store re-signs only rows past 50 min).
+  setInterval(() => { if (document.visibilityState === 'visible' && picturesOn() && unitsWeek != null) refreshPictures(); }, PICTURE_REFRESH_MS);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && picturesOn() && unitsWeek != null) refreshPictures(); });
+
   async function loadWeek(n) {
     weekN = n;
     setWeekButton(n);
@@ -360,18 +546,21 @@ async function boot() {
     try { localStorage.setItem(LS_WEEK, String(n)); } catch { /* ignore */ }
     audio?.stop?.();
     const week = weeks.find((w) => w.n === n);
-    const [us, highlights, info] = await Promise.all([store.getUnits(n), store.getHighlights(n), audioInfo(n)]);
+    const [us, highlights, info, pictures] = await Promise.all([store.getUnits(n), store.getHighlights(n), audioInfo(n), loadPictures(n)]);
     if (n !== weekN) return;   // the user moved on while this loaded
     units = us;
     unitsWeek = n;
+    weekTotals.set(n, us.length);
     audioState = info;
+    pictureRows = pictures;
     document.title = `Week ${n} · ${week?.title ?? ''} — Latin 103`;
     const focusBtn = $('[data-toggle="highlights"] .toggle__label');
     focusBtn.textContent = week?.focus?.label ?? 'Grammar focus';
     focusBtn.closest('button').setAttribute('aria-label', week?.focus?.label ? `Grammar focus: ${week.focus.label}` : 'Grammar focus');
-    // One render: audio availability and lookups ride along with the week.
-    reader.setWeek(week, units, highlights, { audio: playable(info), lookups });
+    // One render: audio availability, lookups, pictures and the reading progress ride along with the week.
+    reader.setWeek(week, units, highlights, { audio: playable(info), lookups, pictures, progress });
     panel.close();
+    paintProgress();
     settingsUI?.refreshAudio();
     settingsUI?.render(settings);   // the Grammar focus switch names this week's focus
   }
@@ -397,6 +586,7 @@ async function boot() {
     audio: { get: (s = settings) => s.showAudio !== false, set: (on) => ({ showAudio: on }) },
     summaries: { get: (s = settings) => s.showSummaries !== false, set: (on) => ({ showSummaries: on }) },   // settings-only: no toolbar button
     glossEnglish: { get: (s = settings) => !!s.showGlossEnglish, set: (on) => ({ showGlossEnglish: on }) },   // settings-only: the English under every margin gloss
+    pictures: { get: (s = settings) => s.showPictures !== false, set: (on) => ({ showPictures: on }) },   // settings-only: the textbook's illustrations
   };
   function applyDisplay() {
     paintRate();
@@ -406,6 +596,11 @@ async function boot() {
     readerEl.dataset.margin = settings.showMargin !== false ? 'on' : 'off';
     readerEl.dataset.summaries = toggles.summaries.get() ? 'on' : 'off';   // hides the Summary disclosures and sentence view's button
     readerEl.dataset.glossEn = toggles.glossEnglish.get() ? 'on' : 'off';   // every gloss's English shown, the per-gloss "en" chips hidden
+    readerEl.dataset.pictures = picturesOn() ? 'on' : 'off';
+    if (picturesOn() !== picturesShown && unitsWeek != null) {   // switched on: fetch (re-sign) and render; off: the CSS hides them and the rows are dropped
+      picturesShown = picturesOn();
+      if (picturesShown) refreshPictures(); else { pictureRows = []; reader.setPictures([]); }
+    }
     // Audio off: no play buttons, no cursor, no transport — playback stops (stop() clears the highlight and hides #transport).
     readerEl.dataset.audio = audioOn() ? 'on' : 'off';
     if (!audioOn() && audio && audio.status().mode !== 'idle') audio.stop();
@@ -610,6 +805,26 @@ async function boot() {
       stop: () => audio.stop(),
       onState: (cb) => audio.onState?.(cb),
     } : null,
+    progress: hasProgress ? {
+      weekLabel: () => `week ${weekN}`,
+      info: () => ({ read: readInWeek(), total: units.length, all: progress.size }),
+      // Each returns the line the dialog shows (it is modal: a #notice behind its backdrop would go unseen).
+      async resetWeek() {
+        const n = weekN;
+        dropReads();
+        await store.resetProgress(n);
+        progress = await store.getProgress();
+        paintProgress();
+        return `Week ${n}: reading progress reset. Looked-up words are untouched.`;
+      },
+      async resetAll() {
+        dropReads();
+        await store.resetProgress(null);
+        progress = await store.getProgress();
+        paintProgress();
+        return 'All reading progress reset. Looked-up words are untouched.';
+      },
+    } : null,
     onSignOut: async () => { try { await auth.signOut(); } finally { if (fixture) location.reload(); } },
   });
   settingsBtn.addEventListener('click', () => settingsUI.open());
@@ -621,12 +836,15 @@ async function boot() {
       const livePanel = settings.panelWidth;
       settings = await store.getSettings();
       if (panelBusy()) settings = { ...settings, panelWidth: livePanel };
+      positionKey = posKey(normaliseLastPosition(settings.lastPosition));   // another device's position: this one writes again on its next move
       mirror(settings); applyToDocument(settings); applyDisplay(); settingsUI.render(settings);
     }
     if (kind === 'alignments') { audio?.invalidate?.(weekN); refreshAudioAvailability(); }
+    if (kind === 'progress' && hasProgress) { progress = await store.getProgress(); paintProgress(); }
   };
   // Anything that arrived during boot (settings/lookups are re-read below via loadWeek + the synced read above).
   if (remote.lookups) onRemoteChange('lookups');
+  if (remote.progress) onRemoteChange('progress');
 
   // Keyboard
   document.addEventListener('keydown', (e) => {
@@ -648,7 +866,13 @@ async function boot() {
 
   applyDisplay();
   await loadWeek(weekN);
+  // The view is the device's own (l103.view); the sentence is the synced last position, in either view.
   setView(localStorage.getItem('l103.view') === 'sentence' ? 'sentence' : 'passage');
+  if (lastPos && lastPos.week_n === weekN && units.length) reader.goToUnit(lastPos.unit_id, { quiet: true });
+  // From here on the reader's moves are the learner's: positions are written again (never the boot render's or a failed resume's).
+  clearTimeout(positionTimer);
+  positionTimer = 0;
+  positionArmed = true;
   document.documentElement.dataset.ready = '1';
   maybeShowHint();
   if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-size="3" data-face="serif">
+<html lang="en" data-size="3" data-note-size="4" data-face="serif">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,6 +13,9 @@
         // Same clamp as clampSize() in sync.js: integer 1–8, anything else → 3.
         var n = (s.size == null || s.size === '' || typeof s.size === 'boolean') ? NaN : Math.round(Number(s.size));
         h.dataset.size = isFinite(n) ? Math.min(8, Math.max(1, n)) : 3;
+        // Same clamp as clampNoteSize(): integer 1–7, anything else → 4.
+        var m = (s.noteSize == null || s.noteSize === '' || typeof s.noteSize === 'boolean') ? NaN : Math.round(Number(s.noteSize));
+        h.dataset.noteSize = isFinite(m) ? Math.min(7, Math.max(1, m)) : 4;
         h.dataset.face = s.face || 'serif';
         if (s.theme && s.theme !== 'system') h.dataset.theme = s.theme;
         if (s.compact) h.dataset.compact = '1';
@@ -75,7 +78,12 @@
 
     <div class="layout" data-panel="closed">
       <main id="main">
-        <article id="reader" class="reader" data-view="passage" data-english="hidden" data-highlights="on" data-underlines="on" data-margin="on" data-audio="on" data-summaries="on" data-gloss-en="off" aria-label="Reading">
+        <article id="reader" class="reader" data-view="passage" data-english="hidden" data-highlights="on" data-underlines="on" data-margin="on" data-audio="on" data-summaries="on" data-gloss-en="off" data-pictures="on" aria-label="Reading">
+          <!-- Reading progress (CONTRACT.md "Reading progress"): "42 of 93 read · Continue →". reader.js moves it into every render (above the listen bar / under sentence view's meta line); main.js paints it. -->
+          <p id="progress" class="progress" hidden>
+            <span class="progress__text" data-progress-text></span>
+            <button type="button" class="progress__continue" data-progress-continue aria-label="Continue where you left off: the first sentence not yet read" hidden><span class="progress__sep" aria-hidden="true">· </span><span class="progress__word">Continue <span aria-hidden="true">→</span></span></button>
+          </p>
           <!-- The listen bar. reader.js moves it into every render (top of the passage / above the sentence); main.js paints it. -->
           <div id="listen" class="listen" role="group" aria-label="Listen to the text" data-state="quiet" hidden>
             <div class="listen__main">
@@ -151,6 +159,19 @@
         </div>
       </div>
 
+      <!-- Notes: glosses, captions and the panel's notes at their own step, under the reading size (data-note-size on <html>). -->
+      <div class="settings__row" role="group" aria-labelledby="note-size-label">
+        <span id="note-size-label" class="settings__label">Notes <small class="settings__label-hint">glosses, captions, notes</small></span>
+        <div class="stepper stepper--notes">
+          <button type="button" class="btn btn--icon" data-note-step="-1" aria-label="Smaller notes"><span aria-hidden="true" class="stepper__a stepper__a--sm">A</span></button>
+          <span class="size-dots" aria-hidden="true">
+            <span class="note-dot size-dot"></span><span class="note-dot size-dot"></span><span class="note-dot size-dot"></span><span class="note-dot size-dot"></span><span class="note-dot size-dot"></span><span class="note-dot size-dot"></span><span class="note-dot size-dot"></span>
+          </span>
+          <button type="button" class="btn btn--icon" data-note-step="1" aria-label="Larger notes"><span aria-hidden="true" class="stepper__a stepper__a--lg">A</span></button>
+          <span class="note-value visually-hidden" aria-live="polite">4 of 7</span>
+        </div>
+      </div>
+
       <fieldset class="settings__row">
         <legend class="settings__label">Typeface</legend>
         <div class="choices">
@@ -208,6 +229,11 @@
           <span class="switch__text">English under margin notes <small>Always shown, instead of the small “en” button</small></span>
         </label>
         <label class="switch">
+          <input type="checkbox" role="switch" data-setting-toggle="pictures">
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Pictures <small>The book's illustrations beside their sentences</small></span>
+        </label>
+        <label class="switch">
           <input type="checkbox" role="switch" data-setting-toggle="audio">
           <span class="switch__ui" aria-hidden="true"></span>
           <span class="switch__text">Audio <small>Play buttons and follow-along</small></span>
@@ -239,6 +265,18 @@
           <button type="button" class="btn btn--quiet" data-action="stop" hidden>Stop</button>
         </div>
         <p class="audio__msg" data-audio-msg role="status"></p>
+      </section>
+
+      <!-- Reading progress (CONTRACT.md "Reading progress"): this week's count and the two resets, each behind a confirm(). Lookups live apart and are never reset here. -->
+      <section class="settings__row settings__progress" data-progress aria-labelledby="progress-label" hidden>
+        <h3 id="progress-label" class="settings__label">Progress · <span data-progress-week>this week</span></h3>
+        <p class="progress-set__state" data-progress-state>Nothing read yet.</p>
+        <div class="progress-set__actions">
+          <button type="button" class="btn btn--quiet" data-action="reset-week">Reset this week</button>
+          <button type="button" class="btn btn--quiet" data-action="reset-all">Reset all progress</button>
+        </div>
+        <p class="progress-set__note">Looked-up words are kept separately and are never reset here.</p>
+        <p class="audio__msg" data-progress-msg role="status"></p>
       </section>
 
       <div class="settings__tools">

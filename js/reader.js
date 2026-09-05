@@ -150,6 +150,55 @@ export function stackMargin(items, gap = 0, { maxUp = 0 } = {}) {
 }
 
 /**
+ * How far the stacked margin blocks sit below where they want to be, in px
+ * (the worst case). Blocks resting under a *pinned* one (a picture, which
+ * stays beside its own sentence whatever the notes do) are measured from the
+ * block above them, not from their own sentence — the note under the picture,
+ * the note under that one, and so on while each rests on the chain: glosses
+ * flowing under the illustration are the book's own arrangement, not
+ * crowding. The chain ends at the first block that sits at its own sentence
+ * again; notes crowding notes count as before. A picture joins a chain only
+ * under another picture of the same sentence (`unit`): displaced by anything
+ * else, it is no longer beside its sentence and counts in full. Pure.
+ */
+export function marginDrift(items, tops, gap = 0) {
+  let floor = -Infinity;      // bottom of the chain so far (+ gap)
+  let chained = false;
+  let prev = null;
+  let worst = 0;
+  items.forEach((it, i) => {
+    const pushed = chained && tops[i] > it.top && tops[i] <= floor + 0.5;   // pushed onto the chain, not placed at its own sentence
+    const resting = pushed && (!it.pinned || (prev?.pinned && prev.unit != null && prev.unit === it.unit));
+    const want = resting ? floor : it.top;
+    worst = Math.max(worst, tops[i] - want);
+    chained = it.pinned || resting;
+    floor = chained ? tops[i] + it.height + gap : -Infinity;
+    prev = it;
+  });
+  return worst;
+}
+
+/**
+ * Picture rows grouped by the sentence they stand beside: Map unit_id →
+ * rows in `sort` order (ties by id). Rows without a unit id are dropped. Pure.
+ */
+export function groupPictures(rows) {
+  const out = new Map();
+  for (const p of rows || []) {
+    if (!p || !p.unit_id) continue;
+    (out.get(p.unit_id) ?? out.set(p.unit_id, []).get(p.unit_id)).push(p);
+  }
+  const by = (a, b) => (Number(a.sort) || 0) - (Number(b.sort) || 0) || String(a.id).localeCompare(String(b.id));
+  for (const list of out.values()) list.sort(by);
+  return out;
+}
+
+/** The image's alternative text: its caption, else a generic line. Pure. */
+export function pictureAlt(p) {
+  return plainWords(p?.caption) ?? 'Illustration from the textbook';
+}
+
+/**
  * Offset that puts a smaller note's first baseline on the sentence's first
  * baseline. `contentTop` is the content-area top of the sentence's first text
  * box (the first client rect of its Latin, relative to the .prose — the same
@@ -180,6 +229,96 @@ export function partSummary(part) {
 export function summaryStorageKey(weekId, part) {
   const slug = String(part ?? '').trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '') || 'part';
   return `l103.summary.${weekId || 'week'}.${slug}`;
+}
+
+/** First unit (in order) not in `progress` (a Map / Set of unit ids), or null once every one is read. Pure. */
+export function firstUnread(units, progress) {
+  for (const u of units || []) if (u && !progress?.has?.(u.id)) return u;
+  return null;
+}
+
+/**
+ * Read-batching: adds to `queue` (a Set) every id in `ids` that is neither
+ * already read (`progress`, a Map / Set) nor queued, and returns the ids it
+ * added. main.js fills the queue from the reader's `read` events and flushes
+ * it to store.markRead() in one call. Pure apart from the queue it fills.
+ */
+export function queueReads(queue, ids, progress) {
+  const added = [];
+  for (const id of ids || []) {
+    if (typeof id !== 'string' || !id || queue.has(id) || progress?.has?.(id)) continue;
+    queue.add(id);
+    added.push(id);
+  }
+  return added;
+}
+
+/**
+ * Where a unit's audio ends, from the alignment rows (start_ms order): its
+ * own `end_ms`, else the next row's start, else `fallback` (the recording's
+ * length, or null). null for a unit that has no row. Pure.
+ */
+export function unitEndMs(rows, unitId, fallback = null) {
+  const i = (rows || []).findIndex((r) => r && r.unit_id === unitId);
+  if (i < 0) return null;
+  const own = rows[i].end_ms;
+  if (own != null && Number.isFinite(Number(own))) return Number(own);
+  const next = rows[i + 1];
+  if (next && Number.isFinite(Number(next.start_ms))) return Number(next.start_ms);
+  return fallback != null && Number.isFinite(Number(fallback)) ? Number(fallback) : null;
+}
+
+/**
+ * Whether playback has *read* the sentence that was under the cursor
+ * (`prevId`) now that the cursor is on `nextId` (null: playback is over).
+ * Two ways only — the cursor moved on to the row after it in the alignment
+ * (chapter playback passed it), or it stopped where that sentence ends
+ * (`atMs`, the element's time, within `slackMs` of unitEndMs; the
+ * recording's `durationMs` stands in for a last row without end_ms) — and
+ * in both the time it was actually playing (`playedMs`: pauses excluded)
+ * must reach `minMs`, or 80% of the sentence when that is shorter. A Stop
+ * partway, a tap on another sentence, an error, a sentence with no row:
+ * false. Pure.
+ */
+export function playbackRead({ prevId, nextId = null, playedMs = 0, atMs = null, rows, durationMs = null, error = null, minMs = 1500, slackMs = 400 }) {
+  if (!prevId || error) return false;
+  const list = rows || [];
+  const i = list.findIndex((r) => r && r.unit_id === prevId);
+  if (i < 0) return false;
+  const end = unitEndMs(list, prevId, durationMs);
+  const start = Number(list[i].start_ms) || 0;
+  const need = end != null && end > start ? Math.min(minMs, 0.8 * (end - start)) : minMs;
+  if (!((Number(playedMs) || 0) >= need)) return false;
+  if (nextId != null) return list[i + 1]?.unit_id === nextId;
+  return end != null && atMs != null && Number(atMs) >= end - slackMs;
+}
+
+/**
+ * The unit nearest a horizontal line `y` (viewport px): the one whose box
+ * straddles it, else the one with the smallest distance from either edge.
+ * `boxes`: [{ id, top, bottom }] in document order; empty boxes are skipped.
+ * Returns the id, or null. Pure — the passage view's "current sentence
+ * while scrolling" (the line is the top third of the viewport).
+ */
+export function nearestUnit(boxes, y) {
+  let best = null;
+  let bestD = Infinity;
+  for (const b of boxes || []) {
+    if (!b || !(b.bottom > b.top)) continue;
+    const d = b.top <= y && b.bottom >= y ? 0 : Math.min(Math.abs(b.top - y), Math.abs(b.bottom - y));
+    if (d < bestD) { bestD = d; best = b.id; if (d === 0) break; }
+  }
+  return best;
+}
+
+/**
+ * Whether a unit counts as in view for reading progress: at least `ratio`
+ * (80%) of it is visible — or, for a unit taller than the viewport, that much
+ * of the viewport is filled by it. Pure.
+ */
+export function inViewEnough(visibleHeight, unitHeight, viewportHeight, ratio = 0.8) {
+  const need = Math.min(Number(unitHeight) || 0, Number(viewportHeight) || 0);
+  return need > 0 && (Number(visibleHeight) || 0) >= ratio * need - 0.5;
 }
 
 /* ------------------------------------------------------------------ DOM */
@@ -222,8 +361,10 @@ const h = (tag, attrs = {}, ...children) => {
  * @param {HTMLElement} [o.listen]   the listen bar (#listen, owned by main.js): moved into every render —
  *                                   top of the passage (under the first part title) / above the sentence
  * @param {object}      [o.plain]    `{ get() → bool, set(bool) }` for settings.plainOpen (the "In plain words" disclosures)
+ * @param {HTMLElement} [o.progressBar]  the reading-progress line (#progress, owned by main.js): moved into every render
+ *                                   like the listen bar — above it in passage view, under the meta line in sentence view
  */
-export function createReader({ root, tokenize, describeForm, live, listen = null, plain = null }) {
+export function createReader({ root, tokenize, describeForm, live, listen = null, plain = null, progressBar = null }) {
   const listeners = {};
   const on = (ev, cb) => { (listeners[ev] ??= []).push(cb); };
   const emit = (ev, detail) => { for (const cb of listeners[ev] ?? []) cb(detail); };
@@ -233,8 +374,19 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     lookups: new Map(), seen: new Set(), view: 'passage', current: 0,
     audio: false, playing: null, playingWord: null, tokens: new Map(), marginTokens: new Map(), summaryTokens: new Map(),
     glossOpen: new Set(),   // margin glosses whose English is shown ("<unit id>#<index>"), across re-renders and both copies
+    pictures: new Map(),    // unit id → picture rows (groupPictures)
+    picTokens: new Map(),   // picture id → caption tokens
+    progress: new Map(),    // unit id → read_at (store.getProgress): the sentences already read
+    readTimer: 0,           // sentence view: the current sentence counts as read after READ_DWELL_MS
+    io: null,               // passage view: IntersectionObserver over the units
+    ioTimers: new Map(),    // unit id → timer while the unit has been ≥ 80% in view
+    inView: new Set(),      // unit ids ≥ 80% in view right now
+    skipped: new Set(),     // units in view at a reset: not timed until they have left and come back (whatever pauses and resumes meanwhile)
+    scrollRaf: 0,
+    settleUntil: 0,         // ignore scroll tracking until then (a programmatic scroll is in flight)
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const READ_DWELL_MS = 2000;
 
   function tokensFor(unit) {
     if (!state.tokens.has(unit.id)) state.tokens.set(unit.id, tokenize(unit.la));
@@ -316,6 +468,116 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     scheduleReflow();   // the gutter blocks change height
   }
 
+  /* --- pictures ---------------------------------------------------- */
+  // The textbook's illustrations beside the sentence they stand next to
+  // (CONTRACT.md "Pictures"). Like margin notes, two copies are rendered in
+  // passage view — .pic--inline inside the unit (phones, or a part shown
+  // inline) and .mpic in the gutter, positioned with the notes — and CSS shows
+  // one. The caption is tokenised Latin (tappable, recorded against the
+  // sentence through data-for); its English sits beneath, behind the same
+  // "en" chip as a margin gloss (settings.showGlossEnglish shows it outright).
+  function picTokensFor(p) {
+    if (!state.picTokens.has(p.id)) state.picTokens.set(p.id, tokenize(plainWords(p.caption) ?? ''));
+    return state.picTokens.get(p.id);
+  }
+  function pictureImg(p) {
+    const alt = pictureAlt(p);
+    const img = h('img', {
+      class: 'pic__img', src: p.url || null, alt, loading: 'lazy', decoding: 'async',
+      width: p.width != null ? String(p.width) : null, height: p.height != null ? String(p.height) : null,
+    });
+    // A URL that no longer answers (an expired signature offline): the alt text takes the frame.
+    img.addEventListener('error', () => { img.replaceWith(h('span', { class: 'pic__missing', role: 'img', 'aria-label': alt, text: alt })); }, { once: true });
+    // A row without width/height takes its size only once the image is in: the gutter and the line numbers move.
+    if (p.width == null || p.height == null) img.addEventListener('load', scheduleReflow, { once: true });
+    return img;
+  }
+  function pictureFigure(unit, p, cls) {
+    const key = `pic:${p.id}`;
+    const en = plainWords(p.caption_en);
+    const open = !!en && state.glossOpen.has(key);
+    const alt = pictureAlt(p);
+    const fig = h('figure', {
+      class: `pic ${cls}` + (open ? ' is-en-open' : ''), 'data-pic': p.id, 'data-for': unit.id, 'data-order': String(unit.order), 'data-gloss': en ? key : null,
+    },
+      h('button', { type: 'button', class: 'pic__btn', 'data-pic-open': p.id, 'aria-label': `Enlarge: ${alt}` }, pictureImg(p)),
+      p.caption || en ? h('figcaption', { class: 'pic__cap' },
+        p.caption ? h('span', { class: 'pic__la', lang: 'la' }, renderTokens(picTokensFor(p), [])) : null,
+        en ? h('button', { type: 'button', class: 'mnotes__en-btn', 'data-gloss-toggle': key, 'aria-expanded': String(open), 'aria-label': 'In English' }, h('span', { 'aria-hidden': 'true', text: 'en' })) : null,
+        en ? h('span', { class: 'pic__en', lang: 'en', text: en }) : null) : null);
+    return fig;
+  }
+  /** Every picture of a unit as figures, or [] */
+  function pictureBlocks(unit, cls) {
+    return (state.pictures.get(unit.id) ?? []).map((p) => pictureFigure(unit, p, cls));
+  }
+  /** `unit id → picture ids` of a grouped map, as one string, to tell "the same pictures, new URLs" from a real change. */
+  const pictureShape = (grouped) => [...grouped].map(([u, list]) => `${u}:${list.map((p) => p.id).join(',')}`).join('|');
+  // Re-signed URLs land on the figures already on the page: only an <img>
+  // whose URL changed gets a new src (no re-render, no refetch of the rest),
+  // and a frame that had fallen back to the alt text gets its image back.
+  function swapPictureUrls(prevGrouped) {
+    const prevUrl = new Map();
+    for (const list of prevGrouped.values()) for (const p of list) prevUrl.set(p.id, p.url ?? null);
+    for (const list of state.pictures.values()) {
+      for (const p of list) {
+        const url = p.url ?? null;
+        if (url === prevUrl.get(p.id)) continue;
+        for (const fig of root.querySelectorAll(`figure[data-pic="${CSS.escape(p.id)}"]`)) {
+          const btn = fig.querySelector('.pic__btn');
+          const img = btn?.querySelector('img.pic__img');
+          if (!btn) continue;
+          if (img && url) img.src = url;
+          else if (url) btn.replaceChildren(pictureImg(p));   // the alt-text frame: an image again
+          else if (img) img.removeAttribute('src');
+        }
+      }
+    }
+  }
+  // A tap on the image: the picture at its full size in a native dialog.
+  // Escape and the backdrop close it; focus goes back to the button that opened it.
+  let lightbox = null;
+  let lightboxOpener = null;
+  function ensureLightbox() {
+    if (lightbox) return lightbox;
+    lightbox = h('dialog', { class: 'lightbox', 'aria-label': 'Illustration' },
+      h('button', { type: 'button', class: 'lightbox__close', 'aria-label': 'Close' }, h('span', { 'aria-hidden': 'true', text: '×' })),
+      h('img', { class: 'lightbox__img', alt: '' }),
+      h('p', { class: 'lightbox__cap' }));
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('.lightbox__close')) lightbox.close(); });
+    lightbox.addEventListener('keydown', (e) => e.stopPropagation());   // the reader's letter shortcuts stay out while it is open (Escape still closes: the dialog's own cancel)
+    lightbox.addEventListener('close', () => {
+      lightbox.querySelector('.lightbox__img').removeAttribute('src');
+      const back = lightboxOpener;
+      lightboxOpener = null;
+      if (back?.isConnected) back.focus({ preventScroll: true });
+    });
+    document.body.append(lightbox);
+    return lightbox;
+  }
+  function openPicture(id, opener) {
+    let p = null;
+    for (const list of state.pictures.values()) { p = list.find((x) => x.id === id) ?? p; if (p) break; }
+    if (!p || !p.url) return;
+    const box = ensureLightbox();
+    const img = box.querySelector('.lightbox__img');
+    img.alt = pictureAlt(p);
+    if (p.width != null) img.width = p.width; else img.removeAttribute('width');
+    if (p.height != null) img.height = p.height; else img.removeAttribute('height');
+    img.src = p.url;
+    const cap = box.querySelector('.lightbox__cap');
+    const en = plainWords(p.caption_en);
+    cap.replaceChildren(...[
+      p.caption ? h('span', { lang: 'la', text: p.caption }) : null,
+      p.caption && en ? h('span', { class: 'lightbox__sep', 'aria-hidden': 'true', text: ' · ' }) : null,
+      en ? h('span', { class: 'lightbox__en', lang: 'en', text: en }) : null,
+      p.page != null ? h('span', { class: 'lightbox__page', text: ` — page ${p.page}` }) : null,
+    ].filter(Boolean));
+    lightboxOpener = opener ?? null;
+    if (!box.open) box.showModal();
+    box.querySelector('.lightbox__close').focus({ preventScroll: true });
+  }
+
   /* --- section summaries ------------------------------------------- */
   // week.parts[].summary_en / summary_la (CONTRACT.md "Section summaries").
   // The Latin is tokenised once per part and rendered as tappable words like
@@ -378,7 +640,10 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       }
       const summary = summaryBlock(p);
       if (summary) section.append(summary);
-      if (listen && !container.childElementCount) section.append(listen);   // the listen bar: under the first part's title, above its first sentence
+      if (!container.childElementCount) {
+        if (progressBar) section.append(progressBar);   // "42 of 93 read · Continue →": under the first part's title (and its summary)
+        if (listen) section.append(listen);   // the listen bar: under that, above the first sentence
+      }
       const prose = h('div', { class: 'prose' });
       units.forEach((u, i) => {
         const unitEl = h('span', {
@@ -396,11 +661,16 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
         // word joiner glues them to the text and .marks does not wrap inside.
         const marks = [noteMark(u), playButton(u)].filter(Boolean);
         unitEl.append(...[la, marks.length ? h('span', { class: 'marks' }, '⁠', ...marks) : null, margin, h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
-        prose.append(unitEl);
+        // The inline copy of the unit's pictures stands in the prose just before
+        // the unit (not inside it): the sentence starts on a fresh line under
+        // the plate and its margin line number stays beside the text.
+        prose.append(...pictureBlocks(u, 'pic--inline'), unitEl);
         if (i < units.length - 1) prose.append(' ');
       });
-      // The gutter copy: hidden by CSS in the inline mode, positioned by positionMargin().
-      const gutter = h('div', { class: 'margin' }, units.map((u) => marginBlock(u, 'mnote')));
+      // The gutter copy: hidden by CSS in the inline mode, positioned by
+      // positionMargin(). A unit's pictures come before its notes, so the
+      // notes stack beneath the illustration as in the book's margin.
+      const gutter = h('div', { class: 'margin' }, units.map((u) => [...pictureBlocks(u, 'mpic'), marginBlock(u, 'mnote')]));
       if (gutter.childElementCount) prose.append(gutter);
       section.append(prose);
       container.append(section);
@@ -418,12 +688,17 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       .filter(Boolean).join(' · ');
     const part = state.week?.parts?.find((p) => p.part && p.part === u.part) ?? null;
     const metaEl = h('p', { class: 'sentence__meta' }, h('span', { text: meta }));
+    // A faint "read" tick once the sentence counts as read (kept in step by paintReadTick()).
+    metaEl.append(h('span', { class: 'sentence__read', hidden: !state.progress.has(u.id) },
+      h('span', { class: 'sentence__meta-sep', 'aria-hidden': 'true', text: ' · ' }), h('span', { text: 'read' }), h('span', { 'aria-hidden': 'true', text: ' ✓' })));
     if (part && partSummary(part)) {
       metaEl.append(h('span', { class: 'sentence__meta-sep', 'aria-hidden': 'true', text: ' · ' }),
         h('button', { type: 'button', class: 'sentence__summary', 'data-summary': part.part, 'aria-label': `Section summary: ${part.part}` }, 'Section summary'));
     }
     wrap.append(metaEl);
+    if (progressBar) wrap.append(progressBar);   // the week's progress line, above the listen bar
     if (listen) wrap.append(listen);   // "Play sentence" / "Play from here" live in the bar; no inline play button here
+    wrap.append(...pictureBlocks(u, 'pic--sentence'));   // the illustration above the Latin
     const la = h('div', { class: 'sentence__la', lang: 'la' });
     if (u.unit_type === 'turn' && u.speaker) la.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
     la.append(renderLatin(u));
@@ -464,12 +739,145 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   }
 
   function render() {
+    clearReadTimers();
     root.replaceChildren(state.view === 'passage' ? renderPassage() : renderSentence());
     root.dataset.view = state.view;
     wordEls = { unitId: null, els: [] };
     applyPlayingWord();
     reflow();
     emit('render', { view: state.view, unit: state.units[state.current] ?? null });   // main.js repaints the listen bar
+    armReads();
+    emitPosition();
+  }
+
+  /* --- reading progress (CONTRACT.md "Reading progress") ------------ */
+  // The reader only *notices* reading; main.js batches the `read` events into
+  // store.markRead(). Sentence view: the sentence shown counts after 2 s
+  // (READ_DWELL_MS), or at once when moved past with Next / j (goTo). Passage
+  // view: a unit that has been ≥ 80% in view for 2 s (an IntersectionObserver
+  // below the sticky header + a timer per unit). Nothing counts while the tab
+  // is hidden; nothing is ever un-marked. Playback is main.js's (audio state).
+  function emitRead(id, why) { emit('read', { unitIds: [id], why }); }
+  function clearReadTimers() {
+    clearTimeout(state.readTimer);
+    state.readTimer = 0;
+    for (const t of state.ioTimers.values()) clearTimeout(t);
+    state.ioTimers.clear();
+    state.inView.clear();
+    state.skipped.clear();
+    state.io?.disconnect();
+    state.io = null;
+  }
+  function armReads() {
+    clearReadTimers();
+    if (state.view === 'sentence') { armSentence(); return; }
+    observeUnits();
+  }
+  // Reading is not counted while the tab is hidden, nor while a modal dialog
+  // (Settings, the weeks menu, the word popup, the lightbox) covers the text.
+  const readsPaused = () => document.visibilityState !== 'visible' || !!document.querySelector('dialog[open]');
+  function armSentence() {
+    clearTimeout(state.readTimer);
+    state.readTimer = 0;
+    const u = state.units[state.current];
+    if (!u || state.progress.has(u.id) || readsPaused()) return;
+    state.readTimer = setTimeout(() => { state.readTimer = 0; if (state.units[state.current]?.id === u.id && !readsPaused()) emitRead(u.id, 'dwell'); }, READ_DWELL_MS);
+  }
+  function barHeight() {
+    return parseFloat(document.documentElement.style.getPropertyValue('--bar-h')) || 0;
+  }
+  // `skipVisible` (after a reset): the units in view at that moment are noted
+  // but not timed — they count again only once they have left and come back,
+  // so a reset is never followed by "1 of 93" two seconds later.
+  function observeUnits(skipVisible = false) {
+    state.io?.disconnect();
+    state.io = null;
+    if (typeof IntersectionObserver !== 'function' || !state.units.length) return;
+    const barH = Math.round(barHeight());
+    let first = skipVisible;
+    state.io = new IntersectionObserver((entries) => {
+      const skip = first;
+      first = false;
+      for (const e of entries) {
+        const id = e.target.dataset.id;
+        const rootH = e.rootBounds?.height ?? (window.innerHeight - barH);
+        const ok = e.isIntersecting && inViewEnough(e.intersectionRect.height, e.boundingClientRect.height, rootH);
+        if (ok) { state.inView.add(id); if (skip) state.skipped.add(id); else armUnit(id); }
+        else { state.inView.delete(id); state.skipped.delete(id); disarmUnit(id); }
+      }
+    }, { rootMargin: `-${barH}px 0px 0px 0px`, threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] });
+    for (const el of root.querySelectorAll('.unit')) if (!state.progress.has(el.dataset.id)) state.io.observe(el);
+  }
+  function armUnit(id) {
+    if (state.ioTimers.has(id) || state.progress.has(id) || state.skipped.has(id) || readsPaused()) return;
+    state.ioTimers.set(id, setTimeout(() => {
+      state.ioTimers.delete(id);
+      if (state.inView.has(id) && !readsPaused() && !state.progress.has(id)) emitRead(id, 'view');
+    }, READ_DWELL_MS));
+  }
+  function disarmUnit(id) {
+    clearTimeout(state.ioTimers.get(id));
+    state.ioTimers.delete(id);
+  }
+  // The tab hidden / a dialog opened: every timer stops; shown / closed again: the units still in view start over.
+  let pausedReads = readsPaused();
+  function syncReadPause() {
+    const paused = readsPaused();
+    if (paused === pausedReads) return;
+    pausedReads = paused;
+    if (!paused) {
+      if (state.view === 'sentence') armSentence();
+      else for (const id of state.inView) armUnit(id);
+    } else {
+      clearTimeout(state.readTimer);
+      state.readTimer = 0;
+      for (const id of [...state.ioTimers.keys()]) disarmUnit(id);
+    }
+  }
+  document.addEventListener('visibilitychange', syncReadPause);
+  if (typeof MutationObserver === 'function') {
+    new MutationObserver(syncReadPause).observe(document.body, { attributes: true, attributeFilter: ['open'], subtree: true });
+  }
+  function paintReadTick() {
+    const el = root.querySelector('.sentence__read');
+    const u = state.units[state.current];
+    if (el && u) el.hidden = !state.progress.has(u.id);
+  }
+
+  /* --- the current sentence (last position) ------------------------- */
+  // `position` events carry the sentence the reader is on — sentence view's
+  // sentence, passage view's tapped / played one or, while scrolling, the one
+  // nearest the top third of the viewport (nearestUnit) — main.js debounces
+  // them into settings.lastPosition. The same line is where scrollToCurrent()
+  // puts a sentence, so the two views resume from the same place.
+  function emitPosition() {
+    const u = state.units[state.current];
+    if (u) emit('position', { unit: u, view: state.view });
+  }
+  function thirdLine() {
+    const barH = barHeight();
+    return barH + (window.innerHeight - barH) / 3;
+  }
+  function trackScroll() {
+    state.scrollRaf = 0;
+    if (state.view !== 'passage' || !state.units.length || state.playing || performance.now() < state.settleUntil) return;
+    const y = thirdLine();
+    const boxes = [];
+    for (const el of root.querySelectorAll('.unit')) {
+      const r = el.getBoundingClientRect();
+      boxes.push({ id: el.dataset.id, top: r.top, bottom: r.bottom });
+    }
+    const u = state.byId.get(nearestUnit(boxes, y));
+    if (!u || u.order === state.current) return;
+    state.current = u.order;
+    emitPosition();
+  }
+  window.addEventListener('scroll', () => { if (!state.scrollRaf) state.scrollRaf = requestAnimationFrame(trackScroll); }, { passive: true });
+  /** Scroll a unit's first line to the top third of the viewport (below the sticky header). */
+  function scrollUnitToThird(el, behavior) {
+    const top = window.scrollY + el.getBoundingClientRect().top - thirdLine();
+    state.settleUntil = performance.now() + 800;   // the scroll in flight is not the learner's
+    window.scrollTo({ top: Math.max(0, Math.round(top)), behavior: behavior ?? (reduced.matches ? 'auto' : 'smooth') });
   }
 
   // The spoken-word cursor (audio.js → setPlayingWord): the unit's word
@@ -544,19 +952,22 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       if (!gutter) continue;                       // nothing to place: follows the article
       const prose = gutter.parentElement;
       prose.style.removeProperty('min-height');
-      const blocks = [...gutter.children];
+      const blocks = [...gutter.children].filter((el) => el.offsetHeight > 0);   // pictures switched off take no room
       if (!blocks.length) continue;
       const proseTop = prose.getBoundingClientRect().top;
-      const ns = getComputedStyle(blocks[0]);
+      const note = blocks.find((el) => el.classList.contains('mnote')) ?? blocks[0];
+      const ns = getComputedStyle(note);
       const noteSize = parseFloat(ns.fontSize);
       const noteLineHeight = parseFloat(ns.lineHeight) || noteSize * 1.3;
+      const gap = Math.round(noteLineHeight * 0.4);
       const items = blocks.map((el) => {
         const unit = prose.querySelector(`.unit[data-id="${CSS.escape(el.dataset.for)}"]`);
         const contentTop = unit ? firstLineTop(unit, proseTop) : 0;
-        return { el, top: marginTop({ contentTop, textSize, noteSize, noteLineHeight }), height: el.offsetHeight };
+        const pinned = el.classList.contains('mpic');   // a picture sits level with its sentence's first line; the notes flow under it
+        return { el, pinned, unit: el.dataset.for, top: pinned ? Math.round(contentTop) : marginTop({ contentTop, textSize, noteSize, noteLineHeight }), height: el.offsetHeight };
       });
-      const tops = stackMargin(items, Math.round(noteLineHeight * 0.4), { maxUp: Math.round(textLineHeight * 0.9) });   // pulled up, but never a full line above its sentence
-      const drift = Math.max(...items.map((it, i) => tops[i] - it.top));
+      const tops = stackMargin(items, gap, { maxUp: Math.round(textLineHeight * 0.9) });   // pulled up, but never a full line above its sentence
+      const drift = marginDrift(items, tops, gap);
       if (drift > DRIFT_LINES * textLineHeight) {
         // Too dense for the column here: glosses go under their sentences.
         part.dataset.marginMode = 'inline';
@@ -615,6 +1026,8 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     if (w) { setCurrentFrom(w); emit('word', wordFrom(w)); return; }
     const gt = e.target.closest('[data-gloss-toggle]');
     if (gt) { toggleGloss(gt.dataset.glossToggle); return; }
+    const po = e.target.closest('[data-pic-open]');
+    if (po) { setCurrentFrom(po); openPicture(po.dataset.picOpen, po); return; }
     const nm = e.target.closest('.notemark');
     if (nm) { setCurrentFrom(nm); emit('note', { unit: state.byId.get(nm.dataset.noteFor), el: nm }); return; }
     const pb = e.target.closest('.playbtn');
@@ -637,7 +1050,11 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   });
   function setCurrentFrom(el) {
     const unitEl = el.closest('[data-order]');
-    if (unitEl) state.current = Number(unitEl.dataset.order);
+    if (!unitEl) return;
+    const order = Number(unitEl.dataset.order);
+    if (order === state.current) return;
+    state.current = order;
+    emitPosition();
   }
 
   // Swipe between sentences on touch.
@@ -654,10 +1071,12 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   /* --- public API --------------------------------------------------- */
   const api = {
     on,
-    /** Replace the week. `extra.audio` / `extra.lookups` are applied before the single render. */
+    /** Replace the week. `extra.audio` / `extra.lookups` / `extra.pictures` (store.getPictures rows) are applied before the single render. */
     setWeek(week, units, highlights, extra = {}) {
       if ('audio' in extra) state.audio = extra.audio instanceof Set ? extra.audio : !!extra.audio;
       if (extra.lookups) { state.lookups = extra.lookups; state.seen = activeUnderlines(extra.lookups); }
+      if (extra.progress) state.progress = extra.progress;
+      const newWeek = state.week?.n !== week?.n;
       state.week = week;
       state.units = [...units].sort((a, b) => a.order - b.order);
       state.byId = new Map(state.units.map((u) => [u.id, u]));
@@ -665,6 +1084,9 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       state.marginTokens.clear();
       state.summaryTokens.clear();
       state.glossOpen.clear();
+      state.picTokens.clear();
+      state.pictures = groupPictures(extra.pictures ?? []);
+      for (const id of state.pictures.keys()) if (!state.byId.has(id)) console.warn('[reader] picture for unknown unit', id);
       state.hl.clear();
       const byUnit = new Map();
       for (const hl of highlights ?? []) (byUnit.get(hl.unit_id) ?? byUnit.set(hl.unit_id, []).get(hl.unit_id)).push(hl);
@@ -675,8 +1097,20 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
         if (missing.length) console.warn('[reader] unresolved highlights in', id, missing.map((m) => m.text));
         state.hl.set(id, ranges);
       }
-      state.current = Math.min(state.current, Math.max(0, state.units.length - 1));
+      state.current = newWeek ? 0 : Math.min(state.current, Math.max(0, state.units.length - 1));
+      if (newWeek && state.view === 'passage') window.scrollTo({ top: 0, behavior: 'auto' });   // a fresh week opens at its head (goToUnit() may then move on)
       render();
+    },
+    /** The sentences already read (store.getProgress()): the tick in sentence view, and no timers for them. */
+    setProgress(map) {
+      const prev = state.progress;
+      state.progress = map ?? new Map();
+      for (const id of [...state.inView]) if (state.progress.has(id)) { disarmUnit(id); state.inView.delete(id); }
+      const u = state.units[state.current];
+      if (state.view === 'sentence' && u && state.progress.has(u.id)) { clearTimeout(state.readTimer); state.readTimer = 0; }
+      // A reset (ids gone from the map): passage view watches those units again — except the ones in view right now.
+      if (state.view === 'passage' && [...prev.keys()].some((id) => !state.progress.has(id))) observeUnits(true);
+      paintReadTick();
     },
     setLookups(map) {
       state.lookups = map;
@@ -697,6 +1131,10 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     getCurrentUnit: () => state.units[state.current] ?? null,
     goTo(order) {
       if (order < 0 || order >= state.units.length) return;
+      if (state.view === 'sentence' && order > state.current) {   // moved past with Next / j: the sentence left behind counts as read
+        const prev = state.units[state.current];
+        if (prev && !state.progress.has(prev.id)) emitRead(prev.id, 'next');
+      }
       state.current = order;
       if (state.view === 'sentence') {
         // Keep keyboard focus on the same Next/Previous control across the re-render.
@@ -713,9 +1151,33 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     next: () => api.goTo(state.current + 1),
     prev: () => api.goTo(state.current - 1),
     currentUnit: () => state.units[state.current],
-    scrollToCurrent() {
-      const el = root.querySelector(`[data-order="${state.current}"]`);
-      el?.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'auto' : 'smooth' });
+    /**
+     * Go to a sentence by id in whichever view is on: sentence view navigates
+     * to it (goTo: announced, focused); passage view scrolls it to the top
+     * third and makes it current. `quiet` (boot resume): no announcement, no
+     * focus, no smooth scroll. Returns false for an unknown id.
+     */
+    goToUnit(unitId, { quiet = false } = {}) {
+      const u = state.byId.get(unitId);
+      if (!u) return false;
+      if (state.view === 'sentence') {
+        if (!quiet) { api.goTo(u.order); return true; }
+        state.current = u.order;
+        render();
+        root.querySelector('.sentence')?.scrollIntoView({ block: 'start', behavior: 'auto' });
+      } else {
+        state.current = u.order;
+        api.scrollToCurrent(quiet ? 'auto' : undefined);
+        emitPosition();
+        if (!quiet) announce();
+      }
+      emit('navigate', { unit: u, order: u.order });
+      return true;
+    },
+    /** Scroll passage view's current sentence to the top third of the viewport (the line trackScroll() reads). */
+    scrollToCurrent(behavior) {
+      const el = root.querySelector(`.unit[data-order="${state.current}"]`);
+      if (el) scrollUnitToThird(el, behavior);
     },
     /**
      * Audio hook: mark the unit now playing (null clears). Sentence view
@@ -747,6 +1209,8 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       }
       const el = root.querySelector(`[data-id="${CSS.escape(unitId)}"]`);
       if (el) { el.classList.add('is-playing'); el.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'auto' : 'smooth' }); }
+      const u = state.byId.get(unitId);
+      if (u && u.order !== state.current) { state.current = u.order; emitPosition(); }   // the played sentence is the current one
     },
     /** Audio hook: the word being spoken — `idx` counts the unit's word tokens (wordTexts) in text order; null clears. */
     setPlayingWord(unitId, idx) {
@@ -775,6 +1239,18 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       render();
     },
     rerender: render,
+    /**
+     * Replace the week's pictures (store.getPictures rows). The same pictures
+     * with new URLs (a re-sign) are swapped into the existing <img>s in place;
+     * anything else (pictures added, removed, switched off) re-renders.
+     */
+    setPictures(rows) {
+      const prev = state.pictures;
+      state.pictures = groupPictures(rows ?? []);
+      if (pictureShape(prev) === pictureShape(state.pictures)) { swapPictureUrls(prev); return; }
+      state.picTokens.clear();
+      render();
+    },
     /** A part's summary (English, "In Latin", tappable Latin) as a fresh element for the panel; null without one. */
     summaryBody: (part) => summaryBody(part),
     /** Re-measure margin notes and line numbers (after a display toggle or font change). */

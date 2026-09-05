@@ -117,7 +117,13 @@ export function renderParadigm(p) {
   for (const s of p.sections ?? []) {
     const table = h('table', { class: 'pt' });
     if (s.title) table.append(h('caption', { class: 'pt__caption', text: s.title }));
-    if (s.headers?.length) table.append(h('thead', {}, h('tr', {}, s.headers.map((hd) => h('th', { scope: 'col', text: hd })))));
+    if (s.headers?.length) {
+      // The body rows start with a row-label cell (I / you / singular …); the
+      // header row needs a blank cell above it, or "active / passive" slides
+      // one column to the left.
+      const labelCol = (s.rows?.[0]?.cells?.length ?? 0) === s.headers.length ? [h('th', { scope: 'col', class: 'pt__corner', 'aria-label': 'form' })] : [];
+      table.append(h('thead', {}, h('tr', {}, ...labelCol, s.headers.map((hd) => h('th', { scope: 'col', text: hd })))));
+    }
     const body = h('tbody');
     for (const r of s.rows) {
       body.append(h('tr', {}, h('th', { scope: 'row', text: r.label }),
@@ -509,9 +515,23 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     const li = swapRow(key);
     if (expanded.has(key) && li) li.scrollIntoView({ block: 'nearest' });
   }
+  // The lookups changed (another device, the phone popup before the panel
+  // opened): the sentence shown is seeded again — a word looked up elsewhere
+  // gets its row, a word forgotten elsewhere loses it (learned ones keep
+  // theirs, with the badge) — and the rows are redrawn, focus kept.
   function refreshStack() {
     if (!isWide() || !asideOpen() || current || stackUnit == null) return;
-    for (const r of stacks.get(stackUnit) ?? []) swapRow(rowKey(r));
+    const before = (stacks.get(stackUnit) ?? []).map(rowKey).join(' ');
+    seedStack(stackUnit);
+    const map = getLookups?.();
+    if (map) stacks.set(stackUnit, (stacks.get(stackUnit) ?? []).filter((r) => r.kind !== 'word' || map.has(r.form)));
+    const rows = stacks.get(stackUnit) ?? [];
+    const keys = rows.map(rowKey);
+    if (keys.join(' ') === before) { for (const r of rows) swapRow(rowKey(r)); return; }
+    const active = document.activeElement;
+    const key = active?.closest?.('[data-row]')?.dataset.row ?? null;
+    const inside = aside.contains(active);
+    showStack(stackUnit, { focus: key && keys.includes(key) ? key : inside ? 'root' : null });
   }
   function removeRow(key) {
     stacks.set(stackUnit, stackWithout(stacks.get(stackUnit) ?? [], key));
@@ -686,7 +706,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     showSentence(unitId, { open = false } = {}) {
       if (!isWide() || unitId == null) return;
       if (!asideOpen() && !open) return;          // in passage view a closed panel stays closed
-      if (unitId === stackUnit && !current && asideOpen()) return;
+      if (unitId === stackUnit && !current && asideOpen()) { refreshStack(); return; }   // the same sentence: lookups made meanwhile join it
       showStack(unitId);
     },
     /** Escape: a temporary view goes back to the stack, an expanded row collapses, then the panel closes (focus back in the text). */

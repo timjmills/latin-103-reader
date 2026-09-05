@@ -1,12 +1,13 @@
-// Settings: type size (8 steps, 16–44px), face, theme, compact labels, the
+// Settings: type size (8 steps, 16–44px), notes size (7 steps, a factor over
+// the glosses / captions / panel notes only), face, theme, compact labels, the
 // Reading switches (the toolbar toggles again), plus the tools that live in
 // the same menu (the Audio section for the current week — speed, upload,
 // align, play chapter — and Sign out).
 // The inline script in index.html applies the localStorage mirror before
 // first paint; this module keeps <html> attributes + the store in step.
 
-import { SIZE_MIN, SIZE_MAX, clampSize, RATE_STEPS, clampRate } from './sync.js';
-export { SIZE_MIN, SIZE_MAX, clampSize, RATE_STEPS, clampRate };
+import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate } from './sync.js';
+export { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate };
 
 /** "0.8×" — one decimal, always. Pure. */
 export function fmtRate(rate) {
@@ -117,9 +118,10 @@ export const THEMES = [
   { value: 'dark', label: 'Dark' },
 ];
 
-/** Apply theme/size/face to <html> so CSS tokens pick them up. */
+/** Apply theme/size/notes size/face to <html> so CSS tokens pick them up. */
 export function applyToDocument(settings, root = document.documentElement) {
   root.dataset.size = String(clampSize(settings.size));
+  root.dataset.noteSize = String(clampNoteSize(settings.noteSize));
   root.dataset.face = settings.face ?? 'serif';
   if (settings.theme && settings.theme !== 'system') root.dataset.theme = settings.theme;
   else delete root.dataset.theme;
@@ -169,6 +171,28 @@ export function synthHintText({ sentence = false, unitSynth = false, anySynth = 
   return anySynth ? 'Some or all of this week is read by a synthesised voice' : '';
 }
 
+/**
+ * Reading progress in a few words: "not started" (nothing read), "42 of 93
+ * sentences" (`noun` names the count: "sentences" in the weeks menu, "read"
+ * in the heading line), "finished ✓" (all read). Counts are clamped. Pure.
+ */
+export function progressText(read, total, { noun = 'sentences' } = {}) {
+  const t = Math.max(0, Math.round(Number(total)) || 0);
+  const r = Math.min(t, Math.max(0, Math.round(Number(read)) || 0));
+  if (!t || r === 0) return 'not started';
+  if (r >= t) return 'finished ✓';
+  return `${r} of ${t} ${noun}`;
+}
+
+/** Settings → Progress state line: "Nothing read yet.", "42 of 93 sentences read.", "All 93 sentences read." Pure. */
+export function progressStateText(read, total) {
+  const t = Math.max(0, Math.round(Number(total)) || 0);
+  const r = Math.min(t, Math.max(0, Math.round(Number(read)) || 0));
+  if (!t || r === 0) return 'Nothing read yet.';
+  if (r >= t) return `All ${t} sentences read.`;
+  return `${r} of ${t} sentences read.`;
+}
+
 function fmtSize(bytes) {
   if (!Number.isFinite(bytes)) return '';
   return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} kB`;
@@ -189,9 +213,12 @@ function fmtSize(bytes) {
  */
 export function initSettings(dialog, opts) {
   const $ = (sel) => dialog.querySelector(sel);
-  const sizeDown = $('[data-size-step="-1"]');
-  const sizeUp = $('[data-size-step="1"]');
-  const sizeDots = [...dialog.querySelectorAll('.size-dot')];
+  // The two steppers (Type size, Notes): the same control over different
+  // settings keys and ranges.
+  const steppers = [
+    stepper({ key: 'size', min: SIZE_MIN, max: SIZE_MAX, clamp: clampSize, down: $('[data-size-step="-1"]'), up: $('[data-size-step="1"]'), dots: [...dialog.querySelectorAll('.size-dot:not(.note-dot)')], value: $('.size-value') }),
+    stepper({ key: 'noteSize', min: NOTE_SIZE_MIN, max: NOTE_SIZE_MAX, clamp: clampNoteSize, down: $('[data-note-step="-1"]'), up: $('[data-note-step="1"]'), dots: [...dialog.querySelectorAll('.note-dot')], value: $('.note-value') }),
+  ].filter(Boolean);
   const faceInputs = [...dialog.querySelectorAll('input[name="face"]')];
   const themeInputs = [...dialog.querySelectorAll('input[name="theme"]')];
   const compact = $('input[name="compact"]');
@@ -202,11 +229,7 @@ export function initSettings(dialog, opts) {
   const speed = rateMenu({ row: $('[data-audio] [data-rate-chips]'), value: $('[data-audio] [data-rate-value]'), onPick: (r) => update({ audioRate: r }) });
 
   function render(s) {
-    const size = clampSize(s.size);
-    sizeDown.disabled = size <= SIZE_MIN;
-    sizeUp.disabled = size >= SIZE_MAX;
-    sizeDots.forEach((d, i) => d.classList.toggle('is-on', i < size));
-    $('.size-value').textContent = `${size} of ${SIZE_MAX}`;
+    for (const st of steppers) st.paint(s);
     faceInputs.forEach((i) => { i.checked = i.value === s.face; });
     themeInputs.forEach((i) => { i.checked = i.value === s.theme; });
     compact.checked = !!s.compact;
@@ -223,17 +246,7 @@ export function initSettings(dialog, opts) {
     opts.onChange?.(next, patch);
   }
 
-  // The size a click steps from: the last one asked for, so a second click
-  // before the first save resolves still moves one more step.
-  let sizeAsked = null;
-  function stepSize(dir) {
-    const size = clampSize((sizeAsked ?? clampSize(opts.get().size)) + dir);
-    sizeAsked = size;
-    render({ ...opts.get(), size });
-    update({ size }).finally(() => { if (sizeAsked === size) sizeAsked = null; });
-  }
-  sizeDown.addEventListener('click', () => stepSize(-1));
-  sizeUp.addEventListener('click', () => stepSize(1));
+  for (const st of steppers) st.wire({ get: opts.get, render, update });
   faceInputs.forEach((i) => i.addEventListener('change', () => i.checked && update({ face: i.value })));
   themeInputs.forEach((i) => i.addEventListener('change', () => i.checked && update({ theme: i.value })));
   compact.addEventListener('change', () => update({ compact: compact.checked }));
@@ -247,14 +260,116 @@ export function initSettings(dialog, opts) {
 
   /* ------------------------------------------------------------ audio */
   const audioUI = initAudioSection(dialog, opts.audio);
+  const progressUI = initProgressSection(dialog, opts.progress);
 
   render(opts.get());
   return {
     render,
-    /** Open the dialog and refresh the Audio section for the current week. */
-    open() { dialog.showModal(); audioUI?.refresh(); },
+    /** Open the dialog and refresh the Audio and Progress sections for the current week. */
+    open() { dialog.showModal(); audioUI?.refresh(); progressUI?.refresh(); },
     refreshAudio: () => audioUI?.refresh(),
+    refreshProgress: () => progressUI?.refresh(),
   };
+}
+
+/**
+ * One size stepper (Type size, Notes): `down` / `up` buttons, the dots and
+ * the live "3 of 8" line over settings[`key`], clamped by `clamp` to
+ * [min, max]. `paint(settings)` shows a value; `wire({ get, render, update })`
+ * binds the clicks. Returns null when the markup is missing.
+ */
+function stepper({ key, min, max, clamp, down, up, dots, value }) {
+  if (!down || !up) return null;
+  // At either end the button stays in the tab order (aria-disabled, a no-op
+  // click) so a keyboard user who reaches 1 or 8 keeps their place.
+  function paint(s) {
+    const n = clamp(s[key]);
+    down.setAttribute('aria-disabled', String(n <= min));
+    up.setAttribute('aria-disabled', String(n >= max));
+    dots.forEach((d, i) => d.classList.toggle('is-on', i < n));
+    if (value) value.textContent = `${n} of ${max}`;
+  }
+  function wire({ get, render, update }) {
+    // The step a click moves from: the last one asked for, so a second click
+    // before the first save resolves still moves one more step.
+    let asked = null;
+    function step(dir) {
+      const n = clamp((asked ?? clamp(get()[key])) + dir);
+      if (n === (asked ?? clamp(get()[key]))) return;   // already at the end
+      asked = n;
+      render({ ...get(), [key]: n });
+      update({ [key]: n }).finally(() => { if (asked === n) asked = null; });
+    }
+    down.addEventListener('click', () => step(-1));
+    up.addEventListener('click', () => step(1));
+  }
+  return { paint, wire };
+}
+
+/**
+ * Settings → Progress (CONTRACT.md "Reading progress"): this week's count,
+ * "Reset this week" / "Reset all progress" — each behind a native confirm()
+ * — and the line saying lookups are never touched. `progress` is main.js's
+ * hook: { weekLabel(), info() → { read, total, all }, resetWeek(), resetAll() }.
+ */
+function initProgressSection(dialog, progress) {
+  const section = dialog.querySelector('[data-progress]');
+  if (!section) return null;
+  if (!progress) { section.hidden = true; return null; }
+  section.hidden = false;
+  const $ = (sel) => section.querySelector(sel);
+  const weekEl = $('[data-progress-week]');
+  const stateEl = $('[data-progress-state]');
+  const msgEl = $('[data-progress-msg]');
+  const resetWeek = $('[data-action="reset-week"]');
+  const resetAll = $('[data-action="reset-all"]');
+  let info = { read: 0, total: 0, all: 0 };
+  let token = 0;
+
+  const say = (text, tone) => {
+    msgEl.textContent = text || '';
+    if (tone) msgEl.dataset.tone = tone; else delete msgEl.dataset.tone;
+  };
+  function paint() {
+    weekEl.textContent = progress.weekLabel?.() ?? 'this week';
+    stateEl.textContent = progressStateText(info.read, info.total);
+    stateEl.dataset.state = !info.read ? 'none' : info.read >= info.total ? 'done' : 'part';
+    resetWeek.disabled = !info.read;
+    resetAll.disabled = !info.all;
+  }
+  async function refresh() {
+    const t = ++token;
+    try {
+      const next = await progress.info();
+      if (t !== token) return;
+      info = { read: 0, total: 0, all: 0, ...next };
+    } catch (e) {
+      if (t !== token) return;
+      say(e?.message || 'Could not read the progress.', 'error');
+    }
+    paint();
+  }
+  async function reset(what) {
+    const question = what === 'week'
+      ? `Reset this week's reading progress? The ${info.read === 1 ? 'sentence' : `${info.read} sentences`} marked read will be unmarked. Looked-up words are kept.`
+      : `Reset all reading progress, every week? Looked-up words are kept.`;
+    if (!window.confirm(question)) return;
+    say('');
+    resetWeek.disabled = resetAll.disabled = true;
+    try {
+      // The hook may hand back the line to show; the dialog is modal, so the notice belongs here, not behind the backdrop.
+      const done = await (what === 'week' ? progress.resetWeek() : progress.resetAll());
+      say(typeof done === 'string' && done ? done : (what === 'week' ? 'Reading progress for this week reset.' : 'All reading progress reset.'), 'ok');
+      await refresh();
+    } catch (e) {
+      say(e?.message || 'The reset failed.', 'error');
+      paint();
+    }
+  }
+  resetWeek.addEventListener('click', () => reset('week'));
+  resetAll.addEventListener('click', () => reset('all'));
+  paint();
+  return { refresh };
 }
 
 function initAudioSection(dialog, audio) {
