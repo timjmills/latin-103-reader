@@ -42,12 +42,12 @@ values ({USER}, {n}, {q(wk['id'])}, {q(wk['title'])}, {q(wk['source'])}, {q(wk.g
         {q(wk.get('has_line_numbers', True))}, {q(wk.get('focus'))}, {q(wk.get('parts', []))});
 """]
     head = ('insert into public.units (user_id, id, week_n, "order", part, line_no, block_start, '
-            'unit_type, speaker, la, en, en_raw, note, tags, margin, note_simple) values\n')
+            'unit_type, speaker, la, en, en_raw, note, tags, margin, note_simple, lines) values\n')
     rows = [
         f"({USER}, {q(u['id'])}, {n}, {u['order']}, {q(u.get('part'))}, {q(u.get('line_no'))}, "
         f"{q(bool(u.get('block_start')))}, {q(u.get('unit_type', 'sentence'))}, {q(u.get('speaker'))}, "
         f"{q(u['la'])}, {q(u.get('en') or '')}, {q(u.get('en_raw'))}, {q(u.get('note'))}, {q(u.get('tags', []))}, "
-        f"{q(u.get('margin') or [])}, {q(u.get('note_simple'))})"
+        f"{q(u.get('margin') or [])}, {q(u.get('note_simple'))}, {q(u.get('lines') or [])})"
         for u in units
     ]
     for i in range(0, len(rows), CHUNK):
