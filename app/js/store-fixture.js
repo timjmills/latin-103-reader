@@ -3,12 +3,13 @@
 // UI's persistence paths are exercised. Chosen by main.js when ?fixture=1 or
 // when app/config.js is missing / has no SUPABASE_URL.
 
-import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, weekOfUnit } from './sync.js';
+import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, weekOfUnit, isDayKey, cleanMs } from './sync.js';
 
 const LS_LOOKUPS = 'l103.lookups';
 const LS_SETTINGS = 'latin103.settings';
 const LS_ALIGN = 'l103.align.';
 const LS_PROGRESS = 'l103.progress';   // { unit_id: read_at } — reading progress (CONTRACT.md), kept apart from the lookups
+const LS_STUDY = 'l103.study';         // { "YYYY-MM-DD": active_ms } — the study log (CONTRACT.md "Study log")
 
 // The one list of defaults (sync.js): the fixture never drifts from the real store.
 export { DEFAULT_SETTINGS };
@@ -246,6 +247,18 @@ export const store = {
     for (const id of Object.keys(all)) if (n == null || weekOfUnit(id) === n) delete all[id];
     writeJSON(LS_PROGRESS, all);
   },
+  // Study log (CONTRACT.md "Study log"): active ms per local day, localStorage-backed; never mixed with progress or lookups.
+  async getStudyDays() {
+    const all = readJSON(LS_STUDY, {});
+    return new Map(Object.entries(all).filter(([d]) => isDayKey(d)).map(([d, ms]) => [d, cleanMs(ms)]));
+  },
+  async addActiveTime(day, ms) {
+    if (!isDayKey(day) || !cleanMs(ms)) return;
+    const all = readJSON(LS_STUDY, {});
+    all[day] = cleanMs(all[day]) + cleanMs(ms);
+    writeJSON(LS_STUDY, all);
+  },
+  async clearStudyLog() { writeJSON(LS_STUDY, {}); },
   // A manual alignment (localStorage) wins; otherwise the pipeline's
   // data/build/audio/week-NN.alignment.json (app_rows, with timed words).
   async getAlignment(weekN) {
@@ -276,6 +289,7 @@ if (typeof window !== 'undefined') {
     if (e.key === LS_LOOKUPS) emit('lookups');
     if (e.key === LS_SETTINGS) emit('settings');
     if (e.key === LS_PROGRESS) emit('progress');
+    if (e.key === LS_STUDY) emit('study');
   });
 }
 

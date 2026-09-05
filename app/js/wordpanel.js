@@ -115,7 +115,8 @@ export function renderParadigm(p) {
       h('span', { class: 'paradigm__label' }, 'Full paradigm', p.title ? h('span', { class: 'paradigm__title', lang: 'la', text: ` — ${p.title}` }) : null)));
   if (p.note) details.append(h('p', { class: 'paradigm__note', text: p.note }));
   for (const s of p.sections ?? []) {
-    const table = h('table', { class: 'pt' });
+    // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).
+    const table = h('table', { class: 'pt' + ((s.headers?.length ?? 0) >= 3 ? ' pt--wide' : '') });
     if (s.title) table.append(h('caption', { class: 'pt__caption', text: s.title }));
     if (s.headers?.length) {
       // The body rows start with a row-label cell (I / you / singular …); the
@@ -153,6 +154,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   const expanded = new Set();   // expanded rows (rowKey) — several may be open; rows never fold on their own
   let seq = 0;                  // ids for aria-controls
   let switching = false;        // the breakpoint handler closes the dialog itself
+  let userClosed = false;       // the learner closed the aside (× / Escape): sentence view leaves it closed until they open something
   const emptyState = aside.firstElementChild?.cloneNode(true) ?? document.createElement('div');
   const resetAside = () => aside.replaceChildren(emptyState.cloneNode(true));
 
@@ -215,7 +217,8 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     (same ?? reader.querySelector('.sentence') ?? reader).focus?.({ preventScroll: true });
   }
 
-  function close() {
+  /** Close the popup / the aside. `user: false` for a programmatic close (a week change) that must not keep sentence view from opening the stack again. */
+  function close({ user = true } = {}) {
     if (dialog.open) { dialog.close(); return; }   // 'close' handler restores focus
     if (asideOpen()) {
       layout.dataset.panel = 'closed';
@@ -223,9 +226,29 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       current = null;
       stackUnit = null;
       expanded.clear();
+      autoOpened = false;
+      if (user) userClosed = true;
       focusText();
     }
   }
+  /**
+   * Leaving sentence view: an aside that sentence view opened by itself
+   * (`autoOpened` — the learner has not tapped anything since), or one with
+   * nothing to show, closes quietly, so a tablet gets its margin gutter back.
+   * True when it closed.
+   */
+  function closeIfEmpty() {
+    if (!isWide() || !asideOpen() || current) return false;
+    if (!autoOpened && (stacks.get(stackUnit) ?? []).length) return false;
+    layout.dataset.panel = 'closed';
+    resetAside();
+    stackUnit = null;
+    autoOpened = false;
+    expanded.clear();
+    return true;
+  }
+  let autoOpened = false;       // the aside was opened by showSentence(open: true), not by a tap
+  const opened = () => { userClosed = false; autoOpened = false; };   // the learner opened something: sentence view may follow along again
   dialog.addEventListener('close', () => { if (switching) return; current = null; focusText(); });
   dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
 
@@ -655,6 +678,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       const item = { kind: 'word', form, text, unitId, hl, result, pos: Number.isFinite(pos) ? pos : undefined,
                      index: remembered != null && result.entries[remembered] ? remembered : 0 };
       const toStack = isWide();
+      opened();
       if (!toStack) current = item;
       if (result.entries.length) {
         // The tap cycle: the first tap looks the word up (yellow everywhere); the
@@ -680,6 +704,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       open(entryContent(), el, `Word: ${text}`);
     },
     showNote({ unit, el }) {
+      opened();
       if (isWide()) {
         // The † is a toggle: it opens the note row in the sentence's stack, and a
         // second tap on the same † folds it back up (the panel stays).
@@ -699,14 +724,21 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     /** A part's section summary. `body` is reader.summaryBody(part); `unitId` (may be null) is the part's first sentence, for lookups made inside. */
     showSummary({ part, body, unitId = null, el }) {
       if (!body) return;
+      opened();
       current = { kind: 'summary', title: part ? `${part} · Summary` : 'Section summary', body, unitId };
       open(content(), el, current.title);
     },
-    /** Sentence view moved to another sentence: an open stack follows it (a closed panel stays closed). */
+    /**
+     * The current sentence changed: an open stack follows it. `open: true`
+     * (sentence view) also opens a closed aside — unless the learner closed
+     * it themselves, which holds until they open something (a word, a †, a
+     * summary). Passage view (`open: false`) never opens a closed one.
+     */
     showSentence(unitId, { open = false } = {}) {
       if (!isWide() || unitId == null) return;
-      if (!asideOpen() && !open) return;          // in passage view a closed panel stays closed
+      if (!asideOpen() && (!open || userClosed)) return;
       if (unitId === stackUnit && !current && asideOpen()) { refreshStack(); return; }   // the same sentence: lookups made meanwhile join it
+      if (!asideOpen()) autoOpened = true;
       showStack(unitId);
     },
     /** Escape: a temporary view goes back to the stack, an expanded row collapses, then the panel closes (focus back in the text). */
@@ -729,6 +761,9 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     },
     refresh() { if (current?.kind === 'word') rerender(true); else refreshStack(); },
     close,
+    closeIfEmpty,
     isOpen: () => dialog.open || asideOpen(),
+    /** True while the learner's own close is being honoured (tests / debugging). */
+    isUserClosed: () => userClosed,
   };
 }

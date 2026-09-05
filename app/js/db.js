@@ -10,12 +10,13 @@
 //   alignments   keyPath [week_n, unit_id]   index week_n
 //   pictures     keyPath id            index week_n   (+ url / url_exp: the last signed URL, so offline shows what the browser cached)
 //   progress     keyPath unit_id       index week_n   (reading_progress: one row per sentence read)
+//   study_days   keyPath day           (active reading time per local day, CONTRACT.md "Study log")
 //   meta         keyPath key           (user_id, user_email, texts_synced_at …)
 //   outbox       keyPath seq (auto)    queued writes while offline
 
 export const DB_NAME = 'latin103';
-export const DB_VERSION = 3;   // 2: pictures; 3: progress
-export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'meta', 'outbox'];
+export const DB_VERSION = 4;   // 2: pictures; 3: progress; 4: study_days
+export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'study_days', 'meta', 'outbox'];
 
 let dbPromise = null;
 
@@ -33,6 +34,7 @@ function upgrade(idb) {
   mk('alignments', { keyPath: ['week_n', 'unit_id'] }, [['week_n', 'week_n']]);
   mk('pictures', { keyPath: 'id' }, [['week_n', 'week_n']]);
   mk('progress', { keyPath: 'unit_id' }, [['week_n', 'week_n']]);
+  mk('study_days', { keyPath: 'day' });
   mk('meta', { keyPath: 'key' });
   mk('outbox', { keyPath: 'seq', autoIncrement: true });
 }

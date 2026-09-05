@@ -92,6 +92,78 @@ export function progressByWeek(progress) {
   return out;
 }
 
+/* ------------------------------------------------------------------ study log */
+// CONTRACT.md "Study log": table `study_days` (day, active_ms) — active reading
+// time per local calendar day. Local-first like progress; the merge is additive-
+// max: whichever side holds the larger figure for a day wins (the outbox sends
+// a day's local total; the server keeps max(server, local)).
+
+/** The local calendar day of `value` (Date | epoch ms | ISO string; default now) as "YYYY-MM-DD". Pure. */
+export function localDay(value = new Date()) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** True for a "YYYY-MM-DD" day key. Pure. */
+export const isDayKey = (day) => /^\d{4}-\d{2}-\d{2}$/.test(String(day ?? ''));
+
+/** Non-negative integer ms from any value (NaN / negative / non-numbers → 0). Pure. */
+export function cleanMs(value) {
+  const n = Math.round(Number(value));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+/**
+ * A `study_days` row after `ms` more active time on `day`: the existing
+ * total plus `ms` (nothing negative, nothing fractional), with a fresh
+ * updated_at. `existing` may be null. Pure.
+ */
+export function addStudyMs(existing, day, ms, now = new Date().toISOString()) {
+  if (!isDayKey(day)) return null;
+  return { day, active_ms: cleanMs(existing?.active_ms) + cleanMs(ms), updated_at: now };
+}
+
+/** True when the outbox still holds a `study_days` op (a day's total or a clear not yet on the server). Pure. */
+export function studyPending(ops) {
+  return (ops || []).some((op) => op && op.table === 'study_days');
+}
+
+/**
+ * Merge the server's `study_days` rows into the local Map (day → row) with
+ * the additive-max rule: per day the larger active_ms stands. While a
+ * study_days op is still in the outbox nothing is merged (`skipped: true`) — a
+ * pull overlapping a clear must not bring the cleared days back; with an
+ * empty outbox days the server no longer has are dropped too. Pure.
+ */
+export function mergeStudyDays(localMap, remoteRows, ops) {
+  if (studyPending(ops)) return { merged: localMap, changed: [], removed: 0, skipped: true };
+  const merged = new Map(localMap);
+  const changed = [];
+  for (const row of remoteRows || []) {
+    if (!row || !isDayKey(row.day)) continue;
+    const cur = merged.get(row.day);
+    const remote = cleanMs(row.active_ms);
+    if (!cur || remote > cleanMs(cur.active_ms)) {
+      merged.set(row.day, { day: row.day, active_ms: remote, updated_at: row.updated_at ?? cur?.updated_at ?? null });
+      changed.push(row.day);
+    }
+  }
+  let removed = 0;
+  if (!(ops || []).length) {
+    const remoteDays = new Set((remoteRows || []).map((r) => r?.day));
+    for (const k of [...merged.keys()]) if (!remoteDays.has(k)) { merged.delete(k); removed += 1; }
+  }
+  return { merged, changed, removed, skipped: false };
+}
+
+/** Public shape for store.getStudyDays(): Map day → active_ms (integer ms). Pure. */
+export function studyDaysView(map) {
+  const out = new Map();
+  for (const [day, row] of map || []) if (isDayKey(day)) out.set(day, cleanMs(row?.active_ms ?? row));
+  return out;
+}
+
 export const RATE_MIN = 0.5;
 export const RATE_MAX = 1.2;
 /** The playback speeds offered (one decimal, 0.5–1.2). */

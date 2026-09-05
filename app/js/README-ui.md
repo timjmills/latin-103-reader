@@ -441,6 +441,66 @@ Switching views keeps the sentence: passage → sentence opens the current
 (scroll-tracked) sentence; sentence → passage `scrollToCurrent()` puts it on
 the same top-third line.
 
+## Study log and time left (CONTRACT.md "Study log")
+
+Store: `store.getStudyDays()` → `Map<day, active_ms>` (day = local
+`YYYY-MM-DD`, `localDay()` in `sync.js`); `store.addActiveTime(day, ms)`;
+`store.clearStudyLog()`. `store.js` keeps table `study_days` in IndexedDB
+(`study_days` store, DB version 4), local-first through the outbox — one
+`study_days:upsert` per day key (the day's running total, so a burst of
+flushes coalesces to the latest figure) and one `study_days:delete` for a
+clear — with the **additive-max** rule on both sides: `sendOp()` reads the
+server's total and upserts `max(server, local)`; `mergeStudyDays()` (pure,
+`tests/study.test.mjs`) keeps the larger figure per day on a pull and, like
+progress, merges nothing while a study op is still in the outbox (a pull
+overlapping a clear must not bring the days back). A realtime subscription
+on `study_days` → `onChange('study')`. The fixture store keeps
+`localStorage['l103.study']`. A library without the table (seeded before
+migration 0010) logs a warning and goes without.
+
+Active time (`main.js`): a 15 s ticker (`ACTIVE_TICK_MS`) banks its length
+while the tab is visible and there was pointer / key / wheel / scroll / touch
+activity within the last 60 s (`ACTIVE_IDLE_MS`; `bump()` on capture) or
+audio is playing — `activeSlice()` in `settings.js`, pure; a throttled tick
+banks at most two ticks. The bank is flushed every minute
+(`ACTIVE_FLUSH_MS`), at once on `visibilitychange` → hidden and `pagehide`,
+and before a day boundary (to the day that is ending); coming back to a
+hidden tab resets the tick clock, so time away is never banked. Each flush
+re-reads the map and repaints.
+
+Stats (`settings.js`, pure): `sentencesPerDay()` / `sentencesPerDayByWeek()`
+group the progress map's `read_at` by local day; `studyLog({ progress,
+studyDays, now })` → `{ today, days (the last 14, oldest first, each
+{ day, ms, sentences, pace }), weeks ({ n, ms, sentences, pace }), pace,
+overall }`. A week's minutes are each day's minutes **shared out by the
+sentences read in each week that day** (the table has no per-week column; a
+day with time but no sentences is counted in no week) — the dialog says so.
+`paceOf()`: sentences per active hour over the last 7 active days
+(`basis: 'recent'`), else over every active day (`'overall'`), else
+`ROUGH_PACE` = 60/h (`'rough'`); a pace needs `PACE_MIN_MS` (2 min) of time
+behind it. `timeLeftText(unread, pace)` → "about 45 min left" (5-minute
+steps from a quarter-hour up, halves of an hour from one hour up: "about 1½
+h left"), "finished", "(rough estimate)" appended on the rough pace.
+
+UI: `#progress` gains `[data-progress-left]` ("42 of 93 read · about 45 min
+left · Continue →"; hidden when finished); every weeks-menu row with a
+library week gets `.weeks__left` ("· about 2 h left") after its count.
+`paintProgress()` recomputes `stats` on every progress or study change
+(`timeLeftFor()` in `main.js`). Settings → Progress → **Study log**
+(`initStudyLog()` in `settings.js`, `[data-study]` in index.html): today's
+line (minutes · sentences · pace), an inline SVG sparkline of minutes per
+day over the last 14 (`sparklinePath()`, pure; one series in `--ink-3`, the
+last point in `--rubric` with a 2 px surface ring — tokens, so both themes),
+the active days of those 14 as a table (day · min · sentences · pace, newest
+first), the per-week rows, the pace line naming its basis, the apportioning
+hint, and **Clear study log** (native `confirm()`; the line is shown inside
+the dialog). Reset progress leaves the study log alone and the clear leaves
+progress and lookups alone.
+
+Escape: `main.js`'s keydown returns early while the Settings or weeks
+dialog is open, so Escape there is the dialog's own cancel and never
+`panel.escape()` behind the backdrop.
+
 ## Side panel: the sentence stack (tablet + desktop)
 
 From 768px the `<aside id="panel">` no longer shows one entry at a time: it
@@ -449,33 +509,53 @@ holds a **stack for the current sentence** (`wordpanel.js`, `panels.css`
 and notes, unchanged.
 
 - Rows, top to bottom: the sentence's † grammar note (if any) collapsed to
-  its first line; each grammar-focus highlight tapped in the sentence (the
-  glowed text + its label); every word looked up in the sentence (`form —
-  meaning`), in tap order, newest last. `stackWith()` / `stackWithout()` /
-  `rowKey()` (pure, `tests/ui.stack.test.mjs`) keep that order; `sentenceTitle()`
-  names the sentence in the header ("Pars I · line 4, sentence 2", or the id
-  tail for block ids).
+  its first line; every grammar-focus highlight in the sentence (the glowed
+  text + its label — seeded from `getHighlights`, not only the tapped ones);
+  every word looked up in the sentence and not yet learned (`form —
+  meaning`, seeded from the lookups map, `seedStack()`), all in **sentence
+  order** — `stackWith()` sorts by kind, then by the row's character offset
+  (`pos` / the highlight's `start`); rows without a position go last, in tap
+  order. `stackWithout()` / `rowKey()` (pure, `tests/ui.stack.test.mjs`)
+  keep that order; `sentenceTitle()` names the sentence in the header
+  ("Pars I · line 4, sentence 2", or the id tail for block ids).
 - Rows are buttons (`.stack__btn`, `aria-expanded`, `aria-controls`) that
   expand in place to the full content — words: enclitic, entry switch, parse,
   dictionary form + category, senses, usage, gloss terms, the paradigm
   disclosure, Learned / Unlearn / Forget; notes: the Latin, the note, "In
-  plain words"; highlights: the focus note + "In plain words". One row is
-  open at a time. A tapped word is added **collapsed**, scrolled into view and
-  focused — it stays quiet until pressed. The † opens its row (the one tap
-  that does). Keys: Enter / Space toggle, ArrowUp / ArrowDown (Home / End)
-  move between rows (stopped in the aside so sentence view's arrows never
-  also fire), Escape → `panel.escape()`: a temporary view goes back to the
-  stack, then the open row collapses, then the panel closes and focus returns
-  to the text (`focusText()`: the tapped element, or the same word after a
-  sentence-view re-render).
+  plain words"; highlights: the focus note + "In plain words". Rows expand
+  **independently** — several may be open at once (`expanded`, a Set of row
+  keys) and none folds on its own; another sentence's stack starts collapsed.
+  A tapped word is added **collapsed**, scrolled into view and focused — it
+  stays quiet until pressed. The † opens its row (the one tap that does; a
+  second tap on the same † folds it). Keys: Enter / Space toggle, ArrowUp /
+  ArrowDown (Home / End) move between rows (stopped in the aside so sentence
+  view's arrows never also fire), Escape → `panel.escape()`: a temporary view
+  goes back to the stack, then every open row collapses, then the panel
+  closes and focus returns to the text (`focusText()`: the tapped element, or
+  the same word after a sentence-view re-render).
 - The stack belongs to the current sentence. A word or † in another sentence
-  (passage view) switches it; sentence view's `reader.on('navigate')` →
-  `panel.showSentence(unitId)` switches an *open* panel (a closed one stays
-  closed). Every sentence's rows are kept for the session (`stacks`, keyed by
-  unit id), so coming back restores them; a sentence with a note starts with
-  the note row (`getUnit` from `main.js`). Sentence view's "Words you looked
-  up in this sentence" list is hidden from 768px (reader.css) — the stack
-  replaces it; phones keep it.
+  (passage view) switches it. `panel.showSentence(unitId, { open })` follows
+  the reader's `navigate` events: in passage view (`open: false`) only an
+  *open* panel switches; in sentence view (`open: true`, from `main.js`'s
+  `navigate` handler and `setView('sentence')`) the panel is **always open on
+  the current sentence** — except after the learner closed it themselves (×
+  or the last Escape: `userClosed` in `wordpanel.js`, QA-4 m3). That close
+  holds until they open something again (a word, a †, a section summary);
+  `panel.close({ user: false })` (a week change in `main.js`) does not set
+  it. Leaving sentence view for passage view, `panel.closeIfEmpty()` closes
+  an aside whose stack has nothing in it, so a tablet's Sentence → Passage
+  round trip never leaves an empty panel open (which would narrow the prose
+  and drop the margin gutter). Every sentence's rows are kept for the session
+  (`stacks`, keyed by unit id), so coming back restores them; a sentence with
+  a note starts with the note row (`getUnit` from `main.js`). Sentence view's
+  "Words you looked up in this sentence" list is hidden from 768px
+  (reader.css) — the stack replaces it; phones keep it.
+- Paradigm tables in the panel (`renderParadigm`): `.pt` at `--ui-sm` from
+  768px; a section with three or more value columns (adjectives: m / f / n)
+  gets `.pt--wide` — `--ui-xs`, the tablet's tighter cell padding and a
+  row-label column that may wrap — so it fits the panel's default width
+  without the sideways scroll (QA-4 m4). `.pt__scroll` stays as the last
+  resort.
 - "Section summary" (sentence view) still opens in the panel, as a temporary
   view with a "Back to the sentence" control (`[data-back]`) when a stack
   exists; a word tapped inside it joins that sentence's stack as before.

@@ -1,8 +1,8 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader, firstUnread, queueReads, playbackRead } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
-import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText } from './settings.js';
-import { clampRate, normaliseLastPosition, progressByWeek } from './sync.js';
+import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice } from './settings.js';
+import { clampRate, normaliseLastPosition, progressByWeek, localDay } from './sync.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const LS_WEEK = 'l103.week';
@@ -12,6 +12,9 @@ const READ_FLUSH_MS = 500;       // reader `read` events are batched this long b
 const POSITION_SAVE_MS = 1000;   // settings.lastPosition is written this long after the current sentence last changed
 const PLAYED_MIN_MS = 1500;      // playback counts a sentence as read only after this much actual playing (or 80% of a shorter one) — see playbackRead()
 const PICTURE_REFRESH_MS = 5 * 60 * 1000;   // how often a long session asks the store for the week's picture URLs (re-signed past 50 min, swapped in place)
+const ACTIVE_TICK_MS = 15 * 1000;     // the study-log ticker (CONTRACT.md "Study log"): each tick banks its length while the learner is active
+const ACTIVE_IDLE_MS = 60 * 1000;     // …"active" = pointer / key / scroll / touch within this long, or audio playing
+const ACTIVE_FLUSH_MS = 60 * 1000;    // banked time is written to the store this often (and at once when the tab hides)
 
 async function pickStore() {
   const params = new URLSearchParams(location.search);
@@ -58,7 +61,7 @@ async function boot() {
   mirror(settings);
   function mirror(s) { try { localStorage.setItem('latin103.settings', JSON.stringify(s)); } catch { /* ignore */ } }
 
-  const remote = { lookups: false, settings: false, alignments: false, weeks: false, progress: false };
+  const remote = { lookups: false, settings: false, alignments: false, weeks: false, progress: false, study: false };
   let onRemoteChange = (kind) => { remote[kind] = true; };   // buffered until the UI exists
   store.onChange?.((kind) => onRemoteChange(kind));
 
@@ -79,6 +82,10 @@ async function boot() {
   // Reading progress (CONTRACT.md): unit id → read_at. Kept apart from the lookups; never reset with them.
   const hasProgress = typeof store.getProgress === 'function';
   let progress = hasProgress ? await store.getProgress() : new Map();
+  // Study log (CONTRACT.md): active ms per local day. Feeds the time-left estimates and Settings → Progress.
+  const hasStudy = hasProgress && typeof store.getStudyDays === 'function';
+  let studyDays = hasStudy ? await store.getStudyDays() : new Map();
+  let stats = null;   // studyLog() over `progress` + `studyDays`, recomputed by paintProgress()
 
   // Short visible status line + the live region (play errors and the like).
   const noticeEl = $('#notice');
@@ -180,6 +187,9 @@ async function boot() {
         bar.append(fill);
         const count = document.createElement('span'); count.className = 'weeks__count'; count.textContent = progressText(read, total);
         prog.append(bar, count);
+        // "· about 2 h left" at the current pace (timeLeftText; "finished ✓" already says the rest).
+        const left = timeLeftFor(read, total);
+        if (left) { const l = document.createElement('span'); l.className = 'weeks__left'; l.textContent = `· ${left}`; prog.append(l); }
         b.append(prog);
       }
       li.append(b);
@@ -448,20 +458,69 @@ async function boot() {
   // the one repaint after a batch, a reset or a change from another device.
   const progressEl = $('#progress');
   const progressTextEl = $('[data-progress-text]');
+  const progressLeft = $('[data-progress-left]');
+  const progressLeftText = $('[data-progress-left-text]');
   const progressContinue = $('[data-progress-continue]');
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const readInWeek = () => units.reduce((n, u) => n + (progress.has(u.id) ? 1 : 0), 0);
+  // "about 45 min left" for a week: unread ÷ pace (CONTRACT.md "Estimated time left"); '' when finished or without the study log.
+  const timeLeftFor = (read, total) => (hasStudy && total > 0 && read < total ? timeLeftText(total - read, (stats ??= studyLog({ progress, studyDays })).pace) : '');
   function paintProgress() {
     reader.setProgress?.(progress);
+    stats = hasStudy ? studyLog({ progress, studyDays }) : null;
     if (!progressEl) return;
     progressEl.hidden = !hasProgress || !units.length;
     if (progressEl.hidden) return;
     const read = readInWeek();
     progressEl.dataset.state = read === 0 ? 'none' : read >= units.length ? 'done' : 'part';
     progressTextEl.textContent = cap(progressText(read, units.length, { noun: 'read' }));
+    const left = timeLeftFor(read, units.length);
+    if (progressLeft) { progressLeft.hidden = !left; if (progressLeftText) progressLeftText.textContent = left; }
     progressContinue.hidden = read >= units.length;
     if (weeksDialog.open) renderWeeksMenu(weekN);
     settingsUI?.refreshProgress?.();
+  }
+
+  /* ------------------------------------------------- active time (study log) */
+  // A 15 s ticker banks its length while the tab is visible and the learner
+  // was active within the last minute (pointer / keys / scroll / touch) or
+  // audio is playing (activeSlice() in settings.js, pure). The bank is
+  // written every minute — store.addActiveTime(day, ms), day = the local
+  // date — and at once when the tab hides or the page is left; a day change
+  // mid-session flushes to the day that is ending first.
+  let lastActivity = Date.now();
+  let lastTick = Date.now();
+  let lastFlush = Date.now();
+  let banked = { day: localDay(), ms: 0 };
+  const bump = () => { lastActivity = Date.now(); };
+  if (hasStudy) {
+    for (const ev of ['pointerdown', 'pointermove', 'keydown', 'wheel', 'scroll', 'touchstart']) window.addEventListener(ev, bump, { passive: true, capture: true });
+    setInterval(tickActive, ACTIVE_TICK_MS);
+    // The tab is hidden by the time the event fires; the stretch since the
+    // last tick was on screen, so the closing tick counts it as visible.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') { tickActive({ closing: true }); flushActive(); }
+      else { lastTick = Date.now(); }   // time away is never banked
+    });
+    window.addEventListener('pagehide', () => { tickActive({ closing: true }); flushActive(); });
+  }
+  function tickActive({ closing = false } = {}) {
+    const now = Date.now();
+    const dt = now - lastTick;
+    lastTick = now;
+    const day = localDay(new Date(now));
+    if (day !== banked.day) { flushActive(); banked = { day, ms: 0 }; }
+    banked.ms += activeSlice({ visible: closing || document.visibilityState === 'visible', now, lastActivity, playing: !!audio?.status?.().playing, dt, idleMs: ACTIVE_IDLE_MS, tickMs: ACTIVE_TICK_MS });
+    if (now - lastFlush >= ACTIVE_FLUSH_MS) flushActive();
+  }
+  async function flushActive() {
+    lastFlush = Date.now();
+    const { day, ms } = banked;
+    banked = { day, ms: 0 };
+    if (!hasStudy || ms <= 0) return;
+    try { await store.addActiveTime(day, Math.round(ms)); } catch (e) { console.warn('[study] not saved', e?.message || e); return; }
+    studyDays = await store.getStudyDays();
+    paintProgress();
   }
   // Continue: the first sentence not yet read, else the last position, else the first sentence.
   progressContinue?.addEventListener('click', () => {
@@ -559,7 +618,7 @@ async function boot() {
     focusBtn.closest('button').setAttribute('aria-label', week?.focus?.label ? `Grammar focus: ${week.focus.label}` : 'Grammar focus');
     // One render: audio availability, lookups, pictures and the reading progress ride along with the week.
     reader.setWeek(week, units, highlights, { audio: playable(info), lookups, pictures, progress });
-    panel.close();
+    panel.close({ user: false });   // a week change, not the learner's choice: sentence view may open the stack again
     paintProgress();
     settingsUI?.refreshAudio();
     settingsUI?.render(settings);   // the Grammar focus switch names this week's focus
@@ -571,8 +630,11 @@ async function boot() {
     reader.setView(v);
     viewBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
     try { localStorage.setItem('l103.view', v); } catch { /* ignore */ }
-    // Entering sentence view: the panel shows that sentence's stack straight away.
+    // Entering sentence view: the panel shows that sentence's stack straight away
+    // (unless the learner closed it, wordpanel.js). Leaving it: a stack with
+    // nothing in it closes again, so a tablet gets its margin gutter back.
     if (v === 'sentence') { const cur = reader.getCurrentUnit?.(); if (cur) panel.showSentence(cur.id, { open: true }); }
+    else panel.closeIfEmpty?.();
   }
   viewBtns.forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
 
@@ -824,6 +886,17 @@ async function boot() {
         paintProgress();
         return 'All reading progress reset. Looked-up words are untouched.';
       },
+      // The study log (CONTRACT.md): the figures the dialog draws, and its own clear — reading progress stays.
+      study: hasStudy ? {
+        log: () => stats ?? (stats = studyLog({ progress, studyDays })),
+        async clear() {
+          banked = { day: localDay(), ms: 0 };
+          await store.clearStudyLog();
+          studyDays = await store.getStudyDays();
+          paintProgress();
+          return 'Study log cleared. Reading progress and looked-up words are untouched.';
+        },
+      } : null,
     } : null,
     onSignOut: async () => { try { await auth.signOut(); } finally { if (fixture) location.reload(); } },
   });
@@ -841,18 +914,22 @@ async function boot() {
     }
     if (kind === 'alignments') { audio?.invalidate?.(weekN); refreshAudioAvailability(); }
     if (kind === 'progress' && hasProgress) { progress = await store.getProgress(); paintProgress(); }
+    if (kind === 'study' && hasStudy) { studyDays = await store.getStudyDays(); paintProgress(); }
   };
   // Anything that arrived during boot (settings/lookups are re-read below via loadWeek + the synced read above).
   if (remote.lookups) onRemoteChange('lookups');
   if (remote.progress) onRemoteChange('progress');
+  if (remote.study) onRemoteChange('study');
 
   // Keyboard
   document.addEventListener('keydown', (e) => {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     const tag = e.target.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+    // A modal dialog (Settings, the weeks menu) owns Escape: its own cancel closes it, the panel stack behind it is left alone.
+    if (settingsDialog.open || weeksDialog.open) return;
     if (e.key === 'Escape') { if (panel.isOpen()) { e.preventDefault(); panel.escape(); } return; }   // stack: back / collapse the open row / close
-    if ($('#popup').open || settingsDialog.open || weeksDialog.open) return;
+    if ($('#popup').open) return;
     if (audio?.status?.().mode === 'align') return;   // the alignment overlay owns the keyboard (it also stops propagation)
     if (reader.getView() === 'sentence') {
       if (e.key === 'j' || e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); reader.next(); return; }
