@@ -1,9 +1,9 @@
 {
   "skill": "imperfect-irregular",
   "core": [
-    { "type": "p", "text": "Three irregular verbs build their imperfect a little differently: **the imperfect of the irregular verbs (eram = I was, poteram = I could, ibam = I was going)**. *esse*: *eram, erās, erat, erāmus, erātis, erant* — the stem is *era-*, the endings the usual ones. *posse* adds *pot-* in front: *poteram, poterās, poterat, poterāmus, poterātis, poterant*. *īre* uses its stem *ī-* with *-ba-* and no *e*: *ībam, ībās, ībat, ībāmus, ībātis, ībant*. The rest — *volō, nōlō, mālō, ferō* — are regular here: *volēbat, ferēbat*. Latin name: imperfectum verbōrum anomalōrum." },
+    { "type": "p", "text": "Three irregular verbs build their imperfect a little differently: **the imperfect of the irregular verbs (eram = I was, poteram = I could, ibam = I was going)**. *esse*: *eram, erās, erat, erāmus, erātis, erant* — the stem is *era-*, the endings the usual ones. *posse* adds *pot-* in front: *poteram, poterās, poterat, poterāmus, poterātis, poterant*. *īre* uses its stem *ī-* with *-ba-* and no *e*: *ībam, ībās, ībat, ībāmus, ībātis, ībant*. Latin name: imperfectum verbōrum anomalōrum." },
     { "type": "english", "text": "*Was* and *were* are the English imperfect of *be*: *he was a boy*. *Could* is the past of *can*; *was going* the past of *goes*." },
-    { "type": "rule", "text": "eram / poteram with the -m, -s, -t endings; ībam like a 1st-conjugation imperfect; the other irregulars are regular (-ēbat)." },
+    { "type": "rule", "text": "eram / poteram with the -m, -s, -t endings; ībam = stem ī- + -ba- + endings, like amā-ba-m; the other irregulars are regular (-ēbat)." },
     { "type": "paradigm", "key": "sum", "highlight": { "tense": "impf", "mood": "ind" } },
     { "type": "paradigm", "key": "possum", "highlight": { "tense": "impf", "mood": "ind" } },
     { "type": "paradigm", "key": "eo", "highlight": { "tense": "impf", "mood": "ind" } },
@@ -11,8 +11,8 @@
     { "type": "confusion", "with": "irregular-verbs-present", "text": "*est* — he is; *erat* — he was. *potest* — he can; *poterat* — he could. *it* — he goes; *ībat* — he was going. The present shifts its stem (*su- / es-*, *e- / ī-*); the imperfect settles on one stem (*era-*, *ī-*) and adds the past endings. If you see *era-* or *-ba-*, you are in the past." }
   ],
   "more": [
-    { "type": "p", "text": "*eram* also builds the pluperfect (the 'had done' tense): *amāverat* is *amāv-* + *erat*. So *era-* inside a longer verb means *had*. Compounds of *esse* follow *eram* — *aberat* (was away), *aderant* (were present) — and compounds of *īre* follow *ībam*: *redībat* (was going back), *exībant*." },
-    { "type": "p", "text": "Your notes: *su / es* uses the special stem *era-* with regular endings (*eram, erās, erat, erāmus, erātis, erant*); *possum* and all other compounds of *esse* add a prefix to the same stem (*pot-era-m*); *e / i* uses the stem *i* and the marker without its *e* (*ībam, ībās, ībat*); the other irregular verbs are regular in the imperfect, *volō* keeping the stem *vol-* (*volēbat, mālēbāmus, ferēbātur, nōlēbam*)." },
+    { "type": "p", "text": "The rest — *volō, nōlō, mālō, ferō* — are regular here: *volēbat, ferēbat*. *eram* also builds the pluperfect (the 'had done' tense): *amāverat* is *amāv-* + *erat*. So *era-* inside a longer verb means *had*. Compounds of *esse* follow *eram* — *aberat* (was away), *aderant* (were present) — and compounds of *īre* follow *ībam*: *redībat* (was going back), *exībant*." },
+    { "type": "p", "text": "The learner's notes (week 19): *su / es* uses the special stem *era-* with regular endings (*eram, erās, erat, erāmus, erātis, erant*); *possum* and all other compounds of *esse* add a prefix to the same stem (*pot-era-m*); *e / i* uses the stem *i* and the marker without its *e* (*ībam, ībās, ībat*); the other irregular verbs are regular in the imperfect, *volō* keeping the stem *vol-* (*volēbat, mālēbāmus, ferēbātur, nōlēbam*)." },
     { "type": "p", "text": "Ørberg (chapter XIX): *esse: eram, erāmus, erās, erātis, erat, erant*; *ante trēs hōrās nox erat*; *Iūlius tam improbus erat quam Mārcus nunc est*. A&G §170, §198, §203 give the full tables; *ferō* has *ferēbam*, and *fīō* (become) *fīēbam*." }
   ],
   "sources": ["notes p67", "Ørberg cap. XIX Grammatica Latina", "A&G §170, §198, §203"]

@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "The subjunctive can also soften a statement into a possibility: **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē adiuvem* — I could help you; *aliquis dīcat* — someone might say; *fortasse veniam* — I may come. Its commonest use is polite: *velim* — I would like; *nōlim* — I would rather not; *mālim* — I would prefer. Latin name: *coniunctivus potentialis*."
+      "text": "The subjunctive can also soften a statement into a possibility: **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē adiuvem* — I could help you; *aliquis dīcat* — someone might say; *fortasse veniam* — I may come. Its commonest use is polite: *velim* — I would like; *nōlim* — I would rather not; *mālim* — I would prefer. Latin name: *coniūnctīvus potentiālis*."
     },
     {
       "type": "english",
@@ -26,7 +26,7 @@
       "units": [
         "w11:b15.1",
         "w14:b13.6",
-        "w12:b16.4"
+        "w10:arachne:b5.2"
       ],
       "invented": [
         {

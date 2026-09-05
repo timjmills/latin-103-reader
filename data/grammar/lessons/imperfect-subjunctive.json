@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "Every clause that needs the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) after a past main verb uses **the imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive)**. Making it is the easiest job in Latin: take the infinitive (the plain 'to' form: *venīre*, to come) and add the personal endings — *venīre-m, venīrē-s, venīre-t, venīrē-mus, venīrē-tis, venīre-nt*; passive *-r, -ris, -tur, -mur, -minī, -ntur*. Latin name: *coniunctivus imperfecti*."
+      "text": "Every clause that needs the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) after a past main verb uses **the imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive)**. Making it is the easiest job in Latin: take the infinitive (the 'to' form), *venīre* (to come), and add the personal endings — *venīre-m, venīrē-s, venīre-t, venīrē-mus, venīrē-tis, venīre-nt*; passive *-r, -ris, -tur, -mur, -minī, -ntur*. Latin name: *coniūnctīvus imperfectī*."
     },
     {
       "type": "english",
@@ -63,7 +63,7 @@
     },
     {
       "type": "p",
-      "text": "The learner's notes describe the form as 1st stem + -(e)re- + ending, and note that in practice it always looks like the present active infinitive with an ending — even for deponent verbs (looks passive, means active), which have no active infinitive: *lābī* (to slip) → *lāberētur*. Irregular verbs double their consonant in the infinitive and the imperfect subjunctive follows: *es-se → esset, pos-se → posset, vel-le → vellet, fer-re → ferret, māl-le → māllet, nōl-le → nōllet*."
+      "text": "The learner's notes describe the form as 1st stem + -(e)re- + ending, and note that in practice it always looks like the present active infinitive with an ending — even for a deponent verb (passive-looking endings, active meaning: loquitur = he speaks), which has no active infinitive: *lābī* (to slip) → *lāberētur*. Irregular verbs double their consonant in the infinitive and the imperfect subjunctive follows: *es-se → esset, pos-se → posset, vel-le → vellet, fer-re → ferret, māl-le → māllet, nōl-le → nōllet*."
     },
     {
       "type": "p",

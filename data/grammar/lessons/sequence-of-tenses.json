@@ -3,15 +3,15 @@
   "core": [
     {
       "type": "p",
-      "text": "Which tense of the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) goes inside an *ut*, *nē*, *cum* or question clause depends on the main verb. That pairing is **the sequence of tenses (a present main verb takes the present subjunctive, a past one the imperfect)**: *imperat ut veniās* (he orders you to come) but *imperāvit ut venīrēs* (he ordered you to come). Latin name: *consecutio temporum*."
+      "text": "Which tense of the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) goes inside an *ut*, *nē*, *cum* or question clause depends on the main verb. That pairing is **the sequence of tenses (a present main verb takes the present subjunctive, a past one the imperfect)**: *imperat ut veniās* (he orders you to come) but *imperāvit ut venīrēs* (he ordered you to come). Latin name: *cōnsecūtiō temporum*."
     },
     {
       "type": "english",
-      "text": "English shifts too: he says he *is* coming; he said he *was* coming. The tense of the report follows the tense of the main verb."
+      "text": "English shifts too: he says he *is* coming; he said he *was* coming."
     },
     {
       "type": "rule",
-      "text": "Main verb present or future → present subjunctive; main verb imperfect, perfect or pluperfect → imperfect subjunctive. The same rule covers purpose, result, indirect command, cum clauses and indirect questions."
+      "text": "Main verb present or future → the present subjunctive (the 'may / let' form: veniat = let him come, may he come); main verb imperfect, perfect or pluperfect → the imperfect subjunctive. The same rule covers purpose, result, indirect command, cum clauses and indirect questions."
     },
     {
       "type": "paradigm",
@@ -43,7 +43,7 @@
     {
       "type": "confusion",
       "with": "imperfect-subjunctive",
-      "text": "The imperfect subjunctive is not 'past meaning' but 'past setting': in *vēnit ut vidēret* the seeing is still ahead from his point of view. Choose the tense by the main verb, then translate the clause naturally ('to see', 'to stay')."
+      "text": "The imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive) is not 'past meaning' but 'past setting': in *vēnit ut vidēret* the seeing is still ahead from his point of view. Choose the tense by the main verb, then translate the clause naturally ('to see', 'to stay')."
     }
   ],
   "more": [

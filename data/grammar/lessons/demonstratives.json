@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "To say *this* one or *that* one, Latin uses **the pointing words hic ('this'), ille ('that'), is ('that / the one we mean')**, *prōnōmina dēmōnstrātīva*. *Hic* points at what is near or was just mentioned, *ille* at what is far off, *is* at the one already known: *hic ānulus* = this ring, *illa taberna* = that shop, *is servus* = that slave (the one we spoke of). They stand with a noun and match it in gender, number and case."
+      "text": "To say *this* one or *that* one, Latin uses **the pointing words hic ('this'), ille ('that'), is ('that / the one we mean')**, *prōnōmina dēmōnstrātīva*. *Hic* points at what is near or was just mentioned, *ille* at what is far off, *is* at the one already known: *hic ānulus* = this ring, *illa taberna* = that shop, *is servus* = that slave (the one we spoke of)."
     },
     {
       "type": "english",
@@ -11,7 +11,7 @@
     },
     {
       "type": "rule",
-      "text": "hic haec hoc = this; ille illa illud = that; is ea id = the one meant. All three have an odd genitive in -ius and dative in -ī, whatever the gender."
+      "text": "hic haec hoc = this; ille illa illud = that; is ea id = the one meant. All three share an odd genitive in -ius (eius, huius, illīus) and one dative form for every gender (eī, huic, illī)."
     },
     {
       "type": "paradigm",
@@ -46,7 +46,7 @@
   "more": [
     {
       "type": "p",
-      "text": "From the learner's notes (week 8): the near demonstrative *hic, haec, hoc*, the far *ille, illa, illud*, and *is, ea, id* as distance-neutral, 'the one you know about' (*Id oppidum Bethlehem est*). All five demonstratives — *hic*, *ille*, *is*, *iste*, *ipse* — follow the -ius / -ī pattern of *alius*: genitive singular -ius and dative singular -ī for every gender, neuter singular sometimes -ud instead of -um. *Ille* follows it cleanly (*ille*, *illud*, *illīus*, *illī*). *Is* has an odd nominative (*is*, *id*) and a stem that switches between e- and i- (*eum*, *eius*, *eī*; plural *iī*, *eōrum*, *iīs* or *eīs*). *Hic* hides the pattern under a leftover -c from an old *-ce*: *hunc*, *hanc*, *huius*, *huic*, *hōc*, *hāc*."
+      "text": "From the learner's notes (week 8): a demonstrative stands with a noun and matches it in gender, number and case; the near demonstrative *hic, haec, hoc*, the far *ille, illa, illud*, and *is, ea, id* as distance-neutral, 'the one you know about' (*Id oppidum Bethlehem est*). All five demonstratives — *hic*, *ille*, *is*, *iste*, *ipse* — follow the -ius / -ī pattern of *alius*: genitive singular -ius and dative singular -ī for every gender, neuter singular sometimes -ud instead of -um. *Ille* follows it cleanly (*ille*, *illud*, *illīus*, *illī*). *Is* has an odd nominative (*is*, *id*) and a stem that switches between e- and i- (*eum*, *eius*, *eī*; plural *iī*, *eōrum*, *iīs* or *eīs*). *Hic* hides the pattern under a leftover -c from an old *-ce*: *hunc*, *hanc*, *huius*, *huic*, *hōc*, *hāc*."
     },
     {
       "type": "p",

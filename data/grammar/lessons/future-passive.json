@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "To say that something *will be done* to someone, Latin uses **the future passive (the 'will be done' form)**. It is the future you already know (*laudābit* — he will praise) with the passive person endings on the end instead of the active ones: *laudābitur* — he will be praised. Deponents (verbs that look passive but mean active) use these same endings: *sequētur* = he will follow. Latin name: *futurum indicativi passivi*."
+      "text": "To say that something *will be done* to someone, Latin uses **the future passive (the 'will be done' form)**. It is the future you already know (*laudābit* — he will praise) with the passive person endings on the end instead of the active ones: *laudābitur* — he will be praised. A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) uses these same endings: *sequētur* = he will follow. Latin name: *futūrum indicātīvī passīvī*."
     },
     {
       "type": "english",
@@ -25,7 +25,7 @@
     {
       "type": "examples",
       "units": [
-        "r20:36.1",
+        "r20:148.2",
         "r20:28.1",
         "r23:77.1",
         "r23:108.1"
@@ -41,7 +41,7 @@
     {
       "type": "confusion",
       "with": "present-subjunctive",
-      "text": "In the third and fourth conjugations the future passive and **the present subjunctive (the 'may / let' form: veniat = let him come, may he come)** differ by one vowel: *pōnētur* (will be put) has -ē-, *pōnātur* (let it be put) has -ā-. In the first conjugation it is the other way round: *laudābitur* is future, *laudētur* is subjunctive."
+      "text": "In the third and fourth conjugations the future passive and **the present subjunctive (the 'may / let' form: veniat = let him come, may he come)** differ by one vowel: *pōnētur* (will be put) has -ē-, *pōnātur* (let it be put) has -ā-. In the first conjugation the pair is *laudābitur* (future, with *-bi-*) against *laudētur* (subjunctive, with *-ē-*)."
     }
   ],
   "more": [

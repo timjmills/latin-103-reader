@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "A dictionary lists a Latin verb by **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**: *pulsō, pulsāre, pulsāvī, pulsātum*. Everything the verb can do is built on three stems hidden in parts two to four. The infinitive gives the present stem (*pulsā-*), for present, imperfect and future. The third part gives the perfect stem (*pulsāv-*), for 'did / had done'. The fourth gives the participle stem (*pulsāt-*), for 'having been done' and the passive past. Latin name: *partes principales verbi*."
+      "text": "A dictionary lists a Latin verb by **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**: *pulsō, pulsāre, pulsāvī, pulsātum*. Everything the verb can do is built on three stems hidden in parts two to four. The infinitive gives the present stem (*pulsā-*), for present, imperfect and future. The third part gives the perfect stem (*pulsāv-*), for 'did / had done'. The fourth gives the participle stem (*pulsāt-*), for 'having been done' and the passive past. Latin name: *partēs prīncipālēs verbī*."
     },
     {
       "type": "english",
@@ -47,7 +47,7 @@
     },
     {
       "type": "p",
-      "text": "Deponents have no perfect-active stem, so they show only two parts plus the participle: *loquī, locūtum*; *lābī, lāpsum*. Ørberg lists new verbs at the foot of each chapter exactly this way: *pellere pepulisse pulsum*."
+      "text": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) has no perfect-active stem, so it shows only two parts plus the participle: *loquī, locūtum*; *lābī, lāpsum*. Ørberg lists new verbs at the foot of each chapter exactly this way: *pellere pepulisse pulsum*."
     }
   ],
   "sources": [

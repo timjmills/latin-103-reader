@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "A question can be asked straight (*Quid facit?* what is he doing?) or tucked inside another sentence — **an indirect question (a question folded into a sentence: nescio quid faciat = I don't know what he is doing)**. After a verb of asking, knowing or wondering (*rogat*, *scit*, *mīrātur*), the question word stays (*quis, quid, cūr, ubi, quōmodo, num*) but the verb goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). Latin name: *interrogatio obliqua*."
+      "text": "A question can be asked straight (*Quid facit?* what is he doing?) or tucked inside another sentence — **an indirect question (a question folded into a sentence: nescio quid faciat = I don't know what he is doing)**. After a verb of asking, knowing or wondering (*rogat*, *scit*, *mīrātur*), the question word stays (*quis, quid, cūr, ubi, quōmodo, num*) but the verb goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). Latin name: *interrogātiō oblīqua*."
     },
     {
       "type": "english",
@@ -42,13 +42,13 @@
     {
       "type": "confusion",
       "with": "relative-pronoun",
-      "text": "*quis / quid* asks; *quī / quae / quod* (who, which) points back to a noun and keeps the indicative: *nesciō quid dīcat* (I don't know what he is saying — question) but *audiō id quod dīcit* (I hear what he says — a 'who / which' clause on a noun)."
+      "text": "*quis / quid* asks; *quī / quae / quod* (who, which) points back to a noun and keeps the indicative (the plain statement form): *nesciō quid dīcat* (I don't know what he is saying — question) but *audiō id quod dīcit* (I hear what he says — a 'who / which' clause on a noun)."
     }
   ],
   "more": [
     {
       "type": "p",
-      "text": "Also easy to confuse: a reported statement uses the accusative + infinitive (the 'says that …' pattern) — *dīcit eum venīre*, he says that he is coming; a reported question uses a question word + subjunctive — *rogat num veniat*, he asks whether he is coming. 'That' → infinitive; 'whether / who / why' → subjunctive."
+      "text": "Also easy to confuse: a reported statement uses the accusative + infinitive (the 'that …' clause after says / sees / thinks) — *dīcit eum venīre*, he says that he is coming; a reported question uses a question word + subjunctive — *rogat num veniat*, he asks whether he is coming. 'That' → infinitive; 'whether / who / why' → subjunctive."
     },
     {
       "type": "p",

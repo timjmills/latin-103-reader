@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "To read verse aloud you need **prosody (which syllables count long or short, and when a final vowel is swallowed by the next word)**. (1) A syllable is long if its vowel is long (*ā*) or a diphthong (*ae, au, oe, eu*). (2) It is long 'by position' if two consonants follow, even across words; *x* counts as two, *h* as none. (3) Elision: a final vowel, or vowel + *m*, is dropped before a vowel or *h*: *Ōd(ī) et amō*; *Lesbi(a) atqu(e) amēmus*. Latin name: *prosodia: quantitas syllabarum, elisio*."
+      "text": "To read verse aloud you need **prosody (which syllables count long or short, and when a final vowel is swallowed by the next word)**. (1) A syllable is long if its vowel is long (*ā*) or a diphthong (*ae, au, oe, eu*). (2) It is long 'by position' if two consonants follow, even across words; *x* counts as two, *h* as none. (3) Elision: a final vowel, or vowel + *m*, is dropped before a vowel or *h*: *Ōd(ī) et amō*; *Lesbi(a) atqu(e) amēmus*. Latin name: *prosōdia: quantitās syllabārum, ēlīsiō*."
     },
     {
       "type": "english",
@@ -23,8 +23,8 @@
       ],
       "invented": [
         {
-          "la": "Bella puella venit, sed nēmō vīdit amantem.",
-          "en": "A pretty girl came, but no one saw her lover. (a made-up hexameter: – ⏑ ⏑ | – ⏑ ⏑ | – – | – – | – ⏑ ⏑ | – –)",
+          "la": "Bella puella redit, sed nēmō vīdit amantem.",
+          "en": "A pretty girl comes back, but no one has seen her lover. (a made-up hexameter: – ⏑ ⏑ | – ⏑ ⏑ | – – | – – | – ⏑ ⏑ | – –)",
           "focus": "vīdit"
         }
       ]
@@ -42,7 +42,7 @@
   "more": [
     {
       "type": "p",
-      "text": "Martial's couplet (Week 14) scanned: *Nōn amo | tē, Sabi|dī, nec | possum | dīcere | quārē* and *Hoc tan|tum pos|sum || dīcere | nōn amo | tē*: *amō* twice with its *-ō* counted short, *nec* long before *p*, *Hoc* long before *t*, *tum* long before *p*. Elision at work in Catullus: *Vīvāmus, mea Lesbia, atque amēmus* reads *Lesbi(a) atqu(e) amēmus*; *Passer mortuus est* reads *mortuu(s) est* — with *est* and *es* it is the *e* of the little verb that drops after a vowel or *-s* (*sōla'st*, *bella's*)."
+      "text": "Martial's couplet (Week 14) scanned: *Nōn amo | tē, Sabi|dī, nec | possum | dīcere | quārē* and *Hoc tan|tum pos|sum || dīcere | nōn amo | tē*: *amō* twice with its *-ō* counted short, *nec* long before *p*, *Hoc* long before *t*, *tum* long before *p*. Elision at work in Catullus: *Vīvāmus, mea Lesbia, atque amēmus* reads *Lesbi(a) atqu(e) amēmus*. With *est* and *es* it is the *e* of the little verb that drops after a vowel or *-s* (*sōla est* → *sōla'st*, *bella es* → *bella's*). Not every meeting of vowels elides: *passer mortuus est meae puellae* keeps all eleven syllables — *-us* before *est* is just a short syllable."
     },
     {
       "type": "p",

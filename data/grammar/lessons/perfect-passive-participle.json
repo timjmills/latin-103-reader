@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "The fourth principal part, turned into an -us -a -um adjective, is **the perfect participle (the 'having been done' word: laudatus = praised)**: *puer laudātus* — the praised boy, the boy who has been praised. It describes a noun by something already done to it, and agrees with that noun like any adjective: *fīlum factum*, *catēna rupta*, *virī territī*. Latin name: *participium perfecti passivi*."
+      "text": "The fourth principal part, turned into an -us -a -um adjective, is **the perfect participle (the 'having been done' word: laudatus = praised)**: *puer laudātus* — the praised boy, the boy who has been praised. It describes a noun by something already done to it, and agrees with that noun like any adjective: *fīlum factum*, *catēna rupta*, *virī territī*. Latin name: *participium perfectī passīvī*."
     },
     {
       "type": "english",
@@ -23,7 +23,7 @@
       "units": [
         "w01:63.8",
         "r22:80.1",
-        "r22:97.2",
+        "r22:72.1",
         "w13:b8.3"
       ],
       "invented": [
@@ -43,7 +43,7 @@
   "more": [
     {
       "type": "p",
-      "text": "The learner's notes (week 21) pair Latin's two true participles: present active in -ns (*ferēns* — carrying) and perfect passive in -tus (*lātus* — carried). There is no present passive or perfect active participle for ordinary verbs; deponents fill the second gap (*locūtus* — having spoken)."
+      "text": "The learner's notes (week 21) pair Latin's two true participles: present active in -ns (*ferēns* — carrying) and perfect passive in -tus (*lātus* — carried). There is no present passive or perfect active participle for ordinary verbs; a deponent verb (passive-looking endings, active meaning: loquitur = he speaks) fills the second gap (*locūtus* — having spoken)."
     },
     {
       "type": "p",

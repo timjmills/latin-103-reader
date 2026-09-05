@@ -1,17 +1,17 @@
 {
   "skill": "dative-possession",
   "core": [
-    { "type": "p", "text": "Latin often says *I have* as 'to me there is'. That is **the dative of possession (the 'to me there is' way of saying 'I have')**: the owner sits in the dative (the 'to/for' form), the thing owned is the subject, and the verb is *est* or *sunt*. *Mārcō ūna soror est* — to Marcus there is one sister: Marcus has one sister. The commonest case is a name: *Mātrī 'Aemilia' nōmen est* — the mother's name is Aemilia. Latin name: datīvus possessīvus." },
+    { "type": "p", "text": "Latin often says *I have* as 'to me there is'. That is **the dative of possession (the 'to me there is' way of saying 'I have')**: the owner sits in the dative (the 'to/for' form), the thing owned is the subject, and the verb is *est* or *sunt*. *Mārcō ūna soror est* — to Marcus there is one sister: Marcus has one sister. Latin name: datīvus possessīvus." },
     { "type": "english", "text": "English keeps a trace of this with things: *there is a bad smell to the room* means the room has a bad smell. Latin extends it to everyone: *mihi est* — there is to me — I have." },
-    { "type": "rule", "text": "Owner in the dative + est / sunt + the thing owned in the nominative (the subject form) = 'X has Y'." },
+    { "type": "rule", "text": "Owner in the dative + est / sunt + the thing owned in the nominative (the plain naming form) = 'X has Y'." },
     { "type": "paradigm", "key": "decl2m", "highlight": { "case": "dat" } },
     { "type": "paradigm", "key": "decl3", "highlight": { "case": "dat" } },
     { "type": "examples", "units": ["r12:6.1", "r12:6.2", "r12:9.1", "r13:15.1"], "invented": [ { "la": "Puerō est canis.", "en": "The boy has a dog.", "focus": "Puerō" }, { "la": "Mihi nōmen est Iūlia.", "en": "My name is Julia.", "focus": "Mihi" } ] },
     { "type": "confusion", "with": "genitive-possession", "text": "Both say who owns something. The genitive (the 'of' form) hangs on a noun: *soror Mārcī* — Marcus's sister. The dative goes with *est* and makes a whole sentence: *Mārcō est soror* — Marcus has a sister. Look at what the owner's word is attached to: a noun (genitive, *mātris*) or *est* (dative, *mātrī*)." }
   ],
   "more": [
-    { "type": "p", "text": "With *nōmen est* the name usually stays in the nominative (*Eī nōmen est Lūcius*), but it may agree with the owner's dative (*Puerō nōmen est Mārcō*); both are correct. The relative pronoun does the same job: *Iānus est deus cui duae faciēs sunt* — Janus is a god who has two faces." },
-    { "type": "p", "text": "Your notes: the dative noun is the possessor and the nominative the thing possessed (*virō est gladius* — to the man there is a sword; *fēminīs sunt pānēs*); English does something like it only for qualities (*there is a strange look to his face*); and it is common inside a relative clause with a dative relative pronoun: *ecce vir cui gladius est* — see the man who has a sword." },
+    { "type": "p", "text": "The commonest case is a name: *Mātrī 'Aemilia' nōmen est* — the mother's name is Aemilia. With *nōmen est* the name usually stays in the nominative (*Eī nōmen est Lūcius*), but it may agree with the owner's dative (*Puerō nōmen est Mārcō*); both are correct. The relative pronoun does the same job: *Iānus est deus cui duae faciēs sunt* — Janus is a god who has two faces." },
+    { "type": "p", "text": "The learner's notes (week 12): the dative noun is the possessor and the nominative the thing possessed (*virō est gladius* — to the man there is a sword; *fēminīs sunt pānēs*); English does something like it only for qualities (*there is a strange look to his face*); and it is common inside a relative clause with a dative relative pronoun: *ecce vir cui gladius est* — see the man who has a sword." },
     { "type": "p", "text": "Ørberg brings it in with the family's names in chapter XII (*Iūliae duo frātrēs sunt*, *Virō Rōmānō tria nōmina sunt*). A&G §373: the dative of possession stresses the fact of owning, the genitive the owner; *mihi est* is the plain way to say *I have* when *habeō* would put too much weight on the having." }
   ],
   "sources": ["notes p39", "Ørberg cap. XII", "A&G §373"]
