@@ -198,6 +198,155 @@ export function pictureAlt(p) {
   return plainWords(p?.caption) ?? 'Illustration from the textbook';
 }
 
+/* --- book lines (CONTRACT.md "Book lines") ---------------------------- */
+
+/**
+ * A unit's printed-line data as a clean, sorted list of `{ line, start }`:
+ * integer line numbers, integer character offsets into `la`, duplicates and
+ * unusable entries dropped. `[]` for a unit without any (Fabellae Latinae,
+ * an unmapped unit). Pure.
+ */
+export function unitLines(unit) {
+  const rows = Array.isArray(unit?.lines) ? unit.lines : [];
+  const clean = [];
+  const seen = new Set();
+  for (const r of rows) {
+    const line = Math.round(Number(r?.line));
+    const start = Math.round(Number(r?.start));
+    if (!Number.isFinite(line) || !Number.isFinite(start) || start < 0 || seen.has(start)) continue;
+    seen.add(start);
+    clean.push({ line, start });
+  }
+  // Monotonic by line as well: an entry naming a line at or before the one
+  // kept last (the same line from a second offset, or out of order) is dropped.
+  const out = [];
+  for (const e of clean.sort((a, b) => a.start - b.start)) {
+    if (out.length && e.line <= out[out.length - 1].line) continue;
+    out.push(e);
+  }
+  return out;
+}
+
+/**
+ * Where each printed line begins inside a tokenised unit, for book mode:
+ * `[{ index, line }]` — `index` is the token that opens the line (the split
+ * always falls between tokens: the word containing the offset, else the
+ * first token at or after it, never a whitespace one), `line` its printed
+ * number. An entry whose offset lands inside a word (a data slip: the
+ * pipeline emits word starts) puts the break before that word. An offset
+ * of 0 is the unit's own first line (no break, just the number). Entries
+ * past the text, or that resolve to the same token, are dropped. Pure.
+ */
+export function lineStarts(tokens, lines) {
+  const out = [];
+  let last = -1;
+  for (const { line, start } of unitLines({ lines })) {
+    let i = tokens.findIndex((t) => t.isWord && t.start <= start && start < t.end);   // the word containing the offset…
+    if (i < 0) i = tokens.findIndex((t) => t.start >= start);                        // …else the first token at or after it
+    if (i < 0) continue;
+    while (i < tokens.length && !tokens[i].isWord && !tokens[i].text.trim()) i++;   // never open a line with whitespace
+    if (i >= tokens.length || i <= last) continue;
+    out.push({ index: i, line });
+    last = i;
+  }
+  return out;
+}
+
+/**
+ * How the non-word token before a printed-line break is divided between the
+ * two lines: `{ head, tail }` around its last whitespace run — `; "` → `;`
+ * ends the line above, `"` opens the new one; ` ` → both empty. null when the
+ * text has no whitespace (nothing to divide: it stays whole on the line above). Pure.
+ */
+export function breakSplit(text) {
+  const m = /^([\s\S]*?)\s+(\S*)$/.exec(String(text ?? ''));
+  return m ? { head: m[1], tail: m[2] } : null;
+}
+
+/** The last printed line a unit occupies, or null without line data. Pure. */
+export function lastLine(unit) {
+  const rows = unitLines(unit);
+  return rows.length ? rows[rows.length - 1].line : null;
+}
+
+/**
+ * Whether a printed line ends with `unit` so that `next` opens a new one:
+ * both mapped — `next` starts on a later line than `unit` ends; otherwise
+ * (either unmapped) a block start opens a paragraph. `lastMapped` is the
+ * last printed line seen so far in the part: an unmapped `unit` in the
+ * middle of a mapped block (the pipeline gives `lines: []` to a sentence it
+ * cannot place) stands on that line, so a mapped `next` starting later still
+ * opens a new one. False without `next`. Pure.
+ */
+export function breakAfter(unit, next, lastMapped = null) {
+  if (!unit || !next) return false;
+  const end = lastLine(unit) ?? lastMapped;
+  const first = unitLines(next)[0]?.line ?? null;
+  if (end != null && first != null) return first > end;
+  return !!next.block_start;
+}
+
+/** Whether any unit of the week carries printed-line data (the Settings switch's hint says when none does). Pure. */
+export function weekHasLines(units) {
+  return (units || []).some((u) => unitLines(u).length > 0);
+}
+
+/**
+ * The printed lines of a run of units (one part, in order) rebuilt from
+ * their line data — what book mode's column has to hold: `[{ line, text,
+ * ends }]`, the line's text as printed (units sharing a line joined by a
+ * space, the whitespace at a break dropped) and `ends`, how many units end
+ * on it (each may carry a † and a play button). An unmapped unit inside a
+ * mapped block (`lines: []`, not a block start) stands on the last line
+ * seen, as breakAfter() lays it out; a block start without data, and what
+ * follows it until the next mapped unit, is flow text and is left out. Pure.
+ */
+export function printedLines(units) {
+  const lines = new Map();
+  let cur = null;
+  const add = (line, text) => {
+    const t = String(text ?? '').replace(/\s+/g, ' ').trim();
+    const L = lines.get(line) ?? lines.set(line, { line, text: '', ends: 0 }).get(line);
+    if (t) L.text = L.text ? `${L.text} ${t}` : t;
+    return L;
+  };
+  for (const u of units || []) {
+    if (!u) continue;
+    const rows = unitLines(u);
+    if (!rows.length) {
+      if (u.block_start || cur == null) { cur = null; continue; }
+      add(cur, u.la).ends++;
+      continue;
+    }
+    const la = String(u.la ?? '');
+    rows.forEach((r, i) => { add(r.line, la.slice(r.start, rows[i + 1]?.start ?? la.length)); cur = r.line; });
+    lines.get(cur).ends++;
+  }
+  return [...lines.values()];
+}
+
+/**
+ * Which line numbers to hide so every screen line shows its number once:
+ * `items` = `[{ top, line }]` in document order (the number's screen top and
+ * its printed line, a string or a number). A number on the same screen line
+ * as the last one shown (within 2 px), or naming the same printed line as it
+ * (a sentence continuing a line that wrapped, two verses sharing a printed
+ * line), is a duplicate. Returns one boolean per item. Pure.
+ */
+export function lineNumberDups(items) {
+  let prevTop = null;
+  let prevLine = null;
+  return (items || []).map((it) => {
+    const top = Number(it?.top);
+    const line = it?.line != null ? String(it.line) : null;
+    const dup = (prevTop != null && Number.isFinite(top) && Math.abs(top - prevTop) < 2) || (line != null && line === prevLine);
+    if (dup) return true;
+    if (Number.isFinite(top)) prevTop = top;
+    prevLine = line;
+    return false;
+  });
+}
+
 /**
  * Offset that puts a smaller note's first baseline on the sentence's first
  * baseline. `contentTop` is the content-area top of the sentence's first text
@@ -409,7 +558,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
 
   const state = {
     week: null, units: [], byId: new Map(), hl: new Map(),
-    lookups: new Map(), seen: new Set(), view: 'passage', current: 0,
+    lookups: new Map(), seen: new Set(), view: 'passage', current: 0, lineMode: 'flow',   // lineMode: settings.lineMode (setLineMode)
     audio: false, playing: null, playingWord: null, tokens: new Map(), marginTokens: new Map(), summaryTokens: new Map(),
     glossOpen: new Set(),   // margin glosses whose English is shown ("<unit id>#<index>"), across re-renders and both copies
     pictures: new Map(),    // unit id → picture rows (groupPictures)
@@ -422,6 +571,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     skipped: new Set(),     // units in view at a reset: not timed until they have left and come back (whatever pauses and resumes meanwhile)
     scrollRaf: 0,
     settleUntil: 0,         // ignore scroll tracking until then (a programmatic scroll is in flight)
+    bookMaxMarks: 0,        // book mode: the most sentences with marks († / play) ending on one printed line, as rendered (layoutMargin sizes the marks column)
     shownOrder: -1,         // the order last rendered as current, and since when (currentSince): a review by Next needs READ_DWELL_MS of it
     currentSince: 0,
   };
@@ -435,17 +585,44 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   }
 
   /* --- Latin text → spans ------------------------------------------ */
+  // Book mode (passage view): the unit's printed lines — a break before the
+  // token that opens each line after the first, the whitespace at the break
+  // dropped, and every line's number in the gutter before its first token.
+  // A line opens at its first *word* (the pipeline's `start` is the first
+  // letter), so the non-word token before it (`; "`, ` (`, ` — ‘`) is split
+  // at its last whitespace run: the head (`;`) ends the line above, the tail
+  // (`"`) opens the new one after its number.
+  const bookUnit = (unit) => state.lineMode === 'book' && state.view === 'passage' && unitLines(unit).length > 0;
   function renderLatin(unit) {
-    return renderTokens(tokensFor(unit), state.hl.get(unit.id) ?? []);
+    const tokens = tokensFor(unit);
+    return renderTokens(tokens, state.hl.get(unit.id) ?? [], bookUnit(unit) ? lineStarts(tokens, unit.lines) : []);
   }
-  function renderTokens(tokens, ranges) {
+  const lineNumber = (n) => h('span', { class: 'lineno', 'aria-hidden': 'true', 'data-line': String(n), text: String(n) });
+  function renderTokens(tokens, ranges, starts = []) {
     const frag = document.createDocumentFragment();
     const groups = segmentUnit(tokens, ranges);
+    const opens = new Map(starts.map((s) => [s.index, s.line]));
+    const split = new Map();     // the non-word token just before a break → { head, tail } around its last whitespace run (pure whitespace: both '')
+    for (const s of starts) {
+      const prev = s.index > 0 ? tokens[s.index - 1] : null;
+      const parts = prev && !prev.isWord ? breakSplit(prev.text) : null;
+      if (parts) split.set(s.index - 1, parts);
+
+    }
+    let i = 0;
     for (const g of groups) {
       const parent = g.range
         ? h('span', { class: 'hl', 'data-hl-label': g.range.label, 'data-hl-note': g.range.note, 'data-hl-text': g.range.text, 'data-hl-simple': plainWords(g.range.simple) })
         : frag;
       for (const t of g.tokens) {
+        const idx = i++;
+        if (split.has(idx)) { if (split.get(idx).head) parent.append(split.get(idx).head); continue; }
+        if (opens.has(idx)) {
+          if (idx > 0) parent.append(h('br', { class: 'lb' }));
+          parent.append(lineNumber(opens.get(idx)));
+          const tail = split.get(idx - 1)?.tail;
+          if (tail) parent.append(tail);
+        }
         if (!t.isWord) { parent.append(t.text); continue; }
         parent.append(h('span', {
           class: 'w' + (state.seen.has(t.form) ? ' w--seen' : ''),
@@ -482,7 +659,8 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   function marginBlock(unit, cls) {
     const notes = marginTokensFor(unit);
     if (!notes.length) return null;
-    const block = h('span', { class: cls, lang: 'la', 'data-for': unit.id, 'data-order': String(unit.order), role: 'group', 'aria-label': 'Margin notes' });
+    // data-line: the first gloss's printed line — in book mode the gutter copy is set level with that line (positionMargin).
+    const block = h('span', { class: cls, lang: 'la', 'data-for': unit.id, 'data-order': String(unit.order), 'data-line': notes[0].line != null ? String(notes[0].line) : null, role: 'group', 'aria-label': 'Margin notes' });
     notes.forEach((m, i) => {
       // A gloss with an English rendering gets a small "en" chip after the
       // Latin; a tap shows the English beneath (settings.showGlossEnglish shows
@@ -670,6 +848,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   /* --- passage view ------------------------------------------------ */
   function renderPassage() {
     const container = h('div', { class: 'passage' });
+    state.bookMaxMarks = 0;
     const parts = state.week?.parts?.length ? state.week.parts : [{ part: null, lines: null }];
     for (const p of parts) {
       const units = state.units.filter((u) => (p.part ? u.part === p.part : true));
@@ -686,26 +865,64 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
         if (listen) section.append(listen);   // the listen bar: under that, above the first sentence
       }
       const prose = h('div', { class: 'prose' });
+      // Book mode: the printed line, not the sentence, is the unit of layout.
+      // Pass 1 — which units end a printed line (breakAfter, carrying the
+      // last mapped line past an unmapped unit); pass 2 groups the mapped
+      // inline units of a line (`unit--line`): the line's inline pictures
+      // stand above it and its sentences' inline notes (`mnotes--line`)
+      // below it, so a sentence boundary never cuts a printed line in two
+      // (a sentence with notes is not a block in this mode). Verse / turn
+      // blocks and unmapped units keep the flow layout.
+      const book = state.lineMode === 'book';
+      const mapped = units.map((u) => bookUnit(u));
+      let lastMapped = null;   // the last printed line a mapped unit of this part ended on
+      const eol = units.map((u, i) => {
+        const next = units[i + 1];
+        const e = book && (mapped[i] || (next != null && mapped[i + 1])) && breakAfter(u, next, lastMapped);
+        if (mapped[i]) lastMapped = lastLine(u);
+        return e;
+      });
+      const inLine = (i) => i >= 0 && i < units.length && mapped[i] && units[i].unit_type !== 'verse' && units[i].unit_type !== 'turn';
+      let pendingNotes = [];
+      let marksLine = null;   // the printed line the last marks were on, and how many sets it holds
+      let marksOnLine = 0;
       units.forEach((u, i) => {
+        const lined = inLine(i);
+        const opensLine = lined && (i === 0 || eol[i - 1] || !inLine(i - 1));
+        // The inline copy of the pictures stands in the prose just before the
+        // sentence (not inside it) — in book mode before the printed line that
+        // holds it: the line starts fresh under the plate, its number beside the text.
+        if (opensLine) {
+          for (let j = i; inLine(j); j++) { prose.append(...pictureBlocks(units[j], 'pic--inline')); if (eol[j]) break; }
+        } else if (!lined) prose.append(...pictureBlocks(u, 'pic--inline'));
+        if (lined && lastLine(u) !== marksLine) { marksLine = lastLine(u); marksOnLine = 0; }
         const unitEl = h('span', {
-          class: 'unit' + (u.unit_type === 'verse' ? ' unit--verse' : '') + (u.unit_type === 'turn' ? ' unit--turn' : '') + (state.playing === u.id ? ' is-playing' : ''),
+          class: 'unit' + (u.unit_type === 'verse' ? ' unit--verse' : '') + (u.unit_type === 'turn' ? ' unit--turn' : '') + (lined ? ' unit--line' : '') + (state.playing === u.id ? ' is-playing' : ''),
           'data-id': u.id, 'data-order': String(u.order), 'data-type': u.unit_type,
         });
-        if (state.week?.has_line_numbers && u.block_start && u.line_no != null) {
-          unitEl.append(h('span', { class: 'lineno', 'aria-hidden': 'true', text: String(u.line_no) }));
+        // Flow layout: the block's number beside its first line. Book mode numbers every printed line from inside renderLatin() instead — for the units that have line data; the rest keep this.
+        if (state.week?.has_line_numbers && u.block_start && u.line_no != null && !mapped[i]) {
+          unitEl.append(lineNumber(u.line_no));
         }
         if (u.unit_type === 'turn' && u.speaker) unitEl.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
         const la = h('span', { class: 'la', lang: 'la' }, renderLatin(u));
-        const margin = marginBlock(u, 'mnotes');
-        if (margin) unitEl.classList.add('has-margin');
+        const margin = marginBlock(u, lined ? 'mnotes mnotes--line' : 'mnotes');
+        if (margin && !lined) unitEl.classList.add('has-margin');
         // Dagger + play button stay on the sentence's last line, together: a
         // word joiner glues them to the text and .marks does not wrap inside.
+        // On a printed line (book mode, wide screens) CSS moves them into a
+        // column at the line's right end; --mark-i is the slot of a second
+        // sentence ending on the same line.
         const marks = [noteMark(u), playButton(u)].filter(Boolean);
-        unitEl.append(...[la, marks.length ? h('span', { class: 'marks' }, '⁠', ...marks) : null, margin, h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
-        // The inline copy of the unit's pictures stands in the prose just before
-        // the unit (not inside it): the sentence starts on a fresh line under
-        // the plate and its margin line number stays beside the text.
-        prose.append(...pictureBlocks(u, 'pic--inline'), unitEl);
+        const marksEl = marks.length ? h('span', { class: 'marks', style: lined && marksOnLine ? `--mark-i: ${marksOnLine}` : null }, '⁠', ...marks) : null;
+        if (lined && marks.length) state.bookMaxMarks = Math.max(state.bookMaxMarks, ++marksOnLine);
+        // Book mode: a printed line that ends with this sentence ends the screen
+        // line too (a trailing break, after the marks: it collapses when the
+        // unit or what follows is a block — CSS hides it there besides).
+        unitEl.append(...[la, marksEl, eol[i] ? h('br', { class: 'lb lb--unit' }) : null, lined ? null : margin, h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
+        prose.append(unitEl);
+        if (lined && margin) pendingNotes.push(margin);
+        if (lined && (eol[i] || !inLine(i + 1)) && pendingNotes.length) { prose.append(...pendingNotes); pendingNotes = []; }   // the line's notes, under it
         if (i < units.length - 1) prose.append(' ');
       });
       // The gutter copy: hidden by CSS in the inline mode, positioned by
@@ -779,14 +996,36 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     return wrap;
   }
 
+  // A render rebuilds the whole article. The article keeps its height across
+  // the swap (a min-height for the moment the old children are out), so the
+  // document never shrinks under the viewport: Chromium clamps the scroll
+  // offset to the short document and, even after the new content is in and
+  // the offset put back, re-applies that clamp a frame or two later. The
+  // offset is restored besides, and the margin blocks are excluded from the
+  // page's scroll anchoring (reader.css: `.margin, .mnote, .mpic`) — anchoring
+  // on a node the margin reflow then moves used to carry a page deep in a
+  // chapter to the chapter's end. Anchoring stays on for everything else
+  // (a picture decoding above the viewport, a summary toggled, fonts arriving)
+  // but cannot span the swap itself (its anchor node is the one removed), so
+  // passage view puts the first sentence in view back where it was on screen:
+  // a re-render that changes the shape of the text above (play buttons or
+  // pictures switched off, Book lines) would otherwise move the page by that much.
   function render() {
     clearReadTimers();
     if (state.current !== state.shownOrder) { state.shownOrder = state.current; state.currentSince = Date.now(); }
+    const y = window.scrollY;
+    const anchor = state.view === 'passage' && root.dataset.view === 'passage' ? firstUnitInView() : null;
+    root.style.minHeight = `${root.offsetHeight}px`;
     root.replaceChildren(state.view === 'passage' ? renderPassage() : renderSentence());
     root.dataset.view = state.view;
     wordEls = { unitId: null, els: [] };
     applyPlayingWord();
     reflow();
+    root.style.removeProperty('min-height');
+    // The anchor sentence goes back where it was — now, and again while the
+    // layout settles (holdScroll: the margin reflow, pictures decoding).
+    if (anchor) holdScroll(() => restoreAnchor(anchor));
+    else if (Math.abs(window.scrollY - y) > 0.5) window.scrollTo({ top: y, behavior: 'auto' });
     emit('render', { view: state.view, unit: state.units[state.current] ?? null });   // main.js repaints the listen bar
     armReads();
     emitPosition();
@@ -921,11 +1160,120 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   }
   window.addEventListener('scroll', () => { if (!state.scrollRaf) state.scrollRaf = requestAnimationFrame(trackScroll); }, { passive: true });
   /** Scroll a unit's first line to the top third of the viewport (below the sticky header). */
+  /**
+   * Passage view's scroll anchor — the unit under the learner's eye, with
+   * its on-screen top: the one at the third line (what trackScroll() reads
+   * and scrollToCurrent() aims at), so a change that reflows the text above
+   * it leaves *that* sentence where it is. At the head of the page (nothing
+   * scrolled off) there is no anchor: the top stays the top. null when none.
+   */
+  function firstUnitInView() {
+    if (window.scrollY < 1) return null;
+    const y = thirdLine();
+    const boxes = [];
+    for (const u of root.querySelectorAll('.unit')) {
+      const r = u.getBoundingClientRect();
+      if (r.height > 0) boxes.push({ id: u.dataset.id, top: r.top, bottom: r.bottom });
+    }
+    const id = nearestUnit(boxes, y);
+    const b = boxes.find((x) => x.id === id);
+    if (!b) return null;
+    // The text line itself, when the DOM survives the change (a size step,
+    // a display toggle): a sentence spanning several lines has one top, but
+    // the lines between it and the reading line change with the measure.
+    const word = wordAt(root.querySelector(`.unit[data-id="${CSS.escape(b.id)}"]`), y);
+    return { id: b.id, top: b.top, el: word, lineTop: word ? word.getBoundingClientRect().top : null };
+  }
+  /**
+   * The word of `unitEl`'s Latin nearest the reading line `y` (viewport px):
+   * the one whose box straddles it, else the closest by vertical distance.
+   * Geometry, not hit-testing — keepInView() runs while the Settings dialog
+   * is modal, and elementFromPoint / caretPositionFromPoint would find its
+   * backdrop. A word never wraps inside, so its top is its line's top
+   * whatever the measure. null without one.
+   */
+  function wordAt(unitEl, y) {
+    if (!unitEl) return null;
+    let best = null;
+    let bestD = Infinity;
+    for (const w of unitEl.querySelectorAll('.la .w')) {
+      const r = w.getBoundingClientRect();
+      if (!(r.height > 0)) continue;
+      const d = r.top <= y && r.bottom >= y ? 0 : Math.min(Math.abs(r.top - y), Math.abs(r.bottom - y));
+      if (d < bestD) { bestD = d; best = w; if (d === 0) break; }
+    }
+    return best;
+  }
   function scrollUnitToThird(el, behavior) {
     const top = window.scrollY + el.getBoundingClientRect().top - thirdLine();
     state.settleUntil = performance.now() + 800;   // the scroll in flight is not the learner's
     window.scrollTo({ top: Math.max(0, Math.round(top)), behavior: behavior ?? (reduced.matches ? 'auto' : 'smooth') });
   }
+  /** Put the anchor unit (firstUnitInView) back at the on-screen top it had. */
+  function restoreAnchor(anchor) {
+    if (state.view !== 'passage') return;
+    let d = null;
+    if (anchor.el?.isConnected && anchor.lineTop != null) {   // the same word, while it is still on the page (no re-render)
+      const r = anchor.el.getBoundingClientRect();
+      if (r.height > 0) d = r.top - anchor.lineTop;
+    }
+    if (d == null) {
+      const el = root.querySelector(`.unit[data-id="${CSS.escape(anchor.id)}"]`);
+      if (!el) return;
+      d = el.getBoundingClientRect().top - anchor.top;
+    }
+    if (Math.abs(d) > 0.5) window.scrollTo({ top: window.scrollY + d, behavior: 'auto' });
+  }
+
+  /* --- scroll hold -------------------------------------------------- */
+  // A change that reflows the text (a re-render, a settings save, Book
+  // lines) is followed by layout the browser only finishes over the next
+  // frames — the margin reflow (next frame, and again when the reserved
+  // heights change), fonts, the lazy pictures decoding — each moving the
+  // text under the viewport after any one synchronous correction.
+  // holdScroll(place) runs `place()` now and again on the next two frames,
+  // after every reflow(), after each picture that loads, at 200 ms and at
+  // the end of the window (500 ms), with trackScroll() told those scrolls
+  // are not the learner's (settleUntil) so the current sentence is never
+  // re-labelled meanwhile. A wheel, a touch or a scrolling key outside a
+  // dialog ends it early — closing Settings with Escape or Done does not.
+  // One hold at a time: a new one replaces the last; a `sticky` hold (the
+  // Book lines switch placing its sentence) is left alone by keepInView().
+  const HOLD_MS = 500;
+  const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ']);
+  let hold = null;
+  let holdSeq = 0;
+  function holdScroll(place, { ms = HOLD_MS, sticky = false } = {}) {
+    stopHold();
+    const h = { seq: ++holdSeq, sticky, until: performance.now() + ms, timers: [], raf: 0 };
+    const cancel = (e) => {
+      if (e.type === 'keydown' && !SCROLL_KEYS.has(e.key)) return;
+      if (e.target?.closest?.('dialog[open]')) return;   // scrolling inside Settings is not scrolling the text
+      stopHold();
+    };
+    h.off = () => { for (const ev of ['wheel', 'touchstart', 'keydown']) window.removeEventListener(ev, cancel, true); };
+    for (const ev of ['wheel', 'touchstart', 'keydown']) window.addEventListener(ev, cancel, { capture: true, passive: true });
+    h.apply = () => {
+      if (hold !== h) return;
+      if (performance.now() > h.until + 50) { stopHold(); return; }
+      state.settleUntil = Math.max(state.settleUntil, performance.now() + 150);
+      place();
+    };
+    hold = h;
+    h.apply();
+    h.raf = requestAnimationFrame(() => { h.apply(); h.raf = requestAnimationFrame(h.apply); });
+    h.timers.push(setTimeout(h.apply, 200), setTimeout(() => { h.apply(); stopHold(); }, ms));
+    return h;
+  }
+  function stopHold() {
+    if (!hold) return;
+    const h = hold;
+    hold = null;
+    h.off();
+    cancelAnimationFrame(h.raf);
+    for (const t of h.timers) clearTimeout(t);
+  }
+  root.addEventListener('load', (e) => { if (e.target instanceof HTMLImageElement) hold?.apply(); }, true);   // a picture decoded: the text under it moved
 
   // The spoken-word cursor (audio.js → setPlayingWord): the unit's word
   // tokens in text order, margin notes and the lookups list excluded. The
@@ -945,6 +1293,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   function reflow() {
     layoutMargin();
     dedupeLineNumbers();
+    hold?.apply();   // the layout just moved the text: the held sentence goes back
   }
 
   // Gutter vs inline margin notes: first the room beside the prose
@@ -952,46 +1301,132 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   // whose stacked notes would still sit more than ~a line below their
   // sentences after the pull-up is shown inline instead. <article data-margin-mode> carries the
   // overall answer (gutter while any part keeps the gutter), every .part its own.
+  // Book mode keeps the gutter whatever the density (the glosses are placed
+  // by line number and may stack below their line): an inline part would
+  // make every sentence with notes a block and cut the printed lines.
   const DRIFT_LINES = 0.9;   // same bound as the pull-up: a note stays within a text line of its sentence either way
   const probe = h('span', { class: 'margin-probe', 'aria-hidden': 'true' });
   function layoutMargin() {
-    if (state.view !== 'passage') { delete root.dataset.marginMode; return; }
+    if (state.view !== 'passage') { delete root.dataset.marginMode; clearBookColumn(); return; }
     const prose = root.querySelector('.prose');
     if (!prose) return;
     if (!probe.isConnected) root.append(probe);
     const rs = getComputedStyle(root);
     const main = root.parentElement ?? root;
-    const available = main.clientWidth - parseFloat(rs.paddingLeft) - parseFloat(rs.paddingRight);
+    const padL = parseFloat(rs.paddingLeft);
+    const padR = parseFloat(rs.paddingRight);
+    const available = main.clientWidth - padL - padR;
     const em = parseFloat(rs.fontSize);
-    let mode = marginMode({
-      wide: wide.matches, available, em,
-      colPx: probe.offsetWidth, gutterPx: parseFloat(getComputedStyle(prose).paddingLeft),
-    });
+    const colPx = probe.offsetWidth;
+    const gutterPx = parseFloat(getComputedStyle(prose).paddingLeft);
+    // Book mode: the gutter needs room for a typical printed line and its marks beside the notes column, not just the 18 em of flow text.
+    const need = state.lineMode === 'book' && weekHasLines(state.units) ? bookNeed(em) : null;
+    let mode = marginMode({ wide: wide.matches, available, em, colPx, gutterPx, minEm: need ? Math.max(18, (need.typicalPx + need.marksW + need.pad) / em) : undefined });
+    const book = !!need;
+    const withColumn = mode === 'gutter' && root.dataset.margin !== 'off';
+    if (need) sizeBookColumn(need, { available, colPx: withColumn ? colPx : 0, gutterPx, padL, padR });
+    else clearBookColumn();
     const parts = [...root.querySelectorAll('.part')];
-    if (mode === 'gutter' && root.dataset.margin !== 'off') {
+    if (withColumn) {
       if (root.dataset.marginMode !== 'gutter') root.dataset.marginMode = 'gutter';   // measure with the column in place
       const lineHeight = parseFloat(rs.lineHeight) || em * 1.55;
-      if (!positionMargin(parts, em, lineHeight)) mode = 'inline';
+      if (!positionMargin(parts, em, lineHeight, { demote: !book })) mode = 'inline';
     } else {
       for (const p of parts) { p.dataset.marginMode = 'inline'; for (const pr of p.querySelectorAll('.prose')) pr.style.removeProperty('min-height'); }
     }
     if (root.dataset.marginMode !== mode) root.dataset.marginMode = mode;
   }
+  // Book mode: the column is sized from the data — the widest printed line
+  // of the week in the reading face (printedLines() per part, measured on a
+  // canvas once per week, face and size) plus a column at the line's right
+  // for the † and play buttons (CSS: .unit--line .marks, --marks-w per
+  // slot, --marks-room for as many slots as the room allows, one at least)
+  // — so no printed line wraps where the screen has the room. The article's
+  // max-width says the rest: gutter, padding, the notes column when in use.
+  // Where the room is short (a tablet, a very long line) the column takes
+  // what there is and the longest lines wrap, their numbers staying single;
+  // without the notes column the marks may stand over the article's own
+  // right padding, and a second set on a line that has no slot for it stays
+  // inline in the text (.marks--inline) rather than hang past the edge.
+  const bookCache = { key: null, textPx: 0, typicalPx: 0 };
+  function measurePrintedLines(font) {
+    const key = `${state.week?.n ?? ''}|${font}`;
+    if (bookCache.key === key) return bookCache;
+    const widths = [];
+    const ctx = document.createElement('canvas').getContext?.('2d');
+    if (ctx) {
+      ctx.font = font;
+      const parts = state.week?.parts?.length ? state.week.parts : [{ part: null }];
+      for (const p of parts) {
+        for (const L of printedLines(state.units.filter((u) => (p.part ? u.part === p.part : true)))) widths.push(ctx.measureText(L.text).width);
+      }
+    }
+    widths.sort((a, b) => a - b);
+    const slack = (w) => Math.ceil(w * 1.01) + 2;   // a little for shaping / rounding
+    bookCache.key = key;
+    bookCache.textPx = widths.length ? slack(widths[widths.length - 1]) : 0;
+    bookCache.typicalPx = widths.length ? slack(widths[Math.floor(0.9 * (widths.length - 1))]) : 0;   // the 90th percentile: what the gutter must leave room for
+    return bookCache;
+  }
+  function bookNeed(em) {
+    const ps = getComputedStyle(root.querySelector('.prose') ?? root);
+    const { textPx, typicalPx } = measurePrintedLines(`${ps.fontStyle} ${ps.fontWeight} ${ps.fontSize} ${ps.fontFamily}`);
+    let marksW = 0;
+    for (const m of root.querySelectorAll('.unit--line .marks')) { m.classList.remove('marks--inline'); marksW = Math.max(marksW, m.getBoundingClientRect().width); }
+    return { textPx, typicalPx, marksW: Math.ceil(marksW), pad: Math.round(0.4 * em) };   // pad: between the text and the marks
+  }
+  function sizeBookColumn({ textPx, marksW, pad }, { available, colPx, gutterPx, padL, padR }) {
+    const over = colPx ? 0 : padR;                       // no notes column: the marks may stand over the article's right padding
+    const room = available - gutterPx - colPx + over;    // for the text and the marks together
+    const slots = marksW > 0 ? Math.max(1, Math.min(state.bookMaxMarks || 1, Math.floor((room - textPx - pad) / marksW))) : 0;
+    const marksRoom = slots ? Math.max(0, slots * marksW + pad - over) : 0;
+    root.style.setProperty('--marks-w', `${marksW}px`);
+    root.style.setProperty('--marks-room', `${marksRoom}px`);
+    root.style.maxWidth = `${Math.ceil(textPx + marksRoom + gutterPx + padL + padR + colPx)}px`;
+    for (const m of root.querySelectorAll('.unit--line .marks[style]')) {
+      if ((parseInt(m.style.getPropertyValue('--mark-i'), 10) || 0) >= slots) m.classList.add('marks--inline');
+    }
+  }
+  function clearBookColumn() {
+    root.style.removeProperty('--marks-w');
+    root.style.removeProperty('--marks-room');
+    root.style.removeProperty('max-width');
+  }
   // Content-area top of a unit's first text box, relative to its .prose. A
   // Range over the Latin finds the first line whatever the unit's display
   // (inline, verse/turn blocks, interleaved translation); offsetTop would be
   // the line-box top for block units and sit the note too high.
-  function firstLineTop(unit, proseTop) {
+  // In book mode a block whose glosses name a printed line (`line`) is set
+  // level with that line when it is its own screen line: the line's number
+  // (.lineno[data-line], in the unit, else anywhere in the prose) finds it,
+  // and the first text after the number is measured. Else the first line.
+  function firstLineTop(unit, proseTop, line = null) {
     const la = unit.querySelector('.la') ?? unit;
-    try {
-      const range = document.createRange();
-      range.selectNodeContents(la);
-      for (const r of range.getClientRects()) if (r.height > 0) return r.top - proseTop;
-    } catch { /* fall through */ }
-    return unit.offsetTop;
+    let top = null;
+    if (line != null && state.lineMode === 'book') {
+      const sel = `.lineno[data-line="${CSS.escape(String(line))}"]`;
+      const num = unit.querySelector(sel) ?? unit.closest('.prose')?.querySelector(sel);
+      if (num) top = textTop(num.closest('.unit') ?? la, num);   // the number's own unit (a flow number stands outside .la): the walker's root must contain it
+    }
+    if (top == null) top = textTop(la);
+    return top != null ? top - proseTop : unit.offsetTop;
   }
-  /** Lay every part out as a gutter, keep the ones whose notes stay beside their sentences. Returns whether any did. */
-  function positionMargin(parts, textSize, textLineHeight) {
+  /** Top of the first text box in `container` (after `after`, a node inside it, when given); line numbers are skipped. null without one. */
+  function textTop(container, after = null) {
+    try {
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      if (after) walker.currentNode = after;
+      const range = document.createRange();
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (n.parentElement?.closest('.lineno')) continue;
+        range.selectNodeContents(n);
+        for (const r of range.getClientRects()) if (r.height > 0) return r.top;
+      }
+    } catch { /* fall through */ }
+    return null;
+  }
+  /** Lay every part out as a gutter, keep the ones whose notes stay beside their sentences (`demote: false` keeps them all — book mode). Returns whether any did. */
+  function positionMargin(parts, textSize, textLineHeight, { demote = true } = {}) {
     let anyGutter = false;
     for (const part of parts) part.dataset.marginMode = 'gutter';
     for (const part of parts) {
@@ -1009,13 +1444,13 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       const gap = Math.round(noteLineHeight * 0.4);
       const items = blocks.map((el) => {
         const unit = prose.querySelector(`.unit[data-id="${CSS.escape(el.dataset.for)}"]`);
-        const contentTop = unit ? firstLineTop(unit, proseTop) : 0;
+        const contentTop = unit ? firstLineTop(unit, proseTop, el.dataset.line ?? null) : 0;
         const pinned = el.classList.contains('mpic');   // a picture sits level with its sentence's first line; the notes flow under it
         return { el, pinned, unit: el.dataset.for, top: pinned ? Math.round(contentTop) : marginTop({ contentTop, textSize, noteSize, noteLineHeight }), height: el.offsetHeight };
       });
       const tops = stackMargin(items, gap, { maxUp: Math.round(textLineHeight * 0.9) });   // pulled up, but never a full line above its sentence
       const drift = marginDrift(items, tops, gap);
-      if (drift > DRIFT_LINES * textLineHeight) {
+      if (demote && drift > DRIFT_LINES * textLineHeight) {
         // Too dense for the column here: glosses go under their sentences.
         part.dataset.marginMode = 'inline';
         continue;
@@ -1030,16 +1465,17 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   }
 
   // Two blocks that start on the same visual line would print two margin
-  // numbers on top of each other; keep the first. Re-run whenever the text reflows.
+  // numbers on top of each other; keep the first. The same printed number
+  // twice in a row (a line that wraps on a phone, then the sentence that
+  // continues it) is one number too. Re-run whenever the text reflows.
+  // Runs after layoutMargin() has settled every part's mode (the numbers are
+  // measured in the layout they end up in), on every reflow and resize.
   function dedupeLineNumbers() {
     if (state.view !== 'passage') return;
-    let prevTop = null;
-    for (const el of root.querySelectorAll('.lineno')) {
-      el.classList.remove('lineno--dup');
-      const top = Math.round(el.getBoundingClientRect().top);
-      if (prevTop != null && Math.abs(top - prevTop) < 2) el.classList.add('lineno--dup');
-      else prevTop = top;
-    }
+    const els = [...root.querySelectorAll('.lineno')];
+    for (const el of els) el.classList.remove('lineno--dup');
+    const dups = lineNumberDups(els.map((el) => ({ top: Math.round(el.getBoundingClientRect().top), line: el.dataset.line ?? null })));
+    els.forEach((el, i) => { if (dups[i]) el.classList.add('lineno--dup'); });
   }
   const wide = matchMedia('(min-width: 768px)');
   let reflowRaf = 0;
@@ -1050,6 +1486,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     if (root.parentElement) ro.observe(root.parentElement);
   }
   wide.addEventListener('change', scheduleReflow);
+  window.addEventListener('resize', scheduleReflow);
   if (document.fonts?.ready) document.fonts.ready.then(scheduleReflow);
 
   function announce() {
@@ -1174,6 +1611,34 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       else if (!state.playing) api.scrollToCurrent();
     },
     getView: () => state.view,
+    /**
+     * settings.lineMode: 'book' lays passage view out one printed line per
+     * line for the units with line data (CONTRACT.md "Book lines"); anything
+     * else is the flow layout. A change re-renders passage view (sentence
+     * view is untouched: the next setView renders). `settle` — the learner's
+     * own switch — puts the current sentence back on its line afterwards;
+     * a change arriving from another device leaves the viewport alone.
+     */
+    setLineMode(mode, { settle = false } = {}) {
+      const next = mode === 'book' ? 'book' : 'flow';
+      if (next === state.lineMode) return;
+      state.lineMode = next;
+      if (!state.week || state.view !== 'passage') return;
+      const wanted = state.current;   // captured before the render: the sentence the learner was on
+      render();
+      if (!settle) return;
+      // The whole passage changes shape: the current sentence is put back on
+      // its line now and again while the layout settles (holdScroll: the
+      // margin reflow, the pictures re-created by the render coming in
+      // lazily). It stays the current sentence throughout — the tracker is
+      // held off, and the place is forced rather than checked.
+      holdScroll(() => {
+        if (state.lineMode !== next || state.view !== 'passage' || state.playing) return;
+        state.current = wanted;
+        api.scrollToCurrent('auto');
+      }, { sticky: true });
+    },
+    getLineMode: () => state.lineMode,
     /** The unit the reader is on (sentence view's sentence; the last tapped/played one in passage view). */
     getCurrentUnit: () => state.units[state.current] ?? null,
     goTo(order) {
@@ -1221,7 +1686,22 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
       emit('navigate', { unit: u, order: u.order });
       return true;
     },
+    /**
+     * Run `fn` — a display change that reflows the text above the viewport
+     * (play buttons or pictures switched off, the translation shown) — and
+     * put the first sentence in view back where it was on screen. The
+     * browser's own scroll anchoring compensates only for the node it picked;
+     * this holds the text the learner is reading. No-op outside passage view.
+     */
+    keepInView(fn) {
+      const anchor = state.view === 'passage' ? firstUnitInView() : null;
+      const seq = holdSeq;
+      fn();
+      if (hold?.sticky && hold.seq > seq) return;   // fn placed its own sentence (the Book lines switch): leave that alone
+      if (anchor) holdScroll(() => restoreAnchor(anchor));   // now, and again while the layout settles (frames, reflow, pictures)
+    },
     /** Scroll passage view's current sentence to the top third of the viewport (the line trackScroll() reads). */
+
     scrollToCurrent(behavior) {
       const el = root.querySelector(`.unit[data-order="${state.current}"]`);
       if (el) scrollUnitToThird(el, behavior);

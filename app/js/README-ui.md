@@ -182,7 +182,7 @@ open entry; `cb('settings')` re-applies theme/size/face/toggles;
 `{ size:1-8, noteSize:1-7, face:'serif'|'sans'|'dyslexic', theme:'system'|'light'|'dark',
 compact:false, showEnglish:'hidden'|'interleaved', showHighlights:true,
 showUnderlines:true, showMargin:true, showAudio:true, showSummaries:true,
-plainOpen:false, showGlossEnglish:false, showPictures:true, audioRate:0.5–1.2,
+plainOpen:false, showGlossEnglish:false, showPictures:true, lineMode:'flow'|'book', audioRate:0.5–1.2,
 panelWidth:null|px }` — mirrored to `localStorage['latin103.settings']`
 (same key as E's `store.js`), read by the inline script in `index.html` before
 first paint. `l103.week`, `l103.view` and `l103.hint.translation` also live in
@@ -244,6 +244,124 @@ Words inside notes are tokenised and tappable; `wordFrom()` resolves the unit
 through `data-for`, so lookups are recorded against the sentence. Sentence
 view shows the same block between the Latin and the translation. The fixture
 store injects sample notes on week 1 with `?fixture=1&margins=demo`.
+
+## Book lines (CONTRACT.md "Book lines")
+
+`unit.lines: [{ line, start }]` — where each printed line of the book begins
+inside `la` (`store.js` / the fixture pass it through, missing → `[]`;
+`unitLines()` in `reader.js` is the one normaliser: sorted, integers,
+duplicates dropped). `settings.lineMode: 'flow' | 'book'` (default flow;
+Settings → Reading "Book lines — one printed line per line, every line
+numbered", `toggles.bookLines` in `main.js`, no toolbar button) →
+`<article data-line-mode="flow|book">` and `reader.setLineMode(mode)`, which
+re-renders passage view and puts the current sentence back on its line.
+Sentence view is unchanged.
+
+- **Rendering** (`renderLatin()` → `renderTokens(tokens, ranges, starts)`):
+  for a unit with line data, `lineStarts(tokens, lines)` (pure,
+  `tests/ui.book-lines.test.mjs`) names the token that opens each printed
+  line — the first token at or after the offset, never whitespace, so the
+  split always falls between tokens. Before it go a `<br class="lb">` (not
+  for the unit's own first line) and a `.lineno` with `data-line`, the
+  whitespace token just before the break is dropped. Every printed line is
+  numbered, not just block starts; `dedupeLineNumbers()` hides a number
+  that lands on the same screen line as the previous one (a sentence
+  continuing the line), so each line shows its number once. A sentence that
+  ends a printed line gets a trailing `<br class="lb lb--unit">` after its
+  `.marks` (the † and play button stay on its last line) when
+  `breakAfter(unit, next)` says the next sentence opens a new line (both
+  mapped: a later line number; one unmapped: a block start). Highlight
+  glows, the yellow underlines, the audio word cursor and the play buttons
+  are untouched — the breaks and numbers sit inside the same `.la` spans.
+- **What keeps the flow layout**: units without line data (Fabellae
+  Latinae, unmapped units) render as before with their block number; a
+  week with none at all shows the Settings switch with the hint "This
+  week's text has no printed line numbers" (`bookLinesDesc()` in
+  `settings.js`, `opts.hasLines()` from `main.js` = `weekHasLines(units)`)
+  — the setting still saves and applies to other weeks. Block units (verse,
+  a speaker turn, the interleaved translation, a sentence with inline
+  margin notes) hide their trailing break by CSS; with the notes inline
+  such a sentence ends its screen line whatever the print does.
+- **Margin notes in the gutter** align with the printed line their first
+  gloss names: the `.mnote` carries `data-line`, and `firstLineTop()` finds
+  that line's `.lineno` (in the unit, else anywhere in the prose) and
+  measures the first text after it (`textTop()`, a TreeWalker over text
+  nodes that skips the numbers); a line not found falls back to the
+  sentence's first line as before. In book mode the gutter is kept whatever
+  the density of the glosses (`positionMargin(…, { demote: false })`): an
+  inline part would make every sentence with notes a block and cut the
+  printed lines; dense stretches stack below their line instead.
+- **One printed line per screen line** (QA-6 M1). The printed line, not the
+  sentence, is the unit of layout in book mode: `renderPassage()` groups the
+  mapped inline units of a line (`.unit--line`, never `has-margin`), puts
+  the line's inline pictures above it and its sentences' inline notes
+  (`.mnotes--line`) below it, so a sentence boundary never splits a line.
+  The column is sized from the data: `printedLines(units)` (pure, tested)
+  rebuilds each part's printed lines from `unit.lines`, `sizeBookColumn()`
+  measures them on a canvas in the reading face once per week/face/size and
+  sets the article's `max-width` to hold the widest, plus a right-hand
+  column for the † and play buttons — `.unit--line .marks` is absolutely
+  positioned at the text column's right edge (`--prose-pr`, `--marks-w` per
+  slot, `--marks-room` for as many slots as the room allows, at least one;
+  `--mark-i` on a second sentence ending on the same line; a set with no
+  slot stays inline, `.marks--inline`) — so no line wraps for its marks. The
+  gutter needs room for a *typical* line (the 90th percentile) plus a marks
+  slot (`marginMode`'s `minEm`), which sends 768 inline with its lines
+  whole; where the room is short (1100 beside the 24 rem panel, an OCR
+  outlier such as week 5 line 137) the longest lines wrap and their
+  numbers stay single (`lineNumberDups()`, pure: same screen line or same
+  printed line as the number shown last — two verses sharing a printed
+  line show it once). Book mode pads the article `--s-5` instead of `--s-7`
+  on wide screens; phones keep the marks inline.
+- **Scroll stability** (found while testing; general): `render()` holds the
+  article's height across the DOM swap (a momentary `min-height`) and puts
+  the scroll offset back, and `.margin, .mnote, .mpic { overflow-anchor: none }`
+  in `reader.css` (the page keeps anchoring elsewhere: pictures decoding,
+  a summary toggled, fonts arriving) — Chromium used to clamp the offset to
+  the emptied document and, anchoring on a node the margin reflow then
+  moved, carry a page deep in a chapter to its end on any re-render (a
+  `setAudioAvailable` toggle included). One synchronous correction is not
+  enough — the margin reflow (next frame), fonts and the lazy pictures each
+  move the text afterwards — so every correction is a **scroll hold**
+  (`holdScroll(place)`): `place()` runs now, on the next two frames, after
+  every `reflow()`, after each picture `load`, at 200 ms and at 500 ms,
+  with `state.settleUntil` kept ahead so `trackScroll()` never re-labels
+  the current sentence meanwhile; a wheel, a touch or a scrolling key
+  outside a dialog ends it (Escape/Done closing Settings does not). The
+  anchor (`firstUnitInView()`) is the unit at the third line — the one the
+  learner reads — and, while the DOM survives the change, the very word
+  under the eye (`wordAt()`: that unit's `.w` nearest the third line, by
+  geometry — hit-testing would find the modal Settings dialog's backdrop):
+  a sentence spanning several lines has one top, but the lines between it
+  and the reading line change with the measure. At the head of the page
+  there is no anchor. `setLineMode(mode, { settle })`
+  re-renders passage view only (sentence view renders on its next
+  `setView`); with `settle` — the learner's own switch, never a change
+  from another device — its hold is *sticky*: it puts the sentence that was
+  current back on the third line (forcing `state.current`) and
+  `keepInView()` leaves it alone. `applyDisplay()` in `main.js` runs under
+  `reader.keepInView(fn)`, and so do `applyToDocument()` (the type / notes
+  size and theme, via `applyDisplay({ first })`) and the Settings dialog's
+  live preview of a size step (`opts.applyToDocument` in `settings.js`):
+  a settings save deep in a chapter leaves the line being read where it is.
+  Study time: `main.js` no longer counts a `scroll` event as activity
+  (the boot resume, Continue and every re-placing scroll programmatically);
+  pointer, keys, wheel, touch or audio only (QA-6 m7).
+- **Quotes and brackets**: a line's `start` is its first *letter* (the
+  pipeline's `tokens_with_offsets`), so `renderTokens()` splits the non-word
+  token before the break (`; "`) at its last whitespace run: `;` ends the
+  line above, `"` opens the new line after its number. An unmapped unit
+  between mapped ones stands on the last mapped line (`breakAfter(u, next,
+  lastMapped)`), so the next mapped sentence still opens its own line.
+  `unitLines()` keeps the entries monotonic by line; `lineStarts()` snaps a
+  mid-word offset to that word; `dedupeLineNumbers()` also hides a repeated
+  `data-line` (a printed line that wraps on a phone).
+
+- **Fixture**: while `data/build/week-01.json` carries no `lines`,
+  `withDemoLines()` in `store-fixture.js` synthesises breaks for week 1
+  (every ~55 characters at a word boundary, numbered on from each block's
+  `line_no`; real data wins the moment any unit has some). `?lines=none`
+  strips the line data from every week to try the switch's hint.
 
 ## Section summaries (CONTRACT.md "Section summaries")
 

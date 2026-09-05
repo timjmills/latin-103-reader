@@ -4,6 +4,7 @@
 // when app/config.js is missing / has no SUPABASE_URL.
 
 import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs } from './sync.js';
+import { tokenize } from './tokenize.js';
 
 const LS_LOOKUPS = 'l103.lookups';
 const LS_SETTINGS = 'latin103.settings';
@@ -80,6 +81,11 @@ const DEMO_MARGIN = {
 const demoMargins = () => {
   try { return new URLSearchParams(location.search).get('margins') === 'demo'; } catch { return false; }
 };
+// ?lines=none — every unit without printed-line data, so the Book lines
+// switch's "no printed line numbers" state can be exercised on any week.
+const noLines = () => {
+  try { return new URLSearchParams(location.search).get('lines') === 'none'; } catch { return false; }
+};
 
 // Section summaries (week.parts[].summary_en / summary_la): until the build
 // carries them, week 1's first two parts get two invented ones, in memory
@@ -140,6 +146,45 @@ export function withPlainDemo(units, highlights = null) {
   return { units: out, highlights: hs };
 }
 
+// Book lines (CONTRACT.md "Book lines"): until the build carries `unit.lines`,
+// week 1 gets plausible printed-line breaks in memory only — every ~55
+// characters at a word boundary, numbered on from each block's `line_no` —
+// so the book layout can be exercised. Not the book's own line breaks; the
+// pipeline's data replaces them the moment a unit of the week has `lines`.
+// Like the pipeline, a line's `start` is the first *letter* of its first
+// word (tokenize() word starts), not the quote or bracket in front of it.
+export const DEMO_LINE_WIDTH = 55;
+/** Pure: the units with `lines` synthesised (a copy); untouched when any unit already has line data. */
+export function withDemoLines(units, width = DEMO_LINE_WIDTH) {
+  if (units.some((u) => Array.isArray(u.lines) && u.lines.length)) return units.map((u) => ({ ...u, lines: Array.isArray(u.lines) ? u.lines : [] }));
+  const out = [];
+  let line = null;   // the printed line being filled, and how much of it is used
+  let col = 0;
+  for (const u of [...units].sort((a, b) => a.order - b.order)) {
+    if (u.block_start || line == null) { line = u.line_no ?? null; col = 0; }
+    if (line == null || typeof u.la !== 'string') { out.push({ ...u, lines: [] }); continue; }
+    const lines = [];
+    const words = tokenize(u.la).filter((t) => t.isWord);
+    const re = /\S+/g;
+    let m;
+    let first = true;
+    while ((m = re.exec(u.la))) {
+      const word = m[0];
+      const need = (col > 0 ? 1 : 0) + word.length;
+      if (col > 0 && col + need > width) { line += 1; col = 0; }
+      if (first || col === 0) {
+        const w = words.find((t) => t.start >= m.index && t.start < m.index + word.length);   // the chunk's first letter (`"Quis` → Q); a letterless chunk keeps its own start
+        if (first || lines[lines.length - 1].line !== line) lines.push({ line, start: first ? 0 : (w?.start ?? m.index) });
+      }
+
+      col += (col > 0 ? 1 : 0) + word.length;
+      first = false;
+    }
+    out.push({ ...u, lines });
+  }
+  return out;
+}
+
 // Pictures (CONTRACT.md "Pictures"): data/build/pictures-week-NN.json, images
 // served from data/build/pictures/week-NN/<file> by the dev server. Until the
 // pipeline has cropped any, week 1 gets two drawn placeholders (an SVG data
@@ -181,6 +226,9 @@ async function loadWeek(weekN) {
     const demo = weekN === 1 && demoMargins();
     let units = data.units.map((u) => ({ ...u, margin: demo && DEMO_MARGIN[u.id] ? DEMO_MARGIN[u.id] : (u.margin ?? []) }));
     if (weekN === 1) units = withPlainDemo(units).units;
+    if (noLines()) units = units.map((u) => ({ ...u, lines: [] }));
+    else if (weekN === 1) units = withDemoLines(units);
+    else units = units.map((u) => ({ ...u, lines: Array.isArray(u.lines) ? u.lines : [] }));   // like store.js: never undefined
     cache.units.set(weekN, units);
     if (!cache.weeks) cache.weeks = [withDemoSummaries(data.week)];
   }

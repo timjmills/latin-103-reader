@@ -17,6 +17,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   plainOpen: false,        // "In plain words" under a note: stays open once the learner has opened one
   showGlossEnglish: false, // Settings → Reading: the English under every margin gloss, always shown
   showPictures: true,      // Settings → Reading: the textbook's illustrations beside their sentences
+  lineMode: 'flow',        // Settings → Reading "Book lines": 'book' lays passage view out one printed line per line, every line numbered (CONTRACT.md "Book lines")
   audioRate: 1,            // playback speed, one of RATE_STEPS (0.5–1.2); pitch is preserved
   panelWidth: null,        // px, chosen with the divider; null = the CSS default
   lastPosition: null,      // { week_n, unit_id, view, at }: where the learner was (CONTRACT.md "Reading progress"); null = never read

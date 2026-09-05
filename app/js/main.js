@@ -1,5 +1,5 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
-import { createReader, firstUnread, queueReads, playbackRead } from './reader.js';
+import { createReader, firstUnread, queueReads, playbackRead, weekHasLines } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
 import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice } from './settings.js';
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
@@ -503,7 +503,8 @@ async function boot() {
   let banked = { day: localDay(), ms: 0 };
   const bump = () => { lastActivity = Date.now(); };
   if (hasStudy) {
-    for (const ev of ['pointerdown', 'pointermove', 'keydown', 'wheel', 'scroll', 'touchstart']) window.addEventListener(ev, bump, { passive: true, capture: true });
+    // The learner's own input only — never `scroll`: the boot resume, Continue and every re-placing scroll programmatically, and an untouched page must bank nothing.
+    for (const ev of ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart']) window.addEventListener(ev, bump, { passive: true, capture: true });
     setInterval(tickActive, ACTIVE_TICK_MS);
     // The tab is hidden by the time the event fires; the stretch since the
     // last tick was on screen, so the closing tick counts it as visible.
@@ -666,9 +667,20 @@ async function boot() {
     summaries: { get: (s = settings) => s.showSummaries !== false, set: (on) => ({ showSummaries: on }) },   // settings-only: no toolbar button
     glossEnglish: { get: (s = settings) => !!s.showGlossEnglish, set: (on) => ({ showGlossEnglish: on }) },   // settings-only: the English under every margin gloss
     pictures: { get: (s = settings) => s.showPictures !== false, set: (on) => ({ showPictures: on }) },   // settings-only: the textbook's illustrations
+    bookLines: { get: (s = settings) => s.lineMode === 'book', set: (on) => ({ lineMode: on ? 'book' : 'flow' }) },   // settings-only: passage view laid out as printed (CONTRACT.md "Book lines")
   };
-  function applyDisplay() {
+  /**
+   * `settle`: the learner's own Book lines switch — the reader puts the current
+   * sentence back on its line after the re-render (never for a change from
+   * another device). Every toggle reflows the text above the viewport, so the
+   * whole pass runs under reader.keepInView(): the sentence in view stays put.
+   */
+  function applyDisplay({ settle = false, first = null } = {}) {
+    reader.keepInView(() => { first?.(); applyDisplayNow({ settle }); });   // `first`: applyToDocument — the type / notes size and theme change the layout too, so it runs under the same hold
+  }
+  function applyDisplayNow({ settle }) {
     paintRate();
+
     readerEl.dataset.english = settings.showEnglish;
     readerEl.dataset.highlights = settings.showHighlights ? 'on' : 'off';
     readerEl.dataset.underlines = settings.showUnderlines ? 'on' : 'off';
@@ -676,6 +688,9 @@ async function boot() {
     readerEl.dataset.summaries = toggles.summaries.get() ? 'on' : 'off';   // hides the Summary disclosures and sentence view's button
     readerEl.dataset.glossEn = toggles.glossEnglish.get() ? 'on' : 'off';   // every gloss's English shown, the per-gloss "en" chips hidden
     readerEl.dataset.pictures = picturesOn() ? 'on' : 'off';
+    // Book lines: the reader re-renders passage view on a change (a no-op before the first week and when nothing changed).
+    readerEl.dataset.lineMode = toggles.bookLines.get() ? 'book' : 'flow';
+    reader.setLineMode(readerEl.dataset.lineMode, { settle });
     if (picturesOn() !== picturesShown && unitsWeek != null) {   // switched on: fetch (re-sign) and render; off: the CSS hides them and the rows are dropped
       picturesShown = picturesOn();
       if (picturesShown) refreshPictures(); else { pictureRows = []; reader.setPictures([]); }
@@ -805,8 +820,7 @@ async function boot() {
     settings = { ...settings, ...saved };
     if (panelBusy()) settings.panelWidth = livePanel;
     mirror(settings);
-    applyToDocument(settings);
-    applyDisplay();
+    applyDisplay({ settle: 'lineMode' in patch, first: () => applyToDocument(settings) });
     settingsUI?.render(settings);   // the dialog mirrors every control that lives elsewhere (toolbar toggles, transport speed)
     if ('audioRate' in patch && live) live.textContent = fmtRate(settings.audioRate);   // just the new rate; the chip's aria-pressed says the rest
     if ('showEnglish' in patch) dismissHint();
@@ -858,9 +872,11 @@ async function boot() {
   settingsUI = initSettings(settingsDialog, {
     get: () => settings,
     set: saveSettings,
+    applyToDocument: (s) => reader.keepInView(() => applyToDocument(s)),   // the dialog's live preview of a size step reflows the text: under the same hold as the save
     onChange: (s, patch) => { if ('compact' in patch) { panel.refresh(); if (reader.getView() === 'sentence') reader.rerender(); } },
     toggles,
     focusLabel: () => weeks.find((w) => w.n === weekN)?.focus?.label ?? outline.find((w) => w.n === weekN)?.focus?.label ?? '',
+    hasLines: () => unitsWeek == null || weekHasLines(units),   // the Book lines switch explains itself while the week has no printed-line data (unknown until a week is in: no hint yet)
     audio: audio ? {
       weekLabel: () => `week ${weekN}`,
       info: () => audioInfo(),
@@ -927,9 +943,11 @@ async function boot() {
       settings = await store.getSettings();
       if (panelBusy()) settings = { ...settings, panelWidth: livePanel };
       positionKey = posKey(normaliseLastPosition(settings.lastPosition));   // another device's position: this one writes again on its next move
-      mirror(settings); applyToDocument(settings); applyDisplay(); settingsUI.render(settings);
+      mirror(settings); applyDisplay({ first: () => applyToDocument(settings) }); settingsUI.render(settings);
     }
     if (kind === 'alignments') { audio?.invalidate?.(weekN); refreshAudioAvailability(); }
+    if (kind === 'weeks' && unitsWeek != null && unitsWeek === weekN && picturesOn()) refreshPictures();   // pictures the sync's once-check fetched for the open week show now, not on the next refresh
+
     if (kind === 'progress' && hasProgress) { await loadProgress(); paintProgress(); }
     if (kind === 'study' && hasStudy) { studyDays = await store.getStudyDays(); paintProgress(); }
   };
