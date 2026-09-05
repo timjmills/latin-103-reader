@@ -919,7 +919,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
         // Book mode: a printed line that ends with this sentence ends the screen
         // line too (a trailing break, after the marks: it collapses when the
         // unit or what follows is a block — CSS hides it there besides).
-        unitEl.append(...[la, marksEl, eol[i] ? h('br', { class: 'lb lb--unit' }) : null, lined ? null : margin, h('span', { class: 'en', lang: 'en', text: u.en })].filter(Boolean));
+        unitEl.append(...[la, marksEl, eol[i] ? h('br', { class: 'lb lb--unit' }) : null, lined ? null : margin, u.en ? h('span', { class: 'en', lang: 'en', text: u.en }) : null].filter(Boolean));   // no translation (the review shelf): no row for it
         prose.append(unitEl);
         if (lined && margin) pendingNotes.push(margin);
         if (lined && (eol[i] || !inLine(i + 1)) && pendingNotes.length) { prose.append(...pendingNotes); pendingNotes = []; }   // the line's notes, under it
@@ -963,7 +963,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     wrap.append(la);
     const margin = marginBlock(u, 'mnotes mnotes--sentence');
     if (margin) wrap.append(margin);
-    wrap.append(h('p', { class: 'sentence__en en', lang: 'en', text: u.en }));
+    if (u.en) wrap.append(h('p', { class: 'sentence__en en', lang: 'en', text: u.en }));   // Latin-only units (the review shelf) get no empty row
     if (u.note) {
       wrap.append(h('section', { class: 'sentence__note', 'aria-label': 'Grammar note' },
         h('h3', { class: 'sentence__h', text: 'Note' }), h('p', { text: u.note }), plainDisclosure(u.note_simple, plain)));

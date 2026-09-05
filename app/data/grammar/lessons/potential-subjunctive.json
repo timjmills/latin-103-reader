@@ -1,0 +1,65 @@
+{
+  "skill": "potential-subjunctive",
+  "core": [
+    {
+      "type": "p",
+      "text": "The subjunctive can also soften a statement into a possibility: **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē adiuvem* — I could help you; *aliquis dīcat* — someone might say; *fortasse veniam* — I may come. Its commonest use is polite: *velim* — I would like; *nōlim* — I would rather not; *mālim* — I would prefer. Latin name: *coniunctivus potentialis*."
+    },
+    {
+      "type": "english",
+      "text": "English does the same with *would*, *could*, *might*: *I would like to come*, *one might say*."
+    },
+    {
+      "type": "rule",
+      "text": "Present (or perfect) subjunctive in a main clause, often with aliquis, quis or fortasse: 'could / would / may'. Negative nōn."
+    },
+    {
+      "type": "paradigm",
+      "key": "volo",
+      "highlight": {
+        "tense": "pres",
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w11:b15.1",
+        "w14:b13.6",
+        "w12:b16.4"
+      ],
+      "invented": [
+        {
+          "la": "Venīre velim, sed nōn possum.",
+          "en": "I would like to come, but I can't.",
+          "focus": "velim"
+        },
+        {
+          "la": "Aliquis dīcat: 'Nōn crēdō.'",
+          "en": "Someone might say: 'I don't believe it.'",
+          "focus": "dīcat"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "subjunctive-wish-command",
+      "text": "Same form, different tone: **the subjunctive as a wish or gentle command (eamus = let's go; veniat = let him come)** wants something to happen (*veniat* — let him come); the potential only says it could (*veniat* — he may come). Wishes take *nē*, possibilities *nōn*; *fortasse* or *aliquis* points to the potential."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 27) call it possibility or probability, 'often used merely to weaken a statement in order to be polite', and single out *possim, velim, nōlim, mālim*: *venīre possim* — I could come; *venīre velim* — I would like to come."
+    },
+    {
+      "type": "p",
+      "text": "With the imperfect subjunctive the possibility moves into the past or becomes unreal: *vellem* — I would wish (but it cannot be); *dīcerēs* — you would have said. The perfect subjunctive is common in cautious statements: *haud sciō an ita dīxerim* — I rather think I said so. In the second person it is the general 'you': *crēdās* — one would believe."
+    }
+  ],
+  "sources": [
+    "notes p98, 100",
+    "Ørberg cap. XXVII",
+    "A&G §445–447"
+  ]
+}

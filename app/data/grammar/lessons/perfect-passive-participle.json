@@ -1,0 +1,58 @@
+{
+  "skill": "perfect-passive-participle",
+  "core": [
+    {
+      "type": "p",
+      "text": "The fourth principal part, turned into an -us -a -um adjective, is **the perfect participle (the 'having been done' word: laudatus = praised)**: *puer laudātus* — the praised boy, the boy who has been praised. It describes a noun by something already done to it, and agrees with that noun like any adjective: *fīlum factum*, *catēna rupta*, *virī territī*. Latin name: *participium perfecti passivi*."
+    },
+    {
+      "type": "english",
+      "text": "A participle is a verb used like an adjective. English has one just like this: *a broken cup*, *a written letter* — *broken* and *written* describe the noun by what happened to it."
+    },
+    {
+      "type": "rule",
+      "text": "Participle stem + -us, -a, -um; declined like bonus. Meaning: 'having been …-ed'."
+    },
+    {
+      "type": "paradigm",
+      "key": "adj12",
+      "highlight": null
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w01:63.8",
+        "r22:80.1",
+        "r22:97.2",
+        "w13:b8.3"
+      ],
+      "invented": [
+        {
+          "la": "Puer ā magistrō laudātus gaudet.",
+          "en": "The boy praised by the teacher is glad.",
+          "focus": "laudātus"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-passive",
+      "text": "The same word with *est* becomes a whole verb, **the perfect passive (the 'was done / has been done' form: laudatus est)**: *puer laudātus est* — the boy was praised. Without *est* it just describes: *puer laudātus gaudet* — the praised boy is glad."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 21) pair Latin's two true participles: present active in -ns (*ferēns* — carrying) and perfect passive in -tus (*lātus* — carried). There is no present passive or perfect active participle for ordinary verbs; deponents fill the second gap (*locūtus* — having spoken)."
+    },
+    {
+      "type": "p",
+      "text": "Endings vary: -tus (*laudātus, audītus, scrīptus*), -sus after certain consonants (*vīsus, missus, clausus, pulsus*). Many have become plain adjectives or nouns: *parātus* (ready), *factum* (a deed), *dictum* (a saying)."
+    }
+  ],
+  "sources": [
+    "notes p80–81",
+    "Ørberg cap. XXI Grammatica Latina",
+    "A&G §494"
+  ]
+}

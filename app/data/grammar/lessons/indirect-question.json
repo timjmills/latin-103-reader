@@ -1,0 +1,67 @@
+{
+  "skill": "indirect-question",
+  "core": [
+    {
+      "type": "p",
+      "text": "A question can be asked straight (*Quid facit?* what is he doing?) or tucked inside another sentence — **an indirect question (a question folded into a sentence: nescio quid faciat = I don't know what he is doing)**. After a verb of asking, knowing or wondering (*rogat*, *scit*, *mīrātur*), the question word stays (*quis, quid, cūr, ubi, quōmodo, num*) but the verb goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). Latin name: *interrogatio obliqua*."
+    },
+    {
+      "type": "english",
+      "text": "English: *Where is he?* becomes *I don't know where he is*: only the word order changes. Latin changes the verb form instead."
+    },
+    {
+      "type": "rule",
+      "text": "Asking / knowing verb + question word + subjunctive: present after a present main verb, imperfect after a past one. 'Whether' is num or utrum … an."
+    },
+    {
+      "type": "paradigm",
+      "key": "quis",
+      "highlight": null
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w06:184.1",
+        "w13:b14.3",
+        "w07:b21.4",
+        "w05:nausicaa:185.1"
+      ],
+      "invented": [
+        {
+          "la": "Rogō ubi pater sit.",
+          "en": "I ask where father is.",
+          "focus": "sit"
+        },
+        {
+          "la": "Nesciēbam cūr puella plōrāret.",
+          "en": "I did not know why the girl was crying.",
+          "focus": "plōrāret"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "relative-pronoun",
+      "text": "*quis / quid* asks; *quī / quae / quod* (who, which) points back to a noun and keeps the indicative: *nesciō quid dīcat* (I don't know what he is saying — question) but *audiō id quod dīcit* (I hear what he says — a 'who / which' clause on a noun)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: a reported statement uses the accusative + infinitive (the 'says that …' pattern) — *dīcit eum venīre*, he says that he is coming; a reported question uses a question word + subjunctive — *rogat num veniat*, he asks whether he is coming. 'That' → infinitive; 'whether / who / why' → subjunctive."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes: an indirect question is a question that forms a dependent clause inside another sentence; English marks it by word order, Latin by the subjunctive. Their examples: *sciunt ubi sīs* (they know where you are), *quaere ab eō quō eat* (ask him where he is going), *nesciō quid faciam*."
+    },
+    {
+      "type": "p",
+      "text": "The question word can be *-ne* on the first word (*interrogāvī tuane esset pecūnia* — I asked whether the money was yours, Week 7), or *num* / *an* for 'whether'. For a question about something already over, the perfect subjunctive follows a present verb (*nesciō quis advēnerit*, Week 10) and the pluperfect a past one (*nesciēbam quis advēnisset*, Week 12). A deliberative question keeps its subjunctive when folded in: *nesciēbat quid faceret* — he did not know what to do. Ørberg's chapter 29 builds the pattern from *Quid faciam?* to *nesciō quid faciam*; chapter 32 adds *dubitat num … laudāverit*."
+    }
+  ],
+  "sources": [
+    "notes p110",
+    "Ørberg cap. XXIX, XXXII",
+    "A&G §573–575"
+  ]
+}

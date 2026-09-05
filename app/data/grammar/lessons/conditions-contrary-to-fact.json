@@ -1,0 +1,62 @@
+{
+  "skill": "conditions-contrary-to-fact",
+  "core": [
+    {
+      "type": "p",
+      "text": "For the unreal, Latin uses **the contrary-to-fact condition (si + subjunctive: 'if I were …, I would …'; 'if I had …, I would have …')**. Both halves, the *sī* (if) clause and the main one, take the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). Imperfect for an unreal present: *sī thunnus essem, in marī habitārem* — if I were a tuna, I would live in the sea. Pluperfect for an unreal past: *sī aquam bibisset, nōn mortuus esset* — if he had drunk, he would not have died. Latin name: *condicio irrealis*."
+    },
+    {
+      "type": "english",
+      "text": "English steps back in time for the unreal — *if I were rich*, *if I had known* — and adds *would*. Latin has no *would*; the subjunctive does that job."
+    },
+    {
+      "type": "rule",
+      "text": "sī / nisi + imperfect … imperfect = unreal now; pluperfect … pluperfect = unreal in the past. The halves may mix."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w12:b9.2",
+        "w12:b11.4",
+        "w12:b10.3",
+        "w12:b19.3"
+      ],
+      "invented": [
+        {
+          "la": "Sī pecūniam habērem, librum emerem.",
+          "en": "If I had money, I would buy the book.",
+          "focus": "habērem"
+        },
+        {
+          "la": "Sī vēnissēs, tē vīdissem.",
+          "en": "If you had come, I would have seen you.",
+          "focus": "vēnissēs"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "future-perfect",
+      "text": "A real future condition keeps the indicative: *sī vēneris, gaudēbō* — if you come: the future perfect (the 'will have done' tense). The subjunctive says it is not so: *sī venīrēs, gaudērem* — if you were coming."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: *utinam Rōmae essem* wishes; *sī Rōmae essem, laetus essem* reasons from the wish to its consequence. Both use the imperfect or pluperfect subjunctive; *sī* plus a second clause makes it a condition."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (Week 33, 'Contrafactual Subjunctive'): the action is untrue and merely hypothetical; the imperfect makes a hypothetical set in the present, the pluperfect one set in the past, and the same tenses appear in unreal comparisons — *ille vir ululat tamquam lupus esset* (he howls as if he were a wolf), *cecidit tamquam lapide percussus esset* — and after *potius quam* (rather than): *equō vehor potius quam ambulārem*. The notes also count the present subjunctive as the future member of the set, the 'future less vivid': *sī nāvis veniat, salvus sim* — if a ship were to come, I would be saved; *loqueris tamquam veniās*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 33 builds it from the school scene: *sī magistrō pāruissēs, attentē audīvissēs, rēctē scrīpsissēs, ā magistrō laudātus essēs* — if you had obeyed, listened, written correctly, you would have been praised; *etiam sī industrius fuissem, magister mē nōn laudāvisset*. Chapter 34 has Martial's *vellem sī magis esset anus*. Mixed conditions are common: 'if I had learned then (pluperfect), I would now be wise (imperfect)' is *sī tum didicissem, nunc sapiēns essem*. Choose each half's tense by its own time."
+    }
+  ],
+  "sources": [
+    "notes p119",
+    "Ørberg cap. XXXIII Grammatica Latina",
+    "A&G §517, §516b, §524"
+  ]
+}

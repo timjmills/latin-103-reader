@@ -1,0 +1,58 @@
+{
+  "skill": "enclitics",
+  "core": [
+    {
+      "type": "p",
+      "text": "Two tiny words never stand alone but are glued to the end of another word: **the tacked-on words -que ('and') and -ne (turns a sentence into a question)**, *encliticae -que, -ne*. *-que* joins the word it sits on to what came before: *puerī puellaeque* = boys and girls, with the 'and' hanging off *puellae*. *-ne* sits on the first word of a sentence and makes it a yes/no question: *Estne Gallia in Eurōpā?* = Is Gaul in Europe?"
+    },
+    {
+      "type": "english",
+      "text": "English asks a yes/no question by moving the verb to the front (*is* Gaul in Europe?). Latin keeps the order and adds *-ne* to the word it asks about."
+    },
+    {
+      "type": "rule",
+      "text": "-que = 'and', added to the second of the two things joined; -ne on the first word = a yes/no question. Read the word without its tail first."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r01:11.1",
+        "r02:49.1",
+        "r03:53.1",
+        "r01:46.1"
+      ],
+      "invented": [
+        {
+          "la": "Iūlius Aemiliaque in vīllā habitant.",
+          "en": "Julius and Aemilia live in the villa.",
+          "focus": "Aemiliaque"
+        },
+        {
+          "la": "Dormitne pater?",
+          "en": "Is father asleep?",
+          "focus": "Dormitne"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "subjunctive-wish-command",
+      "text": "The tail *-ne* is not the word *nē* (so that … not; don't). *-ne* is short, glued on, and asks; *nē* stands on its own with a long vowel, opens a clause and forbids: *Venitne?* — is he coming? *Nē veniat!* — let him not come."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes have only a heading for this topic (week 18), so the fuller picture comes from Ørberg and Allen & Greenough. A third enclitic, *-ve*, means 'or'. All three throw the word's stress onto the syllable just before them (*puellae-QUE*)."
+    },
+    {
+      "type": "p",
+      "text": "Not every word ending in -que is 'and' plus a word: *quoque* (also), *neque* (and not), *itaque* (therefore), *ubīque* (everywhere) and *-cumque* words are whole words. *-que* can join two sentences as well as two words, sitting on the first word of the second: *Iūlius Quīntum videt eumque interrogat* (r03:53.1). *-ne* attaches to *nōn* to make *nōnne*, which expects the answer yes; *num* (Num Crēta oppidum est?) expects no. Ørberg cap. I (-ne, -que), cap. III (-que on a pronoun); A&G §121, §332."
+    }
+  ],
+  "sources": [
+    "notes p62 (heading only)",
+    "Ørberg cap. I & III Grammatica Latina",
+    "A&G §121, §332"
+  ]
+}

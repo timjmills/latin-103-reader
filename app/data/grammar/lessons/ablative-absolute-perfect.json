@@ -1,0 +1,53 @@
+{
+  "skill": "ablative-absolute-perfect",
+  "core": [
+    {
+      "type": "p",
+      "text": "A noun and a perfect participle set apart in the ablative make **the ablative absolute with a perfect participle ('with X done', 'after X was done')**: *Mīnōtaurō occīsō* — the Minotaur having been killed, that is, after the Minotaur was killed. It gives background already finished when the main action happens, and stands grammatically outside the rest of the sentence. Latin name: *ablativus absolutus cum participio perfecti*."
+    },
+    {
+      "type": "english",
+      "text": "English does it clumsily: *that said, he left*; *with the food prepared, he called everyone*. Usually we make a clause: *after he had said that …*."
+    },
+    {
+      "type": "rule",
+      "text": "Ablative noun + ablative perfect participle agreeing with it, usually first in the sentence with a comma: 'after / when / once X had been done'."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w01:132.1",
+        "w01:81.2",
+        "w12:b13.2",
+        "w02:141.1"
+      ],
+      "invented": [
+        {
+          "la": "Cēnā parātā, omnēs ad mēnsam veniunt.",
+          "en": "Dinner having been prepared, everyone comes to the table.",
+          "focus": "Cēnā parātā"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-absolute",
+      "text": "With a present participle, **the ablative absolute (a noun + participle set apart in the ablative: 'with X doing')** means 'while' (*pluviā cadente* — while the rain is falling); with a perfect participle it means 'after' (*iānuā apertā* — after the door was opened). The tense of the participle is the clue."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 22) list *hōc dictō* (that said), *cibō parātō*, *mūrīs aedificātīs*, and point out that a deponent participle keeps its active sense: *tempestāte ortā* — a storm having arisen; *marītō mortuō* — her husband having died."
+    },
+    {
+      "type": "p",
+      "text": "The noun in the absolute is never the subject or object of the main verb; if it were, Latin would use a plain participle agreeing with it instead (*Thēseus fīlum secūtus exiit*). Ørberg glosses the construction as a clause: *cane vīnctō = postquam canis vīnctus est*."
+    }
+  ],
+  "sources": [
+    "notes p85",
+    "Ørberg cap. XXII (margin)",
+    "A&G §419–420"
+  ]
+}

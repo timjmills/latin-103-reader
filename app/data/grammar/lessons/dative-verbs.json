@@ -1,0 +1,77 @@
+{
+  "skill": "dative-verbs",
+  "core": [
+    {
+      "type": "p",
+      "text": "A handful of common verbs put their object in **the dative (the 'to/for' form)** where English uses a plain object: *pāreō* (obey), *placeō* (please), *noceō* (harm), *crēdō* (believe, trust), *persuādeō* (persuade), *ignōscō* (forgive), *serviō* (serve), *faveō* (favour), *invideō* (envy), *resistō* (resist), *studeō* (be keen on), and compounds of *sum* like *adsum* (be there to help) and *prōsum* (do good to). *Servī dominō pārent* — the slaves obey the master. Latin name: *verba cum dativo*."
+    },
+    {
+      "type": "english",
+      "text": "Think of older English: *give ear to*, *be pleasing to*, *do harm to*. The Latin verb means 'be obedient to', 'be trusting to', so a 'to' word follows."
+    },
+    {
+      "type": "rule",
+      "text": "Learn each verb with its case: pāreō, placeō, noceō, crēdō, persuādeō, ignōscō, serviō, faveō, invideō, studeō, resistō + dative. Impersonal licet, libet, placet mihi = it is allowed / pleasing to me."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "dat"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "ego",
+      "highlight": {
+        "case": "dat"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w11:b39.2",
+        "w11:b11.3",
+        "w13:b21.1",
+        "w14:b4.2"
+      ],
+      "invented": [
+        {
+          "la": "Puerī magistrō pārent.",
+          "en": "The boys obey the teacher.",
+          "focus": "magistrō"
+        },
+        {
+          "la": "Nēmō servō invidet.",
+          "en": "No one envies a slave.",
+          "focus": "servō"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "accusative-object",
+      "text": "These verbs cannot take the accusative (the object form): *crēdō tibi*, never *crēdō tē*. So in the passive they go impersonal: *mihi persuādētur*, 'I am persuaded' (literally: it is persuaded to me). Learn the verb and its case as one item."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: *dat puerō librum* has a receiver (dative) and a thing given (accusative) — the ordinary indirect object. *nocet puerō* has only the dative: the verb itself demands it. Both are datives; only the second is the verb's object."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes have no page on these verbs; Ørberg's margin notes gloss each one with *(dat)* as it appears, and chapter 34 gathers them in the poems: *cui favēs* (whom you favour), *sī tibi dī favent*, *nūllī nūbere* (marry no one — *nūbō*, marry, takes the dative of the man), *nōbīs carmina placent*, *nēmō tibi nocēbit*. Allen & Greenough group the meanings: favour, help, please, trust, believe, persuade, command, obey, serve, resist, envy, threaten, pardon, spare — *faveō, auxilior, placeō, fīdō, crēdō, persuādeō, imperō, pāreō, serviō, resistō, invideō, minor, ignōscō, parcō*."
+    },
+    {
+      "type": "p",
+      "text": "Compounds of *sum* take the dative of the person: *adsum amīcō* (I stand by my friend), *dēsum* (fail: *amīcī nōbīs dēsunt*, Week 11), *prōsum* (benefit: *precēs tibi nōn prōsunt*, Week 4), *obsum* (harm), *intersum* (take part in). The impersonals *licet* (it is allowed), *libet* (it pleases), *placet* (it seems good) take the dative of the person: *sī tibi libet* — if you like (Week 13). Beware the near-synonyms that take the accusative anyway: *iuvō* and *adiuvō* (help), *dēlectō* (delight), *iubeō* (order) — *iubeō tē*, but *imperō tibi*. And *crēdō* with a thing believed takes the accusative + infinitive: *crēdō eum latēre*."
+    }
+  ],
+  "sources": [
+    "Ørberg cap. XXXIV (margin glosses)",
+    "Ørberg cap. VII Grammatica Latina",
+    "A&G §367, §370",
+    "(no notes page)"
+  ]
+}

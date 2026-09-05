@@ -1,0 +1,60 @@
+{
+  "skill": "accusative-destination",
+  "core": [
+    {
+      "type": "p",
+      "text": "Movement towards a place takes *ad* (to), *in* (into) or *sub* (under, going under) with **the accusative (the 'to/into' form after ad, in)**, *accūsātīvus dīrēctiōnis*: *ad vīllam it* = he goes to the villa; *in hortum currit* = he runs into the garden. The question word is *quō?* (where to?). Names of towns and *domum* (home) drop the preposition: *Rōmam it* = he goes to Rome."
+    },
+    {
+      "type": "english",
+      "text": "*To*, *into*, *towards* mark the goal of a movement: *she went to Rome*. English uses the same *in* for being in and going in; Latin keeps the word but changes the noun's ending."
+    },
+    {
+      "type": "rule",
+      "text": "Going somewhere: *ad*, *in*, *sub* + accusative (-am, -um; plural -ās, -ōs). Town names and *domum* stand alone in the accusative."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl1",
+      "highlight": {
+        "case": "acc"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r06:20.1",
+        "r06:50.1",
+        "r07:66.1",
+        "r07:69.2"
+      ],
+      "invented": [
+        {
+          "la": "Māter cum fīliā ad tabernam ambulat.",
+          "en": "The mother walks to the shop with her daughter.",
+          "focus": "tabernam"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-place",
+      "text": "*In vīllā* (ablative): in the villa, at rest. *In vīllam* (accusative): into the villa, arriving. The verb usually gives it away: *est*, *habitat*, *dormit* go with the ablative; *it*, *venit*, *currit*, *intrat* with the accusative. The same test works for *sub*."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: a destination may be physical, logical or in time; with most prepositions (*contrā*, *per*, *ante*) the accusative is simply the case prepositions take, so 'destination' and 'object of a preposition' need not be told apart. It matters only for *in* and *sub*, which switch to the ablative when nothing moves, and for the bare accusative of towns and *domum* (*vir domum venit* — the man comes home)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VI lines up the three questions: *quō?* Rōmam, Tusculum (accusative); *unde?* Rōmā, Tusculō (ablative); *ubi?* Rōmae, Tusculī (locative). *Per* + accusative = through (*per ōstium*, *per portam*), and *ante* / *post* + accusative give a fixed position (*ante tabernam cōnsistunt* — they stop in front of the shop, r08:44.1). A&G §426–427."
+    }
+  ],
+  "sources": [
+    "notes p18",
+    "Ørberg cap. VI Grammatica Latina",
+    "A&G §426–427"
+  ]
+}

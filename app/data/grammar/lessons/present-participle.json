@@ -1,0 +1,18 @@
+{
+  "skill": "present-participle",
+  "core": [
+    { "type": "p", "text": "Add *-ns* to a verb's stem and you get an adjective: **the present participle (the '-ing' word that describes a noun)**. *dormīre* (to sleep) → *dormiēns* (sleeping); *canere* (to sing, crow) → *canēns*; *vigilāre* (to be awake) → *vigilāns*. It describes a noun and agrees with it, taking the 3rd-declension endings on the stem *-nt-*: *puer dormiēns* (the sleeping boy), *puerum dormientem*, *puerī dormientis*, *puerōs dormientēs*. It keeps its verb-power and can have an object: *gallum canentem audit* — he hears the cock crowing. Latin name: participium praesentis." },
+    { "type": "english", "text": "A participle is a verb used like an adjective: *the fleeing soldiers*, *a boy sleeping in bed*. An *-ing* word used as a noun (*sleeping is pleasant*) is a gerund." },
+    { "type": "rule", "text": "Stem + -ns (genitive -ntis): -āns, -ēns, -ēns, -iēns by conjugation; agrees with its noun like a 3rd-declension adjective." },
+    { "type": "paradigm", "key": "conj3", "highlight": { "mood": "ptc", "tense": "pres" } },
+    { "type": "paradigm", "key": "adj3" },
+    { "type": "examples", "units": ["r14:22.1", "r14:19.3", "r14:34.2", "r14:36.1"], "invented": [ { "la": "Māter fīliam cantantem audit.", "en": "The mother hears her daughter singing.", "focus": "cantantem" } ] },
+    { "type": "confusion", "with": "gerund", "text": "Both come out as *-ing* in English. The participle ends in *-ns / -nt-* and describes a noun that is doing something: *puer dormiēns*. The gerund (the '-ing' noun form: ad bibendum = for drinking) ends in *-nd-* and names the action itself: *ad dormiendum* — for sleeping. *-nt-* = someone doing it; *-nd-* = the doing." }
+  ],
+  "more": [
+    { "type": "p", "text": "The ablative singular is *-e* when the participle works as a verb (*ā puerō dormiente*, and in the ablative absolute), but *-ī* when it has become a plain adjective (*ā patre amantī*, *sapientī*). The genitive plural is *-ium*, the neuter plural *-ia*: *animālia volantia* — flying animals." },
+    { "type": "p", "text": "The present participle means *at the same time as the main verb*, whatever that tense is: *puer dormiēns gallum nōn audīvit* — while he was sleeping he did not hear. Some participles have turned into ordinary adjectives or nouns: *sapiēns* (wise), *parēns* (parent), *oriēns* (the east, where the sun is rising)." },
+    { "type": "p", "text": "Your notes: the active participle adds *-(e)ns* to the stem; the *e* drops after *a-* and *e-*stems (*ambulāns, vidēns*) and stays in consonant, *-iō* and *i-*stems (*frangēns, percutiēns, veniēns*); every other form adds *-(e)nt-* plus a 3rd-declension ending, agreeing in case, number and gender; a participle may take an object or a phrase to form a participial phrase (*the soldiers fleeing from the battlefield*). Ørberg (chapter XIV): *vigilāns, iacēns, canēns, dormiēns* are participles, adjectives of the 3rd declension with genitive *-antis / -entis* and ablative *-e* or *-ī*." }
+  ],
+  "sources": ["notes p45–46", "Ørberg cap. XIV Grammatica Latina", "A&G §117–119, §488–492"]
+}

@@ -80,7 +80,7 @@ skill("adjective-agreement", "Adjective agreement", "an adjective agreeing with 
       "An adjective takes the gender, number and case of its noun (malus, mala, malum); the endings need not rhyme with the noun's.")
 
 skill("enclitics", "Enclitics -que and -ne", "the tacked-on words -que ('and') and -ne (turns a sentence into a question)", "encliticae -que, -ne", "syntax", 1, 18, [62],
-      ["nominative-subject"], [],
+      ["nominative-subject"], ["subjunctive-wish-command"],   # -ne on a verb (venitne?) against ne + subjunctive (ne veniat): the builder adds the reverse link
       [], None,
       [r"(?i)\b\w{3,}(que|ne|ve)\b"],
       [{"enc": "que"}, {"enc": "ne"}],

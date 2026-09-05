@@ -1,0 +1,71 @@
+{
+  "skill": "deliberative-subjunctive",
+  "core": [
+    {
+      "type": "p",
+      "text": "A question that expects no answer because the speaker is at a loss uses **the deliberative subjunctive (the 'what am I to do?' question: quid faciam?)**. The verb is the present subjunctive (the 'may / let' form), usually first person: *Quid faciam?* what am I to do? *Quō eāmus?* where are we to go? In a past story the imperfect subjunctive: *quid facerem?* what was I to do? Latin name: *coniunctivus deliberativus*."
+    },
+    {
+      "type": "english",
+      "text": "English: *What am I to do? What should I say? How could we live?* — a question about what ought to happen, not about what is happening."
+    },
+    {
+      "type": "rule",
+      "text": "Question word + first-person present subjunctive = 'am I to …?', 'should we …?'; the negative is nōn."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "subj",
+        "tense": "pres",
+        "person": 1
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w07:b4.3",
+        "w07:b41.2",
+        "w07:b12.2",
+        "w12:b16.4"
+      ],
+      "invented": [
+        {
+          "la": "Quid dīcam patrī?",
+          "en": "What am I to say to my father?",
+          "focus": "dīcam"
+        },
+        {
+          "la": "Utrum maneam an fugiam?",
+          "en": "Am I to stay or run away?",
+          "focus": "maneam"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "future-active",
+      "text": "In the 3rd and 4th conjugation the first person singular is the same in the future (the 'will do' tense) and the present subjunctive: *faciam*, *vīvam*. Only the tone decides: a real 'what will I do?' against a helpless 'what am I to do?'. Other persons differ: *faciēs* is future, *faciās* subjunctive."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: put the same question after *nesciō* and it becomes an indirect question with the same subjunctive — *nesciō quid faciam*, I don't know what to do. Standing alone with a question mark, it is deliberative."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes: a doubtful question, often expressing frustration, sometimes used for rhetorical effect — *Quis mē dīligat?* (who could ever love me?), *Quōmodo vīvam?* (how am I supposed to live?). Third-person deliberatives exist but are rare in the course."
+    },
+    {
+      "type": "p",
+      "text": "The same form without a question is a wish or an exhortation (*vīvāmus, amēmus* — let us live, let us love); the question mark and a question word make it deliberative. Ørberg's chapter 29 has the merchant's *Quid faciam?* and the steersman's *Quōmodo vīvāmus sine pecūniā?*"
+    }
+  ],
+  "sources": [
+    "notes p111",
+    "Ørberg cap. XXIX",
+    "A&G §444"
+  ]
+}

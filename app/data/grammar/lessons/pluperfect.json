@@ -1,0 +1,61 @@
+{
+  "skill": "pluperfect",
+  "core": [
+    {
+      "type": "p",
+      "text": "To place one past action before another, Latin uses **the pluperfect (the 'had done' tense)**: *puer ūmidus erat, quod per imbrem ambulāverat* — the boy was wet because he had walked through the rain. Active: perfect stem + -era- + the ordinary endings: *ambulāveram, -erās, -erat, -erāmus, -erātis, -erant*. Passive and deponent: participle + *eram, erās, erat …*: *captus erat* — he had been caught; *profectī erant* — they had set out. Latin name: *plusquamperfectum indicativi*."
+    },
+    {
+      "type": "english",
+      "text": "English marks it with *had*: *he had come*, *they had gone*. It is the 'past of the past'."
+    },
+    {
+      "type": "rule",
+      "text": "Active: perfect stem + -eram (that is, the perfect infinitive minus -isse, plus -eram). Passive: participle + eram."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "plupf",
+        "mood": "ind"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w04:135.1",
+        "w03:minos:b5.1",
+        "r24:110.1",
+        "r24:83.1"
+      ],
+      "invented": [
+        {
+          "la": "Puer, quī diū dormīverat, tandem surrēxit.",
+          "en": "The boy, who had slept a long time, at last got up.",
+          "focus": "dormīverat"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-active",
+      "text": "*Scrīpsit* is **the perfect (the 'did / has done' tense)**: he wrote. *Scrīpserat* adds -era-: he had written, before something else in the story. Find the -era- (or the -erat / -erant with a participle) and you have the pluperfect."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 24) sort out the English: the present perfect (*he has come*) is a sense of the Latin perfect; the past perfect (*he had come*) is the pluperfect. Their examples: *ille vēnerat*, *istī profectī erant*, *vīderāmus*, *advēneram*."
+    },
+    {
+      "type": "p",
+      "text": "*Sum* has *fueram, fuerās, fuerat …*. In stories the pluperfect often sits in a *postquam*, *quod* or relative clause (*quae rēx fēcerat* — which the king had done) or in a report of the past: *dīxit sē scrīpsisse* becomes *dīxerat …* when the whole scene is earlier."
+    }
+  ],
+  "sources": [
+    "notes p90–91",
+    "Ørberg cap. XXIV Grammatica Latina",
+    "A&G §477"
+  ]
+}

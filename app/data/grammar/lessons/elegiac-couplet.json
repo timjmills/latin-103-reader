@@ -1,0 +1,61 @@
+{
+  "skill": "elegiac-couplet",
+  "core": [
+    {
+      "type": "p",
+      "text": "Latin verse runs not on rhyme but on **the metre (the rhythm of a line: the hexameter and pentameter of the elegiac couplet, Catullus's eleven-syllable line)** — a fixed pattern of long (–) and short (⏑) syllables (the prosody lesson says which). Syllables group into feet: a dactyl (– ⏑ ⏑, *fē-mi-na*) or a spondee (– –, *nē-mō*). Latin name: *versus: hexameter, pentameter, hendecasyllabus*."
+    },
+    {
+      "type": "english",
+      "text": "Like *DUM-da-da DUM-da-da* in a limerick: the beat is the pattern, the words must fit it. 'Long' means takes longer to say, not louder."
+    },
+    {
+      "type": "rule",
+      "text": "Hexameter: six feet of dactyls or spondees, fifth nearly always a dactyl, sixth two syllables. Pentameter: two halves of two and a half feet with a break (||), the second half always dactyl, dactyl, syllable. Hexameter + pentameter = elegiac couplet."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w13:b18.1",
+        "w13:b18.2",
+        "w14:b11.1",
+        "w14:b11.2"
+      ],
+      "invented": [
+        {
+          "la": "Sīc nautae currunt, sīc ventus flāmina mittit.",
+          "en": "So the sailors run, so the wind sends its blasts. (a made-up hexameter: – – | – – | – – | – – | – ⏑ ⏑ | – –)",
+          "focus": "flāmina"
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Ovid (Week 13): *Nōn ego | nōbili|um sede|ō studi|ōsus e|quōrum* — five dactyls, spondee; *cui tamen | ipsa fa|vēs || vincat ut | ille pre|cor* — dactyl, dactyl, half, twice. *um* is long before *s*; *sus* stays short."
+    },
+    {
+      "type": "confusion",
+      "with": "prosody-scansion",
+      "text": "Metre is the pattern to fill; prosody is the rules for syllable length and swallowed vowels. Mark syllables first, then divide into feet."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Martial's couplet (Week 14) scanned: *Nōn amo | tē, Sabi|dī, nec | possum | dīcere | quārē* — dactyl, dactyl, spondee, spondee, dactyl, spondee; *Hoc tan|tum pos|sum || dīcere | nōn amo | tē* — spondee, spondee, half; dactyl, dactyl, half. Twice the final *-ō* of *amō* is counted short, a licence Ørberg notes (*volŏ, nēmŏ*); *nec* and *Hoc* are long because a consonant follows."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 34 (*Dē versibus*) explains the names: the hexameter from Greek *hex*, six, because it has six feet, five dactyls (spondees may replace them, but the fifth is always a dactyl) and a final spondee or trochee (– ⏑); the pentameter from *pente*, five, because its two halves of two and a half feet make five, and the second half admits no spondees; a pentameter always follows a hexameter. The break in the middle of a pentameter, and the word-break usually found in the third foot of a hexameter (*Nōn amō tē, Sabidī, || nec possum*), is the caesura, the natural pause when reading aloud."
+    },
+    {
+      "type": "p",
+      "text": "Catullus's hendecasyllable (Greek *hendeka*, eleven) has eleven syllables in five feet: spondee, dactyl, trochee, trochee, spondee or trochee — *Vīvā|mus mea | Lesbi(a) | atqu(e) a|mēmus*; *Passer | mortuu(s) | est me|ae pu|ellae*; *Cēnā|bis bene | mī Fa|bull(e) a|pud mē*. Its first foot is occasionally an iamb (⏑ –) or a trochee. Ovid wrote the *Amōrēs* in couplets; Martial's epigrams use both the couplet and the hendecasyllable."
+    }
+  ],
+  "sources": [
+    "Ørberg cap. XXXIV Grammatica Latina (Dē versibus)",
+    "A&G §615–616, §625",
+    "(no notes page)"
+  ]
+}

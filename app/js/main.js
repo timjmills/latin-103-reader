@@ -1,8 +1,9 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader, firstUnread, queueReads, playbackRead, weekHasLines } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
-import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice } from './settings.js';
+import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek } from './settings.js';
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
+import { mountGrammar } from './grammar/index.js';   // the Grammar section (GRAMMAR-CONTRACT.md): mounted once the reader is ready
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const LS_WEEK = 'l103.week';
@@ -167,47 +168,76 @@ async function boot() {
       try { weekTotals.set(w.n, (await store.getUnits(w.n)).length); } catch { /* the row stays without a count */ }
     }));
   }
-  function renderWeeksMenu(currentN) {
-    const byWeek = progressByWeek(progress);
-    weeksList.replaceChildren(...outline.map((c) => {
-      const lib = weeks.find((w) => w.n === c.n);
-      const li = document.createElement('li');
-      li.className = 'weeks__item';
-      const b = document.createElement('button');
-      b.type = 'button'; b.className = 'weeks__row'; b.dataset.n = String(c.n);
-      if (!lib) b.disabled = true;
-      if (c.n === currentN) b.setAttribute('aria-current', 'true');
-      const n = document.createElement('span'); n.className = 'weeks__n'; n.textContent = String(c.n);
-      const name = document.createElement('span'); name.className = 'weeks__name'; name.lang = 'la'; name.textContent = lib?.title ?? c.title;
-      const meta = document.createElement('span'); meta.className = 'weeks__meta';
-      meta.textContent = [c.reading, c.focus?.label].filter(Boolean).join(' — ');
-      const state = document.createElement('span'); state.className = 'weeks__state';
-      state.textContent = lib ? (c.n === currentN ? 'Reading now' : '') : 'Not added yet';
-      b.append(n, name, meta, state);
-      // A thin bar and "42 of 93 sentences" / "not started" / "finished ✓" for every week in the library.
-      const total = weekTotals.get(c.n) ?? 0;
-      if (lib && hasProgress && total > 0) {
-        const read = Math.min(total, byWeek.get(c.n) ?? 0);
-        const prog = document.createElement('span'); prog.className = 'weeks__progress';
-        prog.dataset.state = read === 0 ? 'none' : read >= total ? 'done' : 'part';
-        const bar = document.createElement('span'); bar.className = 'weeks__bar'; bar.setAttribute('aria-hidden', 'true');
-        const fill = document.createElement('span'); fill.className = 'weeks__bar-fill'; fill.style.width = `${Math.round((read / total) * 100)}%`;
-        bar.append(fill);
-        const count = document.createElement('span'); count.className = 'weeks__count'; count.textContent = progressText(read, total);
-        prog.append(bar, count);
-        // "· about 2 h left" at the current pace (timeLeftText; "finished ✓" already says the rest).
-        const left = timeLeftFor(read, total);
-        if (left) { const l = document.createElement('span'); l.className = 'weeks__left'; l.textContent = `· ${left}`; prog.append(l); }
-        b.append(prog);
-      }
-      li.append(b);
-      return li;
-    }));
+  // The menu: the 14 course weeks, then the review shelf (GRAMMAR-CONTRACT.md
+  // "Review shelf": Familia Romana I–XXIV, library weeks n = 100 + chapter)
+  // under one disclosure heading — collapsed by default, remembered in
+  // settings.shelfOpen, opened for the visit when the current week is on it.
+  const shelfOpen = () => !!settings.shelfOpen;
+  function weekRow(entry, currentN) {
+    const { n, outline: c, lib } = entry;
+    const shelf = isShelfWeek(n);
+    const title = lib?.title ?? c?.title ?? '';
+    const li = document.createElement('li');
+    li.className = 'weeks__item';
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'weeks__row'; b.dataset.n = String(n);
+    if (shelf) b.dataset.shelf = '';
+    if (!lib) b.disabled = true;
+    if (n === currentN) b.setAttribute('aria-current', 'true');
+    const num = document.createElement('span'); num.className = 'weeks__n'; num.textContent = shelf ? entry.numeral : String(n);
+    if (shelf) num.setAttribute('aria-label', `Chapter ${entry.numeral}`);
+    const name = document.createElement('span'); name.className = 'weeks__name'; name.lang = 'la'; name.textContent = title;
+    const meta = document.createElement('span'); meta.className = 'weeks__meta';
+    meta.textContent = shelf ? (lib?.focus?.label ?? '') : [c?.reading, c?.focus?.label].filter(Boolean).join(' — ');
+    const state = document.createElement('span'); state.className = 'weeks__state';
+    state.textContent = lib ? (n === currentN ? 'Reading now' : '') : 'Not added yet';
+    b.append(num, name, meta, state);
+    // A thin bar and "42 of 93 sentences" / "not started" / "finished ✓" for every week in the library.
+    const total = weekTotals.get(n) ?? 0;
+    if (lib && hasProgress && total > 0) {
+      const read = Math.min(total, progressByWeek(progress).get(n) ?? 0);
+      const prog = document.createElement('span'); prog.className = 'weeks__progress';
+      prog.dataset.state = read === 0 ? 'none' : read >= total ? 'done' : 'part';
+      const bar = document.createElement('span'); bar.className = 'weeks__bar'; bar.setAttribute('aria-hidden', 'true');
+      const fill = document.createElement('span'); fill.className = 'weeks__bar-fill'; fill.style.width = `${Math.round((read / total) * 100)}%`;
+      bar.append(fill);
+      const count = document.createElement('span'); count.className = 'weeks__count'; count.textContent = progressText(read, total);
+      prog.append(bar, count);
+      // "· about 2 h left" at the current pace (timeLeftFor; "finished ✓" already says the rest) — course weeks only: the pace is the 103 reading's.
+      const left = timeLeftFor(read, total, n);
+      if (left) { const l = document.createElement('span'); l.className = 'weeks__left'; l.textContent = `· ${left}`; prog.append(l); }
+      b.append(prog);
+    }
+    li.append(b);
+    return li;
   }
+  function renderWeeksMenu(currentN) {
+    const { course, shelf } = groupWeeks(outline, weeks);
+    const items = course.map((e) => weekRow(e, currentN));
+    if (shelf.length) {
+      const open = shelfOpen() || shelf.some((e) => e.n === currentN);
+      const li = document.createElement('li');
+      li.className = 'weeks__group';
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'weeks__group-btn'; btn.dataset.group = 'shelf';
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-controls', 'weeks-shelf');
+      const caret = document.createElement('span'); caret.className = 'weeks__group-caret'; caret.setAttribute('aria-hidden', 'true'); caret.textContent = '\u25b8';
+      const name = document.createElement('span'); name.className = 'weeks__group-name'; name.textContent = 'Review shelf \u00b7 Familia Romana I\u2013XXIV';
+      const count = document.createElement('span'); count.className = 'weeks__group-count'; count.textContent = `${shelf.length} chapter${shelf.length === 1 ? '' : 's'}`;
+      btn.append(caret, name, count);
+      const list = document.createElement('ol');
+      list.id = 'weeks-shelf'; list.className = 'weeks__group-list'; list.hidden = !open;
+      list.append(...shelf.map((e) => weekRow(e, currentN)));
+      li.append(btn, list);
+      items.push(li);
+    }
+    weeksList.replaceChildren(...items);
+  }
+  const weekTitle = (n) => (weeks.find((w) => w.n === n) ?? outline.find((w) => w.n === n))?.title ?? '';
   function setWeekButton(n) {
-    const c = outline.find((w) => w.n === n) || weeks.find((w) => w.n === n);
-    weekBtn.querySelector('.week__num').textContent = `Week ${n}`;
-    weekBtn.querySelector('.week__title').textContent = c?.title ?? '';
+    weekBtn.querySelector('.week__num').textContent = weekNumberLabel(n);   // "Week 3" / "Cap. VII"
+    weekBtn.querySelector('.week__title').textContent = weekTitle(n);
   }
   weekBtn.addEventListener('click', async () => {
     await ensureWeekTotals();
@@ -217,13 +247,24 @@ async function boot() {
   });
   weeksDialog.querySelector('[data-close="weeks"]').addEventListener('click', () => weeksDialog.close());
   weeksDialog.addEventListener('click', (e) => { if (e.target === weeksDialog) weeksDialog.close(); });
-  weeksList.addEventListener('click', (e) => {
+  weeksList.addEventListener('click', async (e) => {
+    // The shelf's heading folds its chapters away or out; the choice is kept in settings (shelfOpen).
+    const g = e.target.closest('.weeks__group-btn');
+    if (g) {
+      const on = g.getAttribute('aria-expanded') !== 'true';
+      g.setAttribute('aria-expanded', String(on));
+      const list = document.getElementById(g.getAttribute('aria-controls'));
+      if (list) list.hidden = !on;
+      if (live) live.textContent = on ? 'Review shelf shown.' : 'Review shelf hidden.';
+      await saveSettings({ shelfOpen: on });
+      return;
+    }
     const b = e.target.closest('.weeks__row'); if (!b || b.disabled) return;
     weeksDialog.close(); loadWeek(Number(b.dataset.n));
   });
-  // Arrow keys move between the rows (Home/End to the first/last); Tab still works.
+  // Arrow keys move between the rows and the shelf heading (Home/End to the first/last); Tab still works.
   weeksList.addEventListener('keydown', (e) => {
-    const rows = [...weeksList.querySelectorAll('.weeks__row')];
+    const rows = [...weeksList.querySelectorAll('.weeks__row, .weeks__group-btn')].filter((el) => !el.closest('[hidden]'));
     const i = rows.indexOf(e.target);
     if (i < 0) return;
     const next = { ArrowDown: Math.min(rows.length - 1, i + 1), ArrowUp: Math.max(0, i - 1), Home: 0, End: rows.length - 1 }[e.key];
@@ -358,7 +399,7 @@ async function boot() {
     let quiet = '';
     if (!audio) quiet = 'Audio playback is not available in this build.';
     else if (!info) quiet = 'Checking for a recording…';
-    else if (!info.hasAudio) quiet = 'No recording for this week yet';
+    else if (!info.hasAudio) quiet = `No recording for this ${weekPhrase(weekN).split(' ')[0]} yet`;
     else if (!info.alignedCount) quiet = 'Recording uploaded — align it in Settings → Audio to listen';
     else if (!audioOn()) quiet = 'Audio is off — turn it on in the toolbar';
     const active = st.mode === 'all' || st.mode === 'unit';
@@ -473,7 +514,8 @@ async function boot() {
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const readInWeek = () => units.reduce((n, u) => n + (progress.has(u.id) ? 1 : 0), 0);
   // "about 45 min left" for a week: unread ÷ pace (CONTRACT.md "Estimated time left"); '' when finished or without the study log.
-  const timeLeftFor = (read, total) => (hasStudy && total > 0 && read < total ? timeLeftText(total - read, (stats ??= studyLog({ progress: progressRows, studyDays })).pace) : '');
+  // Shelf chapters get no estimate: the pace is the 103 reading's (GRAMMAR-CONTRACT.md "Review shelf").
+  const timeLeftFor = (read, total, n = weekN) => (hasStudy && !isShelfWeek(n) && total > 0 && read < total ? timeLeftText(total - read, (stats ??= studyLog({ progress: progressRows, studyDays })).pace) : '');
   function paintProgress() {
     reader.setProgress?.(progressRows);
     stats = hasStudy ? studyLog({ progress: progressRows, studyDays }) : null;
@@ -630,11 +672,14 @@ async function boot() {
     weekTotals.set(n, us.length);
     audioState = info;
     pictureRows = pictures;
-    document.title = `Week ${n} · ${week?.title ?? ''} — Latin 103`;
+    document.title = `${weekTitleLabel(n, week?.title)} — Latin 103`;
+    readerEl.dataset.shelf = isShelfWeek(n) ? 'on' : 'off';
+    if (isShelfWeek(n)) dismissHint();
     const focusBtn = $('[data-toggle="highlights"] .toggle__label');
     focusBtn.textContent = week?.focus?.label ?? 'Grammar focus';
     focusBtn.closest('button').setAttribute('aria-label', week?.focus?.label ? `Grammar focus: ${week.focus.label}` : 'Grammar focus');
     // One render: audio availability, lookups, pictures and the reading progress ride along with the week.
+    paintTranslation();
     reader.setWeek(week, units, highlights, { audio: playable(info), lookups, pictures, progress: progressRows });
     panel.close({ user: false });   // a week change, not the learner's choice: sentence view may open the stack again
     paintProgress();
@@ -681,7 +726,7 @@ async function boot() {
   function applyDisplayNow({ settle }) {
     paintRate();
 
-    readerEl.dataset.english = settings.showEnglish;
+    paintTranslation();
     readerEl.dataset.highlights = settings.showHighlights ? 'on' : 'off';
     readerEl.dataset.underlines = settings.showUnderlines ? 'on' : 'off';
     readerEl.dataset.margin = settings.showMargin !== false ? 'on' : 'off';
@@ -703,6 +748,15 @@ async function boot() {
     for (const [k, t] of Object.entries(toggles)) $(`[data-toggle="${k}"]`)?.setAttribute('aria-pressed', String(t.get()));
     applyPanelWidth(settings.panelWidth);
     reader.reflow();
+  }
+
+  // The review shelf is Latin only: the Translation toggle goes away and the
+  // rows stay hidden whatever settings.showEnglish says (the setting itself is
+  // kept for the course weeks). Painted with the week and with every display change.
+  function paintTranslation() {
+    const shelf = isShelfWeek(weekN);
+    readerEl.dataset.english = shelf ? 'hidden' : settings.showEnglish;
+    hintFor.hidden = shelf;
   }
 
   /* ---------------------------------------------- side panel width */
@@ -854,7 +908,7 @@ async function boot() {
     window.removeEventListener('resize', placeHint);
   }
   function maybeShowHint() {
-    if (!hint || toggles.english.get()) return;
+    if (!hint || toggles.english.get() || isShelfWeek(weekN)) return;
     let seen = '1';
     try { seen = localStorage.getItem(LS_HINT_TRANSLATION) ?? ''; } catch { /* no storage: the hint is skipped rather than shown every time */ }
     if (seen) return;
@@ -876,9 +930,10 @@ async function boot() {
     onChange: (s, patch) => { if ('compact' in patch) { panel.refresh(); if (reader.getView() === 'sentence') reader.rerender(); } },
     toggles,
     focusLabel: () => weeks.find((w) => w.n === weekN)?.focus?.label ?? outline.find((w) => w.n === weekN)?.focus?.label ?? '',
+    hasTranslation: () => !isShelfWeek(weekN),   // the Translation switch explains itself on a shelf chapter (Latin only)
     hasLines: () => unitsWeek == null || weekHasLines(units),   // the Book lines switch explains itself while the week has no printed-line data (unknown until a week is in: no hint yet)
     audio: audio ? {
-      weekLabel: () => `week ${weekN}`,
+      weekLabel: () => weekPhrase(weekN),
       info: () => audioInfo(),
       async upload(file) {
         const n = weekN;
@@ -889,7 +944,7 @@ async function boot() {
       align: () => {
         const n = weekN;
         audio.startAlignment(n)
-          .then(async (rows) => { if (rows) { audio.invalidate?.(n); await refreshAudioAvailability(); notify(`Week ${n} aligned: ${rows.length} of ${units.length} sentences.`); } })
+          .then(async (rows) => { if (rows) { audio.invalidate?.(n); await refreshAudioAvailability(); notify(`${cap(weekPhrase(n))} aligned: ${rows.length} of ${units.length} sentences.`); } })
           .catch((e) => notify(e?.message || 'Alignment failed.'))
           .finally(() => settingsBtn.focus());
       },
@@ -901,7 +956,7 @@ async function boot() {
       onState: (cb) => audio.onState?.(cb),
     } : null,
     progress: hasProgress ? {
-      weekLabel: () => `week ${weekN}`,
+      weekLabel: () => weekPhrase(weekN),
       info: () => ({ read: readInWeek(), total: units.length, all: progress.size }),
       // Each returns the line the dialog shows (it is modal: a #notice behind its backdrop would go unseen).
       async resetWeek() {
@@ -910,7 +965,7 @@ async function boot() {
         await store.resetProgress(n);
         await loadProgress();
         paintProgress();
-        return `Week ${n}: reading progress reset. Looked-up words are untouched.`;
+        return `${cap(weekPhrase(n))}: reading progress reset. Looked-up words are untouched.`;
       },
       async resetAll() {
         dropReads();
@@ -970,7 +1025,7 @@ async function boot() {
       if (e.key === 'j' || e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); reader.next(); return; }
       if (e.key === 'k' || e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); reader.prev(); return; }
     }
-    if (e.key === 'e') saveSettings(toggles.english.set(!toggles.english.get()));
+    if (e.key === 'e' && !isShelfWeek(weekN)) saveSettings(toggles.english.set(!toggles.english.get()));
     if (e.key === 'h') saveSettings(toggles.highlights.set(!toggles.highlights.get()));
     if (e.key === 'm') saveSettings(toggles.margin.set(!toggles.margin.get()));
     if (e.key === 'a') saveSettings(toggles.audio.set(!toggles.audio.get()));
@@ -988,6 +1043,8 @@ async function boot() {
   document.documentElement.dataset.ready = '1';
   maybeShowHint();
   if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));
+  // Grammar section: binds the header's Read / Grammar control; loads nothing until Grammar is opened.
+  mountGrammar({ store, dict, par, reader, settings, saveSettings }).catch((e) => console.warn('[grammar] not mounted', e?.message || e));
 }
 
 boot().catch((err) => {

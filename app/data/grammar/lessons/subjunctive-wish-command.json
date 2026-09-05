@@ -1,0 +1,66 @@
+{
+  "skill": "subjunctive-wish-command",
+  "core": [
+    {
+      "type": "p",
+      "text": "On its own, in a main clause, the present subjunctive expresses what the speaker wants: **the subjunctive as a wish or gentle command (eamus = let's go; veniat = let him come)**. *Vīvāmus atque amēmus* — let us live and love; *vīvat Bacchus!* — long live Bacchus; *fīat voluntās tua* — may your will be done. First person plural is a suggestion, third person an order given at a distance, and a plain wish is 'may …'. Negative: *nē* — *nē timeās* — don't be afraid. Latin name: *coniunctivus optativus, hortativus, iussivus*."
+    },
+    {
+      "type": "english",
+      "text": "English uses *let's*, *let him*, *may*, *long live*: *let's go*, *may she recover*, *let them eat cake*."
+    },
+    {
+      "type": "rule",
+      "text": "Present subjunctive in a main clause, no ut: 'let us …', 'let him / them …', 'may …'. Negative nē."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "pres",
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w13:b26.1",
+        "w09:b48.4",
+        "w11:b8.2",
+        "w09:b53.1"
+      ],
+      "invented": [
+        {
+          "la": "Eāmus domum, amīcī!",
+          "en": "Let's go home, friends!",
+          "focus": "Eāmus"
+        },
+        {
+          "la": "Nē timeās, Iūlia!",
+          "en": "Don't be afraid, Julia!",
+          "focus": "timeās"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperative",
+      "text": "Straight to 'you' goes **the imperative (the command form)**: *venī!* The subjunctive fills the gaps where no imperative exists — *veniat* (let him come), *veniāmus* (let's come) — and softens an order to 'you' (*veniās* — do come)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 27) file all of this under one heading, the optative ('wish'), and say the force depends on who speaks to whom: to a superior it is a request (*Domine, mē adiuvēs!*), among equals a suggestion (*Amīcī, discēdāmus!*), to inferiors a command (*Servī corpus auferant!*). Grammar books split these as hortatory (let us), jussive (let him) and optative (may)."
+    },
+    {
+      "type": "p",
+      "text": "A wish can be strengthened with *utinam* (if only), and past tenses of the subjunctive make it a wish that cannot come true: *utinam Rōmae essem* — if only I were in Rome. In a question the same form asks what one is to do: *quid faciam?* — what am I to do?"
+    }
+  ],
+  "sources": [
+    "notes p96–97",
+    "Ørberg cap. XXVII",
+    "A&G §439–441"
+  ]
+}

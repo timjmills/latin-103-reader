@@ -1,0 +1,67 @@
+{
+  "skill": "ablative-place",
+  "core": [
+    {
+      "type": "p",
+      "text": "To say where something is, Latin uses a preposition with **the ablative (the 'in/on/with' form)**, *ablātīvus locī*: *in vīllā* = in the villa, *in hortō* = in the garden, *cum Mārcō* = with Marcus, *sub arbore* = under the tree. The ablative singular ends -ā (a long a), -ō, later -e; the plural -īs, -ibus. Only a handful of prepositions take it: *in*, *sub*, *cum*, *prō*, *sine*, and the 'from' words *ā/ab*, *ē/ex*, *dē*."
+    },
+    {
+      "type": "english",
+      "text": "*In*, *on*, *under*, *with* and their nouns tell where: *the cup is on the table*. Latin needs the preposition too, but the noun after it changes its ending."
+    },
+    {
+      "type": "rule",
+      "text": "Where something is: *in*, *sub*, *cum* + ablative (-ā / -ō singular, -īs plural). Most other prepositions (*ad*, *ante*, *post*, *per* …) take the accusative."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl1",
+      "highlight": {
+        "case": "abl"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "abl"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r01:1.1",
+        "r05:2.1",
+        "r05:9.2",
+        "r05:37.1"
+      ],
+      "invented": [
+        {
+          "la": "Puella cum ancillā in hortō sedet.",
+          "en": "The girl is sitting in the garden with the maid.",
+          "focus": "hortō"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "accusative-destination",
+      "text": "*In* takes both cases, and the case is the meaning. *In hortō est* (ablative): he is in the garden, staying put. *In hortum currit* (accusative): he runs into the garden, moving towards it. Ask whether anything is going somewhere. -ō / -ā / -īs = where; -um / -am / -ōs = where to."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: a location can also be shown by a preposition whose own meaning is a place, with the accusative (*super petram* — on top of the rock; *ante caseum* — in front of the cheese). It is the six prepositions *in*, *sub*, *prae*, *prō*, *cum*, *cōram* that need the new case. Because *mēnsa* (subject) and *mēnsā* (ablative) differ only in the length of the a, the notes always mark that macron. Adjectives take the same ablative endings as their nouns (*in magnā vīllā*, *cum magnīs hortīs*)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. V–VI: ablātīvus -ā, -ō, plural -īs; the question *ubi?* (where?). Names of towns drop *in* and use the locative, which looks like the genitive: *Rōmae*, *Tusculī* (r06:59.1). A bare ablative of place without a preposition belongs mostly to poetry (A&G §429). Third-declension ablatives: *sub arbore*, *in monte*, plural *in montibus* (r09:23.2). A&G §426, §429."
+    }
+  ],
+  "sources": [
+    "notes p15–16",
+    "Ørberg cap. V–VI Grammatica Latina",
+    "A&G §426, §429"
+  ]
+}

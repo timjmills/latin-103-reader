@@ -1,0 +1,18 @@
+{
+  "skill": "ablative-time",
+  "core": [
+    { "type": "p", "text": "To say *when* something happens, Latin uses a bare ablative with no preposition: **the ablative (the 'at / in (a time)' form)**. *Nocte sōl nōn lūcet* — at night the sun does not shine; *hōrā sextā* — at the sixth hour; *mēnse Iūniō* — in June; *eō tempore* — at that time; *hieme, aestāte, vēre* — in winter, in summer, in spring. The time word simply takes its ablative ending, and English supplies *at, in* or *on*. Latin name: ablātīvus temporis." },
+    { "type": "english", "text": "English needs a preposition for time — *at night, in June, on Monday*. Latin drops it and lets the ending do the work, just as it drops *with* in *gladiō pugnat* (fights with a sword)." },
+    { "type": "rule", "text": "A time word in the ablative, without a preposition, answers 'when?'" },
+    { "type": "paradigm", "key": "decl3", "highlight": { "case": "abl" } },
+    { "type": "paradigm", "key": "decl1", "highlight": { "case": "abl" } },
+    { "type": "examples", "units": ["r13:46.1", "r13:108.1", "r13:91.1", "w04:7.1"], "invented": [ { "la": "Hieme puerī domī manent.", "en": "In winter the boys stay at home.", "focus": "Hieme" } ] },
+    { "type": "confusion", "with": "ablative-place", "text": "The same case says where and when. *In hortō* (in the garden) keeps *in*; *nocte* (at night) has nothing. Place usually keeps the preposition, time usually drops it. So a bare ablative of a time word — *nocte, diē, hōrā, annō, mēnse, tempore, hieme* — is time; a bare ablative of a place word is rare in prose (towns and *domī* apart)." }
+  ],
+  "more": [
+    { "type": "p", "text": "How long something lasts is the accusative (the object form), not the ablative: *trēs hōrās dormit* — he sleeps for three hours; *multōs annōs* — for many years. Within how long is the ablative again: *tribus diēbus* — within three days. *Paucīs diēbus* can mean either 'within' or 'a few days later' by context." },
+    { "type": "p", "text": "Your notes: a fourth use of the ablative after place, origin and means, answering *when?* or *at what time?*; Classical Latin has no preposition (*nocte hominēs dormiunt*, *diē hominēs operantur*), but medieval Latin often writes *in autumnō*, *sub nocte*. Use the classical way in composition; expect *in* in later readings." },
+    { "type": "p", "text": "Ørberg (chapter XIII) uses it throughout the calendar chapter: *mēnse Iūniō diēs longī sunt*, *diēbus prīmīs mēnsium*, *hōrā sextā vel merīdiē*, *nocte*. A&G §423: set phrases behave the same — *initiō* (at the beginning), *fīne* (at the end), *tempore* (in time), *bellō* (in the war)." }
+  ],
+  "sources": ["notes p43", "Ørberg cap. XIII", "A&G §423–424"]
+}

@@ -1,0 +1,67 @@
+{
+  "skill": "purpose-clause",
+  "core": [
+    {
+      "type": "p",
+      "text": "To say what someone is trying to achieve, Latin adds **ut / ne + subjunctive (the 'in order to' clause: venit ut videat = comes to see)**: *ut* (so that) for an aim, *nē* (so that … not) for something to avoid. Its verb is in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). Latin name: *coniunctivus finalis*."
+    },
+    {
+      "type": "english",
+      "text": "English: he came *to see* her; she hid *so that no one would find* her. Purpose is the aim, not what happened."
+    },
+    {
+      "type": "rule",
+      "text": "ut / nē + present subjunctive after a present main verb, imperfect subjunctive after a past one. The negative is nē, never ut nōn."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w13:b16.1",
+        "w12:b15.3",
+        "w07:b30.2",
+        "w11:b31.1"
+      ],
+      "invented": [
+        {
+          "la": "Servus ad urbem currit ut medicum vocet.",
+          "en": "The slave runs to the city to call a doctor.",
+          "focus": "vocet"
+        },
+        {
+          "la": "Puella tacuit nē māter audīret.",
+          "en": "The girl kept quiet so that her mother would not hear.",
+          "focus": "audīret"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "result-clause",
+      "text": "A result clause also uses *ut*, but after a signal word — *tam* (so), *ita* (in such a way), *tantus* (so big) — and its negative is *ut nōn*. Aim = purpose; outcome = result: *tam stultus est ut crēdat*, so foolish that he believes."
+    },
+    {
+      "type": "confusion",
+      "with": "indirect-command",
+      "text": "After a verb of ordering or asking (*imperat* orders, *rogat* asks), *ut* + subjunctive is the order itself: *imperat ut solvat*, orders him to pay — an indirect command, not a purpose."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "A relative word can carry the purpose: *quī* + subjunctive = 'someone to …', *quō* + subjunctive = 'so that by it': *nāvis parārētur quā Ulixēs redīre posset* — a ship was to be got ready in which he could sail home (Week 5). Translate as if the relative were *ut*."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes put it this way: a purpose clause states the intent of an action — *veniunt ad mēnsam ut cēnent* (they come to the table to dine), *moritur ut vīvāmus* (he dies so that we may live); the relative kind (*veniunt quī cēnent*) is best translated without the relative. Ørberg's chapter 29 pairs the tenses: *Dāvus clāmat ut puerum excitet* / *clāmāvit ut puerum excitāret*."
+    },
+    {
+      "type": "p",
+      "text": "Other ways Latin says 'in order to': *ad* + gerund (*ad nāvigandum*, for sailing), the supine after a verb of motion (*spectātum veniunt*, they come to watch), *causā* with a genitive gerund. With a comparative, *quō* replaces *ut*: *quō facilius* … = so that … more easily."
+    }
+  ],
+  "sources": [
+    "notes p103",
+    "Ørberg cap. XXIX Grammatica Latina",
+    "A&G §531"
+  ]
+}

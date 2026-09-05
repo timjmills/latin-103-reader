@@ -1,0 +1,76 @@
+{
+  "skill": "nominative-subject",
+  "core": [
+    {
+      "type": "p",
+      "text": "Every Latin noun changes its ending to show its job in the sentence. Naming who or what the sentence is about — the doer, or the thing being described — is the job of **the nominative (the plain naming form)**, *cāsus nōminātīvus*. It is the form the dictionary gives: *puella* (girl), *servus* (slave), *oppidum* (town). Latin does not rely on word order: the subject may come first, last or in the middle, and the ending marks it."
+    },
+    {
+      "type": "english",
+      "text": "The subject is the person or thing the sentence is about, usually before the verb: *the girl* sings. A word after *is* that renames the subject (*Julia is a girl*) belongs with it."
+    },
+    {
+      "type": "rule",
+      "text": "The subject, and any word that renames it after *est* / *sunt* (is / are), stands in the nominative: singular -a, -us, -um; plural -ae, -ī, -a."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl1",
+      "highlight": {
+        "case": "nom"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "nom"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r01:18.1",
+        "r03:8.1",
+        "r01:27.2",
+        "r01:33.2"
+      ],
+      "invented": [
+        {
+          "la": "Puella cantat, puer rīdet.",
+          "en": "The girl sings, the boy laughs.",
+          "focus": "Puella"
+        },
+        {
+          "la": "Servī in hortō labōrant.",
+          "en": "The slaves are working in the garden.",
+          "focus": "Servī"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "accusative-object",
+      "text": "*Mārcus Iūliam pulsat* and *Iūlia Mārcum pulsat* use the same two names, but the endings, not the order, say who hits whom. The doer keeps the naming form (*Mārcus*, *Iūlia*); the one it is done to takes -m, the accusative (the object form). A word ending in -m is not the subject."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes sort nouns by their first form: a-nouns (*ūva*, grape), us-nouns (*caseus*, cheese) and um-nouns (*pōculum*, cup); nouns in -r or -er (*vir*, man; *culter*, knife; *puer*, boy) count as us-nouns with a missing -us. Some change their stem before any ending is added (*culter, cultr-ī*; *carō, carn-is*), which is why a second form is learned with the word."
+    },
+    {
+      "type": "p",
+      "text": "Plurals: -a becomes -ae, -us becomes -ī, -um becomes -a. That neuter plural -a looks like a feminine singular: *oppida* is 'towns', never 'a town'. Nouns of the other declensions (*pānis*, *pānēs*) follow later."
+    },
+    {
+      "type": "p",
+      "text": "After *est* / *sunt* the word that describes or renames the subject is also nominative (*Nīlus fluvius est*; *Sicilia īnsula magna est*): both halves of an 'A is B' sentence wear the same ending. Ørberg's cap. I sets out singulāris / plūrālis; A&G §339 gives the nominative as the case of the subject and §283 the predicate nominative."
+    }
+  ],
+  "sources": [
+    "notes p1–2",
+    "Ørberg cap. I Grammatica Latina",
+    "A&G §283, §339"
+  ]
+}

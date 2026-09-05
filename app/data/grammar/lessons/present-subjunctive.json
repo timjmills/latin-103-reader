@@ -1,0 +1,61 @@
+{
+  "skill": "present-subjunctive",
+  "core": [
+    {
+      "type": "p",
+      "text": "For wishes, purposes and what someone tells someone to do, a verb takes the shape of **the present subjunctive (the 'may / let' form: veniat = let him come, may he come)**. The forms change one vowel: first conjugation swaps its -ā- for -ē- (*laudat → laudet*); the others put -ā- before the ending (*videat, pōnat, audiat*). Endings are the ordinary -m, -s, -t, -mus, -tis, -nt, active or passive. Latin name: *coniunctivus praesentis*."
+    },
+    {
+      "type": "english",
+      "text": "English lost most of its subjunctive; its shadow survives in *God save the king* and *so be it*."
+    },
+    {
+      "type": "rule",
+      "text": "1st conjugation: -em, -ēs, -et, -ēmus, -ētis, -ent. 2nd, 3rd, 4th: -am, -ās, -at, -āmus, -ātis, -ant. Irregular: sim, possim, velim, nōlim, mālim (with -i-); eam, feram, fīam."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "pres",
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w04:74.7",
+        "w04:84.2",
+        "w08:b19.1",
+        "w04:149.3"
+      ],
+      "invented": [
+        {
+          "la": "Magister discipulōs monet ut taceant et audiant.",
+          "en": "The teacher warns the pupils to be quiet and listen.",
+          "focus": "taceant"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "future-active",
+      "text": "In the third and fourth conjugations **the future (the 'will do' tense)** has -ē- (*scrībet* — he will write) where the subjunctive has -ā- (*scrībat* — let him write). In the first conjugation it is -bit against -et: *laudābit* / *laudet*. Only *scrībam* is shared; the sentence decides."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 27) treat -a- as the subjunctive marker, contracting with an ā-stem into -e- (*ambulem*), and give the irregulars: *sim, sīs, sit*; *possim*; *eam, eās, eat*; *velim*; *nōlim*; *mālim*. Passive endings follow the same vowel: *laudētur, videātur, pōnātur, audiātur*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (cap. XXVII) introduces the mood through commands reported with *ut*: *dominus servō imperat ut intret, forem claudat, taceat et audiat*. Where the forms go — wishes, orders, purpose, indirect questions — is the business of the next lessons; this one is about recognising the vowel."
+    }
+  ],
+  "sources": [
+    "notes p96, 99–100",
+    "Ørberg cap. XXVII Grammatica Latina",
+    "A&G §179"
+  ]
+}

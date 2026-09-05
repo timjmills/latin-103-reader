@@ -1,0 +1,17 @@
+{
+  "skill": "irregular-comparison",
+  "core": [
+    { "type": "p", "text": "A few everyday adjectives change their whole stem when compared: **the irregular comparatives and superlatives (better / best, worse / worst, bigger / biggest)**. *bonus* (good) → *melior, melius* → *optimus*; *malus* (bad) → *peior, peius* → *pessimus*; *magnus* (big) → *māior, māius* → *maximus*; *parvus* (small) → *minor, minus* → *minimus*; *multī* (many) → *plūrēs, plūra* → *plūrimī*; and *multum* (much) → *plūs* → *plūrimum*. Only the stems are strange: the comparatives decline like any *-ior* word (*meliōrem*), the superlatives like *bonus -a -um*. Latin name: comparātiō anomala." },
+    { "type": "english", "text": "*Good, better, best* and *bad, worse, worst* are English irregular comparisons — the *-er* form is a different word. Latin's list is nearly the same." },
+    { "type": "rule", "text": "melior / optimus, peior / pessimus, māior / maximus, minor / minimus, plūrēs / plūrimī: new stems, regular endings." },
+    { "type": "paradigm", "key": "adjcomp", "highlight": { "degree": ["comp", "super"] } },
+    { "type": "examples", "units": ["r19:35.1", "r19:27.1", "r19:89.1", "r19:15.1"], "invented": [ { "la": "Hic liber melior est quam ille.", "en": "This book is better than that one.", "focus": "melior" } ] },
+    { "type": "confusion", "with": "comparative", "text": "*māior* and *longior* work exactly alike — both are the comparative (the '-er / more' form), both take *quam* (than) and 3rd-declension endings. The trap is spotting them: *melior* has no *bonus* inside it, so learn the pairs as vocabulary. *minus* and *plūs* also serve as adverbs and nouns: *minus pulchra* — less beautiful; *plūs dīcere* — to say more." }
+  ],
+  "more": [
+    { "type": "p", "text": "*plūs* in the singular is a neuter noun with a genitive after it: *plūs pecūniae* — more money; only the plural *plūrēs, plūra* agrees like an adjective. Related sets: *superus* → *superior* → *suprēmus / summus*; *īnferus* → *īnferior* → *īnfimus / īmus*; *senex* (old) → *senior*; *iuvenis* (young) → *iūnior*." },
+    { "type": "p", "text": "*māior* and *minor* also mean *older* and *younger*: *Quīntus māior est quam Iūlia* — Quintus is older than Julia; *maximus / minimus līberōrum* — the eldest / youngest of the children. *optimus* is the everyday word for *excellent*." },
+    { "type": "p", "text": "Your notes: a handful of adjectives in both languages form their comparative and superlative from very different stems — *bonus / melior / optimus*, *malus / peior / pessimus*, *magnus / māior / maximus*, *parvus / minor / minimus*, *multus / plūs (plūrēs) / plūrimus* — and apart from the stems they act normally. Ørberg (chapter XIX margin): *multum, comp. plūs, sup. plūrimum; paulum, comp. minus, sup. minimum*; A&G §129 give the full list." }
+  ],
+  "sources": ["notes p68", "Ørberg cap. XIX", "A&G §129"]
+}

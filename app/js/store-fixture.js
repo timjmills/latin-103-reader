@@ -3,7 +3,7 @@
 // UI's persistence paths are exercised. Chosen by main.js when ?fixture=1 or
 // when app/config.js is missing / has no SUPABASE_URL.
 
-import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs } from './sync.js';
+import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs, roman } from './sync.js';
 import { tokenize } from './tokenize.js';
 
 const LS_LOOKUPS = 'l103.lookups';
@@ -220,7 +220,45 @@ async function loadPictures(weekN) {
   return cache.pictures.get(n);
 }
 
+// Review shelf (GRAMMAR-CONTRACT.md "Review shelf"): two chapters of Familia
+// Romana as library weeks n = 100 + chapter (r01, r07), Latin only (`en` = ""),
+// no highlights / notes / summaries / audio / pictures, line numbers as usual —
+// so the shelf UI can be tried offline. The sentences are invented on the
+// chapters' themes (the book's own text is never committed).
+const SHELF_BASE = 100;
+const isShelf = (n) => Number(n) > SHELF_BASE;
+const SHELF_TEXT = {
+  1: { title: 'Imperium Rōmānum', focus: { key: 'nominative', label: 'Nominative: the subject', blurb: 'The subject form (puella, fluvius, oppidum) and singular against plural.' }, la: [
+    'Rōma in Italiā est.', 'Italia in Eurōpā est.', 'Gallia quoque in Eurōpā est.', 'Ubi est Hispānia?', 'Hispānia in Eurōpā est, nōn in Asiā.',
+    'Nīlus fluvius magnus est.', 'Tiberis fluvius parvus est.', 'Multī fluviī in Eurōpā sunt.', 'Sardinia īnsula est.', 'Corsica et Sardinia īnsulae sunt.',
+    'Brundisium oppidum Rōmānum est.', 'Quid est Brundisium? Oppidum est.',
+  ] },
+  7: { title: 'Puella et Rosa', focus: { key: 'dative', label: 'Dative case: indirect objects', blurb: "The 'to/for' form: the person something is given to." }, la: [
+    'Iūlia in hortō est.', 'Puella rosās videt et rīdet.', 'Iūlius fīliae suae rosam dat.', 'Iūlia patrī grātiās agit.', 'Mārcus sorōrī nihil dat.',
+    'Aemilia puerīs māla dat.', 'Quīntus mātrī mālum ostendit.', 'Cui Iūlius ōsculum dat? Iūliae.', 'Syra puellae speculum tenet.', 'Puella sē in speculō videt.',
+    'Ecce rosa in nāsō puellae!', 'Iūlia laeta ē hortō exit.',
+  ] },
+};
+function shelfWeek(c) {
+  const t = SHELF_TEXT[c];
+  return { n: SHELF_BASE + c, id: `r${pad(c)}`, title: t.title, source: 'FR', chapter: roman(c), has_line_numbers: true, focus: t.focus,
+    parts: [{ part: `Capitulum ${c}`, lines: `1–${t.la.length}`, source: 'FR' }], unit_count: t.la.length };
+}
+function shelfUnits(c) {
+  const t = SHELF_TEXT[c];
+  return t.la.map((la, i) => ({
+    id: `r${pad(c)}:${i + 1}.1`, order: i, part: `Capitulum ${c}`, source: 'FR', line_no: i + 1, block_start: i % 3 === 0, unit_type: 'sentence', speaker: null,
+    la, en: '', en_raw: null, note: null, note_simple: null, tags: [], margin: [], lines: [{ line: i + 1, start: 0 }], week_n: SHELF_BASE + c,
+  }));
+}
+const shelfWeeks = () => Object.keys(SHELF_TEXT).map((c) => shelfWeek(Number(c)));
+
 async function loadWeek(weekN) {
+  if (isShelf(weekN)) {
+    const c = Number(weekN) - SHELF_BASE;
+    if (!cache.units.has(weekN)) cache.units.set(weekN, SHELF_TEXT[c] ? shelfUnits(c) : []);
+    return cache.units.get(weekN);
+  }
   if (!cache.units.has(weekN)) {
     const data = await fetchJSON(`week-${pad(weekN)}.json`);
     const demo = weekN === 1 && demoMargins();
@@ -239,11 +277,13 @@ export const store = {
   async ready() {
     try { cache.weeks = (await fetchJSON('weeks.json')).map(withDemoSummaries); }
     catch { await loadWeek(1); }
+    cache.weeks = [...cache.weeks.filter((w) => !isShelf(w.n)), ...shelfWeeks()];   // the course weeks, then the review shelf
     return true;
   },
   async getWeeks() { if (!cache.weeks) await this.ready(); return cache.weeks; },
   getUnits: (weekN) => loadWeek(weekN),
   async getHighlights(weekN) {
+    if (isShelf(weekN)) return [];   // the shelf carries no highlights (and no file to ask for)
     if (!cache.highlights.has(weekN)) {
       try {
         const rows = await fetchJSON(`highlights-week-${pad(weekN)}.json`);
@@ -253,7 +293,7 @@ export const store = {
     }
     return cache.highlights.get(weekN);
   },
-  getPictures: (weekN) => loadPictures(weekN),
+  getPictures: (weekN) => (isShelf(weekN) ? Promise.resolve([]) : loadPictures(weekN)),
   async getLookups() { return new Map(Object.entries(readJSON(LS_LOOKUPS, {}))); },
   async addLookup(form, unitId) {
     const all = readJSON(LS_LOOKUPS, {});
@@ -322,6 +362,7 @@ export const store = {
   // data/build/audio/week-NN.alignment.json (app_rows, with timed words).
   async getAlignment(weekN) {
     const n = Number(weekN);
+    if (isShelf(n)) return [];
     const local = readJSON(LS_ALIGN + n, null);
     if (Array.isArray(local) && local.length) return normaliseAlignmentRows(local);
     return normaliseAlignmentRows(await pipelineAlignment(n));
@@ -331,6 +372,7 @@ export const store = {
   // upload, the repo's own audio/week-NN.mp3 is used when the dev server has it.
   async getAudioUrl(weekN) {
     const n = Number(weekN);
+    if (isShelf(n)) return cache.audio.get(n) ?? null;   // no recording to look for on the dev server
     return cache.audio.get(n) ?? (await localAudioUrl(n));
   },
   async uploadAudio(weekN, file) {

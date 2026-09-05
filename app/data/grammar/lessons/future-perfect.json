@@ -1,0 +1,70 @@
+{
+  "skill": "future-perfect",
+  "core": [
+    {
+      "type": "p",
+      "text": "**the future perfect (the 'will have done' tense)** marks an action finished before another future action. Latin uses it in *sī* (if), *cum* (when), *postquam* (after) clauses: *cum vēnerō, gaudēbō* — when I have come (literally: will have come), I will be glad. Forms: perfect stem + *-erō, -eris, -erit, -erimus, -eritis, -erint*; passive: perfect participle + *erō, eris, erit* (*captus erit*). Latin name: *futurum exactum*."
+    },
+    {
+      "type": "english",
+      "text": "English: *by noon he will have left*. In *if* and *when* clauses English drops it — *when you have finished, call me* — but the logic is the same: finishing first, calling second."
+    },
+    {
+      "type": "rule",
+      "text": "Perfect stem + -erō … -erint. In a sī / cum / postquam clause with a future main verb translate it as a plain present or perfect: sī vēnerit = if he comes."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "tense": "futperf",
+        "mood": "ind"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w08:b23.5",
+        "w09:b2.1",
+        "w11:b9.2",
+        "w14:b4.3"
+      ],
+      "invented": [
+        {
+          "la": "Sī epistulam scrīpseris, gaudēbō.",
+          "en": "If you write the letter, I will be glad.",
+          "focus": "scrīpseris"
+        },
+        {
+          "la": "Cum cēnāverimus, dormiēmus.",
+          "en": "When we have had dinner, we will sleep.",
+          "focus": "cēnāverimus"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-subjunctive",
+      "text": "The perfect subjunctive (the 'have done' form: *nesciō quid fēcerit*) has the same endings except *-erō* / *-erim*. The job decides: in a sī / cum / postquam clause pointing to the future it is the future perfect (*sī vēnerit, gaudēbō*); after *nē* (don't) or a question word it is the perfect subjunctive (*nē timuerīs*; *nesciō quid fēcerit*)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: the perfect (the 'did / has done' tense) ends *-ērunt* in the plural, the future perfect *-erint* — *vēnērunt* they came, *vēnerint* they will have come. The third person plural is the one place the two nearly touch."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes: the future perfect is an action viewed as completed in the future; in English 'will have' + past participle. Latin builds the active from the 2nd stem + *-er-* + endings, with *-int* rather than *-unt* in the third plural precisely to keep it apart from the perfect; the passive is the perfect participle + *erō, eris, erit, erimus, eritis, erunt* (*captus erō*, *captī erunt*). Latin uses it freely in subordinate clauses where English has the present or perfect: *quī vīderit, crēdet* — he who has seen will believe."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 30: *dux mīlitem laudābit, sī fortiter pugnāverit*; *discipulus laudābitur sī magistrō pāruerit et industrius fuerit*; passive *pater gaudēbit sī fīlius laudātus erit*. Irregulars follow the perfect stem: *fuerō, potuerō, voluerō, ierō*. In a main clause on its own it is rare and means a confident 'will have': *vīderimus*, we will have seen. With *cum* it stays indicative because it is a real future time, not story background (compare cum + subjunctive, Week 6)."
+    }
+  ],
+  "sources": [
+    "notes p112–113",
+    "Ørberg cap. XXX Grammatica Latina",
+    "A&G §160, §478, §516c"
+  ]
+}

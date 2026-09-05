@@ -1,0 +1,17 @@
+{
+  "skill": "superlative",
+  "core": [
+    { "type": "p", "text": "For *longest, bravest, most beautiful* Latin adds *-issimus -a -um* to the adjective's stem: **the superlative (the '-est / most' form)**. *longus* (long) → *longissimus*; *brevis* (short) → *brevissimus*; *clārus* (bright) → *clārissima stēlla*. Adjectives in *-er* double the *r* instead: *pulcher* → *pulcherrimus*, *piger* (lazy) → *pigerrimus*. The result is an ordinary *-us -a -um* adjective. The group it is the best *of* goes in the genitive (the 'of' form) or after *ex*: *mēnsis annī brevissimus* — the shortest month of the year. Latin name: gradus superlātīvus." },
+    { "type": "english", "text": "The superlative is the *-est* or *most* form: *tallest, most careful*. It sets one thing against all the rest of its group: *the tallest of the boys*." },
+    { "type": "rule", "text": "Stem + -issimus (-er adjectives: -errimus), declined like bonus; 'of all' = genitive or ex + ablative." },
+    { "type": "paradigm", "key": "adj12", "highlight": { "degree": "super" } },
+    { "type": "examples", "units": ["r13:98.1", "r13:29.1", "r13:48.1", "w04:138.1"], "invented": [ { "la": "Rōma urbs pulcherrima est.", "en": "Rome is the most beautiful city.", "focus": "pulcherrima" } ] },
+    { "type": "confusion", "with": "comparative", "text": "*-ior* = *more*, two things; *-issimus* = *most*, one against all. *Sōl clārior est quam lūna* — brighter than the moon; *sōl stēlla clārissima est* — the brightest star. The comparative (the '-er / more' form) takes 3rd-declension endings (*clāriōrem*), the superlative *-us -a -um* endings (*clārissimum*), so the ending tells you which one you have." }
+  ],
+  "more": [
+    { "type": "p", "text": "Six adjectives in *-ilis* use *-limus*: *facilis* → *facillimus* (easiest), *difficilis* → *difficillimus*, *similis* → *simillimus*. Adjectives in *-eus / -ius* say *maximē* (most) instead: *maximē idōneus*." },
+    { "type": "p", "text": "The superlative often just means *very*: *Metella laetissima erat* — Metella was very happy. *quam* + superlative means *as … as possible*: *quam celerrimē* — as quickly as possible. As a noun, *-issimī* with a genitive picks out the top of a group: *fortissimus omnium* — the bravest of all." },
+    { "type": "p", "text": "Your notes: add *-issim-* and then the *-us -a -um* ending (*īnfirmissimus, clāmōsissima, plēnissimum*); *-er* adjectives add *-rim-* to the nominative masculine singular (*pigerrimus, pulcherrima*); the group of comparison is a genitive or *ex* + ablative (*īnfirmissimus omnium*, *plēnissimum ex pōculīs*). Ørberg (chapter XIII): *altissimus, longissima, brevissimum* are superlatives, adjectives of the 1st and 2nd declension; *Aetna mōns Siciliae altissimus est*." }
+  ],
+  "sources": ["notes p44", "Ørberg cap. XIII Grammatica Latina", "A&G §124–125, §346"]
+}

@@ -1,0 +1,79 @@
+{
+  "skill": "imperfect-subjunctive",
+  "core": [
+    {
+      "type": "p",
+      "text": "Every clause that needs the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) after a past main verb uses **the imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive)**. Making it is the easiest job in Latin: take the infinitive (the plain 'to' form: *venīre*, to come) and add the personal endings — *venīre-m, venīrē-s, venīre-t, venīrē-mus, venīrē-tis, venīre-nt*; passive *-r, -ris, -tur, -mur, -minī, -ntur*. Latin name: *coniunctivus imperfecti*."
+    },
+    {
+      "type": "english",
+      "text": "English has no separate form; *might* or *would* does the job: he came *so that he might see*; she asked *that they would stay*."
+    },
+    {
+      "type": "rule",
+      "text": "Infinitive + personal endings, for every verb, irregular ones included: esse → esset, posse → posset, velle → vellet, ferre → ferret, īre → īret."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "tense": "impf",
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "sum",
+      "highlight": {
+        "tense": "impf",
+        "mood": "subj"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w06:156.6",
+        "w07:b35.3",
+        "w10:fl-69:b14.4",
+        "w12:b8.2"
+      ],
+      "invented": [
+        {
+          "la": "Māter fīliō imperāvit ut domī manēret.",
+          "en": "The mother ordered her son to stay at home.",
+          "focus": "manēret"
+        },
+        {
+          "la": "Iūlius cūrāvit ut servī tenērentur.",
+          "en": "Julius saw to it that the slaves were held.",
+          "focus": "tenērentur"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "pluperfect-subjunctive",
+      "text": "*venīret* (imperfect) and *vēnisset* (pluperfect) both sit in the past. The imperfect is built on the present infinitive (*venīre*) and means 'was coming / might come'; the pluperfect on the perfect infinitive (*vēnisse*, to have come) and means 'had come'. Look for -re- against -isse- inside the word."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: the infinitive itself. The whole infinitive is still inside the form — *tacēre* = to be silent, *tacēret* = he might be silent. A word ending in -re is the infinitive; add -m, -s, -t and it is the imperfect subjunctive."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes describe the form as 1st stem + -(e)re- + ending, and note that in practice it always looks like the present active infinitive with an ending — even for deponent verbs (looks passive, means active), which have no active infinitive: *lābī* (to slip) → *lāberētur*. Irregular verbs double their consonant in the infinitive and the imperfect subjunctive follows: *es-se → esset, pos-se → posset, vel-le → vellet, fer-re → ferret, māl-le → māllet, nōl-le → nōllet*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 28 gives the full tables: active *-rem, -rēs, -ret, -rēmus, -rētis, -rent*; passive *-rer, -rēris, -rētur, -rēmur, -rēminī, -rentur*, with *tacēret*, *audīret*, *scrīberet*, *esset* as models. Note the long ē in *-rēs, -rēmus, -rētis, -rēris, -rētur*. Where it is used: purpose, result, indirect command and indirect question after a past verb (Week 6), *cum* clauses (Weeks 6–7), wishes that cannot come true (Week 11), unreal conditions (Week 12)."
+    }
+  ],
+  "sources": [
+    "notes p105",
+    "notes p107",
+    "Ørberg cap. XXVIII Grammatica Latina",
+    "A&G §179, §184"
+  ]
+}

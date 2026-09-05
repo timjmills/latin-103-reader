@@ -1,0 +1,18 @@
+{
+  "skill": "future-active",
+  "core": [
+    { "type": "p", "text": "To say *will*, Latin uses two different markers, depending on the conjugation: **the future (the 'will do' tense)**. The 1st and 2nd conjugations insert *-b-*: *amā-b-ō, amā-b-is, amā-b-it, amā-b-imus, amā-b-itis, amā-b-unt* (*lūcēbit* — it will shine; *habēbis* — you will have). The 3rd and 4th change the vowel instead: *-a-* for *I*, then *-ē-*: *dīc-a-m, dīc-ē-s, dīc-e-t, dīc-ē-mus, dīc-ē-tis, dīc-e-nt* (*faciam* — I will do; *dormiet* — he will sleep). *esse* has *erō, eris, erit, erimus, eritis, erunt*. Latin name: futūrum indicātīvī āctīvī." },
+    { "type": "english", "text": "English marks the future with *will* or *shall* (*I will go*) or with *going to*. Latin has no helping verb; the ending carries the *will*." },
+    { "type": "rule", "text": "1st / 2nd: -bō, -bis, -bit, -bimus, -bitis, -bunt. 3rd / 4th: -am, -ēs, -et, -ēmus, -ētis, -ent." },
+    { "type": "paradigm", "key": "conj1", "highlight": { "tense": "fut", "mood": "ind", "voice": "act" } },
+    { "type": "paradigm", "key": "conj3", "highlight": { "tense": "fut", "mood": "ind", "voice": "act" } },
+    { "type": "examples", "units": ["r20:112.2", "r20:56.2", "r20:86.2", "w01:63.15"], "invented": [ { "la": "Crās tē vidēbō.", "en": "Tomorrow I will see you.", "focus": "vidēbō" } ] },
+    { "type": "confusion", "with": "imperfect-active", "text": "*-bi-* and *-ba-* are one letter apart: *amābit* — he will love; *amābat* — he was loving, the imperfect (the 'was doing' tense). And in the 3rd conjugation the future *-ē-* (*dīcēs, dīcet*) looks like the 2nd conjugation's present (*vidēs, videt*): check the dictionary form — *dīcere* (3rd) makes *dīcet* a future, *vidēre* (2nd) makes *videt* a present." }
+  ],
+  "more": [
+    { "type": "p", "text": "3rd-conjugation *-iō* verbs and the 4th share *-iam, -iēs, -iet*: *faciam, faciēs, faciet; audiam, audiēs, audiet*. The future passive is *-bor, -beris, -bitur, -bimur, -biminī, -buntur* and *-ar, -ēris, -ētur, -ēmur, -ēminī, -entur* (*laudābitur*, *mittētur*). *īre* has *ībō*, *posse* *poterō*, *ferre* *feram*." },
+    { "type": "p", "text": "The *-am* first person of the 3rd and 4th is the same form as the present subjunctive (the 'may / let' form: veniat = let him come): *faciam* can be *I will do* or *what am I to do?* — the context and the next forms decide (*faciēs* is future, *faciās* subjunctive)." },
+    { "type": "p", "text": "Your notes: like the imperfect, the future is made with an intermediate ending; for most verbs it is *a / e* — *a* in the first person singular and *e* elsewhere — with no variable vowel needed and *-m* for *I* (*pōnam, pōnēs, pōnet, pōnēmus, pōnētis, pōnent; fugiam, veniam*); for *a-* and *e-*stem verbs this does not work, so the marker *b* is used instead, after which the variable vowels stay and *-ō* is used (*pulsābō, pulsābis, pulsābit, pulsābimus, pulsābitis, pulsābunt; vidēbō*). Ørberg (chapter XX): futūrum *-bit / -bunt* and *-et / -ent*; *computābit, pārēbit, scrībet, dormiet*; *erō, eris, erit*; *crās rūrsus in lūdō dormiēs, male computābis, foedē scrībēs*." }
+  ],
+  "sources": ["notes p69–70", "Ørberg cap. XX Grammatica Latina", "A&G §184, §472"]
+}

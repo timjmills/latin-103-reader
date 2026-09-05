@@ -424,10 +424,30 @@
 .weeks__progress { flex-wrap: wrap; row-gap: 2px; }
 .weeks__progress[data-state="done"] { color: var(--success); }
 .weeks__progress[data-state="done"] .weeks__bar-fill { background: var(--success); }
+/* The review shelf (Familia Romana I–XXIV): one group after the course weeks — a
+   disclosure heading with the chapter count, its rows under it, roman numerals
+   in the number column. Collapsed by default (settings.shelfOpen). */
+.weeks__group { border-top: 1px solid var(--line-strong); margin-top: var(--s-2); }
+.weeks__group-btn {
+  display: flex; align-items: baseline; gap: var(--s-2); width: 100%; min-height: var(--tap);
+  padding: var(--s-3) var(--s-2); text-align: left;
+  background: none; border: 0; border-radius: var(--radius); color: inherit; font: inherit; cursor: pointer;
+}
+.weeks__group-btn:hover { background: var(--bg-chrome); }
+.weeks__group-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.weeks__group-caret { flex: none; width: 2.6rem; color: var(--ink-3); font-size: var(--ui-sm); transition: transform var(--t-base) var(--ease-out); }
+.weeks__group-btn[aria-expanded="true"] .weeks__group-caret { transform: rotate(90deg); }
+.weeks__group-name { font-family: var(--face-serif); font-size: var(--ui-lg); line-height: 1.3; }
+.weeks__group-count { margin-left: auto; font-size: var(--ui-xs); color: var(--ink-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.weeks__group-list { list-style: none; margin: 0; padding: 0 0 0 var(--s-2); }
+.weeks__group-list .weeks__item:first-child { border-top: 1px solid var(--line); }
+.weeks__row[data-shelf] .weeks__n { font-size: var(--ui-md); letter-spacing: 0.02em; }
+@media (prefers-reduced-motion: reduce) { .weeks__group-caret { transition: none; } }
 @media (max-width: 479.98px) {
   .weeks { width: calc(100vw - 1rem); max-height: 88dvh; }
   .weeks__row { grid-template-columns: 2.2rem minmax(0, 1fr); }
   .weeks__state { grid-column: 2; grid-row: 4; }
+  .weeks__group-caret { width: 2.2rem; }
 }
 .weeks[open] { animation: pop var(--t-base) var(--ease-out); }
 @media (prefers-reduced-motion: reduce) { .weeks[open] { animation: none; } }

@@ -1,0 +1,61 @@
+{
+  "skill": "demonstratives",
+  "core": [
+    {
+      "type": "p",
+      "text": "To say *this* one or *that* one, Latin uses **the pointing words hic ('this'), ille ('that'), is ('that / the one we mean')**, *prōnōmina dēmōnstrātīva*. *Hic* points at what is near or was just mentioned, *ille* at what is far off, *is* at the one already known: *hic ānulus* = this ring, *illa taberna* = that shop, *is servus* = that slave (the one we spoke of). They stand with a noun and match it in gender, number and case."
+    },
+    {
+      "type": "english",
+      "text": "*This / these* is close, *that / those* is far; often the distance is in the story, not in space. English has no word for the neutral *is*: use *that* or *the*."
+    },
+    {
+      "type": "rule",
+      "text": "hic haec hoc = this; ille illa illud = that; is ea id = the one meant. All three have an odd genitive in -ius and dative in -ī, whatever the gender."
+    },
+    {
+      "type": "paradigm",
+      "key": "hic"
+    },
+    {
+      "type": "paradigm",
+      "key": "is"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r08:2.3",
+        "r08:41.2",
+        "r08:59.1",
+        "r10:40.2"
+      ],
+      "invented": [
+        {
+          "la": "Hic puer bonus est, ille puer improbus.",
+          "en": "This boy is good, that boy naughty.",
+          "focus": "Hic"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "relative-pronoun",
+      "text": "English *that* does two jobs. *That shop* points: *illa taberna*. *The shop that Albinus has* links a clause: *taberna quam Albīnus habet* — the relative pronoun quī, quae, quod ('who, which, that'). If *that* could be *which* or *who*, it is *quī*; if it could be *this*, it is *ille* or *hic*."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes (week 8): the near demonstrative *hic, haec, hoc*, the far *ille, illa, illud*, and *is, ea, id* as distance-neutral, 'the one you know about' (*Id oppidum Bethlehem est*). All five demonstratives — *hic*, *ille*, *is*, *iste*, *ipse* — follow the -ius / -ī pattern of *alius*: genitive singular -ius and dative singular -ī for every gender, neuter singular sometimes -ud instead of -um. *Ille* follows it cleanly (*ille*, *illud*, *illīus*, *illī*). *Is* has an odd nominative (*is*, *id*) and a stem that switches between e- and i- (*eum*, *eius*, *eī*; plural *iī*, *eōrum*, *iīs* or *eīs*). *Hic* hides the pattern under a leftover -c from an old *-ce*: *hunc*, *hanc*, *huius*, *huic*, *hōc*, *hāc*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VIII sets *is* and *ille* beside the question words: *is / ille servus*, *eum / illum*, *eius / illīus*, *eī / illī*, *eō / illō*; plural *iī / illī*, *eōs / illōs*, *eōrum / illōrum*. *Iste* is 'that of yours'; *ipse* is 'himself, the very one' (*lupus ipse*, r09:54.2). Neuter plural *haec* alone = these things. A&G §146, §296–298."
+    }
+  ],
+  "sources": [
+    "notes p21, p24–25",
+    "Ørberg cap. VIII Grammatica Latina",
+    "A&G §146, §296–298"
+  ]
+}

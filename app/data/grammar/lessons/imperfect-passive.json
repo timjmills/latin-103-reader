@@ -1,0 +1,18 @@
+{
+  "skill": "imperfect-passive",
+  "core": [
+    { "type": "p", "text": "Put the *-ba-* of the imperfect (the 'was doing' tense) together with the passive endings and you have **the imperfect passive (the 'was being done' form)**: *amā-bā-tur* — she was being loved, she was loved; *nōminā-bā-tur* — he was called; *ego amā-ba-r* — I was loved. The set is *-bar, -bāris, -bātur, -bāmur, -bāminī, -bantur*; the 3rd and 4th conjugations take *-ēbar, -ēbātur* (*mittēbantur* — they were being sent). Deponents use exactly these forms with their active meaning: *sequēbātur* — he was following. Latin name: imperfectum indicātīvī passīvī." },
+    { "type": "english", "text": "*Was being praised* is the English passive of the ongoing past: the subject was on the receiving end while it went on. English needs three words; Latin one." },
+    { "type": "rule", "text": "Stem (+ ē) + ba + -r, -ris, -tur, -mur, -minī, -ntur; a deponent has the same shape with an active sense." },
+    { "type": "paradigm", "key": "conj1", "highlight": { "tense": "impf", "mood": "ind", "voice": "pass" } },
+    { "type": "paradigm", "key": "conj3", "highlight": { "tense": "impf", "mood": "ind", "voice": "pass" } },
+    { "type": "examples", "units": ["r19:84.1", "r19:70.1", "r19:128.1", "w06:67.2"], "invented": [ { "la": "Puer ā magistrō laudābātur.", "en": "The boy was being praised by the teacher.", "focus": "laudābātur" } ] },
+    { "type": "confusion", "with": "imperfect-active", "text": "*amābat* and *amābātur* share the *-ba-*; the *r* decides who does what. *Iūlius uxōrem amābat et ab eā amābātur* — he loved her (active) and was loved by her (passive). Person for person: *-bam / -bar*, *-bās / -bāris*, *-bat / -bātur*, *-bāmus / -bāmur*, *-bātis / -bāminī*, *-bant / -bantur*." }
+  ],
+  "more": [
+    { "type": "p", "text": "The doer is *ā / ab* + ablative (*ab eā amābātur*); a thing used is a bare ablative (*flūctibus iactābātur* — was tossed by the waves). *vidēbātur* usually means *seemed*, not *was seen*: *sibi fēlīx esse vidēbātur* — he seemed to himself to be happy." },
+    { "type": "p", "text": "Your notes: the passive and deponent imperfect use the same marker *(e)ba* as the active, with the passive / deponent endings added; the variable vowels drop after the *a*; the first person singular always takes *-r*, never *-or*: *pōnēbar, pulsābar, vidēbar, fugiēbar, audiēbar; pōnēbāris, pōnēbātur, pōnēbāmur, pōnēbāminī, pōnēbantur*." },
+    { "type": "p", "text": "Ørberg (chapter XIX): *laudābar, laudābāris, laudābātur, laudābāmur, laudābāminī, laudābantur*; *timēbar*; *reprehendēbar, reprehendēbātur*; *pūniēbar*; and in the story *Iūlius uxōrem suam amābat et ab eā amābātur*. A&G §184 give the same table under the first conjugation." }
+  ],
+  "sources": ["notes p66", "Ørberg cap. XIX Grammatica Latina", "A&G §184"]
+}

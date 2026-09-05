@@ -1,0 +1,78 @@
+{
+  "skill": "future-imperative",
+  "core": [
+    {
+      "type": "p",
+      "text": "Besides the everyday order (*pugnā!* fight!), Latin has **the future imperative (the 'you shall …' order for later or for rules: esto! memento!)**: *pugnātō!* — fight (when the time comes)! It ends in *-tō* (singular) and *-tōte* (plural) on the present stem: *amā-tō, monē-tō, scrībi-tō, audī-tō*; from *sum*: *estō, estōte*. It is the imperative (the command form) for instructions that hold from now on — laws, rules, letters saying what to do later — and a few fixed verbs: *mementō* (remember!), *scītō* (know that …). Latin name: *imperativus futuri*."
+    },
+    {
+      "type": "english",
+      "text": "English: *you shall not steal*; *be careful (from now on)*; *remember!* — orders about later or always, not about this very moment."
+    },
+    {
+      "type": "rule",
+      "text": "Present stem + -tō / -tōte (third person -tō / -ntō). It means about the same as the plain imperative, with a 'from now on / when that happens' colour."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "mood": "imper",
+        "tense": "fut"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "sum",
+      "highlight": {
+        "mood": "imper",
+        "tense": "fut"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w02:130.5",
+        "w12:b20.4",
+        "w12:b20.5",
+        "w12:b20.6"
+      ],
+      "invented": [
+        {
+          "la": "Crās ad mē venītō!",
+          "en": "Come to me tomorrow!",
+          "focus": "venītō"
+        },
+        {
+          "la": "Semper patrī pārētō, fīlī!",
+          "en": "Always obey your father, son!",
+          "focus": "pārētō"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "imperative",
+      "text": "*pugnā* (now!) and *pugnātō* (from now on / then) are both orders; Ørberg says they mean almost the same. Spot *-tō / -tōte*: that is the future one. *estō* is 'be (from now on)', *es* is 'be (right now)'."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: *monitō* in *puerō monitō* (the boy having been warned, Week 2) is the perfect participle in the ablative (the 'by/with/from' form), agreeing with a noun; *monētō* with a long ē before *-tō* is 'warn!'. Check the vowel before *-tō* and whether the word agrees with a noun beside it."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes have no page on this form. Ørberg's chapter 33 introduces it in three lines: *pugnātō, mīles! pugnātōte, mīlitēs!* — the future imperative ends in *-tō* (singular) and *-tōte* (plural) and means nearly the same as the present imperative *pugnā, pugnāte*. In the text Aemilius's letter home uses it for what his family should do after reading: *exspectātō, scrībitō, monētō, nārrātōte, scītōte*."
+    },
+    {
+      "type": "p",
+      "text": "Allen & Greenough: the future imperative is used for orders whose carrying-out lies in the future, so it is the form of laws, wills and precepts (*rēgiō imperiō duo suntō* — let there be two with royal power), and of verbs that name a standing state: *mementō* (remember), *scītō* (know), *habētō* (consider). The third-person forms are *-tō* (singular, same as the second) and *-ntō* (plural); deponent verbs use *-tor* (*sequitor*). In laws the negative is *nē* + future imperative. The old-fashioned flavour is why it survives in mottoes (*estō perpetua*) and on tombstones."
+    }
+  ],
+  "sources": [
+    "Ørberg cap. XXXIII Grammatica Latina",
+    "A&G §163, §449",
+    "(no notes page)"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "skill": "future-participle",
+  "core": [
+    {
+      "type": "p",
+      "text": "Someone described by what they are about to do, or intend to do, gets **the future participle (the 'about to' word: venturus = about to come)**: *epistulam scrīptūrus sum* — I am about to write a letter; *mīlitēs pugnātūrī* — soldiers about to fight. It is the participle stem with -ūr- slipped in before -us -a -um, and it is active. Latin name: *participium futuri activi*."
+    },
+    {
+      "type": "english",
+      "text": "English has no single word for it; we say *about to …*, *going to …*, *on the point of …*."
+    },
+    {
+      "type": "rule",
+      "text": "Participle stem + -ūr- + -us -a -um. With sum it makes a near future: factūrus sum = I am going to do."
+    },
+    {
+      "type": "paradigm",
+      "key": "adj12",
+      "highlight": {
+        "mood": "ptc",
+        "tense": "fut"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r23:125.1",
+        "r23:127.1",
+        "w03:fl-63:b14.2",
+        "r23:97.1"
+      ],
+      "invented": [
+        {
+          "la": "Mīlitēs pugnātūrī gladiōs sūmunt.",
+          "en": "The soldiers, about to fight, take up their swords.",
+          "focus": "pugnātūrī"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-passive-participle",
+      "text": "*Scrīptus* is **the perfect participle (the 'having been done' word: laudatus = praised)**, passive and past; *scrīptūrus* is active and future. The -ūr- is the whole difference: *laudātus* — praised; *laudātūrus* — about to praise."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 23) list the three participles in a grid: present active -ns, perfect passive -tus, future active -ūrus (and the future passive, the gerundive, -ndus). Their examples: *puer ambulātūrus*, *oppidum cāsūrum*, *puella flōrem carptūra*, *mīlitēs moritūrī*. Deponents form it the same way and it is active as usual: *profectūrus* — about to set out."
+    },
+    {
+      "type": "p",
+      "text": "*Sum* has *futūrus* — about to be, the future (adjective *futūrus* = future). The participle with *eram* gives 'was going to': *petītūrus eram tabernam* — I was intending to go to the shop."
+    }
+  ],
+  "sources": [
+    "notes p88",
+    "Ørberg cap. XXIII Grammatica Latina",
+    "A&G §498–499"
+  ]
+}

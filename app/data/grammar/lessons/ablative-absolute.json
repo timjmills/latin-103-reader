@@ -1,0 +1,16 @@
+{
+  "skill": "ablative-absolute",
+  "core": [
+    { "type": "p", "text": "Latin can set a small scene beside the main sentence by putting a noun and a participle (a verb used like an adjective) together in the ablative: **the ablative absolute (a noun + participle set apart in the ablative: 'with X doing')**. *Sōle oriente nāvis ēgreditur* — with the sun rising, the ship goes out: as the sun rises. *Cane lātrante iānitor excitātur* — with the dog barking, the doorkeeper is woken. The pair stands loose ('absolute') from the rest: neither word is the subject or object of the main verb. English makes a clause with *as, while, when*. Latin name: ablātīvus absolūtus." },
+    { "type": "english", "text": "English has the same thing, rarely: *weather permitting, we sail*. Usually we say *when the sun rose* — a clause with *when* or *while*." },
+    { "type": "rule", "text": "Noun + present participle, both ablative, agreeing, not part of the main sentence = 'while / as X is doing'." },
+    { "type": "examples", "units": ["r16:64.1", "r22:30.1", "r22:23.1", "w05:fl-68:b44.1"], "invented": [ { "la": "Magistrō recitante, discipulī tacent.", "en": "While the teacher reads aloud, the pupils are silent.", "focus": "Magistrō recitante" } ] },
+    { "type": "confusion", "with": "ablative-means", "text": "*Gladiō pugnat* — one ablative, a thing used, no participle: the ablative (the 'by/with' form). An ablative absolute is two words agreeing, one a participle: *cane lātrante*. Test: drop the pair — is the rest still a complete sentence? *Iānitor excitātur* stands alone, so *cane lātrante* was extra scenery." }
+  ],
+  "more": [
+    { "type": "p", "text": "With a perfect participle (the 'having been done' word: laudatus = praised) the absolute says *after X was done*: *Ariadnā relictā* — Ariadne having been left, after leaving Ariadne. That is the next skill. The participle may even be missing, leaving noun + adjective or noun + noun: *lūnā plēnā* — under a full moon; *Caesare duce* — with Caesar as leader." },
+    { "type": "p", "text": "The noun in the absolute must not be the subject or object of the main clause; if it is, Latin uses a plain participle agreeing with it instead: *puer dormiēns gallum nōn audit*. And a deponent (looks passive, means active) gives an active-sense present participle: *sōle oriente*, from *orīrī*." },
+    { "type": "p", "text": "Your notes: a noun and a matching adjective — very often a participle — in the ablative give the circumstances in which the main action happens; there is no English equivalent, so translate with whatever conjunction fits: *pāstōre sub arbore dormiente, lupus venit* — as the shepherd sleeps under a tree, a wolf comes; *lūnā plēnā, mīlitēs fugiunt* — under a full moon; *nēmine vidente* — when nobody was watching. Ørberg brings it in in chapter XVI (*sōle oriente*, *multīs hominibus spectantibus*) without naming it; A&G §419–420 give the whole picture." }
+  ],
+  "sources": ["notes p55", "Ørberg cap. XVI", "A&G §419–420"]
+}

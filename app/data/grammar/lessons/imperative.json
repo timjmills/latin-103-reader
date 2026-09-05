@@ -1,0 +1,71 @@
+{
+  "skill": "imperative",
+  "core": [
+    {
+      "type": "p",
+      "text": "To give an order, Latin uses **the imperative (the command form)**, *modus imperātīvus*: *Tacē!* = Be quiet! *Venī!* = Come! For one person it is the verb's bare stem — *vocā*, *tacē*, *pōne*, *audī* — and for more than one the stem + *-te*: *vocāte*, *tacēte*, *pōnite*, *audīte*. The person ordered is often named beside it in the vocative (the calling form): *Tacē, serve!*"
+    },
+    {
+      "type": "english",
+      "text": "An English command is the plain verb with the subject *you* left out: *Come!* *Sit down!* Latin does the same with its own endings, and it also tells you whether one person or several is being ordered."
+    },
+    {
+      "type": "rule",
+      "text": "Singular: the stem (-ā, -ē, -e, -ī). Plural: add -te (-āte, -ēte, -ite, -īte). Three verbs shorten: *dīc!* (say), *dūc!* (lead), *fac!* (do)."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "mood": "imper",
+        "voice": "act",
+        "tense": "pres"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "imper",
+        "voice": "act",
+        "tense": "pres"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r04:24.1",
+        "r04:37.3",
+        "r04:60.1",
+        "r05:51.2"
+      ],
+      "invented": [
+        {
+          "la": "Venīte, puerī, et audīte!",
+          "en": "Come, boys, and listen!",
+          "focus": "Venīte"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "present-indicative-3rd",
+      "text": "In the 3rd conjugation order and statement differ by one letter: *pōne!* (put!) beside *pōnit* (he puts). In the others the vowel is the same and only the -t is missing: *vocā* / *vocat*. No -t and no -nt means nobody is being described; someone is being told."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes treat the singular ending as a variable -(e) that drops after a vowel, which is why a-, e- and i-stem verbs show the bare stem (*flā!*, *vidē!*, *venī!*) while consonant stems keep it (*pōne!*, *frange!*); the plural -(i)te keeps its i only after a consonant (*pōnite*, but *flāte*, *vidēte*, *venīte*). Weak i-stems drop the i of the stem in the singular but keep it in the plural: *accipe!*, *accipite!*"
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. IV: *dominus imperat, servus pāret* — imperātīvus -ā, -ē, -e, -ī against indicātīvus -at, -et, -it, -it. Irregular: *es!* / *este!* (be), *ī!* / *īte!* (go), *fer!* / *ferte!* (bring), and *dīc*, *dūc*, *fac*. Latin does not put *nōn* before a command; 'don't' is *nōlī* / *nōlīte* + infinitive (*Nōlī mē relinquere!*), and a polite or third-person command uses the subjunctive. A&G §448–450."
+    }
+  ],
+  "sources": [
+    "notes p13",
+    "Ørberg cap. IV Grammatica Latina",
+    "A&G §448–450"
+  ]
+}

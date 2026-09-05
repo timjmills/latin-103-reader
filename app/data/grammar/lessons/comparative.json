@@ -1,0 +1,17 @@
+{
+  "skill": "comparative",
+  "core": [
+    { "type": "p", "text": "To say *longer, heavier, more beautiful*, Latin puts *-ior* on the adjective's stem: **the comparative (the '-er / more' form)**. *longus* (long) → *longior*; *gravis* (heavy) → *gravior*; *pulcher* (beautiful) → *pulchrior*. The neuter is *-ius*: *pīlum brevius* — a shorter spear. The other endings are the 3rd-declension ones: *longiōrem, longiōris, longiōrēs, longiōra*. The thing you compare with follows *quam* (than), in the same case as the first thing: *gladius longior est quam pīlum*. Latin name: gradus comparātīvus." },
+    { "type": "english", "text": "The comparative is the *-er* or *more* form: *taller, more careful*. *Than* introduces the point of comparison: *taller than his brother*." },
+    { "type": "rule", "text": "Stem + -ior (neuter -ius), declined like a 3rd-declension noun; 'than' = quam, same case on both sides." },
+    { "type": "paradigm", "key": "adjcomp", "highlight": { "degree": "comp" } },
+    { "type": "examples", "units": ["r12:53.1", "r13:114.2", "r12:134.1", "r13:29.1"], "invented": [ { "la": "Via longior est quam rīvus.", "en": "The road is longer than the stream.", "focus": "longior" } ] },
+    { "type": "confusion", "with": "superlative", "text": "*-ior* means *more* (two things side by side); *-issimus* means *most* (one against all the rest). *Februārius brevior est quam Mārtius* sets two months against each other; *mēnsis brevissimus* picks the shortest of all twelve. The endings differ too: the comparative declines like a 3rd-declension noun (*breviōrem*), the superlative (the '-est / most' form) like *bonus -a -um* (*brevissimum*)." }
+  ],
+  "more": [
+    { "type": "p", "text": "The comparative's ablative singular is *-e* (*longiōre*), its genitive plural *-um*, its neuter plural *-a* (*longiōra*): it follows the consonant-stem pattern, not the *-ī, -ium, -ia* of ordinary 3rd-declension adjectives." },
+    { "type": "p", "text": "Instead of *quam*, Latin can put the second thing in the ablative (the 'by/with/from' form) with no *quam* at all: *gladius pīlō longior est*. That is the ablative of comparison, its own skill. On its own the comparative can mean *rather* or *too*: *via longior* — a rather long road. Adjectives in *-eus / -ius* (*idōneus* suitable) use *magis* (more) instead: *magis idōneus*." },
+    { "type": "p", "text": "Your notes: the masculine and feminine nominative singular add *-ior* to the stem whatever the adjective's type (*īnfirmior, pigrior, gravior, sapientior*), the neuter adds *-ius* (*plēnius, gravius, pulchrius*); every other form adds a 3rd-declension ending after *-ior-*; the point of comparison follows *quam* (*vir īnfirmior est quam fēmina*). Ørberg (chapters XII–XIII): *altior, longior, brevius* are comparatives; *longior quam cēterae viae* — longer than the other roads." }
+  ],
+  "sources": ["notes p40–41", "Ørberg cap. XII–XIII Grammatica Latina", "A&G §120–124, §407"]
+}

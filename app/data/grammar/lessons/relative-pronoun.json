@@ -1,0 +1,57 @@
+{
+  "skill": "relative-pronoun",
+  "core": [
+    {
+      "type": "p",
+      "text": "To add a whole clause about a noun, Latin uses **the relative pronoun qui, quae, quod ('who, which, that')**, *prōnōmen relātīvum*: *puer quī rīdet* = the boy who laughs; *puella quam Mārcus pulsat* = the girl whom Marcus hits. The noun it refers to (the antecedent) fixes its gender and number; its own job inside the clause fixes its case: *quī* (nominative) laughs, *quam* (accusative) gets hit."
+    },
+    {
+      "type": "english",
+      "text": "A relative clause is the *who / which / that* part of *the man who is coming is my friend*. English still shows case in *who* (subject), *whom* (object) and *whose* (owner)."
+    },
+    {
+      "type": "rule",
+      "text": "Gender and number from the noun before; case from the pronoun's own job in its clause. The odd forms: *cuius* (whose), *cui* (to whom), *quem* (whom), plural *quibus*."
+    },
+    {
+      "type": "paradigm",
+      "key": "qui"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r03:70.1",
+        "r03:72.2",
+        "r07:101.3",
+        "r08:20.1"
+      ],
+      "invented": [
+        {
+          "la": "Servī quōs dominus vocat statim veniunt.",
+          "en": "The slaves whom the master calls come at once.",
+          "focus": "quōs"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "demonstratives",
+      "text": "*Is* and *quī* share endings (*eum / quem*, *eī / cui*) and both point back to a noun, but *is* stays in its own sentence while *quī* opens a new clause with its own verb: *is servus* — that slave; *servus quī saccum portat* — the slave who carries the sack. A form of *quī* always has a verb of its own nearby."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: the relative clause gives more information about its antecedent, and the pronoun's case is decided inside that clause — in *the woman whom he saw*, *whom* is the object of *saw*. The Latin forms mostly follow the -ius / -ī pattern of the demonstratives, with a few third-declension endings (*quem*, *quibus*). The notes' worked pairs: *vir … quī cibum comedit*, *fēmina … quae in hortō est*, *fēmina quam vir videt*, *fēminae quās*, *cuius pater fortis est*, *cui vir aquam fert*, *quibus*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VIII lines the relative up with the question words *quis? quī? quem? cuius? cui? quō?* and with *is* / *ille*. A relative can open a sentence and refer back to the last one (*Quī …* = and he …). With no antecedent it means 'whoever, anyone who': *quī spīrat vīvus est* (r10:48.2). The neuter *quod* is also the conjunction 'because' (r10:23.1), and *in quā*, *ā quō* put the preposition before the pronoun (r08:1.1). A&G §303–307."
+    }
+  ],
+  "sources": [
+    "notes p27–28",
+    "Ørberg cap. VIII Grammatica Latina",
+    "A&G §303–307"
+  ]
+}

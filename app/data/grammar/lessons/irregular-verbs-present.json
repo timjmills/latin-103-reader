@@ -1,0 +1,19 @@
+{
+  "skill": "irregular-verbs-present",
+  "core": [
+    { "type": "p", "text": "A few very common verbs refuse the ordinary pattern: **the irregular verbs (be, can, go, want, not want, prefer, carry) in the present**. *esse* (be): *sum, es, est, sumus, estis, sunt*. *posse* (be able): *possum, potes, potest, possumus, potestis, possunt*. *īre* (go): *eō, īs, it, īmus, ītis, eunt*. *velle* (want): *volō, vīs, vult, volumus, vultis, volunt*; *nōlle* (not want): *nōlō, nōn vīs, nōn vult, nōlumus, nōn vultis, nōlunt*; *mālle* (prefer): *mālō, māvīs, māvult, mālumus, māvultis, mālunt*. *ferre* (carry): *ferō, fers, fert, ferimus, fertis, ferunt*. The endings are normal; the stems shift. Latin name: verba anomala." },
+    { "type": "english", "text": "English *be* is irregular the same way: *am, are, is* share no stem, yet they are one verb. Learn these as small tables." },
+    { "type": "rule", "text": "Endings regular; stems change (su- / es-, e- / ī-, vol- / vul- / vī-) or the vowel drops (fers, fert, vult)." },
+    { "type": "paradigm", "key": "sum", "highlight": { "tense": "pres", "mood": "ind" } },
+    { "type": "paradigm", "key": "eo", "highlight": { "tense": "pres", "mood": "ind" } },
+    { "type": "paradigm", "key": "volo", "highlight": { "tense": "pres", "mood": "ind" } },
+    { "type": "examples", "units": ["r15:2.2", "r15:73.1", "r16:57.1", "w01:4.1"], "invented": [ { "la": "Mārcus domum īre nōn vult.", "en": "Marcus does not want to go home.", "focus": "vult" } ] },
+    { "type": "confusion", "with": "active-personal-endings", "text": "The endings are the same six — *sum, es, est* still end in *-m, -s, -t*. What changes is the piece in front: *su-* / *es-*, *e-* / *ī-*, *vol-* / *vul-* / *vī-*. Do not hunt for a conjugation vowel; *fers* and *vult* have none. Read the ending for the person, the stem for the verb." }
+  ],
+  "more": [
+    { "type": "p", "text": "*posse* is *pot-* + *esse*, with *pot-* becoming *pos-* before *s*: *pos-sum, pot-es, pot-est, pos-sumus, pot-estis, pos-sunt*. Compounds follow their base verb: *ab-est* (is away), *ad-sunt* (are present), *red-eō* (go back), *ex-it*, *ad-eunt*, *trāns-fert*. *fīō* (become, be made) serves as the passive of *faciō*: *fit, fīunt*. The infinitives are odd too — *esse, posse, īre, velle, nōlle, mālle, ferre* — and the passive infinitive of *ferre* is *ferrī*." },
+    { "type": "p", "text": "Your notes: a verb counts as irregular if it has more than one stem or breaks the variable-vowel rules; *su / es* uses no variable vowels and takes *-m* for *I*; *possum* is *pos-* + *sum* and *pot-* + *es-*; *e / i* alternates stems and has *eunt*, not *ent*, in the third person plural; *vol / vul / vel / vī* has four stems and uses *-umus*, not *-imus*; *mālō* is *magis* + *volō* and *nōlō* is *nōn* + *volō*, both keeping *-umus*; *fer* has one stem but drops the vowel in *fers, fert, fertis*." },
+    { "type": "p", "text": "Ørberg (chapter XV) sets *esse*, *īre* and *posse* beside the regular persons (*pos-sumus, pot-estis, pos-sunt*). A&G §199: the old form *volt, voltis* for *vult, vultis* appears in early texts; *nōn vīs* and *nōn vult* never contract." }
+  ],
+  "sources": ["notes p52–53", "Ørberg cap. XV Grammatica Latina", "A&G §170, §198–200, §203"]
+}

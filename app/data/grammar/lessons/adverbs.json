@@ -1,0 +1,16 @@
+{
+  "skill": "adverbs",
+  "core": [
+    { "type": "p", "text": "To say *how* something is done, Latin turns an adjective into **an adverb (the '-ly' word: how something is done) and its -ius / -issime forms**. *-us -a -um* adjectives take *-ē*: *rēctus* (correct) → *rēctē* (correctly), *sevērus* (strict) → *sevērē*, *pulcher* → *pulchrē*. 3rd-declension adjectives take *-iter*: *fortis* (brave) → *fortiter*, *brevis* → *breviter*, *turpis* (shameful) → *turpiter*. The comparative adverb is *-ius*, the neuter comparative: *rēctius* — more correctly; the superlative is *-issimē* (*-errimē* for *-er* words): *rēctissimē, pulcherrimē*. An adverb never changes its ending for a noun. Latin name: adverbia." },
+    { "type": "english", "text": "An adjective describes a thing (*a loud voice*); an adverb describes a doing (*he shouts loudly*). English adds *-ly*; Latin adds *-ē* or *-iter*." },
+    { "type": "rule", "text": "-us adjectives → -ē; -is adjectives → -iter; comparative -ius; superlative -issimē." },
+    { "type": "examples", "units": ["r18:72.1", "r18:81.1", "r18:85.1", "r18:105.1"], "invented": [ { "la": "Iūlia pulchrē cantat.", "en": "Julia sings beautifully.", "focus": "pulchrē" } ] },
+    { "type": "confusion", "with": "adjective-agreement", "text": "*Sextus rēctus est* and *Sextus rēctē scrībit* — the first describes Sextus, the second his writing. An adjective agreeing with its noun (same gender, number and case) changes with the noun (*puella laeta*, *puerī laetī*); the adverb *laetē* never changes. And do not mistake adverbial *-ē* (long) for the vocative *-e* of *serve!*" }
+  ],
+  "more": [
+    { "type": "p", "text": "Some adverbs are odd: *bonus* → *bene* (well), *malus* → *male* (badly), *facilis* → *facile* (easily), *multus* → *multum* (much), *magnus* → *magnopere* (greatly); *-ns* adjectives make *-nter*: *prūdēns* → *prūdenter*. Their comparatives are *melius, peius, facilius, plūs, magis*; superlatives *optimē, pessimē, facillimē, plūrimum, maximē*. Neuter accusatives also serve as adverbs: *multum, paulum* (a little), *prīmum* (first)." },
+    { "type": "p", "text": "Your notes: *-us -a -um* and *-er -a -um* adjectives add *-ē* to the stem (the macron distinguishes it from the vocative *-e*): *plēnē, astūtē, pigrē*; 3rd-declension adjectives add *-iter* (*graviter, celeriter*), and after *t* the *-it-* drops to avoid a stutter: *sapienter*; the comparative adverb is *-ius* for every declension (*astūtius, pigrius, celerius*), the superlative *-issimē*, or *-rimē* on the masculine singular of *-er* adjectives (*plēnissimē, pulcherrimē, celerrimē*)." },
+    { "type": "p", "text": "Ørberg (chapter XVIII): adjective *-us -a -um* → adverb *-ē*; adjective *-is -e* → adverb *-iter*; *rēctius, fortius* are comparatives of the adverb, *rēctissimē, fortissimē* superlatives; *nēmō fortius pugnat quam Rōmānī: Rōmānī fortissimē pugnant*. A&G §214–218 give the full set, including *-ō* adverbs (*subitō* suddenly, *falsō* falsely)." }
+  ],
+  "sources": ["notes p59–60", "Ørberg cap. XVIII Grammatica Latina", "A&G §214–218"]
+}

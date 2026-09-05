@@ -1,0 +1,62 @@
+{
+  "skill": "future-passive",
+  "core": [
+    {
+      "type": "p",
+      "text": "To say that something *will be done* to someone, Latin uses **the future passive (the 'will be done' form)**. It is the future you already know (*laudābit* — he will praise) with the passive person endings on the end instead of the active ones: *laudābitur* — he will be praised. Deponents (verbs that look passive but mean active) use these same endings: *sequētur* = he will follow. Latin name: *futurum indicativi passivi*."
+    },
+    {
+      "type": "english",
+      "text": "Passive means the subject has the action done *to* it: *the boy will be praised* (someone praises him), not *the boy will praise*."
+    },
+    {
+      "type": "rule",
+      "text": "First and second conjugation: -bor, -beris, -bitur, -bimur, -biminī, -buntur. Third and fourth: -ar, -ēris, -ētur, -ēmur, -ēminī, -entur."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "fut",
+        "mood": "ind",
+        "voice": "pass"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r20:36.1",
+        "r20:28.1",
+        "r23:77.1",
+        "r23:108.1"
+      ],
+      "invented": [
+        {
+          "la": "Crās epistula ā Iūliō scrībētur.",
+          "en": "Tomorrow the letter will be written by Julius.",
+          "focus": "scrībētur"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "present-subjunctive",
+      "text": "In the third and fourth conjugations the future passive and **the present subjunctive (the 'may / let' form: veniat = let him come, may he come)** differ by one vowel: *pōnētur* (will be put) has -ē-, *pōnātur* (let it be put) has -ā-. In the first conjugation it is the other way round: *laudābitur* is future, *laudētur* is subjunctive."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 20) put it simply: build the future exactly as in the active, then swap in the passive endings; the -b- goes with ā- and ē-stem verbs, the a/e vowel with the rest. Watch the second person singular: *laudāberis* and *pōnēris* end in -ris, not -s."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (cap. XX) sets the two futures side by side: the bad pupil says *laudābor, nōn reprehendar* and his father answers *nōn laudāberis, sed reprehendēris*. The rare passive infinitive of the future (*laudātum īrī*) comes later, in chapter XXIII."
+    }
+  ],
+  "sources": [
+    "notes p71–72",
+    "Ørberg cap. XX Grammatica Latina",
+    "A&G §184"
+  ]
+}

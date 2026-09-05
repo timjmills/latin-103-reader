@@ -1,0 +1,65 @@
+{
+  "skill": "noun-gender",
+  "core": [
+    {
+      "type": "p",
+      "text": "Every Latin noun belongs to one of three groups, and the group never changes: this is its **gender (masculine, feminine or neuter, fixed for each noun)**, *genus*. It has little to do with real sex. *Fēmina* (woman) is feminine and *vir* (man) masculine, as you would expect; but *īnsula* (island) is feminine, *fluvius* (river) masculine and *oppidum* (town) neuter, purely because of their endings. Gender matters because every adjective and pointing word must match it."
+    },
+    {
+      "type": "english",
+      "text": "English keeps gender only in *he / she / it*, and a river is *it*. Latin sorts nouns for things into the three groups too, so its *he*-words include rivers and its *she*-words tables."
+    },
+    {
+      "type": "rule",
+      "text": "Nouns in -a are feminine, nouns in -us (and -r) masculine, nouns in -um neuter. For any other ending, learn the gender with the word."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl1"
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m"
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2n"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r02:1.1",
+        "r02:1.2",
+        "r01:34.2",
+        "r01:29.1"
+      ],
+      "invented": [
+        {
+          "la": "Fluvius magnus est, īnsula parva est.",
+          "en": "The river is big, the island is small.",
+          "focus": "Fluvius"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "adjective-agreement",
+      "text": "A noun's gender is fixed; an adjective's is not. *Rōmānus, Rōmāna, Rōmānum* is one adjective in three shapes waiting to match a noun: *vir Rōmānus*, *fēmina Rōmāna*, *oppidum Rōmānum*. The noun decides, the adjective follows. Do not read *Rōmāna* as 'a Roman woman' unless a feminine noun is there or understood."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes: 1st-declension a-nouns are almost always feminine, 2nd-declension us-nouns (with the -r and -er kind) almost always masculine, um-nouns always neuter. Third-declension nouns are split fairly evenly among the three, so their gender is learned with the word: *pānis* m (bread), *carō, carnis* f (meat), *mare, maris* n (sea). A few nouns have an irregular gender that must simply be remembered: *propheta* m (prophet), *domus* f (house). A dictionary letter *c* means common gender: either masculine or feminine (*canis*, dog)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. II: masculīnum -us (-r), fēminīnum -a, neutrum -um. Allen & Greenough add the rules of meaning that override the ending: names of males, rivers, winds and months are masculine; names of females, countries, towns, islands and trees are feminine (*Rōma*, *Corsica*, but also *Aegyptus* f). Neuter nouns always have the same form for subject and object, and their plural always ends in -a (A&G §31–35)."
+    }
+  ],
+  "sources": [
+    "notes p3",
+    "Ørberg cap. II Grammatica Latina",
+    "A&G §31–35"
+  ]
+}

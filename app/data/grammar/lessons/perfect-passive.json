@@ -1,0 +1,62 @@
+{
+  "skill": "perfect-passive",
+  "core": [
+    {
+      "type": "p",
+      "text": "Two words make **the perfect passive (the 'was done / has been done' form: laudatus est)**: the perfect participle (the 'having been done' word) plus the present of *sum*. *Mārcus pulsātus est* — Marcus was hit. The participle agrees with the subject, so a woman says *pulsāta sum* and several boys *pulsātī sumus*. Latin name: *perfectum indicativi passivi*."
+    },
+    {
+      "type": "english",
+      "text": "English also builds this with two words, *was* + participle: *the letter was written*, *they have been seen*."
+    },
+    {
+      "type": "rule",
+      "text": "Participle (agreeing with the subject) + sum, es, est, sumus, estis, sunt. Translate est as 'was' or 'has been', not 'is'."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "perf",
+        "mood": "ind",
+        "voice": "pass"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r21:33.1",
+        "r21:84.2",
+        "r21:105.1",
+        "r21:10.2"
+      ],
+      "invented": [
+        {
+          "la": "Epistula ā Iūliō scrīpta est.",
+          "en": "The letter was written by Julius.",
+          "focus": "scrīpta est"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "perfect-active",
+      "text": "Same tense, opposite direction: **the perfect (the 'did / has done' tense)** is one word on the perfect stem, *Sextus Mārcum pulsāvit* — Sextus hit Marcus; the passive is participle + *est*, *Mārcus ā Sextō pulsātus est* — Marcus was hit by Sextus. The doer moves into ā / ab + ablative."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 21) warn that *est* looks present but the tense is past; that oddity comes from the Latin perfect doubling as a simple past. Neuter subjects take -um: *hoc scītum est* — this was known."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (cap. XXI) contrasts *pater fīlium laudāvit* with *fīlius laudātus est ā patre*. In the accusative + infinitive the same participle goes with *esse*: *dīcit sē laudātum esse* — he says he was praised."
+    }
+  ],
+  "sources": [
+    "notes p82",
+    "Ørberg cap. XXI Grammatica Latina",
+    "A&G §184, §495"
+  ]
+}

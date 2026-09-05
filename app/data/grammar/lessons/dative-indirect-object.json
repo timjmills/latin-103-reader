@@ -1,0 +1,67 @@
+{
+  "skill": "dative-indirect-object",
+  "core": [
+    {
+      "type": "p",
+      "text": "When someone gives, says or shows something, the person on the receiving end goes into **the dative (the 'to/for' form)**, *cāsus datīvus*: *Iūlius Mārcō mālum dat* = Julius gives Marcus an apple, gives an apple to Marcus. The thing given stays in the accusative (the object form); the receiver takes -ō, -ae, -ī in the singular and -īs, -ibus in the plural. The question word is *cui?* (to whom?). No preposition, ever."
+    },
+    {
+      "type": "english",
+      "text": "The indirect object is the person something is given to: *he gave her a flower* — *her* receives, *a flower* is what is given. English can also say *to her*; Latin says it with the ending."
+    },
+    {
+      "type": "rule",
+      "text": "Verbs of giving, telling and showing (*dat*, *dīcit*, *ostendit*, *mōnstrat*) put the receiver in the dative: -ae / -ō / -ī singular, -īs / -ibus plural."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "dat"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "decl3",
+      "highlight": {
+        "case": "dat"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r07:46.1",
+        "r07:63.1",
+        "r07:60.1",
+        "r09:12.1"
+      ],
+      "invented": [
+        {
+          "la": "Magister discipulīs fābulam nārrat.",
+          "en": "The teacher tells the pupils a story.",
+          "focus": "discipulīs"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-means",
+      "text": "In the plural the dative and the ablative are twins: *servīs*, *puellīs*, *ovibus*. Ask what the word is doing. A person who receives is dative: *servīs māla dat* — gives the slaves apples. A thing something is done with is ablative: *baculō verberat*. Living receiver, dative; tool, ablative."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: 'dative' means the giving case, because giving verbs so often need an indirect object — someone the verb touches only at second hand. English places it before the direct object or adds *to* / *for*; Latin never uses word order or a preposition for it. The notes' chart adds the is-nouns: dative -ī, plural -ibus (*Vir ūvās fēminae dat*, *fīliō*, *fīliīs*)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VII: datīvus -ō / -īs, -ae / -īs, and neuter *oppidō* (*fluvius oppidō aquam dat*); pronouns *eī*, *iīs*, later *mihi*, *tibi*. Two look-alikes: the singular dative of a-nouns equals the genitive (*puellae*), and of us-nouns equals the ablative (*servō*); the verb settles it. The dative also marks the person something is for or who is affected (*hominī necesse est* — it is necessary for a person, r10:58.1; *mihi placet* — it pleases me), and goes with a few verbs that take no object (*pāret* — obeys: *ancilla pāret*, r07:19.1). A&G §361–367."
+    }
+  ],
+  "sources": [
+    "notes p23",
+    "Ørberg cap. VII Grammatica Latina",
+    "A&G §361–367"
+  ]
+}

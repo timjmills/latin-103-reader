@@ -1,0 +1,67 @@
+{
+  "skill": "genitive-possession",
+  "core": [
+    {
+      "type": "p",
+      "text": "To say whose something is, Latin puts the owner into **the genitive (the 'of' form)**, *genitīvus possessīvus*: *fīlius Iūliī* = the son of Julius, Julius's son; *ancilla Aemiliae* = Aemilia's maid. Owner and thing owned need not stand side by side; the ending shows the link. The question word is *cuius?* (whose?)."
+    },
+    {
+      "type": "english",
+      "text": "English shows possession with *'s* or *of*: *the man's house*, *the roof of the house*. Latin uses one ending for both and no *of*."
+    },
+    {
+      "type": "rule",
+      "text": "The owner takes the genitive: singular -ae (a-nouns), -ī (us- and um-nouns); plural -ārum, -ōrum. It may stand before or after the noun it belongs to."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl1",
+      "highlight": {
+        "case": "gen"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "gen"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r02:10.2",
+        "r02:12.2",
+        "r02:33.2",
+        "r02:29.1"
+      ],
+      "invented": [
+        {
+          "la": "Baculum dominī in mēnsā est.",
+          "en": "The master's stick is on the table.",
+          "focus": "dominī"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "dative-indirect-object",
+      "text": "*Puellae* is the genitive (of the girl) and also the dative (the 'to/for' form: to the girl); *servī* is genitive singular (of the slave) and nominative plural (slaves). Look at the neighbours: a genitive hangs on another noun (*liber puellae* — the girl's book); a dative hangs on a verb of giving (*puellae librum dat* — gives the girl a book)."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: grammatical 'possession' is broad. It covers holding something (the student's library book), owning it (my book on your shelf), and simply a close tie (the man's wife). English pronouns still have a genitive (*his*, *her*, *whose*), and English always puts the possessor first; Latin may put it either side of its noun and even split the two with another word (*panēs sunt fēminae*)."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. II: genetīvus -ī / -ōrum for masculine and neuter, -ae / -ārum for feminine, with the question *cuius?*. Names in -ius have genitive -iī (*Iūliī*), often written with one ī. For 'my', 'your', 'his own' Latin does not use a genitive but the adjectives *meus*, *tuus*, *suus*, which agree with the thing owned: *servus meus*, *ancilla tua*. For 'his' meaning someone else's it uses *eius*. A&G §343."
+    }
+  ],
+  "sources": [
+    "notes p5",
+    "Ørberg cap. II Grammatica Latina",
+    "A&G §343"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "skill": "passive-voice",
+  "core": [
+    {
+      "type": "p",
+      "text": "So far the subject has done the action: *servī dominum portant* = the slaves carry the master. Turn it round and the master becomes the subject and has it done to him: *dominus ā servīs portātur* = the master is carried by the slaves. That is **the passive (the 'is done' form)**, *genus passīvum*. Latin makes it with new endings: -tur for one (*portātur*), -ntur for several (*portantur*)."
+    },
+    {
+      "type": "english",
+      "text": "Active: *the dog bites the man*. Passive: *the man is bitten (by the dog)*. English adds *is / are* plus a participle (a verb used like an adjective); Latin changes the ending and needs no helping verb."
+    },
+    {
+      "type": "rule",
+      "text": "Replace -t with -tur and -nt with -ntur: *vocat → vocātur*, *vocant → vocantur*. Only a verb that can take an object can be passive."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj1",
+      "highlight": {
+        "tense": "pres",
+        "mood": "ind",
+        "voice": "pass",
+        "person": 3
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "tense": "pres",
+        "mood": "ind",
+        "voice": "pass",
+        "person": 3
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r06:62.1",
+        "r06:73.1",
+        "r06:70.1",
+        "r10:15.1"
+      ],
+      "invented": [
+        {
+          "la": "Puer ā mātre vocātur.",
+          "en": "The boy is called by his mother.",
+          "focus": "vocātur"
+        },
+        {
+          "la": "Rosae ā puellīs carpuntur.",
+          "en": "The roses are picked by the girls.",
+          "focus": "carpuntur"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "present-indicative-3rd",
+      "text": "*Vocat* — he calls (he is doing it). *Vocātur* — he is called (it is done to him). The -ur tail is the whole difference, and it flips who acts. The subject of a passive verb is nominative all the same: *puer vocātur*, not *puerum*."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "From the learner's notes: 'voice' is the relation between the subject and the action — doing it (active) or receiving it (passive). The notes' variable vowels again: consonant stems keep them (*pōnitur, pōnuntur*; *dūcitur, dūcuntur*), a- and e-stems drop them (*aedificātur, aedificantur*; *vidētur, videntur*), i-stems drop the i in the singular but keep the u in the plural (*accipitur, accipiuntur*; *audītur, audiuntur*). Intransitive verbs — states (*est*, *dormit*), motion (*it*, *cadit*), self-contained action (*rīdet*) — have no object and so no passive; if you cannot add a sensible object, the verb cannot be passive."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg cap. VI: -tur / -ntur with *ā servō* for the doer. The other persons (-or, -ris, -mur, -minī) come later, and some passives read best as active English: *dēlectātur* = is pleased, likes; *vehitur* = rides. A&G §156, §163."
+    }
+  ],
+  "sources": [
+    "notes p20",
+    "Ørberg cap. VI Grammatica Latina",
+    "A&G §156, §163"
+  ]
+}

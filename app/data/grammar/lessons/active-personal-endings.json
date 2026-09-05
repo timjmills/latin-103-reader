@@ -1,0 +1,18 @@
+{
+  "skill": "active-personal-endings",
+  "core": [
+    { "type": "p", "text": "A Latin verb carries its own subject in its ending: **the person endings (I / you / he / we / you all / they on the verb)**. *-ō* I, *-s* you, *-t* he / she / it, *-mus* we, *-tis* you all, *-nt* they. So *dormiō* is *I sleep*, *dormīs* *you sleep*, then *dormit, dormīmus, dormītis, dormiunt*. Between stem and ending sits the conjugation's vowel: *clāmā-s, rīdē-s, dīc-i-s, audī-s*; the 3rd conjugation has *-u-* before *-nt* (*dīcunt, faciunt*). Because the ending says who, *ego* and *tū* appear only for emphasis. Latin name: dēsinentiae persōnālēs āctīvae." },
+    { "type": "english", "text": "Person is who is talking: first person = the speaker (I, we), second = the listener (you), third = anyone else. English shows it only in *am / are / is* and *he sleeps*." },
+    { "type": "rule", "text": "-ō, -s, -t, -mus, -tis, -nt; the vowel in front belongs to the conjugation." },
+    { "type": "paradigm", "key": "conj1", "highlight": { "tense": "pres", "mood": "ind", "voice": "act" } },
+    { "type": "paradigm", "key": "conj3", "highlight": { "tense": "pres", "mood": "ind", "voice": "act" } },
+    { "type": "examples", "units": ["r15:103.1", "r15:56.1", "r15:58.1", "r15:102.1"], "invented": [ { "la": "Nōs in hortō lūdimus.", "en": "We play in the garden.", "focus": "lūdimus" } ] },
+    { "type": "confusion", "with": "passive-personal-endings", "text": "Each active ending has a passive twin: *-ō / -or*, *-s / -ris*, *-t / -tur*, *-mus / -mur*, *-tis / -minī*, *-nt / -ntur*: *laudō* I praise, *laudor* I am praised. A final *r* (or *-minī*) means the subject is on the receiving end, or the verb is a deponent (looks passive, means active)." }
+  ],
+  "more": [
+    { "type": "p", "text": "The 1st conjugation drops its *a* before *-ō*: *clāmā-re* but *clām-ō*. Outside the present tense the first person ends in *-m* instead of *-ō*: *sum, eram, dīcam* — so *-m* is the *I* ending everywhere else." },
+    { "type": "p", "text": "Your notes: the endings are *-ō / -m, -(i)s, -(i)t, -(i)mus, -(i)tis, -(u)nt*; the bracketed vowel appears where the stem ends in a consonant (*frang-is, frang-imus, frang-itis*) and not after *a-, e-* and *i-*stems (*ambulā-s, tenē-mus, audī-tis*); in the present indicative only *-ō* is used for *I*, and *a-*stems drop their *a* before it (*ambul-ō*) because two open vowels are hard to say together. The nominative pronouns *ego, tū, is* are redundant and mark emphasis, as English does with the voice, so *ambulō* is far commoner than *ego ambulō*." },
+    { "type": "p", "text": "Ørberg (chapter XV): persōna prīma *rīdeō rīdēmus*, secunda *rīdēs rīdētis*, tertia *rīdet rīdent*; *clāmō clāmāmus, dīcō dīcimus, faciō facimus, audiō audīmus*; and beside them *esse* (*sum, es, est, sumus, estis, sunt*), *īre* (*eō, īs, it, īmus, ītis, eunt*) and *posse* (*possum, potes, potest, possumus, potestis, possunt*)." }
+  ],
+  "sources": ["notes p50–51", "Ørberg cap. XV Grammatica Latina", "A&G §163, §174–186"]
+}

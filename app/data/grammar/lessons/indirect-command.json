@@ -1,0 +1,53 @@
+{
+  "skill": "indirect-command",
+  "core": [
+    {
+      "type": "p",
+      "text": "When a sentence reports an order, a request or a wish, the thing wanted goes into a clause with **ut / ne + subjunctive (the form for what someone asks or orders someone to do)**: *imperat ut mercēdem solvat* — he orders him to pay the rent; *ōrat nē sē verberet* — he begs him not to beat him. Latin name: *coniunctivus substantivus: ut, ne*."
+    },
+    {
+      "type": "english",
+      "text": "English uses *to*: *he told the farmer to pay*, *she asked her not to leave*. The *to*-phrase is the command."
+    },
+    {
+      "type": "rule",
+      "text": "Verb of ordering, asking, warning or wishing + ut (nē for 'not') + subjunctive. Lead-ins: imperō, rogō, ōrō, moneō, postulō, cūrō, hortor, volō."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w04:74.7",
+        "w04:124.3",
+        "w04:160.5",
+        "w10:fl-73:b30.3"
+      ],
+      "invented": [
+        {
+          "la": "Māter fīliō imperat nē in viā lūdat.",
+          "en": "The mother orders her son not to play in the street.",
+          "focus": "nē … lūdat"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "purpose-clause",
+      "text": "After a verb of doing the same *ut* + subjunctive is **ut / ne + subjunctive (the 'in order to' clause: venit ut videat = comes to see)** — it says why. After *imperat, rogat, monet* it says what was ordered. Ask: is *ut* completing a verb of telling, or explaining an action?"
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes (week 27) call this the substantive subjunctive: a noun clause for a wish, command or tendency rather than a fact. Their examples: *dux imperat ut mīlitēs sequantur*; *volō ut omnēs veniāmus*; *mōs est Rōmānīs ut ad cēnam discumbant*; and *accidit ut …* / *fit ut …* (it happens that …)."
+    },
+    {
+      "type": "p",
+      "text": "The clause verb is present subjunctive after a present main verb and imperfect after a past one (*rogāvit ut nārrāret*); that pairing is the sequence of tenses. Two verbs of ordering skip *ut*: *iubeō* and *vetō* take the accusative + infinitive (*iubet eum venīre*). Verbs of saying and thinking never take *ut*; they take the accusative + infinitive (*dīcit eum venīre*). A second negative in the clause is *nēve*: *cūrā nē ovēs aberrent nēve silvam petant*."
+    }
+  ],
+  "sources": [
+    "notes p101–102",
+    "Ørberg cap. XXVII Grammatica Latina",
+    "A&G §563"
+  ]
+}

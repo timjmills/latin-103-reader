@@ -1,0 +1,75 @@
+{
+  "skill": "dative-of-agent",
+  "core": [
+    {
+      "type": "p",
+      "text": "With the gerundive + *sum* (the 'must be done' pattern), the person who has to do the job is not *ā* + ablative but **the dative of agent (the person who must do it: mihi legendum est = I must read)**: *liber mihi legendus est* — the book is for me to read, so: I must read the book; *servō faciendum est* — the slave must do it. The dative (the 'to/for' form) fits because the duty is 'for' that person. Latin name: *dativus auctoris*."
+    },
+    {
+      "type": "english",
+      "text": "English turns it round: *the book must be read by me* becomes *I must read the book*. Find the dative, make it the subject, say 'must'."
+    },
+    {
+      "type": "rule",
+      "text": "Gerundive + sum + dative = 'X must …': the dative names the doer. ā/ab + ablative is not used with the gerundive."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "dat"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "ego",
+      "highlight": {
+        "case": "dat"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "w09:b43.2",
+        "w09:b46.8",
+        "w09:b47.1"
+      ],
+      "invented": [
+        {
+          "la": "Servīs labōrandum est.",
+          "en": "The slaves must work.",
+          "focus": "Servīs"
+        },
+        {
+          "la": "Haec epistula tibi legenda est.",
+          "en": "You must read this letter.",
+          "focus": "tibi"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-agent",
+      "text": "With an ordinary passive the doer is ā/ab + the ablative (the 'by' phrase with a passive verb): *liber ā puerō legitur* — the book is read by the boy. Only with the gerundive does the doer become dative: *liber puerō legendus est*. So: *-tur / -tus est* → ā + ablative; *-ndus est* → dative."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "Also easy to confuse: some verbs take a dative object anyway (*fīdere* trust, *pārēre* obey). In *amīcīs fīdendum nōn est* (Week 11) *amīcīs* is the ones not to be trusted, not the person who must act. Ask: is the dative the doer, or the verb's own object?"
+    },
+    {
+      "type": "p",
+      "text": "In the course texts only one sentence spells the doer out (*servō faciendum est*, Week 9): the second and third examples above have no doer named — *merum bibendum est*, *tacendum est* — and that is the normal case: the duty is stated, the person understood. Add one and it goes in the dative: *nōbīs merum bibendum est*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg's chapter 31 states the rule in Latin: the person by whom something ought to be done is marked with the gerundive by the dative — *discipulus industrius magistrō laudandus est* (= *ā magistrō*), *Lingua Latīna vōbīs discenda est*, *quidquid magister imperāvit discipulō faciendum est*. The learner's notes for Week 31 describe the participle and *sum* but do not treat the agent; this lesson fills that gap. Allen & Greenough add two edges: when the gerundive verb itself takes a dative (like *fīdere*) or two datives would be confusing, writers fall back on ā/ab + ablative for the doer; and poets sometimes use a dative of agent with a perfect participle too (*mihi cōnsultum est*, care has been taken by me)."
+    }
+  ],
+  "sources": [
+    "Ørberg cap. XXXI Grammatica Latina",
+    "notes p114 (participle only)",
+    "A&G §374"
+  ]
+}
