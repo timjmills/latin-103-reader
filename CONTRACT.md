@@ -242,3 +242,18 @@ For struggling learners every note gets a simpler second layer:
 - `data/build/margin-week-NN.json` entries gain `"en"` (short English rendering of Ørberg's Latin gloss) → carried into `unit.margin[].en`.
 UI: an "In plain words" disclosure under each note (sentence note, highlight note) and the English shown beneath a margin gloss when tapped/expanded.
 - (2026-09-04, later) alignment rows also carry `end_ms` (int|null; the last unit of a shared recording needs it) and `synth` (bool). `words` now has one entry per token of the unit (`t` = the unit's own word text), with times interpolated between confidently matched anchors; interpolated entries carry `"i": true`.
+
+## Pictures (2026-09-05)
+
+Illustrations cropped from the textbook scans, anchored to the sentence they stand beside.
+- Pipeline output `data/build/pictures-week-NN.json`: `[{ "id": "w01/p197-1", "file": "data/build/pictures/week-01/p197-1.png", "page": 197, "unit_id": "w01:29.1", "caption": "labyrinthus -ī m", "caption_en": "labyrinth", "width": 900, "height": 620, "sort": 0 }]`.
+- Table `pictures` (see migration 0008); objects in the private bucket `pictures` at `{user}/week-NN/p197-1.png`.
+- `store.getPictures(weekN)` → `[{ id, unit_id, url (signed), caption, caption_en, width, height, sort }]`, cached per session; offline → whatever is cached in IndexedDB (rows only; images come from the browser cache).
+- UI: passage view shows a picture beside its sentence (gutter column on wide screens, above that sentence's margin notes; full-width above the sentence on phones), caption in the reading face, tappable Latin; sentence view shows it above the Latin. Setting `showPictures` (default true).
+
+## Reading progress (2026-09-05)
+
+Table `reading_progress` (user_id, unit_id, week_n, read_at): one row per sentence the learner has read. A sentence counts as read when it has been the current sentence in sentence view for ≥ 2 s or moved past with Next, when it has been played, or when its block has been fully in view for ≥ 2 s in passage view (IntersectionObserver). Local-first with the outbox like lookups; realtime keeps devices in step.
+`store.getProgress()` → `Map<unit_id, read_at>`; `store.markRead(unitIds[])`; `store.resetProgress(weekN|null)` (one week or everything, after a confirm). Lookups are never touched by progress or by any reseed.
+UI: the weeks menu shows a thin bar and "42 of 93 sentences" per week; the current week's heading shows the same; "Continue where you left off" jumps to the first unread sentence; Settings → Progress has Reset this week / Reset all.
+Last position: `settings.lastPosition = { week_n, unit_id, view, at }` is written (debounced) whenever the current sentence changes in either view; on boot the app opens that week and scrolls to / navigates to that sentence (synced through settings like everything else). The weeks menu also opens on the last week.

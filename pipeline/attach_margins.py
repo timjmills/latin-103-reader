@@ -120,6 +120,30 @@ def locate_units(units: list[dict], index_by_slug: dict[str | None, LineIndex], 
     return out
 
 
+_ENDINGS = ("ibus", "orum", "arum", "ium", "ius", "us", "um", "ae", "is", "es", "em", "os", "as", "am", "ur", "o", "i", "e", "a")
+
+
+def gloss_stem(la: str) -> str:
+    """The searchable stem of a gloss's headword: 'agnus -ī m = parvula ovis' → 'agn',
+    'forte = nesciō cūr' → 'fort', 'immortālēs -ium m pl' → 'immortal'. '' when too short."""
+    head = re.split(r"[\s:=↔(]", strip_macrons(la).strip().lower(), 1)[0]
+    head = re.sub(r"[^a-z]", "", head.replace("v", "u").replace("j", "i"))
+    if len(head) < 4:
+        return head if len(head) >= 3 else ""
+    for e in _ENDINGS:
+        if head.endswith(e) and len(head) - len(e) >= 3:
+            return head[: -len(e)]
+    return head
+
+
+def unit_has_stem(unit: dict, stem: str) -> bool:
+    for t in toks(unit["la"]):
+        t = t.replace("v", "u").replace("j", "i")
+        if t.startswith(stem):
+            return True
+    return False
+
+
 def blocks_of(units: list[dict]) -> list[list[dict]]:
     out: list[list[dict]] = []
     for u in units:
@@ -238,10 +262,22 @@ def process_week(n: int, root: Path, check: bool = False) -> dict | None:
         _, slug, block = candidates[0]
         # the unit printed on that line: last unit of the block whose own start line <= L
         target = block[0]
-        for u in block:
+        ti = 0
+        for i, u in enumerate(block):
             f = loc.get(u["id"])
             if f and f["line"] <= L:
-                target = u
+                target, ti = u, i
+        # Several sentences share a printed line, so the line alone can put a
+        # gloss one sentence too late. Prefer the nearby sentence that actually
+        # contains the glossed word: the line's sentence, then the one before
+        # it (which may run on into this line), then the next.
+        stem = gloss_stem(g["la"])
+        if stem:
+            order = [ti, ti - 1, ti - 2, ti + 1]
+            for k in order:
+                if 0 <= k < len(block) and unit_has_stem(block[k], stem):
+                    target = block[k]
+                    break
         target["margin"].append(entry)
         rep["attached"] += 1
 
