@@ -138,3 +138,13 @@ heading; the reader shows them like any week (translation toggle disabled).
 Own page inside the section: skills by state, items today / 7 days, accuracy,
 per-skill history (last 10 attempts), confusions list. Not merged into the
 reading study log (the study-log active timer keeps running — it is one app).
+
+## Amendments from the skill map (A, 2026-09-05)
+
+- `week` = week within the course (101: 1–14, 102: 1–10, 103: 1–14 matching `w01`–`w14`); `notes_week` (1–34) keeps the notes' numbering.
+- Top-level `paradigm_keys` map (key → table in paradigms.js): decl1–decl5, adj12/adj3/adj3cons/adjcomp, conj1–conj4/conj3io, named tables sum…fio, is…se, unus/duo/tres, vis/deus/domus/iuppiter. D builds its key → table lookup from it (paradigms.js only exposes `paradigm(entry, parse)`).
+- `paradigm_focus` = the cells a skill is about (highlighting, single-cell items).
+- `parse_filter` may be an array (any-of); extra entry-level keys: `deponent: true` (glossary `kind: "dep"|"semidep"`), `enc: "que"|"ne"`, `h: [...]` headwords, `decl: 3` (= entry.cat[0]); `null` for the two metre skills (lesson only, no generated items).
+- Categories in use: noun-case, verb-form, syntax, verb-use, adjective (incl. adverbs), pronoun, metre, vocabulary; `questions` reserved for wave 2.
+- Lessons: a missing `lessons/<skill>.json` renders a "lesson coming" placeholder, never an error.
+- sw.js: CACHE_VERSION is v31 after the book-lines deploy; the grammar hook bumps to v32 and precaches js/grammar/*, css/grammar.css, data/grammar/skills.json and every lessons/*.json; `.sample.json` fixtures are removed before deploy.
