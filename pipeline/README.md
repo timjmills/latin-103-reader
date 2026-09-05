@@ -217,6 +217,21 @@ in the book). Full limitations in the docstring of `recover_lines.py`.
 - `data/build/weeks.json` — index of the `week` objects for every week whose
   build exists (plus `unit_count`), refreshed on every run.
 
+## Review shelf: Familia Romana I–XXIV from the scan
+
+`python pipeline/review_shelf.py [chapters] [--sql]` builds
+`data/build/review-NN.json` (week `n = 100 + chapter`, id `rNN`, Latin only,
+one part "Capitulum N", block per printed paragraph, `lines` and `margin` as
+for the other weeks) straight from the text layer of `scans/familia-romana.pdf`,
+reusing `extract_margins.py` for the page geometry, line numbering and gloss
+cleaning and `build_week.split_sentences` for the sentences. Unit ids are
+`rNN:<line>.<k>` — the printed line the sentence starts on. `--sql` writes
+`data/build/sql/rNN-*.sql` through `seed_sql.week_sql`; `--dump` prints every
+classified row; `--render DIR` renders the pages for a spot check. Everything
+uncertain (sentences left out, OCR repairs made, unverified tokens, layout
+notes) goes to `data/build/review-REPORT.md`; the docstring of
+`review_shelf.py` explains the cleaning rules. `weeks.json` is not touched.
+
 ## Audio: aligning recordings and synthesising the rest
 
 Requirements (free, local): `pip install faster-whisper imageio-ffmpeg edge-tts gTTS`.

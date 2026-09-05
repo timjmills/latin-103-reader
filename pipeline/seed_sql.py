@@ -29,8 +29,12 @@ def q(v):
     return "'" + str(v).replace("'", "''") + "'"
 
 
-def week_sql(n: int) -> list[str]:
-    data = json.loads((BUILD / f"week-{n:02d}.json").read_text(encoding="utf-8"))
+def week_sql(n: int, path: Path | None = None) -> list[str]:
+    """SQL statements for one week. `path` overrides the default
+    data/build/week-NN.json (the review shelf passes review-NN.json with
+    n = 100 + chapter); highlights are read from highlights-week-NN.json when
+    that file exists, so a review week (which has none) seeds no highlights."""
+    data = json.loads((path or BUILD / f"week-{n:02d}.json").read_text(encoding="utf-8"))
     wk, units = data["week"], data["units"]
     hl_path = BUILD / f"highlights-week-{n:02d}.json"
     hl = json.loads(hl_path.read_text(encoding="utf-8")) if hl_path.exists() else []
