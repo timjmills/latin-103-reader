@@ -222,6 +222,18 @@ async function pullTexts() {
     state.highlights.delete(n);
     state.pictures.delete(n);
   }
+  // A week that was cached before pictures existed never looks stale, so ask
+  // once per week for its pictures when none are held locally.
+  for (const w of remoteWeeks) {
+    if (stale.includes(w.n)) continue;
+    const flag = `pictures_checked:${w.n}`;
+    if (await db.getMeta(flag)) continue;
+    if ((await db.countByIndex('pictures', 'week_n', w.n)) === 0) {
+      const rows = await pullPictures(sb, w.n);
+      if (rows.length) { await db.replaceWeek('pictures', w.n, rows); state.pictures.delete(w.n); emit('weeks'); }
+    }
+    await db.setMeta(flag, nowIso());
+  }
   // Weeks removed on the server disappear locally too.
   const remoteNs = new Set(remoteWeeks.map((w) => w.n));
   for (const w of state.weeks) {
