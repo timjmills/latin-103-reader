@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "**the pluperfect subjunctive (the 'had / would have' form: cum venisset = when he had come)** is the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) for an action already finished before a past main verb. Build it from the perfect infinitive (the 'to have done' form: *vēnisse*) plus the personal endings: *vēnisse-m, vēnissē-s, vēnisse-t, vēnissē-mus, vēnissē-tis, vēnisse-nt*; passive: perfect participle + *essem, essēs, esset* (*captus esset*). Latin name: *coniunctivus plusquamperfecti*."
+      "text": "For an action already finished before a past main verb, the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) becomes **the pluperfect subjunctive (the 'had / would have' form: cum venisset = when he had come)**. Build it from the perfect infinitive (the 'to have done' form), *vēnisse*, plus the personal endings: *vēnisse-m, vēnissē-s, vēnisse-t, vēnissē-mus, vēnissē-tis, vēnisse-nt*; passive: perfect participle + *essem, essēs, esset* (*captus esset*). Latin name: *coniūnctīvus plūsquamperfectī*."
     },
     {
       "type": "english",
@@ -11,7 +11,7 @@
     },
     {
       "type": "rule",
-      "text": "Perfect infinitive + endings (-issem … -issent). Use it after a past main verb for what had already happened: cum clauses, indirect questions, past wishes, unreal past conditions."
+      "text": "Perfect infinitive + endings (-issem … -issent). After a past main verb, for what had already happened: cum clauses, indirect questions, past wishes, unreal past conditions."
     },
     {
       "type": "paradigm",
@@ -45,7 +45,7 @@
     {
       "type": "confusion",
       "with": "imperfect-subjunctive",
-      "text": "Both follow a past main verb. The imperfect subjunctive (present infinitive + endings: *venīret*) is for something going on at the same time — 'while he was coming'; the pluperfect (perfect infinitive + endings: *vēnisset*) is for something already over — 'after he had come'. Look for -isse- inside the word."
+      "text": "Both follow a past main verb. The imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive) is for something going on at the same time — 'while he was coming'; the pluperfect, built on the perfect infinitive (*vēnisset*), is for something already over — 'after he had come'. Look for -isse- inside the word."
     }
   ],
   "more": [

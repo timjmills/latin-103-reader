@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "After a comparative you can drop *quam* (than) and put the thing compared in the ablative: **the ablative of comparison (the 'than' form: illo fortior = braver than he)**. *Canis lupō ferōcior est* — the dog is fiercer than a wolf; *nihil melle dulcius est* — nothing is sweeter than honey. The ablative usually stands right before the comparative. Latin name: *ablativus comparationis*."
+      "text": "After a comparative you can drop *quam* (than) and put the thing compared in the ablative: **the ablative of comparison (the 'than' form: illo fortior = braver than he)**. *Canis lupō ferōcior est* — the dog is fiercer than a wolf; *nihil melle dulcius est* — nothing is sweeter than honey. The ablative usually stands right before the comparative. Latin name: *ablātīvus comparātiōnis*."
     },
     {
       "type": "english",
@@ -30,7 +30,7 @@
       ],
       "invented": [
         {
-          "la": "Mārcus Quīntō maior est.",
+          "la": "Mārcus Quīntō māior est.",
           "en": "Marcus is bigger than Quintus.",
           "focus": "Quīntō"
         }
@@ -39,7 +39,7 @@
     {
       "type": "confusion",
       "with": "ablative-degree",
-      "text": "Two ablatives can sit around one comparative: *multō maior frātre* — bigger than his brother by much. The person is the ablative of comparison; **the ablative of degree (the 'by how much' form: multo maior = bigger by much)** is the measure (*multō, paulō, nihilō*)."
+      "text": "Two ablatives can sit around one comparative: *multō māior frātre* — bigger than his brother by much. The person is the ablative of comparison; **the ablative of degree (the 'by how much' form: multo maior = bigger by much)** is the measure (*multō, paulō, nihilō*)."
     }
   ],
   "more": [

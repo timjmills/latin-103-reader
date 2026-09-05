@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "Someone described by what they are about to do, or intend to do, gets **the future participle (the 'about to' word: venturus = about to come)**: *epistulam scrīptūrus sum* — I am about to write a letter; *mīlitēs pugnātūrī* — soldiers about to fight. It is the participle stem with -ūr- slipped in before -us -a -um, and it is active. Latin name: *participium futuri activi*."
+      "text": "Someone described by what they are about to do, or intend to do, gets **the future participle (the 'about to' word: venturus = about to come)**: *epistulam scrīptūrus sum* — I am about to write a letter; *mīlitēs pugnātūrī* — soldiers about to fight. It is the participle stem with -ūr- slipped in before -us -a -um, and it is active. Latin name: *participium futūrī āctīvī*."
     },
     {
       "type": "english",
@@ -24,10 +24,10 @@
     {
       "type": "examples",
       "units": [
-        "r23:125.1",
-        "r23:127.1",
+        "r23:115.2",
         "w03:fl-63:b14.2",
-        "r23:97.1"
+        "r23:125.1",
+        "r23:127.1"
       ],
       "invented": [
         {
@@ -46,7 +46,7 @@
   "more": [
     {
       "type": "p",
-      "text": "The learner's notes (week 23) list the three participles in a grid: present active -ns, perfect passive -tus, future active -ūrus (and the future passive, the gerundive, -ndus). Their examples: *puer ambulātūrus*, *oppidum cāsūrum*, *puella flōrem carptūra*, *mīlitēs moritūrī*. Deponents form it the same way and it is active as usual: *profectūrus* — about to set out."
+      "text": "The learner's notes (week 23) list the three participles in a grid: present active -ns, perfect passive -tus, future active -ūrus (and the future passive, the gerundive, -ndus). Their examples: *puer ambulātūrus*, *oppidum cāsūrum*, *puella flōrem carptūra*, *mīlitēs moritūrī*. A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) forms it the same way and it is active as usual: *profectūrus* — about to set out."
     },
     {
       "type": "p",

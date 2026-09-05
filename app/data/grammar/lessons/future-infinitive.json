@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "To report that something *will* happen, Latin uses **the future infinitive (the 'going to' form: venturum esse)**: the future participle plus *esse*. *Dīcit sē epistulam scrīptūrum esse* — he says that he will write a letter. The participle agrees with the accusative subject of the reported clause, so *sē … scrīptūram esse* for a woman, *eōs … factūrōs esse* for several men. Latin name: *infinitivus futuri*."
+      "text": "To report that something *will* happen, Latin uses **the future infinitive (the 'going to' form: venturum esse)**: the future participle plus *esse*. *Dīcit sē epistulam scrīptūrum esse* — he says that he will write a letter. The participle agrees with the accusative subject of the reported clause, so *sē … scrīptūram esse* for a woman, *eōs … factūrōs esse* for several men. Latin name: *īnfīnītīvus futūrī*."
     },
     {
       "type": "english",
@@ -24,9 +24,9 @@
     {
       "type": "examples",
       "units": [
-        "r23:125.2",
+        "w05:fl-67:b40.9",
         "w07:b2.4",
-        "r23:95.1",
+        "w10:fl-73:b32.1",
         "w06:147.1"
       ],
       "invented": [

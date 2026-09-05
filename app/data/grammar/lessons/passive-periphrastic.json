@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "Put the gerundive (the '-nd-' adjective, 'to be done') next to a form of *sum* (to be) and you get **the gerundive with sum (the 'must be done' pattern: liber legendus est = the book must be read)**. *Cibus comedendus est* — the food must be eaten; *tacendum est* — one must be silent (no subject, so the neuter *-um*). The tense of *sum* moves the duty in time: *pūniendus erat* — had to be punished. Latin name: *coniugatio periphrastica passiva*."
+      "text": "Put the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk) next to a form of *sum* (to be) and you get **the gerundive with sum (the 'must be done' pattern: liber legendus est = the book must be read)**. *Cibus comedendus est* — the food must be eaten; *tacendum est* — one must be silent (no subject, so the neuter *-um*). Latin name: *coniugātiō periphrastica passīva*."
     },
     {
       "type": "english",
@@ -44,13 +44,13 @@
     {
       "type": "confusion",
       "with": "perfect-passive",
-      "text": "*laudātus est* (the perfect passive, the 'was done' tense: he was praised) and *laudandus est* (he must be praised) share the shape participle + *est*. Look at the participle: *-tus / -sus* is the perfect passive participle (done); *-ndus* is the gerundive (to be done). *victus est* = was beaten; *vincendus est* = must be beaten."
+      "text": "*laudātus est* — the perfect passive (the 'was done / has been done' form: laudatus est), he was praised — and *laudandus est* (he must be praised) share the shape participle + *est*. Look at the participle: *-tus / -sus* is the perfect passive participle (done); *-ndus* is the gerundive, to be done. *victus est* = was beaten; *vincendus est* = must be beaten."
     }
   ],
   "more": [
     {
       "type": "p",
-      "text": "The person who must do it is added in the dative (the 'to/for' form), not with ā/ab: *liber mihi legendus est* — I must read the book. See the dative of agent lesson."
+      "text": "The tense of *sum* moves the duty in time: *pūniendus erat* — had to be punished. The person who must do it is added in the dative (the 'to/for' form), not with ā/ab: *liber mihi legendus est* — I must read the book. See the dative of agent lesson."
     },
     {
       "type": "p",

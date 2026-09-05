@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "Latin has no separate words for *he, she, it, they*. It uses a pointing word without a noun: **a demonstrative used as a pronoun (is = he, ea = she, id = it)**, *prōnōmina dēmōnstrātīva substantīva*. *Is multōs servōs habet* = he has many slaves; *ea* = she; *id* = it; *iī / eae / ea* = they. *Hic* (this one) and *ille* (that one) do the same job with more point. The gender follows the noun replaced, not real sex: cheese is *caseus*, so 'it' is *is*."
+      "text": "Latin has no separate words for *he, she, it, they*. It uses a pointing word without a noun: **a demonstrative used as a pronoun (is = he, ea = she, id = it)**, *prōnōmina dēmōnstrātīva substantīva*. *Is multōs servōs habet* = he has many slaves; *ea* = she; *id* = it; *iī / eae / ea* = they. The gender follows the noun replaced: cheese is *caseus*, so 'it' is *is*."
     },
     {
       "type": "english",
@@ -42,7 +42,7 @@
   "more": [
     {
       "type": "p",
-      "text": "From the learner's notes: a pronoun takes the place of a noun; any demonstrative can be used 'substantively' (standing alone), and *is, ea, id* is by far the commonest. Masculine for male persons and animals, feminine for female, neuter for everything else — but once a thing has a name, the pronoun takes the name's gender: *Ecce caseus! Is malus est*; *Aqua eius vītam nōn dat* (its water). *Huic malum dat, illī bonum* — he gives something bad to this one, something good to that one."
+      "text": "From the learner's notes: a pronoun takes the place of a noun; any demonstrative can be used 'substantively' (standing alone), and *is, ea, id* is by far the commonest. *Hic* (this one) and *ille* (that one) do the same job with more point. Masculine for male persons and animals, feminine for female, neuter for everything else — but once a thing has a name, the pronoun takes the name's gender: *Ecce caseus! Is malus est*; *Aqua eius vītam nōn dat* (its water). *Huic malum dat, illī bonum* — he gives something bad to this one, something good to that one."
     },
     {
       "type": "p",

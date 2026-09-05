@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "Latin's ordinary past for a finished action is **the perfect (the 'did / has done' tense)**: *pulsāvit* — he hit, or he has hit. It is built on the perfect stem (the third principal part minus -ī) with its own set of endings, used nowhere else: -ī, -istī, -it, -imus, -istis, -ērunt. Latin name: *perfectum indicativi activi*."
+      "text": "Latin's ordinary past for a finished action is **the perfect (the 'did / has done' tense)**: *pulsāvit* — he hit, or he has hit. It is built on the perfect stem (the third principal part minus -ī) with its own set of endings, used nowhere else: -ī, -istī, -it, -imus, -istis, -ērunt. Latin name: *perfectum indicātīvī āctīvī*."
     },
     {
       "type": "english",
@@ -26,7 +26,7 @@
       "type": "examples",
       "units": [
         "r21:11.1",
-        "r21:41.1",
+        "r21:102.2",
         "r21:42.1",
         "r21:21.1"
       ],

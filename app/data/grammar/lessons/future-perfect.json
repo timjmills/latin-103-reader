@@ -3,11 +3,11 @@
   "core": [
     {
       "type": "p",
-      "text": "**the future perfect (the 'will have done' tense)** marks an action finished before another future action. Latin uses it in *sī* (if), *cum* (when), *postquam* (after) clauses: *cum vēnerō, gaudēbō* — when I have come (literally: will have come), I will be glad. Forms: perfect stem + *-erō, -eris, -erit, -erimus, -eritis, -erint*; passive: perfect participle + *erō, eris, erit* (*captus erit*). Latin name: *futurum exactum*."
+      "text": "Latin marks an action finished before another future action with **the future perfect (the 'will have done' tense)**. Latin uses it in *sī* (if), *cum* (when), *postquam* (after) clauses: *cum vēnerō, gaudēbō* — when I have come, I will be glad. Forms: perfect stem + *-erō, -eris, -erit, -erimus, -eritis, -erint*; passive: perfect participle + *erō, eris, erit* (*captus erit*). Latin name: *futūrum exāctum*."
     },
     {
       "type": "english",
-      "text": "English: *by noon he will have left*. In *if* and *when* clauses English drops it — *when you have finished, call me* — but the logic is the same: finishing first, calling second."
+      "text": "English: *by noon he will have left*. In *if* and *when* clauses English drops it — *when you have finished, call me* — but the logic is the same."
     },
     {
       "type": "rule",
@@ -45,7 +45,7 @@
     {
       "type": "confusion",
       "with": "perfect-subjunctive",
-      "text": "The perfect subjunctive (the 'have done' form: *nesciō quid fēcerit*) has the same endings except *-erō* / *-erim*. The job decides: in a sī / cum / postquam clause pointing to the future it is the future perfect (*sī vēnerit, gaudēbō*); after *nē* (don't) or a question word it is the perfect subjunctive (*nē timuerīs*; *nesciō quid fēcerit*)."
+      "text": "The perfect subjunctive (the 'have done' form: nescio quid fecerit; ne timueris = don't be afraid) has the same endings except *-erō* / *-erim*. The job decides: in a sī / cum / postquam clause pointing to the future it is the future perfect (*sī vēnerit, gaudēbō*); after *nē* (don't) or a question word it is the perfect subjunctive (*nē timuerīs*)."
     }
   ],
   "more": [
@@ -59,7 +59,7 @@
     },
     {
       "type": "p",
-      "text": "Ørberg's chapter 30: *dux mīlitem laudābit, sī fortiter pugnāverit*; *discipulus laudābitur sī magistrō pāruerit et industrius fuerit*; passive *pater gaudēbit sī fīlius laudātus erit*. Irregulars follow the perfect stem: *fuerō, potuerō, voluerō, ierō*. In a main clause on its own it is rare and means a confident 'will have': *vīderimus*, we will have seen. With *cum* it stays indicative because it is a real future time, not story background (compare cum + subjunctive, Week 6)."
+      "text": "Ørberg's chapter 30: *dux mīlitem laudābit, sī fortiter pugnāverit*; *discipulus laudābitur sī magistrō pāruerit et industrius fuerit*; passive *pater gaudēbit sī fīlius laudātus erit*. Irregulars follow the perfect stem: *fuerō, potuerō, voluerō, ierō*. In a main clause on its own it is rare and means a confident 'will have': *vīderimus*, we will have seen. With *cum* it stays in the indicative (the plain statement form) because it is a real future time, not story background (compare cum + subjunctive, Week 6)."
     }
   ],
   "sources": [

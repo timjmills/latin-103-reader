@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "In a story about the past, **cum + subjunctive (the 'when / while' clause that sets the scene in a past story)** gives the background to the main event: *cum ambulāret, latrōnēs vīdit* — while he was walking, he saw robbers. The verb is the imperfect subjunctive (the past-time 'might / would' form) for 'while … was doing', the pluperfect subjunctive (the 'had done' form) for 'after … had done'. Latin name: *cum historicum*."
+      "text": "In a story about the past, **cum + subjunctive (the 'when / while' clause that sets the scene in a past story)** gives the background to the main event: *cum ambulāret, latrōnēs vīdit* — while he was walking, he saw robbers. The verb is the imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive) for 'while … was doing', the pluperfect subjunctive (the 'had / would have' form: cum venisset = when he had come) for 'after … had done'. Latin name: *cum historicum*."
     },
     {
       "type": "english",
@@ -37,13 +37,13 @@
     {
       "type": "confusion",
       "with": "cum-causal",
-      "text": "The same *cum* + subjunctive can mean 'since': *ānulum abiēcit, cum sē fēlīcem esse cēnsēret* — he threw the ring away since he thought himself too lucky. If the clause explains *why*, read 'since'; if it only gives the time, read 'when / while'. Often both fit."
+      "text": "The same *cum* + subjunctive can mean 'since': *ānulum abiēcit, cum sēsē nimis fēlīcem esse cēnsēret* — he threw the ring away since he thought himself too lucky. If the clause explains *why*, read 'since'; if it only gives the time, read 'when / while'. Often both fit."
     }
   ],
   "more": [
     {
       "type": "p",
-      "text": "Also easy to confuse: *cum* + indicative is a plain date, not scene-setting — *cum semel occidit lūx* (once the light has set), *cum cēnam parāverit* (when he has got dinner ready: the future perfect, the 'will have done' tense). Subjunctive = story background; indicative = simply 'at the time when'."
+      "text": "Also easy to confuse: *cum* + the indicative (the plain statement form) is a plain date, not scene-setting — *cum semel occidit lūx* (once the light has set), *cum cēnam parāverit* (when he has got dinner ready: the future perfect, the 'will have done' tense). Subjunctive = story background; indicative = simply 'at the time when'."
     },
     {
       "type": "p",

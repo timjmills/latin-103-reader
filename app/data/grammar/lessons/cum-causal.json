@@ -3,11 +3,11 @@
   "core": [
     {
       "type": "p",
-      "text": "**cum + subjunctive meaning 'since' (or, with tamen, 'although')** gives the reason for the main clause: *plōrō, cum mortua sit* — I weep, since she is dead. Unlike the story-telling *cum*, it works in any tense: the present subjunctive (the 'may / let' form) after a present main verb, the imperfect after a past one. With *tamen* (nevertheless) in the main clause it is a concession: *cum dīves sit, tamen miser est* — although he is rich, he is unhappy. Latin name: *cum causale et concessivum*."
+      "text": "A reason for the main clause can be given by **cum + subjunctive meaning 'since' (or, with tamen, 'although')**: *plōrō, cum mortua sit* — I weep, since she is dead. Unlike the story-telling *cum*, it works in any tense: the present subjunctive (the 'may / let' form: veniat = let him come, may he come) after a present main verb, the imperfect after a past one. With *tamen* (nevertheless) in the main clause it is a concession: *cum dīves sit, tamen miser est* — although he is rich, he is unhappy. Latin name: *cum causāle et concessīvum*."
     },
     {
       "type": "english",
-      "text": "*Since* and *because* give a reason; *although* admits something and then goes against it. In Latin one small word does both jobs; the subjunctive marks it."
+      "text": "*Since* and *because* give a reason; *although* admits something and then goes against it. One Latin word does both jobs; the subjunctive marks it."
     },
     {
       "type": "rule",

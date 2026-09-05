@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "**the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk)** is a verb turned into an adjective: stem + *-nd-* + *-us, -a, -um*, agreeing with its noun like *bonus*. It says what should be done to the noun: *cibus comedendus* — food to be eaten, food that needs eating; *vōx audienda* — a voice that must be heard. Latin name: *gerundivum (participium futuri passivi)*, the 'future passive participle' of the learner's notes."
+      "text": "A verb turned into an adjective is **the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk)**: stem + *-nd-* + *-us, -a, -um*, agreeing with its noun like *bonus*. It says what should be done to the noun: *cibus comedendus* — food to be eaten, food that needs eating; *vōx audienda* — a voice that must be heard. Latin name: *gerundīvum (participium futūrī passīvī)*."
     },
     {
       "type": "english",
@@ -11,7 +11,7 @@
     },
     {
       "type": "rule",
-      "text": "Stem + -nd- + adjective endings, agreeing with a noun. After ad, or with causā, it replaces gerund + object: ad litterās scrībendās = for writing letters (literally: for letters to-be-written)."
+      "text": "Stem + -nd- + adjective endings, agreeing with a noun. After ad, or with causā, it replaces gerund + object: ad litterās scrībendās = for writing letters."
     },
     {
       "type": "paradigm",
@@ -44,7 +44,7 @@
     {
       "type": "confusion",
       "with": "gerund",
-      "text": "The gerund (the verb-as-noun, '-ing') is a noun: singular only, endings *-ndī, -ndō, -ndum*, and it can take an object — *ad ālās faciendum* (for making wings). The gerundive is an adjective with any ending and agrees with a noun: *ad litterās scrībendās*. Agrees with a noun → gerundive; stands alone or has its own object → gerund."
+      "text": "The gerund (the '-ing' noun form: ad bibendum = for drinking) is a noun: singular only, endings *-ndī, -ndō, -ndum*, and it can take an object — *ad ālās faciendum* (for making wings). The gerundive is an adjective with any ending and agrees with a noun: *ad litterās scrībendās*. Agrees with a noun → gerundive; stands alone or has its own object → gerund."
     }
   ],
   "more": [

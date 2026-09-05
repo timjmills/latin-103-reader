@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "A Latin verb is a stem plus an ending, and the ending says who is doing it. The first endings to learn are those of **the present tense, 3rd person (-t 'he does', -nt 'they do')**, *praesēns indicātīvī, tertia persōna*: *cantat* = she sings, *cantant* = they sing. No pronoun is needed; the ending carries 'he / she / it / they'. The vowel before the ending shows the verb's family: *canta-t*, *vide-t*, *pōn-i-t*, *audi-t*."
+      "text": "A Latin verb is a stem plus an ending, and the ending says who is doing it. The first endings to learn are those of **the present tense, 3rd person (-t 'he does', -nt 'they do')**, *praesēns indicātīvī, tertia persōna*: *cantat* = she sings, *cantant* = they sing. The vowel before the ending shows the verb's family: *canta-t*, *vide-t*, *pōn-i-t*, *audi-t*."
     },
     {
       "type": "english",
@@ -62,7 +62,7 @@
     },
     {
       "type": "p",
-      "text": "The indicative (*indicātīvus*) is the mood of facts: statements and questions about what is so. Ørberg cap. IV contrasts indicātīvus -at, -et, -it, -it with imperātīvus -ā, -ē, -e, -ī. The other persons (-ō, -s, -mus, -tis) arrive in cap. XV. A&G §170, §174."
+      "text": "No pronoun is needed; the ending carries 'he / she / it / they'. The indicative (*indicātīvus*, the plain statement form) is the mood of facts: statements and questions about what is so. Ørberg cap. IV contrasts indicātīvus -at, -et, -it, -it with imperātīvus -ā, -ē, -e, -ī. The other persons (-ō, -s, -mus, -tis) arrive in cap. XV. A&G §170, §174."
     }
   ],
   "sources": [
