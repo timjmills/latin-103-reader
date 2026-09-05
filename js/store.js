@@ -52,6 +52,7 @@ const state = {
   wired: false,
 };
 const listeners = new Set();
+const realtimeHandlers = new Map();   // table → Set<fn> — handlers other modules register for tables the channel forwards (grammarHooks.onRealtime)
 const PROGRESS_EMIT_MS = 100;
 
 const online = () => typeof navigator === 'undefined' || navigator.onLine !== false;
@@ -189,6 +190,7 @@ function syncAll() {
     await pullTexts();
     await pullProgress();
     await subscribeRealtime();
+    for (const fn of syncedHandlers) { try { await fn(); } catch (e) { console.warn('[store] grammar sync failed', e?.message || e); } }
   })().finally(() => { state.syncing = null; });
   return state.syncing;
 }
@@ -216,21 +218,26 @@ async function pullTexts() {
     const highlights = await pageAll(() => sb.from('highlights').select('*').eq('week_n', n).order('unit_id'));
     await db.replaceWeek('units', n, units);
     await db.replaceWeek('highlights', n, highlights);
-    await db.replaceWeek('pictures', n, await pullPictures(sb, n));
+    const pics = await pullPictures(sb, n);
+    if (pics) await db.replaceWeek('pictures', n, pics);   // a failed fetch keeps whatever was held (the once-check below stays open for the week)
     await db.put('weeks', remoteWeeks.find((w) => w.n === n));
     state.units.delete(n);
     state.highlights.delete(n);
     state.pictures.delete(n);
   }
   // A week that was cached before pictures existed never looks stale, so ask
-  // once per week for its pictures when none are held locally.
+  // once per week for its pictures when none are held locally. The flag is
+  // written only after a fetch that succeeded: a failed one (offline mid-sync,
+  // an expired token, the table not yet migrated) is asked again next sync.
+  let picturesAdded = false;
   for (const w of remoteWeeks) {
     if (stale.includes(w.n)) continue;
     const flag = `pictures_checked:${w.n}`;
     if (await db.getMeta(flag)) continue;
     if ((await db.countByIndex('pictures', 'week_n', w.n)) === 0) {
       const rows = await pullPictures(sb, w.n);
-      if (rows.length) { await db.replaceWeek('pictures', w.n, rows); state.pictures.delete(w.n); emit('weeks'); }
+      if (rows === null) continue;
+      if (rows.length) { await db.replaceWeek('pictures', w.n, rows); state.pictures.delete(w.n); picturesAdded = true; }
     }
     await db.setMeta(flag, nowIso());
   }
@@ -249,22 +256,22 @@ async function pullTexts() {
   }
   const changed = stale.length > 0 || remoteWeeks.length !== state.weeks.length;
   state.weeks = remoteWeeks.sort((a, b) => a.n - b.n);
-  if (changed) {
-    await db.setMeta('texts_synced_at', nowIso());
-    emit('weeks');
-  }
+  if (changed) await db.setMeta('texts_synced_at', nowIso());
+  if (changed || picturesAdded) emit('weeks');   // one emit for the lot: main.js re-reads the open week's pictures on 'weeks'
 }
 
-// The week's picture rows (table `pictures`, migration 0008). A library seeded
-// before that migration has no table: the week still syncs, without pictures.
+// The week's picture rows (table `pictures`, migration 0008), or null when the
+// fetch failed (a library seeded before that migration has no table: the week
+// still syncs, without pictures — the caller decides what the failure means).
 async function pullPictures(sb, n) {
   try {
     return await pageAll(() => sb.from('pictures').select('*').eq('week_n', n).order('sort'));
   } catch (e) {
     console.warn('[store] pictures not synced for week', n, e?.message || e);
-    return [];
+    return null;
   }
 }
+
 
 async function pullProgress() {
   if (!state.uid || !online()) return;
@@ -371,6 +378,8 @@ async function subscribeRealtime() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'audio_alignments', filter }, onAlignmentEvent)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'reading_progress', filter }, onProgressEvent)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'study_days', filter }, onStudyEvent)
+    // Grammar (GRAMMAR-CONTRACT.md): skill_state is in the publication; store-grammar.js registers its handler through grammarHooks.onRealtime().
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'skill_state', filter }, (payload) => { for (const fn of realtimeHandlers.get('skill_state') ?? []) { try { fn(payload); } catch (e) { console.error('[store] grammar realtime handler failed', e); } } })
     .subscribe((status, err) => {
       if (err) console.warn('[store] realtime', status, err);
     });
@@ -530,6 +539,35 @@ async function sendOp(sb, op) {
       res = await sb.from('study_days').delete().eq('user_id', uid);
       if (!res.error) state.studyClearing = false;
       break;
+    // Grammar (GRAMMAR-CONTRACT.md, migration 0014). Rows are built by store-grammar.js
+    // (server column names only; the server keeps the newer updated_at through lww_touch).
+    case 'skill_state:upsert':
+      res = await sb.from('skill_state').upsert({ ...op.row, user_id: uid }, { onConflict: 'user_id,skill' });
+      break;
+    case 'skill_state:delete': {
+      let q = sb.from('skill_state').delete().eq('user_id', uid);
+      if (op.skill != null) q = q.eq('skill', op.skill);
+      res = await q;
+      break;
+    }
+    case 'drill_attempts:insert':
+      res = await sb.from('drill_attempts').insert({ ...op.row, user_id: uid });
+      break;
+    case 'drill_attempts:delete': {
+      let q = sb.from('drill_attempts').delete().eq('user_id', uid);
+      if (op.skill != null) q = q.eq('skill', op.skill);
+      res = await q;
+      break;
+    }
+    case 'confusions:upsert':
+      res = await sb.from('confusions').upsert({ ...op.row, user_id: uid }, { onConflict: 'user_id,skill_a,skill_b' });
+      break;
+    case 'confusions:delete': {
+      let q = sb.from('confusions').delete().eq('user_id', uid);
+      if (op.skill != null) q = q.or(`skill_a.eq.${op.skill},skill_b.eq.${op.skill}`);
+      res = await q;
+      break;
+    }
     default:
       throw new Error(`unknown outbox op ${op.table}:${op.op}`);
   }
@@ -552,9 +590,11 @@ async function getUnits(weekN) {
     const rows = (await db.byIndex('units', 'week_n', n)).sort((a, b) => a.order - b.order);
     // Rows cached before migration 0004 have no `margin`; the UI expects an array.
     // The plain-words layer (CONTRACT.md): `note_simple` and `margin[].en` ride along, missing → null.
+    // Book lines (CONTRACT.md): `lines` [{ line, start }] rides along; missing (rows cached before migration 0013, unmapped units) → [].
     state.units.set(n, rows.map(({ user_id, ...u }) => ({
       ...u,
       note_simple: typeof u.note_simple === 'string' ? u.note_simple : null,
+      lines: Array.isArray(u.lines) ? u.lines : [],
       margin: Array.isArray(u.margin) ? u.margin.map((m) => (m && typeof m === 'object' ? { ...m, en: typeof m.en === 'string' ? m.en : null } : m)) : [],
     })));
   }
@@ -845,6 +885,33 @@ export const store = {
   getStudyDays, addActiveTime, clearStudyLog,
   onChange, sync,
 };
+
+// ---------------------------------------------------------------------------
+// Grammar hooks (GRAMMAR-CONTRACT.md): what app/js/grammar/store-grammar.js
+// needs from this module — the outbox, the client, the user id, realtime
+// forwarding for the grammar tables — so it wraps the same sync path as the
+// lookups instead of forking it. Nothing here is reader state.
+// ---------------------------------------------------------------------------
+
+export const grammarHooks = {
+  ready,
+  enqueue,
+  pageAll,
+  getClient,
+  online,
+  uid: () => state.uid,
+  /** Called when the outbox is empty (a pull may prune), like pullProgress() checks. */
+  outboxEmpty: async () => (await db.getAllKeys('outbox')).length === 0,
+  /** Register a realtime handler for `table` (skill_state); the channel is shared. Returns an unsubscribe. */
+  onRealtime(table, fn) {
+    if (!realtimeHandlers.has(table)) realtimeHandlers.set(table, new Set());
+    realtimeHandlers.get(table).add(fn);
+    return () => realtimeHandlers.get(table)?.delete(fn);
+  },
+  /** Fired after every syncAll() (online again, tab visible, sign-in) so the grammar rows can be pulled too. */
+  onSynced(fn) { syncedHandlers.add(fn); return () => syncedHandlers.delete(fn); },
+};
+const syncedHandlers = new Set();
 
 // ---------------------------------------------------------------------------
 // Service worker helpers (PWA)

@@ -449,6 +449,11 @@ function fmtSize(bytes) {
   return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} kB`;
 }
 
+/** The Book lines switch's description: what it does, or why it can do nothing this week. Pure. */
+export function bookLinesDesc(hasLines) {
+  return hasLines ? 'One printed line per line, every line numbered' : "This week's text has no printed line numbers";
+}
+
 /**
  * Wire the settings dialog. `opts.get()` returns current settings,
  * `opts.set(patch)` persists and returns the new settings.
@@ -456,6 +461,9 @@ function fmtSize(bytes) {
  *   margin|audio: { get(settings) → bool, set(on) → patch } }`, the same map
  *   the toolbar toggles use so the two stay in step. `opts.focusLabel()` (optional)
  *   names this week's grammar focus under the Grammar focus switch.
+ * `opts.hasLines()` (optional) says whether the current week carries printed-line
+ *   data: when not, the Book lines switch's description becomes the hint
+ *   "This week's text has no printed line numbers" (the setting still saves).
  * `opts.audio` (may be null → section hidden) is the Audio tool hook:
  *   { weekLabel(), info() → {hasAudio, alignedCount, total}, upload(file),
  *     align(), play(), stop(), onState(cb) }. The Speed chips in that section
@@ -477,6 +485,7 @@ export function initSettings(dialog, opts) {
   const toggles = opts.toggles || {};
   const switches = [...dialog.querySelectorAll('input[data-setting-toggle]')].filter((i) => toggles[i.dataset.settingToggle]);
   const focusDesc = $('[data-focus-desc]');
+  const linesDesc = $('[data-lines-desc]');
   const speed = rateMenu({ row: $('[data-audio] [data-rate-chips]'), value: $('[data-audio] [data-rate-value]'), onPick: (r) => update({ audioRate: r }) });
 
   function render(s) {
@@ -487,8 +496,13 @@ export function initSettings(dialog, opts) {
     for (const i of switches) i.checked = !!toggles[i.dataset.settingToggle].get(s);
     const focus = opts.focusLabel?.();
     if (focusDesc) focusDesc.textContent = focus ? `This week: ${focus}` : "This week's grammar, highlighted";
+    if (linesDesc) {
+      const has = opts.hasLines ? !!opts.hasLines() : true;
+      linesDesc.textContent = bookLinesDesc(has);
+      linesDesc.classList.toggle('switch__hint', !has);
+    }
     speed?.paint(s.audioRate);
-    applyToDocument(s);
+    (opts.applyToDocument ?? applyToDocument)(s);   // main.js wraps it in the reader's scroll hold: a size step must not move the sentence being read
   }
 
   async function update(patch) {
