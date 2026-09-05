@@ -56,3 +56,23 @@ Keep `line` and `la` untouched.
     python -c "import json;m=json.load(open('data/build/margin-week-NN.json',encoding='utf-8'));print('glosses without en',sum(1 for x in m if not x.get('en')))"
 
 All three must report zero. Do not edit `data/build/week-NN.json`, `pipeline/`, or `app/`.
+
+## Revision rule (2026-09-05): always name the grammar term
+
+The learner wants the plain notes to teach the labels, not hide them. Every
+everyday gloss is paired with its term, term first, gloss in parentheses:
+
+- "the dative (the 'to/for' form)", not "the 'to/for' form"
+- "the ablative (the 'by/with/from' form)", "the genitive (the 'of' form)",
+  "the accusative (the object form)", "the nominative (the subject form)",
+  "the vocative (the form for calling someone)"
+- "the infinitive (the plain 'to' form)", "the subjunctive (the form Latin
+  uses for wishes, purposes and what someone tells someone to do)",
+  "the imperfect (the 'was doing' tense)", "the perfect (the 'did / has done'
+  tense)", "the pluperfect (the 'had done' tense)", "the future perfect (the
+  'will have done' tense)", "a participle (a verb used like an adjective)",
+  "the gerund (the verb-as-noun, '-ing')", "the gerundive (the 'must be done'
+  adjective)", "a deponent (looks passive, means active)", "the supine"
+- The same in the highlight `simple` texts and wherever a case or tense is
+  meant in the margin `en` renderings.
+Keep everything else as it is; do not lengthen notes beyond the bands.

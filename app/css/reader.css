@@ -15,7 +15,7 @@ body {
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-sm); }
 button, select, input { font: inherit; color: inherit; }
 button { cursor: pointer; }
-button:disabled { cursor: default; opacity: 0.45; }
+button:disabled, button[aria-disabled="true"] { cursor: default; opacity: 0.45; }   /* aria-disabled: a no-op that keeps its place in the tab order (the size steppers at either end) */
 a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
 
 .visually-hidden {
@@ -37,12 +37,12 @@ a { color: var(--rubric-ink); text-underline-offset: 0.15em; }
   color: var(--ink); font-size: var(--ui-md); line-height: 1.2; text-decoration: none;
   transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
 }
-.btn:hover:not(:disabled) { border-color: var(--ink-3); }
-.btn:active:not(:disabled) { background: var(--bg-chrome); }
+.btn:hover:not(:disabled, [aria-disabled="true"]) { border-color: var(--ink-3); }
+.btn:active:not(:disabled, [aria-disabled="true"]) { background: var(--bg-chrome); }
 .btn--primary { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }   /* page colour on the rubric: ≥ 6:1 in both palettes */
-.btn--primary:hover:not(:disabled) { border-color: var(--rubric-ink); background: var(--rubric-ink); }
+.btn--primary:hover:not(:disabled, [aria-disabled="true"]) { border-color: var(--rubric-ink); background: var(--rubric-ink); }
 .btn--quiet { background: transparent; border-color: transparent; color: var(--ink-2); }
-.btn--quiet:hover:not(:disabled) { background: var(--bg-chrome); border-color: transparent; color: var(--ink); }
+.btn--quiet:hover:not(:disabled, [aria-disabled="true"]) { background: var(--bg-chrome); border-color: transparent; color: var(--ink); }
 .btn--icon { min-width: var(--tap); padding: 0; }
 .btn__aa { font-family: var(--face-serif); font-size: 1.1rem; letter-spacing: 0.01em; }
 
@@ -243,7 +243,7 @@ body.is-resizing .panel { pointer-events: none; }
 .margin-probe { position: absolute; visibility: hidden; height: 0; width: calc(var(--margin-col) + var(--margin-gap)); }
 .mnotes, .mnote {
   font-family: var(--face-serif); font-style: normal; color: var(--ink-3);
-  font-size: 0.78em; line-height: 1.45; text-wrap: pretty;
+  font-size: calc(0.78em * var(--note-scale)); line-height: 1.45; text-wrap: pretty;
 }
 .mnotes { display: block; margin: 0.2em 0 0.35em; }
 .mnotes__item { display: block; padding-left: 1.15em; text-indent: -1.15em; }
@@ -251,7 +251,7 @@ body.is-resizing .panel { pointer-events: none; }
 .mnote .mnotes__mark { display: none; }
 .mnotes__line { font-family: var(--face-ui); font-size: 0.78em; color: var(--ink-3); font-variant-numeric: tabular-nums; margin-right: 0.45em; }
 .mnotes .w, .mnote .w { color: var(--ink-2); padding-block: 0.3em; }   /* ≥ 24px tap height at the smallest note size */
-.mnotes--sentence { margin: calc(-1 * var(--s-2)) 0 var(--s-4); font-size: 0.9em; }
+.mnotes--sentence { margin: calc(-1 * var(--s-2)) 0 var(--s-4); font-size: calc(0.9em * var(--note-scale)); }
 .reader[data-margin="off"] .mnotes, .reader[data-margin="off"] .margin { display: none; }
 /* Each .part carries its own data-margin-mode (reader.js): a part too dense for the column is inline while its neighbours keep the gutter. */
 .part[data-margin-mode="gutter"] .mnotes { display: none; }
@@ -294,6 +294,76 @@ body.is-resizing .panel { pointer-events: none; }
 .reader[data-gloss-en="on"] .mnotes__en-btn { display: none; }
 .mnotes--sentence .mnotes__en { font-size: 0.95em; }
 
+/* ---------------------------------------------------------- pictures */
+/* The book's illustrations beside their sentence (CONTRACT.md "Pictures").
+   Two copies per unit in passage view, like the margin notes: .pic--inline
+   inside the unit (phones, or a part shown inline — full width, at most 60%
+   of the column, centred, above the sentence) and .mpic in the gutter,
+   positioned by reader.js above that sentence's notes. Sentence view puts
+   .pic--sentence above the Latin. The caption is the reading face, tappable;
+   its English behind the same "en" chip as a margin gloss. */
+.pic { display: block; margin: 0; }
+.pic__btn {
+  display: block; width: 100%; padding: 0; margin: 0; background: transparent; border: 0; border-radius: var(--radius-sm);
+  cursor: zoom-in; line-height: 0;
+}
+.pic__btn:hover .pic__img { border-color: var(--ink-3); }
+.pic__btn:focus-visible { outline-offset: 3px; }
+.pic__img {
+  display: block; width: 100%; height: auto; border-radius: var(--radius-sm);
+  border: 1px solid var(--line); background: var(--bg-raised);
+  transition: border-color var(--t-fast) var(--ease-out);
+}
+/* A scan's paper white blends into the page in the light palette; dark keeps the plate as it is. */
+.pic__img { mix-blend-mode: multiply; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pic__img { mix-blend-mode: normal; } }
+:root[data-theme="dark"] .pic__img { mix-blend-mode: normal; }
+/* The image did not load (an expired signed URL, offline): the alt text keeps the frame. */
+.pic__missing {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  min-height: 4.5em; padding: var(--s-3); border: 1px dashed var(--line-strong); border-radius: var(--radius-sm);
+  font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.4; color: var(--ink-3);
+}
+.pic__cap {
+  margin: 0.4em 0 0; font-family: var(--face-reading); font-size: calc(0.78em * var(--note-scale)); line-height: 1.4; color: var(--ink-2); text-wrap: pretty;
+}
+.pic__la .w { padding-block: 0.3em; }   /* ≥ 24px tap height at the caption size */
+.pic__en { display: none; margin-top: 0.15em; font-family: var(--face-ui); font-size: 0.92em; line-height: 1.4; color: var(--ink-2); text-wrap: pretty; }
+.pic.is-en-open .pic__en, .reader[data-pictures="on"][data-gloss-en="on"] .pic__en { display: block; }
+.reader[data-pictures="off"] .pic, .reader[data-pictures="off"] .mpic { display: none; }
+/* Inline copy: in the prose just before its sentence, 60% of the column, centred. Hidden while the part uses the gutter. */
+.pic--inline { width: 60%; margin: var(--s-3) auto; }
+.prose > .pic--inline:first-child { margin-top: 0; }
+.part[data-margin-mode="gutter"] .pic--inline { display: none; }
+/* Gutter copy: positioned like a .mnote; the notes stack beneath it. */
+.mpic { position: absolute; left: 0; width: 100%; pointer-events: auto; }
+.mpic .pic__cap { font-size: calc(0.78em * var(--note-scale)); line-height: 1.25; }
+/* Sentence view: above the Latin, the same proportion as the inline copy. */
+.pic--sentence { width: 60%; max-width: 22rem; margin: 0 auto var(--s-5); }
+@media (max-width: 479.98px) { .pic--inline, .pic--sentence { width: 72%; } }   /* a narrow phone: the plate stays readable */
+
+/* The illustration at full size: a native dialog, closed by Escape, the backdrop or the button. */
+.lightbox {
+  margin: auto; padding: 0; border: 0; border-radius: var(--radius-lg); max-width: min(96vw, 64rem); max-height: 96dvh;
+  background: var(--bg-raised); color: var(--ink); box-shadow: var(--shadow-pop); overflow: hidden;
+  display: none;
+}
+.lightbox[open] { display: grid; grid-template-rows: minmax(0, 1fr) auto; animation: pop var(--t-base) var(--ease-out); }
+.lightbox::backdrop { background: oklch(0 0 0 / 0.55); }
+.lightbox__img { display: block; width: auto; max-width: 96vw; height: auto; max-height: calc(96dvh - 4rem); margin: 0 auto; object-fit: contain; background: var(--bg-raised); }
+.lightbox__cap { margin: 0; padding: var(--s-3) calc(var(--tap) + var(--s-3)) var(--s-3) var(--s-4); font-family: var(--face-reading); font-size: 1.05rem; line-height: 1.4; color: var(--ink); text-wrap: pretty; }
+.lightbox__cap:empty { display: none; }
+.lightbox__en, .lightbox__page { font-family: var(--face-ui); font-size: var(--ui-sm); color: var(--ink-2); }
+.lightbox__sep { color: var(--ink-3); }
+.lightbox__close {
+  position: absolute; top: var(--s-2); right: var(--s-2); width: var(--tap); height: var(--tap);
+  border: 0; border-radius: 50%; background: oklch(0 0 0 / 0.45); color: oklch(1 0 0); font-size: 1.5rem; line-height: 1;
+  transition: background-color var(--t-fast) var(--ease-out);
+}
+.lightbox__close:hover { background: oklch(0 0 0 / 0.65); }
+.lightbox__close:focus-visible { outline-color: oklch(1 0 0); }
+@media (prefers-reduced-motion: reduce) { .lightbox[open] { animation: none; } }
+
 /* ---------------------------------------------------------- passage */
 .part + .part { margin-top: var(--s-7); }
 .part__title {
@@ -330,7 +400,7 @@ body.is-resizing .panel { pointer-events: none; }
 .summary[open] .summary__toggle { color: var(--ink-2); }
 .summary__toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
 .summary__body { padding: var(--s-1) 0 var(--s-2); max-width: 60ch; animation: rise-down var(--t-base) var(--ease-out); }
-.summary__en { margin: 0 0 var(--s-3); color: var(--ink); text-wrap: pretty; }
+.summary__en { margin: 0 0 var(--s-3); font-size: calc(1em * var(--note-scale)); color: var(--ink); text-wrap: pretty; }   /* the English follows the notes size; the Latin (.summary__p) keeps its own */
 .summary__h { font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); margin: 0 0 var(--s-1); }
 .summary__p { margin: 0; font-family: var(--face-reading); font-size: 1rem; line-height: 1.5; color: var(--ink); text-wrap: pretty; }
 .summary__p .w { padding-block: 0.2em; }   /* ≥ 24px tap height at the UI size */
@@ -415,6 +485,32 @@ body.is-resizing .panel { pointer-events: none; }
 }
 /* Audio toggle off: nothing audio-related in the text (main.js also stops playback, which drops the highlight, and removes the buttons). */
 .reader[data-audio="off"] .playbtn { display: none; }
+
+/* ---------------------------------------------------------- reading progress */
+/* "42 of 93 read · Continue →" (CONTRACT.md "Reading progress"): one quiet
+   line in the text, placed by reader.js under the first part title (above
+   the listen bar) and under sentence view's meta line; main.js paints it.
+   Continue is a text button in the "Section summary" idiom. The read
+   sentences themselves carry no mark — the page stays calm. */
+.progress {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s-1);
+  margin: 0 0 var(--s-3) var(--gutter-r);
+  font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.4; color: var(--ink-3);
+  font-variant-numeric: tabular-nums; hanging-punctuation: none;
+}
+.reader[data-margin="on"] .part[data-margin-mode="gutter"] .progress { margin-right: calc(var(--margin-col) + var(--margin-gap)); }   /* keeps to the text column */
+.sentence .progress { margin-left: 0; margin-bottom: var(--s-3); }
+.progress[data-state="done"] .progress__text { color: var(--success); }
+.progress__continue {
+  display: inline; min-height: 0; padding: 0.35em 0; margin: -0.35em 0;   /* block padding: a ≥ 24px target without moving the line */
+  background: transparent; border: 0; border-radius: var(--radius-sm);
+  color: var(--rubric-ink); font: inherit;
+}
+.progress__sep { color: var(--ink-3); }
+.progress__word { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.15em; transition: text-decoration-color var(--t-fast) var(--ease-out); }
+.progress__continue:hover .progress__word { text-decoration-color: currentColor; }
+/* Sentence view's meta line: a faint "read ✓" once the sentence counts as read. */
+.sentence__read { color: var(--ink-3); }
 
 /* ---------------------------------------------------------- listen bar */
 /* "Play passage" / "Play sentence", the speed and a status line, in the text
@@ -511,9 +607,9 @@ html[data-transport="on"] { scroll-padding-bottom: calc(var(--transport-h, 0px) 
 .sentence__en { font-family: var(--face-ui); font-size: clamp(0.9rem, 0.85em, 1.75rem); line-height: 1.55; color: var(--ink-2); margin: 0 0 var(--s-5); }
 .sentence__h { font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); margin: 0 0 var(--s-2); }
 .sentence__note { margin: 0 0 var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line); }
-.sentence__note p { font-family: var(--face-ui); font-size: 0.8em; line-height: 1.55; color: var(--ink); margin: 0; }
+.sentence__note p { font-family: var(--face-ui); font-size: calc(0.8em * var(--note-scale)); line-height: 1.55; color: var(--ink); margin: 0; }
 /* The "In plain words" disclosure (panels.css) at the note's own size. */
-.sentence__note .plain { font-size: 0.8em; margin-top: var(--s-2); }
+.sentence__note .plain { font-size: calc(0.8em * var(--note-scale)); margin-top: var(--s-2); }
 .sentence__note .plain__text { font-size: 1em; margin: var(--s-1) 0 0; }
 /* "Words you looked up in this sentence": phones only — from 768px the side
    panel's stack for the sentence (panels.css "stack") replaces the list. */

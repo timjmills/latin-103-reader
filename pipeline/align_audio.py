@@ -42,6 +42,9 @@ import time
 import unicodedata
 from pathlib import Path
 
+# The Supabase CLI: on Windows the launcher is supabase.cmd, which subprocess only finds by full path.
+SUPABASE = shutil.which("supabase") or "supabase"
+
 ROOT = Path(__file__).resolve().parent.parent
 AUDIO_DIR = ROOT / "audio"
 BUILD = ROOT / "data" / "build"
@@ -313,13 +316,13 @@ def upload(n: int, audio_path: Path, sql_path: Path, user_id: str, quiet: bool) 
         if r.returncode != 0 or re.search(r"\berror\b", out, re.I):
             raise RuntimeError(out.strip()[-800:])
         return out
-    run(["supabase", "db", "query", "--linked", "-f", str(sql_path), "-o", "json"])
+    run([SUPABASE, "db", "query", "--linked", "-f", str(sql_path), "-o", "json"])
     if not quiet:
         print(f"  alignments uploaded ({sql_path.name})")
     dest = f"ss:///audio/{user_id}/week-{n:02d}.mp3"
     # cp refuses to overwrite, so drop any previous upload first (ignore "not found").
-    subprocess.run(["supabase", "storage", "rm", dest, "--linked", "--experimental"], input="y\n", capture_output=True, text=True, cwd=ROOT)
-    run(["supabase", "storage", "cp", str(audio_path), dest, "--linked", "--experimental"])
+    subprocess.run([SUPABASE, "storage", "rm", dest, "--linked", "--experimental"], input="y\n", capture_output=True, text=True, cwd=ROOT)
+    run([SUPABASE, "storage", "cp", str(audio_path), dest, "--linked", "--experimental"])
     if not quiet:
         print(f"  audio uploaded to private bucket: audio/{user_id}/week-{n:02d}.mp3")
 

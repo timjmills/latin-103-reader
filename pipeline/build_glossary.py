@@ -131,7 +131,7 @@ PREFERRED = {
 PREFERRED_BONUS = 1.0  # one frequency step: enough to lift proficīscor (B) over proficiō (A)
 # Per-form overrides: this reading of exactly this form goes first, whatever the
 # frequencies say (forte in Ørberg is nearly always the adverb "by chance").
-FORM_FIRST = {"forte": ("forte", "ADV")}
+FORM_FIRST = {"forte": ("forte", "ADV"), "facta": ("factum", "N")}   # facta Mārcī = "the deeds of Marcus"
 
 # English for numerals by value: cardinal, ordinal, distributive, adverb.
 NUM_ENGLISH = {

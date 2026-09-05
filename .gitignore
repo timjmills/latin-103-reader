@@ -26,3 +26,4 @@ supabase/.branches/
 data/summaries-*
 data/gloss-abbreviations.json
 data/build/pictures/
+data/pictures-overrides.json

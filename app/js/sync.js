@@ -4,6 +4,7 @@
 
 export const DEFAULT_SETTINGS = Object.freeze({
   size: 3,
+  noteSize: 4,             // Settings → Type "Notes": glosses, captions, panel rows and notes, 1–7 (4 = the reading size's own proportion)
   face: 'serif',
   theme: 'system',
   compact: false,
@@ -15,9 +16,81 @@ export const DEFAULT_SETTINGS = Object.freeze({
   showSummaries: true,     // Settings → Reading: the "Summary" disclosure under each part heading
   plainOpen: false,        // "In plain words" under a note: stays open once the learner has opened one
   showGlossEnglish: false, // Settings → Reading: the English under every margin gloss, always shown
+  showPictures: true,      // Settings → Reading: the textbook's illustrations beside their sentences
   audioRate: 1,            // playback speed, one of RATE_STEPS (0.5–1.2); pitch is preserved
   panelWidth: null,        // px, chosen with the divider; null = the CSS default
+  lastPosition: null,      // { week_n, unit_id, view, at }: where the learner was (CONTRACT.md "Reading progress"); null = never read
 });
+
+/**
+ * `settings.lastPosition` from any source: `{ week_n, unit_id, view, at }`
+ * with a positive integer week, a non-empty unit id, `view` one of
+ * 'passage' | 'sentence' (else 'passage') and `at` an ISO timestamp or null;
+ * anything unusable → null. Pure.
+ */
+export function normaliseLastPosition(value) {
+  if (!value || typeof value !== 'object') return null;
+  const week_n = Math.round(Number(value.week_n));
+  const unit_id = typeof value.unit_id === 'string' ? value.unit_id.trim() : '';
+  if (!Number.isFinite(week_n) || week_n < 1 || !unit_id) return null;
+  const view = value.view === 'sentence' ? 'sentence' : 'passage';
+  const at = ts(value.at) ? new Date(ts(value.at)).toISOString() : null;
+  return { week_n, unit_id, view, at };
+}
+
+/**
+ * Rows for `reading_progress` from the unit ids to mark read: one per id
+ * not already in `existing` (Map / Set of unit ids), de-duplicated, with
+ * `week_n` from the id (ids of no week are dropped). Pure — markRead() is
+ * idempotent because of this.
+ */
+export function makeProgressRows(unitIds, existing, now = new Date().toISOString()) {
+  const out = [];
+  const seen = new Set();
+  for (const id of unitIds || []) {
+    if (typeof id !== 'string' || !id || seen.has(id) || existing?.has?.(id)) continue;
+    const week_n = weekOfUnit(id);
+    if (week_n == null) continue;
+    seen.add(id);
+    out.push({ unit_id: id, week_n, read_at: now, updated_at: now });
+  }
+  return out;
+}
+
+/** True when the outbox still holds a `reading_progress` op (a markRead batch or a reset not yet on the server). Pure. */
+export function progressPending(ops) {
+  return (ops || []).some((op) => op && op.table === 'reading_progress');
+}
+
+/**
+ * Merge the server's `reading_progress` rows into the local Map (unit_id →
+ * row). While any reading_progress op is still in the outbox (`ops`) nothing
+ * is merged — a pull that overlaps a reset must not resurrect the rows the
+ * reset just deleted locally (`skipped: true`, the local Map comes back as
+ * is). With an empty outbox rows the server no longer has are pruned too.
+ * Pure.
+ */
+export function mergeProgress(localMap, remoteRows, ops) {
+  if (progressPending(ops)) return { merged: localMap, changed: [], removed: 0, skipped: true };
+  const { merged, changed } = mergeRows(localMap, remoteRows, (r) => r.unit_id);
+  let removed = 0;
+  if (!(ops || []).length) {
+    const remoteIds = new Set((remoteRows || []).map((r) => r.unit_id));
+    for (const k of [...merged.keys()]) if (!remoteIds.has(k)) { merged.delete(k); removed += 1; }
+  }
+  return { merged, changed, removed, skipped: false };
+}
+
+/** Read sentences per week: Map week_n → count, from a progress Map keyed by unit id (the week comes from the id). Pure. */
+export function progressByWeek(progress) {
+  const out = new Map();
+  for (const id of progress?.keys?.() ?? []) {
+    const n = weekOfUnit(id);
+    if (n == null) continue;
+    out.set(n, (out.get(n) ?? 0) + 1);
+  }
+  return out;
+}
 
 export const RATE_MIN = 0.5;
 export const RATE_MAX = 1.2;
@@ -84,6 +157,26 @@ export function normaliseAlignmentRows(rows) {
     .sort((a, b) => a.start_ms - b.start_ms);
 }
 
+/**
+ * Picture rows (table `pictures`, CONTRACT.md "Pictures") as the store keeps
+ * them: `{id, unit_id, path, caption, caption_en, page, width, height, sort}`.
+ * Rows without an id, a unit or a storage path are dropped; captions are
+ * trimmed strings or null; page / width / height are positive integers or
+ * null; `sort` is a number (0 when missing). Pure.
+ */
+export function normalisePictureRows(rows) {
+  const str = (v) => (typeof v === 'string' && v.trim() ? v.trim() : null);
+  const int = (v) => { const n = Math.round(Number(v)); return v != null && v !== '' && Number.isFinite(n) && n > 0 ? n : null; };
+  return (rows || [])
+    .filter((r) => r && r.id && r.unit_id && typeof r.path === 'string' && r.path.trim())
+    .map((r) => ({
+      id: String(r.id), unit_id: String(r.unit_id), path: r.path.trim(),
+      caption: str(r.caption), caption_en: str(r.caption_en),
+      page: int(r.page), width: int(r.width), height: int(r.height),
+      sort: Number.isFinite(Number(r.sort)) && r.sort !== null && r.sort !== '' ? Number(r.sort) : 0,
+    }));
+}
+
 export const SIZE_MIN = 1;
 export const SIZE_MAX = 8;
 
@@ -96,6 +189,19 @@ export function clampSize(value, fallback = DEFAULT_SETTINGS.size) {
   const n = Math.round(Number(value));
   if (!Number.isFinite(n)) return fallback;
   return Math.min(SIZE_MAX, Math.max(SIZE_MIN, n));
+}
+export const NOTE_SIZE_MIN = 1;
+export const NOTE_SIZE_MAX = 7;
+
+/**
+ * Notes-size step (glosses, captions, panel notes) as an integer in
+ * [NOTE_SIZE_MIN, NOTE_SIZE_MAX]; the same rules as clampSize(). Pure.
+ */
+export function clampNoteSize(value, fallback = DEFAULT_SETTINGS.noteSize) {
+  if (value == null || value === '' || typeof value === 'boolean') return fallback;
+  const n = Math.round(Number(value));
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(NOTE_SIZE_MAX, Math.max(NOTE_SIZE_MIN, n));
 }
 /**
  * A boolean setting from any source: booleans pass, "true"/"1"/1 → true,
@@ -116,7 +222,7 @@ export function clampBool(value, fallback = false) {
 /** Every boolean in DEFAULT_SETTINGS — coerced with clampBool() wherever settings are read or patched. */
 export const BOOL_SETTINGS = Object.freeze(Object.keys(DEFAULT_SETTINGS).filter((k) => typeof DEFAULT_SETTINGS[k] === 'boolean'));
 const withSize = (data) => {
-  const out = { ...data, size: clampSize(data.size), audioRate: clampRate(data.audioRate) };
+  const out = { ...data, size: clampSize(data.size), noteSize: clampNoteSize(data.noteSize), audioRate: clampRate(data.audioRate), lastPosition: normaliseLastPosition(data.lastPosition) };
   for (const k of BOOL_SETTINGS) out[k] = clampBool(data[k], DEFAULT_SETTINGS[k]);
   return out;
 };
@@ -226,7 +332,45 @@ export function patchSettings(current, patch, now = new Date().toISOString()) {
   return { data, updated_at: now };
 }
 
-/** Normalise a settings row from any source into { data, updated_at }; `size` is clamped to 1–8, `audioRate` to 0.5–1.2, every boolean coerced (clampBool). */
+/**
+ * Settings blob with only `lastPosition` replaced. The row's `updated_at`
+ * is left alone: the position carries its own clock (`lastPosition.at`, see
+ * mergeSettings) so a device that merely scrolls never outranks one that
+ * changed a real setting. Pure.
+ */
+export function patchLastPosition(current, lastPosition) {
+  const base = normaliseSettings(current);
+  return { data: { ...base.data, lastPosition: normaliseLastPosition(lastPosition) }, updated_at: base.updated_at };
+}
+
+/** The newer of two last positions by their own `at` (a position without one loses to any with one; equal → the first). Pure. */
+export function newerLastPosition(a, b) {
+  const la = normaliseLastPosition(a);
+  const lb = normaliseLastPosition(b);
+  if (!la) return lb;
+  if (!lb) return la;
+  return ts(lb.at) > ts(la.at) ? lb : la;
+}
+
+/**
+ * Local settings after a remote row arrives (a pull or a realtime event):
+ * the row with the newer `updated_at` wins as a whole — but `lastPosition`
+ * is merged on its own clock, so the newest `at` wins whichever row was
+ * newer. Returns { settings, changed } — `changed` false when nothing
+ * local moves (an own echo, an older row with an older position). Pure.
+ */
+export function mergeSettings(local, remote) {
+  const cur = normaliseSettings(local);
+  if (!remote) return { settings: cur, changed: false };
+  const rem = normaliseSettings(remote);
+  const lastPosition = newerLastPosition(cur.data.lastPosition, rem.data.lastPosition);
+  const base = isNewer(rem, cur) ? rem : cur;
+  const settings = { data: { ...base.data, lastPosition }, updated_at: base.updated_at };
+  const changed = settings.updated_at !== cur.updated_at || JSON.stringify(settings.data) !== JSON.stringify(cur.data);
+  return { settings, changed };
+}
+
+/** Normalise a settings row from any source into { data, updated_at }; `size` is clamped to 1–8, `noteSize` to 1–7, `audioRate` to 0.5–1.2, every boolean coerced (clampBool). */
 export function normaliseSettings(row) {
   if (!row) return { data: { ...DEFAULT_SETTINGS }, updated_at: null };
   return { data: withSize({ ...DEFAULT_SETTINGS, ...(row.data || {}) }), updated_at: row.updated_at || null };

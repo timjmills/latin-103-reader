@@ -4,9 +4,9 @@
 //   import { store, registerServiceWorker } from './store.js';
 //   await store.ready();                     // after auth; warms the cache
 //
-// Texts (weeks/units/highlights) are pull-only: re-fetched per week when the
+// Texts (weeks/units/highlights/pictures) are pull-only: re-fetched per week when the
 // server's weeks.updated_at is newer than the cached one (the seed script bumps
-// it after re-seeding). Progress (lookups/settings/alignments) is local-first:
+// it after re-seeding). Progress (lookups/settings/alignments/reading progress) is local-first:
 // every write lands in IndexedDB immediately, is queued in the outbox, and is
 // flushed when online; newest updated_at wins on both sides.
 
@@ -14,14 +14,16 @@ import * as db from './db.js';
 import { auth, getClient } from './auth.js';
 import {
   mergeRows, applyRealtime, coalesceOutbox, makeLookup, patchLookup,
-  patchSettings, normaliseSettings, lookupsView, weekTag, staleWeeks, isNewer,
-  cleanWords, normaliseAlignmentRows,
+  patchSettings, normaliseSettings, lookupsView, weekTag, staleWeeks,
+  cleanWords, normaliseAlignmentRows, normalisePictureRows, makeProgressRows,
+  mergeProgress, patchLastPosition, mergeSettings,
 } from './sync.js';
 
 export const SETTINGS_LS_KEY = 'latin103.settings';
 const PAGE = 1000;
 const SIGNED_URL_TTL_S = 3600;
 const SIGNED_URL_REUSE_MS = 50 * 60 * 1000;
+const PICTURE_SIGN_BATCH = 25;   // createSignedUrls() paths per request: a week's illustrations in a handful of calls, not one each
 
 const state = {
   uid: null,
@@ -32,13 +34,19 @@ const state = {
   lookups: new Map(),      // form → row
   settings: normaliseSettings(null),
   alignments: new Map(),   // `${week_n}|${unit_id}` → row
+  progress: new Map(),     // unit_id → reading_progress row (CONTRACT.md "Reading progress")
+  pictures: new Map(),     // weekN → raw picture rows (+ url / url_exp once signed)
   signedUrls: new Map(),   // weekN → { url, exp }
   channel: null,
-  flushing: false,
+  flushing: null,          // the flushOutbox() run in flight (a promise), so a second caller chains onto it
+  flushAgain: false,       // an enqueue() arrived while flushing: run once more when this run ends
+  progressGen: 0,          // bumped by every local progress write; a pull that started before one does not merge over it
+  progressEmit: 0,         // timer coalescing a burst of realtime progress events into one emit('progress')
   syncing: null,
   wired: false,
 };
 const listeners = new Set();
+const PROGRESS_EMIT_MS = 100;
 
 const online = () => typeof navigator === 'undefined' || navigator.onLine !== false;
 const nowIso = () => new Date().toISOString();
@@ -97,8 +105,10 @@ async function loadLocal() {
   state.lookups = new Map((await db.getAll('lookups')).map((r) => [r.form, r]));
   state.settings = normaliseSettings(await db.get('settings', 'settings'));
   state.alignments = new Map((await db.getAll('alignments')).map((r) => [alignKey(r), r]));
+  state.progress = new Map((await db.getAll('progress')).map((r) => [r.unit_id, r]));
   state.units.clear();
   state.highlights.clear();
+  state.pictures.clear();
   mirrorSettings();
 }
 
@@ -139,6 +149,8 @@ async function teardown() {
   state.highlights.clear();
   state.lookups.clear();
   state.alignments.clear();
+  state.progress.clear();
+  state.pictures.clear();
   state.signedUrls.clear();
   state.settings = normaliseSettings(null);
 }
@@ -182,9 +194,11 @@ async function pullTexts() {
     const highlights = await pageAll(() => sb.from('highlights').select('*').eq('week_n', n).order('unit_id'));
     await db.replaceWeek('units', n, units);
     await db.replaceWeek('highlights', n, highlights);
+    await db.replaceWeek('pictures', n, await pullPictures(sb, n));
     await db.put('weeks', remoteWeeks.find((w) => w.n === n));
     state.units.delete(n);
     state.highlights.delete(n);
+    state.pictures.delete(n);
   }
   // Weeks removed on the server disappear locally too.
   const remoteNs = new Set(remoteWeeks.map((w) => w.n));
@@ -193,8 +207,10 @@ async function pullTexts() {
       await db.del('weeks', w.n);
       await db.deleteByIndex('units', 'week_n', w.n);
       await db.deleteByIndex('highlights', 'week_n', w.n);
+      await db.deleteByIndex('pictures', 'week_n', w.n);
       state.units.delete(w.n);
       state.highlights.delete(w.n);
+      state.pictures.delete(w.n);
     }
   }
   const changed = stale.length > 0 || remoteWeeks.length !== state.weeks.length;
@@ -202,6 +218,17 @@ async function pullTexts() {
   if (changed) {
     await db.setMeta('texts_synced_at', nowIso());
     emit('weeks');
+  }
+}
+
+// The week's picture rows (table `pictures`, migration 0008). A library seeded
+// before that migration has no table: the week still syncs, without pictures.
+async function pullPictures(sb, n) {
+  try {
+    return await pageAll(() => sb.from('pictures').select('*').eq('week_n', n).order('sort'));
+  } catch (e) {
+    console.warn('[store] pictures not synced for week', n, e?.message || e);
+    return [];
   }
 }
 
@@ -227,15 +254,10 @@ async function pullProgress() {
     emit('lookups');
   }
 
-  // settings
+  // settings (the row by updated_at, lastPosition by its own `at` — mergeSettings)
   const { data: remoteSettings, error: sErr } = await sb.from('settings').select('*').maybeSingle();
   if (sErr) throw sErr;
-  if (remoteSettings && isNewer(remoteSettings, state.settings)) {
-    state.settings = normaliseSettings(remoteSettings);
-    await db.put('settings', { key: 'settings', ...state.settings });
-    mirrorSettings();
-    emit('settings');
-  }
+  if (remoteSettings) await applyRemoteSettings(remoteSettings);
 
   // alignments
   const remoteAlign = await pageAll(() => sb.from('audio_alignments').select('*').order('week_n'));
@@ -251,6 +273,32 @@ async function pullProgress() {
     await db.putMany('alignments', [...a.merged.values()]);
     emit('alignments');
   }
+
+  // reading progress. Nothing is merged while a markRead / reset is still in
+  // the outbox, or when one landed locally while the rows were in flight: a
+  // pull overlapping a reset must not bring the deleted rows back (the next
+  // pull, after the flush, is the one that reconciles).
+  const gen = state.progressGen;
+  const remoteProgress = await pageAll(() => sb.from('reading_progress').select('*').order('unit_id'));
+  if (gen !== state.progressGen) return;
+  const p = mergeProgress(state.progress, remoteProgress, await db.getAll('outbox'));
+  if (p.skipped) return;
+  if (p.changed.length || p.removed) {
+    state.progress = p.merged;
+    await db.clear('progress');
+    await db.putMany('progress', [...p.merged.values()]);
+    emit('progress');
+  }
+}
+
+/** A settings row from the server (pull or realtime): kept when it moves anything locally. */
+async function applyRemoteSettings(row) {
+  const { settings, changed } = mergeSettings(state.settings, row);
+  if (!changed) return;
+  state.settings = settings;
+  await db.put('settings', { key: 'settings', ...state.settings });
+  mirrorSettings();
+  emit('settings');
 }
 
 async function subscribeRealtime() {
@@ -261,6 +309,7 @@ async function subscribeRealtime() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'lookups', filter }, onLookupEvent)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'settings', filter }, onSettingsEvent)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'audio_alignments', filter }, onAlignmentEvent)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'reading_progress', filter }, onProgressEvent)
     .subscribe((status, err) => {
       if (err) console.warn('[store] realtime', status, err);
     });
@@ -276,12 +325,8 @@ async function onLookupEvent(payload) {
 }
 
 async function onSettingsEvent(payload) {
-  if (payload.eventType === 'DELETE') return;
-  if (!isNewer(payload.new, state.settings)) return;
-  state.settings = normaliseSettings(payload.new);
-  await db.put('settings', { key: 'settings', ...state.settings });
-  mirrorSettings();
-  emit('settings');
+  if (payload.eventType === 'DELETE' || !payload.new) return;
+  await applyRemoteSettings(payload.new);
 }
 
 async function onAlignmentEvent(payload) {
@@ -297,6 +342,18 @@ async function onAlignmentEvent(payload) {
   emit('alignments');
 }
 
+// A reset on another device arrives as one DELETE per row: the map is
+// patched per event, the listeners hear about the burst once (PROGRESS_EMIT_MS).
+async function onProgressEvent(payload) {
+  const r = applyRealtime(state.progress, payload, (row) => row.unit_id);
+  if (!r.changed) return;
+  state.progress = r.map;
+  if (payload.eventType === 'DELETE') await db.del('progress', r.key);
+  else await db.put('progress', r.map.get(r.key));
+  clearTimeout(state.progressEmit);
+  state.progressEmit = setTimeout(() => { state.progressEmit = 0; emit('progress'); }, PROGRESS_EMIT_MS);
+}
+
 // ---------------------------------------------------------------------------
 // Outbox
 // ---------------------------------------------------------------------------
@@ -306,27 +363,36 @@ async function enqueue(op) {
   flushOutbox().catch(() => {});
 }
 
-async function flushOutbox() {
-  if (state.flushing || !state.uid || !online()) return;
-  state.flushing = true;
-  try {
-    const ops = await db.getAll('outbox');
-    if (!ops.length) return;
-    const { ops: todo, dropSeqs } = coalesceOutbox(ops);
-    if (dropSeqs.length) await db.delMany('outbox', dropSeqs);
-    const sb = await getClient();
-    for (const op of todo) {
-      try {
-        await sendOp(sb, op);
-        await db.del('outbox', op.seq);
-      } catch (e) {
-        if (isTransient(e)) { console.info('[store] flush deferred:', e?.message || e); return; }
-        console.error('[store] dropping rejected write', op, e);   // e.g. constraint/RLS error: retrying cannot help
-        await db.del('outbox', op.seq);
-      }
+// One flush runs at a time; a caller arriving mid-flush (an enqueue() during
+// a sync, a reset during a markRead flush) waits for it and gets one more
+// pass, so its op is never left behind for the next pull to race against.
+function flushOutbox() {
+  if (!state.uid || !online()) return Promise.resolve();
+  if (state.flushing) { state.flushAgain = true; return state.flushing; }
+  state.flushing = (async () => {
+    do {
+      state.flushAgain = false;
+      await flushOnce();
+    } while (state.flushAgain && online());
+  })().finally(() => { state.flushing = null; state.flushAgain = false; });
+  return state.flushing;
+}
+
+async function flushOnce() {
+  const ops = await db.getAll('outbox');
+  if (!ops.length) return;
+  const { ops: todo, dropSeqs } = coalesceOutbox(ops);
+  if (dropSeqs.length) await db.delMany('outbox', dropSeqs);
+  const sb = await getClient();
+  for (const op of todo) {
+    try {
+      await sendOp(sb, op);
+      await db.del('outbox', op.seq);
+    } catch (e) {
+      if (isTransient(e)) { console.info('[store] flush deferred:', e?.message || e); return; }
+      console.error('[store] dropping rejected write', op, e);   // e.g. constraint/RLS error: retrying cannot help
+      await db.del('outbox', op.seq);
     }
-  } finally {
-    state.flushing = false;
   }
 }
 
@@ -349,6 +415,15 @@ async function sendOp(sb, op) {
       if (op.rows.length) {
         res = await sb.from('audio_alignments').upsert(op.rows.map((r) => ({ ...r, user_id: uid })), { onConflict: 'user_id,week_n,unit_id' });
       }
+      break;
+    }
+    case 'reading_progress:upsert_many':
+      res = await sb.from('reading_progress').upsert(op.rows.map((r) => ({ ...r, user_id: uid })), { onConflict: 'user_id,unit_id' });
+      break;
+    case 'reading_progress:delete': {
+      let q = sb.from('reading_progress').delete().eq('user_id', uid);
+      if (op.week_n != null) q = q.eq('week_n', op.week_n);
+      res = await q;
       break;
     }
     default:
@@ -444,6 +519,23 @@ async function setSettings(patch) {
   return { ...state.settings.data };
 }
 
+/**
+ * Where the learner is (settings.lastPosition), written on its own: the
+ * row's updated_at is not bumped (patchLastPosition), so a device that only
+ * scrolls never outranks one that changed a real setting — lastPosition.at
+ * is the clock the two sides merge on. Coalesces with any pending settings
+ * upsert (same outbox key); the server keeps the row unless the timestamp
+ * sent is older than the stored one.
+ */
+async function setLastPosition(lastPosition) {
+  state.settings = patchLastPosition(state.settings, lastPosition);
+  mirrorSettings();
+  if (!state.uid) { await ready(); }
+  await db.put('settings', { key: 'settings', ...state.settings });
+  await enqueue({ table: 'settings', key: 'settings', op: 'upsert', row: state.settings });
+  return { ...state.settings.data };
+}
+
 async function getAlignment(weekN) {
   await ready();
   const n = Number(weekN);
@@ -467,6 +559,41 @@ async function saveAlignment(weekN, rows) {
   await enqueue({ table: 'audio_alignments', key: `week:${n}`, op: 'replace_week', week_n: n, rows: clean });
 }
 
+// ---------------------------------------------------------------------------
+// Reading progress (CONTRACT.md "Reading progress"): local-first like lookups.
+// markRead() is idempotent (ids already read are skipped); every batch is its
+// own outbox entry (unique key, so coalescing never drops one) and a reset is
+// one delete — for a week or for everything. Realtime keeps a second device
+// in step (emit('progress')). Lookups are never touched here.
+// ---------------------------------------------------------------------------
+
+let markSeq = 0;
+
+async function getProgress() {
+  await ready();
+  return new Map([...state.progress.values()].map((r) => [r.unit_id, r.read_at]));
+}
+
+async function markRead(unitIds) {
+  await ready();
+  const rows = makeProgressRows(unitIds, state.progress, nowIso());
+  if (!rows.length) return;
+  state.progressGen += 1;
+  for (const r of rows) state.progress.set(r.unit_id, r);
+  await db.putMany('progress', rows);
+  await enqueue({ table: 'reading_progress', key: `mark:${Date.now()}:${markSeq++}`, op: 'upsert_many', rows });
+}
+
+async function resetProgress(weekN = null) {
+  await ready();
+  const n = weekN == null ? null : Number(weekN);
+  state.progressGen += 1;
+  for (const [id, r] of [...state.progress]) if (n == null || r.week_n === n) state.progress.delete(id);
+  if (n == null) await db.clear('progress');
+  else await db.deleteByIndex('progress', 'week_n', n);
+  await enqueue({ table: 'reading_progress', key: `reset:${n ?? 'all'}:${Date.now()}`, op: 'delete', week_n: n });
+}
+
 function audioPath(weekN) {
   return `${state.uid}/${weekTag(weekN)}.mp3`;
 }
@@ -487,6 +614,52 @@ async function getAudioUrl(weekN) {
     console.warn('[store] signed URL failed', e);
     return null;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Pictures (CONTRACT.md "Pictures"): rows from IndexedDB, images from the
+// private bucket `pictures` through signed URLs (1 h, re-signed after 50 min).
+// URLs are signed lazily — when a week's pictures are asked for — in batches
+// of PICTURE_SIGN_BATCH with createSignedUrls(), and kept on the cached row so
+// an offline reload still has a URL (stale → the browser cache, or the alt text).
+// ---------------------------------------------------------------------------
+
+const picturePath = (r) => `${state.uid}/${r.path}`;
+
+async function signPictures(rows) {
+  const now = Date.now();
+  const todo = rows.filter((r) => typeof r.path === 'string' && !(r.url && r.url_exp > now));
+  if (!todo.length || !online()) return;
+  try {
+    const sb = await getClient();
+    for (let i = 0; i < todo.length; i += PICTURE_SIGN_BATCH) {
+      const batch = todo.slice(i, i + PICTURE_SIGN_BATCH);
+      const { data, error } = await sb.storage.from('pictures').createSignedUrls(batch.map(picturePath), SIGNED_URL_TTL_S);
+      if (error) throw error;
+      const signed = [];
+      (data || []).forEach((d, j) => {
+        if (!d?.signedUrl) return;
+        batch[j].url = d.signedUrl;
+        batch[j].url_exp = now + SIGNED_URL_REUSE_MS;
+        signed.push(batch[j]);
+      });
+      if (signed.length) await db.putMany('pictures', signed);
+    }
+  } catch (e) {
+    console.warn('[store] picture URLs failed', e?.message || e);
+  }
+}
+
+async function getPictures(weekN) {
+  await ready();
+  const n = Number(weekN);
+  if (!state.pictures.has(n)) state.pictures.set(n, await db.byIndex('pictures', 'week_n', n));
+  const raw = state.pictures.get(n);
+  await signPictures(raw);
+  const urls = new Map(raw.map((r) => [String(r.id), r.url ?? null]));
+  return normalisePictureRows(raw.map(({ user_id, ...r }) => r))
+    .map((p) => ({ ...p, url: urls.get(p.id) ?? null }))
+    .sort((a, b) => a.sort - b.sort || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 }
 
 async function uploadAudio(weekN, file) {
@@ -514,9 +687,11 @@ function sync() {
 export const store = {
   ready, getWeeks, getUnits, getHighlights,
   getLookups, addLookup, markLearned, unlearn, removeLookup,
-  getSettings, setSettings,
+  getSettings, setSettings, setLastPosition,
   getAlignment, saveAlignment,
   getAudioUrl, uploadAudio,
+  getPictures,
+  getProgress, markRead, resetProgress,
   onChange, sync,
 };
 

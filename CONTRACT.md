@@ -249,7 +249,7 @@ Illustrations cropped from the textbook scans, anchored to the sentence they sta
 - Pipeline output `data/build/pictures-week-NN.json`: `[{ "id": "w01/p197-1", "file": "data/build/pictures/week-01/p197-1.png", "page": 197, "unit_id": "w01:29.1", "caption": "labyrinthus -ī m", "caption_en": "labyrinth", "width": 900, "height": 620, "sort": 0 }]`.
 - Table `pictures` (see migration 0008); objects in the private bucket `pictures` at `{user}/week-NN/p197-1.png`.
 - `store.getPictures(weekN)` → `[{ id, unit_id, url (signed), caption, caption_en, width, height, sort }]`, cached per session; offline → whatever is cached in IndexedDB (rows only; images come from the browser cache).
-- UI: passage view shows a picture beside its sentence (gutter column on wide screens, above that sentence's margin notes; full-width above the sentence on phones), caption in the reading face, tappable Latin; sentence view shows it above the Latin. Setting `showPictures` (default true).
+- UI: passage view shows a picture beside its sentence (gutter column on wide screens, above that sentence's margin notes; above the sentence on phones, about three-quarters of the column wide and centred), caption in the reading face, tappable Latin; sentence view shows it above the Latin. Setting `showPictures` (default true).
 
 ## Reading progress (2026-09-05)
 
@@ -257,3 +257,10 @@ Table `reading_progress` (user_id, unit_id, week_n, read_at): one row per senten
 `store.getProgress()` → `Map<unit_id, read_at>`; `store.markRead(unitIds[])`; `store.resetProgress(weekN|null)` (one week or everything, after a confirm). Lookups are never touched by progress or by any reseed.
 UI: the weeks menu shows a thin bar and "42 of 93 sentences" per week; the current week's heading shows the same; "Continue where you left off" jumps to the first unread sentence; Settings → Progress has Reset this week / Reset all.
 Last position: `settings.lastPosition = { week_n, unit_id, view, at }` is written (debounced) whenever the current sentence changes in either view; on boot the app opens that week and scrolls to / navigates to that sentence (synced through settings like everything else). The weeks menu also opens on the last week.
+
+## Study log (2026-09-05)
+
+Table `study_days` (user_id, day, active_ms): active time per local calendar day. "Active" = the tab is visible and there was pointer/keyboard/scroll/touch activity or audio playback within the last 60 s; accumulated in 15 s ticks, flushed to the store every minute and on visibility change / pagehide (local-first, outbox, additive merge: max of local and remote per day). Sentences per day = `reading_progress.read_at` grouped by local day.
+`store.getStudyDays()` → Map<day, active_ms>; `store.addActiveTime(day, ms)`.
+UI: Settings → Progress gains a "Study log" block: today (minutes, sentences), the last 14 days as a compact table (day · minutes · sentences · pace), per-week totals (week n: minutes, sentences, pace in sentences per hour) and overall average pace. Reset progress does not clear the study log; a separate "Clear study log" does.
+Estimated time left: for a week, `unread sentences ÷ pace`, where pace = sentences per active hour over the last 7 active days (fallback: overall pace; fallback before any data: 60 sentences/hour, shown as "rough estimate"). Shown as "about 45 min left" / "about 2 h left" in the week heading line next to the progress count and in each weeks-menu row; "finished" when nothing is unread. Recomputed as progress and active time change.

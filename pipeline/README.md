@@ -254,3 +254,32 @@ FFmpeg is bundled by `imageio-ffmpeg`; nothing is installed system-wide.
 - Writing guides: `pipeline/NOTES-GUIDE.md`, `pipeline/PLAIN-GUIDE.md`.
 - After any of these change: `python pipeline/build_week.py all`, then
   `python pipeline/seed_sql.py all` and run the SQL files with the CLI.
+
+## Pictures: cropping the illustrations and anchoring them to sentences
+
+```
+python pipeline/extract_pictures.py all          # or: 1 3 10   (--debug saves the ink masks)
+python pipeline/upload_pictures.py 1 --user-id <auth user uuid>   # rows + PNGs; --sql-only to just write SQL
+```
+
+`extract_pictures.py` reuses `extract_margins.py` for the page ranges, the column
+geometry and the printed-line index. FR pages are raster scans: the text layer's
+word boxes, the running head and the two rules are blanked, the remaining ink is
+dilated and the connected components ≥ 1.2 cm are the drawings. FS pages carry
+their pictures as embedded images (their rectangles are used directly). FL, in
+this edition, prints no pictures. Each picture is anchored to the numbered line
+nearest its centre and then to the sentence of that block sharing most words with
+the line. Ørberg's picture labels (text-layer rows inside or centred under the
+drawing, not flush with the gloss column) become `caption`.
+
+Outputs: `data/build/pictures-week-NN.json` (CONTRACT "Pictures" shape),
+`data/build/pictures/week-NN/*.png` (crops, ≤ 1600 px) and `_sheet.png` (contact
+sheet with id, page, line, anchor unit, confidence, caption — check anchors
+there), `data/build/pictures-REPORT.md`. Hand corrections live in
+`data/pictures-overrides.json` (`{id: {caption, caption_en, unit_id}}`) and are
+re-applied on every run — labels missing from the scan's text layer and the
+English captions are filled in there. `upload_pictures.py` writes
+`data/build/sql/pictures-wNN.sql` (delete + insert for the first auth user, the
+seed_sql.py pattern) and copies the PNGs to the private bucket
+`pictures/<user-id>/week-NN/<file>`.
+

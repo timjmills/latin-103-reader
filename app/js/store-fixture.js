@@ -3,16 +3,15 @@
 // UI's persistence paths are exercised. Chosen by main.js when ?fixture=1 or
 // when app/config.js is missing / has no SUPABASE_URL.
 
-import { normaliseAlignmentRows } from './sync.js';
+import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, weekOfUnit } from './sync.js';
 
 const LS_LOOKUPS = 'l103.lookups';
 const LS_SETTINGS = 'latin103.settings';
 const LS_ALIGN = 'l103.align.';
+const LS_PROGRESS = 'l103.progress';   // { unit_id: read_at } — reading progress (CONTRACT.md), kept apart from the lookups
 
-export const DEFAULT_SETTINGS = Object.freeze({
-  size: 3, face: 'serif', theme: 'system', compact: false,
-  showEnglish: 'hidden', showHighlights: true, showUnderlines: true, showMargin: true, showAudio: true, showSummaries: true, plainOpen: false, showGlossEnglish: false, panelWidth: null,
-});
+// The one list of defaults (sync.js): the fixture never drifts from the real store.
+export { DEFAULT_SETTINGS };
 
 const base = new URL('../../data/build/', import.meta.url);
 // The repo root is served in dev (python -m http.server 8000 → /audio/week-NN.mp3);
@@ -20,7 +19,7 @@ const base = new URL('../../data/build/', import.meta.url);
 const audioBase = new URL('../../audio/', import.meta.url);
 const listeners = new Set();
 const cache = {
-  weeks: null, units: new Map(), highlights: new Map(),
+  weeks: null, units: new Map(), highlights: new Map(), pictures: new Map(),
   audio: new Map(),       // weekN → object URL of an upload (memory only)
   aligned: new Map(),     // weekN → pipeline alignment rows (data/build/audio/week-NN.alignment.json app_rows) or null
   localAudio: new Map(),  // weekN → audio/week-NN.mp3 URL when the dev server has it, else null
@@ -131,6 +130,41 @@ export function withPlainDemo(units, highlights = null) {
   return { units: out, highlights: hs };
 }
 
+// Pictures (CONTRACT.md "Pictures"): data/build/pictures-week-NN.json, images
+// served from data/build/pictures/week-NN/<file> by the dev server. Until the
+// pipeline has cropped any, week 1 gets two drawn placeholders (an SVG data
+// URL — not the book's art) on w01:29.1 and w01:60.1 so the layout can be
+// tried: one beside dense margin notes, one portrait.
+function placeholderSvg(w, h, label) {
+  const rings = [];
+  for (let i = 0, inset = 0.08; i < 5; i++, inset += 0.07) {
+    rings.push(`<rect x="${Math.round(w * inset)}" y="${Math.round(h * inset)}" width="${Math.round(w * (1 - 2 * inset))}" height="${Math.round(h * (1 - 2 * inset))}" fill="none" stroke="#7c7062" stroke-width="${Math.round(w / 180)}"/>`);
+  }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="#f4f0e8"/>${rings.join('')}`
+    + `<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="${Math.round(Math.min(w, h) / 9)}" fill="#5e544a">${label}</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+const DEMO_PICTURES = [
+  { id: 'w01/demo-1', unit_id: 'w01:29.1', caption: 'labyrinthus -ī m', caption_en: 'labyrinth', page: 197, width: 900, height: 620, sort: 0, url: placeholderSvg(900, 620, 'labyrinthus') },
+  { id: 'w01/demo-2', unit_id: 'w01:60.1', caption: 'Ariadna fīlum Thēseō dat', caption_en: 'Ariadne gives Theseus the thread', page: 199, width: 640, height: 820, sort: 0, url: placeholderSvg(640, 820, 'Ariadna') },
+];
+async function loadPictures(weekN) {
+  const n = Number(weekN);
+  if (!cache.pictures.has(n)) {
+    let rows = null;
+    try {
+      const raw = await fetchJSON(`pictures-week-${pad(n)}.json`);
+      rows = (Array.isArray(raw) ? raw : []).map((p) => ({
+        id: p.id, unit_id: p.unit_id, caption: p.caption ?? null, caption_en: p.caption_en ?? null,
+        page: p.page ?? null, width: p.width ?? null, height: p.height ?? null, sort: p.sort ?? 0,
+        url: new URL(`pictures/week-${pad(n)}/${String(p.file || '').split('/').pop()}`, base).href,
+      }));
+    } catch { rows = n === 1 ? DEMO_PICTURES.map((p) => ({ ...p })) : []; }
+    cache.pictures.set(n, rows);
+  }
+  return cache.pictures.get(n);
+}
+
 async function loadWeek(weekN) {
   if (!cache.units.has(weekN)) {
     const data = await fetchJSON(`week-${pad(weekN)}.json`);
@@ -161,6 +195,7 @@ export const store = {
     }
     return cache.highlights.get(weekN);
   },
+  getPictures: (weekN) => loadPictures(weekN),
   async getLookups() { return new Map(Object.entries(readJSON(LS_LOOKUPS, {}))); },
   async addLookup(form, unitId) {
     const all = readJSON(LS_LOOKUPS, {});
@@ -181,11 +216,35 @@ export const store = {
     const all = readJSON(LS_LOOKUPS, {});
     delete all[form]; writeJSON(LS_LOOKUPS, all);
   },
-  getSettings() { return { ...DEFAULT_SETTINGS, ...readJSON(LS_SETTINGS, {}) }; },
+  getSettings() {
+    const s = { ...DEFAULT_SETTINGS, ...readJSON(LS_SETTINGS, {}) };
+    s.lastPosition = normaliseLastPosition(s.lastPosition);
+    return s;
+  },
   async setSettings(patch) {
     const next = { ...this.getSettings(), ...patch };
+    next.lastPosition = normaliseLastPosition(next.lastPosition);
     writeJSON(LS_SETTINGS, next);
     return next;
+  },
+  /** The last position on its own (store.js keeps the settings row's clock out of it; here it is the same write). */
+  async setLastPosition(lastPosition) {
+    return this.setSettings({ lastPosition });
+  },
+  // Reading progress (CONTRACT.md "Reading progress"): localStorage-backed like the lookups, and never mixed with them.
+  async getProgress() { return new Map(Object.entries(readJSON(LS_PROGRESS, {}))); },
+  async markRead(unitIds) {
+    const all = readJSON(LS_PROGRESS, {});
+    const rows = makeProgressRows(unitIds, new Set(Object.keys(all)));
+    if (!rows.length) return;
+    for (const r of rows) all[r.unit_id] = r.read_at;
+    writeJSON(LS_PROGRESS, all);
+  },
+  async resetProgress(weekN = null) {
+    const n = weekN == null ? null : Number(weekN);
+    const all = readJSON(LS_PROGRESS, {});
+    for (const id of Object.keys(all)) if (n == null || weekOfUnit(id) === n) delete all[id];
+    writeJSON(LS_PROGRESS, all);
   },
   // A manual alignment (localStorage) wins; otherwise the pipeline's
   // data/build/audio/week-NN.alignment.json (app_rows, with timed words).
@@ -216,6 +275,7 @@ if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
     if (e.key === LS_LOOKUPS) emit('lookups');
     if (e.key === LS_SETTINGS) emit('settings');
+    if (e.key === LS_PROGRESS) emit('progress');
   });
 }
 
