@@ -82,6 +82,8 @@
           <!-- Reading progress (CONTRACT.md "Reading progress"): "42 of 93 read · Continue →". reader.js moves it into every render (above the listen bar / under sentence view's meta line); main.js paints it. -->
           <p id="progress" class="progress" hidden>
             <span class="progress__text" data-progress-text></span>
+            <!-- "· about 45 min left" at the learner's pace (CONTRACT.md "Study log"); hidden when finished or without a study log. -->
+            <span class="progress__left" data-progress-left hidden><span class="progress__sep" aria-hidden="true">· </span><span data-progress-left-text></span></span>
             <button type="button" class="progress__continue" data-progress-continue aria-label="Continue where you left off: the first sentence not yet read" hidden><span class="progress__sep" aria-hidden="true">· </span><span class="progress__word">Continue <span aria-hidden="true">→</span></span></button>
           </p>
           <!-- The listen bar. reader.js moves it into every render (top of the passage / above the sentence); main.js paints it. -->
@@ -277,6 +279,36 @@
         </div>
         <p class="progress-set__note">Looked-up words are kept separately and are never reset here.</p>
         <p class="audio__msg" data-progress-msg role="status"></p>
+
+        <!-- Study log (CONTRACT.md "Study log"): active time per day from store.getStudyDays(), sentences per day from the progress map; settings.js paints it (studyLog()). Reset progress leaves it alone; "Clear study log" is its own. -->
+        <div class="study" data-study hidden>
+          <h4 class="study__h" id="study-label">Study log</h4>
+          <p class="study__today" data-study-today>Nothing yet today.</p>
+          <figure class="study__spark" data-study-spark>
+            <svg class="study__svg" viewBox="0 0 160 32" width="160" height="32" role="img" aria-labelledby="study-spark-title" focusable="false">
+              <title id="study-spark-title">Minutes per day over the last 14 days</title>
+              <path class="study__line" data-spark-line d="" fill="none"></path>
+              <circle class="study__dot" data-spark-dot r="4" cx="0" cy="0"></circle>
+            </svg>
+            <figcaption class="study__cap" data-spark-cap>Minutes per day · last 14 days</figcaption>
+          </figure>
+          <table class="study__table" data-study-days hidden>
+            <caption class="visually-hidden">The last 14 days</caption>
+            <thead><tr><th scope="col">Day</th><th scope="col" class="study__num">Min</th><th scope="col" class="study__num">Sentences</th><th scope="col" class="study__num">Pace</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <table class="study__table" data-study-weeks hidden>
+            <caption class="visually-hidden">By week</caption>
+            <thead><tr><th scope="col">Week</th><th scope="col" class="study__num">Min</th><th scope="col" class="study__num">Sentences</th><th scope="col" class="study__num">Pace</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <p class="study__pace" data-study-pace></p>
+          <p class="progress-set__note">Pace is sentences per active hour. A week's minutes are each day's minutes shared out by the sentences read in each week that day, so they are an estimate.</p>
+          <div class="progress-set__actions">
+            <button type="button" class="btn btn--quiet" data-action="clear-study">Clear study log</button>
+          </div>
+          <p class="audio__msg" data-study-msg role="status"></p>
+        </div>
       </section>
 
       <div class="settings__tools">

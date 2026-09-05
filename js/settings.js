@@ -6,7 +6,7 @@
 // The inline script in index.html applies the localStorage mirror before
 // first paint; this module keeps <html> attributes + the store in step.
 
-import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate } from './sync.js';
+import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs } from './sync.js';
 export { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate };
 
 /** "0.8×" — one decimal, always. Pure. */
@@ -193,6 +193,189 @@ export function progressStateText(read, total) {
   return `${r} of ${t} sentences read.`;
 }
 
+/* ------------------------------------------------------------ study log */
+// CONTRACT.md "Study log": sentences per local day come from the progress
+// Map's read_at; minutes per day from store.getStudyDays(). Everything here
+// is pure (tests/study.test.mjs); main.js feeds it and paints the results.
+
+export const ROUGH_PACE = 60;              // sentences per active hour assumed before there is any data
+export const PACE_MIN_MS = 2 * 60 * 1000;  // a pace is only trusted once this much active time stands behind it
+const HOUR_MS = 3600 * 1000;
+
+/** Sentences read per local day: Map day → count, from a progress Map (unit_id → read_at). Pure. */
+export function sentencesPerDay(progress) {
+  const out = new Map();
+  for (const at of progress?.values?.() ?? []) {
+    const day = localDay(at);
+    if (day) out.set(day, (out.get(day) ?? 0) + 1);
+  }
+  return out;
+}
+
+/** Sentences read per local day and week: Map day → Map week_n → count. Pure. */
+export function sentencesPerDayByWeek(progress) {
+  const out = new Map();
+  for (const [id, at] of progress?.entries?.() ?? []) {
+    const day = localDay(at);
+    const n = weekOfUnit(id);
+    if (!day || n == null) continue;
+    if (!out.has(day)) out.set(day, new Map());
+    const m = out.get(day);
+    m.set(n, (m.get(n) ?? 0) + 1);
+  }
+  return out;
+}
+
+/** Sentences per active hour, or null when the time behind it is too little to mean anything. Pure. */
+export function paceRate(sentences, ms, minMs = PACE_MIN_MS) {
+  if (!(ms >= minMs) || !(sentences > 0)) return null;
+  return sentences / (ms / HOUR_MS);
+}
+
+/**
+ * The pace the estimates use: sentences per active hour over the last
+ * `recent` active days (days with any active time), else over every active
+ * day, else ROUGH_PACE (`basis: 'rough'`). `days` are [{ day, ms, sentences }]
+ * in any order. Pure.
+ */
+export function paceOf(days, { recent = 7, minMs = PACE_MIN_MS } = {}) {
+  const active = (days || []).filter((d) => d && d.ms > 0).sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
+  const sum = (list) => list.reduce((acc, d) => ({ ms: acc.ms + d.ms, sentences: acc.sentences + (d.sentences || 0) }), { ms: 0, sentences: 0 });
+  const last = sum(active.slice(-recent));
+  let rate = paceRate(last.sentences, last.ms, minMs);
+  if (rate) return { perHour: rate, basis: 'recent', days: Math.min(recent, active.length), ms: last.ms, sentences: last.sentences };
+  const all = sum(active);
+  rate = paceRate(all.sentences, all.ms, minMs);
+  if (rate) return { perHour: rate, basis: 'overall', days: active.length, ms: all.ms, sentences: all.sentences };
+  return { perHour: ROUGH_PACE, basis: 'rough', days: 0, ms: 0, sentences: 0 };
+}
+
+/** The `span` local days ending today, oldest first. Pure. */
+export function lastDays(now = new Date(), span = 14) {
+  const out = [];
+  const d = now instanceof Date ? new Date(now) : new Date(now);
+  d.setHours(12, 0, 0, 0);
+  for (let i = span - 1; i >= 0; i--) {
+    const x = new Date(d);
+    x.setDate(d.getDate() - i);
+    out.push(localDay(x));
+  }
+  return out;
+}
+
+/**
+ * Everything the Study log shows, from the progress Map and the study-days
+ * Map (day → active_ms):
+ *   today   { day, ms, sentences }
+ *   days    the last `span` days, oldest first: { day, ms, sentences, pace }
+ *   weeks   per week with any reading: { n, ms, sentences, pace } — the
+ *           week's minutes are each day's minutes shared out by the sentences
+ *           read in each week that day (a day with time but no sentences is
+ *           counted in no week); `n` ascending
+ *   pace    paceOf() over every day
+ *   overall { ms, sentences, pace } over every day
+ * Pure.
+ */
+export function studyLog({ progress, studyDays, now = new Date(), span = 14 } = {}) {
+  const perDay = sentencesPerDay(progress);
+  const byWeek = sentencesPerDayByWeek(progress);
+  const dayKeys = new Set([...perDay.keys(), ...(studyDays?.keys?.() ?? [])]);
+  const all = [...dayKeys].map((day) => ({ day, ms: cleanMs(studyDays?.get?.(day)), sentences: perDay.get(day) ?? 0 }));
+  const rowOf = (d) => ({ ...d, pace: paceRate(d.sentences, d.ms) });
+  const byDay = new Map(all.map((d) => [d.day, d]));
+  const today = localDay(now);
+  const days = lastDays(now, span).map((day) => rowOf(byDay.get(day) ?? { day, ms: 0, sentences: 0 }));
+  const weeks = new Map();
+  for (const d of all) {
+    const wk = byWeek.get(d.day);
+    if (!wk) continue;
+    for (const [n, count] of wk) {
+      const w = weeks.get(n) ?? { n, ms: 0, sentences: 0 };
+      w.sentences += count;
+      w.ms += d.sentences ? (d.ms * count) / d.sentences : 0;
+      weeks.set(n, w);
+    }
+  }
+  const overall = all.reduce((acc, d) => ({ ms: acc.ms + d.ms, sentences: acc.sentences + d.sentences }), { ms: 0, sentences: 0 });
+  return {
+    today: rowOf(byDay.get(today) ?? { day: today, ms: 0, sentences: 0 }),
+    days,
+    weeks: [...weeks.values()].sort((a, b) => a.n - b.n).map((w) => rowOf({ ...w, ms: Math.round(w.ms) })),
+    pace: paceOf(all),
+    overall: { ...overall, pace: paceRate(overall.sentences, overall.ms) },
+  };
+}
+
+/** Milliseconds of reading left for `unread` sentences at `pace` (paceOf() shape or a number per hour). Pure. */
+export function timeLeftMs(unread, pace) {
+  const u = Math.max(0, Math.round(Number(unread)) || 0);
+  const perHour = typeof pace === 'number' ? pace : pace?.perHour;
+  return (u / (perHour > 0 ? perHour : ROUGH_PACE)) * HOUR_MS;
+}
+
+/**
+ * "about 45 min left" / "about 1½ h left" / "about 2 h left" — "finished"
+ * when nothing is unread, "(rough estimate)" appended while the pace is the
+ * assumed one (`basis: 'rough'` or no pace at all). Pure.
+ */
+export function timeLeftText(unread, pace) {
+  const u = Math.max(0, Math.round(Number(unread)) || 0);
+  if (!u) return 'finished';
+  const min = timeLeftMs(u, pace) / 60000;
+  let t;
+  if (min < 1) t = 'under a minute left';
+  else if (min < 15) t = `about ${Math.max(1, Math.round(min))} min left`;
+  else if (min < 57.5) t = `about ${Math.round(min / 5) * 5} min left`;
+  else {
+    const h = Math.round(min / 30) / 2;
+    t = `about ${h % 1 ? `${Math.floor(h)}½` : h} h left`;
+  }
+  return !pace || pace.basis === 'rough' ? `${t} (rough estimate)` : t;
+}
+
+/** "12 min", "1 h 05 min", "0 min" (under a minute: "<1 min"). Pure. */
+export function fmtActive(ms) {
+  const n = cleanMs(ms);
+  if (!n) return '0 min';
+  if (n < 60000) return '<1 min';
+  return fmtDuration(n);
+}
+
+/** "72 / h" for a pace, "—" for none. Pure. */
+export function fmtPace(perHour) {
+  return perHour > 0 ? `${Math.round(perHour)} / h` : '—';
+}
+
+/**
+ * Sparkline geometry for `values` (numbers, oldest first) in a `w` × `h`
+ * box: `d` is the SVG path (a flat baseline when every value is 0), `last`
+ * the final point, `max` the top of the scale. Pure.
+ */
+export function sparklinePath(values, { w = 140, h = 28, pad = 2 } = {}) {
+  const vs = (values || []).map((v) => (Number.isFinite(Number(v)) && v > 0 ? Number(v) : 0));
+  const max = Math.max(0, ...vs);
+  const n = vs.length;
+  const x = (i) => (n > 1 ? pad + (i * (w - 2 * pad)) / (n - 1) : w / 2);
+  const y = (v) => h - pad - (max > 0 ? (v / max) * (h - 2 * pad) : 0);
+  const pts = vs.map((v, i) => [Math.round(x(i) * 10) / 10, Math.round(y(v) * 10) / 10]);
+  if (!pts.length) return { d: '', points: [], last: null, max };
+  const d = pts.map(([px, py], i) => `${i ? 'L' : 'M'}${px} ${py}`).join(' ');
+  return { d, points: pts, last: { x: pts[pts.length - 1][0], y: pts[pts.length - 1][1] }, max };
+}
+
+/**
+ * How much of one ticker interval counts as active time: the whole `dt`
+ * when the tab is visible and there was activity within `idleMs` (or audio
+ * is playing), else nothing. `dt` is capped at two ticks so a throttled
+ * timer cannot bank a long absence. Pure.
+ */
+export function activeSlice({ visible = true, now, lastActivity, playing = false, dt, idleMs = 60000, tickMs = 15000 } = {}) {
+  const slice = Math.max(0, Math.min(cleanMs(dt), tickMs * 2));
+  if (!visible || !slice) return 0;
+  if (playing) return slice;
+  return Number.isFinite(now) && Number.isFinite(lastActivity) && now - lastActivity < idleMs ? slice : 0;
+}
+
 function fmtSize(bytes) {
   if (!Number.isFinite(bytes)) return '';
   return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} kB`;
@@ -368,8 +551,102 @@ function initProgressSection(dialog, progress) {
   }
   resetWeek.addEventListener('click', () => reset('week'));
   resetAll.addEventListener('click', () => reset('all'));
+  const study = initStudyLog(section, progress.study ?? null);
   paint();
-  return { refresh };
+  return { refresh: async () => { await refresh(); study?.paint(); } };
+}
+
+/** "Today", "Yesterday", else "Mon 31 Aug" for a "YYYY-MM-DD" day. Pure. */
+export function fmtDay(day, today = localDay()) {
+  if (day === today) return 'Today';
+  const [y, m, d] = String(day).split('-').map(Number);
+  const date = new Date(y, (m || 1) - 1, d || 1);
+  const t = today ? new Date(...String(today).split('-').map((v, i) => Number(v) - (i === 1 ? 1 : 0))) : null;
+  if (t && Math.round((t - date) / 86400000) === 1) return 'Yesterday';
+  try { return date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); }
+  catch { return day; }
+}
+
+/**
+ * The Study log block inside Settings → Progress (CONTRACT.md "Study log").
+ * `study` is main.js's hook: { log() → studyLog(), clear() → the line to show }.
+ * Today's line, the sparkline (minutes per day, the last 14), the active days
+ * of those 14 as a table, the per-week rows, the pace the estimates use, and
+ * "Clear study log" behind a confirm().
+ */
+function initStudyLog(section, study) {
+  const root = section.querySelector('[data-study]');
+  if (!root) return null;
+  if (!study) { root.hidden = true; return null; }
+  root.hidden = false;
+  const $ = (sel) => root.querySelector(sel);
+  const todayEl = $('[data-study-today]');
+  const spark = $('[data-study-spark]');
+  const sparkLine = $('[data-spark-line]');
+  const sparkDot = $('[data-spark-dot]');
+  const sparkCap = $('[data-spark-cap]');
+  const daysTable = $('[data-study-days]');
+  const weeksTable = $('[data-study-weeks]');
+  const paceEl = $('[data-study-pace]');
+  const clearBtn = $('[data-action="clear-study"]');
+  const msgEl = $('[data-study-msg]');
+  const say = (text, tone) => {
+    msgEl.textContent = text || '';
+    if (tone) msgEl.dataset.tone = tone; else delete msgEl.dataset.tone;
+  };
+  const cell = (tag, text, num = false) => { const el = document.createElement(tag); el.textContent = text; if (num) el.className = 'study__num'; return el; };
+  const row = (label, r, { head = false } = {}) => {
+    const tr = document.createElement('tr');
+    const first = cell(head ? 'th' : 'td', label);
+    if (head) first.scope = 'row';
+    tr.append(first, cell('td', String(Math.round(r.ms / 60000)), true), cell('td', String(r.sentences), true), cell('td', fmtPace(r.pace), true));
+    return tr;
+  };
+  function paint() {
+    let log;
+    try { log = study.log(); } catch (e) { say(e?.message || 'Could not read the study log.', 'error'); return; }
+    if (!log) return;
+    const { today, days, weeks, pace, overall } = log;
+    const any = overall.ms > 0 || overall.sentences > 0;
+    todayEl.textContent = today.ms || today.sentences
+      ? `Today · ${fmtActive(today.ms)} · ${today.sentences} ${today.sentences === 1 ? 'sentence' : 'sentences'}${today.pace ? ` · ${fmtPace(today.pace)}` : ''}`
+      : 'Nothing yet today.';
+    // Sparkline: minutes per day, oldest → today; the last point in the accent (dataviz: current period), the line in the de-emphasis ink.
+    const mins = days.map((d) => d.ms / 60000);
+    const { d, last, max } = sparklinePath(mins, { w: 160, h: 32, pad: 4 });
+    spark.hidden = !any;
+    sparkLine.setAttribute('d', d);
+    if (last) { sparkDot.setAttribute('cx', String(last.x)); sparkDot.setAttribute('cy', String(last.y)); }
+    sparkDot.hidden = !last;
+    sparkCap.textContent = max > 0 ? `Minutes per day · last ${days.length} days · peak ${Math.round(max)} min` : `Minutes per day · last ${days.length} days`;
+    // The table lists only the days with anything in them, newest first.
+    const active = days.filter((r) => r.ms > 0 || r.sentences > 0).reverse();
+    daysTable.hidden = !active.length;
+    daysTable.tBodies[0].replaceChildren(...active.map((r) => row(fmtDay(r.day, today.day), r, { head: true })));
+    weeksTable.hidden = !weeks.length;
+    weeksTable.tBodies[0].replaceChildren(...weeks.map((w) => row(`Week ${w.n}`, w, { head: true })));
+    if (!any) paceEl.textContent = `No study time recorded yet — estimates assume ${ROUGH_PACE} sentences an hour until there is.`;
+    else if (pace.basis === 'rough') paceEl.textContent = `Too little time recorded for a pace yet — estimates assume ${ROUGH_PACE} sentences an hour. Overall: ${overall.sentences} sentences in ${fmtActive(overall.ms)}.`;
+    else {
+      const basis = pace.basis === 'recent' ? `over the last ${pace.days === 1 ? 'active day' : `${pace.days} active days`}` : 'over every active day';
+      paceEl.textContent = `Pace: ${Math.round(pace.perHour)} sentences an hour ${basis}. Overall: ${overall.sentences} sentences in ${fmtActive(overall.ms)}${overall.pace ? ` (${fmtPace(overall.pace)})` : ''}.`;
+    }
+    clearBtn.disabled = !any;
+  }
+  clearBtn.addEventListener('click', async () => {
+    if (!window.confirm('Clear the study log? Minutes per day are forgotten on every device. Reading progress and looked-up words are kept.')) return;
+    say('');
+    clearBtn.disabled = true;
+    try {
+      const done = await study.clear();
+      say(typeof done === 'string' && done ? done : 'Study log cleared.', 'ok');
+    } catch (e) {
+      say(e?.message || 'Could not clear the study log.', 'error');
+    }
+    paint();
+  });
+  paint();
+  return { paint };
 }
 
 function initAudioSection(dialog, audio) {

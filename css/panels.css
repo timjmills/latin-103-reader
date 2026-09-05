@@ -136,7 +136,21 @@
 .popup .pt { font-size: var(--ui-sm); }
 .popup .pt tbody th { font-size: var(--ui-xs); white-space: normal; text-wrap: pretty; max-width: 9em; }   /* long row labels wrap before the table scrolls */
 .pt__cell { font-family: var(--face-reading); font-size: 1.05em; }
-@media (min-width: 768px) { .panel .pt { font-size: var(--ui-sm); } }   /* one step smaller in the side panel so most tables fit its default width */
+@media (min-width: 768px) {
+  .panel .pt { font-size: var(--ui-sm); }   /* one step smaller in the side panel so most tables fit its default width */
+  .panel .pt th, .panel .pt td { padding-inline: var(--s-1); }   /* …with the tighter cells: the pluperfect subjunctive (nārrāvissem) fits the 303 px box too (QA-4 m4) */
+}
+/* Three value columns (adjectives: masculine / feminine / neuter, QA-4 m4):
+   one more step down with the tablet's tighter cells, and the row-label
+   column may wrap ("nominative" over two lines) — so the positive,
+   comparative and superlative tables fit the panel's 319 px at its default
+   width instead of scrolling sideways. */
+@media (min-width: 768px) {
+  .panel .pt--wide { font-size: var(--ui-xs); }
+  .panel .pt--wide th, .panel .pt--wide td { padding-inline: var(--s-1); }
+  .panel .pt--wide tbody th { font-size: var(--ui-xs); white-space: normal; text-wrap: pretty; width: auto; min-width: 4.5em; max-width: 6em; padding-right: var(--s-2); }   /* not the 1% column: "nominative sg." wraps at the space, never letter by letter */
+  .panel .pt--wide .pt__cell { font-size: 1em; }
+}
 /* The tablet column is narrower still (min(22rem, 44vw)): one more step down,
    the reading-face cells at the table's own size and tighter cell padding,
    so the 15 nārrō tables fit the box without scrolling. */
@@ -332,6 +346,26 @@
 .progress-set__state[data-state="none"] { color: var(--ink-2); }
 .progress-set__actions { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-inline: calc(-1 * var(--s-3)); }
 .progress-set__note { margin: 0; font-size: var(--ui-xs); line-height: 1.45; color: var(--ink-3); text-wrap: pretty; }
+/* Study log (CONTRACT.md "Study log"): today's line, a sparkline of minutes
+   per day (one series — the line in the tertiary ink, today's point in the
+   rubric), two small tables (the active days of the last 14, the weeks) and
+   the pace line. Figures are UI face, tabular in the columns only. */
+.study { display: grid; gap: var(--s-3); margin-top: var(--s-2); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+.study__h { margin: 0; font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
+.study__today { margin: 0; font-size: var(--ui-md); line-height: 1.45; color: var(--ink); }
+.study__spark { display: flex; align-items: center; gap: var(--s-3); margin: 0; }
+.study__svg { flex: none; overflow: visible; }
+.study__line { stroke: var(--ink-3); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.study__dot { fill: var(--rubric); stroke: var(--bg-raised); stroke-width: 2; }   /* a 2px surface ring where the point sits on the line */
+.study__cap { font-size: var(--ui-xs); line-height: 1.4; color: var(--ink-3); text-wrap: pretty; }
+.study__table { width: 100%; border-collapse: collapse; font-size: var(--ui-sm); line-height: 1.4; color: var(--ink); }
+.study__table th, .study__table td { padding: 0.3em var(--s-2); text-align: left; border-top: 1px solid var(--line); vertical-align: baseline; }
+.study__table thead th { border-top: 0; padding-top: 0; font-weight: 500; font-size: var(--ui-xs); color: var(--ink-3); }
+.study__table tbody th { font-weight: 400; color: var(--ink-2); white-space: nowrap; }
+.study__table .study__num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.study__table tbody tr:first-child td, .study__table tbody tr:first-child th { border-top-color: var(--line-strong); }
+.study__table + .study__table { margin-top: var(--s-2); }   /* the days and the weeks are two tables, not one */
+.study__pace { margin: 0; font-size: var(--ui-sm); line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
 
 .settings__tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2); padding-top: var(--s-3); border-top: 1px solid var(--line); margin-inline: calc(-1 * var(--s-3)); }
 .settings__keys { margin: 0; padding-inline: var(--s-3); font-size: var(--ui-xs); color: var(--ink-3); line-height: 1.5; flex: 1 1 100%; text-wrap: pretty; }
@@ -379,6 +413,8 @@
 }
 .weeks__bar { flex: 0 0 5rem; height: 2px; border-radius: 1px; background: var(--line); overflow: hidden; }
 .weeks__bar-fill { display: block; height: 100%; border-radius: inherit; background: var(--ink-3); transition: width var(--t-base) var(--ease-out); }
+.weeks__left { white-space: nowrap; }   /* "· about 2 h left" (main.js timeLeftFor) */
+.weeks__progress { flex-wrap: wrap; row-gap: 2px; }
 .weeks__progress[data-state="done"] { color: var(--success); }
 .weeks__progress[data-state="done"] .weeks__bar-fill { background: var(--success); }
 @media (max-width: 479.98px) {

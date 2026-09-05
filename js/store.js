@@ -16,7 +16,7 @@ import {
   mergeRows, applyRealtime, coalesceOutbox, makeLookup, patchLookup,
   patchSettings, normaliseSettings, lookupsView, weekTag, staleWeeks,
   cleanWords, normaliseAlignmentRows, normalisePictureRows, makeProgressRows,
-  mergeProgress, patchLastPosition, mergeSettings,
+  mergeProgress, patchLastPosition, mergeSettings, addStudyMs, mergeStudyDays, studyDaysView, cleanMs, isDayKey,
 } from './sync.js';
 
 export const SETTINGS_LS_KEY = 'latin103.settings';
@@ -35,6 +35,7 @@ const state = {
   settings: normaliseSettings(null),
   alignments: new Map(),   // `${week_n}|${unit_id}` → row
   progress: new Map(),     // unit_id → reading_progress row (CONTRACT.md "Reading progress")
+  studyDays: new Map(),    // day → study_days row (CONTRACT.md "Study log": active reading time per local day)
   pictures: new Map(),     // weekN → raw picture rows (+ url / url_exp once signed)
   signedUrls: new Map(),   // weekN → { url, exp }
   channel: null,
@@ -42,6 +43,9 @@ const state = {
   flushAgain: false,       // an enqueue() arrived while flushing: run once more when this run ends
   progressGen: 0,          // bumped by every local progress write; a pull that started before one does not merge over it
   progressEmit: 0,         // timer coalescing a burst of realtime progress events into one emit('progress')
+  studyGen: 0,             // bumped by every local study_days write, like progressGen
+  studyEmit: 0,            // timer coalescing realtime study_days events into one emit('study')
+  studyClearing: false,    // a clearStudyLog() not yet on the server: realtime DELETEs are its own echo, not news
   syncing: null,
   wired: false,
 };
@@ -106,6 +110,7 @@ async function loadLocal() {
   state.settings = normaliseSettings(await db.get('settings', 'settings'));
   state.alignments = new Map((await db.getAll('alignments')).map((r) => [alignKey(r), r]));
   state.progress = new Map((await db.getAll('progress')).map((r) => [r.unit_id, r]));
+  state.studyDays = new Map((await db.getAll('study_days')).map((r) => [r.day, r]));
   state.units.clear();
   state.highlights.clear();
   state.pictures.clear();
@@ -150,6 +155,7 @@ async function teardown() {
   state.lookups.clear();
   state.alignments.clear();
   state.progress.clear();
+  state.studyDays.clear();
   state.pictures.clear();
   state.signedUrls.clear();
   state.settings = normaliseSettings(null);
@@ -289,6 +295,31 @@ async function pullProgress() {
     await db.putMany('progress', [...p.merged.values()]);
     emit('progress');
   }
+
+  await pullStudyDays(sb);
+}
+
+// The study log (table `study_days`, migration 0010): per day the larger of
+// the two totals stands (mergeStudyDays). Nothing is merged while a day's
+// total or a clear is still in the outbox, or when one landed locally while
+// the rows were in flight. A library without the table (seeded before the
+// migration) just goes without.
+async function pullStudyDays(sb) {
+  const gen = state.studyGen;
+  let remote;
+  try {
+    remote = await pageAll(() => sb.from('study_days').select('*').order('day'));
+  } catch (e) {
+    console.warn('[store] study log not synced', e?.message || e);
+    return;
+  }
+  if (gen !== state.studyGen) return;
+  const r = mergeStudyDays(state.studyDays, remote, await db.getAll('outbox'));
+  if (r.skipped || (!r.changed.length && !r.removed)) return;
+  state.studyDays = r.merged;
+  await db.clear('study_days');
+  await db.putMany('study_days', [...r.merged.values()]);
+  emit('study');
 }
 
 /** A settings row from the server (pull or realtime): kept when it moves anything locally. */
@@ -310,6 +341,7 @@ async function subscribeRealtime() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'settings', filter }, onSettingsEvent)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'audio_alignments', filter }, onAlignmentEvent)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'reading_progress', filter }, onProgressEvent)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'study_days', filter }, onStudyEvent)
     .subscribe((status, err) => {
       if (err) console.warn('[store] realtime', status, err);
     });
@@ -352,6 +384,28 @@ async function onProgressEvent(payload) {
   else await db.put('progress', r.map.get(r.key));
   clearTimeout(state.progressEmit);
   state.progressEmit = setTimeout(() => { state.progressEmit = 0; emit('progress'); }, PROGRESS_EMIT_MS);
+}
+
+// Another device's day total (the larger figure wins) or a clear elsewhere
+// (one DELETE per day, heard once). While our own clear is still unsent the
+// DELETEs are its echo; a larger local total in the outbox is sent right after.
+async function onStudyEvent(payload) {
+  if (payload.eventType === 'DELETE') {
+    const day = payload.old?.day;
+    if (!isDayKey(day) || !state.studyDays.has(day) || state.studyClearing) return;
+    state.studyDays.delete(day);
+    await db.del('study_days', day);
+  } else {
+    const row = payload.new;
+    if (!row || !isDayKey(row.day)) return;
+    const cur = state.studyDays.get(row.day);
+    if (cur && cleanMs(cur.active_ms) >= cleanMs(row.active_ms)) return;
+    const next = { day: row.day, active_ms: cleanMs(row.active_ms), updated_at: row.updated_at ?? null };
+    state.studyDays.set(row.day, next);
+    await db.put('study_days', next);
+  }
+  clearTimeout(state.studyEmit);
+  state.studyEmit = setTimeout(() => { state.studyEmit = 0; emit('study'); }, PROGRESS_EMIT_MS);
 }
 
 // ---------------------------------------------------------------------------
@@ -426,6 +480,18 @@ async function sendOp(sb, op) {
       res = await q;
       break;
     }
+    case 'study_days:upsert': {
+      // Additive-max: the server keeps the larger of its total and ours.
+      const { data: cur, error } = await sb.from('study_days').select('active_ms').eq('user_id', uid).eq('day', op.row.day).maybeSingle();
+      if (error) { res = { error }; break; }
+      const active_ms = Math.max(cleanMs(cur?.active_ms), cleanMs(op.row.active_ms));
+      res = await sb.from('study_days').upsert({ user_id: uid, day: op.row.day, active_ms, updated_at: op.row.updated_at }, { onConflict: 'user_id,day' });
+      break;
+    }
+    case 'study_days:delete':
+      res = await sb.from('study_days').delete().eq('user_id', uid);
+      if (!res.error) state.studyClearing = false;
+      break;
     default:
       throw new Error(`unknown outbox op ${op.table}:${op.op}`);
   }
@@ -594,6 +660,38 @@ async function resetProgress(weekN = null) {
   await enqueue({ table: 'reading_progress', key: `reset:${n ?? 'all'}:${Date.now()}`, op: 'delete', week_n: n });
 }
 
+// ---------------------------------------------------------------------------
+// Study log (CONTRACT.md "Study log"): active reading time per local day.
+// addActiveTime() adds to the day's local total at once and queues that
+// total (one outbox key per day, so a burst of flushes coalesces into the
+// latest figure); the server keeps max(server, local). clearStudyLog() is one
+// delete. Reading progress and lookups are never touched here.
+// ---------------------------------------------------------------------------
+
+async function getStudyDays() {
+  await ready();
+  return studyDaysView(state.studyDays);
+}
+
+async function addActiveTime(day, ms) {
+  await ready();
+  const row = addStudyMs(state.studyDays.get(day), day, ms, nowIso());
+  if (!row || !cleanMs(ms)) return;
+  state.studyGen += 1;
+  state.studyDays.set(day, row);
+  await db.put('study_days', row);
+  await enqueue({ table: 'study_days', key: `day:${day}`, op: 'upsert', row });
+}
+
+async function clearStudyLog() {
+  await ready();
+  state.studyGen += 1;
+  state.studyClearing = true;
+  state.studyDays.clear();
+  await db.clear('study_days');
+  await enqueue({ table: 'study_days', key: `clear:${Date.now()}`, op: 'delete' });
+}
+
 function audioPath(weekN) {
   return `${state.uid}/${weekTag(weekN)}.mp3`;
 }
@@ -692,6 +790,7 @@ export const store = {
   getAudioUrl, uploadAudio,
   getPictures,
   getProgress, markRead, resetProgress,
+  getStudyDays, addActiveTime, clearStudyLog,
   onChange, sync,
 };
 
