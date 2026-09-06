@@ -6,8 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   newState, normaliseState, applyAnswer, decay, isDue, learnCriterion, passLearn, startLearning, addToPractice,
-  buildSession, requeue, reviewFirst, suggestToday, kindsFor, orderCandidates, rng, DAY_MS, STABILITY_FLOOR, MASTERED_DAYS,
-} from '../app/js/grammar/scheduler.js';
+  buildSession, requeue, reviewFirst, suggestToday, kindsFor, orderCandidates, rng, DAY_MS, STABILITY_FLOOR, MASTERED_DAYS, SET_WINDOW, SET_MAX, setSlotAllowed} from '../app/js/grammar/scheduler.js';
 import { indexSkills } from '../app/js/grammar/lessons.js';
 import { readFileSync } from 'node:fs';
 
@@ -95,8 +94,65 @@ test('startLearning / passLearn: learning → practising, due tomorrow, stabilit
 test('kindsFor: the stage and one below, kept to the skill\'s kinds', () => {
   assert.deepEqual(kindsFor(S.get('dative-indirect-object'), 1), ['recognise', 'chart']);
   assert.deepEqual(kindsFor(S.get('dative-indirect-object'), 2), ['chart', 'parse', 'recognise']);
-  assert.deepEqual(kindsFor(S.get('dative-indirect-object'), 3), ['parse', 'blank', 'chart']);
+  // Stage 3 adds the production kinds (wave 2) to every drillable grammar skill; a chapter set keeps its one kind.
+  assert.deepEqual(kindsFor(S.get('dative-indirect-object'), 3), ['parse', 'blank', 'transform', 'reorder', 'translate', 'chart']);
   assert.deepEqual(kindsFor({ kinds: ['blank'] }, 1), ['blank']);
+  assert.deepEqual(kindsFor({ kinds: ['blank'] }, 3), ['blank']);
+  assert.deepEqual(kindsFor({ set: 'vocab', kinds: ['vocab'] }, 3), ['vocab']);
+});
+
+test('buildSession: chapter sets take at most 3 of 10 slots (SET_SHARE) unless the preset is "this-week"', () => {
+  const sets = new Map([['questions-07', { id: 'questions-07', set: 'questions', kinds: ['question'], confusable_with: [] }], ['vocab-07', { id: 'vocab-07', set: 'vocab', kinds: ['vocab'], confusable_with: [] }], ['pensum-07', { id: 'pensum-07', set: 'pensum', kinds: ['pensum'], confusable_with: [] }]]);
+  const all = new Map([...S, ...sets]);
+  const ids = ['dative-indirect-object', 'ablative-means', 'genitive-of', ...sets.keys()];
+  for (let seed = 1; seed <= 200; seed++) {
+    const plan = buildSession({ states: rotation(ids), skills: all, preset: 'review-heavy', size: 10, now: NOW, seed });
+    assert.equal(plan.length, 10);
+    assert.ok(plan.filter((p) => sets.has(p.skill)).length <= 3, `seed ${seed}: ${plan.map((p) => p.skill).join(',')}`);
+    for (let i = 1; i < plan.length; i++) assert.notEqual(plan[i].skill, plan[i - 1].skill);
+  }
+  const week = buildSession({ states: rotation(ids), skills: all, preset: 'this-week', currentWeek: [...sets.keys()], size: 9, now: NOW, seed: 5 });
+  assert.ok(week.filter((p) => sets.has(p.skill)).length >= 4, 'this week: the week\'s sets take their two-thirds');
+  const alone = buildSession({ states: rotation(['vocab-07']), skills: all, preset: 'one-skill', oneSkill: 'vocab-07', size: 5, now: NOW, seed: 1 });
+  assert.equal(alone.length, 5);
+  assert.ok(alone.every((p) => p.skill === 'vocab-07' && p.kind === 'vocab'));
+});
+
+test('the chapter-set cap is a sliding window: at most 3 in any ten in a row, over a long session, across an open session batch seam, and through a re-queue', () => {
+  const sets = new Map([['questions-07', { id: 'questions-07', set: 'questions', kinds: ['question'], confusable_with: [] }], ['vocab-07', { id: 'vocab-07', set: 'vocab', kinds: ['vocab'], confusable_with: [] }], ['pensum-07', { id: 'pensum-07', set: 'pensum', kinds: ['pensum'], confusable_with: [] }]]);
+  const all = new Map([...S, ...sets]);
+  const ids = ['dative-indirect-object', 'ablative-means', 'genitive-of', ...sets.keys()];
+  const isSet = (id) => sets.has(id);
+  const windows = (plan) => { for (let i = 0; i + SET_WINDOW <= plan.length; i++) { const n = plan.slice(i, i + SET_WINDOW).filter((p) => isSet(p.skill)).length; assert.ok(n <= SET_MAX, `window at ${i}: ${n} set items in ${SET_WINDOW} — ${plan.map((p) => p.skill).join(',')}`); } };
+  // A 15-item session: a session-total cap of floor(15 × 0.3) = 4 would let four land in one ten.
+  for (let seed = 1; seed <= 120; seed++) windows(buildSession({ states: rotation(ids), skills: all, preset: 'review-heavy', size: 15, now: NOW, seed }));
+  // An open session's second batch counts the first batch's tail (`prior`), so the seam is not a hole.
+  for (let seed = 1; seed <= 120; seed++) {
+    const first = buildSession({ states: rotation(ids), skills: all, preset: 'review-heavy', size: 10, now: NOW, seed });
+    const second = buildSession({ states: rotation(ids), skills: all, preset: 'review-heavy', size: 10, now: NOW, seed: seed + 1000, prior: first });
+    windows([...first, ...second]);
+  }
+  // A missed set item re-queues into a window that has room, never one that is full.
+  for (let seed = 1; seed <= 120; seed++) {
+    const plan = buildSession({ states: rotation(ids), skills: all, preset: 'review-heavy', size: 15, now: NOW, seed });
+    const at = plan.findIndex((p) => isSet(p.skill));
+    if (at < 0) continue;
+    const played = plan.slice(0, at + 1);
+    const rest = requeue(plan.slice(at + 1), { skill: plan[at].skill, kind: plan[at].kind, stage: 1, skills: all, rand: () => 0.5, played });
+    windows([...played, ...rest]);
+  }
+  // setSlotAllowed itself: three sets in the last nine closes the window, and it reopens as they slide out.
+  const set3 = [{ skill: 'vocab-07' }, { skill: 'questions-07' }, { skill: 'pensum-07' }];
+  assert.equal(setSlotAllowed(set3, isSet), false);
+  assert.equal(setSlotAllowed([...set3, ...Array.from({ length: 7 }, () => ({ skill: 'genitive-of' }))], isSet), true, 'the oldest set item has slid out of the ten');
+});
+
+test('applyAnswer: a self-graded "partly" holds the stability (× 1) and never steps the stage', () => {
+  const base = { ...addToPractice(newState('a', NOW), NOW), stability_days: 4, due_at: new Date(NOW - 1000).toISOString(), streak: 3 };
+  const r = applyAnswer(base, { correct: true, hinted: true, partial: true, ms: 3000, now: NOW });
+  assert.equal(r.stability_days, 4);
+  assert.equal(r.stage, 1);
+  assert.equal(r.successes, 1);
 });
 
 function rotation(ids, { due = true } = {}) {

@@ -1,0 +1,140 @@
+{
+ "rows": [
+  {
+   "chapter": 7,
+   "kind": "A",
+   "items": [
+    {
+     "text": "Iūlius fīli_ su_ rosam dat.",
+     "blanks": [
+      {
+       "i": 0,
+       "stem": "fīli",
+       "answers": [
+        "ae"
+       ],
+       "note": "dat. sg., the receiver"
+      },
+      {
+       "i": 1,
+       "stem": "su",
+       "answers": [
+        "ae"
+       ],
+       "note": "agrees with fīliae"
+      }
+     ]
+    },
+    {
+     "text": "Aemilia puer_ māla dat.",
+     "blanks": [
+      {
+       "i": 0,
+       "stem": "puer",
+       "answers": [
+        "īs"
+       ],
+       "note": "dat. pl."
+      }
+     ]
+    },
+    {
+     "text": "Quīntus mātr_ mālum ostendit.",
+     "blanks": [
+      {
+       "i": 0,
+       "stem": "mātr",
+       "answers": [
+        "ī"
+       ],
+       "note": "dat. sg., 3rd declension"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "chapter": 7,
+   "kind": "B",
+   "items": [
+    {
+     "text": "Iūlia ___ grātiās agit.",
+     "blanks": [
+      {
+       "i": 0,
+       "answers": [
+        "patrī"
+       ],
+       "bank": [
+        "patrī",
+        "pater",
+        "patrem"
+       ]
+      }
+     ]
+    },
+    {
+     "text": "Syra ___ speculum tenet.",
+     "blanks": [
+      {
+       "i": 0,
+       "answers": [
+        "puellae"
+       ],
+       "bank": [
+        "puellae",
+        "puella",
+        "puellam"
+       ]
+      }
+     ]
+    },
+    {
+     "text": "Mārcus ___ nihil dat.",
+     "blanks": [
+      {
+       "i": 0,
+       "answers": [
+        "sorōrī"
+       ],
+       "bank": [
+        "sorōrī",
+        "soror",
+        "sorōrem"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "chapter": 7,
+   "kind": "C",
+   "items": [
+    {
+     "q": "Ubi est Iūlia?",
+     "answers": [
+      "in hortō",
+      "Iūlia in hortō est."
+     ],
+     "unit_id": "r07:1.1"
+    },
+    {
+     "q": "Cui Iūlius ōsculum dat?",
+     "answers": [
+      "Iūliae"
+     ],
+     "unit_id": "r07:8.1"
+    },
+    {
+     "q": "Quid Syra puellae tenet?",
+     "answers": [
+      "speculum",
+      "Syra puellae speculum tenet."
+     ],
+     "unit_id": "r07:9.1"
+    }
+   ]
+  }
+ ]
+}

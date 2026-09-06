@@ -25,6 +25,20 @@ export const LEARN_KINDS = 2;
 export const STATES = Object.freeze(['new', 'learning', 'practising', 'mastered', 'lapsed']);
 export const PRESETS = Object.freeze(['review-heavy', 'this-week', 'even', 'one-skill']);   // the setup's radio group (ui.js PRESET_LABEL)
 export const KINDS_BY_STAGE = Object.freeze({ 1: ['recognise', 'chart'], 2: ['chart', 'parse'], 3: ['parse', 'blank'] });
+/** Production kinds (stage3.js): every drillable grammar skill offers them once it reaches stage 3, whatever its `kinds` list says. */
+export const STAGE3_KINDS = Object.freeze(['transform', 'reorder', 'translate']);
+/** The share of a mixed session the chapter sets (questions, vocabulary, pensa) may take, unless the preset is "this-week". */
+export const SET_SHARE = 0.3;
+/** …measured over a sliding window, so the rule reads "at most 3 chapter-set items in any ten in a row" whatever the session size. */
+export const SET_WINDOW = 10;
+export const SET_MAX = Math.round(SET_WINDOW * SET_SHARE);   // 3
+
+/** True when the slot at `i` may be a chapter-set item: fewer than SET_MAX set slots in the SET_WINDOW ending there. `slots` is what already sits before `i` (a session's tail may be prepended for an open-ended batch). Pure. */
+export function setSlotAllowed(slots, isSet, i = slots.length) {
+  let n = 0;
+  for (let j = Math.max(0, i - (SET_WINDOW - 1)); j < i && j < slots.length; j++) if (isSet(slots[j]?.skill)) n += 1;
+  return n < SET_MAX;
+}
 
 const iso = (t) => new Date(t).toISOString();
 const ms = (v) => { if (!v) return 0; const n = typeof v === 'number' ? v : Date.parse(v); return Number.isFinite(n) ? n : 0; };
@@ -85,7 +99,7 @@ export function decay(s, now = Date.now()) {
  * The state after one practice answer. `hinted` answers count as weaker
  * evidence; `early` (before due) growth is the hinted factor at most.
  */
-export function applyAnswer(s, { correct, hinted = false, ms: took = null, now = Date.now() } = {}) {
+export function applyAnswer(s, { correct, hinted = false, partial = false, ms: took = null, now = Date.now() } = {}) {
   const cur = asState(s, now);
   const wasDue = !cur.due_at || ms(cur.due_at) <= now;
   let stability = cur.stability_days;
@@ -94,12 +108,13 @@ export function applyAnswer(s, { correct, hinted = false, ms: took = null, now =
   let successes = cur.successes;
   let failures = cur.failures;
   if (correct) {
-    let factor = hinted ? 1.2 : (took != null && took < FAST_MS ? 2.2 : 1.7);
+    // A self-graded "partly" (translate items) holds the stability where it is: not a failure, not evidence either.
+    let factor = partial ? 1 : hinted ? 1.2 : (took != null && took < FAST_MS ? 2.2 : 1.7);
     if (!wasDue) factor = Math.min(factor, 1.2);
     stability = stability * factor;
     streak += 1;
     successes += 1;
-    if (!hinted && streak >= STAGE_UP_STREAK && stage < 3) { stage += 1; streak = 0; }
+    if (!hinted && !partial && streak >= STAGE_UP_STREAK && stage < 3) { stage += 1; streak = 0; }
   } else {
     stability = Math.max(STABILITY_FLOOR, stability * 0.3);
     streak = 0;
@@ -143,10 +158,12 @@ export function passLearn(s, now = Date.now()) {
 
 /** Drill kinds for a skill at its stage: the stage's own and one below, kept to what the skill allows. */
 export function kindsFor(skill, stage = 1) {
+  // A chapter set (questions, vocabulary, pensa) has its one kind at every stage.
+  if (skill?.set) return skill.kinds?.length ? [...skill.kinds] : ['question'];
   const allowed = skill?.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
   const st = Math.min(3, Math.max(1, stage));
-  const pool = [...(KINDS_BY_STAGE[st] || []), ...(KINDS_BY_STAGE[st - 1] || [])];
-  const out = pool.filter((k) => allowed.includes(k));
+  const pool = [...(KINDS_BY_STAGE[st] || []), ...(st === 3 ? STAGE3_KINDS : []), ...(KINDS_BY_STAGE[st - 1] || [])];
+  const out = pool.filter((k) => allowed.includes(k) || (st === 3 && STAGE3_KINDS.includes(k) && skill?.parse_filter));
   return out.length ? [...new Set(out)] : allowed;
 }
 
@@ -194,9 +211,11 @@ export function orderCandidates({ states, skills, preset, currentWeek = [], now 
  * its confusable_with within three items), pairs the learner has confused
  * preferred; ≈ 20 % of slots asked to come from the current week's units;
  * "this-week" gives two thirds of the slots to the current week's skills.
- * `size` null = open-ended (a first batch of 10; the runner asks for more).
+ * `size` null = open-ended (a first batch of 10; the runner asks for more);
+ * `prior` = the slots already played, so an open session's next batch counts
+ * the chapter-set window across the seam instead of starting it afresh.
  */
-export function buildSession({ states, skills, confusions = null, preset = 'review-heavy', currentWeek = [], size = 10, now = Date.now(), seed = Date.now(), oneSkill = null }) {
+export function buildSession({ states, skills, confusions = null, preset = 'review-heavy', currentWeek = [], size = 10, now = Date.now(), seed = Date.now(), oneSkill = null, prior = null }) {
   const rand = rng(seed);
   const n = size == null ? 10 : Math.max(1, size);
   const ordered = orderCandidates({ states, skills, preset, currentWeek, now, rand, oneSkill });
@@ -208,12 +227,20 @@ export function buildSession({ states, skills, confusions = null, preset = 'revi
   // The skill sequence first (interleaving is about skills), kinds after.
   const seq = [];
   const lastKindOf = new Map();
+  // Chapter sets take at most SET_MAX slots in any SET_WINDOW in a row, unless the preset is "this-week" (or the set was
+  // asked for by itself). A sliding window, not a session total, so a 15-item or open-ended session keeps the same feel;
+  // `prior` carries the tail of the previous batch so an open session's batch boundary is not a hole in the rule.
+  const isSet = (id) => !!skills.get(id)?.set;
+  const capped = preset !== 'this-week' && preset !== 'one-skill';
+  const before = (prior || []).slice(-(SET_WINDOW - 1));
+  const setRoom = () => !capped || setSlotAllowed([...before, ...seq], isSet);
   const pick = (exclude, prefer = null) => {
-    if (prefer && byId.has(prefer) && prefer !== exclude) return byId.get(prefer);
+    if (prefer && byId.has(prefer) && prefer !== exclude && !(isSet(prefer) && !setRoom())) return byId.get(prefer);
     // Round-robin over the priority list: the least-used candidates first, ties by priority.
     const counts = new Map(ordered.map((s) => [s.skill, 0]));
     for (const x of seq) counts.set(x.skill, (counts.get(x.skill) ?? 0) + 1);
-    const pool = ordered.filter((s) => s.skill !== exclude);
+    let pool = ordered.filter((s) => s.skill !== exclude);
+    if (!setRoom()) { const grammar = pool.filter((s) => !isSet(s.skill)); if (grammar.length) pool = grammar; }
     if (!pool.length) return ordered[0];
     const min = Math.min(...pool.map((s) => counts.get(s.skill)));
     return pool.find((s) => counts.get(s.skill) === min);
@@ -279,9 +306,11 @@ export function buildSession({ states, skills, confusions = null, preset = 'revi
  * than three items remain, `fill(n, exclude)` supplies filler slots on other
  * skills (session.js builds them with buildSession) so the gap holds; with
  * no fillers to be had the re-queue is dropped (the summary's "worth another
- * look" still names the skill).
+ * look" still names the skill). A missed chapter-set item comes back inside
+ * the SET_MAX-in-SET_WINDOW rule where a spot allows it; a set item is never
+ * re-queued into a window that is already full, so the mix holds.
  */
-export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random, fill = null }) {
+export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random, fill = null, played = [] }) {
   const out = [...plan];
   let at = 3 + Math.floor(rand() * 4);   // 3..6
   if (out.length < 3) {
@@ -307,14 +336,22 @@ export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.rand
     const ok = (x) => x !== before?.kind && x !== after?.kind;
     return kindsFor(def, stage).filter((x) => ok(x) && x !== kind)[0] ?? kindsFor(def, stage).find(ok) ?? allKinds.find(ok) ?? null;
   };
+  const isSet = (id) => !!skills?.get(id)?.set;
+  // The window a spot sits in counts what has already been played plus the plan ahead of it.
+  const tail = (played || []).slice(-(SET_WINDOW - 1));
+  const roomAt = (i) => !isSet(skill) || setSlotAllowed([...tail, ...out], isSet, tail.length + i);
   // Find a spot at or after `at` where the neighbours differ in skill and a kind unlike both neighbours' exists.
-  for (let i = at; i <= out.length; i++) {
-    const before = out[i - 1], after = out[i];
-    if (before?.skill === skill || after?.skill === skill) continue;
-    const k = pickKind(before, after);
-    if (!k) continue;
-    out.splice(i, 0, { skill, kind: k, stage, currentWeek: false, requeued: true });
-    return out;
+  for (let pass = 0; pass < 2; pass++) {
+    for (let i = at; i <= out.length; i++) {
+      const before = out[i - 1], after = out[i];
+      if (before?.skill === skill || after?.skill === skill) continue;
+      if (pass === 0 && !roomAt(i)) continue;   // first pass keeps the chapter-set window; second lets a missed item back regardless
+      const k = pickKind(before, after);
+      if (!k) continue;
+      out.splice(i, 0, { skill, kind: k, stage, currentWeek: false, requeued: true });
+      return out;
+    }
+    if (!isSet(skill)) break;
   }
   return out;
 }
@@ -341,5 +378,6 @@ export function suggestToday({ states, skills, currentWeek = [], now = Date.now(
   const due = [...states.values()].map((s) => decay(s, now)).filter((s) => isDue(s, now) && skills.has(s.skill));
   const pairs = new Set();
   for (const s of due) for (const c of skills.get(s.skill)?.confusable_with || []) if (due.some((d) => d.skill === c)) pairs.add([s.skill, c].sort().join('|'));
-  return { learn, due: due.map((s) => s.skill), pairs: pairs.size, size: due.length ? Math.min(15, Math.max(5, due.length * 2)) : (learn.length ? 0 : 5) };
+  const grammarDue = due.filter((s) => !skills.get(s.skill)?.set);
+  return { learn, due: grammarDue.map((s) => s.skill), setsDue: due.filter((s) => skills.get(s.skill)?.set).map((s) => s.skill), pairs: pairs.size, size: grammarDue.length ? Math.min(15, Math.max(5, grammarDue.length * 2)) : (learn.length ? 0 : 5) };
 }

@@ -1,0 +1,172 @@
+{
+ "rows": [
+  {
+   "chapter": 1,
+   "kind": "A",
+   "items": [
+    {
+     "text": "Rōma in Itali_ est.",
+     "blanks": [
+      {
+       "i": 0,
+       "stem": "Itali",
+       "answers": [
+        "ā"
+       ],
+       "note": "abl. after in"
+      }
+     ]
+    },
+    {
+     "text": "Nīlus fluvi_ magn_ est.",
+     "blanks": [
+      {
+       "i": 0,
+       "stem": "fluvi",
+       "answers": [
+        "us"
+       ],
+       "note": "nom. sg."
+      },
+      {
+       "i": 1,
+       "stem": "magn",
+       "answers": [
+        "us"
+       ],
+       "note": "agrees with fluvius"
+      }
+     ]
+    },
+    {
+     "text": "Corsica et Sardinia īnsul_ sunt.",
+     "blanks": [
+      {
+       "i": 0,
+       "stem": "īnsul",
+       "answers": [
+        "ae"
+       ],
+       "note": "nom. pl."
+      }
+     ]
+    },
+    {
+     "text": "Mult_ fluvi_ in Eurōpā sunt.",
+     "blanks": [
+      {
+       "i": 0,
+       "stem": "Mult",
+       "answers": [
+        "ī"
+       ]
+      },
+      {
+       "i": 1,
+       "stem": "fluvi",
+       "answers": [
+        "ī"
+       ]
+      }
+     ],
+     "unverified": true
+    }
+   ]
+  },
+  {
+   "chapter": 1,
+   "kind": "B",
+   "items": [
+    {
+     "text": "Rōma in ___ est.",
+     "blanks": [
+      {
+       "i": 0,
+       "answers": [
+        "Italiā"
+       ],
+       "bank": [
+        "Italiā",
+        "Italia",
+        "Eurōpa"
+       ]
+      }
+     ]
+    },
+    {
+     "text": "Nīlus ___ magnus est.",
+     "blanks": [
+      {
+       "i": 0,
+       "answers": [
+        "fluvius"
+       ],
+       "bank": [
+        "fluvius",
+        "īnsula",
+        "oppidum"
+       ]
+      }
+     ]
+    },
+    {
+     "text": "Brundisium ___ Rōmānum est; Corsica ___ est.",
+     "blanks": [
+      {
+       "i": 0,
+       "answers": [
+        "oppidum"
+       ],
+       "bank": [
+        "oppidum",
+        "fluvius"
+       ]
+      },
+      {
+       "i": 1,
+       "answers": [
+        "īnsula"
+       ],
+       "bank": [
+        "īnsula",
+        "oppida"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "chapter": 1,
+   "kind": "C",
+   "items": [
+    {
+     "q": "Ubi est Rōma?",
+     "answers": [
+      "in Italiā",
+      "Rōma in Italiā est."
+     ],
+     "unit_id": "r01:1.1"
+    },
+    {
+     "q": "Quid est Brundisium?",
+     "answers": [
+      "oppidum",
+      "Oppidum est.",
+      "oppidum Rōmānum"
+     ],
+     "unit_id": "r01:12.1"
+    },
+    {
+     "q": "Estne Tiberis fluvius magnus?",
+     "answers": [
+      "Nōn",
+      "Minimē",
+      "Tiberis fluvius parvus est."
+     ],
+     "unit_id": "r01:7.1"
+    }
+   ]
+  }
+ ]
+}

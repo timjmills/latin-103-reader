@@ -1,0 +1,225 @@
+{
+ "chapter": 7,
+ "words": [
+  {
+   "lemma": "hortus",
+   "dict": "hortus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "garden",
+   "parts": null,
+   "unit_id": "r07:1.1",
+   "count": 2
+  },
+  {
+   "lemma": "puella",
+   "dict": "puella, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "girl",
+   "parts": null,
+   "unit_id": "r07:2.1",
+   "count": 4
+  },
+  {
+   "lemma": "rosa",
+   "dict": "rosa, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "rose",
+   "parts": null,
+   "unit_id": "r07:2.1",
+   "count": 3
+  },
+  {
+   "lemma": "fīlia",
+   "dict": "fīlia, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "daughter",
+   "parts": null,
+   "unit_id": "r07:3.1",
+   "count": 1
+  },
+  {
+   "lemma": "pater",
+   "dict": "pater, patris m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 3,
+   "meaning": "father",
+   "parts": null,
+   "unit_id": "r07:4.1",
+   "count": 1
+  },
+  {
+   "lemma": "soror",
+   "dict": "soror, sorōris f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 3,
+   "meaning": "sister",
+   "parts": null,
+   "unit_id": "r07:5.1",
+   "count": 1
+  },
+  {
+   "lemma": "māter",
+   "dict": "māter, mātris f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 3,
+   "meaning": "mother",
+   "parts": null,
+   "unit_id": "r07:7.1",
+   "count": 1
+  },
+  {
+   "lemma": "mālum",
+   "dict": "mālum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "apple",
+   "parts": null,
+   "unit_id": "r07:6.1",
+   "count": 2
+  },
+  {
+   "lemma": "ōsculum",
+   "dict": "ōsculum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "kiss",
+   "parts": null,
+   "unit_id": "r07:8.1",
+   "count": 1
+  },
+  {
+   "lemma": "speculum",
+   "dict": "speculum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "mirror",
+   "parts": null,
+   "unit_id": "r07:9.1",
+   "count": 2
+  },
+  {
+   "lemma": "nāsus",
+   "dict": "nāsus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "nose",
+   "parts": null,
+   "unit_id": "r07:11.1",
+   "count": 1
+  },
+  {
+   "lemma": "videō",
+   "dict": "videō, vidēre, vīdī, vīsum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "see",
+   "parts": "videō, vidēre, vīdī, vīsum",
+   "unit_id": "r07:2.1",
+   "count": 2
+  },
+  {
+   "lemma": "rīdeō",
+   "dict": "rīdeō, rīdēre, rīsī, rīsum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "laugh, smile",
+   "parts": "rīdeō, rīdēre, rīsī, rīsum",
+   "unit_id": "r07:2.1",
+   "count": 1
+  },
+  {
+   "lemma": "dō",
+   "dict": "dō, dare, dedī, datum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "give",
+   "parts": "dō, dare, dedī, datum",
+   "unit_id": "r07:3.1",
+   "count": 4
+  },
+  {
+   "lemma": "ostendō",
+   "dict": "ostendō, ostendere, ostendī, ostentum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "show",
+   "parts": "ostendō, ostendere, ostendī, ostentum",
+   "unit_id": "r07:7.1",
+   "count": 1
+  },
+  {
+   "lemma": "teneō",
+   "dict": "teneō, tenēre, tenuī, tentum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "hold",
+   "parts": "teneō, tenēre, tenuī, tentum",
+   "unit_id": "r07:9.1",
+   "count": 1
+  },
+  {
+   "lemma": "exeō",
+   "dict": "exeō, exīre, exiī, exitum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "go out",
+   "parts": "exeō, exīre, exiī, exitum",
+   "unit_id": "r07:12.1",
+   "count": 1
+  },
+  {
+   "lemma": "laetus",
+   "dict": "laetus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "glad, happy",
+   "parts": null,
+   "unit_id": "r07:12.1",
+   "count": 1
+  },
+  {
+   "lemma": "nihil",
+   "dict": "nihil (indecl.)",
+   "pos": "PRON",
+   "gender": null,
+   "decl": null,
+   "meaning": "nothing",
+   "parts": null,
+   "unit_id": "r07:5.1",
+   "count": 1
+  },
+  {
+   "lemma": "ecce",
+   "dict": "ecce",
+   "pos": "INTERJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "look!, here is",
+   "parts": null,
+   "unit_id": "r07:11.1",
+   "count": 1
+  }
+ ]
+}

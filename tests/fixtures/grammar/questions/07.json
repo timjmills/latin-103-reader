@@ -1,0 +1,186 @@
+{
+ "chapter": 7,
+ "week_id": "r07",
+ "title": "Puella et Rosa",
+ "items": [
+  {
+   "id": "q07-01",
+   "qword": "ubi",
+   "q": "Ubi est Iūlia?",
+   "en": "Where is Julia?",
+   "unit_id": "r07:1.1",
+   "answers": [
+    "in hortō",
+    "Iūlia in hortō est."
+   ],
+   "input": "type",
+   "hint": "a place, ablative after in"
+  },
+  {
+   "id": "q07-02",
+   "qword": "quid",
+   "q": "Quid puella videt?",
+   "en": "What does the girl see?",
+   "unit_id": "r07:2.1",
+   "answers": [
+    "rosās"
+   ],
+   "input": "tap",
+   "hint": "the object, accusative plural"
+  },
+  {
+   "id": "q07-03",
+   "qword": "cui",
+   "q": "Cui Iūlius rosam dat?",
+   "en": "To whom does Julius give a rose?",
+   "unit_id": "r07:3.1",
+   "answers": [
+    "fīliae suae",
+    "fīliae",
+    "Iūlius fīliae suae rosam dat."
+   ],
+   "input": "choice",
+   "choices": [
+    "fīliae suae",
+    "sorōrī",
+    "mātrī",
+    "puerīs"
+   ],
+   "hint": "the receiver, dative"
+  },
+  {
+   "id": "q07-04",
+   "qword": "quis",
+   "q": "Quis patrī grātiās agit?",
+   "en": "Who thanks her father?",
+   "unit_id": "r07:4.1",
+   "answers": [
+    "Iūlia"
+   ],
+   "input": "tap",
+   "hint": "the subject, nominative"
+  },
+  {
+   "id": "q07-05",
+   "qword": "quid",
+   "q": "Quid Mārcus sorōrī dat?",
+   "en": "What does Marcus give his sister?",
+   "unit_id": "r07:5.1",
+   "answers": [
+    "nihil",
+    "Mārcus sorōrī nihil dat."
+   ],
+   "input": "choice",
+   "choices": [
+    "nihil",
+    "rosam",
+    "mālum",
+    "speculum"
+   ],
+   "hint": "nothing at all"
+  },
+  {
+   "id": "q07-06",
+   "qword": "quibus",
+   "q": "Quibus Aemilia māla dat?",
+   "en": "To whom does Aemilia give apples?",
+   "unit_id": "r07:6.1",
+   "answers": [
+    "puerīs"
+   ],
+   "input": "tap",
+   "hint": "the receivers, dative plural"
+  },
+  {
+   "id": "q07-07",
+   "qword": "quis",
+   "q": "Quis mātrī mālum ostendit?",
+   "en": "Who shows his mother an apple?",
+   "unit_id": "r07:7.1",
+   "answers": [
+    "Quīntus"
+   ],
+   "input": "type",
+   "hint": "a name in the nominative"
+  },
+  {
+   "id": "q07-08",
+   "qword": "cui",
+   "q": "Cui Iūlius ōsculum dat?",
+   "en": "Whom does Julius kiss?",
+   "unit_id": "r07:8.1",
+   "answers": [
+    "Iūliae",
+    "Iūlius Iūliae ōsculum dat."
+   ],
+   "input": "tap",
+   "hint": "the receiver, dative"
+  },
+  {
+   "id": "q07-09",
+   "qword": "quid",
+   "q": "Quid Syra puellae tenet?",
+   "en": "What does Syra hold for the girl?",
+   "unit_id": "r07:9.1",
+   "answers": [
+    "speculum"
+   ],
+   "input": "choice",
+   "choices": [
+    "speculum",
+    "rosam",
+    "mālum",
+    "nāsum"
+   ],
+   "hint": "the object, accusative"
+  },
+  {
+   "id": "q07-10",
+   "qword": "num",
+   "q": "Num puella trīstis ē hortō exit?",
+   "en": "Surely the girl does not leave the garden sad?",
+   "unit_id": "r07:12.1",
+   "answers": [
+    "Nōn",
+    "Minimē",
+    "Nōn: Iūlia laeta ē hortō exit.",
+    "Iūlia laeta ē hortō exit."
+   ],
+   "input": "type",
+   "hint": "num expects no"
+  },
+  {
+   "id": "q07-11",
+   "qword": "nonne",
+   "q": "Nōnne rosa in nāsō puellae est?",
+   "en": "Isn't the rose on the girl's nose?",
+   "unit_id": "r07:11.1",
+   "answers": [
+    "Ita",
+    "Ita est",
+    "Ecce rosa in nāsō puellae!"
+   ],
+   "input": "type",
+   "hint": "nōnne expects yes"
+  },
+  {
+   "id": "q07-12",
+   "qword": "unde",
+   "q": "Unde Iūlia laeta exit?",
+   "en": "Where does Julia leave from, happy?",
+   "unit_id": "r07:12.1",
+   "answers": [
+    "ē hortō",
+    "Iūlia laeta ē hortō exit."
+   ],
+   "input": "choice",
+   "choices": [
+    "ē hortō",
+    "in hortō",
+    "ad hortum",
+    "ē vīllā"
+   ],
+   "hint": "ē + ablative"
+  }
+ ]
+}

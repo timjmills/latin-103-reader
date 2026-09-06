@@ -1,0 +1,137 @@
+{
+ "chapter": 1,
+ "words": [
+  {
+   "lemma": "fluvius",
+   "dict": "fluvius, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "river",
+   "parts": null,
+   "unit_id": "r01:6.1",
+   "count": 3
+  },
+  {
+   "lemma": "īnsula",
+   "dict": "īnsula, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "island",
+   "parts": null,
+   "unit_id": "r01:9.1",
+   "count": 2
+  },
+  {
+   "lemma": "oppidum",
+   "dict": "oppidum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "town",
+   "parts": null,
+   "unit_id": "r01:11.1",
+   "count": 2
+  },
+  {
+   "lemma": "magnus",
+   "dict": "magnus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "big, great",
+   "parts": null,
+   "unit_id": "r01:6.1",
+   "count": 1
+  },
+  {
+   "lemma": "parvus",
+   "dict": "parvus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "small",
+   "parts": null,
+   "unit_id": "r01:7.1",
+   "count": 1
+  },
+  {
+   "lemma": "multī",
+   "dict": "multī, -ae, -a",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "many",
+   "parts": null,
+   "unit_id": "r01:8.1",
+   "count": 1
+  },
+  {
+   "lemma": "Rōmānus",
+   "dict": "Rōmānus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "Roman",
+   "parts": null,
+   "unit_id": "r01:11.1",
+   "count": 1
+  },
+  {
+   "lemma": "sum",
+   "dict": "sum, esse, fuī",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be",
+   "parts": "sum, esse, fuī, futūrum",
+   "unit_id": "r01:1.1",
+   "count": 12
+  },
+  {
+   "lemma": "quoque",
+   "dict": "quoque",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "also, too",
+   "parts": null,
+   "unit_id": "r01:3.1",
+   "count": 1
+  },
+  {
+   "lemma": "ubi",
+   "dict": "ubi",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "where",
+   "parts": null,
+   "unit_id": "r01:4.1",
+   "count": 1
+  },
+  {
+   "lemma": "nōn",
+   "dict": "nōn",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "not",
+   "parts": null,
+   "unit_id": "r01:5.1",
+   "count": 1
+  },
+  {
+   "lemma": "in",
+   "dict": "in (+ abl.)",
+   "pos": "PREP",
+   "gender": null,
+   "decl": null,
+   "meaning": "in, on",
+   "parts": null,
+   "unit_id": "r01:1.1",
+   "count": 6
+  }
+ ]
+}

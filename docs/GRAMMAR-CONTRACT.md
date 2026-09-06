@@ -436,3 +436,57 @@ A "Today" card at the top of the weeks menu and of the Grammar map: Learn
 due skills count, confusion pairs) · Questions for the current week's passage ·
 Vocabulary due; estimated minutes from the study log's pace; never forced;
 dismissible per day (settings.todayDismissed = date).
+
+### Wave 2 implementation notes (E, 2026-09-06)
+
+Where the section departs from the sketch above, or pins something the sketch
+left open. Change here first if any of it should move.
+
+- **Files.** `app/js/grammar/{stage3,sets,generate,inputs,today}.js` beside the
+  wave-1 modules; tests `tests/grammar.{stage3,sets,today}.test.mjs`.
+  `generate.js` is one façade over `items.js` + `stage3.js` + `sets.js` keeping
+  the wave-1 interface (`generate`, `drillable`, `pool`), so `session.js` and
+  `ui.js` never branch on which module owns a kind.
+- **The chapter-set share is a sliding window, not a session total.**
+  `SET_MAX` (3) items in any `SET_WINDOW` (10) in a row — a 15-item session
+  therefore holds about five, never four in one ten. `buildSession` takes
+  `prior` (the slots already played) so an open-ended session's next batch of
+  ten counts across the seam, and `requeue` takes `played` so a missed set item
+  returns into a window with room (it is let back regardless only when no such
+  spot exists — re-exposing an error outranks the mix). `SET_SHARE` is kept as
+  the ratio the two constants come from. Uncapped for "This week" and one-skill.
+- **`transform` refuses an op-ambiguous form.** Wave 1 judged a candidate's
+  ambiguity on the skill's own feature; a transform must also be unambiguous in
+  *the feature the instruction moves*. A form that reads as two numbers (or
+  genders, tenses, voices, moods) is skipped, so "make oblīta singular" — where
+  *oblīta* is both nominative singular feminine and nominative plural neuter —
+  is never asked. 61 of the 87 skills still yield transform items. A proper
+  noun's answer keeps the book's capital (the tables hold lower-case stems).
+- **`self` is carried in the attempt's `answer`, not as a column.** The
+  in-memory attempt has `self: true` / `partial`, but `drill_attempts` has no
+  such column, so the stored row keeps only `answer: "self: right|partly|wrong"`
+  and `hinted: true` (a self-graded answer is weighted as hinted). Filtering
+  self-graded attempts in stats would need a server column.
+- **`buildToday` takes a `drillable` predicate.** A lesson-only skill (the two
+  metre skills, or one with no sentences in the library yet) never reaches the
+  Learn line — the G1 rule, now applied to the Today card too. Called pure, it
+  falls back to "the skill has a `parse_filter`". The Learn line's detail counts
+  only drillable skills, and says "(new this week)" when the week holds one.
+- **Grammar minutes come from the drill log, not the study log.** `itemSeconds`
+  = the mean of the last 200 attempts once twenty exist (clamped 8–90 s), else
+  25 s. Only the Today card's Read line uses the study log's pace.
+- **`match` numbers its pairs.** Both halves of a pair carry the same index
+  (`data-n`, drawn by CSS, repeated in the `aria-label`): a fill alone never
+  says which of four boxes goes with which.
+- **Manifests.** `pipeline/build_grammar_index.py` owns all three
+  (`lessons/`, `questions/`, `vocab/`); `build_lessons_index.py` is an alias.
+  `--check` validates the files, not only the manifests' freshness.
+- **Shipped data.** `questions/01–34.json` = 1322 items; `vocab/01–34.json` =
+  1770 words. sw.js is **v35**.
+
+#### Worth changing in the plan
+
+- The Today card's Read line offers the **week's** remaining sentences, so its
+  "about N min in all" can read as 100+ minutes for a day's suggestion — which
+  sits badly with "never forced" (GRAMMAR-PLAN §5). A day's share of the week
+  would be the honest number.

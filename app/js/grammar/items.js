@@ -932,5 +932,5 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     return item;
   }
 
-  return { generate, candidates, drillable, pool, skills: skillMap, scan };
+  return { generate, candidates, drillable, pool, skills: skillMap, scan, meaningsOf };
 }

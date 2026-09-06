@@ -843,3 +843,65 @@ helpers; in the UI:
 - `store-fixture.js` carries chapters I and VII (invented sentences) so the
   shelf can be tried with `?fixture=1`; every other shelf fetch is
   short-circuited (no 404s).
+
+## Grammar wave 2 — depth (2026-09-06)
+
+Stage-3 production kinds, the chapter sets, two new inputs and the daily plan.
+Shapes and ownership: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
+
+- **New modules.** `app/js/grammar/stage3.js` (transform · reorder · translate,
+  built from the same candidates as the wave-1 kinds), `sets.js` (the chapter
+  sets: question sets, vocabulary decks, pensa — loading, item generation and
+  the `setsOfChapter` / `setChapters` / `phraseIndexes` helpers), `generate.js`
+  (one façade over `items.js`, `stage3.js` and `sets.js` with the wave-1
+  interface: `generate`, `drillable`, `pool`), `inputs.js` (the `order` and
+  `match` inputs) and `today.js` (the daily plan, pure). Tests:
+  `tests/grammar.{stage3,sets,today}.test.mjs`.
+- **The two new inputs are keyboard-first.** `order`: arrows walk the bank
+  (Home / End to the ends), Enter or Space places, Backspace takes the last
+  word back; a placed word is a button that unplaces itself; drag is added only
+  under `(pointer: fine)`. `match`: arrows move within a column and across to
+  the other, Enter picks a word then its meaning, and a pair is tapped again to
+  break it. Every pair carries a **number on both halves** (`data-n`, drawn by
+  `.g-match__b[data-n]::before`) so the mapping is visible, not just implied by
+  a fill; the same number is in the `aria-label`. The on-screen `.g-keys` line
+  states the keys. Targets are ≥ 44 px under a coarse pointer.
+- **Chapter sets on the map.** Each chapter's skills are followed by a quieter
+  `.g-sets` list (`Chapter sets`) with one `setRow` per set: Start as new · Add
+  to mixed practice · Practise · Reset. A pensum has **no** Start — it is
+  practise only (three independent guards: `setRow`, `startLearn`, `bulkNew`) —
+  and its `unverified` items are dropped by `groupPensa` before they can reach
+  an item, keeping the surviving items' original indexes so item keys stay
+  stable. The reverse (English → Latin) vocabulary deck is optional: it is
+  excluded from "Add all", "Start all as new" and the week's sets, and only
+  appears as its own row. A "Chapter sets" filter chip shows the sets alone.
+- **Pensa are private data.** They come through `store-grammar.js` from
+  `public.pensa` (migration 0016) and are absent until that pipeline runs: with
+  no rows a chapter simply shows no Pensa row, the map's lede stops promising
+  them, and nothing throws.
+- **The chapter-set share is a sliding window.** At most `SET_MAX` (3) set
+  items in any `SET_WINDOW` (10) in a row — not a session total, so a 15-item
+  or open-ended session keeps the same feel. `buildSession` takes `prior` (the
+  slots already played) so an open session's next batch counts across the seam,
+  and `requeue` takes `played` so a missed set item comes back into a window
+  that has room. The preset "This week" and a one-skill set are uncapped.
+- **The Today card** (`today.js` → `ui.js todayCard()`) renders in two places:
+  the Grammar map's Today section (`place: 'map'`, with the session-in-progress
+  and "start all as new" lines above it) and the weeks menu
+  (`main.js paintWeeksToday()` into `#weeks-today`, `place: 'weeks'`, with the
+  reading line). Lines: Learn (the current 103 week's first unlearned drillable
+  skill, the rest counted) · Practice (a 10-item review-heavy session, due count
+  and confusion pairs) · Questions · Vocabulary due · Read. Grammar minutes come
+  from the learner's own drill pace (`itemSeconds`: the mean of the last 200
+  attempts once 20 exist, clamped 8–90 s, else 25 s); the reading line uses the
+  study log's pace. "Not today" hides it for the day (`settings.todayDismissed`,
+  a local date); the map offers "Show it" back. A lesson-only skill (a metre
+  skill, or one with no sentences yet) never reaches the Learn line — `buildToday`
+  takes the section's own `drillable` predicate, falling back to "has a parse
+  filter" when it is called pure.
+- **Manifests.** `pipeline/build_grammar_index.py` writes and validates all
+  three (`lessons/index.json`, `questions/index.json`, `vocab/index.json`);
+  `--check` fails when one is stale or a file is malformed.
+  `build_lessons_index.py` is kept as an alias. Adding a set file means
+  re-running it, adding the file to `app/sw.js` PRECACHE and bumping
+  `CACHE_VERSION` (sw is **v35**).
