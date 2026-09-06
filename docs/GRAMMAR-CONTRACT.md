@@ -891,3 +891,52 @@ assertion in `tests/grammar.stats.wave3.test.mjs`; sw is **v40**.
   content check over `app/data/grammar/lessons/`; I4 (`min: 2` for the stats
   page's pairs) is a pedagogy decision, not a defect, and both are left for the
   learner to rule on.
+
+## Chapter spine — navigation by chapter (2026-09-06)
+
+The learner asked for the book's own spine: chapters I–XXXIV, each offering
+**its reading or its grammar**, with grammar also browsable **by topic**. The
+course weeks stay reachable as a second view because pace, time-left and the
+study log are computed per 103 week.
+
+### The mapping (fixed, derived from `weeks.chapter`)
+```
+ch  1–24  reading: review shelf week 100+N   · dialogue: colloquia week 200+N
+ch 25     w01      ch 26  w02      ch 29  w07   ch 30  w08   ch 31  w09
+ch 27     w04 + w03 (FS Mīnōs, Corōnis; FL 63–65)
+ch 28     w06 + w05 (FS Coriolānus, Nausicaa; FL 66–68)
+ch 32     w11 + w10 (FS Arachnē; FL 69–74)
+ch 33     w12       ch 34  w13 + w14
+```
+A supplement week attaches to the chapter its own `chapter` string names; each
+of its parts (a Fabula Syrae, a Fabella) is listed as its own reading.
+
+### `app/js/chapters.js` (new, pure, tested) — the single source of truth
+```jsonc
+chapters() -> [ { n: 7, roman: "VII", title: "Puella et Rosa",
+  readings: [ { kind: "fr",     week_n: 107, label: "Familia Rōmāna", part: null },
+              { kind: "collo",  week_n: 207, label: "Colloquium VII", part: null } ],
+  grammar:  { skills: ["dative-indirect-object", …], questions: 7, vocab: 7, pensa: 7 } } ]
+```
+`kind` is `fr | collo | fs | fl`; a reading may name a `part` when a week holds
+several (the supplement weeks). Nothing else may hard-code the mapping.
+
+### Navigation (owner A: app/js/main.js, settings.js, chapters.js, index.html, reader CSS)
+- The menu opens on **Chapters**, I–XXXIV in order, each row: numeral · title ·
+  a reading-progress figure · whether it has audio. A second tab in the same
+  menu, **My weeks**, is today's weeks list unchanged (course weeks, review
+  shelf, Colloquia), so pace and time-left keep their home.
+- Opening a chapter shows its **Readings** (every entry from the mapping, each
+  with its own progress, audio mark and a Continue where one is part-read) and
+  a **Grammar** section (owner B renders it).
+- Labels stay as they are: "Cap. VII", "Colloquium VII", never "Week 107".
+- Deep links: `#/chapter/7` and `#/chapter/7/grammar`.
+
+### Grammar views (owner B: app/js/grammar/**)
+- `mountChapterGrammar(el, { chapter })` renders one chapter's grammar: its
+  skills with their states and actions, its question set, vocabulary deck and
+  pensa, and a "Practise this chapter" that builds a mixed session drawn only
+  from that chapter's skills and sets.
+- The Grammar tab keeps **By topic** (today's map, category filter) and gains
+  **By chapter** (the spine, each chapter's skills grouped under it) as a
+  segmented choice, remembered in settings.
