@@ -966,3 +966,29 @@ parts; a result should be **green when correct and red when not**.
   themes and in greyscale. Colour is never the only signal — the existing word
   ("Right" / the answer) and the visually-hidden label stay, so the result
   survives colour-blindness and a black-and-white print.
+
+### Hints, per answer box (2026-09-06)
+
+Learner's request: hints **per answer box**, which can be turned on, turned
+off, or pressed.
+
+- **Every answer box carries its own hint control** — a typed field, each cell
+  of a chart, each blank of a Pensum A sentence, each slot of an order or match
+  item. An item with four blanks has four hints, each about its own box, never
+  one hint for the whole item.
+- **Three modes**, a setting, remembered: *Press for a hint* (default — the
+  control sits quietly beside the box and reveals on press), *Always show*
+  (every box shows its hint from the start), *No hints* (the control is hidden
+  altogether).
+- **A hint narrows, it never answers.** Two levels per box: first what is being
+  asked of it in plain words with the grammar term ("this one wants the dative
+  — the 'to/for' form — singular"); pressing again gives the rule or the
+  paradigm cell it comes from. Neither level may spell the accepted answer, and
+  the existing sweep that fails the build when an item prints its own answer
+  covers hint text too.
+- **Using a hint is logged** exactly as now — a hinted correct answer is weaker
+  evidence for the scheduler. *Always show* counts every answer as hinted, and
+  the setting says so plainly, so the learner is not surprised by slower
+  progress.
+- Keyboard reachable, labelled for a screen reader, and never covering the box
+  or the sentence.
