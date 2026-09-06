@@ -51,13 +51,13 @@
   },
   {
    "lemma": "dēbeō",
-   "dict": "dēbeō, dēbēre, debuī, dēbitum",
+   "dict": "dēbeō, dēbēre, dēbuī, dēbitum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "owe, ought",
    "sense_full": "owe",
-   "parts": "dēbeō, dēbēre, debuī, dēbitum",
+   "parts": "dēbeō, dēbēre, dēbuī, dēbitum",
    "unit_id": "r20:81.2",
    "count": 21
   },
@@ -147,13 +147,13 @@
   },
   {
    "lemma": "postulō",
-   "dict": "postulō, postulāre, postulāvī, postulatum",
+   "dict": "postulō, postulāre, postulāvī, postulātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "demand, ask",
    "sense_full": "demand, claim",
-   "parts": "postulō, postulāre, postulāvī, postulatum",
+   "parts": "postulō, postulāre, postulāvī, postulātum",
    "unit_id": "r20:6.1",
    "count": 13
   },

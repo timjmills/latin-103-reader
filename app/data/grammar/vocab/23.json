@@ -111,13 +111,13 @@
   },
   {
    "lemma": "negō",
-   "dict": "negō, negāre, negavī, negatum",
+   "dict": "negō, negāre, negāvī, negatum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "deny, say no",
    "sense_full": "deny, refuse",
-   "parts": "negō, negāre, negavī, negatum",
+   "parts": "negō, negāre, negāvī, negatum",
    "unit_id": "r23:66.1",
    "count": 11
   },
@@ -374,14 +374,14 @@
    "count": 2
   },
   {
-   "lemma": "inscribō",
-   "dict": "inscribō, inscribere, inscripsī, inscriptum",
+   "lemma": "īnscribō",
+   "dict": "īnscribō, īnscribere, inscripsī, īnscriptum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "write on, inscribe",
    "sense_full": "write on/in",
-   "parts": "inscribō, inscribere, inscripsī, inscriptum",
+   "parts": "īnscribō, īnscribere, inscripsī, īnscriptum",
    "unit_id": "r23:63.1",
    "count": 2
   },

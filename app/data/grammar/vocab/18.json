@@ -219,13 +219,13 @@
   },
   {
    "lemma": "significō",
-   "dict": "significō, significāre, significavī, significatum",
+   "dict": "significō, significāre, significāvī, significatum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "mean, indicate",
    "sense_full": "signify, indicate, show",
-   "parts": "significō, significāre, significavī, significatum",
+   "parts": "significō, significāre, significāvī, significatum",
    "unit_id": "r18:32.1",
    "count": 7
   },
@@ -290,8 +290,8 @@
    "count": 5
   },
   {
-   "lemma": "frequens",
-   "dict": "frequens, gen. frequentis",
+   "lemma": "frequēns",
+   "dict": "frequēns, gen. frequentis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
