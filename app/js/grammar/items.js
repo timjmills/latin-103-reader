@@ -194,12 +194,25 @@ export function entryAllowed(entry, filter) {
 }
 const headSense = (entry) => String(entry?.senses?.[0] ?? '').split(/[;]/)[0].split(',').slice(0, 2).join(',').trim();
 export const lemmaGloss = (entry) => (entry ? `${entry.lemma} — ${headSense(entry)}` : '');
+/** The head alone: for the rare item whose full citation would spell its own answer (femina *fēminae* f). */
+export const headGloss = (entry) => (entry ? `${String(entry.lemma ?? '').split(/[\s,]/)[0]} — ${headSense(entry)}` : '');
 
 /* ------------------------------------------------- answer matching */
 /** Macron-optional, case-insensitive, punctuation dropped, spaces collapsed. Pure. */
 export function normaliseAnswer(s) {
   return stripMacrons(String(s ?? '')).toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
+/**
+ * Does a line the item *shows* spell one of the forms it accepts? Whole words,
+ * macrons optional — the same reading the grader does. Nothing an item prints
+ * before it is answered may pass this (QA-FINAL B1): not the blanked sentence,
+ * not the question, and not the dictionary line, whose citation carries the
+ * genitive of a noun and the principal parts of a verb.
+ */
+export const spellsAnswer = (text, answers) => {
+  const hay = ` ${normaliseAnswer(text)} `;
+  return (answers || []).some((a) => a && hay.includes(` ${normaliseAnswer(a)} `));
+};
 /** Latin forms only: v/u and j/i are one letter for matching (never applied to the English of a typed parse). */
 const foldVU = (s) => s.replace(/v/g, 'u').replace(/j/g, 'i');
 /** True when the typed form matches one of the accepted answers (macrons optional, v/u and j/i folded). Pure. */
@@ -443,10 +456,40 @@ export function scanUnit(unit, skill, lookup, opts = {}) {
     const addressed = VOC_CUE_RE.test(la.slice(0, t.start).trimEnd()) || (/,/.test(beforeText) && /[,!]/.test(afterText)) || (wi === 0 && /^[,!]/.test(afterText.trim()));
     const vocOk = second || addressed;
     const neighbours = [prev && !/[,.;:!?]/.test(beforeText) ? prev : null, next && !/[,.;:!?]/.test(afterText) ? next : null].filter(Boolean);
+    // A word standing *directly* after a word that is nothing but a preposition (in, ex — never cum or
+    // post, which also read as a conjunction or an adverb) must be in a case that preposition governs.
+    // An entry whose readings here are all other cases cannot account for the word, whatever its stem
+    // happens to spell: "in Latiō" is not the nominative of a word `latiō lationis f` (QA B2).
+    const prepOnly = (w) => { const es = (lookOf(w)?.entries || []).filter((x) => x.pos !== 'ENDING' && !x.enc); return es.length > 0 && es.every((x) => x.pos === 'PREP'); };
+    const directGoverns = new Set(prev && !/[,.;:!?]/.test(beforeText) && prepOnly(prev) ? (lookOf(prev)?.entries || []).flatMap(PREP_GOVERNS) : []);
+    /** The readings the entry's *own table* gives the printed word in a case the preposition governs. */
+    const governedReadings = (e, table) => {
+      const out = [];
+      const norm = stripMacrons(t.text).toLowerCase();
+      const exact = t.text.toLowerCase();
+      for (const sec of table?.sections ?? []) for (const row of sec.rows ?? []) for (const c of row.cells ?? []) {
+        const k = c?.key;
+        if (!k || c.empty || k.kind !== 'nominal' || k.mood || !directGoverns.has(k.case)) continue;
+        const forms = cellForms(c);
+        if (!forms.some((f) => String(f).toLowerCase() === exact) && !(!macronised && forms.some((f) => stripMacrons(String(f)).toLowerCase() === norm))) continue;
+        const p = { case: k.case, number: k.number, gender: k.gender ?? e.gender ?? undefined };
+        if (k.degree) p.degree = k.degree;
+        if (!out.some((q) => q.case === p.case && q.number === p.number && q.gender === p.gender && q.degree === p.degree)) out.push(p);
+      }
+      return out;
+    };
     const trim = (e, parses) => {
       let ps = parses.filter((p) => p.case !== 'voc' || vocOk);
       if (governs.size && ps.some((p) => p.case && governs.has(p.case))) ps = ps.filter((p) => !p.case || governs.has(p.case));
       const table = opts.paradigm ? opts.paradigm(e) : null;
+      // Whitaker's rows for a form can be thinner than the word (montēs: nominative and vocative, no
+      // accusative). Where the preposition settles the case, the entry's own table has the last word:
+      // it either spells the printed form in that case — and that reading replaces the rows — or it
+      // cannot account for the word here at all and the entry is dropped (QA B2).
+      if (directGoverns.size && NOMINAL_POS.has(e.pos) && ps.length && ps.every((p) => p.case && !directGoverns.has(p.case))) {
+        ps = governedReadings(e, table);
+        if (!ps.length) return [];
+      }
       if (table) {
         const norm = stripMacrons(t.text).toLowerCase();
         const exact = t.text.toLowerCase();
@@ -462,20 +505,40 @@ export function scanUnit(unit, skill, lookup, opts = {}) {
       }
       return ps;
     };
+    // A word the dictionary holds as both a noun and an adjective (amīcus, Rōmānus, malum) is read as
+    // the adjective only where the sentence shows the noun it agrees with: "vir amīcus" yes, "amīcus
+    // meus" — whose only neighbour is itself an adjective — no. Without this an *adjective*-agreement
+    // drill teaches that the subject noun of its sentence is an adjective (QA B2).
+    const nounAlso = all.some((e) => e.pos === 'N' && !e.enc && trim(e, e.parses || []).length > 0);
+    const nounNeighbourFor = (p) => neighbours.some((n) => (lookOf(n)?.entries || [])
+      .filter((e2) => e2.pos === 'N' && !e2.enc).flatMap((e2) => e2.parses || [])
+      .some((q) => q.case === p.case && (!p.number || !q.number || q.number === p.number) && genderOk(q.gender, p.gender)));
     let entry = null, parse = null, verified = false;
     const values = new Set();
     const nominalValues = new Map();   // N vs ADJ readings (Rōmānī): distinct classes when they disagree on the feature
     // A noun reading names the word better than an adjective's (Aemiliae: the name, not "Aemilian"); pronouns next.
+    // A capitalised word in the sentence takes a capitalised headword first of all: Mārcō is Mārcus, not mārcēre.
+    const capToken = /^[A-ZĀĒĪŌŪȲ]/.test(t.text);
+    const named = (e) => (capToken && /^[A-ZĀĒĪŌŪȲ]/.test(String(e.lemma ?? '')) ? 0 : 1);
     const rank = (e) => (e.pos === 'N' ? 0 : e.pos === 'PRON' ? 1 : e.pos === 'V' || e.pos === 'VPAR' ? 2 : 3);
-    for (const e of [...entries].sort((a, b) => rank(a) - rank(b))) {
-      const ps = trim(e, e.parses || []);
+    for (const e of [...entries].sort((a, b) => named(a) - named(b) || rank(a) - rank(b))) {
+      let ps = trim(e, e.parses || []);
+      if (e.pos === 'ADJ' && nounAlso) ps = ps.filter(nounNeighbourFor);
       const table = opts.paradigm ? opts.paradigm(e) : null;
+      const printed = t.text.toLowerCase();
       for (const p of ps) {
         const v = featureValue(p, key, e, skill);
         const av = ak === key ? v : featureValue(p, ak, e, skill);
         if (av) values.add(av);
         if (v && (e.pos === 'N' || e.pos === 'ADJ')) { if (!nominalValues.has(e.pos)) nominalValues.set(e.pos, new Set()); nominalValues.get(e.pos).add(v); }
-        if (!entry && parseMatches(p, filter) && (!key || v)) { entry = e; parse = p; verified = !!table && cellsFor(table, p).length > 0; }
+        if (!entry && parseMatches(p, filter) && (!key || v)) {
+          entry = e; parse = p;
+          // Verified means the headword's own stem prints *this* word: the cells existing is not enough
+          // (`latiō lationis f` has an ablative cell — but it spells lationē, not the book's Latiō).
+          const forms = table ? cellsFor(table, p).flatMap(cellForms) : [];
+          verified = forms.some((f) => String(f).toLowerCase() === printed)
+            || (!macronised && forms.some((f) => stripMacrons(String(f)).toLowerCase() === stripMacrons(printed)));
+        }
       }
     }
     if (!entry) continue;
@@ -654,8 +717,9 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     };
   };
 
-  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN }) => {
+  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, where = null }) => {
     let pool_ = candidates(skill.id);
+    if (where) pool_ = pool_.filter(where);
     if (unambiguous) pool_ = pool_.filter((c) => !c.ambiguous);
     else { const clear = pool_.filter((c) => !c.ambiguous); if (clear.length >= 5) pool_ = clear; }   // blank: forms the sentence reads one way, while there are enough
     if (!pool_.length) return null;
@@ -818,7 +882,16 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
 
   function blank(skill, stage, opts) {
     const k = key(skill);
-    const got = pickCandidate(skill, 'blank', { unambiguous: false, ...opts });
+    // The item prints the dictionary line ("the right form of soror") and hides the inflected one, so
+    // nothing it shows may spell the form it wants back (QA-FINAL B1). Three ways it could, all of
+    // them out: the word *is* its own dictionary form (soror); the line carries it anyway, in the
+    // citation (sequor, sequī, *secūtus* sum) or in the meaning (nox noctis f — night; prīmā
+    // *nocte*…); or the sentence prints the same word a second time, outside the blank.
+    const noGiveaway = (c) => {
+      const as = [c.token.text, stripMacrons(c.token.text)];
+      return !spellsAnswer(lemmaGloss(c.entry), as) && !spellsAnswer(blankOut(c.unit.la, c.token), as);
+    };
+    const got = pickCandidate(skill, 'blank', { unambiguous: false, ...opts, where: noGiveaway });
     if (!got) return null;
     const { c, key: itemKey, wrapped } = got;
     const answer = [c.token.text, stripMacrons(c.token.text)];
@@ -866,8 +939,8 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     for (const c of candidates(skill.id)) if (!seen.has(c.entry.h)) seen.set(c.entry.h, c);
     const entries = [...seen.values()];
     if (!entries.length) return null;
-    const keys = [];
-    const spots = [];
+    let keys = [];
+    let spots = [];
     for (const c of entries) {
       const table = plainTable(c.entry);
       if (!table) continue;
@@ -878,6 +951,15 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       })));
     }
     if (!keys.length) return null;
+    // The citation head is itself a cell of the table (cēna is the nominative singular of cēna;
+    // possum is the first person of possum), and the question names the head: "Give the nominative
+    // singular of cēna" answers itself — and so, in its own way, does "the present indicative, he /
+    // she / it of eō", whose answer is *it*. Cells the question's own words spell are left out of the
+    // pool, unless they are all the skill has: then a self-answering chart beats no chart at all.
+    const answersOf = (sp) => { const cell = sp.table.sections[sp.si].rows[sp.ri].cells[sp.ci]; return [cell?.text, cell?.alt, ...String(cell?.text ?? '').split(' / ')].filter(Boolean); };
+    const shownOf = (sp) => { const sec = sp.table.sections[sp.si]; return `${firstWord(sp.c.entry.lemma)} ${sec.title ?? ''} ${sec.rows[sp.ri].label ?? ''} ${sec.headers?.[sp.ci] ?? ''}`; };
+    const open = spots.map((sp, i) => i).filter((i) => !spellsAnswer(shownOf(spots[i]), answersOf(spots[i])));
+    if (open.length) { keys = open.map((i) => keys[i]); spots = open.map((i) => spots[i]); }
     const got = pool.chooseInfo(skill.id, 'chart', keys, rand);
     const spot = spots[keys.indexOf(got.key)];
     const { c, table, si, ri, ci } = spot;
@@ -911,10 +993,16 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       : kind === 'inf' || kind === 'ptc' || kind === 'imper' ? labelOf('tense', `${cellKey.tense} ${kind}`) : kind ? labelOf('tense', kind) : { name: skill.title, plain: skill.plain, full: skill.plain };
     const lemma = c.entry.lemma;
     const head = firstWord(lemma);
+    // A noun's citation prints its genitive and a verb's its principal parts, and a meaning sometimes
+    // quotes a phrase (nox noctis f — night; prīmā *nocte*…), so the dictionary line can be the answer
+    // key for the very cell being asked (femina *fēminae* f → "give the genitive singular of femina").
+    // The line then gives up as much as it must: the citation, then the meaning (QA-FINAL B1).
+    const asked = cells.flatMap((x) => x.answer || []);
+    const chartGloss = [lemmaGloss(c.entry), headGloss(c.entry), head].find((g) => !spellsAnswer(g, asked)) ?? head;
     const fullQuestion = full && genderCols && k === 'case' ? `Fill in the ${cellLabel(section.rows[ri], -1)} of ${head} in every gender`
       : full ? `Fill in the ${finite ? `${section.title}${colLabel ? ` (${colLabel})` : ''}` : (degreeTitle ? `${degreeTitle} ` : '') + (colLabel || section.title)} of ${head}` : null;
     return { ...base(skill, 'chart', stage, null), key: got.key, input: 'chart', entry: c.entry, lemma, repeat: got.wrapped,
-      prompt: { la: null, question: full ? fullQuestion : `Give the ${cellLabel(section.rows[ri])} of ${head}`, gloss: lemmaGloss(c.entry), hint: `${lab.name} — ${lab.plain}` },
+      prompt: { la: null, question: full ? fullQuestion : `Give the ${cellLabel(section.rows[ri])} of ${head}`, gloss: chartGloss, hint: `${lab.name} — ${lab.plain}` },
       answer: cellAnswers(target),
       chart: { table, section: si, col: ci, target: { row: ri, col: ci }, cells, full, head },
       meanings: [], confuse: { values: {}, indexes: {}, forms: {} },

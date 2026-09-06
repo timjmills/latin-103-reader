@@ -104,13 +104,21 @@ test('fixture store: two shelf weeks (101, 107), a dozen Latin-only units each, 
   const weeks = await store.getWeeks();
   const shelf = weeks.filter((w) => isShelfWeek(w.n) && w.n < 200);
   assert.deepEqual(shelf.map((w) => [w.n, w.id, w.chapter, w.has_line_numbers, w.unit_count]), [[101, 'r01', 'I', true, 12], [107, 'r07', 'VII', true, 12]]);
-  assert.ok(shelf.every((w) => w.title && w.focus?.label && w.parts?.length === 1));
+  assert.ok(shelf.every((w) => w.title && w.focus?.label && w.parts?.length === 2), 'each shelf chapter is two lēctiōnēs');
+  // The shelf teaching layer (notes, plain notes, highlights, both summaries) is in the fixture, so it can be exercised.
+  assert.ok(shelf.every((w) => w.parts.every((p) => p.summary_en && p.summary_la)), 'every part carries both summaries');
   assert.deepEqual(weeks.map((w) => w.n).slice(-4), [101, 107, 201, 207], 'the review shelf comes after the course weeks, the colloquia after it');
   const units = await store.getUnits(107);
   assert.equal(units.length, 12);
-  assert.ok(units.every((u) => /^r07:\d+\.1$/.test(u.id) && u.la && u.en === '' && u.week_n === 107 && Array.isArray(u.lines) && u.lines.length === 1 && u.margin.length === 0 && u.note == null));
-  assert.equal(units.filter((u) => u.block_start).length, 4);
-  assert.deepEqual(await store.getHighlights(107), []);
+  assert.ok(units.every((u) => /^r07:\d+\.1$/.test(u.id) && u.la && u.en === '' && u.week_n === 107 && Array.isArray(u.lines) && u.lines.length === 1 && u.margin.length === 0));
+  assert.equal(units.filter((u) => u.block_start).length, 2, 'one block per lēctiō');
+  assert.deepEqual([...new Set(units.map((u) => u.part))], ['Lēctiō prīma', 'Lēctiō secunda']);
+  const noted = units.filter((u) => u.note);
+  assert.ok(noted.length >= 3 && noted.every((u) => u.note_simple), 'sentence notes, each with its plain-words version');
+  const hs = await store.getHighlights(107);
+  assert.ok(hs.length >= 3 && hs.every((h) => h.unit_id && h.text && h.label && h.note && h.simple), 'grammar-focus highlights with a label, a note and a plain version');
+  assert.ok(hs.every((h) => units.find((u) => u.id === h.unit_id)?.la.includes(h.text)), 'every highlight quotes its own sentence');
+  assert.deepEqual(await store.getHighlights(207), [], 'the colloquia carry no highlights');
   assert.deepEqual(await store.getPictures(107), []);
   assert.deepEqual(await store.getAlignment(107), []);
   assert.equal(await store.getAudioUrl(107), null);

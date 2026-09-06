@@ -16,7 +16,7 @@
 //   createStage3({ items, paradigm, rand }).generate({ skill, kind, stage, currentWeek, currentWeekN }) → item | null
 
 import { stripMacrons } from '../tokenize.js';
-import { cellsFor, lemmaGloss, featureLabel, CASE_LABEL, TENSE_LABEL, MOOD_LABEL, patternSpans, compilePatterns, strippedText } from './items.js';
+import { cellsFor, lemmaGloss, spellsAnswer, featureLabel, CASE_LABEL, TENSE_LABEL, MOOD_LABEL, patternSpans, compilePatterns, strippedText } from './items.js';
 import { isShelfWeek } from '../sync.js';
 
 export const STAGE3_KINDS = Object.freeze(['transform', 'reorder', 'translate']);
@@ -152,6 +152,16 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     return forms.length ? { cell: cells[0], forms, table: t } : null;
   };
 
+  /**
+   * The forms the item accepts for one op. The tables hold lower-case stems; a proper noun keeps the
+   * book's capital so the feedback reads "Germānī", not "germānī". The test is the *lemma's* capital:
+   * the book capitalises every sentence's first word, so testing the token would turn "Puella cantat"
+   * into "Puellae is the plural of puella" (m2).
+   */
+  const answersFor = (entry, cell) => {
+    const capped = /^[A-ZĀĒĪŌŪ]/.test(String(entry?.lemma ?? '')) ? cell.forms.map((f) => f.charAt(0).toUpperCase() + f.slice(1)) : cell.forms;
+    return { capped, answers: [...new Set(capped.flatMap((f) => [f, stripMacrons(f)]))] };
+  };
   function transform(skill, stage, opts) {
     const cands = items.candidates(skill.id).filter((c) => !c.ambiguous && c.verified && c.unit.la.length <= 180);
     const spots = [];
@@ -162,6 +172,12 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
         if (opAmbiguous(c.entry, op, c.token.text)) continue;
         const got = formFor(c.entry, op.parse);
         if (!got || got.forms.some((f) => stripMacrons(f).toLowerCase() === c.token.form)) continue;   // a change that reads the same is no exercise
+        // …and neither is a change the item already prints. The sentence can hold the changed form
+        // itself ("ūnum caput est, nōn duo capita" — make caput plural), and a citation names the
+        // genitive of a noun and the principal parts of a verb, which is exactly what several ops
+        // ask for (diēs -ēī m/f, dormiō … dormīvī). Nothing shown may spell the answer (QA-FINAL B1).
+        const { answers } = answersFor(c.entry, got);
+        if (spellsAnswer(c.unit.la, answers) || spellsAnswer(lemmaGloss(c.entry), answers) || spellsAnswer(op.label, answers)) continue;
         spots.push({ c, op, got });
       }
     }
@@ -171,11 +187,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(spots, keyOf, opts, (s) => s.c));
     if (!got) return null;
     const { c, op, got: cell } = spots[keys.indexOf(got.key)];
-    // The tables hold lower-case stems; a proper noun keeps the book's capital so the feedback reads "Germānī", not
-    // "germānī". The test is the *lemma's* capital: the book capitalises every sentence's first word, so testing the
-    // token would turn "Puella cantat" into "Puellae is the plural of puella" (m2).
-    const capped = /^[A-ZĀĒĪŌŪ]/.test(String(c.entry?.lemma ?? '')) ? cell.forms.map((f) => f.charAt(0).toUpperCase() + f.slice(1)) : cell.forms;
-    const answers = [...new Set(capped.flatMap((f) => [f, stripMacrons(f)]))];
+    const { capped, answers } = answersFor(c.entry, cell);
     const lab = c.parse.case ? featureLabel('case', c.parse.case) : featureLabel('tense', `${c.parse.tense} ${c.parse.mood}`);
     return { ...base(skill, 'transform', stage, c), key: got.key, input: 'type', repeat: got.wrapped, op: op.op,
       prompt: { la: c.unit.la, question: op.label, gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}; the ${op.what} sits in the table below.`, placeholder: 'the changed form (macrons optional)' },
