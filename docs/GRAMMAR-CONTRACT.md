@@ -353,3 +353,86 @@ From `qa/grammar/CODE-REVIEW-G1.md` and `qa/grammar/QA-REPORT-G1.md`.
   scheduler policy the learner has not asked for).
 - sw.js is **v34**.
 
+
+## Wave 2 — depth (2026-09-06)
+
+Scope (GRAMMAR-PLAN §8 wave 2): transform, reorder (≤ 8 words), translate
+(self-graded), question-word sets for chapters 1–34, vocabulary recognition
+decks per chapter, pensa from the scan, the daily plan. Ownership:
+
+```
+pipeline/extract_pensa.py             P  Pensum A/B/C for chapters 1–34 → data/build/pensa-NN.json → SQL for public.pensa (private)
+pipeline/build_vocab.py               P  chapter vocabulary → app/data/grammar/vocab/NN.json (public: Whitaker-derived)
+app/data/grammar/questions/NN.json    Q  question-word sets per chapter (our prose; answers by unit id + short Latin)
+app/js/grammar/* (new kinds, inputs, daily plan)  E
+supabase/migrations/0016_grammar_wave2.sql  applied: public.pensa (user_id, chapter, kind A|B|C, items jsonb, updated_at), RLS
+```
+
+### Vocabulary deck `vocab/NN.json` (P → E)
+```jsonc
+{ "chapter": 7, "words": [
+  { "lemma": "puella", "dict": "puella, -ae f.", "pos": "N", "gender": "f", "decl": 1,
+    "meaning": "girl", "parts": null, "unit_id": "r01:18.1", "count": 12 } ] }
+```
+A word belongs to the chapter where its lemma first occurs in the library
+(chapters 1–24 = the shelf, 25–34 = the course weeks by `weeks.chapter`);
+verbs carry `parts` (principal parts), nouns `dict` with genitive + gender,
+adjectives their three forms. Meanings from the glossary's preferred sense
+(build_glossary PREFERRED/SENSE_OVERRIDES). Skill ids for the scheduler:
+`vocab-NN` (Latin → English, default) and `vocab-NN-rev` (English → Latin,
+optional extra deck). Items: `kind: "vocab"`, `input: "choice"` (4 options,
+distractors = same chapter, same pos) at stage 1, `"type"` at stage 2+ for the
+reverse deck; item key `vocab:NN:<lemma>[:rev]`.
+
+### Question sets `questions/NN.json` (Q → E)
+```jsonc
+{ "chapter": 7, "week_id": "r07",            // or "w03" etc. for 25–34
+  "items": [
+    { "id": "q07-01", "qword": "quis", "q": "Quis Mārcum pulsat?", "en": "Who hits Marcus?",
+      "unit_id": "r07:12.1",                  // the sentence that answers it (shown after)
+      "answers": ["Iūlius", "Iulius"],         // accepted Latin (macron-stripped variants added by E)
+      "input": "type",                         // type | choice | tap  (tap: the answer is a word in unit_id's sentence)
+      "choices": ["Iūlius", "Mārcus", "Quīntus", "Iūlia"],   // for choice; ≥ 3 plausible from the passage
+      "hint": "a name in the nominative" } ] }
+```
+≥ 24 items per chapter across the question words quis/quid/cūr/ubi/quō/unde/
+quandō/quōmodo/quot/quālis/uter/num/nōnne/-ne (every set uses ≥ 8 different
+question words; num/nōnne/-ne answers are "Ita (est)" / "Nōn"/ "Minimē" with the
+full-sentence answer accepted); answers must be answerable from the referenced
+sentence alone; Latin in `q` macronised. Skill id `questions-NN`; item key
+`question:<id>`; kinds `question`.
+
+### Pensa (P → Supabase → E)
+`public.pensa` rows: `{ chapter, kind: "A"|"B"|"C", items: [...] }`, private.
+```jsonc
+// A: endings blanked   { "text": "Iūlius in vīll_ habitat.", "blanks": [ { "i": 0, "stem": "vīll", "answers": ["ā"], "note": "abl. after in" } ] }
+// B: words blanked     { "text": "Mārcus ___ Quīntum pulsat.", "blanks": [ { "i": 0, "answers": ["frātrem"], "bank": ["frātrem", "sorōrem", "puerum"] } ] }
+// C: questions         { "q": "Ubi habitat Iūlius?", "answers": ["in vīllā", "Iūlius in vīllā habitat."], "unit_id": "r01:…" }
+```
+Blanks recovered from the scan's text layer (the printed dashes); answers
+computed from the glossary + agreement with the sentence and checked against
+the chapter text (the pensa re-tell the chapter); an item the pipeline could
+not resolve carries `"unverified": true` and E hides it. Skill id
+`pensum-NN` (kinds `pensum`; item key `pensum:NN:A:3`).
+
+### Generated kinds (E, from library units)
+- `transform` (stage 3, input type): one word of a book sentence changed by
+  paradigms.js (sg↔pl, pres→perf/impf, act↔pass, statement→indirect command
+  after *imperat ut*), the learner types the changed form; feedback shows the
+  original sentence. Only forms paradigms.js can produce unambiguously.
+- `reorder` (stage 3, input order): a book sentence of ≤ 8 words scrambled;
+  accept any order the book uses (the original), punctuation kept with words.
+- `translate` (stage 3, self-graded): a course-week sentence (units with `en`;
+  shelf units have none) with its English hidden; the learner writes, reveals,
+  and grades themselves right / partly / wrong with the key words marked (the
+  skill's pattern match) — graded attempts log `self: true`.
+- Inputs added: `order` (tap words into a row, undo, and drag on pointer
+  devices), `match` (word ↔ case / form ↔ meaning pairs, tap-tap), `tap`
+  reused for question answers.
+
+### Daily plan (E)
+A "Today" card at the top of the weeks menu and of the Grammar map: Learn
+(the current 103 week's unlearned skills, one suggested) · Practice (10 items:
+due skills count, confusion pairs) · Questions for the current week's passage ·
+Vocabulary due; estimated minutes from the study log's pace; never forced;
+dismissible per day (settings.todayDismissed = date).
