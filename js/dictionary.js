@@ -79,30 +79,83 @@ function findEntries(key) {
   return e || null;
 }
 
+const MACRON_RE = /[āēīōūȳĀĒĪŌŪȲ]/;
+const CAP_RE = /^[A-ZĀĒĪŌŪȲ]/;
+const tableMemo = new Map();
+function tableOf(entry) {
+  const k = `${entry.lemma}|${entry.pos}|${entry.h ?? ''}`;
+  if (!tableMemo.has(k)) { let t = null; try { t = paradigm(entry, []); } catch { t = null; } tableMemo.set(k, t); }
+  return tableMemo.get(k);
+}
+const cellText = (c) => [c?.text, c?.alt, ...String(c?.text ?? '').split(' / ')].filter(Boolean).map((s) => String(s).trim());
 /**
- * Keys drop macrons, so "hīc" (here) and "hic" (this) share one key. When the
- * query carries macrons and an uninflected entry's lemma matches it exactly,
- * that entry goes first; an uninflected lemma that contradicts the macrons
- * goes behind the rest.
+ * Does the entry's own paradigm print *this* spelling — macrons and all?
+ * 0 yes · 1 the entry has no table, so it has no opinion · 2 it prints the same
+ * letters with other macrons, so this may not be the word (māla is not the
+ * adjective mala) · 3 its table does not print these letters at all, so the
+ * form is only Whitaker's spare parse and the entry goes last.
+ */
+function macronVerdict(entry, q) {
+  // The headword itself is the entry's own spelling of the word, and it carries macrons even where the
+  // stems the paradigm is built from have lost them (māla malae f is built from the stem "mal").
+  if (String(entry.lemma || '').split(/[\s,(/]/)[0].toLowerCase() === q) return 0;
+  const table = tableOf(entry);
+  if (!table) return 1;
+  let loose = false;
+  for (const sec of table.sections ?? []) for (const row of sec.rows ?? []) for (const c of row.cells ?? []) {
+    if (!c || c.empty) continue;
+    for (const f of cellText(c)) {
+      const lf = f.toLowerCase();
+      if (lf === q) return 0;
+      if (stripMacrons(lf) === stripMacrons(q)) loose = true;
+    }
+  }
+  return loose ? 2 : 3;
+}
+
+/**
+ * Keys drop macrons, so "hīc" (here) and "hic" (this) share one key, and so do
+ * *māla* (apples) and *mala* (bad). The printed spelling decides where it can:
+ * an entry whose own lemma or paradigm prints the query exactly goes first, one
+ * that prints the same letters with different macrons goes behind the rest, and
+ * a capitalised word in a sentence takes a capitalised headword first of all
+ * (Mārcō is Mārcus, not "I am withered"). `ambiguous` is set when the leading
+ * readings are still level and mean different things — the caller shows both
+ * rather than choosing one (QA B3).
  */
 function preferMacronMatch(entries, raw) {
-  if (!/[āēīōūȳĀĒĪŌŪȲ]/.test(raw) || entries.length < 2) return entries;
+  if (entries.length < 2) return { entries, ambiguous: false };
   const q = raw.toLowerCase();
+  const hasMacron = MACRON_RE.test(raw);
+  const cap = CAP_RE.test(raw);
   const UNINFLECTED = new Set(['ADV', 'CONJ', 'PREP', 'INTERJ']);
   const score = (e) => {
-    if (!UNINFLECTED.has(e.pos) || e.enc) return 1;
-    const lemma = String(e.lemma || '').split(/[\s(/]/)[0].toLowerCase();
-    if (lemma === q) return 0;
-    if (stripMacrons(lemma) === stripMacrons(q) && lemma !== q) return 2;
-    return 1;
+    if (!hasMacron || e.enc) return 1;
+    if (UNINFLECTED.has(e.pos)) {
+      const lemma = String(e.lemma || '').split(/[\s(/]/)[0].toLowerCase();
+      if (lemma === q) return 0;
+      if (stripMacrons(lemma) === stripMacrons(q) && lemma !== q) return 2;
+      return 1;
+    }
+    return macronVerdict(e, q);
   };
+  const named = (e) => (cap && !e.enc && CAP_RE.test(String(e.lemma ?? '')) ? 0 : 1);
   // whole-word readings stay ahead of enclitic splits (ubīque before ubi + -que)
-  return entries.map((e, i) => [e.enc ? 1 : 0, score(e), i, e]).sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((x) => x[3]);
+  const ranked = entries.map((e, i) => [e.enc ? 1 : 0, score(e), named(e), i, e]);
+  ranked.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || a[3] - b[3]);
+  const best = ranked[0];
+  const head = (e) => String((e.senses || [])[0] ?? '');
+  // Ambiguous means the printed spelling was tested and *nobody* passed: every reading prints these
+  // letters with other macrons (māla — the glossary holds only `malus` bad and `malum` apple, both
+  // spelled mala), so the dictionary cannot say which word this is and the caller shows the readings
+  // instead of choosing. Plain homography (quī, eō — readings that do print the word) is not this.
+  const ambiguous = best[1] === 2 && ranked.some((r, i) => i > 0 && r[0] === best[0] && r[1] === best[1] && r[2] === best[2] && String(r[4].h ?? r[4].lemma) !== String(best[4].h ?? best[4].lemma) && head(r[4]) !== head(best[4]));
+  return { entries: ranked.map((x) => x[4]), ambiguous };
 }
 
 export function lookup(form) {
   const raw = String(form ?? '').replace(/[^\p{L}]/gu, '');
-  const result = { form: raw, entries: [], via: 'miss', enclitic: null };
+  const result = { form: raw, entries: [], via: 'miss', enclitic: null, ambiguous: false };
   if (!raw || !GLOSSARY) return result;
 
   let entries = hitKey(raw);
@@ -111,8 +164,9 @@ export function lookup(form) {
   const lower = stripMacrons(raw).toLowerCase();
   entries = findEntries(lower);
   if (entries) {
-    entries = preferMacronMatch(entries, raw);
-    return { ...result, entries, via: raw === lower ? 'exact' : 'lower', enclitic: entries[0]?.enc ?? null };
+    const ranked = preferMacronMatch(entries, raw);
+    entries = ranked.entries;
+    return { ...result, entries, ambiguous: !!ranked.ambiguous, via: raw === lower ? 'exact' : 'lower', enclitic: entries[0]?.enc ?? null };
   }
 
   for (const enc of ENCLITICS) {
