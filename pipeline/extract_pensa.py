@@ -36,7 +36,7 @@ Text
   with a gap before the next mark.  Sentences: build_week.split_sentences.
 Answers  (precision first: a wrong answer taught to a learner is worse than a
   hidden one, so a blank resolves only on evidence, never on a preference)
-  A blank resolves in exactly two ways.
+  A blank resolves in exactly three ways.
   (a) The chapter's own words.  The pensa re-tell the chapter, so a pensum
       sentence that IS a chapter sentence word for word — same length, every
       printed word in its place, Ørberg's bracketed glosses dropped — hands the
@@ -55,7 +55,27 @@ Answers  (precision first: a wrong answer taught to a learner is worse than a
       reading whose case or person rests on no filter is not evidence either.
       Where the sentence pins nothing (no subject for a finite verb, no case for
       a noun) the blank resolves to nothing at all rather than to whichever
-      reading happens to be left.
+      reading happens to be left.  A reading nothing pins does not always silence
+      the blank, though: what it leaves open is which READING is meant, and the
+      blank asks for a word, so a word that also fits on a pinned reading is still
+      answerable ("Homō duōs pedēs habet" — duōs pins the accusative plural of
+      pes, and the nominative singular of the adjective pedēs, which nothing pins,
+      is spelt the same).  A word that fits on nothing but such a reading is a
+      rival the sentence cannot exclude, and then the blank resolves to nothing.
+  (c) The chapter's own paradigm — Pensum A only, and only in the chapters listed
+      in PARADIGM_CHAPTERS.  Ørberg's Pensum A drills the chapter's new grammar
+      one paradigm at a time: cap. XVII's is all present passive, cap. XXI's all
+      perfect, cap. XX's all future.  Where the sentence pins the person but
+      leaves the tense open, the paradigm the chapter drills — read off
+      app/data/grammar/skills.json, never guessed here — says which tense is
+      meant.  Nothing else is relaxed: the whole filter stack still runs, the
+      survivor must still be unique, it must be a finite verb that really has
+      that paradigm IN ITS OWN SPELLING (nārrāveris is the future perfect,
+      nārrāverīs the perfect subjunctive, and the library's macron-blind index
+      cannot tell them apart), and its person and number must rest on a subject
+      in its own clause with no subordinator between — Ørberg changes subject
+      across ut, nē, quod and a relative.  The chapter never says which part of
+      speech a blank wants, and never its person or number.
   Everything else is `unverified`, as is every blank of a sentence with an
   unreadable token (the principal parts excepted: they read the verb printed
   beside them and nothing else).  Frequency never decides anything.
@@ -101,6 +121,7 @@ BUILD = ROOT / "data" / "build"
 SQL_DIR = BUILD / "sql"
 SCAN = ROOT / "scans" / "familia-romana.pdf"
 VOCAB_DIR = ROOT / "app" / "data" / "grammar" / "vocab"
+SKILLS = ROOT / "app" / "data" / "grammar" / "skills.json"
 REPORT = BUILD / "pensa-REPORT.md"
 
 CHAPTERS = range(1, 35)
@@ -744,6 +765,13 @@ def tok_form(t: Tok, answers: dict[int, str]) -> str | None:
 
 PLURAL_COORD = {"et", "ac", "atque", "que"}
 PERSONAL = {"ego": (1, "sg"), "tu": (2, "sg"), "nos": (1, "pl"), "vos": (2, "pl")}
+#: "Tūne vērē dormīvistī?" — the question's -ne hides the pronoun that names the person,
+#: and without it the sentence looks like a third person and answers dormīvit
+PERSONAL.update({k + "ne": v for k, v in list(PERSONAL.items())})
+#: ipse alone never says whose emphasis it is: Ørberg's "Ipse scrīpsī" ("I wrote it
+#: myself") looks like a third-person nominative and is not one.  Beside a noun it is no
+#: subject head either, so nothing is lost by never reading it as one.
+NO_PERSON = {"ipse", "ipsa", "ipsum", "ipsi", "ipsae", "ipsos", "ipsas"}
 
 
 def _nominal_parses(form: str | None, lex: "Lex") -> list[tuple[dict, dict]]:
@@ -818,6 +846,8 @@ def subject_info(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> 
         k = em.skeleton(f)
         if k in PERSONAL:
             return PERSONAL[k]
+        if k in NO_PERSON:
+            return False
         nps = _nominal_parses(f, lex)
         # the head of a subject is a noun or a pronoun; a bare adjective beside it is
         # part of some other phrase ("īnfantem tuum ipsa cūrābis" — tuum is not a subject)
@@ -1048,6 +1078,27 @@ def predicate_slot(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str], s
     return True
 
 
+class Filt:
+    """One agreement test a candidate reading must pass.
+
+    `test(ep, form)` is the test itself — it returns True for a reading the filter has
+    nothing to say about, so a filter never rejects what it does not govern.  `binds(ep,
+    form)` says whether the filter DOES speak for that reading: `survivors` counts the
+    axes that bind, because a reading no filter binds rests on nothing and must not be
+    called unique.  `kind` names the axis ("case", "agree", "subject")."""
+
+    __slots__ = ("kind", "test", "binds")
+
+    def __init__(self, kind: str, test, binds):
+        self.kind, self.test, self.binds = kind, test, binds
+
+    def __call__(self, ep, form=None) -> bool:
+        return self.test(ep, form)
+
+    def __repr__(self):
+        return f"Filt({self.kind})"
+
+
 def context_filters(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]):
     """Ordered `Filt`s the word in the blank must satisfy, with a note naming the
     governing word."""
@@ -1129,7 +1180,147 @@ def context_filters(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]):
     return fs, note
 
 
-def survivors(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> list[str]:
+FINITE_MOODS = ("ind", "subj", "imper")
+
+#: Ørberg's Pensum A drills the chapter's own new grammar, one paradigm at a time: the
+#: whole of cap. XXI's Pensum A is in the perfect, the whole of cap. XX's in the future.
+#: Where that is so, the chapter's paradigm is evidence about a blank whose sentence
+#: leaves tense and mood open — but only where it IS so.  These are the chapters whose
+#: Pensum A was read on the scanned page and found to drill one finite paradigm and no
+#: other; the rest are left out, and cap. IV (imperatives beside plain presents), cap. VI
+#: (the passive beside the active it is contrasted with) and cap. XV (presents beside
+#: "Bonī discipulī sumus", whose subject the sentence never names) are left out because
+#: they were read and are NOT single-paradigm drills.
+#:
+#: The profile itself is never guessed here: it is the parse_filter of the skills
+#: app/data/grammar/skills.json files under this chapter, so the app and the pipeline
+#: cannot drift apart.  See `chapter_profiles`.
+PARADIGM_CHAPTERS = {3, 17, 19, 20, 21, 24, 27, 28, 30, 32, 33}
+
+#: A word that starts a clause of its own.  `subject_info` reads the first nominative of
+#: the sentence, or borrows the one before the comma, and a subordinate clause may have a
+#: subject of another person entirely: "Magister puerōs monet ut … scrībant" (the writers
+#: are the boys), "Magister mē verberāvit quod in lūdō dormīveram" (the sleeper is
+#: Mārcus, the beater the master).  Reading the wrong person off such a sentence used to
+#: cost nothing, because the tense was open and the blank stayed unverified either way;
+#: once the chapter's paradigm settles the tense the person is all that is left, so the
+#: paradigm may not decide a blank one of these words separates from its subject.
+SUBJECT_BREAK = {
+    # subordinating conjunctions
+    "ut", "uti", "ne", "neve", "quin", "quominus", "utinam", "quod", "quia", "quoniam",
+    "cum", "quom", "si", "nisi", "sin", "etsi", "tametsi", "quamquam", "quamvis", "dum",
+    "donec", "antequam", "priusquam", "postquam", "simulac", "ubi", "quando", "quasi",
+    "num", "an", "anne", "utrum", "cur", "quare", "unde", "quo", "quomodo", "quotiens",
+    # relative and interrogative pronouns: the clause they open has its own subject
+    "qui", "quae", "quod", "quem", "quam", "quos", "quas", "quibus", "cuius", "cui",
+    "quis", "quid", "quorum", "quarum", "quo", "qua", "quibuscum", "quocum", "quacum",
+}
+
+#: The relative quī, quae, quod.  `subject_info` reads it as a nominative and takes it for
+#: the subject — which is how "Magister mē verberāvit quod bene computāveram" came out as
+#: computāverat: the "subject" was the conjunction quod, third person singular by its
+#: form and nobody at all by its sense.  Ørberg's own interrogative quis ("Quis mē
+#: vocat?") really is a subject and is not in this set.
+RELATIVE = {"qui", "quae", "quod", "quem", "quam", "quos", "quas", "quibus", "cuius",
+            "cui", "quorum", "quarum", "quo", "qua", "quibuscum", "quocum", "quacum"}
+
+_PROFILES: dict[int, list[dict]] = {}
+
+
+def chapter_profiles(c: int) -> list[dict]:
+    """The finite parse profiles chapter `c` drills, from app/data/grammar/skills.json.
+
+    Only tense, mood and voice are kept.  Person and number are dropped on purpose —
+    they must be pinned by the sentence, never by the chapter — and so are `pos`, `h`,
+    `case` and `deponent`, every one of which would NARROW the profile and so make it
+    riskier than the evidence warrants.  A skill that names neither tense nor mood
+    (cap. XXI's "principal parts", parse_filter {"pos": "V"}) says nothing about a
+    paradigm; a skill whose mood is not finite (a participle, an infinitive, a gerund)
+    describes forms `survivors` never accepts anyway.  Both are dropped."""
+    if c in _PROFILES:
+        return _PROFILES[c]
+    out: list[dict] = []
+    try:
+        skills = json.loads(SKILLS.read_text(encoding="utf-8"))["skills"]
+    except Exception:
+        skills = []
+    for s in skills:
+        if s.get("chapter") != c:
+            continue
+        pf = s.get("parse_filter")
+        for f in (pf if isinstance(pf, list) else [pf]):
+            if not isinstance(f, dict):
+                continue
+            prof = {k: v for k, v in f.items() if k in ("tense", "mood", "voice") and v}
+            if "tense" not in prof and "mood" not in prof:
+                continue
+            moods = prof.get("mood")
+            moods = moods if isinstance(moods, list) else ([moods] if moods else None)
+            if moods is not None and not any(m in FINITE_MOODS for m in moods):
+                continue
+            if prof not in out:
+                out.append(prof)
+    _PROFILES[c] = out
+    return out
+
+
+TENSE_NAME = {"pres": "pres.", "impf": "impf.", "fut": "fut.", "perf": "perf.",
+              "plupf": "plupf.", "futperf": "fut. perf."}
+MOOD_NAME = {"ind": "ind.", "subj": "subj.", "imper": "imper."}
+
+
+def profile_name(prof: dict) -> str:
+    """'fut. perf. ind.' — a drilled paradigm, for the report."""
+    parts = []
+    for key, names in (("tense", TENSE_NAME), ("mood", MOOD_NAME),
+                       ("voice", {"act": "act.", "pass": "pass."})):
+        v = prof.get(key)
+        if not v:
+            continue
+        vs = v if isinstance(v, (list, tuple)) else [v]
+        parts.append("/".join(names.get(x, str(x)) for x in vs))
+    return " ".join(parts) or "any"
+
+
+def _profile_fits(prof: dict, p: dict) -> bool:
+    for k, v in prof.items():
+        got = p.get(k)
+        want = v if isinstance(v, (list, tuple, set)) else (v,)
+        if got is None or got not in want:
+            return False
+    return True
+
+
+def drilled(ep, profiles: list[dict] | None) -> bool:
+    """Is this finite reading one of the paradigms the chapter drills?"""
+    return not profiles or any(_profile_fits(pr, ep[1]) for pr in profiles)
+
+
+def subject_is_local(sent: list[Tok], i: int, subj: dict | None) -> bool:
+    """Does the subject the filters used stand in the blank's OWN clause?
+
+    `subject_info` walks back over a comma to the clause before when the blank's clause
+    names no nominative of its own, which is how Ørberg's "Mārcus ūmidus est, quod …
+    ambulāvit" carries its subject.  Across `ut` / `nē` it is not: "Magister puerōs monet
+    ut pulchrē scrībant" changes subject there.  The chapter's paradigm is only allowed
+    to decide a blank whose person and number rest on a subject no such word separates."""
+    if not subj:
+        return False
+    lo, hi = min(min(subj["span"]), i), max(max(subj["span"]), i)
+    for j in range(lo, hi + 1):
+        t = sent[j]
+        word = _WORD.search(t.text)
+        if t.blank or not word:
+            continue
+        if j in subj["span"] and em.skeleton(word.group()) not in RELATIVE:
+            continue      # the subject itself may of course be an interrogative quis
+        if em.skeleton(word.group()) in SUBJECT_BREAK:
+            return False
+    return True
+
+
+def survivors(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict[int, str],
+              profiles: list[dict] | None = None) -> list[str]:
     """The candidates that satisfy EVERY filter — no filter is ever dropped, so a
     sentence whose filters contradict one another leaves nothing and the blank stays
     unverified.  A candidate must FIT the slot, not merely fail to contradict it: a
@@ -1139,7 +1330,16 @@ def survivors(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict
     fs, _ = context_filters(sent, i, lex, answers)
     if not fs:
         return []
-    out = []
+    out: list[str] = []
+    #: candidate WORDS that survive the filters only on a reading nothing pins.  Such a
+    #: reading is as possible as any other, so it must not be argued away — but what it
+    #: leaves open is which *reading* is meant, and the blank asks for a word.  A word
+    #: that also fits on a pinned reading is therefore still answerable ("Homō duōs pedēs
+    #: habet": the accusative plural of pes is pinned by duōs, and the nominative
+    #: singular of the adjective pedēs, which nothing pins, is spelt the same).  A word
+    #: that fits on nothing BUT such a reading is a rival the sentence cannot exclude,
+    #: and then the blank resolves to nothing at all.
+    unpinned: set[str] = set()
     for c in cands:
         fits = False
         for ep in parses_of(c, lex):
@@ -1147,35 +1347,72 @@ def survivors(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict
                 continue
             axes = {f.kind for f in fs if f.binds(ep, c)}
             mood = _verb_mood(ep)
-            if mood in ("ind", "subj", "imper"):
-                if "subject" not in axes:
-                    # The sentence names no subject, so every finite form of the stem is
-                    # equally possible and none can be told from the others.  A noun of
-                    # the same stem must not win by default then ("ipsa cūrābis" is not
-                    # "ipsa cūra", "ā parentibus laudābitur" not "ā parentibus laudibus"):
-                    # the blank resolves to nothing.
-                    return []
-            elif mood:
+            if mood and mood not in ("ind", "subj", "imper"):
                 continue                  # an infinitive, a supine, a participle or a
                                           # gerundive: tense, voice — and for the verbal
                                           # adjectives the whole choice of construction —
                                           # rest on nothing the sentence settles
                                           # ("Patientiam habē—!" is not "habentem")
-            if ep[1].get("case") and not ({"case", "agree"} & axes):
-                # The sentence pins no case here, so this reading is as possible as any
-                # other and the blank cannot be settled: an adjective that merely agrees
-                # with the noun beside it must not win over the accusative object nobody
-                # can rule out ("Māter Quīntum videt" is not "Māter quīnta videt").
-                return []
-            if _adjectival(ep, c) and "case" not in axes and sent[i].blank == "A":
-                # Only the neighbour's agreement speaks for this adjective, and the stem's
-                # own adverb agrees with nothing at all: "Mārcus prāvē respondet" and
-                # "Mārcus prāvus respondet" are both Latin, and the pensum means the first.
-                return []
+            if (mood and "subject" not in axes) \
+                    or (ep[1].get("case") and not ({"case", "agree"} & axes)) \
+                    or (_adjectival(ep, c) and "case" not in axes and sent[i].blank == "A"):
+                # a finite form whose person the sentence never names ("ipsa cūrābis" is
+                # not "ipsa cūra"); a case that rests on no filter ("Māter Quīntum videt"
+                # is not "Māter quīnta videt"); an adjective spoken for by nothing but the
+                # noun beside it, where the stem's own adverb agrees with nothing at all
+                # ("Mārcus prāvē respondet", not "Mārcus prāvus respondet")
+                unpinned.add(c)
+                continue
+            if mood and not drilled(ep, profiles):
+                # the chapter drills one paradigm at a time and this finite reading is
+                # not it.  The reading is dropped, never the candidate: a word that fits
+                # some other way still competes, so the chapter can only ever tell two
+                # tenses of the same verb apart, not a verb from a noun
+                continue
             fits = True
         if fits:
             out.append(c)
+    if unpinned - set(out):
+        return []
     return out
+
+
+def exact_parses(form: str, lex: Lex) -> list[tuple[dict, dict]]:
+    """The parses of this exact SPELLING.
+
+    `parses_of` reaches the library's readings through a macron-blind skeleton, so it
+    cannot tell *nārrāveris* (fut. perf. ind.) from *nārrāverīs* (perf. subj.) and hands
+    both spellings the same list.  latin_forms spells the two apart, so when a chapter's
+    paradigm is what settles a blank the spelling itself must have that paradigm."""
+    out: list[tuple[dict, dict]] = list(lex.gen_parses.get(form, ()))
+    for e in lex.entries_of(form):
+        for pr in lex.generated(e).get(form, ()):
+            out.append((e, pr))
+    return out
+
+
+def paradigm_backed(form: str, sent: list[Tok], i: int, lex: Lex, answers: dict[int, str],
+                    profiles: list[dict]) -> bool:
+    """May the chapter's paradigm be what settles this blank?
+
+    Only when the answer it settles on is itself a finite verb of one of the chapter's
+    drilled paradigms, whose person and number the sentence pins on a subject standing in
+    its own clause.  A blank the paradigm settled by removing the verbs and leaving a noun
+    is refused: the chapter says which tense Ørberg is drilling, never which part of
+    speech the sentence wants."""
+    fs, _ = context_filters(sent, i, lex, answers)
+    if not any(f.kind == "subject" for f in fs):
+        return False
+    if not subject_is_local(sent, i, subject_info(sent, i, lex, answers)):
+        return False
+    for ep in exact_parses(form, lex):
+        if _verb_mood(ep) not in FINITE_MOODS or not _informative(ep):
+            continue
+        if not all(f(ep, form) for f in fs) or not drilled(ep, profiles):
+            continue
+        if "subject" in {f.kind for f in fs if f.binds(ep, form)}:
+            return True
+    return False
 
 
 def constrain(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> tuple[list[str], str]:
@@ -1194,9 +1431,15 @@ def constrain(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict
     return cands, note
 
 
-def context_parse(form: str, sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]):
+def context_parse(form: str, sent: list[Tok], i: int, lex: Lex, answers: dict[int, str],
+                  profiles: list[dict] | None = None):
     """The (entry, parse) of `form` that fits this place in the sentence."""
     ps = parses_of(form, lex)
+    if profiles:
+        # the blank was settled by the chapter's paradigm: name that reading, and name it
+        # off the spelling, or cap. XVII's reprehenderis is called a future perfect
+        drilled_ps = [ep for ep in exact_parses(form, lex) if drilled(ep, profiles)]
+        ps = drilled_ps or ps
     if not ps:
         return None
     fs, _ = context_filters(sent, i, lex, answers)
@@ -1207,9 +1450,10 @@ def context_parse(form: str, sent: list[Tok], i: int, lex: Lex, answers: dict[in
     return ps[0]
 
 
-def describe(form: str, lex: Lex, sent: list[Tok], i: int, answers: dict[int, str]) -> str:
+def describe(form: str, lex: Lex, sent: list[Tok], i: int, answers: dict[int, str],
+             profiles: list[dict] | None = None) -> str:
     """A short name of the form for the note: 'abl. sg.', '3rd pl. fut.'"""
-    ep = context_parse(form, sent, i, lex, answers)
+    ep = context_parse(form, sent, i, lex, answers, profiles)
     if ep is None:
         return ""
     e, p = ep
@@ -1466,14 +1710,15 @@ def resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, li
                      bank_lemmas: set[tuple[str, str]], bank_forms: dict[str, list[str]],
                      gen_bank: list[str] | None = None,
                      chapter_lemmas: set[tuple[str, str]] | None = None,
-                     gen_index: list[tuple[str, str, dict]] | None = None) -> dict:
+                     gen_index: list[tuple[str, str, dict]] | None = None,
+                     profiles: list[dict] | None = None, tally: dict | None = None) -> dict:
     """One pensum sentence → an item.  The generator's forms are visible throughout:
     a candidate the chapter never prints is judged by exactly the filters an attested
     one is, and nothing resolves that they do not settle on their own."""
     was, lex.gen_active = lex.gen_active, True
     try:
         return _resolve_sentence(sent, kind, text, lex, library_forms, bank_lemmas,
-                                 bank_forms, gen_bank, chapter_lemmas, gen_index)
+                                 bank_forms, gen_bank, chapter_lemmas, gen_index, profiles, tally)
     finally:
         lex.gen_active = was
 
@@ -1482,7 +1727,8 @@ def _resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, l
                      bank_lemmas: set[tuple[str, str]], bank_forms: dict[str, list[str]],
                      gen_bank: list[str] | None = None,
                      chapter_lemmas: set[tuple[str, str]] | None = None,
-                     gen_index: list[tuple[str, str, dict]] | None = None) -> dict:
+                     gen_index: list[tuple[str, str, dict]] | None = None,
+                     profiles: list[dict] | None = None, tally: dict | None = None) -> dict:
     answers: dict[int, str] = {}
     blanks = [i for i, t in enumerate(sent) if t.blank]
     # the chapter sentences that re-tell this one
@@ -1559,10 +1805,23 @@ def _resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, l
             kept = survivors(pool, sent, i, lex, answers)
             if t.blank == "A":
                 kept = [c for c in kept if ending_of(t.stem, c)]
+            by_paradigm = False
+            if len(kept) != 1 and profiles and kind == "A":
+                # (c) the chapter's own paradigm.  Ørberg's Pensum A drills one paradigm
+                # at a time, so where the sentence leaves the tense open but pins the
+                # person, the chapter says which tense is meant.  Nothing else is relaxed:
+                # the full filter stack still runs, the survivor must still be unique, and
+                # it must be a finite verb whose subject stands in its own clause.
+                narrowed = survivors(pool, sent, i, lex, answers, profiles)
+                if t.blank == "A":
+                    narrowed = [c for c in narrowed if ending_of(t.stem, c)]
+                if len(narrowed) == 1 and paradigm_backed(narrowed[0], sent, i, lex, answers, profiles):
+                    kept, by_paradigm = narrowed, True
             if len(kept) == 1:
                 _, note = constrain(kept, sent, i, lex, answers)
                 results[i] = {"forms": kept, "note": note, "ok": True,
-                              "generated": kept[0] not in cands}
+                              "generated": kept[0] not in cands,
+                              "paradigm": profiles if by_paradigm else None}
                 answers[id(t)] = kept[0]
                 continue
             # unresolved: a shortlist for the report only — it never becomes a fact the
@@ -1572,6 +1831,11 @@ def _resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, l
         pending = nxt if round_ < 2 else [i for i in blanks if sent[i].blank != "P" and i not in from_text]
         if not pending:
             break
+    if tally is not None:
+        # the later rounds resolve a blank again now that its neighbours have values, so
+        # count the blanks the paradigm settled once each, off the results that stand
+        tally["paradigm"] = tally.get("paradigm", 0) + sum(
+            1 for i in blanks if results.get(i, {}).get("paradigm"))
     unreadable = [t.raw for t in sent if not t.ok]
     item_blanks = []
     unverified = bool(unreadable)
@@ -1595,7 +1859,7 @@ def _resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, l
             t.stem = stem_spelt[:1].upper() + stem_spelt[1:] if cap else stem_spelt
             note = r["note"]
             if r["forms"] and r["ok"]:
-                d = describe(r["forms"][0], lex, sent, i, answers)
+                d = describe(r["forms"][0], lex, sent, i, answers, r.get("paradigm"))
                 note = f"{d} ({note})" if note and d else (d or note)
             b = {"i": bi, "stem": t.stem, "answers": ends, "note": note}
             if not (r["ok"] and ends):
@@ -1611,7 +1875,7 @@ def _resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, l
             if kind == "A":
                 b = {"i": bi, "stem": "", "answers": r["forms"], "note": r["note"]}
                 if r["forms"] and r["ok"]:
-                    d = describe(r["forms"][0], lex, sent, i, answers)
+                    d = describe(r["forms"][0], lex, sent, i, answers, r.get("paradigm"))
                     b["note"] = f"{d} ({r['note']})" if r["note"] and d else (d or r["note"])
             if not (r["ok"] and r["forms"]):
                 b["unverified"] = True
@@ -1823,7 +2087,8 @@ def fill_banks(items: list[dict], lex: Lex, c: int) -> None:
 def build_chapter(c: int, pdf, pages: list[int], lex: Lex, lem: bv.Lemmatiser, cleaner: rs.Cleaner,
                   library: dict[int, list[dict]], library_forms: dict[str, Counter], dump: bool = False) -> dict:
     rep: dict = {"chapter": c, "pages": [], "headings": [], "items": {}, "resolved": {}, "unverified": {},
-                 "blanks": {}, "blanks_resolved": {}, "unreadable": Counter(), "lost_dashes": 0, "notes": [], "bank": 0}
+                 "blanks": {}, "blanks_resolved": {}, "unreadable": Counter(), "lost_dashes": 0, "notes": [],
+                 "bank": 0, "paradigm": 0}
     heads = headings(pdf, pages)
     if not heads:
         rep["notes"].append("no PENSVM heading found")
@@ -1867,6 +2132,11 @@ def build_chapter(c: int, pdf, pages: list[int], lex: Lex, lem: bv.Lemmatiser, c
             except Exception:
                 pass
     gen_index = chapter_form_index(lex, chapter_lemmas)
+    profiles = chapter_profiles(c) if c in PARADIGM_CHAPTERS else None
+    if profiles:
+        rep["notes"].append("Pensum A: a blank whose tense the sentence leaves open may be settled "
+                            "by the paradigm(s) this chapter drills — "
+                            + "; ".join(profile_name(pr) for pr in profiles))
     for kind in ("A", "B", "C"):
         rows = blocks.get(kind, [])
         if dump:
@@ -1885,7 +2155,8 @@ def build_chapter(c: int, pdf, pages: list[int], lex: Lex, lem: bv.Lemmatiser, c
             keep = [sent for sent in sents
                     if any(t.blank for t in sent) or _WORD.search(render_text(sent))]
             items = [resolve_sentence(sent, kind, text, lex, library_forms, bank_lemmas,
-                                      bank_forms, gen_bank, chapter_lemmas, gen_index)
+                                      bank_forms, gen_bank, chapter_lemmas, gen_index,
+                                      profiles if kind == "A" else None, rep)
                      for sent in keep]
             if kind == "B":
                 fill_banks(items, lex, c)
@@ -1997,6 +2268,8 @@ def report_section(rep: dict, errs: list[str]) -> str:
         if k in rep["blanks"]:
             line += f"; blanks {rep['blanks_resolved'][k]}/{rep['blanks'][k]} resolved"
         L.append(line)
+    if rep.get("paradigm"):
+        L.append(f"- {rep['paradigm']} Pensum A blank(s) settled by the chapter's own drilled paradigm")
     L.append(f"- text-layer damage: {sum(rep['unreadable'].values())} unreadable tokens, {rep['lost_dashes']} blank dashes lost by the text layer")
     if rep["unreadable"]:
         L.append("  - unreadable: " + ", ".join(f"{t}×{n}" if n > 1 else t for t, n in rep["unreadable"].most_common(40)))
