@@ -940,3 +940,24 @@ several (the supplement weeks). Nothing else may hard-code the mapping.
 - The Grammar tab keeps **By topic** (today's map, category filter) and gains
   **By chapter** (the spine, each chapter's skills grouped under it) as a
   segmented choice, remembered in settings.
+
+## Session flow — move on, step back, colour the result (2026-09-06)
+
+Learner's request, verbatim: answering should **move the session on**; there
+should be a **back arrow and a forward arrow** to move through a session's
+parts; a result should be **green when correct and red when not**.
+
+- **Move on automatically**, a setting, on by default. A correct answer shows
+  its one-line result and advances after a short beat; a wrong answer holds
+  longer, because reading why is the point of the item, and opening "Why"
+  cancels the advance until the learner moves on themselves. Turning the
+  setting off restores today's explicit Next. Enter always advances at once.
+- **Back / forward arrows** step through the items of the session that is
+  running. Going back shows an answered item exactly as it was answered, with
+  its result, read-only — it is never re-gradable and never touches the
+  scheduler; forward returns to where the learner was. Keyboard: left and
+  right arrows, when focus is not in a text field.
+- **Colour**: correct green, wrong red, using tokens that hold up in both
+  themes and in greyscale. Colour is never the only signal — the existing word
+  ("Right" / the answer) and the visually-hidden label stay, so the result
+  survives colour-blindness and a black-and-white print.
