@@ -21,6 +21,14 @@ import { isShelfWeek } from '../sync.js';
 
 export const STAGE3_KINDS = Object.freeze(['transform', 'reorder', 'translate']);
 export const REORDER_MAX_WORDS = 8;
+/**
+ * The 103 weeks whose units are verse (weeks 13 and 14: the elegiac couplet,
+ * the hendecasyllable, the scansion lesson). A verse line's word order is
+ * metrical, not grammatical, so no learner can reason to it from a case ending
+ * — `reorder` never draws from them (QA M11; GRAMMAR-PLAN §9 puts poetry last).
+ */
+export const VERSE_WEEKS = Object.freeze([13, 14]);
+export const isVerseWeek = (n) => VERSE_WEEKS.includes(Number(n));
 const shuffle = (arr, rand) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const NUMBER_NAME = { sg: 'singular', pl: 'plural' };
 const cellForms = (c) => [...String(c.text ?? '').split(' / '), ...(c.alt ? [c.alt] : [])].map((s) => s.replace(/\s+-a -um$/, '').replace(/\s+esse$/, '').replace(/\s+īrī$/, '').trim()).filter(Boolean);
@@ -56,7 +64,10 @@ export function transformOps(c) {
   const nominal = p.case && (!p.mood || p.mood === 'ptc' || p.mood === 'gerundive');
   if (nominal && p.number) {
     const to = p.number === 'sg' ? 'pl' : 'sg';
-    out.push({ op: `num-${to}`, label: `Make ${c.token.text} ${NUMBER_NAME[to]} (same case${p.gender ? ' and gender' : ''})`, parse: { ...p, number: to }, what: `${NUMBER_NAME[to]}` });
+    // A personal pronoun has no gender, so "(same case and gender)" is noise there, and ego → nōs comes from a
+    // suppletive table rather than from anything about the case the skill teaches (m3).
+    const personal = e.pos === 'PRON' && ['ego', 'tū', 'nōs', 'vōs'].includes(String(e.lemma ?? '').toLowerCase());
+    if (!personal) out.push({ op: `num-${to}`, label: `Make ${c.token.text} ${NUMBER_NAME[to]} (same case${p.gender ? ' and gender' : ''})`, parse: { ...p, number: to }, what: `${NUMBER_NAME[to]}` });
   }
   const finite = p.tense && (p.mood === 'ind' || p.mood === 'subj') && p.person != null && p.number;
   if (finite) {
@@ -160,8 +171,10 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(spots, keyOf, opts, (s) => s.c));
     if (!got) return null;
     const { c, op, got: cell } = spots[keys.indexOf(got.key)];
-    // The tables hold lower-case stems; a proper noun keeps the book's capital so the feedback reads "Germānī", not "germānī".
-    const capped = /^[A-ZĀĒĪŌŪ]/.test(c.token.text) ? cell.forms.map((f) => f.charAt(0).toUpperCase() + f.slice(1)) : cell.forms;
+    // The tables hold lower-case stems; a proper noun keeps the book's capital so the feedback reads "Germānī", not
+    // "germānī". The test is the *lemma's* capital: the book capitalises every sentence's first word, so testing the
+    // token would turn "Puella cantat" into "Puellae is the plural of puella" (m2).
+    const capped = /^[A-ZĀĒĪŌŪ]/.test(String(c.entry?.lemma ?? '')) ? cell.forms.map((f) => f.charAt(0).toUpperCase() + f.slice(1)) : cell.forms;
     const answers = [...new Set(capped.flatMap((f) => [f, stripMacrons(f)]))];
     const lab = c.parse.case ? featureLabel('case', c.parse.case) : featureLabel('tense', `${c.parse.tense} ${c.parse.mood}`);
     return { ...base(skill, 'transform', stage, c), key: got.key, input: 'type', repeat: got.wrapped, op: op.op,
@@ -172,18 +185,30 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
 
   function reorder(skill, stage, opts) {
     const seen = new Set();
-    const cands = items.candidates(skill.id).filter((c) => { if (seen.has(c.unit.id)) return false; seen.add(c.unit.id); return chunksOf(c.unit.la).length >= 3 && chunksOf(c.unit.la).length <= REORDER_MAX_WORDS && new Set(chunksOf(c.unit.la)).size >= 2; });
+    // The hint states a parse ("bonum is nominative"), so the candidate must be one the sentence settles — the same
+    // `!ambiguous && verified` filter `transform` uses (QA M1). Verse units are excluded (QA M11).
+    const cands = items.candidates(skill.id).filter((c) => {
+      if (c.ambiguous || !c.verified || isVerseWeek(c.unit.week_n)) return false;
+      if (seen.has(c.unit.id)) return false;
+      seen.add(c.unit.id);
+      const ch = chunksOf(c.unit.la);
+      return ch.length >= 3 && ch.length <= REORDER_MAX_WORDS && new Set(ch).size >= 2;
+    });
     if (!cands.length) return null;
     const keyOf = (c) => `reorder:${c.unit.id}`;
     const keys = cands.map(keyOf);
+    // Scramble is settled before the pool key is spent, so a sentence is never burned unasked (m7).
     const got = pool.chooseInfo(skill.id, 'reorder', keys, rand, tiersFor(cands, keyOf, opts));
     if (!got) return null;
     const c = cands[keys.indexOf(got.key)];
     const chunks = chunksOf(c.unit.la);
     const order = scramble(chunks, rand);
     if (!order) return null;
+    // The last chip does not carry the sentence's full stop, which would say "put me last" (m1). The capital on the
+    // first word is left alone: without a proper-noun test here, lower-casing *Rōma* would be the worse error.
+    const display = chunks.map((w, i) => (i === chunks.length - 1 ? w.replace(/[.!?]+$/, '') : w));
     const lab = c.value ? featureLabel(skill.feature ?? 'case', c.value, { skills: items.skills, skill }) : { name: skill.title, plain: skill.plain };
-    return { ...base(skill, 'reorder', stage, c), key: got.key, input: 'order', repeat: got.wrapped, chunks, scrambled: order,
+    return { ...base(skill, 'reorder', stage, c), key: got.key, input: 'order', repeat: got.wrapped, chunks, display, scrambled: order,
       prompt: { la: null, question: 'Put the words back in the book\'s order', gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}. ${skill.summary ?? ''}`.trim() },
       answer: [c.unit.la], choices: null,
       feedback: { short: `The book has: ${c.unit.la}`, term: skill.plain, label: lab, table: null, lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en || null } };
@@ -191,8 +216,17 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
 
   function translate(skill, stage, opts) {
     const seen = new Set();
-    const cands = items.candidates(skill.id).filter((c) => { if (seen.has(c.unit.id) || !c.unit.en || isShelfWeek(c.unit.week_n)) return false; seen.add(c.unit.id); return c.unit.la.length <= 220; });
+    const all = items.candidates(skill.id);
+    // Same filter as `transform` (QA M1): the feedback names a parse, so it must be one the sentence settles.
+    const cands = all.filter((c) => {
+      if (c.ambiguous || !c.verified) return false;
+      if (seen.has(c.unit.id) || !c.unit.en || isShelfWeek(c.unit.week_n)) return false;
+      seen.add(c.unit.id);
+      return c.unit.la.length <= 220;
+    });
     if (!cands.length) return null;
+    // Every verified candidate of the skill in a unit: the word indexes the app may claim carry the construction.
+    const verifiedIn = (unitId) => new Set(all.filter((c) => c.unit.id === unitId && !c.ambiguous && c.verified).map((c) => c.index));
     const keyOf = (c) => `translate:${c.unit.id}`;
     const keys = cands.map(keyOf);
     const got = pool.chooseInfo(skill.id, 'translate', keys, rand, tiersFor(cands, keyOf, opts));
@@ -202,7 +236,10 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     const stripped = strippedText(c.unit.la);
     const spans = patternSpans(c.unit.la, patternsOf(skill), stripped);
     const words = items.meaningsOf ? items.meaningsOf(c.unit.la) : [];
-    const lit = words.map((w, i) => ({ w, i })).filter(({ w }) => spans.some(([s, e]) => stripped.map[w.start] >= s && stripped.map[w.start] < e)).map(({ i }) => i);
+    // The pattern regex is loose (a genitive pattern lights *cui*), so the spans are intersected with the parses the
+    // sentence actually settles: a word the app cannot verify is never lit as the construction (QA M1).
+    const ok = verifiedIn(c.unit.id);
+    const lit = words.map((w, i) => ({ w, i })).filter(({ w, i }) => ok.has(i) && spans.some(([s, e]) => stripped.map[w.start] >= s && stripped.map[w.start] < e)).map(({ i }) => i);
     if (!lit.includes(c.index)) lit.push(c.index);
     const lab = c.value ? featureLabel(skill.feature ?? 'case', c.value, { skills: items.skills, skill }) : { name: skill.title, plain: skill.plain };
     return { ...base(skill, 'translate', stage, c), key: got.key, input: 'self', repeat: got.wrapped, lit: lit.sort((a, b) => a - b),

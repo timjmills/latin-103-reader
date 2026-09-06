@@ -89,7 +89,10 @@ test('phraseIndexes / answerIndexes / pensumSegments', () => {
   assert.deepEqual(phraseIndexes('Iūlius fīliae suae rosam dat.', 'filiae'), [1]);
   assert.deepEqual(phraseIndexes('Iūlius fīliae suae rosam dat.', 'servō'), []);
   assert.deepEqual(answerIndexes('Cui Iūlius ōsculum dat? Iūliae.', ['Iūliae', 'Iūlius Iūliae ōsculum dat.']), [4], 'only the answer that is in the sentence as a phrase');
-  assert.deepEqual(answerIndexes('Iūlius fīliae suae rosam dat.', ['fīliae suae', 'fīliae']), [1, 2]);
+  // A tap is one word: only a one-word answer's index is an accepted tap, or a tap on "in" would answer "in vīllā" (m5).
+  assert.deepEqual(answerIndexes('Iūlius fīliae suae rosam dat.', ['fīliae suae', 'fīliae']), [1]);
+  assert.deepEqual(answerIndexes('Iūlius fīliae suae rosam dat.', ['fīliae suae']), [], 'a phrase-only answer leaves nothing to tap: the item falls back to typing');
+  assert.deepEqual(answerIndexes('Iūlius fīliae suae rosam dat.', ['fīliae suae'], { whole: false }), [1, 2], 'the feedback still lights the whole phrase');
   assert.deepEqual(pensumSegments('Iūlius fīli_ su_ rosam dat.'), [{ text: 'Iūlius fīli' }, { blank: 0 }, { text: ' su' }, { blank: 1 }, { text: ' rosam dat.' }]);
   assert.deepEqual(pensumSegments('Rōma in ___ est.'), [{ text: 'Rōma in ' }, { blank: 0 }, { text: ' est.' }]);
 });

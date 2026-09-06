@@ -4,13 +4,21 @@
 // scheduler; a wrong practice answer re-queues the skill later in the session
 // and records the confusion pair when the chosen distractor names one.
 
-import { matchesForm, matchParse, matchFunction, parseFeatures, normaliseAnswer } from './items.js';
+import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer } from './items.js';
 import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession } from './scheduler.js';
 import { matchQuestion } from './sets.js';
 import { orderMatches } from './stage3.js';
 
 export const LEARN_GUIDED = 5;
 export const LEARN_BLOCKED = 10;
+/**
+ * A chapter set's Learn pass is a batch, not the whole deck. `vocab-27` holds
+ * ~119 words; 119 items followed by a blocked ten is not a sitting, and
+ * GRAMMAR-PLAN §4 sizes a session at 5 / 10 / 15 / open. The learner takes the
+ * deck fifteen at a time, sees how far through it is, and can stop and come
+ * back — the pool remembers which words have been shown (CR M8).
+ */
+export const SET_LEARN_BATCH = 15;
 
 /**
  * Judge an answer against an item. `value`: a string (type / choice value); a
@@ -35,7 +43,10 @@ export function judge(item, value) {
   if (item.input === 'order') {
     const order = Array.isArray(value) ? value.map(Number) : [];
     const chunks = item.chunks || [];
-    return { correct: orderMatches(chunks, order), expected: chunks.join(' '), given: order.map((i) => chunks[i] ?? '').join(' ') };
+    // The recap reads back what was on screen: the chips carry `display` (the last word without its full stop, m1),
+    // while judging is always against `chunks`, the book's own text.
+    const shown = item.display ?? chunks;
+    return { correct: orderMatches(chunks, order), expected: chunks.join(' '), given: order.map((i) => shown[i] ?? '').join(' ') };
   }
   if (item.input === 'match') {
     const given = value && typeof value === 'object' ? value : {};
@@ -47,9 +58,18 @@ export function judge(item, value) {
   if (item.input === 'inline' || item.input === 'bank') {
     const given = value && typeof value === 'object' ? value : {};
     const blanks = item.blanks || [];
-    // Pensum A accepts the ending alone or the whole word (stem + ending).
-    const results = blanks.map((b, i) => { const g = String(given[i] ?? ''); const ok = matchesForm(g, b.answers) || (b.stem && matchesForm(g, b.answers.map((a) => b.stem + a))); return { i, ok, given: g, expected: b.answers[0] }; });
-    return { correct: results.every((r) => r.ok), cells: results, expected: blanks.map((b) => b.answers[0]).join(', '), given: results.map((r) => r.given || '—').join(', ') };
+    // A pensum blank is macron-sensitive (`item.exact`): Ørberg's Pensum B for chapter I offers *Italia* beside
+    // *Italiā* precisely to drill the contrast, so accepting either would delete the exercise. Ordinary drills stay
+    // macron-optional. Pensum A also accepts the ending alone or the whole word (stem + ending).
+    const exact = !!item.exact;
+    const results = blanks.map((b, i) => {
+      const g = String(given[i] ?? '');
+      const whole = b.stem ? b.answers.map((a) => b.stem + a) : [];
+      const hit = (fn) => fn(g, b.answers) || (whole.length > 0 && fn(g, whole));
+      const ok = exact ? hit(matchesFormExact) : hit(matchesForm);
+      return { i, ok, macron: !ok && exact && hit(matchesForm), given: g, expected: b.answers[0], stem: b.stem ?? '', note: b.note ?? '' };
+    });
+    return { correct: results.every((r) => r.ok), macron: results.some((r) => r.macron), cells: results, expected: blanks.map((b) => b.answers[0]).join(', '), given: results.map((r) => r.given || '—').join(', ') };
   }
   if (item.input === 'self') {
     const g = String(value ?? '');
@@ -151,9 +171,10 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
     extend(more) { queue = [...queue, ...more]; changed(); if (!current) return load(); return current; },
     summary() {
       const right = log.filter((a) => a.correct).length;
+      const partly = log.filter((a) => a.correct && a.partial).length;
       const skillsSeen = [...new Set(log.map((a) => a.skill))];
       const wrong = log.filter((a) => !a.correct).map((a) => a.skill);
-      return { total: log.length, right, wrong: [...new Set(wrong)], skills: skillsSeen, hinted: log.filter((a) => a.hinted).length, ms: log.reduce((n, a) => n + (a.ms || 0), 0) };
+      return { total: log.length, right, partly, wrong: [...new Set(wrong)], skills: skillsSeen, hinted: log.filter((a) => a.hinted).length, ms: log.reduce((n, a) => n + (a.ms || 0), 0) };
     },
   };
 }
@@ -163,7 +184,7 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
  * → blocked 10 (hint behind a button) → criterion (6 of 10 across ≥ 2 kinds)
  * → pass (practising, due tomorrow) or redo (fresh blocked 10).
  */
-export function createLearn({ skill, gstore, items, rand = Math.random }) {
+export function createLearn({ skill, gstore, items, rand = Math.random, resume = null, onProgress = null }) {
   const phases = ['lesson', 'examples', 'guided', 'blocked', 'result'];
   let phase = 'lesson';
   let runner = null;
@@ -174,16 +195,24 @@ export function createLearn({ skill, gstore, items, rand = Math.random }) {
   // the blocked ten mix stages 1–2 (typed parse and blank from stage 2).
   const kindSeq = (n, stageOf) => { const out = []; let last = null; for (let i = 0; i < n; i++) { const pool = kinds.filter((k) => k !== last); const k = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))]; out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false }); last = k; } return out; };
   const getItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, full: phase === 'guided' && slot.kind === 'chart', avoid: opts.avoid, match: isSet && phase === 'guided' ? false : undefined });
+  // A chapter set's "guided" phase walks the deck in batches, with feedback after each item; the blocked ten follow.
+  const total = isSet ? Math.max(1, Number(skill.count) || 0) : LEARN_GUIDED;
+  const deckSize = isSet ? Math.min(SET_LEARN_BATCH, total) : LEARN_GUIDED;
+  let seen = isSet ? Math.max(0, Math.min(total, Number(resume?.seen) || 0)) : 0;
   const record = async ({ attempt, result }) => {
+    if (isSet && phase === 'guided') { seen = Math.min(total, seen + 1); try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ } }
     await gstore.addAttempt(attempt);
     if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(skill.id, attempt.confused_with);
   };
-  // A chapter set's "guided" phase is the whole deck / the passage's items once through, with feedback (a vocab deck of 30 words is 30 items); the blocked ten follow.
-  const deckSize = isSet ? Math.max(1, Number(skill.count) || 0) : LEARN_GUIDED;
+  const batchOf = () => Math.max(1, Math.min(deckSize, total - seen) || deckSize);
   return {
     skill,
     isSet,
     deckSize,
+    get total() { return total; },
+    get seen() { return seen; },
+    get left() { return Math.max(0, total - seen); },
+    get batchSize() { return batchOf(); },
     get phase() { return phase; },
     get runner() { return runner; },
     get rounds() { return rounds; },
@@ -192,13 +221,17 @@ export function createLearn({ skill, gstore, items, rand = Math.random }) {
       await gstore.setState(startLearning(cur ?? skill.id));
     },
     goto(p) { if (phases.includes(p)) phase = p; return phase; },
-    startGuided() {
+    /** A batch of the guided pass. `fresh` (the default when nothing was resumed) starts the deck from the top. */
+    startGuided({ fresh = seen === 0 } = {}) {
       phase = 'guided';
-      if (isSet) items.pool.reset(skill.id);   // once through from the top
-      runner = createRunner({ slots: kindSeq(deckSize, () => 1), getItem, mode: 'learn', onAnswer: record, rand });
+      if (isSet && fresh) { items.pool.reset(skill.id); seen = 0; }   // from the top
+      runner = createRunner({ slots: kindSeq(batchOf(), () => 1), getItem, mode: 'learn', onAnswer: record, rand });
+      try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ }
       return runner.start();
     },
-    startBlocked() { phase = 'blocked'; rounds += 1; runner = createRunner({ slots: kindSeq(LEARN_BLOCKED, (k) => (k === 'blank' || k === 'parse' ? 2 : 1)), getItem, mode: 'learn', onAnswer: record, rand }); return runner.start(); },
+    /** The next batch of the same pass: the pool keeps its place, so no word comes round twice. */
+    moreGuided() { return this.startGuided({ fresh: false }); },
+    startBlocked() { phase = 'blocked'; rounds += 1; try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ } runner = createRunner({ slots: kindSeq(LEARN_BLOCKED, (k) => (k === 'blank' || k === 'parse' ? 2 : 1)), getItem, mode: 'learn', onAnswer: record, rand }); return runner.start(); },
     /** After the blocked drill: the criterion over its attempts (a set has one kind, so the two-kinds rule does not apply to it). */
     async finishBlocked() {
       phase = 'result';

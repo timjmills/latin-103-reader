@@ -251,7 +251,15 @@ async function boot() {
       const card = await grammar.todayCard({ unread, pace: hasStudy ? (stats ??= studyLog({ progress: progressRows, studyDays })).pace : null });
       weeksToday.replaceChildren(...(card ? [card] : []));
       weeksToday.hidden = !card;
-    } catch (e) { console.warn('[grammar] today card', e?.message || e); weeksToday.hidden = true; }
+    } catch (e) {
+      // "Nothing suggested" and "the card could not be built" are different things; hiding the slot said the first (m21).
+      console.warn('[grammar] today card', e?.message || e);
+      const p = document.createElement('p');
+      p.className = 'g-today__fallback';
+      p.textContent = 'Today’s plan could not be loaded. Open Grammar to see it.';
+      weeksToday.replaceChildren(p);
+      weeksToday.hidden = false;
+    }
   }
   weekBtn.addEventListener('click', async () => {
     await ensureWeekTotals();

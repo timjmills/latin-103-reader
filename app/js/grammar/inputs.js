@@ -26,7 +26,10 @@ const h = (tag, attrs = {}, ...children) => {
 const finePointer = () => typeof matchMedia === 'function' && matchMedia('(pointer: fine)').matches;
 const roving = (list, i, dir) => { const n = list.length; if (!n) return; const j = ((i + dir) % n + n) % n; list[j].focus(); };
 
-export function orderInput({ chunks, scrambled, onSubmit, live = null }) {
+export function orderInput({ chunks, display = null, scrambled, onSubmit, live = null }) {
+  // What a chip *says* may differ from the chunk it stands for: the last word's full stop is not printed on it, so the
+  // bank does not announce which word ends the sentence (stage3.js `display`). Judging always uses `chunks`.
+  const label = (idx) => (display?.[idx] ?? chunks[idx]);
   const placed = [];                       // chunk indexes in the row
   const bank = h('div', { class: 'g-order__bank', role: 'group', 'aria-label': 'Words to place' });
   const row = h('div', { class: 'g-order__row', role: 'group', 'aria-label': 'Your sentence' });
@@ -37,15 +40,16 @@ export function orderInput({ chunks, scrambled, onSubmit, live = null }) {
   const bankBtns = new Map();
   const paint = () => {
     // replaceChildren takes varargs, not an array: an array would be stringified into the row.
-    row.replaceChildren(...(placed.length ? placed.map((idx, at) => h('button', { type: 'button', class: 'g-order__w is-placed', lang: 'la', text: chunks[idx], 'aria-label': `${chunks[idx]}: remove from the sentence`, draggable: finePointer() ? 'true' : null, 'data-at': String(at), onclick: () => unplace(at) })) : [empty]));
+    row.replaceChildren(...(placed.length ? placed.map((idx, at) => h('button', { type: 'button', class: 'g-order__w is-placed', lang: 'la', text: label(idx), 'aria-label': `${label(idx)}: remove from the sentence`, draggable: finePointer() ? 'true' : null, 'data-at': String(at), onclick: () => unplace(at) })) : [empty]));
     for (const [idx, b] of bankBtns) { b.disabled = placed.includes(idx); b.classList.toggle('is-used', placed.includes(idx)); }
     undo.disabled = !placed.length;
     check.disabled = placed.length !== chunks.length;
   };
-  const place = (idx) => { if (placed.includes(idx)) return; placed.push(idx); paint(); say(`${chunks[idx]} placed, ${chunks.length - placed.length} left.`); if (placed.length === chunks.length) check.focus({ preventScroll: true }); else { const next = [...bankBtns.values()].find((b) => !b.disabled); next?.focus({ preventScroll: true }); } };
-  const unplace = (at = placed.length - 1) => { if (at < 0 || at >= placed.length) return; const [idx] = placed.splice(at, 1); paint(); say(`${chunks[idx]} back in the bank.`); bankBtns.get(idx)?.focus({ preventScroll: true }); };
+  // Two identical words in a row would set the live region to the same string twice, which most readers swallow, so the position is named (m11).
+  const place = (idx) => { if (placed.includes(idx)) return; placed.push(idx); paint(); say(`${label(idx)} placed ${placed.length}, ${chunks.length - placed.length} left.`); if (placed.length === chunks.length) check.focus({ preventScroll: true }); else { const next = [...bankBtns.values()].find((b) => !b.disabled); next?.focus({ preventScroll: true }); } };
+  const unplace = (at = placed.length - 1) => { if (at < 0 || at >= placed.length) return; const [idx] = placed.splice(at, 1); paint(); say(`${label(idx)} back in the bank, ${chunks.length - placed.length} left.`); bankBtns.get(idx)?.focus({ preventScroll: true }); };
   for (const idx of scrambled) {
-    const b = h('button', { type: 'button', class: 'g-order__w', lang: 'la', text: chunks[idx], 'aria-label': `${chunks[idx]}: place next`, draggable: finePointer() ? 'true' : null, onclick: () => place(idx) });
+    const b = h('button', { type: 'button', class: 'g-order__w', lang: 'la', text: label(idx), 'aria-label': `${label(idx)}: place next`, draggable: finePointer() ? 'true' : null, onclick: () => place(idx) });
     bankBtns.set(idx, b);
     bank.append(b);
   }
@@ -61,7 +65,8 @@ export function orderInput({ chunks, scrambled, onSubmit, live = null }) {
     else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); roving(list, i, -1); }
     else if (e.key === 'Home') { e.preventDefault(); list[0]?.focus(); }
     else if (e.key === 'End') { e.preventDefault(); list[list.length - 1]?.focus(); }
-    else if (e.key === 'Backspace' && placed.length) { e.preventDefault(); unplace(); }
+    // Backspace takes back the word that has focus when one of the placed words does; otherwise the last placed (CR m11).
+    else if (e.key === 'Backspace' && placed.length) { e.preventDefault(); unplace(list === inRow && i >= 0 ? i : placed.length - 1); }
   });
   // Drag on pointer devices: a bank word dropped on the row is placed (at the drop point); a placed word dragged back to the bank is removed.
   if (finePointer()) {
@@ -85,6 +90,7 @@ export function orderInput({ chunks, scrambled, onSubmit, live = null }) {
       if (dragging.from === 'row') { const [idx] = placed.splice(dragging.at, 1); if (at > dragging.at) at -= 1; placed.splice(at, 0, idx); }
       else if (!placed.includes(dragging.idx)) placed.splice(at, 0, dragging.idx);
       dragging = null; paint();
+      say(`${placed.length} of ${chunks.length} placed.`);
     });
     bank.addEventListener('drop', (e) => { e.preventDefault(); if (dragging?.from === 'row') { placed.splice(dragging.at, 1); paint(); } dragging = null; });
     form.addEventListener('dragend', () => { dragging = null; row.classList.remove('is-over'); });
@@ -99,8 +105,8 @@ export function matchInput({ pairs, right, onSubmit, live = null }) {
   let pendingLeft = null;
   let pendingRight = null;
   const say = (t) => { if (live) live.textContent = t; };
-  const leftBtns = pairs.map((p, i) => h('button', { type: 'button', class: 'g-match__b g-match__b--la', lang: 'la', text: p.la, 'data-side': 'left', 'data-i': String(i), 'aria-pressed': 'false', onclick: () => pickLeft(i) }));
-  const rightBtns = right.map((r, j) => h('button', { type: 'button', class: 'g-match__b', text: r.text, 'data-side': 'right', 'data-i': String(j), 'aria-pressed': 'false', onclick: () => pickRight(j) }));
+  const leftBtns = pairs.map((p, i) => h('button', { type: 'button', class: 'g-match__b g-match__b--la', lang: 'la', text: p.la, 'data-side': 'left', 'data-i': String(i), onclick: () => pickLeft(i) }));
+  const rightBtns = right.map((r, j) => h('button', { type: 'button', class: 'g-match__b', text: r.text, 'data-side': 'right', 'data-i': String(j), onclick: () => pickRight(j) }));
   const check = h('button', { type: 'submit', class: 'btn btn--primary', text: 'Check', disabled: true });
   // The number a pair carries on screen: without it four grey boxes say nothing about which two go together.
   const badge = (i) => { const at = order.indexOf(i); return at < 0 ? null : String(at + 1); };
@@ -108,14 +114,14 @@ export function matchInput({ pairs, right, onSubmit, live = null }) {
   const paint = () => {
     const usedRight = new Set(Object.values(chosen));
     const rightOwner = new Map(Object.entries(chosen).map(([k, v]) => [v, Number(k)]));
-    leftBtns.forEach((b, i) => { const r = chosen[i]; b.classList.toggle('is-paired', r != null); b.classList.toggle('is-pending', pendingLeft === i); b.setAttribute('aria-pressed', String(pendingLeft === i)); b.setAttribute('aria-label', r != null ? `Pair ${badge(i)}: ${pairs[i].la} — ${right[r].text}; tap to unpair` : `${pairs[i].la}: pick, then its meaning`); b.dataset.pair = r != null ? String(r) : ''; setBadge(b, badge(i)); });
-    rightBtns.forEach((b, j) => { const owner = rightOwner.get(j); const n = owner == null ? null : badge(owner); b.classList.toggle('is-paired', usedRight.has(j)); b.classList.toggle('is-pending', pendingRight === j); b.setAttribute('aria-pressed', String(pendingRight === j)); b.setAttribute('aria-label', owner == null ? `${right[j].text}: pick, then its Latin word` : `Pair ${n}: ${right[j].text} — ${pairs[owner].la}; tap to unpair`); setBadge(b, n); });
+    leftBtns.forEach((b, i) => { const r = chosen[i]; b.classList.toggle('is-paired', r != null); b.classList.toggle('is-pending', pendingLeft === i); b.setAttribute('aria-pressed', String(pendingLeft === i || r != null)); b.setAttribute('aria-label', r != null ? `Pair ${badge(i)}: ${pairs[i].la} — ${right[r].text}; tap to unpair` : `${pairs[i].la}: pick, then its meaning`); b.dataset.pair = r != null ? String(r) : ''; setBadge(b, badge(i)); });
+    rightBtns.forEach((b, j) => { const owner = rightOwner.get(j); const n = owner == null ? null : badge(owner); b.classList.toggle('is-paired', usedRight.has(j)); b.classList.toggle('is-pending', pendingRight === j); b.setAttribute('aria-pressed', String(pendingRight === j || usedRight.has(j))); b.setAttribute('aria-label', owner == null ? `${right[j].text}: pick, then its Latin word` : `Pair ${n}: ${right[j].text} — ${pairs[owner].la}; tap to unpair`); setBadge(b, n); });
     check.disabled = Object.keys(chosen).length !== pairs.length;
   };
   const unpairLeft = (i) => { delete chosen[i]; const at = order.indexOf(i); if (at >= 0) order.splice(at, 1); };
   const pair = (i, j) => { for (const k of Object.keys(chosen)) if (chosen[k] === j) unpairLeft(Number(k)); chosen[i] = j; if (!order.includes(i)) order.push(i); pendingLeft = null; pendingRight = null; paint(); say(`${pairs[i].la} — ${right[j].text}. ${pairs.length - Object.keys(chosen).length} left.`); if (!check.disabled) check.focus({ preventScroll: true }); };
-  const pickLeft = (i) => { if (chosen[i] != null) { unpairLeft(i); pendingLeft = null; paint(); say(`${pairs[i].la} unpaired.`); return; } if (pendingRight != null) { pair(i, pendingRight); return; } pendingLeft = pendingLeft === i ? null : i; paint(); };
-  const pickRight = (j) => { if (pendingLeft != null) { pair(pendingLeft, j); return; } const owner = Object.keys(chosen).find((k) => chosen[k] === j); if (owner != null) { unpairLeft(Number(owner)); paint(); say(`${right[j].text} unpaired.`); return; } pendingRight = pendingRight === j ? null : j; paint(); };
+  const pickLeft = (i) => { if (chosen[i] != null) { unpairLeft(i); pendingLeft = null; paint(); say(`${pairs[i].la} unpaired.`); return; } if (pendingRight != null) { pair(i, pendingRight); return; } pendingLeft = pendingLeft === i ? null : i; paint(); say(pendingLeft === i ? `${pairs[i].la} picked; now its meaning.` : `${pairs[i].la} let go.`); };
+  const pickRight = (j) => { if (pendingLeft != null) { pair(pendingLeft, j); return; } const owner = Object.keys(chosen).find((k) => chosen[k] === j); if (owner != null) { unpairLeft(Number(owner)); paint(); say(`${right[j].text} unpaired.`); return; } pendingRight = pendingRight === j ? null : j; paint(); say(pendingRight === j ? `${right[j].text} picked; now its Latin word.` : `${right[j].text} let go.`); };
   const cols = h('div', { class: 'g-match' }, h('div', { class: 'g-match__col', role: 'group', 'aria-label': 'Latin words' }, leftBtns), h('div', { class: 'g-match__col', role: 'group', 'aria-label': 'Meanings' }, rightBtns));
   const form = h('form', { class: 'g-match__form', onsubmit: (e) => { e.preventDefault(); if (Object.keys(chosen).length === pairs.length) onSubmit({ ...chosen }); } }, cols, h('div', { class: 'g-order__acts' }, check), h('p', { class: 'g-keys', text: 'Tab or the arrow keys move between the words; Enter picks a word, then its meaning.' }));
   form.addEventListener('keydown', (e) => {

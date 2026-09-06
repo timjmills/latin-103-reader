@@ -240,7 +240,11 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-choice__label[lang="la"] { font-family: var(--face-reading); font-size: 1.1rem; }
 .g-choice__plain { grid-column: 2; font-size: var(--ui-xs); color: var(--ink-3); }
 .g-keys { margin: calc(-1 * var(--s-1)) 0 0; font-size: var(--ui-xs); color: var(--ink-3); }
-@media (hover: none) and (pointer: coarse) { .g-keys:not(.g-keys--tap) { display: none; } }
+/* Hidden from sight on a touch device, but kept in the accessibility tree: a tablet with a Bluetooth keyboard would
+   otherwise lose the only statement of the order / match key model (m12). */
+@media (hover: none) and (pointer: coarse) {
+  .g-keys:not(.g-keys--tap) { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+}
 .g-type { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .g-input { min-height: var(--tap); flex: 1 1 14rem; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: var(--ui-lg); }
 .g-input[lang="la"] { font-family: var(--face-reading); font-size: 1.15rem; }
@@ -345,10 +349,21 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 }
 .g-order__w:hover:not(:disabled) { border-color: var(--ink); }
 .g-order__w.is-placed { background: var(--bg-chrome); border-color: var(--ink-3); }
+/* After Check every button in the item is disabled, and reader.css fades a disabled button to 45 %. The one input whose
+   *answer is the arrangement* must stay readable while the feedback asks the learner to compare it (m7 / QA M7) — the
+   bank's own "already used" fade is a different thing and keeps its 0.35. */
+.g-order__w:disabled { opacity: 1; color: var(--ink-2); }
 .g-order__w.is-used { opacity: 0.35; cursor: default; }
 .g-order__w[draggable="true"] { cursor: grab; }
 .g-order__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-@media (pointer: coarse) { .g-order__w, .g-match__b, .g-pensum__slot, .g-plan__go, .g-self__grade .btn { min-height: var(--tap); } }
+/* 44 px on both axes under a coarse pointer: `et`, `in` and `ā` are two-letter chips, and a Pensum A ending box is
+   ~26 px tall without this (m15 / CR m1). */
+@media (pointer: coarse) {
+  .g-order__w, .g-match__b, .g-pensum__slot, .g-plan__go, .g-self__grade .btn { min-height: var(--tap); }
+  .g-order__w { min-width: var(--tap); }
+  .g-input--end, .g-pensum__slot { min-height: var(--tap); min-width: 3.5em; }
+  .g-pensum { line-height: 2.6; }
+}
 
 /* Match: two columns, Latin left, meanings right; a pending pick is outlined, a pair filled. */
 .g-match { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-3); }
@@ -391,6 +406,17 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-self__grade { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 @media (prefers-reduced-motion: reduce) { .g-self__model { animation: none; } }
 
+/* The right answer is marked in the list itself after an answer, not only in the prose below it (m13). */
+.g-choice.is-answer { border-color: var(--success); box-shadow: inset 2px 0 0 var(--success); }
+.g-choice.is-answer .g-choice__label { font-weight: 600; }
+
+/* A chapter set's Learn pass walks the deck a batch at a time; the bar says how far through it is. */
+.g-prog__wrap { margin: 0 0 var(--s-3); }
+.g-prog { width: 100%; max-width: 26rem; height: 6px; appearance: none; border: 0; border-radius: 999px; background: var(--bg-chrome); }
+.g-prog::-webkit-progress-bar { background: var(--bg-chrome); border-radius: 999px; }
+.g-prog::-webkit-progress-value { background: var(--ink-3); border-radius: 999px; }
+.g-prog::-moz-progress-bar { background: var(--ink-3); border-radius: 999px; }
+
 /* Vocabulary: the word stands large and alone; the dictionary line arrives with the feedback. */
 .g-vocab__word { font-size: clamp(1.4rem, calc(var(--reading-size, 1.35rem) * 1.3), 2.2rem); }
 .g-fb__dict, .g-fb__pairs { margin: 0; font-size: var(--ui-md); }
@@ -400,3 +426,16 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-q-en { font-size: var(--ui-sm); }
 .g-q-en .g-hint__s { min-height: 36px; }
 .g-q-en .g-hint__rule { margin: 0 0 var(--s-1); }
+
+/* ------------------------------------------------ wave 2: the weeks-menu Today card */
+/* The dialog's own slot for the card. Without a rule of its own it borrowed `.g-plan--card`'s margins, written for the
+   skill map, and sat oddly against the week list (m10). */
+.weeks__today { margin: 0 0 var(--s-2); }
+.weeks__today .g-plan--card { margin: 0; }
+.weeks__today .g-plan__row { padding-block: var(--s-2); }
+.weeks__today .g-today__fallback { margin: 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: var(--radius); font-family: var(--face-ui); font-size: var(--ui-sm); color: var(--ink-3); }
+
+/* A question's own words are tappable for their entry (plan §3), so the question is a `.g-la` as well as a `.g-q`:
+   it keeps the question's size and weight and takes the reading face for the Latin. */
+.g-q.g-q--la { font-family: var(--face-reading); }
+.g-q.g-q--la .g-w { font: inherit; }

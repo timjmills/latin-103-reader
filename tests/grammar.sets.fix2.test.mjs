@@ -7,7 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createSetLoader, groupPensa, setSkills, pensumSegments, pensumFilled, createSetItems } from '../app/js/grammar/sets.js';
+import { createSetLoader, groupPensa, setSkills, pensumSegments, pensumFilled, createSetItems, normaliseQuestionSet, qwordLemma } from '../app/js/grammar/sets.js';
 import { createPool, matchesForm, matchesFormExact } from '../app/js/grammar/items.js';
 import { judge } from '../app/js/grammar/session.js';
 
@@ -205,4 +205,17 @@ test('migration 0017 — a self-graded translate attempt reaches the server as a
   assert.equal(serverAttemptRow({ skill: 'x', kind: 'blank', correct: false, at: 'now' }).self, null, 'null on every other kind');
   assert.equal(serverAttemptRow({ skill: 'x', kind: 'translate', self: 'right', at: 'now' }).self, 'right', 'a row from the server passes through');
   assert.equal(serverAttemptRow({ skill: 'x', kind: 'translate', self: 'nonsense', at: 'now' }).self, null, 'anything outside the check constraint is dropped');
+});
+
+test('m12 — an inflected question word is normalised to its lemma for the hint, the printed form kept beside it', () => {
+  const set = normaliseQuestionSet({ chapter: 7, items: [
+    { id: 'a', qword: 'cuius', q: 'Cuius rosa est?', answers: ['Iūliae'] },
+    { id: 'b', qword: 'quem', q: 'Quem videt?', answers: ['Mārcum'] },
+    { id: 'c', qword: 'quod', q: 'Quod oppidum?', answers: ['Tūsculum'] },
+    { id: 'd', qword: 'ubi', q: 'Ubi est?', answers: ['in hortō'] },
+  ] });
+  assert.deepEqual(set.items.map((i) => i.qword), ['quis', 'quis', 'quī', 'ubi']);
+  assert.deepEqual(set.items.map((i) => i.qwordForm), ['cuius', 'quem', 'quod', 'ubi']);
+  assert.equal(qwordLemma('QUAE'), 'quī');
+  assert.equal(qwordLemma(''), null);
 });

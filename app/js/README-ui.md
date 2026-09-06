@@ -879,12 +879,54 @@ Shapes and ownership: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
   `public.pensa` (migration 0016) and are absent until that pipeline runs: with
   no rows a chapter simply shows no Pensa row, the map's lede stops promising
   them, and nothing throws.
-- **The chapter-set share is a sliding window.** At most `SET_MAX` (3) set
-  items in any `SET_WINDOW` (10) in a row — not a session total, so a 15-item
-  or open-ended session keeps the same feel. `buildSession` takes `prior` (the
+- **The chapter-set share is a sliding window with a floor and a ceiling.**
+  At most `SET_MAX` (3) and at least `SET_MIN` (1) set items in any
+  `SET_WINDOW` (10) in a row — not a session total, so a 15-item or open-ended
+  session keeps the same feel. The floor matters: review-heavy walks the skill
+  map in book order and the sets sort after every grammar skill, so without a
+  reservation they were starved to zero. `setFloorSlots` picks one position per
+  window of ten (and per trailing part-window of five or more) and
+  `buildSession` fills it with a due set. `buildSession` takes `prior` (the
   slots already played) so an open session's next batch counts across the seam,
-  and `requeue` takes `played` so a missed set item comes back into a window
-  that has room. The preset "This week" and a one-skill set are uncapped.
+  and `requeue` takes `played` and `setSlotFits` so a missed set item comes back
+  into a window that has room on **both** sides of the splice. The preset "This
+  week" and a one-skill set are uncapped and unfloored.
+- **A set skill has exactly one kind, and that is honoured when the *skill* is
+  picked.** Two set slots side by side would otherwise always break "no two
+  consecutive items of one kind", so `vocab-01` is never placed next to
+  `vocab-02` (a `questions` slot beside a `vocab` slot is fine).
+- **A pensum blank is macron-sensitive; nothing else is.** Pensum items carry
+  `exact: true` and `judge` compares with `matchesFormExact` (case and
+  punctuation ignored, v/u and j/i folded, macrons kept). Ørberg's Pensum B for
+  chapter I offers *Italiā* beside *Italia* to drill the ablative against the
+  nominative, so accepting either would delete the item. A macron-only miss is
+  flagged `macron: true` and the feedback names both forms, reading their case
+  off the word's own paradigm. The Pensum B bank is a **multiset** — one tile
+  per required occurrence — and the UI tracks tiles by position, never by text,
+  so a sentence wanting the same word twice can be finished.
+- **A pensum sentence owns its stem.** `text` already reads "Rōma in Itali_
+  est."; `blanks[].stem` is metadata for the input's label and for accepting
+  "Italiā" typed out. Neither `inlineInput` nor the "Filled in" model answer
+  adds it again.
+- **A chapter set's Learn is a capped, resumable pass.** `SET_LEARN_BATCH` (15)
+  items with feedback, then "another 15" / "go on to the ten" / "stop for now",
+  with a progress bar reading *n of N seen*. The place lives in
+  `localStorage['l103.grammar.learn']`; the item pool remembers which items have
+  been shown, so a resumed batch never repeats one. A deck of 119 words is not
+  a sitting.
+- **The weeks-menu Today card is cheap.** `mountGrammar().todayCard()` runs
+  `lightInit()`, not `init()`: the skill map, the grammar store and **the
+  current chapter's two JSON files** through the loader the full section later
+  reuses — no unit or highlight scan over every week, no lesson-example fetch,
+  no 68 chapter files. A set in rotation from another chapter gets a stub row
+  carrying its title and state, which is all the card prints. Opening Grammar
+  runs the full `init()`, which disposes the light UI's popstate listener and
+  builds its own. When `buildToday` is called without an items generator it
+  falls back to "a skill with a parse filter is drillable".
+- **"Reset all" clears everything the section holds**, not only the four store
+  keys: the saved practice session (resuming it re-created skill states from the
+  pre-reset queue), the "start all as new" run, a set's half-finished Learn pass
+  and today's dismissal.
 - **The Today card** (`today.js` → `ui.js todayCard()`) renders in two places:
   the Grammar map's Today section (`place: 'map'`, with the session-in-progress
   and "start all as new" lines above it) and the weeks menu
@@ -892,9 +934,15 @@ Shapes and ownership: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
   reading line). Lines: Learn (the current 103 week's first unlearned drillable
   skill, the rest counted) · Practice (a 10-item review-heavy session, due count
   and confusion pairs) · Questions · Vocabulary due · Read. Grammar minutes come
-  from the learner's own drill pace (`itemSeconds`: the mean of the last 200
-  attempts once 20 exist, clamped 8–90 s, else 25 s); the reading line uses the
-  study log's pace. "Not today" hides it for the day (`settings.todayDismissed`,
+  from the learner's own drill pace **per kind** (`itemSecondsBy`: the median of
+  the last 200 attempts of that kind once 20 exist, each attempt capped at
+  120 s, the result clamped to 5–120 s, else the kind's own default — a
+  recognition tap is not a translation). The Read line offers a **day's share**
+  of the week (`ceil(unread / days left in the week)`) at the study log's pace
+  and says so; the Questions and Vocabulary "first pass" lines cost the Learn
+  batch plus the blocked ten ("15 of 43, first pass"), not the whole deck; the
+  total is labelled "about N min if you do it all". Nothing on the card reads as
+  a quota. "Not today" hides it for the day (`settings.todayDismissed`,
   a local date); the map offers "Show it" back. A lesson-only skill (a metre
   skill, or one with no sentences yet) never reaches the Learn line — `buildToday`
   takes the section's own `drillable` predicate, falling back to "has a parse
@@ -904,4 +952,4 @@ Shapes and ownership: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
   `--check` fails when one is stale or a file is malformed.
   `build_lessons_index.py` is kept as an alias. Adding a set file means
   re-running it, adding the file to `app/sw.js` PRECACHE and bumping
-  `CACHE_VERSION` (sw is **v35**).
+  `CACHE_VERSION` (sw is **v36**).

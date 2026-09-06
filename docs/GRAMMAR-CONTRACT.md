@@ -189,8 +189,10 @@ here first if any of it should move.
   stability by at most × 1.2 (so an "even mix" evening cannot master a fresh
   skill); a wrong answer always drops mastered → practising; stage-up resets
   `streak` (so `streak` = correct in a row at the current stage; no extra
-  column needed). `successes_spaced` is not stored — mastered = stability > 21 d
-  and `successes ≥ 3`; a `spaced integer` column would let it be exact.
+  column needed). `successes_spaced` **is** stored (migration 0017) and mastery
+  is counted on it: mastered = stability > 21 d and `successes_spaced ≥ 3`,
+  where a spaced success is correct, unaided and given when the skill was
+  already due. A wrong answer clears the count.
   Learn-mode attempts never touch stability / due_at. "Add to mixed practice"
   = practising, due now, stability 0.5 d.
 - **Server rows.** `drill_attempts` has no client id: the local id is
@@ -345,8 +347,7 @@ From `qa/grammar/CODE-REVIEW-G1.md` and `qa/grammar/QA-REPORT-G1.md`.
   Read / Grammar control shares the week row on phones as a single button naming
   the *other* section ("Grammar" while reading, "Read" in grammar), so the reader
   keeps two header rows and the week title its room (G1-19). The feedback block is announced once (through `#live`).
-- **Not changed, with reasons**: `successes_spaced` (m2) still needs a server
-  column — mastered stays stability > 21 d and successes ≥ 3; `ctx.settings`
+- **Not changed, with reasons**: `ctx.settings`
   stays the boot snapshot refreshed by `savePrefs` (m13: a getter would be a
   second hook in main.js); `unit.flags` for OCR-unverified tokens (m18) is
   pipeline work; "Add all" still makes every skill due at once (a spread is a
@@ -382,7 +383,14 @@ adjectives their three forms. Meanings from the glossary's preferred sense
 `vocab-NN` (Latin → English, default) and `vocab-NN-rev` (English → Latin,
 optional extra deck). Items: `kind: "vocab"`, `input: "choice"` (4 options,
 distractors = same chapter, same pos) at stage 1, `"type"` at stage 2+ for the
-reverse deck; item key `vocab:NN:<lemma>[:rev]`.
+reverse deck; item key `vocab:NN:<lemma>:<pos>[:rev]` — three shipped decks
+hold one lemma under two parts of speech (*līber* / *liber* in ch. 2, *mare* in
+10, *anus* in 32) and without the `pos` the second is unreachable. A word shown
+as a four-pair `match` keeps that same key and carries `variant: "match"`, so a
+word's history is one row however it was shown. Distractors are the same
+chapter and the same part of speech, topped up from the same part of speech in
+the nearest chapters — **never** another part of speech, which would let the
+learner answer by shape.
 
 ### Question sets `questions/NN.json` (Q → E)
 ```jsonc
@@ -406,6 +414,9 @@ sentence alone; Latin in `q` macronised. Skill id `questions-NN`; item key
 `public.pensa` rows: `{ chapter, kind: "A"|"B"|"C", items: [...] }`, private.
 ```jsonc
 // A: endings blanked   { "text": "Iūlius in vīll_ habitat.", "blanks": [ { "i": 0, "stem": "vīll", "answers": ["ā"], "note": "abl. after in" } ] }
+//    `text` is authoritative and already contains the stem; `blanks[].stem` is metadata (the input's label, and
+//    "vīllā" typed out in full is accepted). Neither the prompt nor the model answer ever adds it again.
+//    The number of `_` runs in `text` must equal `blanks.length`, or E hides the item.
 // B: words blanked     { "text": "Mārcus ___ Quīntum pulsat.", "blanks": [ { "i": 0, "answers": ["frātrem"], "bank": ["frātrem", "sorōrem", "puerum"] } ] }
 // C: questions         { "q": "Ubi habitat Iūlius?", "answers": ["in vīllā", "Iūlius in vīllā habitat."], "unit_id": "r01:…" }
 ```
@@ -448,8 +459,10 @@ left open. Change here first if any of it should move.
   the wave-1 interface (`generate`, `drillable`, `pool`), so `session.js` and
   `ui.js` never branch on which module owns a kind.
 - **The chapter-set share is a sliding window, not a session total.**
-  `SET_MAX` (3) items in any `SET_WINDOW` (10) in a row — a 15-item session
-  therefore holds about five, never four in one ten. `buildSession` takes
+  `SET_MAX` (3) items in any `SET_WINDOW` (10) in a row, and since the fix pass
+  a floor of `SET_MIN` (1) per window too — a 15-item session therefore holds
+  two or three, never four in one ten and never none. (The sentence that stood
+  here said "about five"; it described the ceiling and was wrong.) `buildSession` takes
   `prior` (the slots already played) so an open-ended session's next batch of
   ten counts across the seam, and `requeue` takes `played` so a missed set item
   returns into a window with room (it is let back regardless only when no such
@@ -482,11 +495,92 @@ left open. Change here first if any of it should move.
   (`lessons/`, `questions/`, `vocab/`); `build_lessons_index.py` is an alias.
   `--check` validates the files, not only the manifests' freshness.
 - **Shipped data.** `questions/01–34.json` = 1322 items; `vocab/01–34.json` =
-  1770 words. sw.js is **v35**.
+  1770 words. sw.js is **v36**.
+
+### Wave 2 fix pass (E, 2026-09-06)
+
+Answering `qa/grammar/CODE-REVIEW-G2.md` and `qa/grammar/QA-REPORT-G2.md`.
+Tests: `tests/grammar.sets.fix2.test.mjs`, `tests/grammar.mix.fix2.test.mjs`,
+and additions to `grammar.stage3` / `grammar.today` / `grammar.store`.
+
+- **A pensum blank is macron-sensitive; every other drill is not.** Ørberg's
+  Pensum B for chapter I offers *Italiā* beside *Italia* precisely to drill the
+  ablative against the nominative, so accepting either would delete the
+  exercise. Pensum items carry `exact: true`; `judge` then uses
+  `matchesFormExact` (case and punctuation ignored, v/u and j/i folded, macrons
+  kept) and marks a macron-only miss `macron: true`, which the feedback names
+  by reading both forms off the word's own paradigm ("Italia is the nominative
+  singular; here the blank wants the ablative, Italiā (abl. after in) — they
+  differ only in the macron"). Pensum answers are no longer given
+  macron-stripped variants. "Macrons optional" (GRAMMAR-PLAN §9a) still holds
+  everywhere else, Pensum C included (it is a typed question, not an ending).
+- **A Pensum B bank is a multiset.** One tile per required occurrence plus the
+  book's distractors; the UI tracks tiles by position, never by text, so a
+  sentence wanting the same word twice can be finished.
+- **`reorder` and `translate` run `!ambiguous && verified`,** the filter
+  `transform` already used: neither may state a parse the sentence did not
+  settle. `translate` additionally intersects its pattern spans with the
+  verified candidates before lighting a word, so a loose regex can no longer
+  light *cui* as a genitive. `reorder` also excludes the verse weeks (13, 14):
+  a metrical line's order cannot be reasoned to from grammar.
+- **Chapter sets have a floor as well as a ceiling.** `SET_MIN` (1) per
+  `SET_WINDOW` (10) while any set is in rotation: `setFloorSlots` reserves one
+  position per window of ten (and per trailing part-window of five or more) and
+  `buildSession` fills it with a due set. A mixed ten therefore holds 1–3 set
+  items, a fifteen 2–3 in any ten. "This week" and one-skill stay uncapped and
+  unfloored. **The earlier sentence "a 15-item session therefore holds about
+  five" described the ceiling only and was never true of review-heavy, which
+  starved the sets to zero.**
+- **A set skill's single kind is honoured when picking the skill,** not only
+  when picking the kind: two set slots side by side may not share a kind, so
+  `vocab-01` never sits beside `vocab-02`.
+- **`requeue` checks the windows on both sides** of the insertion point
+  (`setSlotFits`), since the splice shifts everything after it.
+- **A set's Learn pass is a capped, resumable batch.** `SET_LEARN_BATCH` (15)
+  items with feedback, then "another 15" / "go on to the ten" / "stop for now",
+  with a progress bar reading *n of N seen*. The place is kept in
+  `localStorage['l103.grammar.learn']` and the item pool already remembers what
+  has been shown, so nothing repeats inside a pass.
+- **The Today card's arithmetic is a day's.** The Read line offers
+  `ceil(unread / days left in the week)` at the study log's pace and says so;
+  the Questions and Vocabulary "first pass" lines cost the batch plus the
+  blocked ten ("15 of 43, first pass"); `itemSeconds` is per kind, the **median**
+  of the last 200 of that kind, each attempt capped at 120 s and the result
+  clamped to 5–120 s, with a per-kind default until twenty attempts exist. The
+  total is labelled "about N min if you do it all".
+- **"Reset all" clears the saved session, the "start all as new" run, a set's
+  Learn place and today's dismissal** as well as the four store keys.
+- **Migration 0017's columns are used.** `drill_attempts.self` carries the
+  learner's own grade on a translate item; `skill_state.successes_spaced` is
+  written by `applyAnswer` and read by mastery.
+- **The weeks-menu Today card no longer boots the section.** `todayCard()` runs
+  a light path: the skill map, the grammar store, and **the current chapter's
+  two files** through the same loader the full section later reuses. A set in
+  rotation from another chapter gets a stub row (title, state, at most a
+  ten-item session). Opening Grammar still runs the full `init()`, which
+  replaces the light UI (the first instance's popstate listener is disposed).
+- **A failed chapter-set fetch is logged and retried**, never memoised as
+  `null` for the life of the page; `load()` returns `failed` so the caller can
+  say so.
+- **Minor rules also settled here.** A tap answer must be the whole answer
+  (`answerIndexes(..., { whole: true })` — a tap on *in* no longer answers *in
+  vīllā*; the feedback still lights the whole phrase). A question's own words
+  are glossable whatever the input, `type` and `choice` included. `qword` is
+  normalised to its lemma (*cuius* → *quis*) with the printed form kept in
+  `qwordForm`. `reorder` chips drop the sentence's final stop. `transform`
+  capitalises by the lemma, not by sentence-initial position, and skips number
+  transforms on the personal pronouns. A pensum row whose content changed is
+  written locally even when `updated_at` and the item count did not. Ordinary
+  drills: "macrons optional" unchanged.
+
+**Left alone, with reasons.** The vocabulary pipeline findings (CR M1, M2, M7,
+m8) belong to `pipeline/build_vocab.py`, another agent's file. `reorder` does
+not lower-case a sentence-initial word (QA m1's other half): without a
+proper-noun test in `stage3.js`, printing *rōma* would be a worse error than the
+giveaway. The unbalanced quotation mark (QA m19) is the book's own text, one
+sentence of a longer quoted speech, and is not the app's to close. Commit
+`0eebc68`'s wrong item count (CR m13) is in history.
 
 #### Worth changing in the plan
 
-- The Today card's Read line offers the **week's** remaining sentences, so its
-  "about N min in all" can read as 100+ minutes for a day's suggestion — which
-  sits badly with "never forced" (GRAMMAR-PLAN §5). A day's share of the week
-  would be the honest number.
+- Nothing outstanding from wave 2.

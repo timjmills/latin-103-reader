@@ -34,11 +34,17 @@ export function normalisePensum(r) {
 
 /** The columns the server table has (anything else stays local). */
 export function serverStateRow(row) {
-  const { skill, state, stage, stability_days, due_at, last_at, streak, successes, failures, updated_at } = normaliseState(row);
-  return { skill, state, stage, stability_days, due_at, last_at, streak, successes, failures, updated_at };
+  // `successes_spaced` (migration 0017): the successes that count towards mastery — correct, unaided, and given when
+  // the skill was already due. Mastery reads this, not the raw `successes` count.
+  const { skill, state, stage, stability_days, due_at, last_at, streak, successes, successes_spaced, failures, updated_at } = normaliseState(row);
+  return { skill, state, stage, stability_days, due_at, last_at, streak, successes, successes_spaced, failures, updated_at };
 }
+const SELF = ['right', 'partly', 'wrong'];
 export function serverAttemptRow(a) {
-  return { skill: a.skill, kind: a.kind, item_key: a.item_key, mode: a.mode, correct: !!a.correct, hinted: !!a.hinted, answer: a.answer ?? null, expected: a.expected ?? null, confused_with: a.confused_with ?? null, ms: a.ms == null ? null : Math.round(a.ms), at: a.at };
+  // `self` (migration 0017): the learner's own grade on a translate item, so stats can tell a self-graded attempt from
+  // a judged one instead of inferring it from the `answer` string. null on every other kind.
+  const self = a.self === true ? String(a.answer ?? '').replace(/^self:\s*/, '') : a.self;
+  return { skill: a.skill, kind: a.kind, item_key: a.item_key, mode: a.mode, correct: !!a.correct, hinted: !!a.hinted, self: SELF.includes(self) ? self : null, answer: a.answer ?? null, expected: a.expected ?? null, confused_with: a.confused_with ?? null, ms: a.ms == null ? null : Math.round(a.ms), at: a.at };
 }
 /** A clean attempt row from any source (bad rows → null). Pure. */
 export function normaliseAttempt(a) {
@@ -120,7 +126,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       const rows = await hooks.pageAll(() => sb.from('pensa').select('*').order('chapter'));
       const remote = new Map();
       for (const raw of rows) { const p = normalisePensum(raw); if (p) remote.set(p.id, p); }
-      for (const [id, p] of remote) { const cur = pensa.get(id); if (!cur || ts(p.updated_at) > ts(cur.updated_at) || cur.items.length !== p.items.length) { pensa.set(id, p); await db.put('pensa', p); changed = true; } }
+      for (const [id, p] of remote) { const cur = pensa.get(id); if (!cur || ts(p.updated_at) > ts(cur.updated_at) || cur.items.length !== p.items.length || JSON.stringify(cur.items) !== JSON.stringify(p.items)   /* content, not only the count: an edited item with the same updated_at never reached a device that already had the row (CR m3) */) { pensa.set(id, p); await db.put('pensa', p); changed = true; } }
       for (const id of [...pensa.keys()]) if (!remote.has(id)) { pensa.delete(id); await db.del('pensa', id); changed = true; }
     } catch (e) { console.warn('[grammar] pensa not synced', e?.message || e); }
     if (changed) emit();

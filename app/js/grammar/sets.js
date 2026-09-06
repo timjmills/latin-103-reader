@@ -25,6 +25,24 @@ import { normaliseAnswer } from './items.js';
 export const SET_KINDS = Object.freeze(['question', 'vocab', 'pensum']);
 const pad = (n) => String(n).padStart(2, '0');
 const shuffle = (arr, rand) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+/**
+ * The question words the contract lists, keyed by every inflected form the sets
+ * ship. 88 items carry `quem`, `cui`, `cuius`, `quae`, `quī`, `quod`; the
+ * generated hint read "A cuius question: the answer is in the chapter", and the
+ * "≥ 8 different question words" rule was measured on the raw field (m12). The
+ * inflected form is kept for display; `qword` is the lemma.
+ */
+const QWORD_LEMMA = {
+  quem: 'quis', quid: 'quid', cui: 'quis', cuius: 'quis', quo: 'quis', quibus: 'quis', quis: 'quis',
+  quae: 'quī', qui: 'quī', quod: 'quī', quam: 'quī', quos: 'quī', quas: 'quī', quorum: 'quī', quarum: 'quī',
+  qualis: 'quālis', quale: 'quālis', qualem: 'quālis', quot: 'quot', uter: 'uter', utra: 'uter', utrum: 'uter',
+};
+/** The lemma of a question word, macrons and case ignored; null when there is none. Pure. */
+export function qwordLemma(qword) {
+  const raw = String(qword ?? '').trim();
+  if (!raw) return null;
+  return QWORD_LEMMA[stripMacrons(raw).toLowerCase()] ?? raw;
+}
 const POS_LABEL = { N: 'noun', ADJ: 'adjective', V: 'verb', ADV: 'adverb', PRON: 'pronoun', PREP: 'preposition', CONJ: 'conjunction', NUM: 'numeral', INTERJ: 'interjection' };
 
 /* ------------------------------------------------------------ chapters */
@@ -51,20 +69,31 @@ export function chapterOfWeek(week) {
 /** A loader over `fetchJson(name)` (relative to data/grammar/): the two manifests once, each chapter file once; a missing file is null. */
 export function createSetLoader({ fetchJson }) {
   const cache = new Map();
-  const once = (name, fn) => { if (!cache.has(name)) cache.set(name, fn().catch(() => null)); return cache.get(name); };
+  // A rejection is *not* memoised (M10): the entry is dropped so a later loadAll retries, and the failure is logged rather than swallowed.
+  const once = (name, fn) => {
+    if (!cache.has(name)) cache.set(name, fn().catch((e) => { cache.delete(name); console.warn(`[grammar] chapter set ${name} could not be loaded`, e?.message || e); return null; }));
+    return cache.get(name);
+  };
   const manifest = (dir) => once(`${dir}/index.json`, async () => { const raw = await fetchJson(`${dir}/index.json`); return manifestChapters(raw); });
   const chapter = (dir, c) => once(`${dir}/${pad(c)}.json`, () => fetchJson(`${dir}/${pad(c)}.json`));
   /** { questions: Map chapter → set, vocab: Map chapter → deck } — every listed chapter loaded. */
-  async function loadAll() {
-    const out = { questions: new Map(), vocab: new Map() };
+  const normOf = (dir, d) => (dir === 'questions' ? normaliseQuestionSet(d) : normaliseVocab(d));
+  async function load(chaptersWanted = null) {
+    const out = { questions: new Map(), vocab: new Map(), failed: [] };
     for (const dir of ['questions', 'vocab']) {
-      const chapters = (await manifest(dir)) ?? [];
+      const listed = await manifest(dir);
+      if (listed == null) out.failed.push(`${dir}/index.json`);
+      const chapters = (listed ?? []).filter((c) => chaptersWanted == null || chaptersWanted.includes(c));
       const docs = await Promise.all(chapters.map((c) => chapter(dir, c)));
-      docs.forEach((d, i) => { const norm = dir === 'questions' ? normaliseQuestionSet(d) : normaliseVocab(d); if (norm) out[dir].set(norm.chapter ?? chapters[i], norm); });
+      docs.forEach((d, i) => { const norm = normOf(dir, d); if (norm) out[dir].set(norm.chapter ?? chapters[i], norm); else out.failed.push(`${dir}/${pad(chapters[i])}.json`); });
     }
     return out;
   }
-  return { loadAll };
+  /** Every listed chapter. */
+  const loadAll = () => load(null);
+  /** One chapter only — what the weeks-menu Today card needs (M6): two files, not 68. */
+  const loadChapter = (c) => load([Number(c)]);
+  return { loadAll, loadChapter };
 }
 /** `{ "chapters": [1, 7] }` (or a list) → [1, 7]; anything else → null. Pure. */
 export function manifestChapters(raw) {
@@ -80,7 +109,7 @@ export function normaliseQuestionSet(raw) {
     const answers = [...new Set(it.answers.filter((a) => typeof a === 'string' && a.trim()).flatMap((a) => [a.trim(), stripMacrons(a.trim())]))];
     const input = ['type', 'choice', 'tap'].includes(it.input) ? it.input : 'type';
     const choices = Array.isArray(it.choices) ? it.choices.filter((c) => typeof c === 'string' && c.trim()) : [];
-    return { id: String(it.id ?? `q${pad(chapter ?? 0)}-${pad(i + 1)}`), qword: it.qword ?? null, q: it.q, en: typeof it.en === 'string' ? it.en : '', unit_id: typeof it.unit_id === 'string' ? it.unit_id : null, answers, input: input === 'choice' && choices.length < 2 ? 'type' : input, choices, hint: typeof it.hint === 'string' ? it.hint : '' };
+    return { id: String(it.id ?? `q${pad(chapter ?? 0)}-${pad(i + 1)}`), qword: qwordLemma(it.qword), qwordForm: it.qword ?? null, q: it.q, en: typeof it.en === 'string' ? it.en : '', unit_id: typeof it.unit_id === 'string' ? it.unit_id : null, answers, input: input === 'choice' && choices.length < 2 ? 'type' : input, choices, hint: typeof it.hint === 'string' ? it.hint : '' };
   });
   return { chapter, week_id: typeof raw.week_id === 'string' ? raw.week_id : null, title: typeof raw.title === 'string' ? raw.title : '', items };
 }
@@ -103,7 +132,15 @@ export function groupPensa(rows) {
     const c = Number(r?.chapter);
     const kind = String(r?.kind ?? '').toUpperCase();
     if (!Number.isFinite(c) || !['A', 'B', 'C'].includes(kind)) continue;
-    const items = (Array.isArray(r.items) ? r.items : []).map((it, i) => ({ ...it, i })).filter((it) => it && !it.unverified && (kind === 'C' ? typeof it.q === 'string' && Array.isArray(it.answers) : typeof it.text === 'string' && Array.isArray(it.blanks) && it.blanks.length));
+    const items = (Array.isArray(r.items) ? r.items : []).map((it, i) => ({ ...it, i })).filter((it) => {
+      if (!it || it.unverified) return false;
+      if (kind === 'C') return typeof it.q === 'string' && Array.isArray(it.answers);
+      if (typeof it.text !== 'string' || !Array.isArray(it.blanks) || !it.blanks.length) return false;
+      // The holes in the text and the blanks must correspond one to one, or the wrong answer is paired with the wrong hole (m6).
+      const holes = pensumSegments(it.text).filter((sg) => sg.blank != null).length;
+      if (holes !== it.blanks.length) { console.warn(`[grammar] pensum ${c}${kind} item ${it.i}: ${holes} blanks in the text, ${it.blanks.length} answers — hidden`); return false; }
+      return true;
+    });
     if (!out.has(c)) out.set(c, { A: [], B: [], C: [] });
     out.get(c)[kind] = items;
   }
@@ -180,11 +217,23 @@ export function phraseIndexes(la, phrase) {
   for (let i = 0; i + want.length <= words.length; i++) if (want.every((w, j) => words[i + j] === w)) return want.map((_, j) => i + j);
   return [];
 }
-/** The word indexes any of the answers occupies in the sentence (a tap item's accepted taps). Pure. */
-export function answerIndexes(la, answers) {
+/**
+ * The word indexes an accepted answer occupies in the sentence. `whole` (the
+ * default) accepts only the indexes of answers that are **one word**: a tap is
+ * a single word, so accepting any word of "in vīllā" would mark a tap on *in*
+ * right (m5). Pass `whole: false` for lighting the answer in the feedback,
+ * where the whole phrase should glow. A single-word answer that is only
+ * inflected differently is not in the sentence: nothing to accept, and the
+ * caller falls back to typing. Pure.
+ */
+export function answerIndexes(la, answers, { whole = true } = {}) {
   const out = new Set();
-  for (const a of answers || []) for (const i of phraseIndexes(la, a)) out.add(i);
-  // A single-word answer that is only inflected differently is not in the sentence: nothing to accept, the caller falls back to typing.
+  for (const a of answers || []) {
+    const idx = phraseIndexes(la, a);
+    if (!idx.length) continue;
+    if (whole && idx.length > 1) continue;
+    for (const i of idx) out.add(i);
+  }
   return [...out].sort((a, b) => a - b);
 }
 /** The blanks of a pensum text, in order: segments of prose and `{ blank: i }` for each run of underscores. Pure. */
@@ -194,6 +243,15 @@ export function pensumSegments(text) {
   for (const m of String(text ?? '').matchAll(/_+/g)) { if (m.index > last) out.push({ text: text.slice(last, m.index) }); out.push({ blank: i++ }); last = m.index + m[0].length; }
   if (last < String(text ?? '').length) out.push({ text: text.slice(last) });
   return out;
+}
+
+/**
+ * The pensum sentence with its blanks filled by the model answers. The stem is
+ * already inside the prose segments — `blanks[].stem` is metadata, not a piece
+ * of the sentence (C1). Pure.
+ */
+export function pensumFilled(segments, blanks) {
+  return (segments || []).map((s) => (s.blank != null ? (blanks?.[s.blank]?.answers?.[0] ?? '') : s.text)).join('');
 }
 
 /* ------------------------------------------------------------ generator */
@@ -220,8 +278,9 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     if (input === 'tap') { accept = unit ? answerIndexes(unit.la, it.answers) : []; if (!accept.length) input = 'type'; }
     const item = { ...base(skill, 'question', stage), key: got.key, input, repeat: got.wrapped, unit_id: it.unit_id, question: it,
       prompt: { la: input === 'tap' && unit ? unit.la : null, question: it.q, en: it.en, gloss: null, hint: it.hint || `A ${it.qword ?? 'question'} question: the answer is in the chapter.`, placeholder: 'the answer in Latin (macrons optional)' },
-      answer: it.answers, choices: null, meanings: input === 'tap' && unit ? meaningsOf(unit.la) : [],
-      feedback: { short: unit ? `The chapter says: ${unit.la}` : `The answer is ${it.answers[0]}.`, term: skill.plain, label: null, table: null, lemma: null, sense: null, paradigm: null, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, it.answers) : [] } };
+      // The words of the question itself are glossable whatever the input (plan §3: meanings are never assumed).
+      answer: it.answers, choices: null, meanings: input === 'tap' && unit ? meaningsOf(unit.la) : meaningsOf(it.q),
+      feedback: { short: unit ? `The chapter says: ${unit.la}` : `The answer is ${it.answers[0]}.`, term: skill.plain, label: null, table: null, lemma: null, sense: null, paradigm: null, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, it.answers, { whole: false }) : [] } };
     if (input === 'choice') {
       const correctSet = new Set(it.answers.map(normaliseAnswer));
       const opts = it.choices.map((c) => ({ value: c, label: c, correct: correctSet.has(normaliseAnswer(c)), skill: null }));
@@ -233,11 +292,32 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     return item;
   }
 
+  // Every vocabulary word in the section, by part of speech: a chapter rarely has four verbs of its own, and a
+  // distractor of another part of speech lets the learner answer by shape instead of meaning (M9).
+  let posIndex = null;
+  const byPos = (pos) => {
+    if (!posIndex) {
+      posIndex = new Map();
+      for (const sk of sets.values()) { if (sk.set !== 'vocab' || sk.rev) continue; for (const w of sk.data?.words ?? []) { const k = w.pos || 'X'; if (!posIndex.has(k)) posIndex.set(k, []); posIndex.get(k).push({ ...w, chapter: sk.chapter }); } }
+    }
+    return posIndex.get(pos || 'X') ?? [];
+  };
+  /**
+   * Distractors for a vocabulary item: the same chapter and the same part of
+   * speech first, then the same part of speech from the nearest chapters. Never
+   * another part of speech — that would make the item answerable by shape.
+   */
   const sameChapterDistractors = (deck, word, n, by = (w) => w.meaning) => {
-    const others = deck.words.filter((w) => w.lemma !== word.lemma && normaliseAnswer(by(w)) !== normaliseAnswer(by(word)));
-    const samePos = others.filter((w) => w.pos === word.pos);
-    const picked = shuffle(samePos, rand).slice(0, n);
-    if (picked.length < n) picked.push(...shuffle(others.filter((w) => !picked.includes(w)), rand).slice(0, n - picked.length));
+    const differs = (w) => w.lemma !== word.lemma && normaliseAnswer(by(w)) !== normaliseAnswer(by(word)) && by(w);
+    const chapter = Number(deck.chapter) || 0;
+    const picked = shuffle(deck.words.filter((w) => w.pos === word.pos && differs(w)), rand).slice(0, n);
+    if (picked.length < n) {
+      const seen = new Set(picked.map((w) => `${w.lemma}|${w.pos}`));
+      const near = byPos(word.pos)
+        .filter((w) => differs(w) && !seen.has(`${w.lemma}|${w.pos}`))
+        .sort((a, b) => Math.abs((a.chapter ?? 0) - chapter) - Math.abs((b.chapter ?? 0) - chapter));
+      for (const w of near) { if (picked.length >= n) break; if (seen.has(`${w.lemma}|${w.pos}`)) continue; seen.add(`${w.lemma}|${w.pos}`); picked.push(w); }
+    }
     return picked;
   };
   const dictLine = (w) => (w.parts ? `${w.dict} · ${w.parts}` : w.dict);
@@ -246,7 +326,8 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     if (!deck.words.length) return null;
     const rev = !!skill.rev;
     const suffix = rev ? ':rev' : '';
-    const keyOf = (w) => `vocab:${pad(skill.chapter)}:${w.lemma}${suffix}`;
+    // The key carries the part of speech: three shipped decks hold one lemma twice (liber N / ADJ), and without it the second is unreachable (M8).
+    const keyOf = (w) => `vocab:${pad(skill.chapter)}:${w.lemma}:${w.pos || 'X'}${suffix}`;
     const keys = deck.words.map(keyOf);
     const got = pool.chooseInfo(skill.id, 'vocab', keys, rand);
     const w = deck.words[keys.indexOf(got.key)];
@@ -259,7 +340,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
       const others = sameChapterDistractors(deck, w, 3);
       const pairs = shuffle([w, ...others], rand).map((x) => ({ la: x.lemma, en: x.meaning, dict: dictLine(x) }));
       const right = shuffle(pairs.map((p, i) => ({ text: p.en, pair: i })), rand);
-      return { ...common, key: got.key.replace(/^vocab:/, 'vocab-match:'), input: 'match', pairs, right,
+      return { ...common, variant: 'match', input: 'match', pairs, right,
         prompt: { la: null, question: 'Match each word to its meaning', gloss: null, hint: `Four ${POS_LABEL[w.pos] ? `${posName}s` : 'words'} from chapter ${roman(skill.chapter)}.` },
         answer: pairs.map((p) => `${p.la} — ${p.en}`), choices: null };
     }
@@ -295,17 +376,28 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
       return { ...common, input, unit_id: it.unit_id ?? null, question: { q: it.q, answers, en: it.en ?? '' }, accept: input === 'tap' ? accept : null,
         prompt: { la: input === 'tap' ? unit.la : null, question: it.q, en: it.en ?? '', gloss: null, hint: 'Pensum C: answer from the chapter.', placeholder: 'the answer in Latin (macrons optional)' },
         answer: answers, choices: null, meanings: input === 'tap' ? meaningsOf(unit.la) : [],
-        feedback: { ...common.feedback, short: unit ? `The chapter says: ${unit.la}` : `The answer is ${it.answers[0]}.`, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? accept : [] } };
+        feedback: { ...common.feedback, short: unit ? `The chapter says: ${unit.la}` : `The answer is ${it.answers[0]}.`, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, it.answers, { whole: false }) : [] } };
     }
     const segments = pensumSegments(it.text);
-    const blanks = it.blanks.map((b, i) => ({ i: Number.isFinite(Number(b.i)) ? Number(b.i) : i, stem: b.stem ?? '', answers: [...new Set((b.answers || []).flatMap((a) => [a, stripMacrons(a)]))], note: b.note ?? '', bank: Array.isArray(b.bank) ? b.bank : [] })).sort((a, b) => a.i - b.i);
-    const filled = segments.map((s) => (s.blank != null ? (blanks[s.blank]?.stem ?? '') + (blanks[s.blank]?.answers[0] ?? '') : s.text)).join('');
+    // `text` owns the stem ("Rōma in Itali_ est."); `stem` is metadata for the label and for accepting the whole
+    // word typed out (C1). It is never printed or joined again — that produced "ItaliItaliā".
+    // Answers keep their macrons: a pensum blank is macron-sensitive (M3), because the macron *is* the ending.
+    const blanks = it.blanks.map((b, i) => ({ i: Number.isFinite(Number(b.i)) ? Number(b.i) : i, stem: b.stem ?? '', answers: [...new Set((b.answers || []).filter((a) => typeof a === 'string' && a.length))], note: b.note ?? '', bank: (Array.isArray(b.bank) ? b.bank : []).filter((w) => typeof w === 'string' && w.length) })).sort((a, b) => a.i - b.i);
+    if (blanks.some((b) => !b.answers.length)) return null;
+    const filled = pensumFilled(segments, blanks);
     if (kind === 'A') {
-      return { ...common, input: 'inline', segments, blanks, prompt: { la: null, question: 'Pensum A: type the endings', gloss: null, hint: blanks.map((b) => b.note).filter(Boolean).join(' · ') || 'Each blank wants an ending; the stem is given.' },
+      return { ...common, exact: true, input: 'inline', segments, blanks, prompt: { la: null, question: 'Pensum A: type the endings', gloss: null, hint: blanks.map((b) => b.note).filter(Boolean).join(' · ') || 'Each blank wants an ending; the stem is given. Macrons count here — the length of the vowel is part of the ending.' },
         answer: blanks.map((b) => b.answers[0]), choices: null, feedback: { ...common.feedback, short: `${filled}`, sentence: filled } };
     }
-    const bank = shuffle([...new Set([...blanks.flatMap((b) => b.bank), ...blanks.map((b) => b.answers[0])])], rand);
-    return { ...common, input: 'bank', segments, blanks, bank, prompt: { la: null, question: 'Pensum B: fill each blank from the words below', gloss: null, hint: 'Tap a word for the next empty blank; tap a filled blank to empty it.' },
+    // The bank is a multiset: a sentence that wants the same word twice offers two tiles (M3 / CR M3), plus the
+    // distractors the book prints. Tiles are identified by position, never by their text.
+    const need = new Map();
+    for (const b of blanks) need.set(b.answers[0], (need.get(b.answers[0]) ?? 0) + 1);
+    const tiles = [];
+    for (const [w, n] of need) for (let k = 0; k < n; k++) tiles.push(w);
+    for (const w of new Set(blanks.flatMap((b) => b.bank))) if (!need.has(w)) tiles.push(w);
+    const bank = shuffle(tiles, rand);
+    return { ...common, exact: true, input: 'bank', segments, blanks, bank, prompt: { la: null, question: 'Pensum B: fill each blank from the words below', gloss: null, hint: 'Tap a word for the next empty blank; tap a filled blank to empty it. Two words that differ only in a macron are two different forms.' },
       answer: blanks.map((b) => b.answers[0]), choices: null, feedback: { ...common.feedback, short: `${filled}`, sentence: filled } };
   }
 

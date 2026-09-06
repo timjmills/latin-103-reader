@@ -209,6 +209,17 @@ export function matchesForm(typed, answers) {
   return (answers || []).some((a) => foldVU(normaliseAnswer(a)) === t);
 }
 
+/** Latin forms with the macrons kept: case-insensitive, punctuation dropped, v/u and j/i still folded (an orthographic variant, not a length contrast). Pure. */
+export function normaliseExact(s) {
+  return String(s ?? '').normalize('NFC').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+}
+/** True when the typed form matches an accepted answer *with its macrons* — for drills where the vowel's length is the exercise (pensum blanks). Pure. */
+export function matchesFormExact(typed, answers) {
+  const t = foldVU(normaliseExact(typed));
+  if (!t) return false;
+  return (answers || []).some((a) => foldVU(normaliseExact(a)) === t);
+}
+
 const SYN = {
   case: { nominative: 'nom', nom: 'nom', genitive: 'gen', gen: 'gen', dative: 'dat', dat: 'dat', accusative: 'acc', acc: 'acc', ablative: 'abl', abl: 'abl', vocative: 'voc', voc: 'voc', locative: 'loc', loc: 'loc' },
   number: { singular: 'sg', sing: 'sg', sg: 'sg', s: 'sg', plural: 'pl', plur: 'pl', pl: 'pl', p: 'pl' },

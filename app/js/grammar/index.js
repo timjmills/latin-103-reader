@@ -13,6 +13,7 @@ import { createGrammarStore } from './store-grammar.js';
 import { createItems } from './items.js';
 import { createStage3 } from './stage3.js';
 import { createSetLoader, createSetItems, setSkills, groupPensa, chapterOfWeek, manifestChapters } from './sets.js';
+import { roman } from '../sync.js';
 import { createGenerator } from './generate.js';
 import { createUI } from './ui.js';
 
@@ -76,9 +77,11 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       try { if (saveSettings) ctx.settings = (await saveSettings({ grammar: next })) ?? ctx.settings; } catch (e) { console.warn('[grammar] preferences not saved', e?.message || e); }
     },
     /** Any other settings key (todayDismissed). */
+    /** Any other settings key (todayDismissed). Returns false when the write failed, so the caller does not report success (m20). */
     async saveSetting(patch) {
       ctx.settings = { ...ctx.settings, ...patch };
-      try { if (saveSettings) ctx.settings = (await saveSettings(patch)) ?? ctx.settings; } catch (e) { console.warn('[grammar] setting not saved', e?.message || e); }
+      try { if (saveSettings) ctx.settings = (await saveSettings(patch)) ?? ctx.settings; } catch (e) { console.warn('[grammar] setting not saved', e?.message || e); return false; }
+      return true;
     },
     section: () => document.documentElement.dataset.section ?? 'read',
     say(text) { if (live) live.textContent = text; },
@@ -88,7 +91,11 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
 
   let ui = null;
   let initP = null;
+  let lightP = null;
   let baseItems = null;
+  // One loader for the whole section: the cheap Today card fetches the current chapter through it, and the full
+  // section's loadAll later reuses everything already in its cache.
+  const loader = createSetLoader({ fetchJson });
   /** The chapter sets as skills, from the public files and the store's pensa; rebuilt when the pensa change. */
   function buildSets(loaded) {
     ctx.sets = setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
@@ -115,8 +122,9 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       await Promise.all([...ctx.index.skills.values()].filter((s) => s.feature === 'construction').map(async (s) => { try { lessonUnits.set(s.id, await lessonExampleUnits(s.id)); } catch { lessonUnits.set(s.id, []); } }));
       baseItems = createItems({ units: ctx.units, lookup: dict.lookup, paradigm: par.paradigm, skills: ctx.index.skills, storage: localStorage, gold: { highlights, lessonUnits } });
       // The chapter sets: question sets and vocabulary decks (public), pensa (private, through the grammar store).
-      const loaded = await createSetLoader({ fetchJson }).loadAll();
+      const loaded = await loader.loadAll();
       buildSets(loaded);
+      ui?.dispose?.();
       ui = createUI(ctx);
       window.latinGrammar = ctx;   // documented hook (like window.latinReader): the section's context and the item on screen
       let pensaCount = ctx.gstore.getPensa().length;
@@ -133,6 +141,42 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       root.replaceChildren(Object.assign(document.createElement('p'), { className: 'g-loading', textContent: `The grammar section could not start: ${e?.message ?? e}` }));
     });
     return initP;
+  }
+
+  /**
+   * The cheap path behind the weeks menu's Today card (CR M6 / QA). Opening the
+   * week button used to boot the whole section: every week's units and
+   * highlights, every construction lesson's examples, and all 68 chapter JSON
+   * files. It now loads the skill map, the grammar store and **the current
+   * chapter's two files**, and builds the card from those; a set the learner
+   * already has in rotation but whose file is not loaded gets a stub row with
+   * its title and state, which is all the card prints. Opening Grammar itself
+   * still runs the full `init()`.
+   */
+  async function lightInit() {
+    if (initP) { await initP; return; }
+    if (lightP) return lightP;
+    lightP = (async () => {
+      ctx.index = ctx.index ?? await loadSkills();
+      if (!ctx.gstore) { ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa }); await ctx.gstore.ready(); }
+      if (!ctx.weeks.length) ctx.weeks = await store.getWeeks();
+      const chapter = ctx.currentChapter();
+      const loaded = chapter != null ? await loader.loadChapter(chapter) : { questions: new Map(), vocab: new Map() };
+      const sets = setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
+      // A vocabulary deck in rotation from another chapter: the card names it and offers ten due items; its own file
+      // is fetched when the section opens. `count` is unknown here, so the row claims no more than a session holds.
+      for (const [id] of ctx.gstore.getStates()) {
+        const m = /^(questions|vocab|pensum)-(\d{2})(-rev)?$/.exec(id);
+        if (!m || sets.has(id)) continue;
+        const c = Number(m[2]);
+        const label = m[1] === 'questions' ? 'Questions' : m[1] === 'vocab' ? 'Vocabulary' : 'Pensa';
+        sets.set(id, { id, set: m[1] === 'questions' ? 'questions' : m[1], chapter: c, rev: !!m[3], title: `${label} · Cap. ${roman(c)}${m[3] ? ' · English → Latin' : ''}`, plain: '', kinds: [m[1] === 'questions' ? 'question' : m[1] === 'vocab' ? 'vocab' : 'pensum'], count: 10, confusable_with: [], prereqs: [], stub: true });
+      }
+      ctx.sets = sets;
+      ctx.skills = new Map([...ctx.index.skills, ...ctx.sets]);
+      ui = createUI(ctx);   // no `items`: the card falls back to "a skill with a parse filter is drillable"
+    })().catch((e) => { console.warn('[grammar] the Today card could not be built', e?.message || e); lightP = null; throw e; });
+    return lightP;
   }
 
   // The reader's place and title are kept while Grammar is open and put back on return (G1-06 / G1-07).
@@ -165,6 +209,6 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   return {
     open: () => setSection('grammar'), close: () => setSection('read'), ctx,
     /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */
-    async todayCard(opts = {}) { await init(); return ui ? ui.todayCard({ ...opts, place: 'weeks' }) : null; },
+    async todayCard(opts = {}) { await lightInit(); return ui ? ui.todayCard({ ...opts, place: 'weeks' }) : null; },
   };
 }
