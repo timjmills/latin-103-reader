@@ -15,6 +15,14 @@ skills.json; every question set / vocabulary deck is a JSON object whose
 contract gives (ids unique, answers non-empty, a choice item with ≥ 2 choices,
 a tap item with a unit_id; a word with lemma + meaning).
 
+An answer or a choice is a *reference* (GRAMMAR-CONTRACT.md "Question sets",
+PROMPT.md §5): our own wording as a string, or `{"span": [i, j]}` — words i…j
+of the item's own sentence — or `{"parts": [...]}` weaving the two together, so
+that the book's Latin never ships in a public file. This script checks the
+shape only, exactly as `normaliseRef` in app/js/grammar/sets.js accepts it;
+whether a reference *resolves*, and the copyright line itself, are
+pipeline/check_questions.py's job, since only it reads the private text.
+
 Re-run after adding or removing a file; app/sw.js must list the new file too
 (tests/sw.precache.test.mjs), and CACHE_VERSION bumps. build_lessons_index.py
 is kept as an alias of this script.
@@ -51,6 +59,54 @@ def chapter_files(folder: Path) -> list[int]:
         if m:
             out.append(int(m.group(1)))
     return sorted(out)
+
+
+def _span_ok(s) -> bool:
+    """`[i, j]`: two integers, 0 ≤ i ≤ j — sets.js `normaliseRef`'s `span()`."""
+    return (isinstance(s, list) and len(s) == 2
+            and all(isinstance(n, int) and not isinstance(n, bool) for n in s)
+            and s[0] >= 0 and s[1] >= s[0])
+
+
+def ref_error(ref) -> str | None:
+    """Why this answer/choice is not a usable reference, or None when it is.
+
+    The three shapes of GRAMMAR-CONTRACT.md: a non-empty string (our own
+    wording), `{"span": [i, j]}`, or `{"parts": [...]}` — a non-empty list of
+    those two. Anything the loader would drop is a build error here.
+    """
+    if isinstance(ref, str):
+        return None if ref.strip() else "empty string"
+    if not isinstance(ref, dict):
+        return f"{type(ref).__name__}, expected a string or a span/parts reference"
+    if "span" in ref:
+        return None if _span_ok(ref["span"]) else f"bad span {ref['span']!r} (want [i, j] with 0 ≤ i ≤ j)"
+    if "parts" in ref:
+        parts = ref["parts"]
+        if not isinstance(parts, list) or not parts:
+            return "empty parts"
+        for k, p in enumerate(parts):
+            if isinstance(p, str):
+                if not p.strip():
+                    return f"parts[{k}] is an empty string"
+            elif isinstance(p, dict) and "span" in p:
+                if not _span_ok(p["span"]):
+                    return f"parts[{k}]: bad span {p['span']!r}"
+            else:
+                return f"parts[{k}] is neither a string nor a span"
+        return None
+    return f"reference has neither `span` nor `parts`: {sorted(ref)}"
+
+
+def validate_refs(errs: list[str], where: str, what: str, refs) -> None:
+    """`answers` / `choices`: a non-empty list of well-formed references."""
+    if not isinstance(refs, list) or not refs:
+        errs.append(f"{where}: {what} must be a non-empty list")
+        return
+    for k, ref in enumerate(refs, 1):
+        why = ref_error(ref)
+        if why:
+            errs.append(f"{where}: {what}[{k}] {why}")
 
 
 def validate_lessons(ids: list[str]) -> list[str]:
@@ -99,14 +155,17 @@ def validate_questions(chapters: list[int]) -> list[str]:
             seen.add(iid)
             if not isinstance(it.get("q"), str) or not it["q"].strip():
                 errs.append(f"{where}: no q")
-            answers = it.get("answers")
-            if not isinstance(answers, list) or not answers or not all(isinstance(a, str) and a.strip() for a in answers):
-                errs.append(f"{where}: answers must be a non-empty list of strings")
+            validate_refs(errs, where, "answers", it.get("answers"))
             inp = it.get("input", "type")
             if inp not in QUESTION_INPUTS:
                 errs.append(f"{where}: input {inp!r} is not type | choice | tap")
-            if inp == "choice" and (not isinstance(it.get("choices"), list) or len(it["choices"]) < 2):
-                errs.append(f"{where}: a choice item needs ≥ 2 choices")
+            if inp == "choice":
+                if not isinstance(it.get("choices"), list) or len(it["choices"]) < 2:
+                    errs.append(f"{where}: a choice item needs ≥ 2 choices")
+                else:
+                    validate_refs(errs, where, "choices", it["choices"])
+            elif "choices" in it:
+                validate_refs(errs, where, "choices", it["choices"])
             if inp == "tap" and not isinstance(it.get("unit_id"), str):
                 errs.append(f"{where}: a tap item needs a unit_id")
     return errs

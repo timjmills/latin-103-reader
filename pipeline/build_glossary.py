@@ -396,6 +396,101 @@ def analyse(parser: Parser, form: str) -> list[Rec]:
 # spelling
 
 
+# Macrons the book prints and Whitaker's stems do not carry.
+#
+# `Speller` learns a stem's spelling from the source tokens, so a stem the
+# course texts only ever show in one shape keeps whatever length that shape
+# happens to reveal: a perfect stem seen only in the pluperfect, an oblique
+# stem the text never inflects, a supine stem that never occurs at all.  Every
+# root below is one the corpus prints long where the learnt spelling is short.
+# They were found by generating each root's forms with pipeline/latin_forms.py
+# and comparing them, letter by letter, against the macronised text the project
+# already trusts — data/build/week-*.json and review-*.json with Ørberg's
+# own margin glosses, and the Textus Latīnus of source/week-*.md — and each
+# was then read off the printed page with fitz.  Nothing is here that the
+# corpus does not attest; a root the corpus prints both ways (indignus,
+# magnus, arcus, ubi, intrāre) is left alone.
+#
+# Where a correction is written for root 0 as well as root 1 the two are one
+# morpheme, not two guesses: Whitaker splits a verb's present stem in two
+# (nōscō / nōscere) and a 1st/2nd-declension noun's stem in two (nīdus /
+# nīdī), and spells them alike; the nominative or the 1sg is attested in the
+# corpus in every such row.  A noun whose nominative really is shorter than
+# its oblique stem (clāmor / clāmōris, iānitor / iānitōris) keeps the two apart.
+#
+# Key: "<POS>:<Whitaker's own stems>" — the key `macrons.HAND_ROOTS` uses, and
+# what `Speller.roots` has in hand.  Value: {root index: the printed spelling}.
+# Whitaker sometimes lists one word twice (the personal and the impersonal
+# iuvō, conveniō), and neighbours can share a stem list (vēna / vēnum /
+# vēnus, vēr / vērum / vērū); such a key corrects all of them, which is right
+# because every one of them is long.  The build reports any key that never
+# fires, so a Whitaker update cannot leave a dead row here.
+ROOT_MACRONS: dict[str, dict[int, str]] = {
+    # --- nouns and adjectives
+    "ADJ:frequens/frequent/frequenti/frequentissi": {0: "frequēns"},  # frequēns
+    "ADJ:magn/magn/mai/maxi": {2: "māi", 3: "māxi"},                  # māior, māiōre, māiōris; māximus, māximē, māximō — and the margin "comp māior -ius, sup māximus -a -um"
+    "N:clamor/clamor": {1: "clāmōr"},                                 # clāmōrem, clāmōre, clāmōrēs (root 0 already clāmor)
+    "N:comoedi/comoedi": {0: "cōmoedi", 1: "cōmoedi"},                # cōmoedia, cōmoediam, cōmoediās
+    "N:coniunx/coniug": {0: "coniūnx"},                               # coniūnx, in the chapter's own vocabulary list
+    "N:dens/dent": {0: "dēns"},                                       # dēns
+    "N:form/form": {1: "fōrm"},                                       # fōrmam (root 0 already fōrm)
+    "N:frons/front": {0: "frōns"},                                    # frōns
+    "N:ianitor/ianitor": {1: "iānitōr"},                              # iānitōrem, iānitōre, iānitōris, iānitōrēs, iānitōrī
+    "N:leo/leon": {1: "leōn"},                                        # leōnēs, leōnis
+    "N:mos/mor": {1: "mōr"},                                          # mōrēs, mōris
+    "N:nid/nid": {0: "nīd", 1: "nīd"},                                # nīdus, nīdum, nīdī, nīdō, nīdōs
+    "N:pes/ped": {0: "pēs"},                                          # pēs
+    "N:person/person": {0: "persōn", 1: "persōn"},                    # persōna x61 against persona x4 on the page (the verb personō, a different stem list, keeps its short o)
+    "N:prius/prior": {1: "priōr"},                                    # priōre
+    "N:pulchritudo/pulchritudin": {0: "pulchritūdō"},                 # pulchritūdō
+    "N:uen/uen": {0: "vēn", 1: "vēn"},                                # vēna, vēnam, vēnās (and vēnum / vēnus, which share the stems)
+    "N:uer/uer": {0: "vēr"},                                          # vēr (root 1 already vēr)
+    "N:uocabul/uocabul": {0: "vocābul", 1: "vocābul"},                # vocābulum, vocābula, vocābulō, vocābulīs
+    # --- adverbs: the superlative's own -e
+    "ADV:nuper/-/nuperrime": {2: "nūperrimē"},                        # nūperrimē on the page (Fabulae Syrae p. 82)
+    "ADV:rare/rarius/rarissime": {1: "rārius", 2: "rārissimē"},       # rārius, rārissimē
+    # --- present stems
+    "V:educ/educ/edux/educt": {0: "ēdūc", 1: "ēdūc"},                 # ēdūcere, ēdūcit, ēdūcat — ēducāre (1st conj.) keeps its short u
+    "V:eripi/erip/eripu/erept": {1: "ērip"},                          # ēripit, ēripiunt, ēripient
+    "V:inscrib/inscrib/inscrips/inscript": {0: "īnscrib", 1: "īnscrib", 3: "īnscript"},  # īnscrībere, īnscriptum
+    "V:nosc/nosc/nou/not": {0: "nōsc", 1: "nōsc"},                    # nōscere
+    "V:pot/pot/potau/potat": {0: "pōt", 1: "pōt"},                    # pōtat, pōtāre, pōtātur, pōtābitis
+    "V:prosili/prosil/prosiliu/-": {1: "prōsil"},                     # prōsilīre, prōsiliunt
+    "V:sed/sed/sedau/sedat": {0: "sēd", 1: "sēd"},                    # sēdāre (sedō "settle", not sedeō)
+    "V:transe/transi/transiu/transit": {0: "trānse"},                 # trānsīre, trānsībant, trānsīrent, trānsisse
+    # --- perfect stems
+    "V:caed/caed/cecid/caes": {2: "cecīd"},                           # the margin "caedere cecīdisse caesum" — cadō keeps its short cecid-
+    "V:conueni/conuen/conuen/conuent": {2: "convēn"},                 # convēnerant
+    "V:deb/deb/debu/debit": {2: "dēbu"},                              # dēbuit
+    "V:effugi/effug/effug/effugit": {2: "effūg"},                     # effūgisse, effūgit, effūgī, effūgimus
+    "V:em/em/em/empt": {2: "ēm"},                                     # ēmit, ēmistī, ēmerat, ēmisse
+    "V:fugi/fug/fug/fugit": {2: "fūg"},                               # fūgī, fūgit, fūgisse, fūgērunt — the present stem stays short
+    "V:iuu/iuu/iuu/iut": {2: "iūv"},                                  # iūvit, iūvisse, iūvistī
+    "V:lau/lau/lau/laut": {2: "lāv"},                                 # lāvit, lāvisse
+    "V:lau/lau/lau/lot": {2: "lāv"},                                  # the same verb under Whitaker's other supine
+    "V:mou/mou/mou/mot": {2: "mōv"},                                  # mōvit, mōvisse, mōvērunt
+    "V:neg/neg/negau/negat": {2: "negāv"},                            # negāverat
+    "V:salut/salut/salutau/salutat": {2: "salūtāv"},                  # salūtāvit
+    "V:sed/sed/sed/sess": {2: "sēd"},                                 # sēdit, sēdisse (sedeō)
+    "V:signific/signific/significau/significat": {2: "significāv"},   # significāvit
+    "V:teg/teg/tex/tect": {2: "tēx"},                                 # the margin "tegere tēxisse tēctum"
+    "V:trad/trad/tradid/tradit": {2: "trādid"},                       # trādidit
+    "V:uinci/uinc/uinx/uinct": {2: "vīnx"},                           # vīnxit
+    # --- supine stems (the participle, and every compound tense built on it)
+    "V:appell/appell/appellau/appellat": {3: "appellāt"},             # appellātum
+    "V:dormi/dorm/dormiu/dormit": {3: "dormīt"},                      # dormītum, dormītūrus
+    "V:elig/elig/eleg/elect": {3: "ēlect"},                           # ēlectō — the ē only; the corpus never shows the ē of ēlēctum
+    "V:laud/laud/laudau/laudat": {3: "laudāt"},                       # laudātus, laudātī
+    "V:mut/mut/mutau/mutat": {3: "mūtāt"},                            # mūtātum
+    "V:oppugn/oppugn/oppugnau/oppugnat": {3: "oppugnāt"},             # oppugnātum
+    "V:postul/postul/postulau/postulat": {3: "postulāt"},             # postulātum
+    "V:puls/puls/pulsau/pulsat": {3: "pulsāt"},                       # pulsātus, pulsātum
+    "V:puni/pun/puniu/punit": {3: "pūnīt"},                           # pūnītī
+}
+#: every ROOT_MACRONS key `Speller.roots` matched, for the build's own report
+ROOT_MACRONS_USED: set[str] = set()
+
+
 class Speller:
     """Learns stem spellings from the source tokens; falls back to hand tables."""
 
@@ -480,6 +575,12 @@ class Speller:
                 k += 1
             if k >= 2 and len(strip_macrons(out[1][:k])) == k and has_macron(out[1][:k]):
                 out[0] = out[1][:k] + out[0][k:]
+        # last word: the macrons the book prints that neither the source
+        # tokens nor HAND_ROOTS could give (ROOT_MACRONS above)
+        for i, spelled in (ROOT_MACRONS.get(key) or {}).items():
+            if i < len(out) and canonical(out[i]) == canonical(spelled):
+                out[i] = spelled
+                ROOT_MACRONS_USED.add(key)
         return out
 
 
@@ -1457,6 +1558,10 @@ def main() -> None:
     print(f"entries: {n_entries}; file: {size/1e6:.2f} MB → {OUT_PATH}")
     for wk, n in sorted(total_miss.items()):
         print(f"week {wk:02d}: {sum(weeks[wk].values())} tokens, {len({canonical(t) for t in weeks[wk]})} forms, {n} misses")
+    unused = ", ".join(sorted(set(ROOT_MACRONS) - ROOT_MACRONS_USED))
+    fired = len(ROOT_MACRONS) - (len(unused.split(", ")) if unused else 0)
+    print(f"macron corrections: {fired}/{len(ROOT_MACRONS)} keys fired"
+          + (f"; NOT MATCHED: {unused}" if unused else ""))
 
 
 if __name__ == "__main__":
