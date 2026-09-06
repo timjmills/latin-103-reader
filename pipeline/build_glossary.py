@@ -80,6 +80,7 @@ from macrons import (  # noqa: E402
     HAND_LEMMAS, HAND_ROOTS, HAND_WORDS, canonical, has_macron, restore_v, strip_macrons,
 )
 from senses import head_word, raw_string, rewrite_senses  # noqa: E402
+import latin_forms  # noqa: E402
 
 from whitakers_words.parser import Parser, UniqueLexeme, WordsException  # noqa: E402
 
@@ -93,6 +94,8 @@ ABBREVIATIONS = DATA_DIR / "gloss-abbreviations.json"
 
 WORD_RE = re.compile(r"[A-Za-zĀĒĪŌŪȲāēīōūȳ̄]+")
 SECTION_RE = re.compile(r"###\s*Textus Lat[īi]nus\s*\n(.*?)(?=\n##|\Z)", re.S)
+#: a capital, macronised or not — the glossary's only proper-name signal
+CAPITAL = re.compile(r"^[A-ZĀĒĪŌŪŶ]")
 
 FREQ_RANK = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "I": 6, "M": 6, "N": 6, "X": 2}
 OBSCURE_AGES = set("DEFGH")
@@ -237,6 +240,86 @@ def collect_tokens() -> dict[int, collections.Counter]:
             continue
         texts = [g.get("la", "") for g in j] if isinstance(j, list) else [v.get("la", "") for v in j.values()]
         out.setdefault(n, collections.Counter()).update(WORD_RE.findall(" ".join(texts)))
+    out.update(collect_shelf_tokens())
+    return out
+
+
+def _unit_texts(j: dict) -> list[str]:
+    """Every Latin string a reader can tap in a built unit file."""
+    texts: list[str] = []
+    for u in j.get("units", []):
+        texts.append(u.get("la") or "")
+        for m in u.get("margin") or []:
+            texts.append(m.get("la") or "")
+    return texts
+
+
+def collect_drill_tokens() -> collections.Counter:
+    """The Latin the shipped drills print: the question sets' own questions and
+    typed answers (app/data/grammar/questions/NN.json) and the vocabulary decks'
+    dictionary lines (app/data/grammar/vocab/NN.json).  A question is authored
+    Latin, not a quotation, so it can carry a form the library never prints —
+    and the learner can tap every word of it."""
+    c: collections.Counter = collections.Counter()
+    for path in sorted(glob.glob(str(ROOT / "app" / "data" / "grammar" / "questions" / "[0-9]*.json"))):
+        try:
+            j = json.load(open(path, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for item in j.get("items", []):
+            c.update(WORD_RE.findall(item.get("q") or ""))
+            c.update(WORD_RE.findall(item.get("qword") or ""))
+            for a in (item.get("answers") or []) + (item.get("choices") or []):
+                if isinstance(a, str):
+                    c.update(WORD_RE.findall(a))
+    for path in sorted(glob.glob(str(ROOT / "app" / "data" / "grammar" / "vocab" / "[0-9]*.json"))):
+        try:
+            j = json.load(open(path, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for w in j.get("words", []):
+            for field in ("dict", "parts"):
+                c.update(WORD_RE.findall(w.get(field) or ""))
+    return c
+
+
+def collect_shelf_tokens() -> dict[int, collections.Counter]:
+    """The rest of the library: Familia Rōmāna I–XXIV on the review shelf
+    (data/build/review-NN.json, unit key 1NN) and Colloquia Persōnārum I–XXIV
+    (data/build/collo-NN.json, unit key 2NN), plus the shelf teaching layer
+    (data/shelf-notes-NN.json: part summaries, notes and highlight labels).
+
+    These are the units the review shelf and the grammar question sets quote,
+    so every word the learner can tap there has to be in the token set."""
+    out: dict[int, collections.Counter] = {}
+    for pattern, base in ((BUILD_DIR / "review-*.json", 100), (BUILD_DIR / "collo-*.json", 200)):
+        for path in sorted(glob.glob(str(pattern))):
+            m = re.search(r"-(\d+)\.json$", os.path.basename(path))
+            if not m:
+                continue
+            try:
+                j = json.load(open(path, encoding="utf-8"))
+            except (OSError, ValueError):
+                print(f"warning: could not read {path}", file=sys.stderr)
+                continue
+            n = j.get("week", {}).get("n") or base + int(m.group(1))
+            out.setdefault(n, collections.Counter()).update(WORD_RE.findall(" ".join(_unit_texts(j))))
+    out.setdefault(300, collections.Counter()).update(collect_drill_tokens())
+    for path in sorted(glob.glob(str(DATA_DIR / "shelf-notes-*.json"))):
+        m = re.search(r"-(\d+)\.json$", os.path.basename(path))
+        if not m:
+            continue
+        try:
+            j = json.load(open(path, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        texts: list[str] = []
+        for part in (j.get("parts") or []) if isinstance(j, dict) else []:
+            texts.append(part.get("summary_la") or "")
+        for hl in (j.get("highlights") or []) if isinstance(j, dict) else []:
+            texts.append(hl.get("text") or "")
+        out.setdefault(100 + int(m.group(1)), collections.Counter()).update(
+            WORD_RE.findall(" ".join(texts)))
     return out
 
 
@@ -350,12 +433,20 @@ def inflection_freq_map(parser: Parser) -> dict[int, str]:
 
 
 INFL_FREQ: dict[int, str] = {}
+#: forms the Whitaker port could not even attempt, form → error
+PARSER_ERRORS: dict[str, str] = {}
 
 
 def analyse(parser: Parser, form: str) -> list[Rec]:
     try:
         word = parser.parse(form)
     except WordsException:
+        return []
+    except Exception as exc:                      # noqa: BLE001
+        # the port raises KeyError('PACK') and friends on a few forms the
+        # course texts never showed it; a form with no analysis is a miss,
+        # not a build failure
+        PARSER_ERRORS[form] = f"{type(exc).__name__}: {exc}"
         return []
     recs: list[Rec] = []
     for wform in word.forms:
@@ -487,6 +578,26 @@ ROOT_MACRONS: dict[str, dict[int, str]] = {
     "V:puls/puls/pulsau/pulsat": {3: "pulsāt"},                       # pulsātus, pulsātum
     "V:puni/pun/puniu/punit": {3: "pūnīt"},                           # pūnītī
 }
+# Whitaker gives several *different* words the same stems, and `Speller` learns
+# a stem's spelling from the page, so a macronised token feeds every one of the
+# homographs: mālum "apple" and malum "evil" both live under `N:mal/mal`, and
+# the corpus prints both, so the learnt spelling is a coin toss and `mālum`
+# came out short.  ROOT_MACRONS cannot help — its key is the stem list, which is
+# exactly what these words share.  This table is keyed by the stem list AND
+# Whitaker's own first sense, which is what tells the homographs apart.  Every
+# row is a word the book prints long; its short twin is deliberately left
+# alone, and that is the point — it is what lets `māla` (apples) and `mala`
+# (bad) be told apart at all.
+LEXEME_MACRONS: dict[tuple[str, str, str], dict[int, str]] = {
+    ("N", "mal/mal", "apple"): {0: "māl", 1: "māl"},               # mālum -ī n
+    ("N", "mal/mal", "mast"): {0: "māl", 1: "māl"},                # mālus -ī m
+    ("N", "mal/mal", "apple tree"): {0: "māl", 1: "māl"},          # mālus -ī f
+    ("N", "mal/mal", "cheeks, jaws"): {0: "māl", 1: "māl"},        # māla -ae f
+}
+#: every LEXEME_MACRONS key that matched, for the build's own report
+LEXEME_MACRONS_USED: set[tuple[str, str, str]] = set()
+
+
 #: every ROOT_MACRONS key `Speller.roots` matched, for the build's own report
 ROOT_MACRONS_USED: set[str] = set()
 
@@ -581,6 +692,12 @@ class Speller:
             if i < len(out) and canonical(out[i]) == canonical(spelled):
                 out[i] = spelled
                 ROOT_MACRONS_USED.add(key)
+        # and the homographs Whitaker files under one stem list (mālum / malum)
+        lkey = (rec.lexpos, "/".join(roots), rec.senses_raw[0] if rec.senses_raw else "")
+        for i, spelled in (LEXEME_MACRONS.get(lkey) or {}).items():
+            if i < len(out) and canonical(out[i]) == canonical(spelled):
+                out[i] = spelled
+                LEXEME_MACRONS_USED.add(lkey)
         return out
 
 
@@ -1446,6 +1563,607 @@ def load_abbreviations() -> tuple[dict[str, list[dict]], dict[str, list[dict]], 
 
 
 # ---------------------------------------------------------------------------
+# proper names
+#
+# The library's own cast.  Whitaker has no Familia Rōmāna, so `Iūlia` used to
+# come back as the adjective *iūlius -a -um* ("July"), `Aemilia` as "Aemilian",
+# `Mārcō` as *mārcēre* "be withered", and `Daedalus` — week 2's title
+# character — as "skillful".  Every person, place and people the library names
+# is listed below with the spelling the book prints and a one-line gloss in the
+# project's register; the forms are generated by pipeline/latin_forms.py, so a
+# name resolves in every case, not only in the one case a supplement happened
+# to list.
+#
+# Key: the citation form.  A second word beginning with "-" is an ending
+# (`Iūlius -ī m`); a full word is the genitive and gives the oblique stem
+# (`Lēander Lēandrī m`, `Arīōn Arīonis m`).  `pl` means the name has no
+# singular (`Athēnae -ārum f pl`).  Adjectives are written `-a -um` / `-e`.
+# The macrons were read off the printed page (LLPSI Pars I, Colloquia
+# Persōnārum, Fabulae Syrae) with fitz and checked against the library text;
+# where the two disagreed the book won (Īcarus, Tūsculum, Lȳdia — the PDF text
+# layer cannot render ȳ at all, and prints Icarus only where it drops the
+# macron everywhere else too).
+NAMES: list[tuple[str, str]] = [
+    # --- the household of Iūlius (Familia Rōmāna, Colloquia Persōnārum)
+    ("Iūlius -ī m", "Julius, the father of the family (Lūcius Iūlius Balbus)"),
+    ("Aemilia -ae f", "Aemilia, Julius's wife, the mother of the family"),
+    ("Mārcus -ī m", "Marcus, Julius's elder son"),
+    ("Quīntus -ī m", "Quintus, Julius's younger son"),
+    ("Iūlia -ae f", "Julia, Julius's daughter"),
+    ("Iūliola -ae f", "little Julia (Julia's pet name)"),
+    ("Syra -ae f", "Syra, the slave-woman who looks after Julia"),
+    ("Dāvus -ī m", "Davus, a slave of Julius"),
+    ("Mēdus -ī m", "Medus, the Greek slave who runs away to Greece"),
+    ("Lȳdia -ae f", "Lydia, Medus's beloved, a Christian woman of Rome"),
+    ("Dēlia -ae f", "Delia, a slave-woman (ancilla) of Aemilia"),
+    ("Philippa -ae f", "Philippa, the slave-woman who does Aemilia's hair"),
+    ("Proculus -ī m", "Proculus, the man Philippa loves"),
+    ("Ursus -ī m", "Ursus, a slave of Julius, one of the litter-bearers"),
+    ("Syrus -ī m", "Syrus, a slave of Julius who carries the bags"),
+    ("Lēander Lēandrī m", "Leander, a slave of Julius who carries the bags"),
+    ("Fabricius -ī m", "Fabricius, the slave who helped Marcus run away"),
+    ("Zēnō Zēnōnis m", "Zeno, the slave to whom Marcus dictates his letter"),
+    ("Faustīnus -ī m", "Faustinus, Julius's shepherd (pāstor)"),
+    ("Margarīta -ae f", "Margarita, Julia's little dog"),
+    ("Balbus -ī m", "Balbus, Julius's third name (cognōmen)"),
+    ("Aemilius -ī m", "Aemilius, Aemilia's younger brother, a soldier in Germania"),
+    # --- neighbours, friends, the school, the town
+    ("Cornēlius -ī m", "Cornelius, Julius's friend and neighbour near Tusculum"),
+    ("Fabia -ae f", "Fabia, Cornelius's wife"),
+    ("Orontēs Orontis m", "Orontes, a Greek friend and dinner-guest of Julius"),
+    ("Paula -ae f", "Paula, Orontes's wife"),
+    ("Sextus -ī m", "Sextus, a schoolfellow of Marcus and Quintus"),
+    ("Titus -ī m", "Titus, a schoolfellow of Marcus and Quintus"),
+    ("Diodōrus -ī m", "Diodorus, the boys' schoolmaster, a Greek"),
+    ("Dōrippa -ae f", "Dorippa, Diodorus's wife"),
+    ("Sanniō Sanniōnis m", "Sannio, the doorkeeper (iānitor) of Diodorus's house"),
+    ("Symmachus -ī m", "Symmachus, a guest at Diodorus's table"),
+    ("Lepidus -ī m", "Lepidus, a friend of Marcus"),
+    ("Albīnus -ī m", "Albinus, the shopkeeper (tabernārius) at Tusculum"),
+    ("Rūfus -ī m", "Rufus, the neighbour whose garden the sheep get into"),
+    ("Flōra -ae f", "Flora, the girl who sells roses in the market"),
+    ("Tlēpolemus -ī m", "Tlepolemus, the letter-carrier (tabellārius)"),
+    ("Metella -ae f", "Metella, Aemilia's friend, who writes her a letter"),
+    ("Crassus -ī m", "Crassus (Crassus Dīves), the rich man Aemilia once loved"),
+    # --- the Christian story (cap. XXIII, XXVIII, XXXIII)
+    ("Iēsūs Iēsū m", "Jesus"),
+    ("Chrīstus -ī m", "Christ"),
+    ("Petrus -ī m", "Peter, the disciple of Jesus"),
+    ("Marīa -ae f", "Mary, the mother of Jesus"),
+    ("Matthaeus -ī m", "Matthew, the disciple who wrote the first gospel"),
+    ("Iāīrus -ī m", "Jairus, whose daughter Jesus raised from the dead"),
+    ("Bethlehem f (indeclinable)", "Bethlehem, the town in Judaea where Jesus was born"),
+    # --- Roman names, history and public life
+    ("Caesar Caesaris m", "Caesar (Gaius Julius Caesar), the Roman general and dictator"),
+    ("Augustus -ī m", "Augustus, the first Roman emperor"),
+    ("Gāius -ī m", "Gaius, a Roman first name (praenōmen)"),
+    ("Pūblius -ī m", "Publius, a Roman first name (praenōmen)"),
+    ("Lūcius -ī m", "Lucius, a Roman first name (praenōmen)"),
+    ("Aulus -ī m", "Aulus, a Roman first name (praenōmen)"),
+    ("Decimus -ī m", "Decimus, a Roman first name (praenōmen)"),
+    ("Gnaeus -ī m", "Gnaeus, a Roman first name (praenōmen)"),
+    ("Mānlius -ī m", "Manlius (Titus Manlius Torquatus), who had his own son put to death"),
+    ("Torquātus -ī m", "Torquatus, the third name (cognōmen) of Titus Manlius"),
+    ("Pompēius -ī m", "Pompey, the general who cleared the sea of pirates"),
+    ("Valerius -ī m", "Valerius, a Roman family name (nōmen)"),
+    ("Rōmulus -ī m", "Romulus, the founder and first king of Rome"),
+    ("Remus -ī m", "Remus, Romulus's twin brother"),
+    ("Coriolānus -ī m", "Coriolanus, the Roman general who led the Volsci against Rome"),
+    ("Veturia -ae f", "Veturia, Coriolanus's mother, who begged him to spare Rome"),
+    ("Volumnia -ae f", "Volumnia, Coriolanus's wife"),
+    ("Dionysius -ī m", "Dionysius, the tyrant of Syracuse"),
+    ("Damoclēs Damoclis m", "Damocles, seated at the tyrant's feast under a hanging sword"),
+    ("Polycratēs Polycratis m", "Polycrates, tyrant of Samos, whose lost ring came back in a fish"),
+    ("Periander Periandrī m", "Periander, tyrant of Corinth and Arion's friend"),
+    # --- poets, philosophers, grammarians
+    ("Catullus -ī m", "Catullus, the Roman poet of the Lesbia poems"),
+    ("Lesbia -ae f", "Lesbia, the woman Catullus writes his poems to"),
+    ("Ovidius -ī m", "Ovid, the Roman poet of love and of the Metamorphoses"),
+    ("Mārtiālis Mārtiālis m", "Martial, the Roman poet of epigrams"),
+    ("Lucrētius -ī m", "Lucretius, the Roman poet of 'the nature of things'"),
+    ("Ennius -ī m", "Ennius, the earliest great Roman poet"),
+    ("Tibullus -ī m", "Tibullus, the Roman poet of the quiet country life"),
+    ("Plautus -ī m", "Plautus, the Roman writer of comedies"),
+    ("Dōnātus -ī m", "Donatus, the Roman grammarian whose lesson cap. XXXV quotes"),
+    ("Sōcratēs Sōcratis m", "Socrates, the Athenian philosopher"),
+    ("Platō Platōnis m", "Plato, the Athenian philosopher, Socrates' pupil"),
+    ("Aristotelēs Aristotelis m", "Aristotle, the Greek philosopher, Plato's pupil"),
+    ("Dēmocritus -ī m", "Democritus, the Greek philosopher of atoms"),
+    ("Epicūrus -ī m", "Epicurus, the Greek philosopher of pleasure"),
+    ("Hippocratēs Hippocratis m", "Hippocrates, the Greek physician"),
+    ("Marō Marōnis m", "Maro, Virgil's third name (cognōmen)"),
+    # --- the people Catullus and Martial address
+    ("Cinna -ae m", "Cinna, a would-be poet mocked by Martial"),
+    ("Fabullus -ī m", "Fabullus, the friend Catullus invites to dinner"),
+    ("Sabidius -ī m", "Sabidius, the man Martial cannot say why he dislikes"),
+    ("Māmercus -ī m", "Mamercus, who wants to be thought a poet without reciting"),
+    ("Fīdentīnus -ī m", "Fidentinus, who recites Martial's poems as his own"),
+    ("Fabulla -ae f", "Fabulla, the woman in Martial who praises herself too much"),
+    ("Bassa -ae f", "Bassa, a woman in Martial's epigrams"),
+    ("Gellia -ae f", "Gellia, who weeps for her father only when someone is watching"),
+    ("Laecānia -ae f", "Laecania, whose gleaming white teeth are bought"),
+    ("Thāis Thāidis f", "Thais, the woman in Martial with black teeth"),
+    ("Pontiliānus -ī m", "Pontilianus, who keeps sending Martial his own books"),
+    ("Aemiliānus -ī m", "Aemilianus, a man addressed in an epigram of Martial"),
+    ("Caediciānus -ī m", "Caedicianus, a man addressed in an epigram of Martial"),
+    ("Priscus -ī m", "Priscus, a man addressed in an epigram of Martial"),
+    ("Faustus -ī m", "Faustus, a man addressed in an epigram of Martial"),
+    # --- gods
+    ("Iuppiter Iovis m", "Jupiter, the greatest of the gods"),
+    ("Iūnō Iūnōnis f", "Juno, Jupiter's wife, queen of the gods"),
+    ("Neptūnus -ī m", "Neptune, the god of the sea"),
+    ("Plūtō Plūtōnis m", "Pluto, the god of the world below"),
+    ("Minerva -ae f", "Minerva, the goddess of crafts and of wisdom"),
+    ("Venus Veneris f", "Venus, the goddess of love"),
+    ("Cupīdō Cupīdinis m", "Cupid, the god of love, Venus's son"),
+    ("Mārs Mārtis m", "Mars, the god of war"),
+    ("Mercurius -ī m", "Mercury, the messenger of the gods"),
+    ("Vulcānus -ī m", "Vulcan, the god of fire and of the forge"),
+    ("Diāna -ae f", "Diana, the goddess of hunting and of the moon"),
+    ("Bacchus -ī m", "Bacchus, the god of wine"),
+    ("Apollō Apollinis m", "Apollo, the god of the sun, of music and of prophecy"),
+    ("Phoebus -ī m", "Phoebus, another name for Apollo"),
+    ("Sāturnus -ī m", "Saturn, Jupiter's father, driven from heaven to Italy"),
+    ("Sōl Sōlis m", "the Sun (as a god)"),
+    ("Mūsa -ae f", "a Muse, one of the nine goddesses of the arts"),
+    ("Iānus -ī m", "Janus, the god of doorways and of the year's beginning"),
+    # --- myth and the Greek stories (Fabulae Syrae, cap. I–II, XXV–XXVI)
+    ("Thēseus -ī m", "Theseus, the Athenian hero, Aegeus's son"),
+    ("Aegeus -ī m", "Aegeus, king of Athens, Theseus's father"),
+    ("Mīnōs -ōis m", "Minos, king of Crete"),
+    ("Mīnōtaurus -ī m", "the Minotaur, the bull-headed monster of Crete"),
+    ("Ariadna -ae f", "Ariadne, king Minos's daughter"),
+    ("Daedalus -ī m", "Daedalus, the Athenian craftsman who built the labyrinth"),
+    ("Īcarus -ī m", "Icarus, Daedalus's son, who flew too near the sun"),
+    ("Corōnis Corōnidis f", "Coronis, the girl Apollo loved and killed"),
+    ("Arachnē -ēs f", "Arachne, the weaver who challenged Minerva and became a spider"),
+    ("Arīōn Arīonis m", "Arion, the singer carried ashore by a dolphin"),
+    ("Orpheus -ī m", "Orpheus, the singer who went down to the dead for his wife"),
+    ("Ulixēs Ulixis m", "Ulysses, the Greek hero of the long journey home"),
+    ("Alcinous -ī m", "Alcinous, king of the Phaeacians"),
+    ("Nausicaa -ae f", "Nausicaa, Alcinous's daughter, who found Ulysses on the shore"),
+    ("Midās Midae m", "Midas, the king whose touch turned everything to gold"),
+    ("Herculēs Herculis m", "Hercules, the strongest of heroes, Jupiter's son"),
+    ("Alcmēna -ae f", "Alcmena, Hercules's mother"),
+    ("Amphitryōn Amphitryōnis m", "Amphitryon, Alcmena's husband"),
+    ("Achillēs Achillis m", "Achilles, the greatest Greek warrior at Troy"),
+    ("Hector Hectoris m", "Hector, the Trojan hero, Priam's son"),
+    ("Priamus -ī m", "Priam, the aged king of Troy"),
+    ("Paris Paridis m", "Paris, Priam's son, who carried Helen off to Troy"),
+    ("Helena -ae f", "Helen, the most beautiful woman in the world"),
+    ("Menelāus -ī m", "Menelaus, king of Sparta and Helen's husband"),
+    ("Nestor Nestoris m", "Nestor, the oldest and wisest of the Greeks at Troy"),
+    ("Scylla -ae f", "Scylla, the monster in the rocks on the Italian side of the strait"),
+    ("Charybdis Charybdis f", "Charybdis, the whirlpool facing Scylla"),
+    ("Īnachus -ī m", "Inachus, the river-god and first king of Argos"),
+    ("Nympha -ae f", "a nymph, a young goddess of the woods and waters"),
+    # --- lands and regions
+    ("Rōma -ae f", "Rome"),
+    ("Italia -ae f", "Italy"),
+    ("Eurōpa -ae f", "Europe"),
+    ("Asia -ae f", "Asia (the Roman province in what is now Turkey)"),
+    ("Āfrica -ae f", "Africa"),
+    ("Graecia -ae f", "Greece"),
+    ("Germānia -ae f", "Germany, the land beyond the Rhine"),
+    ("Gallia -ae f", "Gaul, roughly modern France"),
+    ("Hispānia -ae f", "Spain"),
+    ("Britannia -ae f", "Britain"),
+    ("Aegyptus -ī f", "Egypt"),
+    ("Syria -ae f", "Syria"),
+    ("Arabia -ae f", "Arabia"),
+    ("Iūdaea -ae f", "Judaea, the land of the Jews"),
+    ("Campānia -ae f", "Campania, the region south of Latium"),
+    ("Latium -ī n", "Latium, the country round Rome"),
+    ("Sicilia -ae f", "Sicily"),
+    ("Sardinia -ae f", "Sardinia"),
+    ("Crēta -ae f", "Crete, the great island south of Greece"),
+    ("Trōia -ae f", "Troy, the city the Greeks besieged"),
+    ("Peloponnēsus -ī f", "the Peloponnese, the southern part of Greece"),
+    ("Scheria -ae f", "Scheria, the island of the Phaeacians"),
+    # --- islands, towns, hills
+    ("Athēnae -ārum f pl", "Athens"),
+    ("Sparta -ae f", "Sparta, the great city of the Peloponnese"),
+    ("Corinthus -ī f", "Corinth, the city on the isthmus"),
+    ("Delphī -ōrum m pl", "Delphi, where Apollo's oracle was"),
+    ("Olympus -ī m", "Olympus, the mountain where the gods live"),
+    ("Isthmus -ī m", "the Isthmus, the neck of land joining the Peloponnese to Greece"),
+    ("Rhodus -ī f", "Rhodes, the island off Asia Minor"),
+    ("Samos -ī f", "Samos, the island Polycrates ruled"),
+    ("Chios -ī f", "Chios, an island in the Aegean"),
+    ("Lesbos -ī f", "Lesbos, the island Arion came from"),
+    ("Lēmnos -ī f", "Lemnos, an island in the northern Aegean"),
+    ("Naxus -ī f", "Naxos, the island where Theseus left Ariadne"),
+    ("Dēlos -ī f", "Delos, the small sacred island in the middle of the Aegean"),
+    ("Euboea -ae f", "Euboea, the long island beside Attica"),
+    ("Īcaria -ae f", "Icaria, the island named after Icarus"),
+    ("Tūsculum -ī n", "Tusculum, the hill town near Rome where Julius's villa is"),
+    ("Ōstia -ae f", "Ostia, Rome's harbour town at the mouth of the Tiber"),
+    ("Capua -ae f", "Capua, the great city of Campania"),
+    ("Genua -ae f", "Genoa, the port in northern Italy"),
+    ("Placentia -ae f", "Placentia, a town on the Po"),
+    ("Brundisium -ī n", "Brundisium, the port at the heel of Italy"),
+    ("Arīminum -ī n", "Ariminum, the town on the Adriatic coast"),
+    ("Puteolī -ōrum m pl", "Puteoli, the harbour town on the bay of Naples"),
+    ("Capitōlium -ī n", "the Capitol, the hill and temple of Jupiter at Rome"),
+    ("Palātium -ī n", "the Palatine, the hill at Rome where the emperor lived"),
+    # --- rivers, mountains, seas
+    ("Tiberis Tiberis m", "the Tiber, the river of Rome"),
+    ("Nīlus -ī m", "the Nile, the river of Egypt"),
+    ("Rhēnus -ī m", "the Rhine"),
+    ("Dānuvius -ī m", "the Danube"),
+    ("Padus -ī m", "the Po, the great river of northern Italy"),
+    ("Alpēs Alpium f pl", "the Alps"),
+    ("Ōceanus -ī m", "the Ocean, the great sea round the world"),
+    ("Īnferī -ōrum m pl", "the dead, the world below"),
+    # --- peoples
+    ("Rōmānī -ōrum m pl", "the Romans"),
+    ("Graecī -ōrum m pl", "the Greeks"),
+    ("Latīnī -ōrum m pl", "the Latins, the people of Latium"),
+    ("Germānī -ōrum m pl", "the Germans"),
+    ("Gallī -ōrum m pl", "the Gauls"),
+    ("Hispānī -ōrum m pl", "the Spaniards"),
+    ("Britannī -ōrum m pl", "the Britons"),
+    ("Volscī -ōrum m pl", "the Volsci, an old enemy of Rome in southern Latium"),
+    ("Trōiānī -ōrum m pl", "the Trojans"),
+    ("Phaeācēs Phaeācum m pl", "the Phaeacians, the seafaring people who took Ulysses home"),
+    ("Athēniēnsēs Athēniēnsium m pl", "the Athenians"),
+    ("Iūdaeī -ōrum m pl", "the Jews"),
+    ("Christiānī -ōrum m pl", "the Christians"),
+    ("Aegyptiī -ōrum m pl", "the Egyptians"),
+    ("Persae -ārum m pl", "the Persians"),
+    # --- one Roman, one Greek, one Christian: the person, not only the adjective
+    ("Rōmānus -ī m", "a Roman"),
+    ("Graecus -ī m", "a Greek"),
+    ("Christiānus -ī m", "a Christian"),
+    ("Iūdaeus -ī m", "a Jew"),
+    ("Germānus -ī m", "a German"),
+    ("Athēniēnsis Athēniēnsis m", "an Athenian"),
+    # --- the adjectives made from names (via Appia, mare Aegaeum, vīnum Falernum)
+    ("Rōmānus -a -um", "Roman, of Rome"),
+    ("Graecus -a -um", "Greek"),
+    ("Latīnus -a -um", "Latin, of Latium"),
+    ("Germānus -a -um", "German"),
+    ("Gallicus -a -um", "Gallic, of Gaul"),
+    ("Hispānus -a -um", "Spanish"),
+    ("Britannus -a -um", "British"),
+    ("Italus -a -um", "Italian"),
+    ("Trōiānus -a -um", "Trojan"),
+    ("Athēniēnsis -e", "Athenian"),
+    ("Christiānus -a -um", "Christian"),
+    ("Aegyptius -a -um", "Egyptian"),
+    ("Tūsculānus -a -um", "of Tusculum (praedium Tūsculānum, the Tusculan estate)"),
+    ("Albānus -a -um", "Alban, of the Alban Mount (praedium Albānum, Julius's other estate)"),
+    ("Ōstiēnsis -e", "of Ostia (via Ōstiēnsis, the road from Rome to Ostia)"),
+    ("Siculus -a -um", "Sicilian (mare Siculum, the sea south of Sicily)"),
+    ("Tūscus -a -um", "Etruscan (mare Tūscum, the sea west of Italy)"),
+    ("Falernus -a -um", "Falernian (vīnum Falernum, a famous Campanian wine)"),
+    ("Aegaeus -a -um", "Aegean (mare Aegaeum, the sea between Greece and Asia)"),
+    ("Īcarius -a -um", "Icarian (mare Īcarium, the sea where Icarus fell)"),
+    ("Hadriāticus -a -um", "Adriatic (mare Hadriāticum, the sea east of Italy)"),
+    ("Atlanticus -a -um", "Atlantic (ōceanus Atlanticus)"),
+    ("Appius -a -um", "Appian (via Appia, the road from Rome to Brundisium)"),
+    ("Flāminius -a -um", "Flaminian (via Flāminia, the road from Rome to Ariminum)"),
+    ("Aurēlius -a -um", "Aurelian (via Aurēlia, the road from Rome to Genoa)"),
+    ("Capēnus -a -um", "of Capena (porta Capēna, where the via Appia leaves Rome)"),
+    ("Iūlius -a -um", "Julian, of Julius (mēnsis Iūlius = July)"),
+    ("Aemilius -a -um", "Aemilian, of the Aemiliī (via Aemilia, the road across the Po valley)"),
+    # --- the months
+    ("Iānuārius -a -um", "of January (mēnsis Iānuārius, kalendae Iānuāriae)"),
+    ("Februārius -a -um", "of February"),
+    ("Mārtius -a -um", "of March"),
+    ("Aprīlis -e", "of April"),
+    ("Māius -a -um", "of May"),
+    ("Iūnius -a -um", "of June"),
+    ("Quīntīlis -e", "of Quintilis, the old name of July"),
+    ("Sextīlis -e", "of Sextilis, the old name of August"),
+]
+
+#: forms latin_forms cannot derive from the citation form alone.  Greek names
+#: keep their own vocative (Thēseu, Orontē) and accusative (Arachnēn); the
+#: i-stem place names take -im / -ī; Iēsūs has one oblique stem for every case.
+NAME_EXTRA: dict[str, list[tuple[str, dict]]] = {
+    "theseus": [("Thēseu", {"case": "voc", "number": "sg", "gender": "m"})],
+    "orpheus": [("Orpheu", {"case": "voc", "number": "sg", "gender": "m"})],
+    "aegeus": [("Aegeu", {"case": "voc", "number": "sg", "gender": "m"})],
+    "orontes": [("Orontē", {"case": "voc", "number": "sg", "gender": "m"})],
+    "socrates": [("Sōcratē", {"case": "voc", "number": "sg", "gender": "m"})],
+    "ulixes": [("Ulixē", {"case": "voc", "number": "sg", "gender": "m"})],
+    "achilles": [("Achillē", {"case": "voc", "number": "sg", "gender": "m"})],
+    "arachne": [("Arachnēn", {"case": "acc", "number": "sg", "gender": "f"})],
+    "tiberis": [("Tiberim", {"case": "acc", "number": "sg", "gender": "m"}),
+                ("Tiberī", {"case": "abl", "number": "sg", "gender": "m"})],
+    "charybdis": [("Charybdim", {"case": "acc", "number": "sg", "gender": "f"}),
+                  ("Charybdī", {"case": "abl", "number": "sg", "gender": "f"})],
+    "minos": [("Mīnōis", {"case": "gen", "number": "sg", "gender": "m"})],
+}
+
+#: names built entirely by hand: no stem, only the forms listed
+NAME_ONLY: dict[str, tuple[str, str, list[tuple[str, dict]]]] = {
+    # h: (lemma, gloss, [(form, parse)…])
+    "iesus": ("Iēsūs Iēsū m", "Jesus",
+              [("Iēsūs", {"case": "nom", "number": "sg", "gender": "m"}),
+               ("Iēsū", {"case": "gen", "number": "sg", "gender": "m"}),
+               ("Iēsū", {"case": "dat", "number": "sg", "gender": "m"}),
+               ("Iēsum", {"case": "acc", "number": "sg", "gender": "m"}),
+               ("Iēsū", {"case": "abl", "number": "sg", "gender": "m"}),
+               ("Iēsū", {"case": "voc", "number": "sg", "gender": "m"})]),
+}
+
+
+_NAME_MARKERS = {"m", "f", "n", "m/f", "pl", "(indeclinable)"}
+_NAME_GENDER = {"m": "m", "f": "f", "n": "n", "m/f": "c"}
+#: genitive endings → (declension, how much of the genitive is the stem)
+#: genitive endings, ascii, longest first — the tail that decides the declension
+_GEN_TAILS = ("arum", "orum", "ium", "ois", "us", "um", "is", "ae", "es", "ei", "i")
+
+
+def _name_shape(lemma: str) -> dict | None:
+    """'Iūlius -ī m' → {pos, cat, roots, gender, plural}.  See NAMES."""
+    toks = lemma.replace("(indeclinable)", " (indeclinable) ").split()
+    head = toks[0]
+    rest = toks[1:]
+    gender = next((_NAME_GENDER[t] for t in rest if t in _NAME_GENDER), None)
+    plural = "pl" in rest
+    if "(indeclinable)" in rest:
+        return {"pos": "N", "cat": [9, 1], "roots": [head, head], "gender": gender, "plural": plural}
+    # adjectives: "-a -um", "-e", "-is -e"
+    if "-a" in rest and "-um" in rest:
+        stem = head[:-2] if canonical(head).endswith("us") else head
+        return {"pos": "ADJ", "cat": [1, 1], "roots": [stem, stem, "-", "-"], "gender": None, "plural": False}
+    if rest[:1] == ["-e"] or rest[:2] == ["-is", "-e"]:
+        stem = head[:-2] if canonical(head).endswith("is") else head
+        return {"pos": "ADJ", "cat": [3, 2], "roots": [stem, stem, "-", "-"], "gender": None, "plural": False}
+    gen = next((t for t in rest if t not in _NAME_MARKERS), None)
+    if gen is None:
+        return None
+    full = not gen.startswith("-")
+    gc = canonical(gen.lstrip("-"))
+    ec = next((t for t in _GEN_TAILS if gc.endswith(t)), None)
+    if ec is None:
+        return None
+    hc = canonical(head)
+    body = gen.lstrip("-")
+
+    def stem_from_gen(tail: str = ec) -> str:
+        return body[: len(body) - len(tail)]
+
+    if ec in ("ae", "arum"):                                  # 1st declension
+        if hc.endswith("ae") or ec == "arum":
+            stem = head[:-2] if hc.endswith("ae") else head
+            cat = [1, 1]
+        elif hc.endswith("as"):
+            stem, cat = head[:-2], [1, 8]                     # Midās -ae
+        elif hc.endswith("es"):
+            stem, cat = head[:-2], [1, 7]
+        else:
+            stem, cat = head[:-1], [1, 1]
+        return {"pos": "N", "cat": cat, "roots": [stem, stem], "gender": gender, "plural": plural}
+    if ec == "es" and hc.endswith("e"):                       # Arachnē -ēs (Greek)
+        return {"pos": "N", "cat": [1, 6], "roots": [head[:-1], head[:-1]], "gender": gender, "plural": plural}
+    if ec in ("i", "orum"):                                   # 2nd declension
+        if ec == "orum":
+            stem, cat = (head[:-1] if hc.endswith("i") else head), [2, 1]
+            if gender == "n":
+                cat = [2, 2]
+        elif hc.endswith("us"):
+            stem, cat = head[:-2], ([2, 2] if gender == "n" else [2, 1])
+        elif hc.endswith(("um", "on")):
+            stem, cat = head[:-2], [2, 2]
+        elif hc.endswith("os"):
+            stem, cat = head[:-2], [2, 6]
+        elif full:
+            stem, cat = stem_from_gen(), [2, 3]                # Lēander Lēandrī
+        else:
+            stem, cat = head, [2, 3]
+        return {"pos": "N", "cat": cat, "roots": [stem, stem] if cat != [2, 3] else [head, stem],
+                "gender": gender, "plural": plural}
+    if ec in ("is", "ois", "ium", "um"):                      # 3rd declension
+        if full:
+            stem = stem_from_gen()
+        elif ec == "ois":
+            stem = head[:-1]                                  # Mīnōs -ōis → Mīnō
+        elif hc.endswith("is"):
+            stem = head[:-2]
+        else:
+            stem = head
+        cat = [3, 3] if ec == "ium" else ([3, 2] if gender == "n" else [3, 1])
+        return {"pos": "N", "cat": cat, "roots": [head, stem], "gender": gender, "plural": plural}
+    if ec == "us":                                            # 4th declension
+        stem = head[:-2] if hc.endswith("us") else head
+        return {"pos": "N", "cat": [4, 1], "roots": [stem, stem], "gender": gender, "plural": plural}
+    if ec in ("ei",):                                         # 5th declension
+        stem = head[:-2] if hc.endswith("es") else head
+        return {"pos": "N", "cat": [5, 1], "roots": [stem, stem], "gender": gender, "plural": plural}
+    return None
+
+
+def name_entries() -> dict[str, list[tuple[str, dict]]]:
+    """canonical form → [(the spelling the book prints, glossary entry)].
+
+    Every name in NAMES is declined through pipeline/latin_forms, so `Daedalum`
+    and `Daedalō` reach the same entry as `Daedalus`; the roots keep their
+    capital, so the paradigm the app draws reads *Neptūnus … Neptūne*, not
+    *neptūnus … neptūne*."""
+    out: dict[str, list[dict]] = collections.defaultdict(list)
+    seen: set[tuple[str, str]] = set()
+    for lemma, gloss in NAMES:
+        h = ascii_head(lemma)
+        if h in NAME_ONLY:
+            # a name with no regular paradigm: the forms are listed by hand and
+            # `cat`/`roots` stay empty, so the app draws no (wrong) table
+            shape = {"pos": "N", "cat": None, "roots": [], "gender": "m", "plural": False}
+            pairs = list(NAME_ONLY[h][2])
+        else:
+            shape = _name_shape(lemma)
+            if shape is None:
+                print(f"warning: cannot parse the name {lemma!r}", file=sys.stderr)
+                NAME_UNPARSED.append(lemma)
+                continue
+            base = {"lemma": lemma, "h": h, "pos": shape["pos"], "cat": shape["cat"],
+                    "gender": shape["gender"], "roots": shape["roots"]}
+            if (shape["cat"] or [0])[0] == 9:
+                pairs = [(shape["roots"][0], {})]        # Bethlehem: one form, no case
+            else:
+                pairs = latin_forms.forms(base)
+                if shape["plural"]:
+                    pairs = [(f, p) for f, p in pairs if p.get("number") == "pl"]
+                pairs += NAME_EXTRA.get(h, [])
+        if (h, shape["pos"]) in seen:
+            continue
+        seen.add((h, shape["pos"]))
+        base = {"lemma": lemma, "h": h, "pos": shape["pos"], "cat": shape["cat"],
+                "gender": shape["gender"], "roots": shape["roots"]}
+        # one entry per key: the same lexeme's spellings of one form (Oronte /
+        # Orontē) are one word to the learner, so their parses are unioned and
+        # every spelling is remembered for the exact-spelling keys
+        per_key: dict[str, dict] = {}
+        for form, parse in pairs:
+            key = canonical(form)
+            e = per_key.get(key)
+            if e is None:
+                e = per_key[key] = dict(base, parses=[], senses=[gloss], raw=gloss,
+                                        enc=None, proper=True, _sp=[])
+            if parse and parse not in e["parses"]:
+                e["parses"].append(parse)
+            if form not in e["_sp"]:
+                e["_sp"].append(form)
+        for key, e in per_key.items():
+            e["parses"] = learner_parse_order(e["parses"], shape["pos"], key)
+            out[key].append(e)
+    NAME_LEXEMES.update(seen)
+    return out
+
+
+#: filled by name_entries(), for --check
+NAME_LEXEMES: set[tuple[str, str]] = set()
+NAME_UNPARSED: list[str] = []
+
+
+
+# ---------------------------------------------------------------------------
+# exact-spelling keys
+#
+# The glossary is keyed on the macron-stripped, lower-cased form, so `māla`
+# (apples) and `mala` (bad), `Mārcō` (to Marcus) and `mārcō` (I am flabby)
+# arrive at the same list and the learner is shown whichever reading Whitaker's
+# frequencies happen to rank first.  dictionary.js tries the token as printed
+# before it strips anything (`hitKey(raw)`), so the fix is data, not code: when
+# the library prints a form in a spelling that picks a *different* first entry —
+# a capital that means a name, a macron that means another word — that exact
+# spelling is added as its own key with the readings that can actually spell it
+# in front.  Only spellings that change the answer are added, so the cost is a
+# few hundred keys, not a copy of the glossary.
+#
+# Entries also carry `proper: true` on every name, so a caller that has the
+# token's capital in hand can prefer the name without consulting these keys.
+
+_SPELLING_CACHE: dict[tuple, frozenset | None] = {}
+_UNINFLECTED_POS = {"ADV", "CONJ", "PREP", "INTERJ", "ABBR", "ENDING", "PREFIX", "STEM"}
+
+
+def entry_spellings(e: dict) -> frozenset | None:
+    """Every spelling this entry can give, case-folded; None when unknown."""
+    if e.get("_sp"):
+        return frozenset(x.lower() for x in e["_sp"])
+    pos = e.get("pos")
+    if pos in _UNINFLECTED_POS:
+        head = str(e.get("lemma") or "").split(",")[0].split()[0].strip("-")
+        return frozenset([head.lower()]) if head else None
+    key = (e.get("h"), pos, tuple(e.get("roots") or []), tuple(e.get("cat") or []),
+           e.get("gender"), e.get("kind"))
+    if key in _SPELLING_CACHE:
+        return _SPELLING_CACHE[key]
+    try:
+        forms = latin_forms.single_forms(e)
+    except Exception:                                    # noqa: BLE001 — a table we cannot build
+        forms = []
+    out = frozenset(f.lower() for f in forms) if forms else None
+    _SPELLING_CACHE[key] = out
+    return out
+
+
+def _lower_wins(speller: "Speller", form: str) -> bool:
+    """True when the library prints this form in lower case at least as often
+    as with a capital — then the common word, not the name, leads the list."""
+    counter = speller.forms.get(form)
+    if not counter:
+        return False
+    lower = sum(n for sp, n in counter.items() if not CAPITAL.match(sp))
+    upper = sum(n for sp, n in counter.items() if CAPITAL.match(sp))
+    return lower > 0 and lower >= upper
+
+
+def spelling_rank(e: dict, spelling: str) -> int:
+    """How well this reading accounts for a form spelled exactly like this.
+    0 it spells it, letter for letter · 1 apart from a leading capital ·
+    2 we cannot say (no table for this word) · 3 it spells it otherwise."""
+    sp = entry_spellings(e)
+    if sp is None:
+        return 2
+    if spelling in sp or spelling.lower() in sp and spelling.lower() == spelling:
+        return 0
+    return 1 if spelling.lower() in sp else 3
+
+
+def _order_for(entries: list[dict], spelling: str) -> list[dict]:
+    return [e for _, e in sorted(enumerate(entries),
+                                 key=lambda pair: (spelling_rank(pair[1], spelling), pair[0]))]
+
+
+def exact_spelling_keys(glossary: dict[str, list[dict]], speller: "Speller",
+                        display_key: dict[str, str]) -> dict[str, list[dict]]:
+    """Extra keys for the spellings the library actually prints, added only
+    where the spelling changes which reading comes first."""
+    out: dict[str, list[dict]] = {}
+    for form, entries in glossary.items():
+        if len(entries) < 2:
+            continue
+        spellings = speller.forms.get(canonical(form))
+        names_here = [e for e in entries if e.get("proper")]
+        if not spellings:
+            continue
+        for sp in spellings:
+            if sp == form or sp in glossary or not (has_macron(sp) or CAPITAL.match(sp)):
+                continue
+            ordered = _order_for(entries, sp)
+            # only when a reading really does spell the form this way, letter
+            # for letter: a sentence-initial capital on a common word (Solum,
+            # Puerī) is not evidence of anything and gets no key
+            if spelling_rank(ordered[0], sp) != 0 or ordered[0] is entries[0]:
+                continue
+            out[sp] = ordered
+    return out
+
+
+def attach_spellings(glossary: dict[str, list[dict]]) -> int:
+    """`sp`: the spelling(s) this reading gives the key's form, macrons and
+    capital included — written only where the readings under one key disagree,
+    which is exactly where a caller holding the printed token can choose
+    between them (māla/mala, Mārcō/mārcō, liber/līber)."""
+    n = 0
+    for key, entries in glossary.items():
+        if len(entries) < 2:
+            continue
+        ck = canonical(key)
+        per = []
+        for e in entries:
+            sp = entry_spellings(e)
+            per.append(sorted(x for x in (sp or ()) if canonical(x) == ck) or None)
+        # names carry their capital, which entry_spellings lower-cased
+        for e, forms in zip(entries, per):
+            if e.get("_sp") and forms:
+                forms[:] = [x for x in e["_sp"] if canonical(x) == ck] or forms
+        shapes = {tuple(f) for f in per if f}
+        if len(shapes) < 2:
+            continue
+        for e, forms in zip(entries, per):
+            if forms:
+                e["sp"] = forms[0] if len(forms) == 1 else forms
+                n += 1
+    return n
+
+
+# ---------------------------------------------------------------------------
 # main
 
 
@@ -1454,6 +2172,7 @@ def main() -> None:
     old = json.load(open(OLD_GLOSSARY, encoding="utf-8")) if OLD_GLOSSARY.exists() else {}
     supplements, sup_keys = load_supplements()
     abbr_first, abbr_last, abbr_keys = load_abbreviations()
+    names = name_entries()
 
     speller = Speller()
     form_set: set[str] = set()
@@ -1469,6 +2188,9 @@ def main() -> None:
     for k, disp in list(sup_keys.items()) + list(abbr_keys.items()):
         form_set.add(k)
         display_key.setdefault(k, disp)
+    for k, ents in names.items():
+        form_set.add(k)
+        display_key.setdefault(k, strip_macrons(ents[0]["_sp"][0]).lower())
     if SEED_FORMS.exists():
         for line in open(SEED_FORMS, encoding="utf-8"):
             line = line.split("#")[0]
@@ -1505,14 +2227,26 @@ def main() -> None:
         if form in SUM_FORMS and not any(e["h"] == "sum" and e["pos"] in ("V", "VPAR") for e in ranked):
             ranked.insert(0, sum_entry(form))
         sup = list(supplements.get(form, []))
+        nm = list(names.get(form, []))
+        # a name entry replaces the supplement's (hand-listed, one case only)
+        # and Whitaker's reading of the same word
+        nm_hp = {(e["h"], e["pos"]) for e in nm}
+        sup = [e for e in sup if (e["h"], e["pos"]) not in nm_hp]
         # a supplement entry replaces Whitaker's reading of the same word
-        sup_hp = {(e["h"], e["pos"]) for e in sup}
+        sup_hp = {(e["h"], e["pos"]) for e in sup} | nm_hp
         ranked = [e for e in ranked if (e["h"], e["pos"]) not in sup_hp]
-        merged = sup + abbr_first.get(form, []) + ranked + abbr_last.get(form, [])
+        # A name goes first unless the library also prints this form in lower
+        # case at least as often (ursus the bear beside Ursus the slave); the
+        # exact-spelling keys below then put the name first for the capitalised
+        # spelling only.
+        first, last = (nm, []) if nm and not _lower_wins(speller, form) else ([], nm)
+        merged = first + sup + abbr_first.get(form, []) + ranked + last + abbr_last.get(form, [])
         if merged:
             glossary[display_key[form]] = merged
             if ranked:
                 n_whit += 1
+    glossary.update(exact_spelling_keys(glossary, speller, display_key))
+    n_sp = attach_spellings(glossary)
     covered = {canonical(k) for k in glossary}
 
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
@@ -1537,6 +2271,7 @@ def main() -> None:
     # `enc` stays, the tests compare it with null
     for entries in glossary.values():
         for e in entries:
+            e.pop("_sp", None)
             for k in ("cat", "gender"):
                 if k in e and e[k] is None:
                     del e[k]
@@ -1554,10 +2289,15 @@ def main() -> None:
 
     n_entries = sum(len(v) for v in glossary.values())
     print(f"forms in token set: {len(form_set)}")
+    print(f"exact-spelling keys: {len(glossary) - len(form_set) + len(form_set) - len([f for f in form_set if display_key[f] in glossary])}"
+          f"; `sp` written on {n_sp} entries")
     print(f"forms with entries: {len(glossary)} (Whitaker: {n_whit}, supplement-only: {len(glossary) - n_whit})")
     print(f"entries: {n_entries}; file: {size/1e6:.2f} MB → {OUT_PATH}")
     for wk, n in sorted(total_miss.items()):
         print(f"week {wk:02d}: {sum(weeks[wk].values())} tokens, {len({canonical(t) for t in weeks[wk]})} forms, {n} misses")
+    dead = sorted(set(LEXEME_MACRONS) - LEXEME_MACRONS_USED)
+    print(f"lexeme macrons: {len(LEXEME_MACRONS_USED)}/{len(LEXEME_MACRONS)} keys fired"
+          + (f"; NOT MATCHED: {dead}" if dead else ""))
     unused = ", ".join(sorted(set(ROOT_MACRONS) - ROOT_MACRONS_USED))
     fired = len(ROOT_MACRONS) - (len(unused.split(", ")) if unused else 0)
     print(f"macron corrections: {fired}/{len(ROOT_MACRONS)} keys fired"

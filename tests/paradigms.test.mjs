@@ -123,8 +123,8 @@ test('the contracted vocative is for names in -ius and fīlius; a common noun ha
   assert.deepEqual([voc.stem, voc.ending], ['gladi', 'e']);
   assert.match(gladius.note ?? '', /vocative is regular — gladie/);
 
-  for (const [h, want] of [['filius', 'fīlī'], ['iulius', 'iūlī'], ['cornelius', 'Cornēlī'],
-                           ['dionysius', 'dionysī']]) {
+  for (const [h, want] of [['filius', 'fīlī'], ['iulius', 'Iūlī'], ['cornelius', 'Cornēlī'],
+                           ['dionysius', 'Dionysī']]) {
     const p = paradigm(entry(h, 'N'), []);
     assert.equal(p.sections[0].rows[5].cells[0].text, want, `${h} vocative`);
     assert.match(p.note ?? '', /short vocative singular/, `${h} note`);
