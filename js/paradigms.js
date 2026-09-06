@@ -215,6 +215,106 @@ const CONTRACTED_VOC = new Set(['filius', 'genius']);
 // The glossary's only proper-name signal is the capital on the lemma.
 const CAPITAL = /^[A-ZĀĒĪŌŪȲ]/;
 
+// ---------------------------------------------------------------------------
+// Number: plūrālia tantum, and the words that have no plural.
+//
+// A word used only in the plural has NO singular — Alpēs, castra, moenia,
+// līberī, dīvitiae — and a name of one person or place has no plural — Mārcus,
+// Rōma, Neptūnus. Printing the missing number invents Latin, and the chart
+// drill then asks the learner to produce the invented form: the first item of
+// the first chapter session was "Give the dative singular of Athēniēnsēs"
+// (qa/grammar/QA-NAV-SESSION.md M1). So the missing number is left out of the
+// table altogether, exactly as the vulgus type already leaves out its plural —
+// a cell that does not exist cannot become a question.
+//
+// Nothing here is a guess: every word is decided by the data on its own entry.
+//
+//   1  `entry.num` ('pl' / 'sg'), when something upstream already knows.
+//   2  the standalone `pl` on the lemma. build_glossary's NAMES list writes it
+//      exactly where Ørberg's own vocabulary gives the word only in the plural
+//      — Alpēs Alpium f pl, moenia -ium n pl, Athēniēnsēs Athēniēnsium m pl,
+//      and the peoples in -ānī / -ēnsēs. (Familia Romana: the margin gloss at
+//      cap. XVI reads "Alpēs -ium f pl"; the Index vocābulōrum lists
+//      "moenia -ium n 25.11" with no singular head.) Note the *token*: vīs is
+//      written "… f · pl. vīrēs -ium", where "pl." is not this marker — and vīs
+//      is an IRREGULAR_NOUN with its own hand table in any case.
+//   3  Whitaker's own marker on the HEAD sense: "(in the plural)", "(pl.)",
+//      "usually plural". He puts it on the head sense of a plūrāle tantum
+//      (armum -ī n "arms (in the plural)"; tenebra -ae f "darkness (in the
+//      plural)"; castrum -ī n "camp (military; usually plural castra)") and on
+//      a LATER sense of a word that merely has one plural-only meaning (aqua
+//      "rain, rainfall (in the plural)", hortus "park (in the plural)"), so
+//      only the head sense counts. Ørberg's Index vocābulōrum agrees word for
+//      word on the ones he teaches: castra -ōrum n 12.93, arma -ōrum n 12.34,
+//      līberī -ōrum m 2.21, dīvitiae -ārum f 29.27, tenebrae -ārum f 34.83,
+//      moenia -ium n 25.11 — every one of them printed with no singular head.
+//   4  a proper name off the project's own name list (`entry.proper`) names one
+//      person, place or god and has no plural: Ørberg never prints Mārcī (pl.)
+//      or Rōmārum, but the generator was building them, and the drill could ask
+//      for them. Allen & Greenough, "Defective Nouns" §§99–103 (nouns wanting
+//      the plural — proper names, names of materials, abstract nouns; nouns
+//      used only in the plural) and §107 (a plural with a meaning of its own,
+//      castra / litterae). The exceptions are the gentile nouns and the
+//      capitalised common nouns the course really does print in the plural.
+//
+// Kept in step with noun_number() in pipeline/latin_forms.py.
+
+/** Whitaker's plural marker, as senses.py rewrites it and as he writes it. */
+const SENSE_PLURAL = /\(in the plural\)|\(pl\.\)|usu(?:ally|\.|,)\s*plural|usually in the plural/i;
+
+// Names on the project's own list whose plural the course really prints, so
+// `proper` must not take it away. Measured over the whole library (the course
+// weeks, the review shelf, the Colloquia, the margin glosses and the drills):
+// each of these appears there in a form that can only be a plural.
+//   Rōmānōrum / Rōmānīs / Rōmānōs  34   Germānōrum … 27   Graecōrum … 16
+//   Christiānōrum … 13   Athēniēnsēs … 12   Iūdaeōrum … 5   nymphārum … 4
+// Mūsa is the ninth: one of nine, and printed Mūsae wherever the course names
+// them together.
+const PROPER_PLURAL = new Set([
+  'romanus', 'graecus', 'germanus', 'christianus', 'iudaeus', 'atheniensis', 'nympha', 'musa',
+]);
+
+// Whitaker's head-sense marker, overruled. Every flagged word was read against
+// Ørberg's Index vocābulōrum, which agrees with him word for word — castra
+// -ōrum n, arma -ōrum n, tenebrae -ārum f, dīvitiae -ārum f, kalendae -ārum f,
+// nōnae -ārum f pl, cūnae -ārum f, dēliciae -ārum f, nūgae -ārum f, frūgēs -um
+// f, viscera -um n, līberī -ōrum m, moenia -ium n — except on these two, where
+// Ørberg prints a singular head because Whitaker has filed two words under one:
+//   gena -ae f 11.8      — he glosses it "cheeks (in the plural)"
+//   lectus -ī m 10.125   — "chosen, picked, selected men (in the plural)" and
+//                          "bed, couch" share his headword; the bed is the word
+//                          the course teaches, and it is a singular.
+const NOT_PLURAL_ONLY = new Set(['gena', 'lectus']);
+
+// The residue, decided by hand because no marker in the data carries it.
+// aurum: a name of a material. Ørberg's Index vocābulōrum prints "aurum -ī n
+// 22.15" and the book never uses a plural of it; Allen & Greenough put the
+// names of materials among the nouns wanting the plural.
+const SINGULAR_ONLY = new Set(['aurum']);
+
+/**
+ * 'pl' when the noun is used only in the plural, 'sg' when only in the
+ * singular, null otherwise. Nouns only; see the block comment above.
+ */
+export function nounNumber(entry) {
+  if (!entry || entry.pos !== 'N') return null;
+  // An irregular has a hand table with both numbers written out (vīs / vīrēs).
+  if (IRREGULAR_NOUNS[entry.h]) return null;
+  if (entry.num === 'pl' || entry.num === 'sg') return entry.num;
+  const lemma = entry.lemma || '';
+  if (lemma.split(/\s+/).includes('pl')) return 'pl';
+  const head = entry.senses?.[0];
+  if (head && SENSE_PLURAL.test(head) && !NOT_PLURAL_ONLY.has(entry.h)) return 'pl';
+  if (SINGULAR_ONLY.has(entry.h)) return 'sg';
+  if (entry.proper && !PROPER_PLURAL.has(entry.h)) return 'sg';
+  return null;
+}
+
+const GENDER_WORD = { m: 'm', f: 'f', n: 'n', c: 'm/f' };
+
+/** Two notes on one table: the number fact first, whatever else it had after. */
+const joinNote = (first, rest) => (rest ? `${first} ${rest}` : first);
+
 function nounTableKey(entry) {
   const [d, v] = entry.cat || [0, 0];
   const g = entry.gender;
@@ -313,18 +413,24 @@ function nounParadigm(entry, parses) {
       return cell(stem, end, nk(c, num, g));
     });
   };
-  const sg = build('sg');
-  const pl = build('pl');
-  const headers = pl ? ['singular', 'plural'] : ['singular'];
+  // A word used only in one number gets only that number's column: the missing
+  // cells are never built, so nothing can ask for them. A table that already
+  // has no plural (vulgus, Iuppiter) is left exactly as it was.
+  const num = tbl.pl ? nounNumber(entry) : null;
+  const sg = num === 'pl' ? null : build('sg');
+  const pl = num === 'sg' ? null : build('pl');
+  const headers = sg && pl ? ['singular', 'plural'] : sg ? ['singular'] : ['plural'];
   for (let i = 0; i < CASES.length; i++) {
-    const cells = [sg[i]];
+    const cells = [];
+    if (sg) cells.push(sg[i]);
     if (pl) cells.push(pl[i]);
     rows.push({ label: CASE_LABEL[CASES[i]], cells });
   }
   if (hasLoc) {
     const locEnd = key.startsWith('1') ? 'ae' : key.startsWith('2') ? 'ī' : key.startsWith('3') ? 'ī' : null;
     if (locEnd) {
-      const cells = [cell(r1, locEnd, nk('loc', 'sg', g))];
+      const cells = [];
+      if (sg) cells.push(cell(r1, locEnd, nk('loc', 'sg', g)));
       if (pl) cells.push(cell(r1, tbl.pl[4], nk('loc', 'pl', g)));
       rows.push({ label: CASE_LABEL.loc, cells });
     }
@@ -334,12 +440,21 @@ function nounParadigm(entry, parses) {
     title: `${entry.lemma} · ${declensionName(entry) || 'noun'}`,
     sections: [{ title: 'cases', headers, rows }],
   };
-  if (key === '3i') p.note = 'i-stem: genitive plural -ium. A few i-stems (turris, puppis, vīs, sitis) also take accusative -im and ablative -ī.';
-  if (key === '3in') p.note = 'Neuter i-stem: ablative singular -ī, plural -ia, -ium.';
+  // The i-stem note's second half is about the singular, so a plural-only table
+  // keeps only the half that is about it.
+  if (key === '3i') p.note = num === 'pl' ? 'i-stem: genitive plural -ium.' : 'i-stem: genitive plural -ium. A few i-stems (turris, puppis, vīs, sitis) also take accusative -im and ablative -ī.';
+  if (key === '3in') p.note = num === 'pl' ? 'Neuter i-stem: plural -ia, -ium.' : 'Neuter i-stem: ablative singular -ī, plural -ia, -ium.';
   if (key === '3' && entry.cat?.[0] === 3 && NON_I_STEM.has(h)) p.note = 'Consonant stem (not an i-stem): genitive plural -um, ablative singular -e.';
   if (key === '2nus') p.note = 'Neuter in -us: nominative, accusative and vocative are identical; no plural.';
-  if (iusVoc) p.note = `A name in -ius (and fīlius) has the short vocative singular ${contracted}. The genitive stays ${r1}ī, as Ørberg prints it; older Latin sometimes contracts that too.`;
-  else if (iusStem) p.note = `Noun in -ius: the vocative is regular — ${r1}e. Only names in -ius, and fīlius, shorten it to -ī.`;
+  // …and a note about the vocative singular belongs only to a table that has one
+  // (Aegyptiī -ōrum m pl is a 2m stem in -i, and has no singular at all).
+  if (iusVoc && num !== 'pl') p.note = `A name in -ius (and fīlius) has the short vocative singular ${contracted}. The genitive stays ${r1}ī, as Ørberg prints it; older Latin sometimes contracts that too.`;
+  else if (iusStem && num !== 'pl') p.note = `Noun in -ius: the vocative is regular — ${r1}e. Only names in -ius, and fīlius, shorten it to -ī.`;
+  // The number note comes first and keeps whatever else the table had to say.
+  if (num === 'pl') p.note = joinNote(`Used only in the plural — ${pl[0].text} -${tbl.pl[1]} ${GENDER_WORD[g] || ''}`.trim() + '. It has no singular, so the table has no singular column.', p.note);
+  if (num === 'sg') p.note = joinNote(entry.proper && !SINGULAR_ONLY.has(entry.h)
+    ? 'A name: it stands for one person or place, so it has no plural.'
+    : 'Used only in the singular: it has no plural in use.', p.note);
   return markHits(p, parses);
 }
 
