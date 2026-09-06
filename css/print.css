@@ -14,8 +14,10 @@
 html[data-printing] body > *:not(#g-print) { display: none !important; }
 html[data-printing] #g-print { display: block !important; }
 
-/* Off the sheet when nothing is being printed: the root is `hidden` on screen
-   anyway, but a stylesheet that only ever hides is easier to reason about. */
+/* On screen the root carries the `hidden` attribute (print.js), which
+   reader.css enforces with `[hidden] { display: none !important }`. The rule
+   above outranks it — an id beats an attribute selector — so the pages appear
+   on paper and never in the page. This one is the belt to that brace. */
 #g-print:not(.pr) { display: none; }
 
 html[data-printing] {
@@ -44,8 +46,9 @@ html[data-printing] {
 }
 .pr-page:last-child { break-after: auto; page-break-after: auto; }
 /* A skill sheet is allowed to run over: rule, tables and examples together are
-   often more than one page, and cutting the examples off would be worse. */
-.pr-page--sheet { break-inside: auto; }
+   often more than one page, and cutting the examples off would be worse. Its
+   footer runs with it — see .pr-foot--run below. */
+.pr-page--sheet { break-inside: auto; padding-bottom: 10mm; }
 
 /* ------------------------------------------------------------- heading */
 .pr-head { margin: 0 0 6mm; padding-bottom: 2mm; border-bottom: 0.6pt solid #000; }
@@ -140,6 +143,18 @@ html[data-printing] {
   border-top: 0.4pt solid #000;
   font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 8pt;
+}
+
+/* A running footer for the one document that flows over a page break. `fixed`
+   in paged media repeats the element on every page, so both pages of a skill
+   sheet are identified; a chart is one page and keeps its own static footer. */
+.pr-doc--sheet .pr-foot--run {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-top: 0;
+  background: #fff;
 }
 
 /* A printed sheet is a fixed object: no dark theme, no links dressed as links. */

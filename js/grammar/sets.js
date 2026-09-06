@@ -11,6 +11,12 @@
 //   setSkills({ questions, vocab, pensa })    → Map id → pseudo-skill
 //   createSetItems({ sets, units, pool, rand }).generate({ skill, kind, stage }) → item | null
 //   matchQuestion(typed, answers, sentence)   answer matching: macron-stripped, case-insensitive, the full sentence accepted
+//   resolveRef(la, ref) / resolveList(la, list)  a question's `{ span }` / `{ parts }` references → the Latin they stand for
+//
+// A question set's answers and choices are references into the sentence the
+// item names, not the book's words (PROMPT.md §5): they are resolved on the
+// device against the private text, and an item whose sentence is missing is
+// hidden rather than shown half-resolved.
 //
 // Item kinds: `question` (input type | choice | tap from the item; the
 // answering sentence shown after with the answer lit), `vocab` (Latin →
@@ -105,16 +111,74 @@ export function manifestChapters(raw) {
   if (!list) return null;
   return [...new Set(list.map((x) => (typeof x === 'string' ? Number(x.replace(/\.json$/i, '')) : Number(x))).filter((n) => Number.isFinite(n) && n > 0))].sort((a, b) => a - b);
 }
-/** Pure: a question set with every item usable (answers with macron-stripped variants, input defaulted). */
+/* ------------------------------------------------- sentence references
+ * Ørberg's Latin never ships in the public app (PROMPT.md §5): a question
+ * file that needs the book's own words carries *where they are*, not what
+ * they say. An accepted answer or a choice is therefore either
+ *
+ *   "Minimē"                      our own wording — a form, a name, a phrase
+ *   { "span": [3, 6] }            words 3–6 of the item's sentence
+ *   { "parts": [ … ] }            our wording woven around such runs
+ *
+ * and the words arrive at resolve time from the private text the device
+ * fetched by `unit_id`. pipeline/latin_text.py holds the line the public
+ * files are checked against; pipeline/span_questions.py writes them.
+ */
+/** A stored answer or choice, validated: a string, `{ span }` or `{ parts }`; null when unusable. Pure. */
+export function normaliseRef(ref) {
+  const span = (s) => (Array.isArray(s) && s.length === 2 && s.every((n) => Number.isInteger(n)) && s[0] >= 0 && s[1] >= s[0] ? { span: [s[0], s[1]] } : null);
+  if (typeof ref === 'string') return ref.trim() || null;
+  if (!ref || typeof ref !== 'object') return null;
+  if (ref.span) return span(ref.span);
+  if (Array.isArray(ref.parts) && ref.parts.length) {
+    const parts = ref.parts.map((p) => (typeof p === 'string' ? (p.trim() || null) : span(p?.span)));
+    return parts.every(Boolean) ? { parts } : null;
+  }
+  return null;
+}
+/** The parts of a resolved reference as one string: one space between them, none before punctuation. Pure. */
+const joinParts = (parts) => parts.join(' ').replace(/\s+([,.;:!?])/g, '$1').replace(/\s+/g, ' ').trim();
+/**
+ * A stored answer or choice → the Latin it stands for, read out of `la`.
+ * `null` when it cannot be resolved (no sentence, or an index past its end) —
+ * the caller hides the item rather than grading against a guess. Pure.
+ */
+export function resolveRef(la, ref) {
+  if (typeof ref === 'string') return ref;
+  if (!ref || typeof ref !== 'object') return null;
+  const words = tokenize(String(la ?? '')).filter((t) => t.isWord);
+  const slice = (s) => {
+    const [i, j] = Array.isArray(s) ? s : [];
+    if (!Number.isInteger(i) || !Number.isInteger(j) || i < 0 || j < i || j >= words.length) return null;
+    return String(la).slice(words[i].start, words[j].end);
+  };
+  if (ref.span) return slice(ref.span);
+  if (Array.isArray(ref.parts)) {
+    const out = [];
+    for (const p of ref.parts) { const t = typeof p === 'string' ? p : slice(p?.span); if (t == null) return null; out.push(t); }
+    return out.length ? joinParts(out) : null;
+  }
+  return null;
+}
+/** Every answer or choice of a list resolved against `la`; null when any one cannot be. Pure. */
+export function resolveList(la, list) {
+  const out = [];
+  for (const ref of list || []) { const t = resolveRef(la, ref); if (t == null) return null; out.push(t); }
+  return out;
+}
+/** Resolved answers with their macron-stripped variants, deduped — what the matcher and the feedback use. Pure. */
+export const withStripped = (answers) => [...new Set((answers || []).flatMap((a) => [a.trim(), stripMacrons(a.trim())]))];
+
+/** Pure: a question set with every item usable (answers and choices kept as references, input defaulted). */
 export function normaliseQuestionSet(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const chapter = Number(raw.chapter) || null;
   const items = (Array.isArray(raw.items) ? raw.items : []).filter((it) => it && typeof it.q === 'string' && Array.isArray(it.answers) && it.answers.length).map((it, i) => {
-    const answers = [...new Set(it.answers.filter((a) => typeof a === 'string' && a.trim()).flatMap((a) => [a.trim(), stripMacrons(a.trim())]))];
+    const answers = it.answers.map(normaliseRef).filter(Boolean);
     const input = ['type', 'choice', 'tap'].includes(it.input) ? it.input : 'type';
-    const choices = Array.isArray(it.choices) ? it.choices.filter((c) => typeof c === 'string' && c.trim()) : [];
+    const choices = (Array.isArray(it.choices) ? it.choices : []).map(normaliseRef).filter(Boolean);
     return { id: String(it.id ?? `q${pad(chapter ?? 0)}-${pad(i + 1)}`), qword: qwordLemma(it.qword), qwordForm: it.qword ?? null, q: it.q, en: typeof it.en === 'string' ? it.en : '', unit_id: typeof it.unit_id === 'string' ? it.unit_id : null, answers, input: input === 'choice' && choices.length < 2 ? 'type' : input, choices, hint: typeof it.hint === 'string' ? it.hint : '' };
-  });
+  }).filter((it) => it.answers.length);
   return { chapter, week_id: typeof raw.week_id === 'string' ? raw.week_id : null, title: typeof raw.title === 'string' ? raw.title : '', items };
 }
 /** Pure: a vocabulary deck with every word usable. */
@@ -269,26 +333,51 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
   const meaningsOf = (la) => tokenize(la).filter((t) => t.isWord).map((t) => ({ text: t.text, form: t.form, start: t.start }));
   const base = (skill, kind, stage) => ({ skill: skill.id, kind, stage, unit_id: null, week_n: skill.week_n ?? null, target: null, entry: null, parse: null, meanings: [], gold: null, confuse: { values: {}, indexes: {}, forms: {} }, set: skill.set, chapter: skill.chapter });
 
+  /**
+   * A question item with its sentence references resolved from the private
+   * text: `{ unit, answers, choices }`, or null when a reference points at a
+   * sentence the device does not have. A null hides the item — never a crash,
+   * and never a right answer graded wrong against a half-resolved list.
+   */
+  const resolvedQ = new Map();
+  function resolveQuestion(it) {
+    if (resolvedQ.has(it)) return resolvedQ.get(it);
+    const unit = it.unit_id ? unitOf(it.unit_id) : null;
+    const la = unit?.la ?? '';
+    const answers = resolveList(la, it.answers);
+    const choices = resolveList(la, it.choices);
+    const out = answers && answers.length && choices ? { unit, answers: withStripped(answers), choices } : null;
+    if (!out) console.warn(`[grammar] question ${it.id}: its references do not resolve against ${it.unit_id ?? 'no sentence'}${unit ? '' : ' (not in the library)'} — the item is hidden`);
+    resolvedQ.set(it, out);
+    return out;
+  }
+  /** The items of a question set whose references resolve, memoised per skill. */
+  const usableQ = new Map();
+  const questionItems = (skill) => {
+    if (!usableQ.has(skill.id)) usableQ.set(skill.id, (skill.data?.items ?? []).filter((it) => resolveQuestion(it) != null));
+    return usableQ.get(skill.id);
+  };
+
   function question(skill, stage) {
-    const set = skill.data;
+    const items = questionItems(skill);
     const keyOf = (it) => `question:${it.id}`;
-    const keys = set.items.map(keyOf);
+    const keys = items.map(keyOf);
     if (!keys.length) return null;
     const got = pool.chooseInfo(skill.id, 'question', keys, rand);
-    const it = set.items[keys.indexOf(got.key)];
-    const unit = it.unit_id ? unitOf(it.unit_id) : null;
+    const it = items[keys.indexOf(got.key)];
+    const { unit, answers, choices } = resolveQuestion(it);
     let input = it.input;
     let accept = null;
-    if (input === 'tap') { accept = unit ? answerIndexes(unit.la, it.answers) : []; if (!accept.length) input = 'type'; }
+    if (input === 'tap') { accept = unit ? answerIndexes(unit.la, answers) : []; if (!accept.length) input = 'type'; }
     const item = { ...base(skill, 'question', stage), key: got.key, input, repeat: got.wrapped, unit_id: it.unit_id, question: it,
       prompt: { la: input === 'tap' && unit ? unit.la : null, question: it.q, en: it.en, gloss: null, hint: it.hint || `A ${it.qword ?? 'question'} question: the answer is in the chapter.`, placeholder: 'the answer in Latin (macrons optional)' },
       // The words of the question itself are glossable whatever the input (plan §3: meanings are never assumed).
-      answer: it.answers, choices: null, meanings: input === 'tap' && unit ? meaningsOf(unit.la) : meaningsOf(it.q),
-      feedback: { short: unit ? `The chapter says: ${unit.la}` : `The answer is ${it.answers[0]}.`, term: skill.plain, label: null, table: null, lemma: null, sense: null, paradigm: null, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, it.answers, { whole: false }) : [] } };
+      answer: answers, choices: null, meanings: input === 'tap' && unit ? meaningsOf(unit.la) : meaningsOf(it.q),
+      feedback: { short: unit ? `The chapter says: ${unit.la}` : `The answer is ${answers[0]}.`, term: skill.plain, label: null, table: null, lemma: null, sense: null, paradigm: null, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, answers, { whole: false }) : [] } };
     if (input === 'choice') {
-      const correctSet = new Set(it.answers.map(normaliseAnswer));
-      const opts = it.choices.map((c) => ({ value: c, label: c, correct: correctSet.has(normaliseAnswer(c)), skill: null }));
-      if (!opts.some((o) => o.correct)) opts.unshift({ value: it.answers[0], label: it.answers[0], correct: true, skill: null });
+      const correctSet = new Set(answers.map(normaliseAnswer));
+      const opts = choices.map((c) => ({ value: c, label: c, correct: correctSet.has(normaliseAnswer(c)), skill: null }));
+      if (!opts.some((o) => o.correct)) opts.unshift({ value: answers[0], label: answers[0], correct: true, skill: null });
       item.choices = shuffle(opts, rand).slice(0, 4);
       if (!item.choices.some((o) => o.correct)) item.choices[0] = opts.find((o) => o.correct);
     }
@@ -412,6 +501,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     const fn = FNS[kind] ?? FNS[skill.kinds[0]];
     return fn ? fn(skill, stage, { match }) : null;
   }
-  const drillable = (id) => (sets.get(id)?.count ?? 0) > 0;
+  // A question set whose sentences the device does not have yet has no items to give, whatever its `count` says.
+  const drillable = (id) => { const sk = sets.get(id); if (!sk) return false; return sk.set === 'questions' && sk.data ? questionItems(sk).length > 0 : (sk.count ?? 0) > 0; };
   return { generate, drillable, sets };
 }

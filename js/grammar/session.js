@@ -21,6 +21,21 @@ export const LEARN_BLOCKED = 10;
 export const SET_LEARN_BATCH = 15;
 
 /**
+ * How far a session may grow past what the learner asked for. Every wrong
+ * answer re-queues, and a re-queued item answered wrong re-queues again: with
+ * nothing to stop it a ten-item session answered wrongly throughout reached
+ * **84 items and was still growing** (QA I1). The learner who most needs the
+ * repetition is the one for whom the end recedes, which is the wrong way round.
+ * A session may therefore grow by half of what was asked for (at least two
+ * items); past that a miss is not re-queued — it comes back in the next
+ * session instead, and the runner says so. Open-ended sessions count each
+ * batch of ten as more asked for, so the ceiling moves with them.
+ */
+export const REQUEUE_GROWTH = 0.5;
+export const REQUEUE_MIN_GROWTH = 2;
+export const sessionCeiling = (asked) => asked + Math.max(REQUEUE_MIN_GROWTH, Math.ceil(asked * REQUEUE_GROWTH));
+
+/**
  * Judge an answer against an item. `value`: a string (type / choice value); a
  * word index (tap); { cellIndex: string } (chart); an array of chunk indexes
  * (order); { leftIndex: rightIndex } (match); { blankIndex: string } (inline /
@@ -119,7 +134,7 @@ export function confusedWith(item, result) {
  * One drill run over a list of slots. `getItem(slot)` makes the item;
  * `record(attempt, result)` persists. Shared by Learn's phases and Practice.
  */
-function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skills = null, rand = Math.random, fill = null, resume = null, onChange = null }) {
+function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skills = null, rand = Math.random, fill = null, resume = null, onChange = null, pair = null, grows = true }) {
   let queue = [...(resume?.queue ?? slots)];
   let index = resume?.index ?? 0;
   let current = null;
@@ -127,8 +142,12 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
   let hinted = false;
   const log = [...(resume?.log ?? [])];
   let answered = false;   // the item at `index` has been answered: a resume starts after it
+  // What the learner actually asked for, so "3 of 14" can say where the extra four came from.
+  let asked = Number(resume?.asked) || (resume?.queue?.length ?? slots.length);
+  let capped = false;     // a miss was not re-queued because the session is full
+  const ceiling = () => (grows ? sessionCeiling(asked) : Infinity);
   const changed = () => { try { onChange?.(snapshot()); } catch { /* storage */ } };
-  function snapshot() { return { queue, index: answered ? index + 1 : index, log }; }
+  function snapshot() { return { queue, index: answered ? index + 1 : index, log, asked }; }
   function load() {
     while (index < queue.length) {
       const slot = queue[index];
@@ -145,6 +164,11 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
     get length() { return queue.length; },
     get queue() { return queue; },
     get position() { return index; },
+    /** How many items the learner asked for, and how many came back after a wrong answer. */
+    get asked() { return asked; },
+    get added() { return Math.max(0, queue.length - asked); },
+    /** True once a miss went un-re-queued because the session had reached its ceiling. */
+    get capped() { return capped; },
     get current() { return current; },
     get log() { return log; },
     snapshot,
@@ -161,20 +185,28 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date().toISOString() };
       log.push(attempt);
       answered = true;
-      if (!result.correct && requeueOn) queue = [...queue.slice(0, index + 1), ...requeue(queue.slice(index + 1), { skill: item.skill, kind: item.kind, stage: slot.stage ?? item.stage, skills, rand, fill, played: queue.slice(0, index + 1) })];
+      if (!result.correct && requeueOn) {
+        const before = queue.length;
+        const played = queue.slice(0, index + 1);
+        // A pair session's re-queue is two slots (the pair), every other one is a single slot.
+        const other = (pair || []).find((x) => x && x !== item.skill) ?? null;
+        const need = other ? 2 : 1;
+        queue = [...played, ...requeue(queue.slice(index + 1), { skill: item.skill, kind: item.kind, stage: slot.stage ?? item.stage, skills, rand, fill, played, pair: other, cap: ceiling() })];
+        if (queue.length === before && before + need > ceiling()) capped = true;
+      }
       await onAnswer?.({ item, slot, result, attempt, hinted: hinted || self, partial: !!result.partial, ms: took });
       changed();
       return { ...result, attempt, item };
     },
     next() { index += 1; return load(); },
-    /** Open-ended sessions: more slots appended. */
-    extend(more) { queue = [...queue, ...more]; changed(); if (!current) return load(); return current; },
+    /** Open-ended sessions: more slots appended — asked for, so the ceiling moves with them. */
+    extend(more) { queue = [...queue, ...more]; asked += more.length; capped = false; changed(); if (!current) return load(); return current; },
     summary() {
       const right = log.filter((a) => a.correct).length;
       const partly = log.filter((a) => a.correct && a.partial).length;
       const skillsSeen = [...new Set(log.map((a) => a.skill))];
       const wrong = log.filter((a) => !a.correct).map((a) => a.skill);
-      return { total: log.length, right, partly, wrong: [...new Set(wrong)], skills: skillsSeen, hinted: log.filter((a) => a.hinted).length, ms: log.reduce((n, a) => n + (a.ms || 0), 0) };
+      return { total: log.length, right, partly, wrong: [...new Set(wrong)], skills: skillsSeen, hinted: log.filter((a) => a.hinted).length, ms: log.reduce((n, a) => n + (a.ms || 0), 0), asked, added: Math.max(0, queue.length - asked), capped };
     },
   };
 }
@@ -248,7 +280,7 @@ export function createLearn({ skill, gstore, items, rand = Math.random, resume =
  * (batches of 10 until the learner stops). Answers update skill_state at
  * once, so a second device sees the change.
  */
-export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, rand = Math.random, resume = null, onChange = null, fill = undefined }) {
+export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, rand = Math.random, resume = null, onChange = null, fill = undefined, pair = null }) {
   const skills = skillsIndex.skills;
   // Only skills that can produce an item enter a plan (M8): a metre skill or one with no sentences never becomes a slot.
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
@@ -262,10 +294,11 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
     if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(item.skill, attempt.confused_with);
   };
   // A blocked set on one skill repeats that skill by design, so a wrong answer there is not re-queued (it could only come back at once).
-  //  is a caller saying no other skill may enter the session at all (the confusion pair's ten): a re-queue
-  // that cannot find room is then dropped rather than padded out with a third skill.
+  // `fill: null` is a caller saying no other skill may enter the session at all (the confusion pair's ten): a re-queue
+  // that cannot find room is then dropped rather than padded out with a third skill. `pair: [a, b]` goes with it —
+  // in an alternation a miss comes back as the pair, which is the only shape that keeps the two alternating (G3-04).
   const filler = fill === undefined ? (n, exclude) => build(n, exclude) : fill;
-  const runner = createRunner({ slots, getItem, mode: 'practice', onAnswer, requeueOn: preset !== 'one-skill', skills, rand, fill: filler, resume, onChange });
+  const runner = createRunner({ slots, getItem, mode: 'practice', onAnswer, requeueOn: preset !== 'one-skill', skills, rand, fill: filler, resume, onChange, pair });
   return {
     runner, preset, size, open: size == null,
     start: () => runner.start(),

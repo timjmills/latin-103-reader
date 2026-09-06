@@ -1065,3 +1065,50 @@ the tables hold them.
   and tested (`tests/grammar.stats.wave3.test.mjs`).
 
 sw is **v38**: `css/print.css` and `js/grammar/print.js` are precached.
+
+## Grammar wave 3 — the review and QA fixes (2026-09-06)
+
+`qa/grammar/CODE-REVIEW-G3.md` and `qa/grammar/QA-REPORT-G3.md`, answered.
+The findings and what was decided are in `docs/GRAMMAR-CONTRACT.md`, "Wave 3 —
+review and QA fixes"; what a reader of this file needs to know:
+
+- **`index.js` exports `createDrillableMemo({ items, skills })`.** The section
+  is built twice in a life — cheaply for the weeks-menu Today card
+  (`lightInit()`, no `ctx.items`), then in full — and the memo behind
+  `ctx.drillable(id)` must survive that. It answers `false` without caching
+  while there is no generator, never memoises a chapter set, and is cleared by
+  `buildSets()`. `ui.refresh()` is a no-op while `ctx.items` is null, so the
+  light instance never paints the map. Without both, a reader who opened the
+  weeks menu before Grammar saw 83 of 87 skills reading "no sentences in the
+  library yet" until the page was reloaded.
+- **`stats.skillHistory(rows, { total })`** takes the lifetime count from
+  `gstore.countAttempts(skill)`; the rows it is handed are already trimmed, so
+  it cannot know it. `countAttempts` itself now uses the per-skill index the
+  windowed read builds, which the map asks 87 times a paint.
+- **`stats.dayList(days, now)`** builds every day strip with calendar
+  arithmetic (`new Date(y, m, d - i)`), not `now - i × 24 h`, so a clock change
+  cannot lose or double a day.
+- **`stats.progressTrail`** replays Learn's own pass: a run of learn-mode
+  attempts is buffered and, where `learnCriterion` passes over its last ten,
+  `passLearn` is applied at that attempt — the state every practice answer
+  after it was really judged against. A self-graded "partly" comes from
+  `drill_attempts.self`.
+- **`scheduler.requeue(plan, { …, pair, cap })`.** `pair` names the other skill
+  of a confusion-pair session: the plan alternates, so the re-queue is spliced
+  in as the pair (`skill`, `other`), the only shape that keeps the alternation.
+  `cap` is the session ceiling — `session.sessionCeiling(asked)`, asked plus
+  half of it and at least two, so a ten-item session tops out at fifteen. The
+  runner exposes `asked` / `added` / `capped`; the item and the summary say in
+  words how many items came back and when the session is full.
+- **`printDocument`** sets `root.hidden = true` (the print stylesheet is
+  `media="print"` and cannot hide anything on screen) and cleans up on
+  `afterprint`, on `matchMedia('print')` going false, or after five minutes —
+  in that order of preference. `buildSheet` returns a `.pr-doc--sheet` wrapper
+  whose footer is fixed, so it runs on both pages of a sheet that flows.
+  `print.captionFor` drops a one-section table's caption, so a noun chart is no
+  longer headed "cases".
+- **The map's Print charts** is `async`: a category filter prints straight
+  through, "All" asks before any work is done, and the build yields after the
+  "Building…" message and every eight skills.
+
+sw is **v40**.

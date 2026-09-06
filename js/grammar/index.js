@@ -17,6 +17,33 @@ import { roman, isShelfWeek } from '../sync.js';
 import { createGenerator } from './generate.js';
 import { createUI } from './ui.js';
 
+/**
+ * The `drillable` memo, kept pure so the sequence that broke it can be tested
+ * without a DOM (QA-1). Asking whether a skill can produce an item means
+ * scanning the library, so the answer is cached — but **only when there is a
+ * generator to answer it**. `lightInit()` builds a `ui` for the weeks-menu
+ * Today card while `ctx.items` is still null, and `setSection('grammar')`
+ * repaints from that instance; before this the map's 87 misses were cached as
+ * `false` and the whole section went quiet for the rest of the session.
+ * A skill with a `set` is never memoised at all (a deck's item pool changes as
+ * the learner works through it), and `clear()` runs whenever the generator is
+ * rebuilt. `items()` / `skills()` are getters, so the memo follows the context.
+ */
+export function createDrillableMemo({ items, skills }) {
+  const memo = new Map();
+  return {
+    clear() { memo.clear(); },
+    get size() { return memo.size; },
+    drillable(id) {
+      const gen = items();
+      if (!gen) return false;                       // no generator yet: answer, never remember
+      if (skills()?.get?.(id)?.set) return !!gen.drillable(id);
+      if (!memo.has(id)) memo.set(id, !!gen.drillable(id));
+      return memo.get(id);
+    },
+  };
+}
+
 const LS_SECTION = 'l103.section';
 const LS_WEEK = 'l103.week';
 const LS_COURSE_WEEK = 'l103.grammar.courseWeek';   // the last *course* week read, kept while the reader is on a shelf (review or colloquia) — G1-12
@@ -41,7 +68,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   // The fixture pensa: tests/fixtures/grammar/pensa/index.json lists the chapters, NN.json holds the rows (the real store pulls public.pensa).
   const localPensa = fixture ? async () => { const chapters = manifestChapters(await fetchJson('pensa/index.json')) ?? []; const docs = await Promise.all(chapters.map((c) => fetchJson(`pensa/${String(c).padStart(2, '0')}.json`).catch(() => null))); return docs.flatMap((d) => (Array.isArray(d) ? d : Array.isArray(d?.rows) ? d.rows : [])); } : null;
 
-  const drillableMemo = new Map();
+  const drillableMemo = createDrillableMemo({ items: () => ctx.items, skills: () => ctx.skills });
   const ctx = {
     store, dict, par, reader, live, root, fixture,
     settings, saveSettings,
@@ -68,8 +95,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     currentChapter() { const n = ctx.currentWeekN(); const w = ctx.weeks.find((x) => x.n === n); return w ? chapterOfWeek(w) : null; },
     /** The chapter sets that belong to the current week (its chapter's questions, vocabulary and pensa), for the "this week" preset. */
     currentWeekSets() { const c = ctx.currentChapter(); return c == null ? [] : [...ctx.sets.values()].filter((s) => s.chapter === c && !s.rev).map((s) => s.id); },
-    /** True when a skill can produce a drill item at all (a parse filter and at least one sentence in the library; a set with items), memoised. */
-    drillable(id) { if (ctx.skills.get(id)?.set) return !!ctx.items?.drillable(id); if (!drillableMemo.has(id)) drillableMemo.set(id, !!ctx.items?.drillable(id)); return drillableMemo.get(id); },
+    /** True when a skill can produce a drill item at all (a parse filter and at least one sentence in the library; a set with items), memoised — see createDrillableMemo. */
+    drillable(id) { return drillableMemo.drillable(id); },
     /** The grammar preferences kept in settings (unknown keys ride along in the settings blob). */
     prefs() { const g = ctx.settings?.grammar; return { preset: g?.preset ?? 'review-heavy', size: g?.size === null ? null : (Number(g?.size) || 10), oneSkill: g?.oneSkill ?? null }; },
     async savePrefs(patch) {
@@ -99,6 +126,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   const loader = createSetLoader({ fetchJson });
   /** The chapter sets as skills, from the public files and the store's pensa; rebuilt when the pensa change. */
   function buildSets(loaded) {
+    drillableMemo.clear();   // a new generator answers afresh (QA-1)
     ctx.sets = setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
     ctx.skills = new Map([...ctx.index.skills, ...ctx.sets]);
     const setItems = createSetItems({ sets: ctx.sets, units: ctx.units, pool: baseItems.pool });
@@ -116,6 +144,13 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       ctx.weeks = await store.getWeeks();
       const lists = await Promise.all(ctx.weeks.map((w) => store.getUnits(w.n).catch(() => [])));
       ctx.units = lists.flat().filter((u) => u && typeof u.la === 'string');
+      // `?fixture=1`: the fixture chapter sets refer to the fixture's own invented sentences (their span
+      // references index those), so they stand in front of whatever the fixture store loaded for the same id.
+      if (fixture) {
+        const own = await fetchJson('units.json').catch(() => null);
+        const list = (Array.isArray(own?.units) ? own.units : []).filter((u) => u && typeof u.la === 'string');
+        if (list.length) { const ids = new Set(list.map((u) => u.id)); ctx.units = [...list, ...ctx.units.filter((u) => !ids.has(u.id))]; }
+      }
       const highlights = new Map();
       const hlLists = await Promise.all(ctx.weeks.map((w) => (isShelfWeek(w.n) ? Promise.resolve([]) : store.getHighlights(w.n).catch(() => []))));
       for (const h of hlLists.flat()) { if (!h?.unit_id || !h?.text) continue; if (!highlights.has(h.unit_id)) highlights.set(h.unit_id, []); highlights.get(h.unit_id).push({ text: h.text, label: h.label ?? '', note: h.note ?? '' }); }

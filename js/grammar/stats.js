@@ -2,11 +2,24 @@
 // skill_state rows and the drill_attempts log. Never merged into the reading
 // study log.
 
-import { STATES, applyAnswer, newState } from './scheduler.js';
+import { STATES, applyAnswer, newState, passLearn, learnCriterion } from './scheduler.js';
 
 const DAY = 24 * 60 * 60 * 1000;
 const ms = (v) => { const n = typeof v === 'number' ? v : Date.parse(v || ''); return Number.isFinite(n) ? n : 0; };
 export const localDay = (v) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? null : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+
+/**
+ * The last `days` local calendar days ending today, oldest first. Calendar
+ * arithmetic, not `now - i × 24 h`: on the days around a clock change two
+ * subtractions land on the same local date and one date is skipped, so a day
+ * went missing from every strip twice a year (G3-07). Pure.
+ */
+export function dayList(days, now = Date.now()) {
+  const d = new Date(now);
+  const out = [];
+  for (let i = days - 1; i >= 0; i--) out.push(localDay(new Date(d.getFullYear(), d.getMonth(), d.getDate() - i, 12)));
+  return out;
+}
 
 /** Skills by state: { new, learning, practising, mastered, lapsed } counts, over every skill in the map. */
 export function byState(states, skillIds) {
@@ -32,8 +45,7 @@ export function totals(attempts, now = Date.now()) {
 
 /** Items per local day over the last `days` days (oldest first). */
 export function perDay(attempts, { days = 14, now = Date.now() } = {}) {
-  const out = [];
-  for (let i = days - 1; i >= 0; i--) out.push({ day: localDay(now - i * DAY), items: 0, right: 0 });
+  const out = dayList(days, now).map((day) => ({ day, items: 0, right: 0 }));
   const idx = new Map(out.map((d, i) => [d.day, i]));
   for (const a of attempts || []) { const i = idx.get(localDay(ms(a.at))); if (i != null) { out[i].items += 1; if (a.correct) out[i].right += 1; } }
   return out;
@@ -49,13 +61,6 @@ export function perSkill(attempts, skillIds, { last = 10 } = {}) {
     out.set(id, { total: list.length, recent: recent.map((a) => ({ correct: !!a.correct, hinted: !!a.hinted, kind: a.kind, at: a.at })), right: recent.filter((a) => a.correct).length, hinted: recent.filter((a) => a.hinted).length });
   }
   return out;
-}
-
-/** Confusion pairs, most confused first: [{ a, b, count }]. Directional: "a answered as b". */
-export function confusionList(rows, skills) {
-  return (rows || []).filter((r) => r && r.count > 0 && skills.has(r.skill_a) && skills.has(r.skill_b))
-    .map((r) => ({ a: r.skill_a, b: r.skill_b, count: Number(r.count) || 0 }))
-    .sort((x, y) => y.count - x.count);
 }
 
 /* --------------------------------------------- wave 3: confusion analytics */
@@ -121,19 +126,24 @@ export function confusionReason(skillA, skillB, { lessonA = null, lessonB = null
  * windowed list; this is the second guard). `attempts` are that skill's rows,
  * oldest first.
  *
+ * `total` is the skill's **lifetime** count, which the caller knows and this
+ * list does not: the store has already trimmed the rows, so deriving it from
+ * `attempts.length` made `windowed` permanently false and the sentence that
+ * explains the gap unreachable (QA-B2). Pass `gstore.countAttempts(skill)`.
+ *
  * Returns `{ total, read, windowed, counts, perDay, recent, trail, stageChanges }`:
  * `counts` = right / hinted / wrong over the window, `perDay` the last `days`
  * local days, `recent` the last `last` items newest first (the learner's own
  * answer beside the right one), `trail` how stability and stage moved. Pure.
  */
-export function skillHistory(attempts, { last = 20, days = 21, now = Date.now(), max = 400 } = {}) {
+export function skillHistory(attempts, { last = 20, days = 21, now = Date.now(), max = 400, total: lifetime = null } = {}) {
   const all = (attempts || []).filter(Boolean);
-  const total = all.length;
-  const list = total > max ? all.slice(-max) : all;
+  const list = all.length > max ? all.slice(-max) : all;
+  // Never less than what we hold: a stale count must not read as fewer items than the page shows.
+  const total = Number.isFinite(lifetime) ? Math.max(Math.round(lifetime), all.length) : all.length;
   const counts = { right: 0, hinted: 0, wrong: 0 };
   for (const a of list) { if (!a.correct) counts.wrong += 1; else if (a.hinted) counts.hinted += 1; else counts.right += 1; }
-  const perDay = [];
-  for (let i = days - 1; i >= 0; i--) perDay.push({ day: localDay(now - i * DAY), items: 0, right: 0, hinted: 0, wrong: 0 });
+  const perDay = dayList(days, now).map((day) => ({ day, items: 0, right: 0, hinted: 0, wrong: 0 }));
   const idx = new Map(perDay.map((d, i) => [d.day, i]));
   for (const a of list) {
     const i = idx.get(localDay(ms(a.at)));
@@ -147,33 +157,76 @@ export function skillHistory(attempts, { last = 20, days = 21, now = Date.now(),
     given: a.self ? `graded ${String(a.answer ?? '').replace(/^self:\s*/, '')}` : String(a.answer ?? ''),
     expected: String(a.expected ?? ''), confused_with: a.confused_with ?? null, item_key: a.item_key ?? '',
   }));
-  const { trail, stageChanges } = progressTrail(list, { now });
-  return { total, read: list.length, windowed: total > list.length, counts, perDay, recent, trail, stageChanges };
+  const { trail, stageChanges, learnPasses } = progressTrail(list, { now });
+  return { total, read: list.length, windowed: total > list.length, counts, perDay, recent, trail, stageChanges, learnPasses };
 }
 
 /**
  * How stability and stage moved, replayed over the attempts with the very
  * scheduler that wrote them — `skill_state` keeps only today's row, so the
- * shape of the curve can only come from the log. Learn-mode attempts never
- * touched stability (GRAMMAR-CONTRACT.md, wave 1), so they are carried through
- * the trail without moving it. Pure.
+ * shape of the curve can only come from the log.
+ *
+ * Two transitions the log records only implicitly are replayed too (G3-05),
+ * because without them the replay starts from the wrong state and every later
+ * point inherits the error:
+ *
+ * - **Learn's pass.** Learn-mode attempts never move stability, but the end of
+ *   a run of them does: `finishBlocked` tests `learnCriterion` over the last
+ *   ten and, on a pass, calls `passLearn` (stage ≥ 2, stability 1 day, due
+ *   tomorrow). So a run of learn attempts is buffered and judged exactly where
+ *   the flow judged it — when the mode changes back to practice, or at the end
+ *   of the log. The first practice answer then counts as *early* (× 1.2), as
+ *   the live scheduler counted it, instead of as a due review (× 1.7 / × 2.2).
+ * - **A self-graded "partly".** `drill_attempts.self` (migration 0017) keeps
+ *   the learner's own grade, so a translate item graded *partly* replays as the
+ *   × 1 hold the scheduler applied, not as a hinted correct.
+ *
+ * "Add to mixed practice" needs no replay: it sets `due_at` to now, which is
+ * what a fresh row's null `due_at` already means to `applyAnswer`.
+ *
+ * Returns `{ trail, stageChanges, learnPasses }`. Pure.
  */
 export function progressTrail(attempts, { now = Date.now() } = {}) {
   const list = (attempts || []).filter(Boolean);
-  if (!list.length) return { trail: [], stageChanges: [] };
+  if (!list.length) return { trail: [], stageChanges: [], learnPasses: 0 };
   let state = newState(list[0].skill ?? 'skill', ms(list[0].at) || now);
   const trail = [];
   const stageChanges = [];
+  let learnRun = [];       // the consecutive learn-mode attempts not yet judged
+  let learnPasses = 0;
+  const noteStage = (before, at) => { if (state.stage !== before) stageChanges.push({ at, from: before, to: state.stage }); };
+  /**
+   * The end of a run of Learn attempts: the criterion over its last ten,
+   * exactly as `finishBlocked` runs it. The pass belongs to the last attempt of
+   * the run, so that point on the curve is redrawn with it.
+   */
+  const closeLearnRun = () => {
+    if (!learnRun.length) return;
+    const run = learnRun;
+    learnRun = [];
+    if (!learnCriterion(run).passed) return;
+    const lastAt = run[run.length - 1]?.at;
+    const before = state.stage;
+    state = passLearn(state, ms(lastAt) || now);
+    learnPasses += 1;
+    noteStage(before, lastAt);
+    const point = trail[trail.length - 1];
+    if (point) { point.stability = Number(state.stability_days) || 0; point.stage = state.stage; point.state = state.state; }
+  };
   for (const a of list) {
     const at = ms(a.at) || now;
-    if (a.mode !== 'learn') {
+    if (a.mode === 'learn') {
+      learnRun.push(a);
+    } else {
+      closeLearnRun();   // the pass happened at the last Learn attempt, before this answer was judged
       const before = state.stage;
-      state = applyAnswer(state, { correct: !!a.correct, hinted: !!a.hinted, partial: !!a.partial, ms: a.ms ?? null, now: at });
-      if (state.stage !== before) stageChanges.push({ at: a.at, from: before, to: state.stage });
+      state = applyAnswer(state, { correct: !!a.correct, hinted: !!a.hinted, partial: a.partial === true || a.self === 'partly', ms: a.ms ?? null, now: at });
+      noteStage(before, a.at);
     }
     trail.push({ at: a.at, stability: Number(state.stability_days) || 0, stage: state.stage, state: state.state, correct: !!a.correct });
   }
-  return { trail, stageChanges };
+  closeLearnRun();   // a log that ends inside Learn: the pass still counts, and its last point moves with it
+  return { trail, stageChanges, learnPasses };
 }
 
 /**
