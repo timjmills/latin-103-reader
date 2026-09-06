@@ -1290,7 +1290,7 @@ def build_units(blocks: list[dict], n: int, part: str, mac: Macrons, rep: dict) 
                 "source": "CP",
                 "line_no": None,
                 "block_start": kept == 1,
-                "unit_type": "speech",
+                "unit_type": "turn",
                 "speaker": speaker,
                 "la": s,
                 "en": "",
@@ -1421,8 +1421,8 @@ def validate(data: dict, path: Path) -> list[str]:
             errs.append(f"{u['id']}: id shape")
         if not u["la"].strip():
             errs.append(f"{u['id']}: empty la")
-        if u["unit_type"] != "speech":
-            errs.append(f"{u['id']}: unit_type {u['unit_type']!r}, must be 'speech'")
+        if u["unit_type"] != "turn":
+            errs.append(f"{u['id']}: unit_type {u['unit_type']!r}, must be 'turn'")
         if u["en"] != "" or u["note"] is not None or u["tags"] != [] or u["margin"] != []:
             errs.append(f"{u['id']}: en/note/tags/margin must be empty for the colloquia shelf")
         if u["line_no"] is not None or u["lines"] != []:
