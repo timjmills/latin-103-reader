@@ -183,12 +183,38 @@ export function createUI(ctx) {
     }
     return p;
   }
+  /**
+   * The target's dictionary line under the sentence ("puellae — from puella, girl").
+   * A `blank` item has taken its target *out* of the sentence, so printing the
+   * inflected form there would print the answer one line above the input (QA B1):
+   * a blank shows the dictionary form and its meaning, and nothing else.
+   */
+  function glossNode(item) {
+    const [cite, ...rest] = String(item.prompt.gloss).split(' — ');
+    const meaning = rest.join(' — ');
+    const dict = h('span', { lang: 'la', class: 'entry__cite', text: cite });
+    if (item.kind === 'blank' || !item.target?.text) return h('p', { class: 'g-gloss' }, dict, ` — ${meaning}`);
+    return h('p', { class: 'g-gloss' }, h('span', { lang: 'la', text: item.target.text }), ' — from ', dict, `, ${meaning}`);
+  }
   /** "Show all meanings": every word's first reading under the sentence. */
   function glossList(item) {
-    const rows = (item.meanings || []).map((m) => {
-      const e = dict.lookup(m.form).entries[0];
-      const d = e ? dict.describe(e, { compact: true, form: m.text }) : null;
-      return h('li', {}, h('span', { lang: 'la', class: 'g-all__la', text: m.text }), ' — ', h('span', { class: 'g-all__en', text: d ? String(d.meaning).split(/\s+·\s+/)[0] : '?' }));
+    // A blank item's `meanings` still carry the word the blank replaced; listing it would hand over the answer.
+    const hide = item.kind === 'blank' ? item.target?.start ?? null : null;
+    const rows = (item.meanings || []).filter((m) => hide == null || m.start !== hide).map((m) => {
+      // The *printed* word, macrons and all — `m.form` is stripped, and stripped means māla (apples)
+      // reads as mala (bad). Where the dictionary cannot tell the two apart it says so, and both
+      // readings are shown rather than one of them chosen (QA B3).
+      const res = dict.lookup(m.text);
+      const sense = (e) => { const d = e ? dict.describe(e, { compact: true, form: m.text }) : null; return d ? String(d.meaning).split(/\s+·\s+/)[0] : null; };
+      const head = (e) => String((e?.senses || [])[0] ?? '');
+      const readings = [];
+      for (const e of res.ambiguous ? res.entries : res.entries.slice(0, 1)) {
+        if (readings.length >= 3 || readings.some((r) => r.head === head(e))) continue;
+        const s = sense(e);
+        if (s && !readings.some((r) => r.text === s)) readings.push({ head: head(e), text: s });
+      }
+      const text = readings.length ? readings.map((r) => r.text).join(' · or ') : 'not in the glossary';
+      return h('li', {}, h('span', { lang: 'la', class: 'g-all__la', text: m.text }), ' — ', h('span', { class: `g-all__en${readings.length ? '' : ' g-quiet'}`, text }));
     });
     return h('ul', { class: 'g-all', 'aria-label': 'All meanings' }, rows);
   }
@@ -746,16 +772,16 @@ export function createUI(ctx) {
       node.append(question(item.prompt.question));
     } else if (item.input === 'order') {
       node.append(question(item.prompt.question));
-      if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', text: item.target?.text ?? '' }), ' — from ', h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), `, ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
+      if (item.prompt.gloss) node.append(glossNode(item));
     } else if (item.prompt.la) {
       node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
       node.append(question(item.prompt.question));
-      if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', text: item.target?.text ?? '' }), ' — from ', h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), `, ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
+      if (item.prompt.gloss) node.append(glossNode(item));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
       node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
     } else {
       node.append(question(item.input === 'chart' ? chartQuestion(item) : item.prompt.question));
-      if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), ` — ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
+      if (item.prompt.gloss) node.append(glossNode(item));
     }
     // Input
     const latinTyped = item.kind === 'blank' || item.kind === 'transform' || item.kind === 'question' || item.kind === 'pensum' || (item.kind === 'vocab' && skill?.rev);

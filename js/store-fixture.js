@@ -222,9 +222,12 @@ async function loadPictures(weekN) {
 
 // Review shelf (GRAMMAR-CONTRACT.md "Review shelf"): two chapters of Familia
 // Romana as library weeks n = 100 + chapter (r01, r07), Latin only (`en` = ""),
-// no highlights / notes / summaries / audio / pictures, line numbers as usual —
-// so the shelf UI can be tried offline. The sentences are invented on the
-// chapters' themes (the book's own text is never committed).
+// no audio and no pictures, line numbers as usual — so the shelf UI can be
+// tried offline. Each chapter carries the shelf teaching layer the real store
+// serves (`data/shelf-notes-NN.json`): two lēctiōnēs with an English and a
+// simple-Latin summary, sentence notes with their plain-words version, and
+// grammar-focus highlights. The sentences, notes and summaries alike are
+// invented on the chapters' themes (the book's own text is never committed).
 const SHELF_BASE = 100;
 const isShelf = (n) => isShelfWeek(n);
 const SHELF_TEXT = {
@@ -239,17 +242,105 @@ const SHELF_TEXT = {
     'Ecce rosa in nāsō puellae!', 'Iūlia laeta ē hortō exit.',
   ] },
 };
+// The teaching layer for the two shelf chapters: `parts` (each with both
+// summaries, over the sentences it names), `notes` (unit id → note +
+// note_simple) and `highlights` (a phrase of the sentence, the label the
+// grammar map matches on, the note and its plain-words version). Invented, in
+// the same style as SHELF_TEXT above.
+const SHELF_TEACH = {
+  1: {
+    parts: [
+      { part: 'Lēctiō prīma', from: 1, to: 6,
+        summary_en: 'Rome is in Italy and Italy in Europe; Gaul is in Europe too. Where is Spain? In Europe, not in Asia. The Nile is a big river.',
+        summary_la: 'Rōma in Italiā est, Italia in Eurōpā. Gallia quoque in Eurōpā est. Hispānia in Eurōpā est, nōn in Asiā. Nīlus fluvius magnus est.' },
+      { part: 'Lēctiō secunda', from: 7, to: 12,
+        summary_en: 'The Tiber is a small river, but there are many rivers in Europe. Sardinia is an island, and Corsica and Sardinia together are islands. Brundisium is a Roman town.',
+        summary_la: 'Tiberis fluvius parvus est, sed multī fluviī in Eurōpā sunt. Sardinia īnsula est; Corsica et Sardinia īnsulae sunt. Brundisium oppidum Rōmānum est.' },
+    ],
+    notes: {
+      5: { note: 'in + ablative says where something is: in Eurōpā, in Asiā — the -ā is long, and that long -ā is the case ending. nōn denies the phrase it stands in front of, not the verb.',
+        note_simple: "'Spain is in Europe, not in Asia.' After in for a place, the noun changes its ending: Eurōpa becomes in Eurōpā. nōn ('not') goes in front of the words it denies." },
+      8: { note: 'Multī fluviī are both nominative plural: the adjective agrees with its noun in case, number and gender, and a plural subject takes sunt, not est.',
+        note_simple: "'There are many rivers in Europe.' More than one thing takes sunt ('are') where one takes est ('is'), and the word for 'many' copies the plural ending of 'rivers'." },
+      10: { note: 'Two subjects joined by et count as more than one: īnsulae sunt, not īnsula est. The complement īnsulae stands in the nominative, like the subject.',
+        note_simple: "'Corsica and Sardinia are islands.' Two names joined by et ('and') are more than one, so the sentence uses sunt ('are') and the plural word for islands." },
+      12: { note: "Quid, 'what?', stands first. The answer repeats only the new word — oppidum est — because est already carries 'it is'.",
+        note_simple: "'What is Brundisium? It is a town.' Latin asks with Quid ('what') at the front, and the answer leaves out 'it': the verb est says it already." },
+    },
+    highlights: [
+      { line: 1, text: 'in Italiā', label: 'ablative: place where',
+        note: 'in + ablative for where something is. Italia becomes in Italiā, and the long -ā is the ending doing the work of English "in".',
+        simple: "'Rome is in Italy.' To say where something is, Latin puts in in front and lengthens the ending: Italia → in Italiā." },
+      { line: 8, text: 'Multī fluviī', label: 'nominative plural: the subject',
+        note: 'Both words are nominative plural — the -ī ending on each. The adjective agrees with its noun, so "many" is plural because "rivers" is.',
+        simple: "'Many rivers' is the subject of the sentence, and both words end in -ī because there is more than one river." },
+      { line: 10, text: 'īnsulae', label: 'nominative plural: the complement',
+        note: 'The word after sunt describes the subject, so it is nominative too — īnsulae, not īnsulās.',
+        simple: "'…are islands.' The word after 'are' says what the subject is, so it takes the subject ending, not the object one." },
+    ],
+  },
+  7: {
+    parts: [
+      { part: 'Lēctiō prīma', from: 1, to: 6,
+        summary_en: 'Julia is in the garden, where she sees the roses and laughs. Julius gives his daughter a rose and she thanks her father. Marcus gives his sister nothing, while Aemilia gives the boys apples.',
+        summary_la: 'Iūlia in hortō est et rosās videt. Iūlius fīliae suae rosam dat, et puella patrī grātiās agit. Mārcus sorōrī nihil dat; Aemilia puerīs māla dat.' },
+      { part: 'Lēctiō secunda', from: 7, to: 12,
+        summary_en: 'Quintus shows his mother an apple, and Julius gives a kiss — to Julia. Syra holds the mirror for the girl, who sees herself in it. A rose is on her nose, and Julia leaves the garden happy.',
+        summary_la: 'Quīntus mātrī mālum ostendit. Iūlius Iūliae ōsculum dat. Syra puellae speculum tenet et puella sē in speculō videt. Iūlia laeta ē hortō exit.' },
+    ],
+    notes: {
+      3: { note: 'dat takes two objects at once: the thing given (rosam, accusative) and the person it goes to (fīliae, dative). suae is the reflexive possessive — his own daughter, not somebody else\'s.',
+        note_simple: "'Julius gives his own daughter a rose.' The rose is what is given, so it takes the object ending -am; the daughter is who gets it, so she takes the 'to/for' ending -ae." },
+      5: { note: 'sorōrī is the dative singular of the third-declension soror: -ī, where a first-declension noun would have -ae. nihil, "nothing", is the thing given.',
+        note_simple: "'Marcus gives his sister nothing.' soror ('sister') makes its 'to/for' form with -ī: sorōrī. nihil means 'nothing'." },
+      6: { note: 'puerīs is the dative plural, -īs. māla is the neuter plural of mālum, "apples" — with a long ā, and so a different word from mala, "bad things".',
+        note_simple: "'Aemilia gives the boys apples.' The boys are who get them, so they take the plural 'to/for' ending -īs. māla, with a long a, is the plural of mālum, an apple." },
+      8: { note: 'Cui is the dative of quis: "to whom?". The answer gives the dative alone, Iūliae — the rest of the sentence is understood from the question.',
+        note_simple: "'To whom does Julius give a kiss? To Julia.' Cui asks 'to whom'; the answer is just the 'to/for' form of the name." },
+    },
+    highlights: [
+      { line: 3, text: 'fīliae', label: 'dative: indirect object',
+        note: 'The daughter is the one the rose ends up with, so she stands in the dative while rosam, the thing given, is accusative. -ae is the first-declension dative singular.',
+        simple: "The daughter is who gets the rose, so she is in the dative (the 'to/for' form): fīliae. Latin needs no word for 'to' — the ending does it." },
+      { line: 5, text: 'sorōrī', label: 'dative: indirect object',
+        note: 'soror is third declension, so its dative singular is sorōrī. The case is the same as fīliae above; only the declension differs.',
+        simple: "sorōrī is the 'to/for' form of soror, 'sister'. Words like soror make it with -ī instead of -ae." },
+      { line: 6, text: 'puerīs', label: 'dative plural: indirect object',
+        note: 'More than one receiver: the dative plural of puer is puerīs. The apples given stay accusative.',
+        simple: "puerīs is the 'to/for' form for more than one boy. The apples are still what is given, so they keep the object ending." },
+      { line: 8, text: 'Cui', label: 'dative of quis: to whom?',
+        note: 'Cui is the dative of the question word quis — "to whom?" — and it is answered by another dative, Iūliae.',
+        simple: "Cui means 'to whom?'. The answer to a 'to whom' question is itself in the 'to/for' form: Iūliae." },
+    ],
+  },
+};
+const shelfPart = (c, line) => (SHELF_TEACH[c]?.parts ?? []).find((p) => line >= p.from && line <= p.to) ?? null;
 function shelfWeek(c) {
   const t = SHELF_TEXT[c];
+  const teach = SHELF_TEACH[c];
+  const parts = teach
+    ? teach.parts.map((p) => ({ part: p.part, lines: `${p.from}–${p.to}`, source: 'FR', summary_en: p.summary_en, summary_la: p.summary_la }))
+    : [{ part: `Capitulum ${c}`, lines: `1–${t.la.length}`, source: 'FR' }];
   return { n: SHELF_BASE + c, id: `r${pad(c)}`, title: t.title, source: 'FR', chapter: roman(c), has_line_numbers: true, focus: t.focus,
-    parts: [{ part: `Capitulum ${c}`, lines: `1–${t.la.length}`, source: 'FR' }], unit_count: t.la.length };
+    parts, unit_count: t.la.length };
 }
 function shelfUnits(c) {
   const t = SHELF_TEXT[c];
-  return t.la.map((la, i) => ({
-    id: `r${pad(c)}:${i + 1}.1`, order: i, part: `Capitulum ${c}`, source: 'FR', line_no: i + 1, block_start: i % 3 === 0, unit_type: 'sentence', speaker: null,
-    la, en: '', en_raw: null, note: null, note_simple: null, tags: [], margin: [], lines: [{ line: i + 1, start: 0 }], week_n: SHELF_BASE + c,
-  }));
+  const teach = SHELF_TEACH[c];
+  return t.la.map((la, i) => {
+    const line = i + 1;
+    const part = shelfPart(c, line);
+    const n = teach?.notes?.[line] ?? null;
+    return {
+      id: `r${pad(c)}:${line}.1`, order: i, part: part?.part ?? `Capitulum ${c}`, source: 'FR', line_no: line,
+      block_start: part ? line === part.from : i % 3 === 0, unit_type: 'sentence', speaker: null,
+      la, en: '', en_raw: null, note: n?.note ?? null, note_simple: n?.note_simple ?? null, tags: [], margin: [], lines: [{ line, start: 0 }], week_n: SHELF_BASE + c,
+    };
+  });
+}
+/** The chapter's grammar-focus highlights, addressed to the units the fixture built. */
+function shelfHighlights(c) {
+  return (SHELF_TEACH[c]?.highlights ?? []).map((h) => ({ unit_id: `r${pad(c)}:${h.line}.1`, text: h.text, label: h.label, note: h.note, simple: h.simple }));
 }
 const shelfWeeks = () => Object.keys(SHELF_TEXT).map((c) => shelfWeek(Number(c)));
 
@@ -315,7 +406,8 @@ export const store = {
   async getWeeks() { if (!cache.weeks) await this.ready(); return cache.weeks; },
   getUnits: (weekN) => loadWeek(weekN),
   async getHighlights(weekN) {
-    if (isShelf(weekN)) return [];   // the shelf carries no highlights (and no file to ask for)
+    // A review chapter's highlights come from its own teaching layer (SHELF_TEACH); the colloquia carry none.
+    if (isShelf(weekN)) return shelfKind(weekN) === 'review' ? shelfHighlights(shelfChapter(weekN)) : [];
     if (!cache.highlights.has(weekN)) {
       try {
         const rows = await fetchJSON(`highlights-week-${pad(weekN)}.json`);
