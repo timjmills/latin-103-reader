@@ -2128,13 +2128,21 @@ def name_entries() -> dict[str, list[tuple[str, dict]]]:
                 print(f"warning: cannot parse the name {lemma!r}", file=sys.stderr)
                 NAME_UNPARSED.append(lemma)
                 continue
+            # `proper` is what latin_forms.noun_number() reads to know this is a
+            # name off THIS list: a name of one person, place or god has no
+            # plural, so Neptūnōrum / Mārcōs / Rōmārum are never generated (the
+            # gentile nouns and the capitalised common nouns that really do have
+            # one are latin_forms.PROPER_PLURAL). The `pl` on the lemma does the
+            # mirror job — forms() gives Alpēs and Athēniēnsēs no singular.
             base = {"lemma": lemma, "h": h, "pos": shape["pos"], "cat": shape["cat"],
-                    "gender": shape["gender"], "roots": shape["roots"]}
+                    "gender": shape["gender"], "roots": shape["roots"], "proper": True}
             if (shape["cat"] or [0])[0] == 9:
                 pairs = [(shape["roots"][0], {})]        # Bethlehem: one form, no case
             else:
                 pairs = latin_forms.forms(base)
                 if shape["plural"]:
+                    # belt and braces: the lemma's own `pl` has already told
+                    # forms() to build no singular
                     pairs = [(f, p) for f, p in pairs if p.get("number") == "pl"]
                 pairs += NAME_EXTRA.get(h, [])
         if (h, shape["pos"]) in seen:

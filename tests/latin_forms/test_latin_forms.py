@@ -29,9 +29,10 @@ import attestation                # noqa: E402
 CASES = ["nom", "gen", "dat", "acc", "abl", "voc"]
 
 
-def E(lemma, roots, pos, cat, gender=None, kind=None, h=None):
+def E(lemma, roots, pos, cat, gender=None, kind=None, h=None, senses=None, proper=False):
     return {"lemma": lemma, "roots": roots, "pos": pos, "cat": cat, "gender": gender,
-            "kind": kind, "h": h or strip_macrons(lemma.split()[0].split(",")[0]).lower()}
+            "kind": kind, "h": h or strip_macrons(lemma.split()[0].split(",")[0]).lower(),
+            "senses": senses or [], "proper": proper}
 
 
 def cases(entry, num, want_voc=True):
@@ -609,3 +610,89 @@ def test_glossary_attestation():
     assert unexplained <= UNEXPLAINED_BASELINE, (
         f"{unexplained} unexplained mismatches (baseline {UNEXPLAINED_BASELINE}); "
         "run python tests/latin_forms/attestation.py to see them")
+
+
+# ------------------------------------------------------------------- number
+#
+# qa/grammar/QA-NAV-SESSION.md M1.  A word used only in the plural gets no
+# singular column, and a name of one person or place gets no plural: the cells
+# are never built, so forms() never makes them and no drill can ask for them.
+# Every word here was read against Ørberg's Index vocābulōrum (the chapter and
+# line after each), which prints no singular head for any of them.
+
+PLURAL_ONLY_TABLES = {
+    # Alpēs: the margin gloss reads "Alpēs -ium f pl: montēs…"
+    "Alpēs": (E("Alpēs Alpium f pl", ["Alpēs", "Alp"], "N", [3, 3], "f", h="alpes"),
+              ["Alpēs", "Alpium", "Alpibus", "Alpēs", "Alpibus", "Alpēs"]),
+    # castra -ōrum n 12.93 — Whitaker's headword is the singular castrum, whose
+    # head sense he glosses "camp (military; usually plural castra)"
+    "castra": (E("castrum -ī n", ["castr", "castr"], "N", [2, 2], "n", h="castrum",
+                 senses=["camp (military; usually plural castra)", "fort"]),
+               ["castra", "castrōrum", "castrīs", "castra", "castrīs", "castra"]),
+    # moenia -ium n 25.11
+    "moenia": (E("moenia -ium n pl", ["moene", "moen"], "N", [3, 4], "n", h="moene"),
+               ["moenia", "moenium", "moenibus", "moenia", "moenibus", "moenia"]),
+    # a peoples-name off the project's own list: Athēniēnsēs Athēniēnsium m pl
+    "Athēniēnsēs": (E("Athēniēnsēs Athēniēnsium m pl", ["Athēniēnsēs", "Athēniēns"], "N", [3, 3], "m",
+                      h="athenienses"),
+                    ["Athēniēnsēs", "Athēniēnsium", "Athēniēnsibus", "Athēniēnsēs",
+                     "Athēniēnsibus", "Athēniēnsēs"]),
+}
+
+
+@pytest.mark.parametrize("name", sorted(PLURAL_ONLY_TABLES))
+def test_plural_only_nouns_print_no_singular(name):
+    entry, pl = PLURAL_ONLY_TABLES[name]
+    p = lf.paradigm(entry)
+    sec = p["sections"][0]
+    assert sec["headers"] == ["plural"], f"{name}: one column, and it is the plural"
+    assert [r["cells"][0]["text"] for r in sec["rows"]] == pl
+    for r in sec["rows"]:
+        assert len(r["cells"]) == 1, f"{name}: there is no singular cell to ask about"
+        assert r["cells"][0]["key"]["number"] == "pl"
+    assert p["note"].startswith("Used only in the plural — "), p["note"]
+    # and the generator makes no singular form either
+    assert all(pr.get("number") == "pl" for _, pr in lf.forms(entry) if pr.get("number"))
+
+
+def test_plural_only_is_decided_by_the_data_not_by_a_list():
+    """The three signals, one word each — and the two overrides, named."""
+    lemma_pl = E("Alpēs Alpium f pl", ["Alpēs", "Alp"], "N", [3, 3], "f", h="alpes")
+    whitaker = E("tenebra -ae f", ["tenebr", "tenebr"], "N", [1, 1], "f", h="tenebra",
+                 senses=["darkness (in the plural), obscurity", "night"])
+    later_sense = E("aqua -ae f", ["aqu", "aqu"], "N", [1, 1], "f", h="aqua",
+                    senses=["water", "rain, rainfall (in the plural), rainwater"])
+    assert lf.noun_number(lemma_pl) == "pl", "the lemma's own `pl` (Ørberg's vocabulary)"
+    assert lf.noun_number(whitaker) == "pl", "Whitaker's marker on the head sense"
+    assert lf.noun_number(later_sense) is None, "his marker on a later sense is a sense, not a lemma"
+    # "pl." with a full stop, inside vīs's dictionary line, is not the marker —
+    # and vīs is an irregular with a hand table in any case
+    vis = E("vīs (acc. vim, abl. vī) f · pl. vīrēs -ium", ["vīs", "v"], "N", [3, 3], "f", h="vis",
+            senses=["strength (bodily) (in the plural), force"])
+    assert lf.noun_number(vis) is None
+    assert lf.paradigm(vis)["sections"][0]["headers"] == ["singular", "plural"]
+    # Ørberg prints "gena -ae f 11.8" and "lectus -ī m 10.125": Whitaker has two
+    # words under one headword there, and the book's word wins.
+    gena = E("gena -ae f", ["gen", "gen"], "N", [1, 1], "f", h="gena",
+             senses=["cheeks (in the plural)"])
+    assert lf.noun_number(gena) is None
+
+
+def test_a_name_of_one_person_or_place_is_given_no_plural():
+    """The mirror of the same fault: Neptūnōrum, Mārcōs, Rōmārum were generated
+    and a chart could ask for them.  `proper` is build_glossary's own mark for
+    an entry off the project's name list."""
+    neptunus = E("Neptūnus -ī m", ["Neptūn", "Neptūn"], "N", [2, 1], "m", h="neptunus", proper=True)
+    p = lf.paradigm(neptunus)
+    assert p["sections"][0]["headers"] == ["singular"]
+    assert [r["cells"][0]["text"] for r in p["sections"][0]["rows"]] == \
+        ["Neptūnus", "Neptūnī", "Neptūnō", "Neptūnum", "Neptūnō", "Neptūne"]
+    assert "no plural" in p["note"]
+    assert all(pr.get("number") == "sg" for _, pr in lf.forms(neptunus) if pr.get("number"))
+    # …but a name that is also a class keeps it: the library prints Rōmānōrum,
+    # Rōmānīs and Rōmānōs 34 times between them.
+    romanus = E("Rōmānus -ī m", ["Rōmān", "Rōmān"], "N", [2, 1], "m", h="romanus", proper=True)
+    assert lf.paradigm(romanus)["sections"][0]["headers"] == ["singular", "plural"]
+    # aurum -ī n 22.15: a name of a material, and the book uses no plural of it.
+    aurum = E("aurum -ī n", ["aur", "aur"], "N", [2, 2], "n", h="aurum")
+    assert lf.paradigm(aurum)["sections"][0]["headers"] == ["singular"]

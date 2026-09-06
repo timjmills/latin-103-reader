@@ -5,7 +5,11 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-import { paradigm, conjugationName } from '../app/js/paradigms.js';
+import { paradigm, conjugationName, nounNumber } from '../app/js/paradigms.js';
+import { indexSkills } from '../app/js/grammar/lessons.js';
+import { createItems } from '../app/js/grammar/items.js';
+import { createStage3 } from '../app/js/grammar/stage3.js';
+import { setGlossary, lookup } from '../app/js/dictionary.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const glossary = JSON.parse(readFileSync(path.join(here, '..', 'app', 'data', 'glossary.json'), 'utf8'));
@@ -586,4 +590,227 @@ test('verb table headers are short enough for a phone panel; alternates and empt
   assert.ok(cells.some((c) => c.alt), 'is keeps eī / iī alternates');
   const se = paradigm(entry('se', 'PRON'), []);
   assert.ok(se.sections[0].rows[0].cells[0].empty, 'sē has an empty nominative cell');
+});
+
+// --- number: plūrālia tantum, and the words with no plural ------------------
+//
+// qa/grammar/QA-NAV-SESSION.md M1: the very first item of the first chapter
+// session was "Give the dative singular of Athēniēnsēs", a word the dictionary
+// line itself marks `m pl`. The table invented a whole singular column, whose
+// nominative and vocative were the plural form over again, and the chart drill
+// then asked the learner for it. A word used only in one number now gets only
+// that number's column — the missing cells are never built, so no generator can
+// reach them — exactly as the vulgus type has always printed no plural.
+//
+// Every word below was read against Ørberg's own vocabulary; the chapter and
+// line after each is Familia Romana's Index vocābulōrum unless said otherwise.
+
+const numberOf = (p) => p.sections[0].headers;
+const rowOf = (p, label) => p.sections[0].rows.find((r) => r.label === label).cells.map((c) => c.text);
+const allCells = (p) => p.sections.flatMap((s) => s.rows.flatMap((r) => r.cells));
+
+test('plūrālia tantum print no singular at all — Ørberg gives them no singular head', () => {
+  //  Alpēs        the margin gloss reads "Alpēs -ium f pl: montēs…"
+  //  castra       Index: castra -ōrum n 12.93
+  //  moenia       Index: moenia -ium n 25.11
+  //  Athēniēnsēs  the project's own name list, "Athēniēnsēs Athēniēnsium m pl"
+  const cases = [
+    ['alpes', 'Alpēs', ['Alpēs', 'Alpium', 'Alpibus', 'Alpēs', 'Alpibus', 'Alpēs']],
+    ['castrum', 'castra', ['castra', 'castrōrum', 'castrīs', 'castra', 'castrīs', 'castra']],
+    ['moene', 'moenia', ['moenia', 'moenium', 'moenibus', 'moenia', 'moenibus', 'moenia']],
+    ['athenienses', 'Athēniēnsēs', ['Athēniēnsēs', 'Athēniēnsium', 'Athēniēnsibus', 'Athēniēnsēs', 'Athēniēnsibus', 'Athēniēnsēs']],
+  ];
+  for (const [h, head, forms] of cases) {
+    const p = paradigm(entry(h, 'N'), []);
+    assert.deepEqual(numberOf(p), ['plural'], `${head}: one column, and it is the plural`);
+    assert.deepEqual(p.sections[0].rows.map((r) => r.cells[0].text), forms, head);
+    for (const r of p.sections[0].rows) {
+      assert.equal(r.cells.length, 1, `${head}: no second column to ask about`);
+      assert.equal(r.cells[0].key.number, 'pl', `${head}: every cell is a plural`);
+    }
+    assert.match(p.note, /^Used only in the plural — /, `${head}: the table says so`);
+    assert.match(p.note, /no singular/, head);
+  }
+});
+
+test('the fabricated nominative and vocative singular are gone, not merely relabelled', () => {
+  // The old table read "nominative Athēniēnsēs | Athēniēnsēs" beside a genitive
+  // singular Athēniēnsis: a singular column that contradicted itself.
+  for (const h of ['alpes', 'athenienses', 'phaeaces']) {
+    const p = paradigm(entry(h, 'N'), []);
+    assert.deepEqual(allCells(p).filter((c) => c.key?.number === 'sg'), [], `${h}: not one singular cell survives`);
+  }
+});
+
+test('a plural-only table still marks the cell a parse names, and marks no other', () => {
+  const p = paradigm(entry('castrum', 'N'), [{ case: 'acc', number: 'pl', gender: 'n' }]);
+  assert.deepEqual(p.sections[0].rows.filter((r) => r.cells[0].hit).map((r) => r.label), ['accusative']);
+});
+
+test("Ørberg's other plūrālia tantum come out plural too, each on his own vocabulary", () => {
+  // Index vocābulōrum: arma -ōrum n 12.34 · līberī -ōrum m 2.21 ·
+  // dīvitiae -ārum f 29.27 · tenebrae -ārum f 34.83 · kalendae -ārum f 13.57 ·
+  // nōnae -ārum f pl 13.69 · cūnae -ārum f 20.2 · dēliciae -ārum f 34.87 ·
+  // nūgae -ārum f 31.198 · frūgēs -um f 27.29 · viscera -um n 11.22.
+  const want = {
+    armum: 'arma', liber: 'līberī', divitia: 'dīvitiae', tenebra: 'tenebrae',
+    kalenda: 'kalendae', nona: 'nōnae', cuna: 'cūnae', delicia: 'dēliciae',
+    nuga: 'nūgae', frux: 'frūgēs', viscus: 'viscera',
+  };
+  for (const [h, nom] of Object.entries(want)) {
+    const p = paradigm(entry(h, 'N'), []);
+    assert.deepEqual(numberOf(p), ['plural'], h);
+    assert.equal(p.sections[0].rows[0].cells[0].text, nom, h);
+  }
+});
+
+test("Whitaker's plural marker on a LATER sense is not the lemma's: aqua and hortus keep both numbers", () => {
+  // aqua "rain, rainfall (in the plural)", hortus "park (in the plural)",
+  // littera "(in the plural) letter, epistle" — a plural-only *meaning*, not a
+  // plural-only word. Only the head sense decides.
+  for (const h of ['aqua', 'hortus', 'littera']) {
+    assert.deepEqual(numberOf(paradigm(entry(h, 'N'), [])), ['singular', 'plural'], h);
+  }
+});
+
+test('Ørberg overrules Whitaker where Whitaker files two words under one headword', () => {
+  // gena -ae f 11.8 and lectus -ī m 10.125 are singulars in Ørberg's own index;
+  // Whitaker glosses them "cheeks (in the plural)" and "chosen … men (in the
+  // plural) / bed, couch, lounge". The book's word wins.
+  for (const h of ['gena', 'lectus']) {
+    assert.deepEqual(numberOf(paradigm(entry(h, 'N', (e) => (e.cat || [])[0]), [])), ['singular', 'plural'], h);
+  }
+});
+
+test('vīs and the vulgus type are untouched: an irregular keeps its own hand table', () => {
+  const vis = paradigm(entry('vis', 'N'), []);
+  assert.deepEqual(numberOf(vis), ['singular', 'plural']);
+  assert.equal(rowOf(vis, 'nominative')[0], 'vīs');
+  const virus = paradigm(entry('virus', 'N'), []);
+  assert.deepEqual(numberOf(virus), ['singular'], 'the vulgus type still prints no plural');
+  assert.match(virus.note, /no plural/);
+  assert.equal(nounNumber(entry('vis', 'N')), null, 'an irregular is never flagged');
+});
+
+test('the mirror: a name of one person or place is given no plural', () => {
+  // Ørberg prints Mārcus, Iūlia, Rōma, Neptūnus and never a plural of any of
+  // them; the generator was building Mārcōs, Iūliārum, Rōmīs, Neptūnōrum, and a
+  // chart could ask for them. Allen & Greenough, "Defective Nouns": proper
+  // names are among the nouns wanting the plural.
+  for (const h of ['marcus', 'iulia', 'roma', 'neptunus', 'medus']) {
+    const p = paradigm(entry(h, 'N', (e) => e.proper), []);
+    assert.deepEqual(numberOf(p), ['singular'], h);
+    for (const r of p.sections[0].rows) assert.equal(r.cells[0].key.number, 'sg', h);
+    assert.match(p.note, /no plural/, h);
+  }
+  // aurum: a name of a material — Index vocābulōrum "aurum -ī n 22.15".
+  assert.deepEqual(numberOf(paradigm(entry('aurum', 'N', (e) => (e.cat || [])[0] === 2), [])), ['singular']);
+});
+
+test('the mirror stops where the course really does print the plural', () => {
+  // Measured over the whole library: Rōmānōrum / Rōmānīs / Rōmānōs 34,
+  // Germānōrum 27, Graecōrum 16, Christiānōrum 13, Athēniēnsēs 12,
+  // Iūdaeōrum 5, nymphārum 4. A name that is also a class keeps its plural.
+  for (const h of ['romanus', 'graecus', 'germanus', 'christianus', 'iudaeus', 'nympha', 'musa', 'atheniensis']) {
+    assert.deepEqual(numberOf(paradigm(entry(h, 'N', (e) => e.proper), [])), ['singular', 'plural'], h);
+  }
+});
+
+test('over the whole glossary, no noun table ever keeps a number it has dropped', () => {
+  let checked = 0;
+  for (const list of Object.values(glossary)) {
+    for (const e of list) {
+      if (e.pos !== 'N') continue;
+      const num = nounNumber(e);
+      if (!num) continue;
+      const p = paradigm(e, []);
+      if (!p) continue;
+      const numbers = [...new Set(allCells(p).map((c) => c.key?.number).filter(Boolean))];
+      assert.deepEqual(numbers, [num], `${e.lemma}: the table still holds the other number`);
+      checked += 1;
+    }
+  }
+  assert.ok(checked > 200, `the sweep found words to check (saw ${checked})`);
+});
+
+// --- the generators may never ask for a cell that does not exist -----------
+//
+// The model is the QA-FINAL B1 sweep ("no item prints its own answer",
+// tests/grammar.fix4.test.mjs): drive every skill, every kind and every stage
+// over a small library, and assert one invariant over everything that comes
+// back. Here the invariant is that an item only ever asks for a form the
+// entry's own table really prints — so the chart drill can never again open a
+// chapter session with "Give the dative singular of Athēniēnsēs".
+//
+// app/js/grammar/items.js and stage3.js are read, never written: the guards
+// they already carry (`cellMatches` skips an empty cell; `formFor` returns null
+// when the parse names no cell) are what make this hold once the cells are gone.
+
+const sweepUnits = [
+  { id: 'w12:1.1', la: 'Rōmānī castra pōnunt.' },
+  { id: 'w12:1.2', la: 'Mīlitēs in castrīs dormiunt.' },
+  { id: 'w12:1.3', la: 'Arma mīlitum in castrīs sunt.' },
+  { id: 'w25:1.1', la: 'Moenia urbis alta sunt.' },
+  { id: 'w25:1.2', la: 'Servus moenia spectat.' },
+  { id: 'w16:1.1', la: 'Mīlitēs trāns Alpēs eunt.' },
+  { id: 'w07:1.1', la: 'Athēniēnsēs Thēseō rosās dant.' },
+  { id: 'w22:1.1', la: 'Iūlius Mārcō aurum dat.' },
+  { id: 'w02:1.1', la: 'Mārcus Iūliae rosam dat.' },
+  { id: 'w29:1.1', la: 'Dīvitiae virī magnae sunt.' },
+  { id: 'w02:1.2', la: 'Iūlius līberōs suōs amat.' },
+];
+
+const bare = (s) => String(s).normalize('NFD').replace(/\p{Mn}/gu, '').toLowerCase();
+
+test("no generated item ever asks for a form the entry's own table does not print", () => {
+  setGlossary(glossary);
+  const skillIndex = indexSkills(JSON.parse(readFileSync(path.join(here, '..', 'app', 'data', 'grammar', 'skills.json'), 'utf8')));
+  const store = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v) }; };
+  const items = createItems({ units: sweepUnits, lookup, paradigm, skills: skillIndex.skills, storage: store(), rand: () => 0.4 });
+  const s3 = createStage3({ items, paradigm, rand: () => 0.3 });
+
+  let seen = 0;
+  let restricted = 0;
+  const check = (it, id) => {
+    if (!it) return;
+    seen += 1;
+    const where = `${id} · ${it.kind} · ${it.entry?.lemma ?? '—'}`;
+    if (it.kind === 'chart') {
+      const sec = it.chart.table.sections[it.chart.section];
+      assert.ok(sec, `${where}: the chart names a section the table has not got`);
+      assert.ok(sec.headers.length > it.chart.col, `${where}: column ${it.chart.col} does not exist`);
+      for (const c of it.chart.cells) {
+        const real = sec.rows[c.row]?.cells[c.col];
+        assert.ok(real && !real.empty, `${where}: it asks about a cell the table has not got (row ${c.row}, col ${c.col})`);
+        assert.ok((c.answer ?? []).includes(real.text), `${where}: the answer is not that cell's own form`);
+      }
+    }
+    const num = it.entry ? nounNumber(it.entry) : null;
+    if (!num) return;
+    restricted += 1;
+    // Nothing that ASKS about this word may name the number it has not got: the
+    // question itself and the label on each answer box.  (A skill's own hint
+    // describes the case in general — "nominative: singular -a / -us / -um,
+    // plural -ae / -ī / -a" — and is about the ending, not about this lemma, so
+    // it is not swept here.)
+    const other = num === 'pl' ? /\bsingular\b|\bsg\.\b/ : /\bplural\b|\bpl\.\b/;
+    for (const s of [it.prompt?.question, ...(it.chart?.cells ?? []).map((c) => c.label)]) {
+      if (typeof s !== 'string') continue;
+      assert.ok(!other.test(s), `${where}: it names the ${num === 'pl' ? 'singular' : 'plural'} of a word that has none — "${s}"`);
+    }
+    // …and every form it accepts is one the table prints.
+    const printed = new Set([...texts(paradigm(it.entry, []))].map(bare));
+    const asked = it.kind === 'chart' ? it.chart.cells.flatMap((c) => c.answer ?? [])
+      : it.kind === 'transform' ? (it.answer ?? []) : [];
+    for (const a of asked) assert.ok(printed.has(bare(a)), `${where}: the accepted answer ${a} is not in the table`);
+  };
+  for (const id of skillIndex.order) {
+    if (!items.drillable(id)) continue;
+    for (const stage of [1, 2, 3]) {
+      for (const kind of ['recognise', 'parse', 'blank', 'chart']) check(items.generate({ skill: id, kind, stage }), id);
+      for (const kind of ['transform', 'reorder']) check(s3.generate({ skill: id, kind, stage }), id);
+    }
+  }
+  assert.ok(seen > 50, `the sweep generated items (saw ${seen})`);
+  assert.ok(restricted > 20, `and reached the plural-only and name entries (saw ${restricted})`);
 });

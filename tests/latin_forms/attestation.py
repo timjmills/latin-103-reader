@@ -197,6 +197,19 @@ def divergence(entry: dict, form: str, parse: dict, kind: str) -> str | None:
                 and f.endswith(("sse", "runt", "ris", "st")):
             return "sum-compound: the contracted dēsse / dērunt / dēris for dēesse / dēerunt"
     if pos == "N":
+        # A word used in one number only has no cell in the other: the table
+        # stopped printing it, so forms() stopped making it (latin_forms.py
+        # "Number: plūrālia tantum").  Whitaker parses the missing number all
+        # the same, and for the names build_glossary itself wrote the fabricated
+        # plurals into the glossary as keys before this landed — they go on the
+        # next rebuild.  Neither is a form the course ever prints.
+        only = lf.noun_number(entry)
+        if only == "pl" and parse.get("number") == "sg":
+            return ("noun: a plūrāle tantum — the singular Whitaker still parses "
+                    "and the word does not have (Alpēs, castra, moenia, līberī)")
+        if only == "sg" and parse.get("number") == "pl":
+            return ("noun: a plural the word does not have — a name of one person "
+                    "or place (Mārcōs, Rōmārum) or a name of a material (aurum)")
         if case == "gen" and num == "pl" and f.endswith("um") and d in (1, 2):
             return "noun: archaic genitive plural -um for -ārum / -ōrum (deum, fīlium)"
         if d == 3 and case == "gen" and num == "pl":

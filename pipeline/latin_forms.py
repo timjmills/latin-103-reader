@@ -27,7 +27,7 @@ import re
 import unicodedata
 
 __all__ = ["forms", "paradigm", "build", "single_forms", "form_index",
-           "declension_name", "adjective_name", "conjugation_name"]
+           "declension_name", "adjective_name", "conjugation_name", "noun_number"]
 
 CASES = ["nom", "gen", "dat", "acc", "abl", "voc"]
 GENDERS = ["m", "f", "n"]
@@ -206,6 +206,110 @@ CONTRACTED_VOC = {"filius", "genius"}
 # The glossary's only proper-name signal is the capital on the lemma.
 CAPITAL = re.compile(r"^[A-ZĀĒĪŌŪȲ]")
 
+# ---------------------------------------------------------------------------
+# Number: plūrālia tantum, and the words that have no plural.
+#
+# A word used only in the plural has NO singular — Alpēs, castra, moenia,
+# līberī, dīvitiae — and a name of one person or place has no plural — Mārcus,
+# Rōma, Neptūnus.  Printing the missing number invents Latin, and the chart
+# drill then asks the learner to produce the invented form: the first item of
+# the first chapter session was "Give the dative singular of Athēniēnsēs"
+# (qa/grammar/QA-NAV-SESSION.md M1).  So the missing number is left out of the
+# table altogether, exactly as the vulgus type already leaves out its plural —
+# and because forms() reads the table, the generator stops making those forms
+# too.  A cell that does not exist cannot become a question.
+#
+# Nothing here is a guess: every word is decided by the data on its own entry.
+#
+#   1  `entry["num"]` ('pl' / 'sg'), when something upstream already knows.
+#   2  the standalone `pl` on the lemma.  build_glossary's NAMES list writes it
+#      exactly where Ørberg's own vocabulary gives the word only in the plural
+#      — Alpēs Alpium f pl, moenia -ium n pl, Athēniēnsēs Athēniēnsium m pl,
+#      and the peoples in -ānī / -ēnsēs.  (Familia Romana: the margin gloss at
+#      cap. XVI reads "Alpēs -ium f pl"; the Index vocābulōrum lists
+#      "moenia -ium n 25.11" with no singular head.)  Note the *token*: vīs is
+#      written "… f · pl. vīrēs -ium", where "pl." is not this marker — and vīs
+#      is an IRREGULAR_NOUN with its own hand table in any case.
+#   3  Whitaker's own marker on the HEAD sense: "(in the plural)", "(pl.)",
+#      "usually plural".  He puts it on the head sense of a plūrāle tantum
+#      (armum -ī n "arms (in the plural)"; tenebra -ae f "darkness (in the
+#      plural)"; castrum -ī n "camp (military; usually plural castra)") and on
+#      a LATER sense of a word that merely has one plural-only meaning (aqua
+#      "rain, rainfall (in the plural)", hortus "park (in the plural)"), so
+#      only the head sense counts.  Ørberg's Index vocābulōrum agrees word for
+#      word on the ones he teaches: castra -ōrum n 12.93, arma -ōrum n 12.34,
+#      līberī -ōrum m 2.21, dīvitiae -ārum f 29.27, tenebrae -ārum f 34.83,
+#      moenia -ium n 25.11 — every one of them printed with no singular head.
+#   4  a proper name off the project's own name list (`proper`) names one
+#      person, place or god and has no plural: Ørberg never prints Mārcī (pl.)
+#      or Rōmārum, but the generator was building them, and the drill could ask
+#      for them.  Allen & Greenough, "Defective Nouns" §§99–103 (nouns wanting
+#      the plural — proper names, names of materials, abstract nouns; nouns
+#      used only in the plural) and §107 (a plural with a meaning of its own,
+#      castra / litterae).  The exceptions are the gentile nouns and the
+#      capitalised common nouns the course really does print in the plural.
+#
+# Kept in step with nounNumber() in app/js/paradigms.js.
+
+#: Whitaker's plural marker, as senses.py rewrites it and as he writes it.
+SENSE_PLURAL = re.compile(r"\(in the plural\)|\(pl\.\)|usu(?:ally|\.|,)\s*plural"
+                          r"|usually in the plural", re.I)
+
+# Names on the project's own list whose plural the course really prints, so
+# `proper` must not take it away.  Measured over the whole library (the course
+# weeks, the review shelf, the Colloquia, the margin glosses and the drills):
+# each of these appears there in a form that can only be a plural.
+#   Rōmānōrum / Rōmānīs / Rōmānōs  34   Germānōrum … 27   Graecōrum … 16
+#   Christiānōrum … 13   Athēniēnsēs … 12   Iūdaeōrum … 5   nymphārum … 4
+# Mūsa is the ninth: one of nine, and printed Mūsae wherever the course names
+# them together.
+PROPER_PLURAL = {"romanus", "graecus", "germanus", "christianus", "iudaeus",
+                 "atheniensis", "nympha", "musa"}
+
+# Whitaker's head-sense marker, overruled.  Every flagged word was read against
+# Ørberg's Index vocābulōrum, which agrees with him word for word — castra
+# -ōrum n, arma -ōrum n, tenebrae -ārum f, dīvitiae -ārum f, kalendae -ārum f,
+# nōnae -ārum f pl, cūnae -ārum f, dēliciae -ārum f, nūgae -ārum f, frūgēs -um
+# f, viscera -um n, līberī -ōrum m, moenia -ium n — except on these two, where
+# Ørberg prints a singular head because Whitaker has filed two words under one:
+#   gena -ae f 11.8      — he glosses it "cheeks (in the plural)"
+#   lectus -ī m 10.125   — "chosen, picked, selected men (in the plural)" and
+#                          "bed, couch" share his headword; the bed is the word
+#                          the course teaches, and it is a singular.
+NOT_PLURAL_ONLY = {"gena", "lectus"}
+
+# The residue, decided by hand because no marker in the data carries it.
+# aurum: a name of a material.  Ørberg's Index vocābulōrum prints "aurum -ī n
+# 22.15" and the book never uses a plural of it; Allen & Greenough put the
+# names of materials among the nouns wanting the plural.
+SINGULAR_ONLY = {"aurum"}
+
+GENDER_WORD = {"m": "m", "f": "f", "n": "n", "c": "m/f"}
+
+
+def noun_number(entry: dict) -> str | None:
+    """'pl' when the noun is used only in the plural, 'sg' when only in the
+    singular, None otherwise.  Nouns only; see the block comment above."""
+    if not entry or entry.get("pos") != "N":
+        return None
+    # An irregular has a hand table with both numbers written out (vīs / vīrēs).
+    if entry.get("h") in IRREGULAR_NOUNS:
+        return None
+    num = entry.get("num")
+    if num in ("pl", "sg"):
+        return num
+    lemma = entry.get("lemma") or ""
+    if "pl" in lemma.split():
+        return "pl"
+    senses = entry.get("senses") or []
+    if senses and SENSE_PLURAL.search(senses[0]) and entry.get("h") not in NOT_PLURAL_ONLY:
+        return "pl"
+    if entry.get("h") in SINGULAR_ONLY:
+        return "sg"
+    if entry.get("proper") and entry.get("h") not in PROPER_PLURAL:
+        return "sg"
+    return None
+
 
 def noun_table_key(entry: dict) -> str | None:
     d, v = _cat(entry)
@@ -322,20 +426,41 @@ def _noun_paradigm(entry: dict, locative: bool = False) -> dict | None:
             out.append(cell(stem, end, nk(c, num, g)))
         return out
 
-    sg, pl = build("sg"), build("pl")
-    headers = ["singular", "plural"] if pl else ["singular"]
+    # A word used only in one number gets only that number's column: the missing
+    # cells are never built, so nothing can ask for them.  A table that already
+    # has no plural (vulgus, Iuppiter) is left exactly as it was.
+    num = noun_number(entry) if tbl["pl"] else None
+    sg = None if num == "pl" else build("sg")
+    pl = None if num == "sg" else build("pl")
+    headers = ["singular", "plural"] if (sg and pl) else (["singular"] if sg else ["plural"])
     rows = []
     for i, c in enumerate(CASES):
-        rows.append({"label": CASE_LABEL[c], "cells": [sg[i]] + ([pl[i]] if pl else [])})
+        cells = ([sg[i]] if sg else []) + ([pl[i]] if pl else [])
+        rows.append({"label": CASE_LABEL[c], "cells": cells})
     if locative:
         loc_end = "ae" if key.startswith("1") else "ī" if key[0] in "23" else None
         if loc_end:
-            cells = [cell(r1, loc_end, nk("loc", "sg", g))]
+            cells = [cell(r1, loc_end, nk("loc", "sg", g))] if sg else []
             if pl:
                 cells.append(cell(r1, tbl["pl"][4], nk("loc", "pl", g)))
             rows.append({"label": CASE_LABEL["loc"], "cells": cells})
-    return {"kind": "noun", "title": f"{entry.get('lemma', '')} · {declension_name(entry) or 'noun'}",
-            "sections": [{"title": "cases", "headers": headers, "rows": rows}]}
+    # Only the number fact: app/js/paradigms.js prints this same sentence and
+    # then appends the table's own declension note (i-stem, -ius vocative), which
+    # this side has never carried.
+    note = None
+    if num == "pl":
+        dic = f"{pl[0]['text']} -{tbl['pl'][1]} {GENDER_WORD.get(g, '')}".strip()
+        note = (f"Used only in the plural — {dic}. It has no singular, so the "
+                "table has no singular column.")
+    elif num == "sg":
+        note = ("A name: it stands for one person or place, so it has no plural."
+                if entry.get("proper") and entry.get("h") not in SINGULAR_ONLY
+                else "Used only in the singular: it has no plural in use.")
+    out = {"kind": "noun", "title": f"{entry.get('lemma', '')} · {declension_name(entry) or 'noun'}",
+           "sections": [{"title": "cases", "headers": headers, "rows": rows}]}
+    if note:
+        out["note"] = note
+    return out
 
 
 def _irregular_noun(entry: dict, t: dict) -> dict:
@@ -1528,6 +1653,13 @@ def _noun_extras(entry: dict) -> list[tuple[str, dict]]:
     r0 = root(entry, 0)
     r1 = root(entry, 1, r0)
     g = entry.get("gender") or "c"
+    # A word used only in the plural has no singular locative either: Athēnīs,
+    # Delphīs and Puteolīs are the dative/ablative plural doing the work.
+    if noun_number(entry) == "pl":
+        ends = NOUN_ENDINGS[key]["pl"]
+        if ends:
+            out.append((r1 + ends[4], {"case": "loc", "number": "pl", "gender": g}))
+        return out
     if key.startswith("1"):
         out.append((r1 + "ae", {"case": "loc", "number": "sg", "gender": g}))
     elif key.startswith("2"):
