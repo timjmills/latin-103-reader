@@ -375,7 +375,88 @@ function colloUnits(c) {
 }
 const colloWeeks = () => Object.keys(COLLO_TEXT).map((c) => colloWeek(Number(c)));
 
+// Course weeks for the chapter spine, offline (GRAMMAR-CONTRACT.md "Chapter
+// spine"). Without data/build the fixture had no course week at all, so the
+// Chapters list could show only chapters I–XXIV. These two stand in: chapter
+// XXVII takes week 4 (its Familia Romana reading) plus week 3, whose Fabulae
+// Syrae and Fabella are readings of their own — the supplement case. Chapter
+// VII keeps its two shelf readings and, say, chapter II has neither, so all
+// three shapes are on the page. Invented sentences on the weeks' themes; used
+// only when data/build/weeks.json is not being served.
+let demoCourse = false;
+const DEMO_COURSE = {
+  4: {
+    id: 'w04', title: 'Rēs Rūsticae', source: 'FR', chapter: 'XXVII',
+    focus: { key: 'pres-subj', label: 'Present subjunctive', blurb: 'The -e- and -a- forms, and the ut / nē clauses that use them.' },
+    parts: [{ part: 'Pars I', lines: '1–6', source: 'FR' }],
+    lines: [
+      ['Iūlius in agrōs suōs ambulat.', 'Julius walks into his fields.'],
+      ['Colōnī frūmentum metunt.', 'The farmers reap the corn.'],
+      ['Dominus imperat ut servī labōrent.', 'The master orders the slaves to work.'],
+      ['Ovēs in prātō pāscuntur.', 'The sheep graze in the meadow.'],
+      ['Pāstor canem vocat nē ovis erret.', 'The shepherd calls the dog so that no sheep strays.'],
+      ['Vesperī omnēs ad vīllam redeunt.', 'In the evening they all return to the villa.'],
+    ],
+  },
+  3: {
+    id: 'w03', title: 'Mīnōs · Corōnis · Fabella LXIII', source: 'FS+FL', chapter: 'XXVII (FS 1, 5); FL 63',
+    focus: { key: 'pres-subj-supine', label: 'Present subjunctive · supine', blurb: 'ut and nē with the subjunctive, and the supine of purpose.' },
+    parts: [
+      { part: 'Fabulae Syrae 1: Mīnōs', slug: 'minos', source: 'FS', lines: '1–4' },
+      { part: 'Fabulae Syrae 5: Corōnis', slug: 'coronis', source: 'FS', lines: '5–8' },
+      { part: 'Fabellae Latīnae 63', slug: 'fl-63', source: 'FL', lines: null },
+    ],
+    stories: {
+      minos: [
+        ['Mīnōs rēx Crētae erat.', 'Minos was king of Crete.'],
+        ['Neptūnō taurum pulchrum prōmīsit.', 'He promised Neptune a beautiful bull.'],
+        ['Sed taurum nōn immolāvit.', 'But he did not sacrifice the bull.'],
+        ['Itaque deus īrātus fuit.', 'And so the god was angry.'],
+      ],
+      coronis: [
+        ['Corōnis puella pulcherrima erat.', 'Coronis was a most beautiful girl.'],
+        ['Apollō eam amābat.', 'Apollo loved her.'],
+        ['Corvus albus deō omnia nārrāvit.', 'A white raven told the god everything.'],
+        ['Deus corvum nigrum fēcit.', 'The god made the raven black.'],
+      ],
+      'fl-63': [
+        ['Dāvus per viam ambulat.', 'Davus walks along the street.'],
+        ['Duo virī pugnant.', 'Two men are fighting.'],
+        ['Dāvus amīcum suum videt.', 'Davus sees his own friend.'],
+      ],
+    },
+  },
+};
+const demoCourseWeeks = () => Object.entries(DEMO_COURSE).map(([n, w]) => ({
+  n: Number(n), id: w.id, title: w.title, source: w.source, chapter: w.chapter,
+  has_line_numbers: w.source === 'FR', focus: w.focus, parts: w.parts,
+  unit_count: w.lines ? w.lines.length : Object.values(w.stories).reduce((t, s) => t + s.length, 0),
+}));
+function demoCourseUnits(n) {
+  const w = DEMO_COURSE[n];
+  const out = [];
+  const push = (id, part, source, la, en, line) => out.push({
+    id, order: out.length, part, source, line_no: line, block_start: line == null || line % 3 === 1,
+    unit_type: 'sentence', speaker: null, la, en, en_raw: null, note: null, note_simple: null,
+    tags: [], margin: [], lines: line == null ? [] : [{ line, start: 0 }], week_n: n,
+  });
+  if (w.lines) w.lines.forEach(([la, en], i) => push(`${w.id}:${i + 1}.1`, w.parts[0].part, w.source, la, en, i + 1));
+  else {
+    let line = 1;
+    for (const p of w.parts) {
+      const story = w.stories[p.slug] ?? [];
+      story.forEach(([la, en], i) => push(`${w.id}:${p.slug}:${p.source === 'FL' ? `b${i + 1}.1` : `${line + i}.1`}`, p.part, p.source, la, en, p.source === 'FL' ? null : line + i));
+      if (p.source !== 'FL') line += story.length;
+    }
+  }
+  return out;
+}
+
 async function loadWeek(weekN) {
+  if (demoCourse && DEMO_COURSE[weekN]) {
+    if (!cache.units.has(weekN)) cache.units.set(weekN, demoCourseUnits(weekN));
+    return cache.units.get(weekN);
+  }
   if (isShelf(weekN)) {
     const c = shelfChapter(weekN);
     const collo = shelfKind(weekN) === 'colloquia';
@@ -399,8 +480,13 @@ async function loadWeek(weekN) {
 export const store = {
   async ready() {
     try { cache.weeks = (await fetchJSON('weeks.json')).map(withDemoSummaries); }
-    catch { await loadWeek(1); }
-    cache.weeks = [...cache.weeks.filter((w) => !isShelf(w.n)), ...shelfWeeks(), ...colloWeeks()];   // the course weeks, then the review shelf, then the colloquia
+    catch { try { await loadWeek(1); } catch { cache.weeks = []; } }
+    let course = (cache.weeks ?? []).filter((w) => !isShelf(w.n));
+    // Nothing from data/build: the two invented course weeks stand in, so the
+    // Chapters list still has a chapter whose reading is a course week and one
+    // whose supplement week supplies its stories (GRAMMAR-CONTRACT "Chapter spine").
+    if (!course.length) { demoCourse = true; course = demoCourseWeeks(); }
+    cache.weeks = [...course, ...shelfWeeks(), ...colloWeeks()];   // the course weeks, then the review shelf, then the colloquia
     return true;
   },
   async getWeeks() { if (!cache.weeks) await this.ready(); return cache.weeks; },

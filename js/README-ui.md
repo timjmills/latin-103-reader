@@ -183,7 +183,7 @@ open entry; `cb('settings')` re-applies theme/size/face/toggles;
 compact:false, showEnglish:'hidden'|'interleaved', showHighlights:true,
 showUnderlines:true, showMargin:true, showAudio:true, showSummaries:true,
 plainOpen:false, showGlossEnglish:false, showPictures:true, lineMode:'flow'|'book', audioRate:0.5–1.2,
-panelWidth:null|px }` — mirrored to `localStorage['latin103.settings']`
+panelWidth:null|px, menuTab:'chapters'|'weeks' }` — mirrored to `localStorage['latin103.settings']`
 (same key as E's `store.js`), read by the inline script in `index.html` before
 first paint. `l103.week`, `l103.view` and `l103.hint.translation` also live in
 localStorage (UI-only).
@@ -1112,3 +1112,173 @@ review and QA fixes"; what a reader of this file needs to know:
   "Building…" message and every eight skills.
 
 sw is **v40**.
+
+## Grammar by chapter (2026-09-06)
+
+The book's spine, grammar side (GRAMMAR-CONTRACT.md "Chapter spine —
+navigation by chapter"). The chapter → readings mapping is `app/js/chapters.js`
+(owner A); nothing under `js/grammar/` re-derives it.
+
+- **`app/js/grammar/chapter.js`** (new, pure, `tests/grammar.chapter.test.mjs`):
+  `spine(list)` — the chapters in order, from `chapters()` when it is there and
+  from the numerals I–XXXIV when it is not; `chapterMaterial(n, { skills, order,
+  sets, entry })` — the chapter's skills in book order (its entry's own list
+  wins) and its sets in Questions · Vocabulary (· reverse) · Pensa order;
+  `chapterProgress` / `chapterSummary` — the counts and the one quiet line that
+  states them; `chapterPool` — the drillable members as a skills Map with the
+  ids in rotation, lapsed and addable; `spineRows` — the by-chapter view's rows;
+  `normaliseView`.
+- **`mountChapterGrammar(el, { chapter })`** is exported from
+  `js/grammar/index.js` (and carried on `mountGrammar`'s handle). It paints
+  twice on a cold start — the rows and their states from the light path, then
+  the whole panel once the library has been read — because what can be drilled
+  is not knowable before the generator exists and no row may claim otherwise.
+  Returns `{ chapter, refresh(), destroy() }`; mounted panels are repainted with
+  the section (`ui.repaint`) and dropped once their element leaves the document.
+- **Two hooks the shell sets on the handle.** `onChapterNav(fn)` — how a lesson,
+  a history page or a session opened from a chapter page gets back
+  (`fn(n, 'grammar')`); without it the section falls back to its own by-chapter
+  view, scrolled to that chapter. `onLeaveChapter(fn)` — how it *leaves* the
+  chapter page first, since `html[data-page="chapter"]` hides the whole section;
+  without it the section clears the chapter route itself, which the shell's
+  hashchange handler reads the same way.
+- **The Skills page has two views**, a segmented `By topic` / `By chapter`
+  (`.g-seg--views`) under the title, remembered as `settings.grammar.view`.
+  By topic is the map as it was (category filter, bulk actions, Review first).
+  By chapter is the spine: 34 `<details>` sections (`.g-chap--spine`), each
+  summarising its counts and holding the same skill and set rows. Which
+  chapters are unfolded is the learner's and survives a redraw; the chapter
+  being read opens itself the first time, and each view keeps its own scroll.
+- **"Practise this chapter"** is `render('session', { chapter: n })`:
+  `createPractice` with the chapter's drillable material as its whole
+  `skillsIndex`, so the plan, the filler and the re-queue can reach nothing
+  outside it while the interleaving, confusable-pair and chapter-set rules hold
+  as usual. A lapsed member is put back into rotation first (the one-skill
+  rule). Where a chapter has few grammar skills and several sets, the set
+  window yields — `buildSession`'s own fallback: the session is the chapter's
+  material, not a rule kept by leaving items out.
+- **"Practise this skill" is its own view** (`blocked`), so Back leaves it and a
+  chapter page can open it through `ctx.go`. It used to render under the
+  `session` view name, which built a second, unused mixed session first.
+- `js/grammar/chapter.js` must be added to `sw.js`'s PRECACHE (owner A).
+
+## The chapter spine — navigation by chapter (2026-09-06)
+
+The book's own way in (GRAMMAR-CONTRACT.md "Chapter spine — navigation by
+chapter"): Familia Romana I–XXXIV, each chapter offering its reading or its
+grammar. The course weeks stay reachable as a second view, because the pace,
+the time-left estimates and the study log are computed per 103 week.
+
+### `app/js/chapters.js` (new, pure, `tests/ui.chapters.test.mjs`)
+
+**The single source of truth for the chapter → week mapping. Nothing else in
+the app may hard-code it** — `main.js`, `settings.js` and `js/grammar/` all
+read it from here.
+
+```js
+chapters()            // the 34 chapters, frozen, in order
+chapter(n)            // one, or null
+readingsOf(n)         // its readings
+chapterOfWeek(weekN)  // the reverse: 107 → 7, 4 → 27, 3 → 27, 14 → 34
+weekChapters()        // Map week → chapter, built once
+readingPrefix(r) / inReading(unitId, r)   // the unit ids a reading owns
+metaList(names, {max}) / readingsMeta(readings, {max})
+parseChapterRoute(hash) / chapterHash(n, tab)   // #/chapter/7 · #/chapter/7/grammar
+CHAPTER_MAX (34) · SHELF_CHAPTER_MAX (24) · CHAPTER_TABS · SOURCE_NAMES
+```
+
+A chapter is `{ n, roman, title, readings, weeks, grammar }`; a reading is
+`{ id, kind: 'fr'|'collo'|'fs'|'fl', week_n, part, label, supplement }`, and
+`grammar` carries the wave-2 set ids (`questions-07`, `vocab-07`,
+`vocab-07-rev`, `pensum-07`). The mapping as implemented:
+
+```
+ch  1–24  Familia Rōmāna = review shelf week 100+N   ·  Colloquium N = colloquia week 200+N
+ch 25 w01   ch 26 w02   ch 29 w07   ch 30 w08   ch 31 w09   ch 33 w12
+ch 27 w04 + w03's five stories (Mīnōs, Corōnis, Fabellae LXIII–LXV)
+ch 28 w06 + w05's five (Coriolānus, Nausicaa, Fabellae LXVI–LXVIII)
+ch 32 w11 + w10's seven (Arachnē, Fabellae LXIX–LXXIV)
+ch 34 w13 + w14        (the one chapter that spans two course weeks)
+```
+
+Each part of a supplement week is a reading of its own, addressed by the slug
+its unit ids carry (`w03:minos:1.1`, `w05:fl-66:b2.1`), so a story has its own
+progress. All fourteen course weeks and both shelves appear exactly once; the
+titles are the book's table of contents, so a chapter the library has not got
+still shows its numeral and name.
+
+### Row models (`settings.js`, pure, `tests/ui.chapter-rows.test.mjs`)
+
+- `MENU_TABS` / `menuTab(settings)` — the menu's two tabs; **Chapters is the
+  default**, and `settings.menuTab` remembers the last used.
+- `chapterRows({ library, totals, read, audio })` — one row per chapter: the
+  readings the library actually holds, the meta line, `read` / `total` summed
+  over its **distinct** weeks (so a supplement week counts once however many
+  of its stories are listed) and whether any of them has a recording.
+- `chapterMeta(readings)` — the row's second line. On the shelves it is the
+  readings' names ("Familia Rōmāna · Colloquium VII"); from XXV on the course
+  week comes first, since that is where the pace and the study log know it
+  ("Week 4 · Mīnōs · +4 more", "Weeks 13 and 14").
+- `readingWhere(reading, title)` — "Review shelf", "Colloquia Persōnārum",
+  "Week 4 · Rēs Rūsticae", "Week 3 · Fabulae Syrae". Never "Week 107".
+- `readingRows(n, { library, units, totals, titles, progress, audio })` — one
+  row per reading with its own `read` / `total`, `firstId` (where the row
+  opens), `firstUnread` (the row's Continue, only while it is part-read) and
+  `audio`. A part's figures come from the units whose id carries its slug; a
+  whole-week reading whose units are not loaded falls back to `totals`.
+
+### The menu (`index.html`, `main.js`, `css/chapters.css`)
+
+`#weeks` gains a tablist (`.weeks__tabs`, roving tabindex, arrows select) over
+two panels: `#weeks-panel-chapters` (`#chapters-list`) and
+`#weeks-panel-weeks` (`#weeks-list`, **today's list unchanged** — course
+weeks, both shelf disclosures, the pace and the time-left estimates).
+`.weeks[open]` is a flex column with `overflow: hidden`, so the head and the
+tabs stay put and only the open panel scrolls; `main.js` moves `#weeks-today`
+(the day's plan) into whichever panel is open, inside that scroller, so a
+five-line card can never leave the list three rows of room.
+
+Chapter rows reuse the `.weeks__row` grid (roman numeral, Latin title, meta,
+state, hairline bar). `keepPlace(list, render)` wraps both lists' renders: the
+audio marks and every progress change repaint them while the menu is open, and
+a rebuilt row would otherwise drop the keyboard's focus to the page. Arrow keys
+step over disabled rows, as Tab does.
+
+### The chapter page
+
+`<section id="chapter">`, built by `main.js`, shown when the route says so:
+`html[data-page="chapter"]` hides `.layout`, `#grammar`, both segmented
+controls and the display toggles (`css/chapters.css`), so the header keeps the
+week button — **relabelled with the chapter, so two numerals never share a
+screen** — and Settings. `← All chapters` reopens the menu on its Chapters tab.
+
+Two tabs of its own, `Reading` and `Grammar`, each a route:
+
+- **Reading** is `readingRows()` as `.creads` — name, where it lives, an audio
+  mark, its own progress, and `Continue →` beside it once part-read. A row
+  opens its week in the reader at the reading's first sentence, Continue at the
+  first unread one; both drop the hash first, so Back comes back to the chapter.
+- **Grammar** calls the section's `mountChapterGrammar(el, { chapter })` after
+  `mountGrammar()` has resolved. It is loaded lazily — only when the tab is
+  first opened — and its absence is a quiet placeholder pointing at the Grammar
+  section, never an error; a mount that returns no handle is tried again.
+
+Routing lives in the hash and nowhere else: `parseChapterRoute(location.hash)`
+on `hashchange` and once at the end of boot. `#/chapter/7` and
+`#/chapter/7/grammar` are linkable; leaving for the reader is a `pushState`
+that drops the hash, so Back returns to the chapter page on the tab it was on.
+The reader's letter shortcuts and `j`/`k` do nothing while a chapter page is
+open. The section's own hooks are wired here: `onChapterNav(fn)` sets the hash,
+`onLeaveChapter(fn)` drops it.
+
+### Fixture
+
+`store-fixture.js` invents two course weeks — **4** (Familia Rōmāna, six
+sentences) and **3** (Mīnōs, Corōnis, Fabella LXIII as three slugged parts) —
+used **only when `data/build/weeks.json` is not being served, so nothing
+changes on the dev server**. Offline the Chapters list then still has all three
+shapes: chapter VII with two readings, chapter XXVII with a course week and a
+supplement story, chapter II with neither.
+
+`sw.js` is **v42** (`js/chapters.js`, `css/chapters.css`, and the grammar
+side's `js/grammar/chapter.js`, precached).

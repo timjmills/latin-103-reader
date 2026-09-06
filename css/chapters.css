@@ -1,0 +1,143 @@
+/* The chapter spine (GRAMMAR-CONTRACT.md "Chapter spine — navigation by
+   chapter"): the weeks menu's two tabs (Chapters · My weeks) and the chapter
+   page at #/chapter/7. Tokens only — the reader's palette, faces and spacing;
+   hairline lists, no cards, one accent. Loaded after grammar.css so the
+   chapter page's header rules win at equal specificity. */
+
+/* ---------------------------------------------------- the menu's tabs */
+/* The dialog becomes a column so the head, the Today card and the tabs stay
+   put and only the chosen list scrolls. `[open]` matters: a bare `display`
+   on `.weeks` would beat the UA's `dialog:not([open]) { display: none }`. */
+.weeks[open] { display: flex; flex-direction: column; overflow: hidden; }
+.weeks__head, .weeks__tabs { flex: none; }
+.weeks__panel { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+/* The Today card is the day's plan, not one list's, so main.js keeps it at the head of
+   whichever tab is open — inside the scroller, where it can never crowd out the list. */
+.weeks__today { padding-inline: var(--s-3); margin-block: var(--s-3) var(--s-2); }
+.weeks__panel > .weeks__hint { margin-top: var(--s-3); }
+
+.weeks__tabs {
+  display: flex; gap: var(--s-1);
+  margin: var(--s-2) var(--s-5) 0; border-bottom: 1px solid var(--line);
+}
+.weeks__tab {
+  min-height: var(--tap); padding: 0 var(--s-3); margin-bottom: -1px;
+  background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0;
+  color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-md); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.weeks__tab:hover { color: var(--ink); }
+.weeks__tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--rubric); }
+.weeks__tab:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; border-radius: var(--radius-sm); }
+.weeks__panel > .weeks__hint:first-child { margin-top: var(--s-3); }
+
+/* "This one has a recording." A mark, not a control — the Audio toggle is the reader's. */
+.weeks__audio, .creads__audio { color: var(--ink-3); font-size: var(--ui-md); line-height: 1; }
+
+/* ------------------------------------------- the chapter page in the shell */
+/* While a chapter is open the reader and the grammar section step aside, and
+   the header keeps only the week button and settings: the chapter's own tabs
+   say Reading / Grammar, and two of those controls would be one too many. */
+html[data-page="chapter"] .layout,
+html[data-page="chapter"] #grammar,
+html[data-page="chapter"] .seg,
+html[data-page="chapter"] .bar__tools,
+html[data-page="chapter"] #hint-translation { display: none; }
+html[data-page="chapter"] .bar__main {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "week settings";
+}
+
+#chapter { font-family: var(--face-ui); font-size: var(--ui-md); line-height: 1.5; color: var(--ink); }
+.chapter__inner {
+  max-width: 44rem; margin-inline: auto;
+  padding: var(--s-4) var(--s-4) calc(var(--s-7) + env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) { .chapter__inner { padding: var(--s-5) var(--s-6) var(--s-7); } }
+
+.chapter__back {
+  min-height: var(--tap); padding: 0 var(--s-2); margin-left: calc(-1 * var(--s-2));
+  background: none; border: 0; border-radius: var(--radius);
+  color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.chapter__back:hover { color: var(--ink); background: var(--bg-chrome); }
+.chapter__back:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+.chapter__head { margin: var(--s-3) 0 var(--s-5); }
+.chapter__kicker { margin: 0; font-family: var(--face-serif); font-size: var(--ui-md); color: var(--ink-3); }
+.chapter__title {
+  /* fit-content so the focus ring hugs the title instead of drawing a text-input-shaped box across the page */
+  width: fit-content; max-width: 100%;
+  margin: var(--s-1) 0 0; font-family: var(--face-serif); font-weight: 400;
+  font-size: 1.75rem; line-height: 1.2; text-wrap: balance; outline: none;
+}
+.chapter__title:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
+
+.chapter__tabs {
+  display: flex; gap: var(--s-1);
+  margin: 0 0 var(--s-5) calc(-1 * var(--s-2)); border-bottom: 1px solid var(--line);
+}
+.chapter__tab {
+  min-height: var(--tap); padding: 0 var(--s-3); margin-bottom: -1px;
+  background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0;
+  color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-md); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.chapter__tab:hover { color: var(--ink); }
+.chapter__tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--rubric); }
+.chapter__tab:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; border-radius: var(--radius-sm); }
+
+.chapter__quiet { margin: var(--s-4) 0; color: var(--ink-3); }
+.chapter__empty { margin: var(--s-4) 0; color: var(--ink-2); max-width: 60ch; text-wrap: pretty; }
+.chapter__soon {
+  display: grid; gap: var(--s-3); justify-items: start; max-width: 60ch;
+  padding: var(--s-3) var(--s-4); background: var(--bg-chrome); border-radius: var(--radius); color: var(--ink-2);
+}
+.chapter__soon p { margin: 0; text-wrap: pretty; }
+
+/* ------------------------------------------------------- the readings */
+/* One hairline row per reading: its name, where it lives in the library, an
+   audio mark, its own progress — and Continue beside it once it is part-read. */
+.creads { list-style: none; margin: 0; padding: 0; }
+.creads__item {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+  border-top: 1px solid var(--line);
+}
+.creads__item:first-child { border-top: 0; }
+.creads__row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s-3); align-items: baseline;
+  width: 100%; min-height: var(--tap); padding: var(--s-3) var(--s-2); text-align: left;
+  background: none; border: 0; border-radius: var(--radius); color: inherit; font: inherit; cursor: pointer;
+}
+.creads__row:hover { background: var(--bg-chrome); }
+.creads__row:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.creads__row[disabled] { cursor: default; }
+.creads__row[disabled]:hover { background: none; }
+.creads__name { font-family: var(--face-serif); font-size: var(--ui-lg); line-height: 1.3; }
+.creads__row[disabled] .creads__name { color: var(--ink-3); }
+.creads__where { grid-column: 1; font-size: var(--ui-sm); color: var(--ink-2); line-height: 1.4; margin-top: 2px; }
+.creads__audio, .creads__state { grid-column: 2; grid-row: 1; justify-self: end; white-space: nowrap; }
+.creads__state { font-size: var(--ui-xs); color: var(--ink-3); }
+.creads__progress {
+  grid-column: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); row-gap: 2px;
+  margin-top: var(--s-2); font-size: var(--ui-xs); line-height: 1.3; color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.creads__progress[data-state="done"] { color: var(--success); }
+.creads__progress[data-state="done"] .weeks__bar-fill { background: var(--success); }
+.creads__continue {
+  display: inline-flex; align-items: center; gap: 0.35em; white-space: nowrap;
+  min-height: var(--tap); padding: 0 var(--s-3); margin-right: calc(-1 * var(--s-2));
+  background: none; border: 0; border-radius: var(--radius);
+  color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.creads__continue:hover { color: var(--ink); background: var(--bg-chrome); }
+.creads__continue:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+@media (max-width: 479.98px) {
+  .weeks__tabs { margin-inline: var(--s-3); }
+  /* Continue drops under its row rather than squeezing the name off the line. */
+  .creads__item { grid-template-columns: minmax(0, 1fr); }
+  .creads__continue { justify-self: start; margin: 0 0 var(--s-2) calc(-1 * var(--s-2)); }
+}

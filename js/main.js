@@ -1,8 +1,11 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader, firstUnread, queueReads, playbackRead, weekHasLines } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
-import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, SHELF_GROUPS, shelfKind, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek } from './settings.js';
+import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, SHELF_GROUPS, shelfKind, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek, chapterRows, readingRows, menuTab, MENU_TABS } from './settings.js';
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
+// The book's own spine (GRAMMAR-CONTRACT.md "Chapter spine"): the chapter → week
+// mapping lives in chapters.js and nowhere else — never inline it here.
+import { chapter as chapterOf, chapterOfWeek, parseChapterRoute, chapterHash } from './chapters.js';
 import { mountGrammar } from './grammar/index.js';   // the Grammar section (GRAMMAR-CONTRACT.md): mounted once the reader is ready
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -154,7 +157,8 @@ async function boot() {
   let course = [];
   try { course = await (await fetch('./data/course.json')).json(); } catch { /* fall back to library weeks only */ }
   const outline = course.length ? course : weeks;
-  let grammar = null;   // mountGrammar()'s handle (the Today card for the weeks menu)
+  let grammar = null;         // mountGrammar()'s handle (the Today card for the weeks menu, the chapter panels)
+  let grammarReady = null;    // …and the promise for it: a chapter page opened by deep link waits for the section to exist
   const weekBtn = $('#week-btn');
   const weeksDialog = $('#weeks');
   const weeksList = $('#weeks-list');
@@ -232,14 +236,35 @@ async function boot() {
     li.append(btn, list);
     return li;
   }
+  /**
+   * Repaint a menu list without moving the learner: a row rebuilt under the
+   * keyboard would drop focus to the page (the audio marks and every progress
+   * change repaint these lists while the menu is open), so the focused row is
+   * found again by its own data attribute and the panel keeps its scroll.
+   */
+  function keepPlace(list, render) {
+    const active = document.activeElement;
+    const scroller = list.closest('.weeks__panel') ?? list;
+    const top = scroller.scrollTop;
+    const sel = list.contains(active)
+      ? (active.dataset.chapter ? `[data-chapter="${active.dataset.chapter}"]`
+        : active.dataset.n ? `[data-n="${active.dataset.n}"]`
+          : active.dataset.group ? `[data-group="${active.dataset.group}"]` : null)
+      : null;
+    render();
+    if (sel) list.querySelector(sel)?.focus({ preventScroll: true });
+    scroller.scrollTop = top;
+  }
   function renderWeeksMenu(currentN) {
-    const groups = groupWeeks(outline, weeks);
-    const items = groups.course.map((e) => weekRow(e, currentN));
-    for (const g of SHELF_GROUPS) {
-      const entries = groups[g.key] ?? [];
-      if (entries.length) items.push(shelfGroupRow(g, entries, currentN));
-    }
-    weeksList.replaceChildren(...items);
+    keepPlace(weeksList, () => {
+      const groups = groupWeeks(outline, weeks);
+      const items = groups.course.map((e) => weekRow(e, currentN));
+      for (const g of SHELF_GROUPS) {
+        const entries = groups[g.key] ?? [];
+        if (entries.length) items.push(shelfGroupRow(g, entries, currentN));
+      }
+      weeksList.replaceChildren(...items);
+    });
   }
   const weekTitle = (n) => (weeks.find((w) => w.n === n) ?? outline.find((w) => w.n === n))?.title ?? '';
   function setWeekButton(n) {
@@ -267,13 +292,20 @@ async function boot() {
       weeksToday.hidden = false;
     }
   }
-  weekBtn.addEventListener('click', async () => {
+  // The menu opens on whichever tab was last used — Chapters the first time
+  // (GRAMMAR-CONTRACT.md "Chapter spine": the book's own way in).
+  async function openMenu(tab = null) {
     await ensureWeekTotals();
     renderWeeksMenu(weekN);
+    renderChaptersMenu();
+    setMenuTab(tab ?? currentMenuTab, { save: !!tab });
     if (!weeksDialog.open) weeksDialog.showModal();
-    weeksList.querySelector('[aria-current="true"]')?.focus();
+    const panel = menuPanels[currentMenuTab];
+    (panel?.querySelector('[aria-current="true"]') ?? menuTabButton(currentMenuTab))?.focus();
     paintWeeksToday();
-  });
+    warmChapterAudio();
+  }
+  weekBtn.addEventListener('click', () => openMenu());
   weeksDialog.querySelector('[data-close="weeks"]').addEventListener('click', () => weeksDialog.close());
   weeksDialog.addEventListener('click', (e) => { if (e.target === weeksDialog) weeksDialog.close(); });
   weeksList.addEventListener('click', async (e) => {
@@ -292,15 +324,365 @@ async function boot() {
     weeksDialog.close(); loadWeek(Number(b.dataset.n));
   });
   // Arrow keys move between the rows and the shelf heading (Home/End to the first/last); Tab still works.
-  weeksList.addEventListener('keydown', (e) => {
-    const rows = [...weeksList.querySelectorAll('.weeks__row, .weeks__group-btn')].filter((el) => !el.closest('[hidden]'));
-    const i = rows.indexOf(e.target);
-    if (i < 0) return;
-    const next = { ArrowDown: Math.min(rows.length - 1, i + 1), ArrowUp: Math.max(0, i - 1), Home: 0, End: rows.length - 1 }[e.key];
-    if (next == null) return;
-    e.preventDefault();
-    rows[next].focus();
+  function listKeys(list) {
+    list.addEventListener('keydown', (e) => {
+      // Disabled rows (a week or chapter not in the library) are out of the tab order, so the arrows step over them too.
+      const rows = [...list.querySelectorAll('.weeks__row, .weeks__group-btn')].filter((el) => !el.disabled && !el.closest('[hidden]'));
+      const i = rows.indexOf(e.target);
+      if (i < 0) return;
+      const next = { ArrowDown: Math.min(rows.length - 1, i + 1), ArrowUp: Math.max(0, i - 1), Home: 0, End: rows.length - 1 }[e.key];
+      if (next == null) return;
+      e.preventDefault();
+      rows[next].focus();
+    });
+  }
+  listKeys(weeksList);
+
+  /* ------------------------------------------------ the chapter spine */
+  // GRAMMAR-CONTRACT.md "Chapter spine — navigation by chapter": the menu opens
+  // on Chapters (Familia Romana I–XXXIV, the book's own order); My weeks is the
+  // list above, unchanged, so the pace, the time-left estimates and the study
+  // log keep their home. A chapter page lives at #/chapter/7 and
+  // #/chapter/7/grammar. The mapping is chapters.js's alone.
+  const mk = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  document.documentElement.dataset.page = 'reader';   // 'chapter' while a chapter page is open (chapters.css hides the reader and the grammar section)
+  const chaptersList = $('#chapters-list');
+  const chapterEl = $('#chapter');
+  const menuTabs = [...weeksDialog.querySelectorAll('.weeks__tab')];
+  const menuPanels = { chapters: $('#weeks-panel-chapters'), weeks: $('#weeks-panel-weeks') };
+  const menuTabButton = (tab) => menuTabs.find((b) => b.id === `weeks-tab-${tab}`) ?? null;
+  let currentMenuTab = menuTab(settings);
+
+  function setMenuTab(tab, { save = true, focus = false } = {}) {
+    const next = MENU_TABS.includes(tab) ? tab : 'chapters';
+    const changed = next !== currentMenuTab;
+    currentMenuTab = next;
+    for (const b of menuTabs) {
+      const on = b.id === `weeks-tab-${next}`;
+      b.setAttribute('aria-selected', String(on));
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    }
+    for (const [k, el] of Object.entries(menuPanels)) if (el) el.hidden = k !== next;
+    // The day's plan belongs to both lists: it rides at the head of whichever is open, inside
+    // the scroller, so a five-line card can never leave the list three rows of room.
+    if (weeksToday && menuPanels[next] && weeksToday.parentElement !== menuPanels[next]) menuPanels[next].prepend(weeksToday);
+    if (save && changed && menuTab(settings) !== next) saveSettings({ menuTab: next });
+  }
+  for (const b of menuTabs) {
+    b.addEventListener('click', () => setMenuTab(b.id.replace('weeks-tab-', '')));
+    // APG tabs: arrows move and select, Home / End jump to the ends.
+    b.addEventListener('keydown', (e) => {
+      const i = menuTabs.indexOf(e.target);
+      const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: menuTabs.length - 1 }[e.key];
+      if (to == null) return;
+      e.preventDefault();
+      const t = menuTabs[(to + menuTabs.length) % menuTabs.length];
+      setMenuTab(t.id.replace('weeks-tab-', ''), { focus: true });
+    });
+  }
+  setMenuTab(currentMenuTab, { save: false });
+
+  // Which weeks have a recording, for the audio marks. The alignment is the
+  // signal: it is local in the real store (no signed URL per week), and a
+  // recording without one cannot be played sentence by sentence anyway.
+  const alignedByWeek = new Map();   // week_n → Promise<Set<unit_id>>
+  const alignedNow = new Map();      // week_n → Set<unit_id>, once resolved (the row models are pure and synchronous)
+  function alignedIds(n) {
+    if (!alignedByWeek.has(n)) {
+      alignedByWeek.set(n, Promise.resolve(store.getAlignment(n))
+        .then((rows) => new Set((rows ?? []).map((r) => r.unit_id)))
+        .catch(() => new Set()));
+    }
+    return alignedByWeek.get(n);
+  }
+  async function warmAligned(weekNs) {
+    const list = [...new Set(weekNs)].filter((n) => !alignedNow.has(n));
+    if (!list.length) return false;
+    await Promise.all(list.map(async (n) => { alignedNow.set(n, await alignedIds(n)); }));
+    return true;
+  }
+  // The chapters list paints at once and the marks arrive after: nothing waits on the network.
+  async function warmChapterAudio() {
+    if (await warmAligned(weeks.map((w) => w.n)) && weeksDialog.open) renderChaptersMenu();
+  }
+  const audioWeeks = () => new Set([...alignedNow].filter(([, ids]) => ids.size).map(([n]) => n));
+  const libraryWeeks = () => new Set(weeks.map((w) => w.n));
+
+  /** A small "has a recording" mark for a menu / reading row. */
+  function audioMark(cls) {
+    const s = mk('span', cls);
+    const glyph = mk('span', null, '♪');
+    glyph.setAttribute('aria-hidden', 'true');
+    s.append(glyph, mk('span', 'visually-hidden', 'Recording'));
+    return s;
+  }
+  /** The hairline bar + "42 of 93 sentences" both lists use. */
+  function progressBlock(read, total, cls = 'weeks__progress') {
+    const prog = mk('span', cls);
+    prog.dataset.state = read === 0 ? 'none' : read >= total ? 'done' : 'part';
+    const bar = mk('span', 'weeks__bar');
+    bar.setAttribute('aria-hidden', 'true');
+    const fill = mk('span', 'weeks__bar-fill');
+    fill.style.width = `${total > 0 ? Math.round((read / total) * 100) : 0}%`;
+    bar.append(fill);
+    prog.append(bar, mk('span', 'weeks__count', progressText(read, total)));
+    return prog;
+  }
+
+  function chapterMenuRow(row, currentN) {
+    const li = mk('li', 'weeks__item');
+    const b = mk('button', 'weeks__row');
+    b.type = 'button';
+    b.dataset.chapter = String(row.n);
+    b.dataset.shelf = '';                       // the roman-numeral column, as the shelf rows use
+    if (!row.inLibrary) b.disabled = true;
+    if (row.n === currentN) b.setAttribute('aria-current', 'true');
+    const num = mk('span', 'weeks__n', row.roman);
+    num.setAttribute('aria-label', `Chapter ${row.roman}`);
+    const name = mk('span', 'weeks__name', row.title);
+    name.lang = 'la';
+    const meta = mk('span', 'weeks__meta', row.meta);
+    const state = mk('span', 'weeks__state');
+    if (row.inLibrary && row.audio) state.append(audioMark('weeks__audio'));
+    else if (!row.inLibrary) state.textContent = 'Not added yet';
+    b.append(num, name, meta, state);
+    if (row.inLibrary && row.total > 0 && hasProgress) b.append(progressBlock(row.read, row.total));
+    li.append(b);
+    return li;
+  }
+  function renderChaptersMenu() {
+    if (!chaptersList) return;
+    keepPlace(chaptersList, () => {
+      const here = chapterOfWeek(weekN);
+      const rows = chapterRows({ library: libraryWeeks(), totals: weekTotals, read: progressByWeek(progress), audio: audioWeeks() });
+      chaptersList.replaceChildren(...rows.map((r) => chapterMenuRow(r, here)));
+    });
+  }
+  chaptersList?.addEventListener('click', (e) => {
+    const b = e.target.closest('.weeks__row');
+    if (!b || b.disabled) return;
+    weeksDialog.close();
+    goToChapter(Number(b.dataset.chapter));
   });
+  if (chaptersList) listKeys(chaptersList);
+
+  /* ------------------------------------------------- the chapter page */
+  const unitsByWeek = new Map();   // week_n → its units, for the per-reading counts
+  async function unitsFor(n) {
+    if (!unitsByWeek.has(n)) {
+      try { unitsByWeek.set(n, n === unitsWeek ? units : await store.getUnits(n)); }
+      catch (e) { console.warn('[chapter] units not loaded for week', n, e?.message || e); unitsByWeek.set(n, []); }
+    }
+    return unitsByWeek.get(n);
+  }
+  let chapterN = null;        // the chapter on screen, null while the reader has the page
+  let chapterTab = 'reading';
+  let chapterUI = null;       // the built page for `chapterN`
+  let titleBeforeChapter = null;
+
+  function buildChapterPage(n) {
+    const c = chapterOf(n);
+    const wrap = mk('div', 'chapter__inner');
+    const back = mk('button', 'chapter__back', '← All chapters');
+    back.type = 'button';
+    back.addEventListener('click', () => openMenu('chapters'));
+    const head = mk('header', 'chapter__head');
+    const h1 = mk('h1', 'chapter__title', c.title);
+    h1.lang = 'la';
+    h1.tabIndex = -1;
+    head.append(mk('p', 'chapter__kicker', `Cap. ${c.roman}`), h1);
+    const tabs = mk('div', 'chapter__tabs');
+    tabs.setAttribute('role', 'tablist');
+    tabs.setAttribute('aria-label', `Chapter ${c.roman}`);
+    const tabBtns = ['reading', 'grammar'].map((t) => {
+      const b = mk('button', 'chapter__tab', t === 'reading' ? 'Reading' : 'Grammar');
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.id = `chapter-tab-${t}`;
+      b.setAttribute('aria-controls', `chapter-panel-${t}`);
+      b.dataset.tab = t;
+      b.addEventListener('click', () => { location.hash = chapterHash(n, t); });
+      b.addEventListener('keydown', (e) => {
+        const to = { ArrowRight: 1, ArrowLeft: -1, Home: -99, End: 99 }[e.key];
+        if (to == null) return;
+        e.preventDefault();
+        const next = to === -99 ? 'reading' : to === 99 ? 'grammar' : (t === 'reading' ? 'grammar' : 'reading');
+        location.hash = chapterHash(n, next);
+      });
+      return b;
+    });
+    tabs.append(...tabBtns);
+    const panels = {};
+    for (const t of ['reading', 'grammar']) {
+      const p = mk('div', 'chapter__panel');
+      p.id = `chapter-panel-${t}`;
+      p.setAttribute('role', 'tabpanel');
+      p.setAttribute('aria-labelledby', `chapter-tab-${t}`);
+      panels[t] = p;
+    }
+    wrap.append(back, head, tabs, panels.reading, panels.grammar);
+    return { wrap, h1, tabBtns, panels, painted: { reading: false, grammar: false } };
+  }
+
+  /** The chapter's readings, each with its own progress, an audio mark and a Continue where one is part-read. */
+  async function paintChapterReadings(n) {
+    const ui = chapterUI;
+    const panel = ui.panels.reading;
+    const c = chapterOf(n);
+    const lib = libraryWeeks();
+    const wanted = c.weeks.filter((w) => lib.has(w));
+    if (!wanted.length) {
+      panel.replaceChildren(mk('p', 'chapter__empty', 'Nothing from this chapter is in your library yet. Chapters I–XXIV come from the review shelf and the Colloquia; XXV–XXXIV are the fourteen course weeks.'));
+      return;
+    }
+    if (!panel.firstChild) panel.replaceChildren(mk('p', 'chapter__quiet', 'Loading the readings…'));
+    await Promise.all([...wanted.map(unitsFor), warmAligned(wanted)]);
+    if (chapterN !== n || chapterUI !== ui) return;   // the learner moved on while this loaded
+    const rows = readingRows(n, {
+      library: lib, units: unitsByWeek, totals: weekTotals,
+      titles: new Map(weeks.map((w) => [w.n, w.title])),
+      progress, audio: alignedNow,
+    });
+    const list = mk('ol', 'creads');
+    for (const row of rows) list.append(readingRowEl(row));
+    panel.replaceChildren(list);
+    ui.painted.reading = true;
+  }
+  function readingRowEl(row) {
+    const li = mk('li', 'creads__item');
+    const b = mk('button', 'creads__row');
+    b.type = 'button';
+    b.dataset.week = String(row.week_n);
+    if (!row.inLibrary) b.disabled = true;
+    const name = mk('span', 'creads__name', row.label);
+    name.lang = 'la';
+    const where = mk('span', 'creads__where', row.where);
+    b.append(name, where);
+    if (row.audio) b.append(audioMark('creads__audio'));
+    if (!row.inLibrary) b.append(mk('span', 'creads__state', 'Not added yet'));
+    else if (hasProgress && row.total > 0) b.append(progressBlock(row.read, row.total, 'creads__progress'));
+    b.addEventListener('click', () => openReading(row, row.firstId));
+    li.append(b);
+    if (row.firstUnread) {
+      const cont = mk('button', 'creads__continue');
+      cont.type = 'button';
+      const arrow = mk('span', null, '→');
+      arrow.setAttribute('aria-hidden', 'true');
+      cont.append(mk('span', null, 'Continue'), arrow);
+      cont.setAttribute('aria-label', `Continue ${row.label}: the first sentence not yet read`);
+      cont.addEventListener('click', () => openReading(row, row.firstUnread));
+      li.append(cont);
+    }
+    return li;
+  }
+
+  /**
+   * The chapter's grammar, rendered by the grammar section's
+   * `mountChapterGrammar(el, { chapter })`. Until it lands the panel says so
+   * quietly and points at the Grammar section — never an error.
+   */
+  function grammarPlaceholder(failed = false) {
+    const box = mk('div', 'chapter__soon');
+    box.append(mk('p', null, failed
+      ? 'This chapter’s grammar could not be loaded just now.'
+      : 'This chapter’s grammar is not ready yet.'));
+    const p = mk('p', null, 'The Grammar section has the skill map, the questions and the vocabulary in the meantime.');
+    const open = mk('button', 'btn btn--quiet', 'Open Grammar');
+    open.type = 'button';
+    open.addEventListener('click', () => { goHome(); grammar?.open?.(); });
+    box.append(p, open);
+    return box;
+  }
+  async function paintChapterGrammar(n) {
+    const ui = chapterUI;
+    const panel = ui.panels.grammar;
+    if (ui.painted.grammar) return;
+    panel.replaceChildren(mk('p', 'chapter__quiet', 'Loading this chapter’s grammar…'));
+    let mod = null;
+    try {
+      await grammarReady;   // mountGrammar() first: the panel renders into the section it built
+      mod = await import('./grammar/index.js');
+    } catch (e) { console.warn('[chapter] the grammar module could not be loaded', e?.message || e); }
+    if (chapterN !== n || chapterUI !== ui) return;
+    if (typeof mod?.mountChapterGrammar !== 'function') { panel.replaceChildren(grammarPlaceholder()); return; }
+    try {
+      panel.replaceChildren();
+      const handle = await mod.mountChapterGrammar(panel, { chapter: n });
+      if (chapterN !== n || chapterUI !== ui) return;
+      if (!panel.firstChild) panel.replaceChildren(grammarPlaceholder());
+      ui.painted.grammar = !!handle;   // a mount that failed is tried again when the tab comes back
+    } catch (e) {
+      console.warn('[chapter] the chapter grammar could not be mounted', e?.message || e);
+      if (chapterUI === ui) panel.replaceChildren(grammarPlaceholder(true));
+    }
+  }
+
+  function paintChapterTabs() {
+    if (!chapterUI) return;
+    for (const b of chapterUI.tabBtns) {
+      const on = b.dataset.tab === chapterTab;
+      b.setAttribute('aria-selected', String(on));
+      b.tabIndex = on ? 0 : -1;
+      chapterUI.panels[b.dataset.tab].hidden = !on;
+    }
+  }
+
+  /** Show a chapter (and one of its two tabs). Called only from the route. */
+  function openChapter(n, tab) {
+    const c = chapterOf(n);
+    if (!c) { closeChapter(); return; }
+    const entering = document.documentElement.dataset.page !== 'chapter';
+    const fresh = chapterN !== n || !chapterUI;
+    chapterN = n;
+    chapterTab = tab === 'grammar' ? 'grammar' : 'reading';
+    if (entering) {
+      titleBeforeChapter = document.title;
+      document.documentElement.dataset.page = 'chapter';
+      chapterEl.hidden = false;
+      if (weeksDialog.open) weeksDialog.close();
+      audio?.stop?.();
+    }
+    if (fresh) { chapterUI = buildChapterPage(n); chapterEl.replaceChildren(chapterUI.wrap); }
+    paintChapterTabs();
+    document.title = `Cap. ${c.roman} · ${c.title} — Latin 103`;
+    // The header names where you are, so on a chapter page it names the chapter — never the
+    // week left open in the reader, which would put two different numerals on one screen.
+    weekBtn.querySelector('.week__num').textContent = `Cap. ${c.roman}`;
+    weekBtn.querySelector('.week__title').textContent = c.title;
+    if (chapterTab === 'grammar') paintChapterGrammar(n);
+    else if (fresh || !chapterUI.painted.reading) paintChapterReadings(n);
+    if (entering || fresh) { window.scrollTo({ top: 0 }); chapterUI.h1.focus({ preventScroll: true }); }
+  }
+  function closeChapter() {
+    chapterN = null;
+    if (document.documentElement.dataset.page !== 'chapter') return;
+    document.documentElement.dataset.page = 'reader';
+    chapterEl.hidden = true;
+    chapterUI = null;
+    setWeekButton(weekN);   // the header names the week again
+    if (titleBeforeChapter) document.title = titleBeforeChapter;
+    titleBeforeChapter = null;
+  }
+  /** Leave the chapter page for the reader: the hash goes, so Back comes back here. */
+  function goHome() {
+    if (location.hash) { try { history.pushState(null, '', location.pathname + location.search); } catch { location.hash = ''; } }
+    closeChapter();
+  }
+  const goToChapter = (n, tab = 'reading') => { const h = chapterHash(n, tab); if (h) location.hash = h; };
+  /** A reading row: open its week in the reader, at the sentence the row names. */
+  async function openReading(row, unitId) {
+    goHome();
+    if (weekN !== row.week_n || unitsWeek !== row.week_n) await loadWeek(row.week_n);
+    if (unitId) reader.goToUnit(unitId, { quiet: true });
+  }
+  function applyRoute() {
+    const route = parseChapterRoute(location.hash);
+    if (route) openChapter(route.n, route.tab);
+    else closeChapter();
+  }
+  window.addEventListener('hashchange', applyRoute);
+
   // The week to open: the last position (synced through settings) beats the device's own last week.
   const lastPos = normaliseLastPosition(settings.lastPosition);
   let weekN = Number(localStorage.getItem(LS_WEEK)) || weeks[0]?.n || 1;
@@ -557,7 +939,9 @@ async function boot() {
     const left = timeLeftFor(read, units.length);
     if (progressLeft) { progressLeft.hidden = !left; if (progressLeftText) progressLeftText.textContent = left; }
     progressContinue.hidden = read >= units.length;
-    if (weeksDialog.open) renderWeeksMenu(weekN);
+    if (weeksDialog.open) { renderWeeksMenu(weekN); renderChaptersMenu(); }
+    // The chapter page's per-reading figures follow the same map.
+    if (chapterN != null && chapterTab === 'reading') paintChapterReadings(chapterN);
     settingsUI?.refreshProgress?.();
   }
 
@@ -1048,6 +1432,7 @@ async function boot() {
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
     // A modal dialog (Settings, the weeks menu) owns Escape: its own cancel closes it, the panel stack behind it is left alone.
     if (settingsDialog.open || weeksDialog.open) return;
+    if (chapterN != null) return;   // the chapter page has no text to page through and no display toggles
     if (e.key === 'Escape') { if (panel.isOpen()) { e.preventDefault(); panel.escape(); } return; }   // stack: back / collapse the open row / close
     if ($('#popup').open) return;
     if (audio?.status?.().mode === 'align') return;   // the alignment overlay owns the keyboard (it also stops propagation)
@@ -1071,10 +1456,22 @@ async function boot() {
   positionTimer = 0;
   positionArmed = true;
   document.documentElement.dataset.ready = '1';
-  maybeShowHint();
   if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));
   // Grammar section: binds the header's Read / Grammar control; loads nothing until Grammar is opened.
-  mountGrammar({ store, dict, par, reader, settings, saveSettings }).then((g) => { grammar = g; }).catch((e) => console.warn('[grammar] not mounted', e?.message || e));
+  // `onChapterNav` is how a lesson opened from a chapter page finds its way back (the shell owns the route).
+  grammarReady = mountGrammar({ store, dict, par, reader, settings, saveSettings })
+    .then((g) => {
+      grammar = g;
+      // Two hooks the section asks for (README-ui.md "Grammar by chapter"): how to reach a
+      // chapter page, and how to leave one first — the chapter page hides the whole section.
+      g?.onChapterNav?.((n, tab) => goToChapter(Number(n), tab));
+      g?.onLeaveChapter?.(() => goHome());
+      return g;
+    })
+    .catch((e) => { console.warn('[grammar] not mounted', e?.message || e); return null; });
+  // A deep link (#/chapter/7, #/chapter/7/grammar) opens that chapter over the reader.
+  applyRoute();
+  if (chapterN == null) maybeShowHint();
 }
 
 boot().catch((err) => {
