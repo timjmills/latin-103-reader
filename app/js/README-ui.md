@@ -183,7 +183,8 @@ open entry; `cb('settings')` re-applies theme/size/face/toggles;
 compact:false, showEnglish:'hidden'|'interleaved', showHighlights:true,
 showUnderlines:true, showMargin:true, showAudio:true, showSummaries:true,
 plainOpen:false, showGlossEnglish:false, showPictures:true, lineMode:'flow'|'book', audioRate:0.5–1.2,
-panelWidth:null|px, menuTab:'chapters'|'weeks' }` — mirrored to `localStorage['latin103.settings']`
+panelWidth:null|px, menuTab:'chapters'|'weeks',
+grammar:{ preset, size, oneSkill, view:'topic'|'chapter', hints:'press'|'always'|'off' } }` — mirrored to `localStorage['latin103.settings']`
 (same key as E's `store.js`), read by the inline script in `index.html` before
 first paint. `l103.week`, `l103.view` and `l103.hint.translation` also live in
 localStorage (UI-only).
@@ -1161,6 +1162,116 @@ navigation by chapter"). The chapter → readings mapping is `app/js/chapters.js
   chapter page can open it through `ctx.go`. It used to render under the
   `session` view name, which built a second, unused mixed session first.
 - `js/grammar/chapter.js` must be added to `sw.js`'s PRECACHE (owner A).
+
+## Session flow — move on, step back, colour the result (2026-09-06)
+
+GRAMMAR-CONTRACT.md "Session flow — move on, step back, colour the result" and
+"Hints, per answer box". All of it is owner B's: `js/grammar/session.js` (the
+rules), `js/grammar/ui.js` (the views), `css/grammar.css`, and
+`tests/grammar.session-flow.test.mjs`.
+
+### The runner (`session.js`, pure, no DOM)
+
+`createRunner` now keeps two positions. **`index`** is the item on screen;
+**`frontier`** is how far the session has got, and `index` never passes it.
+Three arrays ride alongside the queue, all indexed by queue position: `made`
+(the item built for that slot, or `null` when the slot built nothing and is
+skipped), `results` (the **first** answer there) and the queue itself.
+
+- **Only the first answer to an item is written down.** `answer(value)` judges a
+  retry or a replay and hands the result back with `retry: true`, but it adds no
+  `drill_attempts` row, no `skill_state` (so no `successes`, no
+  `successes_spaced`, no streak or stage move), no `confusions` row, no
+  re-queue, and no entry in `log` — which is what the Learn criterion,
+  `summary()` and the stats page all read. Trying twice therefore cannot inflate
+  a skill anywhere.
+- **`back()` / `forward()`.** `back()` steps to the nearest item already made
+  (skipping slots that built nothing) and never re-generates; `forward()` behind
+  the frontier returns towards it, and *at* the frontier it is the deliberate
+  press that gets past an answered item — the only way past one answered wrong.
+  `canForward` is false while the item on screen has not been answered at all,
+  so forward is not a way to skip a question.
+- New reads on the runner: `frontier`, `replay`, `held`, `answered`,
+  `resultAt(i)`, `itemAt(i)`, `canBack`, `canForward`. `snapshot()` still
+  resumes at the frontier; a resumed session starts its walk there, since the
+  pages before it belong to another sitting.
+
+### The view (`ui.js` `runSession`)
+
+- A **nav bar** above the item (`.g-runnav`): back arrow · "4 of 10" · forward
+  arrow. The position lives here and not on the item, because a page is kept
+  exactly as it was left and a number printed inside it would go stale as the
+  session grows. The count skips slots that built nothing.
+- **A right answer moves on by itself** after `ADVANCE_MS` (1400 ms). Focus goes
+  to *Next*, so Enter advances at once; the back arrow cancels the beat, and
+  stepping back is how a line that went by too fast is re-read.
+- **A wrong answer holds.** The feedback offers *Try again* (primary — rebuilds
+  the same item fresh, keeping the runner's first result) and *Move on* (quiet),
+  and says in plain words that only the first answer counted.
+- **Pages are cached per queue position** (`pages[i]`), so a step back shows the
+  item exactly as it was left — the typed text still in the field, the choice
+  still marked, its own feedback under it — and every input is already disabled
+  by `submit()`, so a replay cannot be re-graded. A tapped word stays clickable
+  for its gloss but no longer moves the pick mark.
+- **Left / right arrow keys** do the same, **on the section's own root**, not on
+  the document: `index.js` stops keydown from leaving `#grammar` so the reader's
+  letter shortcuts cannot fire from inside a drill, and a document-level handler
+  would never hear them. They are ignored when focus is in a field or inside
+  `.g-order` / `.g-match` / `.g-chart`, which use the arrows themselves.
+
+### Colour
+
+`.g-fb[data-ok]` carries the result: `--success` tint for right,
+`--rubric-soft` for wrong, both defined in `tokens.css` for light and dark. It
+is never the only signal — the mark is a ✓ / ✗ / ~ in a ring (a shape, so it
+survives greyscale and a black-and-white print), the line says the word, and a
+visually-hidden "Correct." / "Not right." / "Partly right." opens it for a
+screen reader.
+
+### Hints, per answer box
+
+`boxHints(item, { skill, describe })` in `session.js` (pure) returns one entry
+per answer box: `{ id, index, label, levels }`, `id` being the key that box's
+input uses (a chart cell index, a blank index, a match row, a chunk index; `'0'`
+where the item has a single box). Two levels: what *this* box is being asked
+for in plain words with the grammar term, then the rule or the paradigm cell it
+comes from.
+
+- **Three modes**, `settings.grammar.hints`: `press` (default), `always`, `off`,
+  chosen on the Practice setup and used by every session however it was started.
+  *Always show* opens each box's first level from the start and logs every
+  answer as `hinted`; the setup says so where the learner chooses it. Level two
+  stays a second press ("Tell me more") in every mode.
+- **Where the control sits.** A single-box item keeps the familiar `<details
+  class="g-hint">` under the input. A chart, a pensum, an order or a match item
+  gets a small `?` per box (`.g-hintb`) and a panel under the input
+  (`.g-hints`), so a hint never covers the box or the sentence. Order and match
+  put their controls in a labelled row (`.g-hintrow`) instead of on the chips,
+  which are already the tap and drag targets.
+- **A reorder item's boxes are its word chips**: a chip cannot be tapped for its
+  dictionary entry the way a word in a plain sentence can, because tapping
+  places it, so the hint is where that line lives (`describe` is `ui.js`'s
+  wrapper over `dict.lookup` / `dict.describe`).
+- **A hint never spells an accepted answer.** `answerLeak(text, answers)` and
+  `acceptedAnswers(item)` are exported beside it; `boxHints` runs every level,
+  and every authored clause inside one (a pensum blank's `note`, a lesson's
+  `summary`), through that check and drops what leaks — so a note reading
+  "agrees with fluvius" is dropped from an item whose sibling blank accepts
+  *fluvius*, and the plain statement of the blank still stands.
+  `tests/grammar.session-flow.test.mjs` sweeps every drillable skill the same
+  way, the build-time twin of the `fix4` B1 sweep. `recognise` and `parse` carry
+  the same exemption they carry there: their answer is a label, not a form.
+  Endings of one or two letters that are also ordinary English words (*a*, *is*,
+  *am*, *us*) are out of the check by construction — no English sentence about
+  the ablative can avoid "a", and nothing ever interpolates a Latin form into
+  hint text.
+
+### Also fixed while here
+
+- `renderSetup` used a `from` it never took as a parameter, so the Practice tab
+  threw `ReferenceError: from is not defined` and drew nothing.
+- `dictLine` in `sets.js` printed a verb's principal parts twice when the deck's
+  `dict` already carried them.
 
 ## The chapter spine — navigation by chapter (2026-09-06)
 

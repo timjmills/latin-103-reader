@@ -16,6 +16,29 @@ import { createSetLoader, createSetItems, setSkills, groupPensa, chapterOfWeek, 
 import { roman, isShelfWeek } from '../sync.js';
 import { createGenerator } from './generate.js';
 import { createUI } from './ui.js';
+import { normaliseHintMode } from './session.js';
+import { CHAPTER_MAX } from './chapter.js';
+
+/**
+ * The book's chapters, from `app/js/chapters.js` (owner A: the single source of
+ * truth for chapter → readings / grammar). It is loaded lazily and once; until
+ * it exists the section falls back to the numerals alone, so the by-chapter
+ * view and a chapter page still work — with no titles and no readings, which is
+ * all the grammar side ever reads from it.
+ */
+let chaptersP = null;
+async function loadChapters() {
+  if (!chaptersP) chaptersP = (async () => {
+    try {
+      const m = await import('../chapters.js');
+      const list = typeof m.chapters === 'function' ? m.chapters() : m.chapters;
+      if (Array.isArray(list) && list.length) return list;
+      console.warn('[grammar] chapters.js exports no chapter list; falling back to the numerals');
+    } catch (e) { console.warn('[grammar] chapters.js not available yet; the spine is the numerals alone', e?.message || e); }
+    return null;
+  })();
+  return chaptersP;
+}
 
 /**
  * The `drillable` memo, kept pure so the sequence that broke it can be tested
@@ -73,6 +96,9 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     store, dict, par, reader, live, root, fixture,
     settings, saveSettings,
     index: null, gstore: null, items: null, units: [], weeks: [], sets: new Map(), skills: new Map(),
+    // The book's spine (app/js/chapters.js), null until it has loaded; and the shell's way back to a chapter
+    // page, which it may set through `onChapterNav` so a lesson opened from a chapter returns to it.
+    chapters: null, openChapter: null, leaveChapter: null,
     /** The reader's current week (the device's own, or the synced last position). */
     currentWeekN() {
       const lp = ctx.settings?.lastPosition?.week_n;
@@ -98,7 +124,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     /** True when a skill can produce a drill item at all (a parse filter and at least one sentence in the library; a set with items), memoised — see createDrillableMemo. */
     drillable(id) { return drillableMemo.drillable(id); },
     /** The grammar preferences kept in settings (unknown keys ride along in the settings blob). */
-    prefs() { const g = ctx.settings?.grammar; return { preset: g?.preset ?? 'review-heavy', size: g?.size === null ? null : (Number(g?.size) || 10), oneSkill: g?.oneSkill ?? null }; },
+    // `hints` is the per-answer-box hint mode ('press' | 'always' | 'off'), riding in the same blob as the rest.
+    prefs() { const g = ctx.settings?.grammar; return { preset: g?.preset ?? 'review-heavy', size: g?.size === null ? null : (Number(g?.size) || 10), oneSkill: g?.oneSkill ?? null, view: g?.view === 'chapter' ? 'chapter' : 'topic', hints: normaliseHintMode(g?.hints) }; },
     async savePrefs(patch) {
       const next = { ...(ctx.settings?.grammar ?? {}), ...patch };
       ctx.settings = { ...ctx.settings, grammar: next };
@@ -113,8 +140,13 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     },
     section: () => document.documentElement.dataset.section ?? 'read',
     say(text) { if (live) live.textContent = text; },
-    /** Open the section on a view (the Today card's Start buttons, from the weeks menu). */
-    go(view, params = {}) { if (view === 'read') { setSection('read', { focus: true }); return; } setSection('grammar'); init().then(() => ui?.render(view, params)); },
+    /** Open the section on a view (the Today card's Start buttons in the weeks menu; a chapter panel's actions). */
+    go(view, params = {}) {
+      leaveChapterPage();
+      if (view === 'read') { setSection('read', { focus: true }); return; }
+      setSection('grammar');
+      init().then(() => ui?.render(view, params));
+    },
   };
 
   let ui = null;
@@ -137,6 +169,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     initP = (async () => {
       root.replaceChildren(Object.assign(document.createElement('p'), { className: 'g-loading', textContent: 'Loading the grammar section…' }));
       ctx.index = await loadSkills();
+      ctx.chapters = ctx.chapters ?? await loadChapters();
       ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa });
       await ctx.gstore.ready();
       // Every week in the library, review shelf included: the sentences the items are built from — with the
@@ -194,6 +227,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     if (lightP) return lightP;
     lightP = (async () => {
       ctx.index = ctx.index ?? await loadSkills();
+      ctx.chapters = ctx.chapters ?? await loadChapters();
       if (!ctx.gstore) { ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa }); await ctx.gstore.ready(); }
       if (!ctx.weeks.length) ctx.weeks = await store.getWeeks();
       const chapter = ctx.currentChapter();
@@ -213,6 +247,19 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       ui = createUI(ctx);   // no `items`: the card falls back to "a skill with a parse filter is drillable"
     })().catch((e) => { console.warn('[grammar] the Today card could not be built', e?.message || e); lightP = null; throw e; });
     return lightP;
+  }
+
+  /**
+   * A view opened from a chapter page has to leave that page first: the shell
+   * hides the whole section while `html[data-page="chapter"]` is set, so a
+   * lesson or a session would run behind it. The shell's own way out is
+   * `onLeaveChapter`; without it we clear the chapter route, which its
+   * hashchange handler reads as "no chapter".
+   */
+  function leaveChapterPage() {
+    if (document.documentElement.dataset.page !== 'chapter') return;
+    if (typeof ctx.leaveChapter === 'function') { ctx.leaveChapter(); return; }
+    if (location.hash) { try { location.hash = ''; } catch { /* file: */ } }
   }
 
   // The reader's place and title are kept while Grammar is open and put back on return (G1-06 / G1-07).
@@ -242,9 +289,67 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   if (last === 'grammar') setSection('grammar');
   else setSection('read');
 
+  /**
+   * The grammar of one chapter, rendered into the shell's own element on a
+   * chapter page (GRAMMAR-CONTRACT.md "Chapter spine"): the chapter's skills
+   * with their states and the actions the map offers, its question set,
+   * vocabulary deck and pensa, and "Practise this chapter".
+   *
+   * It paints twice on a cold start — the rows and their states as soon as the
+   * skill map and the store are there, then the whole thing once the library
+   * has been read — because what can be drilled cannot be known before the
+   * generator exists, and a row must never claim otherwise (QA-B1's rule).
+   * Returns a small handle: `refresh()` repaints it, `destroy()` empties it.
+   */
+  async function mountChapterPanel(el, { chapter } = {}) {
+    const n = Number(chapter);
+    if (!el) return null;
+    if (!Number.isFinite(n) || n < 1 || n > CHAPTER_MAX) { console.warn(`[grammar] no such chapter: ${chapter}`); return null; }
+    el.replaceChildren(Object.assign(document.createElement('p'), { className: 'g-loading', textContent: 'Loading this chapter’s grammar…' }));
+    try {
+      if (!initP) { await lightInit(); ui?.chapterPanel?.(el, { chapter: n, known: false }); }
+      await init();
+      ui?.chapterPanel?.(el, { chapter: n });
+    } catch (e) {
+      console.error('[grammar] the chapter panel could not be built', e);
+      el.replaceChildren(Object.assign(document.createElement('p'), { className: 'g-loading', textContent: `This chapter’s grammar could not be loaded: ${e?.message ?? e}` }));
+      return null;
+    }
+    return { chapter: n, refresh: () => ui?.chapterPanel?.(el, { chapter: n }), destroy: () => el.replaceChildren() };
+  }
+  mounted = { mountChapterPanel };
+
   return {
     open: () => setSection('grammar'), close: () => setSection('read'), ctx,
     /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */
     async todayCard(opts = {}) { await lightInit(); return ui ? ui.todayCard({ ...opts, place: 'weeks' }) : null; },
+    /** A chapter page's grammar section (also exported on its own, below). */
+    mountChapterGrammar: mountChapterPanel,
+    /**
+     * How the section gets back to a chapter page: the shell passes its own
+     * router (`(n) => location.hash = `#/chapter/${n}``), and a lesson, a
+     * history page or a session opened from a chapter offers "← Cap. VII".
+     * Without it the section falls back to its own by-chapter view.
+     */
+    onChapterNav(fn) { ctx.openChapter = typeof fn === 'function' ? fn : null; },
+    /**
+     * How the section leaves a chapter page when one of its rows opens a
+     * lesson, a history page or a session: the shell passes its own `goHome`.
+     * Without it the section clears the chapter route itself, which the
+     * shell's hashchange handler reads the same way.
+     */
+    onLeaveChapter(fn) { ctx.leaveChapter = typeof fn === 'function' ? fn : null; },
   };
+}
+
+/** The section instance `mountGrammar` created, so the shell can reach the chapter panel as a plain import. */
+let mounted = null;
+/**
+ * `mountChapterGrammar(el, { chapter })` — the chapter page's grammar section.
+ * Call `mountGrammar()` first (main.js does, at the end of boot); this is the
+ * same function the returned handle carries.
+ */
+export async function mountChapterGrammar(el, opts = {}) {
+  if (!mounted) { console.warn('[grammar] mountChapterGrammar before mountGrammar: nothing to render into'); return null; }
+  return mounted.mountChapterPanel(el, opts);
 }
