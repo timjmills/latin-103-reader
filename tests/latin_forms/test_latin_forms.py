@@ -426,12 +426,39 @@ def test_parity_with_paradigms_js():
     assert not bad, "\n".join(bad[:20])
 
 
-#: how many attested (lemma, form, parse) facts the generator still does not
-#: reproduce and that `attestation.divergence` cannot name.  Every one of them
-#: inspected on 2026-09-06 was a Whitaker artefact in the glossary — a homograph
-#: lemma (dīcō -āre "dedicate" holding dīcere's forms), a bare stem offered as a
-#: word (acu, add, al), or a gender doublet — not a form the generator gets wrong.
-UNEXPLAINED_BASELINE = 321
+#: How many attested (lemma, form, parse) facts the generator still does not
+#: reproduce and that `attestation.divergence` cannot name.  All 55 were read
+#: one by one on 2026-09-06 — `python tests/latin_forms/attestation.py` prints
+#: them — and they fall into four groups:
+#:
+#:  13  the headword collision on `volo`.  latin_forms._verb_paradigm, and
+#:      app/js/paradigms.js with it, picks its irregular tables by `h` alone,
+#:      so volō volāre "fly" [1,1] is handed velle's table (volābat, volāvit,
+#:      volant …) and the velle lexeme [6,2] keeps Whitaker's volandī, mālī.
+#:      The fix is one condition on each side — match the entry's `cat` as well
+#:      as its `h` — and the two must land together or test_parity_with_
+#:      paradigms_js fails.  The glossary half is already fixed: the caption
+#:      over volābat read "volō, velle, voluī" and now reads volō, volāre
+#:      (build_glossary.HAND_LEMMA_CAT).
+#:   9  four real gaps in the hand tables.  Each is a table *cell*, so each
+#:      needs the same edit in app/js/paradigms.js: prōsum keeps its d before a
+#:      vowel (prōdest, prōdesse, prōderunt); sum has the future infinitive
+#:      fore; eō has the present passive infinitive īrī that the future passive
+#:      infinitive is built on; fīō takes its future participle and supine from
+#:      faciō (factūrus, factum).
+#:   8  Whitaker lexemes filed under a table that is not theirs: ciō "set in
+#:      motion" and vēneō sit in his V 6 1, the eō class, so the generator
+#:      builds them as compounds of eō and ciam / cit / cīs / venientem fall
+#:      outside it.  The category is his, not ours, and rewriting it by hand
+#:      would be guesswork on two words the course never sets.
+#:  25  lexemes that are not words, and tokens that are not one word.  Whitaker
+#:      ghosts (bus -ūs from bōs, mammon mammis, captus -ūs holding captōs,
+#:      virus holding virīs, mēlos, Pān), run-together tokens he splits for us
+#:      (hicest, sēipsa, ecce under hic), and stray archaisms with no row
+#:      (mīs, ollis, trīnās, nostrōrum, arcubus, diī).  Nothing to generate.
+#:
+#: A rise is a regression unless the new rows belong to one of these four.
+UNEXPLAINED_BASELINE = 55
 
 
 def test_glossary_attestation():

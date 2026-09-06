@@ -145,6 +145,17 @@ PREFERRED = {
     ("paucus", "ADJ"), ("multus", "ADJ"), ("magnus", "ADJ"), ("bonus", "ADJ"),
 }
 PREFERRED_BONUS = 1.0  # one frequency step: enough to lift proficīscor (B) over proficiō (A)
+
+#: HAND_LEMMAS is keyed on the headword alone, and a few headwords cover two
+#: Whitaker lexemes: volō "fly" (1st conjugation) is not volō, velle, and ēdō
+#: "put out" is not edō, ēsse.  Without this, volāvit was captioned "volō,
+#: velle, voluī".  (The generator still keys its irregular tables on `h`, so
+#: the fly-verb is *also* given velle's table — that fix belongs in
+#: latin_forms.py and app/js/paradigms.js together.)
+HAND_LEMMA_CAT: dict[str, set[tuple[int, int]]] = {
+    "V:volo": {(6, 2)},
+    "V:edo": {(3, 1), (7, 3)},
+}
 # Per-form overrides: this reading of exactly this form goes first, whatever the
 # frequencies say (forte in Ørberg is nearly always the adverb "by chance").
 FORM_FIRST = {"forte": ("forte", "ADV"), "facta": ("factum", "N")}   # facta Mārcī = "the deeds of Marcus"
@@ -450,6 +461,75 @@ INFL_FREQ: dict[int, str] = {}
 PARSER_ERRORS: dict[str, str] = {}
 
 
+#: the verbs whose 2nd singular present imperative really is the bare stem
+SHORT_IMPERATIVES = ("dic", "duc", "fac", "fer")
+
+
+def _fits_lexeme(infl, cat: list) -> bool:
+    """Whitaker's own rule: an ending's declension/conjugation must match the
+    lexeme's, 0 being the wildcard (`V 3 0` fits every 3rd-conjugation verb,
+    `V 0 0` fits any).  The blagae port does not enforce it, so areō "be dry"
+    (2nd) collects the 1st conjugation's participle arāns.
+
+    VPAR is exempt: the port files *every* participle and gerundive under
+    `VPAR 2 0` whatever the conjugation (agendī and audiendum both), so the
+    category says nothing there — `_wrong_conjugation_vowel` reads the ending
+    instead."""
+    ic = list(getattr(infl, "category", None) or [])
+    if not ic or not cat or infl.wordType.name == "VPAR":
+        return True
+    for a, b in zip(ic, cat):
+        if a and b and a != b:
+            return False
+    return True
+
+
+def _wrong_conjugation_vowel(infl, cat: list, roots: list) -> bool:
+    """A present participle or gerundive built on another conjugation's stem:
+    dicāre "dedicate" offered dīcēns / dīcendum, secāre the archaic gerundive
+    secundus, pariō the 3rd conjugation's parēns for pariēns, areō "be dry"
+    the 1st's arāns.  Only the present stem is checked — the perfect and
+    future participles come off the supine stem and carry no conjugation
+    vowel — and only the conjugations whose participle stem is fixed: the
+    irregulars (sum, eō, velle, fīō) keep whatever the port gives them,
+    absēns included."""
+    if infl.wordType.name != "VPAR" or not cat or not roots:
+        return False
+    f = infl.features
+    tense, voice = _name(f.get("Tense")), _name(f.get("Voice"))
+    if not (tense == "PRES" or (tense == "FUT" and voice == "PASSIVE")):
+        return False
+    d, v = (list(cat) + [0, 0])[:2]
+    r0 = str(roots[0] or "")
+    r1 = str(roots[1]) if len(roots) > 1 and roots[1] not in ("-", "", None) else r0
+    if d == 1:
+        stems = [r1 + "a"]
+    elif d == 2:
+        stems = [r1 + "e"]
+    elif d == 3 and (v == 4 or r0.endswith("i")):        # audiō, capiō, ēgredior
+        stems = [r0 + "e", r0 + "u"]
+    elif d == 3 and v in (1, 2):                          # regō, ferō (+ archaic -undus)
+        stems = [r1 + "e", r1 + "u"]
+    else:
+        return False
+    whole = (infl.stem or "") + (getattr(infl, "affix", None) or "")
+    return not any(whole.startswith(s) for s in stems)
+
+
+def _bare_stem_imperative(infl) -> bool:
+    """The port's zero-ending 2nd singular imperative of the 3rd conjugation:
+    `al`, `add`, `cap`, `sūm`.  That row belongs to dīc / dūc / fac / fer, not
+    to every 3rd-conjugation verb, and a bare stem is not a word."""
+    if infl.wordType.name != "V" or getattr(infl, "affix", None):
+        return False
+    if (list(getattr(infl, "category", None) or [0]) + [0])[0] != 3:
+        return False
+    f = infl.features
+    if _name(f.get("Mood")) != "IMP" or _name(f.get("Tense")) != "PRES":
+        return False
+    return not strip_macrons(infl.stem).lower().endswith(SHORT_IMPERATIVES)
+
+
 def analyse(parser: Parser, form: str) -> list[Rec]:
     try:
         word = parser.parse(form)
@@ -474,8 +554,15 @@ def analyse(parser: Parser, form: str) -> list[Rec]:
         for an in wform.analyses.values():
             L = an.lexeme
             unique = isinstance(L, UniqueLexeme)
+            lex_cat = list(L.category) if L.category else []
+            lex_roots = list(L.roots) if L.roots else []
             by_wt: dict[str, list] = collections.OrderedDict()
             for infl in an.inflections:
+                if not unique and (not _fits_lexeme(infl, lex_cat)
+                                   or _wrong_conjugation_vowel(infl, lex_cat, lex_roots)):
+                    continue
+                if _bare_stem_imperative(infl):
+                    continue
                 by_wt.setdefault(infl.wordType.name, []).append(infl)
             for wt, infls in by_wt.items():
                 # drop archaic/poetic ending variants (Whitaker freq B+) when a
@@ -936,9 +1023,13 @@ def verb_lemma(roots: list[str], cat: list, lexform: list[str]) -> tuple[str, st
 
 
 PRON_HEAD = {
-    (4, 1): "is", (4, 2): "idem", (3, 1): "hic", (6, 2): "ipse",
+    (4, 1): "is", (4, 2): "idem", (6, 2): "ipse",
     (5, 1): "ego", (5, 2): "tu", (5, 4): "se",
 }
+#: Whitaker files hic, iste and ille under one demonstrative paradigm (3, 1)
+#: as well as under (6, 1); only the stem tells them apart, and without this
+#: istōs and illōs were entered as forms of hic.
+DEMONSTRATIVE_STEM = {"ist": "iste", "istu": "iste", "ill": "ille", "illu": "ille"}
 
 
 def pron_lemma(rec: Rec, roots: list[str], spelled_form: str) -> tuple[str, str, str | None]:
@@ -949,6 +1040,8 @@ def pron_lemma(rec: Rec, roots: list[str], spelled_form: str) -> tuple[str, str,
     h = None
     if cat in PRON_HEAD:
         h = PRON_HEAD[cat]
+    elif cat == (3, 1):
+        h = DEMONSTRATIVE_STEM.get(r0, "hic")
     elif cat == (6, 1):
         h = "ille" if r0 == "ill" else ("iste" if r0 == "ist" else None)
     elif cat == (5, 3):
@@ -1050,7 +1143,12 @@ def build_entry(rec: Rec, speller: Speller) -> dict | None:
         # place names (Rōmae, Athēnīs, domī) — keep it only for place nouns.
         # -ius/-ium nouns: Whitaker rates the genitive in -iī below the
         # locative, so the ending filter left only "locative" for imperiī, ōtiī …
-        if cat and cat[:2] == [2, 4] and any(p.get("case") == "loc" for p in parses)                 and not any(p.get("case") == "gen" and p.get("number") == "sg" for p in parses):
+        # Only the *singular* locative stands in for the genitive singular: the
+        # locative plural is the dative/ablative plural (cōnsiliīs), and reading
+        # a genitive singular out of it invented cōnsiliīs "of the plan".
+        if cat and cat[:2] == [2, 4] \
+                and any(p.get("case") == "loc" and p.get("number") == "sg" for p in parses) \
+                and not any(p.get("case") == "gen" and p.get("number") == "sg" for p in parses):
             parses.append({"case": "gen", "number": "sg", **({"gender": gender} if gender else {})})
         if ntype not in ("L", "W"):
             non_loc = [p for p in parses if p.get("case") != "loc"]
@@ -1131,7 +1229,10 @@ def build_entry(rec: Rec, speller: Speller) -> dict | None:
         if value in NUM_ENGLISH and kind in NUM_KIND_INDEX:
             senses = [NUM_ENGLISH[value][NUM_KIND_INDEX[kind]]]
     if lexpos in ("N", "ADJ", "V", "NUM") and not rec.unique:
-        lemma = HAND_LEMMAS.get(f"{lexpos}:{h}", lemma)
+        hand_key = f"{lexpos}:{h}"
+        allowed = HAND_LEMMA_CAT.get(hand_key)
+        if allowed is None or tuple((cat + [0, 0])[:2] if cat else (0, 0)) in allowed:
+            lemma = HAND_LEMMAS.get(hand_key, lemma)
     senses = SENSE_OVERRIDES.get((lexpos if lexpos != "VPAR" else "V", h), senses)
     if not senses:
         return None
@@ -1190,6 +1291,12 @@ def rank_and_filter(recs: list[Rec], entries: list[dict], form: str | None = Non
         if e is None:
             continue
         score = freq_rank(rec) - (5.0 if form and FORM_FIRST.get(form) == (e["h"], e["pos"]) else 0) - POS_BONUS.get(e["pos"], 0) - (PREFERRED_BONUS if ((e["h"], e["pos"]) in PREFERRED or (e["pos"] == "VPAR" and (e["h"], "V") in PREFERRED)) else 0)
+        # Whitaker's V 8 lexemes are a second, archaic-stem copy of a verb he
+        # also lists normally (capiō with capsō, servō with servāssō): stemless,
+        # so the app can draw no table for them.  They must never beat the real
+        # capiō, capere, cēpī, captum to the front of `cape`.
+        if (rec.cat or [0])[0] == 8:
+            score += 2.0
         # tie-break identical frequencies: Whitaker's hand-listed irregular forms
         # (sum, vult, vīs) first, then the longer first root (sequor over the stray "secor")
         rootlen = -1000 if rec.unique else (-len(rec.roots[0]) if rec.roots else 0)
@@ -1225,7 +1332,16 @@ def rank_and_filter(recs: list[Rec], entries: list[dict], form: str | None = Non
         if target is None:
             merged.append(e)
             continue
-        target["parses"] = dedupe(target["parses"] + e["parses"])
+        # Whitaker often lists one verb twice, under different conjugations
+        # (possideō as [2,1] and as a stemless [3,1]) or with different stems
+        # (accurrō with accucurr- and with accurr-).  Merging their senses is
+        # right; merging their *parses* is not — it made possidet a future and
+        # accurrit a perfect of a table that spells those possidēbit and
+        # accucurrit.  Where the two really are one lexeme under two spellings
+        # (abiciō / "abiiciō", mittō [3,1] / [8,3]) the parses are the same and
+        # the union changes nothing anyway.
+        if target["cat"] == e["cat"] and target["roots"] == e["roots"]:
+            target["parses"] = dedupe(target["parses"] + e["parses"])
         if target["cat"] is None and e["cat"]:
             target["cat"], target["roots"] = e["cat"], e["roots"]
         for s in e["senses"]:
