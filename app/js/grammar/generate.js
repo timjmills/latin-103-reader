@@ -11,13 +11,15 @@ import { SET_KINDS } from './sets.js';
 export function createGenerator({ items, stage3 = null, sets = null, skills }) {
   const skillMap = skills;
   function generate(slot = {}) {
-    const { skill: id, kind } = slot;
+    const { skill: id, kind, itemKey = null } = slot;
     const skill = typeof id === 'string' ? skillMap.get(id) : id;
     if (!skill) return null;
     if (skill.set) return sets ? sets.generate({ ...slot, skill }) : null;
     if (STAGE3_KINDS.includes(kind)) {
       const item = stage3?.generate({ ...slot, skill }) ?? null;
       if (item) return item;
+      // A redo names one item; another kind would be another item under the same name, so the slot is dropped.
+      if (itemKey != null) return null;
       // Nothing of that kind for the skill (no short sentence, no English, no unambiguous cell): a wave-1 kind instead, the neighbours' kinds last.
       const allowed = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
       const avoid = slot.avoid ?? [];

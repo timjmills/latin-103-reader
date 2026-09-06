@@ -9,6 +9,7 @@
 //   await g.ready();
 //   g.getStates() → Map skill → row       g.setState(row)      g.resetSkill(id) / g.resetAll()
 //   g.getAttempts() → rows (oldest first) g.addAttempt(row)
+//   g.getMissed() → rows, newest first    g.countMissed()      ("Redo what was wrong")
 //   g.getConfusions() → rows              g.bumpConfusion(a, b)
 //   g.getPensa() → rows { chapter, kind, items }   (public.pensa, private: pulled with the grammar rows into the
 //                                                  IndexedDB `pensa` store (db v7); the fixture store reads `localPensa()`)
@@ -46,6 +47,24 @@ export function serverAttemptRow(a) {
   const self = a.self === true ? String(a.answer ?? '').replace(/^self:\s*/, '') : a.self;
   return { skill: a.skill, kind: a.kind, item_key: a.item_key, mode: a.mode, correct: !!a.correct, hinted: !!a.hinted, self: SELF.includes(self) ? self : null, answer: a.answer ?? null, expected: a.expected ?? null, confused_with: a.confused_with ?? null, ms: a.ms == null ? null : Math.round(a.ms), at: a.at };
 }
+/**
+ * True when an attempt row leaves its item **missed** (GRAMMAR-CONTRACT.md
+ * "Redo what was wrong"): the answer was wrong, and — on a self-graded
+ * translate — the learner's own grade was "wrong", never "partly". `judge`
+ * already counts "partly" as correct, so the `self` clause is the belt to that
+ * brace: a row that ever arrives with `correct: false` and `self: 'partly'`
+ * (an older client, a hand-edited row) is still not a miss. Pure.
+ */
+export const isMissedAttempt = (a) => !!a && !a.correct && a.self !== 'partly' && a.self !== 'right';
+
+/**
+ * The identity of a drill item across sessions: its key is stable per (kind,
+ * unit, token), but only *within* a skill — two skills scanning the same word
+ * of the same sentence produce the same `blank:w01:1.1:x:0`. The pair is what
+ * names an item. Pure.
+ */
+export const missKey = (a) => `${a.skill}\u0000${a.item_key}`;
+
 /** A clean attempt row from any source (bad rows → null). Pure. */
 export function normaliseAttempt(a) {
   if (!a || typeof a.skill !== 'string' || typeof a.kind !== 'string' || !a.at) return null;
@@ -63,12 +82,17 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
   // (GRAMMAR-CONTRACT.md wave 3) asks for one skill's tail over and over as it repaints, and the log can
   // hold thousands of rows: without this every repaint would walk and sort the lot on a phone.
   let bySkill = null;
+  // The missed items, newest first: the same idea one step further ("Redo what was wrong"). Every view that
+  // offers a redo — the end of a session, Practice setup, a skill's history, a chapter panel — asks for a
+  // count on every repaint, and the answer means finding the *latest* attempt on each item. Walking thousands
+  // of rows per repaint on a phone is what this avoids; like `bySkill` it is built once and dropped on any write.
+  let missedList = null;
   const confusions = new Map();   // key → row
   const pensa = new Map();        // `${chapter}:${kind}` → row (private, read-only on the device)
   const listeners = new Set();
   let readyP = null;
   let db = null;
-  const dropIndex = () => { bySkill = null; };
+  const dropIndex = () => { bySkill = null; missedList = null; };
   /** The per-skill index, built once and kept until the next write. Rows are the stored objects, not copies. */
   const index = () => {
     if (!bySkill) {
@@ -77,6 +101,26 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       for (const l of bySkill.values()) l.sort((a, b) => ts(a.at) - ts(b.at));
     }
     return bySkill;
+  };
+  /**
+   * Every item whose **most recent** attempt was a miss, newest miss first.
+   * One pass over the log keeps the latest attempt per (skill, item_key); what
+   * survives the `isMissedAttempt` filter is what a redo may draw from.
+   * An attempt with no `item_key` is left out: it names no item, so it could
+   * never be rebuilt, and counting it would promise a redo that cannot happen.
+   */
+  const missed = () => {
+    if (!missedList) {
+      const last = new Map();
+      for (const a of attempts.values()) {
+        if (!a.item_key) continue;
+        const k = missKey(a);
+        const cur = last.get(k);
+        if (!cur || ts(a.at) > ts(cur.at)) last.set(k, a);
+      }
+      missedList = [...last.values()].filter(isMissedAttempt).sort((a, b) => ts(b.at) - ts(a.at));
+    }
+    return missedList;
   };
   const emit = () => { for (const cb of listeners) { try { cb('grammar'); } catch (e) { console.error('[grammar] listener failed', e); } } };
 
@@ -279,6 +323,35 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     countAttempts(skill) {
       if (skill == null) return attempts.size;
       return index().get(skill)?.length ?? 0;
+    },
+    /**
+     * The items to redo (GRAMMAR-CONTRACT.md "Redo what was wrong"): those
+     * whose most recent attempt was wrong, **most recently missed first**.
+     * Answering one right anywhere — a redo, an ordinary session, a blocked
+     * five — takes it off this list, because the newest attempt on it is then
+     * a correct one; missing it again keeps it, with a fresher timestamp.
+     *
+     *   skill   only this skill's (a skill's history page)
+     *   skills  only these ids — any iterable, Set or array (a chapter's)
+     *   limit   at most this many of the most recent
+     *
+     * Rows are copies of the attempt that missed, so a caller can read `kind`
+     * (which item to rebuild) and `at` (how long ago) without reaching in.
+     */
+    getMissed({ skill = null, skills = null, limit = 0 } = {}) {
+      const only = skills == null ? null : (skills instanceof Set ? skills : new Set(skills));
+      let rows = missed();
+      if (skill != null) rows = rows.filter((a) => a.skill === skill);
+      if (only) rows = rows.filter((a) => only.has(a.skill));
+      if (limit > 0 && rows.length > limit) rows = rows.slice(0, limit);
+      return rows.map((a) => ({ ...a }));
+    },
+    /** How many there are, without materialising them — the count every redo control prints. */
+    countMissed({ skill = null, skills = null } = {}) {
+      const only = skills == null ? null : (skills instanceof Set ? skills : new Set(skills));
+      let n = 0;
+      for (const a of missed()) { if (skill != null && a.skill !== skill) continue; if (only && !only.has(a.skill)) continue; n += 1; }
+      return n;
     },
     addAttempt,
     getConfusions: () => [...confusions.values()].map((r) => ({ ...r })),

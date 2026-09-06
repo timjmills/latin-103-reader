@@ -386,6 +386,77 @@ export function buildPairSession({ a, b, states = new Map(), skills, size = 10, 
 }
 
 /**
+ * "Redo the N you missed" (GRAMMAR-CONTRACT.md "Redo what was wrong"): a plan
+ * over the *named items* the learner got wrong, rather than over skills.
+ *
+ * `misses` are attempt rows (store-grammar's `getMissed`, or a session's own
+ * log) — `{ skill, kind, item_key, at }`. What comes back is an ordinary
+ * session plan whose slots each carry `itemKey`, so the generator rebuilds the
+ * very item instead of drawing a fresh one from the skill's pool.
+ *
+ * Three rules, in this order:
+ *
+ * - **Most recently missed first.** The newest miss is always the first slot.
+ * - **Still interleaved.** The `size` items are taken round-robin across the
+ *   skills that missed (each skill's own newest first, skills ordered by their
+ *   newest miss), so a redo of fifteen is not fifteen of one skill while
+ *   another's misses wait; and the order is then walked so that neither the
+ *   skill nor the kind repeats between neighbours where the material allows it.
+ *   A redo of one skill's items is blocked by nature and only the kinds spread.
+ * - **Capped by the size asked for**, and never a slot outside `skills` — the
+ *   caller hands in the world (one skill, one chapter, or everything in the
+ *   map), and a miss on a skill the library no longer has is left out here
+ *   rather than failing later.
+ *
+ * Pure. An item that can no longer be built is not detectable from a row, so
+ * that is the generator's answer at run time: the slot builds nothing and the
+ * runner skips it (session.js counts those and the view says the count is
+ * smaller).
+ */
+export function buildRedoSession({ misses = [], skills, states = new Map(), size = 10, seed = Date.now() }) {
+  const rand = rng(seed);
+  const n = size == null ? 10 : Math.max(1, size);
+  // Newest first, one row per item: a log handed in raw can hold the same item twice.
+  const byItem = new Map();
+  for (const m of misses) {
+    if (!m || typeof m.skill !== 'string' || !m.item_key || !m.kind) continue;
+    if (!skills?.has?.(m.skill)) continue;
+    const k = `${m.skill} ${m.item_key}`;
+    const cur = byItem.get(k);
+    if (!cur || ms(m.at) > ms(cur.at)) byItem.set(k, m);
+  }
+  const rows = [...byItem.values()].sort((a, b) => ms(b.at) - ms(a.at));
+  if (!rows.length) return [];
+  // Round-robin across skills, each skill's own newest first; the skills in the order they were last missed.
+  const perSkill = new Map();
+  for (const r of rows) { let l = perSkill.get(r.skill); if (!l) perSkill.set(r.skill, l = []); l.push(r); }
+  const picked = [];
+  const lists = [...perSkill.values()];
+  while (picked.length < n && lists.some((l) => l.length)) {
+    for (const l of lists) { if (picked.length >= n) break; if (l.length) picked.push(l.shift()); }
+  }
+  picked.sort((a, b) => ms(b.at) - ms(a.at));
+  // Walk them out so neither the skill nor the kind repeats beside itself while anything else is left.
+  const left = [...picked];
+  const out = [];
+  while (left.length) {
+    const prev = out[out.length - 1] ?? null;
+    let i = left.findIndex((r) => r.skill !== prev?.skill && r.kind !== prev?.kind);
+    if (i < 0) i = left.findIndex((r) => r.skill !== prev?.skill);
+    if (i < 0) i = left.findIndex((r) => r.kind !== prev?.kind);
+    if (i < 0) i = 0;
+    out.push(left.splice(i, 1)[0]);
+  }
+  const stageOf = (id) => {
+    const s = Number(states?.get?.(id)?.stage);
+    return Number.isFinite(s) ? Math.min(3, Math.max(1, s)) : 1;
+  };
+  // `rand` is drawn once so the plan is a function of the seed like every other, even though nothing here is random.
+  rand();
+  return out.map((r) => ({ skill: r.skill, kind: r.kind, stage: stageOf(r.skill), currentWeek: false, itemKey: r.item_key, redo: true }));
+}
+
+/**
  * A wrong answer re-queues the skill 3–6 items later — never immediately,
  * never beside itself, never the same kind as a neighbour. `plan` is the
  * remaining plan after the current item; returns a new array. When fewer

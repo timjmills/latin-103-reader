@@ -9,7 +9,7 @@ import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
-import { createLearn, createPractice, createBlockedFive, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL } from './session.js';
+import { createLearn, createPractice, createBlockedFive, createRedo, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL } from './session.js';
 import { featureLabel, featureKey } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
@@ -82,11 +82,11 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------ shell */
   function draw() {
     const nav = h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'practice', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'summary'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
+      ['map', 'practice', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
         { map: 'Skills', practice: 'Practice', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, blocked: renderBlocked, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
     document.title = `Grammar — Latin 103`;
   }
@@ -97,7 +97,7 @@ export function createUI(ctx) {
     // for the skill you left (QA-B10). Its place is kept and restored; every other view opens at the top.
     if (view.name === 'map' && name !== 'map') mapScroll[mapView] = window.scrollY;
     view = { name, params };
-    if (push) { try { history.pushState({ grammar: { name, params: name === 'session' ? { ...params, resume: true } : params } }, ''); } catch { /* file: URLs */ } }
+    if (push) { try { history.pushState({ grammar: { name, params: name === 'session' || name === 'redo' ? { ...params, resume: true } : params } }, ''); } catch { /* file: URLs */ } }
     draw();
     // Each of the two map views keeps its own place: coming back from a lesson lands where it was left, in the view it was left in.
     window.scrollTo({ top: name === 'map' ? (params.chapter != null ? 0 : mapScroll[mapView]) : 0 });
@@ -253,7 +253,7 @@ export function createUI(ctx) {
     const queue = (readJSON(LS_QUEUE, []) || []).filter((id) => skills.has(id) && stateOf(id).state !== 'practising' && stateOf(id).state !== 'mastered');
     return h('section', { class: 'g-today', 'aria-labelledby': 'g-today-h' },
       h('h2', { id: 'g-today-h', class: 'g-h2', text: 'Today' }),
-      saved?.queue?.length && saved.index < saved.queue.length ? h('p', { class: 'g-today__line' }, `A practice session is in progress (${Math.min(saved.index, saved.queue.length)} of ${saved.queue.length} answered). `, btn('Resume', { onclick: () => render('session', { ...(saved.params ?? {}), resume: true }) }, 'btn btn--primary g-today__btn'), ' ', btn('Discard', { onclick: () => { writeJSON(LS_SESSION, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
+      saved?.queue?.length && saved.index < saved.queue.length ? h('p', { class: 'g-today__line' }, `${saved.redo ? 'A redo' : 'A practice session'} is in progress (${Math.min(saved.index, saved.queue.length)} of ${saved.queue.length} answered). `, btn('Resume', { onclick: () => render(saved.redo ? 'redo' : 'session', { ...(saved.params ?? {}), resume: true }) }, 'btn btn--primary g-today__btn'), ' ', btn('Discard', { onclick: () => { writeJSON(LS_SESSION, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
       queue.length ? h('p', { class: 'g-today__line' }, `Learning in book order: ${queue.length} skill${queue.length === 1 ? '' : 's'} to go, next `, h('button', { type: 'button', class: 'g-link', onclick: () => render('learn', { skill: queue[0], queue: queue.slice(1) }) }, titleOf(queue[0])), '. ', btn('Stop the run', { onclick: () => { writeJSON(LS_QUEUE, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
       todayCard({ place: 'map', bare: true }));
   }
@@ -364,9 +364,14 @@ export function createUI(ctx) {
     if (!known) { out.push(h('p', { class: 'g-quiet', text: 'Reading the library to see what can be practised…' })); return out; }
     const pool = chapterPool(material, { state: stateOf, drillable });
     if (pool.rotation.length) {
+      // "Redo the N you missed", narrowed to this chapter, with the count (GRAMMAR-CONTRACT.md "Redo what was
+      // wrong"). With nothing to redo the chapter says so in a line rather than offering an empty session.
+      const missedHere = missedCount({ chapter: material.chapter });
       out.push(h('div', { class: 'g-chap__acts' },
-        btn('Practise this chapter', { onclick: () => go('session', { chapter: material.chapter }), 'aria-label': `Practise chapter ${row.roman}` }, 'btn btn--primary'),
-        h('p', { class: 'g-quiet', text: `A mixed session of ten, drawn only from this chapter: ${pool.rotation.length} of the ${progress.drillable} it can drill ${pool.rotation.length === 1 ? 'is' : 'are'} in rotation.` })));
+        h('div', { class: 'g-acts' },
+          btn('Practise this chapter', { onclick: () => go('session', { chapter: material.chapter }), 'aria-label': `Practise chapter ${row.roman}` }, 'btn btn--primary'),
+          missedHere ? btn(`Redo the ${missedHere} you missed`, { onclick: () => go('redo', { chapter: material.chapter }), 'aria-label': `Redo the ${missedHere} item${missedHere === 1 ? '' : 's'} of chapter ${row.roman} you missed and have not since got right` }, 'btn') : null),
+        h('p', { class: 'g-quiet', text: `A mixed session of ten, drawn only from this chapter: ${pool.rotation.length} of the ${progress.drillable} it can drill ${pool.rotation.length === 1 ? 'is' : 'are'} in rotation.${missedHere ? '' : ' Nothing of this chapter is waiting to be redone.'}` })));
     } else if (pool.addable.length) {
       out.push(h('div', { class: 'g-chap__acts' },
         btn('Add this chapter to mixed practice', { onclick: () => addChapter(material) }, 'btn'),
@@ -703,6 +708,8 @@ export function createUI(ctx) {
     const showResult = (r) => {
       const missedKinds = [...new Set(r.missed.map((a) => a.kind))];
       const passed = r.passed;
+      // The blocked ten's own misses, as items that can be rebuilt (a self-graded "partly" is not one).
+      const redoMissed = r.missed.filter((a) => a.item_key && !a.partial);
       if (passed && readJSON(LS_LEARN, null)?.skill === id) writeJSON(LS_LEARN, null);
       setBody(stepper(blockedStep), h('header', { class: 'g-head' },
         h('h1', { class: 'g-title', text: passed ? 'Learned' : 'Not yet' }),
@@ -714,7 +721,11 @@ export function createUI(ctx) {
           skill.set ? null : h('p', { class: 'g-quiet', text: `Kinds missed: ${missedKinds.join(', ')}. The lesson's rule and the confusion note are below.` }),
           skill.set ? null : h('article', { class: 'g-lesson g-lesson--lit' }, (lesson?.core ?? []).filter((b) => b.type === 'rule' || b.type === 'confusion').map((b) => b.type === 'rule' ? h('p', { class: 'g-lesson__rule is-lit' }, inline(b.text)) : h('div', { class: 'g-lesson__conf is-lit' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, inline(b.text)))))) : null,
         h('div', { class: 'g-acts' },
-          passed ? [btn(queue.length ? `Next: ${titleOf(queue[0])}` : (from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills'), { onclick: finishQueue }, 'btn btn--primary'), btn('Practise now', { onclick: () => startBlocked(id, from) }, 'btn')]
+          // "Redo the N you missed" from a Learn run, but only once the run has **passed**: the skill is in the
+          // rotation from that moment, so a redo is the ordinary logged encounter the contract describes. On a
+          // failed run the honest offer is another ten (below), not a session that would graduate the skill.
+          passed && redoMissed.length ? btn(`Redo the ${redoMissed.length} you missed`, { onclick: () => render('redo', { misses: redoMissed, skill: id, from }), 'aria-label': `Redo the ${redoMissed.length} item${redoMissed.length === 1 ? '' : 's'} you missed in this drill` }, 'btn btn--primary') : null,
+          passed ? [btn(queue.length ? `Next: ${titleOf(queue[0])}` : (from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills'), { onclick: finishQueue }, redoMissed.length ? 'btn' : 'btn btn--primary'), btn('Practise now', { onclick: () => startBlocked(id, from) }, 'btn')]
             : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn('Re-read the lesson', { onclick: showLesson }, 'btn'), btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')]));
       ctx.say(passed ? `${skill.title} learned.` : 'Not yet; another ten items are ready.');
     };
@@ -742,11 +753,21 @@ export function createUI(ctx) {
     const sizes = [5, 10, 15, null];
     const sizeGroup = h('div', { class: 'g-seg', role: 'group', 'aria-label': 'Session size' }, sizes.map((n) => btn(n == null ? 'Open' : String(n), { 'aria-pressed': String(size === n), onclick: (e) => { size = n; for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget)); } }, 'g-seg__btn')));
     const skillSelect = h('select', { class: 'g-select', 'aria-label': 'Skill', onchange: (e) => { oneSkill = e.target.value; } }, rotation.map((id) => h('option', { value: id, selected: id === oneSkill ? true : null }, titleOf(id))));
-    const presetList = h('div', { class: 'g-presets', role: 'radiogroup', 'aria-label': 'Mix' }, Object.entries(PRESET_LABEL).map(([key, [label, desc]]) => {
-      const disabled = key === 'this-week' && !cw.some((id) => rotation.includes(id));
-      return h('label', { class: `g-preset${disabled ? ' is-disabled' : ''}` },
+    // "Missed items" stands beside the four mixes (GRAMMAR-CONTRACT.md "Redo what was wrong"). It is not a mix
+    // over skills — it is a session over the very items got wrong and not since put right — so choosing it starts
+    // the redo view rather than an ordinary session, and with nothing to redo the choice is simply unavailable.
+    const missedTotal = missedCount();
+    const CHOICES = [...Object.entries(PRESET_LABEL), ['missed', ['Missed items', 'The items you got wrong and have not since answered right — most recently missed first, still mixed across skills and kinds, up to the size you chose.']]];
+    const presetList = h('div', { class: 'g-presets', role: 'radiogroup', 'aria-label': 'Mix' }, CHOICES.map(([key, [label, desc]]) => {
+      const disabled = key === 'this-week' ? !cw.some((id) => rotation.includes(id)) : key === 'missed' ? missedTotal === 0 : false;
+      if (disabled && preset === key) preset = 'review-heavy';
+      return h('label', { class: `g-preset${disabled ? ' is-disabled' : ''}${key === 'missed' ? ' g-preset--missed' : ''}` },
         h('input', { type: 'radio', name: 'g-preset', value: key, checked: preset === key ? true : null, disabled: disabled ? true : null, onchange: () => { preset = key; skillSelect.closest('.g-preset__pick').hidden = key !== 'one-skill'; } }),
-        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in practice yet.') : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
+        h('span', { class: 'g-preset__text' }, h('b', { text: key === 'missed' && missedTotal ? `${label} · ${missedTotal}` : label }),
+          h('small', { text: key === 'missed'
+            ? (disabled ? 'Nothing to redo — everything you have missed has since been answered right.' : desc)
+            : disabled ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in practice yet.')
+            : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
     }));
     const pick = h('div', { class: 'g-preset__pick', hidden: preset !== 'one-skill' }, h('span', { class: 'g-label', text: 'Skill' }), skillSelect);
     // Hints, per answer box (GRAMMAR-CONTRACT.md). One setting for every session, wherever it is started from —
@@ -760,6 +781,7 @@ export function createUI(ctx) {
     }));
     const start = async () => {
       await ctx.savePrefs({ preset, size, oneSkill, hints });
+      if (preset === 'missed') { render('redo', { size, from }); return; }
       render('session', { preset, size, oneSkill, from });
     };
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }),
@@ -774,7 +796,11 @@ export function createUI(ctx) {
           h('p', { class: 'g-quiet', text: 'Every answer box has its own hint — a typed field, each cell of a chart, each blank of a pensum, each word of an order or match item. A hint never spells the answer; this choice holds for every session.' }))),
       h('div', { class: 'g-acts' }, btn('Start', { onclick: start }, 'btn btn--primary'), btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
   }
-  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null }) {
+  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null, redo = false, skill: redoSkill = null }) {
+    // "Missed items" is not a mix over skills but a session over named items, so it is its own view. Both routes
+    // in: the setup's choice (which is remembered as a preference and could come back from anywhere), and a
+    // redo in progress resuming through the Today card, which offers every session by the one Resume button.
+    if (redo || preset === 'missed') { render('redo', { skill: redoSkill ?? (preset === 'missed' ? null : oneSkill), chapter, size: preset === 'missed' ? size : null, from, resume }); return; }
     // A confusion pair's Start: ten items alternating exactly those two skills (GRAMMAR-CONTRACT.md, wave 3).
     // It is not a preset — nothing else is let in — so it is built here and handed to the runner as a finished plan.
     if (Array.isArray(pair) && pair.length === 2) { startPair(pair, size ?? 10); return; }
@@ -811,6 +837,74 @@ export function createUI(ctx) {
     const title = ch != null ? `Practise · Cap. ${roman(ch)}` : `Practice · ${(PRESET_LABEL[params.preset] ?? PRESET_LABEL['review-heavy'])[0]}`;
     runSession({ runner: practice.runner, title, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
   }
+  /* ------------------------------------------------- redo what was wrong */
+  /**
+   * The items to redo, narrowed the way the control that offers them is
+   * (GRAMMAR-CONTRACT.md "Redo what was wrong"): everything, one skill's, or
+   * one chapter's. `skills` for a chapter is its whole material — its skills
+   * and its sets — so a chapter's redo cannot reach outside the chapter.
+   */
+  const chapterIds = (n) => chapterMaterial(Number(n), { skills, order: index.order, sets: ctx.sets ?? new Map(), entry: spine(ctx.chapters ?? null).find((c) => c.n === Number(n)) ?? null }).ids;
+  /**
+   * A skill a redo may draw from: one that is in the rotation already (a
+   * lapsed row counts and re-enters, as "Practise this skill" and "Practise
+   * this chapter" let it), and that can still produce an item. A skill still
+   * in **Learn** is left out on purpose — a redo is logged as an ordinary
+   * practice answer, and letting one through would move the skill to
+   * practising without its Learn criterion ever being met. Learn's own misses
+   * are offered back from its result screen, once the skill has passed.
+   */
+  const redoable = (id) => { const st = stateOf(id).state; return (st === 'practising' || st === 'mastered' || st === 'lapsed') && drillable(id); };
+  const redoScope = ({ skill = null, chapter = null } = {}) => new Set((skill != null ? [skill] : chapter != null ? chapterIds(chapter) : [...skills.keys()]).filter(redoable));
+  /** How many items are waiting to be redone here. 0 means the control says so quietly and is not offered. */
+  const missedCount = (scope = {}) => (ctx.items ? gstore.countMissed({ skills: redoScope(scope) }) : 0);
+  /**
+   * A redo session: the same items, freshly ordered, run as an ordinary
+   * session — logged, fed to the scheduler, clearing an item when it is
+   * answered right. `misses` is an explicit list (the end of a session hands
+   * its own back); without one the store is asked, narrowed by `skill` or
+   * `chapter`. `size` caps it (Practice setup's chosen size); the other routes
+   * pass none, because the count on the button is what the learner agreed to.
+   */
+  function renderRedo({ misses = null, skill: skillId = null, chapter = null, size = null, from = null, resume = false } = {}) {
+    if (skillId != null && !skills.has(skillId)) { render('map'); return; }
+    // The world the session may reach: only redoable skills, so the re-queue and the filler stay inside the
+    // skill or the chapter that was asked for and never touch one that is still being learned.
+    const scope = redoScope({ skill: skillId, chapter });
+    const world = { skills: new Map([...scope].map((id) => [id, skills.get(id)]).filter(([, s]) => s)) };
+    const title = skillId != null ? `Redo · ${titleOf(skillId)}` : chapter != null ? `Redo · Cap. ${roman(Number(chapter))}` : 'Redo what you missed';
+    // A lapsed row is asked for on purpose, as in "Practise this skill": it re-enters the rotation now, so the
+    // answers that follow are not judged early (M1).
+    for (const id of scope) if (stateOf(id).state === 'lapsed') gstore.setState(addToPractice(gstore.getState(id) ?? id));
+    const params = { skill: skillId, chapter, size, from, redo: true };
+    // A redo in progress resumes like any other session (the saved queue carries each slot's item key).
+    const saved = resume ? readJSON(LS_SESSION, null) : null;
+    const usable = saved?.redo && saved.queue?.length && saved.index < saved.queue.length ? saved : null;
+    const offered = Array.isArray(misses) && misses.length ? misses.filter((m) => scope.has(m.skill)) : gstore.getMissed({ skills: scope });
+    const rows = offered;
+    if (!usable && !rows.length) { renderNothingToRedo({ skillId, chapter, from }); return; }
+    const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, redo: true, at: Date.now() } : null);
+    const redo = createRedo({ misses: rows, gstore, items, skillsIndex: world, size: size ?? rows.length, oneSkill: skillId, currentWeekN: ctx.currentWeekN(), resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
+    const first = redo.start();
+    if (!first) { writeJSON(LS_SESSION, null); renderNothingToRedo({ skillId, chapter, from, gone: rows.length }); return; }
+    if (usable) ctx.say('Redo resumed.');
+    const asked = usable ? usable.queue.length : redo.plan.length;
+    const short = !usable && rows.length > asked && size == null ? ` ${rows.length - asked} of them can no longer be rebuilt and are left out.` : '';
+    // The wording the contract asks for: a redo is a fresh encounter and *is* counted, unlike the
+    // immediate retry inside an item, which the feedback describes in its own words a moment later.
+    const note = `${asked} item${asked === 1 ? '' : 's'} you missed before, most recent first.${short} Each counts towards its skill — unlike trying an item again on the spot, which never does — and getting one right takes it off the list.`;
+    runSession({ runner: redo.runner, title, note, mode: 'practice', hintOpen: false, practiceLink: true, onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
+  }
+  /** Nothing to redo: said quietly, in the place the learner asked from. */
+  function renderNothingToRedo({ skillId = null, chapter = null, from = null, gone = 0 } = {}) {
+    const where = skillId != null ? titleOf(skillId) : chapter != null ? `chapter ${roman(Number(chapter))}` : 'your practice';
+    setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to redo' }),
+      h('p', { class: 'g-lede', text: gone
+        ? `The ${gone} item${gone === 1 ? '' : 's'} still marked missed in ${where} cannot be rebuilt — the sentences or the words they came from have left the library. Nothing is lost; the skills themselves come round in ordinary practice.`
+        : `Everything you have missed in ${where} has since been answered right. Items come back here when one is got wrong and not yet put right.` })),
+      h('div', { class: 'g-acts' }, btn('Practice', { onclick: () => render('setup', { from }) }, 'btn btn--primary'), backButton(from, 'btn btn--quiet')));
+  }
+
   /** "Practise this skill": a view of its own, so Back leaves it and a chapter page can open it through `ctx.go`. */
   const startBlocked = (id, from = null) => render('blocked', { skill: id, from });
   function renderBlocked({ skill: id, from = null }) {
@@ -846,11 +940,24 @@ export function createUI(ctx) {
     const clean = summary.right - partly;
     const acc = summary.total ? Math.round((clean / summary.total) * 100) : 0;
     const added = summary.added ?? 0;
+    // The items this session leaves missed — one row per item, the last answer to it deciding. A skill still in
+    // Learn is not offered back here (a redo is logged as practice, and that would skip its criterion).
+    const missed = (summary.missed ?? []).filter((m) => redoable(m.skill));
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Session over' }),
       h('p', { class: 'g-lede', text: `${clean} of ${summary.total} right${partly ? `, ${partly} partly` : ''} (${acc}%) · ${summary.skills.length} skill${summary.skills.length === 1 ? '' : 's'} · ${stats.fmtMin(summary.ms)}${summary.hinted ? ` · ${summary.hinted} with a hint` : ''}.` }),
-      added ? h('p', { class: 'g-quiet', text: `${summary.asked} items were asked for; ${added} more came back after a wrong answer.` }) : null),
+      added ? h('p', { class: 'g-quiet', text: `${summary.asked} items were asked for; ${added} more came back after a wrong answer.` }) : null,
+      summary.dropped ? h('p', { class: 'g-quiet', text: `${summary.dropped} item${summary.dropped === 1 ? '' : 's'} could not be rebuilt and ${summary.dropped === 1 ? 'was' : 'were'} left out — the sentence or the word behind ${summary.dropped === 1 ? 'it has' : 'them have'} left the library.` }) : null),
       summary.wrong.length ? h('section', {}, h('h2', { class: 'g-h2', text: 'Worth another look' }), h('ul', { class: 'g-chips' }, summary.wrong.map((id) => h('li', {}, h('button', { type: 'button', class: 'g-chip', onclick: () => startBlocked(id, params?.from ?? null) }, titleOf(id), h('span', { class: 'g-chip__state', text: ' · practise' })))))) : h('p', { class: 'g-quiet', text: 'Nothing missed.' }),
-      h('div', { class: 'g-acts' }, btn(params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session', { onclick: () => render('session', params) }, 'btn btn--primary'), btn(params?.from?.chapter != null ? backLabel(params.from).replace('← ', '') : 'Skills', { onclick: () => leaveTo(params?.from ?? null) }, 'btn btn--quiet'), btn('Stats', { onclick: () => render('stats') }, 'btn btn--quiet')));
+      // "Redo the N you missed" (GRAMMAR-CONTRACT.md): the very items, freshly ordered, as an ordinary session.
+      // The list is this session's own, so it says what just happened rather than what the whole log holds.
+      missed.length ? h('p', { class: 'g-quiet', text: 'They come back as ordinary items, later: each answer counts towards its skill, and getting one right takes it off your missed list.' }) : null,
+      h('div', { class: 'g-acts' },
+        // The redo is narrowed exactly as the session was, and no further: `oneSkill` rides in the params of
+        // every mixed session as the remembered choice for the "One skill" preset, so it names the session's
+        // world only when that preset was the one actually used (a redo of five mixed skills is not one skill's).
+        missed.length ? btn(`Redo the ${missed.length} you missed`, { onclick: () => render('redo', { misses: missed, skill: params?.skill ?? (params?.preset === 'one-skill' ? params.oneSkill : null) ?? null, chapter: params?.chapter ?? null, from: params?.from ?? null }), 'aria-label': `Redo the ${missed.length} item${missed.length === 1 ? '' : 's'} you missed in this session` }, 'btn btn--primary') : null,
+        btn(params?.redo ? 'Another redo' : params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session', { onclick: () => render(params?.redo ? 'redo' : 'session', params) }, `btn ${missed.length ? '' : 'btn--primary'}`.trim()),
+        btn(params?.from?.chapter != null ? backLabel(params.from).replace('← ', '') : 'Skills', { onclick: () => leaveTo(params?.from ?? null) }, 'btn btn--quiet'), btn('Stats', { onclick: () => render('stats') }, 'btn btn--quiet')));
     body.querySelector('h1')?.focus?.({ preventScroll: true });   // a keyboard session ends on the summary, not at the top of the page (G1-09)
     ctx.say(`Session over: ${summary.right} of ${summary.total} right.`);
   }
@@ -923,9 +1030,12 @@ export function createUI(ctx) {
     /** Build (or rebuild, for a retry) the page for the item on screen. */
     function build(i, item, { fresh = false } = {}) {
       const grown = runner.added > 0 ? `${runner.added} item${runner.added === 1 ? '' : 's'} came back after a wrong answer${runner.capped ? '. The session is full now — anything still missed comes back next time' : ''}.` : '';
+      // A redo names its items, and a named item can have gone (the sentence left the library, the deck changed).
+      // The runner skips those; the count on screen is smaller than the one offered, and this says why.
+      const lost = runner.dropped > 0 ? `${runner.dropped} item${runner.dropped === 1 ? '' : 's'} could not be rebuilt and ${runner.dropped === 1 ? 'was' : 'were'} left out.` : '';
       const page = h('div', { class: 'g-page' });
       page.append(itemNode(item, {
-        title, note: [note, grown].filter(Boolean).join(' '), position: i, hintOpen, onHint: () => runner.hint(),
+        title, note: [note, grown, lost].filter(Boolean).join(' '), position: i, hintOpen, onHint: () => runner.hint(),
         onAnswer: async (value) => {
           const result = await runner.answer(value);
           const fb = feedbackNode(item, result, { lesson, mode, practiceLink,
@@ -1579,6 +1689,10 @@ export function createUI(ctx) {
 
     const acts = [];
     if (drillable(id)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id, from) }, 'btn btn--primary'));
+    // "Redo the N you missed", narrowed to this skill, with the count shown (GRAMMAR-CONTRACT.md "Redo what
+    // was wrong"). Nothing to redo says so quietly under the buttons rather than offering an empty session.
+    const missedHere = missedCount({ skill: id });
+    if (missedHere) acts.push(btn(`Redo the ${missedHere} you missed`, { onclick: () => render('redo', { skill: id, from }), 'aria-label': `Redo the ${missedHere} item${missedHere === 1 ? '' : 's'} of ${skill.title} you missed and have not since got right` }, 'btn'));
     acts.push(btn('Lesson', { onclick: () => render('lesson', { skill: id, from }) }, 'btn btn--quiet'));
     if (!skill.set && chartTable(skill)) acts.push(btn('Print chart', { onclick: () => printChart(skill) }, 'btn btn--quiet'));
 
@@ -1590,6 +1704,7 @@ export function createUI(ctx) {
         h('p', { class: 'g-lede', text: 'History' }),
         h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), dueText(st, now))),
       h('div', { class: 'g-acts' }, acts),
+      total && !missedHere ? h('p', { class: 'g-quiet', text: 'Nothing to redo here: every item of this skill you have missed has since been answered right.' }) : null,
     ];
 
     if (!total) {

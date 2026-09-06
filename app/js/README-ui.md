@@ -1393,3 +1393,114 @@ supplement story, chapter II with neither.
 
 `sw.js` is **v42** (`js/chapters.js`, `css/chapters.css`, and the grammar
 side's `js/grammar/chapter.js`, precached).
+
+## Redo what was wrong (2026-09-06)
+
+GRAMMAR-CONTRACT.md "Redo what was wrong". Owner B's throughout:
+`js/grammar/store-grammar.js` (the query), `scheduler.js` (the plan),
+`session.js` (the run), `items.js` / `sets.js` / `stage3.js` / `generate.js`
+(rebuilding one named item), `ui.js`, `css/grammar.css`, and
+`tests/grammar.redo.test.mjs`. No new file, so `sw.js`'s PRECACHE is unchanged.
+
+### What counts as missed (`store-grammar.js`)
+
+`isMissedAttempt(a)` — the answer was wrong, and on a self-graded translate the
+learner's own grade was "wrong". `judge` already counts "partly" as correct, so
+the `self` clause is the belt to that brace (migration 0017 gave
+`drill_attempts.self` for exactly this).
+
+An item is named by **(skill, item_key)**, not by the key alone: the key is
+stable per (kind, unit, token), but two skills scanning the same word of the
+same sentence produce the same `blank:w01:1.1:x:0`.
+
+```js
+g.getMissed({ skill, skills, limit })   // rows, most recently missed first
+g.countMissed({ skill, skills })        // the number every redo control prints
+```
+
+Both read a **third index beside `bySkill`**: one pass over the log keeps the
+latest attempt per item, and what survives `isMissedAttempt` is cached, newest
+first. It is dropped by the same `dropIndex()` every write already calls, so a
+new attempt, a `resetSkill` and a `resetAll` are all seen at once. Without it
+every repaint of the setup, a history page or a chapter panel would walk
+thousands of rows on a phone. Attempts with an empty `item_key` are left out:
+they name no item, so they could never be redone and must not inflate a count.
+
+### Rebuilding one named item (`items.js` and the other generators)
+
+`generate({ …, itemKey })` asks for that exact item. It threads down to
+`createPool.chooseInfo(skill, kind, keys, rand, tiers, want)`, which hands the
+key over (marking it used like any draw) or answers **null** when it has gone —
+the sentence left the library, the deck changed, the pensum was edited. With an
+`itemKey` set, **neither fallback runs**: not the current-week retry, not the
+fall-through to another kind. A different sentence or a different kind would be
+a different item wearing the same name. `recognise` has two shapes over one
+candidate, and the key says which: `recognise-tap:` is the tap-the-word variant,
+plain `recognise:` the multiple choice, so `tap` is settled by the prefix.
+
+Nothing is thrown when an item has gone: the slot builds nothing, the runner
+skips it, and the count on screen is smaller than the count offered.
+
+### The plan (`scheduler.js`, pure)
+
+`buildRedoSession({ misses, skills, states, size, seed })` → ordinary slots,
+each carrying `itemKey` and `redo: true`. Three rules in order: the **newest
+miss leads**; the `size` items are taken **round-robin across the skills that
+missed** (each skill's own newest first) and then walked out so that neither the
+skill nor the kind repeats beside itself while anything else is left; and
+nothing outside the `skills` map handed in ever becomes a slot — the caller
+hands in one skill, one chapter's material, or the whole map.
+
+### The run (`session.js`)
+
+`createRedo({ misses, gstore, items, skillsIndex, size, oneSkill, … })` builds
+that plan and hands it to `createPractice`. Everything else is an ordinary
+session: every answer is a `drill_attempts` row and goes to the scheduler,
+because a redo happens later in time and is the spaced retrieval the plan wants.
+A right answer clears the item (its newest attempt is now correct); a wrong one
+keeps it with a fresher timestamp; a miss re-queues as usual, inside the world
+handed in. `oneSkill` makes it blocked, so a miss is not re-queued beside itself.
+
+**The redo and the in-item retry cannot be confused in the code.** A retry never
+reaches `onAnswer` — `createRunner.answer` returns early with `retry: true` and
+writes nothing anywhere — while a redo is a fresh slot in a fresh queue that
+goes through it like any other. Two more reads support the views:
+`runner.dropped` (slots that built nothing) and `summary().missed`, one row per
+item with the **last** answer to it deciding (`sessionMisses(log)`, pure).
+
+### Where it is offered (`ui.js`)
+
+A new view, **`redo`**, in the Practice group of the nav; `renderRedo` narrows
+by `skill`, by `chapter`, or not at all, and `renderNothingToRedo` is the quiet
+empty state. Four ways in, each printing its own count:
+
+- **End of a session** — "Redo the N you missed" leads the summary's actions,
+  built from that session's own `summary().missed`. It is narrowed exactly as
+  the session was and no further: `oneSkill` rides in the params of every mixed
+  session as the remembered choice, so it names the world only when the
+  `one-skill` preset was the one actually used.
+- **Practice setup** — "Missed items · N" as a fifth choice beside the four
+  mixes (`.g-preset--missed`, set a little apart by a rule). It is not a mix
+  over skills, so Start opens the redo view instead of a session, capped by the
+  size chosen. With nothing to redo the radio is disabled and says so.
+- **A skill's history page** — an action beside "Practise this skill"; with
+  nothing to redo, a quiet line under the buttons instead.
+- **A chapter's grammar** (the by-chapter view and the chapter page's panel,
+  which share `chapterBody`) — beside "Practise this chapter", with the same
+  quiet line folded into the sentence under it.
+- **A Learn result, once the run has passed** — the blocked ten's own misses.
+  Only on a pass: a redo is logged as practice, and offering one on a failed run
+  would move the skill to `practising` without its criterion ever being met. The
+  same rule is why `redoable(id)` (in rotation — `practising`, `mastered` or
+  `lapsed` — and drillable) filters every scope; a lapsed row re-enters with
+  `addToPractice` first, as "Practise this skill" and "Practise this chapter"
+  already do, so the answers that follow are not judged early.
+
+Wording keeps the two apart on screen: a redo's note reads "Each counts towards
+its skill — unlike trying an item again on the spot, which never does", against
+the feedback's "Only your first answer counts towards the skill, so trying again
+costs nothing".
+
+A redo resumes like any other session — `LS_SESSION` carries `redo: true` and
+the queue's slots keep their item keys — and the Today card's one Resume button
+names it ("A redo is in progress") and routes to the right view.

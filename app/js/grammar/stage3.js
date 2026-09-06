@@ -184,7 +184,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     if (!spots.length) return null;
     const keyOf = (s) => `transform:${s.c.unit.id}:${s.c.token.form}:${s.c.index}:${s.op.op}`;
     const keys = spots.map(keyOf);
-    const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(spots, keyOf, opts, (s) => s.c));
+    const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(spots, keyOf, opts, (s) => s.c), opts.itemKey ?? null);
     if (!got) return null;
     const { c, op, got: cell } = spots[keys.indexOf(got.key)];
     const { capped, answers } = answersFor(c.entry, cell);
@@ -210,7 +210,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     const keyOf = (c) => `reorder:${c.unit.id}`;
     const keys = cands.map(keyOf);
     // Scramble is settled before the pool key is spent, so a sentence is never burned unasked (m7).
-    const got = pool.chooseInfo(skill.id, 'reorder', keys, rand, tiersFor(cands, keyOf, opts));
+    const got = pool.chooseInfo(skill.id, 'reorder', keys, rand, tiersFor(cands, keyOf, opts), opts.itemKey ?? null);
     if (!got) return null;
     const c = cands[keys.indexOf(got.key)];
     const chunks = chunksOf(c.unit.la);
@@ -241,7 +241,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     const verifiedIn = (unitId) => new Set(all.filter((c) => c.unit.id === unitId && !c.ambiguous && c.verified).map((c) => c.index));
     const keyOf = (c) => `translate:${c.unit.id}`;
     const keys = cands.map(keyOf);
-    const got = pool.chooseInfo(skill.id, 'translate', keys, rand, tiersFor(cands, keyOf, opts));
+    const got = pool.chooseInfo(skill.id, 'translate', keys, rand, tiersFor(cands, keyOf, opts), opts.itemKey ?? null);
     if (!got) return null;
     const c = cands[keys.indexOf(got.key)];
     // The key words: every word inside the skill's pattern match (the construction), the target word at least.
@@ -261,12 +261,14 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
   }
 
   const FNS = { transform, reorder, translate };
-  function generate({ skill: skillId, kind, stage = 3, currentWeek = false, currentWeekN = null } = {}) {
+  function generate({ skill: skillId, kind, stage = 3, currentWeek = false, currentWeekN = null, itemKey = null } = {}) {
     const skill = typeof skillId === 'string' ? items.skills.get(skillId) : skillId;
     if (!skill || !skill.parse_filter || !FNS[kind]) return null;
-    const opts = { currentWeek, currentWeekN };
+    const opts = { currentWeek, currentWeekN, itemKey };
+    // `itemKey`: a redo asking for one exact item back ("Redo what was wrong"). The pool hands that key over
+    // or nothing at all, and the current-week retry below is not tried — it could only find a different sentence.
     let item = FNS[kind](skill, stage, opts);
-    if (!item && currentWeek) item = FNS[kind](skill, stage, { currentWeek: false, currentWeekN: null });
+    if (!item && currentWeek && itemKey == null) item = FNS[kind](skill, stage, { currentWeek: false, currentWeekN: null, itemKey: null });
     return item;
   }
   return { generate };
