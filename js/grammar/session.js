@@ -133,37 +133,85 @@ export function confusedWith(item, result) {
 /**
  * One drill run over a list of slots. `getItem(slot)` makes the item;
  * `record(attempt, result)` persists. Shared by Learn's phases and Practice.
+ *
+ * Two rules from GRAMMAR-CONTRACT.md "Session flow — move on, step back,
+ * colour the result" live here rather than in the view:
+ *
+ * - **Only the first answer to an item is logged.** A wrong answer holds the
+ *   item where it is and the learner tries again until it is right; those
+ *   retries are for learning. `answer()` judges a retry and hands the result
+ *   back, but writes nothing: no `drill_attempts` row, no `skill_state`, no
+ *   confusion, no re-queue, no place in `log` (so the Learn criterion and
+ *   `successes_spaced` cannot be inflated by trying twice either).
+ * - **`index` is where the learner is looking; `frontier` is how far the
+ *   session has got.** `back()` and `forward()` walk `index` over items that
+ *   are already made and already answered — a replay, never re-graded.
+ *   `forward()` at the frontier is the deliberate press that gets past an item
+ *   the learner has not managed, and it is the only thing that does.
  */
 function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skills = null, rand = Math.random, fill = null, resume = null, onChange = null, pair = null, grows = true }) {
   let queue = [...(resume?.queue ?? slots)];
-  let index = resume?.index ?? 0;
+  let index = resume?.index ?? 0;    // the item on screen
+  let frontier = index;              // the furthest item reached: index never passes it
   let current = null;
   let startedAt = 0;
   let hinted = false;
   const log = [...(resume?.log ?? [])];
-  let answered = false;   // the item at `index` has been answered: a resume starts after it
+  const made = [];        // queue index → { item, slot } | null (null: the slot built nothing and is skipped)
+  const results = [];     // queue index → the FIRST answer there: { result, attempt, value, hinted }
   // What the learner actually asked for, so "3 of 14" can say where the extra four came from.
   let asked = Number(resume?.asked) || (resume?.queue?.length ?? slots.length);
   let capped = false;     // a miss was not re-queued because the session is full
   const ceiling = () => (grows ? sessionCeiling(asked) : Infinity);
   const changed = () => { try { onChange?.(snapshot()); } catch { /* storage */ } };
-  function snapshot() { return { queue, index: answered ? index + 1 : index, log, asked }; }
+  // A resume restarts the walk at the frontier: the items before it were answered in another sitting and were not kept.
+  function snapshot() { return { queue, index: results[frontier] ? frontier + 1 : frontier, log, asked }; }
+  /** Show an item already made, without judging or generating anything. */
+  function show(i) {
+    index = i;
+    current = made[i] ?? null;
+    // Coming back to an item that is still unanswered restarts its clock: the seconds spent reading an
+    // earlier item are not this one's answer time (§9a-31, timing is measured quietly and never shown).
+    if (i === frontier && !results[i]) startedAt = Date.now();
+    changed();
+    return current;
+  }
   function load() {
-    while (index < queue.length) {
-      const slot = queue[index];
-      const prevKind = log.length ? log[log.length - 1].kind : null;
-      const item = getItem(slot, { avoid: [prevKind, queue[index + 1]?.kind].filter(Boolean) });
-      if (item) { current = { item, slot }; startedAt = Date.now(); hinted = false; answered = false; changed(); return current; }
-      index += 1;   // nothing could be built for the slot: skip it
+    while (frontier < queue.length) {
+      if (made[frontier] === undefined) {
+        const slot = queue[frontier];
+        const prevKind = log.length ? log[log.length - 1].kind : null;
+        const item = getItem(slot, { avoid: [prevKind, queue[frontier + 1]?.kind].filter(Boolean) });
+        made[frontier] = item ? { item, slot } : null;   // nothing could be built for the slot: skipped, and stepping back skips it too
+      }
+      if (made[frontier]) { index = frontier; current = made[frontier]; startedAt = Date.now(); hinted = false; changed(); return current; }
+      frontier += 1;
     }
+    index = frontier;
     current = null;
     changed();
     return null;
   }
+  /** The nearest made item before `i`, or -1. */
+  const prevMade = (i) => { for (let j = i - 1; j >= 0; j--) if (made[j]) return j; return -1; };
+  const nextMade = (i) => { for (let j = i + 1; j <= frontier; j++) if (made[j]) return j; return -1; };
   return {
     get length() { return queue.length; },
     get queue() { return queue; },
     get position() { return index; },
+    /** How far the session has got: `position` walks back over this, never past it. */
+    get frontier() { return frontier; },
+    /** True while the learner is looking at an item behind the frontier: read-only, never re-gradable. */
+    get replay() { return index < frontier; },
+    /** True when the item on screen was answered wrong and is holding the session (the drill). */
+    get held() { return index === frontier && !!results[index] && !results[index].result.correct; },
+    /** How the item on screen was first answered, or null. */
+    get answered() { return results[index] ?? null; },
+    resultAt(i) { return results[i] ?? null; },
+    itemAt(i) { return made[i] ?? null; },
+    get canBack() { return prevMade(index) >= 0; },
+    /** Forward is open once the item on screen has been answered — that press is what gets past a miss. */
+    get canForward() { return index < frontier || !!results[index]; },
     /** How many items the learner asked for, and how many came back after a wrong answer. */
     get asked() { return asked; },
     get added() { return Math.max(0, queue.length - asked); },
@@ -173,18 +221,21 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
     get log() { return log; },
     snapshot,
     start() { return load(); },
-    hint() { hinted = true; },
+    hint() { if (!results[index]) hinted = true; },   // a hint pressed on a retry cannot change what was logged
     async answer(value) {
       if (!current) return null;
       const { item, slot } = current;
       const result = judge(item, value);
       if (item.input === 'tap') result.index = Number(value);
+      // A retry (the item was answered wrong and is being tried again) or a replay behind the frontier:
+      // judged so the learner sees where they are, written down nowhere.
+      if (index < frontier || results[index]) return { ...result, retry: true, item, attempt: results[index]?.attempt ?? null, first: results[index]?.result ?? null };
       const took = Date.now() - startedAt;
       // A self-graded answer (translate) is weaker evidence: logged self: true and weighted as hinted (the server row has no column; `answer` carries the grade).
       const self = !!result.self;
       const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date().toISOString() };
       log.push(attempt);
-      answered = true;
+      results[index] = { result, attempt, value, hinted: hinted || self };
       if (!result.correct && requeueOn) {
         const before = queue.length;
         const played = queue.slice(0, index + 1);
@@ -196,9 +247,22 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       }
       await onAnswer?.({ item, slot, result, attempt, hinted: hinted || self, partial: !!result.partial, ms: took });
       changed();
-      return { ...result, attempt, item };
+      return { ...result, attempt, item, retry: false };
     },
-    next() { index += 1; return load(); },
+    /** One step back through the items already seen. Never re-generates and never grades. */
+    back() { const j = prevMade(index); return j < 0 ? current : show(j); },
+    /**
+     * Forward. Behind the frontier it returns to where the learner was; at the
+     * frontier it is the deliberate press past an answered item — the only way
+     * past one that was answered wrong.
+     */
+    forward() {
+      if (index < frontier) { const j = nextMade(index); return j < 0 ? show(frontier) : show(j); }
+      if (!results[index]) return current;   // nothing answered here yet: forward is not a way to skip
+      frontier += 1;
+      return load();
+    },
+    next() { if (index < frontier) { const j = nextMade(index); return j < 0 ? show(frontier) : show(j); } frontier += 1; return load(); },
     /** Open-ended sessions: more slots appended — asked for, so the ceiling moves with them. */
     extend(more) { queue = [...queue, ...more]; asked += more.length; capped = false; changed(); if (!current) return load(); return current; },
     summary() {
@@ -313,4 +377,248 @@ export function createBlockedFive({ skill, gstore, items, skillsIndex, rand = Ma
   const stage = st?.stage ?? 1;
   const plan = buildSession({ states: new Map([[skill.id, { ...(st ?? { skill: skill.id, state: 'practising', stage }), state: 'practising' }]]), skills: skillsIndex.skills, preset: 'one-skill', oneSkill: skill.id, size: 5, seed: Math.floor(rand() * 1e9) });
   return createPractice({ plan, gstore, items, skillsIndex, preset: 'one-skill', size: 5, oneSkill: skill.id, rand });
+}
+
+/* ================================================== hints, per answer box */
+// GRAMMAR-CONTRACT.md "Hints, per answer box". Pure: no DOM, no storage — ui.js
+// renders what `boxHints` returns. It lives here rather than in a module of its
+// own because the session is what logs a hint (`hinted` on the attempt, weaker
+// evidence for the scheduler), and because a new file under app/js/ must also
+// join app/sw.js's PRECACHE, which belongs to the shell.
+//
+// An item with four blanks has four hints, each about its own box. Every hint
+// has two levels:
+//
+//   1. what *this* box is being asked for, in plain words with the grammar
+//      term ("Dative singular: the 'to/for' form");
+//   2. the rule it comes from, or the cell of the paradigm it sits in.
+//
+// A hint narrows, it never answers. `boxHints` runs every level it builds
+// through `answerLeak` and drops any level that spells one of the item's own
+// accepted answers, so a hint cannot give the form away even if a lesson's
+// summary or a pensum's authored note happens to contain it. The build-time
+// sweep (tests/grammar.session-flow.test.mjs) is the same check over every
+// skill, so a leak fails the build rather than reaching a learner.
+//
+// Two kinds are exempt from that check, exactly as the item sweep exempts
+// them (tests/grammar.fix4.test.mjs B1): `recognise` and `parse` are answered
+// with a *label* ("dative singular"), and a hint that may not name the case is
+// not a hint. Their hints stay at the level of the rule, as they always were.
+
+
+export const HINT_MODES = Object.freeze(['press', 'always', 'off']);
+export const HINT_MODE_LABEL = Object.freeze({
+  press: ['Press for a hint', 'The hint sits quietly beside each box and opens when you press it.'],
+  always: ['Always show', 'Every box shows its hint from the start. Every answer then counts as hinted, which is weaker evidence, so skills come round again sooner.'],
+  off: ['No hints', 'The hint controls are hidden altogether.'],
+});
+export const normaliseHintMode = (v) => (HINT_MODES.includes(v) ? v : 'press');
+
+/** Kinds whose answer is a grammatical label, not a form: their hints may name the term. */
+const LABEL_KINDS = new Set(['recognise', 'parse']);
+/**
+ * One- and two-letter answers that are also ordinary English words. A Pensum A
+ * blank wants an ending — *a*, *is*, *am*, *us* — and no English sentence about
+ * the ablative can avoid the word "a". These are left out of the leak check;
+ * nothing in the generator ever puts a Latin form into hint text, and the check
+ * still catches every ending of three letters or more (-ōrum, -ibus, -ere).
+ */
+const SHORT_ENGLISH = new Set(['a', 'am', 'an', 'as', 'at', 'be', 'do', 'e', 'he', 'i', 'id', 'in', 'is', 'it', 'me', 'my', 'no', 'o', 'of', 'on', 'or', 'os', 'so', 'to', 'up', 'us', 'we']);
+
+/** Which of `answers` the text spells out, whole-word, macrons and case ignored. Pure. */
+export function answerLeak(text, answers = []) {
+  const hay = ` ${normaliseAnswer(text)} `;
+  const out = [];
+  for (const a of new Set(answers)) {
+    const n = normaliseAnswer(a);
+    if (!n || (n.length <= 2 && SHORT_ENGLISH.has(n))) continue;
+    if (hay.includes(` ${n} `) && !out.includes(a)) out.push(a);
+  }
+  return out;
+}
+
+/* --------------------------------------------------------------- text */
+const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
+const stop = (s) => { const t = clean(s); return !t ? '' : (/[.!?…]$/.test(t) ? t : `${t}.`); };
+const cap = (s) => { const t = clean(s); return t ? t.charAt(0).toUpperCase() + t.slice(1) : ''; };
+const lower = (s) => { const t = clean(s); return t ? t.charAt(0).toLowerCase() + t.slice(1) : ''; };
+// Sentences joined into a paragraph. The first part keeps its own case (it may open with a Latin word, which
+// must not be capitalised into a proper noun); every part after it is a fresh sentence and is capitalised.
+const join = (...parts) => parts.map((p, i) => stop(i ? cap(p) : p)).filter(Boolean).join(' ');
+const head = (lemma) => String(lemma ?? '').split(/[\s,]/)[0];
+
+/** The item's grammar term and its plain gloss, whichever the generator settled. */
+const labelOf = (item) => {
+  const l = item?.feedback?.label;
+  return { name: clean(l?.name ?? ''), plain: clean(l?.plain ?? ''), full: clean(l?.full ?? '') };
+};
+/** The rule behind an item: the skill's own summary, else the item-level hint the generator wrote. */
+const ruleOf = (item, skill) => clean(skill?.summary || item?.prompt?.hint || '');
+const termOf = (item, skill) => clean(skill?.plain || item?.feedback?.term || '');
+
+/** Every answer this item accepts anywhere, so no hint of any of its boxes can spell one. */
+export function acceptedAnswers(item) {
+  if (!item) return [];
+  const out = [...(Array.isArray(item.answer) ? item.answer : [])];
+  for (const c of item.chart?.cells ?? []) out.push(...(c.answer ?? []));
+  for (const b of item.blanks ?? []) { out.push(...(b.answers ?? [])); if (b.stem) out.push(...(b.answers ?? []).map((a) => b.stem + a)); }
+  for (const p of item.pairs ?? []) out.push(p.en);
+  for (const ch of item.choices ?? []) if (ch.correct) out.push(ch.label, ch.value);
+  return out.filter((a) => typeof a === 'string' && a.length);
+}
+
+/* -------------------------------------------------------------- boxes */
+/**
+ * The answer boxes of an item, each with its own two-level hint.
+ *
+ *   boxHints(item, { skill, describe })
+ *     skill     the skill row (for `summary` — the rule behind level 2)
+ *     describe  (form, text) → { lemma, meaning, parse } | null. Only the
+ *               `order` input uses it: its chips cannot be tapped for their
+ *               entry (a tap places the word), so the hint is where the
+ *               dictionary line lives.
+ *
+ * Returns [{ id, index, label, levels: [string, …] }] — `id` is the key the
+ * input uses for that box (a chart cell index, a blank index, a match row, a
+ * chunk index; '0' where the item has a single box). `levels` may be one long
+ * or empty when a level would have given the answer away.
+ */
+export function boxHints(item, { skill = null, describe = null } = {}) {
+  if (!item) return [];
+  // A chapter set has no rule of its own — its `summary` is the deck's description ("Orberg's Pensum A, B and C
+  // for chapter I"), which says nothing about the box — so level two falls back to what the generator wrote.
+  const rawRule = skill?.set ? clean(item?.prompt?.hint ?? '') : ruleOf(item, skill);
+  const term = termOf(item, skill);
+  const lab = labelOf(item);
+  const exempt = LABEL_KINDS.has(item.kind);
+  const answers = exempt ? [] : acceptedAnswers(item);
+  // Authored text (a pensum blank's note) is checked before it is built into a sentence, so a note that would
+  // have spelled an answer costs its own clause rather than the whole level: "agrees with fluvius" is dropped
+  // from a sentence whose sibling blank accepts *fluvius*, and the plain statement of the blank still stands.
+  const safe = (t) => (t && answerLeak(t, answers).length === 0 ? t : '');
+  // The rule is sanitised the same way and for the same reason: a lesson summary or a generated item hint that
+  // happens to print a form this item accepts must not take the general statement of the level down with it.
+  const rule = safe(rawRule);
+  const raw = build(item, { skill, describe, rule, term, lab, safe });
+  return raw
+    .map((b) => ({ ...b, levels: b.levels.map(clean).filter(Boolean).filter((t) => answerLeak(t, answers).length === 0) }))
+    .filter((b) => b.levels.length);
+}
+
+/** Every hint string an item would show, for the no-leak sweep and for tests. */
+export const hintTexts = (item, opts = {}) => boxHints(item, opts).flatMap((b) => b.levels);
+
+function build(item, ctx) {
+  switch (item.input) {
+    case 'chart': return chartBoxes(item, ctx);
+    case 'inline': return inlineBoxes(item, ctx);
+    case 'bank': return bankBoxes(item, ctx);
+    case 'match': return matchBoxes(item, ctx);
+    case 'order': return orderBoxes(item, ctx);
+    default: return [singleBox(item, ctx)];
+  }
+}
+
+/* ------------------------------------------------------------- charts */
+function chartBoxes(item, { rule, lab }) {
+  const cells = item.chart?.cells ?? [];
+  const h = head(item.chart?.head ?? item.lemma ?? '');
+  // The generator's own item hint reads "Dative — the 'to/for' form", and it describes the *target* cell. On a
+  // whole-row chart (Learn's guided five fill six cells at once) the other cells are other cases, so the gloss is
+  // theirs only when the chart is a single cell; otherwise the cell's own label says what it wants and no more.
+  const plain = cells.length === 1 ? (clean(String(item.prompt?.hint ?? '').split(/\s+—\s+/).slice(1).join(' — ')) || lab.plain) : '';
+  return cells.map((c, i) => ({
+    id: String(i), index: i, label: c.label || `cell ${i + 1}`,
+    levels: [
+      `This cell wants the ${lower(c.label)}${h ? ` of ${h}` : ''}${plain ? ` — ${plain}` : ''}.`,
+      join(rule, h ? `Only the ending changes; the stem of ${h} stays as it is` : ''),
+    ],
+  }));
+}
+
+/* ------------------------------------------- Pensum A: typed endings */
+function inlineBoxes(item, { rule, safe }) {
+  const blanks = item.blanks ?? [];
+  return blanks.map((b, i) => {
+    const note = safe(clean(b.note));
+    return {
+      id: String(i), index: i, label: `Blank ${i + 1}`,
+      levels: [
+        join(`Blank ${i + 1} wants the ending${b.stem ? ' on the stem already printed' : ''}`, note || 'the words around it decide which one'),
+        join('The stem is given; only the ending is missing. Macrons count here — a long vowel is part of the ending, so two spellings that differ by a macron alone are two different forms', rule && rule !== note ? rule : ''),
+      ],
+    };
+  });
+}
+
+/* --------------------------------------------- Pensum B: a word bank */
+function bankBoxes(item, { rule, safe }) {
+  const blanks = item.blanks ?? [];
+  return blanks.map((b, i) => {
+    const note = safe(clean(b.note));
+    return {
+      id: String(i), index: i, label: `Blank ${i + 1}`,
+      levels: [
+        join(`Blank ${i + 1} wants one word from the bank`, note || 'the words on either side of it decide which'),
+        join('Two tiles that differ only in a macron are two different forms; read the whole sentence before you choose', rule && rule !== note ? rule : ''),
+      ],
+    };
+  });
+}
+
+/* --------------------------------------------------- match: one row */
+function matchBoxes(item, { rule }) {
+  const pairs = item.pairs ?? [];
+  return pairs.map((p, i) => ({
+    id: String(i), index: i, label: p.la,
+    levels: [
+      join('Pick the meaning that belongs to this word', p.dict ? `its dictionary line is ${p.dict}` : ''),
+      join(p.dict ? 'The dictionary line gives its declension and gender, not its meaning — but it tells you what kind of word you are looking for' : '', rule),
+    ],
+  }));
+}
+
+/* ------------------------------------------------ order: one chip each */
+/**
+ * A reorder item's boxes are its word chips: those are what the learner moves,
+ * and a chip cannot be tapped for its dictionary entry the way a word in a
+ * plain sentence can, because tapping places it. The hint is therefore where a
+ * chip's dictionary line lives. Naming a word never gives the order away — the
+ * accepted answer is the whole sentence.
+ */
+function orderBoxes(item, { rule, describe }) {
+  const chunks = item.chunks ?? [];
+  const shown = item.display ?? chunks;
+  return chunks.map((word, i) => {
+    const text = shown[i] ?? word;
+    const d = (() => { try { return describe ? describe(word, text) : null; } catch { return null; } })();
+    const line = d ? [d.lemma ? `from ${d.lemma}` : '', d.meaning ? `“${d.meaning}”` : ''].filter(Boolean).join(', ') : '';
+    return {
+      id: String(i), index: i, label: text,
+      levels: [
+        join(line ? cap(line) : `Where does ${text} belong in the book's sentence?`, d?.parse || ''),
+        join('The endings, not the order, say who does what; the book\'s own order is what is being asked for, and Latin usually keeps the verb near the end', rule),
+      ],
+    };
+  });
+}
+
+/* ------------------------------------------------ a single answer box */
+function singleBox(item, { rule, term, lab }) {
+  const target = clean(item.target?.text ?? '');
+  const h = head(item.feedback?.lemma ?? item.word?.lemma ?? item.lemma ?? '');
+  let first = '';
+  if (item.kind === 'blank') first = join(`The blank wants the ${lower(lab.name) || 'right'} form${h ? ` of ${h}` : ''}`, lab.plain);
+  else if (item.kind === 'recognise') first = join(target ? `You are asked what ${target} is in this sentence — read its ending, not its place in the line` : 'You are asked what the marked word is in this sentence', item.prompt?.gloss ? 'the dictionary form is under the sentence' : '');
+  else if (item.kind === 'parse') first = join(target ? `Name what ${target} is: ${item.prompt?.placeholder ? `answer in the shape “${item.prompt.placeholder.replace(/^e\.g\.\s*/i, '')}”` : 'the ending carries it'}` : 'Name what the marked word is; the ending carries it');
+  else if (item.kind === 'transform') first = join(`Change the marked word as the question asks and leave the rest of it alone`, lab.plain ? `it is now ${lower(lab.name)} — ${lab.plain}` : '');
+  else if (item.kind === 'translate') first = 'Write what the sentence says in English, then reveal the book\'s version and grade yourself — the lit words are the ones that carry the construction.';
+  else if (item.kind === 'question') first = join('The answer is in the chapter\'s own sentence, in Latin, in the case the question asks for', item.prompt?.en ? 'the English of the question is behind “In English”' : '');
+  else if (item.kind === 'pensum') first = 'Answer from the chapter itself, in Latin.';
+  else if (item.kind === 'vocab') first = item.input === 'type' ? 'Give the word\'s dictionary form — the one a dictionary would list it under.' : 'One of these is the word\'s meaning; the others are words from the same chapter.';
+  else first = join(term ? `This one is about ${lower(term)}` : 'Read the ending of the marked word', lab.plain);
+  const second = item.kind === 'vocab' || item.kind === 'question' || item.kind === 'pensum'
+    ? join(item.prompt?.hint || '', '')
+    : join(rule, item.entry ? 'The paradigm under this hint has the same shape' : '');
+  return { id: '0', index: 0, label: item.input === 'tap' ? 'the sentence' : 'your answer', levels: [first, second] };
 }

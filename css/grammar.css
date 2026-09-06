@@ -211,10 +211,23 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 
 /* ------------------------------------------------------------ runner */
 .g-run { display: grid; gap: var(--s-4); }
+.g-page { display: grid; gap: var(--s-4); }
+/* Back · "4 of 10" · forward. The position lives here, not on the item: a page is kept exactly as it was left
+   when the learner steps back, so a number printed inside it would go stale as the session grows. */
+.g-runnav { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-bottom: calc(-1 * var(--s-2)); padding-bottom: var(--s-2); border-bottom: 1px solid var(--line); }
+.g-runnav__b {
+  min-width: var(--tap); min-height: var(--tap); display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: 1.05rem;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.g-runnav__b:hover:not(:disabled) { border-color: var(--ink); }
+.g-runnav__b:disabled { color: var(--ink-3); border-color: var(--line); }
+.g-runnav__pos { font-size: var(--ui-sm); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+/* Stepping back is a reading, not a doing: the whole page reads back quieter, and nothing in it can be answered. */
+.g-runnav[data-replay="true"] + .g-run .g-item { opacity: 0.86; }
 .g-item { display: grid; gap: var(--s-3); }
 .g-item__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.35em; margin: 0; font-size: var(--ui-sm); color: var(--ink-3); }   /* the gap does the spacing: a flex item's own leading space is collapsed away */
 .g-item__title { color: var(--ink-2); }
-.g-item__pos { font-variant-numeric: tabular-nums; }
 .g-item__note { margin-top: calc(-1 * var(--s-2)); }
 .g-item__skill { margin: 0; font-family: var(--face-serif); font-size: 1.05rem; color: var(--ink-2); }
 .g-q { margin: 0; font-size: var(--ui-lg); font-weight: 600; text-wrap: balance; outline: none; }
@@ -265,18 +278,58 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-hint__s::-webkit-details-marker { display: none; }
 .g-hint__s::before { content: ""; width: 0.4em; height: 0.4em; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform var(--t-fast) var(--ease-out); }
 .g-hint[open] .g-hint__s::before { transform: rotate(45deg); }
-.g-hint__rule { margin: 0 0 var(--s-2); color: var(--ink-2); font-size: var(--ui-md); text-wrap: pretty; }
+.g-hint__rule { margin: 0 0 var(--s-2); color: var(--ink-2); font-size: var(--ui-md); text-wrap: pretty; max-width: 68ch; }
+.g-hint__rule--deep { color: var(--ink); }
+.g-hint__body { display: grid; }
+.g-hint__more { font-size: var(--ui-sm); justify-self: start; min-height: 36px; }
 .g-hint .paradigm { max-width: 32rem; }
 .g-hint .pt__scroll { --pt-bg: var(--bg); }
+
+/* Hints, one per answer box. The control sits beside its own box; the hint itself opens in the panel under the
+   input, so it never covers the box or the sentence it belongs to (GRAMMAR-CONTRACT.md "Hints, per answer box"). */
+.g-hintb {
+  width: 1.6rem; height: 1.6rem; min-width: 1.6rem; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+  margin-inline-start: 0.25em; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%;
+  background: var(--bg-raised); color: var(--ink-2); font-size: var(--ui-xs); font-weight: 700; line-height: 1;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.g-hintb:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
+.g-hintb[aria-expanded="true"] { border-color: var(--ink); color: var(--ink); background: var(--bg-chrome); }
+/* A word chip's hint is a labelled button in a row under the input: a mark on the chip itself would fight the tap
+   and the drag that place it (order), or the pairing tap (match). */
+.g-hintb--wide { width: auto; min-width: 0; height: auto; min-height: 32px; gap: 0.4em; padding: 0 var(--s-2); border-radius: var(--radius); }
+.g-hintb__w { font-family: var(--face-reading); font-weight: 400; font-size: var(--ui-sm); }
+.g-hintrow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line); }
+.g-hints { display: grid; gap: var(--s-2); }
+.g-hints:not(:has(.g-hints__row:not([hidden]))) { display: none; }
+.g-hints__row { display: grid; gap: var(--s-1); padding: var(--s-2) var(--s-3); background: var(--bg-chrome); border-radius: var(--radius); }
+.g-hints__row[hidden] { display: none; }   /* an author `display` beats the UA sheet's [hidden] rule */
+.g-hints__for { margin: 0; font-size: var(--ui-xs); color: var(--ink-3); text-transform: none; }
+.g-hints__body { display: grid; }
+.g-hints__body .g-hint__rule:last-child { margin-bottom: 0; }
+/* A chart cell keeps its input and its hint side by side inside the cell. The input gives up its own
+   width rule here: `flex: none; width: 100%` beside a button is an overflowing row, not a cell. */
+.g-cellwrap { display: flex; align-items: center; gap: 0.15em; max-width: 100%; }
+.g-cellwrap .g-input--cell { flex: 1 1 auto; width: auto; min-width: 0; }
+/* Coarse pointers: the "?" reaches the 44 px target without growing the ring itself. */
+@media (hover: none) and (pointer: coarse) {
+  .g-hintb { position: relative; }
+  .g-hintb::after { content: ""; position: absolute; inset: -50%; }
+}
 
 /* Feedback: one line, then "Why" */
 .g-fb { display: grid; gap: var(--s-2); padding: var(--s-3) var(--s-4); border-radius: var(--radius); background: var(--bg-chrome); animation: rise-in var(--t-base) var(--ease-out); }
 .g-fb[data-ok="true"] { background: oklch(from var(--success) l c h / 0.1); }
 .g-fb[data-ok="false"] { background: var(--rubric-soft); }
 .g-fb__line { margin: 0; font-size: var(--ui-md); line-height: 1.5; text-wrap: pretty; }
-.g-fb__mark { font-weight: 700; }
+/* Green right, red wrong — but the colour is never the only signal. The mark is a ✓ or a ✗ in a ring, which holds
+   up in greyscale and on a black-and-white print where the two hues meet at the same lightness; the line says the
+   word ("Right." / the answer); and a visually-hidden "Correct." / "Not right." opens the line for a screen reader.
+   Both themes define --success and --rubric (app/css/tokens.css), so the pair follows the theme. */
+.g-fb__mark { display: inline-flex; align-items: center; justify-content: center; width: 1.5em; height: 1.5em; border: 1.5px solid currentColor; border-radius: 50%; font-weight: 700; font-size: 0.85em; line-height: 1; vertical-align: -0.2em; }
 .g-fb[data-ok="true"] .g-fb__mark { color: var(--success); }
 .g-fb[data-ok="false"] .g-fb__mark { color: var(--rubric); }
+.g-fb__again { margin: 0; font-size: var(--ui-sm); color: var(--ink-2); text-wrap: pretty; }
 .g-fb__more { display: grid; gap: var(--s-2); }
 .g-fb__more-s { min-height: 36px; display: flex; align-items: center; gap: var(--s-2); cursor: pointer; list-style: none; color: var(--ink-2); font-size: var(--ui-sm); font-weight: 600; }
 .g-fb__more-s::-webkit-details-marker { display: none; }
@@ -501,3 +554,47 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 @media (min-width: 768px) {
   .g-hist__table { min-width: 0; }
 }
+
+/* --------------------------------------- the chapter spine (by chapter) */
+/* Two ways of browsing the same grammar: By topic (the category map) and By
+   chapter (the book's own spine). The switch sits under the page title, in the
+   segmented control the practice setup already uses. */
+.g-seg--views { margin-bottom: calc(-1 * var(--s-2)); }
+
+/* A chapter of the spine: the numeral and title in the summary, its counts on
+   the right, its skills and sets inside. Folded away by default — the chapter
+   being read opens itself — so 34 chapters stay a page you can read down. */
+.g-chap--spine { display: block; }
+.g-chap__d { border-bottom: 1px solid var(--line); }
+.g-chap__sum {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-3);
+  min-height: var(--tap); padding: var(--s-2) 0; cursor: pointer; list-style: none;
+}
+.g-chap__sum::-webkit-details-marker { display: none; }
+.g-chap__sum::before {
+  content: ""; flex: none; width: 0.4em; height: 0.4em; margin-right: var(--s-1); align-self: center;
+  border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3); transform: rotate(-45deg);
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.g-chap__d[open] > .g-chap__sum::before { transform: rotate(45deg); }
+.g-chap__sum:hover .g-chap__num { color: var(--rubric-ink); }
+.g-chap__sum:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; border-radius: var(--radius-sm); }
+.g-chap__h--sum { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2); padding: 0; border: 0; font-size: 1.1rem; }
+.g-chap__num { white-space: nowrap; }
+.g-chap__title { color: var(--ink-2); font-size: 1rem; }
+.g-chap__count { margin-left: auto; }
+/* Wrapped onto its own line (a phone, a long title), the count reads better under the title than pinned right. */
+@media (max-width: 559.98px) { .g-chap__count { margin-left: 0; } }
+.g-chap__body { padding-bottom: var(--s-3); }
+.g-chap__acts { display: grid; justify-items: start; gap: var(--s-1); padding-top: var(--s-3); }
+.g-chap__acts .g-quiet { max-width: 60ch; }
+@media (prefers-reduced-motion: reduce) { .g-chap__d[open] > .g-chap__sum::before, .g-chap__sum::before { transition: none; } }
+
+/* The chapter page's own grammar panel (mountChapterGrammar): the same rows,
+   in the shell's element, under an h2 — the page owns the chapter's title. */
+.g-chapter { display: grid; gap: var(--s-2); font-family: var(--face-ui); font-size: var(--ui-md); line-height: 1.5; color: var(--ink); }
+.g-chapter > * { min-width: 0; }
+.g-chapter__head { display: grid; gap: 2px; padding-bottom: var(--s-2); }
+.g-chapter__h { margin: 0; font-family: var(--face-serif); font-weight: 400; font-size: 1.3rem; line-height: 1.2; }
+.g-chapter__sum { margin: 0; color: var(--ink-3); font-size: var(--ui-sm); }
+.g-chapter .g-skills { border-top: 1px solid var(--line-strong); }

@@ -413,7 +413,9 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     }
     return picked;
   };
-  const dictLine = (w) => (w.parts ? `${w.dict} · ${w.parts}` : w.dict);
+  // A verb deck often carries its principal parts in `dict` already, and appending `parts` then printed the line
+  // twice ("rīdeō, rīdēre, rīsī, rīsum · rīdeō, rīdēre, rīsī, rīsum") in the feedback and, now, in the word's hint.
+  const dictLine = (w) => (w.parts && !String(w.dict ?? '').includes(w.parts) ? `${w.dict} · ${w.parts}` : w.dict);
   function vocab(skill, stage, opts = {}) {
     const deck = skill.data;
     if (!deck.words.length) return null;

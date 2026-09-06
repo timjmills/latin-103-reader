@@ -9,9 +9,10 @@ import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
-import { createLearn, createPractice, createBlockedFive } from './session.js';
+import { createLearn, createPractice, createBlockedFive, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL } from './session.js';
 import { featureLabel, featureKey } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
+import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -81,11 +82,11 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------ shell */
   function draw() {
     const nav = h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'practice', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'summary'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
+      ['map', 'practice', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'summary'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
         { map: 'Skills', practice: 'Practice', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, blocked: renderBlocked, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
     document.title = `Grammar — Latin 103`;
   }
@@ -94,17 +95,29 @@ export function createUI(ctx) {
     closePop();
     // The map is 87 rows long: coming back from a lesson or a history page at scrollY 0 means hunting
     // for the skill you left (QA-B10). Its place is kept and restored; every other view opens at the top.
-    if (view.name === 'map' && name !== 'map') mapScroll = window.scrollY;
+    if (view.name === 'map' && name !== 'map') mapScroll[mapView] = window.scrollY;
     view = { name, params };
     if (push) { try { history.pushState({ grammar: { name, params: name === 'session' ? { ...params, resume: true } : params } }, ''); } catch { /* file: URLs */ } }
     draw();
-    window.scrollTo({ top: name === 'map' ? mapScroll : 0 });
+    // Each of the two map views keeps its own place: coming back from a lesson lands where it was left, in the view it was left in.
+    window.scrollTo({ top: name === 'map' ? (params.chapter != null ? 0 : mapScroll[mapView]) : 0 });
     if (focus) body.querySelector('h1')?.focus?.({ preventScroll: true });
   }
-  let mapScroll = 0;
+  const mapScroll = { topic: 0, chapter: 0 };
+  // Which of the two Grammar views the map shows — By topic (the category map) or By chapter (the book's spine).
+  // Remembered in settings.grammar.view, so the choice survives a reload and a return from a lesson.
+  let mapView = normaliseView(ctx.prefs?.().view);
   // The light instance behind the weeks-menu Today card has no generator, so it must never paint the
   // map: every row would read "no sentences in the library yet" until `init()` replaced it (QA-1).
-  function refresh() { if (!ctx.items) return; if (['map', 'stats', 'history'].includes(view.name)) draw(); }
+  function refresh() { if (!ctx.items) return; if (['map', 'stats', 'history'].includes(view.name) && showing()) draw(); repaintPanels(); }
+  /** True while the section itself is the thing on screen: `draw()` renames the document, so it must not run behind a chapter page. */
+  const showing = () => (ctx.section?.() ?? 'grammar') === 'grammar';
+  // The chapter pages' grammar panels (index.js's mountChapterGrammar). They are repainted whenever the
+  // section's own state changes, and dropped as soon as the shell has taken their element out of the document.
+  const panels = new Set();
+  function repaintPanels() { for (const p of [...panels]) { if (!p.el?.isConnected) { panels.delete(p); continue; } chapterPanel(p.el, { chapter: p.chapter }); } }
+  /** Redraw what is on screen: the current view when the section is showing, and every mounted chapter panel. */
+  function repaint() { if (showing() && body) draw(); repaintPanels(); }
   // The new heading takes focus whenever the body is replaced and focus has nowhere to be (a view arriving after a lesson fetch, the end of a session) — G1-09.
   const setBody = (...nodes) => { body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
   // The section may be built twice in a life: once cheaply for the weeks-menu Today card, then in full when Grammar is
@@ -220,26 +233,45 @@ export function createUI(ctx) {
   }
 
   /* -------------------------------------------------------------- map */
-  function renderMap() {
+  /** Switch between the two ways of browsing the grammar; the choice is remembered (GRAMMAR-CONTRACT.md "Chapter spine"). */
+  function setMapView(next) {
+    const v = normaliseView(next);
+    if (v === mapView) return;
+    mapScroll[mapView] = window.scrollY;
+    mapView = v;
+    ctx.savePrefs?.({ view: v });     // savePrefs swallows its own failures; the view is right either way for this visit
+    view.params = { ...view.params, chapter: undefined };
+    draw();
+    window.scrollTo({ top: mapScroll[mapView] });
+  }
+  const viewSwitch = () => h('div', { class: 'g-seg g-seg--views', role: 'group', 'aria-label': 'Browse the grammar' },
+    [['topic', 'By topic'], ['chapter', 'By chapter']].map(([v, label]) => btn(label, { 'aria-pressed': String(mapView === v), onclick: () => setMapView(v) }, 'g-seg__btn')));
+
+  /** Today: the daily plan (today.js), with the run in progress and the "start all as new" queue above it. Both map views carry it. */
+  function todaySection() {
+    const saved = readJSON(LS_SESSION, null);
+    const queue = (readJSON(LS_QUEUE, []) || []).filter((id) => skills.has(id) && stateOf(id).state !== 'practising' && stateOf(id).state !== 'mastered');
+    return h('section', { class: 'g-today', 'aria-labelledby': 'g-today-h' },
+      h('h2', { id: 'g-today-h', class: 'g-h2', text: 'Today' }),
+      saved?.queue?.length && saved.index < saved.queue.length ? h('p', { class: 'g-today__line' }, `A practice session is in progress (${Math.min(saved.index, saved.queue.length)} of ${saved.queue.length} answered). `, btn('Resume', { onclick: () => render('session', { ...(saved.params ?? {}), resume: true }) }, 'btn btn--primary g-today__btn'), ' ', btn('Discard', { onclick: () => { writeJSON(LS_SESSION, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
+      queue.length ? h('p', { class: 'g-today__line' }, `Learning in book order: ${queue.length} skill${queue.length === 1 ? '' : 's'} to go, next `, h('button', { type: 'button', class: 'g-link', onclick: () => render('learn', { skill: queue[0], queue: queue.slice(1) }) }, titleOf(queue[0])), '. ', btn('Stop the run', { onclick: () => { writeJSON(LS_QUEUE, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
+      todayCard({ place: 'map', bare: true }));
+  }
+
+  function renderMap(params = {}) {
+    if (mapView === 'chapter') return renderSpine(params);
     const now = Date.now();
     const states = gstore.getStates();
     const cw = ctx.currentWeekSkills();
     const rf = reviewFirst({ weekSkills: cw, skills, states, now });
     const filter = view.params.category ?? 'all';
-    const saved = readJSON(LS_SESSION, null);
-    const queue = (readJSON(LS_QUEUE, []) || []).filter((id) => skills.has(id) && stateOf(id).state !== 'practising' && stateOf(id).state !== 'mastered');
 
     const head = h('header', { class: 'g-head' },
       h('h1', { class: 'g-title', text: 'Skills' }),
       // The pensa arrive from the private library, so the lede only promises them once some are here.
       h('p', { class: 'g-lede', text: `${index.skills.size} skills in book order, with each chapter's questions, vocabulary${[...skills.values()].some((s) => s.set === 'pensum') ? ' and pensa' : ''}. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }));
 
-    // Today: the daily plan (today.js) — with the run in progress and the "start all as new" queue above it.
-    const todayNode = h('section', { class: 'g-today', 'aria-labelledby': 'g-today-h' },
-      h('h2', { id: 'g-today-h', class: 'g-h2', text: 'Today' }),
-      saved?.queue?.length && saved.index < saved.queue.length ? h('p', { class: 'g-today__line' }, `A practice session is in progress (${Math.min(saved.index, saved.queue.length)} of ${saved.queue.length} answered). `, btn('Resume', { onclick: () => render('session', { ...(saved.params ?? {}), resume: true }) }, 'btn btn--primary g-today__btn'), ' ', btn('Discard', { onclick: () => { writeJSON(LS_SESSION, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
-      queue.length ? h('p', { class: 'g-today__line' }, `Learning in book order: ${queue.length} skill${queue.length === 1 ? '' : 's'} to go, next `, h('button', { type: 'button', class: 'g-link', onclick: () => render('learn', { skill: queue[0], queue: queue.slice(1) }) }, titleOf(queue[0])), '. ', btn('Stop the run', { onclick: () => { writeJSON(LS_QUEUE, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
-      todayCard({ place: 'map', bare: true }));
+    const todayNode = todaySection();
 
     const reviewNode = rf.length ? h('section', { class: 'g-review', 'aria-labelledby': 'g-review-h' },
       h('h2', { id: 'g-review-h', class: 'g-h2', text: `Review first · week ${ctx.currentCourseWeekN()}` }),   // the last course week: a shelf chapter being read keeps it (G1-12)
@@ -270,66 +302,175 @@ export function createUI(ctx) {
       const mastered = counted.filter((s) => stateOf(s.id).state === 'mastered').length;
       return h('section', { class: 'g-chap', 'aria-labelledby': `g-chap-${chapter}` },
         h('h2', { id: `g-chap-${chapter}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(chapter)}` }), counted.length ? h('span', { class: 'g-chap__count', text: `${mastered} of ${counted.length} mastered` }) : null),
-        shown.length ? h('ul', { class: 'g-skills' }, shown.map(skillRow)) : null,
-        shownSets.length ? h('div', { class: 'g-sets' }, h('h3', { class: 'g-sets__h', text: 'Chapter sets' }), h('ul', { class: 'g-skills g-skills--sets' }, shownSets.map(setRow))) : null);
+        shown.length ? h('ul', { class: 'g-skills' }, shown.map((s) => skillRow(s))) : null,
+        shownSets.length ? h('div', { class: 'g-sets' }, h('h3', { class: 'g-sets__h', text: 'Chapter sets' }), h('ul', { class: 'g-skills g-skills--sets' }, shownSets.map((s) => setRow(s)))) : null);
     });
 
-    setBody(head, todayNode, reviewNode, filterNode, bulk, chapterNodes);
+    setBody(head, viewSwitch(), todayNode, reviewNode, filterNode, bulk, chapterNodes);
   }
 
-  function skillRow(s) {
+  /* -------------------------------------------------- by chapter (the spine) */
+  /**
+   * The book's spine: chapters I–XXXIV in order, each holding its own skills
+   * and chapter sets and saying how much of it is mastered. The chapter being
+   * read (or the one a link named) is open; the rest are folded away, so 34
+   * chapters stay a page you can read down.
+   */
+  function renderSpine(params = {}) {
+    const rows = spineRows({ chapters: ctx.chapters ?? null, skills, order: index.order, sets: ctx.sets ?? new Map(), state: stateOf, drillable: ctx.items ? drillable : () => true });
+    const here = params.chapter != null ? Number(params.chapter) : ctx.currentChapter?.() ?? null;
+    // Which chapters are unfolded is the learner's: the view is redrawn on every state change, and a redraw
+    // must not close what they opened. null = nothing chosen yet, so the chapter being read opens itself.
+    if (params.chapter != null) { spineOpen = spineOpen ?? new Set(); spineOpen.add(Number(params.chapter)); }
+    const done = rows.filter((r) => r.progress.total && r.progress.mastered === r.progress.total).length;
+    const head = h('header', { class: 'g-head' },
+      h('h1', { class: 'g-title', text: 'Skills' }),
+      h('p', { class: 'g-lede', text: `The book's chapters in order, each with the grammar it introduces and its own questions, vocabulary${[...skills.values()].some((s) => s.set === 'pensum') ? ' and pensa' : ''}. Open a chapter to see what is in it.${done ? ` ${done} chapter${done === 1 ? ' is' : 's are'} fully mastered.` : ''}` }));
+    const sections = rows.map((c) => {
+      const open = spineOpen ? spineOpen.has(c.n) : (here != null && c.n === here);
+      const onToggle = (e) => { if (!spineOpen) spineOpen = new Set(here != null ? [here] : []); if (e.currentTarget.open) spineOpen.add(c.n); else spineOpen.delete(c.n); };
+      return h('section', { class: 'g-chap g-chap--spine', id: `g-ch-${c.n}` },
+        h('details', { class: 'g-chap__d', open: open || null, ontoggle: onToggle },
+          h('summary', { class: 'g-chap__sum' },
+            h('h2', { class: 'g-chap__h g-chap__h--sum' }, h('span', { class: 'g-chap__num', text: `Cap. ${c.roman}` }), c.title ? h('span', { class: 'g-chap__title', text: c.title }) : null),
+            h('span', { class: 'g-chap__count', text: chapterSummary(c.progress) })),
+          h('div', { class: 'g-chap__body' }, chapterBody(c))));
+    });
+    setBody(head, viewSwitch(), todaySection(), sections);
+    // The chapter a link named, or — the first time the spine is opened — the one being read: brought into view once.
+    // A redraw after an answer must leave the page where the learner left it.
+    if (here != null && (params.chapter != null || (!spineScrolled && !mapScroll.chapter))) {
+      spineScrolled = true;
+      requestAnimationFrame(() => document.getElementById(`g-ch-${here}`)?.scrollIntoView?.({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+    }
+  }
+  let spineOpen = null;
+  let spineScrolled = false;
+
+  /**
+   * One chapter's grammar as a list of nodes: its skills, its chapter sets and
+   * the ways into practising it. Shared by the by-chapter view and by the
+   * chapter page's panel (`chapterPanel`), so a chapter reads the same in both.
+   * `known` false = the section has not loaded its generator yet, so nothing
+   * claims what can or cannot be drilled.
+   */
+  function chapterBody(row, { from = null, nav = null, known = !!ctx.items } = {}) {
+    const go = nav ?? ((name, params) => render(name, { ...params, from }));
+    const { material, progress } = row;
+    const out = [];
+    if (!material.members.length) { out.push(h('p', { class: 'g-quiet', text: 'This chapter introduces no grammar of its own.' })); return out; }
+    if (material.skills.length) out.push(h('ul', { class: 'g-skills' }, material.skills.map((s) => skillRow(s, { go, known }))));
+    if (material.sets.length) out.push(h('div', { class: 'g-sets' }, h('h3', { class: 'g-sets__h', text: 'Chapter sets' }), h('ul', { class: 'g-skills g-skills--sets' }, material.sets.map((s) => setRow(s, { go, known })))));
+    if (!known) { out.push(h('p', { class: 'g-quiet', text: 'Reading the library to see what can be practised…' })); return out; }
+    const pool = chapterPool(material, { state: stateOf, drillable });
+    if (pool.rotation.length) {
+      out.push(h('div', { class: 'g-chap__acts' },
+        btn('Practise this chapter', { onclick: () => go('session', { chapter: material.chapter }), 'aria-label': `Practise chapter ${row.roman}` }, 'btn btn--primary'),
+        h('p', { class: 'g-quiet', text: `A mixed session of ten, drawn only from this chapter: ${pool.rotation.length} of the ${progress.drillable} it can drill ${pool.rotation.length === 1 ? 'is' : 'are'} in rotation.` })));
+    } else if (pool.addable.length) {
+      out.push(h('div', { class: 'g-chap__acts' },
+        btn('Add this chapter to mixed practice', { onclick: () => addChapter(material) }, 'btn'),
+        h('p', { class: 'g-quiet', text: 'Nothing from this chapter is in mixed practice yet. Learn a skill above, or add them all and they will come up as they fall due.' })));
+    } else if (progress.drillable) {
+      out.push(h('p', { class: 'g-quiet', text: 'Everything here is still being learned.' }));
+    } else {
+      out.push(h('p', { class: 'g-quiet', text: 'Nothing in this chapter can be drilled yet — the lessons are here to read.' }));
+    }
+    return out;
+  }
+
+  /** "Add this chapter to mixed practice": the chapter's new, drillable skills and sets, by the same route as the map's bulk add. */
+  async function addChapter(material) {
+    const pool = chapterPool(material, { state: stateOf, drillable });
+    if (!pool.addable.length) { ctx.say('Nothing new to add in this chapter.'); return; }
+    if (!confirm(`Add ${pool.addable.length} item${pool.addable.length === 1 ? '' : 's'} from chapter ${roman(material.chapter)} to mixed practice? Each will be practised as it comes up, without a lesson first.`)) return;
+    for (const id of pool.addable) await gstore.setState(addToPractice(gstore.getState(id) ?? id));
+    ctx.say(`${pool.addable.length} added from chapter ${roman(material.chapter)}.`);
+    repaint();
+  }
+
+  /**
+   * The chapter page's grammar panel (`mountChapterGrammar` in index.js): the
+   * same rows and the same actions as the map, rendered into the shell's own
+   * element. Its links open the Grammar section and carry a way back to this
+   * chapter.
+   */
+  function chapterPanel(el, { chapter, known = !!ctx.items } = {}) {
+    if (!el) return;
+    const n = Number(chapter);
+    const tracked = [...panels].find((p) => p.el === el);
+    if (tracked) tracked.chapter = n; else panels.add({ el, chapter: n });
+    const entry = spine(ctx.chapters ?? null).find((c) => c.n === n) ?? null;
+    const material = chapterMaterial(n, { skills, order: index.order, sets: ctx.sets ?? new Map(), entry });
+    const progress = chapterProgress(material, { state: stateOf, drillable: known ? drillable : () => true });
+    const row = { n, roman: entry?.roman ?? roman(n), title: entry?.title ?? '', material, progress };
+    const nav = (name, params) => (ctx.go ? ctx.go(name, { ...params, from: { chapter: n } }) : render(name, { ...params, from: { chapter: n } }));
+    el.replaceChildren(h('div', { class: 'g-chapter' },
+      h('header', { class: 'g-chapter__head' },
+        // The chapter page's own tab already says "Grammar"; the heading is there for a screen reader
+        // walking the page's structure, and the line under it is what the eye needs — the counts.
+        h('h2', { class: 'g-chapter__h visually-hidden', text: `Grammar of chapter ${entry?.roman ?? roman(n)}` }),
+        h('p', { class: 'g-chapter__sum', text: chapterSummary(progress) })),
+      ...chapterBody(row, { nav, known })));
+  }
+
+  function skillRow(s, { go = null, known = true } = {}) {
+    const nav = go ?? ((name, params) => render(name, params));
     const st = stateOf(s.id);
     const acts = [];
-    const lessonBtn = btn('Lesson', { onclick: () => render('lesson', { skill: s.id }) }, 'btn btn--quiet');
-    const can = drillable(s.id);
-    if (!can) {
+    const lessonBtn = btn('Lesson', { onclick: () => nav('lesson', { skill: s.id }) }, 'btn btn--quiet');
+    // `known` false: the panel has states but no generator yet, so the row says nothing about what can be drilled (QA-B1's rule).
+    const can = known ? drillable(s.id) : null;
+    if (!known || !can) {
       // No sentence in the library fits (the metre skills by design): the lesson stands, nothing to drill (M8).
       acts.push(lessonBtn);
     } else if (st.state === 'new') {
-      acts.push(btn('Start as new', { onclick: () => render('learn', { skill: s.id }) }, 'btn'), btn('Add to mixed practice', { onclick: () => addSkill(s.id) }, 'btn btn--quiet'), lessonBtn);
+      acts.push(btn('Start as new', { onclick: () => nav('learn', { skill: s.id }) }, 'btn'), btn('Add to mixed practice', { onclick: () => addSkill(s.id) }, 'btn btn--quiet'), lessonBtn);
     } else if (st.state === 'learning') {
-      acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: s.id }) }, 'btn'), lessonBtn);
+      acts.push(btn('Continue learning', { onclick: () => nav('learn', { skill: s.id }) }, 'btn'), lessonBtn);
     } else if (st.state === 'lapsed') {
-      acts.push(btn('Re-learn', { onclick: () => render('learn', { skill: s.id }) }, 'btn'), btn('Practise this skill', { onclick: () => startBlocked(s.id) }, 'btn btn--quiet'), lessonBtn);
+      acts.push(btn('Re-learn', { onclick: () => nav('learn', { skill: s.id }) }, 'btn'), btn('Practise this skill', { onclick: () => nav('blocked', { skill: s.id }) }, 'btn btn--quiet'), lessonBtn);
     } else {
-      acts.push(btn('Practise this skill', { onclick: () => startBlocked(s.id) }, 'btn'), lessonBtn);
+      acts.push(btn('Practise this skill', { onclick: () => nav('blocked', { skill: s.id }) }, 'btn'), lessonBtn);
     }
-    if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => render('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
-    acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
+    if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => nav('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
+    if (known) acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
     return h('li', { class: 'g-skill', 'data-state': st.state },
       h('div', { class: 'g-skill__main' },
-        h('button', { type: 'button', class: 'g-skill__title', onclick: () => render('lesson', { skill: s.id }) }, s.title),
+        h('button', { type: 'button', class: 'g-skill__title', onclick: () => nav('lesson', { skill: s.id }) }, s.title),
         h('p', { class: 'g-skill__plain', text: `${s.plain} · ${s.course} week ${s.week ?? '—'}` }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can ? st.state : 'none', 'aria-hidden': 'true' }), can ? dueText(st) : (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill'))),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill') : dueText(st))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
   /** A chapter set as a row: Questions · Vocabulary (· English → Latin, optional) · Pensa — the same actions and states as a skill; pensa have no Learn. */
-  function setRow(s) {
+  function setRow(s, { go = null, known = true } = {}) {
+    const nav = go ?? ((name, params) => render(name, params));
     const st = stateOf(s.id);
-    const can = drillable(s.id);
+    const can = known ? drillable(s.id) : null;
     const acts = [];
     const learnable = s.set !== 'pensum';
-    if (!can) acts.push(h('span', { class: 'g-quiet', text: 'nothing here yet' }));
+    if (can === false) acts.push(h('span', { class: 'g-quiet', text: 'nothing here yet' }));
+    else if (can === null) { /* not known yet: the row states its counts and nothing else */ }
     // A new set offers the two documented routes only — Start as new, or Add to mixed practice. "Practise" bypassed
     // both and put the row into rotation without the learner choosing (m16); a pensum has no Learn, so it keeps it.
-    else if (st.state === 'new') { if (learnable) acts.push(btn('Start as new', { onclick: () => render('learn', { skill: s.id }) }, 'btn')); acts.push(btn('Add to mixed practice', { onclick: () => addSkill(s.id) }, learnable ? 'btn btn--quiet' : 'btn')); if (!learnable) acts.push(btn('Practise', { onclick: () => startBlocked(s.id) }, 'btn btn--quiet')); }
-    else if (st.state === 'learning') acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: s.id }) }, 'btn'));
-    else if (st.state === 'lapsed') { if (learnable) acts.push(btn('Re-learn', { onclick: () => render('learn', { skill: s.id }) }, 'btn')); acts.push(btn('Practise', { onclick: () => startBlocked(s.id) }, learnable ? 'btn btn--quiet' : 'btn')); }
-    else acts.push(btn('Practise', { onclick: () => startBlocked(s.id) }, 'btn'));
-    if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => render('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
-    acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
+    else if (st.state === 'new') { if (learnable) acts.push(btn('Start as new', { onclick: () => nav('learn', { skill: s.id }) }, 'btn')); acts.push(btn('Add to mixed practice', { onclick: () => addSkill(s.id) }, learnable ? 'btn btn--quiet' : 'btn')); if (!learnable) acts.push(btn('Practise', { onclick: () => nav('blocked', { skill: s.id }) }, 'btn btn--quiet')); }
+    else if (st.state === 'learning') acts.push(btn('Continue learning', { onclick: () => nav('learn', { skill: s.id }) }, 'btn'));
+    else if (st.state === 'lapsed') { if (learnable) acts.push(btn('Re-learn', { onclick: () => nav('learn', { skill: s.id }) }, 'btn')); acts.push(btn('Practise', { onclick: () => nav('blocked', { skill: s.id }) }, learnable ? 'btn btn--quiet' : 'btn')); }
+    else acts.push(btn('Practise', { onclick: () => nav('blocked', { skill: s.id }) }, 'btn'));
+    if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => nav('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
+    if (known) acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
     const what = s.set === 'questions' ? `${s.count} question${s.count === 1 ? '' : 's'}${s.data?.title ? ` · ${s.data.title}` : ''}` : s.set === 'vocab' ? `${s.count} word${s.count === 1 ? '' : 's'}${s.rev ? ' · English → Latin, an optional extra deck' : ' · Latin → English'}` : `${s.data?.A.length ?? 0} A · ${s.data?.B.length ?? 0} B · ${s.data?.C.length ?? 0} C · practise only`;
     return h('li', { class: 'g-skill g-skill--set', 'data-state': st.state, 'data-set': s.set },
       h('div', { class: 'g-skill__main' },
         h('p', { class: 'g-skill__title g-skill__title--set', text: s.rev ? `${SET_ROW_LABEL[s.set]} · English → Latin` : SET_ROW_LABEL[s.set] }),
         h('p', { class: 'g-skill__plain', text: what }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can ? st.state : 'none', 'aria-hidden': 'true' }), can ? dueText(st) : 'no items yet')),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? 'no items yet' : dueText(st))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
   const drillable = (id) => ctx.drillable(id);
   async function addSkill(id) {
     if (!drillable(id)) { ctx.say(`${titleOf(id)} has no drillable sentences yet.`); return; }
-    await gstore.setState(addToPractice(gstore.getState(id) ?? id)); ctx.say(`${titleOf(id)} added to mixed practice.`); draw();
+    await gstore.setState(addToPractice(gstore.getState(id) ?? id)); ctx.say(`${titleOf(id)} added to mixed practice.`); repaint();
   }
   async function bulkAdd() {
     // A skill already in Learn keeps its run: the bulk add used to move it to `practising` and throw the round away (m17).
@@ -337,7 +478,7 @@ export function createUI(ctx) {
     if (!ids.length) { ctx.say('Every skill with sentences is already in mixed practice.'); return; }
     if (!confirm(`Add ${ids.length} skill${ids.length === 1 ? '' : 's'} to mixed practice? Each will be practised as it comes up, without a lesson first.`)) return;
     for (const id of ids) await gstore.setState(addToPractice(gstore.getState(id) ?? id));
-    ctx.say(`${ids.length} skills added.`); draw();
+    ctx.say(`${ids.length} skills added.`); repaint();
   }
   async function bulkNew() {
     const ids = [...skills.keys()].filter((id) => stateOf(id).state === 'new' && drillable(id) && !skills.get(id).rev && skills.get(id).set !== 'pensum');
@@ -348,7 +489,7 @@ export function createUI(ctx) {
   }
   async function resetSkill(id) {
     if (!confirm(`Reset ${titleOf(id)}? Its progress, attempts and confusions are removed.`)) return;
-    await gstore.resetSkill(id); items.pool.reset(id); ctx.say(`${titleOf(id)} reset.`); draw();
+    await gstore.resetSkill(id); items.pool.reset(id); ctx.say(`${titleOf(id)} reset.`); repaint();
   }
   async function resetAll() {
     if (!confirm('Reset every skill? All grammar progress, attempts and confusions are removed, including any session in progress. The reading progress and looked-up words are untouched.')) return;
@@ -359,7 +500,7 @@ export function createUI(ctx) {
     writeJSON(LS_SESSION, null); writeJSON(LS_QUEUE, null); writeJSON(LS_LEARN, null);
     if (ctx.settings?.todayDismissed) await ctx.saveSetting?.({ todayDismissed: null });
     ctx.say('All grammar progress reset.');
-    draw();
+    repaint();
   }
 
   /* ----------------------------------------------------------- lesson */
@@ -449,24 +590,24 @@ export function createUI(ctx) {
     const anyOwn = units.some((x) => x.own);
     return h('div', { class: 'g-lesson__ex' }, h('p', { class: 'g-lesson__tag', text: anyOwn ? 'From the book' : (units.length ? 'From the library' : 'Examples') }), list);
   }
-  async function renderLessonView({ skill: id }) {
+  async function renderLessonView({ skill: id, from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
     const st = stateOf(id);
     setBody(h('p', { class: 'g-loading', text: 'Loading the lesson…' }));
     const lesson = await lessonOf(id);
     const acts = [];
-    if (st.state === 'new' || st.state === 'lapsed') acts.push(btn(st.state === 'lapsed' ? 'Re-learn this skill' : 'Start learning', { onclick: () => render('learn', { skill: id }) }, 'btn btn--primary'));
-    if (st.state === 'learning') acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: id }) }, 'btn btn--primary'));
-    if (st.state === 'new') acts.push(btn('Add to mixed practice', { onclick: async () => { await addSkill(id); render('lesson', { skill: id }); } }, 'btn'));
-    if (inRotation(st)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id) }, 'btn btn--primary'));
+    if (st.state === 'new' || st.state === 'lapsed') acts.push(btn(st.state === 'lapsed' ? 'Re-learn this skill' : 'Start learning', { onclick: () => render('learn', { skill: id, from }) }, 'btn btn--primary'));
+    if (st.state === 'learning') acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: id, from }) }, 'btn btn--primary'));
+    if (st.state === 'new') acts.push(btn('Add to mixed practice', { onclick: async () => { await addSkill(id); render('lesson', { skill: id, from }); } }, 'btn'));
+    if (inRotation(st)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id, from) }, 'btn btn--primary'));
     // Printable charts (GRAMMAR-CONTRACT.md, wave 3): the chart alone, one table a page with the focus cells boxed,
     // or the whole sheet — rule, forms and examples. Offered only where there is something to put on the paper.
     if (!skill.set && chartTable(skill)) acts.push(btn('Print chart', { onclick: () => printChart(skill) }, 'btn btn--quiet'));
     if (!skill.set) acts.push(btn('Print sheet', { onclick: () => printSheet(skill) }, 'btn btn--quiet'));
-    if (gstore.countAttempts(id)) acts.push(btn('History', { onclick: () => render('history', { skill: id }) }, 'btn btn--quiet'));
+    if (gstore.countAttempts(id)) acts.push(btn('History', { onclick: () => render('history', { skill: id, from }) }, 'btn btn--quiet'));
     setBody(
-      btn('← Skills', { onclick: () => render('map') }, 'btn btn--quiet g-back'),
+      backButton(from),
       lessonHeader(skill, st),
       h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson)),
       h('div', { class: 'g-acts' }, acts));
@@ -479,10 +620,10 @@ export function createUI(ctx) {
     h('p', { class: 'g-summary', text: skill.summary }));
 
   /* ------------------------------------------------------------ learn */
-  async function renderLearnStart({ skill: id, queue = [] }) {
+  async function renderLearnStart({ skill: id, queue = [], from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
-    if (skill.set === 'pensum') { startBlocked(id); return; }   // pensa are practised, never learned in a sitting
+    if (skill.set === 'pensum') { startBlocked(id, from); return; }   // pensa are practised, never learned in a sitting
     // A chapter set's Learn pass is resumable: how far through the deck it is survives Back, a reload and a detour
     // (the pool already remembers which items have been shown, so a resumed batch never repeats one) — CR M8.
     const savedLearn = readJSON(LS_LEARN, null);
@@ -493,11 +634,11 @@ export function createUI(ctx) {
     const lesson = skill.set ? null : await lessonOf(id);
     const steps = skill.set ? [skill.set === 'vocab' ? 'The deck, a batch at a time' : 'The passage\'s questions', 'Blocked 10'] : ['Lesson', 'Examples', 'Guided 5', 'Blocked 10'];
     const stepper = (i) => h('ol', { class: 'g-steps', 'aria-label': 'Learn steps' }, steps.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': i === j ? 'step' : null, text: s })));
-    const finishQueue = () => { writeJSON(LS_QUEUE, queue.length ? queue.slice(1) : null); if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else render('map'); };
+    const finishQueue = () => { writeJSON(LS_QUEUE, queue.length ? queue.slice(1) : null); if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else leaveTo(from); };
     if (queue.length) writeJSON(LS_QUEUE, queue);
 
     const showLesson = () => setBody(stepper(0), lessonHeader(skill, stateOf(id)), h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson, { learn: true })),
-      h('div', { class: 'g-acts' }, btn('Continue to the examples', { onclick: showExamples }, 'btn btn--primary'), btn('Back to skills', { onclick: () => render('map') }, 'btn btn--quiet')));
+      h('div', { class: 'g-acts' }, btn('Continue to the examples', { onclick: showExamples }, 'btn btn--primary'), btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
 
     const showExamples = () => {
       const exBlock = (lesson?.core ?? []).find((b) => b.type === 'examples') ?? { units: [], invented: [] };
@@ -530,11 +671,11 @@ export function createUI(ctx) {
     const blockedStep = skill.set ? 1 : 3;
     const showGuided = (opts = {}) => {
       const first = opts.more ? learn.moreGuided() : learn.startGuided();
-      if (!first) { setBody(stepper(guidedStep), h('p', { class: 'g-quiet', text: skill.set ? 'This set has no items yet.' : 'No sentences in the library fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
-      const from = learn.seen;
+      if (!first) { setBody(stepper(guidedStep), h('p', { class: 'g-quiet', text: skill.set ? 'This set has no items yet.' : 'No sentences in the library fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, backButton(from, 'btn'))); return; }
+      const seenBefore = learn.seen;
       const thing = skill.set === 'vocab' ? 'words' : 'questions';
       const note = skill.set
-        ? `${skill.set === 'vocab' ? 'Each word with its dictionary line after it' : 'Each question with the answering sentence after it'}. ${from + 1}–${Math.min(learn.total, from + learn.batchSize)} of ${learn.total} ${thing}; you can stop after any batch and pick it up here.`
+        ? `${skill.set === 'vocab' ? 'Each word with its dictionary line after it' : 'Each question with the answering sentence after it'}. ${seenBefore + 1}–${Math.min(learn.total, seenBefore + learn.batchSize)} of ${learn.total} ${thing}; you can stop after any batch and pick it up here.`
         : 'Five items with the hint open. Take your time.';
       runSession({ runner: learn.runner, title: `${skill.set ? 'Through the deck' : 'Guided drill'} · ${skill.title}`, note, mode: 'learn', hintOpen: !skill.set, stepper: stepper(guidedStep), lesson, onDone: skill.set ? showBatchEnd : showBlocked });
     };
@@ -551,12 +692,12 @@ export function createUI(ctx) {
         h('div', { class: 'g-acts' },
           left ? btn(`Another ${Math.min(learn.batchSize, left)}`, { onclick: () => showGuided({ more: true }) }, 'btn btn--primary') : null,
           btn('Go on to the ten', { onclick: showBlocked }, left ? 'btn' : 'btn btn--primary'),
-          btn('Stop for now', { onclick: () => render('map') }, 'btn btn--quiet')));
+          btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
       ctx.say(left ? `${learn.seen} of ${learn.total} seen.` : 'Through the deck.');
     };
     const showBlocked = () => {
       const first = learn.startBlocked();
-      if (!first) { render('map'); return; }
+      if (!first) { leaveTo(from); return; }
       runSession({ runner: learn.runner, title: `Blocked drill · ${skill.title}`, note: skill.set ? 'Ten more from this set. Six of ten and it joins your mixed practice.' : 'Ten items, this skill only. Hints are behind a button; feedback after each.', mode: 'learn', hintOpen: false, stepper: stepper(blockedStep), lesson, onDone: async () => showResult(await learn.finishBlocked()) });
     };
     const showResult = (r) => {
@@ -573,15 +714,17 @@ export function createUI(ctx) {
           skill.set ? null : h('p', { class: 'g-quiet', text: `Kinds missed: ${missedKinds.join(', ')}. The lesson's rule and the confusion note are below.` }),
           skill.set ? null : h('article', { class: 'g-lesson g-lesson--lit' }, (lesson?.core ?? []).filter((b) => b.type === 'rule' || b.type === 'confusion').map((b) => b.type === 'rule' ? h('p', { class: 'g-lesson__rule is-lit' }, inline(b.text)) : h('div', { class: 'g-lesson__conf is-lit' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, inline(b.text)))))) : null,
         h('div', { class: 'g-acts' },
-          passed ? [btn(queue.length ? `Next: ${titleOf(queue[0])}` : 'Back to skills', { onclick: finishQueue }, 'btn btn--primary'), btn('Practise now', { onclick: () => startBlocked(id) }, 'btn')]
-            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn('Re-read the lesson', { onclick: showLesson }, 'btn'), btn('Stop for now', { onclick: () => render('map') }, 'btn btn--quiet')]));
+          passed ? [btn(queue.length ? `Next: ${titleOf(queue[0])}` : (from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills'), { onclick: finishQueue }, 'btn btn--primary'), btn('Practise now', { onclick: () => startBlocked(id, from) }, 'btn')]
+            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn('Re-read the lesson', { onclick: showLesson }, 'btn'), btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')]));
       ctx.say(passed ? `${skill.title} learned.` : 'Not yet; another ten items are ready.');
     };
     if (skill.set) showGuided(); else showLesson();
   }
 
   /* --------------------------------------------------------- practice */
-  function renderSetup() {
+  // `from` is the chapter page this was opened from, when it was (the by-chapter view's "Practise"): it names
+  // the Back button and the way out. Without the parameter the view crashed on `from` the moment it was drawn.
+  function renderSetup({ from = null } = {}) {
     const prefs = ctx.prefs();
     const states = gstore.getStates();
     const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
@@ -606,9 +749,18 @@ export function createUI(ctx) {
         h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in practice yet.') : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
     }));
     const pick = h('div', { class: 'g-preset__pick', hidden: preset !== 'one-skill' }, h('span', { class: 'g-label', text: 'Skill' }), skillSelect);
+    // Hints, per answer box (GRAMMAR-CONTRACT.md). One setting for every session, wherever it is started from —
+    // the Today card and a chapter page never pass through this screen, so the choice is remembered, not asked for.
+    let hints = prefs.hints;
+    const hintList = h('div', { class: 'g-presets', role: 'radiogroup', 'aria-label': 'Hints' }, HINT_MODES.map((key) => {
+      const [label, desc] = HINT_MODE_LABEL[key];
+      return h('label', { class: 'g-preset' },
+        h('input', { type: 'radio', name: 'g-hintmode', value: key, checked: hints === key ? true : null, onchange: () => { hints = key; } }),
+        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: desc })));
+    }));
     const start = async () => {
-      await ctx.savePrefs({ preset, size, oneSkill });
-      render('session', { preset, size, oneSkill });
+      await ctx.savePrefs({ preset, size, oneSkill, hints });
+      render('session', { preset, size, oneSkill, from });
     };
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }),
       // "Confusion pair" is reserved for a pair the learner's answers have actually crossed (the Stats
@@ -617,39 +769,76 @@ export function createUI(ctx) {
       h('p', { class: 'g-lede', text: `${rotation.length} skill${rotation.length === 1 ? '' : 's'} in rotation · ${today.due.length + (today.setsDue?.length ?? 0)} due${today.pairs ? ` · ${today.pairs} pair${today.pairs === 1 ? '' : 's'} that are easy to cross` : ''}.` })),
       h('section', { class: 'g-setup' },
         h('div', { class: 'g-setup__row' }, h('span', { class: 'g-label', text: 'Items' }), sizeGroup),
-        h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick)),
-      h('div', { class: 'g-acts' }, btn('Start', { onclick: start }, 'btn btn--primary'), btn('Back to skills', { onclick: () => render('map') }, 'btn btn--quiet')));
+        h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick),
+        h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Hints' }), hintList,
+          h('p', { class: 'g-quiet', text: 'Every answer box has its own hint — a typed field, each cell of a chart, each blank of a pensum, each word of an order or match item. A hint never spells the answer; this choice holds for every session.' }))),
+      h('div', { class: 'g-acts' }, btn('Start', { onclick: start }, 'btn btn--primary'), btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
   }
-  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false }) {
+  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null }) {
     // A confusion pair's Start: ten items alternating exactly those two skills (GRAMMAR-CONTRACT.md, wave 3).
     // It is not a preset — nothing else is let in — so it is built here and handed to the runner as a finished plan.
     if (Array.isArray(pair) && pair.length === 2) { startPair(pair, size ?? 10); return; }
-    const params = { preset, size, oneSkill };
+    // "Practise this chapter": the same mixed session, with the chapter's own skills and sets as its whole world —
+    // so the interleaving, the confusable pairs and the chapter-set window all hold, and the re-queue and the
+    // filler can reach nothing outside the chapter either.
+    const params = chapter != null ? { chapter: Number(chapter), size: size ?? 10, from } : { preset, size, oneSkill, from };
     // A session in progress is kept in localStorage (plan, position, answers) so Back or Reload offers to resume it (G1-08).
     const saved = resume ? readJSON(LS_SESSION, null) : null;
     const usable = saved?.queue?.length && saved.index < saved.queue.length ? saved : null;
     if (usable) Object.assign(params, usable.params ?? {});
+    const ch = params.chapter ?? null;
+    let world = skillsIndex;
+    if (ch != null) {
+      const material = chapterMaterial(ch, { skills, order: index.order, sets: ctx.sets ?? new Map() });
+      const pool = chapterPool(material, { state: stateOf, drillable });
+      // A lapsed row is asked for on purpose here, as it is in "Practise this skill": it re-enters the rotation
+      // now, so the answers that follow are not judged early (M1).
+      for (const id of pool.lapsed) gstore.setState(addToPractice(gstore.getState(id) ?? id));
+      if (!pool.rotation.length) {
+        writeJSON(LS_SESSION, null);
+        setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: `Chapter ${roman(ch)}` }),
+          h('p', { class: 'g-lede', text: pool.map.size ? 'Nothing from this chapter is in mixed practice yet. Learn one of its skills, or add them to practice, and this will build a session from them alone.' : 'Nothing in this chapter can be drilled yet — its lessons are there to read.' })),
+          h('div', { class: 'g-acts' }, backButton(params.from ?? { chapter: ch }, 'btn')));
+        return;
+      }
+      world = { skills: pool.map };
+    }
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
-    const practice = createPractice({ gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN(), currentWeekSkills: [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: params.preset, size: params.size, oneSkill: params.oneSkill, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
+    const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
     const first = practice.start();
-    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: 'No sentences in the library fit the skills in rotation yet.' })), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
+    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : 'No sentences in the library fit the skills in rotation yet.' })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'))); return; }
     if (usable) ctx.say('Session resumed.');
-    runSession({ runner: practice.runner, title: `Practice · ${PRESET_LABEL[params.preset][0]}`, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
+    const title = ch != null ? `Practise · Cap. ${roman(ch)}` : `Practice · ${(PRESET_LABEL[params.preset] ?? PRESET_LABEL['review-heavy'])[0]}`;
+    runSession({ runner: practice.runner, title, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
   }
-  function startBlocked(id) {
+  /** "Practise this skill": a view of its own, so Back leaves it and a chapter page can open it through `ctx.go`. */
+  const startBlocked = (id, from = null) => render('blocked', { skill: id, from });
+  function renderBlocked({ skill: id, from = null }) {
     const skill = skills.get(id);
+    if (!skill) return renderMap();
     const st = gstore.getState(id);
     // A skill still in Learn keeps learning (m14); a lapsed or new one enters the rotation now, so the answers that follow are not judged "early" (M1).
-    if (st?.state === 'learning' && skill.set !== 'pensum') { render('learn', { skill: id }); return; }
+    if (st?.state === 'learning' && skill.set !== 'pensum') { render('learn', { skill: id, from }); return; }
     if (!inRotation(st) || decay(st).state === 'lapsed') gstore.setState(addToPractice(st ?? id));
     const practice = createBlockedFive({ skill, gstore, items, skillsIndex });
-    view = { name: 'session', params: { oneSkill: id } };
-    try { history.pushState({ grammar: { name: 'map', params: {} } }, ''); } catch { /* file: */ }
-    draw();
     const first = practice.start();
-    if (!first) { setBody(h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet.' }), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
-    runSession({ runner: practice.runner, title: `Practise · ${skill.title}`, mode: 'practice', hintOpen: false, onDone: (summary) => renderSummary(summary, { preset: 'one-skill', size: 5, oneSkill: id }) });
+    if (!first) { setBody(h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet.' }), h('div', { class: 'g-acts' }, backButton(from))); return; }
+    runSession({ runner: practice.runner, title: `Practise · ${skill.title}`, mode: 'practice', hintOpen: false, onDone: (summary) => renderSummary(summary, { preset: 'one-skill', size: 5, oneSkill: id, from }) });
   }
+  /**
+   * The way back from a view opened elsewhere: the chapter page it came from
+   * (the shell's own route, when it has given us one), else the by-chapter view
+   * of the map, else the map. Every view that can be reached from a chapter
+   * carries `from`.
+   */
+  function leaveTo(from) {
+    // The shell's own router (`onChapterNav`): back to the chapter page, on its Grammar tab.
+    if (from?.chapter != null && typeof ctx.openChapter === 'function') { ctx.openChapter(Number(from.chapter), 'grammar'); return; }
+    if (from?.chapter != null) { mapView = 'chapter'; render('map', { chapter: Number(from.chapter) }); return; }
+    render('map');
+  }
+  const backLabel = (from) => (from?.chapter != null ? `← Cap. ${roman(Number(from.chapter))}` : '← Skills');
+  const backButton = (from, cls = 'btn btn--quiet g-back') => btn(backLabel(from), { onclick: () => leaveTo(from) }, cls);
   function renderSummary(summary, params) {
     view = { name: 'summary', params };
     // A self-graded "partly" counts towards the scheduler but is not a clean right: it is named, not folded in (m4).
@@ -660,58 +849,141 @@ export function createUI(ctx) {
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Session over' }),
       h('p', { class: 'g-lede', text: `${clean} of ${summary.total} right${partly ? `, ${partly} partly` : ''} (${acc}%) · ${summary.skills.length} skill${summary.skills.length === 1 ? '' : 's'} · ${stats.fmtMin(summary.ms)}${summary.hinted ? ` · ${summary.hinted} with a hint` : ''}.` }),
       added ? h('p', { class: 'g-quiet', text: `${summary.asked} items were asked for; ${added} more came back after a wrong answer.` }) : null),
-      summary.wrong.length ? h('section', {}, h('h2', { class: 'g-h2', text: 'Worth another look' }), h('ul', { class: 'g-chips' }, summary.wrong.map((id) => h('li', {}, h('button', { type: 'button', class: 'g-chip', onclick: () => startBlocked(id) }, titleOf(id), h('span', { class: 'g-chip__state', text: ' · practise' })))))) : h('p', { class: 'g-quiet', text: 'Nothing missed.' }),
-      h('div', { class: 'g-acts' }, btn('Another session', { onclick: () => render('session', params) }, 'btn btn--primary'), btn('Skills', { onclick: () => render('map') }, 'btn btn--quiet'), btn('Stats', { onclick: () => render('stats') }, 'btn btn--quiet')));
+      summary.wrong.length ? h('section', {}, h('h2', { class: 'g-h2', text: 'Worth another look' }), h('ul', { class: 'g-chips' }, summary.wrong.map((id) => h('li', {}, h('button', { type: 'button', class: 'g-chip', onclick: () => startBlocked(id, params?.from ?? null) }, titleOf(id), h('span', { class: 'g-chip__state', text: ' · practise' })))))) : h('p', { class: 'g-quiet', text: 'Nothing missed.' }),
+      h('div', { class: 'g-acts' }, btn(params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session', { onclick: () => render('session', params) }, 'btn btn--primary'), btn(params?.from?.chapter != null ? backLabel(params.from).replace('← ', '') : 'Skills', { onclick: () => leaveTo(params?.from ?? null) }, 'btn btn--quiet'), btn('Stats', { onclick: () => render('stats') }, 'btn btn--quiet')));
     body.querySelector('h1')?.focus?.({ preventScroll: true });   // a keyboard session ends on the summary, not at the top of the page (G1-09)
     ctx.say(`Session over: ${summary.right} of ${summary.total} right.`);
   }
 
   /* ----------------------------------------------------------- runner */
   /**
-   * Drives one runner in the body: item → answer → feedback → next. `open`
+   * The beat between a right answer and the next item. Long enough to read the
+   * one-line feedback, short enough that the session never waits on a click
+   * ("a correct answer moves the session on by itself"). Enter, the forward
+   * arrow, or answering nothing at all skips it; the back arrow cancels it, and
+   * stepping back is how the learner re-reads a line they missed.
+   */
+  const ADVANCE_MS = 1400;
+  /**
+   * Drives one runner in the body: item → answer → feedback → on. `open`
    * sessions offer "ten more" at the end; `practiceLink` shows "Practise this
    * skill" in the feedback (a five-item set that returns here afterwards).
+   *
+   * Session flow (GRAMMAR-CONTRACT.md, 2026-09-06):
+   * - a **right** answer advances by itself after `ADVANCE_MS`; Enter at once;
+   * - a **wrong** answer holds the item, with its result and its explanation,
+   *   and "Try again" builds the same item fresh. Only the forward arrow gets
+   *   past it. The runner logs the first answer and nothing after it;
+   * - **back / forward** walk the items already seen. A page is kept exactly as
+   *   it was left — its inputs already disabled by `submit()` — so a step back
+   *   is a replay, never a second grading. Left and right arrow keys do the
+   *   same when focus is not in a field or in an input that uses them itself.
    */
   function runSession({ runner, title, note = '', mode, hintOpen = false, stepper = null, lesson = null, onDone, practiceLink = false, open = false, more = null }) {
     const wrap = h('div', { class: 'g-run' });
-    setBody(stepper, wrap);
+    const backB = btn([h('span', { 'aria-hidden': 'true', text: '←' })], { 'aria-label': 'Back to the previous item', onclick: () => go(-1) }, 'g-runnav__b');
+    const fwdB = btn([h('span', { 'aria-hidden': 'true', text: '→' })], { 'aria-label': 'On to the next item', onclick: () => go(1) }, 'g-runnav__b');
+    const posEl = h('span', { class: 'g-runnav__pos' });
+    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB);
+    setBody(stepper, nav, wrap);
+    const pages = [];        // queue index → the rendered page, kept so a step back shows it as it was left
+    let beat = null;
+    const clearBeat = () => { if (beat) { clearTimeout(beat); beat = null; } };
+    /** Human position: the made items up to here, out of the made items in all (skipped slots are not counted). */
+    const paintNav = () => {
+      const i = runner.position;
+      let at = 0;
+      let total = 0;
+      for (let j = 0; j < runner.length; j++) { const made = j <= runner.frontier ? !!runner.itemAt(j) : true; if (!made) continue; total += 1; if (j <= i) at += 1; }
+      posEl.textContent = runner.current ? `${at} of ${total}` : `${total} of ${total}`;
+      posEl.setAttribute('aria-label', `Item ${at} of ${total}`);
+      backB.disabled = !runner.canBack;
+      fwdB.disabled = !runner.canForward;
+      nav.dataset.replay = runner.replay ? 'true' : 'false';
+    };
     function finish() {
+      clearBeat();
       const summary = runner.summary();
       if (open && more) {   // open-ended: ten more before the summary
         wrap.replaceChildren(h('div', { class: 'g-open' }, h('p', { class: 'g-lede', text: `${summary.right} of ${summary.total} so far.` }),
           h('div', { class: 'g-acts' }, btn('Ten more', { onclick: () => { more(); step(); } }, 'btn btn--primary'), btn('Finish', { onclick: () => onDone(summary) }, 'btn'))));
+        paintNav();
         wrap.querySelector('button')?.focus({ preventScroll: true });
         return;
       }
       onDone(summary);
     }
-    function step() {
-      closePop();
-      const cur = runner.current;
-      if (!cur) { finish(); return; }
-      const { item } = cur;
-      // Why the total is not what was asked for. A missed item comes back, and the counter grows with it;
-      // saying so is the difference between a session that is longer and one that seems to have no end
-      // (QA-I1). Once the ceiling is reached the session stops growing and says that too.
+    /** Move by one item. -1 back (a replay), +1 forward (past an answered item, whichever way it went). */
+    function go(dir) {
+      clearBeat();
+      if (dir < 0) { if (!runner.canBack) return; runner.back(); }
+      else { if (!runner.canForward) return; runner.forward(); }
+      step({ announce: true });
+    }
+    /** Build (or rebuild, for a retry) the page for the item on screen. */
+    function build(i, item, { fresh = false } = {}) {
       const grown = runner.added > 0 ? `${runner.added} item${runner.added === 1 ? '' : 's'} came back after a wrong answer${runner.capped ? '. The session is full now — anything still missed comes back next time' : ''}.` : '';
-      wrap.replaceChildren(itemNode(item, {
-        title, note: [note, grown].filter(Boolean).join(' '), position: runner.position + 1, length: runner.length, hintOpen, onHint: () => runner.hint(),
+      const page = h('div', { class: 'g-page' });
+      page.append(itemNode(item, {
+        title, note: [note, grown].filter(Boolean).join(' '), position: i, hintOpen, onHint: () => runner.hint(),
         onAnswer: async (value) => {
           const result = await runner.answer(value);
-          const next = () => { runner.next(); step(); };
-          wrap.append(feedbackNode(item, result, { lesson, mode, practiceLink, onNext: next, onPractice: () => nested(item.skill) }));
-          wrap.querySelector('.g-fb__next')?.focus({ preventScroll: true });
-          ctx.say(wrap.querySelector('.g-fb__line')?.textContent ?? '');
-          wrap.querySelector('.g-fb')?.scrollIntoView({ block: 'nearest' });
+          const fb = feedbackNode(item, result, { lesson, mode, practiceLink,
+            onNext: () => go(1),
+            onRetry: result.correct ? null : () => { pages[i] = build(i, item, { fresh: true }); wrap.replaceChildren(pages[i]); paintNav(); focusPage(pages[i]); ctx.say('Try that one again.'); },
+            onPractice: () => nested(item.skill) });
+          page.append(fb);
+          page.dataset.result = result.correct ? 'ok' : 'bad';
+          paintNav();
+          ctx.say(`${fb.querySelector('.g-fb__line')?.textContent ?? ''}${result.correct ? ' Moving on.' : ''}`);
+          fb.scrollIntoView({ block: 'nearest' });
+          if (result.correct) { fb.querySelector('.g-fb__next')?.focus({ preventScroll: true }); clearBeat(); beat = setTimeout(() => { beat = null; go(1); }, ADVANCE_MS); }
+          else fb.querySelector('.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
         },
       }));
-      wrap.querySelector('.g-q')?.focus?.({ preventScroll: true });
+      if (fresh) page.dataset.retry = 'true';
+      return page;
     }
+    const focusPage = (page) => { (page.querySelector('.g-fb__retry, .g-fb__next') ?? page.querySelector('.g-q'))?.focus?.({ preventScroll: true }); };
+    function step({ announce = false } = {}) {
+      closePop();
+      clearBeat();
+      const cur = runner.current;
+      if (!cur) { finish(); return; }
+      const i = runner.position;
+      if (!pages[i]) pages[i] = build(i, cur.item);
+      wrap.replaceChildren(pages[i]);
+      ctx.current = cur.item;
+      paintNav();
+      if (announce) ctx.say(runner.replay ? `${posEl.textContent}, already answered.` : posEl.textContent);
+      // A replayed item is read, not answered, so focus stays on the arrows. The back arrow is disabled at the
+      // first item, and focusing a disabled button drops focus on the body — outside `#grammar`, where the
+      // section's own keydown guard means the arrow keys would never be heard again (QA, keyboard-only pass).
+      if (runner.replay) { (backB.disabled ? fwdB : backB).focus({ preventScroll: true }); return; }
+      focusPage(pages[i]);
+    }
+    // Left / right arrows step through the session, but never when focus is in a field, and never inside an
+    // input that uses the arrows itself (order and match move focus along their own buttons with them).
+    // The listener sits on the section's own root, not on the document: index.js stops keydown from leaving
+    // `#grammar` (so the reader's letter shortcuts cannot fire from inside a drill), and a document-level
+    // handler would therefore never hear an arrow pressed in a session.
+    const onKey = (e) => {
+      if (!wrap.isConnected) { root.removeEventListener('keydown', onKey); return; }
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const t = e.target;
+      if (t?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t?.tagName ?? '')) return;
+      if (t?.closest?.('.g-order, .g-match, .g-chart, .g-pop')) return;
+      e.preventDefault();
+      go(e.key === 'ArrowLeft' ? -1 : 1);
+    };
+    root.addEventListener('keydown', onKey);
     /** "Practise this skill": a five-item blocked set, then back to this session's place (the feedback stays where it was). */
     function nested(skillId) {
       const skill = skills.get(skillId);
       const sub = createBlockedFive({ skill, gstore, items, skillsIndex });
       if (!sub.start()) { ctx.say('No more sentences for this skill right now.'); return; }
+      clearBeat();
       const saved = [...wrap.childNodes];
       const subWrap = h('div', { class: 'g-run g-run--sub' });
       wrap.replaceChildren(h('p', { class: 'g-sub__note', text: `A short set on ${skill.title}; the session continues afterwards.` }), subWrap);
@@ -719,30 +991,48 @@ export function createUI(ctx) {
         closePop();
         const cur = sub.runner.current;
         if (!cur) { wrap.replaceChildren(...saved); wrap.querySelector('.g-fb__next')?.focus({ preventScroll: true }); ctx.say('Back to the session.'); return; }
-        subWrap.replaceChildren(itemNode(cur.item, { title: `Practise · ${skill.title}`, position: sub.runner.position + 1, length: sub.runner.length, hintOpen: false, onHint: () => sub.runner.hint(),
-          onAnswer: async (value) => {
-            const result = await sub.runner.answer(value);
-            subWrap.append(feedbackNode(cur.item, result, { lesson: null, mode: 'practice', practiceLink: false, onNext: () => { sub.runner.next(); subStep(); } }));
-            subWrap.querySelector('.g-fb__next')?.focus({ preventScroll: true });
-            ctx.say(subWrap.querySelector('.g-fb__line')?.textContent ?? '');
-          } }));
-        subWrap.querySelector('.g-q')?.focus?.({ preventScroll: true });
+        const paint = () => {
+          subWrap.replaceChildren(itemNode(cur.item, { title: `Practise · ${skill.title}`, position: sub.runner.position, hintOpen, onHint: () => sub.runner.hint(),
+            onAnswer: async (value) => {
+              const result = await sub.runner.answer(value);
+              const fb = feedbackNode(cur.item, result, { lesson: null, mode: 'practice', practiceLink: false,
+                onNext: () => { sub.runner.forward(); subStep(); },
+                onRetry: result.correct ? null : paint });
+              subWrap.append(fb);
+              ctx.say(fb.querySelector('.g-fb__line')?.textContent ?? '');
+              if (result.correct) { fb.querySelector('.g-fb__next')?.focus({ preventScroll: true }); clearBeat(); beat = setTimeout(() => { beat = null; sub.runner.forward(); subStep(); }, ADVANCE_MS); }
+              else fb.querySelector('.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+            } }));
+          subWrap.querySelector('.g-q')?.focus?.({ preventScroll: true });
+        };
+        paint();
       };
       subStep();
     }
     step();
   }
 
-  function itemNode(item, { title, note = '', position, length, hintOpen, onHint, onAnswer }) {
+  function itemNode(item, { title, note = '', position, hintOpen, onHint, onAnswer }) {
     const skill = skills.get(item.skill);
     ctx.current = item;   // the item on screen (window.latinGrammar.current — tests / debugging)
-    const node = h('section', { class: 'g-item', 'data-kind': item.kind, 'data-input': item.input, 'aria-label': `Item ${position} of ${length}` });
-    node.append(h('p', { class: 'g-item__meta' }, h('span', { class: 'g-item__title', text: title }), h('span', { class: 'g-item__pos', text: `· ${position} of ${length}` })));
+    // The position moved out of the item and into the session's nav bar, where the arrows are and where it
+    // stays true as the session grows: a page is kept as it was left, so a number printed on it would go stale.
+    const node = h('section', { class: 'g-item', 'data-kind': item.kind, 'data-input': item.input, 'data-pos': String(position) });
+    node.append(h('p', { class: 'g-item__meta' }, h('span', { class: 'g-item__title', text: title })));
     if (note) node.append(h('p', { class: 'g-quiet g-item__note', text: note }));
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
     if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.' : 'Every sentence for this skill has come up once; starting over.' }));
     let submitted = false;
-    const submit = (v) => { if (submitted) return; submitted = true; node.querySelectorAll('button, input, textarea').forEach((el) => { if (!el.closest('.g-hint') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en')) el.disabled = true; }); node.dispatchEvent(new CustomEvent('g-answered')); onAnswer(v); };
+    const submit = (v) => { if (submitted) return; submitted = true; node.querySelectorAll('button, input, textarea').forEach((el) => { if (!el.closest('.g-hint') && !el.closest('.g-hints') && !el.classList.contains('g-hintb') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en')) el.disabled = true; }); node.dispatchEvent(new CustomEvent('g-answered')); onAnswer(v); };
+    // The hints for this item's answer boxes. `hintOpen` (Learn's guided five) forces them open, unless the
+    // learner has turned hints off altogether — that choice is theirs and outranks the phase's default.
+    const effMode = hintMode() === 'off' ? 'off' : (hintOpen ? 'always' : hintMode());
+    const boxes = effMode === 'off' ? [] : boxHints(item, { skill, describe: describeWord });
+    const boxIn = (ids) => { const want = new Set(ids.map(String)); return boxes.filter((b) => want.has(String(b.id))); };
+    const shownBoxes = item.input === 'chart' ? boxIn(chartCells(item).map((c) => item.chart.cells.indexOf(c)))
+      : ['inline', 'bank', 'match', 'order'].includes(item.input) ? boxes : [];
+    const hintPanel = shownBoxes.length ? boxHintPanel(shownBoxes, { mode: effMode, onHint: () => { if (!submitted) onHint(); } }) : null;
+    const hintFor = (id, opts) => hintPanel?.control(id, opts) ?? null;
     const question = (text) => h('p', { class: 'g-q', tabindex: '-1', text });
     // The English of a question on demand (a question set, Pensum C): never shown first.
     const englishOf = (en) => (en ? h('details', { class: 'g-q-en' }, h('summary', { class: 'g-hint__s', text: 'In English' }), h('p', { class: 'g-hint__rule', text: en })) : null);
@@ -760,7 +1050,7 @@ export function createUI(ctx) {
         node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
       }
       if (item.prompt.la) {
-        node.append(latin(item.prompt.la, { tap: tapMode ? (i, el) => { el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
+        node.append(latin(item.prompt.la, { tap: tapMode ? (i, el) => { if (submitted) return; el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
         const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
         node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
       }
@@ -774,7 +1064,7 @@ export function createUI(ctx) {
       node.append(question(item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));
     } else if (item.prompt.la) {
-      node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
+      node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { if (submitted) return; el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
       node.append(question(item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
@@ -798,39 +1088,107 @@ export function createUI(ctx) {
       node.append(form);
       setTimeout(() => input.focus({ preventScroll: true }), 0);
     } else if (item.input === 'chart') {
-      node.append(chartInput(item, submit));
+      node.append(chartInput(item, submit, hintFor));
     } else if (item.input === 'tap') {
       node.append(h('p', { class: 'g-keys g-keys--tap', text: 'Tap a word in the sentence.' }));
     } else if (item.input === 'order') {
       const w = orderInput({ chunks: item.chunks, display: item.display ?? null, scrambled: item.scrambled, onSubmit: submit, live: ctx.live });
       node.append(w.node);
+      if (hintPanel) w.node.append(hintPanel.row());
       setTimeout(() => w.focus(), 0);
     } else if (item.input === 'match') {
       const w = matchInput({ pairs: item.pairs, right: item.right, onSubmit: submit, live: ctx.live });
       node.append(w.node);
+      if (hintPanel) w.node.append(hintPanel.row());
       setTimeout(() => w.focus(), 0);
     } else if (item.input === 'inline') {
-      node.append(inlineInput(item, submit));
+      node.append(inlineInput(item, submit, hintFor));
     } else if (item.input === 'bank') {
-      node.append(bankInput(item, submit));
+      node.append(bankInput(item, submit, hintFor));
     } else if (item.input === 'self') {
       node.append(selfInput(item, submit));
     }
-    // Hint: the rule and the plain paradigm (no cell lit). Opening it is logged.
+    // Hints, one per answer box (GRAMMAR-CONTRACT.md "Hints, per answer box"). A single-box item keeps the
+    // familiar disclosure under the input; a chart, a pensum, an order or a match item gets a control per box
+    // and a panel under the input, so a hint never covers the box or the sentence it belongs to.
     const table = item.entry && item.kind !== 'chart' ? (() => { try { return par.paradigm(item.entry, []); } catch { return null; } })() : null;
     const pt = table ? renderParadigm(table) : null;
     if (pt) pt.open = true;
-    const hint = h('details', { class: 'g-hint', open: hintOpen ? true : null }, h('summary', { class: 'g-hint__s', text: 'Hint' }), h('p', { class: 'g-hint__rule', text: item.prompt.hint }), pt);
-    hint.addEventListener('toggle', () => { if (hint.open && !submitted) onHint(); });
-    if (hintOpen) onHint();
-    node.append(hint);
+    const hintOnce = () => { if (!submitted) onHint(); };
+    if (hintPanel) { node.append(hintPanel.node); if (hintPanel.always) hintOnce(); }
+    else if (effMode !== 'off' && boxes[0]) {
+      const box = boxes[0];
+      const alwaysOn = effMode === 'always';
+      const body = h('div', { class: 'g-hint__body' }, h('p', { class: 'g-hint__rule', text: box.levels[0] }));
+      const deep = () => { if (box.levels[1]) body.append(h('p', { class: 'g-hint__rule g-hint__rule--deep', text: box.levels[1] })); if (pt) body.append(pt); };
+      const more = (box.levels[1] || pt) ? btn('Tell me more', { onclick: (e) => { e.currentTarget.remove(); deep(); } }, 'g-link g-hint__more') : null;
+      const hint = h('details', { class: 'g-hint', open: alwaysOn ? true : null },
+        h('summary', { class: 'g-hint__s' }, h('span', { 'aria-hidden': 'true', text: 'Hint' }), h('span', { class: 'visually-hidden', text: `Hint for ${box.label}` })),
+        body, more);
+      hint.addEventListener('toggle', () => { if (hint.open) hintOnce(); });
+      if (alwaysOn) hintOnce();
+      node.append(hint);
+    }
     return node;
   }
 
+  /* ------------------------------------------------------------- hints */
+  /** The learner's hint mode: *Press for a hint* (default), *Always show*, *No hints*. */
+  const hintMode = () => normaliseHintMode(ctx.prefs?.().hints);
+  /** A word's dictionary line, for the hints on a reorder item's chips (their words cannot be tapped: tapping places them). */
+  const describeWord = (form, text) => {
+    try {
+      const e = dict.lookup(form).entries[0];
+      if (!e) return null;
+      const d = dict.describe(e, { compact: true, form: text });
+      return { lemma: d?.lemma ?? null, meaning: String(d?.meaning ?? '').split(/\s+·\s+/)[0] || null, parse: d?.parse ?? null };
+    } catch { return null; }
+  };
+  /**
+   * One hint per answer box for a multi-box item. Each box gets a small control
+   * ("?"); the hint itself opens in a panel under the input, so it never covers
+   * the box or the sentence. Level two is a second press ("Tell me more").
+   * `always` shows every panel from the start and counts the answer as hinted.
+   */
+  function boxHintPanel(boxes, { mode, onHint }) {
+    const always = mode === 'always';
+    const uid = `gh${Math.random().toString(36).slice(2, 8)}`;
+    const rows = new Map();
+    const list = h('div', { class: 'g-hints', role: 'group', 'aria-label': 'Hints' });
+    for (const b of boxes) {
+      const body = h('div', { class: 'g-hints__body' }, h('p', { class: 'g-hint__rule', text: b.levels[0] }));
+      // Level two stays a second press even under *Always show*: "every box shows its hint from the start" is the
+      // first level, what the box is being asked for; the rule behind it is still the deeper look.
+      const more = b.levels[1] ? btn('Tell me more', { onclick: (e) => { e.currentTarget.remove(); body.append(h('p', { class: 'g-hint__rule g-hint__rule--deep', text: b.levels[1] })); } }, 'g-link g-hint__more') : null;
+      const row = h('div', { class: 'g-hints__row', id: `${uid}-${b.id}`, hidden: always ? null : true },
+        h('p', { class: 'g-hints__for', text: b.label }), body, more);
+      rows.set(String(b.id), row);
+      list.append(row);
+    }
+    const control = (id, { label = false } = {}) => {
+      const row = rows.get(String(id));
+      const b = boxes.find((x) => String(x.id) === String(id));
+      if (!row || !b) return null;
+      return h('button', { type: 'button', class: `g-hintb${label ? ' g-hintb--wide' : ''}`, 'aria-expanded': String(always), 'aria-controls': row.id, 'aria-label': `Hint for ${b.label}`,
+        onclick: (e) => {
+          const opening = row.hidden;
+          row.hidden = !opening;
+          e.currentTarget.setAttribute('aria-expanded', String(opening));
+          if (opening) { onHint?.(); row.scrollIntoView({ block: 'nearest' }); }
+        } },
+        h('span', { 'aria-hidden': 'true', text: '?' }), label ? h('span', { 'aria-hidden': 'true', class: 'g-hintb__w', lang: 'la', text: b.label }) : null);
+    };
+    /** For order and match, whose boxes are buttons the learner taps: a labelled row under the input, never a mark on the chip itself. */
+    const row = () => h('div', { class: 'g-hintrow' }, h('span', { class: 'g-label', text: 'Hints' }), boxes.map((b) => control(b.id, { label: true })));
+    return { node: list, control, row, always };
+  }
+
   /** Pensum A: the sentence with an input for each ending, inline after its stem. Submits { blankIndex: typed }. */
-  function inlineInput(item, submit) {
+  function inlineInput(item, submit, hintFor = () => null) {
     const inputs = new Map();
-    const p = h('p', { class: 'g-la g-pensum' , lang: 'la' });
+    // A div, not a p: each blank carries its own hint button beside it, and a button is fine in a paragraph
+    // but the hint panel that follows the sentence is not — the sentence keeps its look through `.g-la`.
+    const p = h('div', { class: 'g-la g-pensum', lang: 'la' });
     for (const seg of item.segments) {
       if (seg.blank == null) { p.append(seg.text); continue; }
       const b = item.blanks[seg.blank];
@@ -840,7 +1198,7 @@ export function createUI(ctx) {
       // The stem is already printed: it ends the prose segment before this blank ("Rōma in Itali_ est."). Printing
       // `b.stem` here too gave every Pensum A item a doubled stem — "Rōma in ItaliItali__ est." (C1). It stays in the
       // input's aria-label, which is where a screen-reader user needs it.
-      p.append(h('span', { class: 'g-pensum__blank' }, inp));
+      p.append(h('span', { class: 'g-pensum__blank' }, inp, hintFor(seg.blank)));
     }
     const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
     const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((b, i) => { v[i] = inputs.get(i)?.value ?? ''; }); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next ending; Enter checks.' }));
@@ -848,16 +1206,16 @@ export function createUI(ctx) {
     return form;
   }
   /** Pensum B: the sentence with word blanks and a tappable bank. Submits { blankIndex: word }. */
-  function bankInput(item, submit) {
+  function bankInput(item, submit, hintFor = () => null) {
     const filled = {};
     const slots = new Map();
-    const p = h('p', { class: 'g-la g-pensum', lang: 'la' });
+    const p = h('div', { class: 'g-la g-pensum', lang: 'la' });
     for (const seg of item.segments) {
       if (seg.blank == null) { p.append(seg.text); continue; }
       const i = seg.blank;
       const slot = h('button', { type: 'button', class: 'g-pensum__slot', lang: 'la', 'aria-label': `Blank ${i + 1}: empty`, onclick: () => { if (filled[i] != null) { delete filled[i]; paint(); } } }, '\u00a0');
       slots.set(i, slot);
-      p.append(slot);
+      p.append(slot, hintFor(i));
     }
     // Tiles are identified by their position in the bank, never by their text: a sentence that wants the same word
     // twice offers two tiles (sets.js builds the bank as a multiset), and disabling "by text" left Check unreachable (M3).
@@ -897,31 +1255,34 @@ export function createUI(ctx) {
   /** The question as asked of the cells shown ("Give the accusative singular of cāsus" when a phone shows one cell). */
   const chartQuestion = (item) => { const cells = chartCells(item); return cells.length === 1 && item.chart.cells.length > 1 ? `Give the ${cells[0].label} of ${item.chart.head ?? item.lemma.split(/[\s,]/)[0]}` : item.prompt.question; };
   /** The paradigm section with inputs in the cells to fill (a compact single row on phones). */
-  function chartInput(item, submit) {
+  function chartInput(item, submit, hintFor = () => null) {
     const { chart } = item;
     const cells = chartCells(item);
     const inputs = new Map();   // index into chart.cells → input
     const mk = (i, label) => { const inp = h('input', { type: 'text', class: 'g-input g-input--cell', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': label, placeholder: '…' }); inputs.set(i, inp); return inp; };
+    // Each cell that is filled in carries its own hint: four cells means four hints, each about its own cell.
+    const cellIn = (i, label) => h('span', { class: 'g-cellwrap' }, mk(i, label), hintFor(i));
     // Cells not shown (phones show one) are judged as right: only what was asked counts.
     const collect = () => { const v = {}; chart.cells.forEach((c, i) => { v[i] = inputs.has(i) ? inputs.get(i).value : c.answer[0]; }); return v; };
     const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); submit(collect()); } });
     if (cells.length === 1) {
       const c = cells[0];
       const i = chart.cells.indexOf(c);
-      form.append(h('label', { class: 'g-chart__one' }, h('span', { class: 'g-label', text: `${item.lemma.split(/[\s,]/)[0]} · ${c.label}` }), mk(i, c.label)));
+      form.append(h('div', { class: 'g-chart__one' }, h('label', { class: 'g-label', for: `gc-${i}` }, `${item.lemma.split(/[\s,]/)[0]} · ${c.label}`), cellIn(i, c.label)));
+      inputs.get(i).id = `gc-${i}`;
     } else {
       const sec = chart.table.sections[chart.section];
       const tbl = h('table', { class: 'pt g-chart__t' }, sec.title ? h('caption', { class: 'pt__caption', text: `${item.lemma} · ${sec.title}` }) : null,
         sec.headers?.length ? h('thead', {}, h('tr', {}, h('th', { scope: 'col', class: 'pt__corner', 'aria-label': 'form' }), sec.headers.map((hd) => h('th', { scope: 'col', text: hd })))) : null,
         h('tbody', {}, sec.rows.map((r, ri) => h('tr', {}, h('th', { scope: 'row', text: r.label }), r.cells.map((cell, ci) => {
           const idx = chart.cells.findIndex((c) => c.row === ri && c.col === ci);
-          if (idx >= 0) return h('td', { class: 'pt__cell g-chart__in' }, mk(idx, chart.cells[idx].label));
+          if (idx >= 0) return h('td', { class: 'pt__cell g-chart__in' }, cellIn(idx, chart.cells[idx].label));
           return h('td', { class: `pt__cell${cell?.empty ? ' is-empty' : ''}`, lang: 'la', text: cell?.empty ? '—' : cell?.text ?? '—' });
         })))));
       form.append(h('div', { class: 'pt__scroll' }, tbl));
     }
     const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
-    form.append(h('div', { class: 'g-chart__acts' }, check));
+    form.append(h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next cell; Enter checks.' }));
     setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
     return form;
   }
@@ -962,7 +1323,7 @@ export function createUI(ctx) {
     return `${head}; ${tail}${note} — they differ only in the macron, and that macron is the ending.`;
   }
 
-  function feedbackNode(item, result, { lesson, mode, practiceLink, onNext, onPractice }) {
+  function feedbackNode(item, result, { lesson, mode, practiceLink, onNext, onRetry = null, onPractice = null }) {
     const skill = skills.get(item.skill);
     const fb = item.feedback;
     const ok = result.correct;
@@ -1022,12 +1383,26 @@ export function createUI(ctx) {
       if (rule) slot.append(h('p', { class: 'g-lesson__rule is-lit' }, inline(rule.text)));
       if (!ok && conf) slot.append(h('div', { class: 'g-lesson__conf' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(conf.with)}` }), h('p', {}, inline(conf.text))));
     }, { once: false });
-    const node = h('div', { class: 'g-fb', 'data-ok': String(ok), 'data-partial': result.partial ? 'true' : null },
-      h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? (result.partial ? '~' : '✓') : '✗' }), ' ', line),
+    // Green for right, red for wrong — and never colour alone. The mark (✓ / ✗ / ~) survives greyscale and a
+    // black-and-white print, the line says the word, and the visually-hidden label says it again for a screen
+    // reader that never sees either. `data-ok` carries the colour in grammar.css, both themes.
+    const verdict = result.partial ? 'Partly right.' : ok ? 'Correct.' : 'Not right.';
+    // A wrong answer holds the item and the learner tries again; only the first answer was logged, and saying so
+    // is what keeps a retry from feeling like cheating (GRAMMAR-CONTRACT.md "Session flow").
+    const again = result.retry
+      ? h('p', { class: 'g-fb__again' }, ok
+        ? 'Right this time. Your first answer to this item is the one already counted, so the skill is unchanged.'
+        : 'Try it once more — your first answer to this item is the one already counted.')
+      : (!ok && onRetry ? h('p', { class: 'g-fb__again', text: 'Have another go. Only your first answer counts towards the skill, so trying again costs nothing.' }) : null);
+    const node = h('div', { class: 'g-fb', 'data-ok': String(ok), 'data-partial': result.partial ? 'true' : null, 'data-retry': result.retry ? 'true' : null },
+      h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? (result.partial ? '~' : '✓') : '✗' }), h('span', { class: 'visually-hidden', text: `${verdict} ` }), ' ', line),
       answerBlock,
       isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : details,
-      h('div', { class: 'g-fb__acts' }, btn('Next', { onclick: onNext }, 'btn btn--primary g-fb__next'), practiceLink && mode === 'practice' ? btn(`Practise ${skill?.title ?? 'this skill'}`, { onclick: onPractice }, 'btn btn--quiet') : null));
-    node.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.classList.contains('g-fb__next')) { e.preventDefault(); onNext(); } });
+      again,
+      h('div', { class: 'g-fb__acts' },
+        !ok && onRetry ? btn('Try again', { onclick: onRetry }, 'btn btn--primary g-fb__retry') : null,
+        btn(ok ? 'Next' : 'Move on', { onclick: onNext, 'aria-label': ok ? 'Next item' : 'Move on to the next item without getting this one right' }, `btn ${ok ? 'btn--primary' : 'btn--quiet'} g-fb__next`),
+        practiceLink && mode === 'practice' && onPractice ? btn(`Practise ${skill?.title ?? 'this skill'}`, { onclick: onPractice }, 'btn btn--quiet') : null));
     return node;
   }
 
@@ -1189,7 +1564,7 @@ export function createUI(ctx) {
    * is windowed to its tail, so a skill with thousands of rows still opens at
    * once on a phone.
    */
-  function renderHistory({ skill: id }) {
+  function renderHistory({ skill: id, from = null }) {
     const skill = skills.get(id);
     if (!skill) { render('map'); return; }
     const now = Date.now();
@@ -1203,12 +1578,12 @@ export function createUI(ctx) {
     const dl = (label, ...value) => [h('dt', { text: label }), h('dd', {}, ...value)];
 
     const acts = [];
-    if (drillable(id)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id) }, 'btn btn--primary'));
-    acts.push(btn('Lesson', { onclick: () => render('lesson', { skill: id }) }, 'btn btn--quiet'));
+    if (drillable(id)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id, from) }, 'btn btn--primary'));
+    acts.push(btn('Lesson', { onclick: () => render('lesson', { skill: id, from }) }, 'btn btn--quiet'));
     if (!skill.set && chartTable(skill)) acts.push(btn('Print chart', { onclick: () => printChart(skill) }, 'btn btn--quiet'));
 
     const head = [
-      btn('← Skills', { onclick: () => render('map') }, 'btn btn--quiet g-back'),
+      backButton(from),
       h('header', { class: 'g-head' },
         skill.set ? null : h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(String(skill.category ?? '').replace('-', ' '))}` }),
         h('h1', { class: 'g-title', text: skill.title }),
@@ -1434,5 +1809,5 @@ export function createUI(ctx) {
 
   const fmtDay = (day) => { const d = new Date(`${day}T12:00:00`); return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); };
 
-  return { render, refresh, todayCard, dispose };
+  return { render, refresh, repaint, todayCard, chapterPanel, dispose };
 }
