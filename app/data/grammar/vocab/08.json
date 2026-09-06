@@ -99,13 +99,13 @@
   },
   {
    "lemma": "emō",
-   "dict": "emō, emere, emī, emptum",
+   "dict": "emō, emere, ēmī, ēmptum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "buy",
    "sense_full": "buy",
-   "parts": "emō, emere, emī, emptum",
+   "parts": "emō, emere, ēmī, ēmptum",
    "unit_id": "r08:13.1",
    "count": 26
   },
@@ -135,13 +135,13 @@
   },
   {
    "lemma": "accipiō",
-   "dict": "accipiō, accipere, accepī, acceptum",
+   "dict": "accipiō, accipere, accēpī, acceptum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "receive, accept",
    "sense_full": "take, grasp, receive, accept, undertake",
-   "parts": "accipiō, accipere, accepī, acceptum",
+   "parts": "accipiō, accipere, accēpī, acceptum",
    "unit_id": "r08:18.1",
    "count": 24
   },
@@ -219,13 +219,13 @@
   },
   {
    "lemma": "ōrnō",
-   "dict": "ōrnō, ōrnāre, ornavī, ornatum",
+   "dict": "ōrnō, ōrnāre, ōrnāvī, ōrnātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "adorn, decorate",
    "sense_full": "equip",
-   "parts": "ōrnō, ōrnāre, ornavī, ornatum",
+   "parts": "ōrnō, ōrnāre, ōrnāvī, ōrnātum",
    "unit_id": "r08:22.1",
    "count": 16
   },
@@ -267,13 +267,13 @@
   },
   {
    "lemma": "vēndō",
-   "dict": "vēndō, vēndere, vendidī, venditum",
+   "dict": "vēndō, vēndere, vēndidī, venditum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "sell",
    "sense_full": "sell",
-   "parts": "vēndō, vēndere, vendidī, venditum",
+   "parts": "vēndō, vēndere, vēndidī, venditum",
    "unit_id": "r08:4.1",
    "count": 13
   },
@@ -302,14 +302,14 @@
    "count": 11
   },
   {
-   "lemma": "conueniō",
-   "dict": "conueniō, convenīre, convenī, conuentum",
+   "lemma": "conveniō",
+   "dict": "conveniō, convenīre, convēnī, conuentum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "fit, suit, be right",
    "sense_full": "be appropriate to, fit, be correctly shaped or consistent",
-   "parts": "conueniō, convenīre, convenī, conuentum",
+   "parts": "conveniō, convenīre, convēnī, conuentum",
    "unit_id": "r08:81.1",
    "count": 11
   },

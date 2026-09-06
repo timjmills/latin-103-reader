@@ -672,6 +672,18 @@
    "parts": null,
    "unit_id": "w02:97.1",
    "count": 1
+  },
+  {
+   "lemma": "sīn",
+   "dict": "sīn",
+   "pos": "CONJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "but if",
+   "sense_full": "but if",
+   "parts": null,
+   "unit_id": "w02:75.1",
+   "count": 1
   }
  ]
 }

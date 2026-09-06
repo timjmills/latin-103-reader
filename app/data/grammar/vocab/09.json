@@ -218,6 +218,18 @@
    "count": 26
   },
   {
+   "lemma": "iaceō",
+   "dict": "iaceō, iacēre, iacuī, iacitum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "lie",
+   "sense_full": "lie",
+   "parts": "iaceō, iacēre, iacuī, iacitum",
+   "unit_id": "r09:35.1",
+   "count": 23
+  },
+  {
    "lemma": "campus",
    "dict": "campus, -ī m.",
    "pos": "N",
@@ -254,15 +266,15 @@
    "count": 20
   },
   {
-   "lemma": "iaceō",
-   "dict": "iaceō, iacēre, iacuī, iacitum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "lie",
-   "sense_full": "lie",
-   "parts": "iaceō, iacēre, iacuī, iacitum",
-   "unit_id": "r09:35.1",
+   "lemma": "dēns",
+   "dict": "dēns, dentis m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 3,
+   "meaning": "tooth",
+   "sense_full": "tooth",
+   "parts": null,
+   "unit_id": "r09:72.1",
    "count": 19
   },
   {
@@ -458,8 +470,8 @@
    "count": 7
   },
   {
-   "lemma": "rīvus",
-   "dict": "rīvus, -ī m.",
+   "lemma": "rivus",
+   "dict": "rivus, rīvī m.",
    "pos": "N",
    "gender": "m",
    "decl": 2,

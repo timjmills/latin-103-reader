@@ -146,8 +146,8 @@
    "count": 31
   },
   {
-   "lemma": "castrum",
-   "dict": "castrum, -ī n.",
+   "lemma": "castra",
+   "dict": "castra, -ōrum n. (plural only)",
    "pos": "N",
    "gender": "n",
    "decl": 2,
@@ -182,30 +182,6 @@
    "count": 26
   },
   {
-   "lemma": "germānus",
-   "dict": "germānus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "German",
-   "sense_full": "own or full (of brother or sister)",
-   "parts": null,
-   "unit_id": "r12:57.1",
-   "count": 25
-  },
-  {
-   "lemma": "iaciō",
-   "dict": "iaciō, iacere, iecī, iactum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "throw, hurl",
-   "sense_full": "throw, hurl, cast",
-   "parts": "iaciō, iacere, iecī, iactum",
-   "unit_id": "r12:106.2",
-   "count": 25
-  },
-  {
    "lemma": "dux",
    "dict": "dux, ducis m.",
    "pos": "N",
@@ -218,8 +194,20 @@
    "count": 24
   },
   {
-   "lemma": "armum",
-   "dict": "armum, -ī n.",
+   "lemma": "iaciō",
+   "dict": "iaciō, iacere, iēcī, iactum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "throw, hurl",
+   "sense_full": "throw, hurl, cast",
+   "parts": "iaciō, iacere, iēcī, iactum",
+   "unit_id": "r12:106.2",
+   "count": 21
+  },
+  {
+   "lemma": "arma",
+   "dict": "arma, -ōrum n. (plural only)",
    "pos": "N",
    "gender": "n",
    "decl": 2,
@@ -350,18 +338,6 @@
    "count": 13
   },
   {
-   "lemma": "metuō",
-   "dict": "metuō, metuere, metuī",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "fear",
-   "sense_full": "fear",
-   "parts": "metuō, metuere, metuī",
-   "unit_id": "r12:82.1",
-   "count": 13
-  },
-  {
    "lemma": "vester",
    "dict": "vester, vestra, vestrum",
    "pos": "ADJ",
@@ -435,13 +411,13 @@
   },
   {
    "lemma": "oppugnō",
-   "dict": "oppugnō, oppugnāre, oppugnavī, oppugnatum",
+   "dict": "oppugnō, oppugnāre, oppugnāvī, oppugnātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "attack, assault",
    "sense_full": "attack, assault, storm, besiege",
-   "parts": "oppugnō, oppugnāre, oppugnavī, oppugnatum",
+   "parts": "oppugnō, oppugnāre, oppugnāvī, oppugnātum",
    "unit_id": "r12:77.1",
    "count": 9
   },
@@ -468,6 +444,30 @@
    "parts": null,
    "unit_id": "r12:54.1",
    "count": 8
+  },
+  {
+   "lemma": "metuō",
+   "dict": "metuō, metuere, metuī",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "fear",
+   "sense_full": "fear",
+   "parts": "metuō, metuere, metuī",
+   "unit_id": "r12:82.1",
+   "count": 7
+  },
+  {
+   "lemma": "metus",
+   "dict": "metus, -ūs m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 4,
+   "meaning": "fear",
+   "sense_full": "fear, anxiety",
+   "parts": null,
+   "unit_id": "r12:85.1",
+   "count": 7
   },
   {
    "lemma": "mīlitāris",
@@ -579,7 +579,7 @@
   },
   {
    "lemma": "praenōmen",
-   "dict": "praenōmen, praenominis n.",
+   "dict": "praenōmen, praenōminis n.",
    "pos": "N",
    "gender": "n",
    "decl": 3,
@@ -614,20 +614,8 @@
    "count": 3
   },
   {
-   "lemma": "hispānus",
-   "dict": "hispānus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "Spanish",
-   "sense_full": "Spanish, of Spain",
-   "parts": null,
-   "unit_id": "r12:87.1",
-   "count": 3
-  },
-  {
    "lemma": "cognōmen",
-   "dict": "cognōmen, cognominis n.",
+   "dict": "cognōmen, cognōminis n.",
    "pos": "N",
    "gender": "n",
    "decl": 3,

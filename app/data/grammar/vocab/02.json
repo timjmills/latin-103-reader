@@ -110,18 +110,6 @@
    "count": 106
   },
   {
-   "lemma": "līber",
-   "dict": "līber, -ī m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 2,
-   "meaning": "children",
-   "sense_full": "children (in the plural)",
-   "parts": null,
-   "unit_id": "r02:21.1",
-   "count": 94
-  },
-  {
    "lemma": "vir",
    "dict": "vir, -ī m.",
    "pos": "N",
@@ -170,6 +158,18 @@
    "count": 64
   },
   {
+   "lemma": "līberī",
+   "dict": "līberī, -ōrum m. (plural only)",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "children",
+   "sense_full": "children (in the plural)",
+   "parts": null,
+   "unit_id": "r02:21.1",
+   "count": 59
+  },
+  {
    "lemma": "ancilla",
    "dict": "ancilla, -ae f.",
    "pos": "N",
@@ -194,8 +194,8 @@
    "count": 53
   },
   {
-   "lemma": "fēmina",
-   "dict": "fēmina, -ae f.",
+   "lemma": "femina",
+   "dict": "femina, fēminae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
@@ -216,6 +216,18 @@
    "parts": null,
    "unit_id": "r02:80.1",
    "count": 40
+  },
+  {
+   "lemma": "līber",
+   "dict": "līber, librī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "book, volume",
+   "sense_full": "book, volume",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 35
   },
   {
    "lemma": "fīlia",
@@ -266,8 +278,8 @@
    "count": 23
   },
   {
-   "lemma": "lingva",
-   "dict": "lingva, -ae f.",
+   "lemma": "lingua",
+   "dict": "lingua, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,

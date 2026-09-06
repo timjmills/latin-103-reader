@@ -155,3 +155,44 @@ def test_check_gloss_rejects_a_raw_sense_line(bad):
 
 def test_the_shipped_decks_pass_check():
     assert bv.check() == []
+
+
+# ------------------------------------------------- plūrālia tantum (noun_number)
+
+# Glossary entries as build_glossary writes them: Whitaker files a word used
+# only in the plural under an invented singular head, and the plural marker sits
+# on his first sense — the hook latin_forms.noun_number() reads.
+PLURAL_ONLY = {
+    "castrum": {"lemma": "castrum -ī n", "pos": "N", "h": "castrum", "cat": [2, 2], "gender": "n",
+                "roots": ["castr", "castr"], "senses": ["camp (military; usually plural castra)", "fort"]},
+    "tenebra": {"lemma": "tenebra -ae f", "pos": "N", "h": "tenebra", "cat": [1, 1], "gender": "f",
+                "roots": ["tenebr", "tenebr"], "senses": ["darkness (in the plural), obscurity", "night"]},
+    "liber": {"lemma": "liber līberī m", "pos": "N", "h": "liber", "cat": [2, 3], "gender": "m",
+              "roots": ["liber", "līber"], "senses": ["children (in the plural)", "(singular vocative) child"]},
+    "idus": {"lemma": "īdus -ūs f", "pos": "N", "h": "idus", "cat": [4, 1], "gender": "f",
+             "roots": ["īd", "īd"], "senses": ["Ides (in the plural), abbreviation Id", "15th of month"]},
+    # Ørberg prints a singular head for these two, so noun_number leaves them alone
+    "gena": {"lemma": "gena -ae f", "pos": "N", "h": "gena", "cat": [1, 1], "gender": "f",
+             "roots": ["gen", "gen"], "senses": ["cheeks (in the plural)", "eyes"]},
+    # the lemma already prints the plural: nothing to rewrite
+    "moene": {"lemma": "moenia -ium n pl", "pos": "N", "h": "moene", "cat": [3, 4], "gender": "n",
+              "roots": ["moene", "moen"], "senses": ["defensive or town walls (in the plural)"]},
+}
+
+
+@pytest.mark.parametrize("h,expected,head", [
+    ("castrum", "castra, -ōrum n. (plural only)", "castra"),
+    ("tenebra", "tenebrae, -ārum f. (plural only)", "tenebrae"),
+    ("liber", "līberī, -ōrum m. (plural only)", "līberī"),
+    ("idus", "īdūs, -uum f. (plural only)", "īdūs"),
+    ("gena", "gena, -ae f.", "gena"),
+    ("moene", "moenia, -ium n. (plural only)", "moenia"),
+])
+def test_a_plurale_tantum_is_printed_in_the_plural(h, expected, head):
+    entry = dict(PLURAL_ONLY[h], parses=[])
+    got, parts = bv.dict_form(entry)
+    assert got == expected
+    assert parts is None
+    assert bv.check_dict_line(got, "N") is None
+    # the headword — and so the deck's own key — follows the dictionary line
+    assert bv.headword(entry) == head

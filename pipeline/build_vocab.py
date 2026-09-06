@@ -87,6 +87,7 @@ ROOT = PIPELINE_DIR.parent
 if str(PIPELINE_DIR) not in sys.path:
     sys.path.insert(0, str(PIPELINE_DIR))
 
+import latin_forms  # noqa: E402
 from macrons import canonical, strip_macrons  # noqa: E402
 
 BUILD = ROOT / "data" / "build"
@@ -101,6 +102,16 @@ SKIP_POS = {"NUM", "ABBR", "ENDING", "PREFIX", "STEM"}
 SENTENCE_END = re.compile(r"[.!?…:][\"'”’»)\]]*$")
 # capitalised adjectives the book lists as vocabulary (never proper names)
 FORM_OVERRIDES = {"ecce": "ecce", "merces": "merx"}  # form → headword (h) to use
+# form → (headword, pos): the reading a form must have where the headword alone
+# cannot separate two lexemes.  līberī -ōrum m "children" is a plūrāle tantum
+# that Whitaker files under the same headword as the adjective līber "free"
+# (and as liber -brī m "book"), and its every form is spelt like the
+# adjective's, so it has no unambiguous form of its own to be attested by; the
+# library prints these four as "children" in twenty of twenty-two places, and
+# the first of them is Familia Romana II ("trēs līberī").  The adjective still
+# enters the deck on hominem līberum (cap. XXXI) and the book on librum / librī.
+FORM_PIN = {"liberi": ("liber", "N"), "liberis": ("liber", "N"),
+            "liberorum": ("liber", "N"), "liberos": ("liber", "N")}
 # Words Ørberg teaches as a noun where Whitaker ranks the adjective of the same
 # headword first (amīcus "friend", not "friendly"): (headword, pos) to prefer.
 POS_PREFERRED = {("amicus", "N"), ("inimicus", "N"), ("medicus", "N"), ("maritus", "N"),
@@ -112,7 +123,7 @@ NATIONAL_ADJ = {"romanus", "graecus", "latinus", "germanus", "gallicus", "aegypt
 # they are one word, and the learner meets whichever spelling the book prints.
 HEAD_ALIAS = {
     ("assum", "V"): "adsum", ("apsum", "V"): "absum", ("lacte", "N"): "lac",
-    ("nil", "N"): "nihil", ("kal", "N"): "kalenda", ("menda", "N"): "mendum",
+    ("nil", "N"): "nihil", ("kal", "N"): "kalendae", ("menda", "N"): "mendum",
     ("eiicio", "V"): "eicio", ("abiicio", "V"): "abicio", ("uasus", "N"): "uasum",
     ("contempno", "V"): "contemno", ("reuertor", "V"): "reuerto",
 }
@@ -149,6 +160,9 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("ubi", "CONJ"): "where, when",
     ("parvus", "ADJ"): "small, little",
     ("capitulum", "N"): "chapter",
+    # the name list spells this adjective with its capital, and Whitaker's
+    # sense line for it ends "of Latium", which short_gloss() would lower-case
+    ("Latīnus", "ADJ"): "Latin",
     # II
     ("puella", "N"): "girl",
     ("ecce", "INTERJ"): "look!, see here!",
@@ -157,7 +171,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("cēterus", "ADJ"): "the other, the rest",
     ("pāgina", "N"): "page",
     ("vir", "N"): "man, husband",
-    ("līber", "N"): "children",
+    ("līberī", "N"): "children",
     # III
     ("ego", "PRON"): "I",
     ("neque", "CONJ"): "and not, nor",
@@ -341,7 +355,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("arcessō", "V"): "send for, summon",
     ("horreō", "V"): "shudder at, dread",
     ("appōnō", "V"): "put beside, serve",
-    ("viscus", "N"): "internal organs",
+    ("viscera", "N"): "internal organs",
     ("gena", "N"): "cheek",
     ("vēna", "N"): "vein",
     ("labrum", "N"): "lip",
@@ -375,7 +389,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("reveniō", "V"): "come back, return",
     # XII
     ("germānus", "ADJ"): "German",
-    ("armum", "N"): "arms, weapons",
+    ("arma", "N"): "arms, weapons",
     ("impetūs", "N"): "attack, charge",
     ("patior", "V"): "suffer, endure, allow",
     ("barbarus", "ADJ"): "foreign, barbarian",
@@ -406,15 +420,15 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("fugiō", "V"): "flee, run away",
     ("gravis", "ADJ"): "heavy, serious",
     ("hispānus", "ADJ"): "Spanish",
-    ("castrum", "N"): "camp",
+    ("castra", "N"): "camp",
     ("pedēs", "N"): "foot soldier",
     ("mīlle", "N"): "thousand",
     ("passus", "N"): "pace, step",
     ("patria", "N"): "native land, country",
     # XIII
     ("nox", "N"): "night",
-    ("kalenda", "N"): "the Kalends, the first of the month",
-    ("īdus", "N"): "the Ides",
+    ("kalendae", "N"): "the Kalends, the first of the month",
+    ("īdūs", "N"): "the Ides",
     ("posterus", "ADJ"): "next, following",
     ("tempus", "N"): "time",
     ("faciēs", "N"): "face, appearance",
@@ -668,7 +682,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("colloquium", "N"): "conversation",
     ("necessārius", "ADJ"): "necessary",
     ("pergō", "V"): "go on, proceed",
-    ("cūna", "N"): "cradle",
+    ("cūnae", "N"): "cradle",
     ("plūs", "N"): "more, too much",
     # XXI
     ("mūtō", "V"): "change, exchange",
@@ -911,7 +925,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("exīstimō", "V"): "think, judge",
     ("faveō", "V"): "favor, support",
     ("fertilis", "ADJ"): "fertile, fruitful",
-    ("frūx", "N"): "crops, fruits",
+    ("frūgēs", "N"): "crops, fruits",
     ("grex", "N"): "flock, herd",
     ("inhūmānus", "ADJ"): "rude, unkind",
     ("noceō", "V"): "harm, hurt",
@@ -1027,7 +1041,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("appāreō", "V"): "appear",
     ("cōnfiteor", "V"): "confess, admit",
     ("dēspērō", "V"): "despair",
-    ("dīvitia", "N"): "riches, wealth",
+    ("dīvitiae", "N"): "riches, wealth",
     ("expōnō", "V"): "set out, put ashore",
     ("afficiō", "V"): "affect, influence",
     ("appropinquō", "V"): "approach, draw near",
@@ -1206,7 +1220,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("iniūstus", "ADJ"): "unjust",
     ("līqueō", "V"): "be liquid, be clear",
     ("memoria", "N"): "memory",
-    ("nūga", "N"): "trifles, nonsense",
+    ("nūgae", "N"): "trifles, nonsense",
     ("retrahō", "V"): "drag back, withdraw",
     ("quamobrem", "CONJ"): "why, for what reason",
     ("quisquis", "PRON"): "whoever",
@@ -1376,7 +1390,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("bāsium", "N"): "kiss",
     ("circēnsis", "ADJ"): "of the circus",
     ("circus", "N"): "circus, race course",
-    ("dēlicia", "N"): "delight, pleasure, pet",
+    ("dēliciae", "N"): "delight, pleasure, pet",
     ("gremium", "N"): "lap, bosom",
     ("ingenium", "N"): "nature, talent",
     ("laedō", "V"): "hurt, injure",
@@ -1386,7 +1400,7 @@ _GLOSS_SOURCE: dict[tuple[str, str], str] = {
     ("prīncipium", "N"): "beginning",
     ("sapiō", "V"): "be wise, have sense",
     ("sinūs", "N"): "fold, lap, bay",
-    ("tenebra", "N"): "darkness",
+    ("tenebrae", "N"): "darkness",
     ("venustus", "ADJ"): "charming, lovely, graceful",
     ("ācer", "ADJ"): "sharp, keen, fierce",
     ("aurīga", "N"): "charioteer",
@@ -1590,6 +1604,47 @@ def _paren(notes: list[str]) -> str:
     return f" ({'; '.join(notes)})" if notes else ""
 
 
+def plural_lemma(e: dict) -> str | None:
+    """A word used only in the plural, rewritten the way the book prints it —
+    `castrum -ī n` → `castra -ōrum n pl` — or None when the entry is not one.
+
+    Whitaker files a plūrāle tantum under an invented singular head (castrum -ī
+    n "camp (military; usually plural castra)"; tenebra -ae f; kalenda -ae f)
+    and the deck printed that head, so the learner was given a dictionary line
+    and a headword that are not Latin.  latin_forms.noun_number() is the same
+    hook the paradigm tables read, so the deck and the chart now agree on which
+    words have no singular; the nominative and genitive plural come from
+    latin_forms.forms(), and the genitive is cut at the stem the two share
+    (castra / castrōrum → -ōrum, viscera / viscerum → -um, īdūs / īduum →
+    -uum), which is how Ørberg's Index vocābulōrum abbreviates it.  The `pl`
+    tail is the marker noun_dict() already understands, so the line comes out
+    "castra, -ōrum n. (plural only)" — the shape moenia has always had.
+
+    An entry whose lemma already prints the plural head (moenia -ium n pl) is
+    left exactly as it is, and so is one with no plural in its table (the
+    indeclinable abbreviation `kal`)."""
+    if e.get("pos") != "N" or latin_forms.noun_number(e) != "pl":
+        return None
+    try:
+        pairs = latin_forms.forms(e)
+    except Exception:                                    # pragma: no cover - a hand table with no case
+        return None
+    def cell(case: str) -> str | None:
+        return next((f for f, p in pairs if p.get("case") == case and p.get("number") == "pl"), None)
+    nom, gen = cell("nom"), cell("gen")
+    if not nom or not gen:
+        return None
+    head = take_notes(positive_lemma(e["lemma"]).split("·")[0])[0].split()
+    # macrons and all: the 4th declension writes its nominative singular and
+    # plural with the same letters (īdus / īdūs), and only one of them is a word
+    if not head or head[0] == nom:
+        return None                                      # the lemma is already the plural one
+    i = 0
+    while i < min(len(nom), len(gen)) and nom[i] == gen[i]:
+        i += 1
+    return f"{nom} -{gen[i:]} pl"
+
+
 def noun_dict(lemma: str, gender: str | None) -> str:
     """puella, -ae f. / frāter, frātris m. / nihil n. (indeclinable)"""
     head, *extra = [s.strip() for s in lemma.split("·")]
@@ -1662,7 +1717,7 @@ def dict_form(e: dict) -> tuple[str, str | None]:
         d = verb_dict(lemma)
         return d, d
     if pos == "N":
-        return noun_dict(e["lemma"], e.get("gender")), None
+        return noun_dict(plural_lemma(e) or e["lemma"], e.get("gender")), None
     if pos == "ADJ":
         return adj_dict(e["lemma"]), None
     if pos == "PREP":
@@ -1700,7 +1755,11 @@ def check_dict_line(d: str, pos: str) -> str | None:
 
 
 def headword(e: dict) -> str:
-    return positive_lemma(e["lemma"]).split(",")[0].split()[0]
+    """The word as the deck names it — and, through lemma_key(), its identity.
+    A plūrāle tantum is named by its plural (castra, not Whitaker's castrum), so
+    the headword, the dictionary line and the key check() re-derives all agree."""
+    pl = plural_lemma(e)
+    return (pl or positive_lemma(e["lemma"])).split(",")[0].split()[0]
 
 
 # ------------------------------------------------------------------ teaching gloss
@@ -1797,6 +1856,9 @@ def build(chapters_wanted: list[int] | None = None, report: bool = False) -> dic
             continue
         if form in FORM_OVERRIDES:
             all_ents = [e for e in all_ents if e["h"] == FORM_OVERRIDES[form]]
+        if form in FORM_PIN:
+            all_ents = [e for e in all_ents
+                        if (canonical(e["h"]), e["pos"]) == FORM_PIN[form]] or all_ents
         ents = [e for e in all_ents if usable(e)]
         if any(not e.get("enc") for e in ents):
             ents = [e for e in ents if not e.get("enc")]  # quoque is one word, not quō + que
@@ -1942,7 +2004,10 @@ def build(chapters_wanted: list[int] | None = None, report: bool = False) -> dic
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for c in (chapters_wanted or list(CHAPTERS)):
         path = OUT_DIR / f"{c:02d}.json"
-        path.write_text(json.dumps(decks[c], ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        # newline="\n": .gitattributes checks these files out with LF, so writing
+        # the platform's line ending would show all 34 decks as changed
+        with open(path, "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(json.dumps(decks[c], ensure_ascii=False, indent=1) + "\n")
         print(f"chapter {c:2d}: {len(decks[c]['words']):3d} words → {path.relative_to(ROOT)}")
         if report:
             for w in decks[c]["words"]:

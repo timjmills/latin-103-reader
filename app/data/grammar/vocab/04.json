@@ -38,18 +38,6 @@
    "count": 129
   },
   {
-   "lemma": "dō",
-   "dict": "dō, dāre, dedī, datum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "give",
-   "sense_full": "give",
-   "parts": "dō, dāre, dedī, datum",
-   "unit_id": "r04:25.1",
-   "count": 125
-  },
-  {
    "lemma": "bonus",
    "dict": "bonus, -a, -um",
    "pos": "ADJ",
@@ -60,6 +48,18 @@
    "parts": null,
    "unit_id": "r04:68.2",
    "count": 100
+  },
+  {
+   "lemma": "dō",
+   "dict": "dō, dāre, dedī, datum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "give",
+   "sense_full": "give",
+   "parts": "dō, dāre, dedī, datum",
+   "unit_id": "r04:27.1",
+   "count": 97
   },
   {
    "lemma": "pecūnia",
@@ -123,13 +123,13 @@
   },
   {
    "lemma": "salūtō",
-   "dict": "salūtō, salūtāre, salutavī, salutatum",
+   "dict": "salūtō, salūtāre, salūtāvī, salūtātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "greet",
    "sense_full": "greet",
-   "parts": "salūtō, salūtāre, salutavī, salutatum",
+   "parts": "salūtō, salūtāre, salūtāvī, salūtātum",
    "unit_id": "r04:33.3",
    "count": 34
   },

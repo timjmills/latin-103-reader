@@ -506,18 +506,6 @@
    "count": 3
   },
   {
-   "lemma": "Trōiānus",
-   "dict": "Trōiānus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "Trojan",
-   "sense_full": "Trojan",
-   "parts": null,
-   "unit_id": "w01:8.1",
-   "count": 3
-  },
-  {
    "lemma": "vorō",
    "dict": "vorō, -āre, -āvī, -ātum",
    "pos": "V",
@@ -575,6 +563,18 @@
    "sense_full": "every year, yearly",
    "parts": null,
    "unit_id": "w01:36.2",
+   "count": 2
+  },
+  {
+   "lemma": "Trōiānus",
+   "dict": "Trōiānus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "Trojan",
+   "sense_full": "Trojan",
+   "parts": null,
+   "unit_id": "w01:8.1",
    "count": 2
   },
   {

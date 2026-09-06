@@ -634,6 +634,7 @@ ROOT_MACRONS: dict[str, dict[int, str]] = {
     "N:person/person": {0: "persōn", 1: "persōn"},                    # persōna x61 against persona x4 on the page (the verb personō, a different stem list, keeps its short o)
     "N:prius/prior": {1: "priōr"},                                    # priōre
     "N:pulchritudo/pulchritudin": {0: "pulchritūdō"},                 # pulchritūdō
+    "N:rem/rem": {0: "rēm"},                                          # rēmus -ī m "oar": the library prints rēmīs x4, rēmī, Rēmōs (root 1 is already rēm), never the nominative — Remus the brother is a name entry with its own spelling
     "N:uen/uen": {0: "vēn", 1: "vēn"},                                # vēna, vēnam, vēnās (and vēnum / vēnus, which share the stems)
     "N:uer/uer": {0: "vēr"},                                          # vēr (root 1 already vēr)
     "N:uocabul/uocabul": {0: "vocābul", 1: "vocābul"},                # vocābulum, vocābula, vocābulō, vocābulīs
@@ -2515,8 +2516,18 @@ def main() -> None:
         nm_hp = {(e["h"], e["pos"]) for e in nm}
         sup = [e for e in sup if (e["h"], e["pos"]) not in nm_hp]
         # a supplement entry replaces Whitaker's reading of the same word
-        sup_hp = {(e["h"], e["pos"]) for e in sup} | nm_hp
-        ranked = [e for e in ranked if (e["h"], e["pos"]) not in sup_hp]
+        sup_hp = {(e["h"], e["pos"]) for e in sup}
+        # A NAME replaces only Whitaker's reading of the same NAME.  Whitaker
+        # files the name and the common noun under one headword — sol is both
+        # Sōl the god and sōl "sun", nympha both the goddess and "nymph",
+        # margarīta both Julia's dog and "pearl", remus both Romulus's brother
+        # and rēmus "oar" — so deleting his reading whenever a name shares the
+        # headword took the common noun out of the dictionary altogether: sōl
+        # lūcet had no word for the sun.  The name still goes first (below);
+        # his common noun follows it, and where the library prints the form in
+        # lower case more often, _lower_wins() puts the common noun in front.
+        ranked = [e for e in ranked if (e["h"], e["pos"]) not in sup_hp
+                  and not ((e["h"], e["pos"]) in nm_hp and CAPITAL.match(e["lemma"] or ""))]
         # A name goes first unless the library also prints this form in lower
         # case at least as often (ursus the bear beside Ursus the slave); the
         # exact-spelling keys below then put the name first for the capitalised

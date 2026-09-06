@@ -110,18 +110,6 @@
    "count": 57
   },
   {
-   "lemma": "mārcō",
-   "dict": "mārcō, mārcere, marcuī, marcitum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "be withered or flabby, droop or shrivel",
-   "sense_full": "be withered or flabby, droop or shrivel",
-   "parts": "mārcō, mārcere, marcuī, marcitum",
-   "unit_id": "r05:9.2",
-   "count": 57
-  },
-  {
    "lemma": "sine",
    "dict": "sine (+ abl.)",
    "pos": "PREP",
@@ -168,18 +156,6 @@
    "parts": "agō, agere, ēgī, āctum",
    "unit_id": "r05:82.1",
    "count": 36
-  },
-  {
-   "lemma": "ōstium",
-   "dict": "ōstium, -ī n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 2,
-   "meaning": "doorway, door",
-   "sense_full": "doorway",
-   "parts": null,
-   "unit_id": "r05:25.1",
-   "count": 35
   },
   {
    "lemma": "habitō",
@@ -230,14 +206,26 @@
    "count": 25
   },
   {
+   "lemma": "ōstium",
+   "dict": "ōstium, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "doorway, door",
+   "sense_full": "doorway",
+   "parts": null,
+   "unit_id": "r05:25.1",
+   "count": 25
+  },
+  {
    "lemma": "dēlectō",
-   "dict": "dēlectō, dēlectāre, delectavī, delectatum",
+   "dict": "dēlectō, dēlectāre, delectavī, dēlectātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "delight, please",
    "sense_full": "delight, please, amuse, fascinate",
-   "parts": "dēlectō, dēlectāre, delectavī, delectatum",
+   "parts": "dēlectō, dēlectāre, delectavī, dēlectātum",
    "unit_id": "r05:60.1",
    "count": 24
   },

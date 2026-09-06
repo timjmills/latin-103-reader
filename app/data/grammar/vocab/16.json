@@ -123,13 +123,13 @@
   },
   {
    "lemma": "occidō",
-   "dict": "occidō, occidere, occidī, occisum",
+   "dict": "occidō, occidere, occidī, occīsum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "kill",
    "sense_full": "kill, murder, slaughter, slay",
-   "parts": "occidō, occidere, occidī, occisum",
+   "parts": "occidō, occidere, occidī, occīsum",
    "unit_id": "r16:45.2",
    "count": 24
   },
@@ -218,18 +218,6 @@
    "count": 20
   },
   {
-   "lemma": "sinō",
-   "dict": "sinō, sinere, sīvī, situm",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "allow, permit",
-   "sense_full": "allow, permit",
-   "parts": "sinō, sinere, sīvī, situm",
-   "unit_id": "r16:1.1",
-   "count": 20
-  },
-  {
    "lemma": "tempestās",
    "dict": "tempestās, tempestātis f.",
    "pos": "N",
@@ -251,6 +239,18 @@
    "sense_full": "little",
    "parts": null,
    "unit_id": "r16:8.1",
+   "count": 19
+  },
+  {
+   "lemma": "sinō",
+   "dict": "sinō, sinere, sīvī, situm",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "allow, permit",
+   "sense_full": "allow, permit",
+   "parts": "sinō, sinere, sīvī, situm",
+   "unit_id": "r16:1.1",
    "count": 19
   },
   {
@@ -279,13 +279,13 @@
   },
   {
    "lemma": "turbō",
-   "dict": "turbō, turbāre, turbavī, turbatum",
+   "dict": "turbō, turbāre, turbāvī, turbātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "disturb, stir up",
    "sense_full": "disturb, agitate, throw into confusion",
-   "parts": "turbō, turbāre, turbavī, turbatum",
+   "parts": "turbō, turbāre, turbāvī, turbātum",
    "unit_id": "r16:32.1",
    "count": 15
   },
@@ -351,13 +351,13 @@
   },
   {
    "lemma": "cernō",
-   "dict": "cernō, cernere, crevī, cretum",
+   "dict": "cernō, cernere, crēvī, crētum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "discern, make out, see",
    "sense_full": "sift, separate, distinguish, discern, resolve, determine",
-   "parts": "cernō, cernere, crevī, cretum",
+   "parts": "cernō, cernere, crēvī, crētum",
    "unit_id": "r16:68.1",
    "count": 11
   },
@@ -384,18 +384,6 @@
    "parts": null,
    "unit_id": "r16:28.1",
    "count": 11
-  },
-  {
-   "lemma": "flō",
-   "dict": "flō, flāre, flavī, flatum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "blow",
-   "sense_full": "breathe",
-   "parts": "flō, flāre, flavī, flatum",
-   "unit_id": "r16:30.1",
-   "count": 10
   },
   {
    "lemma": "intueor",
@@ -531,25 +519,25 @@
   },
   {
    "lemma": "lābor",
-   "dict": "lābor, lābī, lapsus sum",
+   "dict": "lābor, lābī, lāpsus sum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "slip, fall, glide",
    "sense_full": "slip, slip and fall",
-   "parts": "lābor, lābī, lapsus sum",
+   "parts": "lābor, lābī, lāpsus sum",
    "unit_id": "r16:85.1",
    "count": 6
   },
   {
    "lemma": "ēgredior",
-   "dict": "ēgredior, egredī, egressus sum",
+   "dict": "ēgredior, ēgredī, egressus sum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "go out, disembark",
    "sense_full": "go, march, come out",
-   "parts": "ēgredior, egredī, egressus sum",
+   "parts": "ēgredior, ēgredī, egressus sum",
    "unit_id": "r16:38.1",
    "count": 5
   },
@@ -588,6 +576,18 @@
    "parts": null,
    "unit_id": "r16:54.1",
    "count": 5
+  },
+  {
+   "lemma": "flō",
+   "dict": "flō, flāre, flavī, flatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "blow",
+   "sense_full": "breathe",
+   "parts": "flō, flāre, flavī, flatum",
+   "unit_id": "r16:30.1",
+   "count": 4
   },
   {
    "lemma": "gubernātor",

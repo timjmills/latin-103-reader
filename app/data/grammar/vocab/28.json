@@ -554,13 +554,13 @@
    "count": 3
   },
   {
-   "lemma": "siculus",
-   "dict": "siculus, -a, -um",
+   "lemma": "Siculus",
+   "dict": "Siculus, -a, -um",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
    "meaning": "Sicilian",
-   "sense_full": "Sicilian, of/pertaining to Sicily (island southwest of Italy)",
+   "sense_full": "Sicilian (mare Siculum, the sea south of Sicily)",
    "parts": null,
    "unit_id": "w06:1.1",
    "count": 3
@@ -591,7 +591,7 @@
   },
   {
    "lemma": "fāma",
-   "dict": "fāma, -ae f.",
+   "dict": "fāma, famae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
