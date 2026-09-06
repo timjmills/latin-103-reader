@@ -6,9 +6,9 @@ parity.py — pipeline/latin_forms.py against app/js/paradigms.js, cell for cell
     python tests/latin_forms/parity.py --limit 400
 
 Both sides draw the same table from the same glossary entry; every non-empty
-cell must carry the same text in the same place.  latin_forms runs with
-JS_COMPAT on, so the one place where it knowingly departs from the app is put
-back for the comparison (see DIVERGENCES).
+cell must carry the same text — and the same alternative form, where a cell has
+one (gladiī / gladī) — in the same place.  There is no compatibility shim: the
+app and the pipeline must agree everywhere.
 """
 from __future__ import annotations
 
@@ -26,18 +26,6 @@ import latin_forms as lf  # noqa: E402
 
 GLOSSARY = ROOT / "app" / "data" / "glossary.json"
 DUMPER = Path(__file__).resolve().parent / "dump_js_paradigms.mjs"
-
-# Where latin_forms deliberately does NOT follow app/js/paradigms.js.  Each is a
-# bug in the app's table that the pipeline must not copy; JS_COMPAT puts the
-# app's reading back so parity can still be asserted over everything else.
-DIVERGENCES = [
-    "N [2, 4] (praedium, gladius): paradigms.js nounTableKey sends Whitaker's "
-    "-ium / -ius stem to the '2nus' table (vulgus: nom = acc = voc in -us, no "
-    "plural) and so prints praedius, praediī, praediō, praedius … with no "
-    "plural.  latin_forms declines it as an ordinary 2nd-declension noun "
-    "(praedium, praediī / praedī, praediō, praedia …).  119 glossary nouns.",
-]
-
 
 def entries_of(glossary: dict) -> list[dict]:
     seen, out = set(), []
@@ -65,7 +53,7 @@ def py_cells(entry: dict):
             for i, c in enumerate(r["cells"]):
                 if c.get("empty"):
                     continue
-                cells.append([s["title"], r["label"], i, c["text"]])
+                cells.append([s["title"], r["label"], i, c["text"], c.get("alt")])
     return {"title": p["title"], "note": p.get("note"), "cells": cells}
 
 
@@ -81,30 +69,26 @@ def run(entries: list[dict]):
 
 
 def compare(entries: list[dict]) -> list[str]:
-    lf.JS_COMPAT = True
-    try:
-        js = run(entries)
-        bad = []
-        for e, j in zip(entries, js):
-            p = py_cells(e)
-            if (p is None) != (j is None):
-                bad.append(f"{e.get('h')} ({e.get('pos')} {e.get('cat')}): "
-                           f"python {'has no' if p is None else 'has a'} table, js "
-                           f"{'has no' if j is None else 'has a'} table")
-                continue
-            if p is None:
-                continue
-            pj = {(a, b, c): d for a, b, c, d in p["cells"]}
-            jj = {(a, b, c): d for a, b, c, d in j["cells"]}
-            for k in sorted(set(pj) | set(jj), key=str):
-                if pj.get(k) != jj.get(k):
-                    bad.append(f"{e.get('h')} ({e.get('pos')} {e.get('cat')}) {k}: "
-                               f"python {pj.get(k)!r} vs js {jj.get(k)!r}")
-            if p["title"] != j["title"]:
-                bad.append(f"{e.get('h')}: title {p['title']!r} vs {j['title']!r}")
-        return bad
-    finally:
-        lf.JS_COMPAT = False
+    js = run(entries)
+    bad = []
+    for e, j in zip(entries, js):
+        p = py_cells(e)
+        if (p is None) != (j is None):
+            bad.append(f"{e.get('h')} ({e.get('pos')} {e.get('cat')}): "
+                       f"python {'has no' if p is None else 'has a'} table, js "
+                       f"{'has no' if j is None else 'has a'} table")
+            continue
+        if p is None:
+            continue
+        pj = {(a, b, c): (d, alt) for a, b, c, d, alt in p["cells"]}
+        jj = {(a, b, c): (d, alt) for a, b, c, d, alt in j["cells"]}
+        for k in sorted(set(pj) | set(jj), key=str):
+            if pj.get(k) != jj.get(k):
+                bad.append(f"{e.get('h')} ({e.get('pos')} {e.get('cat')}) {k}: "
+                           f"python {pj.get(k)!r} vs js {jj.get(k)!r}")
+        if p["title"] != j["title"]:
+            bad.append(f"{e.get('h')}: title {p['title']!r} vs {j['title']!r}")
+    return bad
 
 
 def main(argv=None) -> int:

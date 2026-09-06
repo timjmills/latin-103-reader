@@ -86,6 +86,63 @@ test('stem/ending split: puell-ārum, rēg-um, urb-ium', () => {
   assert.match(urbs.title, /i-stem/);
 });
 
+// Whitaker's N 2 4 is the -ium / -ius stem, not the vulgus type: an ordinary
+// 2nd-declension noun, save the -ius vocative and its contracted genitive.
+const IUS_NOUNS = {
+  aedificium: {
+    sg: ['aedificium', 'aedificiī', 'aedificiō', 'aedificium', 'aedificiō', 'aedificium'],
+    pl: ['aedificia', 'aedificiōrum', 'aedificiīs', 'aedificia', 'aedificiīs', 'aedificia'],
+  },
+  gladius: {
+    sg: ['gladius', 'gladiī', 'gladiō', 'gladium', 'gladiō', 'gladī'],
+    pl: ['gladiī', 'gladiōrum', 'gladiīs', 'gladiōs', 'gladiīs', 'gladiī'],
+  },
+};
+
+for (const [h, tbl] of Object.entries(IUS_NOUNS)) {
+  test(`noun ${h} (-ium / -ius stem) declines like Ørberg's table`, () => {
+    const e = entry(h, 'N');
+    assert.deepEqual(e.cat, [2, 4]);
+    const p = paradigm(e, e.parses);
+    assert.ok(p, 'paradigm');
+    assert.equal(p.kind, 'noun');
+    assert.deepEqual(column(p, 'cases', 0).slice(0, 6), tbl.sg, `${h} singular`);
+    assert.deepEqual(column(p, 'cases', 1).slice(0, 6), tbl.pl, `${h} plural`);
+    for (const r of p.sections[0].rows) for (const c of r.cells) assert.equal(c.stem + c.ending, c.text);
+  });
+}
+
+test('gladius: vocative gladī (never gladie), genitive gladiī with contracted gladī alongside', () => {
+  const p = paradigm(entry('gladius', 'N'), []);
+  const gen = p.sections[0].rows[1].cells[0];
+  const voc = p.sections[0].rows[5].cells[0];
+  assert.equal(gen.text, 'gladiī');
+  assert.equal(gen.alt, 'gladī');
+  assert.deepEqual([voc.stem, voc.ending], ['glad', 'ī']);
+  assert.equal(voc.text, 'gladī');
+  assert.notEqual(voc.text, 'gladie');
+  assert.match(p.note ?? '', /vocative singular gladī/);
+  // fīlius (Whitaker N 2 5) is the same shape
+  const f = paradigm(entry('filius', 'N'), []);
+  assert.equal(f.sections[0].rows[5].cells[0].text, 'fīlī');
+  assert.equal(f.sections[0].rows[1].cells[0].alt, 'fīlī');
+});
+
+test('aedificium: neuter -ium keeps a plural and never shows a -us nominative', () => {
+  const p = paradigm(entry('aedificium', 'N'), []);
+  assert.equal(p.sections[0].headers.length, 2, 'singular and plural');
+  const all = [...texts(p)];
+  assert.ok(!all.some((t) => /ius$/.test(t)), `no -ius forms: ${all.join(' ')}`);
+  assert.equal(p.note ?? null, null);
+});
+
+test('vulgus type (virus, N 2 1 neuter) keeps the no-plural -us table', () => {
+  const p = paradigm(entry('virus', 'N'), []);
+  assert.deepEqual(p.sections[0].headers, ['singular']);
+  assert.deepEqual(column(p, 'cases', 0).slice(0, 6), ['virus', 'virī', 'virō', 'virus', 'virō', 'virus']);
+  assert.match(p.note ?? '', /no plural/);
+});
+
 test('consonant stems in -is / -ex / -us take gen. pl. -um, not -ium (A&G §121–122)', () => {
   const genPl = (p) => p.sections[0].rows[1].cells[1];
   const canis = paradigm(entry('canis', 'N'), []);

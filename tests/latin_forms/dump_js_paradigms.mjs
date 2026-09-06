@@ -4,7 +4,8 @@
 //   node tests/latin_forms/dump_js_paradigms.mjs entries.json > cells.json
 //
 // entries.json is a list of glossary entries; the output is, per entry, the list
-// of [section title, row label, column index, cell text] of every non-empty cell.
+// of [section title, row label, column index, cell text, alternative form] of
+// every non-empty cell.
 import { readFileSync } from 'node:fs';
 import { paradigm } from '../../app/js/paradigms.js';
 
@@ -17,7 +18,7 @@ const out = entries.map((e) => {
     for (const r of s.rows) {
       r.cells.forEach((c, i) => {
         if (c.empty) return;
-        cells.push([s.title, r.label, i, c.text]);
+        cells.push([s.title, r.label, i, c.text, c.alt ?? null]);
       });
     }
   }

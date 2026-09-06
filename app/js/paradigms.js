@@ -154,9 +154,13 @@ function nounTableKey(entry) {
   if (d === 2) {
     if (v === 2) return '2n';
     if (v === 3) return '2r';
-    if (v === 4) return '2nus';
+    // Whitaker's N 2 4 is the -ium / -ius stem (aedificium, gladius): an
+    // ordinary 2nd-declension noun, not the vulgus type.
+    if (v === 4) return g === 'n' ? '2n' : '2m';
     if (v === 6 || v === 7 || v === 9) return '2g6';
     if (v === 8) return '2g8';
+    // vulgus, virus, pelagus (Whitaker N 2 1, neuter): nom = acc = voc in -us, no plural.
+    if (v === 1 && g === 'n') return '2nus';
     return g === 'n' ? '2n' : '2m';
   }
   if (d === 3) {
@@ -218,6 +222,10 @@ function nounParadigm(entry, parses) {
   const neuter = g === 'n';
   const rows = [];
   const hasLoc = asList(parses).some((p) => p.case === 'loc');
+  // Nouns in -ius (gladius, fīlius, Iūlius): vocative singular gladī, and a
+  // genitive singular that Ørberg gives both ways — fīliī and contracted fīlī.
+  const iusType = key === '2m' && (entry.cat?.[1] === 4 || entry.cat?.[1] === 5) && /[iī]$/.test(r1);
+  const contracted = iusType ? r1.replace(/[iī]$/, '') + 'ī' : null;
   const build = (num) => {
     const ends = tbl[num];
     if (!ends) return null;
@@ -226,10 +234,12 @@ function nounParadigm(entry, parses) {
       let end = ends[i];
       if (num === 'sg' && (c === 'nom' || c === 'voc' || (neuter && c === 'acc'))) {
         if (key.startsWith('3') || key === '2r') { stem = nomStem; end = nomEnd; }
-        if (key === '2m' && c === 'voc' && (entry.cat?.[1] === 5)) { stem = r1.replace(/i$/, ''); end = 'ī'; }
+        if (iusType && c === 'voc') { stem = r1.replace(/[iī]$/, ''); end = 'ī'; }
       }
       if (key === '5' && (c === 'gen' || c === 'dat') && num === 'sg' && /[aeiouāēīōū]$/.test(r1)) end = 'ēī';
-      return cell(stem, end, nk(c, num, g));
+      const out = cell(stem, end, nk(c, num, g));
+      if (iusType && num === 'sg' && c === 'gen') out.alt = contracted;
+      return out;
     });
   };
   const sg = build('sg');
@@ -257,6 +267,7 @@ function nounParadigm(entry, parses) {
   if (key === '3in') p.note = 'Neuter i-stem: ablative singular -ī, plural -ia, -ium.';
   if (key === '3' && entry.cat?.[0] === 3 && NON_I_STEM.has(h)) p.note = 'Consonant stem (not an i-stem): genitive plural -um, ablative singular -e.';
   if (key === '2nus') p.note = 'Neuter in -us: nominative, accusative and vocative are identical; no plural.';
+  if (iusType) p.note = `Noun in -ius: vocative singular ${contracted}, genitive singular ${r1}ī or contracted ${contracted}.`;
   return markHits(p, parses);
 }
 
@@ -1047,7 +1058,7 @@ function numeralParadigm(entry, parses) {
     for (const num of ['sg', 'pl']) {
       if (!t[num]) continue;
       for (let i = 0; i < caseList.length; i++) {
-        rows.push({ label: `${CASE_LABEL[caseList[i]]} ${num === 'sg' ? 'sg.' : 'pl.'}`, cells: t[num][i].map((s, gi) => { const c = splitCell(s.split(' / ')[0], nk(caseList[i], num, genders[gi])); if (s.includes(' / ')) c.text = s.replace(/\|/g, ''); return c; }) });
+        rows.push({ label: `${CASE_LABEL[caseList[i]]} ${num === 'sg' ? 'sg.' : 'pl.'}`, cells: t[num][i].map((s, gi) => { const c = splitCell(s.split(' / ')[0], nk(caseList[i], num, genders[gi])); if (s.includes(' / ')) { c.text = s.replace(/\|/g, ''); c.alt = s.split(' / ')[1].replace(/\|/g, ''); } return c; }) });
       }
     }
     return markHits({ kind: 'adjective', title: t.title, sections: [{ title: 'cases', headers: t.headers, rows }] }, parses);
