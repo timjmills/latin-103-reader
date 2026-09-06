@@ -85,3 +85,50 @@ test('confusions merge by max (M10): a pulled row never lowers the local count, 
   await g.bumpConfusion('a', 'b');
   assert.equal(g.getConfusions()[0].count, 10);
 });
+
+/* ---------------------------------------- wave 3: the windowed attempt log */
+
+test('getAttempts({ skill, limit, since }): one skill\'s tail, oldest first, through the per-skill index', async () => {
+  const g = createGrammarStore({ mode: 'local', storage: mem() });
+  await g.ready();
+  const day = (n) => `2026-08-${String(n).padStart(2, '0')}T10:00:00.000Z`;
+  // Added out of order on purpose: the index must sort, not trust insertion.
+  for (const n of [5, 1, 9, 3, 7]) await g.addAttempt({ skill: 'dative', kind: 'blank', item_key: `k${n}`, mode: 'practice', correct: n % 2 === 1, at: day(n) });
+  for (const n of [2, 4]) await g.addAttempt({ skill: 'ablative', kind: 'parse', item_key: `a${n}`, mode: 'practice', correct: true, at: day(n) });
+
+  assert.deepEqual(g.getAttempts({ skill: 'dative' }).map((a) => a.at), [1, 3, 5, 7, 9].map(day), 'oldest first');
+  assert.deepEqual(g.getAttempts({ skill: 'ablative' }).map((a) => a.item_key), ['a2', 'a4']);
+  assert.deepEqual(g.getAttempts({ skill: 'nobody' }), []);
+  assert.equal(g.getAttempts().length, 7, 'no skill: the whole log');
+
+  // `limit` keeps the newest, which is what a history view reads.
+  assert.deepEqual(g.getAttempts({ skill: 'dative', limit: 2 }).map((a) => a.at), [7, 9].map(day));
+  assert.equal(g.getAttempts({ skill: 'dative', limit: 99 }).length, 5, 'a limit past the end is not padding');
+  assert.deepEqual(g.getAttempts({ skill: 'dative', since: day(5) }).map((a) => a.at), [5, 7, 9].map(day));
+  assert.deepEqual(g.getAttempts({ skill: 'dative', since: day(5), limit: 1 }).map((a) => a.at), [day(9)]);
+
+  // Copies, not the store's own rows.
+  const rows = g.getAttempts({ skill: 'dative' });
+  rows[0].correct = 'tampered';
+  assert.equal(g.getAttempts({ skill: 'dative' })[0].correct, true);
+
+  assert.equal(g.countAttempts('dative'), 5);
+  assert.equal(g.countAttempts('nobody'), 0);
+  assert.equal(g.countAttempts(null), 7);
+});
+
+test('the per-skill index is dropped on every write, so a new attempt and a reset are seen at once', async () => {
+  const g = createGrammarStore({ mode: 'local', storage: mem() });
+  await g.ready();
+  await g.addAttempt({ skill: 'dative', kind: 'blank', item_key: 'k1', mode: 'practice', correct: true, at: '2026-08-01T10:00:00.000Z' });
+  assert.equal(g.getAttempts({ skill: 'dative' }).length, 1);   // builds the index
+  await g.addAttempt({ skill: 'dative', kind: 'blank', item_key: 'k2', mode: 'practice', correct: false, at: '2026-08-02T10:00:00.000Z' });
+  assert.equal(g.getAttempts({ skill: 'dative' }).length, 2, 'a stale index would still say 1');
+  assert.equal(g.countAttempts('dative'), 2);
+  await g.resetSkill('dative');
+  assert.deepEqual(g.getAttempts({ skill: 'dative' }), []);
+  assert.equal(g.countAttempts('dative'), 0);
+  await g.addAttempt({ skill: 'dative', kind: 'blank', item_key: 'k3', mode: 'practice', correct: true, at: '2026-08-03T10:00:00.000Z' });
+  await g.resetAll();
+  assert.deepEqual(g.getAttempts({ skill: 'dative' }), []);
+});

@@ -60,7 +60,7 @@ test('groupWeeks: the outline\'s course weeks (with their library rows), then th
   const g2 = groupWeeks([], weeks);
   assert.deepEqual(g2.course.map((e) => e.n), [1, 3]);
   assert.deepEqual(groupWeeks([{ n: 107 }], weeks).course.map((e) => e.n), [1, 3]);
-  assert.deepEqual(groupWeeks(null, null), { course: [], shelf: [] });
+  assert.deepEqual(groupWeeks(null, null), { course: [], shelf: [], collo: [] });
 });
 
 test('studyLog with the shelf: minutes and reads per day include a chapter; the pace and the per-week table do not', () => {
@@ -102,10 +102,10 @@ test('fixture store: two shelf weeks (101, 107), a dozen Latin-only units each, 
   const { store } = await import('../app/js/store-fixture.js');
   await store.ready().catch(() => {});
   const weeks = await store.getWeeks();
-  const shelf = weeks.filter((w) => isShelfWeek(w.n));
+  const shelf = weeks.filter((w) => isShelfWeek(w.n) && w.n < 200);
   assert.deepEqual(shelf.map((w) => [w.n, w.id, w.chapter, w.has_line_numbers, w.unit_count]), [[101, 'r01', 'I', true, 12], [107, 'r07', 'VII', true, 12]]);
   assert.ok(shelf.every((w) => w.title && w.focus?.label && w.parts?.length === 1));
-  assert.deepEqual(weeks.map((w) => w.n).slice(-2), [101, 107], 'the shelf comes after the course weeks');
+  assert.deepEqual(weeks.map((w) => w.n).slice(-4), [101, 107, 201, 207], 'the review shelf comes after the course weeks, the colloquia after it');
   const units = await store.getUnits(107);
   assert.equal(units.length, 12);
   assert.ok(units.every((u) => /^r07:\d+\.1$/.test(u.id) && u.la && u.en === '' && u.week_n === 107 && Array.isArray(u.lines) && u.lines.length === 1 && u.margin.length === 0 && u.note == null));

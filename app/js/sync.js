@@ -629,27 +629,46 @@ export function lookupsView(map) {
 /**
  * Week number from a unit id: "w07:12.3" → 7; a review-shelf id "r07:46.1"
  * (GRAMMAR-CONTRACT.md "Review shelf": chapters I–XXIV as weeks n = 100 +
- * chapter) → 107. null if not parsable.
+ * chapter) → 107; a Colloquia Personarum id "c07:3.1" (GRAMMAR-CONTRACT.md
+ * "Wave 3 · Colloquia shelf": n = 200 + colloquium) → 207. null if not parsable.
  */
 export function weekOfUnit(unitId) {
-  const m = /^([wr])(\d+):/.exec(unitId || '');
+  const m = /^([wrc])(\d+):/.exec(unitId || '');
   if (!m) return null;
-  return m[1] === 'r' ? SHELF_BASE + Number(m[2]) : Number(m[2]);
+  const base = m[1] === 'r' ? SHELF_BASE : m[1] === 'c' ? COLLO_BASE : 0;
+  return base + Number(m[2]);
 }
 
-/* ------------------------------------------------------------ review shelf */
-// Familia Romana I–XXIV sit in `weeks` as n = 100 + chapter, ids r01–r24,
-// Latin only. The 14 course weeks are n ≤ 14; everything the study log's
-// pace and per-week table say is about those.
+/* ------------------------------------------------------------ the shelves */
+// Two library shelves sit above the 14 course weeks, both Latin only and both
+// outside the 103 pace: Familia Romana I–XXIV as n = 100 + chapter (ids
+// r01–r24) and Colloquia Personarum I–XXIV as n = 200 + colloquium (ids
+// c01–c24). The course weeks are n ≤ 14; everything the study log's pace and
+// per-week table say is about those. Migration 0018 allows weeks.n 1–299.
 export const SHELF_BASE = 100;
-/** True for a review-shelf week number (101–124). Pure. */
-export function isShelfWeek(n) {
+export const COLLO_BASE = 200;
+export const SHELF_SPAN = 100;    // a shelf owns the hundred above its base
+/** Which shelf a week number is on: 'review' | 'colloquia' | null (a course week). Pure. */
+export function shelfKind(n) {
   const x = Number(n);
-  return Number.isFinite(x) && x > SHELF_BASE;
+  if (!Number.isFinite(x)) return null;
+  if (x > COLLO_BASE && x < COLLO_BASE + SHELF_SPAN) return 'colloquia';
+  if (x > SHELF_BASE && x < SHELF_BASE + SHELF_SPAN) return 'review';
+  return null;
 }
-/** The Familia Romana chapter of a shelf week (107 → 7), null for a course week. Pure. */
+/** True for any shelf week (101–199 review, 201–299 colloquia) — never a course week. Pure. */
+export function isShelfWeek(n) {
+  return shelfKind(n) != null;
+}
+/** True for a Familia Romana review-shelf week (101–199). Pure. */
+export const isReviewWeek = (n) => shelfKind(n) === 'review';
+/** True for a Colloquia Personarum week (201–299). Pure. */
+export const isColloquiaWeek = (n) => shelfKind(n) === 'colloquia';
+/** The chapter a shelf week reads (107 → 7, 207 → 7), null for a course week. Pure. */
 export function shelfChapter(n) {
-  return isShelfWeek(n) ? Number(n) - SHELF_BASE : null;
+  const kind = shelfKind(n);
+  if (!kind) return null;
+  return Number(n) - (kind === 'colloquia' ? COLLO_BASE : SHELF_BASE);
 }
 /** Roman numeral (7 → "VII"; 0 or junk → "—"). Pure. */
 export function roman(n) {

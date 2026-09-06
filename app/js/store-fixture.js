@@ -3,7 +3,7 @@
 // UI's persistence paths are exercised. Chosen by main.js when ?fixture=1 or
 // when app/config.js is missing / has no SUPABASE_URL.
 
-import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs, roman } from './sync.js';
+import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs, roman, isShelfWeek, shelfKind, shelfChapter, COLLO_BASE } from './sync.js';
 import { tokenize } from './tokenize.js';
 
 const LS_LOOKUPS = 'l103.lookups';
@@ -226,7 +226,7 @@ async function loadPictures(weekN) {
 // so the shelf UI can be tried offline. The sentences are invented on the
 // chapters' themes (the book's own text is never committed).
 const SHELF_BASE = 100;
-const isShelf = (n) => Number(n) > SHELF_BASE;
+const isShelf = (n) => isShelfWeek(n);
 const SHELF_TEXT = {
   1: { title: 'Imperium Rōmānum', focus: { key: 'nominative', label: 'Nominative: the subject', blurb: 'The subject form (puella, fluvius, oppidum) and singular against plural.' }, la: [
     'Rōma in Italiā est.', 'Italia in Eurōpā est.', 'Gallia quoque in Eurōpā est.', 'Ubi est Hispānia?', 'Hispānia in Eurōpā est, nōn in Asiā.',
@@ -253,10 +253,42 @@ function shelfUnits(c) {
 }
 const shelfWeeks = () => Object.keys(SHELF_TEXT).map((c) => shelfWeek(Number(c)));
 
+// Colloquia Personarum (GRAMMAR-CONTRACT.md "Wave 3 · Colloquia shelf"): two
+// colloquia as library weeks n = 200 + colloquium (c01, c07), Latin only, one
+// unit per speaker turn (`unit_type: "speech"`, `speaker` set), no line
+// numbers and no marginal glosses — so the second shelf can be tried offline.
+// The turns are invented on the colloquia's themes (the book is never committed).
+const COLLO_TEXT = {
+  1: { title: 'Mārcus et Iūlia', focus: { key: 'nominative', label: 'Nominative: the subject', blurb: 'Who is speaking, and who is spoken of.' }, turns: [
+    ['MĀRCUS', 'Ubi est Iūlia?'], ['IŪLIA', 'Hīc sum, Mārce.'], ['MĀRCUS', 'Quid agis?'], ['IŪLIA', 'Rosās numerō.'],
+    ['MĀRCUS', 'Quot rosae sunt?'], ['IŪLIA', 'Sex rosae sunt.'], ['MĀRCUS', 'Rosae pulchrae sunt.'], ['IŪLIA', 'Ita est.'],
+    ['MĀRCUS', 'Ecce Quīntus venit.'], ['QUĪNTUS', 'Salvēte, Mārce et Iūlia!'], ['IŪLIA', 'Salvē, Quīnte.'], ['MĀRCUS', 'In hortum eāmus.'],
+  ] },
+  7: { title: 'Iūlius et Syra', focus: { key: 'dative', label: 'Dative case: indirect objects', blurb: "The 'to/for' form, heard in a dialogue." }, turns: [
+    ['IŪLIUS', 'Syra, quid puellae dās?'], ['SYRA', 'Speculum eī dō, domine.'], ['IŪLIUS', 'Cūr speculum?'], ['SYRA', 'Iūlia sē vidēre vult.'],
+    ['IŪLIUS', 'Fīliae meae rosam dabō.'], ['SYRA', 'Rosa puellae grāta erit.'], ['IŪLIUS', 'Et puerīs māla dabō.'], ['SYRA', 'Puerī tibi grātiās agent.'],
+    ['IŪLIUS', 'Ubi est Mārcus?'], ['SYRA', 'Mārcus mātrī epistulam legit.'], ['IŪLIUS', 'Bene.'], ['SYRA', 'Ecce Iūlia venit, domine.'],
+  ] },
+};
+function colloWeek(c) {
+  const t = COLLO_TEXT[c];
+  return { n: COLLO_BASE + c, id: `c${pad(c)}`, title: t.title, source: 'CP', chapter: roman(c), has_line_numbers: false, focus: t.focus,
+    parts: [{ part: `Colloquium ${roman(c)}`, lines: '', source: 'CP' }], unit_count: t.turns.length };
+}
+function colloUnits(c) {
+  const t = COLLO_TEXT[c];
+  return t.turns.map(([speaker, la], i) => ({
+    id: `c${pad(c)}:${i + 1}.1`, order: i, part: `Colloquium ${roman(c)}`, source: 'CP', line_no: null, block_start: true, unit_type: 'speech', speaker,
+    la, en: '', en_raw: null, note: null, note_simple: null, tags: [], margin: [], lines: [], week_n: COLLO_BASE + c,
+  }));
+}
+const colloWeeks = () => Object.keys(COLLO_TEXT).map((c) => colloWeek(Number(c)));
+
 async function loadWeek(weekN) {
   if (isShelf(weekN)) {
-    const c = Number(weekN) - SHELF_BASE;
-    if (!cache.units.has(weekN)) cache.units.set(weekN, SHELF_TEXT[c] ? shelfUnits(c) : []);
+    const c = shelfChapter(weekN);
+    const collo = shelfKind(weekN) === 'colloquia';
+    if (!cache.units.has(weekN)) cache.units.set(weekN, collo ? (COLLO_TEXT[c] ? colloUnits(c) : []) : (SHELF_TEXT[c] ? shelfUnits(c) : []));
     return cache.units.get(weekN);
   }
   if (!cache.units.has(weekN)) {
@@ -277,7 +309,7 @@ export const store = {
   async ready() {
     try { cache.weeks = (await fetchJSON('weeks.json')).map(withDemoSummaries); }
     catch { await loadWeek(1); }
-    cache.weeks = [...cache.weeks.filter((w) => !isShelf(w.n)), ...shelfWeeks()];   // the course weeks, then the review shelf
+    cache.weeks = [...cache.weeks.filter((w) => !isShelf(w.n)), ...shelfWeeks(), ...colloWeeks()];   // the course weeks, then the review shelf, then the colloquia
     return true;
   },
   async getWeeks() { if (!cache.weeks) await this.ready(); return cache.weeks; },

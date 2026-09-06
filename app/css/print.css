@@ -1,0 +1,146 @@
+/* Printable charts (GRAMMAR-CONTRACT.md, wave 3). Black on white, no app
+   chrome, macrons preserved, page breaks sane. The grammar section builds its
+   pages into #g-print and sets html[data-printing]; everything else on the
+   page is hidden for the duration. Loaded with media="print", so none of this
+   touches the screen. */
+
+@page {
+  size: A4 portrait;
+  margin: 16mm 14mm 14mm;
+}
+
+/* Nothing but the printed document. `display: none` rather than visibility so
+   the reader's fixed header and transport take no space on the sheet. */
+html[data-printing] body > *:not(#g-print) { display: none !important; }
+html[data-printing] #g-print { display: block !important; }
+
+/* Off the sheet when nothing is being printed: the root is `hidden` on screen
+   anyway, but a stylesheet that only ever hides is easier to reason about. */
+#g-print:not(.pr) { display: none; }
+
+html[data-printing] {
+  background: #fff;
+  color: #000;
+  /* The reading-size and notes-size factors are the learner's screen comfort,
+     not the paper's; the sheet sets its own measure. */
+  font-size: 11pt;
+}
+
+.pr {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  color: #000;
+  background: #fff;
+  line-height: 1.4;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* One chart per sheet. The last page never forces a blank one after it. */
+.pr-page {
+  break-after: page;
+  page-break-after: always;
+  break-inside: avoid;
+  display: flow-root;
+}
+.pr-page:last-child { break-after: auto; page-break-after: auto; }
+/* A skill sheet is allowed to run over: rule, tables and examples together are
+   often more than one page, and cutting the examples off would be worse. */
+.pr-page--sheet { break-inside: auto; }
+
+/* ------------------------------------------------------------- heading */
+.pr-head { margin: 0 0 6mm; padding-bottom: 2mm; border-bottom: 0.6pt solid #000; }
+.pr-title { margin: 0; font-size: 20pt; font-weight: 400; line-height: 1.15; }
+.pr-sub { margin: 1.5mm 0 0; font-size: 9.5pt; letter-spacing: 0.01em; }
+.pr-plain { margin: 1.5mm 0 0; font-size: 11pt; font-style: italic; }
+.pr-h2 {
+  margin: 6mm 0 2mm;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 8.5pt; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  break-after: avoid; page-break-after: avoid;
+}
+
+/* -------------------------------------------------------------- tables */
+.pr-t {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 4mm;
+  font-size: 11.5pt;
+  break-inside: avoid;
+}
+.pr-t__cap {
+  caption-side: top;
+  text-align: left;
+  padding: 0 0 2mm;
+  font-size: 10pt;
+  font-style: italic;
+}
+.pr-t th,
+.pr-t td {
+  padding: 1.6mm 3mm;
+  text-align: left;
+  border-bottom: 0.4pt solid #000;
+  vertical-align: baseline;
+}
+.pr-t thead th {
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 8.5pt; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  border-bottom-width: 0.8pt;
+}
+.pr-t tbody th {
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 9pt; font-weight: 400;
+  white-space: nowrap;
+  padding-left: 0;
+}
+.pr-t__corner { border-bottom-width: 0.8pt; }
+.pr-t__c { font-variant-numeric: tabular-nums; }
+.pr-t__c.is-empty { color: #000; }
+.pr-t tbody tr:last-child th,
+.pr-t tbody tr:last-child td { border-bottom-width: 0.8pt; }
+
+/* The skill's focus cells. Black and white has no accent to spend, so the mark
+   is a box and a bold face — legible photocopied, and it survives a greyscale
+   printer that would flatten any tint. */
+.pr-t__c.is-hit {
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1pt #000;
+  border-bottom-color: #000;
+}
+
+.pr-key,
+.pr-note,
+.pr-summary {
+  margin: 2mm 0 0;
+  font-size: 9.5pt;
+  max-width: 60ch;
+}
+.pr-key::before { content: "\25a1  "; font-weight: 700; }
+
+/* --------------------------------------------------------------- sheet */
+.pr-rule p { margin: 0; font-size: 12pt; }
+.pr-tables { margin-top: 2mm; }
+.pr-ex__list { margin: 0; padding-left: 6mm; }
+.pr-ex__list li { margin: 0 0 3.5mm; break-inside: avoid; }
+.pr-la { margin: 0; font-size: 12pt; }
+.pr-en { margin: 0.5mm 0 0; font-size: 10pt; font-style: italic; }
+.pr-ref {
+  margin: 0.5mm 0 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 8pt;
+}
+.pr-conf p { margin: 0; font-size: 10.5pt; max-width: 66ch; }
+
+/* --------------------------------------------------------------- foot */
+.pr-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 6mm;
+  margin-top: 6mm;
+  padding-top: 2mm;
+  border-top: 0.4pt solid #000;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 8pt;
+}
+
+/* A printed sheet is a fixed object: no dark theme, no links dressed as links. */
+.pr a { color: #000; text-decoration: none; }

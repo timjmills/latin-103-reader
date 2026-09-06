@@ -953,3 +953,115 @@ Shapes and ownership: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
   `build_lessons_index.py` is kept as an alias. Adding a set file means
   re-running it, adding the file to `app/sw.js` PRECACHE and bumping
   `CACHE_VERSION` (sw is **v36**).
+
+## Grammar wave 3 — polish (2026-09-06)
+
+Confusion analytics, per-skill history, printable charts, and the second
+library shelf. Shapes and ownership: `docs/GRAMMAR-CONTRACT.md` "Wave 3 —
+polish".
+
+### The two shelves (`sync.js` / `settings.js` / `main.js`)
+
+The review shelf is no longer the only one. `sync.js` now names the shape once:
+
+- `SHELF_BASE` (100) and `COLLO_BASE` (200), each owning the hundred above it
+  (`SHELF_SPAN`), so `weeks.n` 101–199 is Familia Romana and 201–299 Colloquia
+  Personarum (migration 0018 allows 1–299).
+- `shelfKind(n)` → `'review' | 'colloquia' | null`, with `isShelfWeek`,
+  `isReviewWeek`, `isColloquiaWeek` and `shelfChapter(n)` (107 → 7, 207 → 7 —
+  colloquium N accompanies chapter N) built on it. **Every place that already
+  branched on `isShelfWeek` is therefore right for the colloquia with no
+  change**: the 103 pace and the per-week table (`studyLog`), the time-left
+  estimate, `#reader[data-shelf]`, the translation toggle and the `e`
+  shortcut, `items.js` / `stage3.js`'s current-week pool guard, and the
+  grammar section's "last course week".
+- `weekOfUnit()` reads `c07:3.1` as 207 (`w` / `r` / `c` are the three library
+  prefixes). Progress rows, resets and the menu counts follow.
+- Labels: `weekNumberLabel(207)` → "Colloquium VII", `weekPhrase(207)` →
+  "colloquium VII". Nothing ever says "Week 207". `weekTitleLabel` is
+  idempotent — a title that already opens with its own label ("Colloquium VII ·
+  Iūlius et Syra", the shape the pipeline writes) is not given it twice.
+  `translationDesc(false, …, kind)` names the shelf the learner is on.
+- `groupWeeks()` returns `{ course, shelf, collo }`; `SHELF_GROUPS` is the
+  menu's ordered list of shelf headings — `key`, `kind`, list `id`, the
+  settings flag that remembers the disclosure (`shelfOpen` / `colloOpen`), the
+  heading text and its `unit` / `plural` ("2 colloquia", never "colloquiums").
+  `main.js`'s `shelfGroupRow(g, entries, currentN)` renders any of them, so a
+  third shelf is one entry in that array.
+- `reader.js`: `isTurn(u)` treats `unit_type` `'turn'` (the course weeks) and
+  `'speech'` (the colloquia) alike — the speaker's name before the Latin, the
+  turn on its own line, and neither joined into a printed book line.
+- `store-fixture.js` carries colloquia I and VII (invented speaker turns) as
+  well as review chapters I and VII, so both shelves can be tried with
+  `?fixture=1`. Their `title` is the speakers alone; the app supplies the
+  "Colloquium N".
+
+### Confusion analytics (stats page)
+
+`stats.confusionPairs(rows, skills)` folds the two directional `confusions`
+rows for a pair into one line — "you mix up X and Y" is symmetric — naming the
+pair (a, b) with `a` the direction actually answered more often and keeping
+both counts. The stats page's **"What you mix up"** prints each pair with:
+
+- the plain-words reason, from `stats.confusionReason(a, b, { lessonA, lessonB })`:
+  either lesson's own `confusion` block naming the other wins; failing that the
+  two skills' `plain` glosses are set against each other. The lessons are
+  fetched after the first paint and swapped in, so the section never waits; the
+  text is lesson prose, so it goes through `inline()` for its emphasis.
+- which way round it went, in words;
+- a **Start** that runs `scheduler.buildPairSession({ a, b, states, skills, size })`
+  — ten slots alternating exactly those two skills, each at its own stage, no
+  two consecutive slots of one kind. It is not a preset: `renderPracticeStart`
+  takes a `pair` param and hands the finished plan to `createPractice` with
+  `fill: null`, so a missed item re-queues **within the pair** and no third
+  skill is ever added.
+
+Empty state: nothing until a wrong answer names another skill.
+
+### Per-skill history (`view: 'history'`)
+
+Reached from a skill-map row's **History** button (shown once the skill has an
+attempt), from the stats page's per-skill list, and from an item's feedback
+(inside the "Why" disclosure, so Enter on Next can never hit it mid-session).
+Read from `drill_attempts` and `confusions` only — no new tables:
+
+- `gstore.getAttempts({ skill, limit, since })` reads one skill's tail through
+  a **per-skill index** built on demand and dropped on every write;
+  `gstore.countAttempts(skill)` counts without materialising. The view asks for
+  the last `HISTORY_WINDOW` (400) and `stats.skillHistory()` windows again,
+  reporting `total` honestly beside `read` and saying so when they differ.
+- `stats.progressTrail()` replays stability and stage over those attempts with
+  `scheduler.applyAnswer` itself (`skill_state` keeps only today's row, so the
+  shape of the curve can only come from the log); Learn-mode attempts are
+  carried through without moving it, as the scheduler never did.
+- On the page: the counts, a day strip of the last 21 days, the stability
+  curve as an inline SVG polyline with a tick per wrong answer (no library, and
+  the reading is given in words beside it), the stage changes, the last twenty
+  items with the learner's own answer beside the right one (the table scrolls
+  inside its own box on a phone, with the paradigm tables' edge shade), and the
+  skill's confusions with a "practise the pair" each.
+
+### Printable charts (`print.js` + `css/print.css`)
+
+`css/print.css` is linked with `media="print"`, so it never touches the screen.
+`printDocument(content, { title })` builds the pages into one `#g-print` root
+outside the app's tree, sets `html[data-printing]`, calls `print()`, and takes
+everything down on `afterprint` (with a timeout for the browsers that never
+fire it). `html[data-printing] body > *:not(#g-print) { display: none }` — no
+app chrome on the paper, A4 with a 16/14 mm margin, black on white, macrons as
+the tables hold them.
+
+- **Print chart** (a lesson, and a skill's history): `buildChart` puts one
+  paradigm section on each page — `break-after: page` — with the skill's focus
+  cells boxed and bold (a box, not a tint: it survives a greyscale printer) and
+  a key line naming them in the skill's own plain words.
+- **Print sheet** (a lesson): `buildSheet` puts the lesson's rule, the paradigm,
+  the examples with their references, and the confusion note on one sheet,
+  allowed to run onto a second rather than cutting the examples.
+- **Print charts** (the skill map's bulk row): every skill the category filter
+  is showing that has a paradigm, one table a page, after a confirm that says
+  how many pages it is.
+- `paradigmPages()`, `cellText()`, `focusNote()` and `sheetSubtitle()` are pure
+  and tested (`tests/grammar.stats.wave3.test.mjs`).
+
+sw is **v38**: `css/print.css` and `js/grammar/print.js` are precached.

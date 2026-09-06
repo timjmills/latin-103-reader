@@ -1,7 +1,7 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader, firstUnread, queueReads, playbackRead, weekHasLines } from './reader.js';
 import { createWordPanel } from './wordpanel.js';
-import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek } from './settings.js';
+import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, SHELF_GROUPS, shelfKind, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek } from './settings.js';
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
 import { mountGrammar } from './grammar/index.js';   // the Grammar section (GRAMMAR-CONTRACT.md): mounted once the reader is ready
 
@@ -169,11 +169,12 @@ async function boot() {
       try { weekTotals.set(w.n, (await store.getUnits(w.n)).length); } catch { /* the row stays without a count */ }
     }));
   }
-  // The menu: the 14 course weeks, then the review shelf (GRAMMAR-CONTRACT.md
-  // "Review shelf": Familia Romana I–XXIV, library weeks n = 100 + chapter)
-  // under one disclosure heading — collapsed by default, remembered in
-  // settings.shelfOpen, opened for the visit when the current week is on it.
-  const shelfOpen = () => !!settings.shelfOpen;
+  // The menu: the 14 course weeks, then each shelf (GRAMMAR-CONTRACT.md — the
+  // Familia Romana review shelf at n = 100 + chapter, Colloquia Personarum at
+  // n = 200 + colloquium) under its own disclosure heading, collapsed by
+  // default, remembered in settings (shelfOpen / colloOpen) and opened for the
+  // visit when the current week is on it.
+  const groupOpen = (g) => !!settings[g.setting];
   function weekRow(entry, currentN) {
     const { n, outline: c, lib } = entry;
     const shelf = isShelfWeek(n);
@@ -186,7 +187,7 @@ async function boot() {
     if (!lib) b.disabled = true;
     if (n === currentN) b.setAttribute('aria-current', 'true');
     const num = document.createElement('span'); num.className = 'weeks__n'; num.textContent = shelf ? entry.numeral : String(n);
-    if (shelf) num.setAttribute('aria-label', `Chapter ${entry.numeral}`);
+    if (shelf) num.setAttribute('aria-label', weekNumberLabel(n));   // 'Cap. VII' / 'Colloquium VII' — never a bare numeral
     const name = document.createElement('span'); name.className = 'weeks__name'; name.lang = 'la'; name.textContent = title;
     const meta = document.createElement('span'); meta.className = 'weeks__meta';
     meta.textContent = shelf ? (lib?.focus?.label ?? '') : [c?.reading, c?.focus?.label].filter(Boolean).join(' — ');
@@ -212,26 +213,31 @@ async function boot() {
     li.append(b);
     return li;
   }
+  function shelfGroupRow(g, entries, currentN) {
+    const open = groupOpen(g) || entries.some((e) => e.n === currentN);
+    const li = document.createElement('li');
+    li.className = 'weeks__group';
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'weeks__group-btn'; btn.dataset.group = g.key;
+    btn.dataset.setting = g.setting; btn.dataset.name = g.name;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-controls', g.id);
+    const caret = document.createElement('span'); caret.className = 'weeks__group-caret'; caret.setAttribute('aria-hidden', 'true'); caret.textContent = '▸';
+    const name = document.createElement('span'); name.className = 'weeks__group-name'; name.textContent = g.name;
+    const count = document.createElement('span'); count.className = 'weeks__group-count'; count.textContent = `${entries.length} ${entries.length === 1 ? g.unit : (g.plural ?? `${g.unit}s`)}`;
+    btn.append(caret, name, count);
+    const list = document.createElement('ol');
+    list.id = g.id; list.className = 'weeks__group-list'; list.hidden = !open;
+    list.append(...entries.map((e) => weekRow(e, currentN)));
+    li.append(btn, list);
+    return li;
+  }
   function renderWeeksMenu(currentN) {
-    const { course, shelf } = groupWeeks(outline, weeks);
-    const items = course.map((e) => weekRow(e, currentN));
-    if (shelf.length) {
-      const open = shelfOpen() || shelf.some((e) => e.n === currentN);
-      const li = document.createElement('li');
-      li.className = 'weeks__group';
-      const btn = document.createElement('button');
-      btn.type = 'button'; btn.className = 'weeks__group-btn'; btn.dataset.group = 'shelf';
-      btn.setAttribute('aria-expanded', String(open));
-      btn.setAttribute('aria-controls', 'weeks-shelf');
-      const caret = document.createElement('span'); caret.className = 'weeks__group-caret'; caret.setAttribute('aria-hidden', 'true'); caret.textContent = '\u25b8';
-      const name = document.createElement('span'); name.className = 'weeks__group-name'; name.textContent = 'Review shelf \u00b7 Familia Romana I\u2013XXIV';
-      const count = document.createElement('span'); count.className = 'weeks__group-count'; count.textContent = `${shelf.length} chapter${shelf.length === 1 ? '' : 's'}`;
-      btn.append(caret, name, count);
-      const list = document.createElement('ol');
-      list.id = 'weeks-shelf'; list.className = 'weeks__group-list'; list.hidden = !open;
-      list.append(...shelf.map((e) => weekRow(e, currentN)));
-      li.append(btn, list);
-      items.push(li);
+    const groups = groupWeeks(outline, weeks);
+    const items = groups.course.map((e) => weekRow(e, currentN));
+    for (const g of SHELF_GROUPS) {
+      const entries = groups[g.key] ?? [];
+      if (entries.length) items.push(shelfGroupRow(g, entries, currentN));
     }
     weeksList.replaceChildren(...items);
   }
@@ -271,15 +277,15 @@ async function boot() {
   weeksDialog.querySelector('[data-close="weeks"]').addEventListener('click', () => weeksDialog.close());
   weeksDialog.addEventListener('click', (e) => { if (e.target === weeksDialog) weeksDialog.close(); });
   weeksList.addEventListener('click', async (e) => {
-    // The shelf's heading folds its chapters away or out; the choice is kept in settings (shelfOpen).
+    // A shelf heading folds its chapters away or out; the choice is kept in settings (shelfOpen / colloOpen).
     const g = e.target.closest('.weeks__group-btn');
     if (g) {
       const on = g.getAttribute('aria-expanded') !== 'true';
       g.setAttribute('aria-expanded', String(on));
       const list = document.getElementById(g.getAttribute('aria-controls'));
       if (list) list.hidden = !on;
-      if (live) live.textContent = on ? 'Review shelf shown.' : 'Review shelf hidden.';
-      await saveSettings({ shelfOpen: on });
+      if (live) live.textContent = `${g.dataset.name ?? 'Shelf'} ${on ? 'shown' : 'hidden'}.`;
+      if (g.dataset.setting) await saveSettings({ [g.dataset.setting]: on });
       return;
     }
     const b = e.target.closest('.weeks__row'); if (!b || b.disabled) return;
@@ -954,6 +960,7 @@ async function boot() {
     toggles,
     focusLabel: () => weeks.find((w) => w.n === weekN)?.focus?.label ?? outline.find((w) => w.n === weekN)?.focus?.label ?? '',
     hasTranslation: () => !isShelfWeek(weekN),   // the Translation switch explains itself on a shelf chapter (Latin only)
+    shelfKind: () => shelfKind(weekN),           // …and names the right shelf: a review chapter is not a colloquium
     hasLines: () => unitsWeek == null || weekHasLines(units),   // the Book lines switch explains itself while the week has no printed-line data (unknown until a week is in: no hint yet)
     audio: audio ? {
       weekLabel: () => weekPhrase(weekN),

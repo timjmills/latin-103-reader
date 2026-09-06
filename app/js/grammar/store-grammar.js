@@ -59,11 +59,16 @@ export function normaliseAttempt(a) {
 export function createGrammarStore({ mode = 'local', hooks = null, storage = typeof localStorage !== 'undefined' ? localStorage : null, localPensa = null } = {}) {
   const states = new Map();
   const attempts = new Map();     // id → row
+  // A per-skill index over the attempts, built on demand and dropped on any write. The history view
+  // (GRAMMAR-CONTRACT.md wave 3) asks for one skill's tail over and over as it repaints, and the log can
+  // hold thousands of rows: without this every repaint would walk and sort the lot on a phone.
+  let bySkill = null;
   const confusions = new Map();   // key → row
   const pensa = new Map();        // `${chapter}:${kind}` → row (private, read-only on the device)
   const listeners = new Set();
   let readyP = null;
   let db = null;
+  const dropIndex = () => { bySkill = null; };
   const emit = () => { for (const cb of listeners) { try { cb('grammar'); } catch (e) { console.error('[grammar] listener failed', e); } } };
 
   /* ------------------------------------------------------- local */
@@ -80,11 +85,13 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       db = await import('../db.js');
       for (const r of await db.getAll('skill_state')) { const s = normaliseState(r); if (s) states.set(s.skill, s); }
       for (const r of await db.getAll('drill_attempts')) { const a = normaliseAttempt(r); if (a) attempts.set(a.id, a); }
+      dropIndex();
       for (const r of await db.getAll('confusions')) if (r?.skill_a && r?.skill_b) confusions.set(confusionKey(r.skill_a, r.skill_b), r);
       for (const r of await db.getAll('pensa')) { const p = normalisePensum(r); if (p) pensa.set(p.id, p); }
     } else {
       for (const r of readLS(LS.states, [])) { const s = normaliseState(r); if (s) states.set(s.skill, s); }
       for (const r of readLS(LS.attempts, [])) { const a = normaliseAttempt(r); if (a) attempts.set(a.id, a); }
+      dropIndex();
       for (const r of readLS(LS.confusions, [])) if (r?.skill_a && r?.skill_b) confusions.set(confusionKey(r.skill_a, r.skill_b), r);
       // The fixture store's pensa (tests/fixtures/grammar/pensa/*.json through index.js): memory only, never persisted.
       if (localPensa) { try { for (const r of (await localPensa()) || []) { const p = normalisePensum(r); if (p) pensa.set(p.id, p); } } catch (e) { console.warn('[grammar] fixture pensa not loaded', e?.message || e); } }
@@ -113,7 +120,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     try {
       const { data, error } = await sb.from('drill_attempts').select('*').order('at', { ascending: false }).limit(ATTEMPT_PULL);
       if (error) throw error;
-      for (const raw of data || []) { const a = normaliseAttempt(raw); if (a && !attempts.has(a.id)) { attempts.set(a.id, a); await db.put('drill_attempts', a); changed = true; } }
+      for (const raw of data || []) { const a = normaliseAttempt(raw); if (a && !attempts.has(a.id)) { attempts.set(a.id, a); dropIndex(); await db.put('drill_attempts', a); changed = true; } }
     } catch (e) { console.warn('[grammar] drill_attempts not synced', e?.message || e); }
     try {
       const rows = await hooks.pageAll(() => sb.from('confusions').select('*').order('skill_a'));
@@ -176,6 +183,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     const a = normaliseAttempt({ ...row, at: row.at ?? nowIso() });
     if (!a) return null;
     attempts.set(a.id, a);
+    dropIndex();
     if (mode === 'idb') { await db.put('drill_attempts', a); await hooks.enqueue({ table: 'drill_attempts', key: `attempt:${a.id}`, op: 'insert', row: serverAttemptRow(a) }); }
     else persistLocal();
     return a;
@@ -203,6 +211,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
   async function resetSkill(skill) {
     states.delete(skill);
     for (const [id, a] of [...attempts]) if (a.skill === skill) attempts.delete(id);
+    dropIndex();
     for (const [k, c] of [...confusions]) if (c.skill_a === skill || c.skill_b === skill) confusions.delete(k);
     if (mode === 'idb') {
       await db.del('skill_state', skill);
@@ -216,7 +225,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     emit();
   }
   async function resetAll() {
-    states.clear(); attempts.clear(); confusions.clear();
+    states.clear(); attempts.clear(); confusions.clear(); dropIndex();
     if (mode === 'idb') {
       await db.clear('skill_state'); await db.clear('drill_attempts'); await db.clear('confusions');
       const t = Date.now();
@@ -230,7 +239,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
   // Cross-tab changes with the fixture store look like sync events.
   if (mode !== 'idb' && typeof window !== 'undefined') {
     window.addEventListener('storage', (e) => {
-      if (Object.values(LS).includes(e.key)) { states.clear(); attempts.clear(); confusions.clear(); loadLocal().then(emit); }
+      if (Object.values(LS).includes(e.key)) { states.clear(); attempts.clear(); confusions.clear(); dropIndex(); loadLocal().then(emit); }
     });
   }
 
@@ -239,7 +248,34 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     getStates: () => new Map([...states].map(([k, v]) => [k, { ...v }])),
     getState: (skill) => (states.has(skill) ? { ...states.get(skill) } : null),
     setState, resetSkill, resetAll,
-    getAttempts: ({ skill = null } = {}) => [...attempts.values()].filter((a) => skill == null || a.skill === skill).sort((a, b) => ts(a.at) - ts(b.at)),
+    /**
+     * The attempt log, oldest first. `skill` reads one skill's rows through a
+     * per-skill index built once and dropped on the next write; `limit` keeps
+     * only that many of the newest (the history view never needs more) and
+     * `since` drops anything older than the timestamp. Everything is a copy.
+     */
+    getAttempts({ skill = null, limit = 0, since = null } = {}) {
+      let rows;
+      if (skill == null) rows = [...attempts.values()].sort((a, b) => ts(a.at) - ts(b.at));
+      else {
+        if (!bySkill) {
+          bySkill = new Map();
+          for (const a of attempts.values()) { let l = bySkill.get(a.skill); if (!l) bySkill.set(a.skill, l = []); l.push(a); }
+          for (const l of bySkill.values()) l.sort((a, b) => ts(a.at) - ts(b.at));
+        }
+        rows = bySkill.get(skill) ?? [];
+      }
+      if (since != null) { const t = ts(since); rows = rows.filter((a) => ts(a.at) >= t); }
+      if (limit > 0 && rows.length > limit) rows = rows.slice(-limit);
+      return rows.map((a) => ({ ...a }));
+    },
+    /** How many attempts one skill has, without materialising them. */
+    countAttempts(skill) {
+      if (skill == null) return attempts.size;
+      let n = 0;
+      for (const a of attempts.values()) if (a.skill === skill) n += 1;
+      return n;
+    },
     addAttempt,
     getConfusions: () => [...confusions.values()].map((r) => ({ ...r })),
     bumpConfusion, mergeConfusion,

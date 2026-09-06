@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v37';
+const CACHE_VERSION = 'v38';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -36,6 +36,7 @@ const PRECACHE = [
   './js/tokenize.js',
   './js/settings.js',
   './css/grammar.css',
+  './css/print.css',
   './js/grammar/index.js',
   './js/grammar/lessons.js',
   './js/grammar/items.js',
@@ -217,6 +218,8 @@ const PRECACHE = [
   './js/grammar/sets.js',
   './js/grammar/stage3.js',
   './js/grammar/today.js',
+  // wave 3
+  './js/grammar/print.js',
 ];
 
 const abs = (rel) => new URL(rel, self.location.href).href;

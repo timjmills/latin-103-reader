@@ -19,7 +19,7 @@
 // tappable bank; C: a question, typed or tap). `unverified` pensum items are hidden.
 
 import { tokenize, stripMacrons } from '../tokenize.js';
-import { roman } from '../sync.js';
+import { roman, shelfChapter } from '../sync.js';
 import { normaliseAnswer } from './items.js';
 
 export const SET_KINDS = Object.freeze(['question', 'vocab', 'pensum']);
@@ -57,11 +57,15 @@ export function fromRoman(s) {
   for (let i = 0; i < t.length; i++) { const a = v[t[i]], b = v[t[i + 1]] ?? 0; out += a < b ? -a : a; }
   return out || null;
 }
-/** The Familia Romana chapter a library week reads: the shelf's n − 100, a course week's `chapter` field. Pure. */
+/**
+ * The Familia Romana chapter a library week reads: a shelf week's chapter
+ * (review shelf n − 100, colloquia n − 200 — colloquium N accompanies chapter
+ * N), a course week's `chapter` field. Pure.
+ */
 export function chapterOfWeek(week) {
   if (!week) return null;
-  const n = Number(week.n);
-  if (n > 100) return n - 100;
+  const c = shelfChapter(week.n);
+  if (c != null) return c;
   return fromRoman(week.chapter);
 }
 

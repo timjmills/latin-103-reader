@@ -426,6 +426,29 @@ the chapter text (the pensa re-tell the chapter); an item the pipeline could
 not resolve carries `"unverified": true` and E hides it. Skill id
 `pensum-NN` (kinds `pensum`; item key `pensum:NN:A:3`).
 
+**A blank resolves only on evidence** (precision pass, 2026-09-06). Two ways,
+and no third: (a) the pensum sentence IS a chapter sentence word for word —
+same length, every printed word in its place, Ørberg's bracketed glosses
+dropped — and the blanks take the words the chapter prints there; or (b) after
+the full filter stack exactly one candidate survives, out of a pool holding
+every attested form *and* every regular form `latin_forms` can build from the
+chapter's lemmas. No filter is ever dropped (contradictory filters leave
+nothing), a candidate must positively fit rather than merely fail to
+contradict (an adverb or other indeclinable satisfies every agreement filter
+vacuously and so can never win), and a reading whose case or person rests on no
+filter is not evidence: where the sentence pins nothing the blank resolves to
+nothing. Frequency and n-gram context no longer decide anything — they only
+order the shortlist an `unverified` blank carries. Every blank of a sentence
+with an unreadable token is `unverified` too (the printed principal parts
+excepted: they read the verb beside them and nothing else). Subject detection
+is the first nominative of the blank's own comma clause (a noun or pronoun,
+never a bare adjective; carried across a comma when the next clause has none of
+its own, never across `; : ! ?`), coordinated pairs plural, words a preposition
+governs excluded. The pass traded coverage for correctness: 286 resolved blanks
+across the 34 chapters instead of 1153, and 59 resolved A/B items instead of
+332 — every one of the 286 checked against the printed page, none wrong.
+Pensum C is untouched (246 of 383 items resolved, as before).
+
 ### Generated kinds (E, from library units)
 - `transform` (stage 3, input type): one word of a book sentence changed by
   paradigms.js (sg↔pl, pres→perf/impf, act↔pass, statement→indirect command
@@ -681,3 +704,86 @@ Merges the file into data/build/review-NN.json (`note`, `note_simple` on units;
 `week.parts` rebuilt from `parts` with `summary_en`/`summary_la`; highlights to
 data/build/highlights-review-NN.json), validates every id and quoted string,
 and writes SQL in seed_sql's style (units updated in place, highlights replaced).
+
+### Wave 3 implementation notes (E, 2026-09-06)
+
+Where the section departs from the sketch above, or pins something it left
+open. Change here first if any of it should move.
+
+- **Files.** `app/js/grammar/print.js` and `app/css/print.css` beside the wave-1
+  and wave-2 modules; the analytics and history live in `stats.js` (pure) and
+  `ui.js` (views). Tests: `tests/grammar.stats.wave3.test.mjs` (the pair
+  merging and its reason, the pair session, the history windowing and the
+  stability replay, the chart page split) and `tests/ui.colloquia.test.mjs`
+  (the second shelf), with additions to `tests/grammar.store.test.mjs`
+  (the windowed attempt log) and `tests/ui.shelf.test.mjs`. sw is **v38**
+  (`css/print.css`, `js/grammar/print.js` precached).
+- **A shelf is a hundred, and there are two of them.** `sync.js` now carries
+  `COLLO_BASE` (200) beside `SHELF_BASE` (100) and `shelfKind(n)` →
+  `'review' | 'colloquia' | null`; `isShelfWeek` is `shelfKind(n) != null`, so
+  **101–199 and 201–299 are both shelf weeks** and everything that already
+  branched on it — the 103 pace, the per-week table, the time-left estimate,
+  the translation toggle, `#reader[data-shelf]`, the generators' current-week
+  guard, the grammar section's "last course week" — is right for the colloquia
+  with no further change. `shelfChapter(207)` is 7, not 107.
+  `weekOfUnit('c07:3.1')` is 207 (`w` / `r` / `c` are the three prefixes).
+- **`groupWeeks` returns three lists**, `{ course, shelf, collo }` (it returned
+  two), and `settings.js` exports `SHELF_GROUPS` — the ordered shelf headings
+  with their list id, settings flag (`shelfOpen` / `colloOpen`), name and
+  `unit` / `plural`. `main.js` renders any of them through one
+  `shelfGroupRow()`, so a further shelf is one entry in that array. The
+  colloquia heading is "Colloquia Personarum I–XXIV" and its count reads
+  "2 colloquia".
+- **Two notes for the pipeline (P).** (1) The reader prints a speaker's name
+  for `unit_type` `'turn'`; `reader.js` now treats the contract's `'speech'`
+  as the same thing (`isTurn`), so either spelling works — `'speech'` as
+  specified is fine. (2) `title` = "Colloquium N · <speakers>" makes the
+  header read the label twice, since the app already writes "Colloquium VII"
+  from `n`. `weekTitleLabel` is now idempotent (a title opening with its own
+  label is left alone), so the specified shape is safe; **the speakers alone
+  read better** in the weeks menu, where the numeral is already its own
+  column, and that is what the fixture carries.
+- **A confusion pair is symmetric.** `confusions` rows are directional ("a
+  answered as b"); `stats.confusionPairs` folds both directions into one line
+  and names the heavier direction first. The reason line comes from either
+  lesson's `confusion` block naming the other, and only falls back to the two
+  `plain` glosses — so the analytics say what the lesson says.
+- **The pair's Start is not a preset.** `scheduler.buildPairSession({ a, b })`
+  returns slots alternating exactly the two skills, each at its own stage, no
+  two consecutive of a kind; `createPractice` takes it as a finished plan with
+  the new `fill: null` (a re-queue that cannot fit is dropped rather than
+  padded with a third skill), so "these two only" holds for the whole session.
+  Both skills are put into rotation first, by the `startBlocked` rule.
+- **The history is windowed twice.** `store-grammar` keeps a per-skill index of
+  the attempts, built on demand and dropped on every write, and
+  `getAttempts({ skill, limit, since })` returns only the tail;
+  `stats.skillHistory` windows again at 400 and reports `total` beside `read`.
+  `countAttempts(skill)` answers "does this skill have a history" without
+  materialising the rows — the skill map asks it 87 times a paint.
+- **The stability curve is replayed, not stored.** `skill_state` keeps one row,
+  so "how stability and stage moved" can only come from the log:
+  `stats.progressTrail` runs `applyAnswer` over the attempts (Learn-mode ones
+  carried through without moving it, as the scheduler never did). The page says
+  the curve may differ from today's stability when a skill was reset or added
+  to practice by hand.
+- **Printing.** `css/print.css` is linked `media="print"`; the pages are built
+  into `#g-print` outside the app's tree and `html[data-printing] body >
+  *:not(#g-print)` hides everything else. A chart is one paradigm section a
+  page with the focus cells **boxed and bold** (a box, not a tint: it survives
+  a greyscale printer) and a key naming them in the skill's plain words; a
+  skill sheet is rule + forms + examples + the confusion note, allowed to run
+  onto a second page rather than cutting the examples. The map's "Print charts"
+  prints the current category filter's skills after a confirm naming the page
+  count. `paradigmPages` / `cellText` / `focusNote` / `sheetSubtitle` are pure
+  and tested; verified by printing to PDF (`qa/grammar/w3/*.pdf`).
+- **Three small fixes made in passing**, all in rules this wave reuses:
+  `.g-back` gained `justify-self: start` (the "← Skills" button was stretching
+  and centring its label), `.g-link` gained `text-align: inherit` (a long skill
+  title wrapping onto a second line centred itself on a phone), and
+  `translationDesc` takes the shelf kind so it does not call a colloquium a
+  review chapter.
+
+#### Worth changing in the plan
+
+- Nothing outstanding from wave 3. GRAMMAR-PLAN §8 wave 3's four items are
+  built; the Colloquia texts themselves are P's (`pipeline/colloquia.py`).

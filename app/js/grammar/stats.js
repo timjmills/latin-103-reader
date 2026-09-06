@@ -2,7 +2,7 @@
 // skill_state rows and the drill_attempts log. Never merged into the reading
 // study log.
 
-import { STATES } from './scheduler.js';
+import { STATES, applyAnswer, newState } from './scheduler.js';
 
 const DAY = 24 * 60 * 60 * 1000;
 const ms = (v) => { const n = typeof v === 'number' ? v : Date.parse(v || ''); return Number.isFinite(n) ? n : 0; };
@@ -51,12 +51,161 @@ export function perSkill(attempts, skillIds, { last = 10 } = {}) {
   return out;
 }
 
-/** Confusion pairs, most confused first: [{ a, b, count }]. */
+/** Confusion pairs, most confused first: [{ a, b, count }]. Directional: "a answered as b". */
 export function confusionList(rows, skills) {
   return (rows || []).filter((r) => r && r.count > 0 && skills.has(r.skill_a) && skills.has(r.skill_b))
     .map((r) => ({ a: r.skill_a, b: r.skill_b, count: Number(r.count) || 0 }))
     .sort((x, y) => y.count - x.count);
 }
+
+/* --------------------------------------------- wave 3: confusion analytics */
+
+/**
+ * The learner's top confusion *pairs*. "You mix up X and Y" is symmetric, so
+ * the two `confusions` rows for a pair are one line here. The pair is named
+ * (a, b) with `a` the direction answered more often — the mistake actually
+ * made — and keeps both directional counts. `[{ a, b, count, ab, ba }]`, most
+ * confused first. Pure.
+ */
+export function confusionPairs(rows, skills, { limit = 6, min = 1 } = {}) {
+  const merged = new Map();
+  for (const r of rows || []) {
+    if (!r || !skills?.has?.(r.skill_a) || !skills.has(r.skill_b) || r.skill_a === r.skill_b) continue;
+    const n = Number(r.count) || 0;
+    if (n <= 0) continue;
+    const key = [r.skill_a, r.skill_b].sort().join('|');
+    const cur = merged.get(key) ?? { key, count: 0, dir: new Map() };
+    cur.count += n;
+    const dk = `${r.skill_a}|${r.skill_b}`;
+    cur.dir.set(dk, (cur.dir.get(dk) ?? 0) + n);
+    merged.set(key, cur);
+  }
+  const out = [];
+  for (const m of merged.values()) {
+    const [x, y] = m.key.split('|');
+    const xy = m.dir.get(`${x}|${y}`) ?? 0;
+    const yx = m.dir.get(`${y}|${x}`) ?? 0;
+    const [a, b, ab, ba] = xy >= yx ? [x, y, xy, yx] : [y, x, yx, xy];
+    if (m.count >= min) out.push({ a, b, count: m.count, ab, ba });
+  }
+  // Ties settle on the skill ids, so the list does not reshuffle between repaints.
+  out.sort((p, q) => q.count - p.count || (p.a < q.a ? -1 : p.a > q.a ? 1 : 0));
+  return limit > 0 ? out.slice(0, limit) : out;
+}
+
+/**
+ * The plain-words line under a confusion pair: what actually separates the
+ * two. The lessons' own confusion blocks say it best (either lesson may name
+ * the other), so those come first; failing that the two skills' `plain`
+ * glosses are set against each other, which is what they are carried for.
+ * `skillA` / `skillB` are skill-map entries, `lessonA` / `lessonB` their
+ * lesson JSON (or null — a lesson may not be written yet). Pure.
+ */
+export function confusionReason(skillA, skillB, { lessonA = null, lessonB = null } = {}) {
+  const blockOf = (lesson, other) => (lesson?.core ?? []).find((b) => b?.type === 'confusion' && b.with === other && String(b.text ?? '').trim())?.text ?? null;
+  const own = blockOf(lessonA, skillB?.id) ?? blockOf(lessonB, skillA?.id);
+  if (own) return String(own).trim();
+  const plainA = String(skillA?.plain ?? '').trim();
+  const plainB = String(skillB?.plain ?? '').trim();
+  if (plainA && plainB) return `${skillA.title} is ${plainA}; ${skillB.title} is ${plainB}.`;
+  if (skillA?.summary && skillB?.summary) return `${skillA.title}: ${skillA.summary} ${skillB.title}: ${skillB.summary}`;
+  return 'Two skills that answer to the same forms — practising them side by side is what separates them.';
+}
+
+/* ------------------------------------------- wave 3: per-skill history */
+
+/**
+ * One skill's history from `drill_attempts` alone (no new tables). The log can
+ * be long — a year of practice is thousands of rows — so only the tail is ever
+ * read: at most `max` attempts, newest kept (the store hands in an already
+ * windowed list; this is the second guard). `attempts` are that skill's rows,
+ * oldest first.
+ *
+ * Returns `{ total, read, windowed, counts, perDay, recent, trail, stageChanges }`:
+ * `counts` = right / hinted / wrong over the window, `perDay` the last `days`
+ * local days, `recent` the last `last` items newest first (the learner's own
+ * answer beside the right one), `trail` how stability and stage moved. Pure.
+ */
+export function skillHistory(attempts, { last = 20, days = 21, now = Date.now(), max = 400 } = {}) {
+  const all = (attempts || []).filter(Boolean);
+  const total = all.length;
+  const list = total > max ? all.slice(-max) : all;
+  const counts = { right: 0, hinted: 0, wrong: 0 };
+  for (const a of list) { if (!a.correct) counts.wrong += 1; else if (a.hinted) counts.hinted += 1; else counts.right += 1; }
+  const perDay = [];
+  for (let i = days - 1; i >= 0; i--) perDay.push({ day: localDay(now - i * DAY), items: 0, right: 0, hinted: 0, wrong: 0 });
+  const idx = new Map(perDay.map((d, i) => [d.day, i]));
+  for (const a of list) {
+    const i = idx.get(localDay(ms(a.at)));
+    if (i == null) continue;
+    perDay[i].items += 1;
+    if (!a.correct) perDay[i].wrong += 1; else if (a.hinted) perDay[i].hinted += 1; else perDay[i].right += 1;
+  }
+  const recent = list.slice(-last).reverse().map((a) => ({
+    at: a.at, kind: a.kind, mode: a.mode, correct: !!a.correct, hinted: !!a.hinted, self: !!a.self,
+    // A self-graded translate answer stores the learner's own grade, not what they wrote.
+    given: a.self ? `graded ${String(a.answer ?? '').replace(/^self:\s*/, '')}` : String(a.answer ?? ''),
+    expected: String(a.expected ?? ''), confused_with: a.confused_with ?? null, item_key: a.item_key ?? '',
+  }));
+  const { trail, stageChanges } = progressTrail(list, { now });
+  return { total, read: list.length, windowed: total > list.length, counts, perDay, recent, trail, stageChanges };
+}
+
+/**
+ * How stability and stage moved, replayed over the attempts with the very
+ * scheduler that wrote them — `skill_state` keeps only today's row, so the
+ * shape of the curve can only come from the log. Learn-mode attempts never
+ * touched stability (GRAMMAR-CONTRACT.md, wave 1), so they are carried through
+ * the trail without moving it. Pure.
+ */
+export function progressTrail(attempts, { now = Date.now() } = {}) {
+  const list = (attempts || []).filter(Boolean);
+  if (!list.length) return { trail: [], stageChanges: [] };
+  let state = newState(list[0].skill ?? 'skill', ms(list[0].at) || now);
+  const trail = [];
+  const stageChanges = [];
+  for (const a of list) {
+    const at = ms(a.at) || now;
+    if (a.mode !== 'learn') {
+      const before = state.stage;
+      state = applyAnswer(state, { correct: !!a.correct, hinted: !!a.hinted, partial: !!a.partial, ms: a.ms ?? null, now: at });
+      if (state.stage !== before) stageChanges.push({ at: a.at, from: before, to: state.stage });
+    }
+    trail.push({ at: a.at, stability: Number(state.stability_days) || 0, stage: state.stage, state: state.state, correct: !!a.correct });
+  }
+  return { trail, stageChanges };
+}
+
+/**
+ * The confusions that touch one skill, either way round, most confused first:
+ * `[{ other, count, mine }]` — `mine` is the count of this skill answered as
+ * the other. Pure.
+ */
+export function confusionsOf(skill, rows, skills) {
+  const out = new Map();
+  for (const r of rows || []) {
+    if (!r || !(r.count > 0)) continue;
+    const other = r.skill_a === skill ? r.skill_b : r.skill_b === skill ? r.skill_a : null;
+    if (!other || other === skill || (skills && !skills.has(other))) continue;
+    const cur = out.get(other) ?? { other, count: 0, mine: 0 };
+    cur.count += Number(r.count) || 0;
+    if (r.skill_a === skill) cur.mine += Number(r.count) || 0;
+    out.set(other, cur);
+  }
+  return [...out.values()].sort((x, y) => y.count - x.count || (x.other < y.other ? -1 : 1));
+}
+
+/** A stability said plainly: "under an hour" / "18 hours" / "3 days" / "2 months". Pure. */
+export function fmtStability(d) {
+  const n = Number(d) || 0;
+  if (n <= 0) return '—';
+  if (n < 1 / 24) return 'under an hour';
+  if (n < 1) return `${Math.round(n * 24)} hours`;
+  if (n < 1.5) return '1 day';
+  if (n < 60) return `${Math.round(n)} days`;
+  return `${Math.round(n / 30)} months`;
+}
+
 
 export const fmtPct = (n) => (n == null ? '—' : `${n}%`);
 export const fmtMin = (msTotal) => { const s = (msTotal || 0) / 1000; if (s < 45) return 'under a minute'; const m = Math.max(1, Math.round(s / 60)); return `${m} min`; };
