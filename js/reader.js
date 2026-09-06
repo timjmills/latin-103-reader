@@ -525,6 +525,14 @@ export function plainDisclosure(text, plain = null) {
   return details;
 }
 
+/**
+ * A dialogue turn: a unit that prints its speaker's name before the Latin and
+ * stands on its own line. The course weeks say `turn`; the Colloquia
+ * Personarum shelf (GRAMMAR-CONTRACT.md, wave 3) says `speech`. Both are the
+ * same thing on the page.
+ */
+const isTurn = (u) => u?.unit_type === 'turn' || u?.unit_type === 'speech';
+
 const h = (tag, attrs = {}, ...children) => {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -882,7 +890,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
         if (mapped[i]) lastMapped = lastLine(u);
         return e;
       });
-      const inLine = (i) => i >= 0 && i < units.length && mapped[i] && units[i].unit_type !== 'verse' && units[i].unit_type !== 'turn';
+      const inLine = (i) => i >= 0 && i < units.length && mapped[i] && units[i].unit_type !== 'verse' && !isTurn(units[i]);
       let pendingNotes = [];
       let marksLine = null;   // the printed line the last marks were on, and how many sets it holds
       let marksOnLine = 0;
@@ -897,14 +905,14 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
         } else if (!lined) prose.append(...pictureBlocks(u, 'pic--inline'));
         if (lined && lastLine(u) !== marksLine) { marksLine = lastLine(u); marksOnLine = 0; }
         const unitEl = h('span', {
-          class: 'unit' + (u.unit_type === 'verse' ? ' unit--verse' : '') + (u.unit_type === 'turn' ? ' unit--turn' : '') + (lined ? ' unit--line' : '') + (state.playing === u.id ? ' is-playing' : ''),
+          class: 'unit' + (u.unit_type === 'verse' ? ' unit--verse' : '') + (isTurn(u) ? ' unit--turn' : '') + (lined ? ' unit--line' : '') + (state.playing === u.id ? ' is-playing' : ''),
           'data-id': u.id, 'data-order': String(u.order), 'data-type': u.unit_type,
         });
         // Flow layout: the block's number beside its first line. Book mode numbers every printed line from inside renderLatin() instead — for the units that have line data; the rest keep this.
         if (state.week?.has_line_numbers && u.block_start && u.line_no != null && !mapped[i]) {
           unitEl.append(lineNumber(u.line_no));
         }
-        if (u.unit_type === 'turn' && u.speaker) unitEl.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
+        if (isTurn(u) && u.speaker) unitEl.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
         const la = h('span', { class: 'la', lang: 'la' }, renderLatin(u));
         const margin = marginBlock(u, lined ? 'mnotes mnotes--line' : 'mnotes');
         if (margin && !lined) unitEl.classList.add('has-margin');
@@ -958,7 +966,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     if (listen) wrap.append(listen);   // "Play sentence" / "Play from here" live in the bar; no inline play button here
     wrap.append(...pictureBlocks(u, 'pic--sentence'));   // the illustration above the Latin
     const la = h('div', { class: 'sentence__la', lang: 'la' });
-    if (u.unit_type === 'turn' && u.speaker) la.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
+    if (isTurn(u) && u.speaker) la.append(h('span', { class: 'speaker', text: u.speaker }), ' ');
     la.append(renderLatin(u));
     wrap.append(la);
     const margin = marginBlock(u, 'mnotes mnotes--sentence');

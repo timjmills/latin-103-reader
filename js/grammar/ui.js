@@ -6,8 +6,9 @@
 
 import { chapters, roman, inline, loadLesson, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm } from '../wordpanel.js';
+import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
-import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, DAY_MS } from './scheduler.js';
+import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive } from './session.js';
 import { featureLabel, featureKey } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
@@ -15,6 +16,7 @@ import { orderInput, matchInput } from './inputs.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
 import { localDay } from './stats.js';
+import { buildChart, buildSheet, printDocument } from './print.js';
 
 const LS_SESSION = 'l103.grammar.session';      // the practice session in progress (plan, position, log) — Back / Reload can resume it
 const LS_QUEUE = 'l103.grammar.learnQueue';     // "Start all as new": the skills still to go through Learn
@@ -79,11 +81,11 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------ shell */
   function draw() {
     const nav = h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'practice', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'summary'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name))) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
+      ['map', 'practice', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'summary'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
         { map: 'Skills', practice: 'Practice', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, stats: renderStats, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
     document.title = `Grammar — Latin 103`;
   }
@@ -96,7 +98,7 @@ export function createUI(ctx) {
     window.scrollTo({ top: 0 });
     if (focus) body.querySelector('h1')?.focus?.({ preventScroll: true });
   }
-  function refresh() { if (view.name === 'map' || view.name === 'stats') draw(); }
+  function refresh() { if (['map', 'stats', 'history'].includes(view.name)) draw(); }
   // The new heading takes focus whenever the body is replaced and focus has nowhere to be (a view arriving after a lesson fetch, the end of a session) — G1-09.
   const setBody = (...nodes) => { body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
   // The section may be built twice in a life: once cheaply for the weeks-menu Today card, then in full when Grammar is
@@ -219,6 +221,7 @@ export function createUI(ctx) {
     const bulk = h('div', { class: 'g-bulk' },
       btn('Add all to mixed practice', { onclick: () => bulkAdd() }, 'btn btn--quiet'),
       btn('Start all as new', { onclick: () => bulkNew() }, 'btn btn--quiet'),
+      btn('Print charts', { onclick: () => printCharts(filter), 'aria-label': filter === 'all' ? 'Print the paradigm charts of every skill' : `Print the paradigm charts of the ${filter.replace('-', ' ')} skills` }, 'btn btn--quiet'),
       btn('Reset all', { onclick: () => resetAll() }, 'btn btn--quiet g-danger'));
 
     // Every chapter with a skill or a set, in book order; the chapter's sets (Questions · Vocabulary · Pensa) sit under its skills.
@@ -259,6 +262,7 @@ export function createUI(ctx) {
     } else {
       acts.push(btn('Practise this skill', { onclick: () => startBlocked(s.id) }, 'btn'), lessonBtn);
     }
+    if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => render('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
     acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
     return h('li', { class: 'g-skill', 'data-state': st.state },
       h('div', { class: 'g-skill__main' },
@@ -280,6 +284,7 @@ export function createUI(ctx) {
     else if (st.state === 'learning') acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: s.id }) }, 'btn'));
     else if (st.state === 'lapsed') { if (learnable) acts.push(btn('Re-learn', { onclick: () => render('learn', { skill: s.id }) }, 'btn')); acts.push(btn('Practise', { onclick: () => startBlocked(s.id) }, learnable ? 'btn btn--quiet' : 'btn')); }
     else acts.push(btn('Practise', { onclick: () => startBlocked(s.id) }, 'btn'));
+    if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => render('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
     acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
     const what = s.set === 'questions' ? `${s.count} question${s.count === 1 ? '' : 's'}${s.data?.title ? ` · ${s.data.title}` : ''}` : s.set === 'vocab' ? `${s.count} word${s.count === 1 ? '' : 's'}${s.rev ? ' · English → Latin, an optional extra deck' : ' · Latin → English'}` : `${s.data?.A.length ?? 0} A · ${s.data?.B.length ?? 0} B · ${s.data?.C.length ?? 0} C · practise only`;
     return h('li', { class: 'g-skill g-skill--set', 'data-state': st.state, 'data-set': s.set },
@@ -370,12 +375,14 @@ export function createUI(ctx) {
     if (!lesson) out.push(h('p', { class: 'g-lesson__p g-quiet', text: 'This lesson has not been written yet. The summary above and the examples below still stand.' }), examplesBlock(skill, { units: [], invented: [] }, { fallback: 3 }));
     return out;
   }
-  /** "Week 3 · Fabulae Syrae 1: Mīnōs" or, for the review shelf, "Familia Romana cap. VII". */
+  /** "Week 3 · Fabulae Syrae 1: Mīnōs", or a shelf's own name: "Familia Romana cap. VII", "Colloquia Personarum VII". */
   function unitRefText(u) {
-    const m = /^([wr])(\d+):/.exec(String(u.id ?? ''));
-    if (m && m[1] === 'r') return `Familia Romana cap. ${roman(Number(m[2]))}${u.part ? ` · ${u.part}` : ''}`;
+    const m = /^([wrc])(\d+):/.exec(String(u.id ?? ''));
+    const part = u.part ? ` · ${u.part}` : '';
+    if (m && m[1] === 'r') return `Familia Romana cap. ${roman(Number(m[2]))}${part}`;
+    if (m && m[1] === 'c') return `Colloquia Personarum ${roman(Number(m[2]))}${part}`;
     const n = u.week_n ?? (m ? Number(m[2]) : null);
-    return `${n != null ? `Week ${n}` : 'Library'}${u.part ? ` · ${u.part}` : ''}`;
+    return `${n != null ? `Week ${n}` : 'Library'}${part}`;
   }
   /** The lesson's example units in the library, plus substitutes from the skill's own pool when some are missing (short, a noun target for a case skill), each marked. */
   function exampleUnits(skill, ids, want, { maxLen = 140 } = {}) {
@@ -421,6 +428,11 @@ export function createUI(ctx) {
     if (st.state === 'learning') acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: id }) }, 'btn btn--primary'));
     if (st.state === 'new') acts.push(btn('Add to mixed practice', { onclick: async () => { await addSkill(id); render('lesson', { skill: id }); } }, 'btn'));
     if (inRotation(st)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id) }, 'btn btn--primary'));
+    // Printable charts (GRAMMAR-CONTRACT.md, wave 3): the chart alone, one table a page with the focus cells boxed,
+    // or the whole sheet — rule, forms and examples. Offered only where there is something to put on the paper.
+    if (!skill.set && chartTable(skill)) acts.push(btn('Print chart', { onclick: () => printChart(skill) }, 'btn btn--quiet'));
+    if (!skill.set) acts.push(btn('Print sheet', { onclick: () => printSheet(skill) }, 'btn btn--quiet'));
+    if (gstore.countAttempts(id)) acts.push(btn('History', { onclick: () => render('history', { skill: id }) }, 'btn btn--quiet'));
     setBody(
       btn('← Skills', { onclick: () => render('map') }, 'btn btn--quiet g-back'),
       lessonHeader(skill, st),
@@ -542,7 +554,7 @@ export function createUI(ctx) {
     const states = gstore.getStates();
     const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
     const cw = [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])];
-    const onShelf = ctx.currentWeekN() != null && ctx.currentWeekN() > 100;
+    const onShelf = isShelfWeek(ctx.currentWeekN());
     const today = suggestToday({ states, skills, currentWeek: cw });
     let size = prefs.size;
     let preset = prefs.preset;
@@ -559,7 +571,7 @@ export function createUI(ctx) {
       const disabled = key === 'this-week' && !cw.some((id) => rotation.includes(id));
       return h('label', { class: `g-preset${disabled ? ' is-disabled' : ''}` },
         h('input', { type: 'radio', name: 'g-preset', value: key, checked: preset === key ? true : null, disabled: disabled ? true : null, onchange: () => { preset = key; skillSelect.closest('.g-preset__pick').hidden = key !== 'one-skill'; } }),
-        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? (onShelf && !cw.length ? 'Reading the review shelf — no course week is current.' : 'No skill from this week is in practice yet.') : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
+        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in practice yet.') : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
     }));
     const pick = h('div', { class: 'g-preset__pick', hidden: preset !== 'one-skill' }, h('span', { class: 'g-label', text: 'Skill' }), skillSelect);
     const start = async () => {
@@ -573,7 +585,10 @@ export function createUI(ctx) {
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick)),
       h('div', { class: 'g-acts' }, btn('Start', { onclick: start }, 'btn btn--primary'), btn('Back to skills', { onclick: () => render('map') }, 'btn btn--quiet')));
   }
-  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, resume = false }) {
+  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false }) {
+    // A confusion pair's Start: ten items alternating exactly those two skills (GRAMMAR-CONTRACT.md, wave 3).
+    // It is not a preset — nothing else is let in — so it is built here and handed to the runner as a finished plan.
+    if (Array.isArray(pair) && pair.length === 2) { startPair(pair, size ?? 10); return; }
     const params = { preset, size, oneSkill };
     // A session in progress is kept in localStorage (plan, position, answers) so Back or Reload offers to resume it (G1-08).
     const saved = resume ? readJSON(LS_SESSION, null) : null;
@@ -951,6 +966,9 @@ export function createUI(ctx) {
     const details = isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : h('details', { class: 'g-fb__more' }, h('summary', { class: 'g-fb__more-s', text: 'Why' }),
       h('p', { class: 'g-fb__term' }, h('b', { text: skill?.plain ?? fb.term }), ` — ${skill?.summary ?? ''}`),
       h('div', { class: 'g-fb__rule' }),
+      // "Reached from the skill map and from an item's feedback" (GRAMMAR-CONTRACT.md, wave 3). Inside the
+      // expandable, so a keyboard Enter on Next can never land on it by accident mid-session.
+      h('p', { class: 'g-fb__hist' }, h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: item.skill }) }, `How ${skill?.title ?? 'this skill'} has gone`)),
       lit ? h('div', { class: 'g-fb__pt' }, lit) : null,
       unit && !isSet && item.kind !== 'transform' && item.kind !== 'reorder' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(unit.la, { target: item.target?.index ?? null }), unit.en ? h('p', { class: 'g-ex__en', text: unit.en }) : null) : null);
     details?.addEventListener('toggle', async () => {
@@ -1010,6 +1028,10 @@ export function createUI(ctx) {
   }
 
   /* ------------------------------------------------------------ stats */
+  /** How many of a skill's attempts the history view reads at most: a long log is windowed, never walked whole on a phone. */
+  const HISTORY_WINDOW = 400;
+  const HISTORY_DAYS = 21;
+
   function renderStats() {
     const now = Date.now();
     const ids = [...skills.keys()];
@@ -1019,7 +1041,7 @@ export function createUI(ctx) {
     const t = stats.totals(attempts, now);
     const days = stats.perDay(attempts, { days: 7, now }).filter((d) => d.items);
     const per = stats.perSkill(attempts, ids);
-    const conf = stats.confusionList(gstore.getConfusions(), skills);
+    const pairs = stats.confusionPairs(gstore.getConfusions(), skills);
     const dl = (label, value) => [h('dt', { text: label }), h('dd', { text: String(value) })];
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Stats' }), h('p', { class: 'g-lede', text: 'Grammar only — the reading study log is in Settings.' })),
       h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Skills' }),
@@ -1029,15 +1051,294 @@ export function createUI(ctx) {
         days.length ? h('table', { class: 'study__table g-table' }, h('caption', { class: 'visually-hidden', text: 'Items per day, last 7 days' }),
           h('thead', {}, h('tr', {}, h('th', { scope: 'col', text: 'Day' }), h('th', { scope: 'col', class: 'study__num', text: 'Items' }), h('th', { scope: 'col', class: 'study__num', text: 'Right' }))),
           h('tbody', {}, [...days].reverse().map((d) => h('tr', {}, h('th', { scope: 'row', text: fmtDay(d.day) }), h('td', { class: 'study__num', text: String(d.items) }), h('td', { class: 'study__num', text: stats.fmtPct(Math.round((d.right / d.items) * 100)) }))))) : h('p', { class: 'g-quiet', text: 'No items in the last seven days.' })),
+      confusionSection(pairs),
       h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Per skill · last 10' }),
         h('ul', { class: 'g-perskill' }, ids.filter((id) => per.get(id)?.total).map((id) => { const p = per.get(id); return h('li', { class: 'g-perskill__row' },
-          h('span', { class: 'g-perskill__name' }, h('span', { class: 'g-dot', 'data-state': stateOf(id).state, 'aria-hidden': 'true' }), titleOf(id)),
+          h('span', { class: 'g-perskill__name' }, h('span', { class: 'g-dot', 'data-state': stateOf(id).state, 'aria-hidden': 'true' }), h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: id }), 'aria-label': `History of ${titleOf(id)}` }, titleOf(id))),
           h('span', { class: 'g-perskill__dots', 'aria-label': `${p.right} of ${p.recent.length} right` }, p.recent.map((a) => h('span', { class: `g-tick${a.correct ? ' is-ok' : ''}${a.hinted ? ' is-hinted' : ''}`, 'aria-hidden': 'true', text: a.correct ? '✓' : '✗' }))),
           h('span', { class: 'g-perskill__acc', text: `${p.right} of ${p.recent.length}${p.hinted ? ` · ${p.hinted} hinted` : ''}` })); })),
-        ids.every((id) => !per.get(id)?.total) ? h('p', { class: 'g-quiet', text: 'Nothing practised yet.' }) : null),
-      h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Confusions' }),
-        conf.length ? h('ul', { class: 'g-conf' }, conf.map((c) => h('li', {}, `${titleOf(c.a)} answered as ${titleOf(c.b)} · ${c.count} time${c.count === 1 ? '' : 's'}`, ' ', h('button', { type: 'button', class: 'g-link', onclick: () => startBlocked(c.a) }, 'practise')))) : h('p', { class: 'g-quiet', text: 'No confusions recorded — a wrong choice that names another skill is counted here.' })));
+        ids.every((id) => !per.get(id)?.total) ? h('p', { class: 'g-quiet', text: 'Nothing practised yet.' }) : null));
   }
+
+  /**
+   * "What you mix up": the top confusion pairs, each with a plain-words line
+   * saying what separates the two and a Start that practises exactly those two
+   * skills, alternating (GRAMMAR-CONTRACT.md, wave 3). The reason comes from
+   * the lessons' own confusion blocks where they have one, so it arrives after
+   * the fetch; the pair's own `plain` glosses stand in the meantime.
+   */
+  function confusionSection(pairs) {
+    const section = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'What you mix up' }));
+    if (!pairs.length) {
+      section.append(h('p', { class: 'g-quiet', text: 'Nothing yet. When a wrong answer names another skill — an ablative answered as a dative, a result clause taken for a purpose clause — the pair is counted here, with a way to practise the two against each other.' }));
+      return section;
+    }
+    section.append(h('p', { class: 'g-quiet', text: 'The pairs your answers have crossed, most often first. Ten items alternating the two is what tells them apart.' }));
+    section.append(h('ul', { class: 'g-pairs' }, pairs.map((c) => {
+      const a = skills.get(c.a);
+      const b = skills.get(c.b);
+      // The reason is lesson prose, so it carries the lessons' own emphasis (*servīs* set in Latin italics).
+      const why = h('p', { class: 'g-pair__why' }, inline(stats.confusionReason(a, b, {})));
+      // The lessons say it better than the glosses do; they are fetched once and swapped in.
+      Promise.all([lessonOf(c.a), lessonOf(c.b)])
+        .then(([lessonA, lessonB]) => { why.replaceChildren(inline(stats.confusionReason(a, b, { lessonA, lessonB }))); })
+        .catch(() => { /* the gloss line already stands */ });
+      const direction = c.ba
+        ? `${c.ab} × ${titleOf(c.a)} answered as ${titleOf(c.b)} · ${c.ba} the other way round`
+        : `${c.ab} × ${titleOf(c.a)} answered as ${titleOf(c.b)}`;
+      return h('li', { class: 'g-pair' },
+        h('p', { class: 'g-pair__names' },
+          h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: c.a }) }, titleOf(c.a)),
+          ' and ',
+          h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: c.b }) }, titleOf(c.b)),
+          h('span', { class: 'g-pair__count', text: ` · ${c.count} time${c.count === 1 ? '' : 's'}` })),
+        why,
+        h('p', { class: 'g-pair__dir g-quiet', text: direction }),
+        h('div', { class: 'g-pair__acts' },
+          btn('Start', { onclick: () => render('session', { pair: [c.a, c.b], size: 10 }), 'aria-label': `Practise ${titleOf(c.a)} against ${titleOf(c.b)}: ten items` }, 'btn'),
+          h('span', { class: 'g-quiet', text: 'ten items, these two only' })));
+    })));
+    return section;
+  }
+
+  /**
+   * The confusion pair's session: a plan that alternates the two skills and
+   * nothing else. It is not kept in LS_SESSION — Back or a reload
+   * builds a fresh ten on the same pair, which is what the Start promises;
+   * only the mixed practice session is worth resuming mid-queue.
+   */
+  function startPair(pair, size = 10) {
+    const [a, b] = pair;
+    if (!skills.has(a) || !skills.has(b)) { render('stats'); return; }
+    // Both must be answerable before they can be practised; a lapsed or new row joins the rotation now, so the
+    // answers that follow are judged as practice rather than as an early review (the startBlocked rule, M1).
+    for (const id of [a, b]) {
+      if (!drillable(id)) {
+        setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Not yet' }), h('p', { class: 'g-lede', text: `${titleOf(id)} has no sentences in the library to drill, so the pair cannot be practised together yet.` })),
+          h('div', { class: 'g-acts' }, btn('Back to stats', { onclick: () => render('stats') }, 'btn')));
+        return;
+      }
+      const st = gstore.getState(id);
+      if (!inRotation(st) || decay(st).state === 'lapsed') gstore.setState(addToPractice(st ?? id));
+    }
+    const plan = buildPairSession({ a, b, states: gstore.getStates(), skills, size, seed: Math.floor(Math.random() * 1e9) });
+    // `fill: null`: a missed item re-queues within the pair, and nothing else is ever added — the Start promised these two only.
+    const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN(), preset: 'even', size, rand: Math.random, fill: null });
+    const first = practice.start();
+    if (!first) { setBody(h('p', { class: 'g-quiet', text: 'No sentences fit these two skills yet.' }), h('div', { class: 'g-acts' }, btn('Back to stats', { onclick: () => render('stats') }, 'btn'))); return; }
+    ctx.say(`${titleOf(a)} against ${titleOf(b)}: ${plan.length} items.`);
+    runSession({ runner: practice.runner, title: `${titleOf(a)} · ${titleOf(b)}`, note: 'The two alternate: the same forms, asked either way round.', mode: 'practice', hintOpen: false, practiceLink: true, onDone: (summary) => renderSummary(summary, { pair: [a, b], size }) });
+  }
+
+  /* ---------------------------------------------------------- history */
+  /**
+   * One skill's own page (GRAMMAR-CONTRACT.md, wave 3): how the attempts went,
+   * how stability and stage moved, the last twenty items with the learner's own
+   * answers beside the right ones, and the skill's confusions. Everything is
+   * read from `drill_attempts` and `confusions` — no new tables — and the log
+   * is windowed to its tail, so a skill with thousands of rows still opens at
+   * once on a phone.
+   */
+  function renderHistory({ skill: id }) {
+    const skill = skills.get(id);
+    if (!skill) { render('map'); return; }
+    const now = Date.now();
+    const st = stateOf(id);
+    const total = gstore.countAttempts(id);
+    const rows = gstore.getAttempts({ skill: id, limit: HISTORY_WINDOW });
+    const hist = stats.skillHistory(rows, { last: 20, days: HISTORY_DAYS, now, max: HISTORY_WINDOW });
+    const confs = stats.confusionsOf(id, gstore.getConfusions(), skills);
+    const dl = (label, ...value) => [h('dt', { text: label }), h('dd', {}, ...value)];
+
+    const acts = [];
+    if (drillable(id)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id) }, 'btn btn--primary'));
+    acts.push(btn('Lesson', { onclick: () => render('lesson', { skill: id }) }, 'btn btn--quiet'));
+    if (!skill.set && chartTable(skill)) acts.push(btn('Print chart', { onclick: () => printChart(skill) }, 'btn btn--quiet'));
+
+    const head = [
+      btn('← Skills', { onclick: () => render('map') }, 'btn btn--quiet g-back'),
+      h('header', { class: 'g-head' },
+        skill.set ? null : h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(String(skill.category ?? '').replace('-', ' '))}` }),
+        h('h1', { class: 'g-title', text: skill.title }),
+        h('p', { class: 'g-lede', text: 'History' }),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), dueText(st, now))),
+      h('div', { class: 'g-acts' }, acts),
+    ];
+
+    if (!total) {
+      setBody(head, h('p', { class: 'g-quiet', text: 'This skill has not been practised yet, so there is nothing to look back on. Its history starts with the first item answered.' }));
+      return;
+    }
+
+    const c = hist.counts;
+    const shown = hist.read;
+    const attemptsSection = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Attempts' }),
+      h('dl', { class: 'g-dl' },
+        dl('In all', `${total} item${total === 1 ? '' : 's'}`),
+        dl('Right', `${c.right}${shown ? ` · ${Math.round((c.right / shown) * 100)}%` : ''}`),
+        dl('With a hint', String(c.hinted)),
+        dl('Wrong', String(c.wrong))),
+      hist.windowed ? h('p', { class: 'g-quiet', text: `The figures above are the last ${shown} attempts; the ${total - shown} before them are counted only in "In all".` }) : null,
+      sparkStrip(hist.perDay));
+
+    const last = hist.trail[hist.trail.length - 1] ?? null;
+    const movedSection = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'How it moved' }),
+      h('dl', { class: 'g-dl' },
+        dl('Stability', stats.fmtStability(st.stability_days)),
+        dl('Stage', `${st.stage} of 3`),
+        dl('State', cap(st.state)),
+        dl('Next review', dueText(st, now).split(' · ').slice(1).join(' · ') || '—')),
+      hist.trail.length > 1 ? trailChart(hist.trail) : null,
+      hist.stageChanges.length
+        ? h('ul', { class: 'g-trail__steps' }, hist.stageChanges.map((sc) => h('li', { text: `Stage ${sc.from} → ${sc.to} · ${fmtWhen(sc.at)}` })))
+        : h('p', { class: 'g-quiet', text: `Still at stage ${st.stage}: four right in a row at this stage moves it up.` }),
+      last && Math.abs((Number(last.stability) || 0) - (Number(st.stability_days) || 0)) > 0.25
+        ? h('p', { class: 'g-quiet', text: 'The curve is replayed from the attempts, so it can differ a little from the stability above when a skill was reset or added to practice by hand.' })
+        : null);
+
+    const itemsSection = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: `The last ${hist.recent.length === 1 ? 'item' : `${hist.recent.length} items`}` }),
+      h('div', { class: 'g-hist__scroll' },
+        h('table', { class: 'study__table g-table g-hist__table' },
+          h('caption', { class: 'visually-hidden', text: `The last ${hist.recent.length} items on ${skill.title}` }),
+          h('thead', {}, h('tr', {},
+            h('th', { scope: 'col', text: 'When' }),
+            h('th', { scope: 'col', text: 'Item' }),
+            h('th', { scope: 'col', text: 'You' }),
+            h('th', { scope: 'col', text: 'The answer' }))),
+          h('tbody', {}, hist.recent.map((a) => h('tr', { class: a.correct ? null : 'is-wrong' },
+            h('th', { scope: 'row' }, h('span', { class: `g-tick${a.correct ? ' is-ok' : ''}${a.hinted ? ' is-hinted' : ''}`, 'aria-hidden': 'true', text: a.correct ? '✓' : '✗' }), ' ', h('span', { text: fmtWhen(a.at) })),
+            h('td', {}, h('span', { class: 'g-hist__kind', text: a.kind }), a.mode === 'learn' ? h('span', { class: 'g-hist__mode', text: ' learn' }) : null),
+            h('td', { class: 'g-hist__given', lang: a.self ? null : 'la', text: a.given || '—' }),
+            h('td', { class: 'g-hist__want', lang: 'la', text: a.expected || '—' })))))));
+
+    const confSection = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Confusions' }),
+      confs.length
+        ? h('ul', { class: 'g-conf' }, confs.map((x) => h('li', {},
+            `${titleOf(x.other)} · ${x.count} time${x.count === 1 ? '' : 's'} — ${confDirection(x)}. `,
+            h('button', { type: 'button', class: 'g-link', onclick: () => render('session', { pair: [id, x.other], size: 10 }) }, 'practise the pair'))))
+        : h('p', { class: 'g-quiet', text: 'None recorded for this skill.' }));
+
+    setBody(head, attemptsSection, movedSection, itemsSection, confSection);
+  }
+
+  /** Which way round a confusion went, said without arithmetic in brackets. */
+  const confDirection = (x) => (x.mine === x.count ? 'always this skill answered as that one'
+    : x.mine === 0 ? 'always that one answered as this skill'
+    : `${x.mine} this skill answered as that one, ${x.count - x.mine} the other way round`);
+
+  /** Items per day over the history window: one bar a day, the whole strip labelled, the figures said in words underneath. */
+  function sparkStrip(perDay) {
+    const max = Math.max(1, ...perDay.map((d) => d.items));
+    const items = perDay.reduce((n, d) => n + d.items, 0);
+    const active = perDay.filter((d) => d.items).length;
+    return h('div', { class: 'g-spark__wrap' },
+      h('ol', { class: 'g-spark', 'aria-label': `Items per day over the last ${perDay.length} days` },
+        perDay.map((d) => h('li', { class: 'g-spark__d', 'data-empty': d.items ? null : '', style: `--h:${d.items ? Math.max(0.12, d.items / max) : 0}`, title: `${fmtDay(d.day)}: ${d.items} item${d.items === 1 ? '' : 's'}${d.items ? `, ${d.right} right` : ''}` },
+          h('span', { class: 'visually-hidden', text: `${fmtDay(d.day)}: ${d.items} items${d.items ? `, ${d.right} right, ${d.wrong} wrong` : ''}` })))),
+      h('p', { class: 'g-quiet', text: items ? `${items} item${items === 1 ? '' : 's'} on ${active} day${active === 1 ? '' : 's'} in the last ${perDay.length}.` : `Nothing in the last ${perDay.length} days.` }));
+  }
+
+  /**
+   * The stability curve, replayed from the attempts. An inline SVG polyline —
+   * no library, no colour it cannot lose: the line is ink, a wrong answer is a
+   * gap in it. The reading is given in words beside it, so nothing depends on
+   * seeing the shape.
+   */
+  function trailChart(trail) {
+    const W = 320;
+    const H = 56;
+    const vals = trail.map((t) => Number(t.stability) || 0);
+    const max = Math.max(...vals, 1);
+    const x = (i) => (trail.length === 1 ? W : (i / (trail.length - 1)) * W);
+    const y = (v) => H - (v / max) * (H - 4) - 2;
+    const points = trail.map((t, i) => `${x(i).toFixed(1)},${y(vals[i]).toFixed(1)}`).join(' ');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'g-trail');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-label', `Stability over the last ${trail.length} attempts, from ${stats.fmtStability(vals[0])} to ${stats.fmtStability(vals[vals.length - 1])}; the highest it reached was ${stats.fmtStability(max)}.`);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    line.setAttribute('class', 'g-trail__line');
+    line.setAttribute('points', points);
+    svg.append(line);
+    // Every wrong answer, where the curve dropped: the shape alone would not say which dips were misses.
+    // A tick, not a dot — the box is stretched to the width of the page, and a circle would print as an ellipse.
+    for (let i = 0; i < trail.length; i++) {
+      if (trail[i].correct) continue;
+      const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      tick.setAttribute('class', 'g-trail__miss');
+      tick.setAttribute('x1', x(i).toFixed(1));
+      tick.setAttribute('x2', x(i).toFixed(1));
+      tick.setAttribute('y1', (y(vals[i]) - 5).toFixed(1));
+      tick.setAttribute('y2', (y(vals[i]) + 5).toFixed(1));
+      svg.append(tick);
+    }
+    return h('figure', { class: 'g-trail__fig' }, svg,
+      h('figcaption', { class: 'g-quiet', text: `Stability over the last ${trail.length} attempts · highest ${stats.fmtStability(max)}. A tick marks a wrong answer.` }));
+  }
+
+  /** "3 Sep, 14:20" — when an attempt was made; the year only when it was not this one. */
+  function fmtWhen(at) {
+    const d = new Date(at);
+    if (Number.isNaN(d.getTime())) return '—';
+    const opts = { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' };
+    if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
+    return d.toLocaleString(undefined, opts);
+  }
+
+  /* ------------------------------------------------------------ print */
+  /** The paradigm a skill's chart prints: its own focus cells lit, exactly as the lesson lights them. */
+  const chartTable = (skill) => paradigmFor(skill, null);
+
+  /** One skill's chart, one table a page, its focus cells boxed. */
+  function printChart(skill) {
+    const table = chartTable(skill);
+    if (!table) { ctx.say(`${skill.title} has no paradigm table to print.`); return; }
+    printDocument(buildChart({ skill, paradigm: table, roman }), { title: `${skill.title} — chart` });
+  }
+
+  /** The skill sheet: the lesson's rule, the paradigm and its examples on paper. */
+  async function printSheet(skill) {
+    const lesson = await lessonOf(skill.id);
+    const rule = (lesson?.core ?? []).find((b) => b.type === 'rule')?.text ?? '';
+    const exBlock = (lesson?.core ?? []).find((b) => b.type === 'examples') ?? { units: [], invented: [] };
+    const ids = exBlock.units || [];
+    const examples = exampleUnits(skill, ids, Math.max(3, ids.length ? Math.min(3, ids.length) : 3))
+      .map(({ unit: u, own }) => ({ la: u.la, en: u.en || '', ref: `${unitRefText(u)}${own ? '' : ' · from the library'}` }));
+    for (const ex of exBlock.invented || []) examples.push({ la: ex.la, en: ex.en || '', ref: 'Invented example' });
+    const confBlock = (lesson?.core ?? []).find((b) => b.type === 'confusion');
+    const confusion = confBlock ? { title: titleOf(confBlock.with), text: String(confBlock.text ?? '').replace(/\*\*?/g, '') } : null;
+    printDocument(buildSheet({ skill, paradigm: chartTable(skill), rule: String(rule).replace(/\*\*?/g, ''), examples, confusion, roman }), { title: `${skill.title} — sheet` });
+  }
+
+  /**
+   * The map's Print charts: every skill the filter is showing that has a
+   * paradigm, one table a page. The count is said first — a filter of "all" is
+   * a great many sheets, and paper is not undoable.
+   */
+  function printCharts(filter = 'all') {
+    const shown = [...index.skills.values()].filter((s) => filter === 'all' || s.category === filter);
+    // Every chart is built before the confirm can name a page count, and "All" is 87 tables: say so first,
+    // or a phone sits silent for a second with nothing to explain it.
+    if (shown.length > 20) ctx.say(`Building the charts for ${shown.length} skills…`);
+    const frag = document.createDocumentFragment();
+    let skillCount = 0;
+    let pages = 0;
+    for (const s of shown) {
+      const table = chartTable(s);
+      if (!table) continue;
+      const node = buildChart({ skill: s, paradigm: table, roman });
+      if (!node) continue;
+      pages += node.childElementCount;
+      skillCount += 1;
+      frag.append(node);
+    }
+    if (!pages) { ctx.say('None of the skills shown has a paradigm table to print.'); return; }
+    if (!confirm(`Print ${pages} page${pages === 1 ? '' : 's'} — the charts of ${skillCount} skill${skillCount === 1 ? '' : 's'}, one table a page?`)) return;
+    printDocument(frag, { title: filter === 'all' ? 'Latin 103 — paradigm charts' : `Latin 103 — ${filter.replace('-', ' ')} charts` });
+  }
+
   const fmtDay = (day) => { const d = new Date(`${day}T12:00:00`); return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); };
 
   return { render, refresh, todayCard, dispose };

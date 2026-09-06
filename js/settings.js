@@ -6,9 +6,9 @@
 // The inline script in index.html applies the localStorage mirror before
 // first paint; this module keeps <html> attributes + the store in step.
 
-import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs, lastReadOf, readsOf, isShelfWeek, shelfChapter, roman } from './sync.js';
+import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs, lastReadOf, readsOf, isShelfWeek, isReviewWeek, isColloquiaWeek, shelfKind, shelfChapter, roman } from './sync.js';
 
-export { isShelfWeek, shelfChapter, roman };
+export { isShelfWeek, isReviewWeek, isColloquiaWeek, shelfKind, shelfChapter, roman };
 
 export { readsOf };   // the one `reads` coercion (sync.js), re-exported for the study-log callers and tests
 export { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate };
@@ -198,40 +198,66 @@ export function progressStateText(read, total) {
 }
 
 /* ---------------------------------------------------------- week labels */
-// The 14 course weeks are "Week 3"; the review shelf (GRAMMAR-CONTRACT.md
-// "Review shelf": Familia Romana I–XXIV as n = 100 + chapter) is named by its
-// chapter everywhere — never "Week 107".
+// The 14 course weeks are "Week 3"; a shelf week is named by its chapter
+// everywhere — "Cap. VII" for the Familia Romana review shelf (n = 100 +
+// chapter), "Colloquium VII" for Colloquia Personarum (n = 200 + colloquium).
+// Nothing ever says "Week 107" or "Week 207".
 
-/** "Week 3" / "Cap. VII" — the header button, the document title, the menu. Pure. */
+/** "Week 3" / "Cap. VII" / "Colloquium VII" — the header button, the document title, the menu. Pure. */
 export function weekNumberLabel(n) {
   const c = shelfChapter(n);
-  return c != null ? `Cap. ${roman(c)}` : `Week ${n}`;
+  if (c == null) return `Week ${n}`;
+  return shelfKind(n) === 'colloquia' ? `Colloquium ${roman(c)}` : `Cap. ${roman(c)}`;
 }
-/** "week 3" / "chapter VII" — inside a sentence ("Progress · week 3"). Pure. */
+/** "week 3" / "chapter VII" / "colloquium VII" — inside a sentence ("Progress · week 3"). Pure. */
 export function weekPhrase(n) {
   const c = shelfChapter(n);
-  return c != null ? `chapter ${roman(c)}` : `week ${n}`;
+  if (c == null) return `week ${n}`;
+  return shelfKind(n) === 'colloquia' ? `colloquium ${roman(c)}` : `chapter ${roman(c)}`;
 }
-/** "Week 3 · Daedalus et Īcarus" / "Cap. VII · Puella et Rosa". Pure. */
+/**
+ * "Week 3 · Daedalus et Īcarus" / "Cap. VII · Puella et Rosa" /
+ * "Colloquium VII · Iūlius et Syra". A title that already opens with its own
+ * label is not given it twice: the Colloquia pipeline names its rows
+ * "Colloquium N · <speakers>" (GRAMMAR-CONTRACT.md, wave 3), and the header
+ * would otherwise stutter. Pure.
+ */
 export function weekTitleLabel(n, title) {
-  return title ? `${weekNumberLabel(n)} · ${title}` : weekNumberLabel(n);
+  const label = weekNumberLabel(n);
+  if (!title) return label;
+  const t = String(title).trim();
+  if (t === label) return label;
+  if (t.toLowerCase().startsWith(`${label.toLowerCase()} `) || t.toLowerCase().startsWith(`${label.toLowerCase()}·`)) return t;
+  return `${label} · ${t}`;
 }
 
 /**
- * The weeks menu's two groups: the course outline (every outline week, with
- * its library row when there is one) and the review shelf (library weeks
- * n > 100, chapter order, each with `chapter` and `numeral`). `outline` is
- * course.json (or the library's own course weeks when it is missing). Pure.
+ * The weeks menu's three groups: the course outline (every outline week, with
+ * its library row when there is one), the Familia Romana review shelf
+ * (library weeks 101–199) and the Colloquia Personarum shelf (201–299), each
+ * shelf in chapter order with its `chapter`, `numeral` and `kind`. `outline`
+ * is course.json (or the library's own course weeks when it is missing). Pure.
  */
 export function groupWeeks(outline, weeks) {
   const lib = (weeks || []).filter((w) => w && Number.isFinite(Number(w.n)));
   const courseOutline = (outline || []).filter((c) => c && !isShelfWeek(c.n));
   const course = (courseOutline.length ? courseOutline : lib.filter((w) => !isShelfWeek(w.n)))
     .map((c) => ({ n: Number(c.n), outline: c, lib: lib.find((w) => Number(w.n) === Number(c.n)) ?? null }));
-  const shelf = lib.filter((w) => isShelfWeek(w.n)).sort((a, b) => a.n - b.n)
-    .map((w) => ({ n: Number(w.n), outline: null, lib: w, chapter: shelfChapter(w.n), numeral: roman(shelfChapter(w.n)) }));
-  return { course, shelf };
+  const onShelf = (kind) => lib.filter((w) => shelfKind(w.n) === kind).sort((a, b) => a.n - b.n)
+    .map((w) => ({ n: Number(w.n), outline: null, lib: w, kind, chapter: shelfChapter(w.n), numeral: roman(shelfChapter(w.n)) }));
+  return { course, shelf: onShelf('review'), collo: onShelf('colloquia') };
 }
+
+/**
+ * The weeks menu's shelf headings, in the order they are shown. `key` is the
+ * `groupWeeks` field and the settings flag that remembers the disclosure.
+ * GRAMMAR-CONTRACT.md: a colloquium is never filed under "Week 207".
+ */
+export const SHELF_GROUPS = Object.freeze([
+  { key: 'shelf', kind: 'review', id: 'weeks-shelf', setting: 'shelfOpen', name: 'Review shelf · Familia Romana I–XXIV', unit: 'chapter', plural: 'chapters' },
+  // 'colloquia', never 'colloquiums': the plural is the book's own.
+  { key: 'collo', kind: 'colloquia', id: 'weeks-collo', setting: 'colloOpen', name: 'Colloquia Personarum I–XXIV', unit: 'colloquium', plural: 'colloquia' },
+]);
 
 /* ------------------------------------------------------------ study log */
 // CONTRACT.md "Study log": sentences per local day come from the progress
@@ -493,9 +519,16 @@ function fmtSize(bytes) {
   return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} kB`;
 }
 
-/** The Translation switch's description: the usual line, or why there is nothing to show (the review shelf is Latin only). Pure. */
-export function translationDesc(hasTranslation, usual = 'English under each sentence') {
-  return hasTranslation ? usual : 'No English for this chapter — the review shelf is Latin only';
+/**
+ * The Translation switch's description: the usual line, or why there is
+ * nothing to show. Both shelves are Latin only, and each is named for what it
+ * is — a review chapter is not a colloquium. Pure.
+ */
+export function translationDesc(hasTranslation, usual = 'English under each sentence', kind = 'review') {
+  if (hasTranslation) return usual;
+  return kind === 'colloquia'
+    ? 'No English for this colloquium — Colloquia Personarum is Latin only'
+    : 'No English for this chapter — the review shelf is Latin only';
 }
 
 /** The Book lines switch's description: what it does, or why it can do nothing this week. Pure. */
@@ -553,7 +586,7 @@ export function initSettings(dialog, opts) {
     if (englishSwitch) {
       const has = opts.hasTranslation ? !!opts.hasTranslation() : true;
       englishSwitch.disabled = !has;
-      if (englishDesc) { englishDesc.textContent = translationDesc(has, englishDescText); englishDesc.classList.toggle('switch__hint', !has); }
+      if (englishDesc) { englishDesc.textContent = translationDesc(has, englishDescText, opts.shelfKind?.() ?? 'review'); englishDesc.classList.toggle('switch__hint', !has); }
     }
     const focus = opts.focusLabel?.();
     if (focusDesc) focusDesc.textContent = focus ? `This week: ${focus}` : "This week's grammar, highlighted";

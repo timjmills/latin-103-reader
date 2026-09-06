@@ -13,14 +13,15 @@ import { createGrammarStore } from './store-grammar.js';
 import { createItems } from './items.js';
 import { createStage3 } from './stage3.js';
 import { createSetLoader, createSetItems, setSkills, groupPensa, chapterOfWeek, manifestChapters } from './sets.js';
-import { roman } from '../sync.js';
+import { roman, isShelfWeek } from '../sync.js';
 import { createGenerator } from './generate.js';
 import { createUI } from './ui.js';
 
 const LS_SECTION = 'l103.section';
 const LS_WEEK = 'l103.week';
-const LS_COURSE_WEEK = 'l103.grammar.courseWeek';   // the last *course* week read, kept while the reader is on the review shelf (G1-12)
-const SHELF_BASE = 100;
+const LS_COURSE_WEEK = 'l103.grammar.courseWeek';   // the last *course* week read, kept while the reader is on a shelf (review or colloquia) — G1-12
+/** A course week: not on either shelf (review 101–199, colloquia 201–299). */
+const isCourseWeek = (n) => Number.isFinite(n) && n > 0 && !isShelfWeek(n);
 // The public chapter sets ship with the app; `?fixture=1` reads two chapters of each from tests/fixtures/grammar/ (served from the repo root).
 const DATA_BASE = new URL('../../data/grammar/', import.meta.url);
 const FIXTURE_BASE = new URL('../../../tests/fixtures/grammar/', import.meta.url);
@@ -49,17 +50,17 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     currentWeekN() {
       const lp = ctx.settings?.lastPosition?.week_n;
       const n = Number(localStorage.getItem(LS_WEEK)) || lp || null;
-      if (Number.isFinite(n) && n > 0 && n < SHELF_BASE) { try { localStorage.setItem(LS_COURSE_WEEK, String(n)); } catch { /* ignore */ } }
+      if (isCourseWeek(n)) { try { localStorage.setItem(LS_COURSE_WEEK, String(n)); } catch { /* ignore */ } }
       return Number.isFinite(n) && n > 0 ? n : null;
     },
-    /** The last course week (n ≤ 14): the current week while it is one, else the one read before the review shelf. */
+    /** The last course week (n ≤ 14): the current week while it is one, else the one read before the shelf. */
     currentCourseWeekN() {
       const n = ctx.currentWeekN();
-      if (n != null && n < SHELF_BASE) return n;
+      if (isCourseWeek(n)) return n;
       const lp = ctx.settings?.lastPosition?.week_n;
-      if (Number.isFinite(lp) && lp > 0 && lp < SHELF_BASE) return lp;
+      if (isCourseWeek(lp)) return lp;
       const saved = Number(localStorage.getItem(LS_COURSE_WEEK)) || null;
-      return saved && saved < SHELF_BASE ? saved : null;
+      return isCourseWeek(saved) ? saved : null;
     },
     /** The 103 skills introduced this week (the last course week: a shelf chapter being read keeps the week's suggestions). */
     currentWeekSkills() { const n = ctx.currentCourseWeekN(); return n ? weekSkills(ctx.index, n) : []; },
@@ -116,7 +117,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       const lists = await Promise.all(ctx.weeks.map((w) => store.getUnits(w.n).catch(() => [])));
       ctx.units = lists.flat().filter((u) => u && typeof u.la === 'string');
       const highlights = new Map();
-      const hlLists = await Promise.all(ctx.weeks.map((w) => (w.n > SHELF_BASE ? Promise.resolve([]) : store.getHighlights(w.n).catch(() => []))));
+      const hlLists = await Promise.all(ctx.weeks.map((w) => (isShelfWeek(w.n) ? Promise.resolve([]) : store.getHighlights(w.n).catch(() => []))));
       for (const h of hlLists.flat()) { if (!h?.unit_id || !h?.text) continue; if (!highlights.has(h.unit_id)) highlights.set(h.unit_id, []); highlights.get(h.unit_id).push({ text: h.text, label: h.label ?? '', note: h.note ?? '' }); }
       const lessonUnits = new Map();
       await Promise.all([...ctx.index.skills.values()].filter((s) => s.feature === 'construction').map(async (s) => { try { lessonUnits.set(s.id, await lessonExampleUnits(s.id)); } catch { lessonUnits.set(s.id, []); } }));

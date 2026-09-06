@@ -58,10 +58,12 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-summary { margin: var(--s-1) 0 0; max-width: 60ch; text-wrap: pretty; }
 .g-quiet { margin: 0; color: var(--ink-3); font-size: var(--ui-sm); line-height: 1.5; text-wrap: pretty; }
 .g-label { display: block; font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
-.g-link { background: none; border: 0; padding: 0; color: var(--rubric-ink); font: inherit; text-decoration: underline; text-underline-offset: 0.15em; cursor: pointer; border-radius: 2px; }
+/* `text-align: inherit`: a button is inline-block, so a long label wrapping onto a
+   second line would centre itself against the prose around it (a skill title on a phone). */
+.g-link { background: none; border: 0; padding: 0; color: var(--rubric-ink); font: inherit; text-align: inherit; text-decoration: underline; text-underline-offset: 0.15em; cursor: pointer; border-radius: 2px; }
 .g-link:hover { color: var(--ink); }
 .g-acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-.g-back { align-self: start; margin-left: calc(-1 * var(--s-3)); }
+.g-back { align-self: start; justify-self: start; margin-left: calc(-1 * var(--s-3)); }
 .g-danger { color: var(--danger); }
 .g-danger:hover:not(:disabled) { color: var(--danger); }
 
@@ -439,3 +441,60 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
    it keeps the question's size and weight and takes the reading face for the Latin. */
 .g-q.g-q--la { font-family: var(--face-reading); }
 .g-q.g-q--la .g-w { font: inherit; }
+
+/* --------------------------------- wave 3: confusion analytics + history */
+/* "What you mix up": one pair a block, hairline-separated like every other
+   list here. The count is the only figure; nothing is scored or ranked aloud. */
+.g-pairs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.g-pair { display: grid; gap: var(--s-1); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
+.g-pair:last-child { border-bottom: 0; padding-bottom: 0; }
+.g-pair__names { margin: 0; font-size: var(--ui-lg); line-height: 1.35; text-wrap: pretty; }
+/* The two names read as the line's subject, not as four links in a row: ink, with
+   the rubric kept for the underline that says they can be opened. The same for the
+   per-skill list, which is 87 rows long and would otherwise be a wall of red. */
+.g-pair__names .g-link,
+.g-perskill__name .g-link { color: var(--ink); text-decoration-color: var(--rubric); text-decoration-thickness: 1px; }
+.g-pair__names .g-link:hover,
+.g-perskill__name .g-link:hover { color: var(--rubric-ink); }
+.g-pair__count { color: var(--ink-3); font-size: var(--ui-sm); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.g-pair__why { margin: 0; max-width: 62ch; color: var(--ink); text-wrap: pretty; }
+.g-pair__dir { margin: 0; font-variant-numeric: tabular-nums; }
+.g-pair__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); padding-top: var(--s-1); }
+
+/* Items per day: one bar a day, the whole strip labelled. A bar is a reading,
+   not a reward — no colour, no streak, no target line. */
+.g-spark__wrap { display: grid; gap: var(--s-2); margin-top: var(--s-2); }
+.g-spark { list-style: none; margin: 0; padding: 0; display: flex; align-items: flex-end; gap: 2px; height: 2.5rem; }
+.g-spark__d { flex: 1 1 0; min-width: 3px; height: calc(var(--h, 0) * 100%); background: var(--ink-3); border-radius: 1px; }
+.g-spark__d[data-empty] { height: 2px; background: var(--line); }
+
+/* The stability curve, replayed from the attempts. Ink on nothing; a ring per miss. */
+.g-trail__fig { margin: var(--s-3) 0 0; display: grid; gap: var(--s-2); }
+.g-trail { width: 100%; height: 3.5rem; overflow: visible; }
+.g-trail__line { fill: none; stroke: var(--ink-2); stroke-width: 1.25; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.g-trail__miss { stroke: var(--rubric); stroke-width: 1.25; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.g-trail__steps { margin: var(--s-2) 0 0; padding-left: 1.2em; display: grid; gap: var(--s-1); font-size: var(--ui-sm); color: var(--ink-2); }
+
+/* The last twenty items: a plain table that scrolls sideways on a phone rather
+   than wrapping a Latin form onto two lines. */
+/* The same edge shade the paradigm tables use (panels.css .pt__scroll): a fade
+   at whichever end has more, and no shade once the end is reached. */
+.g-hist__scroll {
+  overflow-x: auto; max-width: 100%; margin-top: var(--s-2); overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+  background:
+    linear-gradient(to right, var(--bg) 40%, transparent) left / 2rem 100% no-repeat local,
+    linear-gradient(to left, var(--bg) 40%, transparent) right / 2rem 100% no-repeat local,
+    linear-gradient(to left, var(--scroll-shade), transparent) right / 1.25rem 100% no-repeat scroll,
+    linear-gradient(to right, var(--scroll-shade), transparent) left / 1.25rem 100% no-repeat scroll;
+}
+.g-hist__table { max-width: none; min-width: 30rem; font-size: var(--ui-sm); }
+.g-hist__table th[scope="row"] { white-space: nowrap; color: var(--ink-2); font-weight: 400; }
+.g-hist__table tr.is-wrong .g-hist__given { color: var(--rubric-ink); }
+.g-hist__kind { color: var(--ink-3); }
+.g-hist__mode { color: var(--ink-3); font-style: italic; }
+.g-hist__given, .g-hist__want { max-width: 16rem; }
+.g-fb__hist { margin: var(--s-2) 0 0; font-size: var(--ui-sm); }
+
+@media (min-width: 768px) {
+  .g-hist__table { min-width: 0; }
+}

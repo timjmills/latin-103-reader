@@ -248,7 +248,7 @@ export function createLearn({ skill, gstore, items, rand = Math.random, resume =
  * (batches of 10 until the learner stops). Answers update skill_state at
  * once, so a second device sees the change.
  */
-export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, rand = Math.random, resume = null, onChange = null }) {
+export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, rand = Math.random, resume = null, onChange = null, fill = undefined }) {
   const skills = skillsIndex.skills;
   // Only skills that can produce an item enter a plan (M8): a metre skill or one with no sentences never becomes a slot.
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
@@ -262,7 +262,10 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
     if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(item.skill, attempt.confused_with);
   };
   // A blocked set on one skill repeats that skill by design, so a wrong answer there is not re-queued (it could only come back at once).
-  const runner = createRunner({ slots, getItem, mode: 'practice', onAnswer, requeueOn: preset !== 'one-skill', skills, rand, fill: (n, exclude) => build(n, exclude), resume, onChange });
+  //  is a caller saying no other skill may enter the session at all (the confusion pair's ten): a re-queue
+  // that cannot find room is then dropped rather than padded out with a third skill.
+  const filler = fill === undefined ? (n, exclude) => build(n, exclude) : fill;
+  const runner = createRunner({ slots, getItem, mode: 'practice', onAnswer, requeueOn: preset !== 'one-skill', skills, rand, fill: filler, resume, onChange });
   return {
     runner, preset, size, open: size == null,
     start: () => runner.start(),
