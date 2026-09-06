@@ -1,0 +1,596 @@
+{
+  "chapter": 21,
+  "week_id": "r21",
+  "title": "Pugna Discipulōrum",
+  "items": [
+    {
+      "id": "q21-01",
+      "qword": "unde",
+      "q": "Unde puer domum revertitur?",
+      "en": "Where is the boy returning home from?",
+      "unit_id": "r21:1.1",
+      "answers": [
+        "lūdō"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'ē' (out of ...)"
+    },
+    {
+      "id": "q21-02",
+      "qword": "cūr",
+      "q": "Cūr difficile est Mārcum cognōscere?",
+      "en": "Why is it hard to recognise Marcus?",
+      "unit_id": "r21:2.1",
+      "answers": [
+        "nam sordidus est et sanguis dē nāsō eius fluit",
+        "quia sordidus est et sanguis dē nāsō eius fluit",
+        "quod sordidus est et sanguis dē nāsō eius fluit",
+        "quia sordidus est",
+        "quod sordidus est"
+      ],
+      "input": "type",
+      "hint": "a reason: he is ... (adjective) and blood ..."
+    },
+    {
+      "id": "q21-03",
+      "qword": "cūr",
+      "q": "Cūr vestis Mārcī ūmida est?",
+      "en": "Why are Marcus's clothes wet?",
+      "unit_id": "r21:6.1",
+      "answers": [
+        "quod Mārcus per imbrem ambulāvit",
+        "quia Mārcus per imbrem ambulāvit",
+        "quod per imbrem ambulāvit",
+        "Quod Mārcus per imbrem ambulāvit."
+      ],
+      "input": "type",
+      "hint": "a reason clause with 'quod' and a perfect verb (he walked ...)"
+    },
+    {
+      "id": "q21-04",
+      "qword": "quis",
+      "q": "Quī praeter Mārcum per imbrem ambulāvērunt?",
+      "en": "Who besides Marcus walked through the rain?",
+      "unit_id": "r21:7.1",
+      "answers": [
+        "Titus et Sextus"
+      ],
+      "input": "choice",
+      "hint": "two names in the nominative",
+      "choices": [
+        "Titus et Sextus",
+        "Iūlius et Dāvus",
+        "Quīntus et Iūlia",
+        "magister et Sextus"
+      ]
+    },
+    {
+      "id": "q21-05",
+      "qword": "cūr",
+      "q": "Cūr sanguis Mārcō dē nāsō fluit?",
+      "en": "Why is blood flowing from Marcus's nose?",
+      "unit_id": "r21:10.2",
+      "answers": [
+        "quod Mārcus ā Sextō pulsātus est",
+        "quia ā Sextō pulsātus est",
+        "quod ā Sextō pulsātus est",
+        "Quod Mārcus ā Sextō pulsātus est."
+      ],
+      "input": "type",
+      "hint": "a reason clause with a perfect passive (he was hit by ...)"
+    },
+    {
+      "id": "q21-06",
+      "qword": "quis",
+      "q": "Quis prīmum ōs Mārcī pugnō pulsāvit?",
+      "en": "Who first punched Marcus in the face?",
+      "unit_id": "r21:12.1",
+      "answers": [
+        "Sextus"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q21-07",
+      "qword": "quis",
+      "q": "Cum quibus Sextus pugnāvit?",
+      "en": "With whom did Sextus fight?",
+      "unit_id": "r21:14.1",
+      "answers": [
+        "cum Mārcō et Titō"
+      ],
+      "input": "choice",
+      "hint": "ablative after 'cum' (with ...)",
+      "choices": [
+        "cum Mārcō et Titō",
+        "cum Iūliō et Dāvō",
+        "cum Quīntō et Mārcō",
+        "cum magistrō"
+      ]
+    },
+    {
+      "id": "q21-08",
+      "qword": "quālis",
+      "q": "Quālis est via quae Tusculō ad vīllam Iūliī fert?",
+      "en": "What is the road from Tusculum to Julius's villa like?",
+      "unit_id": "r21:16.1",
+      "answers": [
+        "angustā"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the ablative (agreeing with 'viā')"
+    },
+    {
+      "id": "q21-09",
+      "qword": "cūr",
+      "q": "Cūr Mārcus tam sordidus est?",
+      "en": "Why is Marcus so dirty?",
+      "unit_id": "r21:19.2",
+      "answers": [
+        "quod humī iacuit",
+        "quia humī iacuit",
+        "Sordidus est quod humī iacuit."
+      ],
+      "input": "type",
+      "hint": "a reason clause with 'quod' and 'humī' (on the ground)"
+    },
+    {
+      "id": "q21-10",
+      "qword": "quis",
+      "q": "Sub quō Mārcus prīmum iacuit?",
+      "en": "Under whom did Marcus lie at first?",
+      "unit_id": "r21:22.1",
+      "answers": [
+        "sub Sextō"
+      ],
+      "input": "choice",
+      "hint": "ablative after 'sub' (under ...)",
+      "choices": [
+        "sub Sextō",
+        "sub Titō",
+        "sub bove",
+        "sub magistrō"
+      ]
+    },
+    {
+      "id": "q21-11",
+      "qword": "quis",
+      "q": "Quem Titus oppugnāvit?",
+      "en": "Whom did Titus attack?",
+      "unit_id": "r21:22.2",
+      "answers": [
+        "Sextum"
+      ],
+      "input": "tap",
+      "hint": "a name in the accusative (the object)"
+    },
+    {
+      "id": "q21-12",
+      "qword": "quis",
+      "q": "Quis Mārcum cornū pulsāvit, ut Mārcus ipse dīcit?",
+      "en": "Who hit Marcus with a horn, according to Marcus himself?",
+      "unit_id": "r21:31.1",
+      "answers": [
+        "Bōs"
+      ],
+      "input": "tap",
+      "hint": "a noun in the nominative (the subject)"
+    },
+    {
+      "id": "q21-13",
+      "qword": "num",
+      "q": "Num is quī Mārcum pulsāvit cornua gerit?",
+      "en": "Does the one who hit Marcus have horns?",
+      "unit_id": "r21:32.2",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn gerit",
+        "Cornua nōn gerit",
+        "Is quī tē pulsāvit cornua nōn gerit."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    },
+    {
+      "id": "q21-14",
+      "qword": "quōmodo",
+      "q": "Quibus Mārcus pulsātus est, nōn cornibus, sed ...?",
+      "en": "With what was Marcus hit, not with horns, but ...?",
+      "unit_id": "r21:35.1",
+      "answers": [
+        "pugnīs"
+      ],
+      "input": "tap",
+      "hint": "a noun in the ablative of means (with ...)"
+    },
+    {
+      "id": "q21-15",
+      "qword": "cūr",
+      "q": "Cūr Mārcus sōlus Sextum vincere nōn potest?",
+      "en": "Why can't Marcus beat Sextus on his own?",
+      "unit_id": "r21:46.1",
+      "answers": [
+        "nam is multō māior ac validior est quam ego",
+        "quia Sextus multō māior ac validior est",
+        "quod Sextus multō māior ac validior est quam Mārcus",
+        "quia is multō māior ac validior est",
+        "quia Sextus māior ac validior est"
+      ],
+      "input": "type",
+      "hint": "a reason with two comparative adjectives (bigger and ...)"
+    },
+    {
+      "id": "q21-16",
+      "qword": "quālis",
+      "q": "Quam sordidus est Mārcus, ut pater dīcit?",
+      "en": "How dirty is Marcus, according to his father?",
+      "unit_id": "r21:49.1",
+      "answers": [
+        "tam sordidus quam porcus"
+      ],
+      "input": "choice",
+      "hint": "a comparison with 'tam ... quam' (as ... as a ...)",
+      "choices": [
+        "tam sordidus quam porcus",
+        "tam candidus quam nix",
+        "tam validus quam bōs",
+        "tam mundus quam Sextus"
+      ]
+    },
+    {
+      "id": "q21-17",
+      "qword": "ubi",
+      "q": "Ubi Mārcus iacuit?",
+      "en": "Where did Marcus lie?",
+      "unit_id": "r21:51.1",
+      "answers": [
+        "Humī"
+      ],
+      "input": "tap",
+      "hint": "a locative (on the ground)"
+    },
+    {
+      "id": "q21-18",
+      "qword": "quid",
+      "q": "Quid indignissimum est, ut Iūlius dīcit?",
+      "en": "What is most shameful, according to Julius?",
+      "unit_id": "r21:54.1",
+      "answers": [
+        "duōs puerōs cum ūnō pugnāre"
+      ],
+      "input": "choice",
+      "hint": "an accusative with infinitive (for two boys to ...)",
+      "choices": [
+        "duōs puerōs cum ūnō pugnāre",
+        "pulsāre puerum māiōrem",
+        "humī iacēre in viā",
+        "per imbrem ambulāre"
+      ]
+    },
+    {
+      "id": "q21-19",
+      "qword": "quō",
+      "q": "Quō Iūlius Mārcum īre iubet?",
+      "en": "Where does Julius order Marcus to go?",
+      "unit_id": "r21:57.1",
+      "answers": [
+        "cubiculum"
+      ],
+      "input": "tap",
+      "hint": "accusative after 'in' (motion into)"
+    },
+    {
+      "id": "q21-20",
+      "qword": "quis",
+      "q": "Quis Mārcō alia vestīmenta dabit?",
+      "en": "Who will give Marcus other clothes?",
+      "unit_id": "r21:58.1",
+      "answers": [
+        "Dāvus"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q21-21",
+      "qword": "quid",
+      "q": "Quid Mārcus in cubiculō lavat?",
+      "en": "What does Marcus wash off in the bedroom?",
+      "unit_id": "r21:59.1",
+      "answers": [
+        "cruōrem et sordēs"
+      ],
+      "input": "choice",
+      "hint": "two nouns in the accusative (the objects)",
+      "choices": [
+        "cruōrem et sordēs",
+        "vestīmenta ūmida",
+        "tabellam Sextī",
+        "pedēs sordidōs Dāvī"
+      ]
+    },
+    {
+      "id": "q21-22",
+      "qword": "quid",
+      "q": "Quid Aemilia in solō cōnspicit?",
+      "en": "What does Aemilia notice on the floor?",
+      "unit_id": "r21:63.2",
+      "answers": [
+        "vestīgia"
+      ],
+      "input": "tap",
+      "hint": "a noun in the accusative (the object)"
+    },
+    {
+      "id": "q21-23",
+      "qword": "quis",
+      "q": "Quis intrāvit, ut Iūlius ait?",
+      "en": "Who came in, according to Julius?",
+      "unit_id": "r21:68.1",
+      "answers": [
+        "Porcus"
+      ],
+      "input": "choice",
+      "hint": "a noun in the nominative (the subject)",
+      "choices": [
+        "Porcus",
+        "Bōs",
+        "Mārcus",
+        "Aliquis ē familiā"
+      ]
+    },
+    {
+      "id": "q21-24",
+      "qword": "quandō",
+      "q": "Quandō Mārcus mundus redit?",
+      "en": "When does Marcus come back clean?",
+      "unit_id": "r21:79.1",
+      "answers": [
+        "postquam vestem mūtāvit",
+        "Postquam vestem mūtāvit, mundus redit.",
+        "postquam vestem mūtāvit, mundus redit"
+      ],
+      "input": "type",
+      "hint": "a 'postquam' clause (after he ...)"
+    },
+    {
+      "id": "q21-25",
+      "qword": "cūr",
+      "q": "Cūr Mārcus bonus puer est, ut māter dīcit?",
+      "en": "Why is Marcus a good boy, according to his mother?",
+      "unit_id": "r21:81.1",
+      "answers": [
+        "quod statim vestem mūtāvit",
+        "quia statim vestem mūtāvit",
+        "quod statim vestem mūtāvistī",
+        "Quod statim vestem mūtāvit."
+      ],
+      "input": "type",
+      "hint": "a reason clause with 'quod' and a perfect verb"
+    },
+    {
+      "id": "q21-26",
+      "qword": "quis",
+      "q": "Ā quō Mārcus laudātus est, ut ipse dīcit?",
+      "en": "By whom was Marcus praised, as he himself says?",
+      "unit_id": "r21:84.2",
+      "answers": [
+        "magistrō"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'ā' (by whom)"
+    },
+    {
+      "id": "q21-27",
+      "qword": "-ne",
+      "q": "Estne vērum quod Mārcus dīcit?",
+      "en": "Is what Marcus says true?",
+      "unit_id": "r21:87.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Falsum est",
+        "Nōn vērum, sed falsum est",
+        "Quod dīcit nōn vērum, sed falsum est.",
+        "Nōn, Mārcus mentītur"
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (it is false)"
+    },
+    {
+      "id": "q21-28",
+      "qword": "quid",
+      "q": "Quid magister puerōs hodiē docuit, ut Mārcus dīcit?",
+      "en": "What did the master teach the boys today, according to Marcus?",
+      "unit_id": "r21:90.1",
+      "answers": [
+        "legere et scrībere et computāre"
+      ],
+      "input": "choice",
+      "hint": "infinitives (to ..., to ... and to ...)",
+      "choices": [
+        "legere et scrībere et computāre",
+        "pugnāre et mentīrī",
+        "cantāre et recitāre",
+        "lavāre et vestem mūtāre"
+      ]
+    },
+    {
+      "id": "q21-29",
+      "qword": "quandō",
+      "q": "Quandō Mārcus in lūdō dormīvit?",
+      "en": "When did Marcus sleep at school?",
+      "unit_id": "r21:96.2",
+      "answers": [
+        "Magistrō recitante",
+        "magistrō recitante",
+        "dum magister recitat",
+        "Magistrō recitante, Mārcus dormīvit."
+      ],
+      "input": "type",
+      "hint": "an ablative absolute (while the master was ...)"
+    },
+    {
+      "id": "q21-30",
+      "qword": "-ne",
+      "q": "Crēditne māter Mārcum in lūdō dormīvisse?",
+      "en": "Does the mother believe that Marcus slept at school?",
+      "unit_id": "r21:97.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn crēdit",
+        "Māter id nōn crēdit."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (she does not)"
+    },
+    {
+      "id": "q21-31",
+      "qword": "num",
+      "q": "Num Mārcus sōlus in lūdō dormīvit?",
+      "en": "Was Marcus the only one who slept at school?",
+      "unit_id": "r21:102.2",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Omnēs dormīvērunt",
+        "Nōn, omnēs dormīvērunt",
+        "Nec vērō ego sōlus dormīvī: omnēs dormīvimus!"
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no' (everyone ...)"
+    },
+    {
+      "id": "q21-32",
+      "qword": "nōnne",
+      "q": "Nōnne discipulī ā magistrō pūnītī sunt?",
+      "en": "Weren't the pupils punished by the master?",
+      "unit_id": "r21:106.1",
+      "answers": [
+        "Ita",
+        "Ita est",
+        "Pūnītī sunt",
+        "Ita, pūnītī sunt",
+        "Omnēs verberātī sunt ā magistrō",
+        "Certē malī discipulī fuimus ac pūnītī sumus"
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'nōnne' expects 'yes'"
+    },
+    {
+      "id": "q21-33",
+      "qword": "quid",
+      "q": "Quid Mārcō adhūc dolet?",
+      "en": "What still hurts Marcus?",
+      "unit_id": "r21:107.1",
+      "answers": [
+        "tergum"
+      ],
+      "input": "tap",
+      "hint": "a noun in the nominative (the subject of 'dolet')"
+    },
+    {
+      "id": "q21-34",
+      "qword": "quis",
+      "q": "Cuius est ea tabella?",
+      "en": "Whose is that tablet?",
+      "unit_id": "r21:111.2",
+      "answers": [
+        "Sextī"
+      ],
+      "input": "tap",
+      "hint": "a name in the genitive (whose)"
+    },
+    {
+      "id": "q21-35",
+      "qword": "num",
+      "q": "Num Aemilia dē verbīs Mārcī dubitat?",
+      "en": "Does Aemilia doubt Marcus's words?",
+      "unit_id": "r21:130.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nihil dubitat",
+        "Nōn, omnia crēdit",
+        "Aemilia nihil dubitat, sed omnia crēdit!"
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no' (she believes everything)"
+    },
+    {
+      "id": "q21-36",
+      "qword": "quis",
+      "q": "Quī prāvē scrīpsērunt, ut Mārcus dīcit?",
+      "en": "Who wrote badly, according to Marcus?",
+      "unit_id": "r21:133.2",
+      "answers": [
+        "Titus et Sextus"
+      ],
+      "input": "choice",
+      "hint": "two names in the nominative",
+      "choices": [
+        "Titus et Sextus",
+        "Mārcus et Titus",
+        "Sextus sōlus",
+        "Mārcus sōlus"
+      ]
+    },
+    {
+      "id": "q21-37",
+      "qword": "cūr",
+      "q": "Cūr Iūlius Mārcō nōn crēdit?",
+      "en": "Why doesn't Julius believe Marcus?",
+      "unit_id": "r21:139.1",
+      "answers": [
+        "quia Sextum discipulum industrium ac prūdentem esse scit",
+        "quod Sextum discipulum industrium ac prūdentem esse scit",
+        "quia scit Sextum discipulum industrium ac prūdentem esse",
+        "quod scit Sextum discipulum industrium ac prūdentem esse"
+      ],
+      "input": "type",
+      "hint": "a reason with an accusative and infinitive (he knows Sextus to be ...)"
+    },
+    {
+      "id": "q21-38",
+      "qword": "num",
+      "q": "Num Mārcus patrem suum fallere potest?",
+      "en": "Can Marcus deceive his father?",
+      "unit_id": "r21:140.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn potest",
+        "Mārcus patrem suum fallere nōn potest."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    },
+    {
+      "id": "q21-39",
+      "qword": "quālis",
+      "q": "Quālia sunt omnia quae Mārcus nārrāvit?",
+      "en": "What is everything Marcus told them like?",
+      "unit_id": "r21:143.1",
+      "answers": [
+        "Falsa"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative neuter plural"
+    },
+    {
+      "id": "q21-40",
+      "qword": "quis",
+      "q": "Quis iānuam pulsat?",
+      "en": "Who is knocking at the door?",
+      "unit_id": "r21:147.1",
+      "answers": [
+        "aliquis"
+      ],
+      "input": "tap",
+      "hint": "an indefinite pronoun in the nominative (someone)"
+    }
+  ]
+}

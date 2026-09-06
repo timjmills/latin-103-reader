@@ -1,0 +1,553 @@
+{
+  "chapter": 13,
+  "week_id": "r13",
+  "title": "Annus et Mēnsēs",
+  "items": [
+    {
+      "id": "q13-01",
+      "qword": "quot",
+      "q": "Quot mēnsēs ūnus annus habet?",
+      "en": "How many months does one year have?",
+      "unit_id": "r13:7.1",
+      "answers": [
+        "duodecim",
+        "duodecim mēnsēs",
+        "Ūnus annus duodecim mēnsēs habet."
+      ],
+      "input": "type",
+      "hint": "a number, going with 'mēnsēs' in the accusative"
+    },
+    {
+      "id": "q13-02",
+      "qword": "quid",
+      "q": "Quid est saeculum?",
+      "en": "What is a century?",
+      "unit_id": "r13:8.1",
+      "answers": [
+        "centum annī"
+      ],
+      "input": "choice",
+      "hint": "a phrase in the nominative",
+      "choices": [
+        "centum annī",
+        "ducentī annī",
+        "duodecim mēnsēs",
+        "trecentī diēs"
+      ]
+    },
+    {
+      "id": "q13-03",
+      "qword": "quot",
+      "q": "Quot annōs vīvere nēmō potest?",
+      "en": "How many years can nobody live?",
+      "unit_id": "r13:10.1",
+      "answers": [
+        "ducentōs"
+      ],
+      "input": "tap",
+      "hint": "a number in the accusative (how long)"
+    },
+    {
+      "id": "q13-04",
+      "qword": "unde",
+      "q": "Unde mēnsī prīmō nōmen est?",
+      "en": "Where does the first month get its name from?",
+      "unit_id": "r13:13.1",
+      "answers": [
+        "ā deō Iānō"
+      ],
+      "input": "choice",
+      "hint": "ablative with 'ā' (from a god)",
+      "choices": [
+        "ā deō Iānō",
+        "ā deō Mārte",
+        "ā numerō septem",
+        "ā Iūliō Caesare"
+      ]
+    },
+    {
+      "id": "q13-05",
+      "qword": "quis",
+      "q": "Quis est deus cui duae faciēs sunt?",
+      "en": "Who is the god who has two faces?",
+      "unit_id": "r13:15.1",
+      "answers": [
+        "Iānus"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q13-06",
+      "qword": "quis",
+      "q": "Cuius deus est Mārs?",
+      "en": "Of what is Mars the god?",
+      "unit_id": "r13:16.1",
+      "answers": [
+        "bellī"
+      ],
+      "input": "tap",
+      "hint": "a noun in the genitive (of ...)"
+    },
+    {
+      "id": "q13-07",
+      "qword": "unde",
+      "q": "Unde mēnsis September nōminātur?",
+      "en": "From what is the month September named?",
+      "unit_id": "r13:17.1",
+      "answers": [
+        "ā numerō septem",
+        "ā septem",
+        "Mēnsis September nōminātur ā numerō septem."
+      ],
+      "input": "type",
+      "hint": "ablative with 'ā' (from a number)"
+    },
+    {
+      "id": "q13-08",
+      "qword": "quandō",
+      "q": "Quandō Mārtius mēnsis prīmus erat?",
+      "en": "When was March the first month?",
+      "unit_id": "r13:18.1",
+      "answers": [
+        "tempore antīquō"
+      ],
+      "input": "choice",
+      "hint": "ablative of time (in ... time)",
+      "choices": [
+        "tempore antīquō",
+        "nunc",
+        "hieme",
+        "mēnse Iūniō"
+      ]
+    },
+    {
+      "id": "q13-09",
+      "qword": "quot",
+      "q": "Quot diēs longus est November?",
+      "en": "How many days long is November?",
+      "unit_id": "r13:25.2",
+      "answers": [
+        "trigintā"
+      ],
+      "input": "tap",
+      "hint": "a number in the accusative (how long)"
+    },
+    {
+      "id": "q13-10",
+      "qword": "uter",
+      "q": "Uter mēnsis brevior est, Iānuārius an Februārius?",
+      "en": "Which of the two months is shorter, January or February?",
+      "unit_id": "r13:27.1",
+      "answers": [
+        "Februārius"
+      ],
+      "input": "choice",
+      "hint": "a month name in the nominative",
+      "choices": [
+        "Februārius",
+        "Iānuārius",
+        "December",
+        "Mārtius"
+      ]
+    },
+    {
+      "id": "q13-11",
+      "qword": "quālis",
+      "q": "Quālis mēnsis annī est Februārius?",
+      "en": "What kind of month of the year is February?",
+      "unit_id": "r13:29.1",
+      "answers": [
+        "brevissimus"
+      ],
+      "input": "tap",
+      "hint": "a superlative adjective in the nominative"
+    },
+    {
+      "id": "q13-12",
+      "qword": "quid",
+      "q": "Quid sunt sex mēnsēs?",
+      "en": "What are six months?",
+      "unit_id": "r13:33.1",
+      "answers": [
+        "dīmidia pars annī",
+        "dīmidia pars",
+        "Sex mēnsēs sunt dīmidia pars annī."
+      ],
+      "input": "type",
+      "hint": "a phrase in the nominative"
+    },
+    {
+      "id": "q13-13",
+      "qword": "quid",
+      "q": "Quid est prīma pars diēī?",
+      "en": "What is the first part of the day?",
+      "unit_id": "r13:35.2",
+      "answers": [
+        "māne"
+      ],
+      "input": "choice",
+      "hint": "a noun in the nominative",
+      "choices": [
+        "māne",
+        "vesper",
+        "nox",
+        "merīdiēs"
+      ]
+    },
+    {
+      "id": "q13-14",
+      "qword": "quot",
+      "q": "In quot hōrās diēs dīviditur?",
+      "en": "Into how many hours is the day divided?",
+      "unit_id": "r13:40.1",
+      "answers": [
+        "duodecim"
+      ],
+      "input": "tap",
+      "hint": "a number with 'hōrās' in the accusative"
+    },
+    {
+      "id": "q13-15",
+      "qword": "quōmodo",
+      "q": "Quōmodo hōra sexta nōminātur?",
+      "en": "What is the sixth hour called?",
+      "unit_id": "r13:41.1",
+      "answers": [
+        "meridiēs"
+      ],
+      "input": "tap",
+      "hint": "a noun in the nominative (a name)"
+    },
+    {
+      "id": "q13-16",
+      "qword": "num",
+      "q": "Num sōl nocte lūcet?",
+      "en": "Surely the sun does not shine at night?",
+      "unit_id": "r13:46.1",
+      "answers": [
+        "Nōn",
+        "Nōn lūcet",
+        "Minimē",
+        "Nocte sōl nōn lūcet."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    },
+    {
+      "id": "q13-17",
+      "qword": "unde",
+      "q": "Unde lūx lūnae venit?",
+      "en": "Where does the moon's light come from?",
+      "unit_id": "r13:46.2",
+      "answers": [
+        "sōle"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'ā' (from the sun)"
+    },
+    {
+      "id": "q13-18",
+      "qword": "quālis",
+      "q": "Quālis stēlla est sōl?",
+      "en": "What kind of star is the sun?",
+      "unit_id": "r13:48.1",
+      "answers": [
+        "clārissima"
+      ],
+      "input": "tap",
+      "hint": "a superlative adjective in the nominative"
+    },
+    {
+      "id": "q13-19",
+      "qword": "quandō",
+      "q": "Quandō lūna 'nova' esse dīcitur?",
+      "en": "When is the moon said to be 'new'?",
+      "unit_id": "r13:51.1",
+      "answers": [
+        "Cum exigua pars lūnae tantum vidētur",
+        "cum exigua pars lūnae vidētur",
+        "Cum exigua pars lūnae tantum vidētur, lūna 'nova' esse dīcitur."
+      ],
+      "input": "type",
+      "hint": "a 'cum' clause (when ...)"
+    },
+    {
+      "id": "q13-20",
+      "qword": "quōmodo",
+      "q": "Quōmodo diēs mēnsis prīmus nōminātur?",
+      "en": "What is the first day of the month called?",
+      "unit_id": "r13:57.1",
+      "answers": [
+        "kalendae"
+      ],
+      "input": "choice",
+      "hint": "a noun in the nominative (a name)",
+      "choices": [
+        "kalendae",
+        "īdūs",
+        "nōnae",
+        "aequinoctium"
+      ]
+    },
+    {
+      "id": "q13-21",
+      "qword": "quis",
+      "q": "Quī diēs 'īdūs' nōminātur?",
+      "en": "Which day is called the 'ides'?",
+      "unit_id": "r13:62.1",
+      "answers": [
+        "diēs tertius decimus post kalendās"
+      ],
+      "input": "choice",
+      "hint": "a phrase in the nominative",
+      "choices": [
+        "diēs tertius decimus post kalendās",
+        "diēs prīmus mēnsis",
+        "diēs nōnus ante īdūs",
+        "diēs quīntus decimus mēnsis"
+      ]
+    },
+    {
+      "id": "q13-22",
+      "qword": "-ne",
+      "q": "Estne diēs octāvus ante kalendās Iānuāriās diēs annī longissimus?",
+      "en": "Is the eighth day before the Kalends of January the longest day of the year?",
+      "unit_id": "r13:72.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn est",
+        "Nōn, brevissimus est",
+        "Is diēs annī brevissimus est."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (it is the shortest day)"
+    },
+    {
+      "id": "q13-23",
+      "qword": "quot",
+      "q": "Quot sunt tempora annī?",
+      "en": "How many seasons of the year are there?",
+      "unit_id": "r13:80.1",
+      "answers": [
+        "quattuor"
+      ],
+      "input": "tap",
+      "hint": "a number in the nominative"
+    },
+    {
+      "id": "q13-24",
+      "qword": "quid",
+      "q": "Quid est mēnsis Iūnius?",
+      "en": "What is the month of June?",
+      "unit_id": "r13:82.1",
+      "answers": [
+        "initium aestātis"
+      ],
+      "input": "choice",
+      "hint": "a phrase in the nominative with a genitive",
+      "choices": [
+        "initium aestātis",
+        "initium hiemis",
+        "fīnis noctis",
+        "dīmidia pars annī"
+      ]
+    },
+    {
+      "id": "q13-25",
+      "qword": "quālis",
+      "q": "Quāle tempus est hiems?",
+      "en": "What kind of season is winter?",
+      "unit_id": "r13:88.1",
+      "answers": [
+        "frīgidum"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative neuter"
+    },
+    {
+      "id": "q13-26",
+      "qword": "quid",
+      "q": "Quid est imber?",
+      "en": "What is rain?",
+      "unit_id": "r13:90.1",
+      "answers": [
+        "aqua quae dē nūbibus cadit"
+      ],
+      "input": "choice",
+      "hint": "a noun in the nominative with a relative clause",
+      "choices": [
+        "aqua quae dē nūbibus cadit",
+        "nix quae dē caelō cadit",
+        "tempus frīgidum annī",
+        "pars lūnae obscūra"
+      ]
+    },
+    {
+      "id": "q13-27",
+      "qword": "ubi",
+      "q": "Ubi hiemēs frīgidiōrēs sunt quam in Italiā?",
+      "en": "Where are winters colder than in Italy?",
+      "unit_id": "r13:95.1",
+      "answers": [
+        "Germāniā"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'in' (place where)"
+    },
+    {
+      "id": "q13-28",
+      "qword": "quis",
+      "q": "Quī mēnsēs calidissimī sunt?",
+      "en": "Which months are the hottest?",
+      "unit_id": "r13:98.2",
+      "answers": [
+        "Iūlius et Augustus"
+      ],
+      "input": "choice",
+      "hint": "two names in the nominative",
+      "choices": [
+        "Iūlius et Augustus",
+        "Iānuārius et Februārius",
+        "Mārtius et Aprīlis",
+        "Iūnius et September"
+      ]
+    },
+    {
+      "id": "q13-29",
+      "qword": "cūr",
+      "q": "Cūr multī Rōmānī aestāte urbem relinquunt?",
+      "en": "Why do many Romans leave the city in summer?",
+      "unit_id": "r13:99.1",
+      "answers": [
+        "quia tōtam aestātem in urbe vīvere nōlunt",
+        "quod tōtam aestātem in urbe vīvere nōlunt",
+        "neque enim tōtam aestātem in urbe vīvere volunt",
+        "Neque enim tōtam aestātem in urbe vīvere volunt."
+      ],
+      "input": "type",
+      "hint": "a reason: 'quia ...' with a verb of wanting"
+    },
+    {
+      "id": "q13-30",
+      "qword": "ubi",
+      "q": "Ubi Aemilia sedet?",
+      "en": "Where is Aemilia sitting?",
+      "unit_id": "r13:102.2",
+      "answers": [
+        "apud fīlium aegrum",
+        "apud fīlium",
+        "Aemilia apud fīlium aegrum sedet."
+      ],
+      "input": "type",
+      "hint": "accusative after 'apud' (beside ...)"
+    },
+    {
+      "id": "q13-31",
+      "qword": "quandō",
+      "q": "Quandō sōl altissimus est?",
+      "en": "When is the sun highest?",
+      "unit_id": "r13:108.1",
+      "answers": [
+        "Hōrā sextā",
+        "Hōrā sextā vel merīdiē",
+        "merīdiē",
+        "Hōrā sextā vel merīdiē."
+      ],
+      "input": "type",
+      "hint": "ablative of time (at the ... hour)"
+    },
+    {
+      "id": "q13-32",
+      "qword": "quandō",
+      "q": "Quandō longissimī sunt diēs?",
+      "en": "When are the days longest?",
+      "unit_id": "r13:117.1",
+      "answers": [
+        "Mēnse Iūniō"
+      ],
+      "input": "choice",
+      "hint": "ablative of time (in the month ...)",
+      "choices": [
+        "Mēnse Iūniō",
+        "Mēnse Decembrī",
+        "Hōrā sextā",
+        "Hieme"
+      ]
+    },
+    {
+      "id": "q13-33",
+      "qword": "unde",
+      "q": "Unde mēnsis Iūlius nōmen habet?",
+      "en": "From whom does the month of July get its name?",
+      "unit_id": "r13:125.1",
+      "answers": [
+        "ā Iūliō Caesare",
+        "ā Iuliō Caesare",
+        "ā Caesare",
+        "Mēnsis Iūlius ā Iūliō Caesare nōmen habet."
+      ],
+      "input": "type",
+      "hint": "ablative with 'ā' (from a person)"
+    },
+    {
+      "id": "q13-34",
+      "qword": "cūr",
+      "q": "Cūr mēnsī Augustō nōmen erat 'Sextīlis'?",
+      "en": "Why was the month of August called 'Sextilis'?",
+      "unit_id": "r13:136.1",
+      "answers": [
+        "quia sextus erat",
+        "Quia sextus erat."
+      ],
+      "input": "type",
+      "hint": "a reason: 'quia ...'"
+    },
+    {
+      "id": "q13-35",
+      "qword": "nōnne",
+      "q": "Nōnne māter fīlium oculōs claudere videt?",
+      "en": "Doesn't the mother see her son closing his eyes?",
+      "unit_id": "r13:139.1",
+      "answers": [
+        "Ita",
+        "Ita est",
+        "Ita, videt",
+        "Videt",
+        "Māter fīlium oculōs claudere videt."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'nōnne' expects 'yes'"
+    },
+    {
+      "id": "q13-36",
+      "qword": "ubi",
+      "q": "Ubi sōl lūcet, cum hīc nox est?",
+      "en": "Where does the sun shine when it is night here?",
+      "unit_id": "r13:144.1",
+      "answers": [
+        "in aliīs terrīs",
+        "in aliīs terrīs procul ab Italiā",
+        "Sōl lūcet in aliīs terrīs procul ab Italiā et ab urbe Rōmā."
+      ],
+      "input": "type",
+      "hint": "ablative after 'in' (place where)"
+    },
+    {
+      "id": "q13-37",
+      "qword": "num",
+      "q": "Num nunc tempus est dormīre?",
+      "en": "Surely it is not time to sleep now?",
+      "unit_id": "r13:148.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn est",
+        "Nōn est tempus dormīre."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    }
+  ]
+}

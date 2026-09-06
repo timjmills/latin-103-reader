@@ -1,0 +1,291 @@
+{
+ "chapter": 3,
+ "words": [
+  {
+   "lemma": "ego",
+   "dict": "ego, meī",
+   "pos": "PRON",
+   "gender": null,
+   "decl": null,
+   "meaning": "I",
+   "parts": null,
+   "unit_id": "r03:20.1",
+   "count": 442
+  },
+  {
+   "lemma": "hīc",
+   "dict": "hīc, haec, hoc",
+   "pos": "PRON",
+   "gender": null,
+   "decl": null,
+   "meaning": "this (near me)",
+   "parts": null,
+   "unit_id": "r03:40.1",
+   "count": 300
+  },
+  {
+   "lemma": "videō",
+   "dict": "videō, vidēre, vīdī, vīsum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "see, look at",
+   "parts": "videō, vidēre, vīdī, vīsum",
+   "unit_id": "r03:11.1",
+   "count": 181
+  },
+  {
+   "lemma": "neque",
+   "dict": "neque",
+   "pos": "CONJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "nor neque..neque=neither..nor",
+   "parts": null,
+   "unit_id": "r03:42.1",
+   "count": 168
+  },
+  {
+   "lemma": "iam",
+   "dict": "iam",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "now, already, by/even now",
+   "parts": null,
+   "unit_id": "r03:9.1",
+   "count": 141
+  },
+  {
+   "lemma": "veniō",
+   "dict": "veniō, venīre, vēnī, ventum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "come",
+   "parts": "veniō, venīre, vēnī, ventum",
+   "unit_id": "r03:21.1",
+   "count": 129
+  },
+  {
+   "lemma": "audiō",
+   "dict": "audiō, audīre, audīvī, audītum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "hear, listen, accept, agree with",
+   "parts": "audiō, audīre, audīvī, audītum",
+   "unit_id": "r03:42.1",
+   "count": 116
+  },
+  {
+   "lemma": "dormiō",
+   "dict": "dormiō, dormīre, dormīvī, dormitum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "sleep, rest",
+   "parts": "dormiō, dormīre, dormīvī, dormitum",
+   "unit_id": "r03:37.1",
+   "count": 92
+  },
+  {
+   "lemma": "respondeō",
+   "dict": "respondeō, respondēre, respondī, respōnsum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "answer",
+   "parts": "respondeō, respondēre, respondī, respōnsum",
+   "unit_id": "r03:25.1",
+   "count": 85
+  },
+  {
+   "lemma": "pulsō",
+   "dict": "pulsō, pulsāre, pulsavī, pulsatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "beat",
+   "parts": "pulsō, pulsāre, pulsavī, pulsatum",
+   "unit_id": "r03:8.1",
+   "count": 65
+  },
+  {
+   "lemma": "cūr",
+   "dict": "cūr",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "why, wherefore",
+   "parts": null,
+   "unit_id": "r03:26.1",
+   "count": 64
+  },
+  {
+   "lemma": "interrogō",
+   "dict": "interrogō, interrogāre, interrogāvī, interrogātum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "ask, question, interrogate, examine",
+   "parts": "interrogō, interrogāre, interrogāvī, interrogātum",
+   "unit_id": "r03:23.1",
+   "count": 60
+  },
+  {
+   "lemma": "vocō",
+   "dict": "vocō, vocāre, vocāvī, vocātum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "call, summon",
+   "parts": "vocō, vocāre, vocāvī, vocātum",
+   "unit_id": "r03:16.1",
+   "count": 56
+  },
+  {
+   "lemma": "quia",
+   "dict": "quia",
+   "pos": "CONJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "because",
+   "parts": null,
+   "unit_id": "r03:27.1",
+   "count": 55
+  },
+  {
+   "lemma": "verberō",
+   "dict": "verberō, verberāre, verberavī, verberatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "beat, strike, lash",
+   "parts": "verberō, verberāre, verberavī, verberatum",
+   "unit_id": "r03:45.3",
+   "count": 46
+  },
+  {
+   "lemma": "improbus",
+   "dict": "improbus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "wicked or flagrant",
+   "parts": null,
+   "unit_id": "r03:32.1",
+   "count": 44
+  },
+  {
+   "lemma": "rīdeō",
+   "dict": "rīdeō, rīdēre, risī, risum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "laugh at (with dat.), laugh",
+   "parts": "rīdeō, rīdēre, risī, risum",
+   "unit_id": "r03:10.1",
+   "count": 39
+  },
+  {
+   "lemma": "irascor",
+   "dict": "irascor, irascī, īrātus sum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "get, be, become angry",
+   "parts": "irascor, irascī, īrātus sum",
+   "unit_id": "r03:6.2",
+   "count": 36
+  },
+  {
+   "lemma": "laetus",
+   "dict": "laetus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "happy, cheerful, joyful, glad",
+   "parts": null,
+   "unit_id": "r03:3.2",
+   "count": 36
+  },
+  {
+   "lemma": "plōrō",
+   "dict": "plōrō, plōrāre, ploravī, ploratum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "cry over, cry aloud",
+   "parts": "plōrō, plōrāre, ploravī, ploratum",
+   "unit_id": "r03:9.1",
+   "count": 20
+  },
+  {
+   "lemma": "probus",
+   "dict": "probus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "good, honest",
+   "parts": null,
+   "unit_id": "r03:32.1",
+   "count": 19
+  },
+  {
+   "lemma": "cantō",
+   "dict": "cantō, cantāre, cantavī, cantatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "sing",
+   "parts": "cantō, cantāre, cantavī, cantatum",
+   "unit_id": "r03:3.1",
+   "count": 12
+  },
+  {
+   "lemma": "mamma",
+   "dict": "mamma, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "breast, udder",
+   "parts": null,
+   "unit_id": "r03:19.1",
+   "count": 8
+  },
+  {
+   "lemma": "st",
+   "dict": "st",
+   "pos": "INTERJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "hush! hist!",
+   "parts": null,
+   "unit_id": "r03:4.1",
+   "count": 6
+  },
+  {
+   "lemma": "arcūs",
+   "dict": "arcūs, -ūs m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 4,
+   "meaning": "bow, arc, coil, arch",
+   "parts": null,
+   "unit_id": "r03:32.1",
+   "count": 4
+  },
+  {
+   "lemma": "hahahae",
+   "dict": "hahahae",
+   "pos": "INTERJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "Ha ha!",
+   "parts": null,
+   "unit_id": "r03:10.1",
+   "count": 2
+  }
+ ]
+}
