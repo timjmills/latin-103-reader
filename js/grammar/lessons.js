@@ -48,13 +48,20 @@ export function createLessonLoader({ fetchJson: fetcher = fetchJson } = {}) {
       const ids = await manifest();
       if (ids && !ids.has(skillId)) return null;
       let raw = null;
-      try { raw = await fetcher(`lessons/${skillId}.json`); } catch { raw = null; }
+      try { raw = await fetcher(`lessons/${skillId}.json`); }
+      catch (e) {
+        // A 404 is the placeholder for good; a network failure is not cached, so the next open asks again (m7).
+        if (!/\b404\b/.test(String(e?.message ?? e))) cache.delete(skillId);
+        raw = null;
+      }
       return raw ? normaliseLesson(raw) : null;
     })();
     cache.set(skillId, p);
     return p;
   }
-  return { loadLesson, manifest, hasLesson: async (skillId) => { const ids = await manifest(); return ids ? ids.has(skillId) : (await loadLesson(skillId)) != null; } };
+  /** The unit ids a lesson's examples block quotes (for the gold drill items); [] without a lesson. */
+  const exampleUnits = async (skillId) => ((await loadLesson(skillId))?.core ?? []).filter((b) => b.type === 'examples').flatMap((b) => (Array.isArray(b.units) ? b.units.filter((u) => typeof u === 'string') : []));
+  return { loadLesson, manifest, exampleUnits, hasLesson: async (skillId) => { const ids = await manifest(); return ids ? ids.has(skillId) : (await loadLesson(skillId)) != null; } };
 }
 
 /** Pure: the loaded map indexed for the section. */
@@ -73,7 +80,8 @@ export function indexSkills(raw, sample = false) {
   }]));
   const order = (Array.isArray(raw?.order) ? raw.order : []).filter((id) => skills.has(id));
   for (const id of skills.keys()) if (!order.includes(id)) order.push(id);
-  return { version: raw?.version ?? 0, sample: sample || raw?.sample === true, skills, order, categories: [...new Set(list.map((s) => s.category).filter(Boolean))] };
+  const paradigmKeys = raw?.paradigm_keys && typeof raw.paradigm_keys === 'object' ? raw.paradigm_keys : {};
+  return { version: raw?.version ?? 0, sample: sample || raw?.sample === true, skills, order, categories: [...new Set(list.map((s) => s.category).filter(Boolean))], paradigmKeys };
 }
 
 /** Chapters in book order, each with its skills in map order. Pure. */
@@ -97,6 +105,7 @@ export function weekSkills(index, weekN) {
 const lessons = createLessonLoader();
 /** The lesson for a skill, or null (the "lesson coming" placeholder) when the manifest does not list it. */
 export const loadLesson = (skillId) => lessons.loadLesson(skillId);
+export const lessonExampleUnits = (skillId) => lessons.exampleUnits(skillId);
 
 /** Pure: a lesson with every block usable. */
 export function normaliseLesson(l) {
@@ -118,4 +127,65 @@ export function inline(text) {
   }
   frag.append(String(text ?? '').slice(last));
   return frag;
+}
+
+/* ------------------------------------------------ paradigm keys (G1-01) */
+/** The lesson's paradigm keys → a glossary headword (the named tables) or the class a library word must belong to. */
+export const KEY_CLASS = {
+  decl1: { pos: 'N', cat: [1] }, decl2m: { pos: 'N', cat: [2, 1], gender: 'm' }, decl2n: { pos: 'N', cat: [2], gender: 'n' }, decl2r: { pos: 'N', cat: [2, 3] },
+  decl3: { pos: 'N', cat: [3], gender: ['m', 'f', 'c'] }, decl3n: { pos: 'N', cat: [3], gender: 'n', catv: [1, 2] }, decl3i: { pos: 'N', cat: [3, 3], gender: ['m', 'f', 'c'] }, decl3in: { pos: 'N', cat: [3, 4], gender: 'n' },
+  decl4: { pos: 'N', cat: [4, 1] }, decl4n: { pos: 'N', cat: [4, 2] }, decl5: { pos: 'N', cat: [5] },
+  adj12: { pos: 'ADJ', cat: [1, 1] }, adj3: { pos: 'ADJ', cat: [3], catv: [2, 3] }, adj3cons: { pos: 'ADJ', cat: [3, 1] }, adjcomp: { pos: 'ADJ', comp: true },
+  conj1: { pos: 'V', cat: [1, 1] }, conj2: { pos: 'V', cat: [2, 1] }, conj3: { pos: 'V', cat: [3, 1], io: false }, conj3io: { pos: 'V', cat: [3, 1], io: true }, conj4: { pos: 'V', cat: [3, 4] },
+};
+/** Model words for a class when the skill's own sentences offer none (looked up in the glossary; the reader's own words come first). */
+export const KEY_MODELS = {
+  decl1: ['puella', 'rosa', 'via'], decl2m: ['servus', 'hortus', 'dominus'], decl2n: ['oppidum', 'verbum', 'baculum'], decl2r: ['puer', 'liber', 'magister'],
+  decl3: ['pastor', 'rex', 'mater', 'ovis'], decl3n: ['corpus', 'flumen', 'caput'], decl3i: ['navis', 'ovis', 'mons'], decl3in: ['mare', 'animal'], decl4: ['manus', 'exercitus'], decl4n: ['cornu'], decl5: ['dies', 'res'],
+  adj12: ['bonus', 'magnus', 'pulcher'], adj3: ['fortis', 'brevis', 'omnis'], adj3cons: ['vetus', 'pauper'], adjcomp: ['fortior', 'maior', 'melior'],
+  conj1: ['amo', 'voco', 'laudo'], conj2: ['video', 'habeo', 'moneo'], conj3: ['pono', 'scribo', 'duco'], conj3io: ['capio', 'facio', 'fugio'], conj4: ['audio', 'venio', 'dormio'],
+};
+
+/** True when a glossary entry belongs to the class a paradigm key names (KEY_CLASS). */
+export function entryOfClass(entry, cls) {
+  if (!entry || !cls || entry.pos !== cls.pos) return false;
+  const [d, v] = entry.cat || [0, 0];
+  if (cls.comp) return entry.kind === 'comp' || /-ior/.test(entry.lemma || '') || (entry.parses || []).some((p) => p.degree === 'comp');
+  if (cls.cat && d !== cls.cat[0]) return false;
+  if (cls.cat && cls.cat.length > 1 && v !== cls.cat[1]) return false;
+  if (cls.catv && !cls.catv.includes(v)) return false;
+  if (cls.gender && !(Array.isArray(cls.gender) ? cls.gender : [cls.gender]).includes(entry.gender)) return false;
+  if (cls.io != null) { const io = /i$/.test(entry.roots?.[0] || ''); if (io !== cls.io) return false; }
+  if (cls.pos === 'V' && (entry.kind === 'dep' || entry.kind === 'semidep' || entry.kind === 'impers')) return false;
+  return true;
+}
+
+/**
+ * The parses that light a lesson table: every cell the highlight names — both
+ * numbers for a case, every person / number / voice for a finite tense
+ * (paradigms.js matches finite cells strictly), both voices for a non-finite
+ * form unless the highlight names one. Pure.
+ */
+export function highlightParses(filter) {
+  const f = filter && typeof filter === 'object' && !Array.isArray(filter) ? filter : null;
+  if (!f) return [];
+  const list = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
+  const or = (v, d) => (list(v).length ? list(v) : d);
+  const out = [];
+  const moods = or(f.mood, f.tense ? ['ind', 'subj'] : f.case ? [undefined] : f.voice || f.person ? ['ind'] : [undefined]);
+  for (const m of moods) {
+    const finite = m === 'ind' || m === 'subj';
+    const nonFinite = m === 'inf' || m === 'ptc' || m === 'imper';
+    const tenses = or(f.tense, finite ? ['pres'] : m === 'gerund' || m === 'gerundive' || m === 'supine' ? [undefined] : nonFinite ? ['pres'] : [undefined]);
+    const voices = or(f.voice, finite || nonFinite ? ['act', 'pass'] : [undefined]);
+    const persons = or(f.person, finite ? [1, 2, 3] : [undefined]);
+    const numbers = or(f.number, finite || m === 'imper' || f.case || m === 'ptc' || m === 'gerundive' ? ['sg', 'pl'] : [undefined]);
+    const cases = or(f.case, m === 'gerund' || m === 'supine' ? ['gen', 'dat', 'acc', 'abl'] : [undefined]);
+    for (const t of tenses) for (const v of voices) for (const pe of persons) for (const n of numbers) for (const c of cases) for (const g of or(f.gender, [undefined])) for (const d of or(f.degree, [undefined])) {
+      const p = {};
+      if (m) p.mood = m; if (t) p.tense = t; if (v) p.voice = v; if (pe != null) p.person = pe; if (n) p.number = n; if (c) p.case = c; if (g) p.gender = g; if (d) p.degree = d;
+      if (Object.keys(p).length) out.push(p);
+    }
+  }
+  return out;
 }

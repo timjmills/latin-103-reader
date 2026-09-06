@@ -59,4 +59,4 @@ export function confusionList(rows, skills) {
 }
 
 export const fmtPct = (n) => (n == null ? '—' : `${n}%`);
-export const fmtMin = (msTotal) => { const m = Math.round((msTotal || 0) / 60000); return m < 1 ? 'under a minute' : `${m} min`; };
+export const fmtMin = (msTotal) => { const s = (msTotal || 0) / 1000; if (s < 45) return 'under a minute'; const m = Math.max(1, Math.round(s / 60)); return `${m} min`; };
