@@ -32,6 +32,8 @@
   <link rel="stylesheet" href="css/reader.css">
   <link rel="stylesheet" href="css/panels.css">
   <link rel="stylesheet" href="css/grammar.css">
+  <!-- The chapter spine (GRAMMAR-CONTRACT.md): after grammar.css, so the chapter page's header rules win. -->
+  <link rel="stylesheet" href="css/chapters.css">
   <link rel="stylesheet" href="css/print.css" media="print">
 </head>
 <body>
@@ -124,6 +126,11 @@
     <!-- Grammar section mount (GRAMMAR-CONTRACT.md): shown instead of .layout while the header's Section control says Grammar. -->
     <section id="grammar" class="grammar" aria-label="Grammar" hidden></section>
 
+    <!-- One chapter of the book (GRAMMAR-CONTRACT.md "Chapter spine"): its Readings and its
+         Grammar, at #/chapter/7 and #/chapter/7/grammar. main.js builds it; while it is open
+         html[data-page="chapter"] hides the reader and the grammar section. -->
+    <section id="chapter" class="chapter" aria-label="Chapter" hidden></section>
+
     <div id="transport" class="transport" hidden>
       <div class="transport__main">
         <p class="transport__text"><span class="transport__title">Playing chapter</span> <span class="transport__pos" data-transport-pos></span></p>
@@ -148,10 +155,21 @@
         <h2 id="weeks-title" class="weeks__title">Latin 103 · Fall 2026</h2>
         <button type="button" class="panel__close" data-close="weeks" aria-label="Close">×</button>
       </div>
-      <p class="weeks__hint">Fourteen weeks, then the review shelf. Greyed weeks have not been added to your library yet.</p>
-      <!-- Today card (GRAMMAR-CONTRACT.md "Daily plan"): filled by the grammar section when the menu opens. -->
+      <!-- Today card (GRAMMAR-CONTRACT.md "Daily plan"): filled by the grammar section when the menu opens. Above the tabs: it is the day's plan, not one list's. -->
       <div id="weeks-today" class="weeks__today" hidden></div>
-      <ol id="weeks-list" class="weeks__list"></ol>
+      <!-- Two ways in (GRAMMAR-CONTRACT.md "Chapter spine"): the book's own chapters, or the 103 weeks. main.js remembers which was last used (settings.menuTab). -->
+      <div class="weeks__tabs" role="tablist" aria-label="Library">
+        <button type="button" class="weeks__tab" role="tab" id="weeks-tab-chapters" aria-controls="weeks-panel-chapters" aria-selected="true">Chapters</button>
+        <button type="button" class="weeks__tab" role="tab" id="weeks-tab-weeks" aria-controls="weeks-panel-weeks" aria-selected="false" tabindex="-1">My weeks</button>
+      </div>
+      <div class="weeks__panel" id="weeks-panel-chapters" role="tabpanel" aria-labelledby="weeks-tab-chapters">
+        <p class="weeks__hint">Familia Rōmāna I–XXXIV. Each chapter holds its reading and its grammar.</p>
+        <ol id="chapters-list" class="weeks__list"></ol>
+      </div>
+      <div class="weeks__panel" id="weeks-panel-weeks" role="tabpanel" aria-labelledby="weeks-tab-weeks" hidden>
+        <p class="weeks__hint">Fourteen weeks, then the review shelf. Greyed weeks have not been added to your library yet.</p>
+        <ol id="weeks-list" class="weeks__list"></ol>
+      </div>
     </dialog>
 
     <dialog id="settings" class="settings" aria-labelledby="settings-title">

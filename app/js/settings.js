@@ -7,6 +7,7 @@
 // first paint; this module keeps <html> attributes + the store in step.
 
 import { SIZE_MIN, SIZE_MAX, clampSize, NOTE_SIZE_MIN, NOTE_SIZE_MAX, clampNoteSize, RATE_STEPS, clampRate, localDay, weekOfUnit, cleanMs, lastReadOf, readsOf, isShelfWeek, isReviewWeek, isColloquiaWeek, shelfKind, shelfChapter, roman } from './sync.js';
+import { chapters, chapter as chapterOf, readingsMeta, metaList, inReading, SOURCE_NAMES } from './chapters.js';
 
 export { isShelfWeek, isReviewWeek, isColloquiaWeek, shelfKind, shelfChapter, roman };
 
@@ -258,6 +259,118 @@ export const SHELF_GROUPS = Object.freeze([
   // 'colloquia', never 'colloquiums': the plural is the book's own.
   { key: 'collo', kind: 'colloquia', id: 'weeks-collo', setting: 'colloOpen', name: 'Colloquia Personarum I–XXIV', unit: 'colloquium', plural: 'colloquia' },
 ]);
+
+/* --------------------------------------------------------- chapter spine */
+// GRAMMAR-CONTRACT.md "Chapter spine": the menu opens on Chapters (I–XXXIV in
+// the book's order), with My weeks — today's list — as the second tab. The
+// mapping itself lives in chapters.js and nowhere else; these are the row
+// models the menu and the chapter page paint, and they are pure
+// (tests/ui.chapters.test.mjs, tests/ui.chapter-rows.test.mjs).
+
+/** The two tabs of the weeks menu, in order. `settings.menuTab` remembers the last. */
+export const MENU_TABS = Object.freeze(['chapters', 'weeks']);
+/** The tab to open on: the remembered one, else Chapters (the book's own spine). Pure. */
+export function menuTab(settings) {
+  const t = settings?.menuTab;
+  return MENU_TABS.includes(t) ? t : 'chapters';
+}
+
+const hasWeek = (set, n) => !!(set && (typeof set.has === 'function' ? set.has(n) : set[n]));
+const countOf = (map, n) => Math.max(0, Math.round(Number(map?.get?.(n) ?? 0)) || 0);
+
+/**
+ * One row per chapter for the Chapters tab: the numeral, the Latin title, what
+ * it holds, how far it has been read and whether it has a recording.
+ *  - `library`: Set of week numbers the library actually holds
+ *  - `totals` / `read`: Map week_n → sentences, sentences read (progressByWeek)
+ *  - `audio`: Set of week numbers with a recording
+ * A chapter's figures are its distinct weeks', so a supplement week is counted
+ * once however many of its stories are listed. Pure.
+ */
+export function chapterRows({ library = null, totals = null, read = null, audio = null } = {}) {
+  return chapters().map((c) => {
+    const readings = c.readings.filter((r) => !library || hasWeek(library, r.week_n));
+    const weeks = [...new Set(readings.map((r) => r.week_n))];
+    const total = weeks.reduce((n, w) => n + countOf(totals, w), 0);
+    const done = weeks.reduce((n, w) => n + Math.min(countOf(totals, w), countOf(read, w)), 0);
+    return {
+      n: c.n, roman: c.roman, title: c.title,
+      readings, weeks,
+      inLibrary: readings.length > 0,
+      meta: chapterMeta(readings),
+      total, read: Math.min(total, done),
+      audio: weeks.some((w) => hasWeek(audio, w)),
+    };
+  });
+}
+
+/**
+ * A chapter row's second line. On the shelves it is the readings' own names
+ * ("Familia Rōmāna · Colloquium VII"); from XXV on, the course week that reads
+ * the chapter comes first, since that is where the pace and the study log
+ * know it ("Week 4 · Mīnōs · +4 more", "Weeks 13 and 14"). Pure.
+ */
+export function chapterMeta(readings) {
+  const list = readings ?? [];
+  if (!list.length) return '';
+  // The supplement week is named by its stories, not by its number: "Week 4 · Mīnōs · …", never "Weeks 3 and 4".
+  const course = [...new Set(list.filter((r) => !r.supplement).map((r) => r.week_n))].filter((w) => !isShelfWeek(w)).sort((a, b) => a - b);
+  if (!course.length) return readingsMeta(list);
+  const label = course.length === 1
+    ? `Week ${course[0]}`
+    : `Weeks ${course.slice(0, -1).join(', ')} and ${course[course.length - 1]}`;
+  return metaList([label, ...list.filter((r) => r.supplement).map((r) => r.label)]);
+}
+
+/**
+ * Where a reading lives in the learner's own library — the line under its name
+ * on the chapter page. "Review shelf", "Colloquia Persōnārum", "Week 4 · Rēs
+ * Rūsticae", "Week 3 · Fabulae Syrae". `title` is the library week's own title
+ * (a course week has one worth printing; a shelf chapter's only repeats the
+ * page heading). Pure.
+ */
+export function readingWhere(reading, title = '') {
+  if (!reading) return '';
+  if (isShelfWeek(reading.week_n)) return shelfKind(reading.week_n) === 'colloquia' ? 'Colloquia Persōnārum' : 'Review shelf';
+  const week = weekNumberLabel(reading.week_n);
+  if (reading.kind === 'fr') return title ? `${week} · ${title}` : week;
+  return `${week} · ${SOURCE_NAMES[reading.kind] ?? ''}`.replace(/ · $/, '');
+}
+
+/**
+ * One row per reading of a chapter, for the chapter page: its name, where it
+ * lives, its own progress, whether it has audio, the sentence to open it at and
+ * the first one not yet read (the row's Continue).
+ *  - `units`: Map week_n → the week's units in order (a week not loaded falls
+ *    back to `totals` for a whole-week reading and to nothing for a part)
+ *  - `progress`: Map unit_id → read_at
+ *  - `audio`: Map week_n → Set of aligned unit ids, or a Set of week numbers
+ * Pure.
+ */
+export function readingRows(n, { library = null, units = null, totals = null, titles = null, progress = null, audio = null } = {}) {
+  const c = chapterOf(n);
+  if (!c) return [];
+  return c.readings.map((r) => {
+    const inLibrary = !library || hasWeek(library, r.week_n);
+    const list = (units?.get?.(r.week_n) ?? []).filter((u) => u?.id && (!r.part || inReading(u.id, r)));
+    const total = list.length || (r.part ? 0 : countOf(totals, r.week_n));
+    let read = 0;
+    let firstUnread = null;
+    for (const u of list) {
+      if (progress?.has?.(u.id)) read += 1;
+      else if (!firstUnread) firstUnread = u.id;
+    }
+    const aligned = audio?.get?.(r.week_n);
+    return {
+      reading: r, id: r.id, label: r.label, week_n: r.week_n, part: r.part, kind: r.kind,
+      where: readingWhere(r, titles?.get?.(r.week_n) ?? ''),
+      inLibrary, total, read: Math.min(total, read),
+      firstId: list[0]?.id ?? null,
+      firstUnread: read > 0 && read < total ? firstUnread : null,
+      audio: aligned instanceof Set ? list.some((u) => aligned.has(u.id)) : hasWeek(audio, r.week_n),
+    };
+  });
+}
 
 /* ------------------------------------------------------------ study log */
 // CONTRACT.md "Study log": sentences per local day come from the progress
