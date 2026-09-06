@@ -23,7 +23,7 @@ export const LEARN_WINDOW = 10;
 export const LEARN_NEEDED = 6;
 export const LEARN_KINDS = 2;
 export const STATES = Object.freeze(['new', 'learning', 'practising', 'mastered', 'lapsed']);
-export const PRESETS = Object.freeze(['review-heavy', 'this-week', 'even', 'one-skill']);
+export const PRESETS = Object.freeze(['review-heavy', 'this-week', 'even', 'one-skill']);   // the setup's radio group (ui.js PRESET_LABEL)
 export const KINDS_BY_STAGE = Object.freeze({ 1: ['recognise', 'chart'], 2: ['chart', 'parse'], 3: ['parse', 'blank'] });
 
 const iso = (t) => new Date(t).toISOString();
@@ -172,8 +172,9 @@ const confusionWeight = (map, a, b) => (map?.get(`${a}|${b}`) ?? 0) + (map?.get(
  * `states`: Map skill → row; `skills`: Map id → skill definition.
  */
 export function orderCandidates({ states, skills, preset, currentWeek = [], now = Date.now(), rand = Math.random, oneSkill = null }) {
+  // A blocked set on one skill is asked for on purpose (a lapsed row included: "Practise this skill" re-enters it), so decay does not apply there.
+  if (preset === 'one-skill') return [...states.values()].filter((s) => s.skill === oneSkill && inRotation(s) && skills.has(s.skill));
   const rows = [...states.values()].map((s) => decay(s, now)).filter((s) => inRotation(s) && skills.has(s.skill));
-  if (preset === 'one-skill') return rows.filter((s) => s.skill === oneSkill);
   const due = rows.filter((s) => isDue(s, now)).sort((a, b) => overdueRatio(b, now) - overdueRatio(a, now) || ms(a.due_at) - ms(b.due_at));
   const rest = rows.filter((s) => !isDue(s, now)).sort((a, b) => ms(a.due_at) - ms(b.due_at));
   if (preset === 'even') return shuffle(rows, rand);
@@ -239,7 +240,10 @@ export function buildSession({ states, skills, confusions = null, preset = 'revi
       }
     }
     if (!prefer && weekQuota && weekUsed < weekQuota) {
-      const w = ordered.find((s) => cur.has(s.skill) && s.skill !== prev);
+      // Round-robin over the week's skills: the least used first, so a third week skill is never starved (m1).
+      const weekSkills = ordered.filter((s) => cur.has(s.skill) && s.skill !== prev);
+      const used = new Map(weekSkills.map((s) => [s.skill, seq.filter((x) => x.skill === s.skill).length]));
+      const w = weekSkills.sort((a, b) => used.get(a.skill) - used.get(b.skill))[0];
       if (w) { prefer = w.skill; weekUsed += 1; }
     }
     const s = pick(prev, prefer);
@@ -269,24 +273,49 @@ export function buildSession({ states, skills, confusions = null, preset = 'revi
 }
 
 /**
- * A wrong answer re-queues the skill 3–6 items later (never immediately),
- * keeping the no-two-in-a-row rules. `plan` is the remaining plan after the
- * current item; returns a new array.
+ * A wrong answer re-queues the skill 3–6 items later — never immediately,
+ * never beside itself, never the same kind as a neighbour. `plan` is the
+ * remaining plan after the current item; returns a new array. When fewer
+ * than three items remain, `fill(n, exclude)` supplies filler slots on other
+ * skills (session.js builds them with buildSession) so the gap holds; with
+ * no fillers to be had the re-queue is dropped (the summary's "worth another
+ * look" still names the skill).
  */
-export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random }) {
+export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random, fill = null }) {
   const out = [...plan];
   let at = 3 + Math.floor(rand() * 4);   // 3..6
+  if (out.length < 3) {
+    const need = 3 - out.length;
+    const extra = (fill ? fill(need + 2, skill) : []).filter((s) => s && s.skill !== skill);
+    for (const f of extra) {
+      if (out.length >= 3) break;
+      const last = out[out.length - 1];
+      if (last && last.skill === f.skill) continue;
+      const def = skills?.get(f.skill);
+      let k = f.kind;
+      if (last && k === last.kind) k = kindsFor(def, f.stage ?? 1).find((x) => x !== last.kind) ?? (def?.kinds || []).find((x) => x !== last.kind) ?? null;
+      if (!k) continue;
+      out.push({ ...f, kind: k, currentWeek: false, filler: true });
+    }
+    if (out.length < 3) return out;
+    at = 3;
+  }
   at = Math.min(at, out.length);
-  // Find a spot at or after `at` where neighbours differ in skill.
+  const def = skills?.get(skill);
+  const allKinds = def?.kinds?.length ? def.kinds : ['recognise', 'chart', 'parse', 'blank'];
+  const pickKind = (before, after) => {
+    const ok = (x) => x !== before?.kind && x !== after?.kind;
+    return kindsFor(def, stage).filter((x) => ok(x) && x !== kind)[0] ?? kindsFor(def, stage).find(ok) ?? allKinds.find(ok) ?? null;
+  };
+  // Find a spot at or after `at` where the neighbours differ in skill and a kind unlike both neighbours' exists.
   for (let i = at; i <= out.length; i++) {
     const before = out[i - 1], after = out[i];
     if (before?.skill === skill || after?.skill === skill) continue;
-    const kinds = kindsFor(skills?.get(skill), stage).filter((k) => k !== before?.kind && k !== after?.kind && k !== kind);
-    const k = kinds[0] ?? kindsFor(skills?.get(skill), stage).find((x) => x !== before?.kind && x !== after?.kind) ?? kind;
+    const k = pickKind(before, after);
+    if (!k) continue;
     out.splice(i, 0, { skill, kind: k, stage, currentWeek: false, requeued: true });
     return out;
   }
-  out.push({ skill, kind, stage, currentWeek: false, requeued: true });
   return out;
 }
 

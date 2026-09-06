@@ -51,3 +51,30 @@ test('index.json on disk lists exactly the lesson files present, each a skill of
   }
   assert.ok(!onDisk.some((f) => f.endsWith('.sample')), 'no sample fixtures ship');
 });
+
+test('paradigm keys (G1-01): the map lists every key; a class key resolves by declension / conjugation, a named table by its headword; highlights light whole tense blocks', async () => {
+  const { KEY_CLASS, entryOfClass, highlightParses } = await import('../app/js/grammar/lessons.js');
+  const index = indexSkills(read('skills.json'));
+  assert.ok(Object.keys(index.paradigmKeys).length >= 40);
+  for (const k of Object.keys(KEY_CLASS)) assert.ok(index.paradigmKeys[k], `${k} is a paradigm key`);
+  for (const s of index.skills.values()) for (const k of s.paradigms) assert.ok(index.paradigmKeys[k], `${s.id}: ${k}`);
+  const pono = { pos: 'V', cat: [3, 1], roots: ['pōn', 'pōn', 'posu', 'posit'], h: 'pono' };
+  const capio = { pos: 'V', cat: [3, 1], roots: ['capi', 'cap', 'cēp', 'capt'], h: 'capio' };
+  const affero = { pos: 'V', cat: [3, 2], roots: ['affer', 'affer', 'attul', 'allāt'], h: 'affero' };
+  const loquor = { pos: 'V', cat: [3, 1], roots: ['loqu', 'loqu', '-', 'locūt'], h: 'loquor', kind: 'dep' };
+  assert.equal(entryOfClass(pono, KEY_CLASS.conj3), true);
+  assert.equal(entryOfClass(capio, KEY_CLASS.conj3), false);
+  assert.equal(entryOfClass(capio, KEY_CLASS.conj3io), true);
+  assert.equal(entryOfClass(affero, KEY_CLASS.conj3), false, 'a compound of ferō is irregular, never the model 3rd-conjugation verb');
+  assert.equal(entryOfClass(loquor, KEY_CLASS.conj3), false);
+  assert.equal(entryOfClass({ pos: 'N', cat: [2, 1], gender: 'm' }, KEY_CLASS.decl2m), true);
+  assert.equal(entryOfClass({ pos: 'N', cat: [2, 2], gender: 'n' }, KEY_CLASS.decl2m), false);
+  assert.equal(entryOfClass({ pos: 'N', cat: [3, 3], gender: 'f' }, KEY_CLASS.decl3), true);
+  assert.equal(entryOfClass({ pos: 'N', cat: [3, 4], gender: 'n' }, KEY_CLASS.decl3in), true);
+  const impf = highlightParses({ tense: 'impf', mood: 'subj' });
+  assert.equal(impf.length, 12, 'every person, number and voice of the imperfect subjunctive');
+  assert.ok(impf.every((p) => p.tense === 'impf' && p.mood === 'subj' && p.person && p.number && p.voice));
+  assert.deepEqual(highlightParses({ case: 'dat' }), [{ number: 'sg', case: 'dat' }, { number: 'pl', case: 'dat' }]);
+  assert.deepEqual(highlightParses({ mood: 'inf', tense: 'pres' }).map((p) => p.voice), ['act', 'pass']);
+  assert.equal(highlightParses(null).length, 0);
+});

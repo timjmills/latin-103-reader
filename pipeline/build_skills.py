@@ -188,8 +188,8 @@ skill("ablative-agent", "Ablative of agent: by a person (a/ab + ablative)", "the
 skill("dative-indirect-object", "Dative: the indirect object", DAT, "casus dativus", "noun-case", 7, 7, [23],
       ["nominative-subject", "accusative-object"], ["ablative-means", "genitive-possession", "ablative-place"],
       NOUN12 + ["decl3"], {"case": "dat"},
-      [r"(?i)\b\w+(ae|o|i|is|ibus)\b(?=[^.!?]*\b(dat|dant|donat|ostendit|dicit|monstrat|tradit|reddit|dabat|dedit|dabit|dedit|dederunt|respondet|scribit|mittit|misit)\b)",
-       r"(?i)\b(mihi|tibi|ei|nobis|vobis|eis|iis|cui|quibus|illi|huic|\w+(ibus|is))\b"],
+      [r"(?i)\b(mihi|tibi|ei|nobis|vobis|eis|iis|cui|quibus|illi|huic|\w+(ae|o|i|is|ibus))\b(?=[^.!?]*\b(da|dat|dant|dabat|dabant|dabit|dabunt|dare|det|dent|daret|darent|dedit|dederunt|dederat|dono|donat|donavit|ostendit|ostendunt|ostendebat|ostende|dicit|dicunt|dicebat|dixit|dixerunt|dic|dicere|monstrat|monstravit|monstra|tradit|tradidit|reddit|reddidit|redde|respondet|respondit|scribit|scripsit|scribe|mittit|mittunt|misit|miserunt|mitte|narrat|narravit|narra|affert|attulit|portat|portavit|promittit|promisit|nuntiat|nuntiavit)\b)",
+       r"(?i)\b(da|dat|dant|dabat|dabant|dabit|dedit|dederunt|donat|ostendit|dicit|dixit|monstrat|tradit|reddit|respondet|respondit|scribit|scripsit|mittit|misit|narrat|narravit|affert|attulit|portat|promittit|promisit)\b[^.!?]*\b(mihi|tibi|ei|nobis|vobis|eis|iis|cui|quibus|illi|huic|\w+(ae|o|i|is|ibus))\b"],
       {"case": "dat"},
       ["recognise", "chart", "parse", "blank"],
       "The person something is given, said or shown to: -ae / -o / -i singular, -is / -ibus plural; never marked by word order or a preposition.")
@@ -781,6 +781,218 @@ skill("prosody-scansion", "Prosody: long and short syllables, elision", "prosody
       "A syllable is long if its vowel is long, a diphthong, or followed by two consonants; a final vowel or -m before a word starting with a vowel or h- is elided (od(i) et amo); the hexameter pauses at a caesura.", syl=14)
 
 # ---------------------------------------------------------------------------
+# What each skill's items ask about (GRAMMAR-CONTRACT.md "feature"): the
+# dimension a recognise / parse item tests. `construction` = the item asks the
+# *function* ("What is this dative doing here?", "What kind of clause is
+# this?") with the confusable constructions as the choices; those skills also
+# carry `function` (the answer label; the part in brackets is its plain gloss)
+# and `highlight_match` (a regex over the reader's grammar-focus labels that
+# names the construction, so those sentences become gold drill items).
+
+FEATURES = {"case", "gender", "number", "tense", "mood", "voice", "person", "degree", "construction", "form"}
+
+FEATURE = {
+    # case: which case is this form (the plain-case and declension / pronoun skills)
+    "nominative-subject": "case", "accusative-object": "case", "vocative": "case",
+    "demonstratives": "case", "demonstrative-pronouns": "case", "relative-pronoun": "case", "personal-pronouns": "case",
+    "third-declension": "case", "third-declension-neuter": "case", "fourth-declension": "case", "fifth-declension": "case",
+    # gender
+    "noun-gender": "gender", "adjective-agreement": "gender",
+    # construction: the function-named case skills and the syntax / verb-use skills
+    "genitive-possession": "construction", "genitive-of": "construction", "ablative-place": "construction", "ablative-origin": "construction",
+    "accusative-destination": "construction", "ablative-means": "construction", "ablative-agent": "construction", "dative-indirect-object": "construction",
+    "accusative-infinitive": "construction", "dative-possession": "construction", "ablative-time": "construction", "ablative-absolute": "construction",
+    "ablative-degree": "construction", "noli-infinitive": "construction", "perfect-passive": "construction", "ablative-absolute-perfect": "construction",
+    "perfect-deponent": "construction", "ablative-comparison": "construction", "subjunctive-wish-command": "construction", "potential-subjunctive": "construction",
+    "indirect-command": "construction", "purpose-clause": "construction", "result-clause": "construction", "cum-narrative": "construction",
+    "cum-causal": "construction", "indirect-question": "construction", "deliberative-subjunctive": "construction", "passive-periphrastic": "construction",
+    "dative-of-agent": "construction", "wishes-utinam": "construction", "conditions-contrary-to-fact": "construction", "dative-verbs": "construction", "dummodo": "construction",
+    # tense (asked together with the mood: "which tense and mood")
+    "present-indicative-3rd": "tense", "irregular-verbs-present": "tense", "imperfect-active": "tense", "imperfect-passive": "tense", "imperfect-irregular": "tense",
+    "future-active": "tense", "future-passive": "tense", "future-irregular": "tense", "perfect-active": "tense", "pluperfect": "tense",
+    "present-subjunctive": "tense", "imperfect-subjunctive": "tense", "sequence-of-tenses": "tense", "future-perfect": "tense", "perfect-subjunctive": "tense", "pluperfect-subjunctive": "tense",
+    # mood (the non-finite forms and the imperatives)
+    "imperative": "mood", "infinitive": "mood", "present-participle": "mood", "perfect-passive-participle": "mood", "perfect-infinitive": "mood", "supine": "mood",
+    "perfect-deponent-participle": "mood", "future-participle": "mood", "future-infinitive": "mood", "deponent-imperatives": "mood", "gerund": "mood", "gerundive": "mood", "future-imperative": "mood",
+    # voice, person, degree, form
+    "passive-voice": "voice", "deponent-verbs": "voice",
+    "active-personal-endings": "person", "passive-personal-endings": "person",
+    "comparative": "degree", "superlative": "degree", "irregular-comparison": "degree", "adverbs": "degree",
+    "enclitics": "form", "principal-parts": "form",
+    # lesson only
+    "elegiac-couplet": None, "prosody-scansion": None,
+}
+
+FUNCTION = {
+    "genitive-possession": "possession (whose it is)",
+    "genitive-of": "'of': part, description or after an adjective (a cup of wine, full of apples)",
+    "ablative-place": "place where (in / sub / cum + ablative)",
+    "ablative-origin": "from, out of, away from (a / ab / e / ex / de + ablative)",
+    "accusative-destination": "motion towards (ad / in + accusative)",
+    "ablative-means": "means (with a thing, no preposition)",
+    "ablative-agent": "agent (by a person: a / ab + ablative)",
+    "dative-indirect-object": "indirect object (the receiver)",
+    "accusative-infinitive": "indirect statement (accusative + infinitive)",
+    "dative-possession": "possession (mihi est = I have)",
+    "ablative-time": "time when",
+    "ablative-absolute": "ablative absolute (noun + present participle)",
+    "ablative-degree": "degree of difference (by how much)",
+    "noli-infinitive": "negative command (noli + infinitive)",
+    "perfect-passive": "perfect passive (laudatus est = was praised)",
+    "ablative-absolute-perfect": "ablative absolute (noun + perfect participle)",
+    "perfect-deponent": "perfect of a deponent (locutus est = he spoke)",
+    "ablative-comparison": "comparison (than, without quam)",
+    "subjunctive-wish-command": "wish or command in a main clause (let us …, may he …)",
+    "potential-subjunctive": "potential (could / would / might)",
+    "indirect-command": "indirect command (ordered / asked to …)",
+    "purpose-clause": "purpose (in order to)",
+    "result-clause": "result (so … that)",
+    "cum-narrative": "cum: when / while (past narrative)",
+    "cum-causal": "cum: since / although",
+    "indirect-question": "indirect question (asks / knows what …)",
+    "deliberative-subjunctive": "deliberative question (what am I to do?)",
+    "passive-periphrastic": "must be done (gerundive + sum)",
+    "dative-of-agent": "agent with the gerundive (by whom it must be done)",
+    "wishes-utinam": "wish with utinam (if only …)",
+    "conditions-contrary-to-fact": "unreal condition (if I were …, if I had …)",
+    "dative-verbs": "object of a dative verb (pareo, placeo, noceo, credo …)",
+    "dummodo": "proviso (provided that)",
+}
+# Extra phrases a typed function answer may use (the head of `function` is always accepted).
+FUNCTION_KEYS = {
+    "genitive-possession": ["possessive", "possessive genitive", "genitive of possession"],
+    "genitive-of": ["partitive", "description", "descriptive", "objective genitive", "of"],
+    "ablative-place": ["place", "location", "where"],
+    "ablative-origin": ["origin", "separation", "from", "source"],
+    "accusative-destination": ["motion", "destination", "towards", "direction", "place to which"],
+    "ablative-means": ["means", "instrument", "instrumental"],
+    "ablative-agent": ["agent", "personal agent"],
+    "dative-indirect-object": ["indirect object", "receiver", "recipient"],
+    "accusative-infinitive": ["indirect statement", "indirect speech", "accusative and infinitive", "reported statement"],
+    "dative-possession": ["possession", "possessor", "dative of possession"],
+    "ablative-time": ["time", "time when", "time at which"],
+    "ablative-absolute": ["ablative absolute", "absolute"],
+    "ablative-degree": ["degree of difference", "degree", "measure", "by how much"],
+    "noli-infinitive": ["negative command", "prohibition", "noli"],
+    "perfect-passive": ["perfect passive"],
+    "ablative-absolute-perfect": ["ablative absolute", "absolute"],
+    "perfect-deponent": ["perfect deponent", "deponent perfect", "deponent"],
+    "ablative-comparison": ["comparison", "comparative", "than"],
+    "subjunctive-wish-command": ["hortatory", "jussive", "iussive", "wish", "command", "exhortation"],
+    "potential-subjunctive": ["potential", "possibility"],
+    "indirect-command": ["indirect command", "command", "request", "indirect request"],
+    "purpose-clause": ["purpose", "final", "final clause", "in order to"],
+    "result-clause": ["result", "consecutive", "consequence"],
+    "cum-narrative": ["temporal", "circumstantial", "narrative", "when", "while", "historic"],
+    "cum-causal": ["causal", "concessive", "since", "although", "because"],
+    "indirect-question": ["indirect question", "question"],
+    "deliberative-subjunctive": ["deliberative", "deliberation"],
+    "passive-periphrastic": ["passive periphrastic", "periphrastic", "obligation", "necessity", "must"],
+    "dative-of-agent": ["agent", "dative of agent"],
+    "wishes-utinam": ["wish", "optative", "utinam"],
+    "conditions-contrary-to-fact": ["condition", "conditional", "contrary to fact", "unreal", "unfulfilled"],
+    "dative-verbs": ["dative verb", "special verb", "verb taking the dative", "object of a verb"],
+    "dummodo": ["proviso", "provided", "condition", "as long as"],
+}
+# Grammar-focus highlight labels (data/build/highlights-week-NN.json) that name the construction: those sentences are gold items.
+HIGHLIGHT_MATCH = {
+    "purpose-clause": r"purpose clause|relative clause of purpose|clause of purpose",
+    "indirect-command": r"indirect command|indirect request",
+    "result-clause": r"result clause",
+    "cum-narrative": r"cum clause|circumstantial cum|temporal cum|cum historic",
+    "cum-causal": r"causal cum|cum causal|concessive cum|cum concessive",
+    "indirect-question": r"indirect question",
+    "deliberative-subjunctive": r"deliberative",
+    "conditions-contrary-to-fact": r"contrary-to-fact|contrary to fact|unreal condition",
+    "wishes-utinam": r"utinam|(?<!contrary-to-fact )\bwish\b",
+    "dummodo": r"dummodo|proviso",
+    "passive-periphrastic": r"passive periphrastic",
+    "dative-of-agent": r"dative of agent",
+    "dative-verbs": r"verb taking the dative|impersonal verb with the dative|verb with the dative",
+    "gerund": r"\bgerund\b(?!ive)",
+    "gerundive": r"gerundive(?! \+ sum)",
+    "supine": r"supine",
+    "ablative-absolute": r"ablative absolute(?!.*perfect)",
+    "ablative-absolute-perfect": r"ablative absolute.*perfect",
+    "potential-subjunctive": r"potential",
+    "subjunctive-wish-command": r"hortatory|jussive|iussive",
+    "perfect-deponent": r"deponent perfect(?! participle)",
+    "perfect-deponent-participle": r"deponent perfect participle",
+    "deponent-imperatives": r"deponent imperative",
+    "deponent-verbs": r"deponent present|deponent infinitive|deponent imperfect|deponent future",
+    "future-imperative": r"future imperative",
+    "future-perfect": r"future perfect",
+    "perfect-subjunctive": r"(?<!im)(?<!plu)perfect subjunctive",
+    "imperfect-subjunctive": r"imperfect (passive )?subjunctive",
+    "present-subjunctive": r"present subjunctive",
+    "pluperfect-subjunctive": r"pluperfect subjunctive",
+    "noli-infinitive": r"nol[iī] \+ infinitive|negative command with nol|prohibition with nol",
+    "accusative-infinitive": r"indirect statement|accusative and infinitive|accusative \+ infinitive",
+    "ablative-agent": r"ablative of agent",
+    "ablative-means": r"ablative of means|ablative of instrument",
+    "ablative-time": r"ablative of time",
+    "ablative-degree": r"degree of difference",
+    "ablative-comparison": r"ablative of comparison",
+    "dative-possession": r"dative of possession",
+    "dative-indirect-object": r"indirect object",
+    "genitive-of": r"partitive|genitive of description|objective genitive",
+    "genitive-possession": r"possessive genitive|genitive of possession",
+    "perfect-passive": r"perfect passive(?! participle)(?! subjunctive)(?! infinitive)",
+}
+
+# The Latin names with their macrons (the lesson lede prints them as given).
+LATIN = {
+    "nominative-subject": "cāsus nōminātīvus", "noun-gender": "genus", "adjective-agreement": "adiectīvum cum substantīvō congruēns",
+    "enclitics": "encliticae -que, -ne", "genitive-possession": "genitīvus possessīvus", "genitive-of": "genitīvus dēscrīptīvus et partitīvus",
+    "accusative-object": "cāsus accūsātīvus", "present-indicative-3rd": "praesēns indicātīvī, tertia persōna", "imperative": "modus imperātīvus",
+    "vocative": "cāsus vocātīvus", "ablative-place": "ablātīvus locī", "ablative-origin": "ablātīvus sēparātīvus", "accusative-destination": "accūsātīvus dīrēctiōnis",
+    "ablative-means": "ablātīvus īnstrūmentī", "passive-voice": "genus passīvum", "ablative-agent": "ablātīvus auctōris", "dative-indirect-object": "cāsus datīvus",
+    "demonstratives": "prōnōmina dēmōnstrātīva", "demonstrative-pronouns": "prōnōmina dēmōnstrātīva substantīva", "relative-pronoun": "prōnōmen relātīvum",
+    "third-declension": "dēclīnātiō tertia", "infinitive": "modus īnfīnītīvus", "accusative-infinitive": "accūsātīvus cum īnfīnītīvō",
+    "third-declension-neuter": "dēclīnātiō tertia, genus neutrum", "fourth-declension": "dēclīnātiō quārta", "dative-possession": "datīvus possessīvus",
+    "comparative": "gradus comparātīvus", "fifth-declension": "dēclīnātiō quīnta", "ablative-time": "ablātīvus temporis", "superlative": "gradus superlātīvus",
+    "present-participle": "participium praesentis", "personal-pronouns": "prōnōmina persōnālia et reflexīvum", "active-personal-endings": "dēsinentiae persōnālēs āctīvae",
+    "irregular-verbs-present": "verba anōmala", "deponent-verbs": "verba dēpōnentia", "ablative-absolute": "ablātīvus absolūtus", "ablative-degree": "ablātīvus mēnsūrae",
+    "passive-personal-endings": "dēsinentiae persōnālēs passīvae", "adverbs": "adverbia", "imperfect-active": "imperfectum indicātīvī āctīvī",
+    "imperfect-passive": "imperfectum indicātīvī passīvī", "imperfect-irregular": "imperfectum verbōrum anōmalōrum", "irregular-comparison": "comparātiō anōmala",
+    "future-active": "futūrum indicātīvī āctīvī", "future-passive": "futūrum indicātīvī passīvī", "noli-infinitive": "prohibitiō: nōlī cum īnfīnītīvō",
+    "future-irregular": "futūrum verbōrum anōmalōrum", "principal-parts": "partēs prīncipālēs verbī", "perfect-active": "perfectum indicātīvī āctīvī",
+    "perfect-passive-participle": "participium perfectī passīvī", "perfect-passive": "perfectum indicātīvī passīvī", "perfect-infinitive": "īnfīnītīvus perfectī",
+    "supine": "supīnum", "ablative-absolute-perfect": "ablātīvus absolūtus cum participiō perfectī", "perfect-deponent-participle": "participium perfectī verbī dēpōnentis",
+    "perfect-deponent": "perfectum verbī dēpōnentis", "future-participle": "participium futūrī āctīvī", "future-infinitive": "īnfīnītīvus futūrī",
+    "pluperfect": "plūsquamperfectum indicātīvī", "ablative-comparison": "ablātīvus comparātiōnis", "deponent-imperatives": "imperātīvus verbōrum dēpōnentium",
+    "gerund": "gerundium", "present-subjunctive": "coniūnctīvus praesentis", "subjunctive-wish-command": "coniūnctīvus optātīvus, hortātīvus, iussīvus",
+    "potential-subjunctive": "coniūnctīvus potentiālis", "indirect-command": "coniūnctīvus substantīvus: ut, nē", "purpose-clause": "coniūnctīvus fīnālis",
+    "result-clause": "coniūnctīvus cōnsecūtīvus", "imperfect-subjunctive": "coniūnctīvus imperfectī", "sequence-of-tenses": "cōnsecūtiō temporum",
+    "cum-narrative": "cum historicum", "cum-causal": "cum causāle et concessīvum", "indirect-question": "interrogātiō oblīqua",
+    "deliberative-subjunctive": "coniūnctīvus dēlīberātīvus", "future-perfect": "futūrum exāctum", "gerundive": "gerundīvum (participium futūrī passīvī)",
+    "passive-periphrastic": "coniugātiō periphrastica passīva", "dative-of-agent": "datīvus auctōris", "perfect-subjunctive": "coniūnctīvus perfectī",
+    "wishes-utinam": "coniūnctīvus optātīvus cum utinam", "pluperfect-subjunctive": "coniūnctīvus plūsquamperfectī", "conditions-contrary-to-fact": "condiciō irreālis",
+    "future-imperative": "imperātīvus futūrī", "dative-verbs": "verba cum datīvō", "dummodo": "dummodo cum coniūnctīvō",
+    "elegiac-couplet": "versūs: hexameter, pentameter, hendecasyllabus", "prosody-scansion": "prosōdia: quantitās syllabārum, ēlīsiō",
+}
+
+# Sentences a skill's loose pattern would catch but that belong to a sibling construction: a result signal word or a
+# verb of commanding before the ut-clause is not a purpose clause; those sentences drill the sibling instead.
+EXCLUDE = {
+    "purpose-clause": [r"(?i)\b(tam|ita|sic|adeo|tot|talis|tale|tales|talem|tantus|tanta|tantum|tanti|tantae|tantos|tantas)\b[^.!?]*\but\b",
+                       r"(?i)\b(imper|ora|rog|mone|hort|persuade|cur|cav|pet|postul|iube|licet|oportet|necesse|praecip|effic|accid|fit|opta|cupi|precor)\w*\b[^.!?]*\b(ut|ne)\b"],
+    "result-clause": [r"(?i)\b(imper|ora|rog|mone|hort|persuade|postul|praecip|opta|cupi|precor)\w*\b[^.!?]*\but\b"],
+    "indirect-command": [r"(?i)\b(tam|ita|sic|adeo|tot|talis|tantus|tanta|tantum)\b[^.!?]*\but\b"],
+    "cum-narrative": [r"(?i)\bcum\b[^.!?]*\btamen\b", r"(?i)\b(quippe|utpote)\b"],
+    "cum-causal": [r"(?i)\bcum\b\s+(\w+\s+){0,6}\w+(isset|issent)\b"],
+    "dative-indirect-object": [r"(?i)\b(mihi|tibi|ei|nobis|vobis|eis|cui|\w+(ae|o|i|is|ibus))\s+(est|sunt|erat|erant|erit|erunt|nomen)\b", r"(?i)\b\w+nd(us|a|um|i|ae|a)\s*(est|sunt|erat|erant|erit|erunt|esse)\b"],
+}
+
+def annotate(skills):
+    for s in skills:
+        i = s["id"]
+        s["feature"] = FEATURE.get(i, "?")
+        s["exclude_patterns"] = EXCLUDE.get(i, [])
+        s["function"] = FUNCTION.get(i)
+        s["function_keys"] = FUNCTION_KEYS.get(i, [])
+        s["highlight_match"] = HIGHLIGHT_MATCH.get(i)
+        if i in LATIN: s["latin_label"] = LATIN[i]
 
 def symmetrise(skills):
     by = {s["id"]: s for s in skills}
@@ -829,7 +1041,7 @@ def validate(doc):
         if "chart" in s["kinds"] and not s["paradigms"]: errs.append(i + ": chart kind without a paradigm")
         for k in s["paradigms"]:
             if k not in doc["paradigm_keys"]: errs.append("%s: unknown paradigm key %s" % (i, k))
-        for pat in s["patterns"]:
+        for pat in s["patterns"] + s.get("exclude_patterns", []):
             try: re.compile(pat)
             except re.error as e: errs.append("%s: bad pattern %s (%s)" % (i, pat, e))
         pf = s["parse_filter"]
@@ -838,6 +1050,14 @@ def validate(doc):
         for f in ("title", "plain", "latin_label", "summary"):
             if not s[f]: errs.append(i + ": empty " + f)
         if not all(isinstance(p, int) and 1 <= p <= 120 for p in s["notes_pages"]): errs.append(i + ": bad notes_pages")
+        feat = s.get("feature", "?")
+        if feat is not None and feat not in FEATURES: errs.append("%s: bad feature %r (every skill needs one of %s or null)" % (i, feat, sorted(FEATURES)))
+        if feat is None and pf is not None: errs.append(i + ": feature null but parse_filter set")
+        if feat == "construction" and not s.get("function"): errs.append(i + ": construction skill without a function label")
+        if feat != "construction" and s.get("function"): errs.append(i + ": function label on a non-construction skill")
+        if s.get("highlight_match"):
+            try: re.compile(s["highlight_match"])
+            except re.error as e: errs.append("%s: bad highlight_match (%s)" % (i, e))
     return errs
 
 PARADIGM_KEYS = {
@@ -855,6 +1075,7 @@ PARADIGM_KEYS = {
 }
 
 def build():
+    annotate(S)
     symmetrise(S)
     return {
         "version": 1,

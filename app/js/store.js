@@ -551,7 +551,8 @@ async function sendOp(sb, op) {
       break;
     }
     case 'drill_attempts:insert':
-      res = await sb.from('drill_attempts').insert({ ...op.row, user_id: uid });
+      // Idempotent: a retry after a transient error that did land is a no-op (unique index drill_attempts_dedupe, migration 0015).
+      res = await sb.from('drill_attempts').upsert({ ...op.row, user_id: uid }, { onConflict: 'user_id,at,skill,item_key', ignoreDuplicates: true });
       break;
     case 'drill_attempts:delete': {
       let q = sb.from('drill_attempts').delete().eq('user_id', uid);

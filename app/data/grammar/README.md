@@ -51,9 +51,14 @@ The why: `docs/GRAMMAR-PLAN.md` §2.
 | `confusable_with` | skills it is deliberately interleaved against; always symmetric (the builder adds the reverse link) |
 | `paradigms` | table keys (see below) to show in the lesson and to fill in `chart` drills; `[]` when no table applies |
 | `paradigm_focus` | which cells of those tables the skill is about (`{"case":"dat"}`, `{"tense":"impf","mood":"ind","voice":"act"}`); `null` = the whole table. Lessons may override per block with their own `highlight` |
-| `patterns` | macron-stripped, case-insensitive regexes that find candidate sentences in `unit.la` (loose on purpose — generators then filter tokens by `parse_filter`) |
+| `patterns` | macron-stripped, case-insensitive regexes that find candidate sentences in `unit.la`; a token is a drill target only inside a match (the generators then filter it by `parse_filter`), so sibling skills keep their own pools — a dative for the indirect object needs a verb of giving in the clause |
 | `parse_filter` | features a token's parse must satisfy to be a target of this skill (see below); an array means any-of; `null` for metre skills, whose items come from verse units |
 | `kinds` | drill kinds valid for the skill: `recognise`, `chart` (only where `paradigms` is non-empty), `parse`, `blank` |
+| `feature` | what the skill's recognise / parse items ask: `case` · `gender` · `number` · `tense` · `mood` · `voice` · `person` · `degree` · `construction` · `form`; `null` for the metre skills. `construction` skills ask the *function* of the form ("What is this dative doing here?", "what kind of clause is it in?") with the confusable constructions as choices |
+| `function` | construction skills only: the answer label with its plain gloss in brackets — `indirect object (the receiver)` |
+| `function_keys` | extra phrases a typed function answer may use (`["receiver", "recipient"]`) |
+| `exclude_patterns` | regexes over `unit.la` for sentences a sibling construction owns (a result signal word before *ut* is not a purpose clause): no candidates from them unless gold |
+| `highlight_match` | a regex over the reader's grammar-focus highlight labels that names this construction; matching sentences are gold drill items (drawn first) |
 | `summary` | one or two sentences in plain words |
 
 The top-level `order` array is the book order (chapters non-decreasing); the
@@ -116,7 +121,8 @@ and `tests/grammar.lessons.test.mjs` enforce both).
 5. Run `python pipeline/build_skills.py`. It refuses to write if ids are not
    unique, a prereq or confusable is unknown or out of order, `order` does not
    contain every id exactly once, chapters go backwards, a paradigm key or
-   parse_filter key is unknown, or a pattern does not compile. The count is
+   parse_filter key is unknown, a pattern or `highlight_match` does not compile,
+   a skill has no `feature` (or a construction no `function`). The count is
    pinned at 87; change the assertion when a skill is added or removed and
    say so in `docs/GRAMMAR-CONTRACT.md`.
 6. Write the lesson `lessons/<id>.json` (contract section B).

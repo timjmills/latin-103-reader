@@ -4,13 +4,18 @@
 // Every Latin word in a drill is tappable for its entry (a small popover built
 // from dictionary.describe); the target's dictionary form sits under the item.
 
-import { chapters, roman, inline, loadLesson } from './lessons.js';
+import { chapters, roman, inline, loadLesson, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm } from '../wordpanel.js';
 import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive } from './session.js';
-import { featureLabel, featureKey, scanUnit } from './items.js';
+import { featureLabel, featureKey } from './items.js';
 import * as stats from './stats.js';
+
+const LS_SESSION = 'l103.grammar.session';      // the practice session in progress (plan, position, log) — Back / Reload can resume it
+const LS_QUEUE = 'l103.grammar.learnQueue';     // "Start all as new": the skills still to go through Learn
+const readJSON = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
+const writeJSON = (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } };
 
 const h = (tag, attrs = {}, ...children) => {
   const el = document.createElement(tag);
@@ -72,9 +77,23 @@ export function createUI(ctx) {
     (fn[view.name] ?? renderMap)(view.params);
     document.title = `Grammar — Latin 103`;
   }
-  function render(name, params = {}) { closePop(); view = { name, params }; draw(); window.scrollTo({ top: 0 }); }
+  /** Show a view. Each is a history entry (Back walks the section's views; a session in progress resumes); the new heading takes focus. */
+  function render(name, params = {}, { push = true, focus = true } = {}) {
+    closePop();
+    view = { name, params };
+    if (push) { try { history.pushState({ grammar: { name, params: name === 'session' ? { ...params, resume: true } : params } }, ''); } catch { /* file: URLs */ } }
+    draw();
+    window.scrollTo({ top: 0 });
+    if (focus) body.querySelector('h1')?.focus?.({ preventScroll: true });
+  }
   function refresh() { if (view.name === 'map' || view.name === 'stats') draw(); }
-  const setBody = (...nodes) => { body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; } };
+  // The new heading takes focus whenever the body is replaced and focus has nowhere to be (a view arriving after a lesson fetch, the end of a session) — G1-09.
+  const setBody = (...nodes) => { body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
+  window.addEventListener('popstate', (e) => {
+    const g = e.state?.grammar;
+    if (!g || ctx.section?.() === 'read') return;
+    render(g.name, g.params ?? {}, { push: false });
+  });
 
   /* ------------------------------------------------------ gloss popover */
   let pop = null;
@@ -83,14 +102,17 @@ export function createUI(ctx) {
   function showGloss(wordEl, form, text, unitLa = '') {
     closePop();
     const r = dict.lookup(form);
-    const entry = r.entries[0] ?? null;
-    const d = entry ? dict.describe(entry, { compact: !!ctx.settings?.compact, form: text, context: unitLa }) : null;
+    const entries = r.entries.slice(0, 4);
+    const described = entries.map((entry) => dict.describe(entry, { compact: !!ctx.settings?.compact, form: text, context: unitLa }));
+    // Every reading the dictionary has (the reader's panel offers them too): the first in full, the others compact.
+    const block = (d, i) => h('div', { class: `g-pop__entry${i ? ' g-pop__entry--alt' : ''}` },
+      h('p', { class: 'g-pop__meaning' }, String(d.meaning ?? '').split(/\s+·\s+/).map((m, j) => [j ? h('br') : null, m])),
+      d.parse ? h('p', { class: 'g-pop__parse', text: d.parse }) : null,
+      h('p', { class: 'g-pop__lemma' }, h('span', { lang: 'la', class: 'entry__cite', text: d.lemma }), d.category ? ` · ${d.category}` : ''));
     pop = h('div', { class: 'g-pop', role: 'dialog', 'aria-label': `Word: ${text}` },
       h('p', { class: 'g-pop__form', lang: 'la', text }),
-      d ? h('p', { class: 'g-pop__meaning' }, String(d.meaning ?? '').split(/\s+·\s+/).map((m, i) => [i ? h('br') : null, m])) : h('p', { class: 'g-pop__meaning g-pop__miss', text: 'Not in the dictionary' }),
-      d?.parse ? h('p', { class: 'g-pop__parse', text: d.parse }) : null,
-      d ? h('p', { class: 'g-pop__lemma' }, h('span', { lang: 'la', class: 'entry__cite', text: d.lemma }), d.category ? ` · ${d.category}` : '') : null,
-      r.entries.length > 1 ? h('p', { class: 'g-pop__more', text: `${r.entries.length} entries — the first is shown` }) : null,
+      described.length ? described.map(block) : h('p', { class: 'g-pop__meaning g-pop__miss', text: 'Not in the dictionary' }),
+      r.entries.length > 1 ? h('p', { class: 'g-pop__more', text: `${r.entries.length} entries${r.entries.length > entries.length ? ` — the first ${entries.length} shown` : ''}` }) : null,
       btn('×', { class: 'g-pop__close', 'aria-label': 'Close' }, 'g-pop__close'));
     pop.querySelector('.g-pop__close').addEventListener('click', closePop);
     pop.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePop(); wordEl.focus(); } });
@@ -107,20 +129,45 @@ export function createUI(ctx) {
     pop.querySelector('.g-pop__close').focus({ preventScroll: true });
   }
 
-  /** A Latin sentence as tappable words. `target`: word index to mark; `tap(index)`: the words are the answer. */
+  /** A Latin sentence as tappable words. `target`: word index (or a list of them) to mark; `tap(index)`: the words are the answer; a `___` blank is marked as the target. */
   function latin(la, { target = null, tap = null, cls = '' } = {}) {
     const p = h('p', { class: `g-la${cls ? ` ${cls}` : ''}`, lang: 'la' });
+    const targets = new Set(target == null ? [] : Array.isArray(target) ? target : [target]);
     let wi = -1;
+    let last = null;
     for (const t of tokenize(la)) {
-      if (!t.isWord) { p.append(t.text); continue; }
+      if (!t.isWord) {
+        const parts = /^(\S*)([\s\S]*)$/.exec(t.text);
+        // In a tap item the punctuation clinging to a word stays inside its box, so "superbia," reads as one word.
+        if (tap && last && parts[1]) { last.append(h('span', { class: 'g-w__punct', 'aria-hidden': 'true', text: parts[1] })); p.append(parts[2]); }
+        else p.append(t.text);
+        const blank = /___/.exec(t.text);
+        if (blank && !tap) {   // the blank is the target of a blank item (G1-02)
+          const node = p.lastChild;
+          const before = node.textContent.slice(0, blank.index), after = node.textContent.slice(blank.index + 3);
+          node.textContent = before;
+          p.append(h('span', { class: 'g-blank', role: 'img', 'aria-label': 'blank' }), after);
+        }
+        last = null;
+        continue;
+      }
       wi += 1;
       const i = wi;
-      const b = h('button', { type: 'button', class: `g-w${i === target ? ' g-w--target' : ''}`, 'data-form': t.form, 'data-index': String(i), lang: 'la', text: t.text,
+      const b = h('button', { type: 'button', class: `g-w${targets.has(i) ? ' g-w--target' : ''}`, 'data-form': t.form, 'data-index': String(i), lang: 'la', text: t.text,
         onclick: (e) => { if (tap) tap(i, e.currentTarget); else showGloss(e.currentTarget, t.form, t.text, la); } });
       if (tap) b.setAttribute('aria-label', `${t.text}: choose this word`);
       p.append(b);
+      last = b;
     }
     return p;
+  }
+  /** The word indexes of a phrase in a sentence ("Magistrō recitante" → [0, 1]); [] when it is not there. */
+  function phraseIndexes(la, phrase) {
+    const words = tokenize(la).filter((t) => t.isWord);
+    const want = tokenize(String(phrase ?? '')).filter((t) => t.isWord).map((t) => t.form);
+    if (!want.length) return [];
+    for (let i = 0; i + want.length <= words.length; i++) if (want.every((w, j) => words[i + j].form === w)) return want.map((_, j) => i + j);
+    return [];
   }
   /** "Show all meanings": every word's first reading under the sentence. */
   function glossList(item) {
@@ -139,23 +186,26 @@ export function createUI(ctx) {
     const cw = ctx.currentWeekSkills();
     const today = suggestToday({ states, skills, currentWeek: cw, now });
     const rf = reviewFirst({ weekSkills: cw, skills, states, now });
-    const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)));
+    const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
     const filter = view.params.category ?? 'all';
+    const saved = readJSON(LS_SESSION, null);
+    const queue = (readJSON(LS_QUEUE, []) || []).filter((id) => skills.has(id) && stateOf(id).state !== 'practising' && stateOf(id).state !== 'mastered');
 
     const head = h('header', { class: 'g-head' },
       h('h1', { class: 'g-title', text: 'Skills' }),
-      h('p', { class: 'g-lede', text: `${skills.size} skills in book order. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }),
-      index.sample ? h('p', { class: 'g-note', text: 'Sample skill map — six skills while the full map of 87 is being written.' }) : null);
+      h('p', { class: 'g-lede', text: `${skills.size} skills in book order. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }));
 
     const todayNode = h('section', { class: 'g-today', 'aria-labelledby': 'g-today-h' },
       h('h2', { id: 'g-today-h', class: 'g-h2', text: 'Today' }),
+      saved?.queue?.length && saved.index < saved.queue.length ? h('p', { class: 'g-today__line' }, `A practice session is in progress (${Math.min(saved.index, saved.queue.length)} of ${saved.queue.length} answered). `, btn('Resume', { onclick: () => render('session', { ...(saved.params ?? {}), resume: true }) }, 'btn btn--primary g-today__btn'), ' ', btn('Discard', { onclick: () => { writeJSON(LS_SESSION, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
+      queue.length ? h('p', { class: 'g-today__line' }, `Learning in book order: ${queue.length} skill${queue.length === 1 ? '' : 's'} to go, next `, h('button', { type: 'button', class: 'g-link', onclick: () => render('learn', { skill: queue[0], queue: queue.slice(1) }) }, titleOf(queue[0])), '. ', btn('Stop the run', { onclick: () => { writeJSON(LS_QUEUE, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
       today.learn.length ? h('p', { class: 'g-today__line' }, 'Learn: ', today.learn.map((id, i) => [i ? ', ' : null, h('button', { type: 'button', class: 'g-link', onclick: () => render('learn', { skill: id }) }, titleOf(id))]), ' (new this week)') : null,
       rotation.length
         ? h('p', { class: 'g-today__line' }, `Practice: ${today.due.length ? `${today.due.length} due skill${today.due.length === 1 ? '' : 's'}` : 'nothing due'}${today.pairs ? ` · ${today.pairs} confusion pair${today.pairs === 1 ? '' : 's'}` : ''}. `, btn('Start a session', { onclick: () => render('setup') }, 'btn btn--primary g-today__btn'))
         : h('p', { class: 'g-today__line g-quiet', text: 'Nothing in mixed practice yet — add a skill below, or start one as new.' }));
 
     const reviewNode = rf.length ? h('section', { class: 'g-review', 'aria-labelledby': 'g-review-h' },
-      h('h2', { id: 'g-review-h', class: 'g-h2', text: `Review first · week ${ctx.currentWeekN()}` }),   // only drawn with the week's skills (rf): a shelf chapter has none, so never "week 107"
+      h('h2', { id: 'g-review-h', class: 'g-h2', text: `Review first · week ${ctx.currentCourseWeekN()}` }),   // the last course week: a shelf chapter being read keeps it (G1-12)
       h('p', { class: 'g-quiet', text: "The prerequisites of this week's new skills, the most decayed first." }),
       h('ul', { class: 'g-chips' }, rf.map((r) => h('li', {}, h('button', { type: 'button', class: 'g-chip', 'data-state': r.state, onclick: () => render('lesson', { skill: r.skill }) }, titleOf(r.skill), h('span', { class: 'g-chip__state', text: ` · ${STATE_LABEL[r.state]}` })))))) : null;
 
@@ -184,7 +234,11 @@ export function createUI(ctx) {
     const st = stateOf(s.id);
     const acts = [];
     const lessonBtn = btn('Lesson', { onclick: () => render('lesson', { skill: s.id }) }, 'btn btn--quiet');
-    if (st.state === 'new') {
+    const can = drillable(s.id);
+    if (!can) {
+      // No sentence in the library fits (the metre skills by design): the lesson stands, nothing to drill (M8).
+      acts.push(lessonBtn);
+    } else if (st.state === 'new') {
       acts.push(btn('Start as new', { onclick: () => render('learn', { skill: s.id }) }, 'btn'), btn('Add to mixed practice', { onclick: () => addSkill(s.id) }, 'btn btn--quiet'), lessonBtn);
     } else if (st.state === 'learning') {
       acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: s.id }) }, 'btn'), lessonBtn);
@@ -198,13 +252,17 @@ export function createUI(ctx) {
       h('div', { class: 'g-skill__main' },
         h('button', { type: 'button', class: 'g-skill__title', onclick: () => render('lesson', { skill: s.id }) }, s.title),
         h('p', { class: 'g-skill__plain', text: `${s.plain} · ${s.course} week ${s.week ?? '—'}` }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), dueText(st))),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can ? st.state : 'none', 'aria-hidden': 'true' }), can ? dueText(st) : (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill'))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
-  async function addSkill(id) { await gstore.setState(addToPractice(gstore.getState(id) ?? id)); ctx.say(`${titleOf(id)} added to mixed practice.`); draw(); }
+  const drillable = (id) => ctx.drillable(id);
+  async function addSkill(id) {
+    if (!drillable(id)) { ctx.say(`${titleOf(id)} has no drillable sentences yet.`); return; }
+    await gstore.setState(addToPractice(gstore.getState(id) ?? id)); ctx.say(`${titleOf(id)} added to mixed practice.`); draw();
+  }
   async function bulkAdd() {
-    const ids = [...skills.keys()].filter((id) => !inRotation(stateOf(id)));
-    if (!ids.length) { ctx.say('Every skill is already in mixed practice.'); return; }
+    const ids = [...skills.keys()].filter((id) => !inRotation(stateOf(id)) && drillable(id));
+    if (!ids.length) { ctx.say('Every skill with sentences is already in mixed practice.'); return; }
     if (!confirm(`Add ${ids.length} skill${ids.length === 1 ? '' : 's'} to mixed practice? Each will be practised as it comes up, without a lesson first.`)) return;
     for (const id of ids) await gstore.setState(addToPractice(gstore.getState(id) ?? id));
     ctx.say(`${ids.length} skills added.`); draw();
@@ -213,6 +271,7 @@ export function createUI(ctx) {
     const ids = [...skills.keys()].filter((id) => stateOf(id).state === 'new');
     if (!ids.length) { ctx.say('No skill is still new.'); return; }
     if (!confirm(`Start all ${ids.length} new skills through Learn, one after another, in book order?`)) return;
+    writeJSON(LS_QUEUE, ids.slice(1));   // the run survives a detour, a reload or Back (G1-11)
     render('learn', { skill: ids[0], queue: ids.slice(1) });
   }
   async function resetSkill(id) {
@@ -225,22 +284,34 @@ export function createUI(ctx) {
   }
 
   /* ----------------------------------------------------------- lesson */
+  /** The glossary entry a paradigm key names: a named table's headword (sum, is, ego …) or a word of the class (decl3, conj3 …), the skill's own sentences first. */
+  function entryForKey(key, skill) {
+    if (!key) return null;
+    const named = index.paradigmKeys?.[key];
+    if (named && !KEY_CLASS[key]) {
+      const es = dict.lookup(key).entries.filter((e) => e.h === key && ['V', 'PRON', 'NUM', 'N'].includes(e.pos));
+      return es.find((e) => (key === 'domus' ? e.cat?.[0] === 4 : true)) ?? es[0] ?? null;
+    }
+    const cls = KEY_CLASS[key];
+    if (!cls) return null;
+    const own = items.candidates(skill.id).find((c) => entryOfClass(c.entry, cls))?.entry;
+    if (own) return own;
+    for (const w of KEY_MODELS[key] || []) { const e = dict.lookup(w).entries.find((x) => x.h === w && entryOfClass(x, cls)); if (e) return e; }
+    return null;
+  }
   function paradigmFor(skill, block) {
-    // The lesson names a table key (decl1 …); the sentences supply a real entry of that shape, so the table is the reader's own.
-    const cands = items.candidates(skill.id);
+    // The lesson names a table key (decl2m, conj3, sum …): the skill map's paradigm_keys says which table it is (G1-01).
     const filter = block?.highlight ?? skill.paradigm_focus ?? (Array.isArray(skill.parse_filter) ? null : skill.parse_filter);
     const want = block?.key ?? skill.paradigms?.[0] ?? '';
-    const m = /^(decl|conj)(\d)/.exec(want);
-    let c = null;
-    if (m) c = cands.find((x) => (m[1] === 'decl' ? x.entry.pos === 'N' : x.entry.pos === 'V') && x.entry.cat?.[0] === Number(m[2])) ?? null;
-    c = c ?? cands[0] ?? null;
-    if (!c) return null;
-    const parses = (c.entry.parses || []).filter((p) => Object.entries(filter || {}).every(([k, v]) => k === 'pos' || String(p[k]) === String(v)));
-    // Light every cell of the highlighted feature (both numbers / persons), not only the sentence's form.
-    const hits = parses.length ? parses : [c.parse];
-    const all = [];
-    for (const p of hits) { all.push(p); if (p.number) all.push({ ...p, number: p.number === 'sg' ? 'pl' : 'sg' }); }
-    try { return par.paradigm(c.entry, all); } catch { return null; }
+    let entry = entryForKey(want, skill);
+    if (!entry) {
+      const c = items.candidates(skill.id)[0] ?? null;
+      if (want) console.warn(`[grammar] paradigm key "${want}" (${skill.id}): no entry of that class; ${c ? `showing ${c.entry.lemma}` : 'no table'}`);
+      entry = c?.entry ?? null;
+    }
+    if (!entry) return null;
+    const hits = highlightParses(filter);
+    try { return par.paradigm(entry, hits); } catch { return null; }
   }
   function lessonBlocks(skill, lesson, { learn = false } = {}) {
     const out = [];
@@ -264,26 +335,38 @@ export function createUI(ctx) {
     const n = u.week_n ?? (m ? Number(m[2]) : null);
     return `${n != null ? `Week ${n}` : 'Library'}${u.part ? ` · ${u.part}` : ''}`;
   }
+  /** The lesson's example units in the library, plus substitutes from the skill's own pool when some are missing (short, a noun target for a case skill), each marked. */
+  function exampleUnits(skill, ids, want, { maxLen = 140 } = {}) {
+    const own = ids.map(unitOf).filter(Boolean).map((u) => ({ unit: u, own: true }));
+    const missing = ids.filter((id) => !unitOf(id));
+    if (missing.length) console.warn(`[grammar] lesson ${skill.id}: example units not in the library: ${missing.join(', ')}`);
+    if (own.length >= want) return own.slice(0, Math.max(want, own.length));
+    const seen = new Set(own.map((x) => x.unit.id));
+    const pool = items.candidates(skill.id).filter((c) => !c.ambiguous && c.unit.la.length < maxLen && !seen.has(c.unit.id));
+    const nounFirst = skill.parse_filter?.case ? [...pool.filter((c) => c.entry.pos === 'N'), ...pool.filter((c) => c.entry.pos !== 'N')] : pool;
+    const extra = [];
+    for (const c of nounFirst) { if (extra.length >= want - own.length) break; if (seen.has(c.unit.id)) continue; seen.add(c.unit.id); extra.push({ unit: c.unit, own: false }); }
+    return [...own, ...extra];
+  }
+  // The word lit in an example: an unambiguous noun before an agreeing adjective (mulierī, not miserae), else the first clear reading.
+  const focusOf = (u, skill) => { const cs = items.scan(u, skill); return cs.find((c) => !c.ambiguous && c.entry.pos === 'N') ?? cs.find((c) => !c.ambiguous) ?? cs[0] ?? null; };
   function examplesBlock(skill, b, { fallback = 0 } = {}) {
     const list = h('ul', { class: 'g-ex' });
-    let units = (b.units || []).map(unitOf).filter(Boolean);
-    // Book examples the library does not hold yet (the review shelf before it is seeded) are made up from the library's own short sentences.
-    const want = Math.max(fallback, (b.units || []).length ? Math.min(3, (b.units || []).length) : 0);
-    if (units.length < want) {
-      const seen = new Set(units.map((u) => u.id));
-      units = [...units, ...items.candidates(skill.id).filter((c) => !c.ambiguous).map((c) => c.unit).filter((u) => u.la.length < 140 && !seen.has(u.id) && seen.add(u.id)).slice(0, want - units.length)];
-    }
-    for (const u of units) {
-      const focus = scanUnit(u, skill, dict.lookup).filter((c) => !c.ambiguous)[0] ?? scanUnit(u, skill, dict.lookup)[0] ?? null;
-      list.append(h('li', { class: 'g-ex__item' }, latin(u.la, { target: focus?.index ?? null }), u.en ? h('p', { class: 'g-ex__en', text: u.en }) : null, h('p', { class: 'g-ex__ref', text: unitRefText(u) })));
+    const ids = b.units || [];
+    const want = Math.max(fallback, ids.length ? Math.min(3, ids.length) : 0);
+    const units = exampleUnits(skill, ids, want);
+    for (const { unit: u, own } of units) {
+      const focus = focusOf(u, skill);
+      // A substitute drawn from the library is marked as such: book examples first, invented ones marked, substitutes never passed off as the lesson's (G1-13).
+      list.append(h('li', { class: 'g-ex__item' }, latin(u.la, { target: focus?.index ?? null }), u.en ? h('p', { class: 'g-ex__en', text: u.en }) : null, h('p', { class: 'g-ex__ref', text: `${own ? '' : 'From the library · '}${unitRefText(u)}` })));
     }
     for (const ex of b.invented || []) {
-      const toks = tokenize(ex.la).filter((t) => t.isWord);
-      const ti = ex.focus ? toks.findIndex((t) => t.text === ex.focus) : -1;
-      list.append(h('li', { class: 'g-ex__item g-ex__item--inv' }, latin(ex.la, { target: ti >= 0 ? ti : null }), ex.en ? h('p', { class: 'g-ex__en', text: ex.en }) : null, h('p', { class: 'g-ex__ref', text: 'Invented example' })));
+      const ti = ex.focus ? phraseIndexes(ex.la, ex.focus) : [];
+      list.append(h('li', { class: 'g-ex__item g-ex__item--inv' }, latin(ex.la, { target: ti.length ? ti : null }), ex.en ? h('p', { class: 'g-ex__en', text: ex.en }) : null, h('p', { class: 'g-ex__ref', text: 'Invented example' })));
     }
     if (!list.children.length) return null;
-    return h('div', { class: 'g-lesson__ex' }, h('p', { class: 'g-lesson__tag', text: 'From the book' }), list);
+    const anyOwn = units.some((x) => x.own);
+    return h('div', { class: 'g-lesson__ex' }, h('p', { class: 'g-lesson__tag', text: anyOwn ? 'From the book' : (units.length ? 'From the library' : 'Examples') }), list);
   }
   async function renderLessonView({ skill: id }) {
     const skill = skills.get(id);
@@ -318,30 +401,33 @@ export function createUI(ctx) {
     const lesson = await lessonOf(id);
     const steps = ['Lesson', 'Examples', 'Guided 5', 'Blocked 10'];
     const stepper = (i) => h('ol', { class: 'g-steps', 'aria-label': 'Learn steps' }, steps.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': i === j ? 'step' : null, text: s })));
-    const finishQueue = () => { if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else render('map'); };
+    const finishQueue = () => { writeJSON(LS_QUEUE, queue.length ? queue.slice(1) : null); if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else render('map'); };
+    if (queue.length) writeJSON(LS_QUEUE, queue);
 
     const showLesson = () => setBody(stepper(0), lessonHeader(skill, stateOf(id)), h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson, { learn: true })),
       h('div', { class: 'g-acts' }, btn('Continue to the examples', { onclick: showExamples }, 'btn btn--primary'), btn('Back to skills', { onclick: () => render('map') }, 'btn btn--quiet')));
 
     const showExamples = () => {
       const exBlock = (lesson?.core ?? []).find((b) => b.type === 'examples') ?? { units: [], invented: [] };
-      const seen = new Set();
-      let units = (exBlock.units || []).map(unitOf).filter(Boolean);
-      const extra = items.candidates(id).filter((c) => !c.ambiguous).map((c) => c.unit).filter((u) => u.la.length < 150 && !seen.has(u.id) && seen.add(u.id) && !units.some((x) => x.id === u.id));
-      units = [...units, ...extra].slice(0, 3);
-      const k = featureKey(skill.parse_filter);
-      const rows = units.map((u) => {
-        const cands = scanUnit(u, skill, dict.lookup);
-        const focus = cands.find((c) => !c.ambiguous) ?? cands[0] ?? null;
+      const units = exampleUnits(skill, exBlock.units || [], 3, { maxLen: 150 }).slice(0, 3);
+      const k = featureKey(skill);
+      const rows = units.map(({ unit: u, own }) => {
+        const all = items.scan(u, skill);
+        // Parse aloud the readings the sentence settles; a form that could be read another way is named only when nothing else fits.
+        const cands = all.some((c) => !c.ambiguous) ? all.filter((c) => !c.ambiguous) : all;
+        const focus = cands.find((c) => !c.ambiguous && c.entry.pos === 'N') ?? cands[0] ?? null;
         const parsed = cands.map((c) => {
-          const d = dict.describe(c.entry, { compact: false, form: c.token.text, context: u.la });
-          const lab = featureLabel(k, c.value);
-          return h('li', {}, h('b', { lang: 'la', text: c.token.text }), ` — ${String(d.meaning).split(/\s+·\s+/)[0]} — ${lab.name}, ${lab.plain}${c.ambiguous ? ' (the ending could also be read another way; the sentence decides)' : ''}.`);
+          // The gloss and the label come from the parse that matched, not the entry's first reading (G1-04).
+          const d = dict.describe({ ...c.entry, parses: [c.parse] }, { compact: false, form: c.token.text, context: u.la });
+          const lab = featureLabel(k, c.value, { skills, skill });
+          const what = k === 'construction' && c.parse?.case && c.entry.pos !== 'V' ? `${featureLabel('case', c.parse.case).name}, ${lab.name}` : lab.name;
+          return h('li', {}, h('b', { lang: 'la', text: c.token.text }), ` — ${String(d.meaning).split(/\s+·\s+/)[0]} — ${what}, ${lab.plain}${c.ambiguous ? ' (the ending could also be read another way; the sentence decides)' : ''}.`);
         });
-        return h('li', { class: 'g-ex__item' }, latin(u.la, { target: focus?.index ?? null }), u.en ? h('p', { class: 'g-ex__en', text: u.en }) : null, h('ul', { class: 'g-ex__parsed' }, parsed));
+        return h('li', { class: 'g-ex__item' }, latin(u.la, { target: focus?.index ?? null }), u.en ? h('p', { class: 'g-ex__en', text: u.en }) : null, h('p', { class: 'g-ex__ref', text: `${own ? '' : 'From the library · '}${unitRefText(u)}` }), h('ul', { class: 'g-ex__parsed' }, parsed));
       });
       for (const ex of (exBlock.invented || []).slice(0, Math.max(0, 3 - rows.length))) {
-        rows.push(h('li', { class: 'g-ex__item g-ex__item--inv' }, latin(ex.la, { target: ex.focus ? tokenize(ex.la).filter((t) => t.isWord).findIndex((t) => t.text === ex.focus) : null }), h('p', { class: 'g-ex__en', text: ex.en }), h('p', { class: 'g-ex__ref', text: 'Invented example' })));
+        const ti = ex.focus ? phraseIndexes(ex.la, ex.focus) : [];
+        rows.push(h('li', { class: 'g-ex__item g-ex__item--inv' }, latin(ex.la, { target: ti.length ? ti : null }), h('p', { class: 'g-ex__en', text: ex.en }), h('p', { class: 'g-ex__ref', text: 'Invented example' })));
       }
       setBody(stepper(1), h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Worked examples' }), h('p', { class: 'g-lede', text: `Three sentences with ${skill.plain}, each parsed in plain words. Tap any word for its entry.` })),
         h('ul', { class: 'g-ex g-ex--worked' }, rows),
@@ -382,8 +468,9 @@ export function createUI(ctx) {
   function renderSetup() {
     const prefs = ctx.prefs();
     const states = gstore.getStates();
-    const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)));
+    const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
     const cw = ctx.currentWeekSkills();
+    const onShelf = ctx.currentWeekN() != null && ctx.currentWeekN() > 100;
     const today = suggestToday({ states, skills, currentWeek: cw });
     let size = prefs.size;
     let preset = prefs.preset;
@@ -400,7 +487,7 @@ export function createUI(ctx) {
       const disabled = key === 'this-week' && !cw.some((id) => rotation.includes(id));
       return h('label', { class: `g-preset${disabled ? ' is-disabled' : ''}` },
         h('input', { type: 'radio', name: 'g-preset', value: key, checked: preset === key ? true : null, disabled: disabled ? true : null, onchange: () => { preset = key; skillSelect.closest('.g-preset__pick').hidden = key !== 'one-skill'; } }),
-        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? "No skill from this week is in practice yet." : desc })));
+        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? (onShelf && !cw.length ? 'Reading the review shelf — no course week is current.' : 'No skill from this week is in practice yet.') : desc })));
     }));
     const pick = h('div', { class: 'g-preset__pick', hidden: preset !== 'one-skill' }, h('span', { class: 'g-label', text: 'Skill' }), skillSelect);
     const start = async () => {
@@ -414,18 +501,28 @@ export function createUI(ctx) {
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick)),
       h('div', { class: 'g-acts' }, btn('Start', { onclick: start }, 'btn btn--primary'), btn('Back to skills', { onclick: () => render('map') }, 'btn btn--quiet')));
   }
-  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null }) {
-    const practice = createPractice({ gstore, items, skillsIndex: index, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ctx.currentWeekSkills(), preset, size, oneSkill });
+  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, resume = false }) {
+    const params = { preset, size, oneSkill };
+    // A session in progress is kept in localStorage (plan, position, answers) so Back or Reload offers to resume it (G1-08).
+    const saved = resume ? readJSON(LS_SESSION, null) : null;
+    const usable = saved?.queue?.length && saved.index < saved.queue.length ? saved : null;
+    if (usable) Object.assign(params, usable.params ?? {});
+    const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
+    const practice = createPractice({ gstore, items, skillsIndex: index, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ctx.currentWeekSkills(), preset: params.preset, size: params.size, oneSkill: params.oneSkill, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
     const first = practice.start();
-    if (!first) { setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: 'No sentences in the library fit the skills in rotation yet.' })), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
-    runSession({ runner: practice.runner, title: `Practice · ${PRESET_LABEL[preset][0]}`, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => renderSummary(summary, { preset, size, oneSkill }) });
+    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: 'No sentences in the library fit the skills in rotation yet.' })), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
+    if (usable) ctx.say('Session resumed.');
+    runSession({ runner: practice.runner, title: `Practice · ${PRESET_LABEL[params.preset][0]}`, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
   }
   function startBlocked(id) {
     const skill = skills.get(id);
     const st = gstore.getState(id);
-    if (!inRotation(st)) gstore.setState(addToPractice(st ?? id));
+    // A skill still in Learn keeps learning (m14); a lapsed or new one enters the rotation now, so the answers that follow are not judged "early" (M1).
+    if (st?.state === 'learning') { render('learn', { skill: id }); return; }
+    if (!inRotation(st) || decay(st).state === 'lapsed') gstore.setState(addToPractice(st ?? id));
     const practice = createBlockedFive({ skill, gstore, items, skillsIndex: index });
     view = { name: 'session', params: { oneSkill: id } };
+    try { history.pushState({ grammar: { name: 'map', params: {} } }, ''); } catch { /* file: */ }
     draw();
     const first = practice.start();
     if (!first) { setBody(h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet.' }), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
@@ -438,6 +535,7 @@ export function createUI(ctx) {
       h('p', { class: 'g-lede', text: `${summary.right} of ${summary.total} right (${acc}%) · ${summary.skills.length} skill${summary.skills.length === 1 ? '' : 's'} · ${stats.fmtMin(summary.ms)}${summary.hinted ? ` · ${summary.hinted} with a hint` : ''}.` })),
       summary.wrong.length ? h('section', {}, h('h2', { class: 'g-h2', text: 'Worth another look' }), h('ul', { class: 'g-chips' }, summary.wrong.map((id) => h('li', {}, h('button', { type: 'button', class: 'g-chip', onclick: () => startBlocked(id) }, titleOf(id), h('span', { class: 'g-chip__state', text: ' · practise' })))))) : h('p', { class: 'g-quiet', text: 'Nothing missed.' }),
       h('div', { class: 'g-acts' }, btn('Another session', { onclick: () => render('session', params) }, 'btn btn--primary'), btn('Skills', { onclick: () => render('map') }, 'btn btn--quiet'), btn('Stats', { onclick: () => render('stats') }, 'btn btn--quiet')));
+    body.querySelector('h1')?.focus?.({ preventScroll: true });   // a keyboard session ends on the summary, not at the top of the page (G1-09)
     ctx.say(`Session over: ${summary.right} of ${summary.total} right.`);
   }
 
@@ -511,18 +609,19 @@ export function createUI(ctx) {
     node.append(h('p', { class: 'g-item__meta' }, h('span', { class: 'g-item__title', text: title }), h('span', { class: 'g-item__pos', text: ` · ${position} of ${length}` })));
     if (note) node.append(h('p', { class: 'g-quiet g-item__note', text: note }));
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${item.kind}` }));
+    if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: 'Every sentence for this skill has come up once; starting over.' }));
     let submitted = false;
     const submit = (v) => { if (submitted) return; submitted = true; node.querySelectorAll('button, input').forEach((el) => { if (!el.closest('.g-hint') && !el.classList.contains('g-w') && !el.closest('.g-all-switch')) el.disabled = true; }); onAnswer(v); };
     // The sentence (tap items answer by tapping).
     if (item.prompt.la) {
       const tapMode = item.input === 'tap';
-      node.append(latin(item.prompt.la, { target: tapMode ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
+      node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
       node.append(h('p', { class: 'g-q', tabindex: '-1', text: item.prompt.question }));
       if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', text: item.target?.text ?? '' }), ' — from ', h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), `, ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
       node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
     } else {
-      node.append(h('p', { class: 'g-q', tabindex: '-1', text: item.prompt.question }));
+      node.append(h('p', { class: 'g-q', tabindex: '-1', text: item.input === 'chart' ? chartQuestion(item) : item.prompt.question }));
       if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), ` — ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
     }
     // Input
@@ -531,7 +630,7 @@ export function createUI(ctx) {
       node.append(group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer.' }));
       node.addEventListener('keydown', (e) => { const n = Number(e.key); if (n >= 1 && n <= item.choices.length && !submitted && e.target.tagName !== 'INPUT') { e.preventDefault(); group.children[n - 1].click(); } });
     } else if (item.input === 'type') {
-      const input = h('input', { type: 'text', class: 'g-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', lang: item.kind === 'blank' ? 'la' : 'en', 'aria-label': item.kind === 'blank' ? 'The missing form' : 'Your parse', placeholder: item.kind === 'blank' ? 'the form (macrons optional)' : 'e.g. dative singular' });
+      const input = h('input', { type: 'text', class: 'g-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', lang: item.kind === 'blank' ? 'la' : 'en', 'aria-label': item.kind === 'blank' ? 'The missing form' : 'Your answer', placeholder: item.kind === 'blank' ? 'the form (macrons optional)' : (item.prompt.placeholder ?? 'e.g. dative singular') });
       const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
       const form = h('form', { class: 'g-type', onsubmit: (e) => { e.preventDefault(); if (input.value.trim()) submit(input.value); } }, input, check);
       node.append(form);
@@ -539,7 +638,7 @@ export function createUI(ctx) {
     } else if (item.input === 'chart') {
       node.append(chartInput(item, submit));
     } else if (item.input === 'tap') {
-      node.append(h('p', { class: 'g-keys', text: 'Tap a word in the sentence.' }));
+      node.append(h('p', { class: 'g-keys g-keys--tap', text: 'Tap a word in the sentence.' }));
     }
     // Hint: the rule and the plain paradigm (no cell lit). Opening it is logged.
     const table = item.entry && item.kind !== 'chart' ? (() => { try { return par.paradigm(item.entry, []); } catch { return null; } })() : null;
@@ -552,11 +651,14 @@ export function createUI(ctx) {
     return node;
   }
 
+  /** The cells a chart item shows: all of them, or the target cell alone on a phone. */
+  const chartCells = (item) => { const { chart } = item; if (phone() && chart.cells.length > 1) return [chart.cells.find((c) => c.row === chart.target.row && c.col === chart.target.col) ?? chart.cells.find((c) => c.row === chart.target.row) ?? chart.cells[0]]; return chart.cells; };
+  /** The question as asked of the cells shown ("Give the accusative singular of cāsus" when a phone shows one cell). */
+  const chartQuestion = (item) => { const cells = chartCells(item); return cells.length === 1 && item.chart.cells.length > 1 ? `Give the ${cells[0].label} of ${item.chart.head ?? item.lemma.split(/[\s,]/)[0]}` : item.prompt.question; };
   /** The paradigm section with inputs in the cells to fill (a compact single row on phones). */
   function chartInput(item, submit) {
     const { chart } = item;
-    let cells = chart.cells;
-    if (phone() && cells.length > 1) cells = [cells.find((c) => c.row === chart.target.row) ?? cells[0]];
+    const cells = chartCells(item);
     const inputs = new Map();   // index into chart.cells → input
     const mk = (i, label) => { const inp = h('input', { type: 'text', class: 'g-input g-input--cell', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': label, placeholder: '…' }); inputs.set(i, inp); return inp; };
     // Cells not shown (phones show one) are judged as right: only what was asked counts.
@@ -620,7 +722,7 @@ export function createUI(ctx) {
       if (rule) slot.append(h('p', { class: 'g-lesson__rule is-lit' }, inline(rule.text)));
       if (!ok && conf) slot.append(h('div', { class: 'g-lesson__conf' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(conf.with)}` }), h('p', {}, inline(conf.text))));
     }, { once: false });
-    const node = h('div', { class: 'g-fb', 'data-ok': String(ok), role: 'status' },
+    const node = h('div', { class: 'g-fb', 'data-ok': String(ok) },
       h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? '✓' : '✗' }), ' ', line),
       details,
       h('div', { class: 'g-fb__acts' }, btn('Next', { onclick: onNext }, 'btn btn--primary g-fb__next'), practiceLink && mode === 'practice' ? btn(`Practise ${skill?.title ?? 'this skill'}`, { onclick: onPractice }, 'btn btn--quiet') : null));

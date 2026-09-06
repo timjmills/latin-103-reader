@@ -33,7 +33,10 @@ export function serverAttemptRow(a) {
 /** A clean attempt row from any source (bad rows → null). Pure. */
 export function normaliseAttempt(a) {
   if (!a || typeof a.skill !== 'string' || typeof a.kind !== 'string' || !a.at) return null;
-  const row = { ...serverAttemptRow({ ...a, item_key: String(a.item_key ?? ''), mode: a.mode === 'learn' ? 'learn' : 'practice' }) };
+  // `at` canonical (…Z, milliseconds): the server hands timestamptz back as +00:00, and the id must be the same on both sides (C2).
+  const t = Date.parse(a.at);
+  if (!Number.isFinite(t)) return null;
+  const row = { ...serverAttemptRow({ ...a, at: new Date(t).toISOString(), item_key: String(a.item_key ?? ''), mode: a.mode === 'learn' ? 'learn' : 'practice' }) };
   return { ...row, id: attemptId(row) };
 }
 
@@ -95,11 +98,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     try {
       const rows = await hooks.pageAll(() => sb.from('confusions').select('*').order('skill_a'));
       for (const r of rows) {
-        if (!r?.skill_a || !r?.skill_b) continue;
-        const k = confusionKey(r.skill_a, r.skill_b);
-        const cur = confusions.get(k);
-        const row = { skill_a: r.skill_a, skill_b: r.skill_b, count: Math.max(Number(r.count) || 0, Number(cur?.count) || 0), updated_at: r.updated_at ?? cur?.updated_at ?? null };
-        if (!cur || row.count !== cur.count) { confusions.set(k, row); await db.put('confusions', row); changed = true; }
+        if (mergeConfusion(r)) { await db.put('confusions', confusions.get(confusionKey(r.skill_a, r.skill_b))); changed = true; }
       }
     } catch (e) { console.warn('[grammar] confusions not synced', e?.message || e); }
     if (changed) emit();
@@ -153,6 +152,16 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     else persistLocal();
     return a;
   }
+  /** Merge a confusion row by max (the server's before-update trigger does the same, migration 0015): two devices never regress each other's count. */
+  function mergeConfusion(r) {
+    if (!r?.skill_a || !r?.skill_b) return false;
+    const k = confusionKey(r.skill_a, r.skill_b);
+    const cur = confusions.get(k);
+    const row = { skill_a: r.skill_a, skill_b: r.skill_b, count: Math.max(Number(r.count) || 0, Number(cur?.count) || 0), updated_at: r.updated_at && cur?.updated_at ? (ts(r.updated_at) >= ts(cur.updated_at) ? r.updated_at : cur.updated_at) : (r.updated_at ?? cur?.updated_at ?? null) };
+    if (cur && row.count === cur.count) return false;
+    confusions.set(k, row);
+    return true;
+  }
   async function bumpConfusion(a, b) {
     if (!a || !b || a === b) return null;
     const k = confusionKey(a, b);
@@ -205,7 +214,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     getAttempts: ({ skill = null } = {}) => [...attempts.values()].filter((a) => skill == null || a.skill === skill).sort((a, b) => ts(a.at) - ts(b.at)),
     addAttempt,
     getConfusions: () => [...confusions.values()].map((r) => ({ ...r })),
-    bumpConfusion,
+    bumpConfusion, mergeConfusion,
     onChange(cb) { listeners.add(cb); return () => listeners.delete(cb); },
     mode,
   };
