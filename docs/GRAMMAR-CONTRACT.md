@@ -947,11 +947,16 @@ Learner's request, verbatim: answering should **move the session on**; there
 should be a **back arrow and a forward arrow** to move through a session's
 parts; a result should be **green when correct and red when not**.
 
-- **Move on automatically**, a setting, on by default. A correct answer shows
-  its one-line result and advances after a short beat; a wrong answer holds
-  longer, because reading why is the point of the item, and opening "Why"
-  cancels the advance until the learner moves on themselves. Turning the
-  setting off restores today's explicit Next. Enter always advances at once.
+- **A correct answer moves the session on** by itself, after a short beat, so
+  the learner never clicks Next to be told they were right. Enter advances at
+  once.
+- **A wrong answer does not move on.** The item stays, with its result and its
+  explanation, and the learner tries again until it is right — that is the
+  point of the drill. The only way past a wrong item is to touch the forward
+  arrow deliberately.
+  Scoring is unchanged by this: the **first** answer to an item is what is
+  logged and what the scheduler sees; the retries that follow are for learning
+  and are not logged again, so a skill cannot be inflated by trying twice.
 - **Back / forward arrows** step through the items of the session that is
   running. Going back shows an answered item exactly as it was answered, with
   its result, read-only — it is never re-gradable and never touches the
