@@ -34,19 +34,32 @@ Text
   and of the library's Whitaker analyses.  A blank whose dash the text layer
   lost is still found: a token that is a known stem but not a word, printed
   with a gap before the next mark.  Sentences: build_week.split_sentences.
-Answers
-  A  the candidate forms are the library's attested forms that begin with the
-     stem and belong to a lemma with that root; B  the chapter's attested
-     forms whose lemma is in the word bank (the margin's Vocābula list plus
-     the chapter's vocab deck, app/data/grammar/vocab/NN.json).  The pensa
-     re-tell the chapter, so each blank is matched against the chapter's own
-     sentences: the candidate that appears between the same neighbouring
-     words (trigram, then either bigram) wins; what is left is filtered by
-     agreement — the case a preceding preposition governs, adjective ↔ noun
-     agreement with the neighbouring word, verb ↔ subject person and number.
-     One survivor: resolved (A answers are the endings, with a note naming
-     the form); several: all accepted, `unverified`; none: `unverified` with
-     no answers.  A sentence with an unreadable token is `unverified` too.
+Answers  (precision first: a wrong answer taught to a learner is worse than a
+  hidden one, so a blank resolves only on evidence, never on a preference)
+  A blank resolves in exactly two ways.
+  (a) The chapter's own words.  The pensa re-tell the chapter, so a pensum
+      sentence that IS a chapter sentence word for word — same length, every
+      printed word in its place, Ørberg's bracketed glosses dropped — hands the
+      blanks the words the chapter prints there.  Nothing looser counts: a
+      partial alignment slides the blanks along the sentence.
+  (b) One survivor of the whole candidate pool.  The pool is every attested form
+      beginning with the stem (Pensum A) or in the word bank (Pensum B) TOGETHER
+      with every regular form latin_forms can make of the chapter's lemmas — an
+      answer is only unique if it has met the rivals it should have met.  The
+      pool is filtered by agreement: the case a preposition governs, the
+      nominative a copula's predicate takes, adjective ↔ noun agreement, verb ↔
+      subject person and number.  No filter is ever dropped, so contradictory
+      filters leave nothing; and a candidate must FIT, not merely fail to
+      contradict — a reading with no parse (an adverb, a particle, an
+      indeclinable) satisfies every filter vacuously and never survives, and a
+      reading whose case or person rests on no filter is not evidence either.
+      Where the sentence pins nothing (no subject for a finite verb, no case for
+      a noun) the blank resolves to nothing at all rather than to whichever
+      reading happens to be left.
+  Everything else is `unverified`, as is every blank of a sentence with an
+  unreadable token (the principal parts excepted: they read the verb printed
+  beside them and nothing else).  Frequency never decides anything.
+  C  see below.
   C  the chapter sentence sharing most of the question's content lemmas is
      the answering unit; a short Latin answer is derived by question word
      (ubi → the "in …" phrase, quid est X → the predicate, num/-ne/nōnne →
@@ -63,6 +76,7 @@ Outputs (data/build/)
 from __future__ import annotations
 
 import argparse
+import bisect
 import json
 import random
 import re
@@ -728,105 +742,195 @@ def tok_form(t: Tok, answers: dict[int, str]) -> str | None:
     return m.group() if m else None
 
 
-def subject_number(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> tuple[int, str] | None:
-    """(person, number) the verb at i should agree with, from the words before it."""
-    words = []
-    for t in sent[:i]:
+PLURAL_COORD = {"et", "ac", "atque", "que"}
+PERSONAL = {"ego": (1, "sg"), "tu": (2, "sg"), "nos": (1, "pl"), "vos": (2, "pl")}
+
+
+def _nominal_parses(form: str | None, lex: "Lex") -> list[tuple[dict, dict]]:
+    """(entry, parse) readings of the word as a noun / adjective / pronoun with a case."""
+    if not form:
+        return []
+    return [(e, p) for e, p in parses_of(form, lex) if e["pos"] in NOMINAL and p.get("case")]
+
+
+def prep_span(sent: list[Tok], lex: Lex, answers: dict[int, str]) -> set[int]:
+    """Token indexes inside a prepositional phrase.  A word a preposition governs is
+    never the sentence's subject, however nominative it may look ("in cūnīs Aemiliae"
+    — Aemiliae is not the subject of the verb that follows)."""
+    out: set[int] = set()
+    run = 0        # 0 outside a phrase, else its length so far + 1; a prepositional
+                   # phrase is the preposition, its noun and one word qualifying it
+    for j, t in enumerate(sent):
+        if not t.blank and not _WORD.search(t.text):
+            if re.search(r"[,;:.!?]", t.text):
+                run = 0
+            continue
         f = tok_form(t, answers)
-        if f:
-            words.append(f)
-        elif re.search(r"[;:!?]", t.text):
-            words = []
-    keys = [em.skeleton(w) for w in words]
-    for k, per, num in (("ego", 1, "sg"), ("tu", 2, "sg"), ("nos", 1, "pl"), ("vos", 2, "pl")):
-        if k in keys:
-            return per, num
-    noms = []
-    for w in words:
-        ents = lex.entries_of(w)
-        if ents and ents[0]["pos"] in ("N", "PRON") and any(p.get("case") == "nom" for p in ents[0].get("parses", [])):
-            nums = {p.get("number") for p in ents[0]["parses"] if p.get("case") == "nom"}
-            noms.append((em.skeleton(w), nums))
-    if len(noms) >= 2 and "et" in keys:
-        return 3, "pl"
-    if noms:
-        nums = noms[-1][1]
-        if nums == {"pl"}:
-            return 3, "pl"
-        if nums == {"sg"}:
-            return 3, "sg"
-    return None
-
-
-GAP = -1.5
-
-
-def _align(pat: list[tuple[str, str]], keys: list[str]) -> tuple[list[int | None], int]:
-    """Needleman–Wunsch alignment of a pensum sentence (blanks are wildcards) against
-    a chapter sentence → (target index per pattern item, literal words matched)."""
-    n, m = len(pat), len(keys)
-    dp = [[0.0] * (m + 1) for _ in range(n + 1)]
-    bt = [[0] * (m + 1) for _ in range(n + 1)]          # 0 pair, 1 skip pattern, 2 skip target
-    for i in range(1, n + 1):
-        dp[i][0], bt[i][0] = dp[i - 1][0] + GAP, 1
-    for j in range(1, m + 1):
-        dp[0][j], bt[0][j] = dp[0][j - 1] + GAP, 2
-    for i in range(1, n + 1):
-        kind, k = pat[i - 1]
-        row, prev = dp[i], dp[i - 1]
-        for j in range(1, m + 1):
-            sub = 0.5 if kind == "b" else (3.0 if k == keys[j - 1] else -2.0)
-            best, b = prev[j - 1] + sub, 0
-            if prev[j] + GAP > best:
-                best, b = prev[j] + GAP, 1
-            if row[j - 1] + GAP > best:
-                best, b = row[j - 1] + GAP, 2
-            row[j], bt[i][j] = best, b
-    i, j = n, m
-    out: list[int | None] = [None] * n
-    while i > 0 or j > 0:
-        b = bt[i][j]
-        if i > 0 and j > 0 and b == 0:
-            out[i - 1] = j - 1
-            i, j = i - 1, j - 1
-        elif i > 0 and (b == 1 or j == 0):
-            i -= 1
+        if f is not None and em.skeleton(f) in PREP_CASE:
+            run = 1
+            continue
+        if not run:
+            continue
+        if (t.blank or f is None or _nominal_parses(f, lex)) and run <= 2:
+            out.add(j)
+            run += 1
         else:
-            j -= 1
-    hits = sum(1 for i, (kind, k) in enumerate(pat) if kind == "w" and out[i] is not None and keys[out[i]] == k)
-    return out, hits
+            run = 0                  # a verb, a particle, or the phrase's own length
+    return out
+
+
+def clause_start(sent: list[Tok], i: int) -> int:
+    """The first token of the blank's own clause: Ørberg's sentences change subject at a
+    comma ("Ego excitābor, tū bene dormiēs nec excitāberis")."""
+    for j in range(i - 1, -1, -1):
+        if not sent[j].blank and re.search(r"[,;:!?]", sent[j].text):
+            return j + 1
+    return 0
+
+
+def _strong_break(sent: list[Tok], j: int) -> bool:
+    return not sent[j].blank and bool(re.search(r"[;:!?]", sent[j].text))
+
+
+def subject_info(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> dict | None:
+    """The subject the word at `i` agrees with: the FIRST nominative of its clause.
+
+    Latin puts the subject first and the predicate after it, so the first nominative is
+    the subject and a later one is the predicate ("Iūlius dominus … est").  A clause
+    with no nominative of its own borrows the one before the comma, which is how a
+    compound sentence carries its subject ("tū bene dormiēs nec excitāberis"); a
+    semicolon, a colon or a full stop ends that.  `ego / tū / nōs / vōs` count as
+    nominatives, a coordinated pair is plural, and a word a preposition governs is never
+    the subject.  When the first nominative does not fix its number, nothing is claimed."""
+    gov = prep_span(sent, lex, answers)
+
+    def word_at(j: int) -> str | None:
+        return tok_form(sent[j], answers)
+
+    def is_nom(j: int, head: bool = False) -> tuple[int, str] | None | bool:
+        """(person, number), None when the word is no nominative at all, False when it is
+        one but does not fix its number — the caller then claims nothing."""
+        if j in gov:
+            return None
+        f = word_at(j)
+        if not f:
+            return None
+        k = em.skeleton(f)
+        if k in PERSONAL:
+            return PERSONAL[k]
+        nps = _nominal_parses(f, lex)
+        # the head of a subject is a noun or a pronoun; a bare adjective beside it is
+        # part of some other phrase ("īnfantem tuum ipsa cūrābis" — tuum is not a subject)
+        if head:
+            nps = [ep for ep in nps if ep[0]["pos"] in ("N", "PRON", "NUM")]
+        nums = {p.get("number") for _, p in nps if p.get("case") == "nom"}
+        if not nums:
+            return None
+        if len(nums) != 1 or None in nums:
+            return False
+        return 3, nums.pop()
+
+    def loose(j: int) -> bool:
+        """a word the library does not know — an OCR-damaged or unlisted proper noun"""
+        f = word_at(j)
+        return bool(f) and not parses_of(f, lex)
+
+    # forward only as far as the blank's own comma segment: what follows a comma is
+    # another clause, or an address ("Industriī estōte, servī!" — servī is a vocative)
+    end = len(sent)
+    for j in range(i, len(sent)):
+        if not sent[j].blank and re.search(r"[,;:!?]", sent[j].text):
+            end = j
+            break
+    start = clause_start(sent, i)
+    while True:
+        for j in range(start, end):
+            t = sent[j]
+            if t.blank and word_at(j) is None:
+                continue
+            hit = is_nom(j, head=True)
+            if hit is None:
+                continue
+            if hit is False:
+                return None            # a nominative that does not fix its number
+            per, num = hit
+            span, persons = {j}, {per}
+            # "Nīlus et Rhēnus", "Lesbos et Chios et Naxus": a coordinated subject is plural
+            k = j
+            while True:
+                c = k + 1
+                while c < end and not (sent[c].blank or _WORD.search(sent[c].text)):
+                    c += 1
+                d = c + 1
+                while d < end and not (sent[d].blank or _WORD.search(sent[d].text)):
+                    d += 1
+                if d >= end or sent[c].blank                         or em.skeleton(sent[c].text.strip(",.;:\"'")) not in PLURAL_COORD:
+                    break
+                nxt = is_nom(d)
+                if not nxt and not loose(d):
+                    break
+                span |= {c, d}
+                persons.add(nxt[0] if isinstance(nxt, tuple) else 3)
+                num, k = "pl", d
+            per = 1 if 1 in persons else (2 if 2 in persons else 3)
+            if per == 3 and end < len(sent) and re.search(r"!", sent[end].text):
+                # an exclamation addresses somebody: "Malī discipulī estis!" has no
+                # third-person subject, whatever the nominative beside it looks like
+                return None
+            return {"person": per, "number": num, "span": span, "coord": len(span) > 1}
+        if start == 0 or _strong_break(sent, start - 1):
+            return None
+        end = start - 1
+        start = clause_start(sent, start - 1)
 
 
 def aligned_answers(sent: list[Tok], text: ChapterText, picks: list[int]) -> dict[int, str]:
     """Blank position in the sentence → the word the chapter prints there.
-    Only alignments that reproduce most of the pensum's own words are trusted, and
-    the chapter's sentences must agree with one another about the word."""
+
+    Only an EXACT alignment is trusted: the pensum sentence, with Ørberg's bracketed
+    glosses ("[= fēmina]") dropped, must appear in a chapter sentence word for word
+    with the blanks filled in — same length, every printed word in its place.  A looser
+    alignment slides the blanks along the sentence and reads the wrong word into them
+    ("Aemilia ōrnāmenta in collō" ← "Aemilia ānulum …"), so nothing less counts."""
+    if any(not t.ok for t in sent):
+        # an unreadable token is a wildcard: it swallows a word of the chapter sentence
+        # and every blank after it reads the word beside its own.  The item is
+        # unverified for the same reason, so nothing is lost by refusing to align it.
+        return {}
     pat: list[tuple[str, str]] = []
     slot: list[int] = []
+    depth = 0
     for i, t in enumerate(sent):
         if t.blank:
-            pat.append(("b", ""))
-            slot.append(i)
-        else:
-            for m in _WORD.finditer(t.text):
-                pat.append(("w", em.skeleton(m.group()) if t.ok else "?"))
-                slot.append(-1)
+            if depth == 0:
+                pat.append(("b", ""))
+                slot.append(i)
+            continue
+        opened = t.text.count("[") + t.text.count("(")
+        closed = t.text.count("]") + t.text.count(")")
+        inside = depth > 0 or opened > 0
+        depth = max(0, depth + opened - closed)
+        if inside:
+            continue                      # an editorial gloss, not part of the sentence
+        for m in _WORD.finditer(t.text):
+            pat.append(("w", em.skeleton(m.group()) if t.ok else "?"))
+            slot.append(-1)
     n_lit = sum(1 for k, _ in pat if k == "w")
-    if not slot or n_lit < 3 or not any(k == "b" for k, _ in pat):
+    if not any(k == "b" for k, _ in pat) or n_lit < 3:
         return {}
     votes: dict[int, Counter] = defaultdict(Counter)
     for ui in picks:
         toks = text.unit_tokens[ui]
-        if not toks or abs(len(toks) - len(pat)) > 4:
-            continue
+        if len(toks) != len(pat):
+            continue                      # the same sentence, word for word, or nothing:
+                                          # a blank at the end of a shorter pattern would
+                                          # otherwise swallow whatever the chapter has there
         keys = [em.skeleton(t) for t in toks]
-        out, hits = _align(pat, keys)
-        if hits < max(3, 0.7 * n_lit):
+        if any(k == "w" and keys[pi] != key for pi, (k, key) in enumerate(pat)):
             continue
         for pi, si in enumerate(slot):
-            if si >= 0 or out[pi] is None:
-                continue
-            votes[si][toks[out[pi]]] += 1
+            if si >= 0:
+                votes[si][toks[pi]] += 1
     return {si: c.most_common(1)[0][0] for si, c in votes.items()
             if len({em.skeleton(f) for f in c}) == 1}
 
@@ -856,26 +960,103 @@ def copula_number(sent: list[Tok], answers: dict[int, str]) -> str | None:
     return nums.pop() if len(nums) == 1 else None
 
 
-def has_finite_verb(sent: list[Tok], lex: Lex, answers: dict[int, str]) -> bool:
-    """A verb of its own in the sentence: then the words around a blank are not
-    simply a copula's subject and predicate."""
-    for t in sent:
+def _nom_ep(ep) -> bool:
+    """The reading inflects for case — a noun, adjective, pronoun, or a participle or
+    gerundive.  The parse decides for a verb form, not the entry: the generator reaches
+    a verb through whichever of its two glossary entries the index happened to keep, and
+    a VPAR entry's *finite* forms are verbs like any other."""
+    if ep[1].get("mood"):
+        return bool(ep[1].get("case"))
+    return ep[0]["pos"] in NOMINAL or bool(ep[1].get("case"))
+
+
+def _verb_mood(ep) -> str | None:
+    return ep[1].get("mood") if ep[0]["pos"] in ("V", "VPAR") else None
+
+
+ADJECTIVAL = ("ADJ", "NUM", "PRON")
+
+
+def _adjectival(ep, form: str | None = None, name_is_noun: bool = False) -> bool:
+    """A word that can qualify a noun.  A capitalised NEIGHBOUR is read as a name
+    whatever the glossary calls it — Whitaker files *Iūlius* and *Aemilius* as
+    adjectives too ("of the Iulian gens"), and reading them so made the blank in
+    "Iūlius Iūliae … mālum dat" agree with Iūlius."""
+    if name_is_noun and form and form[:1].isupper():
+        return False
+    return ep[0]["pos"] in ADJECTIVAL or ep[1].get("mood") == "ptc"
+
+
+def _attributive(ep, nb, form: str | None = None, nb_form: str | None = None) -> bool:
+    """Two neighbouring words agree only when one of them qualifies the other: a noun
+    and an adjective (or a participle, a numeral, a demonstrative).  Two nouns side by
+    side do not agree — "pater Mārcī", "dominus servōrum", "Iūlius Aemiliam vidēt" — and
+    a filter that made them agree turned every such genitive into a nominative."""
+    return _adjectival(ep, form) != _adjectival(nb, nb_form, name_is_noun=True)
+
+
+def _informative(ep) -> bool:
+    """The reading says something the filters can test — a case, or a verb's mood.
+    An adverb, a conjunction, a preposition, an interjection and an indeclinable
+    numeral say nothing, so they satisfy every filter vacuously and must never be
+    counted a survivor."""
+    return bool(ep[1].get("case")) or bool(_verb_mood(ep))
+
+
+def predicate_slot(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str], subj: dict | None) -> bool:
+    """Could the blank at `i` be the copula's predicate?  Only while every nominative
+    the clause has printed before it belongs to the subject: after a predicate noun of
+    its own ("Aemilia domina ___ est") the blank is that noun's complement, and Ørberg
+    is drilling the genitive, not the nominative."""
+    span = subj["span"] if subj else set()
+    if subj and min(subj["span"]) > i and i not in span:
+        return False           # the subject comes after the blank: "in pāginā prīmā
+                               # capitulī secundī multa vocābula sunt" — the blank is
+                               # neither subject nor predicate but a genitive
+    gov = prep_span(sent, lex, answers)
+    for j in range(i - 1, -1, -1):
+        if j in gov:
+            continue
+        t = sent[j]
+        if not t.blank and not _WORD.search(t.text):
+            if re.search(r"[;:!?]", t.text):
+                break
+            continue
+        if t.blank or j in span:
+            continue
         f = tok_form(t, answers)
-        if f and any(e["pos"] == "V" and p.get("mood") in ("ind", "subj")
-                     for e, p in parses_of(f, lex)):
-            return True
-    return False
+        if f and any(p.get("case") == "nom" for _, p in _nominal_parses(f, lex)):
+            return False
+    first = True
+    for j in range(i + 1, len(sent)):
+        t = sent[j]
+        if not t.blank and not _WORD.search(t.text):
+            if re.search(r"[;:!?]", t.text):
+                break
+            continue
+        if first:
+            first = False          # the word right after the blank belongs to its own
+            continue               # phrase ("fīlius Iūliī", "īnsula magna")
+        if t.blank or j in span or j in gov:
+            continue
+        f = tok_form(t, answers)
+        if f and any(p.get("case") == "nom" for _, p in _nominal_parses(f, lex)):
+            return False           # a nominative of its own stands further on: that is
+                                   # the predicate, and the blank before it is not
+                                   # ("Numerus capitulōrum nōn parvus est", "in pāginā
+                                   # prīmā capitulī secundī multa vocābula sunt")
+    return True
 
 
 def context_filters(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]):
-    """Ordered predicates over (entry, parse) that the word in the blank must satisfy,
-    with a note naming the governing word.  A predicate passes any word it says
-    nothing about, so it only ever narrows a genuinely ambiguous choice."""
-    fs: list = []
+    """Ordered `Filt`s the word in the blank must satisfy, with a note naming the
+    governing word."""
+    fs: list[Filt] = []
     note = ""
     left, right = neighbour(sent, i, -1), neighbour(sent, i, 1)
     lf = tok_form(left, answers) if left else None
     rf = tok_form(right, answers) if right else None
+    subj = subject_info(sent, i, lex, answers)
 
     # a preposition before the blank, or before the noun the blank qualifies
     prep = prep_word = None
@@ -889,53 +1070,112 @@ def context_filters(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]):
             prep, prep_word = em.skeleton(llf), llf
     if prep:
         cases = PREP_CASE[prep]
-        fs.append(lambda ep: ep[0]["pos"] not in NOMINAL or ep[1].get("case") in cases)
+        # when the preposition stands before the blank it governs the blank itself; when
+        # it stands before the noun beside the blank, it speaks only for a word that
+        # qualifies that noun ("in vīllā magnā"), never for a noun of the blank's own
+        direct = bool(lf and em.skeleton(lf) in PREP_CASE)
+        binds = ((lambda ep, form=None: _nom_ep(ep)) if direct
+                 else (lambda ep, form=None: _nom_ep(ep) and _adjectival(ep, form)))
+        fs.append(Filt("case", lambda ep, form=None: not binds(ep) or ep[1].get("case") in cases, binds))
         note = f"after {prep_word}"
     else:
-        # predicate / subject of a copula: nominative, agreeing in number.  When the
-        # copula itself is still blank, the subject before the blank supplies the number
-        cn = copula_number(sent, answers)
-        if cn is None and not has_finite_verb(sent, lex, answers):
-            # the copula itself is still blank: the subject supplies its number
-            sn = subject_number(sent, i, lex, answers)
-            cn = sn[1] if sn and sn[0] == 3 else None
+        # Subject or predicate of a copula: nominative, agreeing in number.  Only while
+        # the blank can BE the predicate — once the clause has printed a nominative of
+        # its own beside the subject, what follows is that noun's complement and may
+        # stand in any case ("Aemilia domina ancillārum est", "pater Mārcī est").
+        cn = copula_number(sent, answers) if predicate_slot(sent, i, lex, answers, subj) else None
         if cn:
-            fs.append(lambda ep: ep[0]["pos"] not in NOMINAL or
-                      (ep[1].get("case") == "nom" and ep[1].get("number") == cn))
+            fs.append(Filt("case",
+                           lambda ep, form=None: not _nom_ep(ep) or (ep[1].get("case") == "nom"
+                                                                     and ep[1].get("number") == cn),
+                           lambda ep, form=None: _nom_ep(ep)))
 
     # adjective ↔ noun agreement with a neighbouring word — but not with a noun that
     # belongs to a preposition phrase the blank is outside of ("in Graeciā multae īnsulae")
-    skip_left = False
-    if left is not None and not left.blank and lf and (is_nominal(rf, lex) or (right is not None and right.blank)):
-        ll = neighbour(sent, sent.index(left), -1)
-        llf = tok_form(ll, answers) if ll else None
-        skip_left = bool(llf and em.skeleton(llf) in PREP_CASE)
-    for nb in ((None if skip_left else lf), rf):
-        nbp = [q for e, q in parses_of(nb, lex) if e["pos"] in NOMINAL and q.get("case")] if nb else []
+    gov = prep_span(sent, lex, answers)
+    skip_left = left is not None and sent.index(left) in gov and i not in gov
+    skip_right = right is not None and sent.index(right) in gov and i not in gov
+    if rf and em.skeleton(rf).endswith("que") and lex.is_form(rf[:-3]):
+        skip_right = True      # "ā pāstōre cēterīsque ovibus": -que starts a new phrase
+    for nb in ((None if skip_left else lf), (None if skip_right else rf)):
+        nbp = [(e, q) for e, q in parses_of(nb, lex) if _nom_ep((e, q)) and q.get("case")] if nb else []
         if nbp:
-            fs.append(lambda ep, nbp=nbp: ep[0]["pos"] not in NOMINAL
-                      or (bool(ep[1].get("case")) and any(agree(ep[1], q) for q in nbp)))
+            def binds(ep, form=None, nbp=nbp, nb=nb):
+                return _nom_ep(ep) and any(_attributive(ep, q, form, nb) for q in nbp)
 
-    # a finite verb agrees with its subject
-    sn = subject_number(sent, i, lex, answers)
-    if sn:
-        per, num = sn
-        # an imperative has no nominative subject, so it does not survive one
-        fs.append(lambda ep: ep[0]["pos"] != "V" or ep[1].get("mood") in (None, "inf", "ptc")
-                  or (ep[1].get("person") == per and ep[1].get("number") == num))
+            def test(ep, form=None, nbp=nbp, nb=nb, binds=binds):
+                if not binds(ep, form):
+                    return True
+                return bool(ep[1].get("case")) and any(agree(ep[1], q[1]) for q in nbp
+                                                       if _attributive(ep, q, form, nb))
+
+            fs.append(Filt("agree", test, binds))
+
+    # a finite verb agrees with its subject; an imperative addresses a second person
+    if subj:
+        per, num = subj["person"], subj["number"]
+
+        def verb_ok(ep, form=None, per=per, num=num):
+            mood = _verb_mood(ep)
+            if mood in ("ind", "subj"):
+                return ep[1].get("person") == per and ep[1].get("number") == num
+            if mood == "imper":
+                return per == 2 and ep[1].get("number") == num
+            return True
+
+        fs.append(Filt("subject", verb_ok,
+                       lambda ep, form=None: _verb_mood(ep) in ("ind", "subj", "imper")))
 
     return fs, note
 
 
 def survivors(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> list[str]:
-    """The candidates that satisfy EVERY filter — no filter is dropped.  This is
-    the test a generated form must pass: the chapter never prints it, so nothing
-    but agreement speaks for it."""
+    """The candidates that satisfy EVERY filter — no filter is ever dropped, so a
+    sentence whose filters contradict one another leaves nothing and the blank stays
+    unverified.  A candidate must FIT the slot, not merely fail to contradict it: a
+    reading with no parse at all (an adverb, a particle, an indeclinable) satisfies
+    every agreement filter vacuously and is therefore never a survivor — only the
+    chapter-text alignment can attest such a word."""
     fs, _ = context_filters(sent, i, lex, answers)
     if not fs:
         return []
-    return [c for c in cands
-            if parses_of(c, lex) and any(all(f(ep) for f in fs) for ep in parses_of(c, lex))]
+    out = []
+    for c in cands:
+        fits = False
+        for ep in parses_of(c, lex):
+            if not _informative(ep) or not all(f(ep, c) for f in fs):
+                continue
+            axes = {f.kind for f in fs if f.binds(ep, c)}
+            mood = _verb_mood(ep)
+            if mood in ("ind", "subj", "imper"):
+                if "subject" not in axes:
+                    # The sentence names no subject, so every finite form of the stem is
+                    # equally possible and none can be told from the others.  A noun of
+                    # the same stem must not win by default then ("ipsa cūrābis" is not
+                    # "ipsa cūra", "ā parentibus laudābitur" not "ā parentibus laudibus"):
+                    # the blank resolves to nothing.
+                    return []
+            elif mood:
+                continue                  # an infinitive, a supine, a participle or a
+                                          # gerundive: tense, voice — and for the verbal
+                                          # adjectives the whole choice of construction —
+                                          # rest on nothing the sentence settles
+                                          # ("Patientiam habē—!" is not "habentem")
+            if ep[1].get("case") and not ({"case", "agree"} & axes):
+                # The sentence pins no case here, so this reading is as possible as any
+                # other and the blank cannot be settled: an adjective that merely agrees
+                # with the noun beside it must not win over the accusative object nobody
+                # can rule out ("Māter Quīntum videt" is not "Māter quīnta videt").
+                return []
+            if _adjectival(ep, c) and "case" not in axes and sent[i].blank == "A":
+                # Only the neighbour's agreement speaks for this adjective, and the stem's
+                # own adverb agrees with nothing at all: "Mārcus prāvē respondet" and
+                # "Mārcus prāvus respondet" are both Latin, and the pensum means the first.
+                return []
+            fits = True
+        if fits:
+            out.append(c)
+    return out
 
 
 def constrain(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> tuple[list[str], str]:
@@ -948,7 +1188,7 @@ def constrain(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict
     fs, note = context_filters(sent, i, lex, answers)
     for depth in range(len(fs), 0, -1):
         kept = [c for c in cands
-                if not parses_of(c, lex) or any(all(f(ep) for f in fs[:depth]) for ep in parses_of(c, lex))]
+                if not parses_of(c, lex) or any(all(f(ep, c) for f in fs[:depth]) for ep in parses_of(c, lex))]
         if kept:
             return kept, note
     return cands, note
@@ -961,7 +1201,7 @@ def context_parse(form: str, sent: list[Tok], i: int, lex: Lex, answers: dict[in
         return None
     fs, _ = context_filters(sent, i, lex, answers)
     for depth in range(len(fs), 0, -1):
-        kept = [ep for ep in ps if all(f(ep) for f in fs[:depth])]
+        kept = [ep for ep in ps if all(f(ep, form) for f in fs[:depth])]
         if kept:
             return kept[0]
     return ps[0]
@@ -1100,6 +1340,43 @@ def generated_stem_candidates(stem: str, lex: Lex, attested: list[str],
     return sorted(out, key=lambda f: (len(f), f))
 
 
+def chapter_form_index(lex: Lex, lemmas: set[tuple[str, str]]) -> list[tuple[str, str, dict]]:
+    """(skeleton, form, entry) for every regular form of the chapter's own lemmas, by
+    skeleton.  A search over the roots misses the irregular verbs — esse has no root
+    "er" — so this index is what lets the stem "er-" offer erō and erat beside erus,
+    and a blank only resolves when it has met every rival it should have met."""
+    out: list[tuple[str, str, dict]] = []
+    for e in lex.by_lemma.values():
+        try:
+            if bv.lemma_key(e) not in lemmas:
+                continue
+        except Exception:
+            continue
+        for f in lex.generated(e):
+            if " " not in f:
+                out.append((em.skeleton(f), f, e))
+    out.sort(key=lambda r: (r[0], r[1]))
+    return out
+
+
+def indexed_stem_candidates(stem: str, lex: Lex, attested: list[str],
+                            index: list[tuple[str, str, dict]]) -> list[str]:
+    """The chapter's regular forms that begin with the printed stem."""
+    sk = em.skeleton(stem)
+    if len(sk) < 2 or not index:
+        return []
+    have = {em.skeleton(a) for a in attested}
+    out: dict[str, None] = {}
+    for k, f, e in index[bisect.bisect_left(index, (sk,)):]:
+        if not k.startswith(sk):
+            break
+        if k == sk or k in have:
+            continue
+        lex.offer(e, f, lex.generated(e).get(f) or [])
+        out[f] = None
+    return sorted(out)
+
+
 def generated_bank_candidates(bank_lemmas: set[tuple[str, str]], lex: Lex,
                               attested: list[str]) -> list[str]:
     """Every regular form of the word bank's lemmas — Pensum B asks the learner to
@@ -1129,6 +1406,32 @@ def ending_of(stem: str, form: str) -> tuple[str, str] | None:
     return form[:n], form[n:]
 
 
+#: the glossary's roots drop a few long vowels that Ørberg prints, and one perfect is
+#: ambiguous between two verbs (caedere cecīdisse / cadere cecidisse).  A pensum answer
+#: is macron-sensitive, so these principal parts are spelt out by verb.
+PART_FIX: dict[str, dict[str, str]] = {
+    "instruere": {"isse": "īnstrūxisse", "um": "īnstrūctum"},
+    "cogere": {"isse": "coēgisse", "um": "coāctum"},
+    "eligere": {"isse": "ēlēgisse", "um": "ēlēctum"},
+    "confiteri": {"um": "cōnfessum"},
+    "auferre": {"isse": "abstulisse", "um": "ablātum"},
+    "noscere": {"isse": "nōvisse", "um": "nōtum"},
+    "cognoscere": {"isse": "cognōvisse", "um": "cognitum"},
+    "caedere": {"isse": "cecīdisse", "um": "caesum"},
+    "emere": {"isse": "ēmisse", "um": "ēmptum"},
+    "includere": {"isse": "inclūsisse", "um": "inclūsum"},
+    "tradere": {"isse": "trādidisse", "um": "trāditum"},
+    "fugere": {"isse": "fūgisse"},
+    "reprehendere": {"isse": "reprehendisse", "um": "reprehēnsum"},
+    "iuvare": {"isse": "iūvisse", "um": "iūtum"},
+    "neglegere": {"isse": "neglēxisse", "um": "neglēctum"},
+    "desinere": {"isse": "dēsiisse"},
+    "eicere": {"isse": "ēiēcisse", "um": "ēiectum"},
+    "promere": {"isse": "prōmpsisse", "um": "prōmptum"},
+    "intellegere": {"isse": "intellēxisse", "um": "intellēctum"},
+}
+
+
 def principal_part(sent: list[Tok], i: int, lex: Lex) -> list[str]:
     """'-isse' / '-um' after an infinitive: the perfect infinitive / supine from the roots."""
     t = sent[i]
@@ -1138,6 +1441,9 @@ def principal_part(sent: list[Tok], i: int, lex: Lex) -> list[str]:
     if j < 0:
         return []
     verb = _WORD.search(sent[j].text).group()
+    fix = PART_FIX.get(em.skeleton(verb), {}).get(t.stem)
+    if fix:
+        return [fix]
     for e in lex.entries_of(verb):
         if e["pos"] == "V" and any(p.get("mood") == "inf" for p in e.get("parses", [])) and e.get("roots"):
             dep = e.get("kind") in ("dep", "semidep")
@@ -1159,7 +1465,24 @@ def principal_part(sent: list[Tok], i: int, lex: Lex) -> list[str]:
 def resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, library_forms: dict[str, Counter],
                      bank_lemmas: set[tuple[str, str]], bank_forms: dict[str, list[str]],
                      gen_bank: list[str] | None = None,
-                     chapter_lemmas: set[tuple[str, str]] | None = None) -> dict:
+                     chapter_lemmas: set[tuple[str, str]] | None = None,
+                     gen_index: list[tuple[str, str, dict]] | None = None) -> dict:
+    """One pensum sentence → an item.  The generator's forms are visible throughout:
+    a candidate the chapter never prints is judged by exactly the filters an attested
+    one is, and nothing resolves that they do not settle on their own."""
+    was, lex.gen_active = lex.gen_active, True
+    try:
+        return _resolve_sentence(sent, kind, text, lex, library_forms, bank_lemmas,
+                                 bank_forms, gen_bank, chapter_lemmas, gen_index)
+    finally:
+        lex.gen_active = was
+
+
+def _resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, library_forms: dict[str, Counter],
+                     bank_lemmas: set[tuple[str, str]], bank_forms: dict[str, list[str]],
+                     gen_bank: list[str] | None = None,
+                     chapter_lemmas: set[tuple[str, str]] | None = None,
+                     gen_index: list[tuple[str, str, dict]] | None = None) -> dict:
     answers: dict[int, str] = {}
     blanks = [i for i, t in enumerate(sent) if t.blank]
     # the chapter sentences that re-tell this one
@@ -1167,6 +1490,7 @@ def resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, li
     focus, picks = text.focus(lit)
     attested = aligned_answers(sent, text, picks)
     results: dict[int, dict] = {}
+    damaged = any(not t.ok for t in sent)
     pending = list(blanks)
     from_text: set[int] = set()
     # passes: blanks with literal neighbours first, then those beside resolved blanks,
@@ -1182,6 +1506,13 @@ def resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, li
                 if forms:
                     answers[id(t)] = forms[0]
                 continue
+            if damaged:
+                # an unreadable token stands where a word should: the neighbours a blank
+                # is judged by may be the wrong ones, and the item is unverified anyway.
+                # Only the principal parts, which read the verb printed beside them and
+                # nothing else, still answer.
+                results[i] = {"forms": [], "note": "", "ok": False, "generated": False}
+                continue
             left, right = neighbour(sent, i, -1), neighbour(sent, i, 1)
             if (left and left.blank and id(left) not in answers or right and right.blank and id(right) not in answers) and round_ < 2:
                 nxt.append(i)
@@ -1195,50 +1526,49 @@ def resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, li
             else:
                 # a whole-word blank inside Pensum A: the chapter's own words
                 cands = list(text.forms.values())
-            # the chapter's own wording, when its sentences line up with this one
+            # (a) the chapter's own wording, when its sentences line up with this one
             hit = attested.get(i)
             if hit and (t.blank != "A" or ending_of(t.stem, hit)):
                 _, note = constrain([hit], sent, i, lex, answers)
-                results[i] = {"forms": [hit], "note": note, "ok": True}
+                results[i] = {"forms": [hit], "note": note, "ok": True, "generated": False}
                 answers[id(t)] = hit
                 from_text.add(i)
                 continue
-            forms, note, ok = resolve_blank(sent, i, cands, text, lex, answers, focus)
-            gen = False
-            if not ok:
-                # the attested forms did not settle it: try again with the regular
-                # forms latin_forms can make, which the narrative may never print.
-                # Same pool, same filters, same alignment — an attested answer that
-                # already stood is never replaced, because we only get here when
-                # none did.
-                if t.blank == "A":
-                    extra = generated_stem_candidates(t.stem, lex, cands, chapter_lemmas)
-                elif kind == "B":
-                    extra = [f for f in (gen_bank or []) if f not in cands]
-                else:
-                    extra = []
-                if extra:
-                    lex.gen_active = True
-                    try:
-                        kept = survivors(cands + extra, sent, i, lex, answers)
-                    finally:
-                        lex.gen_active = False
-                    if t.blank == "A":
-                        kept = [c for c in kept if ending_of(t.stem, c)]
-                    # exactly one form in the whole pool survives every filter: that
-                    # is the answer.  Anything less leaves the blank unverified — an
-                    # unresolved generated shortlist would also put a guess into
-                    # `answers`, where the next blank would read it as fact.
-                    if len(kept) == 1:
-                        lex.gen_active = True
+            # (b) exactly one survivor of the WHOLE pool — every attested form and
+            # every regular form latin_forms can make from a matching root — after the
+            # full filter stack.  Nothing else resolves: no frequency, no tie-break.
+            if t.blank == "A":
+                # the generated pool must be at least as wide as the attested one, or a
+                # form the library happens to print ("pāruit") looks unique when its own
+                # lemma's other forms ("pāruisset") were never offered
+                lemmas = set(chapter_lemmas or ())
+                for c in cands:
+                    for e in lex.entries_of(c):
                         try:
-                            f2, n2, _ = resolve_blank(sent, i, kept, text, lex, answers, focus)
-                        finally:
-                            lex.gen_active = False
-                        forms, note, ok, gen = f2, n2, True, True
-            results[i] = {"forms": forms, "note": note, "ok": ok, "generated": gen}
-            if forms:
-                answers[id(t)] = forms[0]
+                            lemmas.add(bv.lemma_key(e))
+                        except Exception:
+                            pass
+                extra = generated_stem_candidates(t.stem, lex, cands, lemmas)
+                extra += [f for f in indexed_stem_candidates(t.stem, lex, cands, gen_index or [])
+                          if f not in extra]
+            elif kind == "B":
+                extra = [f for f in (gen_bank or []) if f not in cands]
+            else:
+                extra = []
+            pool = cands + extra
+            kept = survivors(pool, sent, i, lex, answers)
+            if t.blank == "A":
+                kept = [c for c in kept if ending_of(t.stem, c)]
+            if len(kept) == 1:
+                _, note = constrain(kept, sent, i, lex, answers)
+                results[i] = {"forms": kept, "note": note, "ok": True,
+                              "generated": kept[0] not in cands}
+                answers[id(t)] = kept[0]
+                continue
+            # unresolved: a shortlist for the report only — it never becomes a fact the
+            # neighbouring blanks may read, so `answers` is left alone
+            forms, note, _ = resolve_blank(sent, i, kept or cands, text, lex, answers, focus)
+            results[i] = {"forms": forms[:3], "note": note, "ok": False, "generated": False}
         pending = nxt if round_ < 2 else [i for i in blanks if sent[i].blank != "P" and i not in from_text]
         if not pending:
             break
@@ -1536,6 +1866,7 @@ def build_chapter(c: int, pdf, pages: list[int], lex: Lex, lem: bv.Lemmatiser, c
                 chapter_lemmas.add(bv.lemma_key(e))
             except Exception:
                 pass
+    gen_index = chapter_form_index(lex, chapter_lemmas)
     for kind in ("A", "B", "C"):
         rows = blocks.get(kind, [])
         if dump:
@@ -1554,7 +1885,8 @@ def build_chapter(c: int, pdf, pages: list[int], lex: Lex, lem: bv.Lemmatiser, c
             keep = [sent for sent in sents
                     if any(t.blank for t in sent) or _WORD.search(render_text(sent))]
             items = [resolve_sentence(sent, kind, text, lex, library_forms, bank_lemmas,
-                                      bank_forms, gen_bank, chapter_lemmas) for sent in keep]
+                                      bank_forms, gen_bank, chapter_lemmas, gen_index)
+                     for sent in keep]
             if kind == "B":
                 fill_banks(items, lex, c)
         out[kind] = items
