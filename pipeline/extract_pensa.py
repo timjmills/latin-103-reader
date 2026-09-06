@@ -80,6 +80,7 @@ import review_shelf as rs  # noqa: E402
 import build_vocab as bv  # noqa: E402
 from build_week import split_sentences  # noqa: E402
 from macrons import canonical, strip_macrons  # noqa: E402
+import latin_forms as lfm  # noqa: E402
 import seed_sql  # noqa: E402
 
 BUILD = ROOT / "data" / "build"
@@ -215,6 +216,14 @@ class Tok:
         return f"Tok({self.text!r}{', blank ' + self.blank + ' ' + self.stem if self.blank else ''}{'' if self.ok else ', ?'})"
 
 
+GENERABLE = ("N", "ADJ", "V", "VPAR", "PRON", "NUM", "ADV")
+
+
+def lemma_id(e: dict) -> tuple:
+    return (e.get("h"), e.get("pos") if e.get("pos") != "VPAR" else "V", e.get("lemma"),
+            tuple(e.get("cat") or []), tuple(e.get("roots") or []), e.get("gender"), e.get("kind"))
+
+
 class Lex:
     """Attested forms and stems: the glossary, the library's Whitaker analyses
     (build_vocab's cache), the extract_margins lexicon."""
@@ -237,6 +246,64 @@ class Lex:
                         vowel = {1: "ā", 2: "ē", 4: "ī"}.get(e["cat"][0])
                         if vowel:
                             self.stems[em.skeleton(r + vowel)][r + vowel] += 1
+
+        # the generator's index: every lemma, reachable by the skeleton of its roots
+        self.by_root: dict[str, list[dict]] = defaultdict(list)
+        self.by_lemma: dict[tuple, dict] = {}
+        seen: set[tuple] = set()
+        for ents in self.entries.values():
+            for e in ents:
+                if e.get("pos") not in GENERABLE or not e.get("roots"):
+                    continue
+                lid = lemma_id(e)
+                if lid in seen:
+                    continue
+                seen.add(lid)
+                self.by_lemma[lid] = e
+                roots = {em.skeleton(r) for r in e["roots"] if r and r != "-"}
+                for r in roots:
+                    if r:
+                        self.by_root[r].append(e)
+        self._gen: dict[tuple, dict[str, list[dict]]] = {}
+        #: form → [(entry, parse)] for the forms latin_forms generated this run.
+        #: only consulted while `gen_active` is on — the generated pass — so that
+        #: the attested pass behaves exactly as it did before the generator existed
+        self.gen_parses: dict[str, list[tuple[dict, dict]]] = {}
+        self.gen_active = False
+
+    def offer(self, e: dict, form: str, parses: list[dict]) -> None:
+        """Record a generated form's parses so parses_of can reach them."""
+        if form in self.gen_parses:
+            return
+        self.gen_parses[form] = [(e, p) for p in parses]
+
+    def generated(self, e: dict) -> dict[str, list[dict]]:
+        """form → parses, every regular form of the lemma (latin_forms)."""
+        lid = lemma_id(e)
+        idx = self._gen.get(lid)
+        if idx is None:
+            gen = dict(e)
+            if gen.get("pos") == "VPAR":
+                gen = dict(gen, pos="V")
+            try:
+                idx = lfm.form_index(gen)
+            except Exception:
+                idx = {}
+            self._gen[lid] = idx
+        return idx
+
+    def entries_by_root_prefix(self, sk: str, slack: int = 2) -> list[dict]:
+        """The lemmas whose root the printed stem begins with (as stem_candidates
+        allows: at most `slack` letters of the ending are printed with the stem)."""
+        out, seen = [], set()
+        for n in range(len(sk), max(0, len(sk) - slack) - 1, -1):
+            for e in self.by_root.get(sk[:n], ()):
+                lid = lemma_id(e)
+                if lid in seen:
+                    continue
+                seen.add(lid)
+                out.append(e)
+        return out
 
     def is_form(self, tok: str) -> bool:
         k = em.skeleton(tok)
@@ -621,12 +688,16 @@ def render_text(sent: list[Tok]) -> str:
 # ------------------------------------------------------------------ answers
 
 def parses_of(form: str, lex: Lex) -> list[tuple[dict, dict]]:
-    """(entry, parse) pairs for a form."""
+    """(entry, parse) pairs for a form.  A form the library never prints has none;
+    if it came from latin_forms, its generated parses stand in, so the agreement
+    filters judge a generated candidate exactly as they judge an attested one."""
     out = []
     for e in lex.entries_of(form):
         for p in e.get("parses") or [{}]:
             out.append((e, p))
-    return out
+    if out or not lex.gen_active:
+        return out
+    return lex.gen_parses.get(form, [])
 
 
 def agree(p: dict, q: dict) -> bool:
@@ -852,7 +923,19 @@ def context_filters(sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]):
         # an imperative has no nominative subject, so it does not survive one
         fs.append(lambda ep: ep[0]["pos"] != "V" or ep[1].get("mood") in (None, "inf", "ptc")
                   or (ep[1].get("person") == per and ep[1].get("number") == num))
+
     return fs, note
+
+
+def survivors(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> list[str]:
+    """The candidates that satisfy EVERY filter — no filter is dropped.  This is
+    the test a generated form must pass: the chapter never prints it, so nothing
+    but agreement speaks for it."""
+    fs, _ = context_filters(sent, i, lex, answers)
+    if not fs:
+        return []
+    return [c for c in cands
+            if parses_of(c, lex) and any(all(f(ep) for f in fs) for ep in parses_of(c, lex))]
 
 
 def constrain(cands: list[str], sent: list[Tok], i: int, lex: Lex, answers: dict[int, str]) -> tuple[list[str], str]:
@@ -990,6 +1073,54 @@ def stem_candidates(stem: str, lex: Lex, text: ChapterText, library_forms: dict[
     return sorted(out, key=lambda f: -out[f])
 
 
+def generated_stem_candidates(stem: str, lex: Lex, attested: list[str],
+                              lemmas: set[tuple[str, str]] | None = None) -> list[str]:
+    """Regular forms of the lemmas whose root the stem names, from latin_forms —
+    the forms Ørberg asks for that the library never prints (amābit, dormiēmus).
+    Only lemmas the chapter itself uses are offered (the pensa re-tell the
+    chapter), and only after the attested forms have failed."""
+    sk = em.skeleton(stem)
+    if len(sk) < 2:
+        return []
+    have = {em.skeleton(a) for a in attested}
+    out: dict[str, None] = {}
+    for e in lex.entries_by_root_prefix(sk):
+        if lemmas is not None:
+            try:
+                if bv.lemma_key(e) not in lemmas:
+                    continue
+            except Exception:
+                continue
+        for f, ps in lex.generated(e).items():
+            k = em.skeleton(f)
+            if k == sk or not k.startswith(sk) or k in have or " " in f:
+                continue
+            lex.offer(e, f, ps)
+            out[f] = None
+    return sorted(out, key=lambda f: (len(f), f))
+
+
+def generated_bank_candidates(bank_lemmas: set[tuple[str, str]], lex: Lex,
+                              attested: list[str]) -> list[str]:
+    """Every regular form of the word bank's lemmas — Pensum B asks the learner to
+    inflect a bank word, and the chapter does not print every case and person."""
+    have = {em.skeleton(a) for a in attested}
+    out: dict[str, None] = {}
+    for e in lex.by_lemma.values():
+        try:
+            lk = bv.lemma_key(e)
+        except Exception:
+            continue
+        if lk not in bank_lemmas:
+            continue
+        for f, ps in lex.generated(e).items():
+            if " " in f or em.skeleton(f) in have:
+                continue
+            lex.offer(e, f, ps)
+            out[f] = None
+    return sorted(out, key=lambda f: (len(f), f))
+
+
 def ending_of(stem: str, form: str) -> tuple[str, str] | None:
     """(stem as spelt in the form, ending) when the form begins with the stem."""
     n = len(stem)
@@ -1009,18 +1140,26 @@ def principal_part(sent: list[Tok], i: int, lex: Lex) -> list[str]:
     verb = _WORD.search(sent[j].text).group()
     for e in lex.entries_of(verb):
         if e["pos"] == "V" and any(p.get("mood") == "inf" for p in e.get("parses", [])) and e.get("roots"):
-            roots = e["roots"]
-            if e.get("kind") in ("dep", "semidep"):
-                return []
-            if t.stem == "isse" and len(roots) > 2 and roots[2] not in ("-", ""):
-                return [roots[2] + "isse"]
-            if t.stem == "um" and len(roots) > 3 and roots[3] not in ("-", ""):
-                return [roots[3] + "um"]
+            dep = e.get("kind") in ("dep", "semidep")
+            # latin_forms knows which of the two the verb actually has: a deponent
+            # has no active perfect infinitive (Ørberg writes it "sequī -um esse"),
+            # but it does have the supine the exercise asks for
+            gen = lex.generated(e)
+            want = "supine" if t.stem == "um" else "inf"
+            for f, ps in gen.items():
+                for pr in ps:
+                    if t.stem == "um" and pr.get("mood") == "supine" and pr.get("case") == "acc":
+                        return [f]
+                    if t.stem == "isse" and not dep and pr.get("mood") == "inf"                             and pr.get("tense") == "perf" and pr.get("voice") == "act":
+                        return [f]
+            del want
     return []
 
 
 def resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, library_forms: dict[str, Counter],
-                     bank_lemmas: set[tuple[str, str]], bank_forms: dict[str, list[str]]) -> dict:
+                     bank_lemmas: set[tuple[str, str]], bank_forms: dict[str, list[str]],
+                     gen_bank: list[str] | None = None,
+                     chapter_lemmas: set[tuple[str, str]] | None = None) -> dict:
     answers: dict[int, str] = {}
     blanks = [i for i, t in enumerate(sent) if t.blank]
     # the chapter sentences that re-tell this one
@@ -1065,7 +1204,39 @@ def resolve_sentence(sent: list[Tok], kind: str, text: ChapterText, lex: Lex, li
                 from_text.add(i)
                 continue
             forms, note, ok = resolve_blank(sent, i, cands, text, lex, answers, focus)
-            results[i] = {"forms": forms, "note": note, "ok": ok}
+            gen = False
+            if not ok:
+                # the attested forms did not settle it: try again with the regular
+                # forms latin_forms can make, which the narrative may never print.
+                # Same pool, same filters, same alignment — an attested answer that
+                # already stood is never replaced, because we only get here when
+                # none did.
+                if t.blank == "A":
+                    extra = generated_stem_candidates(t.stem, lex, cands, chapter_lemmas)
+                elif kind == "B":
+                    extra = [f for f in (gen_bank or []) if f not in cands]
+                else:
+                    extra = []
+                if extra:
+                    lex.gen_active = True
+                    try:
+                        kept = survivors(cands + extra, sent, i, lex, answers)
+                    finally:
+                        lex.gen_active = False
+                    if t.blank == "A":
+                        kept = [c for c in kept if ending_of(t.stem, c)]
+                    # exactly one form in the whole pool survives every filter: that
+                    # is the answer.  Anything less leaves the blank unverified — an
+                    # unresolved generated shortlist would also put a guess into
+                    # `answers`, where the next blank would read it as fact.
+                    if len(kept) == 1:
+                        lex.gen_active = True
+                        try:
+                            f2, n2, _ = resolve_blank(sent, i, kept, text, lex, answers, focus)
+                        finally:
+                            lex.gen_active = False
+                        forms, note, ok, gen = f2, n2, True, True
+            results[i] = {"forms": forms, "note": note, "ok": ok, "generated": gen}
             if forms:
                 answers[id(t)] = forms[0]
         pending = nxt if round_ < 2 else [i for i in blanks if sent[i].blank != "P" and i not in from_text]
@@ -1356,6 +1527,15 @@ def build_chapter(c: int, pdf, pages: list[int], lex: Lex, lem: bv.Lemmatiser, c
     out["bank"] = bank_list
     rep["bank"] = len(bank_lemmas)
     ukeys = unit_keys(units, lem)
+    gen_bank = generated_bank_candidates(bank_lemmas, lex, list(bank_forms.keys()))
+    chapter_lemmas = set(bank_lemmas)
+    for k in text.uni:
+        e = text.lem_entry(k)
+        if e is not None:
+            try:
+                chapter_lemmas.add(bv.lemma_key(e))
+            except Exception:
+                pass
     for kind in ("A", "B", "C"):
         rows = blocks.get(kind, [])
         if dump:
@@ -1371,11 +1551,10 @@ def build_chapter(c: int, pdf, pages: list[int], lex: Lex, lem: bv.Lemmatiser, c
         if kind == "C":
             items = build_c(sents, units, ukeys, lex, lem)
         else:
-            items = []
-            for sent in sents:
-                if not any(t.blank for t in sent) and not _WORD.search(render_text(sent)):
-                    continue
-                items.append(resolve_sentence(sent, kind, text, lex, library_forms, bank_lemmas, bank_forms))
+            keep = [sent for sent in sents
+                    if any(t.blank for t in sent) or _WORD.search(render_text(sent))]
+            items = [resolve_sentence(sent, kind, text, lex, library_forms, bank_lemmas,
+                                      bank_forms, gen_bank, chapter_lemmas) for sent in keep]
             if kind == "B":
                 fill_banks(items, lex, c)
         out[kind] = items
