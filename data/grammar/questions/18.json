@@ -1,0 +1,612 @@
+{
+  "chapter": 18,
+  "week_id": "r18",
+  "title": "Litterae Latīnae",
+  "items": [
+    {
+      "id": "q18-01",
+      "qword": "quis",
+      "q": "Quī litterās Latīnās discunt?",
+      "en": "Who learn the Latin letters?",
+      "unit_id": "r18:2.1",
+      "answers": [
+        "parvī discipulī"
+      ],
+      "input": "choice",
+      "hint": "a noun with adjective in the nominative plural",
+      "choices": [
+        "parvī discipulī",
+        "magnī discipulī",
+        "magistrī doctī",
+        "servī Graecī"
+      ]
+    },
+    {
+      "id": "q18-02",
+      "qword": "quid",
+      "q": "Quid magnī discipulī discunt?",
+      "en": "What do the older pupils learn?",
+      "unit_id": "r18:3.1",
+      "answers": [
+        "litterās Graecās et linguam Graecam",
+        "litterās Graecās",
+        "linguam Graecam",
+        "Litterās Graecās et linguam Graecam discunt."
+      ],
+      "input": "type",
+      "hint": "nouns in the accusative (the objects)"
+    },
+    {
+      "id": "q18-03",
+      "qword": "quālis",
+      "q": "Quālis est lingua Graeca?",
+      "en": "What is the Greek language like?",
+      "unit_id": "r18:4.1",
+      "answers": [
+        "difficilis"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative"
+    },
+    {
+      "id": "q18-04",
+      "qword": "quālis",
+      "q": "Quālēs litterae sunt Y et Z in linguā Latīnā?",
+      "en": "What kind of letters are Y and Z in Latin?",
+      "unit_id": "r18:12.1",
+      "answers": [
+        "rārae"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative plural"
+    },
+    {
+      "id": "q18-05",
+      "qword": "quot",
+      "q": "Quot litterās habet vocābulum 'amīca'?",
+      "en": "How many letters does the word 'amīca' have?",
+      "unit_id": "r18:19.1",
+      "answers": [
+        "quīnque"
+      ],
+      "input": "tap",
+      "hint": "a number with 'litterās' in the accusative"
+    },
+    {
+      "id": "q18-06",
+      "qword": "cūr",
+      "q": "Cūr numerus syllabārum et vōcālium īdem est?",
+      "en": "Why is the number of syllables and vowels the same?",
+      "unit_id": "r18:20.1",
+      "answers": [
+        "quia quaeque syllaba vōcālem habet",
+        "quod quaeque syllaba vōcālem habet",
+        "Quaeque syllaba vōcālem habet."
+      ],
+      "input": "type",
+      "hint": "a reason clause with 'quia' (each syllable ...)"
+    },
+    {
+      "id": "q18-07",
+      "qword": "num",
+      "q": "Num sine vōcālī syllaba fierī potest?",
+      "en": "Can a syllable be formed without a vowel?",
+      "unit_id": "r18:24.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn potest",
+        "Sine vōcālī syllaba fierī nōn potest."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    },
+    {
+      "id": "q18-08",
+      "qword": "quandō",
+      "q": "Quandō vocābula fīunt?",
+      "en": "When are words formed?",
+      "unit_id": "r18:29.1",
+      "answers": [
+        "cum syllabae iunguntur"
+      ],
+      "input": "choice",
+      "hint": "a 'cum' clause (when ...)",
+      "choices": [
+        "cum syllabae iunguntur",
+        "cum vocābula coniunguntur",
+        "cum litterae dēsunt",
+        "cum discipulī scrībunt"
+      ]
+    },
+    {
+      "id": "q18-09",
+      "qword": "quid",
+      "q": "Quid fit cum vocābula coniunguntur?",
+      "en": "What is formed when words are joined together?",
+      "unit_id": "r18:29.2",
+      "answers": [
+        "sententiae"
+      ],
+      "input": "choice",
+      "hint": "a noun in the nominative plural",
+      "choices": [
+        "sententiae",
+        "vocābula",
+        "syllabae",
+        "litterae"
+      ]
+    },
+    {
+      "id": "q18-10",
+      "qword": "cūr",
+      "q": "Cūr magister et librōs Latīnōs et Graecōs legere potest?",
+      "en": "Why can the master read both Latin and Greek books?",
+      "unit_id": "r18:37.2",
+      "answers": [
+        "nam is utramque linguam scit",
+        "quia utramque linguam scit",
+        "quod utramque linguam scit",
+        "Is utramque linguam scit."
+      ],
+      "input": "type",
+      "hint": "a reason: he knows ... (both languages)"
+    },
+    {
+      "id": "q18-11",
+      "qword": "quid",
+      "q": "Quid puerī in lūdō discunt praeter legere?",
+      "en": "What do the boys learn at school besides reading?",
+      "unit_id": "r18:48.1",
+      "answers": [
+        "scrībere"
+      ],
+      "input": "tap",
+      "hint": "an infinitive (to ...)"
+    },
+    {
+      "id": "q18-12",
+      "qword": "quid",
+      "q": "Quid quisque puer prōmit?",
+      "en": "What does each boy take out?",
+      "unit_id": "r18:55.1",
+      "answers": [
+        "stilum et rēgulam"
+      ],
+      "input": "choice",
+      "hint": "two nouns in the accusative (the objects)",
+      "choices": [
+        "stilum et rēgulam",
+        "calamum et chartam",
+        "tabulam et cēram",
+        "librum et tabulam"
+      ]
+    },
+    {
+      "id": "q18-13",
+      "qword": "quōmodo",
+      "q": "Quōmodo discipulī eandem sententiam scrībunt?",
+      "en": "How do the pupils write the same sentence?",
+      "unit_id": "r18:56.1",
+      "answers": [
+        "variīs modīs",
+        "nōn eōdem modō, sed variīs modīs",
+        "Variīs modīs scrībunt."
+      ],
+      "input": "type",
+      "hint": "ablative of manner (in ... ways)"
+    },
+    {
+      "id": "q18-14",
+      "qword": "quis",
+      "q": "Quis ūnus ex tribus puerīs rēctē scrībit?",
+      "en": "Which one of the three boys writes correctly?",
+      "unit_id": "r18:58.1",
+      "answers": [
+        "Sextus"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q18-15",
+      "qword": "quis",
+      "q": "Cui discipulī tabulās suās dant?",
+      "en": "To whom do the pupils give their tablets?",
+      "unit_id": "r18:63.1",
+      "answers": [
+        "magistrō"
+      ],
+      "input": "choice",
+      "hint": "a noun in the dative (to whom)",
+      "choices": [
+        "magistrō",
+        "Sextō",
+        "Zēnōnī",
+        "patrī"
+      ]
+    },
+    {
+      "id": "q18-16",
+      "qword": "quālis",
+      "q": "Quālēs sunt litterae Mārcī et Titī?",
+      "en": "What are Marcus's and Titus's letters like?",
+      "unit_id": "r18:66.1",
+      "answers": [
+        "foedae"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative plural"
+    },
+    {
+      "id": "q18-17",
+      "qword": "quis",
+      "q": "Cui magister prīmum tabulam reddit?",
+      "en": "To whom does the master give back the tablet first?",
+      "unit_id": "r18:67.1",
+      "answers": [
+        "Sextō"
+      ],
+      "input": "choice",
+      "hint": "a name in the dative (to whom)",
+      "choices": [
+        "Sextō",
+        "Titō",
+        "Mārcō",
+        "Quīntō"
+      ]
+    },
+    {
+      "id": "q18-18",
+      "qword": "quōmodo",
+      "q": "Quōmodo magister Titum et Mārcum reprehendit?",
+      "en": "How does the master scold Titus and Marcus?",
+      "unit_id": "r18:72.1",
+      "answers": [
+        "sevērē"
+      ],
+      "input": "tap",
+      "hint": "an adverb (how)"
+    },
+    {
+      "id": "q18-19",
+      "qword": "quis",
+      "q": "Cuius litterae pulcherrimae sunt, ut Titus dīcit?",
+      "en": "Whose letters are the most beautiful, as Titus says?",
+      "unit_id": "r18:73.1",
+      "answers": [
+        "Sextī"
+      ],
+      "input": "tap",
+      "hint": "a name in the genitive (whose)"
+    },
+    {
+      "id": "q18-20",
+      "qword": "-ne",
+      "q": "Scrībitne Titus pulchrius quam Mārcus?",
+      "en": "Does Titus write more beautifully than Marcus?",
+      "unit_id": "r18:77.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn pulchrius",
+        "Neque pulchrius neque foedius scrībit quam Mārcus",
+        "Litterae eōrum aequē foedae sunt."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (their letters are equally ugly)"
+    },
+    {
+      "id": "q18-21",
+      "qword": "quis",
+      "q": "Quis prāvissimē scrībit?",
+      "en": "Who writes the most incorrectly?",
+      "unit_id": "r18:82.1",
+      "answers": [
+        "Mārcus",
+        "ille",
+        "Nēmō prāvius scrībit quam Mārcus.",
+        "Nēmō prāvius scrībit quam ille."
+      ],
+      "input": "type",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q18-22",
+      "qword": "quis",
+      "q": "Cum quō Titus sē comparāre dēbet?",
+      "en": "With whom should Titus compare himself?",
+      "unit_id": "r18:85.1",
+      "answers": [
+        "Sextō"
+      ],
+      "input": "tap",
+      "hint": "a name in the ablative after 'cum' (with ...)"
+    },
+    {
+      "id": "q18-23",
+      "qword": "quōmodo",
+      "q": "Quōmodo Mārcus scrībit, ut magister dīcit?",
+      "en": "How does Marcus write, according to the master?",
+      "unit_id": "r18:86.1",
+      "answers": [
+        "foedissimē et prāvissimē"
+      ],
+      "input": "choice",
+      "hint": "superlative adverbs (how)",
+      "choices": [
+        "foedissimē et prāvissimē",
+        "pulcherrimē et rēctissimē",
+        "pulchrius quam Titus",
+        "leviter et rēctē"
+      ]
+    },
+    {
+      "id": "q18-24",
+      "qword": "uter",
+      "q": "Uter sevērius reprehenditur, Mārcus an Titus?",
+      "en": "Which of the two is scolded more severely, Marcus or Titus?",
+      "unit_id": "r18:89.1",
+      "answers": [
+        "Mārcus"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q18-25",
+      "qword": "quot",
+      "q": "Quot litterās deesse magister cernit?",
+      "en": "How many letters does the master see are missing?",
+      "unit_id": "r18:92.1",
+      "answers": [
+        "quattuor"
+      ],
+      "input": "tap",
+      "hint": "a number with 'litterās' in the accusative"
+    },
+    {
+      "id": "q18-26",
+      "qword": "quis",
+      "q": "Quae littera in vocābulō prīmō et postrēmō deest?",
+      "en": "Which letter is missing in the first and the last word?",
+      "unit_id": "r18:94.1",
+      "answers": [
+        "H"
+      ],
+      "input": "tap",
+      "hint": "a letter (the subject of 'deest')"
+    },
+    {
+      "id": "q18-27",
+      "qword": "quid",
+      "q": "Quid est cēra?",
+      "en": "What is wax?",
+      "unit_id": "r18:109.1",
+      "answers": [
+        "māteria mollis quam apēs faciunt"
+      ],
+      "input": "choice",
+      "hint": "a noun with adjective in the nominative and a relative clause",
+      "choices": [
+        "māteria mollis quam apēs faciunt",
+        "māteria dūra ex quā gladiī efficiuntur",
+        "alta herba quae in Aegyptō reperitur",
+        "pecūnia quam magister accipit"
+      ]
+    },
+    {
+      "id": "q18-28",
+      "qword": "quot",
+      "q": "Quotiēs Mārcus v scrībit?",
+      "en": "How many times does Marcus write v?",
+      "unit_id": "r18:122.2",
+      "answers": [
+        "quater"
+      ],
+      "input": "tap",
+      "hint": "a number adverb (how many times)"
+    },
+    {
+      "id": "q18-29",
+      "qword": "-ne",
+      "q": "Animadvertitne magister hoc?",
+      "en": "Does the master notice this?",
+      "unit_id": "r18:130.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn animadvertit",
+        "Magister hoc nōn animadvertit."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (he does not)"
+    },
+    {
+      "id": "q18-30",
+      "qword": "num",
+      "q": "Num in vocābulō 'hoculōs' littera deest?",
+      "en": "Is a letter missing in the word 'hoculōs'?",
+      "unit_id": "r18:140.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Immō superest",
+        "Nōn deest, at superest H littera",
+        "Immō vērō nōn deest, at superest H littera!"
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no' (a letter is extra, not missing)"
+    },
+    {
+      "id": "q18-31",
+      "qword": "-ne",
+      "q": "Estne pater Mārcī semper domī?",
+      "en": "Is Marcus's father always at home?",
+      "unit_id": "r18:152.2",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn semper",
+        "Saepe abest",
+        "Saepe abest pater meus.",
+        "Nōn semper; saepe abest."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (he is often away)"
+    },
+    {
+      "id": "q18-32",
+      "qword": "quandō",
+      "q": "Quandō oportet Mārcum epistulās ad patrem scrībere?",
+      "en": "When should Marcus write letters to his father?",
+      "unit_id": "r18:153.1",
+      "answers": [
+        "cum pater eius abest",
+        "cum pater abest",
+        "Cum pater tuus abest",
+        "Cum pater eius abest, oportet eum epistulās ad eum scrībere."
+      ],
+      "input": "type",
+      "hint": "a 'cum' clause (when ...)"
+    },
+    {
+      "id": "q18-33",
+      "qword": "quālis",
+      "q": "Quālis puer est Sextus?",
+      "en": "What kind of boy is Sextus?",
+      "unit_id": "r18:156.1",
+      "answers": [
+        "probus ac tam impiger quam apis"
+      ],
+      "input": "choice",
+      "hint": "adjectives in the nominative with a comparison",
+      "choices": [
+        "probus ac tam impiger quam apis",
+        "piger ac tam stultus quam asinus",
+        "improbus ac foedus",
+        "doctus ac sevērus"
+      ]
+    },
+    {
+      "id": "q18-34",
+      "qword": "quis",
+      "q": "Cui Mārcus dictat?",
+      "en": "To whom does Marcus dictate?",
+      "unit_id": "r18:158.1",
+      "answers": [
+        "Zēnōnī"
+      ],
+      "input": "tap",
+      "hint": "a name in the dative (to whom)"
+    },
+    {
+      "id": "q18-35",
+      "qword": "quis",
+      "q": "Quis est Zēnō?",
+      "en": "Who is Zeno?",
+      "unit_id": "r18:159.1",
+      "answers": [
+        "servus doctus quī et Latīnē et Graecē scit"
+      ],
+      "input": "choice",
+      "hint": "a noun in the nominative with a relative clause",
+      "choices": [
+        "servus doctus quī et Latīnē et Graecē scit",
+        "magister sevērus quī puerōs docet",
+        "pater Mārcī quī saepe abest",
+        "discipulus probus quī epistulās scrībit"
+      ]
+    },
+    {
+      "id": "q18-36",
+      "qword": "quōmodo",
+      "q": "Quōmodo magister scrībit?",
+      "en": "With what does the master write?",
+      "unit_id": "r18:161.1",
+      "answers": [
+        "calamō"
+      ],
+      "input": "tap",
+      "hint": "a noun in the ablative of means (with a ...)"
+    },
+    {
+      "id": "q18-37",
+      "qword": "unde",
+      "q": "Unde charta efficitur?",
+      "en": "What is paper made from?",
+      "unit_id": "r18:161.1",
+      "answers": [
+        "ex papyrō",
+        "Charta ex papyrō efficitur."
+      ],
+      "input": "type",
+      "hint": "ablative after 'ex' (out of ...)"
+    },
+    {
+      "id": "q18-38",
+      "qword": "quis",
+      "q": "Quī diēs est hodiē?",
+      "en": "What day is it today?",
+      "unit_id": "r18:180.1",
+      "answers": [
+        "kalendae Iūniae",
+        "Kalendae Iūniae",
+        "Hodiē kalendae Iūniae sunt."
+      ],
+      "input": "type",
+      "hint": "a date in the nominative plural"
+    },
+    {
+      "id": "q18-39",
+      "qword": "quid",
+      "q": "Quid est mercēs?",
+      "en": "What is a fee?",
+      "unit_id": "r18:182.1",
+      "answers": [
+        "pecūnia quam magister quōque mēnse ā patribus discipulōrum accipit"
+      ],
+      "input": "choice",
+      "hint": "a noun in the nominative with a relative clause",
+      "choices": [
+        "pecūnia quam magister quōque mēnse ā patribus discipulōrum accipit",
+        "māteria mollis quam apēs faciunt",
+        "epistula quam magister ad patrem scrībit",
+        "charta quae ex papyrō efficitur"
+      ]
+    },
+    {
+      "id": "q18-40",
+      "qword": "quis",
+      "q": "Quī statim magistrō mercēdem dant?",
+      "en": "Who give the master the fee at once?",
+      "unit_id": "r18:186.1",
+      "answers": [
+        "Sextus et Titus"
+      ],
+      "input": "choice",
+      "hint": "two names in the nominative",
+      "choices": [
+        "Sextus et Titus",
+        "Mārcus et Titus",
+        "Sextus et Mārcus",
+        "Zēnō et Sextus"
+      ]
+    },
+    {
+      "id": "q18-41",
+      "qword": "num",
+      "q": "Num Mārcus mercēdem sēcum fert?",
+      "en": "Does Marcus have the fee with him?",
+      "unit_id": "r18:186.2",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn fert",
+        "Mārcus mercēdem sēcum nōn fert."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    }
+  ]
+}

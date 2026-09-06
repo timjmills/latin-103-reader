@@ -1,0 +1,628 @@
+{
+  "chapter": 19,
+  "week_id": "r19",
+  "title": "Marītus et Uxor",
+  "items": [
+    {
+      "id": "q19-01",
+      "qword": "ubi",
+      "q": "Ubi Iūlius cum uxōre suā ambulat?",
+      "en": "Where is Julius walking with his wife?",
+      "unit_id": "r19:1.1",
+      "answers": [
+        "peristylō"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'in' (place where)"
+    },
+    {
+      "id": "q19-02",
+      "qword": "quot",
+      "q": "Quot signa inter columnās stant?",
+      "en": "How many statues stand between the columns?",
+      "unit_id": "r19:3.1",
+      "answers": [
+        "tria"
+      ],
+      "input": "tap",
+      "hint": "a number in the nominative neuter"
+    },
+    {
+      "id": "q19-03",
+      "qword": "quis",
+      "q": "Cuius fīlius est Cupīdō?",
+      "en": "Whose son is Cupid?",
+      "unit_id": "r19:6.2",
+      "answers": [
+        "Veneris et Mārtis"
+      ],
+      "input": "choice",
+      "hint": "two names in the genitive (whose)",
+      "choices": [
+        "Veneris et Mārtis",
+        "Iūnōnis et Iovis",
+        "Veneris et Vulcānī",
+        "Iūnōnis et Mārtis"
+      ]
+    },
+    {
+      "id": "q19-04",
+      "qword": "cūr",
+      "q": "Cūr Venus mala uxor est?",
+      "en": "Why is Venus a bad wife?",
+      "unit_id": "r19:8.1",
+      "answers": [
+        "quia aliōs deōs amat praeter coniugem suum",
+        "quod aliōs deōs amat praeter coniugem suum Vulcānum",
+        "quia aliōs deōs amat praeter coniugem suum Vulcānum",
+        "quia aliōs deōs amat",
+        "Venus aliōs deōs amat praeter coniugem suum Vulcānum."
+      ],
+      "input": "type",
+      "hint": "a reason: she loves ... (accusative object)"
+    },
+    {
+      "id": "q19-05",
+      "qword": "quālis",
+      "q": "Quālis marītus est Iuppiter?",
+      "en": "What kind of husband is Jupiter?",
+      "unit_id": "r19:11.1",
+      "answers": [
+        "malus"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative"
+    },
+    {
+      "id": "q19-06",
+      "qword": "quis",
+      "q": "Quae dea pessima uxor est?",
+      "en": "Which goddess is the worst wife?",
+      "unit_id": "r19:15.1",
+      "answers": [
+        "Venus"
+      ],
+      "input": "choice",
+      "hint": "a name in the nominative",
+      "choices": [
+        "Venus",
+        "Iūnō",
+        "Aemilia",
+        "Minerva"
+      ]
+    },
+    {
+      "id": "q19-07",
+      "qword": "quis",
+      "q": "Quam deam mātrēs familiās invocant?",
+      "en": "Which goddess do mothers of families call upon?",
+      "unit_id": "r19:17.1",
+      "answers": [
+        "Iūnōnem"
+      ],
+      "input": "tap",
+      "hint": "a name in the accusative (the object)"
+    },
+    {
+      "id": "q19-08",
+      "qword": "cūr",
+      "q": "Cūr amantēs Venerem et Cupīdinem invocant?",
+      "en": "Why do lovers call upon Venus and Cupid?",
+      "unit_id": "r19:18.1",
+      "answers": [
+        "nam Venus et Cupīdō amōrem in cordibus hominum excitāre possunt",
+        "quia Venus et Cupīdō amōrem in cordibus hominum excitāre possunt",
+        "quod amōrem in cordibus hominum excitāre possunt",
+        "quia amōrem excitāre possunt",
+        "quia amōrem in cordibus hominum excitāre possunt"
+      ],
+      "input": "type",
+      "hint": "a reason: they can ... (infinitive with 'possunt')"
+    },
+    {
+      "id": "q19-09",
+      "qword": "quis",
+      "q": "Quis est deus amōris?",
+      "en": "Who is the god of love?",
+      "unit_id": "r19:20.1",
+      "answers": [
+        "Cupīdō"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q19-10",
+      "qword": "quālis",
+      "q": "Quālis uxor est Aemilia?",
+      "en": "What kind of wife is Aemilia?",
+      "unit_id": "r19:26.1",
+      "answers": [
+        "bona"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative"
+    },
+    {
+      "id": "q19-11",
+      "qword": "-ne",
+      "q": "Estne Aemilia uxor melior quam Venus?",
+      "en": "Is Aemilia a better wife than Venus?",
+      "unit_id": "r19:27.1",
+      "answers": [
+        "Ita",
+        "Ita est",
+        "Certē",
+        "Melior est",
+        "Ita, melior est",
+        "Aemilia uxor melior est quam Venus."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (she certainly is)"
+    },
+    {
+      "id": "q19-12",
+      "qword": "quot",
+      "q": "Quot līberōrum parentēs sunt Iūlius et Aemilia?",
+      "en": "Of how many children are Julius and Aemilia the parents?",
+      "unit_id": "r19:31.1",
+      "answers": [
+        "trium"
+      ],
+      "input": "tap",
+      "hint": "a number in the genitive (of ... children)"
+    },
+    {
+      "id": "q19-13",
+      "qword": "quot",
+      "q": "Quot annōs habet Mārcus?",
+      "en": "How old is Marcus?",
+      "unit_id": "r19:33.1",
+      "answers": [
+        "octō"
+      ],
+      "input": "choice",
+      "hint": "a number with 'annōs' in the accusative",
+      "choices": [
+        "octō",
+        "septem",
+        "quīnque",
+        "decem"
+      ]
+    },
+    {
+      "id": "q19-14",
+      "qword": "uter",
+      "q": "Uter māior est, Quīntus an Mārcus?",
+      "en": "Which of the two is older, Quintus or Marcus?",
+      "unit_id": "r19:35.1",
+      "answers": [
+        "Mārcus"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative (after 'quam')"
+    },
+    {
+      "id": "q19-15",
+      "qword": "quis",
+      "q": "Quis est māximus līberōrum?",
+      "en": "Who is the oldest of the children?",
+      "unit_id": "r19:36.1",
+      "answers": [
+        "Mārcus"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q19-16",
+      "qword": "quandō",
+      "q": "Quandō Iūlius pater familiās nōn erat?",
+      "en": "When was Julius not yet a father of a family?",
+      "unit_id": "r19:38.1",
+      "answers": [
+        "ante decem annōs",
+        "Ante decem annōs",
+        "Ante decem annōs Iūlius pater familiās nōn erat."
+      ],
+      "input": "type",
+      "hint": "accusative after 'ante' (... years ago)"
+    },
+    {
+      "id": "q19-17",
+      "qword": "ubi",
+      "q": "Ubi Aemilia virgō habitābat?",
+      "en": "Where did Aemilia live as a girl?",
+      "unit_id": "r19:40.1",
+      "answers": [
+        "Rōmae apud parentēs suōs"
+      ],
+      "input": "choice",
+      "hint": "'Rōmae' (locative, at Rome) with 'apud' + accusative",
+      "choices": [
+        "Rōmae apud parentēs suōs",
+        "Tusculī in vīllā magnificā",
+        "in eādem domō cum Iūliō",
+        "in Palātiō apud Crassum"
+      ]
+    },
+    {
+      "id": "q19-18",
+      "qword": "num",
+      "q": "Num Iūlius et Aemilia in eādem domō habitābant?",
+      "en": "Did Julius and Aemilia live in the same house?",
+      "unit_id": "r19:44.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn in eādem domō",
+        "In eādem urbe habitābant, nōn in eādem domō.",
+        "Nōn, in eādem urbe, nōn in eādem domō"
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no' (same city, not same house)"
+    },
+    {
+      "id": "q19-19",
+      "qword": "ubi",
+      "q": "Ubi est forum Rōmānum?",
+      "en": "Where is the Roman forum?",
+      "unit_id": "r19:47.1",
+      "answers": [
+        "in mediā urbe inter collēs Capitōlium et Palātium",
+        "in mediā urbe",
+        "inter collēs Capitōlium et Palātium",
+        "In mediā urbe inter collēs Capitōlium et Palātium est forum Rōmānum."
+      ],
+      "input": "type",
+      "hint": "ablative after 'in' (in the middle of ...)"
+    },
+    {
+      "id": "q19-20",
+      "qword": "ubi",
+      "q": "Ubi est templum Iovis Optimī Māximī?",
+      "en": "Where is the temple of Jupiter Best and Greatest?",
+      "unit_id": "r19:49.1",
+      "answers": [
+        "Capitōliō"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'in' (place where)"
+    },
+    {
+      "id": "q19-21",
+      "qword": "uter",
+      "q": "Utrum oppidum māius est, Ōstia an Tusculum?",
+      "en": "Which of the two towns is bigger, Ostia or Tusculum?",
+      "unit_id": "r19:56.1",
+      "answers": [
+        "Ōstia"
+      ],
+      "input": "tap",
+      "hint": "a town name in the nominative"
+    },
+    {
+      "id": "q19-22",
+      "qword": "quālis",
+      "q": "Quālis homō erat pater Aemiliae?",
+      "en": "What kind of man was Aemilia's father?",
+      "unit_id": "r19:61.1",
+      "answers": [
+        "pauper"
+      ],
+      "input": "choice",
+      "hint": "an adjective in the nominative",
+      "choices": [
+        "pauper",
+        "dīves",
+        "mortuus",
+        "magnificus"
+      ]
+    },
+    {
+      "id": "q19-23",
+      "qword": "cūr",
+      "q": "Cūr Iūlius virginem pauperem amābat?",
+      "en": "Why did Julius love a poor girl?",
+      "unit_id": "r19:65.1",
+      "answers": [
+        "Quia ea virgō proba ac fōrmōsa erat",
+        "quia ea virgō proba ac fōrmōsa erat",
+        "quod proba ac fōrmōsa erat",
+        "quia proba et fōrmōsa erat",
+        "quia proba ac fōrmōsa erat"
+      ],
+      "input": "type",
+      "hint": "a reason with 'quia' and two adjectives in the nominative"
+    },
+    {
+      "id": "q19-24",
+      "qword": "quōmodo",
+      "q": "Quōmodo Iūlius Aemiliam appellābat?",
+      "en": "What did Julius call Aemilia?",
+      "unit_id": "r19:66.1",
+      "answers": [
+        "amīcam"
+      ],
+      "input": "tap",
+      "hint": "a noun in the accusative (the name he used)"
+    },
+    {
+      "id": "q19-25",
+      "qword": "quis",
+      "q": "Quem Aemilia amābat?",
+      "en": "Whom did Aemilia love?",
+      "unit_id": "r19:67.1",
+      "answers": [
+        "alium virum Rōmānum"
+      ],
+      "input": "choice",
+      "hint": "a noun with adjectives in the accusative (the object)",
+      "choices": [
+        "alium virum Rōmānum",
+        "Iūlium adulēscentem",
+        "Vulcānum deum",
+        "patrem suum pauperem"
+      ]
+    },
+    {
+      "id": "q19-26",
+      "qword": "quōmodo",
+      "q": "Quōmodo Iūlius nocte dormiēbat?",
+      "en": "How did Julius sleep at night?",
+      "unit_id": "r19:69.1",
+      "answers": [
+        "male"
+      ],
+      "input": "choice",
+      "hint": "an adverb (how)",
+      "choices": [
+        "male",
+        "bene",
+        "cotīdiē",
+        "numquam"
+      ]
+    },
+    {
+      "id": "q19-27",
+      "qword": "cūr",
+      "q": "Cūr Aemilia ā Crassō nōn amābātur?",
+      "en": "Why was Aemilia not loved by Crassus?",
+      "unit_id": "r19:71.1",
+      "answers": [
+        "quod parentēs Aemiliae pauperēs erant",
+        "quia parentēs eius pauperēs erant",
+        "quod parentēs eius pauperēs erant",
+        "quia parentēs Aemiliae pauperēs erant",
+        "Quod parentēs Aemiliae pauperēs erant."
+      ],
+      "input": "type",
+      "hint": "a reason clause with 'quod' (her parents were ...)"
+    },
+    {
+      "id": "q19-28",
+      "qword": "ubi",
+      "q": "Ubi Aemilia Iūlium vidēbat?",
+      "en": "Where did Aemilia see Julius?",
+      "unit_id": "r19:74.1",
+      "answers": [
+        "forō"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'in' (place where)"
+    },
+    {
+      "id": "q19-29",
+      "qword": "quid",
+      "q": "Quid Iūlius cum epistulīs ad Aemiliam mittere solēbat?",
+      "en": "What did Julius use to send Aemilia along with the letters?",
+      "unit_id": "r19:76.1",
+      "answers": [
+        "rosās aliōsque flōrēs pulcherrimōs"
+      ],
+      "input": "choice",
+      "hint": "nouns in the accusative (the objects)",
+      "choices": [
+        "rosās aliōsque flōrēs pulcherrimōs",
+        "dōna magnifica et pecūniam",
+        "signa Veneris et Cupīdinis",
+        "māla et pānem"
+      ]
+    },
+    {
+      "id": "q19-30",
+      "qword": "quandō",
+      "q": "Quandō Iūlius et Aemilia coniugēs erant?",
+      "en": "When were Julius and Aemilia husband and wife?",
+      "unit_id": "r19:83.1",
+      "answers": [
+        "Annō post",
+        "annō post",
+        "ūnō annō post"
+      ],
+      "input": "type",
+      "hint": "ablative of time with 'post' (a year ...)"
+    },
+    {
+      "id": "q19-31",
+      "qword": "-ne",
+      "q": "Suntne coniugēs etiam nunc beātī?",
+      "en": "Are the couple happy even now?",
+      "unit_id": "r19:86.1",
+      "answers": [
+        "Ita",
+        "Ita est",
+        "Beātī sunt",
+        "Ita, beātī sunt",
+        "Etiam nunc beātī sunt coniugēs."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (they are)"
+    },
+    {
+      "id": "q19-32",
+      "qword": "num",
+      "q": "Num amor Iūliī tempore minuitur?",
+      "en": "Is Julius's love lessened by time?",
+      "unit_id": "r19:90.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn minuitur",
+        "Amor meus tempore nōn minuitur.",
+        "Amor eius tempore nōn minuitur."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    },
+    {
+      "id": "q19-33",
+      "qword": "quid",
+      "q": "Quid Aemilia cum epistulīs et flōribus Iūliī faciēbat?",
+      "en": "What did Aemilia do with Julius's letters and flowers?",
+      "unit_id": "r19:101.1",
+      "answers": [
+        "omnēs ad Iūlium remittēbat",
+        "ad eum remittēbat",
+        "omnēs ad eum remittēbat",
+        "remittēbat",
+        "omnēs ad mē remittēbās"
+      ],
+      "input": "type",
+      "hint": "a verb in the imperfect (she used to send them ...)"
+    },
+    {
+      "id": "q19-34",
+      "qword": "cūr",
+      "q": "Cūr ille vir Rōmānus Aemiliam nōn amābat?",
+      "en": "Why did that Roman man not love Aemilia?",
+      "unit_id": "r19:107.1",
+      "answers": [
+        "quod virgō pauper erat",
+        "quia virgō pauper erat",
+        "quod virgō pauper eram",
+        "Quod virgō pauper erat."
+      ],
+      "input": "type",
+      "hint": "a reason clause with 'quod' (she was a ... girl)"
+    },
+    {
+      "id": "q19-35",
+      "qword": "quis",
+      "q": "Quis sōlus amōre Aemiliae dignus erat?",
+      "en": "Who alone was worthy of Aemilia's love?",
+      "unit_id": "r19:111.2",
+      "answers": [
+        "Iūlius"
+      ],
+      "input": "choice",
+      "hint": "a name in the nominative",
+      "choices": [
+        "Iūlius",
+        "Crassus Dīves",
+        "Vulcānus",
+        "pater Aemiliae"
+      ]
+    },
+    {
+      "id": "q19-36",
+      "qword": "cūr",
+      "q": "Cūr Aemilia fēmina beāta est?",
+      "en": "Why is Aemilia a happy woman?",
+      "unit_id": "r19:115.2",
+      "answers": [
+        "quod marītum bonum habet"
+      ],
+      "input": "choice",
+      "hint": "a reason clause with 'quod' (because ...)",
+      "choices": [
+        "quod marītum bonum habet",
+        "quod pecūniam multam habet",
+        "quia pulcherrima omnium virginum est",
+        "quod Rōmae apud parentēs habitat"
+      ]
+    },
+    {
+      "id": "q19-37",
+      "qword": "ubi",
+      "q": "Ubi Iūlius et Aemilia decem annīs ante habitābant?",
+      "en": "Where did Julius and Aemilia live ten years ago?",
+      "unit_id": "r19:123.2",
+      "answers": [
+        "apud parentēs suōs",
+        "apud parentēs nostrōs",
+        "apud parentēs",
+        "Apud parentēs nostrōs habitābāmus.",
+        "Apud parentēs suōs habitābant."
+      ],
+      "input": "type",
+      "hint": "accusative after 'apud' (at the house of ...)"
+    },
+    {
+      "id": "q19-38",
+      "qword": "num",
+      "q": "Num Aemilia hodiē minus pulchra est quam tunc erat?",
+      "en": "Is Aemilia less beautiful today than she was then?",
+      "unit_id": "r19:135.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Tam pulchra est quam tunc",
+        "Mātrōna tam pulchra est quam virgō erat",
+        "Certē mātrōna tam pulchra es quam virgō erās.",
+        "Nōn, tam pulchra est quam tunc"
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no' (just as beautiful)"
+    },
+    {
+      "id": "q19-39",
+      "qword": "quālis",
+      "q": "Quālis erat Aemilia eō tempore?",
+      "en": "What was Aemilia like at that time?",
+      "unit_id": "r19:137.1",
+      "answers": [
+        "gracilior"
+      ],
+      "input": "tap",
+      "hint": "a comparative adjective in the nominative"
+    },
+    {
+      "id": "q19-40",
+      "qword": "quālis",
+      "q": "Quālem cibum Aemilia nunc ēst, ut Iūlius dīcit?",
+      "en": "What kind of food does Aemilia eat now, according to Julius?",
+      "unit_id": "r19:143.1",
+      "answers": [
+        "meliōrem"
+      ],
+      "input": "tap",
+      "hint": "a comparative adjective in the accusative"
+    },
+    {
+      "id": "q19-41",
+      "qword": "quis",
+      "q": "Cuius dōnum est amor?",
+      "en": "Whose gift is love?",
+      "unit_id": "r19:153.1",
+      "answers": [
+        "Veneris"
+      ],
+      "input": "tap",
+      "hint": "a name in the genitive (whose)"
+    },
+    {
+      "id": "q19-42",
+      "qword": "quid",
+      "q": "Quid sunt līberī?",
+      "en": "What are children?",
+      "unit_id": "r19:153.2",
+      "answers": [
+        "dōna Iūnōnis",
+        "Līberī dōna Iūnōnis sunt."
+      ],
+      "input": "type",
+      "hint": "a noun in the nominative plural with a genitive"
+    }
+  ]
+}

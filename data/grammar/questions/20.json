@@ -1,0 +1,635 @@
+{
+  "chapter": 20,
+  "week_id": "r20",
+  "title": "Parentēs",
+  "items": [
+    {
+      "id": "q20-01",
+      "qword": "quis",
+      "q": "Quī īnfantēs dīcuntur?",
+      "en": "Who are called infants?",
+      "unit_id": "r20:1.1",
+      "answers": [
+        "puerī parvulī quī nōndum fārī possunt"
+      ],
+      "input": "choice",
+      "hint": "a noun with adjective in the nominative and a relative clause",
+      "choices": [
+        "puerī parvulī quī nōndum fārī possunt",
+        "mulierēs quae aliēnōs īnfantēs alunt",
+        "puerī quī in lūdum eunt",
+        "līberī nautārum quī patrēs nōn vident"
+      ]
+    },
+    {
+      "id": "q20-02",
+      "qword": "ubi",
+      "q": "Ubi parvulus īnfans cubāre solet?",
+      "en": "Where does a little infant usually lie?",
+      "unit_id": "r20:2.1",
+      "answers": [
+        "cūnīs"
+      ],
+      "input": "tap",
+      "hint": "ablative after 'in' (place where)"
+    },
+    {
+      "id": "q20-03",
+      "qword": "quōmodo",
+      "q": "Quō īnfans, cui dentēs nūllī sunt, vīvit?",
+      "en": "On what does an infant with no teeth live?",
+      "unit_id": "r20:10.1",
+      "answers": [
+        "lacte"
+      ],
+      "input": "tap",
+      "hint": "a noun in the ablative (lives on ...)"
+    },
+    {
+      "id": "q20-04",
+      "qword": "quis",
+      "q": "Ā quā īnfans alitur, sī māter ipsa eum alere nōn potest?",
+      "en": "By whom is the infant fed, if the mother herself cannot feed it?",
+      "unit_id": "r20:12.1",
+      "answers": [
+        "ab aliā muliere",
+        "ab aliā muliere, quae eī in locō mātris est",
+        "ab aliā muliere quae eī in locō mātris est",
+        "Ab aliā muliere alitur."
+      ],
+      "input": "type",
+      "hint": "ablative after 'ab' (by another ...)"
+    },
+    {
+      "id": "q20-05",
+      "qword": "quis",
+      "q": "Ā quibus multī īnfantēs Rōmānī aluntur?",
+      "en": "By whom are many Roman infants fed?",
+      "unit_id": "r20:15.1",
+      "answers": [
+        "ā nūtrīcibus"
+      ],
+      "input": "choice",
+      "hint": "ablative after 'ā' (by whom)",
+      "choices": [
+        "ā nūtrīcibus",
+        "ā mātribus suīs",
+        "ā patribus",
+        "ab ancillīs"
+      ]
+    },
+    {
+      "id": "q20-06",
+      "qword": "quālis",
+      "q": "Quālēs sunt cūnae nunc?",
+      "en": "What are the cradle like now?",
+      "unit_id": "r20:19.1",
+      "answers": [
+        "vacuae"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative plural"
+    },
+    {
+      "id": "q20-07",
+      "qword": "quandō",
+      "q": "Quandō novus īnfans in cūnīs erit?",
+      "en": "When will there be a new baby in the cradle?",
+      "unit_id": "r20:21.1",
+      "answers": [
+        "post paucōs mēnsēs"
+      ],
+      "input": "choice",
+      "hint": "accusative after 'post' (after ...)",
+      "choices": [
+        "post paucōs mēnsēs",
+        "ante quīnque annōs",
+        "annō post",
+        "crās"
+      ]
+    },
+    {
+      "id": "q20-08",
+      "qword": "quot",
+      "q": "Quot līberōs tum Iūlius et Aemilia habēbunt?",
+      "en": "How many children will Julius and Aemilia have then?",
+      "unit_id": "r20:23.1",
+      "answers": [
+        "quattuor"
+      ],
+      "input": "tap",
+      "hint": "a number with 'līberōs' in the accusative"
+    },
+    {
+      "id": "q20-09",
+      "qword": "quōmodo",
+      "q": "Quōmodo Aemilia ab īnfante appellābitur?",
+      "en": "What will Aemilia be called by the baby?",
+      "unit_id": "r20:29.1",
+      "answers": [
+        "mamma"
+      ],
+      "input": "choice",
+      "hint": "a name in the nominative (after a passive verb)",
+      "choices": [
+        "mamma",
+        "māter",
+        "tata",
+        "Iūliola"
+      ]
+    },
+    {
+      "id": "q20-10",
+      "qword": "cūr",
+      "q": "Cūr īnfans 'mamma' et 'tata' dīcet, nōn 'māter' et 'pater'?",
+      "en": "Why will the baby say 'mamma' and 'tata', not 'māter' and 'pater'?",
+      "unit_id": "r20:29.1",
+      "answers": [
+        "neque enim īnfans ipsa nōmina 'patris' et 'mātris' dīcere poterit",
+        "quia nōmina 'patris' et 'mātris' dīcere nōn poterit",
+        "quod nōmina patris et mātris dīcere nōn poterit",
+        "quia īnfans ipsa nōmina patris et mātris dīcere nōn poterit",
+        "quia ea nōmina dīcere nōn poterit"
+      ],
+      "input": "type",
+      "hint": "a reason with the future of 'posse' (it will not be able to ...)"
+    },
+    {
+      "id": "q20-11",
+      "qword": "quis",
+      "q": "Quis initiō īnfantem sustinēbit ac manū dūcet?",
+      "en": "Who will hold the baby up and lead it by the hand at first?",
+      "unit_id": "r20:34.1",
+      "answers": [
+        "pater"
+      ],
+      "input": "tap",
+      "hint": "a noun in the nominative (the subject)"
+    },
+    {
+      "id": "q20-12",
+      "qword": "quis",
+      "q": "Ā quibus īnfans ambulāns laudābitur?",
+      "en": "By whom will the walking baby be praised?",
+      "unit_id": "r20:36.1",
+      "answers": [
+        "ā parentibus laetīs",
+        "ā parentibus",
+        "Ā parentibus laetīs laudābitur."
+      ],
+      "input": "type",
+      "hint": "ablative after 'ā' (by whom)"
+    },
+    {
+      "id": "q20-13",
+      "qword": "uter",
+      "q": "Utra īnfantem Aemiliae alet, māterne an nūtrīx?",
+      "en": "Which of the two will feed Aemilia's baby, the mother or the nurse?",
+      "unit_id": "r20:39.1",
+      "answers": [
+        "mātre"
+      ],
+      "input": "tap",
+      "hint": "a noun in the ablative after 'ā' (by whom, in the passive sentence)"
+    },
+    {
+      "id": "q20-14",
+      "qword": "quō",
+      "q": "Quō ancillae cūnās vesperī portābunt?",
+      "en": "Where will the maids carry the cradle to in the evening?",
+      "unit_id": "r20:42.2",
+      "answers": [
+        "in cubiculum parentum",
+        "in cubiculum",
+        "In cubiculum parentum portābunt."
+      ],
+      "input": "type",
+      "hint": "accusative after 'in' (motion into)"
+    },
+    {
+      "id": "q20-15",
+      "qword": "quālis",
+      "q": "Quālis Aemilia in sellā cōnsīdit?",
+      "en": "In what state does Aemilia sit down in the chair?",
+      "unit_id": "r20:47.2",
+      "answers": [
+        "fessa"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative (agreeing with Aemilia)"
+    },
+    {
+      "id": "q20-16",
+      "qword": "quid",
+      "q": "Dē quō tempore marītus et uxor iam colloquuntur?",
+      "en": "About what time are husband and wife now talking?",
+      "unit_id": "r20:48.1",
+      "answers": [
+        "dē tempore futūrō"
+      ],
+      "input": "choice",
+      "hint": "ablative after 'dē' (about ...)",
+      "choices": [
+        "dē tempore futūrō",
+        "dē tempore praeteritō",
+        "dē tempore praesentī",
+        "dē tempestāte"
+      ]
+    },
+    {
+      "id": "q20-17",
+      "qword": "quid",
+      "q": "Quid Iūlius iam intellegit?",
+      "en": "What does Julius now understand?",
+      "unit_id": "r20:51.1",
+      "answers": [
+        "Aemiliam novum īnfantem exspectāre",
+        "Aemiliam īnfantem exspectāre",
+        "Iūlius intellegit Aemiliam novum īnfantem exspectāre."
+      ],
+      "input": "type",
+      "hint": "an accusative with infinitive (that Aemilia ...)"
+    },
+    {
+      "id": "q20-18",
+      "qword": "quid",
+      "q": "Quid Aemilia habēre vult?",
+      "en": "What does Aemilia want to have?",
+      "unit_id": "r20:54.3",
+      "answers": [
+        "alteram fīliam"
+      ],
+      "input": "choice",
+      "hint": "a noun with adjective in the accusative (the object)",
+      "choices": [
+        "alteram fīliam",
+        "alterum fīlium",
+        "plūrēs fīliōs",
+        "novam nūtrīcem"
+      ]
+    },
+    {
+      "id": "q20-19",
+      "qword": "quis",
+      "q": "Quem Iūlius magis amābit quam parvulam fīliam?",
+      "en": "Whom will Julius love more than a little daughter?",
+      "unit_id": "r20:60.1",
+      "answers": [
+        "nēminem",
+        "Nēminem",
+        "Nēminem magis amābit quam parvulam fīliam."
+      ],
+      "input": "type",
+      "hint": "a pronoun in the accusative (nobody)"
+    },
+    {
+      "id": "q20-20",
+      "qword": "quis",
+      "q": "Quōs Iūlius saepe laudat?",
+      "en": "Whom does Julius often praise?",
+      "unit_id": "r20:61.1",
+      "answers": [
+        "Mārcum et Quīntum"
+      ],
+      "input": "choice",
+      "hint": "two names in the accusative (the objects)",
+      "choices": [
+        "Mārcum et Quīntum",
+        "Iūliam et Mārcum",
+        "Iūliam sōlam",
+        "Syram et Iūliam"
+      ]
+    },
+    {
+      "id": "q20-21",
+      "qword": "quālis",
+      "q": "Quālis puella est Iūlia?",
+      "en": "What kind of girl is Julia?",
+      "unit_id": "r20:61.1",
+      "answers": [
+        "proba"
+      ],
+      "input": "tap",
+      "hint": "an adjective in the nominative"
+    },
+    {
+      "id": "q20-22",
+      "qword": "quō",
+      "q": "Quō Aemilia gradum facit?",
+      "en": "Towards what does Aemilia take a step?",
+      "unit_id": "r20:64.1",
+      "answers": [
+        "ōstium"
+      ],
+      "input": "tap",
+      "hint": "accusative after 'adversus' (towards ...)"
+    },
+    {
+      "id": "q20-23",
+      "qword": "-ne",
+      "q": "Abitne Aemilia?",
+      "en": "Does Aemilia go away?",
+      "unit_id": "r20:70.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn abit",
+        "Nōn abit, sed apud marītum manet.",
+        "Aemilia nōn abit."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (she stays)"
+    },
+    {
+      "id": "q20-24",
+      "qword": "nōnne",
+      "q": "Nōnne Aemilia apud īnfantem suum manēbit?",
+      "en": "Won't Aemilia stay with her baby?",
+      "unit_id": "r20:75.1",
+      "answers": [
+        "Ita",
+        "Ita est",
+        "Manēbit",
+        "Ita, manēbit",
+        "Ego vērō manēbō apud īnfantem meum",
+        "Aemilia apud īnfantem suum manēbit."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'nōnne' expects 'yes'"
+    },
+    {
+      "id": "q20-25",
+      "qword": "quid",
+      "q": "Quid est mātris officium?",
+      "en": "What is a mother's duty?",
+      "unit_id": "r20:82.1",
+      "answers": [
+        "īnfantem ipsam cūrāre et alere"
+      ],
+      "input": "choice",
+      "hint": "two infinitives (to ... and to ...)",
+      "choices": [
+        "īnfantem ipsam cūrāre et alere",
+        "pecūniam facere ac familiam alere",
+        "cum īnfante vāgiente cubāre",
+        "īnfantem apud nūtrīcem relinquere"
+      ]
+    },
+    {
+      "id": "q20-26",
+      "qword": "quandō",
+      "q": "Quandō Aemilia apud īnfantem erit?",
+      "en": "When will Aemilia be with the baby?",
+      "unit_id": "r20:87.1",
+      "answers": [
+        "neque sōlum diē, sed etiam nocte",
+        "diē et nocte",
+        "et diē et nocte",
+        "semper",
+        "nocte",
+        "Neque sōlum diē, sed etiam nocte apud īnfantem erō."
+      ],
+      "input": "type",
+      "hint": "ablative of time (by day and by ...)"
+    },
+    {
+      "id": "q20-27",
+      "qword": "quid",
+      "q": "Quid est officium Iūliī, ut ipse dīcit?",
+      "en": "What is Julius's duty, as he himself says?",
+      "unit_id": "r20:96.1",
+      "answers": [
+        "pecūniam facere ac magnam familiam alere"
+      ],
+      "input": "choice",
+      "hint": "two infinitives (to ... and to ...)",
+      "choices": [
+        "pecūniam facere ac magnam familiam alere",
+        "cum īnfante vāgiente cubāre",
+        "īnfantem lacte alere",
+        "cūnās movēre et cantāre"
+      ]
+    },
+    {
+      "id": "q20-28",
+      "qword": "quis",
+      "q": "Cui somnus necessārius est?",
+      "en": "For whom is sleep necessary?",
+      "unit_id": "r20:98.1",
+      "answers": [
+        "virō"
+      ],
+      "input": "tap",
+      "hint": "a noun in the dative (necessary for ...)"
+    },
+    {
+      "id": "q20-29",
+      "qword": "quis",
+      "q": "Quis dominae in ōstiō occurrit?",
+      "en": "Who meets the mistress in the doorway?",
+      "unit_id": "r20:103.1",
+      "answers": [
+        "Syra"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative"
+    },
+    {
+      "id": "q20-30",
+      "qword": "cūr",
+      "q": "Cūr Syra et Iūlia in hortō nōn manent?",
+      "en": "Why don't Syra and Julia stay in the garden?",
+      "unit_id": "r20:107.1",
+      "answers": [
+        "Quia mox imbrem habēbimus",
+        "quia mox imbrem habēbunt",
+        "quia mox imber erit",
+        "quod mox imbrem habēbunt",
+        "quia caelum nūbibus ātrīs operītur"
+      ],
+      "input": "type",
+      "hint": "a reason with 'quia' and a future verb (rain is coming)"
+    },
+    {
+      "id": "q20-31",
+      "qword": "quid",
+      "q": "Quid illae nūbēs afferent?",
+      "en": "What will those clouds bring?",
+      "unit_id": "r20:111.1",
+      "answers": [
+        "imbrem"
+      ],
+      "input": "tap",
+      "hint": "a noun in the accusative (the object)"
+    },
+    {
+      "id": "q20-32",
+      "qword": "quō",
+      "q": "Quō Iūlius intrat?",
+      "en": "Where does Julius go into?",
+      "unit_id": "r20:114.1",
+      "answers": [
+        "ātrium"
+      ],
+      "input": "tap",
+      "hint": "a noun in the accusative (motion into)"
+    },
+    {
+      "id": "q20-33",
+      "qword": "quid",
+      "q": "Quid Iūlius et Aemilia in ātriō aspiciunt?",
+      "en": "What do Julius and Aemilia watch in the atrium?",
+      "unit_id": "r20:115.1",
+      "answers": [
+        "imbrem in impluvium cadentem"
+      ],
+      "input": "choice",
+      "hint": "accusative noun with a present participle",
+      "choices": [
+        "imbrem in impluvium cadentem",
+        "nūbēs ātrās",
+        "sōlem rūrsus lūcentem",
+        "Syram et Iūliam intrantēs"
+      ]
+    },
+    {
+      "id": "q20-34",
+      "qword": "cūr",
+      "q": "Cūr Iūlia laetātur?",
+      "en": "Why is Julia glad?",
+      "unit_id": "r20:126.1",
+      "answers": [
+        "quod pater eius nauta nōn est",
+        "quod pater meus nauta nōn est et domī apud nōs manēre potest",
+        "quia pater eius nauta nōn est",
+        "quod pater eius nauta nōn est et domī manēre potest"
+      ],
+      "input": "type",
+      "hint": "a reason clause with 'quod' (her father is not ...)"
+    },
+    {
+      "id": "q20-35",
+      "qword": "quandō",
+      "q": "Quandō Iūlius Rōmam ībit?",
+      "en": "When will Julius go to Rome?",
+      "unit_id": "r20:128.1",
+      "answers": [
+        "crās"
+      ],
+      "input": "choice",
+      "hint": "an adverb of time",
+      "choices": [
+        "crās",
+        "hodiē",
+        "tertiō quōque diē",
+        "cotīdiē"
+      ]
+    },
+    {
+      "id": "q20-36",
+      "qword": "num",
+      "q": "Num Iūlius in terrās aliēnās ībit, ut nauta?",
+      "en": "Will Julius go to foreign lands, like a sailor?",
+      "unit_id": "r20:129.1",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn ībit",
+        "Nec vērō in terrās aliēnās ībit, ut nauta.",
+        "In terrās aliēnās nōn ībit."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer; 'num' expects 'no'"
+    },
+    {
+      "id": "q20-37",
+      "qword": "quandō",
+      "q": "Quandō Iūlia patrī occurret?",
+      "en": "When will Julia go to meet her father?",
+      "unit_id": "r20:139.1",
+      "answers": [
+        "Cotīdiē"
+      ],
+      "input": "tap",
+      "hint": "an adverb of time (every ...)"
+    },
+    {
+      "id": "q20-38",
+      "qword": "-ne",
+      "q": "Estne Iūliae soror?",
+      "en": "Does Julia have a sister?",
+      "unit_id": "r20:144.2",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Nōn est",
+        "Mihi soror nōn est.",
+        "Iūliae soror nōn est."
+      ],
+      "input": "type",
+      "hint": "a yes/no answer (dative of possession: she has none)"
+    },
+    {
+      "id": "q20-39",
+      "qword": "cūr",
+      "q": "Cūr Iūlia sorōrem habēre nōn vult?",
+      "en": "Why doesn't Julia want to have a sister?",
+      "unit_id": "r20:148.2",
+      "answers": [
+        "Nam sī sorōrem habēbō, ea sōla ā vōbīs amābitur, ego nōn amābor",
+        "quia soror sōla amābitur, ipsa nōn amābitur",
+        "quod soror sōla ā parentibus amābitur",
+        "quia ea sōla amābitur et ipsa nōn amābitur",
+        "quia soror sōla amābitur"
+      ],
+      "input": "type",
+      "hint": "a reason with future passive verbs (the sister alone will be ...)"
+    },
+    {
+      "id": "q20-40",
+      "qword": "quandō",
+      "q": "Quandō Iūlia laeta erit?",
+      "en": "When will Julia be happy?",
+      "unit_id": "r20:152.1",
+      "answers": [
+        "Sī aequē amābimur",
+        "sī aequē amābuntur",
+        "sī aequē amābitur",
+        "sī aequē ā parentibus amābuntur",
+        "sī aequē ā parentibus amābitur"
+      ],
+      "input": "type",
+      "hint": "a 'sī' clause with a future passive verb"
+    },
+    {
+      "id": "q20-41",
+      "qword": "quis",
+      "q": "Quī ita loquuntur, ut Aemilia dīcit?",
+      "en": "Who talk like that, according to Aemilia?",
+      "unit_id": "r20:157.1",
+      "answers": [
+        "parvulī īnfantēs"
+      ],
+      "input": "choice",
+      "hint": "a noun with adjective in the nominative plural",
+      "choices": [
+        "parvulī īnfantēs",
+        "puellae probae",
+        "parentēs sevērī",
+        "nūtrīcēs"
+      ]
+    },
+    {
+      "id": "q20-42",
+      "qword": "quōmodo",
+      "q": "Quōmodo Iūlia ā parentibus vocābitur?",
+      "en": "What will Julia be called by her parents?",
+      "unit_id": "r20:162.2",
+      "answers": [
+        "Iūlia"
+      ],
+      "input": "tap",
+      "hint": "a name in the nominative (after a passive verb)"
+    }
+  ]
+}

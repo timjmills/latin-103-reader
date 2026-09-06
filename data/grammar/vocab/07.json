@@ -1,0 +1,291 @@
+{
+ "chapter": 7,
+ "words": [
+  {
+   "lemma": "sē",
+   "dict": "sē, suī",
+   "pos": "PRON",
+   "gender": null,
+   "decl": null,
+   "meaning": "himself, herself, itself, themselves (referring back to the subject)",
+   "parts": null,
+   "unit_id": "r07:8.2",
+   "count": 171
+  },
+  {
+   "lemma": "oculus",
+   "dict": "oculus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "eye",
+   "parts": null,
+   "unit_id": "r07:6.1",
+   "count": 59
+  },
+  {
+   "lemma": "aperiō",
+   "dict": "aperiō, aperīre, aperuī, apertum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "uncover, open, disclose",
+   "parts": "aperiō, aperīre, aperuī, apertum",
+   "unit_id": "r07:14.1",
+   "count": 41
+  },
+  {
+   "lemma": "nōnne",
+   "dict": "nōnne",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "not? (interrogative, expects the answer \"Yes\")",
+   "parts": null,
+   "unit_id": "r07:26.2",
+   "count": 36
+  },
+  {
+   "lemma": "teneō",
+   "dict": "teneō, tenēre, tenuī, tentum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "hold, keep",
+   "parts": "teneō, tenēre, tenuī, tentum",
+   "unit_id": "r07:5.3",
+   "count": 33
+  },
+  {
+   "lemma": "vertō",
+   "dict": "vertō, vertere, vertī, versum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "turn, turn around",
+   "parts": "vertō, vertere, vertī, versum",
+   "unit_id": "r07:16.1",
+   "count": 33
+  },
+  {
+   "lemma": "lacrima",
+   "dict": "lacrima, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "tear",
+   "parts": null,
+   "unit_id": "r07:6.1",
+   "count": 31
+  },
+  {
+   "lemma": "claudō",
+   "dict": "claudō, claudere, clausī, clausum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "close, shut, block up",
+   "parts": "claudō, claudere, clausī, clausum",
+   "unit_id": "r07:14.1",
+   "count": 28
+  },
+  {
+   "lemma": "exeō",
+   "dict": "exeō, exīre, exiī, exitum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "come, go, sail, march, leave",
+   "parts": "exeō, exīre, exiī, exitum",
+   "unit_id": "r07:82.1",
+   "count": 26
+  },
+  {
+   "lemma": "currō",
+   "dict": "currō, currere, cucurrī, cursum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "run, trot, gallop, hurry, hasten, speed, move, travel, proceed, flow swiftly",
+   "parts": "currō, currere, cucurrī, cursum",
+   "unit_id": "r07:66.1",
+   "count": 23
+  },
+  {
+   "lemma": "exspectō",
+   "dict": "exspectō, exspectāre, exspectavī, exspectātum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "lookout for, await",
+   "parts": "exspectō, exspectāre, exspectavī, exspectātum",
+   "unit_id": "r07:1.2",
+   "count": 23
+  },
+  {
+   "lemma": "parō",
+   "dict": "parō, parāre, parāvī, parātum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "prepare",
+   "parts": "parō, parāre, parāvī, parātum",
+   "unit_id": "r07:19.1",
+   "count": 22
+  },
+  {
+   "lemma": "adeō",
+   "dict": "adeō, adīre, adiī, aditum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "approach",
+   "parts": "adeō, adīre, adiī, aditum",
+   "unit_id": "r07:61.1",
+   "count": 17
+  },
+  {
+   "lemma": "immō",
+   "dict": "immō",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "no indeed (contradiction)",
+   "parts": null,
+   "unit_id": "r07:21.2",
+   "count": 17
+  },
+  {
+   "lemma": "pirum",
+   "dict": "pirum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "pear",
+   "parts": null,
+   "unit_id": "r07:52.1",
+   "count": 16
+  },
+  {
+   "lemma": "plēnus",
+   "dict": "plēnus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "full, plump",
+   "parts": null,
+   "unit_id": "r07:38.1",
+   "count": 16
+  },
+  {
+   "lemma": "fōrmōsus",
+   "dict": "fōrmōsus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "beautiful, finely formed, handsome, fair",
+   "parts": null,
+   "unit_id": "r07:10.1",
+   "count": 14
+  },
+  {
+   "lemma": "adveniō",
+   "dict": "adveniō, advēnīre, advēnī, aduentum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "come to, arrive",
+   "parts": "adveniō, advēnīre, advēnī, aduentum",
+   "unit_id": "r07:30.1",
+   "count": 11
+  },
+  {
+   "lemma": "ōsculum",
+   "dict": "ōsculum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "kiss",
+   "parts": null,
+   "unit_id": "r07:62.1",
+   "count": 11
+  },
+  {
+   "lemma": "illīc",
+   "dict": "illīc",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "in that place, there, over there",
+   "parts": null,
+   "unit_id": "r07:2.1",
+   "count": 10
+  },
+  {
+   "lemma": "īnsum",
+   "dict": "īnsum, inesse, infuī, infutūrum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be in, on, there",
+   "parts": "īnsum, inesse, infuī, infutūrum",
+   "unit_id": "r07:38.1",
+   "count": 9
+  },
+  {
+   "lemma": "lacrimō",
+   "dict": "lacrimō, lacrimāre, lacrimavī, lacrimatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "shed tears, weep",
+   "parts": "lacrimō, lacrimāre, lacrimavī, lacrimatum",
+   "unit_id": "r07:6.1",
+   "count": 9
+  },
+  {
+   "lemma": "speculum",
+   "dict": "speculum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "mirror, looking glass, reflector",
+   "parts": null,
+   "unit_id": "r07:8.1",
+   "count": 8
+  },
+  {
+   "lemma": "tergeō",
+   "dict": "tergeō, tergēre, tersī, tersum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "rub, wipe",
+   "parts": "tergeō, tergēre, tersī, tersum",
+   "unit_id": "r07:23.2",
+   "count": 6
+  },
+  {
+   "lemma": "salveō",
+   "dict": "salveō, salvēre",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be well/in good health",
+   "parts": "salveō, salvēre",
+   "unit_id": "r07:31.1",
+   "count": 5
+  },
+  {
+   "lemma": "ōstiārius",
+   "dict": "ōstiārius, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "porter, doorkeeper",
+   "parts": null,
+   "unit_id": "r07:33.1",
+   "count": 4
+  }
+ ]
+}

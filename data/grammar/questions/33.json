@@ -1,0 +1,557 @@
+{
+  "chapter": 33,
+  "week_id": "w12",
+  "title": "Exercitus Rōmānus",
+  "items": [
+    {
+      "id": "q33-01",
+      "qword": "quot",
+      "q": "In quot cohortēs singulae legiōnēs dīviduntur?",
+      "en": "Into how many cohorts is each legion divided?",
+      "unit_id": "w12:b1.1",
+      "answers": [
+        "dēnās"
+      ],
+      "input": "tap",
+      "hint": "a distributive numeral ('ten each') in the accusative after in"
+    },
+    {
+      "id": "q33-02",
+      "qword": "quid",
+      "q": "Quibus armīs legiōnāriī armātī sunt?",
+      "en": "With what weapons are the legionaries armed?",
+      "unit_id": "w12:b1.5",
+      "answers": [
+        "scūtīs, gladiīs pīlīsque",
+        "scūtīs, gladiīs, pīlīs",
+        "scūtīs et gladiīs et pīlīs"
+      ],
+      "input": "choice",
+      "choices": [
+        "scūtīs, gladiīs pīlīsque",
+        "arcubus sagittīsque",
+        "gladiīs ligneīs",
+        "vāllō et fossā"
+      ],
+      "hint": "ablatives of means with the participle armātī"
+    },
+    {
+      "id": "q33-03",
+      "qword": "quid",
+      "q": "Quid est signum legiōnis?",
+      "en": "What is the standard of a legion?",
+      "unit_id": "w12:b2.1",
+      "answers": [
+        "aquila"
+      ],
+      "input": "tap",
+      "hint": "the nominative predicate, with a relative clause in the passive (fertur)"
+    },
+    {
+      "id": "q33-04",
+      "qword": "quandō",
+      "q": "Quandō cohortēs in trēs ōrdinēs īnstruuntur?",
+      "en": "When are the cohorts drawn up in three lines?",
+      "unit_id": "w12:b2.4",
+      "answers": [
+        "cum agmen ad hostēs pervēnit, sī tempus et locus idōneus est ad pugnandum",
+        "cum agmen ad hostēs pervēnit",
+        "sī tempus et locus idōneus est ad pugnandum",
+        "cum agmen ad hostēs pervēnit et locus idōneus est ad pugnandum"
+      ],
+      "input": "type",
+      "hint": "cum + perfect indicative (a general condition); ad pugnandum is ad + gerund"
+    },
+    {
+      "id": "q33-05",
+      "qword": "quid",
+      "q": "Quid dux ante proelium mīlitēs suōs hortātur?",
+      "en": "What does the general urge his soldiers to do before battle?",
+      "unit_id": "w12:b2.6",
+      "answers": [
+        "ut fortiter pugnent",
+        "hortātur ut fortiter pugnent"
+      ],
+      "input": "type",
+      "hint": "hortātur (deponent) ut + present subjunctive"
+    },
+    {
+      "id": "q33-06",
+      "qword": "quōmodo",
+      "q": "Quōmodo castra Rōmāna mūniuntur?",
+      "en": "How is a Roman camp fortified?",
+      "unit_id": "w12:b2.9",
+      "answers": [
+        "vāllō et fossā",
+        "vāllō et fossā circumdantur"
+      ],
+      "input": "choice",
+      "choices": [
+        "vāllō et fossā",
+        "scūtīs et pīlīs",
+        "aquilā argenteā",
+        "equitātū"
+      ],
+      "hint": "ablatives of means; locō ad dēfendendum idōneō uses ad + gerund"
+    },
+    {
+      "id": "q33-07",
+      "qword": "cūr",
+      "q": "Cūr Aemilius puer gladiōs ligneōs sibi faciēbat?",
+      "en": "Why did Aemilius as a boy make himself wooden swords?",
+      "unit_id": "w12:b3.2",
+      "answers": [
+        "ut cum aliīs puerīs proelia lūderet",
+        "ut cum aliīs puerīs eiusdem aetātis proelia lūderet",
+        "ut proelia lūderet"
+      ],
+      "input": "type",
+      "hint": "a purpose clause: ut + imperfect subjunctive; septem annōs nātus gives his age"
+    },
+    {
+      "id": "q33-08",
+      "qword": "cūr",
+      "q": "Cūr voluntās fīliī patrī haud placēbat?",
+      "en": "Why did his son's wish displease the father?",
+      "unit_id": "w12:b3.4",
+      "answers": [
+        "quia ipse litterīs studēbat neque aliud studium fīliō dignum arbitrābātur",
+        "cum ipse litterīs studēret",
+        "quia ipse litterīs studēbat",
+        "cum ipse litterīs studēret neque ūllum aliud studium fīliō suō dignum esse arbitrārētur"
+      ],
+      "input": "choice",
+      "choices": [
+        "quia ipse litterīs studēbat neque aliud studium fīliō dignum arbitrābātur",
+        "quia fīlius litterīs studēbat",
+        "quia pater rem mīlitārem amābat",
+        "quia fīlius in Germāniā erat"
+      ],
+      "hint": "a causal cum clause with the imperfect subjunctive; studēre takes the dative (litterīs)"
+    },
+    {
+      "id": "q33-09",
+      "qword": "quō",
+      "q": "Quō pater Aemilium ad exercitum mīsit?",
+      "en": "Where did the father send Aemilius to join the army?",
+      "unit_id": "w12:b3.5",
+      "answers": [
+        "Germāniam"
+      ],
+      "input": "tap",
+      "hint": "in + accusative for place to which; the ut clause at the end gives the purpose"
+    },
+    {
+      "id": "q33-10",
+      "qword": "quis",
+      "q": "Ā quibus virtūs Aemiliī laudātur?",
+      "en": "By whom is Aemilius' courage praised?",
+      "unit_id": "w12:b3.7",
+      "answers": [
+        "omnibus"
+      ],
+      "input": "tap",
+      "hint": "the ablative of agent after ab with a passive verb"
+    },
+    {
+      "id": "q33-11",
+      "qword": "quālis",
+      "q": "Quālem esse Aemilium ex litterīs prīvātīs appāret?",
+      "en": "What state is Aemilius in, as appears from his private letters?",
+      "unit_id": "w12:b4.3",
+      "answers": [
+        "vītā mīlitārī fatīgātum",
+        "eum iam vītā mīlitārī fatīgātum esse",
+        "fatīgātum",
+        "vītā mīlitārī fatīgātum esse"
+      ],
+      "input": "type",
+      "hint": "an indirect statement with a perfect passive infinitive (fatīgātum esse); vītā mīlitārī is an ablative of means"
+    },
+    {
+      "id": "q33-12",
+      "qword": "quandō",
+      "q": "Quandō Aemilia litterās novissimās ā frātre accēpit?",
+      "en": "When did Aemilia receive the latest letter from her brother?",
+      "unit_id": "w12:b4.4",
+      "answers": [
+        "prīdiē kalendās Iūniās",
+        "prīdiē kal. Iūn."
+      ],
+      "input": "choice",
+      "choices": [
+        "prīdiē kalendās Iūniās",
+        "posterō diē",
+        "a. d. VII kal. Māi.",
+        "prīdiē īdūs Māiās"
+      ],
+      "hint": "a Roman date: prīdiē + accusative ('the day before the Kalends of June')"
+    },
+    {
+      "id": "q33-13",
+      "qword": "quot",
+      "q": "Ante quot diēs epistula Aemiliae scrīpta erat?",
+      "en": "How many days earlier had Aemilia's letter been written?",
+      "unit_id": "w12:b6.1",
+      "answers": [
+        "vīgintī"
+      ],
+      "input": "tap",
+      "hint": "ante + accusative; a. d. VII kal. Māi. is the Roman date"
+    },
+    {
+      "id": "q33-14",
+      "qword": "quot",
+      "q": "Quot diēbus celer tabellārius iter trāns Alpēs cōnficere potest?",
+      "en": "In how many days can a fast courier complete the journey across the Alps?",
+      "unit_id": "w12:b6.3",
+      "answers": [
+        "quīndecim"
+      ],
+      "input": "tap",
+      "hint": "an ablative of time within which (quīndecim diēbus)"
+    },
+    {
+      "id": "q33-15",
+      "qword": "-ne",
+      "q": "Fruunturne Aemilia et Iūlius bonā valētūdine?",
+      "en": "Are Aemilia and Julius in good health?",
+      "unit_id": "w12:b7.1",
+      "answers": [
+        "Ita",
+        "Ita est",
+        "Fruuntur",
+        "Ita, fruuntur",
+        "Ita, bonā valētūdine fruuntur",
+        "Bonā valētūdine fruuntur"
+      ],
+      "input": "type",
+      "hint": "a yes/no question with -ne; fruor takes the ablative, inside an indirect statement after cognōvī"
+    },
+    {
+      "id": "q33-16",
+      "qword": "quid",
+      "q": "Quid Aemilius optat?",
+      "en": "What does Aemilius wish?",
+      "unit_id": "w12:b8.2",
+      "answers": [
+        "utinam Rōmae essem aut tū apud mē essēs",
+        "utinam Rōmae esset aut soror apud eum esset",
+        "utinam Rōmae esset",
+        "Rōmae esse aut sorōrem apud sē esse",
+        "ut Rōmae esset aut soror apud sē esset"
+      ],
+      "input": "choice",
+      "choices": [
+        "utinam Rōmae essem aut tū apud mē essēs",
+        "utinam hostēs Dānuvium trānsīrent",
+        "utinam tabellārius tardior esset",
+        "utinam bellum diūtius dūrāret"
+      ],
+      "hint": "utinam + imperfect subjunctive: a wish that cannot come true now"
+    },
+    {
+      "id": "q33-17",
+      "qword": "cūr",
+      "q": "Cūr Aemilius haec frūstrā optat?",
+      "en": "Why does Aemilius wish these things in vain?",
+      "unit_id": "w12:b9.1",
+      "answers": [
+        "cum nēmō nisi deus ita subitō in alium locum trānsferrī possit",
+        "quia nēmō nisi deus subitō in alium locum trānsferrī potest",
+        "quia nēmō nisi deus in alium locum trānsferrī potest",
+        "cum nēmō nisi deus in alium locum trānsferrī possit"
+      ],
+      "input": "type",
+      "hint": "a causal cum clause with the present subjunctive (possit); trānsferrī is a passive infinitive"
+    },
+    {
+      "id": "q33-18",
+      "qword": "quid",
+      "q": "Quid Aemilius faceret, sī Mercurius esset?",
+      "en": "What would Aemilius do if he were Mercury?",
+      "unit_id": "w12:b9.2",
+      "answers": [
+        "in Italiam volāret",
+        "ventō celerius trāns montēs amnēsque in Italiam volāret",
+        "trāns montēs in Italiam volāret",
+        "trāns montēs amnēsque in Italiam volāret"
+      ],
+      "input": "type",
+      "hint": "a present contrary-to-fact condition: sī + imperfect subjunctive … imperfect subjunctive; ventō is an ablative of comparison"
+    },
+    {
+      "id": "q33-19",
+      "qword": "quid",
+      "q": "Quid hostēs facerent, nisi legiōnēs fīnēs imperiī dēfenderent?",
+      "en": "What would the enemy do if the legions were not defending the frontiers?",
+      "unit_id": "w12:b10.3",
+      "answers": [
+        "Dānuvium et Alpēs trānsīrent atque in Italiam pervenīrent",
+        "celeriter Dānuvium et Alpēs trānsīrent",
+        "in Italiam pervenīrent",
+        "Dānuvium et Alpēs trānsīrent",
+        "Dānuvium et Alpēs trānsīrent atque ūsque in Italiam pervenīrent"
+      ],
+      "input": "type",
+      "hint": "a contrary-to-fact condition: nisi + imperfect subjunctive … imperfect subjunctive (trānsīrent, pervenīrent)"
+    },
+    {
+      "id": "q33-20",
+      "qword": "cūr",
+      "q": "Cūr Aemiliō nūllum ōtium fuit ad epistulam scrībendam?",
+      "en": "Why did Aemilius have no leisure for writing a letter?",
+      "unit_id": "w12:b11.5",
+      "answers": [
+        "cum per complūrēs mēnsēs vix tempus habuerit ad dormiendum",
+        "quia vix tempus habuit ad dormiendum",
+        "quia per complūrēs mēnsēs vix tempus habuit ad dormiendum",
+        "cum vix tempus habuerit ad dormiendum"
+      ],
+      "input": "type",
+      "hint": "a causal cum clause with the perfect subjunctive (habuerim); ad epistulam scrībendam is ad + gerundive"
+    },
+    {
+      "id": "q33-21",
+      "qword": "quandō",
+      "q": "Quandō in castra nūntiātum est hostēs flūmen trānsīsse?",
+      "en": "When was it reported in camp that the enemy had crossed the river?",
+      "unit_id": "w12:b13.1",
+      "answers": [
+        "nocte",
+        "Mediā"
+      ],
+      "input": "tap",
+      "hint": "an ablative of time when (mediā nocte); the report is an indirect statement with a perfect infinitive"
+    },
+    {
+      "id": "q33-22",
+      "qword": "quid",
+      "q": "Quid mīlitēs prīmō mīrābantur?",
+      "en": "What did the soldiers wonder at first?",
+      "unit_id": "w12:b13.3",
+      "answers": [
+        "quamobrem mediā nocte ē somnō excitātī essent",
+        "quamobrem ē somnō excitātī essent",
+        "cūr mediā nocte ē somnō excitātī essent"
+      ],
+      "input": "choice",
+      "choices": [
+        "quamobrem mediā nocte ē somnō excitātī essent",
+        "num nūntius vērum dīxisset",
+        "ubi hostēs essent",
+        "cūr arma cēpissent"
+      ],
+      "hint": "an indirect question with the pluperfect subjunctive; cum … cēpissent is a cum clause with the pluperfect subjunctive"
+    },
+    {
+      "id": "q33-23",
+      "qword": "quid",
+      "q": "Quid Aemilius dubitāre coeperat?",
+      "en": "What had Aemilius begun to doubt?",
+      "unit_id": "w12:b13.4",
+      "answers": [
+        "num nūntius vērum dīxisset",
+        "num nūntius vērum dīxisset dubitāre coeperat"
+      ],
+      "input": "type",
+      "hint": "an indirect question with num and the pluperfect subjunctive (dīxisset)"
+    },
+    {
+      "id": "q33-24",
+      "qword": "cūr",
+      "q": "Cūr nostrī prīmum impetum facile sustinuērunt?",
+      "en": "Why did our men easily withstand the first attack?",
+      "unit_id": "w12:b13.5",
+      "answers": [
+        "cum parātī essent ad castra dēfendenda",
+        "quia parātī erant ad castra dēfendenda",
+        "quod parātī erant ad castra dēfendenda",
+        "quia parātī erant"
+      ],
+      "input": "type",
+      "hint": "a causal cum clause with the imperfect subjunctive; ad castra dēfendenda is ad + gerundive (purpose)"
+    },
+    {
+      "id": "q33-25",
+      "qword": "unde",
+      "q": "Quā portā equitātus noster ērūpit?",
+      "en": "Through which gate did our cavalry burst out?",
+      "unit_id": "w12:b13.7",
+      "answers": [
+        "portā dextrā",
+        "dextrā"
+      ],
+      "input": "choice",
+      "choices": [
+        "portā dextrā",
+        "portā sinistrā",
+        "ē silvīs proximīs",
+        "ā rīpā flūminis"
+      ],
+      "hint": "an ablative of the way by which; cum … pugnātum esset is an impersonal passive in a cum clause"
+    },
+    {
+      "id": "q33-26",
+      "qword": "cūr",
+      "q": "Cūr aliī hostēs armīs abiectīs in flūmen sē prōiēcērunt?",
+      "en": "Why did some of the enemy throw away their weapons and hurl themselves into the river?",
+      "unit_id": "w12:b13.10",
+      "answers": [
+        "ut natandō ad rīpam ulteriōrem pervenīrent",
+        "ut ad rīpam ulteriōrem pervenīrent",
+        "ut natandō ad rīpam pervenīrent"
+      ],
+      "input": "type",
+      "hint": "a purpose clause with the imperfect subjunctive; natandō is a gerund in the ablative; ad eōs persequendōs is ad + gerundive"
+    },
+    {
+      "id": "q33-27",
+      "qword": "quot",
+      "q": "Quot mīlia hominum hostēs eō proeliō āmīsērunt?",
+      "en": "How many thousand men did the enemy lose in that battle?",
+      "unit_id": "w12:b14.1",
+      "answers": [
+        "Duo"
+      ],
+      "input": "tap",
+      "hint": "a numeral with mīlia (neuter plural); hominum is a partitive genitive"
+    },
+    {
+      "id": "q33-28",
+      "qword": "ubi",
+      "q": "Ubi Aemilius sagittā vulnerātus est?",
+      "en": "Where was Aemilius wounded by an arrow?",
+      "unit_id": "w12:b14.3",
+      "answers": [
+        "bracchio",
+        "laevō"
+      ],
+      "input": "tap",
+      "hint": "in + ablative (in bracchiō laevō); sagittā is an ablative of means"
+    },
+    {
+      "id": "q33-29",
+      "qword": "cūr",
+      "q": "Cūr dux virtūtem mīlitum laudāvit?",
+      "en": "Why did the general praise the soldiers' courage?",
+      "unit_id": "w12:b15.1",
+      "answers": [
+        "quod contrā hostēs numerō superiōrēs fortissimē pugnāvissent",
+        "quod fortissimē pugnāvissent",
+        "quod contrā hostēs numerō superiōrēs fortissimē pugnāvissēmus",
+        "quia contrā hostēs numerō superiōrēs fortissimē pugnāverant"
+      ],
+      "input": "type",
+      "hint": "quod + pluperfect subjunctive: a reason reported as the general's own; cum … salūtātus esset is a cum clause"
+    },
+    {
+      "id": "q33-30",
+      "qword": "cūr",
+      "q": "Cūr lēgātī ā Germānīs missī ad castra vēnērunt?",
+      "en": "Why did envoys sent by the Germans come to the camp?",
+      "unit_id": "w12:b15.3",
+      "answers": [
+        "ut cum imperātōre colloquerentur",
+        "ut cum imperātōre colloquerentur vēnērunt"
+      ],
+      "input": "choice",
+      "choices": [
+        "ut cum imperātōre colloquerentur",
+        "ut castra oppugnārent",
+        "ut arma pōnerent",
+        "ut mīlitēs Rōmānōs laudārent"
+      ],
+      "hint": "a purpose clause: ut + imperfect subjunctive of a deponent verb"
+    },
+    {
+      "id": "q33-31",
+      "qword": "quōmodo",
+      "q": "Quōmodo Pūblius Valerius cecidit?",
+      "en": "How did Publius Valerius fall?",
+      "unit_id": "w12:b16.2",
+      "answers": [
+        "pīlō percussus",
+        "pīlō percussus cecidit",
+        "pīlō"
+      ],
+      "input": "choice",
+      "choices": [
+        "pīlō percussus",
+        "sagittā vulnerātus",
+        "gladiō caesus",
+        "in flūmen prōiectus"
+      ],
+      "hint": "an ablative of means with a perfect participle; cum … vellet is a cum clause with the imperfect subjunctive"
+    },
+    {
+      "id": "q33-32",
+      "qword": "quid",
+      "q": "Quid Aemilius nunc optat dē patre suō?",
+      "en": "What does Aemilius now wish about his father?",
+      "unit_id": "w12:b17.1",
+      "answers": [
+        "utinam patrem audīvisset",
+        "patrem audīvisse",
+        "utinam patrem audīvisset cum eum ad studium litterārum hortārētur",
+        "utinam patrem audīvissem",
+        "ut patrem audīvisset"
+      ],
+      "input": "type",
+      "hint": "utinam + pluperfect subjunctive: a wish about the past that did not come true"
+    },
+    {
+      "id": "q33-33",
+      "qword": "quis",
+      "q": "Quem poētam Aemilius praecipuē ōderat?",
+      "en": "Which poet did Aemilius particularly hate?",
+      "unit_id": "w12:b17.3",
+      "answers": [
+        "Tibullum"
+      ],
+      "input": "choice",
+      "choices": [
+        "Tibullum",
+        "Pūblium Valerium",
+        "senem magistrum",
+        "ducem exercitūs"
+      ],
+      "hint": "the accusative object of ōderam (a pluperfect with imperfect meaning)"
+    },
+    {
+      "id": "q33-34",
+      "qword": "quid",
+      "q": "Quid Aemilius fēcisset, sī iam tum Tibullum vērum dīxisse intellēxisset?",
+      "en": "What would Aemilius have done if he had understood back then that Tibullus was right?",
+      "unit_id": "w12:b19.3",
+      "answers": [
+        "patrem audīvisset nec ad bellum profectus esset",
+        "patrem audīvisset",
+        "certē patrem audīvisset",
+        "certē patrem audīvisset nec ad bellum profectus esset"
+      ],
+      "input": "type",
+      "hint": "a past contrary-to-fact condition: sī + pluperfect subjunctive … pluperfect subjunctive"
+    },
+    {
+      "id": "q33-35",
+      "qword": "quid",
+      "q": "Quid Aemilia aliōs monēre dēbet?",
+      "en": "What should Aemilia urge others to do?",
+      "unit_id": "w12:b20.4",
+      "answers": [
+        "ut ad Aemilium litterās dent",
+        "ut ad mē litterās dent",
+        "ut ad eum litterās dent"
+      ],
+      "input": "choice",
+      "choices": [
+        "ut ad Aemilium litterās dent",
+        "ut pācem petant",
+        "ut in Germāniam veniant",
+        "ut valētūdinem cūrent"
+      ],
+      "hint": "monētō is a future imperative; the command continues with ut + present subjunctive"
+    }
+  ]
+}

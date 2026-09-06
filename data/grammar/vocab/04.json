@@ -1,0 +1,291 @@
+{
+ "chapter": 4,
+ "words": [
+  {
+   "lemma": "suus",
+   "dict": "suus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "his own, her own, its own, their own (reflexive possessive)",
+   "parts": null,
+   "unit_id": "r04:19.1",
+   "count": 272
+  },
+  {
+   "lemma": "habeō",
+   "dict": "habeō, habēre, habuī, habitum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "have, hold, consider, think, reason",
+   "parts": "habeō, habēre, habuī, habitum",
+   "unit_id": "r04:4.1",
+   "count": 164
+  },
+  {
+   "lemma": "dē",
+   "dict": "dē",
+   "pos": "PREP",
+   "gender": null,
+   "decl": null,
+   "meaning": "down or away from, from, off",
+   "parts": null,
+   "unit_id": "r04:89.1",
+   "count": 129
+  },
+  {
+   "lemma": "dō",
+   "dict": "dō, dāre, dedī, datum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "give",
+   "parts": "dō, dāre, dedī, datum",
+   "unit_id": "r04:27.1",
+   "count": 116
+  },
+  {
+   "lemma": "pecūnia",
+   "dict": "pecūnia, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "money",
+   "parts": null,
+   "unit_id": "r04:3.2",
+   "count": 88
+  },
+  {
+   "lemma": "tantus",
+   "dict": "tantus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "of such size",
+   "parts": null,
+   "unit_id": "r04:11.2",
+   "count": 68
+  },
+  {
+   "lemma": "nūllus",
+   "dict": "nūllus, -a, -um, (gen., -īus)",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "no",
+   "parts": null,
+   "unit_id": "r04:45.1",
+   "count": 62
+  },
+  {
+   "lemma": "bonus",
+   "dict": "bonus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "good, honest, brave, noble, kind, pleasant, right, useful",
+   "parts": null,
+   "unit_id": "r04:68.2",
+   "count": 58
+  },
+  {
+   "lemma": "verbum",
+   "dict": "verbum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "word",
+   "parts": null,
+   "unit_id": "r04:45.1",
+   "count": 49
+  },
+  {
+   "lemma": "sacculus",
+   "dict": "sacculus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "little bag (as a filter for wine)",
+   "parts": null,
+   "unit_id": "r04:3.1",
+   "count": 39
+  },
+  {
+   "lemma": "salūtō",
+   "dict": "salūtō, salūtāre, salutavī, salutatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "greet",
+   "parts": "salūtō, salūtāre, salutavī, salutatum",
+   "unit_id": "r04:33.3",
+   "count": 34
+  },
+  {
+   "lemma": "absum",
+   "dict": "absum, abesse, āfuī, āfutūrum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be away, absent, distant, missing",
+   "parts": "absum, abesse, āfuī, āfutūrum",
+   "unit_id": "r04:20.2",
+   "count": 30
+  },
+  {
+   "lemma": "pōnō",
+   "dict": "pōnō, pōnere, posuī, positum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "put, place, set",
+   "parts": "pōnō, pōnere, posuī, positum",
+   "unit_id": "r04:60.1",
+   "count": 27
+  },
+  {
+   "lemma": "discēdō",
+   "dict": "discēdō, discēdere, discessī, discessum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "go/march off, depart, withdraw",
+   "parts": "discēdō, discēdere, discessī, discessum",
+   "unit_id": "r04:73.1",
+   "count": 26
+  },
+  {
+   "lemma": "sūmō",
+   "dict": "sūmō, sūmere, sūmpsī, sūmptum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "take up",
+   "parts": "sūmō, sūmere, sūmpsī, sūmptum",
+   "unit_id": "r04:73.1",
+   "count": 26
+  },
+  {
+   "lemma": "taceō",
+   "dict": "taceō, tacēre, tacuī, tacitum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be silent",
+   "parts": "taceō, tacēre, tacuī, tacitum",
+   "unit_id": "r04:37.2",
+   "count": 26
+  },
+  {
+   "lemma": "nummus",
+   "dict": "nummus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "coin",
+   "parts": null,
+   "unit_id": "r04:5.1",
+   "count": 22
+  },
+  {
+   "lemma": "salvus",
+   "dict": "salvus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "well, unharmed, sound",
+   "parts": null,
+   "unit_id": "r04:34.1",
+   "count": 22
+  },
+  {
+   "lemma": "adsum",
+   "dict": "adsum, adesse, adfuī, adfutūrum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be near, be present, be in attendance, arrive, appear",
+   "parts": "adsum, adesse, adfuī, adfutūrum",
+   "unit_id": "r04:20.1",
+   "count": 21
+  },
+  {
+   "lemma": "mēnsa",
+   "dict": "mēnsa, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "table",
+   "parts": null,
+   "unit_id": "r04:60.1",
+   "count": 21
+  },
+  {
+   "lemma": "rūrsus",
+   "dict": "rūrsus",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "turned back, backward",
+   "parts": null,
+   "unit_id": "r04:12.1",
+   "count": 19
+  },
+  {
+   "lemma": "baculum",
+   "dict": "baculum, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "stick, walking stick, staff",
+   "parts": null,
+   "unit_id": "r04:62.1",
+   "count": 14
+  },
+  {
+   "lemma": "numerō",
+   "dict": "numerō, numerāre, numeravī, numeratum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "count, add up, reckon or compute",
+   "parts": "numerō, numerāre, numeravī, numeratum",
+   "unit_id": "r04:9.1",
+   "count": 12
+  },
+  {
+   "lemma": "accūsō",
+   "dict": "accūsō, accūsāre, accusavī, accusatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "accuse, blame, find fault, impugn",
+   "parts": "accūsō, accūsāre, accusavī, accusatum",
+   "unit_id": "r04:48.1",
+   "count": 11
+  },
+  {
+   "lemma": "vacuus",
+   "dict": "vacuus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "empty, vacant, unoccupied",
+   "parts": null,
+   "unit_id": "r04:66.1",
+   "count": 11
+  },
+  {
+   "lemma": "dō",
+   "dict": "dō, dāre, dedī, datum + -ue",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "give",
+   "parts": "dō, dāre, dedī, datum + -ue",
+   "unit_id": "r04:25.1",
+   "count": 9
+  }
+ ]
+}

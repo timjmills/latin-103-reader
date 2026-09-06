@@ -1,0 +1,313 @@
+{
+ "chapter": 2,
+ "words": [
+  {
+   "lemma": "quī",
+   "dict": "quī, quae, quod",
+   "pos": "PRON",
+   "gender": null,
+   "decl": null,
+   "meaning": "who, which, that (relative)",
+   "parts": null,
+   "unit_id": "r02:15.1",
+   "count": 1097
+  },
+  {
+   "lemma": "tū",
+   "dict": "tū, tuī",
+   "pos": "PRON",
+   "gender": null,
+   "decl": null,
+   "meaning": "you (one person)",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 329
+  },
+  {
+   "lemma": "puer",
+   "dict": "puer, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "boy, lad, young man",
+   "parts": null,
+   "unit_id": "r02:2.1",
+   "count": 224
+  },
+  {
+   "lemma": "meus",
+   "dict": "meus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "my (personal possession)",
+   "parts": null,
+   "unit_id": "r02:66.1",
+   "count": 189
+  },
+  {
+   "lemma": "servus",
+   "dict": "servus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "slave",
+   "parts": null,
+   "unit_id": "r02:25.2",
+   "count": 174
+  },
+  {
+   "lemma": "pater",
+   "dict": "pater, patris m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 3,
+   "meaning": "father",
+   "parts": null,
+   "unit_id": "r02:9.1",
+   "count": 142
+  },
+  {
+   "lemma": "tuus",
+   "dict": "tuus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "your (sing.)",
+   "parts": null,
+   "unit_id": "r02:67.1",
+   "count": 140
+  },
+  {
+   "lemma": "dominus",
+   "dict": "dominus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "owner, lord, master",
+   "parts": null,
+   "unit_id": "r02:26.1",
+   "count": 126
+  },
+  {
+   "lemma": "fīlius",
+   "dict": "fīlius, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "son",
+   "parts": null,
+   "unit_id": "r02:12.1",
+   "count": 106
+  },
+  {
+   "lemma": "vir",
+   "dict": "vir, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "man",
+   "parts": null,
+   "unit_id": "r02:1.1",
+   "count": 87
+  },
+  {
+   "lemma": "māter",
+   "dict": "māter, mātris f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 3,
+   "meaning": "mother, foster mother",
+   "parts": null,
+   "unit_id": "r02:10.1",
+   "count": 86
+  },
+  {
+   "lemma": "puella",
+   "dict": "puella, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "girl, (female) child or daughter",
+   "parts": null,
+   "unit_id": "r02:3.1",
+   "count": 75
+  },
+  {
+   "lemma": "ecce",
+   "dict": "ecce",
+   "pos": "INTERJ",
+   "gender": null,
+   "decl": null,
+   "meaning": "behold! see! look! there! here! ecce eum = here he is",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 64
+  },
+  {
+   "lemma": "ancilla",
+   "dict": "ancilla, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "slave girl",
+   "parts": null,
+   "unit_id": "r02:30.2",
+   "count": 57
+  },
+  {
+   "lemma": "cēterus",
+   "dict": "cēterus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "the other",
+   "parts": null,
+   "unit_id": "r02:58.1",
+   "count": 53
+  },
+  {
+   "lemma": "fēmina",
+   "dict": "fēmina, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "woman",
+   "parts": null,
+   "unit_id": "r02:1.2",
+   "count": 47
+  },
+  {
+   "lemma": "līber",
+   "dict": "līber, lībera, līberum",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "free (man)",
+   "parts": null,
+   "unit_id": "r02:21.1",
+   "count": 47
+  },
+  {
+   "lemma": "līber",
+   "dict": "līber, librī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "book, volume",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 47
+  },
+  {
+   "lemma": "novus",
+   "dict": "novus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "new, fresh, young",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 36
+  },
+  {
+   "lemma": "fīlia",
+   "dict": "fīlia, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "daughter",
+   "parts": null,
+   "unit_id": "r02:19.2",
+   "count": 32
+  },
+  {
+   "lemma": "familiā",
+   "dict": "familiā, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "household",
+   "parts": null,
+   "unit_id": "r02:8.1",
+   "count": 31
+  },
+  {
+   "lemma": "domina",
+   "dict": "domina, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "mistress of a family, wife",
+   "parts": null,
+   "unit_id": "r02:31.1",
+   "count": 29
+  },
+  {
+   "lemma": "quot",
+   "dict": "quot, (indeclinable)",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 9,
+   "meaning": "how many? (quot ... tot ... = as many ... as)",
+   "parts": null,
+   "unit_id": "r02:37.1",
+   "count": 23
+  },
+  {
+   "lemma": "lingva",
+   "dict": "lingva, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "tongue",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 11
+  },
+  {
+   "lemma": "antīquus",
+   "dict": "antīquus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "old, ancient, aged",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 7
+  },
+  {
+   "lemma": "mel",
+   "dict": "mel, mellis n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 3,
+   "meaning": "honey",
+   "parts": null,
+   "unit_id": "r02:68.2",
+   "count": 6
+  },
+  {
+   "lemma": "titulus",
+   "dict": "titulus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "title (person or book)",
+   "parts": null,
+   "unit_id": "r02:80.1",
+   "count": 3
+  },
+  {
+   "lemma": "pāgina",
+   "dict": "pāgina, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "page, sheet",
+   "parts": null,
+   "unit_id": "r02:88.1",
+   "count": 2
+  }
+ ]
+}
