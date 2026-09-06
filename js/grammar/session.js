@@ -5,7 +5,7 @@
 // and records the confusion pair when the chosen distractor names one.
 
 import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer } from './items.js';
-import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession } from './scheduler.js';
+import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession, buildRedoSession } from './scheduler.js';
 import { matchQuestion } from './sets.js';
 import { orderMatches } from './stage3.js';
 
@@ -131,6 +131,27 @@ export function confusedWith(item, result) {
 }
 
 /**
+ * The items a run leaves missed (GRAMMAR-CONTRACT.md "Redo what was wrong"),
+ * newest first. One row per (skill, item_key), the **last** answer to it
+ * deciding — the same rule the store applies over the whole log, applied here
+ * to one session's own log so the end of a session can offer its misses back
+ * without a round trip. A self-graded "partly" is not a miss.
+ *
+ * This reads `log`, which holds first answers only: an immediate retry writes
+ * nothing there, so trying an item again until it is right cannot take it off
+ * this list. That is deliberate — the item was missed, and a redo later is the
+ * spaced retrieval the plan wants. Pure.
+ */
+export function sessionMisses(log = []) {
+  const last = new Map();
+  for (const a of log) { if (!a?.skill || !a.item_key) continue; last.set(`${a.skill} ${a.item_key}`, a); }
+  return [...last.values()]
+    .filter((a) => !a.correct && !a.partial)
+    .map((a) => ({ skill: a.skill, kind: a.kind, item_key: a.item_key, at: a.at, mode: a.mode }))
+    .sort((a, b) => Date.parse(b.at || 0) - Date.parse(a.at || 0));
+}
+
+/**
  * One drill run over a list of slots. `getItem(slot)` makes the item;
  * `record(attempt, result)` persists. Shared by Learn's phases and Practice.
  *
@@ -162,6 +183,11 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
   // What the learner actually asked for, so "3 of 14" can say where the extra four came from.
   let asked = Number(resume?.asked) || (resume?.queue?.length ?? slots.length);
   let capped = false;     // a miss was not re-queued because the session is full
+  // Slots that built nothing and were skipped. Ordinary sessions almost never have one (the scheduler only
+  // plans drillable skills); a **redo** can, because it names items and a named item may have gone — the
+  // sentence left the library, the deck changed. The session then simply holds fewer items and says so,
+  // which is the contract's "drop it quietly and say the count is smaller, never crash".
+  let dropped = 0;
   const ceiling = () => (grows ? sessionCeiling(asked) : Infinity);
   const changed = () => { try { onChange?.(snapshot()); } catch { /* storage */ } };
   // A resume restarts the walk at the frontier: the items before it were answered in another sitting and were not kept.
@@ -185,6 +211,7 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
         made[frontier] = item ? { item, slot } : null;   // nothing could be built for the slot: skipped, and stepping back skips it too
       }
       if (made[frontier]) { index = frontier; current = made[frontier]; startedAt = Date.now(); hinted = false; changed(); return current; }
+      dropped += 1;
       frontier += 1;
     }
     index = frontier;
@@ -217,6 +244,8 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
     get added() { return Math.max(0, queue.length - asked); },
     /** True once a miss went un-re-queued because the session had reached its ceiling. */
     get capped() { return capped; },
+    /** How many slots built nothing and were passed over (a redo whose item can no longer be made). */
+    get dropped() { return dropped; },
     get current() { return current; },
     get log() { return log; },
     snapshot,
@@ -270,7 +299,9 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       const partly = log.filter((a) => a.correct && a.partial).length;
       const skillsSeen = [...new Set(log.map((a) => a.skill))];
       const wrong = log.filter((a) => !a.correct).map((a) => a.skill);
-      return { total: log.length, right, partly, wrong: [...new Set(wrong)], skills: skillsSeen, hinted: log.filter((a) => a.hinted).length, ms: log.reduce((n, a) => n + (a.ms || 0), 0), asked, added: Math.max(0, queue.length - asked), capped };
+      // `missed` is the items to offer back ("Redo the N you missed"), not the skills: one row per item, the
+      // last answer to it deciding, so an item missed and then got right later in the same session is not in it.
+      return { total: log.length, right, partly, wrong: [...new Set(wrong)], missed: sessionMisses(log), skills: skillsSeen, hinted: log.filter((a) => a.hinted).length, ms: log.reduce((n, a) => n + (a.ms || 0), 0), asked, added: Math.max(0, queue.length - asked), capped, dropped };
     },
   };
 }
@@ -350,7 +381,8 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
   const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior });
   const slots = plan ?? build(size ?? 10);
-  const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, avoid: opts.avoid });
+  // `itemKey` (a redo's slot) asks the generator for that exact item and nothing else; an ordinary slot has none.
+  const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, avoid: opts.avoid, itemKey: slot.itemKey ?? null });
   const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
     await gstore.addAttempt(attempt);
     const cur = gstore.getState(item.skill) ?? item.skill;
@@ -369,6 +401,47 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
     /** Open-ended: another batch, counting the chapter-set window across the seam. */
     more: () => runner.extend(build(10, null, runner.queue)),
   };
+}
+
+/**
+ * **Redo what was wrong** (GRAMMAR-CONTRACT.md, 2026-09-06): the items the
+ * learner missed and has not since answered right, played again as an
+ * ordinary session.
+ *
+ * It *is* an ordinary session, and that is the whole point of it. Every answer
+ * is logged as a `drill_attempt` and fed to the scheduler, because a redo
+ * happens later in time and is exactly the spaced retrieval the plan wants: a
+ * right answer here clears the item from the missed list (its newest attempt
+ * is now a correct one) and grows the skill's stability; a wrong one keeps it,
+ * with a fresher timestamp. Nothing about the runner changes for it.
+ *
+ * This is the opposite of the **immediate retry inside an item** — the "Try
+ * again" that follows a wrong answer, which is judged and shown and written
+ * down nowhere (`createRunner.answer` returns early with `retry: true`). The
+ * two are kept apart by construction: a retry never reaches `onAnswer`, and a
+ * redo is a fresh slot in a fresh queue that goes through it like any other.
+ *
+ *   misses      attempt rows to draw from (store.getMissed(), or a session's
+ *               own `summary().missed`)
+ *   skillsIndex the world the session may reach — one skill, one chapter's
+ *               material, or the whole map; the re-queue and the filler stay
+ *               inside it, so a narrowed redo cannot wander out of its skill
+ *               or its chapter
+ *   size        the cap; the plan is at most this long, often shorter
+ *   oneSkill    set when the redo is one skill's, so a miss is not re-queued
+ *               (it could only come back beside itself, as in "Practise this
+ *               skill")
+ *
+ * `requested` says how many misses were offered and `plan.length` how many
+ * became slots; the runner's `dropped` counts those that turned out to build
+ * nothing after all. The view prints the difference rather than pretending.
+ */
+export function createRedo({ misses = [], gstore, items, skillsIndex, size = 10, oneSkill = null, currentWeekN = null, rand = Math.random, resume = null, onChange = null }) {
+  const skills = skillsIndex.skills;
+  const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
+  const plan = buildRedoSession({ misses, skills: drillSkills, states: gstore.getStates(), size: size ?? 10, seed: Math.floor(rand() * 1e9) });
+  const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN, preset: oneSkill ? 'one-skill' : 'review-heavy', size: plan.length || 1, oneSkill, rand, resume, onChange });
+  return { ...practice, redo: true, plan, requested: misses.length, size: plan.length, open: false };
 }
 
 /** "Practice this skill": a 5-item blocked set on one skill (practice mode, scheduler updated). */

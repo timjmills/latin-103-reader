@@ -301,10 +301,25 @@ export function createPool(storage, key = 'l103.grammar.used') {
     used(skill, kind) { return new Set(data[`${skill}|${kind}`] ?? []); },
     /** Pick from `keys` one not used yet, preferring the first non-empty `tiers` subset; when every key has been used the pool starts over. Returns the key (see `chooseInfo` for the wrap flag). */
     choose(skill, kind, keys, rand = Math.random, tiers = []) { return this.chooseInfo(skill, kind, keys, rand, tiers)?.key ?? null; },
-    chooseInfo(skill, kind, keys, rand = Math.random, tiers = []) {
+    /**
+     * `want` asks for one exact key back — a redo playing an item the learner
+     * missed (GRAMMAR-CONTRACT.md "Redo what was wrong"). The pool hands it
+     * over when the key is still in `keys`, marks it used like any other draw,
+     * and answers **null** when it has gone (the sentence left the library, the
+     * deck changed): the caller then drops the slot quietly rather than
+     * substituting a different item under the same name.
+     */
+    chooseInfo(skill, kind, keys, rand = Math.random, tiers = [], want = null) {
       if (!keys.length) return null;
       const k = `${skill}|${kind}`;
       let used = new Set(data[k] ?? []);
+      if (want != null) {
+        if (!keys.includes(want)) return null;
+        used.add(want);
+        data[k] = [...used];
+        save();
+        return { key: want, wrapped: false, left: keys.filter((x) => !used.has(x)).length, wanted: true };
+      }
       let fresh = keys.filter((x) => !used.has(x));
       let wrapped = false;
       if (!fresh.length) { used = new Set(); fresh = keys; wrapped = true; }
@@ -717,7 +732,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     };
   };
 
-  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, where = null }) => {
+  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, where = null, itemKey = null }) => {
     let pool_ = candidates(skill.id);
     if (where) pool_ = pool_.filter(where);
     if (unambiguous) pool_ = pool_.filter((c) => !c.ambiguous);
@@ -733,7 +748,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     if (key(skill) === 'construction' && caseOf(skill)) { const nouns = pool_.filter((c) => c.entry.pos === 'N'); if (nouns.length >= 5) tiers.push(new Set(nouns.map(keyOf))); }
     // Shorter sentences first: a drill reads one sentence, not a paragraph (long ones come once the short ones are spent).
     tiers.push(new Set(pool_.filter((c) => c.unit.la.length <= SHORT_LA).map(keyOf)));
-    const got = pool.chooseInfo(skill.id, kind, keys, rand, tiers.filter((t) => t.size));
+    const got = pool.chooseInfo(skill.id, kind, keys, rand, tiers.filter((t) => t.size), itemKey);
     if (!got) return null;
     return { c: pool_[keys.indexOf(got.key)], key: got.key, wrapped: got.wrapped };
   };
@@ -751,7 +766,11 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
   function recognise(skill, stage, opts) {
     const k = key(skill);
     if (!k) return null;
-    const got = pickCandidate(skill, 'recognise', { unambiguous: true, ...opts });
+    // A redo asks for one exact item back, and a recognise item has two shapes over one candidate: the
+    // `recognise-tap:` key is the tap-the-word variant, the plain `recognise:` key the multiple choice.
+    // The prefix therefore settles `tap` as well as the candidate, so the item comes back as it was.
+    const wantTap = opts.itemKey == null ? null : /^recognise-tap:/.test(String(opts.itemKey));
+    const got = pickCandidate(skill, 'recognise', { unambiguous: true, ...opts, itemKey: opts.itemKey == null ? null : String(opts.itemKey).replace(/^recognise-tap:/, 'recognise:') });
     if (!got) return null;
     const { c, key: itemKey, wrapped } = got;
     // "What is this dative doing?" offers the dative's other jobs; a construction without a case offers the other clause types.
@@ -761,7 +780,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const confuse = confuseMap(skill, c, k);
     // Every other recognise item is "tap the word": the sentence's words are the
     // choices, and any word the skill's filter fits is right (accept = word indexes).
-    if (opts.tap ?? rand() < 0.5) {
+    if (wantTap ?? (opts.tap ?? rand() < 0.5)) {
       const accept = candidates(skill.id).filter((x) => x.unit.id === c.unit.id && x.value === c.value && !x.ambiguous).map((x) => x.index);
       return { ...base(skill, 'recognise', stage, c), key: itemKey.replace(/^recognise:/, 'recognise-tap:'), input: 'tap', repeat: wrapped,
         prompt: { la: c.unit.la, question: `Tap the word that is ${lab.name} — ${lab.plain}`, gloss: null, hint: skill.summary },
@@ -960,7 +979,8 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const shownOf = (sp) => { const sec = sp.table.sections[sp.si]; return `${firstWord(sp.c.entry.lemma)} ${sec.title ?? ''} ${sec.rows[sp.ri].label ?? ''} ${sec.headers?.[sp.ci] ?? ''}`; };
     const open = spots.map((sp, i) => i).filter((i) => !spellsAnswer(shownOf(spots[i]), answersOf(spots[i])));
     if (open.length) { keys = open.map((i) => keys[i]); spots = open.map((i) => spots[i]); }
-    const got = pool.chooseInfo(skill.id, 'chart', keys, rand);
+    const got = pool.chooseInfo(skill.id, 'chart', keys, rand, [], opts.itemKey ?? null);
+    if (!got) return null;   // a redo whose cell the table no longer has: dropped, never swapped for another cell
     const spot = spots[keys.indexOf(got.key)];
     const { c, table, si, ri, ci } = spot;
     const section = table.sections[si];
@@ -1015,12 +1035,16 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
    * kinds are tried — those not in `avoid` (the neighbours' kinds) first — and
    * the item that comes back says which kind it is.
    */
-  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, full = false, tap = undefined, avoid = [] } = {}) {
+  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, full = false, tap = undefined, avoid = [], itemKey = null } = {}) {
     const skill = typeof skillId === 'string' ? skillMap.get(skillId) : skillId;
     if (!skill || !skill.parse_filter) return null;
-    const opts = { currentWeek, currentWeekN, tap };
+    const opts = { currentWeek, currentWeekN, tap, itemKey };
     const fn = FNS[kind];
     if (!fn) return null;
+    // A redo asks for one named item (GRAMMAR-CONTRACT.md "Redo what was wrong"). Neither of the two
+    // fallbacks below may run for it: a different sentence, or a different kind, would be a different
+    // item wearing the same name. Nothing to rebuild → null, and the session drops the slot quietly.
+    if (itemKey != null) return fn(skill, stage, opts, { full });
     let item = fn(skill, stage, opts, { full });
     if (!item && currentWeek) item = fn(skill, stage, { currentWeek: false, currentWeekN: null, tap }, { full });
     if (!item) { // fall back through the other kinds so a session slot is never empty — the neighbours' kinds last

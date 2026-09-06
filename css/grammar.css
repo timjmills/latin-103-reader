@@ -207,6 +207,9 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-preset__text small { color: var(--ink-3); font-size: var(--ui-xs); line-height: 1.4; }
 .g-preset.is-disabled { color: var(--ink-3); cursor: default; }
 .g-preset__pick { display: grid; gap: var(--s-1); padding-top: var(--s-2); }
+/* "Missed items" is not a fifth mix over skills but a session over named items ("Redo what was wrong"),
+   so it sits a little apart from the four — a rule, not a badge or a colour. */
+.g-preset--missed { margin-top: var(--s-2); border-top-width: 2px; }
 .g-select { min-height: 40px; max-width: 100%; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: var(--ui-md); }
 
 /* ------------------------------------------------------------ runner */

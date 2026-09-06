@@ -358,12 +358,13 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     return usableQ.get(skill.id);
   };
 
-  function question(skill, stage) {
+  function question(skill, stage, opts = {}) {
     const items = questionItems(skill);
     const keyOf = (it) => `question:${it.id}`;
     const keys = items.map(keyOf);
     if (!keys.length) return null;
-    const got = pool.chooseInfo(skill.id, 'question', keys, rand);
+    const got = pool.chooseInfo(skill.id, 'question', keys, rand, [], opts.itemKey ?? null);
+    if (!got) return null;   // a redo whose question has left the set: dropped, never swapped for another one
     const it = items[keys.indexOf(got.key)];
     const { unit, answers, choices } = resolveQuestion(it);
     let input = it.input;
@@ -424,7 +425,8 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     // The key carries the part of speech: three shipped decks hold one lemma twice (liber N / ADJ), and without it the second is unreachable (M8).
     const keyOf = (w) => `vocab:${pad(skill.chapter)}:${w.lemma}:${w.pos || 'X'}${suffix}`;
     const keys = deck.words.map(keyOf);
-    const got = pool.chooseInfo(skill.id, 'vocab', keys, rand);
+    const got = pool.chooseInfo(skill.id, 'vocab', keys, rand, [], opts.itemKey ?? null);
+    if (!got) return null;   // a redo whose word has left the deck
     const w = deck.words[keys.indexOf(got.key)];
     const posName = POS_LABEL[w.pos] ?? (w.pos || 'word');
     const common = { ...base(skill, 'vocab', stage), key: got.key, repeat: got.wrapped, word: w, unit_id: w.unit_id,
@@ -455,12 +457,13 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     return item;
   }
 
-  function pensum(skill, stage) {
+  function pensum(skill, stage, opts = {}) {
     const p = skill.data;
     const entries = [...p.A.map((it) => ({ kind: 'A', it })), ...p.B.map((it) => ({ kind: 'B', it })), ...p.C.map((it) => ({ kind: 'C', it }))];
     if (!entries.length) return null;
     const keys = entries.map((e) => `pensum:${pad(skill.chapter)}:${e.kind}:${e.it.i}`);
-    const got = pool.chooseInfo(skill.id, 'pensum', keys, rand);
+    const got = pool.chooseInfo(skill.id, 'pensum', keys, rand, [], opts.itemKey ?? null);
+    if (!got) return null;   // a redo whose pensum line has changed on the server
     const { kind, it } = entries[keys.indexOf(got.key)];
     const common = { ...base(skill, 'pensum', stage), key: got.key, repeat: got.wrapped, pensum: kind, feedback: { short: '', term: skill.plain, label: null, table: null, lemma: null, sense: null, paradigm: null } };
     if (kind === 'C') {
@@ -497,11 +500,14 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
   }
 
   const FNS = { question, vocab, pensum };
-  function generate({ skill: skillId, kind, stage = 1, match = undefined } = {}) {
+  function generate({ skill: skillId, kind, stage = 1, match = undefined, itemKey = null } = {}) {
     const skill = typeof skillId === 'string' ? sets.get(skillId) : skillId;
     if (!skill?.set) return null;
     const fn = FNS[kind] ?? FNS[skill.kinds[0]];
-    return fn ? fn(skill, stage, { match }) : null;
+    // `itemKey`: one exact item back for a redo ("Redo what was wrong"). A vocabulary word is drilled as a
+    // multiple choice or as a four-way match, and the key does not say which; `match` is left as the caller
+    // set it, so a redo of a vocabulary item is the same word, in whichever of its two shapes comes up.
+    return fn ? fn(skill, stage, { match, itemKey }) : null;
   }
   // A question set whose sentences the device does not have yet has no items to give, whatever its `count` says.
   const drillable = (id) => { const sk = sets.get(id); if (!sk) return false; return sk.set === 'questions' && sk.data ? questionItems(sk).length > 0 : (sk.count ?? 0) > 0; };
