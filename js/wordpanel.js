@@ -294,7 +294,12 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   const entryOf = (item) => item.result.entries[item.index] ?? item.result.entries[0] ?? null;
   const describeItem = (item) => {
     const entry = entryOf(item);
-    return entry ? describe(entry, { compact: !!getSettings().compact, form: item.form }) : null;
+    return entry ? describe(entry, { compact: !!getSettings().compact, form: item.text || item.form, context: unitOf(item.unitId)?.la ?? '' }) : null;
+  };
+  /** What `lookup` needs to rank the readings for *this* word in *this* sentence. */
+  const wordOpts = (unitId, text, at) => {
+    const la = unitOf(unitId)?.la ?? '';
+    return la ? { context: la, at: Number.isFinite(at) ? at : undefined } : {};
   };
 
   /**
@@ -426,7 +431,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       const rec = map.get(t.form);
       if (!rec || rec.learned_at) continue;
       seen.add(t.form);
-      const result = lookup(t.form);
+      const result = lookup(t.text, wordOpts(unitId, t.text, t.start));
       if (!result.entries.length) continue;
       const remembered = entryIndex?.get?.(t.form);
       cur = stackWith(cur, { kind: 'word', form: t.form, text: t.text, unitId, hl: null, result, pos: t.start,
@@ -672,9 +677,11 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
 
   return {
     async showWord({ form, text, unitId, el, hl }) {
-      const result = lookup(form);
-      const remembered = entryIndex?.get?.(form);
       const pos = Number(el?.dataset?.start);
+      // The word as the book prints it, with its sentence: the dictionary needs both to say which
+      // reading this is (māla in "Aemilia puerīs māla dat" is apples, not cheeks).
+      const result = lookup(text || form, wordOpts(unitId, text || form, pos));
+      const remembered = entryIndex?.get?.(form);
       const item = { kind: 'word', form, text, unitId, hl, result, pos: Number.isFinite(pos) ? pos : undefined,
                      index: remembered != null && result.entries[remembered] ? remembered : 0 };
       const toStack = isWide();

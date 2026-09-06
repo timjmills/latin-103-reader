@@ -2,7 +2,14 @@
 //
 //   loadGlossary(url)        fetch + index glossary.json (+ function-words.json, glosses.json next to it)
 //   setGlossary(g, fw, gl)   same, from already-parsed objects (tests, prefetch)
-//   lookup(form)             → { form, entries, via: 'exact'|'lower'|'enclitic'|'miss', enclitic }
+//   lookup(form, opts)       → { form, entries, via: 'exact'|'lower'|'enclitic'|'miss', enclitic }
+//                              opts.context  the sentence the form sits in — readings whose parse
+//                                            cannot fit it are ranked down (see "ranking" below)
+//                              opts.at       the form's character offset in that context, when the
+//                                            caller has it (the sentence may print the word twice)
+//                              opts.want     a parse the caller already knows must hold
+//                                            ({ case: 'abl' }, { mood: 'imper' }) — readings that
+//                                            cannot take it lose
 //   describe(entry, opts)    → opts.compact; opts.form (as in the text) and opts.context (the unit's
 //                              Latin) let the meaning line put a command / an address first
 //   describe(entry, opts)    → LearnerEntry (see CONTRACT.md)
@@ -11,7 +18,7 @@
 // by/with/from the labyrinth", "they were sending / they might send
 // (subjunctive)"); the parse line is the label ("dative or ablative singular").
 
-import { stripMacrons } from './tokenize.js';
+import { stripMacrons, normalizeForm, tokenize } from './tokenize.js';
 import { paradigm, declensionName, adjectiveName, conjugationName } from './paradigms.js';
 
 let GLOSSARY = null;
@@ -87,6 +94,12 @@ function tableOf(entry) {
   if (!tableMemo.has(k)) { let t = null; try { t = paradigm(entry, []); } catch { t = null; } tableMemo.set(k, t); }
   return tableMemo.get(k);
 }
+/** "sē, suī (+ -cum: with)" — Whitaker's fold of an enclitic-like tackon into the headword. */
+const TACKON_RE = /\+\s*-/;
+/** Ørberg's margin abbreviations and endings, whose "spelling" is a fragment: `-iō`, `-ōrum`, `m`. */
+const GLOSS_POS = new Set(['ABBR', 'ENDING', 'PREFIX', 'STEM']);
+/** The entry's own spelling of its headword: first word, hyphens off ("-iō" is the ending -iō). */
+const headSpelling = (e) => String(e.lemma || '').split(/[\s,(/]/)[0].replace(/^-+|-+$/g, '').toLowerCase();
 const cellText = (c) => [c?.text, c?.alt, ...String(c?.text ?? '').split(' / ')].filter(Boolean).map((s) => String(s).trim());
 /**
  * Does the entry's own paradigm print *this* spelling — macrons and all?
@@ -96,9 +109,13 @@ const cellText = (c) => [c?.text, c?.alt, ...String(c?.text ?? '').split(' / ')]
  * form is only Whitaker's spare parse and the entry goes last.
  */
 function macronVerdict(entry, q) {
+  // A reading Whitaker cut a tackon off ("sē, suī (+ -cum: with)" for sēcum, "Q + -uis" for quis)
+  // has a table for the bare word: it cannot be *asked* how the whole word is spelled, so it is not
+  // held against it, and the build's order settles where it goes.
+  if (TACKON_RE.test(String(entry.lemma || ''))) return 0;
   // The headword itself is the entry's own spelling of the word, and it carries macrons even where the
   // stems the paradigm is built from have lost them (māla malae f is built from the stem "mal").
-  if (String(entry.lemma || '').split(/[\s,(/]/)[0].toLowerCase() === q) return 0;
+  if (headSpelling(entry) === q) return 0;
   const table = tableOf(entry);
   if (!table) return 1;
   let loose = false;
@@ -113,60 +130,302 @@ function macronVerdict(entry, q) {
   return loose ? 2 : 3;
 }
 
+// ---------------------------------------------------------------------------
+// ranking: which reading of a form leads the list
+//
+// One key can hold several words. They are put in order by, in this order:
+//
+//   1. whole word before enclitic split          ubīque before ubi + -que
+//   2. the printed spelling                      macronVerdict above — a reading that prints these
+//                                                letters with *other* macrons is not this word at
+//                                                all, so it cannot win on any other ground
+//   3. the sentence                              fitPenalties below — a reading whose parse cannot
+//                                                survive the governing preposition, the adjective
+//                                                next to it or the verb's object slot loses
+//   4. a capital wants a name                    Mārcō is Mārcus, not "I am withered"; a real name
+//                                                (`proper`) before a merely capitalised word
+//                                                (Aemilia the woman before Aemilius -a -um)
+//   5. a word the learner never meets            `n` from the build: how often the library prints a
+//                                                form of that lexeme that the rival readings cannot
+//                                                (māla → mālum/mālō/mālōrum, 64; cheeks, 0). It only
+//                                                ever pushes a reading *back*, and only at its
+//                                                sharpest — never printed at all, against a rival
+//                                                that is part of the course.
+//   6. the sentence, guessing                    fitPenalties' softer half: which slot in the clause
+//                                                is still free. Worth having, but a guess, so last.
+//   7. the build's own order                     Whitaker frequency, supplements, names
+
+// `n` / `nd` from build_glossary.py: how often the library prints a form only this reading can give,
+// and how many such forms there were to count over. COUNT_SEEN / COUNT_BASE match it.
+const COUNT_SEEN = 10;
+const COUNT_BASE = 4;
+const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
+/**
+ * 0 for every reading, 1 for one the library never once shows the learner while
+ * a rival is all over the course. Two things keep this honest.
+ *
+ * Only "never printed at all" counts. Nothing softer is trustworthy, because a
+ * verb has ten times a noun's forms to be counted over, so comparing the two
+ * totals measures the paradigm, not the word.
+ *
+ * And the rival has to have been counted over evidence of a comparable size.
+ * `vītēs` is the vine, but the only forms the vine alone can give are
+ * `vītis/vīte/vītium/vītibus`, none of which the book prints, while `vītō`
+ * "avoid" brings 146 forms of its own to the count: whichever word is meant, a
+ * race like that goes to the verb.
+ *
+ * A reading with no `n` at all had too little of its own to print (the adverb
+ * `modo` gives no form the noun `modus` does not; Iūlia none that Iūlius -a -um
+ * does not), so the counts never move it either way.
+ */
+function countRanks(entries) {
+  const ns = entries.map((e) => num(e?.n));
+  const nds = entries.map((e) => num(e?.nd));
+  return ns.map((n, i) => (n === 0 && ns.some((rn, k) => rn >= COUNT_SEEN && nds[k] != null && nds[i] && nds[k] <= COUNT_BASE * nds[i]) ? 1 : 0));
+}
+
+const NOMINAL_POS = new Set(['N', 'ADJ', 'PRON', 'NUM']);
+const STATED_MOODS = new Set(['ind', 'subj']);
+/** punctuation that ends the stretch of sentence a word can agree with */
+const CLAUSE_BREAK = /[.,;:!?()[\]"“”«»…\n]|--|—|–/;
+
+const casesOf = (e) => { const s = new Set(); for (const p of e.parses || []) if (p.case) s.add(p.case); return s; };
+
+/** sum and its compounds (absum, possum, adsum …): they take no object. */
+const COPULA_H = /(^|[a-z])sum$/;
+
+/** What a *neighbouring* token could be — never ranked, so it is read raw. */
+function tokenFacts(form) {
+  const ents = findEntries(form) || [];
+  const facts = { cases: new Set(), governs: new Set(), agree: [], stated: false, copula: false, other: false };
+  for (const e of ents) {
+    // `other`: this token has a reading that is not a preposition, so it may not be governing at all
+    // — `cum` is as often "when" as "with", and `causā` is a noun that follows its genitive.
+    if (e.pos !== 'PREP') facts.other = true;
+    if (e.pos === 'PREP' && e.kind) facts.governs.add(e.kind);
+    for (const p of e.parses || []) {
+      if (p.governs) facts.governs.add(p.governs);
+      if (p.case) {
+        facts.cases.add(p.case);
+        if (NOMINAL_POS.has(e.pos)) facts.agree.push({ pos: e.pos, case: p.case, number: p.number, gender: p.gender });
+      }
+      // "est" can be read as edō "he eats", but in a course text it is sum, so a form that *could*
+      // be the copula is treated as one and the clause is not made to want an object. Only a stated
+      // (indicative or subjunctive) reading counts as the clause's verb: Whitaker offers a passive
+      // imperative for every infinitive ("numerāre" = "be counted!"), which is not a verb in use.
+      if (STATED_MOODS.has(p.mood)) { facts.stated = true; if (COPULA_H.test(String(e.h ?? ''))) facts.copula = true; }
+    }
+  }
+  // nothing here could be a noun, so a stated reading of it really is the clause's verb
+  facts.verbOnly = facts.stated && facts.cases.size === 0;
+  // …and a word that can head the subject: a noun or pronoun, not an adjective agreeing with one
+  facts.subject = facts.agree.some((a) => a.case === 'nom' && (a.pos === 'N' || a.pos === 'PRON'));
+  return facts;
+}
+
+// The same sentence is asked about once per word of it, so the reading of it is kept.
+const ctxMemo = new Map();
+function analyseContext(context) {
+  if (ctxMemo.has(context)) return ctxMemo.get(context);
+  const words = [];
+  let clause = 0;
+  for (const t of tokenize(context)) {
+    if (t.isWord) words.push({ ...tokenFacts(t.form), text: t.text, form: t.form, start: t.start, clause });
+    else if (CLAUSE_BREAK.test(t.text)) clause += 1;
+  }
+  const out = { words };
+  if (ctxMemo.size > 200) ctxMemo.clear();
+  ctxMemo.set(context, out);
+  return out;
+}
+
+/** Which word of the sentence is the one being looked up. `at` is its offset when the caller has it. */
+function locate(words, raw, at) {
+  if (Number.isFinite(at)) {
+    const hit = words.findIndex((w) => w.start === at);
+    if (hit >= 0) return hit;
+  }
+  const form = normalizeForm(raw);
+  let hit = words.findIndex((w) => w.text === raw);
+  if (hit < 0) hit = words.findIndex((w) => w.form === form);
+  return hit;
+}
+
+/** Every (case, number, gender) an entry can carry. */
+const agreeOf = (e) => (e.parses || []).filter((p) => p.case).map((p) => ({ case: p.case, number: p.number, gender: p.gender }));
+const agrees = (a, b) => a.case === b.case && a.number === b.number && a.gender === b.gender;
+
+/**
+ * How badly each reading contradicts the sentence. `hard` is what the sentence
+ * really says — a case the governing preposition cannot take, an adjective
+ * beside it that agrees with nothing the reading offers; `soft` is the two
+ * guesses about which slot is still free, which are worth having but are not
+ * evidence of the same kind, so they are settled last of all.
+ *
+ * Every rule is judged three ways per reading: it holds, it fails, or the rule
+ * has nothing to say about this reading (an adverb has no case to disagree
+ * with). A rule that *no* reading actually satisfies is dropped whole — an
+ * adjective that turns out not to modify this word, or a preposition governing
+ * something else, must not be allowed to push the uninflected reading up by
+ * penalising every inflected one.
+ */
+function fitPenalties(entries, raw, opts) {
+  const hard = entries.map(() => 0);
+  const soft = entries.map(() => 0);
+  /** `verdict(e)` → 0 it holds · 1 it fails · null not applicable. */
+  const apply = (pen, weight, verdict) => {
+    const v = entries.map(verdict);
+    if (!v.some((x) => x === 0)) return;
+    v.forEach((x, i) => { if (x === 1) pen[i] += weight; });
+  };
+  const nominal = (e) => NOMINAL_POS.has(e.pos) && casesOf(e).size > 0;
+
+  // The caller already knows the role (a drill that asks for the ablative, a scan that matched one parse).
+  const want = opts.want;
+  if (want && Object.keys(want).length) {
+    apply(hard, 4, (e) => ((e.parses || []).some((p) => Object.entries(want).every(([k, v]) => p[k] === v)) ? 0 : 1));
+  }
+
+  const context = opts.context;
+  if (!context) return { hard, soft };
+  const { words } = analyseContext(context);
+  const at = locate(words, raw, opts.at);
+  if (at < 0) return { hard, soft };
+  const here = words[at].clause;
+  const inClause = (j) => j >= 0 && j < words.length && words[j].clause === here;
+
+  // 1. a governing preposition, and only over the word it stands in front of: "in hortō", and in
+  //    "ad magnam vīllam" the accusative is asked of `magnam`. Reaching further would ask it of the
+  //    wrong word — in "ad ōram maris" the preposition has its object already, and `maris` (of the
+  //    sea) belongs to `ōram`, not to `ad`.
+  const before = inClause(at - 1) ? words[at - 1] : null;
+  const governs = before && before.governs.size && !before.other ? before.governs : null;
+  if (governs) {
+    apply(hard, 4, (e) => (!nominal(e) ? null : [...casesOf(e)].some((c) => governs.has(c)) ? 0 : 1));
+  }
+
+  // 2. the word in front of it agrees with it: "duōs pedēs", "magna vīlla", "servus bonus" (read
+  //    from `bonus`). Only the word in front — an adjective *after* the word is as likely to belong
+  //    to the verb, and "duōs pedēs longus est" is two feet long, not two long feet.
+  // …and only when that word is not already spoken for: in "Puella laeta mālō suō" the adjective
+  // `laeta` agrees with `Puella` behind it, so it says nothing about `mālō`.
+  const spokenFor = before?.agree.length && inClause(at - 2)
+    && words[at - 2].agree.some((a) => before.agree.some((b) => agrees(a, b)));
+  if (before?.agree.length && !spokenFor) {
+    const adjOnly = before.agree.every((a) => a.pos === 'ADJ' || a.pos === 'NUM');
+    const nounOnly = before.agree.every((a) => a.pos === 'N');
+    if (adjOnly || nounOnly) {
+      const mine = adjOnly ? (e) => e.pos === 'N' || e.pos === 'PRON' : (e) => e.pos === 'ADJ' || e.pos === 'NUM';
+      apply(hard, 2, (e) => (!mine(e) || !agreeOf(e).length ? null : agreeOf(e).some((a) => before.agree.some((b) => agrees(a, b))) ? 0 : 1));
+    }
+  }
+
+  // 3. the verb still wants an object: "Aemilia puerīs māla dat" — a subject stands in front of the
+  //    word, the verb takes objects, and nothing else in the clause can be accusative, so the
+  //    reading that can (mālum, apples) is the one the sentence is asking for.
+  //
+  //    All three conditions earn their keep. The verb has to be a word that is *nothing but* a verb,
+  //    or "is enim deus maris est" would count `is` as "you go" and demand an object; it must not be
+  //    sum or a compound of it, which take none; and a subject has to have been named already, or
+  //    "Nunc īnfans dormit" would ask the intransitive `dormit` for one — and that subject has to be
+  //    a noun or pronoun of its own, not the adjective standing in front of this very word
+  //    ("Parvulus īnfans in cūnīs cubāre solet").
+  const verbWantsObject = words.some((w, j) => j !== at && inClause(j) && w.verbOnly && !w.copula)
+    && words.some((w, j) => j < at && inClause(j) && w.subject)
+    && !words.some((w, j) => j !== at && inClause(j) && w.cases.has('acc'));
+  if (verbWantsObject) apply(soft, 1, (e) => (!nominal(e) ? null : casesOf(e).has('acc') ? 0 : 1));
+  return { hard, soft };
+}
+
+/** Is this word the first of its sentence, so that its capital says nothing? */
+function startsSentence(opts) {
+  if (!opts.context || !Number.isFinite(opts.at)) return false;
+  const before = String(opts.context).slice(0, opts.at).replace(/[\s"'“”‘’(\[—–-]+$/u, '');
+  // a colon too: "Syra: \"Num pater domī est?\"" opens a sentence just as a full stop does
+  return before === '' || /[.!?:…]$/.test(before);
+}
+
 /**
  * Keys drop macrons, so "hīc" (here) and "hic" (this) share one key, and so do
- * *māla* (apples) and *mala* (bad). The printed spelling decides where it can:
- * an entry whose own lemma or paradigm prints the query exactly goes first, one
- * that prints the same letters with different macrons goes behind the rest, and
- * a capitalised word in a sentence takes a capitalised headword first of all
- * (Mārcō is Mārcus, not "I am withered"). `ambiguous` is set when the leading
+ * *māla* (apples) and *mala* (bad). `ambiguous` is set when the leading
  * readings are still level and mean different things — the caller shows both
  * rather than choosing one (QA B3).
  */
-function preferMacronMatch(entries, raw) {
-  if (entries.length < 2) return { entries, ambiguous: false };
-  const q = raw.toLowerCase();
+export function rankEntries(entries, raw, opts = {}) {
+  if (!Array.isArray(entries) || entries.length < 2) return { entries: entries || [], ambiguous: false };
+  const q = String(raw).toLowerCase();
   const hasMacron = MACRON_RE.test(raw);
-  const cap = CAP_RE.test(raw);
-  const UNINFLECTED = new Set(['ADV', 'CONJ', 'PREP', 'INTERJ']);
+  // A capital means a name only where the sentence did not put it there: "Num pater domī est?" opens
+  // with the question particle, not with Numerius. Without the sentence we cannot tell, and the
+  // capital is taken at face value as before.
+  const cap = CAP_RE.test(raw) && !startsSentence(opts);
+  // …and the words that have only one form of their own: the true uninflected parts of speech, and
+  // the gloss abbreviations, whose "spelling" is a fragment ("-iō", "-ōrum").
+  const UNINFLECTED = new Set([...GLOSS_POS, 'ADV', 'CONJ', 'PREP', 'INTERJ']);
   const score = (e) => {
-    if (!hasMacron || e.enc) return 1;
+    // `spelled`: the list came from a key the build made for this exact spelling, and the build
+    // tested it against every form of every reading (spelling_rank in build_glossary.py). Asking
+    // again here with a table the app may not be able to build could only make that answer worse.
+    if (opts.spelled || !hasMacron || e.enc) return 1;
     if (UNINFLECTED.has(e.pos)) {
-      const lemma = String(e.lemma || '').split(/[\s(/]/)[0].toLowerCase();
+      if (TACKON_RE.test(String(e.lemma || ''))) return 0;
+      const lemma = headSpelling(e);
       if (lemma === q) return 0;
-      if (stripMacrons(lemma) === stripMacrons(q) && lemma !== q) return 2;
+      if (stripMacrons(lemma) === stripMacrons(q) && lemma !== q) {
+        // A word with one form and a disputed vowel: the library prints the adverb `modo` 39 times
+        // and `modō` 52, so a macron that disagrees with the headword proves nothing about a
+        // particle, and the build's order is left to decide. It does still tell a *fragment* apart
+        // from a word — the ending `-a` is not the preposition `ā`.
+        return GLOSS_POS.has(e.pos) ? 2 : 0;
+      }
       return 1;
     }
     return macronVerdict(e, q);
   };
-  const named = (e) => (cap && !e.enc && CAP_RE.test(String(e.lemma ?? '')) ? 0 : 1);
+  // Mārcō is Mārcus, Aemilia is the woman and not the adjective Aemilius -a -um; a common word that
+  // only happens to start the sentence is nobody.
+  const named = (e) => (!cap || e.enc ? 3 : e.proper ? (e.pos === 'N' ? 0 : 1) : CAP_RE.test(String(e.lemma ?? '')) ? 2 : 3);
+  const fit = fitPenalties(entries, raw, opts);
+  const band = countRanks(entries);
   // whole-word readings stay ahead of enclitic splits (ubīque before ubi + -que)
-  const ranked = entries.map((e, i) => [e.enc ? 1 : 0, score(e), named(e), i, e]);
-  ranked.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || a[3] - b[3]);
+  const ranked = entries.map((e, i) => [e.enc ? 1 : 0, score(e), fit.hard[i], named(e), band[i], fit.soft[i], i, e]);
+  ranked.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || a[3] - b[3] || a[4] - b[4] || a[5] - b[5] || a[6] - b[6]);
   const best = ranked[0];
   const head = (e) => String((e.senses || [])[0] ?? '');
   // Ambiguous means the printed spelling was tested and *nobody* passed: every reading prints these
-  // letters with other macrons (māla — the glossary holds only `malus` bad and `malum` apple, both
-  // spelled mala), so the dictionary cannot say which word this is and the caller shows the readings
-  // instead of choosing. Plain homography (quī, eō — readings that do print the word) is not this.
-  const ambiguous = best[1] === 2 && ranked.some((r, i) => i > 0 && r[0] === best[0] && r[1] === best[1] && r[2] === best[2] && String(r[4].h ?? r[4].lemma) !== String(best[4].h ?? best[4].lemma) && head(r[4]) !== head(best[4]));
-  return { entries: ranked.map((x) => x[4]), ambiguous };
+  // letters with other macrons (mala — the glossary holds `malus` bad and `malum` apple, both spelled
+  // mala), and nothing else — not the sentence, not the counts — separates them either. Plain
+  // homography (quī, eō — readings that do print the word) is not this.
+  const ambiguous = best[1] === 2 && ranked.some((r, i) => i > 0
+    && r.slice(0, 6).every((x, k) => x === best[k])
+    && String(r[7].h ?? r[7].lemma) !== String(best[7].h ?? best[7].lemma) && head(r[7]) !== head(best[7]));
+  return { entries: ranked.map((x) => x[7]), ambiguous };
 }
 
-export function lookup(form) {
+/**
+ * `opts`: `context` (the sentence the form sits in), `at` (its offset there)
+ * and `want` (a parse the caller knows must hold). All optional — with none of
+ * them the readings are still put in order by spelling, capital and how often
+ * the library prints the word.
+ */
+export function lookup(form, opts = {}) {
   const raw = String(form ?? '').replace(/[^\p{L}]/gu, '');
   const result = { form: raw, entries: [], via: 'miss', enclitic: null, ambiguous: false };
   if (!raw || !GLOSSARY) return result;
 
-  let entries = hitKey(raw);
-  if (entries) return { ...result, entries, via: 'exact', enclitic: entries[0]?.enc ?? null };
-
   const lower = stripMacrons(raw).toLowerCase();
-  entries = findEntries(lower);
+  let entries = hitKey(raw);
+  let via = 'exact';
+  // a key the build made for this exact spelling (māla, Mārcō) — its order already answers the
+  // spelling question, so the ranking below leaves that part alone
+  const spelled = !!entries && raw !== lower;
+  if (!entries) {
+    entries = findEntries(lower);
+    if (entries) via = raw === lower ? 'exact' : 'lower';
+  }
   if (entries) {
-    const ranked = preferMacronMatch(entries, raw);
-    entries = ranked.entries;
-    return { ...result, entries, ambiguous: !!ranked.ambiguous, via: raw === lower ? 'exact' : 'lower', enclitic: entries[0]?.enc ?? null };
+    const ranked = rankEntries(entries, raw, { ...opts, spelled });
+    return { ...result, entries: ranked.entries, ambiguous: !!ranked.ambiguous, via, enclitic: ranked.entries[0]?.enc ?? null };
   }
 
   for (const enc of ENCLITICS) {
@@ -175,7 +434,8 @@ export function lookup(form) {
       const found = findEntries(base);
       if (found) {
         const cloned = found.map((e) => ({ ...e, enc }));
-        return { ...result, entries: cloned, via: 'enclitic', enclitic: enc };
+        const ranked = rankEntries(cloned, raw, opts);
+        return { ...result, entries: ranked.entries, ambiguous: !!ranked.ambiguous, via: 'enclitic', enclitic: enc };
       }
     }
   }
@@ -784,4 +1044,4 @@ export function describe(entry, opts = {}) {
   };
 }
 
-export const _internal = { thirdSg, pastTense, pastParticiple, ingForm, pluralNoun, headWord, finiteMeaning, verbForms };
+export const _internal = { thirdSg, pastTense, pastParticiple, ingForm, pluralNoun, headWord, finiteMeaning, verbForms, countRanks, fitPenalties };
