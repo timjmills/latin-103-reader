@@ -10,9 +10,9 @@
     { "type": "confusion", "with": "genitive-possession", "text": "Both say who owns something. The genitive (the 'of' form) hangs on a noun: *soror Mārcī* — Marcus's sister. The dative goes with *est* and makes a whole sentence: *Mārcō est soror* — Marcus has a sister. Look at what the owner's word is attached to: a noun (genitive, *mātris*) or *est* (dative, *mātrī*)." }
   ],
   "more": [
-    { "type": "p", "text": "The commonest case is a name: *Mātrī 'Aemilia' nōmen est* — the mother's name is Aemilia. With *nōmen est* the name usually stays in the nominative (*Eī nōmen est Lūcius*), but it may agree with the owner's dative (*Puerō nōmen est Mārcō*); both are correct. The relative pronoun does the same job: *Iānus est deus cui duae faciēs sunt* — Janus is a god who has two faces." },
+    { "type": "p", "text": "The commonest case is a name: *Mātrī 'Aemilia' nōmen est* — the mother's name is Aemilia. With *nōmen est* the name usually stays in the nominative (*Eī nōmen est Lūcius*), but it may agree with the owner's dative (*Puerō nōmen est Mārcō*); both are correct. The relative pronoun does the same job: *Iānus est deus* — a god *cui duae faciēs sunt*, who has two faces." },
     { "type": "p", "text": "The learner's notes (week 12): the dative noun is the possessor and the nominative the thing possessed (*virō est gladius* — to the man there is a sword; *fēminīs sunt pānēs*); English does something like it only for qualities (*there is a strange look to his face*); and it is common inside a relative clause with a dative relative pronoun: *ecce vir cui gladius est* — see the man who has a sword." },
-    { "type": "p", "text": "Ørberg brings it in with the family's names in chapter XII (*Iūliae duo frātrēs sunt*, *Virō Rōmānō tria nōmina sunt*). A&G §373: the dative of possession stresses the fact of owning, the genitive the owner; *mihi est* is the plain way to say *I have* when *habeō* would put too much weight on the having." }
+    { "type": "p", "text": "Ørberg brings it in with the family's names in chapter XII (*Iūliae duo frātrēs sunt*; a Roman man has *tria nōmina*). A&G §373: the dative of possession stresses the fact of owning, the genitive the owner; *mihi est* is the plain way to say *I have* when *habeō* would put too much weight on the having." }
   ],
   "sources": ["notes p39", "Ørberg cap. XII", "A&G §373"]
 }

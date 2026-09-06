@@ -38,9 +38,68 @@ function splitCell(str, key) {
   return i < 0 ? cell('', str, key) : cell(str.slice(0, i), str.slice(i + 1), key);
 }
 
+// Whitaker's stems reach us with some long vowels missing, and a few carrying
+// a macron that does not belong. These are the verb stems Familia Romana itself
+// spells otherwise; the comment on each line is what the book prints. Kept in
+// step with STEM_MACRONS in pipeline/latin_forms.py.
+const STEM_MACRONS = {
+  ardeo:   { 0: 'ārd', 1: 'ārd' },  // ārdēre, ārdentem, ārdentī
+  pareo:   { 0: 'pār', 1: 'pār' },  // pārēre, pāret, pārent, pārēbō
+  lateo:   { 1: 'lat' },            // latēre, latet, latent — not lātus
+  fateor:  { 1: 'fat' },            // fatērī, fatētur, fatentī — not fātum
+  nato:    { 1: 'nat' },            // natāre, natat, natandō — not nātus
+  novo:    { 1: 'nov' },            // novus, novum; nōvī belongs to nōscō
+  labo:    { 1: 'lab' },            // labāre — lābī, lābitur are lābor
+  fabulor: { 0: 'fābul' },          // fābulārī, fābula
+  prodo:   { 0: 'prōd' },           // prōdere = prō + dō
+  velo:    { 1: 'vēl' },            // vēlō from vēlum; vēla, vēlīs
+};
+const MACRON = '\u0304';   // U+0304, the combining macron: 'a' + MACRON is ā
+const plain = (s) => (s ?? '').normalize('NFD').replace(/\p{Mn}/gu, '');
+
+/** 'ārd' → [['a', MACRON], ['r', ''], ['d', '']] — base letters with their marks. */
+function letters(s) {
+  const out = [];
+  for (const ch of (s ?? '').normalize('NFD')) {
+    if (/\p{Mn}/u.test(ch) && out.length) out[out.length - 1][1] += ch;
+    else out.push([ch, '']);
+  }
+  return out;
+}
+
+/**
+ * Give `derived` the macrons `base` carries, over the letters they share.
+ * Only ever ADDS a macron, and stops at the first letter that differs, so a
+ * derived stem that is legitimately longer than its base (sērior beside serus)
+ * keeps its own quantity. A comparative or superlative never changes the
+ * quantity of the stem it is built on — fōrmōs- gives fōrmōsior, fōrmōsissimus
+ * — so the shared letters can be filled in safely.
+ * Kept in step with merge_macrons() in pipeline/latin_forms.py.
+ */
+function mergeMacrons(base, derived) {
+  if (!base || !derived) return derived;
+  const b = letters(base);
+  const d = letters(derived);
+  let changed = false;
+  for (let i = 0; i < Math.min(b.length, d.length); i++) {
+    if (b[i][0] !== d[i][0]) break;
+    if (b[i][1].includes(MACRON) && !d[i][1].includes(MACRON)) { d[i][1] += MACRON; changed = true; }
+  }
+  return changed ? d.map(([c, m]) => c + m).join('').normalize('NFC') : derived;
+}
+
 function root(entry, i, fallback = '') {
   const r = entry.roots?.[i];
-  return r && r !== '-' ? r : fallback;
+  const v = r && r !== '-' ? r : fallback;
+  const fix = STEM_MACRONS[entry.h];
+  if (fix && fix[i] != null && (entry.pos === 'V' || entry.pos === 'VPAR') && plain(fix[i]) === plain(v)) return fix[i];
+  // Whitaker drops the stem's macrons from an adjective's comparative and
+  // superlative stems (fōrmōs- but formosi-, formōsissi-). Put them back.
+  if ((i === 2 || i === 3) && (entry.pos === 'ADJ' || entry.pos === 'ADV') && v) {
+    const r1 = entry.roots?.[1];
+    return mergeMacrons(r1 && r1 !== '-' ? r1 : (entry.roots?.[0] ?? ''), v);
+  }
+  return v;
 }
 
 function genderOk(cellGender, parseGender) {
@@ -146,6 +205,16 @@ const NON_I_STEM = new Set([
   'pater', 'mater', 'frater', 'parens',
 ]);
 
+// The contracted vocative singular of a 2nd-declension noun in -ius (Iūlī,
+// Vergilī, fīlī) belongs to PROPER NAMES in -ius, plus the two common nouns
+// fīlius and genius — Allen & Greenough §49.c, Bennett §25.2, Gildersleeve &
+// Lodge §33. An ordinary common noun in -ius keeps the regular -ie: gladie,
+// fluvie, nūntie (and so Ørberg, Familia Romana cap. IV, where the vocative is
+// taught on Mārce / Quīnte / fīlī, never on gladius).
+const CONTRACTED_VOC = new Set(['filius', 'genius']);
+// The glossary's only proper-name signal is the capital on the lemma.
+const CAPITAL = /^[A-ZĀĒĪŌŪȲ]/;
+
 function nounTableKey(entry) {
   const [d, v] = entry.cat || [0, 0];
   const g = entry.gender;
@@ -222,10 +291,11 @@ function nounParadigm(entry, parses) {
   const neuter = g === 'n';
   const rows = [];
   const hasLoc = asList(parses).some((p) => p.case === 'loc');
-  // Nouns in -ius (gladius, fīlius, Iūlius): vocative singular gladī, and a
-  // genitive singular that Ørberg gives both ways — fīliī and contracted fīlī.
-  const iusType = key === '2m' && (entry.cat?.[1] === 4 || entry.cat?.[1] === 5) && /[iī]$/.test(r1);
-  const contracted = iusType ? r1.replace(/[iī]$/, '') + 'ī' : null;
+  // A 2nd-declension masculine in -ius. Only a proper name (and fīlius,
+  // genius) contracts the vocative to -ī; see CONTRACTED_VOC above.
+  const iusStem = key === '2m' && /[iī]$/.test(r1);
+  const contracted = iusStem ? r1.replace(/[iī]$/, '') + 'ī' : null;
+  const iusVoc = iusStem && (CONTRACTED_VOC.has(h) || CAPITAL.test(entry.lemma || ''));
   const build = (num) => {
     const ends = tbl[num];
     if (!ends) return null;
@@ -234,12 +304,13 @@ function nounParadigm(entry, parses) {
       let end = ends[i];
       if (num === 'sg' && (c === 'nom' || c === 'voc' || (neuter && c === 'acc'))) {
         if (key.startsWith('3') || key === '2r') { stem = nomStem; end = nomEnd; }
-        if (iusType && c === 'voc') { stem = r1.replace(/[iī]$/, ''); end = 'ī'; }
+        if (iusVoc && c === 'voc') { stem = r1.replace(/[iī]$/, ''); end = 'ī'; }
       }
       if (key === '5' && (c === 'gen' || c === 'dat') && num === 'sg' && /[aeiouāēīōū]$/.test(r1)) end = 'ēī';
-      const out = cell(stem, end, nk(c, num, g));
-      if (iusType && num === 'sg' && c === 'gen') out.alt = contracted;
-      return out;
+      // No `alt` on the genitive: the contracted fīlī is a vocative in this
+      // chart, and an `alt` is an accepted drill answer everywhere it is read,
+      // so one string would answer two rows. The contraction lives in the note.
+      return cell(stem, end, nk(c, num, g));
     });
   };
   const sg = build('sg');
@@ -267,7 +338,8 @@ function nounParadigm(entry, parses) {
   if (key === '3in') p.note = 'Neuter i-stem: ablative singular -ī, plural -ia, -ium.';
   if (key === '3' && entry.cat?.[0] === 3 && NON_I_STEM.has(h)) p.note = 'Consonant stem (not an i-stem): genitive plural -um, ablative singular -e.';
   if (key === '2nus') p.note = 'Neuter in -us: nominative, accusative and vocative are identical; no plural.';
-  if (iusType) p.note = `Noun in -ius: vocative singular ${contracted}, genitive singular ${r1}ī or contracted ${contracted}.`;
+  if (iusVoc) p.note = `A name in -ius (and fīlius) has the short vocative singular ${contracted}. The genitive stays ${r1}ī, as Ørberg prints it; older Latin sometimes contracts that too.`;
+  else if (iusStem) p.note = `Noun in -ius: the vocative is regular — ${r1}e. Only names in -ius, and fīlius, shorten it to -ī.`;
   return markHits(p, parses);
 }
 

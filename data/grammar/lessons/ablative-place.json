@@ -3,15 +3,15 @@
   "core": [
     {
       "type": "p",
-      "text": "To say where something is, Latin uses a preposition with **the ablative (the 'in/on/with' form)**, *ablātīvus locī*: *in vīllā* = in the villa, *in hortō* = in the garden, *cum Mārcō* = with Marcus, *sub arbore* = under the tree. The ablative singular ends -ā (a long a), -ō, later -e; the plural -īs, -ibus. Only a handful of prepositions take it: *in*, *sub*, *cum*, *prō*, *sine*, and the 'from' words *ā/ab*, *ē/ex*, *dē*."
+      "text": "To say where something is, Latin uses a preposition with **the ablative (the 'in/on/under' form)**, *ablātīvus locī*: *in vīllā* = in the villa, *in hortō* = in the garden, *sub arbore* = under the tree, *in oppidō* = in town. The ablative singular ends -ā (a long a), -ō, later -e; the plural -īs, -ibus. Only a handful of prepositions take this case: *in*, *sub*, *prō*, *prae*, *cōram*, *sine*, *cum*, and the 'from' words *ā/ab*, *ē/ex*, *dē*. Of those, only *in* and *sub* say where."
     },
     {
       "type": "english",
-      "text": "*In*, *on*, *under*, *with* and their nouns tell where: *the cup is on the table*. Latin needs the preposition too, but the noun after it changes its ending."
+      "text": "*In*, *on*, *at*, *under* and their nouns tell where: *the cup is on the table*. Latin needs the preposition too, but the noun after it changes its ending."
     },
     {
       "type": "rule",
-      "text": "Where something is: *in*, *sub*, *cum* + ablative (-ā / -ō singular, -īs plural). Most other prepositions (*ad*, *ante*, *post*, *per* …) take the accusative."
+      "text": "Where something is: *in*, *sub* + ablative (-ā / -ō singular, -īs plural). Most other prepositions (*ad*, *ante*, *post*, *per* …) take the accusative, and *cum* + ablative says who is with you, not where."
     },
     {
       "type": "paradigm",
@@ -32,7 +32,7 @@
       "units": [
         "r01:1.1",
         "r05:6.1",
-        "r05:9.2",
+        "r05:12.1",
         "r05:37.1"
       ],
       "invented": [
@@ -47,12 +47,17 @@
       "type": "confusion",
       "with": "accusative-destination",
       "text": "*In* takes both cases, and the case is the meaning. *In hortō est* (ablative): he is in the garden, staying put. *In hortum currit* (accusative): he runs into the garden, moving towards it. Ask whether anything is going somewhere. -ō / -ā / -īs = where; -um / -am / -ōs = where to."
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-accompaniment",
+      "text": "*In oppidō est* — and *cum dominō*: two ablatives, doing different work. *oppidō* after *in* is where he is, *dominō* after *cum* is who he is with. A slave is not a place. Ask what the noun *is*: somewhere you could point to on a map or in a house is place; somebody (or an animal) who came along is company. The preposition settles it — *in* and *sub* say where, *cum* says with whom."
     }
   ],
   "more": [
     {
       "type": "p",
-      "text": "From the learner's notes: a location can also be shown by a preposition whose own meaning is a place, with the accusative (*super petram* — on top of the rock; *ante caseum* — in front of the cheese). It is the six prepositions *in*, *sub*, *prae*, *prō*, *cum*, *cōram* that need the new case. Because *mēnsa* (subject) and *mēnsā* (ablative) differ only in the length of the a, the notes always mark that macron. Adjectives take the same ablative endings as their nouns (*in magnā vīllā*, *cum magnīs hortīs*)."
+      "text": "From the learner's notes: a location can also be shown by a preposition whose own meaning is a place, with the accusative (*super petram* — on top of the rock; *ante caseum* — in front of the cheese). It is the six prepositions *in*, *sub*, *prae*, *prō*, *cum*, *cōram* that need the new case — though of those only *in* and *sub* answer *ubi?*; *cum* answers *quōcum?* Because *mēnsa* (subject) and *mēnsā* (ablative) differ only in the length of the a, the notes always mark that macron. Adjectives take the same ablative endings as their nouns (*in magnā vīllā*, *cum magnīs hortīs*)."
     },
     {
       "type": "p",

@@ -1,0 +1,65 @@
+{
+  "skill": "ablative-accompaniment",
+  "core": [
+    {
+      "type": "p",
+      "text": "Latin says who goes along with whom by putting *cum* in front of **the ablative (the 'with someone' form)**, *ablātīvus sociātīvus*: *cum Mārcō* — with Marcus; *cum ancillīs* — with the maidservants; *cum cane et ovibus* — with his dog and his sheep. The companion is usually a person, sometimes an animal or something carried along. *Cum* is the only preposition that does this, and it never drops out: no *cum*, no company."
+    },
+    {
+      "type": "english",
+      "text": "*With* does two jobs in English: the one you are alongside (*he walked with Davus*) and the thing you use (*he cut it with a knife*). Latin keeps the two apart, and only the first gets a word for *with*."
+    },
+    {
+      "type": "rule",
+      "text": "Company: *cum* + ablative (*cum Dāvō*). A thing you use: the bare ablative, no preposition at all (*gladiō*)."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl2m",
+      "highlight": {
+        "case": "abl"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r05:9.2",
+        "r05:90.1",
+        "w05:fl-66:b15.1",
+        "r09:31.1"
+      ],
+      "invented": [
+        {
+          "la": "Vir cum gladiō in viā stat.",
+          "en": "A man is standing in the street with a sword (carrying one).",
+          "focus": "gladiō"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "ablative-means",
+      "text": "*Vir cum gladiō stat* is a man carrying a sword; *vir gladiō pugnat* is a man using one. Test it with *and*: if you could write *Mārcus et Dāvus ambulant* instead, it is company and *cum* stays. If the noun is the thing that does the work, drop *cum* and let the bare ending say it. Ørberg never writes *cum* for a tool."
+    },
+    {
+      "type": "confusion",
+      "with": "cum-narrative",
+      "text": "The same three letters are also a conjunction. *Cum Dāvō ambulat* — *cum* with a noun in the ablative: with Davus. *Cum ambulāret* — *cum* with a verb: when he was walking. Look at the word after *cum*: a noun in the ablative means company, a verb means a clause has started."
+    }
+  ],
+  "more": [
+    {
+      "type": "p",
+      "text": "The learner's notes teach *cum* on the same two pages as *in* and *sub* (p15–16), because all three ask for the same case. The question they answer is not the same: *in vīllā* answers *ubi?* — where?, *cum Aemiliā* answers *quōcum?* — with whom? Its opposite is *sine* + ablative (*sine Aemiliā* — without Aemilia, r05:45.2), which takes the ablative for the same reason."
+    },
+    {
+      "type": "p",
+      "text": "A personal or relative pronoun takes *cum* glued on behind it: *mēcum*, *tēcum*, *sēcum*, *nōbīscum*, *vōbīscum*, *quōcum* — never *cum mē*. *Ūnā cum* is the same construction with an adverb in front, 'together with' (*ūnā cum Iūliā*, r20:103.1). Verbs of fighting and talking keep the company sense: *pugnāvimus cum puerō māiōre* — we fought with (against) a bigger boy (r21:45.1); *cum Aemiliā colloquitur* — she talks with Aemilia. A&G §413 (accompaniment), §409 (means)."
+    }
+  ],
+  "sources": [
+    "notes p15–16",
+    "Ørberg cap. V Grammatica Latina",
+    "A&G §413"
+  ]
+}
