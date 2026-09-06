@@ -232,6 +232,99 @@ uncertain (sentences left out, OCR repairs made, unverified tokens, layout
 notes) goes to `data/build/review-REPORT.md`; the docstring of
 `review_shelf.py` explains the cleaning rules. `weeks.json` is not touched.
 
+## Colloquia shelf: Colloquia Personarum I–XXIV from the scan
+
+`python pipeline/colloquia.py [numbers] [--sql] [--check]` builds
+`data/build/collo-NN.json` (week `n = 200 + colloquium`, id `cNN`, source `CP`,
+title "Colloquium N · <speakers>", `chapter` = the same-numbered Familia Romana
+chapter, Latin only, `has_line_numbers: false`, `margin: []`) from the text
+layer of `scans/colloquia-personarum.pdf`. One block per speaker turn; every
+unit is `unit_type: "speech"` with `speaker` set from the printed name before
+the colon (a bare label — "Mārcus:" — moves into `speaker` and leaves the Latin;
+a narrative lead-in — "Dōrippa Mēdum salūtat:" — stays in the text and names the
+speaker too). Ids are `cNN:bK.S` (block, sentence) because this book prints no
+line numbers. `--sql` writes `data/build/sql/cNN-*.sql` through
+`seed_sql.week_sql`; `--check` rebuilds and validates without writing anything;
+`--dump` prints every classified row; `--render DIR` renders the pages at
+200 dpi for a spot check. The per-colloquium report is
+`data/build/collo-REPORT.md`. Nothing is uploaded and `weeks.json` is untouched.
+
+**Why this is not `review_shelf.py`.** The Colloquia scan is a much worse text
+layer than the Familia Romana one: *no macrons at all*, heavy letter confusion,
+no printed line numbers, and a *hanging* indent (a turn starts flush left, its
+runover lines are indented) instead of Ørberg's paragraph indent. So the page
+geometry, the block rule, the token cleaning and the id scheme are this book's
+own; only `build_week.split_sentences`, `extract_margins._variants` and
+`seed_sql` are shared.
+
+How the text is restored, in order (the module docstring is the full version):
+
+1. **Pages.** The k-th page carrying a `COLLOQVIVM` heading starts colloquium k;
+   the reading ends at the `DECLINATIONES` appendix. The spans are cross-checked
+   against the printed *Index colloquiōrum* on p. 5 — a mismatch is reported,
+   never silently fixed. Front matter (pp. 1–6) and the appendix (pp. 75–79) are
+   dropped; this book has no exercises.
+2. **Columns.** The marginal glosses are set at 9.0 pt in the outer margin, the
+   reading at 8.1/8.2 pt. The main column's x-range is measured from the 8.x
+   words, then *every* word inside that range is kept whatever its size — the
+   macron capitals Ō Ā Ē Ī are set at 9.9/10.0 pt and dropping them would
+   silently truncate a sentence. The glosses fall outside and are dropped.
+3. **OCR repair**, by an explicit rule table built by reading the rendered
+   pages, never a blind regex sweep:
+   * the scan's Latin-1 accents *are* the book's macrons (é→ē, ì→ī, ò→ō, ù→ū),
+     and a capital vowel inside a word is a macron vowel (margarItae →
+     margarītae, fOrmosa → fōrmōsa) — both are normalisations, not guesses;
+   * `CHAR_RULES`, applied as candidate generation and accepted only when the
+     result is a spelling the macron index attests. They are **macron-aware**:
+     `ii` and `fi` stand for an overbar vowel, so *iinus* can only be **ūnus**
+     (never *anus*, whose a is short) and *liicet* only **lūcet**. Tier 1 is the
+     slips the scan makes constantly (ii→ā/ē/ī/ō/ū, fi/fu/ful→ū…, f→ī,
+     l/1/I/!/|→i, i→l, rn↔m, 6/0/5→ō); tier 2 (r→f, b→h, ti→d, c↔e, ro→m, …) is
+     tried only when tier 1 reaches nothing;
+   * `WORD_FIXES`, a word-level table for the recurring proper names
+     (*liilia* → Iūlia, *Comelius* → Cornēlius, *Miircus* → Mārcus) and for the
+     handful of tokens no character rule reaches, each read off the page;
+   * `KEEP_AS_PRINTED`, the book's *own* words: Colloquium I is a spelling
+     lesson, so *Barabia*, *Suria*, *Siria*, *Aegiptus* are Iūlia's mistakes and
+     must survive, and so must the animal noises.
+4. **Macrons.** Every attested form is stripped of its macrons to build a
+   macron-less → macronised index in three tiers: **0** the hand-checked cast of
+   the *Persōnae* page and the places, declined by `latin_forms`; **1**
+   `app/data/glossary.json` run through `latin_forms`, every regular form *with
+   its parse*; **2** the clean macronised corpora (`data/build/review-*.json`
+   and `source/week-*.md`), for keys tier 1 does not know. One candidate takes
+   its macrons; several are settled by agreement with the sentence — the
+   hand-checked table first, then a preposition's case government, agreement
+   with an unambiguous ablative neighbour, adjective ↔ noun concord in
+   case/number/gender, a vocative after *Ō*, the one-letter prepositions ā / ē
+   before a name or an ablative, then the short reading for an `-a`/`-ā` pair
+   with no anchor (measured on the macronised Familia Romana text: right in
+   89 % of cases), then attestation in the clean corpora. What none of those
+   settles is printed without macrons and listed.
+5. **Sentences.** `build_week.split_sentences`, inside each block, so a
+   speaker's quoted words stay whole and keep the block's speaker.
+6. **Dropping.** A sentence still holding a token the repair could not settle —
+   junk characters, an un-Latin cluster, a word no tier attests and no rule
+   reaches, or two repairs the sentence cannot choose between — is dropped whole
+   and listed with its page. Nothing is guessed.
+
+**Measured accuracy.** Colloquia I, VII, XIV and XXIV were checked word for word
+against the 200-dpi renders of pp. 7–8, 18–19, 36–38 and 72–74: **27 words wrong
+of 1642 printed (98.4 %)**, of which 20 are the one block Colloquium XXIV drops
+and reports (the text layer turns *nātūrā* into *miturii* and *tonitrū* into
+*toniW*). Of the words actually kept, 7 of 1622 are wrong (**99.6 %**), and
+every one of those is a vowel-length choice the sentence cannot settle
+(*ōris/oris*, *forīs/foris*, *īmus/imus*, *servā/serva*, *advenit/advēnit*,
+*Domus/Domūs*, *tonitrūs/tonitrus*) or an OCR slip that produced another real
+word (*ōrnārī* printed as *amari*), which nothing can detect.
+
+**Known limits.** The reader shows a speaker name only for `unit_type === 'turn'`
+(`app/js/reader.js`), so the shelf's `"speech"` units — the shape the contract
+asks for — need that check widened before the names appear. Two of Ørberg's own
+oddities are kept as printed and flagged in the report: Colloquium XIV names
+*Aemilius* where *Aemilia* is speaking, and Colloquium XXIII's Greek-alphabet
+table is a display block the text layer cannot read.
+
 ## Audio: aligning recordings and synthesising the rest
 
 Requirements (free, local): `pip install faster-whisper imageio-ffmpeg edge-tts gTTS`.
