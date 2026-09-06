@@ -7,18 +7,20 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "true, real, genuine, actual",
+   "meaning": "true, real",
+   "sense_full": "true, real, genuine, actual",
    "parts": null,
    "unit_id": "r13:92.1",
    "count": 166
   },
   {
    "lemma": "diēs",
-   "dict": "diēs, -ēī m/f.",
+   "dict": "diēs, -ēī m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 5,
    "meaning": "day",
+   "sense_full": "day",
    "parts": null,
    "unit_id": "r13:7.1",
    "count": 90
@@ -30,6 +32,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "month",
+   "sense_full": "month",
    "parts": null,
    "unit_id": "r13:1.1",
    "count": 58
@@ -40,7 +43,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "therefore (placed after its word), so/then",
+   "meaning": "therefore, so",
+   "sense_full": "therefore (placed after its word), so/then",
    "parts": null,
    "unit_id": "r13:22.1",
    "count": 51
@@ -51,7 +55,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "time, condition, right time",
+   "meaning": "time",
+   "sense_full": "time, condition, right time",
    "parts": null,
    "unit_id": "r13:8.2",
    "count": 47
@@ -62,7 +67,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "year (astronomical or civil)",
+   "meaning": "year",
+   "sense_full": "year (astronomical or civil)",
    "parts": null,
    "unit_id": "r13:1.1",
    "count": 45
@@ -74,6 +80,7 @@
    "gender": null,
    "decl": null,
    "meaning": "now, today, at present",
+   "sense_full": "now, today, at present",
    "parts": null,
    "unit_id": "r13:22.1",
    "count": 40
@@ -85,20 +92,10 @@
    "gender": "f",
    "decl": 3,
    "meaning": "city",
+   "sense_full": "city",
    "parts": null,
    "unit_id": "r13:99.1",
    "count": 33
-  },
-  {
-   "lemma": "maneō",
-   "dict": "maneō, manēre, mānsī, mānsum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "remain, stay, abide",
-   "parts": "maneō, manēre, mānsī, mānsum",
-   "unit_id": "r13:35.2",
-   "count": 32
   },
   {
    "lemma": "incipiō",
@@ -107,8 +104,21 @@
    "gender": null,
    "decl": null,
    "meaning": "begin",
+   "sense_full": "begin",
    "parts": "incipiō, incipere, incēpī, inceptum",
    "unit_id": "r13:85.1",
+   "count": 29
+  },
+  {
+   "lemma": "posterus",
+   "dict": "posterus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "next, following",
+   "sense_full": "coming after, following, next",
+   "parts": null,
+   "unit_id": "r13:1.1",
    "count": 29
   },
   {
@@ -118,6 +128,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "hour",
+   "sense_full": "hour",
    "parts": null,
    "unit_id": "r13:40.1",
    "count": 27
@@ -128,7 +139,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "night prima nocte = early in the night",
+   "meaning": "night",
+   "sense_full": "night prima nocte = early in the night",
    "parts": null,
    "unit_id": "r13:37.1",
    "count": 26
@@ -140,17 +152,19 @@
    "gender": "f",
    "decl": 1,
    "meaning": "goddess",
+   "sense_full": "goddess",
    "parts": null,
    "unit_id": "r13:13.1",
    "count": 24
   },
   {
    "lemma": "tōtus",
-   "dict": "tōtus, -a, -um, (gen., -īus)",
+   "dict": "tōtus, -a, -um (gen. -īus)",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "whole, all, entire, total, complete",
+   "meaning": "whole, entire",
+   "sense_full": "whole, all, entire, total, complete",
    "parts": null,
    "unit_id": "r13:49.1",
    "count": 24
@@ -162,6 +176,7 @@
    "gender": null,
    "decl": null,
    "meaning": "likewise",
+   "sense_full": "likewise",
    "parts": null,
    "unit_id": "r13:30.1",
    "count": 22
@@ -173,20 +188,10 @@
    "gender": null,
    "decl": null,
    "meaning": "then, thereupon, at that time",
+   "sense_full": "then, thereupon, at that time",
    "parts": null,
    "unit_id": "r13:19.1",
    "count": 22
-  },
-  {
-   "lemma": "posterus",
-   "dict": "posterus, -a, -um, ·, superlative, postrēmus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "coming after, following, next",
-   "parts": null,
-   "unit_id": "r13:1.1",
-   "count": 19
   },
   {
    "lemma": "imber",
@@ -194,10 +199,23 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "rain, shower, storm",
+   "meaning": "rain, shower",
+   "sense_full": "rain, shower, storm",
    "parts": null,
    "unit_id": "r13:89.1",
    "count": 18
+  },
+  {
+   "lemma": "kalenda",
+   "dict": "kalenda, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "the Kalends, the first of the month",
+   "sense_full": "Kalends (in the plural), 1st of month",
+   "parts": null,
+   "unit_id": "r13:57.1",
+   "count": 16
   },
   {
    "lemma": "meridiēs",
@@ -205,7 +223,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 5,
-   "meaning": "noon",
+   "meaning": "midday, noon",
+   "sense_full": "noon",
    "parts": null,
    "unit_id": "r13:41.1",
    "count": 16
@@ -217,31 +236,10 @@
    "gender": null,
    "decl": null,
    "meaning": "or",
+   "sense_full": "or",
    "parts": null,
    "unit_id": "r13:7.1",
    "count": 16
-  },
-  {
-   "lemma": "kalenda",
-   "dict": "kalenda, -ae f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 1,
-   "meaning": "Kalends (in the plural), 1st of month",
-   "parts": null,
-   "unit_id": "r13:57.1",
-   "count": 15
-  },
-  {
-   "lemma": "magnus",
-   "dict": "magnus, -a, -um, ·, comparative, maior,, maius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "large, great, big, vast",
-   "parts": null,
-   "unit_id": "r13:1.1",
-   "count": 15
   },
   {
    "lemma": "initium",
@@ -249,7 +247,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "beginning, commencement",
+   "meaning": "beginning",
+   "sense_full": "beginning, commencement",
    "parts": null,
    "unit_id": "r13:37.2",
    "count": 14
@@ -261,8 +260,21 @@
    "gender": "f",
    "decl": 1,
    "meaning": "moon",
+   "sense_full": "moon",
    "parts": null,
    "unit_id": "r13:46.1",
+   "count": 14
+  },
+  {
+   "lemma": "māne",
+   "dict": "māne",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "in the morning",
+   "sense_full": "in the morning",
+   "parts": null,
+   "unit_id": "r13:35.2",
    "count": 14
   },
   {
@@ -271,10 +283,23 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "level, even, equal, like",
+   "meaning": "equal, level",
+   "sense_full": "level, even, equal, like",
    "parts": null,
    "unit_id": "r13:43.1",
    "count": 13
+  },
+  {
+   "lemma": "frīgidus",
+   "dict": "frīgidus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "cold",
+   "sense_full": "cold, cool, chilly, frigid",
+   "parts": null,
+   "unit_id": "r13:88.1",
+   "count": 12
   },
   {
    "lemma": "hiems",
@@ -282,7 +307,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "winter, winter time",
+   "meaning": "winter",
+   "sense_full": "winter, winter time",
    "parts": null,
    "unit_id": "r13:80.1",
    "count": 10
@@ -293,7 +319,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "dim, dark, obscure",
+   "meaning": "dark, dim",
+   "sense_full": "dim, dark, obscure",
    "parts": null,
    "unit_id": "r13:49.1",
    "count": 10
@@ -304,10 +331,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "cover (over)",
+   "meaning": "cover",
+   "sense_full": "cover (over)",
    "parts": "operiō, operīre, operuī, opertum",
    "unit_id": "r13:91.1",
    "count": 10
+  },
+  {
+   "lemma": "calidus",
+   "dict": "calidus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "hot, warm",
+   "sense_full": "warm, hot",
+   "parts": null,
+   "unit_id": "r13:87.1",
+   "count": 9
   },
   {
    "lemma": "faciēs",
@@ -315,7 +355,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 5,
-   "meaning": "shape, face, look",
+   "meaning": "face, appearance",
+   "sense_full": "shape, face, look",
    "parts": null,
    "unit_id": "r13:139.1",
    "count": 9
@@ -327,6 +368,7 @@
    "gender": null,
    "decl": null,
    "meaning": "name, call",
+   "sense_full": "name, call",
    "parts": "nōminō, nōmināre, nominavī, nominatum",
    "unit_id": "r13:17.1",
    "count": 9
@@ -338,19 +380,9 @@
    "gender": "f",
    "decl": 3,
    "meaning": "summer",
+   "sense_full": "summer",
    "parts": null,
    "unit_id": "r13:80.1",
-   "count": 8
-  },
-  {
-   "lemma": "frīgidus",
-   "dict": "frīgidus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "cold, cool, chilly, frigid",
-   "parts": null,
-   "unit_id": "r13:88.1",
    "count": 8
   },
   {
@@ -359,7 +391,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 4,
-   "meaning": "Ides (in the plural), abbreviation Id",
+   "meaning": "the Ides",
+   "sense_full": "Ides (in the plural), abbreviation Id",
    "parts": null,
    "unit_id": "r13:62.1",
    "count": 8
@@ -370,7 +403,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "light, daylight, light of day",
+   "meaning": "light, daylight",
+   "sense_full": "light, daylight, light of day",
    "parts": null,
    "unit_id": "r13:46.2",
    "count": 7
@@ -382,31 +416,10 @@
    "gender": "f",
    "decl": 1,
    "meaning": "star",
+   "sense_full": "star",
    "parts": null,
    "unit_id": "r13:46.1",
    "count": 7
-  },
-  {
-   "lemma": "calidus",
-   "dict": "calidus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "warm, hot",
-   "parts": null,
-   "unit_id": "r13:87.1",
-   "count": 6
-  },
-  {
-   "lemma": "fōrma",
-   "dict": "fōrma, formae f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 1,
-   "meaning": "form, figure, appearance",
-   "parts": null,
-   "unit_id": "r13:52.1",
-   "count": 6
   },
   {
    "lemma": "vesper",
@@ -415,8 +428,21 @@
    "gender": "m",
    "decl": 3,
    "meaning": "evening",
+   "sense_full": "evening",
    "parts": null,
    "unit_id": "r13:35.2",
+   "count": 7
+  },
+  {
+   "lemma": "fōrma",
+   "dict": "fōrma, formae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "shape, form",
+   "sense_full": "form, figure, appearance",
+   "parts": null,
+   "unit_id": "r13:52.1",
    "count": 6
   },
   {
@@ -426,6 +452,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "small",
+   "sense_full": "small",
    "parts": null,
    "unit_id": "r13:51.1",
    "count": 5
@@ -436,7 +463,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "illuminate, light up",
+   "meaning": "light up, illuminate",
+   "sense_full": "illuminate, light up",
    "parts": "illūstrō, illūstrāre, illustravī, illustratum",
    "unit_id": "r13:48.1",
    "count": 5
@@ -448,6 +476,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "snow",
+   "sense_full": "snow",
    "parts": null,
    "unit_id": "r13:89.1",
    "count": 5
@@ -458,7 +487,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "when (interrogative), at what time",
+   "meaning": "when, at what time",
+   "sense_full": "when (interrogative), at what time",
    "parts": null,
    "unit_id": "r13:107.1",
    "count": 5
@@ -470,8 +500,21 @@
    "gender": "m",
    "decl": 2,
    "meaning": "autumn",
+   "sense_full": "autumn",
    "parts": null,
    "unit_id": "r13:80.1",
+   "count": 4
+  },
+  {
+   "lemma": "clārus",
+   "dict": "clārus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "clear, bright, famous",
+   "sense_full": "clear, bright, gleaming",
+   "parts": null,
+   "unit_id": "r13:46.2",
    "count": 4
   },
   {
@@ -480,7 +523,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "basin, tank, tub",
+   "meaning": "lake",
+   "sense_full": "basin, tank, tub",
    "parts": null,
    "unit_id": "r13:95.1",
    "count": 4
@@ -492,20 +536,10 @@
    "gender": "n",
    "decl": 3,
    "meaning": "spring",
+   "sense_full": "spring",
    "parts": null,
    "unit_id": "r13:80.1",
    "count": 4
-  },
-  {
-   "lemma": "clārus",
-   "dict": "clārus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "clear, bright, gleaming",
-   "parts": null,
-   "unit_id": "r13:46.2",
-   "count": 3
   },
   {
    "lemma": "dīmidius",
@@ -514,19 +548,9 @@
    "gender": null,
    "decl": 1,
    "meaning": "half",
+   "sense_full": "half",
    "parts": null,
    "unit_id": "r13:33.1",
-   "count": 3
-  },
-  {
-   "lemma": "frīgidus",
-   "dict": "frīgidus, -a, -um, ·, comparative, frīgidior,, frīgidius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "cold, cool, chilly, frigid",
-   "parts": null,
-   "unit_id": "r13:90.2",
    "count": 3
   },
   {
@@ -535,7 +559,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "age",
+   "meaning": "century, age",
+   "sense_full": "age",
    "parts": null,
    "unit_id": "r13:8.1",
    "count": 3
@@ -547,41 +572,9 @@
    "gender": "n",
    "decl": 2,
    "meaning": "equinox",
+   "sense_full": "equinox",
    "parts": null,
    "unit_id": "r13:75.1",
-   "count": 2
-  },
-  {
-   "lemma": "altus",
-   "dict": "altus, -a, -um, ·, superlative, altissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "high",
-   "parts": null,
-   "unit_id": "r13:43.1",
-   "count": 2
-  },
-  {
-   "lemma": "brevis",
-   "dict": "brevis, -e, ·, superlative, brevissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "short, little, small, stunted",
-   "parts": null,
-   "unit_id": "r13:29.1",
-   "count": 2
-  },
-  {
-   "lemma": "calidus",
-   "dict": "calidus, -a, -um, ·, superlative, calidissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "warm, hot",
-   "parts": null,
-   "unit_id": "r13:98.2",
    "count": 2
   },
   {
@@ -591,53 +584,10 @@
    "gender": "f",
    "decl": 5,
    "meaning": "ice",
+   "sense_full": "ice",
    "parts": null,
    "unit_id": "r13:95.1",
    "count": 2
-  },
-  {
-   "lemma": "longus",
-   "dict": "longus, -a, -um, ·, superlative, longissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "long",
-   "parts": null,
-   "unit_id": "r13:74.1",
-   "count": 2
-  },
-  {
-   "lemma": "calidus",
-   "dict": "calidus, -a, -um, ·, comparative, calidior,, calidius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "warm, hot",
-   "parts": null,
-   "unit_id": "r13:108.2",
-   "count": 1
-  },
-  {
-   "lemma": "clarus",
-   "dict": "clarus, -a, -um, ·, superlative, clārissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "clear, bright, gleaming",
-   "parts": null,
-   "unit_id": "r13:48.1",
-   "count": 1
-  },
-  {
-   "lemma": "frīgidus",
-   "dict": "frīgidus, -a, -um, ·, superlative, frīgidissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "cold, cool, chilly, frigid",
-   "parts": null,
-   "unit_id": "r13:98.1",
-   "count": 1
   },
   {
    "lemma": "iānuārius",
@@ -645,20 +595,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "January (month or mensis understood)",
+   "meaning": "January",
+   "sense_full": "January (month or mensis understood)",
    "parts": null,
    "unit_id": "r13:13.1",
-   "count": 1
-  },
-  {
-   "lemma": "vesper",
-   "dict": "vesper, -ī m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 2,
-   "meaning": "evening",
-   "parts": null,
-   "unit_id": "r13:37.1",
    "count": 1
   }
  ]

@@ -7,7 +7,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "battle, fight, bout, conflict",
+   "meaning": "battle",
+   "sense_full": "battle, fight, bout, conflict",
    "parts": null,
    "unit_id": "w12:b2.6",
    "count": 9
@@ -18,7 +19,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "chop, hew, cut out, down, to pieces",
+   "meaning": "cut down, strike, kill",
+   "sense_full": "chop, hew, cut out, down, to pieces",
    "parts": "caedō, caedere, cecidī, caesum",
    "unit_id": "w12:b2.7",
    "count": 7
@@ -29,18 +31,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "pour out, away, off",
+   "meaning": "pour out",
+   "sense_full": "pour out, away, off",
    "parts": "effundō, effundere, effūdī, effusum",
    "unit_id": "w12:b10.1",
    "count": 6
   },
   {
    "lemma": "plērīque",
-   "dict": "plērīque,, plēraeque,, plēraque",
+   "dict": "plērīque, plēraeque, plēraque",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "most, the greater part (of)",
+   "meaning": "most, the greater part",
+   "sense_full": "most, the greater part (of)",
    "parts": null,
    "unit_id": "w12:b13.8",
    "count": 5
@@ -52,6 +56,7 @@
    "gender": "m",
    "decl": 4,
    "meaning": "line, verse",
+   "sense_full": "line, verse",
    "parts": null,
    "unit_id": "w12:b17.4",
    "count": 5
@@ -62,7 +67,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "wound, injure, harm, pain or distress",
+   "meaning": "wound",
+   "sense_full": "wound, injure, harm, pain or distress",
    "parts": "vulnerō, vulnerāre, vulnerāvī, vulnerātum",
    "unit_id": "w12:b14.3",
    "count": 5
@@ -74,6 +80,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "legion",
+   "sense_full": "legion",
    "parts": null,
    "unit_id": "w12:b1.1",
    "count": 4
@@ -84,7 +91,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "particular, especial",
+   "meaning": "special, particular",
+   "sense_full": "particular, especial",
    "parts": null,
    "unit_id": "w12:b4.3",
    "count": 4
@@ -95,7 +103,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "go, come forth, go forward, march forward",
+   "meaning": "advance, go forward",
+   "sense_full": "go, come forth, go forward, march forward",
    "parts": "prōgredior, prōgredī, prōgressus sum",
    "unit_id": "w12:b2.2",
    "count": 4
@@ -107,6 +116,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "wound",
+   "sense_full": "wound",
    "parts": null,
    "unit_id": "w12:b14.3",
    "count": 4
@@ -117,7 +127,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "lifetime, age, generation",
+   "meaning": "age, lifetime",
+   "sense_full": "lifetime, age, generation",
    "parts": null,
    "unit_id": "w12:b3.1",
    "count": 3
@@ -128,7 +139,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "stream",
+   "meaning": "column, marching army",
+   "sense_full": "stream",
    "parts": null,
    "unit_id": "w12:b2.1",
    "count": 3
@@ -139,7 +151,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "cohort (a tenth of a legion, about 480 men)",
+   "meaning": "cohort",
+   "sense_full": "cohort (a tenth of a legion, about 480 men)",
    "parts": null,
    "unit_id": "w12:b1.1",
    "count": 3
@@ -150,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "desire or want, long or wish for, request, require or need",
+   "meaning": "long for, miss, want",
+   "sense_full": "desire or want, long or wish for, request, require or need",
    "parts": "dēsīderō, dēsīderāre, desideravī, desideratum",
    "unit_id": "w12:b7.3",
    "count": 3
@@ -161,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "weary, tire, fatigue",
+   "meaning": "tire, wear out",
+   "sense_full": "weary, tire, fatigue",
    "parts": "fatīgō, fatīgāre, fatigavī, fatīgātum",
    "unit_id": "w12:b4.3",
    "count": 3
@@ -172,7 +187,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "row, order or rank",
+   "meaning": "rank, row, order",
+   "sense_full": "row, order or rank",
    "parts": null,
    "unit_id": "w12:b2.2",
    "count": 3
@@ -184,6 +200,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "peace",
+   "sense_full": "peace",
    "parts": null,
    "unit_id": "w12:b15.2",
    "count": 3
@@ -195,6 +212,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "private",
+   "sense_full": "private",
    "parts": null,
    "unit_id": "w12:b4.2",
    "count": 3
@@ -205,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "run out ahead, run forward, advance",
+   "meaning": "run forward, charge",
+   "sense_full": "run out ahead, run forward, advance",
    "parts": "prōcurrō, prōcurrere, prōcucurrī, procursum",
    "unit_id": "w12:b2.7",
    "count": 3
@@ -216,7 +235,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hurry, speed up",
+   "meaning": "hurry",
+   "sense_full": "hurry, speed up",
    "parts": "properō, properāre, properavī, properatum",
    "unit_id": "w12:b6.4",
    "count": 3
@@ -228,6 +248,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "public",
+   "sense_full": "public",
    "parts": null,
    "unit_id": "w12:b4.2",
    "count": 3
@@ -239,6 +260,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "bank",
+   "sense_full": "bank",
    "parts": null,
    "unit_id": "w12:b13.10",
    "count": 3
@@ -249,7 +271,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "desire, be eager for",
+   "meaning": "be eager for, study",
+   "sense_full": "desire, be eager for",
    "parts": "studeō, studēre, studuī",
    "unit_id": "w12:b3.4",
    "count": 3
@@ -260,7 +283,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "eagerness, enthusiasm, zeal, spirit",
+   "meaning": "eagerness, study",
+   "sense_full": "eagerness, enthusiasm, zeal, spirit",
    "parts": null,
    "unit_id": "w12:b3.4",
    "count": 3
@@ -271,7 +295,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "good health, soundness",
+   "meaning": "health",
+   "sense_full": "good health, soundness",
    "parts": null,
    "unit_id": "w12:b7.1",
    "count": 3
@@ -282,7 +307,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "strength or power",
+   "meaning": "courage, virtue, strength",
+   "sense_full": "strength or power",
    "parts": null,
    "unit_id": "w12:b3.7",
    "count": 3
@@ -293,7 +319,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 5,
-   "meaning": "sharpness, sharp edge, point",
+   "meaning": "battle line, sharp edge",
+   "sense_full": "sharpness, sharp edge, point",
    "parts": null,
    "unit_id": "w12:b2.5",
    "count": 2
@@ -304,18 +331,20 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "river (real or personified), stream",
+   "meaning": "river",
+   "sense_full": "river (real or personified), stream",
    "parts": null,
    "unit_id": "w12:b8.5",
    "count": 2
   },
   {
    "lemma": "citrā",
-   "dict": "citrā",
+   "dict": "citrā (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "on this or near side of, short of",
+   "meaning": "on this side of",
+   "sense_full": "on this or near side of, short of",
    "parts": null,
    "unit_id": "w12:b10.4",
    "count": 2
@@ -326,7 +355,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "awful, dire, dreadful(omen)",
+   "meaning": "dreadful, dire",
+   "sense_full": "awful, dire, dreadful(omen)",
    "parts": null,
    "unit_id": "w12:b17.4",
    "count": 2
@@ -338,6 +368,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "sword",
+   "sense_full": "sword",
    "parts": null,
    "unit_id": "w12:b17.4",
    "count": 2
@@ -348,7 +379,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "burst or pop (abscess or boil)",
+   "meaning": "burst out",
+   "sense_full": "burst or pop (abscess or boil)",
    "parts": "ērumpō, ērumpere, ērūpī, eruptum",
    "unit_id": "w12:b13.7",
    "count": 2
@@ -360,6 +392,7 @@
    "gender": null,
    "decl": null,
    "meaning": "run out",
+   "sense_full": "run out",
    "parts": "excurrō, excurrere, excucurrī, excursum",
    "unit_id": "w12:b13.4",
    "count": 2
@@ -370,7 +403,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "encourage",
+   "meaning": "encourage, urge",
+   "sense_full": "encourage",
    "parts": "hortor, hortārī, hortatus sum",
    "unit_id": "w12:b2.6",
    "count": 2
@@ -381,7 +415,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "suitable, appropriate, adequate, having right qualities",
+   "meaning": "suitable, fit",
+   "sense_full": "suitable, appropriate, adequate, having right qualities",
    "parts": null,
    "unit_id": "w12:b2.4",
    "count": 2
@@ -392,7 +427,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "emperor",
+   "meaning": "commander, general",
+   "sense_full": "emperor",
    "parts": null,
    "unit_id": "w12:b15.3",
    "count": 2
@@ -403,7 +439,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "unharmed, uninjured",
+   "meaning": "unharmed, safe",
+   "sense_full": "unharmed, uninjured",
    "parts": null,
    "unit_id": "w12:b14.5",
    "count": 2
@@ -414,7 +451,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "construct, build",
+   "meaning": "draw up, equip, build",
+   "sense_full": "construct, build",
    "parts": "īnstruō, īnstruere, instruxī, īnstrūctum",
    "unit_id": "w12:b2.4",
    "count": 2
@@ -425,7 +463,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "envoy, ambassador, legate",
+   "meaning": "legate, envoy",
+   "sense_full": "envoy, ambassador, legate",
    "parts": null,
    "unit_id": "w12:b15.3",
    "count": 2
@@ -436,7 +475,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "legionary, of a legion",
+   "meaning": "legionary",
+   "sense_full": "legionary, of a legion",
    "parts": null,
    "unit_id": "w12:b1.5",
    "count": 2
@@ -447,7 +487,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "idle",
+   "meaning": "idle, at leisure",
+   "sense_full": "idle",
    "parts": null,
    "unit_id": "w12:b17.3",
    "count": 2
@@ -458,7 +499,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "day before",
+   "meaning": "the day before",
+   "sense_full": "day before",
    "parts": null,
    "unit_id": "w12:b4.4",
    "count": 2
@@ -470,6 +512,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "raft",
+   "sense_full": "raft",
    "parts": null,
    "unit_id": "w12:b13.1",
    "count": 2
@@ -480,7 +523,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "laughable, funny, comic, amusing",
+   "meaning": "laughable, funny",
+   "sense_full": "laughable, funny, comic, amusing",
    "parts": null,
    "unit_id": "w12:b10.1",
    "count": 2
@@ -491,7 +535,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "tribute, stipend",
+   "meaning": "pay, tribute",
+   "sense_full": "tribute, stipend",
    "parts": null,
    "unit_id": "w12:b3.5",
    "count": 2
@@ -503,20 +548,10 @@
    "gender": null,
    "decl": null,
    "meaning": "beyond, further",
+   "sense_full": "beyond, further",
    "parts": null,
    "unit_id": "w12:b10.4",
    "count": 2
-  },
-  {
-   "lemma": "-",
-   "dict": "-, (gen., -is), ·, comparative, ulterior,, ulterius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "far",
-   "parts": null,
-   "unit_id": "w12:b13.10",
-   "count": 1
   },
   {
    "lemma": "adiungō",
@@ -524,7 +559,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "add, attach, join to, add to, support",
+   "meaning": "join to, add",
+   "sense_full": "add, attach, join to, add to, support",
    "parts": "adiungō, adiungere, adiunxī, adiunctum",
    "unit_id": "w12:b1.3",
    "count": 1
@@ -535,7 +571,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "steep, high, lofty, towering, tall",
+   "meaning": "steep, high",
+   "sense_full": "steep, high, lofty, towering, tall",
    "parts": null,
    "unit_id": "w12:b6.3",
    "count": 1
@@ -546,20 +583,10 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "murder, slaughter, massacre",
+   "meaning": "slaughter, murder",
+   "sense_full": "murder, slaughter, massacre",
    "parts": null,
    "unit_id": "w12:b19.1",
-   "count": 1
-  },
-  {
-   "lemma": "cārus",
-   "dict": "cārus, -a, -um, ·, superlative, cārissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "dear, beloved",
-   "parts": null,
-   "unit_id": "w12:b5.1",
    "count": 1
   },
   {
@@ -569,17 +596,19 @@
    "gender": null,
    "decl": null,
    "meaning": "surround",
+   "sense_full": "surround",
    "parts": "circumdō, circumdāre, circumdedī, circumdatum",
    "unit_id": "w12:b2.9",
    "count": 1
   },
   {
    "lemma": "citer",
-   "dict": "citer, citera, citerum, ·, comparative, citerior,, citerius",
+   "dict": "citer, citera, citerum",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "near/on this side",
+   "meaning": "on this side",
+   "sense_full": "near/on this side",
    "parts": null,
    "unit_id": "w12:b13.10",
    "count": 1
@@ -590,7 +619,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "collect or gather, round up, restrict or confine",
+   "meaning": "gather, force",
+   "sense_full": "collect or gather, round up, restrict or confine",
    "parts": "cōgō, cōgere, coegī, coactum",
    "unit_id": "w12:b3.5",
    "count": 1
@@ -601,7 +631,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "recall (to self or other)",
+   "meaning": "recall, mention",
+   "sense_full": "recall (to self or other)",
    "parts": "commemorō, commemorāre, commemorāvī, commemoratum",
    "unit_id": "w12:b3.1",
    "count": 1
@@ -612,7 +643,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "firmly, immovably",
+   "meaning": "steadily, firmly",
+   "sense_full": "firmly, immovably",
    "parts": null,
    "unit_id": "w12:b13.7",
    "count": 1
@@ -623,7 +655,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "call or bring together",
+   "meaning": "call together",
+   "sense_full": "call or bring together",
    "parts": "conuocō, conuocāre, conuocavī, convocātum",
    "unit_id": "w12:b13.2",
    "count": 1
@@ -634,31 +667,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "connect, join physically, couple",
+   "meaning": "join, couple",
+   "sense_full": "connect, join physically, couple",
    "parts": "cōpulō, cōpulāre, copulavī, cōpulātum",
    "unit_id": "w12:b13.1",
-   "count": 1
-  },
-  {
-   "lemma": "difficilis",
-   "dict": "difficilis, -e, ·, superlative, difficillimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "difficult, troublesome",
-   "parts": null,
-   "unit_id": "w12:b6.3",
-   "count": 1
-  },
-  {
-   "lemma": "diūtius",
-   "dict": "diūtius (comparative of diū)",
-   "pos": "ADV",
-   "gender": null,
-   "decl": null,
-   "meaning": "(for) a long, considerable time, while",
-   "parts": null,
-   "unit_id": "w12:b13.9",
    "count": 1
   },
   {
@@ -667,20 +679,10 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "and indeed, because, since, as a matter of fact (independent reason, emphasis)",
+   "meaning": "for indeed, and indeed",
+   "sense_full": "and indeed, because, since, as a matter of fact (independent reason, emphasis)",
    "parts": null,
    "unit_id": "w12:b16.5",
-   "count": 1
-  },
-  {
-   "lemma": "kal",
-   "dict": "kal m (indeclinable)",
-   "pos": "N",
-   "gender": "m",
-   "decl": 9,
-   "meaning": "Kalends (in the plural), 1st of month",
-   "parts": null,
-   "unit_id": "w12:b6.1",
    "count": 1
   },
   {
@@ -689,7 +691,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "of May (kalendae Māiae = the Kalends of May, 1 May, so a. d. VII kal. Māi. = 25 April)",
+   "meaning": "of May",
+   "sense_full": "of May (kalendae Māiae = the Kalends of May, 1 May, so a. d. VII kal. Māi. = 25 April)",
    "parts": null,
    "unit_id": "w12:b6.1",
    "count": 1
@@ -701,6 +704,7 @@
    "gender": null,
    "decl": null,
    "meaning": "fortify",
+   "sense_full": "fortify",
    "parts": "mūniō, mūnīre, munivī, munitum",
    "unit_id": "w12:b2.10",
    "count": 1
@@ -711,7 +715,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "javelin, heavy iron-tipped throwing spear",
+   "meaning": "javelin",
+   "sense_full": "javelin, heavy iron-tipped throwing spear",
    "parts": null,
    "unit_id": "w12:b16.2",
    "count": 1
@@ -722,7 +727,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "excel, surpass, be outstanding, superior, best, greater(to)",
+   "meaning": "excel, surpass, perform",
+   "sense_full": "excel, surpass, be outstanding, superior, best, greater(to)",
    "parts": "praestō, praestāre, praestitī, praestitum",
    "unit_id": "w12:b10.2",
    "count": 1
@@ -733,18 +739,20 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "for how long?",
+   "meaning": "how long",
+   "sense_full": "for how long?",
    "parts": null,
    "unit_id": "w12:b10.4",
    "count": 1
   },
   {
    "lemma": "quicum",
-   "dict": "quicum (+ -cum: with)",
+   "dict": "quicum",
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "who",
+   "meaning": "with whom",
+   "sense_full": "who",
    "parts": null,
    "unit_id": "w12:b16.1",
    "count": 1
@@ -755,7 +763,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "so long, for so long a time",
+   "meaning": "so long",
+   "sense_full": "so long, for so long a time",
    "parts": null,
    "unit_id": "w12:b10.4",
    "count": 1
@@ -766,7 +775,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "transport, convey, transfer, shift",
+   "meaning": "carry across, transfer",
+   "sense_full": "transport, convey, transfer, shift",
    "parts": "trānsferō, trānsferre, transtulī, translatum",
    "unit_id": "w12:b9.1",
    "count": 1
@@ -777,18 +787,20 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "triple",
+   "meaning": "triple, threefold",
+   "sense_full": "triple",
    "parts": null,
    "unit_id": "w12:b11.2",
    "count": 1
   },
   {
    "lemma": "ūnus",
-   "dict": "ūnus, -a, -um, (gen., -īus)",
+   "dict": "ūnus, -a, -um (gen. -īus)",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "alone, a single or sole",
+   "meaning": "one, single, alone",
+   "sense_full": "alone, a single or sole",
    "parts": null,
    "unit_id": "w12:b11.2",
    "count": 1
@@ -799,7 +811,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "wall, rampart",
+   "meaning": "rampart, wall",
+   "sense_full": "wall, rampart",
    "parts": null,
    "unit_id": "w12:b2.9",
    "count": 1

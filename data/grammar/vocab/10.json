@@ -8,6 +8,7 @@
    "gender": null,
    "decl": null,
    "meaning": "be able, can",
+   "sense_full": "be able, can",
    "parts": "possum, posse, potuī",
    "unit_id": "r10:21.1",
    "count": 269
@@ -18,7 +19,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "make, build, construct, create",
+   "meaning": "make, do",
+   "sense_full": "make, build, construct, create",
    "parts": "faciō, facere, fēcī, factum",
    "unit_id": "r10:17.1",
    "count": 139
@@ -29,7 +31,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "man, human being, person, fellow",
+   "meaning": "human being, person, man",
+   "sense_full": "man, human being, person, fellow",
    "parts": null,
    "unit_id": "r10:5.1",
    "count": 126
@@ -41,9 +44,22 @@
    "gender": null,
    "decl": null,
    "meaning": "want, wish, be willing",
+   "sense_full": "want, wish, be willing",
    "parts": "volō, velle, voluī",
    "unit_id": "r10:10.1",
    "count": 126
+  },
+  {
+   "lemma": "mare",
+   "dict": "mare, -is n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 3,
+   "meaning": "sea",
+   "sense_full": "sea",
+   "parts": null,
+   "unit_id": "r10:35.1",
+   "count": 110
   },
   {
    "lemma": "enim",
@@ -51,7 +67,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "namely (placed after its word)",
+   "meaning": "for, indeed",
+   "sense_full": "namely (placed after its word)",
    "parts": null,
    "unit_id": "r10:29.1",
    "count": 109
@@ -62,7 +79,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "read",
+   "meaning": "read, gather",
+   "sense_full": "read",
    "parts": "legō, legere, lēgī, lēctum",
    "unit_id": "r10:125.1",
    "count": 82
@@ -74,20 +92,10 @@
    "gender": "m",
    "decl": 3,
    "meaning": "foot",
+   "sense_full": "foot",
    "parts": null,
    "unit_id": "r10:12.2",
    "count": 68
-  },
-  {
-   "lemma": "mare",
-   "dict": "mare, (gen., -is)",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "male",
-   "parts": null,
-   "unit_id": "r10:35.2",
-   "count": 60
   },
   {
    "lemma": "vīvō",
@@ -95,29 +103,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be alive, live",
+   "meaning": "live, be alive",
+   "sense_full": "be alive, live",
    "parts": "vīvō, vīvere, vīxī, vīctum",
    "unit_id": "r10:46.1",
    "count": 56
   },
   {
-   "lemma": "mare",
-   "dict": "mare, -is n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 3,
-   "meaning": "sea",
-   "parts": null,
-   "unit_id": "r10:35.1",
-   "count": 50
-  },
-  {
    "lemma": "nēmō",
-   "dict": "nēmō, (acc. nēminem, dat. nēminī) m/f.",
+   "dict": "nēmō m./f. (acc. nēminem, dat. nēminī)",
    "pos": "N",
    "gender": "c",
    "decl": 3,
    "meaning": "no one, nobody",
+   "sense_full": "no one, nobody",
    "parts": null,
    "unit_id": "r10:44.1",
    "count": 47
@@ -129,17 +128,19 @@
    "gender": null,
    "decl": null,
    "meaning": "therefore",
+   "sense_full": "therefore",
    "parts": null,
    "unit_id": "r10:121.1",
    "count": 44
   },
   {
    "lemma": "necesse",
-   "dict": "necesse, (indeclinable)",
+   "dict": "necesse (indeclinable)",
    "pos": "ADJ",
    "gender": null,
    "decl": 9,
-   "meaning": "necessary (necesse est = it is necessary, one must)",
+   "meaning": "necessary",
+   "sense_full": "necessary (necesse est = it is necessary, one must)",
    "parts": null,
    "unit_id": "r10:58.1",
    "count": 41
@@ -150,7 +151,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "play, mock, tease, trick",
+   "meaning": "play",
+   "sense_full": "play, mock, tease, trick",
    "parts": "lūdō, lūdere, lūsī, lūsum",
    "unit_id": "r10:74.2",
    "count": 37
@@ -161,7 +163,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "dead, deceased",
+   "meaning": "dead",
+   "sense_full": "dead, deceased",
    "parts": null,
    "unit_id": "r10:48.2",
    "count": 34
@@ -173,6 +176,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "god",
+   "sense_full": "god",
    "parts": null,
    "unit_id": "r10:27.1",
    "count": 31
@@ -184,6 +188,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "bird",
+   "sense_full": "bird",
    "parts": null,
    "unit_id": "r10:9.1",
    "count": 30
@@ -194,10 +199,23 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "river, stream",
+   "meaning": "river",
+   "sense_full": "river, stream",
    "parts": null,
    "unit_id": "r10:40.1",
    "count": 30
+  },
+  {
+   "lemma": "capiō",
+   "dict": "capiō, capere, cēpī, captum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "take, seize, catch",
+   "sense_full": "take hold, seize",
+   "parts": "capiō, capere, cēpī, captum",
+   "unit_id": "r10:2.1",
+   "count": 29
   },
   {
    "lemma": "mercātor",
@@ -205,7 +223,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "trader, merchant",
+   "meaning": "merchant, trader",
+   "sense_full": "trader, merchant",
    "parts": null,
    "unit_id": "r10:28.1",
    "count": 29
@@ -216,21 +235,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "move, stir, agitate, affect, provoke, disturb",
+   "meaning": "move, stir",
+   "sense_full": "move, stir, agitate, affect, provoke, disturb",
    "parts": "moveō, movēre, movī, motum",
    "unit_id": "r10:13.2",
    "count": 29
-  },
-  {
-   "lemma": "capiō",
-   "dict": "capiō, capere, cēpī, captum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "take hold, seize",
-   "parts": "capiō, capere, cēpī, captum",
-   "unit_id": "r10:2.1",
-   "count": 27
   },
   {
    "lemma": "piscis",
@@ -239,6 +248,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "fish",
+   "sense_full": "fish",
    "parts": null,
    "unit_id": "r10:9.1",
    "count": 26
@@ -249,21 +259,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "sing, celebrate, chant",
+   "meaning": "sing",
+   "sense_full": "sing, celebrate, chant",
    "parts": "canō, canere, cecinī, cantum",
    "unit_id": "r10:79.1",
    "count": 25
   },
   {
-   "lemma": "pilā",
-   "dict": "pilā, pīlae f.",
+   "lemma": "pila",
+   "dict": "pila, pīlae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "ball (play or decorative)",
+   "meaning": "ball",
+   "sense_full": "ball (play or decorative)",
    "parts": null,
    "unit_id": "r10:74.2",
-   "count": 22
+   "count": 23
   },
   {
    "lemma": "vōx",
@@ -271,7 +283,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "voice, tone, expression",
+   "meaning": "voice, word",
+   "sense_full": "voice, tone, expression",
    "parts": null,
    "unit_id": "r10:82.1",
    "count": 21
@@ -283,6 +296,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "wing",
+   "sense_full": "wing",
    "parts": null,
    "unit_id": "r10:12.1",
    "count": 20
@@ -293,7 +307,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "fall, sink, drop, plummet, topple",
+   "meaning": "fall",
+   "sense_full": "fall, sink, drop, plummet, topple",
    "parts": "cadō, cadere, cecidī, casum",
    "unit_id": "r10:102.1",
    "count": 19
@@ -304,10 +319,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "climb",
+   "meaning": "climb, go up",
+   "sense_full": "climb",
    "parts": "ascendō, ascendere, ascendī, ascensum",
    "unit_id": "r10:94.2",
    "count": 18
+  },
+  {
+   "lemma": "audeō",
+   "dict": "audeō, audēre, ausus sum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "dare",
+   "sense_full": "intend, be prepared",
+   "parts": "audeō, audēre, ausus sum",
+   "unit_id": "r10:87.1",
+   "count": 17
   },
   {
    "lemma": "bēstia",
@@ -315,7 +343,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "beast, animal, creature",
+   "meaning": "animal, beast",
+   "sense_full": "beast, animal, creature",
    "parts": null,
    "unit_id": "r10:1.1",
    "count": 16
@@ -326,31 +355,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "frighten greatly, terrify",
+   "meaning": "terrify",
+   "sense_full": "frighten greatly, terrify",
    "parts": "perterreō, perterrēre, perterruī, perterritum",
    "unit_id": "r10:105.2",
    "count": 16
   },
   {
    "lemma": "āēr",
-   "dict": "āēr, āeris m/f.",
+   "dict": "āēr, āeris m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
-   "meaning": "air (one of 4 elements)",
+   "meaning": "air",
+   "sense_full": "air (one of 4 elements)",
    "parts": null,
    "unit_id": "r10:10.1",
-   "count": 15
-  },
-  {
-   "lemma": "audeō",
-   "dict": "audeō, audēre, ausus sum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "intend, be prepared",
-   "parts": "audeō, audēre, ausus sum",
-   "unit_id": "r10:87.1",
    "count": 15
   },
   {
@@ -360,6 +380,7 @@
    "gender": null,
    "decl": null,
    "meaning": "swim",
+   "sense_full": "swim",
    "parts": "natō, natāre, natavī, natatum",
    "unit_id": "r10:11.1",
    "count": 15
@@ -371,6 +392,7 @@
    "gender": null,
    "decl": null,
    "meaning": "breathe",
+   "sense_full": "breathe",
    "parts": "spirō, spirāre, spiravī, spiratum",
    "unit_id": "r10:46.1",
    "count": 15
@@ -382,6 +404,7 @@
    "gender": null,
    "decl": null,
    "meaning": "hide",
+   "sense_full": "hide",
    "parts": "occultō, occultāre, occultavī, occultatum",
    "unit_id": "r10:87.1",
    "count": 14
@@ -392,7 +415,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "soul, spirit, vital principle",
+   "meaning": "breath, soul, life",
+   "sense_full": "soul, spirit, vital principle",
    "parts": null,
    "unit_id": "r10:51.2",
    "count": 13
@@ -404,6 +428,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "wild, savage",
+   "sense_full": "wild, savage",
    "parts": null,
    "unit_id": "r10:2.1",
    "count": 12
@@ -414,18 +439,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "support",
+   "meaning": "hold up, support",
+   "sense_full": "support",
    "parts": "sustineō, sustinēre, sustinuī, sustentum",
    "unit_id": "r10:100.2",
    "count": 12
   },
   {
    "lemma": "asinus",
-   "dict": "asinus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "of, connected with an ass, donkey, ass's",
+   "dict": "asinus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "ass, donkey",
+   "sense_full": "ass, donkey",
    "parts": null,
    "unit_id": "r10:1.1",
    "count": 11
@@ -436,7 +463,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "bear",
+   "meaning": "give birth to, lay",
+   "sense_full": "bear",
    "parts": "pariō, parere, peperī, partum",
    "unit_id": "r10:71.2",
    "count": 11
@@ -447,7 +475,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "alive, fresh",
+   "meaning": "alive, living",
+   "sense_full": "alive, fresh",
    "parts": null,
    "unit_id": "r10:48.2",
    "count": 11
@@ -459,6 +488,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "nest",
+   "sense_full": "nest",
    "parts": null,
    "unit_id": "r10:69.1",
    "count": 10
@@ -470,6 +500,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "lion",
+   "sense_full": "lion",
    "parts": null,
    "unit_id": "r10:1.1",
    "count": 8
@@ -480,7 +511,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "silver eagle on pole, standard of a legion",
+   "meaning": "eagle",
+   "sense_full": "silver eagle on pole, standard of a legion",
    "parts": null,
    "unit_id": "r10:9.2",
    "count": 7
@@ -492,6 +524,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "leaf",
+   "sense_full": "leaf",
    "parts": null,
    "unit_id": "r10:69.1",
    "count": 7
@@ -503,6 +536,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "egg",
+   "sense_full": "egg",
    "parts": null,
    "unit_id": "r10:71.1",
    "count": 7
@@ -513,7 +547,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "branch, bough",
+   "meaning": "branch",
+   "sense_full": "branch, bough",
    "parts": null,
    "unit_id": "r10:69.1",
    "count": 7
@@ -524,7 +559,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "blackish, dark colored, of undyed wool as worn in morning",
+   "meaning": "chick, young animal",
+   "sense_full": "blackish, dark colored, of undyed wool as worn in morning",
    "parts": null,
    "unit_id": "r10:71.2",
    "count": 6
@@ -535,21 +571,11 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "lungs (singular or plural)",
+   "meaning": "lung",
+   "sense_full": "lungs (singular or plural)",
    "parts": null,
    "unit_id": "r10:51.2",
    "count": 6
-  },
-  {
-   "lemma": "nūntius",
-   "dict": "nūntius, -ī m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 2,
-   "meaning": "messenger, herald, envoy",
-   "parts": null,
-   "unit_id": "r10:29.1",
-   "count": 5
   },
   {
    "lemma": "crassus",
@@ -557,10 +583,23 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "thick or deep",
+   "meaning": "thick, fat",
+   "sense_full": "thick or deep",
    "parts": null,
    "unit_id": "r10:100.2",
-   "count": 4
+   "count": 5
+  },
+  {
+   "lemma": "nūntius",
+   "dict": "nūntius, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "messenger, message",
+   "sense_full": "messenger, herald, envoy",
+   "parts": null,
+   "unit_id": "r10:29.1",
+   "count": 5
   },
   {
    "lemma": "animal",
@@ -568,7 +607,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "animal, living thing or offspring",
+   "meaning": "animal, living creature",
+   "sense_full": "animal, living thing or offspring",
    "parts": null,
    "unit_id": "r10:54.1",
    "count": 3
@@ -579,7 +619,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "tail (animal)",
+   "meaning": "tail",
+   "sense_full": "tail (animal)",
    "parts": null,
    "unit_id": "r10:14.2",
    "count": 3
@@ -591,20 +632,10 @@
    "gender": null,
    "decl": 3,
    "meaning": "thin, fine",
+   "sense_full": "thin, fine",
    "parts": null,
    "unit_id": "r10:100.2",
    "count": 3
-  },
-  {
-   "lemma": "capiō",
-   "dict": "capiō",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "take hold, seize",
-   "parts": "capiō",
-   "unit_id": "r10:78.1",
-   "count": 2
   },
   {
    "lemma": "avius",
@@ -612,20 +643,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "out of the way, unfrequented, remote",
+   "meaning": "remote, out of the way",
+   "sense_full": "out of the way, unfrequented, remote",
    "parts": null,
    "unit_id": "r10:89.2",
-   "count": 1
-  },
-  {
-   "lemma": "is",
-   "dict": "is, ea, id (+ -cum: with)",
-   "pos": "PRON",
-   "gender": null,
-   "decl": null,
-   "meaning": "he, she, it, they",
-   "parts": null,
-   "unit_id": "r10:74.2",
    "count": 1
   },
   {
@@ -634,7 +655,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "forequarter or shoulder of pork",
+   "meaning": "ham, shoulder of pork",
+   "sense_full": "forequarter or shoulder of pork",
    "parts": null,
    "unit_id": "r10:26.1",
    "count": 1

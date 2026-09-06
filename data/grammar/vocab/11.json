@@ -8,6 +8,7 @@
    "gender": null,
    "decl": null,
    "meaning": "say, declare, state",
+   "sense_full": "say, declare, state",
    "parts": "dīcō, dīcere, dīxī, dictum",
    "unit_id": "r11:60.1",
    "count": 179
@@ -18,7 +19,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "nor, and..not",
+   "meaning": "and not, nor",
+   "sense_full": "nor, and..not",
    "parts": null,
    "unit_id": "r11:54.1",
    "count": 156
@@ -29,7 +31,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "and, as well or soon as",
+   "meaning": "and, and also",
+   "sense_full": "and, as well or soon as",
    "parts": null,
    "unit_id": "r11:41.1",
    "count": 142
@@ -41,28 +44,31 @@
    "gender": null,
    "decl": null,
    "meaning": "we, us",
+   "sense_full": "we, us",
    "parts": null,
    "unit_id": "r11:133.1",
-   "count": 101
+   "count": 102
   },
   {
-   "lemma": "modus",
-   "dict": "modus, -ī m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 2,
-   "meaning": "manner, mode, way, method",
+   "lemma": "modō",
+   "dict": "modō",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "only, merely",
+   "sense_full": "only, merely",
    "parts": null,
    "unit_id": "r11:37.1",
-   "count": 69
+   "count": 63
   },
   {
    "lemma": "medicus",
-   "dict": "medicus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "healing, curative, medical",
+   "dict": "medicus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "doctor, physician",
+   "sense_full": "doctor, physician",
    "parts": null,
    "unit_id": "r11:26.1",
    "count": 55
@@ -73,7 +79,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 4,
-   "meaning": "hand, fist",
+   "meaning": "hand",
+   "sense_full": "hand, fist",
    "parts": null,
    "unit_id": "r11:3.1",
    "count": 54
@@ -85,6 +92,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "our",
+   "sense_full": "our",
    "parts": null,
    "unit_id": "r11:131.1",
    "count": 48
@@ -95,7 +103,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "order, tell, command, direct",
+   "meaning": "order, command",
+   "sense_full": "order, tell, command, direct",
    "parts": "iubeō, iubēre, iussī, iussum",
    "unit_id": "r11:44.2",
    "count": 40
@@ -106,7 +115,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "observe, watch, look at, see",
+   "meaning": "look at, watch",
+   "sense_full": "observe, watch, look at, see",
    "parts": "spectō, spectāre, spectāvī, spectātum",
    "unit_id": "r11:76.1",
    "count": 40
@@ -117,7 +127,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "well, very, quite, rightly, agreeably, cheaply, in good style",
+   "meaning": "well",
+   "sense_full": "well, very, quite, rightly, agreeably, cheaply, in good style",
    "parts": null,
    "unit_id": "r11:13.2",
    "count": 37
@@ -128,7 +139,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "think, believe, suppose, hold",
+   "meaning": "think, believe",
+   "sense_full": "think, believe, suppose, hold",
    "parts": "putō, putāre, putāvī, putātum",
    "unit_id": "r11:107.2",
    "count": 35
@@ -139,7 +151,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hurt",
+   "meaning": "hurt, feel pain, grieve",
+   "sense_full": "hurt",
    "parts": "doleō, dolēre, doluī, dolitum",
    "unit_id": "r11:80.1",
    "count": 32
@@ -151,6 +164,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "head",
+   "sense_full": "head",
    "parts": null,
    "unit_id": "r11:5.1",
    "count": 30
@@ -162,6 +176,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "ear",
+   "sense_full": "ear",
    "parts": null,
    "unit_id": "r11:5.2",
    "count": 27
@@ -173,6 +188,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "body",
+   "sense_full": "body",
    "parts": null,
    "unit_id": "r11:1.1",
    "count": 27
@@ -183,7 +199,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "sick or ill, infirm",
+   "meaning": "sick, ill",
+   "sense_full": "sick or ill, infirm",
    "parts": null,
    "unit_id": "r11:23.1",
    "count": 26
@@ -194,7 +211,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "sit, remain",
+   "meaning": "sit",
+   "sense_full": "sit, remain",
    "parts": "sedeō, sedēre, sedī, sessum",
    "unit_id": "r11:31.1",
    "count": 26
@@ -206,17 +224,19 @@
    "gender": "n",
    "decl": 2,
    "meaning": "arm",
+   "sense_full": "arm",
    "parts": null,
    "unit_id": "r11:1.1",
    "count": 23
   },
   {
    "lemma": "super",
-   "dict": "super",
+   "dict": "super (+ acc./abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "over (space), above, upon, in addition to",
+   "meaning": "over, above, upon",
+   "sense_full": "over (space), above, upon, in addition to",
    "parts": null,
    "unit_id": "r11:6.1",
    "count": 23
@@ -227,21 +247,11 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "cup, bowl, drinking vessel",
+   "meaning": "cup",
+   "sense_full": "cup, bowl, drinking vessel",
    "parts": null,
    "unit_id": "r11:36.1",
    "count": 21
-  },
-  {
-   "lemma": "stō",
-   "dict": "stō, stāre, stetī, statum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "stand, stand still, stand firm",
-   "parts": "stō, stāre, stetī, statum",
-   "unit_id": "r11:32.1",
-   "count": 20
   },
   {
    "lemma": "stultus",
@@ -250,8 +260,21 @@
    "gender": null,
    "decl": 1,
    "meaning": "foolish, stupid",
+   "sense_full": "foolish, stupid",
    "parts": null,
    "unit_id": "r11:9.1",
+   "count": 21
+  },
+  {
+   "lemma": "stō",
+   "dict": "stō, stāre, stetī, statum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "stand",
+   "sense_full": "stand, stand still, stand firm",
+   "parts": "stō, stāre, stetī, statum",
+   "unit_id": "r11:32.1",
    "count": 20
   },
   {
@@ -260,32 +283,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "sound",
+   "meaning": "healthy, sound",
+   "sense_full": "sound",
    "parts": null,
    "unit_id": "r11:23.1",
    "count": 19
-  },
-  {
-   "lemma": "ōs",
-   "dict": "ōs, ōris n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 3,
-   "meaning": "mouth, speech, expression",
-   "parts": null,
-   "unit_id": "r11:5.2",
-   "count": 16
-  },
-  {
-   "lemma": "sanguis",
-   "dict": "sanguis, sanguinis m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 3,
-   "meaning": "blood",
-   "parts": null,
-   "unit_id": "r11:19.1",
-   "count": 16
   },
   {
    "lemma": "gaudeō",
@@ -294,9 +296,34 @@
    "gender": null,
    "decl": null,
    "meaning": "be glad, rejoice",
+   "sense_full": "be glad, rejoice",
    "parts": "gaudeō, gaudēre, gavisus sum",
    "unit_id": "r11:114.1",
-   "count": 14
+   "count": 18
+  },
+  {
+   "lemma": "ōs",
+   "dict": "ōs, ōris n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 3,
+   "meaning": "mouth, face",
+   "sense_full": "mouth, speech, expression",
+   "parts": null,
+   "unit_id": "r11:5.2",
+   "count": 18
+  },
+  {
+   "lemma": "sanguis",
+   "dict": "sanguis, sanguinis m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 3,
+   "meaning": "blood",
+   "sense_full": "blood",
+   "parts": null,
+   "unit_id": "r11:19.1",
+   "count": 16
   },
   {
    "lemma": "quiēscō",
@@ -304,7 +331,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "rest, keep quiet or calm, be at peace or rest",
+   "meaning": "rest, be quiet",
+   "sense_full": "rest, keep quiet or calm, be at peace or rest",
    "parts": "quiēscō, quiēscere, quiēvī, quiētum",
    "unit_id": "r11:58.1",
    "count": 14
@@ -315,7 +343,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be sick",
+   "meaning": "be ill",
+   "sense_full": "be sick",
    "parts": "aegrōtō, aegrōtāre, aegrotavī, aegrotatum",
    "unit_id": "r11:48.1",
    "count": 13
@@ -326,7 +355,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "live in (place), inhabit",
+   "meaning": "cultivate, till, inhabit",
+   "sense_full": "live in (place), inhabit",
    "parts": "colō, colere, coluī, cultum",
    "unit_id": "r11:20.1",
    "count": 11
@@ -337,7 +367,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "perceive, feel, experience",
+   "meaning": "feel, perceive",
+   "sense_full": "perceive, feel, experience",
    "parts": "sentiō, sentīre, sensī, sensum",
    "unit_id": "r11:89.1",
    "count": 11
@@ -349,6 +380,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "heart",
+   "sense_full": "heart",
    "parts": null,
    "unit_id": "r11:18.3",
    "count": 10
@@ -359,7 +391,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "stomach, womb",
+   "meaning": "belly, stomach",
+   "sense_full": "stomach, womb",
    "parts": null,
    "unit_id": "r11:20.1",
    "count": 10
@@ -371,17 +404,19 @@
    "gender": "m",
    "decl": 2,
    "meaning": "hair",
+   "sense_full": "hair",
    "parts": null,
    "unit_id": "r11:6.1",
    "count": 9
   },
   {
    "lemma": "frōns",
-   "dict": "frōns, frontis m/f.",
+   "dict": "frōns, frontis m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
-   "meaning": "forehead, brow",
+   "meaning": "forehead",
+   "sense_full": "forehead, brow",
    "parts": null,
    "unit_id": "r11:8.1",
    "count": 9
@@ -392,7 +427,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "member, limb, organ",
+   "meaning": "limb",
+   "sense_full": "member, limb, organ",
    "parts": null,
    "unit_id": "r11:1.1",
    "count": 8
@@ -404,6 +440,7 @@
    "gender": null,
    "decl": null,
    "meaning": "cure, heal",
+   "sense_full": "cure, heal",
    "parts": "sānō, sānāre, sanavī, sanatum",
    "unit_id": "r11:27.1",
    "count": 8
@@ -414,7 +451,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "send for, summon, indict",
+   "meaning": "send for, summon",
+   "sense_full": "send for, summon, indict",
    "parts": "arcessō, arcessere, arcessīvī, arcessitum",
    "unit_id": "r11:42.1",
    "count": 7
@@ -426,6 +464,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "color",
+   "sense_full": "color",
    "parts": null,
    "unit_id": "r11:77.1",
    "count": 7
@@ -436,7 +475,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "flow, stream",
+   "meaning": "flow",
+   "sense_full": "flow, stream",
    "parts": "fluō, fluere, fluxī, fluxum",
    "unit_id": "r11:19.1",
    "count": 7
@@ -447,20 +487,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "dread, shrink from, shudder at",
+   "meaning": "shudder at, dread",
+   "sense_full": "dread, shrink from, shudder at",
    "parts": "horreō, horrēre, horruī",
    "unit_id": "r11:98.1",
-   "count": 7
-  },
-  {
-   "lemma": "lingva",
-   "dict": "lingva, linguae f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 1,
-   "meaning": "tongue",
-   "parts": null,
-   "unit_id": "r11:67.2",
    "count": 7
   },
   {
@@ -469,7 +499,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "red, ruddy, painted red",
+   "meaning": "red",
+   "sense_full": "red, ruddy, painted red",
    "parts": null,
    "unit_id": "r11:11.2",
    "count": 7
@@ -480,7 +511,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "touch, strike",
+   "meaning": "touch",
+   "sense_full": "touch, strike",
    "parts": "tangō, tangere, tetigī, tactum",
    "unit_id": "r11:40.1",
    "count": 7
@@ -491,7 +523,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "place near, set before/on table, serve up",
+   "meaning": "put beside, serve",
+   "sense_full": "place near, set before/on table, serve up",
    "parts": "appōnō, appōnere, apposuī, appositum",
    "unit_id": "r11:88.1",
    "count": 6
@@ -502,7 +535,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "breast, heart",
+   "meaning": "chest, breast",
+   "sense_full": "breast, heart",
    "parts": null,
    "unit_id": "r11:18.2",
    "count": 6
@@ -514,6 +548,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "leg",
+   "sense_full": "leg",
    "parts": null,
    "unit_id": "r11:1.1",
    "count": 5
@@ -525,6 +560,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "knife",
+   "sense_full": "knife",
    "parts": null,
    "unit_id": "r11:94.1",
    "count": 5
@@ -536,17 +572,19 @@
    "gender": null,
    "decl": 1,
    "meaning": "human",
+   "sense_full": "human",
    "parts": null,
    "unit_id": "r11:1.1",
    "count": 5
   },
   {
    "lemma": "īnfrā",
-   "dict": "īnfrā",
+   "dict": "īnfrā (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
    "meaning": "below, lower than",
+   "sense_full": "below, lower than",
    "parts": null,
    "unit_id": "r11:8.1",
    "count": 5
@@ -557,7 +595,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "throb, beat, pulsate",
+   "meaning": "throb, beat",
+   "sense_full": "throb, beat, pulsate",
    "parts": "palpitō, palpitāre, palpitavī, palpitatum",
    "unit_id": "r11:98.2",
    "count": 4
@@ -569,6 +608,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "brain",
+   "sense_full": "brain",
    "parts": null,
    "unit_id": "r11:8.2",
    "count": 3
@@ -579,7 +619,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "wipe, clean off, away",
+   "meaning": "wipe off, wipe clean",
+   "sense_full": "wipe, clean off, away",
    "parts": "dētergeō, dētergēre, detersī, detersum",
    "unit_id": "r11:119.1",
    "count": 2
@@ -590,7 +631,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "cheeks (in the plural)",
+   "meaning": "cheek",
+   "sense_full": "cheeks (in the plural)",
    "parts": null,
    "unit_id": "r11:8.1",
    "count": 2
@@ -602,6 +644,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "liver",
+   "sense_full": "liver",
    "parts": null,
    "unit_id": "r11:20.1",
    "count": 2
@@ -612,7 +655,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "lip (of person, vessel, ditch, river), rim, edge",
+   "meaning": "lip",
+   "sense_full": "lip (of person, vessel, ditch, river), rim, edge",
    "parts": null,
    "unit_id": "r11:10.1",
    "count": 2
@@ -624,6 +668,7 @@
    "gender": null,
    "decl": null,
    "meaning": "come back, return",
+   "sense_full": "come back, return",
    "parts": "reveniō, revenīre, revenī, reventum",
    "unit_id": "r11:46.1",
    "count": 2
@@ -634,7 +679,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "blood-vessel, vein",
+   "meaning": "vein",
+   "sense_full": "blood-vessel, vein",
    "parts": null,
    "unit_id": "r11:19.1",
    "count": 2
@@ -645,7 +691,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "see, look at",
+   "meaning": "look at",
+   "sense_full": "see, look at",
    "parts": "tuor, tuārī",
    "unit_id": "r11:60.1",
    "count": 1
@@ -656,7 +703,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "soft fleshy body parts (usually plural), internal organs",
+   "meaning": "internal organs",
+   "sense_full": "soft fleshy body parts (usually plural), internal organs",
    "parts": null,
    "unit_id": "r11:21.2",
    "count": 1

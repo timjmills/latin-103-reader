@@ -7,7 +7,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "indeed (placed after its word), certainly, even, at least",
+   "meaning": "indeed, certainly, even",
+   "sense_full": "indeed (placed after its word), certainly, even, at least",
    "parts": null,
    "unit_id": "w02:42.1",
    "count": 36
@@ -18,10 +19,23 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "who, what, which?, what, which one, man, person? what kind or type of?",
+   "meaning": "anyone, anything",
+   "sense_full": "who, what, which?, what, which one, man, person? what kind or type of?",
    "parts": null,
    "unit_id": "w02:23.2",
    "count": 22
+  },
+  {
+   "lemma": "inveniō",
+   "dict": "inveniō, invēnīre, invēnī, inventum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "find, come upon",
+   "sense_full": "come upon",
+   "parts": "inveniō, invēnīre, invēnī, inventum",
+   "unit_id": "w02:19.1",
+   "count": 15
   },
   {
    "lemma": "haud",
@@ -30,19 +44,9 @@
    "gender": null,
    "decl": null,
    "meaning": "not, not at all, by no means",
+   "sense_full": "not, not at all, by no means",
    "parts": null,
    "unit_id": "w02:23.3",
-   "count": 14
-  },
-  {
-   "lemma": "inveniō",
-   "dict": "inveniō, invēnīre, invēnī, inventum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "come upon",
-   "parts": "inveniō, invēnīre, invēnī, inventum",
-   "unit_id": "w02:19.1",
    "count": 14
   },
   {
@@ -51,10 +55,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "help, assist, aid, support, serve, further",
+   "meaning": "help, aid",
+   "sense_full": "help, assist, aid, support, serve, further",
    "parts": "iuvō, iuvāre, iuvī, iutum",
    "unit_id": "w02:23.2",
    "count": 14
+  },
+  {
+   "lemma": "celeriter",
+   "dict": "celeriter",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "quickly",
+   "sense_full": "quickly, rapidly, speedily",
+   "parts": null,
+   "unit_id": "w02:3.2",
+   "count": 13
   },
   {
    "lemma": "cōnsilium",
@@ -62,7 +79,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "debate, discussion, deliberation, consultation",
+   "meaning": "plan, advice, counsel",
+   "sense_full": "debate, discussion, deliberation, consultation",
    "parts": null,
    "unit_id": "w02:23.1",
    "count": 12
@@ -73,7 +91,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "follow up, pursue",
+   "meaning": "pursue, follow",
+   "sense_full": "follow up, pursue",
    "parts": "persequor, persequī, persecūtus sum",
    "unit_id": "w02:1.1",
    "count": 12
@@ -85,6 +104,7 @@
    "gender": null,
    "decl": null,
    "meaning": "because, since, seeing that",
+   "sense_full": "because, since, seeing that",
    "parts": null,
    "unit_id": "w02:12.3",
    "count": 12
@@ -95,9 +115,22 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "close, firm, tight",
+   "meaning": "close, tight",
+   "sense_full": "close, firm, tight",
    "parts": null,
    "unit_id": "w02:48.1",
+   "count": 10
+  },
+  {
+   "lemma": "audāx",
+   "dict": "audāx, gen. audācis",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 3,
+   "meaning": "bold, daring",
+   "sense_full": "bold, daring",
+   "parts": null,
+   "unit_id": "w02:19.2",
    "count": 10
   },
   {
@@ -106,9 +139,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "make, construct",
+   "meaning": "finish, complete, make",
+   "sense_full": "make, construct",
    "parts": "conficiō, cōnficere, cōnfēcī, cōnfectum",
    "unit_id": "w02:3.3",
+   "count": 10
+  },
+  {
+   "lemma": "studiōsus",
+   "dict": "studiōsus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "eager, keen",
+   "sense_full": "eager, keen, full of zeal",
+   "parts": null,
+   "unit_id": "w02:42.1",
    "count": 10
   },
   {
@@ -117,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "fall upon, down, to, at or near, descend, alight",
+   "meaning": "happen, occur",
+   "sense_full": "fall upon, down, to, at or near, descend, alight",
    "parts": "accidō, accidere, accidī",
    "unit_id": "w02:111.1",
    "count": 9
@@ -128,32 +175,11 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "prison, jail",
+   "meaning": "prison",
+   "sense_full": "prison, jail",
    "parts": null,
    "unit_id": "w02:23.1",
    "count": 9
-  },
-  {
-   "lemma": "studiōsus",
-   "dict": "studiōsus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "eager, keen, full of zeal",
-   "parts": null,
-   "unit_id": "w02:42.1",
-   "count": 9
-  },
-  {
-   "lemma": "audāx",
-   "dict": "audāx, (gen., audācis)",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "bold, daring",
-   "parts": null,
-   "unit_id": "w02:19.2",
-   "count": 8
   },
   {
    "lemma": "effugiō",
@@ -161,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "flee or escape",
+   "meaning": "escape, flee",
+   "sense_full": "flee or escape",
    "parts": "effugiō, effūgere, effugī, effugitum",
    "unit_id": "w02:19.2",
    "count": 8
@@ -173,6 +200,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "feather, wing",
+   "sense_full": "feather, wing",
    "parts": null,
    "unit_id": "w02:57.1",
    "count": 8
@@ -183,7 +211,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "rest of, remaining, available, left",
+   "meaning": "remaining, the rest of",
+   "sense_full": "rest of, remaining, available, left",
    "parts": null,
    "unit_id": "w02:12.3",
    "count": 8
@@ -195,20 +224,10 @@
    "gender": "n",
    "decl": 2,
    "meaning": "top",
+   "sense_full": "top",
    "parts": null,
    "unit_id": "w02:75.1",
    "count": 8
-  },
-  {
-   "lemma": "celeriter",
-   "dict": "celeriter",
-   "pos": "ADV",
-   "gender": null,
-   "decl": null,
-   "meaning": "quickly, rapidly, speedily",
-   "parts": null,
-   "unit_id": "w02:3.2",
-   "count": 7
   },
   {
    "lemma": "cōnsequor",
@@ -216,7 +235,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "follow, go/come after",
+   "meaning": "catch up with, follow",
+   "sense_full": "follow, go/come after",
    "parts": "cōnsequor, cōnsequī, consecutus sum",
    "unit_id": "w02:3.2",
    "count": 7
@@ -228,6 +248,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "freedom, liberty",
+   "sense_full": "freedom, liberty",
    "parts": null,
    "unit_id": "w02:83.2",
    "count": 7
@@ -239,6 +260,7 @@
    "gender": null,
    "decl": null,
    "meaning": "as, just as, just as if",
+   "sense_full": "as, just as, just as if",
    "parts": null,
    "unit_id": "w02:48.2",
    "count": 7
@@ -249,7 +271,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "stray, wander, deviate",
+   "meaning": "wander off, stray",
+   "sense_full": "stray, wander, deviate",
    "parts": "aberrō, aberrāre, aberrāvī, aberratum",
    "unit_id": "w02:124.2",
    "count": 6
@@ -261,6 +284,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "skill, craft, art",
+   "sense_full": "skill, craft, art",
    "parts": null,
    "unit_id": "w02:48.2",
    "count": 6
@@ -272,6 +296,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "shore, coast",
+   "sense_full": "shore, coast",
    "parts": null,
    "unit_id": "w02:102.2",
    "count": 6
@@ -282,7 +307,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "beware, avoid, take precautions or defensive action",
+   "meaning": "beware, be careful",
+   "sense_full": "beware, avoid, take precautions or defensive action",
    "parts": "caveō, cavēre, cavī, cautum",
    "unit_id": "w02:75.3",
    "count": 5
@@ -294,17 +320,19 @@
    "gender": null,
    "decl": null,
    "meaning": "fasten, fix",
+   "sense_full": "fasten, fix",
    "parts": "fīgō, fīgere, fīxī, fīxum",
    "unit_id": "w02:57.2",
    "count": 5
   },
   {
    "lemma": "ingēns",
-   "dict": "ingēns, (gen., ingentis)",
+   "dict": "ingēns, gen. ingentis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "not natural, immoderate",
+   "meaning": "huge, enormous",
+   "sense_full": "not natural, immoderate",
    "parts": null,
    "unit_id": "w02:61.1",
    "count": 5
@@ -316,6 +344,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "nature",
+   "sense_full": "nature",
    "parts": null,
    "unit_id": "w02:42.4",
    "count": 5
@@ -327,17 +356,19 @@
    "gender": null,
    "decl": null,
    "meaning": "nearly, almost",
+   "sense_full": "nearly, almost",
    "parts": null,
    "unit_id": "w02:23.3",
    "count": 5
   },
   {
    "lemma": "trāns",
-   "dict": "trāns",
+   "dict": "trāns (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
    "meaning": "across, over",
+   "sense_full": "across, over",
    "parts": null,
    "unit_id": "w02:32.7",
    "count": 5
@@ -349,6 +380,7 @@
    "gender": null,
    "decl": null,
    "meaning": "some",
+   "sense_full": "some",
    "parts": null,
    "unit_id": "w02:83.1",
    "count": 4
@@ -359,18 +391,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "look down on/over",
+   "meaning": "look down on",
+   "sense_full": "look down on/over",
    "parts": "dēspiciō, dēspicere, despexī, despectum",
    "unit_id": "w02:90.1",
    "count": 4
   },
   {
-   "lemma": "fugā",
-   "dict": "fugā, -ae f.",
+   "lemma": "fuga",
+   "dict": "fuga, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "flight, fleeing, escape",
+   "meaning": "flight, escape",
+   "sense_full": "flight, fleeing, escape",
    "parts": null,
    "unit_id": "w02:3.4",
    "count": 4
@@ -381,7 +415,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "fire, brightness",
+   "meaning": "fire",
+   "sense_full": "fire, brightness",
    "parts": null,
    "unit_id": "w02:57.1",
    "count": 4
@@ -392,7 +427,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "imitate, copy, mimic",
+   "meaning": "imitate, copy",
+   "sense_full": "imitate, copy, mimic",
    "parts": "imitor, imitārī, imitatus sum",
    "unit_id": "w02:32.8",
    "count": 4
@@ -403,20 +439,10 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "upper arm, arm, shoulder",
+   "meaning": "arm, upper arm",
+   "sense_full": "upper arm, arm, shoulder",
    "parts": null,
    "unit_id": "w02:57.2",
-   "count": 4
-  },
-  {
-   "lemma": "novus",
-   "dict": "novus, -a, -um, ·, superlative, novissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "new, fresh, young",
-   "parts": null,
-   "unit_id": "w02:61.2",
    "count": 4
   },
   {
@@ -425,7 +451,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "circle",
+   "meaning": "circle, ring",
+   "sense_full": "circle",
    "parts": null,
    "unit_id": "w02:32.6",
    "count": 4
@@ -437,6 +464,7 @@
    "gender": null,
    "decl": null,
    "meaning": "complete, finish",
+   "sense_full": "complete, finish",
    "parts": "perficiō, perficere, perfecī, perfectum",
    "unit_id": "w02:54.1",
    "count": 4
@@ -447,7 +475,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "casual, rash, accidental",
+   "meaning": "rash, reckless",
+   "sense_full": "casual, rash, accidental",
    "parts": null,
    "unit_id": "w02:102.1",
    "count": 4
@@ -458,7 +487,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "swift, quick, agile, rapid, speedy, fast",
+   "meaning": "swift, quick",
+   "sense_full": "swift, quick, agile, rapid, speedy, fast",
    "parts": null,
    "unit_id": "w02:3.1",
    "count": 3
@@ -469,7 +499,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "burn up, destroy or kill",
+   "meaning": "use up, consume",
+   "sense_full": "burn up, destroy or kill",
    "parts": "cōnsūmō, cōnsūmere, cōnsūmpsī, cōnsūmptum",
    "unit_id": "w02:3.4",
    "count": 3
@@ -480,7 +511,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "lift, raise, hold up",
+   "meaning": "lift, raise",
+   "sense_full": "lift, raise, hold up",
    "parts": "levō, levāre, levāvī, levatum",
    "unit_id": "w02:68.1",
    "count": 3
@@ -492,6 +524,7 @@
    "gender": null,
    "decl": null,
    "meaning": "call back, recall",
+   "sense_full": "call back, recall",
    "parts": "revocō, revocāre, revocavī, revocatum",
    "unit_id": "w02:141.2",
    "count": 3
@@ -503,6 +536,7 @@
    "gender": null,
    "decl": null,
    "meaning": "up, on high",
+   "sense_full": "up, on high",
    "parts": null,
    "unit_id": "w02:70.4",
    "count": 3
@@ -513,7 +547,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "look up to",
+   "meaning": "look up at",
+   "sense_full": "look up to",
    "parts": "suspiciō, suspicere, suspexī, suspectum",
    "unit_id": "w02:83.1",
    "count": 3
@@ -524,20 +559,10 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "fall, overthrow",
+   "meaning": "fall, chance, misfortune",
+   "sense_full": "fall, overthrow",
    "parts": null,
    "unit_id": "w02:124.2",
-   "count": 2
-  },
-  {
-   "lemma": "celer",
-   "dict": "celer, celeris, celere, ·, comparative, celerior,, celerius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "swift, quick, agile, rapid, speedy, fast",
-   "parts": null,
-   "unit_id": "w02:61.4",
    "count": 2
   },
   {
@@ -546,7 +571,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "down, downwards, beneath, below",
+   "meaning": "down, downwards, beneath",
+   "sense_full": "down, downwards, beneath, below",
    "parts": null,
    "unit_id": "w02:70.4",
    "count": 2
@@ -557,7 +583,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "fly away, fly up, out, forth",
+   "meaning": "fly away, fly up",
+   "sense_full": "fly away, fly up, out, forth",
    "parts": "ēvolō, ēvolāre, ēvolāvī, evolatum",
    "unit_id": "w02:32.9",
    "count": 2
@@ -568,7 +595,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "think out",
+   "meaning": "think out, devise",
+   "sense_full": "think out",
    "parts": "excogitō, excogitāre, excōgitāvī, excogitatum",
    "unit_id": "w02:32.4",
    "count": 2
@@ -579,7 +607,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "multitude, great number",
+   "meaning": "crowd, great number",
+   "sense_full": "multitude, great number",
    "parts": null,
    "unit_id": "w02:90.1",
    "count": 2
@@ -591,6 +620,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "near, neighboring",
+   "sense_full": "near, neighboring",
    "parts": null,
    "unit_id": "w02:113.1",
    "count": 2
@@ -602,6 +632,7 @@
    "gender": null,
    "decl": null,
    "meaning": "shake",
+   "sense_full": "shake",
    "parts": "quatiō, quatere, quassum",
    "unit_id": "w02:113.2",
    "count": 2
@@ -613,20 +644,10 @@
    "gender": null,
    "decl": null,
    "meaning": "burn",
+   "sense_full": "burn",
    "parts": "ūrō, ūrere, ussī, ustum",
    "unit_id": "w02:75.1",
    "count": 2
-  },
-  {
-   "lemma": "īnferus",
-   "dict": "īnferus, -a, -um, ·, superlative, īnfimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "below, beneath, underneath",
-   "parts": null,
-   "unit_id": "w02:75.1",
-   "count": 1
   },
   {
    "lemma": "iūnctus",
@@ -634,7 +655,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "connected in space, adjoining, contiguous",
+   "meaning": "joined, connected",
+   "sense_full": "connected in space, adjoining, contiguous",
    "parts": null,
    "unit_id": "w02:113.1",
    "count": 1
@@ -646,6 +668,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "peninsula",
+   "sense_full": "peninsula",
    "parts": null,
    "unit_id": "w02:97.1",
    "count": 1

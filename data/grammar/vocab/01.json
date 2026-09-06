@@ -8,6 +8,7 @@
    "gender": null,
    "decl": null,
    "meaning": "be, exist",
+   "sense_full": "be, exist",
    "parts": "sum, esse, fuī, futūrum",
    "unit_id": "r01:1.1",
    "count": 2179
@@ -19,17 +20,19 @@
    "gender": null,
    "decl": null,
    "meaning": "and, and even",
+   "sense_full": "and, and even",
    "parts": null,
    "unit_id": "r01:2.1",
    "count": 966
   },
   {
    "lemma": "in",
-   "dict": "in",
+   "dict": "in (+ acc./abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "in, on, at (space)",
+   "meaning": "in, on, at",
+   "sense_full": "in, on, at (space)",
    "parts": null,
    "unit_id": "r01:1.1",
    "count": 864
@@ -40,10 +43,11 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "he, she, it, they",
+   "meaning": "he, she, it",
+   "sense_full": "he, she, it, they",
    "parts": null,
    "unit_id": "r01:62.1",
-   "count": 739
+   "count": 740
   },
   {
    "lemma": "nōn",
@@ -52,6 +56,7 @@
    "gender": null,
    "decl": null,
    "meaning": "not, by no means, no",
+   "sense_full": "not, by no means, no",
    "parts": null,
    "unit_id": "r01:5.1",
    "count": 669
@@ -63,6 +68,7 @@
    "gender": null,
    "decl": null,
    "meaning": "but, but also",
+   "sense_full": "but, but also",
    "parts": null,
    "unit_id": "r01:6.2",
    "count": 348
@@ -73,10 +79,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "large, great, big, vast",
+   "meaning": "large, great, big",
+   "sense_full": "large, great, big, vast",
    "parts": null,
    "unit_id": "r01:22.1",
-   "count": 165
+   "count": 202
   },
   {
    "lemma": "multus",
@@ -84,10 +91,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "much, many, great, many a",
+   "meaning": "much, many, great",
+   "sense_full": "much, many, great, many a",
    "parts": null,
    "unit_id": "r01:44.1",
-   "count": 154
+   "count": 161
   },
   {
    "lemma": "rōmānus",
@@ -96,6 +104,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "Roman",
+   "sense_full": "Roman",
    "parts": null,
    "unit_id": "r01:40.1",
    "count": 123
@@ -107,9 +116,22 @@
    "gender": null,
    "decl": null,
    "meaning": "who? what?",
+   "sense_full": "who? what?",
    "parts": null,
    "unit_id": "r01:50.1",
    "count": 119
+  },
+  {
+   "lemma": "parvus",
+   "dict": "parvus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "small, little",
+   "sense_full": "small, little, cheap",
+   "parts": null,
+   "unit_id": "r01:22.2",
+   "count": 102
   },
   {
    "lemma": "prīmus",
@@ -117,7 +139,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "first, foremost or best, chief, principal",
+   "meaning": "first",
+   "sense_full": "first, foremost or best, chief, principal",
    "parts": null,
    "unit_id": "r01:73.1",
    "count": 87
@@ -128,7 +151,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "letter (alphabet)",
+   "meaning": "letter",
+   "sense_full": "letter (alphabet)",
    "parts": null,
    "unit_id": "r01:66.1",
    "count": 78
@@ -139,21 +163,11 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "likewise, besides, also, too",
+   "meaning": "also, too",
+   "sense_full": "likewise, besides, also, too",
    "parts": null,
    "unit_id": "r01:2.2",
    "count": 68
-  },
-  {
-   "lemma": "parvus",
-   "dict": "parvus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "small, little, cheap",
-   "parts": null,
-   "unit_id": "r01:22.2",
-   "count": 67
   },
   {
    "lemma": "ubi",
@@ -161,7 +175,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "where, whereby",
+   "meaning": "where, when",
+   "sense_full": "where, whereby",
    "parts": null,
    "unit_id": "r01:12.2",
    "count": 61
@@ -173,6 +188,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "town",
+   "sense_full": "town",
    "parts": null,
    "unit_id": "r01:33.1",
    "count": 58
@@ -183,7 +199,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "number, sum, total, rank",
+   "meaning": "number, sum, total",
+   "sense_full": "number, sum, total, rank",
    "parts": null,
    "unit_id": "r01:62.1",
    "count": 47
@@ -194,7 +211,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "if, whether",
+   "meaning": "surely not?",
+   "sense_full": "if, whether",
    "parts": null,
    "unit_id": "r01:49.1",
    "count": 40
@@ -206,6 +224,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "island",
+   "sense_full": "island",
    "parts": null,
    "unit_id": "r01:27.1",
    "count": 38
@@ -216,7 +235,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "noun, common or concrete noun",
+   "meaning": "word",
+   "sense_full": "noun, common or concrete noun",
    "parts": null,
    "unit_id": "r01:71.1",
    "count": 38
@@ -228,6 +248,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "river, stream",
+   "sense_full": "river, stream",
    "parts": null,
    "unit_id": "r01:18.1",
    "count": 28
@@ -239,6 +260,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "Latin",
+   "sense_full": "Latin",
    "parts": null,
    "unit_id": "r01:71.1",
    "count": 28
@@ -249,7 +271,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "next, following",
+   "meaning": "second, following",
+   "sense_full": "next, following",
    "parts": null,
    "unit_id": "r01:74.1",
    "count": 21
@@ -261,20 +284,10 @@
    "gender": null,
    "decl": 1,
    "meaning": "Greek",
+   "sense_full": "Greek",
    "parts": null,
    "unit_id": "r01:39.1",
    "count": 20
-  },
-  {
-   "lemma": "imperium",
-   "dict": "imperium, -ī n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 2,
-   "meaning": "command",
-   "parts": null,
-   "unit_id": "r01:55.1",
-   "count": 17
   },
   {
    "lemma": "paucus",
@@ -282,10 +295,23 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "little, small in quantity or extent",
+   "meaning": "few, little",
+   "sense_full": "little, small in quantity or extent",
    "parts": null,
    "unit_id": "r01:47.1",
-   "count": 16
+   "count": 18
+  },
+  {
+   "lemma": "imperium",
+   "dict": "imperium, -ī n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 2,
+   "meaning": "command, empire",
+   "sense_full": "command",
+   "parts": null,
+   "unit_id": "r01:55.1",
+   "count": 17
   },
   {
    "lemma": "syllaba",
@@ -294,6 +320,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "syllable",
+   "sense_full": "syllable",
    "parts": null,
    "unit_id": "r01:74.1",
    "count": 16
@@ -305,6 +332,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "province",
+   "sense_full": "province",
    "parts": null,
    "unit_id": "r01:56.1",
    "count": 13
@@ -315,7 +343,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "chapter or article (in book)",
+   "meaning": "chapter",
+   "sense_full": "chapter or article (in book)",
    "parts": null,
    "unit_id": "r01:73.1",
    "count": 8

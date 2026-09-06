@@ -7,7 +7,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "tell, tell about, relate, narrate, recount, describe",
+   "meaning": "tell, relate",
+   "sense_full": "tell, tell about, relate, narrate, recount, describe",
    "parts": "nārrō, nārrāre, nārrāvī, nārrātum",
    "unit_id": "r21:56.1",
    "count": 59
@@ -18,7 +19,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "garment, clothing, blanket",
+   "meaning": "clothing, garment",
+   "sense_full": "garment, clothing, blanket",
    "parts": null,
    "unit_id": "r21:5.1",
    "count": 37
@@ -29,7 +31,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "trust, entrust",
+   "meaning": "believe, trust",
+   "sense_full": "trust, entrust",
    "parts": "crēdō, crēdere, crēdidī, crēditum",
    "unit_id": "r21:97.1",
    "count": 30
@@ -41,20 +44,10 @@
    "gender": null,
    "decl": null,
    "meaning": "after",
+   "sense_full": "after",
    "parts": null,
    "unit_id": "r21:79.1",
    "count": 28
-  },
-  {
-   "lemma": "causā",
-   "dict": "causā, -ae f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 1,
-   "meaning": "cause, reason, motive",
-   "parts": null,
-   "unit_id": "r21:36.2",
-   "count": 24
   },
   {
    "lemma": "aliquis",
@@ -62,7 +55,8 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "anyone, anybody, anything",
+   "meaning": "someone, something",
+   "sense_full": "anyone, anybody, anything",
    "parts": null,
    "unit_id": "r21:63.2",
    "count": 21
@@ -73,20 +67,34 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "move, change, shift, alter, exchange, substitute (for)",
+   "meaning": "change, exchange",
+   "sense_full": "move, change, shift, alter, exchange, substitute (for)",
    "parts": "mūtō, mūtāre, mutavī, mutatum",
    "unit_id": "r21:57.1",
    "count": 21
   },
   {
    "lemma": "aiō",
-   "dict": "aiō, ait (defective: says)",
+   "dict": "aiō, ait",
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "say, assert",
-   "parts": "aiō, ait (defective: says)",
+   "meaning": "say",
+   "sense_full": "say, assert",
+   "parts": "aiō, ait",
    "unit_id": "r21:68.1",
+   "count": 18
+  },
+  {
+   "lemma": "causā",
+   "dict": "causā (+ gen.)",
+   "pos": "PREP",
+   "gender": null,
+   "decl": null,
+   "meaning": "for the sake of, because of",
+   "sense_full": "for sake or purpose of (preceded by genitive.), on account or behalf of, with a view to",
+   "parts": null,
+   "unit_id": "r21:36.2",
    "count": 18
   },
   {
@@ -95,7 +103,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "become acquainted with or aware of",
+   "meaning": "get to know, learn, recognize",
+   "sense_full": "become acquainted with or aware of",
    "parts": "cognōscō, cognōscere, cognōvī, cognitum",
    "unit_id": "r21:2.1",
    "count": 18
@@ -106,20 +115,22 @@
    "pos": "N",
    "gender": "f",
    "decl": 2,
-   "meaning": "ground, soil, earth, land, country",
+   "meaning": "ground, soil",
+   "sense_full": "ground, soil, earth, land, country",
    "parts": null,
    "unit_id": "r21:19.2",
    "count": 15
   },
   {
-   "lemma": "intrō",
-   "dict": "intrō -āre -āvī -ātum",
-   "pos": "V",
+   "lemma": "falsus",
+   "dict": "falsus, -a, -um",
+   "pos": "ADJ",
    "gender": null,
-   "decl": null,
-   "meaning": "enter, go into",
-   "parts": "intrō -āre -āvī -ātum",
-   "unit_id": "r21:66.1",
+   "decl": 1,
+   "meaning": "false, wrong",
+   "sense_full": "wrong, lying, fictitious, spurious, false, deceiving, feigned, deceptive",
+   "parts": null,
+   "unit_id": "r21:87.1",
    "count": 14
   },
   {
@@ -128,21 +139,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "lie, deceive, invent",
+   "meaning": "lie, tell a lie",
+   "sense_full": "lie, deceive, invent",
    "parts": "mentior, mentīrī, mentitus sum",
    "unit_id": "r21:87.1",
    "count": 14
   },
   {
-   "lemma": "falsus",
-   "dict": "falsus, -a, -um",
-   "pos": "ADJ",
+   "lemma": "dubitō",
+   "dict": "dubitō, dubitāre, dubitāvī, dubitatum",
+   "pos": "V",
    "gender": null,
-   "decl": 1,
-   "meaning": "wrong, lying, fictitious, spurious, false, deceiving, feigned, deceptive",
-   "parts": null,
-   "unit_id": "r21:87.1",
-   "count": 13
+   "decl": null,
+   "meaning": "doubt, hesitate",
+   "sense_full": "doubt",
+   "parts": "dubitō, dubitāre, dubitāvī, dubitatum",
+   "unit_id": "r21:129.1",
+   "count": 12
   },
   {
    "lemma": "vincō",
@@ -150,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "conquer, defeat, excel",
+   "meaning": "conquer, defeat",
+   "sense_full": "conquer, defeat, excel",
    "parts": "vincō, vincere, vīcī, victum",
    "unit_id": "r21:46.1",
    "count": 12
@@ -161,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "observe, see, witness",
+   "meaning": "catch sight of, see",
+   "sense_full": "observe, see, witness",
    "parts": "conspiciō, cōnspicere, cōnspexī, cōnspectum",
    "unit_id": "r21:63.2",
    "count": 11
@@ -173,6 +188,7 @@
    "gender": null,
    "decl": null,
    "meaning": "deceive",
+   "sense_full": "deceive",
    "parts": "fallō, fallere, fefellī, falsum",
    "unit_id": "r21:114.1",
    "count": 10
@@ -183,7 +199,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "small board",
+   "meaning": "small tablet",
+   "sense_full": "small board",
    "parts": null,
    "unit_id": "r21:109.1",
    "count": 10
@@ -194,7 +211,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "excuse, justify, explain",
+   "meaning": "excuse",
+   "sense_full": "excuse, justify, explain",
    "parts": "excūsō, excūsāre, excusavī, excusatum",
    "unit_id": "r21:45.1",
    "count": 8
@@ -206,6 +224,7 @@
    "gender": null,
    "decl": null,
    "meaning": "meanwhile, in the meantime",
+   "sense_full": "meanwhile, in the meantime",
    "parts": null,
    "unit_id": "r21:63.1",
    "count": 8
@@ -216,7 +235,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "pig, hog",
+   "meaning": "pig",
+   "sense_full": "pig, hog",
    "parts": null,
    "unit_id": "r21:49.1",
    "count": 7
@@ -227,20 +247,22 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "narrow, steep, close, confined",
+   "meaning": "narrow",
+   "sense_full": "narrow, steep, close, confined",
    "parts": null,
    "unit_id": "r21:16.1",
    "count": 6
   },
   {
-   "lemma": "dubitō",
-   "dict": "dubitō, dubitāre, dubitāvī, dubitatum",
-   "pos": "V",
+   "lemma": "indīgnus",
+   "dict": "indīgnus, -a, -um",
+   "pos": "ADJ",
    "gender": null,
-   "decl": null,
-   "meaning": "doubt",
-   "parts": "dubitō, dubitāre, dubitāvī, dubitatum",
-   "unit_id": "r21:129.1",
+   "decl": 1,
+   "meaning": "unworthy",
+   "sense_full": "unworthy, undeserving, undeserved",
+   "parts": null,
+   "unit_id": "r21:53.1",
    "count": 6
   },
   {
@@ -249,7 +271,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "clean, cleanly, nice, neat, elegant, delicate",
+   "meaning": "clean, neat",
+   "sense_full": "clean, cleanly, nice, neat, elegant, delicate",
    "parts": null,
    "unit_id": "r21:61.1",
    "count": 6
@@ -260,18 +283,20 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "strong, powerful",
+   "meaning": "strong",
+   "sense_full": "strong, powerful",
    "parts": null,
    "unit_id": "r21:48.1",
    "count": 5
   },
   {
    "lemma": "bōs",
-   "dict": "bōs, bovis m/f.",
+   "dict": "bōs, bovis m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
    "meaning": "ox",
+   "sense_full": "ox",
    "parts": null,
    "unit_id": "r21:31.1",
    "count": 4
@@ -282,7 +307,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "bright, clear, transparent",
+   "meaning": "white, shining, bright",
+   "sense_full": "bright, clear, transparent",
    "parts": null,
    "unit_id": "r21:3.1",
    "count": 4
@@ -294,31 +320,10 @@
    "gender": "n",
    "decl": 4,
    "meaning": "horn",
+   "sense_full": "horn",
    "parts": null,
    "unit_id": "r21:31.1",
    "count": 4
-  },
-  {
-   "lemma": "indīgnus",
-   "dict": "indīgnus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "unworthy, undeserving, undeserved",
-   "parts": null,
-   "unit_id": "r21:53.1",
-   "count": 4
-  },
-  {
-   "lemma": "pigerrimus",
-   "dict": "pigerrimus, -a, -um, ·, superlative, of, piger, pigra, pigrum",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "laziest, very lazy",
-   "parts": null,
-   "unit_id": "r21:129.1",
-   "count": 3
   },
   {
    "lemma": "cruor",
@@ -327,6 +332,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "blood",
+   "sense_full": "blood",
    "parts": null,
    "unit_id": "r21:59.1",
    "count": 2
@@ -337,21 +343,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be dirty or soiled",
+   "meaning": "be dirty",
+   "sense_full": "be dirty or soiled",
    "parts": "sordeō, sordēre, sorduī, sorditum",
    "unit_id": "r21:59.1",
    "count": 2
-  },
-  {
-   "lemma": "indīgnus",
-   "dict": "indīgnus, -a, -um, ·, superlative, indignissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "unworthy, undeserving, undeserved",
-   "parts": null,
-   "unit_id": "r21:54.1",
-   "count": 1
   }
  ]
 }

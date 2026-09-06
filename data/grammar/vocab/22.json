@@ -7,7 +7,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "doorkeeper, porter",
+   "meaning": "doorkeeper",
+   "sense_full": "doorkeeper, porter",
    "parts": null,
    "unit_id": "r22:4.1",
    "count": 40
@@ -18,7 +19,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "loosen, release, unbind, untie, free",
+   "meaning": "loosen, untie, release",
+   "sense_full": "loosen, release, unbind, untie, free",
    "parts": "solvō, solvere, solvī, solūtum",
    "unit_id": "r22:62.1",
    "count": 33
@@ -29,7 +31,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "letter-carrier, courier",
+   "meaning": "letter carrier",
+   "sense_full": "letter-carrier, courier",
    "parts": null,
    "unit_id": "r22:24.1",
    "count": 28
@@ -40,7 +43,8 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "that (of yours)",
+   "meaning": "that",
+   "sense_full": "that (of yours)",
    "parts": null,
    "unit_id": "r22:85.1",
    "count": 27
@@ -51,7 +55,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "remind, advise, warn",
+   "meaning": "warn, advise",
+   "sense_full": "remind, advise, warn",
    "parts": "moneō, monēre, monuī, monitum",
    "unit_id": "r22:60.3",
    "count": 20
@@ -63,6 +68,7 @@
    "gender": null,
    "decl": null,
    "meaning": "finally",
+   "sense_full": "finally",
    "parts": null,
    "unit_id": "r22:35.1",
    "count": 19
@@ -74,6 +80,7 @@
    "gender": null,
    "decl": null,
    "meaning": "as, just as",
+   "sense_full": "as, just as",
    "parts": null,
    "unit_id": "r22:16.1",
    "count": 17
@@ -84,7 +91,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "frighten, scare, terrify, deter",
+   "meaning": "frighten",
+   "sense_full": "frighten, scare, terrify, deter",
    "parts": "terreō, terrēre, terruī, territum",
    "unit_id": "r22:66.1",
    "count": 17
@@ -96,17 +104,19 @@
    "gender": null,
    "decl": null,
    "meaning": "come near, approach",
+   "sense_full": "come near, approach",
    "parts": "accēdō, accēdere, accessī, accessum",
    "unit_id": "r22:66.1",
    "count": 16
   },
   {
    "lemma": "prō",
-   "dict": "prō",
+   "dict": "prō (+ abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "on behalf of",
+   "meaning": "for, on behalf of, in front of",
+   "sense_full": "on behalf of",
    "parts": null,
    "unit_id": "r22:79.3",
    "count": 14
@@ -117,7 +127,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "fact, deed, act",
+   "meaning": "deed, act",
+   "sense_full": "fact, deed, act",
    "parts": null,
    "unit_id": "r22:13.1",
    "count": 13
@@ -128,7 +139,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "catch or capture",
+   "meaning": "seize, catch",
+   "sense_full": "catch or capture",
    "parts": "prehendō, prehendere, prehendī, prehensum",
    "unit_id": "r22:72.1",
    "count": 12
@@ -140,20 +152,22 @@
    "gender": "f",
    "decl": 1,
    "meaning": "chain",
+   "sense_full": "chain",
    "parts": null,
    "unit_id": "r22:9.1",
    "count": 11
   },
   {
    "lemma": "ferōx",
-   "dict": "ferōx, (gen., ferocis)",
+   "dict": "ferōx, gen. ferocis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "wild, bold",
+   "meaning": "fierce, wild",
+   "sense_full": "wild, bold",
    "parts": null,
    "unit_id": "r22:9.1",
-   "count": 10
+   "count": 11
   },
   {
    "lemma": "nūper",
@@ -162,6 +176,7 @@
    "gender": null,
    "decl": null,
    "meaning": "recently, not long ago",
+   "sense_full": "recently, not long ago",
    "parts": null,
    "unit_id": "r22:100.2",
    "count": 10
@@ -173,6 +188,7 @@
    "gender": null,
    "decl": null,
    "meaning": "afterwards",
+   "sense_full": "afterwards",
    "parts": null,
    "unit_id": "r22:41.1",
    "count": 10
@@ -183,7 +199,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "observe, witness",
+   "meaning": "think, consider",
+   "sense_full": "observe, witness",
    "parts": "arbitror, arbitrārī, arbitratus sum",
    "unit_id": "r22:93.1",
    "count": 9
@@ -194,7 +211,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "beat",
+   "meaning": "drive, push, drive out",
+   "sense_full": "beat",
    "parts": "pellō, pellere, pepulī, pulsum",
    "unit_id": "r22:84.1",
    "count": 9
@@ -206,6 +224,7 @@
    "gender": null,
    "decl": null,
    "meaning": "break",
+   "sense_full": "break",
    "parts": "rumpō, rumpere, rupī, ruptum",
    "unit_id": "r22:70.1",
    "count": 9
@@ -216,7 +235,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "of gold, golden",
+   "meaning": "golden, of gold",
+   "sense_full": "of gold, golden",
    "parts": null,
    "unit_id": "r22:16.2",
    "count": 8
@@ -227,7 +247,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "why not, in fact",
+   "meaning": "why not, indeed",
+   "sense_full": "why not, in fact",
    "parts": null,
    "unit_id": "r22:32.1",
    "count": 8
@@ -239,6 +260,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "salt",
+   "sense_full": "salt",
    "parts": null,
    "unit_id": "r22:70.1",
    "count": 8
@@ -249,7 +271,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "go/pass (from or away)",
+   "meaning": "go, yield, withdraw",
+   "sense_full": "go/pass (from or away)",
    "parts": "cēdō, cēdere, cessī, cessum",
    "unit_id": "r22:72.1",
    "count": 7
@@ -260,7 +283,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "likeness, image, appearance",
+   "meaning": "image, likeness",
+   "sense_full": "likeness, image, appearance",
    "parts": null,
    "unit_id": "r22:64.1",
    "count": 7
@@ -271,7 +295,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "tear, split, divide",
+   "meaning": "tear, split",
+   "sense_full": "tear, split, divide",
    "parts": "scindō, scindere, scidī, scissum",
    "unit_id": "r22:100.2",
    "count": 7
@@ -282,7 +307,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "tremble, shake, shudder at",
+   "meaning": "tremble, shake",
+   "sense_full": "tremble, shake, shudder at",
    "parts": "tremō, tremere, tremuī",
    "unit_id": "r22:84.1",
    "count": 7
@@ -293,18 +319,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "mock, deride, laugh at, make fun of",
+   "meaning": "mock, laugh at",
+   "sense_full": "mock, deride, laugh at, make fun of",
    "parts": "dērīdeō, dērīdēre, derisī, derisum",
    "unit_id": "r22:80.1",
    "count": 6
   },
   {
    "lemma": "extrā",
-   "dict": "extrā",
+   "dict": "extrā (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "outside of, beyond, without, beside",
+   "meaning": "outside, beyond",
+   "sense_full": "outside of, beyond, without, beside",
    "parts": null,
    "unit_id": "r22:7.1",
    "count": 6
@@ -315,9 +343,22 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "iron, made of iron",
+   "meaning": "of iron, iron",
+   "sense_full": "iron, made of iron",
    "parts": null,
    "unit_id": "r22:13.2",
+   "count": 6
+  },
+  {
+   "lemma": "foris",
+   "dict": "foris",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "out of doors, abroad",
+   "sense_full": "out of doors, abroad",
+   "parts": null,
+   "unit_id": "r22:2.1",
    "count": 6
   },
   {
@@ -327,6 +368,7 @@
    "gender": null,
    "decl": null,
    "meaning": "bite",
+   "sense_full": "bite",
    "parts": "mordeō, mordēre, momordī, morsum",
    "unit_id": "r22:60.2",
    "count": 6
@@ -337,7 +379,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "earlier, before, previously, first",
+   "meaning": "earlier, before",
+   "sense_full": "earlier, before, previously, first",
    "parts": null,
    "unit_id": "r22:42.1",
    "count": 6
@@ -348,7 +391,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "bind, fetter",
+   "meaning": "bind, tie up",
+   "sense_full": "bind, fetter",
    "parts": "vinciō, vincīre, vinxī, vinctum",
    "unit_id": "r22:9.1",
    "count": 6
@@ -359,7 +403,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "urge on, put to a gallop",
+   "meaning": "let in, admit",
+   "sense_full": "urge on, put to a gallop",
    "parts": "admittō, admittere, admisī, admissum",
    "unit_id": "r22:7.1",
    "count": 5
@@ -370,7 +415,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "before, before this",
+   "meaning": "before, earlier",
+   "sense_full": "before, before this",
    "parts": null,
    "unit_id": "r22:11.1",
    "count": 5
@@ -381,7 +427,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "guard, protect, preserve, watch over, keep safe",
+   "meaning": "guard, watch over",
+   "sense_full": "guard, protect, preserve, watch over, keep safe",
    "parts": "custodiō, cūstōdīre, custodivī, custoditum",
    "unit_id": "r22:4.1",
    "count": 5
@@ -392,7 +439,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "cover, coverlet",
+   "meaning": "cloak",
+   "sense_full": "cover, coverlet",
    "parts": null,
    "unit_id": "r22:72.1",
    "count": 5
@@ -403,7 +451,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hold back, restrain",
+   "meaning": "hold back, keep",
+   "sense_full": "hold back, restrain",
    "parts": "retineō, retinēre, retinuī, retentum",
    "unit_id": "r22:62.1",
    "count": 5
@@ -414,7 +463,8 @@
    "pos": "INTERJ",
    "gender": null,
    "decl": null,
-   "meaning": "hey!, ho!, ho there!, listen!",
+   "meaning": "hey!, ho!, ho there!",
+   "sense_full": "hey!, ho!, ho there!, listen!",
    "parts": null,
    "unit_id": "r22:26.1",
    "count": 4
@@ -425,7 +475,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "wooden, wood-",
+   "meaning": "wooden",
+   "sense_full": "wooden, wood-",
    "parts": null,
    "unit_id": "r22:19.1",
    "count": 4
@@ -436,7 +487,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "pause",
+   "meaning": "stop, halt, resist",
+   "sense_full": "pause",
    "parts": "resistō, resistere, restitī",
    "unit_id": "r22:62.1",
    "count": 4
@@ -447,7 +499,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "out of doors, abroad, forth, out",
+   "meaning": "out, outside",
+   "sense_full": "out of doors, abroad, forth, out",
    "parts": null,
    "unit_id": "r22:115.1",
    "count": 3
@@ -459,6 +512,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "wood",
+   "sense_full": "wood",
    "parts": null,
    "unit_id": "r22:18.1",
    "count": 3
@@ -469,7 +523,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "threshold, entrance",
+   "meaning": "threshold",
+   "sense_full": "threshold, entrance",
    "parts": null,
    "unit_id": "r22:1.2",
    "count": 3
@@ -480,7 +535,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "proceed",
+   "meaning": "go forward, advance",
+   "sense_full": "proceed",
    "parts": "prōcēdō, prōcēdere, processī, processum",
    "unit_id": "r22:75.2",
    "count": 3
@@ -491,7 +547,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "recede, go back, withdraw, ebb",
+   "meaning": "go back, withdraw",
+   "sense_full": "recede, go back, withdraw, ebb",
    "parts": "recēdō, recēdere, recessī, recessum",
    "unit_id": "r22:75.2",
    "count": 3
@@ -502,7 +559,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "ask, inquire",
+   "meaning": "keep asking",
+   "sense_full": "ask, inquire",
    "parts": "rogitō, rogitāre, rogitavī, rogitatum",
    "unit_id": "r22:40.1",
    "count": 3
@@ -513,7 +571,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "one may know, certainly",
+   "meaning": "of course, naturally",
+   "sense_full": "one may know, certainly",
    "parts": null,
    "unit_id": "r22:110.1",
    "count": 3
@@ -525,6 +584,7 @@
    "gender": "m",
    "decl": 4,
    "meaning": "hearing",
+   "sense_full": "hearing",
    "parts": null,
    "unit_id": "r22:45.3",
    "count": 2
@@ -535,7 +595,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "gold (metal or color), gold money, riches",
+   "meaning": "gold",
+   "sense_full": "gold (metal or color), gold money, riches",
    "parts": null,
    "unit_id": "r22:15.1",
    "count": 2
@@ -547,6 +608,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "hinge",
+   "sense_full": "hinge",
    "parts": null,
    "unit_id": "r22:2.1",
    "count": 2
@@ -557,40 +619,32 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "speech",
+   "meaning": "saying, word",
+   "sense_full": "speech",
    "parts": null,
    "unit_id": "r22:43.1",
    "count": 2
   },
   {
    "lemma": "faber",
-   "dict": "faber, fabra, fabrum",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "skillful",
+   "dict": "faber, fabrī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "craftsman, smith",
+   "sense_full": "workman, artisan",
    "parts": null,
    "unit_id": "r22:19.1",
    "count": 2
   },
   {
-   "lemma": "lavō",
-   "dict": "lavō, lavāre, lavī, lavātum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "wash, bathe",
-   "parts": "lavō, lavāre, lavī, lavātum",
-   "unit_id": "r22:49.1",
-   "count": 2
-  },
-  {
-   "lemma": "propius",
-   "dict": "propius (comparative of prope)",
+   "lemma": "prope",
+   "dict": "prope",
    "pos": "ADV",
    "gender": null,
    "decl": null,
    "meaning": "near, nearly",
+   "sense_full": "near, nearly",
    "parts": null,
    "unit_id": "r22:66.1",
    "count": 2
@@ -601,7 +655,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "roar",
+   "meaning": "growl, roar",
+   "sense_full": "roar",
    "parts": "fremō, fremere, fremuī, fremitum",
    "unit_id": "r22:75.2",
    "count": 1

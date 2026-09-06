@@ -3,11 +3,12 @@
  "words": [
   {
    "lemma": "īnfāns",
-   "dict": "īnfāns, īnfantis m/f.",
+   "dict": "īnfāns, īnfantis m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
-   "meaning": "infant",
+   "meaning": "baby, infant",
+   "sense_full": "infant",
    "parts": null,
    "unit_id": "r20:1.1",
    "count": 93
@@ -19,6 +20,7 @@
    "gender": null,
    "decl": null,
    "meaning": "not want, be unwilling",
+   "sense_full": "not want, be unwilling",
    "parts": "nōlō, nōlle, nōluī",
    "unit_id": "r20:16.1",
    "count": 80
@@ -29,7 +31,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "arrange, see, attend to",
+   "meaning": "look after, care for",
+   "sense_full": "arrange, see, attend to",
    "parts": "cūrō, cūrāre, cūrāvī, cūrātum",
    "unit_id": "r20:77.1",
    "count": 34
@@ -40,7 +43,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "duty, obligation",
+   "meaning": "duty",
+   "sense_full": "duty, obligation",
    "parts": null,
    "unit_id": "r20:82.1",
    "count": 22
@@ -51,21 +55,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "owe",
+   "meaning": "owe, ought",
+   "sense_full": "owe",
    "parts": "dēbeō, dēbēre, debuī, dēbitum",
    "unit_id": "r20:81.2",
    "count": 21
-  },
-  {
-   "lemma": "parvulus",
-   "dict": "parvulus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "very small, very young",
-   "parts": null,
-   "unit_id": "r20:1.1",
-   "count": 18
   },
   {
    "lemma": "revertō",
@@ -73,9 +67,34 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "turn back, go back, return",
+   "meaning": "turn back, return",
+   "sense_full": "turn back, go back, return",
    "parts": "revertō, revertere, revertī",
    "unit_id": "r20:123.1",
+   "count": 19
+  },
+  {
+   "lemma": "maneō",
+   "dict": "maneō, manēre, mānsī, mānsum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "remain, stay",
+   "sense_full": "remain, stay, abide",
+   "parts": "maneō, manēre, mānsī, mānsum",
+   "unit_id": "r20:70.1",
+   "count": 18
+  },
+  {
+   "lemma": "parvulus",
+   "dict": "parvulus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "very small, tiny",
+   "sense_full": "very small, very young",
+   "parts": null,
+   "unit_id": "r20:1.1",
    "count": 18
   },
   {
@@ -85,6 +104,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "sleep",
+   "sense_full": "sleep",
    "parts": null,
    "unit_id": "r20:2.2",
    "count": 17
@@ -96,6 +116,7 @@
    "gender": null,
    "decl": null,
    "meaning": "go on, proceed",
+   "sense_full": "go on, proceed",
    "parts": "pergō, pergere, perrēxī, perrectum",
    "unit_id": "r20:70.2",
    "count": 16
@@ -107,6 +128,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "woman",
+   "sense_full": "woman",
    "parts": null,
    "unit_id": "r20:12.1",
    "count": 15
@@ -118,6 +140,7 @@
    "gender": null,
    "decl": null,
    "meaning": "more, rather",
+   "sense_full": "more, rather",
    "parts": null,
    "unit_id": "r20:60.1",
    "count": 14
@@ -128,7 +151,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "demand, claim",
+   "meaning": "demand, ask",
+   "sense_full": "demand, claim",
    "parts": "postulō, postulāre, postulāvī, postulatum",
    "unit_id": "r20:6.1",
    "count": 13
@@ -139,7 +163,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "cradle (usually plural)",
+   "meaning": "cradle",
+   "sense_full": "cradle (usually plural)",
    "parts": null,
    "unit_id": "r20:2.1",
    "count": 12
@@ -150,7 +175,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "soon, next (time or position)",
+   "meaning": "soon, next",
+   "sense_full": "soon, next (time or position)",
    "parts": null,
    "unit_id": "r20:34.1",
    "count": 12
@@ -161,7 +187,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "foreign",
+   "meaning": "another's, foreign",
+   "sense_full": "foreign",
    "parts": null,
    "unit_id": "r20:14.1",
    "count": 11
@@ -172,7 +199,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "feed, nourish, rear, nurse, suckle",
+   "meaning": "feed, nourish",
+   "sense_full": "feed, nourish, rear, nurse, suckle",
    "parts": "alō, alere, aluī, alitum",
    "unit_id": "r20:12.1",
    "count": 11
@@ -183,7 +211,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be without, absent from, devoid of, free from",
+   "meaning": "lack, be without",
+   "sense_full": "be without, absent from, devoid of, free from",
    "parts": "careō, carēre, caruī, caritum",
    "unit_id": "r20:2.2",
    "count": 11
@@ -194,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "utter cries of distress, wail, squall",
+   "meaning": "wail, cry",
+   "sense_full": "utter cries of distress, wail, squall",
    "parts": "vagiō, vāgīre, vagivī",
    "unit_id": "r20:7.1",
    "count": 11
@@ -205,7 +235,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "opposite, directly facing, ranged against",
+   "meaning": "facing, opposite",
+   "sense_full": "opposite, directly facing, ranged against",
    "parts": null,
    "unit_id": "r20:64.1",
    "count": 10
@@ -217,6 +248,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "nurse",
+   "sense_full": "nurse",
    "parts": null,
    "unit_id": "r20:14.1",
    "count": 10
@@ -227,7 +259,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "talk, speak to, with",
+   "meaning": "talk with, converse",
+   "sense_full": "talk, speak to, with",
    "parts": "colloquor, colloquī, collocutus sum",
    "unit_id": "r20:47.1",
    "count": 8
@@ -239,6 +272,7 @@
    "gender": null,
    "decl": null,
    "meaning": "tomorrow",
+   "sense_full": "tomorrow",
    "parts": null,
    "unit_id": "r20:128.1",
    "count": 8
@@ -249,7 +283,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "it is fitting, right, seemly, suitable",
+   "meaning": "it is fitting, it is proper",
+   "sense_full": "it is fitting, right, seemly, suitable",
    "parts": "decet, decēre, decuit (impersonal)",
    "unit_id": "r20:157.1",
    "count": 8
@@ -260,7 +295,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "damp, moist, dank, wet, humid",
+   "meaning": "damp, wet",
+   "sense_full": "damp, moist, dank, wet, humid",
    "parts": null,
    "unit_id": "r20:108.1",
    "count": 8
@@ -271,7 +307,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "necessary, needed, essential, indispensable",
+   "meaning": "necessary",
+   "sense_full": "necessary, needed, essential, indispensable",
    "parts": null,
    "unit_id": "r20:2.2",
    "count": 7
@@ -282,7 +319,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "love, hold dear",
+   "meaning": "love, be fond of",
+   "sense_full": "love, hold dear",
    "parts": "dīligō, dīligere, dilexī, dilectum",
    "unit_id": "r20:141.1",
    "count": 6
@@ -294,6 +332,7 @@
    "gender": "m",
    "decl": 4,
    "meaning": "step",
+   "sense_full": "step",
    "parts": null,
    "unit_id": "r20:33.1",
    "count": 6
@@ -305,6 +344,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "silence",
+   "sense_full": "silence",
    "parts": null,
    "unit_id": "r20:116.1",
    "count": 6
@@ -315,7 +355,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be silent, not to speak (about)",
+   "meaning": "be silent",
+   "sense_full": "be silent, not to speak (about)",
    "parts": "sileō, silēre, siluī",
    "unit_id": "r20:115.1",
    "count": 6
@@ -327,8 +368,21 @@
    "gender": "f",
    "decl": 1,
    "meaning": "little daughter",
+   "sense_full": "little daughter",
    "parts": null,
    "unit_id": "r20:56.2",
+   "count": 5
+  },
+  {
+   "lemma": "lac",
+   "dict": "lac, lactis n.",
+   "pos": "N",
+   "gender": "n",
+   "decl": 3,
+   "meaning": "milk",
+   "sense_full": "milk",
+   "parts": null,
+   "unit_id": "r20:8.2",
    "count": 5
   },
   {
@@ -337,7 +391,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "more, too much, more than enough",
+   "meaning": "more, too much",
+   "sense_full": "more, too much, more than enough",
    "parts": null,
    "unit_id": "r20:37.1",
    "count": 5
@@ -348,7 +403,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "conversation, discussion",
+   "meaning": "conversation, talk",
+   "sense_full": "conversation, discussion",
    "parts": null,
    "unit_id": "r20:50.1",
    "count": 5
@@ -360,31 +416,10 @@
    "gender": null,
    "decl": null,
    "meaning": "run to meet",
+   "sense_full": "run to meet",
    "parts": "occurrō, occurrere, occucurrī, occursum",
    "unit_id": "r20:103.1",
    "count": 4
-  },
-  {
-   "lemma": "lacte",
-   "dict": "lacte, -is n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 3,
-   "meaning": "milk",
-   "parts": null,
-   "unit_id": "r20:10.1",
-   "count": 3
-  },
-  {
-   "lemma": "lac",
-   "dict": "lac, lactis n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 3,
-   "meaning": "milk",
-   "parts": null,
-   "unit_id": "r20:8.2",
-   "count": 2
   },
   {
    "lemma": "colloquium",
@@ -392,7 +427,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "talk, conversation",
+   "meaning": "conversation",
+   "sense_full": "talk, conversation",
    "parts": null,
    "unit_id": "r20:71.1",
    "count": 1
@@ -403,7 +439,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "speak, talk",
+   "meaning": "speak, say",
+   "sense_full": "speak, talk",
    "parts": "for, fārī, fātus sum",
    "unit_id": "r20:1.1",
    "count": 1
@@ -414,7 +451,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "maternal, motherly, of a mother",
+   "meaning": "motherly, of a mother",
+   "sense_full": "maternal, motherly, of a mother",
    "parts": null,
    "unit_id": "r20:39.1",
    "count": 1
@@ -425,7 +463,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "pass/go by",
+   "meaning": "pass by, go past",
+   "sense_full": "pass/go by",
    "parts": "praetereō, praeterīre, praeteriviī, praeteritum",
    "unit_id": "r20:48.1",
    "count": 1

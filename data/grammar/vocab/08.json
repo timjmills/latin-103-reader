@@ -7,21 +7,23 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "that (over there)",
+   "meaning": "that",
+   "sense_full": "that (over there)",
    "parts": null,
    "unit_id": "r08:41.2",
    "count": 180
   },
   {
    "lemma": "alius",
-   "dict": "alius, -a, -ud, (gen., -īus)",
+   "dict": "alius, -a, -ud (gen. -īus)",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
    "meaning": "other, another",
+   "sense_full": "other, another",
    "parts": null,
    "unit_id": "r08:5.1",
-   "count": 118
+   "count": 119
   },
   {
    "lemma": "ānulus",
@@ -29,7 +31,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "ring, signet ring",
+   "meaning": "ring",
+   "sense_full": "ring, signet ring",
    "parts": null,
    "unit_id": "r08:7.2",
    "count": 68
@@ -40,7 +43,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "look, gaze on, at, see, observe, behold, regard",
+   "meaning": "look at, catch sight of",
+   "sense_full": "look, gaze on, at, see, observe, behold, regard",
    "parts": "aspiciō, aspicere, aspexī, aspectum",
    "unit_id": "r08:14.1",
    "count": 43
@@ -51,7 +55,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "equipment",
+   "meaning": "ornament, jewel",
+   "sense_full": "equipment",
    "parts": null,
    "unit_id": "r08:7.1",
    "count": 34
@@ -62,7 +67,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "or, or rather or else",
+   "meaning": "or",
+   "sense_full": "or, or rather or else",
    "parts": null,
    "unit_id": "r08:14.1",
    "count": 33
@@ -73,7 +79,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "proclaim, declare",
+   "meaning": "shout, cry out",
+   "sense_full": "proclaim, declare",
    "parts": "clāmō, clāmāre, clāmāvī, clamatum",
    "unit_id": "r08:36.1",
    "count": 28
@@ -85,6 +92,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "finger",
+   "sense_full": "finger",
    "parts": null,
    "unit_id": "r08:21.1",
    "count": 27
@@ -96,6 +104,7 @@
    "gender": null,
    "decl": null,
    "meaning": "buy",
+   "sense_full": "buy",
    "parts": "emō, emere, emī, emptum",
    "unit_id": "r08:13.1",
    "count": 26
@@ -106,7 +115,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "very much",
+   "meaning": "too much, too",
+   "sense_full": "very much",
    "parts": null,
    "unit_id": "r08:98.1",
    "count": 26
@@ -117,7 +127,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "depart, go away",
+   "meaning": "go away, depart",
+   "sense_full": "depart, go away",
    "parts": "abeō, abīre, abiī, abitum",
    "unit_id": "r08:16.1",
    "count": 24
@@ -128,7 +139,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "take, grasp, receive, accept, undertake",
+   "meaning": "receive, accept",
+   "sense_full": "take, grasp, receive, accept, undertake",
    "parts": "accipiō, accipere, accepī, acceptum",
    "unit_id": "r08:18.1",
    "count": 24
@@ -139,7 +151,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "bud",
+   "meaning": "jewel, gem",
+   "sense_full": "bud",
    "parts": null,
    "unit_id": "r08:1.1",
    "count": 24
@@ -151,6 +164,7 @@
    "gender": null,
    "decl": null,
    "meaning": "show",
+   "sense_full": "show",
    "parts": "ostendō, ostendere, ostendī, ostensum",
    "unit_id": "r08:45.1",
    "count": 23
@@ -161,7 +175,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "tavern, inn",
+   "meaning": "shop, stall",
+   "sense_full": "tavern, inn",
    "parts": null,
    "unit_id": "r08:1.1",
    "count": 22
@@ -173,6 +188,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "price, value, worth",
+   "sense_full": "price, value, worth",
    "parts": null,
    "unit_id": "r08:62.1",
    "count": 21
@@ -184,6 +200,7 @@
    "gender": null,
    "decl": null,
    "meaning": "enough, adequately",
+   "sense_full": "enough, adequately",
    "parts": null,
    "unit_id": "r08:95.1",
    "count": 20
@@ -195,6 +212,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "pearl",
+   "sense_full": "pearl",
    "parts": null,
    "unit_id": "r08:1.1",
    "count": 18
@@ -205,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "equip",
+   "meaning": "adorn, decorate",
+   "sense_full": "equip",
    "parts": "ōrnō, ōrnāre, ornavī, ornatum",
    "unit_id": "r08:22.1",
    "count": 16
@@ -216,7 +235,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "middle, center",
+   "meaning": "middle",
+   "sense_full": "middle, center",
    "parts": null,
    "unit_id": "r08:120.1",
    "count": 15
@@ -227,7 +247,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "how great",
+   "meaning": "how great, how much",
+   "sense_full": "how great",
    "parts": null,
    "unit_id": "r08:72.2",
    "count": 15
@@ -238,7 +259,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "stop, stand, halt, cease",
+   "meaning": "stop, halt",
+   "sense_full": "stop, stand, halt, cease",
    "parts": "cōnsistō, cōnsistere, constitī, constitum",
    "unit_id": "r08:11.1",
    "count": 13
@@ -250,6 +272,7 @@
    "gender": null,
    "decl": null,
    "meaning": "sell",
+   "sense_full": "sell",
    "parts": "vēndō, vēndere, vendidī, venditum",
    "unit_id": "r08:4.1",
    "count": 13
@@ -260,7 +283,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "agree, correspond, fit, be correct",
+   "meaning": "cost, stand firm",
+   "sense_full": "agree, correspond, fit, be correct",
    "parts": "cōnstō, cōnstāre, constitī, constatum",
    "unit_id": "r08:56.1",
    "count": 12
@@ -271,7 +295,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "hill, hillock, eminence, hill-top",
+   "meaning": "hill",
+   "sense_full": "hill, hillock, eminence, hill-top",
    "parts": null,
    "unit_id": "r08:22.1",
    "count": 11
@@ -282,7 +307,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be appropriate to, fit, be correctly shaped or consistent",
+   "meaning": "fit, suit, be right",
+   "sense_full": "be appropriate to, fit, be correctly shaped or consistent",
    "parts": "conueniō, convenīre, convenī, conuentum",
    "unit_id": "r08:81.1",
    "count": 11
@@ -294,6 +320,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "neck",
+   "sense_full": "neck",
    "parts": null,
    "unit_id": "r08:21.1",
    "count": 10
@@ -304,7 +331,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "show",
+   "meaning": "show, point out",
+   "sense_full": "show",
    "parts": "mōnstrō, mōnstrāre, monstravī, monstratum",
    "unit_id": "r08:42.1",
    "count": 8
@@ -316,6 +344,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "rich, wealthy",
+   "sense_full": "rich, wealthy",
    "parts": null,
    "unit_id": "r08:20.1",
    "count": 8
@@ -327,6 +356,7 @@
    "gender": null,
    "decl": null,
    "meaning": "bud, come into bud, put out buds",
+   "sense_full": "bud, come into bud, put out buds",
    "parts": "gemmō, gemmāre, gemmavī, gemmātum",
    "unit_id": "r08:58.1",
    "count": 5
@@ -337,7 +367,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "string, line (plumb or fishing)",
+   "meaning": "string, line",
+   "sense_full": "string, line (plumb or fishing)",
    "parts": null,
    "unit_id": "r08:8.1",
    "count": 5
@@ -348,7 +379,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "keeper of a taberna, shopkeeper, tradesman",
+   "meaning": "shopkeeper",
+   "sense_full": "keeper of a taberna, shopkeeper, tradesman",
    "parts": null,
    "unit_id": "r08:3.1",
    "count": 5
@@ -359,7 +391,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "middle, middle of, mid",
+   "meaning": "middle, in the middle of",
+   "sense_full": "middle, middle of, mid",
    "parts": null,
    "unit_id": "r08:123.2",
    "count": 4

@@ -3,11 +3,12 @@
  "words": [
   {
    "lemma": "ob",
-   "dict": "ob",
+   "dict": "ob (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "on account of, for the sake of, for",
+   "meaning": "because of, on account of",
+   "sense_full": "on account of, for the sake of, for",
    "parts": null,
    "unit_id": "r23:36.2",
    "count": 22
@@ -19,20 +20,10 @@
    "gender": null,
    "decl": null,
    "meaning": "ever, at any time",
+   "sense_full": "ever, at any time",
    "parts": null,
    "unit_id": "r23:25.1",
    "count": 21
-  },
-  {
-   "lemma": "inclūdō",
-   "dict": "inclūdō, inclūdere, inclusī, inclusum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "shut up/in, imprison, enclose",
-   "parts": "inclūdō, inclūdere, inclusī, inclusum",
-   "unit_id": "r23:101.1",
-   "count": 16
   },
   {
    "lemma": "plānus",
@@ -40,9 +31,22 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "level, flat",
+   "meaning": "flat, level",
+   "sense_full": "level, flat",
    "parts": null,
    "unit_id": "r23:51.1",
+   "count": 17
+  },
+  {
+   "lemma": "inclūdō",
+   "dict": "inclūdō, inclūdere, inclusī, inclusum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "shut in, enclose",
+   "sense_full": "shut up/in, imprison, enclose",
+   "parts": "inclūdō, inclūdere, inclusī, inclusum",
+   "unit_id": "r23:101.1",
    "count": 16
   },
   {
@@ -52,6 +56,7 @@
    "gender": null,
    "decl": null,
    "meaning": "promise",
+   "sense_full": "promise",
    "parts": "prōmittō, prōmittere, promisī, promissum",
    "unit_id": "r23:89.1",
    "count": 16
@@ -63,6 +68,7 @@
    "gender": null,
    "decl": null,
    "meaning": "yesterday",
+   "sense_full": "yesterday",
    "parts": null,
    "unit_id": "r23:104.1",
    "count": 15
@@ -73,7 +79,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "earn",
+   "meaning": "earn, deserve",
+   "sense_full": "earn",
    "parts": "mereō, merēre, meruī, meritum",
    "unit_id": "r23:44.1",
    "count": 14
@@ -84,7 +91,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "it shames, make ashamed",
+   "meaning": "it shames, one is ashamed",
+   "sense_full": "it shames, make ashamed",
    "parts": "pudet, pudēre (impersonal)",
    "unit_id": "r23:79.1",
    "count": 14
@@ -95,7 +103,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "after this, in the future, hereafter, from now on",
+   "meaning": "after this, in the future, hereafter",
+   "sense_full": "after this, in the future, hereafter, from now on",
    "parts": null,
    "unit_id": "r23:84.1",
    "count": 12
@@ -106,7 +115,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "deny, refuse",
+   "meaning": "deny, say no",
+   "sense_full": "deny, refuse",
    "parts": "negō, negāre, negavī, negatum",
    "unit_id": "r23:66.1",
    "count": 11
@@ -117,7 +127,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be/look pale",
+   "meaning": "be pale",
+   "sense_full": "be/look pale",
    "parts": "palleō, pallēre, palluī",
    "unit_id": "r23:36.1",
    "count": 11
@@ -129,6 +140,7 @@
    "gender": null,
    "decl": null,
    "meaning": "perhaps, possibly",
+   "sense_full": "perhaps, possibly",
    "parts": null,
    "unit_id": "r23:18.1",
    "count": 10
@@ -139,7 +151,8 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "who, what, which?, what, which one, man, person? what kind or type of?",
+   "meaning": "who then?, what then?",
+   "sense_full": "who, what, which?, what, which one, man, person? what kind or type of?",
    "parts": null,
    "unit_id": "r23:6.1",
    "count": 8
@@ -150,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be red, become red",
+   "meaning": "be red, blush",
+   "sense_full": "be red, become red",
    "parts": "rubeō, rubēre",
    "unit_id": "r23:81.1",
    "count": 8
@@ -161,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hand over, surrender",
+   "meaning": "hand over",
+   "sense_full": "hand over, surrender",
    "parts": "trādō, trādere, tradidī, traditum",
    "unit_id": "r23:4.1",
    "count": 8
@@ -172,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "admit, confess (with the accusative)",
+   "meaning": "confess, admit",
+   "sense_full": "admit, confess (with the accusative)",
    "parts": "fateor, fatērī, fassus sum",
    "unit_id": "r23:67.1",
    "count": 7
@@ -183,10 +199,23 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "from here, from this source or cause",
+   "meaning": "from here, hence",
+   "sense_full": "from here, from this source or cause",
    "parts": null,
    "unit_id": "r23:11.1",
    "count": 7
+  },
+  {
+   "lemma": "causa",
+   "dict": "causa, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "cause, reason",
+   "sense_full": "cause, reason, motive",
+   "parts": null,
+   "unit_id": "r23:140.1",
+   "count": 6
   },
   {
    "lemma": "perdō",
@@ -194,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "ruin, destroy",
+   "meaning": "destroy, lose",
+   "sense_full": "ruin, destroy",
    "parts": "perdō, perdere, perdidī, perditum",
    "unit_id": "r23:72.1",
    "count": 6
@@ -206,6 +236,7 @@
    "gender": "m",
    "decl": 4,
    "meaning": "face, expression",
+   "sense_full": "face, expression",
    "parts": null,
    "unit_id": "r23:34.1",
    "count": 5
@@ -216,18 +247,20 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "door-key",
+   "meaning": "key",
+   "sense_full": "door-key",
    "parts": null,
    "unit_id": "r23:102.1",
    "count": 4
   },
   {
    "lemma": "comes",
-   "dict": "comes, comitis m/f.",
+   "dict": "comes, comitis m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
-   "meaning": "comrade, companion, associate, partner",
+   "meaning": "companion",
+   "sense_full": "comrade, companion, associate, partner",
    "parts": null,
    "unit_id": "r23:107.1",
    "count": 4
@@ -238,7 +271,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "send away or off",
+   "meaning": "send away, dismiss",
+   "sense_full": "send away or off",
    "parts": "dīmittō, dīmittere, dimisī, dimissum",
    "unit_id": "r23:12.1",
    "count": 4
@@ -250,6 +284,7 @@
    "gender": null,
    "decl": null,
    "meaning": "from there, from that place",
+   "sense_full": "from there, from that place",
    "parts": null,
    "unit_id": "r23:3.2",
    "count": 4
@@ -260,7 +295,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "untouched, entire, whole, complete",
+   "meaning": "whole, untouched",
+   "sense_full": "untouched, entire, whole, complete",
    "parts": null,
    "unit_id": "r23:19.2",
    "count": 4
@@ -271,7 +307,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "pale, yellow-green",
+   "meaning": "pale",
+   "sense_full": "pale, yellow-green",
    "parts": null,
    "unit_id": "r23:34.1",
    "count": 4
@@ -282,7 +319,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "turn away from or aside, divert, rout",
+   "meaning": "turn away, avert",
+   "sense_full": "turn away from or aside, divert, rout",
    "parts": "āvertō, āvertere, āvertī, aversum",
    "unit_id": "r23:51.1",
    "count": 3
@@ -293,7 +331,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "join as an attendant, guard or escort",
+   "meaning": "accompany",
+   "sense_full": "join as an attendant, guard or escort",
    "parts": "comitor, comitārī, comitatus sum",
    "unit_id": "r23:104.1",
    "count": 3
@@ -304,7 +343,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "praise, approval, merit",
+   "meaning": "praise",
+   "sense_full": "praise, approval, merit",
    "parts": null,
    "unit_id": "r23:48.1",
    "count": 3
@@ -315,7 +355,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "obey, be subject or obedient to",
+   "meaning": "obey",
+   "sense_full": "obey, be subject or obedient to",
    "parts": "pareō, parēre, paruī, pāritum",
    "unit_id": "r23:84.1",
    "count": 3
@@ -326,7 +367,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "secure, maintain, sustain",
+   "meaning": "hold together, contain, keep",
+   "sense_full": "secure, maintain, sustain",
    "parts": "contineō, continēre, continuī, contentum",
    "unit_id": "r23:18.1",
    "count": 2
@@ -337,7 +379,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "write on/in",
+   "meaning": "write on, inscribe",
+   "sense_full": "write on/in",
    "parts": "inscribō, inscribere, inscripsī, inscriptum",
    "unit_id": "r23:63.1",
    "count": 2
@@ -348,18 +391,20 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "decency, shame",
+   "meaning": "shame, modesty",
+   "sense_full": "decency, shame",
    "parts": null,
    "unit_id": "r23:81.1",
    "count": 2
   },
   {
    "lemma": "superus",
-   "dict": "superus, -a, -um, ·, comparative, superior,, superius",
+   "dict": "superus, -a, -um",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "above, high",
+   "meaning": "upper, above",
+   "sense_full": "above, high",
    "parts": null,
    "unit_id": "r23:63.1",
    "count": 2
@@ -370,7 +415,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "lop or cut off, prune, shorten",
+   "meaning": "cut off",
+   "sense_full": "lop or cut off, prune, shorten",
    "parts": "amputō, amputāre, amputavī, amputatum",
    "unit_id": "r23:25.1",
    "count": 1
@@ -381,20 +427,10 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "before this time, up til now",
+   "meaning": "before this, previously",
+   "sense_full": "before this time, up til now",
    "parts": null,
    "unit_id": "r23:89.1",
-   "count": 1
-  },
-  {
-   "lemma": "planus",
-   "dict": "planus, -a, -um, ·, superlative, plānissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "level, flat",
-   "parts": null,
-   "unit_id": "r23:53.1",
    "count": 1
   },
   {
@@ -403,7 +439,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "lash, whip",
+   "meaning": "lash, blow",
+   "sense_full": "lash, whip",
    "parts": null,
    "unit_id": "r23:123.1",
    "count": 1

@@ -7,7 +7,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "teacher, tutor, master, expert, chief",
+   "meaning": "teacher, master",
+   "sense_full": "teacher, tutor, master, expert, chief",
    "parts": null,
    "unit_id": "r15:4.1",
    "count": 173
@@ -19,6 +20,7 @@
    "gender": null,
    "decl": null,
    "meaning": "then, next",
+   "sense_full": "then, next",
    "parts": null,
    "unit_id": "r15:27.1",
    "count": 85
@@ -29,7 +31,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "student, pupil, trainee",
+   "meaning": "pupil, student",
+   "sense_full": "student, pupil, trainee",
    "parts": null,
    "unit_id": "r15:5.1",
    "count": 72
@@ -40,7 +43,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "but, but on the other hand",
+   "meaning": "but",
+   "sense_full": "but, but on the other hand",
    "parts": null,
    "unit_id": "r15:25.1",
    "count": 67
@@ -51,7 +55,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "if, if only",
+   "meaning": "if",
+   "sense_full": "if, if only",
    "parts": null,
    "unit_id": "r15:83.1",
    "count": 64
@@ -62,10 +67,11 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "you (more than one)",
+   "meaning": "you",
+   "sense_full": "you (more than one)",
    "parts": null,
    "unit_id": "r15:51.1",
-   "count": 47
+   "count": 48
   },
   {
    "lemma": "statim",
@@ -74,9 +80,22 @@
    "gender": null,
    "decl": null,
    "meaning": "at once, immediately",
+   "sense_full": "at once, immediately",
    "parts": null,
    "unit_id": "r15:27.1",
    "count": 38
+  },
+  {
+   "lemma": "domūs",
+   "dict": "domūs, -ūs f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 4,
+   "meaning": "house, home",
+   "sense_full": "house, building",
+   "parts": null,
+   "unit_id": "r15:81.1",
+   "count": 37
   },
   {
    "lemma": "recitō",
@@ -85,6 +104,7 @@
    "gender": null,
    "decl": null,
    "meaning": "read aloud, recite",
+   "sense_full": "read aloud, recite",
    "parts": "recitō, recitāre, recitavī, recitatum",
    "unit_id": "r15:96.2",
    "count": 33
@@ -95,7 +115,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "if not",
+   "meaning": "if not, unless",
+   "sense_full": "if not",
    "parts": null,
    "unit_id": "r15:91.1",
    "count": 30
@@ -106,21 +127,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "return, go back, give back",
+   "meaning": "go back, return",
+   "sense_full": "return, go back, give back",
    "parts": "redeō, redīre, rediī, reditum",
    "unit_id": "r15:66.1",
    "count": 30
-  },
-  {
-   "lemma": "domūs",
-   "dict": "domūs, -ūs f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 4,
-   "meaning": "house, building",
-   "parts": null,
-   "unit_id": "r15:81.1",
-   "count": 28
   },
   {
    "lemma": "iānua",
@@ -128,9 +139,22 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "door, entrance",
+   "meaning": "door",
+   "sense_full": "door, entrance",
    "parts": null,
    "unit_id": "r15:27.1",
+   "count": 26
+  },
+  {
+   "lemma": "sevērus",
+   "dict": "sevērus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "strict, severe",
+   "sense_full": "stern, strict, severe",
+   "parts": null,
+   "unit_id": "r15:5.1",
    "count": 26
   },
   {
@@ -139,21 +163,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "return",
+   "meaning": "give back, return",
+   "sense_full": "return",
    "parts": "reddō, reddere, reddidī, redditum",
    "unit_id": "r15:88.1",
    "count": 24
-  },
-  {
-   "lemma": "sevērus",
-   "dict": "sevērus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "stern, strict, severe",
-   "parts": null,
-   "unit_id": "r15:5.1",
-   "count": 22
   },
   {
    "lemma": "lūdus",
@@ -161,7 +175,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "game, play, sport, pastime, entertainment, fun",
+   "meaning": "school, game",
+   "sense_full": "game, play, sport, pastime, entertainment, fun",
    "parts": null,
    "unit_id": "r15:2.1",
    "count": 19
@@ -172,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "sit down/be seated",
+   "meaning": "sit down",
+   "sense_full": "sit down/be seated",
    "parts": "cōnsīdō, cōnsīdere, consedī, consessum",
    "unit_id": "r15:17.2",
    "count": 17
@@ -183,7 +199,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "it is permitted, one may",
+   "meaning": "it is allowed, one may",
+   "sense_full": "it is permitted, one may",
    "parts": "licet, licēre, licuit (impersonal)",
    "unit_id": "r15:116.1",
    "count": 17
@@ -195,6 +212,7 @@
    "gender": null,
    "decl": null,
    "meaning": "not yet",
+   "sense_full": "not yet",
    "parts": null,
    "unit_id": "r15:12.1",
    "count": 16
@@ -205,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "punish (person or offense), inflict punishment",
+   "meaning": "punish",
+   "sense_full": "punish (person or offense), inflict punishment",
    "parts": "pūniō, pūnīre, pūnīvī, punitum",
    "unit_id": "r15:5.1",
    "count": 15
@@ -216,7 +235,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "before, sooner than",
+   "meaning": "before",
+   "sense_full": "before, sooner than",
    "parts": null,
    "unit_id": "r15:27.1",
    "count": 14
@@ -227,7 +247,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "stop, end, finish, abandon, leave, break off, desist or cease",
+   "meaning": "stop, cease",
+   "sense_full": "stop, end, finish, abandon, leave, break off, desist or cease",
    "parts": "dēsinō, dēsinere, desivī, desitum",
    "unit_id": "r15:65.3",
    "count": 14
@@ -238,7 +259,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "back, rear",
+   "meaning": "back",
+   "sense_full": "back, rear",
    "parts": null,
    "unit_id": "r15:61.1",
    "count": 12
@@ -250,42 +272,46 @@
    "gender": null,
    "decl": null,
    "meaning": "exclaim, shout",
+   "sense_full": "exclaim, shout",
    "parts": "exclāmō, exclāmāre, exclāmāvī, exclamatum",
    "unit_id": "r15:23.1",
    "count": 11
   },
   {
-   "lemma": "sellā",
-   "dict": "sellā, -ae f.",
+   "lemma": "sella",
+   "dict": "sella, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "seat (usually no back or arms), stool, chair",
+   "meaning": "chair, stool",
+   "sense_full": "seat (usually no back or arms), stool, chair",
    "parts": null,
    "unit_id": "r15:14.1",
    "count": 11
   },
   {
-   "lemma": "posterus",
-   "dict": "posterus, -a, -um, ·, comparative, posterior,, posterius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "coming after, following, next",
-   "parts": null,
-   "unit_id": "r15:62.1",
-   "count": 7
-  },
-  {
-   "lemma": "virgā",
-   "dict": "virgā, -ae f.",
+   "lemma": "virga",
+   "dict": "virga, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "twig, sprout, stalk",
+   "meaning": "rod, stick",
+   "sense_full": "twig, sprout, stalk",
    "parts": null,
    "unit_id": "r15:5.1",
    "count": 6
+  },
+  {
+   "lemma": "īnferus",
+   "dict": "īnferus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "lower, below",
+   "sense_full": "below, beneath, underneath",
+   "parts": null,
+   "unit_id": "r15:74.1",
+   "count": 5
   },
   {
    "lemma": "lectulus",
@@ -293,7 +319,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "bed or couch",
+   "meaning": "bed, couch",
+   "sense_full": "bed or couch",
    "parts": null,
    "unit_id": "r15:115.1",
    "count": 4
@@ -304,7 +331,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "superior or elder monk",
+   "meaning": "the first of two, the former",
+   "sense_full": "superior or elder monk",
    "parts": null,
    "unit_id": "r15:97.1",
    "count": 3
@@ -315,21 +343,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "silent, secret",
+   "meaning": "silent",
+   "sense_full": "silent, secret",
    "parts": null,
    "unit_id": "r15:18.2",
    "count": 3
-  },
-  {
-   "lemma": "īnferus",
-   "dict": "īnferus, -a, -um, ·, comparative, īnferior,, īnferius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "below, beneath, underneath",
-   "parts": null,
-   "unit_id": "r15:74.1",
-   "count": 1
   }
  ]
 }

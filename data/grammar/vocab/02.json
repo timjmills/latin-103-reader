@@ -7,7 +7,8 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "who, which, that (relative)",
+   "meaning": "who, which, that",
+   "sense_full": "who, which, that (relative)",
    "parts": null,
    "unit_id": "r02:15.1",
    "count": 1097
@@ -18,10 +19,11 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "you (one person)",
+   "meaning": "you",
+   "sense_full": "you (one person)",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 329
+   "count": 338
   },
   {
    "lemma": "puer",
@@ -30,6 +32,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "boy, lad, young man",
+   "sense_full": "boy, lad, young man",
    "parts": null,
    "unit_id": "r02:2.1",
    "count": 224
@@ -40,7 +43,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "my (personal possession)",
+   "meaning": "my",
+   "sense_full": "my (personal possession)",
    "parts": null,
    "unit_id": "r02:66.1",
    "count": 189
@@ -52,6 +56,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "slave",
+   "sense_full": "slave",
    "parts": null,
    "unit_id": "r02:25.2",
    "count": 174
@@ -63,6 +68,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "father",
+   "sense_full": "father",
    "parts": null,
    "unit_id": "r02:9.1",
    "count": 142
@@ -73,7 +79,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "your (sing.)",
+   "meaning": "your",
+   "sense_full": "your (sing.)",
    "parts": null,
    "unit_id": "r02:67.1",
    "count": 140
@@ -85,6 +92,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "owner, lord, master",
+   "sense_full": "owner, lord, master",
    "parts": null,
    "unit_id": "r02:26.1",
    "count": 126
@@ -96,9 +104,22 @@
    "gender": "m",
    "decl": 2,
    "meaning": "son",
+   "sense_full": "son",
    "parts": null,
    "unit_id": "r02:12.1",
    "count": 106
+  },
+  {
+   "lemma": "līber",
+   "dict": "līber, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "children",
+   "sense_full": "children (in the plural)",
+   "parts": null,
+   "unit_id": "r02:21.1",
+   "count": 94
   },
   {
    "lemma": "vir",
@@ -106,7 +127,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "man",
+   "meaning": "man, husband",
+   "sense_full": "man",
    "parts": null,
    "unit_id": "r02:1.1",
    "count": 87
@@ -118,6 +140,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "mother, foster mother",
+   "sense_full": "mother, foster mother",
    "parts": null,
    "unit_id": "r02:10.1",
    "count": 86
@@ -128,7 +151,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "girl, (female) child or daughter",
+   "meaning": "girl",
+   "sense_full": "girl, (female) child or daughter",
    "parts": null,
    "unit_id": "r02:3.1",
    "count": 75
@@ -139,7 +163,8 @@
    "pos": "INTERJ",
    "gender": null,
    "decl": null,
-   "meaning": "behold! see! look! there! here! ecce eum = here he is",
+   "meaning": "look!, see here!",
+   "sense_full": "behold! see! look! there! here! ecce eum = here he is",
    "parts": null,
    "unit_id": "r02:80.1",
    "count": 64
@@ -151,6 +176,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "slave girl",
+   "sense_full": "slave girl",
    "parts": null,
    "unit_id": "r02:30.2",
    "count": 57
@@ -161,7 +187,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "the other",
+   "meaning": "the other, the rest",
+   "sense_full": "the other",
    "parts": null,
    "unit_id": "r02:58.1",
    "count": 53
@@ -173,30 +200,9 @@
    "gender": "f",
    "decl": 1,
    "meaning": "woman",
+   "sense_full": "woman",
    "parts": null,
    "unit_id": "r02:1.2",
-   "count": 47
-  },
-  {
-   "lemma": "līber",
-   "dict": "līber, lībera, līberum",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "free (man)",
-   "parts": null,
-   "unit_id": "r02:21.1",
-   "count": 47
-  },
-  {
-   "lemma": "līber",
-   "dict": "līber, librī m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 2,
-   "meaning": "book, volume",
-   "parts": null,
-   "unit_id": "r02:80.1",
    "count": 47
   },
   {
@@ -206,9 +212,10 @@
    "gender": null,
    "decl": 1,
    "meaning": "new, fresh, young",
+   "sense_full": "new, fresh, young",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 36
+   "count": 40
   },
   {
    "lemma": "fīlia",
@@ -217,17 +224,19 @@
    "gender": "f",
    "decl": 1,
    "meaning": "daughter",
+   "sense_full": "daughter",
    "parts": null,
    "unit_id": "r02:19.2",
    "count": 32
   },
   {
-   "lemma": "familiā",
-   "dict": "familiā, -ae f.",
+   "lemma": "familia",
+   "dict": "familia, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
    "meaning": "household",
+   "sense_full": "household",
    "parts": null,
    "unit_id": "r02:8.1",
    "count": 31
@@ -238,18 +247,20 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "mistress of a family, wife",
+   "meaning": "mistress, lady of the house",
+   "sense_full": "mistress of a family, wife",
    "parts": null,
    "unit_id": "r02:31.1",
    "count": 29
   },
   {
    "lemma": "quot",
-   "dict": "quot, (indeclinable)",
+   "dict": "quot (indeclinable)",
    "pos": "ADJ",
    "gender": null,
    "decl": 9,
-   "meaning": "how many? (quot ... tot ... = as many ... as)",
+   "meaning": "how many?",
+   "sense_full": "how many? (quot ... tot ... = as many ... as)",
    "parts": null,
    "unit_id": "r02:37.1",
    "count": 23
@@ -260,10 +271,11 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "tongue",
+   "meaning": "tongue, language",
+   "sense_full": "tongue",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 11
+   "count": 18
   },
   {
    "lemma": "antīquus",
@@ -272,6 +284,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "old, ancient, aged",
+   "sense_full": "old, ancient, aged",
    "parts": null,
    "unit_id": "r02:80.1",
    "count": 7
@@ -283,6 +296,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "honey",
+   "sense_full": "honey",
    "parts": null,
    "unit_id": "r02:68.2",
    "count": 6
@@ -293,7 +307,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "title (person or book)",
+   "meaning": "title",
+   "sense_full": "title (person or book)",
    "parts": null,
    "unit_id": "r02:80.1",
    "count": 3
@@ -304,7 +319,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "page, sheet",
+   "meaning": "page",
+   "sense_full": "page, sheet",
    "parts": null,
    "unit_id": "r02:88.1",
    "count": 2
