@@ -69,6 +69,15 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
   let readyP = null;
   let db = null;
   const dropIndex = () => { bySkill = null; };
+  /** The per-skill index, built once and kept until the next write. Rows are the stored objects, not copies. */
+  const index = () => {
+    if (!bySkill) {
+      bySkill = new Map();
+      for (const a of attempts.values()) { let l = bySkill.get(a.skill); if (!l) bySkill.set(a.skill, l = []); l.push(a); }
+      for (const l of bySkill.values()) l.sort((a, b) => ts(a.at) - ts(b.at));
+    }
+    return bySkill;
+  };
   const emit = () => { for (const cb of listeners) { try { cb('grammar'); } catch (e) { console.error('[grammar] listener failed', e); } } };
 
   /* ------------------------------------------------------- local */
@@ -257,24 +266,19 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     getAttempts({ skill = null, limit = 0, since = null } = {}) {
       let rows;
       if (skill == null) rows = [...attempts.values()].sort((a, b) => ts(a.at) - ts(b.at));
-      else {
-        if (!bySkill) {
-          bySkill = new Map();
-          for (const a of attempts.values()) { let l = bySkill.get(a.skill); if (!l) bySkill.set(a.skill, l = []); l.push(a); }
-          for (const l of bySkill.values()) l.sort((a, b) => ts(a.at) - ts(b.at));
-        }
-        rows = bySkill.get(skill) ?? [];
-      }
+      else rows = index().get(skill) ?? [];
       if (since != null) { const t = ts(since); rows = rows.filter((a) => ts(a.at) >= t); }
       if (limit > 0 && rows.length > limit) rows = rows.slice(-limit);
       return rows.map((a) => ({ ...a }));
     },
-    /** How many attempts one skill has, without materialising them. */
+    /**
+     * How many attempts one skill has, without materialising them: the same
+     * per-skill index `getAttempts` uses, so the skill map's 87 calls a paint
+     * cost one array lookup each rather than 87 walks of the whole log (G3-06).
+     */
     countAttempts(skill) {
       if (skill == null) return attempts.size;
-      let n = 0;
-      for (const a of attempts.values()) if (a.skill === skill) n += 1;
-      return n;
+      return index().get(skill)?.length ?? 0;
     },
     addAttempt,
     getConfusions: () => [...confusions.values()].map((r) => ({ ...r })),

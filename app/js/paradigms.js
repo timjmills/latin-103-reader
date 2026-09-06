@@ -1095,14 +1095,14 @@ function compoundOf(entry, baseKey, parses) {
     const r3 = root(entry, 3, 'lāt');
     const t = JSON.parse(JSON.stringify(base));
     const swap = (arr, from, to) => arr.map((s) => s.replace(new RegExp('^' + from), to));
-    for (const k of ['perf', 'plupf', 'futperf']) { t.ind[k] = swap(t.ind[k], 'tul', ' ' + r2); t.indPass[k] = swap(t.indPass[k], 'lāt', ' ' + r3); }
-    for (const k of ['perf', 'plupf']) { t.subj[k] = swap(t.subj[k], 'tul', ' ' + r2); t.subjPass[k] = swap(t.subjPass[k], 'lāt', ' ' + r3); }
-    t.inf.perf = ' ' + r2 + '|isse'; t.inf.perfPass = ' ' + r3 + '|us esse'; t.inf.fut = ' ' + r3 + '|ūrus esse'; t.inf.futPass = ' ' + r3 + '|um īrī';
-    t.ptc.perf = ' ' + r3 + '|us -a -um'; t.ptc.fut = ' ' + r3 + '|ūrus -a -um'; t.supine = ' ' + r3;
+    for (const k of ['perf', 'plupf', 'futperf']) { t.ind[k] = swap(t.ind[k], 'tul', '\u0000' + r2); t.indPass[k] = swap(t.indPass[k], 'lāt', '\u0000' + r3); }
+    for (const k of ['perf', 'plupf']) { t.subj[k] = swap(t.subj[k], 'tul', '\u0000' + r2); t.subjPass[k] = swap(t.subjPass[k], 'lāt', '\u0000' + r3); }
+    t.inf.perf = '\u0000' + r2 + '|isse'; t.inf.perfPass = '\u0000' + r3 + '|us esse'; t.inf.fut = '\u0000' + r3 + '|ūrus esse'; t.inf.futPass = '\u0000' + r3 + '|um īrī';
+    t.ptc.perf = '\u0000' + r3 + '|us -a -um'; t.ptc.fut = '\u0000' + r3 + '|ūrus -a -um'; t.supine = '\u0000' + r3;
     const p = irregularVerb(entry, t, parses, prefix);
     // strip the marker that protected already-prefixed stems
     for (const s of p.sections) for (const r of s.rows) for (const c of r.cells) {
-      if (c.text.includes(' ')) { c.text = c.text.replace(prefix + ' ', '').replace(' ', ''); c.stem = c.stem.replace(prefix + ' ', '').replace(' ', ''); }
+      if (c.text.includes('\u0000')) { c.text = c.text.replace(prefix + '\u0000', '').replace('\u0000', ''); c.stem = c.stem.replace(prefix + '\u0000', '').replace('\u0000', ''); }
     }
     return p;
   }

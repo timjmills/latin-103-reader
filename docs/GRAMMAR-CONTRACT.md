@@ -398,9 +398,9 @@ learner answer by shape.
   "items": [
     { "id": "q07-01", "qword": "quis", "q": "Quis Mārcum pulsat?", "en": "Who hits Marcus?",
       "unit_id": "r07:12.1",                  // the sentence that answers it (shown after)
-      "answers": ["Iūlius", "Iulius"],         // accepted Latin (macron-stripped variants added by E)
+      "answers": ["Iūlius", { "span": [0, 4] }],   // accepted Latin: our own wording, or where it is in the sentence
       "input": "type",                         // type | choice | tap  (tap: the answer is a word in unit_id's sentence)
-      "choices": ["Iūlius", "Mārcus", "Quīntus", "Iūlia"],   // for choice; ≥ 3 plausible from the passage
+      "choices": [{ "span": [0, 0] }, "Mārcus", "Quīntus", "Iūlia"],   // for choice; ≥ 3 plausible from the passage
       "hint": "a name in the nominative" } ] }
 ```
 ≥ 24 items per chapter across the question words quis/quid/cūr/ubi/quō/unde/
@@ -409,6 +409,24 @@ question words; num/nōnne/-ne answers are "Ita (est)" / "Nōn"/ "Minimē" with 
 full-sentence answer accepted); answers must be answerable from the referenced
 sentence alone; Latin in `q` macronised. Skill id `questions-NN`; item key
 `question:<id>`; kinds `question`.
+
+**These files are public, so the book's words are not in them** (PROMPT.md §5).
+An accepted answer or a choice is one of three things:
+
+| value | meaning |
+| --- | --- |
+| `"Minimē"` | our own wording — a dictionary form, a name, a phrase that borrows no two consecutive words of the sentence |
+| `{ "span": [i, j] }` | words *i*…*j* (inclusive, 0-based) of the item's sentence, over `tokenize()`'s word tokens |
+| `{ "parts": [ "quia", { "span": [2, 3] }, "rīdet" ] }` | our wording woven around such runs; resolved parts join with one space, none before punctuation |
+
+`sets.js` resolves them (`resolveRef` / `resolveList`) against the sentence
+`unit_id` names, adds the macron-stripped variants there, and **hides any item
+whose references do not resolve** — a missing sentence never yields a crash, a
+half-resolved choice list, or a right answer graded wrong. The line the public
+files are held to, and the checks that enforce it, live in
+`pipeline/latin_text.py`; `pipeline/span_questions.py` writes the references and
+`pipeline/check_questions.py` validates them (and sweeps `lessons/`, `vocab/`
+and `skills.json` for the same rule).
 
 ### Pensa (P → Supabase → E)
 `public.pensa` rows: `{ chapter, kind: "A"|"B"|"C", items: [...] }`, private.
@@ -787,3 +805,89 @@ open. Change here first if any of it should move.
 
 - Nothing outstanding from wave 3. GRAMMAR-PLAN §8 wave 3's four items are
   built; the Colloquia texts themselves are P's (`pipeline/colloquia.py`).
+
+## Wave 3 — review and QA fixes (E, 2026-09-06)
+
+`qa/grammar/CODE-REVIEW-G3.md` and `qa/grammar/QA-REPORT-G3.md`, answered.
+Tests: `tests/grammar.fix3.test.mjs` (new, all pure) plus one changed
+assertion in `tests/grammar.stats.wave3.test.mjs`; sw is **v40**.
+
+- **The `drillable` memo can no longer be poisoned (QA-B1, critical).** It is
+  now `index.js`'s exported `createDrillableMemo({ items, skills })`: a miss
+  answered while `ctx.items` is null — the light `lightInit()` instance the
+  weeks-menu Today card is built from — returns `false` and **caches nothing**,
+  and `buildSets()` clears the memo whenever the generator is rebuilt.
+  `ui.refresh()` is also a no-op while there is no generator, so the light
+  instance never paints the skill map at all. Reading, opening and closing the
+  weeks menu, then opening Grammar used to leave 83 of 87 skills reading "no
+  sentences in the library yet" for the rest of the session.
+- **The history's lifetime total is passed in (QA-B2).**
+  `stats.skillHistory(rows, { …, total })` takes `gstore.countAttempts(skill)`
+  rather than deriving it from the already-trimmed list, so `windowed` can be
+  true, the sentence that explains the gap is reachable, and the page says
+  "Right of the last 400" where the figure is over the window.
+- **The print root is `hidden` (G3-03 / QA-B3).** `print.css` is `media="print"`,
+  so nothing in it reaches the screen; the attribute is what keeps the built
+  pages out of the document, and `html[data-printing] #g-print` outranks
+  `[hidden]` so the sheet still prints. Cleanup no longer waits out a timer:
+  `afterprint`, plus `matchMedia('print')` going false (the Safari-dismissal
+  case), with a five-minute timer only as a last resort. The title is restored
+  only if it is still the one the print set, so a view drawn while the dialog
+  was open keeps its own.
+- **A confusion pair re-queues as a pair (G3-04).** `buildPairSession` emits a
+  strict alternation, in which no *single* slot can sit between two different
+  skills — so `requeue({ pair })` splices the missed skill **and its partner**
+  in after an `other` slot, which is the only shape that keeps the two
+  alternating and lets nothing else in. `createPractice({ pair: [a, b] })`
+  carries it; `ui.startPair` passes it beside `fill: null`.
+- **The replayed curve starts from the right state (G3-05).**
+  `stats.progressTrail` buffers a run of Learn attempts and, at the point the
+  flow judges it (the mode changes back to practice, or the log ends), applies
+  `learnCriterion` over its last ten and replays `passLearn`. A self-graded
+  "partly" is read from `drill_attempts.self` (migration 0017) and replays as
+  the × 1 hold. "Add to mixed practice" needs no replay — its `due_at` of now is
+  what a fresh row's null `due_at` already means. The page's caveat now names a
+  reset, which is the one transition the log cannot record.
+- **A session has a ceiling (QA-I1).** `session.sessionCeiling(asked)` = asked +
+  half of it, at least two: a ten-item session may reach fifteen and no further.
+  Every wrong answer still re-queues until then; past it the miss comes back in
+  the next session. The runner carries `asked` / `added` / `capped`, the item
+  says "N items came back after a wrong answer" (and "The session is full now"
+  once capped), and the summary says how many were asked for. An open-ended
+  session counts each batch of ten as more asked for, so the ceiling moves with
+  it. Answering everything wrong took a ten-item session to 84 before this.
+- **Bulk print (G3-09 / QA-I2).** A category filter prints straight through —
+  that is the default route. "All" asks **before any work is done**, so
+  declining costs nothing, and points at the category filter; the build then
+  yields to the browser after the "Building…" message and every eight skills,
+  so the message paints and the page keeps answering; the existing confirm
+  naming the true page count still follows.
+- **Minors.** `countAttempts` uses the per-skill index beside it (G3-06);
+  `stats.dayList` builds the strips with calendar arithmetic so no day is lost
+  or doubled across a clock change (G3-07); the history table carries a
+  visually-hidden "Right / Wrong / Right, with a hint" in each row header
+  (G3-08) and marks `lang="la"` only on the kinds that actually produce Latin
+  (QA-B5); the scheduler-side count reads "N pairs that are easy to cross", so
+  "confusion pair" means only an observed mix-up (QA-B6); the Stats page's
+  Skills section says "87 skills and 8 chapter sets, counted together" (QA-B7);
+  a pair's count is its own line-box and never begins a line with a separator
+  (QA-B8); a skill sheet's footer runs on every page it spans, scoped by
+  `.pr-doc--sheet` so bulk charts are untouched (QA-B9); the map keeps its
+  scroll position across a lesson or history page (QA-B10);
+  `stats.confusionList` is deleted (G3-13). In passing: a one-section table
+  drops a caption that only repeats the sheet (`print.captionFor` — no more
+  charts headed "cases"), a printed sheet's three examples are a named constant
+  rather than `Math.max(3, Math.min(3, …))`, and a print that cannot run says
+  so instead of only warning to the console (G3-10).
+
+#### Not changed here
+
+- G3-01 and G3-02 (the -ius vocative and the contracted genitive) live in
+  `app/js/paradigms.js` and `pipeline/latin_forms.py`, which this pass does not
+  own.
+- QA-B4 (`cum` + a person taught as "place where") is
+  `app/data/grammar/skills.json` content, likewise not owned here.
+- I3 (a `confusable_with` pair with no `confusion` block in either lesson) is a
+  content check over `app/data/grammar/lessons/`; I4 (`min: 2` for the stats
+  page's pairs) is a pedagogy decision, not a defect, and both are left for the
+  learner to rule on.

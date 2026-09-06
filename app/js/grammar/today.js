@@ -1,6 +1,6 @@
 // The daily plan (GRAMMAR-PLAN.md §5, GRAMMAR-CONTRACT.md "Daily plan"): a
 // suggested set for today, never forced — Learn (one of the current 103 week's
-// unlearned skills) · Practice (10 items: due skills, confusion pairs) ·
+// unlearned skills) · Practice (10 items: due skills, declared-confusable pairs) ·
 // Questions for the current week's passage · Vocabulary due — with estimated
 // minutes: grammar items at the learner's own pace from the attempt log (≈ 25 s
 // each until twenty attempts say otherwise), the reading line at the study
@@ -94,7 +94,7 @@ export function buildToday({ states, skills, currentWeek = [], weekChapter = nul
   const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && (skills.get(id)?.set ? true : canDrill(id)));
   if (rotation.length) {
     const due = today.due.length;
-    const detail = `${size} items · ${due ? `${due} due skill${due === 1 ? '' : 's'}` : 'nothing due'}${today.pairs ? ` · ${today.pairs} confusion pair${today.pairs === 1 ? '' : 's'}` : ''}`;
+    const detail = `${size} items · ${due ? `${due} due skill${due === 1 ? '' : 's'}` : 'nothing due'}${today.pairs ? ` · ${today.pairs} pair${today.pairs === 1 ? '' : 's'} easy to cross` : ''}`;
     lines.push({ id: 'practice', kind: 'practice', label: 'Practice', detail, minutes: minutesOf(size, s), due, pairs: today.pairs, action: { view: 'session', params: { preset: 'review-heavy', size, oneSkill: null } } });
   }
   // Questions for the current week's passage: Learn while new, a set of ten when in rotation (and due or never practised).

@@ -448,7 +448,8 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-pairs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
 .g-pair { display: grid; gap: var(--s-1); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
 .g-pair:last-child { border-bottom: 0; padding-bottom: 0; }
-.g-pair__names { margin: 0; font-size: var(--ui-lg); line-height: 1.35; text-wrap: pretty; }
+.g-pair__names { margin: 0; font-size: var(--ui-lg); line-height: 1.35; text-wrap: pretty; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--s-3); row-gap: 0.1rem; }
+.g-pair__who { text-wrap: pretty; }
 /* The two names read as the line's subject, not as four links in a row: ink, with
    the rubric kept for the underline that says they can be opened. The same for the
    per-skill list, which is 87 rows long and would otherwise be a wall of red. */
@@ -456,6 +457,8 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-perskill__name .g-link { color: var(--ink); text-decoration-color: var(--rubric); text-decoration-thickness: 1px; }
 .g-pair__names .g-link:hover,
 .g-perskill__name .g-link:hover { color: var(--rubric-ink); }
+/* Its own line-box: when the two names fill the row the count drops beneath them
+   and reads as "5 times", never as a line beginning "· 5 times" (QA-B8). */
 .g-pair__count { color: var(--ink-3); font-size: var(--ui-sm); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .g-pair__why { margin: 0; max-width: 62ch; color: var(--ink); text-wrap: pretty; }
 .g-pair__dir { margin: 0; font-variant-numeric: tabular-nums; }

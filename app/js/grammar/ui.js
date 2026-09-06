@@ -92,13 +92,19 @@ export function createUI(ctx) {
   /** Show a view. Each is a history entry (Back walks the section's views; a session in progress resumes); the new heading takes focus. */
   function render(name, params = {}, { push = true, focus = true } = {}) {
     closePop();
+    // The map is 87 rows long: coming back from a lesson or a history page at scrollY 0 means hunting
+    // for the skill you left (QA-B10). Its place is kept and restored; every other view opens at the top.
+    if (view.name === 'map' && name !== 'map') mapScroll = window.scrollY;
     view = { name, params };
     if (push) { try { history.pushState({ grammar: { name, params: name === 'session' ? { ...params, resume: true } : params } }, ''); } catch { /* file: URLs */ } }
     draw();
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: name === 'map' ? mapScroll : 0 });
     if (focus) body.querySelector('h1')?.focus?.({ preventScroll: true });
   }
-  function refresh() { if (['map', 'stats', 'history'].includes(view.name)) draw(); }
+  let mapScroll = 0;
+  // The light instance behind the weeks-menu Today card has no generator, so it must never paint the
+  // map: every row would read "no sentences in the library yet" until `init()` replaced it (QA-1).
+  function refresh() { if (!ctx.items) return; if (['map', 'stats', 'history'].includes(view.name)) draw(); }
   // The new heading takes focus whenever the body is replaced and focus has nowhere to be (a view arriving after a lesson fetch, the end of a session) — G1-09.
   const setBody = (...nodes) => { body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
   // The section may be built twice in a life: once cheaply for the weeks-menu Today card, then in full when Grammar is
@@ -579,7 +585,10 @@ export function createUI(ctx) {
       render('session', { preset, size, oneSkill });
     };
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }),
-      h('p', { class: 'g-lede', text: `${rotation.length} skill${rotation.length === 1 ? '' : 's'} in rotation · ${today.due.length + (today.setsDue?.length ?? 0)} due${today.pairs ? ` · ${today.pairs} confusion pair${today.pairs === 1 ? '' : 's'} to work on` : ''}.` })),
+      // "Confusion pair" is reserved for a pair the learner's answers have actually crossed (the Stats
+      // page's "What you mix up"). This count is of pairs the map *declares* confusable and that are
+      // both due — a different thing, and it said the same words one tab away (QA-B6).
+      h('p', { class: 'g-lede', text: `${rotation.length} skill${rotation.length === 1 ? '' : 's'} in rotation · ${today.due.length + (today.setsDue?.length ?? 0)} due${today.pairs ? ` · ${today.pairs} pair${today.pairs === 1 ? '' : 's'} that are easy to cross` : ''}.` })),
       h('section', { class: 'g-setup' },
         h('div', { class: 'g-setup__row' }, h('span', { class: 'g-label', text: 'Items' }), sizeGroup),
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick)),
@@ -621,8 +630,10 @@ export function createUI(ctx) {
     const partly = summary.partly ?? 0;
     const clean = summary.right - partly;
     const acc = summary.total ? Math.round((clean / summary.total) * 100) : 0;
+    const added = summary.added ?? 0;
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Session over' }),
-      h('p', { class: 'g-lede', text: `${clean} of ${summary.total} right${partly ? `, ${partly} partly` : ''} (${acc}%) · ${summary.skills.length} skill${summary.skills.length === 1 ? '' : 's'} · ${stats.fmtMin(summary.ms)}${summary.hinted ? ` · ${summary.hinted} with a hint` : ''}.` })),
+      h('p', { class: 'g-lede', text: `${clean} of ${summary.total} right${partly ? `, ${partly} partly` : ''} (${acc}%) · ${summary.skills.length} skill${summary.skills.length === 1 ? '' : 's'} · ${stats.fmtMin(summary.ms)}${summary.hinted ? ` · ${summary.hinted} with a hint` : ''}.` }),
+      added ? h('p', { class: 'g-quiet', text: `${summary.asked} items were asked for; ${added} more came back after a wrong answer.` }) : null),
       summary.wrong.length ? h('section', {}, h('h2', { class: 'g-h2', text: 'Worth another look' }), h('ul', { class: 'g-chips' }, summary.wrong.map((id) => h('li', {}, h('button', { type: 'button', class: 'g-chip', onclick: () => startBlocked(id) }, titleOf(id), h('span', { class: 'g-chip__state', text: ' · practise' })))))) : h('p', { class: 'g-quiet', text: 'Nothing missed.' }),
       h('div', { class: 'g-acts' }, btn('Another session', { onclick: () => render('session', params) }, 'btn btn--primary'), btn('Skills', { onclick: () => render('map') }, 'btn btn--quiet'), btn('Stats', { onclick: () => render('stats') }, 'btn btn--quiet')));
     body.querySelector('h1')?.focus?.({ preventScroll: true });   // a keyboard session ends on the summary, not at the top of the page (G1-09)
@@ -653,8 +664,12 @@ export function createUI(ctx) {
       const cur = runner.current;
       if (!cur) { finish(); return; }
       const { item } = cur;
+      // Why the total is not what was asked for. A missed item comes back, and the counter grows with it;
+      // saying so is the difference between a session that is longer and one that seems to have no end
+      // (QA-I1). Once the ceiling is reached the session stops growing and says that too.
+      const grown = runner.added > 0 ? `${runner.added} item${runner.added === 1 ? '' : 's'} came back after a wrong answer${runner.capped ? '. The session is full now — anything still missed comes back next time' : ''}.` : '';
       wrap.replaceChildren(itemNode(item, {
-        title, note, position: runner.position + 1, length: runner.length, hintOpen, onHint: () => runner.hint(),
+        title, note: [note, grown].filter(Boolean).join(' '), position: runner.position + 1, length: runner.length, hintOpen, onHint: () => runner.hint(),
         onAnswer: async (value) => {
           const result = await runner.answer(value);
           const next = () => { runner.next(); step(); };
@@ -1044,7 +1059,10 @@ export function createUI(ctx) {
     const pairs = stats.confusionPairs(gstore.getConfusions(), skills);
     const dl = (label, value) => [h('dt', { text: label }), h('dd', { text: String(value) })];
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Stats' }), h('p', { class: 'g-lede', text: 'Grammar only — the reading study log is in Settings.' })),
+      // The tally runs over the map *and* the chapter sets, so it reaches 95 where the map's lede says
+       // 87 skills. Nothing reconciled the two figures; now the heading does (QA-B7).
       h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Skills' }),
+        h('p', { class: 'g-quiet', text: `${index.skills.size} skill${index.skills.size === 1 ? '' : 's'}${ctx.sets?.size ? ` and ${ctx.sets.size} chapter set${ctx.sets.size === 1 ? '' : 's'}` : ''}, counted together.` }),
         h('dl', { class: 'g-dl' }, ['mastered', 'practising', 'learning', 'lapsed', 'new'].map((s) => dl(cap(s), by[s])))),
       h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Items' }),
         h('dl', { class: 'g-dl' }, dl('Today', t.today ? `${t.today} · ${stats.fmtPct(t.accToday)} right` : '0'), dl('Last 7 days', t.week ? `${t.week} · ${stats.fmtPct(t.accWeek)} right` : '0'), dl('All time', t.all ? `${t.all} · ${stats.fmtPct(t.accAll)} right · ${stats.fmtMin(t.ms)}` : '0')),
@@ -1086,12 +1104,15 @@ export function createUI(ctx) {
       const direction = c.ba
         ? `${c.ab} × ${titleOf(c.a)} answered as ${titleOf(c.b)} · ${c.ba} the other way round`
         : `${c.ab} × ${titleOf(c.a)} answered as ${titleOf(c.b)}`;
+      // The count is its own line-box, not a " · 5 times" tail: as a tail it wrapped and the next line
+      // began with the separator (QA-B8). It sits beside the names, and under them when they fill the row.
       return h('li', { class: 'g-pair' },
         h('p', { class: 'g-pair__names' },
-          h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: c.a }) }, titleOf(c.a)),
-          ' and ',
-          h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: c.b }) }, titleOf(c.b)),
-          h('span', { class: 'g-pair__count', text: ` · ${c.count} time${c.count === 1 ? '' : 's'}` })),
+          h('span', { class: 'g-pair__who' },
+            h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: c.a }) }, titleOf(c.a)),
+            ' and ',
+            h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: c.b }) }, titleOf(c.b))),
+          h('span', { class: 'g-pair__count', text: `${c.count} time${c.count === 1 ? '' : 's'}` })),
         why,
         h('p', { class: 'g-pair__dir g-quiet', text: direction }),
         h('div', { class: 'g-pair__acts' },
@@ -1111,7 +1132,9 @@ export function createUI(ctx) {
     const [a, b] = pair;
     if (!skills.has(a) || !skills.has(b)) { render('stats'); return; }
     // Both must be answerable before they can be practised; a lapsed or new row joins the rotation now, so the
-    // answers that follow are judged as practice rather than as an early review (the startBlocked rule, M1).
+    // answers that follow are judged as practice rather than as an early review (as startBlocked does, M1).
+    // Unlike startBlocked this does not divert a *learning* skill back into Learn: the learner asked for the
+    // pair, and half a pair is not a session (G3-12).
     for (const id of [a, b]) {
       if (!drillable(id)) {
         setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Not yet' }), h('p', { class: 'g-lede', text: `${titleOf(id)} has no sentences in the library to drill, so the pair cannot be practised together yet.` })),
@@ -1122,8 +1145,9 @@ export function createUI(ctx) {
       if (!inRotation(st) || decay(st).state === 'lapsed') gstore.setState(addToPractice(st ?? id));
     }
     const plan = buildPairSession({ a, b, states: gstore.getStates(), skills, size, seed: Math.floor(Math.random() * 1e9) });
-    // `fill: null`: a missed item re-queues within the pair, and nothing else is ever added — the Start promised these two only.
-    const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN(), preset: 'even', size, rand: Math.random, fill: null });
+    // `fill: null`: nothing but these two ever enters — the Start promised so. `pair` is what lets a miss
+    // come back at all: the plan alternates, so the re-queue arrives as the pair itself (G3-04).
+    const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN(), preset: 'even', size, rand: Math.random, fill: null, pair: [a, b] });
     const first = practice.start();
     if (!first) { setBody(h('p', { class: 'g-quiet', text: 'No sentences fit these two skills yet.' }), h('div', { class: 'g-acts' }, btn('Back to stats', { onclick: () => render('stats') }, 'btn'))); return; }
     ctx.say(`${titleOf(a)} against ${titleOf(b)}: ${plan.length} items.`);
@@ -1146,7 +1170,9 @@ export function createUI(ctx) {
     const st = stateOf(id);
     const total = gstore.countAttempts(id);
     const rows = gstore.getAttempts({ skill: id, limit: HISTORY_WINDOW });
-    const hist = stats.skillHistory(rows, { last: 20, days: HISTORY_DAYS, now, max: HISTORY_WINDOW });
+    // The store has already trimmed the rows, so the lifetime count has to be handed in: deriving it
+    // from the list made the parts add up to something other than the stated total (QA-B2).
+    const hist = stats.skillHistory(rows, { last: 20, days: HISTORY_DAYS, now, max: HISTORY_WINDOW, total });
     const confs = stats.confusionsOf(id, gstore.getConfusions(), skills);
     const dl = (label, ...value) => [h('dt', { text: label }), h('dd', {}, ...value)];
 
@@ -1175,10 +1201,12 @@ export function createUI(ctx) {
     const attemptsSection = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Attempts' }),
       h('dl', { class: 'g-dl' },
         dl('In all', `${total} item${total === 1 ? '' : 's'}`),
-        dl('Right', `${c.right}${shown ? ` · ${Math.round((c.right / shown) * 100)}%` : ''}`),
+        // Right / hinted / wrong are counted over the window, so on a long log they add up to `shown`,
+        // not to `total`. The percentage says which figure it is over rather than reading as a lifetime.
+        dl(hist.windowed ? `Right of the last ${shown}` : 'Right', `${c.right}${shown ? ` · ${Math.round((c.right / shown) * 100)}%` : ''}`),
         dl('With a hint', String(c.hinted)),
         dl('Wrong', String(c.wrong))),
-      hist.windowed ? h('p', { class: 'g-quiet', text: `The figures above are the last ${shown} attempts; the ${total - shown} before them are counted only in "In all".` }) : null,
+      hist.windowed ? h('p', { class: 'g-quiet', text: `Right, with a hint and wrong count the last ${shown} attempts — they add up to ${shown}, not to ${total}. The ${total - shown} before them are counted only in "In all".` }) : null,
       sparkStrip(hist.perDay));
 
     const last = hist.trail[hist.trail.length - 1] ?? null;
@@ -1192,8 +1220,10 @@ export function createUI(ctx) {
       hist.stageChanges.length
         ? h('ul', { class: 'g-trail__steps' }, hist.stageChanges.map((sc) => h('li', { text: `Stage ${sc.from} → ${sc.to} · ${fmtWhen(sc.at)}` })))
         : h('p', { class: 'g-quiet', text: `Still at stage ${st.stage}: four right in a row at this stage moves it up.` }),
+      // The replay now includes Learn's own pass (stats.progressTrail), so the two figures normally agree.
+      // What it cannot see is a reset: the log survives one, the row does not.
       last && Math.abs((Number(last.stability) || 0) - (Number(st.stability_days) || 0)) > 0.25
-        ? h('p', { class: 'g-quiet', text: 'The curve is replayed from the attempts, so it can differ a little from the stability above when a skill was reset or added to practice by hand.' })
+        ? h('p', { class: 'g-quiet', text: 'The curve is replayed from the attempts — the answers, and Learn’s own pass where the log shows one. It can still differ from the stability above when the skill was reset by hand, which the log does not record.' })
         : null);
 
     const itemsSection = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: `The last ${hist.recent.length === 1 ? 'item' : `${hist.recent.length} items`}` }),
@@ -1206,10 +1236,18 @@ export function createUI(ctx) {
             h('th', { scope: 'col', text: 'You' }),
             h('th', { scope: 'col', text: 'The answer' }))),
           h('tbody', {}, hist.recent.map((a) => h('tr', { class: a.correct ? null : 'is-wrong' },
-            h('th', { scope: 'row' }, h('span', { class: `g-tick${a.correct ? ' is-ok' : ''}${a.hinted ? ' is-hinted' : ''}`, 'aria-hidden': 'true', text: a.correct ? '✓' : '✗' }), ' ', h('span', { text: fmtWhen(a.at) })),
+            // Right and wrong were a colour and an aria-hidden glyph, so a screen reader — and anyone who
+            // cannot separate the two inks — was told nothing (G3-08). The word is in the row header.
+            h('th', { scope: 'row' },
+              h('span', { class: `g-tick${a.correct ? ' is-ok' : ''}${a.hinted ? ' is-hinted' : ''}`, 'aria-hidden': 'true', text: a.correct ? '✓' : '✗' }),
+              h('span', { class: 'visually-hidden', text: `${a.correct ? 'Right' : 'Wrong'}${a.hinted && a.correct ? ', with a hint' : ''}. ` }),
+              ' ', h('span', { text: fmtWhen(a.at) })),
             h('td', {}, h('span', { class: 'g-hist__kind', text: a.kind }), a.mode === 'learn' ? h('span', { class: 'g-hist__mode', text: ' learn' }) : null),
-            h('td', { class: 'g-hist__given', lang: a.self ? null : 'la', text: a.given || '—' }),
-            h('td', { class: 'g-hist__want', lang: 'la', text: a.expected || '—' })))))));
+            // Only the kinds that actually produce Latin are marked as Latin: a choice, a parse or a
+            // self-graded translate holds English ("time when", "graded partly"), and a Latin voice
+            // reading English is worse than none (QA-B5).
+            h('td', { class: 'g-hist__given', lang: latinAnswer(a) ? 'la' : null, text: a.given || '—' }),
+            h('td', { class: 'g-hist__want', lang: latinAnswer(a) ? 'la' : null, text: a.expected || '—' })))))));
 
     const confSection = h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Confusions' }),
       confs.length
@@ -1220,6 +1258,15 @@ export function createUI(ctx) {
 
     setBody(head, attemptsSection, movedSection, itemsSection, confSection);
   }
+
+  /**
+   * The drill kinds whose answer and expected answer are Latin words. `recognise`
+   * and `parse` are answered with English feature names ("time when", "dative
+   * singular"), `translate` with a self-grade, and a vocabulary row does not say
+   * which way the deck ran — so none of those is marked `lang="la"`.
+   */
+  const LATIN_ANSWER_KINDS = new Set(['chart', 'blank', 'transform', 'reorder', 'question', 'pensum']);
+  const latinAnswer = (a) => !a.self && LATIN_ANSWER_KINDS.has(a.kind);
 
   /** Which way round a confusion went, said without arithmetic in brackets. */
   const confDirection = (x) => (x.mine === x.count ? 'always this skill answered as that one'
@@ -1290,12 +1337,19 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------ print */
   /** The paradigm a skill's chart prints: its own focus cells lit, exactly as the lesson lights them. */
   const chartTable = (skill) => paradigmFor(skill, null);
+  /** How many book examples a printed skill sheet carries (`Math.max(3, …Math.min(3, …))` was always 3 — G3-10). */
+  const SHEET_EXAMPLES = 3;
+  /** Above this many skills the bulk print asks first and builds in chunks, yielding so its own message can paint. */
+  const BULK_ASK = 20;
+  const BULK_CHUNK = 8;
+  const yieldToPaint = () => new Promise((r) => { if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => setTimeout(r, 0)); else setTimeout(r, 0); });
 
   /** One skill's chart, one table a page, its focus cells boxed. */
   function printChart(skill) {
     const table = chartTable(skill);
     if (!table) { ctx.say(`${skill.title} has no paradigm table to print.`); return; }
-    printDocument(buildChart({ skill, paradigm: table, roman }), { title: `${skill.title} — chart` });
+    // A browser with no printing at all told the learner nothing before (G3-10).
+    if (!printDocument(buildChart({ skill, paradigm: table, roman }), { title: `${skill.title} — chart` })) ctx.say('This browser cannot print from the app. Use the browser’s own Print in its menu.');
   }
 
   /** The skill sheet: the lesson's rule, the paradigm and its examples on paper. */
@@ -1304,39 +1358,52 @@ export function createUI(ctx) {
     const rule = (lesson?.core ?? []).find((b) => b.type === 'rule')?.text ?? '';
     const exBlock = (lesson?.core ?? []).find((b) => b.type === 'examples') ?? { units: [], invented: [] };
     const ids = exBlock.units || [];
-    const examples = exampleUnits(skill, ids, Math.max(3, ids.length ? Math.min(3, ids.length) : 3))
+    const examples = exampleUnits(skill, ids, SHEET_EXAMPLES)
       .map(({ unit: u, own }) => ({ la: u.la, en: u.en || '', ref: `${unitRefText(u)}${own ? '' : ' · from the library'}` }));
     for (const ex of exBlock.invented || []) examples.push({ la: ex.la, en: ex.en || '', ref: 'Invented example' });
     const confBlock = (lesson?.core ?? []).find((b) => b.type === 'confusion');
     const confusion = confBlock ? { title: titleOf(confBlock.with), text: String(confBlock.text ?? '').replace(/\*\*?/g, '') } : null;
-    printDocument(buildSheet({ skill, paradigm: chartTable(skill), rule: String(rule).replace(/\*\*?/g, ''), examples, confusion, roman }), { title: `${skill.title} — sheet` });
+    if (!printDocument(buildSheet({ skill, paradigm: chartTable(skill), rule: String(rule).replace(/\*\*?/g, ''), examples, confusion, roman }), { title: `${skill.title} — sheet` })) ctx.say('This browser cannot print from the app. Use the browser’s own Print in its menu.');
   }
 
   /**
    * The map's Print charts: every skill the filter is showing that has a
-   * paradigm, one table a page. The count is said first — a filter of "all" is
-   * a great many sheets, and paper is not undoable.
+   * paradigm, one table a page.
+   *
+   * Three things the first version got wrong (G3-09, QA-I2). The "Building…"
+   * message could never paint, because a synchronous loop over 87 skills — each
+   * a full library scan for its candidates — followed it on the same tick; the
+   * confirm came *after* all that work, so declining wasted thirteen seconds of
+   * blocked main thread; and "All" is 777 sheets, which is a filing cabinet
+   * rather than a study aid. So: a category filter prints straight through
+   * (that is the default and the recommended route), "All" asks before any work
+   * is done, and the build yields to the browser every few skills, so the
+   * message shows and the page keeps answering.
    */
-  function printCharts(filter = 'all') {
+  async function printCharts(filter = 'all') {
     const shown = [...index.skills.values()].filter((s) => filter === 'all' || s.category === filter);
-    // Every chart is built before the confirm can name a page count, and "All" is 87 tables: say so first,
-    // or a phone sits silent for a second with nothing to explain it.
-    if (shown.length > 20) ctx.say(`Building the charts for ${shown.length} skills…`);
+    if (!shown.length) { ctx.say('No skills are shown under this filter.'); return; }
+    if (filter === 'all' && shown.length > BULK_ASK
+      && !confirm(`Print the charts of all ${shown.length} skills? That is several hundred sheets. Cancel to choose a category above and print just those.`)) {
+      ctx.say('Nothing printed. Choose a category above, then Print charts again.');
+      root.querySelector('.g-filter')?.scrollIntoView({ block: 'nearest' });
+      root.querySelector('.g-filter__btn')?.focus?.({ preventScroll: true });
+      return;
+    }
     const frag = document.createDocumentFragment();
     let skillCount = 0;
     let pages = 0;
-    for (const s of shown) {
+    if (shown.length > BULK_ASK) { ctx.say(`Building the charts for ${shown.length} skills…`); await yieldToPaint(); }
+    for (let i = 0; i < shown.length; i++) {
+      const s = shown[i];
       const table = chartTable(s);
-      if (!table) continue;
-      const node = buildChart({ skill: s, paradigm: table, roman });
-      if (!node) continue;
-      pages += node.childElementCount;
-      skillCount += 1;
-      frag.append(node);
+      const node = table ? buildChart({ skill: s, paradigm: table, roman }) : null;
+      if (node) { pages += node.childElementCount; skillCount += 1; frag.append(node); }
+      if (shown.length > BULK_ASK && (i + 1) % BULK_CHUNK === 0) await yieldToPaint();
     }
     if (!pages) { ctx.say('None of the skills shown has a paradigm table to print.'); return; }
-    if (!confirm(`Print ${pages} page${pages === 1 ? '' : 's'} — the charts of ${skillCount} skill${skillCount === 1 ? '' : 's'}, one table a page?`)) return;
-    printDocument(frag, { title: filter === 'all' ? 'Latin 103 — paradigm charts' : `Latin 103 — ${filter.replace('-', ' ')} charts` });
+    if (!confirm(`Print ${pages} page${pages === 1 ? '' : 's'} — the charts of ${skillCount} skill${skillCount === 1 ? '' : 's'}, one table a page?`)) { ctx.say('Nothing printed.'); return; }
+    if (!printDocument(frag, { title: filter === 'all' ? 'Latin 103 — paradigm charts' : `Latin 103 — ${filter.replace('-', ' ')} charts` })) ctx.say('This browser cannot print from the app. Use the browser’s own Print in its menu.');
   }
 
   const fmtDay = (day) => { const d = new Date(`${day}T12:00:00`); return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); };

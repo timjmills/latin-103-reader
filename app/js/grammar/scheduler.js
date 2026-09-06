@@ -395,9 +395,23 @@ export function buildPairSession({ a, b, states = new Map(), skills, size = 10, 
  * look" still names the skill). A missed chapter-set item comes back inside
  * the SET_MAX-in-SET_WINDOW rule where a spot allows it; a set item is never
  * re-queued into a window that is already full, so the mix holds.
+ *
+ * `pair` names the other skill of a confusion-pair session. Such a plan is a
+ * strict alternation, so **no single slot can sit between two different
+ * skills** — every interior gap has one of each, and before this a miss on the
+ * second skill was dropped every time (G3-04). The re-queue therefore comes
+ * back as the pair itself, `[skill, other]`, spliced where the alternation
+ * survives it: after a slot on `other`, so the run reads … other, skill,
+ * other … Nothing but the two skills ever enters.
+ *
+ * `cap` bounds the whole plan: a session that is already at its ceiling drops
+ * the re-queue rather than growing (session.js says so on screen).
  */
-export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random, fill = null, played = [] }) {
+export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random, fill = null, played = [], pair = null, cap = Infinity }) {
   const out = [...plan];
+  const room = (n) => (played?.length ?? 0) + out.length + n <= cap;
+  if (!room(1)) return out;
+  if (pair && pair !== skill) return requeuePair(out, { skill, kind, stage, other: pair, skills, rand, room, prev: played?.[played.length - 1] ?? null });
   let at = 3 + Math.floor(rand() * 4);   // 3..6
   if (out.length < 3) {
     const need = 3 - out.length;
@@ -440,6 +454,49 @@ export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.rand
     if (!isSet(skill)) break;
   }
   return out;
+}
+
+/**
+ * The confusion-pair re-queue: the missed skill and its partner as one block,
+ * so the plan stays an alternation of exactly the two. Placed after the first
+ * `other` slot at or beyond the usual 3–6 gap; failing that, appended in
+ * whichever order keeps the alternation with the last slot. Pure.
+ */
+function requeuePair(out, { skill, kind, stage = 1, other, skills, rand = Math.random, room = () => true, prev = null }) {
+  if (!room(2)) return out;
+  const at = Math.min(3 + Math.floor(rand() * 4), out.length);
+  const defA = skills?.get(skill);
+  const defB = skills?.get(other);
+  const stageB = out.find((s) => s.skill === other)?.stage ?? stage;
+  const kindsOf = (def, st, fallback) => { const k = kindsFor(def, st); return k.length ? k : (def?.kinds?.length ? def.kinds : fallback); };
+  const KA = kindsOf(defA, stage, ['recognise', 'chart', 'parse', 'blank']);
+  const KB = kindsOf(defB, stageB, ['recognise', 'chart', 'parse', 'blank']);
+  const slot = (id, st, k) => ({ skill: id, kind: k, stage: st, currentWeek: false, pair: true, requeued: true });
+  /**
+   * Two slots for `first` then `second`, no kind repeated across either join
+   * — the pair is confusable precisely because its forms look alike, and a run
+   * of one kind would let shape, not grammar, answer.
+   */
+  const block = (first, second, before, after) => {
+    const k1 = first.kinds.find((k) => k !== before?.kind && k !== (first.id === skill ? kind : null)) ?? first.kinds.find((k) => k !== before?.kind) ?? first.kinds[0];
+    const k2 = second.kinds.find((k) => k !== k1 && k !== after?.kind) ?? second.kinds.find((k) => k !== k1) ?? second.kinds[0];
+    if (!k1 || !k2) return null;
+    return [slot(first.id, first.stage, k1), slot(second.id, second.stage, k2)];
+  };
+  const missed = { id: skill, stage, kinds: KA };
+  const partner = { id: other, stage: stageB, kinds: KB };
+  for (let i = at; i < out.length; i++) {
+    if (out[i - 1]?.skill !== other || out[i]?.skill !== skill) continue;
+    const b = block(missed, partner, out[i - 1], out[i]);
+    if (!b) break;
+    return [...out.slice(0, i), ...b, ...out.slice(i)];
+  }
+  // Nothing left to splice into: append, keeping the alternation with whatever comes before —
+  // the end of the plan, or the item just answered when the plan is finished.
+  const last = out[out.length - 1] ?? prev;
+  const [first, second] = last?.skill === skill ? [partner, missed] : [missed, partner];
+  const b = block(first, second, last, null);
+  return b ? [...out, ...b] : out;
 }
 
 /** The review-first list for a 103 week: prerequisites of its new skills, most decayed first. Pure. */
