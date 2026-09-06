@@ -634,3 +634,50 @@ the course weeks).
 paradigm tables print one per page with the cells the skill focuses on marked;
 a skill sheet prints the lesson's rule, paradigm and examples. Black on white,
 no app chrome, macrons preserved.
+
+## Wave 3 — shelf notes, plain explanations and summaries (2026-09-06)
+
+The review shelf (chapters I–XXIV) has Latin, line numbers and Ørberg's margin
+glosses but none of the teaching layer the course weeks carry. Add it, in the
+same shapes and register the course weeks use (pipeline/NOTES-GUIDE.md and
+pipeline/PLAIN-GUIDE.md are binding).
+
+```
+data/shelf-notes-NN.json     content agents (private, gitignored like data/week*)
+pipeline/build_shelf_notes.py  merges into data/build/review-NN.json + SQL, splits parts by lectio
+```
+
+### `data/shelf-notes-NN.json`
+```jsonc
+{
+  "chapter": 7,
+  "parts": [                                  // Ørberg's lectiōnēs, in order
+    { "part": "Lēctiō prīma", "units": ["r07:1.1", "r07:41.3"],   // first and last unit of the section
+      "summary_en": "…what happens, 60–120 words…",
+      "summary_la": "…the same in simple Latin the learner can read at this chapter's level…" }
+  ],
+  "notes": [                                  // only where a learner needs help
+    { "unit_id": "r07:12.1",
+      "note": "…the course-week register: names the construction, cites the words…",
+      "note_simple": "…plain words, the grammar term with its everyday gloss…" }
+  ],
+  "highlights": [                             // the chapter's new grammar, as the course weeks mark it
+    { "unit_id": "r07:12.1", "text": "puerō", "occurrence": 1, "label": "dative: indirect object",
+      "note": "…", "simple": "…" }
+  ]
+}
+```
+Rules: notes on roughly a quarter to a third of the sentences — the ones that
+teach the chapter's new grammar or would stop a reader — never a note that
+merely translates; 15–30 highlights per chapter, drawn from the skills whose
+`chapter` equals this one in app/data/grammar/skills.json, using those skills'
+`plain` strings verbatim for the grammar term; every grammar term glossed on
+first use in a note; `summary_la` uses only words and constructions the learner
+has met by that chapter. Unit ids must exist in data/build/review-NN.json and
+the highlighted `text` must occur in that unit's `la`.
+
+### `pipeline/build_shelf_notes.py`
+Merges the file into data/build/review-NN.json (`note`, `note_simple` on units;
+`week.parts` rebuilt from `parts` with `summary_en`/`summary_la`; highlights to
+data/build/highlights-review-NN.json), validates every id and quoted string,
+and writes SQL in seed_sql's style (units updated in place, highlights replaced).
