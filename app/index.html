@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="css/grammar.css">
   <!-- The chapter spine (GRAMMAR-CONTRACT.md): after grammar.css, so the chapter page's header rules win. -->
   <link rel="stylesheet" href="css/chapters.css">
+  <link rel="stylesheet" href="css/progress.css">
   <link rel="stylesheet" href="css/print.css" media="print">
 </head>
 <body>
@@ -131,6 +132,12 @@
          html[data-page="chapter"] hides the reader and the grammar section. -->
     <section id="chapter" class="chapter" aria-label="Chapter" hidden></section>
 
+    <!-- Progress across every chapter (GRAMMAR-CONTRACT.md): all thirty-four chapters with their
+         readings, their grammar and their derived timings, at #/progress (and #/progress/7 with one
+         chapter open). main.js builds it; html[data-page="progress"] hides the reader and the grammar
+         section, as a chapter page does. -->
+    <section id="progress-page" class="prog" aria-label="Progress" hidden></section>
+
     <div id="transport" class="transport" hidden>
       <div class="transport__main">
         <p class="transport__text"><span class="transport__title">Playing chapter</span> <span class="transport__pos" data-transport-pos></span></p>
@@ -153,7 +160,11 @@
   <dialog id="weeks" class="weeks" aria-labelledby="weeks-title">
       <div class="weeks__head">
         <h2 id="weeks-title" class="weeks__title">Latin 103 · Fall 2026</h2>
-        <button type="button" class="panel__close" data-close="weeks" aria-label="Close">×</button>
+        <div class="weeks__headtools">
+          <!-- Progress across every chapter (GRAMMAR-CONTRACT.md): the second way in is Settings → Progress. -->
+          <button type="button" class="weeks__more" data-open="progress">Progress</button>
+          <button type="button" class="panel__close" data-close="weeks" aria-label="Close">×</button>
+        </div>
       </div>
       <!-- Today card (GRAMMAR-CONTRACT.md "Daily plan"): filled by the grammar section when the menu opens. Above the tabs: it is the day's plan, not one list's. -->
       <div id="weeks-today" class="weeks__today" hidden></div>
@@ -344,6 +355,8 @@
           <p class="progress-set__note">Pace is sentences per active hour, first reads only. A sentence met again half an hour or more after its last pass counts as reviewed; a week's passes is how many times its most-read sentence has been covered. A week's minutes are each day's minutes shared out by the sentences read in each week that day, so they are an estimate.</p>
           <div class="progress-set__actions">
             <button type="button" class="btn btn--quiet" data-action="clear-study">Clear study log</button>
+            <!-- Progress across every chapter (GRAMMAR-CONTRACT.md): the fourteen weeks above are unchanged; this is the book by chapter. -->
+            <button type="button" class="btn btn--quiet" data-action="open-progress">Progress by chapter</button>
           </div>
           <p class="audio__msg" data-study-msg role="status"></p>
         </div>

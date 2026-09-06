@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v42';
+const CACHE_VERSION = 'v43';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -36,8 +36,10 @@ const PRECACHE = [
   './js/tokenize.js',
   './js/settings.js',
   './js/chapters.js',
+  './js/progress.js',
   './css/grammar.css',
   './css/chapters.css',
+  './css/progress.css',
   './css/print.css',
   './js/grammar/index.js',
   './js/grammar/lessons.js',

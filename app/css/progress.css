@@ -1,0 +1,198 @@
+/* Progress across every chapter (GRAMMAR-CONTRACT.md "Progress across every
+   chapter"): the page at #/progress — the book's totals, then all thirty-four
+   chapters, each row opening to its readings, its grammar and its timings.
+
+   The chapter spine's own idiom, kept: tokens only, hairline lists, no cards,
+   one accent, tabular numbers. This is a plan, not a scoreboard — nothing here
+   congratulates, ranks or celebrates; the only colour beyond the ink is the
+   rubric on the open row and the success ink on something finished. */
+
+/* While the page is open the reader, the grammar section and the reader's own
+   toolbar step aside, exactly as they do for a chapter page. */
+html[data-page="progress"] .layout,
+html[data-page="progress"] #grammar,
+html[data-page="progress"] #chapter,
+html[data-page="progress"] .seg,
+html[data-page="progress"] .bar__tools,
+html[data-page="progress"] #hint-translation { display: none; }
+html[data-page="progress"] .bar__main {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "week settings";
+}
+
+#progress-page { font-family: var(--face-ui); font-size: var(--ui-md); line-height: 1.5; color: var(--ink); }
+.prog__inner {
+  max-width: 46rem; margin-inline: auto;
+  padding: var(--s-4) var(--s-4) calc(var(--s-7) + env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) { .prog__inner { padding: var(--s-5) var(--s-6) var(--s-7); } }
+
+.prog__back {
+  min-height: var(--tap); padding: 0 var(--s-2); margin-left: calc(-1 * var(--s-2));
+  background: none; border: 0; border-radius: var(--radius);
+  color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.prog__back:hover { color: var(--ink); background: var(--bg-chrome); }
+.prog__back:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+.prog__head { margin: var(--s-3) 0 var(--s-5); }
+.prog__kicker { margin: 0; font-family: var(--face-serif); font-size: var(--ui-md); color: var(--ink-3); }
+.prog__title {
+  width: fit-content; max-width: 100%;
+  margin: var(--s-1) 0 0; font-family: var(--face-serif); font-weight: 400;
+  font-size: 1.75rem; line-height: 1.2; text-wrap: balance; outline: none;
+}
+.prog__title:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
+
+/* ------------------------------------------------------------ the totals */
+/* Four figures between two hairlines — a definition list, not a row of tiles.
+   Only "Minutes measured" is measured; the note under them says so. */
+.prog__totals { margin: 0 0 var(--s-5); }
+.prog__figs {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: var(--s-3) var(--s-5); margin: 0; padding: var(--s-4) 0;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.prog__fig dt { font-size: var(--ui-xs); color: var(--ink-3); line-height: 1.3; }
+.prog__fig dd {
+  margin: 2px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35em;
+  font-variant-numeric: tabular-nums;
+}
+.prog__val { font-family: var(--face-serif); font-size: 1.35rem; line-height: 1.15; color: var(--ink); }
+.prog__of { font-size: var(--ui-sm); color: var(--ink-3); }
+.prog__note {
+  margin: var(--s-3) 0 0; max-width: 68ch;
+  font-size: var(--ui-sm); color: var(--ink-2); line-height: 1.55; text-wrap: pretty;
+}
+
+/* ----------------------------------------------------------- the chapters */
+.prog__list { list-style: none; margin: 0; padding: 0; }
+.prog__item { border-top: 1px solid var(--line); }
+.prog__item:first-child { border-top: 0; }
+.prog__item:last-child { border-bottom: 1px solid var(--line); }
+
+.prog__row {
+  display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto;
+  column-gap: var(--s-3); align-items: baseline;
+  width: 100%; min-height: var(--tap); padding: var(--s-3) var(--s-2); text-align: left;
+  background: none; border: 0; border-radius: var(--radius); color: inherit; font: inherit; cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease-out);
+}
+.prog__row:hover { background: var(--bg-chrome); }
+.prog__row:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.prog__n { font-family: var(--face-serif); font-size: var(--ui-md); color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.prog__row[aria-expanded="true"] .prog__n { color: var(--rubric); }
+.prog__name { font-family: var(--face-serif); font-size: var(--ui-lg); line-height: 1.3; }
+.prog__line {
+  grid-column: 2; font-size: var(--ui-sm); color: var(--ink-2); line-height: 1.4;
+  margin-top: 2px; font-variant-numeric: tabular-nums;
+}
+.prog__caret {
+  grid-column: 3; grid-row: 1; justify-self: end; color: var(--ink-3); line-height: 1;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.prog__row[aria-expanded="true"] .prog__caret { transform: rotate(180deg); }
+/* The same hairline gauge the weeks menu uses — a measure, not a medal, and
+   only while a chapter is part-read (see main.js: a full one read as an underline). */
+.prog__bar {
+  grid-column: 2; display: block; height: 2px; width: min(100%, 12rem);
+  margin-top: var(--s-3); background: var(--line); border-radius: 999px; overflow: hidden;
+}
+.prog__fill { display: block; height: 100%; background: var(--line-strong); }
+
+/* ------------------------------------------------------------ the detail */
+.prog__detail {
+  padding: var(--s-2) var(--s-2) var(--s-5) calc(2.6rem + var(--s-3) + var(--s-2));
+  animation: prog-in var(--t-base) var(--ease-out);
+}
+@keyframes prog-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .prog__detail { animation: none; } }
+
+.prog__group { margin: 0 0 var(--s-4); }
+.prog__gh {
+  margin: 0 0 var(--s-2); font-family: var(--face-ui); font-size: var(--ui-sm);
+  font-weight: 600; color: var(--ink-3);
+}
+.prog__quiet { margin: 0; color: var(--ink-3); font-size: var(--ui-sm); }
+/* The line above the list while the grammar is still being read, or when it could not be. */
+.prog__waiting { margin: 0 0 var(--s-4); max-width: 60ch; text-wrap: pretty; }
+
+/* Readings — one hairline row each: its name, where it lives, its own count, a
+   recording mark, and Continue (Open when nothing has been read). */
+.prog__reads { list-style: none; margin: 0; padding: 0; }
+.prog__read {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
+  column-gap: var(--s-3); align-items: baseline;
+  padding: var(--s-2) 0; border-top: 1px solid var(--line);
+}
+.prog__read:first-child { border-top: 0; }
+.prog__read-name { font-family: var(--face-serif); font-size: var(--ui-md); line-height: 1.3; }
+.prog__read-where { grid-column: 1; font-size: var(--ui-xs); color: var(--ink-3); line-height: 1.4; }
+.prog__read-count {
+  grid-column: 1; font-size: var(--ui-xs); color: var(--ink-2); margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.prog__read-count[data-state="done"] { color: var(--success); }
+.prog__read-audio { grid-column: 2; grid-row: 1; justify-self: end; color: var(--ink-3); font-size: var(--ui-md); line-height: 1; }
+.prog__read-go {
+  grid-column: 3; grid-row: 1 / span 3; align-self: center;
+  display: inline-flex; align-items: center; gap: 0.35em; white-space: nowrap;
+  min-height: var(--tap); padding: 0 var(--s-3); margin-right: calc(-1 * var(--s-2));
+  background: none; border: 0; border-radius: var(--radius);
+  color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.prog__read-go:hover { color: var(--ink); background: var(--bg-chrome); }
+.prog__read-go:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+/* Grammar — the skills in one line by state, then the chapter's sets. */
+.prog__states { margin: 0 0 var(--s-2); font-size: var(--ui-sm); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.prog__sets { list-style: none; margin: 0; padding: 0; }
+.prog__set {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s-3); align-items: baseline;
+  padding: var(--s-2) 0; border-top: 1px solid var(--line); font-variant-numeric: tabular-nums;
+}
+.prog__set:first-child { border-top: 0; }
+.prog__set-name { font-size: var(--ui-sm); color: var(--ink); }
+.prog__set-count { grid-column: 1; font-size: var(--ui-xs); color: var(--ink-2); margin-top: 2px; }
+.prog__set-left { grid-column: 2; grid-row: 1; justify-self: end; font-size: var(--ui-xs); color: var(--ink-3); white-space: nowrap; }
+
+/* The chapter's own total, and the sentence that says it is an estimate. */
+.prog__total {
+  margin: var(--s-4) 0 var(--s-1); padding-top: var(--s-3); border-top: 1px solid var(--line);
+  font-size: var(--ui-md); color: var(--ink); font-variant-numeric: tabular-nums;
+}
+.prog__from { margin: 0 0 var(--s-3); font-size: var(--ui-xs); color: var(--ink-3); max-width: 60ch; text-wrap: pretty; }
+/* .btn's own padding would indent the label past everything above it. */
+.prog__open { margin-left: calc(-1 * var(--s-4)); }
+
+/* --------------------------------------------------------- the menu's way in */
+.weeks__headtools { display: flex; align-items: center; gap: var(--s-1); }
+.weeks__more {
+  min-height: var(--tap); padding: 0 var(--s-2);
+  background: none; border: 0; border-radius: var(--radius);
+  color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.weeks__more:hover { color: var(--ink); background: var(--bg-chrome); }
+.weeks__more:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+/* ------------------------------------------------------------- phones */
+@media (max-width: 479.98px) {
+  /* The menu's head now carries a third control, and at 375 the dialog title
+     wrapped over the tabs. It gives up a step of size instead — the head keeps
+     one line, and the title is still the largest thing in it. */
+  .weeks__head { padding-inline: var(--s-3); }
+  .weeks__title { font-size: 1.15rem; }
+  .weeks__more { padding-inline: var(--s-1); }
+
+  .prog__figs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-4); }
+  .prog__row { grid-template-columns: 2.2rem minmax(0, 1fr) auto; }
+  .prog__detail { padding-left: var(--s-2); }
+  /* Continue drops under its reading rather than squeezing the name off the line. */
+  .prog__read { grid-template-columns: minmax(0, 1fr) auto; }
+  .prog__read-go { grid-column: 1 / -1; grid-row: auto; justify-self: start; margin: var(--s-1) 0 0 calc(-1 * var(--s-3)); }
+  .prog__set { grid-template-columns: minmax(0, 1fr); }
+  .prog__set-left { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 2px; }
+}

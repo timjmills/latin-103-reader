@@ -6,6 +6,9 @@ import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled
 // The book's own spine (GRAMMAR-CONTRACT.md "Chapter spine"): the chapter → week
 // mapping lives in chapters.js and nowhere else — never inline it here.
 import { chapter as chapterOf, chapterOfWeek, parseChapterRoute, chapterHash } from './chapters.js';
+// Progress across every chapter (GRAMMAR-CONTRACT.md): the pure aggregation the
+// #/progress page paints — reading, grammar and the derived timings.
+import { parseProgressRoute, progressHash, chapterRows as bookRows, chapterGrammar, chapterLine, timingLine, bookTotals, fmtEstimate, fmtMeasured, paceNote, estimateNote } from './progress.js';
 import { mountGrammar } from './grammar/index.js';   // the Grammar section (GRAMMAR-CONTRACT.md): mounted once the reader is ready
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -307,6 +310,8 @@ async function boot() {
   }
   weekBtn.addEventListener('click', () => openMenu());
   weeksDialog.querySelector('[data-close="weeks"]').addEventListener('click', () => weeksDialog.close());
+  // Progress across every chapter (GRAMMAR-CONTRACT.md): the menu's way in; the other is Settings → Progress.
+  weeksDialog.querySelector('[data-open="progress"]')?.addEventListener('click', () => { weeksDialog.close(); goToProgress(); });
   weeksDialog.addEventListener('click', (e) => { if (e.target === weeksDialog) weeksDialog.close(); });
   weeksList.addEventListener('click', async (e) => {
     // A shelf heading folds its chapters away or out; the choice is kept in settings (shelfOpen / colloOpen).
@@ -664,10 +669,16 @@ async function boot() {
     if (titleBeforeChapter) document.title = titleBeforeChapter;
     titleBeforeChapter = null;
   }
-  /** Leave the chapter page for the reader: the hash goes, so Back comes back here. */
+  /**
+   * Leave a chapter or the Progress page for the reader: the hash goes, so Back
+   * comes back here. `pushState` fires no hashchange, so both pages are closed
+   * by hand — a Continue pressed on the Progress page left it covering the
+   * reader it had just moved.
+   */
   function goHome() {
     if (location.hash) { try { history.pushState(null, '', location.pathname + location.search); } catch { location.hash = ''; } }
     closeChapter();
+    closeProgPage();
   }
   const goToChapter = (n, tab = 'reading') => { const h = chapterHash(n, tab); if (h) location.hash = h; };
   /** A reading row: open its week in the reader, at the sentence the row names. */
@@ -676,10 +687,390 @@ async function boot() {
     if (weekN !== row.week_n || unitsWeek !== row.week_n) await loadWeek(row.week_n);
     if (unitId) reader.goToUnit(unitId, { quiet: true });
   }
+  /* ---------------------------------------------------- the Progress page */
+  // GRAMMAR-CONTRACT.md "Progress across every chapter": all thirty-four
+  // chapters, each row opening to its readings, its grammar and its timings,
+  // with the book's totals at the top. It lives at #/progress (and
+  // #/progress/7, which opens that chapter's detail); the aggregation itself
+  // is pure (progress.js) and this only feeds it and paints the result.
+  //
+  // What it costs, and why it is built the way it is: the book is 8,000+
+  // sentences, 88 skills and 100+ chapter sets. The list therefore paints from
+  // what the shell already holds — the weeks' unit counts and the progress map
+  // — so the first paint waits for nothing; the grammar is read once in the
+  // background and the rows are repainted when it lands; a chapter's own units
+  // are fetched only when its row is opened. The attempt log is walked once
+  // (thousands of rows) and everything derived from it is cached until the
+  // grammar store says it changed.
+  const progPageEl = $('#progress-page');
+  let progUI = null;              // the built page
+  let progOpen = false;
+  let progChapter = null;         // the unfolded chapter, or null
+  let titleBeforeProg = null;
+  let progGrammarP = null;        // Promise<the grammar figures> — see grammarFigures()
+  let progGrammarWatched = false;
+  let progGrammarDone = false;   // the grammar has answered — null from here on means it could not be read, not "not yet"
+  /** What the page says where the grammar would be: still coming, or not readable. */
+  const grammarQuiet = () => (progGrammarDone
+    ? 'Your grammar could not be read just now — the readings and the times here stand without it.'
+    : 'Reading your grammar…');
+
+  /**
+   * The grammar side of the page, read through the section's own context
+   * (mountGrammar's `ctx`) and never past it: the skill map, the learner's
+   * skill states, the chapter sets and the attempt log. `null` when the
+   * section is not there — the page then says its grammar could not be read
+   * rather than printing zeros.
+   */
+  function grammarFigures() {
+    if (!progGrammarP) progGrammarP = (async () => {
+      const g = grammar ?? await grammarReady;
+      if (!g?.ctx) return null;
+      // The section's own cheap start (the skill map and the grammar store, not
+      // the whole library): we want what it warms, not the card it returns.
+      if (!g.ctx.gstore || !g.ctx.index) { try { await g.todayCard({ unread: 0, pace: null }); } catch { /* the card is not what we came for */ } }
+      const ctx = g.ctx;
+      if (!ctx.gstore || !ctx.index) return null;
+      // A drill answered anywhere drops what was worked out from the log; the page
+      // re-reads it and repaints only while it is the page on screen.
+      if (!progGrammarWatched) {
+        progGrammarWatched = true;
+        ctx.gstore.onChange(() => { progGrammarP = null; if (progOpen) grammarFigures().then((f) => { if (progOpen) paintProgPage(f); }); });
+      }
+      const [{ decay, newState }, { itemSecondsBy }, { chapterMaterial }, setsMod] = await Promise.all([
+        import('./grammar/scheduler.js'), import('./grammar/today.js'), import('./grammar/chapter.js'), import('./grammar/sets.js'),
+      ]);
+      // Every chapter's sets: the section has them once it has fully started;
+      // otherwise the same public files through the same loader (68 small JSON
+      // files, fetched once and behind the first paint).
+      let sets = ctx.items && ctx.sets?.size ? ctx.sets : null;
+      if (!sets) {
+        const base = new URL(fixture ? '../../tests/fixtures/grammar/' : '../data/grammar/', import.meta.url);
+        const fetchJson = async (name) => { const res = await fetch(new URL(name, base)); if (!res.ok) throw new Error(`${name}: ${res.status}`); return res.json(); };
+        const loaded = await setsMod.createSetLoader({ fetchJson }).loadAll();
+        sets = setsMod.setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: setsMod.groupPensa(ctx.gstore.getPensa()), weeks });
+      }
+      // One walk of the attempt log for both figures it has to answer: how many
+      // distinct items of a set have been met, and how long an item takes.
+      const attempts = ctx.gstore.getAttempts();
+      const met = new Map();
+      for (const a of attempts) {
+        if (!a?.skill) continue;
+        let r = met.get(a.skill);
+        if (!r) met.set(a.skill, r = { attempts: 0, keys: new Set() });
+        r.attempts += 1;
+        if (a.item_key) r.keys.add(a.item_key);
+      }
+      const none = { done: 0, attempts: 0 };
+      const seenOf = (id) => { const r = met.get(id); return r ? { done: r.keys.size, attempts: r.attempts } : none; };
+      const now = Date.now();
+      const states = ctx.gstore.getStates();
+      const stateOf = (id) => decay(states.get(id) ?? newState(id, now), now).state;
+      const secondsFor = itemSecondsBy(attempts);
+      const skills = ctx.index.skills ?? new Map();
+      const entries = new Map((ctx.chapters ?? []).map((c) => [c.n, c]));
+      const cache = new Map();
+      const grammarOf = (n) => {
+        if (!cache.has(n)) {
+          const material = chapterMaterial(n, { skills, order: ctx.index.order ?? null, sets, entry: entries.get(n) ?? null });
+          cache.set(n, chapterGrammar({ skills: material.skills, sets: material.sets, stateOf, seenOf, secondsFor }));
+        }
+        return cache.get(n);
+      };
+      let skillsTotal = 0;
+      let skillsMastered = 0;
+      for (const s of skills.values()) { if (s?.set) continue; skillsTotal += 1; if (stateOf(s.id) === 'mastered') skillsMastered += 1; }
+      return { grammarOf, skillsTotal, skillsMastered, stateOf, seenOf, secondsFor };
+    })().catch((e) => { console.warn('[progress] the grammar could not be read', e?.message || e); return null; });
+    return progGrammarP;
+  }
+
+  /** The book's rows as the page paints them: readings from what the shell holds, grammar when it has arrived. */
+  function progRows(figures) {
+    const rows = chapterRows({ library: libraryWeeks(), totals: weekTotals, read: progressByWeek(progress), audio: audioWeeks() });
+    return bookRows(rows, { grammarOf: figures?.grammarOf ?? null, pace: progPace() });
+  }
+  const progPace = () => (hasStudy ? (stats ??= studyLog({ progress: progressRows, studyDays })).pace : null);
+
+  function buildProgPage() {
+    const wrap = mk('div', 'prog__inner');
+    // "All chapters" is what a chapter page goes back to; this page *is* all the
+    // chapters, so its way out is the text. The header button still opens the menu.
+    const back = mk('button', 'prog__back', '← Back to reading');
+    back.type = 'button';
+    back.addEventListener('click', () => goHome());
+    const head = mk('header', 'prog__head');
+    const h1 = mk('h1', 'prog__title', 'Progress');
+    h1.tabIndex = -1;
+    head.append(mk('p', 'prog__kicker', 'Familia Rōmāna I–XXXIV'), h1);
+    const totals = mk('section', 'prog__totals');
+    totals.setAttribute('aria-labelledby', 'prog-totals-h');
+    const th = mk('h2', 'visually-hidden', 'Across the book');
+    th.id = 'prog-totals-h';
+    const figs = mk('dl', 'prog__figs');
+    const note = mk('p', 'prog__note');
+    totals.append(th, figs, note);
+    const list = mk('ol', 'prog__list');
+    const quiet = mk('p', 'prog__quiet prog__waiting', grammarQuiet());
+    wrap.append(back, head, totals, quiet, list);
+    return { wrap, h1, figs, note, list, quiet, rowsById: new Map() };
+  }
+
+  /** One figure of the totals band: a term, its number, and what it is out of. */
+  function progFigure(term, value, of = '') {
+    const box = mk('div', 'prog__fig');
+    box.append(mk('dt', null, term));
+    const dd = mk('dd', null, null);
+    dd.append(mk('span', 'prog__val', value));
+    if (of) dd.append(mk('span', 'prog__of', of));
+    box.append(dd);
+    return box;
+  }
+
+  function paintProgTotals(rows, figures) {
+    const t = bookTotals(rows, {
+      measuredMs: hasStudy ? (stats ??= studyLog({ progress: progressRows, studyDays })).overall.ms : 0,
+      skillsTotal: figures?.skillsTotal ?? null,
+      skillsMastered: figures?.skillsMastered ?? null,
+      grammarKnown: !!figures,
+    });
+    const items = [
+      progFigure('Sentences read', String(t.sentencesRead), t.sentencesTotal ? `of ${t.sentencesTotal}` : ''),
+      progFigure('Chapters finished', String(t.chaptersFinished), `of ${t.chapters}`),
+      progFigure('Skills mastered', figures ? String(t.skillsMastered) : '—', figures && t.skillsTotal ? `of ${t.skillsTotal}` : ''),
+      progFigure('Minutes measured', fmtMeasured(t.measuredMs)),
+    ];
+    progUI.figs.replaceChildren(...items);
+    progUI.note.textContent = paceNote(progPace());
+  }
+
+  /** A chapter's row: numeral, title, its one line of counts, and a hairline bar once something is read. */
+  function progRowEl(row) {
+    const li = mk('li', 'prog__item');
+    li.dataset.n = String(row.n);
+    const b = mk('button', 'prog__row');
+    b.type = 'button';
+    b.dataset.n = String(row.n);
+    b.id = `prog-row-${row.n}`;
+    b.setAttribute('aria-expanded', 'false');
+    b.setAttribute('aria-controls', `prog-detail-${row.n}`);
+    const num = mk('span', 'prog__n', row.roman);
+    num.setAttribute('aria-label', `Chapter ${row.roman}`);
+    const name = mk('span', 'prog__name', row.title);
+    name.lang = 'la';
+    const line = mk('span', 'prog__line', chapterLine(row));
+    const caret = mk('span', 'prog__caret', '⌄');
+    caret.setAttribute('aria-hidden', 'true');
+    b.append(num, name, line, caret);
+    // The hairline gauge only while a chapter is part-read: a finished row already
+    // says "Read through", and a full bar under the line read as an underline.
+    if (row.state === 'part' && row.total > 0) {
+      const bar = mk('span', 'prog__bar');
+      bar.setAttribute('aria-hidden', 'true');
+      const fill = mk('span', 'prog__fill');
+      fill.style.width = `${Math.round((row.read / row.total) * 100)}%`;
+      bar.append(fill);
+      b.append(bar);
+    }
+    const detail = mk('div', 'prog__detail');
+    detail.id = `prog-detail-${row.n}`;
+    detail.hidden = true;
+    li.append(b, detail);
+    return { li, button: b, detail };
+  }
+
+  /** The grammar block of a chapter's detail: its skills by state, then its sets. */
+  function progGrammarBlock(row) {
+    const g = row.grammar;
+    const box = mk('section', 'prog__group');
+    box.append(mk('h3', 'prog__gh', 'Grammar'));
+    if (!g?.known) { box.append(mk('p', 'prog__quiet', grammarQuiet())); return box; }
+    if (!g.any) { box.append(mk('p', 'prog__quiet', 'This chapter has no grammar of its own.')); return box; }
+    if (g.total) {
+      const parts = [`${g.total} skill${g.total === 1 ? '' : 's'}`];
+      for (const [state, label] of [['mastered', 'mastered'], ['practising', 'practising'], ['learning', 'learning'], ['lapsed', 'lapsed'], ['new', 'not started']]) {
+        if (g.counts[state] > 0) parts.push(`${g.counts[state]} ${label}`);
+      }
+      box.append(mk('p', 'prog__states', parts.join(' · ')));
+    }
+    if (g.visibleSets.length) {
+      const list = mk('ul', 'prog__sets');
+      for (const s of g.visibleSets) {
+        const li = mk('li', 'prog__set');
+        li.append(mk('span', 'prog__set-name', s.label));
+        li.append(mk('span', 'prog__set-count', s.done > 0 ? `${s.done} of ${s.total} ${s.verb}` : `${s.total} ${s.noun}, none ${s.verb} yet`));
+        const left = fmtEstimate(s.leftMs);
+        if (left) li.append(mk('span', 'prog__set-left', `${left} left`));
+        list.append(li);
+      }
+      box.append(list);
+    }
+    return box;
+  }
+
+  /** A chapter's detail: its readings (each with its own progress, audio mark and Continue), its grammar, its total. */
+  async function paintProgDetail(n) {
+    const built = progUI?.rowsById.get(n);
+    if (!built) return;
+    const { detail } = built;
+    const row = progUI.rows?.find((r) => r.n === n);
+    if (!row) return;
+    const lib = libraryWeeks();
+    const wanted = row.weeks.filter((w) => lib.has(w));
+    if (!detail.firstChild) detail.replaceChildren(mk('p', 'prog__quiet', 'Loading this chapter…'));
+    await Promise.all([...wanted.map(unitsFor), warmAligned(wanted)]);
+    if (!progOpen || progChapter !== n || progUI?.rowsById.get(n) !== built) return;
+    const frag = document.createDocumentFragment();
+    // Readings — only the ones this chapter actually has (no Colloquium after XXIV, no empty rows).
+    const reads = mk('section', 'prog__group');
+    reads.append(mk('h3', 'prog__gh', 'Readings'));
+    if (!wanted.length) {
+      reads.append(mk('p', 'prog__quiet', 'Nothing from this chapter is in your library yet.'));
+    } else {
+      const rows = readingRows(n, {
+        library: lib, units: unitsByWeek, totals: weekTotals,
+        titles: new Map(weeks.map((w) => [w.n, w.title])),
+        progress, audio: alignedNow,
+      }).filter((r) => r.inLibrary);
+      const list = mk('ol', 'prog__reads');
+      for (const r of rows) list.append(progReadingEl(r));
+      reads.append(list);
+    }
+    frag.append(reads, progGrammarBlock(row));
+    const total = mk('p', 'prog__total', timingLine(row) || 'Nothing to plan here yet.');
+    const from = mk('p', 'prog__from', estimateNote(progPace()));
+    const open = mk('button', 'btn btn--quiet prog__open', `Open Cap. ${row.roman}`);
+    open.type = 'button';
+    open.addEventListener('click', () => { goHome(); goToChapter(n); });
+    frag.append(total, from, open);
+    detail.replaceChildren(frag);
+  }
+
+  function progReadingEl(r) {
+    const li = mk('li', 'prog__read');
+    const name = mk('span', 'prog__read-name', r.label);
+    name.lang = 'la';
+    li.append(name);
+    li.append(mk('span', 'prog__read-where', r.where));
+    const state = mk('span', 'prog__read-count', hasProgress && r.total > 0 ? cap(progressText(r.read, r.total, { noun: 'sentences' })) : `${r.total} sentence${r.total === 1 ? '' : 's'}`);
+    if (r.total > 0 && r.read >= r.total) state.dataset.state = 'done';
+    li.append(state);
+    if (r.audio) li.append(audioMark('prog__read-audio'));
+    const cont = mk('button', 'prog__read-go');
+    cont.type = 'button';
+    const arrow = mk('span', null, '→');
+    arrow.setAttribute('aria-hidden', 'true');
+    cont.append(mk('span', null, r.firstUnread ? 'Continue' : 'Open'), arrow);
+    cont.setAttribute('aria-label', r.firstUnread ? `Continue ${r.label}: the first sentence not yet read` : `Open ${r.label}`);
+    cont.addEventListener('click', () => openReading(r, r.firstUnread ?? r.firstId));
+    li.append(cont);
+    return li;
+  }
+
+  /** Repaint the list (and the open chapter's detail) from the current progress and whatever grammar has landed. */
+  function paintProgPage(figures = progUI?.gfig ?? null) {
+    if (!progUI) return;
+    // The list is rebuilt when the grammar lands or progress changes; a row the
+    // learner had reached with the keyboard keeps its focus and its place.
+    const hadFocus = document.activeElement?.closest?.('.prog__row')?.dataset.n ?? null;
+    const rows = progRows(figures);
+    progUI.rows = rows;
+    progUI.gfig = figures;
+    paintProgTotals(rows, figures);
+    const items = [];
+    progUI.rowsById = new Map();
+    for (const row of rows) {
+      const built = progRowEl(row);
+      progUI.rowsById.set(row.n, built);
+      if (row.n === progChapter) { built.button.setAttribute('aria-expanded', 'true'); built.detail.hidden = false; }
+      items.push(built.li);
+    }
+    progUI.list.replaceChildren(...items);
+    progUI.quiet.hidden = !!figures;
+    if (!figures) progUI.quiet.textContent = grammarQuiet();
+    if (hadFocus != null) progUI.rowsById.get(Number(hadFocus))?.button?.focus({ preventScroll: true });
+    if (progChapter != null) paintProgDetail(progChapter);
+  }
+
+  function toggleProgChapter(n) {
+    const open = progChapter !== n;
+    progChapter = open ? n : null;
+    for (const [k, built] of progUI.rowsById) {
+      const on = open && k === n;
+      built.button.setAttribute('aria-expanded', String(on));
+      built.detail.hidden = !on;
+      if (!on) built.detail.replaceChildren();
+    }
+    if (open) paintProgDetail(n);
+    if (live) live.textContent = open ? `Chapter ${chapterOf(n)?.roman ?? n} opened.` : 'Closed.';
+    // The route follows the open chapter so it can be linked to (#/progress/7); it
+    // *replaces* rather than pushes, so Back leaves the page instead of stepping
+    // back through every row that was opened on the way.
+    const want = progressHash(open ? n : null);
+    if (location.hash !== want) { try { history.replaceState(null, '', want); } catch { /* file: */ } }
+  }
+
+  function openProgPage(n = null) {
+    if (!progPageEl) return;
+    const entering = !progOpen;
+    progOpen = true;
+    progChapter = n;
+    if (entering) {
+      titleBeforeProg = document.title;
+      document.documentElement.dataset.page = 'progress';
+      progPageEl.hidden = false;
+      if (weeksDialog.open) weeksDialog.close();
+      audio?.stop?.();
+      document.title = 'Progress — Latin 103';
+      progUI = buildProgPage();
+      progPageEl.replaceChildren(progUI.wrap);
+      weekBtn.querySelector('.week__num').textContent = 'Progress';
+      weekBtn.querySelector('.week__title').textContent = 'every chapter';
+    }
+    // Paint at once from what the shell already holds; the two things that may
+    // still be missing — a week's sentence count, and the grammar — repaint when
+    // they land, and only if they actually changed anything.
+    const known = weekTotals.size;
+    ensureWeekTotals().then(() => { if (progOpen && weekTotals.size !== known) paintProgPage(progUI?.gfig ?? null); });
+    paintProgPage(progUI?.gfig ?? null);
+    grammarFigures().then((f) => { progGrammarDone = true; if (progOpen && (!f || f !== progUI?.gfig)) paintProgPage(f); });
+    if (entering) { window.scrollTo({ top: 0 }); progUI.h1.focus({ preventScroll: true }); }
+    else if (n != null) progUI.rowsById.get(n)?.button?.scrollIntoView?.({ block: 'nearest' });
+  }
+  function closeProgPage() {
+    if (!progOpen) return;
+    progOpen = false;
+    progChapter = null;
+    progUI = null;
+    if (progPageEl) progPageEl.hidden = true;
+    if (document.documentElement.dataset.page === 'progress') document.documentElement.dataset.page = 'reader';
+    setWeekButton(weekN);
+    if (titleBeforeProg) document.title = titleBeforeProg;
+    titleBeforeProg = null;
+  }
+  const goToProgress = (n = null) => { location.hash = progressHash(n); };
+  progPageEl?.addEventListener('click', (e) => {
+    const b = e.target.closest('.prog__row');
+    if (b) toggleProgChapter(Number(b.dataset.n));
+  });
+  // Arrow keys walk the chapter rows, as they do in the menu; Tab still works.
+  progPageEl?.addEventListener('keydown', (e) => {
+    const rows = [...(progUI?.list.querySelectorAll('.prog__row') ?? [])];
+    const i = rows.indexOf(e.target);
+    if (i < 0) return;
+    const to = { ArrowDown: Math.min(rows.length - 1, i + 1), ArrowUp: Math.max(0, i - 1), Home: 0, End: rows.length - 1 }[e.key];
+    if (to == null) return;
+    e.preventDefault();
+    rows[to].focus();
+  });
+
   function applyRoute() {
     const route = parseChapterRoute(location.hash);
-    if (route) openChapter(route.n, route.tab);
-    else closeChapter();
+    const prog = route ? null : parseProgressRoute(location.hash);
+    if (route) { closeProgPage(); openChapter(route.n, route.tab); return; }
+    closeChapter();
+    if (prog) openProgPage(prog.n);
+    else closeProgPage();
   }
   window.addEventListener('hashchange', applyRoute);
 
@@ -940,8 +1331,9 @@ async function boot() {
     if (progressLeft) { progressLeft.hidden = !left; if (progressLeftText) progressLeftText.textContent = left; }
     progressContinue.hidden = read >= units.length;
     if (weeksDialog.open) { renderWeeksMenu(weekN); renderChaptersMenu(); }
-    // The chapter page's per-reading figures follow the same map.
+    // The chapter page's per-reading figures follow the same map, and so does the Progress page.
     if (chapterN != null && chapterTab === 'reading') paintChapterReadings(chapterN);
+    if (progOpen) paintProgPage();
     settingsUI?.refreshProgress?.();
   }
 
@@ -1391,6 +1783,8 @@ async function boot() {
       // The study log (CONTRACT.md): the figures the dialog draws, and its own clear — reading progress stays.
       study: hasStudy ? {
         log: () => stats ?? (stats = studyLog({ progress: progressRows, studyDays })),
+        // Progress across every chapter (GRAMMAR-CONTRACT.md): the page beside the study log; the fourteen-week table above is untouched.
+        openBook: () => { settingsDialog.close(); goToProgress(); },
         async clear() {
           banked = { day: localDay(), ms: 0 };
           await store.clearStudyLog();
@@ -1432,7 +1826,7 @@ async function boot() {
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
     // A modal dialog (Settings, the weeks menu) owns Escape: its own cancel closes it, the panel stack behind it is left alone.
     if (settingsDialog.open || weeksDialog.open) return;
-    if (chapterN != null) return;   // the chapter page has no text to page through and no display toggles
+    if (chapterN != null || progOpen) return;   // the chapter and Progress pages have no text to page through and no display toggles
     if (e.key === 'Escape') { if (panel.isOpen()) { e.preventDefault(); panel.escape(); } return; }   // stack: back / collapse the open row / close
     if ($('#popup').open) return;
     if (audio?.status?.().mode === 'align') return;   // the alignment overlay owns the keyboard (it also stops propagation)
