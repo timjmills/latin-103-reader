@@ -187,8 +187,14 @@ Shapes: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
   parts for verbs; `meaning` is the glossary's preferred sense. Recognition is
   the default: `vocab-NN` (Latin → English) is the deck the map and the Today
   card offer, and `vocab-NN-rev` is an optional extra the bulk actions and the
-  week's sets leave alone. Item key `vocab:NN:<lemma>` (`…:rev` for the
-  reverse deck, `vocab-match:…` for a match item).
+  week's sets leave alone. Item key
+  `vocab:NN:<lemma>:<pos>` (`…:rev` for the reverse deck). The part of speech is
+  in the key because three decks hold one lemma twice (*līber* / *liber* in
+  ch. 2, *mare* in 10, *anus* in 32); without it the second is unreachable. A
+  four-pair `match` item keeps the same key and carries `variant: "match"`, so a
+  word has one history however it was shown. Distractors are the same chapter
+  and the same part of speech, topped up from the same part of speech in the
+  nearest chapters — never another part of speech.
 - **Pensa are private** and are *not* in this folder: they live in
   `public.pensa` (migration 0016) and reach the section through
   `store-grammar.js`. Until that pipeline has run there are simply no Pensa
@@ -196,7 +202,13 @@ Shapes: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
   pipeline could not resolve carries `"unverified": true` and is hidden
   client-side, the surviving items keeping their original indexes so
   `pensum:NN:A:3` stays the same item. A pensum is **practise only**: it never
-  offers a Learn flow.
+  offers a Learn flow. In an A or B item `text` is authoritative and already
+  carries the stem ("Rōma in Itali_ est."); `blanks[].stem` is metadata for the
+  input's label and for accepting the whole word. An item whose `_` runs do not
+  match its `blanks` length is hidden rather than paired wrongly. Pensum answers
+  are judged **with their macrons** — the contrast between *Italia* and *Italiā*
+  is the exercise — so `answers` must be macronised exactly as the book has
+  them.
 
 Do not hand-edit `questions/*.json` or `vocab/*.json` — they are pipeline
 output, like `skills.json`. Run `build_grammar_index.py --check` after any

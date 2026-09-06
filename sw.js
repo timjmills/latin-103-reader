@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v35';
+const CACHE_VERSION = 'v36';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -224,7 +224,9 @@ const abs = (rel) => new URL(rel, self.location.href).href;
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(SHELL);
-    await Promise.all(PRECACHE.map(async (rel) => {
+    // In chunks, not all ~180 at once: a phone that opened every connection in one Promise.all stalled the install (m9).
+    const CHUNK = 12;
+    const one = async (rel) => {
       try {
         const res = await fetch(new Request(abs(rel), { cache: 'reload' }));
         if (res.ok) await cache.put(abs(rel), res);
@@ -232,7 +234,8 @@ self.addEventListener('install', (event) => {
       } catch (e) {
         console.warn('[sw] precache failed', rel, e && e.message);
       }
-    }));
+    };
+    for (let i = 0; i < PRECACHE.length; i += CHUNK) await Promise.all(PRECACHE.slice(i, i + CHUNK).map(one));
     await self.skipWaiting();
   })());
 });
