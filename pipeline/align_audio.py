@@ -68,6 +68,13 @@ def words_of(text: str) -> list[str]:
     return [w for w in re.findall(r"[A-Za-zĀ-ȳāēīōūȳ]+", text)]
 
 
+def week_json(n: int) -> Path:
+    """The text for week n. Course weeks 1–14 are data/build/week-NN.json; the
+    Familia Romana review shelf (weeks 101–124 = chapters I–XXIV) is
+    data/build/review-NN.json, built by review_shelf.py."""
+    return BUILD / (f"review-{n - 100:02d}.json" if n >= 101 else f"week-{n:02d}.json")
+
+
 # ----------------------------------------------------------------- transcribe
 
 def ffmpeg_exe() -> str:
@@ -95,7 +102,10 @@ def transcribe(path: Path, model_name: str, quiet: bool) -> tuple[list[dict], di
     # so the Windows box needs no system install.
     os.environ.setdefault("IMAGEIO_FFMPEG_EXE", ffmpeg_exe())
     t0 = time.time()
-    model = WhisperModel(model_name, device="cpu", compute_type="int8")
+    # WHISPER_CPU_THREADS caps the threads per process so several weeks can be
+    # transcribed in parallel without fighting over the cores (0 = all cores).
+    model = WhisperModel(model_name, device="cpu", compute_type="int8",
+                         cpu_threads=int(os.environ.get("WHISPER_CPU_THREADS", "0")))
     segments, info = model.transcribe(
         str(path), language="la", beam_size=5, word_timestamps=True,
         vad_filter=True, vad_parameters={"min_silence_duration_ms": 300},
@@ -116,12 +126,68 @@ def transcribe(path: Path, model_name: str, quiet: bool) -> tuple[list[dict], di
 
 # ----------------------------------------------------------------- alignment
 
+def paced_blocks(blocks, ref: list[str], words: list[dict]) -> list:
+    """Keep only the matching blocks that agree with each other about the pace.
+
+    Ørberg's chapters repeat whole phrases — cap. XXIII says "in viā pugnātūrum
+    nec in lūdō dormītūrum esse" twice, once as narrative and once in the
+    indirect-speech recap — and difflib, which places its longest block first,
+    can match a sentence to the wrong occurrence. Everything between the two
+    then has nowhere left to match and is crammed into a fraction of a second
+    (before this filter, cap. XXIII stranded 19 sentences inside four seconds
+    at 648 s whose speech is really at 519–650 s).
+
+    The reader's pace is near enough constant, so a block is only believable if
+    the audio between it and the previous kept block is roughly what its word
+    count needs: no faster than a third of the chapter's pace, no slower than
+    twice it plus a pause. Keep the chain of blocks carrying the most matched
+    tokens under that rule; the sentences left without a block are fuzzy-rescued
+    and interpolated like any other unmatched sentence.
+    """
+    bl = [b for b in blocks if b.size]
+    if len(bl) < 2 or not words:
+        return bl
+    pace = (words[-1]["end"] - words[0]["start"]) / max(1, len(ref))   # seconds per reference token
+
+    def plausible(p, q) -> bool:
+        exp = (q.a - p.a) * pace
+        dt = words[q.b]["start"] - words[p.b]["start"]
+        return exp * 0.3 - 6 <= dt <= exp * 2.0 + 15
+
+    best = [b.size for b in bl]           # most matched tokens in a chain ending here
+    prev = [-1] * len(bl)
+    for k in range(len(bl)):
+        for j in range(k):
+            if best[j] + bl[k].size > best[k] and plausible(bl[j], bl[k]):
+                best[k], prev[k] = best[j] + bl[k].size, j
+    k = max(range(len(bl)), key=lambda i: best[i])
+    chain = []
+    while k >= 0:
+        chain.append(bl[k])
+        k = prev[k]
+    return chain[::-1]
+
+
+def seek(unit: dict, hyp: list[str], lo: int, hi: int) -> int | None:
+    """The earliest whisper word in hyp[lo:hi] that sounds like one of the
+    sentence's first distinctive words, or None. Short words (et, est, in …)
+    are no evidence and are not searched for."""
+    toks = [t for w in words_of(unit["la"]) if len(t := norm(w)) >= 4][:6]
+    for t in toks:
+        for k in range(max(0, lo), min(hi, len(hyp))):
+            if difflib.SequenceMatcher(a=t, b=hyp[k]).ratio() >= 0.8:
+                return k
+    return None
+
+
 def align(units: list[dict], words: list[dict]) -> dict:
     """Map every unit to a start time. Returns {unit_id: {start, end, matched, source, words}}."""
     # Flatten the unit text into tokens with back-references.
     ref: list[str] = []
     owner: list[int] = []
+    tok_start: list[int] = []          # unit index → where its tokens start in ref
     for i, u in enumerate(units):
+        tok_start.append(len(ref))
         for w in words_of(u["la"]):
             n = norm(w)
             if n:
@@ -132,7 +198,7 @@ def align(units: list[dict], words: list[dict]) -> dict:
     sm = difflib.SequenceMatcher(a=ref, b=hyp, autojunk=False)
     first_hit: dict[int, int] = {}     # unit index → whisper word index of first matched token
     last_hit: dict[int, int] = {}
-    for a, b, size in sm.get_matching_blocks():
+    for a, b, size in paced_blocks(sm.get_matching_blocks(), ref, words):
         for k in range(size):
             ui = owner[a + k]
             # A lone short word (et, est, in …) is not evidence; ask for a run of two
@@ -142,30 +208,76 @@ def align(units: list[dict], words: list[dict]) -> dict:
             first_hit.setdefault(ui, b + k)
             last_hit[ui] = b + k
 
-    # Second pass: fuzzy-rescue units with no exact hit, searching the whisper
-    # words between the previous and next confident hits.
-    order = sorted(first_hit)
-    for i, u in enumerate(units):
-        if i in first_hit:
-            continue
-        prev = max((j for j in order if j < i), default=None)
-        nxt = min((j for j in order if j > i), default=None)
-        lo = (last_hit[prev] + 1) if prev is not None else 0
-        hi = first_hit[nxt] if nxt is not None else len(hyp)
-        toks = [norm(w) for w in words_of(u["la"])]
-        toks = [t for t in toks if len(t) >= 4][:6]
-        best = None
-        for t in toks:
-            for k in range(lo, hi):
-                r = difflib.SequenceMatcher(a=t, b=hyp[k]).ratio()
-                if r >= 0.8 and (best is None or k < best):
-                    best = k
-                    break
+    pace = ((words[-1]["end"] - words[0]["start"]) / max(1, len(ref))) if words else 0.0
+
+    def rescue() -> None:
+        """Fuzzy-find every sentence with no block of its own, between the
+        previous and next confident hits. A rescued sentence is itself a
+        boundary for the next one, so a long run is walked forward rather than
+        every sentence in it searching the same wide window."""
+        order = sorted(first_hit)
+        for i, u in enumerate(units):
+            if i in first_hit:
+                continue
+            prev = max((j for j in order if j < i), default=None)
+            nxt = min((j for j in order if j > i), default=None)
+            lo = (last_hit[prev] + 1) if prev is not None else 0
+            hi = first_hit[nxt] if nxt is not None else len(hyp)
+            best = seek(u, hyp, lo, hi)
             if best is not None:
-                break
-        if best is not None:
-            first_hit[i] = best
-            last_hit[i] = best
+                first_hit[i] = last_hit[i] = best
+                order = sorted(first_hit)
+
+    def unlate() -> bool:
+        """Move back sentences anchored too late, and give up the anchor when
+        they cannot be found earlier. Every failure of the kind cap. XXIII shows
+        is a sentence matched to a *later* repeat of its own words (Ørberg's
+        indirect-speech recaps say everything twice), and it shows up two ways:
+        the audio before the sentence is far more than its words need, or the
+        sentences after it would have to be read three times faster than the
+        chapter's pace, which no reader does. Returns True when an anchor was
+        given up, so the caller can rescue those sentences afresh."""
+        anchored = sorted(first_hit)
+        drop: list[int] = []
+        for x, i in enumerate(anchored):
+            p = next((j for j in reversed(anchored[:x]) if j not in drop), None)
+            # Look far enough ahead for the pace to mean something: the sentence
+            # right after a misplaced one is usually misplaced with it.
+            q = next((j for j in anchored[x + 1:] if tok_start[j] - tok_start[i] >= 20), None)
+            late = p is not None and (
+                words[first_hit[i]]["start"] - words[first_hit[p]]["start"]
+                > (tok_start[i] - tok_start[p]) * pace * 2.0 + 15)
+            need = (tok_start[q] - tok_start[i]) * pace if q is not None else 0.0
+            room = (words[first_hit[q]]["start"] - words[first_hit[i]]["start"]) if q is not None else 0.0
+            crams = need > 5 and room < need * 0.33
+            # A sentence sharing its instant with the next one has no time of
+            # its own at all. It happens when the only word that matched was a
+            # short one at the sentence's end (cap. XIV's "Vflla Iūliī obscūra
+            # et quiēta est" — the scan's typo for Vīlla leaves only "est").
+            nxt = anchored[x + 1] if x + 1 < len(anchored) else None
+            squeezed = (nxt is not None and tok_start[i + 1] - tok_start[i] >= 2
+                        and words[first_hit[nxt]]["start"] - words[first_hit[i]]["start"] < 0.15)
+            if not (late or crams or squeezed):
+                continue
+            k = seek(units[i], hyp, (last_hit[p] + 1) if p is not None else 0, first_hit[i])
+            if k is not None:
+                first_hit[i] = k
+                last_hit[i] = max(k, min(last_hit[i], k + len(words_of(units[i]["la"]))))
+            elif crams and room < need * 0.15:
+                # Nowhere near enough audio for the words that follow and no
+                # earlier home for this sentence: the anchor is not evidence.
+                # Interpolating it is honest; leaving it is not. (A merely tight
+                # fit is left alone — the reader does speed up.)
+                drop.append(i)
+        for i in drop:
+            del first_hit[i], last_hit[i]
+        return bool(drop)
+
+    rescue()
+    for _ in range(4):
+        if not unlate():
+            break
+        rescue()
 
     out: dict[str, dict] = {}
     n = len(units)
@@ -322,7 +434,17 @@ def upload(n: int, audio_path: Path, sql_path: Path, user_id: str, quiet: bool) 
     dest = f"ss:///audio/{user_id}/week-{n:02d}.mp3"
     # cp refuses to overwrite, so drop any previous upload first (ignore "not found").
     subprocess.run([SUPABASE, "storage", "rm", dest, "--linked", "--experimental"], input="y\n", capture_output=True, text=True, cwd=ROOT)
-    run([SUPABASE, "storage", "cp", str(audio_path), dest, "--linked", "--experimental"])
+    # The CLI reads a Windows absolute source ("C:\…") as a URL scheme and refuses
+    # the copy, so hand it a path relative to ROOT — which is already the cwd.
+    src = audio_path.resolve()
+    try:
+        src_arg = str(src.relative_to(ROOT)).replace("\\", "/")
+    except ValueError:
+        src_arg = str(src)
+    # …and name the type: the bucket only accepts audio/*, while the CLI's guess
+    # from the extension sometimes comes back as application/octet-stream.
+    run([SUPABASE, "storage", "cp", src_arg, dest, "--linked", "--experimental",
+         "--content-type", "audio/mpeg"])
     if not quiet:
         print(f"  audio uploaded to private bucket: audio/{user_id}/week-{n:02d}.mp3")
 
@@ -346,7 +468,7 @@ def process(n: int, model: str, src: Path | None, do_upload: bool, user_id: str 
     real = AUDIO_DIR / f"week-{n:02d}.real.mp3"
     source_audio = real if real.exists() else dest
 
-    data = json.loads((BUILD / f"week-{n:02d}.json").read_text(encoding="utf-8"))
+    data = json.loads(week_json(n).read_text(encoding="utf-8"))
     week, units = data["week"], data["units"]
     if not quiet:
         print(f"week {n:02d}: {week['title']} — {len(units)} sentences, {source_audio.name} ({duration_s(source_audio)} s)")

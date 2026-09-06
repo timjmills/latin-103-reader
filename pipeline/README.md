@@ -522,3 +522,152 @@ prints. Those blanks come out `unverified` rather than guessed. The pronoun
 pensa (cap. VIII `h- / ill- / qu-`) are ambiguous by construction and mostly
 `unverified` too. Text-layer damage per chapter is listed in the report; the
 worst pages are cap. IV, XI, XVI and XXV.
+
+## Shelf audio: word timings for Familia Romana I–XXIV
+
+The review shelf (`review_shelf.py`, weeks 101–124 = chapters I–XXIV) gets the
+same word-level audio as the course weeks, from the YouTube readings of Familia
+Romana in `Course 6. Latin 101/Youtube Audio/`. Chapter *k* becomes week
+`100 + k`, so the pipeline's own week numbering carries straight through:
+`audio/week-1NN.mp3`, `data/build/audio/week-1NN.alignment.json`,
+`data/build/sql/audio-w1NN.sql`, bucket object `audio/{user}/week-1NN.mp3`.
+`align_audio.week_json()` is what routes a week ≥ 101 to `review-NN.json`
+instead of `week-NN.json`; nothing else in the script needed changing.
+
+```
+# one chapter (chapter IX → week 109)
+python pipeline/align_audio.py 109 --audio "…/25. … Cap.9 Pastor & Oves ….mp3"
+python pipeline/align_audio.py 109 --upload --user-id <auth user uuid>
+
+# a chapter Whisper mangled: re-run it with the larger model
+python pipeline/align_audio.py 123 --model medium --retranscribe
+```
+
+**Choosing the recording.** One file per chapter, matched on the `Cap` /
+`Cap.` / `Cap_` number in the file name — the `Colloquium N` files (a different
+text) and the "Lingua Latina Comprehensibilis" lessons are skipped. The file
+name is only a hypothesis: confirm each one by *listening by transcript*, i.e.
+compare the first 30 s of the cached Whisper transcript with the chapter's
+opening sentences in `review-NN.json`. Every reading opens with a spoken title
+("Capitulum quārtum, Dominus et Servī, Scaena prīma") and then the chapter's
+first sentence, so the check is quick and unambiguous — do not compare the
+normalised token streams numerically, the reader's ecclesiastical pronunciation
+comes out of Whisper as `wiha Latina` for *via Latīna* and scores badly however
+right it is.
+
+**What is aligned.** Only the reading text, which is all `review-NN.json`
+holds. A recording that runs on into Grammatica Latina or the Pēnsa simply ends
+up with audio past the last unit, which is correct: the last sentence ends at
+its own last matched word, not at the end of the file. The spoken title before
+the first sentence is left outside unit 1 the same way. In practice these
+readings are the chapter only — the last unit lands at 97–99 % of every file.
+
+**Model choice.** `small` is the default and is enough for most chapters. Where
+the reader's audio defeats it the transcript degrades into nonsense tokens, no
+sentence matches for a minute or more, and a run of sentences ends up pinned to
+the same instant — `--model medium --retranscribe` fixes that (chapter XVII went
+from 79 % to 98 % of sentences matched directly, chapter XXIII from 66 % to
+87 %). The tell-tales to check per chapter are: the share of sentences matched
+directly, the longest run of consecutive sentences sharing one `start_ms`, and
+the number of units whose whole span is under 150 ms. `WHISPER_CPU_THREADS=4`
+caps the threads per process so several chapters can be transcribed in parallel
+(the transcripts cache, so the alignment can then be redone for free).
+
+**Uploading.** Same `--upload --user-id <uuid>` as the course weeks. Two things
+the Supabase CLI wants that it did not use to: the source must be a path
+*relative* to the repo root (it reads a Windows `C:\…` as a URL scheme and
+refuses the copy), and the content type must be named (`--content-type
+audio/mpeg`; the bucket allows only `audio/*` and the CLI's guess from the
+extension is sometimes `application/octet-stream`). Both are now in
+`align_audio.upload()`. Expect the odd `ECIRCUITBREAKER` / SASL failure from the
+pooler on the `db query` step — retry the whole step, it succeeds on the second
+attempt.
+
+A chapter with no recording would be synthesised exactly like the course weeks'
+missing stories — `python pipeline/tts_audio.py <week>` with the Edge voice
+`it-IT-DiegoNeural`; that script reads `review-NN.json` through the same
+`week_json()`. As it stands every chapter has a real reading, chapter II
+included, so nothing on the shelf is synthesised (`synth` is `false` on all
+2757 rows).
+
+### Repeated phrases, and the three passes that survive them (2026-09-06)
+
+difflib takes its longest matching block first, which is wrong for Ørberg: the
+chapters restate everything in indirect speech, so the same phrase is read twice
+minutes apart, and a sentence can be matched to the *later* copy of its own
+words. Everything between the two then has nowhere left to match and is crammed
+into a fraction of a second. Cap. XXIII was the bad case — 19 sentences whose
+speech is at 519–650 s were all pinned inside four seconds at 648 s — and
+cap. XIX had a smaller one (5 sentences, up to 35 s out).
+
+`align()` now runs three passes over the anchors:
+
+1. `paced_blocks()` keeps only the matching blocks that agree with each other
+   about the reading pace. Between two blocks the audio must be no less than a
+   third and no more than twice what their word count needs (plus a pause), and
+   the chain carrying the most matched tokens wins.
+2. `rescue()` — the old fuzzy second pass — finds a sentence with no block of
+   its own between the previous and next confident hits. A rescued sentence is
+   itself a boundary for the next one, so a long run is walked forward.
+3. `unlate()` moves back a sentence anchored too late. Three tells: far more
+   audio before it than its words need; the sentences after it having to be read
+   three times faster than the chapter's pace (measured 20 tokens ahead, because
+   the sentence right after a misplaced one is usually misplaced with it); or the
+   sentence sharing its instant with the next one, so it has no time of its own
+   at all — which is what an anchor on a short trailing word looks like (cap. XIV
+   `r14:1.3`, where the scan's "Vflla" for *Vīlla* left only "est" to match, was
+   pinned to a zero-length span at 19.56 s; its speech is 15.1–19.6 s). Where the
+   sentence cannot be found earlier and the room left is under 15 % of what is
+   needed, the anchor is given up and the sentence is interpolated: honest,
+   rather than confidently wrong. Passes 2 and 3 alternate until nothing more is
+   given up.
+
+Measured over the 24 shelf chapters, this moved 37 sentences by more than 2 s:
+29 fit the transcript better afterwards, 4 slightly worse (1–3 s boundary
+shifts), 4 unchanged. Cap. XXIII went from 110 to 120 sentences matched directly,
+its worst span from 146 s to 34 s, and its sub-150 ms spans from 11 to none. Two
+sub-150 ms spans are left on the whole shelf (`r05:103.1` at 120 ms, `r15:96.1`
+at 75 ms, both two- or three-word sentences whose words Whisper never heard), and
+no zero-length one.
+
+**Known limit — the word cursor's leading words.** A sentence starts at the time
+of its first *matched* word, which is often not its first word (Whisper drops
+quiet ones), so `token_times()` has no room for the words before that anchor and
+stacks them on one instant. 2761 of the shelf's 21318 word entries are
+zero-length and 943 of 2757 sentences begin with such a stack; `wordAt()` in
+`app/js/audio.js` picks the last word at a given instant, so those words never
+light up. The sentence's own start/end — what playback uses — is unaffected.
+Fixing it means backing a sentence's start off by roughly 0.3 s per unanchored
+leading word, bounded by the previous sentence's last heard word; it would
+change every week's rows, so it is left for a pass that can re-verify all of
+them.
+
+### Verification of the shelf, chapter by chapter (2026-09-06)
+
+Checked, and re-uploaded afterwards, so `public.audio_alignments` matches
+`data/build/audio/week-1NN.alignment.json` exactly (row counts, every
+`start_ms`/`end_ms`, every word `s`/`e`, 2757 rows, `synth` false throughout):
+
+- every unit of `review-NN.json` has exactly one row, in order, with one word
+  entry per word of its own text; times are monotonic within and across units;
+  no unit has a zero or absurd span. Two chapters (V, XV) hold one span under
+  150 ms each; the six spans over 30 s (cap. I, XIII, XV, XVI, XVIII, XXIII,
+  longest 43 s) are long sentences read across a pause, not stretched ones;
+- the last timestamp lands 8.6–16.8 s before the end of every recording;
+- each recording is the chapter it claims: every reading opens by naming its
+  own chapter ("Capitulum duodēvīcēsimum", "Kapitulun sextum dekimu. Tempestas")
+  and all 24 match `shelf-source-map.json`;
+- nothing runs on into Grammatica Latina or the Pēnsa — the transcript holds at
+  most 11 words after the last unit ends, and those are stragglers of the last
+  sentence itself, not new material.
+
+The four hand-checked chapters (I, IX, XVII, XXIV): the first, a middle and the
+last sentence of each were cut out of the MP3 at exactly the span their word
+timings claim and re-transcribed on their own, against a decoy cut of the same
+length 30 s away. Word agreement 64 / 57 / 67 / 71 % against decoys of 14 / 26 /
+13 / 10 %; letter agreement (fairer, since a 1.5 s island comes back as "thans
+tu dos actam bigres" for *tam stultus ac tam piger es*) 51 / 66 / 79 / 80 %
+against decoys of 22 / 29 / 22 / 20 %. Eleven of the twelve cuts are decisively
+the words the row claims; the twelfth, cap. I's `r01:36.1`, is placed right but
+its word cursor points about 3 s late — the leading-word limit above, made worse
+by "Delphī" being said twice in three seconds.

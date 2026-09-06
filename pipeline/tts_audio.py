@@ -39,8 +39,8 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from align_audio import (AUDIO_DIR, BUILD, OUT_DIR, build_views, duration_s, ffmpeg_exe,  # noqa: E402
-                         upload, write_sql)
+from align_audio import (AUDIO_DIR, OUT_DIR, build_views, duration_s, ffmpeg_exe,  # noqa: E402
+                         upload, week_json, write_sql)
 
 ROOT = Path(__file__).resolve().parent.parent
 MACRON = str.maketrans("āēīōūȳĀĒĪŌŪȲ", "aeiouyAEIOUY")
@@ -132,7 +132,7 @@ def choose_missing(units: list[dict], real: dict[str, dict], threshold: float = 
 
 def process(n: int, engine: str, voice: str, rate: str, only_source: str | None, slugs: list[str] | None,
             fill_missing: bool, do_upload: bool, user_id: str | None, quiet: bool) -> Path:
-    data = json.loads((BUILD / f"week-{n:02d}.json").read_text(encoding="utf-8"))
+    data = json.loads(week_json(n).read_text(encoding="utf-8"))
     week, units = data["week"], data["units"]
     dest = AUDIO_DIR / f"week-{n:02d}.mp3"
     real_path = AUDIO_DIR / f"week-{n:02d}.real.mp3"
