@@ -47,6 +47,22 @@ const PRESET_LABEL = {
   'one-skill': ['One skill', 'A blocked set on a skill you choose.'],
 };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+/**
+ * What an item says about where its sentence came from (`item.scope`, set by
+ * the generators through chapter.js's `scopeNote`). A chapter's practice
+ * prefers that chapter's own Latin; when the chapter has none for the skill it
+ * reaches outward, and the item says which way it reached rather than leaving
+ * the learner to recognise cap. XXXIV in a chapter-VII drill (QA M3). Pure.
+ */
+export function scopeSentence(scope) {
+  if (!scope || !scope.chapter || scope.scope === 'own') return null;
+  const here = `chapter ${roman(scope.chapter)}`;
+  if (scope.from == null) return `This sentence is not from a chapter of the book.`;
+  if (scope.from === scope.chapter) return null;
+  if (!scope.beyond) return `This skill has no sentence in ${here} itself, so this one is from chapter ${roman(scope.from)} — Latin you have already read.`;
+  return `This skill has no sentence in ${here} or earlier, so this one is from chapter ${roman(scope.from)} — further on than you have read.`;
+}
+
 const KIND_LABEL = { recognise: 'recognise', chart: 'chart', parse: 'parse', blank: 'blank', transform: 'transform', reorder: 'reorder', translate: 'translate', question: 'question', vocab: 'vocabulary', pensum: 'pensum' };
 const SET_ROW_LABEL = { questions: 'Questions', vocab: 'Vocabulary', pensum: 'Pensa' };
 
@@ -371,7 +387,7 @@ export function createUI(ctx) {
         h('div', { class: 'g-acts' },
           btn('Practise this chapter', { onclick: () => go('session', { chapter: material.chapter }), 'aria-label': `Practise chapter ${row.roman}` }, 'btn btn--primary'),
           missedHere ? btn(`Redo the ${missedHere} you missed`, { onclick: () => go('redo', { chapter: material.chapter }), 'aria-label': `Redo the ${missedHere} item${missedHere === 1 ? '' : 's'} of chapter ${row.roman} you missed and have not since got right` }, 'btn') : null),
-        h('p', { class: 'g-quiet', text: `A mixed session of ten, drawn only from this chapter: ${pool.rotation.length} of the ${progress.drillable} it can drill ${pool.rotation.length === 1 ? 'is' : 'are'} in rotation.${missedHere ? '' : ' Nothing of this chapter is waiting to be redone.'}` })));
+        h('p', { class: 'g-quiet', text: `A mixed session of ten, drawn only from this chapter — its skills, and its own sentences wherever the library has them: ${pool.rotation.length} of the ${progress.drillable} it can drill ${pool.rotation.length === 1 ? 'is' : 'are'} in rotation.${missedHere ? '' : ' Nothing of this chapter is waiting to be redone.'}` })));
     } else if (pool.addable.length) {
       out.push(h('div', { class: 'g-chap__acts' },
         btn('Add this chapter to mixed practice', { onclick: () => addChapter(material) }, 'btn'),
@@ -830,7 +846,7 @@ export function createUI(ctx) {
       world = { skills: pool.map };
     }
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
-    const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
+    const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, chapter: ch, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
     const first = practice.start();
     if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : 'No sentences in the library fit the skills in rotation yet.' })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'))); return; }
     if (usable) ctx.say('Session resumed.');
@@ -884,7 +900,7 @@ export function createUI(ctx) {
     const rows = offered;
     if (!usable && !rows.length) { renderNothingToRedo({ skillId, chapter, from }); return; }
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, redo: true, at: Date.now() } : null);
-    const redo = createRedo({ misses: rows, gstore, items, skillsIndex: world, size: size ?? rows.length, oneSkill: skillId, currentWeekN: ctx.currentWeekN(), resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
+    const redo = createRedo({ misses: rows, gstore, items, skillsIndex: world, size: size ?? rows.length, oneSkill: skillId, chapter: chapter != null ? Number(chapter) : null, currentWeekN: ctx.currentWeekN(), resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
     const first = redo.start();
     if (!first) { writeJSON(LS_SESSION, null); renderNothingToRedo({ skillId, chapter, from, gone: rows.length }); return; }
     if (usable) ctx.say('Redo resumed.');
@@ -1131,7 +1147,16 @@ export function createUI(ctx) {
     node.append(h('p', { class: 'g-item__meta' }, h('span', { class: 'g-item__title', text: title })));
     if (note) node.append(h('p', { class: 'g-quiet g-item__note', text: note }));
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
-    if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.' : 'Every sentence for this skill has come up once; starting over.' }));
+    // Pool exhaustion, said of the pool the item was actually drawn from: a chapter session draws that
+    // chapter's sentences, so "every sentence for this skill" would be a wider claim than the truth.
+    if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.'
+      : item.scope?.scope === 'own' ? `Every chapter ${roman(item.scope.chapter)} sentence for this skill has come up once; starting over.`
+        : 'Every sentence for this skill has come up once; starting over.' }));
+    // Where the sentence came from, when a chapter scoped the session and the chapter itself had none
+    // (chapter.js "the sentence's chapter"). A reach forward is said out loud; an earlier chapter is named
+    // as the ordinary, welcome thing it is. Nothing is printed when the sentence is the chapter's own.
+    const scopeLine = scopeSentence(item.scope);
+    if (scopeLine) node.append(h('p', { class: 'g-quiet g-item__note', text: scopeLine }));
     let submitted = false;
     const submit = (v) => { if (submitted) return; submitted = true; node.querySelectorAll('button, input, textarea').forEach((el) => { if (!el.closest('.g-hint') && !el.closest('.g-hints') && !el.classList.contains('g-hintb') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en')) el.disabled = true; }); node.dispatchEvent(new CustomEvent('g-answered')); onAnswer(v); };
     // The hints for this item's answer boxes. `hintOpen` (Learn's guided five) forces them open, unless the

@@ -7,6 +7,7 @@
 import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer } from './items.js';
 import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession, buildRedoSession } from './scheduler.js';
 import { matchQuestion } from './sets.js';
+import { chapterOfWeek } from '../chapters.js';
 import { orderMatches } from './stage3.js';
 
 export const LEARN_GUIDED = 5;
@@ -271,7 +272,7 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
         // A pair session's re-queue is two slots (the pair), every other one is a single slot.
         const other = (pair || []).find((x) => x && x !== item.skill) ?? null;
         const need = other ? 2 : 1;
-        queue = [...played, ...requeue(queue.slice(index + 1), { skill: item.skill, kind: item.kind, stage: slot.stage ?? item.stage, skills, rand, fill, played, pair: other, cap: ceiling() })];
+        queue = [...played, ...requeue(queue.slice(index + 1), { skill: item.skill, kind: item.kind, stage: slot.stage ?? item.stage, skills, rand, fill, played, pair: other, cap: ceiling(), chapter: slot.chapter ?? null })];
         if (queue.length === before && before + need > ceiling()) capped = true;
       }
       await onAnswer?.({ item, slot, result, attempt, hinted: hinted || self, partial: !!result.partial, ms: took });
@@ -375,14 +376,17 @@ export function createLearn({ skill, gstore, items, rand = Math.random, resume =
  * (batches of 10 until the learner stops). Answers update skill_state at
  * once, so a second device sees the change.
  */
-export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, rand = Math.random, resume = null, onChange = null, fill = undefined, pair = null }) {
+export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, chapter = null, rand = Math.random, resume = null, onChange = null, fill = undefined, pair = null }) {
   const skills = skillsIndex.skills;
   // Only skills that can produce an item enter a plan (M8): a metre skill or one with no sentences never becomes a slot.
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
-  const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior });
+  // The chapter that scopes the sentences (chapter.js "the sentence's chapter"): the chapter of a chapter
+  // session, and — for the ≈ 20 % current-week slots of any session — the chapter the current week reads.
+  const weekChapter = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
+  const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior, chapter, currentWeekChapter: weekChapter });
   const slots = plan ?? build(size ?? 10);
   // `itemKey` (a redo's slot) asks the generator for that exact item and nothing else; an ordinary slot has none.
-  const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, avoid: opts.avoid, itemKey: slot.itemKey ?? null });
+  const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, chapter: slot.chapter ?? chapter ?? null, avoid: opts.avoid, itemKey: slot.itemKey ?? null });
   const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
     await gstore.addAttempt(attempt);
     const cur = gstore.getState(item.skill) ?? item.skill;
@@ -436,11 +440,11 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
  * became slots; the runner's `dropped` counts those that turned out to build
  * nothing after all. The view prints the difference rather than pretending.
  */
-export function createRedo({ misses = [], gstore, items, skillsIndex, size = 10, oneSkill = null, currentWeekN = null, rand = Math.random, resume = null, onChange = null }) {
+export function createRedo({ misses = [], gstore, items, skillsIndex, size = 10, oneSkill = null, chapter = null, currentWeekN = null, rand = Math.random, resume = null, onChange = null }) {
   const skills = skillsIndex.skills;
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
   const plan = buildRedoSession({ misses, skills: drillSkills, states: gstore.getStates(), size: size ?? 10, seed: Math.floor(rand() * 1e9) });
-  const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN, preset: oneSkill ? 'one-skill' : 'review-heavy', size: plan.length || 1, oneSkill, rand, resume, onChange });
+  const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN, chapter, preset: oneSkill ? 'one-skill' : 'review-heavy', size: plan.length || 1, oneSkill, rand, resume, onChange });
   return { ...practice, redo: true, plan, requested: misses.length, size: plan.length, open: false };
 }
 

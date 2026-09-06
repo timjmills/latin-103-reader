@@ -1037,6 +1037,72 @@ left open. Change here first if any of it should move.
   chapter page shows no reading progress — that is the shell's half of the
   page.
 
+### A chapter's practice reads like that chapter (2026-09-06)
+
+`qa/grammar/QA-NAV-SESSION.md` **M3**: "Practise this chapter" for cap. VII kept
+strictly inside chapter VII's *skills* but drilled them on sentences from the
+whole library — Catullus 70 (cap. XXXIV) and a periodic sentence with an
+imperfect subjunctive, in a chapter-VII session. The skills were scoped; the
+Latin was not. **The sentence's chapter is now part of choosing an item.**
+
+**The rule, one place: `app/js/grammar/chapter.js`.**
+
+1. the chapter's **own** sentences;
+2. failing those, sentences **at or before** it — Latin the learner has met;
+3. only with neither, the wider library, and **the item says so in its own
+   words** rather than reaching forward silently.
+
+A sentence's chapter is its library week's, read through `app/js/chapters.js`
+(`chapterOfWeek`: 107 → VII, 207 → VII, week 4 → XXVII) — the one place the
+mapping lives; nothing here re-derives it. A week the spine does not name has
+no chapter, so such a sentence is never "own" or "earlier" and can only be
+reached in tier 3, before the ones that are demonstrably ahead.
+
+- **`scopeByChapter(list, chapter, weekOf)`** narrows a draw to the narrowest
+  non-empty tier and reports `{ list, scope: 'own' | 'earlier' | 'beyond',
+  counts }`. No chapter (or an empty list) leaves everything alone with
+  `scope: null` — the whole library, exactly as before.
+- **`scopeNote(chapter, scope, sentence)`** is what the item carries as
+  `item.scope` = `{ chapter, from, scope, beyond }`. It is set whenever a
+  chapter scoped the draw, the chapter's own sentences included, because the
+  pool such an item exhausts is the *chapter's* and not the library's — the
+  "starting over" line says so ("Every chapter VII sentence for this skill has
+  come up once"). `ui.scopeSentence(item.scope)` turns the other two tiers into
+  the line printed above the item: *"This skill has no sentence in chapter IX
+  itself, so this one is from chapter VII — Latin you have already read"*, and
+  *"…no sentence in chapter XVI or earlier, so this one is from chapter XXV —
+  further on than you have read."*
+- **`chapterSentenceReport(chapter, { skills, candidates })`** is the
+  measurement: per skill, the sentences (counted once each, by unit id) that are
+  the chapter's `own`, `earlier`, `atOrBefore`, `later` and `unknown`, with the
+  totals and `none` — the skills with nothing at or before the chapter, the ones
+  whose items must say so. A chapter set is counted but never listed in `none`:
+  its items are the chapter's own by construction.
+
+**Where the scope comes from.** `buildSession({ …, chapter, currentWeekChapter })`
+stamps every slot: `chapter` is the session's own (a chapter page's "Practise
+this chapter", a spine row's), and `currentWeekChapter` scopes the ≈ 20 % slots
+that already ask for the current week — "this week" used to mean the week's
+*skills* while its sentences could come from twenty chapters ahead.
+`session.createPractice({ chapter })` passes it to `buildSession` and to every
+`items.generate` call, derives `currentWeekChapter` from `currentWeekN` itself,
+and `requeue({ chapter })` keeps a re-queued miss in the same chapter; the
+filler already came from `buildSession`. `ui.renderPracticeStart` passes the
+chapter it already knew about, and a chapter's redo passes it too.
+
+**Where it is applied.** `items.pickCandidate` (recognise, parse, blank) scopes
+*after* the kind's own filters, so what is narrowed is what the learner could
+actually have been shown; `items.chart` scopes the candidates its lemmas come
+from (a chart has no sentence, but its word came from one); `stage3.scopeFor`
+does the same for transform, reorder and translate. The tiers inside a scope —
+gold, this week, nouns, short sentences — are unchanged, and so is the used-key
+pool. **A redo is never scoped**: it names one exact item, and the scope could
+only make that item undrawable.
+
+Tests: `tests/grammar.chapter-scope.test.mjs` (a chapter with plenty of its own,
+one with few, one with none; a chapter-VII session with nothing from a later
+chapter; the current-week slots; the pure rule; the report).
+
 #### Worth changing in the plan
 
 - Nothing outstanding.

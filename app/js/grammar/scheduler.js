@@ -249,8 +249,16 @@ export function orderCandidates({ states, skills, preset, currentWeek = [], now 
  * `size` null = open-ended (a first batch of 10; the runner asks for more);
  * `prior` = the slots already played, so an open session's next batch counts
  * the chapter-set window across the seam instead of starting it afresh.
+ *
+ * **The sentence's chapter is part of the slot** (chapter.js "the sentence's
+ * chapter"). `chapter` is the chapter that scopes the whole session — the
+ * chapter page's "Practise this chapter", a spine row's — and every slot
+ * carries it, so the generator draws that chapter's Latin and not the
+ * library's. `currentWeekChapter` does the same for the ≈ 20 % slots that
+ * already ask for the current week: without it "this week" meant the week's
+ * *skills* while the sentences could come from twenty chapters ahead.
  */
-export function buildSession({ states, skills, confusions = null, preset = 'review-heavy', currentWeek = [], size = 10, now = Date.now(), seed = Date.now(), oneSkill = null, prior = null }) {
+export function buildSession({ states, skills, confusions = null, preset = 'review-heavy', currentWeek = [], size = 10, now = Date.now(), seed = Date.now(), oneSkill = null, prior = null, chapter = null, currentWeekChapter = null }) {
   const rand = rng(seed);
   const n = size == null ? 10 : Math.max(1, size);
   const ordered = orderCandidates({ states, skills, preset, currentWeek, now, rand, oneSkill });
@@ -343,6 +351,9 @@ export function buildSession({ states, skills, confusions = null, preset = 'revi
   const want = Math.round(plan.length * 0.2);
   const idx = shuffle(plan.map((_, i) => i), rand).slice(0, want);
   for (const i of idx) plan[i].currentWeek = true;
+  // The scope of each slot's sentence: the session's chapter where there is one, else the current week's
+  // chapter on the slots that asked for the current week. Everything else stays the whole library.
+  for (const slot of plan) slot.chapter = chapter ?? (slot.currentWeek ? currentWeekChapter : null) ?? null;
   return plan;
 }
 
@@ -478,11 +489,11 @@ export function buildRedoSession({ misses = [], skills, states = new Map(), size
  * `cap` bounds the whole plan: a session that is already at its ceiling drops
  * the re-queue rather than growing (session.js says so on screen).
  */
-export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random, fill = null, played = [], pair = null, cap = Infinity }) {
+export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.random, fill = null, played = [], pair = null, cap = Infinity, chapter = null }) {
   const out = [...plan];
   const room = (n) => (played?.length ?? 0) + out.length + n <= cap;
   if (!room(1)) return out;
-  if (pair && pair !== skill) return requeuePair(out, { skill, kind, stage, other: pair, skills, rand, room, prev: played?.[played.length - 1] ?? null });
+  if (pair && pair !== skill) return requeuePair(out, { skill, kind, stage, other: pair, skills, rand, room, prev: played?.[played.length - 1] ?? null, chapter });
   let at = 3 + Math.floor(rand() * 4);   // 3..6
   if (out.length < 3) {
     const need = 3 - out.length;
@@ -519,7 +530,7 @@ export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.rand
       if (pass === 0 && !roomAt(i)) continue;   // first pass keeps the chapter-set window; second lets a missed item back regardless
       const k = pickKind(before, after);
       if (!k) continue;
-      out.splice(i, 0, { skill, kind: k, stage, currentWeek: false, requeued: true });
+      out.splice(i, 0, { skill, kind: k, stage, currentWeek: false, chapter, requeued: true });
       return out;
     }
     if (!isSet(skill)) break;
@@ -533,7 +544,7 @@ export function requeue(plan, { skill, kind, stage = 1, skills, rand = Math.rand
  * `other` slot at or beyond the usual 3–6 gap; failing that, appended in
  * whichever order keeps the alternation with the last slot. Pure.
  */
-function requeuePair(out, { skill, kind, stage = 1, other, skills, rand = Math.random, room = () => true, prev = null }) {
+function requeuePair(out, { skill, kind, stage = 1, other, skills, rand = Math.random, room = () => true, prev = null, chapter = null }) {
   if (!room(2)) return out;
   const at = Math.min(3 + Math.floor(rand() * 4), out.length);
   const defA = skills?.get(skill);
@@ -542,7 +553,7 @@ function requeuePair(out, { skill, kind, stage = 1, other, skills, rand = Math.r
   const kindsOf = (def, st, fallback) => { const k = kindsFor(def, st); return k.length ? k : (def?.kinds?.length ? def.kinds : fallback); };
   const KA = kindsOf(defA, stage, ['recognise', 'chart', 'parse', 'blank']);
   const KB = kindsOf(defB, stageB, ['recognise', 'chart', 'parse', 'blank']);
-  const slot = (id, st, k) => ({ skill: id, kind: k, stage: st, currentWeek: false, pair: true, requeued: true });
+  const slot = (id, st, k) => ({ skill: id, kind: k, stage: st, currentWeek: false, chapter, pair: true, requeued: true });
   /**
    * Two slots for `first` then `second`, no kind repeated across either join
    * — the pair is confusable precisely because its forms look alike, and a run
