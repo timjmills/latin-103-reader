@@ -18,6 +18,7 @@
 import { stripMacrons } from '../tokenize.js';
 import { cellsFor, lemmaGloss, spellsAnswer, featureLabel, CASE_LABEL, TENSE_LABEL, MOOD_LABEL, patternSpans, compilePatterns, strippedText } from './items.js';
 import { isShelfWeek } from '../sync.js';
+import { scopeByChapter, scopeNote } from './chapter.js';
 
 export const STAGE3_KINDS = Object.freeze(['transform', 'reorder', 'translate']);
 export const REORDER_MAX_WORDS = 8;
@@ -93,14 +94,23 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
   const patMemo = new Map();
   const patternsOf = (skill) => { if (!patMemo.has(skill.id)) patMemo.set(skill.id, compilePatterns(skill.patterns)); return patMemo.get(skill.id); };
   const meaningsOf = (la) => items.meaningsOf ? items.meaningsOf(la) : [];
-  const base = (skill, kind, stage, c) => ({
-    skill: skill.id, kind, stage, unit_id: c.unit.id, week_n: c.unit.week_n ?? null,
+  const base = (skill, kind, stage, c, scope = null) => ({
+    skill: skill.id, kind, stage, unit_id: c.unit.id, week_n: c.unit.week_n ?? null, scope,
     target: { text: c.token.text, form: c.token.form, start: c.token.start, end: c.token.end, index: c.index }, entry: c.entry, parse: c.parse,
     meanings: meaningsOf(c.unit.la), gold: c.gold ?? null, confuse: { values: {}, indexes: {}, forms: {} },
   });
   // The draw tiers (gold first, then the current week). `list` may be richer
   // than a candidate — a transform spot is a candidate *and* an op, and each op
   // is its own key — so `candOf` reads the candidate back out of an entry.
+  /**
+   * The chapter that scopes the session narrows a stage-3 draw exactly as it
+   * narrows a wave-1 one (chapter.js "the sentence's chapter"): the kind's own
+   * filter runs first, so what is scoped is what the learner could have been
+   * shown, and the fallback is outward — never a sentence from a later chapter
+   * while an earlier one exists. A redo names its item and is left alone.
+   */
+  const scopeFor = (list, { chapter = null, itemKey = null }, weekOf = (x) => x?.unit?.week_n ?? null) =>
+    (itemKey != null ? { list, scope: null, counts: null } : scopeByChapter(list, chapter, weekOf));
   const tiersFor = (list, keyOf, { currentWeek, currentWeekN }, candOf = (x) => x) => {
     const tiers = [new Set(list.filter((x) => candOf(x).gold).map(keyOf))];
     if (currentWeek && currentWeekN != null && !isShelfWeek(currentWeekN)) tiers.push(new Set(list.filter((x) => candOf(x).unit.week_n === currentWeekN).map(keyOf)));
@@ -182,14 +192,16 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
       }
     }
     if (!spots.length) return null;
+    const scoped = scopeFor(spots, opts, (s) => s.c.unit.week_n ?? null);
+    const note = (c) => scopeNote(opts.chapter ?? null, scoped.scope, c);
     const keyOf = (s) => `transform:${s.c.unit.id}:${s.c.token.form}:${s.c.index}:${s.op.op}`;
-    const keys = spots.map(keyOf);
-    const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(spots, keyOf, opts, (s) => s.c), opts.itemKey ?? null);
+    const keys = scoped.list.map(keyOf);
+    const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(scoped.list, keyOf, opts, (s) => s.c), opts.itemKey ?? null);
     if (!got) return null;
-    const { c, op, got: cell } = spots[keys.indexOf(got.key)];
+    const { c, op, got: cell } = scoped.list[keys.indexOf(got.key)];
     const { capped, answers } = answersFor(c.entry, cell);
     const lab = c.parse.case ? featureLabel('case', c.parse.case) : featureLabel('tense', `${c.parse.tense} ${c.parse.mood}`);
-    return { ...base(skill, 'transform', stage, c), key: got.key, input: 'type', repeat: got.wrapped, op: op.op,
+    return { ...base(skill, 'transform', stage, c, note(c)), key: got.key, input: 'type', repeat: got.wrapped, op: op.op,
       prompt: { la: c.unit.la, question: op.label, gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}; the ${op.what} sits in the table below.`, placeholder: 'the changed form (macrons optional)' },
       answer: answers, choices: null,
       feedback: { short: `${capped[0]} is the ${op.what} of ${c.entry.lemma}; the book has ${c.token.text}.`, term: skill.plain, label: lab, table: (() => { try { return paradigm ? paradigm(c.entry, [op.parse]) : null; } catch { return null; } })(), lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en || null } };
@@ -207,12 +219,13 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
       return ch.length >= 3 && ch.length <= REORDER_MAX_WORDS && new Set(ch).size >= 2;
     });
     if (!cands.length) return null;
+    const scoped = scopeFor(cands, opts);
     const keyOf = (c) => `reorder:${c.unit.id}`;
-    const keys = cands.map(keyOf);
+    const keys = scoped.list.map(keyOf);
     // Scramble is settled before the pool key is spent, so a sentence is never burned unasked (m7).
-    const got = pool.chooseInfo(skill.id, 'reorder', keys, rand, tiersFor(cands, keyOf, opts), opts.itemKey ?? null);
+    const got = pool.chooseInfo(skill.id, 'reorder', keys, rand, tiersFor(scoped.list, keyOf, opts), opts.itemKey ?? null);
     if (!got) return null;
-    const c = cands[keys.indexOf(got.key)];
+    const c = scoped.list[keys.indexOf(got.key)];
     const chunks = chunksOf(c.unit.la);
     const order = scramble(chunks, rand);
     if (!order) return null;
@@ -220,7 +233,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     // first word is left alone: without a proper-noun test here, lower-casing *Rōma* would be the worse error.
     const display = chunks.map((w, i) => (i === chunks.length - 1 ? w.replace(/[.!?]+$/, '') : w));
     const lab = c.value ? featureLabel(skill.feature ?? 'case', c.value, { skills: items.skills, skill }) : { name: skill.title, plain: skill.plain };
-    return { ...base(skill, 'reorder', stage, c), key: got.key, input: 'order', repeat: got.wrapped, chunks, display, scrambled: order,
+    return { ...base(skill, 'reorder', stage, c, scopeNote(opts.chapter ?? null, scoped.scope, c)), key: got.key, input: 'order', repeat: got.wrapped, chunks, display, scrambled: order,
       prompt: { la: null, question: 'Put the words back in the book\'s order', gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}. ${skill.summary ?? ''}`.trim() },
       answer: [c.unit.la], choices: null,
       feedback: { short: `The book has: ${c.unit.la}`, term: skill.plain, label: lab, table: null, lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en || null } };
@@ -239,11 +252,12 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     if (!cands.length) return null;
     // Every verified candidate of the skill in a unit: the word indexes the app may claim carry the construction.
     const verifiedIn = (unitId) => new Set(all.filter((c) => c.unit.id === unitId && !c.ambiguous && c.verified).map((c) => c.index));
+    const scoped = scopeFor(cands, opts);
     const keyOf = (c) => `translate:${c.unit.id}`;
-    const keys = cands.map(keyOf);
-    const got = pool.chooseInfo(skill.id, 'translate', keys, rand, tiersFor(cands, keyOf, opts), opts.itemKey ?? null);
+    const keys = scoped.list.map(keyOf);
+    const got = pool.chooseInfo(skill.id, 'translate', keys, rand, tiersFor(scoped.list, keyOf, opts), opts.itemKey ?? null);
     if (!got) return null;
-    const c = cands[keys.indexOf(got.key)];
+    const c = scoped.list[keys.indexOf(got.key)];
     // The key words: every word inside the skill's pattern match (the construction), the target word at least.
     const stripped = strippedText(c.unit.la);
     const spans = patternSpans(c.unit.la, patternsOf(skill), stripped);
@@ -254,21 +268,21 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     const lit = words.map((w, i) => ({ w, i })).filter(({ w, i }) => ok.has(i) && spans.some(([s, e]) => stripped.map[w.start] >= s && stripped.map[w.start] < e)).map(({ i }) => i);
     if (!lit.includes(c.index)) lit.push(c.index);
     const lab = c.value ? featureLabel(skill.feature ?? 'case', c.value, { skills: items.skills, skill }) : { name: skill.title, plain: skill.plain };
-    return { ...base(skill, 'translate', stage, c), key: got.key, input: 'self', repeat: got.wrapped, lit: lit.sort((a, b) => a - b),
+    return { ...base(skill, 'translate', stage, c, scopeNote(opts.chapter ?? null, scoped.scope, c)), key: got.key, input: 'self', repeat: got.wrapped, lit: lit.sort((a, b) => a - b),
       prompt: { la: c.unit.la, question: 'Translate the sentence, then compare', gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}.` },
       answer: [c.unit.en], choices: null,
       feedback: { short: `${c.token.text} is ${lab.name} — ${lab.plain} — from ${c.entry.lemma}.`, term: skill.plain, label: lab, table: null, lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en } };
   }
 
   const FNS = { transform, reorder, translate };
-  function generate({ skill: skillId, kind, stage = 3, currentWeek = false, currentWeekN = null, itemKey = null } = {}) {
+  function generate({ skill: skillId, kind, stage = 3, currentWeek = false, currentWeekN = null, chapter = null, itemKey = null } = {}) {
     const skill = typeof skillId === 'string' ? items.skills.get(skillId) : skillId;
     if (!skill || !skill.parse_filter || !FNS[kind]) return null;
-    const opts = { currentWeek, currentWeekN, itemKey };
+    const opts = { currentWeek, currentWeekN, chapter, itemKey };
     // `itemKey`: a redo asking for one exact item back ("Redo what was wrong"). The pool hands that key over
     // or nothing at all, and the current-week retry below is not tried — it could only find a different sentence.
     let item = FNS[kind](skill, stage, opts);
-    if (!item && currentWeek && itemKey == null) item = FNS[kind](skill, stage, { currentWeek: false, currentWeekN: null, itemKey: null });
+    if (!item && currentWeek && itemKey == null) item = FNS[kind](skill, stage, { currentWeek: false, currentWeekN: null, chapter, itemKey: null });
     return item;
   }
   return { generate };

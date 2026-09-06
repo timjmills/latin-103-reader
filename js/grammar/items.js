@@ -30,6 +30,7 @@
 
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { weekOfUnit, isShelfWeek } from '../sync.js';
+import { scopeByChapter, scopeNote } from './chapter.js';
 
 /* ----------------------------------------------------------- labels */
 export const FEATURES = Object.freeze(['case', 'gender', 'number', 'tense', 'mood', 'voice', 'person', 'degree', 'construction', 'form']);
@@ -685,8 +686,8 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       .map((ch) => ({ ...ch, label: labelOf(k, ch.value, skill).name, plain: labelOf(k, ch.value, skill).plain }));
   };
 
-  const base = (skill, kind, stage, c) => ({
-    skill: skill.id, kind, stage, unit_id: c?.unit?.id ?? null, week_n: c?.unit?.week_n ?? null,
+  const base = (skill, kind, stage, c, scope = null) => ({
+    skill: skill.id, kind, stage, unit_id: c?.unit?.id ?? null, week_n: c?.unit?.week_n ?? null, scope,
     target: c ? { text: c.token.text, form: c.token.form, start: c.token.start, end: c.token.end, index: c.index } : null,
     entry: c?.entry ?? null, parse: c?.parse ?? null,
     meanings: c ? meaningsOf(c.unit.la) : [],
@@ -732,12 +733,17 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     };
   };
 
-  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, where = null, itemKey = null }) => {
+  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, chapter = null, where = null, itemKey = null }) => {
     let pool_ = candidates(skill.id);
     if (where) pool_ = pool_.filter(where);
     if (unambiguous) pool_ = pool_.filter((c) => !c.ambiguous);
     else { const clear = pool_.filter((c) => !c.ambiguous); if (clear.length >= 5) pool_ = clear; }   // blank: forms the sentence reads one way, while there are enough
     if (!pool_.length) return null;
+    // A chapter scopes the draw before anything else orders it: its own sentences, else the chapters at or
+    // before it, else the wider library with the item saying so (chapter.js "the sentence's chapter"). A redo
+    // names one exact item, and that item is what it is — the scope would only make it undrawable.
+    const scoped = itemKey != null ? { list: pool_, scope: null, counts: null } : scopeByChapter(pool_, chapter);
+    pool_ = scoped.list;
     const keyOf = (c) => `${kind}:${c.unit.id}:${c.token.form}:${c.index}`;
     const keys = pool_.map(keyOf);
     const tiers = [];
@@ -750,7 +756,8 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     tiers.push(new Set(pool_.filter((c) => c.unit.la.length <= SHORT_LA).map(keyOf)));
     const got = pool.chooseInfo(skill.id, kind, keys, rand, tiers.filter((t) => t.size), itemKey);
     if (!got) return null;
-    return { c: pool_[keys.indexOf(got.key)], key: got.key, wrapped: got.wrapped };
+    const c = pool_[keys.indexOf(got.key)];
+    return { c, key: got.key, wrapped: got.wrapped, scope: scopeNote(chapter, scoped.scope, c) };
   };
 
   const recogniseQuestion = (skill, c, k) => {
@@ -772,7 +779,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const wantTap = opts.itemKey == null ? null : /^recognise-tap:/.test(String(opts.itemKey));
     const got = pickCandidate(skill, 'recognise', { unambiguous: true, ...opts, itemKey: opts.itemKey == null ? null : String(opts.itemKey).replace(/^recognise-tap:/, 'recognise:') });
     if (!got) return null;
-    const { c, key: itemKey, wrapped } = got;
+    const { c, key: itemKey, wrapped, scope } = got;
     // "What is this dative doing?" offers the dative's other jobs; a construction without a case offers the other clause types.
     const choices = choicesFor(skill, c, k, 4, { sameCaseOnly: k === 'construction' }) ?? choicesFor(skill, c, k);
     if (!choices || choices.length < 2) return null;   // one button is no question
@@ -782,11 +789,11 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     // choices, and any word the skill's filter fits is right (accept = word indexes).
     if (wantTap ?? (opts.tap ?? rand() < 0.5)) {
       const accept = candidates(skill.id).filter((x) => x.unit.id === c.unit.id && x.value === c.value && !x.ambiguous).map((x) => x.index);
-      return { ...base(skill, 'recognise', stage, c), key: itemKey.replace(/^recognise:/, 'recognise-tap:'), input: 'tap', repeat: wrapped,
+      return { ...base(skill, 'recognise', stage, c, scope), key: itemKey.replace(/^recognise:/, 'recognise-tap:'), input: 'tap', repeat: wrapped,
         prompt: { la: c.unit.la, question: `Tap the word that is ${lab.name} — ${lab.plain}`, gloss: null, hint: skill.summary },
         answer: [c.token.text], accept: accept.length ? accept : [c.index], choices: null, confuse, feedback: feedbackFor(skill, c, k) };
     }
-    return { ...base(skill, 'recognise', stage, c), key: itemKey, input: 'choice', repeat: wrapped,
+    return { ...base(skill, 'recognise', stage, c, scope), key: itemKey, input: 'choice', repeat: wrapped,
       prompt: { la: c.unit.la, question: recogniseQuestion(skill, c, k), gloss: lemmaGloss(c.entry), hint: skill.summary },
       answer: [c.value], choices, confuse, feedback: feedbackFor(skill, c, k) };
   }
@@ -848,7 +855,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     if (!k) return null;
     const got = pickCandidate(skill, 'parse', { unambiguous: true, ...opts });
     if (!got) return null;
-    const { c, key: itemKey, wrapped } = got;
+    const { c, key: itemKey, wrapped, scope } = got;
     const confuse = confuseMap(skill, c, k);
     if (k === 'construction') {
       // A construction is parsed by its job: "indirect object", "purpose" — choices at stage 1, typed from stage 2.
@@ -859,7 +866,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       const reject = {};
       for (const ch of choices) if (!ch.correct && ch.skill) for (const kw of functionKeys(skillMap.get(ch.skill))) reject[kw] = ch.skill;
       const expect = { kind: 'function', accept: functionKeys(skill), reject };
-      const item = { ...base(skill, 'parse', stage, c), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
+      const item = { ...base(skill, 'parse', stage, c, scope), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
         prompt: { la: c.unit.la, question: caseName ? (stage >= 2 ? `${c.token.text} is ${caseName}: what is it doing here? (its function)` : `${c.token.text}: which case, and what is it doing here?`) : `What is ${c.token.text} doing here? (the construction)`, gloss: lemmaGloss(c.entry), hint: skill.summary, placeholder: 'e.g. indirect object' },
         answer: [labelOf(k, c.value, skill).name], expect, choices: null, confuse, feedback: feedbackFor(skill, c, k) };
       if (item.input === 'choice') { item.choices = choices.map(withCase); item.answer = [c.value]; }
@@ -867,7 +874,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     }
     const expect = parseExpect(skill, c);
     const canonical = parseName(skill, c.parse, c.entry);
-    const item = { ...base(skill, 'parse', stage, c), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
+    const item = { ...base(skill, 'parse', stage, c, scope), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
       prompt: { la: c.unit.la, question: parseQuestion(skill, c, expect), gloss: lemmaGloss(c.entry), hint: skill.summary, placeholder: parsePlaceholder(expect) },
       answer: [canonical], expect, expectKey: k, choices: null, confuse, feedback: feedbackFor(skill, c, k) };
     if (item.input === 'choice') {
@@ -912,10 +919,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     };
     const got = pickCandidate(skill, 'blank', { unambiguous: false, ...opts, where: noGiveaway });
     if (!got) return null;
-    const { c, key: itemKey, wrapped } = got;
+    const { c, key: itemKey, wrapped, scope } = got;
     const answer = [c.token.text, stripMacrons(c.token.text)];
     const lab = c.value ? labelOf(k, c.value, skill) : { name: skill.title, plain: skill.plain };
-    const item = { ...base(skill, 'blank', stage, c), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
+    const item = { ...base(skill, 'blank', stage, c, scope), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
       prompt: { la: blankOut(c.unit.la, c.token), question: `Fill the blank with the right form of ${firstWord(c.entry.lemma)}`, gloss: lemmaGloss(c.entry), hint: `${lab.name} — ${lab.plain}` },
       answer, choices: null, confuse: confuseMap(skill, c, k), feedback: feedbackFor(skill, c, k) };
     if (item.input === 'choice') {
@@ -954,8 +961,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const k = key(skill);
     const filter = filterOf(skill);
     // The lemmas the skill's sentences use, one paradigm each; the pool is keyed by lemma + cell.
+    // A chart has no sentence, but its word came from one, so the chapter scopes which words it may ask about.
+    const scoped = opts.itemKey != null ? { list: candidates(skill.id), scope: null } : scopeByChapter(candidates(skill.id), opts.chapter ?? null);
     const seen = new Map();
-    for (const c of candidates(skill.id)) if (!seen.has(c.entry.h)) seen.set(c.entry.h, c);
+    for (const c of scoped.list) if (!seen.has(c.entry.h)) seen.set(c.entry.h, c);
     const entries = [...seen.values()];
     if (!entries.length) return null;
     let keys = [];
@@ -1021,7 +1030,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const chartGloss = [lemmaGloss(c.entry), headGloss(c.entry), head].find((g) => !spellsAnswer(g, asked)) ?? head;
     const fullQuestion = full && genderCols && k === 'case' ? `Fill in the ${cellLabel(section.rows[ri], -1)} of ${head} in every gender`
       : full ? `Fill in the ${finite ? `${section.title}${colLabel ? ` (${colLabel})` : ''}` : (degreeTitle ? `${degreeTitle} ` : '') + (colLabel || section.title)} of ${head}` : null;
-    return { ...base(skill, 'chart', stage, null), key: got.key, input: 'chart', entry: c.entry, lemma, repeat: got.wrapped,
+    return { ...base(skill, 'chart', stage, null, scopeNote(opts.chapter ?? null, scoped.scope, c)), key: got.key, input: 'chart', entry: c.entry, lemma, repeat: got.wrapped,
       prompt: { la: null, question: full ? fullQuestion : `Give the ${cellLabel(section.rows[ri])} of ${head}`, gloss: chartGloss, hint: `${lab.name} — ${lab.plain}` },
       answer: cellAnswers(target),
       chart: { table, section: si, col: ci, target: { row: ri, col: ci }, cells, full, head },
@@ -1035,10 +1044,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
    * kinds are tried — those not in `avoid` (the neighbours' kinds) first — and
    * the item that comes back says which kind it is.
    */
-  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, full = false, tap = undefined, avoid = [], itemKey = null } = {}) {
+  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, chapter = null, full = false, tap = undefined, avoid = [], itemKey = null } = {}) {
     const skill = typeof skillId === 'string' ? skillMap.get(skillId) : skillId;
     if (!skill || !skill.parse_filter) return null;
-    const opts = { currentWeek, currentWeekN, tap, itemKey };
+    const opts = { currentWeek, currentWeekN, chapter, tap, itemKey };
     const fn = FNS[kind];
     if (!fn) return null;
     // A redo asks for one named item (GRAMMAR-CONTRACT.md "Redo what was wrong"). Neither of the two
@@ -1046,11 +1055,11 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     // item wearing the same name. Nothing to rebuild → null, and the session drops the slot quietly.
     if (itemKey != null) return fn(skill, stage, opts, { full });
     let item = fn(skill, stage, opts, { full });
-    if (!item && currentWeek) item = fn(skill, stage, { currentWeek: false, currentWeekN: null, tap }, { full });
+    if (!item && currentWeek) item = fn(skill, stage, { currentWeek: false, currentWeekN: null, chapter, tap }, { full });
     if (!item) { // fall back through the other kinds so a session slot is never empty — the neighbours' kinds last
       const allowed = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
       const order = ['blank', 'recognise', 'parse', 'chart'].filter((a) => a !== kind && allowed.includes(a));
-      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null }, { full }); if (item) break; }
+      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null, chapter }, { full }); if (item) break; }
     }
     return item;
   }

@@ -6,6 +6,7 @@
 // and without it the spine is simply the numerals I–XXXIV with no titles.
 
 import { roman } from '../sync.js';
+import { chapterOfWeek } from '../chapters.js';
 
 export const CHAPTER_MIN = 1;
 export const CHAPTER_MAX = 34;            // Familia Romana I–XXXIV
@@ -123,4 +124,129 @@ export function spineRows({ chapters = null, skills = new Map(), order = null, s
     const material = chapterMaterial(c.n, { skills, order, sets, entry: c });
     return { ...c, material, progress: chapterProgress(material, { state, drillable }) };
   });
+}
+
+/* ================================================ the sentence's chapter */
+// A chapter's practice must read like that chapter (QA M3): the skills were
+// already kept inside it, but the *sentences* those skills were drilled on
+// came from the whole library, so a chapter-VII session could quote Catullus
+// 70 — cap. XXXIV, twenty-seven chapters ahead of the learner. The rule, and
+// it applies wherever a chapter or a week scopes a session:
+//
+//   1. the chapter's own sentences;
+//   2. failing those, sentences at or before it (Latin the learner has met);
+//   3. only with neither, the wider library — and the item says so in its own
+//      words rather than reaching forward silently.
+//
+// The chapter of a sentence is its library week's, through `chapters.js`
+// (the one place the chapter → week mapping lives): 107 → VII, 207 → VII,
+// week 4 → XXVII. A week the spine does not name has no chapter; such a
+// sentence is never "own" or "earlier", so it can only be reached in tier 3.
+
+/** The scopes a draw can end in, narrowest first. `beyond` is the honest one: nothing at or before the chapter. */
+export const SCOPES = Object.freeze(['own', 'earlier', 'beyond']);
+
+/** A chapter number, or null for anything that is not one (null and undefined included — `Number(null)` is 0, which is not chapter zero). Pure. */
+const chapterNumber = (x) => { const n = Math.round(Number(x)); return Number.isFinite(n) && n >= CHAPTER_MIN ? n : null; };
+
+/** Where a library week sits relative to a chapter: 'own' | 'earlier' | 'later' | 'unknown'. Pure. */
+export function chapterTier(weekN, chapter) {
+  const n = chapterNumber(chapter);
+  if (n == null) return 'unknown';
+  const c = chapterOfWeek(weekN);
+  if (c == null) return 'unknown';
+  return c === n ? 'own' : c < n ? 'earlier' : 'later';
+}
+
+/** The chapter a sentence (a candidate, an item, a unit) belongs to, or null. Pure. */
+export function chapterOfSentence(x) {
+  const w = x?.unit?.week_n ?? x?.week_n ?? null;
+  return w == null ? null : chapterOfWeek(w);
+}
+
+/**
+ * Narrow a draw to the chapter that scopes it. `list` is whatever the
+ * generator would otherwise have drawn from (candidates, transform spots …)
+ * and `weekOf` reads a library week off one of them.
+ *
+ * Returns `{ list, scope, counts }`: the narrowest non-empty tier, which of
+ * the three it is, and the count of each so a caller can say how thin the
+ * chapter was. `chapter` null (or a list already empty) leaves everything
+ * alone with `scope: null` — the whole library, exactly as before.
+ * Pure.
+ */
+export function scopeByChapter(list, chapter, weekOf = (x) => x?.unit?.week_n ?? x?.week_n ?? null) {
+  const n = chapterNumber(chapter);
+  const all = Array.isArray(list) ? list : [];
+  if (n == null || !all.length) return { list: all, scope: null, counts: null };
+  const own = [];
+  const earlier = [];
+  const later = [];
+  const unknown = [];
+  for (const x of all) {
+    const t = chapterTier(weekOf(x), n);
+    (t === 'own' ? own : t === 'earlier' ? earlier : t === 'later' ? later : unknown).push(x);
+  }
+  const counts = { own: own.length, earlier: earlier.length, later: later.length, unknown: unknown.length, atOrBefore: own.length + earlier.length, total: all.length };
+  if (own.length) return { list: own, scope: 'own', counts };
+  if (earlier.length) return { list: earlier, scope: 'earlier', counts };
+  // Nothing at or before the chapter: the wider library, unknown weeks before the ones that are demonstrably ahead.
+  return { list: [...unknown, ...later], scope: 'beyond', counts };
+}
+
+/**
+ * What an item carries when a chapter scoped its draw: the chapter asked for,
+ * the chapter the sentence actually came from, which tier it was drawn in, and
+ * whether that is a reach forward. `null` only when no chapter scoped the draw
+ * at all — an item from the chapter's own Latin still says which chapter that
+ * is, because the pool it exhausts is the chapter's and not the library's.
+ * Pure.
+ */
+export function scopeNote(chapter, scope, sentence) {
+  const n = chapterNumber(chapter);
+  if (n == null || !scope) return null;
+  const from = chapterOfSentence(sentence);
+  return { chapter: n, from, scope, beyond: scope === 'beyond' };
+}
+
+/**
+ * How much Latin a chapter can actually draw on, per skill — the measurement
+ * behind the rule, so a regression shows up as a number and not as a lucky
+ * sample. `skills` is the skill definitions (or ids) to report on and
+ * `candidates(id)` the generator's candidate list for one of them; sentences
+ * are counted once each, by unit id.
+ *
+ *   { chapter, skills: [ { skill, set, own, earlier, atOrBefore, later,
+ *                          unknown, total } ], totals, none }
+ *
+ * `none` names the skills with nothing at or before the chapter — the ones
+ * whose items must say so. A chapter set is counted but never listed there:
+ * its items are the chapter's own by construction. Pure.
+ */
+export function chapterSentenceReport(chapter, { skills = [], candidates = () => [] } = {}) {
+  const n = chapterNumber(chapter);
+  const rows = [];
+  for (const s of skills) {
+    const id = typeof s === 'string' ? s : s?.id;
+    if (!id) continue;
+    const isSet = typeof s === 'string' ? false : !!s?.set;
+    const seen = new Map();
+    for (const c of candidates(id) ?? []) {
+      const u = c?.unit?.id ?? c?.unit_id ?? null;
+      if (u == null || seen.has(u)) continue;
+      seen.set(u, chapterTier(c?.unit?.week_n ?? c?.week_n ?? null, n));
+    }
+    const tiers = [...seen.values()];
+    const count = (t) => tiers.filter((x) => x === t).length;
+    const own = count('own');
+    const earlier = count('earlier');
+    rows.push({ skill: id, set: isSet, own, earlier, atOrBefore: own + earlier, later: count('later'), unknown: count('unknown'), total: seen.size });
+  }
+  const sum = (k) => rows.reduce((t, r) => t + r[k], 0);
+  return {
+    chapter: n,
+    skills: rows,
+    totals: { own: sum('own'), earlier: sum('earlier'), atOrBefore: sum('atOrBefore'), later: sum('later'), unknown: sum('unknown'), total: sum('total') },
+    none: rows.filter((r) => !r.set && !r.atOrBefore).map((r) => r.skill),
+  };
 }
