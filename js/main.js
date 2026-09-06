@@ -154,6 +154,7 @@ async function boot() {
   let course = [];
   try { course = await (await fetch('./data/course.json')).json(); } catch { /* fall back to library weeks only */ }
   const outline = course.length ? course : weeks;
+  let grammar = null;   // mountGrammar()'s handle (the Today card for the weeks menu)
   const weekBtn = $('#week-btn');
   const weeksDialog = $('#weeks');
   const weeksList = $('#weeks-list');
@@ -239,11 +240,25 @@ async function boot() {
     weekBtn.querySelector('.week__num').textContent = weekNumberLabel(n);   // "Week 3" / "Cap. VII"
     weekBtn.querySelector('.week__title').textContent = weekTitle(n);
   }
+  // The Today card (GRAMMAR-CONTRACT.md "Daily plan") at the top of the menu: the grammar section builds it
+  // (mountGrammar's handle, set at the end of boot); the reading line comes from this week's unread count and the pace.
+  const weeksToday = $('#weeks-today');
+  async function paintWeeksToday() {
+    if (!weeksToday || !grammar?.todayCard) return;
+    try {
+      const read = readInWeek();
+      const unread = hasProgress && units.length ? Math.max(0, units.length - read) : 0;
+      const card = await grammar.todayCard({ unread, pace: hasStudy ? (stats ??= studyLog({ progress: progressRows, studyDays })).pace : null });
+      weeksToday.replaceChildren(...(card ? [card] : []));
+      weeksToday.hidden = !card;
+    } catch (e) { console.warn('[grammar] today card', e?.message || e); weeksToday.hidden = true; }
+  }
   weekBtn.addEventListener('click', async () => {
     await ensureWeekTotals();
     renderWeeksMenu(weekN);
     if (!weeksDialog.open) weeksDialog.showModal();
     weeksList.querySelector('[aria-current="true"]')?.focus();
+    paintWeeksToday();
   });
   weeksDialog.querySelector('[data-close="weeks"]').addEventListener('click', () => weeksDialog.close());
   weeksDialog.addEventListener('click', (e) => { if (e.target === weeksDialog) weeksDialog.close(); });
@@ -1044,7 +1059,7 @@ async function boot() {
   maybeShowHint();
   if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));
   // Grammar section: binds the header's Read / Grammar control; loads nothing until Grammar is opened.
-  mountGrammar({ store, dict, par, reader, settings, saveSettings }).catch((e) => console.warn('[grammar] not mounted', e?.message || e));
+  mountGrammar({ store, dict, par, reader, settings, saveSettings }).then((g) => { grammar = g; }).catch((e) => console.warn('[grammar] not mounted', e?.message || e));
 }
 
 boot().catch((err) => {

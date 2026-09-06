@@ -6,11 +6,18 @@
 
 import { matchesForm, matchParse, matchFunction, parseFeatures, normaliseAnswer } from './items.js';
 import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession } from './scheduler.js';
+import { matchQuestion } from './sets.js';
+import { orderMatches } from './stage3.js';
 
 export const LEARN_GUIDED = 5;
 export const LEARN_BLOCKED = 10;
 
-/** Judge an answer against an item. `value`: a string (type / choice value) or, for a chart, { cellIndex: string }. Pure. */
+/**
+ * Judge an answer against an item. `value`: a string (type / choice value); a
+ * word index (tap); { cellIndex: string } (chart); an array of chunk indexes
+ * (order); { leftIndex: rightIndex } (match); { blankIndex: string } (inline /
+ * bank); 'right' | 'partly' | 'wrong' (self). Pure.
+ */
 export function judge(item, value) {
   if (!item) return { correct: false, expected: '', given: '' };
   if (item.input === 'chart') {
@@ -25,6 +32,29 @@ export function judge(item, value) {
     const word = item.meanings?.[i]?.text ?? '';
     return { correct: ok, expected: item.target?.text ?? item.answer?.[0] ?? '', given: word || String(value ?? '') };
   }
+  if (item.input === 'order') {
+    const order = Array.isArray(value) ? value.map(Number) : [];
+    const chunks = item.chunks || [];
+    return { correct: orderMatches(chunks, order), expected: chunks.join(' '), given: order.map((i) => chunks[i] ?? '').join(' ') };
+  }
+  if (item.input === 'match') {
+    const given = value && typeof value === 'object' ? value : {};
+    const pairs = item.pairs || [];
+    const right = item.right || [];
+    const results = pairs.map((p, i) => { const r = right[Number(given[i])]; return { i, ok: !!r && r.pair === i, given: r?.text ?? '', expected: p.en, la: p.la }; });
+    return { correct: results.every((r) => r.ok), cells: results, expected: pairs.map((p) => `${p.la} — ${p.en}`).join(', '), given: results.map((r) => `${r.la} — ${r.given || '—'}`).join(', ') };
+  }
+  if (item.input === 'inline' || item.input === 'bank') {
+    const given = value && typeof value === 'object' ? value : {};
+    const blanks = item.blanks || [];
+    // Pensum A accepts the ending alone or the whole word (stem + ending).
+    const results = blanks.map((b, i) => { const g = String(given[i] ?? ''); const ok = matchesForm(g, b.answers) || (b.stem && matchesForm(g, b.answers.map((a) => b.stem + a))); return { i, ok, given: g, expected: b.answers[0] }; });
+    return { correct: results.every((r) => r.ok), cells: results, expected: blanks.map((b) => b.answers[0]).join(', '), given: results.map((r) => r.given || '—').join(', ') };
+  }
+  if (item.input === 'self') {
+    const g = String(value ?? '');
+    return { correct: g === 'right' || g === 'partly', partial: g === 'partly', self: true, expected: item.answer?.[0] ?? '', given: g };
+  }
   const given = String(value ?? '');
   if (item.input === 'choice') {
     const ch = (item.choices || []).find((c) => c.value === given);
@@ -32,6 +62,7 @@ export function judge(item, value) {
   }
   if (item.expect?.kind === 'function') { const m = matchFunction(given, item.expect); return { correct: m.correct, expected: item.answer?.[0] ?? '', given, confusedSkill: m.confused }; }
   if (item.expect) return { correct: matchParse(given, item.expect), expected: item.answer?.[0] ?? '', given };
+  if (item.kind === 'question' || (item.kind === 'pensum' && item.pensum === 'C')) return { correct: matchQuestion(given, item.answer || [], item.feedback?.sentence ?? ''), expected: item.answer?.[0] ?? '', given };
   return { correct: matchesForm(given, item.answer || []), expected: item.answer?.[0] ?? '', given };
 }
 
@@ -92,6 +123,7 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
   }
   return {
     get length() { return queue.length; },
+    get queue() { return queue; },
     get position() { return index; },
     get current() { return current; },
     get log() { return log; },
@@ -104,11 +136,13 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       const result = judge(item, value);
       if (item.input === 'tap') result.index = Number(value);
       const took = Date.now() - startedAt;
-      const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted, answer: String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date().toISOString() };
+      // A self-graded answer (translate) is weaker evidence: logged self: true and weighted as hinted (the server row has no column; `answer` carries the grade).
+      const self = !!result.self;
+      const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date().toISOString() };
       log.push(attempt);
       answered = true;
-      if (!result.correct && requeueOn) queue = [...queue.slice(0, index + 1), ...requeue(queue.slice(index + 1), { skill: item.skill, kind: item.kind, stage: slot.stage ?? item.stage, skills, rand, fill })];
-      await onAnswer?.({ item, slot, result, attempt, hinted, ms: took });
+      if (!result.correct && requeueOn) queue = [...queue.slice(0, index + 1), ...requeue(queue.slice(index + 1), { skill: item.skill, kind: item.kind, stage: slot.stage ?? item.stage, skills, rand, fill, played: queue.slice(0, index + 1) })];
+      await onAnswer?.({ item, slot, result, attempt, hinted: hinted || self, partial: !!result.partial, ms: took });
       changed();
       return { ...result, attempt, item };
     },
@@ -134,17 +168,22 @@ export function createLearn({ skill, gstore, items, rand = Math.random }) {
   let phase = 'lesson';
   let runner = null;
   let rounds = 0;
+  const isSet = !!skill.set;
   const kinds = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
   // Recognition before recall (plan §3): the guided five are stage-1 items (choices, a whole chart);
   // the blocked ten mix stages 1–2 (typed parse and blank from stage 2).
-  const kindSeq = (n, stageOf) => { const out = []; let last = null; for (let i = 0; i < n; i++) { const pool = kinds.filter((k) => k !== last); const k = pool[Math.floor(rand() * pool.length)]; out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false }); last = k; } return out; };
-  const getItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, full: phase === 'guided' && slot.kind === 'chart', avoid: opts.avoid });
+  const kindSeq = (n, stageOf) => { const out = []; let last = null; for (let i = 0; i < n; i++) { const pool = kinds.filter((k) => k !== last); const k = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))]; out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false }); last = k; } return out; };
+  const getItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, full: phase === 'guided' && slot.kind === 'chart', avoid: opts.avoid, match: isSet && phase === 'guided' ? false : undefined });
   const record = async ({ attempt, result }) => {
     await gstore.addAttempt(attempt);
     if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(skill.id, attempt.confused_with);
   };
+  // A chapter set's "guided" phase is the whole deck / the passage's items once through, with feedback (a vocab deck of 30 words is 30 items); the blocked ten follow.
+  const deckSize = isSet ? Math.max(1, Number(skill.count) || 0) : LEARN_GUIDED;
   return {
     skill,
+    isSet,
+    deckSize,
     get phase() { return phase; },
     get runner() { return runner; },
     get rounds() { return rounds; },
@@ -153,12 +192,17 @@ export function createLearn({ skill, gstore, items, rand = Math.random }) {
       await gstore.setState(startLearning(cur ?? skill.id));
     },
     goto(p) { if (phases.includes(p)) phase = p; return phase; },
-    startGuided() { phase = 'guided'; runner = createRunner({ slots: kindSeq(LEARN_GUIDED, () => 1), getItem, mode: 'learn', onAnswer: record, rand }); return runner.start(); },
+    startGuided() {
+      phase = 'guided';
+      if (isSet) items.pool.reset(skill.id);   // once through from the top
+      runner = createRunner({ slots: kindSeq(deckSize, () => 1), getItem, mode: 'learn', onAnswer: record, rand });
+      return runner.start();
+    },
     startBlocked() { phase = 'blocked'; rounds += 1; runner = createRunner({ slots: kindSeq(LEARN_BLOCKED, (k) => (k === 'blank' || k === 'parse' ? 2 : 1)), getItem, mode: 'learn', onAnswer: record, rand }); return runner.start(); },
-    /** After the blocked drill: the criterion over its attempts. */
+    /** After the blocked drill: the criterion over its attempts (a set has one kind, so the two-kinds rule does not apply to it). */
     async finishBlocked() {
       phase = 'result';
-      const c = learnCriterion(runner.log);
+      const c = learnCriterion(runner.log, isSet ? { kinds: 1 } : {});
       if (c.passed) await gstore.setState(passLearn(gstore.getState(skill.id) ?? skill.id));
       const missed = runner.log.filter((a) => !a.correct);
       return { ...c, missed, rounds };
@@ -175,13 +219,13 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
   const skills = skillsIndex.skills;
   // Only skills that can produce an item enter a plan (M8): a metre skill or one with no sentences never becomes a slot.
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
-  const build = (n, exclude = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9) });
+  const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior });
   const slots = plan ?? build(size ?? 10);
   const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, avoid: opts.avoid });
-  const onAnswer = async ({ item, result, attempt, hinted, ms }) => {
+  const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
     await gstore.addAttempt(attempt);
     const cur = gstore.getState(item.skill) ?? item.skill;
-    await gstore.setState(applyAnswer(cur, { correct: result.correct, hinted, ms }));
+    await gstore.setState(applyAnswer(cur, { correct: result.correct, hinted, partial, ms }));
     if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(item.skill, attempt.confused_with);
   };
   // A blocked set on one skill repeats that skill by design, so a wrong answer there is not re-queued (it could only come back at once).
@@ -189,8 +233,8 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
   return {
     runner, preset, size, open: size == null,
     start: () => runner.start(),
-    /** Open-ended: another batch. */
-    more: () => runner.extend(build(10)),
+    /** Open-ended: another batch, counting the chapter-set window across the seam. */
+    more: () => runner.extend(build(10, null, runner.queue)),
   };
 }
 

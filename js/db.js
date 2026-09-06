@@ -14,12 +14,13 @@
 //   skill_state  keyPath skill         (grammar: one row per skill — GRAMMAR-CONTRACT.md)
 //   drill_attempts keyPath id          index skill   (grammar: append-only attempt log, id made on the device)
 //   confusions   keyPath key           (grammar: `${skill_a}|${skill_b}` → count)
+//   pensa        keyPath id            index chapter   (grammar wave 2: `${chapter}:${kind}` → the private Pensum A/B/C rows of public.pensa)
 //   meta         keyPath key           (user_id, user_email, texts_synced_at …)
 //   outbox       keyPath seq (auto)    queued writes while offline
 
 export const DB_NAME = 'latin103';
-export const DB_VERSION = 6;   // 2: pictures; 3: progress; 4: study_days; 5: study_rows (per device) replaces study_days; 6: grammar (skill_state, drill_attempts, confusions)
-export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'study_rows', 'skill_state', 'drill_attempts', 'confusions', 'meta', 'outbox'];
+export const DB_VERSION = 7;   // 2: pictures; 3: progress; 4: study_days; 5: study_rows (per device) replaces study_days; 6: grammar (skill_state, drill_attempts, confusions); 7: pensa
+export const STORES = ['weeks', 'units', 'highlights', 'lookups', 'settings', 'alignments', 'pictures', 'progress', 'study_rows', 'skill_state', 'drill_attempts', 'confusions', 'pensa', 'meta', 'outbox'];
 
 let dbPromise = null;
 
@@ -44,6 +45,8 @@ function upgrade(idb) {
   mk('skill_state', { keyPath: 'skill' });
   mk('drill_attempts', { keyPath: 'id' }, [['skill', 'skill']]);
   mk('confusions', { keyPath: 'key' });
+  // v7: the pensa (GRAMMAR-CONTRACT.md "Wave 2") — pulled with the grammar rows, private like the texts.
+  mk('pensa', { keyPath: 'id' }, [['chapter', 'chapter']]);
   mk('meta', { keyPath: 'key' });
   mk('outbox', { keyPath: 'seq', autoIncrement: true });
 }

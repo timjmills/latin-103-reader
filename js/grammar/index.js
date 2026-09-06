@@ -1,20 +1,28 @@
 // Grammar section (GRAMMAR-PLAN.md / GRAMMAR-CONTRACT.md): mount, the Read /
 // Grammar switch, data loading and the router. Nothing here runs until the
-// learner opens Grammar for the first time (or the device last left it open);
-// the reader is untouched either way — the section only hides the reader's
-// layout with `hidden` and shows its own <section id="grammar">.
+// learner opens Grammar for the first time (or the device last left it open,
+// or the weeks menu asks for the Today card); the reader is untouched either
+// way — the section only hides the reader's layout with `hidden` and shows
+// its own <section id="grammar">.
 //
 //   mountGrammar({ store, dict, par, reader, settings, saveSettings })   from main.js, after boot
+//     → { open, close, ctx, todayCard({ unread, pace }) → Promise<node | null> }   (the card the weeks menu shows)
 
 import { loadSkills, weekSkills, lessonExampleUnits } from './lessons.js';
 import { createGrammarStore } from './store-grammar.js';
 import { createItems } from './items.js';
+import { createStage3 } from './stage3.js';
+import { createSetLoader, createSetItems, setSkills, groupPensa, chapterOfWeek, manifestChapters } from './sets.js';
+import { createGenerator } from './generate.js';
 import { createUI } from './ui.js';
 
 const LS_SECTION = 'l103.section';
 const LS_WEEK = 'l103.week';
 const LS_COURSE_WEEK = 'l103.grammar.courseWeek';   // the last *course* week read, kept while the reader is on the review shelf (G1-12)
 const SHELF_BASE = 100;
+// The public chapter sets ship with the app; `?fixture=1` reads two chapters of each from tests/fixtures/grammar/ (served from the repo root).
+const DATA_BASE = new URL('../../data/grammar/', import.meta.url);
+const FIXTURE_BASE = new URL('../../../tests/fixtures/grammar/', import.meta.url);
 
 export async function mountGrammar({ store, dict, par, reader = null, settings = {}, saveSettings = null }) {
   const root = document.getElementById('grammar');
@@ -26,12 +34,16 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   const fixture = document.documentElement.dataset.fixture === '1';
   let hooks = null;
   if (!fixture) { try { hooks = (await import('../store.js')).grammarHooks; } catch (e) { console.warn('[grammar] store hooks missing; keeping progress on this device only', e?.message || e); } }
+  const dataBase = fixture ? FIXTURE_BASE : DATA_BASE;
+  const fetchJson = async (name) => { const res = await fetch(new URL(name, dataBase)); if (!res.ok) throw new Error(`${name}: ${res.status}`); return res.json(); };
+  // The fixture pensa: tests/fixtures/grammar/pensa/index.json lists the chapters, NN.json holds the rows (the real store pulls public.pensa).
+  const localPensa = fixture ? async () => { const chapters = manifestChapters(await fetchJson('pensa/index.json')) ?? []; const docs = await Promise.all(chapters.map((c) => fetchJson(`pensa/${String(c).padStart(2, '0')}.json`).catch(() => null))); return docs.flatMap((d) => (Array.isArray(d) ? d : Array.isArray(d?.rows) ? d.rows : [])); } : null;
 
   const drillableMemo = new Map();
   const ctx = {
     store, dict, par, reader, live, root, fixture,
     settings, saveSettings,
-    index: null, gstore: null, items: null, units: [], weeks: [],
+    index: null, gstore: null, items: null, units: [], weeks: [], sets: new Map(), skills: new Map(),
     /** The reader's current week (the device's own, or the synced last position). */
     currentWeekN() {
       const lp = ctx.settings?.lastPosition?.week_n;
@@ -50,8 +62,12 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     },
     /** The 103 skills introduced this week (the last course week: a shelf chapter being read keeps the week's suggestions). */
     currentWeekSkills() { const n = ctx.currentCourseWeekN(); return n ? weekSkills(ctx.index, n) : []; },
-    /** True when a skill can produce a drill item at all (a parse filter and at least one sentence in the library), memoised. */
-    drillable(id) { if (!drillableMemo.has(id)) drillableMemo.set(id, !!ctx.items?.drillable(id)); return drillableMemo.get(id); },
+    /** The chapter the current week reads (a shelf chapter or the course week's Familia Romana chapter), for its question set and vocabulary deck. */
+    currentChapter() { const n = ctx.currentWeekN(); const w = ctx.weeks.find((x) => x.n === n); return w ? chapterOfWeek(w) : null; },
+    /** The chapter sets that belong to the current week (its chapter's questions, vocabulary and pensa), for the "this week" preset. */
+    currentWeekSets() { const c = ctx.currentChapter(); return c == null ? [] : [...ctx.sets.values()].filter((s) => s.chapter === c && !s.rev).map((s) => s.id); },
+    /** True when a skill can produce a drill item at all (a parse filter and at least one sentence in the library; a set with items), memoised. */
+    drillable(id) { if (ctx.skills.get(id)?.set) return !!ctx.items?.drillable(id); if (!drillableMemo.has(id)) drillableMemo.set(id, !!ctx.items?.drillable(id)); return drillableMemo.get(id); },
     /** The grammar preferences kept in settings (unknown keys ride along in the settings blob). */
     prefs() { const g = ctx.settings?.grammar; return { preset: g?.preset ?? 'review-heavy', size: g?.size === null ? null : (Number(g?.size) || 10), oneSkill: g?.oneSkill ?? null }; },
     async savePrefs(patch) {
@@ -59,18 +75,33 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       ctx.settings = { ...ctx.settings, grammar: next };
       try { if (saveSettings) ctx.settings = (await saveSettings({ grammar: next })) ?? ctx.settings; } catch (e) { console.warn('[grammar] preferences not saved', e?.message || e); }
     },
+    /** Any other settings key (todayDismissed). */
+    async saveSetting(patch) {
+      ctx.settings = { ...ctx.settings, ...patch };
+      try { if (saveSettings) ctx.settings = (await saveSettings(patch)) ?? ctx.settings; } catch (e) { console.warn('[grammar] setting not saved', e?.message || e); }
+    },
     section: () => document.documentElement.dataset.section ?? 'read',
     say(text) { if (live) live.textContent = text; },
+    /** Open the section on a view (the Today card's Start buttons, from the weeks menu). */
+    go(view, params = {}) { if (view === 'read') { setSection('read', { focus: true }); return; } setSection('grammar'); init().then(() => ui?.render(view, params)); },
   };
 
   let ui = null;
   let initP = null;
+  let baseItems = null;
+  /** The chapter sets as skills, from the public files and the store's pensa; rebuilt when the pensa change. */
+  function buildSets(loaded) {
+    ctx.sets = setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
+    ctx.skills = new Map([...ctx.index.skills, ...ctx.sets]);
+    const setItems = createSetItems({ sets: ctx.sets, units: ctx.units, pool: baseItems.pool });
+    ctx.items = createGenerator({ items: baseItems, stage3: createStage3({ items: baseItems, paradigm: par.paradigm }), sets: setItems, skills: ctx.skills });
+  }
   async function init() {
     if (initP) return initP;
     initP = (async () => {
       root.replaceChildren(Object.assign(document.createElement('p'), { className: 'g-loading', textContent: 'Loading the grammar section…' }));
       ctx.index = await loadSkills();
-      ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks });
+      ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa });
       await ctx.gstore.ready();
       // Every week in the library, review shelf included: the sentences the items are built from — with the
       // reader's grammar-focus highlights (gold items for the construction they name) and the lessons' own examples.
@@ -82,12 +113,16 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       for (const h of hlLists.flat()) { if (!h?.unit_id || !h?.text) continue; if (!highlights.has(h.unit_id)) highlights.set(h.unit_id, []); highlights.get(h.unit_id).push({ text: h.text, label: h.label ?? '', note: h.note ?? '' }); }
       const lessonUnits = new Map();
       await Promise.all([...ctx.index.skills.values()].filter((s) => s.feature === 'construction').map(async (s) => { try { lessonUnits.set(s.id, await lessonExampleUnits(s.id)); } catch { lessonUnits.set(s.id, []); } }));
-      ctx.items = createItems({ units: ctx.units, lookup: dict.lookup, paradigm: par.paradigm, skills: ctx.index.skills, storage: localStorage, gold: { highlights, lessonUnits } });
+      baseItems = createItems({ units: ctx.units, lookup: dict.lookup, paradigm: par.paradigm, skills: ctx.index.skills, storage: localStorage, gold: { highlights, lessonUnits } });
+      // The chapter sets: question sets and vocabulary decks (public), pensa (private, through the grammar store).
+      const loaded = await createSetLoader({ fetchJson }).loadAll();
+      buildSets(loaded);
       ui = createUI(ctx);
       window.latinGrammar = ctx;   // documented hook (like window.latinReader): the section's context and the item on screen
-      ctx.gstore.onChange(() => ui.refresh());
+      let pensaCount = ctx.gstore.getPensa().length;
+      ctx.gstore.onChange(() => { const n = ctx.gstore.getPensa().length; if (n !== pensaCount) { pensaCount = n; buildSets(loaded); } ui.refresh(); });
       try { history.replaceState({ grammar: { name: 'map', params: {} } }, ''); } catch { /* file: */ }
-      ui.render('map', {}, { push: false, focus: false });
+      if (ctx.section() === 'grammar') ui.render('map', {}, { push: false, focus: false });
       // The pools of the other skills warm up in idle time, so the map's "no sentences yet" rows appear without a stall.
       const rest = [...ctx.index.skills.keys()];
       const warm = (deadline) => { while (rest.length && (deadline?.timeRemaining?.() ?? 8) > 4) ctx.drillable(rest.shift()); if (rest.length) schedule(warm); else ui.refresh(); };
@@ -112,7 +147,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     root.hidden = !grammar;
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === (grammar ? 'grammar' : 'read')));
     try { localStorage.setItem(LS_SECTION, grammar ? 'grammar' : 'read'); } catch { /* ignore */ }
-    if (grammar) { init().then(() => { if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
+    if (grammar) { init().then(() => { if (was !== 'grammar' && ui && !root.querySelector('.g')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
     else {
       document.title = readerTitle && !/^Grammar — /.test(readerTitle) ? readerTitle : document.title.replace(/^Grammar — /, '');
       if (was === 'grammar') { const y = readerScroll; requestAnimationFrame(() => window.scrollTo({ top: y })); if (focus) document.querySelector('#reader h1, #main [tabindex="-1"], #main h2')?.focus?.({ preventScroll: true }); }
@@ -127,5 +162,9 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   if (last === 'grammar') setSection('grammar');
   else setSection('read');
 
-  return { open: () => setSection('grammar'), close: () => setSection('read'), ctx };
+  return {
+    open: () => setSection('grammar'), close: () => setSection('read'), ctx,
+    /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */
+    async todayCard(opts = {}) { await init(); return ui ? ui.todayCard({ ...opts, place: 'weeks' }) : null; },
+  };
 }

@@ -210,7 +210,7 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 /* ------------------------------------------------------------ runner */
 .g-run { display: grid; gap: var(--s-4); }
 .g-item { display: grid; gap: var(--s-3); }
-.g-item__meta { display: flex; flex-wrap: wrap; align-items: baseline; margin: 0; font-size: var(--ui-sm); color: var(--ink-3); }
+.g-item__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.35em; margin: 0; font-size: var(--ui-sm); color: var(--ink-3); }   /* the gap does the spacing: a flex item's own leading space is collapsed away */
 .g-item__title { color: var(--ink-2); }
 .g-item__pos { font-variant-numeric: tabular-nums; }
 .g-item__note { margin-top: calc(-1 * var(--s-2)); }
@@ -303,3 +303,100 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-tick.is-ok { color: var(--success); background: oklch(from var(--success) l c h / 0.12); }
 .g-tick.is-hinted { outline: 1px dashed var(--ink-3); outline-offset: -1px; }
 .g-conf { margin: 0; padding-left: 1.2em; display: grid; gap: var(--s-1); font-size: var(--ui-md); }
+
+/* ------------------------------------------------ wave 2: chapter sets */
+/* A chapter's sets (Questions · Vocabulary · Pensa) sit under its skills as a quieter sub-list: same rows, a small heading. */
+.g-sets { margin-top: var(--s-2); }
+.g-sets__h { margin: 0; padding: var(--s-2) 0 var(--s-1); font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
+.g-skill__title--set { cursor: default; font-size: 1rem; }
+.g-skill__title--set:hover { color: var(--ink); }
+.g-skills--sets .g-skill { padding-block: var(--s-2); }
+
+/* ------------------------------------------------ wave 2: the Today plan */
+/* One row per suggested session: label · detail · Start. Hairlines, no card; the map's Today section holds it bare, the weeks menu wraps it in a bordered block. */
+.g-plan { display: grid; gap: var(--s-1); }
+.g-plan--card { margin: 0 var(--s-3) var(--s-2); padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); font-family: var(--face-ui); font-size: var(--ui-md); }
+.g-plan__h { margin: 0 0 var(--s-1); font-family: var(--face-serif); font-weight: 400; font-size: 1.1rem; }
+.g-plan__total { color: var(--ink-3); font-family: var(--face-ui); font-size: var(--ui-sm); }
+.g-plan__list { list-style: none; margin: 0; padding: 0; }
+.g-plan__row { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr) auto; gap: var(--s-1) var(--s-3); align-items: center; padding: var(--s-2) 0; border-top: 1px solid var(--line); }
+.g-plan__row:first-child { border-top: 0; }
+.g-plan__label { font-weight: 600; }
+.g-plan__detail { color: var(--ink-2); font-size: var(--ui-sm); line-height: 1.4; }
+.g-plan__min { color: var(--ink-3); white-space: nowrap; }
+.g-plan__go { min-height: 36px; font-size: var(--ui-sm); }
+.g-plan__foot { margin: 0; font-size: var(--ui-sm); }
+@media (max-width: 479.98px) {
+  .g-plan__row { grid-template-columns: minmax(0, 1fr) auto; }
+  .g-plan__detail { grid-column: 1 / -1; }
+}
+
+/* ------------------------------------------------ wave 2: inputs */
+/* Order: the bank of words and the row they go into, the same dashed-box vocabulary as the tap items. */
+.g-order, .g-match__form { display: grid; gap: var(--s-3); }
+.g-order__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); min-height: calc(var(--tap) + var(--s-2)); padding: var(--s-2); border: 1px dashed var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); transition: border-color var(--t-fast) var(--ease-out); }
+.g-order__row.is-over { border-color: var(--ink); border-style: solid; }
+.g-order__empty { color: var(--ink-3); font-size: var(--ui-sm); padding-inline: var(--s-1); }
+.g-order__bank { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.g-order__w {
+  min-height: 36px; padding: 0.15em 0.5em; font-family: var(--face-reading); font-size: clamp(1.05rem, var(--reading-size, 1.25rem), 1.5rem); line-height: 1.3;
+  background: var(--bg-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink); cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out);
+}
+.g-order__w:hover:not(:disabled) { border-color: var(--ink); }
+.g-order__w.is-placed { background: var(--bg-chrome); border-color: var(--ink-3); }
+.g-order__w.is-used { opacity: 0.35; cursor: default; }
+.g-order__w[draggable="true"] { cursor: grab; }
+.g-order__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+@media (pointer: coarse) { .g-order__w, .g-match__b, .g-pensum__slot, .g-plan__go, .g-self__grade .btn { min-height: var(--tap); } }
+
+/* Match: two columns, Latin left, meanings right; a pending pick is outlined, a pair filled. */
+.g-match { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-3); }
+.g-match__col { display: grid; gap: var(--s-2); align-content: start; }
+.g-match__b {
+  min-height: var(--tap); padding: var(--s-2) var(--s-3); text-align: left; background: var(--bg-raised); border: 1px solid var(--line-strong); border-radius: var(--radius); color: var(--ink); font-size: var(--ui-md);
+  transition: border-color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out);
+}
+.g-match__b--la { font-family: var(--face-reading); font-size: 1.15rem; }
+.g-match__b:hover:not(:disabled) { border-color: var(--ink); }
+.g-match__b.is-pending { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.g-match__b.is-paired { background: var(--bg-chrome); border-color: var(--ink-3); }
+/* A paired button carries its pair's number on both sides of the table: four grey boxes alone never say which two go together. */
+.g-match__b[data-n] { display: flex; align-items: baseline; gap: var(--s-2); }
+.g-match__b[data-n]::before {
+  content: attr(data-n);
+  flex: none; min-width: 1.5em; padding: 0.05em 0.35em; border-radius: var(--radius-sm);
+  background: var(--rubric-soft); color: var(--rubric-ink);
+  font-family: var(--face-ui); font-size: var(--ui-xs); font-variant-numeric: tabular-nums; text-align: center;
+}
+.g-match__b:disabled { opacity: 1; color: var(--ink-2); }
+
+/* Pensum A / B: inline endings and word slots inside the sentence. */
+.g-pensum { line-height: 2; }
+.g-pensum__blank { white-space: nowrap; }
+.g-pensum__stem { border-bottom: 1px solid transparent; }
+.g-input--end { display: inline-block; width: auto; min-width: 2.6em; max-width: 6em; min-height: 1.6em; margin: 0 0.1em 0 0; padding: 0 0.3em; font-size: 0.95em; vertical-align: baseline; border-radius: var(--radius-sm); }
+.g-pensum__slot {
+  display: inline-block; min-width: 4.5em; min-height: 1.6em; margin: 0 0.15em; padding: 0 0.4em; vertical-align: baseline; font: inherit; line-height: 1.5;
+  background: var(--bg-raised); border: 1px dashed var(--line-strong); border-bottom: 2px solid var(--ink-3); border-radius: var(--radius-sm); color: var(--ink); cursor: pointer;
+}
+.g-pensum__slot.is-filled { border-style: solid; border-color: var(--ink-3); background: var(--bg-chrome); }
+.g-pensum__slot:disabled { cursor: default; opacity: 1; }
+
+/* Translate: the textarea, then the book's English and the three grades. */
+.g-self { display: grid; gap: var(--s-3); }
+.g-textarea { min-height: 3.4rem; padding: var(--s-2) var(--s-3); font-size: var(--ui-lg); line-height: 1.5; resize: vertical; font-family: var(--face-ui); }
+.g-self__model { margin: 0; padding: var(--s-3) var(--s-4); background: var(--bg-chrome); border-radius: var(--radius); font-size: var(--ui-lg); line-height: 1.5; animation: rise-in var(--t-base) var(--ease-out); }
+.g-self__model .g-lesson__tag { display: block; }
+.g-self__grade { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+@media (prefers-reduced-motion: reduce) { .g-self__model { animation: none; } }
+
+/* Vocabulary: the word stands large and alone; the dictionary line arrives with the feedback. */
+.g-vocab__word { font-size: clamp(1.4rem, calc(var(--reading-size, 1.35rem) * 1.3), 2.2rem); }
+.g-fb__dict, .g-fb__pairs { margin: 0; font-size: var(--ui-md); }
+.g-fb__pairs { padding-left: 1.2em; display: grid; gap: 2px; }
+.g-fb[data-partial="true"] { background: var(--bg-chrome); }
+.g-fb[data-partial="true"] .g-fb__mark { color: var(--ink-2); }
+.g-q-en { font-size: var(--ui-sm); }
+.g-q-en .g-hint__s { min-height: 36px; }
+.g-q-en .g-hint__rule { margin: 0 0 var(--s-1); }

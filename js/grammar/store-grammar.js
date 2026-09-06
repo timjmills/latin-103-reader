@@ -10,6 +10,8 @@
 //   g.getStates() → Map skill → row       g.setState(row)      g.resetSkill(id) / g.resetAll()
 //   g.getAttempts() → rows (oldest first) g.addAttempt(row)
 //   g.getConfusions() → rows              g.bumpConfusion(a, b)
+//   g.getPensa() → rows { chapter, kind, items }   (public.pensa, private: pulled with the grammar rows into the
+//                                                  IndexedDB `pensa` store (db v7); the fixture store reads `localPensa()`)
 //   g.onChange(cb) → unsubscribe          (cb() after a pull / realtime change)
 
 import { normaliseState } from './scheduler.js';
@@ -21,6 +23,14 @@ const ts = (v) => { const n = Date.parse(v || ''); return Number.isFinite(n) ? n
 /** The attempt's local id: the server has no client id, so (at, skill, item_key) names a row on both sides. */
 export const attemptId = (a) => `${a.at}|${a.skill}|${a.item_key}`;
 export const confusionKey = (a, b) => `${a}|${b}`;
+/** A clean pensa row from any source (bad rows → null). Pure. */
+export function normalisePensum(r) {
+  const chapter = Number(r?.chapter);
+  const kind = String(r?.kind ?? '').toUpperCase();
+  if (!Number.isFinite(chapter) || chapter < 1 || !['A', 'B', 'C'].includes(kind)) return null;
+  const items = Array.isArray(r.items) ? r.items.filter((it) => it && typeof it === 'object') : [];
+  return { id: `${chapter}:${kind}`, chapter, kind, items, updated_at: r.updated_at ?? null };
+}
 
 /** The columns the server table has (anything else stays local). */
 export function serverStateRow(row) {
@@ -40,10 +50,11 @@ export function normaliseAttempt(a) {
   return { ...row, id: attemptId(row) };
 }
 
-export function createGrammarStore({ mode = 'local', hooks = null, storage = typeof localStorage !== 'undefined' ? localStorage : null } = {}) {
+export function createGrammarStore({ mode = 'local', hooks = null, storage = typeof localStorage !== 'undefined' ? localStorage : null, localPensa = null } = {}) {
   const states = new Map();
   const attempts = new Map();     // id → row
   const confusions = new Map();   // key → row
+  const pensa = new Map();        // `${chapter}:${kind}` → row (private, read-only on the device)
   const listeners = new Set();
   let readyP = null;
   let db = null;
@@ -64,10 +75,13 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       for (const r of await db.getAll('skill_state')) { const s = normaliseState(r); if (s) states.set(s.skill, s); }
       for (const r of await db.getAll('drill_attempts')) { const a = normaliseAttempt(r); if (a) attempts.set(a.id, a); }
       for (const r of await db.getAll('confusions')) if (r?.skill_a && r?.skill_b) confusions.set(confusionKey(r.skill_a, r.skill_b), r);
+      for (const r of await db.getAll('pensa')) { const p = normalisePensum(r); if (p) pensa.set(p.id, p); }
     } else {
       for (const r of readLS(LS.states, [])) { const s = normaliseState(r); if (s) states.set(s.skill, s); }
       for (const r of readLS(LS.attempts, [])) { const a = normaliseAttempt(r); if (a) attempts.set(a.id, a); }
       for (const r of readLS(LS.confusions, [])) if (r?.skill_a && r?.skill_b) confusions.set(confusionKey(r.skill_a, r.skill_b), r);
+      // The fixture store's pensa (tests/fixtures/grammar/pensa/*.json through index.js): memory only, never persisted.
+      if (localPensa) { try { for (const r of (await localPensa()) || []) { const p = normalisePensum(r); if (p) pensa.set(p.id, p); } } catch (e) { console.warn('[grammar] fixture pensa not loaded', e?.message || e); } }
     }
   }
 
@@ -101,6 +115,14 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
         if (mergeConfusion(r)) { await db.put('confusions', confusions.get(confusionKey(r.skill_a, r.skill_b))); changed = true; }
       }
     } catch (e) { console.warn('[grammar] confusions not synced', e?.message || e); }
+    // The pensa: private rows like the texts, pulled whole (a few dozen rows), replaced when the server's set differs.
+    try {
+      const rows = await hooks.pageAll(() => sb.from('pensa').select('*').order('chapter'));
+      const remote = new Map();
+      for (const raw of rows) { const p = normalisePensum(raw); if (p) remote.set(p.id, p); }
+      for (const [id, p] of remote) { const cur = pensa.get(id); if (!cur || ts(p.updated_at) > ts(cur.updated_at) || cur.items.length !== p.items.length) { pensa.set(id, p); await db.put('pensa', p); changed = true; } }
+      for (const id of [...pensa.keys()]) if (!remote.has(id)) { pensa.delete(id); await db.del('pensa', id); changed = true; }
+    } catch (e) { console.warn('[grammar] pensa not synced', e?.message || e); }
     if (changed) emit();
   }
 
@@ -215,6 +237,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     addAttempt,
     getConfusions: () => [...confusions.values()].map((r) => ({ ...r })),
     bumpConfusion, mergeConfusion,
+    getPensa: () => [...pensa.values()].map((r) => ({ ...r, items: r.items.map((it) => ({ ...it })) })),
     onChange(cb) { listeners.add(cb); return () => listeners.delete(cb); },
     mode,
   };

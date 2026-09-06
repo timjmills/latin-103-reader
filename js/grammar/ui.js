@@ -10,6 +10,9 @@ import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive } from './session.js';
 import { featureLabel, featureKey } from './items.js';
+import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
+import { orderInput, matchInput } from './inputs.js';
+import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
 
 const LS_SESSION = 'l103.grammar.session';      // the practice session in progress (plan, position, log) — Back / Reload can resume it
@@ -39,6 +42,8 @@ const PRESET_LABEL = {
   'one-skill': ['One skill', 'A blocked set on a skill you choose.'],
 };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const KIND_LABEL = { recognise: 'recognise', chart: 'chart', parse: 'parse', blank: 'blank', transform: 'transform', reorder: 'reorder', translate: 'translate', question: 'question', vocab: 'vocabulary', pensum: 'pensum' };
+const SET_ROW_LABEL = { questions: 'Questions', vocab: 'Vocabulary', pensum: 'Pensa' };
 
 function dueText(s, now = Date.now()) {
   if (!s || s.state === 'new') return 'not started';
@@ -55,8 +60,11 @@ function dueText(s, now = Date.now()) {
 }
 
 export function createUI(ctx) {
-  const { root, index, gstore, items, dict, par } = ctx;
-  const skills = index.skills;
+  const { root, index, gstore, dict, par } = ctx;
+  // The grammar skills and the chapter sets (questions-NN, vocab-NN[-rev], pensum-NN) as one map: the scheduler treats them alike.
+  const skills = ctx.skills ?? index.skills;
+  const skillsIndex = { skills };
+  const items = ctx.items;
   let view = { name: 'map', params: {} };
   let body = null;
   let allMeanings = false;   // the "show all meanings" switch, for the session
@@ -161,14 +169,6 @@ export function createUI(ctx) {
     }
     return p;
   }
-  /** The word indexes of a phrase in a sentence ("Magistrō recitante" → [0, 1]); [] when it is not there. */
-  function phraseIndexes(la, phrase) {
-    const words = tokenize(la).filter((t) => t.isWord);
-    const want = tokenize(String(phrase ?? '')).filter((t) => t.isWord).map((t) => t.form);
-    if (!want.length) return [];
-    for (let i = 0; i + want.length <= words.length; i++) if (want.every((w, j) => words[i + j].form === w)) return want.map((_, j) => i + j);
-    return [];
-  }
   /** "Show all meanings": every word's first reading under the sentence. */
   function glossList(item) {
     const rows = (item.meanings || []).map((m) => {
@@ -184,47 +184,51 @@ export function createUI(ctx) {
     const now = Date.now();
     const states = gstore.getStates();
     const cw = ctx.currentWeekSkills();
-    const today = suggestToday({ states, skills, currentWeek: cw, now });
     const rf = reviewFirst({ weekSkills: cw, skills, states, now });
-    const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
     const filter = view.params.category ?? 'all';
     const saved = readJSON(LS_SESSION, null);
     const queue = (readJSON(LS_QUEUE, []) || []).filter((id) => skills.has(id) && stateOf(id).state !== 'practising' && stateOf(id).state !== 'mastered');
 
     const head = h('header', { class: 'g-head' },
       h('h1', { class: 'g-title', text: 'Skills' }),
-      h('p', { class: 'g-lede', text: `${skills.size} skills in book order. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }));
+      // The pensa arrive from the private library, so the lede only promises them once some are here.
+      h('p', { class: 'g-lede', text: `${index.skills.size} skills in book order, with each chapter's questions, vocabulary${[...skills.values()].some((s) => s.set === 'pensum') ? ' and pensa' : ''}. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }));
 
+    // Today: the daily plan (today.js) — with the run in progress and the "start all as new" queue above it.
     const todayNode = h('section', { class: 'g-today', 'aria-labelledby': 'g-today-h' },
       h('h2', { id: 'g-today-h', class: 'g-h2', text: 'Today' }),
       saved?.queue?.length && saved.index < saved.queue.length ? h('p', { class: 'g-today__line' }, `A practice session is in progress (${Math.min(saved.index, saved.queue.length)} of ${saved.queue.length} answered). `, btn('Resume', { onclick: () => render('session', { ...(saved.params ?? {}), resume: true }) }, 'btn btn--primary g-today__btn'), ' ', btn('Discard', { onclick: () => { writeJSON(LS_SESSION, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
       queue.length ? h('p', { class: 'g-today__line' }, `Learning in book order: ${queue.length} skill${queue.length === 1 ? '' : 's'} to go, next `, h('button', { type: 'button', class: 'g-link', onclick: () => render('learn', { skill: queue[0], queue: queue.slice(1) }) }, titleOf(queue[0])), '. ', btn('Stop the run', { onclick: () => { writeJSON(LS_QUEUE, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
-      today.learn.length ? h('p', { class: 'g-today__line' }, 'Learn: ', today.learn.map((id, i) => [i ? ', ' : null, h('button', { type: 'button', class: 'g-link', onclick: () => render('learn', { skill: id }) }, titleOf(id))]), ' (new this week)') : null,
-      rotation.length
-        ? h('p', { class: 'g-today__line' }, `Practice: ${today.due.length ? `${today.due.length} due skill${today.due.length === 1 ? '' : 's'}` : 'nothing due'}${today.pairs ? ` · ${today.pairs} confusion pair${today.pairs === 1 ? '' : 's'}` : ''}. `, btn('Start a session', { onclick: () => render('setup') }, 'btn btn--primary g-today__btn'))
-        : h('p', { class: 'g-today__line g-quiet', text: 'Nothing in mixed practice yet — add a skill below, or start one as new.' }));
+      todayCard({ place: 'map', bare: true }));
 
     const reviewNode = rf.length ? h('section', { class: 'g-review', 'aria-labelledby': 'g-review-h' },
       h('h2', { id: 'g-review-h', class: 'g-h2', text: `Review first · week ${ctx.currentCourseWeekN()}` }),   // the last course week: a shelf chapter being read keeps it (G1-12)
       h('p', { class: 'g-quiet', text: "The prerequisites of this week's new skills, the most decayed first." }),
       h('ul', { class: 'g-chips' }, rf.map((r) => h('li', {}, h('button', { type: 'button', class: 'g-chip', 'data-state': r.state, onclick: () => render('lesson', { skill: r.skill }) }, titleOf(r.skill), h('span', { class: 'g-chip__state', text: ` · ${STATE_LABEL[r.state]}` })))))) : null;
 
-    const cats = ['all', ...index.categories];
+    const cats = ['all', ...index.categories, ...(ctx.sets?.size ? ['sets'] : [])];
     const filterNode = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'Filter by category' },
-      cats.map((c) => btn(c === 'all' ? 'All' : cap(c.replace('-', ' ')), { 'aria-pressed': String(filter === c), onclick: () => { view.params.category = c; draw(); } }, 'g-filter__btn')));
+      cats.map((c) => btn(c === 'all' ? 'All' : c === 'sets' ? 'Chapter sets' : cap(c.replace('-', ' ')), { 'aria-pressed': String(filter === c), onclick: () => { view.params.category = c; draw(); } }, 'g-filter__btn')));
 
     const bulk = h('div', { class: 'g-bulk' },
       btn('Add all to mixed practice', { onclick: () => bulkAdd() }, 'btn btn--quiet'),
       btn('Start all as new', { onclick: () => bulkNew() }, 'btn btn--quiet'),
       btn('Reset all', { onclick: () => resetAll() }, 'btn btn--quiet g-danger'));
 
-    const chapterNodes = chapters(index).map(({ chapter, skills: list }) => {
-      const shown = list.filter((s) => filter === 'all' || s.category === filter);
-      if (!shown.length) return null;
+    // Every chapter with a skill or a set, in book order; the chapter's sets (Questions · Vocabulary · Pensa) sit under its skills.
+    const byChapter = new Map(chapters(index).map((c) => [c.chapter, c.skills]));
+    const allChapters = [...new Set([...byChapter.keys(), ...setChapters(ctx.sets ?? new Map())])].sort((a, b) => a - b);
+    const chapterNodes = allChapters.map((chapter) => {
+      const list = byChapter.get(chapter) ?? [];
+      const sets = setsOfChapter(ctx.sets ?? new Map(), chapter);
+      const shown = filter === 'sets' ? [] : list.filter((s) => filter === 'all' || s.category === filter);
+      const shownSets = filter === 'all' || filter === 'sets' ? sets : [];
+      if (!shown.length && !shownSets.length) return null;
       const mastered = list.filter((s) => stateOf(s.id).state === 'mastered').length;
       return h('section', { class: 'g-chap', 'aria-labelledby': `g-chap-${chapter}` },
-        h('h2', { id: `g-chap-${chapter}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(chapter)}` }), h('span', { class: 'g-chap__count', text: `${mastered} of ${list.length} mastered` })),
-        h('ul', { class: 'g-skills' }, shown.map(skillRow)));
+        h('h2', { id: `g-chap-${chapter}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(chapter)}` }), list.length ? h('span', { class: 'g-chap__count', text: `${mastered} of ${list.length} mastered` }) : null),
+        shown.length ? h('ul', { class: 'g-skills' }, shown.map(skillRow)) : null,
+        shownSets.length ? h('div', { class: 'g-sets' }, h('h3', { class: 'g-sets__h', text: 'Chapter sets' }), h('ul', { class: 'g-skills g-skills--sets' }, shownSets.map(setRow))) : null);
     });
 
     setBody(head, todayNode, reviewNode, filterNode, bulk, chapterNodes);
@@ -255,20 +259,40 @@ export function createUI(ctx) {
         h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can ? st.state : 'none', 'aria-hidden': 'true' }), can ? dueText(st) : (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill'))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
+  /** A chapter set as a row: Questions · Vocabulary (· English → Latin, optional) · Pensa — the same actions and states as a skill; pensa have no Learn. */
+  function setRow(s) {
+    const st = stateOf(s.id);
+    const can = drillable(s.id);
+    const acts = [];
+    const learnable = s.set !== 'pensum';
+    if (!can) acts.push(h('span', { class: 'g-quiet', text: 'nothing here yet' }));
+    else if (st.state === 'new') { if (learnable) acts.push(btn('Start as new', { onclick: () => render('learn', { skill: s.id }) }, 'btn')); acts.push(btn('Add to mixed practice', { onclick: () => addSkill(s.id) }, learnable ? 'btn btn--quiet' : 'btn'), btn('Practise', { onclick: () => startBlocked(s.id) }, 'btn btn--quiet')); }
+    else if (st.state === 'learning') acts.push(btn('Continue learning', { onclick: () => render('learn', { skill: s.id }) }, 'btn'));
+    else if (st.state === 'lapsed') { if (learnable) acts.push(btn('Re-learn', { onclick: () => render('learn', { skill: s.id }) }, 'btn')); acts.push(btn('Practise', { onclick: () => startBlocked(s.id) }, learnable ? 'btn btn--quiet' : 'btn')); }
+    else acts.push(btn('Practise', { onclick: () => startBlocked(s.id) }, 'btn'));
+    acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
+    const what = s.set === 'questions' ? `${s.count} question${s.count === 1 ? '' : 's'}${s.data?.title ? ` · ${s.data.title}` : ''}` : s.set === 'vocab' ? `${s.count} word${s.count === 1 ? '' : 's'}${s.rev ? ' · English → Latin, an optional extra deck' : ' · Latin → English'}` : `${s.data?.A.length ?? 0} A · ${s.data?.B.length ?? 0} B · ${s.data?.C.length ?? 0} C · practise only`;
+    return h('li', { class: 'g-skill g-skill--set', 'data-state': st.state, 'data-set': s.set },
+      h('div', { class: 'g-skill__main' },
+        h('p', { class: 'g-skill__title g-skill__title--set', text: s.rev ? `${SET_ROW_LABEL[s.set]} · English → Latin` : SET_ROW_LABEL[s.set] }),
+        h('p', { class: 'g-skill__plain', text: what }),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can ? st.state : 'none', 'aria-hidden': 'true' }), can ? dueText(st) : 'no items yet')),
+      h('div', { class: 'g-skill__acts' }, acts));
+  }
   const drillable = (id) => ctx.drillable(id);
   async function addSkill(id) {
     if (!drillable(id)) { ctx.say(`${titleOf(id)} has no drillable sentences yet.`); return; }
     await gstore.setState(addToPractice(gstore.getState(id) ?? id)); ctx.say(`${titleOf(id)} added to mixed practice.`); draw();
   }
   async function bulkAdd() {
-    const ids = [...skills.keys()].filter((id) => !inRotation(stateOf(id)) && drillable(id));
+    const ids = [...skills.keys()].filter((id) => !skills.get(id).rev && !inRotation(stateOf(id)) && drillable(id));
     if (!ids.length) { ctx.say('Every skill with sentences is already in mixed practice.'); return; }
     if (!confirm(`Add ${ids.length} skill${ids.length === 1 ? '' : 's'} to mixed practice? Each will be practised as it comes up, without a lesson first.`)) return;
     for (const id of ids) await gstore.setState(addToPractice(gstore.getState(id) ?? id));
     ctx.say(`${ids.length} skills added.`); draw();
   }
   async function bulkNew() {
-    const ids = [...skills.keys()].filter((id) => stateOf(id).state === 'new');
+    const ids = [...skills.keys()].filter((id) => stateOf(id).state === 'new' && drillable(id) && !skills.get(id).rev && skills.get(id).set !== 'pensum');
     if (!ids.length) { ctx.say('No skill is still new.'); return; }
     if (!confirm(`Start all ${ids.length} new skills through Learn, one after another, in book order?`)) return;
     writeJSON(LS_QUEUE, ids.slice(1));   // the run survives a detour, a reload or Back (G1-11)
@@ -396,10 +420,11 @@ export function createUI(ctx) {
   async function renderLearnStart({ skill: id, queue = [] }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    if (skill.set === 'pensum') { startBlocked(id); return; }   // pensa are practised, never learned in a sitting
     const learn = createLearn({ skill, gstore, items });
     await learn.begin();
-    const lesson = await lessonOf(id);
-    const steps = ['Lesson', 'Examples', 'Guided 5', 'Blocked 10'];
+    const lesson = skill.set ? null : await lessonOf(id);
+    const steps = skill.set ? [skill.set === 'vocab' ? 'The deck, once through' : 'The passage\'s questions', 'Blocked 10'] : ['Lesson', 'Examples', 'Guided 5', 'Blocked 10'];
     const stepper = (i) => h('ol', { class: 'g-steps', 'aria-label': 'Learn steps' }, steps.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': i === j ? 'step' : null, text: s })));
     const finishQueue = () => { writeJSON(LS_QUEUE, queue.length ? queue.slice(1) : null); if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else render('map'); };
     if (queue.length) writeJSON(LS_QUEUE, queue);
@@ -434,34 +459,37 @@ export function createUI(ctx) {
         h('div', { class: 'g-acts' }, btn('Start the guided drill', { onclick: showGuided }, 'btn btn--primary'), btn('Back to the lesson', { onclick: showLesson }, 'btn btn--quiet')));
     };
 
+    const guidedStep = skill.set ? 0 : 2;
+    const blockedStep = skill.set ? 1 : 3;
     const showGuided = () => {
       const first = learn.startGuided();
-      if (!first) { setBody(stepper(2), h('p', { class: 'g-quiet', text: 'No sentences in the library fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
-      runSession({ runner: learn.runner, title: `Guided drill · ${skill.title}`, note: 'Five items with the hint open. Take your time.', mode: 'learn', hintOpen: true, stepper: stepper(2), lesson, onDone: showBlocked });
+      if (!first) { setBody(stepper(guidedStep), h('p', { class: 'g-quiet', text: skill.set ? 'This set has no items yet.' : 'No sentences in the library fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
+      const note = skill.set === 'vocab' ? `Every word of the deck once, with its dictionary line after each. ${learn.deckSize} words.` : skill.set === 'questions' ? `Every question about the passage once; the answering sentence is shown after each. ${learn.deckSize} questions.` : 'Five items with the hint open. Take your time.';
+      runSession({ runner: learn.runner, title: `${skill.set ? 'Once through' : 'Guided drill'} · ${skill.title}`, note, mode: 'learn', hintOpen: !skill.set, stepper: stepper(guidedStep), lesson, onDone: showBlocked });
     };
     const showBlocked = () => {
       const first = learn.startBlocked();
       if (!first) { render('map'); return; }
-      runSession({ runner: learn.runner, title: `Blocked drill · ${skill.title}`, note: 'Ten items, this skill only. Hints are behind a button; feedback after each.', mode: 'learn', hintOpen: false, stepper: stepper(3), lesson, onDone: async () => showResult(await learn.finishBlocked()) });
+      runSession({ runner: learn.runner, title: `Blocked drill · ${skill.title}`, note: skill.set ? 'Ten more from this set. Six of ten and it joins your mixed practice.' : 'Ten items, this skill only. Hints are behind a button; feedback after each.', mode: 'learn', hintOpen: false, stepper: stepper(blockedStep), lesson, onDone: async () => showResult(await learn.finishBlocked()) });
     };
     const showResult = (r) => {
       const missedKinds = [...new Set(r.missed.map((a) => a.kind))];
       const passed = r.passed;
-      setBody(stepper(3), h('header', { class: 'g-head' },
+      setBody(stepper(blockedStep), h('header', { class: 'g-head' },
         h('h1', { class: 'g-title', text: passed ? 'Learned' : 'Not yet' }),
         h('p', { class: 'g-lede', text: passed
-          ? `${r.correct} of ${r.total} across ${r.kinds} kinds. ${skill.title} joins your mixed practice; its first review is due tomorrow.`
-          : `${r.correct} of ${r.total}${r.kinds < 2 && r.correct >= 6 ? ', but all of one kind' : ''} — the bar is six of ten across two kinds. Nothing is lost: a fresh set of ten is ready when you are.` })),
+          ? (skill.set ? `${r.correct} of ${r.total}. ${skill.title} joins your mixed practice; its first review is due tomorrow.` : `${r.correct} of ${r.total} across ${r.kinds} kinds. ${skill.title} joins your mixed practice; its first review is due tomorrow.`)
+          : (skill.set ? `${r.correct} of ${r.total} — the bar is six of ten. Nothing is lost: another ten are ready when you are.` : `${r.correct} of ${r.total}${r.kinds < 2 && r.correct >= 6 ? ', but all of one kind' : ''} — the bar is six of ten across two kinds. Nothing is lost: a fresh set of ten is ready when you are.`) })),
         !passed && r.missed.length ? h('section', { class: 'g-missed' }, h('h2', { class: 'g-h2', text: 'What was missed' }),
           h('ul', { class: 'g-missed__list' }, r.missed.map((a) => h('li', {}, h('span', { class: 'g-missed__kind', text: a.kind }), ' ', h('span', { lang: 'la', text: a.answer || '—' }), ' → ', h('span', { lang: 'la', text: a.expected })))),
-          h('p', { class: 'g-quiet', text: `Kinds missed: ${missedKinds.join(', ')}. The lesson's rule and the confusion note are below.` }),
-          h('article', { class: 'g-lesson g-lesson--lit' }, (lesson?.core ?? []).filter((b) => b.type === 'rule' || b.type === 'confusion').map((b) => b.type === 'rule' ? h('p', { class: 'g-lesson__rule is-lit' }, inline(b.text)) : h('div', { class: 'g-lesson__conf is-lit' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, inline(b.text)))))) : null,
+          skill.set ? null : h('p', { class: 'g-quiet', text: `Kinds missed: ${missedKinds.join(', ')}. The lesson's rule and the confusion note are below.` }),
+          skill.set ? null : h('article', { class: 'g-lesson g-lesson--lit' }, (lesson?.core ?? []).filter((b) => b.type === 'rule' || b.type === 'confusion').map((b) => b.type === 'rule' ? h('p', { class: 'g-lesson__rule is-lit' }, inline(b.text)) : h('div', { class: 'g-lesson__conf is-lit' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, inline(b.text)))))) : null,
         h('div', { class: 'g-acts' },
           passed ? [btn(queue.length ? `Next: ${titleOf(queue[0])}` : 'Back to skills', { onclick: finishQueue }, 'btn btn--primary'), btn('Practise now', { onclick: () => startBlocked(id) }, 'btn')]
-            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), btn('Re-read the lesson', { onclick: showLesson }, 'btn'), btn('Stop for now', { onclick: () => render('map') }, 'btn btn--quiet')]));
+            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn('Once through again', { onclick: showGuided }, 'btn') : btn('Re-read the lesson', { onclick: showLesson }, 'btn'), btn('Stop for now', { onclick: () => render('map') }, 'btn btn--quiet')]));
       ctx.say(passed ? `${skill.title} learned.` : 'Not yet; another ten items are ready.');
     };
-    showLesson();
+    if (skill.set) showGuided(); else showLesson();
   }
 
   /* --------------------------------------------------------- practice */
@@ -469,7 +497,7 @@ export function createUI(ctx) {
     const prefs = ctx.prefs();
     const states = gstore.getStates();
     const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
-    const cw = ctx.currentWeekSkills();
+    const cw = [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])];
     const onShelf = ctx.currentWeekN() != null && ctx.currentWeekN() > 100;
     const today = suggestToday({ states, skills, currentWeek: cw });
     let size = prefs.size;
@@ -487,7 +515,7 @@ export function createUI(ctx) {
       const disabled = key === 'this-week' && !cw.some((id) => rotation.includes(id));
       return h('label', { class: `g-preset${disabled ? ' is-disabled' : ''}` },
         h('input', { type: 'radio', name: 'g-preset', value: key, checked: preset === key ? true : null, disabled: disabled ? true : null, onchange: () => { preset = key; skillSelect.closest('.g-preset__pick').hidden = key !== 'one-skill'; } }),
-        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? (onShelf && !cw.length ? 'Reading the review shelf — no course week is current.' : 'No skill from this week is in practice yet.') : desc })));
+        h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: disabled ? (onShelf && !cw.length ? 'Reading the review shelf — no course week is current.' : 'No skill from this week is in practice yet.') : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
     }));
     const pick = h('div', { class: 'g-preset__pick', hidden: preset !== 'one-skill' }, h('span', { class: 'g-label', text: 'Skill' }), skillSelect);
     const start = async () => {
@@ -495,7 +523,7 @@ export function createUI(ctx) {
       render('session', { preset, size, oneSkill });
     };
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }),
-      h('p', { class: 'g-lede', text: `${rotation.length} skill${rotation.length === 1 ? '' : 's'} in rotation · ${today.due.length} due${today.pairs ? ` · ${today.pairs} confusion pair${today.pairs === 1 ? '' : 's'} to work on` : ''}.` })),
+      h('p', { class: 'g-lede', text: `${rotation.length} skill${rotation.length === 1 ? '' : 's'} in rotation · ${today.due.length + (today.setsDue?.length ?? 0)} due${today.pairs ? ` · ${today.pairs} confusion pair${today.pairs === 1 ? '' : 's'} to work on` : ''}.` })),
       h('section', { class: 'g-setup' },
         h('div', { class: 'g-setup__row' }, h('span', { class: 'g-label', text: 'Items' }), sizeGroup),
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick)),
@@ -508,7 +536,7 @@ export function createUI(ctx) {
     const usable = saved?.queue?.length && saved.index < saved.queue.length ? saved : null;
     if (usable) Object.assign(params, usable.params ?? {});
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
-    const practice = createPractice({ gstore, items, skillsIndex: index, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ctx.currentWeekSkills(), preset: params.preset, size: params.size, oneSkill: params.oneSkill, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
+    const practice = createPractice({ gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN(), currentWeekSkills: [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: params.preset, size: params.size, oneSkill: params.oneSkill, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
     const first = practice.start();
     if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: 'No sentences in the library fit the skills in rotation yet.' })), h('div', { class: 'g-acts' }, btn('Back to skills', { onclick: () => render('map') }, 'btn'))); return; }
     if (usable) ctx.say('Session resumed.');
@@ -518,9 +546,9 @@ export function createUI(ctx) {
     const skill = skills.get(id);
     const st = gstore.getState(id);
     // A skill still in Learn keeps learning (m14); a lapsed or new one enters the rotation now, so the answers that follow are not judged "early" (M1).
-    if (st?.state === 'learning') { render('learn', { skill: id }); return; }
+    if (st?.state === 'learning' && skill.set !== 'pensum') { render('learn', { skill: id }); return; }
     if (!inRotation(st) || decay(st).state === 'lapsed') gstore.setState(addToPractice(st ?? id));
-    const practice = createBlockedFive({ skill, gstore, items, skillsIndex: index });
+    const practice = createBlockedFive({ skill, gstore, items, skillsIndex });
     view = { name: 'session', params: { oneSkill: id } };
     try { history.pushState({ grammar: { name: 'map', params: {} } }, ''); } catch { /* file: */ }
     draw();
@@ -579,7 +607,7 @@ export function createUI(ctx) {
     /** "Practise this skill": a five-item blocked set, then back to this session's place (the feedback stays where it was). */
     function nested(skillId) {
       const skill = skills.get(skillId);
-      const sub = createBlockedFive({ skill, gstore, items, skillsIndex: index });
+      const sub = createBlockedFive({ skill, gstore, items, skillsIndex });
       if (!sub.start()) { ctx.say('No more sentences for this skill right now.'); return; }
       const saved = [...wrap.childNodes];
       const subWrap = h('div', { class: 'g-run g-run--sub' });
@@ -605,32 +633,52 @@ export function createUI(ctx) {
   function itemNode(item, { title, note = '', position, length, hintOpen, onHint, onAnswer }) {
     const skill = skills.get(item.skill);
     ctx.current = item;   // the item on screen (window.latinGrammar.current — tests / debugging)
-    const node = h('section', { class: 'g-item', 'data-kind': item.kind, 'aria-label': `Item ${position} of ${length}` });
-    node.append(h('p', { class: 'g-item__meta' }, h('span', { class: 'g-item__title', text: title }), h('span', { class: 'g-item__pos', text: ` · ${position} of ${length}` })));
+    const node = h('section', { class: 'g-item', 'data-kind': item.kind, 'data-input': item.input, 'aria-label': `Item ${position} of ${length}` });
+    node.append(h('p', { class: 'g-item__meta' }, h('span', { class: 'g-item__title', text: title }), h('span', { class: 'g-item__pos', text: `· ${position} of ${length}` })));
     if (note) node.append(h('p', { class: 'g-quiet g-item__note', text: note }));
-    node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${item.kind}` }));
-    if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: 'Every sentence for this skill has come up once; starting over.' }));
+    node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
+    if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.' : 'Every sentence for this skill has come up once; starting over.' }));
     let submitted = false;
-    const submit = (v) => { if (submitted) return; submitted = true; node.querySelectorAll('button, input').forEach((el) => { if (!el.closest('.g-hint') && !el.classList.contains('g-w') && !el.closest('.g-all-switch')) el.disabled = true; }); onAnswer(v); };
-    // The sentence (tap items answer by tapping).
-    if (item.prompt.la) {
-      const tapMode = item.input === 'tap';
+    const submit = (v) => { if (submitted) return; submitted = true; node.querySelectorAll('button, input, textarea').forEach((el) => { if (!el.closest('.g-hint') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en')) el.disabled = true; }); onAnswer(v); };
+    const question = (text) => h('p', { class: 'g-q', tabindex: '-1', text });
+    // The English of a question on demand (a question set, Pensum C): never shown first.
+    const englishOf = (en) => (en ? h('details', { class: 'g-q-en' }, h('summary', { class: 'g-hint__s', text: 'In English' }), h('p', { class: 'g-hint__rule', text: en })) : null);
+    const tapMode = item.input === 'tap';
+    // The sentence (tap items answer by tapping); a question shows its question first, the sentence under it when it is a tap item.
+    if (item.kind === 'question' || (item.kind === 'pensum' && item.pensum === 'C')) {
+      node.append(question(item.prompt.question), englishOf(item.prompt.en));
+      if (item.prompt.la) {
+        node.append(latin(item.prompt.la, { tap: tapMode ? (i, el) => { el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
+        const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
+        node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
+      }
+    } else if (item.kind === 'vocab') {
+      // Vocabulary withholds the meaning by design (plan §3): the word stands alone, the dictionary line comes after.
+      if (item.input === 'match') node.append(question(item.prompt.question));
+      else node.append(h('p', { class: 'g-la g-vocab__word', lang: item.word && !skill?.rev ? 'la' : null, text: skill?.rev ? item.word.meaning : item.word.lemma }), question(item.prompt.question));
+    } else if (item.kind === 'pensum') {
+      node.append(question(item.prompt.question));
+    } else if (item.input === 'order') {
+      node.append(question(item.prompt.question));
+      if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', text: item.target?.text ?? '' }), ' — from ', h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), `, ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
+    } else if (item.prompt.la) {
       node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
-      node.append(h('p', { class: 'g-q', tabindex: '-1', text: item.prompt.question }));
+      node.append(question(item.prompt.question));
       if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', text: item.target?.text ?? '' }), ' — from ', h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), `, ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
       node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
     } else {
-      node.append(h('p', { class: 'g-q', tabindex: '-1', text: item.input === 'chart' ? chartQuestion(item) : item.prompt.question }));
+      node.append(question(item.input === 'chart' ? chartQuestion(item) : item.prompt.question));
       if (item.prompt.gloss) node.append(h('p', { class: 'g-gloss' }, h('span', { lang: 'la', class: 'entry__cite', text: item.prompt.gloss.split(' — ')[0] }), ` — ${item.prompt.gloss.split(' — ').slice(1).join(' — ')}`));
     }
     // Input
+    const latinTyped = item.kind === 'blank' || item.kind === 'transform' || item.kind === 'question' || item.kind === 'pensum' || (item.kind === 'vocab' && skill?.rev);
     if (item.input === 'choice') {
-      const group = h('div', { class: 'g-choices', role: 'group', 'aria-label': 'Answers' }, item.choices.map((c, i) => btn([h('span', { class: 'g-choice__n', 'aria-hidden': 'true', text: `${i + 1}` }), h('span', { class: 'g-choice__label', lang: item.kind === 'blank' ? 'la' : null, text: c.label }), c.plain ? h('span', { class: 'g-choice__plain', text: c.plain }) : null], { 'data-value': c.value, onclick: (e) => { e.currentTarget.classList.add('is-picked'); submit(c.value); } }, 'g-choice')));
+      const group = h('div', { class: 'g-choices', role: 'group', 'aria-label': 'Answers' }, item.choices.map((c, i) => btn([h('span', { class: 'g-choice__n', 'aria-hidden': 'true', text: `${i + 1}` }), h('span', { class: 'g-choice__label', lang: item.kind === 'blank' || item.kind === 'question' || (item.kind === 'vocab' && skill?.rev) ? 'la' : null, text: c.label }), c.plain ? h('span', { class: 'g-choice__plain', text: c.plain }) : null], { 'data-value': c.value, onclick: (e) => { e.currentTarget.classList.add('is-picked'); submit(c.value); } }, 'g-choice')));
       node.append(group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer.' }));
       node.addEventListener('keydown', (e) => { const n = Number(e.key); if (n >= 1 && n <= item.choices.length && !submitted && e.target.tagName !== 'INPUT') { e.preventDefault(); group.children[n - 1].click(); } });
     } else if (item.input === 'type') {
-      const input = h('input', { type: 'text', class: 'g-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', lang: item.kind === 'blank' ? 'la' : 'en', 'aria-label': item.kind === 'blank' ? 'The missing form' : 'Your answer', placeholder: item.kind === 'blank' ? 'the form (macrons optional)' : (item.prompt.placeholder ?? 'e.g. dative singular') });
+      const input = h('input', { type: 'text', class: 'g-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', lang: latinTyped ? 'la' : 'en', 'aria-label': item.kind === 'blank' ? 'The missing form' : 'Your answer', placeholder: item.kind === 'blank' ? 'the form (macrons optional)' : (item.prompt.placeholder ?? 'e.g. dative singular') });
       const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
       const form = h('form', { class: 'g-type', onsubmit: (e) => { e.preventDefault(); if (input.value.trim()) submit(input.value); } }, input, check);
       node.append(form);
@@ -639,6 +687,20 @@ export function createUI(ctx) {
       node.append(chartInput(item, submit));
     } else if (item.input === 'tap') {
       node.append(h('p', { class: 'g-keys g-keys--tap', text: 'Tap a word in the sentence.' }));
+    } else if (item.input === 'order') {
+      const w = orderInput({ chunks: item.chunks, scrambled: item.scrambled, onSubmit: submit, live: ctx.live });
+      node.append(w.node);
+      setTimeout(() => w.focus(), 0);
+    } else if (item.input === 'match') {
+      const w = matchInput({ pairs: item.pairs, right: item.right, onSubmit: submit, live: ctx.live });
+      node.append(w.node);
+      setTimeout(() => w.focus(), 0);
+    } else if (item.input === 'inline') {
+      node.append(inlineInput(item, submit));
+    } else if (item.input === 'bank') {
+      node.append(bankInput(item, submit));
+    } else if (item.input === 'self') {
+      node.append(selfInput(item, submit));
     }
     // Hint: the rule and the plain paradigm (no cell lit). Opening it is logged.
     const table = item.entry && item.kind !== 'chart' ? (() => { try { return par.paradigm(item.entry, []); } catch { return null; } })() : null;
@@ -649,6 +711,66 @@ export function createUI(ctx) {
     if (hintOpen) onHint();
     node.append(hint);
     return node;
+  }
+
+  /** Pensum A: the sentence with an input for each ending, inline after its stem. Submits { blankIndex: typed }. */
+  function inlineInput(item, submit) {
+    const inputs = new Map();
+    const p = h('p', { class: 'g-la g-pensum' , lang: 'la' });
+    for (const seg of item.segments) {
+      if (seg.blank == null) { p.append(seg.text); continue; }
+      const b = item.blanks[seg.blank];
+      if (!b) continue;
+      const inp = h('input', { type: 'text', class: 'g-input g-input--end', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': `Ending after ${b.stem || 'the stem'}${b.note ? ` (${b.note})` : ''}`, placeholder: '…', size: String(Math.max(2, Math.min(6, (b.answers[0] ?? '').length + 1))) });
+      inputs.set(seg.blank, inp);
+      p.append(h('span', { class: 'g-pensum__blank' }, h('span', { class: 'g-pensum__stem', text: b.stem }), inp));
+    }
+    const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((b, i) => { v[i] = inputs.get(i)?.value ?? ''; }); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next ending; Enter checks.' }));
+    setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
+    return form;
+  }
+  /** Pensum B: the sentence with word blanks and a tappable bank. Submits { blankIndex: word }. */
+  function bankInput(item, submit) {
+    const filled = {};
+    const slots = new Map();
+    const p = h('p', { class: 'g-la g-pensum', lang: 'la' });
+    for (const seg of item.segments) {
+      if (seg.blank == null) { p.append(seg.text); continue; }
+      const i = seg.blank;
+      const slot = h('button', { type: 'button', class: 'g-pensum__slot', lang: 'la', 'aria-label': `Blank ${i + 1}: empty`, onclick: () => { if (filled[i] != null) { delete filled[i]; paint(); } } }, '\u00a0');
+      slots.set(i, slot);
+      p.append(slot);
+    }
+    const bankBtns = item.bank.map((w) => h('button', { type: 'button', class: 'g-order__w', lang: 'la', text: w, onclick: () => { const next = item.blanks.findIndex((_, i) => filled[i] == null); if (next < 0) return; filled[next] = w; paint(); } }));
+    const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
+    const paint = () => {
+      for (const [i, slot] of slots) { const w = filled[i]; slot.textContent = w ?? '\u00a0'; slot.classList.toggle('is-filled', w != null); slot.setAttribute('aria-label', w != null ? `Blank ${i + 1}: ${w}; tap to empty` : `Blank ${i + 1}: empty`); }
+      const used = new Set(Object.values(filled));
+      for (const b of bankBtns) b.disabled = used.has(b.textContent);
+      check.disabled = item.blanks.some((_, i) => filled[i] == null);
+    };
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); submit({ ...filled }); } }, p, h('div', { class: 'g-order__bank', role: 'group', 'aria-label': 'Word bank' }, bankBtns), h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab to a word and press Enter to put it in the next empty blank; a filled blank empties when chosen.' }));
+    paint();
+    setTimeout(() => bankBtns[0]?.focus({ preventScroll: true }), 0);
+    return form;
+  }
+  /** Translate: write, reveal the English (the key words lit in the Latin), grade yourself. Submits 'right' | 'partly' | 'wrong'. */
+  function selfInput(item, submit) {
+    const ta = h('textarea', { class: 'g-input g-textarea', lang: 'en', rows: '2', 'aria-label': 'Your translation', placeholder: 'Your translation…', autocapitalize: 'sentences', spellcheck: 'true' });
+    const reveal = btn('Reveal', {}, 'btn btn--primary');
+    const wrap = h('div', { class: 'g-self' }, ta, h('div', { class: 'g-chart__acts' }, reveal));
+    reveal.addEventListener('click', () => {
+      reveal.disabled = true; ta.readOnly = true;
+      const la = wrap.closest('.g-item')?.querySelector('.g-la');
+      if (la) for (const i of item.lit ?? []) la.querySelector(`.g-w[data-index="${i}"]`)?.classList.add('g-w--target');
+      const grades = h('div', { class: 'g-self__grade', role: 'group', 'aria-label': 'How close were you?' },
+        btn('Right', { onclick: () => submit('right') }, 'btn'), btn('Partly', { onclick: () => submit('partly') }, 'btn'), btn('Wrong', { onclick: () => submit('wrong') }, 'btn'));
+      wrap.append(h('p', { class: 'g-self__model' }, h('span', { class: 'g-lesson__tag', text: 'The book' }), ' ', item.answer[0]), h('p', { class: 'g-quiet', text: 'The lit words carry the construction. Grade yourself: the answer is logged as your own judgement.' }), grades);
+      grades.querySelector('button')?.focus({ preventScroll: true });
+    });
+    setTimeout(() => ta.focus({ preventScroll: true }), 0);
+    return wrap;
   }
 
   /** The cells a chart item shows: all of them, or the target cell alone on a phone. */
@@ -689,8 +811,10 @@ export function createUI(ctx) {
     const skill = skills.get(item.skill);
     const fb = item.feedback;
     const ok = result.correct;
+    const isSet = !!item.set;
     let line;
-    if (ok) line = `Right. ${fb.short}`;
+    if (item.input === 'self') line = result.given === 'right' ? `Right, by your own account. ${fb.short}` : result.given === 'partly' ? `Partly — worth another look. ${fb.short}` : `Not this time. ${fb.short}`;
+    else if (ok) line = `Right. ${fb.short}`;
     else if (item.input === 'tap') {
       const tapped = item.meanings?.find((m) => m.text === result.given);
       const e = tapped ? dict.lookup(tapped.form).entries[0] : null;
@@ -699,34 +823,76 @@ export function createUI(ctx) {
     } else if (item.input === 'choice' && result.choice) {
       const given = result.choice.plain ? `${result.choice.label} (${result.choice.plain})` : result.choice.label;
       line = `You chose ${given}; the answer is ${result.expected}. ${fb.short}`;
-    } else if (item.input === 'chart' && result.cells) {
+    } else if ((item.input === 'chart' || item.input === 'inline' || item.input === 'bank') && result.cells) {
       const wrong = result.cells.filter((c) => !c.ok);
-      line = `${wrong.length === 1 ? 'One cell' : `${wrong.length} cells`} off: ${wrong.map((c) => `${c.given || '—'} → ${c.expected}`).join(', ')}. ${fb.short}`;
-    } else line = `You answered ${result.given || '—'}; the answer is ${result.expected}. ${fb.short}`;
+      line = `${wrong.length === 1 ? 'One blank' : `${wrong.length} blanks`} off: ${wrong.map((c) => `${c.given || '—'} → ${c.expected}`).join(', ')}. ${fb.short}`;
+    } else if (item.input === 'match' && result.cells) {
+      const wrong = result.cells.filter((c) => !c.ok);
+      line = `${wrong.length === 1 ? 'One pair' : `${wrong.length} pairs`} off: ${wrong.map((c) => `${c.la} is ${c.expected}`).join('; ')}.`;
+    // The learner's order usually ends on a word that carries its own punctuation, so a full stop after it would read as a typo.
+    } else if (item.input === 'order') line = `Not quite — you had: ${result.given}${/[.!?,;:]$/.test(String(result.given).trim()) ? '' : '.'} ${fb.short}`;
+    else line = `You answered ${result.given || '—'}; the answer is ${result.expected}. ${fb.short}`;
 
     const unit = item.unit_id ? unitOf(item.unit_id) : null;
     const lit = fb.table ? renderParadigm(fb.table) : null;
     if (lit) lit.open = true;
-    const details = h('details', { class: 'g-fb__more' }, h('summary', { class: 'g-fb__more-s', text: 'Why' }),
+    // A question's answering sentence with the answer lit, right on the feedback (the English on demand); a vocabulary word's dictionary line.
+    const answerBlock = (item.kind === 'question' || (item.kind === 'pensum' && item.pensum === 'C')) && fb.sentence
+      ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'The sentence that answers it' }), latin(fb.sentence, { target: fb.lit?.length ? fb.lit : null }), fb.sentenceEn ? h('details', { class: 'g-q-en' }, h('summary', { class: 'g-hint__s', text: 'In English' }), h('p', { class: 'g-hint__rule', text: fb.sentenceEn })) : null)
+      : item.kind === 'vocab' && item.input !== 'match' ? h('p', { class: 'g-fb__dict' }, h('span', { lang: 'la', class: 'entry__cite', text: item.word.lemma }), ` — ${item.word.meaning} · `, h('span', { lang: 'la', text: fb.dict }))
+      : item.kind === 'vocab' ? h('ul', { class: 'g-fb__pairs' }, item.pairs.map((p) => h('li', {}, h('span', { lang: 'la', class: 'entry__cite', text: p.la }), ` — ${p.en} · `, h('span', { lang: 'la', text: p.dict }))))
+      : item.kind === 'pensum' && fb.sentence ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'Filled in' }), h('p', { class: 'g-la', lang: 'la', text: fb.sentence }))
+      : item.kind === 'transform' || item.kind === 'reorder' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'The book\'s sentence' }), latin(fb.sentence, { target: item.kind === 'transform' ? item.target?.index ?? null : null }), fb.sentenceEn ? h('p', { class: 'g-ex__en', text: fb.sentenceEn }) : null)
+      : null;
+    const details = isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : h('details', { class: 'g-fb__more' }, h('summary', { class: 'g-fb__more-s', text: 'Why' }),
       h('p', { class: 'g-fb__term' }, h('b', { text: skill?.plain ?? fb.term }), ` — ${skill?.summary ?? ''}`),
       h('div', { class: 'g-fb__rule' }),
       lit ? h('div', { class: 'g-fb__pt' }, lit) : null,
-      unit ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(unit.la, { target: item.target?.index ?? null }), unit.en ? h('p', { class: 'g-ex__en', text: unit.en }) : null) : null);
-    details.addEventListener('toggle', async () => {
+      unit && !isSet && item.kind !== 'transform' && item.kind !== 'reorder' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(unit.la, { target: item.target?.index ?? null }), unit.en ? h('p', { class: 'g-ex__en', text: unit.en }) : null) : null);
+    details?.addEventListener('toggle', async () => {
       if (!details.open) return;
       const slot = details.querySelector('.g-fb__rule');
-      if (slot.childElementCount) return;
+      if (slot.childElementCount || isSet) return;
       const l = lesson ?? await lessonOf(item.skill);
       const rule = (l?.core ?? []).find((b) => b.type === 'rule');
       const conf = (l?.core ?? []).find((b) => b.type === 'confusion' && (!result.attempt?.confused_with || b.with === result.attempt.confused_with));
       if (rule) slot.append(h('p', { class: 'g-lesson__rule is-lit' }, inline(rule.text)));
       if (!ok && conf) slot.append(h('div', { class: 'g-lesson__conf' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(conf.with)}` }), h('p', {}, inline(conf.text))));
     }, { once: false });
-    const node = h('div', { class: 'g-fb', 'data-ok': String(ok) },
-      h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? '✓' : '✗' }), ' ', line),
-      details,
+    const node = h('div', { class: 'g-fb', 'data-ok': String(ok), 'data-partial': result.partial ? 'true' : null },
+      h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? (result.partial ? '~' : '✓') : '✗' }), ' ', line),
+      answerBlock,
+      isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : details,
       h('div', { class: 'g-fb__acts' }, btn('Next', { onclick: onNext }, 'btn btn--primary g-fb__next'), practiceLink && mode === 'practice' ? btn(`Practise ${skill?.title ?? 'this skill'}`, { onclick: onPractice }, 'btn btn--quiet') : null));
     node.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.classList.contains('g-fb__next')) { e.preventDefault(); onNext(); } });
+    return node;
+  }
+
+  /* ------------------------------------------------------------ today */
+  /**
+   * The Today card (today.js): the plan's lines with a Start each and "Not
+   * today" to dismiss it for the day. `place` 'map' (the Grammar map, inside
+   * its Today section) or 'weeks' (the weeks menu, main.js: with the reading
+   * line from `unread` / `pace`). `bare` = the lines only, no heading.
+   */
+  function todayCard({ place = 'map', bare = false, unread = 0, pace = null } = {}) {
+    const now = Date.now();
+    const plan = buildToday({ states: gstore.getStates(), skills, currentWeek: ctx.currentWeekSkills(), weekChapter: ctx.currentChapter?.() ?? null, attempts: gstore.getAttempts(), unread: place === 'weeks' ? unread : 0, pace, now, dismissed: ctx.settings?.todayDismissed ?? null, drillable });
+    const dismiss = async () => { await ctx.saveSetting?.({ todayDismissed: plan.day }); ctx.say('Today\'s plan hidden for today.'); if (place === 'map') draw(); else node.replaceWith(todayCard({ place, bare, unread, pace }) ?? ''); };
+    const restore = async () => { await ctx.saveSetting?.({ todayDismissed: null }); if (place === 'map') draw(); else node.replaceWith(todayCard({ place, bare, unread, pace }) ?? ''); };
+    if (plan.dismissed) {
+      if (place === 'weeks') return null;
+      return h('p', { class: 'g-today__line g-quiet' }, 'The plan is put away for today. ', h('button', { type: 'button', class: 'g-link', onclick: restore }, 'Show it'));
+    }
+    const go = (action) => { if (!action) return; if (place === 'weeks') { document.getElementById('weeks')?.close?.(); ctx.go?.(action.view, action.params ?? {}); } else render(action.view, action.params ?? {}); };
+    const rows = plan.lines.map((l) => h('li', { class: 'g-plan__row', 'data-kind': l.kind },
+      h('span', { class: 'g-plan__label', text: l.label }),
+      h('span', { class: 'g-plan__detail' }, l.detail, l.minutes != null ? h('span', { class: 'g-plan__min', text: ` · ${fmtMinutes(l.minutes)}` }) : null),
+      btn(l.kind === 'read' ? 'Read' : 'Start', { onclick: () => go(l.action), 'aria-label': `${l.kind === 'read' ? 'Read' : 'Start'}: ${l.label} — ${l.detail}` }, `btn g-plan__go${l.kind === 'learn' || (l.kind === 'practice' && !plan.lines.some((x) => x.kind === 'learn')) ? ' btn--primary' : ''}`)));
+    const node = h('section', { class: `g-plan${bare ? '' : ' g-plan--card'}`, 'aria-label': bare ? null : 'Today' },
+      bare ? null : h('h3', { class: 'g-plan__h' }, 'Today', plan.minutes ? h('span', { class: 'g-plan__total', text: ` · ${fmtMinutes(plan.minutes)}` }) : null),
+      rows.length ? h('ul', { class: 'g-plan__list' }, rows) : h('p', { class: 'g-today__line g-quiet', text: place === 'weeks' ? 'Nothing suggested for today — open Grammar to start a skill or add one to practice.' : 'Nothing suggested for today. Start a skill as new below, or add one to mixed practice.' }),
+      h('p', { class: 'g-plan__foot' }, bare && plan.minutes ? h('span', { class: 'g-quiet', text: `${fmtMinutes(plan.minutes)} in all · ` }) : null, h('button', { type: 'button', class: 'g-link', onclick: dismiss }, 'Not today')));
     return node;
   }
 
@@ -761,5 +927,5 @@ export function createUI(ctx) {
   }
   const fmtDay = (day) => { const d = new Date(`${day}T12:00:00`); return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); };
 
-  return { render, refresh };
+  return { render, refresh, todayCard };
 }
