@@ -992,3 +992,73 @@ off, or pressed.
   progress.
 - Keyboard reachable, labelled for a screen reader, and never covering the box
   or the sentence.
+
+### Chapter spine — grammar implementation notes (B, 2026-09-06)
+
+Where the grammar side departs from the sketch above, or pins something it
+left open. Change here first if any of it should move.
+
+- **Files.** `app/js/grammar/chapter.js` (new, pure) beside the earlier
+  modules; the views live in `ui.js` and the mount in `index.js`; tests
+  `tests/grammar.chapter.test.mjs`. `js/grammar/chapter.js` must join `sw.js`'s
+  PRECACHE (owner A's file) with a version bump.
+- **`mountChapterGrammar(el, { chapter })`** is a module-level export of
+  `app/js/grammar/index.js` *and* a method on `mountGrammar`'s handle; it needs
+  `mountGrammar()` to have run. It returns `{ chapter, refresh(), destroy() }`
+  and paints twice on a cold start (states first, the practisable truth once
+  the library is read), because the `drillable` memo may not be answered
+  without a generator (the wave-3 QA-B1 rule).
+- **Two hooks on the handle, both optional.** `onChapterNav(fn)` — `fn(n,
+  'grammar')` is called to get back to a chapter page from a lesson, a history
+  page or a session opened there; without it the section shows its own
+  by-chapter view at that chapter. `onLeaveChapter(fn)` — called before the
+  section takes over the screen, since `html[data-page="chapter"]` hides
+  `#grammar`; without it the section clears the chapter route (`location.hash`),
+  which the shell's own hashchange handler reads as "no chapter".
+- **The remembered view is `settings.grammar.view`** (`'topic' | 'chapter'`),
+  riding in the same blob as `preset`, `size` and `oneSkill`.
+- **The by-chapter view is the whole spine**, I–XXXIV, as folded sections; a
+  chapter with no chapter list yet (chapters.js absent) still gets its numeral,
+  its skills and its sets. Which chapters are open is the learner's and
+  survives a redraw; each of the two views keeps its own scroll position.
+- **"Practise this chapter"** is the ordinary mixed session with the chapter's
+  drillable material as its whole `skillsIndex` — so the filler and the
+  re-queue stay inside the chapter too — at `preset: 'review-heavy'`, ten
+  items, resumable like any other session (`params: { chapter }`). Lapsed
+  members re-enter the rotation first, as "Practise this skill" does. Where a
+  chapter holds few grammar skills and several sets (chapter VII: one skill,
+  four sets) the set window cannot hold and `buildSession`'s existing fallback
+  applies: the session is the chapter's material rather than a rule kept by
+  leaving items out.
+- **`startBlocked` is now the view `blocked`** rather than a hand-driven
+  `session`; Back leaves it, and a chapter page can open it through `ctx.go`.
+- **Not changed, with reasons.** The Today card, the category filter and the
+  bulk actions belong to By topic (the daily plan sits above both views); a
+  chapter page shows no reading progress — that is the shell's half of the
+  page.
+
+#### Worth changing in the plan
+
+- Nothing outstanding.
+
+### Redo what was wrong (2026-09-06)
+
+Learner's request: an option to redo the questions that were wrong.
+
+- **At the end of a session**: "Redo the N you missed" when N > 0 — the same
+  items, freshly ordered, played again as an ordinary session.
+- **In Practice setup**: a "Missed items" choice beside the presets, building a
+  session from items the learner has got wrong and has **not since answered
+  right** — most recently missed first, mixed across skills so it is still
+  interleaved practice, capped by the size chosen.
+- **From a skill's history and from a chapter's grammar**: the same, narrowed
+  to that skill or that chapter, with the count shown so the learner knows what
+  they are taking on. Nothing to redo says so quietly.
+- **What counts as missed** is derived from `drill_attempts`: an item whose most
+  recent attempt was wrong. Answering it right in a redo clears it; answering it
+  wrong again keeps it. Self-graded translate counts as missed only on "wrong",
+  not on "partly".
+- **Scoring**: a redo is an ordinary encounter and **is logged**, because it
+  happens later in time and is exactly the spaced retrieval the plan wants. This
+  is the opposite of the immediate retry inside an item, which is never logged —
+  keep the two clearly apart in the code and say which is which in the UI.
