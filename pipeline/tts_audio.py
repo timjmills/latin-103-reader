@@ -8,6 +8,9 @@ on its own, so its start time is known when the pieces are joined).
                                                           # laid out in reading order around the real recording
     python pipeline/tts_audio.py 10 --engine google       # Google's Latin voice instead of Edge Italian
     python pipeline/tts_audio.py 3 5 10 --upload --user-id <uuid>
+    python pipeline/tts_audio.py 3 5 --fill-missing --rebuild-alignment
+                                                          # redo the alignment from the clips and the joined MP3
+                                                          # already on disk: no synthesis, no re-encoding, no upload
 
 Engines (all free, no key):
   edge     Microsoft Edge neural voices via `edge-tts` (default voice it-IT-DiegoNeural,
@@ -21,6 +24,13 @@ Output, identical in shape to align_audio.py so the app treats it the same:
                                        between the synthesised stories
   data/build/audio/week-NN.alignment.json   passage_view / sentence_view / app_rows
   data/build/sql/audio-wNN.sql              audio_alignments rows for the user
+
+Word spacing: align_audio.respace() is applied before the rows are built, to each
+run of same-source sentences on its own (respace_runs) — the real recording and
+each synthesised block are different audio joined end to end, so a word the
+recogniser missed at the end of the reading must not be given time out of the
+block after it. Only the reading has such words; an Edge word boundary is exact,
+so a wholly synthesised week passes through unchanged.
 
 Macrons are stripped before synthesis (the engines do not know them) and the
 text is otherwise sent verbatim. Speaker turns are read as plain text.
@@ -40,7 +50,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from align_audio import (AUDIO_DIR, OUT_DIR, build_views, duration_s, ffmpeg_exe,  # noqa: E402
-                         upload, week_json, write_sql)
+                         respace, upload, week_json, write_sql)
 
 ROOT = Path(__file__).resolve().parent.parent
 MACRON = str.maketrans("āēīōūȳĀĒĪŌŪȲ", "aeiouyAEIOUY")
@@ -130,8 +140,77 @@ def choose_missing(units: list[dict], real: dict[str, dict], threshold: float = 
     return out
 
 
+def ms_grid(v: float) -> float:
+    """The millisecond grid app_rows are written on; respace() runs on it too, so
+    the times it is given are exactly the ones the app will be shown."""
+    return int(round(v * 1000)) / 1000
+
+
+def stacks(al: dict[str, dict]) -> tuple[int, int]:
+    """(word entries with no instant of their own, sentences opening on a stack)."""
+    return (sum(1 for s in al.values() for w in s["words"] if w["end"] - w["start"] <= 0),
+            sum(1 for s in al.values() if len(s["words"]) > 1
+                and s["words"][0]["end"] <= s["words"][0]["start"]
+                and s["words"][1]["start"] == s["words"][0]["start"]))
+
+
+def respace_runs(units: list[dict], runs: list[tuple[str, list[dict]]], al: dict[str, dict]) -> tuple[int, int]:
+    """Give every word entry an instant of its own (align_audio.respace), run by run.
+
+    A joined week is different audio end to end: the real reading, and one or
+    more synthesised blocks, with a 2 s pause between. respace() spreads a run of
+    words the recogniser never heard over the audio between the heard words on
+    either side of it, so it must not see across a join — a word missed at the
+    end of the reading would otherwise be given time out of the synthesised block
+    that follows it. Each run of same-source sentences is therefore respaced on
+    its own, with the anchors those sentences carry (where the aligner matched
+    them, at the run's offset inside the joined file).
+
+    Only the real recording has unheard words: every word of a synthesised
+    sentence carries an exact Edge word boundary, so a wholly synthesised week
+    (week 10) passes through unchanged.
+
+    Returns (zero-length word entries, sentences opening on a stack) as they were
+    before the pass, for the log.
+    """
+    for s in al.values():
+        s["start"] = ms_grid(s["start"])
+        if s.get("end") is not None:
+            s["end"] = ms_grid(s["end"])
+        for w in s["words"]:
+            w["start"], w["end"] = ms_grid(w["start"]), ms_grid(w["end"])
+
+    before = stacks(al)
+
+    for kind, us in runs:
+        rows = [al[u["id"]]["words"] for u in us]
+        # A synthesised sentence has no anchor to keep: its clip's own start is
+        # where it begins, and none of its words was interpolated.
+        anchors = {i: al[u["id"]]["start"] for i, u in enumerate(us)
+                   if kind == "real" and al[u["id"]]["matched"]}
+        respace(rows, anchors)
+
+    # A sentence begins where its own first word begins — respace() may have
+    # moved its opening words back before the anchor — and never later.
+    ordered = [u["id"] for u in units]
+    for uid in ordered:
+        s = al[uid]
+        if s["words"]:
+            s["start"] = min(s["words"][0]["start"], s["start"])
+    # The joined layout leaves 2 s between the recording and a synthesised block,
+    # so an end is not simply the next start; it only may not fall behind its own
+    # start, nor reach past the sentence after it.
+    for i, uid in enumerate(ordered):
+        s = al[uid]
+        if s.get("end") is None:
+            continue
+        nxt = al[ordered[i + 1]]["start"] if i + 1 < len(ordered) else s["end"]
+        s["end"] = max(s["start"], min(s["end"], nxt))
+    return before
+
+
 def process(n: int, engine: str, voice: str, rate: str, only_source: str | None, slugs: list[str] | None,
-            fill_missing: bool, do_upload: bool, user_id: str | None, quiet: bool) -> Path:
+            fill_missing: bool, do_upload: bool, user_id: str | None, quiet: bool, rebuild: bool = False) -> Path:
     data = json.loads(week_json(n).read_text(encoding="utf-8"))
     week, units = data["week"], data["units"]
     dest = AUDIO_DIR / f"week-{n:02d}.mp3"
@@ -180,6 +259,8 @@ def process(n: int, engine: str, voice: str, rate: str, only_source: str | None,
     for i, u in enumerate(tts_units):
         out = clip_dir / (u["id"].replace(":", "_") + ".mp3")
         if not out.exists():
+            if rebuild:
+                raise SystemExit(f"week {n:02d}: --rebuild-alignment but {out.relative_to(ROOT)} is not on disk")
             synth(speakable(u["la"]), out, engine, voice, rate)
         wj = out.with_suffix(".words.json")
         unit_words[u["id"]] = json.loads(wj.read_text(encoding="utf-8")) if wj.exists() else []
@@ -214,7 +295,8 @@ def process(n: int, engine: str, voice: str, rate: str, only_source: str | None,
 
     def silence(name: str, secs: float) -> None:
         f = work / name
-        subprocess.run([ffmpeg_exe(), "-v", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", str(secs), str(f)], check=True)
+        if not rebuild:                   # only the concat needs the file; the timeline is the constant
+            subprocess.run([ffmpeg_exe(), "-v", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", str(secs), str(f)], check=True)
         parts.append(f.name)
 
     seg = 0
@@ -228,7 +310,9 @@ def process(n: int, engine: str, voice: str, rate: str, only_source: str | None,
                 s = real_alignment[u["id"]]
                 al[u["id"]] = {"start": round(s["start"] + offset, 3), "end": round(s["end"] + offset, 3),
                                "matched": s["matched"], "source": s["source"],
-                               "words": [{"text": x["text"], "start": round(x["start"] + offset, 3), "end": round(x["end"] + offset, 3)} for x in s["words"]]}
+                               # "i" — a word the recogniser never heard — is kept: respace_runs() needs it
+                               "words": [{"text": x["text"], "start": round(x["start"] + offset, 3), "end": round(x["end"] + offset, 3),
+                                          **({"i": True} if x.get("i") else {})} for x in s["words"]]}
             t += duration_s(w) or 0.0
             silence(f"{seg:04d}-gap.wav", JOIN_GAP_S)
             t += JOIN_GAP_S
@@ -248,9 +332,15 @@ def process(n: int, engine: str, voice: str, rate: str, only_source: str | None,
             silence(f"{seg:04d}-gap.wav", gap)
             t += gap
             seg += 1
-    lst = work / "list.txt"
-    lst.write_text("".join(f"file '{p}'\n" for p in parts), encoding="utf-8")
-    subprocess.run([ffmpeg_exe(), "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-c:a", "libmp3lame", "-b:a", "96k", str(dest)], check=True, cwd=work)
+    if rebuild:
+        # The joined MP3 on disk is the one that was uploaded: the clips it was
+        # made of are unchanged, so re-encoding it would only risk changing it.
+        if not dest.exists():
+            raise SystemExit(f"week {n:02d}: --rebuild-alignment but {dest.relative_to(ROOT)} is not on disk")
+    else:
+        lst = work / "list.txt"
+        lst.write_text("".join(f"file '{p}'\n" for p in parts), encoding="utf-8")
+        subprocess.run([ffmpeg_exe(), "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-c:a", "libmp3lame", "-b:a", "96k", str(dest)], check=True, cwd=work)
     shutil.rmtree(work, ignore_errors=True)
 
     # Each sentence ends where the next begins (so per-sentence playback runs on into the gap).
@@ -258,6 +348,12 @@ def process(n: int, engine: str, voice: str, rate: str, only_source: str | None,
     for i, uid in enumerate(ordered):
         if i + 1 < len(ordered):
             al[uid]["end"] = max(al[uid]["end"], al[ordered[i + 1]]["start"]) if al[uid]["source"].startswith("tts") else al[uid]["end"]
+
+    zero, stacked = respace_runs(units, runs, al)
+    zero2, stacked2 = stacks(al)
+    if not quiet:
+        print(f"  respaced: zero-length word entries {zero} -> {zero2}, "
+              f"sentences opening on a stack {stacked} -> {stacked2}")
 
     passage_view, sentence_view = build_views(week, units, al)
     app_rows = [{"unit_id": s["unit_id"], "start_ms": int(round(s["start"] * 1000)), "end_ms": int(round(s["end"] * 1000)),
@@ -306,14 +402,20 @@ def main(argv=None) -> int:
     ap.add_argument("--only-source", choices=["FR", "FS", "FL"], help="synthesise only units from this source")
     ap.add_argument("--slugs", help="comma-separated story slugs to synthesise (e.g. coriolanus,fl-66); the rest come from the real recording")
     ap.add_argument("--fill-missing", action="store_true", help="synthesise every story the real recording does not contain (needs align_audio.py first)")
+    ap.add_argument("--rebuild-alignment", action="store_true", dest="rebuild",
+                    help="rebuild the alignment from the clips and the joined MP3 already on disk: no synthesis, "
+                         "no re-encoding of week-NN.mp3, no upload")
     ap.add_argument("--upload", action="store_true")
     ap.add_argument("--user-id", default=os.environ.get("LATIN_USER_ID"))
     ap.add_argument("--quiet", action="store_true")
     a = ap.parse_args(argv)
+    if a.rebuild and a.upload:
+        raise SystemExit("--rebuild-alignment does not upload")
     rc = 0
     for n in a.weeks:
         try:
-            process(n, a.engine, a.voice, a.rate, a.only_source, a.slugs.split(",") if a.slugs else None, a.fill_missing, a.upload, a.user_id, a.quiet)
+            process(n, a.engine, a.voice, a.rate, a.only_source, a.slugs.split(",") if a.slugs else None,
+                    a.fill_missing, a.upload, a.user_id, a.quiet, a.rebuild)
         except Exception as e:
             print(f"week {n:02d}: FAILED — {e}", file=sys.stderr)
             rc = 1

@@ -390,7 +390,11 @@ FFmpeg is bundled by `imageio-ffmpeg`; nothing is installed system-wide.
    synthesise only the parts the recording lacks and lay them out in reading
    order around it. Default voice: Edge `it-IT-DiegoNeural` (church-style
    Latin); `--engine google` uses Google's Latin voice. Word timings come from
-   the engine's word boundaries.
+   the engine's word boundaries. `respace_runs()` then gives every word entry an
+   instant of its own before the rows are built — `align_audio.respace()` over
+   each run of same-source sentences separately (below). `--rebuild-alignment`
+   redoes the alignment from the clips and the joined MP3 already on disk: no
+   synthesis, no re-encoding of `week-NN.mp3`, no upload.
 4. Upload: `--upload --user-id <auth user uuid>` on either script pushes the
    rows (`audio_alignments`, including `words`) with the Supabase CLI and the
    MP3 to the private bucket `audio/{user}/week-NN.mp3`. The app's own
@@ -734,16 +738,58 @@ word the first copy is the one this sentence wants.
 **Weeks 3, 5 and 10 are not the aligner's to re-run.** They are a real recording
 with the stories it lacks synthesised around it, laid out by `tts_audio.py`, and
 re-running `align_audio.py` on them would throw the joined layout away (and the
-MP3s are already uploaded). `data/build/audio/_verify/repair_tts_weeks.py`
-applies `respace()` to their rows in place instead, reading the "i" flags back
-off `audio.real_alignment` (tts_audio drops them when it merges the two sources)
-and treating every word of a synthesised row as heard, since an Edge word
-boundary is exact. It runs `respace()` on each run of same-source rows
-separately: the real reading and each synthesised block are different audio
-joined end to end, and a word the recogniser missed in the reading must not be
-given time out of the synthesised part after it. Week 10 is wholly synthesised
-and had no unheard word to place, so it is untouched — the one week of the 38
-whose rows this pass did not change.
+MP3s are already uploaded). `tts_audio.respace_runs()` does the same pass for
+them, on `al` before `app_rows` is built: the real recording's words keep their
+"i" flag when they are shifted into the joined file (tts_audio used to drop it
+when it merged the two sources), and every word of a synthesised row counts as
+heard, since an Edge word boundary is exact. It runs `respace()` on each run of
+same-source rows separately — the runs the joined MP3 is made of: the real
+reading and each synthesised block are different audio joined end to end with a
+2 s pause between, and a word the recogniser missed in the reading must not be
+given time out of the synthesised part after it. The row's own start then follows
+its first word back, and its end is held between its own start and the next row's
+(the joined layout leaves gaps, so an end is not simply the next start). Week 10
+is wholly synthesised and has no unheard word to place, so it passes through
+unchanged — the one week of the 38 whose rows this pass does not change.
+
+This began as `data/build/audio/_verify/repair_tts_weeks.py`, which applied the
+pass to the finished rows in place; the script is retired (it now only prints
+what it did), because a plain run of `tts_audio.py` would have silently undone
+the fix for those two weeks. **The pipeline pass was proved equivalent to it**
+before the script was retired: rebuilding both weeks from the audio already on
+disk, and week 10 with them —
+
+```
+python pipeline/tts_audio.py 3 5 --fill-missing --rebuild-alignment
+python pipeline/tts_audio.py 10 --rebuild-alignment
+```
+
+— reproduced the repaired rows exactly. Every `start_ms`, `end_ms`, `synth` flag
+and every word `s`, `e` and `i` is identical, `sentence_view` with them, and
+`data/build/sql/audio-wNN.sql` came out byte-identical; week 10's file did not
+change at all, and none of the three MP3s was rewritten. The same rows were
+checked against `public.audio_alignments` — an md5 over `unit_id | start_ms |
+end_ms | synth |` every word's `t:s:e:i`, ordered by `unit_id`, computed in
+Postgres and again locally — and match for all three weeks (82, 105 and 156
+rows, one user each). Nothing was uploaded: the database already held the
+repaired rows. The only difference is `passage_view`, which the repair script
+never updated and which had therefore kept the times from before the pass; it is
+now built from the respaced words like everything else, and is not uploaded.
+
+The three weeks, measured on their `app_rows` before the pass (the untouched
+output in `_verify/before2`) and after it:
+
+| week | rows | word entries | zero-length | rows with one | opening on a stack | non-monotonic within / across rows | rows overlapping the next |
+|---|---|---|---|---|---|---|---|
+| 3 | 82 | 1375 | 78 → **2** | 23 → 2 | 18 → **0** | 0 / 0 → 0 / 0 | 0 → 0 |
+| 5 | 105 | 1662 | 84 → **8** | 25 → 2 | 18 → **0** | 0 / 0 → 0 / 0 | 0 → 0 |
+| 10 | 156 | 2634 | 0 → 0 | 0 → 0 | 0 → 0 | 0 / 0 → 0 / 0 | 0 → 0 |
+
+The ten entries left without an instant are all interpolated words in the *real*
+recording with no room either side — `respace()`'s honest case, where the stack
+stands rather than invent evidence — and none of them opens a sentence: week 3's
+are the 4th word of `w03:minos:b5.2` and the 8th of `w03:coronis:b12.4`, week 5's
+the 4th of `w05:nausicaa:147.5` and seven inside `w05:nausicaa:230.2`.
 
 ### Validation of both fixes, all 38 weeks (2026-09-06)
 

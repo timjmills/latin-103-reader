@@ -105,3 +105,62 @@ def test_a_lead_never_crosses_the_previous_sentence():
     out = align(units, words)
     assert out["u2"]["start"] >= 4.9            # not into u1's own speech
     assert out["u1"]["end"] == out["u2"]["start"]
+
+
+def test_a_joined_week_comes_out_respaced_run_by_run():
+    """tts_audio.py lays a real recording and synthesised blocks end to end, and
+    respaces each run on its own: the opening words of a sentence the recogniser
+    only half heard get an instant apiece, no word of the reading is given time
+    out of the synthesised block after it, and the synthesised rows — every word
+    of which carries an exact Edge boundary — come through untouched."""
+    from tts_audio import respace_runs
+
+    units = [{"id": "u1", "la": "Theseus filius regis Minotaurum necat"},
+             {"id": "u2", "la": "labyrinthus magnus est"},
+             {"id": "u3", "la": "Arachne texit"},
+             {"id": "u4", "la": "aranea est"}]
+
+    def w(t, a, b, i=False):
+        return {"text": t, "start": a, "end": b, **({"i": True} if i else {})}
+
+    al = {
+        # the reading: "Theseus filius regis" was never heard, so the three of
+        # them are stacked on the anchor, and "est" was swallowed by "magnus"
+        "u1": {"start": 5.0, "end": 6.5, "matched": True, "source": "whisper",
+               "words": [w("Theseus", 5.0, 5.0, True), w("filius", 5.0, 5.0, True), w("regis", 5.0, 5.0, True),
+                         w("Minotaurum", 5.0, 5.7), w("necat", 5.8, 6.2)]},
+        "u2": {"start": 6.5, "end": 8.0, "matched": True, "source": "whisper",
+               "words": [w("labyrinthus", 6.5, 7.0), w("magnus", 7.1, 7.5), w("est", 7.5, 7.5, True)]},
+        # the synthesised block, 2 s of silence after the recording
+        "u3": {"start": 10.0, "end": 12.0, "matched": True, "source": "tts:edge",
+               "words": [w("Arachne", 10.0, 10.6), w("texit", 10.7, 11.2)]},
+        "u4": {"start": 12.0, "end": 13.0, "matched": True, "source": "tts:edge",
+               "words": [w("aranea", 12.0, 12.4), w("est", 12.5, 12.9)]},
+    }
+    runs = [("real", units[:2]), ("tts", units[2:])]
+    before = respace_runs(units, runs, al)
+    assert before == (4, 1)                     # 4 zero-length entries, 1 sentence opening on a stack
+
+    u1 = al["u1"]["words"]
+    assert all(x["end"] > x["start"] for x in u1)
+    assert all(u1[k]["start"] < u1[k + 1]["start"] for k in range(len(u1) - 1))
+    assert u1[0]["start"] < 5.0 and al["u1"]["start"] == u1[0]["start"]   # the row moved back with them
+
+    # the run ends with the recording: "est" is not given the 2 s pause, nor any
+    # part of the synthesised block that follows it
+    est = al["u2"]["words"][-1]
+    assert est["end"] <= 8.0 and est["start"] > al["u2"]["words"][-2]["start"]
+
+    # nothing of the synthesised block moved: an Edge word boundary is exact
+    assert [(x["start"], x["end"]) for x in al["u3"]["words"]] == [(10.0, 10.6), (10.7, 11.2)]
+    assert [(x["start"], x["end"]) for x in al["u4"]["words"]] == [(12.0, 12.4), (12.5, 12.9)]
+    assert al["u3"]["start"] == 10.0 and al["u4"]["start"] == 12.0
+    # a row still ends no later than the row after it starts, and never before its own start
+    ids = [u["id"] for u in units]
+    assert all(al[a]["end"] <= al[b]["start"] for a, b in zip(ids, ids[1:]))
+    assert all(al[i]["end"] >= al[i]["start"] for i in ids)
+    # running it again changes nothing (the one entry still without an instant is
+    # the last word of the reading, which has no heard word after it to borrow from)
+    was = {k: [dict(x) for x in v["words"]] for k, v in al.items()}
+    respace_runs(units, runs, al)
+    assert {k: v["words"] for k, v in al.items()} == was
