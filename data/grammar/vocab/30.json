@@ -314,14 +314,14 @@
    "count": 4
   },
   {
-   "lemma": "potō",
-   "dict": "potō, potāre, pōtāvī, potatum",
+   "lemma": "pōtō",
+   "dict": "pōtō, pōtāre, pōtāvī, potatum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "drink",
    "sense_full": "drink",
-   "parts": "potō, potāre, pōtāvī, potatum",
+   "parts": "pōtō, pōtāre, pōtāvī, potatum",
    "unit_id": "w08:b29.3",
    "count": 4
   },
@@ -411,13 +411,13 @@
   },
   {
    "lemma": "ēligō",
-   "dict": "ēligō, ēligere, ēlēgī, electum",
+   "dict": "ēligō, ēligere, ēlēgī, ēlectum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "choose, pick out",
    "sense_full": "pick out, choose",
-   "parts": "ēligō, ēligere, ēlēgī, electum",
+   "parts": "ēligō, ēligere, ēlēgī, ēlectum",
    "unit_id": "w08:b18.2",
    "count": 3
   },

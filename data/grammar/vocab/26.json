@@ -51,13 +51,13 @@
   },
   {
    "lemma": "iuvō",
-   "dict": "iuvō, iuvāre, iuvī, iutum",
+   "dict": "iuvō, iuvāre, iūvī, iutum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "help, aid",
    "sense_full": "help, assist, aid, support, serve, further",
-   "parts": "iuvō, iuvāre, iuvī, iutum",
+   "parts": "iuvō, iuvāre, iūvī, iutum",
    "unit_id": "w02:23.2",
    "count": 14
   },
@@ -183,13 +183,13 @@
   },
   {
    "lemma": "effugiō",
-   "dict": "effugiō, effūgere, effugī, effugitum",
+   "dict": "effugiō, effūgere, effūgī, effugitum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "escape, flee",
    "sense_full": "flee or escape",
-   "parts": "effugiō, effūgere, effugī, effugitum",
+   "parts": "effugiō, effūgere, effūgī, effugitum",
    "unit_id": "w02:19.2",
    "count": 8
   },
