@@ -295,3 +295,114 @@ test('duplicate lexemes are merged in the build (no twin chips)', () => {
   }
   assert.ok(!lookup('secūtus').entries.some((e) => e.h === 'secor'), 'ghost lemma secor gone');
 });
+
+// ---------------------------------------------------------------------------
+// ranking: which reading of a form leads the list
+
+test('māla in "Aemilia puerīs māla dat" is apples, and every reading is still offered', () => {
+  const la = 'Aemilia puerīs māla dat.';
+  const at = la.indexOf('māla');
+  const r = lookup('māla', { context: la, at });
+  assert.equal(r.entries[0].h, 'malum');
+  assert.match(r.entries[0].lemma, /^mālum -ī n/);
+  assert.match(describe(r.entries[0], { form: 'māla', context: la }).meaning, /apples/);
+  // the word panel offers the rest — nothing is dropped, only ordered
+  assert.ok(r.entries.length >= 4, `all readings kept (${r.entries.length})`);
+  assert.ok(r.entries.some((e) => /^māla -ae f/.test(e.lemma)), 'the cheeks reading is still there');
+  assert.equal(r.ambiguous, false, 'one reading leads; the caller need not show two');
+  // the drill gloss has no sentence to go on, and the library counts alone still settle it
+  assert.match(lookup('māla').entries[0].lemma, /^mālum -ī n/);
+});
+
+test('nōn is "not", with no second reading offered beside it', () => {
+  const r = lookup('nōn', { context: 'Quīntus nōn dormit.', at: 8 });
+  assert.equal(r.entries[0].pos, 'ADV');
+  assert.match(describe(r.entries[0]).meaning, /^not/);
+  assert.equal(r.ambiguous, false, 'the Nones are not offered as a rival reading');
+  assert.equal(lookup('nōn').ambiguous, false);
+});
+
+test('the library counts push back a reading the course never prints, and only that', () => {
+  const { countRanks } = _internal;
+  const seen = { n: 80, nd: 8 }, never = { n: 0, nd: 7 };
+  assert.deepEqual(countRanks([seen, never]), [0, 1]);
+  // a near miss is left where the build put it
+  assert.deepEqual(countRanks([{ n: 80, nd: 8 }, { n: 12, nd: 7 }]), [0, 0]);
+  // a rival that was counted over ten times the evidence proves nothing (a verb against a noun)
+  assert.deepEqual(countRanks([{ n: 22, nd: 146 }, { n: 0, nd: 5 }]), [0, 0]);
+  // and a reading with nothing of its own to count is never moved
+  assert.deepEqual(countRanks([{ n: 80, nd: 8 }, {}]), [0, 0]);
+  const mala = lookup('māla').entries;
+  assert.equal(mala.find((e) => /^māla -ae f/.test(e.lemma)).n, 0, 'cheeks: the library prints none of its own forms');
+  assert.ok(mala.find((e) => /^mālum -ī n/.test(e.lemma)).n >= 10, 'apples: all over the course');
+});
+
+test('the sentence decides: a preposition governs the word it stands in front of', () => {
+  const { fitPenalties } = _internal;
+  const abl = { pos: 'N', parses: [{ case: 'abl', number: 'sg' }] };
+  const acc = { pos: 'N', parses: [{ case: 'acc', number: 'sg' }] };
+  // invented sentences (no textbook text in the repo). `ex` takes the ablative and nothing else.
+  const la = 'Puer ex hortō venit.';
+  const pen = fitPenalties([abl, acc], 'hortō', { context: la, at: la.indexOf('hortō') });
+  assert.equal(pen.hard[0], 0);
+  assert.ok(pen.hard[1] > 0, 'an accusative-only reading cannot follow "ex hortō"');
+  // …and not over a word it has an object for already: in "ex ōrā maris" the genitive belongs to
+  // `ōrā`, not to `ex`
+  const la2 = 'Ex ōrā maris vēnit.';
+  const gen = { pos: 'N', parses: [{ case: 'gen', number: 'sg' }] };
+  const p2 = fitPenalties([gen, acc], 'maris', { context: la2, at: la2.indexOf('maris') });
+  assert.deepEqual(p2.hard, [0, 0]);
+  // a rule no reading satisfies is dropped whole, so an adverb is not floated up by it
+  const adv = { pos: 'ADV', parses: [{}] };
+  const p3 = fitPenalties([gen, adv], 'hortō', { context: la, at: la.indexOf('hortō') });
+  assert.deepEqual(p3.hard, [0, 0]);
+  // and the verb's empty object slot is a guess, kept apart from what the sentence actually says
+  const dat = { pos: 'N', parses: [{ case: 'dat', number: 'sg' }] };
+  const la4 = 'Puella puerīs rosam dat.';
+  const p4 = fitPenalties([acc, dat], 'rosam', { context: la4, at: la4.indexOf('rosam') });
+  assert.deepEqual(p4.hard, [0, 0]);
+  assert.deepEqual(p4.soft, [0, 1]);
+});
+
+test('a caller that knows the role says so, and readings that cannot take it lose', () => {
+  const dat = lookup('labyrinthō', { want: { case: 'dat', number: 'sg' } });
+  assert.ok(dat.entries[0].parses.some((p) => p.case === 'dat'));
+  // an impossible want is ignored rather than shuffling the list at random
+  const before = lookup('labyrinthō').entries.map((e) => e.lemma);
+  assert.deepEqual(lookup('labyrinthō', { want: { case: 'loc' } }).entries.map((e) => e.lemma), before);
+});
+
+test('a capital prefers a name, unless the sentence put it there', () => {
+  // invented sentences
+  const la = 'Iūlius Aemiliam et Aemiliae fīliōs videt.';
+  const r = lookup('Aemiliae', { context: la, at: la.indexOf('Aemiliae') });
+  assert.equal(r.entries[0].pos, 'N', 'the woman, not the adjective Aemilius -a -um');
+  assert.match(r.entries[0].lemma, /^Aemilia/);
+  // "Num" opens the question; the capital is the sentence's, not Numerius's
+  const q = 'Num pater domī est?';
+  assert.equal(lookup('Num', { context: q, at: 0 }).entries[0].pos, 'ADV');
+  // with no sentence to go on the capital is taken at face value, as before
+  assert.match(lookup('Mārcō').entries[0].lemma, /^Mārcus/);
+});
+
+test('the printed macron still outranks the sentence and the counts', () => {
+  // hīc (here) and hic (this) share a key; the macron says which
+  assert.equal(lookup('hīc').entries[0].pos, 'ADV');
+  assert.equal(lookup('hic').entries[0].pos, 'PRON');
+  assert.match(lookup('lectō').entries[0].lemma, /^lectus -ī m/);   // in bed, not lēctō from legō
+  assert.match(lookup('ēst').entries[0].lemma, /^edō/);             // he eats, not est "he is"
+  // …but a particle whose vowel length the library itself writes both ways is left to the build
+  assert.equal(lookup('modō').entries[0].pos, 'ADV');
+  assert.equal(lookup('modo').entries[0].pos, 'ADV');
+});
+
+test('lookup keeps its old shape when called with one argument', () => {
+  const r = lookup('puella');
+  assert.equal(r.form, 'puella');
+  assert.equal(r.via, 'exact');
+  assert.equal(r.enclitic, null);
+  assert.equal(r.ambiguous, false);
+  assert.ok(Array.isArray(r.entries) && r.entries.length);
+  // an unknown option is ignored, not obeyed
+  assert.deepEqual(lookup('puella', { nonsense: true }).entries, r.entries);
+});

@@ -48,6 +48,18 @@ Ranking of the entries under one form (lower sorts first)
 6. Duplicate lexemes (same headword, pos and senses — Whitaker lists mittō
    twice, as [3,1] and [8,3]) are merged into the better-ranked one.
 
+Library counts (`n`)
+--------------------
+Whitaker's frequency is *Latin's* frequency, not this course's.  Every reading
+that shares its key with another therefore carries `n`: how often the whole
+library (the course weeks, the review shelf, the Colloquia, the margin glosses,
+the summaries and the drills — collect_tokens()) prints any form of that
+lexeme, macrons and all.  It is counted over the entry's whole paradigm because
+the key's own spelling is precisely the one the rival readings share: `māla` is
+printed 33 times and could be apples or cheeks, but `mālum/mālō/mālōrum` are
+printed 64 times and `mālae/mālam/mālā` never.  dictionary.js ranks on it, and
+the exact-spelling keys below are ordered by it.
+
 Spelling
 --------
 See pipeline/macrons.py. Stems get macrons/v from the source tokens, then
@@ -67,6 +79,7 @@ from __future__ import annotations
 import collections
 import glob
 import json
+import math
 import os
 import re
 import sys
@@ -2058,11 +2071,22 @@ NAME_UNPARSED: list[str] = []
 # token's capital in hand can prefer the name without consulting these keys.
 
 _SPELLING_CACHE: dict[tuple, frozenset | None] = {}
-_UNINFLECTED_POS = {"ADV", "CONJ", "PREP", "INTERJ", "ABBR", "ENDING", "PREFIX", "STEM"}
+_GLOSS_POS = {"ABBR", "ENDING", "PREFIX", "STEM"}
+_UNINFLECTED_POS = {"ADV", "CONJ", "PREP", "INTERJ"} | _GLOSS_POS
+
+#: form (lower-cased, macrons kept) → how often the whole library prints it;
+#: filled by main() from collect_tokens() and read by entry_count().
+LIB_FORM_COUNTS: dict[str, int] = {}
 
 
-def entry_spellings(e: dict) -> frozenset | None:
-    """Every spelling this entry can give, case-folded; None when unknown."""
+def entry_spellings(e: dict, core: bool = False) -> frozenset | None:
+    """Every spelling this entry can give, case-folded; None when unknown.
+
+    `core` drops the comparative and superlative, which triple an adjective's
+    table with forms nobody writes (`lātior`, `lātissimum`).  Counting those as
+    the adjective's own would make `lātus -a -um` look like a word the library
+    never prints, when in truth every form of it the library prints is a form
+    `ferō`'s participle `lātum` prints too."""
     if e.get("_sp"):
         return frozenset(x.lower() for x in e["_sp"])
     pos = e.get("pos")
@@ -2070,15 +2094,82 @@ def entry_spellings(e: dict) -> frozenset | None:
         head = str(e.get("lemma") or "").split(",")[0].split()[0].strip("-")
         return frozenset([head.lower()]) if head else None
     key = (e.get("h"), pos, tuple(e.get("roots") or []), tuple(e.get("cat") or []),
-           e.get("gender"), e.get("kind"))
+           e.get("gender"), e.get("kind"), core)
     if key in _SPELLING_CACHE:
         return _SPELLING_CACHE[key]
     try:
-        forms = latin_forms.single_forms(e)
+        if core:
+            forms = [f for f, p in latin_forms.forms(e) if p.get("degree") in (None, "pos")]
+        else:
+            forms = latin_forms.single_forms(e)
     except Exception:                                    # noqa: BLE001 — a table we cannot build
         forms = []
     out = frozenset(f.lower() for f in forms) if forms else None
     _SPELLING_CACHE[key] = out
+    return out
+
+
+def entry_count(e: dict, rivals: frozenset = frozenset(), core: bool = False) -> int:
+    """How often the library prints a form of this lexeme that no other reading
+    under the same key can print — the evidence that it is *this* word.
+
+    Counting the whole paradigm would be worthless: the key's own spelling is
+    exactly the one the rivals share, and where one lexeme's forms contain
+    another's (Iūlius -a -um prints every form of Iūlia -ae f) the bigger table
+    would always win.  So only the spellings the rivals cannot give are counted:
+    `māla` itself is printed 33 times and settles nothing, but `mālum/mālō/
+    mālōrum` (apples) are printed 64 times and `mālae/mālam/mālā` (cheeks) never.
+    """
+    if not LIB_FORM_COUNTS:
+        return 0
+    sp = entry_spellings(e, core=core)
+    if not sp:
+        return 0
+    return sum(LIB_FORM_COUNTS.get(s, 0) for s in sp - rivals)
+
+
+def rival_spellings(entries: list[dict], i: int) -> frozenset:
+    """Every spelling the *other* readings under this key can print."""
+    out: set[str] = set()
+    for j, other in enumerate(entries):
+        if j == i:
+            continue
+        sp = entry_spellings(other)
+        if sp:
+            out |= sp
+    return frozenset(out)
+
+
+#: Counts are used one way only, and only at their sharpest: a reading whose
+#: own forms the library prints *not once* goes behind a reading whose own
+#: forms it prints constantly.  Anything softer than that cannot be trusted to
+#: compare a noun with a verb — a verb has ten times as many forms to be
+#: counted over, so relative size measures the paradigm, not the word.
+COUNT_SEEN = 10
+#: a reading is only measurable when at least 1/COUNT_SHARE of the forms it can
+#: give are forms no rival under the same key can give
+COUNT_SHARE = 3
+#: …and two readings are only comparable when they were counted over evidence of
+#: the same order of size.  `vītēs` is the vine, but the vine's own forms are
+#: `vītis/vīte/vītium/vītibus` (5 of them, none of which the book happens to
+#: print) while `vītō` "avoid" brings 146 forms of its own to be counted over:
+#: whichever word is meant, the verb wins a race like that.
+COUNT_BASE = 4
+
+
+def count_ranks(entries: list[dict]) -> list[int]:
+    """0 for every reading, 1 for one the library never once shows the learner
+    while another under the same key — counted over evidence of a comparable
+    size — is genuinely part of the course."""
+    ns = [e.get("n") if isinstance(e.get("n"), int) else None for e in entries]
+    nds = [e.get("nd") if isinstance(e.get("nd"), int) else None for e in entries]
+    out = []
+    for n, nd in zip(ns, nds):
+        beaten = n == 0 and any(
+            rn is not None and rn >= COUNT_SEEN and rnd is not None and nd
+            and rnd <= COUNT_BASE * nd
+            for rn, rnd in zip(ns, nds))
+        out.append(1 if beaten else 0)
     return out
 
 
@@ -2102,12 +2193,27 @@ def spelling_rank(e: dict, spelling: str) -> int:
         return 2
     if spelling in sp or spelling.lower() in sp and spelling.lower() == spelling:
         return 0
-    return 1 if spelling.lower() in sp else 3
+    if spelling.lower() in sp:
+        return 1
+    # A word with one form and a disputed vowel: the library prints the adverb `modo` 39 times and
+    # `modō` 52, so a macron that disagrees with the headword says nothing about which particle this
+    # is.  (A *fragment* is still told apart from a word: the ending `-a` is not the preposition `ā`.)
+    # The macron alone, mind: "Hic" differs from the adverb `hīc` by its capital as well, and a
+    # capital at the head of a sentence is not evidence of anything (see exact_spelling_keys).
+    pos = e.get("pos")
+    if pos in _UNINFLECTED_POS and pos not in _GLOSS_POS:
+        if strip_macrons(spelling) in {strip_macrons(x) for x in sp}:
+            return 0
+    return 3
 
 
-def _order_for(entries: list[dict], spelling: str) -> list[dict]:
+def _order_for(entries: list[dict], spelling: str, counts: bool = True) -> list[dict]:
+    # spelling first (a reading that cannot print these letters is not this
+    # word), then behind the rest anything the library never shows the learner
+    back = count_ranks(entries) if counts else [0] * len(entries)
     return [e for _, e in sorted(enumerate(entries),
-                                 key=lambda pair: (spelling_rank(pair[1], spelling), pair[0]))]
+                                 key=lambda pair: (spelling_rank(pair[1], spelling),
+                                                   back[pair[0]], pair[0]))]
 
 
 def exact_spelling_keys(glossary: dict[str, list[dict]], speller: "Speller",
@@ -2125,13 +2231,15 @@ def exact_spelling_keys(glossary: dict[str, list[dict]], speller: "Speller",
         for sp in spellings:
             if sp == form or sp in glossary or not (has_macron(sp) or CAPITAL.match(sp)):
                 continue
-            ordered = _order_for(entries, sp)
             # only when a reading really does spell the form this way, letter
             # for letter: a sentence-initial capital on a common word (Solum,
-            # Puerī) is not evidence of anything and gets no key
-            if spelling_rank(ordered[0], sp) != 0 or ordered[0] is entries[0]:
+            # Puerī) is not evidence of anything and gets no key.  The *spelling*
+            # alone decides whether the key is worth adding (library counts must
+            # not conjure new keys); the stored order then also uses the counts.
+            spelled = _order_for(entries, sp, counts=False)
+            if spelling_rank(spelled[0], sp) != 0 or spelled[0] is entries[0]:
                 continue
-            out[sp] = ordered
+            out[sp] = _order_for(entries, sp)
     return out
 
 
@@ -2163,12 +2271,62 @@ def attach_spellings(glossary: dict[str, list[dict]]) -> int:
     return n
 
 
+def attach_library_counts(glossary: dict[str, list[dict]]) -> int:
+    """`n`: entry_count() written on every reading that shares its key with
+    another, so the app can prefer the word the learner has actually met when
+    the spelling cannot tell two readings apart (māla apples / māla cheeks).
+
+    Only multi-entry keys carry it — a form with one reading has nothing to
+    rank.  `n` is written even when it is 0: 0 is the finding that matters
+    (`māla -ae f`, cheeks — the library prints `mālae/mālam/mālā` nowhere).
+    Three kinds of reading are left without one instead, and the app reads
+    "no `n`" as "the counts have nothing to say", which is not the same:
+
+    * a gloss abbreviation (ABBR/ENDING/PREFIX/STEM) — hand-placed first or
+      last by the build on purpose, and its "spelling" is a fragment (`-a`);
+    * a reading that cannot print the key's own form: it is here because
+      Whitaker cut the word up (quisque as queō + -que), so a count over its
+      paradigm is a count of some other string;
+    * a reading with too little of its own to count, because a rival can give
+      most of its forms too (Iūlia -ae f inside Iūlius -a -um; the adverb
+      `modo` inside the noun `modus`; the adjective `mortuus -a -um`, whose
+      only forms beyond the participle `mortuus` are `mortuē` and comparatives
+      nobody writes).  Fewer than COUNT_SHARE of its forms are its own, so
+      "never printed" would be a fact about Latin morphology, not about the
+      word — unmeasurable, and left alone.
+    """
+    n = 0
+    for key, entries in glossary.items():
+        if len(entries) < 2:
+            continue
+        ck = canonical(key)
+        for i, e in enumerate(entries):
+            if "n" in e:                     # shared object (an exact-spelling key)
+                continue
+            if e.get("pos") in _GLOSS_POS:
+                continue
+            sp = entry_spellings(e, core=True)
+            if not sp or not any(canonical(x) == ck for x in sp):
+                continue
+            rivals = rival_spellings(entries, i)
+            if len(sp - rivals) * COUNT_SHARE < len(sp):   # too little of its own to measure
+                continue
+            e["n"] = entry_count(e, rivals, core=True)
+            e["nd"] = len(sp - rivals)          # how much evidence that count had to work with
+            n += 1
+    return n
+
+
 # ---------------------------------------------------------------------------
 # main
 
 
 def main() -> None:
     weeks = collect_tokens()
+    LIB_FORM_COUNTS.clear()
+    for _counter in weeks.values():
+        for _tok, _n in _counter.items():
+            LIB_FORM_COUNTS[_tok.lower()] = LIB_FORM_COUNTS.get(_tok.lower(), 0) + _n
     old = json.load(open(OLD_GLOSSARY, encoding="utf-8")) if OLD_GLOSSARY.exists() else {}
     supplements, sup_keys = load_supplements()
     abbr_first, abbr_last, abbr_keys = load_abbreviations()
@@ -2245,6 +2403,7 @@ def main() -> None:
             glossary[display_key[form]] = merged
             if ranked:
                 n_whit += 1
+    n_lib = attach_library_counts(glossary)
     glossary.update(exact_spelling_keys(glossary, speller, display_key))
     n_sp = attach_spellings(glossary)
     covered = {canonical(k) for k in glossary}
@@ -2290,7 +2449,7 @@ def main() -> None:
     n_entries = sum(len(v) for v in glossary.values())
     print(f"forms in token set: {len(form_set)}")
     print(f"exact-spelling keys: {len(glossary) - len(form_set) + len(form_set) - len([f for f in form_set if display_key[f] in glossary])}"
-          f"; `sp` written on {n_sp} entries")
+          f"; `sp` written on {n_sp} entries; `n` (library count) on {n_lib}")
     print(f"forms with entries: {len(glossary)} (Whitaker: {n_whit}, supplement-only: {len(glossary) - n_whit})")
     print(f"entries: {n_entries}; file: {size/1e6:.2f} MB → {OUT_PATH}")
     for wk, n in sorted(total_miss.items()):
