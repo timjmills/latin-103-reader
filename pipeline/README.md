@@ -298,3 +298,90 @@ English captions are filled in there. `upload_pictures.py` writes
 seed_sql.py pattern) and copies the PNGs to the private bucket
 `pictures/<user-id>/week-NN/<file>`.
 
+## Pensa: Ørberg's PENSVM A / B / C from the scan
+
+```
+python pipeline/extract_pensa.py                 # chapters 1–34 (+ SQL, report)
+python pipeline/extract_pensa.py 1 8 20 30       # selected chapters
+python pipeline/extract_pensa.py --check         # validate every pensa-NN.json + sql/pNN.sql
+python pipeline/extract_pensa.py 1 --dump        # print the rows and the tokens of each pensum
+python pipeline/extract_pensa.py 20 --render DIR # render the pensa pages to PNG for a spot check
+```
+
+Outputs `data/build/pensa-NN.json` (`{chapter, A, B, C, bank, report}`, the shapes
+of GRAMMAR-CONTRACT "Pensa"), `data/build/sql/pNN.sql` (three upserts into
+`public.pensa` for the first auth user — nothing is uploaded here; run them with
+`supabase db query --linked -f data/build/sql/pNN.sql`) and
+`data/build/pensa-REPORT.md` (items, resolved / unverified and text-layer damage
+per chapter). `--check` re-reads both files for every chapter and is what CI
+should run.
+
+**Pages and blocks.** Chapter *k* starts on the *k*-th page whose running head
+reads CAPITVLVM (`review_shelf.chapter_pages`); a pensum runs from its PENSVM
+heading to the next one. The heading matcher tolerates one garbled letter,
+because the scan prints `PKNSVM` on p143. Rows come from `extract_margins.GEOM`
+with the dashes and stops kept — unlike `review_shelf`'s cleaning pass, since the
+printed blanks *are* dashes: a short dash after a stem in Pensum A (`vīll-`), an
+em dash for a whole word (`—`), questions in Pensum C. The margin beside the
+pensa carries the chapter's `Vocābula:` list, which is the printed word bank of
+Pensum B (the chapter's `app/data/grammar/vocab/NN.json` deck is added to it).
+
+**Blanks the text layer lost.** Roughly one printed dash in twenty is missing
+from the scan's text layer — `sed — — est.` arrives as `sed` … `est.` with a
+26 pt hole. Every row is measured: its median word gap is a space and its median
+font size is an em dash; whatever is left of an over-wide gap once a space (and,
+for a stem that lost its hyphen, a hyphen) is subtracted counts one whole-word
+blank per dash width. A row that is not the last of its paragraph is justified
+flush right, so a short right end is a lost mark too — the right margin is the
+75th-percentile row end, not the widest one, so ordinary justification slack does
+not invent blanks.
+
+**Answers.** The pensa re-tell the chapter, so the chapter's own sentences are
+the answer key, in this order:
+
+1. *Alignment.* The chapter sentences that share most of the pensum sentence's
+   words are aligned against it word by word (Needleman–Wunsch, blanks are
+   wildcards). An alignment that reproduces ≥ 70 % of the printed words hands the
+   blank the word the chapter prints there; two chapter sentences that disagree
+   hand over nothing.
+2. *Agreement.* Candidates — for Pensum A the attested forms beginning with the
+   stem whose lemma has that root, for Pensum B the word bank's forms, for a
+   whole-word blank inside Pensum A the chapter's own words — are filtered by the
+   case a preceding preposition governs, by adjective ↔ noun agreement with the
+   neighbouring word, by the number of the sentence's copula (a predicate noun is
+   nominative and agrees with `est` / `sunt`), and by verb ↔ subject person and
+   number. A candidate must satisfy *one* reading of itself against *all* the
+   filters, so a word that is a noun under one test and an imperative under
+   another is not counted as explained; filters are dropped from the end until
+   something survives, so agreement never empties the pool.
+3. *Context.* What survives is ranked by what the chapter prints between the same
+   neighbours: trigram, then both bigrams, then either — inside the matching
+   sentences first, then the chapter at large.
+
+One survivor is *resolved* (Pensum A stores the endings and a note naming the
+form); several are all accepted and the blank is `unverified`; none leaves it
+`unverified` with no answers. Adjacent blanks are solved in rounds, so an
+adjective and its noun each get a second look once the other has a value. A
+sentence with a token the OCR left unreadable is `unverified` whatever else
+happened, and so is an item with no blanks at all (cap. XXXIV Pensum A is a
+scansion exercise, not a fill-in). `-isse` / `-um` after an infinitive (the
+principal-parts rows of chapters XXII onwards) are answered from the glossary's
+roots.
+
+Pensum C picks the chapter sentence sharing most of the question's content lemmas
+— never another question — and cuts a short Latin answer out of it by question
+word (`ubi` → the prepositional phrase, `quid est X` → the predicate, `quis` →
+the nominative name, `quot` → the numeral, `cūr` → the *quia* / *quod* clause,
+`num` / `nōnne` / `-ne` → *Ita* / *Nōn* by whether the sentence affirms the
+question). The full sentence is always accepted as well and `unit_id` names it.
+A weak match, or a `ubi` / `quis` / `quot` / `cūr` question whose short answer
+could not be cut, is `unverified`.
+
+**Known limits.** The glossary is built from the library, so a Pensum A blank
+whose answer occurs nowhere in Familia Romana I–XXXIV has no candidate at all —
+this is why the future and future-perfect pensa (cap. XX, XXIX–XXXIII) resolve
+worst: the book asks for `amābit` and `pugnāverint`, which its own narrative never
+prints. Those blanks come out `unverified` rather than guessed. The pronoun
+pensa (cap. VIII `h- / ill- / qu-`) are ambiguous by construction and mostly
+`unverified` too. Text-layer damage per chapter is listed in the report; the
+worst pages are cap. IV, XI, XVI and XXV.
