@@ -1062,3 +1062,34 @@ Learner's request: an option to redo the questions that were wrong.
   happens later in time and is exactly the spaced retrieval the plan wants. This
   is the opposite of the immediate retry inside an item, which is never logged —
   keep the two clearly apart in the code and say which is which in the UI.
+
+## Progress across every chapter (2026-09-06)
+
+Learner's request: show the timings and all the components for **every chapter**,
+not only the current week. Today the study log reports pace and time-left for
+the 14 course weeks; chapters I–XXIV and the dialogues have none of it, and a
+chapter's grammar, questions, vocabulary and pensa are not counted anywhere.
+
+**A Progress view listing all 34 chapters**, reachable from the menu and from
+Settings beside the study log, each chapter one row that opens to its detail:
+
+- **Reading** — per reading of that chapter (the text, the dialogue, each story):
+  sentences read of the total, whether it has audio, and a Continue.
+- **Timings** — time already spent on the chapter and time still to come, both
+  from the study log's measured pace (minutes per sentence, per device, as the
+  week figures already use). Say plainly that they are estimates from pace: the
+  only measured quantity is the daily active minutes the study log records, and
+  nothing may present a derived figure as a measurement.
+- **Grammar** — skills of that chapter by state (new · learning · practising ·
+  mastered · lapsed), the question set answered of its total, the vocabulary
+  deck seen of its total, the pensa items available and done, each with the
+  estimated minutes left at the learner's own drill pace (per-kind medians, as
+  the Today card already computes).
+- **A chapter total** — the sum of the above, so a chapter can be planned.
+- Chapters with nothing done read as untouched rather than as zeros; a component
+  a chapter does not have (no Colloquium after XXIV, a chapter with no pensa) is
+  absent, never an empty row.
+
+The 14 course weeks keep their existing table unchanged — this view is by
+chapter and additional to it. Totals across the whole book sit at the top:
+sentences read, chapters finished, skills mastered, minutes measured.
