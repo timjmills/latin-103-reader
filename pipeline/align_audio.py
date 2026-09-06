@@ -168,15 +168,71 @@ def paced_blocks(blocks, ref: list[str], words: list[dict]) -> list:
     return chain[::-1]
 
 
-def seek(unit: dict, hyp: list[str], lo: int, hi: int) -> int | None:
-    """The earliest whisper word in hyp[lo:hi] that sounds like one of the
-    sentence's first distinctive words, or None. Short words (et, est, in …)
-    are no evidence and are not searched for."""
-    toks = [t for w in words_of(unit["la"]) if len(t := norm(w)) >= 4][:6]
-    for t in toks:
-        for k in range(max(0, lo), min(hi, len(hyp))):
-            if difflib.SequenceMatcher(a=t, b=hyp[k]).ratio() >= 0.8:
-                return k
+LOOK = 40           # letters of a sentence's opening weighed against the transcript
+SEEK_FLOOR = 0.58   # below this the transcript is no evidence of where the sentence is
+SEEK_SLACK = 0.03   # …and the earliest place this close to the best one wins
+HEAD = 12           # the opening letters, which count for more: it is a start we are placing
+HEAD_W = 0.35
+
+
+def letter_stream(hyp: list[str]) -> tuple[str, list[int]]:
+    """The transcript as one stream of letters, with each word's offset in it."""
+    off = [0]
+    for h in hyp:
+        off.append(off[-1] + len(h))
+    return "".join(hyp), off
+
+
+def seek(unit: dict, hyp: list[str], lo: int, hi: int,
+         cache: tuple[str, list[int]] | None = None) -> int | None:
+    """Where in hyp[lo:hi] the sentence begins, or None.
+
+    Every position is scored by how well the sentence's opening letters agree
+    with the transcript's letters read from there — letters, not words, because
+    this reader's ecclesiastical Latin reaches Whisper with the word boundaries
+    in the wrong places: *posthāc Mārcum* comes back as "post tāc Marquīn",
+    *sūmit ac surgit* as "sumitac surgit". Scoring one word at a time is what
+    left cap. XXIII nine sentences late — the old pass took the first word that
+    fuzzily matched the sentence's *first* distinctive word anywhere in the
+    window, so `r23:107.1` ("Posthāc Mārcum sine comite …", spoken at 592 s)
+    was pinned to the "Marcus" of the next paragraph at 610 s, and the eight
+    sentences after it were crammed into what was left.
+
+    The earliest position within SEEK_SLACK of the best one wins. Ørberg says
+    everything twice — narrative, then indirect speech — so the two copies score
+    alike; scanning forward from the previous sentence's last heard word, the
+    first copy is the one this sentence wants. A best score under SEEK_FLOOR is
+    not evidence at all and the sentence is left to be interpolated: measured
+    over ten weeks, a sentence's true opening scores 0.84 at the median and 0.73
+    at the 5th percentile, while a decoy 25 words away tops out at 0.59.
+    """
+    ref = "".join(t for w in words_of(unit["la"]) if (t := norm(w)))[:LOOK]
+    lo, hi = max(0, lo), min(hi, len(hyp))
+    if len(ref) < 8 or lo >= hi:
+        return None
+    joined, off = cache if cache is not None else letter_stream(hyp)
+    sm = difflib.SequenceMatcher(autojunk=False)
+    sm.set_seq2(ref)
+    head = difflib.SequenceMatcher(autojunk=False)
+    head.set_seq2(ref[:HEAD])
+    end = off[hi]
+    best_r, scores = 0.0, []
+    for k in range(lo, hi):
+        got = joined[off[k]:min(end, off[k] + len(ref) + 8)]
+        sm.set_seq1(got)
+        # the composite can be no more than (1-HEAD_W)*this + HEAD_W
+        if (1 - HEAD_W) * sm.real_quick_ratio() + HEAD_W < best_r - SEEK_SLACK:
+            scores.append(0.0)
+            continue
+        head.set_seq1(got[:HEAD + 4])
+        r = (1 - HEAD_W) * sm.ratio() + HEAD_W * head.ratio()
+        scores.append(r)
+        best_r = max(best_r, r)
+    if best_r < SEEK_FLOOR:
+        return None
+    for k, r in zip(range(lo, hi), scores):
+        if r >= best_r - SEEK_SLACK:
+            return k
     return None
 
 
@@ -194,6 +250,7 @@ def align(units: list[dict], words: list[dict]) -> dict:
                 ref.append(n)
                 owner.append(i)
     hyp = [w["n"] for w in words]
+    cache = letter_stream(hyp)
 
     sm = difflib.SequenceMatcher(a=ref, b=hyp, autojunk=False)
     first_hit: dict[int, int] = {}     # unit index → whisper word index of first matched token
@@ -223,7 +280,7 @@ def align(units: list[dict], words: list[dict]) -> dict:
             nxt = min((j for j in order if j > i), default=None)
             lo = (last_hit[prev] + 1) if prev is not None else 0
             hi = first_hit[nxt] if nxt is not None else len(hyp)
-            best = seek(u, hyp, lo, hi)
+            best = seek(u, hyp, lo, hi, cache)
             if best is not None:
                 first_hit[i] = last_hit[i] = best
                 order = sorted(first_hit)
@@ -259,7 +316,7 @@ def align(units: list[dict], words: list[dict]) -> dict:
                         and words[first_hit[nxt]]["start"] - words[first_hit[i]]["start"] < 0.15)
             if not (late or crams or squeezed):
                 continue
-            k = seek(units[i], hyp, (last_hit[p] + 1) if p is not None else 0, first_hit[i])
+            k = seek(units[i], hyp, (last_hit[p] + 1) if p is not None else 0, first_hit[i], cache)
             if k is not None:
                 first_hit[i] = k
                 last_hit[i] = max(k, min(last_hit[i], k + len(words_of(units[i]["la"]))))
@@ -305,24 +362,199 @@ def align(units: list[dict], words: list[dict]) -> dict:
         if starts[k] < starts[k - 1]:
             starts[k] = starts[k - 1]
 
-    for i, u in enumerate(units):
-        start = starts[i]
+    ends: list[float] = []
+    for i in range(n):
         if i + 1 < n:
-            end = starts[i + 1]
+            ends.append(starts[i + 1])
         elif i in last_hit:
             # The recording may run on (week 14 follows week 13 in the same file):
             # the last sentence ends where its last matched word ends.
-            end = words[last_hit[i]]["end"] + 0.6
+            ends.append(round(words[last_hit[i]]["end"] + 0.6, 3))
         else:
-            end = words[-1]["end"] if words else start
-        inside = [w for w in words if start <= w["start"] < end]
+            ends.append(words[-1]["end"] if words else starts[i])
+
+    timed = [token_times(u["la"], [w for w in words if starts[i] <= w["start"] < ends[i]], starts[i], ends[i])
+             for i, u in enumerate(units)]
+    respace(timed, {i: starts[i] for i in first_hit})
+
+    # A sentence begins where its own first word begins: respace() has moved the
+    # words the recogniser never heard back into the audio before the first one
+    # it did, so the opening words are no longer stacked on the anchor's instant.
+    for i in range(n):
+        if not timed[i]:
+            continue
+        # …but never later than where the sentence itself matched. Ørberg
+        # repeats a phrase inside one sentence ("Aegyptus in Eurōpā nōn est,
+        # Aegyptus in Āfricā est"), and token_times() can take the second copy
+        # for the sentence's first word when the first copy falls a moment
+        # before the anchor; that is a wrong word cursor, not a later sentence.
+        starts[i] = min(starts[i], timed[i][0]["start"]) if i in first_hit else timed[i][0]["start"]
+    for k in range(1, n):
+        starts[k] = max(starts[k], starts[k - 1])
+    for i in range(n - 1):
+        # A sentence wedged between two anchors with no audio between them would
+        # otherwise get a zero-length row, and the app plays a row from its start
+        # to its end: pressing play on it would play nothing. It keeps MIN_ROW_S,
+        # overlapping the sentence after it by that much at worst.
+        ends[i] = max(starts[i] + MIN_ROW_S, starts[i + 1])
+    if n and timed[n - 1]:
+        ends[n - 1] = max(ends[n - 1], timed[n - 1][-1]["end"])
+
+    # Where that clamp pulled a sentence's start back behind the interpolated
+    # tail of the sentence before it, that tail is re-spread into the room left.
+    for i in range(n):
+        ws, b = timed[i], ends[i]
+        j = len(ws)
+        while j > 0 and ws[j - 1].get("i") and ws[j - 1]["end"] > b + 1e-9:
+            j -= 1
+        if j == len(ws):
+            continue
+        a = min(ws[j - 1]["end"] if j > 0 else starts[i], b)
+        weight = [max(1, len(norm(w["text"]))) for w in ws[j:]]
+        t, total = a, sum(weight) or 1
+        for w, wt in zip(ws[j:], weight):
+            span = (b - a) * wt / total
+            w["start"], w["end"] = round(t, 3), round(t + span, 3)
+            t += span
+
+    for i, u in enumerate(units):
         out[u["id"]] = {
-            "start": start, "end": round(end, 3),
+            "start": round(starts[i], 3), "end": round(ends[i], 3),
             "matched": i in first_hit,
             "source": "whisper" if i in first_hit else "interpolated",
-            "words": token_times(u["la"], inside, start, round(end, 3)),
+            "words": timed[i],
         }
     return out
+
+
+LEAD_S = 0.30   # audio a word the recogniser never heard may claim before the next one it did
+MIN_S = 0.09    # …and the least any word entry gets of its own, so the cursor can show it
+MIN_ROW_S = 0.15  # a sentence squeezed to nothing still gets this much, so "play it" plays something
+
+
+def respace(rows: list[list[dict]], anchors: dict[int, float] | None = None) -> None:
+    """Give every word entry an instant of its own. Modifies `rows` in place.
+
+    `anchors[i]` is where the alignment placed sentence `i` — the heard word it
+    matched, which is evidence in its own right and may be earlier than LEAD_S a
+    word would reach (Whisper hands back *posthāc* as the two words "post tāc",
+    so no single word of cap. XXIII's `r23:107.1` matched at its true start and
+    the sentence's own anchor was a word and a half further in).
+
+    `rows` is one list of timed words per sentence, in reading order, as
+    token_times() leaves them: a word Whisper heard carries the recogniser's own
+    times, a word it never heard is flagged "i" and was interpolated. A sentence
+    used to begin at its first *heard* word, which is often not its first word,
+    so the words before that anchor had no room at all and were stacked on one
+    instant — 2761 of the shelf's 21318 entries had zero length, and `wordAt()`
+    in app/js/audio.js shows only the last word at a given instant, so those
+    words never lit up as the reading passed them.
+
+    Every maximal run of unheard words is laid out over the audio between the
+    heard words on either side of it, by letter count, under two rules:
+
+      * where the run crosses a sentence boundary, the later sentence's share is
+        capped at LEAD_S a word, so its start moves back far enough to cover its
+        own opening words and no further — a sentence backed off further than
+        that would begin in silence, or in the previous sentence's speech, and
+        "play this sentence" starts at exactly this time. The share is also
+        never more than the run's proportional part of the gap, so a tight gap
+        is divided rather than overdrawn, and the boundary therefore never
+        crosses the previous sentence's last heard word.
+      * where that still leaves a word less than MIN_S of its own — the two
+        heard words either side are contiguous in the transcript, so the word
+        between them was swallowed by one of them — the run reaches back into
+        the tail of the heard word before it, leaving that word MIN_S and never
+        moving its start. Whisper's word boundaries are no more precise than
+        that, and a word with no instant of its own can never be shown. The
+        borrowing stays inside one sentence: a run that *begins* a sentence is
+        left stacked rather than moved across the boundary on no evidence.
+
+    Over the library this takes the zero-length entries from 4448 of 40370 to
+    243, and the sentences that open on a stack from 1504 of 4306 to 33.
+    """
+    flat = [(ri, wi) for ri, ws in enumerate(rows) for wi in range(len(ws))]
+    if not flat:
+        return
+
+    def W(x):
+        ri, wi = flat[x]
+        return rows[ri][wi]
+
+    n = len(flat)
+    x = 0
+    while x < n:
+        if not W(x).get("i"):
+            x += 1
+            continue
+        y = x
+        while y < n and W(y).get("i"):
+            y += 1
+        lo = W(x - 1)["end"] if x > 0 else 0.0
+        hi = W(y)["start"] if y < n else max(W(n - 1)["end"], lo)
+        _place(rows, flat, x, y, lo, max(lo, hi), y < n, anchors or {})
+        x = y
+
+    # Nothing may share an instant with the word after it.
+    for x in range(n - 1, 0, -1):
+        cur, prev = W(x), W(x - 1)
+        if cur["start"] - prev["start"] >= MIN_S - 1e-9 or not prev.get("i"):
+            continue
+        z = x - 1
+        while z > 0 and W(z - 1).get("i"):
+            z -= 1
+        held = W(z - 1) if z > 0 else None
+        # borrow from the heard word before the run, but only inside one sentence
+        floor = (held["start"] + MIN_S
+                 if held is not None and flat[z - 1][0] == flat[x - 1][0]
+                 else (held["end"] if held is not None else 0.0))
+        # never later than the word after it: where the borrowing has no room
+        # left the stack simply stands, which is honest, but it must not invert
+        want = min(cur["start"], max(0.0, floor, cur["start"] - MIN_S))
+        if want < prev["start"]:
+            prev["start"] = round(want, 3)
+        prev["end"] = round(min(max(prev["end"], prev["start"]), cur["start"]), 3)
+
+
+def _spread(rows, flat, ks: list[int], a: float, b: float) -> None:
+    """Lay the words flat[k] for k in ks out over [a, b] by letter count."""
+    weight = [max(1, len(norm(rows[flat[k][0]][flat[k][1]]["text"]))) for k in ks]
+    total = sum(weight) or 1
+    t = a
+    for k, wt in zip(ks, weight):
+        w = rows[flat[k][0]][flat[k][1]]
+        span = (b - a) * wt / total
+        w["start"], w["end"] = round(t, 3), round(t + span, 3)
+        t += span
+
+
+def _place(rows, flat, x: int, y: int, lo: float, hi: float, anchored_right: bool,
+           anchors: dict[int, float]) -> None:
+    """Lay the run of unheard words flat[x:y] out over [lo, hi]; see respace().
+
+    Only one part of a run is capped: the words that *open* the sentence whose
+    first heard word closes the run. Those are the ones the cursor could not
+    show, and LEAD_S apiece is as far back as their sentence's start may move.
+    Everything before them — the tail of the sentence before, and any sentence
+    in between that was never heard at all — is spread over what is left, by
+    letter count, exactly as the interpolation always did: there is no evidence
+    of where those words fall, and bunching them at one end would invent some.
+    """
+    ks = list(range(x, y))
+    # the words that open the sentence the run leads into — the sentence that
+    # owns the heard word at flat[y], not merely the last sentence in the run
+    lead = [k for k in ks if anchored_right and flat[k][0] == flat[y][0]]
+    edge = hi
+    if lead and flat[lead[0]][1] == 0:
+        take = min(LEAD_S * len(lead), (hi - lo) * len(lead) / len(ks))
+        want = anchors.get(flat[lead[0]][0])
+        if want is not None and lo <= want < hi:
+            take = max(take, hi - want)          # the sentence's own anchor wins
+        edge = max(lo, hi - take)
+        _spread(rows, flat, lead, edge, hi)
+        ks = ks[:len(ks) - len(lead)]
+    if ks:
+        _spread(rows, flat, ks, lo, edge)
 
 
 def token_times(la: str, heard: list[dict], start: float, end: float) -> list[dict]:

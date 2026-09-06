@@ -26,8 +26,12 @@ def test_interpolation_spreads_by_word_count():
     units[3]["la"] = "uuuu v"
     out = align(units, words)
     assert out["u1"]["start"] == 0.0 and out["u4"]["start"] == 20.0
-    assert out["u2"]["start"] == 10.0          # after u1's 10 of 20 words
-    assert out["u3"]["start"] == 12.0          # after u1 + u2 (12 of 20)
+    # The 19 words nobody heard share the audio between the two that were heard
+    # — 0.5 s (where "abcd" ends) to 20.0 s — by letter count, and a sentence
+    # begins where its own first word does. u2 opens on the 10th of those 19.
+    assert out["u2"]["start"] == 9.737         # after u1's 9 remaining words
+    assert out["u3"]["start"] == 11.789        # after u1's 9 + u2's 2
+    assert out["u1"]["start"] < out["u2"]["start"] < out["u3"]["start"] < out["u4"]["start"]
     assert out["u2"]["source"] == "interpolated"
 
 
@@ -65,3 +69,39 @@ def test_last_unit_ends_at_its_last_heard_word():
              {"w": "aliud", "n": "aliud", "start": 60.0, "end": 60.4}]   # the next week's text
     out = align(units, words)
     assert out["u2"]["start"] == 5.0 and out["u2"]["end"] == 6.7           # not 60.4
+
+
+def test_leading_words_get_time_of_their_own():
+    """A sentence whose first heard word is not its first word still lights up
+    its opening words: respace() backs the start off into the audio before the
+    anchor, so no entry shares an instant with the one after it."""
+    from align_audio import align
+    units = [{"id": "u1", "la": "labyrinthus magnus est"},
+             {"id": "u2", "la": "Theseus filius regis Minotaurum necat"}]
+    words = [{"w": "labyrinthus", "n": "labyrinthus", "start": 1.0, "end": 1.8},
+             {"w": "magnus", "n": "magnus", "start": 1.9, "end": 2.4},
+             {"w": "est", "n": "est", "start": 2.4, "end": 2.7},
+             # "Theseus filius regis" was not heard; the anchor is "minotaurum"
+             {"w": "minotaurum", "n": "minotaurum", "start": 5.0, "end": 5.7},
+             {"w": "necat", "n": "necat", "start": 5.8, "end": 6.2}]
+    out = align(units, words)
+    w2 = out["u2"]["words"]
+    assert [x["text"] for x in w2] == ["Theseus", "filius", "regis", "Minotaurum", "necat"]
+    assert all(x["end"] > x["start"] for x in w2)
+    assert all(w2[k]["start"] < w2[k + 1]["start"] for k in range(len(w2) - 1))
+    # backed off by ~0.3 s a word, and never across the previous sentence's last
+    # heard word (2.7 s), which is where u1 now ends
+    assert 4.0 <= out["u2"]["start"] <= 4.2 and out["u2"]["start"] == w2[0]["start"]
+    assert out["u1"]["end"] == out["u2"]["start"] > 2.7
+
+
+def test_a_lead_never_crosses_the_previous_sentence():
+    from align_audio import align
+    units = [{"id": "u1", "la": "labyrinthus"},
+             {"id": "u2", "la": "Theseus filius regis Minotaurum necat"}]
+    words = [{"w": "labyrinthus", "n": "labyrinthus", "start": 1.0, "end": 4.9},
+             {"w": "minotaurum", "n": "minotaurum", "start": 5.0, "end": 5.7},
+             {"w": "necat", "n": "necat", "start": 5.8, "end": 6.2}]
+    out = align(units, words)
+    assert out["u2"]["start"] >= 4.9            # not into u1's own speech
+    assert out["u1"]["end"] == out["u2"]["start"]

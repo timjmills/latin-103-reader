@@ -630,17 +630,9 @@ sub-150 ms spans are left on the whole shelf (`r05:103.1` at 120 ms, `r15:96.1`
 at 75 ms, both two- or three-word sentences whose words Whisper never heard), and
 no zero-length one.
 
-**Known limit — the word cursor's leading words.** A sentence starts at the time
-of its first *matched* word, which is often not its first word (Whisper drops
-quiet ones), so `token_times()` has no room for the words before that anchor and
-stacks them on one instant. 2761 of the shelf's 21318 word entries are
-zero-length and 943 of 2757 sentences begin with such a stack; `wordAt()` in
-`app/js/audio.js` picks the last word at a given instant, so those words never
-light up. The sentence's own start/end — what playback uses — is unaffected.
-Fixing it means backing a sentence's start off by roughly 0.3 s per unanchored
-leading word, bounded by the previous sentence's last heard word; it would
-change every week's rows, so it is left for a pass that can re-verify all of
-them.
+**The word cursor's leading words** — a sentence starting at its first *matched*
+word, so the words before that anchor were stacked on one instant and never lit
+up — was fixed in the pass below, across all 38 weeks.
 
 ### Verification of the shelf, chapter by chapter (2026-09-06)
 
@@ -671,3 +663,175 @@ against decoys of 22 / 29 / 22 / 20 %. Eleven of the twelve cuts are decisively
 the words the row claims; the twelfth, cap. I's `r01:36.1`, is placed right but
 its word cursor points about 3 s late — the leading-word limit above, made worse
 by "Delphī" being said twice in three seconds.
+
+### The word cursor's opening words, and cap. XXIII's last nine (2026-09-06)
+
+Two defects the pass above left behind, both fixed across the whole library —
+the fourteen course weeks and the twenty-four shelf chapters, 4306 rows.
+
+**1. A sentence never lit its opening words.** `align()` started a sentence at
+its first word Whisper *matched*, which is usually not its first word: Whisper
+drops quiet openings, and Ørberg's sentences begin with short ones (`nam`, `at`,
+`ecce`, a name). `token_times()` then had no room at all for the words before
+that anchor and stacked them on the anchor's instant, and `wordAt()` in
+`app/js/audio.js` shows only the *last* word at a given instant, so they never
+lit up. Measured over all 38 weeks: **4448 of 40370 word entries were
+zero-length, and 1504 of the 4306 sentences opened on such a stack.**
+
+`respace()` now lays every maximal run of unheard words out over the audio
+between the heard words on either side of it, and a sentence begins where its own
+first word begins:
+
+- the run's words that *open* a sentence take LEAD_S (0.30 s) apiece, so the
+  sentence's start moves back far enough to cover them and no further. Backing
+  it further off would make "play this sentence" start in silence or in the
+  previous sentence's speech, since the row's `start_ms` is exactly where
+  playback begins. The share is also capped at the run's proportional part of
+  the gap, so the boundary can never cross the previous sentence's last heard
+  word;
+- where the sentence's own anchor is *earlier* than that (Whisper hands back
+  *posthāc* as the two words "post tāc", so no single word matched at the true
+  start) the anchor wins — it is evidence, and 0.30 s a word is only a default;
+- everything else in the run — the tail of the sentence before, and any sentence
+  in between that was never heard at all — is spread by letter count over what
+  is left, exactly as the interpolation always did: there is no evidence of where
+  those words fall, and bunching them at one end would invent some;
+- where a word still has less than MIN_S (0.09 s) of its own, because the two
+  heard words either side are contiguous in the transcript and it was swallowed
+  by one of them, the run reaches back into the tail of the heard word before it,
+  leaving that word MIN_S and never moving its start. This stays inside one
+  sentence: a run that *begins* a sentence is left stacked rather than moved
+  across a boundary on no evidence.
+
+A sentence wedged between two anchors with no audio between them would now get a
+zero-length row, and the app plays a row from its `start_ms` to its `end_ms`:
+`MIN_ROW_S` (0.15 s) is the floor, so its play button still does something. That
+is the only place rows overlap, and by at most 0.15 s.
+
+**2. Cap. XXIII's nine late sentences.** `r23:107.1` through `r23:117.1` — the
+593–648 s stretch — were still 3 to 18 s late. `seek()`, the fuzzy pass that
+places a sentence with no matching block of its own, took the first whisper word
+anywhere in its window that fuzzily matched the sentence's *first distinctive
+word*. "Posthāc Mārcum sine comite ambulāre nōn sinam", spoken at 592 s, has
+"Mārcum" as its first distinctive word, and the reader's "Marcus" in the next
+paragraph at 610 s scores 0.83 against it — so the sentence was pinned there and
+the eight after it were crammed into what was left.
+
+`seek()` now scores every position in its window by the character-level agreement
+of the sentence's opening 40 letters with the transcript's letters read from
+there, weighting the first 12 letters at 0.35 because it is a *start* being
+placed. Letters, not words: this reader's ecclesiastical Latin reaches Whisper
+with the word boundaries in the wrong places (*sūmit ac surgit* comes back as
+"sumitac surgit", *Nōlī eum* as "Noleum"). Calibrated on ten weeks' worth of
+sentences whose first word difflib itself matched, a true opening scores 0.84 at
+the median and 0.73 at the 5th percentile, while a decoy 25 words away tops out
+at 0.59 — so a best score under `SEEK_FLOOR` (0.58) is not evidence and the
+sentence is interpolated instead. The earliest position within `SEEK_SLACK`
+(0.03) of the best one wins: Ørberg says everything twice, narrative then
+indirect speech, and scanning forward from the previous sentence's last heard
+word the first copy is the one this sentence wants.
+
+**Weeks 3, 5 and 10 are not the aligner's to re-run.** They are a real recording
+with the stories it lacks synthesised around it, laid out by `tts_audio.py`, and
+re-running `align_audio.py` on them would throw the joined layout away (and the
+MP3s are already uploaded). `data/build/audio/_verify/repair_tts_weeks.py`
+applies `respace()` to their rows in place instead, reading the "i" flags back
+off `audio.real_alignment` (tts_audio drops them when it merges the two sources)
+and treating every word of a synthesised row as heard, since an Edge word
+boundary is exact. It runs `respace()` on each run of same-source rows
+separately: the real reading and each synthesised block are different audio
+joined end to end, and a word the recogniser missed in the reading must not be
+given time out of the synthesised part after it. Week 10 is wholly synthesised
+and had no unheard word to place, so it is untouched — the one week of the 38
+whose rows this pass did not change.
+
+### Validation of both fixes, all 38 weeks (2026-09-06)
+
+**Measured before and after, over all 4306 rows and 40370 word entries:**
+
+| | before | after |
+|---|---|---|
+| zero-length word entries | 4448 | **243** |
+| …of them, before the sentence's first heard word | 3180 | 50 |
+| sentences opening on a stack | 1504 of 4306 | **33** |
+| rows with any zero-length entry | 1896 | 115 |
+| sentence starts before the previous sentence's last heard word | 9 | **0** |
+| word times non-monotonic within a row / across rows | 0 / 0 | 0 / 0 |
+| rows under 150 ms | 3 | 0 |
+| word entries outside their own row's span | 0 | 0 |
+| rows starting before the previous row ends (beyond MIN_ROW_S) | 0 | 0 |
+| sentences matched directly | 4192 | 4190 |
+
+On the shelf alone the zero-length entries go from 2761 of 21318 to 149 and the
+stack-opening sentences from 945 to 29; on the course weeks, 1687 to 60 and 559
+to 4.
+
+**Placement, measured independently.** For every unit, the best character-level
+match of its opening 40 letters is found in the raw transcript within ±25 s of
+the row's start, and the offset between that and the row is measured — it
+searches the transcript, not the alignment, so before and after are comparable.
+Over 3831 units: median |offset| **0.64 s → 0.26 s**, p90 2.82 → 2.07, p95 4.16 →
+2.89; units more than 3 s out **320 → 173**, more than 5 s out 123 → 76. Of the
+119 units this pass moved by more than 2 s, 86 fit the transcript better
+afterwards, 27 unchanged, 6 worse — and four of those six are sentences the
+recogniser never heard at all, scoring near zero either way.
+
+The two sentences net lost from the direct-match count are the honest half of
+the same trade: `SEEK_FLOOR` refuses evidence the old pass accepted. Of the units
+that gave up a direct match and are recognisable in the transcript at all, nine
+of twelve ended up *closer* to their speech (median |offset| 7.77 s → 5.04 s),
+and 23 units gained a direct match (median 1.65 s → 0.00 s).
+
+**Cap. XXIII.** The nine sentences are now within 0.05 s of what the transcript
+says, except `r23:115.1` ("Nōlī eum verberāre!", three words, which Whisper
+merged into "Noleum") at 0.72 s early. Across the whole chapter, median |offset|
+0.56 s → 0.00 s, worst 18.01 s → 5.26 s, units more than 3 s out 13 → 2, and
+**38 units improved by more than 0.5 s with none worsened**. Sentences matched
+directly: 120 → 126 of 126.
+
+**Hand checks by ear** (`data/build/audio/_verify/earcheck3.py`): the audio is cut
+at exactly the span a row claims, with a second of decoding lead-in and lead-out,
+re-transcribed on its own, and scored against a decoy cut of the same length 30 s
+away — the control that says the timings point at *these* words and not at Latin
+in general.
+
+- **Twenty sentences, one per week across both libraries** (weeks 1, 2, 3, 5, 6,
+  8, 9, 11, 13, 14 and chapters I, IV, VII, X, XII, XIV, XVI, XIX, XXI, XXIV),
+  each chosen as its week's worst case: the sentence with the longest run of
+  unheard opening words that used to be a single stack. Word agreement **65 %
+  against a decoy's 17 %**, letter agreement 68 % against 24 %. Every one of the
+  twenty beats its decoy on words; nineteen of twenty on letters (`r10:111.2`,
+  a ten-word sentence, scores 60 % vs 30 % on words but 51 % vs 53 % on letters).
+- **Cap. XXIII's nine**: word agreement **70 % against 16 %**, letter agreement
+  **80 % against 26 %**; all nine beat their decoy on letters, eight of nine on
+  words (`r23:111.1` is the three-word "Ecce clāvis cubiculī", which comes back
+  as "e khe kla wiz ku bi qli" — no whole word matches, 61 % of the letters do,
+  against the decoy's 0 %). Cut at their **old** spans the same nine score 23 %
+  words and 28 % letters against decoys of 10 % and 22 % — barely distinguishable
+  from unrelated audio, which is what being 3–18 s late looks like.
+
+`EAR_BEAM=1` runs the check greedily, which is three or four times faster and
+agrees with the beam of 5 within a few points — but not always: the greedy decode
+of `r16:87.1` came back as diacritic noise and scored 0 %, where the beam of 5
+hears the sentence plainly (60 % against a decoy's 20 %). Re-check anything that
+scores near zero before believing it.
+
+**Uploaded.** All 37 changed weeks' `audio_alignments` rows were pushed one week
+at a time (`_verify/upload_rows.py`), all first attempt, no pooler failures. The
+MP3s are untouched by this pass and were **not** re-uploaded.
+`_verify/db_match.py` then compared the database with the local files on row
+count, the sum of every `start_ms` and `end_ms`, the number of word entries, the
+sum of every word `s` and `e`, the `synth` flags and an md5 over the word texts
+in order: **4306 rows, matching exactly.**
+
+**What is left.** 243 word entries (0.6 %) and 33 sentence openings (0.8 %) still
+share an instant, and 35 rows hold a run of four or more. They are all downstream
+of a mis-anchored *sentence*, not of `respace()`: `w11:b4.4` is the worst, 21
+words stacked because `token_times()` anchored the sentence's second word
+"atque" to the reader's "que" 20 s into it, and the transcript holds no audio at
+all for the first half of the sentence. `LEAD_S` is also too small for a long
+unheard opening — `r16:87.1` opens with seven words the recogniser missed, so its
+row can only reach 2.1 s back where the speech begins 4 s earlier, and the cursor
+lags across those seven words. Both want better sentence-level anchoring, not
+more word-level redistribution.
+
