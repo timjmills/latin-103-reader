@@ -376,14 +376,14 @@ const ADJ_COMP = {
 };
 const GENDERS = ['m', 'f', 'n'];
 
-function adjSection(title, stemFor, table, degree, extraKey = {}) {
+function adjSection(title, stemFor, table, degree, extraKey = {}, suffix = '') {
   const rows = [];
   for (const num of ['sg', 'pl']) {
     for (let i = 0; i < CASES.length; i++) {
       const c = CASES[i];
       const cells = GENDERS.map((g, gi) => {
         const { stem, ending } = stemFor(c, num, g, table[num][i][gi]);
-        return cell(stem, ending, nk(c, num, g, { degree, ...extraKey }));
+        return cell(stem, ending + suffix, nk(c, num, g, { degree, ...extraKey }));
       });
       rows.push({ label: `${CASE_LABEL[c]} ${num === 'sg' ? 'sg.' : 'pl.'}`, cells });
     }
@@ -400,6 +400,14 @@ export function adjectiveName(entry) {
   return 'adjective';
 }
 
+// Adjectives build_glossary keeps as one word with a fixed enclitic on the end.
+// Whitaker's roots are the bare stem (uter- / utr-, plēr-), so the table has to
+// hang the enclitic back on every cell, exactly as pronounParadigm does for
+// quisque: uterque, utraque, utrumque, utrīusque, utrīque (Allen & Greenough
+// §151.a), plērīque, plēraeque, plēraque, plērōrumque (§151.b). Kept in step
+// with ADJ_SUFFIX in pipeline/latin_forms.py.
+const ADJ_SUFFIX = { uterque: 'que', plerique: 'que' };
+
 function adjectiveParadigm(entry, parses) {
   const [d, v] = entry.cat || [0, 0];
   const r0 = root(entry, 0);
@@ -409,6 +417,7 @@ function adjectiveParadigm(entry, parses) {
   const sections = [];
   const list = asList(parses);
   const degrees = new Set(list.map((p) => p.degree || 'pos'));
+  const suffix = ADJ_SUFFIX[entry.h] || '';
   const compOnly = entry.lemma?.endsWith('or -us') && !d;
 
   if (!compOnly && (d === 1 || d === 3)) {
@@ -436,14 +445,14 @@ function adjectiveParadigm(entry, parses) {
       };
     }
     const consStem = d === 3 && NON_I_STEM.has(entry.h);
-    sections.push(adjSection('positive', stemFor, d === 1 ? ADJ_12 : consStem ? ADJ_3_CONS : ADJ_3, 'pos'));
+    sections.push(adjSection('positive', stemFor, d === 1 ? ADJ_12 : consStem ? ADJ_3_CONS : ADJ_3, 'pos', {}, suffix));
   }
   if (r2 || compOnly) {
     const cs = compOnly ? r0 : r2;
-    sections.push(adjSection(compOnly ? 'comparative' : `comparative (${cs}or, ${cs}us)`, (c, num, g, end) => ({ stem: cs, ending: end }), ADJ_COMP, compOnly ? 'pos' : 'comp'));
+    sections.push(adjSection(compOnly ? 'comparative' : `comparative (${cs}or, ${cs}us)`, (c, num, g, end) => ({ stem: cs, ending: end }), ADJ_COMP, compOnly ? 'pos' : 'comp', {}, suffix));
   }
   if (r3) {
-    sections.push(adjSection(`superlative (${r3}mus -a -um)`, (c, num, g, end) => ({ stem: r3, ending: 'm' + end }), ADJ_12, 'super'));
+    sections.push(adjSection(`superlative (${r3}mus -a -um)`, (c, num, g, end) => ({ stem: r3, ending: 'm' + end }), ADJ_12, 'super', {}, suffix));
   }
   if (!sections.length) return null;
   const p = { kind: 'adjective', title: `${entry.lemma} · ${adjectiveName(entry)}`, sections };
@@ -669,7 +678,8 @@ function personRows(cols) {
 
 function verbParadigm(entry, parses) {
   const h = entry.h;
-  if (IRREGULAR_VERBS[h]) return irregularVerb(entry, IRREGULAR_VERBS[h], parses);
+  const irr = irregularTable(entry);
+  if (irr) return irregularVerb(entry, irr, parses);
   // compounds of sum / eō / ferō
   const [d, v] = entry.cat || [0, 0];
   if (d === 5 && v === 1 && h !== 'sum') return compoundOf(entry, 'sum', parses);
@@ -841,7 +851,10 @@ const IRREGULAR_VERBS = {
       plupf: ['fu|issem', 'fu|issēs', 'fu|isset', 'fu|issēmus', 'fu|issētis', 'fu|issent'],
     },
     imper: { sg: 'es', pl: 'es|te', futSg: 'es|tō', futPl: 'es|tōte' },
-    inf: { pres: 'es|se', perf: 'fu|isse', fut: 'fut|ūrus esse' },
+    // fore = futūrum esse — Ørberg glosses it so in cap. XXXIII ("fore (īnf fut)
+    // = futūrum/-am … esse", beside "pācem fore spērēmus"); Allen & Greenough
+    // §170.b. A compound takes it too: adfore, dēfore, prōfore.
+    inf: { pres: 'es|se', perf: 'fu|isse', fut: 'fut|ūrus esse / fore' },
     ptc: { fut: 'fut|ūrus -a -um' },
   },
   possum: {
@@ -880,7 +893,10 @@ const IRREGULAR_VERBS = {
       plupf: ['ī|ssem', 'ī|ssēs', 'ī|sset', 'ī|ssēmus', 'ī|ssētis', 'ī|ssent'],
     },
     imper: { sg: 'ī', pl: 'ī|te', futSg: 'ī|tō', futPl: 'ī|tōte' },
-    inf: { pres: 'ī|re', perf: 'ī|sse', fut: 'it|ūrus esse' },
+    // īrī is the one passive form of eō the course meets: every verb's future
+    // passive infinitive is built on it — Ørberg, cap. XXIII, Grammatica
+    // Latina: "'laudātum īrī' … quī ex supīnō et 'īrī' cōnstat".
+    inf: { pres: 'ī|re', perf: 'ī|sse', fut: 'it|ūrus esse', presPass: 'ī|rī' },
     ptc: { pres: 'i|ēns (euntis)', fut: 'it|ūrus -a -um', gerundive: 'e|undus -a -um' },
     gerund: 'e|und', supine: 'it',
   },
@@ -994,14 +1010,47 @@ const IRREGULAR_VERBS = {
     },
     imper: { sg: 'fī', pl: 'fī|te' },
     inf: { pres: 'fi|erī', perf: 'fact|us esse', fut: 'fact|um īrī' },
-    ptc: { perf: 'fact|us -a -um', gerundive: 'faci|endus -a -um' },
+    // fīō has no perfect stem of its own: it borrows faciō's whole fourth
+    // principal part, so the future participle is factūrus and the supine
+    // factum (Allen & Greenough §204.b; the supine is already in factum īrī).
+    ptc: { perf: 'fact|us -a -um', fut: 'fact|ūrus -a -um', gerundive: 'faci|endus -a -um' },
+    supine: 'fact',
     perfIsPassive: true,
   },
 };
 
+// The Whitaker category each hand table belongs to. Headwords collide: `volō,
+// volāre, volāvī, volātum` "fly" (his V 1 1, Ørberg cap. X: avēs volant) has the
+// same dictionary form as `volō, velle, voluī` (V 6 2), and his V 1 1 ghost `eō,
+// eāre` has the same as `eō, īre, iī, itum` (V 6 1). An entry whose category is
+// not the table's is a different verb and is built regularly. An entry with no
+// category at all is a hand supplement, and the headword is all we have to go on.
+// Kept in step with IRREGULAR_CAT in pipeline/latin_forms.py.
+const IRREGULAR_CAT = { sum: [5, 1], possum: [5, 2], eo: [6, 1], fero: [3, 2], volo: [6, 2], nolo: [6, 2], malo: [6, 2], fio: [3, 3] };
+
+/** The hand table for this entry — only if the entry's category is its own. */
+function irregularTable(entry) {
+  const t = IRREGULAR_VERBS[entry.h];
+  if (!t) return null;
+  const cat = IRREGULAR_CAT[entry.h];
+  const [d, v] = entry.cat || [0, 0];
+  if (cat && entry.cat?.length && (d !== cat[0] || v !== cat[1])) return null;
+  return t;
+}
+
 function irregularVerb(entry, t, parses, prefix = '') {
   const sections = [];
-  const P = (s) => (prefix && s && s !== '—' ? (s.startsWith('nōn ') ? s : prefix + s) : s);
+  const P = (s) => {
+    if (!prefix || !s || s === '—' || s.startsWith('nōn ')) return s;
+    if (s.includes(' / ')) return s.split(' / ').map(P).join(' / ');  // … / fore → … / prōfore
+    // prō- keeps the old final d before a vowel: prōdes, prōdest, prōdestis,
+    // prōderam, prōderō, prōderunt, prōdessem, prōdesse — but prōsum, prōsumus,
+    // prōsunt, prōfuī. Ørberg prints the pair in the margin of cap. XXVII
+    // ("prōd-est prō-sunt", "prōd-esse prō-fuisse"); Allen & Greenough §204
+    // gives the whole table. (The same d shows in prōdeō, prōdīs, prōdit.)
+    const p = prefix === 'prō' && /^[aeiou]/i.test(plain(s)) ? prefix + 'd' : prefix;
+    return p + s;
+  };
   const voiceOfTense = (tense) => (t.perfIsPassive && ['perf', 'plupf', 'futperf'].includes(tense) ? 'pass' : 'act');
   const tenseSection = (tense, mood) => {
     const table = mood === 'ind' ? t.ind : t.subj;
