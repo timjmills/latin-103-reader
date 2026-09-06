@@ -1,0 +1,19 @@
+{
+  "note": "Invented sentences (never the book's) for the fixture chapter sets: questions/07.json refers to them by id, and its span references are indexes into these. `?fixture=1` merges them over the units the fixture store loads, so a question set resolves against the text it was written for; tests/grammar.sets.test.mjs reads the same list.",
+  "units": [
+    {"id": "r07:1.1", "la": "Iūlia in hortō est.", "en": "", "week_n": 107},
+    {"id": "r07:2.1", "la": "Puella rosās videt et rīdet.", "en": "", "week_n": 107},
+    {"id": "r07:3.1", "la": "Iūlius fīliae suae rosam dat.", "en": "", "week_n": 107},
+    {"id": "r07:4.1", "la": "Iūlia patrī grātiās agit.", "en": "", "week_n": 107},
+    {"id": "r07:5.1", "la": "Mārcus sorōrī nihil dat.", "en": "", "week_n": 107},
+    {"id": "r07:6.1", "la": "Aemilia puerīs māla dat.", "en": "", "week_n": 107},
+    {"id": "r07:7.1", "la": "Quīntus mātrī mālum ostendit.", "en": "", "week_n": 107},
+    {"id": "r07:8.1", "la": "Cui Iūlius ōsculum dat? Iūliae.", "en": "", "week_n": 107},
+    {"id": "r07:9.1", "la": "Syra puellae speculum tenet.", "en": "", "week_n": 107},
+    {"id": "r07:11.1", "la": "Ecce rosa in nāsō puellae!", "en": "", "week_n": 107},
+    {"id": "r07:12.1", "la": "Iūlia laeta ē hortō exit.", "en": "", "week_n": 107},
+    {"id": "r01:1.1", "la": "Rōma in Italiā est.", "en": "", "week_n": 101},
+    {"id": "r01:7.1", "la": "Tiberis fluvius parvus est.", "en": "", "week_n": 101},
+    {"id": "r01:12.1", "la": "Quid est Brundisium? Oppidum est.", "en": "", "week_n": 101}
+  ]
+}

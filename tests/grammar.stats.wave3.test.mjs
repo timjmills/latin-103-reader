@@ -186,7 +186,7 @@ test('progressTrail replays stability and stage with the scheduler that wrote th
   for (const r of rows.filter((x) => x.mode !== 'learn')) s = applyAnswer(s, { correct: r.correct, hinted: r.hinted, ms: r.ms, now: Date.parse(r.at) });
   assert.equal(trail[3].stability, s.stability_days);
   assert.equal(trail[3].stage, s.stage);
-  assert.deepEqual(progressTrail([]), { trail: [], stageChanges: [] });
+  assert.deepEqual(progressTrail([]), { trail: [], stageChanges: [], learnPasses: 0 });
 });
 
 test('progressTrail reports a stage change when one happens', () => {

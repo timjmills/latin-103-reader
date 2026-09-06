@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v38';
+const CACHE_VERSION = 'v40';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -49,6 +49,7 @@ const PRECACHE = [
   './data/grammar/lessons/index.json',
   './data/grammar/lessons/ablative-absolute-perfect.json',
   './data/grammar/lessons/ablative-absolute.json',
+  './data/grammar/lessons/ablative-accompaniment.json',
   './data/grammar/lessons/ablative-agent.json',
   './data/grammar/lessons/ablative-comparison.json',
   './data/grammar/lessons/ablative-degree.json',

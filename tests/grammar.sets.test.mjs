@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import {
   createSetLoader, manifestChapters, normaliseQuestionSet, normaliseVocab, groupPensa, setSkills, setsOfChapter, setChapters,
   matchQuestion, phraseIndexes, answerIndexes, pensumSegments, createSetItems, fromRoman, chapterOfWeek,
+  resolveRef, resolveList, withStripped,
 } from '../app/js/grammar/sets.js';
 import { createPool } from '../app/js/grammar/items.js';
 import { judge } from '../app/js/grammar/session.js';
@@ -17,16 +18,9 @@ import { orderMatches, scramble, chunksOf } from '../app/js/grammar/stage3.js';
 const fx = new URL('./fixtures/grammar/', import.meta.url);
 const read = (name) => JSON.parse(readFileSync(new URL(name, fx), 'utf8'));
 const fetchJson = async (name) => { try { return read(name); } catch { throw new Error(`${name}: 404`); } };
-// The fixture store's shelf sentences (store-fixture.js r07 / r01) and one course sentence, as the section sees them.
-const units = [
-  { id: 'r07:1.1', la: 'Iūlia in hortō est.', en: '', week_n: 107 }, { id: 'r07:2.1', la: 'Puella rosās videt et rīdet.', en: '', week_n: 107 },
-  { id: 'r07:3.1', la: 'Iūlius fīliae suae rosam dat.', en: '', week_n: 107 }, { id: 'r07:4.1', la: 'Iūlia patrī grātiās agit.', en: '', week_n: 107 },
-  { id: 'r07:5.1', la: 'Mārcus sorōrī nihil dat.', en: '', week_n: 107 }, { id: 'r07:6.1', la: 'Aemilia puerīs māla dat.', en: '', week_n: 107 },
-  { id: 'r07:7.1', la: 'Quīntus mātrī mālum ostendit.', en: '', week_n: 107 }, { id: 'r07:8.1', la: 'Cui Iūlius ōsculum dat? Iūliae.', en: '', week_n: 107 },
-  { id: 'r07:9.1', la: 'Syra puellae speculum tenet.', en: '', week_n: 107 }, { id: 'r07:11.1', la: 'Ecce rosa in nāsō puellae!', en: '', week_n: 107 },
-  { id: 'r07:12.1', la: 'Iūlia laeta ē hortō exit.', en: '', week_n: 107 },
-  { id: 'r01:1.1', la: 'Rōma in Italiā est.', en: '', week_n: 101 }, { id: 'r01:7.1', la: 'Tiberis fluvius parvus est.', en: '', week_n: 101 }, { id: 'r01:12.1', la: 'Quid est Brundisium? Oppidum est.', en: '', week_n: 101 },
-];
+// The fixture's own invented sentences (tests/fixtures/grammar/units.json) — the sentences the fixture question
+// set refers to, and the ones its span references index. `?fixture=1` merges the same file over the store's units.
+const units = read('units.json').units;
 const weeks = [{ n: 1, id: 'w01', chapter: 'XXV' }, { n: 3, id: 'w03', chapter: 'XXVII (FS 1, 5); FL 63–65' }, { n: 101, id: 'r01' }, { n: 107, id: 'r07' }];
 const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v) }; };
 async function loadSets() {
@@ -45,13 +39,18 @@ test('fromRoman / chapterOfWeek: a course week reads its chapter field, the shel
   assert.equal(chapterOfWeek(weeks[3]), 7);
 });
 
-test('manifests and normalisation: chapters listed once, items usable, macron-stripped answers added, bad rows dropped', () => {
+test('manifests and normalisation: chapters listed once, items usable, sentence references kept, bad rows dropped', () => {
   assert.deepEqual(manifestChapters({ version: 1, chapters: [7, '25', 7, 'x'] }), [7, 25]);
   assert.deepEqual(manifestChapters(['13.json']), [13]);
   assert.equal(manifestChapters({}), null);
   const q = normaliseQuestionSet(read('questions/07.json'));
   assert.equal(q.chapter, 7); assert.equal(q.week_id, 'r07'); assert.equal(q.items.length, 12);
-  assert.ok(q.items[0].answers.includes('in horto'), 'macron-stripped variant added');
+  // The answers stay references: the book's words are not in the public file, so they cannot be expanded until
+  // the sentence is in hand (the macron-stripped variants are added at resolve time — see the span test below).
+  assert.deepEqual(q.items[0].answers, [{ span: [1, 2] }, { span: [0, 3] }]);
+  assert.deepEqual(normaliseQuestionSet({ chapter: 1, items: [{ q: 'x?', answers: ['Ita', { span: [0, 1] }, { parts: ['quia', { span: [2, 3] }] }, { span: [2, 1] }, { span: 'x' }, 42, { parts: [] }] }] }).items[0].answers,
+    ['Ita', { span: [0, 1] }, { parts: ['quia', { span: [2, 3] }] }], 'a malformed reference is dropped, a good one kept');
+  assert.equal(normaliseQuestionSet({ chapter: 1, items: [{ q: 'x?', answers: [42] }] }).items.length, 0, 'an item left with no answer at all is dropped');
   assert.equal(normaliseQuestionSet({ chapter: 1, items: [{ q: 'x', answers: ['a'], input: 'choice', choices: ['a'] }, { q: 'no answers', answers: [] }] }).items[0].input, 'type', 'a choice item with one choice is typed');
   const v = normaliseVocab({ chapter: 2, words: [{ lemma: 'līber', pos: 'ADJ', meaning: 'free' }, { lemma: 'līber', pos: 'N', meaning: 'book' }, { lemma: 'bonus', pos: 'ADJ', meaning: 'good' }, { lemma: 'bonus', pos: 'ADJ', meaning: 'good (comp.)' }, { lemma: 'x' }] });
   assert.deepEqual(v.words.map((w) => `${w.lemma}|${w.pos}`), ['līber|ADJ', 'līber|N', 'bonus|ADJ'], 'lemma + pos dedupes; a word without a meaning is dropped');
@@ -95,6 +94,40 @@ test('phraseIndexes / answerIndexes / pensumSegments', () => {
   assert.deepEqual(answerIndexes('Iūlius fīliae suae rosam dat.', ['fīliae suae'], { whole: false }), [1, 2], 'the feedback still lights the whole phrase');
   assert.deepEqual(pensumSegments('Iūlius fīli_ su_ rosam dat.'), [{ text: 'Iūlius fīli' }, { blank: 0 }, { text: ' su' }, { blank: 1 }, { text: ' rosam dat.' }]);
   assert.deepEqual(pensumSegments('Rōma in ___ est.'), [{ text: 'Rōma in ' }, { blank: 0 }, { text: ' est.' }]);
+});
+
+test('sentence references: a span is the words of the sentence, parts weave our wording around them; an index past the end resolves to nothing', () => {
+  const la = 'Iūlius fīliae suae rosam dat.';
+  assert.equal(resolveRef(la, { span: [1, 2] }), 'fīliae suae');
+  assert.equal(resolveRef(la, { span: [0, 4] }), 'Iūlius fīliae suae rosam dat', 'the slice runs word to word');
+  assert.equal(resolveRef(la, 'Minimē'), 'Minimē', 'our own wording passes through');
+  assert.equal(resolveRef(la, { parts: ['Nōn:', { span: [1, 2] }] }), 'Nōn: fīliae suae');
+  assert.equal(resolveRef('Tiberis nōn est fluvius magnus, Tiberis fluvius parvus est.', { parts: [{ span: [1, 2] }, 'parvus'] }), 'nōn est parvus');
+  assert.equal(resolveRef(la, { span: [3, 9] }), null, 'past the end of the sentence');
+  assert.equal(resolveRef('', { span: [0, 1] }), null, 'no sentence at all');
+  assert.equal(resolveRef(la, { parts: ['Ita', { span: [9, 9] }] }), null, 'one bad part spoils the whole');
+  assert.deepEqual(resolveList(la, ['Ita', { span: [1, 2] }]), ['Ita', 'fīliae suae']);
+  assert.equal(resolveList(la, ['Ita', { span: [1, 9] }]), null, 'a list is all or nothing');
+  assert.deepEqual(withStripped(['fīliae suae', 'Ita']), ['fīliae suae', 'filiae suae', 'Ita'], 'macron-stripped variants added once, at resolve time');
+});
+
+test('a question whose sentence the device does not have is hidden, never guessed at: the set degrades to its resolvable items and to nothing at all when none resolve', () => {
+  const items = [
+    { id: 'q9-1', q: 'Ubi?', answers: [{ span: [1, 2] }], input: 'type', unit_id: 'r07:1.1', choices: [], hint: '', en: '' },
+    { id: 'q9-2', q: 'Quid?', answers: [{ span: [1, 2] }], input: 'type', unit_id: 'r07:404.1', choices: [], hint: '', en: '' },
+    { id: 'q9-3', q: 'Quis?', answers: [{ span: [0, 0] }, 'Nēmō'], input: 'choice', unit_id: 'r07:1.1', choices: [{ span: [0, 0] }, { span: [99, 99] }], hint: '', en: '' },
+  ];
+  const sets = setSkills({ questions: new Map([[9, normaliseQuestionSet({ chapter: 9, items })]]) });
+  const gen = createSetItems({ sets, units, pool: createPool(mem()), rand: () => 0 });
+  const seen = new Set();
+  for (let i = 0; i < 4; i++) { const it = gen.generate({ skill: 'questions-09', kind: 'question' }); assert.ok(it, 'an item still comes'); seen.add(it.question.id); }
+  assert.deepEqual([...seen], ['q9-1'], 'the item with a missing sentence and the one with a broken choice are both out');
+  assert.equal(gen.drillable('questions-09'), true);
+  // Every item unresolvable: no crash, no item, and the set reports itself undrillable rather than stalling a session.
+  const none = setSkills({ questions: new Map([[8, normaliseQuestionSet({ chapter: 8, items: [{ ...items[1], id: 'q8-1' }] })]]) });
+  const dead = createSetItems({ sets: none, units, pool: createPool(mem()), rand: () => 0 });
+  assert.equal(dead.generate({ skill: 'questions-08', kind: 'question' }), null);
+  assert.equal(dead.drillable('questions-08'), false);
 });
 
 test('question items: the item\'s input, tap accepts the answer\'s words in the sentence (typed when absent), choices from the item, the answering sentence in the feedback; keys never repeat until the set is spent', async () => {

@@ -553,7 +553,7 @@
     "parse",
     "blank"
    ],
-   "summary": "The form for addressing someone: the same as the nominative except -us nouns become -e (Marce!) and -ius nouns become -i (Iuli!, mi fili!).",
+   "summary": "The form for addressing someone: the same as the nominative except -us nouns become -e (Marce!) and names in -ius become -i (Iuli!, mi fili!) - an ordinary noun in -ius keeps -ie (gladie!).",
    "feature": "case",
    "exclude_patterns": [],
    "function": null,
@@ -562,8 +562,8 @@
   },
   {
    "id": "ablative-place",
-   "title": "Ablative: place where (in, sub, cum + ablative)",
-   "plain": "the ablative (the 'in/on/with' form)",
+   "title": "Ablative: place where (in, sub + ablative)",
+   "plain": "the ablative (the 'in/on/under' form)",
    "latin_label": "ablātīvus locī",
    "category": "noun-case",
    "chapter": 5,
@@ -581,6 +581,7 @@
     "accusative-destination",
     "ablative-origin",
     "ablative-means",
+    "ablative-accompaniment",
     "accusative-object",
     "dative-indirect-object",
     "ablative-time",
@@ -597,7 +598,7 @@
     "case": "abl"
    },
    "patterns": [
-    "(?i)\\b(in|sub|cum|pro|prae|coram|sine)\\s+\\w+(a|o|is|e|i|ibus|u|ebus)\\b"
+    "(?i)\\b(in|sub|pro|prae|coram|sine)\\s+\\w+(a|o|is|e|i|ibus|u|ebus)\\b"
    ],
    "parse_filter": {
     "case": "abl",
@@ -609,14 +610,74 @@
     "parse",
     "blank"
    ],
-   "summary": "Where something is: in, sub, cum, pro take the ablative (-a / -o singular, -is plural); most other prepositions take the accusative.",
+   "summary": "Where something is: in, sub, pro take the ablative (-a / -o singular, -is plural); most other prepositions take the accusative; cum is company, not place.",
    "feature": "construction",
    "exclude_patterns": [],
-   "function": "place where (in / sub / cum + ablative)",
+   "function": "place where (in / sub + ablative)",
    "function_keys": [
     "place",
     "location",
     "where"
+   ],
+   "highlight_match": null
+  },
+  {
+   "id": "ablative-accompaniment",
+   "title": "Ablative: with someone (cum + ablative)",
+   "plain": "the ablative (the 'with someone' form)",
+   "latin_label": "ablātīvus sociātīvus",
+   "category": "noun-case",
+   "chapter": 5,
+   "course": "101",
+   "week": 5,
+   "notes_week": 5,
+   "notes_pages": [
+    15,
+    16
+   ],
+   "prereqs": [
+    "ablative-place"
+   ],
+   "confusable_with": [
+    "ablative-means",
+    "ablative-place",
+    "cum-narrative"
+   ],
+   "paradigms": [
+    "decl1",
+    "decl2m",
+    "decl2n",
+    "decl2r"
+   ],
+   "paradigm_focus": {
+    "case": "abl"
+   },
+   "patterns": [
+    "(?i)\\b(una\\s+)?cum\\s+\\w+(a|o|is|e|i|ibus|u|ebus)\\b"
+   ],
+   "parse_filter": {
+    "case": "abl",
+    "pos": "N"
+   },
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "summary": "Who goes along: cum + ablative (cum Marco, cum ancillis). Only cum does this; a thing you use takes the bare ablative with no preposition at all.",
+   "feature": "construction",
+   "exclude_patterns": [
+    "(?i)\\bcum\\b[^.!?]*\\b\\w+(isset|issent)\\b",
+    "(?i)^[\\s\"'“‘]*cum\\b(?![^.!?]*\\bcum\\b)"
+   ],
+   "function": "accompaniment (with someone: cum + ablative)",
+   "function_keys": [
+    "accompaniment",
+    "company",
+    "with",
+    "with someone",
+    "together with",
+    "comitative"
    ],
    "highlight_match": null
   },
@@ -753,6 +814,7 @@
     "ablative-place",
     "dative-indirect-object",
     "genitive-of",
+    "ablative-accompaniment",
     "ablative-absolute",
     "ablative-degree",
     "ablative-comparison"
@@ -3958,6 +4020,7 @@
     "ablative-place",
     "ablative-absolute-perfect",
     "future-perfect",
+    "ablative-accompaniment",
     "conditions-contrary-to-fact",
     "dummodo"
    ],
@@ -4901,6 +4964,7 @@
   "imperative",
   "vocative",
   "ablative-place",
+  "ablative-accompaniment",
   "ablative-origin",
   "accusative-destination",
   "ablative-means",

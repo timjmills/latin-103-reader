@@ -87,14 +87,14 @@ test('stem/ending split: puell-ārum, rēg-um, urb-ium', () => {
 });
 
 // Whitaker's N 2 4 is the -ium / -ius stem, not the vulgus type: an ordinary
-// 2nd-declension noun, save the -ius vocative and its contracted genitive.
+// 2nd-declension noun, vocative and all.
 const IUS_NOUNS = {
   aedificium: {
     sg: ['aedificium', 'aedificiī', 'aedificiō', 'aedificium', 'aedificiō', 'aedificium'],
     pl: ['aedificia', 'aedificiōrum', 'aedificiīs', 'aedificia', 'aedificiīs', 'aedificia'],
   },
   gladius: {
-    sg: ['gladius', 'gladiī', 'gladiō', 'gladium', 'gladiō', 'gladī'],
+    sg: ['gladius', 'gladiī', 'gladiō', 'gladium', 'gladiō', 'gladie'],
     pl: ['gladiī', 'gladiōrum', 'gladiīs', 'gladiōs', 'gladiīs', 'gladiī'],
   },
 };
@@ -112,20 +112,44 @@ for (const [h, tbl] of Object.entries(IUS_NOUNS)) {
   });
 }
 
-test('gladius: vocative gladī (never gladie), genitive gladiī with contracted gladī alongside', () => {
-  const p = paradigm(entry('gladius', 'N'), []);
-  const gen = p.sections[0].rows[1].cells[0];
-  const voc = p.sections[0].rows[5].cells[0];
-  assert.equal(gen.text, 'gladiī');
-  assert.equal(gen.alt, 'gladī');
-  assert.deepEqual([voc.stem, voc.ending], ['glad', 'ī']);
-  assert.equal(voc.text, 'gladī');
-  assert.notEqual(voc.text, 'gladie');
-  assert.match(p.note ?? '', /vocative singular gladī/);
-  // fīlius (Whitaker N 2 5) is the same shape
+// The contracted vocative in -ī belongs to PROPER NAMES in -ius plus fīlius and
+// genius (A&G §49.c, Bennett §25.2, Gildersleeve & Lodge §33). An ordinary
+// common noun in -ius keeps the regular -ie, whatever Whitaker class it is in.
+test('the contracted vocative is for names in -ius and fīlius; a common noun has -ie', () => {
+  const gladius = paradigm(entry('gladius', 'N'), []);
+  const voc = gladius.sections[0].rows[5].cells[0];
+  assert.equal(voc.text, 'gladie');
+  assert.notEqual(voc.text, 'gladī');
+  assert.deepEqual([voc.stem, voc.ending], ['gladi', 'e']);
+  assert.match(gladius.note ?? '', /vocative is regular — gladie/);
+
+  for (const [h, want] of [['filius', 'fīlī'], ['iulius', 'iūlī'], ['cornelius', 'Cornēlī'],
+                           ['dionysius', 'dionysī']]) {
+    const p = paradigm(entry(h, 'N'), []);
+    assert.equal(p.sections[0].rows[5].cells[0].text, want, `${h} vocative`);
+    assert.match(p.note ?? '', /short vocative singular/, `${h} note`);
+  }
+  // Common nouns in -ius across all three Whitaker classes keep -ie.
+  for (const [h, want] of [['fluvius', 'fluvie'], ['nuntius', 'nūntie'], ['sestertius', 'sēstertie'],
+                           ['tabellarius', 'tabellārie'], ['denarius', 'dēnārie'], ['medius', 'medie']]) {
+    assert.equal(paradigm(entry(h, 'N'), []).sections[0].rows[5].cells[0].text, want, `${h} vocative`);
+  }
+});
+
+// G3-02: an `alt` is an accepted drill answer everywhere it is read, so the
+// contracted genitive fīlī would let one string answer two rows of the chart.
+test('no -ius noun carries a contracted genitive as a second accepted form', () => {
+  for (const h of ['gladius', 'filius', 'iulius', 'cornelius', 'fluvius']) {
+    const p = paradigm(entry(h, 'N'), []);
+    const gen = p.sections[0].rows[1].cells[0];
+    assert.equal(gen.alt, undefined, `${h} genitive alt`);
+    assert.ok(!gen.text.includes(' / '), `${h} genitive is one form`);
+  }
   const f = paradigm(entry('filius', 'N'), []);
+  assert.equal(f.sections[0].rows[1].cells[0].text, 'fīliī');
   assert.equal(f.sections[0].rows[5].cells[0].text, 'fīlī');
-  assert.equal(f.sections[0].rows[1].cells[0].alt, 'fīlī');
+  // the contraction is still taught — in the note, where it cannot be typed in
+  assert.match(f.note ?? '', /older Latin/);
 });
 
 test('aedificium: neuter -ium keeps a plural and never shows a -us nominative', () => {
@@ -222,6 +246,31 @@ test('ācer ācris ācre (three endings)', () => {
   assert.deepEqual(pos.rows[6].cells.map((c) => c.text), ['ācrēs', 'ācrēs', 'ācria']);
   assert.deepEqual(pos.rows[7].cells.map((c) => c.text), ['ācrium', 'ācrium', 'ācrium']);
   assertForms(p, ['ācrior', 'ācrius', 'ācerrimus'], 'acer degrees');
+});
+
+// Whitaker hands us fōrmōs- for the positive but formosi- / formōsissi- for the
+// degrees; the book prints fōrmōsissimus. A degree stem never changes the
+// quantity of the stem it is built on, so the macrons are filled back in.
+test('a comparative or superlative keeps the macrons of its own stem', () => {
+  const cases = [['formosus', ['fōrmōsior', 'fōrmōsissimus', 'fōrmōsissimum']],
+                 ['clarus', ['clārior', 'clārissimus']],
+                 ['ater', ['ātrior']],
+                 ['infelix', ['īnfēlīcior', 'īnfēlīcissimus']],
+                 ['rectus', ['rēctior', 'rēctissimus']]];
+  for (const [h, want] of cases) assertForms(paradigm(entry(h, 'ADJ'), []), want, `${h} degrees`);
+  // never the other way round: serus has no macron, sērior keeps its own
+  const serus = paradigm(entry('serus', 'ADJ'), []);
+  assertForms(serus, ['sērior'], 'serus comparative');
+});
+
+// The book prints ārdēre / ārdentem and pārēre / pāret; Whitaker's stems lost
+// the long vowel, and latēre / fatērī were given one they never had.
+test('second-conjugation stems the glossary mis-macronised', () => {
+  const ardeo = paradigm(entry('ardeo', 'VPAR'), []);
+  assertForms(ardeo, ['ārdeō', 'ārdēre', 'ārdet', 'ārdēns'], 'ardeo');
+  assertForms(paradigm(entry('pareo', 'V'), []), ['pāreō', 'pārēre', 'pāret'], 'pareo');
+  const lateo = [...texts(paradigm(entry('lateo', 'V'), []))];
+  assert.ok(lateo.includes('latēre') && !lateo.includes('lātēre'), 'lateo keeps a short a');
 });
 
 test('fēlīx (one ending) and ingēns', () => {

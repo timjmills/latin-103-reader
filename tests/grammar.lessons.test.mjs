@@ -44,7 +44,7 @@ test('index.json on disk lists exactly the lesson files present, each a skill of
   const onDisk = readdirSync(new URL('lessons/', dataDir)).filter((f) => f.endsWith('.json') && f !== 'index.json' && !f.endsWith('.sample.json')).map((f) => f.replace(/\.json$/, '')).sort();
   assert.deepEqual([...manifest.lessons].sort(), onDisk, 'the manifest is stale: python pipeline/build_lessons_index.py');
   const index = indexSkills(read('skills.json'));
-  assert.equal(index.skills.size, 87);
+  assert.equal(index.skills.size, 88);   // 87 + ablative-accompaniment (QA-B4: cum is company, not place)
   for (const id of manifest.lessons) {
     assert.ok(index.skills.has(id), `${id} is not a skill`);
     assert.equal(read(`lessons/${id}.json`).skill, id, `${id}.json names another skill`);

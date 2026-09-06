@@ -1,65 +1,65 @@
 {
-  "skill": "vocative",
-  "core": [
+ "skill": "vocative",
+ "core": [
+  {
+   "type": "p",
+   "text": "When you speak to someone by name or title, that word goes into **the vocative (the calling form)**, *cāsus vocātīvus*: *Salvē, domine!* = Hello, master! *Tacē, Mēde!* Nearly always it looks exactly like the nominative (the plain naming form) — *Iūlia!*, *puerī!* — so there is one thing to learn: nouns in -us change to -e, and names in -ius (and *meus*) to -ī: *Mārce!*, *Iūlī!*, *mī fīlī!*"
+  },
+  {
+   "type": "english",
+   "text": "English marks the person addressed only with commas and the voice: *Bill, the cup is on the table.* Latin gives the name its own ending, which is why *Mārce* looks wrong at first."
+  },
+  {
+   "type": "rule",
+   "text": "Vocative = nominative, except 2nd-declension -us → -e (*serve*, *Dāve*) and a **name** in -ius → -ī (*Iūlī*, and so *fīlī*, *mī*). An ordinary noun in -ius is regular: *gladie*. The plural is never different (*servī!*)."
+  },
+  {
+   "type": "paradigm",
+   "key": "decl2m",
+   "highlight": {
+    "case": "voc"
+   }
+  },
+  {
+   "type": "examples",
+   "units": [
+    "r04:34.1",
+    "r04:37.2",
+    "r04:41.1",
+    "r05:51.1"
+   ],
+   "invented": [
     {
-      "type": "p",
-      "text": "When you speak to someone by name or title, that word goes into **the vocative (the calling form)**, *cāsus vocātīvus*: *Salvē, domine!* = Hello, master! *Tacē, Mēde!* Nearly always it looks exactly like the nominative (the plain naming form) — *Iūlia!*, *puerī!* — so there is one thing to learn: nouns in -us change to -e, and names in -ius (and *meus*) to -ī: *Mārce!*, *Iūlī!*, *mī fīlī!*"
+     "la": "Salvē, Iūlī! Ubi est fīlius tuus?",
+     "en": "Hello, Julius! Where is your son?",
+     "focus": "Iūlī"
     },
     {
-      "type": "english",
-      "text": "English marks the person addressed only with commas and the voice: *Bill, the cup is on the table.* Latin gives the name its own ending, which is why *Mārce* looks wrong at first."
-    },
-    {
-      "type": "rule",
-      "text": "Vocative = nominative, except 2nd-declension -us → -e (*serve*, *Dāve*) and -ius → -ī (*Iūlī*, *fīlī*). The plural is never different (*servī!*)."
-    },
-    {
-      "type": "paradigm",
-      "key": "decl2m",
-      "highlight": {
-        "case": "voc"
-      }
-    },
-    {
-      "type": "examples",
-      "units": [
-        "r04:34.1",
-        "r04:37.2",
-        "r04:41.1",
-        "r05:51.1"
-      ],
-      "invented": [
-        {
-          "la": "Salvē, Iūlī! Ubi est fīlius tuus?",
-          "en": "Hello, Julius! Where is your son?",
-          "focus": "Iūlī"
-        },
-        {
-          "la": "Ō mī fīlī, venī ad mē!",
-          "en": "O my son, come to me!",
-          "focus": "fīlī"
-        }
-      ]
-    },
-    {
-      "type": "confusion",
-      "with": "nominative-subject",
-      "text": "*Mārcus venit* — Marcus is the subject, coming. *Mārce, venī!* — Marcus is being spoken to and told to come. A name in -e beside a command or a greeting is not a misspelling but the vocative; the subject of the command is 'you'."
+     "la": "Ō mī fīlī, venī ad mē!",
+     "en": "O my son, come to me!",
+     "focus": "fīlī"
     }
-  ],
-  "more": [
-    {
-      "type": "p",
-      "text": "From the learner's notes: direct address is calling out a name to get someone's attention, and it can sit inside a statement, a question or a command. The vocative is left out of most declension charts because it copies the nominative; only the two exceptions need remembering — -us → -e (*Marcus* → *Marce!*), and -ius or *meus* → -ī (*Iūlius* → *Iūlī!*, *meus* → *mī*)."
-    },
-    {
-      "type": "p",
-      "text": "Ørberg cap. IV: *Dāve!* vocātīvus -e. The vocative often comes second in its sentence, tucked after the first word (*Quid est, domine?*), and can follow *ō* (*Ō Iūlia, mea parva fīlia!*). Adjectives agreeing with it take -e too: *puer improbe!* *Mī* is the vocative of *meus*, but feminine *mea* does not change (*mea Lydia*). *Deus* keeps *deus* as its vocative. A&G §340."
-    }
-  ],
-  "sources": [
-    "notes p14",
-    "Ørberg cap. IV Grammatica Latina",
-    "A&G §340"
-  ]
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "nominative-subject",
+   "text": "*Mārcus venit* — Marcus is the subject, coming. *Mārce, venī!* — Marcus is being spoken to and told to come. A name in -e beside a command or a greeting is not a misspelling but the vocative; the subject of the command is 'you'."
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "From the learner's notes: direct address is calling out a name to get someone's attention, and it can sit inside a statement, a question or a command. The vocative is left out of most declension charts because it copies the nominative; only the two exceptions need remembering — -us → -e (*Marcus* → *Marce!*), and -ius or *meus* → -ī (*Iūlius* → *Iūlī!*, *meus* → *mī*). The second exception is narrower than it looks: it belongs to *names* in -ius, plus *fīlius* and *genius* (Allen & Greenough §49.c). A common noun in -ius keeps the ordinary -ie — *gladius* → *gladie!*, *fluvius* → *fluvie!*"
+  },
+  {
+   "type": "p",
+   "text": "Ørberg cap. IV: *Dāve!* vocātīvus -e. The vocative often comes second in its sentence, tucked after the first word (*Quid est, domine?*), and can follow *ō* (*Ō Iūlia!*), with the adjectives beside it: *mea parva fīlia*. Adjectives agreeing with it take -e too: *puer improbe!* *Mī* is the vocative of *meus*, but feminine *mea* does not change (*mea Lydia*). *Deus* keeps *deus* as its vocative. A&G §340."
+  }
+ ],
+ "sources": [
+  "notes p14",
+  "Ørberg cap. IV Grammatica Latina",
+  "A&G §340"
+ ]
 }

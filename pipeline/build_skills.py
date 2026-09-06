@@ -134,15 +134,30 @@ skill("vocative", "Vocative: calling someone", VOC, "casus vocativus", "noun-cas
       [r"(?i)\b[A-Z]\w+(e|i)\b\s*[,!]", r"(?i)\b(o|mi)\s+\w+\b"],
       {"case": "voc"},
       ["recognise", "chart", "parse", "blank"],
-      "The form for addressing someone: the same as the nominative except -us nouns become -e (Marce!) and -ius nouns become -i (Iuli!, mi fili!).")
+      "The form for addressing someone: the same as the nominative except -us nouns become -e (Marce!) and names in -ius become -i (Iuli!, mi fili!) - an ordinary noun in -ius keeps -ie (gladie!).")
 
-skill("ablative-place", "Ablative: place where (in, sub, cum + ablative)", "the ablative (the 'in/on/with' form)", "ablativus loci", "noun-case", 5, 5, [15, 16],
-      ["accusative-object"], ["accusative-destination", "ablative-origin", "ablative-means"],
+skill("ablative-place", "Ablative: place where (in, sub + ablative)", "the ablative (the 'in/on/under' form)", "ablativus loci", "noun-case", 5, 5, [15, 16],
+      ["accusative-object"], ["accusative-destination", "ablative-origin", "ablative-means", "ablative-accompaniment"],
       NOUN12, {"case": "abl"},
-      [r"(?i)\b(in|sub|cum|pro|prae|coram|sine)\s+\w+(a|o|is|e|i|ibus|u|ebus)\b"],
+      [r"(?i)\b(in|sub|pro|prae|coram|sine)\s+\w+(a|o|is|e|i|ibus|u|ebus)\b"],
       {"case": "abl", "pos": "N"},
       ["recognise", "chart", "parse", "blank"],
-      "Where something is: in, sub, cum, pro take the ablative (-a / -o singular, -is plural); most other prepositions take the accusative.")
+      "Where something is: in, sub, pro take the ablative (-a / -o singular, -is plural); most other prepositions take the accusative; cum is company, not place.")
+
+# The learner's notes teach cum on the same two pages as in and sub, which is
+# why the app read cum Davo as place where (QA-B4).  It is the ablative of
+# accompaniment: Orberg has it from cap. V (cum Aemilia, cum Marco, cum
+# ancillis) and its real neighbour is the ablative of means -- cum gladio is a
+# man carrying a sword, gladio is a man using one.
+skill("ablative-accompaniment", "Ablative: with someone (cum + ablative)", "the ablative (the 'with someone' form)", "ablativus sociativus", "noun-case", 5, 5, [15, 16],
+      # every declared pair is answered by a `confusion` block in one of the two
+      # lessons: means and cum-the-conjunction here, place in ablative-place.
+      ["ablative-place"], ["ablative-means", "ablative-place", "cum-narrative"],
+      NOUN12, {"case": "abl"},
+      [r"(?i)\b(una\s+)?cum\s+\w+(a|o|is|e|i|ibus|u|ebus)\b"],
+      {"case": "abl", "pos": "N"},
+      ["recognise", "parse", "blank"],
+      "Who goes along: cum + ablative (cum Marco, cum ancillis). Only cum does this; a thing you use takes the bare ablative with no preposition at all.")
 
 skill("ablative-origin", "Ablative: from (ab, ex, de + ablative)", "the ablative (the 'from' form)", "ablativus separativus", "noun-case", 5, 5, [17],
       ["ablative-place"], ["ablative-place", "ablative-agent", "accusative-destination"],
@@ -799,7 +814,8 @@ FEATURE = {
     # gender
     "noun-gender": "gender", "adjective-agreement": "gender",
     # construction: the function-named case skills and the syntax / verb-use skills
-    "genitive-possession": "construction", "genitive-of": "construction", "ablative-place": "construction", "ablative-origin": "construction",
+    "genitive-possession": "construction", "genitive-of": "construction", "ablative-place": "construction",
+    "ablative-accompaniment": "construction", "ablative-origin": "construction",
     "accusative-destination": "construction", "ablative-means": "construction", "ablative-agent": "construction", "dative-indirect-object": "construction",
     "accusative-infinitive": "construction", "dative-possession": "construction", "ablative-time": "construction", "ablative-absolute": "construction",
     "ablative-degree": "construction", "noli-infinitive": "construction", "perfect-passive": "construction", "ablative-absolute-perfect": "construction",
@@ -826,7 +842,8 @@ FEATURE = {
 FUNCTION = {
     "genitive-possession": "possession (whose it is)",
     "genitive-of": "'of': part, description or after an adjective (a cup of wine, full of apples)",
-    "ablative-place": "place where (in / sub / cum + ablative)",
+    "ablative-place": "place where (in / sub + ablative)",
+    "ablative-accompaniment": "accompaniment (with someone: cum + ablative)",
     "ablative-origin": "from, out of, away from (a / ab / e / ex / de + ablative)",
     "accusative-destination": "motion towards (ad / in + accusative)",
     "ablative-means": "means (with a thing, no preposition)",
@@ -863,6 +880,7 @@ FUNCTION_KEYS = {
     "genitive-possession": ["possessive", "possessive genitive", "genitive of possession"],
     "genitive-of": ["partitive", "description", "descriptive", "objective genitive", "of"],
     "ablative-place": ["place", "location", "where"],
+    "ablative-accompaniment": ["accompaniment", "company", "with", "with someone", "together with", "comitative"],
     "ablative-origin": ["origin", "separation", "from", "source"],
     "accusative-destination": ["motion", "destination", "towards", "direction", "place to which"],
     "ablative-means": ["means", "instrument", "instrumental"],
@@ -945,7 +963,7 @@ LATIN = {
     "nominative-subject": "cāsus nōminātīvus", "noun-gender": "genus", "adjective-agreement": "adiectīvum cum substantīvō congruēns",
     "enclitics": "encliticae -que, -ne", "genitive-possession": "genitīvus possessīvus", "genitive-of": "genitīvus dēscrīptīvus et partitīvus",
     "accusative-object": "cāsus accūsātīvus", "present-indicative-3rd": "praesēns indicātīvī, tertia persōna", "imperative": "modus imperātīvus",
-    "vocative": "cāsus vocātīvus", "ablative-place": "ablātīvus locī", "ablative-origin": "ablātīvus sēparātīvus", "accusative-destination": "accūsātīvus dīrēctiōnis",
+    "vocative": "cāsus vocātīvus", "ablative-place": "ablātīvus locī", "ablative-accompaniment": "ablātīvus sociātīvus", "ablative-origin": "ablātīvus sēparātīvus", "accusative-destination": "accūsātīvus dīrēctiōnis",
     "ablative-means": "ablātīvus īnstrūmentī", "passive-voice": "genus passīvum", "ablative-agent": "ablātīvus auctōris", "dative-indirect-object": "cāsus datīvus",
     "demonstratives": "prōnōmina dēmōnstrātīva", "demonstrative-pronouns": "prōnōmina dēmōnstrātīva substantīva", "relative-pronoun": "prōnōmen relātīvum",
     "third-declension": "dēclīnātiō tertia", "infinitive": "modus īnfīnītīvus", "accusative-infinitive": "accūsātīvus cum īnfīnītīvō",
@@ -981,6 +999,10 @@ EXCLUDE = {
     "indirect-command": [r"(?i)\b(tam|ita|sic|adeo|tot|talis|tantus|tanta|tantum)\b[^.!?]*\but\b"],
     "cum-narrative": [r"(?i)\bcum\b[^.!?]*\btamen\b", r"(?i)\b(quippe|utpote)\b"],
     "cum-causal": [r"(?i)\bcum\b\s+(\w+\s+){0,6}\w+(isset|issent)\b"],
+    # cum as a conjunction, not the preposition: a pluperfect subjunctive after it,
+    # or a sentence that opens with cum and never says it again (Cum avis volat ...).
+    "ablative-accompaniment": [r"(?i)\bcum\b[^.!?]*\b\w+(isset|issent)\b",
+                               "(?i)^[\\s\"'\u201c\u2018]*cum\\b(?![^.!?]*\\bcum\\b)"],
     "dative-indirect-object": [r"(?i)\b(mihi|tibi|ei|nobis|vobis|eis|cui|\w+(ae|o|i|is|ibus))\s+(est|sunt|erat|erant|erit|erunt|nomen)\b", r"(?i)\b\w+nd(us|a|um|i|ae|a)\s*(est|sunt|erat|erant|erit|erunt|esse)\b"],
 }
 
@@ -1014,8 +1036,8 @@ def validate(doc):
     idset = set(ids)
     if sorted(order) != sorted(ids) or len(order) != len(set(order)):
         errs.append("order must contain every id exactly once")
-    if len(skills) != 87:
-        errs.append("expected 87 skills, got %d" % len(skills))
+    if len(skills) != 88:
+        errs.append("expected 88 skills, got %d" % len(skills))
     pos = {i: n for n, i in enumerate(order)}
     by = {s["id"]: s for s in skills}
     last = 0

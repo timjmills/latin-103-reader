@@ -73,10 +73,75 @@ def fk(tense, mood, voice, i) -> dict:
             "person": PERSONS[i][0], "number": PERSONS[i][1]}
 
 
+# Whitaker's stems reach us with some long vowels missing, and a few carrying a
+# macron that does not belong.  These are the verb stems Familia Romana itself
+# spells otherwise; the comment on each line is what the book prints.  Every
+# other macron repair below is derived, not listed.
+STEM_MACRONS = {
+    "ardeo":   {0: "ārd", 1: "ārd"},    # ārdēre, ārdentem, ārdentī
+    "pareo":   {0: "pār", 1: "pār"},    # pārēre, pāret, pārent, pārēbō
+    "lateo":   {1: "lat"},              # latēre, latet, latent — not lātus
+    "fateor":  {1: "fat"},              # fatērī, fatētur, fatentī — not fātum
+    "nato":    {1: "nat"},              # natāre, natat, natandō — not nātus
+    "novo":    {1: "nov"},              # novus, novum; nōvī belongs to nōscō
+    "labo":    {1: "lab"},              # labāre — lābī, lābitur are lābor
+    "fabulor": {0: "fābul"},            # fābulārī, fābula
+    "prodo":   {0: "prōd"},             # prōdere = prō + dō
+    "velo":    {1: "vēl"},              # vēlō from vēlum; vēla, vēlīs
+}
+_VERB_POS = ("V", "VPAR")
+_MACRON = "\u0304"   # U+0304, the combining macron: "a" + _MACRON is ā
+
+
+def _letters(s: str) -> list[list[str]]:
+    """'ārd' → [['a', _MACRON], ['r', ''], ['d', '']] — base letters with their marks."""
+    out: list[list[str]] = []
+    for ch in unicodedata.normalize("NFD", s or ""):
+        if unicodedata.combining(ch) and out:
+            out[-1][1] += ch
+        else:
+            out.append([ch, ""])
+    return out
+
+
+def merge_macrons(base: str, derived: str) -> str:
+    """Give `derived` the macrons `base` carries, over the letters they share.
+
+    Only ever ADDS a macron, and stops at the first letter that differs, so a
+    derived stem that is legitimately longer than its base (sērior beside serus)
+    keeps its own quantity.  A comparative or superlative never changes the
+    quantity of the stem it is built on — fōrmōs- gives fōrmōsior,
+    fōrmōsissimus — so the shared letters can be filled in safely.
+    Kept in step with mergeMacrons() in app/js/paradigms.js.
+    """
+    if not base or not derived:
+        return derived
+    b, d = _letters(base), _letters(derived)
+    changed = False
+    for i in range(min(len(b), len(d))):
+        if b[i][0] != d[i][0]:
+            break
+        if _MACRON in b[i][1] and _MACRON not in d[i][1]:
+            d[i][1] += _MACRON
+            changed = True
+    if not changed:
+        return derived
+    return unicodedata.normalize("NFC", "".join(c + m for c, m in d))
+
+
 def root(entry: dict, i: int, fallback: str = "") -> str:
     r = entry.get("roots") or []
     v = r[i] if i < len(r) else None
-    return v if v and v != "-" else fallback
+    v = v if v and v != "-" else fallback
+    fix = STEM_MACRONS.get(entry.get("h") or "")
+    if fix and i in fix and entry.get("pos") in _VERB_POS and _plain(fix[i]) == _plain(v):
+        return fix[i]
+    # Whitaker drops the stem's macrons from the comparative and superlative
+    # stems of an adjective (fōrmōs- but formosi-, formōsissi-).  Put them back.
+    if i in (2, 3) and entry.get("pos") in ("ADJ", "ADV") and v:
+        base = r[1] if len(r) > 1 and r[1] and r[1] != "-" else (r[0] if r else "")
+        return merge_macrons(base, v)
+    return v
 
 
 def _cat(entry: dict) -> tuple[int, int]:
@@ -132,15 +197,19 @@ NON_I_STEM = {
     "particeps", "caelebs", "pater", "mater", "frater", "parens",
 }
 
+# The contracted vocative singular of a 2nd-declension noun in -ius (Iūlī,
+# Vergilī, fīlī) belongs to PROPER NAMES in -ius, plus the two common nouns
+# fīlius and genius — Allen & Greenough §49.c, Bennett §25.2, Gildersleeve &
+# Lodge §33. An ordinary common noun in -ius keeps the regular -ie: gladie,
+# fluvie, nūntie.  Kept in step with CONTRACTED_VOC in app/js/paradigms.js.
+CONTRACTED_VOC = {"filius", "genius"}
+# The glossary's only proper-name signal is the capital on the lemma.
+CAPITAL = re.compile(r"^[A-ZĀĒĪŌŪȲ]")
 
-#: reproduce app/js/paradigms.js exactly, bug for bug (the parity test sets it)
-JS_COMPAT = False
 
-
-def noun_table_key(entry: dict, js_compat: bool | None = None) -> str | None:
+def noun_table_key(entry: dict) -> str | None:
     d, v = _cat(entry)
     g = entry.get("gender")
-    js = JS_COMPAT if js_compat is None else js_compat
     if d == 3 and entry.get("h") in NON_I_STEM:
         return "3n" if g == "n" else "3"
     if d == 1:
@@ -151,17 +220,17 @@ def noun_table_key(entry: dict, js_compat: bool | None = None) -> str | None:
         if v == 3:
             return "2r"
         if v == 4:
-            # Whitaker's N 2 4 is the -ium / -ius stem (praedium, gladius), whose
-            # nominative is stem + um / us.  app/js/paradigms.js reads it as the
-            # rare "neuter in -us" (vulgus) and prints praedius, praediī, praediō…
-            # — see tests/latin_forms/test_parity.py DIVERGENCES.
-            if js:
-                return "2nus"
+            # Whitaker's N 2 4 is the -ium / -ius stem (aedificium, gladius),
+            # whose nominative is stem + um / us: an ordinary 2nd-declension
+            # noun, not the "neuter in -us" (vulgus) type.
             return "2n" if g == "n" else "2m"
         if v in (6, 7, 9):
             return "2g6"
         if v == 8:
             return "2g8"
+        if v == 1 and g == "n":
+            # vulgus, virus, pelagus: nom = acc = voc in -us, no plural.
+            return "2nus"
         return "2n" if g == "n" else "2m"
     if d == 3:
         if v == 4:
@@ -227,7 +296,11 @@ def _noun_paradigm(entry: dict, locative: bool = False) -> dict | None:
     r1, nom_stem, nom_end = st["r1"], st["nomStem"], st["nomEnd"]
     g = entry.get("gender") or "c"
     neuter = g == "n"
-    d, v = _cat(entry)
+    # A 2nd-declension masculine in -ius. Only a proper name (and fīlius,
+    # genius) contracts the vocative to -ī; see CONTRACTED_VOC above.
+    ius_stem = key == "2m" and r1[-1:] in ("i", "ī")
+    contracted = (r1[:-1] + "ī") if ius_stem else None
+    ius_voc = ius_stem and (h in CONTRACTED_VOC or bool(CAPITAL.match(entry.get("lemma") or "")))
 
     def build(num):
         ends = tbl[num]
@@ -239,10 +312,13 @@ def _noun_paradigm(entry: dict, locative: bool = False) -> dict | None:
             if num == "sg" and (c in ("nom", "voc") or (neuter and c == "acc")):
                 if key.startswith("3") or key == "2r":
                     stem, end = nom_stem, nom_end
-                if key == "2m" and c == "voc" and v == 5:
-                    stem, end = re.sub(r"i$", "", r1), "ī"
+                if ius_voc and c == "voc":
+                    stem, end = r1[:-1], "ī"
             if key == "5" and c in ("gen", "dat") and num == "sg" and re.search(r"[aeiouāēīōū]$", r1):
                 end = "ēī"
+            # No "alt" on the genitive: the contracted fīlī is a vocative in
+            # this chart, and an alt is an accepted drill answer wherever it is
+            # read, so one string would answer two rows.
             out.append(cell(stem, end, nk(c, num, g)))
         return out
 
@@ -1417,9 +1493,12 @@ def _adverb_forms(entry: dict) -> list[tuple[str, dict]]:
     out = []
     if entry.get("pos") == "ADV":
         rs = entry.get("roots") or []
+        base = rs[0] if rs and rs[0] and rs[0] != "-" else ""
         for i, deg in enumerate(("pos", "comp", "super")):
             r = rs[i] if i < len(rs) else None
             if r and r != "-":
+                if i:
+                    r = merge_macrons(base, r)   # nūper → nūperrime, not nuperrime
                 out.append((r, {} if deg == "pos" else {"degree": deg}))
         return out
     if entry.get("pos") != "ADJ":

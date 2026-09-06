@@ -10,8 +10,18 @@
    "en": "Where is Julia?",
    "unit_id": "r07:1.1",
    "answers": [
-    "in hortō",
-    "Iūlia in hortō est."
+    {
+     "span": [
+      1,
+      2
+     ]
+    },
+    {
+     "span": [
+      0,
+      3
+     ]
+    }
    ],
    "input": "type",
    "hint": "a place, ablative after in"
@@ -35,13 +45,28 @@
    "en": "To whom does Julius give a rose?",
    "unit_id": "r07:3.1",
    "answers": [
-    "fīliae suae",
+    {
+     "span": [
+      1,
+      2
+     ]
+    },
     "fīliae",
-    "Iūlius fīliae suae rosam dat."
+    {
+     "span": [
+      0,
+      4
+     ]
+    }
    ],
    "input": "choice",
    "choices": [
-    "fīliae suae",
+    {
+     "span": [
+      1,
+      2
+     ]
+    },
     "sorōrī",
     "mātrī",
     "puerīs"
@@ -68,7 +93,12 @@
    "unit_id": "r07:5.1",
    "answers": [
     "nihil",
-    "Mārcus sorōrī nihil dat."
+    {
+     "span": [
+      0,
+      3
+     ]
+    }
    ],
    "input": "choice",
    "choices": [
@@ -111,7 +141,17 @@
    "unit_id": "r07:8.1",
    "answers": [
     "Iūliae",
-    "Iūlius Iūliae ōsculum dat."
+    {
+     "parts": [
+      "Iūlius Iūliae",
+      {
+       "span": [
+        2,
+        3
+       ]
+      }
+     ]
+    }
    ],
    "input": "tap",
    "hint": "the receiver, dative"
@@ -143,8 +183,23 @@
    "answers": [
     "Nōn",
     "Minimē",
-    "Nōn: Iūlia laeta ē hortō exit.",
-    "Iūlia laeta ē hortō exit."
+    {
+     "parts": [
+      "Nōn:",
+      {
+       "span": [
+        0,
+        4
+       ]
+      }
+     ]
+    },
+    {
+     "span": [
+      0,
+      4
+     ]
+    }
    ],
    "input": "type",
    "hint": "num expects no"
@@ -158,7 +213,12 @@
    "answers": [
     "Ita",
     "Ita est",
-    "Ecce rosa in nāsō puellae!"
+    {
+     "span": [
+      0,
+      4
+     ]
+    }
    ],
    "input": "type",
    "hint": "nōnne expects yes"
@@ -170,12 +230,27 @@
    "en": "Where does Julia leave from, happy?",
    "unit_id": "r07:12.1",
    "answers": [
-    "ē hortō",
-    "Iūlia laeta ē hortō exit."
+    {
+     "span": [
+      2,
+      3
+     ]
+    },
+    {
+     "span": [
+      0,
+      4
+     ]
+    }
    ],
    "input": "choice",
    "choices": [
-    "ē hortō",
+    {
+     "span": [
+      2,
+      3
+     ]
+    },
     "in hortō",
     "ad hortum",
     "ē vīllā"
