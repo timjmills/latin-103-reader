@@ -138,7 +138,10 @@ test('vocab items: Latin → English is a choice with same-pos distractors from 
   const match = gen.generate({ skill: 'vocab-07', kind: 'vocab', stage: 1, match: true });
   assert.equal(match.input, 'match');
   assert.equal(match.pairs.length, 4); assert.equal(match.right.length, 4);
-  assert.ok(match.key.startsWith('vocab-match:07:'));
+  // The contract fixes the key as `vocab:NN:<lemma>:<pos>[:rev]`; the way the word was shown rides in `variant`, so a
+  // word's history is one row whether it came up as a choice or inside a match (M5 / m5).
+  assert.ok(match.key.startsWith('vocab:07:'), match.key);
+  assert.equal(match.variant, 'match');
   const rev1 = gen.generate({ skill: 'vocab-07-rev', kind: 'vocab', stage: 1 });
   assert.equal(rev1.input, 'choice'); assert.ok(rev1.choices.every((c) => /^[A-Za-zāēīōū]/.test(c.label)));
   const rev2 = gen.generate({ skill: 'vocab-07-rev', kind: 'vocab', stage: 2 });

@@ -7,7 +7,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "his own, her own, its own, their own (reflexive possessive)",
+   "meaning": "his own, her own, its own",
+   "sense_full": "his own, her own, its own, their own (reflexive possessive)",
    "parts": null,
    "unit_id": "r04:19.1",
    "count": 272
@@ -18,18 +19,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "have, hold, consider, think, reason",
+   "meaning": "have, hold",
+   "sense_full": "have, hold, consider, think, reason",
    "parts": "habeō, habēre, habuī, habitum",
    "unit_id": "r04:4.1",
    "count": 164
   },
   {
    "lemma": "dē",
-   "dict": "dē",
+   "dict": "dē (+ abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "down or away from, from, off",
+   "meaning": "from, down from, about",
+   "sense_full": "down or away from, from, off",
    "parts": null,
    "unit_id": "r04:89.1",
    "count": 129
@@ -41,9 +44,22 @@
    "gender": null,
    "decl": null,
    "meaning": "give",
+   "sense_full": "give",
    "parts": "dō, dāre, dedī, datum",
-   "unit_id": "r04:27.1",
-   "count": 116
+   "unit_id": "r04:25.1",
+   "count": 125
+  },
+  {
+   "lemma": "bonus",
+   "dict": "bonus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "good",
+   "sense_full": "good, honest, brave, noble, kind, pleasant, right, useful",
+   "parts": null,
+   "unit_id": "r04:68.2",
+   "count": 100
   },
   {
    "lemma": "pecūnia",
@@ -52,6 +68,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "money",
+   "sense_full": "money",
    "parts": null,
    "unit_id": "r04:3.2",
    "count": 88
@@ -62,32 +79,23 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "of such size",
+   "meaning": "so great, so much",
+   "sense_full": "of such size",
    "parts": null,
    "unit_id": "r04:11.2",
    "count": 68
   },
   {
    "lemma": "nūllus",
-   "dict": "nūllus, -a, -um, (gen., -īus)",
+   "dict": "nūllus, -a, -um (gen. -īus)",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "no",
+   "meaning": "no, none",
+   "sense_full": "no",
    "parts": null,
    "unit_id": "r04:45.1",
    "count": 62
-  },
-  {
-   "lemma": "bonus",
-   "dict": "bonus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "good, honest, brave, noble, kind, pleasant, right, useful",
-   "parts": null,
-   "unit_id": "r04:68.2",
-   "count": 58
   },
   {
    "lemma": "verbum",
@@ -96,6 +104,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "word",
+   "sense_full": "word",
    "parts": null,
    "unit_id": "r04:45.1",
    "count": 49
@@ -106,7 +115,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "little bag (as a filter for wine)",
+   "meaning": "little bag, purse",
+   "sense_full": "little bag (as a filter for wine)",
    "parts": null,
    "unit_id": "r04:3.1",
    "count": 39
@@ -118,6 +128,7 @@
    "gender": null,
    "decl": null,
    "meaning": "greet",
+   "sense_full": "greet",
    "parts": "salūtō, salūtāre, salutavī, salutatum",
    "unit_id": "r04:33.3",
    "count": 34
@@ -128,10 +139,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be away, absent, distant, missing",
+   "meaning": "be away, be absent",
+   "sense_full": "be away, absent, distant, missing",
    "parts": "absum, abesse, āfuī, āfutūrum",
    "unit_id": "r04:20.2",
-   "count": 30
+   "count": 32
   },
   {
    "lemma": "pōnō",
@@ -140,6 +152,7 @@
    "gender": null,
    "decl": null,
    "meaning": "put, place, set",
+   "sense_full": "put, place, set",
    "parts": "pōnō, pōnere, posuī, positum",
    "unit_id": "r04:60.1",
    "count": 27
@@ -150,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "go/march off, depart, withdraw",
+   "meaning": "go away, depart",
+   "sense_full": "go/march off, depart, withdraw",
    "parts": "discēdō, discēdere, discessī, discessum",
    "unit_id": "r04:73.1",
    "count": 26
@@ -161,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "take up",
+   "meaning": "take, take up",
+   "sense_full": "take up",
    "parts": "sūmō, sūmere, sūmpsī, sūmptum",
    "unit_id": "r04:73.1",
    "count": 26
@@ -173,9 +188,22 @@
    "gender": null,
    "decl": null,
    "meaning": "be silent",
+   "sense_full": "be silent",
    "parts": "taceō, tacēre, tacuī, tacitum",
    "unit_id": "r04:37.2",
    "count": 26
+  },
+  {
+   "lemma": "adsum",
+   "dict": "adsum, adesse, adfuī, adfutūrum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be present, be here",
+   "sense_full": "be near, be present, be in attendance, arrive, appear",
+   "parts": "adsum, adesse, adfuī, adfutūrum",
+   "unit_id": "r04:20.1",
+   "count": 23
   },
   {
    "lemma": "nummus",
@@ -184,6 +212,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "coin",
+   "sense_full": "coin",
    "parts": null,
    "unit_id": "r04:5.1",
    "count": 22
@@ -194,21 +223,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "well, unharmed, sound",
+   "meaning": "safe, unharmed, well",
+   "sense_full": "well, unharmed, sound",
    "parts": null,
    "unit_id": "r04:34.1",
    "count": 22
-  },
-  {
-   "lemma": "adsum",
-   "dict": "adsum, adesse, adfuī, adfutūrum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "be near, be present, be in attendance, arrive, appear",
-   "parts": "adsum, adesse, adfuī, adfutūrum",
-   "unit_id": "r04:20.1",
-   "count": 21
   },
   {
    "lemma": "mēnsa",
@@ -217,6 +236,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "table",
+   "sense_full": "table",
    "parts": null,
    "unit_id": "r04:60.1",
    "count": 21
@@ -227,7 +247,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "turned back, backward",
+   "meaning": "again, back",
+   "sense_full": "turned back, backward",
    "parts": null,
    "unit_id": "r04:12.1",
    "count": 19
@@ -238,7 +259,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "stick, walking stick, staff",
+   "meaning": "stick, staff",
+   "sense_full": "stick, walking stick, staff",
    "parts": null,
    "unit_id": "r04:62.1",
    "count": 14
@@ -249,7 +271,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "count, add up, reckon or compute",
+   "meaning": "count",
+   "sense_full": "count, add up, reckon or compute",
    "parts": "numerō, numerāre, numeravī, numeratum",
    "unit_id": "r04:9.1",
    "count": 12
@@ -260,7 +283,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "accuse, blame, find fault, impugn",
+   "meaning": "accuse, blame",
+   "sense_full": "accuse, blame, find fault, impugn",
    "parts": "accūsō, accūsāre, accusavī, accusatum",
    "unit_id": "r04:48.1",
    "count": 11
@@ -271,21 +295,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "empty, vacant, unoccupied",
+   "meaning": "empty",
+   "sense_full": "empty, vacant, unoccupied",
    "parts": null,
    "unit_id": "r04:66.1",
    "count": 11
-  },
-  {
-   "lemma": "dō",
-   "dict": "dō, dāre, dedī, datum + -ue",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "give",
-   "parts": "dō, dāre, dedī, datum + -ue",
-   "unit_id": "r04:25.1",
-   "count": 9
   }
  ]
 }

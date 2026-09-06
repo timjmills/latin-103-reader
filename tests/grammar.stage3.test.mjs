@@ -119,12 +119,16 @@ test('reorder: sentences of 3–8 words, scrambled, punctuation kept on its word
   assert.equal(chunksOf('  a  b ').length, 2);
 });
 
-test('translate: course units with English only (never the shelf), the construction\'s words lit, self-graded; the attempt is logged self: true and weighted as hinted', async () => {
+test('translate: course units with English only (never the shelf), unambiguous and verified, the construction\'s words lit, self-graded; the attempt is logged self: true and weighted as hinted', async () => {
   const { stage3 } = mk();
   const ids = new Set();
-  for (let i = 0; i < 3; i++) { const it = stage3.generate({ skill: 'dative-indirect-object', kind: 'translate', stage: 3 }); assert.ok(it && it.input === 'self'); ids.add(it.unit_id); assert.ok(it.answer[0].length > 5, 'the English is the model'); assert.ok(it.lit.includes(it.target.index), 'the target is lit'); assert.ok(!/^r/.test(it.unit_id)); }
-  assert.equal(ids.size, 3);
-  assert.equal(stage3.generate({ skill: 'dative-indirect-object', kind: 'translate' }).repeat, true, 'three course sentences, then the pool wraps');
+  // Two of the three course sentences, not three: in *Ariadna Thēseō fīlum dedit* the form `Thēseō` reads as dative
+  // **or** ablative, and the item's feedback states a case. `translate` now runs the same `!ambiguous && verified`
+  // filter as `transform`, so it never asserts a parse the sentence did not settle (QA M1).
+  for (let i = 0; i < 2; i++) { const it = stage3.generate({ skill: 'dative-indirect-object', kind: 'translate', stage: 3 }); assert.ok(it && it.input === 'self'); ids.add(it.unit_id); assert.ok(it.answer[0].length > 5, 'the English is the model'); assert.ok(it.lit.includes(it.target.index), 'the target is lit'); assert.ok(!/^r/.test(it.unit_id)); }
+  assert.equal(ids.size, 2);
+  assert.equal(ids.has('w01:63.10'), false, 'the sentence whose dative is ambiguous is never drawn');
+  assert.equal(stage3.generate({ skill: 'dative-indirect-object', kind: 'translate' }).repeat, true, 'two course sentences, then the pool wraps');
   // Through the runner: self: true, hinted, partial for "partly".
   const { createPractice } = await import('../app/js/grammar/session.js');
   const { createGrammarStore } = await import('../app/js/grammar/store-grammar.js');
@@ -157,4 +161,48 @@ test('generate.js: stage-3 kinds fall back to a wave-1 kind when the skill offer
   assert.equal(gen.generate({ skill: 'dative-indirect-object', kind: 'vocab' }), null);
   assert.equal(gen.drillable('dative-indirect-object'), true);
   assert.equal(gen.drillable('nope'), false);
+});
+
+/* ------------------------------------------------- wave-2 fix pass (2026-09-06) */
+
+test('QA M1 — reorder runs the same !ambiguous && verified filter as transform, so its hint never states a parse the sentence did not settle', () => {
+  // Ariadna Thēseō fīlum dedit: Thēseō reads as dative *or* ablative. The old reorder drew it and printed
+  // "Thēseō is dative — the indirect object" as a flat claim.
+  const only = [units[0]];
+  const items = createItems({ units: only, lookup, paradigm, skills: S, storage: mem(), rand: () => 0.4 });
+  const stage3 = createStage3({ items, paradigm, rand: () => 0.4 });
+  assert.equal(stage3.generate({ skill: 'dative-indirect-object', kind: 'reorder', stage: 3 }), null, 'the ambiguous sentence is not used');
+  // The unambiguous one is.
+  const ok = createItems({ units: [units[1]], lookup, paradigm, skills: S, storage: mem(), rand: () => 0.4 });
+  const it = createStage3({ items: ok, paradigm, rand: () => 0.4 }).generate({ skill: 'dative-indirect-object', kind: 'reorder', stage: 3 });
+  assert.ok(it, 'Servus puerō librum dat is drawn');
+  assert.match(it.prompt.hint, /puerō is/);
+});
+
+test('QA M11 — reorder never draws from the verse weeks: a metrical line cannot be reasoned back to from a case ending', () => {
+  const verse = [{ ...units[1], id: 'w13:1.1', week_n: 13 }, { ...units[2], id: 'w14:1.1', week_n: 14 }];
+  const items = createItems({ units: verse, lookup, paradigm, skills: S, storage: mem(), rand: () => 0.4 });
+  const stage3 = createStage3({ items, paradigm, rand: () => 0.4 });
+  assert.equal(stage3.generate({ skill: 'dative-indirect-object', kind: 'reorder', stage: 3 }), null);
+  // The same sentences in a prose week are fine, so it is the week that is excluded and not the sentence.
+  const prose = createItems({ units: [{ ...units[1], id: 'w12:1.1', week_n: 12 }], lookup, paradigm, skills: S, storage: mem(), rand: () => 0.4 });
+  assert.ok(createStage3({ items: prose, paradigm, rand: () => 0.4 }).generate({ skill: 'dative-indirect-object', kind: 'reorder', stage: 3 }));
+  // translate is unaffected: verse units carry no English in the library, and the shelf test already covers that.
+});
+
+test('QA m1 — the reorder chips do not carry the sentence-ending stop, but judging is still the book order', () => {
+  const items = createItems({ units: [units[1]], lookup, paradigm, skills: S, storage: mem(), rand: () => 0.4 });
+  const it = createStage3({ items, paradigm, rand: () => 0.4 }).generate({ skill: 'dative-indirect-object', kind: 'reorder', stage: 3 });
+  assert.deepEqual(it.chunks, ['Servus', 'puerō', 'librum', 'dat.']);
+  assert.deepEqual(it.display, ['Servus', 'puerō', 'librum', 'dat'], 'the last chunk is shown without its full stop');
+  assert.equal(judge(it, [0, 1, 2, 3]).correct, true, 'the answer is still the book order');
+  assert.equal(it.feedback.short, 'The book has: Servus puerō librum dat.', 'and the feedback prints the sentence whole');
+});
+
+test('QA m2 — a transform instruction capitalises by the lemma, not by the sentence-initial position', () => {
+  // Servus puerō librum dat: "servus" is a common noun that happens to open the sentence.
+  const items = createItems({ units: [units[1]], lookup, paradigm, skills: S, storage: mem(), rand: () => 0.4 });
+  const stage3 = createStage3({ items, paradigm, rand: () => 0.4 });
+  const it = stage3.generate({ skill: 'nominative-subject', kind: 'transform', stage: 3 });
+  if (it && it.target.text === 'Servus') assert.ok(it.answer.some((a) => /^s/.test(a)), `the answer keeps the lemma's case: ${it.answer.join(', ')}`);
 });

@@ -8,17 +8,19 @@
    "gender": null,
    "decl": null,
    "meaning": "I",
+   "sense_full": "I",
    "parts": null,
    "unit_id": "r03:20.1",
-   "count": 442
+   "count": 453
   },
   {
-   "lemma": "hīc",
-   "dict": "hīc, haec, hoc",
+   "lemma": "hic",
+   "dict": "hic, haec, hoc",
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "this (near me)",
+   "meaning": "this",
+   "sense_full": "this (near me)",
    "parts": null,
    "unit_id": "r03:40.1",
    "count": 300
@@ -30,6 +32,7 @@
    "gender": null,
    "decl": null,
    "meaning": "see, look at",
+   "sense_full": "see, look at",
    "parts": "videō, vidēre, vīdī, vīsum",
    "unit_id": "r03:11.1",
    "count": 181
@@ -40,7 +43,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "nor neque..neque=neither..nor",
+   "meaning": "and not, nor",
+   "sense_full": "nor neque..neque=neither..nor",
    "parts": null,
    "unit_id": "r03:42.1",
    "count": 168
@@ -51,7 +55,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "now, already, by/even now",
+   "meaning": "now, already",
+   "sense_full": "now, already, by/even now",
    "parts": null,
    "unit_id": "r03:9.1",
    "count": 141
@@ -63,6 +68,7 @@
    "gender": null,
    "decl": null,
    "meaning": "come",
+   "sense_full": "come",
    "parts": "veniō, venīre, vēnī, ventum",
    "unit_id": "r03:21.1",
    "count": 129
@@ -73,7 +79,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hear, listen, accept, agree with",
+   "meaning": "hear, listen to",
+   "sense_full": "hear, listen, accept, agree with",
    "parts": "audiō, audīre, audīvī, audītum",
    "unit_id": "r03:42.1",
    "count": 116
@@ -85,6 +92,7 @@
    "gender": null,
    "decl": null,
    "meaning": "sleep, rest",
+   "sense_full": "sleep, rest",
    "parts": "dormiō, dormīre, dormīvī, dormitum",
    "unit_id": "r03:37.1",
    "count": 92
@@ -96,6 +104,7 @@
    "gender": null,
    "decl": null,
    "meaning": "answer",
+   "sense_full": "answer",
    "parts": "respondeō, respondēre, respondī, respōnsum",
    "unit_id": "r03:25.1",
    "count": 85
@@ -106,7 +115,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "beat",
+   "meaning": "beat, strike, knock",
+   "sense_full": "beat",
    "parts": "pulsō, pulsāre, pulsavī, pulsatum",
    "unit_id": "r03:8.1",
    "count": 65
@@ -118,6 +128,7 @@
    "gender": null,
    "decl": null,
    "meaning": "why, wherefore",
+   "sense_full": "why, wherefore",
    "parts": null,
    "unit_id": "r03:26.1",
    "count": 64
@@ -128,7 +139,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "ask, question, interrogate, examine",
+   "meaning": "ask, question, interrogate",
+   "sense_full": "ask, question, interrogate, examine",
    "parts": "interrogō, interrogāre, interrogāvī, interrogātum",
    "unit_id": "r03:23.1",
    "count": 60
@@ -140,6 +152,7 @@
    "gender": null,
    "decl": null,
    "meaning": "call, summon",
+   "sense_full": "call, summon",
    "parts": "vocō, vocāre, vocāvī, vocātum",
    "unit_id": "r03:16.1",
    "count": 56
@@ -151,6 +164,7 @@
    "gender": null,
    "decl": null,
    "meaning": "because",
+   "sense_full": "because",
    "parts": null,
    "unit_id": "r03:27.1",
    "count": 55
@@ -161,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "beat, strike, lash",
+   "meaning": "beat, flog",
+   "sense_full": "beat, strike, lash",
    "parts": "verberō, verberāre, verberavī, verberatum",
    "unit_id": "r03:45.3",
    "count": 46
@@ -172,10 +187,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "wicked or flagrant",
+   "meaning": "bad, wicked",
+   "sense_full": "wicked or flagrant",
    "parts": null,
    "unit_id": "r03:32.1",
-   "count": 44
+   "count": 45
   },
   {
    "lemma": "rīdeō",
@@ -183,21 +199,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "laugh at (with dat.), laugh",
+   "meaning": "laugh, laugh at",
+   "sense_full": "laugh at (with dat.), laugh",
    "parts": "rīdeō, rīdēre, risī, risum",
    "unit_id": "r03:10.1",
    "count": 39
-  },
-  {
-   "lemma": "irascor",
-   "dict": "irascor, irascī, īrātus sum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "get, be, become angry",
-   "parts": "irascor, irascī, īrātus sum",
-   "unit_id": "r03:6.2",
-   "count": 36
   },
   {
    "lemma": "laetus",
@@ -205,9 +211,22 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "happy, cheerful, joyful, glad",
+   "meaning": "happy, cheerful, joyful",
+   "sense_full": "happy, cheerful, joyful, glad",
    "parts": null,
    "unit_id": "r03:3.2",
+   "count": 37
+  },
+  {
+   "lemma": "irascor",
+   "dict": "irascor, irascī, īrātus sum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "grow angry, be angry",
+   "sense_full": "get, be, become angry",
+   "parts": "irascor, irascī, īrātus sum",
+   "unit_id": "r03:6.2",
    "count": 36
   },
   {
@@ -216,7 +235,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "cry over, cry aloud",
+   "meaning": "cry, wail",
+   "sense_full": "cry over, cry aloud",
    "parts": "plōrō, plōrāre, ploravī, ploratum",
    "unit_id": "r03:9.1",
    "count": 20
@@ -228,9 +248,10 @@
    "gender": null,
    "decl": 1,
    "meaning": "good, honest",
+   "sense_full": "good, honest",
    "parts": null,
    "unit_id": "r03:32.1",
-   "count": 19
+   "count": 20
   },
   {
    "lemma": "cantō",
@@ -239,6 +260,7 @@
    "gender": null,
    "decl": null,
    "meaning": "sing",
+   "sense_full": "sing",
    "parts": "cantō, cantāre, cantavī, cantatum",
    "unit_id": "r03:3.1",
    "count": 12
@@ -249,7 +271,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "breast, udder",
+   "meaning": "mummy, mother",
+   "sense_full": "breast, udder",
    "parts": null,
    "unit_id": "r03:19.1",
    "count": 8
@@ -261,6 +284,7 @@
    "gender": null,
    "decl": null,
    "meaning": "hush! hist!",
+   "sense_full": "hush! hist!",
    "parts": null,
    "unit_id": "r03:4.1",
    "count": 6
@@ -271,7 +295,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "bow, arc, coil, arch",
+   "meaning": "bow, arc, coil",
+   "sense_full": "bow, arc, coil, arch",
    "parts": null,
    "unit_id": "r03:32.1",
    "count": 4
@@ -282,7 +307,8 @@
    "pos": "INTERJ",
    "gender": null,
    "decl": null,
-   "meaning": "Ha ha!",
+   "meaning": "ha ha!",
+   "sense_full": "Ha ha!",
    "parts": null,
    "unit_id": "r03:10.1",
    "count": 2

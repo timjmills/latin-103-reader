@@ -7,7 +7,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "greatly, very, intensely",
+   "meaning": "very, greatly",
+   "sense_full": "greatly, very, intensely",
    "parts": null,
    "unit_id": "r24:19.2",
    "count": 22
@@ -19,6 +20,7 @@
    "gender": null,
    "decl": null,
    "meaning": "although, though, even if",
+   "sense_full": "although, though, even if",
    "parts": null,
    "unit_id": "r24:38.1",
    "count": 21
@@ -29,7 +31,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be amazed, surprised, bewildered(at)",
+   "meaning": "wonder at, be amazed",
+   "sense_full": "be amazed, surprised, bewildered(at)",
    "parts": "mīror, mīrārī, mīrātus sum",
    "unit_id": "r24:7.1",
    "count": 18
@@ -40,7 +43,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "wish, long, be eager for",
+   "meaning": "want, desire",
+   "sense_full": "wish, long, be eager for",
    "parts": "cupiō, cupere, cupīvī, cupītum",
    "unit_id": "r24:50.2",
    "count": 16
@@ -51,7 +55,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "pain, anguish, grief, sorrow, suffering",
+   "meaning": "pain, grief",
+   "sense_full": "pain, anguish, grief, sorrow, suffering",
    "parts": null,
    "unit_id": "r24:24.1",
    "count": 13
@@ -63,9 +68,22 @@
    "gender": null,
    "decl": null,
    "meaning": "suddenly, unexpectedly",
+   "sense_full": "suddenly, unexpectedly",
    "parts": null,
    "unit_id": "r24:12.1",
    "count": 12
+  },
+  {
+   "lemma": "nōscō",
+   "dict": "nōscō, nōscere, novī, notum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "get to know, learn",
+   "sense_full": "get to know",
+   "parts": "nōscō, nōscere, novī, notum",
+   "unit_id": "r24:50.2",
+   "count": 10
   },
   {
    "lemma": "cōnātus",
@@ -74,6 +92,7 @@
    "gender": "m",
    "decl": 4,
    "meaning": "attempt, effort",
+   "sense_full": "attempt, effort",
    "parts": null,
    "unit_id": "r24:26.1",
    "count": 9
@@ -84,7 +103,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "break, shatter, crush",
+   "meaning": "break, shatter",
+   "sense_full": "break, shatter, crush",
    "parts": "frangō, frangere, frēgī, frāctum",
    "unit_id": "r24:21.1",
    "count": 9
@@ -95,20 +115,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "not know",
+   "meaning": "not know, be unaware of",
+   "sense_full": "not know",
    "parts": "ignōrō, ignōrāre, ignoravī, ignoratum",
    "unit_id": "r24:50.1",
-   "count": 9
-  },
-  {
-   "lemma": "nōscō",
-   "dict": "nōscō, nōscere, novī, notum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "get to know",
-   "parts": "nōscō, nōscere, novī, notum",
-   "unit_id": "r24:50.2",
    "count": 9
   },
   {
@@ -117,7 +127,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "incessant or unremitting, constantly repeated or recurring",
+   "meaning": "continuous, unbroken",
+   "sense_full": "incessant or unremitting, constantly repeated or recurring",
    "parts": null,
    "unit_id": "r24:15.1",
    "count": 8
@@ -128,7 +139,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "bloody, bleeding, discharging blood",
+   "meaning": "bloody, bleeding",
+   "sense_full": "bloody, bleeding, discharging blood",
    "parts": null,
    "unit_id": "r24:63.1",
    "count": 6
@@ -139,7 +151,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "beat, strike",
+   "meaning": "strike, hit",
+   "sense_full": "beat, strike",
    "parts": "percutiō, percutere, percussī, percussum",
    "unit_id": "r24:12.1",
    "count": 6
@@ -150,7 +163,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "noise, sound",
+   "meaning": "sound, noise",
+   "sense_full": "noise, sound",
    "parts": null,
    "unit_id": "r24:9.1",
    "count": 6
@@ -161,7 +175,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "noise, racket",
+   "meaning": "noise, din",
+   "sense_full": "noise, racket",
    "parts": null,
    "unit_id": "r24:12.1",
    "count": 6
@@ -172,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "turn upside down or side-to-side",
+   "meaning": "turn, turn round",
+   "sense_full": "turn upside down or side-to-side",
    "parts": "convertō, convertere, convertī, conversum",
    "unit_id": "r24:1.2",
    "count": 5
@@ -183,18 +199,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "recline, lie at ease, sink, lie, settle back, down",
+   "meaning": "lie down, recline",
+   "sense_full": "recline, lie at ease, sink, lie, settle back, down",
    "parts": "recumbō, recumbere, recubuī",
    "unit_id": "r24:8.1",
    "count": 5
   },
   {
    "lemma": "iūxtā",
-   "dict": "iūxtā",
+   "dict": "iūxtā (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "near, (very) close to, next to",
+   "meaning": "next to, close to",
+   "sense_full": "near, (very) close to, next to",
    "parts": null,
    "unit_id": "r24:12.1",
    "count": 4
@@ -205,7 +223,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "left, on the left hand",
+   "meaning": "left, on the left",
+   "sense_full": "left, on the left hand",
    "parts": null,
    "unit_id": "r24:5.1",
    "count": 4
@@ -217,6 +236,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "side",
+   "sense_full": "side",
    "parts": null,
    "unit_id": "r24:1.2",
    "count": 4
@@ -227,7 +247,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "elegant, fashionable",
+   "meaning": "elegant, smart",
+   "sense_full": "elegant, fashionable",
    "parts": null,
    "unit_id": "r24:73.1",
    "count": 3
@@ -238,7 +259,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "sick, diseased",
+   "meaning": "sick, ill",
+   "sense_full": "sick, diseased",
    "parts": null,
    "unit_id": "r24:1.2",
    "count": 2
@@ -249,20 +271,10 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "anew, over again, from a fresh beginning",
+   "meaning": "again, anew",
+   "sense_full": "anew, over again, from a fresh beginning",
    "parts": null,
    "unit_id": "r24:3.1",
-   "count": 2
-  },
-  {
-   "lemma": "dexter",
-   "dict": "dexter, dextera, dexterum",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "right, on, to the right hand, side",
-   "parts": null,
-   "unit_id": "r24:5.1",
    "count": 2
   },
   {
@@ -271,31 +283,10 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "within, on the inside, inside",
+   "meaning": "inside, within",
+   "sense_full": "within, on the inside, inside",
    "parts": null,
    "unit_id": "r24:39.1",
-   "count": 2
-  },
-  {
-   "lemma": "ōs",
-   "dict": "ōs, ossis n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 3,
-   "meaning": "bone",
-   "parts": null,
-   "unit_id": "r24:36.1",
-   "count": 2
-  },
-  {
-   "lemma": "saepissimē",
-   "dict": "saepissimē (superlative of saepe)",
-   "pos": "ADV",
-   "gender": null,
-   "decl": null,
-   "meaning": "often, oft, oftimes, many times, frequently",
-   "parts": null,
-   "unit_id": "r24:93.1",
    "count": 2
   },
   {
@@ -304,7 +295,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "go, move, pass, sink",
+   "meaning": "come up, approach, go under",
+   "sense_full": "go, move, pass, sink",
    "parts": "subeō, subīre, subiviī, subitum",
    "unit_id": "r24:9.1",
    "count": 2
@@ -316,6 +308,7 @@
    "gender": null,
    "decl": null,
    "meaning": "otherwise, differently",
+   "sense_full": "otherwise, differently",
    "parts": null,
    "unit_id": "r24:21.1",
    "count": 1
@@ -326,7 +319,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "company of soldiers or mercenaries",
+   "meaning": "escort, retinue",
+   "sense_full": "company of soldiers or mercenaries",
    "parts": null,
    "unit_id": "r24:54.1",
    "count": 1
@@ -337,7 +331,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "rampage, act in a fierce, violent, savage manner",
+   "meaning": "be fierce",
+   "sense_full": "rampage, act in a fierce, violent, savage manner",
    "parts": "ferōciō, ferocīre",
    "unit_id": "r24:90.1",
    "count": 1
@@ -348,18 +343,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "cry for",
+   "meaning": "weep, cry",
+   "sense_full": "cry for",
    "parts": "fleō, flēre, flevī, fletum",
    "unit_id": "r24:38.1",
    "count": 1
   },
   {
    "lemma": "impar",
-   "dict": "impar, (gen., imparis)",
+   "dict": "impar, gen. imparis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "unequal (size, number, rank, esteem)",
+   "meaning": "unequal",
+   "sense_full": "unequal (size, number, rank, esteem)",
    "parts": null,
    "unit_id": "r24:7.1",
    "count": 1
@@ -370,20 +367,10 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "bite, sting",
+   "meaning": "bite",
+   "sense_full": "bite, sting",
    "parts": null,
    "unit_id": "r24:91.1",
-   "count": 1
-  },
-  {
-   "lemma": "pigrior",
-   "dict": "pigrior, -ius, ·, comparative, of, piger",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": null,
-   "meaning": "lazier, slower (comparative of piger: prae cēterīs piger = cēterīs pigrior)",
-   "parts": null,
-   "unit_id": "r24:117.1",
    "count": 1
   },
   {
@@ -392,7 +379,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "commotion, confusion, uproar",
+   "meaning": "uproar, commotion",
+   "sense_full": "commotion, confusion, uproar",
    "parts": null,
    "unit_id": "r24:87.1",
    "count": 1

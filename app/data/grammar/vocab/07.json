@@ -7,10 +7,11 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "himself, herself, itself, themselves (referring back to the subject)",
+   "meaning": "himself, herself, itself",
+   "sense_full": "himself, herself, itself, themselves (referring back to the subject)",
    "parts": null,
    "unit_id": "r07:8.2",
-   "count": 171
+   "count": 187
   },
   {
    "lemma": "oculus",
@@ -19,6 +20,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "eye",
+   "sense_full": "eye",
    "parts": null,
    "unit_id": "r07:6.1",
    "count": 59
@@ -29,7 +31,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "uncover, open, disclose",
+   "meaning": "open, uncover",
+   "sense_full": "uncover, open, disclose",
    "parts": "aperiō, aperīre, aperuī, apertum",
    "unit_id": "r07:14.1",
    "count": 41
@@ -40,7 +43,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "not? (interrogative, expects the answer \"Yes\")",
+   "meaning": "surely?",
+   "sense_full": "not? (interrogative, expects the answer \"Yes\")",
    "parts": null,
    "unit_id": "r07:26.2",
    "count": 36
@@ -52,6 +56,7 @@
    "gender": null,
    "decl": null,
    "meaning": "hold, keep",
+   "sense_full": "hold, keep",
    "parts": "teneō, tenēre, tenuī, tentum",
    "unit_id": "r07:5.3",
    "count": 33
@@ -62,7 +67,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "turn, turn around",
+   "meaning": "turn",
+   "sense_full": "turn, turn around",
    "parts": "vertō, vertere, vertī, versum",
    "unit_id": "r07:16.1",
    "count": 33
@@ -74,6 +80,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "tear",
+   "sense_full": "tear",
    "parts": null,
    "unit_id": "r07:6.1",
    "count": 31
@@ -84,7 +91,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "close, shut, block up",
+   "meaning": "close, shut",
+   "sense_full": "close, shut, block up",
    "parts": "claudō, claudere, clausī, clausum",
    "unit_id": "r07:14.1",
    "count": 28
@@ -95,7 +103,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "come, go, sail, march, leave",
+   "meaning": "go out, leave",
+   "sense_full": "come, go, sail, march, leave",
    "parts": "exeō, exīre, exiī, exitum",
    "unit_id": "r07:82.1",
    "count": 26
@@ -106,7 +115,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "run, trot, gallop, hurry, hasten, speed, move, travel, proceed, flow swiftly",
+   "meaning": "run, hurry",
+   "sense_full": "run, trot, gallop, hurry, hasten, speed, move, travel, proceed, flow swiftly",
    "parts": "currō, currere, cucurrī, cursum",
    "unit_id": "r07:66.1",
    "count": 23
@@ -117,7 +127,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "lookout for, await",
+   "meaning": "wait for, await",
+   "sense_full": "lookout for, await",
    "parts": "exspectō, exspectāre, exspectavī, exspectātum",
    "unit_id": "r07:1.2",
    "count": 23
@@ -128,10 +139,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "prepare",
+   "meaning": "prepare, get ready",
+   "sense_full": "prepare",
    "parts": "parō, parāre, parāvī, parātum",
    "unit_id": "r07:19.1",
    "count": 22
+  },
+  {
+   "lemma": "fōrmōsus",
+   "dict": "fōrmōsus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "beautiful, handsome",
+   "sense_full": "beautiful, finely formed, handsome, fair",
+   "parts": null,
+   "unit_id": "r07:10.1",
+   "count": 18
   },
   {
    "lemma": "adeō",
@@ -139,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "approach",
+   "meaning": "go to, approach",
+   "sense_full": "approach",
    "parts": "adeō, adīre, adiī, aditum",
    "unit_id": "r07:61.1",
    "count": 17
@@ -150,7 +175,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "no indeed (contradiction)",
+   "meaning": "no indeed, on the contrary",
+   "sense_full": "no indeed (contradiction)",
    "parts": null,
    "unit_id": "r07:21.2",
    "count": 17
@@ -162,6 +188,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "pear",
+   "sense_full": "pear",
    "parts": null,
    "unit_id": "r07:52.1",
    "count": 16
@@ -172,21 +199,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "full, plump",
+   "meaning": "full",
+   "sense_full": "full, plump",
    "parts": null,
    "unit_id": "r07:38.1",
    "count": 16
-  },
-  {
-   "lemma": "fōrmōsus",
-   "dict": "fōrmōsus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "beautiful, finely formed, handsome, fair",
-   "parts": null,
-   "unit_id": "r07:10.1",
-   "count": 14
   },
   {
    "lemma": "adveniō",
@@ -194,7 +211,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "come to, arrive",
+   "meaning": "arrive, come",
+   "sense_full": "come to, arrive",
    "parts": "adveniō, advēnīre, advēnī, aduentum",
    "unit_id": "r07:30.1",
    "count": 11
@@ -206,6 +224,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "kiss",
+   "sense_full": "kiss",
    "parts": null,
    "unit_id": "r07:62.1",
    "count": 11
@@ -216,7 +235,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "in that place, there, over there",
+   "meaning": "there, over there",
+   "sense_full": "in that place, there, over there",
    "parts": null,
    "unit_id": "r07:2.1",
    "count": 10
@@ -227,7 +247,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be in, on, there",
+   "meaning": "be in, be inside",
+   "sense_full": "be in, on, there",
    "parts": "īnsum, inesse, infuī, infutūrum",
    "unit_id": "r07:38.1",
    "count": 9
@@ -238,7 +259,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "shed tears, weep",
+   "meaning": "weep, cry",
+   "sense_full": "shed tears, weep",
    "parts": "lacrimō, lacrimāre, lacrimavī, lacrimatum",
    "unit_id": "r07:6.1",
    "count": 9
@@ -249,7 +271,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "mirror, looking glass, reflector",
+   "meaning": "mirror",
+   "sense_full": "mirror, looking glass, reflector",
    "parts": null,
    "unit_id": "r07:8.1",
    "count": 8
@@ -260,21 +283,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "rub, wipe",
+   "meaning": "wipe, wipe off",
+   "sense_full": "rub, wipe",
    "parts": "tergeō, tergēre, tersī, tersum",
    "unit_id": "r07:23.2",
    "count": 6
-  },
-  {
-   "lemma": "salveō",
-   "dict": "salveō, salvēre",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "be well/in good health",
-   "parts": "salveō, salvēre",
-   "unit_id": "r07:31.1",
-   "count": 5
   },
   {
    "lemma": "ōstiārius",
@@ -283,9 +296,22 @@
    "gender": "m",
    "decl": 2,
    "meaning": "porter, doorkeeper",
+   "sense_full": "porter, doorkeeper",
    "parts": null,
    "unit_id": "r07:33.1",
    "count": 4
+  },
+  {
+   "lemma": "salveō",
+   "dict": "salveō, salvēre",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be well",
+   "sense_full": "be well/in good health",
+   "parts": "salveō, salvēre",
+   "unit_id": "r07:31.1",
+   "count": 3
   }
  ]
 }

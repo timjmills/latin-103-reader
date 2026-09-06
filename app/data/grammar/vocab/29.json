@@ -8,6 +8,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "life, career, livelihood",
+   "sense_full": "life, career, livelihood",
    "parts": null,
    "unit_id": "w07:b1.5",
    "count": 23
@@ -18,7 +19,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "song or music",
+   "meaning": "song, poem",
+   "sense_full": "song or music",
    "parts": null,
    "unit_id": "w07:b20.8",
    "count": 15
@@ -30,6 +32,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "tyrant",
+   "sense_full": "tyrant",
    "parts": null,
    "unit_id": "w07:b32.1",
    "count": 12
@@ -41,20 +44,34 @@
    "gender": null,
    "decl": null,
    "meaning": "lose",
+   "sense_full": "lose",
    "parts": "āmittō, āmittere, āmīsī, āmissum",
    "unit_id": "w07:b4.6",
    "count": 10
   },
   {
    "lemma": "fēlīx",
-   "dict": "fēlīx, (gen., fēlīcis)",
+   "dict": "fēlīx, gen. fēlīcis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "happy",
+   "meaning": "lucky, happy, fortunate",
+   "sense_full": "happy",
    "parts": null,
    "unit_id": "w07:b9.6",
    "count": 10
+  },
+  {
+   "lemma": "abiciō",
+   "dict": "abiciō, abicere, abiēcī, abiectum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "throw away, throw down",
+   "sense_full": "throw, cast away, down, aside",
+   "parts": "abiciō, abicere, abiēcī, abiectum",
+   "unit_id": "w07:b31.3",
+   "count": 9
   },
   {
    "lemma": "fidēs",
@@ -62,7 +79,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "chord, instrument string",
+   "meaning": "lyre string, lyre",
+   "sense_full": "chord, instrument string",
    "parts": null,
    "unit_id": "w07:b17.2",
    "count": 9
@@ -73,7 +91,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "chance, luck, fate",
+   "meaning": "fortune, luck, chance",
+   "sense_full": "chance, luck, fate",
    "parts": null,
    "unit_id": "w07:b37.2",
    "count": 9
@@ -84,7 +103,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "urge, recommend",
+   "meaning": "advise, urge",
+   "sense_full": "urge, recommend",
    "parts": "suādeō, suādēre, suāsī, suāsum",
    "unit_id": "w07:b34.3",
    "count": 9
@@ -96,6 +116,7 @@
    "gender": null,
    "decl": null,
    "meaning": "value, assess",
+   "sense_full": "value, assess",
    "parts": "aestimō, aestimāre, aestimavī, aestimatum",
    "unit_id": "w07:b1.5",
    "count": 8
@@ -106,9 +127,22 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "kindness, favor, benefit, service, help",
+   "meaning": "kindness, favor, service",
+   "sense_full": "kindness, favor, benefit, service, help",
    "parts": null,
    "unit_id": "w07:b30.3",
+   "count": 8
+  },
+  {
+   "lemma": "pretiōsus",
+   "dict": "pretiōsus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "precious, costly",
+   "sense_full": "expensive, costly, of great value, precious",
+   "parts": null,
+   "unit_id": "w07:b2.2",
    "count": 8
   },
   {
@@ -117,21 +151,11 @@
    "pos": "N",
    "gender": "f",
    "decl": 5,
-   "meaning": "hope, anticipation, expectation",
+   "meaning": "hope",
+   "sense_full": "hope, anticipation, expectation",
    "parts": null,
    "unit_id": "w07:b3.1",
    "count": 8
-  },
-  {
-   "lemma": "abiiciō",
-   "dict": "abiiciō, abiicere, abiēcī, abiectum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "throw, cast away, down, aside",
-   "parts": "abiiciō, abiicere, abiēcī, abiectum",
-   "unit_id": "w07:b32.1",
-   "count": 7
   },
   {
    "lemma": "appāreō",
@@ -140,6 +164,7 @@
    "gender": null,
    "decl": null,
    "meaning": "appear",
+   "sense_full": "appear",
    "parts": "appāreō, appārēre, appāruī, apparitum",
    "unit_id": "w07:b21.6",
    "count": 7
@@ -150,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "confess (with the accusative), admit, acknowledge, reveal, disclose",
+   "meaning": "confess, admit",
+   "sense_full": "confess (with the accusative), admit, acknowledge, reveal, disclose",
    "parts": "cōnfiteor, cōnfitērī, confessus sum",
    "unit_id": "w07:b21.7",
    "count": 7
@@ -161,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "despair (of)",
+   "meaning": "despair",
+   "sense_full": "despair (of)",
    "parts": "dēspērō, dēspērāre, dēspērāvī, desperatum",
    "unit_id": "w07:b20.8",
    "count": 7
@@ -172,7 +199,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "riches (in the plural), wealth",
+   "meaning": "riches, wealth",
+   "sense_full": "riches (in the plural), wealth",
    "parts": null,
    "unit_id": "w07:b5.3",
    "count": 7
@@ -183,20 +211,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "set, put forth, out",
+   "meaning": "set out, put ashore",
+   "sense_full": "set, put forth, out",
    "parts": "expōnō, expōnere, exposuī, expositum",
    "unit_id": "w07:b21.1",
-   "count": 7
-  },
-  {
-   "lemma": "nōtus",
-   "dict": "nōtus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "well known, familiar, notable, famous, esteemed",
-   "parts": null,
-   "unit_id": "w07:b16.1",
    "count": 7
   },
   {
@@ -205,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "affect, make impression",
+   "meaning": "affect, influence",
+   "sense_full": "affect, make impression",
    "parts": "afficiō, afficere, affēcī, affectum",
    "unit_id": "w07:b10.4",
    "count": 6
@@ -216,7 +235,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "approach (with the dative or ad+accusative)",
+   "meaning": "approach, draw near",
+   "sense_full": "approach (with the dative or ad+accusative)",
    "parts": "appropinquō, appropinquāre, appropinquavī, appropinquatum",
    "unit_id": "w07:b38.4",
    "count": 6
@@ -227,7 +247,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "snatch away, take by force",
+   "meaning": "snatch away, rescue",
+   "sense_full": "snatch away, take by force",
    "parts": "ēripiō, eripere, ēripuī, ēreptum",
    "unit_id": "w07:b10.3",
    "count": 6
@@ -238,20 +259,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "envy, regard with envy or ill will",
+   "meaning": "envy, be jealous of",
+   "sense_full": "envy, regard with envy or ill will",
    "parts": "invideō, invidēre, invidī, inuisum",
    "unit_id": "w07:b20.1",
    "count": 6
   },
   {
-   "lemma": "pretiōsus",
-   "dict": "pretiōsus, -a, -um",
+   "lemma": "nōbilis",
+   "dict": "nōbilis, -e",
    "pos": "ADJ",
    "gender": null,
-   "decl": 1,
-   "meaning": "expensive, costly, of great value, precious",
+   "decl": 3,
+   "meaning": "noble, well born",
+   "sense_full": "noble, well born",
    "parts": null,
-   "unit_id": "w07:b2.2",
+   "unit_id": "w07:b17.2",
    "count": 6
   },
   {
@@ -261,6 +284,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "oar",
+   "sense_full": "oar",
    "parts": null,
    "unit_id": "w07:b40.2",
    "count": 6
@@ -271,20 +295,10 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "crime, misdeed, offense",
+   "meaning": "crime, misdeed",
+   "sense_full": "crime, misdeed, offense",
    "parts": null,
    "unit_id": "w07:b21.7",
-   "count": 5
-  },
-  {
-   "lemma": "merx",
-   "dict": "merx, mercis f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 3,
-   "meaning": "commodity",
-   "parts": null,
-   "unit_id": "w07:b2.3",
    "count": 5
   },
   {
@@ -293,7 +307,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "wonderful, strange, remarkable, amazing, surprising, extraordinary",
+   "meaning": "wonderful, strange, surprising",
+   "sense_full": "wonderful, strange, remarkable, amazing, surprising, extraordinary",
    "parts": null,
    "unit_id": "w07:b3.3",
    "count": 5
@@ -304,7 +319,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "troubled",
+   "meaning": "troubled, upset",
+   "sense_full": "troubled",
    "parts": null,
    "unit_id": "w07:b14.3",
    "count": 5
@@ -315,7 +331,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "straight on, forward",
+   "meaning": "at once, straight on",
+   "sense_full": "straight on, forward",
    "parts": null,
    "unit_id": "w07:b6.1",
    "count": 5
@@ -326,7 +343,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "as if, just as if, as though",
+   "meaning": "as if, as though",
+   "sense_full": "as if, just as if, as though",
    "parts": null,
    "unit_id": "w07:b21.3",
    "count": 5
@@ -337,9 +355,22 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "suddenly, unexpectedly",
+   "meaning": "suddenly",
+   "sense_full": "suddenly, unexpectedly",
    "parts": null,
    "unit_id": "w07:b21.1",
+   "count": 5
+  },
+  {
+   "lemma": "saliō",
+   "dict": "saliō, salīre, salivī, saltum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "leap, jump",
+   "sense_full": "leap, jump",
+   "parts": "saliō, salīre, salivī, saltum",
+   "unit_id": "w07:b14.2",
    "count": 5
   },
   {
@@ -348,7 +379,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "withhold, keep away or clear",
+   "meaning": "keep away, abstain",
+   "sense_full": "withhold, keep away or clear",
    "parts": "abstineō, abstinēre, abstinuī, abstentum",
    "unit_id": "w07:b20.7",
    "count": 4
@@ -359,7 +391,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "draw gently to, entice, lure, induce (sleep), attract, win over, encourage",
+   "meaning": "attract, entice",
+   "sense_full": "draw gently to, entice, lure, induce (sleep), attract, win over, encourage",
    "parts": "alliciō, allicere, allēxī, allectum",
    "unit_id": "w07:b20.11",
    "count": 4
@@ -370,7 +403,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "song, chant",
+   "meaning": "song, singing",
+   "sense_full": "song, chant",
    "parts": null,
    "unit_id": "w07:b20.11",
    "count": 4
@@ -381,18 +415,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "deter",
+   "meaning": "deter, frighten off",
+   "sense_full": "deter",
    "parts": "dēterreō, dēterrēre, deterruī, deterritum",
    "unit_id": "w07:b1.3",
    "count": 4
   },
   {
    "lemma": "fūr",
-   "dict": "fūr, -is m/f.",
+   "dict": "fūr, -is m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
-   "meaning": "thief, robber",
+   "meaning": "thief",
+   "sense_full": "thief, robber",
    "parts": null,
    "unit_id": "w07:b27.2",
    "count": 4
@@ -403,18 +439,20 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "thence, thenceforth",
+   "meaning": "from there, then",
+   "sense_full": "thence, thenceforth",
    "parts": null,
    "unit_id": "w07:b18.4",
    "count": 4
   },
   {
-   "lemma": "laetitiā",
-   "dict": "laetitiā, -ae f.",
+   "lemma": "laetitia",
+   "dict": "laetitia, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "joy or happiness",
+   "meaning": "joy, gladness",
+   "sense_full": "joy or happiness",
    "parts": null,
    "unit_id": "w07:b10.4",
    "count": 4
@@ -425,7 +463,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "let through",
+   "meaning": "allow, let through",
+   "sense_full": "let through",
    "parts": "permittō, permittere, permīsī, permissum",
    "unit_id": "w07:b20.5",
    "count": 4
@@ -437,6 +476,7 @@
    "gender": null,
    "decl": null,
    "meaning": "complain",
+   "sense_full": "complain",
    "parts": "queror, querī, questus sum",
    "unit_id": "w07:b4.1",
    "count": 4
@@ -447,7 +487,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "take away secretly",
+   "meaning": "steal, take secretly",
+   "sense_full": "take away secretly",
    "parts": "surripiō, surripere, surripuī, surreptum",
    "unit_id": "w07:b26.1",
    "count": 4
@@ -459,6 +500,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "dolphin",
+   "sense_full": "dolphin",
    "parts": null,
    "unit_id": "w07:b15.2",
    "count": 3
@@ -469,7 +511,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "lyre-player",
+   "meaning": "lyre player",
+   "sense_full": "lyre-player",
    "parts": null,
    "unit_id": "w07:b18.3",
    "count": 3
@@ -480,7 +523,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "gliding, sliding",
+   "meaning": "gliding, fall",
+   "sense_full": "gliding, sliding",
    "parts": null,
    "unit_id": "w07:b31.5",
    "count": 3
@@ -491,51 +535,20 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "sad or unhappy",
+   "meaning": "sad, gloomy",
+   "sense_full": "sad or unhappy",
    "parts": null,
    "unit_id": "w07:b3.3",
    "count": 3
   },
   {
-   "lemma": "nēquissimus",
-   "dict": "nēquissimus, -a, -um, ·, superlative, of, nēquam",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "most worthless, utterly wicked (superlative of nēquam)",
-   "parts": null,
-   "unit_id": "w07:b27.2",
-   "count": 3
-  },
-  {
-   "lemma": "nōbilis",
-   "dict": "nōbilis, -e",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "noble, well born",
-   "parts": null,
-   "unit_id": "w07:b17.2",
-   "count": 3
-  },
-  {
-   "lemma": "nōbilis",
-   "dict": "nōbilis, -e, ·, superlative, nōbilissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "noble, well born",
-   "parts": null,
-   "unit_id": "w07:b18.3",
-   "count": 3
-  },
-  {
    "lemma": "nōnnūllus",
-   "dict": "nōnnūllus, -a, -um, (gen., -īus)",
+   "dict": "nōnnūllus, -a, -um (gen. -īus)",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "some, several, a few",
+   "meaning": "some, several",
+   "sense_full": "some, several, a few",
    "parts": null,
    "unit_id": "w07:b2.2",
    "count": 3
@@ -547,6 +560,7 @@
    "gender": null,
    "decl": null,
    "meaning": "sometimes",
+   "sense_full": "sometimes",
    "parts": null,
    "unit_id": "w07:b23.1",
    "count": 3
@@ -557,7 +571,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "forbear, refrain from",
+   "meaning": "spare",
+   "sense_full": "forbear, refrain from",
    "parts": "parcō, parcere, pepercī, parsum",
    "unit_id": "w07:b20.2",
    "count": 3
@@ -568,7 +583,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "stir up",
+   "meaning": "move deeply, stir up",
+   "sense_full": "stir up",
    "parts": "permoveō, permovēre, permovī, permōtum",
    "unit_id": "w07:b20.7",
    "count": 3
@@ -579,7 +595,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "rapid, swift",
+   "meaning": "swift, rapid",
+   "sense_full": "rapid, swift",
    "parts": null,
    "unit_id": "w07:b18.3",
    "count": 3
@@ -590,20 +607,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "stay behind",
+   "meaning": "stay behind, remain",
+   "sense_full": "stay behind",
    "parts": "remaneō, remanēre, remansī, remansum",
    "unit_id": "w07:b2.1",
-   "count": 3
-  },
-  {
-   "lemma": "saliō",
-   "dict": "saliō, salīre, salivī, saltum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "leap, jump",
-   "parts": "saliō, salīre, salivī, saltum",
-   "unit_id": "w07:b14.2",
    "count": 3
   },
   {
@@ -612,7 +619,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "health",
+   "meaning": "health, safety, greeting",
+   "sense_full": "health",
    "parts": null,
    "unit_id": "w07:b23.1",
    "count": 3
@@ -623,21 +631,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "cut, sever",
+   "meaning": "cut",
+   "sense_full": "cut, sever",
    "parts": "secō, secāre, secuī, sectum",
    "unit_id": "w07:b35.2",
    "count": 3
   },
   {
-   "lemma": "abiciō",
-   "dict": "abiciō, abicere, abiēcī, abiectum",
-   "pos": "V",
+   "lemma": "vēlōx",
+   "dict": "vēlōx, gen. vēlōcis",
+   "pos": "ADJ",
    "gender": null,
-   "decl": null,
-   "meaning": "throw, cast away, down, aside",
-   "parts": "abiciō, abicere, abiēcī, abiectum",
-   "unit_id": "w07:b31.3",
-   "count": 2
+   "decl": 3,
+   "meaning": "swift, fast",
+   "sense_full": "swift, quick, fleet, rapid, speedy",
+   "parts": null,
+   "unit_id": "w07:b38.4",
+   "count": 3
   },
   {
    "lemma": "affectus",
@@ -645,20 +655,10 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "affection, passion, love",
+   "meaning": "feeling, affection",
+   "sense_full": "affection, passion, love",
    "parts": null,
    "unit_id": "w07:b35.3",
-   "count": 2
-  },
-  {
-   "lemma": "beātus",
-   "dict": "beātus, -a, -um, ·, comparative, beātior,, beātius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "happy, fortunate, bringing happiness",
-   "parts": null,
-   "unit_id": "w07:b36.1",
    "count": 2
   },
   {
@@ -667,7 +667,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "high, lofty, tall",
+   "meaning": "high, lofty",
+   "sense_full": "high, lofty, tall",
    "parts": null,
    "unit_id": "w07:b20.10",
    "count": 2
@@ -678,7 +679,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "leap or jump down, dismount, alight",
+   "meaning": "jump down",
+   "sense_full": "leap or jump down, dismount, alight",
    "parts": "desiliō, dēsilīre, dēsiluī, desultum",
    "unit_id": "w07:b20.7",
    "count": 2
@@ -689,18 +691,20 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "back, range, ridge",
+   "meaning": "back, ridge",
+   "sense_full": "back, range, ridge",
    "parts": null,
    "unit_id": "w07:b21.1",
    "count": 2
   },
   {
    "lemma": "fallāx",
-   "dict": "fallāx, (gen., fallācis)",
+   "dict": "fallāx, gen. fallācis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
    "meaning": "deceitful, treacherous",
+   "sense_full": "deceitful, treacherous",
    "parts": null,
    "unit_id": "w07:b21.3",
    "count": 2
@@ -711,7 +715,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "luck, good fortune",
+   "meaning": "good luck, happiness",
+   "sense_full": "luck, good fortune",
    "parts": null,
    "unit_id": "w07:b34.3",
    "count": 2
@@ -722,7 +727,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "ignorant",
+   "meaning": "ignorant, unaware",
+   "sense_full": "ignorant",
    "parts": null,
    "unit_id": "w07:b17.1",
    "count": 2
@@ -734,6 +740,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "gain, profit",
+   "sense_full": "gain, profit",
    "parts": null,
    "unit_id": "w07:b2.4",
    "count": 2
@@ -744,7 +751,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "magic, magical",
+   "meaning": "magic",
+   "sense_full": "magic, magical",
    "parts": null,
    "unit_id": "w07:b40.3",
    "count": 2
@@ -756,19 +764,9 @@
    "gender": "m",
    "decl": 3,
    "meaning": "fisherman",
+   "sense_full": "fisherman",
    "parts": null,
    "unit_id": "w07:b35.1",
-   "count": 2
-  },
-  {
-   "lemma": "pretiōsus",
-   "dict": "pretiōsus, -a, -um, ·, superlative, pretiōsissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "expensive, costly, of great value, precious",
-   "parts": null,
-   "unit_id": "w07:b34.4",
    "count": 2
   },
   {
@@ -778,6 +776,7 @@
    "gender": null,
    "decl": null,
    "meaning": "lead back, bring back",
+   "sense_full": "lead back, bring back",
    "parts": "redūcō, redūcere, reduxī, reductum",
    "unit_id": "w07:b18.4",
    "count": 2
@@ -788,20 +787,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be astounded",
+   "meaning": "be amazed",
+   "sense_full": "be astounded",
    "parts": "stupeō, stupēre, stupuī",
    "unit_id": "w07:b21.7",
-   "count": 2
-  },
-  {
-   "lemma": "vēlōx",
-   "dict": "vēlōx, (gen., vēlōcis)",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "swift, quick, fleet, rapid, speedy",
-   "parts": null,
-   "unit_id": "w07:b38.4",
    "count": 2
   },
   {
@@ -810,7 +799,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "add, increase, raise",
+   "meaning": "add, throw to",
+   "sense_full": "add, increase, raise",
    "parts": "adiciō, adicere, adiecī, adiectum",
    "unit_id": "w07:b1.4",
    "count": 1
@@ -821,7 +811,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "drag, pull, strip, take down",
+   "meaning": "drag off, strip",
+   "sense_full": "drag, pull, strip, take down",
    "parts": "dētrahō, dētrahere, detraxī, detractum",
    "unit_id": "w07:b31.4",
    "count": 1
@@ -832,7 +823,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "present, grant",
+   "meaning": "give, present",
+   "sense_full": "present, grant",
    "parts": "dōnō, dōnāre, donavī, donatum",
    "unit_id": "w07:b35.1",
    "count": 1
@@ -843,7 +835,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "limit, end",
+   "meaning": "finish, end",
+   "sense_full": "limit, end",
    "parts": "fīniō, fīnīre, finivī, finitum",
    "unit_id": "w07:b37.4",
    "count": 1
@@ -855,6 +848,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "unknown, strange",
+   "sense_full": "unknown, strange",
    "parts": null,
    "unit_id": "w07:b17.3",
    "count": 1
@@ -865,7 +859,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "hate, hatred, dislike",
+   "meaning": "envy, ill will",
+   "sense_full": "hate, hatred, dislike",
    "parts": null,
    "unit_id": "w07:b34.3",
    "count": 1
@@ -876,20 +871,10 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "sailing",
+   "meaning": "voyage, sailing",
+   "sense_full": "sailing",
    "parts": null,
    "unit_id": "w07:b11.2",
-   "count": 1
-  },
-  {
-   "lemma": "nōs",
-   "dict": "nōs, nostrum / nostrī (+ -cum: with)",
-   "pos": "PRON",
-   "gender": null,
-   "decl": null,
-   "meaning": "we, us",
-   "parts": null,
-   "unit_id": "w07:b9.5",
    "count": 1
   },
   {
@@ -899,6 +884,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "sadness",
+   "sense_full": "sadness",
    "parts": null,
    "unit_id": "w07:b11.1",
    "count": 1
@@ -909,31 +895,10 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "swiftly or rapidly, with speed of movement",
+   "meaning": "swiftly, quickly",
+   "sense_full": "swiftly or rapidly, with speed of movement",
    "parts": null,
    "unit_id": "w07:b40.1",
-   "count": 1
-  },
-  {
-   "lemma": "vēlōx",
-   "dict": "vēlōx, (gen., vēlōcis), ·, superlative, vēlōcissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "swift, quick, fleet, rapid, speedy",
-   "parts": null,
-   "unit_id": "w07:b40.3",
-   "count": 1
-  },
-  {
-   "lemma": "vōs",
-   "dict": "vōs, vestrum / vestrī (+ -cum: with)",
-   "pos": "PRON",
-   "gender": null,
-   "decl": null,
-   "meaning": "you (more than one)",
-   "parts": null,
-   "unit_id": "w07:b14.2",
    "count": 1
   }
  ]

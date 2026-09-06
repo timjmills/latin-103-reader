@@ -8,20 +8,34 @@
    "gender": null,
    "decl": null,
    "meaning": "write",
+   "sense_full": "write",
    "parts": "scrībō, scrībere, scrīpsī, scrīptum",
    "unit_id": "r18:48.1",
    "count": 136
   },
   {
-   "lemma": "epistulā",
-   "dict": "epistulā, -ae f.",
+   "lemma": "epistula",
+   "dict": "epistula, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "letter, dispatch, written communication",
+   "meaning": "letter",
+   "sense_full": "letter, dispatch, written communication",
    "parts": null,
    "unit_id": "r18:153.1",
    "count": 62
+  },
+  {
+   "lemma": "ita",
+   "dict": "ita",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "thus, so",
+   "sense_full": "thus, so",
+   "parts": null,
+   "unit_id": "r18:43.1",
+   "count": 60
   },
   {
    "lemma": "īdem",
@@ -30,6 +44,7 @@
    "gender": null,
    "decl": null,
    "meaning": "the same",
+   "sense_full": "the same",
    "parts": null,
    "unit_id": "r18:20.1",
    "count": 44
@@ -41,20 +56,22 @@
    "gender": null,
    "decl": 3,
    "meaning": "such",
+   "sense_full": "such",
    "parts": null,
    "unit_id": "r18:67.1",
    "count": 28
   },
   {
-   "lemma": "pulcher",
-   "dict": "pulcher, pulchra, pulchrum, ·, superlative, pulcherrimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "pretty",
+   "lemma": "mercēs",
+   "dict": "mercēs, mercēdis f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 3,
+   "meaning": "pay, recompense, hire",
+   "sense_full": "pay, recompense, hire, salary, reward",
    "parts": null,
-   "unit_id": "r18:73.1",
-   "count": 26
+   "unit_id": "r18:181.3",
+   "count": 24
   },
   {
    "lemma": "intellegō",
@@ -63,6 +80,7 @@
    "gender": null,
    "decl": null,
    "meaning": "understand",
+   "sense_full": "understand",
    "parts": "intellegō, intellegere, intellēxī, intellectum",
    "unit_id": "r18:44.1",
    "count": 23
@@ -74,6 +92,7 @@
    "gender": null,
    "decl": null,
    "meaning": "thus, so",
+   "sense_full": "thus, so",
    "parts": null,
    "unit_id": "r18:41.1",
    "count": 20
@@ -84,18 +103,20 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "wax, beeswax",
+   "meaning": "wax",
+   "sense_full": "wax, beeswax",
    "parts": null,
    "unit_id": "r18:107.1",
    "count": 17
   },
   {
-   "lemma": "sententiā",
-   "dict": "sententiā, -ae f.",
+   "lemma": "sententia",
+   "dict": "sententia, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "opinion, feeling, way of thinking",
+   "meaning": "opinion, sentence",
+   "sense_full": "opinion, feeling, way of thinking",
    "parts": null,
    "unit_id": "r18:29.2",
    "count": 15
@@ -106,7 +127,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "pay attention to, attend to",
+   "meaning": "notice, pay attention to",
+   "sense_full": "pay attention to, attend to",
    "parts": "animadvertō, animadvertere, animadvertī, animaduersum",
    "unit_id": "r18:130.1",
    "count": 11
@@ -117,7 +139,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be wanting or lacking",
+   "meaning": "be lacking, be missing",
+   "sense_full": "be wanting or lacking",
    "parts": "dēsum, deesse, defuī, defutūrum",
    "unit_id": "r18:92.1",
    "count": 9
@@ -128,9 +151,22 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "fine, beautifully",
+   "meaning": "beautifully, finely",
+   "sense_full": "fine, beautifully",
    "parts": null,
    "unit_id": "r18:67.1",
+   "count": 9
+  },
+  {
+   "lemma": "rārus",
+   "dict": "rārus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "rare, thin",
+   "sense_full": "thin, scattered",
+   "parts": null,
+   "unit_id": "r18:12.1",
    "count": 9
   },
   {
@@ -139,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "prepare",
+   "meaning": "prepare, get ready",
+   "sense_full": "prepare",
    "parts": "comparō, comparāre, comparavī, comparatum",
    "unit_id": "r18:77.1",
    "count": 8
@@ -150,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "bring about",
+   "meaning": "bring about, make",
+   "sense_full": "bring about",
    "parts": "efficiō, efficere, effēcī, effectum",
    "unit_id": "r18:113.1",
    "count": 8
@@ -161,7 +199,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "soften, mitigate, make easier",
+   "meaning": "soften",
+   "sense_full": "soften, mitigate, make easier",
    "parts": "molliō, mollīre, mollivī, mollitum",
    "unit_id": "r18:109.1",
    "count": 8
@@ -172,20 +211,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "hard, stern",
+   "meaning": "hard, tough",
+   "sense_full": "hard, stern",
    "parts": null,
    "unit_id": "r18:111.1",
-   "count": 7
-  },
-  {
-   "lemma": "rārus",
-   "dict": "rārus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "thin, scattered",
-   "parts": null,
-   "unit_id": "r18:12.1",
    "count": 7
   },
   {
@@ -194,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "signify, indicate, show",
+   "meaning": "mean, indicate",
+   "sense_full": "signify, indicate, show",
    "parts": "significō, significāre, significavī, significatum",
    "unit_id": "r18:32.1",
    "count": 7
@@ -205,9 +235,22 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "master, owner",
+   "meaning": "master",
+   "sense_full": "master, owner",
    "parts": null,
    "unit_id": "r18:33.1",
+   "count": 6
+  },
+  {
+   "lemma": "modus",
+   "dict": "modus, -ī m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 2,
+   "meaning": "way, manner",
+   "sense_full": "manner, mode, way, method",
+   "parts": null,
+   "unit_id": "r18:56.1",
    "count": 6
   },
   {
@@ -216,7 +259,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "different",
+   "meaning": "varied, different",
+   "sense_full": "different",
    "parts": null,
    "unit_id": "r18:32.1",
    "count": 6
@@ -227,7 +271,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "able to speak",
+   "meaning": "vowel, sounding",
+   "sense_full": "able to speak",
    "parts": null,
    "unit_id": "r18:7.1",
    "count": 6
@@ -239,8 +284,21 @@
    "gender": "n",
    "decl": 2,
    "meaning": "iron",
+   "sense_full": "iron",
    "parts": null,
    "unit_id": "r18:112.2",
+   "count": 5
+  },
+  {
+   "lemma": "frequens",
+   "dict": "frequens, gen. frequentis",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 3,
+   "meaning": "frequent, common",
+   "sense_full": "crowded",
+   "parts": null,
+   "unit_id": "r18:12.1",
    "count": 5
   },
   {
@@ -250,6 +308,7 @@
    "gender": null,
    "decl": null,
    "meaning": "join, unite",
+   "sense_full": "join, unite",
    "parts": "iungō, iungere, iunxī, iunctum",
    "unit_id": "r18:25.1",
    "count": 5
@@ -260,9 +319,22 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "what kind, sort, condition(of)",
+   "meaning": "what kind of",
+   "sense_full": "what kind, sort, condition(of)",
    "parts": null,
    "unit_id": "r18:65.1",
+   "count": 5
+  },
+  {
+   "lemma": "turpis",
+   "dict": "turpis, -e",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 3,
+   "meaning": "ugly, shameful",
+   "sense_full": "ugly",
+   "parts": null,
+   "unit_id": "r18:92.1",
    "count": 5
   },
   {
@@ -271,7 +343,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "add, insert, bring or attach to, say in addition",
+   "meaning": "add",
+   "sense_full": "add, insert, bring or attach to, say in addition",
    "parts": "addō, addere, addidī, additum",
    "unit_id": "r18:104.1",
    "count": 4
@@ -282,7 +355,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "paper or papyrus (sheet)",
+   "meaning": "paper",
+   "sense_full": "paper or papyrus (sheet)",
    "parts": null,
    "unit_id": "r18:161.1",
    "count": 4
@@ -293,7 +367,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "sound, utter, make noise together, harmonize",
+   "meaning": "sound together",
+   "sense_full": "sound, utter, make noise together, harmonize",
    "parts": "consonō, consonāre, consonuī",
    "unit_id": "r18:7.1",
    "count": 4
@@ -304,20 +379,10 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "strongly",
+   "meaning": "bravely, strongly",
+   "sense_full": "strongly",
    "parts": null,
    "unit_id": "r18:39.1",
-   "count": 4
-  },
-  {
-   "lemma": "frequens",
-   "dict": "frequens, (gen., frequentis)",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "crowded",
-   "parts": null,
-   "unit_id": "r18:12.1",
    "count": 4
   },
   {
@@ -326,9 +391,22 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "wood (building material), lumber, timber",
+   "meaning": "material, wood",
+   "sense_full": "wood (building material), lumber, timber",
    "parts": null,
    "unit_id": "r18:109.1",
+   "count": 4
+  },
+  {
+   "lemma": "menda",
+   "dict": "menda, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "mistake, error",
+   "sense_full": "bodily defect, blemish",
+   "parts": null,
+   "unit_id": "r18:102.1",
    "count": 4
   },
   {
@@ -337,7 +415,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "press, press hard, pursue",
+   "meaning": "press",
+   "sense_full": "press, press hard, pursue",
    "parts": "premō, premere, pressī, pressum",
    "unit_id": "r18:107.1",
    "count": 4
@@ -349,6 +428,7 @@
    "gender": null,
    "decl": null,
    "meaning": "shamefully, disgracefully",
+   "sense_full": "shamefully, disgracefully",
    "parts": null,
    "unit_id": "r18:105.1",
    "count": 4
@@ -359,7 +439,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "shortly, briefly, in a nut shell",
+   "meaning": "briefly, shortly",
+   "sense_full": "shortly, briefly, in a nut shell",
    "parts": null,
    "unit_id": "r18:134.1",
    "count": 3
@@ -370,20 +451,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "connect, join or yoke together",
+   "meaning": "join together",
+   "sense_full": "connect, join or yoke together",
    "parts": "coniungō, coniungere, coniunxī, coniunctum",
    "unit_id": "r18:29.2",
    "count": 3
   },
   {
-   "lemma": "menda",
-   "dict": "menda, -ae f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 1,
-   "meaning": "bodily defect, blemish",
+   "lemma": "quater",
+   "dict": "quater",
+   "pos": "ADV",
+   "gender": null,
+   "decl": null,
+   "meaning": "four times",
+   "sense_full": "four times (number or degree)",
    "parts": null,
-   "unit_id": "r18:102.1",
+   "unit_id": "r18:122.2",
    "count": 3
   },
   {
@@ -392,32 +475,11 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be left over",
+   "meaning": "be left over, remain",
+   "sense_full": "be left over",
    "parts": "supersum, superesse, superfuī, superfutūrum",
    "unit_id": "r18:140.1",
    "count": 3
-  },
-  {
-   "lemma": "turpis",
-   "dict": "turpis, -e",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "ugly",
-   "parts": null,
-   "unit_id": "r18:92.1",
-   "count": 3
-  },
-  {
-   "lemma": "apsum",
-   "dict": "apsum, apesse, afuī, afutūrum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "be away, absent, distant, missing",
-   "parts": "apsum, apesse, afuī, afutūrum",
-   "unit_id": "r18:109.1",
-   "count": 2
   },
   {
    "lemma": "calamus",
@@ -425,7 +487,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "reed, cane",
+   "meaning": "reed pen, reed",
+   "sense_full": "reed, cane",
    "parts": null,
    "unit_id": "r18:161.1",
    "count": 2
@@ -436,7 +499,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "correct, set right",
+   "meaning": "correct",
+   "sense_full": "correct, set right",
    "parts": "corrigō, corrigere, correxī, correctum",
    "unit_id": "r18:104.1",
    "count": 2
@@ -447,7 +511,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "erase, wipe, scratch, remove(letters or marks), wipe or blot out, expunge, delete",
+   "meaning": "erase, wipe out",
+   "sense_full": "erase, wipe, scratch, remove(letters or marks), wipe or blot out, expunge, delete",
    "parts": "dēleō, dēlēre, delevī, deletum",
    "unit_id": "r18:144.2",
    "count": 2
@@ -458,18 +523,20 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "violently",
+   "meaning": "heavily, seriously",
+   "sense_full": "violently",
    "parts": null,
    "unit_id": "r18:111.1",
    "count": 2
   },
   {
    "lemma": "papyrus",
-   "dict": "papyrus, -ī m/f.",
+   "dict": "papyrus, -ī m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 2,
-   "meaning": "papyrus, the plant (reed)",
+   "meaning": "papyrus",
+   "sense_full": "papyrus, the plant (reed)",
    "parts": null,
    "unit_id": "r18:161.1",
    "count": 2
@@ -481,52 +548,9 @@
    "gender": null,
    "decl": null,
    "meaning": "how often",
+   "sense_full": "how often",
    "parts": null,
    "unit_id": "r18:122.1",
-   "count": 2
-  },
-  {
-   "lemma": "rārus",
-   "dict": "rārus, -a, -um, ·, comparative, rarior,, rarius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "thin, scattered",
-   "parts": null,
-   "unit_id": "r18:33.1",
-   "count": 2
-  },
-  {
-   "lemma": "rectus",
-   "dict": "rectus, -a, -um, ·, comparative, rēctior,, rēctius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "right, proper",
-   "parts": null,
-   "unit_id": "r18:81.1",
-   "count": 2
-  },
-  {
-   "lemma": "rectus",
-   "dict": "rectus, -a, -um, ·, superlative, rēctissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "right, proper",
-   "parts": null,
-   "unit_id": "r18:85.1",
-   "count": 2
-  },
-  {
-   "lemma": "sevērus",
-   "dict": "sevērus, -a, -um, ·, comparative, sevērior,, sevērius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "stern, strict, severe",
-   "parts": null,
-   "unit_id": "r18:89.1",
    "count": 2
   },
   {
@@ -535,7 +559,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "mark, stamp, designate, sign",
+   "meaning": "mark, seal",
+   "sense_full": "mark, stamp, designate, sign",
    "parts": "signō, signāre, signavī, signatum",
    "unit_id": "r18:187.1",
    "count": 2
@@ -547,6 +572,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "bee",
+   "sense_full": "bee",
    "parts": null,
    "unit_id": "r18:156.1",
    "count": 1
@@ -558,52 +584,9 @@
    "gender": "f",
    "decl": 1,
    "meaning": "little creature, insect",
+   "sense_full": "little creature, insect",
    "parts": null,
    "unit_id": "r18:109.1",
-   "count": 1
-  },
-  {
-   "lemma": "facilis",
-   "dict": "facilis, -e, ·, superlative, facillimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "easy, easy to do, without difficulty, ready, quick, good natured, courteous",
-   "parts": null,
-   "unit_id": "r18:100.1",
-   "count": 1
-  },
-  {
-   "lemma": "foedus",
-   "dict": "foedus, -a, -um, ·, comparative, foedior,, foedius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "foul",
-   "parts": null,
-   "unit_id": "r18:77.1",
-   "count": 1
-  },
-  {
-   "lemma": "foedus",
-   "dict": "foedus, -a, -um, ·, superlative, foedissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "foul",
-   "parts": null,
-   "unit_id": "r18:86.1",
-   "count": 1
-  },
-  {
-   "lemma": "frequens",
-   "dict": "frequens, (gen., frequentis), ·, superlative, frequentissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "crowded",
-   "parts": null,
-   "unit_id": "r18:100.1",
    "count": 1
   },
   {
@@ -613,6 +596,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "active, energetic",
+   "sense_full": "active, energetic",
    "parts": null,
    "unit_id": "r18:156.1",
    "count": 1
@@ -623,7 +607,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "impress, imprint",
+   "meaning": "press into, imprint",
+   "sense_full": "impress, imprint",
    "parts": "imprimō, imprimere, impressī, impressum",
    "unit_id": "r18:190.1",
    "count": 1
@@ -634,42 +619,22 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "lightly, gently, softly, quietly",
+   "meaning": "lightly, gently",
+   "sense_full": "lightly, gently, softly, quietly",
    "parts": null,
    "unit_id": "r18:105.1",
    "count": 1
   },
   {
-   "lemma": "mendum",
-   "dict": "mendum, -ī n.",
-   "pos": "N",
-   "gender": "n",
-   "decl": 2,
-   "meaning": "bodily defect, blemish",
-   "parts": null,
-   "unit_id": "r18:145.2",
-   "count": 1
-  },
-  {
    "lemma": "mollis",
-   "dict": "mollis, -e, ·, superlative, mollissimus, -a, -um",
+   "dict": "mollis, -e",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "soft (cushion or grass)",
+   "meaning": "soft",
+   "sense_full": "soft (cushion or grass)",
    "parts": null,
    "unit_id": "r18:128.1",
-   "count": 1
-  },
-  {
-   "lemma": "quater",
-   "dict": "quater",
-   "pos": "ADV",
-   "gender": null,
-   "decl": null,
-   "meaning": "four times (number or degree)",
-   "parts": null,
-   "unit_id": "r18:122.2",
    "count": 1
   },
   {
@@ -678,7 +643,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "go, advance, rush, hurry",
+   "meaning": "go, advance",
+   "sense_full": "go, advance, rush, hurry",
    "parts": "uadō, uadere, vasī",
    "unit_id": "r18:168.1",
    "count": 1

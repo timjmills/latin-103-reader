@@ -7,10 +7,11 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "not",
+   "meaning": "not, that not",
+   "sense_full": "not",
    "parts": null,
    "unit_id": "w04:49.4",
-   "count": 50
+   "count": 58
   },
   {
    "lemma": "vīnum",
@@ -19,6 +20,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "wine",
+   "sense_full": "wine",
    "parts": null,
    "unit_id": "w04:45.4",
    "count": 39
@@ -30,6 +32,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "field, ground",
+   "sense_full": "field, ground",
    "parts": null,
    "unit_id": "w04:1.5",
    "count": 38
@@ -40,7 +43,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 1,
-   "meaning": "farmer, cultivator, gardener, agriculturist",
+   "meaning": "farmer",
+   "sense_full": "farmer, cultivator, gardener, agriculturist",
    "parts": null,
    "unit_id": "w04:7.4",
    "count": 26
@@ -51,7 +55,8 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "who",
+   "meaning": "a certain, some",
+   "sense_full": "who",
    "parts": null,
    "unit_id": "w04:74.2",
    "count": 24
@@ -62,7 +67,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "grain",
+   "meaning": "grain, corn",
+   "sense_full": "grain",
    "parts": null,
    "unit_id": "w04:7.1",
    "count": 22
@@ -74,6 +80,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "danger, peril",
+   "sense_full": "danger, peril",
    "parts": null,
    "unit_id": "w03:minos:b6.2",
    "count": 19
@@ -84,7 +91,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "farmer, cultivator, tiller",
+   "meaning": "farmer, tenant farmer",
+   "sense_full": "farmer, cultivator, tiller",
    "parts": null,
    "unit_id": "w04:70.1",
    "count": 15
@@ -95,18 +103,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "think or suppose, judge",
+   "meaning": "think, be of the opinion",
+   "sense_full": "think or suppose, judge",
    "parts": "cēnseō, cēnsēre, censuī, cēnsum",
    "unit_id": "w04:59.2",
    "count": 14
   },
   {
    "lemma": "prae",
-   "dict": "prae",
+   "dict": "prae (+ abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "before, in front",
+   "meaning": "before, in front of",
+   "sense_full": "before, in front",
    "parts": null,
    "unit_id": "w04:12.3",
    "count": 13
@@ -117,7 +127,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "pain, trouble, annoyance, distress",
+   "meaning": "business, task",
+   "sense_full": "pain, trouble, annoyance, distress",
    "parts": null,
    "unit_id": "w04:7.5",
    "count": 11
@@ -128,7 +139,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hope for",
+   "meaning": "hope, hope for",
+   "sense_full": "hope for",
    "parts": "spērō, spērāre, speravī, speratum",
    "unit_id": "w03:fl-64:b15.5",
    "count": 11
@@ -139,7 +151,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "country, rural",
+   "meaning": "of the country, rural",
+   "sense_full": "country, rural",
    "parts": null,
    "unit_id": "w04:92.6",
    "count": 10
@@ -150,7 +163,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "vines in a vineyard or arranged in rows",
+   "meaning": "vineyard",
+   "sense_full": "vines in a vineyard or arranged in rows",
    "parts": null,
    "unit_id": "w04:45.2",
    "count": 10
@@ -161,18 +175,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "work, labor",
+   "meaning": "work, toil",
+   "sense_full": "work, labor",
    "parts": "labōrō, labōrāre, laboravī, laboratum",
    "unit_id": "w04:59.1",
    "count": 9
   },
   {
    "lemma": "par",
-   "dict": "par, (gen., paris)",
+   "dict": "par, gen. paris",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "equal (to)",
+   "meaning": "equal",
+   "sense_full": "equal (to)",
    "parts": null,
    "unit_id": "w04:38.2",
    "count": 9
@@ -183,7 +199,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "use, make use of, enjoy",
+   "meaning": "use",
+   "sense_full": "use, make use of, enjoy",
    "parts": "ūtor, ūtī, ūsus sum",
    "unit_id": "w04:17.5",
    "count": 9
@@ -194,7 +211,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "furnish with, adorn, embellish",
+   "meaning": "adorn, equip",
+   "sense_full": "furnish with, adorn, embellish",
    "parts": "exōrnō, exōrnāre, exornavī, exōrnātum",
    "unit_id": "w03:coronis:b9.2",
    "count": 8
@@ -206,6 +224,7 @@
    "gender": null,
    "decl": null,
    "meaning": "in vain",
+   "sense_full": "in vain",
    "parts": null,
    "unit_id": "w03:coronis:b11.4",
    "count": 8
@@ -216,20 +235,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "free",
+   "meaning": "free, set free",
+   "sense_full": "free",
    "parts": "līberō, līberāre, līberāvī, līberātum",
    "unit_id": "w03:minos:b6.2",
-   "count": 8
-  },
-  {
-   "lemma": "nē",
-   "dict": "nē + -ue",
-   "pos": "ADV",
-   "gender": null,
-   "decl": null,
-   "meaning": "not",
-   "parts": null,
-   "unit_id": "w04:138.2",
    "count": 8
   },
   {
@@ -238,19 +247,33 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "disregard, neglect, ignore, regard of no consequence",
+   "meaning": "neglect, disregard",
+   "sense_full": "disregard, neglect, ignore, regard of no consequence",
    "parts": "neglegō, neglegere, neglēxī, neglectum",
    "unit_id": "w04:100.3",
    "count": 8
   },
   {
+   "lemma": "nēquam",
+   "dict": "nēquam (indeclinable)",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 9,
+   "meaning": "worthless, good-for-nothing",
+   "sense_full": "worthless, good-for-nothing, wicked",
+   "parts": null,
+   "unit_id": "w04:149.2",
+   "count": 8
+  },
+  {
    "lemma": "ōdī",
-   "dict": "ōdī, ōdisse (perfect form, present meaning: hate)",
+   "dict": "ōdī, ōdisse",
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hate (perfect form, present force), dislike",
-   "parts": "ōdī, ōdisse (perfect form, present meaning: hate)",
+   "meaning": "hate",
+   "sense_full": "hate (perfect form, present force), dislike",
+   "parts": "ōdī, ōdisse",
    "unit_id": "w03:coronis:b10.1",
    "count": 8
   },
@@ -260,7 +283,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "stall, stable, enclosure, fold",
+   "meaning": "stable, stall",
+   "sense_full": "stall, stable, enclosure, fold",
    "parts": null,
    "unit_id": "w03:minos:b3.1",
    "count": 8
@@ -272,6 +296,7 @@
    "gender": null,
    "decl": null,
    "meaning": "avoid, shun",
+   "sense_full": "avoid, shun",
    "parts": "vītō, vītāre, vītāvī, vitatum",
    "unit_id": "w04:45.1",
    "count": 8
@@ -282,7 +307,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "plow, till, cultivate",
+   "meaning": "plow, till",
+   "sense_full": "plow, till, cultivate",
    "parts": "arō, arāre, aravī, aratum",
    "unit_id": "w04:7.3",
    "count": 7
@@ -293,7 +319,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "pour, cast (metals)",
+   "meaning": "pour",
+   "sense_full": "pour, cast (metals)",
    "parts": "fundō, fundere, fūdī, fūsum",
    "unit_id": "w03:minos:b2.2",
    "count": 7
@@ -304,7 +331,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "reap",
+   "meaning": "reap, harvest",
+   "sense_full": "reap",
    "parts": "metō, metere, messuī, messum",
    "unit_id": "w04:7.2",
    "count": 7
@@ -316,6 +344,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "leisure",
+   "sense_full": "leisure",
    "parts": null,
    "unit_id": "w04:59.5",
    "count": 7
@@ -326,7 +355,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hinder, restrain",
+   "meaning": "prevent, keep off",
+   "sense_full": "hinder, restrain",
    "parts": "prohibeō, prohibēre, prohibuī, prohibitum",
    "unit_id": "w04:166.2",
    "count": 7
@@ -338,6 +368,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "of the city",
+   "sense_full": "of the city",
    "parts": null,
    "unit_id": "w04:59.5",
    "count": 7
@@ -349,6 +380,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "theft",
+   "sense_full": "theft",
    "parts": null,
    "unit_id": "w03:fl-63:b14.4",
    "count": 6
@@ -359,7 +391,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "mortal, transient",
+   "meaning": "mortal",
+   "sense_full": "mortal, transient",
    "parts": null,
    "unit_id": "w03:minos:b1.2",
    "count": 6
@@ -370,7 +403,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "cattle, herd, flock",
+   "meaning": "cattle, flock, herd",
+   "sense_full": "cattle, herd, flock",
    "parts": null,
    "unit_id": "w04:29.3",
    "count": 6
@@ -382,6 +416,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "prayer, request",
+   "sense_full": "prayer, request",
    "parts": null,
    "unit_id": "w04:109.1",
    "count": 6
@@ -392,7 +427,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "drag off",
+   "meaning": "seize, snatch, carry off",
+   "sense_full": "drag off",
    "parts": "rapiō, rapere, rapuī, raptum",
    "unit_id": "w04:92.4",
    "count": 6
@@ -404,6 +440,7 @@
    "gender": null,
    "decl": null,
    "meaning": "wreath",
+   "sense_full": "wreath",
    "parts": "serō, serere, servī, sertum",
    "unit_id": "w04:7.3",
    "count": 6
@@ -414,7 +451,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "plenty, abundance, supply",
+   "meaning": "plenty, supply",
+   "sense_full": "plenty, abundance, supply",
    "parts": null,
    "unit_id": "w04:38.1",
    "count": 5
@@ -426,6 +464,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "raven",
+   "sense_full": "raven",
    "parts": null,
    "unit_id": "w03:coronis:b10.1",
    "count": 5
@@ -436,20 +475,10 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "tool, tools",
+   "meaning": "tool, equipment",
+   "sense_full": "tool, tools",
    "parts": null,
    "unit_id": "w04:12.2",
-   "count": 5
-  },
-  {
-   "lemma": "nēquam",
-   "dict": "nēquam, (indeclinable), ·, superlative, nēquissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 9,
-   "meaning": "worthless, good-for-nothing, wicked",
-   "parts": null,
-   "unit_id": "w04:149.2",
    "count": 5
   },
   {
@@ -458,7 +487,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "scatter, strew, sprinkle",
+   "meaning": "scatter, sprinkle",
+   "sense_full": "scatter, strew, sprinkle",
    "parts": "spargō, spargere, sparsī, sparsum",
    "unit_id": "w04:12.5",
    "count": 5
@@ -469,7 +499,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "arrogant, overbearing, haughty, proud",
+   "meaning": "proud, arrogant",
+   "sense_full": "arrogant, overbearing, haughty, proud",
    "parts": null,
    "unit_id": "w03:minos:b1.1",
    "count": 5
@@ -481,6 +512,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "grape",
+   "sense_full": "grape",
    "parts": null,
    "unit_id": "w04:45.3",
    "count": 5
@@ -492,19 +524,9 @@
    "gender": "n",
    "decl": 2,
    "meaning": "plow",
+   "sense_full": "plow",
    "parts": null,
    "unit_id": "w04:12.1",
-   "count": 4
-  },
-  {
-   "lemma": "celer",
-   "dict": "celer, celeris, celere, ·, superlative, celerrimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "swift, quick, agile, rapid, speedy, fast",
-   "parts": null,
-   "unit_id": "w04:177.1",
    "count": 4
   },
   {
@@ -513,7 +535,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "come forth/to be",
+   "meaning": "grow, increase",
+   "sense_full": "come forth/to be",
    "parts": "crēscō, crēscere, crēvī, crētum",
    "unit_id": "w04:7.1",
    "count": 4
@@ -525,6 +548,7 @@
    "gender": null,
    "decl": null,
    "meaning": "finally, in the end",
+   "sense_full": "finally, in the end",
    "parts": null,
    "unit_id": "w04:1.2",
    "count": 4
@@ -535,7 +559,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "value or esteem",
+   "meaning": "think, judge",
+   "sense_full": "value or esteem",
    "parts": "exīstimō, exīstimāre, existimavī, existimatum",
    "unit_id": "w04:59.2",
    "count": 4
@@ -546,20 +571,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "favor (with the dative), befriend, support, back up",
+   "meaning": "favor, support",
+   "sense_full": "favor (with the dative), befriend, support, back up",
    "parts": "faveō, favēre, favī, fautum",
    "unit_id": "w03:minos:b1.1",
    "count": 4
   },
   {
-   "lemma": "fōrmōsus",
-   "dict": "fōrmōsus, -a, -um, ·, superlative, formōsissimus, -a, -um",
+   "lemma": "fertilis",
+   "dict": "fertilis, -e",
    "pos": "ADJ",
    "gender": null,
-   "decl": 1,
-   "meaning": "beautiful, finely formed, handsome, fair",
+   "decl": 3,
+   "meaning": "fertile, fruitful",
+   "sense_full": "fertile, fruitful",
    "parts": null,
-   "unit_id": "w03:coronis:b8.3",
+   "unit_id": "w04:29.1",
    "count": 4
   },
   {
@@ -568,29 +595,20 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "crops (in the plural), fruits, produce, legumes",
+   "meaning": "crops, fruits",
+   "sense_full": "crops (in the plural), fruits, produce, legumes",
    "parts": null,
    "unit_id": "w04:29.1",
    "count": 4
   },
   {
-   "lemma": "gaudeō",
-   "dict": "gaudeō -ēre, gāvīsus sum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "rejoice, be glad (semi-deponent: perfect gāvīsus sum)",
-   "parts": "gaudeō -ēre, gāvīsus sum",
-   "unit_id": "w03:coronis:b9.1",
-   "count": 4
-  },
-  {
    "lemma": "grex",
-   "dict": "grex, gregis m/f.",
+   "dict": "grex, gregis m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
    "meaning": "flock, herd",
+   "sense_full": "flock, herd",
    "parts": null,
    "unit_id": "w04:134.2",
    "count": 4
@@ -601,7 +619,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "rude, discourteous, churlish",
+   "meaning": "rude, unkind",
+   "sense_full": "rude, discourteous, churlish",
    "parts": null,
    "unit_id": "w04:177.3",
    "count": 4
@@ -613,6 +632,7 @@
    "gender": null,
    "decl": null,
    "meaning": "harm, hurt",
+   "sense_full": "harm, hurt",
    "parts": "noceō, nocēre, nocuī, nocitum",
    "unit_id": "w04:118.2",
    "count": 4
@@ -623,7 +643,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "feed, feed on",
+   "meaning": "feed, pasture",
+   "sense_full": "feed, feed on",
    "parts": "pāscō, pāscere, pavī, pāstum",
    "unit_id": "w04:29.3",
    "count": 4
@@ -634,7 +655,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "endurance or hardiness",
+   "meaning": "patience, endurance",
+   "sense_full": "endurance or hardiness",
    "parts": null,
    "unit_id": "w04:88.3",
    "count": 4
@@ -646,6 +668,7 @@
    "gender": null,
    "decl": null,
    "meaning": "throw down, throw out",
+   "sense_full": "throw down, throw out",
    "parts": "prōiciō, prōicere, prōiēcī, proiectum",
    "unit_id": "w04:92.1",
    "count": 4
@@ -656,7 +679,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be useful, be advantageous, benefit, profit (with dative)",
+   "meaning": "be useful, benefit",
+   "sense_full": "be useful, be advantageous, benefit, profit (with dative)",
    "parts": "prōsum, prōdesse, prōfuī, profutūrum",
    "unit_id": "w04:118.2",
    "count": 4
@@ -667,7 +691,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "area, region",
+   "meaning": "region, district",
+   "sense_full": "area, region",
    "parts": null,
    "unit_id": "w04:23.1",
    "count": 4
@@ -679,6 +704,7 @@
    "gender": null,
    "decl": null,
    "meaning": "sacrifice",
+   "sense_full": "sacrifice",
    "parts": "sacrificō, sacrificāre, sacrificavī, sacrificātum",
    "unit_id": "w03:minos:b2.1",
    "count": 4
@@ -689,7 +715,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "beautiful, attractive, pleasant, agreeable, enjoyable, charming, lovely",
+   "meaning": "pleasant, lovely",
+   "sense_full": "beautiful, attractive, pleasant, agreeable, enjoyable, charming, lovely",
    "parts": null,
    "unit_id": "w04:1.5",
    "count": 3
@@ -701,6 +728,7 @@
    "gender": null,
    "decl": null,
    "meaning": "while, as long as, until",
+   "sense_full": "while, as long as, until",
    "parts": null,
    "unit_id": "w03:minos:b6.2",
    "count": 3
@@ -711,20 +739,10 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "sickle. scythe",
+   "meaning": "sickle, scythe",
+   "sense_full": "sickle. scythe",
    "parts": null,
    "unit_id": "w04:17.2",
-   "count": 3
-  },
-  {
-   "lemma": "fertilis",
-   "dict": "fertilis, -e",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "fertile, fruitful",
-   "parts": null,
-   "unit_id": "w04:29.1",
    "count": 3
   },
   {
@@ -733,7 +751,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "early, speedy",
+   "meaning": "ripe, early",
+   "sense_full": "early, speedy",
    "parts": null,
    "unit_id": "w04:12.7",
    "count": 3
@@ -744,7 +763,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "farm, estate",
+   "meaning": "estate, farm",
+   "sense_full": "farm, estate",
    "parts": null,
    "unit_id": "w04:49.1",
    "count": 3
@@ -755,7 +775,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "recognize, recollect",
+   "meaning": "recognize",
+   "sense_full": "recognize, recollect",
    "parts": "recognōscō, recognōscere, recognōvī, recognitum",
    "unit_id": "w03:fl-63:b13.3",
    "count": 3
@@ -766,7 +787,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "moisten, wet, water, irrigate",
+   "meaning": "water, moisten",
+   "sense_full": "moisten, wet, water, irrigate",
    "parts": "rigō, rigāre, rigavī, rigatum",
    "unit_id": "w04:38.3",
    "count": 3
@@ -777,7 +799,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "country, farm",
+   "meaning": "country, countryside",
+   "sense_full": "country, farm",
    "parts": null,
    "unit_id": "w04:59.4",
    "count": 3
@@ -788,18 +811,20 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "like, similar, resembling",
+   "meaning": "like, similar",
+   "sense_full": "like, similar, resembling",
    "parts": null,
    "unit_id": "w03:minos:b3.1",
    "count": 3
   },
   {
    "lemma": "abs",
-   "dict": "abs",
+   "dict": "abs (+ abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "by (agent), from (departure, cause, remote origin (time)",
+   "meaning": "by, from",
+   "sense_full": "by (agent), from (departure, cause, remote origin (time)",
    "parts": null,
    "unit_id": "w04:74.4",
    "count": 2
@@ -810,7 +835,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "affirm or assert (dogmatically or positively)",
+   "meaning": "affirm, assert",
+   "sense_full": "affirm or assert (dogmatically or positively)",
    "parts": "affirmō, affirmāre, affirmāvī, affirmatum",
    "unit_id": "w03:fl-64:b15.6",
    "count": 2
@@ -822,6 +848,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "heat",
+   "sense_full": "heat",
    "parts": null,
    "unit_id": "w04:118.2",
    "count": 2
@@ -832,18 +859,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "surround, encircle, ring",
+   "meaning": "surround, encircle",
+   "sense_full": "surround, encircle, ring",
    "parts": "cingō, cingere, cinxī, cinctum",
    "unit_id": "w04:1.5",
    "count": 2
   },
   {
    "lemma": "circā",
-   "dict": "circā",
+   "dict": "circā (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "around, on bounds of",
+   "meaning": "around, about",
+   "sense_full": "around, on bounds of",
    "parts": null,
    "unit_id": "w04:49.1",
    "count": 2
@@ -854,7 +883,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "hurl",
+   "meaning": "send out, let go",
+   "sense_full": "hurl",
    "parts": "ēmittō, ēmittere, ēmīsī, ēmissum",
    "unit_id": "w03:minos:b6.1",
    "count": 2
@@ -865,29 +895,32 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "pregnant, heavy with child",
+   "meaning": "pregnant, heavy",
+   "sense_full": "pregnant, heavy with child",
    "parts": null,
    "unit_id": "w04:104.2",
    "count": 2
   },
   {
    "lemma": "incola",
-   "dict": "incola, -ae m/f.",
+   "dict": "incola, -ae m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 1,
    "meaning": "inhabitant",
+   "sense_full": "inhabitant",
    "parts": null,
    "unit_id": "w03:minos:b6.2",
    "count": 2
   },
   {
    "lemma": "īnfēlīx",
-   "dict": "īnfēlīx, (gen., īnfēlīcis)",
+   "dict": "īnfēlīx, gen. īnfēlīcis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "unfortunate, unhappy, wretched",
+   "meaning": "unlucky, unhappy",
+   "sense_full": "unfortunate, unhappy, wretched",
    "parts": null,
    "unit_id": "w03:fl-64:b15.5",
    "count": 2
@@ -899,6 +932,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "unsafe, dangerous",
+   "sense_full": "unsafe, dangerous",
    "parts": null,
    "unit_id": "w03:minos:b6.1",
    "count": 2
@@ -910,6 +944,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "wool",
+   "sense_full": "wool",
    "parts": null,
    "unit_id": "w04:29.4",
    "count": 2
@@ -920,7 +955,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "fodder, forage, food for cattle",
+   "meaning": "fodder, food",
+   "sense_full": "fodder, forage, food for cattle",
    "parts": null,
    "unit_id": "w04:29.3",
    "count": 2
@@ -931,7 +967,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "royal, of a king, regal",
+   "meaning": "royal, of a king",
+   "sense_full": "royal, of a king, regal",
    "parts": null,
    "unit_id": "w03:minos:b1.1",
    "count": 2
@@ -942,7 +979,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "undeveloped, rough, wild",
+   "meaning": "rough, undeveloped",
+   "sense_full": "undeveloped, rough, wild",
    "parts": null,
    "unit_id": "w04:23.1",
    "count": 2
@@ -954,6 +992,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "seed",
+   "sense_full": "seed",
    "parts": null,
    "unit_id": "w04:12.5",
    "count": 2
@@ -965,6 +1004,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "dry",
+   "sense_full": "dry",
    "parts": null,
    "unit_id": "w04:128.1",
    "count": 2
@@ -975,20 +1015,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "situated close to the city",
+   "meaning": "near the city",
+   "sense_full": "situated close to the city",
    "parts": null,
    "unit_id": "w04:49.4",
-   "count": 2
-  },
-  {
-   "lemma": "turpis",
-   "dict": "turpis, -e, ·, superlative, turpissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "ugly",
-   "parts": null,
-   "unit_id": "w03:fl-65:b19.1",
    "count": 2
   },
   {
@@ -997,42 +1027,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "lead up, to, away",
+   "meaning": "lead to, bring",
+   "sense_full": "lead up, to, away",
    "parts": "addūcō, addūcere, adduxī, adductum",
    "unit_id": "w03:minos:b3.1",
-   "count": 1
-  },
-  {
-   "lemma": "alius",
-   "dict": "alius, -a, -ud, (gen., -īus), +, -ue",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "other, another",
-   "parts": null,
-   "unit_id": "w04:29.1",
-   "count": 1
-  },
-  {
-   "lemma": "ferōcissimus",
-   "dict": "ferōcissimus, -a, -um, ·, superlative, of, ferōx, (gen., ferōcis)",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "most fierce, very savage",
-   "parts": null,
-   "unit_id": "w03:minos:b6.1",
-   "count": 1
-  },
-  {
-   "lemma": "fertilis",
-   "dict": "fertilis, -e, ·, superlative, fertilissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "fertile, fruitful",
-   "parts": null,
-   "unit_id": "w04:38.4",
    "count": 1
   },
   {
@@ -1042,6 +1040,7 @@
    "gender": "n",
    "decl": 3,
    "meaning": "cold",
+   "sense_full": "cold",
    "parts": null,
    "unit_id": "w04:118.2",
    "count": 1
@@ -1053,6 +1052,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "rope",
+   "sense_full": "rope",
    "parts": null,
    "unit_id": "w03:minos:b6.2",
    "count": 1
@@ -1063,20 +1063,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "unripe, immature, untimely",
+   "meaning": "unripe, untimely",
+   "sense_full": "unripe, immature, untimely",
    "parts": null,
    "unit_id": "w04:166.1",
-   "count": 1
-  },
-  {
-   "lemma": "indīgnus",
-   "dict": "indīgnus, -a, -um, +, -ue",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "unworthy, undeserving, undeserved",
-   "parts": null,
-   "unit_id": "w04:59.2",
    "count": 1
   },
   {
@@ -1085,7 +1075,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "comprehension or understanding",
+   "meaning": "understanding",
+   "sense_full": "comprehension or understanding",
    "parts": null,
    "unit_id": "w03:fl-63:b13.2",
    "count": 1
@@ -1096,31 +1087,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "carry or bring in, import",
+   "meaning": "carry in, import",
+   "sense_full": "carry or bring in, import",
    "parts": "invehō, invehere, inuexī, inuectum",
    "unit_id": "w04:38.1",
-   "count": 1
-  },
-  {
-   "lemma": "inveniō",
-   "dict": "inveniō -īre invēnī inventum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "find, come upon, discover",
-   "parts": "inveniō -īre invēnī inventum",
-   "unit_id": "w03:fl-63:b14.10",
-   "count": 1
-  },
-  {
-   "lemma": "laetus",
-   "dict": "laetus, -a, -um, ·, superlative, laetissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "happy, cheerful, joyful, glad",
-   "parts": null,
-   "unit_id": "w03:fl-64:b16.5",
    "count": 1
   },
   {
@@ -1129,20 +1099,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "displease",
+   "meaning": "make sorry, cause regret",
+   "sense_full": "displease",
    "parts": "paeniteō, paenitēre, paenituī",
    "unit_id": "w03:coronis:b11.2",
-   "count": 1
-  },
-  {
-   "lemma": "quater",
-   "dict": "quater + -ue",
-   "pos": "ADV",
-   "gender": null,
-   "decl": null,
-   "meaning": "four times (number or degree)",
-   "parts": null,
-   "unit_id": "w04:74.4",
    "count": 1
   },
   {
@@ -1151,7 +1111,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "lump, rough piece",
+   "meaning": "rubble, lump",
+   "sense_full": "lump, rough piece",
    "parts": null,
    "unit_id": "w03:fl-65:b19.1",
    "count": 1
@@ -1162,7 +1123,8 @@
    "pos": "INTERJ",
    "gender": null,
    "decl": null,
-   "meaning": "hee-haw! (the braying of a donkey)",
+   "meaning": "hee-haw!",
+   "sense_full": "hee-haw! (the braying of a donkey)",
    "parts": null,
    "unit_id": "w03:fl-65:b19.1",
    "count": 1
@@ -1173,7 +1135,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "sacred, holy, consecrated",
+   "meaning": "sacred, holy",
+   "sense_full": "sacred, holy, consecrated",
    "parts": null,
    "unit_id": "w03:minos:b4.2",
    "count": 1
@@ -1184,7 +1147,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "settle, allay",
+   "meaning": "settle, calm",
+   "sense_full": "settle, allay",
    "parts": "sedō, sedāre, sedavī, sedatum",
    "unit_id": "w03:minos:b2.1",
    "count": 1

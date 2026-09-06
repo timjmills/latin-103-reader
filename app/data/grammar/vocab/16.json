@@ -8,20 +8,10 @@
    "gender": "f",
    "decl": 3,
    "meaning": "ship",
+   "sense_full": "ship",
    "parts": null,
    "unit_id": "r16:8.1",
    "count": 91
-  },
-  {
-   "lemma": "mercēs",
-   "dict": "mercēs, mercēdis f.",
-   "pos": "N",
-   "gender": "f",
-   "decl": 3,
-   "meaning": "pay, recompense, hire, salary, reward",
-   "parts": null,
-   "unit_id": "r16:22.1",
-   "count": 49
   },
   {
    "lemma": "semper",
@@ -30,6 +20,7 @@
    "gender": null,
    "decl": null,
    "meaning": "always",
+   "sense_full": "always",
    "parts": null,
    "unit_id": "r16:26.1",
    "count": 47
@@ -40,7 +31,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "steer, drive, pilot, direct, manage, conduct, guide, control, govern",
+   "meaning": "steer",
+   "sense_full": "steer, drive, pilot, direct, manage, conduct, guide, control, govern",
    "parts": "gubernō, gubernāre, gubernavī, gubernatum",
    "unit_id": "r16:41.2",
    "count": 46
@@ -52,6 +44,7 @@
    "gender": "m",
    "decl": 1,
    "meaning": "sailor, seaman, mariner",
+   "sense_full": "sailor, seaman, mariner",
    "parts": null,
    "unit_id": "r16:27.1",
    "count": 41
@@ -62,10 +55,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "depart, set out",
+   "meaning": "set out, depart",
+   "sense_full": "depart, set out",
    "parts": "proficīscor, proficīscī, profectus sum",
    "unit_id": "r16:55.1",
    "count": 38
+  },
+  {
+   "lemma": "merx",
+   "dict": "merx, mercis f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 3,
+   "meaning": "goods, wares",
+   "sense_full": "commodity",
+   "parts": null,
+   "unit_id": "r16:22.1",
+   "count": 30
   },
   {
    "lemma": "ōrō",
@@ -73,7 +79,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "beg, ask for, pray",
+   "meaning": "beg, pray",
+   "sense_full": "beg, ask for, pray",
    "parts": "ōrō, ōrāre, ōrāvī, oratum",
    "unit_id": "r16:18.1",
    "count": 30
@@ -84,7 +91,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "speak, tell",
+   "meaning": "speak, talk",
+   "sense_full": "speak, tell",
    "parts": "loquor, loquī, locūtus sum",
    "unit_id": "r16:96.1",
    "count": 29
@@ -95,7 +103,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "at same time",
+   "meaning": "at the same time",
+   "sense_full": "at same time",
    "parts": null,
    "unit_id": "r16:54.2",
    "count": 27
@@ -107,6 +116,7 @@
    "gender": null,
    "decl": null,
    "meaning": "sail",
+   "sense_full": "sail",
    "parts": "nāvigō, nāvigāre, nāvigāvī, navigatum",
    "unit_id": "r16:8.1",
    "count": 24
@@ -117,7 +127,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "kill, murder, slaughter, slay",
+   "meaning": "kill",
+   "sense_full": "kill, murder, slaughter, slay",
    "parts": "occidō, occidere, occidī, occisum",
    "unit_id": "r16:45.2",
    "count": 24
@@ -129,6 +140,7 @@
    "gender": null,
    "decl": null,
    "meaning": "become, be made, happen",
+   "sense_full": "become, be made, happen",
    "parts": "fīō, fierī, factus sum",
    "unit_id": "r16:96.1",
    "count": 23
@@ -140,6 +152,7 @@
    "gender": null,
    "decl": null,
    "meaning": "again",
+   "sense_full": "again",
    "parts": null,
    "unit_id": "r16:142.1",
    "count": 22
@@ -150,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be glad, joyful, delighted",
+   "meaning": "be glad, rejoice",
+   "sense_full": "be glad, joyful, delighted",
    "parts": "laetor, laetārī, laetatus sum",
    "unit_id": "r16:73.1",
    "count": 22
@@ -162,6 +176,7 @@
    "gender": null,
    "decl": null,
    "meaning": "follow",
+   "sense_full": "follow",
    "parts": "sequor, sequī, secūtus sum",
    "unit_id": "r16:66.1",
    "count": 22
@@ -172,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "watch over",
+   "meaning": "save, keep, watch over",
+   "sense_full": "watch over",
    "parts": "servō, servāre, servāvī, servātum",
    "unit_id": "r16:125.2",
    "count": 22
@@ -183,7 +199,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "attempt, try, endeavor, make an effort",
+   "meaning": "try, attempt",
+   "sense_full": "attempt, try, endeavor, make an effort",
    "parts": "cōnor, cōnārī, cōnātus sum",
    "unit_id": "r16:137.2",
    "count": 21
@@ -194,8 +211,21 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "call (upon)",
+   "meaning": "call, name",
+   "sense_full": "call (upon)",
    "parts": "appellō, appellāre, appellavī, appellatum",
+   "unit_id": "r16:1.1",
+   "count": 20
+  },
+  {
+   "lemma": "sinō",
+   "dict": "sinō, sinere, sīvī, situm",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "allow, permit",
+   "sense_full": "allow, permit",
+   "parts": "sinō, sinere, sīvī, situm",
    "unit_id": "r16:1.1",
    "count": 20
   },
@@ -205,7 +235,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "season, time, weather",
+   "meaning": "storm, weather",
+   "sense_full": "season, time, weather",
    "parts": null,
    "unit_id": "r16:32.1",
    "count": 20
@@ -217,6 +248,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "little",
+   "sense_full": "little",
    "parts": null,
    "unit_id": "r16:8.1",
    "count": 19
@@ -227,7 +259,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "hardly, scarcely, barely, only just",
+   "meaning": "hardly, scarcely, barely",
+   "sense_full": "hardly, scarcely, barely, only just",
    "parts": null,
    "unit_id": "r16:68.1",
    "count": 18
@@ -238,7 +271,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "console, (be source of) comfort or solace",
+   "meaning": "comfort, console",
+   "sense_full": "console, (be source of) comfort or solace",
    "parts": "cōnsōlor, cōnsōlārī, consolatus sum",
    "unit_id": "r16:89.1",
    "count": 16
@@ -249,7 +283,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "disturb, agitate, throw into confusion",
+   "meaning": "disturb, stir up",
+   "sense_full": "disturb, agitate, throw into confusion",
    "parts": "turbō, turbāre, turbavī, turbatum",
    "unit_id": "r16:32.1",
    "count": 15
@@ -261,6 +296,7 @@
    "gender": "m",
    "decl": 4,
    "meaning": "wave",
+   "sense_full": "wave",
    "parts": null,
    "unit_id": "r16:32.1",
    "count": 14
@@ -271,18 +307,20 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "rise (sun or river)",
+   "meaning": "rise",
+   "sense_full": "rise (sun or river)",
    "parts": "orior, orīrī, ortus sum",
    "unit_id": "r16:45.1",
    "count": 14
   },
   {
    "lemma": "propter",
-   "dict": "propter",
+   "dict": "propter (+ acc.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "near",
+   "meaning": "because of, on account of",
+   "sense_full": "near",
    "parts": null,
    "unit_id": "r16:117.1",
    "count": 14
@@ -293,7 +331,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "seat, rank, position",
+   "meaning": "place, spot",
+   "sense_full": "seat, rank, position",
    "parts": null,
    "unit_id": "r16:20.1",
    "count": 12
@@ -305,6 +344,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "maritime",
+   "sense_full": "maritime",
    "parts": null,
    "unit_id": "r16:12.1",
    "count": 12
@@ -315,7 +355,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "sift, separate, distinguish, discern, resolve, determine",
+   "meaning": "discern, make out, see",
+   "sense_full": "sift, separate, distinguish, discern, resolve, determine",
    "parts": "cernō, cernere, crevī, cretum",
    "unit_id": "r16:68.1",
    "count": 11
@@ -326,7 +367,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "call upon, invoke",
+   "meaning": "call upon",
+   "sense_full": "call upon, invoke",
    "parts": "invocō, invocāre, inuocavī, inuocatum",
    "unit_id": "r16:105.1",
    "count": 11
@@ -338,6 +380,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "quiet, calm",
+   "sense_full": "quiet, calm",
    "parts": null,
    "unit_id": "r16:28.1",
    "count": 11
@@ -348,7 +391,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "breathe",
+   "meaning": "blow",
+   "sense_full": "breathe",
    "parts": "flō, flāre, flavī, flatum",
    "unit_id": "r16:30.1",
    "count": 10
@@ -359,7 +403,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "look at",
+   "meaning": "gaze at, look at",
+   "sense_full": "look at",
    "parts": "intueor, intuērī, intuitus sum",
    "unit_id": "r16:79.1",
    "count": 10
@@ -370,7 +415,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "port, harbor",
+   "meaning": "harbor, port",
+   "sense_full": "port, harbor",
    "parts": null,
    "unit_id": "r16:17.1",
    "count": 10
@@ -382,6 +428,7 @@
    "gender": null,
    "decl": null,
    "meaning": "or if",
+   "sense_full": "or if",
    "parts": null,
    "unit_id": "r16:1.1",
    "count": 10
@@ -393,6 +440,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "black, dark",
+   "sense_full": "black, dark",
    "parts": null,
    "unit_id": "r16:96.1",
    "count": 9
@@ -403,7 +451,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "sail, covering",
+   "meaning": "sail",
+   "sense_full": "sail, covering",
    "parts": null,
    "unit_id": "r16:38.1",
    "count": 8
@@ -414,7 +463,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "revere, respect",
+   "meaning": "fear, be afraid of",
+   "sense_full": "revere, respect",
    "parts": "vereor, verērī, veritus sum",
    "unit_id": "r16:73.1",
    "count": 8
@@ -425,7 +475,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "embrace, hug",
+   "meaning": "embrace",
+   "sense_full": "embrace, hug",
    "parts": "complector, complectī, complexus sum",
    "unit_id": "r16:87.1",
    "count": 7
@@ -436,7 +487,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "climb up, ascend, scale",
+   "meaning": "climb, go on board",
+   "sense_full": "climb up, ascend, scale",
    "parts": "cōnscendō, cōnscendere, cōnscendī, conscensum",
    "unit_id": "r16:55.1",
    "count": 7
@@ -447,9 +499,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "place, put, station",
+   "meaning": "place, put",
+   "sense_full": "place, put, station",
    "parts": "locō, locāre, locavī, locatum",
    "unit_id": "r16:140.1",
+   "count": 7
+  },
+  {
+   "lemma": "opperior",
+   "dict": "opperior, opperīrī, opperitus sum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "wait for, await",
+   "sense_full": "wait (for)",
+   "parts": "opperior, opperīrī, opperitus sum",
+   "unit_id": "r16:28.1",
    "count": 7
   },
   {
@@ -458,7 +523,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "besides, thereafter",
+   "meaning": "besides, moreover",
+   "sense_full": "besides, thereafter",
    "parts": null,
    "unit_id": "r16:62.1",
    "count": 7
@@ -469,20 +535,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "slip, slip and fall",
+   "meaning": "slip, fall, glide",
+   "sense_full": "slip, slip and fall",
    "parts": "lābor, lābī, lapsus sum",
    "unit_id": "r16:85.1",
-   "count": 6
-  },
-  {
-   "lemma": "opperior",
-   "dict": "opperior, opperīrī, opperitus sum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "wait (for)",
-   "parts": "opperior, opperīrī, opperitus sum",
-   "unit_id": "r16:28.1",
    "count": 6
   },
   {
@@ -491,7 +547,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "go, march, come out",
+   "meaning": "go out, disembark",
+   "sense_full": "go, march, come out",
    "parts": "ēgredior, egredī, egressus sum",
    "unit_id": "r16:38.1",
    "count": 5
@@ -502,7 +559,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "stern or aft (of ship)",
+   "meaning": "stern",
+   "sense_full": "stern or aft (of ship)",
    "parts": null,
    "unit_id": "r16:41.1",
    "count": 5
@@ -513,7 +571,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "Big/Little Dipper (s./plural)",
+   "meaning": "the north",
+   "sense_full": "Big/Little Dipper (s./plural)",
    "parts": null,
    "unit_id": "r16:47.1",
    "count": 5
@@ -524,21 +583,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "clear, fair, bright",
+   "meaning": "clear, bright",
+   "sense_full": "clear, fair, bright",
    "parts": null,
    "unit_id": "r16:54.1",
    "count": 5
-  },
-  {
-   "lemma": "altus",
-   "dict": "altus, -a, -um, ·, comparative, altior,, altius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "high",
-   "parts": null,
-   "unit_id": "r16:32.1",
-   "count": 4
   },
   {
    "lemma": "gubernātor",
@@ -546,7 +595,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "helmsman, pilot",
+   "meaning": "helmsman",
+   "sense_full": "helmsman, pilot",
    "parts": null,
    "unit_id": "r16:92.1",
    "count": 4
@@ -557,7 +607,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "throw away, throw out, throw, jerk about",
+   "meaning": "throw, toss",
+   "sense_full": "throw away, throw out, throw, jerk about",
    "parts": "iactō, iactāre, iactavī, iactatum",
    "unit_id": "r16:115.1",
    "count": 4
@@ -568,7 +619,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "fill up",
+   "meaning": "fill",
+   "sense_full": "fill up",
    "parts": "impleō, implēre, implevī, impletum",
    "unit_id": "r16:33.1",
    "count": 4
@@ -579,7 +631,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "opposite, contrary, in contradiction",
+   "meaning": "opposite, contrary",
+   "sense_full": "opposite, contrary, in contradiction",
    "parts": null,
    "unit_id": "r16:48.1",
    "count": 3
@@ -590,20 +643,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "draw up/out",
+   "meaning": "draw, drain",
+   "sense_full": "draw up/out",
    "parts": "hauriō, haurīre, hausī, haustum",
    "unit_id": "r16:117.1",
-   "count": 3
-  },
-  {
-   "lemma": "īnferus",
-   "dict": "īnferus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "below, beneath, underneath",
-   "parts": null,
-   "unit_id": "r16:1.1",
    "count": 3
   },
   {
@@ -612,7 +655,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be/lie between, be in the midst",
+   "meaning": "be between",
+   "sense_full": "be/lie between, be in the midst",
    "parts": "intersum, interesse, interfuī, interfutūrum",
    "unit_id": "r16:1.1",
    "count": 3
@@ -624,6 +668,7 @@
    "gender": "m",
    "decl": 4,
    "meaning": "thunder",
+   "sense_full": "thunder",
    "parts": null,
    "unit_id": "r16:107.1",
    "count": 3
@@ -634,7 +679,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "wild or stormy",
+   "meaning": "stormy, wild",
+   "sense_full": "wild or stormy",
    "parts": null,
    "unit_id": "r16:30.1",
    "count": 3
@@ -645,7 +691,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "lightning, flashing, brightness",
+   "meaning": "lightning",
+   "sense_full": "lightning, flashing, brightness",
    "parts": null,
    "unit_id": "r16:107.1",
    "count": 2
@@ -656,7 +703,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "glitter, flash, shine brightly, gleam",
+   "meaning": "flash with lightning",
+   "sense_full": "glitter, flash, shine brightly, gleam",
    "parts": "fulgurō, fulgurāre, fulguravī, fulguratum",
    "unit_id": "r16:112.1",
    "count": 1

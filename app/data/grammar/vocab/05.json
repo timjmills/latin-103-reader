@@ -3,11 +3,12 @@
  "words": [
   {
    "lemma": "cum",
-   "dict": "cum",
+   "dict": "cum (+ abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "with, together, jointly, along, simultaneous with, amid",
+   "meaning": "with",
+   "sense_full": "with, together, jointly, along, simultaneous with, amid",
    "parts": null,
    "unit_id": "r05:9.1",
    "count": 277
@@ -19,17 +20,19 @@
    "gender": null,
    "decl": null,
    "meaning": "love, like",
+   "sense_full": "love, like",
    "parts": "amō, amāre, amāvī, amātum",
    "unit_id": "r05:20.2",
    "count": 109
   },
   {
    "lemma": "ab",
-   "dict": "ab",
+   "dict": "ab (+ abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
-   "meaning": "by (agent), from (departure, cause, remote origin or time)",
+   "meaning": "by, from",
+   "sense_full": "by (agent), from (departure, cause, remote origin or time)",
    "parts": null,
    "unit_id": "r05:48.1",
    "count": 104
@@ -40,43 +43,47 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "and also, besides or furthermore, in addition/as well",
+   "meaning": "also, even",
+   "sense_full": "and also, besides or furthermore, in addition/as well",
    "parts": null,
    "unit_id": "r05:30.1",
    "count": 99
   },
   {
    "lemma": "sōlus",
-   "dict": "sōlus, -a, -um, (gen., -īus)",
+   "dict": "sōlus, -a, -um (gen. -īus)",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "only, single",
+   "meaning": "only, alone",
+   "sense_full": "only, single",
    "parts": null,
    "unit_id": "r05:23.2",
    "count": 96
   },
   {
    "lemma": "ex",
-   "dict": "ex",
+   "dict": "ex (+ abl.)",
    "pos": "PREP",
    "gender": null,
    "decl": null,
    "meaning": "out of, from",
+   "sense_full": "out of, from",
    "parts": null,
    "unit_id": "r05:58.1",
    "count": 90
   },
   {
-   "lemma": "sinō",
-   "dict": "sinō, sinere, sīvī, situm",
-   "pos": "V",
+   "lemma": "pulcher",
+   "dict": "pulcher, pulchra, pulchrum",
+   "pos": "ADJ",
    "gender": null,
-   "decl": null,
-   "meaning": "allow, permit",
-   "parts": "sinō, sinere, sīvī, situm",
-   "unit_id": "r05:44.2",
-   "count": 76
+   "decl": 1,
+   "meaning": "beautiful, pretty",
+   "sense_full": "pretty",
+   "parts": null,
+   "unit_id": "r05:15.1",
+   "count": 82
   },
   {
    "lemma": "cubiculum",
@@ -85,17 +92,19 @@
    "gender": "n",
    "decl": 2,
    "meaning": "bedroom",
+   "sense_full": "bedroom",
    "parts": null,
    "unit_id": "r05:35.1",
    "count": 61
   },
   {
-   "lemma": "aquā",
-   "dict": "aquā, -ae f.",
+   "lemma": "aqua",
+   "dict": "aqua, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
    "meaning": "water",
+   "sense_full": "water",
    "parts": null,
    "unit_id": "r05:28.1",
    "count": 57
@@ -107,9 +116,22 @@
    "gender": null,
    "decl": null,
    "meaning": "be withered or flabby, droop or shrivel",
+   "sense_full": "be withered or flabby, droop or shrivel",
    "parts": "mārcō, mārcere, marcuī, marcitum",
    "unit_id": "r05:9.2",
    "count": 57
+  },
+  {
+   "lemma": "sine",
+   "dict": "sine (+ abl.)",
+   "pos": "PREP",
+   "gender": null,
+   "decl": null,
+   "meaning": "without",
+   "sense_full": "without",
+   "parts": null,
+   "unit_id": "r05:44.2",
+   "count": 56
   },
   {
    "lemma": "vīlla",
@@ -117,21 +139,11 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "farm, country home, estate",
+   "meaning": "country house, farm",
+   "sense_full": "farm, country home, estate",
    "parts": null,
    "unit_id": "r05:1.1",
    "count": 54
-  },
-  {
-   "lemma": "pulcher",
-   "dict": "pulcher, pulchra, pulchrum",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "pretty",
-   "parts": null,
-   "unit_id": "r05:15.1",
-   "count": 45
   },
   {
    "lemma": "imperō",
@@ -139,7 +151,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "order, command, levy",
+   "meaning": "order, command",
+   "sense_full": "order, command, levy",
    "parts": "imperō, imperāre, imperāvī, imperātum",
    "unit_id": "r05:51.1",
    "count": 40
@@ -150,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "drive, urge, conduct, act",
+   "meaning": "drive, do, lead",
+   "sense_full": "drive, urge, conduct, act",
    "parts": "agō, agere, ēgī, āctum",
    "unit_id": "r05:82.1",
    "count": 36
@@ -161,7 +175,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "doorway",
+   "meaning": "doorway, door",
+   "sense_full": "doorway",
    "parts": null,
    "unit_id": "r05:25.1",
    "count": 35
@@ -172,7 +187,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "inhabit, dwell",
+   "meaning": "live, dwell",
+   "sense_full": "inhabit, dwell",
    "parts": "habitō, habitāre, habitāvī, habitatum",
    "unit_id": "r05:2.1",
    "count": 34
@@ -183,7 +199,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "garden, fruit or kitchen garden",
+   "meaning": "garden",
+   "sense_full": "garden, fruit or kitchen garden",
    "parts": null,
    "unit_id": "r05:1.1",
    "count": 29
@@ -195,6 +212,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "rose",
+   "sense_full": "rose",
    "parts": null,
    "unit_id": "r05:13.1",
    "count": 29
@@ -205,7 +223,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "atrium, reception hall in a Roman house",
+   "meaning": "atrium, main room",
+   "sense_full": "atrium, reception hall in a Roman house",
    "parts": null,
    "unit_id": "r05:27.1",
    "count": 25
@@ -216,7 +235,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "delight, please, amuse, fascinate",
+   "meaning": "delight, please",
+   "sense_full": "delight, please, amuse, fascinate",
    "parts": "dēlectō, dēlectāre, delectavī, delectatum",
    "unit_id": "r05:60.1",
    "count": 24
@@ -228,6 +248,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "nose",
+   "sense_full": "nose",
    "parts": null,
    "unit_id": "r05:17.2",
    "count": 24
@@ -238,7 +259,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "inner courtyard lined with rows of columns, peristyle",
+   "meaning": "peristyle, colonnaded courtyard",
+   "sense_full": "inner courtyard lined with rows of columns, peristyle",
    "parts": null,
    "unit_id": "r05:30.1",
    "count": 22
@@ -249,10 +271,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "foul",
+   "meaning": "ugly, foul",
+   "sense_full": "foul",
    "parts": null,
    "unit_id": "r05:17.2",
-   "count": 18
+   "count": 20
   },
   {
    "lemma": "fenestra",
@@ -260,7 +283,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "window, opening for light",
+   "meaning": "window",
+   "sense_full": "window, opening for light",
    "parts": null,
    "unit_id": "r05:26.1",
    "count": 13
@@ -271,7 +295,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "basin in atrium floor to receive rain-water from roof",
+   "meaning": "water basin in the atrium",
+   "sense_full": "basin in atrium floor to receive rain-water from roof",
    "parts": null,
    "unit_id": "r05:27.1",
    "count": 8
@@ -283,6 +308,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "lily",
+   "sense_full": "lily",
    "parts": null,
    "unit_id": "r05:13.1",
    "count": 6
@@ -293,7 +319,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "seize, pick, pluck, gather",
+   "meaning": "pick, pluck",
+   "sense_full": "seize, pick, pluck, gather",
    "parts": "carpō, carpere, carpsī, carptum",
    "unit_id": "r05:57.1",
    "count": 5

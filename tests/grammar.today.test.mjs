@@ -25,12 +25,15 @@ const week1 = [...S.values()].filter((s) => s.course === '103' && s.week === 1).
 const due = (id) => ({ ...addToPractice(newState(id, NOW), NOW), due_at: new Date(NOW - 1000).toISOString(), stability_days: 2 });
 const later = (id) => ({ ...addToPractice(newState(id, NOW), NOW), due_at: new Date(NOW + 3 * DAY_MS).toISOString(), stability_days: 4 });
 
-test('itemSeconds: 25 s until twenty timed attempts, then the mean (clamped 8–90)', () => {
+test('itemSeconds: 25 s until twenty timed attempts, then the median, each attempt capped at two minutes, the result clamped 5–120', () => {
   assert.equal(itemSeconds([]), DEFAULT_ITEM_S);
   assert.equal(itemSeconds(Array.from({ length: 19 }, () => ({ ms: 40000 }))), DEFAULT_ITEM_S);
   assert.equal(itemSeconds(Array.from({ length: 20 }, () => ({ ms: 40000 }))), 40);
-  assert.equal(itemSeconds(Array.from({ length: 30 }, () => ({ ms: 500 }))), 8);
-  assert.equal(itemSeconds(Array.from({ length: 30 }, () => ({ ms: 900000 }))), 90);
+  assert.equal(itemSeconds(Array.from({ length: 30 }, () => ({ ms: 500 }))), 5);
+  assert.equal(itemSeconds(Array.from({ length: 30 }, () => ({ ms: 900000 }))), 120, 'every attempt is capped at 120 s');
+  // One item left open while the learner walked away used to drag the mean to the clamp for the next 180 items.
+  const fast = Array.from({ length: 24 }, () => ({ ms: 10000 }));
+  assert.equal(itemSeconds([...fast, { ms: 3600000 }]), 10);
 });
 
 test('an empty learner with a current week: Learn the week\'s first skill, no practice, questions + vocabulary once through, the reading line', () => {

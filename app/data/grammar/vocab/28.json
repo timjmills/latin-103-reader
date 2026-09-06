@@ -7,7 +7,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "robber, thief",
+   "meaning": "robber, pirate",
+   "sense_full": "robber, thief",
    "parts": null,
    "unit_id": "w06:126.4",
    "count": 29
@@ -18,7 +19,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "dinner or supper, principal Roman meal (evening)",
+   "meaning": "dinner",
+   "sense_full": "dinner or supper, principal Roman meal (evening)",
    "parts": null,
    "unit_id": "w05:nausicaa:221.1",
    "count": 14
@@ -29,7 +31,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "die, pass away",
+   "meaning": "perish, die",
+   "sense_full": "die, pass away",
    "parts": "pereō, perīre, periī, peritum",
    "unit_id": "w06:118.4",
    "count": 13
@@ -40,7 +43,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "come to",
+   "meaning": "arrive, reach",
+   "sense_full": "come to",
    "parts": "perveniō, pervēnīre, pervēnī, perventum",
    "unit_id": "w06:136.1",
    "count": 12
@@ -51,7 +55,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "mind",
+   "meaning": "mind, spirit",
+   "sense_full": "mind",
    "parts": null,
    "unit_id": "w06:14.1",
    "count": 11
@@ -62,10 +67,11 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "(for) a long, considerable time, while",
+   "meaning": "for a long time",
+   "sense_full": "(for) a long, considerable time, while",
    "parts": null,
    "unit_id": "w05:nausicaa:158.1",
-   "count": 10
+   "count": 11
   },
   {
    "lemma": "optō",
@@ -73,7 +79,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "choose, select",
+   "meaning": "choose, wish for",
+   "sense_full": "choose, select",
    "parts": "optō, optāre, optāvī, optātum",
    "unit_id": "w05:nausicaa:211.3",
    "count": 10
@@ -84,7 +91,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "power, rule, force",
+   "meaning": "power, authority",
+   "sense_full": "power, rule, force",
    "parts": null,
    "unit_id": "w06:76.2",
    "count": 10
@@ -95,7 +103,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "leader or chief, first, leading member, citizen, man",
+   "meaning": "leader, chief man",
+   "sense_full": "leader or chief, first, leading member, citizen, man",
    "parts": null,
    "unit_id": "w06:64.1",
    "count": 10
@@ -106,7 +115,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "honor, adore, worship, pay homage, reverence",
+   "meaning": "worship, adore",
+   "sense_full": "honor, adore, worship, pay homage, reverence",
    "parts": "adōrō, adōrāre, adōrāvī, adoratum",
    "unit_id": "w06:21.3",
    "count": 9
@@ -117,7 +127,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "little book, booklet",
+   "meaning": "little book",
+   "sense_full": "little book, booklet",
    "parts": null,
    "unit_id": "w06:42.4",
    "count": 9
@@ -128,7 +139,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "persuade, convince (with dat.)",
+   "meaning": "persuade, convince",
+   "sense_full": "persuade, convince (with dat.)",
    "parts": "persuādeō, persuādēre, persuāsī, persuāsum",
    "unit_id": "w06:109.2",
    "count": 9
@@ -139,9 +151,22 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "small ship",
+   "meaning": "small boat",
+   "sense_full": "small ship",
    "parts": null,
    "unit_id": "w06:94.1",
+   "count": 8
+  },
+  {
+   "lemma": "nōtus",
+   "dict": "nōtus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "known, well known, famous",
+   "sense_full": "well known, familiar, notable, famous, esteemed",
+   "parts": null,
+   "unit_id": "w05:nausicaa:158.1",
    "count": 8
   },
   {
@@ -151,6 +176,7 @@
    "gender": null,
    "decl": null,
    "meaning": "ask, ask for",
+   "sense_full": "ask, ask for",
    "parts": "rogō, rogāre, rogāvī, rogātum",
    "unit_id": "w06:56.1",
    "count": 8
@@ -161,10 +187,23 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "serve",
+   "meaning": "serve, be a slave",
+   "sense_full": "serve",
    "parts": "serviō, servīre, servivī, servitum",
    "unit_id": "w06:152.1",
    "count": 8
+  },
+  {
+   "lemma": "mālō",
+   "dict": "mālō, mālle, māluī",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "prefer",
+   "sense_full": "prefer, want more",
+   "parts": "mālō, mālle, māluī",
+   "unit_id": "w06:152.1",
+   "count": 7
   },
   {
    "lemma": "immortālis",
@@ -173,6 +212,7 @@
    "gender": null,
    "decl": 3,
    "meaning": "immortal, not subject to death",
+   "sense_full": "immortal, not subject to death",
    "parts": null,
    "unit_id": "w06:42.2",
    "count": 6
@@ -183,7 +223,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "beg, implore, entreat",
+   "meaning": "pray, beg",
+   "sense_full": "beg, implore, entreat",
    "parts": "precor, precārī, precātus sum",
    "unit_id": "w05:nausicaa:185.1",
    "count": 6
@@ -194,10 +235,23 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "safe, prudent",
+   "meaning": "safe",
+   "sense_full": "safe, prudent",
    "parts": null,
    "unit_id": "w06:135.1",
    "count": 6
+  },
+  {
+   "lemma": "eiciō",
+   "dict": "eiciō, ēicere, ēicī, eictum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "throw out, cast out",
+   "sense_full": "accomplish, perform, bring about, cause",
+   "parts": "eiciō, ēicere, ēicī, eictum",
+   "unit_id": "w06:1.2",
+   "count": 5
   },
   {
    "lemma": "extendō",
@@ -205,20 +259,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "stretch or thrust out",
+   "meaning": "stretch out",
+   "sense_full": "stretch or thrust out",
    "parts": "extendō, extendere, extendī, extensum",
    "unit_id": "w06:48.2",
-   "count": 5
-  },
-  {
-   "lemma": "fortis",
-   "dict": "fortis, -e, ·, superlative, fortissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "strong, powerful, mighty, vigorous, firm, steadfast, courageous, brave, bold",
-   "parts": null,
-   "unit_id": "w05:nausicaa:211.2",
    "count": 5
   },
   {
@@ -227,20 +271,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "overhang, hang over",
+   "meaning": "hang over, overhang",
+   "sense_full": "overhang, hang over",
    "parts": "impendeō, impendēre",
    "unit_id": "w06:126.4",
    "count": 5
   },
   {
-   "lemma": "mōs",
-   "dict": "mōs, moris m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 3,
-   "meaning": "custom, habit",
-   "parts": null,
-   "unit_id": "w06:154.1",
+   "lemma": "morior",
+   "dict": "morior, morī, mortuus sum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "die",
+   "sense_full": "die, expire, pass, die, wither away, out",
+   "parts": "morior, morī, mortuus sum",
+   "unit_id": "w06:42.3",
    "count": 5
   },
   {
@@ -249,7 +295,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "born, arisen",
+   "meaning": "born",
+   "sense_full": "born, arisen",
    "parts": null,
    "unit_id": "w06:21.2",
    "count": 5
@@ -260,7 +307,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "rather, more, preferably",
+   "meaning": "rather",
+   "sense_full": "rather, more, preferably",
    "parts": null,
    "unit_id": "w06:126.2",
    "count": 5
@@ -272,6 +320,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "whole, entire",
+   "sense_full": "whole, entire",
    "parts": null,
    "unit_id": "w06:34.3",
    "count": 5
@@ -282,7 +331,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "keep turning or going round, spin, whirl",
+   "meaning": "turn, spin",
+   "sense_full": "keep turning or going round, spin, whirl",
    "parts": "versō, versāre, versavī, versātum",
    "unit_id": "w06:84.2",
    "count": 5
@@ -293,7 +343,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "help, aid, abet, encourage, favor",
+   "meaning": "help, aid",
+   "sense_full": "help, aid, abet, encourage, favor",
    "parts": "adiuvō, adiuvāre, adiuvī, adiutum",
    "unit_id": "w05:nausicaa:185.3",
    "count": 4
@@ -304,7 +355,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "admire, respect",
+   "meaning": "admire, wonder at",
+   "sense_full": "admire, respect",
    "parts": "admīror, admīrārī, admiratus sum",
    "unit_id": "w06:179.1",
    "count": 4
@@ -315,7 +367,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "dumb, silent, mute",
+   "meaning": "dumb, silent",
+   "sense_full": "dumb, silent, mute",
    "parts": null,
    "unit_id": "w06:30.1",
    "count": 4
@@ -327,6 +380,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "nymph",
+   "sense_full": "nymph",
    "parts": null,
    "unit_id": "w05:nausicaa:165.6",
    "count": 4
@@ -338,6 +392,7 @@
    "gender": null,
    "decl": null,
    "meaning": "obey",
+   "sense_full": "obey",
    "parts": "oboediō, oboedīre, oboedivī, oboeditum",
    "unit_id": "w06:14.2",
    "count": 4
@@ -348,7 +403,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "small savings",
+   "meaning": "savings",
+   "sense_full": "small savings",
    "parts": null,
    "unit_id": "w06:156.2",
    "count": 4
@@ -359,7 +415,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "deaf, unresponsive to what is said",
+   "meaning": "deaf",
+   "sense_full": "deaf, unresponsive to what is said",
    "parts": null,
    "unit_id": "w06:30.1",
    "count": 4
@@ -370,7 +427,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "encourage, stir up",
+   "meaning": "raise up, rouse",
+   "sense_full": "encourage, stir up",
    "parts": "suscitō, suscitāre, suscitāvī, suscitatum",
    "unit_id": "w06:64.1",
    "count": 4
@@ -382,6 +440,7 @@
    "gender": null,
    "decl": null,
    "meaning": "just as, as if",
+   "sense_full": "just as, as if",
    "parts": null,
    "unit_id": "w06:21.3",
    "count": 4
@@ -392,7 +451,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "seize (upon), grasp, cling to, lay hold of",
+   "meaning": "seize, take hold of",
+   "sense_full": "seize (upon), grasp, cling to, lay hold of",
    "parts": "apprehendō, apprehendere, apprehendī, apprehensum",
    "unit_id": "w06:48.2",
    "count": 3
@@ -403,20 +463,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "turn or stretch towards",
+   "meaning": "pay attention to",
+   "sense_full": "turn or stretch towards",
    "parts": "attendō, attendere, attendī, attentum",
    "unit_id": "w06:109.1",
-   "count": 3
-  },
-  {
-   "lemma": "beātus",
-   "dict": "beātus, -a, -um, ·, superlative, beātissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "happy, fortunate, bringing happiness",
-   "parts": null,
-   "unit_id": "w05:nausicaa:185.2",
    "count": 3
   },
   {
@@ -426,19 +476,9 @@
    "gender": null,
    "decl": 1,
    "meaning": "blind",
+   "sense_full": "blind",
    "parts": null,
    "unit_id": "w06:30.1",
-   "count": 3
-  },
-  {
-   "lemma": "eiiciō",
-   "dict": "eiiciō, eiicere, ēiēcī, ēiectum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "cast, throw, fling, drive out, extract, expel, discharge, vomit",
-   "parts": "eiiciō, eiicere, ēiēcī, ēiectum",
-   "unit_id": "w06:67.6",
    "count": 3
   },
   {
@@ -447,7 +487,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "roll out, unroll",
+   "meaning": "unroll, roll out",
+   "sense_full": "roll out, unroll",
    "parts": "ēvolvō, ēvolvere, ēvolvī, evolutum",
    "unit_id": "w06:56.1",
    "count": 3
@@ -458,7 +499,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "sea",
+   "meaning": "strait, sea",
+   "sense_full": "sea",
    "parts": null,
    "unit_id": "w06:1.1",
    "count": 3
@@ -469,7 +511,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "joy, delight, gladness",
+   "meaning": "joy, delight",
+   "sense_full": "joy, delight, gladness",
    "parts": null,
    "unit_id": "w05:nausicaa:158.1",
    "count": 3
@@ -480,7 +523,8 @@
    "pos": "INTERJ",
    "gender": null,
    "decl": null,
-   "meaning": "oh! ah! alas! (an expression of dismay or pain)",
+   "meaning": "oh! ah! alas!",
+   "sense_full": "oh! ah! alas! (an expression of dismay or pain)",
    "parts": null,
    "unit_id": "w05:nausicaa:165.2",
    "count": 3
@@ -491,31 +535,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "remember",
+   "meaning": "mention, recount",
+   "sense_full": "remember",
    "parts": "memorō, memorāre, memorāvī, memoratum",
    "unit_id": "w06:51.2",
-   "count": 3
-  },
-  {
-   "lemma": "morior",
-   "dict": "morior, morī, mortuus sum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "die, expire, pass, die, wither away, out",
-   "parts": "morior, morī, mortuus sum",
-   "unit_id": "w06:42.3",
-   "count": 3
-  },
-  {
-   "lemma": "posterus",
-   "dict": "posterus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "coming after, following, next",
-   "parts": null,
-   "unit_id": "w05:nausicaa:225.3",
    "count": 3
   },
   {
@@ -525,6 +548,7 @@
    "gender": null,
    "decl": null,
    "meaning": "reign, rule",
+   "sense_full": "reign, rule",
    "parts": "rēgnō, rēgnāre, regnavī, regnatum",
    "unit_id": "w06:84.2",
    "count": 3
@@ -535,7 +559,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "Sicilian, of/pertaining to Sicily (island southwest of Italy)",
+   "meaning": "Sicilian",
+   "sense_full": "Sicilian, of/pertaining to Sicily (island southwest of Italy)",
    "parts": null,
    "unit_id": "w06:1.1",
    "count": 3
@@ -546,7 +571,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be remiss or inactive",
+   "meaning": "stop, be idle",
+   "sense_full": "be remiss or inactive",
    "parts": "cessō, cessāre, cessāvī, cessatum",
    "unit_id": "w06:6.1",
    "count": 2
@@ -557,20 +583,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "unyoke",
+   "meaning": "unyoke, separate",
+   "sense_full": "unyoke",
    "parts": "disiungō, disiungere, disiunxī, disiunctum",
    "unit_id": "w06:1.1",
-   "count": 2
-  },
-  {
-   "lemma": "eiciō",
-   "dict": "eiciō, ēicere, ēicī, eictum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "accomplish, perform, bring about, cause",
-   "parts": "eiciō, ēicere, ēicī, eictum",
-   "unit_id": "w06:1.2",
    "count": 2
   },
   {
@@ -579,20 +595,10 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "rumor",
+   "meaning": "rumor, report, fame",
+   "sense_full": "rumor",
    "parts": null,
    "unit_id": "w06:34.3",
-   "count": 2
-  },
-  {
-   "lemma": "miser",
-   "dict": "miser, misera, miserum, ·, comparative, miserior,, miserius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "poor, miserable, wretched, unfortunate, unhappy, distressing",
-   "parts": null,
-   "unit_id": "w05:fl-67:b40.6",
    "count": 2
   },
   {
@@ -602,6 +608,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "dangerous, hazardous, perilous",
+   "sense_full": "dangerous, hazardous, perilous",
    "parts": null,
    "unit_id": "w06:136.3",
    "count": 2
@@ -612,7 +619,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "piper, performer on tibia",
+   "meaning": "piper, flute player",
+   "sense_full": "piper, performer on tibia",
    "parts": null,
    "unit_id": "w06:67.3",
    "count": 2
@@ -623,7 +631,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "deep hole, chasm, watery hollow",
+   "meaning": "chasm, whirlpool",
+   "sense_full": "deep hole, chasm, watery hollow",
    "parts": null,
    "unit_id": "w06:126.4",
    "count": 2
@@ -634,7 +643,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "appear, originate",
+   "meaning": "arise, break out",
+   "sense_full": "appear, originate",
    "parts": "coorior, coorīrī, coortus sum",
    "unit_id": "w05:nausicaa:165.1",
    "count": 1
@@ -645,7 +655,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "put, lay down, aside, away",
+   "meaning": "put down, lay aside",
+   "sense_full": "put, lay down, aside, away",
    "parts": "deponō, deponere, deposivī, dēpositum",
    "unit_id": "w05:nausicaa:182.1",
    "count": 1
@@ -656,7 +667,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "need (with the genitive or ablative), lack, want",
+   "meaning": "need, lack",
+   "sense_full": "need (with the genitive or ablative), lack, want",
    "parts": "egeō, egēre, eguī",
    "unit_id": "w05:nausicaa:200.2",
    "count": 1
@@ -668,6 +680,7 @@
    "gender": null,
    "decl": null,
    "meaning": "hear clearly",
+   "sense_full": "hear clearly",
    "parts": "exaudiō, exaudīre, exaudīvī, exauditum",
    "unit_id": "w06:84.1",
    "count": 1
@@ -678,20 +691,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "test, put to the test",
+   "meaning": "try, test",
+   "sense_full": "test, put to the test",
    "parts": "experior, experīrī, expertus sum",
    "unit_id": "w05:nausicaa:165.7",
-   "count": 1
-  },
-  {
-   "lemma": "improbissimus",
-   "dict": "improbissimus, -a, -um, ·, superlative, of, improbus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "most wicked, utterly shameless",
-   "parts": null,
-   "unit_id": "w05:fl-67:b40.8",
    "count": 1
   },
   {
@@ -700,20 +703,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be produced spontaneously, come into existence or being",
+   "meaning": "be born",
+   "sense_full": "be produced spontaneously, come into existence or being",
    "parts": "nāscor, nāscī, nātus sum",
    "unit_id": "w06:42.3",
-   "count": 1
-  },
-  {
-   "lemma": "nōtus",
-   "dict": "nōtus, -a, -um, ·, superlative, nōtissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "well known, familiar, notable, famous, esteemed",
-   "parts": null,
-   "unit_id": "w05:nausicaa:158.1",
    "count": 1
   },
   {
@@ -723,6 +716,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "queen",
+   "sense_full": "queen",
    "parts": null,
    "unit_id": "w05:nausicaa:211.5",
    "count": 1
@@ -734,6 +728,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "senator",
+   "sense_full": "senator",
    "parts": null,
    "unit_id": "w05:coriolanus:137.1",
    "count": 1
@@ -744,20 +739,10 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "stillness",
+   "meaning": "calm, stillness",
+   "sense_full": "stillness",
    "parts": null,
    "unit_id": "w06:118.6",
-   "count": 1
-  },
-  {
-   "lemma": "trīstissimus",
-   "dict": "trīstissimus, -a, -um, ·, superlative, of, trīstis, -e",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "very sad, saddest",
-   "parts": null,
-   "unit_id": "w05:nausicaa:230.1",
    "count": 1
   },
   {
@@ -766,7 +751,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "make commotion, disturbance, uproar, armed rising",
+   "meaning": "make an uproar",
+   "sense_full": "make commotion, disturbance, uproar, armed rising",
    "parts": "tumultuō, tumultuāre, tumultuavī, tumultuatum",
    "unit_id": "w06:67.3",
    "count": 1
@@ -777,18 +763,20 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "commotion, uproar, turmoil, tumult, disturbance",
+   "meaning": "crowd, throng",
+   "sense_full": "commotion, uproar, turmoil, tumult, disturbance",
    "parts": null,
    "unit_id": "w06:67.3",
    "count": 1
   },
   {
-   "lemma": "vigiliā",
-   "dict": "vigiliā, -ae f.",
+   "lemma": "vigilia",
+   "dict": "vigilia, -ae f.",
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "watch (fourth part of the night), vigil, wakefulness",
+   "meaning": "watch, vigil",
+   "sense_full": "watch (fourth part of the night), vigil, wakefulness",
    "parts": null,
    "unit_id": "w06:94.2",
    "count": 1
@@ -799,7 +787,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 4,
-   "meaning": "look, sight, appearance",
+   "meaning": "sight, look",
+   "sense_full": "look, sight, appearance",
    "parts": null,
    "unit_id": "w05:nausicaa:176.2",
    "count": 1

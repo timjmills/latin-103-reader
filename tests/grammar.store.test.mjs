@@ -11,7 +11,8 @@ const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? nu
 
 test('serverStateRow: only the columns skill_state has, normalised', () => {
   const row = serverStateRow({ skill: 'a', state: 'practising', stage: '2', stability_days: 3, extra: 'no', updated_at: '2026-09-05T10:00:00.000Z' });
-  assert.deepEqual(Object.keys(row).sort(), ['due_at', 'failures', 'last_at', 'skill', 'stability_days', 'stage', 'state', 'streak', 'successes', 'updated_at']);
+  // `successes_spaced` is a real column since migration 0017, and mastery is counted on it.
+  assert.deepEqual(Object.keys(row).sort(), ['due_at', 'failures', 'last_at', 'skill', 'stability_days', 'stage', 'state', 'streak', 'successes', 'successes_spaced', 'updated_at']);
   assert.equal(row.stage, 2);
   assert.equal('extra' in row, false);
 });

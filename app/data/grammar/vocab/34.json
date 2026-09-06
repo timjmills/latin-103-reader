@@ -7,21 +7,11 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "inscription or epitaph",
+   "meaning": "epigram",
+   "sense_full": "inscription or epitaph",
    "parts": null,
    "unit_id": "w14:b5.2",
    "count": 7
-  },
-  {
-   "lemma": "nīl",
-   "dict": "nīl n (indeclinable)",
-   "pos": "N",
-   "gender": "n",
-   "decl": 9,
-   "meaning": "nothing",
-   "parts": null,
-   "unit_id": "w14:b9.5",
-   "count": 6
   },
   {
    "lemma": "certāmen",
@@ -29,7 +19,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "contest, competition",
+   "meaning": "contest, struggle",
+   "sense_full": "contest, competition",
    "parts": null,
    "unit_id": "w13:b5.1",
    "count": 5
@@ -40,7 +31,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "marry, be married to",
+   "meaning": "marry",
+   "sense_full": "marry, be married to",
    "parts": "nūbō, nūbere, nūpsī, nuptum",
    "unit_id": "w13:b27.1",
    "count": 5
@@ -52,6 +44,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "sparrow",
+   "sense_full": "sparrow",
    "parts": null,
    "unit_id": "w13:b23.1",
    "count": 5
@@ -62,7 +55,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "humorous, funny, droll",
+   "meaning": "funny, playful",
+   "sense_full": "humorous, funny, droll",
    "parts": null,
    "unit_id": "w14:b2.3",
    "count": 4
@@ -73,7 +67,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "clap, strike (with flat hand), pat",
+   "meaning": "clap, applaud",
+   "sense_full": "clap, strike (with flat hand), pat",
    "parts": "plaudō, plaudere, plausī, plausum",
    "unit_id": "w13:b10.2",
    "count": 4
@@ -84,7 +79,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "net, snare",
+   "meaning": "net",
+   "sense_full": "net, snare",
    "parts": null,
    "unit_id": "w13:b8.3",
    "count": 4
@@ -96,6 +92,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "spectator",
+   "sense_full": "spectator",
    "parts": null,
    "unit_id": "w13:b10.1",
    "count": 4
@@ -106,7 +103,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "kindle, set on fire, light",
+   "meaning": "light, set on fire",
+   "sense_full": "kindle, set on fire, light",
    "parts": "accendō, accendere, accendī, accēnsum",
    "unit_id": "w13:b22.2",
    "count": 3
@@ -117,7 +115,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "then, next, afterward",
+   "meaning": "then, next",
+   "sense_full": "then, next, afterward",
    "parts": null,
    "unit_id": "w13:b26.8",
    "count": 3
@@ -128,7 +127,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "provided (that) (+ subj)",
+   "meaning": "provided that",
+   "sense_full": "provided (that) (+ subj)",
    "parts": null,
    "unit_id": "w13:b6.1",
    "count": 3
@@ -139,9 +139,22 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "utterance, oracle",
+   "meaning": "fate, destiny",
+   "sense_full": "utterance, oracle",
    "parts": null,
    "unit_id": "w13:b19.1",
+   "count": 3
+  },
+  {
+   "lemma": "implicō",
+   "dict": "implicō, implicāre, implicavī, implicatum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "entangle, involve",
+   "sense_full": "implicate",
+   "parts": "implicō, implicāre, implicavī, implicatum",
+   "unit_id": "w13:b10.1",
    "count": 3
   },
   {
@@ -150,7 +163,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "it pleases, is pleasing or agreeable",
+   "meaning": "it pleases",
+   "sense_full": "it pleases, is pleasing or agreeable",
    "parts": "libet, libēre, libuit (impersonal)",
    "unit_id": "w13:b11.1",
    "count": 3
@@ -161,7 +175,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "mourn, grieve (over)",
+   "meaning": "mourn, grieve",
+   "sense_full": "mourn, grieve (over)",
    "parts": "lūgeō, lūgēre, luxī, luctum",
    "unit_id": "w13:b12.3",
    "count": 3
@@ -172,7 +187,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "account, reckoning, invoice",
+   "meaning": "reason, account, method",
+   "sense_full": "account, reckoning, invoice",
    "parts": null,
    "unit_id": "w13:b14.4",
    "count": 3
@@ -183,7 +199,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "swollen, inflated, distended",
+   "meaning": "swollen",
+   "sense_full": "swollen, inflated, distended",
    "parts": null,
    "unit_id": "w13:b3.2",
    "count": 3
@@ -195,6 +212,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "kiss",
+   "sense_full": "kiss",
    "parts": null,
    "unit_id": "w13:b26.7",
    "count": 2
@@ -205,7 +223,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "of the Circus",
+   "meaning": "of the circus",
+   "sense_full": "of the Circus",
    "parts": null,
    "unit_id": "w13:b12.1",
    "count": 2
@@ -216,7 +235,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "race course",
+   "meaning": "circus, race course",
+   "sense_full": "race course",
    "parts": null,
    "unit_id": "w13:b11.2",
    "count": 2
@@ -227,7 +247,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "pleasure, delight, fun(usually plural), activity affording enjoyment, luxuries",
+   "meaning": "delight, pleasure, pet",
+   "sense_full": "pleasure, delight, fun(usually plural), activity affording enjoyment, luxuries",
    "parts": null,
    "unit_id": "w13:b23.1",
    "count": 2
@@ -239,6 +260,7 @@
    "gender": "m",
    "decl": 3,
    "meaning": "gladiator",
+   "sense_full": "gladiator",
    "parts": null,
    "unit_id": "w13:b8.2",
    "count": 2
@@ -250,6 +272,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "gladiatorial",
+   "sense_full": "gladiatorial",
    "parts": null,
    "unit_id": "w13:b9.1",
    "count": 2
@@ -261,19 +284,9 @@
    "gender": "n",
    "decl": 2,
    "meaning": "lap, bosom",
+   "sense_full": "lap, bosom",
    "parts": null,
    "unit_id": "w13:b20.2",
-   "count": 2
-  },
-  {
-   "lemma": "implicō",
-   "dict": "implicō, implicāre, implicuī, implicitum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "implicate",
-   "parts": "implicō, implicāre, implicuī, implicitum",
-   "unit_id": "w13:b10.1",
    "count": 2
   },
   {
@@ -282,7 +295,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "nature, innate quality",
+   "meaning": "nature, talent",
+   "sense_full": "nature, innate quality",
    "parts": null,
    "unit_id": "w13:b14.4",
    "count": 2
@@ -293,7 +307,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "strike",
+   "meaning": "hurt, injure",
+   "sense_full": "strike",
    "parts": "laedō, laedere, laesī, laesum",
    "unit_id": "w13:b4.1",
    "count": 2
@@ -305,6 +320,7 @@
    "gender": "f",
    "decl": 1,
    "meaning": "oil lamp",
+   "sense_full": "oil lamp",
    "parts": null,
    "unit_id": "w13:b22.2",
    "count": 2
@@ -316,6 +332,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "mind",
+   "sense_full": "mind",
    "parts": null,
    "unit_id": "w13:b25.3",
    "count": 2
@@ -326,7 +343,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "poor, wretched",
+   "meaning": "poor little, wretched",
+   "sense_full": "poor, wretched",
    "parts": null,
    "unit_id": "w13:b3.2",
    "count": 2
@@ -337,7 +355,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "continuous, uninterpreted",
+   "meaning": "continuous, unbroken",
+   "sense_full": "continuous, uninterpreted",
    "parts": null,
    "unit_id": "w13:b25.2",
    "count": 2
@@ -349,8 +368,33 @@
    "gender": "n",
    "decl": 2,
    "meaning": "beginning",
+   "sense_full": "beginning",
    "parts": null,
    "unit_id": "w13:b17.2",
+   "count": 2
+  },
+  {
+   "lemma": "sapiō",
+   "dict": "sapiō, -ere, -iī",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be wise, have sense",
+   "sense_full": "show good sense, be wise",
+   "parts": "sapiō, -ere, -iī",
+   "unit_id": "w14:b13.3",
+   "count": 2
+  },
+  {
+   "lemma": "sinūs",
+   "dict": "sinūs, -ūs m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 4,
+   "meaning": "fold, lap, bay",
+   "sense_full": "curved or bent surface",
+   "parts": null,
+   "unit_id": "w14:b5.3",
    "count": 2
   },
   {
@@ -359,18 +403,20 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "darkness (in the plural), obscurity",
+   "meaning": "darkness",
+   "sense_full": "darkness (in the plural), obscurity",
    "parts": null,
    "unit_id": "w13:b22.1",
    "count": 2
   },
   {
    "lemma": "testis",
-   "dict": "testis, -is m/f.",
+   "dict": "testis, -is m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
    "meaning": "witness",
+   "sense_full": "witness",
    "parts": null,
    "unit_id": "w14:b17.3",
    "count": 2
@@ -382,20 +428,22 @@
    "gender": "n",
    "decl": 2,
    "meaning": "theater",
+   "sense_full": "theater",
    "parts": null,
    "unit_id": "w13:b13.1",
    "count": 2
   },
   {
-   "lemma": "-",
-   "dict": "-, (gen., -is), ·, superlative, ultimus, -a, -um",
+   "lemma": "venustus",
+   "dict": "venustus, -a, -um",
    "pos": "ADJ",
    "gender": null,
-   "decl": 3,
-   "meaning": "far",
+   "decl": 1,
+   "meaning": "charming, lovely, graceful",
+   "sense_full": "attractive, charming, graceful, pretty, neat",
    "parts": null,
-   "unit_id": "w13:b25.1",
-   "count": 1
+   "unit_id": "w13:b24.2",
+   "count": 2
   },
   {
    "lemma": "ācer",
@@ -403,7 +451,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "sharp, bitter, pointed, piercing, shrill",
+   "meaning": "sharp, keen, fierce",
+   "sense_full": "sharp, bitter, pointed, piercing, shrill",
    "parts": null,
    "unit_id": "w13:b13.3",
    "count": 1
@@ -414,7 +463,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 1,
-   "meaning": "charioteer, driver",
+   "meaning": "charioteer",
+   "sense_full": "charioteer, driver",
    "parts": null,
    "unit_id": "w13:b12.2",
    "count": 1
@@ -425,7 +475,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "pretty, handsome, charming, pleasant, agreeable, polite",
+   "meaning": "pretty, charming",
+   "sense_full": "pretty, handsome, charming, pleasant, agreeable, polite",
    "parts": null,
    "unit_id": "w13:b16.1",
    "count": 1
@@ -436,7 +487,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "loud, excessive, boisterous, derisive laugh, guffaw",
+   "meaning": "loud laugh, guffaw",
+   "sense_full": "loud, excessive, boisterous, derisive laugh, guffaw",
    "parts": null,
    "unit_id": "w14:b4.5",
    "count": 1
@@ -447,7 +499,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "leap, spring, hop round",
+   "meaning": "hop around",
+   "sense_full": "leap, spring, hop round",
    "parts": "circumsiliō, circumsilīre",
    "unit_id": "w13:b24.9",
    "count": 1
@@ -459,6 +512,7 @@
    "gender": "n",
    "decl": 2,
    "meaning": "neck",
+   "sense_full": "neck",
    "parts": null,
    "unit_id": "w13:b20.5",
    "count": 1
@@ -469,7 +523,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "comedy (as form of drama or literature",
+   "meaning": "comedy",
+   "sense_full": "comedy (as form of drama or literature",
    "parts": null,
    "unit_id": "w13:b13.2",
    "count": 1
@@ -480,7 +535,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "confuse, disquiet, confound, derange, dismay, upset or mix up",
+   "meaning": "throw into confusion, upset",
+   "sense_full": "confuse, disquiet, confound, derange, dismay, upset or mix up",
    "parts": "conturbō, conturbāre, conturbavī, conturbatum",
    "unit_id": "w13:b26.11",
    "count": 1
@@ -491,7 +547,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "devour, consume",
+   "meaning": "devour, swallow",
+   "sense_full": "devour, consume",
    "parts": "dēvorō, dēvorāre, devoravī, dēvorātum",
    "unit_id": "w13:b24.14",
    "count": 1
@@ -502,7 +559,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "doubtful, dubious, uncertain",
+   "meaning": "doubtful, uncertain",
+   "sense_full": "doubtful, dubious, uncertain",
    "parts": null,
    "unit_id": "w13:b29.2",
    "count": 1
@@ -513,7 +571,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "redden, blush, blush at",
+   "meaning": "blush, redden",
+   "sense_full": "redden, blush, blush at",
    "parts": "ērubēscō, ērubēscere, erubuī",
    "unit_id": "w14:b17.1",
    "count": 1
@@ -524,7 +583,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "torture",
+   "meaning": "torment, torture",
+   "sense_full": "torture",
    "parts": "excruciō, excruciāre, excruciavī, excruciatum",
    "unit_id": "w13:b30.2",
    "count": 1
@@ -536,19 +596,9 @@
    "gender": null,
    "decl": 1,
    "meaning": "twin, double",
+   "sense_full": "twin, double",
    "parts": null,
    "unit_id": "w13:b14.1",
-   "count": 1
-  },
-  {
-   "lemma": "implicō",
-   "dict": "implicō, implicāre, implicavī, implicatum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "implicate",
-   "parts": "implicō, implicāre, implicavī, implicatum",
-   "unit_id": "w13:b10.1",
    "count": 1
   },
   {
@@ -557,7 +607,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "willingly",
+   "meaning": "gladly, willingly",
+   "sense_full": "willingly",
    "parts": null,
    "unit_id": "w13:b22.1",
    "count": 1
@@ -568,7 +619,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "sweetened with honey",
+   "meaning": "honey-sweet",
+   "sense_full": "sweetened with honey",
    "parts": null,
    "unit_id": "w13:b24.6",
    "count": 1
@@ -579,20 +631,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "snowy, covered with snow",
+   "meaning": "snowy, snow-white",
+   "sense_full": "snowy, covered with snow",
    "parts": null,
    "unit_id": "w14:b13.1",
-   "count": 1
-  },
-  {
-   "lemma": "nōscō",
-   "dict": "nōscō -ere, nōvī, nōtum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "know, get to know (the perfect nōvī means 'I know', so nōverat / nōrat = 'knew')",
-   "parts": "nōscō -ere, nōvī, nōtum",
-   "unit_id": "w13:b24.6",
    "count": 1
   },
   {
@@ -601,7 +643,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "(little) eye",
+   "meaning": "little eye",
+   "sense_full": "(little) eye",
    "parts": null,
    "unit_id": "w13:b24.18",
    "count": 1
@@ -612,7 +655,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "hate, hatred, dislike, antipathy",
+   "meaning": "hatred, hate",
+   "sense_full": "hate, hatred, dislike, antipathy",
    "parts": null,
    "unit_id": "w13:b29.2",
    "count": 1
@@ -623,7 +667,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "power, might",
+   "meaning": "wealth, resources, help",
+   "sense_full": "power, might",
    "parts": null,
    "unit_id": "w14:b18.2",
    "count": 1
@@ -634,7 +679,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "gape",
+   "meaning": "gape, yawn",
+   "sense_full": "gape",
    "parts": "ōscitō, ōscitāre",
    "unit_id": "w14:b7.3",
    "count": 1
@@ -645,7 +691,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "palm or width of the hand",
+   "meaning": "palm, hand",
+   "sense_full": "palm or width of the hand",
    "parts": null,
    "unit_id": "w13:b10.2",
    "count": 1
@@ -656,7 +703,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "chirp, pipe",
+   "meaning": "chirp",
+   "sense_full": "chirp, pipe",
    "parts": "pīpiō, pīpiāre, pipiavī, pipiatum",
    "unit_id": "w13:b24.10",
    "count": 1
@@ -668,6 +716,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "poetic",
+   "sense_full": "poetic",
    "parts": null,
    "unit_id": "w13:b17.1",
    "count": 1
@@ -678,7 +727,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "jump, leap up, forward",
+   "meaning": "leap forward, jump up",
+   "sense_full": "jump, leap up, forward",
    "parts": "prōsiliō, prosilīre, prosilivī",
    "unit_id": "w14:b18.4",
    "count": 1
@@ -689,31 +739,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "require, seek, ask for",
+   "meaning": "look for, ask for, need",
+   "sense_full": "require, seek, ask for",
    "parts": "requīrō, requīrere, requisivī, requisitum",
    "unit_id": "w13:b30.1",
-   "count": 1
-  },
-  {
-   "lemma": "sapiō",
-   "dict": "sapiō -ere -iī",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "show good sense, be wise",
-   "parts": "sapiō -ere -iī",
-   "unit_id": "w14:b13.3",
-   "count": 1
-  },
-  {
-   "lemma": "sapiō",
-   "dict": "sapiō, sapere, sapivī",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "taste of",
-   "parts": "sapiō, sapere, sapivī",
-   "unit_id": "w14:b13.4",
    "count": 1
   },
   {
@@ -722,7 +751,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "theatrical",
+   "meaning": "of the stage, theatrical",
+   "sense_full": "theatrical",
    "parts": null,
    "unit_id": "w13:b13.1",
    "count": 1
@@ -733,7 +763,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "scalpel, lancet",
+   "meaning": "scalpel",
+   "sense_full": "scalpel, lancet",
    "parts": null,
    "unit_id": "w13:b3.1",
    "count": 1
@@ -745,41 +776,9 @@
    "gender": null,
    "decl": 1,
    "meaning": "serious, grave",
+   "sense_full": "serious, grave",
    "parts": null,
    "unit_id": "w14:b3.1",
-   "count": 1
-  },
-  {
-   "lemma": "sinūs",
-   "dict": "sinūs, -ūs m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 4,
-   "meaning": "curved or bent surface",
-   "parts": null,
-   "unit_id": "w14:b5.3",
-   "count": 1
-  },
-  {
-   "lemma": "sinūs",
-   "dict": "sinūs, -ī m.",
-   "pos": "N",
-   "gender": "m",
-   "decl": 2,
-   "meaning": "bowl for serving wine, etc",
-   "parts": null,
-   "unit_id": "w14:b7.2",
-   "count": 1
-  },
-  {
-   "lemma": "studiōsus",
-   "dict": "studiōsus, -a, -um, ·, comparative, studiōsior,, studiōsius",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "eager, keen, full of zeal",
-   "parts": null,
-   "unit_id": "w13:b6.3",
    "count": 1
   },
   {
@@ -788,7 +787,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "dark",
+   "meaning": "dark, gloomy",
+   "sense_full": "dark",
    "parts": null,
    "unit_id": "w13:b24.11",
    "count": 1
@@ -799,31 +799,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "(poor little) swollen, inflated, inflamed, grandiose",
+   "meaning": "a little swollen",
+   "sense_full": "(poor little) swollen, inflated, inflamed, grandiose",
    "parts": null,
    "unit_id": "w13:b24.18",
-   "count": 1
-  },
-  {
-   "lemma": "venustior",
-   "dict": "venustior, -ius, ·, comparative, of, venustus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": null,
-   "meaning": "more charming, more attractive",
-   "parts": null,
-   "unit_id": "w13:b24.2",
-   "count": 1
-  },
-  {
-   "lemma": "venustus",
-   "dict": "venustus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "attractive, charming, graceful, pretty, neat",
-   "parts": null,
-   "unit_id": "w14:b4.6",
    "count": 1
   },
   {
@@ -832,7 +811,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 2,
-   "meaning": "verse",
+   "meaning": "little verse",
+   "sense_full": "verse",
    "parts": null,
    "unit_id": "w14:b9.3",
    "count": 1

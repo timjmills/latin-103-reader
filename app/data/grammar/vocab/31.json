@@ -8,6 +8,7 @@
    "gender": null,
    "decl": null,
    "meaning": "whoever",
+   "sense_full": "whoever",
    "parts": null,
    "unit_id": "w09:b46.7",
    "count": 7
@@ -18,7 +19,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "fugitive",
+   "meaning": "runaway, fugitive",
+   "sense_full": "fugitive",
    "parts": null,
    "unit_id": "w09:b21.1",
    "count": 6
@@ -29,10 +31,11 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "writing without faith",
+   "meaning": "faithless, untrustworthy",
+   "sense_full": "writing without faith",
    "parts": null,
    "unit_id": "w09:b18.3",
-   "count": 5
+   "count": 6
   },
   {
    "lemma": "poena",
@@ -40,7 +43,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "penalty, punishment",
+   "meaning": "punishment, penalty",
+   "sense_full": "penalty, punishment",
    "parts": null,
    "unit_id": "w09:b31.5",
    "count": 5
@@ -51,7 +55,8 @@
    "pos": "PRON",
    "gender": null,
    "decl": null,
-   "meaning": "whatever, whatsoever",
+   "meaning": "whatever",
+   "sense_full": "whatever, whatsoever",
    "parts": null,
    "unit_id": "w09:b10.1",
    "count": 5
@@ -62,7 +67,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "lead away, carry off",
+   "meaning": "lead away, take away",
+   "sense_full": "lead away, carry off",
    "parts": "abdūcō, abdūcere, abdūxī, abductum",
    "unit_id": "w09:b44.1",
    "count": 4
@@ -73,20 +79,34 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "bear, carry, take, fetch, remove, withdraw",
+   "meaning": "carry off, take away",
+   "sense_full": "bear, carry, take, fetch, remove, withdraw",
    "parts": "auferō, auferre, abstulī, ablatum",
    "unit_id": "w09:b16.3",
    "count": 4
   },
   {
    "lemma": "clēmēns",
-   "dict": "clēmēns, (gen., clēmentis)",
+   "dict": "clēmēns, gen. clēmentis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "merciful or loving",
+   "meaning": "merciful, mild",
+   "sense_full": "merciful or loving",
    "parts": null,
    "unit_id": "w09:b28.1",
+   "count": 4
+  },
+  {
+   "lemma": "crūdēlis",
+   "dict": "crūdēlis, -e",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 3,
+   "meaning": "cruel, harsh",
+   "sense_full": "cruel, hardhearted, unmerciful, severe, bloodthirsty, savage, inhuman",
+   "parts": null,
+   "unit_id": "w09:b33.7",
    "count": 4
   },
   {
@@ -96,8 +116,21 @@
    "gender": "f",
    "decl": 3,
    "meaning": "cross",
+   "sense_full": "cross",
    "parts": null,
    "unit_id": "w09:b20.4",
+   "count": 4
+  },
+  {
+   "lemma": "ēducō",
+   "dict": "ēducō, ēducāre, educavī, ēducātum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "bring up, rear",
+   "sense_full": "bring up",
+   "parts": "ēducō, ēducāre, educavī, ēducātum",
+   "unit_id": "w09:b41.2",
    "count": 4
   },
   {
@@ -106,7 +139,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "injury",
+   "meaning": "injustice, wrong",
+   "sense_full": "injury",
    "parts": null,
    "unit_id": "w09:b31.5",
    "count": 4
@@ -117,31 +151,46 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "just, fair, equitable",
+   "meaning": "just, fair",
+   "sense_full": "just, fair, equitable",
    "parts": null,
    "unit_id": "w09:b31.3",
    "count": 4
   },
   {
    "lemma": "iuvenis",
-   "dict": "iuvenis, -e",
-   "pos": "ADJ",
-   "gender": null,
+   "dict": "iuvenis, -is m./f.",
+   "pos": "N",
+   "gender": "c",
    "decl": 3,
-   "meaning": "youthful, young",
+   "meaning": "young man",
+   "sense_full": "youth, young man or woman",
    "parts": null,
    "unit_id": "w09:b22.2",
    "count": 4
   },
   {
    "lemma": "memor",
-   "dict": "memor, (gen., memoris)",
+   "dict": "memor, gen. memoris",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "remembering",
+   "meaning": "remembering, mindful",
+   "sense_full": "remembering",
    "parts": null,
    "unit_id": "w09:b7.3",
+   "count": 4
+  },
+  {
+   "lemma": "mōs",
+   "dict": "mōs, moris m.",
+   "pos": "N",
+   "gender": "m",
+   "decl": 3,
+   "meaning": "custom, habit",
+   "sense_full": "custom, habit",
+   "parts": null,
+   "unit_id": "w09:b37.1",
    "count": 4
   },
   {
@@ -150,7 +199,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "for and in fact, on the other hand",
+   "meaning": "for indeed",
+   "sense_full": "for and in fact, on the other hand",
    "parts": null,
    "unit_id": "w09:b37.1",
    "count": 4
@@ -162,6 +212,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "excessive, too great",
+   "sense_full": "excessive, too great",
    "parts": null,
    "unit_id": "w09:b27.2",
    "count": 4
@@ -172,7 +223,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "prize, reward",
+   "meaning": "reward, prize",
+   "sense_full": "prize, reward",
    "parts": null,
    "unit_id": "w09:b24.1",
    "count": 4
@@ -183,7 +235,8 @@
    "pos": "N",
    "gender": "m",
    "decl": 3,
-   "meaning": "hearsay, rumor, gossip",
+   "meaning": "rumor, gossip",
+   "sense_full": "hearsay, rumor, gossip",
    "parts": null,
    "unit_id": "w09:b4.1",
    "count": 4
@@ -195,17 +248,19 @@
    "gender": "n",
    "decl": 3,
    "meaning": "crime",
+   "sense_full": "crime",
    "parts": null,
    "unit_id": "w09:b33.3",
    "count": 4
   },
   {
    "lemma": "senex",
-   "dict": "senex, (gen., senis)",
-   "pos": "ADJ",
-   "gender": null,
+   "dict": "senex, senis m.",
+   "pos": "N",
+   "gender": "m",
    "decl": 3,
-   "meaning": "aged, old",
+   "meaning": "old man",
+   "sense_full": "old man",
    "parts": null,
    "unit_id": "w09:b46.6",
    "count": 4
@@ -216,7 +271,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "set up, establish, set, place, build",
+   "meaning": "set up, fix, decide",
+   "sense_full": "set up, establish, set, place, build",
    "parts": "statuō, statuere, statuī, statūtum",
    "unit_id": "w09:b25.2",
    "count": 4
@@ -227,7 +283,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "punishment, suffering",
+   "meaning": "punishment",
+   "sense_full": "punishment, suffering",
    "parts": null,
    "unit_id": "w09:b33.4",
    "count": 4
@@ -238,7 +295,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "forbid, prohibit",
+   "meaning": "forbid",
+   "sense_full": "forbid, prohibit",
    "parts": "vetō, vetāre, vetuī, vetitum",
    "unit_id": "w09:b31.7",
    "count": 4
@@ -249,7 +307,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "avaricious, greedy",
+   "meaning": "greedy",
+   "sense_full": "avaricious, greedy",
    "parts": null,
    "unit_id": "w09:b8.1",
    "count": 3
@@ -260,7 +319,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "in person, face-to-face",
+   "meaning": "in person, face to face",
+   "sense_full": "in person, face-to-face",
    "parts": null,
    "unit_id": "w09:b33.6",
    "count": 3
@@ -271,20 +331,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "torment, torture",
+   "meaning": "torture, torment",
+   "sense_full": "torment, torture",
    "parts": "cruciō, cruciāre, cruciāvī, cruciatum",
    "unit_id": "w09:b20.3",
-   "count": 3
-  },
-  {
-   "lemma": "crūdēlis",
-   "dict": "crūdēlis, -e",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "cruel, hardhearted, unmerciful, severe, bloodthirsty, savage, inhuman",
-   "parts": null,
-   "unit_id": "w09:b33.7",
    "count": 3
   },
   {
@@ -293,7 +343,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "weak, feeble, frail",
+   "meaning": "weak, feeble",
+   "sense_full": "weak, feeble, frail",
    "parts": null,
    "unit_id": "w09:b38.1",
    "count": 3
@@ -304,20 +355,10 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "drunk, intoxicated",
+   "meaning": "drunk",
+   "sense_full": "drunk, intoxicated",
    "parts": null,
    "unit_id": "w09:b51.3",
-   "count": 3
-  },
-  {
-   "lemma": "ēducō",
-   "dict": "ēducō, ēducāre, educavī, ēducātum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "bring up",
-   "parts": "ēducō, ēducāre, educavī, ēducātum",
-   "unit_id": "w09:b41.2",
    "count": 3
   },
   {
@@ -326,7 +367,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "infirm, weak feeble ineffectual",
+   "meaning": "weak, feeble",
+   "sense_full": "infirm, weak feeble ineffectual",
    "parts": null,
    "unit_id": "w09:b35.1",
    "count": 3
@@ -337,7 +379,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "law",
+   "meaning": "law, right",
+   "sense_full": "law",
    "parts": null,
    "unit_id": "w09:b31.6",
    "count": 3
@@ -349,6 +392,7 @@
    "gender": "f",
    "decl": 3,
    "meaning": "law",
+   "sense_full": "law",
    "parts": null,
    "unit_id": "w09:b31.7",
    "count": 3
@@ -359,18 +403,20 @@
    "pos": "N",
    "gender": "n",
    "decl": 3,
-   "meaning": "service",
+   "meaning": "duty, gift, service",
+   "sense_full": "service",
    "parts": null,
    "unit_id": "w09:b10.4",
    "count": 3
   },
   {
    "lemma": "praesēns",
-   "dict": "praesēns, (gen., praesentis)",
+   "dict": "praesēns, gen. praesentis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
    "meaning": "present",
+   "sense_full": "present",
    "parts": null,
    "unit_id": "w09:b1.4",
    "count": 3
@@ -381,7 +427,8 @@
    "pos": "CONJ",
    "gender": null,
    "decl": null,
-   "meaning": "why, for what reason, on what account",
+   "meaning": "why, for what reason",
+   "sense_full": "why, for what reason, on what account",
    "parts": null,
    "unit_id": "w09:b12.1",
    "count": 3
@@ -392,21 +439,35 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "infamous, wicked",
+   "meaning": "wicked, criminal",
+   "sense_full": "infamous, wicked",
    "parts": null,
    "unit_id": "w09:b33.4",
    "count": 3
   },
   {
    "lemma": "vetus",
-   "dict": "vetus, (gen., veteris)",
+   "dict": "vetus, gen. veteris",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "old, aged, ancient",
+   "meaning": "old, ancient",
+   "sense_full": "old, aged, ancient",
    "parts": null,
    "unit_id": "w09:b34.1",
    "count": 3
+  },
+  {
+   "lemma": "fīdō",
+   "dict": "fīdō, -ere, fīsus sum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "trust, rely on",
+   "sense_full": "trust (+ dative), rely on (semi-deponent: perfect fīsus sum)",
+   "parts": "fīdō, -ere, fīsus sum",
+   "unit_id": "w09:b18.2",
+   "count": 2
   },
   {
    "lemma": "fīdus",
@@ -415,6 +476,7 @@
    "gender": null,
    "decl": 1,
    "meaning": "faithful, loyal",
+   "sense_full": "faithful, loyal",
    "parts": null,
    "unit_id": "w09:b42.1",
    "count": 2
@@ -425,7 +487,8 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "utterly, completely, without exception",
+   "meaning": "utterly, completely",
+   "sense_full": "utterly, completely, without exception",
    "parts": null,
    "unit_id": "w09:b48.6",
    "count": 2
@@ -437,6 +500,7 @@
    "gender": "m",
    "decl": 2,
    "meaning": "son-in-law",
+   "sense_full": "son-in-law",
    "parts": null,
    "unit_id": "w09:b31.5",
    "count": 2
@@ -447,7 +511,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "pardon, forgive (with dative)",
+   "meaning": "forgive, pardon",
+   "sense_full": "pardon, forgive (with dative)",
    "parts": "ignōscō, ignōscere, ignovī, ignōtum",
    "unit_id": "w09:b29.2",
    "count": 2
@@ -458,31 +523,22 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "lie hidden, lurk",
+   "meaning": "lie hidden",
+   "sense_full": "lie hidden, lurk",
    "parts": "lateō, lātēre, latuī",
    "unit_id": "w09:b21.1",
    "count": 2
   },
   {
    "lemma": "parricīda",
-   "dict": "parricīda, -ae m/f.",
+   "dict": "parricīda, -ae m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 1,
-   "meaning": "murderer of near relative (father?/parent)",
+   "meaning": "murderer of a parent",
+   "sense_full": "murderer of near relative (father?/parent)",
    "parts": null,
    "unit_id": "w09:b32.3",
-   "count": 2
-  },
-  {
-   "lemma": "pessimus",
-   "dict": "pessimus, -a, -um, ·, superlative, of, malus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "worst, very bad",
-   "parts": null,
-   "unit_id": "w09:b10.4",
    "count": 2
   },
   {
@@ -491,7 +547,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 3,
-   "meaning": "drinking, drink",
+   "meaning": "drink",
+   "sense_full": "drinking, drink",
    "parts": null,
    "unit_id": "w09:b1.1",
    "count": 2
@@ -503,19 +560,21 @@
    "gender": null,
    "decl": null,
    "meaning": "before",
+   "sense_full": "before",
    "parts": null,
    "unit_id": "w09:b20.3",
    "count": 2
   },
   {
-   "lemma": "sevērus",
-   "dict": "sevērus, -a, -um, ·, superlative, sevērissimus, -a, -um",
+   "lemma": "sapiēns",
+   "dict": "sapiēns, gen. sapientis",
    "pos": "ADJ",
    "gender": null,
-   "decl": 1,
-   "meaning": "stern, strict, severe",
+   "decl": 3,
+   "meaning": "wise, sensible",
+   "sense_full": "rational",
    "parts": null,
-   "unit_id": "w09:b33.7",
+   "unit_id": "w09:b32.3",
    "count": 2
   },
   {
@@ -524,7 +583,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "certain quantity, amount, number, size of",
+   "meaning": "a fair amount of",
+   "sense_full": "certain quantity, amount, number, size of",
    "parts": null,
    "unit_id": "w09:b16.3",
    "count": 1
@@ -535,7 +595,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "ass's, of, produced by, foaled of an ass",
+   "meaning": "of a donkey",
+   "sense_full": "ass's, of, produced by, foaled of an ass",
    "parts": null,
    "unit_id": "w09:b15.2",
    "count": 1
@@ -546,7 +607,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "flee, flee from, shun",
+   "meaning": "run away, flee",
+   "sense_full": "flee, flee from, shun",
    "parts": "aufugiō, aufūgere, aufūgī",
    "unit_id": "w09:b16.3",
    "count": 1
@@ -557,20 +619,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "have confidence in, rely on, trust (to)",
+   "meaning": "trust, rely on",
+   "sense_full": "have confidence in, rely on, trust (to)",
    "parts": "cōnfīdō, cōnfīdere, confisus sum",
    "unit_id": "w09:b18.3",
-   "count": 1
-  },
-  {
-   "lemma": "crūdēlis",
-   "dict": "crūdēlis, -e, ·, superlative, crūdēlissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "cruel, hardhearted, unmerciful, severe, bloodthirsty, savage, inhuman",
-   "parts": null,
-   "unit_id": "w09:b34.1",
    "count": 1
   },
   {
@@ -579,20 +631,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "talk (familiarly), chat, converse",
+   "meaning": "talk, chat",
+   "sense_full": "talk (familiarly), chat, converse",
    "parts": "fabulor, fābulārī, fabulatus sum",
    "unit_id": "w09:b49.3",
-   "count": 1
-  },
-  {
-   "lemma": "fīdō",
-   "dict": "fīdō -ere, fīsus sum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "trust (+ dative), rely on (semi-deponent: perfect fīsus sum)",
-   "parts": "fīdō -ere, fīsus sum",
-   "unit_id": "w09:b18.2",
    "count": 1
   },
   {
@@ -601,7 +643,8 @@
    "pos": "N",
    "gender": "n",
    "decl": 2,
-   "meaning": "graffito, a message scratched on a wall (here one found at Pompeii)",
+   "meaning": "graffito",
+   "sense_full": "graffito, a message scratched on a wall (here one found at Pompeii)",
    "parts": null,
    "unit_id": "w09:b58.1",
    "count": 1
@@ -612,31 +655,22 @@
    "pos": "ADV",
    "gender": null,
    "decl": null,
-   "meaning": "therefore, for the reason that, for that reason",
+   "meaning": "for that reason, therefore",
+   "sense_full": "therefore, for the reason that, for that reason",
    "parts": null,
    "unit_id": "w09:b32.4",
    "count": 1
   },
   {
    "lemma": "impatiēns",
-   "dict": "impatiēns, (gen., impatientis)",
+   "dict": "impatiēns, gen. impatientis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
-   "meaning": "impatient or intolerant (of)",
+   "meaning": "impatient",
+   "sense_full": "impatient or intolerant (of)",
    "parts": null,
    "unit_id": "w09:b11.1",
-   "count": 1
-  },
-  {
-   "lemma": "īnfīdissimus",
-   "dict": "īnfīdissimus, -a, -um, ·, superlative, of, īnfīdus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "most faithless, utterly untrustworthy",
-   "parts": null,
-   "unit_id": "w09:b20.2",
    "count": 1
   },
   {
@@ -645,7 +679,8 @@
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "unjust, wrongful",
+   "meaning": "unjust",
+   "sense_full": "unjust, wrongful",
    "parts": null,
    "unit_id": "w09:b31.4",
    "count": 1
@@ -656,7 +691,8 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "be in molten or liquid state",
+   "meaning": "be liquid, be clear",
+   "sense_full": "be in molten or liquid state",
    "parts": "līqueō, līquēre, licuī",
    "unit_id": "w09:b32.4",
    "count": 1
@@ -667,7 +703,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "memory, recollection",
+   "meaning": "memory",
+   "sense_full": "memory, recollection",
    "parts": null,
    "unit_id": "w09:b33.3",
    "count": 1
@@ -678,7 +715,8 @@
    "pos": "N",
    "gender": "f",
    "decl": 1,
-   "meaning": "trifles (in the plural), nonsense",
+   "meaning": "trifles, nonsense",
+   "sense_full": "trifles (in the plural), nonsense",
    "parts": null,
    "unit_id": "w09:b55.1",
    "count": 1
@@ -689,31 +727,10 @@
    "pos": "V",
    "gender": null,
    "decl": null,
-   "meaning": "draw back, withdraw",
+   "meaning": "drag back, withdraw",
+   "sense_full": "draw back, withdraw",
    "parts": "retrahō, retrahere, retrāxī, retractum",
    "unit_id": "w09:b24.1",
-   "count": 1
-  },
-  {
-   "lemma": "sapiēns",
-   "dict": "sapiēns, (gen., sapientis)",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "rational",
-   "parts": null,
-   "unit_id": "w09:b32.3",
-   "count": 1
-  },
-  {
-   "lemma": "sapiēns",
-   "dict": "sapiēns, (gen., sapientis), ·, superlative, sapientissimus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 3,
-   "meaning": "rational",
-   "parts": null,
-   "unit_id": "w09:b33.3",
    "count": 1
   }
  ]
