@@ -198,6 +198,39 @@ def test_adjective_ius_genitive():
     assert has(e, "sōlī", case="dat", number="sg", gender="f")
 
 
+def test_adjective_with_a_fixed_que():
+    """uterque and plērīque are one word with -que welded on; the glossary keeps
+    only the bare stem (uter- / utr-, plēr-), so the table hangs -que back on
+    every cell.  Allen & Greenough §151.a (uterque, utrīusque, utrīque) and
+    §151.b (plērīque, plēraeque, plēraque, plērōrumque); Ørberg lists uterque
+    among the prōnōmina indēfīnīta in cap. XXXV but prints no table."""
+    uterque = E("uterque, utraque, utrumque", ["uter", "utr"], "ADJ", [1, 4], h="uterque")
+    for f, parse in (
+            ("uterque", dict(case="nom", number="sg", gender="m")),
+            ("utraque", dict(case="nom", number="sg", gender="f")),
+            ("utrumque", dict(case="nom", number="sg", gender="n")),
+            ("utrīusque", dict(case="gen", number="sg", gender="m")),
+            ("utrīque", dict(case="dat", number="sg", gender="f")),
+            ("utramque", dict(case="acc", number="sg", gender="f")),
+            ("utrōque", dict(case="abl", number="sg", gender="m")),
+            ("utrōrumque", dict(case="gen", number="pl", gender="m")),
+            ("utrīsque", dict(case="abl", number="pl", gender="n"))):
+        assert has(uterque, f, **parse), f
+    assert "uter" not in lf.form_index(uterque)
+
+    plerique = E("plērīque, plēraeque, plēraque", ["plēr", "plēr"], "ADJ", [1, 1], h="plerique")
+    for f, parse in (
+            ("plērīque", dict(case="nom", number="pl", gender="m")),
+            ("plēraeque", dict(case="nom", number="pl", gender="f")),
+            ("plēraque", dict(case="nom", number="pl", gender="n")),
+            ("plērōrumque", dict(case="gen", number="pl", gender="m")),
+            ("plērīsque", dict(case="dat", number="pl", gender="f")),
+            ("plērōsque", dict(case="acc", number="pl", gender="m")),
+            ("plērumque", dict(case="acc", number="sg", gender="n"))):
+        assert has(plerique, f, **parse), f
+    assert "plērī" not in lf.form_index(plerique)
+
+
 # --------------------------------------------------------------------- verbs
 
 AMO = E("amō, amāre, amāvī, amātum", ["am", "am", "amāv", "amāt"], "V", [1, 1], h="amo")
@@ -317,7 +350,8 @@ IRREGULARS = {
              "erunt": ("fut", "ind", 3, "pl"), "fuit": ("perf", "ind", 3, "sg"),
              "fuērunt": ("perf", "ind", 3, "pl"), "fuerat": ("plupf", "ind", 3, "sg"),
              "fuerit": ("futperf", "ind", 3, "sg")},
-            ["esse", "fuisse", "es", "este", "estō", "futūrus", "sim", "sit", "essent", "fuissem"]),
+            ["esse", "fuisse", "es", "este", "estō", "futūrus", "sim", "sit", "essent",
+             "fuissem", "fore"]),
     "possum": (E("possum, posse, potuī", ["pot", "pot", "potu", "-"], "V", [5, 2]),
                {"potest": ("pres", "ind", 3, "sg"), "possunt": ("pres", "ind", 3, "pl"),
                 "poterat": ("impf", "ind", 3, "sg"), "poterit": ("fut", "ind", 3, "sg"),
@@ -328,7 +362,8 @@ IRREGULARS = {
             "ībat": ("impf", "ind", 3, "sg"), "ībit": ("fut", "ind", 3, "sg"),
             "ībunt": ("fut", "ind", 3, "pl"), "iit": ("perf", "ind", 3, "sg"),
             "iērunt": ("perf", "ind", 3, "pl")},
-           ["īre", "īsse", "ī", "īte", "iēns", "euntis", "eundum", "itum", "itūrus", "eat", "īret"]),
+           ["īre", "īrī", "īsse", "ī", "īte", "iēns", "euntis", "eundum", "itum", "itūrus",
+            "eat", "īret"]),
     "fero": (E("ferō, ferre, tulī, lātum", ["fer", "fer", "tul", "lāt"], "V", [3, 2]),
              {"fert": ("pres", "ind", 3, "sg"), "ferunt": ("pres", "ind", 3, "pl"),
               "ferēbat": ("impf", "ind", 3, "sg"), "feret": ("fut", "ind", 3, "sg"),
@@ -348,10 +383,12 @@ IRREGULARS = {
              {"mālunt": ("pres", "ind", 3, "pl"), "mālet": ("fut", "ind", 3, "sg"),
               "māluit": ("perf", "ind", 3, "sg")},
              ["mālle", "mālim", "māllem", "māluisse"]),
-    "fio": (E("fīō, fierī, factus sum", ["f", "f", "-", "fact"], "V", [7, 3]),
+    # the glossary files fīō as Whitaker's V 3 3, and the table is now claimed by
+    # that category and no other (IRREGULAR_CAT)
+    "fio": (E("fīō, fierī, factus sum", ["fī", "f", "-", "fact"], "V", [3, 3], kind="semidep"),
             {"fit": ("pres", "ind", 3, "sg"), "fīunt": ("pres", "ind", 3, "pl"),
              "fīēbat": ("impf", "ind", 3, "sg"), "fīet": ("fut", "ind", 3, "sg")},
-            ["fierī", "fīat", "fieret", "factus", "fī", "fīte"]),
+            ["fierī", "fīat", "fieret", "factus", "fī", "fīte", "factūrus", "factum", "factū"]),
 }
 
 
@@ -363,6 +400,103 @@ def test_irregular_verbs(name):
         assert has(entry, form, tense=tense, mood=mood, person=per, number=num), f"{name}: {form}"
     for f in others:
         assert f in idx, f"{name}: {f}"
+
+
+def test_irregular_tables_are_claimed_by_one_category():
+    """A hand table belongs to its Whitaker category, not to its headword alone.
+
+    Ørberg teaches volāre in cap. X (avēs in āere volant, volāre nōn possum) and
+    velle from cap. X on; the glossary keeps them apart as V 1 1 and V 6 2, and
+    the generator must too — a learner tapping volābat wants the 1st conjugation.
+    Whitaker's ghost 1st-conjugation eō (eāre, ēvī, etum) collides the same way."""
+    fly = E("volō, volāre, volāvī, volātum", ["vol", "vol", "volāv", "volāt"], "V", [1, 1])
+    idx = lf.form_index(fly)
+    for f in ("volat", "volant", "volābat", "volābis", "volābimus", "volāvit",
+              "volāvērunt", "volā", "volāre", "volandō", "volantēs", "volātūrus"):
+        assert f in idx, f
+    assert has(fly, "volat", tense="pres", mood="ind", voice="act", person=3, number="sg")
+    assert has(fly, "volābat", tense="impf", mood="ind", voice="act", person=3, number="sg")
+    assert "vult" not in idx and "velle" not in idx and "vīs" not in idx
+    assert lf.paradigm(fly)["title"].endswith("1st conjugation")
+
+    want = E("volō, velle, voluī", ["vol", "vel", "volu", "-"], "V", [6, 2])
+    assert has(want, "vult", tense="pres", mood="ind", voice="act", person=3, number="sg")
+    assert "volat" not in lf.form_index(want)
+
+    ghost = E("eō, īre, iī, itum", ["e", "e", "ēv", "et"], "V", [1, 1], h="eo")
+    assert lf.paradigm(ghost)["title"].endswith("1st conjugation")
+    assert "ībat" not in lf.form_index(ghost)
+
+    # a hand supplement carries no category at all: the headword is all we have
+    bare = {"lemma": "fīō, fierī, factus sum", "h": "fio", "pos": "V", "roots": []}
+    assert "fieret" in lf.form_index(bare)
+
+
+def test_prosum_keeps_its_d_before_a_vowel():
+    """Ørberg, cap. XXVII, margin: 'prōd-esse prō-fuisse', 'prōd-est prō-sunt'.
+    The whole table is Allen & Greenough §204."""
+    e = E("prōsum, prōdesse, prōfuī, prōfutūrum", ["prōs", "prōd", "prōfu", "prōfut"],
+          "V", [5, 1], h="prosum")
+    table = {
+        ("pres", "ind"): ["prōsum", "prōdes", "prōdest", "prōsumus", "prōdestis", "prōsunt"],
+        ("impf", "ind"): ["prōderam", "prōderās", "prōderat", "prōderāmus", "prōderātis", "prōderant"],
+        ("fut", "ind"): ["prōderō", "prōderis", "prōderit", "prōderimus", "prōderitis", "prōderunt"],
+        ("perf", "ind"): ["prōfuī", "prōfuistī", "prōfuit", "prōfuimus", "prōfuistis", "prōfuērunt"],
+        ("pres", "subj"): ["prōsim", "prōsīs", "prōsit", "prōsīmus", "prōsītis", "prōsint"],
+        ("impf", "subj"): ["prōdessem", "prōdessēs", "prōdesset", "prōdessēmus", "prōdessētis",
+                           "prōdessent"],
+    }
+    for (tense, mood), row in table.items():
+        for i, (per, num) in enumerate(PERSONS):
+            assert has(e, row[i], tense=tense, mood=mood, voice="act", person=per, number=num), \
+                f"{row[i]} ({tense} {mood} {per}{num})"
+    idx = lf.form_index(e)
+    for f in ("prōdesse", "prōfuisse", "prōdes", "prōdeste", "prōdestō", "prōfutūrus", "prōfore"):
+        assert f in idx, f
+    # the d is prō-'s alone: absum, dēsum, praesum keep the bare s / es
+    for lemma, roots, forms3 in (
+            ("absum, abesse, āfuī, āfutūrum", ["abs", "abes", "āfu", "āfut"], ("abest", "absunt", "abesse")),
+            ("dēsum, dēesse, dēfuī", ["dēs", "dēes", "dēfu", "-"], ("dēest", "dēsunt", "dēesse"))):
+        i2 = lf.form_index(E(lemma, roots, "V", [5, 1]))
+        for f in forms3:
+            assert f in i2, f
+
+
+def test_sum_future_infinitive_fore():
+    """Ørberg, cap. XXXIII, margin: 'fore (īnf fut) = futūrum/-am … esse'
+    (pācem fore spērēmus).  Allen & Greenough §170.b."""
+    sum_ = E("sum, esse, fuī, futūrum", ["s", "es", "fu", "fut"], "V", [5, 1])
+    assert has(sum_, "fore", mood="inf", tense="fut", voice="act")
+    assert has(sum_, "esse", mood="inf", tense="pres", voice="act")
+    # a compound carries the prefix onto it too
+    assert has(E("absum, abesse, āfuī, āfutūrum", ["abs", "abes", "āfu", "āfut"], "V", [5, 1]),
+               "abfore", mood="inf", tense="fut", voice="act")
+
+
+def test_eo_present_passive_infinitive_iri():
+    """Ørberg, cap. XXIII, Grammatica Latina: "'laudātum īrī' est īnfīnītīvus
+    futūrī passīvī, quī ex supīnō et 'īrī' cōnstat"."""
+    eo = E("eō, īre, iī, itum", ["e", "i", "i", "it"], "V", [6, 1])
+    assert has(eo, "īrī", mood="inf", tense="pres", voice="pass")
+    assert has(eo, "īre", mood="inf", tense="pres", voice="act")
+    # the compounds have the passive the note promises: trānsīrī, abīrī
+    assert has(E("trānseō, trānsīre, trānsiī, trānsitum", ["trānse", "trānsi", "trānsi", "trānsit"],
+                 "V", [6, 1], h="transeo"), "trānsīrī", mood="inf", tense="pres", voice="pass")
+
+
+def test_fio_borrows_facio_future_participle_and_supine():
+    """fīō is faciō's passive and has no fourth principal part of its own: the
+    future participle is factūrus and the supine factum (Allen & Greenough
+    §204.b; Ørberg prints factūrus / factūrum esse in cap. XXIII)."""
+    fio = E("fīō, fierī, factus sum", ["fī", "f", "-", "fact"], "V", [3, 3], kind="semidep")
+    assert has(fio, "factūrus", mood="ptc", tense="fut", voice="act", case="nom", number="sg",
+               gender="m")
+    assert has(fio, "factūrum", mood="ptc", tense="fut", voice="act", case="acc", number="sg",
+               gender="m")
+    assert has(fio, "factum", mood="supine", case="acc")
+    assert has(fio, "factū", mood="supine", case="abl")
+    assert has(fio, "factus", mood="ptc", tense="perf", voice="pass", case="nom", number="sg",
+               gender="m")
 
 
 def test_compounds_of_sum_eo_fero():
@@ -427,25 +561,17 @@ def test_parity_with_paradigms_js():
 
 
 #: How many attested (lemma, form, parse) facts the generator still does not
-#: reproduce and that `attestation.divergence` cannot name.  All 55 were read
+#: reproduce and that `attestation.divergence` cannot name.  All 38 were read
 #: one by one on 2026-09-06 — `python tests/latin_forms/attestation.py` prints
-#: them — and they fall into four groups:
+#: them — and they fall into three groups:
 #:
-#:  13  the headword collision on `volo`.  latin_forms._verb_paradigm, and
-#:      app/js/paradigms.js with it, picks its irregular tables by `h` alone,
-#:      so volō volāre "fly" [1,1] is handed velle's table (volābat, volāvit,
-#:      volant …) and the velle lexeme [6,2] keeps Whitaker's volandī, mālī.
-#:      The fix is one condition on each side — match the entry's `cat` as well
-#:      as its `h` — and the two must land together or test_parity_with_
-#:      paradigms_js fails.  The glossary half is already fixed: the caption
-#:      over volābat read "volō, velle, voluī" and now reads volō, volāre
-#:      (build_glossary.HAND_LEMMA_CAT).
-#:   9  four real gaps in the hand tables.  Each is a table *cell*, so each
-#:      needs the same edit in app/js/paradigms.js: prōsum keeps its d before a
-#:      vowel (prōdest, prōdesse, prōderunt); sum has the future infinitive
-#:      fore; eō has the present passive infinitive īrī that the future passive
-#:      infinitive is built on; fīō takes its future participle and supine from
-#:      faciō (factūrus, factum).
+#:   5  what is left of the `volo` headword collision.  The tables are now
+#:      claimed by category as well as headword (IRREGULAR_CAT, on both sides),
+#:      so volō volāre "fly" [1,1] is a 1st-conjugation verb again and velle
+#:      [6,2] keeps velle's table.  Whitaker still files Ørberg's volāre forms
+#:      volandī / volandō / volandum / volantēs under his velle lexeme, and mālī
+#:      under mālō; velle and mālle have no gerund and no participle to hold
+#:      them, and inventing one to satisfy his analysis would be a worse table.
 #:   8  Whitaker lexemes filed under a table that is not theirs: ciō "set in
 #:      motion" and vēneō sit in his V 6 1, the eō class, so the generator
 #:      builds them as compounds of eō and ciam / cit / cīs / venientem fall
@@ -457,8 +583,15 @@ def test_parity_with_paradigms_js():
 #:      (hicest, sēipsa, ecce under hic), and stray archaisms with no row
 #:      (mīs, ollis, trīnās, nostrōrum, arcubus, diī).  Nothing to generate.
 #:
-#: A rise is a regression unless the new rows belong to one of these four.
-UNEXPLAINED_BASELINE = 55
+#: The four table gaps that used to stand here as a fourth group (9 facts) are
+#: closed, in latin_forms.py and app/js/paradigms.js together: prōsum keeps its
+#: d before a vowel (prōdest, prōdesse, prōderam, prōderunt), sum has the future
+#: infinitive fore, eō has the present passive infinitive īrī, and fīō takes
+#: faciō's future participle and supine (factūrus, factum).  So is the -que
+#: adjective gap: uterque and plērīque no longer decline as uter / plērus.
+#:
+#: A rise is a regression unless the new rows belong to one of these three.
+UNEXPLAINED_BASELINE = 38
 
 
 def test_glossary_attestation():

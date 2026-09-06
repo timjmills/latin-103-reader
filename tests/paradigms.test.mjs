@@ -288,6 +288,32 @@ test('fēlīx (one ending) and ingēns', () => {
   assertForms(ingens, ['ingēns', 'ingentis', 'ingentī', 'ingentem', 'ingentēs', 'ingentia', 'ingentium', 'ingentibus'], 'ingens');
 });
 
+test('uterque and plērīque carry their fixed -que through the table', () => {
+  // build_glossary folds uter + -que into one lemma but keeps Whitaker's bare
+  // roots (uter- / utr-, plēr-), so the table hangs -que back on every cell, the
+  // way the quisque table does. Allen & Greenough §151.a (uterque, utraque,
+  // utrumque, utrīusque, utrīque) and §151.b (plērīque, plēraeque, plēraque);
+  // Ørberg lists uterque among the prōnōmina indēfīnīta in cap. XXXV but prints
+  // no table for it.
+  const uterque = paradigm(entry('uterque', 'ADJ'), []);
+  const pos = uterque.sections.find((s) => s.title === 'positive');
+  assert.deepEqual(pos.rows[0].cells.map((c) => c.text), ['uterque', 'utraque', 'utrumque']);
+  assert.deepEqual(pos.rows[1].cells.map((c) => c.text), ['utrīusque', 'utrīusque', 'utrīusque']);
+  assert.deepEqual(pos.rows[2].cells.map((c) => c.text), ['utrīque', 'utrīque', 'utrīque']);
+  assert.deepEqual(pos.rows[3].cells.map((c) => c.text), ['utrumque', 'utramque', 'utrumque']);
+  assert.deepEqual(pos.rows[4].cells.map((c) => c.text), ['utrōque', 'utrāque', 'utrōque']);
+  assert.deepEqual(pos.rows[7].cells.map((c) => c.text), ['utrōrumque', 'utrārumque', 'utrōrumque']);
+  assert.ok(!texts(uterque).has('uter'), 'uterque must not decline as bare uter');
+
+  const plerique = paradigm(entry('plerique', 'ADJ'), []);
+  const pp = plerique.sections.find((s) => s.title === 'positive');
+  assert.deepEqual(pp.rows[6].cells.map((c) => c.text), ['plērīque', 'plēraeque', 'plēraque']);
+  assert.deepEqual(pp.rows[7].cells.map((c) => c.text), ['plērōrumque', 'plērārumque', 'plērōrumque']);
+  assert.deepEqual(pp.rows[8].cells.map((c) => c.text), ['plērīsque', 'plērīsque', 'plērīsque']);
+  assert.equal(pp.rows[3].cells[2].text, 'plērumque');    // plērumque = mostly
+  assert.ok(!texts(plerique).has('plērus'));
+});
+
 // --- verbs -----------------------------------------------------------------
 
 const VERBS = {
@@ -397,7 +423,8 @@ test('irregular verbs: sum, possum, eō, ferō, volō', () => {
   assert.deepEqual(column(possum, 'imperfect subjunctive', 0), ['possem', 'possēs', 'posset', 'possēmus', 'possētis', 'possent']);
   assertForms(possum, ['potuī', 'posse', 'potuisse', 'poterō'], 'possum');
 
-  const eo = paradigm(entry('eo', 'V'), []);
+  // the headword alone is ambiguous: pick the lexeme whose category owns the table
+  const eo = paradigm(entry('eo', 'V', (e) => e.cat?.[0] === 6), []);
   assert.deepEqual(column(eo, 'present indicative', 0), ['eō', 'īs', 'it', 'īmus', 'ītis', 'eunt']);
   assert.deepEqual(column(eo, 'imperfect indicative', 0), ['ībam', 'ībās', 'ībat', 'ībāmus', 'ībātis', 'ībant']);
   assert.deepEqual(column(eo, 'future indicative', 0), ['ībō', 'ībis', 'ībit', 'ībimus', 'ībitis', 'ībunt']);
@@ -414,7 +441,7 @@ test('irregular verbs: sum, possum, eō, ferō, volō', () => {
   assert.deepEqual(column(fero, 'imperfect subjunctive', 0), ['ferrem', 'ferrēs', 'ferret', 'ferrēmus', 'ferrētis', 'ferrent']);
   assertForms(fero, ['fer', 'ferte', 'ferre', 'ferrī', 'tulisse', 'lātus esse', 'ferēns', 'lātus -a -um', 'lātūrus -a -um', 'ferendus -a -um'], 'fero');
 
-  const volo = paradigm(entry('volo', 'V'), []);
+  const volo = paradigm(entry('volo', 'V', (e) => e.cat?.[0] === 6), []);
   assert.deepEqual(column(volo, 'present indicative', 0), ['volō', 'vīs', 'vult', 'volumus', 'vultis', 'volunt']);
   assert.deepEqual(column(volo, 'present subjunctive', 0), ['velim', 'velīs', 'velit', 'velīmus', 'velītis', 'velint']);
   assert.deepEqual(column(volo, 'imperfect subjunctive', 0), ['vellem', 'vellēs', 'vellet', 'vellēmus', 'vellētis', 'vellent']);
@@ -426,8 +453,60 @@ test('nōlō, mālō, fīō hand tables', () => {
   assertForms(nolo, ['nōlō', 'nōn vīs', 'nōn vult', 'nōlumus', 'nōlunt', 'nōlī', 'nōlīte', 'nōlle', 'nōlim', 'nōllem', 'nōluī'], 'nolo');
   const malo = paradigm(entry('malo', 'V'), []);
   assertForms(malo, ['mālō', 'māvīs', 'māvult', 'mālumus', 'mālunt', 'mālle', 'mālim', 'māllem', 'māluī'], 'malo');
-  const fio = paradigm(entry('fio', 'V'), []);
+  const fio = paradigm(entry('fio', 'V', (e) => e.cat?.[0] === 3), []);
   assertForms(fio, ['fīō', 'fīs', 'fit', 'fīmus', 'fītis', 'fīunt', 'fīēbam', 'fīam', 'factus sum', 'fierem', 'fierī', 'factus -a -um'], 'fio');
+});
+
+test('a hand table belongs to its category, not to its headword alone', () => {
+  // volō volāre "fly" is Ørberg's cap. X (avēs in āere volant, volāre nōn
+  // possum) and Whitaker's V 1 1; volō velle is V 6 2. Same headword, two verbs.
+  const fly = paradigm(entry('volo', 'V', (e) => e.cat?.[0] === 1), []);
+  assert.ok(fly.title.endsWith('1st conjugation'), fly.title);
+  assert.deepEqual(column(fly, 'present indicative', 0), ['volō', 'volās', 'volat', 'volāmus', 'volātis', 'volant']);
+  assert.deepEqual(column(fly, 'imperfect indicative', 0), ['volābam', 'volābās', 'volābat', 'volābāmus', 'volābātis', 'volābant']);
+  assert.deepEqual(column(fly, 'future indicative', 0), ['volābō', 'volābis', 'volābit', 'volābimus', 'volābitis', 'volābunt']);
+  const flying = texts(fly);
+  for (const wrong of ['vult', 'vīs', 'velle', 'velim', 'vellem']) assert.ok(!flying.has(wrong), `volāre must not print ${wrong}`);
+
+  // Whitaker's ghost 1st-conjugation eō (eāre, ēvī, etum) collides the same way
+  const ghost = paradigm({ lemma: 'eō, īre, iī, itum', h: 'eo', pos: 'V', cat: [1, 1], roots: ['e', 'e', 'ēv', 'et'] }, []);
+  assert.ok(ghost.title.endsWith('1st conjugation'), ghost.title);
+  assert.ok(!texts(ghost).has('ībat'));
+
+  // a hand supplement carries no category: the headword is all we have to go on
+  const bare = paradigm({ lemma: 'fīō, fierī, factus sum', h: 'fio', pos: 'V', roots: [] }, []);
+  assertForms(bare, ['fierem', 'fierī'], 'fio (no category)');
+});
+
+test('prōsum keeps its d before a vowel: prōdest / prōsunt', () => {
+  // Ørberg, cap. XXVII, margin: "prōd-esse prō-fuisse", "prōd-est prō-sunt".
+  // The whole table is Allen & Greenough §204.
+  const p = paradigm(entry('prosum', 'V'), []);
+  assert.deepEqual(column(p, 'present indicative', 0), ['prōsum', 'prōdes', 'prōdest', 'prōsumus', 'prōdestis', 'prōsunt']);
+  assert.deepEqual(column(p, 'imperfect indicative', 0), ['prōderam', 'prōderās', 'prōderat', 'prōderāmus', 'prōderātis', 'prōderant']);
+  assert.deepEqual(column(p, 'future indicative', 0), ['prōderō', 'prōderis', 'prōderit', 'prōderimus', 'prōderitis', 'prōderunt']);
+  assert.deepEqual(column(p, 'perfect indicative', 0), ['prōfuī', 'prōfuistī', 'prōfuit', 'prōfuimus', 'prōfuistis', 'prōfuērunt']);
+  assert.deepEqual(column(p, 'present subjunctive', 0), ['prōsim', 'prōsīs', 'prōsit', 'prōsīmus', 'prōsītis', 'prōsint']);
+  assert.deepEqual(column(p, 'imperfect subjunctive', 0), ['prōdessem', 'prōdessēs', 'prōdesset', 'prōdessēmus', 'prōdessētis', 'prōdessent']);
+  assertForms(p, ['prōdesse', 'prōfuisse', 'prōdes', 'prōdeste', 'prōdestō', 'prōfutūrus -a -um'], 'prosum');
+  // the d is prō-'s alone
+  const absum = paradigm(Object.values(glossary).flat().find((e) => e.h === 'absum' && e.pos === 'V'), []);
+  assert.deepEqual(column(absum, 'present indicative', 0), ['absum', 'abes', 'abest', 'absumus', 'abestis', 'absunt']);
+});
+
+test('the table gaps Ørberg fills: fore, īrī, factūrus, factum', () => {
+  // fore = futūrum esse (Ørberg cap. XXXIII margin: "fore (īnf fut) =
+  // futūrum/-am … esse"; Allen & Greenough §170.b)
+  const sum = paradigm(entry('sum', 'V'), []);
+  assertForms(sum, ['fore', 'futūrus esse', 'futūrus esse / fore'], 'sum');
+  // "'laudātum īrī' … quī ex supīnō et 'īrī' cōnstat" (Ørberg cap. XXIII)
+  const eo = paradigm(entry('eo', 'V', (e) => e.cat?.[0] === 6), []);
+  const inf = eo.sections.find((s) => s.title === 'infinitives');
+  assert.deepEqual(inf.headers, ['active', 'passive']);
+  assert.deepEqual(inf.rows[0].cells.map((c) => c.text), ['īre', 'īrī']);
+  // fīō borrows faciō's fourth principal part (Allen & Greenough §204.b)
+  const fio = paradigm(entry('fio', 'V', (e) => e.cat?.[0] === 3), []);
+  assertForms(fio, ['factūrus -a -um', 'factum', 'factū', 'factum īrī'], 'fio');
 });
 
 test('compounds of eō and sum reuse the irregular tables', () => {

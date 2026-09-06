@@ -189,9 +189,10 @@ def divergence(entry: dict, form: str, parse: dict, kind: str) -> str | None:
             # absēns and praesēns are real; dēns "of dēsum" is Whitaker filling
             # the same row in.  Either way sum has no participle to generate.
             return "sum-compound: present participle absēns / praesēns (sum itself has none)"
-        # prōsum is left out on purpose: prōdest / prōdesse / prōderunt are not a
-        # contraction but the d the compound keeps before a vowel, and neither
-        # latin_forms nor app/js/paradigms.js writes it — a real gap, not a choice.
+        # prōsum stays out of this branch: prōdest / prōdesse / prōderunt are not
+        # a contraction but the d the compound keeps before a vowel, and both
+        # latin_forms and app/js/paradigms.js now write them.  Anything of
+        # prōsum's that is still missing is a real gap and must show as one.
         if d == 5 and entry.get("h") not in ("sum", "prosum") \
                 and f.endswith(("sse", "runt", "ris", "st")):
             return "sum-compound: the contracted dēsse / dērunt / dēris for dēesse / dēerunt"
@@ -215,13 +216,13 @@ def divergence(entry: dict, form: str, parse: dict, kind: str) -> str | None:
             return "noun: a 3rd-declension nominative doublet (canēs / canis, vallēs / vallis)"
     if pos in ("ADJ", "NUM", "PRON"):
         if entry.get("h") in QUE_ADJECTIVES and f.endswith(("que", "quae")):
-            # KNOWN GAP, not a choice: build_glossary folds uter + -que into one
-            # lemma but leaves the roots uter- / utr-, and neither latin_forms
-            # nor app/js/paradigms.js can put the fixed -que back on an
-            # adjective the way _pronoun_paradigm does for quisque.  The app
-            # therefore draws uterque's table as uter.  Fixing it needs the
-            # same suffix hook on both sides.
-            return "adjective: a -que compound (uterque, plērīque) declined as its bare stem"
+            # uterque and plērīque are handled: latin_forms.ADJ_SUFFIX and
+            # app/js/paradigms.js's ADJ_SUFFIX hang the fixed -que back on every
+            # cell, the way _pronoun_paradigm does for quisque, so their forms
+            # are generated and never reach here.  What is left are the -que
+            # words with no hand table at all (utercumque, quisquis), which
+            # build_glossary folds into one lemma over a bare stem.
+            return "adjective: a -que compound with no table (utercumque, quisquis)"
         if case == "acc" and num == "pl" and f.endswith("is"):
             return "adjective: 3rd declension accusative plural -īs for -ēs"
         if d == 3 and case == "abl" and num == "sg":

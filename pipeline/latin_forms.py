@@ -378,14 +378,14 @@ ADJ_PTC = {
 }
 
 
-def _adj_section(title, stem_for, table, degree, extra=None):
+def _adj_section(title, stem_for, table, degree, extra=None, suffix=""):
     rows = []
     for num in ("sg", "pl"):
         for i, c in enumerate(CASES):
             cells = []
             for gi, g in enumerate(GENDERS):
                 stem, ending = stem_for(c, num, g, table[num][i][gi])
-                cells.append(cell(stem, ending, nk(c, num, g, degree=degree, **(extra or {}))))
+                cells.append(cell(stem, ending + suffix, nk(c, num, g, degree=degree, **(extra or {}))))
             rows.append({"label": f"{CASE_LABEL[c]} {'sg.' if num == 'sg' else 'pl.'}", "cells": cells})
     return {"title": title, "headers": ["masculine", "feminine", "neuter"], "rows": rows}
 
@@ -407,6 +407,15 @@ def adjective_name(entry: dict) -> str:
     return "adjective"
 
 
+#: Adjectives build_glossary keeps as one word with a fixed enclitic on the end.
+#: Whitaker's roots are the bare stem (uter- / utr-, plēr-), so the table has to
+#: hang the enclitic back on every cell, exactly as _pronoun_paradigm does for
+#: quisque: uterque, utraque, utrumque, utrīusque, utrīque (Allen & Greenough
+#: §151.a), plērīque, plēraeque, plēraque, plērōrumque (§151.b).  Kept in step
+#: with ADJ_SUFFIX in app/js/paradigms.js.
+ADJ_SUFFIX = {"uterque": "que", "plerique": "que"}
+
+
 def _adjective_paradigm(entry: dict) -> dict | None:
     d, v = _cat(entry)
     r0 = root(entry, 0)
@@ -414,6 +423,7 @@ def _adjective_paradigm(entry: dict) -> dict | None:
     r2 = root(entry, 2)
     r3 = root(entry, 3)
     sections = []
+    suffix = ADJ_SUFFIX.get(entry.get("h") or "", "")
     comp_only = bool((entry.get("lemma") or "").endswith("or -us")) and not d
 
     if not comp_only and d in (1, 3):
@@ -444,15 +454,17 @@ def _adjective_paradigm(entry: dict) -> dict | None:
                 return r1, end
         cons = d == 3 and entry.get("h") in NON_I_STEM
         sections.append(_adj_section("positive", stem_for,
-                                     ADJ_12 if d == 1 else (ADJ_3_CONS if cons else ADJ_3), "pos"))
+                                     ADJ_12 if d == 1 else (ADJ_3_CONS if cons else ADJ_3), "pos",
+                                     suffix=suffix))
     if r2 or comp_only:
         cs = r0 if comp_only else r2
         sections.append(_adj_section("comparative" if comp_only else f"comparative ({cs}or, {cs}us)",
                                      lambda c, num, g, end, cs=cs: (cs, end), ADJ_COMP,
-                                     "pos" if comp_only else "comp"))
+                                     "pos" if comp_only else "comp", suffix=suffix))
     if r3:
         sections.append(_adj_section(f"superlative ({r3}mus -a -um)",
-                                     lambda c, num, g, end: (r3, "m" + end), ADJ_12, "super"))
+                                     lambda c, num, g, end: (r3, "m" + end), ADJ_12, "super",
+                                     suffix=suffix))
     if not sections:
         return None
     return {"kind": "adjective", "title": f"{entry.get('lemma', '')} · {adjective_name(entry)}",
@@ -868,7 +880,10 @@ IRREGULAR_VERBS = {
             "plupf": ["fu|issem", "fu|issēs", "fu|isset", "fu|issēmus", "fu|issētis", "fu|issent"],
         },
         "imper": {"sg": "es", "pl": "es|te", "futSg": "es|tō", "futPl": "es|tōte"},
-        "inf": {"pres": "es|se", "perf": "fu|isse", "fut": "fut|ūrus esse"},
+        # fore = futūrum esse — Ørberg glosses it so in cap. XXXIII ("fore (īnf fut)
+        # = futūrum/-am … esse", beside "pācem fore spērēmus"); Allen & Greenough
+        # §170.b.  A compound takes it too: adfore, dēfore, prōfore.
+        "inf": {"pres": "es|se", "perf": "fu|isse", "fut": "fut|ūrus esse / fore"},
         "ptc": {"fut": "fut|ūrus -a -um"},
     },
     "possum": {
@@ -909,7 +924,10 @@ IRREGULAR_VERBS = {
             "plupf": ["ī|ssem", "ī|ssēs", "ī|sset", "ī|ssēmus", "ī|ssētis", "ī|ssent"],
         },
         "imper": {"sg": "ī", "pl": "ī|te", "futSg": "ī|tō", "futPl": "ī|tōte"},
-        "inf": {"pres": "ī|re", "perf": "ī|sse", "fut": "it|ūrus esse"},
+        # īrī is the one passive form of eō the course meets: every verb's future
+        # passive infinitive is built on it — Ørberg, cap. XXIII, Grammatica
+        # Latina: "'laudātum īrī' … quī ex supīnō et 'īrī' cōnstat".
+        "inf": {"pres": "ī|re", "perf": "ī|sse", "fut": "it|ūrus esse", "presPass": "ī|rī"},
         "ptc": {"pres": "i|ēns (euntis)", "fut": "it|ūrus -a -um", "gerundive": "e|undus -a -um"},
         "gerund": "e|und", "supine": "it",
     },
@@ -1030,7 +1048,12 @@ IRREGULAR_VERBS = {
         },
         "imper": {"sg": "fī", "pl": "fī|te"},
         "inf": {"pres": "fi|erī", "perf": "fact|us esse", "fut": "fact|um īrī"},
-        "ptc": {"perf": "fact|us -a -um", "gerundive": "faci|endus -a -um"},
+        # fīō has no perfect stem of its own: it borrows faciō's whole fourth
+        # principal part, so the future participle is factūrus and the supine
+        # factum (Allen & Greenough §204.b; the supine is already in factum īrī).
+        "ptc": {"perf": "fact|us -a -um", "fut": "fact|ūrus -a -um",
+                "gerundive": "faci|endus -a -um"},
+        "supine": "fact",
         "perfIsPassive": True,
     },
 }
@@ -1041,9 +1064,18 @@ def _irregular_verb(entry: dict, t: dict, prefix: str = "") -> dict:
     empty = lambda: {"stem": "", "ending": "—", "text": "—", "key": None, "empty": True}
 
     def P(s):
-        if prefix and s and s != "—" and not s.startswith("nōn "):
-            return prefix + s
-        return s
+        if not prefix or not s or s == "—" or s.startswith("nōn "):
+            return s
+        if " / " in s:                       # futūrus esse / fore → prōfore too
+            return " / ".join(P(x) for x in s.split(" / "))
+        # prō- keeps the old final d before a vowel: prōdes, prōdest, prōdestis,
+        # prōderam, prōderō, prōderunt, prōdessem, prōdesse — but prōsum,
+        # prōsumus, prōsunt, prōfuī.  Ørberg prints the pair in the margin of
+        # cap. XXVII ("prōd-est prō-sunt", "prōd-esse prō-fuisse"); Allen &
+        # Greenough §204 gives the whole table.  (The same d shows in prōdeō,
+        # prōdīs, prōdit, prōdīre.)
+        p = prefix + "d" if prefix == "prō" and re.match(r"[aeiou]", _plain(s), re.I) else prefix
+        return p + s
 
     def voice_of(tense):
         return "pass" if t.get("perfIsPassive") and tense in ("perf", "plupf", "futperf") else "act"
@@ -1182,10 +1214,33 @@ def _compound_of(entry: dict, base_key: str) -> dict | None:
     return _irregular_verb(entry, base, prefix)
 
 
+#: The Whitaker category each hand table belongs to.  Headwords collide: `volō,
+#: volāre, volāvī, volātum` "fly" (his V 1 1, Ørberg cap. X: avēs volant) has the
+#: same dictionary form as `volō, velle, voluī` (V 6 2), and his V 1 1 ghost `eō,
+#: eāre` has the same as `eō, īre, iī, itum` (V 6 1).  An entry whose category is
+#: not the table's is a different verb and is built regularly.  An entry with no
+#: category at all is a hand supplement, and the headword is all we have to go on.
+#: Kept in step with IRREGULAR_CAT in app/js/paradigms.js.
+IRREGULAR_CAT = {"sum": (5, 1), "possum": (5, 2), "eo": (6, 1), "fero": (3, 2),
+                 "volo": (6, 2), "nolo": (6, 2), "malo": (6, 2), "fio": (3, 3)}
+
+
+def irregular_table(entry: dict) -> dict | None:
+    """The hand table for this entry — only if the entry's category is its own."""
+    t = IRREGULAR_VERBS.get(entry.get("h") or "")
+    if not t:
+        return None
+    cat = IRREGULAR_CAT.get(entry.get("h"))
+    if cat and entry.get("cat") and tuple(_cat(entry)) != cat:
+        return None
+    return t
+
+
 def _verb_paradigm(entry: dict) -> dict | None:
     h = entry.get("h")
-    if h in IRREGULAR_VERBS:
-        return _irregular_verb(entry, IRREGULAR_VERBS[h])
+    t = irregular_table(entry)
+    if t:
+        return _irregular_verb(entry, t)
     d, v = _cat(entry)
     if d == 5 and v == 1 and h != "sum":
         return _compound_of(entry, "sum")
