@@ -858,7 +858,8 @@ export function fmtDay(day, today = localDay()) {
 
 /**
  * The Study log block inside Settings → Progress (CONTRACT.md "Study log").
- * `study` is main.js's hook: { log() → studyLog(), clear() → the line to show }.
+ * `study` is main.js's hook: { log() → studyLog(), clear() → the line to show,
+ * openBook() → open the by-chapter Progress page (the button hides without it) }.
  * Today's line, the sparkline (minutes per day, the last 14), the active days
  * of those 14 as a table, the per-week rows, the pace the estimates use, and
  * "Clear study log" behind a confirm().
@@ -880,6 +881,9 @@ function initStudyLog(section, study) {
   const weeksTable = $('[data-study-weeks]');
   const paceEl = $('[data-study-pace]');
   const clearBtn = $('[data-action="clear-study"]');
+  // Progress across every chapter (GRAMMAR-CONTRACT.md "Progress across every chapter"): the page
+  // beside the study log. Hidden when the shell offers no way there; the 14-week table above is unchanged.
+  const bookBtn = $('[data-action="open-progress"]');
   const msgEl = $('[data-study-msg]');
   const say = (text, tone) => {
     msgEl.textContent = text || '';
@@ -928,6 +932,10 @@ function initStudyLog(section, study) {
       paceEl.textContent = `Pace: ${Math.round(pace.perHour)} sentences an hour ${basis}. Overall: ${overall.sentences} sentences in ${fmtActive(overall.ms)}${overall.pace ? ` (${fmtPace(overall.pace)})` : ''}${overall.reviews > 0 ? `; ${overall.reviews} reviewed` : ''}.`;
     }
     clearBtn.disabled = !any;
+  }
+  if (bookBtn) {
+    if (typeof study.openBook === 'function') bookBtn.addEventListener('click', () => study.openBook());
+    else bookBtn.hidden = true;
   }
   clearBtn.addEventListener('click', async () => {
     if (!window.confirm('Clear the study log? Minutes per day are forgotten on every device. Reading progress and looked-up words are kept.')) return;

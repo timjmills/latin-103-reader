@@ -1504,3 +1504,90 @@ costs nothing".
 A redo resumes like any other session — `LS_SESSION` carries `redo: true` and
 the queue's slots keep their item keys — and the Today card's one Resume button
 names it ("A redo is in progress") and routes to the right view.
+
+## Progress across every chapter (2026-09-06)
+
+The learner's request (GRAMMAR-CONTRACT.md "Progress across every chapter"):
+the timings and all the components for **every chapter**, not only the current
+week. A page at `#/progress` lists all thirty-four, each row opening to its
+readings, its grammar and what it will take; the book's totals sit at the top.
+The fourteen-week table in the study log is untouched — this is by chapter and
+additional to it.
+
+Two ways in, as the contract asks: **Progress** in the weeks menu's head
+(`[data-open="progress"]`), and **Progress by chapter** in Settings → Progress
+beside "Clear study log" (`[data-action="open-progress"]`, wired through
+`progress.study.openBook`; the button hides when the shell offers no route).
+
+### `app/js/progress.js` (new, pure, `tests/ui.chapter-progress.test.mjs`)
+
+```js
+parseProgressRoute(hash) / progressHash(n)   // #/progress · #/progress/7
+chapterGrammar({ skills, sets, stateOf, seenOf, secondsFor, known })
+setRow(set, { seenOf, stateOf, secondsFor })  // one chapter set: done of total, minutes left
+skillLeftMs(state, seconds)                   // what a skill costs before it has been met once
+chapterRow(readingRow, { grammar, pace })     // one chapter; `readingRow` is settings.chapterRows()'s
+chapterRows(readingRows, { grammarOf, pace })
+chapterLine(row) / timingLine(row)            // the row's one line · "About 40 min spent · about 2 h to come"
+bookTotals(rows, { measuredMs, skillsTotal, skillsMastered })
+fmtEstimate(ms) / fmtMeasured(ms) / paceNote(pace) / estimateNote(pace)
+readingMs(sentences, pace) · SKILL_STATES · CHAPTER_STATES · SET_KINDS
+```
+
+It never re-derives the chapter → week mapping: the reading side arrives as
+`settings.chapterRows()` rows (which read `chapters.js`), and the grammar side
+as `skills` / `sets` lists the caller has already grouped.
+
+**Measured against derived.** The only measured quantity in the app is the
+active minutes the study log records (CONTRACT.md "Study log"): that is
+`bookTotals().measuredMs` and the totals band's "Minutes measured", printed by
+`fmtMeasured` in the plain voice. *Everything else* — every chapter's time spent
+and time to come — is worked out from the study log's pace (sentences per active
+hour) and the per-kind drill medians the Today card computes
+(`itemSecondsBy`, `grammar/today.js`), and is printed by `fmtEstimate`, which
+always says "about". `paceNote()` under the totals and `estimateNote()` under
+each chapter's own total say so in words, naming the pace and adding "not
+measured"; with too little reading time behind it, both name the assumed 60
+sentences an hour instead. Nothing on the page presents a derived figure as a
+measurement.
+
+**What "to come" means.** A chapter's remaining grammar is *a first pass over
+what has not been met yet*: the lesson and its fifteen guided items for a skill
+never started, the blocked ten for one part-way through or lapsed, nothing for
+one already in rotation, plus the unmet items of each set at that kind's median.
+Spaced practice after that is the daily plan's business and is deliberately not
+counted — estimating it would be a guess about the future rather than an
+estimate of work in hand.
+
+**Nothing done reads as nothing done.** A chapter with no reads and no answers
+shows "Nothing done yet", not a row of zeros; a chapter neither in the library
+nor carrying grammar shows "Not added yet"; a component a chapter does not have
+(no Colloquium after XXIV, no pensa, no question set) is simply absent, and the
+optional English → Latin vocabulary deck is listed only once it has been
+touched. The hairline gauge appears only while a chapter is part-read.
+
+### The page (`main.js`, `app/css/progress.css`)
+
+`html[data-page="progress"]` hides the reader, the grammar section and the
+reader's toolbar, exactly as a chapter page does. `#/progress/7` opens with that
+chapter unfolded; opening a row updates the hash with `replaceState`, so a
+chapter's detail can be linked to without filling the history. The rows are a
+disclosure list (`aria-expanded` / `aria-controls`), arrow keys walk them as
+they do in the menu, and a repaint keeps the focused row.
+
+**How it is kept fast** (the book is 8,000+ sentences, 88 skills and 100+ sets):
+
+- The list paints from what the shell already holds — the weeks' unit counts
+  (`weekTotals`) and the progress map — so the first paint waits for no fetch.
+  Measured on the fixture: **~30 ms from the route change to all 34 rows in the
+  DOM, ~60 ms to pixels** (1440 × 900, warm shell).
+- The grammar is read once through `mountGrammar`'s `ctx` (never past it):
+  `todayCard()` warms the section's cheap start when it has not run, the chapter
+  sets come from `ctx.sets` when the section has fully started and from the same
+  `createSetLoader` otherwise, and the attempt log is walked **once** into
+  `skill → { attempts, distinct item keys }`. All of it is memoised per chapter
+  and dropped when `gstore.onChange` fires.
+- A chapter's own units are fetched only when its row is opened (`unitsFor`),
+  and its readings then come from `settings.readingRows()`.
+- Reading progress arriving from another device repaints the page in place
+  (`paintProgress` → `paintProgPage`).
