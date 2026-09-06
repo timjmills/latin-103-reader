@@ -267,13 +267,13 @@
   },
   {
    "lemma": "vehō",
-   "dict": "vehō, vehere, vexī, vectum",
+   "dict": "vehō, vehere, vēxī, vectum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "carry, convey",
    "sense_full": "bear, carry, convey",
-   "parts": "vehō, vehere, vexī, vectum",
+   "parts": "vehō, vehere, vēxī, vectum",
    "unit_id": "r06:29.1",
    "count": 25
   },
@@ -374,18 +374,6 @@
    "count": 10
   },
   {
-   "lemma": "placeō",
-   "dict": "placeō, placēre, placuī, placitum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "please",
-   "sense_full": "please, satisfy, give pleasure to (with dat.)",
-   "parts": "placeō, placēre, placuī, placitum",
-   "unit_id": "r06:2.1",
-   "count": 9
-  },
-  {
    "lemma": "lectīca",
    "dict": "lectīca, -ae f.",
    "pos": "N",
@@ -395,6 +383,18 @@
    "sense_full": "litter",
    "parts": null,
    "unit_id": "r06:22.1",
+   "count": 8
+  },
+  {
+   "lemma": "placeō",
+   "dict": "placeō, placēre, placuī, placitum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "please",
+   "sense_full": "please, satisfy, give pleasure to (with dat.)",
+   "parts": "placeō, placēre, placuī, placitum",
+   "unit_id": "r06:2.1",
    "count": 8
   },
   {

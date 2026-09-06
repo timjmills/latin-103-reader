@@ -2,8 +2,8 @@
  "chapter": 20,
  "words": [
   {
-   "lemma": "īnfāns",
-   "dict": "īnfāns, īnfantis m./f.",
+   "lemma": "īnfans",
+   "dict": "īnfans, īnfantis m./f.",
    "pos": "N",
    "gender": "c",
    "decl": 3,
@@ -158,8 +158,8 @@
    "count": 13
   },
   {
-   "lemma": "cūna",
-   "dict": "cūna, -ae f.",
+   "lemma": "cūnae",
+   "dict": "cūnae, -ārum f. (plural only)",
    "pos": "N",
    "gender": "f",
    "decl": 1,
@@ -218,14 +218,14 @@
    "count": 11
   },
   {
-   "lemma": "vagiō",
-   "dict": "vagiō, vāgīre, vagivī",
+   "lemma": "vāgiō",
+   "dict": "vāgiō, vāgīre, vagivī",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "wail, cry",
    "sense_full": "utter cries of distress, wail, squall",
-   "parts": "vagiō, vāgīre, vagivī",
+   "parts": "vāgiō, vāgīre, vagivī",
    "unit_id": "r20:7.1",
    "count": 11
   },

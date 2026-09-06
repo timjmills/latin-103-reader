@@ -111,13 +111,13 @@
   },
   {
    "lemma": "pulsō",
-   "dict": "pulsō, pulsāre, pulsavī, pulsatum",
+   "dict": "pulsō, pulsāre, pulsāvī, pulsātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "beat, strike, knock",
    "sense_full": "beat",
-   "parts": "pulsō, pulsāre, pulsavī, pulsatum",
+   "parts": "pulsō, pulsāre, pulsāvī, pulsātum",
    "unit_id": "r03:8.1",
    "count": 65
   },
@@ -171,13 +171,13 @@
   },
   {
    "lemma": "verberō",
-   "dict": "verberō, verberāre, verberavī, verberatum",
+   "dict": "verberō, verberāre, verberāvī, verberātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "beat, flog",
    "sense_full": "beat, strike, lash",
-   "parts": "verberō, verberāre, verberavī, verberatum",
+   "parts": "verberō, verberāre, verberāvī, verberātum",
    "unit_id": "r03:45.3",
    "count": 46
   },
@@ -276,6 +276,18 @@
    "parts": null,
    "unit_id": "r03:19.1",
    "count": 8
+  },
+  {
+   "lemma": "persōna",
+   "dict": "persōna, -ae f.",
+   "pos": "N",
+   "gender": "f",
+   "decl": 1,
+   "meaning": "mask",
+   "sense_full": "mask",
+   "parts": null,
+   "unit_id": "r03:2.1",
+   "count": 6
   },
   {
    "lemma": "st",

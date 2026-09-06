@@ -206,8 +206,8 @@
    "count": 18
   },
   {
-   "lemma": "kalenda",
-   "dict": "kalenda, -ae f.",
+   "lemma": "kalendae",
+   "dict": "kalendae, -ārum f. (plural only)",
    "pos": "N",
    "gender": "f",
    "decl": 1,
@@ -218,8 +218,8 @@
    "count": 16
   },
   {
-   "lemma": "meridiēs",
-   "dict": "meridiēs, -ēī m.",
+   "lemma": "merīdiēs",
+   "dict": "merīdiēs, -ēī m.",
    "pos": "N",
    "gender": "m",
    "decl": 5,
@@ -375,7 +375,7 @@
   },
   {
    "lemma": "aestās",
-   "dict": "aestās, aestatis f.",
+   "dict": "aestās, aestātis f.",
    "pos": "N",
    "gender": "f",
    "decl": 3,
@@ -386,8 +386,8 @@
    "count": 8
   },
   {
-   "lemma": "īdus",
-   "dict": "īdus, -ūs f.",
+   "lemma": "īdūs",
+   "dict": "īdūs, -uum f. (plural only)",
    "pos": "N",
    "gender": "f",
    "decl": 4,
@@ -590,13 +590,13 @@
    "count": 2
   },
   {
-   "lemma": "iānuārius",
-   "dict": "iānuārius, -a, -um",
+   "lemma": "Iānuārius",
+   "dict": "Iānuārius, -a, -um",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
-   "meaning": "January",
-   "sense_full": "January (month or mensis understood)",
+   "meaning": "of January",
+   "sense_full": "of January (mēnsis Iānuārius, kalendae Iānuāriae)",
    "parts": null,
    "unit_id": "r13:13.1",
    "count": 1

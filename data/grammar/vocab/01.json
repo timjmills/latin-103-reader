@@ -98,18 +98,6 @@
    "count": 161
   },
   {
-   "lemma": "rōmānus",
-   "dict": "rōmānus, -a, -um",
-   "pos": "ADJ",
-   "gender": null,
-   "decl": 1,
-   "meaning": "Roman",
-   "sense_full": "Roman",
-   "parts": null,
-   "unit_id": "r01:40.1",
-   "count": 123
-  },
-  {
    "lemma": "quis",
    "dict": "quis, quid",
    "pos": "PRON",
@@ -254,16 +242,28 @@
    "count": 28
   },
   {
-   "lemma": "latīnus",
-   "dict": "latīnus, -a, -um",
+   "lemma": "Rōmānus",
+   "dict": "Rōmānus, -a, -um",
+   "pos": "ADJ",
+   "gender": null,
+   "decl": 1,
+   "meaning": "Roman, of Rome",
+   "sense_full": "Roman, of Rome",
+   "parts": null,
+   "unit_id": "r01:41.1",
+   "count": 28
+  },
+  {
+   "lemma": "Latīnus",
+   "dict": "Latīnus, -a, -um",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
    "meaning": "Latin",
-   "sense_full": "Latin",
+   "sense_full": "Latin, of Latium",
    "parts": null,
    "unit_id": "r01:71.1",
-   "count": 28
+   "count": 25
   },
   {
    "lemma": "secundus",
@@ -278,8 +278,8 @@
    "count": 21
   },
   {
-   "lemma": "graecus",
-   "dict": "graecus, -a, -um",
+   "lemma": "Graecus",
+   "dict": "Graecus, -a, -um",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,

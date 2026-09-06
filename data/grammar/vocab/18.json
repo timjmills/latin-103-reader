@@ -195,13 +195,13 @@
   },
   {
    "lemma": "molliō",
-   "dict": "molliō, mollīre, mollivī, mollitum",
+   "dict": "molliō, mollīre, mollīvī, mollitum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "soften",
    "sense_full": "soften, mitigate, make easier",
-   "parts": "molliō, mollīre, mollivī, mollitum",
+   "parts": "molliō, mollīre, mollīvī, mollitum",
    "unit_id": "r18:109.1",
    "count": 8
   },
@@ -303,13 +303,13 @@
   },
   {
    "lemma": "iungō",
-   "dict": "iungō, iungere, iunxī, iunctum",
+   "dict": "iungō, iungere, iūnxī, iūnctum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "join, unite",
    "sense_full": "join, unite",
-   "parts": "iungō, iungere, iunxī, iunctum",
+   "parts": "iungō, iungere, iūnxī, iūnctum",
    "unit_id": "r18:25.1",
    "count": 5
   },
@@ -362,14 +362,14 @@
    "count": 4
   },
   {
-   "lemma": "consonō",
-   "dict": "consonō, consonāre, consonuī",
+   "lemma": "cōnsonō",
+   "dict": "cōnsonō, cōnsonāre, consonuī",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "sound together",
    "sense_full": "sound, utter, make noise together, harmonize",
-   "parts": "consonō, consonāre, consonuī",
+   "parts": "cōnsonō, cōnsonāre, consonuī",
    "unit_id": "r18:7.1",
    "count": 4
   },
@@ -506,18 +506,6 @@
    "count": 2
   },
   {
-   "lemma": "dēleō",
-   "dict": "dēleō, dēlēre, delevī, deletum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "erase, wipe out",
-   "sense_full": "erase, wipe, scratch, remove(letters or marks), wipe or blot out, expunge, delete",
-   "parts": "dēleō, dēlēre, delevī, deletum",
-   "unit_id": "r18:144.2",
-   "count": 2
-  },
-  {
    "lemma": "graviter",
    "dict": "graviter",
    "pos": "ADV",
@@ -587,6 +575,18 @@
    "sense_full": "little creature, insect",
    "parts": null,
    "unit_id": "r18:109.1",
+   "count": 1
+  },
+  {
+   "lemma": "dēleō",
+   "dict": "dēleō, dēlēre, delevī, deletum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "erase, wipe out",
+   "sense_full": "erase, wipe, scratch, remove(letters or marks), wipe or blot out, expunge, delete",
+   "parts": "dēleō, dēlēre, delevī, deletum",
+   "unit_id": "r18:145.1",
    "count": 1
   },
   {

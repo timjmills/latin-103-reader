@@ -75,13 +75,13 @@
   },
   {
    "lemma": "nōscō",
-   "dict": "nōscō, nōscere, novī, notum",
+   "dict": "nōscō, nōscere, nōvī, nōtum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "get to know, learn",
    "sense_full": "get to know",
-   "parts": "nōscō, nōscere, novī, notum",
+   "parts": "nōscō, nōscere, nōvī, nōtum",
    "unit_id": "r24:50.2",
    "count": 10
   },
@@ -132,6 +132,18 @@
    "parts": null,
    "unit_id": "r24:15.1",
    "count": 8
+  },
+  {
+   "lemma": "fleō",
+   "dict": "fleō, flēre, flevī, fletum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "weep, cry",
+   "sense_full": "cry for",
+   "parts": "fleō, flēre, flevī, fletum",
+   "unit_id": "r24:36.2",
+   "count": 7
   },
   {
    "lemma": "cruentus",
@@ -327,26 +339,14 @@
   },
   {
    "lemma": "ferōciō",
-   "dict": "ferōciō, ferocīre",
+   "dict": "ferōciō, ferōcīre",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "be fierce",
    "sense_full": "rampage, act in a fierce, violent, savage manner",
-   "parts": "ferōciō, ferocīre",
+   "parts": "ferōciō, ferōcīre",
    "unit_id": "r24:90.1",
-   "count": 1
-  },
-  {
-   "lemma": "fleō",
-   "dict": "fleō, flēre, flevī, fletum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "weep, cry",
-   "sense_full": "cry for",
-   "parts": "fleō, flēre, flevī, fletum",
-   "unit_id": "r24:38.1",
    "count": 1
   },
   {

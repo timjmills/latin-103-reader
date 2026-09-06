@@ -63,13 +63,13 @@
   },
   {
    "lemma": "mūtō",
-   "dict": "mūtō, mūtāre, mutavī, mutatum",
+   "dict": "mūtō, mūtāre, mūtāvī, mūtātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "change, exchange",
    "sense_full": "move, change, shift, alter, exchange, substitute (for)",
-   "parts": "mūtō, mūtāre, mutavī, mutatum",
+   "parts": "mūtō, mūtāre, mūtāvī, mūtātum",
    "unit_id": "r21:57.1",
    "count": 21
   },
@@ -135,13 +135,13 @@
   },
   {
    "lemma": "mentior",
-   "dict": "mentior, mentīrī, mentitus sum",
+   "dict": "mentior, mentīrī, mentītus sum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "lie, tell a lie",
    "sense_full": "lie, deceive, invent",
-   "parts": "mentior, mentīrī, mentitus sum",
+   "parts": "mentior, mentīrī, mentītus sum",
    "unit_id": "r21:87.1",
    "count": 14
   },

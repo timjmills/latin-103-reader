@@ -26,8 +26,8 @@
    "count": 11
   },
   {
-   "lemma": "cārus",
-   "dict": "cārus, -a, -um",
+   "lemma": "carus",
+   "dict": "carus, -a, -um",
    "pos": "ADJ",
    "gender": null,
    "decl": 1,
@@ -626,6 +626,18 @@
    "count": 2
   },
   {
+   "lemma": "praesum",
+   "dict": "praesum, praeesse, praefuī, praefutūrum",
+   "pos": "V",
+   "gender": null,
+   "decl": null,
+   "meaning": "be in charge of",
+   "sense_full": "be in charge, control, head(of) (with the dative)",
+   "parts": "praesum, praeesse, praefuī, praefutūrum",
+   "unit_id": "w08:b10.1",
+   "count": 2
+  },
+  {
    "lemma": "prīdem",
    "dict": "prīdem",
    "pos": "ADV",
@@ -719,30 +731,6 @@
    "sense_full": "carry through",
    "parts": "perferō, perferre, pertulī, perlatum",
    "unit_id": "w08:b17.2",
-   "count": 1
-  },
-  {
-   "lemma": "praesum",
-   "dict": "praesum, praeesse, praefuī, praefutūrum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "be in charge of",
-   "sense_full": "be in charge, control, head(of) (with the dative)",
-   "parts": "praesum, praeesse, praefuī, praefutūrum",
-   "unit_id": "w08:b23.2",
-   "count": 1
-  },
-  {
-   "lemma": "praesumō",
-   "dict": "praesumō, praesumere, praesumpsī, praesumptum",
-   "pos": "V",
-   "gender": null,
-   "decl": null,
-   "meaning": "take beforehand",
-   "sense_full": "consume, perform, employ beforehand",
-   "parts": "praesumō, praesumere, praesumpsī, praesumptum",
-   "unit_id": "w08:b10.1",
    "count": 1
   },
   {

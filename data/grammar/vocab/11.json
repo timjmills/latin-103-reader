@@ -507,13 +507,13 @@
   },
   {
    "lemma": "tangō",
-   "dict": "tangō, tangere, tetigī, tactum",
+   "dict": "tangō, tangere, tetigī, tāctum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "touch",
    "sense_full": "touch, strike",
-   "parts": "tangō, tangere, tetigī, tactum",
+   "parts": "tangō, tangere, tetigī, tāctum",
    "unit_id": "r11:40.1",
    "count": 7
   },
@@ -698,8 +698,8 @@
    "count": 1
   },
   {
-   "lemma": "viscus",
-   "dict": "viscus, visceris n.",
+   "lemma": "viscera",
+   "dict": "viscera, -um n. (plural only)",
    "pos": "N",
    "gender": "n",
    "decl": 3,

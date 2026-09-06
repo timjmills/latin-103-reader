@@ -159,7 +159,7 @@
   },
   {
    "lemma": "ferōx",
-   "dict": "ferōx, gen. ferocis",
+   "dict": "ferōx, gen. ferōcis",
    "pos": "ADJ",
    "gender": null,
    "decl": 3,
@@ -195,13 +195,13 @@
   },
   {
    "lemma": "arbitror",
-   "dict": "arbitror, arbitrārī, arbitratus sum",
+   "dict": "arbitror, arbitrārī, arbitrātus sum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "think, consider",
    "sense_full": "observe, witness",
-   "parts": "arbitror, arbitrārī, arbitratus sum",
+   "parts": "arbitror, arbitrārī, arbitrātus sum",
    "unit_id": "r22:93.1",
    "count": 9
   },
@@ -219,13 +219,13 @@
   },
   {
    "lemma": "rumpō",
-   "dict": "rumpō, rumpere, rupī, ruptum",
+   "dict": "rumpō, rumpere, rūpī, ruptum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "break",
    "sense_full": "break",
-   "parts": "rumpō, rumpere, rupī, ruptum",
+   "parts": "rumpō, rumpere, rūpī, ruptum",
    "unit_id": "r22:70.1",
    "count": 9
   },
@@ -255,7 +255,7 @@
   },
   {
    "lemma": "sāl",
-   "dict": "sāl, salis m.",
+   "dict": "sāl, -is m.",
    "pos": "N",
    "gender": "m",
    "decl": 3,
@@ -278,8 +278,8 @@
    "count": 7
   },
   {
-   "lemma": "imāgo",
-   "dict": "imāgo, imāginis f.",
+   "lemma": "imāgō",
+   "dict": "imāgō, imāginis f.",
    "pos": "N",
    "gender": "f",
    "decl": 3,
@@ -387,13 +387,13 @@
   },
   {
    "lemma": "vinciō",
-   "dict": "vinciō, vincīre, vinxī, vinctum",
+   "dict": "vinciō, vincīre, vīnxī, vīnctum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "bind, tie up",
    "sense_full": "bind, fetter",
-   "parts": "vinciō, vincīre, vinxī, vinctum",
+   "parts": "vinciō, vincīre, vīnxī, vīnctum",
    "unit_id": "r22:9.1",
    "count": 6
   },
@@ -519,7 +519,7 @@
   },
   {
    "lemma": "līmen",
-   "dict": "līmen, liminis n.",
+   "dict": "līmen, līminis n.",
    "pos": "N",
    "gender": "n",
    "decl": 3,
