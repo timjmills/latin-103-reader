@@ -325,6 +325,50 @@ oddities are kept as printed and flagged in the report: Colloquium XIV names
 *Aemilius* where *Aemilia* is speaking, and Colloquium XXIII's Greek-alphabet
 table is a display block the text layer cannot read.
 
+## Shelf notes: the teaching layer for the review shelf
+
+```
+python pipeline/build_shelf_notes.py --check     # validate all 24, write nothing
+python pipeline/build_shelf_notes.py all         # validate + write data/build/sql/nNN-*.sql
+python pipeline/build_shelf_notes.py 7 12        # just those chapters
+for f in data/build/sql/n07-*.sql; do supabase db query --linked -f "$f"; done
+```
+
+`build_shelf_notes.py` merges `data/shelf-notes-NN.json` (the content agents'
+notes, summaries and highlights — the shape in GRAMMAR-CONTRACT.md "Wave 3 —
+shelf notes, plain explanations and summaries") into the live library for the
+review-shelf weeks `n = 100 + chapter`. **Both inputs are read-only**:
+`data/build/review-NN.json` is *not* rewritten (other workstreams read it while
+this runs), so the merge exists only as SQL. `nNN-00.sql` carries the week and
+the part reassignment, then one file per 25 note updates, then the highlight
+inserts — `seed_sql.py`'s style and chunking, so every file stays well under
+the Management API limit. Re-running a chapter is idempotent: it clears the
+week's notes, deletes its highlights and writes them again.
+
+What the SQL does per week:
+
+- `units.note` / `units.note_simple` for the noted units (a third of the
+  sentences), cleared first so a removed note does not linger;
+- `units.part` set to the lēctiō the unit falls in. Not optional: the reader
+  groups a passage by matching `unit.part` to `week.parts[].part`
+  (`renderPassage`, `firstUnitOf` in `app/js/reader.js`), so splitting
+  "Capitulum N" into Ørberg's lēctiōnēs without moving the units with it would
+  render an empty week;
+- `highlights` replaced for the week (delete, then insert `user_id, week_n,
+  unit_id, text, occurrence, label, note, simple`);
+- `weeks.parts` rebuilt as `{part, lines, source, summary_en, summary_la}` —
+  the course weeks' shape (CONTRACT.md "Section summaries"), `lines` computed
+  from the printed lines the section's units occupy — and `weeks.updated_at`
+  bumped, which is what makes a client refetch the week (`app/js/store.js`).
+
+Validation is a gate, not a warning: a chapter with any error writes no SQL and
+the run exits non-zero. It checks the contract's keys (and rejects unknown
+ones), that every `unit_id` exists in `review-NN.json`, that a highlight's
+`text` occurs verbatim in that unit's `la` at least `occurrence` times, that no
+unit is noted twice and no span highlighted twice, that the parts are
+contiguous, uniquely named and cover every unit of the week end to end. `--check`
+runs all of that over all 24 chapters without writing.
+
 ## Audio: aligning recordings and synthesising the rest
 
 Requirements (free, local): `pip install faster-whisper imageio-ffmpeg edge-tts gTTS`.
