@@ -66,10 +66,30 @@ See pipeline/macrons.py. Stems get macrons/v from the source tokens, then
 from the hand table; otherwise no macrons. Endings in citation forms carry
 their textbook macrons (-ō, -āre, -ārum, …).
 
+Headword index
+--------------
+glossary.json is keyed by INFLECTED FORM, so a headword can only be found by
+guessing that its own dictionary form is also one of its keys.  It usually is
+not: `lookup(h)` finds the entry for only 2,037 of the 2,735 headwords that have
+a paradigm table (698 miss), and 718 of all 3,294 headwords are unreachable that
+way.  No search by lemma is possible at all.
+
+`app/data/glossary-headwords.json` is that index, and nothing else: for every
+distinct reading (headword, part of speech, dictionary form) it gives the form
+key and the position under it, so `glossary[key][i]` is the entry.  Nothing is
+copied out of the entry — the app already holds the glossary — so the index is
+a map, not a second dictionary, and stays small enough to fetch on a phone
+before the 5 MB glossary is wanted.
+
+    { "version": 1, "fields": ["h", "pos", "key", "i"], "count": 4488,
+      "headwords": [ ["abduco", "V", null, 0], … ] }      // key null = same as h
+
 Outputs
 -------
 app/data/glossary.json                 CONTRACT shape; `cat` and `gender`
                                        are omitted when null
+app/data/glossary-headwords.json       the headword index (above); rebuild it
+                                       alone with `--headword-index`
 data/build/glossary-misses-week-NN.txt forms Whitaker could not parse and no
                                        supplement covers, with source spellings
 """
@@ -102,6 +122,7 @@ SOURCE_DIR = ROOT / "source"
 DATA_DIR = ROOT / "data"
 BUILD_DIR = DATA_DIR / "build"
 OUT_PATH = ROOT / "app" / "data" / "glossary.json"
+INDEX_PATH = ROOT / "app" / "data" / "glossary-headwords.json"
 OLD_GLOSSARY = DATA_DIR / "whitaker-glossary-all-weeks.json"
 ABBREVIATIONS = DATA_DIR / "gloss-abbreviations.json"
 
@@ -2446,7 +2467,50 @@ def attach_library_counts(glossary: dict[str, list[dict]]) -> int:
 # main
 
 
+def headword_index(glossary: dict) -> dict:
+    """
+    The headword index (see the module docstring): one row per distinct
+    (headword, part of speech, dictionary form), in glossary order, saying
+    where that reading lives.  `key` is null when it is the headword itself.
+    Pure — it reads the finished glossary and nothing else.
+    """
+    seen: set[tuple] = set()
+    rows: list[list] = []
+    for key, entries in glossary.items():
+        for i, e in enumerate(entries):
+            ident = (e.get("h"), e.get("pos"), e.get("lemma"))
+            if ident in seen:
+                continue
+            seen.add(ident)
+            rows.append([e.get("h"), e.get("pos"), None if key == e.get("h") else key, i])
+    return {
+        "version": 1,
+        "note": "glossary.json is keyed by inflected form; this maps a headword to "
+                "the entry itself. glossary[key ?? h][i] is the entry.",
+        "fields": ["h", "pos", "key", "i"],
+        "count": len(rows),
+        "headwords": rows,
+    }
+
+
+def write_headword_index(glossary: dict) -> int:
+    index = headword_index(glossary)
+    text = json.dumps(index, ensure_ascii=False, separators=(",", ":"))
+    INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(INDEX_PATH, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    size = len(text.encode("utf-8"))
+    print(f"headwords: {index['count']} readings, {len({r[0] for r in index['headwords']})} "
+          f"distinct; index {size/1024:.1f} KB → {INDEX_PATH}")
+    return size
+
+
 def main() -> None:
+    if "--headword-index" in sys.argv[1:]:
+        # rebuild the index from the committed glossary, without Whitaker
+        glossary = json.load(open(OUT_PATH, encoding="utf-8"))
+        write_headword_index(glossary)
+        return
     weeks = collect_tokens()
     LIB_FORM_COUNTS.clear()
     for _counter in weeks.values():
@@ -2580,6 +2644,7 @@ def main() -> None:
         print("note: dropped `raw` to stay under 3 MB")
     with open(OUT_PATH, "w", encoding="utf-8") as fh:
         fh.write(text)
+    write_headword_index(glossary)
 
     n_entries = sum(len(v) for v in glossary.values())
     print(f"forms in token set: {len(form_set)}")

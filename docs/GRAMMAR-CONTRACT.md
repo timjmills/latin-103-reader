@@ -1248,6 +1248,150 @@ For each table the learner can: see it filled, practise **one cell**, practise
 table, chosen and reviewed, not sampled at random — plus any word from the
 library on request.
 
+### 4a. The stable names (built, 2026-09-09)
+
+§7.4 measured what already exists: **56 ending-tables realised**, by **2,735
+headwords** producing **157,908 keyed cells**, every one of them already
+carrying a structured key. Both counts are reproduced by the build (one table
+per headword, the first entry of it that has one) and asserted by the test.
+§7.4's "63 declared" enumerates 62 by direct count — `NOUN_ENDINGS` 17,
+`PRON_TABLES` 13, `QU_COMPOUNDS` 8, `IRREGULAR_VERBS` 8, `CONJ` 5,
+`IRREGULAR_NOUNS` 4, the four adjective tables, `NUM_TABLES` 3 — and exactly 56
+of them are distinct and reached by a real lemma. The six that are not:
+`NOUN_ENDINGS['1g7']` and the qu-compounds `quicumque`, `quilibet`, `quivis`,
+which no library word reaches, and `PRON_TABLES.nos` / `.vos`, which are the
+same objects as `.ego` / `.tu`. `ADJ_COMP` is realised, but only ever as the
+comparative **section** of an adjective's table, never as a table of its own.
+What was missing was naming and selection. This
+section is what was built; the app builds against it, and
+`pipeline/test_build_paradigm_catalogue.py` holds it true.
+
+```
+app/data/grammar/paradigms.json   the catalogue        pipeline/build_paradigm_catalogue.py
+app/data/glossary-headwords.json  the headword index   pipeline/build_glossary.py --headword-index
+```
+
+**A table id.** `paradigm()` returns no id, and its section indices shift with a
+lemma's root count, so nothing positional can name a table. A table is instead
+the *branch* the generator takes — the set of entries that reach the same ending
+tables — and its id is that branch's name. The 46 keys `skills.json` already
+uses (`decl3i`, `conj3io`, `sum`, `hic`, `unus`, `vis` …) are kept exactly;
+**65 tables** are catalogued in all, because the branches paradigms.js really
+takes are finer than those keys in twenty places (below). The id is
+lemma-independent: `nāvis`, `urbs`, `pars`, `mōns` and 96 other headwords are
+all `decl3i`.
+
+`paradigms.json` carries the branch logic as **ordered data** in `select`, so
+the app can compute a table id for any library word without re-implementing
+paradigms.js: a list of `{ table, when }`, first match wins, where `when` may
+test `pos`, `h`, `d`/`v` (the two halves of `cat`), `gender`, `cat_is` (the
+guard on a hand table — `volō volāre` "fly" is not `volō velle`),
+`root0_ends_i`, and `lemma_matches`. The build proves the list total: every one
+of the 3,785 table-bearing entries matches exactly one rule, and renders no cell
+its table does not name.
+
+**A cell id.** Derived from the cell's own `key`, never from its position. The
+slots are written in this fixed order, and the ones the key does not carry are
+left out:
+
+```
+degree · tense · mood · voice · person · case · number · gender
+```
+
+No two slots share a value, so an id parses back to a key without knowing the
+order (`id_scheme.slot_of` in the file is that map, and the build asserts every
+id is reversible and in slot order). A key whose `kind` is neither `nominal` nor
+`finite` is prefixed with its kind, so a gerund's accusative and a noun's cannot
+collide:
+
+```
+nom.sg              noun, nominative singular
+comp.dat.pl.n       adjective, comparative dative plural neuter
+pres.ind.act.3.sg   verb, present indicative active, he/she/it
+imper.pres.act.pl   imperative, plural            imper.fut.act.3.pl
+inf.perf.pass       perfect passive infinitive    ptc.pres.act
+gerund.acc · supine.abl · gerundive
+```
+
+**One normalisation**: on a *noun* table the gender is the lemma's, not the
+cell's (a noun table is one gender throughout), so it is left out of the id and
+the app puts the entry's own `gender` back when it rebuilds the key. On an
+adjective, pronoun or numeral table gender **is** a column and stays in the id.
+Without this, `dat.sg` would be `dat.sg.f` for *puella* and `dat.sg.m` for
+*nauta* — the same cell under two names.
+
+**A group id**, likewise from the keys, replacing the section index: a finite
+section is `<tense>.<mood>`; a section of nominal cells is its degree (`pos`,
+`comp`, `super`) or `cases` when the cells carry none; anything else is its kind
+(`imper`, `inf`, `ptc` — participles and the gerundive together —, `gerund`,
+`supine`). Nineteen group ids cover every section of every table.
+
+**The pool key.** `chart:<h>:<section>.<row>.<col>` is positional and means a
+different cell for a different lemma. It is replaced by
+
+```
+<table id>#<cell id>          the cell, whatever word it is built on
+<table id>#<group id>         the group
+<table id>@<h>#<cell id>      that cell on that word, when the word matters
+```
+
+so a per-cell history survives switching the word, and switching the word can be
+scored as practice of the same cell.
+
+**What the catalogue holds.** `parts` in learner order (nouns 20 tables ·
+adjectives 9 · pronouns 16 · verbs 16 · numerals 4), each table with its `id`,
+`label`, `example`, `category`, `kind` (the `paradigm.kind` the generator
+returns), the `chapter` that introduces it with `chapter_from` saying how it was
+decided (`skill` · `vocabulary` · `library`), the `skills` that name it, its
+`groups` (each with its cells, and the number of lemmas that render it), its
+`axes`, and its `stock` — three to five headwords, each as `{h, pos, key, i}`
+so `glossary[key][i]` **is** the entry, with the chapter and count that justify
+it and a `stock_note` per table saying why those words. 3,040 named cells in
+all; 188 KB, 17 KB over the wire.
+
+**Axes** are offered only where the data holds at least two values, and each
+value carries its own count so a filter that would leave nothing can say so
+before it is run. Two scopes: a **cell** axis chooses which cells to drill
+(`case` 59 tables · `number` 58 · `gender` 26 · `tense`/`mood`/`person` 16 ·
+`voice` 10 · `degree` 6), a **lemma** axis chooses the word the table is built
+on (`chapter` 26 · `gender` 8 · `deponent` 5). Declension and conjugation are
+not axes *within* a table — they are constant there; they are written on the
+table (`decl`, `conj`) so the catalogue can be filtered across tables.
+
+**`KEY_CLASS` in lessons.js is superseded** by `keys` in `paradigms.json`, which
+maps each of skills.json's 46 `paradigm_keys` to the table (or, for `adjcomp`,
+to the `comp` **group** inside six adjective tables — no glossary entry renders
+`ADJ_COMP` as a table of its own).
+
+**Rebuilding.** `python pipeline/build_paradigm_catalogue.py` writes the file;
+`--check` builds it in memory and reports only; `--report` prints the roster.
+The check fails when a table has no stock word, when a stock word does not
+render that table, when an axis is offered that the data cannot filter, when the
+selection rules stop partitioning the glossary, and when the committed file has
+drifted. `pipeline/test_build_paradigm_catalogue.py` runs all of that under
+pytest and additionally drives **app/js/paradigms.js itself** from node
+(`tests/latin_forms/dump_js_cell_ids.mjs`, which implements the id scheme above
+in JavaScript) to prove the ids in the file are the ids the app will compute.
+
+### 4b. The headword index (built, 2026-09-09)
+
+`glossary.json` is keyed by inflected form only (11,632 keys), so `lookup(h)`
+reaches the entry for just **2,037 of the 2,735 table-bearing headwords**, and
+no search by lemma is possible at all. `app/data/glossary-headwords.json` is the
+missing map and nothing more:
+
+```jsonc
+{ "version": 1, "fields": ["h", "pos", "key", "i"], "count": 4488,
+  "headwords": [ ["abduco", "V", null, 0], … ] }   // key null = the same as h
+```
+
+One row per distinct reading (headword, part of speech, dictionary form) —
+**4,488 rows over all 3,294 headwords**, every one resolving to
+`glossary[key ?? h][i]`. Nothing is copied out of the entry, because the app
+already holds the glossary, so it is a map and not a second dictionary:
+**117 KB, 25 KB gzipped**. It is precached with the shell, and it can be fetched
+on its own — a word picker can open before the 5 MB glossary is wanted.
+
 ## 5. Customisation
 
 Per skill and per table, the axes that are **logical for that skill**, or mixed:
