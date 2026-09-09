@@ -1159,3 +1159,99 @@ Settings beside the study log, each chapter one row that opens to its detail:
 The 14 course weeks keep their existing table unchanged — this view is by
 chapter and additional to it. Totals across the whole book sit at the top:
 sentences read, chapters finished, skills mastered, minutes measured.
+
+# Teaching rebuild (2026-09-09)
+
+The learner's verdict on the grammar practice: the concepts are presented too
+hard and not step by step enough; the sentences and vocabulary are too hard;
+the vocabulary runs past the chapter; there is nowhere that catalogues every
+paradigm for practice on several words; there is no customisation; and the
+answer boxes do not check cell by cell. Their sixteen answers below are binding.
+
+## 1. Teaching sentences (new, and the biggest change)
+
+Ørberg's own sentences are mostly too long for teaching a new skill, so **we
+write our own**. Purpose-made, pedagogically ordered, in the book's vocabulary
+and syntax, **five to eight words**, never longer unless the construction
+cannot be shown shorter (say so per sentence when it happens).
+
+```
+app/data/grammar/sentences/<skill>.json     public — our own Latin, not the book's
+```
+```jsonc
+{ "skill": "dative-indirect-object",
+  "chapter": 7,                         // the skill's chapter; vocabulary is cumulative to here
+  "sentences": [
+    { "id": "dio-01", "la": "Iūlius puerō mālum dat.", "en": "Julius gives the boy an apple.",
+      "words": 4, "focus": "puerō",     // the word the skill is about; must occur in `la`
+      "step": 1,                        // which teaching step it belongs to (1 = first)
+      "stage": 1,                       // 1 recognise · 2 cued recall · 3 production
+      "kinds": ["recognise", "parse", "blank"],
+      "gloss": [ { "w": "Iūlius", "m": "Julius" }, … ]   // every word, in order
+    } ]}
+```
+Rules, enforced by a build check:
+- **Cumulative vocabulary only.** Every word must appear in `app/data/grammar/vocab/NN.json` for some NN ≤ the skill's chapter, or be a proper name of the book's cast, or be the construction's own function word. A build check fails on any word outside that set and names it.
+- **Five to eight words**, counting every printed word. Longer needs a stated reason in the sentence's own `note`.
+- **Correct, natural Latin with macrons**, in Ørberg's register — the kind of sentence he would write. No invented lexicon, no English word order.
+- **Enough per skill** to teach and practise it: at least one per teaching step, and at least twelve in total per drillable skill so items do not repeat quickly.
+- Each carries its full gloss, so no drill ever assumes a meaning.
+- Book sentences are **not** retired: they remain the material for stage 3 and
+  for chapter practice once a skill is in rotation. The written sentences are
+  what Learn and the early stages use.
+
+## 2. Learn, rebuilt as micro-steps (replaces the current flow)
+
+A skill is taught in **four to six steps**, each one idea, each followed
+immediately by a single check on that idea alone.
+
+```jsonc
+"teach": [
+  { "n": 1, "title": "What it does",
+    "say": "…one short paragraph, plain words, the term with its gloss…",
+    "show": { "kind": "sentence", "id": "dio-01" },      // or a paradigm cell, or nothing
+    "check": { "kind": "recognise", "sentence": "dio-02" } },
+  { "n": 2, "title": "The singular endings",
+    "show": { "kind": "paradigm", "key": "decl2", "reveal": ["dat.sg"] },
+    "check": { "kind": "chart", "cells": ["dat.sg"] } } ]
+```
+- **Worked examples are completed, not read.** The first is shown fully parsed;
+  the next two the learner finishes, with the reasoning prompted a step at a time.
+- **A paradigm is built cell by cell**: each step reveals one cell and names its
+  ending, and the learner may practise that cell **on several words** before
+  moving on (the catalogue's stock words, §4).
+- After the steps, the blocked ten and the existing 6-of-10 criterion stand.
+- **Prerequisites**: if a skill's prereqs are unmet, Learn says so and offers
+  them, and lets the learner go on.
+
+## 3. Cell-by-cell checking (every guided and independent practice)
+
+- A cell is judged **when the learner leaves it** (tab, click away, Enter) and
+  turns **green or red** at once. Red does not block: the learner may correct it,
+  press the hint, or leave it and grade the rest together.
+- **The hint reveals that one cell's answer**, and marks the cell hinted.
+- **A chart is one attempt** for the scheduler, correct only if every cell was
+  right unaided, so a twelve-cell table does not swamp the history. Per-cell
+  results are kept for the feedback and for "redo what was wrong".
+- Tab moves in reading order; the last cell tabs to the grade button.
+
+## 4. The paradigm catalogue
+
+```
+app/data/grammar/paradigms.json    catalogue entries, generated from skills.json + paradigms.js
+```
+Organised **by part of speech, then by table**, each entry naming the chapter
+that introduces it and the category it belongs to, with a filter across both.
+For each table the learner can: see it filled, practise **one cell**, practise
+**the whole table**, and **switch the word** it is built on. Every table offers
+**stock words** — the examples the book itself teaches with, three to five per
+table, chosen and reviewed, not sampled at random — plus any word from the
+library on request.
+
+## 5. Customisation
+
+Per skill and per table, the axes that are **logical for that skill**, or mixed:
+gender, declension or conjugation, case, number, tense, person, and chapter
+range. Only axes the data can honestly filter are offered, and a chosen filter
+is remembered per skill. A filter that would leave no material says so instead
+of producing an empty session.
