@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v44';
+const CACHE_VERSION = 'v45';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -50,6 +50,8 @@ const PRECACHE = [
   './js/grammar/ui.js',
   './js/grammar/store-grammar.js',
   './data/grammar/skills.json',
+  './data/grammar/paradigms.json',
+  './data/glossary-headwords.json',
   './data/grammar/lessons/index.json',
   './data/grammar/lessons/ablative-absolute-perfect.json',
   './data/grammar/lessons/ablative-absolute.json',

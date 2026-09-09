@@ -1591,3 +1591,108 @@ they do in the menu, and a repaint keeps the focused row.
   and its readings then come from `settings.readingRows()`.
 - Reading progress arriving from another device repaints the page in place
   (`paintProgress` → `paintProgPage`).
+
+## Teaching rebuild, the measured core (2026-09-09)
+
+The four cheapest large wins of `docs/GRAMMAR-CONTRACT.md` "Teaching rebuild",
+§7.6 items 1 and 2. Everything here is measured over the whole library (5,857
+units, 84 drillable skills, a 5,040-draw simulation of real sessions), and the
+numbers below are the acceptance criteria, not estimates.
+
+### The learner's chapter is the ceiling on every draw
+
+Chapter scoping already existed and worked; it simply was not applied. The
+scheduler gave a chapter to the ≈ 20 % of slots that asked for the current
+week, and only "Practise this chapter" passed one, so **85 % of every skill's
+pool was sentences from chapters later than the learner** (§7.2).
+
+- **`chapter.js` `scopeByChapter(list, chapter, weekOf, { mode })`** grew a
+  second mode. `'own-first'` is what a *chapter's* practice has always done —
+  that chapter's own sentences, then earlier ones, then the wider library.
+  `'ceiling'` is the learner's own position: everything **at or before** it is
+  Latin they have read, so the two tiers are one and the pool stays wide.
+  Both fall outward only when a skill has nothing at or before the chapter.
+  `scopeNote` reads each drawn sentence's own chapter back off it, so an item
+  still says `own` or `earlier`; a ceiling note also carries `ceiling: true`,
+  and `scopeSentence` then says "From chapter III — Latin you have already
+  read" rather than claiming this chapter had none.
+- **`scheduler.js`** writes `chapter` **and** `chapterMode` onto every slot:
+  the session's chapter with `own-first` where there is one, else the
+  learner's chapter as a `ceiling`. A learner who has read nothing is
+  uncapped, as before.
+- **`session.js`** `scopeOf(slot)` answers for a plan handed in ready-made (a
+  redo's named items, a confusion pair's alternation), and `createLearn` and
+  `createBlockedFive` take `currentWeekN` so Learn and "Practise this skill"
+  draw under the same ceiling. `items.generate` and `stage3` take
+  `chapterMode` beside `chapter`.
+
+Measured, at the learner chapters 3 / 5 / 10 / 20 / 30, over the skills a
+learner at that chapter actually has. At **chapter 5**: words beyond the
+learner **47.4 % → 1.8 %** of the candidate pool (the shape §7.2 reports; the
+same figure over simulated draws is 27.7 % → 1.4 %), sentences fully inside
+their vocabulary **15.9 % → 90.8 %**, and **no skill that had material lost
+any** at any of the five chapters. The ceiling mode beats own-first on the
+same draws — at chapter 5, 245 distinct sentences against 137, and 1.4 %
+beyond against 2.8 % — because a single chapter is too thin a pool to drill on.
+
+### "Shorter sentences first" counts words
+
+`SHORT_LA = 180` counted **characters**: 98.1 % of candidates passed it and its
+"short" sentences ran to 36 words. It is now `SHORT_WORDS = 8` — what the
+learner asked for (§1) and the library's own median is seven — and it is a
+preference **inside** every other draw tier rather than a fallback after them,
+because after gold and the current week it was almost never reached. The same
+bar in `stage3.js`: `transform` and `translate` filter to `SHORT_WORDS` and
+widen to `LONG_WORDS` (15) only for a skill that has nothing that short, so no
+skill loses a production kind; the chapter caps first, and the length is chosen
+inside what it leaves.
+
+Measured over the same 5,040-draw sweep: the median item a learner is shown
+falls from **11 words to 7**, and items of 13+ words from **43.5 % to 23.6 %**.
+
+### Every answer box is judged on its own
+
+`judge()` already produced the per-cell truth and threw it away into prose.
+It is now **`cellResults(item, value)`** (pure, exported) — one
+`{ i, ok, given, expected, label }` per box for chart, inline, bank and match —
+with `judge` folding it into the item's single verdict and **`judgeCell(item,
+i, given)`** for one box alone. So a cell cannot go green in the UI and count
+wrong in the log.
+
+In `ui.js` the typed boxes (a chart's cells, Pensum A's endings) are judged
+**as the learner leaves them** — blur, Tab, Enter — and turn green or red at
+once; typing in a box clears its mark again. Red never blocks: the box stays
+editable, its hint stays there, and the item is graded when the learner presses
+Check. Grading paints every box from `cellResults`, including the ones never
+left, and a tapped input (a word bank, a match item) takes its colours then —
+judging a tap as it lands would turn the bank into a game of trying tiles.
+**A chart is still exactly one attempt** for the scheduler, correct only when
+every cell was right; the per-cell results ride on the result for the feedback.
+Colour is never the only signal: each box carries a ✓ or a ✗, `aria-invalid`,
+and a live-region line naming the box ("dative singular: not right yet").
+A box whose hint was opened is marked `data-hinted`.
+
+### The two defects in the same code
+
+- **The hint leak.** The "Tell me more" disclosure on a single-box `blank`
+  item renders the word's whole paradigm, one cell of which is the answer, and
+  the leak sweep inspected strings only. `session.js` now has
+  **`paradigmLeak(table, answers)`** — the string sweep's `answerLeak`, over a
+  rendered table's cells, its title and its note — and **`maskParadigm`**,
+  which returns a copy with every leaking cell printed as `…`. The disclosure
+  renders the masked copy, so the paradigm still shows the shape the answer
+  belongs to and where in it the answer sits, without printing it. The table
+  the feedback shows afterwards is untouched.
+- **The tab order.** A box's inline "?" sat between it and the next box, so Tab
+  from cell one landed on cell one's hint — against the contract and against
+  the key help printed under the input. The inline control now carries
+  `tabindex="-1"`: Tab runs cell to cell and the last cell reaches the grade
+  button. It stays a control — clickable, in the accessibility tree, and
+  reachable from the box itself with **Alt+H**, which the key help names. The
+  labelled row form (order and match, whose boxes are buttons the learner taps)
+  sits after every box and keeps its place in the sequence.
+
+Tested in `tests/grammar.teach-core.test.mjs` (the ceiling on every session
+type, the fallback, nothing emptied; the word bar; per-cell judging and
+one-attempt-per-chart scoring; the paradigm sweep) and live in
+`qa/teach-core/`.

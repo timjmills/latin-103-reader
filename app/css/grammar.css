@@ -314,6 +314,24 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
    width rule here: `flex: none; width: 100%` beside a button is an overflowing row, not a cell. */
 .g-cellwrap { display: flex; align-items: center; gap: 0.15em; max-width: 100%; }
 .g-cellwrap .g-input--cell { flex: 1 1 auto; width: auto; min-width: 0; }
+
+/* Cell by cell (GRAMMAR-CONTRACT.md §3): a box goes green or red as the learner leaves it, and every
+   box takes its colour when the item is graded. The hue is never the only signal — the box also carries
+   a ✓ or a ✗, which holds up in greyscale and on a black-and-white print, and `aria-invalid` and the
+   live region carry it to a screen reader. Red is a mark, not a barrier: nothing about the box changes
+   except its colour, so it can be corrected, hinted, or left and graded with the rest. */
+.g-input.is-right, .g-pensum__slot.is-right { border-color: var(--success); }
+.g-input.is-wrong, .g-pensum__slot.is-wrong { border-color: var(--rubric); }
+.g-input.is-right:disabled, .g-input.is-wrong:disabled { background: var(--bg-raised); }
+.g-cellmark { display: inline-flex; align-items: center; justify-content: center; min-width: 1em; font-size: var(--ui-sm); font-weight: 700; line-height: 1; }
+.g-cellmark:empty { display: none; }
+.g-cellmark.is-ok { color: var(--success); }
+.g-cellmark.is-bad { color: var(--rubric); }
+/* A box whose hint was opened keeps a quiet dotted underline, the same mark the stats page uses for a
+   hinted answer (`.g-tick.is-hinted`): the cell was right, and it was helped. */
+.g-cellwrap[data-hinted="true"] .g-input--cell, .g-pensum__blank[data-hinted="true"] .g-input--end { border-bottom-style: dashed; }
+.g-match__b.is-right { border-color: var(--success); }
+.g-match__b.is-wrong { border-color: var(--rubric); }
 /* Coarse pointers: the "?" reaches the 44 px target without growing the ring itself. */
 @media (hover: none) and (pointer: coarse) {
   .g-hintb { position: relative; }

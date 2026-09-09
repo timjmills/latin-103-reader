@@ -99,7 +99,7 @@ export function orderInput({ chunks, display = null, scrambled, onSubmit, live =
   return { node: form, focus: () => bank.querySelector('button:not(:disabled)')?.focus({ preventScroll: true }) };
 }
 
-export function matchInput({ pairs, right, onSubmit, live = null }) {
+export function matchInput({ pairs, right, onSubmit, live = null, onCells = null }) {
   const chosen = {};              // left index → right index
   const order = [];               // left indexes in the order they were paired: the badge number both halves carry
   let pendingLeft = null;
@@ -132,6 +132,23 @@ export function matchInput({ pairs, right, onSubmit, live = null }) {
     if (e.key === 'ArrowDown') { e.preventDefault(); roving(list, i, 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); roving(list, i, -1); }
     else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); (other[i] ?? other[0])?.focus(); }
+  });
+  // Per-row results when the item is graded (GRAMMAR-CONTRACT.md §3): each pair carries its own green or
+  // red, and the ✓ / ✗ says which without relying on the colour. A pairing is tapped, never "left", so
+  // nothing is judged before the learner presses Check — that would make the item a game of trying tiles.
+  onCells?.((cells) => {
+    for (const r of cells) {
+      const l = leftBtns[r.i];
+      const j = chosen[r.i];
+      const rb = j == null ? null : rightBtns[j];
+      for (const b of [l, rb]) {
+        if (!b) continue;
+        b.classList.toggle('is-right', !!r.ok);
+        b.classList.toggle('is-wrong', !r.ok);
+        b.setAttribute('aria-invalid', String(!r.ok));
+        if (!b.querySelector('.g-cellmark')) b.append(h('span', { class: `g-cellmark${r.ok ? ' is-ok' : ' is-bad'}`, 'aria-hidden': 'true', text: r.ok ? '✓' : '✗' }));
+      }
+    }
   });
   paint();
   return { node: form, focus: () => leftBtns[0]?.focus({ preventScroll: true }) };

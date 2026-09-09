@@ -177,17 +177,23 @@ test('a chapter VII session holds no sentence from a later chapter', () => {
   assert.ok(built >= 5, 'the session really was built');
 });
 
-test('the current-week slots of a mixed session carry the week\'s chapter; the rest stay the whole library', () => {
+test("every slot of a mixed session carries a chapter: the session's where there is one, else the learner's own as a ceiling", () => {
   const states = new Map([[SKILL, { ...addToPractice(newState(SKILL, NOW), NOW), due_at: new Date(NOW - DAY_MS).toISOString(), stability_days: 2 }]]);
   const skills = new Map([[SKILL, INDEX.skills.get(SKILL)]]);
+  // The learner is reading chapter XXVII. That is the ceiling on every slot, not just the ~20 % that
+  // already asked for this week's sentences (GRAMMAR-CONTRACT.md 7.2: it left 85 % of the pool ahead of them).
   const plan = buildSession({ states, skills, size: 10, seed: 3, now: NOW, currentWeekChapter: 27 });
-  const week = plan.filter((p) => p.currentWeek);
-  assert.ok(week.length, 'the ≈ 20 % current-week slots are there');
-  assert.ok(week.every((p) => p.chapter === 27), 'a "this week" sentence is the week\'s chapter, not the library\'s');
-  assert.ok(plan.filter((p) => !p.currentWeek).every((p) => p.chapter === null), 'the other slots are unchanged');
-  // A session's own chapter outranks the week's on every slot.
+  assert.equal(plan.length, 10);
+  assert.ok(plan.every((p) => p.chapter === 27), "the learner's chapter caps every slot");
+  assert.ok(plan.every((p) => p.chapterMode === 'ceiling'), 'a ceiling, not one chapter: everything at or before it is Latin they have read');
+  assert.ok(plan.some((p) => p.currentWeek), 'the ~20 % current-week slots are still there');
+  // A session's own chapter outranks the learner's position on every slot, and keeps its own-first rule.
   const scoped = buildSession({ states, skills, size: 10, seed: 3, now: NOW, chapter: 7, currentWeekChapter: 27 });
   assert.ok(scoped.every((p) => p.chapter === 7));
+  assert.ok(scoped.every((p) => p.chapterMode === 'own-first'), "a chapter's practice reads like that chapter");
+  // A learner with no position at all (nothing read yet) still draws from the whole library.
+  const nowhere = buildSession({ states, skills, size: 6, seed: 3, now: NOW });
+  assert.ok(nowhere.every((p) => p.chapter === null));
 });
 
 /* ------------------------------------------------------- the rule, pure */

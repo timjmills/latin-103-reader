@@ -568,7 +568,19 @@ export function scanUnit(unit, skill, lookup, opts = {}) {
 
 /* ------------------------------------------------------ generator */
 const shuffle = (arr, rand) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const SHORT_LA = 180;
+/**
+ * "Shorter sentences first", in **words** (GRAMMAR-CONTRACT.md §7.1). It used
+ * to be `SHORT_LA = 180` *characters*, which 98.1 % of candidates passed — so
+ * the tier was nearly inert and its "short" sentences ran to 36 words. The bar
+ * is the one the learner asked for and the one the library itself keeps: five
+ * to eight words (§1), the library's own median being seven.
+ *
+ * It is a **preference inside every other tier**, not a fallback after them: a
+ * gold sentence is still drawn before an ordinary one, but the short gold
+ * sentences come before the long gold ones. As a tier after gold it would
+ * almost never be reached, which is the second half of why it was inert.
+ */
+export const SHORT_WORDS = 8;
 const blankOut = (la, t) => `${la.slice(0, t.start)}___${la.slice(t.end)}`;
 const meaningsOf = (la) => tokenize(la).filter((t) => t.isWord).map((t) => ({ text: t.text, form: t.form, start: t.start }));
 const firstWord = (lemma) => String(lemma ?? '').split(/[\s,]/)[0];
@@ -593,6 +605,9 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
   const toks = (la) => { if (!tokMemo.has(la)) tokMemo.set(la, tokenize(la)); return tokMemo.get(la); };
   const stripMemo = new Map();
   const stripped = (la) => { if (!stripMemo.has(la)) stripMemo.set(la, strippedText(la)); return stripMemo.get(la); };
+  const wordMemo = new Map();
+  /** How many printed words a sentence has — the bar the "shorter first" tier keeps. */
+  const wordCount = (la) => { if (!wordMemo.has(la)) wordMemo.set(la, toks(la).filter((t) => t.isWord).length); return wordMemo.get(la); };
   const tableMemo = new Map();
   function safeParadigm(entry, parse) { try { return paradigm ? paradigm(entry, parse ? [parse] : []) : null; } catch { return null; } }
   const plainTable = (entry) => { const k = entry?.lemma ?? ''; if (!tableMemo.has(k)) tableMemo.set(k, entry ? safeParadigm(entry, null) : null); return tableMemo.get(k); };
@@ -733,7 +748,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     };
   };
 
-  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, chapter = null, where = null, itemKey = null }) => {
+  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, chapter = null, chapterMode = 'own-first', where = null, itemKey = null }) => {
     let pool_ = candidates(skill.id);
     if (where) pool_ = pool_.filter(where);
     if (unambiguous) pool_ = pool_.filter((c) => !c.ambiguous);
@@ -742,18 +757,22 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     // A chapter scopes the draw before anything else orders it: its own sentences, else the chapters at or
     // before it, else the wider library with the item saying so (chapter.js "the sentence's chapter"). A redo
     // names one exact item, and that item is what it is — the scope would only make it undrawable.
-    const scoped = itemKey != null ? { list: pool_, scope: null, counts: null } : scopeByChapter(pool_, chapter);
+    const scoped = itemKey != null ? { list: pool_, scope: null, counts: null } : scopeByChapter(pool_, chapter, undefined, { mode: chapterMode });
     pool_ = scoped.list;
     const keyOf = (c) => `${kind}:${c.unit.id}:${c.token.form}:${c.index}`;
     const keys = pool_.map(keyOf);
+    // Shorter sentences first: a drill reads one sentence, not a paragraph. It is a preference *inside*
+    // each tier below (`nest`), so the lesson's own short example still comes before its long one, and
+    // the long ones come only once the short ones are spent.
+    const short = new Set(pool_.filter((c) => wordCount(c.unit.la) <= SHORT_WORDS).map(keyOf));
+    const nest = (t) => { const s = new Set([...t].filter((k) => short.has(k))); return s.size && s.size < t.size ? [s, t] : [t]; };
     const tiers = [];
-    tiers.push(new Set(pool_.filter((c) => c.gold).map(keyOf)));   // the lesson's own examples and the labelled highlights first
+    tiers.push(...nest(new Set(pool_.filter((c) => c.gold).map(keyOf))));   // the lesson's own examples and the labelled highlights first
     // The ≈ 20 % current-week slots draw from a course week only (n ≤ 14): a shelf chapter being read is never 'this week'.
-    if (currentWeek && currentWeekN != null && !isShelfWeek(currentWeekN)) tiers.push(new Set(pool_.filter((c) => c.unit.week_n === currentWeekN).map(keyOf)));
+    if (currentWeek && currentWeekN != null && !isShelfWeek(currentWeekN)) tiers.push(...nest(new Set(pool_.filter((c) => c.unit.week_n === currentWeekN).map(keyOf))));
     // A function skill drills nouns before pronouns (mihi / tibi teach little about the receiver of a gift), while enough nouns exist.
-    if (key(skill) === 'construction' && caseOf(skill)) { const nouns = pool_.filter((c) => c.entry.pos === 'N'); if (nouns.length >= 5) tiers.push(new Set(nouns.map(keyOf))); }
-    // Shorter sentences first: a drill reads one sentence, not a paragraph (long ones come once the short ones are spent).
-    tiers.push(new Set(pool_.filter((c) => c.unit.la.length <= SHORT_LA).map(keyOf)));
+    if (key(skill) === 'construction' && caseOf(skill)) { const nouns = pool_.filter((c) => c.entry.pos === 'N'); if (nouns.length >= 5) tiers.push(...nest(new Set(nouns.map(keyOf)))); }
+    tiers.push(short);
     const got = pool.chooseInfo(skill.id, kind, keys, rand, tiers.filter((t) => t.size), itemKey);
     if (!got) return null;
     const c = pool_[keys.indexOf(got.key)];
@@ -962,7 +981,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const filter = filterOf(skill);
     // The lemmas the skill's sentences use, one paradigm each; the pool is keyed by lemma + cell.
     // A chart has no sentence, but its word came from one, so the chapter scopes which words it may ask about.
-    const scoped = opts.itemKey != null ? { list: candidates(skill.id), scope: null } : scopeByChapter(candidates(skill.id), opts.chapter ?? null);
+    const scoped = opts.itemKey != null ? { list: candidates(skill.id), scope: null } : scopeByChapter(candidates(skill.id), opts.chapter ?? null, undefined, { mode: opts.chapterMode ?? 'own-first' });
     const seen = new Map();
     for (const c of scoped.list) if (!seen.has(c.entry.h)) seen.set(c.entry.h, c);
     const entries = [...seen.values()];
@@ -1044,10 +1063,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
    * kinds are tried — those not in `avoid` (the neighbours' kinds) first — and
    * the item that comes back says which kind it is.
    */
-  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, chapter = null, full = false, tap = undefined, avoid = [], itemKey = null } = {}) {
+  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, chapter = null, chapterMode = 'own-first', full = false, tap = undefined, avoid = [], itemKey = null } = {}) {
     const skill = typeof skillId === 'string' ? skillMap.get(skillId) : skillId;
     if (!skill || !skill.parse_filter) return null;
-    const opts = { currentWeek, currentWeekN, chapter, tap, itemKey };
+    const opts = { currentWeek, currentWeekN, chapter, chapterMode, tap, itemKey };
     const fn = FNS[kind];
     if (!fn) return null;
     // A redo asks for one named item (GRAMMAR-CONTRACT.md "Redo what was wrong"). Neither of the two
@@ -1055,11 +1074,11 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     // item wearing the same name. Nothing to rebuild → null, and the session drops the slot quietly.
     if (itemKey != null) return fn(skill, stage, opts, { full });
     let item = fn(skill, stage, opts, { full });
-    if (!item && currentWeek) item = fn(skill, stage, { currentWeek: false, currentWeekN: null, chapter, tap }, { full });
+    if (!item && currentWeek) item = fn(skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode, tap }, { full });
     if (!item) { // fall back through the other kinds so a session slot is never empty — the neighbours' kinds last
       const allowed = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
       const order = ['blank', 'recognise', 'parse', 'chart'].filter((a) => a !== kind && allowed.includes(a));
-      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null, chapter }, { full }); if (item) break; }
+      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode }, { full }); if (item) break; }
     }
     return item;
   }
