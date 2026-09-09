@@ -14,5 +14,129 @@
     { "type": "p", "text": "The learner's notes (week 19): Latin shows tense with an intermediate ending between the stem and the person ending; the imperfect is one of three past tenses, for ongoing or repeated action and for setting the scene for the main events (*I was walking down the street, when…*; *I used to walk…*); the marker *(e)ba* loses its *e* after *a-* and *e-*stems and keeps it after *(i)-* and *i-*stems (*pōnēbam, pulsābam, vidēbam, fugiēbam, veniēbam*); the person endings lose their variable vowels after the *a*, and the first person always uses *-m*." },
     { "type": "p", "text": "Ørberg (chapter XIX): tempus praeteritum, 3rd person *-bat / -bant*, *-ēbat / -ēbant*; *computābat, pārēbat, scrībēbat, dormiēbat*; *ante vīgintī annōs Iūlius in lūdō dormiēbat, male computābat, foedē scrībēbat*. A&G §470–471 list the uses: continued action, repeated action, description, and the 'was beginning to' sense." }
   ],
-  "sources": ["notes p64–65", "Ørberg cap. XIX Grammatica Latina", "A&G §184, §470–471"]
+  "sources": ["notes p64–65", "Ørberg cap. XIX Grammatica Latina", "A&G §184, §470–471"],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the tense does",
+      "say": "When Latin looks back at the past it can report one finished event, or it can paint what was going on. For what was going on — and for what went on again and again — it uses the imperfect (the 'was doing' tense). *Iūlius ambulābat* is not 'Julius walked once' but 'Julius was walking', and *Iūlius cotīdiē ambulābat* is 'Julius used to walk every day'. The sign of it is *-bā-* sitting between the verb's stem and its person ending.",
+      "show": {
+        "kind": "sentence",
+        "id": "ia-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ia-02",
+        "ask": "Tap the verb that says what Marcus used to do every day."
+      }
+    },
+    {
+      "n": 2,
+      "title": "The stem, then -bā-, then -t",
+      "say": "Build the word in three pieces. Take the stem *ambulā-*, add *-bā-*, then add the ending that says who: *-t* for he, she or it, *-nt* for they. Before a final *-t* or *-nt* that long *ā* shortens, which is why you write *ambulā-ba-t* and *clāmā-ba-nt*. A verb of the second conjugation (the conjugation is which of the four families a Latin verb belongs to; the second is the *-ēre* family) does exactly the same on its own stem vowel: *tacē-* gives *tacēbat*. Nothing else in the word changes.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "ambulo",
+        "reveal": [
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "say": "ambulābat, ambulābant — stem, then -bā-, then -t or -nt"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "canto",
+        "cells": [
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "ask": "Now the same two cells on another verb: write the imperfect of cantō for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The other persons, and -m for 'I'",
+      "say": "The remaining persons put the ordinary endings on that same *-bā-*: *-s* for you, *-mus* for we, *-tis* for you all. The one thing to remember is the 'I' form: it ends in *-m*, not in the *-ō* the present uses. So *ambulō* 'I am walking' but *ambulābam* 'I was walking'.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "ambulo",
+        "reveal": [
+          "impf.ind.act.1.sg",
+          "impf.ind.act.2.sg",
+          "impf.ind.act.1.pl",
+          "impf.ind.act.2.pl"
+        ],
+        "say": "ambulābam, ambulābās, ambulābāmus, ambulābātis"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "laudo",
+        "cells": [
+          "impf.ind.act.1.sg",
+          "impf.ind.act.2.sg",
+          "impf.ind.act.1.pl",
+          "impf.ind.act.2.pl"
+        ],
+        "ask": "Write the imperfect of laudō for I, for you, for we and for you all."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The 3rd and 4th conjugations put -ē- first",
+      "say": "Third- and fourth-conjugation verbs have no long vowel of their own to carry the marker, so they slip in an *-ē-* before it: *mitt-* becomes *mittēbat*, *audi-* becomes *audiēbant*. Read the word as stem + ē + bā + ending. The *-bā-* is the same as before; only the joining vowel is new.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "mitto",
+        "reveal": [
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "say": "mittēbat, mittēbant — stem, then ē, then bā"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "scribo",
+        "cells": [
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "ask": "Now the same two cells on scrībō: the imperfect for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the present",
+      "say": "The present (the 'is doing' tense) and the imperfect differ by those two letters and nothing else: *rīdet* 'she is laughing' against *rīdēbat* 'she was laughing', *pōnit* 'he puts' against *pōnēbat* 'he was putting'. Cover the ending and look for *-ba-* or *-bā-*: if it is there, the sentence has moved into the past.",
+      "show": {
+        "kind": "sentence",
+        "id": "ia-09"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ia-11",
+        "ask": "Tap the one verb here that has moved into the past."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Now write one. The imperfect keeps the background running while everything else happens inside it, so two imperfects often sit in the same sentence: *Iūlius pecūniam vidēbat et in sacculō pōnēbat*. Watch the order too — Latin is happy to put the verb before its subject, so do not expect the last word of a sentence to be the verb.",
+      "show": {
+        "kind": "sentence",
+        "id": "ia-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ia-13",
+        "blank": "scrībēbat",
+        "ask": "Fill the blank with the imperfect of scrībō, third person singular."
+      }
+    }
+  ]
 }

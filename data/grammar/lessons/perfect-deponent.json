@@ -58,5 +58,81 @@
     "notes p87",
     "Ørberg cap. XXII (verba)",
     "A&G §190"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "Two words, one plain past",
+      "say": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) makes its past out of two words, and the pair together is **the perfect of a deponent verb (locūtus est = he spoke)**. In *Mēdus ex vīllā statim profectus est* the two words *profectus est* say one thing: set out. Never put 'was' or 'been' into it — a deponent is active whatever it looks like.",
+      "show": {
+        "kind": "sentence",
+        "id": "pd-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pd-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Where the two words come from",
+      "say": "The first word is the verb's perfect participle — *locūtus*, *secūtus*, *profectus* — and the second is the plain present of *sum*: *sum, es, est, sumus, estis, sunt*. In the table this is the column headed *deponent*, because the deponent has borrowed the passive's shape; only the shape. Read *secūta est* as if it were one word: followed.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "sequor",
+        "reveal": [
+          "perf.ind.pass.3sg"
+        ],
+        "say": "secūtus est — the participle with est, in the column headed deponent"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "sequor",
+        "cells": [
+          "perf.ind.pass.3sg"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "The first word agrees with the subject",
+      "say": "The participle is an adjective, so it takes its ending from whoever did the action: *-us* for one man, *-a* for one woman, *-ī* for several men, *-ae* for several women. *Lȳdia … profecta est*, but *Nautae … ēgressī sunt*. The second word moves with it: *est* for one, *sunt* for more than one.",
+      "show": {
+        "kind": "sentence",
+        "id": "pd-06"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pd-07"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Telling it from the perfect passive",
+      "say": "*Vocātus est* and *locūtus est* are built alike, and only the verb decides which is which. *Vocō* has an ordinary active present, so *vocātus est* is **the perfect passive (the 'was done / has been done' form: laudātus est)** — he was called. *Loquor* has no active at all, so *locūtus est* can only mean he spoke. Look the verb up: a dictionary infinitive ending in *-ī* or *-rī* rather than *-re* (*loquī* not *loquere*, *laetārī* not *laetāre*, *verērī* not *verēre*) marks a deponent.",
+      "show": {
+        "kind": "sentence",
+        "id": "pd-09"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pd-15"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Reading it in a real sentence",
+      "say": "The two words often stand apart, with the object or an ablative between them, and the sense is unchanged: *Mīlitēs hostēs magnō clāmōre secūtī sunt*. Put it into English as a plain past — followed, spoke, set out, feared, slipped — and never reach for 'was'.",
+      "show": {
+        "kind": "sentence",
+        "id": "pd-11"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pd-12"
+      }
+    }
   ]
 }

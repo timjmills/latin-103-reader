@@ -39,6 +39,114 @@
       "text": "*Puer* (boy) has no -us and *ovis* (sheep) no -a, yet *puer bonus* and *ovis parva* are right: agreement copies the noun's gender, not its letters. Ask what the noun is (masculine, feminine or neuter), then pick the adjective's form; never just match the sound of the ending."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What agreeing means",
+      "say": "A describing word has no shape of its own. It is an adjective agreeing with its noun (same gender, number and case): it takes all three from the noun it belongs to. Ørberg prints it *magnus -a -um*, one word with three tails. In *Sicilia īnsula magna … est*, *magna* wears -a because *īnsula* is feminine and single. English has one *big* for an island and for rivers alike, so in Latin the tail, not the place in the line, tells you which noun an adjective belongs to, and it may stand before or after that noun. These steps teach two of the three matches, gender and number. The third, case, is what makes *in prōvinciā Rōmānā* and *in capitulō prīmō* change both words together after *in*; it is taught with the cases themselves, so here you need only notice that the two tails move as a pair.",
+      "show": {
+        "kind": "sentence",
+        "id": "aa-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "aa-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "With a feminine noun: -a",
+      "say": "*Prōvincia* is feminine and single, so its adjective ends -a: *prōvincia Rōmāna*. With a-nouns the two tails happen to rhyme, which makes this the easiest pair to hear.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "nom.sg.f"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "cells": [
+          "nom.sg.f"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "With a masculine noun: -us",
+      "say": "*Numerus* is masculine and single, so the adjective ends -us: *numerus secundus*. Same word as *secunda*, different tail.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "nom.sg.m"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "cells": [
+          "nom.sg.m"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "With a neuter noun: -um",
+      "say": "*Oppidum* is neuter and single, so the adjective ends -um: *oppidum Rōmānum*. Three genders, three tails — -us, -a, -um, the order the dictionary prints them in.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "nom.sg.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "cells": [
+          "nom.sg.n"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "More than one: -ī, -ae, -a",
+      "say": "In the plural the three tails become -ī for masculine, -ae for feminine and -a for neuter: *fluviī magnī*, *īnsulae parvae*, *oppida Rōmāna*. The adjective follows its noun into the plural as readily as it follows its gender.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "nom.pl.m",
+          "nom.pl.f",
+          "nom.pl.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "cells": [
+          "nom.pl.m",
+          "nom.pl.f",
+          "nom.pl.n"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "title": "Copy the gender, not the letters",
+      "say": "*Aegyptus* ends in -us, but it is feminine, because the names of countries are: so a describing word on *Aegyptus* is feminine too — *Magna est Aegyptus*, never *magnus*. Ask what the noun’s gender is and then choose the tail; never match the sound of the ending.",
+      "show": {
+        "kind": "sentence",
+        "id": "aa-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "aa-14"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

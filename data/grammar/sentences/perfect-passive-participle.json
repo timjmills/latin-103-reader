@@ -1,0 +1,547 @@
+{
+ "skill": "perfect-passive-participle",
+ "chapter": 21,
+ "sentences": [
+  {
+   "id": "ppp-01",
+   "la": "Puer ā magistrō laudātus laetus est.",
+   "en": "The boy praised by the teacher is happy.",
+   "words": 6,
+   "focus": "laudātus",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "laudātus",
+     "m": "praised"
+    },
+    {
+     "w": "laetus",
+     "m": "happy"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ppp-02",
+   "la": "Puella ā magistrō laudāta laeta est.",
+   "en": "The girl praised by the teacher is happy.",
+   "words": 6,
+   "focus": "laudāta",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puella",
+     "m": "the girl"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "laudāta",
+     "m": "praised"
+    },
+    {
+     "w": "laeta",
+     "m": "happy"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ppp-03",
+   "la": "Iūlius ōstium clausum nōn aperuit.",
+   "en": "Julius did not open the shut door.",
+   "words": 5,
+   "focus": "clausum",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "ōstium",
+     "m": "the door (object)"
+    },
+    {
+     "w": "clausum",
+     "m": "shut"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "aperuit",
+     "m": "opened"
+    }
+   ]
+  },
+  {
+   "id": "ppp-04",
+   "la": "Aqua ā Syrā portāta frīgida est.",
+   "en": "The water carried by Syra is cold.",
+   "words": 6,
+   "focus": "portāta",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Aqua",
+     "m": "the water"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Syrā",
+     "m": "Syra"
+    },
+    {
+     "w": "portāta",
+     "m": "carried"
+    },
+    {
+     "w": "frīgida",
+     "m": "cold"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ppp-05",
+   "la": "Mārcus epistulam scrīptam patrī ostendit.",
+   "en": "Marcus showed the written letter to his father.",
+   "words": 5,
+   "focus": "scrīptam",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "epistulam",
+     "m": "the letter (object)"
+    },
+    {
+     "w": "scrīptam",
+     "m": "written"
+    },
+    {
+     "w": "patrī",
+     "m": "to his father"
+    },
+    {
+     "w": "ostendit",
+     "m": "showed"
+    }
+   ]
+  },
+  {
+   "id": "ppp-06",
+   "la": "Puerī prope portam apertam stant.",
+   "en": "The boys are standing near the opened gate.",
+   "words": 5,
+   "focus": "apertam",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "prope",
+     "m": "near"
+    },
+    {
+     "w": "portam",
+     "m": "the gate"
+    },
+    {
+     "w": "apertam",
+     "m": "opened"
+    },
+    {
+     "w": "stant",
+     "m": "are standing"
+    }
+   ]
+  },
+  {
+   "id": "ppp-07",
+   "la": "Servī ā dominō vocātī statim veniunt.",
+   "en": "The slaves called by their master come at once.",
+   "words": 6,
+   "focus": "vocātī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "dominō",
+     "m": "their master"
+    },
+    {
+     "w": "vocātī",
+     "m": "called"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "veniunt",
+     "m": "come"
+    }
+   ]
+  },
+  {
+   "id": "ppp-08",
+   "la": "Rosae ā Iūliā carptae in mēnsā sunt.",
+   "en": "The roses picked by Julia are on the table.",
+   "words": 7,
+   "focus": "carptae",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Rosae",
+     "m": "the roses"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Iūliā",
+     "m": "Julia"
+    },
+    {
+     "w": "carptae",
+     "m": "picked"
+    },
+    {
+     "w": "in",
+     "m": "on"
+    },
+    {
+     "w": "mēnsā",
+     "m": "the table"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ppp-09",
+   "la": "Verba ā magistrō dicta puerī audiunt.",
+   "en": "The boys hear the words spoken by the teacher.",
+   "words": 6,
+   "focus": "dicta",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Verba",
+     "m": "the words (object)"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "dicta",
+     "m": "spoken"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "audiunt",
+     "m": "hear"
+    }
+   ],
+   "note": "dicta is neuter plural here, agreeing with verba; the -a ending is not the feminine singular."
+  },
+  {
+   "id": "ppp-10",
+   "la": "Puer vocātus venit, puer vocāns manet.",
+   "en": "The boy who has been called comes; the boy who is calling stays.",
+   "words": 6,
+   "focus": "vocātus",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "vocātus",
+     "m": "called"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    },
+    {
+     "w": "puer",
+     "m": "the boy"
+    },
+    {
+     "w": "vocāns",
+     "m": "calling"
+    },
+    {
+     "w": "manet",
+     "m": "stays"
+    }
+   ],
+   "note": "The two participles of the same verb stand side by side: vocātus is done to him, vocāns is done by him."
+  },
+  {
+   "id": "ppp-11",
+   "la": "Puerī perterritī ad mātrem cucurrērunt.",
+   "en": "The terrified boys ran to their mother.",
+   "words": 5,
+   "focus": "perterritī",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "perterritī",
+     "m": "terrified"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "mātrem",
+     "m": "their mother"
+    },
+    {
+     "w": "cucurrērunt",
+     "m": "ran"
+    }
+   ]
+  },
+  {
+   "id": "ppp-12",
+   "la": "In sacculō occultātam pecūniam Iūlius repperit.",
+   "en": "Julius found the money hidden in the purse.",
+   "words": 6,
+   "focus": "occultātam",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "In",
+     "m": "in"
+    },
+    {
+     "w": "sacculō",
+     "m": "the purse"
+    },
+    {
+     "w": "occultātam",
+     "m": "hidden"
+    },
+    {
+     "w": "pecūniam",
+     "m": "the money (object)"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "repperit",
+     "m": "found"
+    }
+   ],
+   "note": "The participle comes before its noun here, and the phrase it governs comes before that; occultātam still agrees with pecūniam."
+  },
+  {
+   "id": "ppp-13",
+   "la": "Mīlitēs victī arma sua posuērunt.",
+   "en": "The defeated soldiers put down their weapons.",
+   "words": 5,
+   "focus": "victī",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mīlitēs",
+     "m": "the soldiers"
+    },
+    {
+     "w": "victī",
+     "m": "defeated"
+    },
+    {
+     "w": "arma",
+     "m": "their weapons (object)"
+    },
+    {
+     "w": "sua",
+     "m": "their own"
+    },
+    {
+     "w": "posuērunt",
+     "m": "put down"
+    }
+   ]
+  },
+  {
+   "id": "ppp-14",
+   "la": "Iūlius librum ā Mārcō lēctum quaerit.",
+   "en": "Julius is looking for the book read by Marcus.",
+   "words": 6,
+   "focus": "lēctum",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "librum",
+     "m": "the book (object)"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Mārcō",
+     "m": "Marcus"
+    },
+    {
+     "w": "lēctum",
+     "m": "read"
+    },
+    {
+     "w": "quaerit",
+     "m": "is looking for"
+    }
+   ],
+   "note": "lēctum here is masculine accusative singular, agreeing with librum; the same letters can also be a supine, so the noun decides."
+  }
+ ]
+}

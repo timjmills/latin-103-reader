@@ -1,0 +1,576 @@
+{
+  "skill": "future-participle",
+  "chapter": 23,
+  "sentences": [
+    {
+      "id": "fp-01",
+      "la": "Mārcus longam epistulam scrīptūrus est.",
+      "en": "Marcus is about to write a long letter.",
+      "words": 5,
+      "focus": "scrīptūrus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "longam",
+          "m": "a long"
+        },
+        {
+          "w": "epistulam",
+          "m": "letter"
+        },
+        {
+          "w": "scrīptūrus",
+          "m": "about to write"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "fp-02",
+      "la": "Iūlius Rōmam crās itūrus est.",
+      "en": "Julius is about to go to Rome tomorrow.",
+      "words": 5,
+      "focus": "itūrus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "itūrus",
+          "m": "about to go"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "fp-03",
+      "la": "Dāvus dominō pecūniam datūrus est.",
+      "en": "Davus is about to give the master the money.",
+      "words": 5,
+      "focus": "datūrus",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "dominō",
+          "m": "to the master"
+        },
+        {
+          "w": "pecūniam",
+          "m": "the money"
+        },
+        {
+          "w": "datūrus",
+          "m": "about to give"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "fp-04",
+      "la": "Nauta ad īnsulam nāvigātūrus est.",
+      "en": "The sailor is about to sail to the island.",
+      "words": 5,
+      "focus": "nāvigātūrus",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nauta",
+          "m": "the sailor"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "īnsulam",
+          "m": "the island"
+        },
+        {
+          "w": "nāvigātūrus",
+          "m": "about to sail"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "fp-05",
+      "la": "Aemilia fīlium suum vocātūra est.",
+      "en": "Aemilia is about to call her son.",
+      "words": 5,
+      "focus": "vocātūra",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "fīlium",
+          "m": "son"
+        },
+        {
+          "w": "suum",
+          "m": "her own"
+        },
+        {
+          "w": "vocātūra",
+          "m": "about to call"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "fp-06",
+      "la": "Iūlia mātrī rosam datūra est.",
+      "en": "Julia is about to give her mother a rose.",
+      "words": 5,
+      "focus": "datūra",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "mātrī",
+          "m": "to her mother"
+        },
+        {
+          "w": "rosam",
+          "m": "a rose"
+        },
+        {
+          "w": "datūra",
+          "m": "about to give"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "fp-07",
+      "la": "Puerī in hortō lūsūrī sunt.",
+      "en": "The boys are about to play in the garden.",
+      "words": 5,
+      "focus": "lūsūrī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "lūsūrī",
+          "m": "about to play"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "fp-08",
+      "la": "Mīlitēs prō oppidō pugnātūrī erant.",
+      "en": "The soldiers were going to fight in front of the town.",
+      "words": 5,
+      "focus": "pugnātūrī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "the soldiers"
+        },
+        {
+          "w": "prō",
+          "m": "in front of"
+        },
+        {
+          "w": "oppidō",
+          "m": "the town"
+        },
+        {
+          "w": "pugnātūrī",
+          "m": "going to fight"
+        },
+        {
+          "w": "erant",
+          "m": "were"
+        }
+      ]
+    },
+    {
+      "id": "fp-09",
+      "la": "Epistula scrīpta est, sed Mārcus aliam scrīptūrus est.",
+      "en": "The letter has been written, but Marcus is about to write another.",
+      "words": 8,
+      "focus": "scrīptūrus",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Epistula",
+          "m": "the letter"
+        },
+        {
+          "w": "scrīpta",
+          "m": "written"
+        },
+        {
+          "w": "est",
+          "m": "has been"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "aliam",
+          "m": "another"
+        },
+        {
+          "w": "scrīptūrus",
+          "m": "about to write"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "fp-10",
+      "la": "Mīlitēs victī sunt, sed iterum pugnātūrī sunt.",
+      "en": "The soldiers were beaten, but they are going to fight again.",
+      "words": 7,
+      "focus": "pugnātūrī",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "the soldiers"
+        },
+        {
+          "w": "victī",
+          "m": "beaten"
+        },
+        {
+          "w": "sunt",
+          "m": "were"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "iterum",
+          "m": "again"
+        },
+        {
+          "w": "pugnātūrī",
+          "m": "going to fight"
+        },
+        {
+          "w": "sunt",
+          "m": "they are"
+        }
+      ]
+    },
+    {
+      "id": "fp-11",
+      "la": "Puerī dormītūrī in cubiculum eunt.",
+      "en": "The boys, about to sleep, go into the bedroom.",
+      "words": 5,
+      "focus": "dormītūrī",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "dormītūrī",
+          "m": "about to sleep"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "cubiculum",
+          "m": "the bedroom"
+        },
+        {
+          "w": "eunt",
+          "m": "go"
+        }
+      ]
+    },
+    {
+      "id": "fp-12",
+      "la": "Discipulī magistrum audītūrī in lūdō tacent.",
+      "en": "The pupils, about to hear the teacher, are quiet in the school.",
+      "words": 6,
+      "focus": "audītūrī",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Discipulī",
+          "m": "the pupils"
+        },
+        {
+          "w": "magistrum",
+          "m": "the teacher"
+        },
+        {
+          "w": "audītūrī",
+          "m": "about to hear"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "tacent",
+          "m": "are quiet"
+        }
+      ]
+    },
+    {
+      "id": "fp-13",
+      "la": "Puella flōrem carptūra in hortum venit.",
+      "en": "The girl, about to pick a flower, comes into the garden.",
+      "words": 6,
+      "focus": "carptūra",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "flōrem",
+          "m": "a flower"
+        },
+        {
+          "w": "carptūra",
+          "m": "about to pick"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "hortum",
+          "m": "the garden"
+        },
+        {
+          "w": "venit",
+          "m": "comes"
+        }
+      ]
+    },
+    {
+      "id": "fp-14",
+      "la": "Quid Quīntus factūrus est hodiē?",
+      "en": "What is Quintus going to do today?",
+      "words": 5,
+      "focus": "factūrus",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "factūrus",
+          "m": "going to do"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "hodiē",
+          "m": "today"
+        }
+      ]
+    },
+    {
+      "id": "fp-15",
+      "la": "Mēdus in Graeciā beātus futūrus est.",
+      "en": "Medus is going to be happy in Greece.",
+      "words": 6,
+      "focus": "futūrus",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "Graeciā",
+          "m": "Greece"
+        },
+        {
+          "w": "beātus",
+          "m": "happy"
+        },
+        {
+          "w": "futūrus",
+          "m": "going to be"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    }
+  ]
+}

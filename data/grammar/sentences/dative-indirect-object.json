@@ -1,0 +1,594 @@
+{
+  "skill": "dative-indirect-object",
+  "chapter": 7,
+  "sentences": [
+    {
+      "id": "dio-01",
+      "la": "Iūlius servō suō nummum dat.",
+      "en": "Julius gives his slave a coin.",
+      "words": 5,
+      "focus": "servō",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "servō",
+          "m": "to the slave"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "nummum",
+          "m": "a coin"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-02",
+      "la": "Aemilia fīliae suae rosam dat.",
+      "en": "Aemilia gives her daughter a rose.",
+      "words": 5,
+      "focus": "fīliae",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "fīliae",
+          "m": "to the daughter"
+        },
+        {
+          "w": "suae",
+          "m": "her own"
+        },
+        {
+          "w": "rosam",
+          "m": "a rose"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-03",
+      "la": "Iūlia Mārcō ōsculum nōn dat.",
+      "en": "Julia does not give Marcus a kiss.",
+      "words": 5,
+      "focus": "Mārcō",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "Mārcō",
+          "m": "to Marcus"
+        },
+        {
+          "w": "ōsculum",
+          "m": "a kiss"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-04",
+      "la": "Iūlius servīs suīs pecūniam dat.",
+      "en": "Julius gives his slaves money.",
+      "words": 5,
+      "focus": "servīs",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "servīs",
+          "m": "to the slaves"
+        },
+        {
+          "w": "suīs",
+          "m": "his own"
+        },
+        {
+          "w": "pecūniam",
+          "m": "money"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-05",
+      "la": "Ancilla puerīs fessīs aquam dat.",
+      "en": "The slave-girl gives the tired boys water.",
+      "words": 5,
+      "focus": "puerīs",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ancilla",
+          "m": "the slave-girl"
+        },
+        {
+          "w": "puerīs",
+          "m": "to the boys"
+        },
+        {
+          "w": "fessīs",
+          "m": "tired"
+        },
+        {
+          "w": "aquam",
+          "m": "water"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-06",
+      "la": "Mārcus patrī suō librum dat.",
+      "en": "Marcus gives his father a book.",
+      "words": 5,
+      "focus": "patrī",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "patrī",
+          "m": "to the father"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "librum",
+          "m": "a book"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-07",
+      "la": "Iūlius fīliō suō librum dat.",
+      "en": "Julius gives his son a book.",
+      "words": 5,
+      "focus": "fīliō",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "fīliō",
+          "m": "to the son"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "librum",
+          "m": "a book"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-08",
+      "la": "Servus improbus dominō suō nōn respondet.",
+      "en": "The bad slave does not answer his master.",
+      "words": 6,
+      "focus": "dominō",
+      "step": 1,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "improbus",
+          "m": "bad"
+        },
+        {
+          "w": "dominō",
+          "m": "to the master"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "respondet",
+          "m": "answers"
+        }
+      ]
+    },
+    {
+      "id": "dio-09",
+      "la": "Mārcus fīliae dominī rosam dat.",
+      "en": "Marcus gives the master's daughter a rose.",
+      "words": 5,
+      "focus": "fīliae",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "fīliae",
+          "m": "to the daughter"
+        },
+        {
+          "w": "dominī",
+          "m": "of the master"
+        },
+        {
+          "w": "rosam",
+          "m": "a rose"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-10",
+      "la": "Ōstiāriō Mēdus nummōs nōn dat.",
+      "en": "Medus does not give the doorkeeper any coins.",
+      "words": 5,
+      "focus": "Ōstiāriō",
+      "step": 1,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ōstiāriō",
+          "m": "to the doorkeeper"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "nummōs",
+          "m": "coins"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-11",
+      "la": "Cui Iūlius pecūniam suam dat?",
+      "en": "To whom does Julius give his money?",
+      "words": 5,
+      "focus": "Cui",
+      "step": 1,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cui",
+          "m": "to whom?"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "pecūniam",
+          "m": "money"
+        },
+        {
+          "w": "suam",
+          "m": "his own"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-12",
+      "la": "Mārcus Quīntō librum suum dat.",
+      "en": "Marcus gives Quintus his book.",
+      "words": 5,
+      "focus": "Quīntō",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "Quīntō",
+          "m": "to Quintus"
+        },
+        {
+          "w": "librum",
+          "m": "a book"
+        },
+        {
+          "w": "suum",
+          "m": "his own"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-13",
+      "la": "Puerī mātribus suīs rosās dant.",
+      "en": "The boys give their mothers roses.",
+      "words": 5,
+      "focus": "mātribus",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "mātribus",
+          "m": "to the mothers"
+        },
+        {
+          "w": "suīs",
+          "m": "their own"
+        },
+        {
+          "w": "rosās",
+          "m": "roses"
+        },
+        {
+          "w": "dant",
+          "m": "give"
+        }
+      ]
+    },
+    {
+      "id": "dio-14",
+      "la": "Aemilia puellīs et puerīs līlia dat.",
+      "en": "Aemilia gives the girls and the boys lilies.",
+      "words": 6,
+      "focus": "puellīs",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "puellīs",
+          "m": "to the girls"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "puerīs",
+          "m": "to the boys"
+        },
+        {
+          "w": "līlia",
+          "m": "lilies"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-15",
+      "la": "Iūlius amīcō fīliae suae librum dat.",
+      "en": "Julius gives his daughter's friend a book.",
+      "words": 6,
+      "focus": "amīcō",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "amīcō",
+          "m": "to the friend"
+        },
+        {
+          "w": "fīliae",
+          "m": "of the daughter"
+        },
+        {
+          "w": "suae",
+          "m": "his own"
+        },
+        {
+          "w": "librum",
+          "m": "a book"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dio-16",
+      "la": "Iūlius Syrae nummōs suōs dat.",
+      "en": "Julius gives Syra his coins.",
+      "words": 5,
+      "focus": "Syrae",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "Syrae",
+          "m": "to Syra"
+        },
+        {
+          "w": "nummōs",
+          "m": "coins"
+        },
+        {
+          "w": "suōs",
+          "m": "his own"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    }
+  ]
+}

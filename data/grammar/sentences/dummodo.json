@@ -1,0 +1,524 @@
+{
+ "skill": "dummodo",
+ "chapter": 34,
+ "sentences": [
+  {
+   "id": "dmd-01",
+   "la": "Manē hīc mēcum, dummodo taceās.",
+   "en": "Stay here with me, provided you keep quiet.",
+   "words": 5,
+   "focus": "taceās",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Manē",
+     "m": "stay!"
+    },
+    {
+     "w": "hīc",
+     "m": "here"
+    },
+    {
+     "w": "mēcum",
+     "m": "with me"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "taceās",
+     "m": "you keep quiet"
+    }
+   ]
+  },
+  {
+   "id": "dmd-02",
+   "la": "Ī Rōmam, dummodo crās redeās.",
+   "en": "Go to Rome, as long as you come back tomorrow.",
+   "words": 5,
+   "focus": "redeās",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Ī",
+     "m": "go!"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "dummodo",
+     "m": "as long as"
+    },
+    {
+     "w": "crās",
+     "m": "tomorrow"
+    },
+    {
+     "w": "redeās",
+     "m": "you come back"
+    }
+   ]
+  },
+  {
+   "id": "dmd-03",
+   "la": "Mārcus lūdere potest, dummodo litterās scrībat.",
+   "en": "Marcus may play, provided he writes his letters.",
+   "words": 6,
+   "focus": "scrībat",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "lūdere",
+     "m": "to play"
+    },
+    {
+     "w": "potest",
+     "m": "is able"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "litterās",
+     "m": "his letters (of the alphabet)"
+    },
+    {
+     "w": "scrībat",
+     "m": "he writes"
+    }
+   ]
+  },
+  {
+   "id": "dmd-04",
+   "la": "Tē exspectābō, dummodo mox veniās.",
+   "en": "I will wait for you, provided you come soon.",
+   "words": 5,
+   "focus": "veniās",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tē",
+     "m": "you"
+    },
+    {
+     "w": "exspectābō",
+     "m": "I will wait for"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "mox",
+     "m": "soon"
+    },
+    {
+     "w": "veniās",
+     "m": "you come"
+    }
+   ]
+  },
+  {
+   "id": "dmd-05",
+   "la": "Librum tibi dabō, dummodo eum legās.",
+   "en": "I will give you the book, provided you read it.",
+   "words": 6,
+   "focus": "legās",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Librum",
+     "m": "the book"
+    },
+    {
+     "w": "tibi",
+     "m": "to you"
+    },
+    {
+     "w": "dabō",
+     "m": "I will give"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "eum",
+     "m": "it"
+    },
+    {
+     "w": "legās",
+     "m": "you read"
+    }
+   ]
+  },
+  {
+   "id": "dmd-06",
+   "la": "Ex vīllā exībō, dummodo nē imber cadat.",
+   "en": "I will go out of the house, as long as no rain falls.",
+   "words": 7,
+   "focus": "cadat",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ex",
+     "m": "out of"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "exībō",
+     "m": "I will go out"
+    },
+    {
+     "w": "dummodo",
+     "m": "as long as"
+    },
+    {
+     "w": "nē",
+     "m": "not (the negative after dummodo)"
+    },
+    {
+     "w": "imber",
+     "m": "rain"
+    },
+    {
+     "w": "cadat",
+     "m": "falls"
+    }
+   ]
+  },
+  {
+   "id": "dmd-07",
+   "la": "Manēbō, dummodo nē pater īrātus sit.",
+   "en": "I will stay, provided father is not angry.",
+   "words": 6,
+   "focus": "sit",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Manēbō",
+     "m": "I will stay"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "nē",
+     "m": "not (the negative after dummodo)"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "īrātus",
+     "m": "angry"
+    },
+    {
+     "w": "sit",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "dmd-08",
+   "la": "Iūlia cantābit, dummodo nē pater audiat.",
+   "en": "Julia will sing, as long as father does not hear.",
+   "words": 6,
+   "focus": "audiat",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "cantābit",
+     "m": "she will sing"
+    },
+    {
+     "w": "dummodo",
+     "m": "as long as"
+    },
+    {
+     "w": "nē",
+     "m": "not (the negative after dummodo)"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "audiat",
+     "m": "he hears"
+    }
+   ]
+  },
+  {
+   "id": "dmd-09",
+   "la": "Veniat quisquis vult, modo taceat.",
+   "en": "Let anyone who wants come, provided he keeps quiet.",
+   "words": 5,
+   "focus": "taceat",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Veniat",
+     "m": "let him come"
+    },
+    {
+     "w": "quisquis",
+     "m": "whoever"
+    },
+    {
+     "w": "vult",
+     "m": "wants"
+    },
+    {
+     "w": "modo",
+     "m": "provided that"
+    },
+    {
+     "w": "taceat",
+     "m": "he keeps quiet"
+    }
+   ]
+  },
+  {
+   "id": "dmd-10",
+   "la": "Labōret Dāvus, dum cibum accipiat.",
+   "en": "Let Davus work, as long as he gets food.",
+   "words": 5,
+   "focus": "accipiat",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Labōret",
+     "m": "let him work"
+    },
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "dum",
+     "m": "as long as"
+    },
+    {
+     "w": "cibum",
+     "m": "food"
+    },
+    {
+     "w": "accipiat",
+     "m": "he gets"
+    }
+   ]
+  },
+  {
+   "id": "dmd-11",
+   "la": "Dāvus laetus est, dummodo vīnum bibat.",
+   "en": "Davus is happy, provided he drinks wine.",
+   "words": 6,
+   "focus": "bibat",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "laetus",
+     "m": "happy"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "vīnum",
+     "m": "wine"
+    },
+    {
+     "w": "bibat",
+     "m": "he drinks"
+    }
+   ]
+  },
+  {
+   "id": "dmd-12",
+   "la": "Mārcus discere potest, dummodo magister adsit.",
+   "en": "Marcus can learn, provided the teacher is there.",
+   "words": 6,
+   "focus": "adsit",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "discere",
+     "m": "to learn"
+    },
+    {
+     "w": "potest",
+     "m": "is able"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "adsit",
+     "m": "is there"
+    }
+   ]
+  },
+  {
+   "id": "dmd-13",
+   "la": "Puerī lūdant, dummodo nē clāment.",
+   "en": "Let the boys play, provided they do not shout.",
+   "words": 5,
+   "focus": "clāment",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "lūdant",
+     "m": "let them play"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "nē",
+     "m": "not (the negative after dummodo)"
+    },
+    {
+     "w": "clāment",
+     "m": "they shout"
+    }
+   ]
+  },
+  {
+   "id": "dmd-14",
+   "la": "Tibi ignōscam, dummodo vērum dīcās.",
+   "en": "I will forgive you, provided you tell the truth.",
+   "words": 5,
+   "focus": "dīcās",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tibi",
+     "m": "you (the 'to/for' form)"
+    },
+    {
+     "w": "ignōscam",
+     "m": "I will forgive (future, not subjunctive)"
+    },
+    {
+     "w": "dummodo",
+     "m": "provided that"
+    },
+    {
+     "w": "vērum",
+     "m": "the truth"
+    },
+    {
+     "w": "dīcās",
+     "m": "you say"
+    }
+   ]
+  }
+ ]
+}

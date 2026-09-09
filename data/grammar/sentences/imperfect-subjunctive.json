@@ -1,0 +1,542 @@
+{
+ "skill": "imperfect-subjunctive",
+ "chapter": 28,
+ "sentences": [
+  {
+   "id": "is-01",
+   "la": "Iūlius Dāvō imperāvit ut statim tacēret.",
+   "en": "Julius ordered Davus to be quiet at once.",
+   "words": 6,
+   "focus": "tacēret",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "Dāvō",
+     "m": "to Davus"
+    },
+    {
+     "w": "imperāvit",
+     "m": "ordered"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "tacēret",
+     "m": "he be quiet"
+    }
+   ]
+  },
+  {
+   "id": "is-02",
+   "la": "Puerī tacēbant nē magister eōs audīret.",
+   "en": "The boys kept quiet so that the teacher would not hear them.",
+   "words": 6,
+   "focus": "audīret",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "tacēbant",
+     "m": "were keeping quiet"
+    },
+    {
+     "w": "nē",
+     "m": "so that not"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "eōs",
+     "m": "them"
+    },
+    {
+     "w": "audīret",
+     "m": "hear"
+    }
+   ]
+  },
+  {
+   "id": "is-03",
+   "la": "Māter ancillae imperāvit ut aquam portāret.",
+   "en": "The mother ordered the maid to carry water.",
+   "words": 6,
+   "focus": "portāret",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "chart",
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Māter",
+     "m": "the mother"
+    },
+    {
+     "w": "ancillae",
+     "m": "to the maid"
+    },
+    {
+     "w": "imperāvit",
+     "m": "ordered"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "portāret",
+     "m": "she carry"
+    }
+   ],
+   "note": "portāre plus -t makes portāret. The infinitive is kept whole; nothing is cut off it."
+  },
+  {
+   "id": "is-04",
+   "la": "Puer currēbat ut ad vīllam venīret.",
+   "en": "The boy was running so as to reach the house.",
+   "words": 6,
+   "focus": "venīret",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "chart",
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "currēbat",
+     "m": "was running"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllam",
+     "m": "the house"
+    },
+    {
+     "w": "venīret",
+     "m": "he come"
+    }
+   ]
+  },
+  {
+   "id": "is-05",
+   "la": "Dominus servōs mīsit ut agrōs arārent.",
+   "en": "The master sent the slaves to plough the fields.",
+   "words": 6,
+   "focus": "arārent",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servōs",
+     "m": "the slaves"
+    },
+    {
+     "w": "mīsit",
+     "m": "sent"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "agrōs",
+     "m": "the fields"
+    },
+    {
+     "w": "arārent",
+     "m": "they plough"
+    }
+   ]
+  },
+  {
+   "id": "is-06",
+   "la": "Iūlius nōs rogāvit ut in hortō manērēmus.",
+   "en": "Julius asked us to stay in the garden.",
+   "words": 7,
+   "focus": "manērēmus",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "nōs",
+     "m": "us"
+    },
+    {
+     "w": "rogāvit",
+     "m": "asked"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "manērēmus",
+     "m": "we stay"
+    }
+   ],
+   "note": "manēre plus -mus makes manērēmus: the 'we' ending, with the -ē- of the infinitive still there."
+  },
+  {
+   "id": "is-07",
+   "la": "Iūlius cūrāvit ut cibus statim parārētur.",
+   "en": "Julius saw to it that food was prepared at once.",
+   "words": 6,
+   "focus": "parārētur",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "cūrāvit",
+     "m": "saw to it"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "cibus",
+     "m": "food"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "parārētur",
+     "m": "be prepared"
+    }
+   ]
+  },
+  {
+   "id": "is-08",
+   "la": "Dominus cūrāvit ut servī bene pāscerentur.",
+   "en": "The master saw to it that the slaves were well fed.",
+   "words": 6,
+   "focus": "pāscerentur",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "cūrāvit",
+     "m": "saw to it"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "bene",
+     "m": "well"
+    },
+    {
+     "w": "pāscerentur",
+     "m": "be fed"
+    }
+   ]
+  },
+  {
+   "id": "is-09",
+   "la": "Tam trīstis erat ut nihil dīcere posset.",
+   "en": "He was so sad that he could say nothing.",
+   "words": 7,
+   "focus": "posset",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "chart",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tam",
+     "m": "so"
+    },
+    {
+     "w": "trīstis",
+     "m": "sad"
+    },
+    {
+     "w": "erat",
+     "m": "he was"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "nihil",
+     "m": "nothing"
+    },
+    {
+     "w": "dīcere",
+     "m": "to say"
+    },
+    {
+     "w": "posset",
+     "m": "he was able"
+    }
+   ]
+  },
+  {
+   "id": "is-10",
+   "la": "Aemilia ōrāvit nē fīlius suus abesset.",
+   "en": "Aemilia begged that her son should not be away.",
+   "words": 6,
+   "focus": "abesset",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "chart",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "ōrāvit",
+     "m": "begged"
+    },
+    {
+     "w": "nē",
+     "m": "that not"
+    },
+    {
+     "w": "fīlius",
+     "m": "the son"
+    },
+    {
+     "w": "suus",
+     "m": "her own"
+    },
+    {
+     "w": "abesset",
+     "m": "be away"
+    }
+   ]
+  },
+  {
+   "id": "is-11",
+   "la": "Mārcus rogāvit ut Iūlius sēcum īret.",
+   "en": "Marcus asked Julius to go with him.",
+   "words": 6,
+   "focus": "īret",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "chart",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "rogāvit",
+     "m": "asked"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "sēcum",
+     "m": "with him"
+    },
+    {
+     "w": "īret",
+     "m": "go"
+    }
+   ]
+  },
+  {
+   "id": "is-12",
+   "la": "Dāvus discēdere volēbat nē dominus eum vidēret.",
+   "en": "Davus wanted to leave so that the master would not see him.",
+   "words": 7,
+   "focus": "vidēret",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "discēdere",
+     "m": "to go away"
+    },
+    {
+     "w": "volēbat",
+     "m": "was wanting"
+    },
+    {
+     "w": "nē",
+     "m": "so that not"
+    },
+    {
+     "w": "dominus",
+     "m": "the master"
+    },
+    {
+     "w": "eum",
+     "m": "him"
+    },
+    {
+     "w": "vidēret",
+     "m": "see"
+    }
+   ],
+   "note": "vidēret beside videat: vidēret keeps the whole infinitive vidēre and adds -t, while videat is built on the short stem vide- with the -a- of the present subjunctive. If you can still see the infinitive inside the word, it is the past-time form."
+  },
+  {
+   "id": "is-13",
+   "la": "Iūlius clāmāvit ut omnēs statim venīrent.",
+   "en": "Julius shouted so that everybody would come at once.",
+   "words": 6,
+   "focus": "venīrent",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "clāmāvit",
+     "m": "shouted"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "omnēs",
+     "m": "everybody"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "venīrent",
+     "m": "come"
+    }
+   ],
+   "note": "venīre plus -nt gives venīrent. Beside it stand veniant (present subjunctive) and venīre (the bare infinitive): only venīrent has both the -rē- and a person ending."
+  }
+ ]
+}

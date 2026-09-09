@@ -1,5 +1,100 @@
 {
   "skill": "deliberative-subjunctive",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Some questions do not ask for a fact; they ask what to do, and often expect no answer at all. Latin puts the verb in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) and keeps the question mark. That is **the deliberative subjunctive (the 'what am I to do?' question: quid faciam?)**. It is almost always first person: *quid faciam?* what am I to do? *quō eāmus?* where are we to go?",
+      "show": {
+        "kind": "sentence",
+        "id": "delib-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "delib-02",
+        "ask": "Is eāmus asking for a fact, or asking what to do?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The 'I' form ends in -m",
+      "say": "The first person singular of the present subjunctive ends in **-m**. First-conjugation verbs (the *-āre* ones) take *-em* (*labōrō → labōrem*); the second, third and fourth take *-am* (*respondeō → respondeam*, *tollō → tollam*, *dormiō → dormiam*). That one ending carries the whole question.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "reveal": [
+          "pres.subj.act.1.sg"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "delib-09",
+        "ask": "Put labōrō into the 'am I to …?' form."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The 'we' form ends in -mus",
+      "say": "For 'are we to …?' the same subjunctive goes into the first person plural, ending in **-mus**: *emō → emāmus*, *dō → dēmus*, *dormiō → dormiāmus*. It is the ordinary 'let us' form of the verb, asked as a question instead of urged.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "reveal": [
+          "pres.subj.act.1.pl"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "delib-05",
+        "ask": "Put emō into the 'are we to …?' form."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Not the plain future",
+      "say": "In the third and fourth conjugations the future and the subjunctive can look alike, so the sense decides. *Quid faciēmus?* asks for a fact — what shall we do tomorrow? *Quid faciāmus?* asks for a decision — what are we to do? If the question is asking for advice, or throwing up its hands, it is deliberative.",
+      "show": {
+        "kind": "sentence",
+        "id": "delib-08"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "delib-06",
+        "ask": "tollam could be 'I shall lift' or 'am I to lift'. Which is it here?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "For past time, the imperfect",
+      "say": "When the doubt was felt in the past, the same question moves into the imperfect subjunctive (the '-rem, -ret' subjunctive, built on the infinitive): *dīcere → dīcerem*, *facere → facerem*. *Quid ego miser tunc facerem?* — what was I, poor man, to do then?",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "reveal": [
+          "impf.subj.act.1.sg"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "delib-15",
+        "ask": "The doubt was felt in the past. Put dīcō into the imperfect subjunctive."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Ask one yourself",
+      "say": "Now build the question. Choose the person — 'am I to' or 'are we to' — put the verb into the present subjunctive, and keep the question word in front: *quid … cōgitem?*, *utrum maneam an redeam?*",
+      "show": {
+        "kind": "sentence",
+        "id": "delib-11"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "delib-12",
+        "ask": "Ask it: put cōgitō into the 'am I to …?' form."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

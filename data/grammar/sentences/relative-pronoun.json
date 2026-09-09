@@ -1,0 +1,654 @@
+{
+  "skill": "relative-pronoun",
+  "chapter": 8,
+  "sentences": [
+    {
+      "id": "rel-01",
+      "la": "Puer quī rīdet Mārcus est.",
+      "en": "The boy who is laughing is Marcus.",
+      "words": 5,
+      "focus": "quī",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "quī",
+          "m": "who"
+        },
+        {
+          "w": "rīdet",
+          "m": "is laughing"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-02",
+      "la": "Puella quae cantat Iūlia est.",
+      "en": "The girl who is singing is Julia.",
+      "words": 5,
+      "focus": "quae",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "quae",
+          "m": "who"
+        },
+        {
+          "w": "cantat",
+          "m": "is singing"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-03",
+      "la": "Servus quī saccum portat fessus est.",
+      "en": "The slave who is carrying the sack is tired.",
+      "words": 6,
+      "focus": "quī",
+      "step": 1,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "quī",
+          "m": "who"
+        },
+        {
+          "w": "saccum",
+          "m": "the sack"
+        },
+        {
+          "w": "portat",
+          "m": "is carrying"
+        },
+        {
+          "w": "fessus",
+          "m": "tired"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-04",
+      "la": "Puella quam Mārcus pulsat plōrat.",
+      "en": "The girl whom Marcus hits is crying.",
+      "words": 5,
+      "focus": "quam",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "quam",
+          "m": "whom"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "pulsat",
+          "m": "hits"
+        },
+        {
+          "w": "plōrat",
+          "m": "cries"
+        }
+      ]
+    },
+    {
+      "id": "rel-05",
+      "la": "Ānulus quem Mēdus emit parvus est.",
+      "en": "The ring which Medus buys is small.",
+      "words": 6,
+      "focus": "quem",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ānulus",
+          "m": "the ring"
+        },
+        {
+          "w": "quem",
+          "m": "which"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "emit",
+          "m": "buys"
+        },
+        {
+          "w": "parvus",
+          "m": "small"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-06",
+      "la": "Ōrnāmentum quod Lȳdia habet pulchrum est.",
+      "en": "The ornament which Lydia has is beautiful.",
+      "words": 6,
+      "focus": "quod",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ōrnāmentum",
+          "m": "the ornament"
+        },
+        {
+          "w": "quod",
+          "m": "which"
+        },
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        },
+        {
+          "w": "pulchrum",
+          "m": "beautiful"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-07",
+      "la": "Puella cuius māter cantat laeta est.",
+      "en": "The girl whose mother is singing is happy.",
+      "words": 6,
+      "focus": "cuius",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "cuius",
+          "m": "whose"
+        },
+        {
+          "w": "māter",
+          "m": "mother"
+        },
+        {
+          "w": "cantat",
+          "m": "is singing"
+        },
+        {
+          "w": "laeta",
+          "m": "happy"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-08",
+      "la": "Servus cui dominus nummōs dat laetus est.",
+      "en": "The slave to whom the master gives coins is happy.",
+      "words": 7,
+      "focus": "cui",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "cui",
+          "m": "to whom"
+        },
+        {
+          "w": "dominus",
+          "m": "the master"
+        },
+        {
+          "w": "nummōs",
+          "m": "coins"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        },
+        {
+          "w": "laetus",
+          "m": "happy"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-09",
+      "la": "Taberna in quā gemmae sunt magna est.",
+      "en": "The shop in which the jewels are is big.",
+      "words": 7,
+      "focus": "quā",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Taberna",
+          "m": "the shop"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "quā",
+          "m": "which"
+        },
+        {
+          "w": "gemmae",
+          "m": "jewels"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "magna",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-10",
+      "la": "Servī quī saccōs portant fessī sunt.",
+      "en": "The slaves who are carrying sacks are tired.",
+      "words": 6,
+      "focus": "quī",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servī",
+          "m": "the slaves"
+        },
+        {
+          "w": "quī",
+          "m": "who"
+        },
+        {
+          "w": "saccōs",
+          "m": "sacks"
+        },
+        {
+          "w": "portant",
+          "m": "carry"
+        },
+        {
+          "w": "fessī",
+          "m": "tired"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "rel-11",
+      "la": "Puellae quās Mārcus videt in hortō sunt.",
+      "en": "The girls whom Marcus sees are in the garden.",
+      "words": 7,
+      "focus": "quās",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puellae",
+          "m": "the girls"
+        },
+        {
+          "w": "quās",
+          "m": "whom"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "garden"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "rel-12",
+      "la": "Puerī quibus Iūlius pira dat rīdent.",
+      "en": "The boys to whom Julius gives pears are laughing.",
+      "words": 6,
+      "focus": "quibus",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "quibus",
+          "m": "to whom"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "pira",
+          "m": "pears"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        },
+        {
+          "w": "rīdent",
+          "m": "laugh"
+        }
+      ]
+    },
+    {
+      "id": "rel-13",
+      "la": "Ille servus quī pecūniam habet Mēdus est.",
+      "en": "That slave who has the money is Medus.",
+      "words": 7,
+      "focus": "quī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ille",
+          "m": "that"
+        },
+        {
+          "w": "servus",
+          "m": "slave"
+        },
+        {
+          "w": "quī",
+          "m": "who"
+        },
+        {
+          "w": "pecūniam",
+          "m": "money"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-14",
+      "la": "Quis est puer quī in viā plōrat?",
+      "en": "Who is the boy who is crying in the street?",
+      "words": 7,
+      "focus": "quī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quis",
+          "m": "who?"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "puer",
+          "m": "boy"
+        },
+        {
+          "w": "quī",
+          "m": "who"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "viā",
+          "m": "the street"
+        },
+        {
+          "w": "plōrat",
+          "m": "cries"
+        }
+      ]
+    },
+    {
+      "id": "rel-15",
+      "la": "Ōrnāmentum quod in mēnsā est pulchrum est.",
+      "en": "The ornament which is on the table is beautiful.",
+      "words": 7,
+      "focus": "quod",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ōrnāmentum",
+          "m": "the ornament"
+        },
+        {
+          "w": "quod",
+          "m": "which"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "mēnsā",
+          "m": "the table"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "pulchrum",
+          "m": "beautiful"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "rel-16",
+      "la": "Servī quōs dominus vocat veniunt.",
+      "en": "The slaves whom the master calls are coming.",
+      "words": 5,
+      "focus": "quōs",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servī",
+          "m": "the slaves"
+        },
+        {
+          "w": "quōs",
+          "m": "whom"
+        },
+        {
+          "w": "dominus",
+          "m": "the master"
+        },
+        {
+          "w": "vocat",
+          "m": "calls"
+        },
+        {
+          "w": "veniunt",
+          "m": "are coming"
+        }
+      ]
+    }
+  ]
+}

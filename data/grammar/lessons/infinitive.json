@@ -1,5 +1,107 @@
 {
   "skill": "infinitive",
+  "teach": [
+    {
+      "n": 1,
+      "title": "An action with nobody attached",
+      "say": "*Cantat* tells you who and when: she sings, now. Strip both away and you have **the infinitive (the 'to' form)**, *modus īnfīnītīvus*: *cantāre*, to sing — the action named, with no person and no time. On its own it says nothing; it leans on another verb, and Latin's are *potest* (can), *vult* (wants), *audet* (dares) and *necesse est* (it is necessary).",
+      "show": {
+        "kind": "sentence",
+        "id": "inf-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "inf-03"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Add -re to the stem vowel",
+      "say": "Most verbs simply put **-re** after the vowel their stem already ends in. That gives **-āre** for verbs like *cantat* (*cantāre*, *natāre*, *portāre*), **-ēre** for verbs like *videt* (*vidēre*, *tacēre*, *habēre*), and **-īre** for verbs like *audit* (*audīre*, *dormīre*, *venīre*). The dictionary prints this form second, right after the *I* form.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "inf.pres.act"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "inf.pres.act"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "The third family: -ere, with a short e",
+      "say": "One family has no long vowel of its own, so it slips a short *e* in before the -re: *legit* → **legere**, *ascendit* → **ascendere**, *facit* → **facere**, *vēndit* → **vēndere**. It is worth hearing the difference: *vidēre* has a long ē and *legere* a short one, and only the long ē belongs to the family of *videt*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "reveal": [
+          "inf.pres.act"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "inf.pres.act"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "To be done: -rī, or a bare -ī",
+      "say": "For the passive (the 'is done' form) the -e of the ending turns into a long ī: *cantārī* (to be sung), *vidērī* (to be seen), *audīrī* (to be heard). The third family, which had no vowel to begin with, drops the r as well and keeps only **-ī**: *legī* (to be read), *capī* (to be caught). *Avis ā puerō capī potest* = the bird can be caught by the boy.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "inf.pres.pass"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "cells": [
+          "inf.pres.pass"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "The handful that double a consonant",
+      "say": "A few very common verbs never took a stem vowel, so they double a consonant instead of adding -re: *est* → **esse** (to be), *potest* → **posse** (to be able), *vult* → **velle** (to want), *fert* → **ferre** (to carry). *Īre* (to go) is the odd one the other way, a stem so short that only -re is left. Learn these five by heart; two or three more of the same kind turn up much later.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "reveal": [
+          "inf.pres.act"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "eo",
+        "cells": [
+          "inf.pres.act"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "title": "The 'to' form, or the verb itself?",
+      "say": "Two near-misses catch beginners. *Currere* (to run) beside *currunt* (they are running): the infinitive has -re and leans on *volunt*, the finite verb has a person's ending and stands alone. And *tacēre* (to be quiet) beside *tacē!* (be quiet!): the command is short, stands by itself and usually has a name beside it. If a *potest*, *vult* or *audet* is anywhere near, the -re form is an infinitive.",
+      "show": {
+        "kind": "sentence",
+        "id": "inf-12"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "inf-15"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

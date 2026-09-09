@@ -1,0 +1,566 @@
+{
+  "skill": "dative-possession",
+  "chapter": 12,
+  "sentences": [
+    {
+      "id": "dpo-01",
+      "la": "Mārcō soror et frāter sunt.",
+      "en": "Marcus has a sister and a brother.",
+      "words": 5,
+      "focus": "Mārcō",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcō",
+          "m": "to Marcus"
+        },
+        {
+          "w": "soror",
+          "m": "sister"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "frāter",
+          "m": "brother"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "dpo-02",
+      "la": "Iūliae rosa pulchra in hortō est.",
+      "en": "Julia has a beautiful rose in the garden.",
+      "words": 6,
+      "focus": "Iūliae",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūliae",
+          "m": "to Julia"
+        },
+        {
+          "w": "rosa",
+          "m": "rose"
+        },
+        {
+          "w": "pulchra",
+          "m": "beautiful"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpo-03",
+      "la": "Puerō gladius nōn est, sed baculum.",
+      "en": "The boy has no sword, but a stick.",
+      "words": 6,
+      "focus": "Puerō",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerō",
+          "m": "to the boy"
+        },
+        {
+          "w": "gladius",
+          "m": "sword"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "baculum",
+          "m": "a stick"
+        }
+      ]
+    },
+    {
+      "id": "dpo-04",
+      "la": "Dominō pecūnia est, servō nūlla.",
+      "en": "The master has money, the slave none.",
+      "words": 5,
+      "focus": "Dominō",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dominō",
+          "m": "to the master"
+        },
+        {
+          "w": "pecūnia",
+          "m": "money"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "servō",
+          "m": "to the slave"
+        },
+        {
+          "w": "nūlla",
+          "m": "none"
+        }
+      ]
+    },
+    {
+      "id": "dpo-05",
+      "la": "Iūliō servī multī in vīllā sunt.",
+      "en": "Julius has many slaves in the country house.",
+      "words": 6,
+      "focus": "Iūliō",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūliō",
+          "m": "to Julius"
+        },
+        {
+          "w": "servī",
+          "m": "slaves"
+        },
+        {
+          "w": "multī",
+          "m": "many"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "vīllā",
+          "m": "the country house"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "dpo-06",
+      "la": "Amīcō meō equus albus est.",
+      "en": "My friend has a white horse.",
+      "words": 5,
+      "focus": "Amīcō",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Amīcō",
+          "m": "to the friend"
+        },
+        {
+          "w": "meō",
+          "m": "my"
+        },
+        {
+          "w": "equus",
+          "m": "horse"
+        },
+        {
+          "w": "albus",
+          "m": "white"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpo-07",
+      "la": "Patrī meō fīliī et fīliae sunt.",
+      "en": "My father has sons and daughters.",
+      "words": 6,
+      "focus": "Patrī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Patrī",
+          "m": "to the father"
+        },
+        {
+          "w": "meō",
+          "m": "my"
+        },
+        {
+          "w": "fīliī",
+          "m": "sons"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "fīliae",
+          "m": "daughters"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "dpo-08",
+      "la": "Mihi frāter et soror sunt.",
+      "en": "I have a brother and a sister.",
+      "words": 5,
+      "focus": "Mihi",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mihi",
+          "m": "to me"
+        },
+        {
+          "w": "frāter",
+          "m": "brother"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "soror",
+          "m": "sister"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "dpo-09",
+      "la": "Tibi gladius est, mihi hasta est.",
+      "en": "You have a sword, I have a spear.",
+      "words": 6,
+      "focus": "Tibi",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Tibi",
+          "m": "to you"
+        },
+        {
+          "w": "gladius",
+          "m": "sword"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "mihi",
+          "m": "to me"
+        },
+        {
+          "w": "hasta",
+          "m": "spear"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpo-10",
+      "la": "Fīliō Iūliī nōmen Mārcus est.",
+      "en": "Julius's son has the name Marcus.",
+      "words": 5,
+      "focus": "Fīliō",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Fīliō",
+          "m": "to the son"
+        },
+        {
+          "w": "Iūliī",
+          "m": "of Julius"
+        },
+        {
+          "w": "nōmen",
+          "m": "name"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpo-11",
+      "la": "Mārcō canis est; Iūlius Quīntō pirum dat.",
+      "en": "Marcus has a dog; Julius gives Quintus a pear.",
+      "words": 7,
+      "focus": "Mārcō",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcō",
+          "m": "to Marcus"
+        },
+        {
+          "w": "canis",
+          "m": "dog"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "Quīntō",
+          "m": "to Quintus"
+        },
+        {
+          "w": "pirum",
+          "m": "a pear"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dpo-12",
+      "la": "Medicō pecūnia est, et Iūlius servō nummōs dat.",
+      "en": "The doctor has money, and Julius gives the slave coins.",
+      "words": 8,
+      "focus": "Medicō",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Medicō",
+          "m": "to the doctor"
+        },
+        {
+          "w": "pecūnia",
+          "m": "money"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "servō",
+          "m": "to the slave"
+        },
+        {
+          "w": "nummōs",
+          "m": "coins"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dpo-13",
+      "la": "Gladius mīlitis longus est; mīlitī scūtum est.",
+      "en": "The soldier's sword is long; the soldier has a shield.",
+      "words": 7,
+      "focus": "mīlitī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Gladius",
+          "m": "sword"
+        },
+        {
+          "w": "mīlitis",
+          "m": "of the soldier"
+        },
+        {
+          "w": "longus",
+          "m": "long"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "mīlitī",
+          "m": "to the soldier"
+        },
+        {
+          "w": "scūtum",
+          "m": "shield"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpo-14",
+      "la": "Canis pāstōris niger est; pāstōrī ovēs sunt.",
+      "en": "The shepherd's dog is black; the shepherd has sheep.",
+      "words": 7,
+      "focus": "pāstōrī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Canis",
+          "m": "dog"
+        },
+        {
+          "w": "pāstōris",
+          "m": "of the shepherd"
+        },
+        {
+          "w": "niger",
+          "m": "black"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "pāstōrī",
+          "m": "to the shepherd"
+        },
+        {
+          "w": "ovēs",
+          "m": "the sheep"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,117 @@
 {
   "skill": "third-declension",
+  "teach": [
+    {
+      "n": 1,
+      "title": "The third family of nouns",
+      "say": "Most Latin nouns that do not end in -a or -us or -um belong to a third family: **a 3rd-declension noun (the -is / -ēs pattern: pāstor, pāstōris)**, *dēclīnātiō tertia*. Their first form can end in almost anything — *pāstor*, *ovis*, *canis*, *clāmor*, *mōns* — so you cannot tell one by its look alone. Masculine and feminine nouns of this family share every ending, so the gender has to be learned with the word.",
+      "show": {
+        "kind": "sentence",
+        "id": "td-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "td-14"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The genitive shows the stem",
+      "say": "Because the first form is unreliable, these nouns are learned in pairs: *pāstor, pāstōris*; *arbor, arboris*; *ovis, ovis*. The second form is the genitive (the 'of' form), it always ends **-is**, and what is left when you take that -is off is the stem every other ending is built on: *pāstōr-*, *arbor-*. Some stems change a good deal — *mōns, montis*; *dēns, dentis*. For more than one owner the genitive ends **-um** after most stems and **-ium** after nouns like *ovis* and *collis*: *pāstōrum*, *ovium*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl3",
+        "reveal": [
+          "nom.sg",
+          "gen.sg",
+          "gen.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "nom.sg",
+          "gen.sg",
+          "gen.pl"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "As the object: stem + -em",
+      "say": "When one of these nouns is what the verb acts on, it goes into the accusative (the object form): add **-em** to the stem — *pānem*, *ovem*, *montem*, *pāstōrem*. The -em is the surest sign of the family in these chapters: nothing you have met so far ends that way except a third-declension object. And no neuter noun ever ends in -em, so a word in -em is masculine or feminine.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl3",
+        "reveal": [
+          "acc.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "acc.sg"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "Receiving with -ī, and -e for the rest",
+      "say": "Two more singular endings go on the same stem. The dative (the receiver form) is **-ī**: *canī pānem dat*, he gives his dog bread. The ablative (the 'by/with/from' form) is **-e**: *sub arbore*, *in valle*. Keep them apart by their length as much as by their shape: -ī is long, -e is short.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl3",
+        "reveal": [
+          "dat.sg",
+          "abl.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "dat.sg",
+          "abl.sg"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "Two plural endings, four jobs",
+      "say": "Once the stem is known, the plural has only two endings left, and each of them does two jobs. **-ēs** is both the nominative (the subject form) and the accusative (the object form): *ovēs herbam edunt*, *dentēs magnōs habet*. **-ibus** is both the dative (the receiver form) and the ablative (the 'by/with/from' form): *pāstor canibus et ovibus aquam dat*. Two endings to learn, and the sentence tells you which job each is doing.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl3",
+        "reveal": [
+          "nom.pl",
+          "acc.pl",
+          "dat.pl",
+          "abl.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "nom.pl",
+          "acc.pl",
+          "dat.pl",
+          "abl.pl"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "title": "The trap: -is and -īs",
+      "say": "*Ovis* can be the nominative (the subject form: one sheep) or the genitive (the owner form) of the very same word, and it looks like nothing in the other declensions — but *servīs* with a long ī is a second-declension plural, not this family at all. In *dominus servīs aquam dat, pāstor ovibus* the two plurals do the same job with different endings, because the nouns come from different families. Check the dictionary pair before you decide.",
+      "show": {
+        "kind": "sentence",
+        "id": "td-15"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "td-13"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

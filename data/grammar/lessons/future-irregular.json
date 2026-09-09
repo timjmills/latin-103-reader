@@ -57,5 +57,131 @@
     "notes p74",
     "Ørberg cap. XX Grammatica Latina",
     "A&G §170, §203"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What these forms do",
+      "say": "The same handful of very common verbs make their future their own way: the future of the irregular verbs (erō = I will be, poterō = I will be able, ībō = I will go). They mean what any future (the 'will do' tense) means; most of them simply are not built from a plain stem plus *-b-* or *-ē-*, so they are learned as one small set.",
+      "show": {
+        "kind": "sentence",
+        "id": "fi-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fi-02",
+        "ask": "Tap the verb that is about tomorrow."
+      }
+    },
+    {
+      "n": 2,
+      "title": "sum: the stem er-, and anything fastened in front of it",
+      "say": "*Sum* builds its future on *er-*, with endings you already know: *-it* for he, she or it, *-unt* for they. Whatever is fastened to the front of it changes nothing else — *aberit* he will be away, *poterit* he will be able, which is simply *pot-* with the plain form behind it. If you can build the plain one you can build all of them. What can be done follows in the infinitive (the 'to' form): *recitāre poterit*, he will be able to recite.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "word": "sum",
+        "reveal": [
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "say": "the stem er- with -it and -unt behind it"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "sum",
+        "word": "sum",
+        "cells": [
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "ask": "Write the future of sum for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "sum: the other four persons",
+      "say": "The rest of the column takes the ordinary endings on that same *er-*: *-ō* for I, *-is* for you, *-imus* for we, *-itis* for you all. The 'I' form ends in *-ō*, as every future does, and not in the *-m* the imperfect used — that single letter is what keeps 'I was' and 'I will be' apart.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "word": "sum",
+        "reveal": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.2.sg",
+          "fut.ind.act.1.pl",
+          "fut.ind.act.2.pl"
+        ],
+        "say": "er- with -ō, -is, -imus, -itis"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "sum",
+        "word": "sum",
+        "cells": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.2.sg",
+          "fut.ind.act.1.pl",
+          "fut.ind.act.2.pl"
+        ],
+        "ask": "Write the future of sum for I, for you, for we and for you all."
+      }
+    },
+    {
+      "n": 4,
+      "title": "eō takes -b-; volō, nōlō and ferō need nothing new",
+      "say": "*Eō* makes its future with the *-b-* of the first conjugation: *ībō, ībis, ībit, ībunt*. *Volō*, *nōlō* and *ferō* instead follow the third-conjugation pattern — *-am* for 'I', *-ē-* for the rest, shortened before a final *-t* or *-nt* — giving *volet*, *nōlet* and *feret*. Both patterns are ones you have already met.",
+      "show": {
+        "kind": "paradigm",
+        "key": "eo",
+        "word": "eo",
+        "reveal": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "say": "ī- + -b- + the person ending"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "eo",
+        "word": "eo",
+        "cells": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "ask": "Write the future of eō for I, for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling erit from erat, and ībit from ībat",
+      "say": "One vowel separates past from future in the commonest of them: *erat* was, *erit* will be; *poterat* could, *poterit* will be able. The *-a-* looks back and the *-i-* looks forward, and *eō* marks the difference the same way. *Volō*, *nōlō* and *ferō* do not — *volēbat* against *volet* — so read the whole word rather than hunting for one letter.",
+      "show": {
+        "kind": "sentence",
+        "id": "fi-09"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fi-13",
+        "ask": "Tap the verb that is about tomorrow, not about the past."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "These verbs carry most of what a sentence says about later on: where somebody will be, what they will be able to do, where they will go. Here is one already built — *ego crās apud tē erō*, tomorrow I will be at your house. Now set today's fact against tomorrow's and finish the second half yourself.",
+      "show": {
+        "kind": "sentence",
+        "id": "fi-03"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "fi-14",
+        "blank": "aderit",
+        "ask": "Fill the blank with the future of adsum, third person singular."
+      }
+    }
   ]
 }

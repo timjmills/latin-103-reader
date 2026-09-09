@@ -1,0 +1,529 @@
+{
+  "skill": "future-irregular",
+  "chapter": 20,
+  "sentences": [
+    {
+      "id": "fi-01",
+      "la": "Crās Iūlius in vīllā suā erit.",
+      "en": "Tomorrow Julius will be in his own house.",
+      "words": 6,
+      "focus": "erit",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "vīllā",
+          "m": "the house"
+        },
+        {
+          "w": "suā",
+          "m": "his own"
+        },
+        {
+          "w": "erit",
+          "m": "will be"
+        }
+      ]
+    },
+    {
+      "id": "fi-02",
+      "la": "Puerī crās in lūdō nōn erunt.",
+      "en": "Tomorrow the boys will not be in school.",
+      "words": 6,
+      "focus": "erunt",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "erunt",
+          "m": "will be"
+        }
+      ]
+    },
+    {
+      "id": "fi-03",
+      "la": "Ego crās apud tē erō.",
+      "en": "Tomorrow I will be at your house.",
+      "words": 5,
+      "focus": "erō",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ego",
+          "m": "I"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "apud",
+          "m": "at the house of"
+        },
+        {
+          "w": "tē",
+          "m": "you"
+        },
+        {
+          "w": "erō",
+          "m": "will be"
+        }
+      ]
+    },
+    {
+      "id": "fi-04",
+      "la": "Crās in lūdō eris, Mārce.",
+      "en": "Tomorrow you will be in school, Marcus.",
+      "words": 5,
+      "focus": "eris",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "eris",
+          "m": "you will be"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "fi-05",
+      "la": "Nōs mox in oppidō erimus.",
+      "en": "We will soon be in the town.",
+      "words": 5,
+      "focus": "erimus",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōs",
+          "m": "we"
+        },
+        {
+          "w": "mox",
+          "m": "soon"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "oppidō",
+          "m": "the town"
+        },
+        {
+          "w": "erimus",
+          "m": "will be"
+        }
+      ]
+    },
+    {
+      "id": "fi-06",
+      "la": "Mārcus crās melius recitāre poterit.",
+      "en": "Tomorrow Marcus will be able to recite better.",
+      "words": 5,
+      "focus": "poterit",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "melius",
+          "m": "better"
+        },
+        {
+          "w": "recitāre",
+          "m": "to recite"
+        },
+        {
+          "w": "poterit",
+          "m": "will be able"
+        }
+      ]
+    },
+    {
+      "id": "fi-07",
+      "la": "Servī fessī crās ambulāre nōn poterunt.",
+      "en": "Tomorrow the tired slaves will not be able to walk.",
+      "words": 6,
+      "focus": "poterunt",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servī",
+          "m": "the slaves"
+        },
+        {
+          "w": "fessī",
+          "m": "tired"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "ambulāre",
+          "m": "to walk"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "poterunt",
+          "m": "will be able"
+        }
+      ]
+    },
+    {
+      "id": "fi-08",
+      "la": "Crās ad forum cum patre ībō.",
+      "en": "Tomorrow I will go to the market place with father.",
+      "words": 6,
+      "focus": "ībō",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "forum",
+          "m": "the market place"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "patre",
+          "m": "father"
+        },
+        {
+          "w": "ībō",
+          "m": "I will go"
+        }
+      ]
+    },
+    {
+      "id": "fi-09",
+      "la": "Dāvus ad fluvium mox ībit.",
+      "en": "Davus will soon go to the river.",
+      "words": 5,
+      "focus": "ībit",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "fluvium",
+          "m": "the river"
+        },
+        {
+          "w": "mox",
+          "m": "soon"
+        },
+        {
+          "w": "ībit",
+          "m": "will go"
+        }
+      ]
+    },
+    {
+      "id": "fi-10",
+      "la": "Ancilla speculum ad dominam feret.",
+      "en": "The slave girl will carry the mirror to her mistress.",
+      "words": 5,
+      "focus": "feret",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ancilla",
+          "m": "the slave girl"
+        },
+        {
+          "w": "speculum",
+          "m": "the mirror"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "dominam",
+          "m": "the mistress"
+        },
+        {
+          "w": "feret",
+          "m": "will carry"
+        }
+      ]
+    },
+    {
+      "id": "fi-11",
+      "la": "Quīntus crās surgere nōn volet.",
+      "en": "Tomorrow Quintus will not want to get up.",
+      "words": 5,
+      "focus": "volet",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "surgere",
+          "m": "to get up"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "volet",
+          "m": "will want"
+        }
+      ]
+    },
+    {
+      "id": "fi-12",
+      "la": "Mārcus crās in lūdō recitāre nōlet.",
+      "en": "Tomorrow Marcus will not want to recite in school.",
+      "words": 6,
+      "focus": "nōlet",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "recitāre",
+          "m": "to recite"
+        },
+        {
+          "w": "nōlet",
+          "m": "will not want"
+        }
+      ]
+    },
+    {
+      "id": "fi-13",
+      "la": "Dāvus ad forum ībat, crās iterum ībit.",
+      "en": "Davus was going to the market place; tomorrow he will go again.",
+      "words": 7,
+      "focus": "ībit",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "forum",
+          "m": "the market place"
+        },
+        {
+          "w": "ībat",
+          "m": "was going"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "iterum",
+          "m": "again"
+        },
+        {
+          "w": "ībit",
+          "m": "will go"
+        }
+      ]
+    },
+    {
+      "id": "fi-14",
+      "la": "Hodiē Mēdus abest, crās aderit.",
+      "en": "Today Medus is away; tomorrow he will be here.",
+      "words": 5,
+      "focus": "aderit",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hodiē",
+          "m": "today"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "abest",
+          "m": "is away"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "aderit",
+          "m": "will be here"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,533 @@
+{
+ "skill": "active-personal-endings",
+ "chapter": 15,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "ape-01",
+   "la": "Ego cantō, tū cantās, Iūlia cantat.",
+   "en": "I sing, you sing, Julia sings.",
+   "words": 6,
+   "focus": "cantās",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "cantō",
+     "m": "sing"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "cantās",
+     "m": "sing"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "cantat",
+     "m": "sings"
+    }
+   ]
+  },
+  {
+   "id": "ape-02",
+   "la": "Puer dormit, puellae nōn dormiunt.",
+   "en": "The boy is asleep; the girls are not asleep.",
+   "words": 5,
+   "focus": "dormit",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "dormit",
+     "m": "sleeps"
+    },
+    {
+     "w": "puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "dormiunt",
+     "m": "sleep"
+    }
+   ]
+  },
+  {
+   "id": "ape-03",
+   "la": "Mārcum vocō, sed Mārcus nōn venit.",
+   "en": "I call Marcus, but Marcus does not come.",
+   "words": 6,
+   "focus": "vocō",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcum",
+     "m": "Marcus (object)"
+    },
+    {
+     "w": "vocō",
+     "m": "I call"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "ape-04",
+   "la": "Cūr mē virgā pulsās, magister?",
+   "en": "Why do you hit me with the rod, teacher?",
+   "words": 5,
+   "focus": "pulsās",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cūr",
+     "m": "why"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "virgā",
+     "m": "with the rod"
+    },
+    {
+     "w": "pulsās",
+     "m": "you hit"
+    },
+    {
+     "w": "magister",
+     "m": "teacher!"
+    }
+   ]
+  },
+  {
+   "id": "ape-05",
+   "la": "Magister discipulum improbum virgā verberat.",
+   "en": "The teacher beats the naughty pupil with the rod.",
+   "words": 5,
+   "focus": "verberat",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "discipulum",
+     "m": "the pupil"
+    },
+    {
+     "w": "improbum",
+     "m": "naughty"
+    },
+    {
+     "w": "virgā",
+     "m": "with the rod"
+    },
+    {
+     "w": "verberat",
+     "m": "beats"
+    }
+   ]
+  },
+  {
+   "id": "ape-06",
+   "la": "Nōs in lūdō sedēmus et recitāmus.",
+   "en": "We sit in the school and read aloud.",
+   "words": 6,
+   "focus": "recitāmus",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "lūdō",
+     "m": "the school"
+    },
+    {
+     "w": "sedēmus",
+     "m": "we sit"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "recitāmus",
+     "m": "we read aloud"
+    }
+   ]
+  },
+  {
+   "id": "ape-07",
+   "la": "Cūr mihi nōn respondētis, discipulī?",
+   "en": "Why do you all not answer me, pupils?",
+   "words": 5,
+   "focus": "respondētis",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cūr",
+     "m": "why"
+    },
+    {
+     "w": "mihi",
+     "m": "to me"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "respondētis",
+     "m": "you all answer"
+    },
+    {
+     "w": "discipulī",
+     "m": "pupils!"
+    }
+   ]
+  },
+  {
+   "id": "ape-08",
+   "la": "Puerī clāmant, sed puellae cantant.",
+   "en": "The boys shout, but the girls sing.",
+   "words": 5,
+   "focus": "clāmant",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "clāmant",
+     "m": "shout"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "cantant",
+     "m": "sing"
+    }
+   ]
+  },
+  {
+   "id": "ape-09",
+   "la": "Mārcus librum legit, Quīntus mē videt.",
+   "en": "Marcus reads a book, Quintus sees me.",
+   "words": 6,
+   "focus": "legit",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "librum",
+     "m": "a book"
+    },
+    {
+     "w": "legit",
+     "m": "reads"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "videt",
+     "m": "sees"
+    }
+   ]
+  },
+  {
+   "id": "ape-10",
+   "la": "Tū tacēs, sed Sextus multa dīcit.",
+   "en": "You are silent, but Sextus says a lot.",
+   "words": 6,
+   "focus": "tacēs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "tacēs",
+     "m": "are silent"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "Sextus",
+     "m": "Sextus"
+    },
+    {
+     "w": "multa",
+     "m": "many things"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    }
+   ]
+  },
+  {
+   "id": "ape-11",
+   "la": "Discipulī magistrum audiunt et tacent.",
+   "en": "The pupils listen to the teacher and are silent.",
+   "words": 5,
+   "focus": "audiunt",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulī",
+     "m": "the pupils"
+    },
+    {
+     "w": "magistrum",
+     "m": "the teacher"
+    },
+    {
+     "w": "audiunt",
+     "m": "hear"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "tacent",
+     "m": "are silent"
+    }
+   ]
+  },
+  {
+   "id": "ape-12",
+   "la": "Puerī cibum capiunt et edunt.",
+   "en": "The boys take food and eat it.",
+   "words": 5,
+   "focus": "capiunt",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "cibum",
+     "m": "food"
+    },
+    {
+     "w": "capiunt",
+     "m": "take"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "edunt",
+     "m": "eat"
+    }
+   ]
+  },
+  {
+   "id": "ape-13",
+   "la": "Canis lātrat, sed ovēs nōn lātrant.",
+   "en": "The dog barks, but sheep do not bark.",
+   "words": 6,
+   "focus": "lātrant",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Canis",
+     "m": "the dog"
+    },
+    {
+     "w": "lātrat",
+     "m": "barks"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "ovēs",
+     "m": "sheep"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "lātrant",
+     "m": "bark"
+    }
+   ]
+  },
+  {
+   "id": "ape-14",
+   "la": "Ego taceō, sed vōs clāmātis.",
+   "en": "I am silent, but you all are shouting.",
+   "words": 5,
+   "focus": "clāmātis",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "taceō",
+     "m": "am silent"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "vōs",
+     "m": "you all"
+    },
+    {
+     "w": "clāmātis",
+     "m": "are shouting"
+    }
+   ]
+  }
+ ]
+}

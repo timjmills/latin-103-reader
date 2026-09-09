@@ -1,0 +1,602 @@
+{
+  "skill": "irregular-comparison",
+  "chapter": 19,
+  "sentences": [
+    {
+      "id": "icc-01",
+      "la": "Iūlia parva est, Quīntus autem māior.",
+      "en": "Julia is small, but Quintus is bigger.",
+      "words": 6,
+      "focus": "māior",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "parva",
+          "m": "small"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "autem",
+          "m": "but"
+        },
+        {
+          "w": "māior",
+          "m": "bigger"
+        }
+      ]
+    },
+    {
+      "id": "icc-02",
+      "la": "Hic servus bonus est, ille melior.",
+      "en": "This slave is good, that one better.",
+      "words": 6,
+      "focus": "melior",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "servus",
+          "m": "slave"
+        },
+        {
+          "w": "bonus",
+          "m": "good"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "ille",
+          "m": "that one"
+        },
+        {
+          "w": "melior",
+          "m": "better"
+        }
+      ]
+    },
+    {
+      "id": "icc-03",
+      "la": "Mārcus malus puer est, Sextus pēior.",
+      "en": "Marcus is a bad boy, Sextus a worse one.",
+      "words": 6,
+      "focus": "pēior",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "malus",
+          "m": "bad"
+        },
+        {
+          "w": "puer",
+          "m": "boy"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "Sextus",
+          "m": "Sextus"
+        },
+        {
+          "w": "pēior",
+          "m": "worse"
+        }
+      ]
+    },
+    {
+      "id": "icc-04",
+      "la": "Quīntus minor est quam frāter suus.",
+      "en": "Quintus is smaller than his own brother.",
+      "words": 6,
+      "focus": "minor",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "minor",
+          "m": "smaller"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "frāter",
+          "m": "brother"
+        },
+        {
+          "w": "suus",
+          "m": "his own"
+        }
+      ]
+    },
+    {
+      "id": "icc-05",
+      "la": "Hoc dōnum bonum est, illud melius.",
+      "en": "This gift is good, that one better.",
+      "words": 6,
+      "focus": "melius",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hoc",
+          "m": "this"
+        },
+        {
+          "w": "dōnum",
+          "m": "gift"
+        },
+        {
+          "w": "bonum",
+          "m": "good"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "illud",
+          "m": "that one"
+        },
+        {
+          "w": "melius",
+          "m": "better"
+        }
+      ]
+    },
+    {
+      "id": "icc-06",
+      "la": "In hōc lūdō Sextus discipulus optimus est.",
+      "en": "In this school Sextus is the best pupil.",
+      "words": 7,
+      "focus": "optimus",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "In",
+          "m": "in"
+        },
+        {
+          "w": "hōc",
+          "m": "this"
+        },
+        {
+          "w": "lūdō",
+          "m": "school"
+        },
+        {
+          "w": "Sextus",
+          "m": "Sextus"
+        },
+        {
+          "w": "discipulus",
+          "m": "pupil"
+        },
+        {
+          "w": "optimus",
+          "m": "best"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "icc-07",
+      "la": "Quīntus in lūdō discipulus minimus est.",
+      "en": "In school Quintus is the smallest pupil.",
+      "words": 6,
+      "focus": "minimus",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "discipulus",
+          "m": "pupil"
+        },
+        {
+          "w": "minimus",
+          "m": "smallest"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "icc-08",
+      "la": "Rōma urbs māxima imperiī Rōmānī est.",
+      "en": "Rome is the greatest city of the Roman empire.",
+      "words": 6,
+      "focus": "māxima",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Rōma",
+          "m": "Rome"
+        },
+        {
+          "w": "urbs",
+          "m": "city"
+        },
+        {
+          "w": "māxima",
+          "m": "greatest"
+        },
+        {
+          "w": "imperiī",
+          "m": "of the empire"
+        },
+        {
+          "w": "Rōmānī",
+          "m": "Roman"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "icc-09",
+      "la": "Iūlia minima est in familiā Iūliī.",
+      "en": "Julia is the smallest in Julius's household.",
+      "words": 6,
+      "focus": "minima",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "minima",
+          "m": "smallest"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "familiā",
+          "m": "the household"
+        },
+        {
+          "w": "Iūliī",
+          "m": "of Julius"
+        }
+      ]
+    },
+    {
+      "id": "icc-10",
+      "la": "In vīllā Iūliī plūrimī servī sunt.",
+      "en": "In Julius's house there are very many slaves.",
+      "words": 6,
+      "focus": "plūrimī",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "In",
+          "m": "in"
+        },
+        {
+          "w": "vīllā",
+          "m": "the house"
+        },
+        {
+          "w": "Iūliī",
+          "m": "of Julius"
+        },
+        {
+          "w": "plūrimī",
+          "m": "very many"
+        },
+        {
+          "w": "servī",
+          "m": "slaves"
+        },
+        {
+          "w": "sunt",
+          "m": "there are"
+        }
+      ]
+    },
+    {
+      "id": "icc-11",
+      "la": "Iūlius plūs pecūniae quam Mēdus habet.",
+      "en": "Julius has more money than Medus.",
+      "words": 6,
+      "focus": "plūs",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "plūs",
+          "m": "more"
+        },
+        {
+          "w": "pecūniae",
+          "m": "of money"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        }
+      ]
+    },
+    {
+      "id": "icc-12",
+      "la": "Aemilia plūrēs rosās quam līlia habet.",
+      "en": "Aemilia has more roses than lilies.",
+      "words": 6,
+      "focus": "plūrēs",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "plūrēs",
+          "m": "more"
+        },
+        {
+          "w": "rosās",
+          "m": "roses"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "līlia",
+          "m": "lilies"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        }
+      ]
+    },
+    {
+      "id": "icc-13",
+      "la": "Mēdus fortior est, sed Dāvus melior.",
+      "en": "Medus is stronger, but Davus is better.",
+      "words": 6,
+      "focus": "melior",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "fortior",
+          "m": "stronger"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "melior",
+          "m": "better"
+        }
+      ]
+    },
+    {
+      "id": "icc-14",
+      "la": "Mārcus male recitat, Sextus autem pēius.",
+      "en": "Marcus recites badly, but Sextus worse.",
+      "words": 6,
+      "focus": "pēius",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "male",
+          "m": "badly"
+        },
+        {
+          "w": "recitat",
+          "m": "recites"
+        },
+        {
+          "w": "Sextus",
+          "m": "Sextus"
+        },
+        {
+          "w": "autem",
+          "m": "but"
+        },
+        {
+          "w": "pēius",
+          "m": "worse"
+        }
+      ]
+    },
+    {
+      "id": "icc-15",
+      "la": "Hoc dōnum māius est quam illud.",
+      "en": "This gift is bigger than that one.",
+      "words": 6,
+      "focus": "māius",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hoc",
+          "m": "this"
+        },
+        {
+          "w": "dōnum",
+          "m": "gift"
+        },
+        {
+          "w": "māius",
+          "m": "bigger"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "illud",
+          "m": "that one"
+        }
+      ]
+    }
+  ]
+}

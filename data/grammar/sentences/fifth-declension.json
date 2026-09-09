@@ -1,0 +1,601 @@
+{
+  "skill": "fifth-declension",
+  "chapter": 13,
+  "sentences": [
+    {
+      "id": "f5-01",
+      "la": "Diēs longus est, nox brevis.",
+      "en": "The day is long, the night short.",
+      "words": 5,
+      "focus": "Diēs",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Diēs",
+          "m": "day"
+        },
+        {
+          "w": "longus",
+          "m": "long"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "nox",
+          "m": "night"
+        },
+        {
+          "w": "brevis",
+          "m": "short"
+        }
+      ]
+    },
+    {
+      "id": "f5-02",
+      "la": "Glaciēs in fluviō frīgidō est.",
+      "en": "There is ice in the cold river.",
+      "words": 5,
+      "focus": "Glaciēs",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Glaciēs",
+          "m": "ice"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "fluviō",
+          "m": "the river"
+        },
+        {
+          "w": "frīgidō",
+          "m": "cold"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-03",
+      "la": "Puer diem tōtum in hortō agit.",
+      "en": "The boy spends the whole day in the garden.",
+      "words": 6,
+      "focus": "diem",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "boy"
+        },
+        {
+          "w": "diem",
+          "m": "the day"
+        },
+        {
+          "w": "tōtum",
+          "m": "whole"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "agit",
+          "m": "spends"
+        }
+      ]
+    },
+    {
+      "id": "f5-04",
+      "la": "Iūlia faciem suam in speculō videt.",
+      "en": "Julia sees her face in the mirror.",
+      "words": 6,
+      "focus": "faciem",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "faciem",
+          "m": "her face"
+        },
+        {
+          "w": "suam",
+          "m": "her own"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "speculō",
+          "m": "the mirror"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "f5-05",
+      "la": "Hōra prīma initium diēī est.",
+      "en": "The first hour is the beginning of the day.",
+      "words": 5,
+      "focus": "diēī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Hōra",
+          "m": "hour"
+        },
+        {
+          "w": "prīma",
+          "m": "first"
+        },
+        {
+          "w": "initium",
+          "m": "the beginning"
+        },
+        {
+          "w": "diēī",
+          "m": "of the day"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-06",
+      "la": "Merīdiēs medium tempus diēī est.",
+      "en": "Midday is the middle time of the day.",
+      "words": 5,
+      "focus": "diēī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Merīdiēs",
+          "m": "midday"
+        },
+        {
+          "w": "medium",
+          "m": "the middle"
+        },
+        {
+          "w": "tempus",
+          "m": "time"
+        },
+        {
+          "w": "diēī",
+          "m": "of the day"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-07",
+      "la": "Faciēī tuae color ruber est.",
+      "en": "The colour of your face is red.",
+      "words": 5,
+      "focus": "Faciēī",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Faciēī",
+          "m": "of your face"
+        },
+        {
+          "w": "tuae",
+          "m": "your"
+        },
+        {
+          "w": "color",
+          "m": "colour"
+        },
+        {
+          "w": "ruber",
+          "m": "red"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-08",
+      "la": "Merīdiē sōl in caelō altus est.",
+      "en": "At midday the sun is high in the sky.",
+      "words": 6,
+      "focus": "Merīdiē",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Merīdiē",
+          "m": "at midday"
+        },
+        {
+          "w": "sōl",
+          "m": "sun"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "caelō",
+          "m": "the sky"
+        },
+        {
+          "w": "altus",
+          "m": "high"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-09",
+      "la": "Numerus diērum in annō magnus est.",
+      "en": "The number of days in a year is great.",
+      "words": 6,
+      "focus": "diērum",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Numerus",
+          "m": "number"
+        },
+        {
+          "w": "diērum",
+          "m": "of days"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "annō",
+          "m": "year"
+        },
+        {
+          "w": "magnus",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-10",
+      "la": "Diēbus hiemis nix in campīs est.",
+      "en": "On winter days there is snow in the fields.",
+      "words": 6,
+      "focus": "Diēbus",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Diēbus",
+          "m": "on the days"
+        },
+        {
+          "w": "hiemis",
+          "m": "of winter"
+        },
+        {
+          "w": "nix",
+          "m": "snow"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "campīs",
+          "m": "the fields"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-11",
+      "la": "Nūbēs multae sunt, diēs obscūrus est.",
+      "en": "There are many clouds, the day is dark.",
+      "words": 6,
+      "focus": "diēs",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Nūbēs",
+          "m": "clouds"
+        },
+        {
+          "w": "multae",
+          "m": "many"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "diēs",
+          "m": "day"
+        },
+        {
+          "w": "obscūrus",
+          "m": "dark"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-12",
+      "la": "Vallēs longa est, sed diēs brevis.",
+      "en": "The valley is long, but the day is short.",
+      "words": 6,
+      "focus": "diēs",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Vallēs",
+          "m": "the valley"
+        },
+        {
+          "w": "longa",
+          "m": "long"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "diēs",
+          "m": "day"
+        },
+        {
+          "w": "brevis",
+          "m": "short"
+        }
+      ]
+    },
+    {
+      "id": "f5-13",
+      "la": "Hic diēs longus et calidus est.",
+      "en": "This day is long and warm.",
+      "words": 6,
+      "focus": "diēs",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "diēs",
+          "m": "day"
+        },
+        {
+          "w": "longus",
+          "m": "long"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "calidus",
+          "m": "warm"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-14",
+      "la": "Faciēs Aemiliae pulchra et laeta est.",
+      "en": "Aemilia's face is beautiful and happy.",
+      "words": 6,
+      "focus": "Faciēs",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Faciēs",
+          "m": "face"
+        },
+        {
+          "w": "Aemiliae",
+          "m": "of Aemilia"
+        },
+        {
+          "w": "pulchra",
+          "m": "beautiful"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "laeta",
+          "m": "happy"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f5-15",
+      "la": "Aestāte diēs longī et calidī sunt.",
+      "en": "In summer the days are long and warm.",
+      "words": 6,
+      "focus": "diēs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Aestāte",
+          "m": "in summer"
+        },
+        {
+          "w": "diēs",
+          "m": "days"
+        },
+        {
+          "w": "longī",
+          "m": "long"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "calidī",
+          "m": "warm"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    }
+  ]
+}

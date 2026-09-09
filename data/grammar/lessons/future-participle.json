@@ -57,5 +57,86 @@
     "notes p88",
     "Ørberg cap. XXIII Grammatica Latina",
     "A&G §498–499"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "Describing someone by what is coming",
+      "say": "A person can be described by what they are on the point of doing, and the word that does it is **the future participle (the 'about to' word: ventūrus = about to come)**. *Mārcus longam epistulam scrīptūrus est* — Marcus is about to write a long letter. English has no single word for it, so we say 'about to …', 'going to …', 'on the point of …'.",
+      "show": {
+        "kind": "sentence",
+        "id": "fp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fp-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "How the word is made",
+      "say": "Take the fourth principal part, the one ending in *-tum* or *-sum* (*scrīptum*, *datum*, *nāvigātum*), take off the final *-um* and put *-ūrus* in its place: *scrīpt-ūrus*, *dat-ūrus*, *nāvigāt-ūrus*. The *-ūr-* is the whole signal; what follows it is the ordinary *-us* of *bonus*. *Sum* does it too: its fourth part is *futūrum*, so its future participle is *futūrus*, about to be.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "word": "futūrus",
+        "reveal": [
+          "nom.sg.m"
+        ],
+        "say": "futūrus — the stem futūr- with the ordinary -us behind it"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "word": "futūrus",
+        "cells": [
+          "nom.sg.m"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "It agrees like any adjective",
+      "say": "The ending follows the person described, not the verb: *-ūra* for one woman, *-ūrī* for several men. *Aemilia fīlium suum vocātūra est*; *Puerī in hortō lūsūrī sunt*. The *sum* beside it changes to match as well — *est* for one, *sunt* or *erant* for several. The table below runs the same three endings on *futūrus*: *futūrus*, *futūra*, *futūrī*.",
+      "show": {
+        "kind": "sentence",
+        "id": "fp-05"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "word": "futūrus",
+        "cells": [
+          "nom.sg.f",
+          "nom.pl.m"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "Telling -ūrus from -tus",
+      "say": "*Scrīpta* and *scrīptūrus* begin alike and mean opposite things. *Scrīpta est* is **the perfect participle (the 'having been done' word: laudātus = praised)** — done already, and passive. *Scrīptūrus est* is not done at all yet, and active. Hunt for the *-ūr-*.",
+      "show": {
+        "kind": "sentence",
+        "id": "fp-09"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fp-10"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Standing without sum",
+      "say": "It does not need *sum* beside it. On its own it sits next to its noun like any other adjective: *Puerī dormītūrī in cubiculum eunt* — the boys, about to sleep, go into the bedroom. And it can keep an object of its own: *flōrem carptūra*, about to pick a flower. *Sum* has *futūrus*, about to be.",
+      "show": {
+        "kind": "sentence",
+        "id": "fp-11"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "fp-13"
+      }
+    }
   ]
 }

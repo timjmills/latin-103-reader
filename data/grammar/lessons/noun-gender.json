@@ -47,6 +47,100 @@
       "text": "A noun's gender is fixed; an adjective's is not. *Rōmānus, Rōmāna, Rōmānum* is one adjective in three shapes waiting to match a noun: *vir Rōmānus*, *fēmina Rōmāna*, *oppidum Rōmānum*. The noun decides, the adjective follows. Do not read *Rōmāna* as 'a Roman woman' unless a feminine noun is there or understood."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What gender is",
+      "say": "Every Latin noun belongs to one of three groups and stays in it for life: this is its gender (masculine, feminine or neuter, fixed for each noun). It has little to do with being male or female — *fluvius* (river) is masculine and *īnsula* (island) feminine, and neither is alive. It matters because every word that describes a noun has to match it.",
+      "show": {
+        "kind": "sentence",
+        "id": "ng-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ng-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "a-nouns are feminine",
+      "say": "A noun whose dictionary form ends in -a, like *prōvincia* (province) or *syllaba* (syllable), is feminine. The ending is the signal, and for this group it is reliable.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "reveal": [
+          "nom.sg"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ng-03",
+        "ask": "gender"
+      }
+    },
+    {
+      "n": 3,
+      "title": "us-nouns are masculine",
+      "say": "-us in the dictionary form means masculine: *fluvius* (river), *numerus* (number). A handful of nouns that end in -r join this group in the next chapter.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "nom.sg"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ng-05",
+        "ask": "gender"
+      }
+    },
+    {
+      "n": 4,
+      "title": "um-nouns are neuter, and go to -a for several",
+      "say": "-um means neuter: *oppidum* (town), *vocābulum* (word), *capitulum* (chapter). A neuter noun’s plural ends in -a — *oppida*, *vocābula* — which is the one place a neuter can be mistaken for a single feminine noun.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2n",
+        "reveal": [
+          "nom.sg",
+          "nom.pl"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ng-08",
+        "ask": "gender"
+      }
+    },
+    {
+      "n": 5,
+      "title": "When the ending does not tell you",
+      "say": "*Aegyptus* (Egypt) ends in -us and is feminine, because names of countries and islands are feminine whatever their ending. The describing word is where you see it: *Aegyptus magna est*, but *Nīlus magnus est* — one noun ending, two genders. *Tiberis* (the Tiber) ends in -is and is masculine, because rivers are masculine. Where the ending gives no honest signal the gender is learned with the word, like its meaning.",
+      "show": {
+        "kind": "sentence",
+        "id": "ng-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ng-10",
+        "ask": "gender"
+      }
+    },
+    {
+      "n": 6,
+      "title": "The noun’s gender is fixed; the adjective borrows it",
+      "say": "*Rōmānus*, *Rōmāna*, *Rōmānum* are not three words but one, waiting to take its noun’s gender: *fluvius Rōmānus*, *īnsula Rōmāna*, *oppidum Rōmānum*. So an -a on a describing word tells you its noun is either feminine and single (*īnsula Graeca*) or neuter and several (*vocābula Latīna*), while an -a on the noun is the noun’s own group. The noun decides and the adjective follows, never the other way round.",
+      "show": {
+        "kind": "sentence",
+        "id": "ng-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ng-12"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

@@ -1,0 +1,612 @@
+{
+  "skill": "gerund",
+  "chapter": 26,
+  "sentences": [
+    {
+      "id": "g-01",
+      "la": "Puerī ad lūdendum in hortum currunt.",
+      "en": "The boys run into the garden to play.",
+      "words": 6,
+      "focus": "lūdendum",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "lūdendum",
+          "m": "playing"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "hortum",
+          "m": "the garden"
+        },
+        {
+          "w": "currunt",
+          "m": "run"
+        }
+      ]
+    },
+    {
+      "id": "g-02",
+      "la": "Nunc tempus dormiendī est, Mārce.",
+      "en": "Now it is time for sleeping, Marcus.",
+      "words": 5,
+      "focus": "dormiendī",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nunc",
+          "m": "now"
+        },
+        {
+          "w": "tempus",
+          "m": "time"
+        },
+        {
+          "w": "dormiendī",
+          "m": "for sleeping"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "g-03",
+      "la": "Iūlius pōculum ad bibendum poscit.",
+      "en": "Julius asks for a cup for drinking.",
+      "words": 5,
+      "focus": "bibendum",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "pōculum",
+          "m": "a cup"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "bibendum",
+          "m": "drinking"
+        },
+        {
+          "w": "poscit",
+          "m": "asks for"
+        }
+      ]
+    },
+    {
+      "id": "g-04",
+      "la": "Mīlitēs parātī sunt ad pugnandum.",
+      "en": "The soldiers are ready for fighting.",
+      "words": 5,
+      "focus": "pugnandum",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "the soldiers"
+        },
+        {
+          "w": "parātī",
+          "m": "ready"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "pugnandum",
+          "m": "fighting"
+        }
+      ]
+    },
+    {
+      "id": "g-05",
+      "la": "Ad dormiendum in cubiculum īmus.",
+      "en": "We go into the bedroom to sleep.",
+      "words": 5,
+      "focus": "dormiendum",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ad",
+          "m": "for"
+        },
+        {
+          "w": "dormiendum",
+          "m": "sleeping"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "cubiculum",
+          "m": "the bedroom"
+        },
+        {
+          "w": "īmus",
+          "m": "we go"
+        }
+      ]
+    },
+    {
+      "id": "g-06",
+      "la": "Ars scrībendī difficilis est puerīs.",
+      "en": "The art of writing is hard for boys.",
+      "words": 5,
+      "focus": "scrībendī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ars",
+          "m": "the art"
+        },
+        {
+          "w": "scrībendī",
+          "m": "of writing"
+        },
+        {
+          "w": "difficilis",
+          "m": "hard"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "puerīs",
+          "m": "for boys"
+        }
+      ]
+    },
+    {
+      "id": "g-07",
+      "la": "Puer discendī cupidus nōn est.",
+      "en": "The boy is not eager for learning.",
+      "words": 5,
+      "focus": "discendī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "discendī",
+          "m": "of learning"
+        },
+        {
+          "w": "cupidus",
+          "m": "eager"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "g-08",
+      "la": "Magister in lūdum docendī causā venit.",
+      "en": "The teacher comes into the school for the sake of teaching.",
+      "words": 6,
+      "focus": "docendī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Magister",
+          "m": "the teacher"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "lūdum",
+          "m": "the school"
+        },
+        {
+          "w": "docendī",
+          "m": "of teaching"
+        },
+        {
+          "w": "causā",
+          "m": "for the sake"
+        },
+        {
+          "w": "venit",
+          "m": "comes"
+        }
+      ]
+    },
+    {
+      "id": "g-09",
+      "la": "Multa discimus legendō et audiendō.",
+      "en": "We learn many things by reading and by listening.",
+      "words": 5,
+      "focus": "legendō",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Multa",
+          "m": "many things"
+        },
+        {
+          "w": "discimus",
+          "m": "we learn"
+        },
+        {
+          "w": "legendō",
+          "m": "by reading"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "audiendō",
+          "m": "by listening"
+        }
+      ]
+    },
+    {
+      "id": "g-10",
+      "la": "Mārcus in scrībendō multa menda facit.",
+      "en": "Marcus makes many mistakes while writing.",
+      "words": 6,
+      "focus": "scrībendō",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "scrībendō",
+          "m": "writing"
+        },
+        {
+          "w": "multa",
+          "m": "many"
+        },
+        {
+          "w": "menda",
+          "m": "mistakes"
+        },
+        {
+          "w": "facit",
+          "m": "makes"
+        }
+      ]
+    },
+    {
+      "id": "g-11",
+      "la": "Syra puerum aegrum nārrandō cōnsōlātur.",
+      "en": "Syra comforts the sick boy by telling a story.",
+      "words": 5,
+      "focus": "nārrandō",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "puerum",
+          "m": "the boy"
+        },
+        {
+          "w": "aegrum",
+          "m": "sick"
+        },
+        {
+          "w": "nārrandō",
+          "m": "by telling"
+        },
+        {
+          "w": "cōnsōlātur",
+          "m": "comforts"
+        }
+      ]
+    },
+    {
+      "id": "g-12",
+      "la": "Hic locus ad dormiendum bonus est.",
+      "en": "This place is good for sleeping.",
+      "words": 6,
+      "focus": "dormiendum",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "locus",
+          "m": "place"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "dormiendum",
+          "m": "sleeping"
+        },
+        {
+          "w": "bonus",
+          "m": "good"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "g-13",
+      "la": "Aqua ad bibendum in pōculō est.",
+      "en": "There is water for drinking in the cup.",
+      "words": 6,
+      "focus": "bibendum",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aqua",
+          "m": "water"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "bibendum",
+          "m": "drinking"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "pōculō",
+          "m": "the cup"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "g-16",
+      "la": "Puerī ad audiendum in lūdum veniunt.",
+      "en": "The boys come into the school to listen.",
+      "words": 6,
+      "focus": "audiendum",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "audiendum",
+          "m": "listening"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "lūdum",
+          "m": "the school"
+        },
+        {
+          "w": "veniunt",
+          "m": "come"
+        }
+      ]
+    },
+    {
+      "id": "g-14",
+      "la": "Tempus loquendī nōn est, sed audiendī.",
+      "en": "It is not the time for speaking, but for listening.",
+      "words": 6,
+      "focus": "loquendī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Tempus",
+          "m": "the time"
+        },
+        {
+          "w": "loquendī",
+          "m": "for speaking"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "audiendī",
+          "m": "for listening"
+        }
+      ]
+    },
+    {
+      "id": "g-15",
+      "la": "Puerī lūdendī studiōsī sunt, nōn discendī.",
+      "en": "The boys are keen on playing, not on learning.",
+      "words": 6,
+      "focus": "lūdendī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "lūdendī",
+          "m": "on playing"
+        },
+        {
+          "w": "studiōsī",
+          "m": "keen"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "discendī",
+          "m": "on learning"
+        }
+      ]
+    }
+  ]
+}

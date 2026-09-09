@@ -1,0 +1,530 @@
+{
+  "skill": "ablative-agent",
+  "chapter": 6,
+  "sentences": [
+    {
+      "id": "abag-01",
+      "la": "Servus novus ā dominō vocātur.",
+      "en": "The new slave is called by the master.",
+      "words": 5,
+      "focus": "dominō",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "novus",
+          "m": "new"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "dominō",
+          "m": "the master"
+        },
+        {
+          "w": "vocātur",
+          "m": "is called"
+        }
+      ]
+    },
+    {
+      "id": "abag-02",
+      "la": "Saccus magnus ā servō portātur.",
+      "en": "The big sack is carried by the slave.",
+      "words": 5,
+      "focus": "servō",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Saccus",
+          "m": "the sack"
+        },
+        {
+          "w": "magnus",
+          "m": "big"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "servō",
+          "m": "the slave"
+        },
+        {
+          "w": "portātur",
+          "m": "is carried"
+        }
+      ]
+    },
+    {
+      "id": "abag-03",
+      "la": "Iūlia laeta ā Syrā vocātur.",
+      "en": "Happy Julia is called by Syra.",
+      "words": 5,
+      "focus": "Syrā",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "laeta",
+          "m": "happy"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "Syrā",
+          "m": "Syra"
+        },
+        {
+          "w": "vocātur",
+          "m": "is called"
+        }
+      ]
+    },
+    {
+      "id": "abag-04",
+      "la": "Ancilla nova ā dominā salūtātur.",
+      "en": "The new slave-girl is greeted by the mistress.",
+      "words": 5,
+      "focus": "dominā",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ancilla",
+          "m": "the slave-girl"
+        },
+        {
+          "w": "nova",
+          "m": "new"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "dominā",
+          "m": "the mistress"
+        },
+        {
+          "w": "salūtātur",
+          "m": "is greeted"
+        }
+      ]
+    },
+    {
+      "id": "abag-05",
+      "la": "Mārcus improbus ā Iūliō verberātur.",
+      "en": "Naughty Marcus is beaten by Julius.",
+      "words": 5,
+      "focus": "Iūliō",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "improbus",
+          "m": "naughty"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "Iūliō",
+          "m": "Julius"
+        },
+        {
+          "w": "verberātur",
+          "m": "is beaten"
+        }
+      ]
+    },
+    {
+      "id": "abag-06",
+      "la": "Puerī fessī ā servīs vocantur.",
+      "en": "The tired boys are called by the slaves.",
+      "words": 5,
+      "focus": "servīs",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "fessī",
+          "m": "tired"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "servīs",
+          "m": "the slaves"
+        },
+        {
+          "w": "vocantur",
+          "m": "are called"
+        }
+      ]
+    },
+    {
+      "id": "abag-07",
+      "la": "Pecūnia ab amīcō meō numerātur.",
+      "en": "The money is counted by my friend.",
+      "words": 5,
+      "focus": "amīcō",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pecūnia",
+          "m": "the money"
+        },
+        {
+          "w": "ab",
+          "m": "by"
+        },
+        {
+          "w": "amīcō",
+          "m": "the friend"
+        },
+        {
+          "w": "meō",
+          "m": "my"
+        },
+        {
+          "w": "numerātur",
+          "m": "is counted"
+        }
+      ]
+    },
+    {
+      "id": "abag-08",
+      "la": "Aqua ab ancillā ad hortum portātur.",
+      "en": "Water is carried to the garden by the slave-girl.",
+      "words": 6,
+      "focus": "ancillā",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aqua",
+          "m": "water"
+        },
+        {
+          "w": "ab",
+          "m": "by"
+        },
+        {
+          "w": "ancillā",
+          "m": "the slave-girl"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "hortum",
+          "m": "the garden"
+        },
+        {
+          "w": "portātur",
+          "m": "is carried"
+        }
+      ]
+    },
+    {
+      "id": "abag-09",
+      "la": "Servus baculō ā dominō verberātur.",
+      "en": "The slave is beaten with a stick by the master.",
+      "words": 5,
+      "focus": "dominō",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "baculō",
+          "m": "with a stick"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "dominō",
+          "m": "the master"
+        },
+        {
+          "w": "verberātur",
+          "m": "is beaten"
+        }
+      ]
+    },
+    {
+      "id": "abag-10",
+      "la": "Puer ab amīcō suō, nōn baculō, pulsātur.",
+      "en": "The boy is hit by his own friend, not with a stick.",
+      "words": 7,
+      "focus": "amīcō",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "ab",
+          "m": "by"
+        },
+        {
+          "w": "amīcō",
+          "m": "the friend"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "baculō",
+          "m": "with a stick"
+        },
+        {
+          "w": "pulsātur",
+          "m": "is hit"
+        }
+      ]
+    },
+    {
+      "id": "abag-11",
+      "la": "Ā servīs suīs dominus nōn timētur.",
+      "en": "The master is not feared by his own slaves.",
+      "words": 6,
+      "focus": "servīs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ā",
+          "m": "By"
+        },
+        {
+          "w": "servīs",
+          "m": "the slaves"
+        },
+        {
+          "w": "suīs",
+          "m": "his own"
+        },
+        {
+          "w": "dominus",
+          "m": "the master"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "timētur",
+          "m": "is feared"
+        }
+      ]
+    },
+    {
+      "id": "abag-12",
+      "la": "Cūr Mēdus ā dominō suō accūsātur?",
+      "en": "Why is Medus accused by his own master?",
+      "words": 6,
+      "focus": "dominō",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cūr",
+          "m": "why"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "dominō",
+          "m": "the master"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "accūsātur",
+          "m": "is accused"
+        }
+      ]
+    },
+    {
+      "id": "abag-13",
+      "la": "Ōstium baculō ā servō pulsātur.",
+      "en": "The door is knocked with a stick by the slave.",
+      "words": 5,
+      "focus": "servō",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ōstium",
+          "m": "the door"
+        },
+        {
+          "w": "baculō",
+          "m": "with a stick"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "servō",
+          "m": "the slave"
+        },
+        {
+          "w": "pulsātur",
+          "m": "is hit"
+        }
+      ]
+    },
+    {
+      "id": "abag-14",
+      "la": "Saccī magnī ā puerīs portantur.",
+      "en": "The big sacks are carried by the boys.",
+      "words": 5,
+      "focus": "puerīs",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Saccī",
+          "m": "the sacks"
+        },
+        {
+          "w": "magnī",
+          "m": "big"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "puerīs",
+          "m": "the boys"
+        },
+        {
+          "w": "portantur",
+          "m": "are carried"
+        }
+      ]
+    }
+  ]
+}

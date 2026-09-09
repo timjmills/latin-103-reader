@@ -1,53 +1,125 @@
 {
-  "skill": "indirect-command",
-  "core": [
+ "skill": "indirect-command",
+ "core": [
+  {
+   "type": "p",
+   "text": "When a sentence reports an order, a request or a wish, the thing wanted goes into a clause with **ut / ne + subjunctive (the form for what someone asks or orders someone to do)**: *imperat ut mercēdem solvat* — he orders him to pay the rent; *ōrat nē sē verberet* — he begs him not to beat him. Latin name: *coniūnctīvus substantīvus: ut, nē*."
+  },
+  {
+   "type": "english",
+   "text": "English uses *to*: *he told the farmer to pay*, *she asked her not to leave*. The *to*-phrase is the command."
+  },
+  {
+   "type": "rule",
+   "text": "Verb of ordering, asking, warning or wishing + ut (nē for 'not') + subjunctive. Lead-ins: imperō, rogō, ōrō, moneō, postulō, cūrō, hortor, volō."
+  },
+  {
+   "type": "examples",
+   "units": [
+    "w04:74.7",
+    "w04:124.3",
+    "w04:160.5",
+    "w10:fl-69:b14.4"
+   ],
+   "invented": [
     {
-      "type": "p",
-      "text": "When a sentence reports an order, a request or a wish, the thing wanted goes into a clause with **ut / ne + subjunctive (the form for what someone asks or orders someone to do)**: *imperat ut mercēdem solvat* — he orders him to pay the rent; *ōrat nē sē verberet* — he begs him not to beat him. Latin name: *coniūnctīvus substantīvus: ut, nē*."
-    },
-    {
-      "type": "english",
-      "text": "English uses *to*: *he told the farmer to pay*, *she asked her not to leave*. The *to*-phrase is the command."
-    },
-    {
-      "type": "rule",
-      "text": "Verb of ordering, asking, warning or wishing + ut (nē for 'not') + subjunctive. Lead-ins: imperō, rogō, ōrō, moneō, postulō, cūrō, hortor, volō."
-    },
-    {
-      "type": "examples",
-      "units": [
-        "w04:74.7",
-        "w04:124.3",
-        "w04:160.5",
-        "w10:fl-69:b14.4"
-      ],
-      "invented": [
-        {
-          "la": "Māter fīliō imperat nē in viā lūdat.",
-          "en": "The mother orders her son not to play in the street.",
-          "focus": "nē … lūdat"
-        }
-      ]
-    },
-    {
-      "type": "confusion",
-      "with": "purpose-clause",
-      "text": "After a verb of doing the same *ut* + subjunctive is **ut / ne + subjunctive (the 'in order to' clause: venit ut videat = comes to see)** — it says why. After *imperat, rogat, monet* it says what was ordered. Ask: is *ut* completing a verb of telling, or explaining an action?"
+     "la": "Māter fīliō imperat nē in viā lūdat.",
+     "en": "The mother orders her son not to play in the street.",
+     "focus": "nē … lūdat"
     }
-  ],
-  "more": [
-    {
-      "type": "p",
-      "text": "The learner's notes (week 27) call this the substantive subjunctive: a noun clause for a wish, command or tendency rather than a fact. Their examples: *dux imperat ut mīlitēs sequantur*; *volō ut omnēs veniāmus*; *mōs est Rōmānīs ut ad cēnam discumbant*; and *accidit ut …* / *fit ut …* (it happens that …)."
-    },
-    {
-      "type": "p",
-      "text": "The clause verb is present subjunctive after a present main verb and imperfect after a past one (*rogāvit ut nārrāret*); that pairing is the sequence of tenses. Two verbs of ordering skip *ut*: *iubeō* and *vetō* take the accusative + infinitive (*iubet eum venīre*). Verbs of saying and thinking never take *ut*; they take the accusative + infinitive (*dīcit eum venīre*). A second negative in the clause is *nēve*: *cūrā nē ovēs aberrent* — and *nēve silvam petant*."
-    }
-  ],
-  "sources": [
-    "notes p101–102",
-    "Ørberg cap. XXVII Grammatica Latina",
-    "A&G §563"
-  ]
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "purpose-clause",
+   "text": "After a verb of doing the same *ut* + subjunctive is **ut / ne + subjunctive (the 'in order to' clause: venit ut videat = comes to see)** — it says why. After *imperat, rogat, monet* it says what was ordered. Ask: is *ut* completing a verb of telling, or explaining an action?"
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "The learner's notes (week 27) call this the substantive subjunctive: a noun clause for a wish, command or tendency rather than a fact. Their examples: *dux imperat ut mīlitēs sequantur*; *volō ut omnēs veniāmus*; *mōs est Rōmānīs ut ad cēnam discumbant*; and *accidit ut …* / *fit ut …* (it happens that …)."
+  },
+  {
+   "type": "p",
+   "text": "The clause verb is present subjunctive after a present main verb and imperfect after a past one (*rogāvit ut nārrāret*); that pairing is the sequence of tenses. Two verbs of ordering skip *ut*: *iubeō* and *vetō* take the accusative + infinitive (*iubet eum venīre*). Verbs of saying and thinking never take *ut*; they take the accusative + infinitive (*dīcit eum venīre*). A second negative in the clause is *nēve*: *cūrā nē ovēs aberrent* — and *nēve silvam petant*."
+  }
+ ],
+ "sources": [
+  "notes p101–102",
+  "Ørberg cap. XXVII Grammatica Latina",
+  "A&G §563"
+ ],
+ "teach": [
+  {
+   "n": 1,
+   "title": "Reporting an order",
+   "say": "When a sentence tells you what somebody was told to do, the order itself becomes a clause: **ut / nē + subjunctive (the form for what someone asks or orders someone to do)**. *Dominus servō imperat ut labōret* — the master orders the slave to work. English uses a plain 'to'; Latin uses *ut* and puts the verb into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). The *ut* clause is the words that were said.",
+   "show": {
+    "kind": "sentence",
+    "id": "ic-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "ic-02",
+    "ask": "Tap the word that carries the order."
+   }
+  },
+  {
+   "n": 2,
+   "title": "ut and a subjunctive, never an infinitive",
+   "say": "The clause opens with **ut** and its verb is always subjunctive. Latin does not say *monet tacēre*; it says *monet ut taceat*. When you read it, translate *ut* as nothing at all — 'warns him to keep quiet' — and turn the subjunctive into the plain English 'to' form. When you write it, the English 'to' is your signal to put in *ut* and change the verb.",
+   "show": {
+    "kind": "sentence",
+    "id": "ic-03"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "ic-04",
+    "ask": "Fill the blank with the form of nārrō that ut needs here."
+   }
+  },
+  {
+   "n": 3,
+   "title": "nē for what must not happen",
+   "say": "A negative order swaps **nē** in for *ut*: *monet nē currant*, 'warns them not to run'. Nothing else moves — same lead-in verb, same subjunctive, same word order. If you ever find yourself writing *ut nōn* after a verb of ordering or asking, it should have been *nē*.",
+   "show": {
+    "kind": "sentence",
+    "id": "ic-05"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "ic-06",
+    "ask": "Fill the blank with the form of verberō that nē needs here."
+   }
+  },
+  {
+   "n": 4,
+   "title": "Which verbs set it off",
+   "say": "These clauses hang on one family of verbs: *imperō* (order), *ōrō* (beg), *moneō* (warn), *cūrō* (see to it), *postulō* (demand), *volō* (want). One common verb refuses the pattern: *iubeō* (order) takes a plain infinitive instead — *Dāvum venīre iubet*, 'he orders Davus to come'. Meet *ut* or *nē* after any of the first family and the clause is the order itself.",
+   "show": {
+    "kind": "sentence",
+    "id": "ic-07"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "ic-08",
+    "ask": "What is pāreat doing here?"
+   }
+  },
+  {
+   "n": 5,
+   "title": "Not a purpose clause",
+   "say": "*ut* + subjunctive also says why something is done — **ut / nē + subjunctive (the 'in order to' clause: venit ut videat = comes to see)**. What tells them apart is the verb in front. After a verb of telling (*imperat, ōrat, monet*) the *ut* clause is what was said; after any other verb it is the reason for doing it. Ask: is this clause completing a verb of telling, or explaining an action?",
+   "show": {
+    "kind": "sentence",
+    "id": "ic-09"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "ic-10",
+    "ask": "What is bibat here — the order itself, or the doctor's reason?"
+   }
+  }
+ ]
 }

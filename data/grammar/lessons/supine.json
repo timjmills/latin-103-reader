@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "To say what you go *to do*, Latin has **the supine (the special purpose form after a verb of going: dormitum it = goes to sleep)**: the participle stem with -um, used after *īre*, *venīre*, *mittere* and other verbs of moving: *ambulātum exit* — he goes out to walk; *salūtātum veniō* — I come to greet you. It can take an object like a verb: *amīcum salūtātum īvit*. Latin name: *supīnum*."
+      "text": "To say what you go *to do*, Latin has **the supine (the special purpose form after a verb of going: dormītum it = goes to sleep)**: the participle stem with -um, used after *īre*, *venīre*, *mittere* and other verbs of moving: *ambulātum exit* — he goes out to walk; *salūtātum veniō* — I come to greet you. It can take an object like a verb: *amīcum salūtātum īvit*. Latin name: *supīnum*."
     },
     {
       "type": "english",
@@ -39,7 +39,89 @@
     {
       "type": "confusion",
       "with": "perfect-passive-participle",
-      "text": "*Salūtātum* is also the neuter of **the perfect participle (the 'having been done' word: laudatus = praised)**. Ask what it is doing: after a verb of going with no noun to agree with, it is the supine ('to greet'); agreeing with a noun (*oppidum salūtātum*) it is the participle."
+      "text": "*Salūtātum* is also the neuter of **the perfect participle (the 'having been done' word: laudātus = praised)**. Ask what it is doing: after a verb of going with no noun to agree with, it is the supine ('to greet'); agreeing with a noun (*oppidum salūtātum*) it is the participle."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Latin keeps one special form for saying what you go somewhere to do: **the supine (the special purpose form after a verb of going: dormītum it = goes to sleep)**. It answers that one question and no other: *Iūlius in cubiculum it dormītum* — Julius goes into the bedroom to sleep. It turns up only when somebody is going, coming, or being sent somewhere. There is a second supine as well, ending in *-ū*, and it does something else; that is step 3.",
+      "show": {
+        "kind": "sentence",
+        "id": "su-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "su-02",
+        "ask": "Which word says what the boys are going into the garden for?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "How it is built, and that it never changes",
+      "say": "You already have it: it is the fourth dictionary form as it stands. *dormītum*, *lūsum*, *salūtātum*, *ēmptum*, *petītum*. It is not an adjective and agrees with nobody, so it looks the same whoever goes, and however many of them go.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "supine.acc"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "supine.acc"
+        ],
+        "ask": "Fill in the -um supine."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The other supine, in -ū",
+      "say": "There is a second form, ending in *-ū*, and it does something else: it finishes an adjective. *facile dictū*, easy to say; *difficile factū*, difficult to do. Like the first it never changes, not even beside a plural: *verba turpia dictū*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "supine.abl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "supine.abl"
+        ],
+        "ask": "Fill in the -ū supine."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Supine, or participle?",
+      "say": "The *-um* supine and the neuter perfect participle are spelt alike, and that is the one real trap here. Ask what the word belongs to. A participle belongs to a noun and matches it: *librum lēctum*. A supine belongs to a verb of going and matches nothing at all: *vēnit dominum audītum*.",
+      "show": {
+        "kind": "sentence",
+        "id": "su-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "su-12",
+        "ask": "*quaesītum* — is it describing a noun, or saying why the boy left?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Using it",
+      "say": "The supine keeps whatever the verb governs, so it can bring its own object along: *aquam petītum*, *flōrēs carptum*, *patrem quaesītum*. Put the object first and the supine last, and the phrase reads as one piece of English: 'to fetch water'.",
+      "show": {
+        "kind": "sentence",
+        "id": "su-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "su-14",
+        "ask": "*vocō, vocāre, vocāvī, vocātum*. Say what Aemilia goes out to do."
+      }
     }
   ],
   "more": [

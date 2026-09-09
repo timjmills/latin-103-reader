@@ -1,0 +1,188 @@
+{
+ "skill": "prosody-scansion",
+ "chapter": 34,
+ "lesson_only": true,
+ "note": "Prosody is taught, not drilled: the skill's only kind is `recognise`, and there is nothing to parse or fill in. So this file holds four illustrative lines of our own verse rather than the twelve practice sentences a drillable skill gets, and each carries its scansion in `scan`. Every word is inside the cumulative vocabulary to chapter 34 or a name of the book's cast; because the lines are ours and not the poets', a learner may be shown a whole line marked long and short without quoting anyone.",
+ "sentences": [
+  {
+   "id": "prs-01",
+   "la": "Laetae nunc caelum spectant sub lūce puellae.",
+   "en": "Happy girls are looking at the sky now in the light.",
+   "words": 7,
+   "focus": "Laetae",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Lae tae | nunc cae | lum spec | tant sub | lū ce pu | el lae  —  – – | – – | – – | – – | – ⏑ ⏑ | – –",
+   "note": "An illustrative hexameter of our own, not a practice sentence. Both syllables of Laetae are long because both hold a diphthong: ae. So are cae- in caelum and -lae in puellae; lū- is long because its vowel is long.",
+   "gloss": [
+    {
+     "w": "Laetae",
+     "m": "happy"
+    },
+    {
+     "w": "nunc",
+     "m": "now"
+    },
+    {
+     "w": "caelum",
+     "m": "the sky"
+    },
+    {
+     "w": "spectant",
+     "m": "they are looking at"
+    },
+    {
+     "w": "sub",
+     "m": "under, in"
+    },
+    {
+     "w": "lūce",
+     "m": "the light"
+    },
+    {
+     "w": "puellae",
+     "m": "the girls"
+    }
+   ]
+  },
+  {
+   "id": "prs-02",
+   "la": "Ipse pater noster nostrum servābat amīcum.",
+   "en": "Our own father was watching over our friend.",
+   "words": 6,
+   "focus": "noster",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Ip se pa | ter nos | ter nos | trum ser | vā ba ta | mī cum  —  – ⏑ ⏑ | – – | – – | – – | – ⏑ ⏑ | – –",
+   "note": "An illustrative hexameter of our own, not a practice sentence. The o of noster is a short vowel, yet nos- is a long syllable, because s and t follow it. So are Ip-, -ter, -trum and ser-.",
+   "gloss": [
+    {
+     "w": "Ipse",
+     "m": "himself, his very own"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "noster",
+     "m": "our"
+    },
+    {
+     "w": "nostrum",
+     "m": "our"
+    },
+    {
+     "w": "servābat",
+     "m": "was watching over"
+    },
+    {
+     "w": "amīcum",
+     "m": "friend"
+    }
+   ]
+  },
+  {
+   "id": "prs-03",
+   "la": "Iūlia et Aemilia stant nunc in lītore sōlae.",
+   "en": "Julia and Aemilia are standing alone on the shore now.",
+   "words": 8,
+   "focus": "Iūlia",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Iūli(a) et | Aemili | a stant | nunc in | lī to re | sō lae  —  – ⏑ ⏑ | – ⏑ ⏑ | – – | – – | – ⏑ ⏑ | – –",
+   "note": "An illustrative hexameter of our own, not a practice sentence. The final -a of Iūlia is swallowed before the e of et, so the line has fifteen syllables to read, not the sixteen it prints.",
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "stant",
+     "m": "are standing"
+    },
+    {
+     "w": "nunc",
+     "m": "now"
+    },
+    {
+     "w": "in",
+     "m": "on"
+    },
+    {
+     "w": "lītore",
+     "m": "the shore"
+    },
+    {
+     "w": "sōlae",
+     "m": "alone"
+    }
+   ]
+  },
+  {
+   "id": "prs-04",
+   "la": "Nunc taceō, quia nōn habeō quod dīcere possum.",
+   "en": "Now I say nothing, because I have nothing I can say.",
+   "words": 8,
+   "focus": "dīcere",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Nunc ta ce | ō qui a | nōn ha be | ō quod | dī ce re | pos sum  —  – ⏑ ⏑ | – ⏑ ⏑ | – ⏑ ⏑ | – – | – ⏑ ⏑ | – –",
+   "note": "An illustrative hexameter of our own, not a practice sentence. Every rule at once: -ō is long by its own vowel, pos- is long because two consonants follow it, and qui- and -a are both short.",
+   "gloss": [
+    {
+     "w": "Nunc",
+     "m": "now"
+    },
+    {
+     "w": "taceō",
+     "m": "I keep quiet"
+    },
+    {
+     "w": "quia",
+     "m": "because"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "habeō",
+     "m": "I have"
+    },
+    {
+     "w": "quod",
+     "m": "what, anything that"
+    },
+    {
+     "w": "dīcere",
+     "m": "to say"
+    },
+    {
+     "w": "possum",
+     "m": "I am able"
+    }
+   ]
+  }
+ ]
+}

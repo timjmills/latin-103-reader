@@ -1,5 +1,100 @@
 {
   "skill": "dative-verbs",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "A small group of common verbs put the person they act on into **the dative (the 'to/for' form)**, where English simply says 'obey him' or 'harm him'. The Latin verb really means 'be obedient *to*', 'do harm *to*', so a 'to' word follows: *servī dominō pārent*. There is no accusative (the object form) in the sentence at all.",
+      "show": {
+        "kind": "sentence",
+        "id": "dvb-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dvb-02",
+        "ask": "Tap the word the verb pārent is acting on."
+      }
+    },
+    {
+      "n": 2,
+      "title": "The ending to look for: -ō",
+      "say": "Many of the nouns you will meet with these verbs are second declension, and their dative singular ends in **-ō**: *servus → servō*, *puer → puerō*, *dominus → dominō*. The ablative singular is spelled the same, so it is the verb that tells you which you have: after *nocet*, *pāret* or *ignōscit* it is the dative.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "dat.sg"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dvb-04",
+        "ask": "Put servus into the form ignōscit needs."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The same case on a first declension noun: -ae",
+      "say": "First declension nouns make the dative singular in **-ae**: *puella → puellae*, *domina → dominae*. That spelling is also the genitive (the 'of' form) and the nominative plural, so once again the verb decides: *puellae placet* is 'it pleases the girl', not 'of the girl'.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "reveal": [
+          "dat.sg"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dvb-06",
+        "ask": "Put domina into the form pāret needs."
+      }
+    },
+    {
+      "n": 4,
+      "title": "mihi, tibi, sibi",
+      "say": "More often than not it is a person, so you meet a pronoun: *mihi* (to me), *tibi* (to you), *sibi* (to himself or herself), *nōbīs*, *vōbīs*. These are the dative forms of *ego*, *tū* and the reflexive, and they are the commonest thing these verbs take: *mihi crēdit*, *tibi nocēbit*, *sibi placet*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "ego",
+        "reveal": [
+          "dat.sg"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "dvb-07",
+        "ask": "mihi — which case is it?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Which verbs — and the neighbours that take the accusative",
+      "say": "The list is short enough to learn: *pāreō* obey, *placeō* please, *noceō* harm, *crēdō* believe, *persuādeō* persuade, *ignōscō* forgive, *serviō* serve, *faveō* favour, *invideō* envy, *resistō* resist, *studeō* be keen on, *nūbō* marry, and compounds of *sum* like *adsum*. Near neighbours take the accusative anyway: *iubeō tē* but *imperō tibi*; *iuvō* and *adiuvō* help. Learn each verb with its case, as one item.",
+      "show": {
+        "kind": "sentence",
+        "id": "dvb-12"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dvb-13",
+        "ask": "One of these two words is the dative its verb demands, the other a plain accusative. Tap the dative."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Two impersonal verbs work the same way and are worth having ready: *licet mihi* — I am allowed, and *libet mihi* — I feel like it. Both put the person in the dative and leave the doing to an infinitive (the plain 'to' form).",
+      "show": {
+        "kind": "sentence",
+        "id": "dvb-14"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dvb-15",
+        "ask": "Put puer into the form licet needs — the sentence is about more than one boy."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

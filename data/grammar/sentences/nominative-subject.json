@@ -1,0 +1,553 @@
+{
+ "skill": "nominative-subject",
+ "chapter": 1,
+ "sentences": [
+  {
+   "id": "ns-01",
+   "la": "Nīlus fluvius magnus in Āfricā est.",
+   "en": "The Nile is a big river in Africa.",
+   "words": 6,
+   "focus": "Nīlus",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nīlus",
+     "m": "the Nile"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Āfricā",
+     "m": "Africa"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ns-02",
+   "la": "Dānuvius fluvius magnus in Germāniā est.",
+   "en": "The Danube is a big river in Germany.",
+   "words": 6,
+   "focus": "Dānuvius",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Dānuvius",
+     "m": "the Danube"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Germāniā",
+     "m": "Germany"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ns-03",
+   "la": "Sicilia īnsula magna in Eurōpā est.",
+   "en": "Sicily is a big island in Europe.",
+   "words": 6,
+   "focus": "Sicilia",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sicilia",
+     "m": "Sicily"
+    },
+    {
+     "w": "īnsula",
+     "m": "island"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Eurōpā",
+     "m": "Europe"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ns-04",
+   "la": "Multae īnsulae in Graeciā et in Asiā sunt.",
+   "en": "There are many islands in Greece and in Asia.",
+   "words": 8,
+   "focus": "īnsulae",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Multae",
+     "m": "many"
+    },
+    {
+     "w": "īnsulae",
+     "m": "islands"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Graeciā",
+     "m": "Greece"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Asiā",
+     "m": "Asia"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ns-05",
+   "la": "Fluvius magnus in prōvinciā Rōmānā est.",
+   "en": "A big river is in a Roman province.",
+   "words": 6,
+   "focus": "Fluvius",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Fluvius",
+     "m": "a river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "prōvinciā",
+     "m": "province"
+    },
+    {
+     "w": "Rōmānā",
+     "m": "Roman"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ns-06",
+   "la": "Fluviī magnī in Germāniā et in Galliā sunt.",
+   "en": "Big rivers are in Germany and in Gaul.",
+   "words": 8,
+   "focus": "Fluviī",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Fluviī",
+     "m": "rivers"
+    },
+    {
+     "w": "magnī",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Germāniā",
+     "m": "Germany"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Galliā",
+     "m": "Gaul"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ns-07",
+   "la": "Vocābulum Latīnum in capitulō prīmō est.",
+   "en": "A Latin word is in the first chapter.",
+   "words": 6,
+   "focus": "Vocābulum",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Vocābulum",
+     "m": "a word"
+    },
+    {
+     "w": "Latīnum",
+     "m": "Latin"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "capitulō",
+     "m": "chapter"
+    },
+    {
+     "w": "prīmō",
+     "m": "first"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ns-08",
+   "la": "Oppida Rōmāna in Hispāniā quoque sunt.",
+   "en": "There are Roman towns in Spain too.",
+   "words": 6,
+   "focus": "Oppida",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Oppida",
+     "m": "towns"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Hispāniā",
+     "m": "Spain"
+    },
+    {
+     "w": "quoque",
+     "m": "also"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ns-09",
+   "la": "Brundisium et Tūsculum oppida Rōmāna sunt.",
+   "en": "Brundisium and Tusculum are Roman towns.",
+   "words": 6,
+   "focus": "oppida",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Brundisium",
+     "m": "Brundisium"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Tūsculum",
+     "m": "Tusculum"
+    },
+    {
+     "w": "oppida",
+     "m": "towns"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ns-10",
+   "la": "Aegyptus prōvincia Rōmāna in Āfricā est.",
+   "en": "Egypt is a Roman province in Africa.",
+   "words": 6,
+   "focus": "prōvincia",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aegyptus",
+     "m": "Egypt"
+    },
+    {
+     "w": "prōvincia",
+     "m": "a province"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Āfricā",
+     "m": "Africa"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ns-11",
+   "la": "Īnsula magna est, sed oppida parva sunt.",
+   "en": "The island is big, but the towns are small.",
+   "words": 7,
+   "focus": "oppida",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Īnsula",
+     "m": "an island"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "oppida",
+     "m": "towns"
+    },
+    {
+     "w": "parva",
+     "m": "small"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ns-12",
+   "la": "Vocābula Latīna in capitulō prīmō sunt.",
+   "en": "Latin words are in the first chapter.",
+   "words": 6,
+   "focus": "Vocābula",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Vocābula",
+     "m": "words"
+    },
+    {
+     "w": "Latīna",
+     "m": "Latin"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "capitulō",
+     "m": "chapter"
+    },
+    {
+     "w": "prīmō",
+     "m": "first"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ns-13",
+   "la": "Prōvincia magna est, et multa sunt oppida.",
+   "en": "The province is big, and the towns are many.",
+   "words": 7,
+   "focus": "Prōvincia",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Prōvincia",
+     "m": "a province"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "multa",
+     "m": "many"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    },
+    {
+     "w": "oppida",
+     "m": "towns"
+    }
+   ]
+  }
+ ]
+}

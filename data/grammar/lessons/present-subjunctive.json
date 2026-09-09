@@ -57,5 +57,112 @@
     "notes p96, 99–100",
     "Ørberg cap. XXVII Grammatica Latina",
     "A&G §179"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the form is for",
+      "say": "For a wish, a purpose, or what one person tells another to do, the verb changes shape into **the present subjunctive (the 'may / let' form: veniat = let him come, may he come)**. *Dominus servō imperat ut intret* — the master orders the slave to come in. *Ut* ('that') usually stands in front of it, or *nē* for 'that … not'.",
+      "show": {
+        "kind": "sentence",
+        "id": "ps-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ps-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "First conjugation: -a- becomes -e-",
+      "say": "A first-conjugation verb swaps its *-a-* for *-e-*: *portat → portet*, *clāmat → clāmet*, *nārrat → nārret*. Everything after that vowel is the ordinary set of person endings, *-m, -s, -t, -mus, -tis, -nt*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "portō",
+        "reveal": [
+          "pres.subj.act.3sg"
+        ],
+        "say": "portet — the -a- of portat has turned into -e-"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "portō",
+        "cells": [
+          "pres.subj.act.3sg"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "Every other conjugation: slide an -a- in",
+      "say": "The second, third and fourth conjugations put an *-a-* in before the ending instead: *tacet → taceat*, *claudit → claudat*, *audit → audiat*, *lūdunt → lūdant*. The *-iō* verbs of the third keep their *i*: *facit → faciat*, *capit → capiat*. One vowel is the entire change, in both numbers and all three persons.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj2",
+        "word": "taceō",
+        "reveal": [
+          "pres.subj.act.3sg"
+        ],
+        "say": "taceat — the -a- slides in in front of the ending"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3io",
+        "word": "capiō",
+        "cells": [
+          "pres.subj.act.3sg"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "The verbs that go their own way",
+      "say": "*Sum* and its relatives take an *-i-* instead: *sit*, *possit*, *velit*, *nōlit*. *Eō* has *eat*, *ferō* has *ferat*, *fīō* has *fīat*. *Pater imperat ut fīlius Rōmam eat* — the father orders his son to go to Rome.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "word": "sum",
+        "reveal": [
+          "pres.subj.act.3sg"
+        ],
+        "say": "sit — sum takes -i- where the others take -e- or -a-"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "sum",
+        "word": "sum",
+        "cells": [
+          "pres.subj.act.3sg"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the future",
+      "say": "In the third and fourth conjugations the future carries *-e-* exactly where the subjunctive carries *-a-*: *scrībet*, he will write; *scrībat*, that he write. In the first conjugation the two are further apart — *labōrābit* against *labōret* — because the future there has *-bit*. Only the 'I' form is shared: *scrībam* is both 'I shall write' and 'that I write', and the sentence decides.",
+      "show": {
+        "kind": "sentence",
+        "id": "ps-12"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ps-13"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it with no ut at all",
+      "say": "The same form stands alone for a wish or for an order given about someone else: *Veniat Mārcus!*, let Marcus come; *Deī nōs iuvent!*, may the gods help us. The passive keeps the same vowel and adds the passive endings: *claudātur*, that it be shut.",
+      "show": {
+        "kind": "sentence",
+        "id": "ps-14"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ps-16"
+      }
+    }
   ]
 }

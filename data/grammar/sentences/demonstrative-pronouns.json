@@ -1,0 +1,554 @@
+{
+  "skill": "demonstrative-pronouns",
+  "chapter": 8,
+  "sentences": [
+    {
+      "id": "dpr-01",
+      "la": "Ecce ānulus! Is pulcher est.",
+      "en": "Look, a ring! It is beautiful.",
+      "words": 5,
+      "focus": "Is",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ecce",
+          "m": "look!"
+        },
+        {
+          "w": "ānulus",
+          "m": "a ring"
+        },
+        {
+          "w": "Is",
+          "m": "it"
+        },
+        {
+          "w": "pulcher",
+          "m": "beautiful"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpr-02",
+      "la": "Ecce gemma! Ea magna est.",
+      "en": "Look, a jewel! It is big.",
+      "words": 5,
+      "focus": "Ea",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ecce",
+          "m": "look!"
+        },
+        {
+          "w": "gemma",
+          "m": "a jewel"
+        },
+        {
+          "w": "Ea",
+          "m": "it"
+        },
+        {
+          "w": "magna",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpr-03",
+      "la": "Ecce ōrnāmentum! Id parvum est.",
+      "en": "Look, an ornament! It is small.",
+      "words": 5,
+      "focus": "Id",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ecce",
+          "m": "look!"
+        },
+        {
+          "w": "ōrnāmentum",
+          "m": "an ornament"
+        },
+        {
+          "w": "Id",
+          "m": "it"
+        },
+        {
+          "w": "parvum",
+          "m": "small"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpr-04",
+      "la": "Mārcus Quīntum videt et eum vocat.",
+      "en": "Marcus sees Quintus and calls him.",
+      "words": 6,
+      "focus": "eum",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "Quīntum",
+          "m": "Quintus"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "eum",
+          "m": "him"
+        },
+        {
+          "w": "vocat",
+          "m": "calls"
+        }
+      ]
+    },
+    {
+      "id": "dpr-05",
+      "la": "Iūlia rosam carpit et eam tenet.",
+      "en": "Julia picks a rose and holds it.",
+      "words": 6,
+      "focus": "eam",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "rosam",
+          "m": "a rose"
+        },
+        {
+          "w": "carpit",
+          "m": "picks"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "eam",
+          "m": "it"
+        },
+        {
+          "w": "tenet",
+          "m": "holds"
+        }
+      ]
+    },
+    {
+      "id": "dpr-06",
+      "la": "Syra puerum videt: is dormit.",
+      "en": "Syra sees the boy: he is asleep.",
+      "words": 5,
+      "focus": "is",
+      "step": 1,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "puerum",
+          "m": "the boy"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        },
+        {
+          "w": "is",
+          "m": "he"
+        },
+        {
+          "w": "dormit",
+          "m": "is asleep"
+        }
+      ]
+    },
+    {
+      "id": "dpr-07",
+      "la": "Tabernārius gemmās habet; eās vēndit.",
+      "en": "The shopkeeper has jewels; he sells them.",
+      "words": 5,
+      "focus": "eās",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Tabernārius",
+          "m": "the shopkeeper"
+        },
+        {
+          "w": "gemmās",
+          "m": "jewels"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        },
+        {
+          "w": "eās",
+          "m": "them"
+        },
+        {
+          "w": "vēndit",
+          "m": "sells"
+        }
+      ]
+    },
+    {
+      "id": "dpr-08",
+      "la": "Puella laeta est: Syra eī rosam dat.",
+      "en": "The girl is happy: Syra gives her a rose.",
+      "words": 7,
+      "focus": "eī",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "laeta",
+          "m": "happy"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "eī",
+          "m": "to her"
+        },
+        {
+          "w": "rosam",
+          "m": "a rose"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dpr-09",
+      "la": "Mārcus Iūlium videt; sacculus eius plēnus est.",
+      "en": "Marcus sees Julius; his purse is full.",
+      "words": 7,
+      "focus": "eius",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "Iūlium",
+          "m": "Julius"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        },
+        {
+          "w": "sacculus",
+          "m": "the purse"
+        },
+        {
+          "w": "eius",
+          "m": "his"
+        },
+        {
+          "w": "plēnus",
+          "m": "full"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpr-10",
+      "la": "Servī veniunt; eōs dominus vocat.",
+      "en": "The slaves are coming; the master calls them.",
+      "words": 5,
+      "focus": "eōs",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servī",
+          "m": "the slaves"
+        },
+        {
+          "w": "veniunt",
+          "m": "are coming"
+        },
+        {
+          "w": "eōs",
+          "m": "them"
+        },
+        {
+          "w": "dominus",
+          "m": "the master"
+        },
+        {
+          "w": "vocat",
+          "m": "calls"
+        }
+      ]
+    },
+    {
+      "id": "dpr-11",
+      "la": "Ānulī pulchrī sunt; hic magnus est.",
+      "en": "The rings are beautiful; this one is big.",
+      "words": 6,
+      "focus": "hic",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ānulī",
+          "m": "the rings"
+        },
+        {
+          "w": "pulchrī",
+          "m": "beautiful"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "hic",
+          "m": "this one"
+        },
+        {
+          "w": "magnus",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dpr-12",
+      "la": "Hic servus improbus est, ille probus.",
+      "en": "This slave is bad, that one good.",
+      "words": 6,
+      "focus": "ille",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "servus",
+          "m": "slave"
+        },
+        {
+          "w": "improbus",
+          "m": "bad"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "ille",
+          "m": "that one"
+        },
+        {
+          "w": "probus",
+          "m": "good"
+        }
+      ]
+    },
+    {
+      "id": "dpr-13",
+      "la": "Illa gemma magna est; illam Lȳdia emit.",
+      "en": "That jewel is big; Lydia buys it.",
+      "words": 7,
+      "focus": "illam",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Illa",
+          "m": "that"
+        },
+        {
+          "w": "gemma",
+          "m": "a jewel"
+        },
+        {
+          "w": "magna",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "illam",
+          "m": "it"
+        },
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "emit",
+          "m": "buys"
+        }
+      ]
+    },
+    {
+      "id": "dpr-14",
+      "la": "Ōrnāmenta pulchra sunt; ea Lȳdia emit.",
+      "en": "The ornaments are beautiful; Lydia buys them.",
+      "words": 6,
+      "focus": "ea",
+      "step": 2,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ōrnāmenta",
+          "m": "the ornaments"
+        },
+        {
+          "w": "pulchra",
+          "m": "beautiful"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "ea",
+          "m": "them"
+        },
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "emit",
+          "m": "buys"
+        }
+      ]
+    }
+  ]
+}

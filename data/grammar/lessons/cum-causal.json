@@ -1,5 +1,91 @@
 {
   "skill": "cum-causal",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Latin can put **cum** in front of a verb in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do), and the clause then gives the *reason* for the rest of the sentence. That is **cum + subjunctive meaning 'since' (or, with tamen, 'although')**. In *Cum aeger sim, in cubiculō maneō* the cum clause says why I stay in the bedroom: because I am ill. Read 'since' for cum and see whether the sentence makes sense.",
+      "show": {
+        "kind": "sentence",
+        "id": "cumc-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "cumc-02",
+        "ask": "Does this cum clause tell you when the boys keep quiet, or why?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The mood is the tell-tale",
+      "say": "Plain *cum* with an indicative verb (the everyday statement form) means 'when' or 'whenever'. Put that verb into the subjunctive and *cum* can give the reason instead. Look at the one verb inside the clause: *verberat* is indicative, 'he is beating'; *verberet* is subjunctive, and the clause becomes 'since he is beating'. In a story about the past the same subjunctive *cum* is the 'when' of chapter 28; with a present main verb, as here, it is the reason.",
+      "show": {
+        "kind": "sentence",
+        "id": "cumc-03"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "cumc-04",
+        "ask": "fugiat is subjunctive, not fugit. What does that make the cum clause?"
+      }
+    },
+    {
+      "n": 3,
+      "title": "Not the preposition cum",
+      "say": "The other *cum* is a preposition and means 'with'. Telling them apart needs no grammar: the preposition is followed by a noun in the ablative (the 'by/with/from' form) and owns no verb — *cum Aemiliā*, *cum Dāvō*. The causal *cum* owns a verb, and that verb is subjunctive. Both can stand in the same sentence.",
+      "show": {
+        "kind": "sentence",
+        "id": "cumc-05"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "cumc-06",
+        "ask": "Is this cum the preposition 'with', or the one that means 'since'?"
+      }
+    },
+    {
+      "n": 4,
+      "title": "With tamen it means 'although'",
+      "say": "If *tamen* ('nevertheless') stands in the other clause, the same *cum* clause stops being a reason and becomes a concession: you grant something and then go against it. *Cum Iūlia parva sit, tamen fortis est* — although Julia is small, she is nevertheless brave. The cum clause itself is built exactly as before; *tamen* does the work.",
+      "show": {
+        "kind": "sentence",
+        "id": "cumc-07"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "cumc-08",
+        "ask": "tamen stands in the main clause: does cum mean 'since' here, or 'although'?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Present now, imperfect for the past",
+      "say": "The tense inside the cum clause follows the main verb. A present main verb takes the present subjunctive: *plōrat, cum pater absit*. A past main verb takes the imperfect subjunctive (the '-rem, -ret' subjunctive, built on the infinitive): *plōrābat, cum pater abesset*. In past time this is also the shape of the story *cum* of chapter 28, so ask what the clause is doing: if it answers *why*, read 'since'; if it only says *when*, read 'while'.",
+      "show": {
+        "kind": "sentence",
+        "id": "cumc-10"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "cumc-11",
+        "ask": "The main verb tacēbant is past. Put timeō into the tense the cum clause needs."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Say one yourself",
+      "say": "Now add a reason to a statement. Keep the main clause as it is, write *cum*, then the subject, then its verb in the subjunctive — present if the main verb is present. *Syra Iūliam amat* plus a reason gives *Syra Iūliam amat, cum bona puella sit*.",
+      "show": {
+        "kind": "sentence",
+        "id": "cumc-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "cumc-14",
+        "ask": "Complete the reason: put aegrōtō into the present subjunctive."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

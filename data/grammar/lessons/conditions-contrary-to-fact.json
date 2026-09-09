@@ -1,5 +1,91 @@
 {
   "skill": "conditions-contrary-to-fact",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "To talk about what is not so, Latin uses **the contrary-to-fact condition (sī + subjunctive: 'if I were …, I would …'; 'if I had …, I would have …')**. Both halves take the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) — the *sī* half and the main half alike. Latin has no word for 'would': the subjunctive does that work by itself. In ccf-01 the speaker has no money and buys nothing.",
+      "show": {
+        "kind": "sentence",
+        "id": "ccf-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ccf-02",
+        "ask": "Both verbs here are subjunctive. Tap the one that belongs to the sī half."
+      }
+    },
+    {
+      "n": 2,
+      "title": "Not so now: the imperfect subjunctive in both halves",
+      "say": "For something untrue *at this moment*, both verbs go into the imperfect subjunctive. Its endings are the infinitive plus **-m, -s, -t, -mus, -tis, -nt**: *habē-rem, habē-rēs, habē-ret*. It does not mean past time here — stepping back a tense is simply how Latin says 'not really', exactly as English says 'if I *were* rich'.",
+      "show": {
+        "kind": "sentence",
+        "id": "ccf-03"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ccf-04",
+        "ask": "essem — which tense and mood is it?"
+      }
+    },
+    {
+      "n": 3,
+      "title": "Not so back then: the pluperfect subjunctive in both halves",
+      "say": "For something that did not happen and is now past changing, both verbs go into the pluperfect subjunctive, built on the perfect infinitive with **-issem, -issēs, -isset**. The *sī* half says what did not happen; the main half says what therefore did not follow.",
+      "show": {
+        "kind": "sentence",
+        "id": "ccf-06"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ccf-07",
+        "ask": "mānsisset — which tense is it?"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Each half is timed on its own",
+      "say": "The two halves need not match: each picks its tense by its own time. *Sī tum didicissēs, nunc sapiēns essēs* — the learning did not happen back then (pluperfect), so the wisdom is missing now (imperfect). *Nisi* is just *sī* with the 'not' built in.",
+      "show": {
+        "kind": "sentence",
+        "id": "ccf-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ccf-10",
+        "ask": "esset — which tense is it, and so is that half about now or about the past?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from a real condition",
+      "say": "A *sī* clause that keeps the indicative (the plain statement form) claims nothing about being untrue: *sī adest, gaudeō* — if he is here, I am glad; *sī vēneris, gaudēbō* uses the future perfect (the 'will have done' tense) for a real future. The subjunctive is the signal that the speaker is saying it is *not* so: *sī adesset* means he is not here.",
+      "show": {
+        "kind": "sentence",
+        "id": "ccf-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ccf-12",
+        "ask": "fuissētis — is it indicative or subjunctive?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "To build one, first decide *when* the unreal thing sits. Now? Both halves imperfect subjunctive. Already over? Both halves pluperfect subjunctive. Then put *sī* (or *nisi*) in front of the first half and nothing at all in front of the second: Latin needs no 'then' and no 'would'.",
+      "show": {
+        "kind": "sentence",
+        "id": "ccf-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ccf-14",
+        "ask": "Fill the blank with the pluperfect subjunctive of taceō, first person singular — 'if I had kept quiet, father would not have punished me'."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

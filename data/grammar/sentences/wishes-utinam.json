@@ -1,0 +1,512 @@
+{
+ "skill": "wishes-utinam",
+ "chapter": 32,
+ "sentences": [
+  {
+   "id": "wu-01",
+   "la": "Utinam pater mox domum veniat!",
+   "en": "If only father would come home soon!",
+   "words": 5,
+   "focus": "veniat",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "mox",
+     "m": "soon"
+    },
+    {
+     "w": "domum",
+     "m": "home, to the house"
+    },
+    {
+     "w": "veniat",
+     "m": "may he come"
+    }
+   ]
+  },
+  {
+   "id": "wu-02",
+   "la": "Utinam Mēdus et Lȳdia salvī perveniant!",
+   "en": "If only Medus and Lydia arrive safe!",
+   "words": 6,
+   "focus": "perveniant",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "salvī",
+     "m": "safe (plural)"
+    },
+    {
+     "w": "perveniant",
+     "m": "may they arrive"
+    }
+   ]
+  },
+  {
+   "id": "wu-03",
+   "la": "Utinam magister discipulōs hodiē laudet!",
+   "en": "If only the teacher praises the pupils today!",
+   "words": 5,
+   "focus": "laudet",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "discipulōs",
+     "m": "the pupils"
+    },
+    {
+     "w": "hodiē",
+     "m": "today"
+    },
+    {
+     "w": "laudet",
+     "m": "may he praise"
+    }
+   ]
+  },
+  {
+   "id": "wu-04",
+   "la": "Utinam Iūlius fīliō suō ignōscat!",
+   "en": "If only Julius forgives his son!",
+   "words": 5,
+   "focus": "ignōscat",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "fīliō",
+     "m": "his son (the 'to/for' form)"
+    },
+    {
+     "w": "suō",
+     "m": "his own"
+    },
+    {
+     "w": "ignōscat",
+     "m": "may he forgive"
+    }
+   ]
+  },
+  {
+   "id": "wu-05",
+   "la": "Utinam nauta noster mox redeat!",
+   "en": "If only our sailor comes back soon!",
+   "words": 5,
+   "focus": "redeat",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "nauta",
+     "m": "the sailor"
+    },
+    {
+     "w": "noster",
+     "m": "our"
+    },
+    {
+     "w": "mox",
+     "m": "soon"
+    },
+    {
+     "w": "redeat",
+     "m": "may he come back"
+    }
+   ]
+  },
+  {
+   "id": "wu-06",
+   "la": "Utinam ego nunc Rōmae essem!",
+   "en": "If only I were in Rome now!",
+   "words": 5,
+   "focus": "essem",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "nunc",
+     "m": "now"
+    },
+    {
+     "w": "Rōmae",
+     "m": "in Rome"
+    },
+    {
+     "w": "essem",
+     "m": "I were"
+    }
+   ]
+  },
+  {
+   "id": "wu-07",
+   "la": "Utinam frāter meus mēcum hīc esset!",
+   "en": "If only my brother were here with me!",
+   "words": 6,
+   "focus": "esset",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "frāter",
+     "m": "brother"
+    },
+    {
+     "w": "meus",
+     "m": "my"
+    },
+    {
+     "w": "mēcum",
+     "m": "with me"
+    },
+    {
+     "w": "hīc",
+     "m": "here"
+    },
+    {
+     "w": "esset",
+     "m": "he were"
+    }
+   ]
+  },
+  {
+   "id": "wu-08",
+   "la": "Utinam Mārcus litterās suās bene scrīberet!",
+   "en": "If only Marcus wrote his letters well!",
+   "words": 6,
+   "focus": "scrīberet",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "litterās",
+     "m": "letters (of the alphabet)"
+    },
+    {
+     "w": "suās",
+     "m": "his own"
+    },
+    {
+     "w": "bene",
+     "m": "well"
+    },
+    {
+     "w": "scrīberet",
+     "m": "he were writing"
+    }
+   ]
+  },
+  {
+   "id": "wu-09",
+   "la": "Utinam Quīntus in hortō mānsisset!",
+   "en": "If only Quintus had stayed in the garden!",
+   "words": 5,
+   "focus": "mānsisset",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "mānsisset",
+     "m": "he had stayed"
+    }
+   ]
+  },
+  {
+   "id": "wu-10",
+   "la": "Utinam tū magistrō tuō herī pāruissēs!",
+   "en": "If only you had obeyed your teacher yesterday!",
+   "words": 6,
+   "focus": "pāruissēs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "tū",
+     "m": "you"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher (the 'to/for' form)"
+    },
+    {
+     "w": "tuō",
+     "m": "your"
+    },
+    {
+     "w": "herī",
+     "m": "yesterday"
+    },
+    {
+     "w": "pāruissēs",
+     "m": "you had obeyed"
+    }
+   ]
+  },
+  {
+   "id": "wu-11",
+   "la": "Utinam nē pater tam īrātus sit!",
+   "en": "May father not be so angry!",
+   "words": 6,
+   "focus": "sit",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "nē",
+     "m": "not (the negative in a wish)"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "īrātus",
+     "m": "angry"
+    },
+    {
+     "w": "sit",
+     "m": "may he be"
+    }
+   ]
+  },
+  {
+   "id": "wu-12",
+   "la": "Utinam nē Mēdus pecūniam cēpisset!",
+   "en": "If only Medus had not taken the money!",
+   "words": 5,
+   "focus": "cēpisset",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "nē",
+     "m": "not (the negative in a wish)"
+    },
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "pecūniam",
+     "m": "the money"
+    },
+    {
+     "w": "cēpisset",
+     "m": "he had taken"
+    }
+   ]
+  },
+  {
+   "id": "wu-13",
+   "la": "Utinam Aemilia fīlium suum vidēret!",
+   "en": "If only Aemilia could see her son!",
+   "words": 5,
+   "focus": "vidēret",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "fīlium",
+     "m": "her son"
+    },
+    {
+     "w": "suum",
+     "m": "her own"
+    },
+    {
+     "w": "vidēret",
+     "m": "she were seeing"
+    }
+   ]
+  },
+  {
+   "id": "wu-14",
+   "la": "Utinam Aemilia fīlium suum vīdisset!",
+   "en": "If only Aemilia had seen her son!",
+   "words": 5,
+   "focus": "vīdisset",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "fīlium",
+     "m": "her son"
+    },
+    {
+     "w": "suum",
+     "m": "her own"
+    },
+    {
+     "w": "vīdisset",
+     "m": "she had seen"
+    }
+   ]
+  }
+ ]
+}

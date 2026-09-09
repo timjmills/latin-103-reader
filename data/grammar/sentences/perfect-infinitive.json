@@ -1,0 +1,547 @@
+{
+ "skill": "perfect-infinitive",
+ "chapter": 21,
+ "sentences": [
+  {
+   "id": "pinf-01",
+   "la": "Iūlius dīcit Mārcum ex oppidō vēnisse.",
+   "en": "Julius says that Marcus came from the town.",
+   "words": 6,
+   "focus": "vēnisse",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "Mārcum",
+     "m": "that Marcus"
+    },
+    {
+     "w": "ex",
+     "m": "from"
+    },
+    {
+     "w": "oppidō",
+     "m": "the town"
+    },
+    {
+     "w": "vēnisse",
+     "m": "came (to have come)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-02",
+   "la": "Aemilia putat puerōs bene dormīvisse.",
+   "en": "Aemilia thinks that the boys slept well.",
+   "words": 5,
+   "focus": "dormīvisse",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "putat",
+     "m": "thinks"
+    },
+    {
+     "w": "puerōs",
+     "m": "that the boys"
+    },
+    {
+     "w": "bene",
+     "m": "well"
+    },
+    {
+     "w": "dormīvisse",
+     "m": "slept (to have slept)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-03",
+   "la": "Syra dīcit sē epistulam nōn lēgisse.",
+   "en": "Syra says that she has not read the letter.",
+   "words": 6,
+   "focus": "lēgisse",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "sē",
+     "m": "that she"
+    },
+    {
+     "w": "epistulam",
+     "m": "the letter (object)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "lēgisse",
+     "m": "has read (to have read)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-04",
+   "la": "Mārcus sē nihil fēcisse respondit.",
+   "en": "Marcus answered that he had done nothing.",
+   "words": 5,
+   "focus": "fēcisse",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "sē",
+     "m": "that he"
+    },
+    {
+     "w": "nihil",
+     "m": "nothing"
+    },
+    {
+     "w": "fēcisse",
+     "m": "had done (to have done)"
+    },
+    {
+     "w": "respondit",
+     "m": "answered"
+    }
+   ]
+  },
+  {
+   "id": "pinf-05",
+   "la": "Pater crēdit servōs iam discessisse.",
+   "en": "Father believes that the slaves have already left.",
+   "words": 5,
+   "focus": "discessisse",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pater",
+     "m": "father"
+    },
+    {
+     "w": "crēdit",
+     "m": "believes"
+    },
+    {
+     "w": "servōs",
+     "m": "that the slaves"
+    },
+    {
+     "w": "iam",
+     "m": "already"
+    },
+    {
+     "w": "discessisse",
+     "m": "have left (to have left)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-06",
+   "la": "Quīntus dīcit sē aegrum fuisse.",
+   "en": "Quintus says that he has been ill.",
+   "words": 5,
+   "focus": "fuisse",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "sē",
+     "m": "that he"
+    },
+    {
+     "w": "aegrum",
+     "m": "ill"
+    },
+    {
+     "w": "fuisse",
+     "m": "has been (to have been)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-07",
+   "la": "Iūlius dīcit epistulam scrīptam esse.",
+   "en": "Julius says that the letter has been written.",
+   "words": 5,
+   "focus": "scrīptam esse",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "epistulam",
+     "m": "that the letter"
+    },
+    {
+     "w": "scrīptam",
+     "m": "written"
+    },
+    {
+     "w": "esse",
+     "m": "has been (to have been)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-08",
+   "la": "Nūntius dīcit oppidum ab hostibus captum esse.",
+   "en": "The messenger says that the town has been taken by the enemy.",
+   "words": 7,
+   "focus": "captum esse",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nūntius",
+     "m": "the messenger"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "oppidum",
+     "m": "that the town"
+    },
+    {
+     "w": "ab",
+     "m": "by"
+    },
+    {
+     "w": "hostibus",
+     "m": "the enemy"
+    },
+    {
+     "w": "captum",
+     "m": "taken"
+    },
+    {
+     "w": "esse",
+     "m": "has been (to have been)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-09",
+   "la": "Aemilia dīcit rosās ā Iūliā carptās esse.",
+   "en": "Aemilia says that the roses were picked by Julia.",
+   "words": 7,
+   "focus": "carptās esse",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "rosās",
+     "m": "that the roses"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Iūliā",
+     "m": "Julia"
+    },
+    {
+     "w": "carptās",
+     "m": "picked"
+    },
+    {
+     "w": "esse",
+     "m": "were (to have been)"
+    }
+   ],
+   "note": "The participle takes the accusative plural feminine ending because it agrees with rosās, the word the sentence is about."
+  },
+  {
+   "id": "pinf-10",
+   "la": "Mārcus dīcit sē scrībere, nōn scrīpsisse.",
+   "en": "Marcus says that he is writing, not that he has written.",
+   "words": 6,
+   "focus": "scrīpsisse",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "sē",
+     "m": "that he"
+    },
+    {
+     "w": "scrībere",
+     "m": "is writing (to write)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "scrīpsisse",
+     "m": "has written (to have written)"
+    }
+   ],
+   "note": "The two infinitives of one verb stand together: scrībere is now, scrīpsisse is already done."
+  },
+  {
+   "id": "pinf-11",
+   "la": "Servus dīcit dominum Rōmam iisse.",
+   "en": "The slave says that his master has gone to Rome.",
+   "words": 5,
+   "focus": "iisse",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "dominum",
+     "m": "that his master"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "iisse",
+     "m": "has gone (to have gone)"
+    }
+   ],
+   "note": "eō contracts in the tables, where the perfect infinitive is printed īsse; the book writes the full iisse, rediisse, and both are the same form."
+  },
+  {
+   "id": "pinf-12",
+   "la": "Iūlius dīcit servum saccum tulisse.",
+   "en": "Julius says that the slave carried the sack.",
+   "words": 5,
+   "focus": "tulisse",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "servum",
+     "m": "that the slave"
+    },
+    {
+     "w": "saccum",
+     "m": "the sack (object)"
+    },
+    {
+     "w": "tulisse",
+     "m": "carried (to have carried)"
+    }
+   ]
+  },
+  {
+   "id": "pinf-13",
+   "la": "Puerōs in hortō lūsisse Aemilia scit.",
+   "en": "Aemilia knows that the boys played in the garden.",
+   "words": 6,
+   "focus": "lūsisse",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerōs",
+     "m": "that the boys"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "lūsisse",
+     "m": "played (to have played)"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "scit",
+     "m": "knows"
+    }
+   ],
+   "note": "The reported clause comes first and the main verb last, so the -isse ending, not the position, is what marks the infinitive."
+  },
+  {
+   "id": "pinf-14",
+   "la": "Mārcus dīcit puerōs ā magistrō laudātōs esse.",
+   "en": "Marcus says that the boys were praised by the teacher.",
+   "words": 7,
+   "focus": "laudātōs esse",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "dīcit",
+     "m": "says"
+    },
+    {
+     "w": "puerōs",
+     "m": "that the boys"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "laudātōs",
+     "m": "praised"
+    },
+    {
+     "w": "esse",
+     "m": "were (to have been)"
+    }
+   ]
+  }
+ ]
+}

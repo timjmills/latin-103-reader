@@ -1,5 +1,106 @@
 {
   "skill": "accusative-destination",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Where somebody is going",
+      "say": "When somebody moves towards a place, Latin puts *ad* (to) or *in* (into) in front of that place and gives it **the accusative (the 'to/into' form after ad, in)**: *ad vīllam* — to the house. It answers *quō?*, where to? — a different question from *ubi?*, where.",
+      "show": {
+        "kind": "sentence",
+        "id": "acd-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "acd-02",
+        "ask": "Which word says where the slaves are going?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Words in -a take -am",
+      "say": "A place whose plain form ends in -a ends in -am when you are going to it: *vīlla* → *ad vīllam*, *porta* → *ad portam*, *fenestra* → *ad fenestram*. It is the same -am the object of a verb takes; here the *ad* tells you it is a destination.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "word": "vīlla",
+        "reveal": [
+          "acc.sg"
+        ],
+        "say": "ad vīllam — -a becomes -am"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "acd-03",
+        "ask": "Ancilla ad ___ it et rosās videt. (fenestra)"
+      }
+    },
+    {
+      "n": 3,
+      "title": "Words in -us and -um take -um",
+      "say": "*Hortus* → *in hortum*; *ōstium* → *ad ōstium*. A word already ending in -um does not change at all, which is why *ad ōstium* looks like the plain form: for these words the going-to form and the naming form are the same.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "word": "hortus",
+        "reveal": [
+          "acc.sg"
+        ],
+        "say": "in hortum — -us becomes -um"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "acd-05",
+        "ask": "Mārcus cum Quīntō in ___ intrat. (hortus)"
+      }
+    },
+    {
+      "n": 4,
+      "title": "*in* with two cases: staying or going",
+      "say": "*In* takes either case, and the ending is the meaning. *In vīllā*, with -ā, is where he already is. *In hortum*, with -um, is where he is heading. The verb tells you which to expect: *est*, *habitat*, *dormit* stay put, so the noun with them takes -ā or -ō; *it*, *venit*, *intrat* move, so the noun with them takes -am or -um.",
+      "show": {
+        "kind": "sentence",
+        "id": "acd-07"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "acd-08",
+        "ask": "Which of *ātriō* and *cubiculum* is the place she is going to?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "More than one place: -ās and -ōs",
+      "say": "Several destinations take -ās from the -a words and -ōs from the -us words: *ad vīllās*, *ad amīcōs*. The adjective with them takes the same ending: *ad vīllās Rōmānās*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "word": "vīlla",
+        "reveal": [
+          "acc.pl"
+        ],
+        "say": "ad vīllās — the plural ending is -ās"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "acd-10",
+        "ask": "Servī fessī ad ___ Rōmānās veniunt. (vīlla, more than one)"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Towns need no preposition",
+      "say": "The name of a town goes into the same form but drops *ad* altogether: *Rōmam it* — he goes to Rome; *Tūsculum eunt* — they go to Tusculum. A bare -am or -um on a town name is by itself the whole 'to'.",
+      "show": {
+        "kind": "sentence",
+        "id": "acd-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "acd-12",
+        "ask": "Which word says where the slaves are going?"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

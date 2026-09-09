@@ -1,0 +1,682 @@
+{
+  "skill": "demonstratives",
+  "chapter": 8,
+  "sentences": [
+    {
+      "id": "dem-01",
+      "la": "Hic ānulus novus et pulcher est.",
+      "en": "This ring is new and beautiful.",
+      "words": 6,
+      "focus": "Hic",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "ānulus",
+          "m": "ring"
+        },
+        {
+          "w": "novus",
+          "m": "new"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "pulcher",
+          "m": "beautiful"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dem-02",
+      "la": "Illa taberna multās gemmās habet.",
+      "en": "That shop has many jewels.",
+      "words": 5,
+      "focus": "Illa",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Illa",
+          "m": "that"
+        },
+        {
+          "w": "taberna",
+          "m": "shop"
+        },
+        {
+          "w": "multās",
+          "m": "many"
+        },
+        {
+          "w": "gemmās",
+          "m": "jewels"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        }
+      ]
+    },
+    {
+      "id": "dem-03",
+      "la": "Is servus pecūniam nōn habet.",
+      "en": "That slave has no money.",
+      "words": 5,
+      "focus": "Is",
+      "step": 1,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Is",
+          "m": "that"
+        },
+        {
+          "w": "servus",
+          "m": "slave"
+        },
+        {
+          "w": "pecūniam",
+          "m": "money"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        }
+      ]
+    },
+    {
+      "id": "dem-04",
+      "la": "Mārcus hunc ānulum parvum emit.",
+      "en": "Marcus buys this small ring.",
+      "words": 5,
+      "focus": "hunc",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "hunc",
+          "m": "this"
+        },
+        {
+          "w": "ānulum",
+          "m": "ring"
+        },
+        {
+          "w": "parvum",
+          "m": "small"
+        },
+        {
+          "w": "emit",
+          "m": "buys"
+        }
+      ]
+    },
+    {
+      "id": "dem-05",
+      "la": "Iūlius illum servum improbum vocat.",
+      "en": "Julius calls that bad slave.",
+      "words": 5,
+      "focus": "illum",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "illum",
+          "m": "that"
+        },
+        {
+          "w": "servum",
+          "m": "slave"
+        },
+        {
+          "w": "improbum",
+          "m": "bad"
+        },
+        {
+          "w": "vocat",
+          "m": "calls"
+        }
+      ]
+    },
+    {
+      "id": "dem-06",
+      "la": "Lȳdia hanc margarītam pulchram aspicit.",
+      "en": "Lydia looks at this beautiful pearl.",
+      "words": 5,
+      "focus": "hanc",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "hanc",
+          "m": "this"
+        },
+        {
+          "w": "margarītam",
+          "m": "pearl"
+        },
+        {
+          "w": "pulchram",
+          "m": "beautiful"
+        },
+        {
+          "w": "aspicit",
+          "m": "looks at"
+        }
+      ]
+    },
+    {
+      "id": "dem-07",
+      "la": "Pretium huius ānulī magnum est.",
+      "en": "The price of this ring is high.",
+      "words": 5,
+      "focus": "huius",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pretium",
+          "m": "the price"
+        },
+        {
+          "w": "huius",
+          "m": "of this"
+        },
+        {
+          "w": "ānulī",
+          "m": "ring"
+        },
+        {
+          "w": "magnum",
+          "m": "great"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dem-08",
+      "la": "Servus illīus dominī saccum portat.",
+      "en": "That master's slave is carrying the sack.",
+      "words": 5,
+      "focus": "illīus",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "illīus",
+          "m": "of that"
+        },
+        {
+          "w": "dominī",
+          "m": "master"
+        },
+        {
+          "w": "saccum",
+          "m": "the sack"
+        },
+        {
+          "w": "portat",
+          "m": "carries"
+        }
+      ]
+    },
+    {
+      "id": "dem-09",
+      "la": "Iūlius huic servō nummōs dat.",
+      "en": "Julius gives this slave coins.",
+      "words": 5,
+      "focus": "huic",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "huic",
+          "m": "to this"
+        },
+        {
+          "w": "servō",
+          "m": "slave"
+        },
+        {
+          "w": "nummōs",
+          "m": "coins"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "dem-10",
+      "la": "Tabernārius illī fēminae gemmās ostendit.",
+      "en": "The shopkeeper shows that woman jewels.",
+      "words": 5,
+      "focus": "illī",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Tabernārius",
+          "m": "the shopkeeper"
+        },
+        {
+          "w": "illī",
+          "m": "to that"
+        },
+        {
+          "w": "fēminae",
+          "m": "woman"
+        },
+        {
+          "w": "gemmās",
+          "m": "jewels"
+        },
+        {
+          "w": "ostendit",
+          "m": "shows"
+        }
+      ]
+    },
+    {
+      "id": "dem-11",
+      "la": "In hōc hortō multae rosae sunt.",
+      "en": "In this garden there are many roses.",
+      "words": 6,
+      "focus": "hōc",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "In",
+          "m": "in"
+        },
+        {
+          "w": "hōc",
+          "m": "this"
+        },
+        {
+          "w": "hortō",
+          "m": "garden"
+        },
+        {
+          "w": "multae",
+          "m": "many"
+        },
+        {
+          "w": "rosae",
+          "m": "roses"
+        },
+        {
+          "w": "sunt",
+          "m": "there are"
+        }
+      ]
+    },
+    {
+      "id": "dem-12",
+      "la": "Hī puerī in viā ambulant.",
+      "en": "These boys are walking in the street.",
+      "words": 5,
+      "focus": "Hī",
+      "step": 2,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hī",
+          "m": "these"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "viā",
+          "m": "the street"
+        },
+        {
+          "w": "ambulant",
+          "m": "are walking"
+        }
+      ]
+    },
+    {
+      "id": "dem-13",
+      "la": "Hoc ōrnāmentum nimis magnum est.",
+      "en": "This ornament is too big.",
+      "words": 5,
+      "focus": "Hoc",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hoc",
+          "m": "this"
+        },
+        {
+          "w": "ōrnāmentum",
+          "m": "ornament"
+        },
+        {
+          "w": "nimis",
+          "m": "too"
+        },
+        {
+          "w": "magnum",
+          "m": "great"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dem-14",
+      "la": "Ille servus quī saccum portat fessus est.",
+      "en": "That slave who is carrying the sack is tired.",
+      "words": 7,
+      "focus": "Ille",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ille",
+          "m": "that"
+        },
+        {
+          "w": "servus",
+          "m": "slave"
+        },
+        {
+          "w": "quī",
+          "m": "who"
+        },
+        {
+          "w": "saccum",
+          "m": "the sack"
+        },
+        {
+          "w": "portat",
+          "m": "carries"
+        },
+        {
+          "w": "fessus",
+          "m": "tired"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dem-15",
+      "la": "Pretium eius margarītae nimis magnum est.",
+      "en": "The price of that pearl is too high.",
+      "words": 6,
+      "focus": "eius",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pretium",
+          "m": "the price"
+        },
+        {
+          "w": "eius",
+          "m": "of that"
+        },
+        {
+          "w": "margarītae",
+          "m": "pearl"
+        },
+        {
+          "w": "nimis",
+          "m": "too"
+        },
+        {
+          "w": "magnum",
+          "m": "great"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dem-16",
+      "la": "Illa taberna quam Lȳdia amat magna est.",
+      "en": "That shop which Lydia loves is big.",
+      "words": 7,
+      "focus": "Illa",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Illa",
+          "m": "that"
+        },
+        {
+          "w": "taberna",
+          "m": "shop"
+        },
+        {
+          "w": "quam",
+          "m": "which"
+        },
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "amat",
+          "m": "loves"
+        },
+        {
+          "w": "magna",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dem-17",
+      "la": "Haec gemma nimis parva est.",
+      "en": "This jewel is too small.",
+      "words": 5,
+      "focus": "Haec",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Haec",
+          "m": "this"
+        },
+        {
+          "w": "gemma",
+          "m": "jewel"
+        },
+        {
+          "w": "nimis",
+          "m": "too"
+        },
+        {
+          "w": "parva",
+          "m": "small"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dem-18",
+      "la": "Mārcus illud ōrnāmentum pulchrum emit.",
+      "en": "Marcus buys that beautiful ornament.",
+      "words": 5,
+      "focus": "illud",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "illud",
+          "m": "that"
+        },
+        {
+          "w": "ōrnāmentum",
+          "m": "ornament"
+        },
+        {
+          "w": "pulchrum",
+          "m": "beautiful"
+        },
+        {
+          "w": "emit",
+          "m": "buys"
+        }
+      ]
+    }
+  ]
+}

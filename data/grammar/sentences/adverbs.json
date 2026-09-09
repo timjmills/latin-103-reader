@@ -1,0 +1,569 @@
+{
+ "skill": "adverbs",
+ "chapter": 18,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "adv-01",
+   "la": "Iūlia in hortō pulchrē cantat.",
+   "en": "Julia sings beautifully in the garden.",
+   "words": 5,
+   "focus": "pulchrē",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "pulchrē",
+     "m": "beautifully"
+    },
+    {
+     "w": "cantat",
+     "m": "sings"
+    }
+   ]
+  },
+  {
+   "id": "adv-02",
+   "la": "Mārcus litterās suās turpiter scrībit.",
+   "en": "Marcus writes his letters shamefully.",
+   "words": 5,
+   "focus": "turpiter",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "litterās",
+     "m": "the letters"
+    },
+    {
+     "w": "suās",
+     "m": "his own"
+    },
+    {
+     "w": "turpiter",
+     "m": "shamefully"
+    },
+    {
+     "w": "scrībit",
+     "m": "writes"
+    }
+   ]
+  },
+  {
+   "id": "adv-03",
+   "la": "Sextus rēctē scrībit, Mārcus prāvē.",
+   "en": "Sextus writes correctly, Marcus wrongly.",
+   "words": 5,
+   "focus": "rēctē",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sextus",
+     "m": "Sextus"
+    },
+    {
+     "w": "rēctē",
+     "m": "correctly"
+    },
+    {
+     "w": "scrībit",
+     "m": "writes"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "prāvē",
+     "m": "wrongly"
+    }
+   ]
+  },
+  {
+   "id": "adv-04",
+   "la": "Magister sevērē discipulōs pigrōs reprehendit.",
+   "en": "The teacher blames the lazy pupils sternly.",
+   "words": 5,
+   "focus": "sevērē",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "sevērē",
+     "m": "sternly"
+    },
+    {
+     "w": "discipulōs",
+     "m": "the pupils"
+    },
+    {
+     "w": "pigrōs",
+     "m": "lazy"
+    },
+    {
+     "w": "reprehendit",
+     "m": "blames"
+    }
+   ]
+  },
+  {
+   "id": "adv-05",
+   "la": "Discipulus bonus semper rēctē respondet.",
+   "en": "A good pupil always answers correctly.",
+   "words": 5,
+   "focus": "rēctē",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulus",
+     "m": "the pupil"
+    },
+    {
+     "w": "bonus",
+     "m": "good"
+    },
+    {
+     "w": "semper",
+     "m": "always"
+    },
+    {
+     "w": "rēctē",
+     "m": "correctly"
+    },
+    {
+     "w": "respondet",
+     "m": "answers"
+    }
+   ]
+  },
+  {
+   "id": "adv-06",
+   "la": "Mīlitēs Rōmānī contrā hostēs fortiter pugnant.",
+   "en": "The Roman soldiers fight bravely against the enemy.",
+   "words": 6,
+   "focus": "fortiter",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mīlitēs",
+     "m": "the soldiers"
+    },
+    {
+     "w": "Rōmānī",
+     "m": "Roman"
+    },
+    {
+     "w": "contrā",
+     "m": "against"
+    },
+    {
+     "w": "hostēs",
+     "m": "the enemy"
+    },
+    {
+     "w": "fortiter",
+     "m": "bravely"
+    },
+    {
+     "w": "pugnant",
+     "m": "fight"
+    }
+   ]
+  },
+  {
+   "id": "adv-07",
+   "la": "Magister breviter respondet, deinde tacet.",
+   "en": "The teacher answers briefly, then falls silent.",
+   "words": 5,
+   "focus": "breviter",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "breviter",
+     "m": "briefly"
+    },
+    {
+     "w": "respondet",
+     "m": "answers"
+    },
+    {
+     "w": "deinde",
+     "m": "then"
+    },
+    {
+     "w": "tacet",
+     "m": "is silent"
+    }
+   ]
+  },
+  {
+   "id": "adv-08",
+   "la": "Puer graviter aegrōtat et plōrat.",
+   "en": "The boy is seriously ill and cries.",
+   "words": 5,
+   "focus": "graviter",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "graviter",
+     "m": "seriously"
+    },
+    {
+     "w": "aegrōtat",
+     "m": "is ill"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "plōrat",
+     "m": "cries"
+    }
+   ]
+  },
+  {
+   "id": "adv-09",
+   "la": "Sextus rēctius scrībit quam Mārcus.",
+   "en": "Sextus writes more correctly than Marcus.",
+   "words": 5,
+   "focus": "rēctius",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sextus",
+     "m": "Sextus"
+    },
+    {
+     "w": "rēctius",
+     "m": "more correctly"
+    },
+    {
+     "w": "scrībit",
+     "m": "writes"
+    },
+    {
+     "w": "quam",
+     "m": "than"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    }
+   ]
+  },
+  {
+   "id": "adv-10",
+   "la": "Quīntus fortius clāmat quam Iūlia.",
+   "en": "Quintus shouts more strongly than Julia.",
+   "words": 5,
+   "focus": "fortius",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "fortius",
+     "m": "more strongly"
+    },
+    {
+     "w": "clāmat",
+     "m": "shouts"
+    },
+    {
+     "w": "quam",
+     "m": "than"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    }
+   ]
+  },
+  {
+   "id": "adv-11",
+   "la": "Sextus in lūdō pulcherrimē scrībit.",
+   "en": "Sextus writes most beautifully in the school.",
+   "words": 5,
+   "focus": "pulcherrimē",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sextus",
+     "m": "Sextus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "lūdō",
+     "m": "the school"
+    },
+    {
+     "w": "pulcherrimē",
+     "m": "most beautifully"
+    },
+    {
+     "w": "scrībit",
+     "m": "writes"
+    }
+   ]
+  },
+  {
+   "id": "adv-12",
+   "la": "Ille mīles fortissimē contrā hostēs pugnat.",
+   "en": "That soldier fights most bravely against the enemy.",
+   "words": 6,
+   "focus": "fortissimē",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ille",
+     "m": "that"
+    },
+    {
+     "w": "mīles",
+     "m": "soldier"
+    },
+    {
+     "w": "fortissimē",
+     "m": "most bravely"
+    },
+    {
+     "w": "contrā",
+     "m": "against"
+    },
+    {
+     "w": "hostēs",
+     "m": "the enemy"
+    },
+    {
+     "w": "pugnat",
+     "m": "fights"
+    }
+   ]
+  },
+  {
+   "id": "adv-13",
+   "la": "Puella laeta in hortō laetē cantat.",
+   "en": "The happy girl sings happily in the garden.",
+   "words": 6,
+   "focus": "laetē",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puella",
+     "m": "the girl"
+    },
+    {
+     "w": "laeta",
+     "m": "happy"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "laetē",
+     "m": "happily"
+    },
+    {
+     "w": "cantat",
+     "m": "sings"
+    }
+   ]
+  },
+  {
+   "id": "adv-14",
+   "la": "Vōx magistrī gravis est, puer graviter respondet.",
+   "en": "The teacher's voice is grave; the boy answers gravely.",
+   "words": 7,
+   "focus": "graviter",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vōx",
+     "m": "the voice"
+    },
+    {
+     "w": "magistrī",
+     "m": "of the teacher"
+    },
+    {
+     "w": "gravis",
+     "m": "grave"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "puer",
+     "m": "the boy"
+    },
+    {
+     "w": "graviter",
+     "m": "gravely"
+    },
+    {
+     "w": "respondet",
+     "m": "answers"
+    }
+   ]
+  },
+  {
+   "id": "adv-15",
+   "la": "Epistula brevis est, magister breviter scrībit.",
+   "en": "The letter is short; the teacher writes briefly.",
+   "words": 6,
+   "focus": "breviter",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Epistula",
+     "m": "the letter"
+    },
+    {
+     "w": "brevis",
+     "m": "short"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "breviter",
+     "m": "briefly"
+    },
+    {
+     "w": "scrībit",
+     "m": "writes"
+    }
+   ]
+  }
+ ]
+}

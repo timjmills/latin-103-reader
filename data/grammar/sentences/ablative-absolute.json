@@ -1,0 +1,538 @@
+{
+ "skill": "ablative-absolute",
+ "chapter": 16,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "abs-01",
+   "la": "Sōle oriente nautae ex portū nāvigant.",
+   "en": "As the sun rises, the sailors sail out of the harbour.",
+   "words": 6,
+   "focus": "Sōle oriente",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sōle",
+     "m": "with the sun"
+    },
+    {
+     "w": "oriente",
+     "m": "rising"
+    },
+    {
+     "w": "nautae",
+     "m": "the sailors"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "portū",
+     "m": "the harbour"
+    },
+    {
+     "w": "nāvigant",
+     "m": "sail"
+    }
+   ]
+  },
+  {
+   "id": "abs-02",
+   "la": "Magistrō recitante omnēs discipulī tacent.",
+   "en": "While the teacher reads aloud, all the pupils are silent.",
+   "words": 5,
+   "focus": "Magistrō recitante",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Magistrō",
+     "m": "with the teacher"
+    },
+    {
+     "w": "recitante",
+     "m": "reading aloud"
+    },
+    {
+     "w": "omnēs",
+     "m": "all"
+    },
+    {
+     "w": "discipulī",
+     "m": "the pupils"
+    },
+    {
+     "w": "tacent",
+     "m": "are silent"
+    }
+   ]
+  },
+  {
+   "id": "abs-03",
+   "la": "Cane lātrante ōstiārius iānuam aperit.",
+   "en": "As the dog barks, the doorkeeper opens the door.",
+   "words": 5,
+   "focus": "Cane lātrante",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cane",
+     "m": "with the dog"
+    },
+    {
+     "w": "lātrante",
+     "m": "barking"
+    },
+    {
+     "w": "ōstiārius",
+     "m": "the doorkeeper"
+    },
+    {
+     "w": "iānuam",
+     "m": "the door"
+    },
+    {
+     "w": "aperit",
+     "m": "opens"
+    }
+   ]
+  },
+  {
+   "id": "abs-04",
+   "la": "Puerīs dormientibus Iūlius tacitus ambulat.",
+   "en": "While the boys sleep, Julius walks about in silence.",
+   "words": 5,
+   "focus": "Puerīs dormientibus",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerīs",
+     "m": "with the boys"
+    },
+    {
+     "w": "dormientibus",
+     "m": "sleeping"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "tacitus",
+     "m": "silent"
+    },
+    {
+     "w": "ambulat",
+     "m": "walks"
+    }
+   ]
+  },
+  {
+   "id": "abs-05",
+   "la": "Nautīs canentibus nāvis ad Graeciam nāvigat.",
+   "en": "While the sailors sing, the ship sails to Greece.",
+   "words": 6,
+   "focus": "Nautīs canentibus",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nautīs",
+     "m": "with the sailors"
+    },
+    {
+     "w": "canentibus",
+     "m": "singing"
+    },
+    {
+     "w": "nāvis",
+     "m": "the ship"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "Graeciam",
+     "m": "Greece"
+    },
+    {
+     "w": "nāvigat",
+     "m": "sails"
+    }
+   ]
+  },
+  {
+   "id": "abs-06",
+   "la": "Sōle lūcente puerī in hortō lūdunt.",
+   "en": "While the sun shines, the boys play in the garden.",
+   "words": 6,
+   "focus": "Sōle lūcente",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sōle",
+     "m": "with the sun"
+    },
+    {
+     "w": "lūcente",
+     "m": "shining"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "lūdunt",
+     "m": "play"
+    }
+   ]
+  },
+  {
+   "id": "abs-07",
+   "la": "Patre absente Mārcus in hortō lūdit.",
+   "en": "With his father away, Marcus plays in the garden.",
+   "words": 6,
+   "focus": "Patre absente",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Patre",
+     "m": "with father"
+    },
+    {
+     "w": "absente",
+     "m": "being away"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "lūdit",
+     "m": "plays"
+    }
+   ]
+  },
+  {
+   "id": "abs-08",
+   "la": "Discipulī omnēs tacent magistrō intrante.",
+   "en": "All the pupils fall silent as the teacher comes in.",
+   "words": 5,
+   "focus": "magistrō intrante",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulī",
+     "m": "the pupils"
+    },
+    {
+     "w": "omnēs",
+     "m": "all"
+    },
+    {
+     "w": "tacent",
+     "m": "are silent"
+    },
+    {
+     "w": "magistrō",
+     "m": "with the teacher"
+    },
+    {
+     "w": "intrante",
+     "m": "coming in"
+    }
+   ]
+  },
+  {
+   "id": "abs-09",
+   "la": "Iūlia in ātriō sedet imbre cadente.",
+   "en": "Julia sits in the atrium while the rain falls.",
+   "words": 6,
+   "focus": "imbre cadente",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "sedet",
+     "m": "sits"
+    },
+    {
+     "w": "imbre",
+     "m": "with the rain"
+    },
+    {
+     "w": "cadente",
+     "m": "falling"
+    }
+   ]
+  },
+  {
+   "id": "abs-10",
+   "la": "Mīles gladiō pugnat, hostibus clāmantibus.",
+   "en": "The soldier fights with his sword, while the enemy shout.",
+   "words": 5,
+   "focus": "hostibus clāmantibus",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mīles",
+     "m": "the soldier"
+    },
+    {
+     "w": "gladiō",
+     "m": "with a sword"
+    },
+    {
+     "w": "pugnat",
+     "m": "fights"
+    },
+    {
+     "w": "hostibus",
+     "m": "with the enemy"
+    },
+    {
+     "w": "clāmantibus",
+     "m": "shouting"
+    }
+   ]
+  },
+  {
+   "id": "abs-11",
+   "la": "Magister virgā puerum verberat, patre spectante.",
+   "en": "The teacher beats the boy with a rod, while his father watches.",
+   "words": 6,
+   "focus": "patre spectante",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "virgā",
+     "m": "with a rod"
+    },
+    {
+     "w": "puerum",
+     "m": "the boy"
+    },
+    {
+     "w": "verberat",
+     "m": "beats"
+    },
+    {
+     "w": "patre",
+     "m": "with father"
+    },
+    {
+     "w": "spectante",
+     "m": "watching"
+    }
+   ]
+  },
+  {
+   "id": "abs-12",
+   "la": "Mēdō loquente Lȳdia tacet et audit.",
+   "en": "While Medus is talking, Lydia is silent and listens.",
+   "words": 6,
+   "focus": "Mēdō loquente",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēdō",
+     "m": "with Medus"
+    },
+    {
+     "w": "loquente",
+     "m": "speaking"
+    },
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "tacet",
+     "m": "is silent"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "audit",
+     "m": "listens"
+    }
+   ],
+   "note": "loquens is the present participle of the deponent loquor: a deponent present participle is active in form, as here."
+  },
+  {
+   "id": "abs-13",
+   "la": "Tempestāte oriente nautae Neptūnum invocant.",
+   "en": "As a storm rises, the sailors call upon Neptune.",
+   "words": 5,
+   "focus": "Tempestāte oriente",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tempestāte",
+     "m": "with a storm"
+    },
+    {
+     "w": "oriente",
+     "m": "rising"
+    },
+    {
+     "w": "nautae",
+     "m": "the sailors"
+    },
+    {
+     "w": "Neptūnum",
+     "m": "Neptune"
+    },
+    {
+     "w": "invocant",
+     "m": "call upon"
+    }
+   ]
+  },
+  {
+   "id": "abs-14",
+   "la": "Nēmine vidente Mēdus pecūniam sūmit.",
+   "en": "With nobody watching, Medus takes the money.",
+   "words": 5,
+   "focus": "Nēmine vidente",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nēmine",
+     "m": "with nobody"
+    },
+    {
+     "w": "vidente",
+     "m": "seeing"
+    },
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "pecūniam",
+     "m": "the money"
+    },
+    {
+     "w": "sūmit",
+     "m": "takes"
+    }
+   ]
+  }
+ ]
+}

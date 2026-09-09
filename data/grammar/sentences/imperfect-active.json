@@ -1,0 +1,485 @@
+{
+  "skill": "imperfect-active",
+  "chapter": 19,
+  "sentences": [
+    {
+      "id": "ia-01",
+      "la": "Iūlius in hortō suō ambulābat.",
+      "en": "Julius was walking in his own garden.",
+      "words": 5,
+      "focus": "ambulābat",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "ambulābat",
+          "m": "was walking"
+        }
+      ]
+    },
+    {
+      "id": "ia-02",
+      "la": "Mārcus cotīdiē in lūdō dormiēbat.",
+      "en": "Marcus used to sleep in school every day.",
+      "words": 5,
+      "focus": "dormiēbat",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "cotīdiē",
+          "m": "every day"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "dormiēbat",
+          "m": "used to sleep"
+        }
+      ]
+    },
+    {
+      "id": "ia-03",
+      "la": "Puerī in vīllā magnā clāmābant.",
+      "en": "The boys were shouting in the big house.",
+      "words": 5,
+      "focus": "clāmābant",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "vīllā",
+          "m": "the house"
+        },
+        {
+          "w": "magnā",
+          "m": "big"
+        },
+        {
+          "w": "clāmābant",
+          "m": "were shouting"
+        }
+      ]
+    },
+    {
+      "id": "ia-04",
+      "la": "Quīntus in cubiculō suō tacēbat.",
+      "en": "Quintus was keeping quiet in his own bedroom.",
+      "words": 5,
+      "focus": "tacēbat",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "cubiculō",
+          "m": "the bedroom"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "tacēbat",
+          "m": "was keeping quiet"
+        }
+      ]
+    },
+    {
+      "id": "ia-05",
+      "la": "Ego tēcum in hortō ambulābam.",
+      "en": "I was walking with you in the garden.",
+      "words": 5,
+      "focus": "ambulābam",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ego",
+          "m": "I"
+        },
+        {
+          "w": "tēcum",
+          "m": "with you"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "ambulābam",
+          "m": "was walking"
+        }
+      ]
+    },
+    {
+      "id": "ia-06",
+      "la": "Cūr mē nōn audiēbās, Mārce?",
+      "en": "Why were you not listening to me, Marcus?",
+      "words": 5,
+      "focus": "audiēbās",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cūr",
+          "m": "why"
+        },
+        {
+          "w": "mē",
+          "m": "me"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "audiēbās",
+          "m": "were you hearing"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "ia-07",
+      "la": "In silvā ovēs nostrās quaerēbāmus.",
+      "en": "We were looking for our sheep in the wood.",
+      "words": 5,
+      "focus": "quaerēbāmus",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "In",
+          "m": "in"
+        },
+        {
+          "w": "silvā",
+          "m": "the wood"
+        },
+        {
+          "w": "ovēs",
+          "m": "the sheep"
+        },
+        {
+          "w": "nostrās",
+          "m": "our"
+        },
+        {
+          "w": "quaerēbāmus",
+          "m": "we were looking for"
+        }
+      ]
+    },
+    {
+      "id": "ia-08",
+      "la": "Cūr in lūdō nōn tacēbātis, puerī?",
+      "en": "Why were you not keeping quiet in school, boys?",
+      "words": 6,
+      "focus": "tacēbātis",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cūr",
+          "m": "why"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "tacēbātis",
+          "m": "were you keeping quiet"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        }
+      ]
+    },
+    {
+      "id": "ia-09",
+      "la": "Dāvus saccum in mēnsā pōnēbat.",
+      "en": "Davus was putting the sack on the table.",
+      "words": 5,
+      "focus": "pōnēbat",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "saccum",
+          "m": "the sack"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "mēnsā",
+          "m": "the table"
+        },
+        {
+          "w": "pōnēbat",
+          "m": "was putting"
+        }
+      ]
+    },
+    {
+      "id": "ia-10",
+      "la": "Ancillae dominam suam nōn audiēbant.",
+      "en": "The slave girls were not listening to their mistress.",
+      "words": 5,
+      "focus": "audiēbant",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ancillae",
+          "m": "the slave girls"
+        },
+        {
+          "w": "dominam",
+          "m": "the mistress"
+        },
+        {
+          "w": "suam",
+          "m": "their own"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "audiēbant",
+          "m": "were listening to"
+        }
+      ]
+    },
+    {
+      "id": "ia-11",
+      "la": "Nunc Iūlia rīdet, tunc autem plōrābat.",
+      "en": "Now Julia is laughing, but at that time she was crying.",
+      "words": 6,
+      "focus": "plōrābat",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nunc",
+          "m": "now"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "rīdet",
+          "m": "is laughing"
+        },
+        {
+          "w": "tunc",
+          "m": "at that time"
+        },
+        {
+          "w": "autem",
+          "m": "but"
+        },
+        {
+          "w": "plōrābat",
+          "m": "she was crying"
+        }
+      ]
+    },
+    {
+      "id": "ia-12",
+      "la": "Iūlius pecūniam vidēbat et in sacculō pōnēbat.",
+      "en": "Julius was looking at the money and putting it in his purse.",
+      "words": 7,
+      "focus": "pōnēbat",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "pecūniam",
+          "m": "the money"
+        },
+        {
+          "w": "vidēbat",
+          "m": "was looking at"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "sacculō",
+          "m": "the purse"
+        },
+        {
+          "w": "pōnēbat",
+          "m": "was putting"
+        }
+      ]
+    },
+    {
+      "id": "ia-13",
+      "la": "Epistulam longam ad Mēdum scrībēbat Lȳdia.",
+      "en": "Lydia was writing a long letter to Medus.",
+      "words": 6,
+      "focus": "scrībēbat",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Epistulam",
+          "m": "a letter"
+        },
+        {
+          "w": "longam",
+          "m": "long"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "Mēdum",
+          "m": "Medus"
+        },
+        {
+          "w": "scrībēbat",
+          "m": "was writing"
+        },
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        }
+      ]
+    }
+  ]
+}

@@ -1,16 +1,131 @@
 {
-  "skill": "ablative-degree",
-  "core": [
-    { "type": "p", "text": "When you say *bigger by a lot* or *higher by ten feet*, the measure goes in the ablative: **the ablative of degree (the 'by how much' form: multo maior = bigger by much)**. *multō* (by much) and *paulō* (by a little) are the everyday ones: *terra multō pulchrior* — a land more beautiful by much, much more beautiful; *nāvis paulō levior fit* — the ship becomes a little lighter. The ablative sits next to a comparative (the '-er / more' form) and says how far apart the two things are. Latin name: ablātīvus mēnsūrae." },
-    { "type": "english", "text": "English says *much bigger*, *ten feet higher*: the word before the *-er* form measures the gap. Latin puts that word in the ablative, which here means *by*." },
-    { "type": "rule", "text": "multō / paulō / a measured amount, in the ablative, beside a comparative = 'by so much'." },
-    { "type": "examples", "units": ["r16:72.1", "r22:16.2", "r18:89.1", "r16:123.2"], "invented": [ { "la": "Frāter meus multō altior est quam ego.", "en": "My brother is much taller than I am.", "focus": "multō" } ] },
-    { "type": "confusion", "with": "ablative-comparison", "text": "Two ablatives can stand near one comparative. *multō* answers *by how much?*; the ablative of comparison (the 'than' form: illo fortior = braver than he) answers *than whom?*. *Hic multō fortior est illō* — braver than that one (*illō*) by much (*multō*). A measure is degree; the thing compared is comparison." }
-  ],
-  "more": [
-    { "type": "p", "text": "Any measurement works: *decem pedibus altior* — ten feet higher. The same ablative goes with words that hide a comparison, above all time words: *paulō post* — a little later; *multō ante* — long before; *paulō ante* — a little earlier (*quantī paulō ante* — as big as a little before). It also goes with *magis* (more) and *minus* (less): *multō magis laetābor* — I shall be much happier." },
-    { "type": "p", "text": "*tantō … quantō* — by so much … by how much: *quantō altior mōns, tantō frīgidior āēr* — the higher the mountain, the colder the air. *nihilō* (by nothing) makes *nihilō minus* — none the less." },
-    { "type": "p", "text": "The learner's notes (week 16): the ablative names the degree of difference between two things compared; it is either a unit of measure (*pēs* foot, *ūncia* inch, *passus* pace) or a general quantity word (*multum, paulum*); it can combine with a *quam* clause or with an ablative of comparison: *hic multō fortior est*, *hic multō fortior est illō*, *hī paulō māiōrēs sunt quam illī*, *mūrus decem pedibus altior est*. Ørberg (chapter XVI): *multō pulchriōrem, multō turbidior, multō altiōrēs, paulō levior*; A&G §414 call it the ablative of degree of difference." }
-  ],
-  "sources": ["notes p56", "Ørberg cap. XVI", "A&G §414"]
+ "skill": "ablative-degree",
+ "teach": [
+  {
+   "title": "By how much",
+   "say": "When you want to say not just 'taller' but 'much taller', the measure of the gap goes into the ablative: **the ablative of degree (the 'by how much' form: multō māior = bigger by much)**. *Mārcus multō altior est quam Quīntus* — Marcus is taller than Quintus by much. The measuring word stands beside the comparative (the '-er / more' form) and answers one question only: by how much?",
+   "show": {
+    "kind": "sentence",
+    "id": "adg-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "adg-02",
+    "ask": "Which word here says how big the difference is?"
+   },
+   "n": 1
+  },
+  {
+   "title": "multō: by much",
+   "say": "*multō* is the everyday one. It is the ablative of *multum*, and it means 'by much'. It sits immediately in front of the comparative it measures: *multō altior* much taller, *multō gravior* much heavier, *multō melior* much better. English puts *much* in exactly the same place.",
+   "show": {
+    "kind": "sentence",
+    "id": "adg-05"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "adg-06",
+    "blank": "multō",
+    "ask": "Mare hodiē ____ altius est. Which word makes 'deeper' into 'much deeper'?"
+   },
+   "n": 2
+  },
+  {
+   "title": "paulō: by a little",
+   "say": "*paulō* is its opposite number, 'by a little': *paulō brevior* a little shorter, *paulō frīgidior* a little colder. Both words end in *-ō* because that is the ablative singular of an *-us -a -um* adjective standing on its own, with no noun: literally 'by much', 'by a little'.",
+   "show": {
+    "kind": "sentence",
+    "id": "adg-07"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "adg-09",
+    "blank": "paulō",
+    "ask": "Aqua in impluviō ____ frīgidior est. Which word means 'by a little'?"
+   },
+   "n": 3
+  },
+  {
+   "title": "paulō ante, paulō post",
+   "say": "The same measure works with words that already point earlier or later: *paulō ante* a little before, *paulō post* a little afterwards. Nothing is compared with *quam* here, and nothing needs to be: what *paulō* measures is the gap between that moment and this one — how much earlier, how much later.",
+   "show": {
+    "kind": "sentence",
+    "id": "adg-10"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "adg-11",
+    "ask": "Which word here measures how much earlier the ship sails?"
+   },
+   "n": 4
+  },
+  {
+   "title": "Two ablatives, two jobs",
+   "say": "Not every ablative near a comparative is a measure. In *mīles gladiō pugnat*, *gladiō* is **the ablative (the 'by/with/from' form)** — the tool he fights with. In *multō longiōre gladiō*, *gladiō* is still the tool and *multō* answers 'by how much?'. Ask the question aloud: 'with what?' gives the means, 'by how much?' gives the degree. A plain 'than' is a third thing again, and comes with *quam*: *multō fortior quam ille*.",
+   "show": {
+    "kind": "sentence",
+    "id": "adg-13"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "adg-12",
+    "ask": "Which word here measures the gap between the two soldiers?"
+   },
+   "n": 5
+  }
+ ],
+ "core": [
+  {
+   "type": "p",
+   "text": "When you say *bigger by a lot* or *higher by ten feet*, the measure goes in the ablative: **the ablative of degree (the 'by how much' form: multo maior = bigger by much)**. *multō* (by much) and *paulō* (by a little) are the everyday ones: *terra multō pulchrior* — a land more beautiful by much, much more beautiful; *nāvis paulō levior fit* — the ship becomes a little lighter. The ablative sits next to a comparative (the '-er / more' form) and says how far apart the two things are. Latin name: ablātīvus mēnsūrae."
+  },
+  {
+   "type": "english",
+   "text": "English says *much bigger*, *ten feet higher*: the word before the *-er* form measures the gap. Latin puts that word in the ablative, which here means *by*."
+  },
+  {
+   "type": "rule",
+   "text": "multō / paulō / a measured amount, in the ablative, beside a comparative = 'by so much'."
+  },
+  {
+   "type": "examples",
+   "units": [
+    "r16:72.1",
+    "r22:16.2",
+    "r18:89.1",
+    "r16:123.2"
+   ],
+   "invented": [
+    {
+     "la": "Frāter meus multō altior est quam ego.",
+     "en": "My brother is much taller than I am.",
+     "focus": "multō"
+    }
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "ablative-comparison",
+   "text": "Two ablatives can stand near one comparative. *multō* answers *by how much?*; the ablative of comparison (the 'than' form: illo fortior = braver than he) answers *than whom?*. *Hic multō fortior est illō* — braver than that one (*illō*) by much (*multō*). A measure is degree; the thing compared is comparison."
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "Any measurement works: *decem pedibus altior* — ten feet higher. The same ablative goes with words that hide a comparison, above all time words: *paulō post* — a little later; *multō ante* — long before; *paulō ante* — a little earlier (*quantī paulō ante* — as big as a little before). It also goes with *magis* (more) and *minus* (less): *multō magis laetābor* — I shall be much happier."
+  },
+  {
+   "type": "p",
+   "text": "*tantō … quantō* — by so much … by how much: *quantō altior mōns, tantō frīgidior āēr* — the higher the mountain, the colder the air. *nihilō* (by nothing) makes *nihilō minus* — none the less."
+  },
+  {
+   "type": "p",
+   "text": "The learner's notes (week 16): the ablative names the degree of difference between two things compared; it is either a unit of measure (*pēs* foot, *ūncia* inch, *passus* pace) or a general quantity word (*multum, paulum*); it can combine with a *quam* clause or with an ablative of comparison: *hic multō fortior est*, *hic multō fortior est illō*, *hī paulō māiōrēs sunt quam illī*, *mūrus decem pedibus altior est*. Ørberg (chapter XVI): *multō pulchriōrem, multō turbidior, multō altiōrēs, paulō levior*; A&G §414 call it the ablative of degree of difference."
+  }
+ ],
+ "sources": [
+  "notes p56",
+  "Ørberg cap. XVI",
+  "A&G §414"
+ ]
 }

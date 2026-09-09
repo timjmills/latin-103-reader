@@ -42,6 +42,80 @@
       "text": "Same ending, different question. *Servus Iūliī* answers 'whose?': the slave belongs to Julius. *Numerus servōrum* answers 'a number of what?': the slaves own nothing. The Latin does not change, only the sense, and the book uses both freely. When 'whose?' makes no sense, read it as plain *of*."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "The same form, a different question",
+      "say": "The owner’s ending does more than owning: Latin also uses the genitive (the 'of' form) for plain English ‘of’ — how many of something there are, or what a thing is a part of. *Numerus servōrum* is the number of the slaves, and the slaves own nothing at all. Ask ‘whose?’ first; when that makes no sense, read it as plain ‘of’.",
+      "show": {
+        "kind": "sentence",
+        "id": "go-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "go-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "After a word of number or amount",
+      "say": "*Numerus* (number) wants to know a number of what, and the answer takes -ōrum or -ārum: *numerus servōrum*, *numerus litterārum*. English needs ‘of’ there; Latin needs only the ending.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "gen.pl"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "go-03"
+      }
+    },
+    {
+      "n": 3,
+      "title": "A part of a whole",
+      "say": "The same form says what a thing is a part of: *pāgina librī*, a page of the book; *syllaba vocābulī*, a syllable of the word. The whole goes into the -ī (or -ae) form and the part stands in front of it.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "gen.sg"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "go-07"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Latin has no word for ‘of’",
+      "say": "Do not look for a little word, because there is none. In *titulus capitulī prīmī* the whole of ‘of the first chapter’ is carried by two -ī endings. Where your English wants ‘of’, the Latin has an ending instead.",
+      "show": {
+        "kind": "sentence",
+        "id": "go-09"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "go-10"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Whose? or of what?",
+      "say": "*Numerus servōrum Iūliī magnus est* has both uses in a row: *servōrum* answers ‘a number of what?’ and *Iūliī* answers ‘whose slaves?’. The Latin form is identical and only the question changes, so try ‘whose?’ on each word and keep the answer that makes sense. This form does two more jobs — describing a thing (*a man of great courage*) and following adjectives like *plēnus*, full — but the words for those come in later chapters, so they are not practised here.",
+      "show": {
+        "kind": "sentence",
+        "id": "go-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "go-12",
+        "ask": "construction"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "Two words make **the perfect passive (the 'was done / has been done' form: laudatus est)**: the perfect participle (the 'having been done' word: laudatus = praised) plus the present of *sum*. *Mārcus pulsātus est* — Marcus was hit. The participle agrees with the subject, so a woman says *pulsāta sum* and several boys *pulsātī sumus*. Latin name: *perfectum indicātīvī passīvī*."
+      "text": "Two words make **the perfect passive (the 'was done / has been done' form: laudātus est)**: the perfect participle (the 'having been done' word: laudātus = praised) plus the present of *sum*. *Mārcus pulsātus est* — Marcus was hit. The participle agrees with the subject, so a woman says *pulsāta sum* and several boys *pulsātī sumus*. Latin name: *perfectum indicātīvī passīvī*."
     },
     {
       "type": "english",
@@ -42,6 +42,111 @@
       "type": "confusion",
       "with": "perfect-active",
       "text": "Same tense, opposite direction: **the perfect (the 'did / has done' tense)** is one word on the perfect stem, *Sextus Mārcum pulsāvit* — Sextus hit Marcus; the passive is participle + *est*: Marcus is the one *ā Sextō pulsātus est* — hit by Sextus. The doer moves into ā / ab + ablative."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "Two words, one tense",
+      "say": "To say that a thing was done to somebody, Latin writes two words and means one tense: **the perfect passive (the 'was done / has been done' form: laudātus est)**, which works exactly like English 'was praised'. *Puer laudātus est* — the boy was praised. Do not read *est* as a separate 'is': the two words are working together as one verb.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pfp-02",
+        "ask": "Which two words together say 'was praised'?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "How the pair is built: participle + est",
+      "say": "Take the perfect participle — the fourth dictionary form used as an adjective — and put the present of *sum* beside it: *clausum* + *est* = *clausum est*, was shut. The participle carries the meaning, *est* carries the person, and in this pair *est* is always 'was' or 'has been'.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "perf.ind.pass.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.ind.pass.3.sg"
+        ],
+        "ask": "Fill in the 'he / she / it' cell of the perfect passive."
+      }
+    },
+    {
+      "n": 3,
+      "title": "More than one: -ī or -ae, and sunt",
+      "say": "For more than one, the participle takes a plural ending and *sum* becomes *sunt*: *puerī laudātī sunt*, *rosae carptae sunt*. The participle agrees with whoever the sentence is about, so its ending tells you their gender as well as their number.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "perf.ind.pass.3.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.ind.pass.3.pl"
+        ],
+        "ask": "Fill in the 'they' cell of the perfect passive."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Talking about yourself",
+      "say": "One participle serves every person; only the part of *sum* changes. *vocātus sum*, I was called; *reprehēnsus es*, you were blamed; *vocātī sumus*, we were called; *doctī estis*, you were taught. Six forms of the verb, and the same word doing the work in all six.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "perf.ind.pass.1.sg",
+          "perf.ind.pass.2.sg",
+          "perf.ind.pass.1.pl",
+          "perf.ind.pass.2.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.ind.pass.1.sg",
+          "perf.ind.pass.2.sg"
+        ],
+        "ask": "Fill in 'I was called' and 'you were called'."
+      }
+    },
+    {
+      "n": 5,
+      "title": "One word, or two?",
+      "say": "One word ending in *-tur* is the present passive, happening now: *parātur*, it is being got ready. Two words, participle plus *est*, are the perfect passive, already over: *parātus est*, it has been got ready. Counting the words settles the tense before you translate anything.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfp-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pfp-12",
+        "ask": "Which of the two verbs here is passive, and how many words is it?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "The two words may swap places (*scrīpta est* or *est scrīpta*), and other words may stand between them. Whoever did the deed comes in with *ā* or *ab*: *ā nautīs*, *ā patre meō*. Find the participle, find the part of *sum*, and read the two as one verb.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfp-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pfp-14",
+        "ask": "*emō, emere, ēmī, ēmptum*. Put 'was bought' in the gap, agreeing with *vīlla*."
+      }
     }
   ],
   "more": [

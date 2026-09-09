@@ -1,5 +1,106 @@
 {
   "skill": "ablative-means",
+  "teach": [
+    {
+      "n": 1,
+      "title": "The thing something is done with",
+      "say": "When Latin names the tool — what somebody hits with, rides on, writes with — it uses **the ablative (the 'by/with' form)** and puts no preposition in front of it at all: *baculō verberat*, he beats with a stick. English needs the word *with*; Latin needs only the ending.",
+      "show": {
+        "kind": "sentence",
+        "id": "abm-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "abm-02",
+        "ask": "Which word is the thing he is using?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Tools in -us and -um end in -ō",
+      "say": "*Baculum* → *baculō*, *equus* → *equō*. It is the same -ō you have seen after *in* and *ex*; what is different here is that there is no little word in front of it. A bare -ō beside a verb of doing is usually the thing used.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2n",
+        "word": "baculum",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "baculō — the tool ends in -ō, with no preposition"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abm-03",
+        "ask": "Iūlius ___ ad oppidum vehitur. (equus)"
+      }
+    },
+    {
+      "n": 3,
+      "title": "Tools in -a end in a long -ā",
+      "say": "*Lectīca* → *lectīcā*: the litter she is carried in. The macron carries the sense here too — *lectīca* would be the litter doing something, *lectīcā* is the litter being used. (*Viā longā ambulat* is the same ending doing a near neighbour's job: the road he goes by.)",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "word": "lectīca",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "lectīcā — -a becomes a long -ā"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abm-05",
+        "ask": "Aemilia ___ ad vīllam vehitur. (lectīca)"
+      }
+    },
+    {
+      "n": 4,
+      "title": "More than one thing: -īs",
+      "say": "Several things used take -īs, from either kind of word: *umerīs* on his shoulders, *verbīs* with words, *nummīs* with coins. Some of these are naturally plural — you carry a sack on two shoulders.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "word": "umerus",
+        "reveal": [
+          "abl.pl"
+        ],
+        "say": "umerīs — the plural ending is -īs"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abm-07",
+        "ask": "Servus fessus saccum ___ portat. (umerus, more than one)"
+      }
+    },
+    {
+      "n": 5,
+      "title": "*cum* is for company, never for a tool",
+      "say": "English says *with* for both, so this is the trap. A person who came along keeps *cum*: *cum servīs*. A thing that does the work has no *cum* at all: *equō vehitur*. If you can replace it with *and* — Julius and the slaves come — it is company; if it is what does the job, drop the *cum*.",
+      "show": {
+        "kind": "sentence",
+        "id": "abm-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "abm-11",
+        "ask": "Is *umerīs* company or the thing used, and how do you know?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Where it sits in the sentence",
+      "say": "The thing used need not wait for the verb: it can stand first. *Baculō Iūlius servum improbum verberat* — with a stick Julius beats the bad slave. Wherever it stands, what makes it the thing used is the bare ending with no *cum* in front. (A few verbs take it as a matter of course — *dēlectātur* is delighted by, *vehitur* is carried by — so beside those the bare -ō or -īs is nearly always the means.)",
+      "show": {
+        "kind": "sentence",
+        "id": "abm-12"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "abm-14",
+        "ask": "Which word says what the master accuses them with?"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

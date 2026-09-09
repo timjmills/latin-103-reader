@@ -1,0 +1,557 @@
+{
+  "skill": "imperfect-irregular",
+  "chapter": 19,
+  "sentences": [
+    {
+      "id": "iir-01",
+      "la": "Iūlius in hortō suō nōn erat.",
+      "en": "Julius was not in his own garden.",
+      "words": 6,
+      "focus": "erat",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "erat",
+          "m": "was"
+        }
+      ]
+    },
+    {
+      "id": "iir-02",
+      "la": "Puerī in lūdō laetī nōn erant.",
+      "en": "The boys were not happy in school.",
+      "words": 6,
+      "focus": "erant",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "laetī",
+          "m": "happy"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "erant",
+          "m": "were"
+        }
+      ]
+    },
+    {
+      "id": "iir-03",
+      "la": "Ego in vīllā magnā tunc eram.",
+      "en": "At that time I was in a big house.",
+      "words": 6,
+      "focus": "eram",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ego",
+          "m": "I"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "vīllā",
+          "m": "the house"
+        },
+        {
+          "w": "magnā",
+          "m": "big"
+        },
+        {
+          "w": "tunc",
+          "m": "at that time"
+        },
+        {
+          "w": "eram",
+          "m": "was"
+        }
+      ]
+    },
+    {
+      "id": "iir-04",
+      "la": "Cūr in lūdō nōn erās, Mārce?",
+      "en": "Why were you not in school, Marcus?",
+      "words": 6,
+      "focus": "erās",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cūr",
+          "m": "why"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "erās",
+          "m": "were you"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "iir-05",
+      "la": "Nōs in oppidō antīquō tunc erāmus.",
+      "en": "At that time we were in an old town.",
+      "words": 6,
+      "focus": "erāmus",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōs",
+          "m": "we"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "oppidō",
+          "m": "the town"
+        },
+        {
+          "w": "antīquō",
+          "m": "old"
+        },
+        {
+          "w": "tunc",
+          "m": "at that time"
+        },
+        {
+          "w": "erāmus",
+          "m": "were"
+        }
+      ]
+    },
+    {
+      "id": "iir-06",
+      "la": "Pater aberat, māter autem in ātriō aderat.",
+      "en": "Father was away, but mother was there in the atrium.",
+      "words": 7,
+      "focus": "aderat",
+      "step": 2,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pater",
+          "m": "father"
+        },
+        {
+          "w": "aberat",
+          "m": "was away"
+        },
+        {
+          "w": "māter",
+          "m": "mother"
+        },
+        {
+          "w": "autem",
+          "m": "but"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "ātriō",
+          "m": "the atrium"
+        },
+        {
+          "w": "aderat",
+          "m": "was there"
+        }
+      ]
+    },
+    {
+      "id": "iir-07",
+      "la": "Mārcus bene recitāre nōn poterat.",
+      "en": "Marcus could not recite well.",
+      "words": 5,
+      "focus": "poterat",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "bene",
+          "m": "well"
+        },
+        {
+          "w": "recitāre",
+          "m": "to recite"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "poterat",
+          "m": "was able"
+        }
+      ]
+    },
+    {
+      "id": "iir-08",
+      "la": "Puerī fessī ambulāre iam nōn poterant.",
+      "en": "The tired boys could not walk any longer.",
+      "words": 6,
+      "focus": "poterant",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "fessī",
+          "m": "tired"
+        },
+        {
+          "w": "ambulāre",
+          "m": "to walk"
+        },
+        {
+          "w": "iam",
+          "m": "now, already"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "poterant",
+          "m": "were able"
+        }
+      ],
+      "note": "*iam nōn* together means 'no longer'; *iam* on its own is 'now, already'."
+    },
+    {
+      "id": "iir-09",
+      "la": "Dāvus ad forum cum dominō ībat.",
+      "en": "Davus was going to the market place with his master.",
+      "words": 6,
+      "focus": "ībat",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "forum",
+          "m": "the market place"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "dominō",
+          "m": "the master"
+        },
+        {
+          "w": "ībat",
+          "m": "was going"
+        }
+      ]
+    },
+    {
+      "id": "iir-10",
+      "la": "Servī ad fluvium cotīdiē ībant.",
+      "en": "The slaves used to go to the river every day.",
+      "words": 5,
+      "focus": "ībant",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servī",
+          "m": "the slaves"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "fluvium",
+          "m": "the river"
+        },
+        {
+          "w": "cotīdiē",
+          "m": "every day"
+        },
+        {
+          "w": "ībant",
+          "m": "used to go"
+        }
+      ]
+    },
+    {
+      "id": "iir-11",
+      "la": "Quīntus in lectulō dormīre nōn volēbat.",
+      "en": "Quintus did not want to sleep in bed.",
+      "words": 6,
+      "focus": "volēbat",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lectulō",
+          "m": "the bed"
+        },
+        {
+          "w": "dormīre",
+          "m": "to sleep"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "volēbat",
+          "m": "was wanting"
+        }
+      ]
+    },
+    {
+      "id": "iir-12",
+      "la": "Ancilla speculum ad dominam ferēbat.",
+      "en": "The slave girl was carrying the mirror to her mistress.",
+      "words": 5,
+      "focus": "ferēbat",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ancilla",
+          "m": "the slave girl"
+        },
+        {
+          "w": "speculum",
+          "m": "the mirror"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "dominam",
+          "m": "the mistress"
+        },
+        {
+          "w": "ferēbat",
+          "m": "was carrying"
+        }
+      ]
+    },
+    {
+      "id": "iir-13",
+      "la": "Mēdus in viā erat et Rōmam ībat.",
+      "en": "Medus was on the road and was going to Rome.",
+      "words": 7,
+      "focus": "ībat",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "viā",
+          "m": "the road"
+        },
+        {
+          "w": "erat",
+          "m": "was"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "ībat",
+          "m": "was going"
+        }
+      ]
+    },
+    {
+      "id": "iir-14",
+      "la": "Iūlius laetus erat, nam fīlius bene recitābat.",
+      "en": "Julius was happy, for his son was reciting well.",
+      "words": 7,
+      "focus": "erat",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "laetus",
+          "m": "happy"
+        },
+        {
+          "w": "erat",
+          "m": "was"
+        },
+        {
+          "w": "nam",
+          "m": "for"
+        },
+        {
+          "w": "fīlius",
+          "m": "the son"
+        },
+        {
+          "w": "bene",
+          "m": "well"
+        },
+        {
+          "w": "recitābat",
+          "m": "was reciting"
+        }
+      ]
+    }
+  ]
+}

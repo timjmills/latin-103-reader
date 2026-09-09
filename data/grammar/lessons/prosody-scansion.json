@@ -1,5 +1,63 @@
 {
   "skill": "prosody-scansion",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Long by nature",
+      "say": "Before a line can be cut into feet you need **prosody (which syllables count long or short, and when a final vowel is swallowed by the next word)**. 'Long' means it takes longer to say, not that it is louder. The first rule is the easy one: a syllable is long if its vowel is long — the macron tells you, *ā ē ī ō ū* — or if it holds a diphthong, two vowels said as one: *ae, au, oe, eu*. Everything else starts out short.",
+      "show": {
+        "kind": "sentence",
+        "id": "prs-04"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "prs-01",
+        "ask": "Tap the word whose two syllables are both long because both hold a diphthong."
+      }
+    },
+    {
+      "n": 2,
+      "title": "Long by position",
+      "say": "The second rule surprises people: a syllable with a *short* vowel counts long when two consonants follow it. In *spectant*, in the line in front of you, the *e* is short, yet *spec-* is a long syllable, because *c* and *t* come after it. The second consonant may even belong to the next word: *sub lūce* makes *sub* long, because *b* and *l* meet across the gap. *x* counts as two consonants by itself, *h* as none. One softening: *br, cr, gr, tr* usually start the next syllable, so the vowel before them may stay short (*li-brī*).",
+      "show": {
+        "kind": "sentence",
+        "id": "prs-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "prs-02",
+        "ask": "Tap the word that describes pater: its o is a short vowel, yet its first syllable counts long."
+      }
+    },
+    {
+      "n": 3,
+      "title": "Elision: a swallowed vowel",
+      "say": "When a word ends in a vowel, or in a vowel + *m*, and the next word begins with a vowel or with *h-*, that ending is swallowed and not counted. This is elision, and it is why a line that looks too long scans perfectly. English does it too: say 'the end' quickly and you get 'th'end'.",
+      "show": {
+        "kind": "sentence",
+        "id": "prs-02"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "prs-03",
+        "ask": "Tap the word that loses its last letter to the word after it."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Putting it together",
+      "say": "Copy the line out, cross out every elision first, then mark long over each long vowel, each diphthong and each vowel with two consonants after it, and short over the rest. Now divide from the *end*, where the pattern is fixed. If the feet will not come out, the metre is right and your marking is wrong: look again for a missed elision or a syllable long by position. One licence to know: a final *-ō* is sometimes counted short (*volŏ*, *nēmŏ*).",
+      "show": {
+        "kind": "sentence",
+        "id": "prs-03"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "prs-04",
+        "ask": "Tap the word that fills the fifth foot exactly, one whole word to one whole dactyl."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

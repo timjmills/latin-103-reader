@@ -1,0 +1,525 @@
+{
+ "skill": "enclitics",
+ "chapter": 1,
+ "sentences": [
+  {
+   "id": "enc-01",
+   "la": "Sicilia Sardiniaque īnsulae magnae sunt.",
+   "en": "Sicily and Sardinia are big islands.",
+   "words": 5,
+   "focus": "Sardiniaque",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sicilia",
+     "m": "Sicily"
+    },
+    {
+     "w": "Sardiniaque",
+     "m": "and Sardinia (Sardinia + -que 'and')"
+    },
+    {
+     "w": "īnsulae",
+     "m": "islands"
+    },
+    {
+     "w": "magnae",
+     "m": "big"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "enc-02",
+   "la": "Estne Crēta īnsula magna in Graeciā?",
+   "en": "Is Crete a big island in Greece?",
+   "words": 6,
+   "focus": "Estne",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Estne",
+     "m": "is …?"
+    },
+    {
+     "w": "Crēta",
+     "m": "Crete"
+    },
+    {
+     "w": "īnsula",
+     "m": "island"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Graeciā",
+     "m": "Greece"
+    }
+   ]
+  },
+  {
+   "id": "enc-03",
+   "la": "Gallia Hispāniaque prōvinciae Rōmānae sunt.",
+   "en": "Gaul and Spain are Roman provinces.",
+   "words": 5,
+   "focus": "Hispāniaque",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Gallia",
+     "m": "Gaul"
+    },
+    {
+     "w": "Hispāniaque",
+     "m": "and Spain (Hispānia + -que 'and')"
+    },
+    {
+     "w": "prōvinciae",
+     "m": "provinces"
+    },
+    {
+     "w": "Rōmānae",
+     "m": "Roman"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "enc-04",
+   "la": "Rhēnus Dānuviusque fluviī magnī in Germāniā sunt.",
+   "en": "The Rhine and the Danube are big rivers in Germany.",
+   "words": 7,
+   "focus": "Dānuviusque",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Rhēnus",
+     "m": "the Rhine"
+    },
+    {
+     "w": "Dānuviusque",
+     "m": "and the Danube (Dānuvius + -que 'and')"
+    },
+    {
+     "w": "fluviī",
+     "m": "rivers"
+    },
+    {
+     "w": "magnī",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Germāniā",
+     "m": "Germany"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "enc-05",
+   "la": "Litterae syllabaeque in vocābulō Latīnō sunt.",
+   "en": "Letters and syllables are in the Latin word.",
+   "words": 6,
+   "focus": "syllabaeque",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Litterae",
+     "m": "letters"
+    },
+    {
+     "w": "syllabaeque",
+     "m": "and syllables (syllabae + -que 'and')"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vocābulō",
+     "m": "word"
+    },
+    {
+     "w": "Latīnō",
+     "m": "Latin"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "enc-06",
+   "la": "Estne Nīlus fluvius magnus in Āfricā?",
+   "en": "Is the Nile a big river in Africa?",
+   "words": 6,
+   "focus": "Estne",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Estne",
+     "m": "is …?"
+    },
+    {
+     "w": "Nīlus",
+     "m": "the Nile"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Āfricā",
+     "m": "Africa"
+    }
+   ]
+  },
+  {
+   "id": "enc-07",
+   "la": "Suntne Corsica et Sardinia īnsulae Rōmānae?",
+   "en": "Are Corsica and Sardinia Roman islands?",
+   "words": 6,
+   "focus": "Suntne",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Suntne",
+     "m": "are …?"
+    },
+    {
+     "w": "Corsica",
+     "m": "Corsica"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Sardinia",
+     "m": "Sardinia"
+    },
+    {
+     "w": "īnsulae",
+     "m": "islands"
+    },
+    {
+     "w": "Rōmānae",
+     "m": "Roman"
+    }
+   ]
+  },
+  {
+   "id": "enc-08",
+   "la": "Aegyptusne prōvincia Rōmāna in Āfricā est?",
+   "en": "Is Egypt a Roman province in Africa?",
+   "words": 6,
+   "focus": "Aegyptusne",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Aegyptusne",
+     "m": "Egypt …? (Aegyptus + the question tail -ne)"
+    },
+    {
+     "w": "prōvincia",
+     "m": "province"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Āfricā",
+     "m": "Africa"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "enc-09",
+   "la": "Sardinia Corsicaque īnsulae sunt, Sicilia quoque īnsula est.",
+   "en": "Sardinia and Corsica are islands, and Sicily is an island too.",
+   "words": 8,
+   "focus": "Corsicaque",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sardinia",
+     "m": "Sardinia"
+    },
+    {
+     "w": "Corsicaque",
+     "m": "and Corsica (Corsica + -que 'and')"
+    },
+    {
+     "w": "īnsulae",
+     "m": "islands"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    },
+    {
+     "w": "Sicilia",
+     "m": "Sicily"
+    },
+    {
+     "w": "quoque",
+     "m": "also"
+    },
+    {
+     "w": "īnsula",
+     "m": "island"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "enc-10",
+   "la": "Nīlus quoque fluvius est, Rhēnusque fluvius magnus est.",
+   "en": "The Nile too is a river, and the Rhine is a big river.",
+   "words": 8,
+   "focus": "Rhēnusque",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nīlus",
+     "m": "the Nile"
+    },
+    {
+     "w": "quoque",
+     "m": "also"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "Rhēnusque",
+     "m": "and the Rhine (Rhēnus + -que 'and')"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "enc-11",
+   "la": "Suntne Sicilia Sardiniaque īnsulae magnae?",
+   "en": "Are Sicily and Sardinia big islands?",
+   "words": 5,
+   "focus": "Sardiniaque",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Suntne",
+     "m": "are …?"
+    },
+    {
+     "w": "Sicilia",
+     "m": "Sicily"
+    },
+    {
+     "w": "Sardiniaque",
+     "m": "and Sardinia (Sardinia + -que 'and')"
+    },
+    {
+     "w": "īnsulae",
+     "m": "islands"
+    },
+    {
+     "w": "magnae",
+     "m": "big"
+    }
+   ]
+  },
+  {
+   "id": "enc-12",
+   "la": "Estne Rōma oppidum magnum in Italiā?",
+   "en": "Is Rome a big town in Italy?",
+   "words": 6,
+   "focus": "Estne",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Estne",
+     "m": "is …?"
+    },
+    {
+     "w": "Rōma",
+     "m": "Rome"
+    },
+    {
+     "w": "oppidum",
+     "m": "town"
+    },
+    {
+     "w": "magnum",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Italiā",
+     "m": "Italy"
+    }
+   ]
+  },
+  {
+   "id": "enc-13",
+   "la": "Prōvincia Rōmāna magna est, īnsulaeque parvae sunt.",
+   "en": "The Roman province is big, and the islands are small.",
+   "words": 7,
+   "focus": "īnsulaeque",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Prōvincia",
+     "m": "a province"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "īnsulaeque",
+     "m": "and the islands (īnsulae + -que 'and')"
+    },
+    {
+     "w": "parvae",
+     "m": "small"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  }
+ ]
+}

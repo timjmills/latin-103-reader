@@ -1,0 +1,539 @@
+{
+ "skill": "sequence-of-tenses",
+ "chapter": 28,
+ "sentences": [
+  {
+   "id": "st-01",
+   "la": "Iūlius imperat ut Dāvus statim veniat.",
+   "en": "Julius orders Davus to come at once.",
+   "words": 6,
+   "focus": "veniat",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "imperat",
+     "m": "orders"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "veniat",
+     "m": "come"
+    }
+   ]
+  },
+  {
+   "id": "st-02",
+   "la": "Iūlius imperāvit ut Dāvus statim venīret.",
+   "en": "Julius ordered Davus to come at once.",
+   "words": 6,
+   "focus": "venīret",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "imperāvit",
+     "m": "ordered"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "venīret",
+     "m": "come"
+    }
+   ],
+   "note": "The same order, one word different: imperat gives veniat, imperāvit gives venīret. English keeps 'to come' both times."
+  },
+  {
+   "id": "st-03",
+   "la": "Servus currit ut medicum celeriter vocet.",
+   "en": "The slave is running to call a doctor quickly.",
+   "words": 6,
+   "focus": "vocet",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "currit",
+     "m": "runs"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "medicum",
+     "m": "a doctor"
+    },
+    {
+     "w": "celeriter",
+     "m": "quickly"
+    },
+    {
+     "w": "vocet",
+     "m": "he call"
+    }
+   ]
+  },
+  {
+   "id": "st-05",
+   "la": "Dominus servōs mittet ut agrōs arent.",
+   "en": "The master will send the slaves to plough the fields.",
+   "words": 6,
+   "focus": "arent",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servōs",
+     "m": "the slaves"
+    },
+    {
+     "w": "mittet",
+     "m": "will send"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "agrōs",
+     "m": "the fields"
+    },
+    {
+     "w": "arent",
+     "m": "they plough"
+    }
+   ],
+   "note": "mittet is future, and the future counts with the present: it still takes the present subjunctive arent."
+  },
+  {
+   "id": "st-04",
+   "la": "Māter puerōs ōrat nē in viā currant.",
+   "en": "The mother begs the boys not to run in the street.",
+   "words": 7,
+   "focus": "currant",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Māter",
+     "m": "the mother"
+    },
+    {
+     "w": "puerōs",
+     "m": "the boys"
+    },
+    {
+     "w": "ōrat",
+     "m": "begs"
+    },
+    {
+     "w": "nē",
+     "m": "that not"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viā",
+     "m": "the street"
+    },
+    {
+     "w": "currant",
+     "m": "run"
+    }
+   ]
+  },
+  {
+   "id": "st-06",
+   "la": "Servus cucurrit ut medicum celeriter vocāret.",
+   "en": "The slave ran to call a doctor quickly.",
+   "words": 6,
+   "focus": "vocāret",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "cucurrit",
+     "m": "ran"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "medicum",
+     "m": "a doctor"
+    },
+    {
+     "w": "celeriter",
+     "m": "quickly"
+    },
+    {
+     "w": "vocāret",
+     "m": "he call"
+    }
+   ]
+  },
+  {
+   "id": "st-07",
+   "la": "Māter puerōs ōrāvit nē in viā currerent.",
+   "en": "The mother begged the boys not to run in the street.",
+   "words": 7,
+   "focus": "currerent",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Māter",
+     "m": "the mother"
+    },
+    {
+     "w": "puerōs",
+     "m": "the boys"
+    },
+    {
+     "w": "ōrāvit",
+     "m": "begged"
+    },
+    {
+     "w": "nē",
+     "m": "that not"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viā",
+     "m": "the street"
+    },
+    {
+     "w": "currerent",
+     "m": "run"
+    }
+   ]
+  },
+  {
+   "id": "st-08",
+   "la": "Puer tam fessus est ut statim dormiat.",
+   "en": "The boy is so tired that he falls asleep at once.",
+   "words": 7,
+   "focus": "dormiat",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "fessus",
+     "m": "tired"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "dormiat",
+     "m": "he sleeps"
+    }
+   ]
+  },
+  {
+   "id": "st-09",
+   "la": "Puer tam fessus erat ut statim dormīret.",
+   "en": "The boy was so tired that he fell asleep at once.",
+   "words": 7,
+   "focus": "dormīret",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "fessus",
+     "m": "tired"
+    },
+    {
+     "w": "erat",
+     "m": "was"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "dormīret",
+     "m": "he slept"
+    }
+   ]
+  },
+  {
+   "id": "st-10",
+   "la": "Iūlius quaerit ubi fīlius suus sit.",
+   "en": "Julius asks where his son is.",
+   "words": 6,
+   "focus": "sit",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "quaerit",
+     "m": "asks"
+    },
+    {
+     "w": "ubi",
+     "m": "where"
+    },
+    {
+     "w": "fīlius",
+     "m": "the son"
+    },
+    {
+     "w": "suus",
+     "m": "his own"
+    },
+    {
+     "w": "sit",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "st-11",
+   "la": "Iūlius quaesīvit ubi fīlius suus esset.",
+   "en": "Julius asked where his son was.",
+   "words": 6,
+   "focus": "esset",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "quaesīvit",
+     "m": "asked"
+    },
+    {
+     "w": "ubi",
+     "m": "where"
+    },
+    {
+     "w": "fīlius",
+     "m": "the son"
+    },
+    {
+     "w": "suus",
+     "m": "his own"
+    },
+    {
+     "w": "esset",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "st-12",
+   "la": "Cum Mārcus dormīret, Quīntus librum legēbat.",
+   "en": "While Marcus was sleeping, Quintus was reading a book.",
+   "words": 6,
+   "focus": "dormīret",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "while"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "dormīret",
+     "m": "was sleeping"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "librum",
+     "m": "a book"
+    },
+    {
+     "w": "legēbat",
+     "m": "was reading"
+    }
+   ],
+   "note": "legēbat is an imperfect, not a perfect, but it is still past: every past tense takes the imperfect subjunctive."
+  },
+  {
+   "id": "st-13",
+   "la": "Ancilla tacēbat nē domina eam audīret.",
+   "en": "The maid kept quiet so that her mistress would not hear her.",
+   "words": 6,
+   "focus": "audīret",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ancilla",
+     "m": "the maid"
+    },
+    {
+     "w": "tacēbat",
+     "m": "was keeping quiet"
+    },
+    {
+     "w": "nē",
+     "m": "so that not"
+    },
+    {
+     "w": "domina",
+     "m": "the mistress"
+    },
+    {
+     "w": "eam",
+     "m": "her"
+    },
+    {
+     "w": "audīret",
+     "m": "hear"
+    }
+   ]
+  }
+ ]
+}

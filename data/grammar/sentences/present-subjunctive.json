@@ -1,0 +1,748 @@
+{
+  "skill": "present-subjunctive",
+  "chapter": 27,
+  "sentences": [
+    {
+      "id": "ps-01",
+      "la": "Dominus servō imperat ut intret.",
+      "en": "The master orders the slave to come in.",
+      "words": 5,
+      "focus": "intret",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Dominus",
+          "m": "the master"
+        },
+        {
+          "w": "servō",
+          "m": "the slave"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "intret",
+          "m": "he come in"
+        }
+      ]
+    },
+    {
+      "id": "ps-02",
+      "la": "Iūlius imperat ut Mārcus statim veniat.",
+      "en": "Julius orders Marcus to come at once.",
+      "words": 6,
+      "focus": "veniat",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "veniat",
+          "m": "come"
+        }
+      ]
+    },
+    {
+      "id": "ps-03",
+      "la": "Aemilia ancillam ōrat ut aquam portet.",
+      "en": "Aemilia asks the maid to carry water.",
+      "words": 6,
+      "focus": "portet",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "ancillam",
+          "m": "the maid"
+        },
+        {
+          "w": "ōrat",
+          "m": "asks"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "aquam",
+          "m": "water"
+        },
+        {
+          "w": "portet",
+          "m": "she carry"
+        }
+      ]
+    },
+    {
+      "id": "ps-04",
+      "la": "Māter fīliae imperat nē clāmet.",
+      "en": "The mother orders her daughter not to shout.",
+      "words": 5,
+      "focus": "clāmet",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Māter",
+          "m": "the mother"
+        },
+        {
+          "w": "fīliae",
+          "m": "her daughter"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "nē",
+          "m": "that not"
+        },
+        {
+          "w": "clāmet",
+          "m": "she shout"
+        }
+      ]
+    },
+    {
+      "id": "ps-05",
+      "la": "Puerī ōrant ut magister fābulam nārret.",
+      "en": "The boys ask the teacher to tell a story.",
+      "words": 6,
+      "focus": "nārret",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "ōrant",
+          "m": "ask"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "magister",
+          "m": "the teacher"
+        },
+        {
+          "w": "fābulam",
+          "m": "a story"
+        },
+        {
+          "w": "nārret",
+          "m": "tell"
+        }
+      ]
+    },
+    {
+      "id": "ps-19",
+      "la": "Intret servus et aquam portet!",
+      "en": "Let the slave come in and carry water!",
+      "words": 5,
+      "focus": "Intret",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Intret",
+          "m": "let come in"
+        },
+        {
+          "w": "servus",
+          "m": "the slave"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "aquam",
+          "m": "water"
+        },
+        {
+          "w": "portet",
+          "m": "let carry"
+        }
+      ]
+    },
+    {
+      "id": "ps-06",
+      "la": "Magister discipulīs imperat ut taceant.",
+      "en": "The teacher orders the pupils to be quiet.",
+      "words": 5,
+      "focus": "taceant",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Magister",
+          "m": "the teacher"
+        },
+        {
+          "w": "discipulīs",
+          "m": "the pupils"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "taceant",
+          "m": "they be quiet"
+        }
+      ]
+    },
+    {
+      "id": "ps-07",
+      "la": "Iūlius Dāvum monet ut fenestram claudat.",
+      "en": "Julius warns Davus to shut the window.",
+      "words": 6,
+      "focus": "claudat",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "Dāvum",
+          "m": "Davus"
+        },
+        {
+          "w": "monet",
+          "m": "warns"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "fenestram",
+          "m": "the window"
+        },
+        {
+          "w": "claudat",
+          "m": "he shut"
+        }
+      ]
+    },
+    {
+      "id": "ps-08",
+      "la": "Magister monet nē puerī in viā lūdant.",
+      "en": "The teacher warns the boys not to play in the road.",
+      "words": 7,
+      "focus": "lūdant",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Magister",
+          "m": "the teacher"
+        },
+        {
+          "w": "monet",
+          "m": "warns"
+        },
+        {
+          "w": "nē",
+          "m": "that not"
+        },
+        {
+          "w": "puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "viā",
+          "m": "the road"
+        },
+        {
+          "w": "lūdant",
+          "m": "play"
+        }
+      ]
+    },
+    {
+      "id": "ps-17",
+      "la": "Pater imperat ut Mārcus epistulam accipiat.",
+      "en": "The father orders Marcus to receive the letter.",
+      "words": 6,
+      "focus": "accipiat",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pater",
+          "m": "the father"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "epistulam",
+          "m": "the letter"
+        },
+        {
+          "w": "accipiat",
+          "m": "he receive"
+        }
+      ]
+    },
+    {
+      "id": "ps-18",
+      "la": "Taceant puerī et magistrum audiant!",
+      "en": "Let the boys be quiet and listen to the teacher!",
+      "words": 5,
+      "focus": "Taceant",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Taceant",
+          "m": "let be quiet"
+        },
+        {
+          "w": "puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "magistrum",
+          "m": "the teacher"
+        },
+        {
+          "w": "audiant",
+          "m": "let listen to"
+        }
+      ]
+    },
+    {
+      "id": "ps-09",
+      "la": "Pater imperat ut fīlius Rōmam eat.",
+      "en": "The father orders his son to go to Rome.",
+      "words": 6,
+      "focus": "eat",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pater",
+          "m": "the father"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "fīlius",
+          "m": "his son"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "eat",
+          "m": "go"
+        }
+      ]
+    },
+    {
+      "id": "ps-10",
+      "la": "Iūlius imperat ut Mārcus bonus sit.",
+      "en": "Julius orders Marcus to be good.",
+      "words": 6,
+      "focus": "sit",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "bonus",
+          "m": "good"
+        },
+        {
+          "w": "sit",
+          "m": "be"
+        }
+      ]
+    },
+    {
+      "id": "ps-11",
+      "la": "Ōrāmus ut medicus puerum sānāre possit.",
+      "en": "We pray that the doctor may be able to heal the boy.",
+      "words": 6,
+      "focus": "possit",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ōrāmus",
+          "m": "we pray"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "medicus",
+          "m": "the doctor"
+        },
+        {
+          "w": "puerum",
+          "m": "the boy"
+        },
+        {
+          "w": "sānāre",
+          "m": "to heal"
+        },
+        {
+          "w": "possit",
+          "m": "may be able"
+        }
+      ]
+    },
+    {
+      "id": "ps-12",
+      "la": "Mārcus scrībet; pater imperat ut bene scrībat.",
+      "en": "Marcus will write; his father orders him to write well.",
+      "words": 7,
+      "focus": "scrībat",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "scrībet",
+          "m": "will write"
+        },
+        {
+          "w": "pater",
+          "m": "the father"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "bene",
+          "m": "well"
+        },
+        {
+          "w": "scrībat",
+          "m": "he write"
+        }
+      ]
+    },
+    {
+      "id": "ps-13",
+      "la": "Servus nōn labōrābit; dominus imperat ut labōret.",
+      "en": "The slave will not work; the master orders him to work.",
+      "words": 7,
+      "focus": "labōret",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "labōrābit",
+          "m": "will work"
+        },
+        {
+          "w": "dominus",
+          "m": "the master"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "labōret",
+          "m": "he work"
+        }
+      ]
+    },
+    {
+      "id": "ps-14",
+      "la": "Veniat Mārcus et audiat magistrum!",
+      "en": "Let Marcus come and hear the teacher!",
+      "words": 5,
+      "focus": "Veniat",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Veniat",
+          "m": "let come"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "audiat",
+          "m": "hear"
+        },
+        {
+          "w": "magistrum",
+          "m": "the teacher"
+        }
+      ]
+    },
+    {
+      "id": "ps-15",
+      "la": "Deī nōs semper iuvent et servent!",
+      "en": "May the gods always help and save us!",
+      "words": 6,
+      "focus": "iuvent",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Deī",
+          "m": "the gods"
+        },
+        {
+          "w": "nōs",
+          "m": "us"
+        },
+        {
+          "w": "semper",
+          "m": "always"
+        },
+        {
+          "w": "iuvent",
+          "m": "may help"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "servent",
+          "m": "save"
+        }
+      ]
+    },
+    {
+      "id": "ps-16",
+      "la": "Pater imperat ut iānua claudātur.",
+      "en": "The father orders the door to be shut.",
+      "words": 5,
+      "focus": "claudātur",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pater",
+          "m": "the father"
+        },
+        {
+          "w": "imperat",
+          "m": "orders"
+        },
+        {
+          "w": "ut",
+          "m": "that"
+        },
+        {
+          "w": "iānua",
+          "m": "the door"
+        },
+        {
+          "w": "claudātur",
+          "m": "be shut"
+        }
+      ]
+    }
+  ]
+}

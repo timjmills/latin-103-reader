@@ -1,5 +1,109 @@
 {
   "skill": "future-perfect",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Latin marks an action that will be finished before another future one with **the future perfect (the 'will have done' tense)**. Latin is strict where English is lazy: English says 'when I come to Rome, I shall see you', but Latin says *cum Rōmam vēnerō* — when I shall have come. Whenever a clause opens with *cum, sī, ubi, postquam, antequam* and the main verb is future, expect this tense.",
+      "show": {
+        "kind": "sentence",
+        "id": "futp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "futp-02",
+        "ask": "gaudēbimus is future. Does vēnerit happen before it, or after?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The singular: perfect stem + -erō, -eris, -erit",
+      "say": "Take the perfect stem — the third principal part without its *-ī* (*parāvī → parāv-*, *fēcī → fēc-*) — and add **-erō** for 'I', **-eris** for 'you', **-erit** for 'he, she, it'. The *i* of *-eris* is short.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "futperf.ind.act.1.sg",
+          "futperf.ind.act.2.sg",
+          "futperf.ind.act.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "futperf.ind.act.1.sg",
+          "futperf.ind.act.2.sg",
+          "futperf.ind.act.3.sg"
+        ],
+        "ask": "Fill the three singular future perfect forms of laudō."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The plural: -erimus, -eritis, -erint",
+      "say": "The plural is built on the same perfect stem: **-erimus** for 'we', **-eritis** for 'you', **-erint** for 'they'. So *surgō* gives *surrēxerimus, surrēxeritis, surrēxerint*. Six endings, one stem, nothing else changes.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "futperf.ind.act.1.pl",
+          "futperf.ind.act.2.pl",
+          "futperf.ind.act.3.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "futperf.ind.act.1.pl",
+          "futperf.ind.act.2.pl",
+          "futperf.ind.act.3.pl"
+        ],
+        "ask": "Now the three plural future perfect forms of laudō."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Not the plain perfect",
+      "say": "One syllable separates the two tenses. *lēgit* is the perfect (the 'did / has done' tense) and means 'he read'; *lēgerit* has *-eri-* before the ending and means 'he will have read'. The same goes for *vēnit / vēnerit* and *fēcit / fēcerit*. If the main verb is future, read the *-eri-* form as a future perfect.",
+      "show": {
+        "kind": "sentence",
+        "id": "futp-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "futp-09",
+        "ask": "Which tense and mood is fēceris — the plain perfect, or the future perfect?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Where it turns up",
+      "say": "This tense lives almost entirely in the clause that comes first. Open with *cum, sī, nisi, ubi, postquam* or *antequam*, keep the main verb in the plain future, and the first verb goes into the future perfect: *postquam omnēs surrēxerint, servī mēnsam movēbunt*. English uses a present or a perfect there and sounds no different.",
+      "show": {
+        "kind": "sentence",
+        "id": "futp-04"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "futp-06",
+        "ask": "Cum opens the clause and quiēscēmus is future. Which tense is vēnerimus?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Use it",
+      "say": "Put the finished action into the future perfect and leave the main verb in the plain future. 'If Davus runs away, his master will look for him' becomes *Sī Dāvus fūgerit, dominus eum quaeret* — word for word 'if he will have fled'. When the verb is passive the tense is two words instead, the perfect participle (a verb used like an adjective) with the future of *sum*: *epistula scrīpta erit*, the letter will have been written.",
+      "show": {
+        "kind": "sentence",
+        "id": "futp-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "futp-11",
+        "ask": "Put occidō into the future perfect."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

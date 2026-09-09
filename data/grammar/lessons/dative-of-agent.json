@@ -1,5 +1,99 @@
 {
   "skill": "dative-of-agent",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "The 'must be done' pattern usually names the person who must do it, and that person goes in the dative (the 'to/for' form). That is **the dative of agent (the person who must do it: mihi legendum est = I must read)**. *Hic liber mihi legendus est* is word for word 'this book is to-be-read for me', and in plain English 'I have to read this book'.",
+      "show": {
+        "kind": "sentence",
+        "id": "dag-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dag-02",
+        "ask": "What is tibi doing beside tacendum est?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The pronouns: mihi, tibi, nōbīs, vōbīs",
+      "say": "The commonest doers are the pronouns: *mihi* I, *tibi* you, *nōbīs* we, *vōbīs* you (more than one). *mihi* and *nōbīs* are the dative singular and plural of *ego*, printed below; *tū* makes *tibi* and *vōbīs* the same way. They are the very forms you already use for 'give it to me'.",
+      "show": {
+        "kind": "paradigm",
+        "key": "ego",
+        "reveal": [
+          "dat.sg",
+          "dat.pl"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dag-04",
+        "ask": "Fill in the form of ego that means 'we have to'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "Nouns take their ordinary dative endings",
+      "say": "A named person or a whole group takes the dative its own declension (its own family of endings) gives it: *servō* from *servus* for one slave, *servīs* for all of them together. Nothing special is added for this job — it is the plain dative doing a new one.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "dat.sg",
+          "dat.pl"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dag-03",
+        "ask": "Fill in the dative plural of servus."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Not ā or ab with the ablative",
+      "say": "An ordinary passive verb names its doer with *ā/ab* and the ablative (the 'by/with/from' form): *liber ā Mārcō legitur*. The gerundive refuses that and takes the bare dative instead: *liber mihi legendus est*. Do not write *ā mē legendus est*.",
+      "show": {
+        "kind": "sentence",
+        "id": "dag-07"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dag-15",
+        "ask": "Two doers stand here. What is mihi doing?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Not the plain 'to / for' dative",
+      "say": "The same word can do either job. After a verb of giving, *fīliō* is the person given to: *pater fīliō librum dat*. Beside a gerundive with *sum*, *fīliō* is the person who must act: *fīliō legendus est*, his son has to read it. The gerundive is what changes the job.",
+      "show": {
+        "kind": "sentence",
+        "id": "dag-08"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "dag-16",
+        "ask": "mihi is the person the book is sent to. What is tibi doing?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Use it",
+      "say": "Name the doer in the dative, match the gerundive to the thing, and add *sum*: *quid nōbīs faciendum est?* — what do we have to do? Where there is no thing at all, the neuter serves: *omnibus puerīs tacendum est*.",
+      "show": {
+        "kind": "sentence",
+        "id": "dag-10"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dag-11",
+        "ask": "Fill in the dative of servus that names who had to finish the work."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

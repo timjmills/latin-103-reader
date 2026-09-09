@@ -1,0 +1,593 @@
+{
+ "skill": "passive-personal-endings",
+ "chapter": 17,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "ppe-01",
+   "la": "Discipulus improbus ā magistrō pūnītur.",
+   "en": "The naughty pupil is punished by the teacher.",
+   "words": 5,
+   "focus": "pūnītur",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulus",
+     "m": "the pupil"
+    },
+    {
+     "w": "improbus",
+     "m": "naughty"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "pūnītur",
+     "m": "is punished"
+    }
+   ]
+  },
+  {
+   "id": "ppe-02",
+   "la": "Ego laudor, tū nōn laudāris.",
+   "en": "I am praised; you are not praised.",
+   "words": 5,
+   "focus": "laudor",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "laudor",
+     "m": "am praised"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "laudāris",
+     "m": "are praised"
+    }
+   ]
+  },
+  {
+   "id": "ppe-03",
+   "la": "Mārcus ā Iūliā nōn amātur.",
+   "en": "Marcus is not loved by Julia.",
+   "words": 5,
+   "focus": "amātur",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Iūliā",
+     "m": "Julia"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "amātur",
+     "m": "is loved"
+    }
+   ]
+  },
+  {
+   "id": "ppe-04",
+   "la": "Cūr ego nōn laudor, magister?",
+   "en": "Why am I not praised, teacher?",
+   "words": 5,
+   "focus": "laudor",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cūr",
+     "m": "why"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "laudor",
+     "m": "am praised"
+    },
+    {
+     "w": "magister",
+     "m": "teacher!"
+    }
+   ]
+  },
+  {
+   "id": "ppe-05",
+   "la": "Tū ā patre laudāris, ego reprehendor.",
+   "en": "You are praised by father; I am blamed.",
+   "words": 6,
+   "focus": "laudāris",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "patre",
+     "m": "father"
+    },
+    {
+     "w": "laudāris",
+     "m": "are praised"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "reprehendor",
+     "m": "am blamed"
+    }
+   ]
+  },
+  {
+   "id": "ppe-06",
+   "la": "Discipulus piger ā magistrō reprehenditur.",
+   "en": "The lazy pupil is blamed by the teacher.",
+   "words": 5,
+   "focus": "reprehenditur",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulus",
+     "m": "the pupil"
+    },
+    {
+     "w": "piger",
+     "m": "lazy"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "reprehenditur",
+     "m": "is blamed"
+    }
+   ]
+  },
+  {
+   "id": "ppe-07",
+   "la": "Nōs ā magistrō docēmur, vōs nōn docēminī.",
+   "en": "We are taught by the teacher; you all are not taught.",
+   "words": 7,
+   "focus": "docēmur",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "docēmur",
+     "m": "are taught"
+    },
+    {
+     "w": "vōs",
+     "m": "you all"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "docēminī",
+     "m": "are taught"
+    }
+   ]
+  },
+  {
+   "id": "ppe-08",
+   "la": "Puerī prāvī ā magistrō pūniuntur.",
+   "en": "The badly behaved boys are punished by the teacher.",
+   "words": 5,
+   "focus": "pūniuntur",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "prāvī",
+     "m": "badly behaved"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "pūniuntur",
+     "m": "are punished"
+    }
+   ]
+  },
+  {
+   "id": "ppe-09",
+   "la": "Mārcus ā Iūliō vocātur, nōn ā Syrā.",
+   "en": "Marcus is called by Julius, not by Syra.",
+   "words": 7,
+   "focus": "vocātur",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Iūliō",
+     "m": "Julius"
+    },
+    {
+     "w": "vocātur",
+     "m": "is called"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Syrā",
+     "m": "Syra"
+    }
+   ]
+  },
+  {
+   "id": "ppe-10",
+   "la": "Merx ā nautīs in nāvem portātur.",
+   "en": "The merchandise is carried into the ship by the sailors.",
+   "words": 6,
+   "focus": "portātur",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Merx",
+     "m": "the merchandise"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "nautīs",
+     "m": "the sailors"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "nāvem",
+     "m": "the ship"
+    },
+    {
+     "w": "portātur",
+     "m": "is carried"
+    }
+   ]
+  },
+  {
+   "id": "ppe-11",
+   "la": "Vōx magistrī ab omnibus audītur.",
+   "en": "The teacher's voice is heard by everybody.",
+   "words": 5,
+   "focus": "audītur",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vōx",
+     "m": "the voice"
+    },
+    {
+     "w": "magistrī",
+     "m": "of the teacher"
+    },
+    {
+     "w": "ab",
+     "m": "by"
+    },
+    {
+     "w": "omnibus",
+     "m": "everybody"
+    },
+    {
+     "w": "audītur",
+     "m": "is heard"
+    }
+   ]
+  },
+  {
+   "id": "ppe-12",
+   "la": "Liber ā discipulīs legitur, nōn ā magistrō.",
+   "en": "The book is read by the pupils, not by the teacher.",
+   "words": 7,
+   "focus": "legitur",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Liber",
+     "m": "the book"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "discipulīs",
+     "m": "the pupils"
+    },
+    {
+     "w": "legitur",
+     "m": "is read"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    }
+   ]
+  },
+  {
+   "id": "ppe-13",
+   "la": "Tū ā magistrō vidēris, Sexte.",
+   "en": "You are seen by the teacher, Sextus.",
+   "words": 5,
+   "focus": "vidēris",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "vidēris",
+     "m": "are seen"
+    },
+    {
+     "w": "Sexte",
+     "m": "Sextus!"
+    }
+   ]
+  },
+  {
+   "id": "ppe-14",
+   "la": "Discipulī magistrum verentur et ab eō docentur.",
+   "en": "The pupils fear the teacher and are taught by him.",
+   "words": 7,
+   "focus": "verentur",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulī",
+     "m": "the pupils"
+    },
+    {
+     "w": "magistrum",
+     "m": "the teacher"
+    },
+    {
+     "w": "verentur",
+     "m": "fear"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "ab",
+     "m": "by"
+    },
+    {
+     "w": "eō",
+     "m": "him"
+    },
+    {
+     "w": "docentur",
+     "m": "are taught"
+    }
+   ]
+  },
+  {
+   "id": "ppe-15",
+   "la": "Nauta nāvem sequitur, sed ā nūllō vidētur.",
+   "en": "The sailor follows the ship, but is seen by nobody.",
+   "words": 7,
+   "focus": "sequitur",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nauta",
+     "m": "the sailor"
+    },
+    {
+     "w": "nāvem",
+     "m": "the ship"
+    },
+    {
+     "w": "sequitur",
+     "m": "follows"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "nūllō",
+     "m": "nobody"
+    },
+    {
+     "w": "vidētur",
+     "m": "is seen"
+    }
+   ]
+  }
+ ]
+}

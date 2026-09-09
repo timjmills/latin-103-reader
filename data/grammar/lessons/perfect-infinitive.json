@@ -43,6 +43,88 @@
       "text": "Plain **the infinitive (the 'to' form)** means 'at the same time': *dīcit Mārcum dormīre* — he says Marcus is sleeping. The -isse form pushes it back: *dīcit Mārcum dormīvisse* — he says Marcus slept (or has slept)."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "When you report what somebody said or thought, and the thing reported happened earlier, Latin uses **the perfect infinitive (the 'to have done' form)**: *Iūlius dīcit Mārcum vēnisse* — Julius says that Marcus came. English says 'that he came'; Latin says, word for word, 'him to have come'.",
+      "show": {
+        "kind": "sentence",
+        "id": "pinf-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pinf-02",
+        "ask": "Which word reports something that already happened?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The active form: perfect stem + -isse",
+      "say": "Take the perfect stem — the third dictionary form with its *-ī* cut off — and add *-isse*. *lēgī* gives *lēgisse*, *fēcī* gives *fēcisse*, *fuī* gives *fuisse*. One ending covers every verb in the book, and it never changes, whoever is being talked about.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "inf.perf.act"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "inf.perf.act"
+        ],
+        "ask": "Fill in the perfect active infinitive."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The passive form: participle + esse",
+      "say": "For something done to somebody, use the perfect participle with *esse*: *scrīptam esse*, *captum esse*. The participle is an adjective again here, so it takes the ending of the word the sentence is about: *rosās carptās esse*, because the roses are what is being reported.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "inf.perf.pass"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "inf.perf.pass"
+        ],
+        "ask": "Fill in the perfect passive infinitive."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Now, or already?",
+      "say": "The plain infinitive and the perfect infinitive sit one syllable apart. *scrībere* is 'to write', going on now; *scrīpsisse* is 'to have written', already over. Both follow *dīcit* in the same way, so only the ending tells you when the reported thing happened.",
+      "show": {
+        "kind": "sentence",
+        "id": "pinf-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pinf-11",
+        "ask": "*iisse* — is the master going now, or has he already gone?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Using it",
+      "say": "The person the report is about goes into the object form — *Mārcum*, *puerōs*, or *sē* when it is the speaker himself — and the infinitive comes last, however long the clause grows. Read the object form as 'that he', and the infinitive as the verb of that little sentence.",
+      "show": {
+        "kind": "sentence",
+        "id": "pinf-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pinf-14",
+        "ask": "*laudō, laudāre, laudāvī, laudātum*. Report that the boys were praised."
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

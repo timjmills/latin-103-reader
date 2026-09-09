@@ -1,18 +1,185 @@
 {
   "skill": "present-participle",
   "core": [
-    { "type": "p", "text": "Add *-ns* to a verb's stem and you get an adjective: **the present participle (the '-ing' word that describes a noun)**. *dormīre* (to sleep) → *dormiēns* (sleeping); *canere* (to sing, crow) → *canēns*; *vigilāre* (to be awake) → *vigilāns*. It describes a noun and agrees with it, taking the 3rd-declension endings on the stem *-nt-*: *puer dormiēns* (the sleeping boy), *puerum dormientem*, *puerī dormientis*, *puerōs dormientēs*. Latin name: participium praesentis." },
-    { "type": "english", "text": "A participle is a verb used like an adjective: *the fleeing soldiers*, *a boy sleeping in bed*. An *-ing* word used as a noun (*sleeping is pleasant*) is a gerund." },
-    { "type": "rule", "text": "Stem + -ns (genitive -ntis): -āns, -ēns, -ēns, -iēns by conjugation; agrees with its noun like a 3rd-declension adjective." },
-    { "type": "paradigm", "key": "conj3", "highlight": { "mood": "ptc", "tense": "pres" } },
-    { "type": "paradigm", "key": "adj3" },
-    { "type": "examples", "units": ["r14:22.1", "r14:19.3", "r14:34.2", "r14:36.1"], "invented": [ { "la": "Māter fīliam cantantem audit.", "en": "The mother hears her daughter singing.", "focus": "cantantem" } ] },
-    { "type": "confusion", "with": "gerund", "text": "Both come out as *-ing* in English. The participle ends in *-ns / -nt-* and describes a noun that is doing something: *puer dormiēns*. The gerund (the '-ing' noun form: ad bibendum = for drinking) ends in *-nd-* and names the action itself: *ad dormiendum* — for sleeping. *-nt-* = someone doing it; *-nd-* = the doing." }
+    {
+      "type": "p",
+      "text": "Add *-ns* to a verb's stem and you get an adjective: **the present participle (the '-ing' word that describes a noun)**. *dormīre* (to sleep) → *dormiēns* (sleeping); *canere* (to sing, crow) → *canēns*; *vigilāre* (to be awake) → *vigilāns*. It describes a noun and agrees with it, taking the 3rd-declension endings on the stem *-nt-*: *puer dormiēns* (the sleeping boy), *puerum dormientem*, *puerī dormientis*, *puerōs dormientēs*. Latin name: participium praesentis."
+    },
+    {
+      "type": "english",
+      "text": "A participle is a verb used like an adjective: *the fleeing soldiers*, *a boy sleeping in bed*. An *-ing* word used as a noun (*sleeping is pleasant*) is a gerund."
+    },
+    {
+      "type": "rule",
+      "text": "Stem + -ns (genitive -ntis): -āns, -ēns, -ēns, -iēns by conjugation; agrees with its noun like a 3rd-declension adjective."
+    },
+    {
+      "type": "paradigm",
+      "key": "conj3",
+      "highlight": {
+        "mood": "ptc",
+        "tense": "pres"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "adj3"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r14:22.1",
+        "r14:19.3",
+        "r14:34.2",
+        "r14:36.1"
+      ],
+      "invented": [
+        {
+          "la": "Māter fīliam cantantem audit.",
+          "en": "The mother hears her daughter singing.",
+          "focus": "cantantem"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "gerund",
+      "text": "Both come out as *-ing* in English. The participle ends in *-ns / -nt-* and describes a noun that is doing something: *puer dormiēns*. The gerund (the '-ing' noun form: ad bibendum = for drinking) ends in *-nd-* and names the action itself: *ad dormiendum* — for sleeping. *-nt-* = someone doing it; *-nd-* = the doing."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Take a verb and turn it into a word that describes a noun, and you have **the present participle (the '-ing' word that describes a noun)**. *puer dormiēns* is 'the sleeping boy', or 'the boy, sleeping'. It does two things at once: it keeps the verb's meaning and it agrees with its noun the way any adjective does.",
+      "show": {
+        "kind": "sentence",
+        "id": "ptcp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ptcp-02",
+        "ask": "Which word is the participle, and which noun is it describing?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "How it is built: -āns from the 1st conjugation",
+      "say": "One cell. A 1st-conjugation verb — the *-āre* kind — makes its present participle in *-āns*: *cantāre* → *cantāns* (singing), *portāre* → *portāns* (carrying), *ambulāre* → *ambulāns* (walking).",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "cantō",
+        "reveal": [
+          "ptc.pres.act"
+        ],
+        "say": "cantāns — the -āre verb makes -āns"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "cantō",
+        "cells": [
+          "ptc.pres.act"
+        ],
+        "ask": "Give the present participle of *cantāre*."
+      }
+    },
+    {
+      "n": 3,
+      "title": "-ēns and -iēns from the others",
+      "say": "One cell more, on a different verb. The 2nd and 3rd conjugations make *-ēns*: *vidēre* → *vidēns*, *dūcere* → *dūcēns*. The 4th conjugation and the *-iō* verbs of the 3rd make *-iēns*: *audīre* → *audiēns*, *dormīre* → *dormiēns*, *fugere* → *fugiēns*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "dūcō",
+        "reveal": [
+          "ptc.pres.act"
+        ],
+        "say": "dūcēns — the -ere verb makes -ēns"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "dūcō",
+        "cells": [
+          "ptc.pres.act"
+        ],
+        "ask": "Give the present participle of *dūcere*."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The stem is -nt-",
+      "say": "*-ns* is the form for the subject, and for a neuter noun the object as well (*animal dormiēns* either way). Every other form is built on *-nt-*, with the endings of a 3rd-declension adjective: the accusative (the object form) *-ntem* (*fugientem*), the genitive (the 'of' form) *-ntis* (*plōrantis*), the dative (the 'to/for' form) *-ntī* (*dormientī*), the plural *-ntēs* (*currentēs*) and the neuter plural *-ntia* (*dormientia*). The table shows those endings on an ordinary 3rd-declension adjective.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj3",
+        "word": "brevis",
+        "reveal": [
+          "pos.acc.sg.m",
+          "pos.gen.sg.m"
+        ],
+        "say": "brevem / brevis — the -ntem and -ntis of the participle are these endings"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj3",
+        "word": "brevis",
+        "cells": [
+          "pos.acc.sg.m",
+          "pos.gen.sg.m"
+        ],
+        "ask": "Fill the accusative (the object form) and the genitive (the 'of' form) of *brevis* — the endings the participle borrows."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the sentence's own verb",
+      "say": "Both come from the same verb, so look at the ending. A participle ends in *-ns* or *-nt-* and belongs to a noun: *frātrem dormientem*, the sleeping brother. The sentence's own verb carries a person ending: *Quīntus dormit*, Quintus is sleeping. A participle can never be the only verb in a sentence.",
+      "show": {
+        "kind": "sentence",
+        "id": "ptcp-12"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ptcp-13",
+        "ask": "*cantāns* and *cantat* come from one verb. Which is the participle, and which is the sentence's own verb?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it: make it agree",
+      "say": "Find the noun the participle describes and copy its case, number and gender. In *Iūlius puerōs in hortō lūdentēs spectat* the boys are the object, plural and masculine, so the participle is *lūdentēs* — not *lūdēns*, which would describe Julius.",
+      "show": {
+        "kind": "sentence",
+        "id": "ptcp-14"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ptcp-16",
+        "blank": "fugientēs",
+        "ask": "Mīles fortis hostēs ___ petit. *hostēs* is plural and it is the object. (fugiō)"
+      }
+    }
   ],
   "more": [
-    { "type": "p", "text": "The ablative singular is *-e* when the participle works as a verb (*ā puerō dormiente*, and in the ablative absolute), but *-ī* when it has become a plain adjective (*ā patre amantī*, *sapientī*). The genitive plural is *-ium*, the neuter plural *-ia*: *animālia volantia* — flying animals." },
-    { "type": "p", "text": "It keeps its verb-power and can have an object: *gallum canentem audit* — he hears the cock crowing. The present participle means *at the same time as the main verb*, whatever that tense is: *puer dormiēns gallum nōn audīvit* — while he was sleeping he did not hear. Some participles have turned into ordinary adjectives or nouns: *sapiēns* (wise), *parēns* (parent), *oriēns* (the east, where the sun is rising)." },
-    { "type": "p", "text": "The learner's notes (week 14): the active participle adds *-(e)ns* to the stem; the *e* drops after *a-* and *e-*stems (*ambulāns, vidēns*) and stays in consonant, *-iō* and *i-*stems (*frangēns, percutiēns, veniēns*); every other form adds *-(e)nt-* plus a 3rd-declension ending, agreeing in case, number and gender; a participle may take an object or a phrase to form a participial phrase (*the soldiers fleeing from the battlefield*). Ørberg (chapter XIV): *vigilāns, iacēns, canēns, dormiēns* are participles, adjectives of the 3rd declension with genitive *-antis / -entis* and ablative *-e* or *-ī*." }
+    {
+      "type": "p",
+      "text": "The ablative singular is *-e* when the participle works as a verb (*ā puerō dormiente*, and in the ablative absolute), but *-ī* when it has become a plain adjective (*ā patre amantī*, *sapientī*). The genitive plural is *-ium*, the neuter plural *-ia*: *animālia volantia* — flying animals."
+    },
+    {
+      "type": "p",
+      "text": "It keeps its verb-power and can have an object: *gallum canentem audit* — he hears the cock crowing. The present participle means *at the same time as the main verb*, whatever that tense is: *puer dormiēns gallum nōn audīvit* — while he was sleeping he did not hear. Some participles have turned into ordinary adjectives or nouns: *sapiēns* (wise), *parēns* (parent), *oriēns* (the east, where the sun is rising)."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (week 14): the active participle adds *-(e)ns* to the stem; the *e* drops after *a-* and *e-*stems (*ambulāns, vidēns*) and stays in consonant, *-iō* and *i-*stems (*frangēns, percutiēns, veniēns*); every other form adds *-(e)nt-* plus a 3rd-declension ending, agreeing in case, number and gender; a participle may take an object or a phrase to form a participial phrase (*the soldiers fleeing from the battlefield*). Ørberg (chapter XIV): *vigilāns, iacēns, canēns, dormiēns* are participles, adjectives of the 3rd declension with genitive *-antis / -entis* and ablative *-e* or *-ī*."
+    }
   ],
-  "sources": ["notes p45–46", "Ørberg cap. XIV Grammatica Latina", "A&G §117–119, §488–492"]
+  "sources": [
+    "notes p45–46",
+    "Ørberg cap. XIV Grammatica Latina",
+    "A&G §117–119, §488–492"
+  ]
 }

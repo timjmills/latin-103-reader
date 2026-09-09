@@ -1,5 +1,109 @@
 {
   "skill": "perfect-subjunctive",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "The subjunctive of a finished action is **the perfect subjunctive (the 'have done' form: nesciō quid fēcerit; nē timuerīs = don't be afraid)**. Where a present subjunctive says what is going on — *nesciō quid faciat*, I don't know what he is doing — the perfect says what has been done: *nesciō quid fēcerit*, I don't know what he has done. It follows a main verb in the present.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfs-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pfs-02",
+        "ask": "Rogō is present. Does fēcerit say what Marcus is doing, or what he has done?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The singular: perfect stem + -erim, -erīs, -erit",
+      "say": "Take the perfect stem, the third principal part without its *-ī* (*fēcī → fēc-*, *vēnī → vēn-*), and add **-erim** for 'I', **-erīs** for 'you', **-erit** for 'he, she, it': *fēcerim, fēcerīs, fēcerit*. The *-erī-* is long in *-erīs, -erīmus, -erītis*, and short in *-erim, -erit, -erint*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "reveal": [
+          "perf.subj.act.1.sg",
+          "perf.subj.act.2.sg",
+          "perf.subj.act.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.subj.act.1.sg",
+          "perf.subj.act.2.sg",
+          "perf.subj.act.3.sg"
+        ],
+        "ask": "Fill the three singular perfect subjunctive forms of scrībō."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The plural: -erīmus, -erītis, -erint",
+      "say": "The plural adds **-erīmus**, **-erītis**, **-erint** to the same stem: *fēcerīmus, fēcerītis, fēcerint*. So *cessāvī* gives *cessāverint* and *vīdī* gives *vīderint*. One stem, six endings.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "reveal": [
+          "perf.subj.act.1.pl",
+          "perf.subj.act.2.pl",
+          "perf.subj.act.3.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.subj.act.1.pl",
+          "perf.subj.act.2.pl",
+          "perf.subj.act.3.pl"
+        ],
+        "ask": "Now the three plural perfect subjunctive forms of scrībō."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Not the future perfect",
+      "say": "The two share almost every letter. *fēcerō, fēceris, fēcerit* is the future perfect (the 'will have done' tense) and states a plain fact; *fēcerim, fēcerīs, fēcerit* is the subjunctive and sits inside a folded question or after *cum*. *-erit* and *-erint* are spelled the same in both tenses, and *-eris/-erīs*, *-erimus/-erīmus*, *-eritis/-erītis* differ only in the length of the i, so the clause around the verb decides.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfs-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pfs-05",
+        "ask": "frēgerit: future perfect indicative, or perfect subjunctive?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "nē with this form means 'don't'",
+      "say": "A second and quite different use: *nē* with the perfect subjunctive in the second person is an ordinary way of saying 'don't'. *Nē timuerīs* — don't be afraid. *Nē hoc vīnum biberīs* — don't drink this wine. To more than one person: *nē cucurrerītis* — don't run.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfs-08"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pfs-09",
+        "ask": "nē with biberīs: is this a wish, a question, or 'don't'?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Use it",
+      "say": "After a present verb of asking, knowing or wondering, put the finished action into the perfect subjunctive: *nescit quid fīlius ēmerit*. When the verb is passive it is two words, the perfect participle with *sim, sīs, sit*: *nesciō ā quō epistula scrīpta sit*.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfs-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pfs-14",
+        "ask": "Nescit is present. Put emō into the perfect subjunctive."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

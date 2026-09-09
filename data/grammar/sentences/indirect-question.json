@@ -1,0 +1,643 @@
+{
+  "skill": "indirect-question",
+  "chapter": 29,
+  "sentences": [
+    {
+      "id": "iq-01",
+      "la": "Nesciō ubi fīlius meus sit.",
+      "en": "I do not know where my son is.",
+      "words": 5,
+      "focus": "sit",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "ubi",
+          "m": "where"
+        },
+        {
+          "w": "fīlius",
+          "m": "son"
+        },
+        {
+          "w": "meus",
+          "m": "my"
+        },
+        {
+          "w": "sit",
+          "m": "he is"
+        }
+      ]
+    },
+    {
+      "id": "iq-02",
+      "la": "Iūlius rogat quid puerī faciant.",
+      "en": "Julius asks what the boys are doing.",
+      "words": 5,
+      "focus": "faciant",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "rogat",
+          "m": "asks"
+        },
+        {
+          "w": "quid",
+          "m": "what"
+        },
+        {
+          "w": "puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "faciant",
+          "m": "are doing"
+        }
+      ]
+    },
+    {
+      "id": "iq-03",
+      "la": "Aemilia nescit cūr Quīntus plōret.",
+      "en": "Aemilia does not know why Quintus is crying.",
+      "words": 5,
+      "focus": "plōret",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "nescit",
+          "m": "does not know"
+        },
+        {
+          "w": "cūr",
+          "m": "why"
+        },
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "plōret",
+          "m": "is crying"
+        }
+      ]
+    },
+    {
+      "id": "iq-04",
+      "la": "Syra videt quid Iūlia in hortō portet.",
+      "en": "Syra sees what Julia is carrying in the garden.",
+      "words": 7,
+      "focus": "portet",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        },
+        {
+          "w": "quid",
+          "m": "what"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "portet",
+          "m": "is carrying"
+        }
+      ]
+    },
+    {
+      "id": "iq-05",
+      "la": "Nesciō quandō pater domum redeat.",
+      "en": "I do not know when father is coming home.",
+      "words": 5,
+      "focus": "redeat",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "quandō",
+          "m": "when"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        },
+        {
+          "w": "domum",
+          "m": "home"
+        },
+        {
+          "w": "redeat",
+          "m": "is coming back"
+        }
+      ]
+    },
+    {
+      "id": "iq-06",
+      "la": "Puerī quaerunt unde nāvis veniat.",
+      "en": "The boys ask where the ship is coming from.",
+      "words": 5,
+      "focus": "veniat",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "quaerunt",
+          "m": "ask"
+        },
+        {
+          "w": "unde",
+          "m": "from where"
+        },
+        {
+          "w": "nāvis",
+          "m": "the ship"
+        },
+        {
+          "w": "veniat",
+          "m": "is coming"
+        }
+      ]
+    },
+    {
+      "id": "iq-07",
+      "la": "Nesciō utrum dormiat an vigilet.",
+      "en": "I do not know whether he is asleep or awake.",
+      "words": 5,
+      "focus": "dormiat",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "utrum",
+          "m": "whether"
+        },
+        {
+          "w": "dormiat",
+          "m": "he is sleeping"
+        },
+        {
+          "w": "an",
+          "m": "or"
+        },
+        {
+          "w": "vigilet",
+          "m": "he is awake"
+        }
+      ]
+    },
+    {
+      "id": "iq-08",
+      "la": "Iūlius rogat num Dāvus vīnum bibat.",
+      "en": "Julius asks whether Davus is drinking wine.",
+      "words": 6,
+      "focus": "bibat",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "rogat",
+          "m": "asks"
+        },
+        {
+          "w": "num",
+          "m": "whether"
+        },
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "vīnum",
+          "m": "wine"
+        },
+        {
+          "w": "bibat",
+          "m": "is drinking"
+        }
+      ]
+    },
+    {
+      "id": "iq-09",
+      "la": "Nesciō quis sit puer quem vidēs.",
+      "en": "I do not know who the boy you can see is.",
+      "words": 6,
+      "focus": "sit",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "quis",
+          "m": "who"
+        },
+        {
+          "w": "sit",
+          "m": "he is"
+        },
+        {
+          "w": "puer",
+          "m": "the boy"
+        },
+        {
+          "w": "quem",
+          "m": "whom"
+        },
+        {
+          "w": "vidēs",
+          "m": "you see"
+        }
+      ],
+      "note": "Two little q-words, two different jobs: quis asks the folded question and takes a subjunctive (sit), while quem points back to puer and keeps the ordinary indicative (vidēs)."
+    },
+    {
+      "id": "iq-10",
+      "la": "Nesciēbam cūr Mārcus in hortō lacrimāret.",
+      "en": "I did not know why Marcus was crying in the garden.",
+      "words": 6,
+      "focus": "lacrimāret",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciēbam",
+          "m": "I did not know"
+        },
+        {
+          "w": "cūr",
+          "m": "why"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "lacrimāret",
+          "m": "was crying"
+        }
+      ]
+    },
+    {
+      "id": "iq-11",
+      "la": "Aemilia rogāvit ubi Mārcus esset.",
+      "en": "Aemilia asked where Marcus was.",
+      "words": 5,
+      "focus": "esset",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "rogāvit",
+          "m": "asked"
+        },
+        {
+          "w": "ubi",
+          "m": "where"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "esset",
+          "m": "he was"
+        }
+      ]
+    },
+    {
+      "id": "iq-12",
+      "la": "Dīc mihi quōmodo hoc fīat.",
+      "en": "Tell me how this is done.",
+      "words": 5,
+      "focus": "fīat",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dīc",
+          "m": "tell"
+        },
+        {
+          "w": "mihi",
+          "m": "me"
+        },
+        {
+          "w": "quōmodo",
+          "m": "how"
+        },
+        {
+          "w": "hoc",
+          "m": "this"
+        },
+        {
+          "w": "fīat",
+          "m": "is done"
+        }
+      ]
+    },
+    {
+      "id": "iq-13",
+      "la": "Mīrāmur quanta sit vīlla tua.",
+      "en": "We wonder how big your house is.",
+      "words": 5,
+      "focus": "sit",
+      "step": 2,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mīrāmur",
+          "m": "we wonder"
+        },
+        {
+          "w": "quanta",
+          "m": "how big"
+        },
+        {
+          "w": "sit",
+          "m": "it is"
+        },
+        {
+          "w": "vīlla",
+          "m": "the house"
+        },
+        {
+          "w": "tua",
+          "m": "your"
+        }
+      ]
+    },
+    {
+      "id": "iq-14",
+      "la": "Iūlia nescit quot līberī in hortō sint.",
+      "en": "Julia does not know how many children are in the garden.",
+      "words": 7,
+      "focus": "sint",
+      "step": 2,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "nescit",
+          "m": "does not know"
+        },
+        {
+          "w": "quot",
+          "m": "how many"
+        },
+        {
+          "w": "līberī",
+          "m": "children"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "sint",
+          "m": "there are"
+        }
+      ]
+    },
+    {
+      "id": "iq-15",
+      "la": "Iūlius rogat quem Mārcus vocet.",
+      "en": "Julius asks whom Marcus is calling.",
+      "words": 5,
+      "focus": "vocet",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "rogat",
+          "m": "asks"
+        },
+        {
+          "w": "quem",
+          "m": "whom"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "vocet",
+          "m": "is calling"
+        }
+      ]
+    },
+    {
+      "id": "iq-16",
+      "la": "Nesciō quid Syra puerīs dīcat.",
+      "en": "I do not know what Syra is saying to the boys.",
+      "words": 5,
+      "focus": "dīcat",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "quid",
+          "m": "what"
+        },
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "puerīs",
+          "m": "to the boys"
+        },
+        {
+          "w": "dīcat",
+          "m": "is saying"
+        }
+      ]
+    },
+    {
+      "id": "iq-17",
+      "la": "Puer quem vocās nescit ubi sīs.",
+      "en": "The boy you are calling does not know where you are.",
+      "words": 6,
+      "focus": "sīs",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "quem",
+          "m": "whom"
+        },
+        {
+          "w": "vocās",
+          "m": "you are calling"
+        },
+        {
+          "w": "nescit",
+          "m": "does not know"
+        },
+        {
+          "w": "ubi",
+          "m": "where"
+        },
+        {
+          "w": "sīs",
+          "m": "you are"
+        }
+      ],
+      "note": "One sentence, both clauses: quem vocās points back to puer and stays indicative, while ubi sīs is the folded question and goes subjunctive."
+    }
+  ]
+}

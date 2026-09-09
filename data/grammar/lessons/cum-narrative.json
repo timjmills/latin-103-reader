@@ -1,62 +1,134 @@
 {
-  "skill": "cum-narrative",
-  "core": [
+ "skill": "cum-narrative",
+ "core": [
+  {
+   "type": "p",
+   "text": "In a story about the past, **cum + subjunctive (the 'when / while' clause that sets the scene in a past story)** gives the background to the main event: *cum ambulāret, latrōnēs vīdit* — while he was walking, he saw robbers. The verb is the imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive) for 'while … was doing', the pluperfect subjunctive (the 'had / would have' form: cum venisset = when he had come) for 'after … had done'. Latin name: *cum historicum*."
+  },
+  {
+   "type": "english",
+   "text": "English uses *when, while, as, after*: *when he had said this, he left*. The cum clause is the setting; the main clause is what happened."
+  },
+  {
+   "type": "rule",
+   "text": "cum + imperfect subjunctive = while / as; cum + pluperfect subjunctive = when … had / after. Only in past narrative, never with a present main verb."
+  },
+  {
+   "type": "examples",
+   "units": [
+    "w07:b35.3",
+    "w11:b22.2",
+    "w12:b13.8",
+    "w13:b3.2"
+   ],
+   "invented": [
     {
-      "type": "p",
-      "text": "In a story about the past, **cum + subjunctive (the 'when / while' clause that sets the scene in a past story)** gives the background to the main event: *cum ambulāret, latrōnēs vīdit* — while he was walking, he saw robbers. The verb is the imperfect subjunctive (the past-time 'might / would' form: veniret; built on the infinitive) for 'while … was doing', the pluperfect subjunctive (the 'had / would have' form: cum venisset = when he had come) for 'after … had done'. Latin name: *cum historicum*."
+     "la": "Cum Ulixēs dormīret, puellae clāmāvērunt.",
+     "en": "While Ulysses was sleeping, the girls shouted.",
+     "focus": "dormīret"
     },
     {
-      "type": "english",
-      "text": "English uses *when, while, as, after*: *when he had said this, he left*. The cum clause is the setting; the main clause is what happened."
-    },
-    {
-      "type": "rule",
-      "text": "cum + imperfect subjunctive = while / as; cum + pluperfect subjunctive = when … had / after. Only in past narrative, never with a present main verb."
-    },
-    {
-      "type": "examples",
-      "units": [
-        "w07:b35.3",
-        "w11:b22.2",
-        "w12:b13.8",
-        "w13:b3.2"
-      ],
-      "invented": [
-        {
-          "la": "Cum Ulixēs dormīret, puellae clāmāvērunt.",
-          "en": "While Ulysses was sleeping, the girls shouted.",
-          "focus": "dormīret"
-        },
-        {
-          "la": "Cum cēnam cōnsūmpsissent, dormītum iērunt.",
-          "en": "When they had finished dinner, they went to bed.",
-          "focus": "cōnsūmpsissent"
-        }
-      ]
-    },
-    {
-      "type": "confusion",
-      "with": "cum-causal",
-      "text": "The same *cum* + subjunctive can mean 'since': *cum sē fēlīcem cēnsēret*, Polycrates *ānulum abiēcit* — since he thought himself lucky, he threw the ring away (cap. XXVI). If the clause explains *why*, read 'since'; if it only gives the time, read 'when / while'. Often both fit."
+     "la": "Cum cēnam cōnsūmpsissent, dormītum iērunt.",
+     "en": "When they had finished dinner, they went to bed.",
+     "focus": "cōnsūmpsissent"
     }
-  ],
-  "more": [
-    {
-      "type": "p",
-      "text": "Also easy to confuse: *cum* + the indicative (the plain statement form) is a plain date, not scene-setting — *cum semel occidit lūx* (once the light has set), *cum cēnam parāverit* (when he has got dinner ready: the future perfect, the 'will have done' tense). Subjunctive = story background; indicative = simply 'at the time when'."
-    },
-    {
-      "type": "p",
-      "text": "The learner's notes call this the narrative subjunctive: *cum* plus a subjunctive verb gives the setting when telling a story in the past, so it is never present tense; translate with 'when', 'while' or 'as'. Their examples: *cum sōl orerētur, domō profectus est* (as the sun was rising, he set out); *cum in Aegyptō habitārent, urbēs multās aedificāvērunt*."
-    },
-    {
-      "type": "p",
-      "text": "*cum* before a noun in the ablative (the 'by/with/from' form) is the preposition 'with' (*cum Dāvō*, *magnā cum cūrā*); before a clause with its own verb it is the conjunction. An ablative absolute does the same scene-setting in fewer words: *Ulixe dormiente* = *cum Ulixēs dormīret*. In Ørberg the pattern first appears in chapter 29 (*cum Arīōn … nāvigāret, nautae … eum necāre cōnstituērunt*) and returns with the pluperfect in chapter 33 (*cum fīlius id negāvisset, …*)."
-    }
-  ],
-  "sources": [
-    "notes p108",
-    "Ørberg cap. XXIX, XXXIII",
-    "A&G §546"
-  ]
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "cum-causal",
+   "text": "The same *cum* + subjunctive can mean 'since': *cum sē fēlīcem cēnsēret*, Polycrates *ānulum abiēcit* — since he thought himself lucky, he threw the ring away (cap. XXVI). If the clause explains *why*, read 'since'; if it only gives the time, read 'when / while'. Often both fit."
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "Also easy to confuse: *cum* + the indicative (the plain statement form) is a plain date, not scene-setting — *cum semel occidit lūx* (once the light has set), *cum cēnam parāverit* (when he has got dinner ready: the future perfect, the 'will have done' tense). Subjunctive = story background; indicative = simply 'at the time when'."
+  },
+  {
+   "type": "p",
+   "text": "The learner's notes call this the narrative subjunctive: *cum* plus a subjunctive verb gives the setting when telling a story in the past, so it is never present tense; translate with 'when', 'while' or 'as'. Their examples: *cum sōl orerētur, domō profectus est* (as the sun was rising, he set out); *cum in Aegyptō habitārent, urbēs multās aedificāvērunt*."
+  },
+  {
+   "type": "p",
+   "text": "*cum* before a noun in the ablative (the 'by/with/from' form) is the preposition 'with' (*cum Dāvō*, *magnā cum cūrā*); before a clause with its own verb it is the conjunction. An ablative absolute does the same scene-setting in fewer words: *Ulixe dormiente* = *cum Ulixēs dormīret*. In Ørberg the pattern first appears in chapter 29 (*cum Arīōn … nāvigāret, nautae … eum necāre cōnstituērunt*) and returns with the pluperfect in chapter 33 (*cum fīlius id negāvisset, …*)."
+  }
+ ],
+ "sources": [
+  "notes p108",
+  "Ørberg cap. XXIX, XXXIII",
+  "A&G §546"
+ ],
+ "teach": [
+  {
+   "n": 1,
+   "title": "Setting the scene",
+   "say": "A story in Latin often gives the background first and the event second. The background clause is **cum + subjunctive (the 'when / while' clause that sets the scene in a past story)**: *cum Iūlius dormīret, Mēdus fūgit* — while Julius was asleep, Medus fled. The *cum* clause is never the point of the sentence; the main clause (the sentence's own verb, not one tucked inside another clause) is what happened.",
+   "show": {
+    "kind": "sentence",
+    "id": "cn-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "cn-02",
+    "ask": "What is ambulāret doing here?"
+   }
+  },
+  {
+   "n": 2,
+   "title": "cum + imperfect subjunctive: while",
+   "say": "When the background is still going on as the event breaks in, the clause takes the imperfect subjunctive (the past-time 'might / would' form: venīret; built on the infinitive): *cum cantāret*, 'while she was singing'; *cum nox esset*, 'as it was night'. Translate with 'while' or 'as', and use the English 'was …-ing'.",
+   "show": {
+    "kind": "sentence",
+    "id": "cn-03"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "cn-04",
+    "ask": "Fill the blank with the form of sum this cum clause needs."
+   }
+  },
+  {
+   "n": 3,
+   "title": "cum + pluperfect subjunctive: when … had",
+   "say": "When the background is over and done before the event, the clause takes the pluperfect subjunctive (the 'had done' form: *cum vēnisset* = when he had come). You can spot it by the **-isse-** sitting inside the word: *cum dīxisset*, 'when he had said'; *cum vēnisset*, 'when he had come'. Translate with 'when' or 'after' and the English 'had done'. You are not asked to build this form yet: it is put together ending by ending much later in the course, with the rest of that tense. Here you only have to see it and read it.",
+   "show": {
+    "kind": "sentence",
+    "id": "cn-06"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "cn-07",
+    "ask": "Tap the word that says what had already happened before the slaves fell silent."
+   }
+  },
+  {
+   "n": 4,
+   "title": "Two different cums",
+   "say": "*cum* is also the preposition 'with', and it also appears with the indicative (the plain fact form) for a plain date. Three rules of thumb: *cum* followed by a noun in the ablative (the 'by/with/from' form) is 'with' (*cum Lȳdiā*); *cum* answered by a subjunctive is the story clause; *cum* answered by an indicative is 'at the time when'. One sentence can hold two of them at once, so decide each *cum* by what answers it.",
+   "show": {
+    "kind": "sentence",
+    "id": "cn-10"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "cn-13",
+    "ask": "Tap the word that answers the first cum."
+   }
+  },
+  {
+   "n": 5,
+   "title": "When 'since' reads better than 'when'",
+   "say": "The same *cum* + subjunctive very often gives the reason as well as the time. *Cum Quīntus aeger esset, medicus vēnit* reads equally well as 'when Quintus was ill' and 'since Quintus was ill'. If the clause explains why the main clause (the sentence's own verb, not one tucked inside another clause) happened, prefer 'since'; if it only fixes the moment, prefer 'when'. Latin does not make you choose, and often both are right.",
+   "show": {
+    "kind": "sentence",
+    "id": "cn-12"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "cn-11",
+    "ask": "What is abessent doing here?"
+   }
+  }
+ ]
 }

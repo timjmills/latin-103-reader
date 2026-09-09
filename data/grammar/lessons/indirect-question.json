@@ -1,5 +1,96 @@
 {
   "skill": "indirect-question",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "A direct question stands on its own: *Quid facit?* — what is he doing? Fold it into a bigger sentence and you get **an indirect question (a question folded into a sentence: nesciō quid faciat = I don't know what he is doing)**. Two things happen and no more: the question mark goes, and the verb moves into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). English folds questions the same way — 'Where is he?' becomes 'I don't know where he is'.",
+      "show": {
+        "kind": "sentence",
+        "id": "iq-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "iq-02",
+        "ask": "What kind of clause is quid puerī faciant?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The question word keeps its place",
+      "say": "Whatever asked the question stays at the head of the folded clause: *quis* who, *quid* what, *quem* whom, *cūr* why, *ubi* where, *quandō* when, *unde* from where, *quot* how many. Nothing is added and nothing is dropped. *quis* and *quid* are the nominative (the subject form) of that little word: *quis* covers 'who' for a man and for a woman alike, *quid* is the neuter 'what', and *quem* is the accusative (the object form).",
+      "show": {
+        "kind": "paradigm",
+        "key": "quis",
+        "reveal": [
+          "nom.sg.c",
+          "nom.sg.n",
+          "acc.sg.c"
+        ]
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "iq-14",
+        "ask": "quot opens this clause. Is it still a folded question?"
+      }
+    },
+    {
+      "n": 3,
+      "title": "The verb turns subjunctive",
+      "say": "The only change to the verb is its mood. *Rogat quid puerī faciunt* is not Latin; *rogat quid puerī faciant* is. Take the indicative you would have used and move it into the present subjunctive: *venit* becomes *veniat*, *portat* becomes *portet*, *redit* becomes *redeat*.",
+      "show": {
+        "kind": "sentence",
+        "id": "iq-05"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "iq-06",
+        "ask": "Give veniō the mood a folded question needs."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Yes-or-no questions",
+      "say": "A question with no question word is opened by *num*, 'whether': *rogat num Dāvus vīnum bibat*. When two possibilities are offered, Latin writes *utrum … an*, 'whether … or': *nesciō utrum dormiat an vigilet*. The verbs are subjunctive exactly as before.",
+      "show": {
+        "kind": "sentence",
+        "id": "iq-08"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "iq-07",
+        "ask": "utrum … an opens this one. What kind of clause is it?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Not a relative clause",
+      "say": "*quis* and *quid* ask a question; *quī, quem, quae* point back to a noun already named. The mood settles which you are looking at: a folded question has a subjunctive verb, a relative clause keeps the indicative. In *nesciō quis sit puer quem vidēs*, *quis sit* is the question and *quem vidēs* merely describes the boy.",
+      "show": {
+        "kind": "sentence",
+        "id": "iq-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "iq-17",
+        "ask": "Two q-words here. What is the clause ubi sīs doing?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Present now, imperfect for the past",
+      "say": "The tense follows the main verb. A present verb of asking or knowing takes the present subjunctive: *nesciō cūr lacrimet*. A past one takes the imperfect subjunctive (the '-rem, -ret' subjunctive): *nesciēbam cūr lacrimāret*, *rogāvit ubi esset*.",
+      "show": {
+        "kind": "sentence",
+        "id": "iq-10"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "iq-11",
+        "ask": "rogāvit is past. Which tense of the subjunctive does sum need?"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

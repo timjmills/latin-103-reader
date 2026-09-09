@@ -1,5 +1,106 @@
 {
   "skill": "ablative-accompaniment",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Who goes along",
+      "say": "To say who somebody is with, Latin puts *cum* in front of the person and changes that person's ending. The changed ending is **the ablative (the 'with someone' form)**: *cum Syrā* — with Syra. *Cum* is the only preposition that does this job, and it never drops out.",
+      "show": {
+        "kind": "sentence",
+        "id": "abc-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "abc-02",
+        "ask": "Which word says who Marcus is with?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "A companion whose name ends in -a",
+      "say": "A name or noun in -a takes a long -ā after *cum*: *Syra* → *cum Syrā*, *fīlia* → *cum fīliā*. It is the same ending you met after *in*; only the preposition has changed, and with it the job.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "word": "ancilla",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "cum ancillā — -a becomes a long -ā"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abc-03",
+        "ask": "Aemilia cum ___ suā cantat. (fīlia)"
+      }
+    },
+    {
+      "n": 3,
+      "title": "A companion in -us, and one like *pater*",
+      "say": "A word in -us gives -ō: *dominus* → *cum dominō*, *Mēdus* → *cum Mēdō*. A second-declension word in -er does the same: *puer* → *cum puerō*. A word like *pater* belongs to a declension you have not met yet and gives a short -e instead, *cum patre* — read it where it comes, but do not build it from this table.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "word": "dominus",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "cum dominō — -us becomes -ō"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abc-05",
+        "ask": "Dāvus cum ___ suō venit. (dominus)"
+      }
+    },
+    {
+      "n": 4,
+      "title": "More than one companion: -īs",
+      "say": "Several people take -īs, whichever kind of word they are: *cum servīs*, *cum ancillīs*, *cum līberīs*. An adjective with them takes -īs too: *cum ancillīs cēterīs*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "word": "servus",
+        "reveal": [
+          "abl.pl"
+        ],
+        "say": "cum servīs — the plural ending is -īs"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abc-07",
+        "ask": "Dominus cum ___ suīs venit. (servus, more than one)"
+      }
+    },
+    {
+      "n": 5,
+      "title": "With whom, not where and not with what",
+      "say": "*In hortō* is a place; *cum Aemiliā* is a person who came too. And *cum* is for company only: when the noun is a thing being used, Latin drops *cum* altogether. *Vir cum baculō* is a man carrying a stick, walking along with it — not a man using one.",
+      "show": {
+        "kind": "sentence",
+        "id": "abc-12"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "abc-10",
+        "ask": "Which of *hortō* and *Aemiliā* is the company, and what tells you?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "*cum* glued on behind: *mēcum*",
+      "say": "With *ego*, *tū* and *sē* the preposition does not stand in front at all — it is stuck on the back of the word: *mēcum* with me, *tēcum* with you, *sēcum* with himself. Latin never writes *cum mē*. The ending is the same ablative as ever; only the little word has moved house. (You will also meet the whole *cum* phrase standing first, as in *Cum ancillā suā Aemilia in hortō est*: the endings hold it together, not the order.)",
+      "show": {
+        "kind": "sentence",
+        "id": "abc-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abc-13",
+        "ask": "Venī ___, Mārce, et tacē! (cum + ego, 'with me')"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

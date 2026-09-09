@@ -1,0 +1,176 @@
+{
+ "skill": "elegiac-couplet",
+ "chapter": 34,
+ "lesson_only": true,
+ "note": "Metre is taught, not drilled: the skill's only kind is `recognise`, and there is nothing to parse or fill in. So this file holds four illustrative lines of our own verse rather than the twelve practice sentences a drillable skill gets, and each carries its scansion in `scan`. Every word is inside the cumulative vocabulary to chapter 34 or a name of the book's cast; because the lines are ours and not the poets', a learner may be shown a whole line scanned without quoting anyone.",
+ "sentences": [
+  {
+   "id": "ec-01",
+   "la": "Pulchra puella sedet, spectat rīdetque poētam.",
+   "en": "A pretty girl sits, watches the poet and laughs at him.",
+   "words": 6,
+   "focus": "puella",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Pulchra pu | ella se | det, spec | tat rī | detque po | ētam  —  – ⏑ ⏑ | – ⏑ ⏑ | – – | – – | – ⏑ ⏑ | – –",
+   "note": "An illustrative hexameter of our own, not a practice sentence. The foot boundary falls inside puella, which is the point of the first step: feet are counted in syllables, not in words.",
+   "gloss": [
+    {
+     "w": "Pulchra",
+     "m": "pretty"
+    },
+    {
+     "w": "puella",
+     "m": "girl"
+    },
+    {
+     "w": "sedet",
+     "m": "sits"
+    },
+    {
+     "w": "spectat",
+     "m": "watches"
+    },
+    {
+     "w": "rīdetque",
+     "m": "and laughs at"
+    },
+    {
+     "w": "poētam",
+     "m": "the poet"
+    }
+   ]
+  },
+  {
+   "id": "ec-02",
+   "la": "Ille tamen tacitus stat, mala verba timet.",
+   "en": "He, though, stands silent and fears unkind words.",
+   "words": 7,
+   "focus": "stat",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Ille ta | men taci | tus || stat mala | verba ti | met  —  – ⏑ ⏑ | – ⏑ ⏑ | – || – ⏑ ⏑ | – ⏑ ⏑ | –",
+   "note": "An illustrative pentameter of our own, not a practice sentence. It follows ec-01, so the two together make one elegiac couplet. stat is the syllable that opens the second half, straight after the break.",
+   "gloss": [
+    {
+     "w": "Ille",
+     "m": "he"
+    },
+    {
+     "w": "tamen",
+     "m": "however"
+    },
+    {
+     "w": "tacitus",
+     "m": "silent"
+    },
+    {
+     "w": "stat",
+     "m": "stands"
+    },
+    {
+     "w": "mala",
+     "m": "unkind"
+    },
+    {
+     "w": "verba",
+     "m": "words"
+    },
+    {
+     "w": "timet",
+     "m": "fears"
+    }
+   ]
+  },
+  {
+   "id": "ec-03",
+   "la": "Nōn omnēs nautae sunt fortēs, nec bona nāvis.",
+   "en": "Not all sailors are brave, and the ship is no good one either.",
+   "words": 8,
+   "focus": "fortēs",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Nōn om | nēs nau | tae sunt | fortēs | nec bona | nāvis  —  – – | – – | – – | – – | – ⏑ ⏑ | – –",
+   "note": "An illustrative hexameter of our own, not a practice sentence. Four spondees in a row, then the fifth-foot dactyl the hexameter almost always keeps.",
+   "gloss": [
+    {
+     "w": "Nōn",
+     "m": "not"
+    },
+    {
+     "w": "omnēs",
+     "m": "all"
+    },
+    {
+     "w": "nautae",
+     "m": "sailors"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    },
+    {
+     "w": "fortēs",
+     "m": "brave"
+    },
+    {
+     "w": "nec",
+     "m": "nor"
+    },
+    {
+     "w": "bona",
+     "m": "good"
+    },
+    {
+     "w": "nāvis",
+     "m": "the ship"
+    }
+   ]
+  },
+  {
+   "id": "ec-04",
+   "la": "Nūllī crēdere vīs, amīce Mārce.",
+   "en": "You are willing to trust nobody, Marcus my friend.",
+   "words": 5,
+   "focus": "crēdere",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "scan": "Nūllī | crēdere | vīs a | mīce | Mārce  —  – – | – ⏑ ⏑ | – ⏑ | – ⏑ | – ⏓   (eleven syllables)",
+   "note": "An illustrative hendecasyllable of our own, not a practice sentence. crēdere fills the second foot exactly, the one dactyl the line has.",
+   "gloss": [
+    {
+     "w": "Nūllī",
+     "m": "nobody (the 'to/for' form, after crēdere)"
+    },
+    {
+     "w": "crēdere",
+     "m": "to trust"
+    },
+    {
+     "w": "vīs",
+     "m": "you want"
+    },
+    {
+     "w": "amīce",
+     "m": "friend! (calling him)"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus! (calling him)"
+    }
+   ]
+  }
+ ]
+}

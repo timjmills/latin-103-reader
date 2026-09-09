@@ -1,0 +1,545 @@
+{
+ "skill": "ablative-degree",
+ "chapter": 16,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "adg-01",
+   "la": "Mārcus multō altior est quam Quīntus.",
+   "en": "Marcus is much taller than Quintus.",
+   "words": 6,
+   "focus": "multō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "altior",
+     "m": "taller"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "quam",
+     "m": "than"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    }
+   ]
+  },
+  {
+   "id": "adg-02",
+   "la": "Nāvis magna multō gravior est.",
+   "en": "A big ship is much heavier.",
+   "words": 5,
+   "focus": "multō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nāvis",
+     "m": "a ship"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "gravior",
+     "m": "heavier"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "adg-03",
+   "la": "Sextus multō melior discipulus est.",
+   "en": "Sextus is a much better pupil.",
+   "words": 5,
+   "focus": "multō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sextus",
+     "m": "Sextus"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "melior",
+     "m": "better"
+    },
+    {
+     "w": "discipulus",
+     "m": "a pupil"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "adg-04",
+   "la": "Iūlia multō laetior est hodiē.",
+   "en": "Julia is much happier today.",
+   "words": 5,
+   "focus": "multō",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "laetior",
+     "m": "happier"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "hodiē",
+     "m": "today"
+    }
+   ]
+  },
+  {
+   "id": "adg-05",
+   "la": "Magister multō sevērior est quam pater.",
+   "en": "The teacher is much stricter than father.",
+   "words": 6,
+   "focus": "multō",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "sevērior",
+     "m": "stricter"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "quam",
+     "m": "than"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    }
+   ]
+  },
+  {
+   "id": "adg-06",
+   "la": "Mare hodiē multō altius est.",
+   "en": "The sea is much deeper today.",
+   "words": 5,
+   "focus": "multō",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mare",
+     "m": "the sea"
+    },
+    {
+     "w": "hodiē",
+     "m": "today"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "altius",
+     "m": "deeper"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "adg-07",
+   "la": "Hic liber paulō brevior est.",
+   "en": "This book is a little shorter.",
+   "words": 5,
+   "focus": "paulō",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hic",
+     "m": "this"
+    },
+    {
+     "w": "liber",
+     "m": "book"
+    },
+    {
+     "w": "paulō",
+     "m": "by a little"
+    },
+    {
+     "w": "brevior",
+     "m": "shorter"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "adg-08",
+   "la": "Fluvius paulō lātior est quam via.",
+   "en": "The river is a little wider than the road.",
+   "words": 6,
+   "focus": "paulō",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Fluvius",
+     "m": "the river"
+    },
+    {
+     "w": "paulō",
+     "m": "by a little"
+    },
+    {
+     "w": "lātior",
+     "m": "wider"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "quam",
+     "m": "than"
+    },
+    {
+     "w": "via",
+     "m": "the road"
+    }
+   ]
+  },
+  {
+   "id": "adg-09",
+   "la": "Aqua in impluviō paulō frīgidior est.",
+   "en": "The water in the basin is a little colder.",
+   "words": 6,
+   "focus": "paulō",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aqua",
+     "m": "the water"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "impluviō",
+     "m": "the basin"
+    },
+    {
+     "w": "paulō",
+     "m": "by a little"
+    },
+    {
+     "w": "frīgidior",
+     "m": "colder"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "adg-10",
+   "la": "Paulō post nāvis ad portum venit.",
+   "en": "A little afterwards the ship comes to the harbour.",
+   "words": 6,
+   "focus": "Paulō",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Paulō",
+     "m": "by a little"
+    },
+    {
+     "w": "post",
+     "m": "after"
+    },
+    {
+     "w": "nāvis",
+     "m": "the ship"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "portum",
+     "m": "the harbour"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "adg-11",
+   "la": "Nāvis paulō ante ex portū nāvigat.",
+   "en": "A little before, the ship sails out of the harbour.",
+   "words": 6,
+   "focus": "paulō",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nāvis",
+     "m": "the ship"
+    },
+    {
+     "w": "paulō",
+     "m": "by a little"
+    },
+    {
+     "w": "ante",
+     "m": "before"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "portū",
+     "m": "the harbour"
+    },
+    {
+     "w": "nāvigat",
+     "m": "sails"
+    }
+   ]
+  },
+  {
+   "id": "adg-12",
+   "la": "Hic mīles multō fortior est quam ille.",
+   "en": "This soldier is much braver than that one.",
+   "words": 7,
+   "focus": "multō",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hic",
+     "m": "this"
+    },
+    {
+     "w": "mīles",
+     "m": "soldier"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "fortior",
+     "m": "braver"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "quam",
+     "m": "than"
+    },
+    {
+     "w": "ille",
+     "m": "that one"
+    }
+   ]
+  },
+  {
+   "id": "adg-13",
+   "la": "Mīles multō longiōre gladiō pugnat.",
+   "en": "The soldier fights with a much longer sword.",
+   "words": 5,
+   "focus": "multō",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mīles",
+     "m": "the soldier"
+    },
+    {
+     "w": "multō",
+     "m": "by much"
+    },
+    {
+     "w": "longiōre",
+     "m": "longer"
+    },
+    {
+     "w": "gladiō",
+     "m": "with a sword"
+    },
+    {
+     "w": "pugnat",
+     "m": "fights"
+    }
+   ]
+  },
+  {
+   "id": "adg-14",
+   "la": "Quīntus paulō minor est quam Mārcus.",
+   "en": "Quintus is a little smaller than Marcus.",
+   "words": 6,
+   "focus": "paulō",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "paulō",
+     "m": "by a little"
+    },
+    {
+     "w": "minor",
+     "m": "smaller"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "quam",
+     "m": "than"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    }
+   ]
+  }
+ ]
+}

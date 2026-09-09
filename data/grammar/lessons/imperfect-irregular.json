@@ -15,5 +15,131 @@
     { "type": "p", "text": "The learner's notes (week 19): *su / es* uses the special stem *era-* with regular endings (*eram, erās, erat, erāmus, erātis, erant*); *possum* and all other compounds of *esse* add a prefix to the same stem (*pot-era-m*); *e / i* uses the stem *i* and the marker without its *e* (*ībam, ībās, ībat*); the other irregular verbs are regular in the imperfect, *volō* keeping the stem *vol-* (*volēbat, mālēbāmus, ferēbātur, nōlēbam*)." },
     { "type": "p", "text": "Ørberg (chapter XIX): *esse: eram, erāmus, erās, erātis, erat, erant*; *ante trēs hōrās nox erat*; *Iūlius tam improbus erat quam Mārcus nunc est*. A&G §170, §198, §203 give the full tables; *ferō* has *ferēbam*, and *fīō* (become) *fīēbam*." }
   ],
-  "sources": ["notes p67", "Ørberg cap. XIX Grammatica Latina", "A&G §170, §198, §203"]
+  "sources": ["notes p67", "Ørberg cap. XIX Grammatica Latina", "A&G §170, §198, §203"],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What these forms do",
+      "say": "A handful of very common verbs build their past their own way, and they are the ones you meet most: the imperfect of the irregular verbs (eram = I was, poteram = I could, ībam = I was going). They mean what the ordinary imperfect (the 'was doing' tense) means — something going on in the past — but most of them are not made from a plain stem plus *-bā-*, so they are worth learning as their own small set.",
+      "show": {
+        "kind": "sentence",
+        "id": "iir-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "iir-02",
+        "ask": "Tap the verb that puts this sentence into the past."
+      }
+    },
+    {
+      "n": 2,
+      "title": "sum: the stem erā-, and anything fastened in front of it",
+      "say": "The whole imperfect of *sum* is built on the stem *erā-*, with the endings you already know: *-t* for he, she or it, *-nt* for they. Whatever is fastened to the front of it changes nothing else — *aberat* he was away, *aderat* he was there, and *poteram, poterat, poterant* are simply *pot-* with those same forms behind. If you can build the plain one you can build all of them. What somebody could do follows in the infinitive (the 'to' form): *recitāre nōn poterat*, he could not recite.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "word": "sum",
+        "reveal": [
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "say": "the stem erā- with -t and -nt behind it"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "sum",
+        "word": "sum",
+        "cells": [
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "ask": "Write the imperfect of sum for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "sum: the other four persons",
+      "say": "The rest of the column takes the ordinary endings on that same *erā-*: *-m* for I, *-s* for you, *-mus* for we, *-tis* for you all. The 'I' form ends in *-m*, as every imperfect does, and not in the *-ō* the present uses: *sum* is 'I am', and its past puts *-m* on *erā-* instead.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "word": "sum",
+        "reveal": [
+          "impf.ind.act.1.sg",
+          "impf.ind.act.2.sg",
+          "impf.ind.act.1.pl",
+          "impf.ind.act.2.pl"
+        ],
+        "say": "erā- with -m, -s, -mus, -tis"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "sum",
+        "word": "sum",
+        "cells": [
+          "impf.ind.act.1.sg",
+          "impf.ind.act.2.sg",
+          "impf.ind.act.1.pl",
+          "impf.ind.act.2.pl"
+        ],
+        "ask": "Write the imperfect of sum for I, for you, for we and for you all."
+      }
+    },
+    {
+      "n": 4,
+      "title": "eō: ī- with the same -bā-",
+      "say": "*Eō* is the one in this set that does take *-bā-*: its stem shrinks to *ī-* and the marker follows, giving *ībam, ībat, ībant*. *Volō* and *ferō* need nothing new at all — *volēbat* and *ferēbat* are made by the ordinary rule you already have.",
+      "show": {
+        "kind": "paradigm",
+        "key": "eo",
+        "word": "eo",
+        "reveal": [
+          "impf.ind.act.1.sg",
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "say": "ī- + -bā- + the person ending"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "eo",
+        "word": "eo",
+        "cells": [
+          "impf.ind.act.1.sg",
+          "impf.ind.act.3.sg",
+          "impf.ind.act.3.pl"
+        ],
+        "ask": "Write the imperfect of eō for I, for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling erat from ībat, and from est",
+      "say": "Two letters decide it. *Est* is now, *erat* is then. And *erat* is 'was', while a verb built on *ī-* is 'was going' — the same past, but a different verb underneath it. When two of these stand in one sentence, what separates them is which verb they come from, not which tense they are in, so ask what the verb *means* before you ask when it happened.",
+      "show": {
+        "kind": "sentence",
+        "id": "iir-09"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "iir-13",
+        "ask": "Tap the verb that means 'was going', not 'was'."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "These verbs carry most of the background in a story, so they turn up in almost every past sentence you will read. Here *sum* does the work twice over — one person away from the house, another present in it, with *autem* turning the sentence between them. Build one of your own now, and let *sum* carry the setting.",
+      "show": {
+        "kind": "sentence",
+        "id": "iir-06"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "iir-14",
+        "blank": "erat",
+        "ask": "Fill the blank with the imperfect of sum, third person singular."
+      }
+    }
+  ]
 }

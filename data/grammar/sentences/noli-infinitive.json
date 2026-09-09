@@ -1,0 +1,466 @@
+{
+  "skill": "noli-infinitive",
+  "chapter": 20,
+  "sentences": [
+    {
+      "id": "ni-01",
+      "la": "Nōlī in hortō clāmāre, Mārce!",
+      "en": "Do not shout in the garden, Marcus!",
+      "words": 5,
+      "focus": "Nōlī",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "clāmāre",
+          "m": "shout"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "ni-02",
+      "la": "Nōlī mē baculō verberāre, magister!",
+      "en": "Do not beat me with a stick, teacher!",
+      "words": 5,
+      "focus": "Nōlī",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "mē",
+          "m": "me"
+        },
+        {
+          "w": "baculō",
+          "m": "with a stick"
+        },
+        {
+          "w": "verberāre",
+          "m": "beat"
+        },
+        {
+          "w": "magister",
+          "m": "teacher"
+        }
+      ]
+    },
+    {
+      "id": "ni-03",
+      "la": "Nōlīte in lūdō dormīre, puerī!",
+      "en": "Do not sleep in school, boys!",
+      "words": 5,
+      "focus": "Nōlīte",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlīte",
+          "m": "do not (to more than one)"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "dormīre",
+          "m": "sleep"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        }
+      ]
+    },
+    {
+      "id": "ni-04",
+      "la": "Nōlīte pecūniam meam sūmere, servī!",
+      "en": "Do not take my money, slaves!",
+      "words": 5,
+      "focus": "Nōlīte",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlīte",
+          "m": "do not (to more than one)"
+        },
+        {
+          "w": "pecūniam",
+          "m": "the money"
+        },
+        {
+          "w": "meam",
+          "m": "my"
+        },
+        {
+          "w": "sūmere",
+          "m": "take"
+        },
+        {
+          "w": "servī",
+          "m": "slaves"
+        }
+      ]
+    },
+    {
+      "id": "ni-05",
+      "la": "Nōlīte ovēs in silvam dūcere!",
+      "en": "Do not lead the sheep into the wood!",
+      "words": 5,
+      "focus": "Nōlīte",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlīte",
+          "m": "do not (to more than one)"
+        },
+        {
+          "w": "ovēs",
+          "m": "the sheep"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "silvam",
+          "m": "the wood"
+        },
+        {
+          "w": "dūcere",
+          "m": "lead"
+        }
+      ]
+    },
+    {
+      "id": "ni-06",
+      "la": "Nōlī epistulam meam legere, Quīnte!",
+      "en": "Do not read my letter, Quintus!",
+      "words": 5,
+      "focus": "Nōlī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "epistulam",
+          "m": "the letter"
+        },
+        {
+          "w": "meam",
+          "m": "my"
+        },
+        {
+          "w": "legere",
+          "m": "read"
+        },
+        {
+          "w": "Quīnte",
+          "m": "Quintus"
+        }
+      ]
+    },
+    {
+      "id": "ni-07",
+      "la": "Nōlī canem nigrum timēre, Iūlia!",
+      "en": "Do not be afraid of the black dog, Julia!",
+      "words": 5,
+      "focus": "Nōlī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "canem",
+          "m": "the dog"
+        },
+        {
+          "w": "nigrum",
+          "m": "black"
+        },
+        {
+          "w": "timēre",
+          "m": "fear"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        }
+      ]
+    },
+    {
+      "id": "ni-08",
+      "la": "Nōlī cum ancillīs loquī, Mēde!",
+      "en": "Do not talk with the slave girls, Medus!",
+      "words": 5,
+      "focus": "Nōlī",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "ancillīs",
+          "m": "the slave girls"
+        },
+        {
+          "w": "loquī",
+          "m": "talk"
+        },
+        {
+          "w": "Mēde",
+          "m": "Medus"
+        }
+      ]
+    },
+    {
+      "id": "ni-09",
+      "la": "Nōlīte improbī esse, puerī meī!",
+      "en": "Do not be naughty, my boys!",
+      "words": 5,
+      "focus": "Nōlīte",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlīte",
+          "m": "do not (to more than one)"
+        },
+        {
+          "w": "improbī",
+          "m": "naughty"
+        },
+        {
+          "w": "esse",
+          "m": "be"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        },
+        {
+          "w": "meī",
+          "m": "my"
+        }
+      ]
+    },
+    {
+      "id": "ni-10",
+      "la": "Nōlīte ad fluvium sōlī īre!",
+      "en": "Do not go to the river alone!",
+      "words": 5,
+      "focus": "Nōlīte",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlīte",
+          "m": "do not (to more than one)"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "fluvium",
+          "m": "the river"
+        },
+        {
+          "w": "sōlī",
+          "m": "alone"
+        },
+        {
+          "w": "īre",
+          "m": "go"
+        }
+      ]
+    },
+    {
+      "id": "ni-11",
+      "la": "Tacē, Mārce, et nōlī rīdēre!",
+      "en": "Be quiet, Marcus, and do not laugh!",
+      "words": 5,
+      "focus": "nōlī",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Tacē",
+          "m": "be quiet"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "rīdēre",
+          "m": "laugh"
+        }
+      ]
+    },
+    {
+      "id": "ni-12",
+      "la": "Nōlī, Quīnte, ex lectulō surgere!",
+      "en": "Do not get up out of bed, Quintus!",
+      "words": 5,
+      "focus": "Nōlī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "Quīnte",
+          "m": "Quintus"
+        },
+        {
+          "w": "ex",
+          "m": "out of"
+        },
+        {
+          "w": "lectulō",
+          "m": "the bed"
+        },
+        {
+          "w": "surgere",
+          "m": "get up"
+        }
+      ]
+    },
+    {
+      "id": "ni-13",
+      "la": "Nōlī iterum in aquam cadere!",
+      "en": "Do not fall into the water again!",
+      "words": 5,
+      "focus": "Nōlī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "iterum",
+          "m": "again"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "aquam",
+          "m": "the water"
+        },
+        {
+          "w": "cadere",
+          "m": "fall"
+        }
+      ]
+    }
+  ]
+}

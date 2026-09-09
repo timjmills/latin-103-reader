@@ -54,6 +54,112 @@
       "text": "*Puer puellam videt*: the word with -m is the one being seen. Swap the endings, *puerum puella videt*, and the girl is doing the seeing, whatever the English word order suggests. Neuter nouns are the one place the ending cannot help (*oppidum* is both); there the verb and common sense decide."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the object form does",
+      "say": "When a verb does something to someone, the one it is done to takes the accusative (the object form): *Iūlius Mārcum et Quīntum vocat* — Julius calls Marcus and Quintus. English shows this in a few pronouns (*he* / *him*) and otherwise by word order alone; Latin marks the noun itself, so the ending, not the place in the line, says who is on the receiving end.",
+      "show": {
+        "kind": "sentence",
+        "id": "ao-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ao-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "a-nouns: -am",
+      "say": "*Puella* (girl) becomes *puellam* when the verb acts on her: *Aemilia puellam parvam vocat*. One letter, -m, is the whole difference between doing and being done to.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "reveal": [
+          "acc.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl1",
+        "cells": [
+          "acc.sg"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "us-nouns: -um",
+      "say": "*Servus* (slave) becomes *servum*: *Iūlia servum improbum … videt*. The same -m does the work, added to -u instead of -a.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "acc.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl2m",
+        "cells": [
+          "acc.sg"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "More than one: -ōs, and -ās for a-nouns",
+      "say": "For several the mark is -s: us-nouns take -ōs (*servōs*) and a-nouns -ās (*puellās*). *Dominus servōs improbōs verberat* — the master beats the naughty slaves, every one of them carrying that -s. The us-noun’s cell is filled in for you; the a-noun’s is the one to write.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "acc.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl1",
+        "cells": [
+          "acc.pl"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "Neuter nouns do not change at all",
+      "say": "*Oppidum* (town) is *oppidum* whether it acts or is acted on, and *oppida* is *oppida* either way: *Mārcus et Quīntus oppidum antīquum vident*. This is the one place where the ending cannot help you, and the verb and the sense have to decide.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2n",
+        "reveal": [
+          "acc.sg",
+          "acc.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl2n",
+        "cells": [
+          "acc.sg",
+          "acc.pl"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "title": "The ending, not the order",
+      "say": "*Puellam parvam māter laeta vocat* puts the object first and still means that the mother calls the girl, because *puellam* carries the -m. *Mārcus Quīntum pulsat, Quīntus Mārcum verberat* uses the same two names twice and swaps who does what by swapping the endings alone. Read the tails before you read the order.",
+      "show": {
+        "kind": "sentence",
+        "id": "ao-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ao-12"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

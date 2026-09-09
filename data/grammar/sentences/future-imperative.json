@@ -1,0 +1,503 @@
+{
+ "skill": "future-imperative",
+ "chapter": 33,
+ "sentences": [
+  {
+   "id": "fim-01",
+   "la": "Crās ad mē venītō, Mārce!",
+   "en": "Come to me tomorrow, Marcus!",
+   "words": 5,
+   "focus": "venītō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Crās",
+     "m": "tomorrow"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "venītō",
+     "m": "you shall come"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus! (calling him)"
+    }
+   ]
+  },
+  {
+   "id": "fim-02",
+   "la": "Semper patrī tuō pārētō, fīlī!",
+   "en": "Always obey your father, son!",
+   "words": 5,
+   "focus": "pārētō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Semper",
+     "m": "always"
+    },
+    {
+     "w": "patrī",
+     "m": "your father (the 'to/for' form)"
+    },
+    {
+     "w": "tuō",
+     "m": "your"
+    },
+    {
+     "w": "pārētō",
+     "m": "you shall obey"
+    },
+    {
+     "w": "fīlī",
+     "m": "son! (calling him)"
+    }
+   ]
+  },
+  {
+   "id": "fim-03",
+   "la": "Epistulam meam crās legitō, Iūlia!",
+   "en": "Read my letter tomorrow, Julia!",
+   "words": 5,
+   "focus": "legitō",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "chart",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Epistulam",
+     "m": "the letter"
+    },
+    {
+     "w": "meam",
+     "m": "my"
+    },
+    {
+     "w": "crās",
+     "m": "tomorrow"
+    },
+    {
+     "w": "legitō",
+     "m": "you shall read"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia! (calling her)"
+    }
+   ]
+  },
+  {
+   "id": "fim-04",
+   "la": "Pecūniam meam Iūliae datō, Dāve!",
+   "en": "Give my money to Julia, Davus!",
+   "words": 5,
+   "focus": "datō",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pecūniam",
+     "m": "the money"
+    },
+    {
+     "w": "meam",
+     "m": "my"
+    },
+    {
+     "w": "Iūliae",
+     "m": "to Julia"
+    },
+    {
+     "w": "datō",
+     "m": "you shall give"
+    },
+    {
+     "w": "Dāve",
+     "m": "Davus! (calling him)"
+    }
+   ]
+  },
+  {
+   "id": "fim-05",
+   "la": "Puerī, magistrum vestrum semper audītōte!",
+   "en": "Boys, always listen to your teacher!",
+   "words": 5,
+   "focus": "audītōte",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "boys! (calling them)"
+    },
+    {
+     "w": "magistrum",
+     "m": "the teacher"
+    },
+    {
+     "w": "vestrum",
+     "m": "your (plural)"
+    },
+    {
+     "w": "semper",
+     "m": "always"
+    },
+    {
+     "w": "audītōte",
+     "m": "you (plural) shall listen to"
+    }
+   ]
+  },
+  {
+   "id": "fim-06",
+   "la": "Epistulam ad mē crās scrībitōte, amīcī!",
+   "en": "Write me a letter tomorrow, friends!",
+   "words": 6,
+   "focus": "scrībitōte",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Epistulam",
+     "m": "a letter"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "crās",
+     "m": "tomorrow"
+    },
+    {
+     "w": "scrībitōte",
+     "m": "you (plural) shall write"
+    },
+    {
+     "w": "amīcī",
+     "m": "friends! (calling them)"
+    }
+   ]
+  },
+  {
+   "id": "fim-07",
+   "la": "Semper bonus discipulus estō, Mārce!",
+   "en": "Always be a good pupil, Marcus!",
+   "words": 5,
+   "focus": "estō",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Semper",
+     "m": "always"
+    },
+    {
+     "w": "bonus",
+     "m": "a good"
+    },
+    {
+     "w": "discipulus",
+     "m": "pupil"
+    },
+    {
+     "w": "estō",
+     "m": "you shall be"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus! (calling him)"
+    }
+   ]
+  },
+  {
+   "id": "fim-08",
+   "la": "Bonī puerī estōte, amīcī meī!",
+   "en": "Be good boys, my friends!",
+   "words": 5,
+   "focus": "estōte",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Bonī",
+     "m": "good"
+    },
+    {
+     "w": "puerī",
+     "m": "boys"
+    },
+    {
+     "w": "estōte",
+     "m": "you (plural) shall be"
+    },
+    {
+     "w": "amīcī",
+     "m": "friends! (calling them)"
+    },
+    {
+     "w": "meī",
+     "m": "my"
+    }
+   ]
+  },
+  {
+   "id": "fim-09",
+   "la": "Mementō, Quīnte: magister sevērus est.",
+   "en": "Remember, Quintus: the teacher is strict.",
+   "words": 5,
+   "focus": "Mementō",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mementō",
+     "m": "remember!"
+    },
+    {
+     "w": "Quīnte",
+     "m": "Quintus! (calling him)"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "sevērus",
+     "m": "strict"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "fim-10",
+   "la": "Scītō, Mārce: pater tuus adest.",
+   "en": "Know this, Marcus: your father is here.",
+   "words": 5,
+   "focus": "Scītō",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Scītō",
+     "m": "know!"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus! (calling him)"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "adest",
+     "m": "is here"
+    }
+   ]
+  },
+  {
+   "id": "fim-11",
+   "la": "Nunc tacē, Mārce, posteā respondētō!",
+   "en": "Be quiet now, Marcus; answer later!",
+   "words": 5,
+   "focus": "respondētō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nunc",
+     "m": "now"
+    },
+    {
+     "w": "tacē",
+     "m": "be quiet! (this moment)"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus! (calling him)"
+    },
+    {
+     "w": "posteā",
+     "m": "afterwards"
+    },
+    {
+     "w": "respondētō",
+     "m": "you shall answer"
+    }
+   ]
+  },
+  {
+   "id": "fim-12",
+   "la": "Nunc venī, crās quoque venītō!",
+   "en": "Come now, and come tomorrow too!",
+   "words": 5,
+   "focus": "venītō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nunc",
+     "m": "now"
+    },
+    {
+     "w": "venī",
+     "m": "come! (this moment)"
+    },
+    {
+     "w": "crās",
+     "m": "tomorrow"
+    },
+    {
+     "w": "quoque",
+     "m": "also"
+    },
+    {
+     "w": "venītō",
+     "m": "you shall come"
+    }
+   ]
+  },
+  {
+   "id": "fim-13",
+   "la": "Cum Rōmam veniēs, epistulam mittitō.",
+   "en": "When you come to Rome, send a letter.",
+   "words": 5,
+   "focus": "mittitō",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "veniēs",
+     "m": "you will come"
+    },
+    {
+     "w": "epistulam",
+     "m": "a letter"
+    },
+    {
+     "w": "mittitō",
+     "m": "you shall send"
+    }
+   ]
+  },
+  {
+   "id": "fim-14",
+   "la": "Sī pater aberit, mātrī pārētōte, puerī!",
+   "en": "If father is away, obey your mother, boys!",
+   "words": 6,
+   "focus": "pārētōte",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "aberit",
+     "m": "will be away"
+    },
+    {
+     "w": "mātrī",
+     "m": "your mother (the 'to/for' form)"
+    },
+    {
+     "w": "pārētōte",
+     "m": "you (plural) shall obey"
+    },
+    {
+     "w": "puerī",
+     "m": "boys! (calling them)"
+    }
+   ]
+  }
+ ]
+}

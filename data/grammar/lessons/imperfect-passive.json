@@ -14,5 +14,129 @@
     { "type": "p", "text": "The learner's notes (week 19): the passive and deponent imperfect use the same marker *(e)ba* as the active, with the passive / deponent endings added; the variable vowels drop after the *a*; the first person singular always takes *-r*, never *-or*: *pōnēbar, pulsābar, vidēbar, fugiēbar, audiēbar; pōnēbāris, pōnēbātur, pōnēbāmur, pōnēbāminī, pōnēbantur*." },
     { "type": "p", "text": "Ørberg (chapter XIX): *laudābar, laudābāris, laudābātur, laudābāmur, laudābāminī, laudābantur*; *timēbar*; *reprehendēbar, reprehendēbātur*; *pūniēbar*; and in the story *Iūlius uxōrem suam amābat*, then *ab eā amābātur*. A&G §184 give the same table under the first conjugation." }
   ],
-  "sources": ["notes p66", "Ørberg cap. XIX Grammatica Latina", "A&G §184"]
+  "sources": ["notes p66", "Ørberg cap. XIX Grammatica Latina", "A&G §184"],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the form does",
+      "say": "When the subject is not doing something but having it done to it, Latin uses the passive; in the past that is the imperfect passive (the 'was being done' form). *Puerī vocābantur* — the boys were being called. The doer, when it is named at all, comes in behind *ā* or *ab*: *ā magistrō*, by the teacher. The marker *-bā-* is the same one the active imperfect uses; only the endings after it change.",
+      "show": {
+        "kind": "sentence",
+        "id": "ip-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ip-02",
+        "ask": "Tap the verb that says the table was having something done to it."
+      }
+    },
+    {
+      "n": 2,
+      "title": "The third person: -bātur and -bantur",
+      "say": "Take the active imperfect and swap its ending for the passive one: *-bat* becomes *-bātur*, *-bant* becomes *-bantur*. That one syllable is the whole difference, and it turns the subject from the doer into the one it is done to — *audiēbat*, he was listening, against *audiēbātur*, he was being heard. So read to the end of the word before deciding who is doing what.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "voco",
+        "reveal": [
+          "impf.ind.pass.3.sg",
+          "impf.ind.pass.3.pl"
+        ],
+        "say": "vocābātur, vocābantur — the active ending with -ur behind it"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "laudo",
+        "cells": [
+          "impf.ind.pass.3.sg",
+          "impf.ind.pass.3.pl"
+        ],
+        "ask": "Now the same two cells on laudō: the imperfect passive for 'he, she, it' and for 'they'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The other four persons",
+      "say": "The rest of the column puts its own passive endings on the same *-bā-*: *-bar* (I), *-bāris* (you), *-bāmur* (we), *-bāminī* (you all). Four of the six end in *-r* or *-ur* — *-bar*, *-bātur*, *-bāmur*, *-bantur* — and two do not: *-bāris* (you) and *-bāminī* (you all). Those two are the ones to remember.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "voco",
+        "reveal": [
+          "impf.ind.pass.1.sg",
+          "impf.ind.pass.2.sg",
+          "impf.ind.pass.1.pl",
+          "impf.ind.pass.2.pl"
+        ],
+        "say": "vocābar, vocābāris, vocābāmur, vocābāminī"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "amo",
+        "cells": [
+          "impf.ind.pass.1.sg",
+          "impf.ind.pass.2.sg",
+          "impf.ind.pass.1.pl",
+          "impf.ind.pass.2.pl"
+        ],
+        "ask": "Write the imperfect passive of amō for I, for you, for we and for you all."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The 3rd and 4th conjugations put -ē- first",
+      "say": "Exactly as in the active, verbs of the third and fourth conjugations (the conjugation is which of the four families a Latin verb belongs to) slip in an *-ē-* before the marker: *mittēbātur* it was being sent, *aperiēbātur* it was being opened, *carpēbantur* they were being picked. Read the word as stem + ē + bā + passive ending.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "mitto",
+        "reveal": [
+          "impf.ind.pass.3.sg",
+          "impf.ind.pass.3.pl"
+        ],
+        "say": "mittēbātur, mittēbantur — the joining -ē- in front of the marker"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "dico",
+        "cells": [
+          "impf.ind.pass.3.sg",
+          "impf.ind.pass.3.pl"
+        ],
+        "ask": "Now the same two cells on dīcō: the imperfect passive for 'he, she, it' and for 'they'."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Deponent verbs wear these endings and mean something active",
+      "say": "Some verbs carry passive endings but have an active meaning: a deponent verb (passive-looking endings, active meaning: loquitur = he speaks). *Sequēbātur* is not 'he was being followed' but 'he was following'; *loquēbātur* is 'he was talking'. The ending still tells you the tense and the person; the verb itself tells you the meaning.",
+      "show": {
+        "kind": "sentence",
+        "id": "ip-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ip-11",
+        "ask": "ōsculābātur — who is doing the kissing, Aemilia or her daughter?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Now build one from the inside out: stem, then *-ē-* if the verb needs it, then *-bā-*, then the passive ending. In the sentence in front of you the roses are the subject, Julia is the doer behind *ā*, and the verb carries both the past and the passive at once.",
+      "show": {
+        "kind": "sentence",
+        "id": "ip-09"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ip-14",
+        "blank": "dūcēbantur",
+        "ask": "Fill the blank with the imperfect passive of dūcō, third person plural."
+      }
+    }
+  ]
 }

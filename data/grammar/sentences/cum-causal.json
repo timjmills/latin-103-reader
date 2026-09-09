@@ -1,0 +1,588 @@
+{
+  "skill": "cum-causal",
+  "chapter": 29,
+  "sentences": [
+    {
+      "id": "cumc-01",
+      "la": "Cum aeger sim, in cubiculō maneō.",
+      "en": "Since I am ill, I am staying in the bedroom.",
+      "words": 6,
+      "focus": "sim",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "since"
+        },
+        {
+          "w": "aeger",
+          "m": "ill"
+        },
+        {
+          "w": "sim",
+          "m": "I am"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "cubiculō",
+          "m": "the bedroom"
+        },
+        {
+          "w": "maneō",
+          "m": "I stay"
+        }
+      ]
+    },
+    {
+      "id": "cumc-02",
+      "la": "Cum pater dormiat, puerī tacent.",
+      "en": "Since father is asleep, the boys keep quiet.",
+      "words": 5,
+      "focus": "dormiat",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "since"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        },
+        {
+          "w": "dormiat",
+          "m": "is sleeping"
+        },
+        {
+          "w": "puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "tacent",
+          "m": "keep quiet"
+        }
+      ]
+    },
+    {
+      "id": "cumc-03",
+      "la": "Mārcus plōrat, cum Iūlius eum verberet.",
+      "en": "Marcus is crying, since Julius is beating him.",
+      "words": 6,
+      "focus": "verberet",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "plōrat",
+          "m": "is crying"
+        },
+        {
+          "w": "cum",
+          "m": "since"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "eum",
+          "m": "him"
+        },
+        {
+          "w": "verberet",
+          "m": "is beating"
+        }
+      ]
+    },
+    {
+      "id": "cumc-04",
+      "la": "Cum servus fugiat, dominus eum quaerit.",
+      "en": "Since the slave is running away, his master is looking for him.",
+      "words": 6,
+      "focus": "fugiat",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "since"
+        },
+        {
+          "w": "servus",
+          "m": "the slave"
+        },
+        {
+          "w": "fugiat",
+          "m": "is running away"
+        },
+        {
+          "w": "dominus",
+          "m": "the master"
+        },
+        {
+          "w": "eum",
+          "m": "him"
+        },
+        {
+          "w": "quaerit",
+          "m": "is looking for"
+        }
+      ]
+    },
+    {
+      "id": "cumc-05",
+      "la": "Iūlius cum Aemiliā gaudet, cum fīlius adsit.",
+      "en": "Julius is glad with Aemilia, since their son is here.",
+      "words": 7,
+      "focus": "adsit",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "Aemiliā",
+          "m": "Aemilia"
+        },
+        {
+          "w": "gaudet",
+          "m": "is glad"
+        },
+        {
+          "w": "cum",
+          "m": "since"
+        },
+        {
+          "w": "fīlius",
+          "m": "the son"
+        },
+        {
+          "w": "adsit",
+          "m": "is here"
+        }
+      ],
+      "note": "Both kinds of cum stand in one sentence: the first is the preposition with a noun in the ablative (cum Aemiliā = with Aemilia), the second owns a subjunctive verb and gives the reason."
+    },
+    {
+      "id": "cumc-06",
+      "la": "Nōn exeō, cum imber cadat.",
+      "en": "I am not going out, since rain is falling.",
+      "words": 5,
+      "focus": "cadat",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōn",
+          "m": "not"
+        },
+        {
+          "w": "exeō",
+          "m": "I go out"
+        },
+        {
+          "w": "cum",
+          "m": "since"
+        },
+        {
+          "w": "imber",
+          "m": "rain"
+        },
+        {
+          "w": "cadat",
+          "m": "is falling"
+        }
+      ]
+    },
+    {
+      "id": "cumc-07",
+      "la": "Cum Iūlia parva sit, tamen fortis est.",
+      "en": "Although Julia is small, she is nevertheless brave.",
+      "words": 7,
+      "focus": "sit",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "although"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "parva",
+          "m": "small"
+        },
+        {
+          "w": "sit",
+          "m": "she is"
+        },
+        {
+          "w": "tamen",
+          "m": "nevertheless"
+        },
+        {
+          "w": "fortis",
+          "m": "brave"
+        },
+        {
+          "w": "est",
+          "m": "she is"
+        }
+      ]
+    },
+    {
+      "id": "cumc-08",
+      "la": "Cum multum labōret, tamen pauper manet.",
+      "en": "Although he works hard, he nevertheless stays poor.",
+      "words": 6,
+      "focus": "labōret",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "although"
+        },
+        {
+          "w": "multum",
+          "m": "much"
+        },
+        {
+          "w": "labōret",
+          "m": "he works"
+        },
+        {
+          "w": "tamen",
+          "m": "nevertheless"
+        },
+        {
+          "w": "pauper",
+          "m": "poor"
+        },
+        {
+          "w": "manet",
+          "m": "he stays"
+        }
+      ]
+    },
+    {
+      "id": "cumc-09",
+      "la": "Cum Mēdus absit, Lȳdia trīstis est.",
+      "en": "Since Medus is away, Lydia is sad.",
+      "words": 6,
+      "focus": "absit",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "since"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "absit",
+          "m": "is away"
+        },
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "trīstis",
+          "m": "sad"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "cumc-10",
+      "la": "Mārcus plōrābat, cum pater abesset.",
+      "en": "Marcus was crying, since his father was away.",
+      "words": 5,
+      "focus": "abesset",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "plōrābat",
+          "m": "was crying"
+        },
+        {
+          "w": "cum",
+          "m": "since"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        },
+        {
+          "w": "abesset",
+          "m": "was away"
+        }
+      ]
+    },
+    {
+      "id": "cumc-11",
+      "la": "Discipulī tacēbant, cum magistrum timērent.",
+      "en": "The pupils were quiet, since they were afraid of the teacher.",
+      "words": 5,
+      "focus": "timērent",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Discipulī",
+          "m": "the pupils"
+        },
+        {
+          "w": "tacēbant",
+          "m": "were quiet"
+        },
+        {
+          "w": "cum",
+          "m": "since"
+        },
+        {
+          "w": "magistrum",
+          "m": "the teacher"
+        },
+        {
+          "w": "timērent",
+          "m": "they were afraid of"
+        }
+      ]
+    },
+    {
+      "id": "cumc-12",
+      "la": "Cum aqua frīgida sit, puer nōn natat.",
+      "en": "Since the water is cold, the boy is not swimming.",
+      "words": 7,
+      "focus": "sit",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "since"
+        },
+        {
+          "w": "aqua",
+          "m": "the water"
+        },
+        {
+          "w": "frīgida",
+          "m": "cold"
+        },
+        {
+          "w": "sit",
+          "m": "is"
+        },
+        {
+          "w": "puer",
+          "m": "the boy"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "natat",
+          "m": "swims"
+        }
+      ]
+    },
+    {
+      "id": "cumc-13",
+      "la": "Syra Iūliam amat, cum bona puella sit.",
+      "en": "Syra loves Julia, since she is a good girl.",
+      "words": 7,
+      "focus": "sit",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "Iūliam",
+          "m": "Julia"
+        },
+        {
+          "w": "amat",
+          "m": "loves"
+        },
+        {
+          "w": "cum",
+          "m": "since"
+        },
+        {
+          "w": "bona",
+          "m": "good"
+        },
+        {
+          "w": "puella",
+          "m": "girl"
+        },
+        {
+          "w": "sit",
+          "m": "she is"
+        }
+      ]
+    },
+    {
+      "id": "cumc-14",
+      "la": "Cum Quīntus aegrōtet, medicus venit.",
+      "en": "Since Quintus is ill, the doctor is coming.",
+      "words": 5,
+      "focus": "aegrōtet",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "since"
+        },
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "aegrōtet",
+          "m": "is ill"
+        },
+        {
+          "w": "medicus",
+          "m": "the doctor"
+        },
+        {
+          "w": "venit",
+          "m": "comes"
+        }
+      ]
+    },
+    {
+      "id": "cumc-15",
+      "la": "Aemilia gaudet, cum līberī rīdeant.",
+      "en": "Aemilia is glad, since the children are laughing.",
+      "words": 5,
+      "focus": "rīdeant",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "gaudet",
+          "m": "is glad"
+        },
+        {
+          "w": "cum",
+          "m": "since"
+        },
+        {
+          "w": "līberī",
+          "m": "the children"
+        },
+        {
+          "w": "rīdeant",
+          "m": "are laughing"
+        }
+      ]
+    }
+  ]
+}

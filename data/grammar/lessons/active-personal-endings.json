@@ -1,18 +1,195 @@
 {
-  "skill": "active-personal-endings",
-  "core": [
-    { "type": "p", "text": "A Latin verb carries its own subject in its ending: **the person endings (I / you / he / we / you all / they on the verb)**. *-ō* I, *-s* you, *-t* he / she / it, *-mus* we, *-tis* you all, *-nt* they. So *dormiō* is *I sleep*, *dormīs* *you sleep*, then *dormit, dormīmus, dormītis, dormiunt*. Between stem and ending sits the conjugation's vowel: *clāmā-s, rīdē-s, dīc-i-s, audī-s*; the 3rd and 4th conjugations have *-u-* before *-nt* (*dīcunt, faciunt, dormiunt*). Latin name: dēsinentiae persōnālēs āctīvae." },
-    { "type": "english", "text": "Person is who is talking: first person = the speaker (I, we), second = the listener (you), third = anyone else." },
-    { "type": "rule", "text": "-ō, -s, -t, -mus, -tis, -nt; the vowel in front belongs to the conjugation." },
-    { "type": "paradigm", "key": "conj1", "highlight": { "tense": "pres", "mood": "ind", "voice": "act" } },
-    { "type": "paradigm", "key": "conj3", "highlight": { "tense": "pres", "mood": "ind", "voice": "act" } },
-    { "type": "examples", "units": ["r15:103.1", "r15:56.1", "r15:58.1", "r15:102.1"], "invented": [ { "la": "Nōs in hortō lūdimus.", "en": "We play in the garden.", "focus": "lūdimus" } ] },
-    { "type": "confusion", "with": "passive-personal-endings", "text": "Each active ending has a passive twin: *-ō / -or*, *-s / -ris*, *-t / -tur*, *-mus / -mur*, *-tis / -minī*, *-nt / -ntur*: *laudō* I praise, *laudor* I am praised. A final *r* (or *-minī*) means the subject is on the receiving end, or the verb is a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)." }
-  ],
-  "more": [
-    { "type": "p", "text": "Because the ending says who, *ego* and *tū* appear only for emphasis. The 1st conjugation drops its *a* before *-ō*: *clāmā-re* but *clām-ō*. In the imperfect, the pluperfect, the 3rd- and 4th-conjugation future and every subjunctive the first person ends in *-m* instead of *-ō*: *eram, dīxeram, dīcam, dīcerem*. The 1st and 2nd conjugations keep *-ō* in the future, as does the future perfect (*amābō, ībō, dīxerō*), and the perfect has its own *-ī* (*dīxī*)." },
-    { "type": "p", "text": "The learner's notes (week 15): the endings are *-ō / -m, -(i)s, -(i)t, -(i)mus, -(i)tis, -(u)nt*; the bracketed vowel appears where the stem ends in a consonant (*frang-is, frang-imus, frang-itis*) and not after *a-, e-* and *i-*stems (*ambulā-s, tenē-mus, audī-tis*); in the present indicative only *-ō* is used for *I*, and *a-*stems drop their *a* before it (*ambul-ō*) because two open vowels are hard to say together. The nominative pronouns *ego, tū, is* are redundant and mark emphasis, as English does with the voice, so *ambulō* is far commoner than *ego ambulō*." },
-    { "type": "p", "text": "Ørberg (chapter XV): persōna prīma *rīdeō rīdēmus*, secunda *rīdēs rīdētis*, tertia *rīdet rīdent*; *clāmō clāmāmus, dīcō dīcimus, faciō facimus, audiō audīmus*; and beside them *esse* (*sum, es, est, sumus, estis, sunt*), *īre* (*eō, īs, it, īmus, ītis, eunt*) and *posse* (*possum, potes, potest, possumus, potestis, possunt*)." }
-  ],
-  "sources": ["notes p50–51", "Ørberg cap. XV Grammatica Latina", "A&G §163, §174–186"]
+ "skill": "active-personal-endings",
+ "teach": [
+  {
+   "title": "The ending says who",
+   "say": "A Latin verb carries its own subject in its last letters: **the person endings (I / you / he / we / you all / they on the verb)**. One verb, three people, no extra word needed: *cantō* I sing, *cantās* you sing, *cantat* he or she sings. English has to put *I, you, he* in front; Latin changes the end of the verb instead.",
+   "show": {
+    "kind": "sentence",
+    "id": "ape-02"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "ape-01",
+    "ask": "Which of the three verbs here means 'you sing'?"
+   },
+   "n": 1
+  },
+  {
+   "title": "The singular three: -ō, -s, -t",
+   "say": "On a verb of the first conjugation (the -āre family) the singular endings are *-ō* (I), *-s* (you, one person) and *-t* (he, she, it): *cantō, cantās, cantat*. The *-ā-* in front is not part of the ending; it belongs to the verb's own family. Look at the last letter: *-ō* is the speaker, *-s* the one spoken to, *-t* somebody else.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj1",
+    "reveal": [
+     "pres.ind.act.1.sg",
+     "pres.ind.act.2.sg",
+     "pres.ind.act.3.sg"
+    ],
+    "word": "canto"
+   },
+   "check": {
+    "kind": "chart",
+    "key": "conj1",
+    "cells": [
+     "pres.ind.act.1.sg",
+     "pres.ind.act.2.sg",
+     "pres.ind.act.3.sg"
+    ],
+    "ask": "Fill the three singular cells of cantāre: I, you, he/she.",
+    "word": "canto"
+   },
+   "n": 2
+  },
+  {
+   "title": "The plural three: -mus, -tis, -nt",
+   "say": "More than one: *-mus* (we), *-tis* (you all), *-nt* (they) — *cantāmus, cantātis, cantant*. *-mus* and *-tis* are easy to hear. *-nt* is only two letters and is the one that slips past: *cantant* is they sing, where *cantat* is he sings.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj1",
+    "reveal": [
+     "pres.ind.act.1.pl",
+     "pres.ind.act.2.pl",
+     "pres.ind.act.3.pl"
+    ],
+    "word": "canto"
+   },
+   "check": {
+    "kind": "chart",
+    "key": "conj1",
+    "cells": [
+     "pres.ind.act.1.pl",
+     "pres.ind.act.2.pl",
+     "pres.ind.act.3.pl"
+    ],
+    "ask": "Fill the three plural cells of cantāre: we, you all, they.",
+    "word": "canto"
+   },
+   "n": 3
+  },
+  {
+   "title": "The vowel in front belongs to the verb",
+   "say": "The six endings never change; the vowel before them does. *cantā-s*, *vidē-s*, *leg-i-s*, *audī-s* are all 'you'. So *videt* and *legit* are both 'he', although one shows *-et* and the other *-it*: take the *-t* off and what is left is the verb, not the person.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj3",
+    "reveal": [
+     "pres.ind.act.2.sg",
+     "pres.ind.act.3.sg"
+    ],
+    "word": "lego"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "ape-09",
+    "ask": "legit and videt: what person and number is each, and how do you know?"
+   },
+   "n": 4
+  },
+  {
+   "title": "-unt and -iunt are still 'they'",
+   "say": "Before *-nt* the third and fourth families put a *-u-*: *legunt* they read, *audiunt* they hear, *capiunt* they take. A 'they' can therefore end *-ant*, *-ent*, *-unt* or *-iunt*, and all four are the same *-nt* with a different vowel in front.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj3",
+    "reveal": [
+     "pres.ind.act.3.pl"
+    ],
+    "word": "lego"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "ape-11",
+    "ask": "audiunt: how many people are hearing, and which letters tell you?"
+   },
+   "n": 5
+  },
+  {
+   "title": "One or many: -t against -nt",
+   "say": "The commonest slip is reading *-nt* as *-t*. *canis lātrat* is one dog barking; *ovēs lātrant* is sheep barking, and the *n* is the whole difference. The subject noun agrees with it, so the two always confirm each other — and when the subject is *ego* or *vōs*, the ending must match that too: *ego taceō*, *vōs clāmātis*.",
+   "show": {
+    "kind": "sentence",
+    "id": "ape-13"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "ape-14",
+    "blank": "clāmātis",
+    "ask": "Ego taceō, sed vōs ____ . Write the form of clāmāre that vōs needs."
+   },
+   "n": 6
+  }
+ ],
+ "core": [
+  {
+   "type": "p",
+   "text": "A Latin verb carries its own subject in its ending: **the person endings (I / you / he / we / you all / they on the verb)**. *-ō* I, *-s* you, *-t* he / she / it, *-mus* we, *-tis* you all, *-nt* they. So *dormiō* is *I sleep*, *dormīs* *you sleep*, then *dormit, dormīmus, dormītis, dormiunt*. Between stem and ending sits the conjugation's vowel: *clāmā-s, rīdē-s, dīc-i-s, audī-s*; the 3rd and 4th conjugations have *-u-* before *-nt* (*dīcunt, faciunt, dormiunt*). Latin name: dēsinentiae persōnālēs āctīvae."
+  },
+  {
+   "type": "english",
+   "text": "Person is who is talking: first person = the speaker (I, we), second = the listener (you), third = anyone else."
+  },
+  {
+   "type": "rule",
+   "text": "-ō, -s, -t, -mus, -tis, -nt; the vowel in front belongs to the conjugation."
+  },
+  {
+   "type": "paradigm",
+   "key": "conj1",
+   "highlight": {
+    "tense": "pres",
+    "mood": "ind",
+    "voice": "act"
+   }
+  },
+  {
+   "type": "paradigm",
+   "key": "conj3",
+   "highlight": {
+    "tense": "pres",
+    "mood": "ind",
+    "voice": "act"
+   }
+  },
+  {
+   "type": "examples",
+   "units": [
+    "r15:103.1",
+    "r15:56.1",
+    "r15:58.1",
+    "r15:102.1"
+   ],
+   "invented": [
+    {
+     "la": "Nōs in hortō lūdimus.",
+     "en": "We play in the garden.",
+     "focus": "lūdimus"
+    }
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "passive-personal-endings",
+   "text": "Each active ending has a passive twin: *-ō / -or*, *-s / -ris*, *-t / -tur*, *-mus / -mur*, *-tis / -minī*, *-nt / -ntur*: *laudō* I praise, *laudor* I am praised. A final *r* (or *-minī*) means the subject is on the receiving end, or the verb is a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)."
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "Because the ending says who, *ego* and *tū* appear only for emphasis. The 1st conjugation drops its *a* before *-ō*: *clāmā-re* but *clām-ō*. In the imperfect, the pluperfect, the 3rd- and 4th-conjugation future and every subjunctive the first person ends in *-m* instead of *-ō*: *eram, dīxeram, dīcam, dīcerem*. The 1st and 2nd conjugations keep *-ō* in the future, as does the future perfect (*amābō, ībō, dīxerō*), and the perfect has its own *-ī* (*dīxī*)."
+  },
+  {
+   "type": "p",
+   "text": "The learner's notes (week 15): the endings are *-ō / -m, -(i)s, -(i)t, -(i)mus, -(i)tis, -(u)nt*; the bracketed vowel appears where the stem ends in a consonant (*frang-is, frang-imus, frang-itis*) and not after *a-, e-* and *i-*stems (*ambulā-s, tenē-mus, audī-tis*); in the present indicative only *-ō* is used for *I*, and *a-*stems drop their *a* before it (*ambul-ō*) because two open vowels are hard to say together. The nominative pronouns *ego, tū, is* are redundant and mark emphasis, as English does with the voice, so *ambulō* is far commoner than *ego ambulō*."
+  },
+  {
+   "type": "p",
+   "text": "Ørberg (chapter XV): persōna prīma *rīdeō rīdēmus*, secunda *rīdēs rīdētis*, tertia *rīdet rīdent*; *clāmō clāmāmus, dīcō dīcimus, faciō facimus, audiō audīmus*; and beside them *esse* (*sum, es, est, sumus, estis, sunt*), *īre* (*eō, īs, it, īmus, ītis, eunt*) and *posse* (*possum, potes, potest, possumus, potestis, possunt*)."
+  }
+ ],
+ "sources": [
+  "notes p50–51",
+  "Ørberg cap. XV Grammatica Latina",
+  "A&G §163, §174–186"
+ ]
 }

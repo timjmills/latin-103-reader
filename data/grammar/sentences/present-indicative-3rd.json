@@ -1,0 +1,568 @@
+{
+ "skill": "present-indicative-3rd",
+ "chapter": 3,
+ "sentences": [
+  {
+   "id": "pi-01",
+   "la": "Mārcus rīdet, sed Iūlia plōrat.",
+   "en": "Marcus laughs, but Julia cries.",
+   "words": 5,
+   "focus": "rīdet",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "rīdet",
+     "m": "laughs"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "plōrat",
+     "m": "cries"
+    }
+   ]
+  },
+  {
+   "id": "pi-02",
+   "la": "Puerī rīdent, et puellae plōrant.",
+   "en": "The boys laugh, and the girls cry.",
+   "words": 5,
+   "focus": "rīdent",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "rīdent",
+     "m": "laugh"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "puellae",
+     "m": "girls"
+    },
+    {
+     "w": "plōrant",
+     "m": "cry"
+    }
+   ]
+  },
+  {
+   "id": "pi-03",
+   "la": "Iūlius servum improbum vocat et verberat.",
+   "en": "Julius calls the naughty slave and beats him.",
+   "words": 6,
+   "focus": "vocat",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servum",
+     "m": "slave"
+    },
+    {
+     "w": "improbum",
+     "m": "naughty"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "verberat",
+     "m": "beats"
+    }
+   ]
+  },
+  {
+   "id": "pi-04",
+   "la": "Puerī puellam vocant, sed puella nōn cantat.",
+   "en": "The boys call the girl, but the girl does not sing.",
+   "words": 7,
+   "focus": "vocant",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "puellam",
+     "m": "girl"
+    },
+    {
+     "w": "vocant",
+     "m": "call"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "puella",
+     "m": "girl"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "cantat",
+     "m": "sings"
+    }
+   ]
+  },
+  {
+   "id": "pi-05",
+   "la": "Quīntus mātrem videt et rīdet.",
+   "en": "Quintus sees his mother and laughs.",
+   "words": 5,
+   "focus": "videt",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "mātrem",
+     "m": "mother"
+    },
+    {
+     "w": "videt",
+     "m": "sees"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "rīdet",
+     "m": "laughs"
+    }
+   ]
+  },
+  {
+   "id": "pi-06",
+   "la": "Puellae puerōs vocant, sed puerī nōn respondent.",
+   "en": "The girls call the boys, but the boys do not answer.",
+   "words": 7,
+   "focus": "respondent",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "puerōs",
+     "m": "boys"
+    },
+    {
+     "w": "vocant",
+     "m": "call"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "puerī",
+     "m": "boys"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "respondent",
+     "m": "answer"
+    }
+   ]
+  },
+  {
+   "id": "pi-07",
+   "la": "Iūlia in oppidō nōn dormit.",
+   "en": "Julia is not asleep in the town.",
+   "words": 5,
+   "focus": "dormit",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "oppidō",
+     "m": "town"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "dormit",
+     "m": "is asleep"
+    }
+   ]
+  },
+  {
+   "id": "pi-08",
+   "la": "Servī veniunt, et dominus servōs audit.",
+   "en": "The slaves come, and the master hears the slaves.",
+   "words": 6,
+   "focus": "veniunt",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "veniunt",
+     "m": "come"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "dominus",
+     "m": "master"
+    },
+    {
+     "w": "servōs",
+     "m": "slaves"
+    },
+    {
+     "w": "audit",
+     "m": "hears"
+    }
+   ]
+  },
+  {
+   "id": "pi-09",
+   "la": "Mārcus et Quīntus mātrem audiunt.",
+   "en": "Marcus and Quintus hear their mother.",
+   "words": 5,
+   "focus": "audiunt",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "mātrem",
+     "m": "mother"
+    },
+    {
+     "w": "audiunt",
+     "m": "hear"
+    }
+   ]
+  },
+  {
+   "id": "pi-10",
+   "la": "Aemilia māter est, et Iūlius pater est.",
+   "en": "Aemilia is the mother, and Julius is the father.",
+   "words": 7,
+   "focus": "est",
+   "step": 5,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "māter",
+     "m": "mother"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "pi-11",
+   "la": "Mārcus et Quīntus puerī Rōmānī sunt.",
+   "en": "Marcus and Quintus are Roman boys.",
+   "words": 6,
+   "focus": "sunt",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "puerī",
+     "m": "boys"
+    },
+    {
+     "w": "Rōmānī",
+     "m": "Roman"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "pi-12",
+   "la": "Puer dormit, sed puerī nōn dormiunt.",
+   "en": "The boy is asleep, but the boys are not asleep.",
+   "words": 6,
+   "focus": "dormiunt",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "a boy"
+    },
+    {
+     "w": "dormit",
+     "m": "is asleep"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "puerī",
+     "m": "boys"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "dormiunt",
+     "m": "are asleep"
+    }
+   ]
+  },
+  {
+   "id": "pi-13",
+   "la": "Puellae vident, sed puerī nōn audiunt.",
+   "en": "The girls see, but the boys do not hear.",
+   "words": 6,
+   "focus": "audiunt",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "vident",
+     "m": "see"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "puerī",
+     "m": "boys"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "audiunt",
+     "m": "hear"
+    }
+   ]
+  },
+  {
+   "id": "pi-14",
+   "la": "Servus venit, sed servī nōn veniunt.",
+   "en": "The slave comes, but the slaves do not come.",
+   "words": 6,
+   "focus": "veniunt",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "a slave"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "servī",
+     "m": "slaves"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "veniunt",
+     "m": "come"
+    }
+   ]
+  }
+ ]
+}

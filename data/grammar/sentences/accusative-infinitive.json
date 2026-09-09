@@ -1,0 +1,594 @@
+{
+  "skill": "accusative-infinitive",
+  "chapter": 10,
+  "sentences": [
+    {
+      "id": "aci-01",
+      "la": "Syra puerum parvum dormīre videt.",
+      "en": "Syra sees that the little boy is sleeping.",
+      "words": 5,
+      "focus": "dormīre",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "puerum",
+          "m": "the boy"
+        },
+        {
+          "w": "parvum",
+          "m": "little"
+        },
+        {
+          "w": "dormīre",
+          "m": "to be sleeping"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "aci-02",
+      "la": "Iūlius Mārcum ad vīllam venīre videt.",
+      "en": "Julius sees that Marcus is coming to the house.",
+      "words": 6,
+      "focus": "venīre",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "Mārcum",
+          "m": "Marcus"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "vīllam",
+          "m": "the house"
+        },
+        {
+          "w": "venīre",
+          "m": "to be coming"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "aci-03",
+      "la": "Mārcus avem in rāmō canere audit.",
+      "en": "Marcus hears that a bird is singing on the branch.",
+      "words": 6,
+      "focus": "canere",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "avem",
+          "m": "a bird"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "rāmō",
+          "m": "the branch"
+        },
+        {
+          "w": "canere",
+          "m": "to be singing"
+        },
+        {
+          "w": "audit",
+          "m": "hears"
+        }
+      ]
+    },
+    {
+      "id": "aci-04",
+      "la": "Aemilia līberōs in hortō lūdere videt.",
+      "en": "Aemilia sees that the children are playing in the garden.",
+      "words": 6,
+      "focus": "lūdere",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "līberōs",
+          "m": "the children"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "lūdere",
+          "m": "to be playing"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "aci-05",
+      "la": "Iūlius Quīntum vīvum esse videt.",
+      "en": "Julius sees that Quintus is alive.",
+      "words": 5,
+      "focus": "esse",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "Quīntum",
+          "m": "Quintus"
+        },
+        {
+          "w": "vīvum",
+          "m": "alive"
+        },
+        {
+          "w": "esse",
+          "m": "to be"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "aci-06",
+      "la": "Puerī avēs suprā silvam volāre vident.",
+      "en": "The boys see that birds are flying above the wood.",
+      "words": 6,
+      "focus": "volāre",
+      "step": 2,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "avēs",
+          "m": "birds"
+        },
+        {
+          "w": "suprā",
+          "m": "above"
+        },
+        {
+          "w": "silvam",
+          "m": "the wood"
+        },
+        {
+          "w": "volāre",
+          "m": "to be flying"
+        },
+        {
+          "w": "vident",
+          "m": "see"
+        }
+      ]
+    },
+    {
+      "id": "aci-07",
+      "la": "Pāstor ovēs herbam edere videt.",
+      "en": "The shepherd sees that the sheep are eating grass.",
+      "words": 5,
+      "focus": "edere",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pāstor",
+          "m": "the shepherd"
+        },
+        {
+          "w": "ovēs",
+          "m": "the sheep"
+        },
+        {
+          "w": "herbam",
+          "m": "grass"
+        },
+        {
+          "w": "edere",
+          "m": "to be eating"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "aci-08",
+      "la": "Quīntus canem in viā lātrāre audit.",
+      "en": "Quintus hears that a dog is barking in the street.",
+      "words": 6,
+      "focus": "lātrāre",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "canem",
+          "m": "a dog"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "viā",
+          "m": "the street"
+        },
+        {
+          "w": "lātrāre",
+          "m": "to be barking"
+        },
+        {
+          "w": "audit",
+          "m": "hears"
+        }
+      ]
+    },
+    {
+      "id": "aci-10",
+      "la": "Mārcus sē ā patre vocārī audit.",
+      "en": "Marcus hears that he is being called by his father.",
+      "words": 6,
+      "focus": "vocārī",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "sē",
+          "m": "himself"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "patre",
+          "m": "his father"
+        },
+        {
+          "w": "vocārī",
+          "m": "to be called"
+        },
+        {
+          "w": "audit",
+          "m": "hears"
+        }
+      ]
+    },
+    {
+      "id": "aci-11",
+      "la": "Mēdus pecūniam ā dominō numerārī videt.",
+      "en": "Medus sees that the money is being counted by the master.",
+      "words": 6,
+      "focus": "numerārī",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "pecūniam",
+          "m": "the money"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "dominō",
+          "m": "the master"
+        },
+        {
+          "w": "numerārī",
+          "m": "to be counted"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "aci-12",
+      "la": "Mārcus Quīntum currere nōn posse videt.",
+      "en": "Marcus sees that Quintus cannot run.",
+      "words": 6,
+      "focus": "posse",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "Quīntum",
+          "m": "Quintus"
+        },
+        {
+          "w": "currere",
+          "m": "to run"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "posse",
+          "m": "to be able"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "aci-13",
+      "la": "Aemilia in hortō puerōs clāmāre audit.",
+      "en": "Aemilia hears that the boys are shouting in the garden.",
+      "words": 6,
+      "focus": "clāmāre",
+      "step": 1,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "puerōs",
+          "m": "the boys"
+        },
+        {
+          "w": "clāmāre",
+          "m": "to be shouting"
+        },
+        {
+          "w": "audit",
+          "m": "hears"
+        }
+      ]
+    },
+    {
+      "id": "aci-14",
+      "la": "Mārcus dormīre vult, sed Quīntum canere audit.",
+      "en": "Marcus wants to sleep, but he hears that Quintus is singing.",
+      "words": 7,
+      "focus": "canere",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "dormīre",
+          "m": "to sleep"
+        },
+        {
+          "w": "vult",
+          "m": "wants"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "Quīntum",
+          "m": "Quintus"
+        },
+        {
+          "w": "canere",
+          "m": "to be singing"
+        },
+        {
+          "w": "audit",
+          "m": "hears"
+        }
+      ]
+    },
+    {
+      "id": "aci-15",
+      "la": "Mārcus videt Iūliam rosās carpere.",
+      "en": "Marcus sees that Julia is picking roses.",
+      "words": 5,
+      "focus": "carpere",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        },
+        {
+          "w": "Iūliam",
+          "m": "Julia"
+        },
+        {
+          "w": "rosās",
+          "m": "roses"
+        },
+        {
+          "w": "carpere",
+          "m": "to be picking"
+        }
+      ]
+    },
+    {
+      "id": "aci-16",
+      "la": "Audit Syra Quīntum in cubiculō plōrāre.",
+      "en": "Syra hears that Quintus is crying in the bedroom.",
+      "words": 6,
+      "focus": "plōrāre",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Audit",
+          "m": "hears"
+        },
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "Quīntum",
+          "m": "Quintus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "cubiculō",
+          "m": "the bedroom"
+        },
+        {
+          "w": "plōrāre",
+          "m": "to be crying"
+        }
+      ]
+    }
+  ]
+}

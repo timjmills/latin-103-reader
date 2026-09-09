@@ -1,0 +1,566 @@
+{
+ "skill": "accusative-destination",
+ "chapter": 6,
+ "sentences": [
+  {
+   "id": "acd-01",
+   "la": "Iūlius ad vīllam suam ambulat.",
+   "en": "Julius walks to his own house.",
+   "words": 5,
+   "focus": "vīllam",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllam",
+     "m": "the house"
+    },
+    {
+     "w": "suam",
+     "m": "his own"
+    },
+    {
+     "w": "ambulat",
+     "m": "walks"
+    }
+   ]
+  },
+  {
+   "id": "acd-02",
+   "la": "Servī saccōs ad oppidum portant.",
+   "en": "The slaves carry sacks to the town.",
+   "words": 5,
+   "focus": "oppidum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "saccōs",
+     "m": "sacks (object)"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "oppidum",
+     "m": "the town"
+    },
+    {
+     "w": "portant",
+     "m": "carry"
+    }
+   ]
+  },
+  {
+   "id": "acd-03",
+   "la": "Ancilla ad fenestram it et rosās videt.",
+   "en": "The slave girl goes to the window and sees roses.",
+   "words": 7,
+   "focus": "fenestram",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ancilla",
+     "m": "the slave girl"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "fenestram",
+     "m": "the window"
+    },
+    {
+     "w": "it",
+     "m": "goes"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "rosās",
+     "m": "roses (object)"
+    },
+    {
+     "w": "videt",
+     "m": "sees"
+    }
+   ]
+  },
+  {
+   "id": "acd-04",
+   "la": "Puellae ad portam vīllae ambulant.",
+   "en": "The girls walk to the gate of the house.",
+   "words": 5,
+   "focus": "portam",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "portam",
+     "m": "the gate"
+    },
+    {
+     "w": "vīllae",
+     "m": "of the house"
+    },
+    {
+     "w": "ambulant",
+     "m": "walk"
+    }
+   ]
+  },
+  {
+   "id": "acd-05",
+   "la": "Mārcus cum Quīntō in hortum intrat.",
+   "en": "Marcus goes into the garden with Quintus.",
+   "words": 6,
+   "focus": "hortum",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Quīntō",
+     "m": "Quintus"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "intrat",
+     "m": "goes in"
+    }
+   ]
+  },
+  {
+   "id": "acd-06",
+   "la": "Dāvus saccum ad ōstium portat.",
+   "en": "Davus carries a sack to the door.",
+   "words": 5,
+   "focus": "ōstium",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "saccum",
+     "m": "a sack (object)"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "ōstium",
+     "m": "the doorway"
+    },
+    {
+     "w": "portat",
+     "m": "carries"
+    }
+   ]
+  },
+  {
+   "id": "acd-07",
+   "la": "Mārcus in vīllā est; Quīntus in hortum it.",
+   "en": "Marcus is in the house; Quintus is going into the garden.",
+   "words": 8,
+   "focus": "hortum",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "it",
+     "m": "goes"
+    }
+   ]
+  },
+  {
+   "id": "acd-08",
+   "la": "Ancillae in ātriō sunt; Syra in cubiculum intrat.",
+   "en": "The slave girls are in the atrium; Syra goes into the bedroom.",
+   "words": 8,
+   "focus": "cubiculum",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ancillae",
+     "m": "the slave girls"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    },
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "cubiculum",
+     "m": "the bedroom"
+    },
+    {
+     "w": "intrat",
+     "m": "goes in"
+    }
+   ]
+  },
+  {
+   "id": "acd-09",
+   "la": "Puerī ad amīcōs suōs ambulant.",
+   "en": "The boys walk to their friends.",
+   "words": 5,
+   "focus": "amīcōs",
+   "step": 5,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "amīcōs",
+     "m": "friends"
+    },
+    {
+     "w": "suōs",
+     "m": "their own"
+    },
+    {
+     "w": "ambulant",
+     "m": "walk"
+    }
+   ]
+  },
+  {
+   "id": "acd-10",
+   "la": "Servī fessī ad vīllās Rōmānās veniunt.",
+   "en": "The tired slaves come to the Roman houses.",
+   "words": 6,
+   "focus": "vīllās",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "fessī",
+     "m": "tired"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllās",
+     "m": "the houses"
+    },
+    {
+     "w": "Rōmānās",
+     "m": "Roman"
+    },
+    {
+     "w": "veniunt",
+     "m": "come"
+    }
+   ]
+  },
+  {
+   "id": "acd-11",
+   "la": "Mēdus sōlus Rōmam it, nam Lȳdia abest.",
+   "en": "Medus goes to Rome alone, for Lydia is not there.",
+   "words": 7,
+   "focus": "Rōmam",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "sōlus",
+     "m": "alone"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "it",
+     "m": "goes"
+    },
+    {
+     "w": "nam",
+     "m": "for"
+    },
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "abest",
+     "m": "is away"
+    }
+   ]
+  },
+  {
+   "id": "acd-12",
+   "la": "Servī Tūsculum eunt; via longa est.",
+   "en": "The slaves are going to Tusculum; the road is long.",
+   "words": 6,
+   "focus": "Tūsculum",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "Tūsculum",
+     "m": "to Tusculum"
+    },
+    {
+     "w": "eunt",
+     "m": "go"
+    },
+    {
+     "w": "via",
+     "m": "the road"
+    },
+    {
+     "w": "longa",
+     "m": "long"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "acd-13",
+   "la": "Ad impluvium ancillae aquam portant.",
+   "en": "The slave girls carry water to the water basin.",
+   "words": 5,
+   "focus": "impluvium",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ad",
+     "m": "to"
+    },
+    {
+     "w": "impluvium",
+     "m": "the water basin"
+    },
+    {
+     "w": "ancillae",
+     "m": "the slave girls"
+    },
+    {
+     "w": "aquam",
+     "m": "water (object)"
+    },
+    {
+     "w": "portant",
+     "m": "carry"
+    }
+   ]
+  },
+  {
+   "id": "acd-14",
+   "la": "Iūlius in lectīcā ad oppidum vehitur.",
+   "en": "Julius is carried to the town in a litter.",
+   "words": 6,
+   "focus": "oppidum",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "lectīcā",
+     "m": "a litter"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "oppidum",
+     "m": "the town"
+    },
+    {
+     "w": "vehitur",
+     "m": "is carried"
+    }
+   ]
+  }
+ ]
+}

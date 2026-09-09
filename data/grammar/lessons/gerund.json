@@ -11,7 +11,7 @@
     },
     {
       "type": "rule",
-      "text": "Stem + -ndum (after ad: purpose), -ndī ('of …-ing' after a noun or adjective), -ndō (means, or after in / dē / ab). First conjugation -andum, the rest -endum."
+      "text": "Stem + -ndum (after ad: purpose), -ndī ('of …-ing' after a noun or adjective), -ndō (means, or after in / dē / ab). First conjugation -andum; second and third -endum; fourth, and the -iō verbs of the third, -iendum."
     },
     {
       "type": "paradigm",
@@ -56,5 +56,117 @@
     "notes p94–95",
     "Ørberg cap. XXVI Grammatica Latina",
     "A&G §501–507"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "A verb doing a noun's job",
+      "say": "A verb can be turned into a noun, so that it takes a case and follows a preposition, and that noun is **the gerund (the '-ing' noun form: ad bibendum = for drinking)**. *Puerī ad lūdendum in hortum currunt* — the boys run into the garden for playing. English does the same in 'running is fun' and 'shoes for running': there *running* names the activity, it does not describe anybody.",
+      "show": {
+        "kind": "sentence",
+        "id": "g-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "g-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The accusative: ad + -ndum",
+      "say": "Take the present stem, add *-nd-*, then a neuter ending. After *ad*, meaning 'for' or 'in order to', that ending is *-um*: *ad pugnandum*, *ad bibendum*, *ad dormiendum*. First-conjugation verbs give *-andum* (*pugnandum*); the second and third give *-endum* (*bibendum*, *lūdendum*); the fourth, and the *-iō* verbs of the third, give *-iendum* (*dormiendum*, *audiendum*, *faciendum*).",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "pugnō",
+        "reveal": [
+          "gerund.acc"
+        ],
+        "say": "pugnandum — the first conjugation's -andum"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "bibō",
+        "cells": [
+          "gerund.acc"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "The genitive: -ndī",
+      "say": "After a noun or an adjective the ending is *-ī*, the 'of' form: *ars scrībendī*, the art of writing; *discendī cupidus*, eager for learning; *docendī causā*, for the sake of teaching. English says '-ing' here too, so listen for the hidden 'of'.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "scrībō",
+        "reveal": [
+          "gerund.gen"
+        ],
+        "say": "scrībendī — of writing, the 'of' form"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "scrībō",
+        "cells": [
+          "gerund.gen"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "The ablative: -ndō",
+      "say": "The ending *-ō* says how something is done — 'by …-ing': *Multa discimus legendō et audiendō*, we learn much by reading and by listening. After *in* the same *-ō* says 'while': *in scrībendō*, while writing.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "scrībō",
+        "reveal": [
+          "gerund.abl"
+        ],
+        "say": "scrībendō — by writing, and after in, while writing"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "scrībō",
+        "cells": [
+          "gerund.abl"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "The verbs that keep their i",
+      "say": "The fourth conjugation, and the *-iō* verbs of the third, slip an *-i-* in before the *-nd-*: *dormiendum*, *audiendum*, *faciendī*, *accipiendō*. It is the same *i* they already carry in *dormiunt*, *audiunt* and *faciunt*: if the present has it, the gerund keeps it.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj4",
+        "word": "dormiō",
+        "reveal": [
+          "gerund.acc"
+        ],
+        "say": "dormiendum — the fourth conjugation keeps its i"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "g-16"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "The gerund has no nominative at all: for 'sleeping is good' Latin uses the infinitive, *dormīre bonum est*. Everywhere else the three endings carry the sense — *-ndum* after *ad*, *-ndī* after a noun or adjective, *-ndō* for how or while — and a sentence may hold two of them at once.",
+      "show": {
+        "kind": "sentence",
+        "id": "g-14"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "g-15"
+      }
+    }
   ]
 }
