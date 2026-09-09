@@ -254,9 +254,18 @@ export function orderCandidates({ states, skills, preset, currentWeek = [], now 
  * chapter"). `chapter` is the chapter that scopes the whole session — the
  * chapter page's "Practise this chapter", a spine row's — and every slot
  * carries it, so the generator draws that chapter's Latin and not the
- * library's. `currentWeekChapter` does the same for the ≈ 20 % slots that
- * already ask for the current week: without it "this week" meant the week's
- * *skills* while the sentences could come from twenty chapters ahead.
+ * library's.
+ *
+ * `currentWeekChapter` is **the learner's own position, and it is the ceiling
+ * for every slot** (GRAMMAR-CONTRACT.md §7.2). It used to reach only the
+ * ≈ 20 % of slots that already asked for the current week, which left 85 % of
+ * every skill's pool sentences from chapters later than the learner: at
+ * chapter 5, 48.4 % of the words a learner met in drills were beyond them.
+ * A slot that a chapter session already scopes keeps that chapter and its
+ * own-first rule; every other slot takes the ceiling, under which everything
+ * at or before the learner's chapter is equally fair game (`chapterMode`).
+ * A skill with nothing at or before it still reaches outward exactly as
+ * chapter.js has always done, and the item says so.
  */
 export function buildSession({ states, skills, confusions = null, preset = 'review-heavy', currentWeek = [], size = 10, now = Date.now(), seed = Date.now(), oneSkill = null, prior = null, chapter = null, currentWeekChapter = null }) {
   const rand = rng(seed);
@@ -351,9 +360,13 @@ export function buildSession({ states, skills, confusions = null, preset = 'revi
   const want = Math.round(plan.length * 0.2);
   const idx = shuffle(plan.map((_, i) => i), rand).slice(0, want);
   for (const i of idx) plan[i].currentWeek = true;
-  // The scope of each slot's sentence: the session's chapter where there is one, else the current week's
-  // chapter on the slots that asked for the current week. Everything else stays the whole library.
-  for (const slot of plan) slot.chapter = chapter ?? (slot.currentWeek ? currentWeekChapter : null) ?? null;
+  // The scope of each slot's sentence: the session's chapter where there is one — its own Latin first —
+  // else the learner's own chapter as a ceiling, under which everything they have read is fair game.
+  // Only a learner with no position at all (no week read yet) draws from the whole library.
+  for (const slot of plan) {
+    slot.chapter = chapter ?? currentWeekChapter ?? null;
+    slot.chapterMode = chapter != null ? 'own-first' : 'ceiling';
+  }
   return plan;
 }
 

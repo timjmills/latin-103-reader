@@ -42,12 +42,56 @@ export const sessionCeiling = (asked) => asked + Math.max(REQUEUE_MIN_GROWTH, Ma
  * (order); { leftIndex: rightIndex } (match); { blankIndex: string } (inline /
  * bank); 'right' | 'partly' | 'wrong' (self). Pure.
  */
+/**
+ * The per-box truth of a multi-box item — a chart's cells, a pensum's blanks, a
+ * bank's slots, a match item's rows — as `{ i, ok, given, expected, … }`, one
+ * entry per box, in reading order. `judge` folds it into the item's single
+ * verdict; the UI paints each box with it as the learner leaves that box, and
+ * again for all of them when the item is graded (GRAMMAR-CONTRACT.md §3).
+ * `[]` for a single-box item — there is nothing to bind. Pure.
+ */
+export function cellResults(item, value) {
+  const given = value && typeof value === 'object' ? value : {};
+  if (item?.input === 'chart') {
+    return (item.chart?.cells ?? []).map((c, i) => ({ i, ok: matchesForm(given[i] ?? '', c.answer), given: given[i] ?? '', expected: c.answer[0], label: c.label ?? '' }));
+  }
+  if (item?.input === 'match') {
+    const pairs = item.pairs || [];
+    const right = item.right || [];
+    return pairs.map((p, i) => { const r = right[Number(given[i])]; return { i, ok: !!r && r.pair === i, given: r?.text ?? '', expected: p.en, la: p.la, label: p.la }; });
+  }
+  if (item?.input === 'inline' || item?.input === 'bank') {
+    // A pensum blank is macron-sensitive (`item.exact`): Ørberg's Pensum B for chapter I offers *Italia* beside
+    // *Italiā* precisely to drill the contrast, so accepting either would delete the exercise. Ordinary drills stay
+    // macron-optional. Pensum A also accepts the ending alone or the whole word (stem + ending).
+    const exact = !!item.exact;
+    return (item.blanks || []).map((b, i) => {
+      const g = String(given[i] ?? '');
+      const whole = b.stem ? b.answers.map((a) => b.stem + a) : [];
+      const hit = (fn) => fn(g, b.answers) || (whole.length > 0 && fn(g, whole));
+      const ok = exact ? hit(matchesFormExact) : hit(matchesForm);
+      return { i, ok, macron: !ok && exact && hit(matchesForm), given: g, expected: b.answers[0], stem: b.stem ?? '', note: b.note ?? '', label: b.note || `blank ${i + 1}` };
+    });
+  }
+  return [];
+}
+
+/**
+ * One box of a multi-box item, judged on its own — what the UI asks for as the
+ * learner leaves a cell (blur, tab, Enter). The same truth `judge` uses, so a
+ * cell cannot go green here and count wrong there. `null` when the item has no
+ * such box. Pure.
+ */
+export function judgeCell(item, i, given) {
+  const n = Number(i);
+  return cellResults(item, { [n]: given }).find((c) => c.i === n) ?? null;
+}
+
 export function judge(item, value) {
   if (!item) return { correct: false, expected: '', given: '' };
   if (item.input === 'chart') {
     const cells = item.chart?.cells ?? [];
-    const given = value && typeof value === 'object' ? value : {};
-    const results = cells.map((c, i) => ({ i, ok: matchesForm(given[i] ?? '', c.answer), given: given[i] ?? '', expected: c.answer[0] }));
+    const results = cellResults(item, value);
     return { correct: results.every((r) => r.ok), cells: results, expected: cells.map((c) => c.answer[0]).join(', '), given: results.map((r) => r.given).join(', ') };
   }
   if (item.input === 'tap') {
@@ -65,26 +109,13 @@ export function judge(item, value) {
     return { correct: orderMatches(chunks, order), expected: chunks.join(' '), given: order.map((i) => shown[i] ?? '').join(' ') };
   }
   if (item.input === 'match') {
-    const given = value && typeof value === 'object' ? value : {};
     const pairs = item.pairs || [];
-    const right = item.right || [];
-    const results = pairs.map((p, i) => { const r = right[Number(given[i])]; return { i, ok: !!r && r.pair === i, given: r?.text ?? '', expected: p.en, la: p.la }; });
+    const results = cellResults(item, value);
     return { correct: results.every((r) => r.ok), cells: results, expected: pairs.map((p) => `${p.la} — ${p.en}`).join(', '), given: results.map((r) => `${r.la} — ${r.given || '—'}`).join(', ') };
   }
   if (item.input === 'inline' || item.input === 'bank') {
-    const given = value && typeof value === 'object' ? value : {};
     const blanks = item.blanks || [];
-    // A pensum blank is macron-sensitive (`item.exact`): Ørberg's Pensum B for chapter I offers *Italia* beside
-    // *Italiā* precisely to drill the contrast, so accepting either would delete the exercise. Ordinary drills stay
-    // macron-optional. Pensum A also accepts the ending alone or the whole word (stem + ending).
-    const exact = !!item.exact;
-    const results = blanks.map((b, i) => {
-      const g = String(given[i] ?? '');
-      const whole = b.stem ? b.answers.map((a) => b.stem + a) : [];
-      const hit = (fn) => fn(g, b.answers) || (whole.length > 0 && fn(g, whole));
-      const ok = exact ? hit(matchesFormExact) : hit(matchesForm);
-      return { i, ok, macron: !ok && exact && hit(matchesForm), given: g, expected: b.answers[0], stem: b.stem ?? '', note: b.note ?? '' };
-    });
+    const results = cellResults(item, value);
     return { correct: results.every((r) => r.ok), macron: results.some((r) => r.macron), cells: results, expected: blanks.map((b) => b.answers[0]).join(', '), given: results.map((r) => r.given || '—').join(', ') };
   }
   if (item.input === 'self') {
@@ -312,7 +343,11 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
  * → blocked 10 (hint behind a button) → criterion (6 of 10 across ≥ 2 kinds)
  * → pass (practising, due tomorrow) or redo (fresh blocked 10).
  */
-export function createLearn({ skill, gstore, items, rand = Math.random, resume = null, onProgress = null }) {
+export function createLearn({ skill, gstore, items, currentWeekN = null, rand = Math.random, resume = null, onProgress = null }) {
+  // Learn is scoped by the learner's own position like every other session (§7.2): the sentences that
+  // teach a skill are the ones they have read. A skill with nothing at or before it reaches outward
+  // exactly as chapter.js does, and the item says so.
+  const ceiling = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
   const phases = ['lesson', 'examples', 'guided', 'blocked', 'result'];
   let phase = 'lesson';
   let runner = null;
@@ -322,7 +357,7 @@ export function createLearn({ skill, gstore, items, rand = Math.random, resume =
   // Recognition before recall (plan §3): the guided five are stage-1 items (choices, a whole chart);
   // the blocked ten mix stages 1–2 (typed parse and blank from stage 2).
   const kindSeq = (n, stageOf) => { const out = []; let last = null; for (let i = 0; i < n; i++) { const pool = kinds.filter((k) => k !== last); const k = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))]; out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false }); last = k; } return out; };
-  const getItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, full: phase === 'guided' && slot.kind === 'chart', avoid: opts.avoid, match: isSet && phase === 'guided' ? false : undefined });
+  const getItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, chapter: ceiling, chapterMode: 'ceiling', currentWeekN, full: phase === 'guided' && slot.kind === 'chart', avoid: opts.avoid, match: isSet && phase === 'guided' ? false : undefined });
   // A chapter set's "guided" phase walks the deck in batches, with feedback after each item; the blocked ten follow.
   const total = isSet ? Math.max(1, Number(skill.count) || 0) : LEARN_GUIDED;
   const deckSize = isSet ? Math.min(SET_LEARN_BATCH, total) : LEARN_GUIDED;
@@ -381,12 +416,21 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
   // Only skills that can produce an item enter a plan (M8): a metre skill or one with no sentences never becomes a slot.
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
   // The chapter that scopes the sentences (chapter.js "the sentence's chapter"): the chapter of a chapter
-  // session, and — for the ≈ 20 % current-week slots of any session — the chapter the current week reads.
+  // session, else the learner's own chapter as the ceiling on every slot (GRAMMAR-CONTRACT.md §7.2).
   const weekChapter = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
+  /**
+   * What scopes one slot's draw. The scheduler writes both onto every slot it
+   * builds; a plan handed in ready-made (a redo's named items, a confusion
+   * pair's alternation) carries neither, so the session's own chapter answers
+   * for it — and failing that the learner's position, as a ceiling.
+   */
+  const scopeOf = (slot) => (slot.chapter != null ? { chapter: slot.chapter, chapterMode: slot.chapterMode ?? 'own-first' }
+    : chapter != null ? { chapter, chapterMode: 'own-first' }
+    : { chapter: weekChapter, chapterMode: 'ceiling' });
   const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior, chapter, currentWeekChapter: weekChapter });
   const slots = plan ?? build(size ?? 10);
   // `itemKey` (a redo's slot) asks the generator for that exact item and nothing else; an ordinary slot has none.
-  const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, chapter: slot.chapter ?? chapter ?? null, avoid: opts.avoid, itemKey: slot.itemKey ?? null });
+  const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, ...scopeOf(slot), avoid: opts.avoid, itemKey: slot.itemKey ?? null });
   const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
     await gstore.addAttempt(attempt);
     const cur = gstore.getState(item.skill) ?? item.skill;
@@ -449,11 +493,13 @@ export function createRedo({ misses = [], gstore, items, skillsIndex, size = 10,
 }
 
 /** "Practice this skill": a 5-item blocked set on one skill (practice mode, scheduler updated). */
-export function createBlockedFive({ skill, gstore, items, skillsIndex, rand = Math.random }) {
+export function createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN = null, rand = Math.random }) {
   const st = gstore.getState(skill.id);
   const stage = st?.stage ?? 1;
-  const plan = buildSession({ states: new Map([[skill.id, { ...(st ?? { skill: skill.id, state: 'practising', stage }), state: 'practising' }]]), skills: skillsIndex.skills, preset: 'one-skill', oneSkill: skill.id, size: 5, seed: Math.floor(rand() * 1e9) });
-  return createPractice({ plan, gstore, items, skillsIndex, preset: 'one-skill', size: 5, oneSkill: skill.id, rand });
+  // The learner's own chapter is the ceiling here as everywhere (§7.2): "Practise this skill" used to pass
+  // no chapter at all, so a five-item set on a chapter-II skill could quote cap. XXXIV at it.
+  const plan = buildSession({ states: new Map([[skill.id, { ...(st ?? { skill: skill.id, state: 'practising', stage }), state: 'practising' }]]), skills: skillsIndex.skills, preset: 'one-skill', oneSkill: skill.id, size: 5, seed: Math.floor(rand() * 1e9), currentWeekChapter: currentWeekN == null ? null : chapterOfWeek(currentWeekN) });
+  return createPractice({ plan, gstore, items, skillsIndex, preset: 'one-skill', size: 5, oneSkill: skill.id, currentWeekN, rand });
 }
 
 /* ================================================== hints, per answer box */
@@ -512,6 +558,68 @@ export function answerLeak(text, answers = []) {
     if (hay.includes(` ${n} `) && !out.includes(a)) out.push(a);
   }
   return out;
+}
+
+/* ------------------------------------------------- the rendered paradigm */
+// The leak sweep above reads **strings**, and for a long time that was every
+// way an item could give itself away. It is not: a single-box `blank` item's
+// "Tell me more" renders the word's whole paradigm, and one cell of that table
+// *is* the answer — "fill the blank with the right form of soror", then a
+// table with sorōrī printed in it (GRAMMAR-CONTRACT.md §7.5). The sweep has to
+// look at the rendered table too, so it does, here, before the table is built:
+// a leaking cell is printed as an ellipsis, which leaves the paradigm doing the
+// job a hint should do — showing the shape the answer belongs to, and where in
+// it the answer sits — without printing the answer itself.
+
+/** Every Latin form one paradigm cell prints (its text, its alternative, and its stem + ending). Pure. */
+const formsOfCell = (c) => [c?.text, c?.alt, (c?.stem ?? '') + (c?.ending ?? '')]
+  .flatMap((f) => String(f ?? '').split(' / '))
+  .map((f) => f.trim())
+  .filter((f) => f && f !== '—');
+
+/**
+ * Which of `answers` a **rendered paradigm** spells out — cell by cell, and the
+ * table's own title and note. The string sweep's `answerLeak`, over a table.
+ * Pure.
+ */
+export function paradigmLeak(table, answers = []) {
+  const out = [];
+  const seen = (f) => { for (const a of answerLeak(f, answers)) if (!out.includes(a)) out.push(a); };
+  for (const t of [table?.title, table?.note]) if (t) seen(t);
+  for (const sec of table?.sections ?? []) {
+    for (const t of [sec?.title]) if (t) seen(t);
+    for (const row of sec?.rows ?? []) for (const cell of row?.cells ?? []) { if (!cell || cell.empty) continue; for (const f of formsOfCell(cell)) seen(f); }
+  }
+  return out;
+}
+
+/**
+ * The same table with every cell that would spell an answer printed as `mask`
+ * instead (and a title or note that would, dropped). A copy: the paradigm the
+ * feedback prints afterwards, and the dictionary panel's, are untouched. Pure.
+ */
+export function maskParadigm(table, answers = [], mask = '…') {
+  if (!table) return table;
+  if (!paradigmLeak(table, answers).length) return table;
+  const safe = (t) => (t && answerLeak(t, answers).length ? '' : t);
+  return {
+    ...table,
+    title: safe(table.title),
+    note: safe(table.note),
+    sections: (table.sections ?? []).map((sec) => ({
+      ...sec,
+      title: safe(sec.title),
+      rows: (sec.rows ?? []).map((row) => ({
+        ...row,
+        cells: (row.cells ?? []).map((cell) => {
+          if (!cell || cell.empty) return cell;
+          return formsOfCell(cell).some((f) => answerLeak(f, answers).length)
+            ? { ...cell, text: mask, alt: null, stem: null, ending: null, masked: true }
+            : cell;
+        }),
+      })),
+    })),
+  };
 }
 
 /* --------------------------------------------------------------- text */

@@ -9,7 +9,7 @@ import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
-import { createLearn, createPractice, createBlockedFive, createRedo, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL } from './session.js';
+import { createLearn, createPractice, createBlockedFive, createRedo, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers } from './session.js';
 import { featureLabel, featureKey } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
@@ -59,6 +59,9 @@ export function scopeSentence(scope) {
   const here = `chapter ${roman(scope.chapter)}`;
   if (scope.from == null) return `This sentence is not from a chapter of the book.`;
   if (scope.from === scope.chapter) return null;
+  // Under the learner's own ceiling every chapter behind them is equally in play, so an earlier chapter
+  // is not news about this chapter — it is just where the sentence is from.
+  if (scope.ceiling && !scope.beyond) return `From chapter ${roman(scope.from)} — Latin you have already read.`;
   if (!scope.beyond) return `This skill has no sentence in ${here} itself, so this one is from chapter ${roman(scope.from)} — Latin you have already read.`;
   return `This skill has no sentence in ${here} or earlier, so this one is from chapter ${roman(scope.from)} — further on than you have read.`;
 }
@@ -650,7 +653,8 @@ export function createUI(ctx) {
     const savedLearn = readJSON(LS_LEARN, null);
     const resume = skill.set && savedLearn?.skill === id && Number(savedLearn.seen) > 0 ? { seen: Number(savedLearn.seen) } : null;
     const onProgress = (pr) => writeJSON(LS_LEARN, pr.seen > 0 && pr.seen < pr.total ? { skill: pr.skill, seen: pr.seen, at: Date.now() } : null);
-    const learn = createLearn({ skill, gstore, items, resume, onProgress });
+    // The learner's own chapter is the ceiling on Learn's sentences too (GRAMMAR-CONTRACT.md §7.2).
+    const learn = createLearn({ skill, gstore, items, currentWeekN: ctx.currentWeekN(), resume, onProgress });
     await learn.begin();
     const lesson = skill.set ? null : await lessonOf(id);
     const steps = skill.set ? [skill.set === 'vocab' ? 'The deck, a batch at a time' : 'The passage\'s questions', 'Blocked 10'] : ['Lesson', 'Examples', 'Guided 5', 'Blocked 10'];
@@ -930,7 +934,7 @@ export function createUI(ctx) {
     // A skill still in Learn keeps learning (m14); a lapsed or new one enters the rotation now, so the answers that follow are not judged "early" (M1).
     if (st?.state === 'learning' && skill.set !== 'pensum') { render('learn', { skill: id, from }); return; }
     if (!inRotation(st) || decay(st).state === 'lapsed') gstore.setState(addToPractice(st ?? id));
-    const practice = createBlockedFive({ skill, gstore, items, skillsIndex });
+    const practice = createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN() });
     const first = practice.start();
     if (!first) { setBody(h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet.' }), h('div', { class: 'g-acts' }, backButton(from))); return; }
     runSession({ runner: practice.runner, title: `Practise · ${skill.title}`, mode: 'practice', hintOpen: false, onDone: (summary) => renderSummary(summary, { preset: 'one-skill', size: 5, oneSkill: id, from }) });
@@ -1107,7 +1111,7 @@ export function createUI(ctx) {
     /** "Practise this skill": a five-item blocked set, then back to this session's place (the feedback stays where it was). */
     function nested(skillId) {
       const skill = skills.get(skillId);
-      const sub = createBlockedFive({ skill, gstore, items, skillsIndex });
+      const sub = createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN() });
       if (!sub.start()) { ctx.say('No more sentences for this skill right now.'); return; }
       clearBeat();
       const saved = [...wrap.childNodes];
@@ -1158,7 +1162,20 @@ export function createUI(ctx) {
     const scopeLine = scopeSentence(item.scope);
     if (scopeLine) node.append(h('p', { class: 'g-quiet g-item__note', text: scopeLine }));
     let submitted = false;
-    const submit = (v) => { if (submitted) return; submitted = true; node.querySelectorAll('button, input, textarea').forEach((el) => { if (!el.closest('.g-hint') && !el.closest('.g-hints') && !el.classList.contains('g-hintb') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en')) el.disabled = true; }); node.dispatchEvent(new CustomEvent('g-answered')); onAnswer(v); };
+    // Every answer box paints itself green or red (GRAMMAR-CONTRACT.md §3). A typed box does it as the
+    // learner leaves it; grading paints them all, from `cellResults` — the same per-cell truth `judge`
+    // folds into the item's one verdict, so a cell cannot go green here and count wrong there.
+    const cellPainters = [];
+    const onCells = (fn) => cellPainters.push(fn);
+    const submit = (v) => {
+      if (submitted) return;
+      submitted = true;
+      const cells = cellResults(item, v);
+      if (cells.length) for (const paint of cellPainters) paint(cells);
+      node.querySelectorAll('button, input, textarea').forEach((el) => { if (!el.closest('.g-hint') && !el.closest('.g-hints') && !el.classList.contains('g-hintb') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en')) el.disabled = true; });
+      node.dispatchEvent(new CustomEvent('g-answered'));
+      onAnswer(v);
+    };
     // The hints for this item's answer boxes. `hintOpen` (Learn's guided five) forces them open, unless the
     // learner has turned hints off altogether — that choice is theirs and outranks the phase's default.
     const effMode = hintMode() === 'off' ? 'off' : (hintOpen ? 'always' : hintMode());
@@ -1223,7 +1240,7 @@ export function createUI(ctx) {
       node.append(form);
       setTimeout(() => input.focus({ preventScroll: true }), 0);
     } else if (item.input === 'chart') {
-      node.append(chartInput(item, submit, hintFor));
+      node.append(chartInput(item, submit, hintFor, { onCells, live: ctx.live }));
     } else if (item.input === 'tap') {
       node.append(h('p', { class: 'g-keys g-keys--tap', text: 'Tap a word in the sentence.' }));
     } else if (item.input === 'order') {
@@ -1232,21 +1249,25 @@ export function createUI(ctx) {
       if (hintPanel) w.node.append(hintPanel.row());
       setTimeout(() => w.focus(), 0);
     } else if (item.input === 'match') {
-      const w = matchInput({ pairs: item.pairs, right: item.right, onSubmit: submit, live: ctx.live });
+      const w = matchInput({ pairs: item.pairs, right: item.right, onSubmit: submit, live: ctx.live, onCells });
       node.append(w.node);
       if (hintPanel) w.node.append(hintPanel.row());
       setTimeout(() => w.focus(), 0);
     } else if (item.input === 'inline') {
-      node.append(inlineInput(item, submit, hintFor));
+      node.append(inlineInput(item, submit, hintFor, { onCells, live: ctx.live }));
     } else if (item.input === 'bank') {
-      node.append(bankInput(item, submit, hintFor));
+      node.append(bankInput(item, submit, hintFor, { onCells }));
     } else if (item.input === 'self') {
       node.append(selfInput(item, submit));
     }
     // Hints, one per answer box (GRAMMAR-CONTRACT.md "Hints, per answer box"). A single-box item keeps the
     // familiar disclosure under the input; a chart, a pensum, an order or a match item gets a control per box
     // and a panel under the input, so a hint never covers the box or the sentence it belongs to.
-    const table = item.entry && item.kind !== 'chart' ? (() => { try { return par.paradigm(item.entry, []); } catch { return null; } })() : null;
+    // The paradigm behind "Tell me more" is swept for the answer like every hint string is: on a single-box
+    // `blank` item one cell of the word's own table *is* the form the item wants back, and the string sweep
+    // never looked at a rendered table (§7.5). A leaking cell prints an ellipsis instead — the shape stays,
+    // the answer does not.
+    const table = item.entry && item.kind !== 'chart' ? (() => { try { return maskParadigm(par.paradigm(item.entry, []), acceptedAnswers(item)); } catch { return null; } })() : null;
     const pt = table ? renderParadigm(table) : null;
     if (pt) pt.open = true;
     const hintOnce = () => { if (!submitted) onHint(); };
@@ -1300,16 +1321,27 @@ export function createUI(ctx) {
       rows.set(String(b.id), row);
       list.append(row);
     }
-    const control = (id, { label = false } = {}) => {
+    /**
+     * One box's hint control. The **inline** "?" that sits beside its own box is
+     * out of the tab sequence (`tabindex="-1"`): Tab runs cell to cell and the
+     * last cell reaches the grade button, which is what the contract asks for
+     * and what the key help beside the input has always claimed
+     * (GRAMMAR-CONTRACT.md §3; §7.5 found Tab landing on cell one's own hint).
+     * It stays a control — clickable, in the accessibility tree, and reachable
+     * from the box itself with Alt+H. The **labelled** row form (order, match,
+     * whose boxes are buttons the learner taps) sits under the input, after
+     * every box, and so keeps its place in the sequence.
+     */
+    const control = (id, { label = false, onOpen = null } = {}) => {
       const row = rows.get(String(id));
       const b = boxes.find((x) => String(x.id) === String(id));
       if (!row || !b) return null;
-      return h('button', { type: 'button', class: `g-hintb${label ? ' g-hintb--wide' : ''}`, 'aria-expanded': String(always), 'aria-controls': row.id, 'aria-label': `Hint for ${b.label}`,
+      return h('button', { type: 'button', class: `g-hintb${label ? ' g-hintb--wide' : ''}`, tabindex: label ? null : '-1', 'aria-expanded': String(always), 'aria-controls': row.id, 'aria-label': `Hint for ${b.label}`,
         onclick: (e) => {
           const opening = row.hidden;
           row.hidden = !opening;
           e.currentTarget.setAttribute('aria-expanded', String(opening));
-          if (opening) { onHint?.(); row.scrollIntoView({ block: 'nearest' }); }
+          if (opening) { onHint?.(); onOpen?.(); row.scrollIntoView({ block: 'nearest' }); }
         } },
         h('span', { 'aria-hidden': 'true', text: '?' }), label ? h('span', { 'aria-hidden': 'true', class: 'g-hintb__w', lang: 'la', text: b.label }) : null);
     };
@@ -1318,9 +1350,46 @@ export function createUI(ctx) {
     return { node: list, control, row, always };
   }
 
+  /**
+   * The green / red of one answer box, shared by every multi-box input
+   * (GRAMMAR-CONTRACT.md §3). `boxes` is index → { input, wrap, mark }.
+   *
+   * Colour is never the only signal: the box also carries a ✓ or a ✗ beside
+   * it, `aria-invalid` for a screen reader, and the live region says which box
+   * and how it went as the learner leaves it. Red never blocks — the box stays
+   * editable, its hint stays available, and the item is graded when the learner
+   * says so.
+   */
+  function cellPainter(item, boxes, { live = null, labelOf = () => '' } = {}) {
+    const say = (t) => { if (live) live.textContent = t; };
+    /** `r` null clears the box: an empty box has not been answered, so it is neither right nor wrong. */
+    const paint = (i, r) => {
+      const b = boxes.get(i);
+      if (!b) return;
+      const el = b.input ?? b.wrap;
+      el?.classList.toggle('is-right', !!r?.ok);
+      el?.classList.toggle('is-wrong', !!r && !r.ok);
+      if (el) { if (r) el.setAttribute('aria-invalid', String(!r.ok)); else el.removeAttribute('aria-invalid'); }
+      if (b.mark) { b.mark.textContent = r ? (r.ok ? '✓' : '✗') : ''; b.mark.className = `g-cellmark${r ? (r.ok ? ' is-ok' : ' is-bad') : ''}`; }
+    };
+    /** Judge one box as the learner leaves it (blur, tab, Enter); an empty box is left alone. */
+    const mark = (i, value, { announce = false } = {}) => {
+      if (!String(value ?? '').trim()) { paint(i, null); return null; }
+      const r = judgeCell(item, i, value);
+      paint(i, r);
+      if (announce && r) say(`${labelOf(i)}: ${r.ok ? 'right' : 'not right yet'}.`);
+      return r;
+    };
+    const hinted = (i) => { const b = boxes.get(i); if (b?.wrap) b.wrap.dataset.hinted = 'true'; };
+    return { paint, mark, hinted, all: (cells) => { for (const r of cells) if (boxes.has(r.i)) paint(r.i, r); } };
+  }
   /** Pensum A: the sentence with an input for each ending, inline after its stem. Submits { blankIndex: typed }. */
-  function inlineInput(item, submit, hintFor = () => null) {
+  function inlineInput(item, submit, hintFor = () => null, { onCells = null, live = null } = {}) {
     const inputs = new Map();
+    const hints = new Map();
+    const boxes = new Map();
+    const labelOf = (i) => item.blanks[i]?.note || `ending ${i + 1}`;
+    const cells = cellPainter(item, boxes, { live, labelOf });
     // A div, not a p: each blank carries its own hint button beside it, and a button is fine in a paragraph
     // but the hint panel that follows the sentence is not — the sentence keeps its look through `.g-la`.
     const p = h('div', { class: 'g-la g-pensum', lang: 'la' });
@@ -1328,29 +1397,67 @@ export function createUI(ctx) {
       if (seg.blank == null) { p.append(seg.text); continue; }
       const b = item.blanks[seg.blank];
       if (!b) continue;
+      const i = seg.blank;
       const inp = h('input', { type: 'text', class: 'g-input g-input--end', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': `Ending after ${b.stem || 'the stem'}${b.note ? ` (${b.note})` : ''}`, placeholder: '…', size: String(Math.max(2, Math.min(6, (b.answers[0] ?? '').length + 1))) });
-      inputs.set(seg.blank, inp);
+      inputs.set(i, inp);
+      // Judged as the learner leaves it, cleared while they are still typing in it (§3).
+      inp.addEventListener('blur', () => { if (!inp.disabled) cells.mark(i, inp.value, { announce: true }); });
+      inp.addEventListener('input', () => cells.paint(i, null));
+      const hint = hintFor(i, { onOpen: () => cells.hinted(i) });
+      if (hint) hints.set(i, hint);
+      const mark = h('span', { class: 'g-cellmark', 'aria-hidden': 'true' });
       // The stem is already printed: it ends the prose segment before this blank ("Rōma in Itali_ est."). Printing
       // `b.stem` here too gave every Pensum A item a doubled stem — "Rōma in ItaliItali__ est." (C1). It stays in the
       // input's aria-label, which is where a screen-reader user needs it.
-      p.append(h('span', { class: 'g-pensum__blank' }, inp, hintFor(seg.blank)));
+      const wrap = h('span', { class: 'g-pensum__blank' }, inp, mark, hint);
+      boxes.set(i, { input: inp, wrap, mark });
+      p.append(wrap);
     }
     const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((b, i) => { v[i] = inputs.get(i)?.value ?? ''; }); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next ending; Enter checks.' }));
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((b, i) => { v[i] = inputs.get(i)?.value ?? ''; }); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next ending and marks it right or wrong; Alt+H opens the hint for that ending; Enter checks.' }));
+    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i, v) => cells.mark(i, v, { announce: true }) }));
+    onCells?.(cells.all);
     setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
     return form;
   }
+  /**
+   * The keys of a box of typed answers, shared by the chart and Pensum A:
+   * **Alt+H** opens that box's own hint (the "?" beside it is deliberately out
+   * of the tab sequence, so this is how a keyboard reaches it), and **Enter**
+   * judges the box and then moves to the next empty one — it grades the item
+   * only once every box has something in it, so a half-written chart is never
+   * graded by a key the learner meant as "next" (GRAMMAR-CONTRACT.md §3).
+   */
+  function boxKeys(e, { inputs, hints, mark }) {
+    const at = [...inputs.entries()].find(([, el]) => el === e.target);
+    if (!at) return;
+    const [i, inp] = at;
+    if (e.altKey && (e.key === 'h' || e.key === 'H')) { e.preventDefault(); hints.get(i)?.click(); return; }
+    if (e.key !== 'Enter' || e.altKey || e.ctrlKey || e.metaKey) return;
+    mark(i, inp.value);
+    const next = [...inputs.entries()].find(([, el]) => !el.value.trim());
+    if (next) { e.preventDefault(); next[1].focus({ preventScroll: true }); }
+  }
   /** Pensum B: the sentence with word blanks and a tappable bank. Submits { blankIndex: word }. */
-  function bankInput(item, submit, hintFor = () => null) {
+  function bankInput(item, submit, hintFor = () => null, { onCells = null } = {}) {
     const filled = {};
     const slots = new Map();
+    const hints = new Map();
+    const boxes = new Map();
+    const cells = cellPainter(item, boxes);
     const p = h('div', { class: 'g-la g-pensum', lang: 'la' });
     for (const seg of item.segments) {
       if (seg.blank == null) { p.append(seg.text); continue; }
       const i = seg.blank;
       const slot = h('button', { type: 'button', class: 'g-pensum__slot', lang: 'la', 'aria-label': `Blank ${i + 1}: empty`, onclick: () => { if (filled[i] != null) { delete filled[i]; paint(); } } }, '\u00a0');
       slots.set(i, slot);
-      p.append(slot, hintFor(i));
+      const hint = hintFor(i, { onOpen: () => cells.hinted(i) });
+      if (hint) hints.set(i, hint);
+      const mark = h('span', { class: 'g-cellmark', 'aria-hidden': 'true' });
+      // A tapped word is not typed and is never "left", so a bank blank is not judged as it is filled — that
+      // would turn the bank into a game of trying each tile. It takes its colour when the item is graded (§3).
+      boxes.set(i, { input: slot, wrap: slot, mark });
+      p.append(slot, mark, hint);
     }
     // Tiles are identified by their position in the bank, never by their text: a sentence that wants the same word
     // twice offers two tiles (sets.js builds the bank as a multiset), and disabling "by text" left Check unreachable (M3).
@@ -1362,7 +1469,15 @@ export function createUI(ctx) {
       bankBtns.forEach((b, t) => { b.disabled = used.has(t); b.classList.toggle('is-used', used.has(t)); });
       check.disabled = item.blanks.some((_, i) => filled[i] == null);
     };
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((_, i) => { v[i] = filled[i] == null ? '' : item.bank[filled[i]]; }); submit(v); } }, p, h('div', { class: 'g-order__bank', role: 'group', 'aria-label': 'Word bank' }, bankBtns), h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab to a word and press Enter to put it in the next empty blank; a filled blank empties when chosen.' }));
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((_, i) => { v[i] = filled[i] == null ? '' : item.bank[filled[i]]; }); submit(v); } }, p, h('div', { class: 'g-order__bank', role: 'group', 'aria-label': 'Word bank' }, bankBtns), h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab to a word and press Enter to put it in the next empty blank; a filled blank empties when chosen; Alt+H on a blank opens its hint.' }));
+    form.addEventListener('keydown', (e) => {
+      if (!e.altKey || (e.key !== 'h' && e.key !== 'H')) return;
+      const at = [...slots.entries()].find(([, el]) => el === e.target);
+      if (!at) return;
+      e.preventDefault();
+      hints.get(at[0])?.click();
+    });
+    onCells?.(cells.all);
     paint();
     setTimeout(() => bankBtns[0]?.focus({ preventScroll: true }), 0);
     return form;
@@ -1390,13 +1505,33 @@ export function createUI(ctx) {
   /** The question as asked of the cells shown ("Give the accusative singular of cāsus" when a phone shows one cell). */
   const chartQuestion = (item) => { const cells = chartCells(item); return cells.length === 1 && item.chart.cells.length > 1 ? `Give the ${cells[0].label} of ${item.chart.head ?? item.lemma.split(/[\s,]/)[0]}` : item.prompt.question; };
   /** The paradigm section with inputs in the cells to fill (a compact single row on phones). */
-  function chartInput(item, submit, hintFor = () => null) {
+  function chartInput(item, submit, hintFor = () => null, { onCells = null, live = null } = {}) {
     const { chart } = item;
     const cells = chartCells(item);
     const inputs = new Map();   // index into chart.cells → input
-    const mk = (i, label) => { const inp = h('input', { type: 'text', class: 'g-input g-input--cell', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': label, placeholder: '…' }); inputs.set(i, inp); return inp; };
+    const hints = new Map();    // index into chart.cells → its hint control
+    const boxes = new Map();
+    const labelOf = (i) => chart.cells[i]?.label ?? `cell ${i + 1}`;
+    const paintCells = cellPainter(item, boxes, { live, labelOf });
+    const mk = (i, label) => {
+      const inp = h('input', { type: 'text', class: 'g-input g-input--cell', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': label, placeholder: '…' });
+      inputs.set(i, inp);
+      // Judged as the learner leaves it — green or red at once, and red does not block: the cell stays
+      // editable, its hint stays there, and the chart is graded when the learner presses Check (§3).
+      inp.addEventListener('blur', () => { if (!inp.disabled) paintCells.mark(i, inp.value, { announce: true }); });
+      inp.addEventListener('input', () => paintCells.paint(i, null));
+      return inp;
+    };
     // Each cell that is filled in carries its own hint: four cells means four hints, each about its own cell.
-    const cellIn = (i, label) => h('span', { class: 'g-cellwrap' }, mk(i, label), hintFor(i));
+    const cellIn = (i, label) => {
+      const inp = mk(i, label);
+      const hint = hintFor(i, { onOpen: () => paintCells.hinted(i) });
+      if (hint) hints.set(i, hint);
+      const mark = h('span', { class: 'g-cellmark', 'aria-hidden': 'true' });
+      const wrap = h('span', { class: 'g-cellwrap' }, inp, mark, hint);
+      boxes.set(i, { input: inp, wrap, mark });
+      return wrap;
+    };
     // Cells not shown (phones show one) are judged as right: only what was asked counts.
     const collect = () => { const v = {}; chart.cells.forEach((c, i) => { v[i] = inputs.has(i) ? inputs.get(i).value : c.answer[0]; }); return v; };
     const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); submit(collect()); } });
@@ -1417,7 +1552,9 @@ export function createUI(ctx) {
       form.append(h('div', { class: 'pt__scroll' }, tbl));
     }
     const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
-    form.append(h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next cell; Enter checks.' }));
+    form.append(h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H opens the hint for that cell; Enter checks once every cell is filled.' }));
+    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i, v) => paintCells.mark(i, v, { announce: true }) }));
+    onCells?.(paintCells.all);
     setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
     return form;
   }

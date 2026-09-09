@@ -16,12 +16,28 @@
 //   createStage3({ items, paradigm, rand }).generate({ skill, kind, stage, currentWeek, currentWeekN }) → item | null
 
 import { stripMacrons } from '../tokenize.js';
-import { cellsFor, lemmaGloss, spellsAnswer, featureLabel, CASE_LABEL, TENSE_LABEL, MOOD_LABEL, patternSpans, compilePatterns, strippedText } from './items.js';
+import { cellsFor, lemmaGloss, spellsAnswer, featureLabel, CASE_LABEL, TENSE_LABEL, MOOD_LABEL, patternSpans, compilePatterns, strippedText, SHORT_WORDS } from './items.js';
 import { isShelfWeek } from '../sync.js';
 import { scopeByChapter, scopeNote } from './chapter.js';
 
 export const STAGE3_KINDS = Object.freeze(['transform', 'reorder', 'translate']);
 export const REORDER_MAX_WORDS = 8;
+/**
+ * The bar the two production kinds keep, in **words**. It used to be 180
+ * characters (transform) and 220 (translate) — 36 and 44 words of Ørberg,
+ * which is not a sentence anyone writes out from scratch (GRAMMAR-CONTRACT.md
+ * §7.1). `SHORT_WORDS` is the norm, the same eight `reorder` has always kept;
+ * a skill with nothing that short widens to `LONG_WORDS` rather than losing
+ * the kind altogether, and only then.
+ */
+export const LONG_WORDS = 15;
+/** The printed words of a sentence (`chunksOf` keeps punctuation on its word). Pure. */
+export const wordsIn = (la) => chunksOf(la).length;
+/** `list` at or under the short bar, widened to the long one only when nothing is that short. Pure. */
+const shortestFirst = (list, words = (x) => wordsIn(x)) => {
+  const short = list.filter((x) => words(x) <= SHORT_WORDS);
+  return short.length ? short : list.filter((x) => words(x) <= LONG_WORDS);
+};
 /**
  * The 103 weeks whose units are verse (weeks 13 and 14: the elegiac couplet,
  * the hendecasyllable, the scansion lesson). A verse line's word order is
@@ -109,8 +125,8 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
    * shown, and the fallback is outward — never a sentence from a later chapter
    * while an earlier one exists. A redo names its item and is left alone.
    */
-  const scopeFor = (list, { chapter = null, itemKey = null }, weekOf = (x) => x?.unit?.week_n ?? null) =>
-    (itemKey != null ? { list, scope: null, counts: null } : scopeByChapter(list, chapter, weekOf));
+  const scopeFor = (list, { chapter = null, chapterMode = 'own-first', itemKey = null }, weekOf = (x) => x?.unit?.week_n ?? null) =>
+    (itemKey != null ? { list, scope: null, counts: null } : scopeByChapter(list, chapter, weekOf, { mode: chapterMode }));
   const tiersFor = (list, keyOf, { currentWeek, currentWeekN }, candOf = (x) => x) => {
     const tiers = [new Set(list.filter((x) => candOf(x).gold).map(keyOf))];
     if (currentWeek && currentWeekN != null && !isShelfWeek(currentWeekN)) tiers.push(new Set(list.filter((x) => candOf(x).unit.week_n === currentWeekN).map(keyOf)));
@@ -173,7 +189,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     return { capped, answers: [...new Set(capped.flatMap((f) => [f, stripMacrons(f)]))] };
   };
   function transform(skill, stage, opts) {
-    const cands = items.candidates(skill.id).filter((c) => !c.ambiguous && c.verified && c.unit.la.length <= 180);
+    const cands = items.candidates(skill.id).filter((c) => !c.ambiguous && c.verified);
     const spots = [];
     for (const c of cands) {
       const own = formFor(c.entry, c.parse);
@@ -192,13 +208,15 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
       }
     }
     if (!spots.length) return null;
+    // The chapter caps first — it is the harder constraint — and the short sentences are chosen inside what it leaves.
     const scoped = scopeFor(spots, opts, (s) => s.c.unit.week_n ?? null);
+    const list = opts.itemKey != null ? scoped.list : shortestFirst(scoped.list, (s) => wordsIn(s.c.unit.la));
     const note = (c) => scopeNote(opts.chapter ?? null, scoped.scope, c);
     const keyOf = (s) => `transform:${s.c.unit.id}:${s.c.token.form}:${s.c.index}:${s.op.op}`;
-    const keys = scoped.list.map(keyOf);
-    const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(scoped.list, keyOf, opts, (s) => s.c), opts.itemKey ?? null);
+    const keys = list.map(keyOf);
+    const got = pool.chooseInfo(skill.id, 'transform', keys, rand, tiersFor(list, keyOf, opts, (s) => s.c), opts.itemKey ?? null);
     if (!got) return null;
-    const { c, op, got: cell } = scoped.list[keys.indexOf(got.key)];
+    const { c, op, got: cell } = list[keys.indexOf(got.key)];
     const { capped, answers } = answersFor(c.entry, cell);
     const lab = c.parse.case ? featureLabel('case', c.parse.case) : featureLabel('tense', `${c.parse.tense} ${c.parse.mood}`);
     return { ...base(skill, 'transform', stage, c, note(c)), key: got.key, input: 'type', repeat: got.wrapped, op: op.op,
@@ -243,21 +261,23 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     const seen = new Set();
     const all = items.candidates(skill.id);
     // Same filter as `transform` (QA M1): the feedback names a parse, so it must be one the sentence settles.
-    const cands = all.filter((c) => {
+    const long = all.filter((c) => {
       if (c.ambiguous || !c.verified) return false;
       if (seen.has(c.unit.id) || !c.unit.en || isShelfWeek(c.unit.week_n)) return false;
       seen.add(c.unit.id);
-      return c.unit.la.length <= 220;
+      return true;
     });
-    if (!cands.length) return null;
+    if (!long.length) return null;
     // Every verified candidate of the skill in a unit: the word indexes the app may claim carry the construction.
     const verifiedIn = (unitId) => new Set(all.filter((c) => c.unit.id === unitId && !c.ambiguous && c.verified).map((c) => c.index));
-    const scoped = scopeFor(cands, opts);
+    // The chapter caps first — it is the harder constraint — and the short sentences are chosen inside what it leaves.
+    const scoped = scopeFor(long, opts);
+    const cands = opts.itemKey != null ? scoped.list : shortestFirst(scoped.list, (c) => wordsIn(c.unit.la));
     const keyOf = (c) => `translate:${c.unit.id}`;
-    const keys = scoped.list.map(keyOf);
-    const got = pool.chooseInfo(skill.id, 'translate', keys, rand, tiersFor(scoped.list, keyOf, opts), opts.itemKey ?? null);
+    const keys = cands.map(keyOf);
+    const got = pool.chooseInfo(skill.id, 'translate', keys, rand, tiersFor(cands, keyOf, opts), opts.itemKey ?? null);
     if (!got) return null;
-    const c = scoped.list[keys.indexOf(got.key)];
+    const c = cands[keys.indexOf(got.key)];
     // The key words: every word inside the skill's pattern match (the construction), the target word at least.
     const stripped = strippedText(c.unit.la);
     const spans = patternSpans(c.unit.la, patternsOf(skill), stripped);

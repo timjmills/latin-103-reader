@@ -146,6 +146,23 @@ export function spineRows({ chapters = null, skills = new Map(), order = null, s
 /** The scopes a draw can end in, narrowest first. `beyond` is the honest one: nothing at or before the chapter. */
 export const SCOPES = Object.freeze(['own', 'earlier', 'beyond']);
 
+/**
+ * How a chapter narrows a draw. Two callers, two rules:
+ *
+ *   'own-first'  a **chapter's** practice ("Practise this chapter"): that
+ *                chapter's own sentences first, so the session reads like the
+ *                chapter it is named after; earlier Latin only when it has none.
+ *   'ceiling'    the **learner's own position**, which scopes every other
+ *                session (§7.2). Everything at or before it is Latin they have
+ *                already met and is equally fair game, so the two tiers are
+ *                one: capping without narrowing to a single chapter keeps the
+ *                pool wide enough that a skill is not drilled on four sentences.
+ *
+ * Both fall back outward the same way, and only when a skill has nothing at or
+ * before the chapter at all — and the item then says so.
+ */
+export const SCOPE_MODES = Object.freeze(['own-first', 'ceiling']);
+
 /** A chapter number, or null for anything that is not one (null and undefined included — `Number(null)` is 0, which is not chapter zero). Pure. */
 const chapterNumber = (x) => { const n = Math.round(Number(x)); return Number.isFinite(n) && n >= CHAPTER_MIN ? n : null; };
 
@@ -175,7 +192,7 @@ export function chapterOfSentence(x) {
  * alone with `scope: null` — the whole library, exactly as before.
  * Pure.
  */
-export function scopeByChapter(list, chapter, weekOf = (x) => x?.unit?.week_n ?? x?.week_n ?? null) {
+export function scopeByChapter(list, chapter, weekOf = (x) => x?.unit?.week_n ?? x?.week_n ?? null, { mode = 'own-first' } = {}) {
   const n = chapterNumber(chapter);
   const all = Array.isArray(list) ? list : [];
   if (n == null || !all.length) return { list: all, scope: null, counts: null };
@@ -188,8 +205,14 @@ export function scopeByChapter(list, chapter, weekOf = (x) => x?.unit?.week_n ??
     (t === 'own' ? own : t === 'earlier' ? earlier : t === 'later' ? later : unknown).push(x);
   }
   const counts = { own: own.length, earlier: earlier.length, later: later.length, unknown: unknown.length, atOrBefore: own.length + earlier.length, total: all.length };
-  if (own.length) return { list: own, scope: 'own', counts };
-  if (earlier.length) return { list: earlier, scope: 'earlier', counts };
+  if (mode === 'ceiling') {
+    // The learner's ceiling: everything they have read, in one tier. `scopeNote` reads each drawn
+    // sentence's own chapter back off it, so an item still says 'own' or 'earlier' as it always did.
+    if (counts.atOrBefore) return { list: [...own, ...earlier], scope: 'at-or-before', counts };
+  } else {
+    if (own.length) return { list: own, scope: 'own', counts };
+    if (earlier.length) return { list: earlier, scope: 'earlier', counts };
+  }
   // Nothing at or before the chapter: the wider library, unknown weeks before the ones that are demonstrably ahead.
   return { list: [...unknown, ...later], scope: 'beyond', counts };
 }
@@ -206,7 +229,14 @@ export function scopeNote(chapter, scope, sentence) {
   const n = chapterNumber(chapter);
   if (n == null || !scope) return null;
   const from = chapterOfSentence(sentence);
-  return { chapter: n, from, scope, beyond: scope === 'beyond' };
+  // A ceiling draws one tier out of two, so which of them this sentence came from is read off the
+  // sentence itself: at or before the chapter, its own week says 'own' or 'earlier' without guessing.
+  const s = scope !== 'at-or-before' ? scope : (from === n ? 'own' : 'earlier');
+  const note = { chapter: n, from, scope: s, beyond: s === 'beyond' };
+  // A ceiling says something different from a chapter's own practice, so the item remembers which it was:
+  // an earlier chapter under a ceiling is the ordinary thing, not a sign that the chapter itself had none.
+  if (scope === 'at-or-before') note.ceiling = true;
+  return note;
 }
 
 /**
