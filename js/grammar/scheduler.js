@@ -445,7 +445,7 @@ export function buildRedoSession({ misses = [], skills, states = new Map(), size
   for (const m of misses) {
     if (!m || typeof m.skill !== 'string' || !m.item_key || !m.kind) continue;
     if (!skills?.has?.(m.skill)) continue;
-    const k = `${m.skill} ${m.item_key}`;
+    const k = `${m.skill}\u0000${m.item_key}`;
     const cur = byItem.get(k);
     if (!cur || ms(m.at) > ms(cur.at)) byItem.set(k, m);
   }
