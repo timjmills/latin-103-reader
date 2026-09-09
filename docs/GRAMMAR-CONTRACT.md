@@ -1304,3 +1304,48 @@ and 7).
 
 **Status**: specified, not yet built. The content generation for all 88 skills
 is held pending a design review.
+
+## 7. Measured evidence for the rebuild (2026-09-09)
+
+Five probes measured the running system over the whole library (5,857 units:
+1,549 course · 2,757 review shelf · 1,551 Colloquia), driving the app's own
+code rather than re-implementing it. The learner's six complaints are all
+confirmed, but **two of them have a different cause than assumed**, and the
+plan in §1–§5 should be read with this section.
+
+### 7.1 Sentences are twice as long as wanted — but the library is not the problem
+- Candidate sentences: median **10** words, p90 22, max 94. Only **31%** are 5–8 words; **34.7%** are 13+.
+- What a learner is actually shown (5,040 simulated real draws): median **11** words, **44.8%** are 13+ words. The first ten items per skill look gentler (median 9) only because lesson examples and highlights are drawn first; after that the median rises to 12.
+- **The library itself is short**: median unit 7 words, 36.7% are 5–8. Pools are long because a long sentence matches more skills — a 20+ word sentence sits in 14.6 skills' pools against 5.6 for a short one, so 6% of the library supplies 13.7% of all candidate slots.
+- **A bug**: `SHORT_LA = 180` in `items.js:571` counts **characters**, and 98.1% of candidates already pass it, so the "shorter sentences first" tier is nearly inert and its "short" sentences run to 36 words. Same bar in `stage3.js`. Fixing this to a word count is cheap and immediately raises quality.
+- Supply of unambiguous 5–8-word sentences at or before a skill's own chapter: **15 of 84 drillable skills have none**, 15 have one or two, 26 have three to seven, only 28 reach eight. **Six skills have none anywhere in the library** (result-clause, cum-narrative, dative-of-agent, pluperfect-subjunctive, conditions-contrary-to-fact, ablative-absolute). To give every skill eight, **301 sentences must be written**.
+
+### 7.2 The vocabulary overrun is mostly a missing chapter cap, not a vocabulary problem
+This is the finding that most changes the plan.
+- Chapter scoping already exists and works, but is applied to only **~20% of slots** in an ordinary session (`scheduler.js:351-356`); the preset session and "Practise this skill" pass no chapter at all. So **85% of every skill's candidate pool is sentences from chapters later than the skill itself**.
+- For a learner at chapter 5, **48.4%** of the words in drawable sentences are beyond chapter 5, and only 14.9% of sentences are fully inside their vocabulary. **Capping every draw at the learner's chapter** — the rule the chapter session already uses, no vocabulary filter at all — takes that to **3.2% beyond and 85.5% fully inside**, and empties no skill that was not already empty.
+- **A strict vocabulary filter buys only a further 1–2 points and is expensive**: a literal deck-only test rejects **68.2%** of a chapter's own sentences, because the decks contain **no proper names at all** (only eight capitalised entries exist across all 34 decks, all adjectives). Of the out-of-deck tokens in a chapter-scoped draw, 77.9% are proper names, 7.1% numerals, and only **3.3%** are genuinely words taught later — the real fault.
+- **Implication**: implement the chapter cap everywhere first; treat "chapter vocabulary only" as a rule for the *written* sentences (§1), where we control every word, not as a filter over the book's sentences.
+
+### 7.3 Learn has no rehearsal between reading and being scored
+- Four screens, the first two entirely passive: **270–415 words** read, plus a paradigm printed open with a median of **143 forms**, of which a median of **4.2%** is the skill's actual point. Thirteen lessons light nothing at all. The imperfect-subjunctive lesson prints 211 forms to teach 18.
+- **61% of the example sentences carry no English**, because they come from the Latin-only review shelf; 38 of 88 lessons have no translated example at all.
+- "Guided" differs from "blocked" in exactly three ways (`session.js:355-360`): hints forced open, stage 1, and `full: true` charts. **That last makes the guided phase the hardest input in the section** — a whole paradigm column, up to six typed forms, one Check, all-or-nothing. There is an 85% chance a four-kind skill's guided five contains one.
+
+### 7.4 The catalogue is mostly already there
+- `paradigms.js` declares 63 table shapes; **56 distinct tables** are realised by real lemmas, driven by 2,735 headwords, producing **157,908 keyed cells** — and **every cell already carries a structured key**, so per-cell practice is a re-keying job, not new morphology.
+- Missing: a **stable id per table** (`paradigm()` returns no id and section indices shift with a lemma's root count), a **headword index** (the glossary is indexed by inflected form only, so no lemma search exists), and a lemma picker. `KEY_CLASS` in `lessons.js` covers **20 of 46** paradigm keys and mis-selects on four.
+- Customisation is already supported by the data: gender is written on 3,103 of 3,114 noun parses; nouns by declension 296/602/368/148/8; verbs by conjugation 326/124/260/50/55; deponents 72; plural-only 93; singular-only 189. i-stem is derived, not stored.
+
+### 7.5 Nothing is judged per cell, and there is a hint leak
+- **Zero** blur, focusout, input or change handlers exist on any answer box in the grammar module. Every multi-box item is one form with one commit point, judged whole.
+- **Per-cell truth already exists** inside `judge()` as a `cells` array of `{i, ok, given, expected}` — it is simply never bound to the DOM, only flattened into a prose sentence. Cell-by-cell colour is therefore a wiring job.
+- **A real leak**: on a single-box `blank` item the "Tell me more" disclosure renders the word's whole paradigm, one cell of which is the answer. The leak sweep inspects strings only, never the rendered table.
+- **Tab order interleaves each box with its own hint button**, so Tab from cell one lands on cell one's hint, contradicting the on-screen key help.
+
+### 7.6 What this means for the build order
+1. Cap every draw at the learner's chapter, and fix `SHORT_LA` to count words. Cheap, and together they fix most of complaints 2 and 3.
+2. Bind the existing per-cell results to the boxes, fix the tab order, close the paradigm leak. Complaint 6, mostly wiring.
+3. Rebuild Learn as micro-steps, and stop printing a 143-form table to teach six of them. Complaint 1.
+4. Write the teaching sentences — **301 to give every skill eight**, and unavoidable for the 15 skills with none. Complaints 2 and 3, the expensive part.
+5. Build the catalogue on the keys that already exist. Complaints 4 and 5.
