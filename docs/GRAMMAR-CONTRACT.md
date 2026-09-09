@@ -1255,3 +1255,52 @@ gender, declension or conjugation, case, number, tense, person, and chapter
 range. Only axes the data can honestly filter are offered, and a chosen filter
 is remembered per skill. A filter that would leave no material says so instead
 of producing an empty session.
+
+## 6. The decisions behind this rebuild (2026-09-09)
+
+The learner reported six problems with the grammar practice, verbatim:
+
+1. the presentation of the grammar concepts is too hard and not step by step
+   enough, with too little guided practice;
+2. the sentences and vocabulary used in the practice are too hard — each skill
+   should be presented and practised with the simplest sentences that carry the
+   skill, ideally five to eight words;
+3. the vocabulary often goes beyond the vocabulary introduced in the chapter;
+   examples, sentences and both kinds of practice should stay inside it;
+4. there is nowhere that every skill and paradigm is categorised and catalogued
+   so it can be practised on several different words;
+5. some skills need customisation, for instance practising feminine words only;
+6. every guided and independent practice needs cell-by-cell checking (green or
+   red as each cell is completed and tabbed out of) and a hint button that
+   reveals the answer or part of it.
+
+Sixteen questions were put, with a recommendation on each. The answers, which
+are binding on the sections above:
+
+| # | Question | Answer |
+|---|---|---|
+| 1 | Break a skill into micro-steps, each with its own one-item check? | Yes, micro-steps. |
+| 2 | Should worked examples be completed rather than read? | Yes — shown, then completed. |
+| 3 | Build a paradigm cell by cell before filling a blank one? | Yes, one cell at a time, **with the option to practise that cell on several words**. |
+| 4 | If prerequisites are unmet, refuse or warn? | Warn and let it proceed. |
+| 5 | Where do simple practice sentences come from? | **Write our own** — pedagogically sound sentences built on the book's vocabulary and syntax, but simple. |
+| 6 | Chapter vocabulary strictly, or cumulative? | Cumulative. |
+| 7 | When no book sentence is short enough at that chapter? | Always write a teaching sentence, or rewrite, so it is as simple as possible while still teaching the skill. |
+| 8 | Allow the book's proper names freely? | Yes. |
+| 9 | How should the catalogue be organised? | Left to the build: **by part of speech, then table**, each naming the chapter that introduces it, filterable by category — recorded here so it can be reviewed. |
+| 10 | What can the catalogue do with a table? | See it filled, practise one cell, practise the whole table, switch the word — **with hints and automatic checking**. |
+| 11 | Which words does a table offer? | Library words **and stock examples chosen for that skill**. |
+| 12 | Which customisation axes? | Those that are logical for the skill, or mixed. |
+| 13 | On tab out of a wrong cell? | Mark it red; then either take the hint or grade them all together. |
+| 14 | What does the hint give? | The answer for that one cell. |
+| 15 | Is a filled chart one attempt or one per cell? | One attempt for the chart. |
+| 16 | Replace the current Learn flow or sit beside it? | Replace it. |
+
+**The one judgement call flagged at the time**: writing teaching sentences for
+every skill is the largest piece of work here, and it is the only way to
+guarantee five-to-eight-word sentences inside chapter vocabulary, because the
+book's own sentences rarely oblige. The learner chose it knowingly (answers 5
+and 7).
+
+**Status**: specified, not yet built. The content generation for all 88 skills
+is held pending a design review.
