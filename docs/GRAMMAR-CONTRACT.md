@@ -1493,3 +1493,37 @@ This is the finding that most changes the plan.
 3. Rebuild Learn as micro-steps, and stop printing a 143-form table to teach six of them. Complaint 1.
 4. Write the teaching sentences — **301 to give every skill eight**, and unavoidable for the 15 skills with none. Complaints 2 and 3, the expensive part.
 5. Build the catalogue on the keys that already exist. Complaints 4 and 5.
+
+## 8. Teach-step schema, completed (2026-09-10)
+
+Writing the 88 teach blocks surfaced two gaps against the learner's decisions 2,
+3 and 11. Both are settled here; the content and the engine build against this.
+
+**A step's check may name the words it is practised on.** Decision 3 was "one
+cell built up **with the option to practise it with multiple words**", and 11
+was library words **plus stock examples for that skill**. So:
+```jsonc
+"check": { "kind": "chart", "cells": ["dat.sg"],
+           "words": ["puella", "servus", "pater"] }   // omitted = the table's stock words
+```
+The lemmas come from `app/data/grammar/paradigms.json` (§4a), which now names
+three to five stock words per table and is the authority — a step must not
+invent its own. Omitting `words` means the table's stock words in their given
+order. The same cell is asked on each word in turn, so the ending is learned
+rather than one word memorised.
+
+**A worked example is completed, not read.** Decision 2. A step may carry:
+```jsonc
+"worked": { "sentence": "dio-03", "given": ["case"], "ask": ["number", "why"] }
+```
+The first worked example of a skill is shown fully parsed; every later one
+gives some features and asks for the rest, one at a time, with the reasoning
+prompted. `ask` values are parse features the sentence's focus word really has,
+plus `why` for the one-line reason. This replaces the old read-only examples
+screen entirely.
+
+**Two consequences for the engine.** A chart check over several words is still
+**one attempt** per §3 — the whole set of words for that cell, right only if
+every one was right unaided. And a step's check must draw its sentence from the
+skill's own `sentences` file, never from the library, so Learn is entirely
+inside the written material.
