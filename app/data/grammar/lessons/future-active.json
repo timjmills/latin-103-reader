@@ -14,5 +14,131 @@
     { "type": "p", "text": "The *-am* first person of the 3rd and 4th is the same form as the present subjunctive (the 'may / let' form: veniat = let him come, may he come): *faciam* can be *I will do* or *what am I to do?* — the context and the next forms decide (*faciēs* is future, *faciās* subjunctive)." },
     { "type": "p", "text": "The learner's notes (week 20): like the imperfect, the future is made with an intermediate ending; for most verbs it is *a / e* — *a* in the first person singular and *e* elsewhere — with no variable vowel needed and *-m* for *I* (*pōnam, pōnēs, pōnet, pōnēmus, pōnētis, pōnent; fugiam, veniam*); for *a-* and *e-*stem verbs this does not work, so the marker *b* is used instead, after which the variable vowels stay and *-ō* is used (*pulsābō, pulsābis, pulsābit, pulsābimus, pulsābitis, pulsābunt; vidēbō*). Ørberg (chapter XX): futūrum *-bit / -bunt* and *-et / -ent*; *computābit, pārēbit, scrībet, dormiet*; *erō, eris, erit*; *crās rūrsus in lūdō dormiēs, male computābis, foedē scrībēs*." }
   ],
-  "sources": ["notes p69–70", "Ørberg cap. XX Grammatica Latina", "A&G §184, §472"]
+  "sources": ["notes p69–70", "Ørberg cap. XX Grammatica Latina", "A&G §184, §472"],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the tense does",
+      "say": "For what has not happened yet Latin uses the future (the 'will do' tense): *crās Iūlius ambulābit*, tomorrow Julius will walk. It is one word, with no helper like the English 'will'. Words such as *crās* 'tomorrow' and *mox* 'soon' often stand beside it, but the tense itself is carried by the verb alone.",
+      "show": {
+        "kind": "sentence",
+        "id": "fa-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fa-02",
+        "ask": "Tap the verb that has not happened yet."
+      }
+    },
+    {
+      "n": 2,
+      "title": "1st and 2nd conjugations: the endings -bit and -bunt",
+      "say": "Verbs of the first and second conjugations (the conjugation is which of the four families a Latin verb belongs to) build the future with a *-b-*: stem + bi + ending. For he, she or it that comes out as *-bit* (*ambulābit*, *vidēbit*); for they it is *-bunt* (*cantābunt*, *tacēbunt*). Only these two conjugations use the *-b-*, and it makes their future the easiest one to spot.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "ambulo",
+        "reveal": [
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "say": "ambulābit, ambulābunt — the -b- of the first conjugation"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "voco",
+        "cells": [
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "ask": "Now the same two cells on vocō: the future for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The other persons, and -bō for 'I'",
+      "say": "The rest follow the same shape: *-bis* for you, *-bimus* for we, *-bitis* for you all. The 'I' form drops the vowel and ends in *-bō*: *ambulābō*, I will walk. Notice that the imperfect's 'I' ended in *-m* and the future's ends in *-ō* — the quickest way to keep the two apart.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "ambulo",
+        "reveal": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.2.sg",
+          "fut.ind.act.1.pl",
+          "fut.ind.act.2.pl"
+        ],
+        "say": "ambulābō, ambulābis, ambulābimus, ambulābitis"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "laudo",
+        "cells": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.2.sg",
+          "fut.ind.act.1.pl",
+          "fut.ind.act.2.pl"
+        ],
+        "ask": "Write the future of laudō for I, for you, for we and for you all."
+      }
+    },
+    {
+      "n": 4,
+      "title": "3rd and 4th conjugations: -am, then -ē- everywhere else",
+      "say": "Third- and fourth-conjugation verbs use no *-b-* at all. Their 'I' form ends in *-am*, and every other person has an *-ē-*: *scrībēs, scrībēmus, scrībētis*. Before a final *-t* or *-nt* that *ē* shortens, which is why 'he' is *scrībet* and 'they' is *scrībent*. Fourth-conjugation verbs do the same: *veniam*, *veniet*. One verb therefore has two different-looking futures, and both belong to the same column.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "scribo",
+        "reveal": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "say": "scrībam for 'I'; scrībet, scrībent for the rest"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "mitto",
+        "cells": [
+          "fut.ind.act.1.sg",
+          "fut.ind.act.3.sg",
+          "fut.ind.act.3.pl"
+        ],
+        "ask": "Now the same three cells on mittō: the future for I, for 'he' and for 'they'."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling pōnet from pōnit",
+      "say": "In the third conjugation one vowel is the whole tense: *pōnit* is 'he puts', *pōnet* is 'he will put'; *mittit* is 'he sends', *mittet* is 'he will send'. Read the vowel that comes just before the ending, and let a word like *crās* or *mox* confirm what you found.",
+      "show": {
+        "kind": "sentence",
+        "id": "fa-07"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fa-11",
+        "ask": "Tap the verb that is about tomorrow, not about now."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Two futures often run side by side in one sentence, one from each pattern: *Dāvus saccum portābit et in mēnsā pōnet* — *-bit* from the first conjugation, *-et* from the third. Build them yourself, and let the verb's conjugation decide which future you need before you write the ending.",
+      "show": {
+        "kind": "sentence",
+        "id": "fa-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "fa-13",
+        "blank": "aget",
+        "ask": "Fill the blank with the future of agō, third person singular."
+      }
+    }
+  ]
 }

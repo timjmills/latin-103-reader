@@ -1,0 +1,668 @@
+{
+  "skill": "fourth-declension",
+  "chapter": 12,
+  "sentences": [
+    {
+      "id": "f4-01",
+      "la": "Exercitus Rōmānus in campō est.",
+      "en": "The Roman army is in the field.",
+      "words": 5,
+      "focus": "Exercitus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Exercitus",
+          "m": "army"
+        },
+        {
+          "w": "Rōmānus",
+          "m": "Roman"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "campō",
+          "m": "the field"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f4-02",
+      "la": "Metus hostium in castrīs magnus est.",
+      "en": "Fear of the enemy in the camp is great.",
+      "words": 6,
+      "focus": "Metus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Metus",
+          "m": "fear"
+        },
+        {
+          "w": "hostium",
+          "m": "of the enemy"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "castrīs",
+          "m": "the camp"
+        },
+        {
+          "w": "magnus",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f4-03",
+      "la": "Dux exercitum ad flūmen dūcit.",
+      "en": "The leader leads the army to the river.",
+      "words": 5,
+      "focus": "exercitum",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Dux",
+          "m": "leader"
+        },
+        {
+          "w": "exercitum",
+          "m": "the army"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "flūmen",
+          "m": "river"
+        },
+        {
+          "w": "dūcit",
+          "m": "leads"
+        }
+      ]
+    },
+    {
+      "id": "f4-04",
+      "la": "Mārcus manum ad ōs pōnit.",
+      "en": "Marcus puts his hand to his mouth.",
+      "words": 5,
+      "focus": "manum",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "manum",
+          "m": "his hand"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "ōs",
+          "m": "his mouth"
+        },
+        {
+          "w": "pōnit",
+          "m": "puts"
+        }
+      ]
+    },
+    {
+      "id": "f4-05",
+      "la": "Puer arcum tenet et sagittam iacit.",
+      "en": "The boy holds a bow and throws an arrow.",
+      "words": 6,
+      "focus": "arcum",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "boy"
+        },
+        {
+          "w": "arcum",
+          "m": "a bow"
+        },
+        {
+          "w": "tenet",
+          "m": "holds"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "sagittam",
+          "m": "an arrow"
+        },
+        {
+          "w": "iacit",
+          "m": "throws"
+        }
+      ]
+    },
+    {
+      "id": "f4-06",
+      "la": "Impetus exercitūs Rōmānī magnus est.",
+      "en": "The attack of the Roman army is great.",
+      "words": 5,
+      "focus": "exercitūs",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Impetus",
+          "m": "attack"
+        },
+        {
+          "w": "exercitūs",
+          "m": "of the army"
+        },
+        {
+          "w": "Rōmānī",
+          "m": "Roman"
+        },
+        {
+          "w": "magnus",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f4-07",
+      "la": "Dux exercitūs in castrīs est.",
+      "en": "The leader of the army is in the camp.",
+      "words": 5,
+      "focus": "exercitūs",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Dux",
+          "m": "leader"
+        },
+        {
+          "w": "exercitūs",
+          "m": "of the army"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "castrīs",
+          "m": "the camp"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "f4-08",
+      "la": "Dux exercituī suō aquam dat.",
+      "en": "The leader gives his army water.",
+      "words": 5,
+      "focus": "exercituī",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Dux",
+          "m": "leader"
+        },
+        {
+          "w": "exercituī",
+          "m": "to the army"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        },
+        {
+          "w": "aquam",
+          "m": "water"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "f4-09",
+      "la": "Mīles fortis gladium manū tenet.",
+      "en": "The brave soldier holds his sword in his hand.",
+      "words": 5,
+      "focus": "manū",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mīles",
+          "m": "soldier"
+        },
+        {
+          "w": "fortis",
+          "m": "brave"
+        },
+        {
+          "w": "gladium",
+          "m": "the sword"
+        },
+        {
+          "w": "manū",
+          "m": "in his hand"
+        },
+        {
+          "w": "tenet",
+          "m": "holds"
+        }
+      ]
+    },
+    {
+      "id": "f4-10",
+      "la": "Exercitūs Rōmānī in campīs pugnant.",
+      "en": "The Roman armies are fighting in the fields.",
+      "words": 5,
+      "focus": "Exercitūs",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Exercitūs",
+          "m": "armies"
+        },
+        {
+          "w": "Rōmānī",
+          "m": "Roman"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "campīs",
+          "m": "the fields"
+        },
+        {
+          "w": "pugnant",
+          "m": "fight"
+        }
+      ]
+    },
+    {
+      "id": "f4-11",
+      "la": "Impetum exercituum barbarōrum mīlitēs timent.",
+      "en": "The soldiers fear the attack of the foreign armies.",
+      "words": 5,
+      "focus": "exercituum",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Impetum",
+          "m": "the attack"
+        },
+        {
+          "w": "exercituum",
+          "m": "of the armies"
+        },
+        {
+          "w": "barbarōrum",
+          "m": "foreign"
+        },
+        {
+          "w": "mīlitēs",
+          "m": "soldiers"
+        },
+        {
+          "w": "timent",
+          "m": "fear"
+        }
+      ]
+    },
+    {
+      "id": "f4-12",
+      "la": "Mīlitēs fortēs gladiōs manibus tenent.",
+      "en": "The brave soldiers hold their swords in their hands.",
+      "words": 5,
+      "focus": "manibus",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "soldiers"
+        },
+        {
+          "w": "fortēs",
+          "m": "brave"
+        },
+        {
+          "w": "gladiōs",
+          "m": "their swords"
+        },
+        {
+          "w": "manibus",
+          "m": "with their hands"
+        },
+        {
+          "w": "tenent",
+          "m": "hold"
+        }
+      ]
+    },
+    {
+      "id": "f4-13",
+      "la": "Puer genua sua movēre nōn potest.",
+      "en": "The boy cannot move his knees.",
+      "words": 6,
+      "focus": "genua",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "boy"
+        },
+        {
+          "w": "genua",
+          "m": "his knees"
+        },
+        {
+          "w": "sua",
+          "m": "his own"
+        },
+        {
+          "w": "movēre",
+          "m": "to move"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "potest",
+          "m": "can"
+        }
+      ]
+    },
+    {
+      "id": "f4-14",
+      "la": "Amīcus servī venit, sed dux exercitūs abest.",
+      "en": "The slave's friend comes, but the army's leader is away.",
+      "words": 7,
+      "focus": "exercitūs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Amīcus",
+          "m": "friend"
+        },
+        {
+          "w": "servī",
+          "m": "of the slave"
+        },
+        {
+          "w": "venit",
+          "m": "comes"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "dux",
+          "m": "leader"
+        },
+        {
+          "w": "exercitūs",
+          "m": "of the army"
+        },
+        {
+          "w": "abest",
+          "m": "is away"
+        }
+      ]
+    },
+    {
+      "id": "f4-15",
+      "la": "Exercitus magnus est, sed corpus mīlitis aegrum.",
+      "en": "The army is big, but the soldier's body is sick.",
+      "words": 7,
+      "focus": "Exercitus",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Exercitus",
+          "m": "army"
+        },
+        {
+          "w": "magnus",
+          "m": "big"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "corpus",
+          "m": "body"
+        },
+        {
+          "w": "mīlitis",
+          "m": "of the soldier"
+        },
+        {
+          "w": "aegrum",
+          "m": "sick"
+        }
+      ]
+    },
+    {
+      "id": "f4-16",
+      "la": "Manūs Aemiliae pulchrae et parvae sunt.",
+      "en": "Aemilia's hands are beautiful and small.",
+      "words": 6,
+      "focus": "Manūs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Manūs",
+          "m": "hands"
+        },
+        {
+          "w": "Aemiliae",
+          "m": "of Aemilia"
+        },
+        {
+          "w": "pulchrae",
+          "m": "beautiful"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "parvae",
+          "m": "small"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "f4-17",
+      "la": "Puer genū suum tangit et plōrat.",
+      "en": "The boy touches his knee and cries.",
+      "words": 6,
+      "focus": "genū",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "boy"
+        },
+        {
+          "w": "genū",
+          "m": "his knee"
+        },
+        {
+          "w": "suum",
+          "m": "his own"
+        },
+        {
+          "w": "tangit",
+          "m": "touches"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "plōrat",
+          "m": "cries"
+        }
+      ]
+    }
+  ]
+}

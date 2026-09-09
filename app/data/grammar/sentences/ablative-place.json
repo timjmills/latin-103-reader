@@ -1,0 +1,568 @@
+{
+ "skill": "ablative-place",
+ "chapter": 5,
+ "sentences": [
+  {
+   "id": "abp-01",
+   "la": "Iūlius in vīllā magnā habitat.",
+   "en": "Julius lives in a big country house.",
+   "words": 5,
+   "focus": "vīllā",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vīllā",
+     "m": "the country house"
+    },
+    {
+     "w": "magnā",
+     "m": "big"
+    },
+    {
+     "w": "habitat",
+     "m": "lives"
+    }
+   ]
+  },
+  {
+   "id": "abp-02",
+   "la": "Puella in hortō rosās carpit.",
+   "en": "The girl is picking roses in the garden.",
+   "words": 5,
+   "focus": "hortō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puella",
+     "m": "the girl"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "rosās",
+     "m": "roses (object)"
+    },
+    {
+     "w": "carpit",
+     "m": "picks"
+    }
+   ]
+  },
+  {
+   "id": "abp-03",
+   "la": "Sacculus Iūliī in mēnsā est.",
+   "en": "Julius's purse is on the table.",
+   "words": 5,
+   "focus": "mēnsā",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Sacculus",
+     "m": "the purse"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "in",
+     "m": "on"
+    },
+    {
+     "w": "mēnsā",
+     "m": "the table"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abp-04",
+   "la": "Rosae in aquā sunt, nōn in hortō.",
+   "en": "The roses are in the water, not in the garden.",
+   "words": 7,
+   "focus": "aquā",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Rosae",
+     "m": "the roses"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "aquā",
+     "m": "the water"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    }
+   ]
+  },
+  {
+   "id": "abp-05",
+   "la": "Mārcus in cubiculō suō dormit.",
+   "en": "Marcus is sleeping in his own bedroom.",
+   "words": 5,
+   "focus": "cubiculō",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "cubiculō",
+     "m": "the bedroom"
+    },
+    {
+     "w": "suō",
+     "m": "his own"
+    },
+    {
+     "w": "dormit",
+     "m": "is sleeping"
+    }
+   ]
+  },
+  {
+   "id": "abp-06",
+   "la": "Multī servī in hortō Iūliī sunt.",
+   "en": "There are many slaves in Julius's garden.",
+   "words": 6,
+   "focus": "hortō",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Multī",
+     "m": "many"
+    },
+    {
+     "w": "servī",
+     "m": "slaves"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "abp-07",
+   "la": "Ancillae in cubiculīs parvīs dormiunt.",
+   "en": "The slave girls sleep in small bedrooms.",
+   "words": 5,
+   "focus": "cubiculīs",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Ancillae",
+     "m": "the slave girls"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "cubiculīs",
+     "m": "the bedrooms"
+    },
+    {
+     "w": "parvīs",
+     "m": "small"
+    },
+    {
+     "w": "dormiunt",
+     "m": "are sleeping"
+    }
+   ]
+  },
+  {
+   "id": "abp-08",
+   "la": "In vīllīs Rōmānīs multī servī habitant.",
+   "en": "Many slaves live in Roman country houses.",
+   "words": 6,
+   "focus": "vīllīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "In",
+     "m": "in"
+    },
+    {
+     "w": "vīllīs",
+     "m": "the country houses"
+    },
+    {
+     "w": "Rōmānīs",
+     "m": "Roman"
+    },
+    {
+     "w": "multī",
+     "m": "many"
+    },
+    {
+     "w": "servī",
+     "m": "slaves"
+    },
+    {
+     "w": "habitant",
+     "m": "live"
+    }
+   ]
+  },
+  {
+   "id": "abp-09",
+   "la": "Iūlius cum Aemiliā in peristylō est.",
+   "en": "Julius is in the peristyle with Aemilia.",
+   "words": 6,
+   "focus": "peristylō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Aemiliā",
+     "m": "Aemilia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "peristylō",
+     "m": "the peristyle"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abp-10",
+   "la": "Syra cum Iūliā in ātriō cantat.",
+   "en": "Syra is singing in the atrium with Julia.",
+   "words": 6,
+   "focus": "ātriō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Iūliā",
+     "m": "Julia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "cantat",
+     "m": "is singing"
+    }
+   ]
+  },
+  {
+   "id": "abp-11",
+   "la": "In impluviō aqua est, in hortō rosae.",
+   "en": "In the water basin there is water, in the garden roses.",
+   "words": 7,
+   "focus": "impluviō",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "In",
+     "m": "in"
+    },
+    {
+     "w": "impluviō",
+     "m": "the water basin"
+    },
+    {
+     "w": "aqua",
+     "m": "water"
+    },
+    {
+     "w": "est",
+     "m": "there is"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "rosae",
+     "m": "roses"
+    }
+   ]
+  },
+  {
+   "id": "abp-12",
+   "la": "In hortō Iūliī sunt līlia pulchra.",
+   "en": "In Julius's garden there are beautiful lilies.",
+   "words": 6,
+   "focus": "hortō",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "In",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "sunt",
+     "m": "there are"
+    },
+    {
+     "w": "līlia",
+     "m": "lilies"
+    },
+    {
+     "w": "pulchra",
+     "m": "beautiful"
+    }
+   ]
+  },
+  {
+   "id": "abp-13",
+   "la": "Fenestra in cubiculō parvō nōn est.",
+   "en": "There is no window in the small bedroom.",
+   "words": 6,
+   "focus": "cubiculō",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Fenestra",
+     "m": "a window"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "cubiculō",
+     "m": "the bedroom"
+    },
+    {
+     "w": "parvō",
+     "m": "small"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abp-14",
+   "la": "In oppidō sunt multae vīllae pulchrae.",
+   "en": "In the town there are many beautiful houses.",
+   "words": 6,
+   "focus": "oppidō",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "In",
+     "m": "in"
+    },
+    {
+     "w": "oppidō",
+     "m": "the town"
+    },
+    {
+     "w": "sunt",
+     "m": "there are"
+    },
+    {
+     "w": "multae",
+     "m": "many"
+    },
+    {
+     "w": "vīllae",
+     "m": "houses"
+    },
+    {
+     "w": "pulchrae",
+     "m": "beautiful"
+    }
+   ]
+  }
+ ]
+}

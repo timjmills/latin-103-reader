@@ -1,0 +1,485 @@
+{
+ "skill": "potential-subjunctive",
+ "chapter": 27,
+ "sentences": [
+  {
+   "id": "ps-01",
+   "la": "Ego tē iuvāre possim, sed tempus nōn habeō.",
+   "en": "I could help you, but I have no time.",
+   "words": 8,
+   "focus": "possim",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "tē",
+     "m": "you"
+    },
+    {
+     "w": "iuvāre",
+     "m": "to help"
+    },
+    {
+     "w": "possim",
+     "m": "I could"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "tempus",
+     "m": "time"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "habeō",
+     "m": "I have"
+    }
+   ]
+  },
+  {
+   "id": "ps-02",
+   "la": "Tū quoque hoc facere possīs, Mārce.",
+   "en": "You too could do this, Marcus.",
+   "words": 6,
+   "focus": "possīs",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you"
+    },
+    {
+     "w": "quoque",
+     "m": "also"
+    },
+    {
+     "w": "hoc",
+     "m": "this"
+    },
+    {
+     "w": "facere",
+     "m": "to do"
+    },
+    {
+     "w": "possīs",
+     "m": "you could"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus"
+    }
+   ]
+  },
+  {
+   "id": "ps-04",
+   "la": "Nōlim sine amīcīs meīs Rōmam īre.",
+   "en": "I would rather not go to Rome without my friends.",
+   "words": 6,
+   "focus": "Nōlim",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nōlim",
+     "m": "I would not like"
+    },
+    {
+     "w": "sine",
+     "m": "without"
+    },
+    {
+     "w": "amīcīs",
+     "m": "friends"
+    },
+    {
+     "w": "meīs",
+     "m": "my"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "īre",
+     "m": "to go"
+    }
+   ]
+  },
+  {
+   "id": "ps-03",
+   "la": "Velim tēcum ad forum ambulāre.",
+   "en": "I would like to walk to the forum with you.",
+   "words": 5,
+   "focus": "Velim",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Velim",
+     "m": "I would like"
+    },
+    {
+     "w": "tēcum",
+     "m": "with you"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "forum",
+     "m": "the square"
+    },
+    {
+     "w": "ambulāre",
+     "m": "to walk"
+    }
+   ]
+  },
+  {
+   "id": "ps-05",
+   "la": "Fortasse aliquis hoc vērum esse putet.",
+   "en": "Perhaps somebody might think this is true.",
+   "words": 6,
+   "focus": "putet",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Fortasse",
+     "m": "perhaps"
+    },
+    {
+     "w": "aliquis",
+     "m": "somebody"
+    },
+    {
+     "w": "hoc",
+     "m": "this"
+    },
+    {
+     "w": "vērum",
+     "m": "true"
+    },
+    {
+     "w": "esse",
+     "m": "to be"
+    },
+    {
+     "w": "putet",
+     "m": "might think"
+    }
+   ]
+  },
+  {
+   "id": "ps-06",
+   "la": "Aliquis dīcat Mēdum servum improbum esse.",
+   "en": "Somebody might say that Medus is a bad slave.",
+   "words": 6,
+   "focus": "dīcat",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aliquis",
+     "m": "somebody"
+    },
+    {
+     "w": "dīcat",
+     "m": "might say"
+    },
+    {
+     "w": "Mēdum",
+     "m": "Medus"
+    },
+    {
+     "w": "servum",
+     "m": "a slave"
+    },
+    {
+     "w": "improbum",
+     "m": "bad"
+    },
+    {
+     "w": "esse",
+     "m": "to be"
+    }
+   ]
+  },
+  {
+   "id": "ps-07",
+   "la": "Nōn facile hoc crēdās, amīce.",
+   "en": "You would not easily believe this, friend.",
+   "words": 5,
+   "focus": "crēdās",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōn",
+     "m": "not"
+    },
+    {
+     "w": "facile",
+     "m": "easily"
+    },
+    {
+     "w": "hoc",
+     "m": "this"
+    },
+    {
+     "w": "crēdās",
+     "m": "you would believe"
+    },
+    {
+     "w": "amīce",
+     "m": "friend"
+    }
+   ],
+   "note": "The negative is nōn: nē crēdās would forbid you to believe, nōn crēdās only doubts. One word apart, and that word is the whole difference between a command and a possibility."
+  },
+  {
+   "id": "ps-08",
+   "la": "Iūlius servō suō nōn crēdat.",
+   "en": "Julius would not believe his own slave.",
+   "words": 5,
+   "focus": "crēdat",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servō",
+     "m": "slave"
+    },
+    {
+     "w": "suō",
+     "m": "his own"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "crēdat",
+     "m": "would believe"
+    }
+   ]
+  },
+  {
+   "id": "ps-09",
+   "la": "Tū fortasse haec verba vēra putēs.",
+   "en": "You might think these words true.",
+   "words": 6,
+   "focus": "putēs",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you"
+    },
+    {
+     "w": "fortasse",
+     "m": "perhaps"
+    },
+    {
+     "w": "haec",
+     "m": "these"
+    },
+    {
+     "w": "verba",
+     "m": "words"
+    },
+    {
+     "w": "vēra",
+     "m": "true"
+    },
+    {
+     "w": "putēs",
+     "m": "you might think"
+    }
+   ]
+  },
+  {
+   "id": "ps-10",
+   "la": "Sine pecūniā nēmō hunc equum emere velit.",
+   "en": "Without money nobody would want to buy this horse.",
+   "words": 7,
+   "focus": "velit",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sine",
+     "m": "without"
+    },
+    {
+     "w": "pecūniā",
+     "m": "money"
+    },
+    {
+     "w": "nēmō",
+     "m": "nobody"
+    },
+    {
+     "w": "hunc",
+     "m": "this"
+    },
+    {
+     "w": "equum",
+     "m": "horse"
+    },
+    {
+     "w": "emere",
+     "m": "to buy"
+    },
+    {
+     "w": "velit",
+     "m": "would want"
+    }
+   ]
+  },
+  {
+   "id": "ps-11",
+   "la": "Quis haec verba vēra esse crēdat?",
+   "en": "Who would believe that these words are true?",
+   "words": 6,
+   "focus": "crēdat",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quis",
+     "m": "who"
+    },
+    {
+     "w": "haec",
+     "m": "these"
+    },
+    {
+     "w": "verba",
+     "m": "words"
+    },
+    {
+     "w": "vēra",
+     "m": "true"
+    },
+    {
+     "w": "esse",
+     "m": "to be"
+    },
+    {
+     "w": "crēdat",
+     "m": "would believe"
+    }
+   ]
+  },
+  {
+   "id": "ps-12",
+   "la": "Nūllus servus hunc saccum gravem ferre possit.",
+   "en": "No slave could carry this heavy sack.",
+   "words": 7,
+   "focus": "possit",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nūllus",
+     "m": "no"
+    },
+    {
+     "w": "servus",
+     "m": "slave"
+    },
+    {
+     "w": "hunc",
+     "m": "this"
+    },
+    {
+     "w": "saccum",
+     "m": "sack"
+    },
+    {
+     "w": "gravem",
+     "m": "heavy"
+    },
+    {
+     "w": "ferre",
+     "m": "to carry"
+    },
+    {
+     "w": "possit",
+     "m": "could"
+    }
+   ],
+   "note": "possit beside potest: potest says 'he is able', possit only 'he could'. The indicative (the plain fact form) states it; the subjunctive holds it out as a possibility."
+  }
+ ]
+}

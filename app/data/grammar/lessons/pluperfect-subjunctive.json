@@ -1,5 +1,111 @@
 {
   "skill": "pluperfect-subjunctive",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "For something already over before the past thing you are telling about, Latin has **the pluperfect subjunctive (the 'had / would have' form: cum vēnisset = when he had come)**. It is a subjunctive, so it appears after *cum*, after a question word, after *sī*, after *utinam* — never alone as a plain statement. In pfs-01 the dining is finished before the sleeping begins, and *cēnāvissent* says so.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfs-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pfs-02",
+        "ask": "Tap the verb that names what had already happened before Aemilia was glad."
+      }
+    },
+    {
+      "n": 2,
+      "title": "Building the singular: -issem, -issēs, -isset",
+      "say": "Take the perfect infinitive (the 'to have done' form) — *scrīpsisse* — and hang the personal endings on it: *scrīpsisse-m*, *scrīpsissē-s*, *scrīpsisse-t*. The third person singular ends in **-isset**, and that is the form you meet most, so that is the cell opened here. Every verb does it this way, however odd its perfect: *fuisset*, *potuisset*, *voluisset*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "scrībō",
+        "reveal": [
+          "plupf.subj.act.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "scrībō",
+        "cells": [
+          "plupf.subj.act.3.sg"
+        ],
+        "ask": "Write the pluperfect subjunctive, third person singular."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The plural: -issēmus, -issētis, -issent",
+      "say": "The plural adds the person endings you already know: **-issēmus** (we), **-issētis** (you all), **-issent** (they). Nothing new but those endings — the *-isse-* in the middle never moves and never changes. The cell opened here is 'you all', **-issētis**.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "scrībō",
+        "reveal": [
+          "plupf.subj.act.2.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "scrībō",
+        "cells": [
+          "plupf.subj.act.2.pl"
+        ],
+        "ask": "Write the pluperfect subjunctive, second person plural."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The passive is two words",
+      "say": "In the passive the form splits: the perfect participle (a verb used like an adjective — *scrīptus*, written) plus *essem, essēs, esset*. The participle agrees with its subject, so its ending follows the noun: *epistula scrīpta esset*, but *Mārcus laudātus esset*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "scrībō",
+        "reveal": [
+          "plupf.subj.pass.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pfs-08",
+        "ask": "scrīpta esset — which tense, mood and voice is it?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the imperfect subjunctive",
+      "say": "Both follow a past main verb and are easily swapped. The imperfect subjunctive (the past-time 'might / would' form: *venīret*) is built on the plain infinitive and means 'while it was going on'; the pluperfect is built on the perfect infinitive and means 'after it was over'. The test is quick: look for **-isse-** inside the word.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfs-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pfs-11",
+        "ask": "audīvisset — which tense is it, and which letters in the middle told you?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "After *cum* it puts a story in order: first this had happened, then that. *Cum* can also mean 'since' — the same subjunctive, giving the reason instead of the order of events: *cum Mārcus laudātus esset, laetus erat*. After *sī* it makes an unreal past — *sī tacuissēs, magister tē laudāvisset*, and neither half happened. After *utinam* it is a regret.",
+      "show": {
+        "kind": "sentence",
+        "id": "pfs-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pfs-13",
+        "ask": "Fill the blank with the pluperfect subjunctive of inveniō, third person singular."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

@@ -1,0 +1,572 @@
+{
+  "skill": "ablative-comparison",
+  "chapter": 24,
+  "sentences": [
+    {
+      "id": "ac-01",
+      "la": "Mārcus Quīntō māior et fortior est.",
+      "en": "Marcus is bigger and braver than Quintus.",
+      "words": 6,
+      "focus": "Quīntō",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "Quīntō",
+          "m": "than Quintus"
+        },
+        {
+          "w": "māior",
+          "m": "bigger"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "fortior",
+          "m": "braver"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-02",
+      "la": "Sōl lūnā māior et clārior est.",
+      "en": "The sun is bigger and brighter than the moon.",
+      "words": 6,
+      "focus": "lūnā",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Sōl",
+          "m": "the sun"
+        },
+        {
+          "w": "lūnā",
+          "m": "than the moon"
+        },
+        {
+          "w": "māior",
+          "m": "bigger"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "clārior",
+          "m": "brighter"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-03",
+      "la": "Hic mōns illō altior est.",
+      "en": "This mountain is higher than that one.",
+      "words": 5,
+      "focus": "illō",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "mōns",
+          "m": "mountain"
+        },
+        {
+          "w": "illō",
+          "m": "than that one"
+        },
+        {
+          "w": "altior",
+          "m": "higher"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-04",
+      "la": "Canis lupō minor sed fortior est.",
+      "en": "The dog is smaller than a wolf but braver.",
+      "words": 6,
+      "focus": "lupō",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Canis",
+          "m": "the dog"
+        },
+        {
+          "w": "lupō",
+          "m": "than a wolf"
+        },
+        {
+          "w": "minor",
+          "m": "smaller"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "fortior",
+          "m": "braver"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-05",
+      "la": "Nihil aquā frīgidā pūrius est.",
+      "en": "Nothing is purer than cold water.",
+      "words": 5,
+      "focus": "aquā",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nihil",
+          "m": "nothing"
+        },
+        {
+          "w": "aquā",
+          "m": "than water"
+        },
+        {
+          "w": "frīgidā",
+          "m": "cold"
+        },
+        {
+          "w": "pūrius",
+          "m": "purer"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-06",
+      "la": "Frāter meus mē prūdentior est.",
+      "en": "My brother is wiser than I am.",
+      "words": 5,
+      "focus": "mē",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Frāter",
+          "m": "brother"
+        },
+        {
+          "w": "meus",
+          "m": "my"
+        },
+        {
+          "w": "mē",
+          "m": "than I"
+        },
+        {
+          "w": "prūdentior",
+          "m": "wiser"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-07",
+      "la": "Nihil hōc pēius esse potest.",
+      "en": "Nothing can be worse than this.",
+      "words": 5,
+      "focus": "hōc",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nihil",
+          "m": "nothing"
+        },
+        {
+          "w": "hōc",
+          "m": "than this"
+        },
+        {
+          "w": "pēius",
+          "m": "worse"
+        },
+        {
+          "w": "esse",
+          "m": "be"
+        },
+        {
+          "w": "potest",
+          "m": "can"
+        }
+      ]
+    },
+    {
+      "id": "ac-08",
+      "la": "Quis mē miserior esse potest?",
+      "en": "Who can be unhappier than I am?",
+      "words": 5,
+      "focus": "mē",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quis",
+          "m": "who"
+        },
+        {
+          "w": "mē",
+          "m": "than I"
+        },
+        {
+          "w": "miserior",
+          "m": "unhappier"
+        },
+        {
+          "w": "esse",
+          "m": "be"
+        },
+        {
+          "w": "potest",
+          "m": "can"
+        }
+      ]
+    },
+    {
+      "id": "ac-09",
+      "la": "Iūlius multō māior est frātre suō.",
+      "en": "Julius is much bigger than his own brother.",
+      "words": 6,
+      "focus": "frātre",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "multō",
+          "m": "by much"
+        },
+        {
+          "w": "māior",
+          "m": "bigger"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "frātre",
+          "m": "than his brother"
+        },
+        {
+          "w": "suō",
+          "m": "his own"
+        }
+      ]
+    },
+    {
+      "id": "ac-10",
+      "la": "Mārcus paulō altior est Quīntō.",
+      "en": "Marcus is a little taller than Quintus.",
+      "words": 5,
+      "focus": "Quīntō",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "paulō",
+          "m": "by a little"
+        },
+        {
+          "w": "altior",
+          "m": "taller"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "Quīntō",
+          "m": "than Quintus"
+        }
+      ]
+    },
+    {
+      "id": "ac-11",
+      "la": "Mīlitēs Rōmānī hostibus fortiōrēs erant.",
+      "en": "The Roman soldiers were braver than the enemy.",
+      "words": 5,
+      "focus": "hostibus",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "the soldiers"
+        },
+        {
+          "w": "Rōmānī",
+          "m": "Roman"
+        },
+        {
+          "w": "hostibus",
+          "m": "than the enemy"
+        },
+        {
+          "w": "fortiōrēs",
+          "m": "braver"
+        },
+        {
+          "w": "erant",
+          "m": "were"
+        }
+      ]
+    },
+    {
+      "id": "ac-12",
+      "la": "Hiems aestāte semper frīgidior est.",
+      "en": "Winter is always colder than summer.",
+      "words": 5,
+      "focus": "aestāte",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hiems",
+          "m": "winter"
+        },
+        {
+          "w": "aestāte",
+          "m": "than summer"
+        },
+        {
+          "w": "semper",
+          "m": "always"
+        },
+        {
+          "w": "frīgidior",
+          "m": "colder"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-13",
+      "la": "Puella rosā pulchrior in hortō sedet.",
+      "en": "A girl lovelier than a rose sits in the garden.",
+      "words": 6,
+      "focus": "rosā",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "a girl"
+        },
+        {
+          "w": "rosā",
+          "m": "than a rose"
+        },
+        {
+          "w": "pulchrior",
+          "m": "lovelier"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "sedet",
+          "m": "sits"
+        }
+      ]
+    },
+    {
+      "id": "ac-14",
+      "la": "Mare fluviō lātius et altius est.",
+      "en": "The sea is broader and deeper than a river.",
+      "words": 6,
+      "focus": "fluviō",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mare",
+          "m": "the sea"
+        },
+        {
+          "w": "fluviō",
+          "m": "than a river"
+        },
+        {
+          "w": "lātius",
+          "m": "broader"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "altius",
+          "m": "deeper"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ac-15",
+      "la": "Nox in silvā diē obscūrior est.",
+      "en": "Night in the wood is darker than day.",
+      "words": 6,
+      "focus": "diē",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nox",
+          "m": "night"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "silvā",
+          "m": "the wood"
+        },
+        {
+          "w": "diē",
+          "m": "than day"
+        },
+        {
+          "w": "obscūrior",
+          "m": "darker"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    }
+  ]
+}

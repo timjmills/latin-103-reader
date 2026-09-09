@@ -1,0 +1,574 @@
+{
+ "skill": "ablative-origin",
+ "chapter": 5,
+ "sentences": [
+  {
+   "id": "abo-01",
+   "la": "Mēdus ex vīllā Iūliī discēdit.",
+   "en": "Medus goes away out of Julius's house.",
+   "words": 5,
+   "focus": "vīllā",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "discēdit",
+     "m": "goes away"
+    }
+   ]
+  },
+  {
+   "id": "abo-02",
+   "la": "Puerī ex hortō cum Syrā veniunt.",
+   "en": "The boys come out of the garden with Syra.",
+   "words": 6,
+   "focus": "hortō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Syrā",
+     "m": "Syra"
+    },
+    {
+     "w": "veniunt",
+     "m": "come"
+    }
+   ]
+  },
+  {
+   "id": "abo-03",
+   "la": "Ancilla ex ātriō discēdit et tacet.",
+   "en": "The slave girl goes out of the atrium and says nothing.",
+   "words": 6,
+   "focus": "ātriō",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ancilla",
+     "m": "the slave girl"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "discēdit",
+     "m": "goes away"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "tacet",
+     "m": "is silent"
+    }
+   ]
+  },
+  {
+   "id": "abo-04",
+   "la": "Aqua ex impluviō nōn venit.",
+   "en": "No water comes out of the basin.",
+   "words": 5,
+   "focus": "impluviō",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aqua",
+     "m": "water"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "impluviō",
+     "m": "the basin"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "abo-05",
+   "la": "Syra ab Aemiliā discēdit et Iūliam vocat.",
+   "en": "Syra goes away from Aemilia and calls Julia.",
+   "words": 7,
+   "focus": "Aemiliā",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "ab",
+     "m": "away from"
+    },
+    {
+     "w": "Aemiliā",
+     "m": "Aemilia"
+    },
+    {
+     "w": "discēdit",
+     "m": "goes away"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Iūliam",
+     "m": "Julia (object)"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    }
+   ]
+  },
+  {
+   "id": "abo-06",
+   "la": "Ab ōstiō vīllae servus improbus discēdit.",
+   "en": "The bad slave goes away from the door of the house.",
+   "words": 6,
+   "focus": "ōstiō",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ab",
+     "m": "away from"
+    },
+    {
+     "w": "ōstiō",
+     "m": "the doorway"
+    },
+    {
+     "w": "vīllae",
+     "m": "of the house"
+    },
+    {
+     "w": "servus",
+     "m": "the slave"
+    },
+    {
+     "w": "improbus",
+     "m": "bad"
+    },
+    {
+     "w": "discēdit",
+     "m": "goes away"
+    }
+   ]
+  },
+  {
+   "id": "abo-07",
+   "la": "Aemilia dē fīliō suō Syram interrogat.",
+   "en": "Aemilia asks Syra about her son.",
+   "words": 6,
+   "focus": "fīliō",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "dē",
+     "m": "about"
+    },
+    {
+     "w": "fīliō",
+     "m": "son"
+    },
+    {
+     "w": "suō",
+     "m": "her own"
+    },
+    {
+     "w": "Syram",
+     "m": "Syra (object)"
+    },
+    {
+     "w": "interrogat",
+     "m": "asks"
+    }
+   ]
+  },
+  {
+   "id": "abo-08",
+   "la": "Iūlia dē rosīs pulchrīs cantat.",
+   "en": "Julia sings about beautiful roses.",
+   "words": 5,
+   "focus": "rosīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "dē",
+     "m": "about"
+    },
+    {
+     "w": "rosīs",
+     "m": "roses"
+    },
+    {
+     "w": "pulchrīs",
+     "m": "beautiful"
+    },
+    {
+     "w": "cantat",
+     "m": "sings"
+    }
+   ]
+  },
+  {
+   "id": "abo-09",
+   "la": "Mārcus in hortō est; Quīntus ex ātriō venit.",
+   "en": "Marcus is in the garden; Quintus is coming out of the atrium.",
+   "words": 8,
+   "focus": "ātriō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "abo-10",
+   "la": "Servī ex vīllā, nōn ex hortō, veniunt.",
+   "en": "The slaves come out of the house, not out of the garden.",
+   "words": 7,
+   "focus": "vīllā",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "veniunt",
+     "m": "come"
+    }
+   ]
+  },
+  {
+   "id": "abo-11",
+   "la": "Ancillae ex cubiculīs suīs iam discēdunt.",
+   "en": "The slave girls are now going out of their bedrooms.",
+   "words": 6,
+   "focus": "cubiculīs",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ancillae",
+     "m": "the slave girls"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "cubiculīs",
+     "m": "the bedrooms"
+    },
+    {
+     "w": "suīs",
+     "m": "their own"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "discēdunt",
+     "m": "go away"
+    }
+   ]
+  },
+  {
+   "id": "abo-12",
+   "la": "Iūlia sine mātre suā in hortō plōrat.",
+   "en": "Julia is crying in the garden without her mother.",
+   "words": 7,
+   "focus": "mātre",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "sine",
+     "m": "without"
+    },
+    {
+     "w": "mātre",
+     "m": "mother"
+    },
+    {
+     "w": "suā",
+     "m": "her own"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "plōrat",
+     "m": "is crying"
+    }
+   ]
+  },
+  {
+   "id": "abo-13",
+   "la": "Mēdus nummōs ex sacculō Iūliī sūmit.",
+   "en": "Medus takes coins out of Julius's purse.",
+   "words": 6,
+   "focus": "sacculō",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "nummōs",
+     "m": "coins (object)"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "sacculō",
+     "m": "the purse"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "sūmit",
+     "m": "takes"
+    }
+   ]
+  },
+  {
+   "id": "abo-14",
+   "la": "Ex peristylō Iūlius cum Aemiliā discēdit.",
+   "en": "Julius goes out of the peristyle with Aemilia.",
+   "words": 6,
+   "focus": "peristylō",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ex",
+     "m": "out of"
+    },
+    {
+     "w": "peristylō",
+     "m": "the peristyle"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Aemiliā",
+     "m": "Aemilia"
+    },
+    {
+     "w": "discēdit",
+     "m": "goes away"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,521 @@
+{
+  "skill": "gerundive",
+  "chapter": 31,
+  "sentences": [
+    {
+      "id": "ger-01",
+      "la": "Iūlius librum legendum Mārcō dat.",
+      "en": "Julius gives Marcus a book to be read.",
+      "words": 5,
+      "focus": "legendum",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "librum",
+          "m": "a book"
+        },
+        {
+          "w": "legendum",
+          "m": "to be read"
+        },
+        {
+          "w": "Mārcō",
+          "m": "to Marcus"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "ger-02",
+      "la": "Aemilia aquam bibendam puerō dat.",
+      "en": "Aemilia gives the boy water to be drunk.",
+      "words": 5,
+      "focus": "bibendam",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "aquam",
+          "m": "water"
+        },
+        {
+          "w": "bibendam",
+          "m": "to be drunk"
+        },
+        {
+          "w": "puerō",
+          "m": "to the boy"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "ger-03",
+      "la": "Cibus edendus in mēnsā iacet.",
+      "en": "The food to be eaten is lying on the table.",
+      "words": 5,
+      "focus": "edendus",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Cibus",
+          "m": "the food"
+        },
+        {
+          "w": "edendus",
+          "m": "to be eaten"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "mēnsā",
+          "m": "the table"
+        },
+        {
+          "w": "iacet",
+          "m": "lies"
+        }
+      ]
+    },
+    {
+      "id": "ger-04",
+      "la": "Servī ad agrōs colendōs exeunt.",
+      "en": "The slaves are going out to till the fields.",
+      "words": 5,
+      "focus": "colendōs",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servī",
+          "m": "the slaves"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "agrōs",
+          "m": "the fields"
+        },
+        {
+          "w": "colendōs",
+          "m": "to be tilled"
+        },
+        {
+          "w": "exeunt",
+          "m": "go out"
+        }
+      ]
+    },
+    {
+      "id": "ger-05",
+      "la": "Mārcus ad litterās scrībendās sedet.",
+      "en": "Marcus is sitting there to write letters.",
+      "words": 5,
+      "focus": "scrībendās",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "litterās",
+          "m": "letters"
+        },
+        {
+          "w": "scrībendās",
+          "m": "to be written"
+        },
+        {
+          "w": "sedet",
+          "m": "is sitting"
+        }
+      ]
+    },
+    {
+      "id": "ger-06",
+      "la": "Ad urbem videndam multī hominēs veniunt.",
+      "en": "Many people come to see the city.",
+      "words": 6,
+      "focus": "videndam",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ad",
+          "m": "for"
+        },
+        {
+          "w": "urbem",
+          "m": "the city"
+        },
+        {
+          "w": "videndam",
+          "m": "to be seen"
+        },
+        {
+          "w": "multī",
+          "m": "many"
+        },
+        {
+          "w": "hominēs",
+          "m": "people"
+        },
+        {
+          "w": "veniunt",
+          "m": "come"
+        }
+      ]
+    },
+    {
+      "id": "ger-07",
+      "la": "Ancillae ad vāsa lavanda veniunt.",
+      "en": "The maidservants come to wash the dishes.",
+      "words": 5,
+      "focus": "lavanda",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ancillae",
+          "m": "the maidservants"
+        },
+        {
+          "w": "ad",
+          "m": "for"
+        },
+        {
+          "w": "vāsa",
+          "m": "the dishes"
+        },
+        {
+          "w": "lavanda",
+          "m": "to be washed"
+        },
+        {
+          "w": "veniunt",
+          "m": "come"
+        }
+      ]
+    },
+    {
+      "id": "ger-08",
+      "la": "Mēdus Lȳdiae videndae causā Rōmam it.",
+      "en": "Medus goes to Rome for the sake of seeing Lydia.",
+      "words": 6,
+      "focus": "videndae",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "Lȳdiae",
+          "m": "of Lydia"
+        },
+        {
+          "w": "videndae",
+          "m": "to be seen"
+        },
+        {
+          "w": "causā",
+          "m": "for the sake of"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "it",
+          "m": "goes"
+        }
+      ]
+    },
+    {
+      "id": "ger-09",
+      "la": "Puella cantāns carmen cantandum discit.",
+      "en": "The girl, singing, is learning a song that is to be sung.",
+      "words": 5,
+      "focus": "cantandum",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "cantāns",
+          "m": "singing"
+        },
+        {
+          "w": "carmen",
+          "m": "a song"
+        },
+        {
+          "w": "cantandum",
+          "m": "to be sung"
+        },
+        {
+          "w": "discit",
+          "m": "is learning"
+        }
+      ],
+      "note": "cantāns, in -ns, is the present participle and means 'singing'; cantandum, in -nd-, is the gerundive and means 'to be sung'."
+    },
+    {
+      "id": "ger-10",
+      "la": "Servus fugitīvus poenam ferendam timet.",
+      "en": "The runaway slave is afraid of the punishment he must bear.",
+      "words": 5,
+      "focus": "ferendam",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "fugitīvus",
+          "m": "runaway"
+        },
+        {
+          "w": "poenam",
+          "m": "the punishment"
+        },
+        {
+          "w": "ferendam",
+          "m": "to be borne"
+        },
+        {
+          "w": "timet",
+          "m": "fears"
+        }
+      ]
+    },
+    {
+      "id": "ger-11",
+      "la": "Pater fīliō epistulam mittendam dat.",
+      "en": "The father gives his son a letter to be sent.",
+      "words": 5,
+      "focus": "mittendam",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pater",
+          "m": "the father"
+        },
+        {
+          "w": "fīliō",
+          "m": "to his son"
+        },
+        {
+          "w": "epistulam",
+          "m": "a letter"
+        },
+        {
+          "w": "mittendam",
+          "m": "to be sent"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "ger-12",
+      "la": "Iūlius servōs pūniendōs ad vīllam dūcit.",
+      "en": "Julius leads the slaves who must be punished to the house.",
+      "words": 6,
+      "focus": "pūniendōs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "servōs",
+          "m": "the slaves"
+        },
+        {
+          "w": "pūniendōs",
+          "m": "to be punished"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "vīllam",
+          "m": "the house"
+        },
+        {
+          "w": "dūcit",
+          "m": "leads"
+        }
+      ]
+    },
+    {
+      "id": "ger-13",
+      "la": "Magister multōs discipulōs docendōs habet.",
+      "en": "The teacher has many pupils to be taught.",
+      "words": 5,
+      "focus": "docendōs",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Magister",
+          "m": "the teacher"
+        },
+        {
+          "w": "multōs",
+          "m": "many"
+        },
+        {
+          "w": "discipulōs",
+          "m": "pupils"
+        },
+        {
+          "w": "docendōs",
+          "m": "to be taught"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        }
+      ]
+    },
+    {
+      "id": "ger-14",
+      "la": "Aqua bibenda in pōculō frīgida manet.",
+      "en": "The water to be drunk stays cold in the cup.",
+      "words": 6,
+      "focus": "bibenda",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Aqua",
+          "m": "the water"
+        },
+        {
+          "w": "bibenda",
+          "m": "to be drunk"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "pōculō",
+          "m": "the cup"
+        },
+        {
+          "w": "frīgida",
+          "m": "cold"
+        },
+        {
+          "w": "manet",
+          "m": "stays"
+        }
+      ]
+    }
+  ]
+}

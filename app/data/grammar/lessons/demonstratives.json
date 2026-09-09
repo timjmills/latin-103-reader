@@ -1,5 +1,124 @@
 {
   "skill": "demonstratives",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Words that point",
+      "say": "To say *this* one or *that* one, Latin uses **the pointing words hic ('this'), ille ('that'), is ('that / the one we mean')**, *prōnōmina dēmōnstrātīva*. *Hic* points at what is near or has just been said, *ille* at what is further off, *is* at the one already known: *hic ānulus* = this ring, *illa taberna* = that shop, *is servus* = that slave, the one we mean.",
+      "show": {
+        "kind": "sentence",
+        "id": "dem-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dem-03"
+      }
+    },
+    {
+      "n": 2,
+      "title": "It dresses like its noun",
+      "say": "A pointing word stands beside its noun and matches it in gender, number and case, exactly as an adjective does. In the nominative (the subject form) that gives *hic ānulus* (masculine), *haec gemma* (feminine), *hoc ōrnāmentum* (neuter) and, for more than one, *hī puerī*. Choose the form from the noun, never from the English.",
+      "show": {
+        "kind": "paradigm",
+        "key": "hic",
+        "reveal": [
+          "nom.sg.m",
+          "nom.sg.f",
+          "nom.sg.n",
+          "nom.pl.m"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "nom.sg.m",
+          "nom.sg.f",
+          "nom.sg.n",
+          "nom.pl.m"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "When the noun is the object",
+      "say": "If the noun is what the verb acts on, the pointing word goes into the accusative (the object form) with it: masculine **hunc**, feminine **hanc**, neuter **hoc** — *hunc ānulum emit*, *hanc margarītam aspicit*. The object forms change more than you expect, so learn *hunc* and *hanc* as words in their own right rather than trying to reach them from *hic* and *haec*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "hic",
+        "reveal": [
+          "acc.sg.m",
+          "acc.sg.f",
+          "acc.sg.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "acc.sg.m",
+          "acc.sg.f",
+          "acc.sg.n"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "The odd pair: huius and huic",
+      "say": "Two cells break the adjective pattern, and they are the same for all three genders. The genitive (the owner form) is **huius** — *pretium huius ānulī*, the price of this ring. The dative (the receiver form) is **huic** — *huic servō nummōs dat*, he gives this slave coins. One form each, learned as a pair.",
+      "show": {
+        "kind": "paradigm",
+        "key": "hic",
+        "reveal": [
+          "gen.sg.m",
+          "dat.sg.m"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "gen.sg.m",
+          "dat.sg.m"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "ille and is: the four cells to learn",
+      "say": "*Ille* and *is* take the same two odd cells: the genitive (the owner form) **illīus** and **eius**, the dative (the receiver form) **illī** and **eī**, one form each for every gender. Two more cells are not what you would guess either — the first form is *ille, illa, illud* and *is, ea, id*, never *illus* or *ius*, so a neuter thing is **illud** or **id** and never *illum* or *eum*. Everything else does follow an ordinary *-us -a -um* word: *illum*, *illō*, *eum*, *eō*, and *hōc* from *hic*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "ille",
+        "reveal": [
+          "nom.sg.m",
+          "gen.sg.m",
+          "dat.sg.m",
+          "acc.sg.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "is",
+        "cells": [
+          "nom.sg.m",
+          "gen.sg.m",
+          "dat.sg.m",
+          "acc.sg.n"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "title": "Pointing word, or linking word?",
+      "say": "English *that* does two jobs, and Latin keeps them apart. *That shop* points: *illa taberna*. *The shop that Lydia loves* links a clause to the noun: *taberna quam Lȳdia amat*. If you could say *which* or *who* instead, it is a form of *quī*; if you could say *this*, it is *hic* or *ille*. In *ille servus quī saccum portat* both are at work in one sentence.",
+      "show": {
+        "kind": "sentence",
+        "id": "dem-14"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dem-16"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

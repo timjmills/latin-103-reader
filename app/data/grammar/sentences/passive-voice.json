@@ -1,0 +1,638 @@
+{
+ "skill": "passive-voice",
+ "chapter": 6,
+ "sentences": [
+  {
+   "id": "pas-01",
+   "la": "Mārcus ā mātre suā vocātur.",
+   "en": "Marcus is called by his mother.",
+   "words": 5,
+   "focus": "vocātur",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "mātre",
+     "m": "mother"
+    },
+    {
+     "w": "suā",
+     "m": "his own"
+    },
+    {
+     "w": "vocātur",
+     "m": "is called"
+    }
+   ]
+  },
+  {
+   "id": "pas-02",
+   "la": "Servus improbus ā dominō verberātur.",
+   "en": "The bad slave is beaten by his master.",
+   "words": 5,
+   "focus": "verberātur",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "improbus",
+     "m": "bad"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "dominō",
+     "m": "the master"
+    },
+    {
+     "w": "verberātur",
+     "m": "is beaten"
+    }
+   ]
+  },
+  {
+   "id": "pas-03",
+   "la": "Aemilia ā fīliīs suīs salūtātur.",
+   "en": "Aemilia is greeted by her sons.",
+   "words": 5,
+   "focus": "salūtātur",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "fīliīs",
+     "m": "sons"
+    },
+    {
+     "w": "suīs",
+     "m": "her own"
+    },
+    {
+     "w": "salūtātur",
+     "m": "is greeted"
+    }
+   ]
+  },
+  {
+   "id": "pas-04",
+   "la": "Ōstium vīllae baculō Iūliī pulsātur.",
+   "en": "The door of the house is knocked on with Julius's stick.",
+   "words": 5,
+   "focus": "pulsātur",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Ōstium",
+     "m": "the door"
+    },
+    {
+     "w": "vīllae",
+     "m": "of the house"
+    },
+    {
+     "w": "baculō",
+     "m": "with the stick"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "pulsātur",
+     "m": "is knocked on"
+    }
+   ]
+  },
+  {
+   "id": "pas-05",
+   "la": "Puerī ā mātre suā vocantur.",
+   "en": "The boys are called by their mother.",
+   "words": 5,
+   "focus": "vocantur",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "mātre",
+     "m": "mother"
+    },
+    {
+     "w": "suā",
+     "m": "their own"
+    },
+    {
+     "w": "vocantur",
+     "m": "are called"
+    }
+   ]
+  },
+  {
+   "id": "pas-06",
+   "la": "Saccī ā servīs fessīs portantur.",
+   "en": "The sacks are carried by tired slaves.",
+   "words": 5,
+   "focus": "portantur",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Saccī",
+     "m": "the sacks"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "servīs",
+     "m": "slaves"
+    },
+    {
+     "w": "fessīs",
+     "m": "tired"
+    },
+    {
+     "w": "portantur",
+     "m": "are carried"
+    }
+   ]
+  },
+  {
+   "id": "pas-07",
+   "la": "Dāvus servum vocat; servus ā Dāvō vocātur.",
+   "en": "Davus calls the slave; the slave is called by Davus.",
+   "words": 7,
+   "focus": "vocātur",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "servum",
+     "m": "the slave (object)"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    },
+    {
+     "w": "servus",
+     "m": "the slave"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Dāvō",
+     "m": "Davus"
+    },
+    {
+     "w": "vocātur",
+     "m": "is called"
+    }
+   ]
+  },
+  {
+   "id": "pas-08",
+   "la": "Puellae rosās portant; rosae ā puellīs portantur.",
+   "en": "The girls carry roses; the roses are carried by the girls.",
+   "words": 7,
+   "focus": "portantur",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "rosās",
+     "m": "roses (object)"
+    },
+    {
+     "w": "portant",
+     "m": "carry"
+    },
+    {
+     "w": "rosae",
+     "m": "the roses"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "puellīs",
+     "m": "the girls"
+    },
+    {
+     "w": "portantur",
+     "m": "are carried"
+    }
+   ]
+  },
+  {
+   "id": "pas-09",
+   "la": "Iūlius ā servīs in lectīcā portātur.",
+   "en": "Julius is carried in a litter by slaves.",
+   "words": 6,
+   "focus": "portātur",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "servīs",
+     "m": "slaves"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "lectīcā",
+     "m": "a litter"
+    },
+    {
+     "w": "portātur",
+     "m": "is carried"
+    }
+   ]
+  },
+  {
+   "id": "pas-10",
+   "la": "Iūlia rosīs pulchrīs in hortō dēlectātur.",
+   "en": "Julia is delighted by beautiful roses in the garden.",
+   "words": 6,
+   "focus": "dēlectātur",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "rosīs",
+     "m": "by roses"
+    },
+    {
+     "w": "pulchrīs",
+     "m": "beautiful"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "dēlectātur",
+     "m": "is delighted"
+    }
+   ]
+  },
+  {
+   "id": "pas-11",
+   "la": "Sacculus Iūliī in mēnsā pōnitur.",
+   "en": "Julius's purse is put on the table.",
+   "words": 5,
+   "focus": "pōnitur",
+   "step": 6,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Sacculus",
+     "m": "the purse"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "in",
+     "m": "on"
+    },
+    {
+     "w": "mēnsā",
+     "m": "the table"
+    },
+    {
+     "w": "pōnitur",
+     "m": "is put"
+    }
+   ]
+  },
+  {
+   "id": "pas-12",
+   "la": "Nummī ex sacculō Iūliī sūmuntur.",
+   "en": "The coins are taken out of Julius's purse.",
+   "words": 5,
+   "focus": "sūmuntur",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Nummī",
+     "m": "the coins"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "sacculō",
+     "m": "the purse"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "sūmuntur",
+     "m": "are taken"
+    }
+   ]
+  },
+  {
+   "id": "pas-13",
+   "la": "Vīlla Iūliī ex oppidō vidētur.",
+   "en": "Julius's house is seen from the town.",
+   "words": 5,
+   "focus": "vidētur",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Vīlla",
+     "m": "the house"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "ex",
+     "m": "from"
+    },
+    {
+     "w": "oppidō",
+     "m": "the town"
+    },
+    {
+     "w": "vidētur",
+     "m": "is seen"
+    }
+   ]
+  },
+  {
+   "id": "pas-14",
+   "la": "Iūlia ā mātre suā in ātriō audītur.",
+   "en": "Julia is heard in the atrium by her mother.",
+   "words": 7,
+   "focus": "audītur",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "mātre",
+     "m": "mother"
+    },
+    {
+     "w": "suā",
+     "m": "her own"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "audītur",
+     "m": "is heard"
+    }
+   ]
+  },
+  {
+   "id": "pas-15",
+   "la": "Puerī ā Iūliō in hortō audiuntur.",
+   "en": "The boys are heard in the garden by Julius.",
+   "words": 6,
+   "focus": "audiuntur",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Iūliō",
+     "m": "Julius"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "audiuntur",
+     "m": "are heard"
+    }
+   ]
+  },
+  {
+   "id": "pas-16",
+   "la": "Rosae ā puellīs in hortō carpuntur.",
+   "en": "The roses are picked by the girls in the garden.",
+   "words": 6,
+   "focus": "carpuntur",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Rosae",
+     "m": "the roses"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "puellīs",
+     "m": "the girls"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "carpuntur",
+     "m": "are picked"
+    }
+   ]
+  }
+ ]
+}

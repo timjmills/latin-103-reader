@@ -1,0 +1,486 @@
+{
+ "skill": "pluperfect-subjunctive",
+ "chapter": 33,
+ "sentences": [
+  {
+   "id": "pfs-01",
+   "la": "Cum puerī cēnāvissent, statim dormīvērunt.",
+   "en": "When the boys had dined, they went to sleep at once.",
+   "words": 5,
+   "focus": "cēnāvissent",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "cēnāvissent",
+     "m": "they had dined"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "dormīvērunt",
+     "m": "they slept"
+    }
+   ]
+  },
+  {
+   "id": "pfs-02",
+   "la": "Cum Iūlius vēnisset, Aemilia gaudēbat.",
+   "en": "When Julius had come, Aemilia was glad.",
+   "words": 5,
+   "focus": "vēnisset",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "vēnisset",
+     "m": "he had come"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "gaudēbat",
+     "m": "she was glad"
+    }
+   ]
+  },
+  {
+   "id": "pfs-03",
+   "la": "Nesciēbam quis iānuam nostram clausisset.",
+   "en": "I did not know who had shut our door.",
+   "words": 5,
+   "focus": "clausisset",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "chart",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nesciēbam",
+     "m": "I did not know"
+    },
+    {
+     "w": "quis",
+     "m": "who"
+    },
+    {
+     "w": "iānuam",
+     "m": "the door"
+    },
+    {
+     "w": "nostram",
+     "m": "our"
+    },
+    {
+     "w": "clausisset",
+     "m": "he had shut"
+    }
+   ]
+  },
+  {
+   "id": "pfs-04",
+   "la": "Iūlius rogāvit quid Mārcus fēcisset.",
+   "en": "Julius asked what Marcus had done.",
+   "words": 5,
+   "focus": "fēcisset",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "rogāvit",
+     "m": "he asked"
+    },
+    {
+     "w": "quid",
+     "m": "what"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "fēcisset",
+     "m": "he had done"
+    }
+   ]
+  },
+  {
+   "id": "pfs-05",
+   "la": "Nesciēbam ubi tū tōtum diem fuissēs.",
+   "en": "I did not know where you had been all day.",
+   "words": 6,
+   "focus": "fuissēs",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nesciēbam",
+     "m": "I did not know"
+    },
+    {
+     "w": "ubi",
+     "m": "where"
+    },
+    {
+     "w": "tū",
+     "m": "you"
+    },
+    {
+     "w": "tōtum",
+     "m": "the whole"
+    },
+    {
+     "w": "diem",
+     "m": "day"
+    },
+    {
+     "w": "fuissēs",
+     "m": "you had been"
+    }
+   ]
+  },
+  {
+   "id": "pfs-06",
+   "la": "Cum multōs piscēs cēpissent, statim rediērunt.",
+   "en": "When they had caught many fish, they came back at once.",
+   "words": 6,
+   "focus": "cēpissent",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "multōs",
+     "m": "many"
+    },
+    {
+     "w": "piscēs",
+     "m": "fish"
+    },
+    {
+     "w": "cēpissent",
+     "m": "they had caught"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "rediērunt",
+     "m": "they came back"
+    }
+   ]
+  },
+  {
+   "id": "pfs-07",
+   "la": "Magister rogāvit num epistulam scrīpsissētis.",
+   "en": "The teacher asked whether you had written the letter.",
+   "words": 5,
+   "focus": "scrīpsissētis",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "chart",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "rogāvit",
+     "m": "he asked"
+    },
+    {
+     "w": "num",
+     "m": "whether"
+    },
+    {
+     "w": "epistulam",
+     "m": "the letter"
+    },
+    {
+     "w": "scrīpsissētis",
+     "m": "you (plural) had written"
+    }
+   ]
+  },
+  {
+   "id": "pfs-08",
+   "la": "Cum epistula scrīpta esset, Iūlius discessit.",
+   "en": "When the letter had been written, Julius went away.",
+   "words": 6,
+   "focus": "scrīpta esset",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "note": "The passive pluperfect subjunctive is two words, so the focus is two words: the participle and esset together are the one form.",
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "epistula",
+     "m": "the letter"
+    },
+    {
+     "w": "scrīpta",
+     "m": "written (agreeing with epistula)"
+    },
+    {
+     "w": "esset",
+     "m": "had been"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "discessit",
+     "m": "he went away"
+    }
+   ]
+  },
+  {
+   "id": "pfs-09",
+   "la": "Cum Mārcus laudātus esset, laetus erat.",
+   "en": "Since Marcus had been praised, he was happy.",
+   "words": 6,
+   "focus": "laudātus esset",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "note": "The passive pluperfect subjunctive is two words, so the focus is two words: laudātus and esset are the one form.",
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "since"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "laudātus",
+     "m": "praised (agreeing with Mārcus)"
+    },
+    {
+     "w": "esset",
+     "m": "had been"
+    },
+    {
+     "w": "laetus",
+     "m": "happy"
+    },
+    {
+     "w": "erat",
+     "m": "he was"
+    }
+   ]
+  },
+  {
+   "id": "pfs-10",
+   "la": "Cum Syra vēnisset, Iūlia iam dormiēbat.",
+   "en": "When Syra had come, Julia was already asleep.",
+   "words": 6,
+   "focus": "vēnisset",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "vēnisset",
+     "m": "she had come"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "iam",
+     "m": "already"
+    },
+    {
+     "w": "dormiēbat",
+     "m": "she was sleeping"
+    }
+   ]
+  },
+  {
+   "id": "pfs-11",
+   "la": "Nesciēbam quid Mēdus in oppidō audīvisset.",
+   "en": "I did not know what Medus had heard in the town.",
+   "words": 6,
+   "focus": "audīvisset",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nesciēbam",
+     "m": "I did not know"
+    },
+    {
+     "w": "quid",
+     "m": "what"
+    },
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "oppidō",
+     "m": "the town"
+    },
+    {
+     "w": "audīvisset",
+     "m": "he had heard"
+    }
+   ]
+  },
+  {
+   "id": "pfs-12",
+   "la": "Sī tacuissēs, magister tē laudāvisset.",
+   "en": "If you had kept quiet, the teacher would have praised you.",
+   "words": 5,
+   "focus": "tacuissēs",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "tacuissēs",
+     "m": "you had kept quiet"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "tē",
+     "m": "you"
+    },
+    {
+     "w": "laudāvisset",
+     "m": "he would have praised"
+    }
+   ]
+  },
+  {
+   "id": "pfs-13",
+   "la": "Utinam Mārcus librum suum invēnisset!",
+   "en": "If only Marcus had found his book!",
+   "words": 5,
+   "focus": "invēnisset",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Utinam",
+     "m": "if only"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "librum",
+     "m": "the book"
+    },
+    {
+     "w": "suum",
+     "m": "his own"
+    },
+    {
+     "w": "invēnisset",
+     "m": "he had found"
+    }
+   ]
+  }
+ ]
+}

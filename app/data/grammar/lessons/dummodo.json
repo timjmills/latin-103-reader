@@ -1,5 +1,91 @@
 {
   "skill": "dummodo",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "To name the one thing that must hold before the rest is allowed, Latin uses **dummodo + subjunctive (the 'provided that / as long as' condition)**. The verb after *dummodo* goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do), because the thing is not a fact but a requirement: *manē, dummodo taceās* — stay, provided you keep quiet.",
+      "show": {
+        "kind": "sentence",
+        "id": "dmd-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dmd-02",
+        "ask": "Tap the verb that names the condition being laid down."
+      }
+    },
+    {
+      "n": 2,
+      "title": "The tense: present after a present or future main verb",
+      "say": "The tense follows the main verb. Present or future in the main clause gives the present subjunctive after *dummodo*: *potest … scrībat*, *exspectābō … veniās*, *dabō … legās*. (A past main verb would give the imperfect, but almost every *dummodo* you meet is about now or about what is to come.)",
+      "show": {
+        "kind": "sentence",
+        "id": "dmd-03"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "dmd-04",
+        "ask": "veniās — which tense and mood is it?"
+      }
+    },
+    {
+      "n": 3,
+      "title": "The negative: dummodo nē",
+      "say": "To require that something *not* happen, Latin writes *nē*, never *nōn*: **dummodo nē**. The verb is unchanged; *nē* just slips in between. *Manēbō, dummodo nē pater īrātus sit* — I will stay, provided father is not angry.",
+      "show": {
+        "kind": "sentence",
+        "id": "dmd-06"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dmd-08",
+        "ask": "Tap the verb that nē has made negative."
+      }
+    },
+    {
+      "n": 4,
+      "title": "modo and dum do the same work",
+      "say": "*Dummodo* is really *dum* + *modo*, and either half can stand alone with the same meaning and the same subjunctive: *modo taceat* — provided he keeps quiet; *dum cibum accipiat* — as long as he gets food. A bare *modo* or *dum* with a subjunctive verb means 'provided that'.",
+      "show": {
+        "kind": "sentence",
+        "id": "dmd-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "dmd-10",
+        "ask": "accipiat — which mood is it?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Its two neighbours: dum + indicative, and sī",
+      "say": "*Dum* with the indicative (the plain statement form) is plain 'while': *dum bibit* is 'while he drinks', *dummodo bibat* is 'provided he drinks' — the verb form is the whole difference. And *sī* with the subjunctive imagines something untrue (*sī tacērēs* — if you were quiet, and you are not), while *dummodo* lays down a requirement that can perfectly well be met.",
+      "show": {
+        "kind": "sentence",
+        "id": "dmd-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "dmd-12",
+        "ask": "adsit — is it indicative or subjunctive?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Write the main clause first, in whatever mood it needs — a statement, an order, or a 'let him …' — then *dummodo* (or *dummodo nē*) and the requirement in the present subjunctive. That is the whole construction.",
+      "show": {
+        "kind": "sentence",
+        "id": "dmd-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dmd-14",
+        "ask": "Fill the blank with the present subjunctive of dīcō, second person singular."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

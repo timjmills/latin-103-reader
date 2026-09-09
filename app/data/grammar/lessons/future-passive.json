@@ -58,5 +58,131 @@
     "notes p71–72",
     "Ørberg cap. XX Grammatica Latina",
     "A&G §184"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the form does",
+      "say": "When what is going to happen is going to happen *to* the subject, Latin uses the future passive (the 'will be done' form): *puerī laudābuntur*, the boys will be praised. As in every passive the doer comes in behind *ā* or *ab* — *ā magistrō*, by the teacher — and the subject is the one it is done to.",
+      "show": {
+        "kind": "sentence",
+        "id": "fp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fp-02",
+        "ask": "Tap the verb that says the table will have something done to it."
+      }
+    },
+    {
+      "n": 2,
+      "title": "The third person: -bitur and -buntur",
+      "say": "Take the *-b-* future of the first and second conjugations (the conjugation is which of the four families a Latin verb belongs to) and put the passive endings on it. For he, she or it that is *-bitur*: *portābitur*, it will be carried. For they it is *-buntur*: *laudābuntur*, they will be praised. The doer, when it is named, still stands behind *ā*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "voco",
+        "reveal": [
+          "fut.ind.pass.3.sg",
+          "fut.ind.pass.3.pl"
+        ],
+        "say": "vocābitur, vocābuntur — the -b- future with a passive ending"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "amo",
+        "cells": [
+          "fut.ind.pass.3.sg",
+          "fut.ind.pass.3.pl"
+        ],
+        "ask": "Now the same two cells on amō: the future passive for 'he, she, it' and for 'they'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The other four persons: -bor, -beris, -bimur, -biminī",
+      "say": "The rest of the column runs *-bor* (I), *-beris* (you), *-bimur* (we), *-biminī* (you all). The one to watch is *-beris*, with an *e* where every other person has an *i*: *verberāberis*, you will be beaten, beside *verberābitur*, he will be beaten. Everything else in the word stays as it was.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "voco",
+        "reveal": [
+          "fut.ind.pass.1.sg",
+          "fut.ind.pass.2.sg",
+          "fut.ind.pass.1.pl",
+          "fut.ind.pass.2.pl"
+        ],
+        "say": "vocābor, vocāberis, vocābimur, vocābiminī"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "laudo",
+        "cells": [
+          "fut.ind.pass.1.sg",
+          "fut.ind.pass.2.sg",
+          "fut.ind.pass.1.pl",
+          "fut.ind.pass.2.pl"
+        ],
+        "ask": "Write the future passive of laudō for I, for you, for we and for you all."
+      }
+    },
+    {
+      "n": 4,
+      "title": "3rd and 4th conjugations: -ar, then -ē-",
+      "say": "With no *-b-* to lean on, third- and fourth-conjugation verbs use *-ar* for 'I' (*mittar*, I will be sent) and *-ē-* for everyone else: *mittētur*, *aperiētur*. Before *-nt-* that *ē* shortens, so 'they' is *mittentur*. That long *ē* is the whole tense here: *clauditur*, it is being shut, against *claudētur*, it will be shut.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "mitto",
+        "reveal": [
+          "fut.ind.pass.1.sg",
+          "fut.ind.pass.3.sg",
+          "fut.ind.pass.3.pl"
+        ],
+        "say": "mittar for 'I'; mittētur, mittentur for the rest"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "dico",
+        "cells": [
+          "fut.ind.pass.1.sg",
+          "fut.ind.pass.3.sg",
+          "fut.ind.pass.3.pl"
+        ],
+        "ask": "Now the same three cells on dīcō: the future passive for I, for 'he, she, it' and for 'they'."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Deponent verbs wear these endings and mean something active",
+      "say": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) uses this future too, and still means something active: *sequētur* is 'he will follow', not 'he will be followed'. Read the ending for its tense and its person, and let the verb itself tell you the meaning.",
+      "show": {
+        "kind": "sentence",
+        "id": "fp-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "fp-12",
+        "ask": "loquētur — who will be doing the talking?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Now build both patterns side by side. In the sentence in front of you the sack is the subject, the slave behind *ā* is the doer, and *portābitur* carries the future and the passive at once. Decide the conjugation first, then the person, and only then write the ending.",
+      "show": {
+        "kind": "sentence",
+        "id": "fp-03"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "fp-14",
+        "blank": "pōnētur",
+        "ask": "Fill the blank with the future passive of pōnō, third person singular."
+      }
+    }
   ]
 }

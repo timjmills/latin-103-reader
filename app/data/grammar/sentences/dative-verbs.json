@@ -1,0 +1,543 @@
+{
+ "skill": "dative-verbs",
+ "chapter": 34,
+ "sentences": [
+  {
+   "id": "dvb-01",
+   "la": "Servī dominō suō semper pārent.",
+   "en": "The slaves always obey their master.",
+   "words": 5,
+   "focus": "dominō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "dominō",
+     "m": "their master (the 'to/for' form)"
+    },
+    {
+     "w": "suō",
+     "m": "their own"
+    },
+    {
+     "w": "semper",
+     "m": "always"
+    },
+    {
+     "w": "pārent",
+     "m": "they obey"
+    }
+   ]
+  },
+  {
+   "id": "dvb-02",
+   "la": "Puerī bonī magistrō suō pārent.",
+   "en": "Good boys obey their teacher.",
+   "words": 5,
+   "focus": "magistrō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "boys"
+    },
+    {
+     "w": "bonī",
+     "m": "good"
+    },
+    {
+     "w": "magistrō",
+     "m": "their teacher (the 'to/for' form)"
+    },
+    {
+     "w": "suō",
+     "m": "their own"
+    },
+    {
+     "w": "pārent",
+     "m": "they obey"
+    }
+   ]
+  },
+  {
+   "id": "dvb-03",
+   "la": "Canis parvus puerō nōn nocet.",
+   "en": "A small dog does not hurt a boy.",
+   "words": 5,
+   "focus": "puerō",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Canis",
+     "m": "a dog"
+    },
+    {
+     "w": "parvus",
+     "m": "small"
+    },
+    {
+     "w": "puerō",
+     "m": "a boy (the 'to/for' form)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "nocet",
+     "m": "harms"
+    }
+   ]
+  },
+  {
+   "id": "dvb-04",
+   "la": "Dominus servō fugitīvō nōn ignōscit.",
+   "en": "The master does not forgive a runaway slave.",
+   "words": 5,
+   "focus": "servō",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servō",
+     "m": "the slave (the 'to/for' form)"
+    },
+    {
+     "w": "fugitīvō",
+     "m": "runaway"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "ignōscit",
+     "m": "forgives"
+    }
+   ]
+  },
+  {
+   "id": "dvb-05",
+   "la": "Hoc carmen puellae nōn placet.",
+   "en": "This song does not please the girl.",
+   "words": 5,
+   "focus": "puellae",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Hoc",
+     "m": "this"
+    },
+    {
+     "w": "carmen",
+     "m": "song"
+    },
+    {
+     "w": "puellae",
+     "m": "the girl (the 'to/for' form)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "placet",
+     "m": "pleases"
+    }
+   ]
+  },
+  {
+   "id": "dvb-06",
+   "la": "Syra dominae suae semper pāret.",
+   "en": "Syra always obeys her mistress.",
+   "words": 5,
+   "focus": "dominae",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "dominae",
+     "m": "her mistress (the 'to/for' form)"
+    },
+    {
+     "w": "suae",
+     "m": "her own"
+    },
+    {
+     "w": "semper",
+     "m": "always"
+    },
+    {
+     "w": "pāret",
+     "m": "she obeys"
+    }
+   ]
+  },
+  {
+   "id": "dvb-07",
+   "la": "Pater tuus mihi nōn crēdit.",
+   "en": "Your father does not believe me.",
+   "words": 5,
+   "focus": "mihi",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Pater",
+     "m": "father"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "mihi",
+     "m": "me (the 'to/for' form)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "crēdit",
+     "m": "believes"
+    }
+   ]
+  },
+  {
+   "id": "dvb-08",
+   "la": "Nēmō tibi in vīllā nocēbit.",
+   "en": "No one will hurt you in the house.",
+   "words": 5,
+   "focus": "tibi",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nēmō",
+     "m": "no one"
+    },
+    {
+     "w": "tibi",
+     "m": "you (the 'to/for' form)"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "nocēbit",
+     "m": "will harm"
+    }
+   ]
+  },
+  {
+   "id": "dvb-09",
+   "la": "Aemilia sibi hodiē nōn placet.",
+   "en": "Aemilia is not pleased with herself today.",
+   "words": 5,
+   "focus": "sibi",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "sibi",
+     "m": "herself (the 'to/for' form)"
+    },
+    {
+     "w": "hodiē",
+     "m": "today"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "placet",
+     "m": "pleases"
+    }
+   ]
+  },
+  {
+   "id": "dvb-10",
+   "la": "Nēmō servō tam miserō invidet.",
+   "en": "No one envies so wretched a slave.",
+   "words": 5,
+   "focus": "servō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nēmō",
+     "m": "no one"
+    },
+    {
+     "w": "servō",
+     "m": "a slave (the 'to/for' form)"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "miserō",
+     "m": "wretched"
+    },
+    {
+     "w": "invidet",
+     "m": "envies"
+    }
+   ]
+  },
+  {
+   "id": "dvb-11",
+   "la": "Lȳdia pauperī Mēdō nūbere vult.",
+   "en": "Lydia wants to marry poor Medus.",
+   "words": 5,
+   "focus": "Mēdō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "pauperī",
+     "m": "poor"
+    },
+    {
+     "w": "Mēdō",
+     "m": "Medus (the 'to/for' form)"
+    },
+    {
+     "w": "nūbere",
+     "m": "to marry"
+    },
+    {
+     "w": "vult",
+     "m": "she wants"
+    }
+   ]
+  },
+  {
+   "id": "dvb-12",
+   "la": "Iūlius servō imperat, nōn servum iubet.",
+   "en": "Julius gives the slave an order; he does not command the slave.",
+   "words": 6,
+   "focus": "servō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servō",
+     "m": "the slave (the 'to/for' form)"
+    },
+    {
+     "w": "imperat",
+     "m": "gives orders to"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "servum",
+     "m": "the slave (the object form)"
+    },
+    {
+     "w": "iubet",
+     "m": "orders"
+    }
+   ]
+  },
+  {
+   "id": "dvb-13",
+   "la": "Mārcus mihi persuādet, sed mē nōn iuvat.",
+   "en": "Marcus persuades me, but he does not help me.",
+   "words": 7,
+   "focus": "mihi",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "mihi",
+     "m": "me (the 'to/for' form)"
+    },
+    {
+     "w": "persuādet",
+     "m": "persuades"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "mē",
+     "m": "me (the object form)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "iuvat",
+     "m": "helps"
+    }
+   ]
+  },
+  {
+   "id": "dvb-14",
+   "la": "Sī tibi libet, mēcum venī.",
+   "en": "If you like, come with me.",
+   "words": 5,
+   "focus": "tibi",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "tibi",
+     "m": "you (the 'to/for' form)"
+    },
+    {
+     "w": "libet",
+     "m": "it pleases"
+    },
+    {
+     "w": "mēcum",
+     "m": "with me"
+    },
+    {
+     "w": "venī",
+     "m": "come!"
+    }
+   ]
+  },
+  {
+   "id": "dvb-15",
+   "la": "Nōn licet puerīs in viā lūdere.",
+   "en": "Boys are not allowed to play in the street.",
+   "words": 6,
+   "focus": "puerīs",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōn",
+     "m": "not"
+    },
+    {
+     "w": "licet",
+     "m": "it is allowed"
+    },
+    {
+     "w": "puerīs",
+     "m": "the boys (the 'to/for' form)"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viā",
+     "m": "the street"
+    },
+    {
+     "w": "lūdere",
+     "m": "to play"
+    }
+   ]
+  }
+ ]
+}

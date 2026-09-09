@@ -1,0 +1,589 @@
+{
+ "skill": "irregular-verbs-present",
+ "chapter": 15,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "ivp-01",
+   "la": "Ego discipulus sum, tū magister es.",
+   "en": "I am a pupil, you are a teacher.",
+   "words": 6,
+   "focus": "es",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "discipulus",
+     "m": "a pupil"
+    },
+    {
+     "w": "sum",
+     "m": "am"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "magister",
+     "m": "a teacher"
+    },
+    {
+     "w": "es",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ivp-02",
+   "la": "Mārcus in lūdō est, Iūlia in vīllā.",
+   "en": "Marcus is in the school, Julia in the house.",
+   "words": 7,
+   "focus": "est",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "lūdō",
+     "m": "the school"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    }
+   ]
+  },
+  {
+   "id": "ivp-03",
+   "la": "Hic puer improbus est, ego probus sum.",
+   "en": "This boy is naughty; I am good.",
+   "words": 7,
+   "focus": "sum",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hic",
+     "m": "this"
+    },
+    {
+     "w": "puer",
+     "m": "boy"
+    },
+    {
+     "w": "improbus",
+     "m": "naughty"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "probus",
+     "m": "good"
+    },
+    {
+     "w": "sum",
+     "m": "am"
+    }
+   ]
+  },
+  {
+   "id": "ivp-04",
+   "la": "Tū fessus es, sed ego fessus nōn sum.",
+   "en": "You are tired, but I am not tired.",
+   "words": 8,
+   "focus": "es",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "fessus",
+     "m": "tired"
+    },
+    {
+     "w": "es",
+     "m": "are"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "fessus",
+     "m": "tired"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "sum",
+     "m": "am"
+    }
+   ]
+  },
+  {
+   "id": "ivp-05",
+   "la": "Nōs in lūdō sumus, vōs in vīllā estis.",
+   "en": "We are in the school, you all are in the house.",
+   "words": 8,
+   "focus": "sumus",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "lūdō",
+     "m": "the school"
+    },
+    {
+     "w": "sumus",
+     "m": "are"
+    },
+    {
+     "w": "vōs",
+     "m": "you all"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "estis",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ivp-06",
+   "la": "Puerī laetī sunt, quia magister abest.",
+   "en": "The boys are happy, because the teacher is away.",
+   "words": 6,
+   "focus": "sunt",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "laetī",
+     "m": "happy"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    },
+    {
+     "w": "quia",
+     "m": "because"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "abest",
+     "m": "is away"
+    }
+   ]
+  },
+  {
+   "id": "ivp-07",
+   "la": "Ego legere possum, tū nōn potes.",
+   "en": "I can read; you cannot.",
+   "words": 6,
+   "focus": "possum",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "legere",
+     "m": "to read"
+    },
+    {
+     "w": "possum",
+     "m": "am able"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "potes",
+     "m": "are able"
+    }
+   ]
+  },
+  {
+   "id": "ivp-08",
+   "la": "Discipulī improbī tacēre nōn possunt.",
+   "en": "The naughty pupils cannot keep quiet.",
+   "words": 5,
+   "focus": "possunt",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulī",
+     "m": "the pupils"
+    },
+    {
+     "w": "improbī",
+     "m": "naughty"
+    },
+    {
+     "w": "tacēre",
+     "m": "to be silent"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "possunt",
+     "m": "are able"
+    }
+   ]
+  },
+  {
+   "id": "ivp-09",
+   "la": "Ego ad lūdum eō, tū domum īs.",
+   "en": "I am going to school, you are going home.",
+   "words": 7,
+   "focus": "īs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "lūdum",
+     "m": "the school"
+    },
+    {
+     "w": "eō",
+     "m": "go"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "domum",
+     "m": "home"
+    },
+    {
+     "w": "īs",
+     "m": "go"
+    }
+   ]
+  },
+  {
+   "id": "ivp-10",
+   "la": "Puerī ad lūdum eunt cum patre.",
+   "en": "The boys go to school with their father.",
+   "words": 6,
+   "focus": "eunt",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "lūdum",
+     "m": "the school"
+    },
+    {
+     "w": "eunt",
+     "m": "go"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "patre",
+     "m": "father"
+    }
+   ]
+  },
+  {
+   "id": "ivp-11",
+   "la": "Mārcus in lūdum īre nōn vult.",
+   "en": "Marcus does not want to go into the school.",
+   "words": 6,
+   "focus": "vult",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "lūdum",
+     "m": "the school"
+    },
+    {
+     "w": "īre",
+     "m": "to go"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "vult",
+     "m": "wants"
+    }
+   ]
+  },
+  {
+   "id": "ivp-12",
+   "la": "Tū dormīre vīs, ego legere volō.",
+   "en": "You want to sleep; I want to read.",
+   "words": 6,
+   "focus": "vīs",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "dormīre",
+     "m": "to sleep"
+    },
+    {
+     "w": "vīs",
+     "m": "want"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "legere",
+     "m": "to read"
+    },
+    {
+     "w": "volō",
+     "m": "want"
+    }
+   ]
+  },
+  {
+   "id": "ivp-13",
+   "la": "Servus saccum magnum ad vīllam fert.",
+   "en": "The slave carries a big sack to the house.",
+   "words": 6,
+   "focus": "fert",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "saccum",
+     "m": "a sack"
+    },
+    {
+     "w": "magnum",
+     "m": "big"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllam",
+     "m": "the house"
+    },
+    {
+     "w": "fert",
+     "m": "carries"
+    }
+   ]
+  },
+  {
+   "id": "ivp-14",
+   "la": "Nōs aquam ferimus, vōs nihil fertis.",
+   "en": "We are carrying water; you all are carrying nothing.",
+   "words": 6,
+   "focus": "fertis",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "ferimus",
+     "m": "carry"
+    },
+    {
+     "w": "vōs",
+     "m": "you all"
+    },
+    {
+     "w": "nihil",
+     "m": "nothing"
+    },
+    {
+     "w": "fertis",
+     "m": "carry"
+    }
+   ]
+  }
+ ]
+}

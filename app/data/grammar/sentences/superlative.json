@@ -1,0 +1,609 @@
+{
+  "skill": "superlative",
+  "chapter": 13,
+  "sentences": [
+    {
+      "id": "sup-01",
+      "la": "Sōl stēlla clārissima in caelō est.",
+      "en": "The sun is the brightest star in the sky.",
+      "words": 6,
+      "focus": "clārissima",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Sōl",
+          "m": "sun"
+        },
+        {
+          "w": "stēlla",
+          "m": "star"
+        },
+        {
+          "w": "clārissima",
+          "m": "brightest"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "caelō",
+          "m": "the sky"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-02",
+      "la": "Diēs longissimus aestāte calidā est.",
+      "en": "The longest day is in the warm summer.",
+      "words": 5,
+      "focus": "longissimus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Diēs",
+          "m": "day"
+        },
+        {
+          "w": "longissimus",
+          "m": "longest"
+        },
+        {
+          "w": "aestāte",
+          "m": "in summer"
+        },
+        {
+          "w": "calidā",
+          "m": "warm"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-03",
+      "la": "Quīntus puer fortissimus in familiā est.",
+      "en": "Quintus is the bravest boy in the household.",
+      "words": 6,
+      "focus": "fortissimus",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "puer",
+          "m": "boy"
+        },
+        {
+          "w": "fortissimus",
+          "m": "bravest"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "familiā",
+          "m": "the household"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-04",
+      "la": "Mīlitēs fortissimī hostēs barbarōs petunt.",
+      "en": "The bravest soldiers attack the foreign enemy.",
+      "words": 5,
+      "focus": "fortissimī",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "soldiers"
+        },
+        {
+          "w": "fortissimī",
+          "m": "bravest"
+        },
+        {
+          "w": "hostēs",
+          "m": "the enemy"
+        },
+        {
+          "w": "barbarōs",
+          "m": "foreign"
+        },
+        {
+          "w": "petunt",
+          "m": "attack"
+        }
+      ]
+    },
+    {
+      "id": "sup-05",
+      "la": "Mare altissimum et lātissimum est.",
+      "en": "The sea is very deep and very wide.",
+      "words": 5,
+      "focus": "altissimum",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mare",
+          "m": "sea"
+        },
+        {
+          "w": "altissimum",
+          "m": "very deep"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "lātissimum",
+          "m": "very wide"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-06",
+      "la": "Aemilia fēmina laetissima in vīllā est.",
+      "en": "Aemilia is the happiest woman in the country house.",
+      "words": 6,
+      "focus": "laetissima",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "fēmina",
+          "m": "woman"
+        },
+        {
+          "w": "laetissima",
+          "m": "happiest"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "vīllā",
+          "m": "the country house"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-07",
+      "la": "Iūlia in hortō rosam pulcherrimam carpit.",
+      "en": "Julia picks the most beautiful rose in the garden.",
+      "words": 6,
+      "focus": "pulcherrimam",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "rosam",
+          "m": "a rose"
+        },
+        {
+          "w": "pulcherrimam",
+          "m": "most beautiful"
+        },
+        {
+          "w": "carpit",
+          "m": "picks"
+        }
+      ]
+    },
+    {
+      "id": "sup-08",
+      "la": "Rōma urbs pulcherrima et antīqua est.",
+      "en": "Rome is a most beautiful and ancient city.",
+      "words": 6,
+      "focus": "pulcherrima",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Rōma",
+          "m": "Rome"
+        },
+        {
+          "w": "urbs",
+          "m": "city"
+        },
+        {
+          "w": "pulcherrima",
+          "m": "most beautiful"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "antīqua",
+          "m": "ancient"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-09",
+      "la": "Quīntus aegerrimus est, sed Mārcus sānus.",
+      "en": "Quintus is very sick indeed, but Marcus is healthy.",
+      "words": 6,
+      "focus": "aegerrimus",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "aegerrimus",
+          "m": "very sick"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "sānus",
+          "m": "healthy"
+        }
+      ]
+    },
+    {
+      "id": "sup-10",
+      "la": "Mārcus fortior quam Quīntus est, sed Iūlius fortissimus.",
+      "en": "Marcus is braver than Quintus, but Julius is the bravest.",
+      "words": 8,
+      "focus": "fortissimus",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "fortior",
+          "m": "braver"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "fortissimus",
+          "m": "bravest"
+        }
+      ]
+    },
+    {
+      "id": "sup-11",
+      "la": "Hic mēnsis brevior est, ille brevissimus.",
+      "en": "This month is shorter, that one is the shortest.",
+      "words": 6,
+      "focus": "brevissimus",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "mēnsis",
+          "m": "month"
+        },
+        {
+          "w": "brevior",
+          "m": "shorter"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "ille",
+          "m": "that"
+        },
+        {
+          "w": "brevissimus",
+          "m": "shortest"
+        }
+      ]
+    },
+    {
+      "id": "sup-12",
+      "la": "Quīntus fortissimus puerōrum Rōmānōrum est.",
+      "en": "Quintus is the bravest of the Roman boys.",
+      "words": 5,
+      "focus": "fortissimus",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "fortissimus",
+          "m": "bravest"
+        },
+        {
+          "w": "puerōrum",
+          "m": "of the boys"
+        },
+        {
+          "w": "Rōmānōrum",
+          "m": "Roman"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-13",
+      "la": "Mārcus ex puerīs altissimus est.",
+      "en": "Marcus is the tallest of the boys.",
+      "words": 5,
+      "focus": "altissimus",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "ex",
+          "m": "out of"
+        },
+        {
+          "w": "puerīs",
+          "m": "the boys"
+        },
+        {
+          "w": "altissimus",
+          "m": "tallest"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "sup-14",
+      "la": "Aestāte diēs longissimī et noctēs brevissimae sunt.",
+      "en": "In summer the days are longest and the nights shortest.",
+      "words": 7,
+      "focus": "longissimī",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Aestāte",
+          "m": "in summer"
+        },
+        {
+          "w": "diēs",
+          "m": "days"
+        },
+        {
+          "w": "longissimī",
+          "m": "longest"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "noctēs",
+          "m": "nights"
+        },
+        {
+          "w": "brevissimae",
+          "m": "shortest"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "sup-15",
+      "la": "Mēnsis brevissimus annī hieme est.",
+      "en": "The shortest month of the year is in winter.",
+      "words": 5,
+      "focus": "brevissimus",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mēnsis",
+          "m": "month"
+        },
+        {
+          "w": "brevissimus",
+          "m": "shortest"
+        },
+        {
+          "w": "annī",
+          "m": "of the year"
+        },
+        {
+          "w": "hieme",
+          "m": "in winter"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    }
+  ]
+}

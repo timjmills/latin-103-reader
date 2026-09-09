@@ -1,0 +1,466 @@
+{
+ "skill": "subjunctive-wish-command",
+ "chapter": 27,
+ "sentences": [
+  {
+   "id": "swc-01",
+   "la": "Nunc in hortum ambulēmus, amīcī!",
+   "en": "Let's walk into the garden now, friends!",
+   "words": 5,
+   "focus": "ambulēmus",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nunc",
+     "m": "now"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "ambulēmus",
+     "m": "let us walk"
+    },
+    {
+     "w": "amīcī",
+     "m": "friends"
+    }
+   ]
+  },
+  {
+   "id": "swc-02",
+   "la": "Fīlius meus statim ad mē veniat.",
+   "en": "Let my son come to me at once.",
+   "words": 6,
+   "focus": "veniat",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Fīlius",
+     "m": "son"
+    },
+    {
+     "w": "meus",
+     "m": "my"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "veniat",
+     "m": "let him come"
+    }
+   ]
+  },
+  {
+   "id": "swc-03",
+   "la": "Nunc aquam frīgidam bibāmus, amīcī meī.",
+   "en": "Now let's drink cold water, my friends.",
+   "words": 6,
+   "focus": "bibāmus",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nunc",
+     "m": "now"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "frīgidam",
+     "m": "cold"
+    },
+    {
+     "w": "bibāmus",
+     "m": "let us drink"
+    },
+    {
+     "w": "amīcī",
+     "m": "friends"
+    },
+    {
+     "w": "meī",
+     "m": "my"
+    }
+   ]
+  },
+  {
+   "id": "swc-04",
+   "la": "Hodiē in agrīs nostrīs labōrēmus.",
+   "en": "Let us work in our fields today.",
+   "words": 5,
+   "focus": "labōrēmus",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hodiē",
+     "m": "today"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "agrīs",
+     "m": "the fields"
+    },
+    {
+     "w": "nostrīs",
+     "m": "our"
+    },
+    {
+     "w": "labōrēmus",
+     "m": "let us work"
+    }
+   ]
+  },
+  {
+   "id": "swc-05",
+   "la": "Servus tuus iānuam statim aperiat.",
+   "en": "Let your slave open the door at once.",
+   "words": 5,
+   "focus": "aperiat",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "slave"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "iānuam",
+     "m": "the door"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "aperiat",
+     "m": "let him open"
+    }
+   ]
+  },
+  {
+   "id": "swc-06",
+   "la": "Servī cibum nostrum statim portent.",
+   "en": "Let the slaves carry our food at once.",
+   "words": 5,
+   "focus": "portent",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "cibum",
+     "m": "food"
+    },
+    {
+     "w": "nostrum",
+     "m": "our"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "portent",
+     "m": "let them carry"
+    }
+   ]
+  },
+  {
+   "id": "swc-07",
+   "la": "Nē timeās, Iūlia: canis tuus dormit.",
+   "en": "Don't be afraid, Julia: your dog is asleep.",
+   "words": 6,
+   "focus": "timeās",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nē",
+     "m": "not"
+    },
+    {
+     "w": "timeās",
+     "m": "be afraid"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "canis",
+     "m": "the dog"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "dormit",
+     "m": "is sleeping"
+    }
+   ]
+  },
+  {
+   "id": "swc-08",
+   "la": "Nē in viā lūdant puerī tuī.",
+   "en": "Your boys are not to play in the street.",
+   "words": 6,
+   "focus": "lūdant",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nē",
+     "m": "not"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viā",
+     "m": "the street"
+    },
+    {
+     "w": "lūdant",
+     "m": "let them play"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "tuī",
+     "m": "your"
+    }
+   ]
+  },
+  {
+   "id": "swc-09",
+   "la": "Deī nōs et patriam nostram servent.",
+   "en": "May the gods keep us and our country safe.",
+   "words": 6,
+   "focus": "servent",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Deī",
+     "m": "the gods"
+    },
+    {
+     "w": "nōs",
+     "m": "us"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "patriam",
+     "m": "country"
+    },
+    {
+     "w": "nostram",
+     "m": "our"
+    },
+    {
+     "w": "servent",
+     "m": "may they keep safe"
+    }
+   ]
+  },
+  {
+   "id": "swc-10",
+   "la": "Bene valeant omnēs amīcī nostrī.",
+   "en": "May all our friends be well.",
+   "words": 5,
+   "focus": "valeant",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Bene",
+     "m": "well"
+    },
+    {
+     "w": "valeant",
+     "m": "may they be strong"
+    },
+    {
+     "w": "omnēs",
+     "m": "all"
+    },
+    {
+     "w": "amīcī",
+     "m": "friends"
+    },
+    {
+     "w": "nostrī",
+     "m": "our"
+    }
+   ]
+  },
+  {
+   "id": "swc-11",
+   "la": "Venī, Mārce, et frāter tuus veniat.",
+   "en": "Come, Marcus, and let your brother come too.",
+   "words": 6,
+   "focus": "veniat",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Venī",
+     "m": "come!"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "frāter",
+     "m": "brother"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "veniat",
+     "m": "let him come"
+    }
+   ],
+   "note": "The imperative venī gives the order straight to Marcus; the subjunctive veniat gives it to a third person, who is not being spoken to."
+  },
+  {
+   "id": "swc-12",
+   "la": "Ipse maneat, sed nōs ad forum eāmus.",
+   "en": "Let him stay himself, but let us go to the forum.",
+   "words": 7,
+   "focus": "eāmus",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ipse",
+     "m": "he himself"
+    },
+    {
+     "w": "maneat",
+     "m": "let him stay"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "nōs",
+     "m": "we"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "forum",
+     "m": "the square"
+    },
+    {
+     "w": "eāmus",
+     "m": "let us go"
+    }
+   ],
+   "note": "One sentence with both persons: maneat is 'let him', eāmus is 'let us'. Neither could be said with an imperative."
+  }
+ ]
+}

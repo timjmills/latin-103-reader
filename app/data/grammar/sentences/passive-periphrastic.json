@@ -1,0 +1,520 @@
+{
+  "skill": "passive-periphrastic",
+  "chapter": 31,
+  "sentences": [
+    {
+      "id": "pp-01",
+      "la": "Hic liber hodiē legendus est.",
+      "en": "This book must be read today.",
+      "words": 5,
+      "focus": "legendus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "liber",
+          "m": "book"
+        },
+        {
+          "w": "hodiē",
+          "m": "today"
+        },
+        {
+          "w": "legendus",
+          "m": "to be read"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "pp-02",
+      "la": "Omnis cibus in mēnsā edendus est.",
+      "en": "All the food on the table must be eaten.",
+      "words": 6,
+      "focus": "edendus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Omnis",
+          "m": "all"
+        },
+        {
+          "w": "cibus",
+          "m": "the food"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "mēnsā",
+          "m": "the table"
+        },
+        {
+          "w": "edendus",
+          "m": "to be eaten"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "pp-03",
+      "la": "Hae epistulae crās scrībendae sunt.",
+      "en": "These letters must be written tomorrow.",
+      "words": 5,
+      "focus": "scrībendae",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Hae",
+          "m": "these"
+        },
+        {
+          "w": "epistulae",
+          "m": "letters"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "scrībendae",
+          "m": "to be written"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "pp-04",
+      "la": "Haec vāsa argentea lavanda sunt.",
+      "en": "These silver dishes must be washed.",
+      "words": 5,
+      "focus": "lavanda",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Haec",
+          "m": "these"
+        },
+        {
+          "w": "vāsa",
+          "m": "dishes"
+        },
+        {
+          "w": "argentea",
+          "m": "silver"
+        },
+        {
+          "w": "lavanda",
+          "m": "to be washed"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "pp-05",
+      "la": "Puerī bonī semper laudandī sunt.",
+      "en": "Good boys must always be praised.",
+      "words": 5,
+      "focus": "laudandī",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "boys"
+        },
+        {
+          "w": "bonī",
+          "m": "good"
+        },
+        {
+          "w": "semper",
+          "m": "always"
+        },
+        {
+          "w": "laudandī",
+          "m": "to be praised"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "pp-06",
+      "la": "Post cēnam statim dormiendum est.",
+      "en": "After dinner one must sleep at once.",
+      "words": 5,
+      "focus": "dormiendum",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Post",
+          "m": "after"
+        },
+        {
+          "w": "cēnam",
+          "m": "dinner"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "dormiendum",
+          "m": "to be slept"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        }
+      ]
+    },
+    {
+      "id": "pp-07",
+      "la": "In lūdō tacendum est, puerī.",
+      "en": "In school one must keep quiet, boys.",
+      "words": 5,
+      "focus": "tacendum",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "In",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "school"
+        },
+        {
+          "w": "tacendum",
+          "m": "to be kept quiet"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        }
+      ]
+    },
+    {
+      "id": "pp-08",
+      "la": "Porta claudenda erat, sed aperta manēbat.",
+      "en": "The door had to be shut, but it stayed open.",
+      "words": 6,
+      "focus": "claudenda",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Porta",
+          "m": "the door"
+        },
+        {
+          "w": "claudenda",
+          "m": "to be shut"
+        },
+        {
+          "w": "erat",
+          "m": "it was"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "aperta",
+          "m": "open"
+        },
+        {
+          "w": "manēbat",
+          "m": "it was staying"
+        }
+      ]
+    },
+    {
+      "id": "pp-09",
+      "la": "Crās nova vīlla aedificanda erit.",
+      "en": "Tomorrow a new house will have to be built.",
+      "words": 5,
+      "focus": "aedificanda",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "nova",
+          "m": "new"
+        },
+        {
+          "w": "vīlla",
+          "m": "house"
+        },
+        {
+          "w": "aedificanda",
+          "m": "to be built"
+        },
+        {
+          "w": "erit",
+          "m": "it will be"
+        }
+      ]
+    },
+    {
+      "id": "pp-10",
+      "la": "Epistula nōn scrīpta, sed scrībenda est.",
+      "en": "The letter has not been written; it still has to be written.",
+      "words": 6,
+      "focus": "scrībenda",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Epistula",
+          "m": "the letter"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "scrīpta",
+          "m": "written"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "scrībenda",
+          "m": "to be written"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ],
+      "note": "scrīpta est says the job is done; scrībenda est says it still must be done. The -nd- is the whole difference."
+    },
+    {
+      "id": "pp-11",
+      "la": "Servus fugitīvus nōn statim pūniendus est.",
+      "en": "The runaway slave must not be punished at once.",
+      "words": 6,
+      "focus": "pūniendus",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "fugitīvus",
+          "m": "runaway"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "pūniendus",
+          "m": "to be punished"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "pp-12",
+      "la": "Hic ager crās colendus est.",
+      "en": "This field must be tilled tomorrow.",
+      "words": 5,
+      "focus": "colendus",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "ager",
+          "m": "field"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "colendus",
+          "m": "to be tilled"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "pp-13",
+      "la": "Haec verba omnia discenda sunt.",
+      "en": "All these words must be learnt.",
+      "words": 5,
+      "focus": "discenda",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Haec",
+          "m": "these"
+        },
+        {
+          "w": "verba",
+          "m": "words"
+        },
+        {
+          "w": "omnia",
+          "m": "all"
+        },
+        {
+          "w": "discenda",
+          "m": "to be learnt"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "pp-14",
+      "la": "Hoc scelus lēge pūniendum est.",
+      "en": "This crime must be punished by law.",
+      "words": 5,
+      "focus": "pūniendum",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hoc",
+          "m": "this"
+        },
+        {
+          "w": "scelus",
+          "m": "crime"
+        },
+        {
+          "w": "lēge",
+          "m": "by law"
+        },
+        {
+          "w": "pūniendum",
+          "m": "to be punished"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    }
+  ]
+}

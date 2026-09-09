@@ -1,0 +1,604 @@
+{
+  "skill": "perfect-subjunctive",
+  "chapter": 32,
+  "sentences": [
+    {
+      "id": "pfs-01",
+      "la": "Nesciō quis portam nostram clauserit.",
+      "en": "I do not know who has shut our door.",
+      "words": 5,
+      "focus": "clauserit",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "quis",
+          "m": "who"
+        },
+        {
+          "w": "portam",
+          "m": "the door"
+        },
+        {
+          "w": "nostram",
+          "m": "our"
+        },
+        {
+          "w": "clauserit",
+          "m": "has shut"
+        }
+      ]
+    },
+    {
+      "id": "pfs-02",
+      "la": "Rogō quid Mārcus in hortō fēcerit.",
+      "en": "I ask what Marcus has done in the garden.",
+      "words": 6,
+      "focus": "fēcerit",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Rogō",
+          "m": "I ask"
+        },
+        {
+          "w": "quid",
+          "m": "what"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "fēcerit",
+          "m": "has done"
+        }
+      ]
+    },
+    {
+      "id": "pfs-03",
+      "la": "Mīror cūr Lȳdia hodiē nōn vēnerit.",
+      "en": "I wonder why Lydia has not come today.",
+      "words": 6,
+      "focus": "vēnerit",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mīror",
+          "m": "I wonder"
+        },
+        {
+          "w": "cūr",
+          "m": "why"
+        },
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "hodiē",
+          "m": "today"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "vēnerit",
+          "m": "has come"
+        }
+      ]
+    },
+    {
+      "id": "pfs-04",
+      "la": "Nēmō scit quid poēta dīxerit.",
+      "en": "Nobody knows what the poet has said.",
+      "words": 5,
+      "focus": "dīxerit",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Nēmō",
+          "m": "nobody"
+        },
+        {
+          "w": "scit",
+          "m": "knows"
+        },
+        {
+          "w": "quid",
+          "m": "what"
+        },
+        {
+          "w": "poēta",
+          "m": "the poet"
+        },
+        {
+          "w": "dīxerit",
+          "m": "has said"
+        }
+      ]
+    },
+    {
+      "id": "pfs-05",
+      "la": "Iūlius rogat quis fenestram frēgerit.",
+      "en": "Julius asks who has broken the window.",
+      "words": 5,
+      "focus": "frēgerit",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "rogat",
+          "m": "asks"
+        },
+        {
+          "w": "quis",
+          "m": "who"
+        },
+        {
+          "w": "fenestram",
+          "m": "the window"
+        },
+        {
+          "w": "frēgerit",
+          "m": "has broken"
+        }
+      ]
+    },
+    {
+      "id": "pfs-06",
+      "la": "Nesciō ubi Mēdus hāc nocte fuerit.",
+      "en": "I do not know where Medus has been tonight.",
+      "words": 6,
+      "focus": "fuerit",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "ubi",
+          "m": "where"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "hāc",
+          "m": "this"
+        },
+        {
+          "w": "nocte",
+          "m": "night"
+        },
+        {
+          "w": "fuerit",
+          "m": "has been"
+        }
+      ]
+    },
+    {
+      "id": "pfs-07",
+      "la": "Quaerō num Mēdus pecūniam invēnerit.",
+      "en": "I ask whether Medus has found the money.",
+      "words": 5,
+      "focus": "invēnerit",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quaerō",
+          "m": "I ask"
+        },
+        {
+          "w": "num",
+          "m": "whether"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "pecūniam",
+          "m": "the money"
+        },
+        {
+          "w": "invēnerit",
+          "m": "has found"
+        }
+      ]
+    },
+    {
+      "id": "pfs-08",
+      "la": "Nē timuerīs, mea fīlia parva!",
+      "en": "Do not be afraid, my little daughter!",
+      "words": 5,
+      "focus": "timuerīs",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nē",
+          "m": "do not"
+        },
+        {
+          "w": "timuerīs",
+          "m": "be afraid"
+        },
+        {
+          "w": "mea",
+          "m": "my"
+        },
+        {
+          "w": "fīlia",
+          "m": "daughter"
+        },
+        {
+          "w": "parva",
+          "m": "little"
+        }
+      ]
+    },
+    {
+      "id": "pfs-09",
+      "la": "Nē hoc vīnum biberīs, Quīnte!",
+      "en": "Do not drink this wine, Quintus!",
+      "words": 5,
+      "focus": "biberīs",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nē",
+          "m": "do not"
+        },
+        {
+          "w": "hoc",
+          "m": "this"
+        },
+        {
+          "w": "vīnum",
+          "m": "wine"
+        },
+        {
+          "w": "biberīs",
+          "m": "drink"
+        },
+        {
+          "w": "Quīnte",
+          "m": "Quintus"
+        }
+      ]
+    },
+    {
+      "id": "pfs-10",
+      "la": "Nē in aquam cucurrerītis, puerī!",
+      "en": "Do not run into the water, boys!",
+      "words": 5,
+      "focus": "cucurrerītis",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nē",
+          "m": "do not"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "aquam",
+          "m": "the water"
+        },
+        {
+          "w": "cucurrerītis",
+          "m": "run"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        }
+      ]
+    },
+    {
+      "id": "pfs-11",
+      "la": "Sī fūgerit, nesciō quō ierit.",
+      "en": "If he has run away, I do not know where he has gone.",
+      "words": 5,
+      "focus": "ierit",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Sī",
+          "m": "if"
+        },
+        {
+          "w": "fūgerit",
+          "m": "he will have fled"
+        },
+        {
+          "w": "nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "quō",
+          "m": "where to"
+        },
+        {
+          "w": "ierit",
+          "m": "he has gone"
+        }
+      ],
+      "note": "Both verbs end in -erit. After sī, fūgerit is the future perfect of a plain statement; inside nesciō quō the folded question makes ierit a perfect subjunctive."
+    },
+    {
+      "id": "pfs-12",
+      "la": "Nesciō ā quō haec epistula scrīpta sit.",
+      "en": "I do not know by whom this letter has been written.",
+      "words": 7,
+      "focus": "scrīpta sit",
+      "step": 6,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "quō",
+          "m": "whom"
+        },
+        {
+          "w": "haec",
+          "m": "this"
+        },
+        {
+          "w": "epistula",
+          "m": "letter"
+        },
+        {
+          "w": "scrīpta",
+          "m": "written"
+        },
+        {
+          "w": "sit",
+          "m": "it has been"
+        }
+      ],
+      "note": "The passive perfect subjunctive is two words, the perfect participle with sim, sīs, sit. No single-word drill can carry it, so this sentence is only ever recognised, never typed out."
+    },
+    {
+      "id": "pfs-13",
+      "la": "Cum omnia audīverīs, respondē mihi.",
+      "en": "Since you have heard everything, answer me.",
+      "words": 5,
+      "focus": "audīverīs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "since"
+        },
+        {
+          "w": "omnia",
+          "m": "everything"
+        },
+        {
+          "w": "audīverīs",
+          "m": "you have heard"
+        },
+        {
+          "w": "respondē",
+          "m": "answer"
+        },
+        {
+          "w": "mihi",
+          "m": "me"
+        }
+      ]
+    },
+    {
+      "id": "pfs-14",
+      "la": "Nescit pater quid fīlius ēmerit.",
+      "en": "The father does not know what his son has bought.",
+      "words": 5,
+      "focus": "ēmerit",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nescit",
+          "m": "does not know"
+        },
+        {
+          "w": "pater",
+          "m": "the father"
+        },
+        {
+          "w": "quid",
+          "m": "what"
+        },
+        {
+          "w": "fīlius",
+          "m": "the son"
+        },
+        {
+          "w": "ēmerit",
+          "m": "has bought"
+        }
+      ]
+    },
+    {
+      "id": "pfs-15",
+      "la": "Nesciō cūr puerī tam diū cessāverint.",
+      "en": "I do not know why the boys have dawdled so long.",
+      "words": 6,
+      "focus": "cessāverint",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "cūr",
+          "m": "why"
+        },
+        {
+          "w": "puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "tam",
+          "m": "so"
+        },
+        {
+          "w": "diū",
+          "m": "long"
+        },
+        {
+          "w": "cessāverint",
+          "m": "have dawdled"
+        }
+      ]
+    },
+    {
+      "id": "pfs-16",
+      "la": "Rogō quid puellae in hortō vīderint.",
+      "en": "I ask what the girls have seen in the garden.",
+      "words": 6,
+      "focus": "vīderint",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Rogō",
+          "m": "I ask"
+        },
+        {
+          "w": "quid",
+          "m": "what"
+        },
+        {
+          "w": "puellae",
+          "m": "the girls"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "vīderint",
+          "m": "have seen"
+        }
+      ]
+    }
+  ]
+}

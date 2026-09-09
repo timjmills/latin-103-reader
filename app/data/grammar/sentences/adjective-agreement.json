@@ -1,0 +1,589 @@
+{
+ "skill": "adjective-agreement",
+ "chapter": 1,
+ "sentences": [
+  {
+   "id": "aa-01",
+   "la": "Sicilia īnsula magna in Eurōpā est.",
+   "en": "Sicily is a big island in Europe.",
+   "words": 6,
+   "focus": "magna",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sicilia",
+     "m": "Sicily"
+    },
+    {
+     "w": "īnsula",
+     "m": "island"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Eurōpā",
+     "m": "Europe"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-02",
+   "la": "Rhēnus fluvius magnus in Germāniā est.",
+   "en": "The Rhine is a big river in Germany.",
+   "words": 6,
+   "focus": "magnus",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Rhēnus",
+     "m": "the Rhine"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Germāniā",
+     "m": "Germany"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-03",
+   "la": "Prōvincia Rōmāna in Hispāniā magna est.",
+   "en": "The Roman province in Spain is big.",
+   "words": 6,
+   "focus": "Rōmāna",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Prōvincia",
+     "m": "a province"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Hispāniā",
+     "m": "Spain"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-04",
+   "la": "Littera prīma in vocābulō Latīnō est.",
+   "en": "The first letter is in the Latin word.",
+   "words": 6,
+   "focus": "prīma",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Littera",
+     "m": "a letter"
+    },
+    {
+     "w": "prīma",
+     "m": "first"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vocābulō",
+     "m": "word"
+    },
+    {
+     "w": "Latīnō",
+     "m": "Latin"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-05",
+   "la": "Numerus secundus in capitulō prīmō est.",
+   "en": "The second number is in the first chapter.",
+   "words": 6,
+   "focus": "secundus",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "secundus",
+     "m": "second"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "capitulō",
+     "m": "chapter"
+    },
+    {
+     "w": "prīmō",
+     "m": "first"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-06",
+   "la": "Fluvius parvus in prōvinciā Graecā est.",
+   "en": "A small river is in a Greek province.",
+   "words": 6,
+   "focus": "parvus",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Fluvius",
+     "m": "a river"
+    },
+    {
+     "w": "parvus",
+     "m": "small"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "prōvinciā",
+     "m": "province"
+    },
+    {
+     "w": "Graecā",
+     "m": "Greek"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-07",
+   "la": "Oppidum Rōmānum in Britanniā quoque est.",
+   "en": "There is a Roman town in Britain too.",
+   "words": 6,
+   "focus": "Rōmānum",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Oppidum",
+     "m": "a town"
+    },
+    {
+     "w": "Rōmānum",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Britanniā",
+     "m": "Britain"
+    },
+    {
+     "w": "quoque",
+     "m": "also"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-08",
+   "la": "Vocābulum Graecum in capitulō secundō est.",
+   "en": "A Greek word is in the second chapter.",
+   "words": 6,
+   "focus": "Graecum",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Vocābulum",
+     "m": "a word"
+    },
+    {
+     "w": "Graecum",
+     "m": "Greek"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "capitulō",
+     "m": "chapter"
+    },
+    {
+     "w": "secundō",
+     "m": "second"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "aa-09",
+   "la": "Multae īnsulae parvae in Graeciā sunt.",
+   "en": "There are many small islands in Greece.",
+   "words": 6,
+   "focus": "parvae",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Multae",
+     "m": "many"
+    },
+    {
+     "w": "īnsulae",
+     "m": "islands"
+    },
+    {
+     "w": "parvae",
+     "m": "small"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Graeciā",
+     "m": "Greece"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "aa-10",
+   "la": "Fluviī magnī in Germāniā et Galliā sunt.",
+   "en": "Big rivers are in Germany and Gaul.",
+   "words": 7,
+   "focus": "magnī",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Fluviī",
+     "m": "rivers"
+    },
+    {
+     "w": "magnī",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Germāniā",
+     "m": "Germany"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Galliā",
+     "m": "Gaul"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "aa-11",
+   "la": "Oppida Rōmāna in Hispāniā et Syriā sunt.",
+   "en": "Roman towns are in Spain and Syria.",
+   "words": 7,
+   "focus": "Rōmāna",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Oppida",
+     "m": "towns"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Hispāniā",
+     "m": "Spain"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Syriā",
+     "m": "Syria"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "aa-12",
+   "la": "Aegyptus prōvincia Rōmāna est, nōn Graeca.",
+   "en": "Egypt is a Roman province, not a Greek one.",
+   "words": 6,
+   "focus": "Rōmāna",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aegyptus",
+     "m": "Egypt"
+    },
+    {
+     "w": "prōvincia",
+     "m": "province"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "Graeca",
+     "m": "Greek"
+    }
+   ]
+  },
+  {
+   "id": "aa-13",
+   "la": "Magna est Aegyptus, sed parva est Crēta.",
+   "en": "Egypt is big, but Crete is small.",
+   "words": 7,
+   "focus": "Magna",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "Aegyptus",
+     "m": "Egypt"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "parva",
+     "m": "small"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "Crēta",
+     "m": "Crete"
+    }
+   ]
+  },
+  {
+   "id": "aa-14",
+   "la": "Aegyptus magna est, sed Rhodus parva est.",
+   "en": "Egypt is big, but Rhodes is small.",
+   "words": 7,
+   "focus": "magna",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aegyptus",
+     "m": "Egypt"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "Rhodus",
+     "m": "Rhodes"
+    },
+    {
+     "w": "parva",
+     "m": "small"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  }
+ ]
+}

@@ -1,5 +1,112 @@
 {
  "skill": "vocative",
+ "teach": [
+  {
+   "n": 1,
+   "title": "The word for the person you are talking to",
+   "say": "When you call somebody by name, or by what they are, that word goes into **the vocative (the calling form)**. It is not the subject and it is not the object — it does no work in the sentence at all. It is the tap on the shoulder, and Latin fences it off with commas, exactly as English does.",
+   "show": {
+    "kind": "sentence",
+    "id": "voc-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "voc-02",
+    "ask": "Which word is the person being spoken to?"
+   }
+  },
+  {
+   "n": 2,
+   "title": "A word in -us calls with -e",
+   "say": "Here is the one real change. A second-declension word ending in -us swaps that -us for -e when you call: *Dāvus* becomes *Dāve!*, *servus* becomes *serve!*, *Mārcus* becomes *Mārce!* Nothing else in the word moves.",
+   "show": {
+    "kind": "paradigm",
+    "key": "decl2m",
+    "word": "servus",
+    "reveal": [
+     "voc.sg"
+    ],
+    "say": "serve — -us becomes -e when you call him"
+   },
+   "check": {
+    "kind": "chart",
+    "key": "decl2m",
+    "cells": [
+     "voc.sg"
+    ],
+    "ask": "Call one slave."
+   }
+  },
+  {
+   "n": 3,
+   "title": "A name in -ius calls with a single -ī",
+   "say": "A name ending in -ius does not give *-ie*; it contracts to one long -ī: *Iūlius* → *Iūlī!* The same happens to *fīlius* → *fīlī!* and to *meus* → *mī!*, which is why Ørberg writes *mī fīlī*. Only names and *fīlius* do this. An ordinary word in -ius keeps the -ie: *gladius* becomes *gladie!*",
+   "show": {
+    "kind": "paradigm",
+    "key": "decl2m",
+    "word": "Iūlius",
+    "reveal": [
+     "voc.sg"
+    ],
+    "say": "Iūlī — the -ius of a name contracts to a single -ī"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "voc-06",
+    "ask": "___, fīlius tuus iam dormit. (calling Iūlius)"
+   }
+  },
+  {
+   "n": 4,
+   "title": "Everything else is unchanged",
+   "say": "Outside those two, the calling form is simply the naming form again. Names in -a do not move (*Syra!*, *Iūlia!*), third-declension words do not move (*pater!*, *māter!*), and no plural ever moves: *puerī* is both 'the boys' and 'boys!'.",
+   "show": {
+    "kind": "paradigm",
+    "key": "decl2m",
+    "word": "servus",
+    "reveal": [
+     "voc.pl"
+    ],
+    "say": "servī — the calling plural, spelt exactly like the naming plural servī"
+   },
+   "check": {
+    "kind": "chart",
+    "key": "decl2m",
+    "cells": [
+     "voc.pl"
+    ],
+    "ask": "Call more than one slave."
+   }
+  },
+  {
+   "n": 5,
+   "title": "Calling him, or talking about him?",
+   "say": "Two sentences, one name, two jobs. *Mārcus venit* — Marcus is the subject, he is the one coming. *Mārce, venī!* — Marcus is being spoken to and told to come. The -e is not a slip of the pen; it says the word is being addressed, not described.",
+   "show": {
+    "kind": "sentence",
+    "id": "voc-10"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "voc-11",
+    "ask": "Is *Mēde* the subject of the sentence, or the person being called?"
+   }
+  },
+  {
+   "n": 6,
+   "title": "What travels with it, and where it sits",
+   "say": "An adjective beside the person called takes the same ending: *serve improbe!* And the calling form need not come first — Latin often tucks it in after a word or two: *Quid est, domine?*",
+   "show": {
+    "kind": "sentence",
+    "id": "voc-12"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "voc-12",
+    "ask": "Serve ___, discēde et tacē! (improbus)"
+   }
+  }
+ ],
  "core": [
   {
    "type": "p",

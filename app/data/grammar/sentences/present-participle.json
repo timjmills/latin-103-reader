@@ -1,0 +1,642 @@
+{
+  "skill": "present-participle",
+  "chapter": 14,
+  "sentences": [
+    {
+      "id": "ptcp-01",
+      "la": "Māter fīliam in hortō cantantem audit.",
+      "en": "The mother hears her daughter singing in the garden.",
+      "words": 6,
+      "focus": "cantantem",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Māter",
+          "m": "mother"
+        },
+        {
+          "w": "fīliam",
+          "m": "the daughter"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "cantantem",
+          "m": "singing"
+        },
+        {
+          "w": "audit",
+          "m": "hears"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-02",
+      "la": "Puer in cubiculō dormiēns nōn respondet.",
+      "en": "The boy, sleeping in his bedroom, does not answer.",
+      "words": 6,
+      "focus": "dormiēns",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "boy"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "cubiculō",
+          "m": "the bedroom"
+        },
+        {
+          "w": "dormiēns",
+          "m": "sleeping"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "respondet",
+          "m": "answers"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-03",
+      "la": "Iūlia rosās portāns in vīllam intrat.",
+      "en": "Julia, carrying roses, goes into the country house.",
+      "words": 6,
+      "focus": "portāns",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "rosās",
+          "m": "roses"
+        },
+        {
+          "w": "portāns",
+          "m": "carrying"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "vīllam",
+          "m": "the country house"
+        },
+        {
+          "w": "intrat",
+          "m": "enters"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-04",
+      "la": "Mārcus in viā ambulāns amīcum videt.",
+      "en": "Marcus, walking in the road, sees his friend.",
+      "words": 6,
+      "focus": "ambulāns",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "viā",
+          "m": "the road"
+        },
+        {
+          "w": "ambulāns",
+          "m": "walking"
+        },
+        {
+          "w": "amīcum",
+          "m": "the friend"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-05",
+      "la": "Mārcus patrem vidēns nōn plōrat.",
+      "en": "Marcus, seeing his father, does not cry.",
+      "words": 5,
+      "focus": "vidēns",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "patrem",
+          "m": "the father"
+        },
+        {
+          "w": "vidēns",
+          "m": "seeing"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "plōrat",
+          "m": "cries"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-06",
+      "la": "Quīntus vōcem mātris audiēns surgit.",
+      "en": "Quintus, hearing his mother's voice, gets up.",
+      "words": 5,
+      "focus": "audiēns",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "vōcem",
+          "m": "the voice"
+        },
+        {
+          "w": "mātris",
+          "m": "of the mother"
+        },
+        {
+          "w": "audiēns",
+          "m": "hearing"
+        },
+        {
+          "w": "surgit",
+          "m": "gets up"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-07",
+      "la": "Iūlius servum ex vīllā fugientem videt.",
+      "en": "Julius sees the slave fleeing out of the country house.",
+      "words": 6,
+      "focus": "fugientem",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "servum",
+          "m": "the slave"
+        },
+        {
+          "w": "ex",
+          "m": "out of"
+        },
+        {
+          "w": "vīllā",
+          "m": "the country house"
+        },
+        {
+          "w": "fugientem",
+          "m": "fleeing"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-08",
+      "la": "Vōx puerī plōrantis in ātriō est.",
+      "en": "The voice of the crying boy is in the hall.",
+      "words": 6,
+      "focus": "plōrantis",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Vōx",
+          "m": "voice"
+        },
+        {
+          "w": "puerī",
+          "m": "of the boy"
+        },
+        {
+          "w": "plōrantis",
+          "m": "crying"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "ātriō",
+          "m": "the hall"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-09",
+      "la": "Puerō dormientī māter ōsculum dat.",
+      "en": "The mother gives the sleeping boy a kiss.",
+      "words": 5,
+      "focus": "dormientī",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puerō",
+          "m": "to the boy"
+        },
+        {
+          "w": "dormientī",
+          "m": "sleeping"
+        },
+        {
+          "w": "māter",
+          "m": "mother"
+        },
+        {
+          "w": "ōsculum",
+          "m": "a kiss"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-10",
+      "la": "Puerī currentēs in campō lūdunt.",
+      "en": "The running boys play in the field.",
+      "words": 5,
+      "focus": "currentēs",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "currentēs",
+          "m": "running"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "campō",
+          "m": "the field"
+        },
+        {
+          "w": "lūdunt",
+          "m": "play"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-11",
+      "la": "Pāstor animālia dormientia in silvā videt.",
+      "en": "The shepherd sees the sleeping animals in the wood.",
+      "words": 6,
+      "focus": "dormientia",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Pāstor",
+          "m": "shepherd"
+        },
+        {
+          "w": "animālia",
+          "m": "animals"
+        },
+        {
+          "w": "dormientia",
+          "m": "sleeping"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "silvā",
+          "m": "the wood"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-12",
+      "la": "Quīntus dormit; Mārcus frātrem dormientem videt.",
+      "en": "Quintus is sleeping; Marcus sees his sleeping brother.",
+      "words": 6,
+      "focus": "dormientem",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "dormit",
+          "m": "sleeps"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "frātrem",
+          "m": "the brother"
+        },
+        {
+          "w": "dormientem",
+          "m": "sleeping"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-13",
+      "la": "Puella cantāns rīdet, et māter cantat.",
+      "en": "The singing girl laughs, and the mother sings.",
+      "words": 6,
+      "focus": "cantāns",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "girl"
+        },
+        {
+          "w": "cantāns",
+          "m": "singing"
+        },
+        {
+          "w": "rīdet",
+          "m": "laughs"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "māter",
+          "m": "mother"
+        },
+        {
+          "w": "cantat",
+          "m": "sings"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-14",
+      "la": "Iūlius puerōs in hortō lūdentēs spectat.",
+      "en": "Julius watches the boys playing in the garden.",
+      "words": 6,
+      "focus": "lūdentēs",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "puerōs",
+          "m": "the boys"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "lūdentēs",
+          "m": "playing"
+        },
+        {
+          "w": "spectat",
+          "m": "looks at"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-15",
+      "la": "Syra puellam plōrantem ex ātriō dūcit.",
+      "en": "Syra leads the crying girl out of the hall.",
+      "words": 6,
+      "focus": "plōrantem",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "puellam",
+          "m": "the girl"
+        },
+        {
+          "w": "plōrantem",
+          "m": "crying"
+        },
+        {
+          "w": "ex",
+          "m": "out of"
+        },
+        {
+          "w": "ātriō",
+          "m": "the hall"
+        },
+        {
+          "w": "dūcit",
+          "m": "leads"
+        }
+      ]
+    },
+    {
+      "id": "ptcp-16",
+      "la": "Mīles fortis hostēs fugientēs petit.",
+      "en": "The brave soldier attacks the fleeing enemy.",
+      "words": 5,
+      "focus": "fugientēs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mīles",
+          "m": "soldier"
+        },
+        {
+          "w": "fortis",
+          "m": "brave"
+        },
+        {
+          "w": "hostēs",
+          "m": "the enemy"
+        },
+        {
+          "w": "fugientēs",
+          "m": "fleeing"
+        },
+        {
+          "w": "petit",
+          "m": "attacks"
+        }
+      ]
+    }
+  ]
+}

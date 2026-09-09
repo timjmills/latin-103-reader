@@ -1,0 +1,526 @@
+{
+ "skill": "perfect-active",
+ "chapter": 21,
+ "sentences": [
+  {
+   "id": "pa-01",
+   "la": "Mārcus hodiē in hortō dormīvit.",
+   "en": "Marcus slept in the garden today.",
+   "words": 5,
+   "focus": "dormīvit",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "hodiē",
+     "m": "today"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "dormīvit",
+     "m": "slept"
+    }
+   ]
+  },
+  {
+   "id": "pa-02",
+   "la": "Iūlius servum ad vīllam vocāvit.",
+   "en": "Julius called the slave to the country house.",
+   "words": 5,
+   "focus": "vocāvit",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servum",
+     "m": "the slave (object)"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllam",
+     "m": "the country house"
+    },
+    {
+     "w": "vocāvit",
+     "m": "called"
+    }
+   ]
+  },
+  {
+   "id": "pa-03",
+   "la": "Ego epistulam tuam iam lēgī.",
+   "en": "I have already read your letter.",
+   "words": 5,
+   "focus": "lēgī",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "epistulam",
+     "m": "the letter (object)"
+    },
+    {
+     "w": "tuam",
+     "m": "your"
+    },
+    {
+     "w": "iam",
+     "m": "already"
+    },
+    {
+     "w": "lēgī",
+     "m": "I have read"
+    }
+   ]
+  },
+  {
+   "id": "pa-04",
+   "la": "Multa verba in librō scrīpsī.",
+   "en": "I wrote many words in the book.",
+   "words": 5,
+   "focus": "scrīpsī",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Multa",
+     "m": "many"
+    },
+    {
+     "w": "verba",
+     "m": "words (object)"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "librō",
+     "m": "the book"
+    },
+    {
+     "w": "scrīpsī",
+     "m": "I wrote"
+    }
+   ]
+  },
+  {
+   "id": "pa-05",
+   "la": "Puerī et puellae in hortō lūsērunt.",
+   "en": "The boys and girls played in the garden.",
+   "words": 6,
+   "focus": "lūsērunt",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "lūsērunt",
+     "m": "played"
+    }
+   ]
+  },
+  {
+   "id": "pa-06",
+   "la": "Dominus ad oppidum sōlus iit.",
+   "en": "The master went to the town alone.",
+   "words": 5,
+   "focus": "iit",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "oppidum",
+     "m": "the town"
+    },
+    {
+     "w": "sōlus",
+     "m": "alone"
+    },
+    {
+     "w": "iit",
+     "m": "went"
+    }
+   ],
+   "note": "eō has the shortest perfect in the book: iī, īstī, iit. The stem is a bare i-, so only the ending shows the tense."
+  },
+  {
+   "id": "pa-07",
+   "la": "Cūr mihi nihil respondistī, Mārce?",
+   "en": "Why did you give me no answer, Marcus?",
+   "words": 5,
+   "focus": "respondistī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cūr",
+     "m": "why"
+    },
+    {
+     "w": "mihi",
+     "m": "to me"
+    },
+    {
+     "w": "nihil",
+     "m": "nothing"
+    },
+    {
+     "w": "respondistī",
+     "m": "did you answer"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus (called to)"
+    }
+   ]
+  },
+  {
+   "id": "pa-08",
+   "la": "Nōs ad forum cum patre ambulāvimus.",
+   "en": "We walked to the forum with our father.",
+   "words": 6,
+   "focus": "ambulāvimus",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "forum",
+     "m": "the forum"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "patre",
+     "m": "our father"
+    },
+    {
+     "w": "ambulāvimus",
+     "m": "we walked"
+    }
+   ]
+  },
+  {
+   "id": "pa-09",
+   "la": "Vōs in hortō cum puerīs mānsistis.",
+   "en": "You all stayed in the garden with the boys.",
+   "words": 6,
+   "focus": "mānsistis",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vōs",
+     "m": "you (more than one)"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "puerīs",
+     "m": "the boys"
+    },
+    {
+     "w": "mānsistis",
+     "m": "you stayed"
+    }
+   ]
+  },
+  {
+   "id": "pa-10",
+   "la": "Puer nōn dormiēbat, sed statim dormīvit.",
+   "en": "The boy was not sleeping, but he slept at once.",
+   "words": 6,
+   "focus": "dormīvit",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "dormiēbat",
+     "m": "was sleeping"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "dormīvit",
+     "m": "slept"
+    }
+   ],
+   "note": "dormiēbat and dormīvit stand side by side: -ēbā- marks the imperfect, the perfect stem plus -it marks the perfect."
+  },
+  {
+   "id": "pa-11",
+   "la": "Aemilia tacēbat; tum Iūlius intrāvit.",
+   "en": "Aemilia was silent; then Julius came in.",
+   "words": 5,
+   "focus": "intrāvit",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "tacēbat",
+     "m": "was silent"
+    },
+    {
+     "w": "tum",
+     "m": "then"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "intrāvit",
+     "m": "came in"
+    }
+   ]
+  },
+  {
+   "id": "pa-12",
+   "la": "Postquam Iūlius vēnit, omnēs tacuērunt.",
+   "en": "After Julius came, they all fell silent.",
+   "words": 5,
+   "focus": "tacuērunt",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Postquam",
+     "m": "after"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "vēnit",
+     "m": "came"
+    },
+    {
+     "w": "omnēs",
+     "m": "everyone"
+    },
+    {
+     "w": "tacuērunt",
+     "m": "fell silent"
+    }
+   ]
+  },
+  {
+   "id": "pa-13",
+   "la": "Mīlitēs oppidum novum fortiter expugnāvērunt.",
+   "en": "The soldiers bravely stormed the new town.",
+   "words": 5,
+   "focus": "expugnāvērunt",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mīlitēs",
+     "m": "the soldiers"
+    },
+    {
+     "w": "oppidum",
+     "m": "the town (object)"
+    },
+    {
+     "w": "novum",
+     "m": "new"
+    },
+    {
+     "w": "fortiter",
+     "m": "bravely"
+    },
+    {
+     "w": "expugnāvērunt",
+     "m": "stormed"
+    }
+   ]
+  },
+  {
+   "id": "pa-14",
+   "la": "Ad īnsulam nostram vēnērunt mercātōrēs Rōmānī.",
+   "en": "Roman merchants came to our island.",
+   "words": 6,
+   "focus": "vēnērunt",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ad",
+     "m": "to"
+    },
+    {
+     "w": "īnsulam",
+     "m": "the island"
+    },
+    {
+     "w": "nostram",
+     "m": "our"
+    },
+    {
+     "w": "vēnērunt",
+     "m": "came"
+    },
+    {
+     "w": "mercātōrēs",
+     "m": "merchants"
+    },
+    {
+     "w": "Rōmānī",
+     "m": "Roman"
+    }
+   ],
+   "note": "The verb stands before its subject here; the ending -ērunt, not the word order, tells you who came."
+  }
+ ]
+}

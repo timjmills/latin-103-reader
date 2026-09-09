@@ -1,5 +1,72 @@
 {
   "skill": "demonstrative-pronouns",
+  "teach": [
+    {
+      "n": 1,
+      "title": "No noun beside it",
+      "say": "Latin has no separate word for *he*, *she*, *it* or *they*. It uses a pointing word on its own, and then it is **a demonstrative used as a pronoun (is = he, ea = she, id = it)**, *prōnōmina dēmōnstrātīva substantīva*. Compare *is servus dormit* — that slave is asleep, a pointing word with its noun — and *is dormit* — he is asleep, the same word standing alone. Look beside it: if no noun matches it, read he, she or it.",
+      "show": {
+        "kind": "sentence",
+        "id": "dpr-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dpr-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Its gender comes from the noun it stands for",
+      "say": "English picks *he*, *she* or *it* by whether the thing is male, female or neither. Latin picks by the gender of the noun being replaced, so a thing can be *is* or *ea*. *Ānulus* is masculine, so a ring is *is*; *gemma* is feminine, so a jewel is *ea*; *ōrnāmentum* is neuter, so it is *id*, and several of them are *ea*.",
+      "show": {
+        "kind": "sentence",
+        "id": "dpr-03"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "dpr-14"
+      }
+    },
+    {
+      "n": 3,
+      "title": "When the pronoun is the object",
+      "say": "As the thing the verb acts on, the pronoun takes the accusative (the object form): **eum** (him), **eam** (her, it), **id** (it), and for more than one **eōs**, **eās**, **ea**. *Mārcus Quīntum videt et eum vocat* — sees Quintus and calls him. The gender still comes from the noun it replaces, not from the English.",
+      "show": {
+        "kind": "sentence",
+        "id": "dpr-04"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dpr-05"
+      }
+    },
+    {
+      "n": 4,
+      "title": "eius and eī: whose, and to whom",
+      "say": "**eius** means his, her or its — the genitive (the owner form), and it never changes for gender: *sacculus eius* = his purse. **eī** means to him, to her, to it — the dative (the receiver form): *Syra eī rosam dat* = Syra gives her a rose. Both stand outside the noun they belong to, so they are easy to miss.",
+      "show": {
+        "kind": "sentence",
+        "id": "dpr-09"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "dpr-08"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Pronoun, or pointing word?",
+      "say": "The same word does both jobs, and only the sentence around it decides. *Illa gemma magna est* — *illa* has *gemma* beside it, so it points: that jewel. *illam Lȳdia emit* — nothing matches *illam*, so it stands in for the jewel: Lydia buys it. Hunt for a noun agreeing in gender, number and case; if there is none, the word is a pronoun.",
+      "show": {
+        "kind": "sentence",
+        "id": "dpr-13"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dpr-11"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

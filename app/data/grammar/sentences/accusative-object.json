@@ -1,0 +1,575 @@
+{
+ "skill": "accusative-object",
+ "chapter": 3,
+ "sentences": [
+  {
+   "id": "ao-01",
+   "la": "Iūlius Mārcum et Quīntum vocat.",
+   "en": "Julius calls Marcus and Quintus.",
+   "words": 5,
+   "focus": "Mārcum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "Mārcum",
+     "m": "Marcus"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Quīntum",
+     "m": "Quintus"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    }
+   ]
+  },
+  {
+   "id": "ao-02",
+   "la": "Mārcus Iūliam pulsat, et Iūlia plōrat.",
+   "en": "Marcus hits Julia, and Julia cries.",
+   "words": 6,
+   "focus": "Iūliam",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "Iūliam",
+     "m": "Julia"
+    },
+    {
+     "w": "pulsat",
+     "m": "hits"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "plōrat",
+     "m": "cries"
+    }
+   ]
+  },
+  {
+   "id": "ao-03",
+   "la": "Aemilia puellam parvam vocat, et puella venit.",
+   "en": "Aemilia calls the small girl, and the girl comes.",
+   "words": 7,
+   "focus": "puellam",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "puellam",
+     "m": "girl"
+    },
+    {
+     "w": "parvam",
+     "m": "small"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "puella",
+     "m": "girl"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "ao-04",
+   "la": "Syra Iūliam vocat, sed Iūlia nōn respondet.",
+   "en": "Syra calls Julia, but Julia does not answer.",
+   "words": 7,
+   "focus": "Iūliam",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "Iūliam",
+     "m": "Julia"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "respondet",
+     "m": "answers"
+    }
+   ]
+  },
+  {
+   "id": "ao-05",
+   "la": "Iūlia servum improbum in oppidō videt.",
+   "en": "Julia sees the naughty slave in the town.",
+   "words": 6,
+   "focus": "servum",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "servum",
+     "m": "slave"
+    },
+    {
+     "w": "improbum",
+     "m": "naughty"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "oppidō",
+     "m": "town"
+    },
+    {
+     "w": "videt",
+     "m": "sees"
+    }
+   ]
+  },
+  {
+   "id": "ao-06",
+   "la": "Dominus servum vocat, sed servus nōn venit.",
+   "en": "The master calls the slave, but the slave does not come.",
+   "words": 7,
+   "focus": "servum",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servum",
+     "m": "slave"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "servus",
+     "m": "slave"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "ao-07",
+   "la": "Dominus servōs improbōs verberat, et servī plōrant.",
+   "en": "The master beats the naughty slaves, and the slaves cry.",
+   "words": 7,
+   "focus": "servōs",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servōs",
+     "m": "slaves"
+    },
+    {
+     "w": "improbōs",
+     "m": "naughty"
+    },
+    {
+     "w": "verberat",
+     "m": "beats"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "servī",
+     "m": "slaves"
+    },
+    {
+     "w": "plōrant",
+     "m": "cry"
+    }
+   ]
+  },
+  {
+   "id": "ao-08",
+   "la": "Māter puellās et puerōs vocat.",
+   "en": "The mother calls the girls and the boys.",
+   "words": 5,
+   "focus": "puellās",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Māter",
+     "m": "the mother"
+    },
+    {
+     "w": "puellās",
+     "m": "girls"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "puerōs",
+     "m": "boys"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    }
+   ]
+  },
+  {
+   "id": "ao-09",
+   "la": "Mārcus et Quīntus oppidum antīquum vident.",
+   "en": "Marcus and Quintus see the old town.",
+   "words": 6,
+   "focus": "oppidum",
+   "step": 5,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "oppidum",
+     "m": "town"
+    },
+    {
+     "w": "antīquum",
+     "m": "old"
+    },
+    {
+     "w": "vident",
+     "m": "see"
+    }
+   ]
+  },
+  {
+   "id": "ao-10",
+   "la": "Puerī multa oppida in prōvinciā vident.",
+   "en": "The boys see many towns in the province.",
+   "words": 6,
+   "focus": "oppida",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "multa",
+     "m": "many"
+    },
+    {
+     "w": "oppida",
+     "m": "towns"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "prōvinciā",
+     "m": "province"
+    },
+    {
+     "w": "vident",
+     "m": "see"
+    }
+   ]
+  },
+  {
+   "id": "ao-11",
+   "la": "Puellam parvam māter laeta vocat.",
+   "en": "The happy mother calls the small girl.",
+   "words": 5,
+   "focus": "Puellam",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puellam",
+     "m": "the girl"
+    },
+    {
+     "w": "parvam",
+     "m": "small"
+    },
+    {
+     "w": "māter",
+     "m": "mother"
+    },
+    {
+     "w": "laeta",
+     "m": "happy"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    }
+   ]
+  },
+  {
+   "id": "ao-12",
+   "la": "Mārcus Quīntum pulsat, Quīntus Mārcum verberat.",
+   "en": "Marcus hits Quintus, Quintus beats Marcus.",
+   "words": 6,
+   "focus": "Quīntum",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "Quīntum",
+     "m": "Quintus"
+    },
+    {
+     "w": "pulsat",
+     "m": "hits"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "Mārcum",
+     "m": "Marcus"
+    },
+    {
+     "w": "verberat",
+     "m": "beats"
+    }
+   ]
+  },
+  {
+   "id": "ao-13",
+   "la": "Quīntus mātrem audit, sed nōn respondet.",
+   "en": "Quintus hears his mother, but does not answer.",
+   "words": 6,
+   "focus": "mātrem",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "mātrem",
+     "m": "mother"
+    },
+    {
+     "w": "audit",
+     "m": "hears"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "respondet",
+     "m": "answers"
+    }
+   ]
+  },
+  {
+   "id": "ao-14",
+   "la": "Vocābula Latīna puerī in librō vident.",
+   "en": "The boys see the Latin words in the book.",
+   "words": 6,
+   "focus": "Vocābula",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vocābula",
+     "m": "words"
+    },
+    {
+     "w": "Latīna",
+     "m": "Latin"
+    },
+    {
+     "w": "puerī",
+     "m": "boys"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "librō",
+     "m": "book"
+    },
+    {
+     "w": "vident",
+     "m": "see"
+    }
+   ]
+  }
+ ]
+}

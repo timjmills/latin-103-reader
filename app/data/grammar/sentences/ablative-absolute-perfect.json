@@ -1,0 +1,553 @@
+{
+ "skill": "ablative-absolute-perfect",
+ "chapter": 22,
+ "sentences": [
+  {
+   "id": "aap-01",
+   "la": "Hōc dictō, Iūlius ex ātriō exiit.",
+   "en": "This said, Julius went out of the atrium.",
+   "words": 6,
+   "focus": "Hōc dictō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Hōc",
+     "m": "this"
+    },
+    {
+     "w": "dictō",
+     "m": "said"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "exiit",
+     "m": "went"
+    }
+   ]
+  },
+  {
+   "id": "aap-02",
+   "la": "Cibō parātō, ancilla dominum vocāvit.",
+   "en": "The food ready, the slave girl called her master.",
+   "words": 5,
+   "focus": "Cibō parātō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Cibō",
+     "m": "the food"
+    },
+    {
+     "w": "parātō",
+     "m": "got ready"
+    },
+    {
+     "w": "ancilla",
+     "m": "the slave girl"
+    },
+    {
+     "w": "dominum",
+     "m": "her master (object)"
+    },
+    {
+     "w": "vocāvit",
+     "m": "called"
+    }
+   ]
+  },
+  {
+   "id": "aap-03",
+   "la": "Iūlius, iānuā clausā, in cubiculum iit.",
+   "en": "Julius, the door shut, went into the bedroom.",
+   "words": 6,
+   "focus": "iānuā clausā",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "iānuā",
+     "m": "the door"
+    },
+    {
+     "w": "clausā",
+     "m": "shut"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "cubiculum",
+     "m": "the bedroom"
+    },
+    {
+     "w": "iit",
+     "m": "went"
+    }
+   ]
+  },
+  {
+   "id": "aap-04",
+   "la": "Epistulā scrīptā, Mārcus stilum posuit.",
+   "en": "The letter written, Marcus put down his pen.",
+   "words": 5,
+   "focus": "Epistulā scrīptā",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Epistulā",
+     "m": "the letter"
+    },
+    {
+     "w": "scrīptā",
+     "m": "written"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "stilum",
+     "m": "his pen (object)"
+    },
+    {
+     "w": "posuit",
+     "m": "put down"
+    }
+   ]
+  },
+  {
+   "id": "aap-05",
+   "la": "Portā apertā, canis in hortum cucurrit.",
+   "en": "The gate opened, the dog ran into the garden.",
+   "words": 6,
+   "focus": "Portā apertā",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Portā",
+     "m": "the gate"
+    },
+    {
+     "w": "apertā",
+     "m": "opened"
+    },
+    {
+     "w": "canis",
+     "m": "the dog"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "cucurrit",
+     "m": "ran"
+    }
+   ]
+  },
+  {
+   "id": "aap-06",
+   "la": "Hīs verbīs dictīs, omnēs puerī tacuērunt.",
+   "en": "These words said, all the boys fell silent.",
+   "words": 6,
+   "focus": "verbīs dictīs",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hīs",
+     "m": "these"
+    },
+    {
+     "w": "verbīs",
+     "m": "words"
+    },
+    {
+     "w": "dictīs",
+     "m": "said"
+    },
+    {
+     "w": "omnēs",
+     "m": "all"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "tacuērunt",
+     "m": "fell silent"
+    }
+   ]
+  },
+  {
+   "id": "aap-07",
+   "la": "Mīlitibus victīs, oppidum ab hostibus captum est.",
+   "en": "The soldiers defeated, the town was taken by the enemy.",
+   "words": 7,
+   "focus": "Mīlitibus victīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mīlitibus",
+     "m": "the soldiers"
+    },
+    {
+     "w": "victīs",
+     "m": "defeated"
+    },
+    {
+     "w": "oppidum",
+     "m": "the town"
+    },
+    {
+     "w": "ab",
+     "m": "by"
+    },
+    {
+     "w": "hostibus",
+     "m": "the enemy"
+    },
+    {
+     "w": "captum",
+     "m": "taken"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "aap-08",
+   "la": "Servīs vocātīs, dominus pecūniam dedit.",
+   "en": "The slaves called, the master gave out the money.",
+   "words": 5,
+   "focus": "Servīs vocātīs",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servīs",
+     "m": "the slaves"
+    },
+    {
+     "w": "vocātīs",
+     "m": "called"
+    },
+    {
+     "w": "dominus",
+     "m": "the master"
+    },
+    {
+     "w": "pecūniam",
+     "m": "the money (object)"
+    },
+    {
+     "w": "dedit",
+     "m": "gave"
+    }
+   ]
+  },
+  {
+   "id": "aap-09",
+   "la": "Librīs sūmptīs, Mārcus ad lūdum iit.",
+   "en": "His books taken up, Marcus went to school.",
+   "words": 6,
+   "focus": "Librīs sūmptīs",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Librīs",
+     "m": "his books"
+    },
+    {
+     "w": "sūmptīs",
+     "m": "taken up"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "lūdum",
+     "m": "school"
+    },
+    {
+     "w": "iit",
+     "m": "went"
+    }
+   ]
+  },
+  {
+   "id": "aap-10",
+   "la": "Nāve solūtā, nautae ad īnsulam nāvigāvērunt.",
+   "en": "The ship loosed, the sailors sailed to the island.",
+   "words": 6,
+   "focus": "Nāve solūtā",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nāve",
+     "m": "the ship"
+    },
+    {
+     "w": "solūtā",
+     "m": "loosed"
+    },
+    {
+     "w": "nautae",
+     "m": "the sailors"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "īnsulam",
+     "m": "the island"
+    },
+    {
+     "w": "nāvigāvērunt",
+     "m": "sailed"
+    }
+   ]
+  },
+  {
+   "id": "aap-11",
+   "la": "Puerī, magistrō audītō, tabulās sūmpsērunt.",
+   "en": "The boys, the teacher heard, took up their tablets.",
+   "words": 5,
+   "focus": "magistrō audītō",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "audītō",
+     "m": "heard"
+    },
+    {
+     "w": "tabulās",
+     "m": "their tablets (object)"
+    },
+    {
+     "w": "sūmpsērunt",
+     "m": "took up"
+    }
+   ],
+   "note": "The pair sits inside the sentence, not at the front, and it is still not the subject: puerī is."
+  },
+  {
+   "id": "aap-12",
+   "la": "Pecūniā datā, mercātor gemmam Aemiliae dedit.",
+   "en": "The money given, the merchant gave Aemilia the jewel.",
+   "words": 6,
+   "focus": "Pecūniā datā",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pecūniā",
+     "m": "the money"
+    },
+    {
+     "w": "datā",
+     "m": "given"
+    },
+    {
+     "w": "mercātor",
+     "m": "the merchant"
+    },
+    {
+     "w": "gemmam",
+     "m": "the jewel (object)"
+    },
+    {
+     "w": "Aemiliae",
+     "m": "to Aemilia"
+    },
+    {
+     "w": "dedit",
+     "m": "gave"
+    }
+   ],
+   "note": "There is no est anywhere: pecūniā datā is not 'the money was given', which would be pecūnia data est."
+  },
+  {
+   "id": "aap-13",
+   "la": "Occīsā ove, pāstor ad vīllam rediit.",
+   "en": "The sheep killed, the shepherd went back to the country house.",
+   "words": 6,
+   "focus": "Occīsā ove",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Occīsā",
+     "m": "killed"
+    },
+    {
+     "w": "ove",
+     "m": "the sheep"
+    },
+    {
+     "w": "pāstor",
+     "m": "the shepherd"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllam",
+     "m": "the country house"
+    },
+    {
+     "w": "rediit",
+     "m": "went back"
+    }
+   ],
+   "note": "The participle comes first here; both words still end in the ablative, and that is what holds the pair together."
+  },
+  {
+   "id": "aap-14",
+   "la": "Librō ā puerō lēctō, magister gaudet.",
+   "en": "The book read by the boy, the teacher is glad.",
+   "words": 6,
+   "focus": "lēctō",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Librō",
+     "m": "the book"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "puerō",
+     "m": "the boy"
+    },
+    {
+     "w": "lēctō",
+     "m": "read"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "gaudet",
+     "m": "is glad"
+    }
+   ],
+   "note": "The noun and its participle are split by the phrase saying who did it, so the focus names the participle alone: librō … lēctō."
+  }
+ ]
+}

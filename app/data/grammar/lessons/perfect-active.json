@@ -44,6 +44,112 @@
       "text": "Both are past, but **the imperfect (the 'was doing' tense)** paints a scene going on (*dormiēbat* — he was sleeping); the perfect reports one thing that happened (*dormīvit* — he slept). The -bā- / -ēbā- marker means imperfect; a changed stem plus -it / -ērunt means perfect."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the perfect does",
+      "say": "When a thing is over and done with, Latin reaches for **the perfect (the 'did / has done' tense)**: *dormīvit* — he slept, or he has slept. One Latin form covers both English pasts, and the rest of the sentence decides which to say. This is the tense stories are told in.",
+      "show": {
+        "kind": "sentence",
+        "id": "pa-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pa-02",
+        "ask": "Which word tells you the calling is already over?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The stem, and the ending for 'I'",
+      "say": "Every perfect is built on the perfect stem: the third dictionary form with its *-ī* cut off. *lēgī* gives *lēg-*, *scrīpsī* gives *scrīps-*, *vocāvī* gives *vocāv-*. Put the *-ī* back and you have the form for 'I': *lēgī*, 'I read'. Nothing ever stands between stem and ending.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "perf.ind.act.1.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.ind.act.1.sg"
+        ],
+        "ask": "Fill in the 'I' cell of the perfect."
+      }
+    },
+    {
+      "n": 3,
+      "title": "-it and -ērunt, the two a story lives on",
+      "say": "A story is told about other people, so these two do most of the work: *-it* for one person, *-ērunt* for more than one. *vocāvit* — he called; *lūsērunt* — they played. The *ē* of *-ērunt* is long: *lūsērunt*, never *lūserunt*. The *-ī* of *lēgī* and the *-ī* of *respondistī* are long too; *-it*, *-imus* and *-istis* are the short ones.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "perf.ind.act.3.sg",
+          "perf.ind.act.3.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.ind.act.3.sg",
+          "perf.ind.act.3.pl"
+        ],
+        "ask": "Fill in the two cells the story uses most."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The three endings that carry -is-",
+      "say": "The rest are *-istī* for 'you', *-imus* for 'we', *-istis* for 'you all'. Two of the three carry *-is-*, which belongs to no other tense at all: *respondistī*, *mānsistis*. See *-istī* or *-istis* and the tense is settled before you even know the verb.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "perf.ind.act.2.sg",
+          "perf.ind.act.1.pl",
+          "perf.ind.act.2.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "perf.ind.act.2.sg",
+          "perf.ind.act.2.pl"
+        ],
+        "ask": "Fill in the two cells that carry -is-."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Perfect or imperfect?",
+      "say": "Both are past, and this is where beginners slip. **The imperfect (the 'was doing' tense)** paints a scene that is still running: *dormiēbat*, he was sleeping. The perfect reports one finished thing: *dormīvit*, he slept. Look for *-bā-* or *-ēbā-* before the ending: that is the imperfect. A changed stem with *-it* or *-ērunt* is the perfect.",
+      "show": {
+        "kind": "sentence",
+        "id": "pa-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pa-11",
+        "ask": "Of the two verbs here, which is the perfect, and what tells you?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Now say it yourself. Ørberg's usual signals for the perfect are *postquam* 'after', *iam* 'already' and *tum* 'then', and each points at something already over. The word order is free — the verb may come first — and it is still the ending, never the position, that tells you who acted.",
+      "show": {
+        "kind": "sentence",
+        "id": "pa-14"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pa-12",
+        "ask": "*taceō, tacēre, tacuī*. Put 'they fell silent' in the gap."
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

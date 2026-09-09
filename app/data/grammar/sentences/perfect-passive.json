@@ -1,0 +1,606 @@
+{
+ "skill": "perfect-passive",
+ "chapter": 21,
+ "sentences": [
+  {
+   "id": "pfp-01",
+   "la": "Puer ā magistrō laudātus est.",
+   "en": "The boy was praised by the teacher.",
+   "words": 5,
+   "focus": "laudātus est",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "laudātus",
+     "m": "praised"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "pfp-02",
+   "la": "Puella ā magistrō laudāta est.",
+   "en": "The girl was praised by the teacher.",
+   "words": 5,
+   "focus": "laudāta est",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puella",
+     "m": "the girl"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "laudāta",
+     "m": "praised"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "pfp-03",
+   "la": "Ōstium ab ōstiāriō clausum est.",
+   "en": "The door was shut by the doorkeeper.",
+   "words": 5,
+   "focus": "clausum est",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ōstium",
+     "m": "the door"
+    },
+    {
+     "w": "ab",
+     "m": "by"
+    },
+    {
+     "w": "ōstiāriō",
+     "m": "the doorkeeper"
+    },
+    {
+     "w": "clausum",
+     "m": "shut"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "pfp-04",
+   "la": "Hodiē scrīpta est epistula longa.",
+   "en": "A long letter was written today.",
+   "words": 5,
+   "focus": "scrīpta est",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hodiē",
+     "m": "today"
+    },
+    {
+     "w": "scrīpta",
+     "m": "written"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    },
+    {
+     "w": "epistula",
+     "m": "a letter"
+    },
+    {
+     "w": "longa",
+     "m": "long"
+    }
+   ],
+   "note": "The two words can stand in either order: scrīpta est here, est scrīpta elsewhere. Both are one perfect passive."
+  },
+  {
+   "id": "pfp-05",
+   "la": "Puerī ā magistrō laudātī sunt.",
+   "en": "The boys were praised by the teacher.",
+   "words": 5,
+   "focus": "laudātī sunt",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "laudātī",
+     "m": "praised"
+    },
+    {
+     "w": "sunt",
+     "m": "were"
+    }
+   ]
+  },
+  {
+   "id": "pfp-06",
+   "la": "Rosae ā Iūliā in hortō carptae sunt.",
+   "en": "The roses were picked by Julia in the garden.",
+   "words": 7,
+   "focus": "carptae sunt",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Rosae",
+     "m": "the roses"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Iūliā",
+     "m": "Julia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "carptae",
+     "m": "picked"
+    },
+    {
+     "w": "sunt",
+     "m": "were"
+    }
+   ]
+  },
+  {
+   "id": "pfp-07",
+   "la": "Ego ā patre meō vocātus sum.",
+   "en": "I was called by my father.",
+   "words": 6,
+   "focus": "vocātus sum",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "patre",
+     "m": "father"
+    },
+    {
+     "w": "meō",
+     "m": "my"
+    },
+    {
+     "w": "vocātus",
+     "m": "called"
+    },
+    {
+     "w": "sum",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "pfp-08",
+   "la": "Tū ā magistrō nōn reprehēnsus es.",
+   "en": "You were not blamed by the teacher.",
+   "words": 6,
+   "focus": "reprehēnsus es",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "reprehēnsus",
+     "m": "blamed"
+    },
+    {
+     "w": "es",
+     "m": "were"
+    }
+   ]
+  },
+  {
+   "id": "pfp-09",
+   "la": "Nōs ā dominō in vīllam vocātī sumus.",
+   "en": "We were called into the country house by the master.",
+   "words": 7,
+   "focus": "vocātī sumus",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "dominō",
+     "m": "the master"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "vīllam",
+     "m": "the country house"
+    },
+    {
+     "w": "vocātī",
+     "m": "called"
+    },
+    {
+     "w": "sumus",
+     "m": "were"
+    }
+   ]
+  },
+  {
+   "id": "pfp-10",
+   "la": "Vōs ā magistrō bene doctī estis.",
+   "en": "You were well taught by the teacher.",
+   "words": 6,
+   "focus": "doctī estis",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vōs",
+     "m": "you (more than one)"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "bene",
+     "m": "well"
+    },
+    {
+     "w": "doctī",
+     "m": "taught"
+    },
+    {
+     "w": "estis",
+     "m": "were"
+    }
+   ]
+  },
+  {
+   "id": "pfp-11",
+   "la": "Cibus parātur, sed pānis iam parātus est.",
+   "en": "The food is being got ready, but the bread has already been got ready.",
+   "words": 7,
+   "focus": "parātus est",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Cibus",
+     "m": "the food"
+    },
+    {
+     "w": "parātur",
+     "m": "is being got ready"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "pānis",
+     "m": "the bread"
+    },
+    {
+     "w": "iam",
+     "m": "already"
+    },
+    {
+     "w": "parātus",
+     "m": "got ready"
+    },
+    {
+     "w": "est",
+     "m": "has been"
+    }
+   ],
+   "note": "One word (parātur) is the present passive; two words (parātus est) are the perfect passive. Here est means 'has been', not 'is'."
+  },
+  {
+   "id": "pfp-12",
+   "la": "Mārcus Quīntum pulsāvit; Quīntus pulsātus est.",
+   "en": "Marcus hit Quintus; Quintus was hit.",
+   "words": 6,
+   "focus": "pulsātus est",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "Quīntum",
+     "m": "Quintus (object)"
+    },
+    {
+     "w": "pulsāvit",
+     "m": "hit"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "pulsātus",
+     "m": "hit"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ],
+   "note": "The same event twice: the perfect active names the doer as subject, the perfect passive names the sufferer as subject."
+  },
+  {
+   "id": "pfp-13",
+   "la": "Nāvis ā nautīs in portum ducta est.",
+   "en": "The ship was brought into the harbour by the sailors.",
+   "words": 7,
+   "focus": "ducta est",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nāvis",
+     "m": "the ship"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "nautīs",
+     "m": "the sailors"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "portum",
+     "m": "the harbour"
+    },
+    {
+     "w": "ducta",
+     "m": "brought"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "pfp-14",
+   "la": "Illa vīlla ā patre meō ēmpta est.",
+   "en": "That country house was bought by my father.",
+   "words": 7,
+   "focus": "ēmpta est",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Illa",
+     "m": "that"
+    },
+    {
+     "w": "vīlla",
+     "m": "country house"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "patre",
+     "m": "father"
+    },
+    {
+     "w": "meō",
+     "m": "my"
+    },
+    {
+     "w": "ēmpta",
+     "m": "bought"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "pfp-15",
+   "la": "Ovis ā lupō in campō occīsa est.",
+   "en": "The sheep was killed by a wolf in the field.",
+   "words": 7,
+   "focus": "occīsa est",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ovis",
+     "m": "the sheep"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "lupō",
+     "m": "a wolf"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "campō",
+     "m": "the field"
+    },
+    {
+     "w": "occīsa",
+     "m": "killed"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  }
+ ]
+}

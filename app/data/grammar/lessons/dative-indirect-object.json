@@ -1,5 +1,108 @@
 {
   "skill": "dative-indirect-object",
+  "teach": [
+    {
+      "n": 1,
+      "title": "The person who gets it",
+      "say": "When someone gives, hands, says or answers something, there are two people in play: the thing given is the object, and the person on the receiving end goes into **the dative (the 'to/for' form)**, *cāsus datīvus*. *Iūlius servō nummum dat* = Julius gives the slave a coin. No preposition is used, and no word order marks it — only the ending. The question word is *cui?* (to whom?).",
+      "show": {
+        "kind": "sentence",
+        "id": "dio-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "dio-11"
+      }
+    },
+    {
+      "n": 2,
+      "title": "A servus-type receiver ends in -ō",
+      "say": "A receiver whose dictionary form ends in -us (*servus*, *dominus*, *fīlius*) ends **-ō** in the dative singular: *servō*, *dominō*, *fīliō*. Names in -us do it too: *Mārcō*, *Quīntō*. A word in -um takes the very same ending (*oppidum* → *oppidō*), though a thing is seldom the one receiving. It is the same -ō as the ablative, so the sentence, not the ending, tells you which it is.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "dat.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl2n",
+        "cells": [
+          "dat.sg"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "An ancilla-type receiver ends in -ae",
+      "say": "A receiver whose dictionary form ends in -a (*fīlia*, *puella*, *ancilla*, and the name *Syra*) ends **-ae** in the dative singular: *fīliae*, *puellae*, *Syrae*. Say it as two sounds, ah-ee, and remember that it is the giving-to ending, whatever else -ae may also be.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "reveal": [
+          "dat.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "dat.sg"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "More than one receiver: -īs",
+      "say": "Two or more receivers take the dative plural, and both families end **-īs**: *servīs*, *puerīs*, *puellīs*. Nothing else changes — the thing given stays in the object form, and the verb still agrees with the subject, not with the receivers.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "dat.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "dat.pl"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "The pater family: -ī and -ibus",
+      "say": "Nouns whose genitive ends in -is (*pater, patris*; *māter, mātris*) build the dative on that stem: **-ī** in the singular, **-ibus** in the plural — *patrī*, *mātrī*, *patribus*, *mātribus*. The job is exactly the same; only the two endings are new.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl3",
+        "reveal": [
+          "dat.sg",
+          "dat.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "dat.sg",
+          "dat.pl"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "title": "Two words in -ae: which one receives?",
+      "say": "*fīliae* can be the dative (the receiver, to the daughter) or the genitive (the owner, of the daughter), and *dominī* can be the genitive too. Work from the verb: the giving verb needs exactly one receiver, and any other case-mate hangs on a noun. *Mārcus fīliae dominī rosam dat* = Marcus gives a rose to the master's daughter — *fīliae* receives, *dominī* owns.",
+      "show": {
+        "kind": "sentence",
+        "id": "dio-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "dio-15"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

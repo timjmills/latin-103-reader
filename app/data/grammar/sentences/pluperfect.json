@@ -1,0 +1,544 @@
+{
+  "skill": "pluperfect",
+  "chapter": 24,
+  "sentences": [
+    {
+      "id": "pl-01",
+      "la": "Quīntus dormīverat, sed nunc vigilat.",
+      "en": "Quintus had slept, but now he is awake.",
+      "words": 5,
+      "focus": "dormīverat",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "dormīverat",
+          "m": "had slept"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "vigilat",
+          "m": "he is awake"
+        }
+      ]
+    },
+    {
+      "id": "pl-02",
+      "la": "Puer ūmidus erat, quia per imbrem ambulāverat.",
+      "en": "The boy was wet, because he had walked through the rain.",
+      "words": 7,
+      "focus": "ambulāverat",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "ūmidus",
+          "m": "wet"
+        },
+        {
+          "w": "erat",
+          "m": "was"
+        },
+        {
+          "w": "quia",
+          "m": "because"
+        },
+        {
+          "w": "per",
+          "m": "through"
+        },
+        {
+          "w": "imbrem",
+          "m": "the rain"
+        },
+        {
+          "w": "ambulāverat",
+          "m": "he had walked"
+        }
+      ]
+    },
+    {
+      "id": "pl-03",
+      "la": "Iūlius epistulam scrīpserat et Rōmam mīserat.",
+      "en": "Julius had written a letter and had sent it to Rome.",
+      "words": 6,
+      "focus": "scrīpserat",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "epistulam",
+          "m": "a letter"
+        },
+        {
+          "w": "scrīpserat",
+          "m": "had written"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "mīserat",
+          "m": "had sent"
+        }
+      ]
+    },
+    {
+      "id": "pl-04",
+      "la": "Ancilla iānuam clauserat, sed Mēdus intrāvit.",
+      "en": "The maid had shut the door, but Medus came in.",
+      "words": 6,
+      "focus": "clauserat",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ancilla",
+          "m": "the maid"
+        },
+        {
+          "w": "iānuam",
+          "m": "the door"
+        },
+        {
+          "w": "clauserat",
+          "m": "had shut"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "intrāvit",
+          "m": "came in"
+        }
+      ]
+    },
+    {
+      "id": "pl-05",
+      "la": "Ego eum anteā nōn vīderam.",
+      "en": "I had not seen him before.",
+      "words": 5,
+      "focus": "vīderam",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ego",
+          "m": "I"
+        },
+        {
+          "w": "eum",
+          "m": "him"
+        },
+        {
+          "w": "anteā",
+          "m": "before"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "vīderam",
+          "m": "had seen"
+        }
+      ]
+    },
+    {
+      "id": "pl-06",
+      "la": "Vōs ex oppidō iam discesserātis.",
+      "en": "You had already gone away from the town.",
+      "words": 5,
+      "focus": "discesserātis",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Vōs",
+          "m": "you"
+        },
+        {
+          "w": "ex",
+          "m": "from"
+        },
+        {
+          "w": "oppidō",
+          "m": "the town"
+        },
+        {
+          "w": "iam",
+          "m": "already"
+        },
+        {
+          "w": "discesserātis",
+          "m": "had gone away"
+        }
+      ]
+    },
+    {
+      "id": "pl-07",
+      "la": "Puerī, quī fessī erant, iam dormīverant.",
+      "en": "The boys, who were tired, had already fallen asleep.",
+      "words": 6,
+      "focus": "dormīverant",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "quī",
+          "m": "who"
+        },
+        {
+          "w": "fessī",
+          "m": "tired"
+        },
+        {
+          "w": "erant",
+          "m": "were"
+        },
+        {
+          "w": "iam",
+          "m": "already"
+        },
+        {
+          "w": "dormīverant",
+          "m": "had slept"
+        }
+      ]
+    },
+    {
+      "id": "pl-08",
+      "la": "Mārcus in lūdō nōn fuerat.",
+      "en": "Marcus had not been in the school.",
+      "words": 5,
+      "focus": "fuerat",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "fuerat",
+          "m": "had been"
+        }
+      ]
+    },
+    {
+      "id": "pl-09",
+      "la": "Iānua ā servō clausa erat.",
+      "en": "The door had been shut by the slave.",
+      "words": 5,
+      "focus": "clausa erat",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iānua",
+          "m": "the door"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "servō",
+          "m": "the slave"
+        },
+        {
+          "w": "clausa",
+          "m": "shut"
+        },
+        {
+          "w": "erat",
+          "m": "had been"
+        }
+      ]
+    },
+    {
+      "id": "pl-10",
+      "la": "Mēdus cum Lȳdiā Rōmam profectus erat.",
+      "en": "Medus had set out for Rome with Lydia.",
+      "words": 6,
+      "focus": "profectus erat",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "Lȳdiā",
+          "m": "Lydia"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "profectus",
+          "m": "had set out"
+        },
+        {
+          "w": "erat",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pl-11",
+      "la": "Iūlius vēnit; Mēdus autem iam abierat.",
+      "en": "Julius came; but Medus had already gone away.",
+      "words": 6,
+      "focus": "abierat",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "vēnit",
+          "m": "came"
+        },
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "autem",
+          "m": "but"
+        },
+        {
+          "w": "iam",
+          "m": "already"
+        },
+        {
+          "w": "abierat",
+          "m": "had gone away"
+        }
+      ]
+    },
+    {
+      "id": "pl-12",
+      "la": "Puella flōrem, quem carpserat, mātrī dedit.",
+      "en": "The girl gave her mother the flower which she had picked.",
+      "words": 6,
+      "focus": "carpserat",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "flōrem",
+          "m": "the flower"
+        },
+        {
+          "w": "quem",
+          "m": "which"
+        },
+        {
+          "w": "carpserat",
+          "m": "she had picked"
+        },
+        {
+          "w": "mātrī",
+          "m": "to her mother"
+        },
+        {
+          "w": "dedit",
+          "m": "gave"
+        }
+      ]
+    },
+    {
+      "id": "pl-13",
+      "la": "Puer canem, quem verberāverat, nunc timet.",
+      "en": "The boy now fears the dog which he had beaten.",
+      "words": 6,
+      "focus": "verberāverat",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "canem",
+          "m": "the dog"
+        },
+        {
+          "w": "quem",
+          "m": "which"
+        },
+        {
+          "w": "verberāverat",
+          "m": "he had beaten"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "timet",
+          "m": "fears"
+        }
+      ]
+    },
+    {
+      "id": "pl-14",
+      "la": "Nautae nāvem solverant et abierant.",
+      "en": "The sailors had cast off the ship and had gone away.",
+      "words": 5,
+      "focus": "solverant",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nautae",
+          "m": "the sailors"
+        },
+        {
+          "w": "nāvem",
+          "m": "the ship"
+        },
+        {
+          "w": "solverant",
+          "m": "had cast off"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "abierant",
+          "m": "had gone away"
+        }
+      ]
+    }
+  ]
+}

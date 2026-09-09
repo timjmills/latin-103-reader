@@ -1,5 +1,94 @@
 {
   "skill": "ablative-agent",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Who did it, when the verb is passive",
+      "say": "A passive verb says the action is done *to* its subject: *saccus portātur* — the sack is carried. To name the person doing it, Latin puts *ā* in front (or *ab* when the next word starts with a vowel: *ab amīcō*) and the doer goes into **the ablative (the 'by' form after ā/ab)**, *ablātīvus auctōris*: *ā servō* — by the slave. Nothing else in the sentence moves.",
+      "show": {
+        "kind": "sentence",
+        "id": "abag-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "abag-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "A servus-type doer ends in -ō",
+      "say": "The doer is an ordinary noun, so it takes the ablative ending of its own family. A noun in -us (*servus*, *dominus*, *amīcus*) drops -us and ends **-ō** in the ablative singular: *ā servō*, *ā dominō*, *ab amīcō*. Names in -us do the same: *ā Iūliō*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "abl.sg"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abag-05"
+      }
+    },
+    {
+      "n": 3,
+      "title": "An ancilla-type doer ends in -ā",
+      "say": "A noun in -a (*ancilla*, *domina*, and the names *Syra*, *Aemilia*) ends **-ā** in the ablative singular: *ab ancillā*, *ā dominā*, *ā Syrā*. It is the same letter as the plain nominative, only long — so look for *ā/ab* in front, which never lies.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "reveal": [
+          "abl.sg"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abag-04"
+      }
+    },
+    {
+      "n": 4,
+      "title": "More than one doer: -īs",
+      "say": "When several people do it, the doer goes into the ablative plural, and both families end **-īs**: *ā servīs*, *ā puerīs*, *ā puellīs*. Watch the verb: it is plural only when the *subject* is plural (*saccī portantur*), never because the doers are many — *ā servīs suīs dominus nōn timētur* has one master and many slaves, and the verb stays singular.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "abl.pl"
+        ]
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abag-06"
+      }
+    },
+    {
+      "n": 5,
+      "title": "A doer, or a thing used?",
+      "say": "*ā/ab* names something alive that chose to act — a person, a god, an animal. A lifeless thing the doer uses takes the bare ablative with no preposition at all: *baculō* — with a stick. In *servus baculō ā dominō verberātur* both are present: the master does it, the stick is what he does it with. Ask of each ablative: could this decide to act?",
+      "show": {
+        "kind": "sentence",
+        "id": "abag-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "abag-10"
+      }
+    },
+    {
+      "n": 6,
+      "title": "It can stand anywhere in the sentence",
+      "say": "The doer is marked by *ā/ab* and by the ending, never by its place, so the phrase may open the sentence, sit in the middle, or follow the verb without the meaning shifting: *ā servīs suīs dominus nōn timētur* = the master is not feared by his own slaves. Read the endings first and the order second.",
+      "show": {
+        "kind": "sentence",
+        "id": "abag-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "abag-12"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

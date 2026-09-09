@@ -1,5 +1,91 @@
 {
   "skill": "passive-periphrastic",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Put a gerundive beside a part of *sum* and Latin has said 'must'. That is **the gerundive with sum (the 'must be done' pattern: liber legendus est = the book must be read)**. *Hic liber hodiē legendus est* — this book must be read today. There is no separate word for 'must'; the *-nd-* and the *est* carry it between them.",
+      "show": {
+        "kind": "sentence",
+        "id": "pp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pp-02",
+        "ask": "What does edendus est say about the food?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "It agrees with the thing that must be done",
+      "say": "The gerundive is an adjective, so it takes the gender, number and case of the subject, and *sum* takes the number too: *liber legendus est*, *epistulae scrībendae sunt*, *vāsa lavanda sunt*, *puerī laudandī sunt*. Find the subject first and the ending follows from it.",
+      "show": {
+        "kind": "sentence",
+        "id": "pp-03"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pp-04",
+        "ask": "vāsa is neuter plural. Fill in the gerundive of lavō to match it."
+      }
+    },
+    {
+      "n": 3,
+      "title": "With no subject at all: 'one must'",
+      "say": "When nothing in particular has to be done — only an action — Latin uses the neuter singular with *est* and no subject at all: *dormiendum est* 'one must sleep', *tacendum est* 'one must keep quiet'. English needs a word like 'one' or 'we'; Latin needs none.",
+      "show": {
+        "kind": "sentence",
+        "id": "pp-06"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pp-07",
+        "ask": "tacendum est has no subject at all. What is this construction?"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Not the perfect passive",
+      "say": "*scrīpta est* and *scrībenda est* look alike and mean opposite things. The perfect passive *scrīpta est* says the letter has been written and the job is done; the gerundive *scrībenda est* says it still must be written. Look for the *-nd-*.",
+      "show": {
+        "kind": "sentence",
+        "id": "pp-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pp-11",
+        "ask": "pūniendus est: has the slave been punished, or must he be?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Only sum changes tense",
+      "say": "The gerundive itself never changes its tense; the verb beside it does. *Porta claudenda est* — the door must be shut. *Porta claudenda erat* — it had to be shut. *Crās vīlla aedificanda erit* — tomorrow the house will have to be built. Change the part of *sum* and you have moved the obligation in time.",
+      "show": {
+        "kind": "sentence",
+        "id": "pp-08"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pp-09",
+        "ask": "erit puts the obligation in the future. Fill in the gerundive of aedificō to match vīlla."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Say it yourself",
+      "say": "Name the thing that must be done, match the gerundive to it, and add the right part of *sum*: *haec verba*, neuter plural, gives *haec verba omnia discenda sunt* — all these words must be learnt.",
+      "show": {
+        "kind": "sentence",
+        "id": "pp-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pp-14",
+        "ask": "verba is neuter plural. Fill in the gerundive of discō."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

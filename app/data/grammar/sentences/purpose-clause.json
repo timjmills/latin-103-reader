@@ -1,0 +1,541 @@
+{
+ "skill": "purpose-clause",
+ "chapter": 28,
+ "sentences": [
+  {
+   "id": "pc-01",
+   "la": "Servus ad urbem currit ut medicum vocet.",
+   "en": "The slave runs to the city to call a doctor.",
+   "words": 7,
+   "focus": "vocet",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "urbem",
+     "m": "the city"
+    },
+    {
+     "w": "currit",
+     "m": "runs"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "medicum",
+     "m": "a doctor"
+    },
+    {
+     "w": "vocet",
+     "m": "he call"
+    }
+   ]
+  },
+  {
+   "id": "pc-02",
+   "la": "Mārcus in hortum exit ut lūdat.",
+   "en": "Marcus goes out into the garden to play.",
+   "words": 6,
+   "focus": "lūdat",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "exit",
+     "m": "goes out"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "lūdat",
+     "m": "he play"
+    }
+   ]
+  },
+  {
+   "id": "pc-03",
+   "la": "Aemilia ad fenestram venit ut mare spectet.",
+   "en": "Aemilia comes to the window to look at the sea.",
+   "words": 7,
+   "focus": "spectet",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "fenestram",
+     "m": "the window"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "mare",
+     "m": "the sea"
+    },
+    {
+     "w": "spectet",
+     "m": "she watch"
+    }
+   ],
+   "note": "Latin cannot say 'venit spectāre'. Where English uses 'to look', Latin uses ut with a subjunctive verb."
+  },
+  {
+   "id": "pc-04",
+   "la": "Quīntus librum aperit ut litterās legat.",
+   "en": "Quintus opens the book to read the letters.",
+   "words": 6,
+   "focus": "legat",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "librum",
+     "m": "the book"
+    },
+    {
+     "w": "aperit",
+     "m": "opens"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "litterās",
+     "m": "the letters"
+    },
+    {
+     "w": "legat",
+     "m": "he read"
+    }
+   ]
+  },
+  {
+   "id": "pc-05",
+   "la": "Puella tacet nē māter eam audiat.",
+   "en": "The girl keeps quiet so that her mother will not hear her.",
+   "words": 6,
+   "focus": "audiat",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puella",
+     "m": "the girl"
+    },
+    {
+     "w": "tacet",
+     "m": "keeps quiet"
+    },
+    {
+     "w": "nē",
+     "m": "so that not"
+    },
+    {
+     "w": "māter",
+     "m": "the mother"
+    },
+    {
+     "w": "eam",
+     "m": "her"
+    },
+    {
+     "w": "audiat",
+     "m": "hear"
+    }
+   ]
+  },
+  {
+   "id": "pc-06",
+   "la": "Dāvus ōstium claudit nē canis intret.",
+   "en": "Davus shuts the door so that the dog will not come in.",
+   "words": 6,
+   "focus": "intret",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "ōstium",
+     "m": "the doorway"
+    },
+    {
+     "w": "claudit",
+     "m": "shuts"
+    },
+    {
+     "w": "nē",
+     "m": "so that not"
+    },
+    {
+     "w": "canis",
+     "m": "the dog"
+    },
+    {
+     "w": "intret",
+     "m": "come in"
+    }
+   ]
+  },
+  {
+   "id": "pc-07",
+   "la": "Nē aeger fīat, Mārcus aquam pūram bibit.",
+   "en": "So as not to fall ill, Marcus drinks clean water.",
+   "words": 7,
+   "focus": "fīat",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nē",
+     "m": "so that not"
+    },
+    {
+     "w": "aeger",
+     "m": "ill"
+    },
+    {
+     "w": "fīat",
+     "m": "he become"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "pūram",
+     "m": "clean"
+    },
+    {
+     "w": "bibit",
+     "m": "he drinks"
+    }
+   ],
+   "note": "The aim comes first here. Word order does not change the rule: nē still opens the clause and its verb is still subjunctive."
+  },
+  {
+   "id": "pc-08",
+   "la": "Iūlius pecūniam dat ut servī cibum emant.",
+   "en": "Julius gives money so that the slaves may buy food.",
+   "words": 7,
+   "focus": "emant",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "pecūniam",
+     "m": "money"
+    },
+    {
+     "w": "dat",
+     "m": "gives"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "cibum",
+     "m": "food"
+    },
+    {
+     "w": "emant",
+     "m": "may buy"
+    }
+   ]
+  },
+  {
+   "id": "pc-09",
+   "la": "Mārcus celeriter currit ut prīmus veniat.",
+   "en": "Marcus runs fast in order to arrive first.",
+   "words": 6,
+   "focus": "veniat",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "celeriter",
+     "m": "quickly"
+    },
+    {
+     "w": "currit",
+     "m": "runs"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "prīmus",
+     "m": "first"
+    },
+    {
+     "w": "veniat",
+     "m": "he come"
+    }
+   ],
+   "note": "celeriter is only an adverb, not a signal word: there is no tam or ita, so this is his aim, not the outcome."
+  },
+  {
+   "id": "pc-10",
+   "la": "Dominus servōs mittit ut agrōs arent.",
+   "en": "The master sends the slaves to plough the fields.",
+   "words": 6,
+   "focus": "arent",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servōs",
+     "m": "the slaves"
+    },
+    {
+     "w": "mittit",
+     "m": "sends"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "agrōs",
+     "m": "the fields"
+    },
+    {
+     "w": "arent",
+     "m": "they plough"
+    }
+   ]
+  },
+  {
+   "id": "pc-11",
+   "la": "Ad forum īmus ut amīcōs videāmus.",
+   "en": "We are going to the forum to see our friends.",
+   "words": 6,
+   "focus": "videāmus",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ad",
+     "m": "to"
+    },
+    {
+     "w": "forum",
+     "m": "the square"
+    },
+    {
+     "w": "īmus",
+     "m": "we go"
+    },
+    {
+     "w": "ut",
+     "m": "so that"
+    },
+    {
+     "w": "amīcōs",
+     "m": "friends"
+    },
+    {
+     "w": "videāmus",
+     "m": "we may see"
+    }
+   ]
+  },
+  {
+   "id": "pc-12",
+   "la": "Iūlius servum mittit quī epistulam ferat.",
+   "en": "Julius sends a slave to carry the letter.",
+   "words": 6,
+   "focus": "ferat",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servum",
+     "m": "a slave"
+    },
+    {
+     "w": "mittit",
+     "m": "sends"
+    },
+    {
+     "w": "quī",
+     "m": "who"
+    },
+    {
+     "w": "epistulam",
+     "m": "the letter"
+    },
+    {
+     "w": "ferat",
+     "m": "may carry"
+    }
+   ],
+   "note": "quī here does the work of ut: 'a slave to carry the letter'. The subjunctive ferat is what shows it is an aim and not a plain description."
+  },
+  {
+   "id": "pc-13",
+   "la": "Iūlia ancillam vocat quae aquam ferat.",
+   "en": "Julia calls a maid to fetch water.",
+   "words": 6,
+   "focus": "ferat",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "ancillam",
+     "m": "a maid"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    },
+    {
+     "w": "quae",
+     "m": "who"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "ferat",
+     "m": "may bring"
+    }
+   ],
+   "note": "quae is the feminine of quī and does the same work as ut: 'a maid to fetch water'."
+  }
+ ]
+}

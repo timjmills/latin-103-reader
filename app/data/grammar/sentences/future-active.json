@@ -1,0 +1,489 @@
+{
+  "skill": "future-active",
+  "chapter": 20,
+  "sentences": [
+    {
+      "id": "fa-01",
+      "la": "Crās Iūlius ad forum ambulābit.",
+      "en": "Tomorrow Julius will walk to the market place.",
+      "words": 5,
+      "focus": "ambulābit",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "forum",
+          "m": "the market place"
+        },
+        {
+          "w": "ambulābit",
+          "m": "will walk"
+        }
+      ]
+    },
+    {
+      "id": "fa-02",
+      "la": "Ancillae crās in hortō cantābunt.",
+      "en": "Tomorrow the slave girls will sing in the garden.",
+      "words": 5,
+      "focus": "cantābunt",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Ancillae",
+          "m": "the slave girls"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "cantābunt",
+          "m": "will sing"
+        }
+      ]
+    },
+    {
+      "id": "fa-03",
+      "la": "Crās mātrem tuam vidēbis, Quīnte.",
+      "en": "Tomorrow you will see your mother, Quintus.",
+      "words": 5,
+      "focus": "vidēbis",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "mātrem",
+          "m": "mother"
+        },
+        {
+          "w": "tuam",
+          "m": "your"
+        },
+        {
+          "w": "vidēbis",
+          "m": "you will see"
+        },
+        {
+          "w": "Quīnte",
+          "m": "Quintus"
+        }
+      ]
+    },
+    {
+      "id": "fa-04",
+      "la": "Puerī crās in lūdō tacēbunt.",
+      "en": "Tomorrow the boys will keep quiet in school.",
+      "words": 5,
+      "focus": "tacēbunt",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "tacēbunt",
+          "m": "will keep quiet"
+        }
+      ]
+    },
+    {
+      "id": "fa-05",
+      "la": "Ego crās tēcum ad urbem ambulābō.",
+      "en": "Tomorrow I will walk to the city with you.",
+      "words": 6,
+      "focus": "ambulābō",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ego",
+          "m": "I"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "tēcum",
+          "m": "with you"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "urbem",
+          "m": "the city"
+        },
+        {
+          "w": "ambulābō",
+          "m": "will walk"
+        }
+      ]
+    },
+    {
+      "id": "fa-06",
+      "la": "Cūr crās in lūdō nōn cantābitis?",
+      "en": "Why will you not sing in school tomorrow?",
+      "words": 6,
+      "focus": "cantābitis",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cūr",
+          "m": "why"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "the school"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "cantābitis",
+          "m": "will you sing"
+        }
+      ]
+    },
+    {
+      "id": "fa-07",
+      "la": "Mārcus epistulam longam crās scrībet.",
+      "en": "Tomorrow Marcus will write a long letter.",
+      "words": 5,
+      "focus": "scrībet",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "epistulam",
+          "m": "a letter"
+        },
+        {
+          "w": "longam",
+          "m": "long"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "scrībet",
+          "m": "will write"
+        }
+      ]
+    },
+    {
+      "id": "fa-08",
+      "la": "Epistulam ad tē crās mittam.",
+      "en": "Tomorrow I will send a letter to you.",
+      "words": 5,
+      "focus": "mittam",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Epistulam",
+          "m": "a letter"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "tē",
+          "m": "you"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "mittam",
+          "m": "I will send"
+        }
+      ]
+    },
+    {
+      "id": "fa-09",
+      "la": "Mēdus ad vīllam mox veniet.",
+      "en": "Medus will soon come to the house.",
+      "words": 5,
+      "focus": "veniet",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "vīllam",
+          "m": "the house"
+        },
+        {
+          "w": "mox",
+          "m": "soon"
+        },
+        {
+          "w": "veniet",
+          "m": "will come"
+        }
+      ]
+    },
+    {
+      "id": "fa-10",
+      "la": "Crās rosās in hortō carpēmus.",
+      "en": "Tomorrow we will pick roses in the garden.",
+      "words": 5,
+      "focus": "carpēmus",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "rosās",
+          "m": "roses"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "carpēmus",
+          "m": "we will pick"
+        }
+      ]
+    },
+    {
+      "id": "fa-11",
+      "la": "Mārcus nunc scrībit, crās melius scrībet.",
+      "en": "Marcus is writing now; tomorrow he will write better.",
+      "words": 6,
+      "focus": "scrībet",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "scrībit",
+          "m": "is writing"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "melius",
+          "m": "better"
+        },
+        {
+          "w": "scrībet",
+          "m": "will write"
+        }
+      ]
+    },
+    {
+      "id": "fa-12",
+      "la": "Dāvus saccum portābit et in mēnsā pōnet.",
+      "en": "Davus will carry the sack and put it on the table.",
+      "words": 7,
+      "focus": "pōnet",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "saccum",
+          "m": "the sack"
+        },
+        {
+          "w": "portābit",
+          "m": "will carry"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "mēnsā",
+          "m": "the table"
+        },
+        {
+          "w": "pōnet",
+          "m": "will put"
+        }
+      ]
+    },
+    {
+      "id": "fa-13",
+      "la": "Quid crās aget Iūlius in forō?",
+      "en": "What will Julius do in the market place tomorrow?",
+      "words": 6,
+      "focus": "aget",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "aget",
+          "m": "will do"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "forō",
+          "m": "the market place"
+        }
+      ]
+    }
+  ]
+}

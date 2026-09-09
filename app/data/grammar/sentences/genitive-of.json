@@ -1,0 +1,518 @@
+{
+ "skill": "genitive-of",
+ "chapter": 2,
+ "sentences": [
+  {
+   "id": "go-01",
+   "la": "Numerus servōrum in familiā magnus est.",
+   "en": "The number of slaves in the household is big.",
+   "words": 6,
+   "focus": "servōrum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "servōrum",
+     "m": "of the slaves"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "familiā",
+     "m": "household"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-02",
+   "la": "Numerus litterārum in vocābulō parvus est.",
+   "en": "The number of letters in the word is small.",
+   "words": 6,
+   "focus": "litterārum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "litterārum",
+     "m": "of letters"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vocābulō",
+     "m": "word"
+    },
+    {
+     "w": "parvus",
+     "m": "small"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-03",
+   "la": "Numerus oppidōrum in prōvinciā magnus est.",
+   "en": "The number of towns in the province is big.",
+   "words": 6,
+   "focus": "oppidōrum",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "oppidōrum",
+     "m": "of towns"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "prōvinciā",
+     "m": "province"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-04",
+   "la": "Numerus syllabārum in vocābulō Latīnō parvus est.",
+   "en": "The number of syllables in the Latin word is small.",
+   "words": 7,
+   "focus": "syllabārum",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "syllabārum",
+     "m": "of syllables"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vocābulō",
+     "m": "word"
+    },
+    {
+     "w": "Latīnō",
+     "m": "Latin"
+    },
+    {
+     "w": "parvus",
+     "m": "small"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-05",
+   "la": "Numerus līberōrum in familiā Rōmānā magnus est.",
+   "en": "The number of children in the Roman household is big.",
+   "words": 7,
+   "focus": "līberōrum",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "līberōrum",
+     "m": "of children"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "familiā",
+     "m": "household"
+    },
+    {
+     "w": "Rōmānā",
+     "m": "Roman"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-06",
+   "la": "In pāginā prīmā librī multa vocābula sunt.",
+   "en": "There are many words on the first page of the book.",
+   "words": 7,
+   "focus": "librī",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "In",
+     "m": "in"
+    },
+    {
+     "w": "pāginā",
+     "m": "page"
+    },
+    {
+     "w": "prīmā",
+     "m": "first"
+    },
+    {
+     "w": "librī",
+     "m": "of the book"
+    },
+    {
+     "w": "multa",
+     "m": "many"
+    },
+    {
+     "w": "vocābula",
+     "m": "words"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "go-07",
+   "la": "Syllabae vocābulī Latīnī paucae sunt.",
+   "en": "The syllables of the Latin word are few.",
+   "words": 5,
+   "focus": "vocābulī",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syllabae",
+     "m": "syllables"
+    },
+    {
+     "w": "vocābulī",
+     "m": "of the word"
+    },
+    {
+     "w": "Latīnī",
+     "m": "Latin"
+    },
+    {
+     "w": "paucae",
+     "m": "few"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "go-08",
+   "la": "Littera prīma capitulī magna est.",
+   "en": "The first letter of the chapter is big.",
+   "words": 5,
+   "focus": "capitulī",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Littera",
+     "m": "a letter"
+    },
+    {
+     "w": "prīma",
+     "m": "first"
+    },
+    {
+     "w": "capitulī",
+     "m": "of the chapter"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-09",
+   "la": "Titulus capitulī prīmī novus nōn est.",
+   "en": "The title of the first chapter is not new.",
+   "words": 6,
+   "focus": "capitulī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Titulus",
+     "m": "the title"
+    },
+    {
+     "w": "capitulī",
+     "m": "of the chapter"
+    },
+    {
+     "w": "prīmī",
+     "m": "first"
+    },
+    {
+     "w": "novus",
+     "m": "new"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-10",
+   "la": "Multae prōvinciae imperiī Rōmānī magnae sunt.",
+   "en": "Many provinces of the Roman empire are big.",
+   "words": 6,
+   "focus": "imperiī",
+   "step": 4,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Multae",
+     "m": "many"
+    },
+    {
+     "w": "prōvinciae",
+     "m": "provinces"
+    },
+    {
+     "w": "imperiī",
+     "m": "of the empire"
+    },
+    {
+     "w": "Rōmānī",
+     "m": "Roman"
+    },
+    {
+     "w": "magnae",
+     "m": "big"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "go-11",
+   "la": "Numerus servōrum Iūliī magnus est.",
+   "en": "The number of Julius's slaves is big.",
+   "words": 5,
+   "focus": "servōrum",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "servōrum",
+     "m": "of the slaves"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-12",
+   "la": "Numerus fīliōrum Iūliī parvus est.",
+   "en": "The number of Julius's sons is small.",
+   "words": 5,
+   "focus": "fīliōrum",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "fīliōrum",
+     "m": "of the sons"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "parvus",
+     "m": "small"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "go-13",
+   "la": "Ecce numerus pāginārum librī antīquī.",
+   "en": "Look, the number of pages of the old book.",
+   "words": 5,
+   "focus": "pāginārum",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ecce",
+     "m": "look!"
+    },
+    {
+     "w": "numerus",
+     "m": "number"
+    },
+    {
+     "w": "pāginārum",
+     "m": "of pages"
+    },
+    {
+     "w": "librī",
+     "m": "of the book"
+    },
+    {
+     "w": "antīquī",
+     "m": "old"
+    }
+   ]
+  }
+ ]
+}

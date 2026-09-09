@@ -1,5 +1,114 @@
 {
   "skill": "future-imperative",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Beside the everyday order *venī!* (come, right now) Latin has **the future imperative (the 'you shall …' order for later or for rules: estō! mementō!)**. It gives an instruction for a time that has not come yet, or a rule that holds from now on: *crās venītō* — come tomorrow. Ørberg says the two mean nearly the same thing; the difference is the 'when the time comes' colouring.",
+      "show": {
+        "kind": "sentence",
+        "id": "fim-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fim-02",
+        "ask": "Tap the word that gives the order."
+      }
+    },
+    {
+      "n": 2,
+      "title": "The singular ending: -tō",
+      "say": "Take the plain order you already use and add **-tō**: *amā* → *amātō*, *pārē* → *pārētō*, *lege* → *legitō*, *audī* → *audītō*. In the third conjugation the little vowel before the ending is *i*: *legitō* — the form this step's own sentence uses — and *scrībitō*, *mittitō*. The one form serves for 'you shall' and 'he shall' alike.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "amō",
+        "reveal": [
+          "imper.fut.act.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "amō",
+        "cells": [
+          "imper.fut.act.sg"
+        ],
+        "ask": "Write the future imperative singular."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The plural ending: -tōte",
+      "say": "For more than one person told to do it the ending is **-tōte**: *amātōte, pārētōte, scrībitōte, audītōte*. It is simply the singular *-tō* with *-te* on the end, just as the plain plural order *amāte* is *amā* with *-te*. An order about other people — 'they shall …' — ends in **-ntō** instead: *suntō*, *amantō*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "amō",
+        "reveal": [
+          "imper.fut.act.2.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "amō",
+        "cells": [
+          "imper.fut.act.2.pl"
+        ],
+        "ask": "Write the future imperative plural."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The ones to learn by heart: estō, estōte, mementō, scītō",
+      "say": "*Sum* makes *estō* (you or he shall be) and *estōte* (you all shall be). Two more verbs are met almost only in this form: *mementō!* (remember) from *meminī*, and *scītō!* (know) from *sciō* — because remembering and knowing are states you are told to be in from now on, not acts you do this second.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "reveal": [
+          "imper.fut.act.sg",
+          "imper.fut.act.2.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "sum",
+        "cells": [
+          "imper.fut.act.sg"
+        ],
+        "ask": "Write the future imperative singular of sum."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the plain imperative",
+      "say": "Both are orders, so the ending is the whole difference: *tacē* is 'be quiet this second', *respondētō* is 'answer when the time comes'. Watch one trap: *monitō* in *puerō monitō* is no order at all but a perfect participle in the ablative (the 'by/with/from' form) agreeing with the noun beside it; *monētō*, with a long *ē*, is the order.",
+      "show": {
+        "kind": "sentence",
+        "id": "fim-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fim-12",
+        "ask": "One of these two orders is about later. Tap it."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Use it where English says 'you shall', or where an instruction reaches forward — a letter telling the family what to do after they read it, a rule, a promise. It sits happily after a *cum* or *sī* clause about the future, because that is exactly the time it means.",
+      "show": {
+        "kind": "sentence",
+        "id": "fim-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "fim-14",
+        "ask": "Fill the blank with the future imperative plural of pāreō."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

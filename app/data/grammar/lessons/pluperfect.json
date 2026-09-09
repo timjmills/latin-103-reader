@@ -57,5 +57,92 @@
     "notes p90–91",
     "Ørberg cap. XXIV Grammatica Latina",
     "A&G §477"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "The past before the past",
+      "say": "One past action can be set earlier than another, and the tense that does it is **the pluperfect (the 'had done' tense)**. *Quīntus dormīverat, sed nunc vigilat* — he had slept; now he is awake. English marks it with 'had': had come, had gone, had written. It never stands for the plain past by itself.",
+      "show": {
+        "kind": "sentence",
+        "id": "pl-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pl-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Building the active: the perfect stem plus -erat",
+      "say": "Take the perfect and cut off its ending — *ambulāvī → ambulāv-*, *scrīpsī → scrīps-*, *clausī → claus-* — then add *-erat* for 'he or she had': *ambulāverat*, *scrīpserat*, *clauserat*. It is the very *erat* you already know, glued on the end.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "ambulō",
+        "reveal": [
+          "plupf.ind.act.3sg"
+        ],
+        "say": "ambulāverat — the perfect stem ambulāv- with -erat behind it"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "ambulō",
+        "cells": [
+          "plupf.ind.act.3sg"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "The other five persons",
+      "say": "The rest of the row is the ordinary set of endings on the same *-erā-*: *-eram* (I), *-erās* (you), *-erat* (he), *-erāmus* (we), *-erātis* (you all), *-erant* (they). *Ego eum anteā nōn vīderam*; *Vōs ex oppidō iam discesserātis*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "ambulō",
+        "reveal": [
+          "plupf.ind.act.1sg",
+          "plupf.ind.act.2pl"
+        ],
+        "say": "ambulāveram / ambulāverātis — the same -erā- under every person"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "word": "ambulō",
+        "cells": [
+          "plupf.ind.act.1sg",
+          "plupf.ind.act.2pl"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "Passive and deponent take two words",
+      "say": "A passive, and a deponent (looks passive, means active), build the pluperfect from the participle plus *erat*: *Iānua ā servō clausa erat* — the door had been shut; *Mēdus profectus erat* — Medus had set out. Swap *erat* back for *est* and you are in the perfect again.",
+      "show": {
+        "kind": "sentence",
+        "id": "pl-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pl-10"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the perfect",
+      "say": "*Abiit* — he went away; *abierat* — he had gone away, before the rest of the story. In *Iūlius vēnit; Mēdus autem iam abierat* the two tenses do different work in one sentence: *vēnit* moves the story on, *abierat* looks back behind it. Find the *-era-*, or the *erat* beside a participle.",
+      "show": {
+        "kind": "sentence",
+        "id": "pl-11"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pl-13"
+      }
+    }
   ]
 }

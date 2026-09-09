@@ -1,0 +1,687 @@
+{
+  "skill": "comparative",
+  "chapter": 12,
+  "sentences": [
+    {
+      "id": "cmp-01",
+      "la": "Via longa est, sed fluvius longior.",
+      "en": "The road is long, but the river is longer.",
+      "words": 6,
+      "focus": "longior",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Via",
+          "m": "road"
+        },
+        {
+          "w": "longa",
+          "m": "long"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "fluvius",
+          "m": "river"
+        },
+        {
+          "w": "longior",
+          "m": "longer"
+        }
+      ]
+    },
+    {
+      "id": "cmp-02",
+      "la": "Mārcus fortis est, Quīntus fortior est.",
+      "en": "Marcus is brave, Quintus is braver.",
+      "words": 6,
+      "focus": "fortior",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "fortis",
+          "m": "brave"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "fortior",
+          "m": "braver"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "cmp-03",
+      "la": "Aemilia laeta est, Iūlia laetior est.",
+      "en": "Aemilia is happy, Julia is happier.",
+      "words": 6,
+      "focus": "laetior",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "laeta",
+          "m": "happy"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "laetior",
+          "m": "happier"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "cmp-04",
+      "la": "Frāter meus altior et fortior est.",
+      "en": "My brother is taller and braver.",
+      "words": 6,
+      "focus": "altior",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Frāter",
+          "m": "brother"
+        },
+        {
+          "w": "meus",
+          "m": "my"
+        },
+        {
+          "w": "altior",
+          "m": "taller"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "fortior",
+          "m": "braver"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "cmp-05",
+      "la": "Scūtum meum brevius et levius est.",
+      "en": "My shield is shorter and lighter.",
+      "words": 6,
+      "focus": "brevius",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Scūtum",
+          "m": "shield"
+        },
+        {
+          "w": "meum",
+          "m": "my"
+        },
+        {
+          "w": "brevius",
+          "m": "shorter"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "levius",
+          "m": "lighter"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "cmp-06",
+      "la": "Bracchium longum est, crūs longius.",
+      "en": "The arm is long, the leg longer.",
+      "words": 5,
+      "focus": "longius",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Bracchium",
+          "m": "arm"
+        },
+        {
+          "w": "longum",
+          "m": "long"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "crūs",
+          "m": "leg"
+        },
+        {
+          "w": "longius",
+          "m": "longer"
+        }
+      ]
+    },
+    {
+      "id": "cmp-07",
+      "la": "Iūlius gladium longiōrem et graviōrem sūmit.",
+      "en": "Julius takes a longer and heavier sword.",
+      "words": 6,
+      "focus": "longiōrem",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "gladium",
+          "m": "the sword"
+        },
+        {
+          "w": "longiōrem",
+          "m": "longer"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "graviōrem",
+          "m": "heavier"
+        },
+        {
+          "w": "sūmit",
+          "m": "takes"
+        }
+      ]
+    },
+    {
+      "id": "cmp-08",
+      "la": "Mīlitēs fortiōrēs hostēs barbarōs petunt.",
+      "en": "The braver soldiers attack the foreign enemy.",
+      "words": 5,
+      "focus": "fortiōrēs",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "soldiers"
+        },
+        {
+          "w": "fortiōrēs",
+          "m": "braver"
+        },
+        {
+          "w": "hostēs",
+          "m": "the enemy"
+        },
+        {
+          "w": "barbarōs",
+          "m": "foreign"
+        },
+        {
+          "w": "petunt",
+          "m": "attack"
+        }
+      ]
+    },
+    {
+      "id": "cmp-09",
+      "la": "Puer scūta graviōra portāre nōn potest.",
+      "en": "The boy cannot carry heavier shields.",
+      "words": 6,
+      "focus": "graviōra",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "boy"
+        },
+        {
+          "w": "scūta",
+          "m": "shields"
+        },
+        {
+          "w": "graviōra",
+          "m": "heavier"
+        },
+        {
+          "w": "portāre",
+          "m": "to carry"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "potest",
+          "m": "can"
+        }
+      ]
+    },
+    {
+      "id": "cmp-10",
+      "la": "Gladius longus est, sed hasta longior.",
+      "en": "The sword is long, but the spear is longer.",
+      "words": 6,
+      "focus": "longior",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Gladius",
+          "m": "sword"
+        },
+        {
+          "w": "longus",
+          "m": "long"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "hasta",
+          "m": "spear"
+        },
+        {
+          "w": "longior",
+          "m": "longer"
+        }
+      ]
+    },
+    {
+      "id": "cmp-11",
+      "la": "Hasta gravis est, sed scūtum gravius.",
+      "en": "The spear is heavy, but the shield is heavier.",
+      "words": 6,
+      "focus": "gravius",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Hasta",
+          "m": "spear"
+        },
+        {
+          "w": "gravis",
+          "m": "heavy"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "scūtum",
+          "m": "shield"
+        },
+        {
+          "w": "gravius",
+          "m": "heavier"
+        }
+      ]
+    },
+    {
+      "id": "cmp-12",
+      "la": "Puella laetior rosam pulchriōrem carpit.",
+      "en": "The happier girl picks a more beautiful rose.",
+      "words": 5,
+      "focus": "pulchriōrem",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "girl"
+        },
+        {
+          "w": "laetior",
+          "m": "happier"
+        },
+        {
+          "w": "rosam",
+          "m": "a rose"
+        },
+        {
+          "w": "pulchriōrem",
+          "m": "more beautiful"
+        },
+        {
+          "w": "carpit",
+          "m": "picks"
+        }
+      ]
+    },
+    {
+      "id": "cmp-13",
+      "la": "Fluvius longior est quam via.",
+      "en": "The river is longer than the road.",
+      "words": 5,
+      "focus": "longior",
+      "step": 6,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Fluvius",
+          "m": "river"
+        },
+        {
+          "w": "longior",
+          "m": "longer"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "via",
+          "m": "road"
+        }
+      ]
+    },
+    {
+      "id": "cmp-14",
+      "la": "Tū fortior es quam ego.",
+      "en": "You are braver than I am.",
+      "words": 5,
+      "focus": "fortior",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Tū",
+          "m": "you"
+        },
+        {
+          "w": "fortior",
+          "m": "braver"
+        },
+        {
+          "w": "es",
+          "m": "you are"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "ego",
+          "m": "I"
+        }
+      ]
+    },
+    {
+      "id": "cmp-15",
+      "la": "Dominī laetiōrēs sunt quam servī.",
+      "en": "The masters are happier than the slaves.",
+      "words": 5,
+      "focus": "laetiōrēs",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Dominī",
+          "m": "masters"
+        },
+        {
+          "w": "laetiōrēs",
+          "m": "happier"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "servī",
+          "m": "the slaves"
+        }
+      ]
+    },
+    {
+      "id": "cmp-16",
+      "la": "Iūlius Mēdum altiōrem quam Dāvum esse putat.",
+      "en": "Julius thinks that Medus is taller than Davus.",
+      "words": 7,
+      "focus": "altiōrem",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "Mēdum",
+          "m": "Medus"
+        },
+        {
+          "w": "altiōrem",
+          "m": "taller"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "Dāvum",
+          "m": "Davus"
+        },
+        {
+          "w": "esse",
+          "m": "to be"
+        },
+        {
+          "w": "putat",
+          "m": "thinks"
+        }
+      ]
+    },
+    {
+      "id": "cmp-17",
+      "la": "Vōx puellae tenuior est quam vōx puerī.",
+      "en": "The girl's voice is thinner than the boy's voice.",
+      "words": 7,
+      "focus": "tenuior",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Vōx",
+          "m": "voice"
+        },
+        {
+          "w": "puellae",
+          "m": "of the girl"
+        },
+        {
+          "w": "tenuior",
+          "m": "thinner"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "quam",
+          "m": "than"
+        },
+        {
+          "w": "vōx",
+          "m": "voice"
+        },
+        {
+          "w": "puerī",
+          "m": "of the boy"
+        }
+      ]
+    }
+  ]
+}

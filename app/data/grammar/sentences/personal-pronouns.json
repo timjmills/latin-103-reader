@@ -1,0 +1,685 @@
+{
+ "skill": "personal-pronouns",
+ "chapter": 15,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "pp-01",
+   "la": "Ego sum Mārcus, tū es Quīntus.",
+   "en": "I am Marcus, you are Quintus.",
+   "words": 6,
+   "focus": "Ego",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "sum",
+     "m": "am"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "es",
+     "m": "are"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    }
+   ]
+  },
+  {
+   "id": "pp-02",
+   "la": "Tū cantās, ego nōn cantō.",
+   "en": "You are singing; I am not singing.",
+   "words": 5,
+   "focus": "Tū",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "cantās",
+     "m": "are singing"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "cantō",
+     "m": "am singing"
+    }
+   ]
+  },
+  {
+   "id": "pp-03",
+   "la": "Ego librum legō, tū dormīs.",
+   "en": "I am reading a book, you are sleeping.",
+   "words": 5,
+   "focus": "tū",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "librum",
+     "m": "a book"
+    },
+    {
+     "w": "legō",
+     "m": "am reading"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "dormīs",
+     "m": "are sleeping"
+    }
+   ]
+  },
+  {
+   "id": "pp-04",
+   "la": "Magister mē vocat, sed ego taceō.",
+   "en": "The teacher calls me, but I am silent.",
+   "words": 6,
+   "focus": "mē",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "ego",
+     "m": "I"
+    },
+    {
+     "w": "taceō",
+     "m": "am silent"
+    }
+   ]
+  },
+  {
+   "id": "pp-05",
+   "la": "Pater mihi librum novum dat.",
+   "en": "Father gives me a new book.",
+   "words": 5,
+   "focus": "mihi",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pater",
+     "m": "father"
+    },
+    {
+     "w": "mihi",
+     "m": "to me"
+    },
+    {
+     "w": "librum",
+     "m": "a book"
+    },
+    {
+     "w": "novum",
+     "m": "new"
+    },
+    {
+     "w": "dat",
+     "m": "gives"
+    }
+   ]
+  },
+  {
+   "id": "pp-06",
+   "la": "Syra mē audit, sed mihi nōn respondet.",
+   "en": "Syra hears me, but does not answer me.",
+   "words": 7,
+   "focus": "mihi",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "audit",
+     "m": "hears"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "mihi",
+     "m": "to me"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "respondet",
+     "m": "answers"
+    }
+   ]
+  },
+  {
+   "id": "pp-07",
+   "la": "Ego tē videō, sed tū mē nōn vidēs.",
+   "en": "I see you, but you do not see me.",
+   "words": 8,
+   "focus": "tē",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "tē",
+     "m": "you (object)"
+    },
+    {
+     "w": "videō",
+     "m": "see"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "vidēs",
+     "m": "see"
+    }
+   ]
+  },
+  {
+   "id": "pp-08",
+   "la": "Magister tibi virgam ostendit, Sexte.",
+   "en": "The teacher shows you the rod, Sextus.",
+   "words": 5,
+   "focus": "tibi",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "tibi",
+     "m": "to you"
+    },
+    {
+     "w": "virgam",
+     "m": "the rod"
+    },
+    {
+     "w": "ostendit",
+     "m": "shows"
+    },
+    {
+     "w": "Sexte",
+     "m": "Sextus!"
+    }
+   ]
+  },
+  {
+   "id": "pp-09",
+   "la": "Nōs in hortō sumus, vōs in ātriō estis.",
+   "en": "We are in the garden, you all are in the atrium.",
+   "words": 8,
+   "focus": "vōs",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "sumus",
+     "m": "are"
+    },
+    {
+     "w": "vōs",
+     "m": "you all"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "estis",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "pp-10",
+   "la": "Iūlius nōbīs pecūniam dat, vōbīs nihil.",
+   "en": "Julius gives us money, and you all nothing.",
+   "words": 6,
+   "focus": "nōbīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "nōbīs",
+     "m": "to us"
+    },
+    {
+     "w": "pecūniam",
+     "m": "money"
+    },
+    {
+     "w": "dat",
+     "m": "gives"
+    },
+    {
+     "w": "vōbīs",
+     "m": "to you all"
+    },
+    {
+     "w": "nihil",
+     "m": "nothing"
+    }
+   ]
+  },
+  {
+   "id": "pp-11",
+   "la": "Iūlia sē in speculō videt.",
+   "en": "Julia sees herself in the mirror.",
+   "words": 5,
+   "focus": "sē",
+   "step": 5,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "sē",
+     "m": "herself"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "speculō",
+     "m": "the mirror"
+    },
+    {
+     "w": "videt",
+     "m": "sees"
+    }
+   ]
+  },
+  {
+   "id": "pp-12",
+   "la": "Puerī sē lavant, deinde vestīmenta induunt.",
+   "en": "The boys wash themselves, then put on their clothes.",
+   "words": 6,
+   "focus": "sē",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "sē",
+     "m": "themselves"
+    },
+    {
+     "w": "lavant",
+     "m": "wash"
+    },
+    {
+     "w": "deinde",
+     "m": "then"
+    },
+    {
+     "w": "vestīmenta",
+     "m": "clothes"
+    },
+    {
+     "w": "induunt",
+     "m": "put on"
+    }
+   ]
+  },
+  {
+   "id": "pp-13",
+   "la": "Mārcus sē amat, Quīntus eum nōn amat.",
+   "en": "Marcus loves himself; Quintus does not love him.",
+   "words": 7,
+   "focus": "sē",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "sē",
+     "m": "himself"
+    },
+    {
+     "w": "amat",
+     "m": "loves"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "eum",
+     "m": "him (someone else)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "amat",
+     "m": "loves"
+    }
+   ]
+  },
+  {
+   "id": "pp-14",
+   "la": "Syra puerum lavat, puer sē nōn lavat.",
+   "en": "Syra washes the boy; the boy does not wash himself.",
+   "words": 7,
+   "focus": "sē",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "puerum",
+     "m": "the boy"
+    },
+    {
+     "w": "lavat",
+     "m": "washes"
+    },
+    {
+     "w": "puer",
+     "m": "the boy"
+    },
+    {
+     "w": "sē",
+     "m": "himself"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "lavat",
+     "m": "washes"
+    }
+   ]
+  },
+  {
+   "id": "pp-15",
+   "la": "Venī mēcum in hortum, Iūlia!",
+   "en": "Come with me into the garden, Julia!",
+   "words": 5,
+   "focus": "mēcum",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Venī",
+     "m": "come!"
+    },
+    {
+     "w": "mēcum",
+     "m": "with me"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia!"
+    }
+   ]
+  },
+  {
+   "id": "pp-16",
+   "la": "Mārcus sēcum librum ad lūdum portat.",
+   "en": "Marcus carries a book with him to school.",
+   "words": 6,
+   "focus": "sēcum",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "sēcum",
+     "m": "with himself"
+    },
+    {
+     "w": "librum",
+     "m": "a book"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "lūdum",
+     "m": "school"
+    },
+    {
+     "w": "portat",
+     "m": "carries"
+    }
+   ]
+  },
+  {
+   "id": "pp-17",
+   "la": "Quīntus nōbīscum in ātriō sedet.",
+   "en": "Quintus is sitting with us in the atrium.",
+   "words": 5,
+   "focus": "nōbīscum",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "nōbīscum",
+     "m": "with us"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "sedet",
+     "m": "is sitting"
+    }
+   ]
+  }
+ ]
+}

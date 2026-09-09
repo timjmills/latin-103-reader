@@ -35,6 +35,93 @@
       "text": "With a present participle, **the ablative absolute (a noun + participle set apart in the ablative: 'with X doing')** means 'while' (*pluviā cadente* — while the rain is falling); with a perfect participle it means 'after' (*iānuā apertā* — after the door was opened). The tense of the participle is the clue."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Two words in the ablative can set the scene for a whole sentence, and that is **the ablative absolute with a perfect participle ('with X done', 'after X was done')**. It says that something was already finished when the main action happened: *Hōc dictō, Iūlius exiit* — this said, Julius went out. The little package is not the subject of anything; it only says when.",
+      "show": {
+        "kind": "sentence",
+        "id": "aap-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "aap-02",
+        "ask": "Which two words say what had already happened?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Both words wear the same ablative ending",
+      "say": "The noun and the participle both stand in the ablative — **the ablative (the 'by/with' form)** — and that shared ending is what ties them together: *cibō parātō*, *iānuā clausā*, *portā apertā*. Nothing else in the sentence governs them; they stand loose, which is what 'absolute' means.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.abl.sg.m",
+          "pos.abl.sg.f"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.abl.sg.m",
+          "pos.abl.sg.f"
+        ],
+        "ask": "Fill in the two singular ablatives the pair is built on."
+      }
+    },
+    {
+      "n": 3,
+      "title": "In the plural, both are ablative",
+      "say": "When there is more than one, both words stand in the ablative plural. With nouns like *servus* and *verbum* the two of them end in *-īs*: *servīs vocātīs*, *verbīs dictīs*, *librīs sūmptīs*. A 3rd-declension noun (the *-is / -ēs* pattern: *mīles, mīlitis*) keeps its own *-ibus*, and only the participle shows *-īs*: *mīlitibus victīs*. Either way the two endings answer each other, and that pairing is the plainest sign of this construction anywhere in the book.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.abl.pl.m",
+          "pos.abl.pl.f",
+          "pos.abl.pl.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.abl.pl.m",
+          "pos.abl.pl.n"
+        ],
+        "ask": "Fill in the plural ablatives."
+      }
+    },
+    {
+      "n": 4,
+      "title": "No est, and no tie to the main verb",
+      "say": "Beware the pair that looks the same and is not. *Pecūnia data est* is a whole sentence, 'the money was given'. *Pecūniā datā* has no *est*, and is not the subject of anything: it only says when. If you can lift the two words out and the sentence still stands, it is an ablative absolute.",
+      "show": {
+        "kind": "sentence",
+        "id": "aap-12"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "aap-07",
+        "ask": "*Mīlitibus victīs* — is this the subject of *captum est*, or not?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Turning it into English",
+      "say": "There is no tidy English for it, so choose the joint that fits: 'when the sheep had been killed', 'after the book was read', 'the door being shut', 'with the money given'. Say the little clause first and the main sentence after it, and it comes out right every time.",
+      "show": {
+        "kind": "sentence",
+        "id": "aap-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "aap-14",
+        "ask": "*legō, legere, lēgī, lēctum*. Put the participle in the ablative to match *librō*."
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

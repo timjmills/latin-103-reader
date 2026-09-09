@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "The fourth principal part, turned into an -us -a -um adjective, is **the perfect participle (the 'having been done' word: laudatus = praised)**: *puer laudātus* — the praised boy, the boy who has been praised. It describes a noun by something already done to it, and agrees with that noun like any adjective: *fīlum factum*, *catēna rupta*, *virī territī*. Latin name: *participium perfectī passīvī*."
+      "text": "The fourth principal part, turned into an -us -a -um adjective, is **the perfect participle (the 'having been done' word: laudātus = praised)**: *puer laudātus* — the praised boy, the boy who has been praised. It describes a noun by something already done to it, and agrees with that noun like any adjective: *fīlum factum*, *catēna rupta*, *virī territī*. Latin name: *participium perfectī passīvī*."
     },
     {
       "type": "english",
@@ -37,7 +37,118 @@
     {
       "type": "confusion",
       "with": "perfect-passive",
-      "text": "The same word with *est* becomes a whole verb, **the perfect passive (the 'was done / has been done' form: laudatus est)**: *puer laudātus est* — the boy was praised. Without *est* it just describes: *puer laudātus gaudet* — the praised boy is glad."
+      "text": "The same word with *est* becomes a whole verb, **the perfect passive (the 'was done / has been done' form: laudātus est)**: *puer laudātus est* — the boy was praised. Without *est* it just describes: *puer laudātus gaudet* — the praised boy is glad."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Take a verb and use it to describe a noun, and you have **the perfect participle (the 'having been done' word: laudātus = praised)**. It says what has been done to somebody: *puer laudātus*, the boy who has been praised. It is one word, and it describes its noun exactly as *bonus* or *magnus* would.",
+      "show": {
+        "kind": "sentence",
+        "id": "ppp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ppp-02",
+        "ask": "Which word says what was done to the girl?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Where it comes from, and its first three endings",
+      "say": "Take the fourth dictionary form, *laudātum*, cut the *-um*, and put on the endings of *bonus*: *laudātus* for a man, *laudāta* for a woman, *laudātum* for a thing. Nothing else changes. So *clausum ōstium* is a shut door and *portāta aqua* is water that has been carried.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.nom.sg.m",
+          "pos.nom.sg.f",
+          "pos.nom.sg.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.nom.sg.m",
+          "pos.nom.sg.f",
+          "pos.nom.sg.n"
+        ],
+        "ask": "Fill in the three subject forms of the singular."
+      }
+    },
+    {
+      "n": 3,
+      "title": "It follows its noun into the object form",
+      "say": "Because it is an adjective it goes wherever its noun goes. When the noun is the object, the participle takes the object ending too: *epistulam scrīptam*, the written letter; *portam apertam*, the opened gate. The verb of the sentence never touches it.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.acc.sg.m",
+          "pos.acc.sg.f"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.acc.sg.m",
+          "pos.acc.sg.f"
+        ],
+        "ask": "Fill in the two object forms of the singular."
+      }
+    },
+    {
+      "n": 4,
+      "title": "More than one",
+      "say": "In the plural, the endings of *bonus* again: *vocātī servī*, men who have been called; *carptae rosae*, roses that have been picked; *dicta verba*, words that have been spoken. Watch that last one: *dicta* is neuter plural here, not a feminine singular.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.nom.pl.m",
+          "pos.nom.pl.f",
+          "pos.nom.pl.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.nom.pl.m",
+          "pos.nom.pl.f",
+          "pos.nom.pl.n"
+        ],
+        "ask": "Fill in the three subject forms of the plural."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Done to him, or done by him?",
+      "say": "Latin has a second participle, **the present participle (the '-ing' word that describes a noun)**, and once you know the signal the two never blur. *-ns* means he is doing it; *-tus* or *-sus* means it was done to him. *puer vocātus* was called; *puer vocāns* is calling. (The one exception is a deponent — *locūtus* means he spoke; that comes next chapter.)",
+      "show": {
+        "kind": "sentence",
+        "id": "ppp-10"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ppp-11",
+        "ask": "*perterritī* — did the boys frighten, or were they frightened?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "In a real sentence the participle need not stand beside its noun, and it may come first: *in sacculō occultātam pecūniam*. Find the participle's ending, then find the noun carrying the same case, number and gender, and the pair falls out of the sentence by itself.",
+      "show": {
+        "kind": "sentence",
+        "id": "ppp-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ppp-14",
+        "ask": "*legō, legere, lēgī, lēctum*. Make the participle agree with *librum*."
+      }
     }
   ],
   "more": [

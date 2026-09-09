@@ -1,0 +1,549 @@
+{
+ "skill": "deponent-verbs",
+ "chapter": 16,
+ "note": "Our own teaching sentences: five to eight words, every word inside the cumulative chapter vocabulary or a name of the book's cast. Contract section 1.",
+ "sentences": [
+  {
+   "id": "dep-01",
+   "la": "Nauta in nāve Neptūnum verētur.",
+   "en": "The sailor on the ship fears Neptune.",
+   "words": 5,
+   "focus": "verētur",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Nauta",
+     "m": "the sailor"
+    },
+    {
+     "w": "in",
+     "m": "on"
+    },
+    {
+     "w": "nāve",
+     "m": "the ship"
+    },
+    {
+     "w": "Neptūnum",
+     "m": "Neptune"
+    },
+    {
+     "w": "verētur",
+     "m": "fears"
+    }
+   ]
+  },
+  {
+   "id": "dep-02",
+   "la": "Puerī magistrum ad lūdum sequuntur.",
+   "en": "The boys follow the teacher to school.",
+   "words": 5,
+   "focus": "sequuntur",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "magistrum",
+     "m": "the teacher"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "lūdum",
+     "m": "the school"
+    },
+    {
+     "w": "sequuntur",
+     "m": "follow"
+    }
+   ]
+  },
+  {
+   "id": "dep-03",
+   "la": "Hodiē nāvis ex portū proficīscitur.",
+   "en": "Today the ship sets out from the harbour.",
+   "words": 5,
+   "focus": "proficīscitur",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hodiē",
+     "m": "today"
+    },
+    {
+     "w": "nāvis",
+     "m": "the ship"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "portū",
+     "m": "the harbour"
+    },
+    {
+     "w": "proficīscitur",
+     "m": "sets out"
+    }
+   ]
+  },
+  {
+   "id": "dep-04",
+   "la": "Ego tē sequor, tū mē nōn sequeris.",
+   "en": "I follow you; you do not follow me.",
+   "words": 7,
+   "focus": "sequor",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ego",
+     "m": "I"
+    },
+    {
+     "w": "tē",
+     "m": "you (object)"
+    },
+    {
+     "w": "sequor",
+     "m": "follow"
+    },
+    {
+     "w": "tū",
+     "m": "you (one person)"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "sequeris",
+     "m": "follow"
+    }
+   ]
+  },
+  {
+   "id": "dep-05",
+   "la": "Lȳdia in nāve cum Mēdō loquitur.",
+   "en": "Lydia is talking with Medus on the ship.",
+   "words": 6,
+   "focus": "loquitur",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "in",
+     "m": "on"
+    },
+    {
+     "w": "nāve",
+     "m": "the ship"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Mēdō",
+     "m": "Medus"
+    },
+    {
+     "w": "loquitur",
+     "m": "talks"
+    }
+   ]
+  },
+  {
+   "id": "dep-06",
+   "la": "Cūr mēcum nōn loqueris, Mēde?",
+   "en": "Why do you not talk with me, Medus?",
+   "words": 5,
+   "focus": "loqueris",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cūr",
+     "m": "why"
+    },
+    {
+     "w": "mēcum",
+     "m": "with me"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "loqueris",
+     "m": "you talk"
+    },
+    {
+     "w": "Mēde",
+     "m": "Medus!"
+    }
+   ]
+  },
+  {
+   "id": "dep-07",
+   "la": "Nōs magistrum sequimur, vōs nautam sequiminī.",
+   "en": "We follow the teacher, you all follow the sailor.",
+   "words": 6,
+   "focus": "sequimur",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nōs",
+     "m": "we"
+    },
+    {
+     "w": "magistrum",
+     "m": "the teacher"
+    },
+    {
+     "w": "sequimur",
+     "m": "follow"
+    },
+    {
+     "w": "vōs",
+     "m": "you all"
+    },
+    {
+     "w": "nautam",
+     "m": "the sailor"
+    },
+    {
+     "w": "sequiminī",
+     "m": "follow"
+    }
+   ]
+  },
+  {
+   "id": "dep-08",
+   "la": "Nautae ex nāve ēgrediuntur et laetantur.",
+   "en": "The sailors get out of the ship and rejoice.",
+   "words": 6,
+   "focus": "ēgrediuntur",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nautae",
+     "m": "the sailors"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "nāve",
+     "m": "the ship"
+    },
+    {
+     "w": "ēgrediuntur",
+     "m": "go out"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "laetantur",
+     "m": "rejoice"
+    }
+   ]
+  },
+  {
+   "id": "dep-09",
+   "la": "Puer cum magistrō loquī nōn audet.",
+   "en": "The boy does not dare to speak with the teacher.",
+   "words": 6,
+   "focus": "loquī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "loquī",
+     "m": "to speak"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "audet",
+     "m": "dares"
+    }
+   ]
+  },
+  {
+   "id": "dep-10",
+   "la": "Nauta nāvem magnam sequī cōnātur.",
+   "en": "The sailor tries to follow the big ship.",
+   "words": 5,
+   "focus": "sequī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nauta",
+     "m": "the sailor"
+    },
+    {
+     "w": "nāvem",
+     "m": "the ship"
+    },
+    {
+     "w": "magnam",
+     "m": "big"
+    },
+    {
+     "w": "sequī",
+     "m": "to follow"
+    },
+    {
+     "w": "cōnātur",
+     "m": "tries"
+    }
+   ]
+  },
+  {
+   "id": "dep-11",
+   "la": "Discipulus improbus magistrum sevērum verētur.",
+   "en": "The naughty pupil fears the strict teacher.",
+   "words": 5,
+   "focus": "verētur",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Discipulus",
+     "m": "the pupil"
+    },
+    {
+     "w": "improbus",
+     "m": "naughty"
+    },
+    {
+     "w": "magistrum",
+     "m": "the teacher"
+    },
+    {
+     "w": "sevērum",
+     "m": "strict"
+    },
+    {
+     "w": "verētur",
+     "m": "fears"
+    }
+   ]
+  },
+  {
+   "id": "dep-12",
+   "la": "Servī dominum ad portum sequuntur.",
+   "en": "The slaves follow their master to the harbour.",
+   "words": 5,
+   "focus": "sequuntur",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "dominum",
+     "m": "the master"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "portum",
+     "m": "the harbour"
+    },
+    {
+     "w": "sequuntur",
+     "m": "follow"
+    }
+   ]
+  },
+  {
+   "id": "dep-13",
+   "la": "Nauta ā dominō vocātur, sed nōn loquitur.",
+   "en": "The sailor is called by the master, but does not speak.",
+   "words": 7,
+   "focus": "loquitur",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nauta",
+     "m": "the sailor"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "dominō",
+     "m": "the master"
+    },
+    {
+     "w": "vocātur",
+     "m": "is called"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "loquitur",
+     "m": "speaks"
+    }
+   ]
+  },
+  {
+   "id": "dep-14",
+   "la": "Puerī ā magistrō vocantur et statim sequuntur.",
+   "en": "The boys are called by the teacher and follow at once.",
+   "words": 7,
+   "focus": "sequuntur",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "vocantur",
+     "m": "are called"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "sequuntur",
+     "m": "follow"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,529 @@
+{
+ "skill": "vocative",
+ "chapter": 4,
+ "sentences": [
+  {
+   "id": "voc-01",
+   "la": "Venī, Mārce, et sacculum meum vidē!",
+   "en": "Come, Marcus, and look at my purse!",
+   "words": 6,
+   "focus": "Mārce",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Venī",
+     "m": "come!"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus (called)"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "sacculum",
+     "m": "the purse (object)"
+    },
+    {
+     "w": "meum",
+     "m": "my"
+    },
+    {
+     "w": "vidē",
+     "m": "look at!"
+    }
+   ]
+  },
+  {
+   "id": "voc-02",
+   "la": "Syra, Iūlia parva iam plōrat.",
+   "en": "Syra, little Julia is crying now.",
+   "words": 5,
+   "focus": "Syra",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra (called)"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "parva",
+     "m": "little"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "plōrat",
+     "m": "is crying"
+    }
+   ]
+  },
+  {
+   "id": "voc-03",
+   "la": "Dāve, dominus tuus tē vocat.",
+   "en": "Davus, your master is calling you.",
+   "words": 5,
+   "focus": "Dāve",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāve",
+     "m": "Davus (called)"
+    },
+    {
+     "w": "dominus",
+     "m": "master"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "tē",
+     "m": "you (object)"
+    },
+    {
+     "w": "vocat",
+     "m": "is calling"
+    }
+   ]
+  },
+  {
+   "id": "voc-04",
+   "la": "Mēde, sacculum dominī tuī sūme!",
+   "en": "Medus, take your master's purse!",
+   "words": 5,
+   "focus": "Mēde",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēde",
+     "m": "Medus (called)"
+    },
+    {
+     "w": "sacculum",
+     "m": "the purse (object)"
+    },
+    {
+     "w": "dominī",
+     "m": "of the master"
+    },
+    {
+     "w": "tuī",
+     "m": "your"
+    },
+    {
+     "w": "sūme",
+     "m": "take!"
+    }
+   ]
+  },
+  {
+   "id": "voc-05",
+   "la": "Serve, tacē: dominus tuus adest!",
+   "en": "Slave, be quiet: your master is here!",
+   "words": 5,
+   "focus": "Serve",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Serve",
+     "m": "slave (called)"
+    },
+    {
+     "w": "tacē",
+     "m": "be quiet!"
+    },
+    {
+     "w": "dominus",
+     "m": "master"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "adest",
+     "m": "is here"
+    }
+   ]
+  },
+  {
+   "id": "voc-06",
+   "la": "Iūlī, fīlius tuus iam dormit.",
+   "en": "Julius, your son is asleep now.",
+   "words": 5,
+   "focus": "Iūlī",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlī",
+     "m": "Julius (called)"
+    },
+    {
+     "w": "fīlius",
+     "m": "son"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "dormit",
+     "m": "is asleep"
+    }
+   ]
+  },
+  {
+   "id": "voc-07",
+   "la": "Mī fīlī, tacē et mātrem audī!",
+   "en": "My son, be quiet and listen to your mother!",
+   "words": 6,
+   "focus": "fīlī",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mī",
+     "m": "my (called)"
+    },
+    {
+     "w": "fīlī",
+     "m": "son (called)"
+    },
+    {
+     "w": "tacē",
+     "m": "be quiet!"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "mātrem",
+     "m": "mother (object)"
+    },
+    {
+     "w": "audī",
+     "m": "listen to!"
+    }
+   ]
+  },
+  {
+   "id": "voc-08",
+   "la": "Puerī probī, Iūlius vōs vocat!",
+   "en": "Good boys, Julius is calling you!",
+   "words": 5,
+   "focus": "Puerī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "boys (called)"
+    },
+    {
+     "w": "probī",
+     "m": "good"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "vōs",
+     "m": "you (more than one, object)"
+    },
+    {
+     "w": "vocat",
+     "m": "is calling"
+    }
+   ]
+  },
+  {
+   "id": "voc-09",
+   "la": "Pater, ubi est pecūnia tua?",
+   "en": "Father, where is your money?",
+   "words": 5,
+   "focus": "Pater",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pater",
+     "m": "father (called)"
+    },
+    {
+     "w": "ubi",
+     "m": "where"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "pecūnia",
+     "m": "money"
+    },
+    {
+     "w": "tua",
+     "m": "your"
+    }
+   ]
+  },
+  {
+   "id": "voc-10",
+   "la": "Mārcus venit; venī quoque, Quīnte!",
+   "en": "Marcus is coming; you come too, Quintus!",
+   "words": 5,
+   "focus": "Quīnte",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "venit",
+     "m": "is coming"
+    },
+    {
+     "w": "venī",
+     "m": "come!"
+    },
+    {
+     "w": "quoque",
+     "m": "too"
+    },
+    {
+     "w": "Quīnte",
+     "m": "Quintus (called)"
+    }
+   ]
+  },
+  {
+   "id": "voc-11",
+   "la": "Dāvus tacet; tacē quoque, Mēde!",
+   "en": "Davus is quiet; you be quiet too, Medus!",
+   "words": 5,
+   "focus": "Mēde",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "tacet",
+     "m": "is quiet"
+    },
+    {
+     "w": "tacē",
+     "m": "be quiet!"
+    },
+    {
+     "w": "quoque",
+     "m": "too"
+    },
+    {
+     "w": "Mēde",
+     "m": "Medus (called)"
+    }
+   ]
+  },
+  {
+   "id": "voc-12",
+   "la": "Serve improbe, discēde et tacē!",
+   "en": "Wicked slave, go away and be quiet!",
+   "words": 5,
+   "focus": "improbe",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Serve",
+     "m": "slave (called)"
+    },
+    {
+     "w": "improbe",
+     "m": "wicked (called)"
+    },
+    {
+     "w": "discēde",
+     "m": "go away!"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "tacē",
+     "m": "be quiet!"
+    }
+   ]
+  },
+  {
+   "id": "voc-13",
+   "la": "Domina, ancilla tua nōn respondet.",
+   "en": "Mistress, your slave girl is not answering.",
+   "words": 5,
+   "focus": "Domina",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Domina",
+     "m": "mistress (called)"
+    },
+    {
+     "w": "ancilla",
+     "m": "slave girl"
+    },
+    {
+     "w": "tua",
+     "m": "your"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "respondet",
+     "m": "is answering"
+    }
+   ]
+  },
+  {
+   "id": "voc-14",
+   "la": "Quid est, domine? Sacculus tuus vacuus est.",
+   "en": "What is it, master? Your purse is empty.",
+   "words": 7,
+   "focus": "domine",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Quid",
+     "m": "what"
+    },
+    {
+     "w": "est",
+     "m": "is it"
+    },
+    {
+     "w": "domine",
+     "m": "master (called)"
+    },
+    {
+     "w": "Sacculus",
+     "m": "the purse"
+    },
+    {
+     "w": "tuus",
+     "m": "your"
+    },
+    {
+     "w": "vacuus",
+     "m": "empty"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  }
+ ]
+}

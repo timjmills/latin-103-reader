@@ -1,0 +1,592 @@
+{
+ "skill": "perfect-deponent-participle",
+ "chapter": 22,
+ "sentences": [
+  {
+   "id": "pdp-01",
+   "la": "Puer in viā lāpsus statim surrēxit.",
+   "en": "The boy, having slipped in the street, got up at once.",
+   "words": 6,
+   "focus": "lāpsus",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viā",
+     "m": "the street"
+    },
+    {
+     "w": "lāpsus",
+     "m": "having slipped"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "surrēxit",
+     "m": "got up"
+    }
+   ]
+  },
+  {
+   "id": "pdp-02",
+   "la": "Iūlius, haec locūtus, ex ātriō exiit.",
+   "en": "Julius, having said this, went out of the atrium.",
+   "words": 6,
+   "focus": "locūtus",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "haec",
+     "m": "these things (object)"
+    },
+    {
+     "w": "locūtus",
+     "m": "having said"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "exiit",
+     "m": "went"
+    }
+   ]
+  },
+  {
+   "id": "pdp-03",
+   "la": "Mēdus, Rōmā profectus, ad portum vēnit.",
+   "en": "Medus, having set out from Rome, came to the harbour.",
+   "words": 6,
+   "focus": "profectus",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "Rōmā",
+     "m": "from Rome"
+    },
+    {
+     "w": "profectus",
+     "m": "having set out"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "portum",
+     "m": "the harbour"
+    },
+    {
+     "w": "vēnit",
+     "m": "came"
+    }
+   ]
+  },
+  {
+   "id": "pdp-04",
+   "la": "Lȳdia, Mēdum secūta, nāvem cōnscendit.",
+   "en": "Lydia, having followed Medus, went on board the ship.",
+   "words": 5,
+   "focus": "secūta",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "Mēdum",
+     "m": "Medus (object)"
+    },
+    {
+     "w": "secūta",
+     "m": "having followed"
+    },
+    {
+     "w": "nāvem",
+     "m": "the ship (object)"
+    },
+    {
+     "w": "cōnscendit",
+     "m": "went on board"
+    }
+   ]
+  },
+  {
+   "id": "pdp-05",
+   "la": "Aemilia, fīliam suam complexa, lacrimāvit.",
+   "en": "Aemilia, having embraced her daughter, wept.",
+   "words": 5,
+   "focus": "complexa",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "fīliam",
+     "m": "her daughter (object)"
+    },
+    {
+     "w": "suam",
+     "m": "her own"
+    },
+    {
+     "w": "complexa",
+     "m": "having embraced"
+    },
+    {
+     "w": "lacrimāvit",
+     "m": "wept"
+    }
+   ]
+  },
+  {
+   "id": "pdp-06",
+   "la": "Nautae ē nāve ēgressī ad tabernam iērunt.",
+   "en": "The sailors, having gone off the ship, went to the shop.",
+   "words": 7,
+   "focus": "ēgressī",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nautae",
+     "m": "the sailors"
+    },
+    {
+     "w": "ē",
+     "m": "out of"
+    },
+    {
+     "w": "nāve",
+     "m": "the ship"
+    },
+    {
+     "w": "ēgressī",
+     "m": "having gone out"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "tabernam",
+     "m": "the shop"
+    },
+    {
+     "w": "iērunt",
+     "m": "went"
+    }
+   ]
+  },
+  {
+   "id": "pdp-07",
+   "la": "Puellae, mātrem secūtae, in hortum intrāvērunt.",
+   "en": "The girls, having followed their mother, went into the garden.",
+   "words": 6,
+   "focus": "secūtae",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "mātrem",
+     "m": "their mother (object)"
+    },
+    {
+     "w": "secūtae",
+     "m": "having followed"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "intrāvērunt",
+     "m": "went"
+    }
+   ]
+  },
+  {
+   "id": "pdp-08",
+   "la": "Puer laudātus tacuit, magister locūtus abiit.",
+   "en": "The boy, having been praised, was silent; the teacher, having spoken, went away.",
+   "words": 6,
+   "focus": "locūtus",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "laudātus",
+     "m": "having been praised"
+    },
+    {
+     "w": "tacuit",
+     "m": "was silent"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "locūtus",
+     "m": "having spoken"
+    },
+    {
+     "w": "abiit",
+     "m": "went away"
+    }
+   ],
+   "note": "The two participles look alike and end alike: laudātus is what was done to the boy, locūtus is what the teacher himself did."
+  },
+  {
+   "id": "pdp-09",
+   "la": "Mārcus, patrem veritus, nihil dīxit.",
+   "en": "Marcus, having feared his father, said nothing.",
+   "words": 5,
+   "focus": "veritus",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "patrem",
+     "m": "his father (object)"
+    },
+    {
+     "w": "veritus",
+     "m": "having feared"
+    },
+    {
+     "w": "nihil",
+     "m": "nothing"
+    },
+    {
+     "w": "dīxit",
+     "m": "said"
+    }
+   ]
+  },
+  {
+   "id": "pdp-10",
+   "la": "Quīntus, multa passus, tandem quiēvit.",
+   "en": "Quintus, having suffered much, rested at last.",
+   "words": 5,
+   "focus": "passus",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "multa",
+     "m": "many things (object)"
+    },
+    {
+     "w": "passus",
+     "m": "having suffered"
+    },
+    {
+     "w": "tandem",
+     "m": "at last"
+    },
+    {
+     "w": "quiēvit",
+     "m": "rested"
+    }
+   ]
+  },
+  {
+   "id": "pdp-11",
+   "la": "Dāvus, dominum abesse arbitrātus, quiēvit.",
+   "en": "Davus, having thought his master was away, rested.",
+   "words": 5,
+   "focus": "arbitrātus",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "dominum",
+     "m": "that his master"
+    },
+    {
+     "w": "abesse",
+     "m": "was away (to be away)"
+    },
+    {
+     "w": "arbitrātus",
+     "m": "having thought"
+    },
+    {
+     "w": "quiēvit",
+     "m": "rested"
+    }
+   ],
+   "note": "A deponent participle keeps everything the verb governs: arbitrātus takes a whole reported clause, dominum abesse."
+  },
+  {
+   "id": "pdp-12",
+   "la": "Servus mentītus ā dominō pūnītus est.",
+   "en": "The slave, having lied, was punished by his master.",
+   "words": 6,
+   "focus": "mentītus",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "mentītus",
+     "m": "having lied"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "dominō",
+     "m": "his master"
+    },
+    {
+     "w": "pūnītus",
+     "m": "punished"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ],
+   "note": "Both participles sit in one sentence: mentītus says what the slave did, pūnītus est says what was done to him."
+  },
+  {
+   "id": "pdp-13",
+   "la": "Profecta ā vīllā, Syra Rōmam petīvit.",
+   "en": "Having set out from the country house, Syra made for Rome.",
+   "words": 6,
+   "focus": "Profecta",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Profecta",
+     "m": "having set out"
+    },
+    {
+     "w": "ā",
+     "m": "from"
+    },
+    {
+     "w": "vīllā",
+     "m": "the country house"
+    },
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "petīvit",
+     "m": "made for"
+    }
+   ],
+   "note": "The participle opens the sentence, before the person it agrees with; profecta is feminine because Syra is."
+  },
+  {
+   "id": "pdp-14",
+   "la": "Māter, īnfantem ōsculāta, eum in lectulum posuit.",
+   "en": "The mother, having kissed the baby, put him in the bed.",
+   "words": 7,
+   "focus": "ōsculāta",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Māter",
+     "m": "the mother"
+    },
+    {
+     "w": "īnfantem",
+     "m": "the baby (object)"
+    },
+    {
+     "w": "ōsculāta",
+     "m": "having kissed"
+    },
+    {
+     "w": "eum",
+     "m": "him"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "lectulum",
+     "m": "the bed"
+    },
+    {
+     "w": "posuit",
+     "m": "put"
+    }
+   ]
+  },
+  {
+   "id": "pdp-15",
+   "la": "Iūlia, speculum intuita, sē pulchram putat.",
+   "en": "Julia, having gazed at the mirror, thinks herself beautiful.",
+   "words": 6,
+   "focus": "intuita",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "speculum",
+     "m": "the mirror (object)"
+    },
+    {
+     "w": "intuita",
+     "m": "having gazed at"
+    },
+    {
+     "w": "sē",
+     "m": "herself"
+    },
+    {
+     "w": "pulchram",
+     "m": "beautiful"
+    },
+    {
+     "w": "putat",
+     "m": "thinks"
+    }
+   ]
+  }
+ ]
+}

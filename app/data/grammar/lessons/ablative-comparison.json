@@ -56,5 +56,77 @@
     "notes p92",
     "Ørberg cap. XXIV (margin)",
     "A&G §406"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "The word for 'than' can disappear",
+      "say": "After a comparative, Latin may drop *quam* (than) and put the thing compared into the ablative instead: **the ablative of comparison (the 'than' form: illō fortior = braver than he)**. *Mārcus Quīntō māior est* — Marcus is bigger than Quintus. Nothing has gone missing; the case is doing the work of the word.",
+      "show": {
+        "kind": "sentence",
+        "id": "ac-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ac-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Where it stands, and what it looks like",
+      "say": "It nearly always sits immediately before its comparative, and it wears the plain ablative ending of its own declension: *lupō*, *aquā*, *illō*, *hostibus*. There is no preposition in front of it, and that bare ablative is the tell: *Canis lupō minor est*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "word": "lupus",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "lupō — the bare ablative, with no preposition in front of it"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ac-04"
+      }
+    },
+    {
+      "n": 3,
+      "title": "Pronouns do it too",
+      "say": "The same ablative serves for *mē*, *tē*, *hōc*, *illō*, *eō*: *Frāter meus mē prūdentior est* — my brother is wiser than I am. After a negative word it is the usual way to say it: *Nihil hōc pēius esse potest*, nothing can be worse than this.",
+      "show": {
+        "kind": "sentence",
+        "id": "ac-06"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ac-07"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Two ablatives round one comparative",
+      "say": "*Iūlius multō māior est frātre suō.* Two ablatives, two different jobs: *frātre* is the person compared, and *multō* is **the ablative of degree (the 'by how much' form: multō māior = bigger by much)** — by how much bigger. The measure words are few and worth knowing by sight, *multō* and *paulō*, and each stands immediately in front of its own comparative.",
+      "show": {
+        "kind": "sentence",
+        "id": "ac-09"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ac-10"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Using it",
+      "say": "It works with any comparative, singular or plural, adjective or adverb: *Mīlitēs Rōmānī hostibus fortiōrēs erant*. Turn it into English with 'than'. When the first thing compared is neither the subject nor the object, Latin keeps *quam* and puts both halves in the same case instead.",
+      "show": {
+        "kind": "sentence",
+        "id": "ac-11"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ac-13"
+      }
+    }
   ]
 }

@@ -1,0 +1,553 @@
+{
+  "skill": "deliberative-subjunctive",
+  "chapter": 29,
+  "sentences": [
+    {
+      "id": "delib-01",
+      "la": "Quid ego nunc faciam, Mārce?",
+      "en": "What am I to do now, Marcus?",
+      "words": 5,
+      "focus": "faciam",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "ego",
+          "m": "I"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "faciam",
+          "m": "am I to do"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "delib-02",
+      "la": "Quō nunc eāmus, amīcī meī?",
+      "en": "Where are we to go now, my friends?",
+      "words": 5,
+      "focus": "eāmus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Quō",
+          "m": "where to"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "eāmus",
+          "m": "are we to go"
+        },
+        {
+          "w": "amīcī",
+          "m": "friends"
+        },
+        {
+          "w": "meī",
+          "m": "my"
+        }
+      ]
+    },
+    {
+      "id": "delib-03",
+      "la": "Quid tibi nunc respondeam, bone pater?",
+      "en": "What am I to answer you now, good father?",
+      "words": 6,
+      "focus": "respondeam",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "tibi",
+          "m": "to you"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "respondeam",
+          "m": "am I to answer"
+        },
+        {
+          "w": "bone",
+          "m": "good"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        }
+      ]
+    },
+    {
+      "id": "delib-04",
+      "la": "Cui ego pecūniam meam dem?",
+      "en": "To whom am I to give my money?",
+      "words": 5,
+      "focus": "dem",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cui",
+          "m": "to whom"
+        },
+        {
+          "w": "ego",
+          "m": "I"
+        },
+        {
+          "w": "pecūniam",
+          "m": "money"
+        },
+        {
+          "w": "meam",
+          "m": "my"
+        },
+        {
+          "w": "dem",
+          "m": "am I to give"
+        }
+      ]
+    },
+    {
+      "id": "delib-05",
+      "la": "Unde pānem emāmus sine pecūniā?",
+      "en": "Where are we to buy bread from, with no money?",
+      "words": 5,
+      "focus": "emāmus",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Unde",
+          "m": "from where"
+        },
+        {
+          "w": "pānem",
+          "m": "bread"
+        },
+        {
+          "w": "emāmus",
+          "m": "are we to buy"
+        },
+        {
+          "w": "sine",
+          "m": "without"
+        },
+        {
+          "w": "pecūniā",
+          "m": "money"
+        }
+      ]
+    },
+    {
+      "id": "delib-06",
+      "la": "Quōmodo tantum saxum sōlus tollam?",
+      "en": "How am I to lift so big a stone on my own?",
+      "words": 5,
+      "focus": "tollam",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quōmodo",
+          "m": "how"
+        },
+        {
+          "w": "tantum",
+          "m": "so big"
+        },
+        {
+          "w": "saxum",
+          "m": "stone"
+        },
+        {
+          "w": "sōlus",
+          "m": "alone"
+        },
+        {
+          "w": "tollam",
+          "m": "am I to lift"
+        }
+      ]
+    },
+    {
+      "id": "delib-07",
+      "la": "Quem ego vocem in tantō perīculō?",
+      "en": "Whom am I to call in such great danger?",
+      "words": 6,
+      "focus": "vocem",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Quem",
+          "m": "whom"
+        },
+        {
+          "w": "ego",
+          "m": "I"
+        },
+        {
+          "w": "vocem",
+          "m": "am I to call"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "tantō",
+          "m": "such great"
+        },
+        {
+          "w": "perīculō",
+          "m": "danger"
+        }
+      ],
+      "note": "vocem with a short o is 'am I to call'; vōcem with a long ō is the noun 'voice'. The question mark and the sense decide."
+    },
+    {
+      "id": "delib-08",
+      "la": "Quid nunc faciāmus, amīcī meī?",
+      "en": "What are we to do now, my friends?",
+      "words": 5,
+      "focus": "faciāmus",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "faciāmus",
+          "m": "are we to do"
+        },
+        {
+          "w": "amīcī",
+          "m": "friends"
+        },
+        {
+          "w": "meī",
+          "m": "my"
+        }
+      ],
+      "note": "faciāmus asks 'are we to do?'; faciēmus, one letter away, is the plain future 'we shall do'."
+    },
+    {
+      "id": "delib-09",
+      "la": "Cūr ego semper sōlus labōrem?",
+      "en": "Why am I always to work on my own?",
+      "words": 5,
+      "focus": "labōrem",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cūr",
+          "m": "why"
+        },
+        {
+          "w": "ego",
+          "m": "I"
+        },
+        {
+          "w": "semper",
+          "m": "always"
+        },
+        {
+          "w": "sōlus",
+          "m": "alone"
+        },
+        {
+          "w": "labōrem",
+          "m": "am I to work"
+        }
+      ]
+    },
+    {
+      "id": "delib-10",
+      "la": "Quid ego miser tunc facerem?",
+      "en": "What was I, poor man, to do then?",
+      "words": 5,
+      "focus": "facerem",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "ego",
+          "m": "I"
+        },
+        {
+          "w": "miser",
+          "m": "poor"
+        },
+        {
+          "w": "tunc",
+          "m": "then"
+        },
+        {
+          "w": "facerem",
+          "m": "was I to do"
+        }
+      ]
+    },
+    {
+      "id": "delib-11",
+      "la": "Utrum maneam an domum redeam?",
+      "en": "Am I to stay or go home?",
+      "words": 5,
+      "focus": "maneam",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Utrum",
+          "m": "whether"
+        },
+        {
+          "w": "maneam",
+          "m": "am I to stay"
+        },
+        {
+          "w": "an",
+          "m": "or"
+        },
+        {
+          "w": "domum",
+          "m": "home"
+        },
+        {
+          "w": "redeam",
+          "m": "am I to go back"
+        }
+      ]
+    },
+    {
+      "id": "delib-12",
+      "la": "Quid dē hāc rē nunc cōgitem?",
+      "en": "What am I to think about this business now?",
+      "words": 6,
+      "focus": "cōgitem",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "dē",
+          "m": "about"
+        },
+        {
+          "w": "hāc",
+          "m": "this"
+        },
+        {
+          "w": "rē",
+          "m": "business"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "cōgitem",
+          "m": "am I to think"
+        }
+      ]
+    },
+    {
+      "id": "delib-13",
+      "la": "Quid nunc puerīs miserīs dēmus?",
+      "en": "What are we to give the poor boys now?",
+      "words": 5,
+      "focus": "dēmus",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "puerīs",
+          "m": "to the boys"
+        },
+        {
+          "w": "miserīs",
+          "m": "poor"
+        },
+        {
+          "w": "dēmus",
+          "m": "are we to give"
+        }
+      ]
+    },
+    {
+      "id": "delib-14",
+      "la": "Ubi hāc nocte dormiāmus, Dāve?",
+      "en": "Where are we to sleep tonight, Davus?",
+      "words": 5,
+      "focus": "dormiāmus",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ubi",
+          "m": "where"
+        },
+        {
+          "w": "hāc",
+          "m": "this"
+        },
+        {
+          "w": "nocte",
+          "m": "night"
+        },
+        {
+          "w": "dormiāmus",
+          "m": "are we to sleep"
+        },
+        {
+          "w": "Dāve",
+          "m": "Davus"
+        }
+      ]
+    },
+    {
+      "id": "delib-15",
+      "la": "Quid ego tunc patrī dīcerem?",
+      "en": "What was I to say to my father then?",
+      "words": 5,
+      "focus": "dīcerem",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "ego",
+          "m": "I"
+        },
+        {
+          "w": "tunc",
+          "m": "then"
+        },
+        {
+          "w": "patrī",
+          "m": "to my father"
+        },
+        {
+          "w": "dīcerem",
+          "m": "was I to say"
+        }
+      ]
+    }
+  ]
+}

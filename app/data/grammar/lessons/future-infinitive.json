@@ -57,5 +57,81 @@
     "notes p89",
     "Ørberg cap. XXIII Grammatica Latina",
     "A&G §584"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "Reporting what will happen",
+      "say": "When Latin reports that something *will* happen, the verb inside the report takes the shape of **the future infinitive (the 'going to' form: ventūrum esse)**. *Mārcus dīcit sē epistulam scrīptūrum esse* — Marcus says that he will write a letter. English needs a 'that' and a 'will'; Latin packs both into the form.",
+      "show": {
+        "kind": "sentence",
+        "id": "fi-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fi-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "What the two words are",
+      "say": "It is the future participle — the *-ūr-* word — with *esse* after it: *scrīptūrum esse*, *datūrum esse*, *reditūrum esse*. In the table it sits on the future row of the infinitives, beside *scrībere* (now) and *scrīpsisse* (earlier); the table prints its naming form, *scrīptūrus esse*, and inside a report the participle changes to *scrīptūrum* to agree with the accusative person.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "scrībō",
+        "reveal": [
+          "inf.fut.act"
+        ],
+        "say": "scrīptūrus esse — the fourth part scrīpt- with -ūrus, then esse"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "scrībō",
+        "cells": [
+          "inf.fut.act"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "The participle agrees with the person reported",
+      "say": "The person reported stands in the accusative (the object form) — *sē*, *Iūlium*, *lupum* — and the participle agrees with it: *sē itūrum esse* for a man, *sē ventūram esse* for a woman, *sē lūsūrōs esse* for several. Only *esse* never changes.",
+      "show": {
+        "kind": "sentence",
+        "id": "fi-05"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "fi-06"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Telling it from the perfect infinitive",
+      "say": "Three infinitives, three times: *cantāre* — singing now; *cantāvisse* — sang, earlier; *cantātūram esse* — will sing, later. The *-isse* is the earlier one, the *-ūrum esse* the later one, and a sentence can carry both at once.",
+      "show": {
+        "kind": "sentence",
+        "id": "fi-10"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "fi-11"
+      }
+    },
+    {
+      "n": 5,
+      "title": "The two short forms",
+      "say": "*Esse* is very often simply left out and understood: *Mārcus dīcit sē statim ventūrum*. And *sum* has a one-word future infinitive of its own, *fore*, beside the fuller *futūrum esse*: *Medicus dīcit puerum sānum fore* — the doctor says the boy will be well.",
+      "show": {
+        "kind": "sentence",
+        "id": "fi-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "fi-13"
+      }
+    }
   ]
 }

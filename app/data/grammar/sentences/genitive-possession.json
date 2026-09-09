@@ -1,0 +1,514 @@
+{
+ "skill": "genitive-possession",
+ "chapter": 2,
+ "sentences": [
+  {
+   "id": "gp-01",
+   "la": "Iūlius pater Mārcī et Quīntī est.",
+   "en": "Julius is the father of Marcus and Quintus.",
+   "words": 6,
+   "focus": "Mārcī",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "Mārcī",
+     "m": "of Marcus"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Quīntī",
+     "m": "of Quintus"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-02",
+   "la": "Aemilia māter Iūliae et Mārcī est.",
+   "en": "Aemilia is the mother of Julia and Marcus.",
+   "words": 6,
+   "focus": "Iūliae",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "māter",
+     "m": "mother"
+    },
+    {
+     "w": "Iūliae",
+     "m": "of Julia"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Mārcī",
+     "m": "of Marcus"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-03",
+   "la": "Ancilla dominae in familiā Rōmānā est.",
+   "en": "The mistress's slave girl is in a Roman household.",
+   "words": 6,
+   "focus": "dominae",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Ancilla",
+     "m": "a slave girl"
+    },
+    {
+     "w": "dominae",
+     "m": "of the mistress"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "familiā",
+     "m": "household"
+    },
+    {
+     "w": "Rōmānā",
+     "m": "Roman"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-04",
+   "la": "Liber puellae novus est, sed parvus.",
+   "en": "The girl's book is new, but small.",
+   "words": 6,
+   "focus": "puellae",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Liber",
+     "m": "the book"
+    },
+    {
+     "w": "puellae",
+     "m": "of the girl"
+    },
+    {
+     "w": "novus",
+     "m": "new"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "parvus",
+     "m": "small"
+    }
+   ]
+  },
+  {
+   "id": "gp-05",
+   "la": "Servus dominī in oppidō est.",
+   "en": "The master's slave is in the town.",
+   "words": 5,
+   "focus": "dominī",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "a slave"
+    },
+    {
+     "w": "dominī",
+     "m": "of the master"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "oppidō",
+     "m": "town"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-06",
+   "la": "Titulus capitulī secundī novus est.",
+   "en": "The title of the second chapter is new.",
+   "words": 5,
+   "focus": "capitulī",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Titulus",
+     "m": "the title"
+    },
+    {
+     "w": "capitulī",
+     "m": "of the chapter"
+    },
+    {
+     "w": "secundī",
+     "m": "second"
+    },
+    {
+     "w": "novus",
+     "m": "new"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-07",
+   "la": "Pater puerōrum dominus Rōmānus est.",
+   "en": "The boys' father is a Roman master.",
+   "words": 5,
+   "focus": "puerōrum",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Pater",
+     "m": "the father"
+    },
+    {
+     "w": "puerōrum",
+     "m": "of the boys"
+    },
+    {
+     "w": "dominus",
+     "m": "master"
+    },
+    {
+     "w": "Rōmānus",
+     "m": "Roman"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-08",
+   "la": "Māter puellārum in familiā Rōmānā est.",
+   "en": "The girls' mother is in a Roman household.",
+   "words": 6,
+   "focus": "puellārum",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Māter",
+     "m": "the mother"
+    },
+    {
+     "w": "puellārum",
+     "m": "of the girls"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "familiā",
+     "m": "household"
+    },
+    {
+     "w": "Rōmānā",
+     "m": "Roman"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-09",
+   "la": "Ecce liber novus fīliae tuae.",
+   "en": "Look, your daughter's new book.",
+   "words": 5,
+   "focus": "fīliae",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ecce",
+     "m": "look!"
+    },
+    {
+     "w": "liber",
+     "m": "book"
+    },
+    {
+     "w": "novus",
+     "m": "new"
+    },
+    {
+     "w": "fīliae",
+     "m": "of the daughter"
+    },
+    {
+     "w": "tuae",
+     "m": "your"
+    }
+   ]
+  },
+  {
+   "id": "gp-10",
+   "la": "Mārcī pater dominus multōrum servōrum est.",
+   "en": "Marcus's father is the master of many slaves.",
+   "words": 6,
+   "focus": "Mārcī",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcī",
+     "m": "of Marcus"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "dominus",
+     "m": "master"
+    },
+    {
+     "w": "multōrum",
+     "m": "of many"
+    },
+    {
+     "w": "servōrum",
+     "m": "of the slaves"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "gp-11",
+   "la": "Ancillae Aemiliae in familiā sunt.",
+   "en": "Aemilia's slave girls are in the household.",
+   "words": 5,
+   "focus": "Aemiliae",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ancillae",
+     "m": "the slave girls"
+    },
+    {
+     "w": "Aemiliae",
+     "m": "of Aemilia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "familiā",
+     "m": "household"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "gp-12",
+   "la": "Servī dominī in oppidō Rōmānō sunt.",
+   "en": "The master's slaves are in a Roman town.",
+   "words": 6,
+   "focus": "dominī",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "dominī",
+     "m": "of the master"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "oppidō",
+     "m": "town"
+    },
+    {
+     "w": "Rōmānō",
+     "m": "Roman"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "gp-13",
+   "la": "Līberī Iūliī et Aemiliae in familiā sunt.",
+   "en": "The children of Julius and Aemilia are in the household.",
+   "words": 7,
+   "focus": "Iūliī",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Līberī",
+     "m": "the children"
+    },
+    {
+     "w": "Iūliī",
+     "m": "of Julius"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Aemiliae",
+     "m": "of Aemilia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "familiā",
+     "m": "household"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  }
+ ]
+}

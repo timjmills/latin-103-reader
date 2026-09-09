@@ -1,0 +1,529 @@
+{
+  "skill": "future-passive",
+  "chapter": 20,
+  "sentences": [
+    {
+      "id": "fp-01",
+      "la": "Puerī ā magistrō crās laudābuntur.",
+      "en": "Tomorrow the boys will be praised by the teacher.",
+      "words": 5,
+      "focus": "laudābuntur",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "magistrō",
+          "m": "the teacher"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "laudābuntur",
+          "m": "will be praised"
+        }
+      ]
+    },
+    {
+      "id": "fp-02",
+      "la": "Mēnsa ā Syrā mox tergēbitur.",
+      "en": "The table will soon be wiped by Syra.",
+      "words": 5,
+      "focus": "tergēbitur",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mēnsa",
+          "m": "the table"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "Syrā",
+          "m": "Syra"
+        },
+        {
+          "w": "mox",
+          "m": "soon"
+        },
+        {
+          "w": "tergēbitur",
+          "m": "will be wiped"
+        }
+      ]
+    },
+    {
+      "id": "fp-03",
+      "la": "Saccus ā servō ad forum portābitur.",
+      "en": "The sack will be carried to the market place by a slave.",
+      "words": 6,
+      "focus": "portābitur",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Saccus",
+          "m": "the sack"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "servō",
+          "m": "a slave"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "forum",
+          "m": "the market place"
+        },
+        {
+          "w": "portābitur",
+          "m": "will be carried"
+        }
+      ]
+    },
+    {
+      "id": "fp-04",
+      "la": "Ego ā patre meō nōn laudābor.",
+      "en": "I will not be praised by my father.",
+      "words": 6,
+      "focus": "laudābor",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ego",
+          "m": "I"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "patre",
+          "m": "father"
+        },
+        {
+          "w": "meō",
+          "m": "my"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "laudābor",
+          "m": "will be praised"
+        }
+      ]
+    },
+    {
+      "id": "fp-05",
+      "la": "Crās ā magistrō nōn verberāberis, Mārce.",
+      "en": "Tomorrow you will not be beaten by the teacher, Marcus.",
+      "words": 6,
+      "focus": "verberāberis",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "magistrō",
+          "m": "the teacher"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "verberāberis",
+          "m": "you will be beaten"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "fp-06",
+      "la": "Crās ā patre nostrō vocābimur.",
+      "en": "Tomorrow we will be called by our father.",
+      "words": 5,
+      "focus": "vocābimur",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "patre",
+          "m": "father"
+        },
+        {
+          "w": "nostrō",
+          "m": "our"
+        },
+        {
+          "w": "vocābimur",
+          "m": "we will be called"
+        }
+      ]
+    },
+    {
+      "id": "fp-07",
+      "la": "Vōs ā dominō crās nōn vocābiminī.",
+      "en": "You will not be called by the master tomorrow.",
+      "words": 6,
+      "focus": "vocābiminī",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Vōs",
+          "m": "you (more than one)"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "dominō",
+          "m": "the master"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "vocābiminī",
+          "m": "you will be called"
+        }
+      ]
+    },
+    {
+      "id": "fp-08",
+      "la": "Epistula ad Mēdum mox mittētur.",
+      "en": "The letter will soon be sent to Medus.",
+      "words": 5,
+      "focus": "mittētur",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Epistula",
+          "m": "the letter"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "Mēdum",
+          "m": "Medus"
+        },
+        {
+          "w": "mox",
+          "m": "soon"
+        },
+        {
+          "w": "mittētur",
+          "m": "will be sent"
+        }
+      ]
+    },
+    {
+      "id": "fp-09",
+      "la": "Ōstium ā Dāvō crās aperiētur.",
+      "en": "Tomorrow the door will be opened by Davus.",
+      "words": 5,
+      "focus": "aperiētur",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ōstium",
+          "m": "the door"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "Dāvō",
+          "m": "Davus"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "aperiētur",
+          "m": "will be opened"
+        }
+      ]
+    },
+    {
+      "id": "fp-10",
+      "la": "Ego ā dominō meō crās mittar.",
+      "en": "Tomorrow I will be sent by my master.",
+      "words": 6,
+      "focus": "mittar",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ego",
+          "m": "I"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "dominō",
+          "m": "master"
+        },
+        {
+          "w": "meō",
+          "m": "my"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "mittar",
+          "m": "I will be sent"
+        }
+      ]
+    },
+    {
+      "id": "fp-11",
+      "la": "Canis pāstōrem suum crās sequētur.",
+      "en": "Tomorrow the dog will follow its shepherd.",
+      "words": 5,
+      "focus": "sequētur",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Canis",
+          "m": "the dog"
+        },
+        {
+          "w": "pāstōrem",
+          "m": "the shepherd"
+        },
+        {
+          "w": "suum",
+          "m": "its own"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "sequētur",
+          "m": "will follow"
+        }
+      ]
+    },
+    {
+      "id": "fp-12",
+      "la": "Iūlius cum uxōre suā mox loquētur.",
+      "en": "Julius will soon talk with his wife.",
+      "words": 6,
+      "focus": "loquētur",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "uxōre",
+          "m": "wife"
+        },
+        {
+          "w": "suā",
+          "m": "his own"
+        },
+        {
+          "w": "mox",
+          "m": "soon"
+        },
+        {
+          "w": "loquētur",
+          "m": "will talk"
+        }
+      ]
+    },
+    {
+      "id": "fp-13",
+      "la": "Ōstium nunc clauditur, crās claudētur.",
+      "en": "The door is being shut now; tomorrow it will be shut.",
+      "words": 5,
+      "focus": "claudētur",
+      "step": 4,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Ōstium",
+          "m": "the door"
+        },
+        {
+          "w": "nunc",
+          "m": "now"
+        },
+        {
+          "w": "clauditur",
+          "m": "is being shut"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "claudētur",
+          "m": "will be shut"
+        }
+      ]
+    },
+    {
+      "id": "fp-14",
+      "la": "Saccus portābitur et in mēnsā pōnētur.",
+      "en": "The sack will be carried and put on the table.",
+      "words": 6,
+      "focus": "pōnētur",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Saccus",
+          "m": "the sack"
+        },
+        {
+          "w": "portābitur",
+          "m": "will be carried"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "in",
+          "m": "on"
+        },
+        {
+          "w": "mēnsā",
+          "m": "the table"
+        },
+        {
+          "w": "pōnētur",
+          "m": "will be put"
+        }
+      ]
+    }
+  ]
+}

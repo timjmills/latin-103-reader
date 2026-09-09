@@ -54,6 +54,110 @@
       "text": "*Mārcus Iūliam pulsat* and *Iūlia Mārcum pulsat* use the same two names, but the endings, not the order, say who hits whom. The doer keeps the naming form (*Mārcus*, *Iūlia*); the one it is done to takes -m, the accusative (the object form). A word ending in -m is not the subject."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What the naming form does",
+      "say": "A Latin noun changes its tail to show its job in the sentence. Naming who or what the sentence is about — the subject — is the job of the nominative (the plain naming form). In *Nīlus fluvius magnus in Āfricā est* the sentence is about *Nīlus*, so *Nīlus* wears that form. English keeps the subject in its place in front of the verb; Latin lets it stand anywhere and marks it with the ending instead.",
+      "show": {
+        "kind": "sentence",
+        "id": "ns-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ns-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "a-nouns: -a for one, -ae for several",
+      "say": "A noun whose dictionary form ends in -a, like *īnsula* (island), keeps -a for one and changes to -ae for more than one: *īnsula* is one island, *īnsulae* is islands. Nothing else about the word moves; only the tail.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "reveal": [
+          "nom.sg",
+          "nom.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl1",
+        "cells": [
+          "nom.sg",
+          "nom.pl"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "us-nouns: -us for one, -ī for several",
+      "say": "*Fluvius* (river) ends in -us for one. For several the -us becomes -ī: *fluviī*, rivers. Read the tail, not the length of the word: *fluviī* is a plural even though it is barely longer than the singular.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "nom.sg",
+          "nom.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl2m",
+        "cells": [
+          "nom.sg",
+          "nom.pl"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "um-nouns: -um for one, -a for several",
+      "say": "*Oppidum* (town) ends in -um for one and -a for several: *oppida*, towns. Mark that plural -a now. It is the ending that catches beginners out, because it looks exactly like the -a of a single a-noun.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2n",
+        "reveal": [
+          "nom.sg",
+          "nom.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl2n",
+        "cells": [
+          "nom.sg",
+          "nom.pl"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "The word after *est* or *sunt* names the subject too",
+      "say": "In *Brundisium et Tūsculum oppida Rōmāna sunt*, *oppida* is not on the receiving end of anything: it says what the subject is. A word that renames the subject after *est* (is) or *sunt* (are) wears the same naming form as the subject, so both halves of an ‘A is B’ sentence match.",
+      "show": {
+        "kind": "sentence",
+        "id": "ns-09"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ns-10"
+      }
+    },
+    {
+      "n": 6,
+      "title": "-a: one feminine thing, or several neuter ones",
+      "say": "*Īnsula* ends in -a and is one island. *Oppida* ends in -a and is several towns. Two different endings that look alike. The verb settles it — *est* for one, *sunt* for several — and so does the noun itself: an a-noun in -a is one, an um-noun in -a is many. There is a third -a besides: after *in* an a-noun lengthens to -ā (*in Italīā*, *in prōvinciā*), which is neither of those two and comes later, with the cases.",
+      "show": {
+        "kind": "sentence",
+        "id": "ns-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ns-12"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

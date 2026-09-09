@@ -1,5 +1,115 @@
 {
   "skill": "ablative-place",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Where something is",
+      "say": "To say where somebody or something is, Latin puts *in* in front of the noun and changes the noun's ending. That changed ending is **the ablative (the 'in/on/under' form)**. *In hortō* — in the garden. It answers one question, *ubi?*, where?",
+      "show": {
+        "kind": "sentence",
+        "id": "abp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "abp-02",
+        "ask": "Which word says where she is?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Words in -a: the ending is a long -ā",
+      "say": "*Vīlla* is the plain naming form, with a short a. After *in* it becomes *vīllā*, with a long ā — that macron is the whole difference, and Ørberg always prints it, because *mēnsa* (the table, doing something) and *mēnsā* (on the table) are otherwise the same six letters.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "word": "vīlla",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "in vīllā — long -ā, against the short -a of the plain vīlla"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl1",
+        "cells": [
+          "abl.sg"
+        ],
+        "ask": "Give the form that goes after *in*."
+      }
+    },
+    {
+      "n": 3,
+      "title": "Words in -us and -um: the ending is -ō",
+      "say": "*Hortus* and *cubiculum* both end -ō after *in*: *in hortō*, *in cubiculō*. One ending covers both, whichever of the two the naming form looked like.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "word": "hortus",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "in hortō — -us becomes -ō"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl2m",
+        "cells": [
+          "abl.sg"
+        ],
+        "ask": "Give the form that goes after *in*."
+      }
+    },
+    {
+      "n": 4,
+      "title": "More than one place: -īs",
+      "say": "For several the ending is -īs, and it is the same -īs for both kinds of word: *in vīllīs*, *in cubiculīs*, *in hortīs*. Any adjective travelling with the noun takes it too: *in cubiculīs parvīs*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "word": "vīlla",
+        "reveal": [
+          "abl.pl"
+        ],
+        "say": "in vīllīs — the plural ending is -īs"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl1",
+        "cells": [
+          "abl.pl"
+        ],
+        "ask": "Give the plural form that goes after *in*."
+      }
+    },
+    {
+      "n": 5,
+      "title": "*in* says where, *cum* says with whom",
+      "say": "Two nouns in the same ablative can be doing quite different jobs, and the little word in front settles which. *In peristylō* is a place you could point to. *Cum Aemiliā* is a person who came along. Ask what the noun is: somewhere, or somebody.",
+      "show": {
+        "kind": "sentence",
+        "id": "abp-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "abp-10",
+        "ask": "Of *Iūliā* and *ātriō*, which one says where, and why?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Where the phrase sits",
+      "say": "The *in* phrase does not have to wait until the middle of the sentence: it can stand first, and the noun is still the place. *In hortō Iūliī sunt līlia pulchra* — in Julius's garden there are beautiful lilies. What makes it the place is *in* with the -ā, -ō or -īs ending, not where the phrase sits.",
+      "show": {
+        "kind": "sentence",
+        "id": "abp-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abp-11",
+        "ask": "In ___ aqua est, in hortō rosae. (impluvium)"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

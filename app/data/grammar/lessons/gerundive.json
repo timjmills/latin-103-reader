@@ -1,5 +1,105 @@
 {
   "skill": "gerundive",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "A verb turned into an adjective and hung on a noun is **the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk)**. It does not say what the noun is doing; it says what is to be done to it. *liber legendus* is 'a book to be read', *aqua bibenda* 'water to be drunk'. English has no single word for it, so we say 'to be …ed'.",
+      "show": {
+        "kind": "sentence",
+        "id": "ger-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ger-02",
+        "ask": "What is bibendam telling you about the water?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "How it is built: stem + -nd-",
+      "say": "Every gerundive is built the same way: the verb's own stem, then **-nd-**, then the endings of *bonus*. The first conjugation (the *-āre* verbs) gives *-andus*: *lavandus*. The second (*-ēre*) and the third (*-ere*) give *-endus*: *docendus*, *legendus*. The third conjugation in *-iō* and the fourth (*-īre*) give *-iendus*: *faciendus*, *audiendus*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "reveal": [
+          "gerundive"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "gerundive"
+        ],
+        "ask": "Write the gerundive of scrībō."
+      }
+    },
+    {
+      "n": 3,
+      "title": "It agrees like bonus -a -um",
+      "say": "The gerundive is an ordinary first-and-second-declension adjective (one that goes like *bonus -a -um*), so it takes the gender, number and case of the noun it belongs to: *poena ferenda* feminine singular, *discipulī docendī* masculine plural, *vāsa lavanda* neuter plural. Change the noun and the ending follows it.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.nom.sg.m",
+          "pos.nom.sg.f",
+          "pos.nom.sg.n"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.nom.sg.m",
+          "pos.nom.sg.f",
+          "pos.nom.sg.n"
+        ],
+        "ask": "Give the nominative singular of bonus in all three genders."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Not the present participle",
+      "say": "Two verb-adjectives sit close together. The present participle (the '-ing' word that describes a noun) ends in *-ns* and is active: *cantāns* 'singing', *legēns* 'reading'. The gerundive has *-nd-* and is passive: *cantandum* 'to be sung', *legendus* 'to be read'. *Puella cantāns carmen cantandum discit* holds one of each.",
+      "show": {
+        "kind": "sentence",
+        "id": "ger-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ger-13",
+        "ask": "docendōs: is this the present participle, or the gerundive?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "After ad, and with causā: what it is for",
+      "say": "*ad* with a gerundive gives the purpose: *ad agrōs colendōs*, 'for the fields to be tilled', that is, to till the fields. *causā* after a genitive (the 'of' form) does the same: *Lȳdiae videndae causā*, for the sake of seeing Lydia. Turn the pair into an English '-ing' or 'to …'.",
+      "show": {
+        "kind": "sentence",
+        "id": "ger-04"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ger-06",
+        "ask": "What does ad urbem videndam say the people are coming for?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Build one",
+      "say": "Choose the noun first, then match the gerundive to it in gender, number and case. 'Marcus is sitting there to write letters' has *litterās*, feminine plural accusative after *ad*, and so *scrībendās*: *Mārcus ad litterās scrībendās sedet*.",
+      "show": {
+        "kind": "sentence",
+        "id": "ger-05"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ger-11",
+        "ask": "Match mittō to epistulam: fill in the gerundive."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

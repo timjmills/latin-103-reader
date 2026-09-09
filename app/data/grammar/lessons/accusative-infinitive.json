@@ -1,17 +1,133 @@
 {
   "skill": "accusative-infinitive",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Latin has no word for 'that'",
+      "say": "English reports with a joining word: *she sees that the boy is sleeping*. Latin has none, and uses **the accusative + infinitive (the 'that …' clause after says / sees / thinks)** instead, *accūsātīvus cum īnfīnītīvō*: the reported person goes into the accusative (the object form) and the reported verb into the infinitive (the 'to' form). *Syra puerum dormīre videt* — literally Syra sees the-boy-to-sleep.",
+      "show": {
+        "kind": "sentence",
+        "id": "aci-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "aci-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The accusative word is the one doing it",
+      "say": "This is the step that feels wrong at first. *Puerum* looks like an object, but nobody is doing anything to the boy — he is the one asleep. Inside a reported clause the accusative is the *subject*, and the infinitive is its verb: *avem canere* = the bird is singing, *līberōs lūdere* = the children are playing. Ask who does the infinitive's action and the accusative answers.",
+      "show": {
+        "kind": "sentence",
+        "id": "aci-03"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "aci-04"
+      }
+    },
+    {
+      "n": 3,
+      "title": "What sets it off",
+      "say": "The pattern is set off by a verb of seeing, hearing, saying or thinking, and in these chapters that means *videt* (sees) and *audit* (hears). That verb usually comes last, after the whole reported clause: *Quīntus canem in viā lātrāre audit*. It need not: *Mārcus videt Iūliam rosās carpere* puts it second and *Audit Syra Quīntum in cubiculō plōrāre* puts it first. Find the reporting verb before you translate, wherever it stands.",
+      "show": {
+        "kind": "sentence",
+        "id": "aci-08"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "aci-15"
+      }
+    },
+    {
+      "n": 4,
+      "title": "esse in the clause, and being-done verbs",
+      "say": "If what is reported is a state, the infinitive is *esse*, and any adjective in the clause agrees with the accusative subject: *Quīntum vīvum esse videt* = sees that Quintus is alive — *Quīntum* and *vīvum* both accusative. If what is reported is done to somebody, the infinitive turns passive: *sē ā patre vocārī audit* = hears that he is being called by his father.",
+      "show": {
+        "kind": "sentence",
+        "id": "aci-05"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "aci-10"
+      }
+    },
+    {
+      "n": 5,
+      "title": "A plain 'to' form, or a reported clause?",
+      "say": "After *vult*, *potest* and *audet* the infinitive has no subject of its own: *Mārcus dormīre vult* = Marcus wants to sleep — the wanter and the sleeper are the same person. In a reported clause an extra accusative supplies a different doer: *Quīntum canere audit* = he hears that Quintus is singing. Count the accusatives: one that the infinitive itself acts on is an object; one that acts is a reported subject.",
+      "show": {
+        "kind": "sentence",
+        "id": "aci-14"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "aci-12"
+      }
+    }
+  ],
   "core": [
-    { "type": "p", "text": "After a verb of saying, seeing or thinking, Latin does not say *that he is sleeping*. It uses **the accusative + infinitive (the 'that …' clause after says / sees / thinks)**: the person reported goes into the accusative (the object form) and the verb into the infinitive (the 'to' form). *Medicus puerum dormīre videt* — the doctor sees the-boy-to-sleep: sees that the boy is sleeping. Latin does it after *videt* (sees), *audit* (hears), *dīcit* (says), *putat* (thinks). Latin name: accūsātīvus cum īnfīnītīvō." },
-    { "type": "english", "text": "A clause is a small sentence inside a sentence, with its own subject and verb: *I know [that she is here]*. *I saw her run* has an object-form subject (*her*) and a bare verb (*run*) — the Latin shape." },
-    { "type": "rule", "text": "Reported subject in the accusative, reported verb in the infinitive; no word for 'that'." },
-    { "type": "examples", "units": ["r10:80.1", "r11:59.1", "r11:128.1", "r11:107.2"], "invented": [ { "la": "Syra puerum dormīre dīcit.", "en": "Syra says that the boy is sleeping.", "focus": "puerum dormīre" }, { "la": "Mārcus sē aegrum esse putat.", "en": "Marcus thinks that he is ill.", "focus": "sē aegrum esse" } ] },
-    { "type": "confusion", "with": "infinitive", "text": "A plain infinitive after *vult* (wants) has no subject of its own: *puer dormīre vult* — the boy wants to sleep. In the accusative + infinitive an extra accusative does the action: *puerum dormīre videt*. Ask who does the infinitive's action; an accusative word means a reported clause." }
+    {
+      "type": "p",
+      "text": "After a verb of saying, seeing or thinking, Latin does not say *that he is sleeping*. It uses **the accusative + infinitive (the 'that …' clause after says / sees / thinks)**: the person reported goes into the accusative (the object form) and the verb into the infinitive (the 'to' form). *Medicus puerum dormīre videt* — the doctor sees the-boy-to-sleep: sees that the boy is sleeping. Latin does it after *videt* (sees), *audit* (hears), *dīcit* (says), *putat* (thinks). Latin name: accūsātīvus cum īnfīnītīvō."
+    },
+    {
+      "type": "english",
+      "text": "A clause is a small sentence inside a sentence, with its own subject and verb: *I know [that she is here]*. *I saw her run* has an object-form subject (*her*) and a bare verb (*run*) — the Latin shape."
+    },
+    {
+      "type": "rule",
+      "text": "Reported subject in the accusative, reported verb in the infinitive; no word for 'that'."
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r10:80.1",
+        "r11:59.1",
+        "r11:128.1",
+        "r11:107.2"
+      ],
+      "invented": [
+        {
+          "la": "Syra puerum dormīre dīcit.",
+          "en": "Syra says that the boy is sleeping.",
+          "focus": "puerum dormīre"
+        },
+        {
+          "la": "Mārcus sē aegrum esse putat.",
+          "en": "Marcus thinks that he is ill.",
+          "focus": "sē aegrum esse"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "infinitive",
+      "text": "A plain infinitive after *vult* (wants) has no subject of its own: *puer dormīre vult* — the boy wants to sleep. In the accusative + infinitive an extra accusative does the action: *puerum dormīre videt*. Ask who does the infinitive's action; an accusative word means a reported clause."
+    }
   ],
   "more": [
-    { "type": "p", "text": "The infinitive's tense is relative to the main verb. The present infinitive means 'at the same time': *eum dormīre dīcit* — says he is sleeping; *eum dormīre dīxit* — said he was sleeping. The perfect infinitive (the 'to have done' form) reports something earlier: *eum dormīvisse dīcit* — says he slept." },
-    { "type": "p", "text": "When the reported person is the same as the speaker, Latin uses *sē* (himself, herself): Quintus says *sē aegrum esse* — that he (Quintus) is ill; *eum aegrum esse* would mean someone else. A passive infinitive works too: *Dāvus Quīntum in lectō pōnī videt* — Davus sees Quintus being put in bed." },
-    { "type": "p", "text": "The learner's notes (week 10) set two English 'that'-clauses side by side — the indicative (the plain statement form) kind, *I know that she is here*, and the infinitive kind (*I know her to be…*) — and point out that Classical Latin almost always prefers the infinitive kind, while the Vulgate and medieval texts often write *quod / quia / quoniam* + indicative (*videt quod is aedificat*). Use the classical way in composition; expect the other in later readings. The notes' practice set turns direct speech into reported speech: *Aemilia: 'Quīntus vīvus est'* → *Aemilia Quīntum vīvum esse dīcit*." },
-    { "type": "p", "text": "Ørberg (chapter XI) lists the verbs that take it: *vidēre, audīre, sentīre* (feel, notice), *iubēre*, *dīcere*, *putāre*, *gaudēre* (be glad) and *necesse esse* (*puerum dormīre necesse est* — the boy must sleep). A&G add that an adjective in the clause agrees with its accusative subject (*Quīntum vīvum esse*), and that after *iubeō* the accusative is felt as the object of the ordering as well." }
+    {
+      "type": "p",
+      "text": "The infinitive's tense is relative to the main verb. The present infinitive means 'at the same time': *eum dormīre dīcit* — says he is sleeping; *eum dormīre dīxit* — said he was sleeping. The perfect infinitive (the 'to have done' form) reports something earlier: *eum dormīvisse dīcit* — says he slept."
+    },
+    {
+      "type": "p",
+      "text": "When the reported person is the same as the speaker, Latin uses *sē* (himself, herself): Quintus says *sē aegrum esse* — that he (Quintus) is ill; *eum aegrum esse* would mean someone else. A passive infinitive works too: *Dāvus Quīntum in lectō pōnī videt* — Davus sees Quintus being put in bed."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (week 10) set two English 'that'-clauses side by side — the indicative (the plain statement form) kind, *I know that she is here*, and the infinitive kind (*I know her to be…*) — and point out that Classical Latin almost always prefers the infinitive kind, while the Vulgate and medieval texts often write *quod / quia / quoniam* + indicative (*videt quod is aedificat*). Use the classical way in composition; expect the other in later readings. The notes' practice set turns direct speech into reported speech: *Aemilia: 'Quīntus vīvus est'* → *Aemilia Quīntum vīvum esse dīcit*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (chapter XI) lists the verbs that take it: *vidēre, audīre, sentīre* (feel, notice), *iubēre*, *dīcere*, *putāre*, *gaudēre* (be glad) and *necesse esse* (*puerum dormīre necesse est* — the boy must sleep). A&G add that an adjective in the clause agrees with its accusative subject (*Quīntum vīvum esse*), and that after *iubeō* the accusative is felt as the object of the ordering as well."
+    }
   ],
-  "sources": ["notes p32–33, 36–37", "Ørberg cap. XI Grammatica Latina", "A&G §579–582"]
+  "sources": [
+    "notes p32–33, 36–37",
+    "Ørberg cap. XI Grammatica Latina",
+    "A&G §579–582"
+  ]
 }

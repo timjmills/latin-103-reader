@@ -55,6 +55,118 @@
       "text": "*Vocat* (he calls) and *vocā!* (call!) are one letter apart. A verb with -t states a fact and has a subject you can point to; without the -t, usually with an exclamation mark or a name being addressed, it is an order: *Mēdus Dāvum vocat.* — *Dāvum vocā!*"
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "-t for one, -nt for several",
+      "say": "A Latin verb is a stem with an ending, and the ending says who is doing it. These two are the present tense, 3rd person (-t 'he does', -nt 'they do'): *Mārcus rīdet* — Marcus laughs; *Puerī rīdent* — the boys laugh. No word for ‘he’ or ‘they’ is needed, because the tail already carries it.",
+      "show": {
+        "kind": "sentence",
+        "id": "pi-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pi-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "a-verbs: -at and -ant",
+      "say": "*Vocāre* (to call) has an a in front of the ending: *vocat*, he calls; *vocant*, they call. This is the largest family of Latin verbs, and its a stays put in front of both endings.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "reveal": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "cells": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "e-verbs: -et and -ent",
+      "say": "*Vidēre* (to see) has an e: *videt*, he sees; *vident*, they see. The two tails are the same as before; only the vowel in front of them has changed, and that vowel is what says which family a verb belongs to.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj2",
+        "reveal": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj2",
+        "cells": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "i-verbs: -it and -iunt",
+      "say": "*Audīre* (to hear) has an i: *audit*, he hears. In the plural that i does not step aside — it is *audiunt*, they hear, with the i still standing in front of -unt.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj4",
+        "reveal": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj4",
+        "cells": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "*Est* and *sunt*",
+      "say": "One pair refuses the pattern and has to be learned as it stands: *est* (is) and *sunt* (are). *Aemilia māter est* — Aemilia is the mother; *Mārcus et Quīntus puerī Rōmānī sunt* — Marcus and Quintus are Roman boys. Even here the -t and the -nt are visible at the end.",
+      "show": {
+        "kind": "paradigm",
+        "key": "sum",
+        "reveal": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "sum",
+        "cells": [
+          "pres.ind.act.3sg",
+          "pres.ind.act.3pl"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "title": "The singulars rhyme, the plurals do not",
+      "say": "*Videt* and *dormit* end a single letter apart — an e in one, an i in the other — and both mean one person doing something. Their plurals part company: *vident*, but *dormiunt*. So before you make a verb plural, look at the vowel in front of the -t: in every verb you have met so far an e gives -ent and an i gives -iunt.",
+      "show": {
+        "kind": "sentence",
+        "id": "pi-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pi-13"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

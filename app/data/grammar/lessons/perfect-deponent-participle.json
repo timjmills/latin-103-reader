@@ -3,7 +3,7 @@
   "core": [
     {
       "type": "p",
-      "text": "Deponents build their participle like everyone else, but it means the opposite: **the perfect participle of a deponent verb (active meaning: locutus = having spoken)**. *Haec locūta, Ariadna …* — having said this, Ariadne …; *fīlum secūtus* — having followed the thread. This is the only 'having done' participle Latin has, so writers use it constantly to tell what someone did just before the main verb. Latin name: *participium perfectī verbī dēpōnentis*."
+      "text": "Deponents build their participle like everyone else, but it means the opposite: **the perfect participle of a deponent verb (active meaning: locūtus = having spoken)**. *Haec locūta, Ariadna …* — having said this, Ariadne …; *fīlum secūtus* — having followed the thread. This is the only 'having done' participle Latin has, so writers use it constantly to tell what someone did just before the main verb. Latin name: *participium perfectī verbī dēpōnentis*."
     },
     {
       "type": "english",
@@ -37,7 +37,93 @@
     {
       "type": "confusion",
       "with": "perfect-passive-participle",
-      "text": "*Locūtus* and *laudātus* look identical, but **the perfect participle (the 'having been done' word: laudatus = praised)** of an ordinary verb is passive. Check the dictionary form: a verb whose infinitive ends in -ī / -ārī / -ērī / -īrī is deponent, and its participle is active — *profecta* is 'having set out', not 'having been set out'."
+      "text": "*Locūtus* and *laudātus* look identical, but **the perfect participle (the 'having been done' word: laudātus = praised)** of an ordinary verb is passive. Check the dictionary form: a verb whose infinitive ends in -ī / -ārī / -ērī / -īrī is deponent, and its participle is active — *profecta* is 'having set out', not 'having been set out'."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "A deponent verb builds its participle like any other verb but means the opposite by it: **the perfect participle of a deponent verb (active meaning: locūtus = having spoken)** describes the person who did something, not the person it was done to. *Puer lāpsus surrēxit* — the boy, having slipped, got up. He did the slipping himself; nobody slipped him.",
+      "show": {
+        "kind": "sentence",
+        "id": "pdp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pdp-02",
+        "ask": "Which word says what Julius himself had done?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Built exactly like the other perfect participle",
+      "say": "There is no new form to learn. It is the last part of the deponent's dictionary entry with the endings of *bonus*: *loquī, locūtus*; *sequī, secūtus*; *complectī, complexus*. So *Lȳdia secūta* is a woman who has followed, and *Aemilia complexa* a woman who has embraced.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.nom.sg.m",
+          "pos.nom.sg.f"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.nom.sg.m",
+          "pos.nom.sg.f"
+        ],
+        "ask": "Fill in the man's form and the woman's form."
+      }
+    },
+    {
+      "n": 3,
+      "title": "It agrees with the doer, in the plural too",
+      "say": "The participle always agrees with whoever did the thing: *nautae ēgressī*, sailors who have gone out; *puellae secūtae*, girls who have followed. Count the people, look at whether they are men or women, and the ending follows by itself.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "reveal": [
+          "pos.nom.pl.m",
+          "pos.nom.pl.f"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "cells": [
+          "pos.nom.pl.m",
+          "pos.nom.pl.f"
+        ],
+        "ask": "Fill in the two plural subject forms."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The same shape, the opposite meaning",
+      "say": "*laudātus* and *locūtus* end alike and look alike, and they mean opposite things. *laudātus* was praised by somebody else; *locūtus* did the speaking himself. Only the verb behind the word decides, so the deponents have to be known by name: *loquor, sequor, patior, vereor, proficīscor, lābor*.",
+      "show": {
+        "kind": "sentence",
+        "id": "pdp-08"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pdp-09",
+        "ask": "*veritus* — was Marcus feared, or was he afraid?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Using it",
+      "say": "Because it means something active, it keeps everything the verb itself would take: an object (*patrem veritus*, *multa passus*), or even a whole reported clause (*dominum abesse arbitrātus*). Read it as 'having …ed', keep its object with it, and the sentence unwinds.",
+      "show": {
+        "kind": "sentence",
+        "id": "pdp-11"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "pdp-15",
+        "ask": "*intueor, intuērī, intuitus sum*. Put in the word that says Julia herself had gazed at the mirror."
+      }
     }
   ],
   "more": [

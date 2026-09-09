@@ -1,0 +1,580 @@
+{
+  "skill": "future-perfect",
+  "chapter": 30,
+  "sentences": [
+    {
+      "id": "futp-01",
+      "la": "Cum Rōmam vēnerō, tē statim vidēbō.",
+      "en": "When I have come to Rome, I shall see you at once.",
+      "words": 6,
+      "focus": "vēnerō",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "when"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "vēnerō",
+          "m": "I shall have come"
+        },
+        {
+          "w": "tē",
+          "m": "you"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "vidēbō",
+          "m": "I shall see"
+        }
+      ]
+    },
+    {
+      "id": "futp-02",
+      "la": "Sī pater domum vēnerit, omnēs gaudēbimus.",
+      "en": "If father comes home, we shall all be glad.",
+      "words": 6,
+      "focus": "vēnerit",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Sī",
+          "m": "if"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        },
+        {
+          "w": "domum",
+          "m": "home"
+        },
+        {
+          "w": "vēnerit",
+          "m": "will have come"
+        },
+        {
+          "w": "omnēs",
+          "m": "all of us"
+        },
+        {
+          "w": "gaudēbimus",
+          "m": "we shall be glad"
+        }
+      ]
+    },
+    {
+      "id": "futp-03",
+      "la": "Ubi cēnam parāveris, nōs vocābis.",
+      "en": "When you have got dinner ready, you will call us.",
+      "words": 5,
+      "focus": "parāveris",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Ubi",
+          "m": "when"
+        },
+        {
+          "w": "cēnam",
+          "m": "dinner"
+        },
+        {
+          "w": "parāveris",
+          "m": "you will have prepared"
+        },
+        {
+          "w": "nōs",
+          "m": "us"
+        },
+        {
+          "w": "vocābis",
+          "m": "you will call"
+        }
+      ]
+    },
+    {
+      "id": "futp-04",
+      "la": "Postquam omnēs surrēxerint, servī mēnsam movēbunt.",
+      "en": "After they have all got up, the slaves will move the table.",
+      "words": 6,
+      "focus": "surrēxerint",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Postquam",
+          "m": "after"
+        },
+        {
+          "w": "omnēs",
+          "m": "all of them"
+        },
+        {
+          "w": "surrēxerint",
+          "m": "will have got up"
+        },
+        {
+          "w": "servī",
+          "m": "the slaves"
+        },
+        {
+          "w": "mēnsam",
+          "m": "the table"
+        },
+        {
+          "w": "movēbunt",
+          "m": "will move"
+        }
+      ]
+    },
+    {
+      "id": "futp-05",
+      "la": "Nisi tacueritis, magister vōs pūniet.",
+      "en": "Unless you fall silent, the teacher will punish you.",
+      "words": 5,
+      "focus": "tacueritis",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nisi",
+          "m": "unless"
+        },
+        {
+          "w": "tacueritis",
+          "m": "you will have kept quiet"
+        },
+        {
+          "w": "magister",
+          "m": "the teacher"
+        },
+        {
+          "w": "vōs",
+          "m": "you"
+        },
+        {
+          "w": "pūniet",
+          "m": "will punish"
+        }
+      ]
+    },
+    {
+      "id": "futp-06",
+      "la": "Cum ad vīllam vēnerimus, quiēscēmus.",
+      "en": "When we have come to the house, we shall rest.",
+      "words": 5,
+      "focus": "vēnerimus",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "when"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "vīllam",
+          "m": "the house"
+        },
+        {
+          "w": "vēnerimus",
+          "m": "we shall have come"
+        },
+        {
+          "w": "quiēscēmus",
+          "m": "we shall rest"
+        }
+      ]
+    },
+    {
+      "id": "futp-07",
+      "la": "Cum in hortō fuerō, tē exspectābō.",
+      "en": "When I am in the garden, I shall wait for you.",
+      "words": 6,
+      "focus": "fuerō",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "when"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "fuerō",
+          "m": "I shall have been"
+        },
+        {
+          "w": "tē",
+          "m": "you"
+        },
+        {
+          "w": "exspectābō",
+          "m": "I shall wait for"
+        }
+      ]
+    },
+    {
+      "id": "futp-08",
+      "la": "Ubi Tūsculum ieris, mē salūtābis.",
+      "en": "When you have gone to Tusculum, you will greet me.",
+      "words": 5,
+      "focus": "ieris",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Ubi",
+          "m": "when"
+        },
+        {
+          "w": "Tūsculum",
+          "m": "to Tusculum"
+        },
+        {
+          "w": "ieris",
+          "m": "you will have gone"
+        },
+        {
+          "w": "mē",
+          "m": "me"
+        },
+        {
+          "w": "salūtābis",
+          "m": "you will greet"
+        }
+      ]
+    },
+    {
+      "id": "futp-09",
+      "la": "Sī hoc fēceris, pater tē laudābit.",
+      "en": "If you do this, father will praise you.",
+      "words": 6,
+      "focus": "fēceris",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Sī",
+          "m": "if"
+        },
+        {
+          "w": "hoc",
+          "m": "this"
+        },
+        {
+          "w": "fēceris",
+          "m": "you will have done"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        },
+        {
+          "w": "tē",
+          "m": "you"
+        },
+        {
+          "w": "laudābit",
+          "m": "will praise"
+        }
+      ],
+      "note": "The -is of fēceris is short here. The perfect subjunctive fēcerīs, which comes in chapter 32, is spelt the same but has a long -īs."
+    },
+    {
+      "id": "futp-10",
+      "la": "Sī Mārcus librum lēgerit, Iūlius gaudēbit.",
+      "en": "If Marcus reads the book, Julius will be glad.",
+      "words": 6,
+      "focus": "lēgerit",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Sī",
+          "m": "if"
+        },
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "librum",
+          "m": "the book"
+        },
+        {
+          "w": "lēgerit",
+          "m": "will have read"
+        },
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "gaudēbit",
+          "m": "will be glad"
+        }
+      ],
+      "note": "lēgit is the plain perfect 'he read'; lēgerit adds -eri- and means 'he will have read'."
+    },
+    {
+      "id": "futp-11",
+      "la": "Antequam sōl occiderit, domum redībimus.",
+      "en": "Before the sun has set, we shall go home.",
+      "words": 5,
+      "focus": "occiderit",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Antequam",
+          "m": "before"
+        },
+        {
+          "w": "sōl",
+          "m": "the sun"
+        },
+        {
+          "w": "occiderit",
+          "m": "will have gone down"
+        },
+        {
+          "w": "domum",
+          "m": "home"
+        },
+        {
+          "w": "redībimus",
+          "m": "we shall go back"
+        }
+      ]
+    },
+    {
+      "id": "futp-12",
+      "la": "Cum epistula scrīpta erit, eam legēmus.",
+      "en": "When the letter has been written, we shall read it.",
+      "words": 6,
+      "focus": "scrīpta erit",
+      "step": 6,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Cum",
+          "m": "when"
+        },
+        {
+          "w": "epistula",
+          "m": "the letter"
+        },
+        {
+          "w": "scrīpta",
+          "m": "written"
+        },
+        {
+          "w": "erit",
+          "m": "will have been"
+        },
+        {
+          "w": "eam",
+          "m": "it"
+        },
+        {
+          "w": "legēmus",
+          "m": "we shall read"
+        }
+      ],
+      "note": "The passive future perfect is two words, the perfect participle with the future of sum. No single-word drill can carry it, so this sentence is only ever recognised, never typed out."
+    },
+    {
+      "id": "futp-13",
+      "la": "Sī Dāvus fūgerit, dominus eum quaeret.",
+      "en": "If Davus runs away, his master will look for him.",
+      "words": 6,
+      "focus": "fūgerit",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Sī",
+          "m": "if"
+        },
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "fūgerit",
+          "m": "will have fled"
+        },
+        {
+          "w": "dominus",
+          "m": "the master"
+        },
+        {
+          "w": "eum",
+          "m": "him"
+        },
+        {
+          "w": "quaeret",
+          "m": "will look for"
+        }
+      ]
+    },
+    {
+      "id": "futp-14",
+      "la": "Postquam vīnum gustāverimus, dē cēnā dīcēmus.",
+      "en": "After we have tasted the wine, we shall talk about the dinner.",
+      "words": 6,
+      "focus": "gustāverimus",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Postquam",
+          "m": "after"
+        },
+        {
+          "w": "vīnum",
+          "m": "the wine"
+        },
+        {
+          "w": "gustāverimus",
+          "m": "we shall have tasted"
+        },
+        {
+          "w": "dē",
+          "m": "about"
+        },
+        {
+          "w": "cēnā",
+          "m": "the dinner"
+        },
+        {
+          "w": "dīcēmus",
+          "m": "we shall speak"
+        }
+      ]
+    },
+    {
+      "id": "futp-15",
+      "la": "Sī porta clausa erit, nōn intrābimus.",
+      "en": "If the door has been shut, we shall not go in.",
+      "words": 6,
+      "focus": "clausa erit",
+      "step": 6,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Sī",
+          "m": "if"
+        },
+        {
+          "w": "porta",
+          "m": "the door"
+        },
+        {
+          "w": "clausa",
+          "m": "shut"
+        },
+        {
+          "w": "erit",
+          "m": "will have been"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "intrābimus",
+          "m": "we shall go in"
+        }
+      ],
+      "note": "Two words again: clausa is the perfect participle and erit the future of sum. It is only ever recognised; the typed drills use the one-word active forms."
+    }
+  ]
+}

@@ -1,0 +1,634 @@
+{
+  "skill": "dative-of-agent",
+  "chapter": 31,
+  "sentences": [
+    {
+      "id": "dag-01",
+      "la": "Hic liber mihi hodiē legendus est.",
+      "en": "This book has to be read by me today.",
+      "words": 6,
+      "focus": "mihi",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise"
+      ],
+      "gloss": [
+        {
+          "w": "Hic",
+          "m": "this"
+        },
+        {
+          "w": "liber",
+          "m": "book"
+        },
+        {
+          "w": "mihi",
+          "m": "by me"
+        },
+        {
+          "w": "hodiē",
+          "m": "today"
+        },
+        {
+          "w": "legendus",
+          "m": "to be read"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dag-02",
+      "la": "Nunc tibi tacendum est, Mārce.",
+      "en": "Now you have to keep quiet, Marcus.",
+      "words": 5,
+      "focus": "tibi",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nunc",
+          "m": "now"
+        },
+        {
+          "w": "tibi",
+          "m": "by you"
+        },
+        {
+          "w": "tacendum",
+          "m": "to be kept quiet"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "dag-03",
+      "la": "In agrō servīs labōrandum est.",
+      "en": "The slaves have to work in the field.",
+      "words": 5,
+      "focus": "servīs",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "In",
+          "m": "in"
+        },
+        {
+          "w": "agrō",
+          "m": "the field"
+        },
+        {
+          "w": "servīs",
+          "m": "by the slaves"
+        },
+        {
+          "w": "labōrandum",
+          "m": "to be worked"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        }
+      ]
+    },
+    {
+      "id": "dag-04",
+      "la": "Crās nōbīs omnibus domum redeundum est.",
+      "en": "Tomorrow we all have to go home.",
+      "words": 6,
+      "focus": "nōbīs",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "nōbīs",
+          "m": "by us"
+        },
+        {
+          "w": "omnibus",
+          "m": "all"
+        },
+        {
+          "w": "domum",
+          "m": "home"
+        },
+        {
+          "w": "redeundum",
+          "m": "to be gone back"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        }
+      ]
+    },
+    {
+      "id": "dag-05",
+      "la": "Epistula Iūliō hodiē scrībenda est.",
+      "en": "The letter has to be written by Julius today.",
+      "words": 5,
+      "focus": "Iūliō",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Epistula",
+          "m": "the letter"
+        },
+        {
+          "w": "Iūliō",
+          "m": "by Julius"
+        },
+        {
+          "w": "hodiē",
+          "m": "today"
+        },
+        {
+          "w": "scrībenda",
+          "m": "to be written"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dag-06",
+      "la": "Fīlius aeger mātrī cūrandus est.",
+      "en": "The sick son has to be looked after by his mother.",
+      "words": 5,
+      "focus": "mātrī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Fīlius",
+          "m": "the son"
+        },
+        {
+          "w": "aeger",
+          "m": "sick"
+        },
+        {
+          "w": "mātrī",
+          "m": "by his mother"
+        },
+        {
+          "w": "cūrandus",
+          "m": "to be looked after"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "dag-07",
+      "la": "Liber ā Mārcō legitur, sed mihi legendus est.",
+      "en": "The book is being read by Marcus, but I am the one who has to read it.",
+      "words": 8,
+      "focus": "mihi",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Liber",
+          "m": "the book"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "Mārcō",
+          "m": "Marcus"
+        },
+        {
+          "w": "legitur",
+          "m": "is being read"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "mihi",
+          "m": "by me"
+        },
+        {
+          "w": "legendus",
+          "m": "to be read"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ],
+      "note": "An ordinary passive verb names its doer with ā + the ablative (ā Mārcō); the gerundive with sum names its doer with the plain dative (mihi)."
+    },
+    {
+      "id": "dag-08",
+      "la": "Pater fīliō librum dat; fīliō legendus est.",
+      "en": "The father gives his son a book; his son has to read it.",
+      "words": 7,
+      "focus": "fīliō",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Pater",
+          "m": "the father"
+        },
+        {
+          "w": "fīliō",
+          "m": "to his son"
+        },
+        {
+          "w": "librum",
+          "m": "a book"
+        },
+        {
+          "w": "dat",
+          "m": "gives"
+        },
+        {
+          "w": "fīliō",
+          "m": "by his son"
+        },
+        {
+          "w": "legendus",
+          "m": "to be read"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        }
+      ],
+      "note": "The same word twice: after dat, fīliō is the plain 'to' dative (he gives it to him); beside legendus est it is the doer (he is the one who must read it)."
+    },
+    {
+      "id": "dag-09",
+      "la": "Hodiē vōbīs multa verba discenda sunt.",
+      "en": "Today you have to learn many words.",
+      "words": 6,
+      "focus": "vōbīs",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hodiē",
+          "m": "today"
+        },
+        {
+          "w": "vōbīs",
+          "m": "by you"
+        },
+        {
+          "w": "multa",
+          "m": "many"
+        },
+        {
+          "w": "verba",
+          "m": "words"
+        },
+        {
+          "w": "discenda",
+          "m": "to be learnt"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "dag-10",
+      "la": "Quid nōbīs faciendum est, pater?",
+      "en": "What do we have to do, father?",
+      "words": 5,
+      "focus": "nōbīs",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quid",
+          "m": "what"
+        },
+        {
+          "w": "nōbīs",
+          "m": "by us"
+        },
+        {
+          "w": "faciendum",
+          "m": "to be done"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        }
+      ]
+    },
+    {
+      "id": "dag-11",
+      "la": "Hoc opus servō perficiendum erat.",
+      "en": "This work had to be finished by the slave.",
+      "words": 5,
+      "focus": "servō",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hoc",
+          "m": "this"
+        },
+        {
+          "w": "opus",
+          "m": "work"
+        },
+        {
+          "w": "servō",
+          "m": "by the slave"
+        },
+        {
+          "w": "perficiendum",
+          "m": "to be finished"
+        },
+        {
+          "w": "erat",
+          "m": "it was"
+        }
+      ]
+    },
+    {
+      "id": "dag-12",
+      "la": "Omnibus puerīs in lūdō tacendum est.",
+      "en": "All the boys have to keep quiet in school.",
+      "words": 6,
+      "focus": "puerīs",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Omnibus",
+          "m": "by all"
+        },
+        {
+          "w": "puerīs",
+          "m": "the boys"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "lūdō",
+          "m": "school"
+        },
+        {
+          "w": "tacendum",
+          "m": "to be kept quiet"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        }
+      ]
+    },
+    {
+      "id": "dag-13",
+      "la": "Nesciō cui haec cēna paranda sit.",
+      "en": "I do not know who has to get this dinner ready.",
+      "words": 6,
+      "focus": "cui",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Nesciō",
+          "m": "I do not know"
+        },
+        {
+          "w": "cui",
+          "m": "by whom"
+        },
+        {
+          "w": "haec",
+          "m": "this"
+        },
+        {
+          "w": "cēna",
+          "m": "dinner"
+        },
+        {
+          "w": "paranda",
+          "m": "to be prepared"
+        },
+        {
+          "w": "sit",
+          "m": "it is"
+        }
+      ]
+    },
+    {
+      "id": "dag-14",
+      "la": "Hodiē ancillīs vāsa lavanda sunt.",
+      "en": "Today the maidservants have to wash the dishes.",
+      "words": 5,
+      "focus": "ancillīs",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hodiē",
+          "m": "today"
+        },
+        {
+          "w": "ancillīs",
+          "m": "by the maidservants"
+        },
+        {
+          "w": "vāsa",
+          "m": "the dishes"
+        },
+        {
+          "w": "lavanda",
+          "m": "to be washed"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "dag-15",
+      "la": "Cēna ā Syrā parātur, mihi nōn paranda est.",
+      "en": "The dinner is being got ready by Syra; it is not for me to get ready.",
+      "words": 8,
+      "focus": "mihi",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Cēna",
+          "m": "the dinner"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "Syrā",
+          "m": "Syra"
+        },
+        {
+          "w": "parātur",
+          "m": "is being got ready"
+        },
+        {
+          "w": "mihi",
+          "m": "by me"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "paranda",
+          "m": "to be got ready"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ],
+      "note": "The same sentence holds both: ā Syrā is the doer of an ordinary passive verb, mihi the doer beside the gerundive."
+    },
+    {
+      "id": "dag-16",
+      "la": "Mihi liber mittitur, tibi legendus est.",
+      "en": "The book is sent to me, but you have to read it.",
+      "words": 6,
+      "focus": "tibi",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mihi",
+          "m": "to me"
+        },
+        {
+          "w": "liber",
+          "m": "the book"
+        },
+        {
+          "w": "mittitur",
+          "m": "is being sent"
+        },
+        {
+          "w": "tibi",
+          "m": "by you"
+        },
+        {
+          "w": "legendus",
+          "m": "to be read"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ],
+      "note": "Two datives, two jobs: mihi is the person the book is sent to, tibi the person who must read it."
+    }
+  ]
+}

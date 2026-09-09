@@ -1,0 +1,610 @@
+{
+ "skill": "imperative",
+ "chapter": 4,
+ "sentences": [
+  {
+   "id": "imp-01",
+   "la": "Dāve, pecūniam meam iam numerā!",
+   "en": "Davus, count my money now!",
+   "words": 5,
+   "focus": "numerā",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Dāve",
+     "m": "Davus (called)"
+    },
+    {
+     "w": "pecūniam",
+     "m": "money (object)"
+    },
+    {
+     "w": "meam",
+     "m": "my"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "numerā",
+     "m": "count! (to one person)"
+    }
+   ]
+  },
+  {
+   "id": "imp-02",
+   "la": "Mēde, dominum tuum iam salūtā!",
+   "en": "Medus, greet your master now!",
+   "words": 5,
+   "focus": "salūtā",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mēde",
+     "m": "Medus (called)"
+    },
+    {
+     "w": "dominum",
+     "m": "the master (object)"
+    },
+    {
+     "w": "tuum",
+     "m": "your"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "salūtā",
+     "m": "greet! (to one person)"
+    }
+   ]
+  },
+  {
+   "id": "imp-03",
+   "la": "Iūlia, ancillam tuam iam vocā!",
+   "en": "Julia, call your slave girl now!",
+   "words": 5,
+   "focus": "vocā",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia (called)"
+    },
+    {
+     "w": "ancillam",
+     "m": "slave girl (object)"
+    },
+    {
+     "w": "tuam",
+     "m": "your"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "vocā",
+     "m": "call! (to one person)"
+    }
+   ]
+  },
+  {
+   "id": "imp-04",
+   "la": "Quīnte, mē salūtā et tacē!",
+   "en": "Quintus, greet me and be quiet!",
+   "words": 5,
+   "focus": "salūtā",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Quīnte",
+     "m": "Quintus (called)"
+    },
+    {
+     "w": "mē",
+     "m": "me (object)"
+    },
+    {
+     "w": "salūtā",
+     "m": "greet! (to one person)"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "tacē",
+     "m": "be quiet!"
+    }
+   ]
+  },
+  {
+   "id": "imp-05",
+   "la": "Mārce et Quīnte, mātrem vocāte!",
+   "en": "Marcus and Quintus, call mother!",
+   "words": 5,
+   "focus": "vocāte",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mārce",
+     "m": "Marcus (called)"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Quīnte",
+     "m": "Quintus (called)"
+    },
+    {
+     "w": "mātrem",
+     "m": "mother (object)"
+    },
+    {
+     "w": "vocāte",
+     "m": "call! (to more than one)"
+    }
+   ]
+  },
+  {
+   "id": "imp-06",
+   "la": "Puerī, nummōs in sacculō numerāte!",
+   "en": "Boys, count the coins in the purse!",
+   "words": 5,
+   "focus": "numerāte",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "boys (called)"
+    },
+    {
+     "w": "nummōs",
+     "m": "the coins (object)"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "sacculō",
+     "m": "the purse"
+    },
+    {
+     "w": "numerāte",
+     "m": "count! (to more than one)"
+    }
+   ]
+  },
+  {
+   "id": "imp-07",
+   "la": "Respondē, Mārce: ubi est baculum?",
+   "en": "Answer, Marcus: where is the stick?",
+   "words": 5,
+   "focus": "Respondē",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Respondē",
+     "m": "answer! (to one person)"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus (called)"
+    },
+    {
+     "w": "ubi",
+     "m": "where"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "baculum",
+     "m": "the stick"
+    }
+   ]
+  },
+  {
+   "id": "imp-08",
+   "la": "Venī, Syra, et Iūliam parvam audī!",
+   "en": "Come, Syra, and listen to little Julia!",
+   "words": 6,
+   "focus": "Venī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Venī",
+     "m": "come! (to one person)"
+    },
+    {
+     "w": "Syra",
+     "m": "Syra (called)"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Iūliam",
+     "m": "Julia (object)"
+    },
+    {
+     "w": "parvam",
+     "m": "little"
+    },
+    {
+     "w": "audī",
+     "m": "listen to! (to one person)"
+    }
+   ]
+  },
+  {
+   "id": "imp-09",
+   "la": "Mārce et Quīnte, tacēte iam!",
+   "en": "Marcus and Quintus, be quiet now!",
+   "words": 5,
+   "focus": "tacēte",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Mārce",
+     "m": "Marcus (called)"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Quīnte",
+     "m": "Quintus (called)"
+    },
+    {
+     "w": "tacēte",
+     "m": "be quiet! (to more than one)"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    }
+   ]
+  },
+  {
+   "id": "imp-10",
+   "la": "Tacēte, puerī probī, et mē audīte!",
+   "en": "Be quiet, good boys, and listen to me!",
+   "words": 6,
+   "focus": "audīte",
+   "step": 4,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Tacēte",
+     "m": "be quiet! (to more than one)"
+    },
+    {
+     "w": "puerī",
+     "m": "boys (called)"
+    },
+    {
+     "w": "probī",
+     "m": "good"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "mē",
+     "m": "me (object)"
+    },
+    {
+     "w": "audīte",
+     "m": "listen to! (to more than one)"
+    }
+   ]
+  },
+  {
+   "id": "imp-11",
+   "la": "Dāve, nummōs meōs iam sūme!",
+   "en": "Davus, take my coins now!",
+   "words": 5,
+   "focus": "sūme",
+   "step": 5,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Dāve",
+     "m": "Davus (called)"
+    },
+    {
+     "w": "nummōs",
+     "m": "the coins (object)"
+    },
+    {
+     "w": "meōs",
+     "m": "my"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "sūme",
+     "m": "take! (to one person)"
+    }
+   ]
+  },
+  {
+   "id": "imp-12",
+   "la": "Discēdite, puerī, quia Iūlius venit.",
+   "en": "Go away, boys, because Julius is coming.",
+   "words": 5,
+   "focus": "Discēdite",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Discēdite",
+     "m": "go away! (to more than one)"
+    },
+    {
+     "w": "puerī",
+     "m": "boys (called)"
+    },
+    {
+     "w": "quia",
+     "m": "because"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "venit",
+     "m": "is coming"
+    }
+   ]
+  },
+  {
+   "id": "imp-13",
+   "la": "Sacculum meum, Mēde, iam sūme!",
+   "en": "Take my purse now, Medus!",
+   "words": 5,
+   "focus": "sūme",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Sacculum",
+     "m": "the purse (object)"
+    },
+    {
+     "w": "meum",
+     "m": "my"
+    },
+    {
+     "w": "Mēde",
+     "m": "Medus (called)"
+    },
+    {
+     "w": "iam",
+     "m": "now"
+    },
+    {
+     "w": "sūme",
+     "m": "take! (to one person)"
+    }
+   ]
+  },
+  {
+   "id": "imp-14",
+   "la": "Dāvus venit; venī quoque, Mēde!",
+   "en": "Davus is coming; you come too, Medus!",
+   "words": 5,
+   "focus": "venī",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "venit",
+     "m": "is coming"
+    },
+    {
+     "w": "venī",
+     "m": "come! (to one person)"
+    },
+    {
+     "w": "quoque",
+     "m": "too"
+    },
+    {
+     "w": "Mēde",
+     "m": "Medus (called)"
+    }
+   ]
+  },
+  {
+   "id": "imp-15",
+   "la": "Dāvus baculum pōnit; pōne baculum, Mēde!",
+   "en": "Davus is putting the stick down; put the stick down, Medus!",
+   "words": 6,
+   "focus": "pōne",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "baculum",
+     "m": "the stick (object)"
+    },
+    {
+     "w": "pōnit",
+     "m": "puts down"
+    },
+    {
+     "w": "pōne",
+     "m": "put down! (to one person)"
+    },
+    {
+     "w": "baculum",
+     "m": "the stick (object)"
+    },
+    {
+     "w": "Mēde",
+     "m": "Medus (called)"
+    }
+   ]
+  },
+  {
+   "id": "imp-16",
+   "la": "Iūlia cantat; cantā quoque, Mārce!",
+   "en": "Julia is singing; you sing too, Marcus!",
+   "words": 5,
+   "focus": "cantā",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank",
+    "chart"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "cantat",
+     "m": "is singing"
+    },
+    {
+     "w": "cantā",
+     "m": "sing! (to one person)"
+    },
+    {
+     "w": "quoque",
+     "m": "too"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus (called)"
+    }
+   ]
+  }
+ ]
+}

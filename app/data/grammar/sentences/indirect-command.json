@@ -1,0 +1,478 @@
+{
+ "skill": "indirect-command",
+ "chapter": 27,
+ "sentences": [
+  {
+   "id": "ic-01",
+   "la": "Dominus servō imperat ut labōret.",
+   "en": "The master orders the slave to work.",
+   "words": 5,
+   "focus": "labōret",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servō",
+     "m": "to the slave"
+    },
+    {
+     "w": "imperat",
+     "m": "orders"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "labōret",
+     "m": "he work"
+    }
+   ]
+  },
+  {
+   "id": "ic-02",
+   "la": "Māter ancillae imperat ut aquam portet.",
+   "en": "The mother orders the maid to carry water.",
+   "words": 6,
+   "focus": "portet",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Māter",
+     "m": "the mother"
+    },
+    {
+     "w": "ancillae",
+     "m": "to the maid"
+    },
+    {
+     "w": "imperat",
+     "m": "orders"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "portet",
+     "m": "she carry"
+    }
+   ]
+  },
+  {
+   "id": "ic-03",
+   "la": "Iūlius Dāvum monet ut taceat.",
+   "en": "Julius warns Davus to keep quiet.",
+   "words": 5,
+   "focus": "taceat",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "Dāvum",
+     "m": "Davus"
+    },
+    {
+     "w": "monet",
+     "m": "warns"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "taceat",
+     "m": "he be quiet"
+    }
+   ]
+  },
+  {
+   "id": "ic-04",
+   "la": "Puella patrem ōrat ut fābulam nārret.",
+   "en": "The girl begs her father to tell a story.",
+   "words": 6,
+   "focus": "nārret",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puella",
+     "m": "the girl"
+    },
+    {
+     "w": "patrem",
+     "m": "father"
+    },
+    {
+     "w": "ōrat",
+     "m": "begs"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "fābulam",
+     "m": "a story"
+    },
+    {
+     "w": "nārret",
+     "m": "he tell"
+    }
+   ]
+  },
+  {
+   "id": "ic-05",
+   "la": "Aemilia puerōs monet nē in viā currant.",
+   "en": "Aemilia warns the boys not to run in the street.",
+   "words": 7,
+   "focus": "currant",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "puerōs",
+     "m": "the boys"
+    },
+    {
+     "w": "monet",
+     "m": "warns"
+    },
+    {
+     "w": "nē",
+     "m": "that not"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viā",
+     "m": "the street"
+    },
+    {
+     "w": "currant",
+     "m": "they run"
+    }
+   ]
+  },
+  {
+   "id": "ic-06",
+   "la": "Servus dominum ōrat nē sē verberet.",
+   "en": "The slave begs his master not to beat him.",
+   "words": 6,
+   "focus": "verberet",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "dominum",
+     "m": "the master"
+    },
+    {
+     "w": "ōrat",
+     "m": "begs"
+    },
+    {
+     "w": "nē",
+     "m": "that not"
+    },
+    {
+     "w": "sē",
+     "m": "himself"
+    },
+    {
+     "w": "verberet",
+     "m": "he beat"
+    }
+   ]
+  },
+  {
+   "id": "ic-07",
+   "la": "Magister discipulīs imperat ut librōs aperiant.",
+   "en": "The teacher orders the pupils to open their books.",
+   "words": 6,
+   "focus": "aperiant",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "discipulīs",
+     "m": "to the pupils"
+    },
+    {
+     "w": "imperat",
+     "m": "orders"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "librōs",
+     "m": "the books"
+    },
+    {
+     "w": "aperiant",
+     "m": "they open"
+    }
+   ]
+  },
+  {
+   "id": "ic-08",
+   "la": "Pater fīlium monet ut magistrō pāreat.",
+   "en": "The father warns his son to obey the teacher.",
+   "words": 6,
+   "focus": "pāreat",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pater",
+     "m": "the father"
+    },
+    {
+     "w": "fīlium",
+     "m": "the son"
+    },
+    {
+     "w": "monet",
+     "m": "warns"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "magistrō",
+     "m": "the teacher"
+    },
+    {
+     "w": "pāreat",
+     "m": "he obey"
+    }
+   ],
+   "note": "imperat takes the dative of the person told (discipulīs, ic-07), monet and ōrat the accusative (fīlium). The ut clause is the same either way."
+  },
+  {
+   "id": "ic-09",
+   "la": "Iūlius cūrat ut servī cibum parent.",
+   "en": "Julius sees to it that the slaves prepare food.",
+   "words": 6,
+   "focus": "parent",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "cūrat",
+     "m": "sees to it"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "cibum",
+     "m": "food"
+    },
+    {
+     "w": "parent",
+     "m": "they prepare"
+    }
+   ]
+  },
+  {
+   "id": "ic-10",
+   "la": "Medicus aegrum monet ut aquam bibat.",
+   "en": "The doctor warns the sick man to drink water.",
+   "words": 6,
+   "focus": "bibat",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Medicus",
+     "m": "the doctor"
+    },
+    {
+     "w": "aegrum",
+     "m": "the sick man"
+    },
+    {
+     "w": "monet",
+     "m": "warns"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "bibat",
+     "m": "he drink"
+    }
+   ]
+  },
+  {
+   "id": "ic-11",
+   "la": "Ut statim redeat, dominus servō imperat.",
+   "en": "The master orders the slave to come back at once.",
+   "words": 6,
+   "focus": "redeat",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ut",
+     "m": "that"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "redeat",
+     "m": "he come back"
+    },
+    {
+     "w": "dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servō",
+     "m": "to the slave"
+    },
+    {
+     "w": "imperat",
+     "m": "orders"
+    }
+   ],
+   "note": "The order comes first and the verb of ordering last. The ut clause is still what was ordered, not why anything was done."
+  },
+  {
+   "id": "ic-12",
+   "la": "Pater imperat nē quis iānuam aperiat.",
+   "en": "The father orders that nobody open the door.",
+   "words": 6,
+   "focus": "aperiat",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pater",
+     "m": "the father"
+    },
+    {
+     "w": "imperat",
+     "m": "orders"
+    },
+    {
+     "w": "nē",
+     "m": "that not"
+    },
+    {
+     "w": "quis",
+     "m": "anyone"
+    },
+    {
+     "w": "iānuam",
+     "m": "the door"
+    },
+    {
+     "w": "aperiat",
+     "m": "open"
+    }
+   ],
+   "note": "After nē, quis means 'anyone' rather than 'who'."
+  }
+ ]
+}

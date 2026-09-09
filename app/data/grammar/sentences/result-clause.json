@@ -1,0 +1,570 @@
+{
+ "skill": "result-clause",
+ "chapter": 28,
+ "sentences": [
+  {
+   "id": "rc-01",
+   "la": "Puer tam fessus est ut statim dormiat.",
+   "en": "The boy is so tired that he falls asleep at once.",
+   "words": 7,
+   "focus": "dormiat",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "fessus",
+     "m": "tired"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "dormiat",
+     "m": "he sleeps"
+    }
+   ]
+  },
+  {
+   "id": "rc-02",
+   "la": "Via tam longa est ut puerī fessī sint.",
+   "en": "The road is so long that the boys are tired.",
+   "words": 8,
+   "focus": "sint",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Via",
+     "m": "the road"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "longa",
+     "m": "long"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "fessī",
+     "m": "tired"
+    },
+    {
+     "w": "sint",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "rc-03",
+   "la": "Tantus est clāmor ut nēmō audiat.",
+   "en": "The shouting is so loud that nobody can hear.",
+   "words": 6,
+   "focus": "audiat",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Tantus",
+     "m": "so great"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "clāmor",
+     "m": "the shouting"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "nēmō",
+     "m": "nobody"
+    },
+    {
+     "w": "audiat",
+     "m": "hears"
+    }
+   ]
+  },
+  {
+   "id": "rc-04",
+   "la": "Ita clāmat Mārcus ut omnēs audiant.",
+   "en": "Marcus shouts in such a way that everybody hears.",
+   "words": 6,
+   "focus": "audiant",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Ita",
+     "m": "in such a way"
+    },
+    {
+     "w": "clāmat",
+     "m": "shouts"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "omnēs",
+     "m": "everybody"
+    },
+    {
+     "w": "audiant",
+     "m": "hears"
+    }
+   ]
+  },
+  {
+   "id": "rc-10",
+   "la": "Dominus tam sevērus est ut servī timeant.",
+   "en": "The master is so strict that the slaves are afraid.",
+   "words": 7,
+   "focus": "timeant",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "sevērus",
+     "m": "strict"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "timeant",
+     "m": "fear"
+    }
+   ]
+  },
+  {
+   "id": "rc-05",
+   "la": "Tanta est tempestās ut nāvis nōn moveātur.",
+   "en": "The storm is so great that the ship is not moved.",
+   "words": 7,
+   "focus": "moveātur",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tanta",
+     "m": "so great"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "tempestās",
+     "m": "the storm"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "nāvis",
+     "m": "the ship"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "moveātur",
+     "m": "is moved"
+    }
+   ]
+  },
+  {
+   "id": "rc-06",
+   "la": "Tam fessus sum ut ambulāre nōn possim.",
+   "en": "I am so tired that I cannot walk.",
+   "words": 7,
+   "focus": "possim",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tam",
+     "m": "so"
+    },
+    {
+     "w": "fessus",
+     "m": "tired"
+    },
+    {
+     "w": "sum",
+     "m": "I am"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "ambulāre",
+     "m": "to walk"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "possim",
+     "m": "I am able"
+    }
+   ],
+   "note": "The negative is ut nōn. Writing nē here would turn the outcome into an aim."
+  },
+  {
+   "id": "rc-09",
+   "la": "Aqua tam frīgida est ut puerī nōn natent.",
+   "en": "The water is so cold that the boys do not swim.",
+   "words": 8,
+   "focus": "natent",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aqua",
+     "m": "the water"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "frīgida",
+     "m": "cold"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "natent",
+     "m": "swim"
+    }
+   ]
+  },
+  {
+   "id": "rc-07",
+   "la": "Dāvus tam celeriter currit ut nēmō eum videat.",
+   "en": "Davus runs so fast that nobody sees him.",
+   "words": 8,
+   "focus": "videat",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "tam",
+     "m": "so"
+    },
+    {
+     "w": "celeriter",
+     "m": "quickly"
+    },
+    {
+     "w": "currit",
+     "m": "runs"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "nēmō",
+     "m": "nobody"
+    },
+    {
+     "w": "eum",
+     "m": "him"
+    },
+    {
+     "w": "videat",
+     "m": "sees"
+    }
+   ]
+  },
+  {
+   "id": "rc-08",
+   "la": "Puella tālem fābulam nārrat ut omnēs rīdeant.",
+   "en": "The girl tells such a story that everybody laughs.",
+   "words": 7,
+   "focus": "rīdeant",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puella",
+     "m": "the girl"
+    },
+    {
+     "w": "tālem",
+     "m": "such a"
+    },
+    {
+     "w": "fābulam",
+     "m": "story"
+    },
+    {
+     "w": "nārrat",
+     "m": "tells"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "omnēs",
+     "m": "everybody"
+    },
+    {
+     "w": "rīdeant",
+     "m": "laughs"
+    }
+   ],
+   "note": "You cannot put 'in order' in front of this: nobody laughs on purpose. tālem is the signal, and laughing is the outcome."
+  },
+  {
+   "id": "rc-12",
+   "la": "Tam bene cantat ut nēmō discēdere velit.",
+   "en": "She sings so well that nobody wants to leave.",
+   "words": 7,
+   "focus": "velit",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tam",
+     "m": "so"
+    },
+    {
+     "w": "bene",
+     "m": "well"
+    },
+    {
+     "w": "cantat",
+     "m": "she sings"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "nēmō",
+     "m": "nobody"
+    },
+    {
+     "w": "discēdere",
+     "m": "to go away"
+    },
+    {
+     "w": "velit",
+     "m": "wants"
+    }
+   ]
+  },
+  {
+   "id": "rc-11",
+   "la": "Tantus erat timor ut omnēs fugerent.",
+   "en": "The fear was so great that everybody ran away.",
+   "words": 6,
+   "focus": "fugerent",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tantus",
+     "m": "so great"
+    },
+    {
+     "w": "erat",
+     "m": "was"
+    },
+    {
+     "w": "timor",
+     "m": "the fear"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "omnēs",
+     "m": "everybody"
+    },
+    {
+     "w": "fugerent",
+     "m": "fled"
+    }
+   ],
+   "note": "The story is in the past (erat), so the result verb is the imperfect subjunctive fugerent instead of fugiant."
+  },
+  {
+   "id": "rc-13",
+   "la": "Tam fortiter pugnāvērunt ut hostēs fugerent.",
+   "en": "They fought so bravely that the enemy fled.",
+   "words": 6,
+   "focus": "fugerent",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Tam",
+     "m": "so"
+    },
+    {
+     "w": "fortiter",
+     "m": "bravely"
+    },
+    {
+     "w": "pugnāvērunt",
+     "m": "they fought"
+    },
+    {
+     "w": "ut",
+     "m": "that"
+    },
+    {
+     "w": "hostēs",
+     "m": "the enemy"
+    },
+    {
+     "w": "fugerent",
+     "m": "fled"
+    }
+   ]
+  }
+ ]
+}

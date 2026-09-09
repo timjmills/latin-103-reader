@@ -1,17 +1,191 @@
 {
   "skill": "fifth-declension",
   "core": [
-    { "type": "p", "text": "The last and smallest noun family runs on *e*: **a 5th-declension noun (the e-pattern: dies, diei; res, rei)**. *diēs* (day): *diēs, diem, diēī, diēī, diē*; plural *diēs, diēs, diērum, diēbus, diēbus*. The two words that matter are *diēs* and *rēs* (thing, matter); the others are *faciēs* (face), *merīdiēs* (midday), *spēs* (hope), *fidēs* (trust), *glaciēs* (ice). They are feminine — except *diēs* and *merīdiēs*, which are masculine. Latin name: dēclīnātiō quīnta." },
-    { "type": "english", "text": "A declension is a family of nouns that share one set of endings. This is the fifth and last: after it there are no more noun patterns to learn." },
-    { "type": "rule", "text": "-ēs, -em, -ēī, -ēī, -ē; plural -ēs, -ēs, -ērum, -ēbus, -ēbus; the genitive -ēī marks the family." },
-    { "type": "paradigm", "key": "decl5", "highlight": { "case": "gen" } },
-    { "type": "examples", "units": ["r13:35.1", "r13:45.1", "r13:15.1", "r14:111.1"], "invented": [ { "la": "Aestāte diēs longī sunt.", "en": "In summer the days are long.", "focus": "diēs" }, { "la": "Iūlia rem novam videt.", "en": "Julia sees a new thing.", "focus": "rem" } ] },
-    { "type": "confusion", "with": "third-declension", "text": "*diēs* and *rēs* look like 3rd-declension plurals (*ovēs*, *pānēs*). The dictionary genitive tells them apart: *diēs, diēī* (5th) against *ovis, ovis* (3rd). In a sentence, an *-ēs* form with a singular verb (*diēs est*) is a 5th-declension singular; and only the 5th has *-ēī, -ērum, -ēbus*." }
+    {
+      "type": "p",
+      "text": "The last and smallest noun family runs on *e*: **a 5th-declension noun (the e-pattern: dies, diei; res, rei)**. *diēs* (day): *diēs, diem, diēī, diēī, diē*; plural *diēs, diēs, diērum, diēbus, diēbus*. The two words that matter are *diēs* and *rēs* (thing, matter); the others are *faciēs* (face), *merīdiēs* (midday), *spēs* (hope), *fidēs* (trust), *glaciēs* (ice). They are feminine — except *diēs* and *merīdiēs*, which are masculine. Latin name: dēclīnātiō quīnta."
+    },
+    {
+      "type": "english",
+      "text": "A declension is a family of nouns that share one set of endings. This is the fifth and last: after it there are no more noun patterns to learn."
+    },
+    {
+      "type": "rule",
+      "text": "-ēs, -em, -ēī, -ēī, -ē; plural -ēs, -ēs, -ērum, -ēbus, -ēbus; the genitive -ēī marks the family."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl5",
+      "highlight": {
+        "case": "gen"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r13:35.1",
+        "r13:45.1",
+        "r13:15.1",
+        "r14:111.1"
+      ],
+      "invented": [
+        {
+          "la": "Aestāte diēs longī sunt.",
+          "en": "In summer the days are long.",
+          "focus": "diēs"
+        },
+        {
+          "la": "Iūlia rem novam videt.",
+          "en": "Julia sees a new thing.",
+          "focus": "rem"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "third-declension",
+      "text": "*diēs* and *rēs* look like 3rd-declension plurals (*ovēs*, *pānēs*). The dictionary genitive tells them apart: *diēs, diēī* (5th) against *ovis, ovis* (3rd). In a sentence, an *-ēs* form with a singular verb (*diēs est*) is a 5th-declension singular; and only the 5th has *-ēī, -ērum, -ēbus*."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "One noun family is left, and it is the smallest: **a 5th-declension noun (the e-pattern: diēs, diēī; rēs, reī)**. Its endings run on *e* the way the first family runs on *a* and the second on *o*. At this point in the book it holds *diēs* (day), *merīdiēs* (midday), *faciēs* (face) and *glaciēs* (ice).",
+      "show": {
+        "kind": "sentence",
+        "id": "f5-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "f5-02",
+        "ask": "Which word here is the 5th-declension noun?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Subject -ēs, object -em",
+      "say": "One cell at a time. The nominative (the subject form) ends in *-ēs*: *diēs*, *faciēs*. The accusative (the object form) ends in *-em*: *diem*, *faciem*. Only the last syllable changes.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl5",
+        "word": "diēs",
+        "reveal": [
+          "nom.sg",
+          "acc.sg"
+        ],
+        "say": "diēs / diem — only the last syllable changes"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl5",
+        "word": "diēs",
+        "cells": [
+          "nom.sg",
+          "acc.sg"
+        ],
+        "ask": "Fill the subject cell and the object cell of *diēs*."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The genitive and dative -ēī",
+      "say": "Two cells that are spelt alike. The genitive (the 'of' form) and the dative (the 'to/for' form) are both *-ēī*: *diēī*, of the day or to the day; *faciēī*. Both of the nouns you have met keep the long *-ēī*, because their stem ends in a vowel; one whose stem ends in a consonant shortens it to *-eī* (*rēs, reī*), and you meet none of those yet. In practice you will meet the genitive far more often than the dative: *initium diēī*, the beginning of the day.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl5",
+        "word": "diēs",
+        "reveal": [
+          "gen.sg",
+          "dat.sg"
+        ],
+        "say": "diēī / diēī — the 'of' cell and the 'to/for' cell are spelt alike"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl5",
+        "word": "diēs",
+        "cells": [
+          "gen.sg",
+          "dat.sg"
+        ],
+        "ask": "Fill the genitive (the 'of' form) and the dative (the 'to/for' form) of *diēs*. They are the same spelling."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The ablative -ē and the plural",
+      "say": "The ablative (the 'by/with/from' form) is a bare long *-ē*: *diē*, *merīdiē*. In the plural the subject and object are *-ēs* again, the genitive is *-ērum* (*diērum*) and the dative and ablative *-ēbus* (*diēbus*).",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl5",
+        "word": "diēs",
+        "reveal": [
+          "abl.sg",
+          "gen.pl",
+          "dat.pl"
+        ],
+        "say": "diē, diērum, diēbus — a bare long -ē, then the two plural endings"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl5",
+        "word": "diēs",
+        "cells": [
+          "abl.sg",
+          "gen.pl",
+          "dat.pl"
+        ],
+        "ask": "Give the ablative singular of *diēs*, then its genitive plural and its dative plural."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from a 3rd-declension -ēs",
+      "say": "*Diēs* looks exactly like *nūbēs* (a cloud) and *vallēs* (a valley) — but those are 3rd declension, and each of them spells its plural exactly like its singular. Two tests. The dictionary genitive: *diēs, diēī* against *nūbēs, nūbis*. And the verb: *diēs obscūrus est* is singular, *nūbēs multae sunt* is plural.",
+      "show": {
+        "kind": "sentence",
+        "id": "f5-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "f5-12",
+        "ask": "*Vallēs* and *diēs* both end in *-ēs*. Which one is 5th declension, and what settles it?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it: which gender?",
+      "say": "The family is feminine — *faciēs pulchra*, *glaciēs frīgida* — but the two day-words are masculine: *diēs* and *merīdiēs*. So *hic diēs longus*, *diēs longī*, and *merīdiēs calidus*, never *merīdiēs calida*. Get the gender right and the adjective follows.",
+      "show": {
+        "kind": "sentence",
+        "id": "f5-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "f5-14",
+        "blank": "pulchra",
+        "ask": "Faciēs Aemiliae ___ et laeta est. *faciēs* is feminine. (pulcher)"
+      }
+    }
   ],
   "more": [
-    { "type": "p", "text": "Only *diēs* and *rēs* have a full plural; most of the others are used in the singular. After a consonant the *-ēī* shortens to *-eī*: *reī, speī, fideī*. *Rēs* is everywhere in idioms: *rēs pūblica* (the state), *rē vērā* (in truth), *quā dē rē* (about which matter)." },
-    { "type": "p", "text": "*diēs* is masculine when it means a day in general, feminine when it means a fixed date or a stretch of time: *diē certā* — on the appointed day. *merīdiēs* is always masculine." },
-    { "type": "p", "text": "The learner's notes (week 13): in every case but the genitive the pattern matches the *is*-nouns with *e* where they have *e* or *i* (*diēs, diem, diēbus*); the genitive looks like the 2nd declension with an *e* in front (*-eī, -ērum*). Ørberg (chapter XIII) declines *diēs* and adds *merīdiēs* m., *faciēs* and *glaciēs* f. and a few other feminines; *māne* (morning) is an indeclinable neuter that never changes its ending." }
+    {
+      "type": "p",
+      "text": "Only *diēs* and *rēs* have a full plural; most of the others are used in the singular. After a consonant the *-ēī* shortens to *-eī*: *reī, speī, fideī*. *Rēs* is everywhere in idioms: *rēs pūblica* (the state), *rē vērā* (in truth), *quā dē rē* (about which matter)."
+    },
+    {
+      "type": "p",
+      "text": "*diēs* is masculine when it means a day in general, feminine when it means a fixed date or a stretch of time: *diē certā* — on the appointed day. *merīdiēs* is always masculine."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (week 13): in every case but the genitive the pattern matches the *is*-nouns with *e* where they have *e* or *i* (*diēs, diem, diēbus*); the genitive looks like the 2nd declension with an *e* in front (*-eī, -ērum*). Ørberg (chapter XIII) declines *diēs* and adds *merīdiēs* m., *faciēs* and *glaciēs* f. and a few other feminines; *māne* (morning) is an indeclinable neuter that never changes its ending."
+    }
   ],
-  "sources": ["notes p42", "Ørberg cap. XIII Grammatica Latina", "A&G §96–98"]
+  "sources": [
+    "notes p42",
+    "Ørberg cap. XIII Grammatica Latina",
+    "A&G §96–98"
+  ]
 }

@@ -1,5 +1,101 @@
 {
   "skill": "ablative-origin",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Where something comes from",
+      "say": "To say where somebody comes from, or is leaving, Latin uses *ex* (out of), *ab* (away from) or *dē* (down from, about) and changes the noun's ending. That ending is **the ablative (the 'from' form)**: *ex vīllā* — out of the house. It answers *unde?*, from where?",
+      "show": {
+        "kind": "sentence",
+        "id": "abo-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "abo-02",
+        "ask": "Which word says where the boys come from?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "The endings are the ones you already know",
+      "say": "Nothing new to learn in the noun: after *ex* a word in -a ends -ā and a word in -us or -um ends -ō, exactly as after *in*. *Ex vīllā*, *ex hortō*, *ex ātriō*. Only the preposition tells you the meaning has turned from 'in' to 'out of'.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2n",
+        "word": "ātrium",
+        "reveal": [
+          "abl.sg"
+        ],
+        "say": "ex ātriō — -um becomes -ō, the same ending as after *in*"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abo-03",
+        "ask": "Ancilla ex ___ discēdit et tacet. (ātrium)"
+      }
+    },
+    {
+      "n": 3,
+      "title": "*ab* — away from a person or a thing",
+      "say": "*Ab* is 'away from': *ab ōstiō* — from the door, *ab Aemiliā* — away from Aemilia. Before a consonant Ørberg writes it ā, with no b, but it is the same word and the same case.",
+      "show": {
+        "kind": "sentence",
+        "id": "abo-05"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abo-06",
+        "ask": "Ab ___ vīllae servus improbus discēdit. (ōstium)"
+      }
+    },
+    {
+      "n": 4,
+      "title": "*dē* keeps the case even when it means 'about'",
+      "say": "*Dē* began as 'down from' and is now mostly 'about, concerning' — but the ending never changes with the meaning: *dē fīliō suō* is 'about her son', and *fīliō* is the same 'from' form as in *ex hortō*. Learn the preposition, and the case comes with it.",
+      "show": {
+        "kind": "sentence",
+        "id": "abo-07"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "abo-08",
+        "ask": "Is *rosīs* the 'from' form, and what put it there?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "The preposition decides, not the ending",
+      "say": "*In hortō* and *ex hortō* are the same word with the same ending, and they mean opposite things. The ablative on its own does not say 'in' or 'out of'; the little word in front does. Read the preposition first, then the ending.",
+      "show": {
+        "kind": "sentence",
+        "id": "abo-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "abo-10",
+        "ask": "Does *vīllā* here say where they are or where they come from?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Several places, and *sine*",
+      "say": "For more than one the ending is -īs again: *ex cubiculīs*, *ex hortīs*. And *sine* (without) belongs to the same family and takes the same case: *sine mātre suā*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2n",
+        "word": "cubiculum",
+        "reveal": [
+          "abl.pl"
+        ],
+        "say": "ex cubiculīs — the plural ending is -īs"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "abo-11",
+        "ask": "Ancillae ex ___ suīs iam discēdunt. (cubiculum, more than one)"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

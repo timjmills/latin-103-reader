@@ -1,0 +1,541 @@
+{
+ "skill": "noun-gender",
+ "chapter": 1,
+ "sentences": [
+  {
+   "id": "ng-01",
+   "la": "Oppidum parvum est, sed prōvincia magna est.",
+   "en": "The town is small, but the province is big.",
+   "words": 7,
+   "focus": "Oppidum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Oppidum",
+     "m": "a town"
+    },
+    {
+     "w": "parvum",
+     "m": "small"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "prōvincia",
+     "m": "province"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-02",
+   "la": "Fluvius magnus in prōvinciā Rōmānā est.",
+   "en": "A big river is in a Roman province.",
+   "words": 6,
+   "focus": "Fluvius",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Fluvius",
+     "m": "a river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "prōvinciā",
+     "m": "province"
+    },
+    {
+     "w": "Rōmānā",
+     "m": "Roman"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-03",
+   "la": "Prōvincia Rōmāna in Āfricā quoque est.",
+   "en": "There is a Roman province in Africa too.",
+   "words": 6,
+   "focus": "Prōvincia",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Prōvincia",
+     "m": "a province"
+    },
+    {
+     "w": "Rōmāna",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Āfricā",
+     "m": "Africa"
+    },
+    {
+     "w": "quoque",
+     "m": "also"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-04",
+   "la": "Syllaba prīma in vocābulō Latīnō est.",
+   "en": "The first syllable is in the Latin word.",
+   "words": 6,
+   "focus": "Syllaba",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Syllaba",
+     "m": "a syllable"
+    },
+    {
+     "w": "prīma",
+     "m": "first"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vocābulō",
+     "m": "word"
+    },
+    {
+     "w": "Latīnō",
+     "m": "Latin"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-05",
+   "la": "Numerus Rōmānus in capitulō prīmō est.",
+   "en": "A Roman numeral is in the first chapter.",
+   "words": 6,
+   "focus": "Numerus",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Numerus",
+     "m": "the number"
+    },
+    {
+     "w": "Rōmānus",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "capitulō",
+     "m": "chapter"
+    },
+    {
+     "w": "prīmō",
+     "m": "first"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-06",
+   "la": "Rhēnus fluvius magnus in Germāniā est.",
+   "en": "The Rhine is a big river in Germany.",
+   "words": 6,
+   "focus": "fluvius",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Rhēnus",
+     "m": "the Rhine"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Germāniā",
+     "m": "Germany"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-07",
+   "la": "Oppidum Rōmānum in Hispāniā magnum est.",
+   "en": "A Roman town in Spain is big.",
+   "words": 6,
+   "focus": "Oppidum",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Oppidum",
+     "m": "a town"
+    },
+    {
+     "w": "Rōmānum",
+     "m": "Roman"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "Hispāniā",
+     "m": "Spain"
+    },
+    {
+     "w": "magnum",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-08",
+   "la": "Vocābula Latīna in capitulō prīmō sunt.",
+   "en": "Latin words are in the first chapter.",
+   "words": 6,
+   "focus": "Vocābula",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Vocābula",
+     "m": "words"
+    },
+    {
+     "w": "Latīna",
+     "m": "Latin"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "capitulō",
+     "m": "chapter"
+    },
+    {
+     "w": "prīmō",
+     "m": "first"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "ng-09",
+   "la": "Aegyptus magna est, et Nīlus magnus est.",
+   "en": "Egypt is big, and the Nile is big.",
+   "words": 7,
+   "focus": "Aegyptus",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Aegyptus",
+     "m": "Egypt"
+    },
+    {
+     "w": "magna",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "Nīlus",
+     "m": "the Nile"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-10",
+   "la": "Tiberis fluvius magnus nōn est, sed parvus.",
+   "en": "The Tiber is not a big river, but a small one.",
+   "words": 7,
+   "focus": "Tiberis",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Tiberis",
+     "m": "the Tiber"
+    },
+    {
+     "w": "fluvius",
+     "m": "river"
+    },
+    {
+     "w": "magnus",
+     "m": "big"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "parvus",
+     "m": "small"
+    }
+   ]
+  },
+  {
+   "id": "ng-11",
+   "la": "Fluvius Rōmānus est, sed īnsula Graeca est.",
+   "en": "The river is Roman, but the island is Greek.",
+   "words": 7,
+   "focus": "īnsula",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Fluvius",
+     "m": "a river"
+    },
+    {
+     "w": "Rōmānus",
+     "m": "Roman"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "īnsula",
+     "m": "island"
+    },
+    {
+     "w": "Graeca",
+     "m": "Greek"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-12",
+   "la": "Vocābulum Graecum est, sed littera Latīna est.",
+   "en": "The word is Greek, but the letter is Latin.",
+   "words": 7,
+   "focus": "littera",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Vocābulum",
+     "m": "a word"
+    },
+    {
+     "w": "Graecum",
+     "m": "Greek"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "littera",
+     "m": "letter"
+    },
+    {
+     "w": "Latīna",
+     "m": "Latin"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "ng-13",
+   "la": "Multa oppida et multae īnsulae in imperiō sunt.",
+   "en": "There are many towns and many islands in the empire.",
+   "words": 8,
+   "focus": "oppida",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Multa",
+     "m": "many"
+    },
+    {
+     "w": "oppida",
+     "m": "towns"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "multae",
+     "m": "many"
+    },
+    {
+     "w": "īnsulae",
+     "m": "islands"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "imperiō",
+     "m": "empire"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  }
+ ]
+}

@@ -1,5 +1,63 @@
 {
   "skill": "elegiac-couplet",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Feet: the dactyl and the spondee",
+      "say": "Latin verse has no rhyme. What makes it verse is **the metre (the rhythm of a line: the hexameter and pentameter of the elegiac couplet, Catullus's eleven-syllable line)** — a fixed run of long and short syllables. The syllables come in groups called feet, and two matter here: the dactyl, one long and two shorts (– ⏑ ⏑), and the spondee, two longs (– –). Two shorts take about as long to say as one long, which is why either may stand in for the other. Feet are counted in syllables, not in words, so a foot can stop in the middle of a word.",
+      "show": {
+        "kind": "sentence",
+        "id": "ec-03"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ec-01",
+        "ask": "Tap the word that the first foot cuts in half."
+      }
+    },
+    {
+      "n": 2,
+      "title": "The hexameter: six feet",
+      "say": "The commonest line is the hexameter — Greek *hex*, six — six feet in a row. The first four may each be a dactyl or a spondee as the poet pleases; the fifth is almost always a dactyl; the sixth has only two syllables. That is what gives every hexameter its unmistakable falling close, *– ⏑ ⏑ | – –*.",
+      "show": {
+        "kind": "sentence",
+        "id": "ec-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ec-03",
+        "ask": "Four spondees open this line. Tap the word that fills the fourth of them exactly, by itself."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The pentameter, and the couplet",
+      "say": "Under every hexameter of Ovid and Martial stands a shorter line, the pentameter — Greek *pente*, five, because its two halves of two and a half feet come to five. The first half may take spondees; the second half never does, and is always *– ⏑ ⏑ | – ⏑ ⏑ | –*. A clear break, the caesura, falls between the halves. Hexameter then pentameter is the elegiac couplet: ec-01 and ec-02 are one.",
+      "show": {
+        "kind": "sentence",
+        "id": "ec-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ec-02",
+        "ask": "Tap the word that opens the second half, straight after the break."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Catullus's eleven-syllable line",
+      "say": "Catullus often counts syllables instead of six feet. The hendecasyllable — Greek *hendeka*, eleven — has exactly eleven, shaped *– – | – ⏑ ⏑ | – ⏑ | – ⏑ | – ⏓*: one dactyl, early, then an even tramp. Martial writes both this and the couplet, so count the syllables of a poem's first line before you start dividing it into feet.",
+      "show": {
+        "kind": "sentence",
+        "id": "ec-02"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ec-04",
+        "ask": "Tap the only dactyl in this line — the one word that is long, short, short."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

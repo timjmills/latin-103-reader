@@ -49,6 +49,104 @@
       "text": "*Puellae* is the genitive (of the girl) and also the dative (the 'to/for' form), to the girl; *servī* is genitive singular (of the slave) and nominative plural (slaves). Look at the neighbours: a genitive hangs on another noun (*liber puellae* — the girl's book); a dative hangs on a verb of giving (*puellae librum dat* — gives the girl a book)."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "Whose?",
+      "say": "To say whose something is, Latin changes the owner’s ending instead of adding a word. The owner stands in the genitive (the 'of' form): *Iūlius pater Mārcī et Quīntī est* — Julius is the father of Marcus and Quintus. The question it answers is *cuius?*, whose? English has two ways to say it, *Marcus’s father* and *the father of Marcus*; Latin has one ending for both and no word for ‘of’.",
+      "show": {
+        "kind": "sentence",
+        "id": "gp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "gp-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "a-nouns: -ae",
+      "say": "An a-noun makes this form by turning -a into -ae: *domina* (mistress) becomes *dominae*, of the mistress. So *ancilla dominae* is the mistress’s slave girl.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl1",
+        "reveal": [
+          "gen.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl1",
+        "cells": [
+          "gen.sg"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "us-nouns and um-nouns: -ī",
+      "say": "*Dominus* (master) becomes *dominī*, and *capitulum* (chapter) becomes *capitulī*: both groups take the same tail, -ī. So *servus dominī* is the master’s slave and *titulus capitulī* the chapter’s title.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "gen.sg"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl2m",
+        "cells": [
+          "gen.sg"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "Several owners: -ōrum, and -ārum for a-nouns",
+      "say": "When the owners are more than one the tail grows: us- and um-nouns take -ōrum (*puerōrum*, of the boys) and a-nouns -ārum (*puellārum*, of the girls). *Pater puerōrum* is the boys’ father, *māter puellārum* the girls’ mother. The us-noun’s cell is filled in for you; the a-noun’s is the one to write.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl2m",
+        "reveal": [
+          "gen.pl"
+        ]
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl1",
+        "cells": [
+          "gen.pl"
+        ]
+      }
+    },
+    {
+      "n": 5,
+      "title": "The owner may stand on either side",
+      "say": "*Mārcī pater* and *pater Mārcī* both mean Marcus’s father, and another word may even come between the two. Latin does not fix the order, because the ending has already done the work. Find the -ae or -ī word, then ask which noun it belongs to.",
+      "show": {
+        "kind": "sentence",
+        "id": "gp-10"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "gp-09"
+      }
+    },
+    {
+      "n": 6,
+      "title": "-ae and -ī also make plurals",
+      "say": "*Ancillae* is ‘slave girls’ and *Aemiliae* is ‘of Aemilia’, and they end alike; so do *servī* (slaves) and *dominī* (of the master). Two tests, in this order. An owner hangs on another noun, so ask which of the two the other belongs to. Then the verb confirms it: *Ancillae Aemiliae in familiā sunt* has *sunt*, and only *ancillae* can be the several ones, because Aemilia is one person.",
+      "show": {
+        "kind": "sentence",
+        "id": "gp-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "gp-12"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",

@@ -1,65 +1,140 @@
 {
-  "skill": "potential-subjunctive",
-  "core": [
+ "skill": "potential-subjunctive",
+ "core": [
+  {
+   "type": "p",
+   "text": "The subjunctive can also soften a statement into a possibility: **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē adiuvem* — I could help you; *aliquis dīcat* — someone might say; *fortasse veniam* — I may come. Its commonest use is polite: *velim* — I would like; *nōlim* — I would rather not; *mālim* — I would prefer. Latin name: *coniūnctīvus potentiālis*."
+  },
+  {
+   "type": "english",
+   "text": "English does the same with *would*, *could*, *might*: *I would like to come*, *one might say*."
+  },
+  {
+   "type": "rule",
+   "text": "Present (or perfect) subjunctive in a main clause, often with aliquis, quis or fortasse: 'could / would / may'. Negative nōn."
+  },
+  {
+   "type": "paradigm",
+   "key": "volo",
+   "highlight": {
+    "tense": "pres",
+    "mood": "subj"
+   }
+  },
+  {
+   "type": "examples",
+   "units": [
+    "w11:b15.1",
+    "w14:b13.6",
+    "w10:arachne:b5.2"
+   ],
+   "invented": [
     {
-      "type": "p",
-      "text": "The subjunctive can also soften a statement into a possibility: **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē adiuvem* — I could help you; *aliquis dīcat* — someone might say; *fortasse veniam* — I may come. Its commonest use is polite: *velim* — I would like; *nōlim* — I would rather not; *mālim* — I would prefer. Latin name: *coniūnctīvus potentiālis*."
+     "la": "Venīre velim, sed nōn possum.",
+     "en": "I would like to come, but I can't.",
+     "focus": "velim"
     },
     {
-      "type": "english",
-      "text": "English does the same with *would*, *could*, *might*: *I would like to come*, *one might say*."
-    },
-    {
-      "type": "rule",
-      "text": "Present (or perfect) subjunctive in a main clause, often with aliquis, quis or fortasse: 'could / would / may'. Negative nōn."
-    },
-    {
-      "type": "paradigm",
-      "key": "volo",
-      "highlight": {
-        "tense": "pres",
-        "mood": "subj"
-      }
-    },
-    {
-      "type": "examples",
-      "units": [
-        "w11:b15.1",
-        "w14:b13.6",
-        "w10:arachne:b5.2"
-      ],
-      "invented": [
-        {
-          "la": "Venīre velim, sed nōn possum.",
-          "en": "I would like to come, but I can't.",
-          "focus": "velim"
-        },
-        {
-          "la": "Aliquis dīcat: 'Nōn crēdō.'",
-          "en": "Someone might say: 'I don't believe it.'",
-          "focus": "dīcat"
-        }
-      ]
-    },
-    {
-      "type": "confusion",
-      "with": "subjunctive-wish-command",
-      "text": "Same form, different tone: **the subjunctive as a wish or gentle command (eamus = let's go; veniat = let him come)** wants something to happen (*veniat* — let him come); the potential only says it could (*veniat* — he may come). Wishes take *nē*, possibilities *nōn*; *fortasse* or *aliquis* points to the potential."
+     "la": "Aliquis dīcat: 'Nōn crēdō.'",
+     "en": "Someone might say: 'I don't believe it.'",
+     "focus": "dīcat"
     }
-  ],
-  "more": [
-    {
-      "type": "p",
-      "text": "The learner's notes (week 27) call it possibility or probability, 'often used merely to weaken a statement in order to be polite', and single out *possim, velim, nōlim, mālim*: *venīre possim* — I could come; *venīre velim* — I would like to come."
-    },
-    {
-      "type": "p",
-      "text": "With the imperfect subjunctive the possibility moves into the past or becomes unreal: *vellem* — I would wish (but it cannot be); *dīcerēs* — you would have said. The perfect subjunctive is common in cautious statements: *haud sciō an ita dīxerim* — I rather think I said so. In the second person it is the general 'you': *crēdās* — one would believe."
-    }
-  ],
-  "sources": [
-    "notes p98, 100",
-    "Ørberg cap. XXVII",
-    "A&G §445–447"
-  ]
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "subjunctive-wish-command",
+   "text": "Same form, different tone: **the subjunctive as a wish or gentle command (eamus = let's go; veniat = let him come)** wants something to happen (*veniat* — let him come); the potential only says it could (*veniat* — he may come). Wishes take *nē*, possibilities *nōn*; *fortasse* or *aliquis* points to the potential."
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "The learner's notes (week 27) call it possibility or probability, 'often used merely to weaken a statement in order to be polite', and single out *possim, velim, nōlim, mālim*: *venīre possim* — I could come; *venīre velim* — I would like to come."
+  },
+  {
+   "type": "p",
+   "text": "With the imperfect subjunctive the possibility moves into the past or becomes unreal: *vellem* — I would wish (but it cannot be); *dīcerēs* — you would have said. The perfect subjunctive is common in cautious statements: *haud sciō an ita dīxerim* — I rather think I said so. In the second person it is the general 'you': *crēdās* — one would believe."
+  }
+ ],
+ "sources": [
+  "notes p98, 100",
+  "Ørberg cap. XXVII",
+  "A&G §445–447"
+ ],
+ "teach": [
+  {
+   "n": 1,
+   "title": "A verb that only says 'could'",
+   "say": "The same present subjunctive can let go of its force entirely and say only that something is possible. That is **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē iuvāre possim* is not 'let me help you' but 'I could help you'; *possīs* is 'you could'. Nothing has been wished for and nobody has been told anything: the speaker is holding the idea out at arm's length.",
+   "show": {
+    "kind": "sentence",
+    "id": "ps-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "ps-02",
+    "ask": "Does possīs say that you can do it, or that you could?"
+   }
+  },
+  {
+   "n": 2,
+   "title": "velim and nōlim: the polite ones",
+   "say": "The commonest potentials by far are the little verbs of wanting: **velim** 'I would like', **nōlim** 'I would rather not'. They are the present subjunctive of *volō* and *nōlō*, and Latin reaches for them exactly where English softens 'I want' into 'I would like'. The ending is the ordinary **-m** of the 'I' person, on the subjunctive stem (what is left of the verb before the ending) *veli-* / *nōli-*.",
+   "show": {
+    "kind": "paradigm",
+    "key": "volo",
+    "reveal": [
+     "pres.subj.act.1sg"
+    ]
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "ps-03",
+    "ask": "Fill the blank with the form of volō that means 'I would like'."
+   }
+  },
+  {
+   "n": 3,
+   "title": "The words that point at it",
+   "say": "Latin usually sets a word beside the verb that points at the possibility: *fortasse* 'perhaps', *aliquis* 'someone', *nēmō* 'nobody' — and a question with *quis* 'who': *Quis haec verba vēra esse crēdat?* is 'who would believe these words are true?', not 'who believes them?'. *Aliquis dīcat* is 'someone might say' — an imagined speaker, not one who has spoken. When one of these stands next to a subjunctive in a main clause (the sentence's own verb, not one tucked inside another clause), read 'could', 'might' or 'would'.",
+   "show": {
+    "kind": "sentence",
+    "id": "ps-05"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "ps-06",
+    "ask": "What is dīcat doing here?"
+   }
+  },
+  {
+   "n": 4,
+   "title": "The negative is nōn",
+   "say": "This is the test that separates the two main-clause uses. A wish or command is denied with *nē*; a possibility is denied with **nōn**: *nōn crēdās*, 'you would not believe'. So *nē crēdās* forbids you to believe, while *nōn crēdās* only doubts — the same verb in the same person, and the negative is the whole difference. Look at which negative is standing there before you decide which reading the sentence wants.",
+   "show": {
+    "kind": "sentence",
+    "id": "ps-07"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "ps-08",
+    "ask": "What is crēdat doing here — wishing for it, or saying it could happen?"
+   }
+  },
+  {
+   "n": 5,
+   "title": "Using it in any person",
+   "say": "The potential is not only for 'I'. *intellegās* 'you could understand', *emat* 'he would buy', *ferat* 'he could carry' — the endings are the ordinary present subjunctive ones you already know, and the sense stays 'could / would'. Put the right person on the subjunctive stem (what is left of the verb before the ending) and let the rest of the sentence do the softening.",
+   "show": {
+    "kind": "sentence",
+    "id": "ps-09"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "ps-10",
+    "ask": "Fill the blank with the form of volō that means 'would want'."
+   }
+  }
+ ]
 }

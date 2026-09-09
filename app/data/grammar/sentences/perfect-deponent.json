@@ -1,0 +1,604 @@
+{
+  "skill": "perfect-deponent",
+  "chapter": 22,
+  "sentences": [
+    {
+      "id": "pd-01",
+      "la": "Mēdus ex vīllā statim profectus est.",
+      "en": "Medus set out from the house at once.",
+      "words": 6,
+      "focus": "profectus est",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mēdus",
+          "m": "Medus"
+        },
+        {
+          "w": "ex",
+          "m": "out of"
+        },
+        {
+          "w": "vīllā",
+          "m": "the house"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "profectus",
+          "m": "set out"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-02",
+      "la": "Puellae in hortō laetātae sunt.",
+      "en": "The girls were glad in the garden.",
+      "words": 5,
+      "focus": "laetātae sunt",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Puellae",
+          "m": "the girls"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "laetātae",
+          "m": "were glad"
+        },
+        {
+          "w": "sunt",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-03",
+      "la": "Iūlius dē pecūniā cum servō locūtus est.",
+      "en": "Julius spoke with the slave about the money.",
+      "words": 7,
+      "focus": "locūtus est",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "dē",
+          "m": "about"
+        },
+        {
+          "w": "pecūniā",
+          "m": "the money"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "servō",
+          "m": "the slave"
+        },
+        {
+          "w": "locūtus",
+          "m": "spoke"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-04",
+      "la": "Puella canem per hortum secūta est.",
+      "en": "The girl followed the dog through the garden.",
+      "words": 6,
+      "focus": "secūta est",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "canem",
+          "m": "the dog"
+        },
+        {
+          "w": "per",
+          "m": "through"
+        },
+        {
+          "w": "hortum",
+          "m": "the garden"
+        },
+        {
+          "w": "secūta",
+          "m": "followed"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-05",
+      "la": "Puerī magistrum in lūdum secūtī sunt.",
+      "en": "The boys followed the teacher into the school.",
+      "words": 6,
+      "focus": "secūtī sunt",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "magistrum",
+          "m": "the teacher"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "lūdum",
+          "m": "the school"
+        },
+        {
+          "w": "secūtī",
+          "m": "followed"
+        },
+        {
+          "w": "sunt",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-06",
+      "la": "Lȳdia cum Mēdō Rōmam profecta est.",
+      "en": "Lydia set out for Rome with Medus.",
+      "words": 6,
+      "focus": "profecta est",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Lȳdia",
+          "m": "Lydia"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "Mēdō",
+          "m": "Medus"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "profecta",
+          "m": "set out"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-07",
+      "la": "Syra puerum aegrum cōnsōlāta est.",
+      "en": "Syra comforted the sick boy.",
+      "words": 5,
+      "focus": "cōnsōlāta est",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Syra",
+          "m": "Syra"
+        },
+        {
+          "w": "puerum",
+          "m": "the boy"
+        },
+        {
+          "w": "aegrum",
+          "m": "sick"
+        },
+        {
+          "w": "cōnsōlāta",
+          "m": "comforted"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-08",
+      "la": "Nautae ex nāve ēgressī sunt.",
+      "en": "The sailors went out of the ship.",
+      "words": 5,
+      "focus": "ēgressī sunt",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nautae",
+          "m": "the sailors"
+        },
+        {
+          "w": "ex",
+          "m": "out of"
+        },
+        {
+          "w": "nāve",
+          "m": "the ship"
+        },
+        {
+          "w": "ēgressī",
+          "m": "went out"
+        },
+        {
+          "w": "sunt",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-09",
+      "la": "Mārcus vocātus est et statim locūtus est.",
+      "en": "Marcus was called and spoke at once.",
+      "words": 7,
+      "focus": "locūtus est",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "vocātus",
+          "m": "called"
+        },
+        {
+          "w": "est",
+          "m": "was"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "locūtus",
+          "m": "spoke"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-15",
+      "la": "Iānua clausa est et Dāvus ēgressus est.",
+      "en": "The door was shut and Davus went out.",
+      "words": 7,
+      "focus": "ēgressus est",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iānua",
+          "m": "the door"
+        },
+        {
+          "w": "clausa",
+          "m": "shut"
+        },
+        {
+          "w": "est",
+          "m": "was"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "ēgressus",
+          "m": "went out"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-10",
+      "la": "Quīntus dē arbore in viam lāpsus est.",
+      "en": "Quintus slipped down out of the tree into the road.",
+      "words": 7,
+      "focus": "lāpsus est",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "dē",
+          "m": "down from"
+        },
+        {
+          "w": "arbore",
+          "m": "the tree"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "viam",
+          "m": "the road"
+        },
+        {
+          "w": "lāpsus",
+          "m": "slipped"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-11",
+      "la": "Mīlitēs hostēs magnō clāmōre secūtī sunt.",
+      "en": "The soldiers followed the enemy with a great shout.",
+      "words": 6,
+      "focus": "secūtī sunt",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mīlitēs",
+          "m": "the soldiers"
+        },
+        {
+          "w": "hostēs",
+          "m": "the enemy"
+        },
+        {
+          "w": "magnō",
+          "m": "with a great"
+        },
+        {
+          "w": "clāmōre",
+          "m": "shout"
+        },
+        {
+          "w": "secūtī",
+          "m": "followed"
+        },
+        {
+          "w": "sunt",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-12",
+      "la": "Puer canem ferōcem veritus est.",
+      "en": "The boy was afraid of the fierce dog.",
+      "words": 5,
+      "focus": "veritus est",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "canem",
+          "m": "the dog"
+        },
+        {
+          "w": "ferōcem",
+          "m": "fierce"
+        },
+        {
+          "w": "veritus",
+          "m": "feared"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-13",
+      "la": "Iūlius sē beātum esse arbitrātus est.",
+      "en": "Julius thought that he was happy.",
+      "words": 6,
+      "focus": "arbitrātus est",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "sē",
+          "m": "himself"
+        },
+        {
+          "w": "beātum",
+          "m": "happy"
+        },
+        {
+          "w": "esse",
+          "m": "to be"
+        },
+        {
+          "w": "arbitrātus",
+          "m": "thought"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    },
+    {
+      "id": "pd-14",
+      "la": "Iūlia speculum suum saepe intuita est.",
+      "en": "Julia often looked at her own mirror.",
+      "words": 6,
+      "focus": "intuita est",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "speculum",
+          "m": "the mirror"
+        },
+        {
+          "w": "suum",
+          "m": "her own"
+        },
+        {
+          "w": "saepe",
+          "m": "often"
+        },
+        {
+          "w": "intuita",
+          "m": "looked at"
+        },
+        {
+          "w": "est",
+          "m": "(the second half of the verb)"
+        }
+      ]
+    }
+  ]
+}

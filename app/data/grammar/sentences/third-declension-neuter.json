@@ -1,0 +1,586 @@
+{
+  "skill": "third-declension-neuter",
+  "chapter": 11,
+  "sentences": [
+    {
+      "id": "t3n-01",
+      "la": "Corpus hominis membra multa habet.",
+      "en": "A person's body has many limbs.",
+      "words": 5,
+      "focus": "Corpus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Corpus",
+          "m": "body"
+        },
+        {
+          "w": "hominis",
+          "m": "of a person"
+        },
+        {
+          "w": "membra",
+          "m": "limbs"
+        },
+        {
+          "w": "multa",
+          "m": "many"
+        },
+        {
+          "w": "habet",
+          "m": "has"
+        }
+      ]
+    },
+    {
+      "id": "t3n-02",
+      "la": "Medicus corpus puerī aegrī spectat.",
+      "en": "The doctor looks at the sick boy's body.",
+      "words": 5,
+      "focus": "corpus",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Medicus",
+          "m": "doctor"
+        },
+        {
+          "w": "corpus",
+          "m": "body"
+        },
+        {
+          "w": "puerī",
+          "m": "of the boy"
+        },
+        {
+          "w": "aegrī",
+          "m": "sick"
+        },
+        {
+          "w": "spectat",
+          "m": "looks at"
+        }
+      ]
+    },
+    {
+      "id": "t3n-03",
+      "la": "Puer ōs aperit et pānem edit.",
+      "en": "The boy opens his mouth and eats bread.",
+      "words": 6,
+      "focus": "ōs",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "boy"
+        },
+        {
+          "w": "ōs",
+          "m": "his mouth"
+        },
+        {
+          "w": "aperit",
+          "m": "opens"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "pānem",
+          "m": "bread"
+        },
+        {
+          "w": "edit",
+          "m": "eats"
+        }
+      ]
+    },
+    {
+      "id": "t3n-04",
+      "la": "Ōs puerī parvum et rubrum est.",
+      "en": "The boy's mouth is small and red.",
+      "words": 6,
+      "focus": "Ōs",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Ōs",
+          "m": "mouth"
+        },
+        {
+          "w": "puerī",
+          "m": "of the boy"
+        },
+        {
+          "w": "parvum",
+          "m": "small"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "rubrum",
+          "m": "red"
+        },
+        {
+          "w": "est",
+          "m": "is"
+        }
+      ]
+    },
+    {
+      "id": "t3n-05",
+      "la": "Flūmina magna in prōvinciā sunt.",
+      "en": "There are big rivers in the province.",
+      "words": 5,
+      "focus": "Flūmina",
+      "step": 3,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Flūmina",
+          "m": "rivers"
+        },
+        {
+          "w": "magna",
+          "m": "big"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "prōvinciā",
+          "m": "the province"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "t3n-06",
+      "la": "Medicus corpora hominum aegrōrum sānat.",
+      "en": "The doctor heals the bodies of sick people.",
+      "words": 5,
+      "focus": "corpora",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Medicus",
+          "m": "doctor"
+        },
+        {
+          "w": "corpora",
+          "m": "bodies"
+        },
+        {
+          "w": "hominum",
+          "m": "of people"
+        },
+        {
+          "w": "aegrōrum",
+          "m": "sick"
+        },
+        {
+          "w": "sānat",
+          "m": "heals"
+        }
+      ]
+    },
+    {
+      "id": "t3n-07",
+      "la": "In marī sunt piscēs multī.",
+      "en": "In the sea there are many fish.",
+      "words": 5,
+      "focus": "marī",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "In",
+          "m": "in"
+        },
+        {
+          "w": "marī",
+          "m": "the sea"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "piscēs",
+          "m": "fish"
+        },
+        {
+          "w": "multī",
+          "m": "many"
+        }
+      ]
+    },
+    {
+      "id": "t3n-08",
+      "la": "Animālia in silvā cibum quaerunt.",
+      "en": "The animals look for food in the wood.",
+      "words": 5,
+      "focus": "Animālia",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Animālia",
+          "m": "animals"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "silvā",
+          "m": "the wood"
+        },
+        {
+          "w": "cibum",
+          "m": "food"
+        },
+        {
+          "w": "quaerunt",
+          "m": "look for"
+        }
+      ]
+    },
+    {
+      "id": "t3n-09",
+      "la": "Maria magna sunt et flūmina parva.",
+      "en": "Seas are big and rivers small.",
+      "words": 6,
+      "focus": "Maria",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Maria",
+          "m": "seas"
+        },
+        {
+          "w": "magna",
+          "m": "big"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "flūmina",
+          "m": "rivers"
+        },
+        {
+          "w": "parva",
+          "m": "small"
+        }
+      ]
+    },
+    {
+      "id": "t3n-10",
+      "la": "Caput pāstōris videō, sed pāstōrem nōn videō.",
+      "en": "I see the shepherd's head, but I do not see the shepherd.",
+      "words": 7,
+      "focus": "Caput",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Caput",
+          "m": "head"
+        },
+        {
+          "w": "pāstōris",
+          "m": "of the shepherd"
+        },
+        {
+          "w": "videō",
+          "m": "I see"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "pāstōrem",
+          "m": "the shepherd"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "videō",
+          "m": "I see"
+        }
+      ]
+    },
+    {
+      "id": "t3n-11",
+      "la": "Medicus sanguinem videt, nōn cor.",
+      "en": "The doctor sees the blood, not the heart.",
+      "words": 5,
+      "focus": "cor",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Medicus",
+          "m": "doctor"
+        },
+        {
+          "w": "sanguinem",
+          "m": "the blood"
+        },
+        {
+          "w": "videt",
+          "m": "sees"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "cor",
+          "m": "heart"
+        }
+      ]
+    },
+    {
+      "id": "t3n-12",
+      "la": "Timōrem nōn habeō, sed pectus palpitat.",
+      "en": "I have no fear, but my chest is throbbing.",
+      "words": 6,
+      "focus": "pectus",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Timōrem",
+          "m": "fear"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "habeō",
+          "m": "I have"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "pectus",
+          "m": "my chest"
+        },
+        {
+          "w": "palpitat",
+          "m": "throbs"
+        }
+      ]
+    },
+    {
+      "id": "t3n-13",
+      "la": "Quīntus mel edit, sed Iūlia pira.",
+      "en": "Quintus eats honey, but Julia pears.",
+      "words": 6,
+      "focus": "mel",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "mel",
+          "m": "honey"
+        },
+        {
+          "w": "edit",
+          "m": "eats"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "pira",
+          "m": "pears"
+        }
+      ]
+    },
+    {
+      "id": "t3n-14",
+      "la": "Iecur et cor in corpore sunt.",
+      "en": "The liver and the heart are in the body.",
+      "words": 6,
+      "focus": "Iecur",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank",
+        "chart"
+      ],
+      "gloss": [
+        {
+          "w": "Iecur",
+          "m": "liver"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "cor",
+          "m": "heart"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "corpore",
+          "m": "the body"
+        },
+        {
+          "w": "sunt",
+          "m": "are"
+        }
+      ]
+    },
+    {
+      "id": "t3n-15",
+      "la": "Corpus aegrum medicus bonus sānat.",
+      "en": "A good doctor heals a sick body.",
+      "words": 5,
+      "focus": "Corpus",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Corpus",
+          "m": "body"
+        },
+        {
+          "w": "aegrum",
+          "m": "sick"
+        },
+        {
+          "w": "medicus",
+          "m": "doctor"
+        },
+        {
+          "w": "bonus",
+          "m": "good"
+        },
+        {
+          "w": "sānat",
+          "m": "heals"
+        }
+      ]
+    }
+  ]
+}

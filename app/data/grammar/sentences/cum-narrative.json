@@ -1,0 +1,540 @@
+{
+ "skill": "cum-narrative",
+ "chapter": 28,
+ "sentences": [
+  {
+   "id": "cn-01",
+   "la": "Cum Iūlius dormīret, Mēdus ex vīllā fūgit.",
+   "en": "While Julius was asleep, Medus fled from the house.",
+   "words": 7,
+   "focus": "dormīret",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "while"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "dormīret",
+     "m": "was sleeping"
+    },
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "fūgit",
+     "m": "fled"
+    }
+   ]
+  },
+  {
+   "id": "cn-02",
+   "la": "Cum Quīntus in hortō ambulāret, avem vīdit.",
+   "en": "While Quintus was walking in the garden, he saw a bird.",
+   "words": 7,
+   "focus": "ambulāret",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "while"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "ambulāret",
+     "m": "was walking"
+    },
+    {
+     "w": "avem",
+     "m": "a bird"
+    },
+    {
+     "w": "vīdit",
+     "m": "he saw"
+    }
+   ]
+  },
+  {
+   "id": "cn-03",
+   "la": "Cum Aemilia cantāret, Iūlia tacēbat.",
+   "en": "While Aemilia was singing, Julia was silent.",
+   "words": 5,
+   "focus": "cantāret",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "while"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "cantāret",
+     "m": "was singing"
+    },
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "tacēbat",
+     "m": "was silent"
+    }
+   ]
+  },
+  {
+   "id": "cn-05",
+   "la": "Cum Mārcus tacēret, pater eum interrogāvit.",
+   "en": "As Marcus stayed silent, his father questioned him.",
+   "words": 6,
+   "focus": "tacēret",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "as"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "tacēret",
+     "m": "was silent"
+    },
+    {
+     "w": "pater",
+     "m": "the father"
+    },
+    {
+     "w": "eum",
+     "m": "him"
+    },
+    {
+     "w": "interrogāvit",
+     "m": "questioned"
+    }
+   ]
+  },
+  {
+   "id": "cn-04",
+   "la": "Cum nox esset, nēmō in viā ambulābat.",
+   "en": "As it was night, nobody was walking in the street.",
+   "words": 7,
+   "focus": "esset",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "as"
+    },
+    {
+     "w": "nox",
+     "m": "night"
+    },
+    {
+     "w": "esset",
+     "m": "it was"
+    },
+    {
+     "w": "nēmō",
+     "m": "nobody"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viā",
+     "m": "the street"
+    },
+    {
+     "w": "ambulābat",
+     "m": "was walking"
+    }
+   ]
+  },
+  {
+   "id": "cn-06",
+   "la": "Cum haec dīxisset, ex ātriō exiit.",
+   "en": "When he had said this, he went out of the hall.",
+   "words": 6,
+   "focus": "dīxisset",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "haec",
+     "m": "these things"
+    },
+    {
+     "w": "dīxisset",
+     "m": "he had said"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "ātriō",
+     "m": "the hall"
+    },
+    {
+     "w": "exiit",
+     "m": "he went out"
+    }
+   ],
+   "note": "The -isse- inside dīxisset is the pluperfect subjunctive (the 'had done' form). You read it here; you build it yourself much later, when that whole tense is taught."
+  },
+  {
+   "id": "cn-07",
+   "la": "Cum dominus vēnisset, servī statim tacuērunt.",
+   "en": "When the master had come, the slaves fell silent at once.",
+   "words": 6,
+   "focus": "vēnisset",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "dominus",
+     "m": "the master"
+    },
+    {
+     "w": "vēnisset",
+     "m": "had come"
+    },
+    {
+     "w": "servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "tacuērunt",
+     "m": "fell silent"
+    }
+   ]
+  },
+  {
+   "id": "cn-08",
+   "la": "Cum cibum cōnsūmpsissent, puerī statim dormīvērunt.",
+   "en": "When they had eaten the food, the boys went to sleep at once.",
+   "words": 6,
+   "focus": "cōnsūmpsissent",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "cibum",
+     "m": "the food"
+    },
+    {
+     "w": "cōnsūmpsissent",
+     "m": "they had eaten up"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "dormīvērunt",
+     "m": "went to sleep"
+    }
+   ]
+  },
+  {
+   "id": "cn-09",
+   "la": "Cum epistulam lēgisset, Iūlius trīstis erat.",
+   "en": "When he had read the letter, Julius was sad.",
+   "words": 6,
+   "focus": "lēgisset",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "when"
+    },
+    {
+     "w": "epistulam",
+     "m": "the letter"
+    },
+    {
+     "w": "lēgisset",
+     "m": "he had read"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "trīstis",
+     "m": "sad"
+    },
+    {
+     "w": "erat",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "cn-10",
+   "la": "Cum Mēdus cum Lȳdiā fugeret, nāvem petīvit.",
+   "en": "While Medus was running away with Lydia, he made for a ship.",
+   "words": 7,
+   "focus": "fugeret",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "while"
+    },
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Lȳdiā",
+     "m": "Lydia"
+    },
+    {
+     "w": "fugeret",
+     "m": "was fleeing"
+    },
+    {
+     "w": "nāvem",
+     "m": "a ship"
+    },
+    {
+     "w": "petīvit",
+     "m": "he made for"
+    }
+   ],
+   "note": "Both cums stand in one sentence: the first opens the clause and is answered by the subjunctive fugeret, the second is the preposition 'with' and is answered by the ablative Lȳdiā."
+  },
+  {
+   "id": "cn-13",
+   "la": "Cum Syra cum Iūliā sedēret, Mārcus intrāvit.",
+   "en": "While Syra was sitting with Julia, Marcus came in.",
+   "words": 7,
+   "focus": "sedēret",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "while"
+    },
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Iūliā",
+     "m": "Julia"
+    },
+    {
+     "w": "sedēret",
+     "m": "was sitting"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "intrāvit",
+     "m": "came in"
+    }
+   ],
+   "note": "The first cum opens the clause and is answered by the subjunctive sedēret; the second is the preposition 'with' and is answered by the ablative Iūliā."
+  },
+  {
+   "id": "cn-11",
+   "la": "Cum servī abessent, dominus ipse iānuam aperuit.",
+   "en": "As the slaves were away, the master opened the door himself.",
+   "words": 7,
+   "focus": "abessent",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "as"
+    },
+    {
+     "w": "servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "abessent",
+     "m": "were away"
+    },
+    {
+     "w": "dominus",
+     "m": "the master"
+    },
+    {
+     "w": "ipse",
+     "m": "himself"
+    },
+    {
+     "w": "iānuam",
+     "m": "the door"
+    },
+    {
+     "w": "aperuit",
+     "m": "opened"
+    }
+   ]
+  },
+  {
+   "id": "cn-12",
+   "la": "Cum Quīntus aeger esset, medicus statim vēnit.",
+   "en": "As Quintus was ill, the doctor came at once.",
+   "words": 7,
+   "focus": "esset",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "since"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "aeger",
+     "m": "ill"
+    },
+    {
+     "w": "esset",
+     "m": "was"
+    },
+    {
+     "w": "medicus",
+     "m": "the doctor"
+    },
+    {
+     "w": "statim",
+     "m": "at once"
+    },
+    {
+     "w": "vēnit",
+     "m": "came"
+    }
+   ],
+   "note": "Here the cum clause gives the reason as much as the time, so 'since' reads as well as 'when'. Both are right."
+  }
+ ]
+}

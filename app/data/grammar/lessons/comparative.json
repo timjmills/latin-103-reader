@@ -1,17 +1,180 @@
 {
   "skill": "comparative",
   "core": [
-    { "type": "p", "text": "To say *longer, heavier, more beautiful*, Latin puts *-ior* on the adjective's stem: **the comparative (the '-er / more' form)**. *longus* (long) → *longior*; *gravis* (heavy) → *gravior*; *pulcher* (beautiful) → *pulchrior*. The neuter is *-ius*: *pīlum brevius* — a shorter spear. The other endings are the 3rd-declension ones: *longiōrem, longiōris, longiōrēs, longiōra*. The thing you compare with follows *quam* (than), in the same case as the first thing: *gladius longior est quam pīlum*. Latin name: gradus comparātīvus." },
-    { "type": "english", "text": "The comparative is the *-er* or *more* form: *taller, more careful*. *Than* introduces the point of comparison: *taller than his brother*." },
-    { "type": "rule", "text": "Stem + -ior (neuter -ius), declined like a 3rd-declension noun; 'than' = quam, same case on both sides." },
-    { "type": "paradigm", "key": "adjcomp", "highlight": { "degree": "comp" } },
-    { "type": "examples", "units": ["r12:53.1", "r13:114.2", "r12:134.1", "r13:29.1"], "invented": [ { "la": "Via longior est quam rīvus.", "en": "The road is longer than the stream.", "focus": "longior" } ] },
-    { "type": "confusion", "with": "superlative", "text": "*-ior* means *more* (two things side by side); *-issimus* means *most* (one against all the rest). *Februārius brevior est quam Mārtius* sets two months against each other; *mēnsis brevissimus* picks the shortest of all twelve. The endings differ too: the comparative declines like a 3rd-declension noun (*breviōrem*), the superlative (the '-est / most' form) like *bonus -a -um* (*brevissimum*)." }
+    {
+      "type": "p",
+      "text": "To say *longer, heavier, more beautiful*, Latin puts *-ior* on the adjective's stem: **the comparative (the '-er / more' form)**. *longus* (long) → *longior*; *gravis* (heavy) → *gravior*; *pulcher* (beautiful) → *pulchrior*. The neuter is *-ius*: *pīlum brevius* — a shorter spear. The other endings are the 3rd-declension ones: *longiōrem, longiōris, longiōrēs, longiōra*. The thing you compare with follows *quam* (than), in the same case as the first thing: *gladius longior est quam pīlum*. Latin name: gradus comparātīvus."
+    },
+    {
+      "type": "english",
+      "text": "The comparative is the *-er* or *more* form: *taller, more careful*. *Than* introduces the point of comparison: *taller than his brother*."
+    },
+    {
+      "type": "rule",
+      "text": "Stem + -ior (neuter -ius), declined like a 3rd-declension noun; 'than' = quam, same case on both sides."
+    },
+    {
+      "type": "paradigm",
+      "key": "adjcomp",
+      "highlight": {
+        "degree": "comp"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r12:53.1",
+        "r13:114.2",
+        "r12:134.1",
+        "r13:29.1"
+      ],
+      "invented": [
+        {
+          "la": "Via longior est quam rīvus.",
+          "en": "The road is longer than the stream.",
+          "focus": "longior"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "superlative",
+      "text": "*-ior* means *more* (two things side by side); *-issimus* means *most* (one against all the rest). *Februārius brevior est quam Mārtius* sets two months against each other; *mēnsis brevissimus* picks the shortest of all twelve. The endings differ too: the comparative declines like a 3rd-declension noun (*breviōrem*), the superlative (the '-est / most' form) like *bonus -a -um* (*brevissimum*)."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Put two things side by side and Latin marks the adjective: **the comparative (the '-er / more' form)**. *longus* (long) → *longior* (longer); *fortis* (brave) → *fortior* (braver). It says one of the two has more of the quality than the other — no more than that.",
+      "show": {
+        "kind": "sentence",
+        "id": "cmp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "cmp-02",
+        "ask": "Which word is the comparative, and who is Quintus being set against?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "How it is built: stem + -ior",
+      "say": "One cell. Take the adjective's stem — the part left when you strip the dictionary ending — and add *-ior*: *long-* → *longior*, *fort-* → *fortior*, *laet-* → *laetior*, *alt-* → *altior*. That is the masculine and feminine subject form; masculine and feminine are alike in this family.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adjcomp",
+        "word": "longus",
+        "reveal": [
+          "comp.nom.sg.m"
+        ],
+        "say": "longior — the stem long- with -ior on it, for a masculine or a feminine noun"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adjcomp",
+        "word": "longus",
+        "cells": [
+          "comp.nom.sg.m"
+        ],
+        "ask": "Give the comparative subject form of *longus* — the one masculine and feminine share."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The neuter is -ius",
+      "say": "One cell more. With a neuter noun the ending is *-ius*, not *-ior*: *scūtum brevius* (a shorter shield), *crūs longius* (a longer leg). Same stem, different last syllable.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adjcomp",
+        "word": "longus",
+        "reveal": [
+          "comp.nom.sg.n"
+        ],
+        "say": "longius — same stem, -ius instead of -ior, for a neuter noun"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adjcomp",
+        "word": "longus",
+        "cells": [
+          "comp.nom.sg.n"
+        ],
+        "ask": "Now the neuter comparative of *longus*."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The rest of the endings are 3rd-declension ones",
+      "say": "Beyond those two cells the comparative declines like a 3rd-declension noun on the stem *-iōr-*: the accusative (the object form) *-iōrem* (*longiōrem*), the genitive (the 'of' form) *-iōris*, the plural nominative *-iōrēs* and the neuter plural *-iōra* (*graviōra*). Nothing new to learn — endings you already know, on a new stem.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adjcomp",
+        "word": "longus",
+        "reveal": [
+          "comp.acc.sg.m",
+          "comp.nom.pl.m"
+        ],
+        "say": "longiōrem / longiōrēs — 3rd-declension endings on the stem longiōr-"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adjcomp",
+        "word": "longus",
+        "cells": [
+          "comp.acc.sg.m",
+          "comp.nom.pl.m"
+        ],
+        "ask": "Give the accusative singular and the nominative plural of *longior*."
+      }
+    },
+    {
+      "n": 5,
+      "title": "-ior or -ius? the noun decides",
+      "say": "This is where beginners slip. The choice between *-ior* and *-ius* has nothing to do with the meaning: it follows the gender of the noun the adjective describes. *Gladius* is masculine and *hasta* feminine, so both take *-ior*: *gladius longior*, *hasta longior*. *Scūtum* is neuter, so it takes *-ius*: *scūtum brevius*. Find the noun first, then choose the ending.",
+      "show": {
+        "kind": "sentence",
+        "id": "cmp-10"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "cmp-11",
+        "ask": "*scūtum* is neuter. Which ending does its comparative take, *-ior* or *-ius*, and why?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it: quam = than",
+      "say": "To name the other side of the comparison, use *quam*: *fluvius longior est quam via*. Whatever case the first side is in, the second side takes the same one — *Iūlius Mēdum altiōrem quam Dāvum esse putat* has both names in the object form.",
+      "show": {
+        "kind": "sentence",
+        "id": "cmp-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "cmp-15",
+        "blank": "servī",
+        "ask": "Dominī laetiōrēs sunt quam ___. The side after *quam* takes the same case as the side before it. (servus, more than one)"
+      }
+    }
   ],
   "more": [
-    { "type": "p", "text": "The comparative's ablative singular is *-e* (*longiōre*), its genitive plural *-um*, its neuter plural *-a* (*longiōra*): it follows the consonant-stem pattern, not the *-ī, -ium, -ia* of ordinary 3rd-declension adjectives." },
-    { "type": "p", "text": "Instead of *quam*, Latin can put the second thing in the ablative of comparison (the 'than' form: illo fortior = braver than he) with no *quam* at all: *gladius pīlō longior est* — its own skill. On its own the comparative can mean *rather* or *too*: *via longior* — a rather long road. Adjectives in *-eus / -ius* (*idōneus* suitable) use *magis* (more) instead: *magis idōneus*." },
-    { "type": "p", "text": "The learner's notes (week 12): the masculine and feminine nominative singular add *-ior* to the stem whatever the adjective's type (*īnfirmior, pigrior, gravior, sapientior*), the neuter adds *-ius* (*plēnius, gravius, pulchrius*); every other form adds a 3rd-declension ending after *-ior-*; the point of comparison follows *quam* (*vir īnfirmior est quam fēmina*). Ørberg (chapters XII–XIII): *altior, longior, brevius* are comparatives; *longior quam cēterae viae* — longer than the other roads." }
+    {
+      "type": "p",
+      "text": "The comparative's ablative singular is *-e* (*longiōre*), its genitive plural *-um*, its neuter plural *-a* (*longiōra*): it follows the consonant-stem pattern, not the *-ī, -ium, -ia* of ordinary 3rd-declension adjectives."
+    },
+    {
+      "type": "p",
+      "text": "Instead of *quam*, Latin can put the second thing in the ablative of comparison (the 'than' form: illo fortior = braver than he) with no *quam* at all: *gladius pīlō longior est* — its own skill. On its own the comparative can mean *rather* or *too*: *via longior* — a rather long road. Adjectives in *-eus / -ius* (*idōneus* suitable) use *magis* (more) instead: *magis idōneus*."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (week 12): the masculine and feminine nominative singular add *-ior* to the stem whatever the adjective's type (*īnfirmior, pigrior, gravior, sapientior*), the neuter adds *-ius* (*plēnius, gravius, pulchrius*); every other form adds a 3rd-declension ending after *-ior-*; the point of comparison follows *quam* (*vir īnfirmior est quam fēmina*). Ørberg (chapters XII–XIII): *altior, longior, brevius* are comparatives; *longior quam cēterae viae* — longer than the other roads."
+    }
   ],
-  "sources": ["notes p40–41", "Ørberg cap. XII–XIII Grammatica Latina", "A&G §120–124, §407"]
+  "sources": [
+    "notes p40–41",
+    "Ørberg cap. XII–XIII Grammatica Latina",
+    "A&G §120–124, §407"
+  ]
 }

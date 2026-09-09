@@ -1,5 +1,117 @@
 {
   "skill": "passive-voice",
+  "teach": [
+    {
+      "n": 1,
+      "title": "Something is done to the subject",
+      "say": "Up to now the subject has been the one doing: *māter Mārcum vocat*, mother calls Marcus. Turn it round and Marcus becomes the subject with the calling done to him: *Mārcus vocātur*. That is **the passive (the 'is done' form)**. English needs two words, *is called*; Latin changes the end of the one verb.",
+      "show": {
+        "kind": "sentence",
+        "id": "pas-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "pas-02",
+        "ask": "Which word says that something is being done to the slave?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "One subject: -tur",
+      "say": "Where the active verb ends -t, the passive ends -tur: *vocat* he calls → *vocātur* he is called; *pulsat* → *pulsātur*; *salūtat* → *salūtātur*. Two letters go on the end, and the vowel in front of them stretches as they do: the short -a- of *vocat* becomes the long -ā- of *vocātur*. The same stretch happens in *vidētur* and *audītur*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "vocō",
+        "reveal": [
+          "pres.ind.pass.3.sg"
+        ],
+        "say": "vocātur — one person, and it is being done to him"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "cells": [
+          "pres.ind.pass.3.sg"
+        ],
+        "ask": "Give the form meaning 'he is called'."
+      }
+    },
+    {
+      "n": 3,
+      "title": "More than one subject: -ntur",
+      "say": "Where the active ends -nt, the passive ends -ntur: *vocant* they call → *vocantur* they are called; *portant* → *portantur*. The -ur is the passive part in both, and the n says there is more than one.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "vocō",
+        "reveal": [
+          "pres.ind.pass.3.pl"
+        ],
+        "say": "vocantur — more than one, and it is being done to them"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "cells": [
+          "pres.ind.pass.3.pl"
+        ],
+        "ask": "Give the form meaning 'they are called'."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Read the tail: -t or -tur",
+      "say": "The two sit side by side in the same sentence often enough that the tail is worth reading twice. *Vocat* — he calls somebody. *Vocātur* — somebody calls him. The subject is nominative either way: it is *servus vocātur*, never *servum*.",
+      "show": {
+        "kind": "sentence",
+        "id": "pas-07"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pas-08",
+        "ask": "Of *portant* and *portantur*, which one has the girls doing the carrying?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Who does it, and what it is done with",
+      "say": "A passive verb can name the doer with *ā* (or *ab* before a vowel) and the ablative: *ā servīs portātur*, he is carried by slaves. A thing is different: it takes the bare ablative with no *ā* at all, because it is the means, not the doer — *rosīs dēlectātur*, she is delighted by roses.",
+      "show": {
+        "kind": "sentence",
+        "id": "pas-09"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "pas-10",
+        "ask": "Is *rosīs* the one doing it, or the thing she is delighted by, and what tells you?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "The other conjugations",
+      "say": "Every verb makes the passive the same way, with its own vowel in front: *vidētur* is seen, *audītur* is heard, *audiuntur* are heard. Consonant stems keep the i and u they use in the active: *pōnit* → *pōnitur*, *sūmunt* → *sūmuntur*, *carpunt* → *carpuntur*. (*Vidētur* also does duty for 'it seems'; in *Vīlla Iūliī ex oppidō vidētur* the *ex oppidō* settles which one is meant.)",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "sūmō",
+        "reveal": [
+          "pres.ind.pass.3.sg",
+          "pres.ind.pass.3.pl"
+        ],
+        "say": "sūmitur / sūmuntur — the -ur goes on behind the active vowel"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "cells": [
+          "pres.ind.pass.3.sg",
+          "pres.ind.pass.3.pl"
+        ],
+        "ask": "Give 'it is taken' and 'they are taken'."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

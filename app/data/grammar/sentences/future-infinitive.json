@@ -1,0 +1,608 @@
+{
+  "skill": "future-infinitive",
+  "chapter": 23,
+  "sentences": [
+    {
+      "id": "fi-01",
+      "la": "Mārcus dīcit sē epistulam scrīptūrum esse.",
+      "en": "Marcus says that he will write a letter.",
+      "words": 6,
+      "focus": "scrīptūrum esse",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "sē",
+          "m": "that he"
+        },
+        {
+          "w": "epistulam",
+          "m": "a letter"
+        },
+        {
+          "w": "scrīptūrum",
+          "m": "going to write"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-02",
+      "la": "Iūlius prōmittit sē Rōmam itūrum esse.",
+      "en": "Julius promises that he will go to Rome.",
+      "words": 6,
+      "focus": "itūrum esse",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "prōmittit",
+          "m": "promises"
+        },
+        {
+          "w": "sē",
+          "m": "that he"
+        },
+        {
+          "w": "Rōmam",
+          "m": "to Rome"
+        },
+        {
+          "w": "itūrum",
+          "m": "going to go"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-03",
+      "la": "Dāvus negat sē pecūniam datūrum esse.",
+      "en": "Davus says that he will not give the money.",
+      "words": 6,
+      "focus": "datūrum esse",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Dāvus",
+          "m": "Davus"
+        },
+        {
+          "w": "negat",
+          "m": "denies"
+        },
+        {
+          "w": "sē",
+          "m": "that he"
+        },
+        {
+          "w": "pecūniam",
+          "m": "the money"
+        },
+        {
+          "w": "datūrum",
+          "m": "going to give"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-04",
+      "la": "Servus respondet sē mox reditūrum esse.",
+      "en": "The slave answers that he will come back soon.",
+      "words": 6,
+      "focus": "reditūrum esse",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "respondet",
+          "m": "answers"
+        },
+        {
+          "w": "sē",
+          "m": "that he"
+        },
+        {
+          "w": "mox",
+          "m": "soon"
+        },
+        {
+          "w": "reditūrum",
+          "m": "going to return"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-05",
+      "la": "Iūlia dīcit sē ventūram esse.",
+      "en": "Julia says that she will come.",
+      "words": 5,
+      "focus": "ventūram esse",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "sē",
+          "m": "that she"
+        },
+        {
+          "w": "ventūram",
+          "m": "going to come"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-06",
+      "la": "Puerī dīcunt sē in hortō lūsūrōs esse.",
+      "en": "The boys say that they will play in the garden.",
+      "words": 7,
+      "focus": "lūsūrōs esse",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "dīcunt",
+          "m": "say"
+        },
+        {
+          "w": "sē",
+          "m": "that they"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "lūsūrōs",
+          "m": "going to play"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-07",
+      "la": "Nautae dīcunt sē crās nāvigātūrōs esse.",
+      "en": "The sailors say that they will sail tomorrow.",
+      "words": 6,
+      "focus": "nāvigātūrōs esse",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nautae",
+          "m": "the sailors"
+        },
+        {
+          "w": "dīcunt",
+          "m": "say"
+        },
+        {
+          "w": "sē",
+          "m": "that they"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "nāvigātūrōs",
+          "m": "going to sail"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-08",
+      "la": "Aemilia putat Iūlium crās ventūrum esse.",
+      "en": "Aemilia thinks that Julius will come tomorrow.",
+      "words": 6,
+      "focus": "ventūrum esse",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aemilia",
+          "m": "Aemilia"
+        },
+        {
+          "w": "putat",
+          "m": "thinks"
+        },
+        {
+          "w": "Iūlium",
+          "m": "that Julius"
+        },
+        {
+          "w": "crās",
+          "m": "tomorrow"
+        },
+        {
+          "w": "ventūrum",
+          "m": "going to come"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-09",
+      "la": "Pāstor dīcit lupum ovēs petītūrum esse.",
+      "en": "The shepherd says that the wolf will make for the sheep.",
+      "words": 6,
+      "focus": "petītūrum esse",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Pāstor",
+          "m": "the shepherd"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "lupum",
+          "m": "that the wolf"
+        },
+        {
+          "w": "ovēs",
+          "m": "the sheep"
+        },
+        {
+          "w": "petītūrum",
+          "m": "going to make for"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-10",
+      "la": "Puella dīcit sē cantāvisse et cantātūram esse.",
+      "en": "The girl says that she has sung and will sing.",
+      "words": 7,
+      "focus": "cantātūram esse",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puella",
+          "m": "the girl"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "sē",
+          "m": "that she"
+        },
+        {
+          "w": "cantāvisse",
+          "m": "has sung"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "cantātūram",
+          "m": "going to sing"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-11",
+      "la": "Iūlius dīcit Mēdum fūgisse et reditūrum esse.",
+      "en": "Julius says that Medus has run away and will come back.",
+      "words": 7,
+      "focus": "reditūrum esse",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "Mēdum",
+          "m": "that Medus"
+        },
+        {
+          "w": "fūgisse",
+          "m": "has fled"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "reditūrum",
+          "m": "going to return"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-12",
+      "la": "Mārcus dīcit sē statim ventūrum.",
+      "en": "Marcus says that he will come at once.",
+      "words": 5,
+      "focus": "ventūrum",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "sē",
+          "m": "that he"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "ventūrum",
+          "m": "going to come"
+        }
+      ]
+    },
+    {
+      "id": "fi-13",
+      "la": "Medicus dīcit puerum sānum fore.",
+      "en": "The doctor says that the boy will be well.",
+      "words": 5,
+      "focus": "fore",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Medicus",
+          "m": "the doctor"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "puerum",
+          "m": "that the boy"
+        },
+        {
+          "w": "sānum",
+          "m": "well"
+        },
+        {
+          "w": "fore",
+          "m": "going to be"
+        }
+      ]
+    },
+    {
+      "id": "fi-14",
+      "la": "Iūlius fatētur sē sevērum futūrum esse.",
+      "en": "Julius admits that he will be strict.",
+      "words": 6,
+      "focus": "futūrum esse",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlius",
+          "m": "Julius"
+        },
+        {
+          "w": "fatētur",
+          "m": "admits"
+        },
+        {
+          "w": "sē",
+          "m": "that he"
+        },
+        {
+          "w": "sevērum",
+          "m": "strict"
+        },
+        {
+          "w": "futūrum",
+          "m": "going to be"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    },
+    {
+      "id": "fi-15",
+      "la": "Mārcus dīcit tē in vīllā mānsūrum esse.",
+      "en": "Marcus says that you will stay in the house.",
+      "words": 7,
+      "focus": "mānsūrum esse",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "dīcit",
+          "m": "says"
+        },
+        {
+          "w": "tē",
+          "m": "that you"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "vīllā",
+          "m": "the house"
+        },
+        {
+          "w": "mānsūrum",
+          "m": "going to stay"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
+        }
+      ]
+    }
+  ]
+}

@@ -57,5 +57,90 @@
     "notes p93",
     "Ørberg cap. XXV Grammatica Latina",
     "A&G §190"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "Ordering someone about with a deponent",
+      "say": "A deponent (passive-looking endings, active meaning: loquitur = he speaks) gives its orders with **the deponent command forms (sequere! = follow!, sequiminī! = follow, all of you!)**. *Sequere mē, Mārce, in hortum!* — one word, one order, exactly as blunt as the English 'Follow me!'",
+      "show": {
+        "kind": "sentence",
+        "id": "di-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "di-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "To one person: -re",
+      "say": "Speaking to one person, add *-re* to the present stem with the verb's own linking vowel in front: long *ā* in the first conjugation (*laetā-re*), long *ē* in the second (*intuē-re*), short *e* in the third (*sequ-e-re*), long *ī* in the fourth (*partī-re*).",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "sequor",
+        "reveal": [
+          "imper.pres.pass.sg"
+        ],
+        "say": "sequere — the stem sequ-, the linking -e-, then -re"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "sequor",
+        "cells": [
+          "imper.pres.pass.sg"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "title": "To several: -minī",
+      "say": "Speaking to more than one, the ending is *-minī*, with that same linking vowel in front: *laetā-minī*, *intuē-minī*, *sequ-i-minī*, *partī-minī*. It is the same *-minī* that means 'you all' in the passive, and it never varies. Beside an ordinary verb's *-te* it looks quite different: *Vidēte … et intuēminī!*",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "sequor",
+        "reveal": [
+          "imper.pres.pass.pl"
+        ],
+        "say": "sequiminī — the stem sequ-, the linking -i-, then -minī"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "word": "sequor",
+        "cells": [
+          "imper.pres.pass.pl"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "title": "Why -re here is not 'to do'",
+      "say": "*Legere* means 'to read'; *sequere* means 'follow!'. They rhyme because the deponent has borrowed the passive's shape. The dictionary settles it: *legō, legere* is an ordinary verb, so its *-re* form is the infinitive (the 'to' form); *sequor, sequī* is a deponent whose infinitive is *sequī*, so *sequere* can only be an order.",
+      "show": {
+        "kind": "sentence",
+        "id": "di-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "di-18"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Saying 'don't'",
+      "say": "For a negative order these forms are not used at all. Latin puts *nōlī* (to one person) or *nōlīte* (to several) in front of the deponent's infinitive: *Nōlī sequī Mēdum!* — don't follow Medus; *Nōlīte proficīscī!* — don't set out. The half of the order that says what to do keeps its own *-re* or *-minī* form: *sed mē sequere!*",
+      "show": {
+        "kind": "sentence",
+        "id": "di-16"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "di-17"
+      }
+    }
   ]
 }

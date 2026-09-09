@@ -1,0 +1,540 @@
+{
+ "skill": "conditions-contrary-to-fact",
+ "chapter": 33,
+ "sentences": [
+  {
+   "id": "ccf-01",
+   "la": "Sī pecūniam habērem, librum emerem.",
+   "en": "If I had money, I would buy the book.",
+   "words": 5,
+   "focus": "habērem",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "pecūniam",
+     "m": "money"
+    },
+    {
+     "w": "habērem",
+     "m": "I had (but I do not)"
+    },
+    {
+     "w": "librum",
+     "m": "the book"
+    },
+    {
+     "w": "emerem",
+     "m": "I would buy"
+    }
+   ]
+  },
+  {
+   "id": "ccf-02",
+   "la": "Sī Rōmae essem, tē vidērem.",
+   "en": "If I were in Rome, I would see you.",
+   "words": 5,
+   "focus": "essem",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "Rōmae",
+     "m": "in Rome"
+    },
+    {
+     "w": "essem",
+     "m": "I were (but I am not)"
+    },
+    {
+     "w": "tē",
+     "m": "you"
+    },
+    {
+     "w": "vidērem",
+     "m": "I would see"
+    }
+   ]
+  },
+  {
+   "id": "ccf-03",
+   "la": "Sī Mārcus studēret, magister eum laudāret.",
+   "en": "If Marcus worked hard, the teacher would praise him.",
+   "words": 6,
+   "focus": "studēret",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "studēret",
+     "m": "he worked hard (but he does not)"
+    },
+    {
+     "w": "magister",
+     "m": "the teacher"
+    },
+    {
+     "w": "eum",
+     "m": "him"
+    },
+    {
+     "w": "laudāret",
+     "m": "he would praise"
+    }
+   ]
+  },
+  {
+   "id": "ccf-04",
+   "la": "Sī avis essem, ad tē volārem.",
+   "en": "If I were a bird, I would fly to you.",
+   "words": 6,
+   "focus": "essem",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "avis",
+     "m": "a bird"
+    },
+    {
+     "w": "essem",
+     "m": "I were (but I am not)"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "tē",
+     "m": "you"
+    },
+    {
+     "w": "volārem",
+     "m": "I would fly"
+    }
+   ]
+  },
+  {
+   "id": "ccf-05",
+   "la": "Nisi Dāvus dormīret, dominum audīret.",
+   "en": "If Davus were not asleep, he would hear his master.",
+   "words": 5,
+   "focus": "dormīret",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nisi",
+     "m": "if not"
+    },
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "dormīret",
+     "m": "he were sleeping (but he is)"
+    },
+    {
+     "w": "dominum",
+     "m": "his master"
+    },
+    {
+     "w": "audīret",
+     "m": "he would hear"
+    }
+   ]
+  },
+  {
+   "id": "ccf-06",
+   "la": "Sī herī vēnissēs, patrem meum vīdissēs.",
+   "en": "If you had come yesterday, you would have seen my father.",
+   "words": 6,
+   "focus": "vēnissēs",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "herī",
+     "m": "yesterday"
+    },
+    {
+     "w": "vēnissēs",
+     "m": "you had come (but you did not)"
+    },
+    {
+     "w": "patrem",
+     "m": "father"
+    },
+    {
+     "w": "meum",
+     "m": "my"
+    },
+    {
+     "w": "vīdissēs",
+     "m": "you would have seen"
+    }
+   ]
+  },
+  {
+   "id": "ccf-07",
+   "la": "Sī Quīntus in hortō mānsisset, nōn cecidisset.",
+   "en": "If Quintus had stayed in the garden, he would not have fallen.",
+   "words": 7,
+   "focus": "mānsisset",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "mānsisset",
+     "m": "he had stayed (but he did not)"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "cecidisset",
+     "m": "he would have fallen"
+    }
+   ]
+  },
+  {
+   "id": "ccf-08",
+   "la": "Sī pater adfuisset, Mārcus nōn fūgisset.",
+   "en": "If father had been there, Marcus would not have run away.",
+   "words": 6,
+   "focus": "adfuisset",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "adfuisset",
+     "m": "he had been there (but he was not)"
+    },
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "fūgisset",
+     "m": "he would have run away"
+    }
+   ]
+  },
+  {
+   "id": "ccf-09",
+   "la": "Sī tum didicissēs, nunc sapiēns essēs.",
+   "en": "If you had learned then, you would be wise now.",
+   "words": 6,
+   "focus": "didicissēs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "tum",
+     "m": "then"
+    },
+    {
+     "w": "didicissēs",
+     "m": "you had learned (but you did not)"
+    },
+    {
+     "w": "nunc",
+     "m": "now"
+    },
+    {
+     "w": "sapiēns",
+     "m": "wise"
+    },
+    {
+     "w": "essēs",
+     "m": "you would be"
+    }
+   ]
+  },
+  {
+   "id": "ccf-10",
+   "la": "Nisi Iūlius dīves esset, servōs nōn habēret.",
+   "en": "If Julius were not rich, he would not have slaves.",
+   "words": 7,
+   "focus": "esset",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nisi",
+     "m": "if not"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "dīves",
+     "m": "rich"
+    },
+    {
+     "w": "esset",
+     "m": "he were (but he is)"
+    },
+    {
+     "w": "servōs",
+     "m": "slaves"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "habēret",
+     "m": "he would have"
+    }
+   ]
+  },
+  {
+   "id": "ccf-11",
+   "la": "Sī Mēdus adesset, Lȳdia gaudēret.",
+   "en": "If Medus were here, Lydia would be glad.",
+   "words": 5,
+   "focus": "adesset",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "adesset",
+     "m": "he were here (but he is not)"
+    },
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "gaudēret",
+     "m": "she would be glad"
+    }
+   ]
+  },
+  {
+   "id": "ccf-12",
+   "la": "Sī vōs Rōmae fuissētis, forum vīdissētis.",
+   "en": "If you had been in Rome, you would have seen the forum.",
+   "words": 6,
+   "focus": "fuissētis",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "vōs",
+     "m": "you (plural)"
+    },
+    {
+     "w": "Rōmae",
+     "m": "in Rome"
+    },
+    {
+     "w": "fuissētis",
+     "m": "you had been (but you were not)"
+    },
+    {
+     "w": "forum",
+     "m": "the forum"
+    },
+    {
+     "w": "vīdissētis",
+     "m": "you would have seen"
+    }
+   ]
+  },
+  {
+   "id": "ccf-13",
+   "la": "Sī Aemilia adesset, puerī nōn clāmārent.",
+   "en": "If Aemilia were here, the boys would not be shouting.",
+   "words": 6,
+   "focus": "adesset",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "adesset",
+     "m": "she were here (but she is not)"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "clāmārent",
+     "m": "they would be shouting"
+    }
+   ]
+  },
+  {
+   "id": "ccf-14",
+   "la": "Sī tacuissem, pater mē nōn pūnīvisset.",
+   "en": "If I had kept quiet, father would not have punished me.",
+   "words": 6,
+   "focus": "tacuissem",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Sī",
+     "m": "if"
+    },
+    {
+     "w": "tacuissem",
+     "m": "I had kept quiet (but I did not)"
+    },
+    {
+     "w": "pater",
+     "m": "father"
+    },
+    {
+     "w": "mē",
+     "m": "me"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "pūnīvisset",
+     "m": "he would have punished"
+    }
+   ]
+  }
+ ]
+}

@@ -1,16 +1,145 @@
 {
-  "skill": "adverbs",
-  "core": [
-    { "type": "p", "text": "To say *how* something is done, Latin turns an adjective into **an adverb (the '-ly' word: how something is done) and its -ius / -issime forms**. *-us -a -um* adjectives take *-ē*: *rēctus* (correct) → *rēctē* (correctly), *sevērus* (strict) → *sevērē*, *pulcher* → *pulchrē*. 3rd-declension adjectives take *-iter*: *fortis* (brave) → *fortiter*, *brevis* → *breviter*, *turpis* (shameful) → *turpiter*. The comparative adverb is *-ius*, the neuter comparative: *rēctius* — more correctly; the superlative is *-issimē* (*-errimē* for *-er* words): *rēctissimē, pulcherrimē*. An adverb never changes its ending for a noun. Latin name: adverbia." },
-    { "type": "english", "text": "An adjective describes a thing (*a loud voice*); an adverb describes a doing (*he shouts loudly*). English adds *-ly*; Latin adds *-ē* or *-iter*." },
-    { "type": "rule", "text": "-us adjectives → -ē; -is adjectives → -iter; comparative -ius; superlative -issimē." },
-    { "type": "examples", "units": ["r18:72.1", "r18:81.1", "r18:85.1", "r18:105.1"], "invented": [ { "la": "Iūlia pulchrē cantat.", "en": "Julia sings beautifully.", "focus": "pulchrē" } ] },
-    { "type": "confusion", "with": "adjective-agreement", "text": "*Sextus rēctus est* and *Sextus rēctē scrībit* — the first describes Sextus, the second his writing. An adjective agreeing with its noun (same gender, number and case) changes with the noun (*puella laeta*, *puerī laetī*); the adverb *laetē* never changes. And do not mistake adverbial *-ē* (long) for the vocative *-e* of *serve!*" }
-  ],
-  "more": [
-    { "type": "p", "text": "Some adverbs are odd: *bonus* → *bene* (well), *malus* → *male* (badly), *facilis* → *facile* (easily), *multus* → *multum* (much), *magnus* → *magnopere* (greatly); *-ns* adjectives make *-nter*: *prūdēns* → *prūdenter*. Their comparatives are *melius, peius, facilius, plūs, magis*; superlatives *optimē, pessimē, facillimē, plūrimum, maximē*. Neuter accusatives also serve as adverbs: *multum, paulum* (a little), *prīmum* (first)." },
-    { "type": "p", "text": "The learner's notes (week 18): *-us -a -um* and *-er -a -um* adjectives add *-ē* to the stem (the macron distinguishes it from the vocative *-e*): *plēnē, astūtē, pigrē*; 3rd-declension adjectives add *-iter* (*graviter, celeriter*), and after *t* the *-it-* drops to avoid a stutter: *sapienter*; the comparative adverb is *-ius* for every declension (*astūtius, pigrius, celerius*), the superlative *-issimē*, or *-rimē* on the masculine singular of *-er* adjectives (*plēnissimē, pulcherrimē, celerrimē*)." },
-    { "type": "p", "text": "Ørberg (chapter XVIII): adjective *-us -a -um* → adverb *-ē*; adjective *-is -e* → adverb *-iter*; *rēctius, fortius* are comparatives of the adverb, *rēctissimē, fortissimē* superlatives; *nēmō fortius pugnat quam Rōmānī: Rōmānī fortissimē pugnant*. A&G §214–218 give the full set, including *-ō* adverbs (*subitō* suddenly, *falsō* falsely)." }
-  ],
-  "sources": ["notes p59–60", "Ørberg cap. XVIII Grammatica Latina", "A&G §214–218"]
+ "skill": "adverbs",
+ "teach": [
+  {
+   "title": "A word that describes the doing",
+   "say": "An adjective describes a thing; to describe a doing Latin uses **an adverb (the '-ly' word: how something is done) and its -ius / -issimē forms**. *Iūlia pulchrē cantat* — Julia sings beautifully. It answers 'how?', it hangs on the verb rather than on any noun, and — this is the useful part — it never changes its ending for anybody.",
+   "show": {
+    "kind": "sentence",
+    "id": "adv-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "adv-02",
+    "ask": "Which word tells you how Marcus writes, rather than what he is like?"
+   },
+   "n": 1
+  },
+  {
+   "title": "-us -a -um adjectives take -ē",
+   "say": "Cut the ending off an adjective of the *-us -a -um* kind and add *-ē*: *rēctus* correct → *rēctē* correctly, *sevērus* strict → *sevērē* sternly, *prāvus* wrong → *prāvē* wrongly, *pulcher* → *pulchrē*. The *-ē* is long, and it stays *-ē* whatever the sentence does.",
+   "show": {
+    "kind": "sentence",
+    "id": "adv-03"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "adv-05",
+    "blank": "rēctē",
+    "ask": "Discipulus bonus semper ____ respondet. Make the adverb of rēctus."
+   },
+   "n": 2
+  },
+  {
+   "title": "Third-declension adjectives take -iter",
+   "say": "An adjective of the *fortis, -e* kind makes its adverb with *-iter* instead: *fortis* → *fortiter* bravely, *brevis* → *breviter* briefly, *gravis* → *graviter* heavily, *turpis* → *turpiter* shamefully. Take the stem the genitive shows you and put *-iter* on it.",
+   "show": {
+    "kind": "sentence",
+    "id": "adv-06"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "adv-07",
+    "blank": "breviter",
+    "ask": "Magister ____ respondet, deinde tacet. Make the adverb of brevis."
+   },
+   "n": 3
+  },
+  {
+   "title": "More: the -ius form",
+   "say": "To say 'more …ly', Latin uses **the comparative (the '-er / more' form)** in its neuter singular, ending *-ius*: *rēctius* more correctly, *fortius* more bravely, *gravius* more heavily. It is the same word as the neuter 'more X thing', doing an adverb's work; with *quam* it sets two doers side by side.",
+   "show": {
+    "kind": "sentence",
+    "id": "adv-09"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "adv-10",
+    "ask": "Which word here says how Quintus shouts, rather than what Quintus is like?"
+   },
+   "n": 4
+  },
+  {
+   "title": "Most: the -issimē form",
+   "say": "To say 'most …ly' or 'very …ly', Latin uses **the superlative (the '-est / most' form)** with *-ē* on the end: *fortissimē* most bravely, *rēctissimē* most correctly. Adjectives in *-er* keep their doubled *r*: *pulcher* → *pulcherrimē*. It is built exactly like the plain adverb in *-ē*, only on the superlative stem.",
+   "show": {
+    "kind": "sentence",
+    "id": "adv-11"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "adv-12",
+    "ask": "Which word here says how the soldier fights?"
+   },
+   "n": 5
+  },
+  {
+   "title": "Adverb or adjective?",
+   "say": "The two are easy to mix up, because both grow from the same word: **an adjective agreeing with its noun (same gender, number and case)** changes to match that noun — *puella laeta*, *puerī laetī* — while the adverb never changes at all, and *laetē* stays *laetē* whoever is singing. In *vōx gravis est, puer graviter respondet* the first word describes the voice and the second the answering. One last trap: the adverb ending *-ē* is long, where the short *-e* of *serve!* is the vocative (the form for calling someone).",
+   "show": {
+    "kind": "sentence",
+    "id": "adv-14"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "adv-15",
+    "ask": "Which of brevis and breviter belongs to the writing rather than to the letter?"
+   },
+   "n": 6
+  }
+ ],
+ "core": [
+  {
+   "type": "p",
+   "text": "To say *how* something is done, Latin turns an adjective into **an adverb (the '-ly' word: how something is done) and its -ius / -issime forms**. *-us -a -um* adjectives take *-ē*: *rēctus* (correct) → *rēctē* (correctly), *sevērus* (strict) → *sevērē*, *pulcher* → *pulchrē*. 3rd-declension adjectives take *-iter*: *fortis* (brave) → *fortiter*, *brevis* → *breviter*, *turpis* (shameful) → *turpiter*. The comparative adverb is *-ius*, the neuter comparative: *rēctius* — more correctly; the superlative is *-issimē* (*-errimē* for *-er* words): *rēctissimē, pulcherrimē*. An adverb never changes its ending for a noun. Latin name: adverbia."
+  },
+  {
+   "type": "english",
+   "text": "An adjective describes a thing (*a loud voice*); an adverb describes a doing (*he shouts loudly*). English adds *-ly*; Latin adds *-ē* or *-iter*."
+  },
+  {
+   "type": "rule",
+   "text": "-us adjectives → -ē; -is adjectives → -iter; comparative -ius; superlative -issimē."
+  },
+  {
+   "type": "examples",
+   "units": [
+    "r18:72.1",
+    "r18:81.1",
+    "r18:85.1",
+    "r18:105.1"
+   ],
+   "invented": [
+    {
+     "la": "Iūlia pulchrē cantat.",
+     "en": "Julia sings beautifully.",
+     "focus": "pulchrē"
+    }
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "adjective-agreement",
+   "text": "*Sextus rēctus est* and *Sextus rēctē scrībit* — the first describes Sextus, the second his writing. An adjective agreeing with its noun (same gender, number and case) changes with the noun (*puella laeta*, *puerī laetī*); the adverb *laetē* never changes. And do not mistake adverbial *-ē* (long) for the vocative *-e* of *serve!*"
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "Some adverbs are odd: *bonus* → *bene* (well), *malus* → *male* (badly), *facilis* → *facile* (easily), *multus* → *multum* (much), *magnus* → *magnopere* (greatly); *-ns* adjectives make *-nter*: *prūdēns* → *prūdenter*. Their comparatives are *melius, peius, facilius, plūs, magis*; superlatives *optimē, pessimē, facillimē, plūrimum, maximē*. Neuter accusatives also serve as adverbs: *multum, paulum* (a little), *prīmum* (first)."
+  },
+  {
+   "type": "p",
+   "text": "The learner's notes (week 18): *-us -a -um* and *-er -a -um* adjectives add *-ē* to the stem (the macron distinguishes it from the vocative *-e*): *plēnē, astūtē, pigrē*; 3rd-declension adjectives add *-iter* (*graviter, celeriter*), and after *t* the *-it-* drops to avoid a stutter: *sapienter*; the comparative adverb is *-ius* for every declension (*astūtius, pigrius, celerius*), the superlative *-issimē*, or *-rimē* on the masculine singular of *-er* adjectives (*plēnissimē, pulcherrimē, celerrimē*)."
+  },
+  {
+   "type": "p",
+   "text": "Ørberg (chapter XVIII): adjective *-us -a -um* → adverb *-ē*; adjective *-is -e* → adverb *-iter*; *rēctius, fortius* are comparatives of the adverb, *rēctissimē, fortissimē* superlatives; *nēmō fortius pugnat quam Rōmānī: Rōmānī fortissimē pugnant*. A&G §214–218 give the full set, including *-ō* adverbs (*subitō* suddenly, *falsō* falsely)."
+  }
+ ],
+ "sources": [
+  "notes p59–60",
+  "Ørberg cap. XVIII Grammatica Latina",
+  "A&G §214–218"
+ ]
 }

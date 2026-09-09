@@ -1,5 +1,123 @@
 {
   "skill": "imperative",
+  "teach": [
+    {
+      "n": 1,
+      "title": "An order has no -t on it",
+      "say": "When one person tells another to do something, the verb takes a shape of its own: **the imperative (the command form)**. It is not describing anybody, so it carries none of the endings that describe — no -t, no -nt. *Numerā!* is not 'he counts', it is 'count!', said to the person standing in front of you.",
+      "show": {
+        "kind": "sentence",
+        "id": "imp-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "imp-02",
+        "ask": "Which word gives the order?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "One person, an -āre verb: the bare stem",
+      "say": "Take *vocāre* (to call), drop the -re, and what is left is the order to one person: *vocā!* Nothing is added at all. The ending is a long -ā, and the macron does work here: the whole order is that one vowel.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "vocō",
+        "reveal": [
+          "imper.pres.act.sg"
+        ],
+        "say": "vocā — the order to one person ends in -ā"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "cells": [
+          "imper.pres.act.sg"
+        ],
+        "ask": "Order one person to call."
+      }
+    },
+    {
+      "n": 3,
+      "title": "More than one person: add -te",
+      "say": "Two boys, one order. The same stem takes -te on the end: *vocā* to one, *vocāte* to several. That -te is the only thing in the word that says how many people are being told.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "vocō",
+        "reveal": [
+          "imper.pres.act.pl"
+        ],
+        "say": "vocāte — the order to more than one adds -te"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj1",
+        "cells": [
+          "imper.pres.act.pl"
+        ],
+        "ask": "Order more than one person to call."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Other verbs keep their own vowel",
+      "say": "Every verb does the same with the vowel it already owns: *tacē!* (tacēre), *audī!* (audīre). For several people the -te goes on behind that vowel: *tacēte*, *audīte*. There is nothing new to learn — only which vowel the verb has.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj4",
+        "word": "audiō",
+        "reveal": [
+          "imper.pres.act.sg",
+          "imper.pres.act.pl"
+        ],
+        "say": "audī / audīte — the -īre verb keeps its ī"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "imp-10",
+        "ask": "Tacēte, puerī probī, et mē ___! (audīre, to more than one)"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Stems ending in a consonant slip in an e or an i",
+      "say": "*Sūmere*, *pōnere* and *discēdere* have no vowel of their own before the -re. To one person they end in a short -e: *sūme!*, *pōne!*, *discēde!* To several, an i comes in before the -te: *sūmite!*, *pōnite!*, *discēdite!* Three common verbs shorten further and you will meet them later: *dīc!*, *dūc!*, *fac!* with no -e at all.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj3",
+        "word": "sūmō",
+        "reveal": [
+          "imper.pres.act.sg",
+          "imper.pres.act.pl"
+        ],
+        "say": "sūme / sūmite — short -e for one, -ite for several"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "conj3",
+        "cells": [
+          "imper.pres.act.sg",
+          "imper.pres.act.pl"
+        ],
+        "ask": "Order one person, then several, to take something."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Order or statement?",
+      "say": "The order and the statement sit one letter apart, so read the tail of the word. *Pōnit* has a -t: somebody is being described, he puts. *Pōne* has none: somebody is being told, put! The same holds for several — *veniunt* they come, *venīte* come!",
+      "show": {
+        "kind": "sentence",
+        "id": "imp-15"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "imp-14",
+        "ask": "Is *venī* an order or a statement, and what tells you?"
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

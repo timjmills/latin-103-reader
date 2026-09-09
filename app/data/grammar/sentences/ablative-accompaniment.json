@@ -1,0 +1,558 @@
+{
+ "skill": "ablative-accompaniment",
+ "chapter": 5,
+ "sentences": [
+  {
+   "id": "abc-01",
+   "la": "Iūlia cum Syrā in hortō est.",
+   "en": "Julia is in the garden with Syra.",
+   "words": 6,
+   "focus": "Syrā",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Syrā",
+     "m": "Syra"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abc-02",
+   "la": "Mārcus cum Quīntō in vīllā dormit.",
+   "en": "Marcus is sleeping in the house with Quintus.",
+   "words": 6,
+   "focus": "Quīntō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Quīntō",
+     "m": "Quintus"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "dormit",
+     "m": "is sleeping"
+    }
+   ]
+  },
+  {
+   "id": "abc-03",
+   "la": "Aemilia cum fīliā suā cantat.",
+   "en": "Aemilia is singing with her daughter.",
+   "words": 5,
+   "focus": "fīliā",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "fīliā",
+     "m": "daughter"
+    },
+    {
+     "w": "suā",
+     "m": "her own"
+    },
+    {
+     "w": "cantat",
+     "m": "is singing"
+    }
+   ]
+  },
+  {
+   "id": "abc-04",
+   "la": "Mēdus cum Lȳdiā ex vīllā discēdit.",
+   "en": "Medus goes out of the house with Lydia.",
+   "words": 6,
+   "focus": "Lȳdiā",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Lȳdiā",
+     "m": "Lydia"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "vīllā",
+     "m": "the house"
+    },
+    {
+     "w": "discēdit",
+     "m": "goes away"
+    }
+   ]
+  },
+  {
+   "id": "abc-05",
+   "la": "Dāvus cum dominō suō venit.",
+   "en": "Davus comes with his master.",
+   "words": 5,
+   "focus": "dominō",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "dominō",
+     "m": "master"
+    },
+    {
+     "w": "suō",
+     "m": "his own"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "abc-06",
+   "la": "Puer cum patre in ātriō est.",
+   "en": "The boy is in the atrium with his father.",
+   "words": 6,
+   "focus": "patre",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "patre",
+     "m": "father"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abc-07",
+   "la": "Dominus cum servīs suīs venit.",
+   "en": "The master comes with his slaves.",
+   "words": 5,
+   "focus": "servīs",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "servīs",
+     "m": "slaves"
+    },
+    {
+     "w": "suīs",
+     "m": "his own"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "abc-08",
+   "la": "Syra cum ancillīs cēterīs in peristylō est.",
+   "en": "Syra is in the peristyle with the other slave girls.",
+   "words": 7,
+   "focus": "ancillīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Syra",
+     "m": "Syra"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "ancillīs",
+     "m": "slave girls"
+    },
+    {
+     "w": "cēterīs",
+     "m": "the other"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "peristylō",
+     "m": "the peristyle"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abc-09",
+   "la": "Puellae cum līberīs cēterīs rīdent.",
+   "en": "The girls are laughing with the other children.",
+   "words": 5,
+   "focus": "līberīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puellae",
+     "m": "the girls"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "līberīs",
+     "m": "children"
+    },
+    {
+     "w": "cēterīs",
+     "m": "the other"
+    },
+    {
+     "w": "rīdent",
+     "m": "are laughing"
+    }
+   ]
+  },
+  {
+   "id": "abc-10",
+   "la": "Iūlius in hortō est, nōn cum Aemiliā.",
+   "en": "Julius is in the garden, not with Aemilia.",
+   "words": 7,
+   "focus": "Aemiliā",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Aemiliā",
+     "m": "Aemilia"
+    }
+   ]
+  },
+  {
+   "id": "abc-11",
+   "la": "Lȳdia cum Mēdō, nōn sōla, venit.",
+   "en": "Lydia comes with Medus, not alone.",
+   "words": 6,
+   "focus": "Mēdō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "Mēdō",
+     "m": "Medus"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "sōla",
+     "m": "alone"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    }
+   ]
+  },
+  {
+   "id": "abc-12",
+   "la": "Vir cum baculō in ōstiō est.",
+   "en": "A man with a stick is in the doorway.",
+   "words": 6,
+   "focus": "baculō",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vir",
+     "m": "a man"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "baculō",
+     "m": "a stick"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ōstiō",
+     "m": "the doorway"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ],
+   "note": "cum here is company of a sort Ørberg allows: the man has the stick with him, walking along with it. A stick he was using would drop cum and stand in the bare ablative."
+  },
+  {
+   "id": "abc-13",
+   "la": "Venī mēcum, Mārce, et tacē!",
+   "en": "Come with me, Marcus, and be quiet!",
+   "words": 5,
+   "focus": "mēcum",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Venī",
+     "m": "come!"
+    },
+    {
+     "w": "mēcum",
+     "m": "with me"
+    },
+    {
+     "w": "Mārce",
+     "m": "Marcus (called)"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "tacē",
+     "m": "be quiet!"
+    }
+   ]
+  },
+  {
+   "id": "abc-14",
+   "la": "Cum ancillā suā Aemilia in hortō est.",
+   "en": "Aemilia is in the garden with her slave girl.",
+   "words": 7,
+   "focus": "ancillā",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Cum",
+     "m": "with"
+    },
+    {
+     "w": "ancillā",
+     "m": "slave girl"
+    },
+    {
+     "w": "suā",
+     "m": "her own"
+    },
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  }
+ ]
+}

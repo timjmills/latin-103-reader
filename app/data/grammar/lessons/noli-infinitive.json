@@ -56,5 +56,99 @@
     "notes p73",
     "Ørberg cap. XX",
     "A&G §450"
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "To tell somebody *not* to do something, Latin does not put a 'not' in front of the command. It uses nōlī / nōlīte + infinitive (the polite 'don't …'): *nōlī clāmāre* is literally 'be unwilling to shout', which is simply 'don't shout'. This is the ordinary, courteous way to forbid something, and it is what you will meet almost every time.",
+      "show": {
+        "kind": "sentence",
+        "id": "ni-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ni-02",
+        "ask": "Tap the word that turns this order into a 'don't'."
+      }
+    },
+    {
+      "n": 2,
+      "title": "nōlī to one person, nōlīte to more than one",
+      "say": "*Nōlī* and *nōlīte* are the imperative (the command form) of *nōlō* 'not to want'. Say *nōlī* to one person — *nōlī dormīre, Mārce* — and *nōlīte* to two or more — *nōlīte dormīre, puerī*. Nothing else in the sentence changes; that first word alone says how many people are being told.",
+      "show": {
+        "kind": "paradigm",
+        "key": "nolo",
+        "word": "nolo",
+        "reveal": [
+          "imper.pres.act.sg",
+          "imper.pres.act.pl"
+        ],
+        "say": "nōlī to one, nōlīte to several"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ni-03",
+        "blank": "Nōlīte",
+        "ask": "Fill the blank with the form used when more than one person is being told."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The verb that follows is the infinitive",
+      "say": "Whatever you are forbidding goes into the infinitive (the 'to' form), never into a command form: *nōlīte dūcere*, not *nōlīte dūcite*. So the pattern is always two verbs — *nōlī* or *nōlīte* first, its infinitive last — with whatever else the sentence needs sitting between them: *nōlī epistulam meam legere*.",
+      "show": {
+        "kind": "sentence",
+        "id": "ni-05"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "ni-06",
+        "ask": "legere — which form of the verb is it, and why not lege?"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Any verb at all, even the odd ones",
+      "say": "Whichever infinitive a verb happens to have is the one you use. A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) has an infinitive in *-ī*: *nōlī loquī*. *Sum* has *esse*: *nōlīte improbī esse*. *Eō* has *īre*: *nōlīte īre*. The construction never changes; only that second word does.",
+      "show": {
+        "kind": "sentence",
+        "id": "ni-08"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ni-09",
+        "ask": "Tap the infinitive that this prohibition forbids."
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the plain command",
+      "say": "A plain command tells somebody to do something: *tacē!*, be quiet. Put *nōlī* in front and the verb behind it forbids instead: *nōlī rīdēre!*, don't laugh. It is the *nōlī* in front that makes it a prohibition, not the ending behind: after *nōlī* the verb is always the infinitive, whatever shape that infinitive has — *rīdēre*, *esse*, *īre*, *loquī*. A command form standing alone, with no *nōlī* in front of it, is an order.",
+      "show": {
+        "kind": "sentence",
+        "id": "ni-06"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "ni-11",
+        "ask": "Tap the word that forbids, not the one that orders."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it",
+      "say": "Latin will happily wedge the person's name between the two halves — *nōlī, Quīnte, ex lectulō surgere* — and the pattern still holds: find *nōlī* or *nōlīte*, then look to the end of the sentence for its infinitive. Now build the second half yourself: the forbidden verb never comes out as a command.",
+      "show": {
+        "kind": "sentence",
+        "id": "ni-12"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "ni-13",
+        "blank": "cadere",
+        "ask": "Nōlī iterum in aquam ____ ! Write the form of cadō that has to follow nōlī."
+      }
+    }
   ]
 }

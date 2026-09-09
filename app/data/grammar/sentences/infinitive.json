@@ -1,0 +1,666 @@
+{
+  "skill": "infinitive",
+  "chapter": 10,
+  "sentences": [
+    {
+      "id": "inf-01",
+      "la": "Avis in āere volāre potest.",
+      "en": "A bird can fly in the air.",
+      "words": 5,
+      "focus": "volāre",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Avis",
+          "m": "a bird"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "āere",
+          "m": "the air"
+        },
+        {
+          "w": "volāre",
+          "m": "to fly"
+        },
+        {
+          "w": "potest",
+          "m": "is able"
+        }
+      ]
+    },
+    {
+      "id": "inf-02",
+      "la": "Puer parvus in aquā natāre nōn potest.",
+      "en": "The little boy cannot swim in the water.",
+      "words": 7,
+      "focus": "natāre",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "parvus",
+          "m": "little"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "aquā",
+          "m": "the water"
+        },
+        {
+          "w": "natāre",
+          "m": "to swim"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "potest",
+          "m": "is able"
+        }
+      ]
+    },
+    {
+      "id": "inf-03",
+      "la": "Iūlia in hortō cantāre vult.",
+      "en": "Julia wants to sing in the garden.",
+      "words": 5,
+      "focus": "cantāre",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "hortō",
+          "m": "the garden"
+        },
+        {
+          "w": "cantāre",
+          "m": "to sing"
+        },
+        {
+          "w": "vult",
+          "m": "wants"
+        }
+      ]
+    },
+    {
+      "id": "inf-04",
+      "la": "Mārcus avem in rāmō vidēre vult.",
+      "en": "Marcus wants to see the bird on the branch.",
+      "words": 6,
+      "focus": "vidēre",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "avem",
+          "m": "the bird"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "rāmō",
+          "m": "the branch"
+        },
+        {
+          "w": "vidēre",
+          "m": "to see"
+        },
+        {
+          "w": "vult",
+          "m": "wants"
+        }
+      ]
+    },
+    {
+      "id": "inf-05",
+      "la": "Quīntus librum legere nōn potest.",
+      "en": "Quintus cannot read the book.",
+      "words": 5,
+      "focus": "legere",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "librum",
+          "m": "the book"
+        },
+        {
+          "w": "legere",
+          "m": "to read"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "potest",
+          "m": "is able"
+        }
+      ]
+    },
+    {
+      "id": "inf-06",
+      "la": "Puerī fessī in cubiculō dormīre volunt.",
+      "en": "The tired boys want to sleep in the bedroom.",
+      "words": 6,
+      "focus": "dormīre",
+      "step": 2,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "fessī",
+          "m": "tired"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "cubiculō",
+          "m": "the bedroom"
+        },
+        {
+          "w": "dormīre",
+          "m": "to sleep"
+        },
+        {
+          "w": "volunt",
+          "m": "want"
+        }
+      ]
+    },
+    {
+      "id": "inf-07",
+      "la": "Mārcus bonus puer esse nōn vult.",
+      "en": "Marcus does not want to be a good boy.",
+      "words": 6,
+      "focus": "esse",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "bonus",
+          "m": "a good"
+        },
+        {
+          "w": "puer",
+          "m": "boy"
+        },
+        {
+          "w": "esse",
+          "m": "to be"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "vult",
+          "m": "wants"
+        }
+      ]
+    },
+    {
+      "id": "inf-08",
+      "la": "Servus ad oppidum īre nōn audet.",
+      "en": "The slave does not dare to go to the town.",
+      "words": 6,
+      "focus": "īre",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Servus",
+          "m": "the slave"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "oppidum",
+          "m": "the town"
+        },
+        {
+          "w": "īre",
+          "m": "to go"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "audet",
+          "m": "dares"
+        }
+      ]
+    },
+    {
+      "id": "inf-09",
+      "la": "Hominī cibum edere necesse est.",
+      "en": "A person has to eat food.",
+      "words": 5,
+      "focus": "edere",
+      "step": 3,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Hominī",
+          "m": "for a person"
+        },
+        {
+          "w": "cibum",
+          "m": "food"
+        },
+        {
+          "w": "edere",
+          "m": "to eat"
+        },
+        {
+          "w": "necesse",
+          "m": "necessary"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        }
+      ]
+    },
+    {
+      "id": "inf-10",
+      "la": "Avis ā puerō capī potest.",
+      "en": "The bird can be caught by the boy.",
+      "words": 5,
+      "focus": "capī",
+      "step": 4,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Avis",
+          "m": "a bird"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "puerō",
+          "m": "the boy"
+        },
+        {
+          "w": "capī",
+          "m": "to be caught"
+        },
+        {
+          "w": "potest",
+          "m": "is able"
+        }
+      ]
+    },
+    {
+      "id": "inf-11",
+      "la": "Puer ā patre vidērī nōn vult.",
+      "en": "The boy does not want to be seen by his father.",
+      "words": 6,
+      "focus": "vidērī",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puer",
+          "m": "the boy"
+        },
+        {
+          "w": "ā",
+          "m": "by"
+        },
+        {
+          "w": "patre",
+          "m": "his father"
+        },
+        {
+          "w": "vidērī",
+          "m": "to be seen"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "vult",
+          "m": "wants"
+        }
+      ]
+    },
+    {
+      "id": "inf-12",
+      "la": "Puerī currere volunt, sed nōn currunt.",
+      "en": "The boys want to run, but they are not running.",
+      "words": 6,
+      "focus": "currere",
+      "step": 6,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Puerī",
+          "m": "the boys"
+        },
+        {
+          "w": "currere",
+          "m": "to run"
+        },
+        {
+          "w": "volunt",
+          "m": "want"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "currunt",
+          "m": "they are running"
+        }
+      ]
+    },
+    {
+      "id": "inf-13",
+      "la": "Mārcus nōn audet in arborem ascendere.",
+      "en": "Marcus does not dare to climb the tree.",
+      "words": 6,
+      "focus": "ascendere",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārcus",
+          "m": "Marcus"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "audet",
+          "m": "dares"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "arborem",
+          "m": "the tree"
+        },
+        {
+          "w": "ascendere",
+          "m": "to climb"
+        }
+      ]
+    },
+    {
+      "id": "inf-14",
+      "la": "Aquila nīdum in arbore facere potest.",
+      "en": "An eagle can make a nest in a tree.",
+      "words": 6,
+      "focus": "facere",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Aquila",
+          "m": "an eagle"
+        },
+        {
+          "w": "nīdum",
+          "m": "a nest"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "arbore",
+          "m": "a tree"
+        },
+        {
+          "w": "facere",
+          "m": "to make"
+        },
+        {
+          "w": "potest",
+          "m": "is able"
+        }
+      ]
+    },
+    {
+      "id": "inf-15",
+      "la": "Quīntus in cubiculō tacēre nōn potest.",
+      "en": "Quintus cannot keep quiet in the bedroom.",
+      "words": 6,
+      "focus": "tacēre",
+      "step": 6,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntus",
+          "m": "Quintus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "cubiculō",
+          "m": "the bedroom"
+        },
+        {
+          "w": "tacēre",
+          "m": "to be quiet"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "potest",
+          "m": "is able"
+        }
+      ]
+    },
+    {
+      "id": "inf-16",
+      "la": "Iūlia ad oppidum īre vult.",
+      "en": "Julia wants to go to the town.",
+      "words": 5,
+      "focus": "īre",
+      "step": 5,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "oppidum",
+          "m": "the town"
+        },
+        {
+          "w": "īre",
+          "m": "to go"
+        },
+        {
+          "w": "vult",
+          "m": "wants"
+        }
+      ]
+    },
+    {
+      "id": "inf-17",
+      "la": "Quīntum in cubiculō dormīre necesse est.",
+      "en": "Quintus has to sleep in the bedroom.",
+      "words": 6,
+      "focus": "dormīre",
+      "step": 2,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Quīntum",
+          "m": "Quintus"
+        },
+        {
+          "w": "in",
+          "m": "in"
+        },
+        {
+          "w": "cubiculō",
+          "m": "the bedroom"
+        },
+        {
+          "w": "dormīre",
+          "m": "to sleep"
+        },
+        {
+          "w": "necesse",
+          "m": "necessary"
+        },
+        {
+          "w": "est",
+          "m": "it is"
+        }
+      ]
+    }
+  ]
+}

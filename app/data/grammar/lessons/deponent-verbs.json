@@ -1,17 +1,181 @@
 {
-  "skill": "deponent-verbs",
-  "core": [
-    { "type": "p", "text": "Some verbs wear passive clothes but do active work: **a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)**. *Lydia eum sequitur* — Lydia follows him; *nauta Neptūnum verētur* — the sailor fears Neptune. Their endings are the passive ones (*-or, -ris, -tur, -mur, -minī, -ntur*), their infinitive ends in *-rī* or *-ī* (*loquī* to speak, *sequī* to follow, *verērī* to fear), and there is no active form at all. The dictionary lists them by the first person: *loquor, sequor, proficīscor* (set out). Latin name: verba dēpōnentia." },
-    { "type": "english", "text": "Think of English *he is gone*: passive shape, but it only means he went. A deponent has 'laid aside' (dēpōnere) its active forms." },
-    { "type": "rule", "text": "Passive endings, active meaning; infinitive -ārī / -ērī / -ī / -īrī; never translate as 'is …-ed'." },
-    { "type": "paradigm", "key": "conj3", "highlight": { "voice": "pass", "mood": "ind", "tense": "pres" } },
-    { "type": "examples", "units": ["r16:67.2", "r16:66.1", "r16:103.2", "r16:145.1"], "invented": [ { "la": "Puerī magistrum sequuntur.", "en": "The boys follow the teacher.", "focus": "sequuntur" } ] },
-    { "type": "confusion", "with": "passive-voice", "text": "*laudātur* and *sequitur* end alike, but *laudātur* is the passive (the 'is done' form) — he is praised — while *sequitur* means *he follows* and can take an object: *Lydia eum sequitur*. A passive-looking verb with an accusative object, or plainly meaning something the subject does, is a deponent. The dictionary form settles it: *laudō* (an active exists) against *sequor*." }
-  ],
-  "more": [
-    { "type": "p", "text": "Deponents keep one active-looking form, the present participle: *sequēns* (following), *loquēns* (speaking), *oriēns* (rising). Their commands are the passive shapes — *sequere!* follow!, *sequiminī!* follow, all of you! — a separate skill. Common deponents from chapter XVI: *laetārī* be glad, *verērī* fear, *proficīscī* set out, *opperīrī* wait for, *cōnsōlārī* comfort, *cōnārī* try, *intuērī* look at, *sequī*, *loquī*, *lābī* slip, *complectī* embrace, *ēgredī* go out, *orīrī* rise." },
-    { "type": "p", "text": "The learner's notes (week 16): deponents are neither active nor passive — their voice is simply deponent; their indicative endings match the passive (*-(i)tur, -(u)ntur*), and the imperative endings *-(e)re* singular, *-(i)minī* plural must be learned now because deponent commands are far commoner than passive ones; the vowel rules are those of regular verbs, but the weak *i*-stems drop the *i*, not the *e*: *ēgredere* (compare *accipe*)." },
-    { "type": "p", "text": "Ørberg (chapter XVI): a deponent is a verb that always has the passive form (except the participle) and stands in the place of an active verb; *laetātur = gaudet, verētur = timet, proficīscitur = abit, opperītur = exspectat*. A&G §190 add the semi-deponents, active in the present but passive in the perfect: *audeō, ausus sum* (dare), *gaudeō, gāvīsus sum*, *soleō, solitus sum* (be used to)." }
-  ],
-  "sources": ["notes p54", "Ørberg cap. XVI Grammatica Latina", "A&G §190"]
+ "skill": "deponent-verbs",
+ "teach": [
+  {
+   "title": "Passive clothes, active work",
+   "say": "Some verbs have nothing but passive-shaped endings and yet mean something the subject does: **a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)**. *sequitur* is not 'he is followed' but 'he follows'; *verētur* is 'he fears'. There is no active form to fall back on — the dictionary lists them by the passive-looking first person: *sequor, loquor, cōnor, vereor*.",
+   "show": {
+    "kind": "sentence",
+    "id": "dep-02"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "dep-01",
+    "ask": "Which word here has a passive-looking ending and yet tells you what the sailor does?"
+   },
+   "n": 1
+  },
+  {
+   "title": "The singular endings: -or, -ris, -tur",
+   "say": "The endings are the passive set. *sequor* I follow, *sequeris* you follow, *sequitur* he or she follows. Every one has an *r* in it, and that *r* is the whole signal — but read the meaning as active anyway.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj3",
+    "reveal": [
+     "pres.ind.pass.1.sg",
+     "pres.ind.pass.2.sg",
+     "pres.ind.pass.3.sg"
+    ],
+    "word": "sequor"
+   },
+   "check": {
+    "kind": "chart",
+    "key": "conj3",
+    "cells": [
+     "pres.ind.pass.1.sg",
+     "pres.ind.pass.2.sg",
+     "pres.ind.pass.3.sg"
+    ],
+    "ask": "Fill the three singular cells for sequor: I follow, you follow, he follows.",
+    "word": "sequor"
+   },
+   "n": 2
+  },
+  {
+   "title": "The plural: -mur, -minī, -ntur",
+   "say": "*sequimur* we follow, *sequiminī* you all follow, *sequuntur* they follow. *-minī* is the odd one out with no *r* at all, so learn it by itself; *-ntur* is just the *-nt* of 'they' with *-ur* added.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj3",
+    "reveal": [
+     "pres.ind.pass.1.pl",
+     "pres.ind.pass.2.pl",
+     "pres.ind.pass.3.pl"
+    ],
+    "word": "sequor"
+   },
+   "check": {
+    "kind": "chart",
+    "key": "conj3",
+    "cells": [
+     "pres.ind.pass.1.pl",
+     "pres.ind.pass.2.pl",
+     "pres.ind.pass.3.pl"
+    ],
+    "ask": "Fill the three plural cells for sequor: we follow, you all follow, they follow.",
+    "word": "sequor"
+   },
+   "n": 3
+  },
+  {
+   "title": "The infinitive ends in -ī, never -re",
+   "say": "The infinitive (the plain 'to' form) of a deponent is the passive-shaped one: *sequī* to follow, *loquī* to speak, *cōnārī* to try, *verērī* to fear. An ordinary verb would say *sequere*. This is the quickest test there is: if the dictionary gives *-ī* or *-rī* where you expect *-re*, the verb is deponent.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj3",
+    "reveal": [
+     "inf.pres.pass"
+    ],
+    "word": "sequor"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "dep-10",
+    "blank": "sequī",
+    "ask": "Nauta nāvem magnam ____ cōnātur. Write the infinitive of sequor."
+   },
+   "n": 4
+  },
+  {
+   "title": "A deponent can take an object",
+   "say": "A real passive has no object — nobody is 'praised the teacher'. A deponent can have one, because its meaning is active: *discipulus magistrum verētur*, the pupil fears the teacher, with *magistrum* in the accusative (the object form). An accusative sitting beside a *-tur* verb is nearly always the sign of a deponent.",
+   "show": {
+    "kind": "sentence",
+    "id": "dep-11"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "dep-12",
+    "ask": "sequuntur: what person, number and voice is it, and which word in the sentence is its object?"
+   },
+   "n": 5
+  },
+  {
+   "title": "Telling it from a real passive",
+   "say": "*vocātur* and *loquitur* end alike, but *vocātur* is the passive (the 'is done' form), he is called, while *loquitur* means he speaks. Two things settle it: a doer named with *ā* or *ab* belongs to a passive, and the dictionary says whether an active exists at all — *vocō* does, *loquō* does not.",
+   "show": {
+    "kind": "sentence",
+    "id": "dep-13"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "dep-14",
+    "ask": "vocantur and sequuntur end the same way. Which one is the boys' own doing?"
+   },
+   "n": 6
+  }
+ ],
+ "core": [
+  {
+   "type": "p",
+   "text": "Some verbs wear passive clothes but do active work: **a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)**. *Lydia eum sequitur* — Lydia follows him; *nauta Neptūnum verētur* — the sailor fears Neptune. Their endings are the passive ones (*-or, -ris, -tur, -mur, -minī, -ntur*), their infinitive ends in *-rī* or *-ī* (*loquī* to speak, *sequī* to follow, *verērī* to fear), and there is no active form at all. The dictionary lists them by the first person: *loquor, sequor, proficīscor* (set out). Latin name: verba dēpōnentia."
+  },
+  {
+   "type": "english",
+   "text": "Think of English *he is gone*: passive shape, but it only means he went. A deponent has 'laid aside' (dēpōnere) its active forms."
+  },
+  {
+   "type": "rule",
+   "text": "Passive endings, active meaning; infinitive -ārī / -ērī / -ī / -īrī; never translate as 'is …-ed'."
+  },
+  {
+   "type": "paradigm",
+   "key": "conj3",
+   "highlight": {
+    "voice": "pass",
+    "mood": "ind",
+    "tense": "pres"
+   }
+  },
+  {
+   "type": "examples",
+   "units": [
+    "r16:67.2",
+    "r16:66.1",
+    "r16:103.2",
+    "r16:145.1"
+   ],
+   "invented": [
+    {
+     "la": "Puerī magistrum sequuntur.",
+     "en": "The boys follow the teacher.",
+     "focus": "sequuntur"
+    }
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "passive-voice",
+   "text": "*laudātur* and *sequitur* end alike, but *laudātur* is the passive (the 'is done' form) — he is praised — while *sequitur* means *he follows* and can take an object: *Lydia eum sequitur*. A passive-looking verb with an accusative object, or plainly meaning something the subject does, is a deponent. The dictionary form settles it: *laudō* (an active exists) against *sequor*."
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "Deponents keep one active-looking form, the present participle: *sequēns* (following), *loquēns* (speaking), *oriēns* (rising). Their commands are the passive shapes — *sequere!* follow!, *sequiminī!* follow, all of you! — a separate skill. Common deponents from chapter XVI: *laetārī* be glad, *verērī* fear, *proficīscī* set out, *opperīrī* wait for, *cōnsōlārī* comfort, *cōnārī* try, *intuērī* look at, *sequī*, *loquī*, *lābī* slip, *complectī* embrace, *ēgredī* go out, *orīrī* rise."
+  },
+  {
+   "type": "p",
+   "text": "The learner's notes (week 16): deponents are neither active nor passive — their voice is simply deponent; their indicative endings match the passive (*-(i)tur, -(u)ntur*), and the imperative endings *-(e)re* singular, *-(i)minī* plural must be learned now because deponent commands are far commoner than passive ones; the vowel rules are those of regular verbs, but the weak *i*-stems drop the *i*, not the *e*: *ēgredere* (compare *accipe*)."
+  },
+  {
+   "type": "p",
+   "text": "Ørberg (chapter XVI): a deponent is a verb that always has the passive form (except the participle) and stands in the place of an active verb; *laetātur = gaudet, verētur = timet, proficīscitur = abit, opperītur = exspectat*. A&G §190 add the semi-deponents, active in the present but passive in the perfect: *audeō, ausus sum* (dare), *gaudeō, gāvīsus sum*, *soleō, solitus sum* (be used to)."
+  }
+ ],
+ "sources": [
+  "notes p54",
+  "Ørberg cap. XVI Grammatica Latina",
+  "A&G §190"
+ ]
 }

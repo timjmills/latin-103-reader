@@ -1,0 +1,526 @@
+{
+ "skill": "ablative-means",
+ "chapter": 6,
+ "sentences": [
+  {
+   "id": "abm-01",
+   "la": "Dāvus servum improbum baculō verberat.",
+   "en": "Davus beats the bad slave with a stick.",
+   "words": 5,
+   "focus": "baculō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dāvus",
+     "m": "Davus"
+    },
+    {
+     "w": "servum",
+     "m": "the slave (object)"
+    },
+    {
+     "w": "improbum",
+     "m": "bad"
+    },
+    {
+     "w": "baculō",
+     "m": "with a stick"
+    },
+    {
+     "w": "verberat",
+     "m": "beats"
+    }
+   ]
+  },
+  {
+   "id": "abm-02",
+   "la": "Iūlius baculō suō ōstium pulsat.",
+   "en": "Julius knocks on the door with his stick.",
+   "words": 5,
+   "focus": "baculō",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "baculō",
+     "m": "with a stick"
+    },
+    {
+     "w": "suō",
+     "m": "his own"
+    },
+    {
+     "w": "ōstium",
+     "m": "the door (object)"
+    },
+    {
+     "w": "pulsat",
+     "m": "knocks on"
+    }
+   ]
+  },
+  {
+   "id": "abm-03",
+   "la": "Iūlius equō ad oppidum vehitur.",
+   "en": "Julius rides to the town on a horse.",
+   "words": 5,
+   "focus": "equō",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "equō",
+     "m": "on a horse"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "oppidum",
+     "m": "the town"
+    },
+    {
+     "w": "vehitur",
+     "m": "is carried"
+    }
+   ]
+  },
+  {
+   "id": "abm-04",
+   "la": "Mēdus sōlus equō Rōmam vehitur.",
+   "en": "Medus rides to Rome alone.",
+   "words": 5,
+   "focus": "equō",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēdus",
+     "m": "Medus"
+    },
+    {
+     "w": "sōlus",
+     "m": "alone"
+    },
+    {
+     "w": "equō",
+     "m": "on a horse"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "vehitur",
+     "m": "is carried"
+    }
+   ]
+  },
+  {
+   "id": "abm-05",
+   "la": "Aemilia lectīcā ad vīllam vehitur.",
+   "en": "Aemilia is carried to the house in a litter.",
+   "words": 5,
+   "focus": "lectīcā",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "lectīcā",
+     "m": "in a litter"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllam",
+     "m": "the house"
+    },
+    {
+     "w": "vehitur",
+     "m": "is carried"
+    }
+   ]
+  },
+  {
+   "id": "abm-06",
+   "la": "Iūlius viā longā ad oppidum ambulat.",
+   "en": "Julius walks to the town by the long road.",
+   "words": 6,
+   "focus": "viā",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "viā",
+     "m": "by the road"
+    },
+    {
+     "w": "longā",
+     "m": "long"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "oppidum",
+     "m": "the town"
+    },
+    {
+     "w": "ambulat",
+     "m": "walks"
+    }
+   ]
+  },
+  {
+   "id": "abm-07",
+   "la": "Servus fessus saccum umerīs portat.",
+   "en": "The tired slave carries a sack on his shoulders.",
+   "words": 5,
+   "focus": "umerīs",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "fessus",
+     "m": "tired"
+    },
+    {
+     "w": "saccum",
+     "m": "a sack (object)"
+    },
+    {
+     "w": "umerīs",
+     "m": "on his shoulders"
+    },
+    {
+     "w": "portat",
+     "m": "carries"
+    }
+   ]
+  },
+  {
+   "id": "abm-08",
+   "la": "Lȳdia verbīs pulchrīs Mēdī dēlectātur.",
+   "en": "Lydia is delighted by Medus's beautiful words.",
+   "words": 5,
+   "focus": "verbīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Lȳdia",
+     "m": "Lydia"
+    },
+    {
+     "w": "verbīs",
+     "m": "by the words"
+    },
+    {
+     "w": "pulchrīs",
+     "m": "beautiful"
+    },
+    {
+     "w": "Mēdī",
+     "m": "of Medus"
+    },
+    {
+     "w": "dēlectātur",
+     "m": "is delighted"
+    }
+   ]
+  },
+  {
+   "id": "abm-09",
+   "la": "Puerī parvī nummīs suīs dēlectantur.",
+   "en": "The little boys are delighted by their own coins.",
+   "words": 5,
+   "focus": "nummīs",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "parvī",
+     "m": "little"
+    },
+    {
+     "w": "nummīs",
+     "m": "by the coins"
+    },
+    {
+     "w": "suīs",
+     "m": "their own"
+    },
+    {
+     "w": "dēlectantur",
+     "m": "are delighted"
+    }
+   ]
+  },
+  {
+   "id": "abm-10",
+   "la": "Iūlius cum servīs venit, sed equō vehitur.",
+   "en": "Julius comes with slaves, but he rides on a horse.",
+   "words": 7,
+   "focus": "equō",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "cum",
+     "m": "with"
+    },
+    {
+     "w": "servīs",
+     "m": "slaves"
+    },
+    {
+     "w": "venit",
+     "m": "comes"
+    },
+    {
+     "w": "sed",
+     "m": "but"
+    },
+    {
+     "w": "equō",
+     "m": "on a horse"
+    },
+    {
+     "w": "vehitur",
+     "m": "is carried"
+    }
+   ]
+  },
+  {
+   "id": "abm-11",
+   "la": "Servī lectīcam umerīs portant, nōn equīs.",
+   "en": "The slaves carry the litter on their shoulders, not by horses.",
+   "words": 6,
+   "focus": "umerīs",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "lectīcam",
+     "m": "the litter (object)"
+    },
+    {
+     "w": "umerīs",
+     "m": "on their shoulders"
+    },
+    {
+     "w": "portant",
+     "m": "carry"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "equīs",
+     "m": "by horses"
+    }
+   ]
+  },
+  {
+   "id": "abm-12",
+   "la": "Baculō Iūlius servum improbum verberat.",
+   "en": "With a stick Julius beats the bad slave.",
+   "words": 5,
+   "focus": "Baculō",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Baculō",
+     "m": "with a stick"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servum",
+     "m": "the slave (object)"
+    },
+    {
+     "w": "improbum",
+     "m": "bad"
+    },
+    {
+     "w": "verberat",
+     "m": "beats"
+    }
+   ]
+  },
+  {
+   "id": "abm-13",
+   "la": "Iūlia rosīs et līliīs dēlectātur.",
+   "en": "Julia is delighted by roses and lilies.",
+   "words": 5,
+   "focus": "rosīs",
+   "step": 6,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "rosīs",
+     "m": "by roses"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "līliīs",
+     "m": "by lilies"
+    },
+    {
+     "w": "dēlectātur",
+     "m": "is delighted"
+    }
+   ]
+  },
+  {
+   "id": "abm-14",
+   "la": "Verbīs multīs dominus servōs accūsat.",
+   "en": "With many words the master accuses the slaves.",
+   "words": 5,
+   "focus": "Verbīs",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Verbīs",
+     "m": "with words"
+    },
+    {
+     "w": "multīs",
+     "m": "many"
+    },
+    {
+     "w": "dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servōs",
+     "m": "the slaves (object)"
+    },
+    {
+     "w": "accūsat",
+     "m": "accuses"
+    }
+   ]
+  }
+ ]
+}

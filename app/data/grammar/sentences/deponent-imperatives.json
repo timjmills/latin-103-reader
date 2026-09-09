@@ -1,0 +1,684 @@
+{
+  "skill": "deponent-imperatives",
+  "chapter": 25,
+  "sentences": [
+    {
+      "id": "di-01",
+      "la": "Sequere mē, Mārce, in hortum!",
+      "en": "Follow me, Marcus, into the garden!",
+      "words": 5,
+      "focus": "Sequere",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Sequere",
+          "m": "follow"
+        },
+        {
+          "w": "mē",
+          "m": "me"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "hortum",
+          "m": "the garden"
+        }
+      ]
+    },
+    {
+      "id": "di-02",
+      "la": "Laetāre, Iūlia, quia pater venit!",
+      "en": "Be glad, Julia, because father is coming!",
+      "words": 5,
+      "focus": "Laetāre",
+      "step": 1,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse"
+      ],
+      "gloss": [
+        {
+          "w": "Laetāre",
+          "m": "be glad"
+        },
+        {
+          "w": "Iūlia",
+          "m": "Julia"
+        },
+        {
+          "w": "quia",
+          "m": "because"
+        },
+        {
+          "w": "pater",
+          "m": "father"
+        },
+        {
+          "w": "venit",
+          "m": "is coming"
+        }
+      ]
+    },
+    {
+      "id": "di-03",
+      "la": "Loquere clārā vōce cum patre tuō!",
+      "en": "Speak in a clear voice with your father!",
+      "words": 6,
+      "focus": "Loquere",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Loquere",
+          "m": "speak"
+        },
+        {
+          "w": "clārā",
+          "m": "in a clear"
+        },
+        {
+          "w": "vōce",
+          "m": "voice"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "patre",
+          "m": "father"
+        },
+        {
+          "w": "tuō",
+          "m": "your"
+        }
+      ]
+    },
+    {
+      "id": "di-04",
+      "la": "Intuēre hoc mōnstrum terribile, Mārce!",
+      "en": "Look at this dreadful monster, Marcus!",
+      "words": 5,
+      "focus": "Intuēre",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Intuēre",
+          "m": "look at"
+        },
+        {
+          "w": "hoc",
+          "m": "this"
+        },
+        {
+          "w": "mōnstrum",
+          "m": "monster"
+        },
+        {
+          "w": "terribile",
+          "m": "dreadful"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        }
+      ]
+    },
+    {
+      "id": "di-05",
+      "la": "Cōnsōlāre sorōrem tuam, quae flet!",
+      "en": "Comfort your sister, who is crying!",
+      "words": 5,
+      "focus": "Cōnsōlāre",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Cōnsōlāre",
+          "m": "comfort"
+        },
+        {
+          "w": "sorōrem",
+          "m": "sister"
+        },
+        {
+          "w": "tuam",
+          "m": "your"
+        },
+        {
+          "w": "quae",
+          "m": "who"
+        },
+        {
+          "w": "flet",
+          "m": "is crying"
+        }
+      ]
+    },
+    {
+      "id": "di-06",
+      "la": "Partīre pānem cum sorōre tuā!",
+      "en": "Share the bread with your sister!",
+      "words": 5,
+      "focus": "Partīre",
+      "step": 2,
+      "stage": 1,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Partīre",
+          "m": "share"
+        },
+        {
+          "w": "pānem",
+          "m": "the bread"
+        },
+        {
+          "w": "cum",
+          "m": "with"
+        },
+        {
+          "w": "sorōre",
+          "m": "sister"
+        },
+        {
+          "w": "tuā",
+          "m": "your"
+        }
+      ]
+    },
+    {
+      "id": "di-07",
+      "la": "Sequiminī magistrum in lūdum, puerī!",
+      "en": "Follow the teacher into the school, boys!",
+      "words": 5,
+      "focus": "Sequiminī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Sequiminī",
+          "m": "follow"
+        },
+        {
+          "w": "magistrum",
+          "m": "the teacher"
+        },
+        {
+          "w": "in",
+          "m": "into"
+        },
+        {
+          "w": "lūdum",
+          "m": "the school"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        }
+      ]
+    },
+    {
+      "id": "di-08",
+      "la": "Proficīsciminī statim, nautae, ad īnsulam!",
+      "en": "Set out at once, sailors, for the island!",
+      "words": 5,
+      "focus": "Proficīsciminī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Proficīsciminī",
+          "m": "set out"
+        },
+        {
+          "w": "statim",
+          "m": "at once"
+        },
+        {
+          "w": "nautae",
+          "m": "sailors"
+        },
+        {
+          "w": "ad",
+          "m": "to"
+        },
+        {
+          "w": "īnsulam",
+          "m": "the island"
+        }
+      ]
+    },
+    {
+      "id": "di-09",
+      "la": "Laetāminī, puerī, quia magister abest!",
+      "en": "Be glad, boys, because the teacher is away!",
+      "words": 5,
+      "focus": "Laetāminī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Laetāminī",
+          "m": "be glad"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        },
+        {
+          "w": "quia",
+          "m": "because"
+        },
+        {
+          "w": "magister",
+          "m": "the teacher"
+        },
+        {
+          "w": "abest",
+          "m": "is away"
+        }
+      ]
+    },
+    {
+      "id": "di-10",
+      "la": "Opperīminī nōs ante iānuam, servī!",
+      "en": "Wait for us in front of the door, slaves!",
+      "words": 5,
+      "focus": "Opperīminī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Opperīminī",
+          "m": "wait for"
+        },
+        {
+          "w": "nōs",
+          "m": "us"
+        },
+        {
+          "w": "ante",
+          "m": "in front of"
+        },
+        {
+          "w": "iānuam",
+          "m": "the door"
+        },
+        {
+          "w": "servī",
+          "m": "slaves"
+        }
+      ]
+    },
+    {
+      "id": "di-12",
+      "la": "Vidēte, puerī, et intuēminī hoc saxum!",
+      "en": "Look, boys, and gaze at this rock!",
+      "words": 6,
+      "focus": "intuēminī",
+      "step": 3,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Vidēte",
+          "m": "look"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "intuēminī",
+          "m": "gaze at"
+        },
+        {
+          "w": "hoc",
+          "m": "this"
+        },
+        {
+          "w": "saxum",
+          "m": "rock"
+        }
+      ]
+    },
+    {
+      "id": "di-11",
+      "la": "Mārce, nōlī legere, sed sequere mē!",
+      "en": "Marcus, do not read, but follow me!",
+      "words": 6,
+      "focus": "sequere",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        },
+        {
+          "w": "nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "legere",
+          "m": "read"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "sequere",
+          "m": "follow"
+        },
+        {
+          "w": "mē",
+          "m": "me"
+        }
+      ]
+    },
+    {
+      "id": "di-18",
+      "la": "Tacēre nōn dēbēs, Mārce, sed loquere!",
+      "en": "You ought not to be silent, Marcus, but speak!",
+      "words": 6,
+      "focus": "loquere",
+      "step": 4,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Tacēre",
+          "m": "to be silent"
+        },
+        {
+          "w": "nōn",
+          "m": "not"
+        },
+        {
+          "w": "dēbēs",
+          "m": "you ought"
+        },
+        {
+          "w": "Mārce",
+          "m": "Marcus"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "loquere",
+          "m": "speak"
+        }
+      ]
+    },
+    {
+      "id": "di-13",
+      "la": "Ēgredere ē vīllā et mē sequere!",
+      "en": "Come out of the house and follow me!",
+      "words": 6,
+      "focus": "Ēgredere",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Ēgredere",
+          "m": "come out"
+        },
+        {
+          "w": "ē",
+          "m": "out of"
+        },
+        {
+          "w": "vīllā",
+          "m": "the house"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "mē",
+          "m": "me"
+        },
+        {
+          "w": "sequere",
+          "m": "follow"
+        }
+      ]
+    },
+    {
+      "id": "di-14",
+      "la": "Verēre deōs, Quīnte, et parentēs tuōs!",
+      "en": "Respect the gods, Quintus, and your parents!",
+      "words": 6,
+      "focus": "Verēre",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Verēre",
+          "m": "respect"
+        },
+        {
+          "w": "deōs",
+          "m": "the gods"
+        },
+        {
+          "w": "Quīnte",
+          "m": "Quintus"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "parentēs",
+          "m": "parents"
+        },
+        {
+          "w": "tuōs",
+          "m": "your"
+        }
+      ]
+    },
+    {
+      "id": "di-15",
+      "la": "Oblīvīsciminī illīus fābulae, puerī, et dormīte!",
+      "en": "Forget that story, boys, and sleep!",
+      "words": 6,
+      "focus": "Oblīvīsciminī",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Oblīvīsciminī",
+          "m": "forget"
+        },
+        {
+          "w": "illīus",
+          "m": "that"
+        },
+        {
+          "w": "fābulae",
+          "m": "story"
+        },
+        {
+          "w": "puerī",
+          "m": "boys"
+        },
+        {
+          "w": "et",
+          "m": "and"
+        },
+        {
+          "w": "dormīte",
+          "m": "sleep"
+        }
+      ]
+    },
+    {
+      "id": "di-16",
+      "la": "Nōlī sequī Mēdum, sed mē sequere!",
+      "en": "Do not follow Medus, but follow me!",
+      "words": 6,
+      "focus": "sequere",
+      "step": 5,
+      "stage": 2,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlī",
+          "m": "do not"
+        },
+        {
+          "w": "sequī",
+          "m": "follow"
+        },
+        {
+          "w": "Mēdum",
+          "m": "Medus"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "mē",
+          "m": "me"
+        },
+        {
+          "w": "sequere",
+          "m": "follow"
+        }
+      ]
+    },
+    {
+      "id": "di-17",
+      "la": "Nōlīte proficīscī, nautae, sed opperīminī!",
+      "en": "Do not set out, sailors, but wait!",
+      "words": 5,
+      "focus": "opperīminī",
+      "step": 5,
+      "stage": 3,
+      "kinds": [
+        "recognise",
+        "parse",
+        "blank"
+      ],
+      "gloss": [
+        {
+          "w": "Nōlīte",
+          "m": "do not"
+        },
+        {
+          "w": "proficīscī",
+          "m": "set out"
+        },
+        {
+          "w": "nautae",
+          "m": "sailors"
+        },
+        {
+          "w": "sed",
+          "m": "but"
+        },
+        {
+          "w": "opperīminī",
+          "m": "wait"
+        }
+      ]
+    }
+  ]
+}

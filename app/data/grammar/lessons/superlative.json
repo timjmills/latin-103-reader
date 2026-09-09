@@ -1,17 +1,172 @@
 {
   "skill": "superlative",
   "core": [
-    { "type": "p", "text": "For *longest, bravest, most beautiful* Latin adds *-issimus -a -um* to the adjective's stem: **the superlative (the '-est / most' form)**. *longus* (long) → *longissimus*; *brevis* (short) → *brevissimus*; *clārus* (bright) → *clārissima stēlla*. Adjectives in *-er* double the *r* instead: *pulcher* → *pulcherrimus*, *piger* (lazy) → *pigerrimus*. The result is an ordinary *-us -a -um* adjective. The group it is the best *of* goes in the genitive (the 'of' form) or after *ex*: *mēnsis annī brevissimus* — the shortest month of the year. Latin name: gradus superlātīvus." },
-    { "type": "english", "text": "The superlative is the *-est* or *most* form: *tallest, most careful*. It sets one thing against all the rest of its group: *the tallest of the boys*." },
-    { "type": "rule", "text": "Stem + -issimus (-er adjectives: -errimus), declined like bonus; 'of all' = genitive or ex + ablative." },
-    { "type": "paradigm", "key": "adj12", "highlight": { "degree": "super" } },
-    { "type": "examples", "units": ["r13:98.1", "r13:29.1", "r13:48.1", "w04:138.1"], "invented": [ { "la": "Rōma urbs pulcherrima est.", "en": "Rome is the most beautiful city.", "focus": "pulcherrima" } ] },
-    { "type": "confusion", "with": "comparative", "text": "*-ior* = *more*, two things; *-issimus* = *most*, one against all. *Sōl clārior est quam lūna* — brighter than the moon; *sōl stēlla clārissima est* — the brightest star. The comparative (the '-er / more' form) takes 3rd-declension endings (*clāriōrem*), the superlative *-us -a -um* endings (*clārissimum*), so the ending tells you which one you have." }
+    {
+      "type": "p",
+      "text": "For *longest, bravest, most beautiful* Latin adds *-issimus -a -um* to the adjective's stem: **the superlative (the '-est / most' form)**. *longus* (long) → *longissimus*; *brevis* (short) → *brevissimus*; *clārus* (bright) → *clārissima stēlla*. Adjectives in *-er* double the *r* instead: *pulcher* → *pulcherrimus*, *piger* (lazy) → *pigerrimus*. The result is an ordinary *-us -a -um* adjective. The group it is the best *of* goes in the genitive (the 'of' form) or after *ex*: *mēnsis annī brevissimus* — the shortest month of the year. Latin name: gradus superlātīvus."
+    },
+    {
+      "type": "english",
+      "text": "The superlative is the *-est* or *most* form: *tallest, most careful*. It sets one thing against all the rest of its group: *the tallest of the boys*."
+    },
+    {
+      "type": "rule",
+      "text": "Stem + -issimus (-er adjectives: -errimus), declined like bonus; 'of all' = genitive or ex + ablative."
+    },
+    {
+      "type": "paradigm",
+      "key": "adj12",
+      "highlight": {
+        "degree": "super"
+      }
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r13:98.1",
+        "r13:29.1",
+        "r13:48.1",
+        "w04:138.1"
+      ],
+      "invented": [
+        {
+          "la": "Rōma urbs pulcherrima est.",
+          "en": "Rome is the most beautiful city.",
+          "focus": "pulcherrima"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "comparative",
+      "text": "*-ior* = *more*, two things; *-issimus* = *most*, one against all. *Sōl clārior est quam lūna* — brighter than the moon; *sōl stēlla clārissima est* — the brightest star. The comparative (the '-er / more' form) takes 3rd-declension endings (*clāriōrem*), the superlative *-us -a -um* endings (*clārissimum*), so the ending tells you which one you have."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Set one thing against the whole group it belongs to and Latin marks the adjective again: **the superlative (the '-est / most' form)**. *clārus* (bright) → *clārissima stēlla*, the brightest star; *fortis* → *mīles fortissimus*, the bravest soldier. It can also mean simply 'very': *aegerrimus*, very sick indeed.",
+      "show": {
+        "kind": "sentence",
+        "id": "sup-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "sup-02",
+        "ask": "Which word is the superlative, and what has been added to the stem to make it?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "How it is built: stem + -issimus",
+      "say": "One cell. Take the stem — the part left when the dictionary ending comes off — and add *-issimus*: *long-* → *longissimus*, *fort-* → *fortissimus*, *clār-* → *clārissimus*. Two *s*'s, then *-imus*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "word": "longus",
+        "reveal": [
+          "super.nom.sg.m"
+        ],
+        "say": "longissimus — the stem long- with -issimus on it"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "word": "longus",
+        "cells": [
+          "super.nom.sg.m"
+        ],
+        "ask": "Give the superlative subject form of *longus*."
+      }
+    },
+    {
+      "n": 3,
+      "title": "It declines like bonus -a -um",
+      "say": "Two cells more. Once built, a superlative is an ordinary 1st/2nd declension adjective: feminine *-issima* (*laetissima*), neuter *-issimum* (*altissimum*), object *-issimum* / *-issimam*, plural *-issimī*, *-issimae*, *-issima*. No new endings at all.",
+      "show": {
+        "kind": "paradigm",
+        "key": "adj12",
+        "word": "longus",
+        "reveal": [
+          "super.nom.sg.f",
+          "super.nom.sg.n"
+        ],
+        "say": "longissima / longissimum — ordinary -a and -um endings on the superlative stem"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "adj12",
+        "word": "longus",
+        "cells": [
+          "super.nom.sg.f",
+          "super.nom.sg.n"
+        ],
+        "ask": "Now the feminine and the neuter of *longissimus*."
+      }
+    },
+    {
+      "n": 4,
+      "title": "Adjectives in -er double the r",
+      "say": "One group breaks the pattern. An adjective whose masculine ends in *-er* does not take *-issimus*: it doubles the *r* and adds *-imus*. *pulcher* → *pulcherrimus*, *aeger* → *aegerrimus*, *niger* → *nigerrimus*. The endings after that are the same *-us -a -um* ones.",
+      "show": {
+        "kind": "sentence",
+        "id": "sup-07"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "sup-09",
+        "blank": "aegerrimus",
+        "ask": "Quīntus ___ est, sed Mārcus sānus. *aeger* ends in *-er*, so double the r. (aeger)"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Telling it from the comparative",
+      "say": "*-ior* is the comparative (the '-er / more' form) and sets two things side by side; *-issimus* is the superlative and sets one against all the rest. The endings part them too: *fortior* declines like a 3rd-declension noun (*fortiōrem*), *fortissimus* like *bonus* (*fortissimum*).",
+      "show": {
+        "kind": "sentence",
+        "id": "sup-10"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "sup-11",
+        "ask": "One of *brevior* and *brevissimus* sets two months side by side, the other sets one month against all the rest. Which is which?"
+      }
+    },
+    {
+      "n": 6,
+      "title": "Using it: naming the group",
+      "say": "To say what the thing is best of, Latin uses the genitive (the 'of' form) of the group — *fortissimus puerōrum*, the bravest of the boys — or *ex* with the ablative: *altissimus ex puerīs*. Both are ordinary; pick either.",
+      "show": {
+        "kind": "sentence",
+        "id": "sup-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "sup-12",
+        "blank": "puerōrum",
+        "ask": "Quīntus fortissimus ___ Rōmānōrum est. The group goes into the genitive (the 'of' form). (puer, more than one)"
+      }
+    }
   ],
   "more": [
-    { "type": "p", "text": "Six adjectives in *-ilis* use *-limus*: *facilis* → *facillimus* (easiest), *difficilis* → *difficillimus*, *similis* → *simillimus*. Adjectives in *-eus / -ius* say *maximē* (most) instead: *maximē idōneus*." },
-    { "type": "p", "text": "The superlative often just means *very*: *Aemilia laetissima erat* — Aemilia was very happy. *quam* + superlative means *as … as possible*: *quam celerrimē* — as quickly as possible. As a noun, *-issimī* with a genitive picks out the top of a group: *fortissimus omnium* — the bravest of all." },
-    { "type": "p", "text": "The learner's notes (week 13): add *-issim-* and then the *-us -a -um* ending (*īnfirmissimus, clāmōsissima, plēnissimum*); *-er* adjectives add *-rim-* to the nominative masculine singular (*pigerrimus, pulcherrima*); the group of comparison is a genitive or *ex* + ablative (*īnfirmissimus omnium*, *plēnissimum ex pōculīs*). Ørberg (chapter XIII): *altissimus, longissima, brevissimum* are superlatives, adjectives of the 1st and 2nd declension; *Aetna mōns Siciliae altissimus est*." }
+    {
+      "type": "p",
+      "text": "Six adjectives in *-ilis* use *-limus*: *facilis* → *facillimus* (easiest), *difficilis* → *difficillimus*, *similis* → *simillimus*. Adjectives in *-eus / -ius* say *maximē* (most) instead: *maximē idōneus*."
+    },
+    {
+      "type": "p",
+      "text": "The superlative often just means *very*: *Aemilia laetissima erat* — Aemilia was very happy. *quam* + superlative means *as … as possible*: *quam celerrimē* — as quickly as possible. As a noun, *-issimī* with a genitive picks out the top of a group: *fortissimus omnium* — the bravest of all."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (week 13): add *-issim-* and then the *-us -a -um* ending (*īnfirmissimus, clāmōsissima, plēnissimum*); *-er* adjectives add *-rim-* to the nominative masculine singular (*pigerrimus, pulcherrima*); the group of comparison is a genitive or *ex* + ablative (*īnfirmissimus omnium*, *plēnissimum ex pōculīs*). Ørberg (chapter XIII): *altissimus, longissima, brevissimum* are superlatives, adjectives of the 1st and 2nd declension; *Aetna mōns Siciliae altissimus est*."
+    }
   ],
-  "sources": ["notes p44", "Ørberg cap. XIII Grammatica Latina", "A&G §124–125, §346"]
+  "sources": [
+    "notes p44",
+    "Ørberg cap. XIII Grammatica Latina",
+    "A&G §124–125, §346"
+  ]
 }

@@ -1,18 +1,199 @@
 {
   "skill": "fourth-declension",
   "core": [
-    { "type": "p", "text": "A small family of nouns runs on the vowel *u*: **a 4th-declension noun (the u-pattern: manus, manus)**. The dictionary shows the pair *-us, -ūs*; the second form is the genitive (the 'of' form), and that long *-ūs* is what tells you the noun is 4th, not 2nd. Singular: *exercitus, exercitum, exercitūs, exercituī, exercitū*; plural: *exercitūs, exercitūs, exercituum, exercitibus, exercitibus*. Most are masculine — *exercitus* (army), *arcus* (bow), *passus* (pace), *metus* (fear), *impetus* (attack); *manus* (hand) is feminine; *cornū* (horn) is neuter. Latin name: dēclīnātiō quārta." },
-    { "type": "english", "text": "A declension is a family of nouns that share one set of endings. English has none; the nearest thing is the plural pattern *ox / oxen* against *box / boxes*." },
-    { "type": "rule", "text": "Genitive singular -ūs marks the family: -us, -um, -ūs, -uī, -ū; plural -ūs, -ūs, -uum, -ibus, -ibus." },
-    { "type": "paradigm", "key": "decl4", "highlight": { "case": "gen" } },
-    { "type": "paradigm", "key": "domus" },
-    { "type": "examples", "units": ["r12:81.1", "r12:77.1", "r12:119.1", "w04:12.5"], "invented": [ { "la": "Mīles manū gladium tenet.", "en": "The soldier holds his sword in his hand.", "focus": "manū" } ] },
-    { "type": "confusion", "with": "third-declension", "text": "Both families have *-ibus* in the plural, and an *-us* nominative can belong to either (*tempus* is 3rd, *exercitus* 4th). The genitive settles it: *temporis* (3rd) against *exercitūs* (4th). The 2nd declension has *-us* too — *servus, servī* — but its genitive is *-ī*, never *-ūs*." }
+    {
+      "type": "p",
+      "text": "A small family of nouns runs on the vowel *u*: **a 4th-declension noun (the u-pattern: manus, manus)**. The dictionary shows the pair *-us, -ūs*; the second form is the genitive (the 'of' form), and that long *-ūs* is what tells you the noun is 4th, not 2nd. Singular: *exercitus, exercitum, exercitūs, exercituī, exercitū*; plural: *exercitūs, exercitūs, exercituum, exercitibus, exercitibus*. Most are masculine — *exercitus* (army), *arcus* (bow), *passus* (pace), *metus* (fear), *impetus* (attack); *manus* (hand) is feminine; *cornū* (horn) is neuter. Latin name: dēclīnātiō quārta."
+    },
+    {
+      "type": "english",
+      "text": "A declension is a family of nouns that share one set of endings. English has none; the nearest thing is the plural pattern *ox / oxen* against *box / boxes*."
+    },
+    {
+      "type": "rule",
+      "text": "Genitive singular -ūs marks the family: -us, -um, -ūs, -uī, -ū; plural -ūs, -ūs, -uum, -ibus, -ibus."
+    },
+    {
+      "type": "paradigm",
+      "key": "decl4",
+      "highlight": {
+        "case": "gen"
+      }
+    },
+    {
+      "type": "paradigm",
+      "key": "domus"
+    },
+    {
+      "type": "examples",
+      "units": [
+        "r12:81.1",
+        "r12:77.1",
+        "r12:119.1",
+        "w04:12.5"
+      ],
+      "invented": [
+        {
+          "la": "Mīles manū gladium tenet.",
+          "en": "The soldier holds his sword in his hand.",
+          "focus": "manū"
+        }
+      ]
+    },
+    {
+      "type": "confusion",
+      "with": "third-declension",
+      "text": "Both families have *-ibus* in the plural, and an *-us* nominative can belong to either (*tempus* is 3rd, *exercitus* 4th). The genitive settles it: *temporis* (3rd) against *exercitūs* (4th). The 2nd declension has *-us* too — *servus, servī* — but its genitive is *-ī*, never *-ūs*."
+    }
+  ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "What it does",
+      "say": "Most nouns you have met run on *a* (*puella*) or on *o* (*servus*). A small family runs on *u* instead, and each of its members is **a 4th-declension noun (the u-pattern: manus, manūs)**: *exercitus* (army), *manus* (hand), *arcus* (bow), *metus* (fear), *impetus* (attack), *passus* (pace). The dictionary always prints one as a pair, *exercitus, exercitūs*.",
+      "show": {
+        "kind": "sentence",
+        "id": "f4-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "f4-02",
+        "ask": "Which word here belongs to the u-family?"
+      }
+    },
+    {
+      "n": 2,
+      "title": "Subject -us, object -um",
+      "say": "One cell at a time. The nominative (the subject form) ends in *-us*: *exercitus*. The accusative (the object form) ends in *-um*: *exercitum*, *manum*, *arcum*. So far it looks exactly like *servus, servum*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl4",
+        "word": "exercitus",
+        "reveal": [
+          "nom.sg",
+          "acc.sg"
+        ],
+        "say": "exercitus / exercitum — so far it looks exactly like servus / servum"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl4",
+        "word": "exercitus",
+        "cells": [
+          "nom.sg",
+          "acc.sg"
+        ],
+        "ask": "Fill the subject cell and the object cell of *exercitus*."
+      }
+    },
+    {
+      "n": 3,
+      "title": "The genitive -ūs is the family's mark",
+      "say": "Here is where it stops looking like *servus*. The genitive (the 'of' form) ends in a long *-ūs*: *exercitūs*, of the army. That one cell is what the dictionary prints, and it is what tells you the noun belongs to this family and not to another.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl4",
+        "word": "exercitus",
+        "reveal": [
+          "gen.sg"
+        ],
+        "say": "exercitūs — a long -ūs, where servus would have -ī"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl4",
+        "word": "exercitus",
+        "cells": [
+          "gen.sg"
+        ],
+        "ask": "Give the genitive (the 'of' form) of *exercitus* — the one cell that proves the family."
+      }
+    },
+    {
+      "n": 4,
+      "title": "The last two singular endings: -uī and -ū",
+      "say": "Two cells more. The dative (the 'to/for' form) is *-uī*: *exercituī*, to the army. The ablative (the 'by/with/from' form) is a bare long *-ū*: *manū*, in his hand. Both keep the family's *u* in plain sight.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl4",
+        "word": "exercitus",
+        "reveal": [
+          "dat.sg",
+          "abl.sg"
+        ],
+        "say": "exercituī / exercitū — both keep the family's u in plain sight"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl4",
+        "word": "exercitus",
+        "cells": [
+          "dat.sg",
+          "abl.sg"
+        ],
+        "ask": "Give the dative (the 'to/for' form) and the ablative (the 'by/with/from' form) of *exercitus*."
+      }
+    },
+    {
+      "n": 5,
+      "title": "The plural: -ūs, -uum, -ibus",
+      "say": "The plural subject and object are both *-ūs* (*exercitūs*, *manūs*), the genitive is *-uum* (*exercituum*), and the dative and ablative are *-ibus* (*manibus*). The neuters *genū* (knee) and *cornū* (horn) take *-ua* instead: *genua*.",
+      "show": {
+        "kind": "paradigm",
+        "key": "decl4",
+        "word": "exercitus",
+        "reveal": [
+          "nom.pl",
+          "gen.pl",
+          "dat.pl"
+        ],
+        "say": "exercitūs, exercituum, exercitibus — subject, 'of', and 'to/for'"
+      },
+      "check": {
+        "kind": "chart",
+        "key": "decl4",
+        "word": "exercitus",
+        "cells": [
+          "nom.pl",
+          "gen.pl",
+          "dat.pl"
+        ],
+        "ask": "Fill the three plural cells of *exercitus*: the subject one, the 'of' one, and the 'to/for' one."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Telling it from the other -us nouns",
+      "say": "Three families own an *-us* nominative, and only the genitive settles which is which: *servus, servī* is 2nd; *corpus, corporis* is 3rd; *exercitus, exercitūs* is 4th. *-ibus* in the plural is shared with the 3rd, so it proves nothing on its own. Learn each noun with its genitive.",
+      "show": {
+        "kind": "sentence",
+        "id": "f4-15"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "f4-14",
+        "blank": "exercitūs",
+        "ask": "Amīcus servī venit, sed dux ___ abest. The 'of' form is what proves the family. (exercitus)"
+      }
+    }
   ],
   "more": [
-    { "type": "p", "text": "*Domus* (house) mixes the 4th and the 2nd: *domus, domum, domūs, domuī, domō*; plural *domūs, domōs, domuum* (or *domōrum*), *domibus*. It keeps three special forms: *domī* (at home), *domum* (homewards), *domō* (from home)." },
-    { "type": "p", "text": "The learner's notes (week 12): the dative and ablative plural is *-ibus*, not the *-ubus* you might expect (the old *-ubus* survives in a few words such as *artubus*, *tribubus*); the nominative singular *-us* is short, while the genitive singular and the nominative and accusative plural have long *-ūs*. Almost all are masculine; the feminine exceptions such as *manus* are flagged in the vocabulary. The rare neuters (*cornū*, *genū* knee) run *-ū, -ū, -ūs, -ū, -ū; -ua, -ua, -uum, -ibus, -ibus*." },
-    { "type": "p", "text": "Ørberg (chapter XII) declines *exercitus* and lists *arcus, passus, equitātus* (cavalry), *impetus, metus, versus* (line of verse), with feminine *manus*. *Mīlle passūs* — a thousand paces — is the Roman mile; *duo mīlia passuum* shows the genitive plural." }
+    {
+      "type": "p",
+      "text": "*Domus* (house) mixes the 4th and the 2nd: *domus, domum, domūs, domuī, domō*; plural *domūs, domōs, domuum* (or *domōrum*), *domibus*. It keeps three special forms: *domī* (at home), *domum* (homewards), *domō* (from home)."
+    },
+    {
+      "type": "p",
+      "text": "The learner's notes (week 12): the dative and ablative plural is *-ibus*, not the *-ubus* you might expect (the old *-ubus* survives in a few words such as *artubus*, *tribubus*); the nominative singular *-us* is short, while the genitive singular and the nominative and accusative plural have long *-ūs*. Almost all are masculine; the feminine exceptions such as *manus* are flagged in the vocabulary. The rare neuters (*cornū*, *genū* knee) run *-ū, -ū, -ūs, -ū, -ū; -ua, -ua, -uum, -ibus, -ibus*."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg (chapter XII) declines *exercitus* and lists *arcus, passus, equitātus* (cavalry), *impetus, metus, versus* (line of verse), with feminine *manus*. *Mīlle passūs* — a thousand paces — is the Roman mile; *duo mīlia passuum* shows the genitive plural."
+    }
   ],
-  "sources": ["notes p38", "Ørberg cap. XII Grammatica Latina", "A&G §88–93"]
+  "sources": [
+    "notes p38",
+    "Ørberg cap. XII Grammatica Latina",
+    "A&G §88–93"
+  ]
 }

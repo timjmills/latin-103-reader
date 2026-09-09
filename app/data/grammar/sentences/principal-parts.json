@@ -1,0 +1,540 @@
+{
+ "skill": "principal-parts",
+ "chapter": 21,
+ "sentences": [
+  {
+   "id": "prp-01",
+   "la": "Iūlius servum in hortō vocat.",
+   "en": "Julius calls the slave in the garden.",
+   "words": 5,
+   "focus": "vocat",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servum",
+     "m": "the slave (object)"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "vocat",
+     "m": "calls"
+    }
+   ]
+  },
+  {
+   "id": "prp-02",
+   "la": "Iūlius servum in hortō vocāvit.",
+   "en": "Julius called the slave in the garden.",
+   "words": 5,
+   "focus": "vocāvit",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "servum",
+     "m": "the slave (object)"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "vocāvit",
+     "m": "called"
+    }
+   ]
+  },
+  {
+   "id": "prp-03",
+   "la": "Servus ā dominō vocātus est.",
+   "en": "The slave was called by his master.",
+   "words": 5,
+   "focus": "vocātus",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "dominō",
+     "m": "the master"
+    },
+    {
+     "w": "vocātus",
+     "m": "called"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "prp-04",
+   "la": "Puerī in lūdō semper scrībunt.",
+   "en": "The boys are always writing at school.",
+   "words": 5,
+   "focus": "scrībunt",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "lūdō",
+     "m": "the school"
+    },
+    {
+     "w": "semper",
+     "m": "always"
+    },
+    {
+     "w": "scrībunt",
+     "m": "write"
+    }
+   ]
+  },
+  {
+   "id": "prp-05",
+   "la": "Dominus servōs suōs in hortum mittit.",
+   "en": "The master sends his slaves into the garden.",
+   "words": 6,
+   "focus": "mittit",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servōs",
+     "m": "the slaves (object)"
+    },
+    {
+     "w": "suōs",
+     "m": "his own"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "mittit",
+     "m": "sends"
+    }
+   ]
+  },
+  {
+   "id": "prp-06",
+   "la": "Mārcus epistulam longam calamō scrīpsit.",
+   "en": "Marcus wrote a long letter with a reed pen.",
+   "words": 5,
+   "focus": "scrīpsit",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "epistulam",
+     "m": "a letter (object)"
+    },
+    {
+     "w": "longam",
+     "m": "long"
+    },
+    {
+     "w": "calamō",
+     "m": "with a reed pen"
+    },
+    {
+     "w": "scrīpsit",
+     "m": "wrote"
+    }
+   ]
+  },
+  {
+   "id": "prp-07",
+   "la": "Iūlius multōs servōs et magnam vīllam habuit.",
+   "en": "Julius had many slaves and a big country house.",
+   "words": 7,
+   "focus": "habuit",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "multōs",
+     "m": "many"
+    },
+    {
+     "w": "servōs",
+     "m": "slaves (object)"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "magnam",
+     "m": "big"
+    },
+    {
+     "w": "vīllam",
+     "m": "country house (object)"
+    },
+    {
+     "w": "habuit",
+     "m": "had"
+    }
+   ]
+  },
+  {
+   "id": "prp-08",
+   "la": "Quīntus vōcem mātris in ātriō audīvit.",
+   "en": "Quintus heard his mother's voice in the atrium.",
+   "words": 6,
+   "focus": "audīvit",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "vōcem",
+     "m": "the voice (object)"
+    },
+    {
+     "w": "mātris",
+     "m": "of his mother"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "audīvit",
+     "m": "heard"
+    }
+   ]
+  },
+  {
+   "id": "prp-09",
+   "la": "Epistula ā Mārcō scrīpta est.",
+   "en": "The letter has been written by Marcus.",
+   "words": 5,
+   "focus": "scrīpta",
+   "step": 4,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Epistula",
+     "m": "the letter"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "Mārcō",
+     "m": "Marcus"
+    },
+    {
+     "w": "scrīpta",
+     "m": "written"
+    },
+    {
+     "w": "est",
+     "m": "has been"
+    }
+   ]
+  },
+  {
+   "id": "prp-10",
+   "la": "Ovis ā lupō in silvā occīsa est.",
+   "en": "The sheep was killed by a wolf in the wood.",
+   "words": 7,
+   "focus": "occīsa",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ovis",
+     "m": "the sheep"
+    },
+    {
+     "w": "ā",
+     "m": "by"
+    },
+    {
+     "w": "lupō",
+     "m": "a wolf"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "silvā",
+     "m": "the wood"
+    },
+    {
+     "w": "occīsa",
+     "m": "killed"
+    },
+    {
+     "w": "est",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "prp-11",
+   "la": "Pāstor ovēs suās ad rīvum dūxit.",
+   "en": "The shepherd led his sheep to the stream.",
+   "words": 6,
+   "focus": "dūxit",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pāstor",
+     "m": "the shepherd"
+    },
+    {
+     "w": "ovēs",
+     "m": "the sheep (object, plural)"
+    },
+    {
+     "w": "suās",
+     "m": "his own"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "rīvum",
+     "m": "the stream"
+    },
+    {
+     "w": "dūxit",
+     "m": "led"
+    }
+   ],
+   "note": "dūcō, dūcere, dūxī, ductum: a consonant-stem verb whose perfect stem cannot be guessed from the infinitive."
+  },
+  {
+   "id": "prp-12",
+   "la": "Puer dē mūrō in aquam cecidit.",
+   "en": "The boy fell off the wall into the water.",
+   "words": 6,
+   "focus": "cecidit",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "dē",
+     "m": "down from"
+    },
+    {
+     "w": "mūrō",
+     "m": "the wall"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "aquam",
+     "m": "the water"
+    },
+    {
+     "w": "cecidit",
+     "m": "fell"
+    }
+   ],
+   "note": "cadō doubles its first syllable in the perfect (cadō, cadere, cecidī): the perfect stem is cecid-, not cad-."
+  },
+  {
+   "id": "prp-13",
+   "la": "Puer aquam ex pōculō bibit, deinde abiit.",
+   "en": "The boy drank water out of the cup, then went away.",
+   "words": 7,
+   "focus": "bibit",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "aquam",
+     "m": "water (object)"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "pōculō",
+     "m": "the cup"
+    },
+    {
+     "w": "bibit",
+     "m": "drank"
+    },
+    {
+     "w": "deinde",
+     "m": "then"
+    },
+    {
+     "w": "abiit",
+     "m": "went away"
+    }
+   ],
+   "note": "bibō, bibere, bibī: the perfect stem is the same as the present stem, so bibit is both 'drinks' and 'drank'. Only the rest of the sentence decides — abiit can only be past, so bibit is past with it."
+  },
+  {
+   "id": "prp-14",
+   "la": "Servus magnum saccum ad vīllam tulit.",
+   "en": "The slave carried a big sack to the country house.",
+   "words": 6,
+   "focus": "tulit",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "magnum",
+     "m": "big"
+    },
+    {
+     "w": "saccum",
+     "m": "sack (object)"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "vīllam",
+     "m": "the country house"
+    },
+    {
+     "w": "tulit",
+     "m": "carried"
+    }
+   ],
+   "note": "ferō, ferre, tulī, lātum: parts three and four come from a different root altogether, so they must be learned by heart."
+  }
+ ]
+}

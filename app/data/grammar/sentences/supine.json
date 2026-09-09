@@ -1,0 +1,527 @@
+{
+ "skill": "supine",
+ "chapter": 22,
+ "sentences": [
+  {
+   "id": "su-01",
+   "la": "Iūlius in cubiculum it dormītum.",
+   "en": "Julius goes into the bedroom to sleep.",
+   "words": 5,
+   "focus": "dormītum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "cubiculum",
+     "m": "the bedroom"
+    },
+    {
+     "w": "it",
+     "m": "goes"
+    },
+    {
+     "w": "dormītum",
+     "m": "to sleep"
+    }
+   ]
+  },
+  {
+   "id": "su-02",
+   "la": "Puerī in hortum eunt lūsum.",
+   "en": "The boys go into the garden to play.",
+   "words": 5,
+   "focus": "lūsum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "eunt",
+     "m": "go"
+    },
+    {
+     "w": "lūsum",
+     "m": "to play"
+    }
+   ]
+  },
+  {
+   "id": "su-03",
+   "la": "Mārcus ad forum it patrem salūtātum.",
+   "en": "Marcus goes to the forum to greet his father.",
+   "words": 6,
+   "focus": "salūtātum",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Mārcus",
+     "m": "Marcus"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "forum",
+     "m": "the forum"
+    },
+    {
+     "w": "it",
+     "m": "goes"
+    },
+    {
+     "w": "patrem",
+     "m": "his father (object)"
+    },
+    {
+     "w": "salūtātum",
+     "m": "to greet"
+    }
+   ]
+  },
+  {
+   "id": "su-04",
+   "la": "Servī ad rīvum eunt aquam petītum.",
+   "en": "The slaves go to the stream to fetch water.",
+   "words": 6,
+   "focus": "petītum",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Servī",
+     "m": "the slaves"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "rīvum",
+     "m": "the stream"
+    },
+    {
+     "w": "eunt",
+     "m": "go"
+    },
+    {
+     "w": "aquam",
+     "m": "water (object)"
+    },
+    {
+     "w": "petītum",
+     "m": "to fetch"
+    }
+   ]
+  },
+  {
+   "id": "su-05",
+   "la": "Mercātor Rōmam vēnit gemmās ēmptum.",
+   "en": "The merchant came to Rome to buy jewels.",
+   "words": 5,
+   "focus": "ēmptum",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mercātor",
+     "m": "the merchant"
+    },
+    {
+     "w": "Rōmam",
+     "m": "to Rome"
+    },
+    {
+     "w": "vēnit",
+     "m": "came"
+    },
+    {
+     "w": "gemmās",
+     "m": "jewels (object)"
+    },
+    {
+     "w": "ēmptum",
+     "m": "to buy"
+    }
+   ]
+  },
+  {
+   "id": "su-06",
+   "la": "Aemilia ancillam mittit cibum parātum.",
+   "en": "Aemilia sends the slave girl to get the food ready.",
+   "words": 5,
+   "focus": "parātum",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "ancillam",
+     "m": "the slave girl (object)"
+    },
+    {
+     "w": "mittit",
+     "m": "sends"
+    },
+    {
+     "w": "cibum",
+     "m": "the food (object)"
+    },
+    {
+     "w": "parātum",
+     "m": "to get ready"
+    }
+   ],
+   "note": "The supine follows mittere too: sending somebody off is going enough for it."
+  },
+  {
+   "id": "su-07",
+   "la": "Iūlia ad hortum it flōrēs carptum.",
+   "en": "Julia goes to the garden to pick flowers.",
+   "words": 6,
+   "focus": "carptum",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iūlia",
+     "m": "Julia"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "it",
+     "m": "goes"
+    },
+    {
+     "w": "flōrēs",
+     "m": "flowers (object)"
+    },
+    {
+     "w": "carptum",
+     "m": "to pick"
+    }
+   ]
+  },
+  {
+   "id": "su-08",
+   "la": "Hoc verbum facile dictū est.",
+   "en": "This word is easy to say.",
+   "words": 5,
+   "focus": "dictū",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Hoc",
+     "m": "this"
+    },
+    {
+     "w": "verbum",
+     "m": "word"
+    },
+    {
+     "w": "facile",
+     "m": "easy"
+    },
+    {
+     "w": "dictū",
+     "m": "to say"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "su-09",
+   "la": "Id difficile factū nōn erat.",
+   "en": "That was not difficult to do.",
+   "words": 5,
+   "focus": "factū",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Id",
+     "m": "that"
+    },
+    {
+     "w": "difficile",
+     "m": "difficult"
+    },
+    {
+     "w": "factū",
+     "m": "to do"
+    },
+    {
+     "w": "nōn",
+     "m": "not"
+    },
+    {
+     "w": "erat",
+     "m": "was"
+    }
+   ]
+  },
+  {
+   "id": "su-10",
+   "la": "Verba tua turpia dictū sunt.",
+   "en": "Your words are shameful to say.",
+   "words": 5,
+   "focus": "dictū",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Verba",
+     "m": "words"
+    },
+    {
+     "w": "tua",
+     "m": "your"
+    },
+    {
+     "w": "turpia",
+     "m": "shameful"
+    },
+    {
+     "w": "dictū",
+     "m": "to say"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ],
+   "note": "The -ū supine never changes, even though turpia is neuter plural: it is not an adjective and agrees with nothing."
+  },
+  {
+   "id": "su-11",
+   "la": "Servus vocātus vēnit dominum audītum.",
+   "en": "The slave, having been called, came to hear his master.",
+   "words": 5,
+   "focus": "audītum",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse"
+   ],
+   "gloss": [
+    {
+     "w": "Servus",
+     "m": "the slave"
+    },
+    {
+     "w": "vocātus",
+     "m": "called"
+    },
+    {
+     "w": "vēnit",
+     "m": "came"
+    },
+    {
+     "w": "dominum",
+     "m": "his master (object)"
+    },
+    {
+     "w": "audītum",
+     "m": "to hear"
+    }
+   ],
+   "note": "Both words come from a fourth principal part, but vocātus agrees with servus and audītum does not change at all."
+  },
+  {
+   "id": "su-12",
+   "la": "Puer ex ātriō abiit patrem quaesītum.",
+   "en": "The boy went out of the atrium to look for his father.",
+   "words": 6,
+   "focus": "quaesītum",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puer",
+     "m": "the boy"
+    },
+    {
+     "w": "ex",
+     "m": "out of"
+    },
+    {
+     "w": "ātriō",
+     "m": "the atrium"
+    },
+    {
+     "w": "abiit",
+     "m": "went away"
+    },
+    {
+     "w": "patrem",
+     "m": "his father (object)"
+    },
+    {
+     "w": "quaesītum",
+     "m": "to look for"
+    }
+   ]
+  },
+  {
+   "id": "su-13",
+   "la": "Iam tempus est dormītum īre.",
+   "en": "It is already time to go to sleep.",
+   "words": 5,
+   "focus": "dormītum",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Iam",
+     "m": "already"
+    },
+    {
+     "w": "tempus",
+     "m": "time"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "dormītum",
+     "m": "to sleep"
+    },
+    {
+     "w": "īre",
+     "m": "to go"
+    }
+   ],
+   "note": "Here the verb of motion is itself an infinitive, and the supine still stands before it."
+  },
+  {
+   "id": "su-14",
+   "la": "Aemilia in hortum exit fīliam vocātum.",
+   "en": "Aemilia goes out into the garden to call her daughter.",
+   "words": 6,
+   "focus": "vocātum",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aemilia",
+     "m": "Aemilia"
+    },
+    {
+     "w": "in",
+     "m": "into"
+    },
+    {
+     "w": "hortum",
+     "m": "the garden"
+    },
+    {
+     "w": "exit",
+     "m": "goes out"
+    },
+    {
+     "w": "fīliam",
+     "m": "her daughter (object)"
+    },
+    {
+     "w": "vocātum",
+     "m": "to call"
+    }
+   ]
+  }
+ ]
+}

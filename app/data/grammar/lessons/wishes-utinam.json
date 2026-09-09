@@ -1,5 +1,103 @@
 {
   "skill": "wishes-utinam",
+  "teach": [
+    {
+      "n": 1,
+      "title": "What a wish looks like",
+      "say": "A wish in Latin is **utinam + subjunctive (the 'if only …' wish; the tense says whether it can still come true)**. The word *utinam* stands in front and the verb goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). *Utinam* is not one English word: it is the 'if only' or 'may …!' colouring. In wu-01 the verb is *veniat*, not *venit* — nobody is saying father is coming, only wishing it.",
+      "show": {
+        "kind": "sentence",
+        "id": "wu-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "wu-02",
+        "ask": "Tap the verb that carries the wish."
+      }
+    },
+    {
+      "n": 2,
+      "title": "A wish that may still come true: the present subjunctive",
+      "say": "The tense says how possible the wish is. The present subjunctive leaves the door open: it may yet happen. Its mark is a changed vowel in the ending. In the first conjugation the *a* turns to *e*: *laudat* (he praises) becomes *laudet* (may he praise). Everywhere else it runs the other way about: *audit* becomes *audiat*, *ignōscit* becomes *ignōscat*. Either way the ending is not the one a plain statement uses.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj1",
+        "word": "laudō",
+        "reveal": [
+          "pres.subj.act.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "wu-03",
+        "ask": "laudet — which tense and mood is it?"
+      }
+    },
+    {
+      "n": 3,
+      "title": "A wish about now that cannot come true: the imperfect subjunctive",
+      "say": "Step back one tense and the wish turns regretful: the imperfect subjunctive says the thing is not so now. The third person singular is *audīret* — the whole infinitive *audīre* with **-t** on the end. Even *sum* does it: *esse* + **-m** gives *essem*. English steps back in time in the same way: 'if only I *were* rich'.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj4",
+        "word": "audiō",
+        "reveal": [
+          "impf.subj.act.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "wu-06",
+        "ask": "essem — which tense is it, and so is the speaker in Rome or not?"
+      }
+    },
+    {
+      "n": 4,
+      "title": "A wish about the past: the pluperfect subjunctive",
+      "say": "For a regret about what is already over, go back one tense further. The third person singular is *audīvisset* — the perfect stem *audīv-* plus **-isset**. Look for **-isse-** in the middle of the word: that is the mark of a wish about the past, and it means the thing did not happen.",
+      "show": {
+        "kind": "paradigm",
+        "key": "conj4",
+        "word": "audiō",
+        "reveal": [
+          "plupf.subj.act.3.sg"
+        ]
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "wu-09",
+        "ask": "mānsisset — which tense is it, and so did Quintus stay or not?"
+      }
+    },
+    {
+      "n": 5,
+      "title": "Wishing for something not to happen: utinam nē",
+      "say": "A negative wish takes *nē*, never *nōn*: **utinam nē**. Nothing else changes — *nē* simply slips in after *utinam*, and the verb keeps whichever of the three tenses the time calls for.",
+      "show": {
+        "kind": "sentence",
+        "id": "wu-11"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "wu-12",
+        "ask": "Tap the verb that nē has made negative."
+      }
+    },
+    {
+      "n": 6,
+      "title": "Choosing the tense, and not mistaking a wish for an 'if'",
+      "say": "The same imperfect and pluperfect subjunctives appear in *sī* sentences — *sī Rōmae essem, laetus essem*. The opening word tells you which you have: *utinam* opens a wish and stops there, *sī* opens a condition whose second half draws the consequence. Once you know it is a wish, pick the tense by the time you mean.",
+      "show": {
+        "kind": "sentence",
+        "id": "wu-13"
+      },
+      "check": {
+        "kind": "blank",
+        "sentence": "wu-14",
+        "ask": "The same wish, but about the past: fill the blank with the pluperfect subjunctive of videō."
+      }
+    }
+  ],
   "core": [
     {
       "type": "p",

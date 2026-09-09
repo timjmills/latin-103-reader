@@ -40,6 +40,74 @@
       "text": "The tail *-ne* is not the word *nē* (so that … not; don't). *-ne* is short, glued on, and asks; *nē* stands on its own with a long vowel, opens a clause and forbids: *Venitne?* — is he coming? *Nē veniat!* — let him not come."
     }
   ],
+  "teach": [
+    {
+      "n": 1,
+      "title": "A word glued to the end of another",
+      "say": "Latin has a few words too small to stand on their own, so they ride on the back of the word in front: the tacked-on words -que ('and') and -ne (turns a sentence into a question). In *Sicilia Sardiniaque īnsulae magnae sunt* the word is *Sardinia* with *-que* stuck on the end. Read the word without its tail first, then add what the tail means.",
+      "show": {
+        "kind": "sentence",
+        "id": "enc-01"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "enc-02"
+      }
+    },
+    {
+      "n": 2,
+      "title": "-que means ‘and’",
+      "say": "*-que* ties its own word to what came before, so the ‘and’ hangs on the second of the two things joined: *Gallia Hispāniaque* is Gaul and Spain. English puts ‘and’ between them; Latin sticks it onto the end of the second.",
+      "show": {
+        "kind": "sentence",
+        "id": "enc-03"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "enc-04"
+      }
+    },
+    {
+      "n": 3,
+      "title": "-ne asks a yes-or-no question",
+      "say": "*-ne* is glued to the word the question is really about, and that word moves to the front — most often the verb: *Nīlus fluvius magnus est* becomes *Estne Nīlus fluvius magnus…?* English asks in the same way, by putting the verb first; Latin puts it first and adds the tail. When the question is about something else, that word leads instead: *Aegyptusne prōvincia Rōmāna est?* asks whether it is Egypt that is a Roman province.",
+      "show": {
+        "kind": "sentence",
+        "id": "enc-06"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "enc-07"
+      }
+    },
+    {
+      "n": 4,
+      "title": "Not every -que is ‘and’",
+      "say": "*Quoque* means ‘also’ and is one whole word, not *quo* plus *-que*. When a word ends in -que, ask whether what is left in front of it is a word you know: *Sardinia* is, *quo* is not.",
+      "show": {
+        "kind": "sentence",
+        "id": "enc-09"
+      },
+      "check": {
+        "kind": "recognise",
+        "sentence": "enc-10"
+      }
+    },
+    {
+      "n": 5,
+      "title": "The word under the tail keeps its own job",
+      "say": "A tail adds a meaning and changes nothing else. In *Suntne Sicilia Sardiniaque īnsulae magnae?*, *Sardiniaque* is still plain *Sardinia*, still one of the things the sentence is about, and *Suntne* is still *sunt*, ‘are’. Strip the tail, read the word, then put the tail’s meaning back.",
+      "show": {
+        "kind": "sentence",
+        "id": "enc-11"
+      },
+      "check": {
+        "kind": "parse",
+        "sentence": "enc-12",
+        "ask": "form"
+      }
+    }
+  ],
   "more": [
     {
       "type": "p",
