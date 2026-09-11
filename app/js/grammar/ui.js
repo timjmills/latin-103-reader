@@ -4,7 +4,7 @@
 // Every Latin word in a drill is tappable for its entry (a small popover built
 // from dictionary.describe); the target's dictionary form sits under the item.
 
-import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
+import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
@@ -54,6 +54,95 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
  * reaches outward, and the item says which way it reached rather than leaving
  * the learner to recognise cap. XXXIV in a chapter-VII drill (QA M3). Pure.
  */
+/**
+ * The chapters the catalogue's "Up to chapter N" filter offers: **every** N
+ * from the first chapter to the last one a table is introduced in. It used to
+ * be the chapters that introduce a table, which is a different list — the
+ * shipped catalogue introduces none in XXIII–XXV or XXIX–XXX, so the menu
+ * jumped from XXII to XXVI and from XXVIII to XXXI and the learner reading
+ * chapter XXIV had no way to say so (N-8). "Up to chapter N" is a meaningful
+ * filter for every N: it means the same as the next one down, which is exactly
+ * the answer a learner in an empty chapter wants. `parts` is the catalogue's
+ * own `raw.parts`; [] when no table names a chapter at all. Pure.
+ */
+export function catalogueChapters(parts) {
+  const named = (Array.isArray(parts) ? parts : []).flatMap((p) => (p?.tables ?? []).map((t) => Number(t?.chapter))).filter((c) => Number.isFinite(c) && c > 0);
+  if (!named.length) return [];
+  const max = Math.max(...named);
+  return Array.from({ length: max }, (_, i) => i + 1);
+}
+
+/**
+ * What the Stats page's state tally is counted over, said exactly (N-22). The
+ * tally runs over the skill map **and** the chapter sets, because the scheduler
+ * treats them alike; the Progress page's "Skills mastered" runs over the
+ * grammar skills alone, because a chapter's question set, vocabulary deck and
+ * pensa are not skills of the book's spine and their number moves with the
+ * learner's own pensa. The two pages therefore count different things, and this
+ * line says which rather than pretending one number covers both: "88 skills and
+ * 8 chapter sets, counted together" above a tally of 96 named neither. Pure.
+ */
+export function tallyDenominator(skills, sets) {
+  const n = Number(skills) || 0;
+  const s = Number(sets) || 0;
+  const plural = (x, word) => `${x} ${word}${x === 1 ? '' : 's'}`;
+  if (!s) return `All ${plural(n, 'grammar skill')}, counted here.`;
+  return `${n + s} in all — ${plural(n, 'grammar skill')} and ${plural(s, 'chapter set')}, counted together. Progress counts the ${n} grammar skills alone, so its "of ${n}" and this ${n + s} are two different tallies.`;
+}
+
+/**
+ * The word indexes a tap on `index` lights: the sentence's **declared focus**
+ * when the tapped word is part of it, else the tapped word alone. A
+ * construction can need two words — an ablative absolute (*imbre cadente*), a
+ * periphrastic form — and a step that asks "which two words are they?" must
+ * light both, as the noticing opener does with the same declaration. The check
+ * lit only the word under the finger, so half the answer to a question about a
+ * pair never appeared (N-16). A drawn library item carries no written sentence
+ * and so no declared focus: there the tapped word is the whole of it. Pure.
+ */
+export function tapSpan(item, index) {
+  const i = Number(index);
+  if (!Number.isInteger(i) || i < 0) return [];
+  const la = item?.prompt?.la ?? '';
+  const focus = item?.written?.focus ?? '';
+  const span = la && focus ? focusIndexes(la, focus) : [];
+  return span.length > 1 && span.includes(i) ? span : [i];
+}
+
+/**
+ * What a practice header says when the skill's generated bank (§11b) could not
+ * be fetched. Offline the bank request is refused, the drill falls back to the
+ * book's sentences — which is the right thing to do — and the header said only
+ * "then the book's", as though that were the whole offer. The learner was never
+ * told, and two refusals reached the console instead (N-13). '' when the bank
+ * is there (the header then names its size) and when the skill simply has none:
+ * there is nothing to download and nothing to say. Pure.
+ */
+export function bankUnreachableNote(bank, unreachable) {
+  return bank || !unreachable ? '' : ' The sentences the app generates are not downloaded yet, so this is the book\'s own for now — connect once and they will be here.';
+}
+
+/**
+ * What a chart's retry keeps: `{ cellIndex: text }` for every box the attempt
+ * judged right, from the same `cellResults` the attempt was scored on. A
+ * scaffold's given cells are not kept — they are printed, not filled, and the
+ * rebuilt table prints them again from `chart.given`. `shown` (the boxes the
+ * table actually rendered) keeps a cell a phone answered for the learner out of
+ * it, so rotating between the two attempts cannot hand back an answer. Nothing
+ * here says a kept cell is right: it is text put back in the box, judged again
+ * with all the others on the next submit. Pure.
+ */
+export function keptCells(item, value, shown = null) {
+  const out = {};
+  for (const r of cellResults(item, value)) {
+    if (r.scaffold || !r.ok) continue;
+    if (shown && !shown.has(r.i)) continue;
+    const text = String(value?.[r.i] ?? '').trim();
+    if (text) out[r.i] = text;
+  }
+  return out;
+}
+
 export function scopeSentence(scope) {
   if (!scope || !scope.chapter || scope.scope === 'own') return null;
   const here = `chapter ${roman(scope.chapter)}`;
@@ -1063,7 +1152,7 @@ export function createUI(ctx) {
     const first = drill.start();
     if (!first) { setBody(nothingToDrill(skill, from)); return; }
     const note = retest ? `Three items on ${skill.title}, a little after you last met it: the first review, the same day.`
-      : `${n} items, this skill only — its own sentences first, then ${drill.bank ? 'ones the app generates from the chapter\'s words, then ' : ''}the book's. The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
+      : `${n} items, this skill only — its own sentences first, then ${drill.bank ? 'ones the app generates from the chapter\'s words, then ' : ''}the book's.${bankUnreachableNote(drill.bank, generatedUnreachable(id))} The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
     runSession({ runner: drill.runner, title: retest ? `Re-test · ${skill.title}` : `Drill · ${skill.title}`, note, mode: drill.mode, hintOpen: false, onDone: (summary) => { if (retest) clearRetest(id); renderSummary(summary, { drill: id, size: n, retest, from }); } });
   }
   const nothingToDrill = (skill, from) => [h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: skill.title }), h('p', { class: 'g-lede', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' })), h('div', { class: 'g-acts' }, backButton(from, 'btn'))];
@@ -1083,7 +1172,7 @@ export function createUI(ctx) {
     const drill = createDrill({ skill, gstore, items, teachItems, generated, currentWeekN: ctx.currentWeekN(), size: LEARN_BLOCKED, pin: pinOf(skill, lesson), open: true });
     await drill.begin();
     if (!drill.start()) { setBody(nothingToDrill(skill, from)); return; }
-    const note = `Ten at a time, for as long as you like — this skill's own sentences first, then ${drill.bank ? `${drill.bank} sentences the app generates from the chapter's words, none twice until all have come round` : 'the book\'s'}. The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
+    const note = `Ten at a time, for as long as you like — this skill's own sentences first, then ${drill.bank ? `${drill.bank} sentences the app generates from the chapter's words, none twice until all have come round` : 'the book\'s'}.${bankUnreachableNote(drill.bank, generatedUnreachable(id))} The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
     runSession({ runner: drill.runner, title: `Unlimited · ${skill.title}`, note, mode: drill.mode, hintOpen: false, open: true, more: () => drill.more(), onDone: (summary) => renderSummary(summary, { drill: id, unlimited: true, from }) });
   }
   const andList = (xs) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
@@ -1240,7 +1329,7 @@ export function createUI(ctx) {
       h('p', { class: 'g-lede', text: `Every paradigm the book teaches, by part of speech: ${listed === allTables ? `${allTables} tables` : `${listed} of ${allTables} tables under this filter`}. Open one to see it filled, practise a cell across several words or the whole table, and switch the word it is built on.` }));
     const filterNode = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'Filter by category' },
       cats.map((c) => btn(c === 'all' ? 'All' : (CATEGORY_LABEL[c] ?? cap(c.replace('-', ' '))), { 'aria-pressed': String(catState.category === c), onclick: () => { catState.category = c; draw(); } }, 'g-filter__btn')));
-    const chapters = [...new Set(parts.flatMap((p) => p.tables.map((t) => t.chapter)).filter((c) => c != null))].sort((a, b) => a - b);
+    const chapters = catalogueChapters(parts);
     const here = readerChapter();
     const chapterSel = h('select', { class: 'g-select', 'aria-label': 'Up to chapter', onchange: (e) => { catState.chapter = e.target.value ? Number(e.target.value) : null; draw(); } },
       h('option', { value: '', selected: catState.chapter == null ? true : null }, 'Every chapter'),
@@ -1892,6 +1981,21 @@ export function createUI(ctx) {
     // The English of a question on demand (a question set, Pensum C): never shown first.
     const englishOf = (en) => (en ? h('details', { class: 'g-q-en' }, h('summary', { class: 'g-hint__s', text: 'In English' }), h('p', { class: 'g-hint__rule', text: en })) : null);
     const tapMode = item.input === 'tap';
+    /**
+     * A tap on a word. A right tap lights the **whole** construction it names —
+     * both words of a pair, from the sentence's declared focus (`tapSpan`) — the
+     * way the noticing opener does; a wrong one marks only the word tapped, and
+     * the feedback says what it was. Lighting only the finger's word left half
+     * the answer to "which two words are they?" unlit (N-16).
+     */
+    const tapPick = (i, el) => {
+      if (submitted) return;
+      const span = (item.accept ?? []).map(Number).includes(Number(i)) ? tapSpan(item, i) : [];
+      const p = el.closest('.g-la');
+      if (span.length > 1) for (const idx of span) p?.querySelector(`.g-w[data-index="${idx}"]`)?.classList.add('g-w--target', 'is-right');
+      el.classList.add('is-picked');
+      submit(i);
+    };
     // The sentence (tap items answer by tapping); a question shows its question first, the sentence under it when it is a tap item.
     if (item.kind === 'question' || (item.kind === 'pensum' && item.pensum === 'C')) {
       // The question's own words are tappable for their entry: plan §3 promises word by word, and a `type` or
@@ -1905,7 +2009,7 @@ export function createUI(ctx) {
         node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
       }
       if (item.prompt.la) {
-        node.append(latin(item.prompt.la, { tap: tapMode ? (i, el) => { if (submitted) return; el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
+        node.append(latin(item.prompt.la, { tap: tapMode ? tapPick : null, cls: tapMode ? 'g-la--tap' : '' }));
         const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
         node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
       }
@@ -1919,7 +2023,7 @@ export function createUI(ctx) {
       node.append(question(item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));
     } else if (item.prompt.la) {
-      node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { if (submitted) return; el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
+      node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? tapPick : null, cls: tapMode ? 'g-la--tap' : '' }));
       // A generated sentence's English and word-by-word gloss, on demand (§11b), like a written sentence's in Learn. The
       // gloss names the very thing a recognise or parse item asks, so opening it before answering counts as a hint
       // (decision 14); a blank withholds the form and a translate reveals the English itself, so neither offers it.
@@ -2269,8 +2373,17 @@ export function createUI(ctx) {
     // every cell (`boxKeys`), so the button no longer promises less than the keyboard does.
     const filledAny = () => [...inputs.values()].some((el) => String(el.value ?? '').trim() !== '');
     let syncCheck = () => {};
+    // A retry keeps what was already right (N-6). "Try again" rebuilds the item, and rebuilding used to hand
+    // back a blank table: two cells right and one wrong became three empty boxes, and the learner retyped
+    // what they already knew. The cells judged right are memoised on the item, as the scaffold's given cells
+    // are, and the rebuilt table carries them — still editable, and **still judged afresh** on the new submit
+    // (`collect` reads the boxes, `cellResults` grades every one of them), never assumed right. Only the
+    // cells that were wrong come back empty, and the first of those takes the focus.
+    const keep = (chart.keep && typeof chart.keep === 'object') ? chart.keep : null;
+    const kept = (i) => (keep && keep[i] != null ? String(keep[i]) : '');
+    const rememberRight = (v) => { chart.keep = keptCells(item, v, new Set(inputs.keys())); };
     const mk = (i, label) => {
-      const inp = h('input', { type: 'text', class: 'g-input g-input--cell', id: `gc-${i}`, lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': label, placeholder: '…' });
+      const inp = h('input', { type: 'text', class: 'g-input g-input--cell', id: `gc-${i}`, lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': label, placeholder: '…', value: kept(i) });
       inputs.set(i, inp);
       // Judged as the learner leaves it — green or red at once, and red does not block: the cell stays
       // editable, its hint stays there, and the chart is graded when the learner presses Check (§3).
@@ -2311,7 +2424,7 @@ export function createUI(ctx) {
     };
     // The guard is on the submit as well as on the button: a disabled button is the visible half, and this is
     // the half that holds however the form is submitted (Enter, an assistive tech, a script) — M-5.
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!filledAny()) { needOne.hidden = false; if (live) live.textContent = needText; return; } const v = collect(); submit(v); afterGrade(v); } });
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!filledAny()) { needOne.hidden = false; if (live) live.textContent = needText; return; } const v = collect(); rememberRight(v); submit(v); afterGrade(v); } });
     if (chart.byWord) {
       // One box per word (§8): the same cell asked on each stock word in turn, each judged as it is left,
       // the whole set one attempt. Every box is asked on a phone too — a single box would answer the rest.
@@ -2354,11 +2467,16 @@ export function createUI(ctx) {
     const needOne = h('p', { class: 'g-quiet g-chart__needone', id: 'g-chart-needone', text: needText });
     check.setAttribute('aria-describedby', 'g-chart-needone');
     syncCheck = () => { const on = filledAny(); check.disabled = !on; needOne.hidden = on; };
+    const keptHere = [...inputs.keys()].filter((i) => kept(i)).length;
+    const emptyHere = inputs.size - keptHere;
     form.append(h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H opens the hint for that cell; Enter checks once every cell is filled.' }));
+    // Said before the keys line, because it explains why boxes already have writing in them.
+    if (keptHere) form.insertBefore(h('p', { class: 'g-quiet g-chart__keptnote', text: `The ${keptHere === 1 ? 'cell' : `${keptHere} cells`} you had right ${keptHere === 1 ? 'is' : 'are'} kept; ${emptyHere === 1 ? 'the empty one is the one' : `the ${emptyHere} empty ones are the ones`} that went wrong. Every cell is judged again when you check.` }), form.querySelector('.g-chart__acts'));
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i, v) => paintCells.mark(i, v, { announce: true }) }));
     syncCheck();
     onCells?.(paintCells.all);
-    setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
+    // The first cell still to fill, which on a retry is the first one that went wrong, not the first box.
+    setTimeout(() => ([...form.querySelectorAll('input')].find((el) => !String(el.value ?? '').trim()) ?? form.querySelector('input'))?.focus({ preventScroll: true }), 0);
     return form;
   }
 
@@ -2538,10 +2656,10 @@ export function createUI(ctx) {
     const pairs = stats.confusionPairs(gstore.getConfusions(), skills);
     const dl = (label, value) => [h('dt', { text: label }), h('dd', { text: String(value) })];
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Stats' }), h('p', { class: 'g-lede', text: 'Grammar only — the reading study log is in Settings.' })),
-      // The tally runs over the map *and* the chapter sets, so it reaches 95 where the map's lede says
-       // 87 skills. Nothing reconciled the two figures; now the heading does (QA-B7).
-      h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Skills' }),
-        h('p', { class: 'g-quiet', text: `${index.skills.size} skill${index.skills.size === 1 ? '' : 's'}${ctx.sets?.size ? ` and ${ctx.sets.size} chapter set${ctx.sets.size === 1 ? '' : 's'}` : ''}, counted together.` }),
+      // The tally runs over the map *and* the chapter sets, so it reaches 96 where the Progress page
+      // says "of 88". The heading names both populations and the line names both tallies (QA-B7, N-22).
+      h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: ctx.sets?.size ? 'Skills and chapter sets' : 'Skills' }),
+        h('p', { class: 'g-quiet', text: tallyDenominator(index.skills.size, ctx.sets?.size ?? 0) }),
         h('dl', { class: 'g-dl' }, ['mastered', 'practising', 'learning', 'lapsed', 'new'].map((s) => dl(cap(s), by[s])))),
       h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: 'Items' }),
         h('dl', { class: 'g-dl' }, dl('Today', t.today ? `${t.today} · ${stats.fmtPct(t.accToday)} right` : '0'), dl('Last 7 days', t.week ? `${t.week} · ${stats.fmtPct(t.accWeek)} right` : '0'), dl('All time', t.all ? `${t.all} · ${stats.fmtPct(t.accAll)} right · ${stats.fmtMin(t.ms)}` : '0')),

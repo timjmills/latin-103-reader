@@ -1208,6 +1208,15 @@ skipped), `results` (the **first** answer there) and the queue itself.
 - **A wrong answer holds.** The feedback offers *Try again* (primary — rebuilds
   the same item fresh, keeping the runner's first result) and *Move on* (quiet),
   and says in plain words that only the first answer counted.
+- **A chart's retry keeps what was right** (N-6). Rebuilding used to hand back a
+  blank table, so ten right cells and two wrong became twelve empty boxes. The
+  boxes the attempt judged right are memoised on the item as `chart.keep`
+  (`keptCells`, from the same `cellResults` the attempt was scored on, narrowed
+  to the boxes the table actually rendered), the rebuilt table prints them
+  again, the wrong ones come back empty and the first of those takes the focus,
+  and a line above the button says so. Kept is not counted: every box, kept or
+  not, is graded afresh on the next submit. The scaffold's given cells are
+  unaffected — they come from `chart.given`, decided once.
 - **Pages are cached per queue position** (`pages[i]`), so a step back shows the
   item exactly as it was left — the typed text still in the field, the choice
   still marked, its own feedback under it — and every input is already disabled
@@ -1295,6 +1304,7 @@ weekChapters()        // Map week → chapter, built once
 readingPrefix(r) / inReading(unitId, r)   // the unit ids a reading owns
 metaList(names, {max}) / readingsMeta(readings, {max})
 parseChapterRoute(hash) / chapterHash(n, tab)   // #/chapter/7 · #/chapter/7/grammar
+isGrammarRoute(hash) / GRAMMAR_HASH             // #/grammar — the grammar section itself
 CHAPTER_MAX (34) · SHELF_CHAPTER_MAX (24) · CHAPTER_TABS · SOURCE_NAMES
 ```
 
@@ -1361,7 +1371,11 @@ step over disabled rows, as Tab does.
 `html[data-page="chapter"]` hides `.layout`, `#grammar`, both segmented
 controls and the display toggles (`css/chapters.css`), so the header keeps the
 week button — **relabelled with the chapter, so two numerals never share a
-screen** — and Settings. `← All chapters` reopens the menu on its Chapters tab.
+screen** — and Settings. `← All chapters` does what it says: it leaves the
+page (`goHome()`, so the route goes with it) and opens the menu on its Chapters
+tab, which is the list of all chapters. It used to raise that menu *over* the
+chapter page with `#/chapter/7` still in the address bar, so closing the menu
+put the learner back on the page they had just left (N-21).
 
 Two tabs of its own, `Reading` and `Grammar`, each a route:
 
@@ -1381,6 +1395,16 @@ that drops the hash, so Back returns to the chapter page on the tab it was on.
 The reader's letter shortcuts and `j`/`k` do nothing while a chapter page is
 open. The section's own hooks are wired here: `onChapterNav(fn)` sets the hash,
 `onLeaveChapter(fn)` drops it.
+
+`#/grammar` is the third route and opens the grammar section (N-20): it waits
+for `grammarReady`, closes the chapter and progress pages, and calls the
+section's own `open()`. Walking **back** out of it closes the section again --
+but only the learner's own Back does that. Every hash the shell writes goes
+through `routeTo`, which marks the change as the shell's own, because a chapter
+page opened from inside the section moves the route itself and the section has
+to stay open underneath it: `goHome()` is what that page goes back to. A
+fragment that is no route of ours (the skip link's `#reader`) is left alone. The
+section's header buttons are unchanged and set no hash.
 
 ### Fixture
 
@@ -1822,6 +1846,15 @@ rules on the item's word (`tableIdOf`), else the word itself.
 - **Attempts**: `createRunner` adds `meta: { generated, template, sentence }`
   to a generated item's attempt only; store-grammar keeps it locally and drops
   it from the server row. Items have no key, so none enters a redo.
+- **A bank that could not be fetched says so** (N-13). Offline the request is
+  refused and the drill falls back to the book's sentences — which is right —
+  but the header said only "then the book's", as though that were the whole
+  offer. `createTeachDataLoader` now tells a 404 ("this skill has no bank")
+  from a request that got no answer at all ("not downloaded yet"), keeps the
+  second kind in `bankUnreachable(skillId)` and asks again next time; the drill
+  and unlimited-practice headers add `bankUnreachableNote`, which names no
+  count and stays silent both when the bank arrived and when the skill has
+  none.
 
 ### The catalogue (§4, decision 10; §11)
 
@@ -1948,3 +1981,61 @@ from it would serve them to the real app on the same origin.
 - **M-9** the Practice tab's hint copy no longer promises that "a hint never
   spells the answer"; it says that the last step, "Show this form", gives
   that one box its answer and marks the box hinted.
+
+### The second pass (N-6, N-8, N-13, N-16, N-20, N-21, N-22; `tests/grammar.qa-app.test.mjs`)
+
+- **N-6** a chart's *Try again* keeps the boxes that were right and empties
+  only the wrong ones, focus on the first of them (`keptCells` →
+  `chart.keep`). Kept is text put back, never a mark: every box is judged
+  again on the next submit. See "A wrong answer holds", above.
+- **N-8** the catalogue's "Up to chapter N" runs I to the last chapter a
+  table comes from, with no gap. It was built from the chapters that
+  *introduce* a table, so the shipped catalogue's menu jumped XXII → XXVI and
+  XXVIII → XXXI and a learner in XXIV could not say so. `catalogueChapters`
+  (pure, exported); the "· being read" mark is unchanged.
+- **N-13** a generated bank that could not be fetched is named in the practice
+  header instead of degrading in silence. See "Unlimited practice", above.
+- **N-16** a check's tap lights the **whole** construction it names, from the
+  sentence's declared focus (`tapSpan`, the same declaration the noticing
+  opener reads through `focusSpanOf`). A question that asks "which two words
+  are they?" lit only the word under the finger. `.g-la--tap
+  .g-w.is-picked.g-w--target` in `grammar.css` keeps the tapped half looking
+  like its partner — `is-picked` is the more specific selector and was
+  winning the background. A library item carries no declared focus, so there
+  the tapped word is still the whole of it.
+- **N-20** `#/grammar` opens the section; see "Routing", above.
+- **N-21** `← All chapters` leaves the chapter page; see "The chapter page".
+- **N-22** Stats tallies the skill map **and** the chapter sets (96) while the
+  Progress band counts the grammar skills alone (88), and neither label said
+  which. Stats' heading reads "Skills and chapter sets", its line
+  (`tallyDenominator`) names both populations, the sum and the other page's
+  figure; the Progress band reads "of 88 grammar skills" (`skillsOutOf`).
+  The two pages still count different things — a chapter's question set,
+  vocabulary deck and pensa are not skills of the book's spine, and their
+  number moves with the learner's own pensa — and now say so.
+- **N-10** is a decision, not a fix: the catalogue's whole-table drill does not
+  withhold its naming skill's cells, and `GRAMMAR-CONTRACT.md` §12 now records
+  why. `ui.js` still passes `taught: []` for a catalogue item.
+- **N-3** a `recognise` check's **shape** is chosen by the step's own wording,
+  not by a coin toss. The two shapes — tap a word, choose a label — each word
+  themselves correctly, and the step then wrote its own question over whichever
+  came up, so "Which two words give the circumstances?" was answered with four
+  construction labels every other time: 79 of the 87 word-questions across the
+  88 lessons, with the coin the other way. `askWantsWord` (`lessons.js`, pure)
+  reads the wording, `normaliseCheck` settles it once as `check.tap`, and
+  `stepItem` → `sentenceItem` → `generate` carry it to `recognise`, whose
+  `opts.tap ?? rand() < 0.5` already accepted it. 120 of the 161 checks are
+  decided by their wording, 41 have none of their own and keep the toss (their
+  question is then the generator's, which matches whatever it built), and a
+  lesson may declare `"tap": true|false` to overrule the reading. No lesson
+  prose changed: where a question and its shape disagreed, the shape was wrong.
+- **N-15** (second case) a chart word is resolved to the reading that has the
+  cells the step asked for. `entryFor` took the first reading that rendered any
+  table; the glossary holds an adjective before the noun under one head, its
+  cells carry gender, `resolveCellId` found nothing, and the step's boxes were
+  dropped by a silent `continue` while the item built itself on the step's other
+  word and the question went on naming the first. `entryFor(word, { fits })`
+  now keeps looking, `chartItem` passes a `fits` that asks whether the reading
+  can answer any named cell, and a word that still answers none is
+  `console.warn`ed with the skill, the table and the cells. Across the 88
+  lessons every chart check now builds every word it declares.
