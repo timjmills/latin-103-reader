@@ -1562,3 +1562,32 @@ test; the schema gains nothing.
 an edit to the JSON alone is lost on the next build. The two changes now in
 the tree (`adsum`/`absum` in the irregular list; `plūs` under irregular
 comparison) are mirrored in the generator and are kept.
+
+## 10. The goal, restated (2026-09-11): easy, quick learning and practice of one skill in isolation
+
+The learner's priority is speed and ease for a single skill, not the full
+interleaved system. That settles the open pedagogy questions of §9:
+
+- **Rule first stays.** A discovery step costs a minute and the learner is
+  reviewing forgotten material, not meeting it. Explicit rule, one example,
+  one check — the quicker route.
+- **Every step's text is cut to sixty words or fewer**: the term with its
+  gloss, the ending, one example. Anything more goes to the lesson's "more".
+  This is an editorial pass over all 88 skills once verification finishes.
+- **Two taps to a drill.** From the skill map, the chapter page or the
+  catalogue, one tap opens the skill and one tap starts practising it. Learn
+  is offered, never forced: a **"Just drill it"** entry skips the steps and
+  starts a blocked set on that skill alone, with the rule pinned at the top of
+  every item so the learner can look without leaving.
+- **Practice of one skill is blocked and short by default**: ten items on
+  that skill only, from its written sentences first (§9 A1), one cell at a
+  time for a paradigm, several words per cell. Mixed practice remains the
+  scheduler's business, not the entry point.
+- **A same-session re-test.** After a skill is learned or drilled, the app
+  offers one short re-test of it before the session ends — three items, ten
+  minutes later or at the summary — because the first review should come
+  soon, not tomorrow. Cheap, and it is where the first exposure is kept.
+- **The catalogue is the fastest route for a paradigm**: pick a table, pick a
+  cell, drill it on many words, switch the word — no lesson in the way.
+- Not taken for this goal: the noticing step and the reading tie-in from §9.
+  Both are good, both add time; recorded for later, not built now.
