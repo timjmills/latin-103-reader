@@ -307,27 +307,30 @@ TABLES: dict[str, dict] = {
     # ---- nouns -----------------------------------------------------------
     "decl1": dict(part="noun", label="1st declension (-a, -ae)", example="puella -ae f",
                   decl=1,
-                  stock=["puella", "femina", "ancilla", "aqua", "nauta"],
-                  stock_note="Ørberg builds the first declension on the women of the "
-                             "family — puella, fēmina, ancilla (cap. II) — and aqua is "
-                             "the first ablative he drills (cap. V). nauta is here so "
-                             "the gender filter has a masculine to offer."),
+                  stock=["insula", "puella", "femina", "ancilla", "nauta"],
+                  stock_note="īnsula is cap. I's own first-declension noun, so a "
+                             "chapter-one drill has a chapter-one word; Ørberg then builds "
+                             "the declension on the women of the family — puella, fēmina, "
+                             "ancilla (cap. II). nauta (cap. XVI) is here so the gender "
+                             "filter has a masculine to offer."),
     "decl1g6": dict(part="noun", label="1st declension, Greek -ē", example="Crētē -ēs f",
                     decl=1,
-                    stock=["crete", "arachne", "phoebe"],
-                    stock_note="Every word of this table in the library: Greek names "
-                               "from the Fabulae, all three of them."),
+                    stock=["arachne", "crete", "phoebe"],
+                    stock_note="Every word of this table in the library: Arachnē, whom "
+                               "cap. XXXII prints, and two Greek names from the Fabulae."),
     "decl1g8": dict(part="noun", label="1st declension, Greek -ās", example="Midās -ae m",
                     decl=1,
                     stock=["midas"],
                     stock_note="The only word of this shape the course prints."),
     "decl2m": dict(part="noun", label="2nd declension masculine (-us, -ī)", example="servus -ī m",
                    decl=2,
-                   stock=["servus", "dominus", "hortus", "amicus", "filius"],
-                   stock_note="Ørberg's own second-declension pair from cap. II is servus "
-                              "/ dominus; hortus and amīcus carry it through caps. V–VI. "
+                   stock=["fluvius", "servus", "dominus", "filius", "hortus"],
+                   stock_note="fluvius is cap. I's own -us noun (Nīlus fluvius est), so a "
+                              "chapter-one drill has a chapter-one word; Ørberg's "
+                              "second-declension pair from cap. II is servus / dominus. "
                               "fīlius is here because the -ius vocative (fīlī) is the one "
-                              "cell of this table that is not regular."),
+                              "cell of this table that is not regular, and hortus carries "
+                              "it through cap. V."),
     "decl2n": dict(part="noun", label="2nd declension neuter (-um, -ī)", example="oppidum -ī n",
                    decl=2,
                    stock=["oppidum", "verbum", "baculum", "cubiculum", "vocabulum"],
@@ -346,8 +349,9 @@ TABLES: dict[str, dict] = {
                      stock_note="The vulgus type: the only word of it in the library."),
     "decl2g6": dict(part="noun", label="2nd declension, Greek -os", example="Dēlos -ī f",
                     decl=2,
-                    stock=["delos", "lesbos", "samos", "chios"],
-                    stock_note="The Greek islands of the Fabulae — the whole of this table "
+                    stock=["lemnos", "delos", "lesbos", "samos", "chios"],
+                    stock_note="Lēmnos is the one the course prints in cap. I; the rest are "
+                               "the Greek islands of the Fabulae — the whole of this table "
                                "in the library except mēlos and aulos."),
     "decl2g8": dict(part="noun", label="2nd declension, Greek -on", example="Īlion -ī n",
                     decl=2,
@@ -362,15 +366,18 @@ TABLES: dict[str, dict] = {
                              "nominative that hides the stem (pēs, pedis)."),
     "decl3i": dict(part="noun", label="3rd declension i-stem (gen. pl. -ium)", example="nāvis -is f",
                    decl=3,
-                   stock=["navis", "urbs", "pars", "mons", "ovis"],
-                   stock_note="nāvis and urbs are the words Ørberg uses for -ium; ovis and "
-                              "mōns are cap. IX's own i-stems, and pars is the commonest of "
+                   stock=["ovis", "mons", "navis", "urbs", "pars"],
+                   stock_note="ovis and mōns are cap. IX's own i-stems, the chapter that "
+                              "introduces the third declension; nāvis and urbs are the "
+                              "words Ørberg uses for -ium, and pars is the commonest of "
                               "them in the course."),
     "decl3n": dict(part="noun", label="3rd declension neuter", example="nōmen nōminis n",
                    decl=3,
-                   stock=["nomen", "corpus", "flumen", "tempus", "caput"],
-                   stock_note="Exactly the neuters cap. XI teaches — nōmen, corpus, flūmen, "
-                              "caput — with tempus, the one the rest of the course needs most."),
+                   stock=["corpus", "caput", "flumen", "nomen", "tempus"],
+                   stock_note="corpus and caput are cap. XI's own neuters — the chapter is "
+                              "the body — with flūmen (cap. X) and nōmen (cap. XII), the "
+                              "ones Ørberg declines, and tempus, the one the rest of the "
+                              "course needs most."),
     "decl3in": dict(part="noun", label="3rd declension neuter i-stem (-ia, -ium)", example="mare -is n",
                     decl=3,
                     stock=["mare", "animal", "rete"],
@@ -384,9 +391,10 @@ TABLES: dict[str, dict] = {
                              "chapters. manus is also the table's feminine."),
     "decl4n": dict(part="noun", label="4th declension neuter (-ū)", example="cornū -ūs n",
                    decl=4,
-                   stock=["cornu", "genu"],
-                   stock_note="The two the course teaches; the rest of this table (pecū, "
-                              "verū, testū) never appears."),
+                   stock=["genu", "cornu"],
+                   stock_note="genū (cap. VI) before cornū (cap. XXI): the two the course "
+                              "teaches; the rest of this table (pecū, verū, testū) never "
+                              "appears."),
     "decl5": dict(part="noun", label="5th declension (-ēs, -ēī)", example="diēs -ēī m/f",
                   decl=5,
                   stock=["dies", "res", "spes", "fides", "facies"],
@@ -418,7 +426,7 @@ TABLES: dict[str, dict] = {
                               "show the stem dropping its e, and noster keeps it."),
     "adj12ius": dict(part="adjective", label="1st/2nd declension, genitive -īus",
                      example="sōlus -a -um (gen. -īus)", decl=12,
-                     stock=["solus", "totus", "nullus", "ullus"],
+                     stock=["nullus", "solus", "totus", "ullus"],
                      stock_note="The four the course teaches of the ūnus / sōlus / tōtus group, "
                                 "in the order it teaches them (nūllus IV, sōlus V, tōtus XIII, "
                                 "ūllus XIX)."),
@@ -491,9 +499,10 @@ TABLES: dict[str, dict] = {
     # ---- verbs -----------------------------------------------------------
     "conj1": dict(part="verb", label="1st conjugation (-āre)", example="amō, amāre, amāvī, amātum",
                   conj=1,
-                  stock=["amo", "voco", "laudo", "ambulo", "canto"],
-                  stock_note="vocō, cantō and pulsō are cap. III's own first-conjugation "
-                             "verbs; amō and laudō are the ones Ørberg's Grammatica Latina "
+                  stock=["voco", "canto", "amo", "laudo", "ambulo"],
+                  stock_note="vocō and cantō are cap. III's own first-conjugation verbs "
+                             "(with pulsō), so the chapter's drill has the chapter's words; "
+                             "amō and laudō are the ones Ørberg's Grammatica Latina "
                              "conjugates, and ambulō is the commonest of them in the course."),
     "conj2": dict(part="verb", label="2nd conjugation (-ēre)", example="videō, vidēre, vīdī, vīsum",
                   conj=2,
@@ -502,16 +511,18 @@ TABLES: dict[str, dict] = {
                              "timeō keep the -ē- through every tense."),
     "conj3": dict(part="verb", label="3rd conjugation (-ere)", example="dīcō, dīcere, dīxī, dictum",
                   conj=3,
-                  stock=["dico", "scribo", "lego", "mitto", "pono"],
-                  stock_note="The five third-conjugation verbs the course prints most: the "
-                             "short -e- that becomes -i- and then -u- is easiest to see on "
-                             "dīcō and pōnō, which cap. IV teaches."),
+                  stock=["pono", "dico", "scribo", "lego", "mitto"],
+                  stock_note="pōnō is the third-conjugation verb cap. IV teaches, where the "
+                             "short -e- that becomes -i- and then -u- is easiest to see, "
+                             "with dīcō; the other three are the ones the course prints "
+                             "most."),
     "conj3io": dict(part="verb", label="3rd conjugation -iō", example="capiō, capere, cēpī, captum",
                     conj=3,
-                    stock=["facio", "capio", "fugio", "accipio", "aspicio"],
-                    stock_note="capiō and faciō are the two the book names for this type; "
-                               "faciō also carries the short imperative fac. aspiciō and "
-                               "accipiō come in at cap. VIII, fugiō at cap. XII."),
+                    stock=["accipio", "aspicio", "facio", "capio", "fugio"],
+                    stock_note="accipiō and aspiciō, cap. VIII, are the first -iō verbs the "
+                               "course teaches; capiō and faciō are the two the book names "
+                               "for this type (faciō also carries the short imperative fac), "
+                               "and fugiō comes in at cap. XII."),
     "conj4": dict(part="verb", label="4th conjugation (-īre)", example="audiō, audīre, audīvī, audītum",
                   conj=4,
                   stock=["audio", "dormio", "venio", "aperio", "scio"],
@@ -578,14 +589,14 @@ KEY_MAP: dict[str, dict] = {
                 "group": "comp"},
 }
 
-#: The chapter that *introduces* a table, where the earliest skill that merely
-#: uses it comes first.  Ørberg prints pater and māter in cap. II but teaches the
-#: third declension in cap. IX, and skills.json says so itself: the dative lesson
-#: of cap. VII lists `decl3` among the paradigms it draws on, while
-#: `third-declension` is the skill that introduces it.  Only the declensions the
-#: book gives a chapter of their own are listed; every other table takes the
-#: earliest chapter at which either a skill names it or the vocabulary teaches
-#: one of its words.
+#: The chapter that *introduces* a table, where the book gives it a chapter of
+#: its own later than it teaches the table's first word.  Ørberg prints pater
+#: and māter in cap. II but teaches the third declension in cap. IX, and
+#: skills.json says so itself: the dative lesson of cap. VII lists `decl3` among
+#: the paradigms it draws on, while `third-declension` is the skill that
+#: introduces it.  Every other table is introduced in the chapter that teaches
+#: its first stock word (build(), below), and the first stock word of a pinned
+#: table must be taught by then.
 INTRODUCED_BY = {
     "decl3": "third-declension", "decl3i": "third-declension",
     "decl3n": "third-declension-neuter", "decl3in": "third-declension-neuter",
@@ -782,6 +793,7 @@ def build() -> tuple[dict, list[str]]:
     skills = skills_raw.get("skills", [])
     skill_chapter = {s["id"]: s.get("chapter") for s in skills}
     skills_for: dict[str, list[str]] = defaultdict(list)
+    drill_skills: dict[str, list[str]] = defaultdict(list)     # names the table itself, not a group of it
     group_skills: dict[tuple[str, str], list[str]] = defaultdict(list)
     chapter_from_skill: dict[str, int] = {}
     category_of: dict[str, Counter] = defaultdict(Counter)
@@ -799,6 +811,7 @@ def build() -> tuple[dict, list[str]]:
                     # an adjective's table) dates the group, never the table
                     group_skills[(tid, spec["group"])].append(s["id"])
                     continue
+                drill_skills[tid].append(s["id"])
                 ch = s.get("chapter")
                 if ch and (tid not in chapter_from_skill or ch < chapter_from_skill[tid]):
                     chapter_from_skill[tid] = ch
@@ -871,6 +884,9 @@ def build() -> tuple[dict, list[str]]:
                 item["taught"] = False
                 if e.get("n"):
                     item["count"] = e["n"]
+                lib = first_library_chapter(cands, by_chapter, owners)
+                if lib:
+                    item["chapter"] = lib
             item["groups"] = sorted({g for g, _ in render[id(e)][1]})
             stock.append(item)
         # Three to five where the course teaches that many, all of them where it
@@ -893,24 +909,61 @@ def build() -> tuple[dict, list[str]]:
             if not any(gid in s["groups"] for s in stock):
                 problems.append(f"{tid}: no stock word renders the group {gid!r}")
 
-        # ---- the chapter that introduces the table: the earliest chapter at
-        # which the course engages it — a skill that names it, or a vocabulary
-        # deck that teaches one of its words — unless INTRODUCED_BY pins it.
+        # ---- the chapter that introduces the table.  The course introduces a
+        # table when it teaches the table's model word — the first stock word —
+        # so that is the chapter, and the check below holds every table to it:
+        # a chapter-one skill drills chapter-one words.  INTRODUCED_BY pins the
+        # declensions the book gives a chapter of their own (pater and māter
+        # are taught in cap. II, the third declension in cap. IX).  A skill that
+        # merely lists a table earlier (present-indicative-3rd names eō in
+        # cap. III; the book conjugates it in cap. VI) does not date it, and
+        # neither does a stray word of the table taught before its model word.
+        # Where the course teaches no word of the table, the library decides:
+        # the earliest chapter that prints the first stock word, or any word.
         chapter, source = None, None
-        taught = [vocab[(e["h"], VOCAB_POS[e["pos"]])]["chapter"] for e in es
-                  if (e["h"], VOCAB_POS[e["pos"]]) in vocab]
+        first = stock[0] if stock else None
         if tid in INTRODUCED_BY and tid in chapter_from_skill:
             chapter, source = chapter_from_skill[tid], "skill"
-        elif tid in chapter_from_skill and taught:
-            chapter = min(chapter_from_skill[tid], min(taught))
-            source = "skill" if chapter == chapter_from_skill[tid] else "vocabulary"
-        elif tid in chapter_from_skill:
-            chapter, source = chapter_from_skill[tid], "skill"
-        elif taught:
-            chapter, source = min(taught), "vocabulary"
+        elif first and first.get("taught"):
+            chapter = first["chapter"]
+            source = "skill" if chapter_from_skill.get(tid) == chapter else "vocabulary"
         else:
-            chapter = first_library_chapter(es, by_chapter, owners)
+            chapter = (first or {}).get("chapter") or first_library_chapter(es, by_chapter, owners)
             source = "library" if chapter else None
+        # ---- the rule, as a check on the data: the first stock word must be
+        # introduced at or before the table's own chapter.  For a pinned table
+        # that is the pin; for every other table the chapter *is* the first
+        # word's, so the check is held against the skills instead — a skill of
+        # chapter c that names the table drills it in chapter c, and when the
+        # course has taught a word of the table by then (a regular one: a
+        # deponent cannot lead an active table) the first stock word must be
+        # taught by then too.  A skill that names a table before the course
+        # teaches any word of it (present-indicative-3rd and eō) is not an
+        # error of the stock; the table keeps its own chapter.
+        if first and chapter:
+            if not first.get("chapter"):
+                problems.append(f"{tid}: first stock word {first['h']!r} is neither taught by a "
+                                f"deck nor printed in a chapter, so it cannot lead the stock")
+            elif first["chapter"] > chapter:
+                problems.append(f"{tid}: first stock word {first['h']!r} is introduced in chapter "
+                                f"{first['chapter']}, after the table's own chapter {chapter}")
+            elif tid not in INTRODUCED_BY:
+                by_chapter_word: dict[int, str] = {}
+                for e in own:
+                    v = vocab.get((e["h"], VOCAB_POS[e["pos"]]))
+                    if v and e.get("kind") not in ("dep", "semidep"):
+                        by_chapter_word.setdefault(v["chapter"], e["h"])
+                for skill_id in sorted(set(drill_skills.get(tid, [])),
+                                       key=lambda k: (skill_chapter.get(k) or 99, k)):
+                    c = skill_chapter.get(skill_id)
+                    if not c or c >= first["chapter"]:
+                        continue
+                    avail = sorted((ch, h) for ch, h in by_chapter_word.items() if ch <= c)
+                    if avail:
+                        problems.append(f"{tid}: {skill_id} (chapter {c}) drills this table, but its "
+                                        f"first stock word {first['h']!r} is taught in chapter "
+                                        f"{first['chapter']} — {avail[0][1]!r} is taught by chapter {avail[0][0]}")
+                        break
 
         # ---- the axes the data can honestly offer
         axes = build_axes(tid, meta, kind, own, groups, vocab, lemmas_with_group)

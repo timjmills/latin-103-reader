@@ -34,10 +34,13 @@ import latin_forms as lf  # noqa: E402
 DUMPER = ROOT / "tests" / "latin_forms" / "dump_js_cell_ids.mjs"
 INDEX_PATH = ROOT / "app" / "data" / "glossary-headwords.json"
 
-#: What §7.4 of the contract measured over the whole glossary, on 2026-09-09.
+#: What §7.4 of the contract measured over the whole glossary, on 2026-09-09
+#: (2,735 headwords, 157,908 cells), moved on 2026-09-11 when the written
+#: teaching sentences joined the glossary's token set (build_glossary.py,
+#: collect_teaching_tokens): arx, arcs and puteō gained tables.
 #: One table per headword — the first entry of that headword that has one.
-MEASURED_HEADWORDS = 2735
-MEASURED_CELLS = 157908
+MEASURED_HEADWORDS = 2738
+MEASURED_CELLS = 158007
 
 
 @pytest.fixture(scope="module")
@@ -102,6 +105,30 @@ def test_every_stock_word_renders_its_table(tables, entries):
             assert cells, f"{tid}: {s['h']} renders an empty table"
             unknown = sorted(set(cells) - declared)
             assert not unknown, f"{tid}: {s['h']} renders cells the catalogue does not name: {unknown[:4]}"
+
+
+def test_the_first_stock_word_is_introduced_by_the_tables_chapter(tables):
+    """§4a stock words per chapter: a chapter-one skill drills chapter-one words,
+    so the word a table is first built on is taught (or, for a word no deck
+    teaches, printed) at or before the table's own chapter — īnsula leads decl1
+    and fluvius decl2m, both cap. I, not puella and servus of cap. II."""
+    for t in tables.values():
+        if not t["chapter"]:
+            continue
+        first = t["stock"][0]
+        assert first.get("chapter"), f"{t['id']}: {first['h']} has no chapter"
+        assert first["chapter"] <= t["chapter"],             f"{t['id']}: {first['h']} is introduced in {first['chapter']}, table is {t['chapter']}"
+    assert tables["decl1"]["stock"][0]["h"] == "insula" and tables["decl1"]["chapter"] == 1
+    assert tables["decl2m"]["stock"][0]["h"] == "fluvius" and tables["decl2m"]["chapter"] == 1
+
+
+def test_a_late_first_stock_word_fails_the_build(monkeypatch):
+    """The rule is the build's own check, not only this test's."""
+    monkeypatch.setitem(bpc.TABLES, "decl1",
+                        dict(bpc.TABLES["decl1"], stock=["nauta", "insula", "puella"]))
+    _, problems = bpc.build()
+    assert any(p.startswith("decl1: nominative-subject (chapter 1)") and "'nauta'" in p
+               and "'insula'" in p for p in problems), problems
 
 
 def test_every_group_is_reachable_from_a_stock_word(tables):

@@ -8,12 +8,17 @@
 
 Exit status is 1 when any skill fails any row that the data can decide.
 
-Each of the 88 skills in app/data/grammar/skills.json is first classified from
-its category (the `paradigms` list then names its tables):
+Each of the 88 skills in app/data/grammar/skills.json is first classified —
+the three lesson-only skills by name (LESSON_ONLY, with the reason each is
+excused), every other by its category (the `paradigms` list then names its
+tables):
 
+    lesson-only        elegiac-couplet · prosody-scansion · principal-parts
     table skill        noun-case · adjective · pronoun · verb-form · vocabulary
     sentence skill     syntax · verb-use
-    lesson-only        metre  (and any skill whose sentences file says `lesson_only`)
+
+A skill whose sentences file says `lesson_only` but is not one of the three is
+reported, not accepted (its row 3 fails).
 
 Then every row of §13's table is tested against the data on disk.  Rows that
 concern the app rather than the data — scaffolded tables, per-box feedback,
@@ -32,10 +37,12 @@ The rows, as the check names them:
     1c  noticing opener              step 1 carries `notice` {sentences[2], ask, tap|options}  (§10 amendment)
     1d  completed worked examples    ≥ 3 `worked`; the first fully given, every later one asks  (§2, §8)
     2   written sentences            ≥ 12, 5–8 words, cumulative vocabulary, focus, gloss  (§1);
-                                     lesson-only: ≥ 4 illustrative lines, each with `scan`
-    3   unlimited practice           table: ≥ 1 catalogue table with stock words  (§4a, §11)
+                                     lesson-only: ≥ 4 illustrative lines (a metre skill's each with `scan`)
+    3   unlimited practice           table: ≥ 1 catalogue table with stock words, the first of
+                                     them taught by the table's own chapter  (§4a, §11)
                                      sentence: ≥ 5 templates, pilot-reviewed  (§11)
-                                     lesson-only: excused, and the sentences file states why
+                                     lesson-only: excused, the reason stated (by the sentences
+                                     file, or by LESSON_ONLY here)
     4   scaffolded table             the named tables have enough cells for 80/50/20/0  (§12) — app
     5   mixed practice / axes        table: every named table offers honest axes  (§5, §12)
                                      sentence: the written set and the generated set both exist
@@ -43,10 +50,13 @@ The rows, as the check names them:
     7   re-test · Just drill it ·    material for a blocked ten, and a pattern the reading
         two-tap · reading tie-in     tie-in can light  (§10) — app; lesson-only: tie-in only
 
-The vocabulary rule is the one pipeline/check_teaching_sentences.py enforces
-(its NAMES, FUNCTION_WORDS and LEMMA_SPELLINGS are imported, not copied); this
-check builds the cumulative form set once, tagged with the chapter each form
-first becomes available, instead of once per chapter.
+The vocabulary rule of row 2 is pipeline/validate_teaching.py's own — its
+resolve() is imported, not reimplemented — so the two agree word for word: a
+printed word is inside the cumulative vocabulary of the skill's chapter, or a
+proper name of the book's cast and places (§1 admits them; the decks hold
+none), or the construction's own function word (-que on enclitics).  The
+cumulative deck forms are built once per chapter and shared by every skill of
+that chapter.
 """
 from __future__ import annotations
 
@@ -62,16 +72,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
-import check_teaching_sentences as CTS                   # noqa: E402
-import latin_forms as LF                                 # noqa: E402
-from macrons import strip_macrons                        # noqa: E402
+import validate_teaching as VT                           # noqa: E402
 
 GRAM = os.path.join(ROOT, "app", "data", "grammar")
 
-#: The skills the contract excuses from drilling ("the two metre skills
-#: (lesson only)", Wave 2 notes; §13's lesson-only column).  §13 counts three;
-#: the data and the contract's prose name only these two.
-LESSON_ONLY = frozenset({"elegiac-couplet", "prosody-scansion"})
+#: The three skills §13's lesson-only column excuses from unlimited practice,
+#: each with the reason the map shows in place of a dead control.  The two
+#: metre skills are "lesson only" from Wave 2 on (nothing to parse or fill in);
+#: principal-parts is a vocabulary skill whose material is the dictionary line
+#: itself — the stems are read off the four parts, not generated from a table,
+#: so no catalogue table and no template sentence can drill it without end.
+LESSON_ONLY: dict[str, str] = {
+    "elegiac-couplet": "metre is taught, not drilled: the lines are scanned and read, "
+                       "and there is nothing to parse or fill in",
+    "prosody-scansion": "prosody is taught, not drilled: syllable length and elision are "
+                        "shown on the line, and there is nothing to parse or fill in",
+    "principal-parts": "the principal parts are the dictionary line itself: the stems are "
+                       "read off the four parts of each verb, not generated from a table, "
+                       "so the written sentences are the whole of its practice",
+}
 
 TABLE_CATEGORIES = frozenset({"noun-case", "adjective", "pronoun", "verb-form", "vocabulary"})
 SENTENCE_CATEGORIES = frozenset({"syntax", "verb-use"})
@@ -140,66 +159,32 @@ def load_catalogue() -> tuple[dict[str, dict], dict[str, dict]]:
 
 # --------------------------------------------------------------- vocabulary
 
-_VOCAB: dict[str, int] | None = None
+class Vocabulary:
+    """The cumulative vocabulary per chapter, as validate_teaching.py builds it
+    for one skill — the deck lemmas to the chapter and every form they take —
+    built once per chapter here and shared by every skill of that chapter."""
 
+    def __init__(self):
+        self.glossary = VT.load(os.path.join(ROOT, "app", "data", "glossary.json"))
+        vdir = os.path.join(GRAM, "vocab")
+        self.decks = {int(n[:2]): _load(os.path.join(vdir, n))["words"]
+                      for n in os.listdir(vdir) if re.fullmatch(r"\d\d\.json", n)}
+        self._by_chapter: dict[int, tuple[set[str], dict]] = {}
 
-def vocab_index() -> dict[str, int]:
-    """Every macronised form a deck word can take -> the chapter it arrives in.
+    def to_chapter(self, chapter: int) -> tuple[set[str], dict]:
+        if chapter not in self._by_chapter:
+            words = [w for c in sorted(self.decks) if c <= chapter for w in self.decks[c]]
+            allowed = {VT.strip_macrons(w["lemma"]) for w in words}
+            forms, _parses = VT.deck_forms(words, self.glossary)
+            self._by_chapter[chapter] = (allowed, forms)
+        return self._by_chapter[chapter]
 
-    The same construction as check_teaching_sentences.allowed_forms, done once
-    for all chapters: a form is inside the cumulative vocabulary of chapter c
-    when its recorded chapter is <= c.
-    """
-    global _VOCAB
-    if _VOCAB is not None:
-        return _VOCAB
-    glossary = CTS.load_glossary()
-    heads: dict[str, tuple[int, str]] = {}
-    vdir = os.path.join(GRAM, "vocab")
-    decks = sorted(n for n in os.listdir(vdir) if re.fullmatch(r"\d\d\.json", n))
-    for name in decks:
-        n = int(name[:2])
-        deck = _load(os.path.join(vdir, name))
-        for w in deck["words"]:
-            key = CTS.gkey(w["lemma"])
-            heads.setdefault(key, (n, w["lemma"]))
-            for e in glossary.get(key, []):
-                h = CTS.gkey(e.get("h") or e.get("lemma", "").split()[0])
-                heads.setdefault(h, (n, w["lemma"]))
-    out: dict[str, int] = {}
-
-    def add(form: str, ch: int):
-        lo = form.lower()
-        if lo not in out or out[lo] > ch:
-            out[lo] = ch
-
-    for entries in glossary.values():
-        for e in entries:
-            h = CTS.gkey(e.get("h") or e.get("lemma", "").split()[0])
-            if h not in heads:
-                continue
-            ch, printed = heads[h]
-            try:
-                forms = LF.single_forms(e)
-            except Exception:                                 # noqa: BLE001
-                forms = []
-            if not forms:
-                forms = [printed]
-            for form in forms:
-                add(form, ch)
-            for extra in CTS.LEMMA_SPELLINGS.get(CTS.gkey(printed), ()):
-                add(extra, ch)
-    _VOCAB = out
-    return out
-
-
-def word_allowed(word: str, chapter: int, vocab: dict[str, int]) -> bool:
-    lo = word.lower()
-    ch = vocab.get(lo)
-    if ch is not None and ch <= chapter:
-        return True
-    bare = strip_macrons(lo)
-    return bare in CTS.NAMES or bare in CTS.FUNCTION_WORDS
+    def resolve(self, word: str, skill: dict):
+        """validate_teaching.resolve: (kind, lemma, enclitic), or None when no
+        rule admits the word — kind is deck, name or function."""
+        allowed, forms = self.to_chapter(skill["chapter"])
+        return VT.resolve(word, allowed, forms, self.glossary,
+                          VT.FUNCTION_WORDS.get(skill["id"], set()))
 
 
 # ----------------------------------------------------------------- helpers
@@ -215,11 +200,11 @@ def say_words(text: str) -> int:
 
 def template_words(la: str) -> int:
     """A template's printed length once filled: each {slot} is one word."""
-    return len(CTS.words_of(re.sub(r"\{[^}]*\}", "X", la or "")))
+    return len(VT.printed_words(re.sub(r"\{[^}]*\}", "X", la or "")))
 
 
 def classify(skill: dict, sentences: dict | None) -> str:
-    if skill["category"] in LESSON_ONLY_CATEGORIES:
+    if skill["id"] in LESSON_ONLY or skill["category"] in LESSON_ONLY_CATEGORIES:
         return "lesson-only"
     if isinstance(sentences, dict) and sentences.get("lesson_only"):
         return "lesson-only"
@@ -242,7 +227,7 @@ class Ctx:
     def __init__(self):
         self.skills, self.paradigm_keys = load_skills()
         self.tables, self.keys = load_catalogue()
-        self.vocab = vocab_index()
+        self.vocab = Vocabulary()
 
     def resolve_tables(self, skill: dict) -> tuple[list[dict], list[str]]:
         """The catalogue tables a skill's paradigm keys name, and any problems."""
@@ -409,7 +394,7 @@ def _sentence_problems(ctx, skill, s: dict, need_scan: bool) -> list[str]:
     p = []
     sid = s.get("id") or "?"
     la = s.get("la") or ""
-    ws = CTS.words_of(la)
+    ws = VT.printed_words(la)
     if s.get("words") != len(ws):
         p.append(f"{sid}: \"words\" {s.get('words')} but {len(ws)} printed")
     if not 5 <= len(ws) <= 8 and not s.get("note"):
@@ -424,7 +409,7 @@ def _sentence_problems(ctx, skill, s: dict, need_scan: bool) -> list[str]:
         if gl != ws:
             p.append(f"{sid}: gloss does not list every word in order")
     for w in ws:
-        if not word_allowed(w, skill["chapter"], ctx.vocab):
+        if ctx.vocab.resolve(w, skill) is None:
             p.append(f"{sid}: {w!r} outside the cumulative vocabulary to chapter {skill['chapter']}")
     return p
 
@@ -446,7 +431,8 @@ def row_2(ctx, skill, cls, lesson, sents):
         if s.get("id") in seen:
             p.append(f"duplicate id {s.get('id')!r}")
         seen.add(s.get("id"))
-        p.extend(_sentence_problems(ctx, skill, s, need_scan=(cls == "lesson-only")))
+        p.extend(_sentence_problems(ctx, skill, s,
+                                    need_scan=(skill["category"] in LESSON_ONLY_CATEGORIES)))
     what = "illustrative lines" if cls == "lesson-only" else "sentences"
     return (FAIL, _join(p)) if p else (PASS, f"{len(ss)} {what}")
 
@@ -459,6 +445,11 @@ def row_3(ctx, skill, cls, lesson, sents, templates):
         no_stock = [t["id"] for t in tables if not t.get("stock")]
         if no_stock:
             p.append(f"tables without stock words: {no_stock}")
+        for t in tables:
+            first = (t.get("stock") or [None])[0]
+            if first and t.get("chapter") and (first.get("chapter") or 99) > t["chapter"]:
+                p.append(f"{t['id']}: first stock word {first['h']!r} is introduced in chapter "
+                         f"{first.get('chapter')}, after the table's chapter {t['chapter']}")
         if p:
             return FAIL, _join(p)
         return PASS, ", ".join(f"{t['id']} ({len(t['stock'])} stock)" for t in tables)
@@ -487,7 +478,7 @@ def row_3(ctx, skill, cls, lesson, sents, templates):
             missing = used - set(slots)
             if missing:
                 p.append(f"{tid}: slots {sorted(missing)} used but not declared")
-            if t.get("focus") and t["focus"] not in slots and t["focus"] not in CTS.words_of(t.get("la") or ""):
+            if t.get("focus") and t["focus"] not in slots and t["focus"] not in VT.printed_words(t.get("la") or ""):
                 p.append(f"{tid}: focus {t['focus']!r} is neither a slot nor a printed word")
             n = template_words(t.get("la") or "")
             if not 5 <= n <= 8 and not t.get("note"):
@@ -500,11 +491,9 @@ def row_3(ctx, skill, cls, lesson, sents, templates):
     # lesson-only: excused, stated
     if skill["id"] not in LESSON_ONLY:
         return FAIL, f"classified lesson-only but not one of the declared skills {sorted(LESSON_ONLY)}"
-    if not isinstance(sents, dict) or not sents.get("lesson_only"):
-        return FAIL, "sentences file does not say lesson_only: true"
-    if not sents.get("note"):
-        return FAIL, "sentences file has lesson_only but no note stating why"
-    return PASS, "excused; the sentences file says why"
+    if isinstance(sents, dict) and sents.get("lesson_only") and sents.get("note"):
+        return PASS, "excused; the sentences file says why"
+    return PASS, "excused: " + LESSON_ONLY[skill["id"]]
 
 
 def row_4(ctx, skill, cls, lesson, sents):
@@ -634,6 +623,8 @@ def check_skill(ctx: Ctx, skill: dict) -> dict:
     rows["6"] = row_6(ctx, skill, cls, lesson, sents)
     rows["7"] = row_7(ctx, skill, cls, lesson, sents)
     notes = []
+    if cls == "lesson-only" and sid in LESSON_ONLY:
+        notes.append("lesson-only: " + LESSON_ONLY[sid])
     if cls == "lesson-only" and sid not in LESSON_ONLY:
         notes.append("lesson-only by its data, but not one of the declared lesson-only skills")
     if cls == "table" and skill.get("feature") == "construction":

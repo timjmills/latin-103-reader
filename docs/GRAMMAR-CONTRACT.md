@@ -1250,8 +1250,8 @@ library on request.
 
 ### 4a. The stable names (built, 2026-09-09)
 
-§7.4 measured what already exists: **56 ending-tables realised**, by **2,735
-headwords** producing **157,908 keyed cells**, every one of them already
+§7.4 measured what already exists: **56 ending-tables realised**, by **2,738
+headwords** producing **158,007 keyed cells**, every one of them already
 carrying a structured key. Both counts are reproduced by the build (one table
 per headword, the first entry of it that has one) and asserted by the test.
 §7.4's "63 declared" enumerates 62 by direct count — `NOUN_ENDINGS` 17,
@@ -1375,22 +1375,24 @@ in JavaScript) to prove the ids in the file are the ids the app will compute.
 
 ### 4b. The headword index (built, 2026-09-09)
 
-`glossary.json` is keyed by inflected form only (11,632 keys), so `lookup(h)`
-reaches the entry for just **2,037 of the 2,735 table-bearing headwords**, and
+`glossary.json` is keyed by inflected form only (12,028 keys), so `lookup(h)`
+reaches the entry for just **2,037 of the 2,738 table-bearing headwords**, and
 no search by lemma is possible at all. `app/data/glossary-headwords.json` is the
 missing map and nothing more:
 
 ```jsonc
-{ "version": 1, "fields": ["h", "pos", "key", "i"], "count": 4488,
+{ "version": 1, "fields": ["h", "pos", "key", "i"], "count": 4502,
   "headwords": [ ["abduco", "V", null, 0], … ] }   // key null = the same as h
 ```
 
 One row per distinct reading (headword, part of speech, dictionary form) —
-**4,488 rows over all 3,294 headwords**, every one resolving to
+**4,502 rows over all 3,294 headwords**, every one resolving to
 `glossary[key ?? h][i]`. Nothing is copied out of the entry, because the app
 already holds the glossary, so it is a map and not a second dictionary:
 **117 KB, 25 KB gzipped**. It is precached with the shell, and it can be fetched
 on its own — a word picker can open before the 5 MB glossary is wanted.
+
+(Numbers re-measured 2026-09-11 after the glossary gained every word of the written teaching sentences and three table-bearing headwords: arx, arcs, puteō.)
 
 ## 5. Customisation
 
@@ -1477,7 +1479,7 @@ This is the finding that most changes the plan.
 - "Guided" differs from "blocked" in exactly three ways (`session.js:355-360`): hints forced open, stage 1, and `full: true` charts. **That last makes the guided phase the hardest input in the section** — a whole paradigm column, up to six typed forms, one Check, all-or-nothing. There is an 85% chance a four-kind skill's guided five contains one.
 
 ### 7.4 The catalogue is mostly already there
-- `paradigms.js` declares 63 table shapes; **56 distinct tables** are realised by real lemmas, driven by 2,735 headwords, producing **157,908 keyed cells** — and **every cell already carries a structured key**, so per-cell practice is a re-keying job, not new morphology.
+- `paradigms.js` declares 63 table shapes; **56 distinct tables** are realised by real lemmas, driven by 2,738 headwords, producing **158,007 keyed cells** — and **every cell already carries a structured key**, so per-cell practice is a re-keying job, not new morphology.
 - Missing: a **stable id per table** (`paradigm()` returns no id and section indices shift with a lemma's root count), a **headword index** (the glossary is indexed by inflected form only, so no lemma search exists), and a lemma picker. `KEY_CLASS` in `lessons.js` covers **20 of 46** paradigm keys and mis-selects on four.
 - Customisation is already supported by the data: gender is written on 3,103 of 3,114 noun parses; nouns by declension 296/602/368/148/8; verbs by conjugation 326/124/260/50/55; deponents 72; plural-only 93; singular-only 189. i-stem is derived, not stored.
 
@@ -1618,7 +1620,7 @@ Learner: to nail a skill down there must be unlimited practice of it, by a
 word generator or a sentence generator. Two supplies, one existing:
 
 **Endings are already unlimited.** A paradigm cell can be built on any of the
-2,735 table-bearing headwords (§4a), so the catalogue's "practise this cell"
+2,738 table-bearing headwords (§4a), so the catalogue's "practise this cell"
 and "practise this table" are the word generator: cell × word, drawn without
 repeat, filtered by the customisation axes (§5). Every morphology skill routes
 its unlimited practice there.

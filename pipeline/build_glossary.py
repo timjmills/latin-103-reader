@@ -7,7 +7,11 @@ Token set
 ---------
 Every word in the Latin sections of source/week-*.md (the "### Textus Latīnus"
 blocks) plus every key of the old data/whitaker-glossary-all-weeks.json, so
-coverage never regresses. Keys in the output are lowercase, macron-stripped.
+coverage never regresses; then the review shelf, the Colloquia, the margin
+glosses, the shelf notes, the drills (collect_drill_tokens) and the written
+teaching sentences of every grammar skill (collect_teaching_tokens), so a form
+a sentence was written to show — pāginārum, vocet — has a key of its own.
+Keys in the output are lowercase, macron-stripped.
 
 Whitaker
 --------
@@ -325,6 +329,38 @@ def collect_drill_tokens() -> collections.Counter:
         for w in j.get("words", []):
             for field in ("dict", "parts"):
                 c.update(WORD_RE.findall(w.get(field) or ""))
+    c.update(collect_teaching_tokens())
+    return c
+
+
+def collect_teaching_tokens() -> collections.Counter:
+    """The Latin of the written teaching sentences (app/data/grammar/sentences/
+    <skill>.json, GRAMMAR-CONTRACT.md §1) and the fixed words of the sentence
+    templates (app/data/grammar/templates/<skill>.json, §11).  They are authored
+    inside the cumulative vocabulary, so every lexeme is already here — but the
+    glossary is keyed by inflected form, and a sentence written to show a form
+    (pāginārum, vocet, laudābuntur) prints one the library never does.  The
+    learner taps every word of a teaching sentence and its focus word must gloss
+    (pipeline/check_skill_coverage.py sweeps them), so each printed form gets its
+    own key.  A template's slots are filled from the catalogue, whose words are
+    glossary entries already; only its literal words are taken."""
+    c: collections.Counter = collections.Counter()
+    for path in sorted(glob.glob(str(ROOT / "app" / "data" / "grammar" / "sentences" / "*.json"))):
+        try:
+            j = json.load(open(path, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for s in j.get("sentences", []):
+            c.update(WORD_RE.findall(s.get("la") or ""))
+            if s.get("focus"):
+                c.update(WORD_RE.findall(s["focus"]))
+    for path in sorted(glob.glob(str(ROOT / "app" / "data" / "grammar" / "templates" / "*.json"))):
+        try:
+            j = json.load(open(path, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for t in j.get("templates", []):
+            c.update(WORD_RE.findall(re.sub(r"\{[^}]*\}", " ", t.get("la") or "")))
     return c
 
 
@@ -682,6 +718,7 @@ ROOT_MACRONS: dict[str, dict[int, str]] = {
     "V:lau/lau/lau/laut": {2: "lāv"},                                 # lāvit, lāvisse
     "V:lau/lau/lau/lot": {2: "lāv"},                                  # the same verb under Whitaker's other supine
     "V:mou/mou/mou/mot": {2: "mōv"},                                  # mōvit, mōvisse, mōvērunt
+    "V:lacrim/lacrim/lacrimau/lacrimat": {2: "lacrimāv", 3: "lacrimāt"},  # lacrimāre x48 and lacrimāns x20 on the page: a regular 1st-conjugation verb builds both later parts on that same -ā- (laudāre / laudāvī / laudātum below)
     "V:neg/neg/negau/negat": {2: "negāv"},                            # negāverat
     "V:salut/salut/salutau/salutat": {2: "salūtāv"},                  # salūtāvit
     "V:sed/sed/sed/sess": {2: "sēd"},                                 # sēdit, sēdisse (sedeō)
@@ -697,7 +734,10 @@ ROOT_MACRONS: dict[str, dict[int, str]] = {
     "V:mut/mut/mutau/mutat": {3: "mūtāt"},                            # mūtātum
     "V:oppugn/oppugn/oppugnau/oppugnat": {3: "oppugnāt"},             # oppugnātum
     "V:postul/postul/postulau/postulat": {3: "postulāt"},             # postulātum
+    "V:egredi/egred/-/egress": {3: "ēgress"},                         # ēgrediuntur x53, ēgreditur x31: the prefix is ē- in every root the page prints, and the participle stem is the one root it never prints
+    "V:occult/occult/occultau/occultat": {3: "occultāt"},             # occultātur on the page (root 2 is already occultāv: occultāvit x55)
     "V:puls/puls/pulsau/pulsat": {3: "pulsāt"},                       # pulsātus, pulsātum
+    "V:reprehend/reprehend/reprehend/reprehens": {3: "reprehēns"},    # reprehēnsum, the answer pensa 24 prints for the supine
     "V:puni/pun/puniu/punit": {3: "pūnīt"},                           # pūnītī
 }
 # Whitaker gives several *different* words the same stems, and `Speller` learns
@@ -1301,6 +1341,89 @@ def supine_entries(entries: list[dict], form: str) -> list[dict]:
             twin = dict(e, pos="VPAR", parses=[{"mood": "supine", "case": case}])
             out.append(twin)
     return out
+
+
+def derive_missing_forms(glossary: dict[str, list[dict]], form_set: set[str],
+                         display_key: dict[str, str]) -> int:
+    """Forms in the token set that Whitaker could not parse and no supplement,
+    name or abbreviation covers, read off the paradigms of the lexemes the
+    glossary already holds — the same morphology the app runs at the tap
+    (latin_forms is the Python mirror of app/js/paradigms.js, tests/latin_forms).
+
+    The written teaching sentences (collect_teaching_tokens) print forms the
+    library never does, and a few of them fall outside this port of Whitaker:
+    the ablative supine `factū` (only the accusative is listed), the active
+    subjunctive of a semi-deponent (`gaudēret`), and a name off the course's own
+    list with an enclitic on it (`Dānuviusque`).  Each is a regular form of a
+    word already in the dictionary, so the entry is that word's, with the
+    parses the paradigm gives the form (`enc` set for an enclitic).  Where more
+    than one lexeme makes the form, the one the library prints most goes first.
+    Only forms with no reading at all are touched: this never adds a rival to a
+    form Whitaker parsed."""
+    missing = [f for f in form_set if display_key[f] not in glossary]
+    if not missing:
+        return 0
+    gen: dict[str, list[tuple[dict, str, list[dict], int]]] = {}
+    seen: set[tuple] = set()
+    for entries in glossary.values():
+        for e in entries:
+            if e.get("enc") or not e.get("roots"):
+                continue
+            # one paradigm per lexeme: a VPAR twin, or the same word from
+            # Whitaker and from a supplement (gaudeō twice, roots spelt with and
+            # without macrons), would otherwise clone the form twice
+            ident = (e["h"], "V" if e["pos"] == "VPAR" else e["pos"],
+                     tuple(canonical(r) for r in e["roots"]))
+            if ident in seen:
+                continue
+            seen.add(ident)
+            try:
+                idx = latin_forms.form_index(e)
+            except Exception:                                   # noqa: BLE001
+                continue
+            printed = sum(LIB_FORM_COUNTS.get(f.lower(), 0) for f in idx)
+            for f, parses in idx.items():
+                gen.setdefault(canonical(f), []).append((e, f, parses, printed))
+
+    def clone(e: dict, parses: list[dict], enc: str | None) -> list[dict]:
+        out = []
+        if e["pos"] in ("V", "VPAR"):
+            groups = [
+                ("V", [p for p in parses if p.get("mood") not in ("ptc", "gerundive", "gerund", "supine")]),
+                ("VPAR", [p for p in parses if p.get("mood") in ("ptc", "gerundive", "gerund", "supine")]),
+            ]
+        else:
+            groups = [(e["pos"], parses)]
+        for pos, ps in groups:
+            if not ps:
+                continue
+            d = dict(e, pos=pos, parses=[dict(p) for p in ps], enc=enc)
+            for k in ("n", "nd", "sp", "_sp"):
+                d.pop(k, None)
+            out.append(d)
+        return out
+
+    n = 0
+    for form in sorted(missing):
+        cands = sorted(gen.get(form, []), key=lambda t: -t[3])
+        entries: list[dict] = []
+        if cands:
+            for e, _f, parses, _n in cands:
+                entries += clone(e, parses, None)
+        else:
+            for suffix in ("que", "ne", "ve"):
+                if form.endswith(suffix) and len(form) > len(suffix) + 1:
+                    stem = form[: -len(suffix)]
+                    base = glossary.get(display_key.get(stem, stem)) or []
+                    for e in base:
+                        if not e.get("enc"):
+                            entries += clone(e, e["parses"], suffix)
+                    if entries:
+                        break
+        if entries:
+            glossary[display_key[form]] = entries[:MAX_ENTRIES_PER_FORM]
+            n += 1
+    return n
 
 
 # ---------------------------------------------------------------------------
@@ -2602,6 +2725,7 @@ def main() -> None:
             glossary[display_key[form]] = merged
             if ranked:
                 n_whit += 1
+    n_derived = derive_missing_forms(glossary, form_set, display_key)
     n_lib = attach_library_counts(glossary)
     glossary.update(exact_spelling_keys(glossary, speller, display_key))
     n_sp = attach_spellings(glossary)
@@ -2650,7 +2774,8 @@ def main() -> None:
     print(f"forms in token set: {len(form_set)}")
     print(f"exact-spelling keys: {len(glossary) - len(form_set) + len(form_set) - len([f for f in form_set if display_key[f] in glossary])}"
           f"; `sp` written on {n_sp} entries; `n` (library count) on {n_lib}")
-    print(f"forms with entries: {len(glossary)} (Whitaker: {n_whit}, supplement-only: {len(glossary) - n_whit})")
+    print(f"forms with entries: {len(glossary)} (Whitaker: {n_whit}, supplement-only: {len(glossary) - n_whit - n_derived}, "
+          f"derived from the glossary's own paradigms: {n_derived})")
     print(f"entries: {n_entries}; file: {size/1e6:.2f} MB → {OUT_PATH}")
     for wk, n in sorted(total_miss.items()):
         print(f"week {wk:02d}: {sum(weeks[wk].values())} tokens, {len({canonical(t) for t in weeks[wk]})} forms, {n} misses")
