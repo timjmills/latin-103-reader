@@ -102,11 +102,18 @@ highlights along.
 
 The shell is already live at **https://timjmills.github.io/latin-103-reader/**
 (GitHub Pages, served from the `gh-pages` branch, which holds only the
-contents of `app/`). After changing anything under `app/`, publish it with:
+contents of `app/`). After changing anything under `app/`, run the copyright
+gate — nothing in the public shell may carry a run of the book or of your
+translations — and then publish:
 
 ```bash
+PYTHONIOENCODING=utf-8 python pipeline/check_copyright.py   # must print "OK: 0 hits"
 git subtree push --prefix app origin gh-pages
 ```
+
+(`pipeline/README.md`, "Copyright gate", says what it checks; it needs
+`data/build/` on this machine, and `python -m pytest pipeline -q` runs it too,
+skipping it where the library is absent.)
 
 Optional: `deploy/pages-workflow.yml` is a GitHub Actions workflow that does
 the same on every push to `main`. To use it, refresh the CLI token with the

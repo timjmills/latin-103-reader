@@ -459,7 +459,7 @@ export function scanUnit(unit, skill, lookup, opts = {}) {
     const prev = words[wi - 1], next = words[wi + 1];
     const beforeText = between(prev, t);
     const afterText = between(t, next);
-    // A preposition governs the word after it and any nominal (or et / -que) run up to it: "in vīllīs Graecīs et Rōmānīs".
+    // A preposition governs the word after it and any nominal (or et / -que) run up to it: "in hortīs magnīs et pulchrīs".
     const governs = new Set();
     for (let j = wi - 1; j >= Math.max(0, wi - 4); j--) {
       const w = words[j];

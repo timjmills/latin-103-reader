@@ -26,8 +26,47 @@ Files:
 | `test_build_week.py` | pytest: Week 1 end to end + synthetic fixtures for every format path |
 | `test_docx_to_md.py` | pytest: synthetic Word documents through the converter and the builder; Week 1 docx = week-01.md |
 | `parse_week_reference.py` | the original one-off parser; kept for its format notes, not used |
+| `check_copyright.py` | the copyright gate: nothing under `app/` may carry a run of the private text (below) |
 
 Everything under `data/build/` is gitignored (copyrighted text).
+
+## Copyright gate: `check_copyright.py`
+
+The book and the user's translations live only in `data/build/` and in
+Supabase; `app/` is published. Before anything under `app/` is deployed, run
+
+```
+PYTHONIOENCODING=utf-8 python pipeline/check_copyright.py
+```
+
+It indexes every **5-word window** of the book's Latin in `data/build/*.json`
+(units' `la` in the weeks, the review shelf and the colloquia; the scanned
+lines; the margin glosses; the pensa; the picture captions; the highlighted
+phrases) and every **8-word window** of the user's English `en` in
+`week-*.json`, then scans every file under `app/` — JSON values one by one,
+`.js`/`.md`/`.html`/`.css` by their text — and prints each hit as
+`file → JSON path (or line) → the string → the window and where it came from`.
+Exit 1 on any hit; 0 on none. Matching is over normalised words (lower-case,
+macrons stripped, v→u, j→i, punctuation dropped), so a hit is a hit however
+it is spelt.
+
+What is *not* indexed: our own prose that also sits in `data/build` (part
+summaries, focus blurbs, notes, the English side of the margin glosses), the
+Whitaker dictionary, and the ancient verse Ørberg reprints (Martial,
+Catullus, Ovid — `latin_text.CLASSICAL`, public domain, which the metre
+lessons quote). A dictionary line that happens to coincide with a margin
+gloss (a declension note, the Roman date formula) is allow-listed by exact
+file and JSON path in `ALLOW` at the top of the script, each entry with its
+reason; a sentence of the book is never allow-listed — rewrite it.
+
+`test_check_copyright.py` runs the gate under pytest. Where `data/build` is
+absent (CI, a fresh clone) that test is **skipped**, not failed; the
+synthetic tests in the same file still run. `--build DIR` or
+`LATIN103_BUILD=DIR` points the script at a library elsewhere.
+
+This is the wider net; `check_questions.py` keeps its own, finer line for the
+question sets (answers and choices as span references, `q` never a clause of
+its own sentence). Run both before a deploy.
 
 ## Dropping in weeks 02–14
 
