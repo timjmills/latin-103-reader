@@ -1,0 +1,922 @@
+{
+ "skill": "indirect-command",
+ "chapter": 27,
+ "templates": [
+  {
+   "id": "ic-t1",
+   "la": "{s:nom} {r:dat} {v1:pres.ind} ut {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} to {v:base}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "rēx",
+      "dux",
+      "erus",
+      "medicus",
+      "gubernātor",
+      "mīles",
+      "prīnceps",
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius"
+     ]
+    },
+    "r": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "nauta",
+      "mīles",
+      "colōnus",
+      "agricola",
+      "nūntius",
+      "tabellārius",
+      "ōstiārius",
+      "coquus",
+      "iānitor",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "Ursus"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "dat": "r",
+     "takes": "ut",
+     "lemmas": [
+      "imperō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "lemmas": [
+      "labōrō",
+      "veniō",
+      "taceō",
+      "surgō",
+      "exeō",
+      "redeō",
+      "maneō",
+      "sedeō",
+      "currō",
+      "discēdō",
+      "accurrō",
+      "vigilō",
+      "intrō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "ic-t2",
+   "la": "{s:nom} {r:dat} {v1:pres.ind} ut {o:acc} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} to {v:base} {o}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "rēx",
+      "dux",
+      "erus",
+      "medicus",
+      "gubernātor",
+      "mīles",
+      "prīnceps",
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius"
+     ]
+    },
+    "r": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "nauta",
+      "mīles",
+      "colōnus",
+      "agricola",
+      "nūntius",
+      "tabellārius",
+      "ōstiārius",
+      "coquus",
+      "iānitor",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "Ursus"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "dat": "r",
+     "takes": "ut",
+     "lemmas": [
+      "imperō"
+     ]
+    },
+    "o": {
+     "only": [
+      "aqua",
+      "vīnum",
+      "cibus",
+      "pānis",
+      "mālum",
+      "epistula",
+      "libellus",
+      "saccus",
+      "vestis",
+      "tunica",
+      "toga",
+      "mēnsa",
+      "iānua",
+      "ōstium",
+      "fenestra",
+      "gladius",
+      "baculum",
+      "rosa",
+      "flōs",
+      "pōculum",
+      "lectīca"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "obj": "o",
+     "lemmas": [
+      "portō",
+      "parō",
+      "emō",
+      "quaerō",
+      "aperiō",
+      "claudō",
+      "legō",
+      "scrībō",
+      "numerō",
+      "ferō",
+      "ostendō",
+      "vēndō",
+      "custodiō",
+      "sūmō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "ic-t3",
+   "la": "{s:nom} {r:acc} {v1:pres.ind} ut {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} to {v:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "r",
+     "takes": "ut",
+     "lemmas": [
+      "moneō",
+      "ōrō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "lemmas": [
+      "taceō",
+      "veniō",
+      "maneō",
+      "surgō",
+      "redeō",
+      "labōrō",
+      "sedeō",
+      "vigilō",
+      "discēdō",
+      "exeō",
+      "accurrō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "ic-t4",
+   "la": "{s:nom} {r:acc} {v1:pres.ind} ut {o:acc} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} to {v:base} {o}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "r",
+     "takes": "ut",
+     "lemmas": [
+      "moneō",
+      "ōrō"
+     ]
+    },
+    "o": {
+     "only": [
+      "aqua",
+      "vīnum",
+      "cibus",
+      "pānis",
+      "mālum",
+      "epistula",
+      "libellus",
+      "saccus",
+      "vestis",
+      "tunica",
+      "toga",
+      "mēnsa",
+      "iānua",
+      "ōstium",
+      "fenestra",
+      "gladius",
+      "baculum",
+      "rosa",
+      "flōs",
+      "pōculum",
+      "fābula"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "obj": "o",
+     "lemmas": [
+      "portō",
+      "parō",
+      "emō",
+      "quaerō",
+      "aperiō",
+      "claudō",
+      "legō",
+      "scrībō",
+      "numerō",
+      "ferō",
+      "ostendō",
+      "vēndō",
+      "custodiō",
+      "sūmō",
+      "bibō",
+      "nārrō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "ic-t5",
+   "la": "{s:nom} {r:acc} {v1:pres.ind} nē {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} not to {v:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "r",
+     "takes": "ut",
+     "lemmas": [
+      "moneō",
+      "ōrō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "lemmas": [
+      "currō",
+      "fugiō",
+      "clāmō",
+      "dormiō",
+      "plōrō",
+      "lūdō",
+      "exeō",
+      "discēdō",
+      "lacrimō",
+      "rīdeō",
+      "cantō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {
+    "nē": "that … not"
+   }
+  },
+  {
+   "id": "ic-t6",
+   "la": "{s:nom} {r:dat} {v1:pres.ind} nē {o:acc} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} not to {v:base} {o}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "rēx",
+      "dux",
+      "erus",
+      "medicus",
+      "gubernātor",
+      "mīles",
+      "prīnceps",
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius"
+     ]
+    },
+    "r": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "nauta",
+      "mīles",
+      "colōnus",
+      "agricola",
+      "nūntius",
+      "tabellārius",
+      "ōstiārius",
+      "coquus",
+      "iānitor",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "Ursus"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "dat": "r",
+     "takes": "ut",
+     "lemmas": [
+      "imperō"
+     ]
+    },
+    "o": {
+     "only": [
+      "aqua",
+      "vīnum",
+      "cibus",
+      "pānis",
+      "mālum",
+      "epistula",
+      "libellus",
+      "saccus",
+      "vestis",
+      "tunica",
+      "toga",
+      "iānua",
+      "ōstium",
+      "fenestra",
+      "gladius",
+      "baculum",
+      "rosa",
+      "flōs",
+      "pōculum"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "obj": "o",
+     "lemmas": [
+      "aperiō",
+      "claudō",
+      "tangō",
+      "portō",
+      "vēndō",
+      "emō",
+      "bibō",
+      "relinquō",
+      "sūmō",
+      "capiō",
+      "legō",
+      "ostendō",
+      "frangō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "nē": "that … not"
+   }
+  },
+  {
+   "id": "ic-t7",
+   "la": "{s:nom} {v1:pres.ind} ut {s2:nom} {o:acc} {v:pres.subj}.",
+   "en": "{s} sees to it that {s2} {v:3sg} {o}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "erus",
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius",
+      "gubernātor",
+      "medicus"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "ut",
+     "gloss": "sees to it",
+     "lemmas": [
+      "cūrō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "colōnus",
+      "agricola",
+      "nauta",
+      "mīles",
+      "coquus",
+      "ōstiārius"
+     ],
+     "number": "any"
+    },
+    "o": {
+     "only": [
+      "aqua",
+      "vīnum",
+      "cibus",
+      "pānis",
+      "cēna",
+      "mēnsa",
+      "iānua",
+      "ōstium",
+      "fenestra",
+      "saccus",
+      "vestis",
+      "rosa",
+      "flōs",
+      "pōculum",
+      "lectus"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "obj": "o",
+     "lemmas": [
+      "parō",
+      "portō",
+      "numerō",
+      "custodiō",
+      "claudō",
+      "aperiō",
+      "emō",
+      "impleō",
+      "ōrnō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "ic-t8",
+   "la": "{s:nom} {r:dat} {v1:pres.ind} ut {adv} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} to {v:base} {adv}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "rēx",
+      "dux",
+      "erus",
+      "medicus",
+      "gubernātor",
+      "mīles",
+      "prīnceps",
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius"
+     ]
+    },
+    "r": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "nauta",
+      "mīles",
+      "colōnus",
+      "agricola",
+      "nūntius",
+      "tabellārius",
+      "ōstiārius",
+      "coquus",
+      "iānitor",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "Ursus"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "dat": "r",
+     "takes": "ut",
+     "lemmas": [
+      "imperō"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim",
+      "celeriter",
+      "mox",
+      "hodiē"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "lemmas": [
+      "redeō",
+      "veniō",
+      "surgō",
+      "exeō",
+      "discēdō",
+      "accurrō",
+      "taceō",
+      "labōrō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "ic-t9",
+   "la": "{s:nom} {r:acc} {v1:pres.ind} ut in {p:abl} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} {r} to {v:base} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "r",
+     "takes": "ut",
+     "lemmas": [
+      "moneō",
+      "ōrō"
+     ]
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "vīlla",
+      "ātrium",
+      "cubiculum",
+      "culīna",
+      "peristylum"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "lemmas": [
+      "maneō",
+      "labōrō",
+      "dormiō",
+      "sedeō",
+      "quiēscō",
+      "cēnō",
+      "vigilō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 6,
+    "rate": 0.15,
+    "causes": [
+     "īnfāns and homō as the one commanding or commanded",
+     "lavō washing walls, rubble and coins (object class too broad for the template)",
+     "begs the merchants to sleep",
+     "cūrat glossed 'looks after' where the template means 'sees to it'"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 5,
+    "rate": 0.125,
+    "causes": [
+     "hostis, inimīcus, nympha, praedō as actors",
+     "emō with pecūnia / nummus ('buy money')",
+     "portō with an animal",
+     "servō aquam",
+     "verb slot gloss may now be literal text"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 9,
+    "rate": 0.225,
+    "causes": [
+     "imperō with any person as receiver ('the mother orders the master', 'the master orders the father'): receiver drawn from a subordinate list",
+     "sleep / rest verbs paired with urbs and silva: house places only"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "one borderline: lūdō for an adult"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 6,
+    "seed": 16,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "begs Aemilia not to play (lūdō with an adult; left as is)"
+    ]
+   }
+  ],
+  "final_rate": 0.025,
+  "method": "40 fresh sentences per pass, read hostilely for agreement, sense, sequence of tenses, English, gloss and macrons; every cause fixed in a frame, template, gate or check, never the symptom"
+ }
+}

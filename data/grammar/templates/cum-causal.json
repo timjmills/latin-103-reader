@@ -1,0 +1,838 @@
+{
+ "skill": "cum-causal",
+ "chapter": 29,
+ "templates": [
+  {
+   "id": "cc-t1",
+   "la": "Cum {s:nom} {adj:nom} {be:pres.subj}, in {p:abl} {v:pres.ind}.",
+   "en": "Since {s} {be:tense} {adj}, {s:pron} {v:prog} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "aeger",
+      "fessus",
+      "aegrōtus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "p": {
+     "only": [
+      "cubiculum",
+      "vīlla",
+      "lectus",
+      "ātrium",
+      "hortus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "gloss": "prog",
+     "lemmas": [
+      "maneō",
+      "dormiō",
+      "sedeō",
+      "cubō",
+      "iaceō",
+      "quiēscō"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "since"
+   }
+  },
+  {
+   "id": "cc-t2",
+   "la": "Cum {s:nom} {v1:pres.subj}, {s2:nom} {v2:pres.ind}.",
+   "en": "Since {s} {v1:prog}, {s2} {v2:prog}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Lȳdia",
+      "Dāvus",
+      "Syra",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "dominus",
+      "domina",
+      "magister",
+      "avus",
+      "avunculus"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "gloss": "prog",
+     "lemmas": [
+      "dormiō",
+      "aegrōtō",
+      "plōrō",
+      "lacrimō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "servus",
+      "puer",
+      "puella",
+      "ancilla",
+      "discipulus",
+      "fīlius",
+      "fīlia",
+      "amīcus",
+      "frāter",
+      "soror"
+     ],
+     "number": "pl"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s2",
+     "gloss": "prog",
+     "lemmas": [
+      "taceō",
+      "sileō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 5,
+   "fixed_gloss": {
+    "Cum": "since"
+   }
+  },
+  {
+   "id": "cc-t3",
+   "la": "{s:nom} {v1:pres.ind}, cum {s2:nom} {pron:acc} {v2:pres.subj}.",
+   "en": "{s} {v1:prog}, since {s2} {v2:prog} {pron}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Dāvus",
+      "Syra",
+      "Dēlia",
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "canis"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "gloss": "prog",
+     "absolute": true,
+     "lemmas": [
+      "plōrō",
+      "lacrimō",
+      "clāmō",
+      "fugiō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Mēdus",
+      "Dāvus",
+      "Syra",
+      "pater",
+      "māter",
+      "dominus",
+      "domina",
+      "magister",
+      "frāter",
+      "puer",
+      "servus"
+     ]
+    },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "obj": "pron",
+     "gloss": "prog",
+     "lemmas": [
+      "verberō",
+      "pulsō",
+      "accūsō",
+      "reprehendō",
+      "terreō",
+      "persequor",
+      "dērīdeō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 6,
+   "fixed_gloss": {
+    "cum": "since"
+   }
+  },
+  {
+   "id": "cc-t4",
+   "la": "Cum {s:nom} {v1:pres.subj}, {s2:nom} {pron:acc} {v2:pres.ind}.",
+   "en": "Since {s} {v1:prog}, {s2} {v2:prog} {pron}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Dāvus",
+      "Syra",
+      "Dēlia",
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "canis"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "gloss": "prog",
+     "lemmas": [
+      "fugiō",
+      "lateō",
+      "aufugiō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Mēdus",
+      "Dāvus",
+      "Syra",
+      "pater",
+      "māter",
+      "dominus",
+      "domina",
+      "magister",
+      "frāter",
+      "soror",
+      "amīcus"
+     ]
+    },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s2",
+     "obj": "pron",
+     "gloss": "prog",
+     "lemmas": [
+      "quaerō",
+      "vocō",
+      "exspectō",
+      "spectō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 6,
+   "fixed_gloss": {
+    "Cum": "since"
+   }
+  },
+  {
+   "id": "cc-t5",
+   "la": "Cum {s:nom} {v1:pres.subj}, {s2:nom} {adj:nom} {be:pres.ind}.",
+   "en": "Since {s} {v1:prog}, {s2} {be:tense} {adj}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Lȳdia",
+      "Dāvus",
+      "Syra",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus",
+      "marītus",
+      "uxor",
+      "dominus"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "takes": "none",
+     "gloss": "prog",
+     "lemmas": [
+      "absum"
+     ]
+    },
+    "s2": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Lȳdia",
+      "Dāvus",
+      "Syra",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus",
+      "marītus",
+      "uxor"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s2",
+     "only": [
+      "trīstis",
+      "miser",
+      "maestus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s2",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 6,
+   "fixed_gloss": {
+    "Cum": "since"
+   }
+  },
+  {
+   "id": "cc-t6",
+   "la": "Cum {s:nom} {adj:nom} {be:pres.subj}, tamen {adj2:nom} {be2:pres.ind}.",
+   "en": "Although {s} {be:tense} {adj}, {s:pron} {be2:tense} nevertheless {adj2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "pauper",
+      "aeger",
+      "fessus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "adj2": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "fortis",
+      "laetus"
+     ],
+     "pred": true
+    },
+    "be2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "same": "be"
+    }
+   },
+   "focus": "be",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "although",
+    "tamen": "nevertheless"
+   }
+  },
+  {
+   "id": "cc-t7",
+   "la": "{s:nom} {v1:impf.ind}, cum {s2:nom} {v2:impf.subj}.",
+   "en": "{s} {v1:tense}, since {s2} {v2:tense}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Lȳdia",
+      "Dāvus",
+      "Syra",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus",
+      "puer",
+      "puella"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.ind",
+     "subj": "s",
+     "lemmas": [
+      "plōrō",
+      "lacrimō",
+      "taceō",
+      "maereō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Lȳdia",
+      "Dāvus",
+      "Syra",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s2",
+     "takes": "none",
+     "gloss": "tense",
+     "lemmas": [
+      "absum"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5,
+   "fixed_gloss": {
+    "cum": "since"
+   }
+  },
+  {
+   "id": "cc-t8",
+   "la": "{s:nom} {v1:impf.ind}, cum {o:acc} {v2:impf.subj}.",
+   "en": "{s} {v1:tense}, since {s:pron} {v2:tense} {o}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.ind",
+     "subj": "s",
+     "lemmas": [
+      "taceō",
+      "tremō",
+      "fugiō",
+      "plōrō"
+     ]
+    },
+    "o": {
+     "only": [
+      "lupus",
+      "leō",
+      "ursus",
+      "hostis",
+      "magister",
+      "dominus",
+      "serpēns",
+      "bēstia",
+      "canis",
+      "taurus",
+      "pīrāta",
+      "praedō",
+      "tempestās",
+      "mare"
+     ],
+     "number": "any"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "obj": "o",
+     "gloss": "tense",
+     "lemmas": [
+      "timeō",
+      "metuō",
+      "vereor"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5,
+   "fixed_gloss": {
+    "cum": "since"
+   }
+  },
+  {
+   "id": "cc-t9",
+   "la": "{s:nom} {o:acc} {v1:pres.ind}, cum {adj:nom} {be:pres.subj}.",
+   "en": "{s} {v1:tense} {o}, since {o:pron} {be:tense} {adj}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Syra",
+      "pater",
+      "māter",
+      "dominus",
+      "domina",
+      "magister",
+      "frāter",
+      "soror",
+      "amīcus"
+     ]
+    },
+    "o": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Dāvus",
+      "Syra",
+      "Dēlia",
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "amīcus",
+      "frāter",
+      "soror"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "amō",
+      "laudō",
+      "dīligō"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "bonus",
+      "probus",
+      "fortis",
+      "industrius",
+      "prūdēns"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "o",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 6,
+   "fixed_gloss": {
+    "cum": "since"
+   }
+  },
+  {
+   "id": "cc-t10",
+   "la": "Cum {s:nom} {v1:pres.subj}, {s2:nom} {pron:acc} {v2:pres.ind}.",
+   "en": "Since {s} {v1:prog}, {s2} {v2:prog} {pron}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Dāvus",
+      "Syra",
+      "Dēlia",
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "gloss": "prog",
+     "lemmas": [
+      "plōrō",
+      "lacrimō",
+      "aegrōtō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Syra",
+      "pater",
+      "māter",
+      "medicus",
+      "domina",
+      "frāter",
+      "soror",
+      "amīcus",
+      "nūtrīx"
+     ]
+    },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s2",
+     "obj": "pron",
+     "gloss": "prog",
+     "lemmas": [
+      "cōnsōlor",
+      "cūrō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 6,
+   "fixed_gloss": {
+    "Cum": "since"
+   }
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 10,
+    "rate": 0.25,
+    "causes": [
+     "strangers paired ('since the queen is away, the letter carrier is sad'): household casts on both sides",
+     "'since the mother flees, the shepherd comforts her': cause / response verbs split by sense",
+     "'since the parent works, the men stay'",
+     "'feared the sheep': fearsome objects only",
+     "timeō absolute as 'fears'",
+     "piscatorēs: the gate now keeps a noun whose oblique root drops a macron the head carries"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 5,
+    "rate": 0.125,
+    "causes": [
+     "hostis / inimīcus as the sick one",
+     "'since Delia is silent, the sister is looking for her': fleeing / hiding only before quaerō, vocō, exspectō",
+     "fortis glossed 'strong' where 'brave' is meant (EN_ADJ_SENSE)"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 4,
+    "rate": 0.1,
+    "causes": [
+     "'the teacher loves the friend, since he is beautiful': pulcher / fōrmōsus out of the praise template",
+     "fūr as the sick one"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 2,
+    "rate": 0.05,
+    "causes": [
+     "'Marcus was weeping, since the husband was away': marītus / uxor out of the missing-person pair"
+    ]
+   },
+   {
+    "pass": 6,
+    "seed": 16,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'the owners were fleeing since they feared the teacher' (left as is)"
+    ]
+   }
+  ],
+  "final_rate": 0.025,
+  "method": "40 fresh sentences per pass, read hostilely for agreement, sense, sequence of tenses, English, gloss and macrons; every cause fixed in a frame, template, gate or check, never the symptom"
+ }
+}

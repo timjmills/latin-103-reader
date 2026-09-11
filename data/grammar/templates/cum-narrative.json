@@ -1,0 +1,841 @@
+{
+ "skill": "cum-narrative",
+ "chapter": 28,
+ "templates": [
+  {
+   "id": "cn-t1",
+   "la": "Cum {s:nom} {v1:impf.subj}, {s2:nom} {v2:perf.ind}.",
+   "en": "While {s} {v1:tense}, {s2} {v2:past}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "gloss": "tense",
+     "absolute": true,
+     "lemmas": [
+      "dormiō",
+      "ambulō",
+      "cantō",
+      "taceō",
+      "sedeō",
+      "labōrō",
+      "cēnō",
+      "quiēscō",
+      "legō",
+      "scrībō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s2",
+     "lemmas": [
+      "exeō",
+      "veniō",
+      "surgō",
+      "discēdō",
+      "redeō",
+      "accurrō",
+      "fugiō",
+      "intrō",
+      "abeō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 6,
+   "fixed_gloss": {
+    "Cum": "while"
+   }
+  },
+  {
+   "id": "cn-t2",
+   "la": "Cum {s:nom} in {p:abl} {v1:impf.subj}, {o:acc} {v2:perf.ind}.",
+   "en": "While {s} {v1:tense} in {p}, {s:pron} {v2:past} {o:a}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "silva",
+      "campus",
+      "via",
+      "lītus"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "gloss": "tense",
+     "lemmas": [
+      "ambulō",
+      "sedeō",
+      "labōrō",
+      "maneō",
+      "errō",
+      "stō"
+     ]
+    },
+    "o": {
+     "only": [
+      "avis",
+      "canis",
+      "equus",
+      "ovis",
+      "asinus",
+      "bōs",
+      "porcus",
+      "gallus",
+      "columba",
+      "passer",
+      "mercātor",
+      "nauta",
+      "mīles",
+      "pāstor",
+      "nūntius",
+      "flōs",
+      "nīdus",
+      "amīcus"
+     ],
+     "number": "any"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "videō",
+      "audiō",
+      "inveniō",
+      "reperiō",
+      "conspiciō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "while"
+   }
+  },
+  {
+   "id": "cn-t3",
+   "la": "Cum {s:nom} {v1:impf.subj}, {s2:nom} {v2:impf.ind}.",
+   "en": "While {s} {v1:tense}, {s2} {v2:tense}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "gloss": "tense",
+     "absolute": true,
+     "lemmas": [
+      "cantō",
+      "dormiō",
+      "ambulō",
+      "labōrō",
+      "legō",
+      "scrībō",
+      "cēnō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.ind",
+     "subj": "s2",
+     "absolute": true,
+     "lemmas": [
+      "taceō",
+      "plōrō",
+      "rīdeō",
+      "dormiō",
+      "legō",
+      "scrībō",
+      "labōrō",
+      "sedeō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 5,
+   "fixed_gloss": {
+    "Cum": "while"
+   }
+  },
+  {
+   "id": "cn-t4",
+   "la": "Cum {s:nom} {v1:impf.subj}, {s2:nom} {pron:acc} {v2:perf.ind}.",
+   "en": "As {s} {v1:tense}, {s2} {v2:past} {pron}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "gloss": "tense",
+     "lemmas": [
+      "taceō",
+      "plōrō",
+      "lacrimō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s2",
+     "obj": "pron",
+     "lemmas": [
+      "interrogō",
+      "aspiciō",
+      "spectō",
+      "vocō",
+      "cōnsōlor"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 6,
+   "fixed_gloss": {
+    "Cum": "as"
+   }
+  },
+  {
+   "id": "cn-t5",
+   "la": "Cum {n:nom} {be:impf.subj}, nēmō in {p:abl} {v:impf.ind}.",
+   "en": "As it {be:tense} {n:bare}, nobody {v:tense} in {p}.",
+   "slots": {
+    "n": {
+     "only": [
+      "nox"
+     ],
+     "art": ""
+    },
+    "be": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "n",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "p": {
+     "only": [
+      "via",
+      "hortus",
+      "silva",
+      "urbs",
+      "forum",
+      "campus",
+      "ātrium"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "impf.ind",
+     "lemmas": [
+      "ambulō",
+      "labōrō",
+      "lūdō",
+      "cantō",
+      "errō",
+      "vigilō"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "as",
+    "nēmō": "nobody"
+   }
+  },
+  {
+   "id": "cn-t6",
+   "la": "Cum {s:nom} {v1:plupf.subj}, {s2:nom} {adv} {v2:perf.ind}.",
+   "en": "When {s} {v1:had}, {s2} {v2:past} {adv}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "plupf.subj",
+     "subj": "s",
+     "lemmas": [
+      "veniō",
+      "redeō",
+      "exeō",
+      "discēdō",
+      "surgō",
+      "abeō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "servus",
+      "puer",
+      "discipulus",
+      "ancilla",
+      "amīcus",
+      "fīlius",
+      "fīlia",
+      "mīles",
+      "nauta",
+      "līberī",
+      "pedes",
+      "eques"
+     ],
+     "number": "pl"
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s2",
+     "lemmas": [
+      "taceō",
+      "surgō",
+      "fugiō",
+      "discēdō",
+      "rīdeō",
+      "exeō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "when"
+   }
+  },
+  {
+   "id": "cn-t7",
+   "la": "Cum {o:acc} {v1:plupf.subj}, {s:nom} {adv} {v2:perf.ind}.",
+   "en": "When {s} {v1:had} {o}, {s:pron} {v2:past} {adv}.",
+   "slots": {
+    "o": {
+     "only": [
+      "cibus",
+      "pānis",
+      "mālum",
+      "pirum",
+      "ōvum",
+      "carō",
+      "holus",
+      "vīnum",
+      "aqua"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "plupf.subj",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "sūmō",
+      "bibō",
+      "gustō"
+     ]
+    },
+    "s": {
+     "only": [
+      "servus",
+      "puer",
+      "discipulus",
+      "ancilla",
+      "amīcus",
+      "fīlius",
+      "mīles",
+      "nauta",
+      "līberī",
+      "frāter",
+      "parēns"
+     ],
+     "number": "pl"
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "dormiō",
+      "discēdō",
+      "exeō",
+      "surgō",
+      "redeō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "when"
+   }
+  },
+  {
+   "id": "cn-t8",
+   "la": "Cum {s:nom} cum {c:abl} {v1:impf.subj}, {s2:nom} {v2:perf.ind}.",
+   "en": "While {s} {v1:tense} with {c}, {s2} {v2:past}.",
+   "slots": {
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Lȳdia",
+      "Dāvus",
+      "Syra",
+      "Dēlia",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus",
+      "puer",
+      "puella",
+      "servus",
+      "ancilla"
+     ]
+    },
+    "c": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Mēdus",
+      "Lȳdia",
+      "Dāvus",
+      "Syra",
+      "Dēlia",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus",
+      "puer",
+      "puella",
+      "servus",
+      "ancilla"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "gloss": "tense",
+     "absolute": true,
+     "lemmas": [
+      "sedeō",
+      "ambulō",
+      "cēnō",
+      "lūdō",
+      "labōrō",
+      "colloquor"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s2",
+     "lemmas": [
+      "veniō",
+      "accurrō",
+      "redeō",
+      "exeō",
+      "surgō",
+      "intrō"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "while",
+    "cum": "with"
+   }
+  },
+  {
+   "id": "cn-t9",
+   "la": "Cum {s:nom} {adj:nom} {be:impf.subj}, {s2:nom} {adv} {v2:perf.ind}.",
+   "en": "As {s} {be:tense} {adj}, {s2} {v2:past} {adv}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "aeger",
+      "aegrōtus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "s2": {
+     "only": [
+      "medicus",
+      "pater",
+      "māter",
+      "amīcus"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim",
+      "mox"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s2",
+     "lemmas": [
+      "veniō",
+      "accurrō",
+      "adveniō"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 7,
+   "fixed_gloss": {
+    "Cum": "as"
+   }
+  },
+  {
+   "id": "cn-t10",
+   "la": "Cum {o:acc} {v1:plupf.subj}, {s:nom} {adj:nom} {be:impf.ind}.",
+   "en": "When {s} {v1:had} {o}, {s:pron} {be:tense} {adj}.",
+   "slots": {
+    "o": {
+     "only": [
+      "epistula",
+      "libellus",
+      "fābula"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "plupf.subj",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "legō",
+      "audiō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "trīstis",
+      "laetus",
+      "maestus",
+      "īrātus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "impf.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "v1",
+   "words": 6,
+   "fixed_gloss": {
+    "Cum": "when"
+   }
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 5,
+    "rate": 0.125,
+    "causes": [
+     "'he heard an owner' ({o:a} on a person): curated animal / stranger objects",
+     "'when they had seen the chairs, they got up': food objects with sūmō, letters with legō (split template)",
+     "'nox=the night' in the gloss: art ''"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 6,
+    "rate": 0.15,
+    "causes": [
+     "cōnsūmō = 'use up' for food: sūmō / bibō / gustō",
+     "'playing with the robber': household companions",
+     "'walking in the bedroom, he found a bee': open places only",
+     "nympha as actor"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 5,
+    "rate": 0.125,
+    "causes": [
+     "'heard sheep in the city', 'found bees in the forum': forum and urbs out of the seeing template",
+     "coniūnx playing: lūdō out",
+     "'had read the titles': epistula / libellus / fābula only"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 2,
+    "rate": 0.05,
+    "causes": [
+     "lions in the garden: leō and lupus out",
+     "'had taken the dinners': cēna out"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'he heard friends' (borderline)"
+    ]
+   },
+   {
+    "pass": 6,
+    "seed": 16,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'as the parent was sick, the father came' (parens beside pater)"
+    ]
+   }
+  ],
+  "final_rate": 0.025,
+  "method": "40 fresh sentences per pass, read hostilely for agreement, sense, sequence of tenses, English, gloss and macrons; every cause fixed in a frame, template, gate or check, never the symptom"
+ }
+}

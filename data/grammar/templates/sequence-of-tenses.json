@@ -1,0 +1,747 @@
+{
+ "skill": "sequence-of-tenses",
+ "chapter": 28,
+ "templates": [
+  {
+   "id": "st-t1",
+   "la": "{s:nom} {r:dat} {v1:pres|perf.ind} ut {v:seq.subj}.",
+   "en": "{s} {v1:tense} {r} to {v:base}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "rēx",
+      "dux",
+      "erus",
+      "medicus",
+      "gubernātor",
+      "mīles",
+      "prīnceps",
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius"
+     ]
+    },
+    "r": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "nauta",
+      "mīles",
+      "colōnus",
+      "agricola",
+      "nūntius",
+      "tabellārius",
+      "ōstiārius",
+      "coquus",
+      "iānitor",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "Ursus"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres|perf.ind",
+     "subj": "s",
+     "dat": "r",
+     "takes": "ut",
+     "lemmas": [
+      "imperō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "v1",
+     "subj": "r",
+     "lemmas": [
+      "veniō",
+      "taceō",
+      "surgō",
+      "exeō",
+      "redeō",
+      "maneō",
+      "labōrō",
+      "sedeō",
+      "discēdō",
+      "accurrō",
+      "vigilō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "st-t2",
+   "la": "{s:nom} {r:acc} {v1:pres|perf.ind} ut {o:acc} {v:seq.subj}.",
+   "en": "{s} {v1:tense} {r} to {v:base} {o}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres|perf.ind",
+     "subj": "s",
+     "obj": "r",
+     "takes": "ut",
+     "lemmas": [
+      "moneō",
+      "rogō",
+      "ōrō"
+     ]
+    },
+    "o": {
+     "only": [
+      "aqua",
+      "vīnum",
+      "cibus",
+      "pānis",
+      "mālum",
+      "epistula",
+      "libellus",
+      "saccus",
+      "vestis",
+      "tunica",
+      "toga",
+      "mēnsa",
+      "iānua",
+      "ōstium",
+      "fenestra",
+      "gladius",
+      "baculum",
+      "rosa",
+      "flōs",
+      "pōculum"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "v1",
+     "subj": "r",
+     "obj": "o",
+     "lemmas": [
+      "portō",
+      "parō",
+      "emō",
+      "quaerō",
+      "aperiō",
+      "claudō",
+      "legō",
+      "scrībō",
+      "numerō",
+      "ferō",
+      "ostendō",
+      "vēndō",
+      "custodiō",
+      "sūmō",
+      "bibō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "st-t3",
+   "la": "{s:nom} {r:acc} {v1:pres|perf.ind} nē {v:seq.subj}.",
+   "en": "{s} {v1:tense} {r} not to {v:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres|perf.ind",
+     "subj": "s",
+     "obj": "r",
+     "takes": "ut",
+     "lemmas": [
+      "moneō",
+      "rogō",
+      "ōrō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "v1",
+     "subj": "r",
+     "lemmas": [
+      "currō",
+      "fugiō",
+      "clāmō",
+      "dormiō",
+      "plōrō",
+      "lūdō",
+      "exeō",
+      "discēdō",
+      "lacrimō",
+      "rīdeō",
+      "cantō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {
+    "nē": "that … not"
+   }
+  },
+  {
+   "id": "st-t4",
+   "la": "{s:nom} {v1:pres|perf.ind} ut {o:acc} {v:seq.subj}.",
+   "en": "{s} {v1:tense} to {v:base} {o}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres|perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "currō",
+      "veniō",
+      "redeō",
+      "exeō",
+      "accurrō",
+      "surgō",
+      "discēdō"
+     ]
+    },
+    "o": {
+     "only": [
+      "amīcus",
+      "medicus",
+      "pater",
+      "māter",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "servus",
+      "ancilla",
+      "magister",
+      "puer",
+      "puella",
+      "nauta",
+      "mercātor",
+      "canis",
+      "equus",
+      "avis",
+      "ovis",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Syra",
+      "Aemilia",
+      "Iūlius"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "v1",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "vocō",
+      "videō",
+      "quaerō",
+      "salūtō",
+      "spectō",
+      "audiō",
+      "inveniō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {
+    "ut": "so that"
+   }
+  },
+  {
+   "id": "st-t5",
+   "la": "{s:nom} {r:acc} {v1:pres|fut|perf.ind} ut {o:acc} {v:seq.subj}.",
+   "en": "{s} {v1:tense} {r} to {v:base} {o}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "rēx",
+      "erus",
+      "medicus",
+      "mercātor",
+      "gubernātor",
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius"
+     ]
+    },
+    "r": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "fīlius",
+      "fīlia",
+      "discipulus",
+      "nauta",
+      "mīles",
+      "nūntius",
+      "tabellārius",
+      "colōnus",
+      "agricola"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres|fut|perf.ind",
+     "subj": "s",
+     "obj": "r",
+     "allow_dat": true,
+     "lemmas": [
+      "mittō"
+     ]
+    },
+    "o": {
+     "only": [
+      "aqua",
+      "vīnum",
+      "cibus",
+      "pānis",
+      "mālum",
+      "epistula",
+      "libellus",
+      "saccus",
+      "vestis",
+      "tunica",
+      "toga",
+      "mēnsa",
+      "gladius",
+      "baculum",
+      "rosa",
+      "flōs",
+      "pōculum",
+      "equus",
+      "ovis",
+      "medicus",
+      "amīcus"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "v1",
+     "subj": "r",
+     "obj": "o",
+     "lemmas": [
+      "parō",
+      "portō",
+      "emō",
+      "quaerō",
+      "vocō",
+      "custodiō",
+      "arcessō",
+      "ferō",
+      "vēndō",
+      "numerō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "so that"
+   }
+  },
+  {
+   "id": "st-t6",
+   "la": "{s:nom} tam {adj:nom} {be:pres|impf.ind} ut {adv} {v:seq.subj}.",
+   "en": "{s} {be:tense} so {adj} that {s:pron} {v:simple} {adv}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "fessus",
+      "aeger",
+      "aegrōtus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres|impf.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "be",
+     "subj": "s",
+     "gloss": "simple",
+     "lemmas": [
+      "dormiō",
+      "quiēscō",
+      "cubō",
+      "recumbō",
+      "iaceō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "st-t7",
+   "la": "{s:nom} {v1:pres|impf.ind} ubi {s2:nom} {be:seq.subj}.",
+   "en": "{s} {v1:tense} where {s2} {be:tense}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres|impf.ind",
+     "subj": "s",
+     "absolute": true,
+     "gloss": "tense",
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr",
+      "pecus",
+      "grex"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "v1",
+     "subj": "s2",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 5
+  },
+  {
+   "id": "st-t8",
+   "la": "{s:nom} in {p:acc} {v1:pres|perf.ind} ut {v:seq.subj}.",
+   "en": "{s} {v1:tense} into {p} to {v:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "silva",
+      "campus",
+      "peristylum",
+      "vīlla"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres|perf.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "exeō",
+      "currō",
+      "eō",
+      "veniō",
+      "redeō",
+      "accurrō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "seq.subj",
+     "seq": "v1",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "lūdō",
+      "ambulō",
+      "quiēscō",
+      "cēnō",
+      "labōrō",
+      "cantō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "so that"
+   }
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 7,
+    "rate": 0.175,
+    "causes": [
+     "st-t5 never filled: mittō wants its receiver (allow_dat)",
+     "lavō with coins, boats and papyri",
+     "'was lying down at once' after a result: the simple mod",
+     "'ran to see grass': person / animal objects only"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 6,
+    "rate": 0.15,
+    "causes": [
+     "hostis as the one ordering",
+     "emō with nummus",
+     "adiuvō with cattle",
+     "fīliola sending people: authority subjects for mittō",
+     "lavō / sedeō as purposes"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 7,
+    "rate": 0.175,
+    "causes": [
+     "spouses ordered about: receiver drawn from a subordinate list",
+     "'hear the monster', 'call the wolves': curated purpose objects",
+     "'runs into the town to sleep': open places with open-air verbs",
+     "'the clothings': mass-noun plural"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'sent the girls to buy the fields': ager and arō out"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 6,
+    "seed": 16,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "comes to call the sheep (left as is)"
+    ]
+   }
+  ],
+  "final_rate": 0.025,
+  "method": "40 fresh sentences per pass, read hostilely for agreement, sense, sequence of tenses, English, gloss and macrons; every cause fixed in a frame, template, gate or check, never the symptom"
+ }
+}
