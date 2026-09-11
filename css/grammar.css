@@ -187,6 +187,11 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
   animation: pop var(--t-base) var(--ease-out);
 }
 .g-pop p { margin: 0; }
+/* Opened by the pointer crossing a word, not by a click: it behaves as a tooltip, so it never takes the
+   pointer (which would make it flicker as the mouse entered it) and it has no close button to press —
+   it goes when the pointer leaves the word. The padding loses the room the × had. */
+.g-pop[data-hover="1"] { pointer-events: none; padding-inline-end: var(--s-4); }
+.g-pop[data-hover="1"] .g-pop__close { display: none; }
 .g-pop__form { font-family: var(--face-reading); font-size: 1.1rem; color: var(--ink-2); }
 .g-pop__meaning { font-family: var(--face-reading); font-size: 1.25rem; line-height: 1.3; margin-top: 2px; }
 .g-pop__miss { color: var(--ink-2); font-style: italic; font-size: 1rem; }
