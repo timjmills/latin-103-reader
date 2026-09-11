@@ -88,7 +88,7 @@
     {
       "n": 3,
       "title": "-ne asks a yes-or-no question",
-      "say": "*-ne* is glued to the word the question is really about, and that word moves to the front — most often the verb. *Nīlus fluvius magnus est* becomes *Estne Nīlus fluvius magnus…?*",
+      "say": "*-ne* is glued to the word the question is really about, and that word moves to the front — most often the verb: *Nīlus fluvius magnus est* becomes *Estne Nīlus fluvius magnus…?* When the question is about something else, that word leads instead: *Aegyptusne prōvincia Rōmāna est?*",
       "show": {
         "kind": "sentence",
         "id": "enc-06"
@@ -160,7 +160,7 @@
     },
     {
       "type": "p",
-      "text": "English asks in the same way, by putting the verb first; Latin puts it first and adds the tail. When the question is about something else, that word leads instead: *Aegyptusne prōvincia Rōmāna est?* asks whether it is Egypt that is a Roman province."
+      "text": "English asks a yes-or-no question in the same way, by putting the verb first; Latin puts it first and adds the tail. *Aegyptusne prōvincia Rōmāna est?* asks whether it is Egypt, rather than somewhere else, that is a Roman province."
     }
   ],
   "sources": [

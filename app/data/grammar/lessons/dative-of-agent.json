@@ -9,7 +9,7 @@
           "dag-05",
           "dag-14"
         ],
-        "ask": "Tap the person who has to do the job in each sentence. What form are both names in?",
+        "ask": "Tap the person who has to do the job in each sentence. What form are both words in?",
         "tap": "focus"
       },
       "say": "The 'must be done' pattern names the person who must do it in the dative (the 'to/for' form): **the dative of agent (the person who must do it: mihi legendum est = I must read)**. *Hic liber mihi legendus est* — word for word 'this book is to-be-read for me': I have to read this book.",

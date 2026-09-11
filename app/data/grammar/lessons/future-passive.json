@@ -63,6 +63,14 @@
     {
       "n": 1,
       "title": "What the form does",
+      "notice": {
+        "sentences": [
+          "fp-01",
+          "fp-03"
+        ],
+        "ask": "Which word in each sentence says what will be done to the subject?",
+        "tap": "focus"
+      },
       "say": "When what is going to happen is going to happen *to* the subject, Latin uses the future passive (the 'will be done' form): *puerī laudābuntur*, the boys will be praised. As in every passive the doer comes in behind *ā* or *ab* — *ā magistrō*, by the teacher — and the subject is the one it is done to.",
       "show": {
         "kind": "sentence",
@@ -88,7 +96,7 @@
     {
       "n": 2,
       "title": "The third person: -bitur and -buntur",
-      "say": "Take the *-b-* future of the first and second conjugations (the conjugation is which of the four families a Latin verb belongs to) and put the passive endings on it. For he, she or it that is *-bitur*: *portābitur*, it will be carried. For they it is *-buntur*: *laudābuntur*, they will be praised. The doer, when it is named, still stands behind *ā*.",
+      "say": "Take the *-b-* future of the first and second conjugations (the conjugation is which of the four families a Latin verb belongs to) and put the passive endings on it: *-bitur* for he, she or it, *-buntur* for they. *portābitur*, it will be carried; *laudābuntur*, they will be praised.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",

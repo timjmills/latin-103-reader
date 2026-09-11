@@ -68,6 +68,22 @@
   {
    "type": "p",
    "text": "Ørberg's chapter 28 gives the full tables: active *-rem, -rēs, -ret, -rēmus, -rētis, -rent*; passive *-rer, -rēris, -rētur, -rēmur, -rēminī, -rentur*, with *tacēret*, *audīret*, *scrīberet*, *esset* as models. Note the long ē in *-rēs, -rēmus, -rētis, -rēris, -rētur*. Where it is used: purpose, result, indirect command and indirect question after a past verb (Week 6), *cum* clauses (Weeks 6–7), wishes that cannot come true (Week 11), unreal conditions (Week 12)."
+  },
+  {
+   "type": "p",
+   "text": "English has no separate form for it, so 'to be quiet', 'would hear' and 'might come' all end up rendering the same Latin ending."
+  },
+  {
+   "type": "p",
+   "text": "This is the easiest form in Latin to build. Nothing is cut off the infinitive and no separate stem (what is left of the verb before the ending) has to be found first."
+  },
+  {
+   "type": "p",
+   "text": "The vowel in front of the ending simply lengthens where Latin's own rules ask it to; the letters you write are still the infinitive followed by the ending."
+  },
+  {
+   "type": "p",
+   "text": "*vidēret* beside the bare *vidēre*: a person ending has been added, so this is a finite verb (one with a person ending, so it can have a subject), not a 'to' form."
   }
  ],
  "sources": [
@@ -80,7 +96,15 @@
   {
    "n": 1,
    "title": "Where you meet it",
-   "say": "Once a story moves into the past, every *ut*, *nē* or *cum* clause changes tense: it takes **the imperfect subjunctive (the past-time 'might / would' form: venīret; built on the infinitive)**. *Iūlius imperāvit ut tacēret* — Julius ordered him to be quiet. English has no separate form for it, so 'to be quiet', 'would hear' and 'might come' all end up rendering the same Latin ending.",
+   "notice": {
+    "sentences": [
+     "is-01",
+     "is-04"
+    ],
+    "ask": "Both stories are in the past. Which word in each sentence has a whole 'to' form (tacēre, venīre) hiding inside it?",
+    "tap": "focus"
+   },
+   "say": "Once a story moves into the past, every *ut*, *nē* or *cum* clause takes **the imperfect subjunctive (the past-time 'might / would' form: venīret; built on the infinitive)**. *Iūlius imperāvit ut tacēret* — Julius ordered him to be quiet.",
    "show": {
     "kind": "sentence",
     "id": "is-01"
@@ -105,14 +129,14 @@
   {
    "n": 2,
    "title": "Infinitive plus -m, -s, -t",
-   "say": "This is the easiest form in Latin to build. Take the present infinitive whole — *portāre*, *vidēre*, *pōnere*, *venīre* — and add the person endings straight onto the end of it: **-m** for 'I', **-s** for 'you', **-t** for 'he, she, it'. So *portāre* + *-t* = *portāret*. Nothing is cut off the infinitive and no separate stem (what is left of the verb before the ending) has to be found first.",
+   "say": "Take the present infinitive (the plain 'to' form) whole — *portāre*, *vidēre*, *pōnere*, *venīre* — and add the person endings straight onto the end: **-m** for 'I', **-s** for 'you', **-t** for 'he, she, it'. So *portāre* + *-t* = *portāret*.",
    "show": {
     "kind": "paradigm",
     "key": "conj1",
     "reveal": [
-     "impf.subj.act.1sg",
-     "impf.subj.act.2sg",
-     "impf.subj.act.3sg"
+     "impf.subj.act.1.sg",
+     "impf.subj.act.2.sg",
+     "impf.subj.act.3.sg"
     ]
    },
    "check": {
@@ -133,14 +157,14 @@
   {
    "n": 3,
    "title": "The plural: -mus, -tis, -nt",
-   "say": "The plural is made on the same infinitive with the same ordinary endings: **-mus** for 'we', **-tis** for 'you all', **-nt** for 'they'. *manēre* + *-mus* = *manērēmus*; *arāre* + *-nt* = *arārent*. The vowel in front of the ending simply lengthens where Latin's own rules ask it to; the letters you write are still the infinitive followed by the ending.",
+   "say": "The plural is made on the same infinitive with the same ordinary endings: **-mus** for 'we', **-tis** for 'you all', **-nt** for 'they'. *manēre* + *-mus* = *manērēmus*; *arāre* + *-nt* = *arārent*.",
    "show": {
     "kind": "paradigm",
     "key": "conj1",
     "reveal": [
-     "impf.subj.act.1pl",
-     "impf.subj.act.2pl",
-     "impf.subj.act.3pl"
+     "impf.subj.act.1.pl",
+     "impf.subj.act.2.pl",
+     "impf.subj.act.3.pl"
     ]
    },
    "check": {
@@ -166,8 +190,8 @@
     "kind": "paradigm",
     "key": "conj1",
     "reveal": [
-     "impf.subj.pass.3sg",
-     "impf.subj.pass.3pl"
+     "impf.subj.pass.3.sg",
+     "impf.subj.pass.3.pl"
     ]
    },
    "worked": {
@@ -205,7 +229,7 @@
     "kind": "paradigm",
     "key": "sum",
     "reveal": [
-     "impf.subj.act.3sg"
+     "impf.subj.act.3.sg"
     ]
    },
    "check": {
@@ -220,7 +244,7 @@
   {
    "n": 6,
    "title": "Not the present subjunctive, not the infinitive",
-   "say": "Two look-alikes to settle. *vidēret* beside *videat*: *vidēret* keeps the whole infinitive *vidēre* and adds **-t**, while *videat* is built the other way about, on the short stem *vide-* with the **-a-** of the present subjunctive — so if you can still see the infinitive inside the word, it is the past-time form. And *vidēret* beside the bare *vidēre*: a person ending has been added, so this is a finite verb (one with a person ending, so it can have a subject), not a 'to' form.",
+   "say": "*vidēret* keeps the whole infinitive *vidēre* and adds **-t**; *videat* is built on the short stem *vide-* (the verb minus its ending) with the **-a-** of the present subjunctive: if you can still see the infinitive, it is the past-time form. The **-t** also tells *vidēret* apart from bare *vidēre*: a verb with its own subject, not a 'to' form.",
    "show": {
     "kind": "sentence",
     "id": "is-12"

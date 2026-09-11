@@ -51,7 +51,7 @@
           "su-03",
           "su-04"
         ],
-        "ask": "Tap the word in each sentence that says what they are going there to do.",
+        "ask": "Which word in each sentence says what Marcus, and the slaves, are going there to do?",
         "tap": "focus"
       },
       "say": "Latin keeps one special form for saying what you go somewhere to do: **the supine (the special purpose form after a verb of going: dormītum it = goes to sleep)**. It answers that one question and no other: *Iūlius in cubiculum it dormītum* — Julius goes into the bedroom to sleep.",

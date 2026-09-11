@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "To talk about what is not so, Latin uses **the contrary-to-fact condition (sī + subjunctive: 'if I were …, I would …'; 'if I had …, I would have …')**. Both halves take the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) — the *sī* half and the main half alike. Latin has no word for 'would': the subjunctive does that work by itself. In ccf-01 the speaker has no money and buys nothing.",
+      "notice": {
+        "sentences": [
+          "ccf-01",
+          "ccf-03"
+        ],
+        "ask": "Neither of these things is actually so. Tap the verb after *sī* in each — what do the two have in common?",
+        "tap": "focus"
+      },
+      "say": "To talk about what is not so, Latin uses **the contrary-to-fact condition (sī + subjunctive: 'if I were …, I would …'; 'if I had …, I would have …')**. Both halves take the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). In ccf-01 the speaker has no money and buys nothing.",
       "show": {
         "kind": "sentence",
         "id": "ccf-01"
@@ -96,7 +104,7 @@
     {
       "n": 5,
       "title": "Telling it from a real condition",
-      "say": "A *sī* clause that keeps the indicative (the plain statement form) claims nothing about being untrue: *sī adest, gaudeō* — if he is here, I am glad; *sī vēneris, gaudēbō* uses the future perfect (the 'will have done' tense) for a real future. The subjunctive is the signal that the speaker is saying it is *not* so: *sī adesset* means he is not here.",
+      "say": "A *sī* clause that keeps the indicative (the plain statement form) claims nothing about being untrue: *sī adest, gaudeō* — if he is here, I am glad. The subjunctive is the signal that the speaker is saying it is *not* so: *sī adesset* means he is not here.",
       "show": {
         "kind": "sentence",
         "id": "ccf-11"
@@ -174,6 +182,14 @@
     {
       "type": "p",
       "text": "Ørberg's chapter 33 builds it from the school scene: *sī magistrō pāruissēs, attentē audīvissēs, rēctē scrīpsissēs, ā magistrō laudātus essēs* — if you had obeyed, listened, written correctly, you would have been praised; *etiam sī industrius fuissem, magister mē nōn laudāvisset*. Chapter 34 has Martial's *vellem sī magis esset anus*. Mixed conditions are common: 'if I had learned then (pluperfect), I would now be wise (imperfect)' is *sī tum didicissem, nunc sapiēns essem*. Choose each half's tense by its own time."
+    },
+    {
+      "type": "p",
+      "text": "Latin has no word for 'would': the subjunctive does that work by itself."
+    },
+    {
+      "type": "p",
+      "text": "*Sī vēneris, gaudēbō* uses the future perfect (the 'will have done' tense) for a real future."
     }
   ],
   "sources": [

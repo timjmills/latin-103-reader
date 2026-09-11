@@ -44,7 +44,7 @@
           "aap-04",
           "aap-08"
         ],
-        "ask": "Tap the two words in each sentence that say what had already been done before the rest happened.",
+        "ask": "Which two words in each sentence say what had already been done before the rest happened?",
         "tap": "focus"
       },
       "say": "Two words in the ablative can set the scene for a whole sentence, and that is **the ablative absolute with a perfect participle ('with X done', 'after X was done')**. It says that something was already finished when the main action happened: *Hōc dictō, Iūlius exiit* — this said, Julius went out.",

@@ -52,6 +52,22 @@
   {
    "type": "p",
    "text": "*cum* before a noun in the ablative (the 'by/with/from' form) is the preposition 'with' (*cum Dāvō*, *magnā cum cūrā*); before a clause with its own verb it is the conjunction. An ablative absolute does the same scene-setting in fewer words: *Ulixe dormiente* = *cum Ulixēs dormīret*. In Ørberg the pattern first appears in chapter 29 (*cum Arīōn … nāvigāret, nautae … eum necāre cōnstituērunt*) and returns with the pluperfect in chapter 33 (*cum fīlius id negāvisset, …*)."
+  },
+  {
+   "type": "p",
+   "text": "The *cum* clause is never the point of the sentence; the main clause (the sentence's own verb, not one tucked inside another clause) is what happened."
+  },
+  {
+   "type": "p",
+   "text": "You are not asked to build the pluperfect subjunctive yet: it is put together ending by ending much later in the course, with the rest of that tense. Here you only have to see it and read it."
+  },
+  {
+   "type": "p",
+   "text": "One sentence can hold two *cum*s at once, so decide each *cum* by what answers it."
+  },
+  {
+   "type": "p",
+   "text": "Between 'when' and 'since' Latin does not make you choose, and often both are right."
   }
  ],
  "sources": [
@@ -63,7 +79,15 @@
   {
    "n": 1,
    "title": "Setting the scene",
-   "say": "A story in Latin often gives the background first and the event second. The background clause is **cum + subjunctive (the 'when / while' clause that sets the scene in a past story)**: *cum Iūlius dormīret, Mēdus fūgit* — while Julius was asleep, Medus fled. The *cum* clause is never the point of the sentence; the main clause (the sentence's own verb, not one tucked inside another clause) is what happened.",
+   "notice": {
+    "sentences": [
+     "cn-02",
+     "cn-03"
+    ],
+    "ask": "Which word in each sentence tells you what was already going on when the rest happened?",
+    "tap": "focus"
+   },
+   "say": "A story often gives the background first and the event second; the background clause is **cum + subjunctive (the 'when / while' clause that sets the scene in a past story)**: *cum Iūlius dormīret, Mēdus fūgit* — while Julius was asleep, Medus fled.",
    "show": {
     "kind": "sentence",
     "id": "cn-01"
@@ -103,7 +127,7 @@
   {
    "n": 3,
    "title": "cum + pluperfect subjunctive: when … had",
-   "say": "When the background is over and done before the event, the clause takes the pluperfect subjunctive (the 'had done' form: *cum vēnisset* = when he had come). You can spot it by the **-isse-** sitting inside the word: *cum dīxisset*, 'when he had said'; *cum vēnisset*, 'when he had come'. Translate with 'when' or 'after' and the English 'had done'. You are not asked to build this form yet: it is put together ending by ending much later in the course, with the rest of that tense. Here you only have to see it and read it.",
+   "say": "When the background is over before the event, the clause takes the pluperfect subjunctive (the 'had done' form: *cum vēnisset* = when he had come), spotted by the **-isse-** inside the word: *cum dīxisset*, 'when he had said'. Translate with 'when' or 'after' and the English 'had done'.",
    "show": {
     "kind": "sentence",
     "id": "cn-06"
@@ -131,7 +155,7 @@
   {
    "n": 4,
    "title": "Two different cums",
-   "say": "*cum* is also the preposition 'with', and it also appears with the indicative (the plain fact form) for a plain date. Three rules of thumb: *cum* followed by a noun in the ablative (the 'by/with/from' form) is 'with' (*cum Lȳdiā*); *cum* answered by a subjunctive is the story clause; *cum* answered by an indicative is 'at the time when'. One sentence can hold two of them at once, so decide each *cum* by what answers it.",
+   "say": "*cum* is also the preposition 'with', and also goes with the indicative (the plain fact form) for a plain date. *cum* followed by a noun in the ablative (the 'by/with/from' form) is 'with' (*cum Lȳdiā*); *cum* answered by a subjunctive is the story clause; *cum* answered by an indicative is 'at the time when'.",
    "show": {
     "kind": "sentence",
     "id": "cn-10"
@@ -145,7 +169,7 @@
   {
    "n": 5,
    "title": "When 'since' reads better than 'when'",
-   "say": "The same *cum* + subjunctive very often gives the reason as well as the time. *Cum Quīntus aeger esset, medicus vēnit* reads equally well as 'when Quintus was ill' and 'since Quintus was ill'. If the clause explains why the main clause (the sentence's own verb, not one tucked inside another clause) happened, prefer 'since'; if it only fixes the moment, prefer 'when'. Latin does not make you choose, and often both are right.",
+   "say": "The same *cum* + subjunctive often gives the reason as well as the time: *Cum Quīntus aeger esset, medicus vēnit* reads equally well as 'when Quintus was ill' and 'since Quintus was ill'. If the clause explains why the main clause happened, prefer 'since'; if it only fixes the moment, prefer 'when'.",
    "show": {
     "kind": "sentence",
     "id": "cn-12"

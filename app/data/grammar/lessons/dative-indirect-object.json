@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "The person who gets it",
-      "say": "When someone gives, hands, says or answers something, there are two people in play: the thing given is the object, and the person on the receiving end goes into **the dative (the 'to/for' form)**, *cāsus datīvus*. *Iūlius servō nummum dat* = Julius gives the slave a coin. No preposition is used, and no word order marks it — only the ending. The question word is *cui?* (to whom?).",
+      "notice": {
+        "sentences": [
+          "dio-01",
+          "dio-02"
+        ],
+        "ask": "Which word in each sentence names the person who gets something?",
+        "tap": "focus"
+      },
+      "say": "When someone gives, hands, says or answers something, the thing given is the object, and the person on the receiving end goes into **the dative (the 'to/for' form)**: *Iūlius servō nummum dat* = Julius gives the slave a coin. The question word is *cui?* (to whom?).",
       "show": {
         "kind": "sentence",
         "id": "dio-01"
@@ -26,7 +34,7 @@
     {
       "n": 2,
       "title": "A servus-type receiver ends in -ō",
-      "say": "A receiver whose dictionary form ends in -us (*servus*, *dominus*, *fīlius*) ends **-ō** in the dative singular: *servō*, *dominō*, *fīliō*. Names in -us do it too: *Mārcō*, *Quīntō*. A word in -um takes the very same ending (*oppidum* → *oppidō*), though a thing is seldom the one receiving. It is the same -ō as the ablative, so the sentence, not the ending, tells you which it is.",
+      "say": "A receiver whose dictionary form ends in -us (*servus*, *dominus*, *fīlius*) ends **-ō** in the dative singular: *servō*, *dominō*, *fīliō*. Names in -us do it too: *Mārcō*, *Quīntō*. A word in -um takes the very same ending (*oppidum* → *oppidō*).",
       "show": {
         "kind": "paradigm",
         "key": "decl2m",
@@ -142,7 +150,7 @@
     {
       "n": 6,
       "title": "Two words in -ae: which one receives?",
-      "say": "*fīliae* can be the dative (the receiver, to the daughter) or the genitive (the owner, of the daughter), and *dominī* can be the genitive too. Work from the verb: the giving verb needs exactly one receiver, and any other case-mate hangs on a noun. *Mārcus fīliae dominī rosam dat* = Marcus gives a rose to the master's daughter — *fīliae* receives, *dominī* owns.",
+      "say": "*fīliae* can be the dative (the receiver, to the daughter) or the genitive (the owner, of the daughter), and *dominī* can be the genitive too. The giving verb needs exactly one receiver, and any other case-mate hangs on a noun. *Mārcus fīliae dominī rosam dat* = Marcus gives a rose to the master's daughter — *fīliae* receives, *dominī* owns.",
       "show": {
         "kind": "sentence",
         "id": "dio-09"
@@ -210,6 +218,14 @@
     {
       "type": "p",
       "text": "Ørberg cap. VII: datīvus -ō / -īs, -ae / -īs, and neuter *oppidō* (*fluvius oppidō aquam dat*); pronouns *eī*, *iīs*, later *mihi*, *tibi*. Two look-alikes: the singular dative of a-nouns equals the genitive (*puellae*), and of us-nouns equals the ablative (*servō*); the verb settles it. The dative also marks the person something is for or who is affected (*hominī necesse est* — it is necessary for a person, r10:58.1; *mihi placet* — it pleases me), and goes with a few verbs that take no object (*pāret* — obeys: *ancilla pāret*, r07:19.1). A&G §361–367."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name is *cāsus datīvus*. No preposition is used, and no word order marks it — only the ending."
+    },
+    {
+      "type": "p",
+      "text": "A word in -um takes the same dative ending as a word in -us, though a thing is seldom the one receiving. It is the same -ō as the ablative, so the sentence, not the ending, tells you which it is."
     }
   ],
   "sources": [

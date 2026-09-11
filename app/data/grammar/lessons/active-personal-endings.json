@@ -8,7 +8,7 @@
      "ape-04",
      "ape-10"
     ],
-    "ask": "Which verb in each sentence means 'you' are doing it, and what last letter do the two share?",
+    "ask": "Which verb in each sentence means 'you' are doing it, and what do the two share at the end?",
     "tap": "focus"
    },
    "say": "A Latin verb carries its own subject in its last letters: **the person endings (I / you / he / we / you all / they on the verb)**. One verb, three people, no extra word needed: *cantō* I sing, *cantās* you sing, *cantat* he or she sings.",

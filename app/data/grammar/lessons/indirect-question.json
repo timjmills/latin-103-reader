@@ -7,12 +7,12 @@
       "notice": {
         "sentences": [
           "iq-03",
-          "iq-06"
+          "iq-16"
         ],
         "ask": "Tap the verb at the end of each sentence. What form are both verbs in?",
         "tap": "focus"
       },
-      "say": "A question folded into a bigger sentence is **an indirect question (a question folded into a sentence: nesciō quid faciat = I don't know what he is doing)**. The question mark goes and the verb moves into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do): *Quid facit?* becomes *nesciō quid faciat*.",
+      "say": "Fold a direct question into a sentence and you get **an indirect question (a question folded into a sentence: nesciō quid faciat = I don't know what he is doing)**. The question mark goes; the verb moves into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do): *Quid facit?* becomes *nesciō quid faciat*.",
       "show": {
         "kind": "sentence",
         "id": "iq-01"

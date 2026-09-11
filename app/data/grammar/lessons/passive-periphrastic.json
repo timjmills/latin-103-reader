@@ -9,7 +9,7 @@
           "pp-05",
           "pp-12"
         ],
-        "ask": "Tap the -nd- word beside est or sunt in each sentence. What do the two have in common?",
+        "ask": "Tap the -nd- word in each sentence. With est or sunt beside it, is it saying what has been done, or what must be done?",
         "tap": "focus"
       },
       "say": "Put a gerundive beside a part of *sum* and Latin has said 'must': **the gerundive with sum (the 'must be done' pattern: liber legendus est = the book must be read)**. *Hic liber hodiē legendus est* — this book must be read today. There is no separate word for 'must'; the *-nd-* and the *est* carry it between them.",

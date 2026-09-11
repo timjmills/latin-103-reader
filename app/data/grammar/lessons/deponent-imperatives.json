@@ -153,7 +153,7 @@
     {
       "n": 5,
       "title": "Saying 'don't'",
-      "say": "For a negative order these forms are not used at all. Latin puts *nōlī* (to one person) or *nōlīte* (to several) in front of the deponent's infinitive: *Nōlī sequī Mēdum!* — don't follow Medus; *Nōlīte proficīscī!* — don't set out. The half of the order that says what to do keeps its own *-re* or *-minī* form: *sed mē sequere!*",
+      "say": "A negative order does not use these forms: Latin puts *nōlī* (to one person) or *nōlīte* (to several) before the deponent's infinitive: *Nōlī sequī Mēdum!* — don't follow Medus. The half that says what to do keeps its own *-re* or *-minī*: *sed mē sequere!*",
       "show": {
         "kind": "sentence",
         "id": "di-16"

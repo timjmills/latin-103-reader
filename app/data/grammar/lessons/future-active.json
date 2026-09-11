@@ -12,13 +12,23 @@
   "more": [
     { "type": "p", "text": "3rd-conjugation *-iō* verbs and the 4th share *-iam, -iēs, -iet*: *faciam, faciēs, faciet; audiam, audiēs, audiet*. The future passive is *-bor, -beris, -bitur, -bimur, -biminī, -buntur* and *-ar, -ēris, -ētur, -ēmur, -ēminī, -entur* (*laudābitur*, *mittētur*). *īre* has *ībō*, *posse* *poterō*, *ferre* *feram*." },
     { "type": "p", "text": "The *-am* first person of the 3rd and 4th is the same form as the present subjunctive (the 'may / let' form: veniat = let him come, may he come): *faciam* can be *I will do* or *what am I to do?* — the context and the next forms decide (*faciēs* is future, *faciās* subjunctive)." },
-    { "type": "p", "text": "The learner's notes (week 20): like the imperfect, the future is made with an intermediate ending; for most verbs it is *a / e* — *a* in the first person singular and *e* elsewhere — with no variable vowel needed and *-m* for *I* (*pōnam, pōnēs, pōnet, pōnēmus, pōnētis, pōnent; fugiam, veniam*); for *a-* and *e-*stem verbs this does not work, so the marker *b* is used instead, after which the variable vowels stay and *-ō* is used (*pulsābō, pulsābis, pulsābit, pulsābimus, pulsābitis, pulsābunt; vidēbō*). Ørberg (chapter XX): futūrum *-bit / -bunt* and *-et / -ent*; *computābit, pārēbit, scrībet, dormiet*; *erō, eris, erit*; *crās rūrsus in lūdō dormiēs, male computābis, foedē scrībēs*." }
+    { "type": "p", "text": "The learner's notes (week 20): like the imperfect, the future is made with an intermediate ending; for most verbs it is *a / e* — *a* in the first person singular and *e* elsewhere — with no variable vowel needed and *-m* for *I* (*pōnam, pōnēs, pōnet, pōnēmus, pōnētis, pōnent; fugiam, veniam*); for *a-* and *e-*stem verbs this does not work, so the marker *b* is used instead, after which the variable vowels stay and *-ō* is used (*pulsābō, pulsābis, pulsābit, pulsābimus, pulsābitis, pulsābunt; vidēbō*). Ørberg (chapter XX): futūrum *-bit / -bunt* and *-et / -ent*; *computābit, pārēbit, scrībet, dormiet*; *erō, eris, erit*; *crās rūrsus in lūdō dormiēs, male computābis, foedē scrībēs*." },
+    { "type": "p", "text": "Only the first and second conjugations use the *-b-* future, and it makes theirs the easiest one to spot." },
+    { "type": "p", "text": "A third- or fourth-conjugation verb therefore has two different-looking futures, *-am* for 'I' and *-ē-* for the rest (*scrībam*, *scrībēs*), and both belong to the same column." }
   ],
   "sources": ["notes p69–70", "Ørberg cap. XX Grammatica Latina", "A&G §184, §472"],
   "teach": [
     {
       "n": 1,
       "title": "What the tense does",
+      "notice": {
+        "sentences": [
+          "fa-01",
+          "fa-04"
+        ],
+        "ask": "Which word in each sentence says what somebody will do?",
+        "tap": "focus"
+      },
       "say": "For what has not happened yet Latin uses the future (the 'will do' tense): *crās Iūlius ambulābit*, tomorrow Julius will walk. It is one word, with no helper like the English 'will'. Words such as *crās* 'tomorrow' and *mox* 'soon' often stand beside it, but the tense itself is carried by the verb alone.",
       "show": {
         "kind": "sentence",
@@ -44,7 +54,7 @@
     {
       "n": 2,
       "title": "1st and 2nd conjugations: the endings -bit and -bunt",
-      "say": "Verbs of the first and second conjugations (the conjugation is which of the four families a Latin verb belongs to) build the future with a *-b-*: stem + bi + ending. For he, she or it that comes out as *-bit* (*ambulābit*, *vidēbit*); for they it is *-bunt* (*cantābunt*, *tacēbunt*). Only these two conjugations use the *-b-*, and it makes their future the easiest one to spot.",
+      "say": "Verbs of the first and second conjugations (the conjugation is which of the four families a Latin verb belongs to) build the future with a *-b-*: stem + bi + ending. For he, she or it that is *-bit*, for they *-bunt*. *ambulābit*, *cantābunt*.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",
@@ -107,7 +117,7 @@
     {
       "n": 4,
       "title": "3rd and 4th conjugations: -am, then -ē- everywhere else",
-      "say": "Third- and fourth-conjugation verbs use no *-b-* at all. Their 'I' form ends in *-am*, and every other person has an *-ē-*: *scrībēs, scrībēmus, scrībētis*. Before a final *-t* or *-nt* that *ē* shortens, which is why 'he' is *scrībet* and 'they' is *scrībent*. Fourth-conjugation verbs do the same: *veniam*, *veniet*. One verb therefore has two different-looking futures, and both belong to the same column.",
+      "say": "Third- and fourth-conjugation verbs use no *-b-* at all: the 'I' form ends in *-am*, and every other person has an *-ē-*, shortened before a final *-t* or *-nt*. *scrībam*; *scrībēs, scrībēmus, scrībētis*; but *scrībet*, *scrībent*. Fourth-conjugation verbs do the same: *veniam*, *veniet*.",
       "show": {
         "kind": "paradigm",
         "key": "conj3",

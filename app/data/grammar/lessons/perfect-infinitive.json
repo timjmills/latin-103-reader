@@ -52,7 +52,7 @@
           "pinf-01",
           "pinf-05"
         ],
-        "ask": "Tap the word in each sentence that reports something that had already happened.",
+        "ask": "Which word in each sentence reports something that had already happened?",
         "tap": "focus"
       },
       "say": "When you report what somebody said or thought, and the thing reported happened earlier, Latin uses **the perfect infinitive (the 'to have done' form)**: *Iūlius dīcit Mārcum vēnisse* — Julius says that Marcus came. English says 'that he came'; Latin says, word for word, 'him to have come'.",

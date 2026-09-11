@@ -11,7 +11,7 @@
     "ask": "Which two words in each sentence set the scene in the background while the main thing happens?",
     "tap": "focus"
    },
-   "say": "Latin can give the circumstances of an action in two words: **the ablative absolute (a noun + participle set apart in the ablative: 'with X doing')**. *Sōle oriente nautae nāvigant* — with the sun rising, the sailors sail; in ordinary English, as the sun rises. The pair says when or why, and the main sentence goes on without needing it.",
+   "say": "Latin can give the circumstances of an action in two words: **the ablative absolute (a noun + participle set apart in the ablative: 'with X doing')**. *Sōle oriente nautae nāvigant* — with the sun rising, the sailors sail; in ordinary English, as the sun rises.",
    "show": {
     "kind": "sentence",
     "id": "abs-01"
@@ -172,6 +172,10 @@
   {
    "type": "p",
    "text": "The learner's notes (week 16): a noun and a matching adjective — very often a participle — in the ablative give the circumstances in which the main action happens; there is no English equivalent, so translate with whatever conjunction fits: *pāstōre sub arbore dormiente, lupus venit* — as the shepherd sleeps under a tree, a wolf comes; *lūnā plēnā, mīlitēs fugiunt* — under a full moon; *nēmine vidente* — when nobody was watching. Ørberg brings it in in chapter XVI (*sōle oriente*, *multīs hominibus spectantibus*) without naming it; A&G §419–420 give the whole picture."
+  },
+  {
+   "type": "p",
+   "text": "The pair says when or why, and the main sentence goes on without needing it."
   }
  ],
  "sources": [

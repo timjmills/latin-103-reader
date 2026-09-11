@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "Latin has no word for 'that'",
-      "say": "English reports with a joining word: *she sees that the boy is sleeping*. Latin has none, and uses **the accusative + infinitive (the 'that …' clause after says / sees / thinks)** instead, *accūsātīvus cum īnfīnītīvō*: the reported person goes into the accusative (the object form) and the reported verb into the infinitive (the 'to' form). *Syra puerum dormīre videt* — literally Syra sees the-boy-to-sleep.",
+      "notice": {
+        "sentences": [
+          "aci-01",
+          "aci-03"
+        ],
+        "ask": "Which word in each sentence tells what the boy, or the bird, is doing?",
+        "tap": "focus"
+      },
+      "say": "English says *she sees that the boy is sleeping*. Latin has no word for *that*; it uses **the accusative + infinitive (the 'that …' clause after says / sees / thinks)**: the reported person goes into the accusative (the object form) and the reported verb into the infinitive (the 'to' form). *Syra puerum dormīre videt* — Syra sees the-boy-to-sleep.",
       "show": {
         "kind": "sentence",
         "id": "aci-01"
@@ -26,7 +34,7 @@
     {
       "n": 2,
       "title": "The accusative word is the one doing it",
-      "say": "This is the step that feels wrong at first. *Puerum* looks like an object, but nobody is doing anything to the boy — he is the one asleep. Inside a reported clause the accusative is the *subject*, and the infinitive is its verb: *avem canere* = the bird is singing, *līberōs lūdere* = the children are playing. Ask who does the infinitive's action and the accusative answers.",
+      "say": "*Puerum* looks like an object, but nobody is doing anything to the boy — he is the one asleep. Inside a reported clause the accusative is the *subject*, and the infinitive is its verb: *avem canere* = the bird is singing, *līberōs lūdere* = the children are playing. Ask who does the infinitive's action and the accusative answers.",
       "show": {
         "kind": "sentence",
         "id": "aci-03"
@@ -39,7 +47,7 @@
     {
       "n": 3,
       "title": "What sets it off",
-      "say": "The pattern is set off by a verb of seeing, hearing, saying or thinking, and in these chapters that means *videt* (sees) and *audit* (hears). That verb usually comes last, after the whole reported clause: *Quīntus canem in viā lātrāre audit*. It need not: *Mārcus videt Iūliam rosās carpere* puts it second and *Audit Syra Quīntum in cubiculō plōrāre* puts it first. Find the reporting verb before you translate, wherever it stands.",
+      "say": "The pattern is set off by a verb of seeing, hearing, saying or thinking — in these chapters *videt* (sees) and *audit* (hears). That verb usually comes last, after the whole reported clause: *Quīntus canem in viā lātrāre audit*. It need not: *Mārcus videt Iūliam rosās carpere* puts it second. Find the reporting verb before you translate.",
       "show": {
         "kind": "sentence",
         "id": "aci-08"
@@ -63,7 +71,7 @@
     {
       "n": 4,
       "title": "esse in the clause, and being-done verbs",
-      "say": "If what is reported is a state, the infinitive is *esse*, and any adjective in the clause agrees with the accusative subject: *Quīntum vīvum esse videt* = sees that Quintus is alive — *Quīntum* and *vīvum* both accusative. If what is reported is done to somebody, the infinitive turns passive: *sē ā patre vocārī audit* = hears that he is being called by his father.",
+      "say": "If what is reported is a state, the infinitive is *esse*, and any adjective agrees with the accusative subject: *Quīntum vīvum esse videt* = sees that Quintus is alive — *Quīntum* and *vīvum* both accusative. If what is reported is done to somebody, the infinitive turns passive: *sē ā patre vocārī audit* = hears that he is being called.",
       "show": {
         "kind": "sentence",
         "id": "aci-05"
@@ -87,7 +95,7 @@
     {
       "n": 5,
       "title": "A plain 'to' form, or a reported clause?",
-      "say": "After *vult*, *potest* and *audet* the infinitive has no subject of its own: *Mārcus dormīre vult* = Marcus wants to sleep — the wanter and the sleeper are the same person. In a reported clause an extra accusative supplies a different doer: *Quīntum canere audit* = he hears that Quintus is singing. Count the accusatives: one that the infinitive itself acts on is an object; one that acts is a reported subject.",
+      "say": "After *vult*, *potest* and *audet* the infinitive has no subject of its own: *Mārcus dormīre vult* = Marcus wants to sleep — the wanter and the sleeper are the same person. In a reported clause an extra accusative supplies a different doer: *Quīntum canere audit* = he hears that Quintus is singing.",
       "show": {
         "kind": "sentence",
         "id": "aci-14"
@@ -154,6 +162,18 @@
     {
       "type": "p",
       "text": "Ørberg (chapter XI) lists the verbs that take it: *vidēre, audīre, sentīre* (feel, notice), *iubēre*, *dīcere*, *putāre*, *gaudēre* (be glad) and *necesse esse* (*puerum dormīre necesse est* — the boy must sleep). A&G add that an adjective in the clause agrees with its accusative subject (*Quīntum vīvum esse*), and that after *iubeō* the accusative is felt as the object of the ordering as well."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name is *accūsātīvus cum īnfīnītīvō*. English reports with a joining word; Latin has none."
+    },
+    {
+      "type": "p",
+      "text": "The reporting verb can even come first: *Audit Syra Quīntum in cubiculō plōrāre* puts it first. Find the reporting verb before you translate, wherever it stands."
+    },
+    {
+      "type": "p",
+      "text": "Plain infinitive or reported clause? Count the accusatives: one that the infinitive itself acts on is an object; one that acts is a reported subject."
     }
   ],
   "sources": [

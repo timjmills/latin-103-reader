@@ -73,7 +73,7 @@
         "ask": "Tap the word after ad that names the activity — what do the two words share?",
         "tap": "focus"
       },
-      "say": "A verb can be turned into a noun, so that it takes a case and follows a preposition, and that noun is **the gerund (the '-ing' noun form: ad bibendum = for drinking)**. *Puerī ad lūdendum in hortum currunt* — the boys run into the garden for playing. English does the same in 'shoes for running'.",
+      "say": "A verb turned into a noun, so that it takes a case and follows a preposition, is **the gerund (the '-ing' noun form: ad bibendum = for drinking)**. *Puerī ad lūdendum in hortum currunt* — the boys run into the garden for playing. English does the same in 'shoes for running'.",
       "show": {
         "kind": "sentence",
         "id": "g-01"
@@ -94,7 +94,7 @@
     {
       "n": 2,
       "title": "The accusative: ad + -ndum",
-      "say": "Take the present stem, add *-nd-*, then a neuter ending. After *ad*, meaning 'for' or 'in order to', that ending is *-um*: *ad pugnandum*, *ad bibendum*, *ad dormiendum*. First-conjugation verbs give *-andum* (*pugnandum*); the second and third give *-endum* (*bibendum*, *lūdendum*); the fourth, and the *-iō* verbs of the third, give *-iendum* (*dormiendum*, *audiendum*, *faciendum*).",
+      "say": "Take the present stem, add *-nd-*, then a neuter ending. After *ad*, meaning 'for' or 'in order to', that ending is *-um*: *ad pugnandum*, *ad bibendum*. The first conjugation gives *-andum* (*pugnandum*); the second and third give *-endum* (*bibendum*, *lūdendum*).",
       "show": {
         "kind": "paradigm",
         "key": "conj1",
@@ -203,7 +203,7 @@
     {
       "n": 6,
       "title": "Using it",
-      "say": "The gerund has no nominative at all: for 'sleeping is good' Latin uses the infinitive, *dormīre bonum est*. Everywhere else the three endings carry the sense — *-ndum* after *ad*, *-ndī* after a noun or adjective, *-ndō* for how or while — and a sentence may hold two of them at once.",
+      "say": "The gerund has no nominative at all: for 'sleeping is good' Latin uses the infinitive (the 'to' form), *dormīre bonum est*. Everywhere else the three endings carry the sense — *-ndum* after *ad*, *-ndī* after a noun or adjective, *-ndō* for how or while — and a sentence may hold two of them at once.",
       "show": {
         "kind": "sentence",
         "id": "g-14"

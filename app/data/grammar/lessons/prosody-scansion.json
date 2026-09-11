@@ -4,7 +4,20 @@
     {
       "n": 1,
       "title": "Long by nature",
-      "say": "Before a line can be cut into feet you need **prosody (which syllables count long or short, and when a final vowel is swallowed by the next word)**. 'Long' means it takes longer to say, not that it is louder. The first rule is the easy one: a syllable is long if its vowel is long — the macron tells you, *ā ē ī ō ū* — or if it holds a diphthong, two vowels said as one: *ae, au, oe, eu*. Everything else starts out short.",
+      "notice": {
+        "sentences": [
+          "prs-01",
+          "prs-02"
+        ],
+        "ask": "*spectant* in one line and *noster* in the other both begin with a short vowel. What do their first syllables have in common?",
+        "options": [
+          "Both count long, because two consonants follow the vowel",
+          "Both count short, because the vowel is short",
+          "Both count long, because the vowel has a macron"
+        ],
+        "answer": "Both count long, because two consonants follow the vowel"
+      },
+      "say": "Before a line can be cut into feet you need **prosody (which syllables count long or short, and when a final vowel is swallowed by the next word)**. A syllable is long if its vowel is long (the macron shows it) or holds a diphthong, two vowels said as one: *ae, au, oe, eu*. Everything else starts out short.",
       "show": {
         "kind": "sentence",
         "id": "prs-04"
@@ -27,7 +40,7 @@
     {
       "n": 2,
       "title": "Long by position",
-      "say": "The second rule surprises people: a syllable with a *short* vowel counts long when two consonants follow it. In *spectant*, in the line in front of you, the *e* is short, yet *spec-* is a long syllable, because *c* and *t* come after it. The second consonant may even belong to the next word: *sub lūce* makes *sub* long, because *b* and *l* meet across the gap. *x* counts as two consonants by itself, *h* as none. One softening: *br, cr, gr, tr* usually start the next syllable, so the vowel before them may stay short (*li-brī*).",
+      "say": "The second rule surprises people: a syllable with a *short* vowel counts long when two consonants follow it. In *spectant* the *e* is short, yet *spec-* is a long syllable, because *c* and *t* come after it. The second consonant may even belong to the next word: *sub lūce* makes *sub* long, because *b* and *l* meet across the gap.",
       "show": {
         "kind": "sentence",
         "id": "prs-01"
@@ -77,7 +90,7 @@
     {
       "n": 4,
       "title": "Putting it together",
-      "say": "Copy the line out, cross out every elision first, then mark long over each long vowel, each diphthong and each vowel with two consonants after it, and short over the rest. Now divide from the *end*, where the pattern is fixed. If the feet will not come out, the metre is right and your marking is wrong: look again for a missed elision or a syllable long by position. One licence to know: a final *-ō* is sometimes counted short (*volŏ*, *nēmŏ*).",
+      "say": "Copy the line out, cross out every elision, then mark long over each long vowel, each diphthong and each syllable long by position, and short over the rest. Divide from the *end*, where the pattern is fixed. If the feet will not come out, your marking is wrong: look for a missed elision or a syllable long by position.",
       "show": {
         "kind": "sentence",
         "id": "prs-03"
@@ -150,6 +163,18 @@
     {
       "type": "p",
       "text": "Method for any line: copy it out, cross out elisions, write – over long vowels and diphthongs and over every vowel followed by two consonants, ⏑ over the rest, then divide from the end — the last two feet of a hexameter are almost always – ⏑ ⏑ | – x, the second half of a pentameter always – ⏑ ⏑ | – ⏑ ⏑ | –. The learner's notes have no page on prosody; Ørberg's Pēnsum A for chapter 34 sets two Martial couplets to scan."
+    },
+    {
+      "type": "p",
+      "text": "'Long' means it takes longer to say, not that it is louder."
+    },
+    {
+      "type": "p",
+      "text": "*x* counts as two consonants by itself, *h* as none. One softening: *br, cr, gr, tr* usually start the next syllable, so the vowel before them may stay short (*li-brī*)."
+    },
+    {
+      "type": "p",
+      "text": "One licence to know: a final *-ō* is sometimes counted short (*volŏ*, *nēmŏ*)."
     }
   ],
   "sources": [

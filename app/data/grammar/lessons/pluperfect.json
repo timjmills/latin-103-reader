@@ -51,6 +51,10 @@
     {
       "type": "p",
       "text": "*Sum* has *fueram, fuerās, fuerat …*. In stories the pluperfect often sits in a *postquam*, *quod* or relative clause (*quae rēx fēcerat* — which the king had done) or in a report of the past: *dīxit sē scrīpsisse* becomes *dīxerat …* when the whole scene is earlier."
+    },
+    {
+      "type": "p",
+      "text": "It never stands for the plain past by itself."
     }
   ],
   "sources": [
@@ -70,7 +74,7 @@
         "ask": "Tap the verb that says what had already happened — what ending do the two verbs share?",
         "tap": "focus"
       },
-      "say": "One past action can be set earlier than another, and the tense that does it is **the pluperfect (the 'had done' tense)**. *Quīntus dormīverat, sed nunc vigilat* — he had slept; now he is awake. English marks it with 'had': had come, had gone, had written. It never stands for the plain past by itself.",
+      "say": "The tense for a past action earlier than another is **the pluperfect (the 'had done' tense)**. *Quīntus dormīverat, sed nunc vigilat* — he had slept; now he is awake. English marks it with 'had': had come, had gone, had written.",
       "show": {
         "kind": "sentence",
         "id": "pl-01"
@@ -94,7 +98,7 @@
     {
       "n": 2,
       "title": "Building the active: the perfect stem plus -erat",
-      "say": "Take the perfect and cut off its ending — *ambulāvī → ambulāv-*, *scrīpsī → scrīps-*, *clausī → claus-* — then add *-erat* for 'he or she had': *ambulāverat*, *scrīpserat*, *clauserat*. It is the very *erat* you already know, glued on the end.",
+      "say": "Take the perfect (the 'did / has done' tense) and cut off its ending — *ambulāvī → ambulāv-*, *scrīpsī → scrīps-*, *clausī → claus-* — then add *-erat* for 'he or she had': *ambulāverat*, *scrīpserat*, *clauserat*. It is the very *erat* you already know, glued on the end.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",
@@ -163,7 +167,7 @@
     {
       "n": 4,
       "title": "Passive and deponent take two words",
-      "say": "A passive, and a deponent (looks passive, means active), build the pluperfect from the participle plus *erat*: *Iānua ā servō clausa erat* — the door had been shut; *Mēdus profectus erat* — Medus had set out. Swap *erat* back for *est* and you are in the perfect again.",
+      "say": "A passive, and a deponent verb (passive-looking endings, active meaning: loquitur = he speaks), build the pluperfect from the participle plus *erat*: *Iānua ā servō clausa erat* — the door had been shut; *Mēdus profectus erat* — Medus had set out. Swap *erat* back for *est* and you are in the perfect again.",
       "show": {
         "kind": "sentence",
         "id": "pl-09"

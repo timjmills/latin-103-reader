@@ -51,7 +51,7 @@
           "go-01",
           "go-04"
         ],
-        "ask": "Tap the word in each sentence that says a number of what. What are these two words doing, when nobody owns anything?",
+        "ask": "Tap the word in each sentence that says a number of what. Try asking whose? of each: does it fit?",
         "tap": "focus"
       },
       "say": "Latin also uses the genitive (the 'of' form) for plain English ‘of’ — how many of something there are, or what a thing is a part of. Ask ‘whose?’ first; when that makes no sense, read it as plain ‘of’. *Numerus servōrum* is the number of the slaves, and the slaves own nothing at all.",

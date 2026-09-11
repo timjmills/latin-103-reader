@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "No noun beside it",
-      "say": "Latin has no separate word for *he*, *she*, *it* or *they*. It uses a pointing word on its own, and then it is **a demonstrative used as a pronoun (is = he, ea = she, id = it)**, *prōnōmina dēmōnstrātīva substantīva*. Compare *is servus dormit* — that slave is asleep, a pointing word with its noun — and *is dormit* — he is asleep, the same word standing alone. Look beside it: if no noun matches it, read he, she or it.",
+      "notice": {
+        "sentences": [
+          "dpr-01",
+          "dpr-03"
+        ],
+        "ask": "Which word in each sentence stands in for the thing just named?",
+        "tap": "focus"
+      },
+      "say": "Latin has no separate word for *he*, *she*, *it* or *they*. It uses a pointing word on its own: **a demonstrative used as a pronoun (is = he, ea = she, id = it)**. *Is servus dormit* = that slave is asleep, but *is dormit* = he is asleep. If no noun matches it, read he, she or it.",
       "show": {
         "kind": "sentence",
         "id": "dpr-01"
@@ -26,7 +34,7 @@
     {
       "n": 2,
       "title": "Its gender comes from the noun it stands for",
-      "say": "English picks *he*, *she* or *it* by whether the thing is male, female or neither. Latin picks by the gender of the noun being replaced, so a thing can be *is* or *ea*. *Ānulus* is masculine, so a ring is *is*; *gemma* is feminine, so a jewel is *ea*; *ōrnāmentum* is neuter, so it is *id*, and several of them are *ea*.",
+      "say": "English picks *he*, *she* or *it* by whether it is male, female or neither. Latin picks by the gender of the noun being replaced, so a thing can be *is* or *ea*: *ānulus* is masculine, so a ring is *is*; *gemma* is feminine, so a jewel is *ea*; *ōrnāmentum* is neuter, so it is *id*, and several are *ea*.",
       "show": {
         "kind": "sentence",
         "id": "dpr-03"
@@ -63,7 +71,7 @@
     {
       "n": 4,
       "title": "eius and eī: whose, and to whom",
-      "say": "**eius** means his, her or its — the genitive (the owner form), and it never changes for gender: *sacculus eius* = his purse. **eī** means to him, to her, to it — the dative (the receiver form): *Syra eī rosam dat* = Syra gives her a rose. Both stand outside the noun they belong to, so they are easy to miss.",
+      "say": "**eius** means his, her or its — the genitive (the owner form), and it never changes for gender: *sacculus eius* = his purse. **eī** means to him, to her, to it — the dative (the receiver form): *Syra eī rosam dat* = Syra gives her a rose.",
       "show": {
         "kind": "sentence",
         "id": "dpr-09"
@@ -76,7 +84,7 @@
     {
       "n": 5,
       "title": "Pronoun, or pointing word?",
-      "say": "The same word does both jobs, and only the sentence around it decides. *Illa gemma magna est* — *illa* has *gemma* beside it, so it points: that jewel. *illam Lȳdia emit* — nothing matches *illam*, so it stands in for the jewel: Lydia buys it. Hunt for a noun agreeing in gender, number and case; if there is none, the word is a pronoun.",
+      "say": "The same word does both jobs; the sentence around it decides. *Illa gemma magna est* — *illa* has *gemma* beside it, so it points: that jewel. *Illam Lȳdia emit* — nothing matches *illam*, so it stands in for the jewel: Lydia buys it. If no noun agrees with it in gender, number and case, the word is a pronoun.",
       "show": {
         "kind": "sentence",
         "id": "dpr-13"
@@ -145,6 +153,14 @@
     {
       "type": "p",
       "text": "Ørberg cap. VIII: *eum / illum*, *eius*, *eī*, *eō*; *eam* from cap. III, *eōrum / eārum* from cap. V. The genitive *eius* means his / her / its when the owner is someone other than the subject (*sacculus eius*); for the subject's own, Latin uses *suus* (*sacculum suum pōnit*, r04:61.1). *Ille* can mean 'the famous', and *hic … ille* = the latter … the former. The true personal pronouns *ego*, *tū*, *nōs*, *vōs* have their own lesson. A&G §295–297."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name is *prōnōmina dēmōnstrātīva substantīva*. Compare *is servus dormit* — that slave is asleep, a pointing word with its noun — and *is dormit* — he is asleep, the same word standing alone. Look beside it: if no noun matches it, read he, she or it."
+    },
+    {
+      "type": "p",
+      "text": "On *eius* and *eī*: both stand outside the noun they belong to, so they are easy to miss."
     }
   ],
   "sources": [

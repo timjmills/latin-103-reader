@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "To name the one thing that must hold before the rest is allowed, Latin uses **dummodo + subjunctive (the 'provided that / as long as' condition)**. The verb after *dummodo* goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do), because the thing is not a fact but a requirement: *manē, dummodo taceās* — stay, provided you keep quiet.",
+      "notice": {
+        "sentences": [
+          "dmd-01",
+          "dmd-03"
+        ],
+        "ask": "Each sentence allows something only on one condition. Tap the verb that names the condition: what word stands in front of each, and what has happened to the verb's ending?",
+        "tap": "focus"
+      },
+      "say": "To name the one thing that must hold before the rest is allowed, Latin uses **dummodo + subjunctive (the 'provided that / as long as' condition)**. The verb after *dummodo* goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do): *manē, dummodo taceās* — stay, provided you keep quiet.",
       "show": {
         "kind": "sentence",
         "id": "dmd-01"
@@ -173,6 +181,10 @@
     {
       "type": "p",
       "text": "Related uses of *dum* with the subjunctive: 'until' when there is waiting or intention (*exspectā dum veniat* — wait until he comes), and 'while' + subjunctive for background in some writers. With the indicative *dum* is plain 'while' or 'as long as' (*dōnec ego vīvam*, Week 11, is the same idea with *dōnec*)."
+    },
+    {
+      "type": "p",
+      "text": "Why the subjunctive after *dummodo*? Because the thing is not a fact but a requirement."
     }
   ],
   "sources": [

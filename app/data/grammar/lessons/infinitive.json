@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "An action with nobody attached",
-      "say": "*Cantat* tells you who and when: she sings, now. Strip both away and you have **the infinitive (the 'to' form)**, *modus īnfīnītīvus*: *cantāre*, to sing — the action named, with no person and no time. On its own it says nothing; it leans on another verb, and Latin's are *potest* (can), *vult* (wants), *audet* (dares) and *necesse est* (it is necessary).",
+      "notice": {
+        "sentences": [
+          "inf-01",
+          "inf-02"
+        ],
+        "ask": "Each sentence has two verbs. Which one names the action without saying who does it or when?",
+        "tap": "focus"
+      },
+      "say": "*Cantat* tells you who and when: she sings, now. Strip both away and you have **the infinitive (the 'to' form)**: *cantāre*, to sing — the action named, with no person and no time. It leans on another verb: *potest* (can), *vult* (wants), *audet* (dares), *necesse est* (it is necessary).",
       "show": {
         "kind": "sentence",
         "id": "inf-01"
@@ -82,7 +90,7 @@
     {
       "n": 4,
       "title": "To be done: -rī, or a bare -ī",
-      "say": "For the passive (the 'is done' form) the -e of the ending turns into a long ī: *cantārī* (to be sung), *vidērī* (to be seen), *audīrī* (to be heard). The third family, which had no vowel to begin with, drops the r as well and keeps only **-ī**: *legī* (to be read), *capī* (to be caught). *Avis ā puerō capī potest* = the bird can be caught by the boy.",
+      "say": "For the passive (the 'is done' form) the -e of the ending turns into a long ī: *cantārī* (to be sung), *vidērī* (to be seen), *audīrī* (to be heard). The third family drops the r and keeps only **-ī**: *legī* (to be read), *capī* (to be caught). *Avis ā puerō capī potest*, the bird can be caught.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",
@@ -116,7 +124,7 @@
     {
       "n": 5,
       "title": "The handful that double a consonant",
-      "say": "A few very common verbs never took a stem vowel, so they double a consonant instead of adding -re: *est* → **esse** (to be), *potest* → **posse** (to be able), *vult* → **velle** (to want), *fert* → **ferre** (to carry). *Īre* (to go) is the odd one the other way, a stem so short that only -re is left. Learn these five by heart; two or three more of the same kind turn up much later.",
+      "say": "A few very common verbs never took a stem vowel, so they double a consonant instead of adding -re: *est* → **esse** (to be), *potest* → **posse** (to be able), *vult* → **velle** (to want), *fert* → **ferre** (to carry). *Īre* (to go) is the odd one the other way: a stem so short that only -re is left.",
       "show": {
         "kind": "paradigm",
         "key": "sum",
@@ -135,7 +143,7 @@
     {
       "n": 6,
       "title": "The 'to' form, or the verb itself?",
-      "say": "Two near-misses catch beginners. *Currere* (to run) beside *currunt* (they are running): the infinitive has -re and leans on *volunt*, the finite verb has a person's ending and stands alone. And *tacēre* (to be quiet) beside *tacē!* (be quiet!): the command is short, stands by itself and usually has a name beside it. If a *potest*, *vult* or *audet* is anywhere near, the -re form is an infinitive.",
+      "say": "Two near-misses. *Currere* (to run) beside *currunt* (they are running): the infinitive has -re and leans on *volunt*; the finite verb has a person's ending and stands alone. *Tacēre* (to be quiet) beside *tacē!* (be quiet!): the command is short and stands by itself. If a *potest*, *vult* or *audet* is near, the -re form is an infinitive.",
       "show": {
         "kind": "sentence",
         "id": "inf-12"
@@ -210,6 +218,22 @@
     {
       "type": "p",
       "text": "Ørberg cap. X: -re / -rī; *necesse est* + infinitive; *vult*, *potest*, *audet*. The infinitive with an accusative as its own subject — *Quīntum vīvum esse vident* (they see that Quintus is alive, r10:122.1) — is the next skill, the accusative and infinitive. Perfect (*vēnisse*) and future (*ventūrum esse*) infinitives come later. A&G §451–456."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name is *modus īnfīnītīvus*. On its own the infinitive says nothing; it leans on another verb."
+    },
+    {
+      "type": "p",
+      "text": "The third family, which had no vowel to begin with, drops the r of the passive ending as well: *Avis ā puerō capī potest* = the bird can be caught by the boy."
+    },
+    {
+      "type": "p",
+      "text": "On *esse*, *posse*, *velle*, *ferre* and *īre*: learn these five by heart; two or three more of the same kind turn up much later."
+    },
+    {
+      "type": "p",
+      "text": "On *tacē!*: the command is short, stands by itself and usually has a name beside it."
     }
   ],
   "sources": [

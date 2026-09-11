@@ -8,10 +8,10 @@
      "dep-03",
      "dep-05"
     ],
-    "ask": "Which verb in each sentence ends in -tur, and is its subject doing the action or having it done to it?",
+    "ask": "Which verb in each sentence looks passive but tells you what the ship, and Lydia, actually do?",
     "tap": "focus"
    },
-   "say": "Some verbs have nothing but passive-shaped endings and yet mean something the subject does: **a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)**. *sequitur* is not 'he is followed' but 'he follows'; *verētur* is 'he fears'.",
+   "say": "Some verbs have nothing but passive-shaped endings and yet mean something the subject does: **a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)**. *sequitur* is not 'he is followed' but 'he follows'; *verētur* is 'he fears'. *Puerī magistrum sequuntur* — the boys follow the teacher.",
    "show": {
     "kind": "sentence",
     "id": "dep-02"
