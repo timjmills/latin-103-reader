@@ -746,3 +746,271 @@ def test_the_second_wave_ships_forty_that_hold_the_learner_facing_invariants(sec
             assert k in forms or k in names or w in g.FUNCTION_WORDS or w.lower() in g.FUNCTION_WORDS or stem, (s["la"], w)
     again = g.generate(skill, 40, 1, lex)
     assert [x["la"] for x in again["sentences"]] == [x["la"] for x in res["sentences"]]
+
+
+# ------------------------------------------------ the QA audit of 2026-09-11
+# Its three criticals were one thing: the generator wrote Latin that parses
+# and means nothing a teacher would say.  Every sentence quoted below is
+# verbatim from QA-REPORT.md, rebuilt here from the template and the words
+# that made it, so the class cannot come back unnoticed.
+
+def _fill_words(lex, t, words, numbers=None):
+    """Fill a template with named lemmas, exactly as `fill_template` would
+    have, so a sentence the audit quoted can be put back through the checks."""
+    import random as _random
+    fill = g.Fill(t)
+    numbers = numbers or {}
+    for name in g._fill_order(t["slots"]):
+        spec = t["slots"][name]
+        pos = spec.get("pos", "N")
+        case = g._slot_case(t, name)
+        if pos == "N":
+            w = lex.word(words[name], "N") or lex.word(words[name], "NAME")
+            assert w is not None, words[name]
+            number = numbers.get(name) or (spec.get("number") if spec.get("number") != "any" else None) or "sg"
+            if w.plural_only:
+                number = "pl"
+            parse = {"case": case, "number": number, "gender": g.noun_gender(w)}
+        elif pos == "ADJ":
+            w = lex.word(words[name], "ADJ")
+            assert w is not None, words[name]
+            number = fill.numbers[spec["agree"]]
+            parse = g.adj_parse(spec, case or fill.parses[spec["agree"]]["case"], number,
+                                fill.words[spec["agree"]])
+        elif pos == "V":
+            spec = g._choose_tense(spec, _random.Random(0))
+            w = lex.word(words[name], "V")
+            assert w is not None, words[name]
+            parse = g.verb_parse(spec, fill, w)
+            number = parse.get("number", "sg")
+        else:
+            raise AssertionError(f"{pos} slots are not rebuilt here")
+        form = g.inflect(w, parse)
+        assert form is not None, (name, words[name], parse)
+        fill.words[name], fill.parses[name], fill.forms[name], fill.numbers[name] = w, parse, form, number
+    return fill
+
+
+def _rebuild(lex, skill, template_id, words, numbers=None):
+    """(the Latin, the English, what `check_sentence` says about it)."""
+    data = g.load_templates(skill)
+    t = next(x for x in data["templates"] if x["id"] == template_id)
+    fill = _fill_words(lex, t, words, numbers)
+    la, en = g.render_la(fill), g.render_en(fill)
+    problems = g.check_sentence(lex, data["chapter"], t, fill, la, data["exclude"], en,
+                                g.render_gloss(fill, la, lex))
+    return la, en, problems
+
+
+DIO = "dative-indirect-object"
+ABS = "ablative-absolute"
+
+#: C-1 — a possessive hung on a person who is no relation of the owner.
+C1_SENTENCES = [
+    ("dio-t7", {"s": "puer", "adj": "fōrmōsus", "r": "vir", "suus": "suus", "v": "respondeō"}, None,
+     "Puer fōrmōsus virō suō nōn respondet.", "vir is no relation of puer"),
+    ("dio-t7", {"s": "inimīcus", "adj": "foedus", "r": "femina", "suus": "suus", "v": "respondeō"}, None,
+     "Inimīcus foedus fēminae suae nōn respondet.", "femina is no relation of inimīcus"),
+    ("dio-t7", {"s": "fīlia", "adj": "pulcher", "r": "puella", "suus": "suus", "v": "respondeō"}, None,
+     "Fīlia pulchra puellae suae nōn respondet.", "puella is no relation of fīlia"),
+    ("dio-t7", {"s": "servus", "adj": "bonus", "r": "puer", "suus": "suus", "v": "respondeō"}, None,
+     "Servus bonus puerō suō nōn respondet.", "puer is no relation of servus"),
+    ("dio-t1", {"g": "domina", "r": "femina", "suus": "suus", "t": "mel", "v": "dō"}, None,
+     "Domina fēminae suae mel dat.", "femina is no relation of domina"),
+    ("dio-t3", {"g": "līberī", "r": "puella", "suus": "suus", "t": "speculum", "v": "dō"}, None,
+     "Līberī puellīs suīs specula dant.", "puella is no relation of līberī"),
+    ("dio-t3", {"g": "amīcus", "r": "vir", "suus": "suus", "t": "nummus", "v": "dō"}, None,
+     "Amīcī virīs suīs nummōs dant.", "vir is no relation of amīcus"),
+    ("dio-t3", {"g": "fīlius", "r": "femina", "suus": "suus", "t": "pirum", "v": "dō"}, None,
+     "Fīliī fēminīs suīs pira dant.", "femina is no relation of fīlius"),
+    ("dio-t3", {"g": "māter", "r": "femina", "suus": "suus", "t": "saccus", "v": "dō"}, None,
+     "Mātrēs fēminīs suīs saccōs dant.", "femina is no relation of māter"),
+]
+
+
+@pytest.mark.parametrize("tid,words,numbers,latin,why", C1_SENTENCES)
+def test_c1_a_possessive_between_two_people_needs_a_relation(lex, tid, words, numbers, latin, why):
+    la, _, problems = _rebuild(lex, DIO, tid, words, numbers)
+    assert la == latin                        # the audit's own sentence, rebuilt
+    assert any(why in p for p in problems), problems
+
+
+@pytest.mark.parametrize("tid,words,latin", [
+    # the contract's own §11a example, and the relations the book does have
+    ("dio-t1", {"g": "Iūlius", "r": "servus", "suus": "suus", "t": "nummus", "v": "dō"},
+     "Iūlius servō suō nummum dat."),
+    ("dio-t3", {"g": "pater", "r": "fīlius", "suus": "suus", "t": "nummus", "v": "dō"},
+     "Patrēs fīliīs suīs nummōs dant."),
+    ("dio-t7", {"s": "ancilla", "adj": "probus", "r": "domina", "suus": "suus", "v": "respondeō"},
+     "Ancilla proba dominae suae nōn respondet."),
+])
+def test_c1_the_relations_the_book_has_still_ship(lex, tid, words, latin):
+    la, _, problems = _rebuild(lex, DIO, tid, words)
+    assert (la, problems) == (latin, [])
+
+
+def test_c1_a_spouse_is_glossed_husband_or_wife_not_man_or_woman(lex):
+    """The audit's second C-1 class: right Latin, wrong English."""
+    la, en, problems = _rebuild(lex, DIO, "dio-t7",
+                                {"s": "femina", "adj": "probus", "r": "vir", "suus": "suus", "v": "respondeō"})
+    assert (la, problems) == ("Fēmina proba virō suō nōn respondet.", [])
+    assert en == "The good woman does not answer her husband."
+    la, en, problems = _rebuild(lex, DIO, "dio-t1",
+                                {"g": "Iūlius", "r": "femina", "suus": "suus", "t": "speculum", "v": "dō"})
+    assert (la, problems) == ("Iūlius fēminae suae speculum dat.", [])
+    assert en == "Julius gives his wife a mirror."
+
+
+def test_c1_nobody_has_two_husbands(lex):
+    """`REL.one`: a word nobody has two of is owned in the singular, and a
+    one-to-one relation keeps the owner singular too."""
+    vir, femina = word(lex, "vir"), word(lex, "femina")
+    pater, filius = word(lex, "pater"), word(lex, "fīlius")
+    assert g.possessive_ok(femina, vir, "sg", "sg")
+    assert not g.possessive_ok(femina, vir, "sg", "pl")      # "by her husbands"
+    assert not g.possessive_ok(vir, femina, "pl", "sg")      # "the men … their wife"
+    assert g.possessive_ok(filius, pater, "pl", "sg")        # "the sons … their father"
+    assert not g.possessive_ok(filius, pater, "sg", "pl")    # "his fathers"
+
+
+def test_c1_a_cast_name_owns_by_the_part_it_plays_and_is_never_owned(lex):
+    julius = lex.word("Iūlius", "NAME")
+    marcus = lex.word("Mārcus", "NAME")
+    assert set(g.rel_keys(julius)) == {g.key_of(x) for x in ("dominus", "pater", "vir")}
+    assert g.possessive_ok(julius, word(lex, "servus"))       # Iūlius is a dominus
+    assert g.possessive_ok(marcus, word(lex, "pater"))        # Mārcus is a fīlius
+    assert not g.possessive_ok(marcus, word(lex, "servus"))   # a boy has no slave
+    assert not g.possessive_ok(word(lex, "servus"), julius)   # "his Julius"
+    assert g.possessive_ok(word(lex, "hostis"), word(lex, "amīcus"))   # anyone has a friend
+    assert g.possessive_ok(word(lex, "puer"), word(lex, "nummus"))     # a thing is anyone's
+
+
+#: C-2 — an adjective on a noun it cannot describe, verbatim from the audit.
+C2_SENTENCES = [
+    (DIO, "dio-t9", {"t": "lacrima", "adj": "fōrmōsus", "r": "vir", "v": "placeō"}, None,
+     "Lacrima fōrmōsa virō nōn placet.", "fōrmōsus does not describe lacrima"),
+    (DIO, "dio-t9", {"t": "lacrima", "adj": "foedus", "r": "femina", "v": "placeō"}, None,
+     "Lacrima foeda fēminae nōn placet.", "foedus does not describe lacrima"),
+    (DIO, "dio-t9", {"t": "lacrima", "adj": "antīquus", "r": "fīlia", "v": "placeō"}, None,
+     "Lacrima antīqua fīliae nōn placet.", "antīquus does not describe lacrima"),
+    (DIO, "dio-t9", {"t": "pecūnia", "adj": "pulcher", "r": "Ursus", "v": "placeō"}, None,
+     "Pecūnia pulchra Ursō nōn placet.", "pulcher does not describe pecūnia"),
+    (DIO, "dio-t9", {"t": "pecūnia", "adj": "magnus", "r": "ancilla", "v": "placeō"}, None,
+     "Pecūnia magna ancillae nōn placet.", "magnus does not describe pecūnia"),
+    (DIO, "dio-t9", {"t": "pecūnia", "adj": "parvus", "r": "Quīntus", "v": "placeō"}, None,
+     "Pecūnia parva Quīntō nōn placet.", "parvus does not describe pecūnia"),
+    (DIO, "dio-t9", {"t": "titulus", "adj": "fōrmōsus", "r": "Dāvus", "v": "placeō"}, None,
+     "Titulus fōrmōsus Dāvō nōn placet.", "fōrmōsus does not describe titulus"),
+    (DIO, "dio-t9", {"t": "mūrus", "adj": "fōrmōsus", "r": "amīcus", "v": "placeō"}, {"t": "pl"},
+     "Mūrī fōrmōsī amīcō nōn placent.", "fōrmōsus does not describe mūrus"),
+    (DIO, "dio-t9", {"t": "porta", "adj": "fōrmōsus", "r": "puer", "v": "placeō"}, {"t": "pl"},
+     "Portae fōrmōsae puerō nōn placent.", "fōrmōsus does not describe porta"),
+    (DIO, "dio-t9", {"t": "persōna", "adj": "fōrmōsus", "r": "pater", "v": "placeō"}, {"t": "pl"},
+     "Persōnae fōrmōsae patrī nōn placent.", "fōrmōsus does not describe persōna"),
+    (DIO, "dio-t9", {"t": "capitulum", "adj": "pulcher", "r": "Ursus", "v": "placeō"}, {"t": "pl"},
+     "Capitula pulchra Ursō nōn placent.", "pulcher does not describe capitulum"),
+    (DIO, "dio-t9", {"t": "baculum", "adj": "pulcher", "r": "servus", "v": "placeō"}, None,
+     "Baculum pulchrum servō nōn placet.", "pulcher does not describe baculum"),
+    (DIO, "dio-t9", {"t": "nummus", "adj": "foedus", "r": "puer", "v": "placeō"}, {"t": "pl"},
+     "Nummī foedī puerō nōn placent.", "foedus does not describe nummus"),
+    (DIO, "dio-t7", {"s": "pater", "adj": "fōrmōsus", "r": "puer", "suus": "suus", "v": "respondeō"}, None,
+     "Pater fōrmōsus puerō suō nōn respondet.", "fōrmōsus does not describe pater"),
+    (DIO, "dio-t7", {"s": "dominus", "adj": "fōrmōsus", "r": "servus", "suus": "suus", "v": "respondeō"}, None,
+     "Dominus fōrmōsus servō suō nōn respondet.", "fōrmōsus does not describe dominus"),
+    (DIO, "dio-t7", {"s": "vir", "adj": "fōrmōsus", "r": "ōstiārius", "suus": "suus", "v": "respondeō"}, None,
+     "Vir fōrmōsus ōstiāriō suō nōn respondet.", "fōrmōsus does not describe vir"),
+    (DIO, "dio-t7", {"s": "inimīcus", "adj": "fōrmōsus", "r": "puer", "suus": "suus", "v": "respondeō"}, None,
+     "Inimīcus fōrmōsus puerō suō nōn respondet.", "fōrmōsus does not describe inimīcus"),
+    (ABS, "abs-t4", {"n": "pedēs", "ptc": "reveniō", "s": "hostis", "adj": "bonus", "v": "cōnsistō"},
+     {"n": "pl"}, "Peditibus revenientibus hostis bonus cōnsistit.", "bonus does not describe hostis"),
+    (ABS, "abs-t4", {"n": "nūntius", "ptc": "equitō", "s": "hostis", "adj": "amīcus", "v": "cōnsīdō"},
+     {"n": "pl"}, "Nūntiīs equitantibus hostis amīcus cōnsīdit.", "amīcus does not describe hostis"),
+    (ABS, "abs-t4", {"n": "canis", "ptc": "accurrō", "s": "hostis", "adj": "probus", "v": "veniō"},
+     {"n": "pl"}, "Canibus accurrentibus hostis probus venit.", "probus does not describe hostis"),
+]
+
+
+@pytest.mark.parametrize("skill,tid,words,numbers,latin,why", C2_SENTENCES)
+def test_c2_an_adjective_cannot_describe_what_it_cannot_describe(lex, skill, tid, words, numbers, latin, why):
+    la, _, problems = _rebuild(lex, skill, tid, words, numbers)
+    assert la == latin                        # the audit's own sentence, rebuilt
+    assert any(why in p for p in problems), problems
+
+
+@pytest.mark.parametrize("skill,tid,words,numbers,latin", [
+    (DIO, "dio-t9", {"t": "speculum", "adj": "novus", "r": "Ursus", "v": "placeō"}, None,
+     "Speculum novum Ursō nōn placet."),
+    (ABS, "abs-t4", {"n": "canis", "ptc": "accurrō", "s": "puer", "adj": "probus", "v": "veniō"},
+     {"n": "pl"}, "Canibus accurrentibus puer probus venit."),
+])
+def test_c2_a_sound_adjective_still_ships(lex, skill, tid, words, numbers, latin):
+    la, _, problems = _rebuild(lex, skill, tid, words, numbers)
+    assert (la, problems) == (latin, [])
+
+
+@pytest.mark.parametrize("adj,noun", [
+    ("fōrmōsus", "vir"), ("fōrmōsus", "pater"), ("fōrmōsus", "hostis"),    # no man is fōrmōsus here
+    ("fōrmōsus", "speculum"), ("fōrmōsus", "flōs"),
+    ("pulcher", "Mēdus"), ("pulcher", "inimīcus"), ("pulcher", "pecūnia"),
+    ("antīquus", "mēnsa"), ("antīquus", "rosa"),
+    ("magnus", "aurum"), ("parvus", "argentum"),
+    ("bonus", "hostis"), ("probus", "hostis"), ("amīcus", "inimīcus"), ("carus", "praedō"),
+])
+def test_c2_the_frames_the_audit_called_too_loose(lex, adj, noun):
+    n = lex.word(noun, "N") or lex.word(noun, "NAME")
+    assert n is not None, noun
+    assert not g.adj_admits(word(lex, adj, "ADJ"), n, "sg")
+
+
+@pytest.mark.parametrize("adj,noun", [
+    ("fōrmōsus", "puella"), ("fōrmōsus", "ancilla"), ("fōrmōsus", "Iūlia"),   # the book's own
+    ("pulcher", "rosa"), ("pulcher", "hortus"), ("pulcher", "femina"), ("pulcher", "lūna"),
+    ("foedus", "corpus"), ("foedus", "littera"),
+    ("antīquus", "templum"), ("antīquus", "fābula"),
+    ("magnus", "saccus"), ("parvus", "puer"), ("bonus", "servus"), ("amīcus", "dominus"),
+])
+def test_c2_what_the_book_does_say_is_still_drawn(lex, adj, noun):
+    n = lex.word(noun, "N") or lex.word(noun, "NAME")
+    assert n is not None, noun
+    assert g.adj_admits(word(lex, adj, "ADJ"), n, "sg")
+
+
+#: C-3 — the conjunction `cum` followed straight by the preposition `cum`,
+#: in the one skill whose point is telling the two apart.  Verbatim.
+@pytest.mark.parametrize("latin", [
+    "Cum ancilla cum Aemiliā ambulāret, parens exiit.",
+    "Cum Iūlius cum puerō colloquerētur, ancilla accucurrit.",
+    "Cum Syra cum servō sedēret, ōstiārius exiit.",
+    "Cum amīcus cum Quīntō lūderet, adulēscēns rediit.",
+    "Cum frāter cum Mēdō labōrāret, mātrōna accucurrit.",
+    "Cum puer cum Syrā lūderet, Quīntus accucurrit.",
+    "Cum fīlius cum Lȳdiā labōrāret, fīlia vēnit.",
+])
+def test_c3_a_cum_clause_may_not_carry_a_cum_phrase(latin):
+    assert g.cum_clash(latin) == "conjunction cum and preposition cum in the same clause"
+
+
+@pytest.mark.parametrize("latin", [
+    # the two uses contrasted across the comma is the point of the skill
+    "Cum Iūlius sedēret, Mārcus cum patre vēnit.",
+    "Cum ancilla ambulāret, parens exiit.",
+    "Mēdus cum Lȳdiā ambulat.",
+])
+def test_c3_the_two_uses_in_different_clauses_are_the_lesson(latin):
+    assert g.cum_clash(latin) is None
+
+
+def test_c3_no_cum_template_puts_the_two_in_one_clause():
+    for skill in ("cum-narrative", "cum-causal"):
+        for t in g.load_templates(skill)["templates"]:
+            assert g.cum_clash(re.sub(r"\{[^}]*\}", "x", t["la"])) is None, (skill, t["id"])
+
+
+@pytest.mark.parametrize("skill", [DIO, ABS, "cum-narrative", "ablative-agent", "wishes-utinam",
+                                   "potential-subjunctive", "conditions-contrary-to-fact"])
+def test_forty_fresh_sentences_carry_none_of_the_three(lex, skill):
+    res = g.generate(skill, 40, 21, lex)
+    assert len(res["sentences"]) == 40
+    for s in res["sentences"]:
+        assert g.cum_clash(s["la"]) is None, s["la"]
+        assert " her man" not in s["en"] and " his woman" not in s["en"], s["en"]

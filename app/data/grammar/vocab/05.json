@@ -121,12 +121,54 @@
    "sem": {
     "of": [
      "person",
-     "thing",
-     "place",
-     "animal",
-     "body",
-     "nature"
-    ]
+     "place"
+    ],
+    "also": [
+     "rosa",
+     "flōs",
+     "līlium",
+     "gemma",
+     "margarīta",
+     "ānulus",
+     "ōrnāmentum",
+     "vestīmentum",
+     "vestis",
+     "toga",
+     "columna",
+     "signum",
+     "speculum",
+     "arbor",
+     "stēlla",
+     "lūna",
+     "sōl",
+     "lūx",
+     "nūbēs",
+     "faciēs",
+     "oculus",
+     "capillus",
+     "corpus",
+     "collum",
+     "umerus",
+     "ōs",
+     "vultus"
+    ],
+    "not": [
+     "hostis",
+     "inimīcus",
+     "praedō",
+     "pīrāta",
+     "fūr",
+     "tyrannus",
+     "parricīda",
+     "carcer",
+     "cloāca",
+     "vorāgō",
+     "stabulum",
+     "humus",
+     "labyrinthus",
+     "castra"
+    ],
+    "gender": "f"
    }
   },
   {
@@ -373,9 +415,12 @@
    "sem": {
     "of": [
      "person",
-     "thing",
      "animal",
      "body"
+    ],
+    "also": [
+     "littera",
+     "vulnus"
     ]
    }
   },

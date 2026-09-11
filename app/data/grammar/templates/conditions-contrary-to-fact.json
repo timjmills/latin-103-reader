@@ -7,12 +7,73 @@
    "la": "Sī {t:acc} {v1:impf.subj.act.1sg}, {o:acc} {v2:impf.subj.act.1sg}.",
    "en": "If I {v1:past} {t:a}, I would {v2:base} {o:a}.",
    "slots": {
-    "t": {"only": ["pecūnia", "nummus", "dēnārius"], "number": "any"},
-    "v1": {"pos": "V", "form": "impf.subj.act.1sg", "subj": "ego", "obj": "t", "lemmas": ["habeō"], "g": "I {past}"},
-    "o": {"only": ["saccus", "ānulus", "gladius", "pōculum", "speculum", "gemma", "tabula", "baculum", "sacculus", "clāvis", "pila", "rosa", "līlium", "canis", "equus", "ovis", "agnus", "porcus", "vīnum", "aqua", "pānis", "cibus", "piscis", "ovum", "pirum", "vestis", "toga", "tunica", "lucerna", "vāsum"]},
-    "v2": {"pos": "V", "form": "impf.subj.act.1sg", "subj": "ego", "obj": "o", "lemmas": ["emō"], "g": "I would {base}"}
+    "t": {
+     "only": [
+      "pecūnia",
+      "nummus",
+      "dēnārius"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj.act.1sg",
+     "subj": "ego",
+     "obj": "t",
+     "lemmas": [
+      "habeō"
+     ],
+     "g": "I {past}"
+    },
+    "o": {
+     "only": [
+      "saccus",
+      "ānulus",
+      "gladius",
+      "pōculum",
+      "speculum",
+      "gemma",
+      "tabula",
+      "baculum",
+      "sacculus",
+      "clāvis",
+      "pila",
+      "rosa",
+      "līlium",
+      "canis",
+      "equus",
+      "ovis",
+      "agnus",
+      "porcus",
+      "vīnum",
+      "aqua",
+      "pānis",
+      "cibus",
+      "piscis",
+      "ovum",
+      "pirum",
+      "vestis",
+      "toga",
+      "tunica",
+      "lucerna",
+      "vāsum"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj.act.1sg",
+     "subj": "ego",
+     "obj": "o",
+     "lemmas": [
+      "emō"
+     ],
+     "g": "I would {base}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 5
   },
   {
@@ -20,26 +81,127 @@
    "la": "Sī in {p:abl} {v1:impf.subj.act.1sg}, tē {v2:impf.subj.act.1sg}.",
    "en": "If I were in {p}, I would {v2:base} you.",
    "slots": {
-    "p": {"only": ["hortus", "vīlla", "forum", "silva", "urbs", "oppidum", "lūdus", "templum", "theātrum"]},
-    "v1": {"pos": "V", "form": "impf.subj.act.1sg", "subj": "ego", "takes": "pred", "lemmas": ["sum"], "g": "I were"},
-    "v2": {"pos": "V", "form": "impf.subj.act.1sg", "subj": "ego", "absolute": true, "lemmas": ["videō", "audiō", "salūtō", "exspectō", "iuvō", "adiuvō", "vocō"], "g": "I would {base}"}
+    "p": {
+     "only": [
+      "hortus",
+      "vīlla",
+      "forum",
+      "silva",
+      "urbs",
+      "oppidum",
+      "lūdus",
+      "templum",
+      "theātrum"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj.act.1sg",
+     "subj": "ego",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ],
+     "g": "I were"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj.act.1sg",
+     "subj": "ego",
+     "absolute": true,
+     "lemmas": [
+      "videō",
+      "audiō",
+      "salūtō",
+      "exspectō",
+      "iuvō",
+      "adiuvō",
+      "vocō"
+     ],
+     "g": "I would {base}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 6,
-   "fixed_gloss": {"tē": "you"}
+   "fixed_gloss": {
+    "tē": "you"
+   }
   },
   {
    "id": "ccf-t3",
    "la": "Sī {s:nom} {v1:impf.subj}, {s2:nom} {pron:acc} {v2:impf.subj}.",
    "en": "If {s} {v1:past}, {s2} would {v2:base} {pron}.",
    "slots": {
-    "s": {"only": ["Mārcus", "Quīntus", "Iūlia", "Dāvus", "Mēdus", "Syra", "Dēlia", "puer", "puella", "discipulus", "servus", "ancilla", "fīlius", "fīlia"], "number": "any"},
-    "v1": {"pos": "V", "form": "impf.subj", "subj": "s", "lemmas": ["labōrō", "taceō", "maneō", "cantō", "lūdō"], "g": "{pron} {past}"},
-    "s2": {"only": ["Iūlius", "Aemilia", "Cornēlius", "magister", "pater", "māter", "dominus", "domina"], "number": "any"},
-    "pron": {"pos": "PRON", "lemma": "is", "agree": "s"},
-    "v2": {"pos": "V", "form": "impf.subj", "subj": "s2", "obj": "pron", "lemmas": ["laudō", "audiō", "videō"], "g": "{pron} would {base}"}
+    "s": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "fīlia"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "lemmas": [
+      "labōrō",
+      "taceō",
+      "maneō",
+      "cantō",
+      "lūdō"
+     ],
+     "g": "{pron} {past}"
+    },
+    "s2": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius",
+      "magister",
+      "pater",
+      "māter",
+      "dominus",
+      "domina"
+     ],
+     "number": "any"
+    },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s2",
+     "obj": "pron",
+     "lemmas": [
+      "laudō",
+      "audiō",
+      "videō"
+     ],
+     "g": "{pron} would {base}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 5
   },
   {
@@ -47,26 +209,123 @@
    "la": "Sī {a:nom} {v1:impf.subj.act.1sg}, ad tē {v2:impf.subj.act.1sg}.",
    "en": "If I were {a:a}, I would {v2:base} to you.",
    "slots": {
-    "a": {"only": ["canis", "equus", "lupus", "leō", "avis"]},
-    "v1": {"pos": "V", "form": "impf.subj.act.1sg", "subj": "ego", "takes": "pred", "lemmas": ["sum"], "g": "I were"},
-    "v2": {"pos": "V", "form": "impf.subj.act.1sg", "subj": "ego", "lemmas": ["currō", "veniō", "accurrō"], "g": "I would {base}"}
+    "a": {
+     "only": [
+      "canis",
+      "equus",
+      "lupus",
+      "leō",
+      "avis"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj.act.1sg",
+     "subj": "ego",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ],
+     "g": "I were"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj.act.1sg",
+     "subj": "ego",
+     "lemmas": [
+      "currō",
+      "veniō",
+      "accurrō"
+     ],
+     "g": "I would {base}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 6,
-   "fixed_gloss": {"tē": "you"}
+   "fixed_gloss": {
+    "tē": "you"
+   }
   },
   {
    "id": "ccf-t5",
    "la": "Nisi {s:nom} {v1:impf.subj}, {o:acc} {poss:acc} {v2:impf.subj}.",
    "en": "If {s} were not {v1:ing}, {s:pron} would {v2:base} {o}.",
    "slots": {
-    "s": {"only": ["Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "puer", "puella", "discipulus", "servus", "ancilla", "fīlius", "fīlia"], "number": "any"},
-    "v1": {"pos": "V", "form": "impf.subj", "subj": "s", "lemmas": ["dormiō", "lūdō", "labōrō", "cantō"], "g": "{pron} were {ing}"},
-    "o": {"only": ["dominus", "domina", "pater", "māter", "magister", "amīcus", "frāter", "soror", "fīlius", "fīlia", "servus", "ancilla"], "number": "any"},
-    "poss": {"pos": "ADJ", "agree": "o", "only": ["suus"], "ref": "s"},
-    "v2": {"pos": "V", "form": "impf.subj", "subj": "s", "obj": "o", "lemmas": ["audiō", "videō"], "g": "{pron} would {base}"}
+    "s": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Syra",
+      "Dāvus",
+      "Mēdus",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "fīlia"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "lemmas": [
+      "dormiō",
+      "lūdō",
+      "labōrō",
+      "cantō"
+     ],
+     "g": "{pron} were {ing}"
+    },
+    "o": {
+     "only": [
+      "dominus",
+      "domina",
+      "pater",
+      "māter",
+      "magister",
+      "amīcus",
+      "frāter",
+      "soror",
+      "fīlius",
+      "fīlia",
+      "servus",
+      "ancilla"
+     ],
+     "number": "any"
+    },
+    "poss": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "suus"
+     ],
+     "ref": "s"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "audiō",
+      "videō"
+     ],
+     "g": "{pron} would {base}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 5
   },
   {
@@ -74,12 +333,55 @@
    "la": "Sī herī {v1:plupf.subj.act.2sg}, {o:acc} {poss:acc} {v2:plupf.subj.act.2sg}.",
    "en": "If you had {v1:pp} yesterday, you would have {v2:pp} {o}.",
    "slots": {
-    "v1": {"pos": "V", "form": "plupf.subj.act.2sg", "subj": "tū", "lemmas": ["veniō", "redeō", "maneō"], "g": "you had {pp}"},
-    "o": {"only": ["frāter", "soror", "fīlius", "fīlia", "amīcus", "servus", "ancilla", "magister", "dominus"], "number": "any"},
-    "poss": {"pos": "ADJ", "agree": "o", "only": ["meus"]},
-    "v2": {"pos": "V", "form": "plupf.subj.act.2sg", "subj": "tū", "obj": "o", "lemmas": ["videō", "audiō", "salūtō"], "g": "you would have {pp}"}
+    "v1": {
+     "pos": "V",
+     "form": "plupf.subj.act.2sg",
+     "subj": "tū",
+     "lemmas": [
+      "veniō",
+      "redeō",
+      "maneō"
+     ],
+     "g": "you had {pp}"
+    },
+    "o": {
+     "only": [
+      "frāter",
+      "soror",
+      "fīlius",
+      "fīlia",
+      "amīcus",
+      "servus",
+      "ancilla",
+      "magister",
+      "dominus"
+     ],
+     "number": "any"
+    },
+    "poss": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "meus"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "plupf.subj.act.2sg",
+     "subj": "tū",
+     "obj": "o",
+     "lemmas": [
+      "videō",
+      "audiō",
+      "salūtō"
+     ],
+     "g": "you would have {pp}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 6
   },
   {
@@ -87,12 +389,70 @@
    "la": "Sī {s:nom} in {p:abl} {v1:plupf.subj}, nōn {v2:plupf.subj}.",
    "en": "If {s} had {v1:pp} in {p}, {s:pron} would not have {v2:pp}.",
    "slots": {
-    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "puer", "puella", "discipulus", "servus", "ancilla", "fīlius", "fīlia", "amīcus"], "number": "any"},
-    "p": {"only": ["hortus", "vīlla", "silva", "urbs", "lūdus", "ātrium", "cubiculum", "culīna", "forum", "campus"]},
-    "v1": {"pos": "V", "form": "plupf.subj", "subj": "s", "lemmas": ["maneō", "sedeō"], "g": "{pron} had {pp}"},
-    "v2": {"pos": "V", "form": "plupf.subj", "subj": "s", "lemmas": ["cadō", "lacrimō", "errō"], "g": "{pron} would have {pp}"}
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Syra",
+      "Dāvus",
+      "Mēdus",
+      "Dēlia",
+      "Cornēlius",
+      "Lȳdia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "fīlia",
+      "amīcus"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "vīlla",
+      "silva",
+      "urbs",
+      "lūdus",
+      "ātrium",
+      "cubiculum",
+      "culīna",
+      "forum",
+      "campus"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "plupf.subj",
+     "subj": "s",
+     "lemmas": [
+      "maneō",
+      "sedeō"
+     ],
+     "g": "{pron} had {pp}"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "plupf.subj",
+     "subj": "s",
+     "lemmas": [
+      "cadō",
+      "lacrimō",
+      "errō"
+     ],
+     "g": "{pron} would have {pp}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 6
   },
   {
@@ -100,12 +460,66 @@
    "la": "Sī {s:nom} {v1:plupf.subj}, {s2:nom} nōn {v2:plupf.subj}.",
    "en": "If {s} had been there, {s2} would not have {v2:pp}.",
    "slots": {
-    "s": {"only": ["Iūlius", "Aemilia", "Cornēlius", "pater", "māter", "magister", "dominus", "domina", "medicus"]},
-    "v1": {"pos": "V", "form": "plupf.subj", "subj": "s", "takes": "none", "lemmas": ["adsum"], "g": "{pron} had been there"},
-    "s2": {"only": ["Mārcus", "Quīntus", "Iūlia", "Dāvus", "Mēdus", "Syra", "Dēlia", "puer", "puella", "discipulus", "servus", "ancilla", "fīlius", "fīlia"], "number": "any"},
-    "v2": {"pos": "V", "form": "plupf.subj", "subj": "s2", "lemmas": ["fugiō", "lacrimō", "lūdō", "dormiō", "cadō"], "g": "{pron} would have {pp}"}
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius",
+      "pater",
+      "māter",
+      "magister",
+      "dominus",
+      "domina",
+      "medicus"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "plupf.subj",
+     "subj": "s",
+     "takes": "none",
+     "lemmas": [
+      "adsum"
+     ],
+     "g": "{pron} had been there"
+    },
+    "s2": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "fīlia"
+     ],
+     "number": "any"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "plupf.subj",
+     "subj": "s2",
+     "lemmas": [
+      "fugiō",
+      "lacrimō",
+      "lūdō",
+      "dormiō",
+      "cadō"
+     ],
+     "g": "{pron} would have {pp}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 6
   },
   {
@@ -113,12 +527,81 @@
    "la": "Sī {s:nom} {v1:impf.subj}, {s2:nom} {v2:impf.subj}.",
    "en": "If {s} were here, {s2} would {v2:base}.",
    "slots": {
-    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "pater", "māter", "frāter", "soror", "amīcus", "magister"]},
-    "v1": {"pos": "V", "form": "impf.subj", "subj": "s", "takes": "none", "lemmas": ["adsum"], "g": "{pron} were here"},
-    "s2": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "puer", "puella", "discipulus", "servus", "ancilla", "fīlius", "fīlia", "frāter", "soror", "amīcus"], "number": "any"},
-    "v2": {"pos": "V", "form": "impf.subj", "subj": "s2", "lemmas": ["gaudeō", "rīdeō", "cantō", "lūdō", "taceō"], "g": "{pron} would {base}"}
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Syra",
+      "Dāvus",
+      "Mēdus",
+      "Dēlia",
+      "Cornēlius",
+      "Lȳdia",
+      "pater",
+      "māter",
+      "frāter",
+      "soror",
+      "amīcus",
+      "magister"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "takes": "none",
+     "lemmas": [
+      "adsum"
+     ],
+     "g": "{pron} were here"
+    },
+    "s2": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Syra",
+      "Dāvus",
+      "Mēdus",
+      "Dēlia",
+      "Cornēlius",
+      "Lȳdia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus"
+     ],
+     "number": "any"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s2",
+     "lemmas": [
+      "gaudeō",
+      "rīdeō",
+      "cantō",
+      "lūdō",
+      "taceō"
+     ],
+     "g": "{pron} would {base}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 5
   },
   {
@@ -126,13 +609,66 @@
    "la": "Nisi {s:nom} {adj:nom} {v1:impf.subj}, {o:acc} nōn {v2:impf.subj}.",
    "en": "If {s} were not {adj}, {s:pron} would not have {o:a}.",
    "slots": {
-    "s": {"only": ["Iūlius", "Aemilia", "Cornēlius", "dominus", "domina", "pater", "mercātor", "medicus", "avunculus"]},
-    "adj": {"pos": "ADJ", "agree": "s", "pred": true, "only": ["dīves"]},
-    "v1": {"pos": "V", "form": "impf.subj", "subj": "s", "takes": "pred", "lemmas": ["sum"], "g": "{pron} were"},
-    "o": {"only": ["servus", "ancilla", "equus", "vīlla", "nāvis", "ager", "pecūnia", "gemma", "ānulus"], "number": "any"},
-    "v2": {"pos": "V", "form": "impf.subj", "subj": "s", "obj": "o", "lemmas": ["habeō"], "g": "{pron} would {base}"}
+    "s": {
+     "only": [
+      "Iūlius",
+      "Aemilia",
+      "Cornēlius",
+      "dominus",
+      "domina",
+      "pater",
+      "mercātor",
+      "medicus",
+      "avunculus"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "pred": true,
+     "only": [
+      "dīves"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ],
+     "g": "{pron} were"
+    },
+    "o": {
+     "only": [
+      "servus",
+      "ancilla",
+      "equus",
+      "vīlla",
+      "nāvis",
+      "ager",
+      "pecūnia",
+      "gemma",
+      "ānulus"
+     ],
+     "number": "any"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "habeō"
+     ],
+     "g": "{pron} would {base}"
+    }
    },
-   "focus": ["v1", "v2"],
+   "focus": [
+    "v1",
+    "v2"
+   ],
    "words": 6
   }
  ],
@@ -140,12 +676,79 @@
  "review": {
   "reviewed_by": "Claude Fable 5.1, hostile read as a Latin teacher, 2026-09-11",
   "passes": [
-   {"pass": 1, "seed": 11, "generated": 40, "rejected": 20, "rate": 0.5, "causes": ["subjects and objects too broad (the murderer worked, the son-in-law would beat them; his victor, my kings)", "pauper inverted the logic of 'nisi … dīves esset'", "count nouns bare (would not have ship; if I had coin)", "dormiō + cadō pairings (had slept in the city, would not have wept)"]},
-   {"pass": 2, "seed": 12, "generated": 40, "rejected": 4, "rate": 0.1, "causes": ["protasis/apodosis verb pairs without sense (if the sons stayed, Cornelius would beat them)", "my husbands", "Aemilia would see her owner"]},
-   {"pass": 3, "seed": 13, "generated": 40, "rejected": 1, "rate": 0.025, "causes": ["fugiō after staying in the bedroom"]},
-   {"pass": 4, "seed": 14, "generated": 40, "rejected": 1, "rate": 0.025, "causes": ["emō with a letter"]},
-   {"pass": 5, "seed": 15, "generated": 40, "rejected": 2, "rate": 0.05, "causes": ["dormiō → laudō pairing (if Medus slept, Julius would praise him)", "my mothers"]},
-   {"pass": 6, "seed": 16, "generated": 40, "rejected": 0, "rate": 0.0, "causes": []}
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 20,
+    "rate": 0.5,
+    "causes": [
+     "subjects and objects too broad (the murderer worked, the son-in-law would beat them; his victor, my kings)",
+     "pauper inverted the logic of 'nisi … dīves esset'",
+     "count nouns bare (would not have ship; if I had coin)",
+     "dormiō + cadō pairings (had slept in the city, would not have wept)"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 4,
+    "rate": 0.1,
+    "causes": [
+     "protasis/apodosis verb pairs without sense (if the sons stayed, Cornelius would beat them)",
+     "my husbands",
+     "Aemilia would see her owner"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "fugiō after staying in the bedroom"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "emō with a letter"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 2,
+    "rate": 0.05,
+    "causes": [
+     "dormiō → laudō pairing (if Medus slept, Julius would praise him)",
+     "my mothers"
+    ]
+   },
+   {
+    "pass": 6,
+    "seed": 16,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": "qa-2026-09-12",
+    "seed": "40 sampled from the shipped bank, before and after",
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": [],
+    "standard": "This pass counted only the three critical classes of the 2026-09-11 QA audit — a possessive between two people with no relation to stand in (C-1), an adjective on a noun it cannot describe (C-2), and the conjunction cum followed by the preposition cum (C-3). None is left. On the wider hostile standard the same 40 gave 1 rejections before the fix and 1 after, the rest for causes this pass did not own: 'If Medus was silent' for the imperfect subjunctive."
+   }
   ],
   "final_rate": 0.0
  }

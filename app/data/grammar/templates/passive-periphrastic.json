@@ -635,6 +635,15 @@
     "causes": [
      "'one must work in the temple' (borderline, left)"
     ]
+   },
+   {
+    "pass": "qa-2026-09-12",
+    "seed": "40 sampled from the shipped bank, before and after",
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": [],
+    "standard": "This pass counted only the three critical classes of the 2026-09-11 QA audit — a possessive between two people with no relation to stand in (C-1), an adjective on a noun it cannot describe (C-2), and the conjunction cum followed by the preposition cum (C-3). None is left. On the wider hostile standard the same 40 gave 1 rejections before the fix and 2 after, the rest for causes this pass did not own: fugitīvus of a pupil; slaves told to work in a school."
    }
   ],
   "final_rate": 0.025

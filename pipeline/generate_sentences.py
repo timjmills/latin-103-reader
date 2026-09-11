@@ -53,6 +53,19 @@ How a sentence is made
      skill's exclusion list.  A failed fill is redrawn; a template that
      cannot be filled is reported, never shipped.
 
+Semantics the QA audit of 2026-09-11 added (its three criticals, each now a
+check so the class cannot come back):
+  · a possessive between two people needs a relation they can stand in —
+    `REL` in pipeline/sem.json, read by `possessive_ok`; "the mistress gives
+    her woman honey" is rejected, "Iūlius servō suō nummum dat" is not, and
+    `vir suus` / `fēmina sua` are glossed "her husband" / "his wife" (C-1);
+  · an adjective frame may now say `not` (words inside its classes it may
+    never describe: small money, a good enemy) and `gender` (of a person,
+    only one of that gender: the book calls a woman fōrmōsa, never a wall or
+    a man) — `adj_admits` (C-2);
+  · a clause the conjunction `cum` introduces may not also carry a `cum`
+    preposition phrase — `cum_clash` (C-3).
+
 Subordinate clauses (2026-09-11): a verb `form` may offer tense alternatives
 (`pres|perf.ind`, one drawn per fill) and a subordinate verb may take its tense
 from its governor (`form: seq.subj` + `seq: <verb slot>`: primary → present,
@@ -71,7 +84,7 @@ from __future__ import annotations
 
 #: Bumped whenever generation changes what it would produce. A bank records it
 #: (build_generated.source_of) so a bank built by an older generator is caught.
-VERSION = "2026-09-11"
+VERSION = "2026-09-12"
 
 import argparse
 import hashlib
@@ -445,6 +458,19 @@ KNOWN_UNRELIABLE = {
     "irascor": "deck spelling lacks its macrons (īrāscor)",
     "uadō": "glossary spelling uadō / vasī",
 }
+# The same, for the perfect system alone: a second-conjugation perfect the
+# glossary spells with the wrong stem or without its macron.  The present
+# system of each is sound, so only the perfect, pluperfect, future perfect
+# and the perfect participle are kept out.  (Found by the 2026-09-12 hostile
+# read: "Utinam tū magistrō tuō herī parvissēs!" — pāreō makes pāruī.)
+KNOWN_UNRELIABLE_PERF = {
+    "pareō": "deck perfect parvī: pāreō makes pāruī",
+    "caveō": "deck perfect cavī lacks its macron (cāvī)",
+    "faveō": "deck perfect favī lacks its macron (fāvī)",
+    "impleō": "deck perfect implevī lacks its macron (implēvī)",
+    "compleō": "deck perfect complevī lacks its macron (complēvī)",
+    "fleō": "deck perfect flevī lacks its macron (flēvī)",
+}
 NO_PASSIVE = {key_of(x) for x in ("habeō", "possideō", "sordeō", "valeō", "careō", "egeō")}
 IRREGULAR_INFINITIVES = {"esse", "posse", "īre", "ferre", "velle", "nōlle", "mālle", "fierī", "ēsse"}
 
@@ -503,6 +529,9 @@ def unreliable_reason(w: "Word") -> tuple[str | None, str | None]:
     for k, reason in KNOWN_UNRELIABLE.items():
         if key_of(k) == key_of(w.lemma):
             return "all", reason
+    for k, reason in KNOWN_UNRELIABLE_PERF.items():
+        if key_of(k) == key_of(w.lemma) and w.pos == "V":
+            return "perf", reason
     e = w.entry
     if e is None:
         return (None, None) if w.pos in ("ADV", "CONJ", "PREP", "INTERJ", "PRON") else ("all", "no glossary entry")
@@ -765,12 +794,13 @@ def en_plural(base: str) -> str:
 
 
 def en_noun(word: Word, number: str, art: str | None = None, adj: str | None = None,
-            det: str | None = None) -> str:
+            det: str | None = None, base: str | None = None) -> str:
     """`art`: None (the, or none for a mass noun) · "the" · "a" · "" (bare);
-    `det` replaces the article ("his", "many")."""
+    `det` replaces the article ("his", "many"); `base` replaces the deck's own
+    English (`vir suus` is "her husband", not "her man")."""
     if word.is_name:
         return f"{adj} {word.en}" if adj else word.en
-    base = en_noun_base(word)
+    base = base or en_noun_base(word)
     plural = word.plural_only or number == "pl"
     if plural and not word.plural_only:
         base = en_plural(base)
@@ -1065,16 +1095,102 @@ def noun_gender(w: Word) -> str:
 
 
 def adj_admits(a: Word, noun: Word, number: str) -> bool:
+    """Does the adjective's frame admit this noun?
+
+    `of` names the classes it may describe, `only` an exhaustive word list,
+    `also` words outside its classes, `not` words inside them it may never
+    describe (a good enemy, small money), and `gender` restricts it to
+    **persons** of that grammatical gender — the book calls a woman
+    *fōrmōsa*, never a wall or a man (other classes are not affected)."""
     sem = a.sem if isinstance(a.sem, dict) else None
     if not sem:
         return False
     if sem.get("number") and sem["number"] != number:
+        return False
+    if key_of(noun.lemma) in {key_of(x) for x in sem.get("not") or []}:
+        return False
+    if sem.get("gender") and "person" in noun.classes and noun_gender(noun) != sem["gender"]:
         return False
     if sem.get("only"):
         return key_of(noun.lemma) in {key_of(x) for x in sem["only"]}
     if key_of(noun.lemma) in {key_of(x) for x in sem.get("also") or []}:
         return True
     return bool(set(sem.get("of") or []) & noun.classes)
+
+
+# ------------------------------------------------- who may be called whose
+#: Determiners that make the noun they agree with somebody's.
+POSSESSIVE_DETS = {key_of(x) for x in ("suus", "meus", "tuus", "noster", "vester", "eius")}
+#: …of which these point back to a word of the sentence, so the pair of people
+#: they put in a possessive relation can be judged (QA C-1).
+POSSESSIVE_REF = {key_of(x) for x in ("suus", "eius")}
+SEM_PATH = PIPELINE_DIR / "sem.json"
+
+
+@lru_cache(maxsize=1)
+def relations() -> tuple[frozenset, dict, frozenset]:
+    """`REL` from pipeline/sem.json — which two people may stand in a
+    possessive relation, and what the book's cast count as.
+
+    Returns ({(owner, owned)} as normalised lemmas, stored both ways round
+    because every relation is one either side may claim, with `"*"` for any
+    person; {cast name: the relational words it counts as}; and the words
+    nobody has two of, so "her husbands" cannot be written)."""
+    try:
+        data = load_json(SEM_PATH).get("REL") or {}
+    except OSError:
+        return frozenset(), {}, frozenset()
+    pairs: set[tuple[str, str]] = set()
+    for p in data.get("pairs") or []:
+        for x in p.get("a") or []:
+            for y in p.get("b") or []:
+                pairs.add((key_of(x), key_of(y)))
+                pairs.add((key_of(y), key_of(x)))
+    roles = {key_of(k): tuple(key_of(x) for x in v) for k, v in (data.get("roles") or {}).items()}
+    one = frozenset(key_of(x) for x in data.get("one") or [])
+    return frozenset(pairs), roles, one
+
+
+def rel_keys(w: Word) -> tuple[str, ...]:
+    """What a word counts as in the relation table: a cast name counts as the
+    roles `REL.roles` gives it (Iūlius is a dominus, a pater and a vir)."""
+    if w.is_name:
+        return relations()[1].get(key_of(w.lemma), ())
+    return (key_of(w.lemma),)
+
+
+def possessive_ok(owner: Word | None, owned: Word,
+                  owner_number: str = "sg", owned_number: str = "sg") -> bool:
+    """May `owned` be called `owner`'s?
+
+    A thing, an animal or a place may be anyone's.  A **person** may not: one
+    person is another's only through a relation the book has — household
+    (dominus / servus), kin (pater / fīlius, vir / uxor, frāter / soror), a
+    teacher and a pupil, a commander and his men, or the words anyone may
+    have one of (amīcus, hospes, medicus).  Without that, "the mistress gives
+    her woman honey" is what comes out (QA C-1).
+
+    Number counts too.  Nobody has two fathers or two husbands (`REL.one`),
+    so such a word is owned in the singular; and when both sides are words of
+    that kind the relation is one to one, so the owner is singular as well —
+    "the woman is not feared by her husbands" is refused, "the sons … their
+    father" is not."""
+    if not owned.is_name and "person" not in owned.classes:
+        return True
+    if owned.is_name:
+        return False              # "his Julius" is no relation
+    if owner is None or not (owner.is_name or "person" in owner.classes):
+        return False
+    pairs, _, one = relations()
+    target = key_of(owned.lemma)
+    if target in one:
+        if owned_number != "sg":
+            return False
+        if owner_number != "sg" and all(k in one for k in rel_keys(owner)):
+            return False
+    if ("*", target) in pairs:
+        return True
+    return any((k, target) in pairs for k in rel_keys(owner))
 
 
 def adj_candidates(lex: Lexicon, chapter: int, noun: Word, spec: dict, number: str,
@@ -1441,6 +1557,24 @@ def _adjectives_of(fill: Fill, name: str) -> tuple[str | None, str | None, str |
     return adj, det, post
 
 
+#: A person whose English changes once they are somebody's: `vir suus` is
+#: "her husband", not "her man"; `fēmina sua` "his wife" (QA C-1's gloss class).
+EN_POSSESSED = {key_of(k): v for k, v in {"vir": "husband", "fēmina": "wife", "mulier": "wife"}.items()}
+
+
+def possessed_base(fill: Fill, name: str) -> str | None:
+    """The English of a noun slot a possessive determiner makes somebody's,
+    when that changes the word: `virō suō` is "her husband"."""
+    want = EN_POSSESSED.get(key_of(fill.words[name].lemma))
+    if not want:
+        return None
+    for n, s in fill.t["slots"].items():
+        if s.get("pos") == "ADJ" and s.get("agree") == name and n in fill.words \
+                and key_of(fill.words[n].lemma) in POSSESSIVE_DETS:
+            return want
+    return None
+
+
 def _en_np(fill: Fill, name: str, mod: str | None = None) -> str:
     w = fill.words[name]
     spec = fill.t["slots"][name]
@@ -1468,14 +1602,15 @@ def _en_np(fill: Fill, name: str, mod: str | None = None) -> str:
     if mod == "be":
         return "are" if plural else "is"
     art = spec.get("art")
+    kin = possessed_base(fill, name)
     if mod == "poss":
-        base = en_noun(w, number, None if w.is_name else "the", adj, det)
+        base = en_noun(w, number, None if w.is_name else "the", adj, det, kin)
         return base + ("'" if base.endswith("s") else "'s")
     if mod == "bare":
         art = ""
     elif mod in ("a", "the"):
         art = mod
-    np = en_noun(w, number, art, adj, det)
+    np = en_noun(w, number, art, adj, det, kin)
     return f"{np} {post}" if post else np
 
 
@@ -1705,7 +1840,7 @@ def gloss_slot(fill: Fill, name: str, after_prep: bool = False) -> str:
     prefix = spec.get("g", "" if after_prep else CASE_GLOSS.get(parse["case"], ""))
     if prefix and not prefix.endswith(" "):
         prefix += " "
-    np = en_noun(w, fill.numbers[name], spec.get("art"))
+    np = en_noun(w, fill.numbers[name], spec.get("art"), base=possessed_base(fill, name))
     if parse["case"] == "voc":
         return np
     return prefix + np
@@ -1800,6 +1935,32 @@ def form_matches_parts(w: Word, form: str, parse: dict) -> str | None:
             return f"gerundive {form} is not a {ORDINAL[conj]}-conjugation form (-{want}us)"
     return None
 
+def cum_clash(la: str) -> str | None:
+    """A clause the **conjunction** `cum` introduces may not also carry a
+    `cum` **preposition** phrase.  "Cum Iūlius cum puerō colloquerētur, …" is
+    legal Latin and the worst sentence shape there is for the one skill whose
+    whole point is telling the two apart (QA C-3)."""
+    for clause in re.split(r"[,;:]", la):
+        toks = [_bare(tok).lower() for tok in clause.split()]
+        if toks[:1] == ["cum"] and "cum" in toks[1:]:
+            return "conjunction cum and preposition cum in the same clause"
+    return None
+
+
+def _possessor(fill: Fill, name: str) -> tuple[Word | None, str]:
+    """(the person a possessive determiner in slot `name` points back to, its
+    number): the slot's `ref`, else the sentence's subject — the rule
+    `en_det` renders by, so the check judges the relation the English says."""
+    spec = fill.t["slots"][name]
+    ref = spec.get("ref") if spec.get("ref") in fill.words else None
+    if ref is None:
+        ref = next((n for n, s in fill.t["slots"].items()
+                    if s.get("pos", "N") == "N" and _slot_case(fill.t, n) == "nom" and n in fill.words), None)
+    if ref is None:
+        return None, "sg"
+    return fill.ref(ref), fill.numbers.get(ref, "sg")
+
+
 def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exclude: list,
                    en: str | None = None, gloss: list | None = None) -> list[str]:
     """Every §11 check; [] when the sentence may ship."""
@@ -1808,6 +1969,9 @@ def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exc
     n = len(tokens)
     if not MIN_WORDS <= n <= MAX_WORDS:
         problems.append(f"length {n}")
+    clash = cum_clash(la)
+    if clash:
+        problems.append(clash)
     # no lemma twice (a `same` slot is the deliberate exception)
     seen: Counter = Counter()
     for name, w in fill.words.items():
@@ -1857,6 +2021,12 @@ def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exc
             noun = fill.words[spec["agree"]]
             if not adj_admits(fill.words[name], noun, fill.numbers[spec["agree"]]):
                 problems.append(f"{name}: {fill.words[name].lemma} does not describe {noun.lemma}")
+            # a possessive between two people needs a relation they can stand in
+            if key_of(fill.words[name].lemma) in POSSESSIVE_REF:
+                owner, owner_n = _possessor(fill, name)
+                if not possessive_ok(owner, noun, owner_n, fill.numbers[spec["agree"]]):
+                    who = owner.lemma if owner is not None else "the subject"
+                    problems.append(f"{name}: {noun.lemma} is no relation of {who}")
     # verb forms agree with the deck's own dictionary line
     for name, spec in t["slots"].items():
         if spec.get("pos") != "V":

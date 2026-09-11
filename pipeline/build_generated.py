@@ -135,7 +135,10 @@ def write_bank(bank: dict, out_dir: Path = OUT_DIR) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{bank['skill']}.json"
     # Compact: 400 sentences with their glosses run to ~280 KB indented, ~170 KB compact (~26 KB gzipped).
-    path.write_text(json.dumps(bank, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    # newline="\n": .gitattributes checks these files out with LF, so writing the
+    # platform's line ending would show every bank as changed on Windows.
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(json.dumps(bank, ensure_ascii=False, separators=(",", ":")) + "\n")
     return path
 
 
@@ -144,7 +147,8 @@ def write_index(out_dir: Path = OUT_DIR) -> Path:
     for one that is not there (lessons.js `loadGenerated`)."""
     ids = sorted(p.stem for p in out_dir.glob("*.json") if p.stem != "index")
     path = out_dir / "index.json"
-    path.write_text(json.dumps({"generated": ids}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(json.dumps({"generated": ids}, ensure_ascii=False, indent=1) + "\n")
     return path
 
 

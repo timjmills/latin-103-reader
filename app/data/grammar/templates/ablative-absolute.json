@@ -761,6 +761,15 @@
     "causes": [
      "'washes the tears', 'the healthy parent comes back' (borderline, left)"
     ]
+   },
+   {
+    "pass": "qa-2026-09-12",
+    "seed": "40 sampled from the shipped bank, before and after",
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": [],
+    "standard": "This pass counted only the three critical classes of the 2026-09-11 QA audit — a possessive between two people with no relation to stand in (C-1), an adjective on a noun it cannot describe (C-2), and the conjunction cum followed by the preposition cum (C-3). None is left. On the wider hostile standard the same 40 gave 7 rejections before the fix and 6 after, the rest for causes this pass did not own: a plural subject fighting with one sword (abs-t6); hostis beside inimīcus, one English word for two Latin ones; īre of eagles; iānuās lavat; dominīs glossed 'the mistresses'; tacitus of a man who is singing."
    }
   ],
   "final_rate": 0.05
