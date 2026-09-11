@@ -1,0 +1,435 @@
+{
+ "skill": "ablative-degree",
+ "chapter": 16,
+ "templates": [
+  {
+   "id": "adg-t1",
+   "la": "{s:nom} multō {adj:nom} est quam {s2:nom}.",
+   "en": "{s} is much {adj} than {s2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "degree": "comp",
+     "pred": true,
+     "only": [
+      "fortis",
+      "laetus",
+      "pulcher",
+      "bonus",
+      "malus",
+      "parvus",
+      "sevērus",
+      "aeger",
+      "sordidus",
+      "fōrmōsus"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ]
+    }
+   },
+   "focus": "multō",
+   "words": 6,
+   "fixed_gloss": {
+    "multō": "by much",
+    "quam": "than"
+   }
+  },
+  {
+   "id": "adg-t2",
+   "la": "{t:nom} multō {adj:nom} est quam {t2:nom}.",
+   "en": "{t} is much {adj} than {t2}.",
+   "slots": {
+    "t": {
+     "only": [
+      "nāvis"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "t",
+     "degree": "comp",
+     "pred": true,
+     "only": [
+      "magnus",
+      "longus",
+      "lātus"
+     ]
+    },
+    "t2": {
+     "only": [
+      "lectīca",
+      "lectulus",
+      "mēnsa",
+      "saccus",
+      "sella"
+     ]
+    }
+   },
+   "focus": "multō",
+   "words": 6,
+   "fixed_gloss": {
+    "multō": "by much",
+    "quam": "than"
+   }
+  },
+  {
+   "id": "adg-t3",
+   "la": "{t:nom} multō {adj:nom} est quam {t2:nom}.",
+   "en": "{t} is much {adj} than {t2}.",
+   "slots": {
+    "t": {
+     "only": [
+      "mōns"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "t",
+     "degree": "comp",
+     "pred": true,
+     "only": [
+      "altus",
+      "magnus"
+     ]
+    },
+    "t2": {
+     "only": [
+      "collis",
+      "mūrus",
+      "arbor",
+      "vīlla"
+     ]
+    }
+   },
+   "focus": "multō",
+   "words": 6,
+   "fixed_gloss": {
+    "multō": "by much",
+    "quam": "than"
+   }
+  },
+  {
+   "id": "adg-t4",
+   "la": "{s:nom} hodiē multō {adj:nom} est.",
+   "en": "{s} is much {adj} today.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "degree": "comp",
+     "pred": true,
+     "only": [
+      "laetus",
+      "aeger",
+      "sevērus",
+      "fortis"
+     ]
+    }
+   },
+   "focus": "multō",
+   "words": 5,
+   "fixed_gloss": {
+    "multō": "by much"
+   }
+  },
+  {
+   "id": "adg-t5",
+   "la": "{s:nom} paulō {adj:nom} est quam {s2:nom}.",
+   "en": "{s} is a little {adj} than {s2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "degree": "comp",
+     "pred": true,
+     "only": [
+      "fortis",
+      "laetus",
+      "pulcher",
+      "bonus",
+      "parvus",
+      "sevērus",
+      "aeger"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ]
+    }
+   },
+   "focus": "paulō",
+   "words": 6,
+   "fixed_gloss": {
+    "paulō": "by a little",
+    "quam": "than"
+   }
+  },
+  {
+   "id": "adg-t6",
+   "la": "{n:nom} hodiē paulō {adj:nom} est.",
+   "en": "{n} is a little {adj} today.",
+   "slots": {
+    "n": {
+     "only": [
+      "mare",
+      "aqua",
+      "caelum"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "n",
+     "degree": "comp",
+     "pred": true,
+     "only": [
+      "frīgidus",
+      "calidus",
+      "obscūrus"
+     ]
+    }
+   },
+   "focus": "paulō",
+   "words": 5,
+   "fixed_gloss": {
+    "paulō": "by a little"
+   }
+  },
+  {
+   "id": "adg-t7",
+   "la": "{t:nom} paulō {adj:nom} est quam {t2:nom}.",
+   "en": "{t} is a little {adj} than {t2}.",
+   "slots": {
+    "t": {
+     "only": [
+      "mare",
+      "flūmen",
+      "fluvius"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "t",
+     "degree": "comp",
+     "pred": true,
+     "only": [
+      "lātus",
+      "magnus"
+     ]
+    },
+    "t2": {
+     "only": [
+      "rīvus"
+     ]
+    }
+   },
+   "focus": "paulō",
+   "words": 6,
+   "fixed_gloss": {
+    "paulō": "by a little",
+    "quam": "than"
+   }
+  },
+  {
+   "id": "adg-t8",
+   "la": "Paulō post {s:nom} ad {p:acc} {v:pres.ind}.",
+   "en": "A little later {s} {v} to {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "vīlla",
+      "oppidum",
+      "hortus",
+      "ātrium",
+      "silva",
+      "urbs",
+      "lūdus",
+      "mare",
+      "flūmen"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "veniō",
+      "currō",
+      "eō",
+      "ambulō",
+      "redeō",
+      "accurrō"
+     ]
+    }
+   },
+   "focus": "Paulō",
+   "words": 6,
+   "fixed_gloss": {
+    "Paulō": "by a little",
+    "post": "later"
+   }
+  },
+  {
+   "id": "adg-t9",
+   "la": "{s:nom} paulō ante ex {p:abl} {v:pres.ind}.",
+   "en": "A little earlier {s} {v} out of {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "vīlla",
+      "oppidum",
+      "hortus",
+      "ātrium",
+      "cubiculum",
+      "silva",
+      "urbs",
+      "lūdus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "discēdō",
+      "abeō",
+      "currō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "paulō",
+   "words": 6,
+   "fixed_gloss": {
+    "paulō": "by a little",
+    "ante": "earlier"
+   }
+  },
+  {
+   "id": "adg-t10",
+   "la": "{s:nom} multō {adj:abl} {inst:abl} {v:pres.ind}.",
+   "en": "{s} {v} with a much {adj} {inst:bare}.",
+   "slots": {
+    "s": {
+     "only": [
+      "mīles",
+      "dux",
+      "eques",
+      "pedes",
+      "hostis",
+      "Iūlius",
+      "Mēdus"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "inst",
+     "degree": "comp",
+     "only": [
+      "longus",
+      "magnus"
+     ]
+    },
+    "inst": {
+     "only": [
+      "gladius",
+      "hasta"
+     ],
+     "g": "with"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "pugnō"
+     ]
+    }
+   },
+   "focus": "multō",
+   "words": 5,
+   "fixed_gloss": {
+    "multō": "by much"
+   }
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11)",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 13,
+    "rate": 0.325,
+    "causes": [
+     "'more wide': the English comparative now counts a silent final e (wider)",
+     "gravis rendered 'more serious' on ships and swords: gravis dropped from the thing templates",
+     "altus 'higher' on rivers: altus kept for the mountain template only",
+     "'goes out out of': exeō / ēgredior dropped where the pattern prints ex",
+     "adjectives without a comparative in the tables (trīstis, pecūniōsus) and out-of-chapter places removed"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.075,
+    "causes": [
+     "'the horsemen fight with a much larger spear': the fighter is singular",
+     "'Air is a little colder': āēr dropped from the weather template"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   }
+  ],
+  "final_rate": 0.0
+ }
+}

@@ -1,0 +1,853 @@
+{
+ "skill": "ablative-absolute-perfect",
+ "chapter": 22,
+ "templates": [
+  {
+   "id": "aap-t1",
+   "la": "{n:abl} {ptc:ptc.perf.pass}, {s:nom} {o:acc} {v:perf.ind}.",
+   "en": "{n:the} {ptc:pp}, {s} {v} {o}.",
+   "slots": {
+    "n": {
+     "only": [
+      "pecūnia",
+      "nummus",
+      "dēnārius",
+      "sēstertius",
+      "ānulus",
+      "gemma",
+      "ōrnāmentum",
+      "speculum",
+      "dōnum",
+      "epistula"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "numerō",
+      "sūmō",
+      "emō",
+      "vēndō",
+      "ostendō",
+      "mōnstrō",
+      "reperiō",
+      "occultō",
+      "accipiō",
+      "scrībō",
+      "legō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfans",
+      "fīliola",
+      "hostis",
+      "inimīcus"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "hostis",
+      "inimīcus",
+      "īnfans"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "vocō",
+      "salūtō",
+      "laudō",
+      "excitō",
+      "exspectō",
+      "arcessō",
+      "dūcō",
+      "mittō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 5
+  },
+  {
+   "id": "aap-t2",
+   "la": "{n:abl} {ptc:ptc.perf.pass}, {s:nom} in {p:acc} {v:perf.ind}.",
+   "en": "{n:the} {ptc:pp}, {s} {v} into {p}.",
+   "slots": {
+    "n": {
+     "only": [
+      "iānua",
+      "porta",
+      "ōstium",
+      "fenestra",
+      "foris"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "aperiō",
+      "claudō"
+     ]
+    },
+    "s": {
+     "only": [
+      "puer",
+      "puella",
+      "servus",
+      "ancilla",
+      "discipulus",
+      "magister",
+      "medicus",
+      "mercātor",
+      "nauta",
+      "mīles",
+      "pāstor",
+      "amīcus",
+      "fīlius",
+      "fīlia",
+      "pater",
+      "māter",
+      "dominus",
+      "domina",
+      "canis",
+      "equus",
+      "asinus",
+      "ovis",
+      "porcus",
+      "Iūlius",
+      "Aemilia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Syra",
+      "Dāvus",
+      "Mēdus",
+      "Dēlia",
+      "Cornēlius",
+      "Lȳdia",
+      "Ursus",
+      "Albīnus",
+      "Sextus"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "ātrium",
+      "cubiculum",
+      "vīlla",
+      "peristylum",
+      "oppidum",
+      "urbs",
+      "silva"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "currō",
+      "intrō",
+      "eō",
+      "veniō",
+      "accurrō",
+      "abeō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "aap-t3",
+   "la": "Hōc dictō, {s:nom} ex {p:abl} {v:perf.ind}.",
+   "en": "This said, {s} {v} from {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfans",
+      "fīliola",
+      "hostis",
+      "inimīcus"
+     ]
+    },
+    "p": {
+     "only": [
+      "ātrium",
+      "cubiculum",
+      "vīlla",
+      "hortus",
+      "lūdus",
+      "templum",
+      "taberna",
+      "urbs",
+      "oppidum"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "exeō",
+      "discēdō",
+      "abeō",
+      "ēgredior"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": [
+    "Hōc",
+    "dictō"
+   ],
+   "words": 6,
+   "fixed_gloss": {
+    "Hōc": "this",
+    "dictō": "said"
+   }
+  },
+  {
+   "id": "aap-t4",
+   "la": "{n:abl} {ptc:ptc.perf.pass}, {g:nom} {r:dat} {t:acc} {v:perf.ind}.",
+   "en": "{n:the} {ptc:pp}, {g} {v} {r} {t:a}.",
+   "slots": {
+    "n": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "discipulus",
+      "magister",
+      "medicus",
+      "mercātor",
+      "nauta",
+      "mīles",
+      "pāstor",
+      "amīcus",
+      "fīlius",
+      "fīlia"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "vocō",
+      "arcessō",
+      "salūtō",
+      "audiō",
+      "laudō",
+      "excitō"
+     ]
+    },
+    "g": {
+     "sem": [
+      "person"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "hostis",
+      "inimīcus"
+     ]
+    },
+    "t": {
+     "only": [
+      "pecūnia",
+      "nummus",
+      "dēnārius",
+      "sēstertius",
+      "dōnum",
+      "ānulus",
+      "gemma",
+      "epistula",
+      "cibus",
+      "pānis",
+      "pōculum"
+     ],
+     "number": "any",
+     "art": "a"
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "g",
+     "obj": "t",
+     "dat": "r",
+     "lemmas": [
+      "dō",
+      "ostendō",
+      "mōnstrō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "aap-t5",
+   "la": "{s:nom}, {n:abl} {ptc:ptc.perf.pass}, in {p:acc} {v:perf.ind}.",
+   "en": "{s}, {n:the} {ptc:pp}, {v} into {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfans",
+      "fīliola",
+      "hostis",
+      "inimīcus"
+     ]
+    },
+    "n": {
+     "only": [
+      "toga",
+      "tunica",
+      "vestis",
+      "vestīmentum",
+      "pallium",
+      "calceus"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "sūmō",
+      "lavō",
+      "emō",
+      "induō",
+      "mūtō"
+     ]
+    },
+    "p": {
+     "only": [
+      "cubiculum",
+      "ātrium",
+      "hortus",
+      "vīlla",
+      "peristylum",
+      "lūdus",
+      "templum",
+      "urbs"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "eō",
+      "intrō",
+      "veniō",
+      "currō",
+      "redeō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "aap-t6",
+   "la": "{n:abl} {ptc:ptc.perf.pass}, omnēs {s:nom} {v:perf.ind}.",
+   "en": "{n:the} {ptc:pp}, all the {s:bare} {v}.",
+   "slots": {
+    "n": {
+     "only": [
+      "verbum",
+      "epistula",
+      "sententia",
+      "nōmen",
+      "titulus",
+      "vocābulum"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "dīcō",
+      "audiō",
+      "recitō",
+      "legō",
+      "scrībō"
+     ]
+    },
+    "s": {
+     "only": [
+      "puer",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "puella",
+      "amīcus",
+      "mīles",
+      "nauta",
+      "līberī"
+     ],
+     "number": "pl"
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "taceō",
+      "rīdeō",
+      "surgō",
+      "gaudeō",
+      "plōrō",
+      "clāmō",
+      "exeō",
+      "discēdō",
+      "laetor"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 5
+  },
+  {
+   "id": "aap-t7",
+   "la": "{n:abl} {ptc:ptc.perf.pass}, {s:nom} ad {p:acc} {v:perf.ind}.",
+   "en": "{n:the} {ptc:pp}, {s} {v} to {p}.",
+   "slots": {
+    "n": {
+     "only": [
+      "pecūnia",
+      "nummus",
+      "dēnārius",
+      "sēstertius",
+      "ānulus",
+      "gemma",
+      "sacculus",
+      "saccus",
+      "epistula",
+      "gladius",
+      "baculum",
+      "speculum"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "sūmō",
+      "capiō",
+      "emō",
+      "vēndō",
+      "numerō",
+      "reperiō",
+      "occultō",
+      "accipiō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfans",
+      "fīliola",
+      "hostis",
+      "inimīcus"
+     ]
+    },
+    "p": {
+     "only": [
+      "vīlla",
+      "oppidum",
+      "urbs",
+      "forum",
+      "hortus",
+      "lūdus",
+      "templum",
+      "taberna",
+      "silva",
+      "mare",
+      "flūmen"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "eō",
+      "veniō",
+      "currō",
+      "ambulō",
+      "redeō",
+      "abeō",
+      "discēdō",
+      "proficīscor"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "aap-t8",
+   "la": "{ptc:ptc.perf.pass} {n:abl}, {s:nom} ad {p:acc} {v:perf.ind}.",
+   "en": "{n:the} {ptc:pp}, {s} {v} to {p}.",
+   "slots": {
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "occīdō",
+      "capiō",
+      "reperiō",
+      "vēndō",
+      "emō"
+     ]
+    },
+    "n": {
+     "only": [
+      "ovis",
+      "canis",
+      "equus",
+      "asinus",
+      "porcus",
+      "bōs",
+      "piscis",
+      "avis"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "s": {
+     "only": [
+      "pāstor",
+      "servus",
+      "puer",
+      "vir",
+      "mercātor",
+      "dominus",
+      "Iūlius",
+      "Dāvus",
+      "Mēdus",
+      "Mārcus"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "vīlla",
+      "oppidum",
+      "urbs",
+      "forum",
+      "hortus",
+      "silva",
+      "campus",
+      "flūmen"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "redeō",
+      "eō",
+      "veniō",
+      "currō",
+      "ambulō",
+      "abeō",
+      "reveniō"
+     ]
+    }
+   },
+   "focus": [
+    "ptc",
+    "n"
+   ],
+   "words": 6
+  },
+  {
+   "id": "aap-t9",
+   "la": "{n:abl} {ab} {ag:abl} {ptc:ptc.perf.pass}, {s:nom} {v:pres.ind}.",
+   "en": "{n:the} {ptc:pp} by {ag}, {s} {v}.",
+   "slots": {
+    "n": {
+     "only": [
+      "epistula",
+      "sententia",
+      "nōmen",
+      "titulus",
+      "vocābulum",
+      "verbum"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "agent": "ag",
+     "lemmas": [
+      "legō",
+      "scrībō",
+      "recitō",
+      "dīcō",
+      "audiō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfans",
+      "fīliola",
+      "hostis",
+      "inimīcus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "gaudeō",
+      "rīdeō",
+      "plōrō",
+      "laetor",
+      "taceō",
+      "lacrimō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "aap-t10",
+   "la": "{n:abl} {ptc:ptc.perf.pass}, {s:nom} {adv} {v:perf.ind}.",
+   "en": "{n:the} {ptc:pp}, {s} {adv} {v}.",
+   "slots": {
+    "n": {
+     "only": [
+      "cibus",
+      "pānis",
+      "piscis",
+      "ovum",
+      "pirum",
+      "petasō",
+      "mel"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "n",
+     "lemmas": [
+      "parō",
+      "sūmō",
+      "emō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfans",
+      "fīliola",
+      "hostis",
+      "inimīcus"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim",
+      "tum",
+      "deinde"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "perf.ind",
+     "subj": "s",
+     "lemmas": [
+      "surgō",
+      "discēdō",
+      "exeō",
+      "dormiō",
+      "abeō",
+      "redeō",
+      "taceō",
+      "gaudeō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 5
+  }
+ ],
+ "exclude": [
+  {
+   "template": "aap-t8",
+   "fill": {
+    "ptc": "occīdō",
+    "n": "equus"
+   }
+  },
+  {
+   "template": "aap-t8",
+   "fill": {
+    "ptc": "occīdō",
+    "n": "canis"
+   }
+  },
+  {
+   "template": "aap-t8",
+   "fill": {
+    "ptc": "occīdō",
+    "n": "asinus"
+   }
+  },
+  {
+   "template": "aap-t8",
+   "fill": {
+    "ptc": "occīdō",
+    "n": "bōs"
+   }
+  }
+ ],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11)",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 12,
+    "rate": 0.3,
+    "causes": [
+     "participles drawn by frame alone ('the chapter washed', 'the bag made out', 'the page lessened', 'the money untied'): every template now pairs a noun group with its own verbs",
+     "'openned': open no longer doubles its consonant (EN_NO_DOUBLE)",
+     "'went out into the villa': exeō dropped where the pattern prints in + accusative",
+     "'went out out of': the English says 'from' after Hōc dictō"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.075,
+    "causes": [
+     "a baby coming to town: īnfans and fīliola kept out of the moving subjects",
+     "'the wolf bought': lupus dropped from the animal template; occīdō excluded with the farm animals",
+     "the enemy as receiver of a coin: hostis / inimīcus kept out of the person slots"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'the animals ran into the city' (borderline): the door template's subject is a curated list"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   }
+  ],
+  "final_rate": 0.0
+ }
+}

@@ -1,0 +1,630 @@
+{
+ "skill": "adverbs",
+ "chapter": 18,
+ "templates": [
+  {
+   "id": "adv-t1",
+   "la": "{s:nom} in {p:abl} {adv} {v:pres.ind}.",
+   "en": "{s} {v} {adv} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "ātrium",
+      "cubiculum",
+      "lūdus",
+      "via",
+      "silva",
+      "peristylum"
+     ]
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "pulcher",
+      "laetus",
+      "foedus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "cantō",
+      "canō"
+     ]
+    }
+   },
+   "focus": "adv",
+   "words": 5
+  },
+  {
+   "id": "adv-t2",
+   "la": "{s:nom} {o:acc} {suus:acc} {adv} {v:pres.ind}.",
+   "en": "{s} {v} {suus} {o:bare} {adv}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "o": {
+     "only": [
+      "littera",
+      "vocābulum",
+      "epistula"
+     ],
+     "number": "pl"
+    },
+    "suus": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "suus"
+     ],
+     "ref": "s"
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "rēctus",
+      "prāvus",
+      "pulcher",
+      "turpis",
+      "foedus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "scrībō"
+     ]
+    }
+   },
+   "focus": "adv",
+   "words": 5
+  },
+  {
+   "id": "adv-t3",
+   "la": "{s:nom} {adv} {v:pres.ind}, {s2:nom} {adv2}.",
+   "en": "{s} {v} {adv}, {s2} {adv2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "rēctus",
+      "pulcher"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "scrībō",
+      "recitō",
+      "respondeō",
+      "legō"
+     ],
+     "absolute": true
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adv2": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "prāvus",
+      "turpis",
+      "foedus"
+     ]
+    }
+   },
+   "focus": "adv",
+   "words": 5
+  },
+  {
+   "id": "adv-t4",
+   "la": "{s:nom} {adv} {o:acc} {adj:acc} {v:pres.ind}.",
+   "en": "{s} {adv} {v} {o}.",
+   "slots": {
+    "s": {
+     "only": [
+      "magister",
+      "pater",
+      "dominus",
+      "māter",
+      "Iūlius",
+      "Aemilia"
+     ]
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "sevērus"
+     ]
+    },
+    "o": {
+     "only": [
+      "discipulus",
+      "puer",
+      "servus",
+      "fīlius",
+      "ancilla",
+      "puella"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "piger",
+      "improbus",
+      "stultus",
+      "indoctus",
+      "sordidus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "reprehendō",
+      "pūniō",
+      "verberō",
+      "accūsō"
+     ]
+    }
+   },
+   "focus": "adv",
+   "words": 5
+  },
+  {
+   "id": "adv-t5",
+   "la": "{s:nom} {adj:nom} semper {adv} {v:pres.ind}.",
+   "en": "{s} always {v} {adv}.",
+   "slots": {
+    "s": {
+     "only": [
+      "discipulus",
+      "puer",
+      "puella",
+      "fīlius",
+      "servus",
+      "ancilla"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "bonus",
+      "probus",
+      "prūdēns",
+      "industrius",
+      "impiger"
+     ]
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "rēctus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "respondeō",
+      "scrībō",
+      "recitō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "adv",
+   "words": 5
+  },
+  {
+   "id": "adv-t6",
+   "la": "{s:nom} {adj:nom} contrā {h:acc} {adv} {v:pres.ind}.",
+   "en": "{s} {v} {adv} against {h}.",
+   "slots": {
+    "s": {
+     "only": [
+      "mīles",
+      "eques",
+      "pedes",
+      "dux"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "Rōmānus",
+      "Graecus",
+      "fortis"
+     ]
+    },
+    "h": {
+     "only": [
+      "hostis"
+     ],
+     "number": "pl"
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "fortis"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "pugnō"
+     ]
+    }
+   },
+   "focus": "adv",
+   "words": 6
+  },
+  {
+   "id": "adv-t7",
+   "la": "{s:nom} {adv} {v:pres.ind}, deinde tacet.",
+   "en": "{s} {v} {adv}, then falls silent.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "brevis"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "respondeō",
+      "loquor",
+      "recitō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "adv",
+   "words": 5,
+   "fixed_gloss": {
+    "tacet": "falls silent"
+   }
+  },
+  {
+   "id": "adv-t8",
+   "la": "{s:nom} {adv} {v1:pres.ind} et {v2:pres.ind}.",
+   "en": "{s} {v1:be} {adv} ill and {v2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "pos",
+     "only": [
+      "gravis"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "aegrōtō"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "plōrō",
+      "lacrimō",
+      "iaceō",
+      "dormiō",
+      "taceō"
+     ]
+    }
+   },
+   "focus": "adv",
+   "words": 5
+  },
+  {
+   "id": "adv-t9",
+   "la": "{s:nom} {adv} {v:pres.ind} quam {s2:nom}.",
+   "en": "{s} {v} {adv} than {s2}.",
+   "slots": {
+    "s": {
+     "only": [
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "fīlia",
+      "amīcus",
+      "frāter",
+      "soror",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia"
+     ]
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "comp",
+     "only": [
+      "rēctus",
+      "pulcher",
+      "fortis"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "scrībō",
+      "cantō",
+      "recitō",
+      "clāmō",
+      "pugnō"
+     ],
+     "absolute": true
+    },
+    "s2": {
+     "only": [
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "fīlia",
+      "amīcus",
+      "frāter",
+      "soror",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia"
+     ]
+    }
+   },
+   "focus": "adv",
+   "words": 5,
+   "fixed_gloss": {
+    "quam": "than"
+   }
+  },
+  {
+   "id": "adv-t10",
+   "la": "{s:nom} in {p:abl} {adv} {v:pres.ind}.",
+   "en": "{s} {v} {adv} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "ātrium",
+      "hortus",
+      "cubiculum",
+      "lūdus",
+      "peristylum"
+     ]
+    },
+    "adv": {
+     "pos": "ADJ",
+     "adv": "super",
+     "only": [
+      "pulcher",
+      "rēctus",
+      "laetus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "scrībō",
+      "recitō",
+      "cantō",
+      "canō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "adv",
+   "words": 5
+  }
+ ],
+ "exclude": [
+  {
+   "template": "adv-t3",
+   "fill": {
+    "adv": "pulcher",
+    "v": "respondeō"
+   }
+  },
+  {
+   "template": "adv-t9",
+   "fill": {
+    "adv": "fortis",
+    "v": "scrībō"
+   }
+  },
+  {
+   "template": "adv-t9",
+   "fill": {
+    "adv": "fortis",
+    "v": "cantō"
+   }
+  },
+  {
+   "template": "adv-t9",
+   "fill": {
+    "adv": "fortis",
+    "v": "recitō"
+   }
+  },
+  {
+   "template": "adv-t9",
+   "fill": {
+    "adv": "rēctus",
+    "v": "clāmō"
+   }
+  },
+  {
+   "template": "adv-t9",
+   "fill": {
+    "adv": "rēctus",
+    "v": "pugnō"
+   }
+  },
+  {
+   "template": "adv-t9",
+   "fill": {
+    "adv": "pulcher",
+    "v": "clāmō"
+   }
+  },
+  {
+   "template": "adv-t9",
+   "fill": {
+    "adv": "pulcher",
+    "v": "pugnō"
+   }
+  },
+  {
+   "template": "adv-t10",
+   "fill": {
+    "adv": "rēctus",
+    "v": "cantō"
+   }
+  },
+  {
+   "template": "adv-t10",
+   "fill": {
+    "adv": "rēctus",
+    "v": "canō"
+   }
+  },
+  {
+   "template": "adv-t10",
+   "fill": {
+    "adv": "laetus",
+    "v": "scrībō"
+   }
+  }
+ ],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11)",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 7,
+    "rate": 0.175,
+    "causes": [
+     "'is ill seriously': the English now says 'is seriously ill' (t8 with be)",
+     "'Ursus writes his names wrongly': the object slot is plural letters / words / epistles",
+     "out-of-chapter list entries (versus, tardus) and a non-deck verb (gemō) removed"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 2,
+    "rate": 0.05,
+    "causes": [
+     "'fights more bravely than the mother': the comparison slots are children, servants and the cast",
+     "'answers beautifully': pulcher + respondeō excluded"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   }
+  ],
+  "final_rate": 0.0
+ }
+}

@@ -1,0 +1,471 @@
+{
+ "skill": "enclitics",
+ "chapter": 1,
+ "templates": [
+  {
+   "id": "enc-t1",
+   "la": "{a:nom} {b:nom}que in {p:abl} {be:pres.ind}.",
+   "en": "{a} and {b} are in {p}.",
+   "slots": {
+    "a": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ],
+     "number": "any"
+    },
+    "b": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "prōvincia",
+      "imperium"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": [
+      "a",
+      "b"
+     ],
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "b",
+   "words": 5
+  },
+  {
+   "id": "enc-t2",
+   "la": "In {p:abl} {a:nom} {b:nom}que {be:pres.ind}.",
+   "en": "In {p} there are {a:bare} and {b:bare}.",
+   "slots": {
+    "p": {
+     "only": [
+      "prōvincia",
+      "imperium"
+     ]
+    },
+    "a": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ],
+     "number": "pl"
+    },
+    "b": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ],
+     "number": "pl"
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": [
+      "a",
+      "b"
+     ],
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "b",
+   "words": 5
+  },
+  {
+   "id": "enc-t3",
+   "la": "{a:nom} {adj:nom} est, {b:nom}que {adj2:nom} est.",
+   "en": "{a} is {adj}, and {b} is {adj2}.",
+   "slots": {
+    "a": {
+     "only": [
+      "prōvincia",
+      "īnsula",
+      "oppidum"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "a",
+     "pred": true,
+     "only": [
+      "magnus",
+      "parvus",
+      "Rōmānus",
+      "Graecus"
+     ]
+    },
+    "b": {
+     "only": [
+      "prōvincia",
+      "īnsula",
+      "oppidum"
+     ]
+    },
+    "adj2": {
+     "pos": "ADJ",
+     "agree": "b",
+     "pred": true,
+     "only": [
+      "magnus",
+      "parvus",
+      "Rōmānus",
+      "Graecus"
+     ]
+    }
+   },
+   "focus": "b",
+   "words": 7
+  },
+  {
+   "id": "enc-t4",
+   "la": "{a:nom} {b:nom}que in {p:abl} {be:pres.ind}.",
+   "en": "{a} and {b} are in {p}.",
+   "slots": {
+    "a": {
+     "only": [
+      "littera",
+      "syllaba",
+      "vocābulum",
+      "numerus"
+     ],
+     "number": "pl"
+    },
+    "b": {
+     "only": [
+      "littera",
+      "syllaba",
+      "vocābulum",
+      "numerus"
+     ],
+     "number": "pl"
+    },
+    "p": {
+     "only": [
+      "vocābulum",
+      "capitulum"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": [
+      "a",
+      "b"
+     ],
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "b",
+   "words": 5
+  },
+  {
+   "id": "enc-t5",
+   "la": "{be:pres.ind}ne {a:nom} {adj:nom} in {p:abl}?",
+   "en": "{be} there {a:a} in {p}?",
+   "slots": {
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "a",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "a": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "a",
+     "only": [
+      "magnus",
+      "parvus",
+      "Rōmānus",
+      "Graecus"
+     ]
+    },
+    "p": {
+     "only": [
+      "prōvincia",
+      "imperium"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 5
+  },
+  {
+   "id": "enc-t6",
+   "la": "{a:nom}ne {adj:nom} in {p:abl} {be:pres.ind}?",
+   "en": "{be} {a} in {p}?",
+   "slots": {
+    "a": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "a",
+     "only": [
+      "magnus",
+      "parvus",
+      "Rōmānus",
+      "Graecus"
+     ]
+    },
+    "p": {
+     "only": [
+      "prōvincia",
+      "imperium"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "a",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "a",
+   "words": 5
+  },
+  {
+   "id": "enc-t7",
+   "la": "{be:pres.ind}ne {a:nom} {b:nom}que in {p:abl}?",
+   "en": "{be} there {a:bare} and {b:bare} in {p}?",
+   "slots": {
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": [
+      "a",
+      "b"
+     ],
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "a": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ],
+     "number": "pl"
+    },
+    "b": {
+     "only": [
+      "fluvius",
+      "oppidum",
+      "īnsula"
+     ],
+     "number": "pl"
+    },
+    "p": {
+     "only": [
+      "prōvincia",
+      "imperium"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 5
+  },
+  {
+   "id": "enc-t8",
+   "la": "{a:nom} {b:nom}que {adj:nom} nōn {be:pres.ind}.",
+   "en": "{a} and {b} are not {adj}.",
+   "slots": {
+    "a": {
+     "only": [
+      "īnsula",
+      "prōvincia"
+     ],
+     "number": "pl"
+    },
+    "b": {
+     "only": [
+      "īnsula",
+      "prōvincia"
+     ],
+     "number": "pl"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "b",
+     "pred": true,
+     "only": [
+      "magnus",
+      "parvus",
+      "Rōmānus",
+      "Graecus"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": [
+      "a",
+      "b"
+     ],
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "b",
+   "words": 5
+  },
+  {
+   "id": "enc-t9",
+   "la": "{a:nom} {adj:nom} est, {b:nom}que {adj2:nom}.",
+   "en": "{a} is {adj}, and {b} {adj2}.",
+   "slots": {
+    "a": {
+     "only": [
+      "prōvincia",
+      "īnsula",
+      "oppidum"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "a",
+     "pred": true,
+     "only": [
+      "magnus",
+      "parvus",
+      "Rōmānus",
+      "Graecus"
+     ]
+    },
+    "b": {
+     "only": [
+      "prōvincia",
+      "īnsula",
+      "oppidum"
+     ]
+    },
+    "adj2": {
+     "pos": "ADJ",
+     "agree": "b",
+     "pred": true,
+     "only": [
+      "magnus",
+      "parvus",
+      "Rōmānus",
+      "Graecus"
+     ]
+    }
+   },
+   "focus": "b",
+   "words": 5
+  }
+ ],
+ "exclude": [
+  {
+   "template": "enc-t5",
+   "fill": {
+    "a": "fluvius",
+    "adj": "Rōmānus"
+   }
+  },
+  {
+   "template": "enc-t5",
+   "fill": {
+    "a": "fluvius",
+    "adj": "Graecus"
+   }
+  },
+  {
+   "template": "enc-t6",
+   "fill": {
+    "a": "fluvius",
+    "adj": "Rōmānus"
+   }
+  },
+  {
+   "template": "enc-t6",
+   "fill": {
+    "a": "fluvius",
+    "adj": "Graecus"
+   }
+  }
+ ],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11)",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 18,
+    "rate": 0.45,
+    "causes": [
+     "imperium glossed by the deck's first sense 'command' (EN_NOUN: empire)",
+     "'the river is Greek / Roman': fluvius dropped from the nationality-adjective templates, excluded elsewhere",
+     "a singular predicate adjective on a plural compound subject (t8: both nouns now plural)"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   }
+  ],
+  "final_rate": 0.0
+ }
+}
