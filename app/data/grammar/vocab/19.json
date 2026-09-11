@@ -138,7 +138,23 @@
    "sense_full": "any",
    "parts": null,
    "unit_id": "r19:13.1",
-   "count": 19
+   "count": 19,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "sg",
+    "det": true
+   }
   },
   {
    "lemma": "beātus",
@@ -167,7 +183,15 @@
    "sense_full": "more",
    "parts": null,
    "unit_id": "r19:52.1",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "of": [
+     "thing",
+     "food",
+     "abstract"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "pauper",
@@ -196,7 +220,13 @@
    "sense_full": "eager or passionate",
    "parts": null,
    "unit_id": "r19:6.2",
-   "count": 13
+   "count": 13,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "dīves",
@@ -339,10 +369,101 @@
      "person"
     ],
     "obj": [
-     "thing",
-     "place",
      "animal",
-     "group"
+     "group",
+     "place"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus",
+     "servus",
+     "ancilla",
+     "dīvitiae",
+     "nāvis",
+     "vīlla",
+     "domūs"
     ]
    }
   },
@@ -356,7 +477,14 @@
    "sense_full": "appropriate or suitable",
    "parts": null,
    "unit_id": "r19:110.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "forum",
@@ -405,14 +533,25 @@
    "sem": {
     "subj": [
      "person",
-     "thing",
      "nature"
     ],
     "obj": [
      "person",
-     "body",
-     "thing",
-     "place"
+     "body"
+    ],
+    "obj_also": [
+     "caput",
+     "corpus",
+     "terra",
+     "campus",
+     "ager",
+     "mēnsa",
+     "lectulus",
+     "saccus",
+     "vāsum",
+     "pōculum",
+     "via",
+     "mūrus"
     ]
    }
   },
@@ -470,7 +609,36 @@
    "sense_full": "increase, enlarge, augment",
    "parts": "augeō, augēre, auxī, auctum",
    "unit_id": "r19:95.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "abstract",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "pecūnia",
+     "numerus",
+     "timor",
+     "dolor",
+     "glōria",
+     "potestās",
+     "imperium",
+     "exercitus",
+     "cōpia",
+     "laetitia",
+     "spēs",
+     "amor",
+     "odium",
+     "metus",
+     "pretium",
+     "mercēs",
+     "stīpendium",
+     "familia",
+     "dīvitiae"
+    ]
+   }
   },
   {
    "lemma": "columna",
@@ -520,7 +688,19 @@
    "sense_full": "lessen, reduce, diminish, impair, abate",
    "parts": "minuō, minuere, minuī, minutum",
    "unit_id": "r19:90.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "abstract",
+     "nature"
+    ],
+    "obj": [
+     "abstract",
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "remittō",
@@ -532,7 +712,19 @@
    "sense_full": "send back, remit",
    "parts": "remittō, remittere, remisī, remissum",
    "unit_id": "r19:79.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "thing"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "pessimō",
@@ -544,7 +736,20 @@
    "sense_full": "ruin, debase",
    "parts": "pessimō, pessimāre, pessimavī, pessimatum",
    "unit_id": "r19:15.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "abstract"
+    ],
+    "takes": [
+     "none"
+    ]
+   }
   }
  ]
 }

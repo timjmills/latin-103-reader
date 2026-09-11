@@ -11,7 +11,19 @@
    "sense_full": "be able, can",
    "parts": "possum, posse, potuī",
    "unit_id": "r10:21.1",
-   "count": 269
+   "count": 269,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing",
+     "nature"
+    ],
+    "obj": [],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "faciō",
@@ -23,7 +35,21 @@
    "sense_full": "make, build, construct, create",
    "parts": "faciō, facere, fēcī, factum",
    "unit_id": "r10:17.1",
-   "count": 139
+   "count": 139,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "abstract"
+    ],
+    "takes": [
+     "ut"
+    ]
+   }
   },
   {
    "lemma": "homō",
@@ -48,7 +74,22 @@
    "sense_full": "want, wish, be willing",
    "parts": "volō, volāre, volāvī, volatum",
    "unit_id": "r10:10.1",
-   "count": 126
+   "count": 126,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "abstract"
+    ],
+    "takes": [
+     "inf",
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "mare",
@@ -178,7 +219,12 @@
    "sense_full": "necessary (necesse est = it is necessary, one must)",
    "parts": null,
    "unit_id": "r10:58.1",
-   "count": 41
+   "count": 41,
+   "sem": {
+    "of": [
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "lūdō",
@@ -193,10 +239,14 @@
    "count": 37,
    "sem": {
     "subj": [
-     "person",
-     "animal"
+     "person"
     ],
-    "obj": []
+    "obj": [],
+    "subj_also": [
+     "canis",
+     "agnus",
+     "līberī"
+    ]
    }
   },
   {
@@ -228,7 +278,7 @@
    "parts": null,
    "unit_id": "r10:27.1",
    "count": 31,
-   "sem": "person"
+   "sem": "other"
   },
   {
    "lemma": "avis",
@@ -273,10 +323,79 @@
      "animal"
     ],
     "obj": [
-     "thing",
      "food",
-     "animal",
-     "person"
+     "animal"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "lignum",
+     "saxum",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "nux",
+     "frūmentum",
+     "praemium",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "charta",
+     "cēra",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "urbs",
+     "oppidum",
+     "castra",
+     "nāvis",
+     "hostis",
+     "praedō",
+     "pīrāta",
+     "fūr",
+     "servus"
     ]
    }
   },
@@ -307,11 +426,102 @@
    "sem": {
     "subj": [
      "person",
-     "animal"
+     "animal",
+     "nature"
     ],
     "obj": [
-     "thing",
      "body"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus",
+     "mēnsa",
+     "lectulus",
+     "sella",
+     "currus",
+     "nāvis"
     ]
    }
   },
@@ -326,7 +536,7 @@
    "parts": null,
    "unit_id": "r10:9.1",
    "count": 26,
-   "sem": "animal"
+   "sem": "food"
   },
   {
    "lemma": "canō",
@@ -452,7 +662,17 @@
    "sense_full": "intend, be prepared",
    "parts": "audeō, audēre, ausus sum",
    "unit_id": "r10:87.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "bēstia",
@@ -543,7 +763,10 @@
      "person",
      "animal"
     ],
-    "obj": []
+    "obj": [],
+    "takes": [
+     "none"
+    ]
    }
   },
   {
@@ -562,8 +785,94 @@
      "person"
     ],
     "obj": [
-     "thing",
-     "person"
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -607,7 +916,27 @@
    "sense_full": "support",
    "parts": "sustineō, sustinēre, sustinuī, sustentum",
    "unit_id": "r10:100.2",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing"
+    ],
+    "obj": [],
+    "obj_only": [
+     "saccus",
+     "mūrus",
+     "columna",
+     "arma",
+     "scūtum",
+     "caput",
+     "corpus",
+     "hasta",
+     "gladius",
+     "lectīca"
+    ]
+   }
   },
   {
    "lemma": "asinus",
@@ -715,7 +1044,31 @@
    "sense_full": "bear",
    "parts": "pariō, parere, peperī, partum",
    "unit_id": "r10:71.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "māter",
+     "femina",
+     "mulier",
+     "uxor",
+     "avis",
+     "ovis",
+     "bōs",
+     "canis",
+     "aquila",
+     "dea"
+    ],
+    "obj_only": [
+     "ovum",
+     "fīlius",
+     "fīlia",
+     "īnfans",
+     "agnus",
+     "līberī"
+    ]
+   }
   },
   {
    "lemma": "rāmus",
@@ -740,7 +1093,13 @@
    "sense_full": "blackish, dark colored, of undyed wool as worn in morning",
    "parts": null,
    "unit_id": "r10:71.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [],
+    "only": [
+     "avis"
+    ]
+   }
   },
   {
    "lemma": "pulmō",
@@ -768,9 +1127,9 @@
    "count": 5,
    "sem": {
     "of": [
-     "person",
      "animal",
-     "thing"
+     "thing",
+     "body"
     ]
    }
   },
@@ -841,7 +1200,12 @@
    "sense_full": "out of the way, unfrequented, remote",
    "parts": null,
    "unit_id": "r10:89.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "petasō",

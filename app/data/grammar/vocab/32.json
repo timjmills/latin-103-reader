@@ -50,7 +50,20 @@
    "sense_full": "paint, tint, color",
    "parts": "pingō, pingere, pīnxī, pictum",
    "unit_id": "w10:arachne:b1.2",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "nature",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "redimō",
@@ -62,7 +75,31 @@
    "sense_full": "buy back, recover, replace by purchase",
    "parts": "redimō, redimere, redēmī, redēmptum",
    "unit_id": "w11:b18.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "nāvis",
+     "ager",
+     "vīlla",
+     "domūs",
+     "praedium",
+     "vīnea",
+     "hortus",
+     "taberna",
+     "lībertās",
+     "vīta",
+     "salūs",
+     "pāx"
+    ]
+   }
   },
   {
    "lemma": "classis",
@@ -112,7 +149,15 @@
    "sense_full": "vie (with), contest, contend or struggle (at law or politics), dispute",
    "parts": "certō, certāre, certāvī, certatum",
    "unit_id": "w10:arachne:b3.3",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "contemnō",
@@ -124,7 +169,22 @@
    "sense_full": "think little of",
    "parts": "contemnō, contemnere, contempsī, contemptum",
    "unit_id": "w11:b2.3",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "abstract",
+     "food",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "seu",
@@ -148,7 +208,12 @@
    "sense_full": "old (of female persons and things), aged",
    "parts": null,
    "unit_id": "w10:arachne:b2.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "grātus",
@@ -178,7 +243,22 @@
    "sense_full": "altogether (usually plural), in a body",
    "parts": null,
    "unit_id": "w11:b1.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "ēgregius",
@@ -208,7 +288,25 @@
    "sense_full": "bring, carry back, again, home",
    "parts": "referō, referre, rettulī, relatum",
    "unit_id": "w11:b26.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "person",
+     "animal",
+     "abstract"
+    ],
+    "dat": [
+     "person"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "vīs",
@@ -246,7 +344,17 @@
    "sense_full": "common, joint, public",
    "parts": null,
    "unit_id": "w11:b4.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "place",
+     "person",
+     "group",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "meminī",
@@ -258,7 +366,17 @@
    "sense_full": "remember (perfect form, present force)",
    "parts": "meminī, meminisse",
    "unit_id": "w11:b21.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "gen",
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "populus",
@@ -283,7 +401,21 @@
    "sense_full": "see, look at",
    "parts": "tueor, tuērī, tuitus sum",
    "unit_id": "w11:b5.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "acus",
@@ -334,7 +466,20 @@
    "sense_full": "stop, cease, desist(from)",
    "parts": "dēsistō, dēsistere, dēstitī, dēstitum",
    "unit_id": "w11:b45.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group",
+     "nature"
+    ],
+    "obj": [],
+    "takes": [
+     "inf",
+     "abl"
+    ]
+   }
   },
   {
    "lemma": "inermis",
@@ -388,7 +533,31 @@
    "sense_full": "offer",
    "parts": "offerō, offerre, obtulī, oblātum",
    "unit_id": "w11:b17.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "abstract"
+    ],
+    "obj_also": [
+     "fīlia",
+     "fīlius",
+     "servus",
+     "ancilla",
+     "equus",
+     "ovis",
+     "agnus",
+     "taurus"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "praeferō",
@@ -400,7 +569,28 @@
    "sense_full": "carry in front",
    "parts": "praeferō, praeferre, praetulī, praelatum",
    "unit_id": "w11:b14.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "food",
+     "abstract"
+    ],
+    "dat": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "food",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "trānseō",
@@ -412,7 +602,25 @@
    "sense_full": "go over, cross",
    "parts": "trānseō, trānsīre, trānsiī, trānsitum",
    "unit_id": "w10:fl-73:b33.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group",
+     "nature"
+    ],
+    "obj": [
+     "place"
+    ],
+    "obj_also": [
+     "mūrus",
+     "vāllum",
+     "līmen",
+     "unda",
+     "moenia"
+    ]
+   }
   },
   {
    "lemma": "victor",
@@ -501,7 +709,16 @@
    "sense_full": "Christian",
    "parts": null,
    "unit_id": "w10:fl-72:b28.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "group",
+     "abstract",
+     "thing",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "exter",
@@ -513,7 +730,16 @@
    "sense_full": "outer or external",
    "parts": null,
    "unit_id": "w10:arachne:b4.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "group",
+     "place",
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "flectō",
@@ -525,7 +751,25 @@
    "sense_full": "bend, curve, bow",
    "parts": "flectō, flectere, flexī, flexum",
    "unit_id": "w11:b8.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "body",
+     "thing"
+    ],
+    "obj_also": [
+     "equus",
+     "currus",
+     "animus",
+     "cursūs",
+     "iter"
+    ]
+   }
   },
   {
    "lemma": "gēns",
@@ -550,7 +794,26 @@
    "sense_full": "advance, walk",
    "parts": "ingredior, ingredī, ingressus sum",
    "unit_id": "w10:arachne:b2.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [
+     "place"
+    ],
+    "obj_also": [
+     "nāvis",
+     "iter",
+     "bellum",
+     "pugna",
+     "proelium",
+     "certāmen",
+     "convīvium"
+    ]
+   }
   },
   {
    "lemma": "mercātōrius",
@@ -562,7 +825,26 @@
    "sense_full": "merchant-, trading (nāvis mercātōria = merchant ship)",
    "parts": null,
    "unit_id": "w11:b5.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [],
+    "only": [
+     "nāvis",
+     "rēs",
+     "ars",
+     "taberna",
+     "classis",
+     "merx",
+     "negōtium",
+     "iter",
+     "nāvigātiō",
+     "lucrum",
+     "vīta",
+     "portūs",
+     "forum",
+     "urbs"
+    ]
+   }
   },
   {
    "lemma": "minor",
@@ -574,7 +856,38 @@
    "sense_full": "threaten, speak or act menacingly",
    "parts": "minor, minārī, minātus sum",
    "unit_id": "w11:b35.4",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract",
+     "group"
+    ],
+    "obj": [],
+    "obj_only": [
+     "mors",
+     "poena",
+     "supplicium",
+     "nex",
+     "caedēs",
+     "bellum",
+     "verber",
+     "vulnus",
+     "crux",
+     "catēna",
+     "carcer",
+     "servitūs"
+    ],
+    "dat": [
+     "person",
+     "animal",
+     "group",
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "mūtuus",
@@ -586,7 +899,13 @@
    "sense_full": "borrowed, lent",
    "parts": null,
    "unit_id": "w11:b32.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "neu",
@@ -610,7 +929,14 @@
    "sense_full": "cloudy",
    "parts": null,
    "unit_id": "w11:b7.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "nature",
+     "time",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "percurrō",
@@ -622,7 +948,29 @@
    "sense_full": "quickly move, run, travel, hasten",
    "parts": "percurrō, percurrere, percucurrī, percursum",
    "unit_id": "w11:b5.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "place"
+    ],
+    "obj_also": [
+     "līber",
+     "epistula",
+     "tabula",
+     "pāgina",
+     "versūs",
+     "carmen",
+     "epigramma",
+     "libellus",
+     "corpus",
+     "membrum"
+    ]
+   }
   },
   {
    "lemma": "proximō",
@@ -634,7 +982,22 @@
    "sense_full": "come or draw near, approach",
    "parts": "proximō, proximāre, proximavī, proximatum",
    "unit_id": "w11:b4.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group",
+     "nature",
+     "thing"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "proximus",
@@ -659,7 +1022,23 @@
    "sense_full": "row, use oars",
    "parts": "rēmigō, rēmigāre, remigavī, remigatum",
    "unit_id": "w11:b6.3",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "nauta",
+     "servus",
+     "mīles",
+     "gubernātor",
+     "piscātor",
+     "vir",
+     "homō",
+     "puer",
+     "pīrāta",
+     "mercātor"
+    ]
+   }
   },
   {
    "lemma": "reminīscor",
@@ -671,7 +1050,17 @@
    "sense_full": "call to mind, recollect",
    "parts": "reminīscor, reminīscī",
    "unit_id": "w11:b19.4",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "gen",
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "sēstertium",
@@ -722,7 +1111,21 @@
    "sense_full": "carry, bring, convey (to)",
    "parts": "advehō, advehere, aduexī, aduectum",
    "unit_id": "w11:b3.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group",
+     "nature",
+     "thing"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "anus",
@@ -747,7 +1150,16 @@
    "sense_full": "white, gray",
    "parts": null,
    "unit_id": "w10:arachne:b2.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "body",
+     "person",
+     "animal",
+     "nature",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "clipeus",
@@ -785,7 +1197,29 @@
    "sense_full": "ordain, decree, determine, resolve",
    "parts": "cōnscīscō, cōnscīscere, cōnscīvī, conscitum",
    "unit_id": "w10:arachne:b8.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [],
+    "obj_only": [
+     "mors",
+     "poena",
+     "supplicium",
+     "nex",
+     "bellum",
+     "pāx",
+     "lēx",
+     "fuga",
+     "cōnsilium",
+     "fīnis"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "dēmittō",
@@ -797,7 +1231,26 @@
    "sense_full": "drop, let fall",
    "parts": "dēmittō, dēmittere, demisī, demissum",
    "unit_id": "w10:fl-74:b36.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "body"
+    ],
+    "obj_also": [
+     "servus",
+     "canis",
+     "animus",
+     "ratis",
+     "nāvicula",
+     "corpus"
+    ]
+   }
   },
   {
    "lemma": "dissuādeō",
@@ -809,7 +1262,32 @@
    "sense_full": "dissuade, advise against",
    "parts": "dissuādeō, dissuādēre, dissuasī, dissuasum",
    "unit_id": "w11:b13.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "bellum",
+     "pāx",
+     "fuga",
+     "iter",
+     "nāvigātiō",
+     "cōnsilium",
+     "mora",
+     "mors",
+     "pugna",
+     "certāmen",
+     "convīvium"
+    ],
+    "dat": [
+     "person"
+    ],
+    "takes": [
+     "ut"
+    ]
+   }
   },
   {
    "lemma": "effringō",
@@ -821,7 +1299,36 @@
    "sense_full": "break open",
    "parts": "effringō, effringere, effregī, effractum",
    "unit_id": "w10:fl-69:b10.4",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "ōstium",
+     "fenestra",
+     "iānua",
+     "porta",
+     "foris",
+     "catēna",
+     "sacculus",
+     "saccus",
+     "mūrus",
+     "moenia",
+     "vāllum",
+     "carcer",
+     "līmen",
+     "cardo",
+     "laqueus",
+     "rēte",
+     "tabula",
+     "vāsum",
+     "pōculum"
+    ]
+   }
   },
   {
    "lemma": "etiamnunc",
@@ -845,7 +1352,44 @@
    "sense_full": "bear, carry",
    "parts": "gestō, gestāre, gestavī, gestatum",
    "unit_id": "w10:arachne:b4.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "toga",
+     "tunica",
+     "vestis",
+     "vestīmentum",
+     "pallium",
+     "calceus",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "saccus",
+     "sacculus",
+     "baculum",
+     "līber",
+     "epistula",
+     "pila",
+     "penna",
+     "catēna",
+     "clāvis",
+     "lucerna",
+     "culter",
+     "falx",
+     "rēte",
+     "pōculum"
+    ]
+   }
   },
   {
    "lemma": "imprūdenter",
@@ -955,7 +1499,21 @@
    "sense_full": "place in command, in front of or before",
    "parts": "praeponō, praeponere, praeposuī, praepositum",
    "unit_id": "w11:b3.4",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "person"
+    ],
+    "dat": [
+     "group",
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "remōveō",
@@ -967,7 +1525,21 @@
    "sense_full": "move back",
    "parts": "remōveō, remōvēre, remōvī, remotum",
    "unit_id": "w10:arachne:b3.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "body",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "repugnō",
@@ -979,7 +1551,22 @@
    "sense_full": "fight back, oppose",
    "parts": "repugnō, repugnāre, repugnavī, repugnatum",
    "unit_id": "w11:b9.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "animal",
+     "group",
+     "abstract",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "stāmen",
@@ -1004,7 +1591,40 @@
    "sense_full": "plunge under, submerge",
    "parts": "submergō, submergere, submersī, submersum",
    "unit_id": "w11:b1.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "nāvis",
+     "nāvicula",
+     "ratis",
+     "rēmus",
+     "currus",
+     "caput",
+     "corpus",
+     "saxum",
+     "arma",
+     "gladius",
+     "ānulus",
+     "pecūnia",
+     "pōculum",
+     "vāsum",
+     "saccus",
+     "sacculus",
+     "pila",
+     "rēte",
+     "catēna",
+     "clāvis",
+     "culter"
+    ]
+   }
   },
   {
    "lemma": "sūcus",
@@ -1042,7 +1662,12 @@
    "sense_full": "with three teeth",
    "parts": null,
    "unit_id": "w10:arachne:b4.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "ubīque",

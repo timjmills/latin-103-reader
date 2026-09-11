@@ -84,10 +84,95 @@
      "person"
     ],
     "obj": [
-     "thing",
      "person",
      "animal",
      "body"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -101,7 +186,26 @@
    "sense_full": "turn, turn around",
    "parts": "vertō, vertere, vertī, versum",
    "unit_id": "r07:16.1",
-   "count": 33
+   "count": 33,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "body"
+    ],
+    "obj_also": [
+     "nāvis",
+     "currus",
+     "equus",
+     "caput",
+     "oculus",
+     "vultus",
+     "faciēs"
+    ]
+   }
   },
   {
    "lemma": "lacrima",
@@ -177,10 +281,25 @@
    "count": 23,
    "sem": {
     "subj": [
-     "person",
-     "animal"
+     "person"
     ],
-    "obj": []
+    "obj": [],
+    "subj_also": [
+     "canis",
+     "equus",
+     "ovis",
+     "bōs",
+     "asinus",
+     "porcus",
+     "leō",
+     "lupus",
+     "taurus",
+     "agnus",
+     "grex",
+     "pecus",
+     "bēstia",
+     "animal"
+    ]
    }
   },
   {
@@ -225,8 +344,17 @@
      "person"
     ],
     "obj": [
-     "food",
-     "thing"
+     "food"
+    ],
+    "obj_also": [
+     "cēna",
+     "nāvis",
+     "arma",
+     "lectulus",
+     "mēnsa",
+     "dōnum",
+     "iter",
+     "convīvium"
     ]
    }
   },
@@ -259,7 +387,17 @@
    "sense_full": "approach",
    "parts": "adeō, adīre, adiī, aditum",
    "unit_id": "r07:61.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "immō",
@@ -296,7 +434,34 @@
    "sense_full": "full, plump",
    "parts": null,
    "unit_id": "r07:38.1",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "of": [],
+    "only": [
+     "saccus",
+     "sacculus",
+     "pōculum",
+     "vāsum",
+     "venter",
+     "domūs",
+     "vīlla",
+     "ātrium",
+     "forum",
+     "theātrum",
+     "nāvis",
+     "mēnsa",
+     "hortus",
+     "campus",
+     "silva",
+     "cubiculum",
+     "lectīca",
+     "lūdus",
+     "taberna",
+     "via",
+     "urbs",
+     "circus"
+    ]
+   }
   },
   {
    "lemma": "adveniō",
@@ -351,7 +516,17 @@
    "sense_full": "be in, on, there",
    "parts": "īnsum, inesse, infuī, infutūrum",
    "unit_id": "r07:38.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "thing",
+     "abstract"
+    ],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "lacrimō",
@@ -394,7 +569,29 @@
    "sense_full": "rub, wipe",
    "parts": "tergeō, tergēre, tersī, tersum",
    "unit_id": "r07:23.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "mēnsa",
+     "pōculum",
+     "vāsum",
+     "speculum",
+     "gladius",
+     "manūs",
+     "ōs",
+     "faciēs",
+     "oculus",
+     "nāsus",
+     "corpus",
+     "pēs",
+     "lacrima",
+     "sanguis"
+    ]
+   }
   },
   {
    "lemma": "ōstiārius",
@@ -419,7 +616,16 @@
    "sense_full": "be well/in good health",
    "parts": "salveō, salvēre",
    "unit_id": "r07:31.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   }
  ]
 }

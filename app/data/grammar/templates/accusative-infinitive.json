@@ -1,0 +1,613 @@
+{
+ "skill": "accusative-infinitive",
+ "chapter": 10,
+ "templates": [
+  {
+   "id": "aci-t1",
+   "la": "{s:nom} {o:acc} {adj:acc} {inf:inf.pres} {head:pres.ind}.",
+   "en": "{s} {head} that {o} {inf:prog}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o",
+     "not": [
+      "mortuus",
+      "vīvus"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "o",
+     "not": [
+      "vīvō",
+      "habitō",
+      "absum",
+      "adsum",
+      "audiō",
+      "videō",
+      "valeō",
+      "sordeō",
+      "pateō",
+      "lateō",
+      "cessō"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō",
+      "audiō"
+     ]
+    }
+   },
+   "focus": "inf",
+   "words": 5
+  },
+  {
+   "id": "aci-t2",
+   "la": "{s:nom} {o:acc} in {p:abl} {inf:inf.pres} {head:pres.ind}.",
+   "en": "{s} {head} that {o} {inf:prog} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "cubiculum",
+      "ātrium",
+      "silva",
+      "campus",
+      "via",
+      "vīlla",
+      "oppidum",
+      "peristylum"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "o",
+     "not": [
+      "abeō",
+      "absum",
+      "accurrō",
+      "accēdō",
+      "adsum",
+      "adveniō",
+      "appropinquō",
+      "ascendō",
+      "audiō",
+      "cadō",
+      "cessō",
+      "currō",
+      "cēdō",
+      "cōnsistō",
+      "discēdō",
+      "dēscendō",
+      "effugiō",
+      "exeō",
+      "eō",
+      "fugiō",
+      "habitō",
+      "intrō",
+      "lateō",
+      "natō",
+      "nāvigō",
+      "pateō",
+      "pergō",
+      "perveniō",
+      "praetereō",
+      "proficīscor",
+      "prōcēdō",
+      "recēdō",
+      "redeō",
+      "reveniō",
+      "revertō",
+      "sordeō",
+      "spīrō",
+      "valeō",
+      "veniō",
+      "videō",
+      "vīvō",
+      "ēgredior"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō",
+      "audiō"
+     ]
+    }
+   },
+   "focus": "inf",
+   "words": 6
+  },
+  {
+   "id": "aci-t3",
+   "la": "{s:nom} {o:acc} {adj:acc} esse {head:pres.ind}.",
+   "en": "{s} {head} that {o} {o:be} {adj}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o",
+     "pred": true
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō"
+     ]
+    }
+   },
+   "focus": "esse",
+   "words": 5
+  },
+  {
+   "id": "aci-t4",
+   "la": "{s:nom} {o:acc} {ab} {ag:abl} {inf:inf.pres.pass} {head:pres.ind}.",
+   "en": "{s} {head} that {o} {inf:prog} by {ag}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal",
+      "thing"
+     ],
+     "number": "any"
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres.pass",
+     "subj": "o",
+     "agent": "ag",
+     "not": [
+      "aspiciō",
+      "audiō",
+      "conspiciō",
+      "habeō",
+      "metuō",
+      "possideō",
+      "spectō",
+      "teneō",
+      "timeō",
+      "videō"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō",
+      "audiō"
+     ]
+    }
+   },
+   "focus": "inf",
+   "words": 6
+  },
+  {
+   "id": "aci-t5",
+   "la": "{s:nom} {o:acc} {inf:inf.pres} nōn posse {head:pres.ind}.",
+   "en": "{s} {head} that {o} cannot {inf:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "o",
+     "not": [
+      "absum",
+      "adsum",
+      "vīvō",
+      "habitō",
+      "valeō",
+      "sordeō",
+      "pateō",
+      "lateō",
+      "cessō"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō"
+     ]
+    }
+   },
+   "focus": "posse",
+   "words": 6
+  },
+  {
+   "id": "aci-t6",
+   "la": "{head:pres.ind} {s:nom} {o:acc} in {p:abl} {inf:inf.pres}.",
+   "en": "{s} {head} that {o} {inf:prog} in {p}.",
+   "slots": {
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō",
+      "audiō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "cubiculum",
+      "ātrium",
+      "silva",
+      "campus",
+      "via",
+      "vīlla",
+      "oppidum",
+      "peristylum"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "o",
+     "not": [
+      "abeō",
+      "absum",
+      "accurrō",
+      "accēdō",
+      "adsum",
+      "adveniō",
+      "appropinquō",
+      "ascendō",
+      "audiō",
+      "cadō",
+      "cessō",
+      "currō",
+      "cēdō",
+      "cōnsistō",
+      "discēdō",
+      "dēscendō",
+      "effugiō",
+      "exeō",
+      "eō",
+      "fugiō",
+      "habitō",
+      "intrō",
+      "lateō",
+      "natō",
+      "nāvigō",
+      "pateō",
+      "pergō",
+      "perveniō",
+      "praetereō",
+      "proficīscor",
+      "prōcēdō",
+      "recēdō",
+      "redeō",
+      "reveniō",
+      "revertō",
+      "sordeō",
+      "spīrō",
+      "valeō",
+      "veniō",
+      "videō",
+      "vīvō",
+      "ēgredior"
+     ]
+    }
+   },
+   "focus": "inf",
+   "words": 6
+  },
+  {
+   "id": "aci-t7",
+   "la": "{s:nom} {inf1:inf.pres} vult, sed {o:acc} {inf2:inf.pres} {head:pres.ind}.",
+   "en": "{s} wants {inf1}, but {head} that {o} {inf2:prog}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "inf1": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "s",
+     "lemmas": [
+      "dormiō",
+      "legō",
+      "lūdō",
+      "cantō",
+      "canō",
+      "quiēscō",
+      "edō",
+      "bibō",
+      "natō",
+      "ambulō"
+     ],
+     "absolute": true
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "inf2": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "o",
+     "lemmas": [
+      "canō",
+      "cantō",
+      "clāmō",
+      "plōrō",
+      "lātrō",
+      "rīdeō",
+      "currō",
+      "bālō",
+      "ululō",
+      "lūdō"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "audiō",
+      "videō"
+     ]
+    }
+   },
+   "fixed_gloss": {
+    "vult": "wants"
+   },
+   "focus": "inf2",
+   "words": 7
+  },
+  {
+   "id": "aci-t8",
+   "la": "{s:nom} {head:pres.ind} {o:acc} {t:acc} {inf:inf.pres}.",
+   "en": "{s} {head} that {o} {inf:prog} {t}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō",
+      "audiō"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "t": {
+     "sem": [
+      "thing",
+      "food",
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "o",
+     "obj": "t",
+     "not": [
+      "audiō",
+      "videō",
+      "aspiciō",
+      "conspiciō",
+      "spectō"
+     ]
+    }
+   },
+   "focus": "inf",
+   "words": 5
+  },
+  {
+   "id": "aci-t9",
+   "la": "{s:nom} {o:acc} {adj:acc} {inf:inf.pres} nōn {head:pres.ind}.",
+   "en": "{s} {head:neg} that {o} {inf:prog}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o",
+     "not": [
+      "mortuus",
+      "vīvus"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "o",
+     "not": [
+      "vīvō",
+      "habitō",
+      "absum",
+      "adsum",
+      "audiō",
+      "videō",
+      "valeō",
+      "sordeō",
+      "pateō",
+      "lateō",
+      "cessō"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "videō",
+      "audiō"
+     ]
+    }
+   },
+   "focus": "inf",
+   "words": 6
+  },
+  {
+   "id": "aci-t10",
+   "la": "{s:nom} sē {ab} {ag:abl} {inf:inf.pres.pass} {head:pres.ind}.",
+   "en": "{s} {head} that {s:pron} {inf:prog} by {ag}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres.pass",
+     "subj": "s",
+     "agent": "ag",
+     "lemmas": [
+      "vocō",
+      "exspectō",
+      "salūtō",
+      "amō",
+      "accūsō",
+      "interrogō",
+      "quaerō",
+      "spectō",
+      "aspiciō",
+      "timeō"
+     ]
+    },
+    "head": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "acc_inf",
+     "lemmas": [
+      "audiō",
+      "videō"
+     ]
+    }
+   },
+   "focus": "inf",
+   "words": 5
+  }
+ ],
+ "exclude": []
+}

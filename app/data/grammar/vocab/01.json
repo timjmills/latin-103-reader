@@ -11,7 +11,25 @@
    "sense_full": "be, exist",
    "parts": "sum, esse, fuī, futūrum",
    "unit_id": "r01:1.1",
-   "count": 2179
+   "count": 2179,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "abstract",
+     "nature",
+     "body",
+     "food",
+     "group",
+     "time"
+    ],
+    "obj": [],
+    "takes": [
+     "pred"
+    ]
+   }
   },
   {
    "lemma": "et",
@@ -106,7 +124,23 @@
    "sense_full": "much, many, great, many a",
    "parts": null,
    "unit_id": "r01:44.1",
-   "count": 161
+   "count": 161,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "pl",
+    "det": true
+   }
   },
   {
    "lemma": "quis",
@@ -151,7 +185,18 @@
    "sense_full": "first, foremost or best, chief, principal",
    "parts": null,
    "unit_id": "r01:73.1",
-   "count": 87
+   "count": 87,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "littera",
@@ -277,7 +322,40 @@
    "sense_full": "Roman, of Rome",
    "parts": null,
    "unit_id": "r01:41.1",
-   "count": 28
+   "count": 28,
+   "sem": {
+    "of": [
+     "person",
+     "place",
+     "group"
+    ],
+    "also": [
+     "nummus",
+     "dēnārius",
+     "sēstertius",
+     "assis",
+     "littera",
+     "lingua",
+     "mōs",
+     "lēx",
+     "iūs",
+     "imperium",
+     "forum",
+     "via",
+     "urbs",
+     "templum",
+     "theātrum",
+     "circus",
+     "amphitheatrum",
+     "toga",
+     "vestis",
+     "sermō",
+     "nāvis",
+     "classis",
+     "exercitus",
+     "patria"
+    ]
+   }
   },
   {
    "lemma": "Latīnus",
@@ -289,7 +367,34 @@
    "sense_full": "Latin, of Latium",
    "parts": null,
    "unit_id": "r01:71.1",
-   "count": 25
+   "count": 25,
+   "sem": {
+    "of": [],
+    "only": [
+     "lingua",
+     "vocābulum",
+     "littera",
+     "līber",
+     "verbum",
+     "nōmen",
+     "sententia",
+     "carmen",
+     "epistula",
+     "versūs",
+     "syllaba",
+     "titulus",
+     "pāgina",
+     "capitulum",
+     "numerus",
+     "exemplum",
+     "epigramma",
+     "cōmoedia",
+     "poēta",
+     "magister",
+     "discipulus",
+     "lūdus"
+    ]
+   }
   },
   {
    "lemma": "secundus",
@@ -301,7 +406,17 @@
    "sense_full": "next, following",
    "parts": null,
    "unit_id": "r01:74.1",
-   "count": 21
+   "count": 21,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "Graecus",
@@ -313,7 +428,39 @@
    "sense_full": "Greek",
    "parts": null,
    "unit_id": "r01:39.1",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "of": [
+     "person",
+     "place",
+     "group"
+    ],
+    "also": [
+     "nāvis",
+     "vīnum",
+     "lingua",
+     "littera",
+     "līber",
+     "verbum",
+     "vocābulum",
+     "nōmen",
+     "carmen",
+     "ars",
+     "mōs",
+     "fābula",
+     "cōmoedia",
+     "epigramma",
+     "vestis",
+     "persōna",
+     "theātrum",
+     "urbs",
+     "īnsula",
+     "oppidum",
+     "patria",
+     "mare",
+     "terra"
+    ]
+   }
   },
   {
    "lemma": "paucus",
@@ -325,7 +472,23 @@
    "sense_full": "little, small in quantity or extent",
    "parts": null,
    "unit_id": "r01:47.1",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "pl",
+    "det": true
+   }
   },
   {
    "lemma": "imperium",

@@ -1,0 +1,111 @@
+{
+ "skill": "ablative-agent",
+ "chapter": 6,
+ "templates": [
+  {
+   "id": "aba-t1",
+   "la": "{pat:nom} {adj:nom} {ab} {ag:abl} {v:pres.ind.pass}.",
+   "en": "{pat} {v} by {ag}.",
+   "slots": {
+    "pat": {"sem": ["person", "animal", "thing"], "number": "any"},
+    "adj": {"pos": "ADJ", "agree": "pat"},
+    "ag": {"sem": ["person"], "number": "any"},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+   },
+   "focus": "ag",
+   "words": 5
+  },
+  {
+   "id": "aba-t2",
+   "la": "{pat:nom} {ab} {ag:abl} {v:pres.ind.pass}, nōn {ab} {ag2:abl}.",
+   "en": "{pat} {v} by {ag}, not by {ag2}.",
+   "slots": {
+    "pat": {"sem": ["person", "animal", "thing"], "number": "any"},
+    "ag": {"sem": ["person"], "number": "any"},
+    "ag2": {"sem": ["person"], "number": "any"},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+   },
+   "focus": "ag",
+   "words": 7
+  },
+  {
+   "id": "aba-t3",
+   "la": "Cūr {pat:nom} {ab} {ag:abl} {adj:abl} {v:pres.ind.pass}?",
+   "en": "Why {v:be} {pat} {v:pp} by {ag}?",
+   "slots": {
+    "pat": {"sem": ["person", "animal"], "number": "any"},
+    "ag": {"sem": ["person"], "names": false, "number": "any"},
+    "adj": {"pos": "ADJ", "agree": "ag"},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+   },
+   "focus": "ag",
+   "words": 6
+  },
+  {
+   "id": "aba-t4",
+   "la": "{pat:nom} baculō {ab} {ag:abl} {v:pres.ind.pass}.",
+   "en": "{pat} {v} with a stick by {ag}.",
+   "slots": {
+    "pat": {"sem": ["person", "animal"], "number": "any"},
+    "ag": {"sem": ["person"], "number": "any"},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag", "lemmas": ["verberō", "pulsō"]}
+   },
+   "fixed_gloss": {"baculō": "with a stick"},
+   "focus": "ag",
+   "words": 5
+  },
+  {
+   "id": "aba-t5",
+   "la": "{pat:nom} {ab} {ag:abl} ad {p:acc} {v:pres.ind.pass}.",
+   "en": "{pat} {v} to {p} by {ag}.",
+   "slots": {
+    "pat": {"sem": ["person", "thing", "food"], "number": "any"},
+    "ag": {"sem": ["person"], "number": "any"},
+    "p": {"only": ["hortus", "vīlla", "oppidum", "ātrium", "cubiculum"]},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag", "lemmas": ["portō", "vocō"]}
+   },
+   "focus": "ag",
+   "words": 6
+  },
+  {
+   "id": "aba-t6",
+   "la": "{ab} {ag:abl} {suus:abl} {pat:nom} nōn {v:pres.ind.pass}.",
+   "en": "{pat} {v:be} not {v:pp} by {suus} {ag:bare}.",
+   "slots": {
+    "ag": {"sem": ["person"], "names": false, "number": "pl"},
+    "suus": {"pos": "ADJ", "agree": "ag", "only": ["suus"], "ref": "pat"},
+    "pat": {"sem": ["person"]},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+   },
+   "focus": "ag",
+   "words": 6
+  },
+  {
+   "id": "aba-t7",
+   "la": "{pat:nom} {ab} {ag:abl}, nōn baculō, {v:pres.ind.pass}.",
+   "en": "{pat} {v} by {ag}, not with a stick.",
+   "slots": {
+    "pat": {"sem": ["person", "animal"], "number": "any"},
+    "ag": {"sem": ["person"], "number": "any"},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag", "lemmas": ["verberō", "pulsō"]}
+   },
+   "fixed_gloss": {"baculō": "with a stick"},
+   "focus": "ag",
+   "words": 6
+  },
+  {
+   "id": "aba-t8",
+   "la": "{ab} {ag:abl} {pat:nom} {adj:nom} {v:pres.ind.pass}.",
+   "en": "By {ag} {pat} {v}.",
+   "slots": {
+    "ag": {"sem": ["person"], "number": "any"},
+    "pat": {"sem": ["person", "animal", "thing"], "number": "any"},
+    "adj": {"pos": "ADJ", "agree": "pat"},
+    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+   },
+   "focus": "ag",
+   "words": 5
+  }
+ ],
+ "exclude": []
+}

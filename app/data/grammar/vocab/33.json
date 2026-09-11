@@ -24,7 +24,28 @@
    "sense_full": "chop, hew, cut out, down, to pieces",
    "parts": "caedō, caedere, cecīdī, caesum",
    "unit_id": "w12:b2.7",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "arbor",
+     "silva",
+     "rāmus",
+     "lignum",
+     "herba",
+     "frūmentum",
+     "vīnea"
+    ]
+   }
   },
   {
    "lemma": "effundō",
@@ -36,7 +57,41 @@
    "sense_full": "pour out, away, off",
    "parts": "effundō, effundere, effūdī, effusum",
    "unit_id": "w12:b10.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "aqua",
+     "vīnum",
+     "lac",
+     "sanguis",
+     "lacrima",
+     "cruor",
+     "sūcus",
+     "mel",
+     "pōtiō",
+     "unda",
+     "pecūnia",
+     "nummus",
+     "sāl",
+     "sēmen",
+     "frūmentum"
+    ],
+    "subj_also": [
+     "nūbēs",
+     "caelum",
+     "imber",
+     "flūmen",
+     "amnis",
+     "mare",
+     "fluvius",
+     "rivus"
+    ]
+   }
   },
   {
    "lemma": "plērīque",
@@ -48,7 +103,23 @@
    "sense_full": "most, the greater part (of)",
    "parts": null,
    "unit_id": "w12:b13.8",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "pl",
+    "det": true
+   }
   },
   {
    "lemma": "versūs",
@@ -73,7 +144,35 @@
    "sense_full": "wound, injure, harm, pain or distress",
    "parts": "vulnerō, vulnerāre, vulnerāvī, vulnerātum",
    "unit_id": "w12:b14.3",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "body"
+    ],
+    "subj_also": [
+     "gladius",
+     "hasta",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "scūtum",
+     "arma",
+     "culter",
+     "falx",
+     "saxum",
+     "dēns",
+     "cornū",
+     "scalpellus",
+     "ferrum",
+     "verbum"
+    ]
+   }
   },
   {
    "lemma": "legiō",
@@ -98,7 +197,16 @@
    "sense_full": "particular, especial",
    "parts": null,
    "unit_id": "w12:b4.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "abstract",
+     "thing",
+     "person",
+     "place",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "prōgredior",
@@ -110,7 +218,15 @@
    "sense_full": "go, come forth, go forward, march forward",
    "parts": "prōgredior, prōgredī, prōgressus sum",
    "unit_id": "w12:b2.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "vulnus",
@@ -174,7 +290,21 @@
    "sense_full": "desire or want, long or wish for, request, require or need",
    "parts": "dēsīderō, dēsīderāre, desideravī, desideratum",
    "unit_id": "w12:b7.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "food",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "fatīgō",
@@ -186,7 +316,40 @@
    "sense_full": "weary, tire, fatigue",
    "parts": "fatīgō, fatīgāre, fatigavī, fatīgātum",
    "unit_id": "w12:b4.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "abstract"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "body"
+    ],
+    "subj_also": [
+     "iter",
+     "calor",
+     "frīgus",
+     "sōl",
+     "famēs",
+     "sitis",
+     "bellum",
+     "pugna",
+     "cursūs",
+     "nāvigātiō",
+     "via",
+     "opus",
+     "negōtium",
+     "vigilia",
+     "dolor",
+     "tempestās",
+     "unda",
+     "flūctus",
+     "mare"
+    ]
+   }
   },
   {
    "lemma": "ōrdō",
@@ -224,7 +387,16 @@
    "sense_full": "private",
    "parts": null,
    "unit_id": "w12:b4.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "place",
+     "person",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "prōcurrō",
@@ -236,7 +408,15 @@
    "sense_full": "run out ahead, run forward, advance",
    "parts": "prōcurrō, prōcurrere, prōcucurrī, procursum",
    "unit_id": "w12:b2.7",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "properō",
@@ -248,7 +428,18 @@
    "sense_full": "hurry, speed up",
    "parts": "properō, properāre, properavī, properatum",
    "unit_id": "w12:b6.4",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "pūblicus",
@@ -260,7 +451,16 @@
    "sense_full": "public",
    "parts": null,
    "unit_id": "w12:b4.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "place",
+     "group",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "rīpa",
@@ -285,7 +485,58 @@
    "sense_full": "desire, be eager for",
    "parts": "studeō, studēre, studuī",
    "unit_id": "w12:b3.4",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "dat_only": [
+     "littera",
+     "ars",
+     "lingua",
+     "carmen",
+     "līber",
+     "glōria",
+     "pecūnia",
+     "laus",
+     "virtūs",
+     "pāx",
+     "bellum",
+     "lucrum",
+     "ōtium",
+     "negōtium",
+     "versūs",
+     "epigramma",
+     "cōmoedia",
+     "rēs",
+     "vīnum",
+     "lūdus",
+     "certāmen",
+     "victōria",
+     "lībertās",
+     "amor",
+     "salūs",
+     "numerus",
+     "vocābulum",
+     "verbum",
+     "sententia",
+     "exemplum",
+     "imperium",
+     "fāma",
+     "fortūna",
+     "potestās",
+     "ratiō",
+     "ingenium",
+     "opus",
+     "studium",
+     "pugna",
+     "proelium"
+    ],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "studium",
@@ -404,7 +655,31 @@
    "sense_full": "burst or pop (abscess or boil)",
    "parts": "ērumpō, ērumpere, ērūpī, eruptum",
    "unit_id": "w12:b13.7",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [],
+    "subj_also": [
+     "ignis",
+     "flūmen",
+     "aqua",
+     "sanguis",
+     "clāmor",
+     "lacrima",
+     "vōx",
+     "tempestās",
+     "tumultus",
+     "bellum",
+     "pugna",
+     "unda",
+     "flūctus",
+     "imber"
+    ]
+   }
   },
   {
    "lemma": "excurrō",
@@ -416,7 +691,15 @@
    "sense_full": "run out",
    "parts": "excurrō, excurrere, excucurrī, excursum",
    "unit_id": "w12:b13.4",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "hortor",
@@ -428,7 +711,20 @@
    "sense_full": "encourage",
    "parts": "hortor, hortārī, hortatus sum",
    "unit_id": "w12:b2.6",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "takes": [
+     "ut"
+    ]
+   }
   },
   {
    "lemma": "idōneus",
@@ -440,7 +736,17 @@
    "sense_full": "suitable, appropriate, adequate, having right qualities",
    "parts": null,
    "unit_id": "w12:b2.4",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "imperātor",
@@ -482,7 +788,38 @@
    "sense_full": "construct, build",
    "parts": "īnstruō, īnstruere, instruxī, īnstrūctum",
    "unit_id": "w12:b2.4",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "group",
+     "person"
+    ],
+    "obj_also": [
+     "nāvis",
+     "castra",
+     "mēnsa",
+     "convīvium",
+     "domūs",
+     "cēna",
+     "equus",
+     "currus",
+     "lectulus",
+     "triclīnium",
+     "culīna",
+     "taberna",
+     "lūdus",
+     "templum",
+     "aedificium",
+     "mūrus",
+     "vāllum",
+     "moenia",
+     "arma"
+    ]
+   }
   },
   {
    "lemma": "lēgātus",
@@ -507,7 +844,14 @@
    "sense_full": "legionary, of a legion",
    "parts": null,
    "unit_id": "w12:b1.5",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "group",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "ōtiōsus",
@@ -604,7 +948,27 @@
    "sense_full": "add, attach, join to, add to, support",
    "parts": "adiungō, adiungere, adiunxī, adiunctum",
    "unit_id": "w12:b1.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "group",
+     "abstract"
+    ],
+    "dat": [
+     "person",
+     "group",
+     "thing",
+     "place",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "arduus",
@@ -646,7 +1010,33 @@
    "sense_full": "surround",
    "parts": "circumdō, circumdāre, circumdedī, circumdatum",
    "unit_id": "w12:b2.9",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group",
+     "nature"
+    ],
+    "obj": [
+     "place",
+     "group",
+     "person",
+     "body"
+    ],
+    "obj_also": [
+     "mūrus",
+     "moenia",
+     "vāllum",
+     "catēna",
+     "fūnis",
+     "rēte",
+     "arma",
+     "vestis",
+     "toga",
+     "pallium",
+     "tunica"
+    ]
+   }
   },
   {
    "lemma": "citer",
@@ -658,7 +1048,13 @@
    "sense_full": "near/on this side",
    "parts": null,
    "unit_id": "w12:b13.10",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "cōgō",
@@ -670,7 +1066,38 @@
    "sense_full": "collect or gather, round up, restrict or confine",
    "parts": "cōgō, cōgere, coegī, coactum",
    "unit_id": "w12:b3.5",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group",
+     "abstract",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj_also": [
+     "pecūnia",
+     "frūmentum",
+     "nummus",
+     "frūgēs",
+     "ūva",
+     "olea",
+     "lignum",
+     "aqua",
+     "cibus",
+     "arma",
+     "nāvis",
+     "classis"
+    ],
+    "takes": [
+     "inf",
+     "ut"
+    ]
+   }
   },
   {
    "lemma": "commemorō",
@@ -682,7 +1109,20 @@
    "sense_full": "recall (to self or other)",
    "parts": "commemorō, commemorāre, commemorāvī, commemoratum",
    "unit_id": "w12:b3.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "abstract",
+     "person",
+     "place"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "cōnstanter",
@@ -706,7 +1146,18 @@
    "sense_full": "call or bring together",
    "parts": "conuocō, conuocāre, conuocavī, convocātum",
    "unit_id": "w12:b13.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "group",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "cōpulō",
@@ -718,7 +1169,28 @@
    "sense_full": "connect, join physically, couple",
    "parts": "cōpulō, cōpulāre, copulavī, cōpulātum",
    "unit_id": "w12:b13.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "body",
+     "animal",
+     "person"
+    ],
+    "obj_also": [
+     "verbum",
+     "littera",
+     "syllaba",
+     "vocābulum",
+     "nōmen",
+     "amīcitia",
+     "animus"
+    ]
+   }
   },
   {
    "lemma": "etenim",
@@ -742,7 +1214,16 @@
    "sense_full": "of May (kalendae Māiae = the Kalends of May, 1 May, so a. d. VII kal. Māi. = 25 April)",
    "parts": null,
    "unit_id": "w12:b6.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [],
+    "only": [
+     "mēnsis",
+     "kalendae",
+     "īdūs",
+     "diēs"
+    ]
+   }
   },
   {
    "lemma": "mūniō",
@@ -754,7 +1235,25 @@
    "sense_full": "fortify",
    "parts": "mūniō, mūnīre, munivī, munitum",
    "unit_id": "w12:b2.10",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "place"
+    ],
+    "obj_also": [
+     "mūrus",
+     "vāllum",
+     "moenia",
+     "nāvis",
+     "classis",
+     "corpus",
+     "animus"
+    ]
+   }
   },
   {
    "lemma": "pīlum",
@@ -779,7 +1278,30 @@
    "sense_full": "excel, surpass, be outstanding, superior, best, greater(to)",
    "parts": "praestō, praestāre, praestitī, praestitum",
    "unit_id": "w12:b10.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing",
+     "group",
+     "abstract",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj_also": [
+     "officium",
+     "mūnus",
+     "auxilium",
+     "opus",
+     "iūs",
+     "silentium"
+    ]
+   }
   },
   {
    "lemma": "quamdiū",
@@ -827,7 +1349,24 @@
    "sense_full": "transport, convey, transfer, shift",
    "parts": "trānsferō, trānsferre, transtulī, translatum",
    "unit_id": "w12:b9.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group",
+     "nature",
+     "thing"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group",
+     "thing",
+     "food",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "trīnus",
@@ -839,7 +1378,23 @@
    "sense_full": "triple",
    "parts": null,
    "unit_id": "w12:b11.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "pl",
+    "det": true
+   }
   },
   {
    "lemma": "ūnus",
@@ -851,7 +1406,23 @@
    "sense_full": "alone, a single or sole",
    "parts": null,
    "unit_id": "w12:b11.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "sg",
+    "det": true
+   }
   },
   {
    "lemma": "vāllum",

@@ -159,8 +159,23 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "place"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "pecūnia",
+     "līber",
+     "epistula",
+     "gladius",
+     "arma",
+     "nāvis",
+     "lectīca",
+     "baculum",
+     "cibus",
+     "vestis",
+     "toga",
+     "pallium"
     ]
    }
   },
@@ -200,7 +215,20 @@
    "sense_full": "attack",
    "parts": "petō, petere, petīvī, petītum",
    "unit_id": "r09:32.1",
-   "count": 31
+   "count": 31,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "dūcō",
@@ -218,8 +246,24 @@
      "person"
     ],
     "obj": [
-     "person",
-     "animal"
+     "person"
+    ],
+    "obj_also": [
+     "equus",
+     "bōs",
+     "asinus",
+     "ovis",
+     "canis",
+     "taurus",
+     "agnus",
+     "porcus",
+     "grex",
+     "pecus",
+     "exercitus",
+     "classis",
+     "legiō",
+     "cohors",
+     "agmen"
     ]
    }
   },
@@ -332,8 +376,93 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "food"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -435,8 +564,96 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "food"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -539,10 +756,29 @@
    "count": 10,
    "sem": {
     "subj": [
-     "person",
-     "animal"
+     "person"
     ],
-    "obj": []
+    "obj": [],
+    "subj_also": [
+     "canis",
+     "equus",
+     "ovis",
+     "bōs",
+     "asinus",
+     "porcus",
+     "leō",
+     "lupus",
+     "taurus",
+     "agnus",
+     "grex",
+     "pecus",
+     "bēstia",
+     "animal",
+     "avis",
+     "aquila",
+     "passer",
+     "corvus"
+    ]
    }
   },
   {
@@ -558,10 +794,25 @@
    "count": 9,
    "sem": {
     "subj": [
-     "person",
-     "animal"
+     "person"
     ],
-    "obj": []
+    "obj": [],
+    "subj_also": [
+     "canis",
+     "equus",
+     "ovis",
+     "bōs",
+     "asinus",
+     "porcus",
+     "leō",
+     "lupus",
+     "taurus",
+     "agnus",
+     "grex",
+     "pecus",
+     "bēstia",
+     "animal"
+    ]
    }
   },
   {
@@ -632,7 +883,20 @@
    "sense_full": "impose, put upon",
    "parts": "impōnō, impōnere, imposuī, impositum",
    "unit_id": "r09:84.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "person"
+    ],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "bālō",

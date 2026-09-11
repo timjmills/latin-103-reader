@@ -35,7 +35,14 @@
    "sense_full": "level, flat",
    "parts": null,
    "unit_id": "r23:51.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "of": [
+     "place",
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "inclūdō",
@@ -79,6 +86,10 @@
     ],
     "dat": [
      "person"
+    ],
+    "takes": [
+     "acc_inf",
+     "inf"
     ]
    }
   },
@@ -104,7 +115,25 @@
    "sense_full": "earn",
    "parts": "mereō, merēre, meruī, meritum",
    "unit_id": "r23:44.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "pecūnia",
+     "laus",
+     "poena",
+     "praemium",
+     "mercēs",
+     "glōria",
+     "supplicium",
+     "amor",
+     "odium",
+     "stīpendium"
+    ]
+   }
   },
   {
    "lemma": "pudet",
@@ -116,7 +145,14 @@
    "sense_full": "it shames, make ashamed",
    "parts": "pudet, pudēre (impersonal)",
    "unit_id": "r23:79.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "posthāc",
@@ -140,7 +176,16 @@
    "sense_full": "deny, refuse",
    "parts": "negō, negāre, negāvī, negatum",
    "unit_id": "r23:66.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "palleō",
@@ -152,7 +197,14 @@
    "sense_full": "be/look pale",
    "parts": "palleō, pallēre, palluī",
    "unit_id": "r23:36.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person",
+     "body"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "fortasse",
@@ -188,7 +240,21 @@
    "sense_full": "be red, become red",
    "parts": "rubeō, rubēre",
    "unit_id": "r23:81.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person",
+     "body"
+    ],
+    "obj": [],
+    "subj_also": [
+     "rosa",
+     "sōl",
+     "caelum",
+     "vīnum",
+     "sanguis"
+    ]
+   }
   },
   {
    "lemma": "trādō",
@@ -206,10 +272,78 @@
      "person"
     ],
     "obj": [
-     "thing",
      "food",
      "person",
      "animal"
+    ],
+    "obj_also": [
+     "pecūnia",
+     "nummus",
+     "dēnārius",
+     "sēstertius",
+     "assis",
+     "rosa",
+     "līlium",
+     "flōs",
+     "līber",
+     "libellus",
+     "epistula",
+     "dōnum",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "pirum",
+     "pānis",
+     "aqua",
+     "vīnum",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "sacculus",
+     "saccus",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "calceus",
+     "pōculum",
+     "vāsum",
+     "praemium",
+     "mercēs",
+     "stīpendium",
+     "ōsculum",
+     "bāsium",
+     "tabula",
+     "tabella",
+     "speculum",
+     "pila",
+     "lucerna",
+     "clāvis",
+     "pecūlium",
+     "stilus",
+     "rēgula",
+     "virga",
+     "signum",
+     "imāgō",
+     "catēna",
+     "rēte",
+     "fūnis",
+     "penna",
+     "calamus",
+     "charta",
+     "cēra"
     ],
     "dat": [
      "person"
@@ -226,7 +360,18 @@
    "sense_full": "admit, confess (with the accusative)",
    "parts": "fateor, fātērī, fassus sum",
    "unit_id": "r23:67.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "abstract"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "hinc",
@@ -269,9 +414,101 @@
      "person"
     ],
     "obj": [
-     "thing",
      "person",
      "animal"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus",
+     "vīta",
+     "patria",
+     "tempus",
+     "spēs",
+     "fidēs",
+     "nāvis",
+     "exercitus"
     ]
    }
   },
@@ -358,7 +595,17 @@
    "sense_full": "untouched, entire, whole, complete",
    "parts": null,
    "unit_id": "r23:19.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "thing",
+     "body",
+     "person",
+     "abstract",
+     "time",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "pallidus",
@@ -388,7 +635,20 @@
    "sense_full": "turn away from or aside, divert, rout",
    "parts": "āvertō, āvertere, āvertī, aversum",
    "unit_id": "r23:51.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "body",
+     "thing",
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "comitor",
@@ -455,7 +715,21 @@
    "sense_full": "secure, maintain, sustain",
    "parts": "contineō, continēre, continuī, contentum",
    "unit_id": "r23:18.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "thing",
+     "place",
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "person",
+     "animal",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "īnscribō",
@@ -467,7 +741,22 @@
    "sense_full": "write on/in",
    "parts": "īnscribō, īnscribere, inscripsī, īnscriptum",
    "unit_id": "r23:63.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "nōmen",
+     "verbum",
+     "littera",
+     "titulus",
+     "versūs",
+     "epigramma",
+     "sententia"
+    ]
+   }
   },
   {
    "lemma": "pudor",
@@ -492,7 +781,15 @@
    "sense_full": "above, high",
    "parts": null,
    "unit_id": "r23:63.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "place",
+     "thing",
+     "nature",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "amputō",

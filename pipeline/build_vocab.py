@@ -71,6 +71,36 @@ Meanings
   "shop"); the rest are cut from the glossary's preferred sense by
   `short_gloss`.  `sense_full` keeps that whole Whitaker sense line.
 
+Semantic class — `sem` (contract §11, the sentence generator)
+  Every noun carries `sem`, one of person · animal · thing · place · time ·
+  abstract · body · food · group · nature · other, judged by hand against the
+  word's glossary sense and its use in the library (a slave is a person, a
+  ship is a thing, Rome is a place, a day is time; `other` is a quantity or
+  pronoun-like noun no template should draw — nihil, nēmō, mīlle).
+  Every adjective carries
+  `sem: {"of": [classes it may describe], "only"? / "also"?: [lemmas],
+  "number"?: "sg"|"pl", "det"?: true}` — `only` replaces the classes with an
+  exact list (lingua Latīna, vīnum merum); `det` marks a determiner
+  (possessives, quantifiers, ordinals used as such) that is never drawn as a
+  free descriptor, only when a template asks for it by name.
+  Every verb carries
+  `sem: {"subj": [...], "obj": [...], "dat"?: [...],
+  "subj_only"? / "obj_only"? / "dat_only"? / "subj_also"? / "obj_also"? /
+  "dat_also"?: [lemmas], "takes"?: [complements]}` — the classes (or the exact
+  words) it combines with, and in `takes` the complement it governs instead
+  of or besides an object: inf (possum, volō) · acc_inf (putō, videō) ·
+  ut (imperō, hortor) · pred (sum, fīō) · abl (ūtor, careō) · gen (meminī) ·
+  none (impersonals and defectives: licet, inquam).  A verb with no object
+  classes and a `takes` is drawn only into a slot that asks for that
+  complement, so possum never stands alone and sum never becomes a plain
+  verb.  Indeclinables carry no `sem`.
+  The source of these judgements is `pipeline/sem.json`, keyed by part of
+  speech and canonical lemma; a rebuild reads it first and the shipped decks
+  second, and `--check` fails on any noun, verb or adjective without `sem`,
+  on a malformed one, and on a deck disagreeing with the file, so a new word
+  is judged before it ships.  `--dump-sem` writes the file back from the
+  decks after a tagging pass.  Nothing derives `sem` automatically.
+
 Nothing here touches app/js or supabase/.
 """
 from __future__ import annotations
@@ -1960,6 +1990,7 @@ def build(chapters_wanted: list[int] | None = None, report: bool = False) -> dic
         print("positive degree never occurs: "
               + ", ".join(f"{headword(first[k][2])} ({k[1].lower()}, ch {first[k][0]})" for k in degree_only))
 
+    existing_sem = load_sem()
     decks: dict[int, dict] = {c: {"chapter": c, "words": []} for c in CHAPTERS}
     for k, (c, uid, e) in first.items():
         if c not in decks:
@@ -1997,6 +2028,9 @@ def build(chapters_wanted: list[int] | None = None, report: bool = False) -> dic
             "unit_id": uid,
             "count": counts[k],
         }
+        sem = existing_sem.get((canonical(head), word["pos"]))
+        if sem is not None:
+            word["sem"] = sem
         decks[c]["words"].append(word)
     for c in decks:
         decks[c]["words"].sort(key=lambda w: (-w["count"], strip_macrons(w["lemma"]).lower()))
@@ -2023,10 +2057,115 @@ def build(chapters_wanted: list[int] | None = None, report: bool = False) -> dic
     return decks
 
 
+SEM_CLASSES = {"person", "animal", "thing", "place", "time", "abstract", "body",
+               "food", "group", "nature", "other"}
+# what a verb governs instead of, or besides, an object (see the docstring)
+VERB_TAKES = {"inf", "acc_inf", "ut", "pred", "abl", "gen", "none"}
+
+
+SEM_PATH = PIPELINE_DIR / "sem.json"
+
+
+def load_sem_file() -> dict[tuple[str, str], object]:
+    """(canonical lemma, pos) → `sem` from pipeline/sem.json, the source of
+    the hand-made judgements.  {} when the file is absent."""
+    out: dict[tuple[str, str], object] = {}
+    if not SEM_PATH.exists():
+        return out
+    data = json.loads(SEM_PATH.read_text(encoding="utf-8"))
+    for pos, entries in data.items():
+        for lemma, sem in entries.items():
+            out[(canonical(lemma), pos)] = sem
+    return out
+
+
+def dump_sem() -> None:
+    """Write pipeline/sem.json from the shipped decks (after a tagging pass)."""
+    data: dict[str, dict[str, object]] = {"N": {}, "ADJ": {}, "V": {}}
+    for c in CHAPTERS:
+        path = OUT_DIR / f"{c:02d}.json"
+        if not path.exists():
+            continue
+        for w in json.loads(path.read_text(encoding="utf-8")).get("words") or []:
+            if w.get("pos") in data and "sem" in w:
+                data[w["pos"]][w["lemma"]] = w["sem"]
+    for pos in data:
+        data[pos] = dict(sorted(data[pos].items(), key=lambda kv: strip_macrons(kv[0]).lower()))
+    with open(SEM_PATH, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+
+
+def load_sem() -> dict[tuple[str, str], object]:
+    """(canonical lemma, pos) → `sem`: pipeline/sem.json first, then whatever
+    the shipped decks carry that the file does not, so a rebuild keeps every
+    hand-made judgement.  Missing decks are simply absent."""
+    out: dict[tuple[str, str], object] = dict(load_sem_file())
+    for c in CHAPTERS:
+        path = OUT_DIR / f"{c:02d}.json"
+        if not path.exists():
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except ValueError:
+            continue
+        for w in data.get("words") or []:
+            if "sem" in w and w.get("lemma"):
+                out.setdefault((canonical(w["lemma"]), w.get("pos") or ""), w["sem"])
+    return out
+
+
+def check_sem(w: dict) -> str | None:
+    """None when the word's `sem` is well-formed for its part of speech."""
+    pos, sem = w.get("pos"), w.get("sem")
+    if pos == "N":
+        if sem is None:
+            return "noun without sem"
+        if not isinstance(sem, str) or sem not in SEM_CLASSES:
+            return f"noun sem {sem!r} is not a class"
+        return None
+    if pos == "ADJ":
+        if sem is None:
+            return "adjective without sem"
+        if not isinstance(sem, dict) or "of" not in sem or not isinstance(sem["of"], list) \
+                or set(sem["of"]) - SEM_CLASSES:
+            return f"adjective sem {sem!r} is not {{'of': [classes]}}"
+        if not sem["of"] and not sem.get("only"):
+            return f"adjective sem {sem!r} names no class and no word"
+        if set(sem) - {"of", "only", "also", "number", "det"} or sem.get("number") not in (None, "sg", "pl"):
+            return f"adjective sem {sem!r} has an unknown key"
+        for key in ("only", "also"):
+            if key in sem and (not isinstance(sem[key], list) or not all(isinstance(x, str) for x in sem[key])):
+                return f"adjective sem {key} is not a list of lemmas"
+        if "det" in sem and sem["det"] is not True:
+            return f"adjective sem det must be true when present"
+        return None
+    if pos == "V":
+        if sem is None:
+            return "verb without sem"
+        keys = {"subj", "obj", "dat", "subj_only", "obj_only", "dat_only",
+                "subj_also", "obj_also", "dat_also", "takes"}
+        if not isinstance(sem, dict) or "subj" not in sem or "obj" not in sem or set(sem) - keys:
+            return f"verb sem {sem!r} is not {{'subj': [...], 'obj': [...]}}"
+        for key in ("subj", "obj", "dat"):
+            if set(sem.get(key) or []) - SEM_CLASSES:
+                return f"verb sem {key} names a class that does not exist"
+        for key in ("subj_only", "obj_only", "dat_only", "subj_also", "obj_also", "dat_also"):
+            if key in sem and (not isinstance(sem[key], list) or not all(isinstance(x, str) for x in sem[key])):
+                return f"verb sem {key} is not a list of lemmas"
+        if "takes" in sem and (not isinstance(sem["takes"], list) or not sem["takes"]
+                               or set(sem["takes"]) - VERB_TAKES):
+            return f"verb sem takes {sem.get('takes')!r} is not a list from {sorted(VERB_TAKES)}"
+        return None
+    if sem is None:
+        return None
+    return f"{pos} carries a sem it cannot use"
+
+
 def check(unit_ids: set[str] | None = None) -> list[str]:
     errs: list[str] = []
     if unit_ids is None:
         unit_ids = {u["id"] for units in library_units().values() for u in units}
+    sem_file = load_sem_file()
     seen: dict[tuple[str, str], int] = {}
     for c in CHAPTERS:
         path = OUT_DIR / f"{c:02d}.json"
@@ -2064,7 +2203,21 @@ def check(unit_ids: set[str] | None = None) -> list[str]:
                 errs.append(f"{path.name}: {w.get('lemma')} meaning {bad}")
             if pos == "V" and not w.get("parts"):
                 errs.append(f"{path.name}: verb {w.get('lemma')} without parts")
+            bad = check_sem(w)
+            if bad:
+                errs.append(f"{path.name}: {w.get('lemma')} {bad}")
+            # the deck must say what pipeline/sem.json says (the file is the source)
+            if pos in ("N", "ADJ", "V") and "sem" in w:
+                filed = sem_file.get((canonical(w.get("lemma") or ""), pos), _MISSING)
+                if filed is _MISSING:
+                    errs.append(f"{path.name}: {w.get('lemma')} ({pos}) has a sem that pipeline/sem.json lacks "
+                                "(run --dump-sem)")
+                elif filed != w["sem"]:
+                    errs.append(f"{path.name}: {w.get('lemma')} ({pos}) sem disagrees with pipeline/sem.json")
     return errs
+
+
+_MISSING = object()
 
 
 def main(argv=None) -> int:
@@ -2072,7 +2225,14 @@ def main(argv=None) -> int:
     ap.add_argument("chapters", nargs="*", type=int, help="chapters to write (default 1–34)")
     ap.add_argument("--check", action="store_true", help="validate app/data/grammar/vocab/*.json only")
     ap.add_argument("--report", action="store_true", help="print every deck")
+    ap.add_argument("--dump-sem", action="store_true",
+                    help="write pipeline/sem.json from the decks' sem fields (after a tagging pass)")
     a = ap.parse_args(argv)
+    if a.dump_sem:
+        dump_sem()
+        n = sum(len(v) for v in json.loads(SEM_PATH.read_text(encoding="utf-8")).values())
+        print(f"sem: {n} judgements written to {SEM_PATH.name}")
+        return 0
     if a.check:
         errs = check()
         for e in errs:

@@ -1,0 +1,13699 @@
+{
+ "N": {
+  "aciēs": "group",
+  "acus": "thing",
+  "adulēscēns": "person",
+  "aedificium": "place",
+  "aequinoctium": "time",
+  "āēr": "nature",
+  "aestās": "time",
+  "aetās": "time",
+  "affectus": "abstract",
+  "ager": "place",
+  "agmen": "group",
+  "agnus": "animal",
+  "agricola": "person",
+  "āla": "body",
+  "aliquot": "other",
+  "amīcitia": "abstract",
+  "amīcus": "person",
+  "amnis": "place",
+  "amor": "abstract",
+  "amphitheatrum": "place",
+  "ancilla": "person",
+  "anima": "abstract",
+  "animal": "animal",
+  "animus": "abstract",
+  "annus": "time",
+  "ānulus": "thing",
+  "anus": "person",
+  "apis": "animal",
+  "aqua": "food",
+  "aquila": "animal",
+  "arānea": "animal",
+  "arātrum": "thing",
+  "arbor": "thing",
+  "arcūs": "thing",
+  "argentum": "thing",
+  "arma": "thing",
+  "ars": "abstract",
+  "asinus": "animal",
+  "assis": "thing",
+  "ātrium": "place",
+  "audītus": "abstract",
+  "aurīga": "person",
+  "auris": "body",
+  "aurum": "thing",
+  "autumnus": "time",
+  "auxilium": "abstract",
+  "avis": "animal",
+  "avunculus": "person",
+  "baculum": "thing",
+  "balneum": "place",
+  "bāsium": "abstract",
+  "bellum": "abstract",
+  "beneficium": "abstract",
+  "bēstia": "animal",
+  "bēstiola": "animal",
+  "bōs": "animal",
+  "bracchium": "body",
+  "cachinnus": "abstract",
+  "caedēs": "abstract",
+  "caelum": "nature",
+  "calamus": "thing",
+  "calceus": "thing",
+  "calor": "nature",
+  "campus": "place",
+  "canis": "animal",
+  "cantus": "abstract",
+  "capillus": "body",
+  "capitulum": "thing",
+  "caput": "body",
+  "carcer": "place",
+  "cardo": "thing",
+  "carmen": "abstract",
+  "carō": "food",
+  "castra": "place",
+  "cāsus": "abstract",
+  "catēna": "thing",
+  "cauda": "body",
+  "causa": "abstract",
+  "cēna": "food",
+  "cēra": "thing",
+  "cerebrum": "body",
+  "certāmen": "abstract",
+  "charta": "thing",
+  "cibus": "food",
+  "circus": "place",
+  "cīvis": "person",
+  "clāmor": "abstract",
+  "classis": "group",
+  "clāvis": "thing",
+  "clipeus": "thing",
+  "cocus": "person",
+  "cognōmen": "abstract",
+  "cohors": "group",
+  "collis": "place",
+  "colloquium": "abstract",
+  "collum": "body",
+  "collus": "body",
+  "colōnus": "person",
+  "color": "abstract",
+  "columna": "thing",
+  "comes": "person",
+  "comitātus": "group",
+  "cōmoedia": "abstract",
+  "cōnātus": "abstract",
+  "condiciō": "abstract",
+  "coniūnx": "person",
+  "cōnsilium": "abstract",
+  "cōnspectus": "abstract",
+  "convīva": "person",
+  "convīvium": "abstract",
+  "cōpia": "abstract",
+  "cor": "body",
+  "cornū": "body",
+  "corpus": "body",
+  "corvus": "animal",
+  "cruor": "body",
+  "crūs": "body",
+  "crux": "thing",
+  "cubiculum": "place",
+  "culīna": "place",
+  "culter": "thing",
+  "cūnae": "thing",
+  "cupiditās": "abstract",
+  "currus": "thing",
+  "cursūs": "abstract",
+  "dea": "other",
+  "dēliciae": "abstract",
+  "delphīnus": "animal",
+  "dēnārius": "thing",
+  "dēns": "body",
+  "deus": "other",
+  "dictus": "abstract",
+  "diēs": "time",
+  "digitus": "body",
+  "discipulus": "person",
+  "dīvitiae": "thing",
+  "dolor": "abstract",
+  "domina": "person",
+  "dominus": "person",
+  "domūs": "place",
+  "dōnum": "thing",
+  "dorsum": "body",
+  "dux": "person",
+  "ēnsis": "thing",
+  "epigramma": "abstract",
+  "epistula": "thing",
+  "eques": "person",
+  "equus": "animal",
+  "erus": "person",
+  "exemplum": "abstract",
+  "exercitus": "group",
+  "expugnātiō": "abstract",
+  "faber": "person",
+  "fābula": "abstract",
+  "faciēs": "body",
+  "factum": "abstract",
+  "falx": "thing",
+  "fāma": "abstract",
+  "famēs": "abstract",
+  "familia": "group",
+  "fātum": "abstract",
+  "fēlīcitās": "abstract",
+  "femina": "person",
+  "fenestra": "thing",
+  "ferrum": "thing",
+  "fidēs": "thing",
+  "fidicen": "person",
+  "fīlia": "person",
+  "fīliola": "person",
+  "fīlius": "person",
+  "fīlum": "thing",
+  "fīnis": "abstract",
+  "flōs": "thing",
+  "flūctus": "nature",
+  "flūmen": "place",
+  "fluvius": "place",
+  "folium": "thing",
+  "foris": "thing",
+  "fōrma": "abstract",
+  "fortūna": "abstract",
+  "forum": "place",
+  "frāter": "person",
+  "fretum": "place",
+  "frīgus": "nature",
+  "frōns": "body",
+  "frūgēs": "food",
+  "frūmentum": "food",
+  "fuga": "abstract",
+  "fulgur": "nature",
+  "fūnis": "thing",
+  "fūr": "person",
+  "fūrtum": "abstract",
+  "gaudium": "abstract",
+  "gemma": "thing",
+  "gena": "body",
+  "gener": "person",
+  "gēns": "group",
+  "genū": "body",
+  "glaciēs": "nature",
+  "gladiātor": "person",
+  "gladius": "thing",
+  "glōria": "abstract",
+  "gradūs": "abstract",
+  "graffītum": "thing",
+  "grātia": "abstract",
+  "gremium": "body",
+  "grex": "animal",
+  "gubernātor": "person",
+  "hasta": "thing",
+  "herba": "thing",
+  "hiems": "time",
+  "holus": "food",
+  "homō": "person",
+  "hōra": "time",
+  "hortus": "place",
+  "hospes": "person",
+  "hostis": "person",
+  "humus": "place",
+  "iānitor": "person",
+  "iānua": "thing",
+  "īdūs": "time",
+  "iecur": "body",
+  "ignis": "nature",
+  "imāgō": "thing",
+  "imber": "nature",
+  "imperātor": "person",
+  "imperium": "abstract",
+  "impetūs": "abstract",
+  "impluvium": "place",
+  "incola": "person",
+  "īnfans": "person",
+  "ingenium": "abstract",
+  "inimīcus": "person",
+  "initium": "abstract",
+  "iniūria": "abstract",
+  "inopia": "abstract",
+  "īnstrūmentum": "thing",
+  "īnsula": "place",
+  "intellēctus": "abstract",
+  "invidia": "abstract",
+  "īra": "abstract",
+  "iter": "abstract",
+  "iūs": "abstract",
+  "iuvenis": "person",
+  "kalendae": "time",
+  "labrum": "body",
+  "labyrinthus": "place",
+  "lac": "food",
+  "lacertus": "body",
+  "lacrima": "thing",
+  "lacūs": "place",
+  "laetitia": "abstract",
+  "lāna": "thing",
+  "lāpsus": "abstract",
+  "laqueus": "thing",
+  "latus": "body",
+  "laus": "abstract",
+  "lectīca": "thing",
+  "lectulus": "thing",
+  "lēgātus": "person",
+  "legiō": "group",
+  "leō": "animal",
+  "lēx": "abstract",
+  "libellus": "thing",
+  "līber": "thing",
+  "līberī": "person",
+  "lībertās": "abstract",
+  "lignum": "thing",
+  "līlium": "thing",
+  "līmen": "thing",
+  "līnea": "thing",
+  "lingua": "abstract",
+  "littera": "thing",
+  "lītus": "place",
+  "locus": "place",
+  "lucerna": "thing",
+  "lucrum": "abstract",
+  "lūdus": "place",
+  "lūna": "nature",
+  "lupus": "animal",
+  "lūx": "nature",
+  "magister": "person",
+  "magistra": "person",
+  "maleficium": "abstract",
+  "mamma": "other",
+  "manūs": "body",
+  "mare": "place",
+  "margarīta": "thing",
+  "marītus": "person",
+  "māter": "person",
+  "māteria": "thing",
+  "mātrōna": "person",
+  "medicus": "person",
+  "medium": "other",
+  "mel": "food",
+  "membrum": "body",
+  "memoria": "abstract",
+  "menda": "abstract",
+  "mēns": "abstract",
+  "mēnsa": "thing",
+  "mēnsis": "time",
+  "mercātor": "person",
+  "mercēs": "thing",
+  "merīdiēs": "time",
+  "merx": "thing",
+  "metus": "abstract",
+  "mīles": "person",
+  "mīlle": "other",
+  "minister": "person",
+  "modus": "abstract",
+  "moenia": "thing",
+  "mōns": "place",
+  "mōnstrum": "animal",
+  "mora": "abstract",
+  "mors": "abstract",
+  "morsus": "abstract",
+  "mōs": "abstract",
+  "mulier": "person",
+  "multitūdō": "group",
+  "mūnus": "abstract",
+  "mūrus": "thing",
+  "nārrātiō": "abstract",
+  "nāsus": "body",
+  "nātūra": "abstract",
+  "nauta": "person",
+  "nāvicula": "thing",
+  "nāvigātiō": "abstract",
+  "nāvis": "thing",
+  "negōtium": "abstract",
+  "nēmō": "other",
+  "nex": "abstract",
+  "nīdus": "thing",
+  "nihil": "other",
+  "nix": "nature",
+  "nōmen": "abstract",
+  "nox": "time",
+  "nūbēs": "nature",
+  "nūgae": "abstract",
+  "numerus": "abstract",
+  "nummus": "thing",
+  "nūntius": "person",
+  "nūtrīx": "person",
+  "nux": "food",
+  "nympha": "person",
+  "ocellus": "body",
+  "oculus": "body",
+  "odium": "abstract",
+  "officium": "abstract",
+  "olea": "food",
+  "oppidum": "place",
+  "ops": "abstract",
+  "opus": "abstract",
+  "ōra": "place",
+  "orbis": "thing",
+  "ōrdō": "abstract",
+  "ōrnāmentum": "thing",
+  "ōs": "body",
+  "ōsculum": "abstract",
+  "ōstiārius": "person",
+  "ōstium": "thing",
+  "ōtium": "abstract",
+  "ovis": "animal",
+  "ovum": "food",
+  "pābulum": "food",
+  "paenīnsula": "place",
+  "pāgina": "thing",
+  "pallium": "thing",
+  "palma": "body",
+  "pānis": "food",
+  "papyrus": "thing",
+  "parens": "person",
+  "parricīda": "person",
+  "pars": "abstract",
+  "passer": "animal",
+  "passus": "abstract",
+  "pāstor": "person",
+  "pater": "person",
+  "patientia": "abstract",
+  "patria": "place",
+  "pāx": "abstract",
+  "pectus": "body",
+  "pecūlium": "thing",
+  "pecūnia": "thing",
+  "pecus": "animal",
+  "pedēs": "person",
+  "penna": "thing",
+  "perīculum": "abstract",
+  "peristylum": "place",
+  "persōna": "thing",
+  "pēs": "body",
+  "petasō": "food",
+  "pila": "thing",
+  "pīlum": "thing",
+  "pīrāta": "person",
+  "pirum": "food",
+  "piscātor": "person",
+  "piscis": "food",
+  "plūs": "other",
+  "pōculum": "thing",
+  "poena": "abstract",
+  "poēta": "person",
+  "populus": "group",
+  "porcus": "animal",
+  "porta": "thing",
+  "portūs": "place",
+  "potestās": "abstract",
+  "pōtiō": "food",
+  "praedium": "place",
+  "praedō": "person",
+  "praemium": "thing",
+  "praenōmen": "abstract",
+  "pretium": "abstract",
+  "prex": "abstract",
+  "prīnceps": "person",
+  "prīncipium": "abstract",
+  "prior": "other",
+  "proelium": "abstract",
+  "prōvincia": "place",
+  "proximus": "person",
+  "pudor": "abstract",
+  "puella": "person",
+  "puer": "person",
+  "pugna": "abstract",
+  "pulchritūdō": "abstract",
+  "pulmō": "body",
+  "puppis": "thing",
+  "rāmus": "thing",
+  "ratiō": "abstract",
+  "ratis": "thing",
+  "rēgīna": "person",
+  "regiō": "place",
+  "rēgula": "thing",
+  "rēmus": "thing",
+  "rēs": "abstract",
+  "rēte": "thing",
+  "rēx": "person",
+  "rīpa": "place",
+  "rivus": "place",
+  "rosa": "thing",
+  "rūdus": "thing",
+  "rūmor": "abstract",
+  "rūs": "place",
+  "sacculus": "thing",
+  "saccus": "thing",
+  "saeculum": "time",
+  "sagitta": "thing",
+  "sāl": "food",
+  "salūs": "abstract",
+  "sanguis": "body",
+  "saxum": "thing",
+  "scalpellus": "thing",
+  "scelus": "abstract",
+  "scūtum": "thing",
+  "sella": "thing",
+  "sēmen": "thing",
+  "senātor": "person",
+  "senex": "person",
+  "sententia": "abstract",
+  "septentriō": "abstract",
+  "sermō": "abstract",
+  "servitūs": "abstract",
+  "servus": "person",
+  "sēstertium": "thing",
+  "sēstertius": "thing",
+  "signum": "thing",
+  "silentium": "abstract",
+  "silva": "place",
+  "sinūs": "body",
+  "sitis": "abstract",
+  "situs": "abstract",
+  "sōl": "nature",
+  "somnus": "abstract",
+  "sonus": "abstract",
+  "soror": "person",
+  "spectātor": "person",
+  "speculum": "thing",
+  "spēs": "abstract",
+  "stabulum": "place",
+  "stāmen": "thing",
+  "stēlla": "nature",
+  "stilus": "thing",
+  "stīpendium": "thing",
+  "strepitus": "abstract",
+  "studium": "abstract",
+  "sūcus": "food",
+  "summum": "other",
+  "superbia": "abstract",
+  "supplicium": "abstract",
+  "syllaba": "abstract",
+  "tabella": "thing",
+  "tabellārius": "person",
+  "taberna": "place",
+  "tabernārius": "person",
+  "tabula": "thing",
+  "talentum": "thing",
+  "taurus": "animal",
+  "tēla": "thing",
+  "tempestās": "nature",
+  "templum": "place",
+  "tempus": "time",
+  "tenebrae": "nature",
+  "tergum": "body",
+  "terra": "place",
+  "testis": "person",
+  "theātrum": "place",
+  "tībīcen": "person",
+  "tim": "other",
+  "timor": "abstract",
+  "titulus": "thing",
+  "toga": "thing",
+  "tonitrus": "nature",
+  "tranquillitās": "abstract",
+  "triclīnium": "place",
+  "trīstitia": "abstract",
+  "tumultus": "abstract",
+  "tunica": "thing",
+  "turba": "group",
+  "tyrannus": "person",
+  "umbra": "nature",
+  "umerus": "body",
+  "unda": "nature",
+  "urbs": "place",
+  "ūsus": "abstract",
+  "ūva": "food",
+  "uxor": "person",
+  "valētūdō": "abstract",
+  "vallēs": "place",
+  "vāllum": "thing",
+  "vāsum": "thing",
+  "vēlum": "thing",
+  "vēna": "body",
+  "venter": "body",
+  "vēr": "time",
+  "verber": "abstract",
+  "verbum": "abstract",
+  "versiculus": "abstract",
+  "versūs": "abstract",
+  "vesper": "time",
+  "vestīgium": "thing",
+  "vestīmentum": "thing",
+  "vestis": "thing",
+  "via": "place",
+  "victor": "person",
+  "victōria": "abstract",
+  "vigilia": "time",
+  "vīlla": "place",
+  "vīnea": "place",
+  "vīnum": "food",
+  "vir": "person",
+  "virga": "thing",
+  "virgō": "person",
+  "virtūs": "abstract",
+  "vīs": "abstract",
+  "viscera": "body",
+  "vīsus": "abstract",
+  "vīta": "abstract",
+  "vocābulum": "abstract",
+  "voluntās": "abstract",
+  "vorāgō": "place",
+  "vōx": "abstract",
+  "vulnus": "abstract",
+  "vultus": "body"
+ },
+ "ADJ": {
+  "ācer": {
+   "of": [
+    "person",
+    "animal",
+    "thing"
+   ]
+  },
+  "acerbus": {
+   "of": [
+    "food"
+   ]
+  },
+  "acūtus": {
+   "of": [
+    "thing"
+   ]
+  },
+  "adversus": {
+   "of": [
+    "person",
+    "group",
+    "nature",
+    "thing",
+    "place",
+    "abstract"
+   ]
+  },
+  "aeger": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "aegrōtus": {
+   "of": [
+    "person"
+   ]
+  },
+  "aequus": {
+   "of": [
+    "place",
+    "thing",
+    "abstract",
+    "person"
+   ]
+  },
+  "albus": {
+   "of": [
+    "animal",
+    "thing",
+    "body"
+   ]
+  },
+  "aliēnus": {
+   "of": [
+    "thing",
+    "place",
+    "person",
+    "abstract",
+    "animal",
+    "food"
+   ],
+   "det": true
+  },
+  "aliquantus": {
+   "of": [
+    "thing",
+    "abstract",
+    "food",
+    "time",
+    "nature",
+    "group"
+   ],
+   "det": true
+  },
+  "alius": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "alter": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "altus": {
+   "of": [
+    "place",
+    "thing",
+    "nature"
+   ]
+  },
+  "amīcus": {
+   "of": [
+    "person"
+   ]
+  },
+  "amoenus": {
+   "of": [
+    "place"
+   ]
+  },
+  "angustus": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "antīquus": {
+   "of": [
+    "thing",
+    "place"
+   ]
+  },
+  "anus": {
+   "of": [
+    "person"
+   ]
+  },
+  "apertus": {
+   "of": [
+    "thing",
+    "place"
+   ]
+  },
+  "arduus": {
+   "of": [
+    "place"
+   ]
+  },
+  "argenteus": {
+   "of": [
+    "thing"
+   ]
+  },
+  "artus": {
+   "of": [
+    "thing",
+    "body",
+    "place",
+    "abstract"
+   ]
+  },
+  "asinīnus": {
+   "of": [
+    "body",
+    "thing",
+    "animal",
+    "abstract",
+    "person"
+   ]
+  },
+  "āter": {
+   "of": [
+    "nature",
+    "thing"
+   ]
+  },
+  "audāx": {
+   "of": [
+    "person"
+   ]
+  },
+  "aureus": {
+   "of": [
+    "thing"
+   ]
+  },
+  "avārus": {
+   "of": [
+    "person"
+   ]
+  },
+  "avius": {
+   "of": [
+    "place"
+   ]
+  },
+  "barbarus": {
+   "of": [
+    "person",
+    "group",
+    "place",
+    "abstract"
+   ]
+  },
+  "beātus": {
+   "of": [
+    "person"
+   ]
+  },
+  "bellus": {
+   "of": [
+    "person",
+    "thing"
+   ]
+  },
+  "bonus": {
+   "of": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "also": [
+    "verbum",
+    "cōnsilium",
+    "fābula",
+    "exemplum",
+    "līber",
+    "epistula",
+    "carmen",
+    "nāvis",
+    "vīlla"
+   ]
+  },
+  "brevis": {
+   "of": [
+    "thing",
+    "time"
+   ]
+  },
+  "caecus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "calidus": {
+   "of": [
+    "nature",
+    "thing",
+    "food"
+   ]
+  },
+  "candidus": {
+   "of": [
+    "thing",
+    "animal",
+    "body"
+   ]
+  },
+  "canus": {
+   "of": [
+    "body",
+    "person",
+    "animal",
+    "nature",
+    "thing"
+   ]
+  },
+  "carus": {
+   "of": [
+    "person"
+   ]
+  },
+  "celer": {
+   "of": [
+    "animal",
+    "person"
+   ]
+  },
+  "celsus": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "certus": {
+   "of": [
+    "abstract",
+    "person",
+    "thing",
+    "time"
+   ]
+  },
+  "cēterus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "Christiānus": {
+   "of": [
+    "person",
+    "group",
+    "abstract",
+    "thing",
+    "time"
+   ]
+  },
+  "circēnsis": {
+   "of": [],
+   "only": [
+    "lūdus",
+    "spectātor",
+    "aurīga",
+    "equus",
+    "currus",
+    "certāmen",
+    "cursūs",
+    "diēs",
+    "victōria",
+    "victor",
+    "turba",
+    "clāmor",
+    "tumultus"
+   ]
+  },
+  "citer": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "clārus": {
+   "of": [
+    "nature",
+    "person"
+   ]
+  },
+  "clēmēns": {
+   "of": [
+    "person"
+   ]
+  },
+  "commūnis": {
+   "of": [
+    "thing",
+    "abstract",
+    "place",
+    "person",
+    "group",
+    "food"
+   ]
+  },
+  "complūrēs": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "continuus": {
+   "of": [
+    "time",
+    "abstract",
+    "thing",
+    "place"
+   ]
+  },
+  "contrārius": {
+   "of": [
+    "place",
+    "thing",
+    "abstract",
+    "nature",
+    "group"
+   ]
+  },
+  "crassus": {
+   "of": [
+    "animal",
+    "thing",
+    "body"
+   ]
+  },
+  "crūdēlis": {
+   "of": [
+    "person"
+   ]
+  },
+  "cruentus": {
+   "of": [
+    "thing",
+    "body"
+   ]
+  },
+  "cūnctus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "cupidus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "dēbilis": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "dexter": {
+   "of": [
+    "body",
+    "thing",
+    "place"
+   ]
+  },
+  "difficilis": {
+   "of": [
+    "abstract"
+   ],
+   "also": [
+    "iter",
+    "via",
+    "līber",
+    "epistula",
+    "verbum",
+    "vocābulum",
+    "lingua",
+    "carmen",
+    "versūs"
+   ]
+  },
+  "dignus": {
+   "of": [
+    "person",
+    "thing",
+    "abstract"
+   ]
+  },
+  "dīligēns": {
+   "of": [
+    "person"
+   ]
+  },
+  "dīmidius": {
+   "of": [
+    "thing",
+    "time",
+    "food",
+    "abstract"
+   ]
+  },
+  "dīrus": {
+   "of": [
+    "abstract"
+   ]
+  },
+  "dīves": {
+   "of": [
+    "person"
+   ]
+  },
+  "dubius": {
+   "of": [
+    "abstract",
+    "person",
+    "thing",
+    "time",
+    "nature",
+    "group"
+   ]
+  },
+  "dulcis": {
+   "of": [
+    "food",
+    "thing"
+   ]
+  },
+  "dūrus": {
+   "of": [
+    "thing"
+   ]
+  },
+  "ēbrius": {
+   "of": [
+    "person"
+   ]
+  },
+  "ēgregius": {
+   "of": [
+    "person",
+    "thing"
+   ]
+  },
+  "exiguus": {
+   "of": [
+    "thing",
+    "place"
+   ]
+  },
+  "exter": {
+   "of": [
+    "person",
+    "group",
+    "place",
+    "thing",
+    "abstract"
+   ]
+  },
+  "facilis": {
+   "of": [
+    "abstract"
+   ],
+   "also": [
+    "iter",
+    "via",
+    "līber",
+    "epistula",
+    "verbum",
+    "vocābulum",
+    "lingua",
+    "carmen",
+    "versūs"
+   ]
+  },
+  "fallāx": {
+   "of": [
+    "person"
+   ]
+  },
+  "falsus": {
+   "of": [
+    "abstract",
+    "person",
+    "thing"
+   ]
+  },
+  "fēlīx": {
+   "of": [
+    "person"
+   ]
+  },
+  "ferōx": {
+   "of": [
+    "animal",
+    "person"
+   ]
+  },
+  "ferreus": {
+   "of": [
+    "thing"
+   ]
+  },
+  "fertilis": {
+   "of": [
+    "place"
+   ]
+  },
+  "ferus": {
+   "of": [
+    "animal"
+   ]
+  },
+  "fessus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "fīdus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "foedus": {
+   "of": [
+    "person",
+    "thing",
+    "animal",
+    "body"
+   ]
+  },
+  "fōrmōsus": {
+   "of": [
+    "person",
+    "thing",
+    "body"
+   ]
+  },
+  "fortis": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "frequēns": {
+   "of": [
+    "place",
+    "group",
+    "abstract",
+    "person"
+   ]
+  },
+  "frīgidus": {
+   "of": [
+    "nature",
+    "thing",
+    "food",
+    "place",
+    "time"
+   ]
+  },
+  "fugitīvus": {
+   "of": [
+    "person"
+   ]
+  },
+  "gallus": {
+   "of": [
+    "person",
+    "group",
+    "place",
+    "thing"
+   ]
+  },
+  "geminus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "body",
+    "place",
+    "group",
+    "abstract"
+   ]
+  },
+  "gladiātōrius": {
+   "of": [],
+   "only": [
+    "lūdus",
+    "certāmen",
+    "pugna",
+    "spectātor",
+    "gladius",
+    "arma",
+    "familia",
+    "scūtum",
+    "ēnsis",
+    "mūnus",
+    "diēs",
+    "victōria",
+    "turba",
+    "clāmor"
+   ]
+  },
+  "glōriōsus": {
+   "of": [
+    "person",
+    "abstract",
+    "thing"
+   ]
+  },
+  "gracilis": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "Graecus": {
+   "of": [
+    "person",
+    "place",
+    "group"
+   ],
+   "also": [
+    "nāvis",
+    "vīnum",
+    "lingua",
+    "littera",
+    "līber",
+    "verbum",
+    "vocābulum",
+    "nōmen",
+    "carmen",
+    "ars",
+    "mōs",
+    "fābula",
+    "cōmoedia",
+    "epigramma",
+    "vestis",
+    "persōna",
+    "theātrum",
+    "urbs",
+    "īnsula",
+    "oppidum",
+    "patria",
+    "mare",
+    "terra"
+   ]
+  },
+  "grātus": {
+   "of": [
+    "thing",
+    "abstract"
+   ]
+  },
+  "gravidus": {
+   "of": [],
+   "only": [
+    "femina",
+    "mulier",
+    "uxor",
+    "māter",
+    "ovis",
+    "bōs",
+    "canis",
+    "domina",
+    "ancilla",
+    "mātrōna",
+    "coniūnx",
+    "nympha",
+    "dea",
+    "rēgīna"
+   ]
+  },
+  "gravis": {
+   "of": [
+    "thing"
+   ]
+  },
+  "hūmānus": {
+   "of": [
+    "body"
+   ],
+   "also": [
+    "corpus",
+    "vōx",
+    "vīta",
+    "ratiō",
+    "animus",
+    "mēns",
+    "faciēs",
+    "caput",
+    "membrum"
+   ]
+  },
+  "humilis": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "Iānuārius": {
+   "of": [],
+   "only": [
+    "mēnsis",
+    "kalendae",
+    "īdūs",
+    "diēs"
+   ]
+  },
+  "idōneus": {
+   "of": [
+    "person",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "animal"
+   ]
+  },
+  "ignārus": {
+   "of": [
+    "person",
+    "animal",
+    "group"
+   ]
+  },
+  "ignōtus": {
+   "of": [
+    "person",
+    "place",
+    "thing"
+   ]
+  },
+  "immātūrus": {
+   "of": [
+    "food",
+    "person",
+    "abstract",
+    "thing"
+   ]
+  },
+  "immortālis": {
+   "of": [
+    "person",
+    "abstract",
+    "nature"
+   ]
+  },
+  "impar": {
+   "of": [
+    "person",
+    "thing",
+    "abstract",
+    "group",
+    "animal"
+   ]
+  },
+  "impatiēns": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "impiger": {
+   "of": [
+    "person"
+   ]
+  },
+  "improbus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "incertus": {
+   "of": [
+    "abstract",
+    "time",
+    "nature"
+   ]
+  },
+  "incolumis": {
+   "of": [
+    "person"
+   ]
+  },
+  "indīgnus": {
+   "of": [
+    "person",
+    "abstract",
+    "thing"
+   ]
+  },
+  "indoctus": {
+   "of": [
+    "person"
+   ]
+  },
+  "industrius": {
+   "of": [
+    "person"
+   ]
+  },
+  "inermis": {
+   "of": [
+    "person"
+   ]
+  },
+  "inexspectātus": {
+   "of": [
+    "abstract",
+    "person",
+    "thing",
+    "nature",
+    "group",
+    "time"
+   ]
+  },
+  "īnfēlīx": {
+   "of": [
+    "person"
+   ]
+  },
+  "īnferus": {
+   "of": [
+    "place",
+    "thing",
+    "nature"
+   ]
+  },
+  "infēstus": {
+   "of": [
+    "place"
+   ]
+  },
+  "īnfīdus": {
+   "of": [
+    "person"
+   ]
+  },
+  "ingēns": {
+   "of": [
+    "thing",
+    "place",
+    "animal",
+    "group",
+    "nature"
+   ]
+  },
+  "inhūmānus": {
+   "of": [
+    "person"
+   ]
+  },
+  "iniūstus": {
+   "of": [
+    "person"
+   ]
+  },
+  "integer": {
+   "of": [
+    "thing",
+    "body",
+    "person",
+    "abstract",
+    "time",
+    "food"
+   ]
+  },
+  "invalidus": {
+   "of": [
+    "person"
+   ]
+  },
+  "iocōsus": {
+   "of": [
+    "person"
+   ]
+  },
+  "īrātus": {
+   "of": [
+    "person"
+   ]
+  },
+  "iūcundus": {
+   "of": [
+    "thing",
+    "abstract",
+    "place"
+   ]
+  },
+  "iūnctus": {
+   "of": [
+    "thing",
+    "animal",
+    "body",
+    "person"
+   ]
+  },
+  "iūstus": {
+   "of": [
+    "person"
+   ]
+  },
+  "laetus": {
+   "of": [
+    "person"
+   ]
+  },
+  "laevus": {
+   "of": [
+    "body",
+    "thing",
+    "place"
+   ]
+  },
+  "largus": {
+   "of": [
+    "person"
+   ]
+  },
+  "Latīnus": {
+   "of": [],
+   "only": [
+    "lingua",
+    "vocābulum",
+    "littera",
+    "līber",
+    "verbum",
+    "nōmen",
+    "sententia",
+    "carmen",
+    "epistula",
+    "versūs",
+    "syllaba",
+    "titulus",
+    "pāgina",
+    "capitulum",
+    "numerus",
+    "exemplum",
+    "epigramma",
+    "cōmoedia",
+    "poēta",
+    "magister",
+    "discipulus",
+    "lūdus"
+   ]
+  },
+  "lātus": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "lautus": {
+   "of": [
+    "person",
+    "thing"
+   ]
+  },
+  "legiōnārius": {
+   "of": [
+    "person",
+    "group",
+    "thing"
+   ]
+  },
+  "levis": {
+   "of": [
+    "thing"
+   ]
+  },
+  "lībertīnus": {
+   "of": [
+    "person",
+    "group"
+   ]
+  },
+  "ligneus": {
+   "of": [
+    "thing"
+   ]
+  },
+  "longus": {
+   "of": [
+    "time"
+   ],
+   "also": [
+    "via",
+    "iter",
+    "epistula",
+    "līber",
+    "fābula",
+    "sermō",
+    "nāvis",
+    "hasta",
+    "gladius",
+    "capillus",
+    "catēna",
+    "fūnis",
+    "mūrus",
+    "vīta",
+    "mēnsa",
+    "lectulus",
+    "rāmus",
+    "cauda",
+    "crūs",
+    "bracchium",
+    "digitus",
+    "nāsus",
+    "versūs",
+    "carmen",
+    "mora",
+    "pugna",
+    "bellum",
+    "silva",
+    "vallēs",
+    "flūmen",
+    "rīpa",
+    "lītus",
+    "ōra",
+    "agmen",
+    "ōrdō",
+    "collum",
+    "nox",
+    "diēs",
+    "hōra",
+    "tempus",
+    "annus",
+    "aestās",
+    "hiems",
+    "nāvigātiō",
+    "colloquium",
+    "fīlum",
+    "līnea",
+    "vēlum",
+    "toga",
+    "vestis"
+   ]
+  },
+  "maestus": {
+   "of": [
+    "person"
+   ]
+  },
+  "magnificus": {
+   "of": [
+    "thing",
+    "place"
+   ]
+  },
+  "magnus": {
+   "of": [
+    "thing",
+    "place",
+    "animal",
+    "body",
+    "group",
+    "nature",
+    "abstract"
+   ]
+  },
+  "magus": {
+   "of": [
+    "thing",
+    "abstract",
+    "person"
+   ]
+  },
+  "Māius": {
+   "of": [],
+   "only": [
+    "mēnsis",
+    "kalendae",
+    "īdūs",
+    "diēs"
+   ]
+  },
+  "malus": {
+   "of": [
+    "person",
+    "animal"
+   ],
+   "also": [
+    "vīnum",
+    "cibus",
+    "verbum",
+    "cōnsilium",
+    "fābula",
+    "somnus",
+    "exemplum"
+   ]
+  },
+  "maritimus": {
+   "of": [],
+   "only": [
+    "nāvis",
+    "ōra",
+    "urbs",
+    "oppidum",
+    "praedō",
+    "pīrāta",
+    "bellum",
+    "iter",
+    "via",
+    "lītus",
+    "portus",
+    "tempestās",
+    "classis",
+    "populus",
+    "gēns"
+   ]
+  },
+  "māternus": {
+   "of": [
+    "thing",
+    "abstract",
+    "body",
+    "place"
+   ]
+  },
+  "mātūrus": {
+   "of": [
+    "food"
+   ]
+  },
+  "medius": {
+   "of": [
+    "place",
+    "thing",
+    "body",
+    "time",
+    "nature",
+    "group"
+   ]
+  },
+  "mellītus": {
+   "of": [
+    "food"
+   ]
+  },
+  "memor": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "mercātōrius": {
+   "of": [],
+   "only": [
+    "nāvis",
+    "rēs",
+    "ars",
+    "taberna",
+    "classis",
+    "merx",
+    "negōtium",
+    "iter",
+    "nāvigātiō",
+    "lucrum",
+    "vīta",
+    "portūs",
+    "forum",
+    "urbs"
+   ]
+  },
+  "merus": {
+   "of": [],
+   "only": [
+    "vīnum",
+    "aqua"
+   ]
+  },
+  "meus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "mīlitāris": {
+   "of": [
+    "thing",
+    "abstract",
+    "group"
+   ]
+  },
+  "mīrābilis": {
+   "of": [
+    "thing",
+    "abstract"
+   ]
+  },
+  "mīrus": {
+   "of": [
+    "thing",
+    "abstract"
+   ]
+  },
+  "misellus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "miser": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "molestus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "mollis": {
+   "of": [
+    "thing",
+    "body"
+   ]
+  },
+  "mortālis": {
+   "of": [
+    "person"
+   ]
+  },
+  "mortuus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "multus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "mundus": {
+   "of": [
+    "thing",
+    "person"
+   ]
+  },
+  "mūtus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "mūtuus": {
+   "of": [
+    "thing",
+    "abstract"
+   ]
+  },
+  "nātus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "necessārius": {
+   "of": [
+    "thing",
+    "abstract",
+    "person",
+    "food"
+   ]
+  },
+  "necesse": {
+   "of": [
+    "abstract"
+   ]
+  },
+  "nēquam": {
+   "of": [
+    "person"
+   ]
+  },
+  "neuter": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "niger": {
+   "of": [
+    "animal",
+    "thing",
+    "body"
+   ]
+  },
+  "nimius": {
+   "of": [
+    "thing",
+    "abstract",
+    "food",
+    "nature",
+    "time",
+    "group"
+   ],
+   "det": true
+  },
+  "niveus": {
+   "of": [
+    "thing",
+    "body"
+   ]
+  },
+  "nōbilis": {
+   "of": [
+    "person"
+   ]
+  },
+  "nōnnūllus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "noster": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "nōtus": {
+   "of": [
+    "person",
+    "place"
+   ]
+  },
+  "novus": {
+   "of": [
+    "thing",
+    "place"
+   ],
+   "also": [
+    "servus",
+    "ancilla",
+    "amīcus",
+    "discipulus",
+    "magister",
+    "dominus"
+   ]
+  },
+  "nūbilus": {
+   "of": [
+    "nature",
+    "time",
+    "place"
+   ]
+  },
+  "nūdus": {
+   "of": [
+    "person",
+    "body"
+   ]
+  },
+  "nūllus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "sg",
+   "det": true
+  },
+  "obscūrus": {
+   "of": [
+    "place",
+    "nature",
+    "time"
+   ]
+  },
+  "omnis": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place"
+   ],
+   "number": "pl"
+  },
+  "ōtiōsus": {
+   "of": [
+    "person"
+   ]
+  },
+  "pallidus": {
+   "of": [
+    "person",
+    "body"
+   ]
+  },
+  "par": {
+   "of": [
+    "person",
+    "thing",
+    "abstract",
+    "group",
+    "animal"
+   ]
+  },
+  "parvulus": {
+   "of": [
+    "person",
+    "animal",
+    "thing"
+   ]
+  },
+  "parvus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "body"
+   ]
+  },
+  "paucus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "paulus": {
+   "of": [
+    "thing",
+    "time",
+    "abstract",
+    "food",
+    "nature"
+   ],
+   "det": true
+  },
+  "pauper": {
+   "of": [
+    "person"
+   ]
+  },
+  "pecūniōsus": {
+   "of": [
+    "person"
+   ]
+  },
+  "perīculōsus": {
+   "of": [
+    "place",
+    "abstract"
+   ]
+  },
+  "peritus": {
+   "of": [
+    "person"
+   ]
+  },
+  "perpetuus": {
+   "of": [
+    "time"
+   ]
+  },
+  "perturbātus": {
+   "of": [
+    "person"
+   ]
+  },
+  "piger": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "plānus": {
+   "of": [
+    "place",
+    "thing",
+    "abstract"
+   ]
+  },
+  "plēnus": {
+   "of": [],
+   "only": [
+    "saccus",
+    "sacculus",
+    "pōculum",
+    "vāsum",
+    "venter",
+    "domūs",
+    "vīlla",
+    "ātrium",
+    "forum",
+    "theātrum",
+    "nāvis",
+    "mēnsa",
+    "hortus",
+    "campus",
+    "silva",
+    "cubiculum",
+    "lectīca",
+    "lūdus",
+    "taberna",
+    "via",
+    "urbs",
+    "circus"
+   ]
+  },
+  "plērīque": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "plūs": {
+   "of": [
+    "thing",
+    "food",
+    "abstract"
+   ],
+   "det": true
+  },
+  "poēticus": {
+   "of": [
+    "thing",
+    "abstract",
+    "person"
+   ]
+  },
+  "posterus": {
+   "of": [
+    "time"
+   ]
+  },
+  "praecipuus": {
+   "of": [
+    "abstract",
+    "thing",
+    "person",
+    "place",
+    "time"
+   ]
+  },
+  "praesēns": {
+   "of": [
+    "person",
+    "time",
+    "abstract",
+    "thing",
+    "group",
+    "nature"
+   ]
+  },
+  "prāvus": {
+   "of": [
+    "person",
+    "abstract",
+    "thing"
+   ]
+  },
+  "pretiōsus": {
+   "of": [
+    "thing"
+   ]
+  },
+  "prīmus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract"
+   ],
+   "det": true
+  },
+  "prīvātus": {
+   "of": [
+    "thing",
+    "abstract",
+    "place",
+    "person",
+    "group"
+   ]
+  },
+  "probus": {
+   "of": [
+    "person"
+   ]
+  },
+  "propinquus": {
+   "of": [
+    "place",
+    "person",
+    "thing",
+    "time"
+   ]
+  },
+  "prūdēns": {
+   "of": [
+    "person"
+   ]
+  },
+  "pūblicus": {
+   "of": [
+    "thing",
+    "abstract",
+    "place",
+    "group",
+    "person"
+   ]
+  },
+  "pulcher": {
+   "of": [
+    "person",
+    "thing",
+    "place",
+    "animal",
+    "body",
+    "nature"
+   ]
+  },
+  "pullus": {
+   "of": [],
+   "only": [
+    "avis"
+   ]
+  },
+  "pūrus": {
+   "of": [
+    "thing",
+    "food",
+    "nature"
+   ]
+  },
+  "quālis": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "quantus": {
+   "of": [
+    "thing",
+    "abstract",
+    "group",
+    "nature",
+    "food",
+    "time",
+    "place"
+   ],
+   "det": true
+  },
+  "quot": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "rapidus": {
+   "of": [
+    "place",
+    "animal"
+   ]
+  },
+  "rārus": {
+   "of": [
+    "thing",
+    "person",
+    "animal",
+    "abstract",
+    "nature"
+   ]
+  },
+  "rēctus": {
+   "of": [
+    "place"
+   ]
+  },
+  "regius": {
+   "of": [
+    "thing",
+    "place"
+   ]
+  },
+  "reliquus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "rīdiculus": {
+   "of": [
+    "person",
+    "thing"
+   ]
+  },
+  "Rōmānus": {
+   "of": [
+    "person",
+    "place",
+    "group"
+   ],
+   "also": [
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "littera",
+    "lingua",
+    "mōs",
+    "lēx",
+    "iūs",
+    "imperium",
+    "forum",
+    "via",
+    "urbs",
+    "templum",
+    "theātrum",
+    "circus",
+    "amphitheatrum",
+    "toga",
+    "vestis",
+    "sermō",
+    "nāvis",
+    "classis",
+    "exercitus",
+    "patria"
+   ]
+  },
+  "ruber": {
+   "of": [
+    "thing",
+    "body"
+   ]
+  },
+  "rudis": {
+   "of": [
+    "person",
+    "thing",
+    "abstract"
+   ]
+  },
+  "rūsticus": {
+   "of": [
+    "person",
+    "thing"
+   ]
+  },
+  "sacer": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "saevus": {
+   "of": [
+    "animal",
+    "person",
+    "nature"
+   ]
+  },
+  "salvus": {
+   "of": [
+    "person"
+   ],
+   "det": true
+  },
+  "sānus": {
+   "of": [
+    "person"
+   ]
+  },
+  "sapiēns": {
+   "of": [
+    "person"
+   ]
+  },
+  "scaenicus": {
+   "of": [
+    "thing",
+    "abstract",
+    "person",
+    "place",
+    "group",
+    "time"
+   ]
+  },
+  "scelestus": {
+   "of": [
+    "person"
+   ]
+  },
+  "secundus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time"
+   ],
+   "det": true
+  },
+  "serēnus": {
+   "of": [
+    "nature"
+   ]
+  },
+  "sērius": {
+   "of": [
+    "person",
+    "abstract"
+   ]
+  },
+  "sevērus": {
+   "of": [
+    "person"
+   ]
+  },
+  "siccus": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "Siculus": {
+   "of": [
+    "person",
+    "place",
+    "group",
+    "thing"
+   ]
+  },
+  "similis": {
+   "of": [
+    "person",
+    "thing",
+    "abstract",
+    "animal",
+    "place",
+    "body",
+    "nature"
+   ]
+  },
+  "singulus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "sinister": {
+   "of": [
+    "body",
+    "thing",
+    "place"
+   ]
+  },
+  "sōlus": {
+   "of": [
+    "person",
+    "animal"
+   ],
+   "det": true
+  },
+  "sordidus": {
+   "of": [
+    "person",
+    "thing",
+    "body"
+   ]
+  },
+  "studiōsus": {
+   "of": [
+    "person"
+   ]
+  },
+  "stultus": {
+   "of": [
+    "person"
+   ]
+  },
+  "suburbānus": {
+   "of": [
+    "place",
+    "thing"
+   ]
+  },
+  "summus": {
+   "of": [
+    "place",
+    "thing",
+    "abstract",
+    "body",
+    "nature",
+    "person",
+    "time",
+    "group"
+   ]
+  },
+  "superbus": {
+   "of": [
+    "person"
+   ]
+  },
+  "superus": {
+   "of": [
+    "place",
+    "thing",
+    "nature",
+    "person"
+   ]
+  },
+  "surdus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "suus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "tacitus": {
+   "of": [
+    "person"
+   ]
+  },
+  "tālis": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "tantus": {
+   "of": [
+    "thing",
+    "abstract",
+    "group",
+    "nature",
+    "food"
+   ],
+   "det": true
+  },
+  "tardus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "temerārius": {
+   "of": [
+    "person"
+   ]
+  },
+  "tenebricōsus": {
+   "of": [
+    "place"
+   ]
+  },
+  "tenuis": {
+   "of": [
+    "thing",
+    "body"
+   ]
+  },
+  "terribilis": {
+   "of": [
+    "animal",
+    "abstract",
+    "nature"
+   ]
+  },
+  "timidus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "togātus": {
+   "of": [],
+   "only": [
+    "vir",
+    "marītus",
+    "fīlius",
+    "puer",
+    "adulēscēns",
+    "iuvenis",
+    "senex",
+    "dominus",
+    "servus",
+    "mīles",
+    "nauta",
+    "mercātor",
+    "pāstor",
+    "agricola",
+    "colōnus",
+    "medicus",
+    "magister",
+    "poēta",
+    "rēx",
+    "prīnceps",
+    "senātor",
+    "tyrannus",
+    "deus",
+    "amīcus",
+    "frāter",
+    "hospes",
+    "convīva",
+    "gladiātor",
+    "aurīga",
+    "faber",
+    "cocus",
+    "minister",
+    "imperātor",
+    "lēgātus",
+    "dux",
+    "eques",
+    "piscātor",
+    "tībīcen",
+    "fidicen",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "gener",
+    "cīvis",
+    "homō",
+    "Iūlius",
+    "Mārcus",
+    "Quīntus",
+    "Dāvus",
+    "Mēdus",
+    "Cornēlius",
+    "Ursus",
+    "Albīnus",
+    "Sextus"
+   ]
+  },
+  "tōtus": {
+   "of": [
+    "place",
+    "thing",
+    "group",
+    "time"
+   ]
+  },
+  "tranquillus": {
+   "of": [
+    "nature",
+    "place"
+   ]
+  },
+  "tridēns": {
+   "of": [
+    "thing"
+   ]
+  },
+  "trīnus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "pl",
+   "det": true
+  },
+  "trīstis": {
+   "of": [
+    "person"
+   ]
+  },
+  "Trōiānus": {
+   "of": [
+    "person",
+    "place",
+    "group",
+    "thing"
+   ]
+  },
+  "turbidus": {
+   "of": [
+    "nature"
+   ]
+  },
+  "turgidulus": {
+   "of": [
+    "body",
+    "thing"
+   ]
+  },
+  "turgidus": {
+   "of": [
+    "body",
+    "thing",
+    "nature",
+    "food"
+   ]
+  },
+  "turpis": {
+   "of": [
+    "person",
+    "thing"
+   ]
+  },
+  "tūtus": {
+   "of": [
+    "place"
+   ]
+  },
+  "tuus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "ūllus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "sg",
+   "det": true
+  },
+  "ūmidus": {
+   "of": [
+    "thing",
+    "place"
+   ]
+  },
+  "ūniversus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "ūnus": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "number": "sg",
+   "det": true
+  },
+  "urbānus": {
+   "of": [
+    "person",
+    "thing",
+    "abstract",
+    "place",
+    "group"
+   ]
+  },
+  "uter": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "uterque": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "vacuus": {
+   "of": [],
+   "only": [
+    "sacculus",
+    "saccus",
+    "pōculum",
+    "vāsum",
+    "cubiculum",
+    "ātrium",
+    "mēnsa",
+    "lectulus",
+    "domūs",
+    "vīlla",
+    "via",
+    "forum",
+    "theātrum",
+    "carcer",
+    "nāvis",
+    "lectīca",
+    "sella",
+    "locus"
+   ]
+  },
+  "valēns": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "validus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "varius": {
+   "of": [
+    "thing",
+    "abstract",
+    "nature",
+    "animal",
+    "person"
+   ]
+  },
+  "vēlōx": {
+   "of": [
+    "animal",
+    "person"
+   ]
+  },
+  "venustus": {
+   "of": [
+    "person"
+   ]
+  },
+  "vērus": {
+   "of": [
+    "abstract"
+   ],
+   "also": [
+    "amīcus"
+   ]
+  },
+  "vester": {
+   "of": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "time",
+    "abstract",
+    "body",
+    "food",
+    "group",
+    "nature"
+   ],
+   "det": true
+  },
+  "vetus": {
+   "of": [
+    "person",
+    "thing",
+    "place"
+   ]
+  },
+  "vīlis": {
+   "of": [
+    "thing"
+   ]
+  },
+  "vīvus": {
+   "of": [
+    "person",
+    "animal"
+   ]
+  },
+  "vōcālis": {
+   "of": [],
+   "only": [
+    "littera"
+   ]
+  }
+ },
+ "V": {
+  "abdūcō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj_also": [
+    "nāvis",
+    "currus"
+   ]
+  },
+  "abeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "aberrō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "abiciō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing"
+   ],
+   "obj_also": [
+    "timor",
+    "spēs",
+    "pudor",
+    "metus",
+    "vīta"
+   ]
+  },
+  "abstineō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "abl"
+   ]
+  },
+  "absum": {
+   "subj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "accēdō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "accendō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "ignis",
+    "lucerna",
+    "lignum",
+    "arbor",
+    "silva",
+    "domūs",
+    "vīlla",
+    "nāvis",
+    "oppidum",
+    "templum",
+    "aedificium",
+    "castra",
+    "taberna",
+    "ratis",
+    "carcer",
+    "īra",
+    "amor",
+    "odium",
+    "timor",
+    "metus",
+    "bellum",
+    "pugna",
+    "cupiditās",
+    "invidia",
+    "spēs",
+    "animus",
+    "studium",
+    "certāmen"
+   ]
+  },
+  "accidō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "rēs",
+    "cāsus",
+    "mors",
+    "nex",
+    "fūrtum",
+    "maleficium",
+    "tumultus",
+    "proelium",
+    "pugna",
+    "caedēs",
+    "scelus"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "accipiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra"
+   ]
+  },
+  "accubō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "accumbō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "accurrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "canis",
+    "equus",
+    "ovis",
+    "bōs",
+    "asinus",
+    "porcus",
+    "leō",
+    "lupus",
+    "taurus",
+    "agnus",
+    "grex",
+    "pecus",
+    "bēstia",
+    "animal"
+   ]
+  },
+  "accūsō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "addō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "abstract",
+    "food"
+   ],
+   "dat": [
+    "thing",
+    "abstract"
+   ]
+  },
+  "addūcō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "adeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "place"
+   ]
+  },
+  "adiciō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "abstract",
+    "food"
+   ],
+   "dat": [
+    "thing",
+    "abstract"
+   ]
+  },
+  "adiungō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "group",
+    "abstract"
+   ],
+   "dat": [
+    "person",
+    "group",
+    "thing",
+    "place",
+    "abstract"
+   ]
+  },
+  "adiuvō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "admīror": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "thing",
+    "place",
+    "abstract",
+    "nature",
+    "animal"
+   ]
+  },
+  "admittō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "adōrō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "deus",
+    "dea"
+   ]
+  },
+  "adsum": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "advehō": {
+   "subj": [
+    "person",
+    "group",
+    "nature",
+    "thing"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "animal",
+    "person"
+   ]
+  },
+  "adveniō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "aedificō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "mūrus",
+    "vīlla",
+    "aedificium",
+    "templum",
+    "nāvis",
+    "urbs",
+    "oppidum",
+    "moenia",
+    "castra",
+    "theātrum",
+    "amphitheatrum",
+    "vāllum",
+    "labyrinthus",
+    "domūs",
+    "carcer",
+    "balneum"
+   ]
+  },
+  "aegrōtō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "aestimō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "abstract",
+    "person",
+    "animal",
+    "place",
+    "food"
+   ]
+  },
+  "afferō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "food"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "afficiō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature",
+    "thing"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "takes": [
+    "abl"
+   ]
+  },
+  "affirmō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "agō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "ovis",
+    "bōs",
+    "porcus",
+    "pecus",
+    "grex",
+    "asinus",
+    "equus",
+    "taurus",
+    "agnus",
+    "negōtium",
+    "rēs",
+    "vīta"
+   ]
+  },
+  "aiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "alliciō": {
+   "subj": [
+    "person",
+    "thing",
+    "food",
+    "abstract",
+    "nature",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "alō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "ambulō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "canis",
+    "equus",
+    "ovis",
+    "bōs",
+    "asinus",
+    "porcus",
+    "leō",
+    "lupus",
+    "taurus",
+    "agnus",
+    "grex",
+    "pecus",
+    "bēstia",
+    "animal"
+   ]
+  },
+  "āmittō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [
+    "thing",
+    "person",
+    "animal",
+    "abstract",
+    "body"
+   ]
+  },
+  "amō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "place"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "vīnum",
+    "rosa",
+    "līlium",
+    "flōs",
+    "ōtium",
+    "patria",
+    "lībertās",
+    "glōria",
+    "vīta",
+    "carmen",
+    "cantus",
+    "lūdus",
+    "mare",
+    "hortus"
+   ]
+  },
+  "amputō": {
+   "subj": [],
+   "obj": [
+    "body"
+   ],
+   "subj_only": [
+    "medicus"
+   ]
+  },
+  "animadvertō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "aperiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "ōstium",
+    "fenestra",
+    "iānua",
+    "porta",
+    "līber",
+    "foris",
+    "sacculus",
+    "oculus",
+    "epistula",
+    "saccus"
+   ]
+  },
+  "appāreō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "nature",
+    "place",
+    "abstract"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "appellō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place"
+   ]
+  },
+  "appōnō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food",
+    "thing"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "apportō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "food"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "apprehendō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "appropinquō": {
+   "subj": [
+    "person",
+    "animal",
+    "group",
+    "thing",
+    "nature"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "place",
+    "thing"
+   ]
+  },
+  "arbitror": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "arcessō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "armō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "group"
+   ]
+  },
+  "arō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "agricola",
+    "colōnus",
+    "servus",
+    "bōs"
+   ],
+   "obj_only": [
+    "ager",
+    "campus",
+    "terra",
+    "humus"
+   ]
+  },
+  "ascendō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "mōns",
+    "arbor",
+    "nāvis",
+    "collis",
+    "mūrus",
+    "equus"
+   ]
+  },
+  "aspergō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "thing",
+    "body",
+    "food"
+   ]
+  },
+  "aspiciō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature",
+    "body"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "attendō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "audeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "audiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "auferō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "animal",
+    "person"
+   ]
+  },
+  "aufugiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "augeō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pecūnia",
+    "numerus",
+    "timor",
+    "dolor",
+    "glōria",
+    "potestās",
+    "imperium",
+    "exercitus",
+    "cōpia",
+    "laetitia",
+    "spēs",
+    "amor",
+    "odium",
+    "metus",
+    "pretium",
+    "mercēs",
+    "stīpendium",
+    "familia",
+    "dīvitiae"
+   ]
+  },
+  "āvertō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "body",
+    "thing",
+    "person",
+    "animal"
+   ]
+  },
+  "bālō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "ovis",
+    "agnus"
+   ]
+  },
+  "bibō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "aqua",
+    "vīnum",
+    "lac",
+    "pōtiō",
+    "sūcus"
+   ]
+  },
+  "cadō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj": [],
+   "subj_also": [
+    "imber",
+    "nix",
+    "folium",
+    "arbor"
+   ]
+  },
+  "caedō": {
+   "subj": [
+    "person",
+    "animal",
+    "group",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "arbor",
+    "silva",
+    "rāmus",
+    "lignum",
+    "herba",
+    "frūmentum",
+    "vīnea"
+   ]
+  },
+  "canō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "avis",
+    "passer"
+   ]
+  },
+  "cantō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "capiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "food",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "lignum",
+    "saxum",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "nux",
+    "frūmentum",
+    "praemium",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "charta",
+    "cēra",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "urbs",
+    "oppidum",
+    "castra",
+    "nāvis",
+    "hostis",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "servus"
+   ]
+  },
+  "careō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "place"
+   ],
+   "obj": [],
+   "takes": [
+    "abl"
+   ]
+  },
+  "carpō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "arbor",
+    "herba",
+    "flōs",
+    "rosa",
+    "līlium",
+    "folium",
+    "rāmus",
+    "ūva",
+    "olea",
+    "sēmen",
+    "frūmentum",
+    "frūgēs"
+   ]
+  },
+  "caveō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "nature"
+   ]
+  },
+  "cēdō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "cēnō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "cēnseō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "cernō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "certō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "cessō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "cingō": {
+   "subj": [
+    "person",
+    "nature",
+    "thing",
+    "group"
+   ],
+   "obj": [
+    "place",
+    "thing",
+    "body",
+    "person"
+   ]
+  },
+  "circumdō": {
+   "subj": [
+    "person",
+    "group",
+    "nature"
+   ],
+   "obj": [
+    "place",
+    "group",
+    "person",
+    "body"
+   ],
+   "obj_also": [
+    "mūrus",
+    "moenia",
+    "vāllum",
+    "catēna",
+    "fūnis",
+    "rēte",
+    "arma",
+    "vestis",
+    "toga",
+    "pallium",
+    "tunica"
+   ]
+  },
+  "circumsiliō": {
+   "subj": [
+    "animal"
+   ],
+   "obj": [],
+   "subj_also": [
+    "puer",
+    "puella",
+    "īnfans",
+    "līberī",
+    "fīlius",
+    "fīlia",
+    "fīliola"
+   ]
+  },
+  "clāmō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "claudō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "ōstium",
+    "fenestra",
+    "iānua",
+    "porta",
+    "līber",
+    "foris",
+    "sacculus",
+    "oculus",
+    "saccus"
+   ]
+  },
+  "coepiō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract",
+    "thing"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "cōgitō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "cognōscō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "thing",
+    "place",
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "cōgō": {
+   "subj": [
+    "person",
+    "group",
+    "abstract",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "frūmentum",
+    "nummus",
+    "frūgēs",
+    "ūva",
+    "olea",
+    "lignum",
+    "aqua",
+    "cibus",
+    "arma",
+    "nāvis",
+    "classis"
+   ],
+   "takes": [
+    "inf",
+    "ut"
+   ]
+  },
+  "colloquor": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "colō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "ager",
+    "hortus",
+    "vīnea",
+    "campus",
+    "terra",
+    "humus",
+    "rūs",
+    "praedium",
+    "deus",
+    "dea"
+   ]
+  },
+  "comitor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "commemorō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract",
+    "person",
+    "place"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "comparō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food"
+   ]
+  },
+  "complector": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "compleō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pōculum",
+    "vāsum",
+    "saccus",
+    "sacculus",
+    "nāvis",
+    "domūs",
+    "ātrium",
+    "forum",
+    "theātrum",
+    "circus",
+    "urbs",
+    "via",
+    "hortus",
+    "triclīnium",
+    "cubiculum",
+    "culīna",
+    "balneum",
+    "lacūs",
+    "oppidum",
+    "silva",
+    "campus",
+    "mare"
+   ]
+  },
+  "computō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pecūnia",
+    "nummus",
+    "numerus",
+    "dēnārius",
+    "sēstertius",
+    "assis"
+   ]
+  },
+  "conficiō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "opus",
+    "iter",
+    "bellum",
+    "negōtium",
+    "epistula",
+    "līber",
+    "cēna",
+    "nāvis",
+    "mūrus",
+    "vestis",
+    "cōnsilium",
+    "versūs",
+    "carmen"
+   ]
+  },
+  "cōnfīdō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "takes": [
+    "abl"
+   ]
+  },
+  "cōnfiteor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "scelus",
+    "fūrtum",
+    "maleficium",
+    "factum",
+    "causa",
+    "timor",
+    "amor",
+    "menda"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "coniungō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "equus",
+    "bōs",
+    "asinus",
+    "taurus",
+    "manūs",
+    "bracchium",
+    "currus",
+    "nāvis",
+    "verbum",
+    "littera",
+    "syllaba"
+   ]
+  },
+  "cōnor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "cōnscendō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "nāvis",
+    "equus",
+    "mōns",
+    "currus"
+   ]
+  },
+  "cōnscīscō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "mors",
+    "poena",
+    "supplicium",
+    "nex",
+    "bellum",
+    "pāx",
+    "lēx",
+    "fuga",
+    "cōnsilium",
+    "fīnis"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "cōnsequor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "cōnsīdō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "canis",
+    "equus",
+    "ovis",
+    "bōs",
+    "asinus",
+    "porcus",
+    "leō",
+    "lupus",
+    "taurus",
+    "agnus",
+    "grex",
+    "pecus",
+    "bēstia",
+    "animal"
+   ]
+  },
+  "cōnsistō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "cōnsōlor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "cōnsonō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "littera",
+    "syllaba",
+    "vōx",
+    "verbum"
+   ]
+  },
+  "conspiciō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "cōnstituō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "signum",
+    "templum",
+    "mūrus",
+    "cōnsilium",
+    "columna",
+    "castra",
+    "diēs",
+    "poena",
+    "praemium"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "cōnstō": {
+   "subj": [
+    "thing",
+    "food",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "cōnsūmō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "tempus",
+    "diēs",
+    "nox",
+    "hōra"
+   ],
+   "subj_also": [
+    "ignis"
+   ]
+  },
+  "contemnō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "abstract",
+    "food",
+    "nature"
+   ]
+  },
+  "contineō": {
+   "subj": [
+    "thing",
+    "place",
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "person",
+    "animal",
+    "abstract"
+   ]
+  },
+  "contrahō": {
+   "subj": [
+    "person",
+    "nature",
+    "abstract"
+   ],
+   "obj": [
+    "body"
+   ],
+   "obj_also": [
+    "vēlum",
+    "exercitus",
+    "mīles",
+    "cōpia",
+    "nāvis",
+    "classis",
+    "legiō",
+    "cohors",
+    "agmen"
+   ]
+  },
+  "conturbō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract",
+    "thing",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group",
+    "abstract"
+   ],
+   "obj_also": [
+    "aqua",
+    "mare",
+    "unda",
+    "flūctus",
+    "nāvis",
+    "classis",
+    "mēnsa",
+    "convīvium",
+    "cēna",
+    "lūdus",
+    "certāmen",
+    "forum",
+    "urbs",
+    "oppidum",
+    "domūs",
+    "familia",
+    "exercitus",
+    "aciēs",
+    "agmen",
+    "ōrdō",
+    "ratiō",
+    "cōnsilium",
+    "animus",
+    "mēns",
+    "somnus",
+    "vīta",
+    "pāx",
+    "ōtium",
+    "silentium",
+    "sermō",
+    "colloquium",
+    "fābula",
+    "carmen",
+    "versūs",
+    "epigramma"
+   ]
+  },
+  "conuocō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "group",
+    "animal"
+   ]
+  },
+  "conveniō": {
+   "subj": [
+    "thing",
+    "abstract"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "none"
+   ]
+  },
+  "convertō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "body",
+    "thing",
+    "person",
+    "animal"
+   ]
+  },
+  "coorior": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "tempestās",
+    "imber",
+    "tumultus",
+    "bellum",
+    "pugna",
+    "proelium",
+    "clāmor",
+    "fulgur",
+    "tonitrus",
+    "ignis",
+    "turba"
+   ]
+  },
+  "cōpulō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "body",
+    "animal",
+    "person"
+   ],
+   "obj_also": [
+    "verbum",
+    "littera",
+    "syllaba",
+    "vocābulum",
+    "nōmen",
+    "amīcitia",
+    "animus"
+   ]
+  },
+  "coquō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ]
+  },
+  "corrigō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "menda",
+    "epistula",
+    "verbum",
+    "vocābulum",
+    "sententia",
+    "versūs",
+    "littera"
+   ]
+  },
+  "crēdō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "crēscō": {
+   "subj": [
+    "person",
+    "animal",
+    "abstract"
+   ],
+   "obj": [],
+   "subj_also": [
+    "arbor",
+    "herba",
+    "flōs",
+    "frūmentum",
+    "flūmen",
+    "ūva",
+    "vīnea"
+   ]
+  },
+  "cruciō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "cubō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "cupiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra",
+    "pāx",
+    "ōtium",
+    "glōria",
+    "lībertās",
+    "salūs",
+    "vīta",
+    "amor"
+   ],
+   "takes": [
+    "inf",
+    "acc_inf"
+   ]
+  },
+  "cūrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "currō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "canis",
+    "equus",
+    "ovis",
+    "bōs",
+    "asinus",
+    "porcus",
+    "leō",
+    "lupus",
+    "taurus",
+    "agnus",
+    "grex",
+    "pecus",
+    "bēstia",
+    "animal"
+   ]
+  },
+  "custodiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "place"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "dēbeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "decet": {
+   "subj": [],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "dēfendō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "place",
+    "group"
+   ],
+   "obj_also": [
+    "nāvis",
+    "castra",
+    "mūrus",
+    "patria",
+    "lībertās",
+    "vīta"
+   ]
+  },
+  "dēlectō": {
+   "subj": [
+    "thing",
+    "abstract",
+    "person",
+    "animal",
+    "nature",
+    "food"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "dēleō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "verbum",
+    "vocābulum",
+    "littera",
+    "nōmen",
+    "menda",
+    "epistula",
+    "versūs",
+    "sententia",
+    "syllaba",
+    "numerus"
+   ]
+  },
+  "dēmittō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "body"
+   ],
+   "obj_also": [
+    "servus",
+    "canis",
+    "animus",
+    "ratis",
+    "nāvicula",
+    "corpus"
+   ]
+  },
+  "dēmōnstrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "body",
+    "place"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "via",
+    "iter"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "deponō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "saccus",
+    "sacculus",
+    "arma",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "baculum",
+    "pecūnia",
+    "pōculum",
+    "līber",
+    "epistula",
+    "ānulus",
+    "corpus",
+    "toga",
+    "tunica",
+    "vestis",
+    "vestīmentum",
+    "pallium",
+    "calceus",
+    "timor",
+    "metus",
+    "spēs",
+    "īra"
+   ]
+  },
+  "dērīdeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "dēscendō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "dēserō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "place"
+   ],
+   "obj_also": [
+    "nāvis",
+    "castra",
+    "exercitus",
+    "patria"
+   ]
+  },
+  "dēsīderō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "food",
+    "abstract"
+   ]
+  },
+  "desiliō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "dēsinō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "dēsistō": {
+   "subj": [
+    "person",
+    "animal",
+    "group",
+    "nature"
+   ],
+   "obj": [],
+   "takes": [
+    "inf",
+    "abl"
+   ]
+  },
+  "dēspērō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "salūs",
+    "vīta",
+    "pāx",
+    "victōria",
+    "lībertās",
+    "fuga",
+    "auxilium"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "dēspiciō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing"
+   ]
+  },
+  "dēsum": {
+   "subj": [
+    "thing",
+    "food",
+    "abstract"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal"
+   ]
+  },
+  "dētergeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "body"
+   ],
+   "obj_also": [
+    "lacrima",
+    "sanguis",
+    "cruor",
+    "mēnsa"
+   ]
+  },
+  "dēterreō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "dētrahō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "toga",
+    "tunica",
+    "vestis",
+    "vestīmentum",
+    "pallium",
+    "calceus",
+    "ānulus",
+    "arma",
+    "gladius",
+    "scūtum"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "dēvorō": {
+   "subj": [
+    "animal",
+    "person"
+   ],
+   "obj": [
+    "food",
+    "animal",
+    "person",
+    "body"
+   ]
+  },
+  "dīcō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "verbum",
+    "vocābulum",
+    "nōmen",
+    "sententia",
+    "fābula"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "dīligō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "dīmittō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ]
+  },
+  "discēdō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "discō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "lingua",
+    "littera",
+    "verbum",
+    "vocābulum",
+    "ars",
+    "carmen",
+    "nōmen",
+    "numerus",
+    "sententia",
+    "exemplum",
+    "versūs",
+    "syllaba"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "disiungō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "bōs",
+    "equus",
+    "asinus",
+    "taurus",
+    "currus",
+    "nāvis"
+   ]
+  },
+  "dissuādeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "bellum",
+    "pāx",
+    "fuga",
+    "iter",
+    "nāvigātiō",
+    "cōnsilium",
+    "mora",
+    "mors",
+    "pugna",
+    "certāmen",
+    "convīvium"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "dīvidō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "place",
+    "abstract"
+   ]
+  },
+  "dō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "doceō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "takes": [
+    "inf",
+    "acc_inf"
+   ]
+  },
+  "doleō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "dōnō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "animal"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "dormiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "dubitō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "dūcō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "obj_also": [
+    "equus",
+    "bōs",
+    "asinus",
+    "ovis",
+    "canis",
+    "taurus",
+    "agnus",
+    "porcus",
+    "grex",
+    "pecus",
+    "exercitus",
+    "classis",
+    "legiō",
+    "cohors",
+    "agmen"
+   ]
+  },
+  "edō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "food"
+   ]
+  },
+  "ēducō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "efficiō": {
+   "subj": [
+    "person",
+    "nature",
+    "abstract"
+   ],
+   "obj": [],
+   "obj_only": [
+    "opus",
+    "pāx",
+    "silentium",
+    "victōria",
+    "mūrus",
+    "nāvis",
+    "aedificium",
+    "templum",
+    "imāgō",
+    "signum"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "effringō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "ōstium",
+    "fenestra",
+    "iānua",
+    "porta",
+    "foris",
+    "catēna",
+    "sacculus",
+    "saccus",
+    "mūrus",
+    "moenia",
+    "vāllum",
+    "carcer",
+    "līmen",
+    "cardo",
+    "laqueus",
+    "rēte",
+    "tabula",
+    "vāsum",
+    "pōculum"
+   ]
+  },
+  "effugiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "effundō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "aqua",
+    "vīnum",
+    "lac",
+    "sanguis",
+    "lacrima",
+    "cruor",
+    "sūcus",
+    "mel",
+    "pōtiō",
+    "unda",
+    "pecūnia",
+    "nummus",
+    "sāl",
+    "sēmen",
+    "frūmentum"
+   ],
+   "subj_also": [
+    "nūbēs",
+    "caelum",
+    "imber",
+    "flūmen",
+    "amnis",
+    "mare",
+    "fluvius",
+    "rivus"
+   ]
+  },
+  "egeō": {
+   "subj": [
+    "person",
+    "animal",
+    "place",
+    "group",
+    "thing"
+   ],
+   "obj": [],
+   "takes": [
+    "abl"
+   ]
+  },
+  "ēgredior": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "eiciō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing"
+   ]
+  },
+  "ēligō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "food",
+    "place",
+    "abstract"
+   ]
+  },
+  "ēmittō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj_also": [
+    "vōx",
+    "clāmor"
+   ]
+  },
+  "emō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "servus",
+    "ancilla",
+    "vīlla",
+    "domūs",
+    "ager",
+    "hortus",
+    "vīnea",
+    "praedium",
+    "taberna",
+    "nāvis"
+   ]
+  },
+  "eō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "equitō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "ēripiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "errō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "canis",
+    "equus",
+    "ovis",
+    "bōs",
+    "asinus",
+    "porcus",
+    "leō",
+    "lupus",
+    "taurus",
+    "agnus",
+    "grex",
+    "pecus",
+    "bēstia",
+    "animal",
+    "avis",
+    "aquila",
+    "passer",
+    "corvus"
+   ]
+  },
+  "ērubēscō": {
+   "subj": [
+    "person",
+    "body"
+   ],
+   "obj": []
+  },
+  "ērumpō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [],
+   "subj_also": [
+    "ignis",
+    "flūmen",
+    "aqua",
+    "sanguis",
+    "clāmor",
+    "lacrima",
+    "vōx",
+    "tempestās",
+    "tumultus",
+    "bellum",
+    "pugna",
+    "unda",
+    "flūctus",
+    "imber"
+   ]
+  },
+  "ēvolō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "avis",
+    "aquila",
+    "passer",
+    "corvus"
+   ]
+  },
+  "ēvolvō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "līber",
+    "libellus",
+    "epistula",
+    "charta",
+    "vēlum",
+    "fīlum"
+   ]
+  },
+  "exaudiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "vōx",
+    "clāmor",
+    "verbum",
+    "sonus",
+    "cantus",
+    "prex",
+    "strepitus",
+    "fābula",
+    "nōmen",
+    "sermō",
+    "carmen",
+    "tonitrus",
+    "cachinnus"
+   ]
+  },
+  "excitō": {
+   "subj": [
+    "person",
+    "animal",
+    "abstract"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "exclāmō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "excogitō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "cōnsilium",
+    "modus",
+    "fābula",
+    "nōmen",
+    "verbum",
+    "ars",
+    "ratiō",
+    "nūgae",
+    "exemplum"
+   ]
+  },
+  "excruciō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature",
+    "animal",
+    "thing"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ]
+  },
+  "excurrō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "excūsō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "exeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "exhauriō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pōculum",
+    "vāsum",
+    "aqua",
+    "vīnum",
+    "pecūnia",
+    "sacculus",
+    "lacūs",
+    "saccus"
+   ]
+  },
+  "exīstimō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "exōrnō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "body",
+    "person",
+    "place"
+   ]
+  },
+  "experior": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract",
+    "thing",
+    "person"
+   ]
+  },
+  "expōnō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "food"
+   ],
+   "obj_also": [
+    "rēs",
+    "causa",
+    "fābula",
+    "cōnsilium",
+    "sententia",
+    "ratiō"
+   ]
+  },
+  "expugnō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "place"
+   ]
+  },
+  "exspectō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "obj_also": [
+    "epistula",
+    "nāvis",
+    "nūntius",
+    "tabellārius"
+   ]
+  },
+  "extendō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "body",
+    "thing"
+   ]
+  },
+  "fabulor": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "faciō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "abstract"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "fallō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "fateor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "fatīgō": {
+   "subj": [
+    "person",
+    "animal",
+    "abstract"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "subj_also": [
+    "iter",
+    "calor",
+    "frīgus",
+    "sōl",
+    "famēs",
+    "sitis",
+    "bellum",
+    "pugna",
+    "cursūs",
+    "nāvigātiō",
+    "via",
+    "opus",
+    "negōtium",
+    "vigilia",
+    "dolor",
+    "tempestās",
+    "unda",
+    "flūctus",
+    "mare"
+   ]
+  },
+  "faveō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "group"
+   ]
+  },
+  "ferō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "ferōciō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "fīdō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "abl"
+   ]
+  },
+  "fīgō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "sagitta",
+    "hasta",
+    "pīlum",
+    "signum",
+    "oculus",
+    "ēnsis",
+    "gladius"
+   ]
+  },
+  "fīniō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "opus",
+    "iter",
+    "bellum",
+    "sermō",
+    "fābula",
+    "vīta",
+    "epistula",
+    "carmen",
+    "cēna",
+    "convīvium",
+    "pugna",
+    "proelium"
+   ]
+  },
+  "fīō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "abstract",
+    "nature"
+   ],
+   "obj": [],
+   "takes": [
+    "pred"
+   ]
+  },
+  "flectō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "body",
+    "thing"
+   ],
+   "obj_also": [
+    "equus",
+    "currus",
+    "animus",
+    "cursūs",
+    "iter"
+   ]
+  },
+  "fleō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "flō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "tempestās",
+    "āēr"
+   ],
+   "takes": [
+    "none"
+   ]
+  },
+  "fluō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "aqua",
+    "flūmen",
+    "rīvus",
+    "sanguis",
+    "lacrima",
+    "cruor",
+    "amnis"
+   ]
+  },
+  "fodiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "ager",
+    "hortus",
+    "vīnea",
+    "campus",
+    "terra",
+    "humus",
+    "rūs",
+    "praedium"
+   ]
+  },
+  "for": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "frangō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "body"
+   ],
+   "obj_also": [
+    "pōculum",
+    "vāsum",
+    "ōstium",
+    "iānua",
+    "porta",
+    "fenestra",
+    "rāmus",
+    "arbor",
+    "nāvis",
+    "rēmus",
+    "hasta",
+    "gladius",
+    "catēna",
+    "baculum",
+    "ovum"
+   ]
+  },
+  "fremō": {
+   "subj": [
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "frigō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature"
+   ],
+   "obj": []
+  },
+  "fruor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "abl"
+   ]
+  },
+  "fugiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "fulgurō": {
+   "subj": [],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "fundō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "aqua",
+    "vīnum",
+    "lac",
+    "sanguis",
+    "lacrima",
+    "cruor",
+    "sūcus",
+    "mel",
+    "pōtiō",
+    "unda"
+   ],
+   "subj_also": [
+    "nūbēs",
+    "caelum"
+   ]
+  },
+  "gaudeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "gemmō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "arbor",
+    "vīnea",
+    "rāmus",
+    "rosa"
+   ]
+  },
+  "generō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "ūva",
+    "flōs",
+    "frūmentum",
+    "olea",
+    "sēmen",
+    "rosa",
+    "folium",
+    "frūgēs"
+   ]
+  },
+  "gerō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "toga",
+    "tunica",
+    "vestis",
+    "vestīmentum",
+    "pallium",
+    "calceus",
+    "ānulus",
+    "gladius",
+    "bellum",
+    "arma",
+    "scūtum",
+    "hasta",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum"
+   ]
+  },
+  "gestō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "toga",
+    "tunica",
+    "vestis",
+    "vestīmentum",
+    "pallium",
+    "calceus",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "saccus",
+    "sacculus",
+    "baculum",
+    "līber",
+    "epistula",
+    "pila",
+    "penna",
+    "catēna",
+    "clāvis",
+    "lucerna",
+    "culter",
+    "falx",
+    "rēte",
+    "pōculum"
+   ]
+  },
+  "gubernō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "gubernātor",
+    "nauta"
+   ],
+   "obj_only": [
+    "nāvis"
+   ]
+  },
+  "gustō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "food"
+   ]
+  },
+  "habeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "vīlla",
+    "domūs",
+    "hortus",
+    "ager",
+    "vīnea",
+    "praedium",
+    "taberna",
+    "nāvis",
+    "servus",
+    "ancilla",
+    "dīvitiae"
+   ]
+  },
+  "habitō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "hauriō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "aqua",
+    "vīnum",
+    "lac",
+    "pōtiō",
+    "sūcus",
+    "sanguis"
+   ]
+  },
+  "horreō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ]
+  },
+  "hortor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "iaceō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "iaciō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pila",
+    "saxum",
+    "hasta",
+    "sagitta",
+    "pīlum",
+    "gladius",
+    "baculum",
+    "rēte",
+    "pōculum",
+    "ānulus",
+    "nummus",
+    "pecūnia",
+    "lignum",
+    "rāmus",
+    "ovum",
+    "pānis"
+   ]
+  },
+  "iactō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "person",
+    "body"
+   ]
+  },
+  "ignōrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "thing",
+    "place",
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "ignōscō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "scelus",
+    "fūrtum",
+    "maleficium",
+    "menda",
+    "iniūria",
+    "factum",
+    "verbum"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "illūstrō": {
+   "subj": [],
+   "obj": [
+    "place",
+    "thing",
+    "nature",
+    "body"
+   ],
+   "subj_only": [
+    "sōl",
+    "lūna",
+    "lūx",
+    "ignis",
+    "lucerna",
+    "stēlla"
+   ]
+  },
+  "imitor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "impendeō": {
+   "subj": [
+    "abstract",
+    "nature",
+    "thing"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "place",
+    "group"
+   ]
+  },
+  "imperō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "group"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "impleō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "saccus",
+    "sacculus",
+    "pōculum",
+    "vāsum"
+   ]
+  },
+  "implicō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "thing",
+    "abstract"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "obj_also": [
+    "nāvis",
+    "rēmus",
+    "fūnis",
+    "catēna",
+    "rēte",
+    "laqueus",
+    "vestis",
+    "toga",
+    "pallium",
+    "animus",
+    "fīlum",
+    "līnea",
+    "stāmen",
+    "tēla"
+   ]
+  },
+  "impōnō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "person"
+   ],
+   "takes": [
+    "none"
+   ]
+  },
+  "imprimō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "signum",
+    "ānulus",
+    "vestīgium",
+    "ōsculum",
+    "bāsium",
+    "littera"
+   ]
+  },
+  "incipiō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "abstract",
+    "nature"
+   ],
+   "obj": [
+    "abstract",
+    "thing"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "inclūdō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "incolō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [
+    "place"
+   ]
+  },
+  "induō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "toga",
+    "tunica",
+    "calceus",
+    "vestis",
+    "vestīmentum",
+    "pallium"
+   ]
+  },
+  "ingredior": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [
+    "place"
+   ],
+   "obj_also": [
+    "nāvis",
+    "iter",
+    "bellum",
+    "pugna",
+    "proelium",
+    "certāmen",
+    "convīvium"
+   ]
+  },
+  "inquam": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "īnscribō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "nōmen",
+    "verbum",
+    "littera",
+    "titulus",
+    "versūs",
+    "epigramma",
+    "sententia"
+   ]
+  },
+  "īnstruō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "group",
+    "person"
+   ],
+   "obj_also": [
+    "nāvis",
+    "castra",
+    "mēnsa",
+    "convīvium",
+    "domūs",
+    "cēna",
+    "equus",
+    "currus",
+    "lectulus",
+    "triclīnium",
+    "culīna",
+    "taberna",
+    "lūdus",
+    "templum",
+    "aedificium",
+    "mūrus",
+    "vāllum",
+    "moenia",
+    "arma"
+   ]
+  },
+  "īnsum": {
+   "subj": [
+    "thing",
+    "abstract"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "intellegō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract",
+    "person"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "interficiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "interpellō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "interrogō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "intersum": {
+   "subj": [
+    "thing",
+    "place",
+    "abstract",
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "intrō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "place"
+   ]
+  },
+  "intueor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature"
+   ]
+  },
+  "invehō": {
+   "subj": [
+    "person",
+    "group",
+    "nature",
+    "thing"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "animal"
+   ]
+  },
+  "inveniō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "via",
+    "iter",
+    "locus"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "invideō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "invocō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "deus",
+    "dea"
+   ]
+  },
+  "irascor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "iubeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "iungō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "equus",
+    "bōs",
+    "asinus",
+    "taurus",
+    "manūs",
+    "bracchium",
+    "currus",
+    "nāvis",
+    "verbum",
+    "littera",
+    "syllaba"
+   ]
+  },
+  "iuvō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "lābor": {
+   "subj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj": []
+  },
+  "labōrō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "lacrimō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "laedō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "nature",
+    "abstract"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "obj_also": [
+    "arbor",
+    "flōs",
+    "rosa",
+    "līlium",
+    "herba",
+    "vīnea",
+    "ager",
+    "hortus",
+    "nāvis",
+    "vestis",
+    "toga",
+    "līber",
+    "epistula",
+    "tabula",
+    "imāgō",
+    "signum",
+    "templum",
+    "columna",
+    "mūrus",
+    "fāma",
+    "glōria",
+    "amīcitia",
+    "pāx",
+    "salūs",
+    "amor",
+    "animus",
+    "pudor",
+    "lēx",
+    "iūs",
+    "patria",
+    "lībertās"
+   ]
+  },
+  "laetor": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "largior": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "lateō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj": []
+  },
+  "lātrō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "canis"
+   ]
+  },
+  "laudō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "abstract",
+    "place"
+   ]
+  },
+  "lavō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "body",
+    "thing"
+   ]
+  },
+  "legō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "līber",
+    "epistula",
+    "littera",
+    "titulus",
+    "pāgina",
+    "tabula",
+    "tabella",
+    "libellus",
+    "carmen",
+    "versūs",
+    "capitulum",
+    "vocābulum",
+    "verbum",
+    "nōmen",
+    "epigramma",
+    "versiculus"
+   ]
+  },
+  "levō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "body"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "līberō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ]
+  },
+  "libet": {
+   "subj": [],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "licet": {
+   "subj": [],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "linō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "body",
+    "thing"
+   ]
+  },
+  "līqueō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "aqua",
+    "glaciēs",
+    "nix",
+    "cēra",
+    "mel",
+    "sanguis",
+    "vīnum",
+    "lac",
+    "argentum",
+    "aurum",
+    "ferrum"
+   ]
+  },
+  "locō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "person",
+    "animal",
+    "food"
+   ]
+  },
+  "loquor": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "lūceō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "sōl",
+    "lūna",
+    "stēlla",
+    "ignis",
+    "lucerna"
+   ]
+  },
+  "lūdō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "canis",
+    "agnus",
+    "līberī"
+   ]
+  },
+  "lūgeō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "mors",
+    "cāsus",
+    "nex",
+    "caedēs",
+    "fātum",
+    "fortūna",
+    "patria",
+    "lībertās",
+    "glōria",
+    "vīta",
+    "salūs",
+    "fuga",
+    "servitūs",
+    "poena",
+    "supplicium",
+    "iniūria"
+   ]
+  },
+  "maereō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "mālō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "abstract"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "maneō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "meminī": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "gen",
+    "acc_inf"
+   ]
+  },
+  "memorō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "mentior": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "mereō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pecūnia",
+    "laus",
+    "poena",
+    "praemium",
+    "mercēs",
+    "glōria",
+    "supplicium",
+    "amor",
+    "odium",
+    "stīpendium"
+   ]
+  },
+  "mergō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "caput",
+    "manūs",
+    "pēs",
+    "bracchium",
+    "corpus",
+    "nāvis",
+    "nāvicula",
+    "ratis",
+    "saccus",
+    "pōculum",
+    "vāsum",
+    "gladius",
+    "digitus"
+   ]
+  },
+  "metō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "agricola",
+    "colōnus",
+    "servus"
+   ],
+   "obj_only": [
+    "frūmentum",
+    "frūgēs"
+   ]
+  },
+  "metuō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ]
+  },
+  "mīlitō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "vir",
+    "marītus",
+    "fīlius",
+    "puer",
+    "adulēscēns",
+    "iuvenis",
+    "senex",
+    "dominus",
+    "servus",
+    "mīles",
+    "nauta",
+    "mercātor",
+    "pāstor",
+    "agricola",
+    "colōnus",
+    "medicus",
+    "magister",
+    "poēta",
+    "rēx",
+    "prīnceps",
+    "senātor",
+    "tyrannus",
+    "amīcus",
+    "frāter",
+    "hospes",
+    "convīva",
+    "gladiātor",
+    "aurīga",
+    "faber",
+    "cocus",
+    "minister",
+    "imperātor",
+    "lēgātus",
+    "dux",
+    "eques",
+    "pedēs",
+    "piscātor",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "gener",
+    "cīvis",
+    "homō",
+    "hostis",
+    "inimīcus",
+    "Iūlius",
+    "Mārcus",
+    "Quīntus",
+    "Dāvus",
+    "Mēdus",
+    "Cornēlius",
+    "Ursus",
+    "Albīnus",
+    "Sextus"
+   ]
+  },
+  "minor": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "mors",
+    "poena",
+    "supplicium",
+    "nex",
+    "caedēs",
+    "bellum",
+    "verber",
+    "vulnus",
+    "crux",
+    "catēna",
+    "carcer",
+    "servitūs"
+   ],
+   "dat": [
+    "person",
+    "animal",
+    "group",
+    "place",
+    "thing"
+   ]
+  },
+  "minuō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature"
+   ],
+   "obj": [
+    "abstract",
+    "thing",
+    "food"
+   ]
+  },
+  "mīror": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "thing",
+    "place",
+    "abstract",
+    "nature",
+    "animal"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "misceō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "cēra",
+    "aurum",
+    "argentum",
+    "ferrum",
+    "terra",
+    "sanguis",
+    "lacrima"
+   ]
+  },
+  "mittō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "epistula",
+    "dōnum",
+    "nūntius",
+    "nāvis",
+    "pecūnia",
+    "cibus"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "molliō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "body",
+    "food"
+   ]
+  },
+  "moneō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "takes": [
+    "ut",
+    "acc_inf"
+   ]
+  },
+  "mōnstrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "body",
+    "place"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "via",
+    "iter"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "mordeō": {
+   "subj": [
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body",
+    "food"
+   ]
+  },
+  "morior": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "moveō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "body"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "mēnsa",
+    "lectulus",
+    "sella",
+    "currus",
+    "nāvis"
+   ]
+  },
+  "mūniō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "place"
+   ],
+   "obj_also": [
+    "mūrus",
+    "vāllum",
+    "moenia",
+    "nāvis",
+    "classis",
+    "corpus",
+    "animus"
+   ]
+  },
+  "mūtō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "vestis",
+    "toga",
+    "tunica",
+    "cōnsilium",
+    "sententia",
+    "vīta",
+    "locus",
+    "iter",
+    "animus",
+    "vōx",
+    "nōmen",
+    "mōs",
+    "modus"
+   ]
+  },
+  "nārrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "fābula",
+    "nārrātiō",
+    "factum",
+    "rēs",
+    "causa",
+    "perīculum",
+    "iter",
+    "somnus"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "nāscor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "natō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "piscis",
+    "delphīnus",
+    "canis"
+   ]
+  },
+  "nāvigō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "nāvis"
+   ]
+  },
+  "necō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "neglegō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "abstract",
+    "place"
+   ],
+   "obj_also": [
+    "epistula",
+    "līber",
+    "ager",
+    "vīnea",
+    "hortus",
+    "nāvis"
+   ]
+  },
+  "negō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "nesciō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf",
+    "inf"
+   ]
+  },
+  "noceō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal",
+    "place",
+    "thing"
+   ]
+  },
+  "nōlō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "abstract"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "nōminō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "place"
+   ]
+  },
+  "nōscō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "thing",
+    "place",
+    "abstract"
+   ]
+  },
+  "nūbō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "fīlia",
+    "puella",
+    "virgō",
+    "mulier",
+    "femina",
+    "ancilla",
+    "dea",
+    "nympha",
+    "soror",
+    "rēgīna",
+    "magistra",
+    "anus",
+    "māter",
+    "domina",
+    "mātrōna",
+    "nūtrīx",
+    "uxor",
+    "Iūlia",
+    "Aemilia",
+    "Syra",
+    "Dēlia",
+    "Lȳdia"
+   ],
+   "dat_only": [
+    "vir",
+    "marītus",
+    "fīlius",
+    "puer",
+    "adulēscēns",
+    "iuvenis",
+    "senex",
+    "dominus",
+    "servus",
+    "mīles",
+    "nauta",
+    "mercātor",
+    "pāstor",
+    "agricola",
+    "colōnus",
+    "medicus",
+    "magister",
+    "poēta",
+    "rēx",
+    "prīnceps",
+    "senātor",
+    "tyrannus",
+    "deus",
+    "amīcus",
+    "frāter",
+    "hospes",
+    "convīva",
+    "gladiātor",
+    "aurīga",
+    "faber",
+    "cocus",
+    "minister",
+    "imperātor",
+    "lēgātus",
+    "dux",
+    "eques",
+    "piscātor",
+    "tībīcen",
+    "fidicen",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "gener",
+    "Iūlius",
+    "Mārcus",
+    "Quīntus",
+    "Dāvus",
+    "Mēdus",
+    "Cornēlius",
+    "Ursus",
+    "Albīnus",
+    "Sextus"
+   ]
+  },
+  "numerō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "pecūnia",
+    "nummus",
+    "ōrnāmentum",
+    "gemma",
+    "margarīta",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "ovis",
+    "servus",
+    "mīles",
+    "nāvis",
+    "līber",
+    "epistula"
+   ]
+  },
+  "nūntiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "mors",
+    "victōria",
+    "pāx",
+    "bellum",
+    "rēs",
+    "fūrtum",
+    "caedēs",
+    "nex",
+    "cāsus"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "oblīvīscor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "gen"
+   ]
+  },
+  "oboediō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "occidō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "occultō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "occurrō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal"
+   ]
+  },
+  "ōdī": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "abstract",
+    "food"
+   ]
+  },
+  "offerō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "abstract"
+   ],
+   "obj_also": [
+    "fīlia",
+    "fīlius",
+    "servus",
+    "ancilla",
+    "equus",
+    "ovis",
+    "agnus",
+    "taurus"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "operiō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "body"
+   ],
+   "obj_also": [
+    "mēnsa",
+    "lectulus",
+    "terra",
+    "campus",
+    "ager",
+    "via",
+    "mūrus",
+    "caput",
+    "oculus",
+    "corpus",
+    "saccus",
+    "vāsum",
+    "pōculum"
+   ]
+  },
+  "oportet": {
+   "subj": [],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "opperior": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "obj_also": [
+    "nāvis",
+    "epistula",
+    "nūntius",
+    "tabellārius"
+   ]
+  },
+  "oppugnō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "place",
+    "group"
+   ]
+  },
+  "optō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "abstract",
+    "food"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "orior": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "sōl",
+    "lūna",
+    "tempestās",
+    "stēlla"
+   ]
+  },
+  "ōrnō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "body",
+    "person",
+    "place"
+   ],
+   "obj_also": [
+    "mēnsa",
+    "lectulus",
+    "nāvis",
+    "currus",
+    "vestis",
+    "toga",
+    "caput"
+   ]
+  },
+  "ōrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "ōscitō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "ōsculor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "ostendō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "body",
+    "place"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "paeniteō": {
+   "subj": [],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "palleō": {
+   "subj": [
+    "person",
+    "body"
+   ],
+   "obj": []
+  },
+  "palpitō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "cor",
+    "vēna",
+    "pectus"
+   ]
+  },
+  "parcō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal",
+    "place",
+    "thing",
+    "group"
+   ]
+  },
+  "pareō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "pariō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "māter",
+    "femina",
+    "mulier",
+    "uxor",
+    "avis",
+    "ovis",
+    "bōs",
+    "canis",
+    "aquila",
+    "dea"
+   ],
+   "obj_only": [
+    "ovum",
+    "fīlius",
+    "fīlia",
+    "īnfans",
+    "agnus",
+    "līberī"
+   ]
+  },
+  "parō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "cēna",
+    "nāvis",
+    "arma",
+    "lectulus",
+    "mēnsa",
+    "dōnum",
+    "iter",
+    "convīvium"
+   ]
+  },
+  "partior": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "abstract"
+   ]
+  },
+  "pāscō": {
+   "subj": [],
+   "obj": [
+    "animal"
+   ],
+   "subj_only": [
+    "pāstor",
+    "agricola",
+    "colōnus",
+    "servus",
+    "puer"
+   ]
+  },
+  "pateō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "ōstium",
+    "fenestra",
+    "iānua",
+    "porta",
+    "foris",
+    "via",
+    "mare",
+    "campus",
+    "ager",
+    "forum",
+    "domūs"
+   ]
+  },
+  "patior": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "pellō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing"
+   ]
+  },
+  "percurrō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "place"
+   ],
+   "obj_also": [
+    "līber",
+    "epistula",
+    "tabula",
+    "pāgina",
+    "versūs",
+    "carmen",
+    "epigramma",
+    "libellus",
+    "corpus",
+    "membrum"
+   ]
+  },
+  "percutiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "obj_also": [
+    "ōstium",
+    "iānua",
+    "porta",
+    "mēnsa",
+    "mūrus",
+    "saxum"
+   ]
+  },
+  "perdō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "vīta",
+    "patria",
+    "tempus",
+    "spēs",
+    "fidēs",
+    "nāvis",
+    "exercitus"
+   ]
+  },
+  "pereō": {
+   "subj": [
+    "person",
+    "animal",
+    "group",
+    "thing"
+   ],
+   "obj": []
+  },
+  "perferō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "epistula",
+    "nūntius",
+    "pecūnia",
+    "dōnum",
+    "mercēs",
+    "dolor",
+    "famēs",
+    "sitis",
+    "poena",
+    "iniūria",
+    "frīgus",
+    "calor",
+    "mors",
+    "verber",
+    "supplicium",
+    "vulnus",
+    "timor",
+    "metus",
+    "tempestās",
+    "cāsus",
+    "fortūna"
+   ]
+  },
+  "perficiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "abstract"
+   ]
+  },
+  "pergō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": []
+  },
+  "permittō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "ut",
+    "acc_inf",
+    "inf"
+   ]
+  },
+  "permoveō": {
+   "subj": [
+    "person",
+    "abstract",
+    "nature",
+    "thing"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ]
+  },
+  "persequor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "persuādeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "ut",
+    "acc_inf"
+   ]
+  },
+  "perterreō": {
+   "subj": [
+    "animal",
+    "person",
+    "nature",
+    "abstract"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "perveniō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "pessimō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "abstract"
+   ],
+   "takes": [
+    "none"
+   ]
+  },
+  "petō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "food"
+   ]
+  },
+  "pingō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature",
+    "body"
+   ]
+  },
+  "pīpiō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "passer",
+    "avis",
+    "īnfans"
+   ]
+  },
+  "placeō": {
+   "subj": [
+    "person",
+    "thing",
+    "abstract",
+    "food",
+    "nature",
+    "animal",
+    "place"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "plaudō": {
+   "subj": [
+    "person",
+    "group",
+    "animal"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "group"
+   ],
+   "dat_also": [
+    "cantus",
+    "carmen",
+    "cōmoedia",
+    "victōria",
+    "ars",
+    "fābula",
+    "epigramma",
+    "versūs",
+    "versiculus",
+    "certāmen",
+    "cursūs",
+    "equus",
+    "currus",
+    "delphīnus"
+   ]
+  },
+  "plōrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "polliceor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "abstract"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf",
+    "inf"
+   ]
+  },
+  "pōnō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "mēnsa",
+    "sella",
+    "lectulus"
+   ]
+  },
+  "portō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "poscō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "possideō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "animal",
+    "group",
+    "place"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "servus",
+    "ancilla",
+    "dīvitiae",
+    "nāvis",
+    "vīlla",
+    "domūs"
+   ]
+  },
+  "possum": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "nature"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "postulō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra",
+    "pāx",
+    "auxilium",
+    "silentium"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "pōtō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "aqua",
+    "vīnum",
+    "lac",
+    "pōtiō",
+    "sūcus"
+   ]
+  },
+  "praeferō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "food",
+    "abstract"
+   ],
+   "dat": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "food",
+    "abstract"
+   ]
+  },
+  "praeponō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "person"
+   ],
+   "dat": [
+    "group",
+    "place",
+    "thing"
+   ]
+  },
+  "praestō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "group",
+    "abstract",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj_also": [
+    "officium",
+    "mūnus",
+    "auxilium",
+    "opus",
+    "iūs",
+    "silentium"
+   ]
+  },
+  "praesum": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "group",
+    "place",
+    "person",
+    "thing"
+   ]
+  },
+  "praetereō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "place",
+    "thing"
+   ]
+  },
+  "precor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "deus",
+    "dea"
+   ]
+  },
+  "prehendō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "premō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj": [
+    "person",
+    "body"
+   ],
+   "obj_also": [
+    "ūva",
+    "olea",
+    "saccus"
+   ]
+  },
+  "prōcēdō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "prōcurrō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "prōferō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food"
+   ]
+  },
+  "proficīscor": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "prōgredior": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "prohibeō": {
+   "subj": [
+    "person",
+    "nature",
+    "abstract",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ]
+  },
+  "prōiciō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "person",
+    "animal",
+    "body"
+   ]
+  },
+  "prōmittō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "abstract"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf",
+    "inf"
+   ]
+  },
+  "prōmō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "food"
+   ]
+  },
+  "properō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "prōsiliō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "prōspiciō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_also": [
+    "mare",
+    "terra",
+    "lītus",
+    "portūs",
+    "nāvis"
+   ]
+  },
+  "prōsum": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "abstract",
+    "food"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal",
+    "place",
+    "group"
+   ]
+  },
+  "proximō": {
+   "subj": [
+    "person",
+    "animal",
+    "group",
+    "nature",
+    "thing"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "place",
+    "thing"
+   ]
+  },
+  "pudet": {
+   "subj": [],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "pugnō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "pulsō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "obj_also": [
+    "ōstium",
+    "iānua",
+    "porta",
+    "foris",
+    "mēnsa"
+   ]
+  },
+  "pūniō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "putō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "quaerō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "quatiō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "body",
+    "person"
+   ]
+  },
+  "queror": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "quiēscō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "canis",
+    "equus",
+    "ovis",
+    "bōs",
+    "asinus",
+    "leō",
+    "lupus",
+    "taurus",
+    "agnus",
+    "grex",
+    "pecus",
+    "bēstia",
+    "animal"
+   ]
+  },
+  "rapiō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "recēdō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "recipiō": {
+   "subj": [
+    "person",
+    "place",
+    "group",
+    "thing"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "food",
+    "abstract"
+   ]
+  },
+  "recitō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "līber",
+    "epistula",
+    "carmen",
+    "versūs",
+    "libellus",
+    "epigramma",
+    "versiculus",
+    "fābula",
+    "sententia"
+   ]
+  },
+  "recognōscō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "abstract"
+   ]
+  },
+  "recumbō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "reddō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "redeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "redimō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "nāvis",
+    "ager",
+    "vīlla",
+    "domūs",
+    "praedium",
+    "vīnea",
+    "hortus",
+    "taberna",
+    "lībertās",
+    "vīta",
+    "salūs",
+    "pāx"
+   ]
+  },
+  "redūcō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj_also": [
+    "nāvis"
+   ]
+  },
+  "referō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "person",
+    "animal",
+    "abstract"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "rēgnō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "rēx",
+    "rēgīna",
+    "tyrannus",
+    "prīnceps",
+    "imperātor",
+    "deus"
+   ]
+  },
+  "regō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "place",
+    "group",
+    "person"
+   ]
+  },
+  "relinquō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "place"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "pecūnia",
+    "līber",
+    "epistula",
+    "gladius",
+    "arma",
+    "nāvis",
+    "lectīca",
+    "baculum",
+    "cibus",
+    "vestis",
+    "toga",
+    "pallium"
+   ]
+  },
+  "remaneō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj": []
+  },
+  "rēmigō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "nauta",
+    "servus",
+    "mīles",
+    "gubernātor",
+    "piscātor",
+    "vir",
+    "homō",
+    "puer",
+    "pīrāta",
+    "mercātor"
+   ]
+  },
+  "reminīscor": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "gen",
+    "acc_inf"
+   ]
+  },
+  "remittō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "thing"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "remōveō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "body",
+    "food"
+   ]
+  },
+  "reperiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "reprehendō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "repugnō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal",
+    "group",
+    "abstract",
+    "thing"
+   ]
+  },
+  "requiēscō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "requīrō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "food",
+    "place",
+    "abstract"
+   ]
+  },
+  "resistō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [],
+   "dat": [
+    "person",
+    "animal",
+    "group",
+    "nature"
+   ]
+  },
+  "respondeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "retineō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "retrahō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "body"
+   ]
+  },
+  "reveniō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "revertō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": []
+  },
+  "revocō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "rīdeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "rigō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "subj_also": [
+    "imber",
+    "flūmen"
+   ],
+   "obj_only": [
+    "ager",
+    "hortus",
+    "campus",
+    "vīnea",
+    "terra",
+    "herba",
+    "arbor",
+    "flōs"
+   ]
+  },
+  "rogitō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "rogō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "rubeō": {
+   "subj": [
+    "person",
+    "body"
+   ],
+   "obj": [],
+   "subj_also": [
+    "rosa",
+    "sōl",
+    "caelum",
+    "vīnum",
+    "sanguis"
+   ]
+  },
+  "rumpō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "catēna",
+    "fūnis",
+    "vestis",
+    "toga",
+    "tunica",
+    "rēte",
+    "laqueus",
+    "vēlum",
+    "līnea",
+    "fīlum",
+    "silentium"
+   ]
+  },
+  "sacrificō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "animal"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "saliō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "salūtō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person"
+   ]
+  },
+  "salveō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "sānō": {
+   "subj": [],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "subj_only": [
+    "medicus"
+   ]
+  },
+  "sapiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "scindō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "epistula",
+    "charta",
+    "vēlum",
+    "līber",
+    "rēte"
+   ]
+  },
+  "sciō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "abstract"
+   ],
+   "takes": [
+    "acc_inf",
+    "inf"
+   ]
+  },
+  "scrībō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "epistula",
+    "littera",
+    "verbum",
+    "vocābulum",
+    "nōmen",
+    "carmen",
+    "versūs",
+    "sententia",
+    "epigramma",
+    "versiculus",
+    "numerus",
+    "titulus",
+    "syllaba",
+    "libellus"
+   ]
+  },
+  "secō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "body",
+    "food"
+   ],
+   "obj_also": [
+    "arbor",
+    "rāmus",
+    "lignum",
+    "herba",
+    "fūnis",
+    "vestis",
+    "līnea",
+    "fīlum"
+   ]
+  },
+  "sedeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "sēdō": {
+   "subj": [
+    "person",
+    "nature",
+    "abstract"
+   ],
+   "obj": [
+    "abstract",
+    "nature",
+    "group"
+   ]
+  },
+  "sentiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "obj_only": [
+    "dolor",
+    "timor",
+    "calor",
+    "frīgus",
+    "metus",
+    "amor",
+    "gaudium",
+    "odium",
+    "famēs",
+    "sitis",
+    "pudor",
+    "laetitia",
+    "trīstitia",
+    "īra",
+    "invidia"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "sequor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "serō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "agricola",
+    "colōnus",
+    "servus"
+   ],
+   "obj_only": [
+    "arbor",
+    "herba",
+    "flōs",
+    "rosa",
+    "līlium",
+    "folium",
+    "rāmus",
+    "ūva",
+    "olea",
+    "sēmen",
+    "frūmentum",
+    "frūgēs"
+   ]
+  },
+  "serviō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat": [
+    "person"
+   ]
+  },
+  "servō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "patria",
+    "urbs",
+    "vīta",
+    "salūs",
+    "nāvis"
+   ]
+  },
+  "significō": {
+   "subj": [],
+   "obj": [
+    "abstract",
+    "thing"
+   ],
+   "subj_only": [
+    "verbum",
+    "vocābulum",
+    "nōmen",
+    "littera",
+    "signum",
+    "syllaba",
+    "sententia",
+    "titulus"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "signō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "epistula",
+    "tabella",
+    "tabula",
+    "cēra",
+    "libellus",
+    "charta"
+   ]
+  },
+  "sileō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "sinō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "soleō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "inf"
+   ]
+  },
+  "solvō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "catēna",
+    "fūnis",
+    "nāvis",
+    "pecūnia"
+   ]
+  },
+  "sordeō": {
+   "subj": [
+    "thing",
+    "body",
+    "person"
+   ],
+   "obj": []
+  },
+  "spargō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "sēmen",
+    "aqua",
+    "sāl",
+    "flōs",
+    "rosa"
+   ]
+  },
+  "spectō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "spērō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "salūs",
+    "lucrum",
+    "pāx",
+    "victōria",
+    "praemium",
+    "auxilium"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "spīrō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "statuō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [],
+   "obj_only": [
+    "cōnsilium",
+    "poena",
+    "praemium",
+    "diēs",
+    "signum",
+    "columna",
+    "templum",
+    "mūrus",
+    "castra",
+    "aedificium",
+    "lēx",
+    "fīnis",
+    "modus",
+    "pretium",
+    "condiciō",
+    "iter",
+    "nāvigātiō",
+    "pāx"
+   ],
+   "takes": [
+    "inf",
+    "ut"
+   ]
+  },
+  "sternō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [],
+   "obj_only": [
+    "lectulus",
+    "mēnsa",
+    "flōs",
+    "rosa",
+    "folium",
+    "herba",
+    "hostis",
+    "mīles",
+    "arbor",
+    "vestis",
+    "pallium",
+    "toga"
+   ]
+  },
+  "stō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "studeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "dat_only": [
+    "littera",
+    "ars",
+    "lingua",
+    "carmen",
+    "līber",
+    "glōria",
+    "pecūnia",
+    "laus",
+    "virtūs",
+    "pāx",
+    "bellum",
+    "lucrum",
+    "ōtium",
+    "negōtium",
+    "versūs",
+    "epigramma",
+    "cōmoedia",
+    "rēs",
+    "vīnum",
+    "lūdus",
+    "certāmen",
+    "victōria",
+    "lībertās",
+    "amor",
+    "salūs",
+    "numerus",
+    "vocābulum",
+    "verbum",
+    "sententia",
+    "exemplum",
+    "imperium",
+    "fāma",
+    "fortūna",
+    "potestās",
+    "ratiō",
+    "ingenium",
+    "opus",
+    "studium",
+    "pugna",
+    "proelium"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "stupeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "suādeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "cōnsilium",
+    "pāx",
+    "fuga",
+    "mora",
+    "silentium",
+    "iter",
+    "nāvigātiō",
+    "bellum",
+    "ōtium"
+   ],
+   "dat": [
+    "person"
+   ],
+   "takes": [
+    "ut"
+   ]
+  },
+  "subeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "submergō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "nāvis",
+    "nāvicula",
+    "ratis",
+    "rēmus",
+    "currus",
+    "caput",
+    "corpus",
+    "saxum",
+    "arma",
+    "gladius",
+    "ānulus",
+    "pecūnia",
+    "pōculum",
+    "vāsum",
+    "saccus",
+    "sacculus",
+    "pila",
+    "rēte",
+    "catēna",
+    "clāvis",
+    "culter"
+   ]
+  },
+  "sum": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "abstract",
+    "nature",
+    "body",
+    "food",
+    "group",
+    "time"
+   ],
+   "obj": [],
+   "takes": [
+    "pred"
+   ]
+  },
+  "sūmō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra"
+   ]
+  },
+  "supersum": {
+   "subj": [
+    "thing",
+    "food",
+    "person",
+    "animal",
+    "abstract"
+   ],
+   "obj": []
+  },
+  "surgō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "surripiō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "animal"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "suscitō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "tumultus",
+    "bellum",
+    "tempestās",
+    "pugna",
+    "clāmor"
+   ]
+  },
+  "suspiciō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "nature",
+    "thing",
+    "place",
+    "person"
+   ]
+  },
+  "sustineō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing"
+   ],
+   "obj": [],
+   "obj_only": [
+    "saccus",
+    "mūrus",
+    "columna",
+    "arma",
+    "scūtum",
+    "caput",
+    "corpus",
+    "hasta",
+    "gladius",
+    "lectīca"
+   ]
+  },
+  "taceō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "tangō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "tegō": {
+   "subj": [
+    "person",
+    "nature"
+   ],
+   "obj": [
+    "person",
+    "body"
+   ],
+   "obj_also": [
+    "caput",
+    "corpus",
+    "terra",
+    "campus",
+    "ager",
+    "mēnsa",
+    "lectulus",
+    "saccus",
+    "vāsum",
+    "pōculum",
+    "via",
+    "mūrus"
+   ]
+  },
+  "teneō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "tergeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [],
+   "obj_only": [
+    "mēnsa",
+    "pōculum",
+    "vāsum",
+    "speculum",
+    "gladius",
+    "manūs",
+    "ōs",
+    "faciēs",
+    "oculus",
+    "nāsus",
+    "corpus",
+    "pēs",
+    "lacrima",
+    "sanguis"
+   ]
+  },
+  "terreō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "timeō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ],
+   "takes": [
+    "inf"
+   ]
+  },
+  "tollō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus"
+   ]
+  },
+  "trādō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food",
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "pecūnia",
+    "nummus",
+    "dēnārius",
+    "sēstertius",
+    "assis",
+    "rosa",
+    "līlium",
+    "flōs",
+    "līber",
+    "libellus",
+    "epistula",
+    "dōnum",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "pirum",
+    "pānis",
+    "aqua",
+    "vīnum",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "sacculus",
+    "saccus",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "calceus",
+    "pōculum",
+    "vāsum",
+    "praemium",
+    "mercēs",
+    "stīpendium",
+    "ōsculum",
+    "bāsium",
+    "tabula",
+    "tabella",
+    "speculum",
+    "pila",
+    "lucerna",
+    "clāvis",
+    "pecūlium",
+    "stilus",
+    "rēgula",
+    "virga",
+    "signum",
+    "imāgō",
+    "catēna",
+    "rēte",
+    "fūnis",
+    "penna",
+    "calamus",
+    "charta",
+    "cēra"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "trahō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "currus",
+    "nāvis"
+   ]
+  },
+  "trānseō": {
+   "subj": [
+    "person",
+    "animal",
+    "group",
+    "nature"
+   ],
+   "obj": [
+    "place"
+   ],
+   "obj_also": [
+    "mūrus",
+    "vāllum",
+    "līmen",
+    "unda",
+    "moenia"
+   ]
+  },
+  "trānsferō": {
+   "subj": [
+    "person",
+    "animal",
+    "group",
+    "nature",
+    "thing"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group",
+    "thing",
+    "food",
+    "abstract"
+   ]
+  },
+  "tremō": {
+   "subj": [
+    "person",
+    "animal",
+    "thing",
+    "place"
+   ],
+   "obj": []
+  },
+  "tueor": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "group"
+   ]
+  },
+  "tumultuō": {
+   "subj": [
+    "person",
+    "group",
+    "animal"
+   ],
+   "obj": []
+  },
+  "tuor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature",
+    "body"
+   ]
+  },
+  "turbō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "group"
+   ],
+   "obj_only": [
+    "aqua",
+    "mare",
+    "unda",
+    "flūctus",
+    "animus",
+    "mēns",
+    "pāx",
+    "ōtium",
+    "silentium",
+    "convīvium",
+    "cēna",
+    "lūdus",
+    "somnus",
+    "sermō",
+    "turba",
+    "exercitus",
+    "familia"
+   ]
+  },
+  "uadō": {
+   "subj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "obj": [],
+   "takes": [
+    "none"
+   ]
+  },
+  "ululō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "lupus"
+   ]
+  },
+  "ūrō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "thing",
+    "person",
+    "body",
+    "place"
+   ],
+   "subj_also": [
+    "ignis",
+    "sōl"
+   ]
+  },
+  "ūtor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [],
+   "takes": [
+    "abl"
+   ]
+  },
+  "vāgiō": {
+   "subj": [],
+   "obj": [],
+   "subj_only": [
+    "īnfans"
+   ]
+  },
+  "valeō": {
+   "subj": [
+    "person"
+   ],
+   "obj": []
+  },
+  "vehō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "food"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "lignum",
+    "saxum",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "praemium",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum"
+   ]
+  },
+  "vēndō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "food",
+    "animal"
+   ],
+   "obj_also": [
+    "saccus",
+    "sacculus",
+    "lectīca",
+    "līber",
+    "epistula",
+    "pecūnia",
+    "nummus",
+    "rosa",
+    "līlium",
+    "baculum",
+    "gladius",
+    "hasta",
+    "scūtum",
+    "arma",
+    "vestis",
+    "toga",
+    "tunica",
+    "pallium",
+    "ānulus",
+    "gemma",
+    "margarīta",
+    "ōrnāmentum",
+    "dōnum",
+    "mercēs",
+    "merx",
+    "vāsum",
+    "pōculum",
+    "lucerna",
+    "tabula",
+    "tabella",
+    "libellus",
+    "speculum",
+    "pila",
+    "catēna",
+    "clāvis",
+    "flōs",
+    "folium",
+    "rāmus",
+    "lignum",
+    "saxum",
+    "aqua",
+    "vīnum",
+    "pānis",
+    "cibus",
+    "mel",
+    "lac",
+    "ovum",
+    "pirum",
+    "ūva",
+    "olea",
+    "carō",
+    "holus",
+    "nux",
+    "frūmentum",
+    "pecūlium",
+    "praemium",
+    "stīpendium",
+    "sēmen",
+    "rēte",
+    "fūnis",
+    "culter",
+    "falx",
+    "arātrum",
+    "īnstrūmentum",
+    "charta",
+    "cēra",
+    "calamus",
+    "stilus",
+    "rēgula",
+    "virga",
+    "vestīmentum",
+    "calceus",
+    "persōna",
+    "imāgō",
+    "signum",
+    "penna",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "clipeus",
+    "laqueus",
+    "lāna",
+    "ratis",
+    "rēmus",
+    "servus",
+    "ancilla",
+    "vīlla",
+    "domūs",
+    "ager",
+    "hortus",
+    "vīnea",
+    "praedium",
+    "taberna",
+    "nāvis"
+   ],
+   "dat": [
+    "person"
+   ]
+  },
+  "veniō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "verberō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "vereor": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "nature",
+    "abstract"
+   ]
+  },
+  "versō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "thing",
+    "body",
+    "person"
+   ]
+  },
+  "vertō": {
+   "subj": [
+    "person",
+    "animal",
+    "nature"
+   ],
+   "obj": [
+    "body"
+   ],
+   "obj_also": [
+    "nāvis",
+    "currus",
+    "equus",
+    "caput",
+    "oculus",
+    "vultus",
+    "faciēs"
+   ]
+  },
+  "vestiō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "body"
+   ]
+  },
+  "vetō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "group"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "videō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "thing",
+    "place",
+    "nature",
+    "body"
+   ],
+   "takes": [
+    "acc_inf"
+   ]
+  },
+  "vigilō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "vinciō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "vincō": {
+   "subj": [
+    "person",
+    "group"
+   ],
+   "obj": [
+    "person",
+    "group"
+   ]
+  },
+  "vīsō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "place"
+   ]
+  },
+  "vītō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "place",
+    "abstract",
+    "nature"
+   ]
+  },
+  "vīvō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": []
+  },
+  "vocō": {
+   "subj": [
+    "person"
+   ],
+   "obj": [
+    "person",
+    "animal"
+   ]
+  },
+  "volō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "thing",
+    "food",
+    "abstract"
+   ],
+   "takes": [
+    "inf",
+    "acc_inf"
+   ]
+  },
+  "vorō": {
+   "subj": [
+    "animal",
+    "person"
+   ],
+   "obj": [
+    "food",
+    "animal",
+    "person"
+   ]
+  },
+  "vulnerō": {
+   "subj": [
+    "person",
+    "animal"
+   ],
+   "obj": [
+    "person",
+    "animal",
+    "body"
+   ],
+   "subj_also": [
+    "gladius",
+    "hasta",
+    "sagitta",
+    "pīlum",
+    "ēnsis",
+    "scūtum",
+    "arma",
+    "culter",
+    "falx",
+    "saxum",
+    "dēns",
+    "cornū",
+    "scalpellus",
+    "ferrum",
+    "verbum"
+   ]
+  }
+ }
+}

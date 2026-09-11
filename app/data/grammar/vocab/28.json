@@ -103,7 +103,21 @@
    "sense_full": "choose, select",
    "parts": "optō, optāre, optāvī, optātum",
    "unit_id": "w05:nausicaa:211.3",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "abstract",
+     "food"
+    ],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "potestās",
@@ -185,6 +199,10 @@
     "obj": [],
     "dat": [
      "person"
+    ],
+    "takes": [
+     "ut",
+     "acc_inf"
     ]
    }
   },
@@ -236,6 +254,9 @@
     ],
     "obj": [
      "person"
+    ],
+    "takes": [
+     "ut"
     ]
    }
   },
@@ -270,7 +291,21 @@
    "sense_full": "prefer, want more",
    "parts": "mālō, mālle, māluī",
    "unit_id": "w06:152.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "abstract"
+    ],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "immortālis",
@@ -282,7 +317,14 @@
    "sense_full": "immortal, not subject to death",
    "parts": null,
    "unit_id": "w06:42.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person",
+     "abstract",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "precor",
@@ -356,7 +398,17 @@
    "sense_full": "stretch or thrust out",
    "parts": "extendō, extendere, extendī, extensum",
    "unit_id": "w06:48.2",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "body",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "impendeō",
@@ -368,7 +420,20 @@
    "sense_full": "overhang, hang over",
    "parts": "impendeō, impendēre",
    "unit_id": "w06:126.4",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "abstract",
+     "nature",
+     "thing"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "place",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "morior",
@@ -399,7 +464,13 @@
    "sense_full": "born, arisen",
    "parts": null,
    "unit_id": "w06:21.2",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "potius",
@@ -423,7 +494,22 @@
    "sense_full": "whole, entire",
    "parts": null,
    "unit_id": "w06:34.3",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "versō",
@@ -435,7 +521,19 @@
    "sense_full": "keep turning or going round, spin, whirl",
    "parts": "versō, versāre, versavī, versātum",
    "unit_id": "w06:84.2",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "body",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "adiuvō",
@@ -578,7 +676,26 @@
    "sense_full": "encourage, stir up",
    "parts": "suscitō, suscitāre, suscitāvī, suscitatum",
    "unit_id": "w06:64.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "tumultus",
+     "bellum",
+     "tempestās",
+     "pugna",
+     "clāmor"
+    ]
+   }
   },
   {
    "lemma": "velut",
@@ -611,8 +728,93 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "body"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -626,7 +828,14 @@
    "sense_full": "turn or stretch towards",
    "parts": "attendō, attendere, attendī, attentum",
    "unit_id": "w06:109.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "caecus",
@@ -656,7 +865,22 @@
    "sense_full": "roll out, unroll",
    "parts": "ēvolvō, ēvolvere, ēvolvī, evolutum",
    "unit_id": "w06:56.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "līber",
+     "libellus",
+     "epistula",
+     "charta",
+     "vēlum",
+     "fīlum"
+    ]
+   }
   },
   {
    "lemma": "fretum",
@@ -706,7 +930,18 @@
    "sense_full": "remember",
    "parts": "memorō, memorāre, memorāvī, memoratum",
    "unit_id": "w06:51.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "abstract"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "rēgnō",
@@ -742,7 +977,15 @@
    "sense_full": "Sicilian (mare Siculum, the sea south of Sicily)",
    "parts": null,
    "unit_id": "w06:1.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "place",
+     "group",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "cessō",
@@ -773,7 +1016,21 @@
    "sense_full": "unyoke",
    "parts": "disiungō, disiungere, disiunxī, disiunctum",
    "unit_id": "w06:1.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "bōs",
+     "equus",
+     "asinus",
+     "taurus",
+     "currus",
+     "nāvis"
+    ]
+   }
   },
   {
    "lemma": "fāma",
@@ -842,7 +1099,24 @@
    "sense_full": "appear, originate",
    "parts": "coorior, coorīrī, coortus sum",
    "unit_id": "w05:nausicaa:165.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "tempestās",
+     "imber",
+     "tumultus",
+     "bellum",
+     "pugna",
+     "proelium",
+     "clāmor",
+     "fulgur",
+     "tonitrus",
+     "ignis",
+     "turba"
+    ]
+   }
   },
   {
    "lemma": "deponō",
@@ -854,7 +1128,39 @@
    "sense_full": "put, lay down, aside, away",
    "parts": "deponō, deponere, deposivī, dēpositum",
    "unit_id": "w05:nausicaa:182.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "saccus",
+     "sacculus",
+     "arma",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "baculum",
+     "pecūnia",
+     "pōculum",
+     "līber",
+     "epistula",
+     "ānulus",
+     "corpus",
+     "toga",
+     "tunica",
+     "vestis",
+     "vestīmentum",
+     "pallium",
+     "calceus",
+     "timor",
+     "metus",
+     "spēs",
+     "īra"
+    ]
+   }
   },
   {
    "lemma": "egeō",
@@ -866,7 +1172,20 @@
    "sense_full": "need (with the genitive or ablative), lack, want",
    "parts": "egeō, egēre, eguī",
    "unit_id": "w05:nausicaa:200.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "place",
+     "group",
+     "thing"
+    ],
+    "obj": [],
+    "takes": [
+     "abl"
+    ]
+   }
   },
   {
    "lemma": "exaudiō",
@@ -878,7 +1197,32 @@
    "sense_full": "hear clearly",
    "parts": "exaudiō, exaudīre, exaudīvī, exauditum",
    "unit_id": "w06:84.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "vōx",
+     "clāmor",
+     "verbum",
+     "sonus",
+     "cantus",
+     "prex",
+     "strepitus",
+     "fābula",
+     "nōmen",
+     "sermō",
+     "carmen",
+     "tonitrus",
+     "cachinnus"
+    ]
+   }
   },
   {
    "lemma": "experior",
@@ -890,7 +1234,17 @@
    "sense_full": "test, put to the test",
    "parts": "experior, experīrī, expertus sum",
    "unit_id": "w05:nausicaa:165.7",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "abstract",
+     "thing",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "nāscor",
@@ -960,7 +1314,15 @@
    "sense_full": "make commotion, disturbance, uproar, armed rising",
    "parts": "tumultuō, tumultuāre, tumultuavī, tumultuatum",
    "unit_id": "w06:67.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "turba",

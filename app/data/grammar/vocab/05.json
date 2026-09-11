@@ -31,8 +31,24 @@
     "obj": [
      "person",
      "animal",
-     "place",
-     "thing"
+     "place"
+    ],
+    "obj_also": [
+     "pecūnia",
+     "vīnum",
+     "rosa",
+     "līlium",
+     "flōs",
+     "ōtium",
+     "patria",
+     "lībertās",
+     "glōria",
+     "vīta",
+     "carmen",
+     "cantus",
+     "lūdus",
+     "mare",
+     "hortus"
     ]
    }
   },
@@ -70,7 +86,14 @@
    "sense_full": "only, single",
    "parts": null,
    "unit_id": "r05:23.2",
-   "count": 96
+   "count": 96,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "ex",
@@ -167,7 +190,20 @@
    "sense_full": "order, command, levy",
    "parts": "imperō, imperāre, imperāvī, imperātum",
    "unit_id": "r05:51.1",
-   "count": 40
+   "count": 40,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "group"
+    ],
+    "takes": [
+     "ut"
+    ]
+   }
   },
   {
    "lemma": "agō",
@@ -179,7 +215,27 @@
    "sense_full": "drive, urge, conduct, act",
    "parts": "agō, agere, ēgī, āctum",
    "unit_id": "r05:82.1",
-   "count": 36
+   "count": 36,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "ovis",
+     "bōs",
+     "porcus",
+     "pecus",
+     "grex",
+     "asinus",
+     "equus",
+     "taurus",
+     "agnus",
+     "negōtium",
+     "rēs",
+     "vīta"
+    ]
+   }
   },
   {
    "lemma": "habitō",
@@ -347,7 +403,7 @@
    "parts": null,
    "unit_id": "r05:27.1",
    "count": 8,
-   "sem": "thing"
+   "sem": "place"
   },
   {
    "lemma": "līlium",
@@ -372,7 +428,28 @@
    "sense_full": "seize, pick, pluck, gather",
    "parts": "carpō, carpere, carpsī, carptum",
    "unit_id": "r05:57.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "arbor",
+     "herba",
+     "flōs",
+     "rosa",
+     "līlium",
+     "folium",
+     "rāmus",
+     "ūva",
+     "olea",
+     "sēmen",
+     "frūmentum",
+     "frūgēs"
+    ]
+   }
   }
  ]
 }

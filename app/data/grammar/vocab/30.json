@@ -54,7 +54,16 @@
    "sense_full": "taste, sip",
    "parts": "gustō, gustāre, gustāvī, gustatum",
    "unit_id": "w08:b27.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "food"
+    ]
+   }
   },
   {
    "lemma": "cēnō",
@@ -66,7 +75,13 @@
    "sense_full": "dine, eat dinner or supper",
    "parts": "cēnō, cēnāre, cenavī, cenatum",
    "unit_id": "w08:b12.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "dēmum",
@@ -141,7 +156,30 @@
    "sense_full": "announce, report, bring word, give warning",
    "parts": "nūntiō, nūntiāre, nūntiāvī, nūntiātum",
    "unit_id": "w08:b8.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "mors",
+     "victōria",
+     "pāx",
+     "bellum",
+     "rēs",
+     "fūrtum",
+     "caedēs",
+     "nex",
+     "cāsus"
+    ],
+    "dat": [
+     "person"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "vāsum",
@@ -205,7 +243,22 @@
    "sense_full": "apiece (in the plural)",
    "parts": null,
    "unit_id": "w08:b21.6",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "sternō",
@@ -217,7 +270,28 @@
    "sense_full": "spread, strew, scatter",
    "parts": "sternō, sternere, strāvī, strātum",
    "unit_id": "w08:b21.4",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "lectulus",
+     "mēnsa",
+     "flōs",
+     "rosa",
+     "folium",
+     "herba",
+     "hostis",
+     "mīles",
+     "arbor",
+     "vestis",
+     "pallium",
+     "toga"
+    ]
+   }
   },
   {
    "lemma": "tardus",
@@ -264,7 +338,28 @@
    "sense_full": "enter into, upon relationship, agreement, business, deal with",
    "parts": "contrahō, contrahere, contraxī, contractum",
    "unit_id": "w08:b10.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "nature",
+     "abstract"
+    ],
+    "obj": [
+     "body"
+    ],
+    "obj_also": [
+     "vēlum",
+     "exercitus",
+     "mīles",
+     "cōpia",
+     "nāvis",
+     "classis",
+     "legiō",
+     "cohors",
+     "agmen"
+    ]
+   }
   },
   {
    "lemma": "dulcis",
@@ -306,7 +401,23 @@
    "sense_full": "draw out",
    "parts": "exhauriō, exhaurīre, exhausī, exhaustum",
    "unit_id": "w08:b35.5",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "pōculum",
+     "vāsum",
+     "aqua",
+     "vīnum",
+     "pecūnia",
+     "sacculus",
+     "lacūs",
+     "saccus"
+    ]
+   }
   },
   {
    "lemma": "fruor",
@@ -318,7 +429,17 @@
    "sense_full": "enjoy, profit by, delight in (with the ablative)",
    "parts": "fruor, fruārī, fruitus sum",
    "unit_id": "w08:b5.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "takes": [
+     "abl"
+    ]
+   }
   },
   {
    "lemma": "glōriōsus",
@@ -330,7 +451,14 @@
    "sense_full": "glorious, full of glory",
    "parts": null,
    "unit_id": "w08:b24.4",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person",
+     "abstract",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "iūcundus",
@@ -361,7 +489,21 @@
    "sense_full": "drink",
    "parts": "pōtō, pōtāre, pōtāvī, potatum",
    "unit_id": "w08:b29.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "aqua",
+     "vīnum",
+     "lac",
+     "pōtiō",
+     "sūcus"
+    ]
+   }
   },
   {
    "lemma": "sitis",
@@ -386,7 +528,13 @@
    "sense_full": "lie near or by",
    "parts": "accubō, accubāre, accubuī, accubitum",
    "unit_id": "w08:b21.6",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "acūtus",
@@ -428,7 +576,19 @@
    "sense_full": "sprinkle or strew on, splatter, splash",
    "parts": "aspergō, aspergere, aspersī, aspersum",
    "unit_id": "w08:b28.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "thing",
+     "body",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "balneum",
@@ -466,7 +626,21 @@
    "sense_full": "pick out, choose",
    "parts": "ēligō, ēligere, ēlēgī, ēlectum",
    "unit_id": "w08:b18.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "food",
+     "place",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "lībertīnus",
@@ -478,7 +652,13 @@
    "sense_full": "of a freedman",
    "parts": null,
    "unit_id": "w08:b29.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "merus",
@@ -490,7 +670,14 @@
    "sense_full": "unmixed (wine), pure, only",
    "parts": null,
    "unit_id": "w08:b29.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [],
+    "only": [
+     "vīnum",
+     "aqua"
+    ]
+   }
   },
   {
    "lemma": "misceō",
@@ -502,7 +689,25 @@
    "sense_full": "mix, mingle",
    "parts": "misceō, miscēre, miscuī, mixtum",
    "unit_id": "w08:b29.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [
+     "food"
+    ],
+    "obj_also": [
+     "cēra",
+     "aurum",
+     "argentum",
+     "ferrum",
+     "terra",
+     "sanguis",
+     "lacrima"
+    ]
+   }
   },
   {
    "lemma": "molestus",
@@ -544,7 +749,16 @@
    "sense_full": "bring forward",
    "parts": "prōferō, prōferre, prōtulī, prolatum",
    "unit_id": "w08:b35.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "prūdenter",
@@ -568,7 +782,22 @@
    "sense_full": "keep back",
    "parts": "recipiō, recipere, recēpī, receptum",
    "unit_id": "w08:b1.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "place",
+     "group",
+     "thing"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "food",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "vīsō",
@@ -580,7 +809,16 @@
    "sense_full": "visit, go to see",
    "parts": "vīsō, vīsere, vīsī, vīsum",
    "unit_id": "w08:b5.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "accumbō",
@@ -592,7 +830,13 @@
    "sense_full": "take a place or recline at the table",
    "parts": "accumbō, accumbere, accumbuī, accumbitum",
    "unit_id": "w08:b25.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "acerbus",
@@ -646,7 +890,15 @@
    "sense_full": "cook",
    "parts": "coquō, coquere, coxī, coctum",
    "unit_id": "w08:b20.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "food"
+    ]
+   }
   },
   {
    "lemma": "dīligēns",
@@ -675,7 +927,28 @@
    "sense_full": "beget, father, produce, procreate",
    "parts": "generō, generāre, generavī, generatum",
    "unit_id": "w08:b24.3",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "ūva",
+     "flōs",
+     "frūmentum",
+     "olea",
+     "sēmen",
+     "rosa",
+     "folium",
+     "frūgēs"
+    ]
+   }
   },
   {
    "lemma": "īmō",
@@ -699,7 +972,19 @@
    "sense_full": "be in charge, control, head(of) (with the dative)",
    "parts": "praesum, praeesse, praefuī, praefutūrum",
    "unit_id": "w08:b10.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "dat": [
+     "group",
+     "place",
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "prīdem",
@@ -723,7 +1008,20 @@
    "sense_full": "carry, convey, bring(to)",
    "parts": "apportō, apportāre, apportavī, apportatum",
    "unit_id": "w08:b32.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "compleō",
@@ -735,7 +1033,38 @@
    "sense_full": "fill (up/in)",
    "parts": "compleō, complēre, complevī, completum",
    "unit_id": "w08:b36.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "pōculum",
+     "vāsum",
+     "saccus",
+     "sacculus",
+     "nāvis",
+     "domūs",
+     "ātrium",
+     "forum",
+     "theātrum",
+     "circus",
+     "urbs",
+     "via",
+     "hortus",
+     "triclīnium",
+     "cubiculum",
+     "culīna",
+     "balneum",
+     "lacūs",
+     "oppidum",
+     "silva",
+     "campus",
+     "mare"
+    ]
+   }
   },
   {
    "lemma": "holus",
@@ -760,7 +1089,17 @@
    "sense_full": "invincible",
    "parts": null,
    "unit_id": "w08:b1.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "abstract",
+     "person",
+     "thing",
+     "nature",
+     "group",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "nux",
@@ -797,7 +1136,37 @@
    "sense_full": "carry through",
    "parts": "perferō, perferre, pertulī, perlatum",
    "unit_id": "w08:b17.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "epistula",
+     "nūntius",
+     "pecūnia",
+     "dōnum",
+     "mercēs",
+     "dolor",
+     "famēs",
+     "sitis",
+     "poena",
+     "iniūria",
+     "frīgus",
+     "calor",
+     "mors",
+     "verber",
+     "supplicium",
+     "vulnus",
+     "timor",
+     "metus",
+     "tempestās",
+     "cāsus",
+     "fortūna"
+    ]
+   }
   },
   {
    "lemma": "requiēscō",
@@ -809,7 +1178,14 @@
    "sense_full": "quiet down",
    "parts": "requiēscō, requiēscere, requievī, requietum",
    "unit_id": "w08:b5.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "summus",
@@ -821,7 +1197,19 @@
    "sense_full": "highest, topmost (lectus summus = the top couch at a Roman dinner)",
    "parts": null,
    "unit_id": "w08:b21.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "place",
+     "thing",
+     "abstract",
+     "body",
+     "nature",
+     "person",
+     "time",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "ūsus",

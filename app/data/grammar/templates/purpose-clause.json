@@ -1,0 +1,639 @@
+{
+ "skill": "purpose-clause",
+ "chapter": 28,
+ "templates": [
+  {
+   "id": "pur-t1",
+   "la": "{s:nom} ad {p:acc} {go:pres.ind} ut {o:acc} {v:pres.subj}.",
+   "en": "{s} {go} to {p} to {v:base} {o}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "urbs",
+      "oppidum",
+      "forum",
+      "vīlla",
+      "hortus",
+      "portus",
+      "lūdus",
+      "templum",
+      "silva",
+      "mare",
+      "flūmen",
+      "īnsula",
+      "taberna",
+      "theātrum",
+      "carcer",
+      "ātrium",
+      "cubiculum",
+      "culīna",
+      "campus",
+      "lītus"
+     ]
+    },
+    "go": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "currō",
+      "veniō",
+      "eō",
+      "ambulō",
+      "accurrō",
+      "redeō",
+      "adveniō",
+      "pergō",
+      "proficīscor"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal",
+      "thing",
+      "food"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "vocō",
+      "videō",
+      "emō",
+      "quaerō",
+      "arcessō",
+      "salūtō",
+      "audiō",
+      "spectō",
+      "laudō",
+      "adiuvō",
+      "iuvō",
+      "inveniō",
+      "capiō",
+      "vēndō",
+      "exspectō",
+      "sequor",
+      "servō",
+      "cūrō",
+      "līberō",
+      "reperiō",
+      "revocō",
+      "occultō",
+      "portō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7
+  },
+  {
+   "id": "pur-t2",
+   "la": "{s:nom} in {p:acc} {go:pres.ind} ut {v:pres.subj}.",
+   "en": "{s} {go} into {p} to {v:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "ātrium",
+      "cubiculum",
+      "silva",
+      "urbs",
+      "forum",
+      "lūdus",
+      "taberna",
+      "campus",
+      "vīlla",
+      "oppidum",
+      "mare",
+      "flūmen",
+      "templum",
+      "culīna",
+      "theātrum",
+      "peristylum"
+     ]
+    },
+    "go": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "exeō",
+      "currō",
+      "eō",
+      "veniō",
+      "redeō",
+      "intrō",
+      "accurrō",
+      "pergō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "lemmas": [
+      "lūdō",
+      "dormiō",
+      "quiēscō",
+      "sedeō",
+      "cēnō",
+      "labōrō",
+      "ambulō",
+      "canō",
+      "cantō",
+      "lavō",
+      "cubō",
+      "recumbō",
+      "vigilō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "v",
+   "words": 6
+  },
+  {
+   "id": "pur-t3",
+   "la": "{s:nom} {o:acc} {send:pres.ind} {rel:nom} {o2:acc} {v:pres.subj}.",
+   "en": "{s} {send} {o:a} to {v:base} {o2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "o": {
+     "sem": [
+      "person"
+     ],
+     "names": false,
+     "number": "any"
+    },
+    "send": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "mittō",
+      "vocō",
+      "arcessō"
+     ]
+    },
+    "rel": {
+     "pos": "PRON",
+     "lemma": "quī",
+     "agree": "o"
+    },
+    "o2": {
+     "sem": [
+      "thing",
+      "food",
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "rel",
+     "obj": "o2",
+     "lemmas": [
+      "ferō",
+      "portō",
+      "emō",
+      "vēndō",
+      "scrībō",
+      "legō",
+      "quaerō",
+      "parō",
+      "cūrō",
+      "custodiō",
+      "servō",
+      "vocō",
+      "arcessō",
+      "dūcō",
+      "aperiō",
+      "claudō",
+      "lavō",
+      "numerō",
+      "spectō",
+      "alō",
+      "pāscō",
+      "occultō",
+      "impleō",
+      "ōrnō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6
+  },
+  {
+   "id": "pur-t4",
+   "la": "{s:nom} {v1:pres.ind} nē {s2:nom} {pron:acc} {v2:pres.subj}.",
+   "en": "{s} {v1} so that {s2} may not {v2:base} {pron}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "taceō",
+      "fugiō",
+      "currō",
+      "sileō",
+      "lateō",
+      "effugiō",
+      "recēdō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "obj": "pron",
+     "lemmas": [
+      "audiō",
+      "videō",
+      "conspiciō",
+      "inveniō",
+      "capiō",
+      "reperiō",
+      "prehendō",
+      "pūniō",
+      "verberō",
+      "vocō",
+      "persequor",
+      "cōnsequor"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 6
+  },
+  {
+   "id": "pur-t5",
+   "la": "{s:nom} {door:acc} {v1:pres.ind} nē {a:nom} {v2:pres.subj}.",
+   "en": "{s} {v1} {door} so that {a} may not {v2:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "door": {
+     "only": [
+      "ōstium",
+      "iānua",
+      "porta",
+      "fenestra",
+      "foris"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "door",
+     "lemmas": [
+      "claudō"
+     ]
+    },
+    "a": {
+     "sem": [
+      "animal",
+      "person"
+     ],
+     "number": "any"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "a",
+     "absolute": true,
+     "lemmas": [
+      "intrō",
+      "exeō",
+      "fugiō",
+      "effugiō",
+      "veniō",
+      "adveniō",
+      "accēdō",
+      "ēgredior"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 6
+  },
+  {
+   "id": "pur-t6",
+   "la": "{s:nom} {o:acc} {v1:pres.ind} nē {adj:nom} fīat.",
+   "en": "{s} {v1} {o} so as not to become {adj}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "food"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "bibō",
+      "edō"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "aeger",
+      "fessus",
+      "trīstis",
+      "miser",
+      "timidus",
+      "pallidus",
+      "sordidus",
+      "aegrōtus",
+      "maestus"
+     ],
+     "pred": true
+    }
+   },
+   "focus": "fīat",
+   "words": 6
+  },
+  {
+   "id": "pur-t7",
+   "la": "{g:nom} {r:dat} {t:acc} {give:pres.ind} ut {o:acc} {v:pres.subj}.",
+   "en": "{g} {give} {r} {t:a} so that {r:pron} may {v:base} {o}.",
+   "slots": {
+    "g": {
+     "sem": [
+      "person"
+     ]
+    },
+    "r": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "t": {
+     "only": [
+      "pecūnia",
+      "nummus",
+      "dēnārius",
+      "sēstertius"
+     ],
+     "number": "any"
+    },
+    "give": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "g",
+     "obj": "t",
+     "dat": "r",
+     "lemmas": [
+      "dō"
+     ]
+    },
+    "o": {
+     "sem": [
+      "thing",
+      "food",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "r",
+     "obj": "o",
+     "lemmas": [
+      "emō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7
+  },
+  {
+   "id": "pur-t8",
+   "la": "{s:nom} {adv} {go:pres.ind} ut {prim:nom} {v:pres.subj}.",
+   "en": "{s} {go} {adv} to {v:base} {prim}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "celeriter",
+      "statim"
+     ]
+    },
+    "go": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "currō",
+      "proficīscor",
+      "surgō"
+     ]
+    },
+    "prim": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "prīmus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "lemmas": [
+      "adveniō",
+      "veniō",
+      "perveniō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6
+  },
+  {
+   "id": "pur-t9",
+   "la": "Ad {p:acc} {go:pres.ind.act.1pl} ut {o:acc} {v:pres.subj.act.1pl}.",
+   "en": "We {go} to {p} to {v:base} {o}.",
+   "slots": {
+    "p": {
+     "only": [
+      "forum",
+      "urbs",
+      "oppidum",
+      "vīlla",
+      "hortus",
+      "portus",
+      "lūdus",
+      "templum",
+      "silva",
+      "mare",
+      "flūmen",
+      "īnsula",
+      "taberna",
+      "theātrum",
+      "lītus"
+     ]
+    },
+    "go": {
+     "pos": "V",
+     "form": "pres.ind.act.1pl",
+     "subj": "nōs",
+     "lemmas": [
+      "eō",
+      "currō",
+      "ambulō",
+      "veniō",
+      "proficīscor",
+      "pergō"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "thing",
+      "animal",
+      "place"
+     ],
+     "number": "pl"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj.act.1pl",
+     "subj": "nōs",
+     "obj": "o",
+     "lemmas": [
+      "videō",
+      "salūtō",
+      "audiō",
+      "spectō",
+      "quaerō",
+      "exspectō",
+      "vocō",
+      "inveniō",
+      "laudō",
+      "adiuvō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 5
+  },
+  {
+   "id": "pur-t10",
+   "la": "{s:nom} {v1:pres.ind} ut {s2:nom} {v2:pres.subj}.",
+   "en": "{s} {v1} so that {s2} may {v2:base}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "clāmō",
+      "exclāmō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "pl",
+     "names": false
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "absolute": true,
+     "lemmas": [
+      "veniō",
+      "accurrō",
+      "audiō",
+      "taceō",
+      "surgō",
+      "adveniō",
+      "fugiō",
+      "exeō",
+      "redeō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5
+  }
+ ],
+ "exclude": []
+}

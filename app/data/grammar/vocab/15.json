@@ -206,8 +206,76 @@
      "person"
     ],
     "obj": [
-     "thing",
      "food"
+    ],
+    "obj_also": [
+     "pecūnia",
+     "nummus",
+     "dēnārius",
+     "sēstertius",
+     "assis",
+     "rosa",
+     "līlium",
+     "flōs",
+     "līber",
+     "libellus",
+     "epistula",
+     "dōnum",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "pirum",
+     "pānis",
+     "aqua",
+     "vīnum",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "sacculus",
+     "saccus",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "calceus",
+     "pōculum",
+     "vāsum",
+     "praemium",
+     "mercēs",
+     "stīpendium",
+     "ōsculum",
+     "bāsium",
+     "tabula",
+     "tabella",
+     "speculum",
+     "pila",
+     "lucerna",
+     "clāvis",
+     "pecūlium",
+     "stilus",
+     "rēgula",
+     "virga",
+     "signum",
+     "imāgō",
+     "catēna",
+     "rēte",
+     "fūnis",
+     "penna",
+     "calamus",
+     "charta",
+     "cēra"
     ],
     "dat": [
      "person"
@@ -240,10 +308,25 @@
    "count": 17,
    "sem": {
     "subj": [
-     "person",
-     "animal"
+     "person"
     ],
-    "obj": []
+    "obj": [],
+    "subj_also": [
+     "canis",
+     "equus",
+     "ovis",
+     "bōs",
+     "asinus",
+     "porcus",
+     "leō",
+     "lupus",
+     "taurus",
+     "agnus",
+     "grex",
+     "pecus",
+     "bēstia",
+     "animal"
+    ]
    }
   },
   {
@@ -256,7 +339,14 @@
    "sense_full": "it is permitted, one may",
    "parts": "licet, licēre, licuit (impersonal)",
    "unit_id": "r15:116.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "nōndum",
@@ -312,7 +402,19 @@
    "sense_full": "stop, end, finish, abandon, leave, break off, desist or cease",
    "parts": "dēsinō, dēsinere, desivī, desitum",
    "unit_id": "r15:65.3",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract"
+    ],
+    "obj": [],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "tergum",
@@ -381,7 +483,14 @@
    "sense_full": "below, beneath, underneath",
    "parts": null,
    "unit_id": "r15:74.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "place",
+     "thing",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "lectulus",

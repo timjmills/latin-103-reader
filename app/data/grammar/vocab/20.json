@@ -24,7 +24,21 @@
    "sense_full": "not want, be unwilling",
    "parts": "nōlō, nōlle, nōluī",
    "unit_id": "r20:16.1",
-   "count": 80
+   "count": 80,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "abstract"
+    ],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "cūrō",
@@ -45,6 +59,9 @@
      "person",
      "animal",
      "body"
+    ],
+    "takes": [
+     "ut"
     ]
    }
   },
@@ -71,7 +88,26 @@
    "sense_full": "owe",
    "parts": "dēbeō, dēbēre, dēbuī, dēbitum",
    "unit_id": "r20:81.2",
-   "count": 21
+   "count": 21,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "pecūnia",
+     "nummus",
+     "dēnārius",
+     "sēstertius",
+     "assis"
+    ],
+    "dat": [
+     "person"
+    ],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "revertō",
@@ -83,7 +119,15 @@
    "sense_full": "turn back, go back, return",
    "parts": "revertō, revertere, revertī",
    "unit_id": "r20:123.1",
-   "count": 19
+   "count": 19,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "maneō",
@@ -149,7 +193,8 @@
    "count": 16,
    "sem": {
     "subj": [
-     "person"
+     "person",
+     "group"
     ],
     "obj": []
    }
@@ -195,9 +240,82 @@
      "person"
     ],
     "obj": [
-     "thing",
-     "food",
-     "abstract"
+     "food"
+    ],
+    "obj_also": [
+     "pecūnia",
+     "nummus",
+     "dēnārius",
+     "sēstertius",
+     "assis",
+     "rosa",
+     "līlium",
+     "flōs",
+     "līber",
+     "libellus",
+     "epistula",
+     "dōnum",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "pirum",
+     "pānis",
+     "aqua",
+     "vīnum",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "sacculus",
+     "saccus",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "calceus",
+     "pōculum",
+     "vāsum",
+     "praemium",
+     "mercēs",
+     "stīpendium",
+     "ōsculum",
+     "bāsium",
+     "tabula",
+     "tabella",
+     "speculum",
+     "pila",
+     "lucerna",
+     "clāvis",
+     "pecūlium",
+     "stilus",
+     "rēgula",
+     "virga",
+     "signum",
+     "imāgō",
+     "catēna",
+     "rēte",
+     "fūnis",
+     "penna",
+     "calamus",
+     "charta",
+     "cēra",
+     "pāx",
+     "auxilium",
+     "silentium"
+    ],
+    "takes": [
+     "ut"
     ]
    }
   },
@@ -236,7 +354,18 @@
    "sense_full": "foreign",
    "parts": null,
    "unit_id": "r20:14.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "of": [
+     "thing",
+     "place",
+     "person",
+     "abstract",
+     "animal",
+     "food"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "alō",
@@ -269,7 +398,19 @@
    "sense_full": "be without, absent from, devoid of, free from",
    "parts": "careō, carēre, caruī, caritum",
    "unit_id": "r20:2.2",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing",
+     "place"
+    ],
+    "obj": [],
+    "takes": [
+     "abl"
+    ]
+   }
   },
   {
    "lemma": "vāgiō",
@@ -300,7 +441,17 @@
    "sense_full": "opposite, directly facing, ranged against",
    "parts": null,
    "unit_id": "r20:64.1",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "of": [
+     "person",
+     "group",
+     "nature",
+     "thing",
+     "place",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "nūtrīx",
@@ -355,7 +506,14 @@
    "sense_full": "it is fitting, right, seemly, suitable",
    "parts": "decet, decēre, decuit (impersonal)",
    "unit_id": "r20:157.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "ūmidus",
@@ -385,7 +543,15 @@
    "sense_full": "necessary, needed, essential, indispensable",
    "parts": null,
    "unit_id": "r20:2.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "person",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "dīligō",
@@ -515,7 +681,18 @@
    "sense_full": "run to meet",
    "parts": "occurrō, occurrere, occucurrī, occursum",
    "unit_id": "r20:103.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "colloquium",
@@ -540,7 +717,16 @@
    "sense_full": "speak, talk",
    "parts": "for, fārī, fātus sum",
    "unit_id": "r20:1.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "māternus",
@@ -552,7 +738,15 @@
    "sense_full": "maternal, motherly, of a mother",
    "parts": null,
    "unit_id": "r20:39.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "body",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "praetereō",

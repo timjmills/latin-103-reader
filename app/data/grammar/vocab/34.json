@@ -37,7 +37,89 @@
    "sense_full": "marry, be married to",
    "parts": "nūbō, nūbere, nūpsī, nuptum",
    "unit_id": "w13:b27.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "fīlia",
+     "puella",
+     "virgō",
+     "mulier",
+     "femina",
+     "ancilla",
+     "dea",
+     "nympha",
+     "soror",
+     "rēgīna",
+     "magistra",
+     "anus",
+     "māter",
+     "domina",
+     "mātrōna",
+     "nūtrīx",
+     "uxor",
+     "Iūlia",
+     "Aemilia",
+     "Syra",
+     "Dēlia",
+     "Lȳdia"
+    ],
+    "dat_only": [
+     "vir",
+     "marītus",
+     "fīlius",
+     "puer",
+     "adulēscēns",
+     "iuvenis",
+     "senex",
+     "dominus",
+     "servus",
+     "mīles",
+     "nauta",
+     "mercātor",
+     "pāstor",
+     "agricola",
+     "colōnus",
+     "medicus",
+     "magister",
+     "poēta",
+     "rēx",
+     "prīnceps",
+     "senātor",
+     "tyrannus",
+     "deus",
+     "amīcus",
+     "frāter",
+     "hospes",
+     "convīva",
+     "gladiātor",
+     "aurīga",
+     "faber",
+     "cocus",
+     "minister",
+     "imperātor",
+     "lēgātus",
+     "dux",
+     "eques",
+     "piscātor",
+     "tībīcen",
+     "fidicen",
+     "praedō",
+     "pīrāta",
+     "fūr",
+     "gener",
+     "Iūlius",
+     "Mārcus",
+     "Quīntus",
+     "Dāvus",
+     "Mēdus",
+     "Cornēlius",
+     "Ursus",
+     "Albīnus",
+     "Sextus"
+    ]
+   }
   },
   {
    "lemma": "passer",
@@ -79,7 +161,35 @@
    "sense_full": "clap, strike (with flat hand), pat",
    "parts": "plaudō, plaudere, plausī, plausum",
    "unit_id": "w13:b10.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "group",
+     "animal"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "group"
+    ],
+    "dat_also": [
+     "cantus",
+     "carmen",
+     "cōmoedia",
+     "victōria",
+     "ars",
+     "fābula",
+     "epigramma",
+     "versūs",
+     "versiculus",
+     "certāmen",
+     "cursūs",
+     "equus",
+     "currus",
+     "delphīnus"
+    ]
+   }
   },
   {
    "lemma": "rēte",
@@ -117,7 +227,44 @@
    "sense_full": "kindle, set on fire, light",
    "parts": "accendō, accendere, accendī, accēnsum",
    "unit_id": "w13:b22.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "ignis",
+     "lucerna",
+     "lignum",
+     "arbor",
+     "silva",
+     "domūs",
+     "vīlla",
+     "nāvis",
+     "oppidum",
+     "templum",
+     "aedificium",
+     "castra",
+     "taberna",
+     "ratis",
+     "carcer",
+     "īra",
+     "amor",
+     "odium",
+     "timor",
+     "metus",
+     "bellum",
+     "pugna",
+     "cupiditās",
+     "invidia",
+     "spēs",
+     "animus",
+     "studium",
+     "certāmen"
+    ]
+   }
   },
   {
    "lemma": "dein",
@@ -166,7 +313,37 @@
    "sense_full": "implicate",
    "parts": "implicō, implicāre, implicavī, implicatum",
    "unit_id": "w13:b10.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "thing",
+     "abstract"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "body"
+    ],
+    "obj_also": [
+     "nāvis",
+     "rēmus",
+     "fūnis",
+     "catēna",
+     "rēte",
+     "laqueus",
+     "vestis",
+     "toga",
+     "pallium",
+     "animus",
+     "fīlum",
+     "līnea",
+     "stāmen",
+     "tēla"
+    ]
+   }
   },
   {
    "lemma": "libet",
@@ -178,7 +355,14 @@
    "sense_full": "it pleases, is pleasing or agreeable",
    "parts": "libet, libēre, libuit (impersonal)",
    "unit_id": "w13:b11.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "lūgeō",
@@ -190,7 +374,36 @@
    "sense_full": "mourn, grieve (over)",
    "parts": "lūgeō, lūgēre, luxī, luctum",
    "unit_id": "w13:b12.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "mors",
+     "cāsus",
+     "nex",
+     "caedēs",
+     "fātum",
+     "fortūna",
+     "patria",
+     "lībertās",
+     "glōria",
+     "vīta",
+     "salūs",
+     "fuga",
+     "servitūs",
+     "poena",
+     "supplicium",
+     "iniūria"
+    ]
+   }
   },
   {
    "lemma": "ratiō",
@@ -215,7 +428,15 @@
    "sense_full": "swollen, inflated, distended",
    "parts": null,
    "unit_id": "w13:b3.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "body",
+     "thing",
+     "nature",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "bāsium",
@@ -240,7 +461,25 @@
    "sense_full": "of the Circus",
    "parts": null,
    "unit_id": "w13:b12.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [],
+    "only": [
+     "lūdus",
+     "spectātor",
+     "aurīga",
+     "equus",
+     "currus",
+     "certāmen",
+     "cursūs",
+     "diēs",
+     "victōria",
+     "victor",
+     "turba",
+     "clāmor",
+     "tumultus"
+    ]
+   }
   },
   {
    "lemma": "circus",
@@ -291,7 +530,26 @@
    "sense_full": "gladiatorial",
    "parts": null,
    "unit_id": "w13:b9.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [],
+    "only": [
+     "lūdus",
+     "certāmen",
+     "pugna",
+     "spectātor",
+     "gladius",
+     "arma",
+     "familia",
+     "scūtum",
+     "ēnsis",
+     "mūnus",
+     "diēs",
+     "victōria",
+     "turba",
+     "clāmor"
+    ]
+   }
   },
   {
    "lemma": "gremium",
@@ -329,7 +587,54 @@
    "sense_full": "strike",
    "parts": "laedō, laedere, laesī, laesum",
    "unit_id": "w13:b4.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing",
+     "nature",
+     "abstract"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "body"
+    ],
+    "obj_also": [
+     "arbor",
+     "flōs",
+     "rosa",
+     "līlium",
+     "herba",
+     "vīnea",
+     "ager",
+     "hortus",
+     "nāvis",
+     "vestis",
+     "toga",
+     "līber",
+     "epistula",
+     "tabula",
+     "imāgō",
+     "signum",
+     "templum",
+     "columna",
+     "mūrus",
+     "fāma",
+     "glōria",
+     "amīcitia",
+     "pāx",
+     "salūs",
+     "amor",
+     "animus",
+     "pudor",
+     "lēx",
+     "iūs",
+     "patria",
+     "lībertās"
+    ]
+   }
   },
   {
    "lemma": "lucerna",
@@ -415,7 +720,13 @@
    "sense_full": "show good sense, be wise",
    "parts": "sapiō, -ere, -iī",
    "unit_id": "w14:b13.3",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "sinūs",
@@ -559,7 +870,22 @@
    "sense_full": "leap, spring, hop round",
    "parts": "circumsiliō, circumsilīre",
    "unit_id": "w13:b24.9",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "animal"
+    ],
+    "obj": [],
+    "subj_also": [
+     "puer",
+     "puella",
+     "īnfans",
+     "līberī",
+     "fīlius",
+     "fīlia",
+     "fīliola"
+    ]
+   }
   },
   {
    "lemma": "collum",
@@ -597,7 +923,60 @@
    "sense_full": "confuse, disquiet, confound, derange, dismay, upset or mix up",
    "parts": "conturbō, conturbāre, conturbavī, conturbatum",
    "unit_id": "w13:b26.11",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract",
+     "thing",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group",
+     "abstract"
+    ],
+    "obj_also": [
+     "aqua",
+     "mare",
+     "unda",
+     "flūctus",
+     "nāvis",
+     "classis",
+     "mēnsa",
+     "convīvium",
+     "cēna",
+     "lūdus",
+     "certāmen",
+     "forum",
+     "urbs",
+     "oppidum",
+     "domūs",
+     "familia",
+     "exercitus",
+     "aciēs",
+     "agmen",
+     "ōrdō",
+     "ratiō",
+     "cōnsilium",
+     "animus",
+     "mēns",
+     "somnus",
+     "vīta",
+     "pāx",
+     "ōtium",
+     "silentium",
+     "sermō",
+     "colloquium",
+     "fābula",
+     "carmen",
+     "versūs",
+     "epigramma"
+    ]
+   }
   },
   {
    "lemma": "dēvorō",
@@ -609,7 +988,19 @@
    "sense_full": "devour, consume",
    "parts": "dēvorō, dēvorāre, devoravī, dēvorātum",
    "unit_id": "w13:b24.14",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "animal",
+     "person"
+    ],
+    "obj": [
+     "food",
+     "animal",
+     "person",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "dubius",
@@ -621,7 +1012,17 @@
    "sense_full": "doubtful, dubious, uncertain",
    "parts": null,
    "unit_id": "w13:b29.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "abstract",
+     "person",
+     "thing",
+     "time",
+     "nature",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "ērubēscō",
@@ -633,7 +1034,14 @@
    "sense_full": "redden, blush, blush at",
    "parts": "ērubēscō, ērubēscere, erubuī",
    "unit_id": "w14:b17.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "body"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "excruciō",
@@ -645,7 +1053,21 @@
    "sense_full": "torture",
    "parts": "excruciō, excruciāre, excruciavī, excruciatum",
    "unit_id": "w13:b30.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "abstract",
+     "nature",
+     "animal",
+     "thing"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "geminus",
@@ -657,7 +1079,18 @@
    "sense_full": "twin, double",
    "parts": null,
    "unit_id": "w13:b14.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "body",
+     "place",
+     "group",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "libenter",
@@ -755,7 +1188,14 @@
    "sense_full": "gape",
    "parts": "ōscitō, ōscitāre",
    "unit_id": "w14:b7.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "palma",
@@ -780,7 +1220,16 @@
    "sense_full": "chirp, pipe",
    "parts": "pīpiō, pīpiāre, pipiavī, pipiatum",
    "unit_id": "w13:b24.10",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "passer",
+     "avis",
+     "īnfans"
+    ]
+   }
   },
   {
    "lemma": "poēticus",
@@ -792,7 +1241,14 @@
    "sense_full": "poetic",
    "parts": null,
    "unit_id": "w13:b17.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "prōsiliō",
@@ -804,7 +1260,14 @@
    "sense_full": "jump, leap up, forward",
    "parts": "prōsiliō, prōsilīre, prosilivī",
    "unit_id": "w14:b18.4",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "requīrō",
@@ -816,7 +1279,22 @@
    "sense_full": "require, seek, ask for",
    "parts": "requīrō, requīrere, requisivī, requisitum",
    "unit_id": "w13:b30.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "food",
+     "place",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "scaenicus",
@@ -828,7 +1306,17 @@
    "sense_full": "theatrical",
    "parts": null,
    "unit_id": "w13:b13.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "person",
+     "place",
+     "group",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "scalpellus",
@@ -888,7 +1376,13 @@
    "sense_full": "(poor little) swollen, inflated, inflamed, grandiose",
    "parts": null,
    "unit_id": "w13:b24.18",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "body",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "versiculus",

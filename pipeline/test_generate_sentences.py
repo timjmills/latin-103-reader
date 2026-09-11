@@ -1,0 +1,271 @@
+"""The sentence generator (contract §11). Run: python -m pytest pipeline/test_generate_sentences.py
+
+Pins every cause the pilot's five hostile reads found, so a regression is a
+failing test and not a shipped sentence: the reliability gate on the
+glossary's uneven macrons, the verb and adjective frames that were too
+broad, the nouns the book never pluralises, the English and gloss slips, and
+the §11 checks themselves.  The last tests generate every pilot skill at two
+seeds and hold the shipped set to the invariants a learner would see.
+"""
+
+import re
+
+import pytest
+
+import generate_sentences as g
+
+
+@pytest.fixture(scope="module")
+def lex():
+    return g.Lexicon()
+
+
+def word(lex, lemma, pos="N"):
+    w = lex.word(lemma, pos)
+    assert w is not None, f"{lemma} ({pos}) is not a deck word"
+    return w
+
+
+# ------------------------------------------------------------ reliability gate
+
+@pytest.mark.parametrize("lemma,pos,scope", [
+    ("adveniō", "V", "all"),      # present roots adveni / advēn: advēniente was shipped in pass 1
+    ("custodiō", "V", "all"),     # cūstōdiat
+    ("edō", "V", "all"),          # Whitaker's edāre homograph: edāre, edat
+    ("līber", "N", "all"),        # liber, līberī in the glossary: līberōs for the book
+    ("irascor", "V", "all"),      # deck spelling without macrons
+    ("plōrō", "V", "perf"),       # ploravērunt: the present system is sound
+    ("portō", "V", "perf"),       # portavērunt
+    ("dēlectō", "V", "perf"),     # delectavī
+    ("cōnsīdō", "V", "perf"),     # consedērunt: the perfect drops the present's macron
+    ("mīlitō", "V", "perf"),      # militavit reached the page through a `same` slot
+])
+def test_the_gate_keeps_the_glossary_gaps_off_the_page(lex, lemma, pos, scope):
+    assert word(lex, lemma, pos).unreliable_scope == scope
+
+
+@pytest.mark.parametrize("lemma,pos", [
+    ("videō", "V"), ("veniō", "V"), ("capiō", "V"), ("legō", "V"),   # a lengthened perfect is Latin, not a gap
+    ("dō", "V"), ("stō", "V"),                                        # a short supine vowel is Latin too
+    ("puer", "N"), ("magnus", "ADJ"), ("vocō", "V"),
+])
+def test_the_gate_leaves_sound_words_alone(lex, lemma, pos):
+    assert word(lex, lemma, pos).unreliable_scope is None
+
+
+def test_a_perfect_only_word_is_drawn_in_the_present_but_not_the_perfect(lex):
+    w = word(lex, "portō", "V")
+    assert w in lex.pool("V", 6)
+    assert g.uses_perfect_system({"tense": "perf", "mood": "ind"})
+    assert not g.uses_perfect_system({"tense": "pres", "mood": "ind"})
+
+
+# ------------------------------------------------------------ frames
+
+@pytest.mark.parametrize("verb,role,noun", [
+    ("portō", "obj", "titulus"),      # titles carried to the garden
+    ("dō", "obj", "fenestra"),        # a window given
+    ("dō", "obj", "capitulum"),
+    ("sinō", "obj", "deus"),          # sinō is complement-only
+    ("vehō", "obj", "mūrus"),         # Marcus carries the wall
+    ("nōminō", "obj", "vestīgium"),
+    ("mergō", "obj", "puella"),
+    ("iungō", "obj", "mēnsa"),
+    ("dūcō", "obj", "apis"),
+    ("tergeō", "obj", "baculum"),
+    ("agō", "obj", "leō"),
+    ("relinquō", "obj", "līnea"),
+    ("amō", "obj", "arcūs"),
+    ("augeō", "obj", "iānua"),
+    ("efficiō", "obj", "sēstertius"),
+    ("mīlitō", "subj", "Lȳdia"),     # a woman serving as a soldier
+    ("cōnsīdō", "subj", "piscis"),
+    ("errō", "subj", "piscis"),
+    ("ambulō", "subj", "piscis"),
+    ("currō", "subj", "piscis"),
+    ("mordeō", "subj", "amīcus"),
+    ("lūdō", "subj", "piscis"),
+    ("pariō", "subj", "puer"),
+    ("lātrō", "subj", "puer"),
+])
+def test_a_frame_refuses_the_combination_the_review_rejected(lex, verb, role, noun):
+    v = word(lex, verb, "V")
+    n = lex.word(noun, "N") or lex.word(noun, "NAME")
+    assert n is not None
+    assert not g._arg_ok(v.sem, role, n)
+
+
+@pytest.mark.parametrize("verb,role,noun", [
+    ("dō", "obj", "nummus"), ("dō", "obj", "pecūnia"), ("portō", "obj", "saccus"),
+    ("vehō", "obj", "lectīca"), ("mīlitō", "subj", "Mārcus"), ("mordeō", "subj", "canis"),
+    ("verberō", "obj", "servus"), ("lātrō", "subj", "canis"), ("numerō", "obj", "pecūnia"),
+])
+def test_a_frame_keeps_the_book_s_own_combinations(lex, verb, role, noun):
+    v = word(lex, verb, "V")
+    n = lex.word(noun, "N") or lex.word(noun, "NAME")
+    assert g._arg_ok(v.sem, role, n)
+
+
+@pytest.mark.parametrize("adj,noun,number", [
+    ("maritimus", "Aemilia", "sg"), ("hūmānus", "hasta", "sg"), ("plēnus", "porta", "sg"),
+    ("longus", "pecūnia", "sg"), ("Latīnus", "timor", "sg"), ("varius", "lac", "sg"),
+    ("difficilis", "campus", "sg"), ("incertus", "tunica", "sg"), ("mīlitāris", "marītus", "sg"),
+    ("vacuus", "ōstium", "sg"), ("togātus", "ancilla", "sg"), ("pullus", "canis", "sg"),
+    ("contrārius", "mīles", "sg"), ("Graecus", "lacrima", "sg"), ("Rōmānus", "lacrima", "sg"),
+])
+def test_an_adjective_no_longer_describes_what_the_review_rejected(lex, adj, noun, number):
+    a = word(lex, adj, "ADJ")
+    n = lex.word(noun, "N") or lex.word(noun, "NAME")
+    assert not g.adj_admits(a, n, number)
+
+
+@pytest.mark.parametrize("adj,noun,number", [
+    ("longus", "via", "sg"), ("Latīnus", "lingua", "sg"), ("plēnus", "saccus", "sg"),
+    ("Graecus", "nāvis", "sg"), ("Rōmānus", "nummus", "sg"), ("Graecus", "servus", "sg"),
+    ("magnus", "saccus", "sg"), ("improbus", "servus", "sg"), ("omnis", "discipulus", "pl"),
+])
+def test_an_adjective_still_describes_what_it_should(lex, adj, noun, number):
+    assert g.adj_admits(word(lex, adj, "ADJ"), word(lex, noun), number)
+
+
+@pytest.mark.parametrize("lemma", ["prīmus", "secundus", "sōlus", "suus", "meus", "multus", "aliēnus"])
+def test_a_determiner_is_never_a_free_descriptor(lex, lemma):
+    a = word(lex, lemma, "ADJ")
+    assert a.sem.get("det") is True
+    n = word(lex, "servus")
+    number = a.sem.get("number") or "sg"
+    assert a not in g.adj_candidates(lex, 34, n, {"agree": "x"}, number, "nom")
+    assert a in g.adj_candidates(lex, 34, n, {"agree": "x", "only": [lemma]}, number, "nom")
+
+
+@pytest.mark.parametrize("lemma", ["sum", "possum", "putō", "licet", "inquam", "absum", "spīrō"])
+def test_a_complement_only_verb_is_never_a_plain_verb(lex, lemma):
+    v = word(lex, lemma, "V")
+    fill = g.Fill({"slots": {"s": {"sem": ["person"]}, "v": {"pos": "V", "form": "pres.ind", "subj": "s"}},
+                   "la": "{s:nom} {v:pres.ind}.", "en": "", "id": "x", "focus": "v"})
+    fill.words["s"], fill.numbers["s"] = word(lex, "puer"), "sg"
+    assert not g.verb_admits(v, fill.t["slots"]["v"], fill)
+
+
+def test_deus_and_mamma_are_not_household_actors(lex):
+    assert word(lex, "deus").sem == "other"
+    assert word(lex, "mamma").sem == "other"
+    assert word(lex, "piscis").sem == "food"
+
+
+# ------------------------------------------------------------ number, forms, checks
+
+@pytest.mark.parametrize("lemma", ["āēr", "pecūnia", "lac", "lūna", "fīlia", "lignum", "pābulum"])
+def test_a_noun_the_book_never_pluralises_stays_singular(lex, lemma):
+    assert g._singular_only(word(lex, lemma))
+
+
+@pytest.mark.parametrize("lemma,form,parse,fragment", [
+    ("edō", "edāre", {"mood": "inf", "tense": "pres", "voice": "act"}, "infinitive"),
+    ("legō", "legat", {"tense": "pres", "mood": "ind", "voice": "act", "person": 3, "number": "sg"}, "3rd-conjugation"),
+    ("vocō", "vocit", {"tense": "pres", "mood": "ind", "voice": "act", "person": 3, "number": "sg"}, "1st-conjugation"),
+    ("vocō", "vocavit", {"tense": "perf", "mood": "ind", "voice": "act", "person": 3, "number": "sg"}, "perfect"),
+])
+def test_a_form_that_contradicts_the_dictionary_line_is_refused(lex, lemma, form, parse, fragment):
+    bad = g.form_matches_parts(word(lex, lemma, "V"), form, parse)
+    assert bad and fragment in bad
+
+
+@pytest.mark.parametrize("lemma,form,parse", [
+    ("vocō", "vocat", {"tense": "pres", "mood": "ind", "voice": "act", "person": 3, "number": "sg"}),
+    ("vocō", "vocāvit", {"tense": "perf", "mood": "ind", "voice": "act", "person": 3, "number": "sg"}),
+    ("dormiō", "dormiente", {"mood": "ptc", "tense": "pres", "case": "abl", "number": "sg"}),
+    ("eō", "iit", {"tense": "perf", "mood": "ind", "voice": "act", "person": 3, "number": "sg"}),
+    ("exeō", "exeunt", {"tense": "pres", "mood": "ind", "voice": "act", "person": 3, "number": "pl"}),
+])
+def test_a_sound_form_passes_the_dictionary_line(lex, lemma, form, parse):
+    assert g.form_matches_parts(word(lex, lemma, "V"), form, parse) is None
+
+
+# ------------------------------------------------------------ English and gloss
+
+@pytest.mark.parametrize("base,shape,number,expected", [
+    ("have", "3sg", "sg", "has"), ("be silent", "3sg", "sg", "is silent"), ("go away", "3sg", "sg", "goes away"),
+    ("give", "past", "sg", "gave"), ("run", "ing", "sg", "running"), ("be", "3sg", "pl", "are"),
+])
+def test_english_verb_forms(base, shape, number, expected):
+    assert g.en_verb(base, shape, number) == expected
+
+
+@pytest.mark.parametrize("base,expected", [
+    ("helmsman", "helmsmen"), ("goods", "goods"), ("denarius", "denarii"), ("clothes", "clothes"),
+    ("slave girl", "slave girls"), ("mummy", "mummies"), ("papyrus", "papyri"),
+])
+def test_english_plurals(base, expected):
+    assert g.en_plural(base) == expected
+
+
+# ------------------------------------------------------------ the generator end to end
+
+PILOT = ["accusative-object", "ablative-means", "ablative-agent", "dative-indirect-object",
+         "accusative-infinitive", "ablative-absolute", "perfect-active", "purpose-clause"]
+
+
+@pytest.fixture(scope="module")
+def batches(lex):
+    return {skill: g.generate(skill, 40, 1, lex) for skill in PILOT}
+
+
+def test_every_template_file_validates():
+    assert g.check_all() == []
+
+
+@pytest.mark.parametrize("skill", PILOT)
+def test_forty_sentences_per_skill_and_nothing_rejected_reaches_the_page(batches, skill):
+    res = batches[skill]
+    assert len(res["sentences"]) == 40
+    shipped = {s["la"] for s in res["sentences"]}
+    assert not any(r["la"] in shipped for r in res["rejected_by_check"])
+
+
+@pytest.mark.parametrize("skill", PILOT)
+def test_shipped_sentences_hold_the_learner_facing_invariants(batches, lex, skill):
+    for s in batches[skill]["sentences"]:
+        n = len(s["la"].split())
+        assert 5 <= n <= 8, s["la"]
+        assert s["words"] == n
+        assert "{" not in s["en"] and "}" not in s["en"], s["en"]
+        assert not re.search(r"\b(\w+) \1\b", s["en"].lower()), s["en"]           # "his his"
+        assert len(s["gloss"]) == n and all(x["m"] not in ("", "?") for x in s["gloss"]), s["gloss"]
+        toks = [x["w"] for x in s["gloss"]]
+        for prev, cur in zip(s["gloss"], s["gloss"][1:]):
+            if prev["w"].lower() in g.PREPOSITIONS:
+                assert not cur["m"].startswith(("by ", "to ", "of ")), (s["la"], cur)   # bare after a preposition
+        assert s["focus"].split()[0].lower() in [t.strip(".,;:!?").lower() for t in toks], (s["la"], s["focus"])
+        assert s["generated"] is True and s["template"] and s["seed"] == 1
+        for lemma in s["fill"].values():
+            w = lex.word(lemma, "N") or lex.word(lemma, "V") or lex.word(lemma, "ADJ") or lex.word(lemma, "ADV") \
+                or lex.word(lemma, "PRON") or lex.word(lemma, "NAME")
+            assert w is not None and w.unreliable_scope != "all", lemma
+
+
+@pytest.mark.parametrize("skill", PILOT)
+def test_generation_is_deterministic_for_a_seed(batches, lex, skill):
+    again = g.generate(skill, 40, 1, lex)
+    assert [s["la"] for s in again["sentences"]] == [s["la"] for s in batches[skill]["sentences"]]
+    other = g.generate(skill, 40, 2, lex)
+    assert [s["la"] for s in other["sentences"]] != [s["la"] for s in batches[skill]["sentences"]]
+
+
+@pytest.mark.parametrize("skill", PILOT)
+def test_every_shipped_word_is_inside_the_cumulative_vocabulary(batches, lex, skill):
+    chapter = batches[skill]["chapter"]
+    forms = lex.forms_at(chapter)
+    names = {g.key_of(f) for w in lex.names(chapter) for f in w.index}
+    for s in batches[skill]["sentences"]:
+        for x in s["gloss"]:
+            k = g.key_of(x["w"])
+            assert k in forms or k in names or x["w"] in g.FUNCTION_WORDS or x["w"].lower() in g.FUNCTION_WORDS, (s["la"], x["w"])
+
+
+def test_a_count_is_exact_for_a_small_template_and_estimated_for_a_large_one(lex):
+    data = g.load_templates("dative-indirect-object")
+    small = g.count_template(lex, data["chapter"], data["templates"][0], data["exclude"], cap=10**9)
+    assert small["exact"] and small["count"] > 100
+    large = g.count_template(lex, data["chapter"], data["templates"][0], data["exclude"], cap=10, sample=50)
+    assert not large["exact"] and large["count"] > 0

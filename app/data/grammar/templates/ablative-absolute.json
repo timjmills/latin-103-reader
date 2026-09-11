@@ -1,0 +1,704 @@
+{
+ "skill": "ablative-absolute",
+ "chapter": 16,
+ "templates": [
+  {
+   "id": "abs-t1",
+   "la": "{n:abl} {ptc:ptc.pres} {s:nom} ex {p:abl} {v:pres.ind}.",
+   "en": "While {n} {ptc:prog}, {s} {v} from {p}.",
+   "slots": {
+    "n": {
+     "sem": [
+      "nature",
+      "person",
+      "animal"
+     ],
+     "number": "any",
+     "g": "",
+     "not": [
+      "āēr",
+      "caelum",
+      "lūx",
+      "nix",
+      "glaciēs",
+      "calor",
+      "frīgus",
+      "umbra",
+      "tenebrae",
+      "unda"
+     ]
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "not": [
+      "absum",
+      "adsum",
+      "aegrōtō",
+      "cadō",
+      "cessō",
+      "crēscō",
+      "cubō",
+      "doleō",
+      "errō",
+      "frigō",
+      "habitō",
+      "iaceō",
+      "lateō",
+      "lābor",
+      "morior",
+      "nāscor",
+      "palleō",
+      "pateō",
+      "pereō",
+      "rubeō",
+      "sileō",
+      "sordeō",
+      "spīrō",
+      "surgō",
+      "tremō",
+      "valeō",
+      "vīvō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "pl"
+    },
+    "p": {
+     "only": [
+      "portus",
+      "vīlla",
+      "oppidum",
+      "urbs",
+      "hortus",
+      "silva",
+      "cubiculum",
+      "ātrium",
+      "lūdus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "exeō",
+      "discēdō",
+      "currō",
+      "veniō",
+      "ambulō",
+      "proficīscor",
+      "ēgredior",
+      "fugiō",
+      "abeō",
+      "redeō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "abs-t2",
+   "la": "{n:abl} {ptc:ptc.pres} omnēs {s:nom} {v:pres.ind}.",
+   "en": "While {n} {ptc:prog}, all {s:bare} {v}.",
+   "slots": {
+    "n": {
+     "sem": [
+      "person"
+     ],
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "absolute": true,
+     "lemmas": [
+      "recitō",
+      "loquor",
+      "dormiō",
+      "canō",
+      "cantō",
+      "clāmō",
+      "legō",
+      "scrībō",
+      "rīdeō",
+      "intrō",
+      "nārrō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "pl",
+     "names": false
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "taceō",
+      "rīdeō",
+      "dormiō",
+      "lūdō",
+      "sedeō",
+      "stō",
+      "clāmō",
+      "plōrō",
+      "cantō",
+      "surgō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 5
+  },
+  {
+   "id": "abs-t3",
+   "la": "{n:abl} {ptc:ptc.pres} {s:nom} {o:acc} {v:pres.ind}.",
+   "en": "While {n} {ptc:prog}, {s} {v} {o}.",
+   "slots": {
+    "n": {
+     "sem": [
+      "animal",
+      "person",
+      "nature"
+     ],
+     "number": "any",
+     "g": "",
+     "not": [
+      "āēr",
+      "caelum",
+      "lūx",
+      "nix",
+      "glaciēs",
+      "calor",
+      "frīgus",
+      "umbra",
+      "tenebrae",
+      "unda"
+     ]
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "not": [
+      "absum",
+      "adsum",
+      "aegrōtō",
+      "cadō",
+      "cessō",
+      "crēscō",
+      "cubō",
+      "doleō",
+      "errō",
+      "frigō",
+      "habitō",
+      "iaceō",
+      "lateō",
+      "lābor",
+      "morior",
+      "nāscor",
+      "palleō",
+      "pateō",
+      "pereō",
+      "rubeō",
+      "sileō",
+      "sordeō",
+      "spīrō",
+      "surgō",
+      "tremō",
+      "valeō",
+      "vīvō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "thing",
+      "person",
+      "animal",
+      "food"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "not": [
+      "capiō",
+      "interficiō",
+      "necō",
+      "occidō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 5
+  },
+  {
+   "id": "abs-t4",
+   "la": "{n:abl} {ptc:ptc.pres} {s:nom} {adj:nom} {v:pres.ind}.",
+   "en": "While {n} {ptc:prog}, {s} {v}.",
+   "slots": {
+    "n": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "pl",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "not": [
+      "frigō",
+      "cadō",
+      "aegrōtō",
+      "lābor",
+      "absum",
+      "adsum",
+      "vīvō",
+      "habitō",
+      "iaceō",
+      "cubō",
+      "valeō",
+      "sordeō",
+      "palleō",
+      "rubeō",
+      "pateō",
+      "lateō",
+      "doleō",
+      "sileō",
+      "cessō",
+      "pereō",
+      "morior",
+      "nāscor",
+      "orior",
+      "crēscō",
+      "fluō",
+      "lūceō",
+      "tremō",
+      "spīrō",
+      "surgō",
+      "errō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "not": [
+      "mortuus",
+      "pecūniōsus",
+      "vērus",
+      "vīvus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "not": [
+      "aegrōtō",
+      "cadō",
+      "cessō",
+      "cubō",
+      "habitō",
+      "iaceō",
+      "lateō",
+      "lābor",
+      "morior",
+      "nāscor",
+      "palleō",
+      "pateō",
+      "pereō",
+      "rubeō",
+      "sordeō",
+      "spīrō",
+      "valeō",
+      "vīvō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 5
+  },
+  {
+   "id": "abs-t5",
+   "la": "{s:nom} in {p:abl} {v:pres.ind} {n:abl} {ptc:ptc.pres}.",
+   "en": "{s} {v} in {p} while {n} {ptc:prog}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "ātrium",
+      "hortus",
+      "cubiculum",
+      "vīlla",
+      "silva",
+      "campus",
+      "peristylum",
+      "nāvis",
+      "portus",
+      "lūdus",
+      "via"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "sedeō",
+      "dormiō",
+      "iaceō",
+      "stō",
+      "lūdō",
+      "cubō",
+      "quiēscō",
+      "vigilō",
+      "ambulō",
+      "cantō"
+     ]
+    },
+    "n": {
+     "sem": [
+      "nature",
+      "animal",
+      "person"
+     ],
+     "number": "any",
+     "g": "",
+     "not": [
+      "āēr",
+      "caelum",
+      "lūx",
+      "nix",
+      "glaciēs",
+      "calor",
+      "frīgus",
+      "umbra",
+      "tenebrae",
+      "unda"
+     ]
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "not": [
+      "absum",
+      "adsum",
+      "aegrōtō",
+      "cadō",
+      "cessō",
+      "crēscō",
+      "cubō",
+      "doleō",
+      "errō",
+      "frigō",
+      "habitō",
+      "iaceō",
+      "lateō",
+      "lābor",
+      "morior",
+      "nāscor",
+      "palleō",
+      "pateō",
+      "pereō",
+      "rubeō",
+      "sileō",
+      "sordeō",
+      "spīrō",
+      "surgō",
+      "tremō",
+      "valeō",
+      "vīvō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "abs-t6",
+   "la": "{s:nom} {inst:abl} {v:pres.ind}, {n:abl} {ptc:ptc.pres}.",
+   "en": "{s} {v} with {inst:a} while {n} {ptc:prog}.",
+   "slots": {
+    "s": {
+     "only": [
+      "mīles",
+      "dux",
+      "eques",
+      "hostis",
+      "pedēs",
+      "nauta",
+      "Iūlius",
+      "Mēdus",
+      "Ursus"
+     ],
+     "number": "any"
+    },
+    "inst": {
+     "only": [
+      "gladius",
+      "hasta"
+     ],
+     "g": "with"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "pugnō"
+     ]
+    },
+    "n": {
+     "sem": [
+      "person"
+     ],
+     "number": "pl",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "absolute": true,
+     "lemmas": [
+      "clāmō",
+      "fugiō",
+      "spectō",
+      "currō",
+      "accurrō",
+      "taceō",
+      "plōrō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 5
+  },
+  {
+   "id": "abs-t7",
+   "la": "{s:nom} {inst:abl} {o:acc} {v:pres.ind}, {n:abl} {ptc:ptc.pres}.",
+   "en": "{s} {v} {o} with {inst:a}, while {n} {ptc:prog}.",
+   "slots": {
+    "s": {
+     "only": [
+      "magister",
+      "dominus",
+      "pater",
+      "Iūlius"
+     ]
+    },
+    "inst": {
+     "only": [
+      "virga",
+      "baculum"
+     ],
+     "g": "with"
+    },
+    "o": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "magister",
+      "dominus",
+      "pater"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "verberō",
+      "pulsō"
+     ]
+    },
+    "n": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "absolute": true,
+     "lemmas": [
+      "spectō",
+      "rīdeō",
+      "plōrō",
+      "clāmō",
+      "taceō",
+      "lacrimō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  },
+  {
+   "id": "abs-t8",
+   "la": "Nēmine vidente {s:nom} {o:acc} {v:pres.ind}.",
+   "en": "With nobody watching, {s} {v} {o}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "thing",
+      "food"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "sūmō",
+      "capiō",
+      "aperiō",
+      "claudō",
+      "legō",
+      "occultō",
+      "tangō",
+      "portō",
+      "relinquō",
+      "edō",
+      "bibō"
+     ]
+    }
+   },
+   "focus": [
+    "Nēmine",
+    "vidente"
+   ],
+   "words": 5
+  },
+  {
+   "id": "abs-t9",
+   "la": "{n:abl} {ptc:ptc.pres} {s:nom} {v1:pres.ind} et {v2:pres.ind}.",
+   "en": "While {n} {ptc:prog}, {s} {v1} and {v2}.",
+   "slots": {
+    "n": {
+     "sem": [
+      "person"
+     ],
+     "g": ""
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.pres",
+     "agree": "n",
+     "absolute": true,
+     "lemmas": [
+      "loquor",
+      "recitō",
+      "canō",
+      "cantō",
+      "clāmō",
+      "rīdeō",
+      "nārrō"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "taceō",
+      "sedeō",
+      "stō"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "audiō",
+      "rīdeō",
+      "plōrō",
+      "lacrimō",
+      "gaudeō",
+      "spectō"
+     ]
+    }
+   },
+   "focus": [
+    "n",
+    "ptc"
+   ],
+   "words": 6
+  }
+ ],
+ "exclude": []
+}

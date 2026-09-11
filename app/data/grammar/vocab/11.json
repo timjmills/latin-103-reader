@@ -11,7 +11,23 @@
    "sense_full": "say, declare, state",
    "parts": "dīcō, dīcere, dīxī, dictum",
    "unit_id": "r11:60.1",
-   "count": 179
+   "count": 179,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "verbum",
+     "vocābulum",
+     "nōmen",
+     "sententia",
+     "fābula"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "nec",
@@ -97,7 +113,22 @@
    "sense_full": "our",
    "parts": null,
    "unit_id": "r11:131.1",
-   "count": 48
+   "count": 48,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "iubeō",
@@ -109,7 +140,20 @@
    "sense_full": "order, tell, command, direct",
    "parts": "iubeō, iubēre, iussī, iussum",
    "unit_id": "r11:44.2",
-   "count": 40
+   "count": 40,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "spectō",
@@ -133,6 +177,9 @@
      "thing",
      "place",
      "nature"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -158,7 +205,16 @@
    "sense_full": "think, believe, suppose, hold",
    "parts": "putō, putāre, putāvī, putātum",
    "unit_id": "r11:107.2",
-   "count": 35
+   "count": 35,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "doleō",
@@ -176,7 +232,10 @@
      "person",
      "animal"
     ],
-    "obj": []
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
    }
   },
   {
@@ -362,7 +421,10 @@
      "person",
      "animal"
     ],
-    "obj": []
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
    }
   },
   {
@@ -404,10 +466,24 @@
    "count": 14,
    "sem": {
     "subj": [
-     "person",
-     "animal"
+     "person"
     ],
-    "obj": []
+    "obj": [],
+    "subj_also": [
+     "canis",
+     "equus",
+     "ovis",
+     "bōs",
+     "asinus",
+     "leō",
+     "lupus",
+     "taurus",
+     "agnus",
+     "grex",
+     "pecus",
+     "bēstia",
+     "animal"
+    ]
    }
   },
   {
@@ -439,7 +515,25 @@
    "sense_full": "live in (place), inhabit",
    "parts": "colō, colere, coluī, cultum",
    "unit_id": "r11:20.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "ager",
+     "hortus",
+     "vīnea",
+     "campus",
+     "terra",
+     "humus",
+     "rūs",
+     "praedium",
+     "deus",
+     "dea"
+    ]
+   }
   },
   {
    "lemma": "sentiō",
@@ -451,7 +545,34 @@
    "sense_full": "perceive, feel, experience",
    "parts": "sentiō, sentīre, sensī, sensum",
    "unit_id": "r11:89.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "dolor",
+     "timor",
+     "calor",
+     "frīgus",
+     "metus",
+     "amor",
+     "gaudium",
+     "odium",
+     "famēs",
+     "sitis",
+     "pudor",
+     "laetitia",
+     "trīstitia",
+     "īra",
+     "invidia"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "cor",
@@ -609,7 +730,19 @@
    "sense_full": "dread, shrink from, shudder at",
    "parts": "horreō, horrēre, horruī",
    "unit_id": "r11:98.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "ruber",
@@ -648,8 +781,93 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "body"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -663,7 +881,19 @@
    "sense_full": "place near, set before/on table, serve up",
    "parts": "appōnō, appōnere, apposuī, appositum",
    "unit_id": "r11:88.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "food",
+     "thing"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "pectus",
@@ -714,7 +944,23 @@
    "sense_full": "human",
    "parts": null,
    "unit_id": "r11:1.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "body"
+    ],
+    "also": [
+     "corpus",
+     "vōx",
+     "vīta",
+     "ratiō",
+     "animus",
+     "mēns",
+     "faciēs",
+     "caput",
+     "membrum"
+    ]
+   }
   },
   {
    "lemma": "īnfrā",
@@ -738,7 +984,16 @@
    "sense_full": "throb, beat, pulsate",
    "parts": "palpitō, palpitāre, palpitavī, palpitatum",
    "unit_id": "r11:98.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "cor",
+     "vēna",
+     "pectus"
+    ]
+   }
   },
   {
    "lemma": "cerebrum",
@@ -763,7 +1018,21 @@
    "sense_full": "wipe, clean off, away",
    "parts": "dētergeō, dētergēre, detersī, detersum",
    "unit_id": "r11:119.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "body"
+    ],
+    "obj_also": [
+     "lacrima",
+     "sanguis",
+     "cruor",
+     "mēnsa"
+    ]
+   }
   },
   {
    "lemma": "gena",
@@ -846,7 +1115,21 @@
    "sense_full": "see, look at",
    "parts": "tuor, tuārī",
    "unit_id": "r11:60.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "nature",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "viscera",

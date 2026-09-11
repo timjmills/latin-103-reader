@@ -1,0 +1,344 @@
+{
+ "skill": "accusative-object",
+ "chapter": 3,
+ "templates": [
+  {
+   "id": "aco-t1",
+   "la": "{s:nom} {o:acc} et {o2:acc} {v:pres.ind}.",
+   "en": "{s} {v} {o} and {o2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o2": {
+     "sem": [
+      "person"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": [
+      "o",
+      "o2"
+     ]
+    }
+   },
+   "focus": "o",
+   "words": 5
+  },
+  {
+   "id": "aco-t2",
+   "la": "{s:nom} {o:acc} {v1:pres.ind}, et {o2:nom} {v2:pres.ind}.",
+   "en": "{s} {v1} {o}, and {o2} {v2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o2": {
+     "same": "o"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "o2",
+     "allow_dat": true
+    }
+   },
+   "focus": "o",
+   "words": 6
+  },
+  {
+   "id": "aco-t3",
+   "la": "{s:nom} {o:acc} {v1:pres.ind}, sed {o2:nom} nōn {v2:pres.ind}.",
+   "en": "{s} {v1} {o}, but {o2} {v2:neg}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o2": {
+     "same": "o"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "vocō",
+      "interrogō",
+      "pulsō",
+      "verberō",
+      "videō"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "o2",
+     "allow_dat": true,
+     "lemmas": [
+      "respondeō",
+      "veniō",
+      "rīdeō",
+      "plōrō",
+      "audiō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "o",
+   "words": 7
+  },
+  {
+   "id": "aco-t4",
+   "la": "{s:nom} {o:acc} {adj:acc} in {p:abl} {v:pres.ind}.",
+   "en": "{s} {v} {o} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "thing"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o"
+    },
+    "p": {
+     "only": [
+      "oppidum",
+      "īnsula"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o"
+    }
+   },
+   "focus": "o",
+   "words": 6
+  },
+  {
+   "id": "aco-t5",
+   "la": "{o:acc} {adj:acc} {s:nom} {adj2:nom} {v:pres.ind}.",
+   "en": "{s} {v} {o}.",
+   "slots": {
+    "o": {
+     "sem": [
+      "person"
+     ],
+     "names": false
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o"
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "names": false
+    },
+    "adj2": {
+     "pos": "ADJ",
+     "agree": "s"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o"
+    }
+   },
+   "focus": "o",
+   "words": 5
+  },
+  {
+   "id": "aco-t6",
+   "la": "{s:nom} {o:acc} in {p:abl} {v:pres.ind}.",
+   "en": "{s} {v} {o} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "pl"
+    },
+    "o": {
+     "sem": [
+      "person",
+      "thing"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "oppidum",
+      "īnsula"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o"
+    }
+   },
+   "focus": "o",
+   "words": 5
+  },
+  {
+   "id": "aco-t7",
+   "la": "Cūr {s:nom} {o:acc} {adj:acc} {v:pres.ind}?",
+   "en": "Why does {s} {v:base} {o}?",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o"
+    }
+   },
+   "focus": "o",
+   "words": 5
+  },
+  {
+   "id": "aco-t8",
+   "la": "{s:nom} {o:acc} {v1:pres.ind}, sed nōn {v2:pres.ind}.",
+   "en": "{s} {v1} {o}, but {v2:neg}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "audiō",
+      "videō"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "allow_dat": true,
+     "lemmas": [
+      "respondeō",
+      "rīdeō",
+      "plōrō",
+      "venit",
+      "veniō"
+     ]
+    }
+   },
+   "focus": "o",
+   "words": 6
+  },
+  {
+   "id": "aco-t9",
+   "la": "{o:acc} {adj:acc} {s:nom} in {p:abl} {v:pres.ind}.",
+   "en": "{s} {v} {o} in {p}.",
+   "slots": {
+    "o": {
+     "only": [
+      "vocābulum",
+      "littera",
+      "numerus",
+      "syllaba",
+      "titulus"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o"
+    },
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "pl"
+    },
+    "p": {
+     "only": [
+      "pāgina",
+      "capitulum"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "videō"
+     ]
+    }
+   },
+   "focus": "o",
+   "words": 6
+  }
+ ],
+ "exclude": []
+}

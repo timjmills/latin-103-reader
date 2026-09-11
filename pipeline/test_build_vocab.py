@@ -21,16 +21,24 @@ def _deck(chapter, words):
 def _word(**kw):
     w = {"lemma": "magnus", "dict": "magnus, -a, -um", "pos": "ADJ", "gender": None,
          "decl": 1, "meaning": "large, great", "sense_full": "large, great, big, vast",
-         "parts": None, "unit_id": "r01:1.1", "count": 3}
+         "parts": None, "unit_id": "r01:1.1", "count": 3,
+         "sem": {"of": ["thing", "place"]}}
     w.update(kw)
     return w
 
 
-def _write_decks(tmp_path, decks, monkeypatch):
+def _write_decks(tmp_path, decks, monkeypatch, sem_file=None):
+    """Write the synthetic decks and, unless `sem_file` is given, a sem.json
+    that agrees with them, so the real pipeline/sem.json never leaks in."""
     monkeypatch.setattr(bv, "OUT_DIR", tmp_path)
+    monkeypatch.setattr(bv, "SEM_PATH", tmp_path / "sem.json")
     for c in bv.CHAPTERS:
         (tmp_path / f"{c:02d}.json").write_text(
             json.dumps(decks.get(c, _deck(c, []))), encoding="utf-8")
+    if sem_file is None:
+        bv.dump_sem()
+    else:
+        (tmp_path / "sem.json").write_text(json.dumps(sem_file), encoding="utf-8")
     return bv.check(unit_ids={"r01:1.1", "r13:1.1"})
 
 
@@ -47,9 +55,9 @@ def test_check_catches_a_planted_duplicate(tmp_path, monkeypatch):
 def test_check_ignores_macrons_and_v_u_when_comparing_lemmas(tmp_path, monkeypatch):
     errs = _write_decks(tmp_path, {
         2: _deck(2, [_word(lemma="lingva", dict="lingva, -ae f.", pos="N", decl=1,
-                           gender="f", meaning="tongue")]),
+                           gender="f", meaning="tongue", sem="abstract")]),
         13: _deck(13, [_word(lemma="lingua", dict="lingua, -ae f.", pos="N", decl=1,
-                             gender="f", meaning="tongue", unit_id="r13:1.1")]),
+                             gender="f", meaning="tongue", unit_id="r13:1.1", sem="abstract")]),
     }, monkeypatch)
     assert any("already in chapter 2" in e for e in errs), errs
 
@@ -58,9 +66,105 @@ def test_check_passes_a_clean_pair_of_decks(tmp_path, monkeypatch):
     errs = _write_decks(tmp_path, {
         1: _deck(1, [_word()]),
         13: _deck(13, [_word(lemma="brevis", dict="brevis, -e", meaning="short",
-                             sense_full="short, little, small", unit_id="r13:1.1")]),
+                             sense_full="short, little, small", unit_id="r13:1.1",
+                             sem={"of": ["thing", "time"]})]),
     }, monkeypatch)
     assert errs == []
+
+
+# ------------------------------------------------------------ semantic class
+
+def _noun(**kw):
+    w = dict(lemma="puella", dict="puella, -ae f.", pos="N", gender="f", decl=1,
+             meaning="girl", sense_full="girl", sem="person")
+    w.update(kw)
+    return _word(**w)
+
+
+def _verb(**kw):
+    w = _word(lemma="dō", dict="dō, dare, dedī, datum", pos="V", decl=None, meaning="give",
+              sense_full="give", parts="dō, dare, dedī, datum",
+              sem={"subj": ["person"], "obj": ["thing", "food"], "dat": ["person"]})
+    w.update(kw)
+    return w
+
+
+@pytest.mark.parametrize("word,expected", [
+    (_noun(sem=None), "noun without sem"),
+    (_noun(sem="widget"), "is not a class"),
+    (_verb(sem=None), "verb without sem"),
+    (_word(sem=None), "adjective without sem"),
+    (_verb(sem={"subj": ["person"]}), "is not {'subj'"),
+    (_verb(sem={"subj": ["person"], "obj": [], "takes": "inf"}), "takes"),
+    (_verb(sem={"subj": ["person"], "obj": [], "takes": ["dative"]}), "takes"),
+    (_verb(sem={"subj": ["person"], "obj": [], "loc": ["place"]}), "is not {'subj'"),
+    (_word(sem={"of": []}), "names no class and no word"),
+    (_word(sem={"of": ["thing"], "det": "yes"}), "det must be true"),
+    (_word(sem={"of": ["thing"], "colour": ["red"]}), "unknown key"),
+    (_word(pos="ADV", dict="bene", meaning="well", sense_full="well", sem={"of": ["thing"]}),
+     "carries a sem it cannot use"),
+])
+def test_check_sem_rejects_a_malformed_judgement(word, expected):
+    if word.get("sem") is None:
+        word.pop("sem", None)
+    bad = bv.check_sem(word)
+    assert bad is not None and expected in bad
+
+
+@pytest.mark.parametrize("word", [
+    _noun(),
+    _verb(),
+    _verb(sem={"subj": ["person"], "obj": [], "takes": ["inf", "acc_inf"]}),
+    _verb(sem={"subj": [], "obj": [], "subj_only": ["sōl"], "dat_only": ["puer"], "dat_also": ["canis"]}),
+    _word(sem={"of": [], "only": ["lingua"]}),
+    _word(sem={"of": ["person"], "det": True, "number": "pl"}),
+    _word(pos="CONJ", dict="et", meaning="and", sense_full="and", sem=None),
+])
+def test_check_sem_accepts_a_well_formed_judgement(word):
+    if word.get("sem") is None:
+        word.pop("sem", None)
+    assert bv.check_sem(word) is None
+
+
+def test_check_requires_every_verb_and_adjective_to_be_judged(tmp_path, monkeypatch):
+    errs = _write_decks(tmp_path, {1: _deck(1, [_word(sem=None), _verb(sem=None)])}, monkeypatch)
+    assert any("magnus adjective without sem" in e for e in errs)
+    assert any("dō verb without sem" in e for e in errs)
+
+
+def test_check_catches_a_deck_that_disagrees_with_sem_json(tmp_path, monkeypatch):
+    errs = _write_decks(tmp_path, {1: _deck(1, [_noun()])}, monkeypatch,
+                        sem_file={"N": {"puella": "animal"}, "ADJ": {}, "V": {}})
+    assert errs == ["01.json: puella (N) sem disagrees with pipeline/sem.json"]
+    errs = _write_decks(tmp_path, {1: _deck(1, [_noun()])}, monkeypatch,
+                        sem_file={"N": {}, "ADJ": {}, "V": {}})
+    assert errs == ["01.json: puella (N) has a sem that pipeline/sem.json lacks (run --dump-sem)"]
+
+
+def test_the_file_wins_over_the_deck_on_a_rebuild(tmp_path, monkeypatch):
+    _write_decks(tmp_path, {1: _deck(1, [_noun()])}, monkeypatch,
+                 sem_file={"N": {"puella": "animal"}, "ADJ": {}, "V": {}})
+    assert bv.load_sem()[("puella", "N")] == "animal"
+
+
+def test_dump_sem_round_trips_the_decks(tmp_path, monkeypatch):
+    _write_decks(tmp_path, {1: _deck(1, [_noun(), _verb(), _word()])}, monkeypatch)
+    data = json.loads((tmp_path / "sem.json").read_text(encoding="utf-8"))
+    assert data == {"N": {"puella": "person"}, "ADJ": {"magnus": {"of": ["thing", "place"]}},
+                    "V": {"dō": {"subj": ["person"], "obj": ["thing", "food"], "dat": ["person"]}}}
+
+
+def test_the_shipped_sem_json_covers_every_noun_verb_and_adjective():
+    filed = bv.load_sem_file()
+    missing = []
+    for c in bv.CHAPTERS:
+        for w in json.loads((bv.OUT_DIR / f"{c:02d}.json").read_text(encoding="utf-8"))["words"]:
+            if w["pos"] in ("N", "V", "ADJ") and (bv.canonical(w["lemma"]), w["pos"]) not in filed:
+                missing.append(w["lemma"])
+    assert missing == []
+    assert sum(1 for k in filed if k[1] == "N") == 562
+    assert sum(1 for k in filed if k[1] == "V") == 551
+    assert sum(1 for k in filed if k[1] == "ADJ") == 299
 
 
 # ------------------------------------------------------------- dict lines

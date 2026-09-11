@@ -1661,6 +1661,95 @@ app/data/grammar/vocab/NN.json             gains "sem": semantic class per word
   and reviewed adversarially by a second Latinist, the rejection rate reported,
   before the remaining skills are written.
 
+### 11a. The template and output shapes, as built (pilot, 2026-09-11)
+
+Eight skills piloted — accusative-object · ablative-means · ablative-agent ·
+dative-indirect-object · accusative-infinitive · ablative-absolute ·
+perfect-active · purpose-clause — 75 templates, in
+`app/data/grammar/templates/<skill>.json`, filled by
+`pipeline/generate_sentences.py`. What the app agent reads and what it must
+render is fixed here; the pipeline is the only writer of both files.
+
+**A template file**
+```jsonc
+{ "skill": "dative-indirect-object", "chapter": 7,      // the skill's own chapter (skills.json)
+  "templates": [
+    { "id": "dio-t1",                                   // unique across every skill (prefix per skill)
+      "la": "{g:nom} {r:dat} {suus:dat} {t:acc} {v:pres.ind}.",
+      "en": "{g} {v} {suus} {r:bare} {t:a}.",           // same slot names; may omit a slot
+      "slots": {
+        "g":    { "sem": ["person"] },                    // noun: class list, or "only": [lemmas]
+        "r":    { "sem": ["person"], "names": false, "number": "sg" },   // sg · pl · any
+        "t":    { "sem": ["thing", "food"], "art": "a", "g": "" },        // art: English article; g: gloss prefix
+        "suus": { "pos": "ADJ", "agree": "r", "only": ["suus"], "ref": "g" },   // ref: whose, for the English
+        "v":    { "pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": "r" }
+      },
+      "focus": "r",                                     // a slot, a printed word, or a list for a two-word focus
+      "words": 5,                                       // the count when filled
+      "fixed_gloss": { "baculō": "with a stick" } }     // gloss of a fixed printed form, when the deck's would mislead
+  ],
+  "exclude": [ "A whole sentence.", { "template": "dio-t1", "fill": { "r": "deus" } } ] }
+```
+Slot kinds: `N` (default; `sem` / `only` / `not` / `number` / `names` / `same` /
+`art` / `g`), `ADJ` (`agree`, `only` / `not`, `pred` keeps it out of the English
+noun phrase, `det` admits determiners), `PRON` (`lemma`, `agree`), `ADV`
+(`only`), `V` (`form` as tense.mood[.voice[.person+number]] · `ptc.pres` ·
+`inf.pres[.pass]`; `subj` a slot, a list of slots, or ego · tū · nōs · vōs;
+`subj_sem` for an implicit subject; `obj` / `dat` a slot or list; `agent` in
+the passive; `lemmas` / `not`; `takes` inf · acc_inf · ut; `absolute`,
+`allow_dat`; `same` copies another verb slot). `{ab}` prints ā / ab by the next
+sound. English modifiers: verbs `base` · `3sg` · `past` · `pp` · `ing` · `prog`
+· `neg` · `be`; nouns `a` · `the` · `bare` · `poss` · `pron` · `be`.
+
+**A deck word's frame** (`app/data/grammar/vocab/NN.json`, source
+`pipeline/sem.json`): a noun carries one class; an adjective
+`{"of": [classes], "only"?/"also"?: [lemmas], "number"?, "det"?: true}`; a verb
+`{"subj": [...], "obj": [...], "dat"?: [...], "subj_only"? / "obj_only"? /
+"dat_only"? / "subj_also"? / "obj_also"? / "dat_also"?: [lemmas], "takes"?:
+[inf · acc_inf · ut · pred · abl · gen · none]}`. A verb with no object classes
+and a `takes` is drawn only into a slot that asks for that complement.
+
+**A generated sentence** (what the app renders; `--json` writes a list of
+these per skill)
+```jsonc
+{ "id": "dio-t1-3f2a1c",                 // template id + a hash of the Latin: stable across runs
+  "la": "Iūlius servō suō nummum dat.", "en": "Julius gives his slave a coin.",
+  "words": 5, "focus": "servō",           // focus occurs in la; two words for an ablative absolute
+  "gloss": [ { "w": "Iūlius", "m": "Julius" }, { "w": "servō", "m": "to the slave" }, … ],  // every word, in order
+  "generated": true, "template": "dio-t1", "seed": 1,
+  "fill": { "g": "Iūlius", "r": "servus", "suus": "suus", "t": "nummus", "v": "dō" } }
+```
+and around them `{ "skill", "chapter", "seed", "sentences": [...],
+"rejected_by_check": [{ "template", "la", "problems" }], "per_template": {},
+"unfillable": {} }`. Deterministic for (skill, seed); the app asks for a new
+seed when it wants a new batch. `--counts` prints each template's productive
+count (exact up to 20,000 noun assignments, sampled above); `--unreliable`
+lists the deck words the reliability gate keeps out of the pools and why.
+
+**The checks before a sentence ships** (`check_sentence`): 5–8 words; no
+lemma twice; every printed word one of the engine's own spellings of a word
+inside the cumulative vocabulary, a cast name, or a construction word; every
+slot form re-parsed as intended; every verb's arguments admitted by its frame
+and every adjective by its `of`; every verb form consistent with the deck's
+dictionary line (conjugation endings, infinitive, perfect stem); focus
+printed; English and gloss complete; exclusion list. Before filling, the
+**reliability gate** keeps a word out of the pools when the glossary's roots
+disagree with each other in macrons, its head or infinitive differs from the
+deck's, or a full genitive in the deck's line is not the engine's — the
+whole word when the present system is affected, the perfect system alone when
+only the perfect or supine root is (portō, plōrō, dēlectō stay in the present).
+
+**Pilot result.** Six hostile reads of 320 sentences each, 40 per skill,
+a different seed each time: 50% rejected on the first (a systematic gloss slip
+after prepositions, over-broad `thing` objects, unmacronised glossary roots,
+determiners drawn as free adjectives), 11% on the second, 6% on the third and
+fourth (frame edges), 2.8% on the fifth and 1.6% on the sixth; every cause
+became a frame, a gate rule or a check, pinned in
+`pipeline/test_generate_sentences.py`. The glossary gaps the gate works around
+(unmacronised perfect roots, present roots that disagree, `liber, līberī`,
+Whitaker's `edāre` and `volāre` homographs) are upstream data to fix; the gate
+lists them with `--unreliable`.
+
 ## 12. Feedback everywhere, and scaffolded tables (2026-09-11)
 
 Learner: everything gives immediate feedback in green and red with the
