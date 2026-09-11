@@ -450,10 +450,10 @@
     },
     {
       "id": "fi-12",
-      "la": "Mārcus dīcit sē statim ventūrum.",
+      "la": "Mārcus dīcit sē statim ventūrum esse.",
       "en": "Marcus says that he will come at once.",
-      "words": 5,
-      "focus": "ventūrum",
+      "words": 6,
+      "focus": "ventūrum esse",
       "step": 5,
       "stage": 3,
       "kinds": [
@@ -481,6 +481,10 @@
         {
           "w": "ventūrum",
           "m": "going to come"
+        },
+        {
+          "w": "esse",
+          "m": "(the second half of the form)"
         }
       ]
     },

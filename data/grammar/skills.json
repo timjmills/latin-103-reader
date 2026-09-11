@@ -1981,7 +1981,10 @@
    ],
    "parse_filter": {
     "deponent": true,
-    "mood": "ind"
+    "mood": [
+     "ind",
+     "inf"
+    ]
    },
    "kinds": [
     "recognise",
