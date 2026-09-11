@@ -1429,7 +1429,9 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     // 1 · the dictionary. A filter that only names the entry (`{pos: 'ADV'}`) is satisfied by the entry alone,
     // so a word with no parses at all still answers it — that is the whole of what an adverb has.
     for (const e of lookup(tok.text)?.entries ?? []) {
-      if (e.enc) continue;
+      // An enclitic reading is skipped everywhere else, because *-que* on a word is not a word. For the skill
+      // that teaches the enclitic it is the whole point, so it is admitted when the filter asks for it.
+      if (e.enc && !filters.some((x) => x.enc)) continue;
       const ps = (e.parses || []);
       const values = new Set();
       let hit = null;
@@ -1442,10 +1444,31 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     }
     return resolveFromTable(unit, sk, idx);
   };
-  /** The focus of a written sentence: whichever word of the declared span the skill's own filter can settle on. */
+  /**
+   * The focus of a written sentence: whichever word of the declared span the skill's own filter can settle
+   * on. A periphrastic form (*ventūrum esse*, *clausum est*) is the exception — no single word of it is a
+   * future infinitive, the two together are — so when no word answers the filter on its own, the candidate is
+   * made on the head with the parse the skill declares. The author said what this sentence teaches; the
+   * alternative is to teach a different sentence instead, which §8 forbids.
+   */
   const resolveFocus = (unit, sk, written) => {
-    for (const idx of focusSpan(written)) { const made = resolveAt(unit, sk, idx); if (made) return made; }
-    return null;
+    const span = focusSpan(written);
+    for (const idx of span) { const made = resolveAt(unit, sk, idx); if (made) return made; }
+    if (span.length < 2) return null;
+    const toks = wordsOf(unit.la);
+    const tok = toks[span[0]];
+    if (!tok) return null;
+    // Only the parse keys of the filter: `pos`, `deponent` and `decl` describe the entry, not the reading.
+    const ENTRY_KEYS = new Set(['pos', 'enc', 'h', 'deponent', 'decl']);
+    const f = filterOf(sk)[0];
+    if (!f) return null;
+    const parse = Object.fromEntries(Object.entries(f).filter(([k, v]) => !ENTRY_KEYS.has(k) && v != null && !Array.isArray(v)));
+    if (!Object.keys(parse).length) return null;
+    const entry = (lookup(tok.text)?.entries ?? []).find((e) => !e.enc) ?? null;
+    if (!entry) return null;
+    const k = featureKey(sk);
+    const value = featureValue(parse, k, entry, sk);
+    return { unit, token: tok, index: span[0], entry, parse, ambiguous: false, settled: true, values: value ? [value] : [], ambKey: k, value, gold: null, verified: true };
   };
   /** The candidate made from the word's own paradigm, for the forms the glossary does not key. */
   const resolveFromTable = (unit, sk, idx) => {
