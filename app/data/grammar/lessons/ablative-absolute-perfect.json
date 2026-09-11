@@ -61,7 +61,7 @@
     {
       "n": 2,
       "title": "Both words wear the same ablative ending",
-      "say": "The noun and the participle both stand in the ablative — **the ablative (the 'by/with' form)** — and that shared ending is what ties them together: *cibō parātō*, *iānuā clausā*, *portā apertā*. Nothing else in the sentence governs them; they stand loose, which is what 'absolute' means.",
+      "say": "The noun and the participle both stand in the ablative — **the ablative (the 'by/with' form)**. A perfect participle declines like *bonus*, so it takes the *-ō* / *-ā* of that table: *cibō parātō*, *iānuā clausā*, *portā apertā*. Nothing else governs them; they stand loose, which is what 'absolute' means.",
       "show": {
         "kind": "paradigm",
         "key": "adj12",
@@ -99,7 +99,7 @@
     {
       "n": 3,
       "title": "In the plural, both are ablative",
-      "say": "When there is more than one, both words stand in the ablative plural. With nouns like *servus* and *verbum* the two of them end in *-īs*: *servīs vocātīs*, *verbīs dictīs*, *librīs sūmptīs*. A 3rd-declension noun (the *-is / -ēs* pattern: *mīles, mīlitis*) keeps its own *-ibus*, and only the participle shows *-īs*: *mīlitibus victīs*.",
+      "say": "When there is more than one, both words stand in the ablative plural. The participle still declines like *bonus*, so it ends in *-īs*, and with nouns such as *servus* and *verbum* both do: *servīs vocātīs*, *verbīs dictīs*. A 3rd-declension noun (*mīles, mīlitis*) keeps its own *-ibus*, and only the participle shows *-īs*: *mīlitibus victīs*.",
       "show": {
         "kind": "paradigm",
         "key": "adj12",

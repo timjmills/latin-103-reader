@@ -364,7 +364,10 @@ skill("deponent-verbs", "Deponent verbs: passive form, active meaning", "a depon
       ["passive-voice", "infinitive"], ["passive-voice", "deponent-imperatives", "perfect-deponent"],
       CONJ_ALL, {"voice": "pass", "mood": "ind", "tense": "pres"},
       [r"(?i)\b(laet|intu|sequ|profic|opper|revert|obliv|pollic|loqu|arbitr|hort|mor|pat|ut|fru|fung|ver|nasc|ori|egred|ingred|regred|progred|complect|precor|quer|imit|comit|admir|mir|solat|tuor|vereor|conor|consol|confit|oper|labor|lab)\w*(or|eor|ior|aris|eris|iris|atur|etur|itur|amur|emur|imur|amini|emini|imini|antur|entur|untur|iuntur|i|ri)\b"],
-      {"deponent": True, "mood": "ind"},
+      # The infinitive is in: step 4 of the lesson teaches -ī / -rī as the
+      # quickest deponent test, and the classic stock (loquī, sequī) is written
+      # into the skill's own sentences (dep-09, dep-10).
+      {"deponent": True, "mood": ["ind", "inf"]},
       ["recognise", "chart", "parse", "blank"],
       "Verbs like loquor, sequor, proficīscor have only passive-shaped forms but mean the doing, not the being done; their infinitive ends in -ī / -rī.")
 

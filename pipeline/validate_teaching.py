@@ -22,9 +22,20 @@ Checks, per skill (contract docs/GRAMMAR-CONTRACT.md "Teaching rebuild", section
   TEACH           4-6 steps, numbered from 1; every step has one `show` and one
                   `check`; every sentence id a step names exists in the sentence file;
                   step 1 words the term exactly as the skill's `plain` string.
-  PARADIGM        every paradigm key is in skills.json's paradigm_keys map and in the
-                  skill's own `paradigms` list; every cell key names a real cell of
-                  that table and stays inside the skill's `paradigm_focus`.
+                  A check kind must be one of the skill's own kinds, except `chart`,
+                  which is also legitimate when the step (or an earlier step of the
+                  same lesson) showed a paradigm, or the skill names catalogue tables
+                  of its own: a step checks the table it showed (contract 9, A2).
+  PARADIGM        every paradigm key is in skills.json's paradigm_keys map; a key
+                  outside the skill's own `paradigms` list is allowed only when the
+                  step's `say` gives the reason (contract 9, A2): it names one of the
+                  table's stock words (perfect participles decline like bonus, so
+                  adj12 is the right table for an ablative absolute) or says
+                  "like" / "declines like" / "same endings". Every cell key names a
+                  real cell of that table and stays inside the skill's `paradigm_focus`.
+  FLOOR           twelve sentences for a drillable skill; a lesson-only skill (the set
+                  pipeline/check_skill_coverage.py excuses, imported from there so the
+                  two checks agree) needs only its illustrative lines.
 """
 import json, os, re, sys, unicodedata
 
@@ -472,6 +483,48 @@ def parse_matches(word, skill, glossary, forms, gen_parses=None):
     return False, json.dumps(filters, sort_keys=True)
 
 
+def lesson_only(skill, sfile):
+    """Is this skill excused from the twelve-sentence floor?
+
+    The set is pipeline/check_skill_coverage.py's (LESSON_ONLY and its
+    categories, or a sentences file that says `lesson_only`), imported so the two
+    checks can never disagree. Imported lazily because that module imports this
+    one for its vocabulary rule.
+    """
+    import check_skill_coverage as csc
+    return csc.classify(skill, sfile) == "lesson-only"
+
+
+def stock_words(pkey):
+    """The macron-stripped stock headwords of the tables a paradigm key names."""
+    doc = load(os.path.join(G, "paradigms.json"))
+    tables = set(key_tables(pkey).get("tables") or [pkey])
+    out = set()
+    for part in doc["parts"]:
+        for table in part["tables"]:
+            if table["id"] in tables:
+                for w in table.get("stock") or []:
+                    out.add(strip_macrons(w.get("h") or ""))
+    return out - {""}
+
+
+WHY_PHRASES = ("declines like", "same endings", "like")
+
+
+def says_why(say, pkey):
+    """Does a step's prose say why it borrows a table outside the skill's own?
+
+    Contract 9, A2: a foreign table is a legitimate teaching move when the prose
+    makes it. It counts when the prose names one of the table's stock words
+    (bonus, magnus ... for adj12) or says "like" / "declines like" / "same endings".
+    """
+    text = strip_macrons(say)
+    words = set(re.findall(r"[a-z]+", text))
+    if words & stock_words(pkey):
+        return True
+    return any(ph in text for ph in WHY_PHRASES)
+
+
 def check_skill(sid, skills, vocab_by_ch, glossary, problems):
     skill = skills[sid]
     ch = skill["chapter"]
@@ -506,7 +559,7 @@ def check_skill(sid, skills, vocab_by_ch, glossary, problems):
     ids = [s["id"] for s in sentences]
     if len(set(ids)) != len(ids):
         say("duplicate sentence ids: %s" % sorted({i for i in ids if ids.count(i) > 1}))
-    if len(sentences) < 12:
+    if len(sentences) < 12 and not lesson_only(skill, sfile):
         say("only %d sentences (twelve is the floor for a drillable skill)" % len(sentences))
 
     longest = 0
@@ -560,14 +613,23 @@ def check_skill(sid, skills, vocab_by_ch, glossary, problems):
     if plain and plain not in (teach[0].get("say") or ""):
         say("step 1 does not word the term as skills.json does: %r" % plain)
     known = set(ids)
+    shown_table = False          # has this lesson shown a paradigm yet? (contract 9, A2)
     for t in teach:
         n = t.get("n")
         for field in ("title", "say", "check"):
             if not t.get(field):
                 say("step %s has no %s" % (n, field))
         chk = t.get("check") or {}
+        show = t.get("show") or {}
+        if show.get("kind") == "paradigm" and show.get("key"):
+            shown_table = True
         if chk.get("kind") not in (skill.get("kinds") or []):
-            say("step %s check kind %r outside the skill's kinds" % (n, chk.get("kind")))
+            # A2: a step checks the table it showed. A chart check is that check,
+            # so it is legitimate once the lesson has put a table on screen, or
+            # when the skill names catalogue tables of its own; a skill with no
+            # table shown and none of its own has nothing for a chart to check.
+            if not (chk.get("kind") == "chart" and (shown_table or skill.get("paradigms"))):
+                say("step %s check kind %r outside the skill's kinds" % (n, chk.get("kind")))
         for ref in (t.get("show") or {}, chk):
             if ref.get("kind") == "sentence" and ref.get("id") not in known:
                 say("step %s names sentence %r, which does not exist" % (n, ref.get("id")))
@@ -580,8 +642,10 @@ def check_skill(sid, skills, vocab_by_ch, glossary, problems):
             if pkey not in PARADIGM_KEYS:
                 say("step %s uses paradigm key %r, absent from paradigm_keys" % (n, pkey))
                 continue
-            if pkey not in (skill.get("paradigms") or []):
-                say("step %s uses paradigm %r, not one of the skill's own" % (n, pkey))
+            if pkey not in (skill.get("paradigms") or []) and not says_why(t.get("say") or "", pkey):
+                say("step %s uses paradigm %r, not one of the skill's own, and the prose "
+                    "does not say why (name a stock word of the table, or say "
+                    "\"like\" / \"declines like\" / \"same endings\")" % (n, pkey))
             for cell in (ref.get("reveal") or ref.get("cells") or []):
                 ok, parse = cell_ok(pkey, cell)
                 if not ok:
