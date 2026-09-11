@@ -1705,3 +1705,23 @@ remembered.
 
 The one-attempt rule (§3) holds: a scaffolded table is one attempt, scored on
 the cells the learner had to fill.
+
+## 13. Every skill, enforced (2026-09-11)
+
+Learner: build these logics throughout all the grammar skills. So §3, §10,
+§11 and §12 apply to all 88, and a build check proves it rather than a
+promise. `pipeline/check_skill_coverage.py` fails unless every skill has:
+
+| route | table skills (~66) | sentence skills (~19) | lesson-only (3) |
+|---|---|---|---|
+| Learn as micro-steps, ≤60-word text, noticing opener, completed worked examples | required | required | required (no checks) |
+| written sentences, 5–8 words, cumulative vocabulary | ≥ 12 | ≥ 12 | 4 illustrative lines |
+| unlimited practice | ≥ 1 catalogue table with stock words | ≥ 5 templates, pilot-reviewed | excused, stated |
+| scaffolded table at 80/50/20/0 and auto | required | where a table is named | — |
+| mixed practice options and customisation axes | the table's honest axes | written / generated / both | — |
+| immediate per-box feedback and per-box hint | every box | every box | — |
+| same-session re-test, "Just drill it", two-tap entry, reading tie-in | required | required | tie-in only |
+
+A skill that cannot meet a row is listed in the check's output with the
+reason, and the map shows that reason on the skill rather than a dead control.
+The check runs in the test suite, so a new skill cannot ship half-wired.
