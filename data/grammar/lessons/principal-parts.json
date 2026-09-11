@@ -1,213 +1,212 @@
 {
-  "skill": "principal-parts",
-  "core": [
+ "skill": "principal-parts",
+ "core": [
+  {
+   "type": "p",
+   "text": "A dictionary lists a Latin verb by **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**: *pulsō, pulsāre, pulsāvī, pulsātum*. Everything the verb can do is built on three stems hidden in parts two to four. The infinitive gives the present stem (*pulsā-*), for present, imperfect and future. The third part gives the perfect stem (*pulsāv-*), for 'did / had done'. The fourth gives the participle stem (*pulsāt-*), for 'having been done' and the passive past. Latin name: *partēs prīncipālēs verbī*."
+  },
+  {
+   "type": "english",
+   "text": "English verbs have parts too: *begin, began, begun*. *Began* makes the past, *begun* makes *has begun* and *was begun*."
+  },
+  {
+   "type": "rule",
+   "text": "Learn the three stems: present (infinitive minus -re), perfect (third part minus -ī), participle (fourth part minus -um)."
+  },
+  {
+   "type": "paradigm",
+   "key": "conj1",
+   "highlight": null
+  },
+  {
+   "type": "examples",
+   "units": [
+    "r21:11.1",
+    "r21:33.1",
+    "r21:32.2",
+    "r21:99.2"
+   ],
+   "invented": [
     {
-      "type": "p",
-      "text": "A dictionary lists a Latin verb by **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**: *pulsō, pulsāre, pulsāvī, pulsātum*. Everything the verb can do is built on three stems hidden in parts two to four. The infinitive gives the present stem (*pulsā-*), for present, imperfect and future. The third part gives the perfect stem (*pulsāv-*), for 'did / had done'. The fourth gives the participle stem (*pulsāt-*), for 'having been done' and the passive past. Latin name: *partēs prīncipālēs verbī*."
-    },
-    {
-      "type": "english",
-      "text": "English verbs have parts too: *begin, began, begun*. *Began* makes the past, *begun* makes *has begun* and *was begun*."
-    },
-    {
-      "type": "rule",
-      "text": "Learn the three stems: present (infinitive minus -re), perfect (third part minus -ī), participle (fourth part minus -um)."
-    },
-    {
-      "type": "paradigm",
-      "key": "conj1",
-      "highlight": null
-    },
-    {
-      "type": "examples",
-      "units": [
-        "r21:11.1",
-        "r21:33.1",
-        "r21:32.2",
-        "r21:99.2"
-      ],
-      "invented": [
-        {
-          "la": "Mārcus scrībit; herī scrīpsit; epistula scrīpta est.",
-          "en": "Marcus writes; yesterday he wrote; the letter has been written.",
-          "focus": "scrīpsit"
-        }
-      ]
-    },
-    {
-      "type": "confusion",
-      "with": "perfect-active",
-      "text": "The third part *is* the first person of **the perfect (the 'did / has done' tense)**: *pulsāvī* = I hit. So the dictionary entry already gives you one whole perfect form; the other endings replace its -ī."
+     "la": "Mārcus scrībit; herī scrīpsit; epistula scrīpta est.",
+     "en": "Marcus writes; yesterday he wrote; the letter has been written.",
+     "focus": "scrīpsit"
     }
-  ],
-  "teach": [
-    {
-      "n": 1,
-      "title": "One verb, three shapes",
-      "notice": {
-        "sentences": [
-          "prp-06",
-          "prp-08"
-        ],
-        "ask": "*scrīpsit* and *audīvit* are different verbs. What do the two have in common?",
-        "tap": "choice",
-        "choices": [
-          "Both say something already done, built on the third dictionary form",
-          "Both say something happening now, built on the second dictionary form",
-          "Both describe a noun, built on the fourth dictionary form"
-        ],
-        "answer": "Both say something already done, built on the third dictionary form"
-      },
-      "say": "A dictionary gives a Latin verb four forms: *vocō, vocāre, vocāvī, vocātum*. These are **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**. The same verb three times — *vocat* 'he calls', *vocāvit* 'he called', *vocātus* 'called' — is three different stems, each cut from one of those forms.",
-      "show": {
-        "kind": "sentence",
-        "id": "prp-01"
-      },
-      "worked": {
-        "sentence": "prp-03",
-        "given": [
-          "case",
-          "number",
-          "gender",
-          "tense",
-          "voice",
-          "mood"
-        ],
-        "ask": []
-      },
-      "check": {
-        "kind": "recognise",
-        "sentence": "prp-02",
-        "ask": "Which word here is built on a different stem from *vocat*?"
-      }
-    },
-    {
-      "n": 2,
-      "title": "Part two gives the present stem",
-      "say": "The second form is the infinitive (the plain 'to' form), *vocāre*. Cut off its *-re* and you have the present stem, *vocā-*. Everything happening now, or going on, is built there and nowhere else: *vocat*, *scrībunt*, *mittit*. Parts three and four have nothing to do with these words.",
-      "show": {
-        "kind": "paradigm",
-        "key": "conj1",
-        "reveal": [
-          "inf.pres.act",
-          "pres.ind.act.3.sg"
-        ]
-      },
-      "check": {
-        "kind": "chart",
-        "cells": [
-          "pres.ind.act.3.sg"
-        ],
-        "words": [
-          "voco",
-          "laudo"
-        ],
-        "ask": "From the infinitive alone, fill in the 'he / she / it' form of the present."
-      }
-    },
-    {
-      "n": 3,
-      "title": "Part three gives the perfect stem: cut the -ī",
-      "say": "The third form is already a whole word — *vocāvī*, 'I called'. Cut its *-ī* and you have the perfect stem, *vocāv-*. Every 'did / has done' form of the verb is built on it: *vocāvit*, *scrīpsit*, *habuit*, *audīvit*. This is the part that surprises you, so it is the part to learn.",
-      "show": {
-        "kind": "paradigm",
-        "key": "conj1",
-        "reveal": [
-          "perf.ind.act.1.sg",
-          "perf.ind.act.3.sg"
-        ]
-      },
-      "worked": {
-        "sentence": "prp-06",
-        "given": [
-          "voice",
-          "mood",
-          "person",
-          "number"
-        ],
-        "ask": [
-          "tense",
-          "why"
-        ]
-      },
-      "check": {
-        "kind": "chart",
-        "cells": [
-          "perf.ind.act.3.sg"
-        ],
-        "words": [
-          "voco",
-          "laudo",
-          "amo"
-        ],
-        "ask": "Cut the -ī off the third part and add -it: fill in the cell."
-      }
-    },
-    {
-      "n": 4,
-      "title": "Part four gives the participle stem: cut the -um",
-      "say": "The fourth form ends in *-um*: *vocātum*. Cut that *-um* and you have the participle stem, *vocāt-*. From it comes the word for what was done to somebody — *vocātus*, *scrīpta*, *occīsa* — and the two-word past that uses it.",
-      "show": {
-        "kind": "paradigm",
-        "key": "conj1",
-        "reveal": [
-          "ptc.perf.pass"
-        ]
-      },
-      "check": {
-        "kind": "chart",
-        "cells": [
-          "ptc.perf.pass"
-        ],
-        "words": [
-          "voco",
-          "laudo",
-          "amo"
-        ],
-        "ask": "Cut the -um off the fourth part and add -us: fill in the cell."
-      }
-    },
-    {
-      "n": 5,
-      "title": "Which part was this word cut from?",
-      "say": "Now the sorting. Three habits cover most verbs: *ā*-verbs are safe (*parāre, parāvī, parātum*); *ē*-verbs mostly go *-uī, -itum* (*habēre, habuī, habitum*); consonant verbs must be learned one at a time (*dūcere, dūxī, ductum*; *cadere, cecidī, cāsum*; *ferre, tulī, lātum*). When a form surprises you, ask which of the four it was cut from.",
-      "show": {
-        "kind": "sentence",
-        "id": "prp-11"
-      },
-      "worked": {
-        "sentence": "prp-12",
-        "given": [
-          "mood"
-        ],
-        "ask": [
-          "tense",
-          "voice",
-          "person",
-          "number",
-          "why"
-        ]
-      },
-      "check": {
-        "kind": "blank",
-        "sentence": "prp-14",
-        "ask": "*ferō, ferre, tulī, lātum*. Put 'he carried' in the gap."
-      }
-    }
-  ],
-  "more": [
-    {
-      "type": "p",
-      "text": "The learner's notes (week 21) say the three stems are what matters, and that most verbs are predictable: ā-verbs go -āv-, -āt- (*laudāre, laudāv-, laudāt-*); ē-verbs mostly -u-, -it- (*monēre, monu-, monit-*); ī-verbs -īv-, -īt- (*audīre, audīv-, audīt-*). Consonant-stem verbs must be learned one by one: *scrībere, scrīps-, scrīpt-*; *dūcere, dūx-, duct-*; *dīligere, dīlēx-, dīlēct-*."
-    },
-    {
-      "type": "p",
-      "text": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) has no perfect-active stem, so it shows only two parts plus the participle: *loquī, locūtum*; *lābī, lāpsum*. Ørberg lists new verbs at the foot of each chapter exactly this way: *pellere pepulisse pulsum*."
-    }
-  ],
-  "sources": [
-    "notes p75–77",
-    "Ørberg cap. XXI–XXII (verba)",
-    "A&G §172"
-  ]
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "perfect-active",
+   "text": "The third part *is* the first person of **the perfect (the 'did / has done' tense)**: *pulsāvī* = I hit. So the dictionary entry already gives you one whole perfect form; the other endings replace its -ī."
+  }
+ ],
+ "teach": [
+  {
+   "n": 1,
+   "title": "One verb, three shapes",
+   "notice": {
+    "sentences": [
+     "prp-06",
+     "prp-08"
+    ],
+    "ask": "*scrīpsit* and *audīvit* are different verbs. What do the two have in common?",
+    "answer": "Both say something already done, built on the third dictionary form",
+    "options": [
+     "Both say something already done, built on the third dictionary form",
+     "Both say something happening now, built on the second dictionary form",
+     "Both describe a noun, built on the fourth dictionary form"
+    ]
+   },
+   "say": "A dictionary gives a Latin verb four forms: *vocō, vocāre, vocāvī, vocātum*. These are **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**. The same verb three times — *vocat* 'he calls', *vocāvit* 'he called', *vocātus* 'called' — is three different stems, each cut from one of those forms.",
+   "show": {
+    "kind": "sentence",
+    "id": "prp-01"
+   },
+   "worked": {
+    "sentence": "prp-03",
+    "given": [
+     "case",
+     "number",
+     "gender",
+     "tense",
+     "voice",
+     "mood"
+    ],
+    "ask": []
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "prp-02",
+    "ask": "Which word here is built on a different stem from *vocat*?"
+   }
+  },
+  {
+   "n": 2,
+   "title": "Part two gives the present stem",
+   "say": "The second form is the infinitive (the plain 'to' form), *vocāre*. Cut off its *-re* and you have the present stem, *vocā-*. Everything happening now, or going on, is built there and nowhere else: *vocat*, *scrībunt*, *mittit*. Parts three and four have nothing to do with these words.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj1",
+    "reveal": [
+     "inf.pres.act",
+     "pres.ind.act.3.sg"
+    ]
+   },
+   "check": {
+    "kind": "chart",
+    "cells": [
+     "pres.ind.act.3.sg"
+    ],
+    "words": [
+     "voco",
+     "laudo"
+    ],
+    "ask": "From the infinitive alone, fill in the 'he / she / it' form of the present."
+   }
+  },
+  {
+   "n": 3,
+   "title": "Part three gives the perfect stem: cut the -ī",
+   "say": "The third form is already a whole word — *vocāvī*, 'I called'. Cut its *-ī* and you have the perfect stem, *vocāv-*. Every 'did / has done' form of the verb is built on it: *vocāvit*, *scrīpsit*, *habuit*, *audīvit*. This is the part that surprises you, so it is the part to learn.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj1",
+    "reveal": [
+     "perf.ind.act.1.sg",
+     "perf.ind.act.3.sg"
+    ]
+   },
+   "worked": {
+    "sentence": "prp-06",
+    "given": [
+     "voice",
+     "mood",
+     "person",
+     "number"
+    ],
+    "ask": [
+     "tense",
+     "why"
+    ]
+   },
+   "check": {
+    "kind": "chart",
+    "cells": [
+     "perf.ind.act.3.sg"
+    ],
+    "words": [
+     "voco",
+     "laudo",
+     "amo"
+    ],
+    "ask": "Cut the -ī off the third part and add -it: fill in the cell."
+   }
+  },
+  {
+   "n": 4,
+   "title": "Part four gives the participle stem: cut the -um",
+   "say": "The fourth form ends in *-um*: *vocātum*. Cut that *-um* and you have the participle stem, *vocāt-*. From it comes the word for what was done to somebody — *vocātus*, *scrīpta*, *occīsa* — and the two-word past that uses it.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj1",
+    "reveal": [
+     "ptc.perf.pass"
+    ]
+   },
+   "check": {
+    "kind": "chart",
+    "cells": [
+     "ptc.perf.pass"
+    ],
+    "words": [
+     "voco",
+     "laudo",
+     "amo"
+    ],
+    "ask": "Cut the -um off the fourth part and add -us: fill in the cell."
+   }
+  },
+  {
+   "n": 5,
+   "title": "Which part was this word cut from?",
+   "say": "Now the sorting. Three habits cover most verbs: *ā*-verbs are safe (*parāre, parāvī, parātum*); *ē*-verbs mostly go *-uī, -itum* (*habēre, habuī, habitum*); consonant verbs must be learned one at a time (*dūcere, dūxī, ductum*; *cadere, cecidī, cāsum*; *ferre, tulī, lātum*). When a form surprises you, ask which of the four it was cut from.",
+   "show": {
+    "kind": "sentence",
+    "id": "prp-11"
+   },
+   "worked": {
+    "sentence": "prp-12",
+    "given": [
+     "mood"
+    ],
+    "ask": [
+     "tense",
+     "voice",
+     "person",
+     "number",
+     "why"
+    ]
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "prp-14",
+    "ask": "*ferō, ferre, tulī, lātum*. Put 'he carried' in the gap."
+   }
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "The learner's notes (week 21) say the three stems are what matters, and that most verbs are predictable: ā-verbs go -āv-, -āt- (*laudāre, laudāv-, laudāt-*); ē-verbs mostly -u-, -it- (*monēre, monu-, monit-*); ī-verbs -īv-, -īt- (*audīre, audīv-, audīt-*). Consonant-stem verbs must be learned one by one: *scrībere, scrīps-, scrīpt-*; *dūcere, dūx-, duct-*; *dīligere, dīlēx-, dīlēct-*."
+  },
+  {
+   "type": "p",
+   "text": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) has no perfect-active stem, so it shows only two parts plus the participle: *loquī, locūtum*; *lābī, lāpsum*. Ørberg lists new verbs at the foot of each chapter exactly this way: *pellere pepulisse pulsum*."
+  }
+ ],
+ "sources": [
+  "notes p75–77",
+  "Ørberg cap. XXI–XXII (verba)",
+  "A&G §172"
+ ]
 }
