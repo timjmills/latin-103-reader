@@ -233,12 +233,12 @@ const isShelf = (n) => isShelfWeek(n);
 const SHELF_TEXT = {
   1: { title: 'Imperium Rōmānum', focus: { key: 'nominative', label: 'Nominative: the subject', blurb: 'The subject form (puella, fluvius, oppidum) and singular against plural.' }, la: [
     'Rōma in Italiā est.', 'Italia in Eurōpā est.', 'Gallia quoque in Eurōpā est.', 'Ubi est Hispānia?', 'Hispānia in Eurōpā est, nōn in Asiā.',
-    'Nīlus fluvius magnus est.', 'Tiberis fluvius parvus est.', 'Multī fluviī in Eurōpā sunt.', 'Sardinia īnsula est.', 'Corsica et Sardinia īnsulae sunt.',
+    'Nīlus fluvius magnus est.', 'Tiberis fluvius parvus est.', 'Multī fluviī in Eurōpā sunt.', 'Sicilia īnsula est.', 'Īnsulae quoque sunt Corsica et Sardinia.',
     'Brundisium oppidum Rōmānum est.', 'Quid est Brundisium? Oppidum est.',
   ] },
   7: { title: 'Puella et Rosa', focus: { key: 'dative', label: 'Dative case: indirect objects', blurb: "The 'to/for' form: the person something is given to." }, la: [
     'Iūlia in hortō est.', 'Puella rosās videt et rīdet.', 'Iūlius fīliae suae rosam dat.', 'Iūlia patrī grātiās agit.', 'Mārcus sorōrī nihil dat.',
-    'Aemilia puerīs māla dat.', 'Quīntus mātrī mālum ostendit.', 'Cui Iūlius ōsculum dat? Iūliae.', 'Syra puellae speculum tenet.', 'Puella sē in speculō videt.',
+    'Aemilia puerīs māla dat.', 'Quīntus mātrī mālum ostendit.', 'Cui Iūlius ōsculum dat? Iūliae.', 'Syra puellae speculum tenet.', 'Puella in speculō sē videt.',
     'Ecce rosa in nāsō puellae!', 'Iūlia laeta ē hortō exit.',
   ] },
 };
@@ -254,8 +254,8 @@ const SHELF_TEACH = {
         summary_en: 'Rome is in Italy and Italy in Europe; Gaul is in Europe too. Where is Spain? In Europe, not in Asia. The Nile is a big river.',
         summary_la: 'Rōma in Italiā est, Italia in Eurōpā. Gallia quoque in Eurōpā est. Hispānia in Eurōpā est, nōn in Asiā. Nīlus fluvius magnus est.' },
       { part: 'Lēctiō secunda', from: 7, to: 12,
-        summary_en: 'The Tiber is a small river, but there are many rivers in Europe. Sardinia is an island, and Corsica and Sardinia together are islands. Brundisium is a Roman town.',
-        summary_la: 'Tiberis fluvius parvus est, sed multī fluviī in Eurōpā sunt. Sardinia īnsula est; Corsica et Sardinia īnsulae sunt. Brundisium oppidum Rōmānum est.' },
+        summary_en: 'The Tiber is a small river, but there are many rivers in Europe. Sicily is an island, and Corsica and Sardinia together are islands. Brundisium is a Roman town.',
+        summary_la: 'Tiberis fluvius parvus est, sed multī fluviī in Eurōpā sunt. Sicilia īnsula est; īnsulae quoque sunt Corsica et Sardinia. Brundisium oppidum Rōmānum est.' },
     ],
     notes: {
       5: { note: 'in + ablative says where something is: in Eurōpā, in Asiā — the -ā is long, and that long -ā is the case ending. nōn denies the phrase it stands in front of, not the verb.',
@@ -286,7 +286,7 @@ const SHELF_TEACH = {
         summary_la: 'Iūlia in hortō est et rosās videt. Iūlius fīliae suae rosam dat, et puella patrī grātiās agit. Mārcus sorōrī nihil dat; Aemilia puerīs māla dat.' },
       { part: 'Lēctiō secunda', from: 7, to: 12,
         summary_en: 'Quintus shows his mother an apple, and Julius gives a kiss — to Julia. Syra holds the mirror for the girl, who sees herself in it. A rose is on her nose, and Julia leaves the garden happy.',
-        summary_la: 'Quīntus mātrī mālum ostendit. Iūlius Iūliae ōsculum dat. Syra puellae speculum tenet et puella sē in speculō videt. Iūlia laeta ē hortō exit.' },
+        summary_la: 'Quīntus mātrī mālum ostendit. Iūlius Iūliae ōsculum dat. Syra puellae speculum tenet et puella in speculō sē videt. Iūlia laeta ē hortō exit.' },
     ],
     notes: {
       3: { note: 'dat takes two objects at once: the thing given (rosam, accusative) and the person it goes to (fīliae, dative). suae is the reflexive possessive — his own daughter, not somebody else\'s.',

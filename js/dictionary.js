@@ -325,11 +325,11 @@ function fitPenalties(entries, raw, opts) {
   //    reading that can (mālum, apples) is the one the sentence is asking for.
   //
   //    All three conditions earn their keep. The verb has to be a word that is *nothing but* a verb,
-  //    or "is enim deus maris est" would count `is` as "you go" and demand an object; it must not be
+  //    or "is enim dominus vīllae est" would count `is` as "you go" and demand an object; it must not be
   //    sum or a compound of it, which take none; and a subject has to have been named already, or
   //    "Nunc īnfans dormit" would ask the intransitive `dormit` for one — and that subject has to be
   //    a noun or pronoun of its own, not the adjective standing in front of this very word
-  //    ("Parvulus īnfans in cūnīs cubāre solet").
+  //    ("Parvulus puer in hortō lūdere solet").
   const verbWantsObject = words.some((w, j) => j !== at && inClause(j) && w.verbOnly && !w.copula)
     && words.some((w, j) => j < at && inClause(j) && w.subject)
     && !words.some((w, j) => j !== at && inClause(j) && w.cases.has('acc'));
