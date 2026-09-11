@@ -14,8 +14,11 @@ excused), every other by its category (the `paradigms` list then names its
 tables):
 
     lesson-only        elegiac-couplet · prosody-scansion · principal-parts
-    table skill        noun-case · adjective · pronoun · verb-form · vocabulary
-    sentence skill     syntax · verb-use
+    table skill        noun-case · adjective · pronoun · verb-form · vocabulary,
+                       when `paradigms` names at least one table
+    sentence skill     syntax · verb-use, and any skill of a table category whose
+                       `paradigms` is empty (ablative-degree, adverbs): with no
+                       table to drill, its unlimited practice is the generator
 
 A skill whose sentences file says `lesson_only` but is not one of the three is
 reported, not accepted (its row 3 fails).
@@ -209,6 +212,14 @@ def classify(skill: dict, sentences: dict | None) -> str:
     if isinstance(sentences, dict) and sentences.get("lesson_only"):
         return "lesson-only"
     if skill["category"] in SENTENCE_CATEGORIES:
+        return "sentence"
+    if not skill.get("paradigms"):
+        # A skill of a table category that names no catalogue table has no
+        # ending to drill without end: its only unlimited practice is a
+        # sentence generator, so it is a sentence skill (§11) — the app makes
+        # the same call, offering "Its tables" only when `paradigms` is set.
+        # Today: ablative-degree (multō / paulō are two fixed words, not a
+        # table) and adverbs (the catalogue has no adverb-formation table).
         return "sentence"
     return "table"
 
@@ -478,8 +489,13 @@ def row_3(ctx, skill, cls, lesson, sents, templates):
             missing = used - set(slots)
             if missing:
                 p.append(f"{tid}: slots {sorted(missing)} used but not declared")
-            if t.get("focus") and t["focus"] not in slots and t["focus"] not in VT.printed_words(t.get("la") or ""):
-                p.append(f"{tid}: focus {t['focus']!r} is neither a slot nor a printed word")
+            # `focus` is a slot name or a printed word; a two-word construction
+            # (an ablative absolute: noun + participle) may name a list of them.
+            focus = t.get("focus")
+            printed = VT.printed_words(t.get("la") or "")
+            for f in (focus if isinstance(focus, list) else [focus]) if focus else []:
+                if not isinstance(f, str) or (f not in slots and f not in printed):
+                    p.append(f"{tid}: focus {f!r} is neither a slot nor a printed word")
             n = template_words(t.get("la") or "")
             if not 5 <= n <= 8 and not t.get("note"):
                 p.append(f"{tid}: {n} words when filled and no note")

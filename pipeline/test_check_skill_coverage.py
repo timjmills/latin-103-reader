@@ -31,25 +31,10 @@ LESSON_ONLY = {"elegiac-couplet", "prosody-scansion", "principal-parts"}
 #: (row, class) → why the build has not reached it yet.  Strict: an unexpected
 #: pass fails the suite until the entry is removed.
 NOT_YET_BUILT = {
-    ("1d", "table"): "row 1d completed worked examples: adverbs carries two worked "
-                     "examples, one short of the three §8 asks for",
-    ("2", "table"): "row 2 written sentences: future-imperative's fim-09 prints Mementō, "
-                    "which no deck to chapter 33 teaches (validate_teaching.py agrees)",
-    ("2", "lesson-only"): "row 2 written sentences: elegiac-couplet's line ec-01 prints "
-                          "rīdetque, and -que is not that skill's own function word "
-                          "(validate_teaching.py agrees)",
-    ("3", "table"): "row 3 unlimited practice: ablative-degree and adverbs name no "
-                    "paradigm table in skills.json",
     ("3", "sentence"): "row 3 unlimited practice: no sentence skill has a templates file "
                        "yet (app/data/grammar/templates/<skill>.json, §11)",
-    ("4", "table"): "row 4 scaffolded table: ablative-degree and adverbs name no "
-                    "catalogue table to scaffold",
-    ("5", "table"): "row 5 mixed practice / axes: ablative-degree and adverbs name no "
-                    "catalogue table with axes",
     ("5", "sentence"): "row 5 mixed practice / axes: the generated set needs the "
                        "templates of row 3",
-    ("7", "table"): "row 7 re-test / just drill / two-tap / tie-in: ablative-degree and "
-                    "adverbs have no catalogue table with stock words to drill",
 }
 
 

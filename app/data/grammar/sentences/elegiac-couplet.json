@@ -6,16 +6,16 @@
  "sentences": [
   {
    "id": "ec-01",
-   "la": "Pulchra puella sedet, spectat rīdetque poētam.",
-   "en": "A pretty girl sits, watches the poet and laughs at him.",
-   "words": 6,
+   "la": "Pulchra puella sedet, spectat, tum rīdet amīcum.",
+   "en": "A pretty girl sits, watches, then laughs at her friend.",
+   "words": 7,
    "focus": "puella",
    "step": 1,
    "stage": 1,
    "kinds": [
     "recognise"
    ],
-   "scan": "Pulchra pu | ella se | det, spec | tat rī | detque po | ētam  —  – ⏑ ⏑ | – ⏑ ⏑ | – – | – – | – ⏑ ⏑ | – –",
+   "scan": "Pulchra pu | ella se | det, spec | tat, tum | rīdet a | mīcum  —  – ⏑ ⏑ | – ⏑ ⏑ | – – | – – | – ⏑ ⏑ | – –",
    "note": "An illustrative hexameter of our own, not a practice sentence. The foot boundary falls inside puella, which is the point of the first step: feet are counted in syllables, not in words.",
    "gloss": [
     {
@@ -35,12 +35,16 @@
      "m": "watches"
     },
     {
-     "w": "rīdetque",
-     "m": "and laughs at"
+     "w": "tum",
+     "m": "then"
     },
     {
-     "w": "poētam",
-     "m": "the poet"
+     "w": "rīdet",
+     "m": "laughs at"
+    },
+    {
+     "w": "amīcum",
+     "m": "her friend"
     }
    ]
   },
