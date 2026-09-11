@@ -3007,7 +3007,7 @@ export function createUI(ctx) {
     syncCheck = () => { const on = filledAny(); check.disabled = !on; needOne.hidden = on; };
     const keptHere = [...inputs.keys()].filter((i) => kept(i)).length;
     const emptyHere = inputs.size - keptHere;
-    form.append(h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H opens the hint for that cell; Enter checks once every cell is filled.' }));
+    form.append(h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H shows that cell’s form and hides it again; Enter checks once every cell is filled.' }));
     // Said before the keys line, because it explains why boxes already have writing in them.
     if (keptHere) form.insertBefore(h('p', { class: 'g-quiet g-chart__keptnote', text: `The ${keptHere === 1 ? 'cell' : `${keptHere} cells`} you had right ${keptHere === 1 ? 'is' : 'are'} kept; ${emptyHere === 1 ? 'the empty one is the one' : `the ${emptyHere} empty ones are the ones`} that went wrong. Every cell is judged again when you check.` }), form.querySelector('.g-chart__acts'));
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => paintCells.mark(i, valueOf(i), { announce: true }) }));
