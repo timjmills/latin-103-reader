@@ -1728,6 +1728,11 @@ A skill that cannot meet a row is listed in the check's output with the
 reason, and the map shows that reason on the skill rather than a dead control.
 The check runs in the test suite, so a new skill cannot ship half-wired.
 
+Class is by category, with one rule on top (2026-09-11): a skill of a table
+category whose `paradigms` names no catalogue table is a **sentence skill** —
+ablative-degree (*multō* / *paulō* are two fixed words, not a table) and adverbs
+(the catalogue has no adverb-formation table) — so each owes a templates file.
+
 **Reading tie-in wording (2026-09-11).** `app/data/grammar/occurrences.json`
 holds, per skill and chapter, the highlight count `h` and the scanner count
 `s` with the unit ids, no Latin (262 KB, 56 KB gzipped, precached). The
@@ -1744,3 +1749,29 @@ the one on screen finishes as it started. The switch sits on the table itself,
 not buried in Settings, and the choice is remembered per table and as a global
 default (`settings.grammar.scaffold = "auto" | 80 | 50 | 20 | "off"`). Turning
 it off is one tap; it never asks for confirmation.
+
+## 14. Built 2026-09-11: what landed, and what is still open
+
+Landed (commits 74ccfb4, 7a9a78c, eee6807): every teach step ≤60 words with a
+noticing opener on all 88 skills; the coverage check sharing the validator's
+vocabulary rule; first stock words taught by the table's chapter, enforced by
+the catalogue build; the glossary keying every word of the written sentences;
+the Learn engine of §10–§13 (opener, written-first checks, scaffolded tables
+with the switch, Just drill it, ten-minute re-test, reading tie-in, Tables view).
+
+Open, in the order they matter:
+
+1. **Lighting the scanner's units in the reader.** The tie-in link opens the
+   chapter page and leaves the unit ids at `sessionStorage['l103.grammar.lit']`;
+   today only highlight (`h`) units light, because they are the reader's own.
+   The reader needs a small hook to light `s` units from that list.
+2. **Per-cell history.** Catalogue attempts log under the first skill that names
+   the table, and only while that skill is in rotation. The §4a pool key
+   (`table#cell`) is not stored; a per-cell history needs a column on attempts.
+3. **Lemma axes.** Only gender is honestly filterable over 3–5 stock words, so
+   chapter and deponency stay in the data but off the UI until a table has
+   enough stock words to make them honest.
+4. **Drilling a `learning` skill** logs in learn mode and changes no state; if a
+   drill should be allowed to promote a skill, say so here first.
+5. **Templates** exist for the pilot skills only; the other sentence skills fail
+   coverage rows 3 and 5 until their templates land.
