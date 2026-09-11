@@ -69,10 +69,25 @@
           "inf.perf.act"
         ]
       },
+      "worked": {
+        "sentence": "pinf-03",
+        "given": [
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "inf.perf.act"
+        ],
+        "words": [
+          "voco",
+          "laudo",
+          "amo",
+          "ambulo"
         ],
         "ask": "Fill in the perfect active infinitive."
       }
@@ -88,10 +103,28 @@
           "inf.perf.pass"
         ]
       },
+      "worked": {
+        "sentence": "pinf-09",
+        "given": [
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "gender"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "inf.perf.pass"
+        ],
+        "words": [
+          "voco",
+          "laudo",
+          "amo"
         ],
         "ask": "Fill in the perfect passive infinitive."
       }
@@ -117,6 +150,16 @@
       "show": {
         "kind": "sentence",
         "id": "pinf-13"
+      },
+      "worked": {
+        "sentence": "pinf-12",
+        "given": [],
+        "ask": [
+          "tense",
+          "voice",
+          "mood",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

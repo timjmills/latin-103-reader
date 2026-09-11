@@ -49,6 +49,18 @@
         "kind": "sentence",
         "id": "prp-01"
       },
+      "worked": {
+        "sentence": "prp-03",
+        "given": [
+          "case",
+          "number",
+          "gender",
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "prp-02",
@@ -72,6 +84,10 @@
         "cells": [
           "pres.ind.act.3.sg"
         ],
+        "words": [
+          "voco",
+          "laudo"
+        ],
         "ask": "From the infinitive alone, fill in the 'he / she / it' form of the present."
       }
     },
@@ -87,10 +103,28 @@
           "perf.ind.act.3.sg"
         ]
       },
+      "worked": {
+        "sentence": "prp-06",
+        "given": [
+          "voice",
+          "mood",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "perf.ind.act.3.sg"
+        ],
+        "words": [
+          "voco",
+          "laudo",
+          "amo"
         ],
         "ask": "Cut the -ī off the third part and add -it: fill in the cell."
       }
@@ -111,6 +145,11 @@
         "cells": [
           "ptc.perf.pass"
         ],
+        "words": [
+          "voco",
+          "laudo",
+          "amo"
+        ],
         "ask": "Cut the -um off the fourth part and add -us: fill in the cell."
       }
     },
@@ -121,6 +160,19 @@
       "show": {
         "kind": "sentence",
         "id": "prp-11"
+      },
+      "worked": {
+        "sentence": "prp-12",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "tense",
+          "voice",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

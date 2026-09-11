@@ -9,6 +9,15 @@
         "kind": "sentence",
         "id": "ec-03"
       },
+      "worked": {
+        "sentence": "ec-03",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "ec-01",
@@ -22,6 +31,17 @@
       "show": {
         "kind": "sentence",
         "id": "ec-01"
+      },
+      "worked": {
+        "sentence": "ec-01",
+        "given": [
+          "case",
+          "gender"
+        ],
+        "ask": [
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "recognise",
@@ -37,6 +57,18 @@
         "kind": "sentence",
         "id": "ec-01"
       },
+      "worked": {
+        "sentence": "ec-02",
+        "given": [
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "mood",
+          "person",
+          "number"
+        ]
+      },
       "check": {
         "kind": "recognise",
         "sentence": "ec-02",
@@ -50,6 +82,16 @@
       "show": {
         "kind": "sentence",
         "id": "ec-02"
+      },
+      "worked": {
+        "sentence": "ec-04",
+        "given": [],
+        "ask": [
+          "tense",
+          "voice",
+          "mood",
+          "why"
+        ]
       },
       "check": {
         "kind": "recognise",

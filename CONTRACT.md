@@ -114,12 +114,32 @@ The UI resolves `text` → char offsets at load time. Function before form in `n
       "parses": [ { "tense": "impf", "voice": "act", "mood": "subj", "person": 3, "number": "pl" } ],
       "senses": ["send", "throw, hurl", "let go, release"],   // learner English, most common first
       "raw": "send, throw, hurl, cast; let out, release, dismiss; disregard",
-      "enc": null                                 // "que" | "ne" | "ve" when the form carried an enclitic
+      "enc": null,                                // "que" | "ne" | "ve" when the form carried an enclitic
+      "proper": true,                             // names only: this reading is a person or a place
+      "sp": ["māla", "mālā"],                     // string or list; only where the readings under one
+                                                  //   key spell the form differently (māla/mala)
+      "n": 66, "nd": 4                            // only where a key holds several readings: how often
+                                                  //   the library prints a form of this lexeme that no
+                                                  //   rival under this key can print, and how many such
+                                                  //   forms there were to count over. Absent when the
+                                                  //   reading has too little of its own to measure.
     } ] }
 ```
 Keys are macron-stripped, lowercase. Nouns/adjectives use
 `{ "case": "dat", "number": "sg", "gender": "m" }` in parses. Supplements
 (proper nouns etc.) use the same shape with `"cat": null` when unknown.
+
+A few extra keys carry the spelling the library actually prints (`māla`,
+`Mārcō`), with the readings that can spell it that way in front.
+
+`dictionary.js` orders the readings under one key by, in this order: whole word
+before enclitic split · the printed spelling · what the sentence says (a
+governing preposition, an adjective agreeing with it, a role the caller names) ·
+a capital wanting a name · `n`/`nd` pushing back a word the course never prints ·
+the free-slot guess · the build's own order. `lookup(form, opts)` takes
+`opts.context` (the sentence), `opts.at` (the form's offset in it) and
+`opts.want` (a parse the caller knows must hold); all are optional and the
+one-argument call is unchanged.
 
 ### Store interface (E implements in `store.js`; D implements `store-fixture.js`; UI calls only this)
 

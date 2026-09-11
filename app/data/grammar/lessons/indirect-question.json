@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "iq-01"
       },
+      "worked": {
+        "sentence": "iq-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "iq-02",
@@ -41,6 +52,19 @@
       "show": {
         "kind": "sentence",
         "id": "iq-05"
+      },
+      "worked": {
+        "sentence": "iq-04",
+        "given": [
+          "tense",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "mood",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",
@@ -83,6 +107,19 @@
       "show": {
         "kind": "sentence",
         "id": "iq-10"
+      },
+      "worked": {
+        "sentence": "iq-16",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

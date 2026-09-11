@@ -9,6 +9,15 @@
         "kind": "sentence",
         "id": "abm-01"
       },
+      "worked": {
+        "sentence": "abm-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "abm-02",
@@ -46,6 +55,17 @@
           "abl.sg"
         ],
         "say": "lectīcā — -a becomes a long -ā"
+      },
+      "worked": {
+        "sentence": "abm-06",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",
@@ -93,6 +113,16 @@
       "show": {
         "kind": "sentence",
         "id": "abm-12"
+      },
+      "worked": {
+        "sentence": "abm-13",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "recognise",

@@ -9,6 +9,16 @@
         "kind": "sentence",
         "id": "pp-01"
       },
+      "worked": {
+        "sentence": "pp-01",
+        "given": [
+          "case",
+          "number",
+          "gender",
+          "mood"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "pp-02",
@@ -22,6 +32,18 @@
       "show": {
         "kind": "sentence",
         "id": "pp-03"
+      },
+      "worked": {
+        "sentence": "pp-05",
+        "given": [
+          "case",
+          "mood"
+        ],
+        "ask": [
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",
@@ -78,6 +100,18 @@
       "show": {
         "kind": "sentence",
         "id": "pp-13"
+      },
+      "worked": {
+        "sentence": "pp-12",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

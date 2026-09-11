@@ -53,6 +53,12 @@ NOUN12 = ["decl1", "decl2m", "decl2n", "decl2r"]
 NOUN_ALL = ["decl1", "decl2m", "decl2n", "decl2r", "decl3", "decl3n", "decl3i", "decl3in", "decl4", "decl5"]
 CONJ_ALL = ["conj1", "conj2", "conj3", "conj3io", "conj4"]
 IRREG = ["sum", "possum", "eo", "fero", "volo", "nolo", "malo"]
+# The same set as a `parse_filter` headword list. absum and adsum are not tables
+# of their own - they render sum's - but aberat / aderat / aberit / aderit are
+# what the imperfect and future of sum look like in the book's sentences, the
+# two skills' `patterns` already admit them, and their lessons teach them, so a
+# parse item built on one has to be inside the skill's own definition.
+IRREG_H = IRREG + ["adsum", "absum"]
 
 # ---------------------------------------------------------------------------
 # Familia Romana I–VIII · Latin 101 weeks 1–8
@@ -414,7 +420,7 @@ skill("imperfect-irregular", "Imperfect of sum, possum, eō: eram, poteram, ība
       ["imperfect-active", "irregular-verbs-present"], ["irregular-verbs-present", "future-irregular", "pluperfect"],
       IRREG, {"tense": "impf", "mood": "ind"},
       [r"(?i)\b(eram|eras|erat|eramus|eratis|erant|poteram|poteras|poterat|poteramus|poteratis|poterant|ibam|ibas|ibat|ibamus|ibatis|ibant|volebam|volebat|volebant|nolebat|malebat|ferebat|ferebant|aberat|aberant|aderat|aderant)\b"],
-      {"tense": "impf", "mood": "ind", "h": IRREG},
+      {"tense": "impf", "mood": "ind", "h": IRREG_H},
       ["recognise", "chart", "parse", "blank"],
       "sum uses the stem erā- (eram, erās, erat …), possum adds pot- (poteram), eō uses ī- + -bā- (ībam); volō, ferō and the rest are regular (volēbat, ferēbat).")
 
@@ -422,7 +428,12 @@ skill("irregular-comparison", "Irregular comparison: bonus, melior, optimus", "t
       ["comparative", "superlative"], ["comparative", "superlative"],
       ["adjcomp", "adj12"], {"degree": ["comp", "super"]},
       [r"(?i)\b(melior|melius|optim|peior|peius|pessim|maior|maius|maxim|minor|minus|minim|plus|plur|plurim|prior|prim|superior|suprem|summ|inferior|infim)\w*\b"],
-      {"pos": "ADJ", "degree": ["comp", "super"], "h": ["bonus", "malus", "magnus", "parvus", "multus", "superus", "inferus"]},
+      # An any-of list (items.js scans a list filter by filter): plūs / plūrēs /
+      # plūris is the comparative of multus that the skill teaches, but the
+      # glossary parses it under its own headword `plus` and marks it with no
+      # degree at all, so the first clause cannot reach it.
+      [{"pos": "ADJ", "degree": ["comp", "super"], "h": ["bonus", "malus", "magnus", "parvus", "multus", "superus", "inferus"]},
+       {"pos": "ADJ", "h": ["plus"]}],
       ["recognise", "chart", "parse", "blank"],
       "bonus / melior / optimus, malus / pēior / pessimus, magnus / māior / māximus, parvus / minor / minimus, multī / plūrēs / plūrimī: new stems, regular endings.")
 
@@ -454,7 +465,7 @@ skill("future-irregular", "Future of sum, possum, eō: erō, poterō, ībō", "t
       ["future-active", "irregular-verbs-present"], ["imperfect-irregular", "future-perfect", "present-subjunctive"],
       IRREG, {"tense": "fut", "mood": "ind"},
       [r"(?i)\b(ero|eris|erit|erimus|eritis|erunt|potero|poteris|poterit|poterimus|poteritis|poterunt|ibo|ibis|ibit|ibimus|ibitis|ibunt|volam|voles|volet|volent|nolet|malet|feram|feres|feret|ferent|aberit|aderit|aberunt|aderunt)\b"],
-      {"tense": "fut", "mood": "ind", "h": IRREG},
+      {"tense": "fut", "mood": "ind", "h": IRREG_H},
       ["recognise", "chart", "parse", "blank"],
       "sum uses er- (erō, eris, erit, erunt), possum adds pot- (poterō), eō takes -b- (ībō, ībis, ībit); volō and ferō go like 3rd-conjugation verbs (volet, feret).")
 

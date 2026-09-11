@@ -2351,7 +2351,9 @@
      "fero",
      "volo",
      "nolo",
-     "malo"
+     "malo",
+     "adsum",
+     "absum"
     ]
    },
    "kinds": [
@@ -2401,22 +2403,30 @@
    "patterns": [
     "(?i)\\b(melior|melius|optim|peior|peius|pessim|maior|maius|maxim|minor|minus|minim|plus|plur|plurim|prior|prim|superior|suprem|summ|inferior|infim)\\w*\\b"
    ],
-   "parse_filter": {
-    "pos": "ADJ",
-    "degree": [
-     "comp",
-     "super"
-    ],
-    "h": [
-     "bonus",
-     "malus",
-     "magnus",
-     "parvus",
-     "multus",
-     "superus",
-     "inferus"
-    ]
-   },
+   "parse_filter": [
+    {
+     "pos": "ADJ",
+     "degree": [
+      "comp",
+      "super"
+     ],
+     "h": [
+      "bonus",
+      "malus",
+      "magnus",
+      "parvus",
+      "multus",
+      "superus",
+      "inferus"
+     ]
+    },
+    {
+     "pos": "ADJ",
+     "h": [
+      "plus"
+     ]
+    }
+   ],
    "kinds": [
     "recognise",
     "chart",
@@ -2648,7 +2658,9 @@
      "fero",
      "volo",
      "nolo",
-     "malo"
+     "malo",
+     "adsum",
+     "absum"
     ]
    },
    "kinds": [

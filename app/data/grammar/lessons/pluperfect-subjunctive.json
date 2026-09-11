@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "pfs-01"
       },
+      "worked": {
+        "sentence": "pfs-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "pfs-02",
@@ -27,12 +38,29 @@
           "plupf.subj.act.3.sg"
         ]
       },
+      "worked": {
+        "sentence": "pfs-04",
+        "given": [
+          "tense",
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "person",
+          "number"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj3",
         "word": "scrībō",
         "cells": [
           "plupf.subj.act.3.sg"
+        ],
+        "words": [
+          "scrībō",
+          "dīcō",
+          "legō"
         ],
         "ask": "Write the pluperfect subjunctive, third person singular."
       }
@@ -49,12 +77,32 @@
           "plupf.subj.act.2.pl"
         ]
       },
+      "worked": {
+        "sentence": "pfs-06",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj3",
         "word": "scrībō",
         "cells": [
           "plupf.subj.act.2.pl"
+        ],
+        "words": [
+          "scrībō",
+          "dīcō",
+          "legō",
+          "mittō",
+          "pōnō"
         ],
         "ask": "Write the pluperfect subjunctive, second person plural."
       }
@@ -69,6 +117,18 @@
         "word": "scrībō",
         "reveal": [
           "plupf.subj.pass.3.sg"
+        ]
+      },
+      "worked": {
+        "sentence": "pfs-09",
+        "given": [],
+        "ask": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number",
+          "why"
         ]
       },
       "check": {

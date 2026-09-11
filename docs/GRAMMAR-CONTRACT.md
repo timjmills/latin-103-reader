@@ -1527,3 +1527,38 @@ screen entirely.
 every one was right unaided. And a step's check must draw its sentence from the
 skill's own `sentences` file, never from the library, so Learn is entirely
 inside the written material.
+
+## 9. Design review (Fable 5.1, 2026-09-11) — verdict and two amendments
+
+**Verdict: the approach is right.** Each of the six complaints maps to a cause
+the measurements confirmed, and the fix chosen for each is the cheapest one
+that actually removes the cause rather than masking it: the chapter cap (not
+a vocabulary filter) for the overrun; a word count (not a rewrite) for length;
+written sentences only where the book cannot supply them; per-cell colour
+bound to truth the judge already computes; the catalogue on keys every cell
+already carries. The micro-step shape — one idea, one check, worked examples
+faded from shown to completed — is the standard instructional sequence for a
+skill with a paradigm, and the one-attempt-per-chart rule keeps the scheduler
+honest under it. Two things the specification left underdetermined:
+
+**A1. Learn's blocked ten and the early practice stages draw from the written
+sentences first.** A skill has about twelve written sentences and its steps
+consume several of them, so a blocked ten drawn only from the written set would
+repeat an item within one sitting. The order is: the skill's own written
+sentences not yet shown in this Learn, then chapter-capped library sentences of
+eight words or fewer (§7.1's tier, now counted in words), then the rest under
+the chapter cap. Stage 3 stays on the library. No item repeats until both
+written and short-library pools are spent, and the item says which pool it
+came from only when it had to reach past the written set.
+
+**A2. A step checks the table it showed, unless the step says why.** Nine
+steps reveal one table and check a sibling (the dative's step 2 reveals
+`decl2m` and drills `decl2n` because its prose says a word in *-um* takes the
+same ending). That is a legitimate teaching move when the prose makes it, and
+a defect when it does not. The verify pass judges each of the nine on that
+test; the schema gains nothing.
+
+**Ownership note.** `skills.json` is generated from `pipeline/build_skills.py`;
+an edit to the JSON alone is lost on the next build. The two changes now in
+the tree (`adsum`/`absum` in the irregular list; `plūs` under irregular
+comparison) are mirrored in the generator and are kept.

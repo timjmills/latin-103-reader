@@ -69,6 +69,14 @@
       "check": {
         "kind": "recognise",
         "sentence": "g-02"
+      },
+      "worked": {
+        "sentence": "g-01",
+        "given": [
+          "mood",
+          "case"
+        ],
+        "ask": []
       }
     },
     {
@@ -90,6 +98,11 @@
         "word": "bibō",
         "cells": [
           "gerund.acc"
+        ],
+        "words": [
+          "dico",
+          "scribo",
+          "lego"
         ]
       }
     },
@@ -112,6 +125,11 @@
         "word": "scrībō",
         "cells": [
           "gerund.gen"
+        ],
+        "words": [
+          "scribo",
+          "dico",
+          "lego"
         ]
       }
     },
@@ -134,6 +152,21 @@
         "word": "scrībō",
         "cells": [
           "gerund.abl"
+        ],
+        "words": [
+          "scribo",
+          "dico",
+          "lego"
+        ]
+      },
+      "worked": {
+        "sentence": "g-10",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "why"
         ]
       }
     },
@@ -166,6 +199,15 @@
       "check": {
         "kind": "blank",
         "sentence": "g-15"
+      },
+      "worked": {
+        "sentence": "g-14",
+        "given": [],
+        "ask": [
+          "mood",
+          "case",
+          "why"
+        ]
       }
     }
   ]

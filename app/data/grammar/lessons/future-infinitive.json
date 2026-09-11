@@ -70,6 +70,18 @@
       "check": {
         "kind": "recognise",
         "sentence": "fi-02"
+      },
+      "worked": {
+        "sentence": "fi-01",
+        "given": [
+          "mood",
+          "tense",
+          "voice",
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -91,6 +103,11 @@
         "word": "scrībō",
         "cells": [
           "inf.fut.act"
+        ],
+        "words": [
+          "scribo",
+          "dico",
+          "mitto"
         ]
       }
     },
@@ -105,6 +122,19 @@
       "check": {
         "kind": "parse",
         "sentence": "fi-06"
+      },
+      "worked": {
+        "sentence": "fi-07",
+        "given": [
+          "mood",
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "gender"
+        ]
       }
     },
     {
@@ -131,6 +161,20 @@
       "check": {
         "kind": "blank",
         "sentence": "fi-13"
+      },
+      "worked": {
+        "sentence": "fi-14",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ]

@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "inf-03"
+      },
+      "worked": {
+        "sentence": "inf-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice"
+        ],
+        "ask": []
       }
     },
     {
@@ -29,6 +38,11 @@
         "kind": "chart",
         "cells": [
           "inf.pres.act"
+        ],
+        "words": [
+          "amo",
+          "voco",
+          "canto"
         ]
       }
     },
@@ -47,6 +61,21 @@
         "kind": "chart",
         "cells": [
           "inf.pres.act"
+        ],
+        "words": [
+          "lego",
+          "pono"
+        ]
+      },
+      "worked": {
+        "sentence": "inf-05",
+        "given": [
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "mood",
+          "why"
         ]
       }
     },
@@ -66,6 +95,21 @@
         "key": "conj3",
         "cells": [
           "inf.pres.pass"
+        ],
+        "words": [
+          "lego",
+          "pono"
+        ]
+      },
+      "worked": {
+        "sentence": "inf-11",
+        "given": [
+          "tense"
+        ],
+        "ask": [
+          "mood",
+          "voice",
+          "why"
         ]
       }
     },

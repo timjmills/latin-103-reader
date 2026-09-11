@@ -55,6 +55,16 @@
         "kind": "recognise",
         "sentence": "sup-02",
         "ask": "Which word is the superlative, and what has been added to the stem to make it?"
+      },
+      "worked": {
+        "sentence": "sup-01",
+        "given": [
+          "degree",
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -76,6 +86,10 @@
         "word": "longus",
         "cells": [
           "super.nom.sg.m"
+        ],
+        "words": [
+          "longus",
+          "novus"
         ],
         "ask": "Give the superlative subject form of *longus*."
       }
@@ -102,7 +116,23 @@
           "super.nom.sg.f",
           "super.nom.sg.n"
         ],
+        "words": [
+          "longus",
+          "novus"
+        ],
         "ask": "Now the feminine and the neuter of *longissimus*."
+      },
+      "worked": {
+        "sentence": "sup-05",
+        "given": [
+          "degree",
+          "case",
+          "number"
+        ],
+        "ask": [
+          "gender",
+          "why"
+        ]
       }
     },
     {
@@ -147,6 +177,17 @@
         "sentence": "sup-12",
         "blank": "puerōrum",
         "ask": "Quīntus fortissimus ___ Rōmānōrum est. The group goes into the genitive (the 'of' form). (puer, more than one)"
+      },
+      "worked": {
+        "sentence": "sup-14",
+        "given": [],
+        "ask": [
+          "degree",
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ],

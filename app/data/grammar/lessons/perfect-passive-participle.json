@@ -68,12 +68,28 @@
           "pos.nom.sg.n"
         ]
       },
+      "worked": {
+        "sentence": "ppp-04",
+        "given": [
+          "case",
+          "number",
+          "gender",
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "pos.nom.sg.m",
           "pos.nom.sg.f",
           "pos.nom.sg.n"
+        ],
+        "words": [
+          "bonus",
+          "magnus"
         ],
         "ask": "Fill in the three subject forms of the singular."
       }
@@ -90,11 +106,29 @@
           "pos.acc.sg.f"
         ]
       },
+      "worked": {
+        "sentence": "ppp-05",
+        "given": [
+          "gender",
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "number"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "pos.acc.sg.m",
           "pos.acc.sg.f"
+        ],
+        "words": [
+          "bonus",
+          "magnus",
+          "longus"
         ],
         "ask": "Fill in the two object forms of the singular."
       }
@@ -118,6 +152,12 @@
           "pos.nom.pl.m",
           "pos.nom.pl.f",
           "pos.nom.pl.n"
+        ],
+        "words": [
+          "bonus",
+          "magnus",
+          "multus",
+          "longus"
         ],
         "ask": "Fill in the three subject forms of the plural."
       }
@@ -143,6 +183,20 @@
       "show": {
         "kind": "sentence",
         "id": "ppp-12"
+      },
+      "worked": {
+        "sentence": "ppp-13",
+        "given": [
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

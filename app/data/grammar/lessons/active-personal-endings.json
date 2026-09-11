@@ -8,6 +8,17 @@
     "kind": "sentence",
     "id": "ape-02"
    },
+   "worked": {
+    "sentence": "ape-02",
+    "given": [
+     "person",
+     "number",
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "ape-01",
@@ -36,6 +47,11 @@
      "pres.ind.act.2.sg",
      "pres.ind.act.3.sg"
     ],
+    "words": [
+     "canto",
+     "amo",
+     "voco"
+    ],
     "ask": "Fill the three singular cells of cantāre: I, you, he/she.",
     "word": "canto"
    },
@@ -54,6 +70,18 @@
     ],
     "word": "canto"
    },
+   "worked": {
+    "sentence": "ape-07",
+    "given": [
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "person",
+     "number"
+    ]
+   },
    "check": {
     "kind": "chart",
     "key": "conj1",
@@ -61,6 +89,11 @@
      "pres.ind.act.1.pl",
      "pres.ind.act.2.pl",
      "pres.ind.act.3.pl"
+    ],
+    "words": [
+     "canto",
+     "amo",
+     "voco"
     ],
     "ask": "Fill the three plural cells of cantāre: we, you all, they.",
     "word": "canto"
@@ -110,6 +143,19 @@
    "show": {
     "kind": "sentence",
     "id": "ape-13"
+   },
+   "worked": {
+    "sentence": "ape-13",
+    "given": [
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "person",
+     "number",
+     "why"
+    ]
    },
    "check": {
     "kind": "blank",

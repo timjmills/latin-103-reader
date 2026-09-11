@@ -9,6 +9,16 @@
         "kind": "sentence",
         "id": "ger-01"
       },
+      "worked": {
+        "sentence": "ger-01",
+        "given": [
+          "case",
+          "number",
+          "gender",
+          "mood"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "ger-02",
@@ -30,6 +40,11 @@
         "kind": "chart",
         "cells": [
           "gerundive"
+        ],
+        "words": [
+          "scribo",
+          "dico",
+          "lego"
         ],
         "ask": "Write the gerundive of scrībō."
       }
@@ -54,6 +69,10 @@
           "pos.nom.sg.f",
           "pos.nom.sg.n"
         ],
+        "words": [
+          "bonus",
+          "magnus"
+        ],
         "ask": "Give the nominative singular of bonus in all three genders."
       }
     },
@@ -64,6 +83,18 @@
       "show": {
         "kind": "sentence",
         "id": "ger-09"
+      },
+      "worked": {
+        "sentence": "ger-14",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "mood",
+          "why"
+        ]
       },
       "check": {
         "kind": "parse",
@@ -92,6 +123,18 @@
       "show": {
         "kind": "sentence",
         "id": "ger-05"
+      },
+      "worked": {
+        "sentence": "ger-12",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

@@ -9,6 +9,15 @@
     "kind": "sentence",
     "id": "voc-01"
    },
+   "worked": {
+    "sentence": "voc-01",
+    "given": [
+     "case",
+     "number",
+     "gender"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "voc-02",
@@ -28,11 +37,26 @@
     ],
     "say": "serve — -us becomes -e when you call him"
    },
+   "worked": {
+    "sentence": "voc-04",
+    "given": [
+     "number",
+     "gender"
+    ],
+    "ask": [
+     "case",
+     "why"
+    ]
+   },
    "check": {
     "kind": "chart",
     "key": "decl2m",
     "cells": [
      "voc.sg"
+    ],
+    "words": [
+     "servus",
+     "dominus"
     ],
     "ask": "Call one slave."
    }
@@ -75,6 +99,11 @@
     "cells": [
      "voc.pl"
     ],
+    "words": [
+     "servus",
+     "dominus",
+     "filius"
+    ],
     "ask": "Call more than one slave."
    }
   },
@@ -99,6 +128,16 @@
    "show": {
     "kind": "sentence",
     "id": "voc-12"
+   },
+   "worked": {
+    "sentence": "voc-14",
+    "given": [],
+    "ask": [
+     "case",
+     "number",
+     "gender",
+     "why"
+    ]
    },
    "check": {
     "kind": "blank",

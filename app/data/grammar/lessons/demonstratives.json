@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "dem-03"
+      },
+      "worked": {
+        "sentence": "dem-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -58,6 +67,17 @@
           "acc.sg.f",
           "acc.sg.n"
         ]
+      },
+      "worked": {
+        "sentence": "dem-04",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       }
     },
     {
@@ -102,6 +122,17 @@
           "gen.sg.m",
           "dat.sg.m",
           "acc.sg.n"
+        ]
+      },
+      "worked": {
+        "sentence": "dem-18",
+        "given": [
+          "number"
+        ],
+        "ask": [
+          "case",
+          "gender",
+          "why"
         ]
       }
     },

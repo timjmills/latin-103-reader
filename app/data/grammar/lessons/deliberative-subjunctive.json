@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "delib-01"
       },
+      "worked": {
+        "sentence": "delib-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "delib-02",
@@ -41,6 +52,19 @@
         "key": "conj3",
         "reveal": [
           "pres.subj.act.1.pl"
+        ]
+      },
+      "worked": {
+        "sentence": "delib-14",
+        "given": [
+          "tense",
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "person",
+          "number",
+          "why"
         ]
       },
       "check": {
@@ -87,6 +111,19 @@
       "show": {
         "kind": "sentence",
         "id": "delib-11"
+      },
+      "worked": {
+        "sentence": "delib-07",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

@@ -86,7 +86,20 @@
         "cells": [
           "nom.sg",
           "nom.pl"
+        ],
+        "words": [
+          "puella",
+          "femina"
         ]
+      },
+      "worked": {
+        "sentence": "ns-03",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -107,6 +120,10 @@
         "cells": [
           "nom.sg",
           "nom.pl"
+        ],
+        "words": [
+          "servus",
+          "dominus"
         ]
       }
     },
@@ -128,6 +145,20 @@
         "cells": [
           "nom.sg",
           "nom.pl"
+        ],
+        "words": [
+          "oppidum",
+          "vocabulum"
+        ]
+      },
+      "worked": {
+        "sentence": "ns-07",
+        "given": [
+          "case"
+        ],
+        "ask": [
+          "number",
+          "gender"
         ]
       }
     },
@@ -155,6 +186,17 @@
       "check": {
         "kind": "recognise",
         "sentence": "ns-12"
+      },
+      "worked": {
+        "sentence": "ns-13",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       }
     }
   ],

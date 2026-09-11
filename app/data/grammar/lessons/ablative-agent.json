@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "abag-02"
+      },
+      "worked": {
+        "sentence": "abag-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -44,6 +53,17 @@
       "check": {
         "kind": "blank",
         "sentence": "abag-04"
+      },
+      "worked": {
+        "sentence": "abag-08",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       }
     },
     {
@@ -73,6 +93,17 @@
       "check": {
         "kind": "parse",
         "sentence": "abag-10"
+      },
+      "worked": {
+        "sentence": "abag-13",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       }
     },
     {

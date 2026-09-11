@@ -67,6 +67,15 @@
         "kind": "recognise",
         "sentence": "dpo-02",
         "ask": "Which word says who has the rose?"
+      },
+      "worked": {
+        "sentence": "dpo-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -116,6 +125,17 @@
         "sentence": "dpo-09",
         "blank": "Tibi",
         "ask": "___ gladius est, mihi hasta est. Which word makes it 'you have'? (tū)"
+      },
+      "worked": {
+        "sentence": "dpo-10",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       }
     },
     {
@@ -145,6 +165,15 @@
         "sentence": "dpo-14",
         "blank": "pāstōrī",
         "ask": "Canis pāstōris niger est; ___ ovēs sunt. The second half has to say the shepherd *has* sheep. (pāstor)"
+      },
+      "worked": {
+        "sentence": "dpo-13",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       }
     }
   ],

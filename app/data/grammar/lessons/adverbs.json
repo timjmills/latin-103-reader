@@ -8,6 +8,13 @@
     "kind": "sentence",
     "id": "adv-01"
    },
+   "worked": {
+    "sentence": "adv-01",
+    "given": [
+     "degree"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "adv-02",
@@ -52,6 +59,13 @@
     "kind": "sentence",
     "id": "adv-09"
    },
+   "worked": {
+    "sentence": "adv-09",
+    "given": [],
+    "ask": [
+     "degree"
+    ]
+   },
    "check": {
     "kind": "recognise",
     "sentence": "adv-10",
@@ -65,6 +79,14 @@
    "show": {
     "kind": "sentence",
     "id": "adv-11"
+   },
+   "worked": {
+    "sentence": "adv-11",
+    "given": [],
+    "ask": [
+     "degree",
+     "why"
+    ]
    },
    "check": {
     "kind": "recognise",

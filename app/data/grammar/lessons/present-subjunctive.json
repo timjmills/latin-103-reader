@@ -70,6 +70,17 @@
       "check": {
         "kind": "recognise",
         "sentence": "ps-02"
+      },
+      "worked": {
+        "sentence": "ps-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -81,7 +92,7 @@
         "key": "conj1",
         "word": "portō",
         "reveal": [
-          "pres.subj.act.3sg"
+          "pres.subj.act.3.sg"
         ],
         "say": "portet — the -a- of portat has turned into -e-"
       },
@@ -90,7 +101,12 @@
         "key": "conj1",
         "word": "portō",
         "cells": [
-          "pres.subj.act.3sg"
+          "pres.subj.act.3.sg"
+        ],
+        "words": [
+          "amo",
+          "voco",
+          "laudo"
         ]
       }
     },
@@ -103,7 +119,7 @@
         "key": "conj2",
         "word": "taceō",
         "reveal": [
-          "pres.subj.act.3sg"
+          "pres.subj.act.3.sg"
         ],
         "say": "taceat — the -a- slides in in front of the ending"
       },
@@ -112,7 +128,24 @@
         "key": "conj3io",
         "word": "capiō",
         "cells": [
-          "pres.subj.act.3sg"
+          "pres.subj.act.3.sg"
+        ],
+        "words": [
+          "capio",
+          "facio",
+          "accipio"
+        ]
+      },
+      "worked": {
+        "sentence": "ps-06",
+        "given": [
+          "tense",
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "person",
+          "number"
         ]
       }
     },
@@ -125,7 +158,7 @@
         "key": "sum",
         "word": "sum",
         "reveal": [
-          "pres.subj.act.3sg"
+          "pres.subj.act.3.sg"
         ],
         "say": "sit — sum takes -i- where the others take -e- or -a-"
       },
@@ -134,7 +167,7 @@
         "key": "sum",
         "word": "sum",
         "cells": [
-          "pres.subj.act.3sg"
+          "pres.subj.act.3.sg"
         ]
       }
     },
@@ -162,6 +195,19 @@
       "check": {
         "kind": "blank",
         "sentence": "ps-16"
+      },
+      "worked": {
+        "sentence": "ps-15",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

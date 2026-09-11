@@ -69,6 +69,15 @@
         "kind": "recognise",
         "sentence": "t3n-02",
         "ask": "Which word here is the neuter noun — the one that would look the same whether it were the doer or the one done to?"
+      },
+      "worked": {
+        "sentence": "t3n-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -92,6 +101,11 @@
         "cells": [
           "nom.sg",
           "acc.sg"
+        ],
+        "words": [
+          "corpus",
+          "nomen",
+          "caput"
         ],
         "ask": "Fill both singular cells of *corpus*. They are one word — write it twice."
       }
@@ -118,7 +132,22 @@
           "nom.pl",
           "acc.pl"
         ],
+        "words": [
+          "corpus",
+          "nomen",
+          "caput"
+        ],
         "ask": "Fill both plural cells of *corpus*, using the stem you find in *corporis*."
+      },
+      "worked": {
+        "sentence": "t3n-06",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number"
+        ]
       }
     },
     {
@@ -146,6 +175,10 @@
           "acc.pl",
           "gen.pl",
           "abl.sg"
+        ],
+        "words": [
+          "mare",
+          "animal"
         ],
         "ask": "Fill the four cells of *mare* where the extra *i* shows: the two plurals in *-ia*, the genitive plural in *-ium*, and the ablative singular in *-ī*."
       }
@@ -176,6 +209,16 @@
         "kind": "recognise",
         "sentence": "t3n-13",
         "ask": "*mel* looks the same as subject and as object. Which is it here, and which word tells you?"
+      },
+      "worked": {
+        "sentence": "t3n-14",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ],

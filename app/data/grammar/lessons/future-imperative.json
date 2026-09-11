@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "fim-01"
       },
+      "worked": {
+        "sentence": "fim-01",
+        "given": [
+          "mood",
+          "tense",
+          "voice",
+          "number",
+          "person"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "fim-02",
@@ -27,12 +38,29 @@
           "imper.fut.act.sg"
         ]
       },
+      "worked": {
+        "sentence": "fim-03",
+        "given": [
+          "mood",
+          "voice",
+          "person"
+        ],
+        "ask": [
+          "tense",
+          "number"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj1",
         "word": "amō",
         "cells": [
           "imper.fut.act.sg"
+        ],
+        "words": [
+          "amō",
+          "vocō",
+          "laudō"
         ],
         "ask": "Write the future imperative singular."
       }
@@ -49,12 +77,31 @@
           "imper.fut.act.2.pl"
         ]
       },
+      "worked": {
+        "sentence": "fim-05",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "number",
+          "person",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj1",
         "word": "amō",
         "cells": [
           "imper.fut.act.2.pl"
+        ],
+        "words": [
+          "amō",
+          "vocō",
+          "laudō",
+          "ambulō"
         ],
         "ask": "Write the future imperative plural."
       }
@@ -69,6 +116,18 @@
         "reveal": [
           "imper.fut.act.sg",
           "imper.fut.act.2.pl"
+        ]
+      },
+      "worked": {
+        "sentence": "fim-08",
+        "given": [],
+        "ask": [
+          "mood",
+          "tense",
+          "voice",
+          "number",
+          "person",
+          "why"
         ]
       },
       "check": {

@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "ccf-01"
       },
+      "worked": {
+        "sentence": "ccf-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "ccf-02",
@@ -23,6 +34,18 @@
         "kind": "sentence",
         "id": "ccf-03"
       },
+      "worked": {
+        "sentence": "ccf-05",
+        "given": [
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "mood"
+        ]
+      },
       "check": {
         "kind": "parse",
         "sentence": "ccf-04",
@@ -36,6 +59,19 @@
       "show": {
         "kind": "sentence",
         "id": "ccf-06"
+      },
+      "worked": {
+        "sentence": "ccf-08",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "parse",

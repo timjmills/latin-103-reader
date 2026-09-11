@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "dmd-01"
       },
+      "worked": {
+        "sentence": "dmd-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "dmd-02",
@@ -23,6 +34,18 @@
         "kind": "sentence",
         "id": "dmd-03"
       },
+      "worked": {
+        "sentence": "dmd-05",
+        "given": [
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "mood"
+        ]
+      },
       "check": {
         "kind": "parse",
         "sentence": "dmd-04",
@@ -36,6 +59,19 @@
       "show": {
         "kind": "sentence",
         "id": "dmd-06"
+      },
+      "worked": {
+        "sentence": "dmd-07",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "recognise",

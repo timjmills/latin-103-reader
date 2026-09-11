@@ -8,6 +8,17 @@
     "kind": "sentence",
     "id": "dep-02"
    },
+   "worked": {
+    "sentence": "dep-02",
+    "given": [
+     "person",
+     "number",
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "dep-01",
@@ -53,6 +64,18 @@
      "pres.ind.pass.3.pl"
     ],
     "word": "sequor"
+   },
+   "worked": {
+    "sentence": "dep-07",
+    "given": [
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "person",
+     "number"
+    ]
    },
    "check": {
     "kind": "chart",
@@ -106,6 +129,19 @@
    "show": {
     "kind": "sentence",
     "id": "dep-13"
+   },
+   "worked": {
+    "sentence": "dep-13",
+    "given": [
+     "tense",
+     "mood"
+    ],
+    "ask": [
+     "person",
+     "number",
+     "voice",
+     "why"
+    ]
    },
    "check": {
     "kind": "recognise",

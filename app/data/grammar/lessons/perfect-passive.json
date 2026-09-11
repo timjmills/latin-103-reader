@@ -70,10 +70,26 @@
           "perf.ind.pass.3.sg"
         ]
       },
+      "worked": {
+        "sentence": "pfp-03",
+        "given": [
+          "tense",
+          "voice",
+          "mood",
+          "person",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "perf.ind.pass.3.sg"
+        ],
+        "words": [
+          "laudo",
+          "voco"
         ],
         "ask": "Fill in the 'he / she / it' cell of the perfect passive."
       }
@@ -94,6 +110,11 @@
         "cells": [
           "perf.ind.pass.3.pl"
         ],
+        "words": [
+          "laudo",
+          "voco",
+          "amo"
+        ],
         "ask": "Fill in the 'they' cell of the perfect passive."
       }
     },
@@ -111,11 +132,29 @@
           "perf.ind.pass.2.pl"
         ]
       },
+      "worked": {
+        "sentence": "pfp-10",
+        "given": [
+          "tense",
+          "voice",
+          "mood",
+          "gender"
+        ],
+        "ask": [
+          "person",
+          "number"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "perf.ind.pass.1.sg",
           "perf.ind.pass.2.sg"
+        ],
+        "words": [
+          "laudo",
+          "voco",
+          "amo"
         ],
         "ask": "Fill in 'I was called' and 'you were called'."
       }
@@ -141,6 +180,20 @@
       "show": {
         "kind": "sentence",
         "id": "pfp-13"
+      },
+      "worked": {
+        "sentence": "pfp-15",
+        "given": [
+          "mood",
+          "person"
+        ],
+        "ask": [
+          "tense",
+          "voice",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

@@ -73,6 +73,18 @@
     "kind": "sentence",
     "id": "pc-01"
    },
+   "worked": {
+    "sentence": "pc-01",
+    "given": [
+     "tense",
+     "mood",
+     "voice",
+     "person",
+     "number",
+     "construction"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "pc-02",
@@ -100,6 +112,20 @@
    "show": {
     "kind": "sentence",
     "id": "pc-05"
+   },
+   "worked": {
+    "sentence": "pc-07",
+    "given": [
+     "tense",
+     "mood",
+     "voice",
+     "person",
+     "number"
+    ],
+    "ask": [
+     "construction",
+     "why"
+    ]
    },
    "check": {
     "kind": "blank",
@@ -142,6 +168,20 @@
    "show": {
     "kind": "sentence",
     "id": "pc-12"
+   },
+   "worked": {
+    "sentence": "pc-12",
+    "given": [
+     "voice"
+    ],
+    "ask": [
+     "tense",
+     "mood",
+     "person",
+     "number",
+     "construction",
+     "why"
+    ]
    },
    "check": {
     "kind": "recognise",

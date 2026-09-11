@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "cumc-01"
       },
+      "worked": {
+        "sentence": "cumc-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "cumc-02",
@@ -22,6 +33,18 @@
       "show": {
         "kind": "sentence",
         "id": "cumc-03"
+      },
+      "worked": {
+        "sentence": "cumc-09",
+        "given": [
+          "tense",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "mood",
+          "why"
+        ]
       },
       "check": {
         "kind": "parse",
@@ -78,6 +101,19 @@
       "show": {
         "kind": "sentence",
         "id": "cumc-13"
+      },
+      "worked": {
+        "sentence": "cumc-15",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

@@ -8,6 +8,17 @@
     "kind": "sentence",
     "id": "ppe-01"
    },
+   "worked": {
+    "sentence": "ppe-01",
+    "given": [
+     "person",
+     "number",
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "ppe-02",
@@ -36,6 +47,11 @@
      "pres.ind.pass.2.sg",
      "pres.ind.pass.3.sg"
     ],
+    "words": [
+     "laudo",
+     "amo",
+     "voco"
+    ],
     "ask": "Fill the three singular passive cells of laudāre: I am praised, you are, he is.",
     "word": "laudo"
    },
@@ -54,6 +70,18 @@
     ],
     "word": "laudo"
    },
+   "worked": {
+    "sentence": "ppe-07",
+    "given": [
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "person",
+     "number"
+    ]
+   },
    "check": {
     "kind": "chart",
     "key": "conj1",
@@ -61,6 +89,11 @@
      "pres.ind.pass.1.pl",
      "pres.ind.pass.2.pl",
      "pres.ind.pass.3.pl"
+    ],
+    "words": [
+     "laudo",
+     "amo",
+     "voco"
     ],
     "ask": "Fill the three plural passive cells of laudāre: we are praised, you all are, they are.",
     "word": "laudo"
@@ -106,6 +139,19 @@
    "show": {
     "kind": "sentence",
     "id": "ppe-14"
+   },
+   "worked": {
+    "sentence": "ppe-14",
+    "given": [
+     "tense",
+     "mood"
+    ],
+    "ask": [
+     "person",
+     "number",
+     "voice",
+     "why"
+    ]
    },
    "check": {
     "kind": "recognise",

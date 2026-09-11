@@ -9,6 +9,15 @@
         "kind": "sentence",
         "id": "abp-01"
       },
+      "worked": {
+        "sentence": "abp-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "abp-02",
@@ -34,6 +43,11 @@
         "cells": [
           "abl.sg"
         ],
+        "words": [
+          "puella",
+          "aqua",
+          "ancilla"
+        ],
         "ask": "Give the form that goes after *in*."
       }
     },
@@ -50,11 +64,27 @@
         ],
         "say": "in hortō — -us becomes -ō"
       },
+      "worked": {
+        "sentence": "abp-05",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "decl2m",
         "cells": [
           "abl.sg"
+        ],
+        "words": [
+          "hortus",
+          "servus",
+          "dominus"
         ],
         "ask": "Give the form that goes after *in*."
       }
@@ -77,6 +107,11 @@
         "key": "decl1",
         "cells": [
           "abl.pl"
+        ],
+        "words": [
+          "puella",
+          "aqua",
+          "ancilla"
         ],
         "ask": "Give the plural form that goes after *in*."
       }
@@ -102,6 +137,16 @@
       "show": {
         "kind": "sentence",
         "id": "abp-12"
+      },
+      "worked": {
+        "sentence": "abp-14",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

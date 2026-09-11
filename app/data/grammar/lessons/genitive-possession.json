@@ -79,7 +79,21 @@
         "key": "decl1",
         "cells": [
           "gen.sg"
+        ],
+        "words": [
+          "puella",
+          "femina",
+          "ancilla"
         ]
+      },
+      "worked": {
+        "sentence": "gp-03",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -98,6 +112,10 @@
         "key": "decl2m",
         "cells": [
           "gen.sg"
+        ],
+        "words": [
+          "servus",
+          "dominus"
         ]
       }
     },
@@ -117,6 +135,21 @@
         "key": "decl1",
         "cells": [
           "gen.pl"
+        ],
+        "words": [
+          "puella",
+          "femina",
+          "ancilla"
+        ]
+      },
+      "worked": {
+        "sentence": "gp-07",
+        "given": [
+          "case"
+        ],
+        "ask": [
+          "number",
+          "gender"
         ]
       }
     },
@@ -144,6 +177,17 @@
       "check": {
         "kind": "recognise",
         "sentence": "gp-12"
+      },
+      "worked": {
+        "sentence": "gp-13",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       }
     }
   ],
