@@ -39,8 +39,16 @@
    "sem": {
     "of": [
      "person",
-     "thing",
      "animal"
+    ],
+    "also": [
+     "vīnum",
+     "cibus",
+     "verbum",
+     "cōnsilium",
+     "fābula",
+     "somnus",
+     "exemplum"
     ]
    }
   },
@@ -106,10 +114,25 @@
    "count": 66,
    "sem": {
     "subj": [
-     "person",
-     "animal"
+     "person"
     ],
-    "obj": []
+    "obj": [],
+    "subj_also": [
+     "canis",
+     "equus",
+     "ovis",
+     "bōs",
+     "asinus",
+     "porcus",
+     "leō",
+     "lupus",
+     "taurus",
+     "agnus",
+     "grex",
+     "pecus",
+     "bēstia",
+     "animal"
+    ]
    }
   },
   {
@@ -138,9 +161,59 @@
    "count": 58,
    "sem": {
     "of": [
-     "thing",
-     "place",
      "time"
+    ],
+    "also": [
+     "via",
+     "iter",
+     "epistula",
+     "līber",
+     "fābula",
+     "sermō",
+     "nāvis",
+     "hasta",
+     "gladius",
+     "capillus",
+     "catēna",
+     "fūnis",
+     "mūrus",
+     "vīta",
+     "mēnsa",
+     "lectulus",
+     "rāmus",
+     "cauda",
+     "crūs",
+     "bracchium",
+     "digitus",
+     "nāsus",
+     "versūs",
+     "carmen",
+     "mora",
+     "pugna",
+     "bellum",
+     "silva",
+     "vallēs",
+     "flūmen",
+     "rīpa",
+     "lītus",
+     "ōra",
+     "agmen",
+     "ōrdō",
+     "collum",
+     "nox",
+     "diēs",
+     "hōra",
+     "tempus",
+     "annus",
+     "aestās",
+     "hiems",
+     "nāvigātiō",
+     "colloquium",
+     "fīlum",
+     "līnea",
+     "vēlum",
+     "toga",
+     "vestis"
     ]
    }
   },
@@ -261,9 +334,95 @@
      "animal"
     ],
     "obj": [
-     "thing",
-     "food",
-     "person"
+     "person",
+     "animal",
+     "food"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -313,6 +472,9 @@
      "animal",
      "nature",
      "abstract"
+    ],
+    "takes": [
+     "inf"
     ]
    }
   },
@@ -326,7 +488,12 @@
    "sense_full": "friendly, dear, fond of",
    "parts": null,
    "unit_id": "r06:77.1",
-   "count": 25
+   "count": 25,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "vehō",
@@ -338,7 +505,87 @@
    "sense_full": "bear, carry, convey",
    "parts": "vehō, vehere, vēxī, vectum",
    "unit_id": "r06:29.1",
-   "count": 25
+   "count": 25,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "food"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "lignum",
+     "saxum",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "praemium",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum"
+    ]
+   }
   },
   {
    "lemma": "procul",
@@ -468,7 +715,22 @@
    "sense_full": "please, satisfy, give pleasure to (with dat.)",
    "parts": "placeō, placēre, placuī, placitum",
    "unit_id": "r06:2.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person",
+     "thing",
+     "abstract",
+     "food",
+     "nature",
+     "animal",
+     "place"
+    ],
+    "obj": [],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "mūrus",

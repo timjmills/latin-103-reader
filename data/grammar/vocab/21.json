@@ -29,6 +29,9 @@
     ],
     "dat": [
      "person"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -63,6 +66,9 @@
     "obj": [],
     "dat": [
      "person"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -105,9 +111,21 @@
     "subj": [
      "person"
     ],
-    "obj": [
-     "thing",
-     "abstract"
+    "obj": [],
+    "obj_only": [
+     "vestis",
+     "toga",
+     "tunica",
+     "cōnsilium",
+     "sententia",
+     "vīta",
+     "locus",
+     "iter",
+     "animus",
+     "vōx",
+     "nōmen",
+     "mōs",
+     "modus"
     ]
    }
   },
@@ -121,7 +139,16 @@
    "sense_full": "say, assert",
    "parts": "aiō, ait",
    "unit_id": "r21:68.1",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "causā",
@@ -155,6 +182,9 @@
      "thing",
      "place",
      "abstract"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -181,7 +211,14 @@
    "sense_full": "wrong, lying, fictitious, spurious, false, deceiving, feigned, deceptive",
    "parts": null,
    "unit_id": "r21:87.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "of": [
+     "abstract",
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "mentior",
@@ -216,7 +253,10 @@
     "subj": [
      "person"
     ],
-    "obj": []
+    "obj": [],
+    "takes": [
+     "inf"
+    ]
    }
   },
   {
@@ -263,6 +303,9 @@
      "thing",
      "place",
      "nature"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -372,7 +415,14 @@
    "sense_full": "unworthy, undeserving, undeserved",
    "parts": null,
    "unit_id": "r21:53.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person",
+     "abstract",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "mundus",
@@ -478,7 +528,15 @@
    "sense_full": "be dirty or soiled",
    "parts": "sordeō, sordēre, sorduī, sorditum",
    "unit_id": "r21:59.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "thing",
+     "body",
+     "person"
+    ],
+    "obj": []
+   }
   }
  ]
 }

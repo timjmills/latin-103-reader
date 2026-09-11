@@ -113,7 +113,17 @@
    "sense_full": "think or suppose, judge",
    "parts": "cēnseō, cēnsēre, censuī, cēnsum",
    "unit_id": "w04:59.2",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "prae",
@@ -150,7 +160,24 @@
    "sense_full": "hope for",
    "parts": "spērō, spērāre, speravī, speratum",
    "unit_id": "w03:fl-64:b15.5",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "salūs",
+     "lucrum",
+     "pāx",
+     "victōria",
+     "praemium",
+     "auxilium"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "rūsticus",
@@ -212,7 +239,16 @@
    "sense_full": "equal (to)",
    "parts": null,
    "unit_id": "w04:38.2",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "abstract",
+     "group",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "ūtor",
@@ -224,7 +260,17 @@
    "sense_full": "use, make use of, enjoy",
    "parts": "ūtor, ūtī, ūsus sum",
    "unit_id": "w04:17.5",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "takes": [
+     "abl"
+    ]
+   }
   },
   {
    "lemma": "exōrnō",
@@ -236,7 +282,18 @@
    "sense_full": "furnish with, adorn, embellish",
    "parts": "exōrnō, exōrnāre, exornavī, exōrnātum",
    "unit_id": "w03:coronis:b9.2",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "body",
+     "person",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "frūstrā",
@@ -290,9 +347,16 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "abstract",
      "place"
+    ],
+    "obj_also": [
+     "epistula",
+     "līber",
+     "ager",
+     "vīnea",
+     "hortus",
+     "nāvis"
     ]
    }
   },
@@ -306,7 +370,12 @@
    "sense_full": "worthless, good-for-nothing, wicked",
    "parts": null,
    "unit_id": "w04:149.2",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "ōdī",
@@ -318,7 +387,21 @@
    "sense_full": "hate (perfect form, present force), dislike",
    "parts": "ōdī, ōdisse",
    "unit_id": "w03:coronis:b10.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "abstract",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "stabulum",
@@ -352,7 +435,6 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "place",
      "abstract",
      "nature"
@@ -397,7 +479,30 @@
    "sense_full": "pour, cast (metals)",
    "parts": "fundō, fundere, fūdī, fūsum",
    "unit_id": "w03:minos:b2.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [],
+    "obj_only": [
+     "aqua",
+     "vīnum",
+     "lac",
+     "sanguis",
+     "lacrima",
+     "cruor",
+     "sūcus",
+     "mel",
+     "pōtiō",
+     "unda"
+    ],
+    "subj_also": [
+     "nūbēs",
+     "caelum"
+    ]
+   }
   },
   {
    "lemma": "metō",
@@ -447,7 +552,20 @@
    "sense_full": "hinder, restrain",
    "parts": "prohibeō, prohibēre, prohibuī, prohibitum",
    "unit_id": "w04:166.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "nature",
+     "abstract",
+     "group"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "urbānus",
@@ -459,7 +577,16 @@
    "sense_full": "of the city",
    "parts": null,
    "unit_id": "w04:59.5",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "abstract",
+     "place",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "fūrtum",
@@ -537,8 +664,93 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "food"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -552,7 +764,30 @@
    "sense_full": "wreath",
    "parts": "serō, serere, servī, sertum",
    "unit_id": "w04:7.3",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "agricola",
+     "colōnus",
+     "servus"
+    ],
+    "obj_only": [
+     "arbor",
+     "herba",
+     "flōs",
+     "rosa",
+     "līlium",
+     "folium",
+     "rāmus",
+     "ūva",
+     "olea",
+     "sēmen",
+     "frūmentum",
+     "frūgēs"
+    ]
+   }
   },
   {
    "lemma": "cōpia",
@@ -712,7 +947,16 @@
    "sense_full": "value or esteem",
    "parts": "exīstimō, exīstimāre, existimavī, existimatum",
    "unit_id": "w04:59.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "faveō",
@@ -871,7 +1115,20 @@
    "sense_full": "throw down, throw out",
    "parts": "prōiciō, prōicere, prōiēcī, proiectum",
    "unit_id": "w04:92.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "person",
+     "animal",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "prōsum",
@@ -883,7 +1140,23 @@
    "sense_full": "be useful, be advantageous, benefit, profit (with dative)",
    "parts": "prōsum, prōdesse, prōfuī, profutūrum",
    "unit_id": "w04:118.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing",
+     "abstract",
+     "food"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "animal",
+     "place",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "regiō",
@@ -908,7 +1181,19 @@
    "sense_full": "sacrifice",
    "parts": "sacrificō, sacrificāre, sacrificavī, sacrificātum",
    "unit_id": "w03:minos:b2.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "animal"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "amoenus",
@@ -992,7 +1277,19 @@
    "sense_full": "recognize, recollect",
    "parts": "recognōscō, recognōscere, recognōvī, recognitum",
    "unit_id": "w03:fl-63:b13.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "rigō",
@@ -1049,7 +1346,18 @@
    "sense_full": "like, similar, resembling",
    "parts": null,
    "unit_id": "w03:minos:b3.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "abstract",
+     "animal",
+     "place",
+     "body",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "abs",
@@ -1073,7 +1381,16 @@
    "sense_full": "affirm or assert (dogmatically or positively)",
    "parts": "affirmō, affirmāre, affirmāvī, affirmatum",
    "unit_id": "w03:fl-64:b15.6",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "calor",
@@ -1098,7 +1415,21 @@
    "sense_full": "surround, encircle, ring",
    "parts": "cingō, cingere, cinxī, cinctum",
    "unit_id": "w04:1.5",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "nature",
+     "thing",
+     "group"
+    ],
+    "obj": [
+     "place",
+     "thing",
+     "body",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "circā",
@@ -1122,7 +1453,23 @@
    "sense_full": "hurl",
    "parts": "ēmittō, ēmittere, ēmīsī, ēmissum",
    "unit_id": "w03:minos:b6.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing"
+    ],
+    "obj_also": [
+     "vōx",
+     "clāmor"
+    ]
+   }
   },
   {
    "lemma": "gravidus",
@@ -1134,7 +1481,26 @@
    "sense_full": "pregnant, heavy with child",
    "parts": null,
    "unit_id": "w04:104.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [],
+    "only": [
+     "femina",
+     "mulier",
+     "uxor",
+     "māter",
+     "ovis",
+     "bōs",
+     "canis",
+     "domina",
+     "ancilla",
+     "mātrōna",
+     "coniūnx",
+     "nympha",
+     "dea",
+     "rēgīna"
+    ]
+   }
   },
   {
    "lemma": "incola",
@@ -1237,7 +1603,14 @@
    "sense_full": "undeveloped, rough, wild",
    "parts": null,
    "unit_id": "w04:23.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "sēmen",
@@ -1280,7 +1653,13 @@
    "sense_full": "situated close to the city",
    "parts": null,
    "unit_id": "w04:49.4",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "addūcō",
@@ -1292,7 +1671,16 @@
    "sense_full": "lead up, to, away",
    "parts": "addūcō, addūcere, adduxī, adductum",
    "unit_id": "w03:minos:b3.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "frīgus",
@@ -1330,7 +1718,15 @@
    "sense_full": "unripe, immature, untimely",
    "parts": null,
    "unit_id": "w04:166.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "food",
+     "person",
+     "abstract",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "intellēctus",
@@ -1355,7 +1751,20 @@
    "sense_full": "carry or bring in, import",
    "parts": "invehō, invehere, inuexī, inuectum",
    "unit_id": "w04:38.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "group",
+     "nature",
+     "thing"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "paeniteō",
@@ -1367,7 +1776,14 @@
    "sense_full": "displease",
    "parts": "paeniteō, paenitēre, paenituī",
    "unit_id": "w03:coronis:b11.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "rūdus",
@@ -1422,7 +1838,19 @@
    "sense_full": "settle, allay",
    "parts": "sēdō, sēdāre, sedavī, sedatum",
    "unit_id": "w03:minos:b2.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "nature",
+     "abstract"
+    ],
+    "obj": [
+     "abstract",
+     "nature",
+     "group"
+    ]
+   }
   }
  ]
 }

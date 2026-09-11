@@ -82,7 +82,21 @@
    "sense_full": "lead away, carry off",
    "parts": "abdūcō, abdūcere, abdūxī, abductum",
    "unit_id": "w09:b44.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj_also": [
+     "nāvis",
+     "currus"
+    ]
+   }
   },
   {
    "lemma": "auferō",
@@ -94,7 +108,20 @@
    "sense_full": "bear, carry, take, fetch, remove, withdraw",
    "parts": "auferō, auferre, abstulī, ablatum",
    "unit_id": "w09:b16.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "clēmēns",
@@ -153,7 +180,16 @@
    "sense_full": "bring up",
    "parts": "ēducō, ēducāre, educavī, ēducātum",
    "unit_id": "w09:b41.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "iniūria",
@@ -208,7 +244,13 @@
    "sense_full": "remembering",
    "parts": null,
    "unit_id": "w09:b7.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "mōs",
@@ -245,7 +287,18 @@
    "sense_full": "excessive, too great",
    "parts": null,
    "unit_id": "w09:b27.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "food",
+     "nature",
+     "time",
+     "group"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "praemium",
@@ -309,7 +362,38 @@
    "sense_full": "set up, establish, set, place, build",
    "parts": "statuō, statuere, statuī, statūtum",
    "unit_id": "w09:b25.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [],
+    "obj_only": [
+     "cōnsilium",
+     "poena",
+     "praemium",
+     "diēs",
+     "signum",
+     "columna",
+     "templum",
+     "mūrus",
+     "castra",
+     "aedificium",
+     "lēx",
+     "fīnis",
+     "modus",
+     "pretium",
+     "condiciō",
+     "iter",
+     "nāvigātiō",
+     "pāx"
+    ],
+    "takes": [
+     "inf",
+     "ut"
+    ]
+   }
   },
   {
    "lemma": "supplicium",
@@ -334,7 +418,20 @@
    "sense_full": "forbid, prohibit",
    "parts": "vetō, vetāre, vetuī, vetitum",
    "unit_id": "w09:b31.7",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "avārus",
@@ -375,7 +472,19 @@
    "sense_full": "torment, torture",
    "parts": "cruciō, cruciāre, cruciāvī, cruciatum",
    "unit_id": "w09:b20.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "abstract",
+     "nature",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "dēbilis",
@@ -478,7 +587,17 @@
    "sense_full": "present",
    "parts": null,
    "unit_id": "w09:b1.4",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "time",
+     "abstract",
+     "thing",
+     "group",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "quamobrem",
@@ -538,7 +657,20 @@
    "sense_full": "trust (+ dative), rely on (semi-deponent: perfect fīsus sum)",
    "parts": "fīdō, -ere, fīsus sum",
    "unit_id": "w09:b18.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "dat": [
+     "person"
+    ],
+    "takes": [
+     "abl"
+    ]
+   }
   },
   {
    "lemma": "fīdus",
@@ -593,7 +725,25 @@
    "sense_full": "pardon, forgive (with dative)",
    "parts": "ignōscō, ignōscere, ignovī, ignōtum",
    "unit_id": "w09:b29.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "scelus",
+     "fūrtum",
+     "maleficium",
+     "menda",
+     "iniūria",
+     "factum",
+     "verbum"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "lateō",
@@ -605,7 +755,15 @@
    "sense_full": "lie hidden, lurk",
    "parts": "lateō, lātēre, latuī",
    "unit_id": "w09:b21.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "parricīda",
@@ -672,7 +830,18 @@
    "sense_full": "certain quantity, amount, number, size of",
    "parts": null,
    "unit_id": "w09:b16.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "food",
+     "time",
+     "nature",
+     "group"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "asinīnus",
@@ -684,7 +853,16 @@
    "sense_full": "ass's, of, produced by, foaled of an ass",
    "parts": null,
    "unit_id": "w09:b15.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "body",
+     "thing",
+     "animal",
+     "abstract",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "aufugiō",
@@ -696,7 +874,14 @@
    "sense_full": "flee, flee from, shun",
    "parts": "aufugiō, aufūgere, aufūgī",
    "unit_id": "w09:b16.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "cōnfīdō",
@@ -708,7 +893,23 @@
    "sense_full": "have confidence in, rely on, trust (to)",
    "parts": "cōnfīdō, cōnfīdere, confisus sum",
    "unit_id": "w09:b18.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "animal",
+     "thing"
+    ],
+    "takes": [
+     "abl"
+    ]
+   }
   },
   {
    "lemma": "fabulor",
@@ -720,7 +921,13 @@
    "sense_full": "talk (familiarly), chat, converse",
    "parts": "fabulor, fābulārī, fabulatus sum",
    "unit_id": "w09:b49.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "graffītum",
@@ -757,7 +964,13 @@
    "sense_full": "impatient or intolerant (of)",
    "parts": null,
    "unit_id": "w09:b11.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "iniūstus",
@@ -786,7 +999,24 @@
    "sense_full": "be in molten or liquid state",
    "parts": "līqueō, līquēre, licuī",
    "unit_id": "w09:b32.4",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "aqua",
+     "glaciēs",
+     "nix",
+     "cēra",
+     "mel",
+     "sanguis",
+     "vīnum",
+     "lac",
+     "argentum",
+     "aurum",
+     "ferrum"
+    ]
+   }
   },
   {
    "lemma": "memoria",
@@ -824,7 +1054,19 @@
    "sense_full": "draw back, withdraw",
    "parts": "retrahō, retrahere, retrāxī, retractum",
    "unit_id": "w09:b24.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "body"
+    ]
+   }
   }
  ]
 }

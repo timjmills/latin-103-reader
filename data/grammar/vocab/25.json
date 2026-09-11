@@ -120,8 +120,13 @@
     "obj": [
      "person",
      "animal",
-     "place",
-     "thing"
+     "place"
+    ],
+    "obj_also": [
+     "nāvis",
+     "castra",
+     "exercitus",
+     "patria"
     ]
    }
   },
@@ -135,7 +140,20 @@
    "sense_full": "begin, commence, initiate",
    "parts": "coepiō, coepere, coepī, coeptum",
    "unit_id": "w01:60.2",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract",
+     "thing"
+    ],
+    "obj": [],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "hūc",
@@ -159,7 +177,16 @@
    "sense_full": "forget",
    "parts": "oblīvīscor, oblīvīscī, oblītus sum",
    "unit_id": "w01:117.2",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "gen"
+    ]
+   }
   },
   {
    "lemma": "ibi",
@@ -261,7 +288,28 @@
    "sense_full": "set up/in position, erect",
    "parts": "cōnstituō, cōnstituere, cōnstituī, cōnstitūtum",
    "unit_id": "w01:51.3",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [],
+    "obj_only": [
+     "signum",
+     "templum",
+     "mūrus",
+     "cōnsilium",
+     "columna",
+     "castra",
+     "diēs",
+     "poena",
+     "praemium"
+    ],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "dēscendō",
@@ -385,8 +433,95 @@
     ],
     "obj": [
      "person",
-     "animal",
-     "thing"
+     "animal"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus",
+     "currus",
+     "nāvis"
     ]
    }
   },
@@ -413,7 +548,16 @@
    "sense_full": "smear, plaster (with)",
    "parts": "linō, linere, levī, lītum",
    "unit_id": "w01:101.7",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "body",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "mīrābilis",
@@ -456,7 +600,21 @@
    "sense_full": "foresee",
    "parts": "prōspiciō, prōspicere, prōspexī, prospectum",
    "unit_id": "w01:101.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_also": [
+     "mare",
+     "terra",
+     "lītus",
+     "portūs",
+     "nāvis"
+    ]
+   }
   },
   {
    "lemma": "timidus",
@@ -523,7 +681,23 @@
    "sense_full": "many (in the plural), several, a fair or good number",
    "parts": null,
    "unit_id": "w01:29.4",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "pl",
+    "det": true
+   }
   },
   {
    "lemma": "forte",
@@ -571,6 +745,10 @@
     ],
     "dat": [
      "person"
+    ],
+    "takes": [
+     "acc_inf",
+     "inf"
     ]
    }
   },
@@ -649,7 +827,24 @@
    "sense_full": "stand open, be open",
    "parts": "pateō, patēre, patuī",
    "unit_id": "w01:29.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "ōstium",
+     "fenestra",
+     "iānua",
+     "porta",
+     "foris",
+     "via",
+     "mare",
+     "campus",
+     "ager",
+     "forum",
+     "domūs"
+    ]
+   }
   },
   {
    "lemma": "vorō",
@@ -740,7 +935,15 @@
    "sense_full": "Trojan",
    "parts": null,
    "unit_id": "w01:8.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "place",
+     "group",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "cupiditās",

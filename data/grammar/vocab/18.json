@@ -82,7 +82,22 @@
    "sense_full": "such",
    "parts": null,
    "unit_id": "r18:67.1",
-   "count": 28
+   "count": 28,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "mercēs",
@@ -115,6 +130,9 @@
     "obj": [
      "abstract",
      "person"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -166,7 +184,22 @@
    "sense_full": "pay attention to, attend to",
    "parts": "animadvertō, animadvertere, animadvertī, animaduersum",
    "unit_id": "r18:130.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "abstract"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "dēsum",
@@ -178,7 +211,19 @@
    "sense_full": "be wanting or lacking",
    "parts": "dēsum, deesse, defuī, defutūrum",
    "unit_id": "r18:92.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "thing",
+     "food",
+     "abstract"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "pulchrē",
@@ -202,7 +247,16 @@
    "sense_full": "thin, scattered",
    "parts": null,
    "unit_id": "r18:12.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "of": [
+     "thing",
+     "person",
+     "animal",
+     "abstract",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "comparō",
@@ -214,7 +268,16 @@
    "sense_full": "prepare",
    "parts": "comparō, comparāre, comparavī, comparatum",
    "unit_id": "r18:77.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "efficiō",
@@ -226,7 +289,30 @@
    "sense_full": "bring about",
    "parts": "efficiō, efficere, effēcī, effectum",
    "unit_id": "r18:113.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person",
+     "nature",
+     "abstract"
+    ],
+    "obj": [],
+    "obj_only": [
+     "opus",
+     "pāx",
+     "silentium",
+     "victōria",
+     "mūrus",
+     "nāvis",
+     "aedificium",
+     "templum",
+     "imāgō",
+     "signum"
+    ],
+    "takes": [
+     "ut"
+    ]
+   }
   },
   {
    "lemma": "molliō",
@@ -238,7 +324,18 @@
    "sense_full": "soften, mitigate, make easier",
    "parts": "molliō, mollīre, mollīvī, mollitum",
    "unit_id": "r18:109.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "body",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "dūrus",
@@ -267,7 +364,27 @@
    "sense_full": "signify, indicate, show",
    "parts": "significō, significāre, significāvī, significatum",
    "unit_id": "r18:32.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [],
+    "obj": [
+     "abstract",
+     "thing"
+    ],
+    "subj_only": [
+     "verbum",
+     "vocābulum",
+     "nōmen",
+     "littera",
+     "signum",
+     "syllaba",
+     "sententia",
+     "titulus"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "erus",
@@ -305,7 +422,16 @@
    "sense_full": "different",
    "parts": null,
    "unit_id": "r18:32.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "nature",
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "vōcālis",
@@ -317,7 +443,13 @@
    "sense_full": "able to speak",
    "parts": null,
    "unit_id": "r18:7.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [],
+    "only": [
+     "littera"
+    ]
+   }
   },
   {
    "lemma": "ferrum",
@@ -342,7 +474,15 @@
    "sense_full": "crowded",
    "parts": null,
    "unit_id": "r18:12.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "place",
+     "group",
+     "abstract",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "iungō",
@@ -354,7 +494,26 @@
    "sense_full": "join, unite",
    "parts": "iungō, iungere, iūnxī, iūnctum",
    "unit_id": "r18:25.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "equus",
+     "bōs",
+     "asinus",
+     "taurus",
+     "manūs",
+     "bracchium",
+     "currus",
+     "nāvis",
+     "verbum",
+     "littera",
+     "syllaba"
+    ]
+   }
   },
   {
    "lemma": "quālis",
@@ -366,7 +525,22 @@
    "sense_full": "what kind, sort, condition(of)",
    "parts": null,
    "unit_id": "r18:65.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "turpis",
@@ -396,7 +570,21 @@
    "sense_full": "add, insert, bring or attach to, say in addition",
    "parts": "addō, addere, addidī, additum",
    "unit_id": "r18:104.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "abstract",
+     "food"
+    ],
+    "dat": [
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "charta",
@@ -421,7 +609,17 @@
    "sense_full": "sound, utter, make noise together, harmonize",
    "parts": "cōnsonō, cōnsonāre, consonuī",
    "unit_id": "r18:7.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "littera",
+     "syllaba",
+     "vōx",
+     "verbum"
+    ]
+   }
   },
   {
    "lemma": "fortiter",
@@ -480,8 +678,12 @@
     ],
     "obj": [
      "person",
-     "thing",
      "body"
+    ],
+    "obj_also": [
+     "ūva",
+     "olea",
+     "saccus"
     ]
    }
   },
@@ -519,7 +721,26 @@
    "sense_full": "connect, join or yoke together",
    "parts": "coniungō, coniungere, coniunxī, coniunctum",
    "unit_id": "r18:29.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "equus",
+     "bōs",
+     "asinus",
+     "taurus",
+     "manūs",
+     "bracchium",
+     "currus",
+     "nāvis",
+     "verbum",
+     "littera",
+     "syllaba"
+    ]
+   }
   },
   {
    "lemma": "quater",
@@ -543,7 +764,17 @@
    "sense_full": "be left over",
    "parts": "supersum, superesse, superfuī, superfutūrum",
    "unit_id": "r18:140.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "thing",
+     "food",
+     "person",
+     "animal",
+     "abstract"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "calamus",
@@ -632,7 +863,21 @@
    "sense_full": "mark, stamp, designate, sign",
    "parts": "signō, signāre, signavī, signatum",
    "unit_id": "r18:187.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "epistula",
+     "tabella",
+     "tabula",
+     "cēra",
+     "libellus",
+     "charta"
+    ]
+   }
   },
   {
    "lemma": "apis",
@@ -717,7 +962,21 @@
    "sense_full": "impress, imprint",
    "parts": "imprimō, imprimere, impressī, impressum",
    "unit_id": "r18:190.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "signum",
+     "ānulus",
+     "vestīgium",
+     "ōsculum",
+     "bāsium",
+     "littera"
+    ]
+   }
   },
   {
    "lemma": "leviter",
@@ -759,7 +1018,18 @@
    "sense_full": "go, advance, rush, hurry",
    "parts": "uadō, uadere, vasī",
    "unit_id": "r18:168.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   }
  ]
 }

@@ -11,7 +11,15 @@
    "sense_full": "fixed, settled, firm",
    "parts": null,
    "unit_id": "r17:118.2",
-   "count": 50
+   "count": 50,
+   "sem": {
+    "of": [
+     "abstract",
+     "person",
+     "thing",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "laudō",
@@ -47,7 +55,19 @@
    "sense_full": "know, understand",
    "parts": "sciō, scīre, scīvī, scītum",
    "unit_id": "r17:2.1",
-   "count": 42
+   "count": 42,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "abstract"
+    ],
+    "takes": [
+     "acc_inf",
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "rēctus",
@@ -88,7 +108,23 @@
    "sense_full": "easy, easy to do, without difficulty, ready, quick, good natured, courteous",
    "parts": null,
    "unit_id": "r17:50.1",
-   "count": 29
+   "count": 29,
+   "sem": {
+    "of": [
+     "abstract"
+    ],
+    "also": [
+     "iter",
+     "via",
+     "līber",
+     "epistula",
+     "verbum",
+     "vocābulum",
+     "lingua",
+     "carmen",
+     "versūs"
+    ]
+   }
   },
   {
    "lemma": "saepe",
@@ -112,7 +148,30 @@
    "sense_full": "learn",
    "parts": "discō, discere, didicī, discitum",
    "unit_id": "r17:1.1",
-   "count": 23
+   "count": 23,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "lingua",
+     "littera",
+     "verbum",
+     "vocābulum",
+     "ars",
+     "carmen",
+     "nōmen",
+     "numerus",
+     "sententia",
+     "exemplum",
+     "versūs",
+     "syllaba"
+    ],
+    "takes": [
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "doceō",
@@ -131,6 +190,10 @@
     ],
     "obj": [
      "person"
+    ],
+    "takes": [
+     "inf",
+     "acc_inf"
     ]
    }
   },
@@ -156,7 +219,23 @@
    "sense_full": "difficult, troublesome",
    "parts": null,
    "unit_id": "r17:69.1",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "of": [
+     "abstract"
+    ],
+    "also": [
+     "iter",
+     "via",
+     "līber",
+     "epistula",
+     "verbum",
+     "vocābulum",
+     "lingua",
+     "carmen",
+     "versūs"
+    ]
+   }
   },
   {
    "lemma": "nesciō",
@@ -168,7 +247,19 @@
    "sense_full": "not know (how)",
    "parts": "nesciō, nescīre, nescivī, nescitum",
    "unit_id": "r17:2.1",
-   "count": 19
+   "count": 19,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "abstract"
+    ],
+    "takes": [
+     "acc_inf",
+     "inf"
+    ]
+   }
   },
   {
    "lemma": "oportet",
@@ -180,7 +271,14 @@
    "sense_full": "it is right, proper, necessary",
    "parts": "oportet, oportēre, oportuit (impersonal)",
    "unit_id": "r17:110.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "takes": [
+     "none"
+    ]
+   }
   },
   {
    "lemma": "prāvus",
@@ -192,7 +290,14 @@
    "sense_full": "crooked",
    "parts": null,
    "unit_id": "r17:40.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "of": [
+     "person",
+     "abstract",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "cōgitō",
@@ -209,7 +314,10 @@
     "subj": [
      "person"
     ],
-    "obj": []
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
    }
   },
   {
@@ -279,9 +387,95 @@
      "person"
     ],
     "obj": [
-     "thing",
      "person",
+     "animal",
      "food"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -368,12 +562,102 @@
      "person"
     ],
     "obj": [
-     "thing",
-     "place",
-     "body"
+     "body",
+     "place"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus",
+     "via",
+     "iter"
     ],
     "dat": [
      "person"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -387,7 +671,16 @@
    "sense_full": "take, bring out, forth",
    "parts": "prōmō, prōmere, prōmpsī, promptum",
    "unit_id": "r17:96.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "prūdēns",
@@ -428,7 +721,14 @@
    "sense_full": "uncertain",
    "parts": null,
    "unit_id": "r17:118.3",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "abstract",
+     "time",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "interpellō",
@@ -440,7 +740,15 @@
    "sense_full": "interrupt, break in on",
    "parts": "interpellō, interpellāre, interpellavī, interpellatum",
    "unit_id": "r17:22.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "quisque",
@@ -464,7 +772,21 @@
    "sense_full": "reckon, compute, calculate, sum or count (up)",
    "parts": "computō, computāre, computavī, computatum",
    "unit_id": "r17:101.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "pecūnia",
+     "nummus",
+     "numerus",
+     "dēnārius",
+     "sēstertius",
+     "assis"
+    ]
+   }
   },
   {
    "lemma": "partior",
@@ -476,7 +798,17 @@
    "sense_full": "share, divide up, distribute",
    "parts": "partior, partīrī, partitus sum",
    "unit_id": "r17:143.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "largior",
@@ -488,7 +820,19 @@
    "sense_full": "grant",
    "parts": "largior, largīrī, largitus sum",
    "unit_id": "r17:132.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "largus",

@@ -31,8 +31,13 @@
     ],
     "obj": [
      "person",
-     "animal",
-     "thing"
+     "animal"
+    ],
+    "obj_also": [
+     "catēna",
+     "fūnis",
+     "nāvis",
+     "pecūnia"
     ]
    }
   },
@@ -78,6 +83,10 @@
     ],
     "obj": [
      "person"
+    ],
+    "takes": [
+     "ut",
+     "acc_inf"
     ]
    }
   },
@@ -192,8 +201,93 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "body"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -262,7 +356,16 @@
    "sense_full": "observe, witness",
    "parts": "arbitror, arbitrārī, arbitrātus sum",
    "unit_id": "r22:93.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "pellō",
@@ -305,8 +408,19 @@
      "animal",
      "nature"
     ],
-    "obj": [
-     "thing"
+    "obj": [],
+    "obj_only": [
+     "catēna",
+     "fūnis",
+     "vestis",
+     "toga",
+     "tunica",
+     "rēte",
+     "laqueus",
+     "vēlum",
+     "līnea",
+     "fīlum",
+     "silentium"
     ]
    }
   },
@@ -401,8 +515,17 @@
      "person",
      "animal"
     ],
-    "obj": [
-     "thing"
+    "obj": [],
+    "obj_only": [
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "epistula",
+     "charta",
+     "vēlum",
+     "līber",
+     "rēte"
     ]
    }
   },
@@ -501,14 +624,12 @@
    "count": 6,
    "sem": {
     "subj": [
-     "animal",
-     "person"
+     "animal"
     ],
     "obj": [
      "person",
      "animal",
      "body",
-     "thing",
      "food"
     ]
    }
@@ -598,8 +719,93 @@
     "obj": [
      "person",
      "animal",
-     "thing",
      "place"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -633,8 +839,93 @@
     ],
     "obj": [
      "person",
-     "animal",
-     "thing"
+     "animal"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -677,7 +968,21 @@
    "sense_full": "pause",
    "parts": "resistō, resistere, restitī",
    "unit_id": "r22:62.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "animal",
+     "group",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "forās",
@@ -766,7 +1071,15 @@
    "sense_full": "ask, inquire",
    "parts": "rogitō, rogitāre, rogitavī, rogitatum",
    "unit_id": "r22:40.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "scīlicet",

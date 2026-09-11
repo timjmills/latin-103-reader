@@ -30,8 +30,93 @@
      "animal"
     ],
     "obj": [
-     "thing",
      "food"
+    ],
+    "obj_also": [
+     "saccus",
+     "sacculus",
+     "lectīca",
+     "līber",
+     "epistula",
+     "pecūnia",
+     "nummus",
+     "rosa",
+     "līlium",
+     "baculum",
+     "gladius",
+     "hasta",
+     "scūtum",
+     "arma",
+     "vestis",
+     "toga",
+     "tunica",
+     "pallium",
+     "ānulus",
+     "gemma",
+     "margarīta",
+     "ōrnāmentum",
+     "dōnum",
+     "mercēs",
+     "merx",
+     "vāsum",
+     "pōculum",
+     "lucerna",
+     "tabula",
+     "tabella",
+     "libellus",
+     "speculum",
+     "pila",
+     "catēna",
+     "clāvis",
+     "flōs",
+     "folium",
+     "rāmus",
+     "lignum",
+     "saxum",
+     "aqua",
+     "vīnum",
+     "pānis",
+     "cibus",
+     "mel",
+     "lac",
+     "ovum",
+     "pirum",
+     "ūva",
+     "olea",
+     "carō",
+     "holus",
+     "nux",
+     "frūmentum",
+     "pecūlium",
+     "praemium",
+     "stīpendium",
+     "sēmen",
+     "rēte",
+     "fūnis",
+     "culter",
+     "falx",
+     "arātrum",
+     "īnstrūmentum",
+     "charta",
+     "cēra",
+     "calamus",
+     "stilus",
+     "rēgula",
+     "virga",
+     "vestīmentum",
+     "calceus",
+     "persōna",
+     "imāgō",
+     "signum",
+     "penna",
+     "sagitta",
+     "pīlum",
+     "ēnsis",
+     "clipeus",
+     "laqueus",
+     "lāna",
+     "ratis",
+     "rēmus"
     ]
    }
   },
@@ -255,8 +340,24 @@
     "subj": [
      "person"
     ],
-    "obj": [
-     "thing"
+    "obj": [],
+    "obj_only": [
+     "pila",
+     "saxum",
+     "hasta",
+     "sagitta",
+     "pīlum",
+     "gladius",
+     "baculum",
+     "rēte",
+     "pōculum",
+     "ānulus",
+     "nummus",
+     "pecūnia",
+     "lignum",
+     "rāmus",
+     "ovum",
+     "pānis"
     ]
    }
   },
@@ -292,8 +393,15 @@
     "obj": [
      "person",
      "place",
-     "thing",
      "group"
+    ],
+    "obj_also": [
+     "nāvis",
+     "castra",
+     "mūrus",
+     "patria",
+     "lībertās",
+     "vīta"
     ]
    }
   },
@@ -410,7 +518,19 @@
    "sense_full": "suffer",
    "parts": "patior, patī, passus sum",
    "unit_id": "r12:93.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "abstract"
+    ],
+    "takes": [
+     "acc_inf"
+    ]
+   }
   },
   {
    "lemma": "barbarus",
@@ -422,7 +542,15 @@
    "sense_full": "foreign, of, used by, typical of foreigners",
    "parts": null,
    "unit_id": "r12:61.1",
-   "count": 13
+   "count": 13,
+   "sem": {
+    "of": [
+     "person",
+     "group",
+     "place",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "vester",
@@ -434,7 +562,22 @@
    "sense_full": "your (in the plural), of, belonging to, associated with you",
    "parts": null,
    "unit_id": "r12:26.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "pugna",
@@ -480,7 +623,18 @@
    "sense_full": "divide",
    "parts": "dīvidō, dīvidere, divisī, divisum",
    "unit_id": "r12:67.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "place",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "eques",
@@ -612,7 +766,14 @@
    "sense_full": "military",
    "parts": null,
    "unit_id": "r12:98.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "mīlle",
@@ -723,7 +884,17 @@
    "sense_full": "live, dwell or reside (in)",
    "parts": "incolō, incolere, incoluī",
    "unit_id": "r12:61.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "praenōmen",
@@ -766,7 +937,24 @@
    "sense_full": "dig, dig out/up",
    "parts": "fodiō, fodere, fodī, fossum",
    "unit_id": "r12:100.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "ager",
+     "hortus",
+     "vīnea",
+     "campus",
+     "terra",
+     "humus",
+     "rūs",
+     "praedium"
+    ]
+   }
   },
   {
    "lemma": "cognōmen",
@@ -806,10 +994,64 @@
    "unit_id": "r12:89.1",
    "count": 1,
    "sem": {
-    "subj": [
-     "person"
-    ],
-    "obj": []
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "vir",
+     "marītus",
+     "fīlius",
+     "puer",
+     "adulēscēns",
+     "iuvenis",
+     "senex",
+     "dominus",
+     "servus",
+     "mīles",
+     "nauta",
+     "mercātor",
+     "pāstor",
+     "agricola",
+     "colōnus",
+     "medicus",
+     "magister",
+     "poēta",
+     "rēx",
+     "prīnceps",
+     "senātor",
+     "tyrannus",
+     "amīcus",
+     "frāter",
+     "hospes",
+     "convīva",
+     "gladiātor",
+     "aurīga",
+     "faber",
+     "cocus",
+     "minister",
+     "imperātor",
+     "lēgātus",
+     "dux",
+     "eques",
+     "pedēs",
+     "piscātor",
+     "praedō",
+     "pīrāta",
+     "fūr",
+     "gener",
+     "cīvis",
+     "homō",
+     "hostis",
+     "inimīcus",
+     "Iūlius",
+     "Mārcus",
+     "Quīntus",
+     "Dāvus",
+     "Mēdus",
+     "Cornēlius",
+     "Ursus",
+     "Albīnus",
+     "Sextus"
+    ]
    }
   }
  ]

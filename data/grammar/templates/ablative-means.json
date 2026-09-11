@@ -1,0 +1,428 @@
+{
+ "skill": "ablative-means",
+ "chapter": 6,
+ "templates": [
+  {
+   "id": "abm-t1",
+   "la": "{s:nom} {o:acc} {adj:acc} baculō {v:pres.ind}.",
+   "en": "{s} {v} {o} with a stick.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "verberō",
+      "pulsō"
+     ]
+    }
+   },
+   "fixed_gloss": {
+    "baculō": "with a stick"
+   },
+   "focus": "baculō",
+   "words": 5
+  },
+  {
+   "id": "abm-t2",
+   "la": "{s:nom} {veh:abl} ad {p:acc} {v:pres.ind.pass}.",
+   "en": "{s} {v} to {p} on {veh:a}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "veh": {
+     "only": [
+      "equus",
+      "lectīca"
+     ],
+     "g": "on"
+    },
+    "p": {
+     "only": [
+      "oppidum",
+      "vīlla",
+      "īnsula",
+      "fluvius"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "s",
+     "lemmas": [
+      "vehō"
+     ]
+    }
+   },
+   "focus": "veh",
+   "words": 5
+  },
+  {
+   "id": "abm-t3",
+   "la": "{s:nom} {m:abl} et {m2:abl} {v:pres.ind.pass}.",
+   "en": "{s} {v} by {m} and {m2}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "m": {
+     "only": [
+      "rosa",
+      "līlium",
+      "nummus",
+      "pecūnia",
+      "mel",
+      "equus",
+      "speculum",
+      "ānulus",
+      "gemma",
+      "margarīta"
+     ],
+     "number": "any"
+    },
+    "m2": {
+     "only": [
+      "rosa",
+      "līlium",
+      "nummus",
+      "pecūnia",
+      "mel",
+      "equus",
+      "speculum",
+      "ānulus",
+      "gemma",
+      "margarīta"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "s",
+     "agent": "m",
+     "lemmas": [
+      "dēlectō"
+     ]
+    }
+   },
+   "focus": "m",
+   "words": 5
+  },
+  {
+   "id": "abm-t4",
+   "la": "{s:nom} {adj:nom} {o:acc} umerīs {v:pres.ind}.",
+   "en": "{s} {v} {o} on his shoulders.",
+   "slots": {
+    "s": {
+     "only": [
+      "servus",
+      "puer",
+      "vir",
+      "amīcus",
+      "fīlius",
+      "pater",
+      "dominus",
+      "Dāvus",
+      "Mēdus",
+      "Ursus",
+      "Cornēlius",
+      "Iūlius",
+      "Mārcus",
+      "Quīntus"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s"
+    },
+    "o": {
+     "only": [
+      "saccus",
+      "sacculus",
+      "lectīca",
+      "līber"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "portō"
+     ]
+    }
+   },
+   "fixed_gloss": {
+    "umerīs": "on his shoulders"
+   },
+   "focus": "umerīs",
+   "words": 5
+  },
+  {
+   "id": "abm-t5",
+   "la": "{s:nom} {via:abl} {adj:abl} ad {p:acc} {v:pres.ind}.",
+   "en": "{s} {v} to {p} by {via}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "via": {
+     "only": [
+      "via"
+     ],
+     "g": "by"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "via",
+     "only": [
+      "longus",
+      "novus",
+      "antīquus",
+      "pulcher",
+      "malus",
+      "bonus"
+     ]
+    },
+    "p": {
+     "only": [
+      "oppidum",
+      "vīlla",
+      "īnsula",
+      "fluvius",
+      "hortus"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "ambulō",
+      "eō",
+      "veniō"
+     ]
+    }
+   },
+   "focus": "via",
+   "words": 6
+  },
+  {
+   "id": "abm-t6",
+   "la": "{inst:abl} {s:nom} {o:acc} {adj:acc} {v:pres.ind}.",
+   "en": "With a stick {s} {v} {o}.",
+   "slots": {
+    "inst": {
+     "only": [
+      "baculum"
+     ],
+     "g": "with"
+    },
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "verberō",
+      "pulsō"
+     ]
+    }
+   },
+   "focus": "inst",
+   "words": 5
+  },
+  {
+   "id": "abm-t7",
+   "la": "{s:nom} {adj:nom} {m:abl} {suus:abl} {v:pres.ind.pass}.",
+   "en": "{s} {v} by {suus} {m:bare}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s"
+    },
+    "m": {
+     "only": [
+      "nummus",
+      "verbum",
+      "rosa",
+      "līlium",
+      "equus",
+      "ānulus",
+      "gemma",
+      "margarīta"
+     ],
+     "number": "pl",
+     "g": "by"
+    },
+    "suus": {
+     "pos": "ADJ",
+     "agree": "m",
+     "only": [
+      "suus"
+     ],
+     "ref": "s"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "s",
+     "agent": "m",
+     "lemmas": [
+      "dēlectō"
+     ]
+    }
+   },
+   "focus": "m",
+   "words": 5
+  },
+  {
+   "id": "abm-t8",
+   "la": "{s:nom} cum {c:abl} {v1:pres.ind}, sed {veh:abl} {v2:pres.ind.pass}.",
+   "en": "{s} {v1} with {c}, but {v2} on {veh:a}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "c": {
+     "sem": [
+      "person"
+     ],
+     "number": "pl",
+     "g": "with"
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "veniō",
+      "discēdō",
+      "eō"
+     ]
+    },
+    "veh": {
+     "only": [
+      "equus",
+      "lectīca"
+     ],
+     "g": "on"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "s",
+     "lemmas": [
+      "vehō"
+     ]
+    }
+   },
+   "focus": "veh",
+   "words": 7
+  },
+  {
+   "id": "abm-t9",
+   "la": "{m:abl} {adj:abl} {s:nom} {o:acc} {v:pres.ind}.",
+   "en": "With {adj} words {s} {v} {o}.",
+   "slots": {
+    "m": {
+     "only": [
+      "verbum"
+     ],
+     "number": "pl",
+     "g": "with"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "m",
+     "only": [
+      "multus",
+      "pulcher",
+      "malus",
+      "bonus",
+      "novus"
+     ]
+    },
+    "s": {
+     "sem": [
+      "person"
+     ]
+    },
+    "o": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "obj": "o",
+     "lemmas": [
+      "accūsō",
+      "salūtō",
+      "vocō",
+      "interrogō"
+     ]
+    }
+   },
+   "focus": "m",
+   "words": 5
+  }
+ ],
+ "exclude": []
+}

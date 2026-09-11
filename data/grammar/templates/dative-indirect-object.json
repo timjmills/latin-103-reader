@@ -1,0 +1,144 @@
+{
+ "skill": "dative-indirect-object",
+ "chapter": 7,
+ "templates": [
+  {
+   "id": "dio-t1",
+   "la": "{g:nom} {r:dat} {suus:dat} {t:acc} {v:pres.ind}.",
+   "en": "{g} {v} {suus} {r:bare} {t:a}.",
+   "slots": {
+    "g": {"sem": ["person"]},
+    "r": {"sem": ["person"], "names": false},
+    "suus": {"pos": "ADJ", "agree": "r", "only": ["suus"], "ref": "g"},
+    "t": {"sem": ["thing", "food"], "art": "a"},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": "r"}
+   },
+   "focus": "r",
+   "words": 5
+  },
+  {
+   "id": "dio-t2",
+   "la": "{g:nom} {r:dat} {t:acc} nōn {v:pres.ind}.",
+   "en": "{g} {v:neg} {r} {t:a}.",
+   "slots": {
+    "g": {"sem": ["person"]},
+    "r": {"sem": ["person"]},
+    "t": {"sem": ["thing", "food"], "art": "a"},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": "r"}
+   },
+   "focus": "r",
+   "words": 5
+  },
+  {
+   "id": "dio-t3",
+   "la": "{g:nom} {r:dat} {suus:dat} {t:acc} {v:pres.ind}.",
+   "en": "{g} {v} {suus} {r:bare} {t:bare}.",
+   "slots": {
+    "g": {"sem": ["person"], "number": "pl"},
+    "r": {"sem": ["person"], "number": "pl"},
+    "suus": {"pos": "ADJ", "agree": "r", "only": ["suus"], "ref": "g"},
+    "t": {"sem": ["thing", "food"], "number": "pl", "art": ""},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": "r"}
+   },
+   "focus": "r",
+   "words": 5
+  },
+  {
+   "id": "dio-t4",
+   "la": "Cui {g:nom} {t:acc} {suus:acc} {v:pres.ind}?",
+   "en": "To whom does {g} {v:base} {suus} {t:bare}?",
+   "slots": {
+    "g": {"sem": ["person"]},
+    "t": {"sem": ["thing", "food"]},
+    "suus": {"pos": "ADJ", "agree": "t", "only": ["suus"], "ref": "g"},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "allow_dat": true, "lemmas": ["dō"]}
+   },
+   "focus": "Cui",
+   "words": 5
+  },
+  {
+   "id": "dio-t5",
+   "la": "{g:nom} {r:dat} {gen:gen} {t:acc} {v:pres.ind}.",
+   "en": "{g} {v} {gen:poss} {r:bare} {t:a}.",
+   "slots": {
+    "g": {"sem": ["person"]},
+    "r": {"only": ["fīlius", "fīlia", "servus", "ancilla", "amīcus", "puer", "puella", "pater", "māter"]},
+    "gen": {"sem": ["person"], "not": ["fīlius", "fīlia", "servus", "ancilla", "amīcus", "puer", "puella", "pater", "māter"]},
+    "t": {"sem": ["thing", "food"], "art": "a"},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": "r"}
+   },
+   "focus": "r",
+   "words": 5
+  },
+  {
+   "id": "dio-t6",
+   "la": "{g:nom} {r1:dat} et {r2:dat} {t:acc} {v:pres.ind}.",
+   "en": "{g} {v} {r1} and {r2} {t:bare}.",
+   "slots": {
+    "g": {"sem": ["person"]},
+    "r1": {"sem": ["person"], "number": "any"},
+    "r2": {"sem": ["person"], "number": "any"},
+    "t": {"sem": ["thing", "food"], "number": "pl", "art": ""},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": ["r1", "r2"]}
+   },
+   "focus": "r1",
+   "words": 6
+  },
+  {
+   "id": "dio-t7",
+   "la": "{s:nom} {adj:nom} {r:dat} {suus:dat} nōn {v:pres.ind}.",
+   "en": "{s} {v:neg} {suus} {r:bare}.",
+   "slots": {
+    "s": {"sem": ["person"], "names": false},
+    "adj": {"pos": "ADJ", "agree": "s"},
+    "r": {"sem": ["person"], "names": false},
+    "suus": {"pos": "ADJ", "agree": "r", "only": ["suus"], "ref": "s"},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "s", "dat": "r", "lemmas": ["respondeō"]}
+   },
+   "focus": "r",
+   "words": 6
+  },
+  {
+   "id": "dio-t8",
+   "la": "{r:dat} {g:nom} {t:acc} nōn {v:pres.ind}.",
+   "en": "{g} {v:neg} {r} {t:bare}.",
+   "slots": {
+    "r": {"sem": ["person"]},
+    "g": {"sem": ["person"]},
+    "t": {"sem": ["thing", "food"], "number": "pl", "art": ""},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": "r"}
+   },
+   "focus": "r",
+   "words": 5
+  },
+  {
+   "id": "dio-t9",
+   "la": "{t:nom} {adj:nom} {r:dat} nōn {v:pres.ind}.",
+   "en": "{t} {v:neg} {r}.",
+   "slots": {
+    "t": {"sem": ["thing", "food"], "number": "any"},
+    "adj": {"pos": "ADJ", "agree": "t"},
+    "r": {"sem": ["person"]},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "t", "dat": "r", "lemmas": ["placeō"]}
+   },
+   "focus": "r",
+   "words": 5
+  },
+  {
+   "id": "dio-t10",
+   "la": "{g:nom} {r:dat} {t:acc} {v:pres.ind}, et {r2:nom} {v2:pres.ind}.",
+   "en": "{g} {v} {r} {t:a}, and {r2} {v2}.",
+   "slots": {
+    "g": {"sem": ["person"]},
+    "r": {"sem": ["person"]},
+    "t": {"sem": ["thing", "food"], "art": "a"},
+    "v": {"pos": "V", "form": "pres.ind", "subj": "g", "obj": "t", "dat": "r"},
+    "r2": {"same": "r"},
+    "v2": {"pos": "V", "form": "pres.ind", "subj": "r2", "lemmas": ["rīdeō", "plōrō", "cantō", "lacrimō", "currō", "exeō", "dormiō", "taceō"]}
+   },
+   "focus": "r",
+   "words": 7
+  }
+ ],
+ "exclude": []
+}

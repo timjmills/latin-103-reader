@@ -48,7 +48,22 @@
    "sense_full": "my (personal possession)",
    "parts": null,
    "unit_id": "r02:66.1",
-   "count": 189
+   "count": 189,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "servus",
@@ -86,7 +101,22 @@
    "sense_full": "your (sing.)",
    "parts": null,
    "unit_id": "r02:67.1",
-   "count": 140
+   "count": 140,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "det": true
+   }
   },
   {
    "lemma": "dominus",
@@ -201,7 +231,23 @@
    "sense_full": "the other",
    "parts": null,
    "unit_id": "r02:58.1",
-   "count": 53
+   "count": 53,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "pl",
+    "det": true
+   }
   },
   {
    "lemma": "femina",
@@ -230,8 +276,15 @@
    "sem": {
     "of": [
      "thing",
-     "person",
      "place"
+    ],
+    "also": [
+     "servus",
+     "ancilla",
+     "amīcus",
+     "discipulus",
+     "magister",
+     "dominus"
     ]
    }
   },
@@ -297,7 +350,23 @@
    "sense_full": "how many? (quot ... tot ... = as many ... as)",
    "parts": null,
    "unit_id": "r02:37.1",
-   "count": 23
+   "count": 23,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "time",
+     "abstract",
+     "body",
+     "food",
+     "group",
+     "nature"
+    ],
+    "number": "pl",
+    "det": true
+   }
   },
   {
    "lemma": "lingua",

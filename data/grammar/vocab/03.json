@@ -48,6 +48,9 @@
      "place",
      "nature",
      "body"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -114,6 +117,9 @@
      "person",
      "animal",
      "abstract"
+    ],
+    "takes": [
+     "acc_inf"
     ]
    }
   },
@@ -333,7 +339,17 @@
    "sense_full": "get, be, become angry",
    "parts": "irascor, irascī, īrātus sum",
    "unit_id": "r03:6.2",
-   "count": 36
+   "count": 36,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "plōrō",
@@ -399,7 +415,7 @@
    "parts": null,
    "unit_id": "r03:19.1",
    "count": 8,
-   "sem": "person"
+   "sem": "other"
   },
   {
    "lemma": "persōna",
