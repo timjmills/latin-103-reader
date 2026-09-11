@@ -345,7 +345,8 @@ test('a cell is judged when it is left, and grading paints every box from the sa
   // The wiring, read off the source for the same reason as above: §7.5 measured **zero** blur handlers
   // in the module, which is why nothing was ever bound to a box.
   assert.ok(/addEventListener\('blur'/.test(UI), 'a box is judged when the learner leaves it');
-  assert.equal((UI.match(/addEventListener\('blur', \(\) => \{ if \(!inp\.disabled\)/g) ?? []).length, 2, 'the chart and Pensum A both do it');
+  // `!peeked.has(i)`: a cell showing its own form (its hint) would otherwise be painted green on the way out.
+  assert.equal((UI.match(/addEventListener\('blur', \(\) => \{ if \(!inp\.disabled && !peeked\.has\(i\)\)/g) ?? []).length, 2, 'the chart and Pensum A both do it');
   assert.match(UI, /const cells = cellResults\(item, v\);/, 'grading paints from the same per-cell truth the runner judges with');
   assert.match(UI, /aria-invalid/, 'and the colour is never the only signal');
 });
