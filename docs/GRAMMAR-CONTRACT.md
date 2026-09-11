@@ -1750,6 +1750,71 @@ became a frame, a gate rule or a check, pinned in
 Whitaker's `edāre` and `volāre` homographs) are upstream data to fix; the gate
 lists them with `--unreliable`.
 
+### 11b. The banks: pre-generated per skill, and how the app draws on them (2026-09-11)
+
+**Decision.** The browser cannot run the Python generator, so the pipeline
+pre-generates a bank per skill: `pipeline/build_generated.py` runs
+`generate_sentences` for every skill that has a templates file, over several
+seeds (1..8 by default, 120 asked per seed), de-duplicated by `la`, capped at
+400 sentences a skill, and writes
+
+```
+app/data/grammar/generated/<skill>.json    { skill, chapter, seeds, count, rejected_by_check, sentences: [...] }
+app/data/grammar/generated/index.json      { "generated": [skill ids] } — the manifest the app reads first
+```
+
+each sentence in the §11a generated-sentence shape (`id · la · en · words ·
+focus · gloss · generated: true · template · seed · fill`). These are our own
+sentences (our templates, our deck), so the files are public and precached like
+the written sets (`app/sw.js` PRECACHE lists every one; `tests/sw.precache.test.mjs`
+holds it to that). Compact JSON: ~170 KB a bank, ~26 KB gzipped.
+
+**Re-run** `python pipeline/build_generated.py` (or with skill ids) after any
+change to a templates file, to `pipeline/sem.json`, or to the generator; the
+build is deterministic for (skill, seed). The coverage check (§13 rows 3 and
+5) fails a sentence skill whose bank is missing or under **100** sentences,
+and holds a table skill that also has templates (a case used as a
+construction) to the same bar; the templates file must carry the pilot-review
+record `"review": { "passes": [...non-empty], "final_rate": ≤ 0.05 }`, and the
+generator's own `{ab}` slot is never "undeclared".
+
+**In the app** (`lessons.js` · `items.js` · `session.js` · `ui.js`):
+
+- `loadGenerated(skill)` fetches a bank lazily, once, gated by the manifest
+  (no request for a skill without one); `normaliseGenerated` gives it the
+  written set's shape, every sentence `generated: true` with its template.
+- A bank becomes a second `createTeachItems` over the skill (its own pool key,
+  `l103.grammar.generated.<skill>`), so every item kind the skill declares —
+  recognise, parse, blank, transform, translate … — is built by `sentenceItem`
+  exactly as for a written sentence: the same per-box green/red, hints,
+  hold-until-right and arrows. A chart slot is asked as a sentence kind.
+- **A1's order, extended** (`createSkillDraw`): the skill's written sentences
+  first, then the generated tier (`createGeneratedTier`: a fresh shuffle, none
+  twice until the whole bank has come round, then a new shuffle whose first
+  item says "starting over"), then the book's short sentences under the
+  chapter cap, then the rest. "Just drill it" therefore overflows into the
+  bank before the library, as §11 asks.
+- **Unlimited practice** is `createDrill({ open: true })`: ten at a time,
+  "Ten more" at the end of each, the bank's memory carried across. View
+  `unlimited`; the button sits beside "Just drill it" on the lesson page and
+  the skill row of every skill with a bank.
+- **A mixed set** (§12) is `createMixed` over `mixedMembers`: the skill on
+  every other item, its declared `confusable_with` (first) and `prereqs`
+  taking turns between, each once, only those the map knows and can drill,
+  capped to the learner's current chapter, at most four; each member drawn
+  from its own pool in A1's order. View `mixed`, the same two places.
+- Every generated item is labelled as such in its own words on the item, shows
+  its English and its word-by-word gloss on demand (opening them before
+  answering counts as a hint, decision 14; a blank and a translate do not
+  offer them), and shows both on the feedback.
+- An attempt on a generated item carries `meta: { generated: true, template,
+  sentence }`; a written one carries no meta. `meta` stays on the device
+  (`normaliseAttempt` keeps it, `serverAttemptRow` drops it — the server table
+  has no column). Neither kind of item has a key, so neither enters "redo what
+  was wrong", as a teaching step's item does not.
+- Not built: the learner's "report this sentence" (§11) — the exclusion list
+  is edited by hand in the templates file for now.
+
 ## 12. Feedback everywhere, and scaffolded tables (2026-09-11)
 
 Learner: everything gives immediate feedback in green and red with the
@@ -1862,5 +1927,7 @@ Open, in the order they matter:
    enough stock words to make them honest.
 4. **Drilling a `learning` skill** logs in learn mode and changes no state; if a
    drill should be allowed to promote a skill, say so here first.
-5. **Templates** exist for the pilot skills only; the other sentence skills fail
-   coverage rows 3 and 5 until their templates land.
+5. **Templates and banks** exist for the pilot skills only (§11b); the other
+   sentence skills fail coverage rows 3 and 5 until their templates land and
+   `python pipeline/build_generated.py` has been run for them (and the new
+   banks added to `app/sw.js` PRECACHE with a `CACHE_VERSION` bump).

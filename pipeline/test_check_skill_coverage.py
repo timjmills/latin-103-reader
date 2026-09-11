@@ -31,11 +31,44 @@ LESSON_ONLY = {"elegiac-couplet", "prosody-scansion", "principal-parts"}
 #: (row, class) → why the build has not reached it yet.  Strict: an unexpected
 #: pass fails the suite until the entry is removed.
 NOT_YET_BUILT = {
-    ("3", "sentence"): "row 3 unlimited practice: no sentence skill has a templates file "
-                       "yet (app/data/grammar/templates/<skill>.json, §11)",
+    ("3", "sentence"): "row 3 unlimited practice: only the pilot's sentence skills have a "
+                       "templates file and a generated bank yet (§11, §11b); the rest "
+                       "fail until their templates land and the banks are built",
     ("5", "sentence"): "row 5 mixed practice / axes: the generated set needs the "
-                       "templates of row 3",
+                       "templates and the bank of row 3",
 }
+
+#: The pilot's eight (§11a): the table-class ones pass row 3 on their tables
+#: and on their generator; the sentence-class ones on the generator alone.
+#: ablative-absolute and purpose-clause are not listed: their review records
+#: land with the templates agent's work, and until then they fail row 3.
+PILOT_TABLE = ["accusative-object", "ablative-means", "ablative-agent",
+               "dative-indirect-object", "perfect-active"]
+PILOT_SENTENCE = ["accusative-infinitive"]
+
+SKILL = {"id": "x", "chapter": 3, "category": "syntax", "paradigms": []}
+REVIEW = {"passes": [{"pass": 1, "generated": 40, "rejected": 2, "rate": 0.05, "causes": ["x"]}],
+          "final_rate": 0.02}
+
+
+def _templates(la="{s:nom} {ab} {ag:abl} {v:pres.ind.pass} venit.", review=REVIEW, n=5):
+    t = {"id": "x-t1", "la": la, "en": "{s} is {v} by {ag}.",
+         "slots": {"s": {"sem": ["person"]}, "ag": {"sem": ["person"]},
+                   "v": {"pos": "V", "form": "pres.ind.pass", "subj": "s", "agent": "ag"}},
+         "focus": "ag", "words": 5}
+    ts = [dict(t, id=f"x-t{i + 1}") for i in range(n)]
+    out = {"skill": "x", "chapter": 3, "templates": ts, "exclude": []}
+    if review is not None:
+        out["review"] = review
+    return out
+
+
+def _bank(n=csc.MIN_BANK):
+    s = {"id": "x-t1-0", "la": "Iūlius ā servō vocātur.", "en": "Julius is called by the slave.",
+         "words": 4, "focus": "servō", "gloss": [{"w": "Iūlius", "m": "Julius"}],
+         "generated": True, "template": "x-t1", "seed": 1, "fill": {}}
+    return {"skill": "x", "chapter": 3, "seeds": [1], "count": n,
+            "sentences": [dict(s, id=f"x-t1-{i}") for i in range(n)]}
 
 
 @pytest.fixture(scope="module")
@@ -102,6 +135,69 @@ def test_no_skill_fails_the_row(request, results, row, cls):
     name = dict((a, b) for a, b, _ in csc.ROWS)[row]
     assert not failing, f"row {row} {name}, {cls} skills: " + "; ".join(
         f"{sid}: {why}" for sid, why in failing)
+
+
+def test_row_3_accepts_the_generators_own_ab_slot():
+    """`{ab}` prints ā / ab by the next sound (§11a): the generator's own slot,
+    never declared — aci-t4 and aci-t10 use it."""
+    status, why = csc.row_3(None, SKILL, "sentence", None, None, _templates(), _bank())
+    assert status == csc.PASS, why
+    status, why = csc.row_3(None, SKILL, "sentence", None, None,
+                            _templates(la="{s:nom} {ab} {ag:abl} {zz:acc} {v:pres.ind.pass}."), _bank())
+    assert status == csc.FAIL and "['zz']" in why and "'ab'" not in why
+
+
+def test_row_3_wants_the_review_record_in_its_exact_shape():
+    ok = lambda tpl: csc.row_3(None, SKILL, "sentence", None, None, tpl, _bank())  # noqa: E731
+    assert ok(_templates())[0] == csc.PASS
+    status, why = ok(_templates(review=None))
+    assert status == csc.FAIL and '"review"' in why
+    # The old loose keys are not a record.
+    tpl = _templates(review=None)
+    tpl["reviewed"] = True
+    assert ok(tpl)[0] == csc.FAIL
+    assert ok(_templates(review={"passes": [], "final_rate": 0.01}))[1].count("passes") == 1
+    assert ok(_templates(review={"passes": [{"pass": 1}], "final_rate": 0.051}))[0] == csc.FAIL
+    assert ok(_templates(review={"passes": [{"pass": 1}], "final_rate": 0.05}))[0] == csc.PASS
+    assert ok(_templates(review={"passes": [{"pass": 1}]}))[0] == csc.FAIL
+    assert ok(_templates(review={"passes": [{"pass": 1}], "final_rate": "0.01"}))[0] == csc.FAIL
+
+
+def test_rows_3_and_5_want_a_generated_bank_of_at_least_100():
+    sents = {"skill": "x", "chapter": 3, "sentences": [{"id": f"x-{i}"} for i in range(csc.MIN_SENTENCES)]}
+    for row in (csc.row_3, csc.row_5):
+        status, why = row(None, SKILL, "sentence", None, sents, _templates(), _bank())
+        assert status == csc.PASS, why
+        assert "bank of 100" in why
+        status, why = row(None, SKILL, "sentence", None, sents, _templates(), None)
+        assert status == csc.FAIL and "build_generated.py" in why
+        status, why = row(None, SKILL, "sentence", None, sents, _templates(), _bank(99))
+        assert status == csc.FAIL and "99" in why
+        status, why = row(None, SKILL, "sentence", None, sents, _templates(), {"__error__": "boom"} if row is csc.row_3 else _bank(0))
+        assert status == csc.FAIL
+    # A bank of the right size but with a broken sentence fails row 3 (row 5 counts only).
+    bank = _bank()
+    bank["sentences"][3] = {"id": "x-t1-3", "la": "Iūlius vocātur."}
+    status, why = csc.row_3(None, SKILL, "sentence", None, sents, _templates(), bank)
+    assert status == csc.FAIL and "x-t1-3" in why
+    bank = _bank()
+    bank["skill"] = "y"
+    assert csc.row_3(None, SKILL, "sentence", None, sents, _templates(), bank)[0] == csc.FAIL
+
+
+def test_the_pilot_skills_pass_rows_3_and_5_on_the_committed_data(results):
+    """The eight pilot skills' templates and banks (§11a, §11b) are on disk and
+    whole — the banks regenerated by pipeline/build_generated.py after any
+    change to a templates file."""
+    for sid in PILOT_TABLE + PILOT_SENTENCE:
+        rows = results[sid]["rows"]
+        assert rows["3"][0] == csc.PASS, (sid, rows["3"][1])
+        assert "bank of" in rows["3"][1], (sid, rows["3"][1])
+        assert rows["5"][0] == csc.PASS, (sid, rows["5"][1])
+    for sid in PILOT_SENTENCE:
+        assert results[sid]["class"] == "sentence"
+    for sid in PILOT_TABLE:
+        assert results[sid]["class"] == "table"
 
 
 def test_the_first_stock_word_is_taught_by_the_tables_chapter():

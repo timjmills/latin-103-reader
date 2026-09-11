@@ -303,7 +303,11 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       // `at` is part of an attempt's id (store-grammar `attemptId`: at | skill | item_key), and a teaching step's or
       // a catalogue's item has no key — so two answers in the same millisecond would be one row. Time only moves forward here.
       lastAt = Math.max(Date.now(), lastAt + 1);
-      const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date(lastAt).toISOString() };
+      // A generated sentence's attempt says so (§11b): `meta` carries the template and the sentence id, kept on
+      // the device (store-grammar `normaliseAttempt`; the server row has no column), so the analytics can tell
+      // a generated item from a written one. A written item's attempt carries no meta at all.
+      const meta = item.generated === true ? { generated: true, template: item.template ?? null, sentence: item.taught ?? null } : null;
+      const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date(lastAt).toISOString(), ...(meta ? { meta } : {}) };
       log.push(attempt);
       results[index] = { result, attempt, value, hinted: hinted || self };
       if (!result.correct && requeueOn) {
@@ -359,12 +363,14 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
  *                       named written sentence, else another written sentence
  *                       — never the library (§8)
  *   blockedItem(slot)   A1's tiers: the skill's written sentences not yet shown;
- *                       then chapter-capped library sentences of eight words or
+ *                       then its generated bank (§11b, `generatedItem`, none
+ *                       shown twice until the bank is spent); then
+ *                       chapter-capped library sentences of eight words or
  *                       fewer; then the rest under the cap. `item.pool` says
  *                       which tier answered, only when it had to reach past the
  *                       written set.
  */
-export function createSkillDraw({ skill, steps = [], teachItems = null, libraryItem, rand = Math.random }) {
+export function createSkillDraw({ skill, steps = [], teachItems = null, libraryItem, generatedItem = null, rand = Math.random }) {
   const shown = new Set();
   const usedKeys = new Set();
   const stepWords = new Set();   // headwords the steps' chart checks were practised on
@@ -417,15 +423,66 @@ export function createSkillDraw({ skill, steps = [], teachItems = null, libraryI
       const own = slot.kind === 'chart' ? chartFromSteps() : teachItems.sentenceItem({ kind: slot.kind, stage: slot.stage, avoid: shown, unshownOnly: true });
       if (own) { noteShown(own.taught); return { ...own, pool: 'written' }; }
     }
-    // 2 · chapter-capped library sentences of eight words or fewer, none shown in this sitting.
+    // 2 · the skill's generated bank (§11b): the endless supply once the written set is spent, none shown twice
+    //     until the whole bank has come round (`createGeneratedTier`).
+    if (generatedItem) { const g = generatedItem(slot); if (g) return g; }
+    // 3 · chapter-capped library sentences of eight words or fewer, none shown in this sitting.
     const short = libraryItem(slot, { avoid: opts.avoid, maxWords: SHORT_WORDS, exclude: usedKeys });
     if (short) { usedKeys.add(short.key); return { ...short, pool: teachItems ? 'library-short' : null }; }
-    // 3 · the rest under the cap; only when that too is spent may an item come round again.
+    // 4 · the rest under the cap; only when that too is spent may an item come round again.
     const rest = libraryItem(slot, { avoid: opts.avoid, exclude: usedKeys }) ?? libraryItem(slot, { avoid: opts.avoid });
     if (rest) { usedKeys.add(rest.key); return { ...rest, pool: teachItems ? 'library' : null }; }
     return null;
   };
   return { shown, usedKeys, stepSlots, stepItem, blockedItem, rand };
+}
+
+const shuffle = (arr, rand) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/**
+ * The generated tier of a skill's draw (GRAMMAR-CONTRACT.md §11, §11b): the
+ * skill's pre-built bank of generated sentences as items, drawn in a fresh
+ * shuffle, **none twice until the whole bank has come round**, then a fresh
+ * shuffle again — the first item of the new round says so (`repeat`). `generated`
+ * is a `createTeachItems` over the bank (the bank's sentences are shaped like the
+ * written ones, so the same item kinds, hints and per-box feedback apply), or
+ * null, in which case the tier answers nothing. A chart slot is asked as the
+ * skill's first sentence kind: a sentence carries no table.
+ *
+ *   item(slot)   → the item with `pool: 'generated'`, or null
+ *   round        how many times the bank has been started over
+ *   size         sentences in the bank
+ */
+export function createGeneratedTier({ skill, generated = null, rand = Math.random } = {}) {
+  const ids = (generated?.sentences ?? []).map((s) => s.id);
+  const sentenceKind = (skill?.kinds ?? []).find((k) => k !== 'chart') ?? 'recognise';
+  let queue = shuffle(ids, rand);
+  const shown = new Set();
+  let round = 0;
+  const item = (slot) => {
+    if (!generated || !ids.length) return null;
+    const kind = slot.kind === 'chart' ? sentenceKind : slot.kind;
+    let repeat = false;
+    for (let pass = 0; pass < 2; pass++) {
+      if (!queue.length) {
+        if (!shown.size) return null;   // nothing in the bank can be an item at all
+        queue = shuffle(ids, rand); shown.clear(); round += 1; repeat = true;
+      }
+      while (queue.length) {
+        const id = queue.shift();
+        if (shown.has(id)) continue;
+        // The named sentence first; when it cannot carry this kind, `sentenceItem` moves to another unshown one.
+        const it = generated.sentenceItem({ kind, sentence: id, stage: slot.stage ?? 1, avoid: shown, unshownOnly: true });
+        if (!it) { shown.add(id); continue; }
+        shown.add(it.taught);
+        // The named sentence could not carry this kind and another answered: it goes to the back, still unshown.
+        if (it.taught !== id) queue.push(id);
+        return { ...it, pool: 'generated', repeat };
+      }
+    }
+    return null;
+  };
+  return { item, get round() { return round; }, get size() { return ids.length; }, shown };
 }
 
 /** The kinds of a skill in a sequence of `n` slots, no kind twice running. Pure but for `rand`. */
@@ -454,16 +511,24 @@ export function kindSequence(skill, n, stageOf, rand = Math.random) {
  * A skill still in Learn keeps its `learning` state — its attempts are logged
  * in learn mode, so the criterion can read them, and nothing here graduates
  * it (only Learn's own criterion does).
+ *
+ * `generated` (§11b) is the skill's bank as a `createTeachItems`: once the
+ * written set is spent the ten draws from it before the book. **Unlimited
+ * practice** (§11) is the same drill with `open: true`: `more()` appends
+ * another `size` slots, as often as the learner asks, the bank reshuffled and
+ * started over only when every sentence in it has come round.
  */
-export function createDrill({ skill, gstore, items, teachItems = null, currentWeekN = null, size = LEARN_BLOCKED, rand = Math.random, pin = null }) {
+export function createDrill({ skill, gstore, items, teachItems = null, generated = null, currentWeekN = null, size = LEARN_BLOCKED, rand = Math.random, pin = null, open = false }) {
   const ceiling = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
   const st = gstore.getState(skill.id);
   const learning = st?.state === 'learning';
   const mode = learning ? 'learn' : 'practice';
   const libraryItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, chapter: ceiling, chapterMode: 'ceiling', currentWeekN, ...opts });
-  const draw = createSkillDraw({ skill, steps: [], teachItems, libraryItem, rand });
+  const tier = createGeneratedTier({ skill, generated, rand });
+  const draw = createSkillDraw({ skill, steps: [], teachItems, libraryItem, generatedItem: generated ? tier.item : null, rand });
   const stage = Math.max(1, Number(st?.stage) || 1);
-  const slots = kindSequence(skill, size, (k) => (k === 'blank' || k === 'parse' ? Math.min(2, Math.max(stage, 1)) : 1), rand);
+  const stageOf = (k) => (k === 'blank' || k === 'parse' ? Math.min(2, Math.max(stage, 1)) : 1);
+  const slots = kindSequence(skill, size, stageOf, rand);
   const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
     await gstore.addAttempt(attempt);
     if (!learning) {
@@ -477,10 +542,108 @@ export function createDrill({ skill, gstore, items, teachItems = null, currentWe
   const pinFor = (it) => pinText([pin, skill.summary], it);
   const runner = createRunner({ slots, getItem: (slot, o) => { const it = draw.blockedItem(slot, { avoid: o?.avoid }); const p = it ? pinFor(it) : null; return it && p ? { ...it, pin: p } : it; }, mode, onAnswer, requeueOn: false, rand, grows: false });
   return {
-    runner, skill, size, mode, pin,
+    runner, skill, size, mode, pin, open,
+    /** Sentences in the skill's generated bank (0 without one) and how often the bank has been started over. */
+    get bank() { return tier.size; },
+    get round() { return tier.round; },
     /** The skill enters the rotation before the first item (new or lapsed → practising, due now); a learning skill is left as it is. */
     async begin() { if (!learning && (!inRotation(st) || st?.state === 'lapsed')) await gstore.setState(addToPractice(st ?? skill.id)); },
     start: () => runner.start(),
+    /** Unlimited practice: another `size` slots on the same draw (the bank's memory carries over, so nothing repeats early). */
+    more: () => runner.extend(kindSequence(skill, size, stageOf, rand)),
+  };
+}
+
+/**
+ * The members of a skill's **mixed practice** (GRAMMAR-CONTRACT.md §12): the
+ * skill itself first, then the skills it is declared confusable with
+ * (`confusable_with`, the point of mixing) and its prerequisites (`prereqs`),
+ * each once, only those the map knows, that can be drilled, and — capped to
+ * the learner's chapter — introduced at or before `chapter` (null: no cap).
+ * At most `max` related skills. Pure.
+ */
+export function mixedMembers(skill, skills, { chapter = null, drillable = () => true, max = 4 } = {}) {
+  const out = [skill];
+  const seen = new Set([skill.id]);
+  for (const id of [...(skill.confusable_with ?? []), ...(skill.prereqs ?? [])]) {
+    if (seen.has(id) || out.length > max) continue;
+    seen.add(id);
+    const s = skills.get(id);
+    if (!s || s.set || !drillable(s.id)) continue;
+    if (chapter != null && Number(s.chapter) > Number(chapter)) continue;
+    out.push(s);
+  }
+  return out;
+}
+
+/**
+ * **Mixed practice** on one skill (§12): a set that interleaves the skill with
+ * its confusable and prerequisite skills — the skill on every other item, the
+ * related ones taking turns between — each drawn from its own pool in A1's
+ * order (written, generated bank, then the book under the chapter cap).
+ * `members` is `mixedMembers`' list with each skill's material:
+ * `{ skill, teachItems, generated, pin }`. Open-ended like unlimited practice:
+ * `more()` appends another `size` in the same rhythm.
+ *
+ * Logged as practice under each item's own skill; a member new or lapsed
+ * enters the rotation at `begin()` as a drill's does; a member still in Learn
+ * keeps its state (its attempts are logged, nothing here moves it).
+ */
+export function createMixed({ members, gstore, items, currentWeekN = null, size = LEARN_BLOCKED, rand = Math.random }) {
+  const ceiling = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
+  const list = (members ?? []).filter((m) => m?.skill);
+  if (!list.length) throw new Error('createMixed: no members');
+  const [main, ...related] = list;
+  const draws = new Map();
+  for (const m of list) {
+    const libraryItem = (slot, opts = {}) => items.generate({ skill: m.skill.id, kind: slot.kind, stage: slot.stage, chapter: ceiling, chapterMode: 'ceiling', currentWeekN, ...opts });
+    const tier = createGeneratedTier({ skill: m.skill, generated: m.generated ?? null, rand });
+    const draw = createSkillDraw({ skill: m.skill, steps: [], teachItems: m.teachItems ?? null, libraryItem, generatedItem: m.generated ? tier.item : null, rand });
+    const st = gstore.getState(m.skill.id);
+    draws.set(m.skill.id, { draw, tier, member: m, learning: st?.state === 'learning', stage: Math.max(1, Number(st?.stage) || 1) });
+  }
+  let n = 0;
+  let lastKind = null;
+  /** `count` slots in the rhythm: the skill, a related one, the skill, the next related one … */
+  const plan = (count) => {
+    const out = [];
+    for (let i = 0; i < count; i++, n++) {
+      const m = related.length && n % 2 === 1 ? related[Math.floor(n / 2) % related.length] : main;
+      const d = draws.get(m.skill.id);
+      const kinds = m.skill.kinds?.length ? m.skill.kinds : ['recognise', 'parse', 'blank'];
+      const pool = kinds.filter((k) => k !== lastKind);
+      const kind = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))];
+      lastKind = kind;
+      out.push({ skill: m.skill.id, kind, stage: kind === 'blank' || kind === 'parse' ? Math.min(2, d.stage) : 1, currentWeek: false });
+    }
+    return out;
+  };
+  const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
+    await gstore.addAttempt(attempt);
+    const d = draws.get(item.skill);
+    if (d && !d.learning) {
+      const cur = gstore.getState(item.skill) ?? item.skill;
+      await gstore.setState(applyAnswer(cur, { correct: result.correct, hinted, partial, ms }));
+    }
+    if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(item.skill, attempt.confused_with);
+  };
+  const getItem = (slot, o) => {
+    const d = draws.get(slot.skill);
+    const it = d?.draw.blockedItem(slot, { avoid: o?.avoid }) ?? null;
+    const p = it ? pinText([d.member.pin, d.member.skill.summary], it) : null;
+    return it && p ? { ...it, pin: p } : it;
+  };
+  const runner = createRunner({ slots: plan(size), getItem, mode: 'practice', onAnswer, requeueOn: false, rand, grows: false });
+  return {
+    runner, skill: main.skill, members: list.map((m) => m.skill), size, mode: 'practice', open: true,
+    async begin() {
+      for (const m of list) {
+        const st = gstore.getState(m.skill.id);
+        if (st?.state !== 'learning' && (!inRotation(st) || st?.state === 'lapsed')) await gstore.setState(addToPractice(st ?? m.skill.id));
+      }
+    },
+    start: () => runner.start(),
+    more: () => runner.extend(plan(size)),
   };
 }
 

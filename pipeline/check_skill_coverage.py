@@ -42,13 +42,17 @@ The rows, as the check names them:
     2   written sentences            ≥ 12, 5–8 words, cumulative vocabulary, focus, gloss  (§1);
                                      lesson-only: ≥ 4 illustrative lines (a metre skill's each with `scan`)
     3   unlimited practice           table: ≥ 1 catalogue table with stock words, the first of
-                                     them taught by the table's own chapter  (§4a, §11)
-                                     sentence: ≥ 5 templates, pilot-reviewed  (§11)
+                                     them taught by the table's own chapter  (§4a, §11); a table
+                                     skill with a templates file is held to the sentence bar too
+                                     sentence: ≥ 5 templates with the pilot-review record
+                                     (`review.passes` non-empty, `final_rate` ≤ 0.05) and a
+                                     generated bank of ≥ 100 sentences  (§11, §11b)
                                      lesson-only: excused, the reason stated (by the sentences
                                      file, or by LESSON_ONLY here)
     4   scaffolded table             the named tables have enough cells for 80/50/20/0  (§12) — app
     5   mixed practice / axes        table: every named table offers honest axes  (§5, §12)
-                                     sentence: the written set and the generated set both exist
+                                     sentence: the written set, the templates and the generated
+                                     bank (≥ 100) all exist
     6   per-box feedback and hint    every check in the teach block is a judgeable box  (§3, §12) — app
     7   re-test · Just drill it ·    material for a blocked ten, and a pattern the reading
         two-tap · reading tie-in     tie-in can light  (§10) — app; lesson-only: tie-in only
@@ -129,7 +133,15 @@ FEATURES = frozenset({"case", "number", "gender", "tense", "mood", "voice",
                       "person", "degree", "construction", "form"})
 CHECK_KINDS = frozenset({"recognise", "parse", "blank", "chart"})
 SENTENCE_CHECK_KINDS = frozenset({"recognise", "parse", "blank"})
-TEMPLATE_REVIEW_KEYS = ("reviewed", "review", "pilot", "reviewed_by")
+#: A generated bank (§11b, app/data/grammar/generated/<skill>.json, built by
+#: pipeline/build_generated.py) counts as unlimited practice from this many
+#: sentences; the pilot review's final rejection rate a templates file may
+#: report (§11: "the rejection rate reported"); and the generator's own slots,
+#: which a template uses without declaring — `{ab}` prints ā / ab by the next
+#: sound (§11a).
+MIN_BANK = 100
+MAX_REVIEW_RATE = 0.05
+BUILTIN_SLOTS = frozenset({"ab"})
 
 
 # ------------------------------------------------------------------ loading
@@ -448,7 +460,104 @@ def row_2(ctx, skill, cls, lesson, sents):
     return (FAIL, _join(p)) if p else (PASS, f"{len(ss)} {what}")
 
 
-def row_3(ctx, skill, cls, lesson, sents, templates):
+def _review_problems(templates: dict) -> list[str]:
+    """The pilot-review record a templates file carries (§11: reviewed
+    adversarially, the rejection rate reported), in exactly this shape:
+
+        "review": { "passes": [ { "pass": 1, "seed": 11, "generated": 40,
+                                  "rejected": 20, "rate": 0.5, "causes": [...] }, ... ],
+                    "final_rate": 0.025 }
+
+    `passes` non-empty and `final_rate` at or under MAX_REVIEW_RATE."""
+    rev = templates.get("review")
+    if not isinstance(rev, dict):
+        return ['no "review" record ({ "passes": [...], "final_rate": r })']
+    p = []
+    passes = rev.get("passes")
+    if not isinstance(passes, list) or not passes:
+        p.append('review "passes" is empty')
+    elif not all(isinstance(x, dict) for x in passes):
+        p.append('review "passes" must be a list of records')
+    rate = rev.get("final_rate")
+    if isinstance(rate, bool) or not isinstance(rate, (int, float)):
+        p.append('review "final_rate" is not a number')
+    elif rate > MAX_REVIEW_RATE:
+        p.append(f"review final_rate {rate} is over {MAX_REVIEW_RATE}")
+    return p
+
+
+def _template_problems(skill: dict, templates) -> list[str]:
+    """Everything wrong with a skill's templates file (§11, §11a); [] when it is whole."""
+    if templates is None:
+        return ["no templates file (app/data/grammar/templates/<skill>.json)"]
+    if "__error__" in templates:
+        return [f"templates file unreadable — {templates['__error__']}"]
+    ts = templates.get("templates") or []
+    p = []
+    if templates.get("skill") != skill["id"]:
+        p.append(f"templates file's skill is {templates.get('skill')!r}")
+    if len(ts) < MIN_TEMPLATES:
+        p.append(f"{len(ts)} templates, fewer than {MIN_TEMPLATES}")
+    seen = set()
+    for t in ts:
+        tid = t.get("id") or "?"
+        if tid in seen:
+            p.append(f"duplicate template id {tid!r}")
+        seen.add(tid)
+        for k in ("la", "en", "slots", "focus"):
+            if not t.get(k):
+                p.append(f"{tid}: no {k!r}")
+        slots = t.get("slots") or {}
+        # The generator's own slots ({ab}) are used without being declared.
+        used = set(re.findall(r"\{(\w+)(?::[^}]*)?\}", t.get("la") or "")) - BUILTIN_SLOTS
+        missing = used - set(slots)
+        if missing:
+            p.append(f"{tid}: slots {sorted(missing)} used but not declared")
+        # `focus` is a slot name or a printed word; a two-word construction
+        # (an ablative absolute: noun + participle) may name a list of them.
+        focus = t.get("focus")
+        printed = VT.printed_words(t.get("la") or "")
+        for f in (focus if isinstance(focus, list) else [focus]) if focus else []:
+            if not isinstance(f, str) or (f not in slots and f not in printed):
+                p.append(f"{tid}: focus {f!r} is neither a slot nor a printed word")
+        n = template_words(t.get("la") or "")
+        if not 5 <= n <= 8 and not t.get("note"):
+            p.append(f"{tid}: {n} words when filled and no note")
+    p.extend(_review_problems(templates))
+    return p
+
+
+def _bank_problems(skill: dict, bank) -> list[str]:
+    """Everything wrong with a skill's generated bank (§11b): it must exist,
+    name the skill, hold MIN_BANK sentences or more, and every sentence must be
+    whole (la, en, gloss, `generated: true`, its template). [] when it is."""
+    sid = skill["id"]
+    if bank is None:
+        return [f"no generated bank (app/data/grammar/generated/{sid}.json — "
+                f"run python pipeline/build_generated.py {sid})"]
+    if "__error__" in bank:
+        return [f"generated bank unreadable — {bank['__error__']}"]
+    p = []
+    if bank.get("skill") != sid:
+        p.append(f"generated bank's skill is {bank.get('skill')!r}")
+    ss = bank.get("sentences") or []
+    if len(ss) < MIN_BANK:
+        p.append(f"generated bank holds {len(ss)} sentences, fewer than {MIN_BANK}")
+    bad = [s.get("id") or "?" for s in ss
+           if not (isinstance(s, dict) and s.get("la") and s.get("en") and s.get("gloss")
+                   and s.get("generated") is True and s.get("template"))]
+    if bad:
+        p.append(f"{len(bad)} bank sentences without la / en / gloss / generated / template, e.g. {bad[:3]}")
+    return p
+
+
+def _generator_summary(templates, bank) -> str:
+    ts = templates.get("templates") or []
+    rate = (templates.get("review") or {}).get("final_rate")
+    return f"{len(ts)} templates reviewed at {rate}, bank of {len(bank.get('sentences') or [])}"
+
+
+def row_3(ctx, skill, cls, lesson, sents, templates, bank=None):
     if cls == "table":
         tables, p = ctx.resolve_tables(skill)
         if not skill.get("paradigms"):
@@ -461,49 +570,23 @@ def row_3(ctx, skill, cls, lesson, sents, templates):
             if first and t.get("chapter") and (first.get("chapter") or 99) > t["chapter"]:
                 p.append(f"{t['id']}: first stock word {first['h']!r} is introduced in chapter "
                          f"{first.get('chapter')}, after the table's chapter {t['chapter']}")
+        # A table skill that also has templates (a case used as a construction,
+        # §11) owes a whole generator too: its file and its bank are held to the
+        # sentence skills' bar, so a broken one cannot ship behind a passing table.
+        extra = ""
+        if templates is not None:
+            p.extend(_template_problems(skill, templates))
+            p.extend(_bank_problems(skill, bank))
+            if not p:
+                extra = " + " + _generator_summary(templates, bank)
         if p:
             return FAIL, _join(p)
-        return PASS, ", ".join(f"{t['id']} ({len(t['stock'])} stock)" for t in tables)
+        return PASS, ", ".join(f"{t['id']} ({len(t['stock'])} stock)" for t in tables) + extra
     if cls == "sentence":
-        if templates is None:
-            return FAIL, "no templates file (app/data/grammar/templates/<skill>.json)"
-        if "__error__" in templates:
-            return FAIL, f"templates file unreadable — {templates['__error__']}"
-        ts = templates.get("templates") or []
-        p = []
-        if templates.get("skill") != skill["id"]:
-            p.append(f"templates file's skill is {templates.get('skill')!r}")
-        if len(ts) < MIN_TEMPLATES:
-            p.append(f"{len(ts)} templates, fewer than {MIN_TEMPLATES}")
-        seen = set()
-        for t in ts:
-            tid = t.get("id") or "?"
-            if tid in seen:
-                p.append(f"duplicate template id {tid!r}")
-            seen.add(tid)
-            for k in ("la", "en", "slots", "focus"):
-                if not t.get(k):
-                    p.append(f"{tid}: no {k!r}")
-            slots = t.get("slots") or {}
-            used = set(re.findall(r"\{(\w+)(?::[^}]*)?\}", t.get("la") or ""))
-            missing = used - set(slots)
-            if missing:
-                p.append(f"{tid}: slots {sorted(missing)} used but not declared")
-            # `focus` is a slot name or a printed word; a two-word construction
-            # (an ablative absolute: noun + participle) may name a list of them.
-            focus = t.get("focus")
-            printed = VT.printed_words(t.get("la") or "")
-            for f in (focus if isinstance(focus, list) else [focus]) if focus else []:
-                if not isinstance(f, str) or (f not in slots and f not in printed):
-                    p.append(f"{tid}: focus {f!r} is neither a slot nor a printed word")
-            n = template_words(t.get("la") or "")
-            if not 5 <= n <= 8 and not t.get("note"):
-                p.append(f"{tid}: {n} words when filled and no note")
-        if not any(templates.get(k) for k in TEMPLATE_REVIEW_KEYS):
-            p.append("no pilot-review record in the file (reviewed / review / pilot)")
+        p = _template_problems(skill, templates) + _bank_problems(skill, bank)
         if p:
             return FAIL, _join(p)
-        return PASS, f"{len(ts)} templates, reviewed"
+        return PASS, _generator_summary(templates, bank)
     # lesson-only: excused, stated
     if skill["id"] not in LESSON_ONLY:
         return FAIL, f"classified lesson-only but not one of the declared skills {sorted(LESSON_ONLY)}"
@@ -526,7 +609,7 @@ def row_4(ctx, skill, cls, lesson, sents):
     return APP, f"{len(tables)} table(s) with cells to scaffold; levels and auto are app-side"
 
 
-def row_5(ctx, skill, cls, lesson, sents, templates):
+def row_5(ctx, skill, cls, lesson, sents, templates, bank=None):
     if cls == "lesson-only":
         return NA, ""
     if cls == "table":
@@ -555,9 +638,14 @@ def row_5(ctx, skill, cls, lesson, sents, templates):
     nt = len((templates or {}).get("templates") or []) if isinstance(templates, dict) else 0
     if nt < MIN_TEMPLATES:
         p.append("generated set: " + ("no templates file" if templates is None else f"{nt} templates"))
+    # The generated set the app offers is the pre-built bank (§11b), not the templates themselves.
+    nb = len((bank or {}).get("sentences") or []) if isinstance(bank, dict) else 0
+    if nb < MIN_BANK:
+        p.append("generated set: " + ("no bank (run python pipeline/build_generated.py)" if bank is None
+                                      else f"bank of {nb}, fewer than {MIN_BANK}"))
     if p:
         return FAIL, _join(p)
-    return PASS, f"written ({n}) and generated ({nt}) both available"
+    return PASS, f"written ({n}) and generated ({nt} templates, bank of {nb}) both available"
 
 
 def row_6(ctx, skill, cls, lesson, sents):
@@ -626,6 +714,7 @@ def check_skill(ctx: Ctx, skill: dict) -> dict:
     lesson = _maybe(os.path.join(GRAM, "lessons", sid + ".json"))
     sents = _maybe(os.path.join(GRAM, "sentences", sid + ".json"))
     templates = _maybe(os.path.join(GRAM, "templates", sid + ".json"))
+    bank = _maybe(os.path.join(GRAM, "generated", sid + ".json"))
     cls = classify(skill, sents)
     rows = OrderedDict()
     rows["1a"] = row_1a(ctx, skill, cls, lesson, sents)
@@ -633,9 +722,9 @@ def check_skill(ctx: Ctx, skill: dict) -> dict:
     rows["1c"] = row_1c(ctx, skill, cls, lesson, sents)
     rows["1d"] = row_1d(ctx, skill, cls, lesson, sents)
     rows["2"] = row_2(ctx, skill, cls, lesson, sents)
-    rows["3"] = row_3(ctx, skill, cls, lesson, sents, templates)
+    rows["3"] = row_3(ctx, skill, cls, lesson, sents, templates, bank)
     rows["4"] = row_4(ctx, skill, cls, lesson, sents)
-    rows["5"] = row_5(ctx, skill, cls, lesson, sents, templates)
+    rows["5"] = row_5(ctx, skill, cls, lesson, sents, templates, bank)
     rows["6"] = row_6(ctx, skill, cls, lesson, sents)
     rows["7"] = row_7(ctx, skill, cls, lesson, sents)
     notes = []

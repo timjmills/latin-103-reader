@@ -72,7 +72,10 @@ export function normaliseAttempt(a) {
   const t = Date.parse(a.at);
   if (!Number.isFinite(t)) return null;
   const row = { ...serverAttemptRow({ ...a, at: new Date(t).toISOString(), item_key: String(a.item_key ?? ''), mode: a.mode === 'learn' ? 'learn' : 'practice' }) };
-  return { ...row, id: attemptId(row) };
+  // `meta` stays local (the server table has no column for it — `serverAttemptRow` drops it from the outbox row): a
+  // generated item's `{ generated: true, template, sentence }` (§11b), so the analytics can tell it from a written one.
+  const meta = a.meta && typeof a.meta === 'object' && !Array.isArray(a.meta) && Object.keys(a.meta).length ? { ...a.meta } : null;
+  return { ...row, id: attemptId(row), ...(meta ? { meta } : {}) };
 }
 
 export function createGrammarStore({ mode = 'local', hooks = null, storage = typeof localStorage !== 'undefined' ? localStorage : null, localPensa = null } = {}) {

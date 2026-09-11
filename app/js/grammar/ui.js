@@ -4,12 +4,12 @@
 // Every Latin word in a drill is tappable for its entry (a small popover built
 // from dictionary.describe); the target's dictionary form sits under the item.
 
-import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
+import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
-import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
+import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
@@ -101,11 +101,11 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------ shell */
   function draw() {
     const nav = h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'practice', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
+      ['map', 'practice', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
         { map: 'Skills', practice: 'Practice', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, catalogue: renderCatalogue, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
     document.title = `Grammar — Latin 103`;
   }
@@ -461,6 +461,8 @@ export function createUI(ctx) {
       acts.push(btn('Practise this skill', { onclick: () => nav('blocked', { skill: s.id }) }, 'btn'), lessonBtn);
     }
     if (drillBtn) acts.splice(1, 0, drillBtn);
+    // Unlimited and mixed practice (§11, §12), the same two taps, on the skills that have a generated bank.
+    if (drillBtn && hasBank(s.id)) acts.splice(2, 0, ...practiceButtons(s, nav));
     if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => nav('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
     if (known) acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
     return h('li', { class: 'g-skill', 'data-state': st.state },
@@ -631,6 +633,9 @@ export function createUI(ctx) {
     if (inRotation(st)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id, from) }, 'btn btn--primary'));
     // Two taps to a drill (§10): the row opened this; one more starts ten items on the skill alone.
     if (!skill.set && drillable(id)) acts.push(btn('Just drill it', { onclick: () => render('drill', { skill: id, from }), 'aria-label': `Just drill ${skill.title}: ten items, the rule pinned above each` }, st.state === 'new' ? 'btn' : 'btn btn--quiet'));
+    // Unlimited practice and a mixed set (§11, §12): one more tap, on a skill with a generated bank. The manifest is
+    // awaited here (the page is async anyway), so the first lesson opened after a cold start offers them too.
+    if (!skill.set && drillable(id) && await hasBankAsync(id)) acts.push(...practiceButtons(skill, (name, params) => render(name, { ...params, from })));
     if (!skill.set && skill.paradigms?.length) acts.push(btn('Its tables', { onclick: () => render('catalogue', { table: skill.paradigms[0], from }) }, 'btn btn--quiet'));
     // Printable charts (GRAMMAR-CONTRACT.md, wave 3): the chart alone, one table a page with the focus cells boxed,
     // or the whole sheet — rule, forms and examples. Offered only where there is something to put on the paper.
@@ -669,6 +674,37 @@ export function createUI(ctx) {
     }
     return teachCache.get(skill.id);
   }
+  /**
+   * The skill's generated bank (§11b) as the same kind of generator, over its
+   * own pool memory: the bank's sentences are shaped like the written ones, so
+   * every item kind, hint and per-box judgement applies to them unchanged.
+   * null when the skill has no bank.
+   */
+  const genCache = new Map();
+  function generatedItemsOf(skill) {
+    if (!genCache.has(skill.id)) {
+      genCache.set(skill.id, (async () => {
+        const [bank, catalogue, headwords] = await Promise.all([loadGenerated(skill.id), loadParadigmCatalogue(), loadHeadwords()]);
+        if (!bank?.sentences?.length) return null;
+        return createTeachItems({ skill, sentences: bank.sentences, lookup: dict.lookup, paradigm: par.paradigm, catalogue, skills, headwords, storage: localStorage, poolKey: `l103.grammar.generated.${skill.id}` });
+      })().catch((e) => { console.warn(`[grammar] the generated bank for ${skill.id} could not be built`, e?.message || e); return null; }));
+    }
+    return genCache.get(skill.id);
+  }
+  // Which skills have a bank (`generated/index.json`): read once, and the rows repainted when it arrives, so
+  // "Unlimited practice" and "Mixed set" appear on exactly the skills that can supply them.
+  let bankIds = null;
+  const bankIdsP = generatedSkillIds().then((ids) => { bankIds = ids ?? new Set(); return bankIds; }).catch(() => (bankIds = new Set()));
+  bankIdsP.then(() => repaint());
+  const hasBank = (id) => !!bankIds?.has(id);
+  const hasBankAsync = async (id) => (await bankIdsP).has(id);
+  /** The two buttons of §11 and §12, one tap each: unlimited practice on the skill, and a mixed set with its confusables. */
+  const practiceButtons = (skill, nav) => [
+    btn('Unlimited practice', { onclick: () => nav('unlimited', { skill: skill.id }), 'aria-label': `Unlimited practice of ${skill.title}: its own sentences, then generated ones, ten at a time for as long as you like` }, 'btn btn--quiet'),
+    mixedMembers(skill, skills, { chapter: ctx.currentChapter?.() ?? null, drillable }).length > 1
+      ? btn('Mixed set', { onclick: () => nav('mixed', { skill: skill.id }), 'aria-label': `A mixed set: ${skill.title} interleaved with the skills it is confused with and builds on` }, 'btn btn--quiet')
+      : null,
+  ].filter(Boolean);
 
   /** The gloss of a written sentence, word by word, under the sentence. */
   const glossLine = (written) => (written?.gloss?.length
@@ -1000,15 +1036,58 @@ export function createUI(ctx) {
     if (!skill) return renderMap();
     if (skill.set) { startBlocked(id, from); return; }   // a chapter set keeps its own practice
     setBody(h('p', { class: 'g-loading', text: 'Preparing the drill…' }));
-    const [lesson, teachItems] = await Promise.all([lessonOf(id), teachItemsOf(skill)]);
+    const [lesson, teachItems, generated] = await Promise.all([lessonOf(id), teachItemsOf(skill), generatedItemsOf(skill)]);
     const n = size ?? LEARN_BLOCKED;
-    const drill = createDrill({ skill, gstore, items, teachItems, currentWeekN: ctx.currentWeekN(), size: n, pin: pinOf(skill, lesson) });
+    const drill = createDrill({ skill, gstore, items, teachItems, generated, currentWeekN: ctx.currentWeekN(), size: n, pin: pinOf(skill, lesson) });
     await drill.begin();
     const first = drill.start();
-    if (!first) { setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: skill.title }), h('p', { class: 'g-lede', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' })), h('div', { class: 'g-acts' }, backButton(from, 'btn'))); return; }
+    if (!first) { setBody(nothingToDrill(skill, from)); return; }
     const note = retest ? `Three items on ${skill.title}, a little after you last met it: the first review, the same day.`
-      : `${n} items, this skill only — its own sentences first, then the book's. The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
+      : `${n} items, this skill only — its own sentences first, then ${drill.bank ? 'ones the app generates from the chapter\'s words, then ' : ''}the book's. The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
     runSession({ runner: drill.runner, title: retest ? `Re-test · ${skill.title}` : `Drill · ${skill.title}`, note, mode: drill.mode, hintOpen: false, onDone: (summary) => { if (retest) clearRetest(id); renderSummary(summary, { drill: id, size: n, retest, from }); } });
+  }
+  const nothingToDrill = (skill, from) => [h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: skill.title }), h('p', { class: 'g-lede', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' })), h('div', { class: 'g-acts' }, backButton(from, 'btn'))];
+
+  /* ------------------------------------- unlimited and mixed practice (§11, §12) */
+  /**
+   * **Unlimited practice** (§11): the drill, open-ended — ten at a time, "Ten
+   * more" at the end of each, the skill's written sentences first and then its
+   * generated bank, nothing repeated until the whole bank has come round.
+   */
+  async function renderUnlimited({ skill: id, from = null }) {
+    const skill = skills.get(id);
+    if (!skill) return renderMap();
+    if (skill.set) { startBlocked(id, from); return; }
+    setBody(h('p', { class: 'g-loading', text: 'Preparing the practice…' }));
+    const [lesson, teachItems, generated] = await Promise.all([lessonOf(id), teachItemsOf(skill), generatedItemsOf(skill)]);
+    const drill = createDrill({ skill, gstore, items, teachItems, generated, currentWeekN: ctx.currentWeekN(), size: LEARN_BLOCKED, pin: pinOf(skill, lesson), open: true });
+    await drill.begin();
+    if (!drill.start()) { setBody(nothingToDrill(skill, from)); return; }
+    const note = `Ten at a time, for as long as you like — this skill's own sentences first, then ${drill.bank ? `${drill.bank} sentences the app generates from the chapter's words, none twice until all have come round` : 'the book\'s'}. The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
+    runSession({ runner: drill.runner, title: `Unlimited · ${skill.title}`, note, mode: drill.mode, hintOpen: false, open: true, more: () => drill.more(), onDone: (summary) => renderSummary(summary, { drill: id, unlimited: true, from }) });
+  }
+  const andList = (xs) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+  /**
+   * **A mixed set** (§12): the skill interleaved with the skills it is declared
+   * confusable with and the ones it builds on (`mixedMembers`, capped to the
+   * learner's chapter), each drawn from its own written sentences, then its
+   * bank, then the book. Open-ended like unlimited practice.
+   */
+  async function renderMixed({ skill: id, from = null }) {
+    const skill = skills.get(id);
+    if (!skill) return renderMap();
+    if (skill.set) { startBlocked(id, from); return; }
+    setBody(h('p', { class: 'g-loading', text: 'Preparing the set…' }));
+    const members = mixedMembers(skill, skills, { chapter: ctx.currentChapter?.() ?? null, drillable });
+    const loaded = await Promise.all(members.map(async (s) => { const [lesson, teachItems, generated] = await Promise.all([lessonOf(s.id), teachItemsOf(s), generatedItemsOf(s)]); return { skill: s, teachItems, generated, pin: pinOf(s, lesson) }; }));
+    const mixed = createMixed({ members: loaded, gstore, items, currentWeekN: ctx.currentWeekN(), size: LEARN_BLOCKED });
+    await mixed.begin();
+    if (!mixed.start()) { setBody(nothingToDrill(skill, from)); return; }
+    const others = members.slice(1).map((s) => s.title);
+    const note = others.length
+      ? `Ten at a time: ${skill.title} on every other item, and between them ${andList(others)} — the skills it is easiest to confuse it with, and the ones it builds on. Each from its own sentences first, then generated ones, then the book's.`
+      : `No related skill can be drilled yet, so this set is ${skill.title} alone.`;
+    runSession({ runner: mixed.runner, title: `Mixed · ${skill.title}`, note, mode: 'practice', hintOpen: false, open: true, more: () => mixed.more(), onDone: (summary) => renderSummary(summary, { drill: id, mixed: true, from }) });
   }
 
   /* ---------------------------------------- the same-session re-test (§10) */
@@ -1470,8 +1549,9 @@ export function createUI(ctx) {
     if (drilled) noteRetestFor(drilled);
     const after = h('div', { class: 'g-after' }, retestNode({ from: params?.from ?? null }));
     if (params?.drill && skills.has(params.drill)) tieInNode(params.drill).then((n) => { if (n) after.append(n); }).catch(() => {});
-    const againLabel = params?.drill ? (params.retest ? `Drill ${titleOf(params.drill)}` : 'Another ten') : params?.catalogue ? 'Back to the table' : params?.redo ? 'Another redo' : params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session';
-    const again = () => (params?.drill ? render('drill', { skill: params.drill, size: params.retest ? null : params.size, from: params.from ?? null }) : params?.catalogue ? render('catalogue', { table: params.catalogue, from: params.from ?? null }) : render(params?.redo ? 'redo' : 'session', params));
+    const againLabel = params?.unlimited ? 'Keep going' : params?.mixed ? 'Another mixed set' : params?.drill ? (params.retest ? `Drill ${titleOf(params.drill)}` : 'Another ten') : params?.catalogue ? 'Back to the table' : params?.redo ? 'Another redo' : params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session';
+    const again = () => (params?.unlimited || params?.mixed ? render(params.unlimited ? 'unlimited' : 'mixed', { skill: params.drill, from: params.from ?? null })
+      : params?.drill ? render('drill', { skill: params.drill, size: params.retest ? null : params.size, from: params.from ?? null }) : params?.catalogue ? render('catalogue', { table: params.catalogue, from: params.from ?? null }) : render(params?.redo ? 'redo' : 'session', params));
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: params?.retest ? 'Re-test over' : 'Session over' }),
       h('p', { class: 'g-lede', text: `${clean} of ${summary.total} right${partly ? `, ${partly} partly` : ''} (${acc}%) · ${summary.skills.length} skill${summary.skills.length === 1 ? '' : 's'} · ${stats.fmtMin(summary.ms)}${summary.hinted ? ` · ${summary.hinted} with a hint` : ''}.` }),
       added ? h('p', { class: 'g-quiet', text: `${summary.asked} items were asked for; ${added} more came back after a wrong answer.` }) : null,
@@ -1689,6 +1769,8 @@ export function createUI(ctx) {
     if (scopeLine) node.append(h('p', { class: 'g-quiet g-item__note', text: scopeLine }));
     // A1: an item in Learn's ten says so only when it had to reach past the skill's own written sentences.
     if (item.pool === 'library-short' || item.pool === 'library') node.append(h('p', { class: 'g-quiet g-item__note', text: 'From the book — every written sentence for this skill has come up in this sitting.' }));
+    // A generated sentence is labelled as such in its own words (§11): made by one of the app's patterns, not the book's.
+    if (item.generated) node.append(h('p', { class: 'g-quiet g-item__note g-item__gen', text: 'A generated sentence — made from the chapter\'s own words by one of the app\'s patterns, not taken from the book.' }));
     let submitted = false;
     // Every answer box paints itself green or red (GRAMMAR-CONTRACT.md §3). A typed box does it as the
     // learner leaves it; grading paints them all, from `cellResults` — the same per-cell truth `judge`
@@ -1746,6 +1828,14 @@ export function createUI(ctx) {
       if (item.prompt.gloss) node.append(glossNode(item));
     } else if (item.prompt.la) {
       node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? (i, el) => { if (submitted) return; el.classList.add('is-picked'); submit(i); } : null, cls: tapMode ? 'g-la--tap' : '' }));
+      // A generated sentence's English and word-by-word gloss, on demand (§11b), like a written sentence's in Learn. The
+      // gloss names the very thing a recognise or parse item asks, so opening it before answering counts as a hint
+      // (decision 14); a blank withholds the form and a translate reveals the English itself, so neither offers it.
+      if (item.generated && item.written && item.kind !== 'blank' && item.kind !== 'translate' && (item.written.en || item.written.gloss?.length)) {
+        const en = h('details', { class: 'g-q-en g-item__en' }, h('summary', { class: 'g-hint__s', text: 'In English (counts as a hint)' }), item.written.en ? h('p', { class: 'g-hint__rule', text: item.written.en }) : null, glossLine(item.written));
+        en.addEventListener('toggle', () => { if (en.open && !submitted) onHint(); });
+        node.append(en);
+      }
       node.append(question(item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
@@ -2237,7 +2327,8 @@ export function createUI(ctx) {
       lit ? h('div', { class: 'g-fb__pt' }, lit) : null,
       unit && !isSet && item.kind !== 'transform' && item.kind !== 'reorder' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(unit.la, { target: item.target?.index ?? null }), unit.en ? h('p', { class: 'g-ex__en', text: unit.en }) : null)
         // A teaching step's written sentence (§1): the whole of it, with its English, once the check is answered.
-        : item.written && item.kind !== 'chart' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(item.written.la, { target: item.target?.index ?? null }), item.written.en ? h('p', { class: 'g-ex__en', text: item.written.en }) : null) : null);
+        // A generated one (§11b) the same, with its gloss word by word — the whole of what the learner may want to check.
+        : item.written && item.kind !== 'chart' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: item.generated ? 'In the sentence (generated)' : 'In the sentence' }), latin(item.written.la, { target: item.target?.index ?? null }), item.written.en ? h('p', { class: 'g-ex__en', text: item.written.en }) : null, glossLine(item.written)) : null);
     details?.addEventListener('toggle', async () => {
       if (!details.open) return;
       const slot = details.querySelector('.g-fb__rule');
