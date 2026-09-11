@@ -8,6 +8,17 @@
     "kind": "sentence",
     "id": "ivp-02"
    },
+   "worked": {
+    "sentence": "ivp-02",
+    "given": [
+     "person",
+     "number",
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "ivp-01",
@@ -77,6 +88,18 @@
      "pres.ind.act.3.pl"
     ]
    },
+   "worked": {
+    "sentence": "ivp-10",
+    "given": [
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "person",
+     "number"
+    ]
+   },
    "check": {
     "kind": "parse",
     "sentence": "ivp-09",
@@ -118,6 +141,19 @@
      "pres.ind.act.2.sg",
      "pres.ind.act.3.sg",
      "pres.ind.act.2.pl"
+    ]
+   },
+   "worked": {
+    "sentence": "ivp-14",
+    "given": [
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "person",
+     "number",
+     "why"
     ]
    },
    "check": {

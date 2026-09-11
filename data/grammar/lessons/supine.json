@@ -51,6 +51,14 @@
         "kind": "sentence",
         "id": "su-01"
       },
+      "worked": {
+        "sentence": "su-03",
+        "given": [
+          "mood",
+          "case"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "su-02",
@@ -73,6 +81,11 @@
         "cells": [
           "supine.acc"
         ],
+        "words": [
+          "voco",
+          "laudo",
+          "amo"
+        ],
         "ask": "Fill in the -um supine."
       }
     },
@@ -87,10 +100,24 @@
           "supine.abl"
         ]
       },
+      "worked": {
+        "sentence": "su-09",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "supine.abl"
+        ],
+        "words": [
+          "voco",
+          "laudo"
         ],
         "ask": "Fill in the -ū supine."
       }
@@ -116,6 +143,15 @@
       "show": {
         "kind": "sentence",
         "id": "su-13"
+      },
+      "worked": {
+        "sentence": "su-07",
+        "given": [],
+        "ask": [
+          "mood",
+          "case",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

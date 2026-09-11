@@ -9,6 +9,15 @@
         "kind": "sentence",
         "id": "abc-01"
       },
+      "worked": {
+        "sentence": "abc-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "abc-02",
@@ -46,6 +55,17 @@
           "abl.sg"
         ],
         "say": "cum dominō — -us becomes -ō"
+      },
+      "worked": {
+        "sentence": "abc-06",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",
@@ -93,6 +113,16 @@
       "show": {
         "kind": "sentence",
         "id": "abc-13"
+      },
+      "worked": {
+        "sentence": "abc-14",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

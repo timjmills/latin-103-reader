@@ -68,8 +68,20 @@
         "kind": "chart",
         "key": "adj12",
         "cells": [
-          "nom.sg.f"
+          "pos.nom.sg.f"
+        ],
+        "words": [
+          "magnus",
+          "novus"
         ]
+      },
+      "worked": {
+        "sentence": "aa-04",
+        "given": [
+          "gender",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -87,7 +99,11 @@
         "kind": "chart",
         "key": "adj12",
         "cells": [
-          "nom.sg.m"
+          "pos.nom.sg.m"
+        ],
+        "words": [
+          "magnus",
+          "novus"
         ]
       }
     },
@@ -106,7 +122,20 @@
         "kind": "chart",
         "key": "adj12",
         "cells": [
-          "nom.sg.n"
+          "pos.nom.sg.n"
+        ],
+        "words": [
+          "magnus",
+          "novus"
+        ]
+      },
+      "worked": {
+        "sentence": "aa-07",
+        "given": [
+          "number"
+        ],
+        "ask": [
+          "gender"
         ]
       }
     },
@@ -127,9 +156,13 @@
         "kind": "chart",
         "key": "adj12",
         "cells": [
-          "nom.pl.m",
-          "nom.pl.f",
-          "nom.pl.n"
+          "pos.nom.pl.m",
+          "pos.nom.pl.f",
+          "pos.nom.pl.n"
+        ],
+        "words": [
+          "magnus",
+          "multus"
         ]
       }
     },
@@ -144,6 +177,16 @@
       "check": {
         "kind": "blank",
         "sentence": "aa-14"
+      },
+      "worked": {
+        "sentence": "aa-12",
+        "given": [
+          "number"
+        ],
+        "ask": [
+          "gender",
+          "why"
+        ]
       }
     }
   ],

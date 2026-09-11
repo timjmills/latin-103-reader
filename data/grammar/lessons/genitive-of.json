@@ -70,6 +70,15 @@
       "check": {
         "kind": "blank",
         "sentence": "go-03"
+      },
+      "worked": {
+        "sentence": "go-04",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -86,6 +95,16 @@
       "check": {
         "kind": "blank",
         "sentence": "go-07"
+      },
+      "worked": {
+        "sentence": "go-06",
+        "given": [
+          "case"
+        ],
+        "ask": [
+          "number",
+          "gender"
+        ]
       }
     },
     {
@@ -113,6 +132,18 @@
         "kind": "parse",
         "sentence": "go-12",
         "ask": "construction"
+      },
+      "worked": {
+        "sentence": "go-08",
+        "given": [
+          "case",
+          "gender"
+        ],
+        "ask": [
+          "number",
+          "construction",
+          "why"
+        ]
       }
     }
   ],

@@ -55,6 +55,16 @@
         "kind": "recognise",
         "sentence": "cmp-02",
         "ask": "Which word is the comparative, and who is Quintus being set against?"
+      },
+      "worked": {
+        "sentence": "cmp-01",
+        "given": [
+          "degree",
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -76,6 +86,11 @@
         "word": "longus",
         "cells": [
           "comp.nom.sg.m"
+        ],
+        "words": [
+          "longus",
+          "fortis",
+          "gravis"
         ],
         "ask": "Give the comparative subject form of *longus* — the one masculine and feminine share."
       }
@@ -100,7 +115,24 @@
         "cells": [
           "comp.nom.sg.n"
         ],
+        "words": [
+          "longus",
+          "brevis",
+          "gravis"
+        ],
         "ask": "Now the neuter comparative of *longus*."
+      },
+      "worked": {
+        "sentence": "cmp-06",
+        "given": [
+          "degree",
+          "case",
+          "number"
+        ],
+        "ask": [
+          "gender",
+          "why"
+        ]
       }
     },
     {
@@ -124,6 +156,10 @@
         "cells": [
           "comp.acc.sg.m",
           "comp.nom.pl.m"
+        ],
+        "words": [
+          "longus",
+          "fortis"
         ],
         "ask": "Give the accusative singular and the nominative plural of *longior*."
       }
@@ -155,6 +191,17 @@
         "sentence": "cmp-15",
         "blank": "servī",
         "ask": "Dominī laetiōrēs sunt quam ___. The side after *quam* takes the same case as the side before it. (servus, more than one)"
+      },
+      "worked": {
+        "sentence": "cmp-17",
+        "given": [],
+        "ask": [
+          "degree",
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ],

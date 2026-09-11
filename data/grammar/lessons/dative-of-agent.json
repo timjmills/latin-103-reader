@@ -9,6 +9,14 @@
         "kind": "sentence",
         "id": "dag-01"
       },
+      "worked": {
+        "sentence": "dag-01",
+        "given": [
+          "case",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "dag-02",
@@ -43,6 +51,17 @@
         "reveal": [
           "dat.sg",
           "dat.pl"
+        ]
+      },
+      "worked": {
+        "sentence": "dag-12",
+        "given": [
+          "case",
+          "gender"
+        ],
+        "ask": [
+          "number",
+          "why"
         ]
       },
       "check": {
@@ -86,6 +105,17 @@
       "show": {
         "kind": "sentence",
         "id": "dag-10"
+      },
+      "worked": {
+        "sentence": "dag-14",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

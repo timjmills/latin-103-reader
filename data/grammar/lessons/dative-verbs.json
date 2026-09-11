@@ -9,6 +9,15 @@
         "kind": "sentence",
         "id": "dvb-01"
       },
+      "worked": {
+        "sentence": "dvb-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "dvb-02",
@@ -24,6 +33,16 @@
         "key": "decl2m",
         "reveal": [
           "dat.sg"
+        ]
+      },
+      "worked": {
+        "sentence": "dvb-03",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case"
         ]
       },
       "check": {
@@ -43,6 +62,16 @@
           "dat.sg"
         ]
       },
+      "worked": {
+        "sentence": "dvb-05",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number"
+        ]
+      },
       "check": {
         "kind": "blank",
         "sentence": "dvb-06",
@@ -60,6 +89,15 @@
           "dat.sg"
         ]
       },
+      "worked": {
+        "sentence": "dvb-08",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
+      },
       "check": {
         "kind": "parse",
         "sentence": "dvb-07",
@@ -73,6 +111,16 @@
       "show": {
         "kind": "sentence",
         "id": "dvb-12"
+      },
+      "worked": {
+        "sentence": "dvb-11",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "recognise",

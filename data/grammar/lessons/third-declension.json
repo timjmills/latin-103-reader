@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "td-14"
+      },
+      "worked": {
+        "sentence": "td-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -33,6 +42,10 @@
           "nom.sg",
           "gen.sg",
           "gen.pl"
+        ],
+        "words": [
+          "pastor",
+          "pater"
         ]
       }
     },
@@ -51,6 +64,22 @@
         "kind": "chart",
         "cells": [
           "acc.sg"
+        ],
+        "words": [
+          "pastor",
+          "pater",
+          "mater"
+        ]
+      },
+      "worked": {
+        "sentence": "td-03",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
         ]
       }
     },
@@ -71,6 +100,10 @@
         "cells": [
           "dat.sg",
           "abl.sg"
+        ],
+        "words": [
+          "pastor",
+          "pater"
         ]
       }
     },
@@ -95,6 +128,21 @@
           "acc.pl",
           "dat.pl",
           "abl.pl"
+        ],
+        "words": [
+          "pastor",
+          "pater"
+        ]
+      },
+      "worked": {
+        "sentence": "td-08",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
         ]
       }
     },

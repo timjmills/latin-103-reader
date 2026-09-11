@@ -9,6 +9,15 @@
         "kind": "sentence",
         "id": "abo-01"
       },
+      "worked": {
+        "sentence": "abo-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "abo-02",
@@ -27,6 +36,17 @@
           "abl.sg"
         ],
         "say": "ex ātriō — -um becomes -ō, the same ending as after *in*"
+      },
+      "worked": {
+        "sentence": "abo-04",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",
@@ -88,6 +108,16 @@
           "abl.pl"
         ],
         "say": "ex cubiculīs — the plural ending is -īs"
+      },
+      "worked": {
+        "sentence": "abo-12",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

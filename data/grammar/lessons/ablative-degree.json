@@ -8,6 +8,15 @@
     "kind": "sentence",
     "id": "adg-01"
    },
+   "worked": {
+    "sentence": "adg-01",
+    "given": [
+     "case",
+     "number",
+     "construction"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "adg-02",
@@ -37,6 +46,16 @@
     "kind": "sentence",
     "id": "adg-07"
    },
+   "worked": {
+    "sentence": "adg-08",
+    "given": [
+     "number"
+    ],
+    "ask": [
+     "case",
+     "construction"
+    ]
+   },
    "check": {
     "kind": "blank",
     "sentence": "adg-09",
@@ -65,6 +84,16 @@
    "show": {
     "kind": "sentence",
     "id": "adg-13"
+   },
+   "worked": {
+    "sentence": "adg-14",
+    "given": [],
+    "ask": [
+     "case",
+     "number",
+     "construction",
+     "why"
+    ]
    },
    "check": {
     "kind": "recognise",

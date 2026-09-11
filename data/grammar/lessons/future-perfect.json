@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "futp-01"
       },
+      "worked": {
+        "sentence": "futp-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "futp-02",
@@ -35,6 +46,10 @@
           "futperf.ind.act.2.sg",
           "futperf.ind.act.3.sg"
         ],
+        "words": [
+          "laudo",
+          "voco"
+        ],
         "ask": "Fill the three singular future perfect forms of laudō."
       }
     },
@@ -58,6 +73,11 @@
           "futperf.ind.act.2.pl",
           "futperf.ind.act.3.pl"
         ],
+        "words": [
+          "laudo",
+          "voco",
+          "amo"
+        ],
         "ask": "Now the three plural future perfect forms of laudō."
       }
     },
@@ -68,6 +88,19 @@
       "show": {
         "kind": "sentence",
         "id": "futp-10"
+      },
+      "worked": {
+        "sentence": "futp-05",
+        "given": [
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "why"
+        ]
       },
       "check": {
         "kind": "parse",
@@ -96,6 +129,19 @@
       "show": {
         "kind": "sentence",
         "id": "futp-13"
+      },
+      "worked": {
+        "sentence": "futp-07",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "imp-01"
       },
+      "worked": {
+        "sentence": "imp-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "imp-02",
@@ -34,6 +45,10 @@
         "cells": [
           "imper.pres.act.sg"
         ],
+        "words": [
+          "voco",
+          "canto"
+        ],
         "ask": "Order one person to call."
       }
     },
@@ -50,11 +65,27 @@
         ],
         "say": "vocāte — the order to more than one adds -te"
       },
+      "worked": {
+        "sentence": "imp-05",
+        "given": [
+          "tense",
+          "voice",
+          "person"
+        ],
+        "ask": [
+          "number",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj1",
         "cells": [
           "imper.pres.act.pl"
+        ],
+        "words": [
+          "voco",
+          "canto"
         ],
         "ask": "Order more than one person to call."
       }
@@ -93,12 +124,28 @@
         ],
         "say": "sūme / sūmite — short -e for one, -ite for several"
       },
+      "worked": {
+        "sentence": "imp-11",
+        "given": [
+          "tense",
+          "voice",
+          "person"
+        ],
+        "ask": [
+          "mood",
+          "number",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj3",
         "cells": [
           "imper.pres.act.sg",
           "imper.pres.act.pl"
+        ],
+        "words": [
+          "pono"
         ],
         "ask": "Order one person, then several, to take something."
       }

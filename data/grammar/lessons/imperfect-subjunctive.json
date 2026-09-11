@@ -85,6 +85,17 @@
     "kind": "sentence",
     "id": "is-01"
    },
+   "worked": {
+    "sentence": "is-01",
+    "given": [
+     "tense",
+     "mood",
+     "voice",
+     "person",
+     "number"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "is-02",
@@ -108,9 +119,13 @@
     "kind": "chart",
     "key": "conj1",
     "cells": [
-     "impf.subj.act.1sg",
-     "impf.subj.act.2sg",
-     "impf.subj.act.3sg"
+     "impf.subj.act.1.sg",
+     "impf.subj.act.2.sg",
+     "impf.subj.act.3.sg"
+    ],
+    "words": [
+     "amo",
+     "voco"
     ],
     "ask": "Write the three singular forms: infinitive plus -m, -s, -t."
    }
@@ -132,9 +147,13 @@
     "kind": "chart",
     "key": "conj1",
     "cells": [
-     "impf.subj.act.1pl",
-     "impf.subj.act.2pl",
-     "impf.subj.act.3pl"
+     "impf.subj.act.1.pl",
+     "impf.subj.act.2.pl",
+     "impf.subj.act.3.pl"
+    ],
+    "words": [
+     "amo",
+     "ambulo"
     ],
     "ask": "Write the three plural forms on the same infinitive."
    }
@@ -151,12 +170,29 @@
      "impf.subj.pass.3pl"
     ]
    },
+   "worked": {
+    "sentence": "is-08",
+    "given": [
+     "tense",
+     "mood"
+    ],
+    "ask": [
+     "voice",
+     "person",
+     "number"
+    ]
+   },
    "check": {
     "kind": "chart",
     "key": "conj1",
     "cells": [
-     "impf.subj.pass.3sg",
-     "impf.subj.pass.3pl"
+     "impf.subj.pass.3.sg",
+     "impf.subj.pass.3.pl"
+    ],
+    "words": [
+     "amo",
+     "laudo",
+     "voco"
     ],
     "ask": "Write the passive 'he was being …' and 'they were being …' forms."
    }
@@ -176,7 +212,7 @@
     "kind": "chart",
     "key": "possum",
     "cells": [
-     "impf.subj.act.3sg"
+     "impf.subj.act.3.sg"
     ],
     "ask": "posse is the infinitive: write the 'he could' form."
    }
@@ -188,6 +224,19 @@
    "show": {
     "kind": "sentence",
     "id": "is-12"
+   },
+   "worked": {
+    "sentence": "is-12",
+    "given": [
+     "voice"
+    ],
+    "ask": [
+     "tense",
+     "mood",
+     "person",
+     "number",
+     "why"
+    ]
    },
    "check": {
     "kind": "parse",

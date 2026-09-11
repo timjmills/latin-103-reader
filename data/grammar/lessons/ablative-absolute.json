@@ -8,6 +8,16 @@
     "kind": "sentence",
     "id": "abs-01"
    },
+   "worked": {
+    "sentence": "abs-01",
+    "given": [
+     "case",
+     "number",
+     "tense",
+     "construction"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "abs-02",
@@ -21,6 +31,16 @@
    "show": {
     "kind": "sentence",
     "id": "abs-03"
+   },
+   "worked": {
+    "sentence": "abs-05",
+    "given": [
+     "case"
+    ],
+    "ask": [
+     "number",
+     "tense"
+    ]
    },
    "check": {
     "kind": "parse",
@@ -77,6 +97,17 @@
    "show": {
     "kind": "sentence",
     "id": "abs-12"
+   },
+   "worked": {
+    "sentence": "abs-14",
+    "given": [],
+    "ask": [
+     "case",
+     "number",
+     "tense",
+     "construction",
+     "why"
+    ]
    },
    "check": {
     "kind": "recognise",

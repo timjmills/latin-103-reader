@@ -67,11 +67,27 @@
           "pos.nom.sg.f"
         ]
       },
+      "worked": {
+        "sentence": "pdp-03",
+        "given": [
+          "case",
+          "number",
+          "gender",
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "pos.nom.sg.m",
           "pos.nom.sg.f"
+        ],
+        "words": [
+          "bonus",
+          "magnus"
         ],
         "ask": "Fill in the man's form and the woman's form."
       }
@@ -88,11 +104,29 @@
           "pos.nom.pl.f"
         ]
       },
+      "worked": {
+        "sentence": "pdp-07",
+        "given": [
+          "case",
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": [
+          "number",
+          "gender"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "pos.nom.pl.m",
           "pos.nom.pl.f"
+        ],
+        "words": [
+          "bonus",
+          "magnus",
+          "longus"
         ],
         "ask": "Fill in the two plural subject forms."
       }
@@ -118,6 +152,20 @@
       "show": {
         "kind": "sentence",
         "id": "pdp-11"
+      },
+      "worked": {
+        "sentence": "pdp-13",
+        "given": [
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

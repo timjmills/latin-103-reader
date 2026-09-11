@@ -9,6 +9,15 @@
         "kind": "sentence",
         "id": "acd-01"
       },
+      "worked": {
+        "sentence": "acd-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "acd-02",
@@ -47,6 +56,17 @@
         ],
         "say": "in hortum — -us becomes -um"
       },
+      "worked": {
+        "sentence": "acd-06",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
+      },
       "check": {
         "kind": "blank",
         "sentence": "acd-05",
@@ -79,6 +99,16 @@
           "acc.pl"
         ],
         "say": "ad vīllās — the plural ending is -ās"
+      },
+      "worked": {
+        "sentence": "acd-09",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

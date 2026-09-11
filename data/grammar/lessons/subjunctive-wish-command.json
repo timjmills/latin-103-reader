@@ -72,6 +72,18 @@
     "kind": "sentence",
     "id": "swc-01"
    },
+   "worked": {
+    "sentence": "swc-01",
+    "given": [
+     "tense",
+     "mood",
+     "voice",
+     "person",
+     "number",
+     "construction"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "swc-02",
@@ -105,6 +117,19 @@
     "reveal": [
      "pres.subj.act.3sg",
      "pres.subj.act.3pl"
+    ]
+   },
+   "worked": {
+    "sentence": "swc-05",
+    "given": [
+     "tense",
+     "mood",
+     "voice",
+     "construction"
+    ],
+    "ask": [
+     "person",
+     "number"
     ]
    },
    "check": {
@@ -148,6 +173,20 @@
    "show": {
     "kind": "sentence",
     "id": "swc-11"
+   },
+   "worked": {
+    "sentence": "swc-11",
+    "given": [
+     "voice"
+    ],
+    "ask": [
+     "tense",
+     "mood",
+     "person",
+     "number",
+     "construction",
+     "why"
+    ]
    },
    "check": {
     "kind": "parse",

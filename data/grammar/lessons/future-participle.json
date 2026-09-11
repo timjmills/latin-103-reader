@@ -70,6 +70,18 @@
       "check": {
         "kind": "recognise",
         "sentence": "fp-02"
+      },
+      "worked": {
+        "sentence": "fp-01",
+        "given": [
+          "mood",
+          "tense",
+          "voice",
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -81,7 +93,7 @@
         "key": "adj12",
         "word": "futūrus",
         "reveal": [
-          "nom.sg.m"
+          "pos.nom.sg.m"
         ],
         "say": "futūrus — the stem futūr- with the ordinary -us behind it"
       },
@@ -90,7 +102,7 @@
         "key": "adj12",
         "word": "futūrus",
         "cells": [
-          "nom.sg.m"
+          "pos.nom.sg.m"
         ]
       }
     },
@@ -107,8 +119,20 @@
         "key": "adj12",
         "word": "futūrus",
         "cells": [
-          "nom.sg.f",
-          "nom.pl.m"
+          "pos.nom.sg.f",
+          "pos.nom.pl.m"
+        ]
+      },
+      "worked": {
+        "sentence": "fp-07",
+        "given": [
+          "mood",
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "number",
+          "gender"
         ]
       }
     },
@@ -136,6 +160,20 @@
       "check": {
         "kind": "blank",
         "sentence": "fp-13"
+      },
+      "worked": {
+        "sentence": "fp-12",
+        "given": [
+          "mood",
+          "tense"
+        ],
+        "ask": [
+          "voice",
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ]

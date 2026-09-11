@@ -76,6 +76,14 @@
         "kind": "parse",
         "sentence": "ng-03",
         "ask": "gender"
+      },
+      "worked": {
+        "sentence": "ng-04",
+        "given": [
+          "gender",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -111,6 +119,15 @@
         "kind": "parse",
         "sentence": "ng-08",
         "ask": "gender"
+      },
+      "worked": {
+        "sentence": "ng-07",
+        "given": [
+          "number"
+        ],
+        "ask": [
+          "gender"
+        ]
       }
     },
     {
@@ -138,6 +155,16 @@
       "check": {
         "kind": "recognise",
         "sentence": "ng-12"
+      },
+      "worked": {
+        "sentence": "ng-13",
+        "given": [
+          "number"
+        ],
+        "ask": [
+          "gender",
+          "why"
+        ]
       }
     }
   ],

@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "aci-02"
+      },
+      "worked": {
+        "sentence": "aci-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice"
+        ],
+        "ask": []
       }
     },
     {
@@ -38,6 +47,17 @@
       "check": {
         "kind": "blank",
         "sentence": "aci-15"
+      },
+      "worked": {
+        "sentence": "aci-16",
+        "given": [
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "mood",
+          "why"
+        ]
       }
     },
     {
@@ -51,6 +71,17 @@
       "check": {
         "kind": "blank",
         "sentence": "aci-10"
+      },
+      "worked": {
+        "sentence": "aci-11",
+        "given": [
+          "tense"
+        ],
+        "ask": [
+          "mood",
+          "voice",
+          "why"
+        ]
       }
     },
     {

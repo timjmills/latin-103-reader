@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "pfs-01"
       },
+      "worked": {
+        "sentence": "pfs-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "pfs-02",
@@ -35,6 +46,10 @@
           "perf.subj.act.2.sg",
           "perf.subj.act.3.sg"
         ],
+        "words": [
+          "scribo",
+          "dico"
+        ],
         "ask": "Fill the three singular perfect subjunctive forms of scrībō."
       }
     },
@@ -58,6 +73,11 @@
           "perf.subj.act.2.pl",
           "perf.subj.act.3.pl"
         ],
+        "words": [
+          "scribo",
+          "dico",
+          "lego"
+        ],
         "ask": "Now the three plural perfect subjunctive forms of scrībō."
       }
     },
@@ -68,6 +88,19 @@
       "show": {
         "kind": "sentence",
         "id": "pfs-11"
+      },
+      "worked": {
+        "sentence": "pfs-07",
+        "given": [
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "why"
+        ]
       },
       "check": {
         "kind": "parse",
@@ -96,6 +129,19 @@
       "show": {
         "kind": "sentence",
         "id": "pfs-12"
+      },
+      "worked": {
+        "sentence": "pfs-13",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

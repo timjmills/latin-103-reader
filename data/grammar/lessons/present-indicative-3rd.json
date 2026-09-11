@@ -85,9 +85,22 @@
         "kind": "chart",
         "key": "conj1",
         "cells": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
+        ],
+        "words": [
+          "voco",
+          "canto"
         ]
+      },
+      "worked": {
+        "sentence": "pi-03",
+        "given": [
+          "tense",
+          "voice",
+          "person"
+        ],
+        "ask": []
       }
     },
     {
@@ -106,8 +119,12 @@
         "kind": "chart",
         "key": "conj2",
         "cells": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
+        ],
+        "words": [
+          "video",
+          "respondeo"
         ]
       }
     },
@@ -127,8 +144,22 @@
         "kind": "chart",
         "key": "conj4",
         "cells": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
+        ],
+        "words": [
+          "audio",
+          "dormio"
+        ]
+      },
+      "worked": {
+        "sentence": "pi-09",
+        "given": [
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "person"
         ]
       }
     },
@@ -148,8 +179,8 @@
         "kind": "chart",
         "key": "sum",
         "cells": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
         ]
       }
     },
@@ -164,6 +195,17 @@
       "check": {
         "kind": "blank",
         "sentence": "pi-13"
+      },
+      "worked": {
+        "sentence": "pi-14",
+        "given": [
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "why"
+        ]
       }
     }
   ],

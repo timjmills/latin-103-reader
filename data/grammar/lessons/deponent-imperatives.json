@@ -70,6 +70,16 @@
       "check": {
         "kind": "recognise",
         "sentence": "di-02"
+      },
+      "worked": {
+        "sentence": "di-01",
+        "given": [
+          "mood",
+          "tense",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -114,6 +124,17 @@
         "cells": [
           "imper.pres.pass.pl"
         ]
+      },
+      "worked": {
+        "sentence": "di-09",
+        "given": [
+          "mood",
+          "tense"
+        ],
+        "ask": [
+          "person",
+          "number"
+        ]
       }
     },
     {
@@ -140,6 +161,17 @@
       "check": {
         "kind": "blank",
         "sentence": "di-17"
+      },
+      "worked": {
+        "sentence": "di-14",
+        "given": [],
+        "ask": [
+          "mood",
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

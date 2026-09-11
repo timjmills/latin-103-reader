@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "rel-03"
+      },
+      "worked": {
+        "sentence": "rel-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -62,6 +71,17 @@
           "acc.pl.m",
           "acc.pl.f"
         ]
+      },
+      "worked": {
+        "sentence": "rel-04",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       }
     },
     {
@@ -105,6 +125,17 @@
           "abl.sg.f",
           "dat.pl.m",
           "abl.pl.m"
+        ]
+      },
+      "worked": {
+        "sentence": "rel-09",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
         ]
       }
     },

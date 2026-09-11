@@ -60,6 +60,18 @@
         "kind": "recognise",
         "sentence": "ptcp-02",
         "ask": "Which word is the participle, and which noun is it describing?"
+      },
+      "worked": {
+        "sentence": "ptcp-01",
+        "given": [
+          "mood",
+          "tense",
+          "voice",
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -81,6 +93,11 @@
         "word": "cantō",
         "cells": [
           "ptc.pres.act"
+        ],
+        "words": [
+          "canto",
+          "ambulo",
+          "voco"
         ],
         "ask": "Give the present participle of *cantāre*."
       }
@@ -104,6 +121,11 @@
         "word": "dūcō",
         "cells": [
           "ptc.pres.act"
+        ],
+        "words": [
+          "dico",
+          "scribo",
+          "lego"
         ],
         "ask": "Give the present participle of *dūcere*."
       }
@@ -130,7 +152,24 @@
           "pos.acc.sg.m",
           "pos.gen.sg.m"
         ],
+        "words": [
+          "brevis",
+          "fortis"
+        ],
         "ask": "Fill the accusative (the object form) and the genitive (the 'of' form) of *brevis* — the endings the participle borrows."
+      },
+      "worked": {
+        "sentence": "ptcp-08",
+        "given": [
+          "mood",
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       }
     },
     {
@@ -160,6 +199,20 @@
         "sentence": "ptcp-16",
         "blank": "fugientēs",
         "ask": "Mīles fortis hostēs ___ petit. *hostēs* is plural and it is the object. (fugiō)"
+      },
+      "worked": {
+        "sentence": "ptcp-15",
+        "given": [
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "mood",
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ],

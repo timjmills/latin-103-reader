@@ -60,6 +60,15 @@
         "kind": "recognise",
         "sentence": "f5-02",
         "ask": "Which word here is the 5th-declension noun?"
+      },
+      "worked": {
+        "sentence": "f5-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -83,6 +92,10 @@
         "cells": [
           "nom.sg",
           "acc.sg"
+        ],
+        "words": [
+          "dies",
+          "facies"
         ],
         "ask": "Fill the subject cell and the object cell of *diēs*."
       }
@@ -109,7 +122,21 @@
           "gen.sg",
           "dat.sg"
         ],
+        "words": [
+          "dies",
+          "facies"
+        ],
         "ask": "Fill the genitive (the 'of' form) and the dative (the 'to/for' form) of *diēs*. They are the same spelling."
+      },
+      "worked": {
+        "sentence": "f5-05",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number"
+        ]
       }
     },
     {
@@ -135,6 +162,10 @@
           "abl.sg",
           "gen.pl",
           "dat.pl"
+        ],
+        "words": [
+          "dies",
+          "facies"
         ],
         "ask": "Give the ablative singular of *diēs*, then its genitive plural and its dative plural."
       }
@@ -166,6 +197,16 @@
         "sentence": "f5-14",
         "blank": "pulchra",
         "ask": "Faciēs Aemiliae ___ et laeta est. *faciēs* is feminine. (pulcher)"
+      },
+      "worked": {
+        "sentence": "f5-15",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ],

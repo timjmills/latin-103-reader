@@ -70,10 +70,25 @@
           "perf.ind.act.1.sg"
         ]
       },
+      "worked": {
+        "sentence": "pa-03",
+        "given": [
+          "tense",
+          "voice",
+          "mood",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "perf.ind.act.1.sg"
+        ],
+        "words": [
+          "voco",
+          "laudo"
         ],
         "ask": "Fill in the 'I' cell of the perfect."
       }
@@ -96,6 +111,11 @@
           "perf.ind.act.3.sg",
           "perf.ind.act.3.pl"
         ],
+        "words": [
+          "voco",
+          "laudo",
+          "amo"
+        ],
         "ask": "Fill in the two cells the story uses most."
       }
     },
@@ -112,11 +132,29 @@
           "perf.ind.act.2.pl"
         ]
       },
+      "worked": {
+        "sentence": "pa-07",
+        "given": [
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": [
+          "person",
+          "number"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "perf.ind.act.2.sg",
           "perf.ind.act.2.pl"
+        ],
+        "words": [
+          "voco",
+          "laudo",
+          "amo",
+          "ambulo"
         ],
         "ask": "Fill in the two cells that carry -is-."
       }
@@ -142,6 +180,19 @@
       "show": {
         "kind": "sentence",
         "id": "pa-14"
+      },
+      "worked": {
+        "sentence": "pa-13",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

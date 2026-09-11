@@ -70,6 +70,17 @@
       "check": {
         "kind": "recognise",
         "sentence": "pl-02"
+      },
+      "worked": {
+        "sentence": "pl-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -81,7 +92,7 @@
         "key": "conj1",
         "word": "ambulō",
         "reveal": [
-          "plupf.ind.act.3sg"
+          "plupf.ind.act.3.sg"
         ],
         "say": "ambulāverat — the perfect stem ambulāv- with -erat behind it"
       },
@@ -90,7 +101,12 @@
         "key": "conj1",
         "word": "ambulō",
         "cells": [
-          "plupf.ind.act.3sg"
+          "plupf.ind.act.3.sg"
+        ],
+        "words": [
+          "ambulo",
+          "voco",
+          "laudo"
         ]
       }
     },
@@ -103,8 +119,8 @@
         "key": "conj1",
         "word": "ambulō",
         "reveal": [
-          "plupf.ind.act.1sg",
-          "plupf.ind.act.2pl"
+          "plupf.ind.act.1.sg",
+          "plupf.ind.act.2.pl"
         ],
         "say": "ambulāveram / ambulāverātis — the same -erā- under every person"
       },
@@ -113,8 +129,26 @@
         "key": "conj1",
         "word": "ambulō",
         "cells": [
-          "plupf.ind.act.1sg",
-          "plupf.ind.act.2pl"
+          "plupf.ind.act.1.sg",
+          "plupf.ind.act.2.pl"
+        ],
+        "words": [
+          "ambulo",
+          "voco",
+          "laudo",
+          "canto"
+        ]
+      },
+      "worked": {
+        "sentence": "pl-06",
+        "given": [
+          "tense",
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "person",
+          "number"
         ]
       }
     },
@@ -142,6 +176,19 @@
       "check": {
         "kind": "blank",
         "sentence": "pl-13"
+      },
+      "worked": {
+        "sentence": "pl-14",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

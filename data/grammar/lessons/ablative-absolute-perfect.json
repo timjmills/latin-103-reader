@@ -62,11 +62,28 @@
           "pos.abl.sg.f"
         ]
       },
+      "worked": {
+        "sentence": "aap-03",
+        "given": [
+          "case",
+          "number",
+          "gender",
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "pos.abl.sg.m",
           "pos.abl.sg.f"
+        ],
+        "words": [
+          "magnus",
+          "bonus",
+          "longus"
         ],
         "ask": "Fill in the two singular ablatives the pair is built on."
       }
@@ -84,11 +101,30 @@
           "pos.abl.pl.n"
         ]
       },
+      "worked": {
+        "sentence": "aap-06",
+        "given": [
+          "case",
+          "tense",
+          "voice",
+          "mood"
+        ],
+        "ask": [
+          "number",
+          "gender"
+        ]
+      },
       "check": {
         "kind": "chart",
         "cells": [
           "pos.abl.pl.m",
           "pos.abl.pl.n"
+        ],
+        "words": [
+          "magnus",
+          "bonus",
+          "longus",
+          "novus"
         ],
         "ask": "Fill in the plural ablatives."
       }
@@ -114,6 +150,20 @@
       "show": {
         "kind": "sentence",
         "id": "aap-13"
+      },
+      "worked": {
+        "sentence": "aap-11",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "tense",
+          "voice",
+          "why"
+        ]
       },
       "check": {
         "kind": "blank",

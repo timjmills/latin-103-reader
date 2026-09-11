@@ -71,6 +71,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "pd-02"
+      },
+      "worked": {
+        "sentence": "pd-01",
+        "given": [
+          "tense",
+          "gender",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -82,7 +91,7 @@
         "key": "conj3",
         "word": "sequor",
         "reveal": [
-          "perf.ind.pass.3sg"
+          "perf.ind.pass.3.sg"
         ],
         "say": "secūtus est — the participle with est, in the column headed deponent"
       },
@@ -91,7 +100,7 @@
         "key": "conj3",
         "word": "sequor",
         "cells": [
-          "perf.ind.pass.3sg"
+          "perf.ind.pass.3.sg"
         ]
       }
     },
@@ -106,6 +115,16 @@
       "check": {
         "kind": "parse",
         "sentence": "pd-07"
+      },
+      "worked": {
+        "sentence": "pd-08",
+        "given": [
+          "tense"
+        ],
+        "ask": [
+          "gender",
+          "number"
+        ]
       }
     },
     {
@@ -132,6 +151,17 @@
       "check": {
         "kind": "blank",
         "sentence": "pd-12"
+      },
+      "worked": {
+        "sentence": "pd-14",
+        "given": [
+          "tense"
+        ],
+        "ask": [
+          "gender",
+          "number",
+          "why"
+        ]
       }
     }
   ]

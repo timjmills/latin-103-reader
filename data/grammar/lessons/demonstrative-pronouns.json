@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "dpr-02"
+      },
+      "worked": {
+        "sentence": "dpr-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -38,6 +47,17 @@
       "check": {
         "kind": "blank",
         "sentence": "dpr-05"
+      },
+      "worked": {
+        "sentence": "dpr-10",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       }
     },
     {
@@ -64,6 +84,17 @@
       "check": {
         "kind": "recognise",
         "sentence": "dpr-11"
+      },
+      "worked": {
+        "sentence": "dpr-12",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       }
     }
   ],

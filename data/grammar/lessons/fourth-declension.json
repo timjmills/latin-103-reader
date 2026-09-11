@@ -59,6 +59,15 @@
         "kind": "recognise",
         "sentence": "f4-02",
         "ask": "Which word here belongs to the u-family?"
+      },
+      "worked": {
+        "sentence": "f4-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -83,6 +92,10 @@
           "nom.sg",
           "acc.sg"
         ],
+        "words": [
+          "exercitus",
+          "manus"
+        ],
         "ask": "Fill the subject cell and the object cell of *exercitus*."
       }
     },
@@ -106,7 +119,23 @@
         "cells": [
           "gen.sg"
         ],
+        "words": [
+          "exercitus",
+          "manus",
+          "portus",
+          "impetus"
+        ],
         "ask": "Give the genitive (the 'of' form) of *exercitus* — the one cell that proves the family."
+      },
+      "worked": {
+        "sentence": "f4-06",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number"
+        ]
       }
     },
     {
@@ -130,6 +159,10 @@
         "cells": [
           "dat.sg",
           "abl.sg"
+        ],
+        "words": [
+          "exercitus",
+          "manus"
         ],
         "ask": "Give the dative (the 'to/for' form) and the ablative (the 'by/with/from' form) of *exercitus*."
       }
@@ -158,6 +191,10 @@
           "gen.pl",
           "dat.pl"
         ],
+        "words": [
+          "exercitus",
+          "manus"
+        ],
         "ask": "Fill the three plural cells of *exercitus*: the subject one, the 'of' one, and the 'to/for' one."
       }
     },
@@ -174,6 +211,16 @@
         "sentence": "f4-14",
         "blank": "exercitūs",
         "ask": "Amīcus servī venit, sed dux ___ abest. The 'of' form is what proves the family. (exercitus)"
+      },
+      "worked": {
+        "sentence": "f4-16",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ],

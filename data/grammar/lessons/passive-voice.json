@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "pas-01"
       },
+      "worked": {
+        "sentence": "pas-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "pas-02",
@@ -34,6 +45,11 @@
         "cells": [
           "pres.ind.pass.3.sg"
         ],
+        "words": [
+          "voco",
+          "amo",
+          "canto"
+        ],
         "ask": "Give the form meaning 'he is called'."
       }
     },
@@ -50,11 +66,29 @@
         ],
         "say": "vocantur — more than one, and it is being done to them"
       },
+      "worked": {
+        "sentence": "pas-06",
+        "given": [
+          "tense",
+          "mood",
+          "person"
+        ],
+        "ask": [
+          "voice",
+          "number",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj1",
         "cells": [
           "pres.ind.pass.3.pl"
+        ],
+        "words": [
+          "voco",
+          "amo",
+          "canto"
         ],
         "ask": "Give the form meaning 'they are called'."
       }
@@ -101,12 +135,28 @@
         ],
         "say": "sūmitur / sūmuntur — the -ur goes on behind the active vowel"
       },
+      "worked": {
+        "sentence": "pas-15",
+        "given": [
+          "mood",
+          "person"
+        ],
+        "ask": [
+          "tense",
+          "voice",
+          "number",
+          "why"
+        ]
+      },
       "check": {
         "kind": "chart",
         "key": "conj3",
         "cells": [
           "pres.ind.pass.3.sg",
           "pres.ind.pass.3.pl"
+        ],
+        "words": [
+          "pono"
         ],
         "ask": "Give 'it is taken' and 'they are taken'."
       }

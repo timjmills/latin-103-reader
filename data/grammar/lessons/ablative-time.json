@@ -62,6 +62,15 @@
         "kind": "recognise",
         "sentence": "abt-02",
         "ask": "Which word says when, and which little English word does its ending do the work of?"
+      },
+      "worked": {
+        "sentence": "abt-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -102,6 +111,17 @@
         "sentence": "abt-06",
         "blank": "Vespere",
         "ask": "___ familia in ātriō sedet. In the evening — the 3rd declension takes a short *-e*. (vesper)"
+      },
+      "worked": {
+        "sentence": "abt-08",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
+        ]
       }
     },
     {
@@ -145,6 +165,16 @@
         "sentence": "abt-15",
         "blank": "diē",
         "ask": "Nocte et ___ flūmen fluit. By night and by day — and no preposition at all. (diēs)"
+      },
+      "worked": {
+        "sentence": "abt-14",
+        "given": [],
+        "ask": [
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ],

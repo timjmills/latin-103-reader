@@ -84,7 +84,21 @@
         "key": "decl1",
         "cells": [
           "acc.sg"
+        ],
+        "words": [
+          "puella",
+          "femina",
+          "ancilla"
         ]
+      },
+      "worked": {
+        "sentence": "ao-03",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -103,6 +117,10 @@
         "key": "decl2m",
         "cells": [
           "acc.sg"
+        ],
+        "words": [
+          "servus",
+          "dominus"
         ]
       }
     },
@@ -122,6 +140,21 @@
         "key": "decl1",
         "cells": [
           "acc.pl"
+        ],
+        "words": [
+          "puella",
+          "femina",
+          "ancilla"
+        ]
+      },
+      "worked": {
+        "sentence": "ao-07",
+        "given": [
+          "case"
+        ],
+        "ask": [
+          "number",
+          "gender"
         ]
       }
     },
@@ -143,6 +176,10 @@
         "cells": [
           "acc.sg",
           "acc.pl"
+        ],
+        "words": [
+          "oppidum",
+          "vocabulum"
         ]
       }
     },
@@ -157,6 +194,17 @@
       "check": {
         "kind": "recognise",
         "sentence": "ao-12"
+      },
+      "worked": {
+        "sentence": "ao-14",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
+        ]
       }
     }
   ],

@@ -8,6 +8,14 @@
     "kind": "sentence",
     "id": "pp-01"
    },
+   "worked": {
+    "sentence": "pp-01",
+    "given": [
+     "case",
+     "number"
+    ],
+    "ask": []
+   },
    "check": {
     "kind": "recognise",
     "sentence": "pp-02",
@@ -46,6 +54,16 @@
     "reveal": [
      "acc.sg",
      "dat.sg"
+    ]
+   },
+   "worked": {
+    "sentence": "pp-08",
+    "given": [
+     "number"
+    ],
+    "ask": [
+     "case",
+     "why"
     ]
    },
    "check": {
@@ -103,6 +121,15 @@
    "show": {
     "kind": "sentence",
     "id": "pp-16"
+   },
+   "worked": {
+    "sentence": "pp-17",
+    "given": [],
+    "ask": [
+     "case",
+     "number",
+     "why"
+    ]
    },
    "check": {
     "kind": "blank",

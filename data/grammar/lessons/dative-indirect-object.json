@@ -12,6 +12,15 @@
       "check": {
         "kind": "recognise",
         "sentence": "dio-11"
+      },
+      "worked": {
+        "sentence": "dio-01",
+        "given": [
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -30,6 +39,11 @@
         "key": "decl2n",
         "cells": [
           "dat.sg"
+        ],
+        "words": [
+          "oppidum",
+          "verbum",
+          "baculum"
         ]
       }
     },
@@ -48,6 +62,22 @@
         "kind": "chart",
         "cells": [
           "dat.sg"
+        ],
+        "words": [
+          "puella",
+          "ancilla",
+          "femina"
+        ]
+      },
+      "worked": {
+        "sentence": "dio-02",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "why"
         ]
       }
     },
@@ -66,6 +96,11 @@
         "kind": "chart",
         "cells": [
           "dat.pl"
+        ],
+        "words": [
+          "servus",
+          "dominus",
+          "amicus"
         ]
       }
     },
@@ -86,6 +121,21 @@
         "cells": [
           "dat.sg",
           "dat.pl"
+        ],
+        "words": [
+          "pater",
+          "mater"
+        ]
+      },
+      "worked": {
+        "sentence": "dio-13",
+        "given": [
+          "gender"
+        ],
+        "ask": [
+          "case",
+          "number",
+          "why"
         ]
       }
     },

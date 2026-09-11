@@ -9,6 +9,17 @@
         "kind": "sentence",
         "id": "wu-01"
       },
+      "worked": {
+        "sentence": "wu-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
+      },
       "check": {
         "kind": "recognise",
         "sentence": "wu-02",
@@ -25,6 +36,18 @@
         "word": "laudō",
         "reveal": [
           "pres.subj.act.3.sg"
+        ]
+      },
+      "worked": {
+        "sentence": "wu-04",
+        "given": [
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "mood"
         ]
       },
       "check": {
@@ -45,6 +68,19 @@
           "impf.subj.act.3.sg"
         ]
       },
+      "worked": {
+        "sentence": "wu-07",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
+      },
       "check": {
         "kind": "parse",
         "sentence": "wu-06",
@@ -61,6 +97,18 @@
         "word": "audiō",
         "reveal": [
           "plupf.subj.act.3.sg"
+        ]
+      },
+      "worked": {
+        "sentence": "wu-10",
+        "given": [],
+        "ask": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number",
+          "why"
         ]
       },
       "check": {
