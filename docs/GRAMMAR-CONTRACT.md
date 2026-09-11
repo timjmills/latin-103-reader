@@ -1658,3 +1658,50 @@ app/data/grammar/vocab/NN.json             gains "sem": semantic class per word
 - **Pilot first**: eight skills across the categories, generated output sampled
   and reviewed adversarially by a second Latinist, the rejection rate reported,
   before the remaining skills are written.
+
+## 12. Feedback everywhere, and scaffolded tables (2026-09-11)
+
+Learner: everything gives immediate feedback in green and red with the
+per-cell hint, using the best pedagogical reason; and mixed practice options
+including partially filled tables — 20, 50, 80 per cent already filled.
+
+**Immediate feedback, without exception.** Every answer box in the app —
+a table cell, a blank in a written or generated sentence, a Pensum blank, a
+worked-example feature, a match slot, an order slot — is judged the moment
+the learner leaves it and turns green or red then (§3). The pedagogical
+reason, stated in the interface once, is that feedback is most effective when
+it arrives while the attempt is still in mind and before the next one is
+made; delayed feedback on a twelve-cell table teaches the learner which table
+was wrong, not which ending. Every box has its own hint, which gives that
+box's answer and marks it hinted (§3, decision 14), so the learner is never
+stuck and the scheduler is never fooled.
+
+**Scaffolded tables — the completion effect.** A table drill can start
+partly filled. The given cells are shown filled and greyed, not editable;
+the learner completes the rest. Four levels, as a control on every table
+drill and remembered per table:
+
+```
+80% given   first meeting — the pattern is visible, the learner adds a few cells
+50% given   the shape is half there
+20% given   anchors only
+ 0% given   blank, the table from memory
+auto        starts at 80% and fades a level after each table completed right unaided,
+            back a level after one completed wrong  (the default)
+```
+
+Which cells are given is deliberate, not random: the **anchors** first — the
+dictionary-form cells (nominative and genitive singular; first person singular
+present and the infinitive), then cells whose ending the learner has already
+met in that step or skill, then the rest. **The cell a step is teaching is
+never given.** Given cells carry the same per-cell hint so a learner can ask
+why a given ending is what it is.
+
+**Mixed practice options** on a table or a skill: whole table · one cell across
+many words · partly filled at a chosen level · the customisation axes of §5 ·
+and for a sentence skill the written set, the generated set, or both. Each is
+one tap from the skill or the catalogue entry, and the last choice is
+remembered.
+
+The one-attempt rule (§3) holds: a scaffolded table is one attempt, scored on
+the cells the learner had to fill.
