@@ -8,6 +8,7 @@ import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalog
 import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
+import { attachHoverGloss, cutLatinWords } from '../hovergloss.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey } from './items.js';
@@ -282,42 +283,15 @@ export function createUI(ctx) {
    *
    * Only where hovering is real: a touch screen reports `any-pointer: coarse` and no hover, and there
    * a "hover" fires on the tap that was meant to choose a word.
-   */
-  const HOVER_IN_MS = 140;   // long enough that crossing a sentence does not strobe
-  let hoverTimer = null;
-  let hoverWord = null;
-  const canHover = () => (typeof window.matchMedia !== 'function') || window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const clearHoverTimer = () => { if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; } };
-  const closeHoverPop = () => { if (pop && pop.dataset.hover === '1') closePop(); };
-  /*
-   * Latin that was drawn as plain text — a chip, a cited form, a table cell, a catalogue example —
-   * becomes words the first time the pointer crosses it. Marked-up Latin (`lang="la"`) is the whole
-   * of what this touches, so an English sentence is never cut into words that happen to look Latin.
-   * Done once per element, and never to a control whose text is its value.
+   *
+   * The machine — that rest delay, that guard, the leave, and cutting plain-text Latin into words
+   * the first time the pointer crosses it — is hovergloss.js, shared with the reader, which was
+   * asked for the same thing ("All Latin text throughout"). What stays here is what is the
+   * section's own: which elements are words, which popup, what a word means, and which words must
+   * keep quiet. `LA_NO` is what must never be cut, nor cut inside: a control whose text is its
+   * value, and everything that is already a word or a popup.
    */
   const LA_NO = 'input, textarea, select, option, .g-w, .g-wx, .g-la, .g-pop, .g-blank';
-  function wordsOnDemand(el) {
-    if (!el || el.dataset.laWords === '1') return false;
-    el.dataset.laWords = '1';
-    if (el.matches(LA_NO) || el.closest('input, textarea, select')) return false;
-    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-    const text = [];
-    while (walk.nextNode()) {
-      const n = walk.currentNode;
-      if (n.parentElement !== el && n.parentElement?.closest(LA_NO)) continue;
-      if (/\p{L}/u.test(n.textContent)) text.push(n);
-    }
-    let cut = false;
-    for (const n of text) {
-      const frag = document.createDocumentFragment();
-      for (const t of tokenize(n.textContent)) {
-        if (t.isWord) { frag.append(h('span', { class: 'g-wx', lang: 'la', 'data-form': t.form, text: t.text })); cut = true; }
-        else frag.append(t.text);
-      }
-      if (cut) n.replaceWith(frag);
-    }
-    return cut;
-  }
 
   /** Has the item this word belongs to been answered? The run stamps `data-result` on the page; a
    *  teaching step has no stamp, so the feedback node being on screen is the same fact. */
@@ -329,44 +303,23 @@ export function createUI(ctx) {
     return !!scope.querySelector('.g-fb, .g-fb__line');
   }
 
-  function onHoverIn(e) {
-    if (!canHover()) return;
-    let w = e.target?.closest?.('.g-w, .g-wx');
-    // Not on a word yet, but on Latin: cut it into words and find the one under the pointer.
-    if (!w) {
-      const la = e.target?.closest?.('[lang="la"]');
-      if (la && root.contains(la) && wordsOnDemand(la)) {
-        w = document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.g-wx');
-      }
-    }
-    if (!w || w === hoverWord || !root.contains(w)) return;
+  // `root` and not `body`: body is rebuilt by every draw(), and is still null when this runs.
+  attachHoverGloss({
+    root,
+    word: '.g-w, .g-wx',
+    pop: '.g-pop',
+    cut: (el) => cutLatinWords(el, { tokenize, cls: 'g-wx', skip: LA_NO }),
     // A tap item asks which word is the ablative; its dictionary entry says "ablative". Hovering would
     // hand over the answer, which is why a click on these words chooses rather than defines. Once the
     // item has been answered the feedback is already on screen and the word is only a word again.
-    if (w.classList.contains('g-w--pick') && !answered(w)) return;
-    clearHoverTimer();
-    hoverWord = w;
-    // A popup opened by a click is the reader's own; leave it alone.
-    if (pop && pop.dataset.hover !== '1') return;
-    hoverTimer = setTimeout(() => {
-      hoverTimer = null;
-      if (!w.isConnected) return;
+    skip: (w) => w.classList.contains('g-w--pick') && !answered(w),
+    busy: () => !!pop && pop.dataset.hover !== '1',   // a popup opened by a click is the reader's own; leave it alone
+    show: (w) => {
       const ctxLa = w.closest('.g-la, [lang="la"]')?.textContent ?? '';
       showGloss(w, w.dataset.form ?? w.textContent, w.textContent, ctxLa, { hover: true });
-    }, HOVER_IN_MS);
-  }
-  function onHoverOut(e) {
-    const w = e.target?.closest?.('.g-w, .g-wx');
-    if (!w) return;
-    const to = e.relatedTarget;
-    if (to && (w.contains(to) || to.closest?.('.g-pop'))) return;   // into the popup itself, or the word's own punctuation
-    clearHoverTimer();
-    hoverWord = null;
-    closeHoverPop();
-  }
-  // `root` and not `body`: body is rebuilt by every draw(), and is still null when this runs.
-  root.addEventListener('mouseover', onHoverIn);
-  root.addEventListener('mouseout', onHoverOut);
+    },
+    hide: () => { if (pop && pop.dataset.hover === '1') closePop(); },
+  });
 
   /** A Latin sentence as tappable words. `target`: word index (or a list of them) to mark; `tap(index)`: the words are the answer; a `___` blank is marked as the target. */
   function latin(la, { target = null, tap = null, cls = '' } = {}) {

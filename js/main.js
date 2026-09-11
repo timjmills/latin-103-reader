@@ -134,7 +134,25 @@ async function boot() {
   // "In plain words" under every note: settings.plainOpen is the learner's last
   // choice, so the disclosures stay open once one has been opened.
   const plain = { get: () => !!settings.plainOpen, set: (on) => { if (!!settings.plainOpen !== !!on) saveSettings({ plainOpen: !!on }); } };
-  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, live, listen: $('#listen'), plain, progressBar: $('#progress'), readSettled });
+  // The pointer-dictionary's lookup (reader.js `showTip`): the same ranked call the panel makes on
+  // a click — the word as the book prints it, with its sentence, so `māla` in a sentence about
+  // apples is apples in the tooltip and in the entry alike. It reads nothing and writes nothing:
+  // resting the pointer on a word is not the learner saying they had to look it up, so no lookup is
+  // recorded and the tap cycle is untouched.
+  const gloss = (text, { context = '', at } = {}) => {
+    const r = dict.lookup(text, context ? { context, at: Number.isFinite(at) ? at : undefined } : {});
+    return {
+      readings: r.entries.slice(0, 1).map((e) => dict.describe(e, { compact: !!settings.compact, form: text, context })),
+      total: r.entries.length,
+    };
+  };
+  const reader = createReader({ root: readerEl, tokenize: tok.tokenize, describeForm, gloss, live, listen: $('#listen'), plain, progressBar: $('#progress'), readSettled });
+  // Latin the shell draws itself, outside the reading text: the chapter page's title and its list of
+  // readings, and the weeks menu's chapter names. The chapter page's Grammar tab is left out — the
+  // Grammar section renders into it and brings its own pointer-dictionary, which knows about its
+  // items; two of them on one panel would be two different tooltips over one word.
+  reader.hoverGloss($('#chapter'), { off: '#chapter-panel-grammar' });
+  reader.hoverGloss($('#weeks'));
   const panel = createWordPanel({
     dialog: $('#popup'), aside: $('#panel'), layout,
     lookup: dict.lookup, describe: dict.describe, paradigm: par.paradigm, store,
