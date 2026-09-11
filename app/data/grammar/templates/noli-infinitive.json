@@ -1,0 +1,799 @@
+{
+ "skill": "noli-infinitive",
+ "chapter": 20,
+ "templates": [
+  {
+   "id": "ni-t1",
+   "la": "Nōlī in {p:abl} {inf:inf.pres}, {n:voc}!",
+   "en": "Do not {inf:base} in {p}, {n:bare}!",
+   "slots": {
+    "p": {
+     "only": [
+      "hortus",
+      "ātrium",
+      "cubiculum",
+      "lūdus",
+      "silva",
+      "via",
+      "peristylum"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "lemmas": [
+      "clāmō",
+      "dormiō",
+      "currō",
+      "lūdō",
+      "cantō",
+      "canō",
+      "sedeō",
+      "iaceō",
+      "ambulō",
+      "maneō",
+      "plōrō",
+      "rīdeō",
+      "lacrimō",
+      "pugnō"
+     ],
+     "absolute": true
+    },
+    "n": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "art": ""
+    }
+   },
+   "focus": "Nōlī",
+   "words": 5
+  },
+  {
+   "id": "ni-t2",
+   "la": "Nōlīte in {p:abl} {inf:inf.pres}, {n:voc}!",
+   "en": "Do not {inf:base} in {p}, {n:bare}!",
+   "slots": {
+    "p": {
+     "only": [
+      "hortus",
+      "ātrium",
+      "cubiculum",
+      "lūdus",
+      "silva",
+      "via",
+      "peristylum"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "lemmas": [
+      "clāmō",
+      "dormiō",
+      "currō",
+      "lūdō",
+      "cantō",
+      "canō",
+      "sedeō",
+      "iaceō",
+      "ambulō",
+      "maneō",
+      "plōrō",
+      "rīdeō",
+      "lacrimō",
+      "pugnō"
+     ],
+     "absolute": true
+    },
+    "n": {
+     "only": [
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus",
+      "mīles",
+      "nauta"
+     ],
+     "number": "pl",
+     "art": ""
+    }
+   },
+   "focus": "Nōlīte",
+   "words": 5
+  },
+  {
+   "id": "ni-t3",
+   "la": "Nōlī {o:acc} {poss:acc} {inf:inf.pres}, {n:voc}!",
+   "en": "Do not {inf:base} {poss} {o:bare}, {n:bare}!",
+   "slots": {
+    "o": {
+     "sem": [
+      "thing",
+      "food",
+      "animal"
+     ],
+     "number": "any",
+     "not": [
+      "lupus",
+      "leō",
+      "bēstia",
+      "ursus"
+     ]
+    },
+    "poss": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "meus"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "obj": "o",
+     "lemmas": [
+      "legō",
+      "sūmō",
+      "tangō",
+      "capiō",
+      "aperiō",
+      "claudō",
+      "portō",
+      "bibō",
+      "verberō",
+      "pulsō",
+      "vēndō",
+      "occultō",
+      "timeō"
+     ]
+    },
+    "n": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "art": ""
+    }
+   },
+   "focus": "Nōlī",
+   "words": 5
+  },
+  {
+   "id": "ni-t4",
+   "la": "Nōlīte {o:acc} {poss:acc} {inf:inf.pres}, {n:voc}!",
+   "en": "Do not {inf:base} {poss} {o:bare}, {n:bare}!",
+   "slots": {
+    "o": {
+     "sem": [
+      "thing",
+      "food",
+      "animal"
+     ],
+     "number": "any",
+     "not": [
+      "lupus",
+      "leō",
+      "bēstia",
+      "ursus"
+     ]
+    },
+    "poss": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "meus"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "obj": "o",
+     "lemmas": [
+      "legō",
+      "sūmō",
+      "tangō",
+      "capiō",
+      "aperiō",
+      "claudō",
+      "portō",
+      "bibō",
+      "verberō",
+      "pulsō",
+      "vēndō",
+      "occultō",
+      "timeō"
+     ]
+    },
+    "n": {
+     "only": [
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "number": "pl",
+     "art": ""
+    }
+   },
+   "focus": "Nōlīte",
+   "words": 5
+  },
+  {
+   "id": "ni-t5",
+   "la": "Nōlī {o:acc} {adj:acc} {inf:inf.pres}, {n:voc}!",
+   "en": "Do not {inf:base} {o}, {n:bare}!",
+   "slots": {
+    "o": {
+     "only": [
+      "puer",
+      "puella",
+      "servus",
+      "ancilla",
+      "discipulus",
+      "amīcus",
+      "frāter",
+      "soror",
+      "canis",
+      "equus",
+      "asinus",
+      "ovis",
+      "avis",
+      "bēstia",
+      "lupus"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "o",
+     "only": [
+      "improbus",
+      "piger",
+      "stultus",
+      "parvus",
+      "aeger",
+      "fessus",
+      "miser",
+      "trīstis",
+      "ferus",
+      "niger",
+      "magnus",
+      "novus"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "obj": "o",
+     "lemmas": [
+      "timeō",
+      "verberō",
+      "pulsō",
+      "exspectō",
+      "vocō",
+      "excitō",
+      "tangō",
+      "sequor",
+      "interrogō",
+      "salūtō",
+      "accūsō",
+      "reprehendō",
+      "relinquō"
+     ]
+    },
+    "n": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "art": ""
+    }
+   },
+   "focus": "Nōlī",
+   "words": 5
+  },
+  {
+   "id": "ni-t6",
+   "la": "Nōlī cum {c:abl} {inf:inf.pres}, {n:voc}!",
+   "en": "Do not {inf:base} with {c}, {n:bare}!",
+   "slots": {
+    "c": {
+     "only": [
+      "puer",
+      "puella",
+      "servus",
+      "ancilla",
+      "discipulus",
+      "amīcus",
+      "mīles",
+      "nauta",
+      "frāter",
+      "soror",
+      "līberī"
+     ],
+     "number": "pl"
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "lemmas": [
+      "loquor",
+      "lūdō",
+      "ambulō",
+      "colloquor",
+      "pugnō",
+      "sedeō",
+      "currō"
+     ],
+     "absolute": true
+    },
+    "n": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "art": ""
+    }
+   },
+   "focus": "Nōlī",
+   "words": 5
+  },
+  {
+   "id": "ni-t7",
+   "la": "Nōlīte {adj:nom} esse, {n:voc} {poss:voc}!",
+   "en": "Do not be {adj}, {poss} {n:bare}!",
+   "slots": {
+    "adj": {
+     "pos": "ADJ",
+     "agree": "n",
+     "pred": true,
+     "only": [
+      "improbus",
+      "piger",
+      "stultus",
+      "trīstis",
+      "sordidus",
+      "tacitus",
+      "indoctus"
+     ]
+    },
+    "n": {
+     "only": [
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus",
+      "līberī"
+     ],
+     "number": "pl",
+     "art": ""
+    },
+    "poss": {
+     "pos": "ADJ",
+     "agree": "n",
+     "only": [
+      "meus"
+     ]
+    }
+   },
+   "focus": "Nōlīte",
+   "words": 5
+  },
+  {
+   "id": "ni-t8",
+   "la": "Nōlī ad {p:acc} {sol:nom} {inf:inf.pres}, {n:voc}!",
+   "en": "Do not {inf:base} to {p} {sol}, {n:bare}!",
+   "slots": {
+    "p": {
+     "only": [
+      "fluvius",
+      "silva",
+      "mare",
+      "oppidum",
+      "urbs",
+      "forum",
+      "flūmen"
+     ]
+    },
+    "sol": {
+     "pos": "ADJ",
+     "agree": "n",
+     "only": [
+      "sōlus"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "lemmas": [
+      "eō",
+      "currō",
+      "ambulō",
+      "abeō",
+      "discēdō",
+      "redeō",
+      "pergō"
+     ],
+     "absolute": true
+    },
+    "n": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "art": ""
+    }
+   },
+   "focus": "Nōlī",
+   "words": 6
+  },
+  {
+   "id": "ni-t9",
+   "la": "{imp:pres.imper.act.2sg}, {n:voc}, et nōlī {inf:inf.pres}!",
+   "en": "{imp:base}, {n:bare}, and do not {inf:base}!",
+   "slots": {
+    "imp": {
+     "pos": "V",
+     "form": "pres.imper.act.2sg",
+     "subj": "n",
+     "lemmas": [
+      "taceō",
+      "sedeō",
+      "surgō",
+      "veniō",
+      "maneō",
+      "vigilō"
+     ],
+     "absolute": true
+    },
+    "n": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "art": ""
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "lemmas": [
+      "rīdeō",
+      "clāmō",
+      "plōrō",
+      "dormiō",
+      "currō",
+      "lūdō",
+      "cantō",
+      "lacrimō",
+      "fugiō",
+      "abeō",
+      "discēdō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "nōlī",
+   "words": 5
+  },
+  {
+   "id": "ni-t10",
+   "la": "Nōlī, {n:voc}, ex {p:abl} {inf:inf.pres}!",
+   "en": "Do not {inf:base} from {p}, {n:bare}!",
+   "slots": {
+    "n": {
+     "only": [
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Sextus",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "puer",
+      "puella",
+      "discipulus",
+      "servus",
+      "ancilla",
+      "fīlius",
+      "amīcus"
+     ],
+     "art": ""
+    },
+    "p": {
+     "only": [
+      "lectulus",
+      "cubiculum",
+      "ātrium",
+      "hortus",
+      "vīlla",
+      "lūdus",
+      "oppidum",
+      "urbs"
+     ]
+    },
+    "inf": {
+     "pos": "V",
+     "form": "inf.pres",
+     "subj": "n",
+     "lemmas": [
+      "surgō",
+      "exeō",
+      "currō",
+      "discēdō",
+      "fugiō",
+      "ēgredior",
+      "abeō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "Nōlī",
+   "words": 6
+  }
+ ],
+ "exclude": [
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "lectulus",
+    "inf": "exeō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "lectulus",
+    "inf": "currō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "lectulus",
+    "inf": "discēdō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "lectulus",
+    "inf": "fugiō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "lectulus",
+    "inf": "ēgredior"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "lectulus",
+    "inf": "abeō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "cubiculum",
+    "inf": "surgō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "ātrium",
+    "inf": "surgō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "hortus",
+    "inf": "surgō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "vīlla",
+    "inf": "surgō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "lūdus",
+    "inf": "surgō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "oppidum",
+    "inf": "surgō"
+   }
+  },
+  {
+   "template": "ni-t10",
+   "fill": {
+    "p": "urbs",
+    "inf": "surgō"
+   }
+  },
+  {
+   "template": "ni-t9",
+   "fill": {
+    "imp": "surgō",
+    "inf": "currō"
+   }
+  },
+  {
+   "template": "ni-t9",
+   "fill": {
+    "imp": "sedeō",
+    "inf": "dormiō"
+   }
+  }
+ ],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11)",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 8,
+    "rate": 0.2,
+    "causes": [
+     "'go out out of': the English says 'from' where the pattern prints ex",
+     "'Hear, pupil': audiō dropped from the imperative list",
+     "'cum = with · ancillīs = with the slave girls': the companion slot no longer carries its own 'with'",
+     "out-of-chapter verbs and adjectives removed from the lists"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 5,
+    "rate": 0.125,
+    "causes": [
+     "free adjectives on a person object ('the strong little daughters', 'the Roman sister'): a curated list",
+     "'with the mothers / doctors': the companions are children, servants, soldiers and sailors"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.075,
+    "causes": [
+     "'get up from the town': surgō excluded with every place but the bed",
+     "'beat the bad father', 'call the sad shopkeepers': the object slot is children, servants and animals",
+     "'hide my wolves': wild animals excluded from the possessed-object slot"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'the lazy birds' (borderline, left); porcus (chapter 21) removed from a chapter-20 list"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   }
+  ],
+  "final_rate": 0.0
+ }
+}

@@ -1711,6 +1711,27 @@ needs a fixed-number subject beside it. Each file's `review` record holds
 `passes` (`pass`, `seed`, `generated`, `rejected`, `rate`, `causes`) and
 `final_rate`.
 
+Added for the second wave (2026-09-11, six more skills): an **enclitic printed
+on a slot** — `{b:nom}que`, `{be:pres.ind}ne` — is one printed word, checked
+on the slot's bare form, glossed as "and the island (īnsula + -que 'and')" /
+"is …? (est + the question tail -ne)", and is the focus when the slot is;
+**`sum`** is drawn into a verb slot that says `takes: "pred"` (`est` / `sunt`
+by the subject's number); an `ADJ` slot with **`degree: comp | super`** draws
+the agreeing comparative (`multō altior`, English "taller" / "more beautiful");
+an `ADJ` slot with **`adv: pos | comp | super`** and an `only` list draws the
+adverb made from an adjective (`fortiter · fortius · fortissimē`, "bravely · more
+bravely · most bravely"; the list is curated because the tables also carry
+Whitaker's `magnē`-type forms); the verb form **`gerundive`** agrees with its
+`agree` slot (passive in sense, so the subject must be a thing the verb takes as
+its object; `agent` names a dative of agent) or, with no `agree`, is the
+impersonal neuter `dormiendum est`, glossed "one must sleep"; `ptc.perf.pass`
+is glossed as a past participle ("opened"), the imperative as "be silent!".
+`form_matches_parts` now also refuses a gerundive without its conjugation's
+`-and-` / `-end-` / `-iend-` and a perfect participle not built on the deck's
+supine. Every template file carries a **`review`** record —
+`{"passes": [{"pass", "seed", "generated", "rejected", "rate", "causes"}], "final_rate"}`
+— and the coverage check reads it.
+
 **A deck word's frame** (`app/data/grammar/vocab/NN.json`, source
 `pipeline/sem.json`): a noun carries one class; an adjective
 `{"of": [classes], "only"?/"also"?: [lemmas], "number"?, "det"?: true}`; a verb

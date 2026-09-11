@@ -234,8 +234,6 @@
     "o": {
      "sem": [
       "thing",
-      "person",
-      "animal",
       "food"
      ],
      "number": "any"
@@ -245,11 +243,25 @@
      "form": "pres.ind",
      "subj": "s",
      "obj": "o",
-     "not": [
+     "lemmas": [
+      "spectō",
+      "numerō",
+      "portō",
+      "sūmō",
       "capiō",
-      "interficiō",
-      "necō",
-      "occidō"
+      "quaerō",
+      "emō",
+      "vēndō",
+      "lavō",
+      "parō",
+      "aperiō",
+      "claudō",
+      "legō",
+      "scrībō",
+      "tangō",
+      "teneō",
+      "ostendō",
+      "occultō"
      ]
     }
    },
@@ -318,8 +330,15 @@
      "pos": "ADJ",
      "agree": "s",
      "not": [
+      "Graecus",
+      "Rōmānus",
+      "barbarus",
+      "gallus",
       "mortuus",
+      "nūdus",
       "pecūniōsus",
+      "togātus",
+      "valēns",
       "vērus",
       "vīvus"
      ]
@@ -545,15 +564,22 @@
      "g": "with"
     },
     "o": {
-     "sem": [
-      "person"
+     "only": [
+      "servus",
+      "puer",
+      "discipulus",
+      "ancilla",
+      "fīlius",
+      "asinus",
+      "canis",
+      "equus",
+      "Mārcus",
+      "Quīntus",
+      "Sextus",
+      "Dāvus",
+      "Mēdus"
      ],
-     "number": "any",
-     "not": [
-      "magister",
-      "dominus",
-      "pater"
-     ]
+     "number": "any"
     },
     "v": {
      "pos": "V",
@@ -700,5 +726,43 @@
    "words": 6
   }
  ],
- "exclude": []
+ "exclude": [],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11); the pilot's own six reads (50% → 1.6%, contract §11a) preceded these",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 21,
+    "generated": 40,
+    "rejected": 6,
+    "rate": 0.15,
+    "causes": [
+     "objects drawn by frame alone in t3 ('divides the styluses', 'places water', 'covers the girl'): a lemma list",
+     "free adjectives on the subject in t4 ('the naked son', 'strong Aemilia'): nūdus, valēns and the nationality adjectives excluded",
+     "a teacher hitting a mother with a rod in t7: the one beaten is a child, a slave or an animal"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 22,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'Aemilia carries the porters': t3's object is a thing or food, its verbs a matching list"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 23,
+    "generated": 40,
+    "rejected": 2,
+    "rate": 0.05,
+    "causes": [
+     "'washes the tears', 'the healthy parent comes back' (borderline, left)"
+    ]
+   }
+  ],
+  "final_rate": 0.05
+ }
 }

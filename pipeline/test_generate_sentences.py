@@ -525,3 +525,224 @@ def test_a_count_is_exact_for_a_small_template_and_estimated_for_a_large_one(lex
     assert small["exact"] and small["count"] > 100
     large = g.count_template(lex, data["chapter"], data["templates"][0], data["exclude"], cap=10, sample=50)
     assert not large["exact"] and large["count"] > 0
+
+
+# ------------------------------------------------------------ the second wave's additions
+# enclitics on a slot, sum as a predicate verb, adverbs and comparatives made
+# from adjectives, the gerundive, the perfect participle's gloss — each pinned
+# on the cause the six new skills' hostile reads found.
+
+SECOND = ["enclitics", "adverbs", "ablative-degree", "noli-infinitive", "ablative-absolute-perfect",
+          "passive-periphrastic"]
+
+
+@pytest.fixture(scope="module")
+def second_batches(lex):
+    return {skill: g.generate(skill, 40, 1, lex) for skill in SECOND}
+
+
+def _fill(lex, t, chapter, seed=1):
+    for s in range(seed, seed + 50):
+        f = g.fill_template(lex, chapter, t, __import__("random").Random(s))
+        if f is not None:
+            return f
+    raise AssertionError(f"{t['id']} never fills")
+
+
+def test_an_enclitic_printed_on_a_slot_is_one_word_glossed_and_inside_the_vocabulary(lex):
+    t = {"id": "x", "la": "{a:nom} {b:nom}que in {p:abl} {be:pres.ind}.", "en": "{a} and {b} are in {p}.",
+         "slots": {"a": {"only": ["fluvius"]}, "b": {"only": ["īnsula"]}, "p": {"only": ["prōvincia"]},
+                   "be": {"pos": "V", "form": "pres.ind", "subj": ["a", "b"], "takes": "pred", "lemmas": ["sum"]}},
+         "focus": "b"}
+    fill = _fill(lex, t, 1)
+    la = g.render_la(fill)
+    assert la == "Fluvius īnsulaque in prōvinciā sunt."
+    assert g._enclitic_slots(t) == {"b": "que"} and g._printed(fill, "b") == "īnsulaque"
+    assert g.focus_text(fill) == "īnsulaque"
+    gloss = g.render_gloss(fill, la, lex)
+    assert gloss[1] == {"w": "īnsulaque", "m": "and the island (īnsula + -que 'and')"}
+    assert gloss[4]["m"] == "are"
+    assert g.check_sentence(lex, 1, t, fill, la, [], g.render_en(fill), gloss) == []
+
+
+def test_the_question_tail_rides_on_the_verb(lex):
+    t = {"id": "x", "la": "{be:pres.ind}ne {a:nom} magnum in {p:abl}?", "en": "{be} {a} in {p}?",
+         "slots": {"be": {"pos": "V", "form": "pres.ind", "subj": "a", "takes": "pred", "lemmas": ["sum"]},
+                   "a": {"only": ["oppidum"]}, "p": {"only": ["prōvincia"]}}, "focus": "be",
+         "fixed_gloss": {"magnum": "large"}}
+    fill = _fill(lex, t, 1)
+    la = g.render_la(fill)
+    assert la == "Estne oppidum magnum in prōvinciā?"
+    assert g.render_gloss(fill, la, lex)[0]["m"] == "is …? (est + the question tail -ne)"
+    assert g.check_sentence(lex, 1, t, fill, la, [], g.render_en(fill), g.render_gloss(fill, la, lex)) == []
+
+
+def test_sum_is_drawn_only_into_a_slot_that_asks_for_a_predicate(lex):
+    v = word(lex, "sum", "V")
+    fill = g.Fill({"slots": {"s": {"sem": ["person"]}, "v": {"pos": "V", "form": "pres.ind", "subj": "s"}},
+                   "la": "{s:nom} {v:pres.ind}.", "en": "", "id": "x", "focus": "v"})
+    fill.words["s"], fill.numbers["s"] = word(lex, "puer"), "sg"
+    assert not g.verb_admits(v, fill.t["slots"]["v"], fill)
+    assert g.verb_admits(v, {"pos": "V", "form": "pres.ind", "subj": "s", "takes": "pred"}, fill)
+
+
+@pytest.mark.parametrize("lemma,degree,form,english", [
+    ("fortis", "pos", "fortiter", "bravely"), ("fortis", "comp", "fortius", "more bravely"),
+    ("fortis", "super", "fortissimē", "most bravely"), ("rēctus", "pos", "rēctē", "correctly"),
+    ("pulcher", "super", "pulcherrimē", "most beautifully"), ("brevis", "pos", "breviter", "briefly"),
+    ("laetus", "pos", "laetē", "happily"), ("bonus", "comp", "melius", "better"),
+])
+def test_an_adverb_is_made_from_its_adjective(lex, lemma, degree, form, english):
+    a = word(lex, lemma, "ADJ")
+    assert g.adverb_form(a, degree) == form
+    assert g.en_adverb(a, degree) == english
+
+
+@pytest.mark.parametrize("base,degree,expected", [
+    ("wide", "comp", "wider"), ("tall", "comp", "taller"), ("happy", "comp", "happier"), ("sad", "comp", "sadder"),
+    ("good", "comp", "better"), ("bad", "super", "worst"), ("beautiful", "comp", "more beautiful"),
+    ("strict", "comp", "stricter"), ("sensible", "comp", "more sensible"), ("big", "super", "biggest"),
+])
+def test_english_comparatives(base, degree, expected):
+    assert g.en_degree(base, degree) == expected
+
+
+def test_a_comparative_adjective_agrees_and_is_reparsed(lex):
+    t = {"id": "x", "la": "{s:nom} multō {adj:nom} est quam {s2:nom}.", "en": "{s} is much {adj} than {s2}.",
+         "slots": {"s": {"only": ["Mārcus"]}, "adj": {"pos": "ADJ", "agree": "s", "degree": "comp", "pred": True,
+                                                       "only": ["fortis"]}, "s2": {"only": ["Quīntus"]}},
+         "focus": "multō", "fixed_gloss": {"multō": "by much", "quam": "than"}}
+    fill = _fill(lex, t, 16)
+    la = g.render_la(fill)
+    assert la == "Mārcus multō fortior est quam Quīntus."
+    assert fill.parses["adj"]["degree"] == "comp"
+    assert g.render_en(fill) == "Marcus is much braver than Quintus."
+    gloss = g.render_gloss(fill, la, lex)
+    assert [x["m"] for x in gloss] == ["Marcus", "by much", "stronger", "is", "than", "Quintus"]
+    assert g.check_sentence(lex, 16, t, fill, la, [], g.render_en(fill), gloss) == []
+
+
+def test_the_gerundive_agrees_with_its_subject_and_stands_alone_impersonally(lex):
+    t = {"id": "x", "la": "Omnēs {s:nom} hodiē {ger:gerundive} {be:pres.ind}.", "en": "All the {s:bare} must be {ger:pp} today.",
+         "slots": {"s": {"only": ["epistula"], "number": "pl"},
+                   "ger": {"pos": "V", "form": "gerundive", "agree": "s", "lemmas": ["scrībō"]},
+                   "be": {"pos": "V", "form": "pres.ind", "subj": "s", "takes": "pred", "lemmas": ["sum"]}},
+         "focus": "ger"}
+    fill = _fill(lex, t, 31)
+    la = g.render_la(fill)
+    assert la == "Omnēs epistulae hodiē scrībendae sunt."
+    assert g.render_en(fill) == "All the letters must be written today."
+    assert g.render_gloss(fill, la, lex)[3]["m"] == "to be written"
+    assert g.check_sentence(lex, 31, t, fill, la, [], g.render_en(fill), g.render_gloss(fill, la, lex)) == []
+    imp = {"id": "y", "la": "Post cēnam statim {ger:gerundive} est.", "en": "After dinner one must {ger:base} at once.",
+           "slots": {"ger": {"pos": "V", "form": "gerundive", "lemmas": ["dormiō"], "absolute": True}}, "focus": "ger",
+           "fixed_gloss": {"Post": "after"}}
+    fill = _fill(lex, imp, 31)
+    la = g.render_la(fill)
+    assert la == "Post cēnam statim dormiendum est."
+    assert fill.parses["ger"] == {"mood": "gerundive", "case": "nom", "number": "sg", "gender": "n"}
+    assert g.render_gloss(fill, la, lex)[3]["m"] == "one must sleep"
+
+
+def test_a_transitive_verb_is_never_an_impersonal_gerundive_and_an_intransitive_never_agrees(lex):
+    imp = {"pos": "V", "form": "gerundive", "lemmas": ["legō", "dormiō"]}
+    fill = g.Fill({"slots": {"ger": imp}, "la": "{ger:gerundive} est.", "en": "", "id": "x", "focus": "ger"})
+    assert not g.verb_admits(word(lex, "legō", "V"), imp, fill)
+    assert g.verb_admits(word(lex, "dormiō", "V"), imp, fill)
+    agr = {"pos": "V", "form": "gerundive", "agree": "s", "lemmas": ["legō", "dormiō"]}
+    fill = g.Fill({"slots": {"s": {"only": ["epistula"]}, "ger": agr}, "la": "{s:nom} {ger:gerundive} est.",
+                   "en": "", "id": "x", "focus": "ger"})
+    fill.words["s"], fill.numbers["s"] = word(lex, "epistula"), "sg"
+    assert g.verb_admits(word(lex, "legō", "V"), agr, fill)
+    assert not g.verb_admits(word(lex, "dormiō", "V"), agr, fill)
+
+
+@pytest.mark.parametrize("lemma,form,parse,fragment", [
+    ("vocō", "vocendus", {"mood": "gerundive", "case": "nom", "number": "sg", "gender": "m"}, "1st-conjugation"),
+    ("audiō", "audendus", {"mood": "gerundive", "case": "nom", "number": "sg", "gender": "m"}, "4th-conjugation"),
+    ("parō", "parītō", {"mood": "ptc", "tense": "perf", "voice": "pass", "case": "abl", "number": "sg", "gender": "m"}, "supine"),
+])
+def test_a_gerundive_or_participle_off_the_dictionary_line_is_refused(lex, lemma, form, parse, fragment):
+    bad = g.form_matches_parts(word(lex, lemma, "V"), form, parse)
+    assert bad and (fragment in bad or "not built on" in bad)
+
+
+@pytest.mark.parametrize("lemma,form,parse", [
+    ("vocō", "vocandus", {"mood": "gerundive", "case": "nom", "number": "sg", "gender": "m"}),
+    ("audiō", "audiendus", {"mood": "gerundive", "case": "nom", "number": "sg", "gender": "m"}),
+    ("parō", "parātō", {"mood": "ptc", "tense": "perf", "voice": "pass", "case": "abl", "number": "sg", "gender": "m"}),
+])
+def test_a_sound_gerundive_or_participle_passes(lex, lemma, form, parse):
+    assert g.form_matches_parts(word(lex, lemma, "V"), form, parse) is None
+
+
+def test_the_perfect_participle_and_the_imperative_are_glossed_as_such(lex):
+    t = {"id": "x", "la": "{n:abl} {ptc:ptc.perf.pass}, {s:nom} in {p:acc} {v:perf.ind}.",
+         "en": "{n:the} {ptc:pp}, {s} {v} into {p}.",
+         "slots": {"n": {"only": ["iānua"], "g": ""}, "ptc": {"pos": "V", "form": "ptc.perf.pass", "agree": "n", "lemmas": ["aperiō"]},
+                   "s": {"only": ["canis"]}, "p": {"only": ["hortus"]},
+                   "v": {"pos": "V", "form": "perf.ind", "subj": "s", "lemmas": ["currō"]}}, "focus": ["n", "ptc"]}
+    fill = _fill(lex, t, 22)
+    la = g.render_la(fill)
+    assert la == "Iānuā apertā, canis in hortum cucurrit."
+    assert g.render_en(fill) == "The door opened, the dog ran into the garden."
+    assert g.render_gloss(fill, la, lex)[1]["m"] == "opened"
+    assert g.focus_text(fill) == "iānuā apertā"
+    imp = {"id": "y", "la": "{imp:pres.imper.act.2sg}, {n:voc}, et nōlī {inf:inf.pres}!",
+           "en": "{imp:base}, {n:bare}, and do not {inf:base}!",
+           "slots": {"imp": {"pos": "V", "form": "pres.imper.act.2sg", "subj": "n", "lemmas": ["taceō"], "absolute": True},
+                     "n": {"only": ["Mārcus"], "art": ""},
+                     "inf": {"pos": "V", "form": "inf.pres", "subj": "n", "lemmas": ["rīdeō"], "absolute": True}},
+           "focus": "nōlī"}
+    fill = _fill(lex, imp, 20)
+    la = g.render_la(fill)
+    assert la == "Tacē, Mārce, et nōlī rīdēre!"
+    assert g.render_en(fill) == "Be silent, Marcus, and do not laugh!"
+    assert [x["m"] for x in g.render_gloss(fill, la, lex)] == ["be silent!", "Marcus", "and", "do not", "to laugh"]
+
+
+@pytest.mark.parametrize("base,shape,expected", [("open", "past", "opened"), ("open", "ing", "opening")])
+def test_open_does_not_double_its_consonant(base, shape, expected):
+    assert g.en_verb(base, shape) == expected
+
+
+def test_hic_and_omnis_read_naturally_in_the_plural(lex):
+    t = {"id": "x", "la": "{dem:nom} {s:nom} {omn:nom} {ger:gerundive} sunt.", "en": "{omn} {dem} {s:bare} must be {ger:pp}.",
+         "slots": {"dem": {"pos": "PRON", "lemma": "hic", "agree": "s"}, "s": {"only": ["epistula"], "number": "pl"},
+                   "omn": {"pos": "ADJ", "agree": "s", "only": ["omnis"]},
+                   "ger": {"pos": "V", "form": "gerundive", "agree": "s", "lemmas": ["legō"]}}, "focus": "ger"}
+    fill = _fill(lex, t, 31)
+    assert g.render_la(fill) == "Hae epistulae omnēs legendae sunt."
+    assert g.render_en(fill) == "All these letters must be read."
+
+
+def test_every_second_wave_template_file_validates_and_carries_its_review():
+    for skill in SECOND:
+        data = g.load_templates(skill)
+        assert 6 <= len(data["templates"]) <= 10, skill
+        assert data["review"]["passes"] and data["review"]["final_rate"] <= 0.05, skill
+
+
+@pytest.mark.parametrize("skill", SECOND)
+def test_the_second_wave_ships_forty_that_hold_the_learner_facing_invariants(second_batches, lex, skill):
+    res = second_batches[skill]
+    assert len(res["sentences"]) == 40
+    chapter = res["chapter"]
+    forms = lex.forms_at(chapter)
+    names = {g.key_of(f) for w in lex.names(chapter) for f in w.index}
+    for s in res["sentences"]:
+        n = len(s["la"].split())
+        assert 5 <= n <= 8 and s["words"] == n, s["la"]
+        assert "{" not in s["en"] and "}" not in s["en"], s["en"]
+        assert not re.search(r"\b(\w+) \1\b", s["en"].lower()), s["en"]
+        assert " out out of" not in s["en"] and "openned" not in s["en"], s["en"]
+        assert len(s["gloss"]) == n and all(x["m"] not in ("", "?") for x in s["gloss"]), s["gloss"]
+        toks = [x["w"].strip(".,;:!?").lower() for x in s["gloss"]]
+        assert s["focus"].split()[0].lower() in toks, (s["la"], s["focus"])
+        for x in s["gloss"]:
+            w = x["w"]
+            k = g.key_of(w)
+            stem = next((k[:-len(e)] for e in g.ENCLITICS if k.endswith(e) and k[:-len(e)] in forms), None)
+            assert k in forms or k in names or w in g.FUNCTION_WORDS or w.lower() in g.FUNCTION_WORDS or stem, (s["la"], w)
+    again = g.generate(skill, 40, 1, lex)
+    assert [x["la"] for x in again["sentences"]] == [x["la"] for x in res["sentences"]]
