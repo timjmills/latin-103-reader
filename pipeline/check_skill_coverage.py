@@ -485,7 +485,8 @@ def row_3(ctx, skill, cls, lesson, sents, templates):
                 if not t.get(k):
                     p.append(f"{tid}: no {k!r}")
             slots = t.get("slots") or {}
-            used = set(re.findall(r"\{(\w+)(?::[^}]*)?\}", t.get("la") or ""))
+            # {ab} is the generator's ā / ab macro (contract §11a), not a slot
+            used = set(re.findall(r"\{(\w+)(?::[^}]*)?\}", t.get("la") or "")) - {"ab"}
             missing = used - set(slots)
             if missing:
                 p.append(f"{tid}: slots {sorted(missing)} used but not declared")

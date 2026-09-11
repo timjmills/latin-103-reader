@@ -26,7 +26,11 @@ How a sentence is made
   2. Adjective slots are filled by an adjective whose `sem.of` (or `only` /
      `also` list) admits the noun it agrees with; determiners (`det`:
      possessives, quantifiers) are drawn only when the slot names them.  The
-     form is that noun's case, number and gender, positive degree.
+     form is that noun's case, number and gender, positive degree unless the
+     slot says `degree: comp | super`; a slot with `adv: pos | comp | super`
+     draws the adverb made from an adjective in its `only` list instead.
+     An enclitic printed on a slot ({b:nom}que, {be:pres.ind}ne) is one
+     printed word, checked and glossed on the slot's bare form.
   3. Verb slots are filled by a verb whose `sem` admits the classes (or the
      exact words) of its subject, object, dative and — in the passive — its
      agent; the finite form takes its person and number from the subject
@@ -110,7 +114,15 @@ FIXED_GLOSS = {
     "vidente": "seeing", "esse": "to be", "posse": "to be able", "fīat": "become", "vult": "wants",
     "ego": "I", "nōs": "we", "vōs": "you", "tū": "you", "sē": "himself",
     "eum": "him", "eam": "her", "eōs": "them", "eās": "them", "quī": "who", "quae": "who",
+    "est": "is", "sunt": "are", "erat": "was", "erit": "will be",
+    "nōlī": "do not", "nōlīte": "do not (to more than one)", "multō": "by much", "paulō": "by a little",
 }
+# An enclitic printed on a slot ({b:nom}que, {be:pres.ind}ne): the gloss it
+# wraps round the slot's own, with the slot's bare form for the learner.
+ENCLITICS = ("que", "ne", "ve")
+ENCLITIC_RE = re.compile(r"\{(\w+)(?::[\w.]+)?\}(que|ne|ve)\b")
+ENCLITIC_GLOSS = {"que": "and {m} ({stem} + -que 'and')", "ne": "{m} …? ({stem} + the question tail -ne)",
+                  "ve": "or {m} ({stem} + -ve 'or')"}
 # Construction words (contract §1) that belong to no deck at the chapter
 # where the construction is taught, each with its reason.
 FUNCTION_WORDS = {
@@ -257,6 +269,8 @@ EN_VERBS = {
     "intersum": "be between", "īnsum": "be in", "cōnstō": "cost", "conveniō": "suit",
     "tumultuō": "make an uproar", "subeō": "come up", "dēbeō": "owe", "careō": "lack",
     "impōnō": "put on", "remittō": "send back", "pessimō": "ruin",
+    # drawn only into a slot that asks for its complement (`takes: "pred"`)
+    "sum": "be",
 }
 EN_3SG = {"have": "has", "do": "does", "go": "goes"}
 # verbs whose English has no progressive ("loves", not "is loving")
@@ -301,6 +315,7 @@ EN_PLURALS = {
     "wife": "wives", "child": "children", "mouse": "mice", "goose": "geese",
     "person": "people", "mummy": "mummies", "cattle": "cattle", "clothes": "clothes",
     "as": "asses", "helmsman": "helmsmen", "craftsman": "craftsmen", "goods": "goods", "papyrus": "papyri",
+    "savings": "savings",
 }
 # nouns the English says without an article in the singular
 EN_MASS = {"water", "money", "bread", "wine", "milk", "meat", "food", "grain", "gold",
@@ -328,13 +343,25 @@ EN_DET = {"meus": "my", "tuus": "your", "noster": "our", "vester": "your", "mult
 # adjectives the English puts after the noun ("the father alone")
 EN_ADJ = {"sōlus": "alone"}
 # an adjective whose first deck sense misleads on the people it describes
-EN_ADJ_SENSE = {"clārus": "famous", "gravis": "serious"}
+EN_ADJ_SENSE = {"clārus": "famous", "gravis": "serious", "omnis": "all"}
+# two-syllable verbs whose last consonant is not doubled (opened, not openned)
+EN_NO_DOUBLE = {"open", "enter", "offer", "order", "visit", "cover", "gather", "answer", "wonder", "listen"}
 # English nouns whose plural keeps the Latin ending
 EN_LATIN_PLURALS = {"denarius"}
 # a better first sense than the deck's for the English sentence
-EN_NOUN = {"via": "road", "homō": "person", "coniūnx": "spouse", "vestīmentum": "garment", "lignum": "firewood"}
+EN_NOUN = {"via": "road", "homō": "person", "coniūnx": "spouse", "vestīmentum": "garment", "lignum": "firewood",
+           "imperium": "empire", "vestis": "garment"}
 # an adverb whose first deck sense misleads in the sentence
 EN_ADV = {"iam": "already"}
+# English comparatives and superlatives the -er / -est rule does not give
+EN_DEGREE = {"good": ("better", "best"), "bad": ("worse", "worst"), "big": ("bigger", "biggest"),
+             "large": ("larger", "largest"), "small": ("smaller", "smallest"), "little": ("less", "least"),
+             "much": ("more", "most"), "many": ("more", "most"), "far": ("farther", "farthest"),
+             "well": ("better", "best"), "badly": ("worse", "worst")}
+# the adverb of an adjective when "-ly" on the deck's sense misleads
+EN_ADVERB_OF = {"bonus": "well", "malus": "badly", "brevis": "briefly", "turpis": "shamefully",
+                "foedus": "horribly", "clārus": "clearly", "rēctus": "correctly", "prāvus": "wrongly",
+                "fortis": "bravely", "gravis": "seriously", "sevērus": "sternly", "levis": "lightly"}
 
 
 @lru_cache(maxsize=None)
@@ -665,7 +692,7 @@ def en_verb(base: str, shape: str, number: str = "sg", person: int = 3) -> str:
             return head + "d" + tail
         if re.search(r"[^aeiou]y$", head):
             return head[:-1] + "ied" + tail
-        if re.search(r"[^aeiou][aeiou][^aeiouwxy]$", head) and len(head) <= 4:
+        if re.search(r"[^aeiou][aeiou][^aeiouwxy]$", head) and len(head) <= 4 and head not in EN_NO_DOUBLE:
             return head + head[-1] + "ed" + tail
         return head + "ed" + tail
     if shape == "pp":
@@ -677,7 +704,7 @@ def en_verb(base: str, shape: str, number: str = "sg", person: int = 3) -> str:
             return head[:-2] + "ying" + tail
         if head.endswith("e") and head not in ("be", "see", "flee"):
             return head[:-1] + "ing" + tail
-        if re.search(r"[^aeiou][aeiou][^aeiouwxy]$", head) and len(head) <= 4:
+        if re.search(r"[^aeiou][aeiou][^aeiouwxy]$", head) and len(head) <= 4 and head not in EN_NO_DOUBLE:
             return head + head[-1] + "ing" + tail
         return head + "ing" + tail
     raise ValueError(shape)
@@ -735,6 +762,64 @@ def en_adj(word: Word) -> str:
     if word.lemma in EN_ADJ_SENSE:
         return EN_ADJ_SENSE[word.lemma]
     return re.sub(r"\s*\(.*?\)", "", word.meaning.split(",")[0]).strip()
+
+
+def en_degree(base: str, degree: str | None) -> str:
+    """The English comparative / superlative of an adjective or adverb phrase:
+    -er / -est on a one-syllable word or a two-syllable -y word, else more / most."""
+    if not degree or degree == "pos":
+        return base
+    i = 0 if degree == "comp" else 1
+    if base in EN_DEGREE:
+        return EN_DEGREE[base][i]
+    syllables = len(re.findall(r"[aeiouy]+", base))
+    if re.search(r"[^aeiouyl]e$", base):
+        syllables -= 1                      # a silent final e: wide, brave
+    if " " in base or syllables > 2 or (syllables == 2 and not base.endswith("y")) or base.endswith("ly"):
+        return ("more " if i == 0 else "most ") + base
+    end = "er" if i == 0 else "est"
+    if base.endswith("e"):
+        return base[:-1] + end
+    if re.search(r"[^aeiou]y$", base):
+        return base[:-1] + "i" + end
+    if re.search(r"[^aeiou][aeiou][^aeiouwxy]$", base) and syllables == 1:
+        return base + base[-1] + end
+    return base + end
+
+
+def en_adj_degree(word: Word, degree: str | None) -> str:
+    return en_degree(en_adj(word), degree)
+
+
+def en_adverb(word: Word, degree: str) -> str:
+    """The English adverb made from a deck adjective ("bravely", "more bravely")."""
+    if word.lemma in EN_ADVERB_OF:
+        adv = EN_ADVERB_OF[word.lemma]
+    else:
+        adj = en_adj(word)
+        if re.search(r"[^aeiou]y$", adj):
+            adv = adj[:-1] + "ily"
+        elif adj.endswith("le"):
+            adv = adj[:-1] + "y"
+        elif adj.endswith("ic"):
+            adv = adj + "ally"
+        elif adj.endswith("ll"):
+            adv = adj + "y"
+        elif adj.endswith("ue"):
+            adv = adj[:-1] + "ly"
+        else:
+            adv = adj + "ly"
+    return en_degree(adv, degree)
+
+
+def adverb_form(word: Word, degree: str) -> str | None:
+    """The engine's adverb made from adjective `word`: the form whose parse is
+    exactly the adverb's (no case, no number), at `degree` pos · comp · super."""
+    want = {} if degree == "pos" else {"degree": degree}
+    for form, parses in word.index.items():
+        if " " not in form and any(p == want for p in parses):
+            return form
+    return None
 
 
 # --------------------------------------------------------------- templates
@@ -807,8 +892,14 @@ def validate_template(t: dict) -> None:
             if not _slot_case(t, name):
                 raise TemplateError(f"{t['id']}: noun slot {name} is printed without a case")
         elif pos == "ADJ":
-            if spec.get("agree") not in t["slots"]:
+            if spec.get("adv"):
+                # the adverb made from an adjective: no agreement, a curated list
+                if spec["adv"] not in ("pos", "comp", "super") or not spec.get("only"):
+                    raise TemplateError(f"{t['id']}: adverb {name} needs adv pos · comp · super and an only list")
+            elif spec.get("agree") not in t["slots"]:
                 raise TemplateError(f"{t['id']}: adjective {name} must agree with a slot")
+            if spec.get("degree") and spec["degree"] not in ("comp", "super"):
+                raise TemplateError(f"{t['id']}: adjective {name} degree {spec['degree']!r}")
             if spec.get("ref") and spec["ref"] not in t["slots"]:
                 raise TemplateError(f"{t['id']}: adjective {name} refers to unknown slot {spec['ref']}")
         elif pos == "V":
@@ -829,6 +920,7 @@ def validate_template(t: dict) -> None:
                         raise TemplateError(f"{t['id']}: verb {name} {role} {r} unknown")
             if spec["form"].startswith("ptc") and not spec.get("agree"):
                 raise TemplateError(f"{t['id']}: participle {name} must agree with a slot")
+            # a gerundive agrees with its subject, or stands alone as the impersonal -ndum est
             if spec.get("takes") and spec["takes"] not in VERB_TAKES:
                 raise TemplateError(f"{t['id']}: verb {name} takes {spec['takes']!r}")
             if set(spec.get("subj_sem") or []) - SEM_CLASSES:
@@ -872,6 +964,16 @@ class Fill:
 def _slot_case(t: dict, name: str) -> str | None:
     m = re.search(r"\{%s:([\w.]+)\}" % re.escape(name), t["la"])
     return m.group(1) if m else None
+
+
+def _enclitic_slots(t: dict) -> dict[str, str]:
+    """slot → the enclitic the pattern prints on it ({b:nom}que → {"b": "que"})."""
+    return {m.group(1): m.group(2) for m in ENCLITIC_RE.finditer(t["la"])}
+
+
+def _printed(fill: Fill, name: str) -> str:
+    """The word as printed: the slot's form plus any enclitic the pattern adds."""
+    return fill.forms[name] + _enclitic_slots(fill.t).get(name, "")
 
 
 def noun_candidates(lex: Lexicon, chapter: int, spec: dict) -> list[Word]:
@@ -948,10 +1050,25 @@ def adj_candidates(lex: Lexicon, chapter: int, noun: Word, spec: dict, number: s
             continue          # a determiner is not a free descriptor
         if not adj_admits(a, noun, number):
             continue
-        if inflect(a, {"case": case, "number": number, "gender": noun_gender(noun)}) is None:
+        if inflect(a, adj_parse(spec, case, number, noun)) is None:
             continue
         out.append(a)
     return out
+
+
+def adj_parse(spec: dict, case: str, number: str, noun: Word) -> dict:
+    """An agreeing adjective's parse; `degree: comp | super` asks for that degree."""
+    parse = {"case": case, "number": number, "gender": noun_gender(noun)}
+    if spec.get("degree"):
+        parse["degree"] = spec["degree"]
+    return parse
+
+
+def adverb_candidates(lex: Lexicon, chapter: int, spec: dict) -> list[Word]:
+    """Adjectives from the slot's `only` list that have the adverb form asked for."""
+    only = {key_of(x) for x in spec["only"]}
+    return [a for a in lex.pool("ADJ", chapter)
+            if key_of(a.lemma) in only and adverb_form(a, spec["adv"]) is not None]
 
 
 def _arg_ok(verb_sem: dict, role: str, word: Word | None) -> bool:
@@ -968,7 +1085,9 @@ def _arg_ok(verb_sem: dict, role: str, word: Word | None) -> bool:
 
 
 def _is_passive(spec: dict) -> bool:
-    return spec.get("voice") == "pass" or "pass" in spec["form"].split(".")
+    # a gerundive agreeing with a subject is passive in sense (liber legendus est)
+    return spec.get("voice") == "pass" or "pass" in spec["form"].split(".") or (
+        spec["form"].startswith("gerundive") and bool(spec.get("agree")))
 
 
 def _role_words(fill: Fill, ref) -> list[Word]:
@@ -980,7 +1099,7 @@ def _role_words(fill: Fill, ref) -> list[Word]:
 def _subject_words(spec: dict, fill: Fill) -> list[Word]:
     subj = spec.get("subj")
     names = subj if isinstance(subj, list) else ([subj] if subj else [])
-    if not names and spec["form"].startswith("ptc"):
+    if not names and (spec["form"].startswith("ptc") or spec["form"].startswith("gerundive")) and spec.get("agree"):
         names = [spec["agree"]]
     out = []
     for n in names:
@@ -1063,6 +1182,12 @@ def verb_parse(spec: dict, fill: Fill, verb: Word) -> dict:
                 "voice": parts[2] if len(parts) > 2 else "act",
                 "case": _slot_case(fill.t, spec["agree"]) or "abl",
                 "number": fill.numbers[spec["agree"]], "gender": noun_gender(agree)}
+    if parts[0] == "gerundive":
+        if not spec.get("agree"):          # the impersonal -ndum est
+            return {"mood": "gerundive", "case": "nom", "number": "sg", "gender": "n"}
+        agree = fill.words[spec["agree"]]
+        return {"mood": "gerundive", "case": _slot_case(fill.t, spec["agree"]) or "nom",
+                "number": fill.numbers[spec["agree"]], "gender": noun_gender(agree)}
     if parts[0] == "inf":
         return {"mood": "inf", "tense": parts[1] if len(parts) > 1 else "pres",
                 "voice": "pass" if verb.deponent else (parts[2] if len(parts) > 2 else "act")}
@@ -1132,6 +1257,15 @@ def fill_template(lex: Lexicon, chapter: int, t: dict, rng: random.Random) -> Fi
             fill.words[name], fill.parses[name], fill.forms[name], fill.numbers[name] = w, parse, form, number
             if not spec.get("same"):
                 used_lemmas.add(key_of(w.lemma))
+        elif pos == "ADJ" and spec.get("adv"):
+            cands = [a for a in adverb_candidates(lex, chapter, spec) if key_of(a.lemma) not in used_lemmas]
+            if not cands:
+                return None
+            a = rng.choice(cands)
+            parse = {} if spec["adv"] == "pos" else {"degree": spec["adv"]}
+            fill.words[name], fill.parses[name], fill.numbers[name] = a, parse, "sg"
+            fill.forms[name] = adverb_form(a, spec["adv"])
+            used_lemmas.add(key_of(a.lemma))
         elif pos == "ADJ":
             noun = fill.words[spec["agree"]]
             number = fill.numbers[spec["agree"]]
@@ -1141,7 +1275,7 @@ def fill_template(lex: Lexicon, chapter: int, t: dict, rng: random.Random) -> Fi
             if not cands:
                 return None
             a = rng.choice(cands)
-            parse = {"case": case, "number": number, "gender": noun_gender(noun)}
+            parse = adj_parse(spec, case, number, noun)
             form = inflect(a, parse)
             if form is None:
                 return None
@@ -1242,7 +1376,7 @@ def _adjectives_of(fill: Fill, name: str) -> tuple[str | None, str | None, str |
             elif isinstance(a.sem, dict) and a.sem.get("det"):
                 det = en_det(fill, n)
             else:
-                adj = en_adj(a)
+                adj = en_adj_degree(a, s.get("degree"))
     return adj, det, post
 
 
@@ -1255,6 +1389,8 @@ def _en_np(fill: Fill, name: str, mod: str | None = None) -> str:
             return {"m": "him", "f": "her", "n": "it"}[g] if n == "sg" else "them"
         if key_of(w.lemma) == "qui":
             return "who"
+        if key_of(w.lemma) in ("hic", "ille"):
+            return {"hic": ("this", "these"), "ille": ("that", "those")}[key_of(w.lemma)][n == "pl"]
         return w.meaning.split(",")[0]
     adj, det, post = _adjectives_of(fill, name)
     number = fill.numbers[name]
@@ -1312,7 +1448,11 @@ def en_verb_phrase(fill: Fill, name: str, mod: str | None = None) -> str:
             return f"{do} not {base}"
         return en_verb(base, mod, number, person)
     if parse.get("mood") == "ptc":
-        return en_verb(base, "ing")
+        return en_verb(base, "pp") if parse.get("tense") == "perf" else en_verb(base, "ing")
+    if parse.get("mood") == "gerundive":
+        return "must be " + en_verb(base, "pp")
+    if parse.get("mood") == "imper":
+        return base
     if parse.get("mood") == "inf":
         return "to " + base
     if parse.get("tense") == "perf":
@@ -1337,7 +1477,10 @@ def render_en(fill: Fill) -> str:
             return en_verb_phrase(fill, name, mod)
         if pos == "ADJ":
             w = fill.words[name]
-            return en_det(fill, name) if isinstance(w.sem, dict) and w.sem.get("det") else en_adj(w)
+            if spec.get("adv"):
+                return en_adverb(w, spec["adv"])
+            return en_det(fill, name) if isinstance(w.sem, dict) and w.sem.get("det") \
+                else en_adj_degree(w, spec.get("degree"))
         if pos == "ADV":
             return en_adv(fill.words[name])
         return _en_np(fill, name, mod)
@@ -1356,8 +1499,9 @@ def render_gloss(fill: Fill, la: str, lex: Lexicon) -> list[dict]:
     """One entry per printed word, in order."""
     tokens = re.findall(r"[^\s]+", la)
     slot_of_form: dict[str, list[str]] = defaultdict(list)
+    enclitics = _enclitic_slots(fill.t)
     for name, form in fill.forms.items():
-        slot_of_form[form].append(name)
+        slot_of_form[_printed(fill, name)].append(name)
     used_slots: set[str] = set()
     out = []
     prev = ""
@@ -1371,7 +1515,10 @@ def render_gloss(fill: Fill, la: str, lex: Lexicon) -> list[dict]:
         if names:
             name = names[0]
             used_slots.add(name)
-            out.append({"w": bare, "m": gloss_slot(fill, name, after_prep)})
+            m = gloss_slot(fill, name, after_prep)
+            if name in enclitics:
+                m = ENCLITIC_GLOSS[enclitics[name]].format(m=m, stem=fill.forms[name])
+            out.append({"w": bare, "m": m})
             continue
         out.append({"w": bare, "m": gloss_fixed(bare, lex, fill)})
     return out
@@ -1388,7 +1535,11 @@ def gloss_slot(fill: Fill, name: str, after_prep: bool = False) -> str:
         base = EN_VERBS[w.lemma]
         number, person = parse.get("number", "sg"), parse.get("person", 3)
         if parse.get("mood") == "ptc":
-            return en_verb(base, "ing")
+            return en_verb(base, "pp") if parse.get("tense") == "perf" else en_verb(base, "ing")
+        if parse.get("mood") == "gerundive":
+            return ("to be " + en_verb(base, "pp")) if spec.get("agree") else "one must " + base
+        if parse.get("mood") == "imper":
+            return base + "!"
         if parse.get("mood") == "inf":
             return ("to be " + en_verb(base, "pp")) if parse.get("voice") == "pass" and not w.deponent else "to " + base
         if parse.get("mood") == "subj":
@@ -1405,9 +1556,11 @@ def gloss_slot(fill: Fill, name: str, after_prep: bool = False) -> str:
             return "you " + base
         return en_verb(base, "3sg", number, person)
     if pos == "ADJ":
+        if spec.get("adv"):
+            return en_adverb(w, spec["adv"])
         if isinstance(w.sem, dict) and w.sem.get("det"):
             return (en_det(fill, name) + " own") if key_of(w.lemma) == "suus" else en_det(fill, name)
-        return en_adj(w)
+        return en_adj_degree(w, spec.get("degree"))
     if pos == "PRON":
         return _en_np(fill, name)
     if pos == "ADV":
@@ -1448,6 +1601,7 @@ PRESENT_ENDINGS = {
     4: ("it", "iunt", "iat", "iant", "ītur", "iuntur", "iente", "ientibus"),
 }
 ORDINAL = {1: "1st", 2: "2nd", 3: "3rd", 4: "4th"}
+GERUNDIVE_STEM = {1: "and", 2: "end", 3: "end", 4: "iend"}
 
 
 def _conjugation(parts: str | None) -> tuple[int | None, str | None]:
@@ -1498,6 +1652,15 @@ def form_matches_parts(w: Word, form: str, parse: dict) -> str | None:
             stem = bits[2][:-1]
             if not form.startswith(stem):
                 return f"perfect {form} is not built on the deck's {bits[2]}"
+    # a perfect participle is built on the deck's supine; a gerundive carries its conjugation's -nd-
+    if parse.get("mood") == "ptc" and parse.get("tense") == "perf" and not w.deponent:
+        bits = [re.sub(r"\s*\(.*?\)", "", x).strip() for x in w.parts.split(",")]
+        if len(bits) > 3 and bits[3].endswith("um") and not form.startswith(bits[3][:-2]):
+            return f"participle {form} is not built on the deck's {bits[3]}"
+    if parse.get("mood") == "gerundive":
+        want = GERUNDIVE_STEM[conj]
+        if want not in form:
+            return f"gerundive {form} is not a {ORDINAL[conj]}-conjugation form (-{want}us)"
     return None
 
 def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exclude: list,
@@ -1524,9 +1687,14 @@ def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exc
     # printed forms all inside the cumulative vocabulary, spelled as the engine spells them
     forms = lex.forms_at(chapter)
     name_forms = {key_of(f): f for w in lex.names(chapter) for f in w.index}
+    # an enclitic the pattern prints on a slot is checked on the slot's bare form
+    stems = {_printed(fill, n): fill.forms[n] for n in _enclitic_slots(t) if n in fill.forms}
     for bare in bares:
-        k = key_of(bare)
         low = bare[:1].lower() + bare[1:]
+        if bare in stems or low in stems:
+            bare = stems.get(bare) or stems[low]
+            low = bare[:1].lower() + bare[1:]
+        k = key_of(bare)
         if k in name_forms or bare in FUNCTION_WORDS or low in FUNCTION_WORDS:
             continue
         spell = forms.get(k)
@@ -1545,7 +1713,10 @@ def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exc
         if pos == "V" and not spec.get("same"):
             if not verb_admits(fill.words[name], spec, fill):
                 problems.append(f"{name}: {fill.words[name].lemma} does not admit its arguments")
-        if pos == "ADJ":
+        if pos == "ADJ" and spec.get("adv"):
+            if adverb_form(fill.words[name], spec["adv"]) != fill.forms[name]:
+                problems.append(f"{name}: {fill.forms[name]} is not the {spec['adv']} adverb of {fill.words[name].lemma}")
+        elif pos == "ADJ":
             noun = fill.words[spec["agree"]]
             if not adj_admits(fill.words[name], noun, fill.numbers[spec["agree"]]):
                 problems.append(f"{name}: {fill.words[name].lemma} does not describe {noun.lemma}")
@@ -1558,7 +1729,7 @@ def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exc
             problems.append(f"{name}: {bad}")
     # the focus is printed
     for f in _focus_slots(t):
-        want = fill.forms.get(f, f)
+        want = _printed(fill, f) if f in fill.forms else f
         if want not in bares and (want[:1].upper() + want[1:]) not in bares:
             problems.append(f"focus {want} not printed")
     # English and gloss complete
@@ -1584,7 +1755,7 @@ def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exc
 # --------------------------------------------------------------- generation
 
 def focus_text(fill: Fill) -> str:
-    return " ".join(fill.forms.get(f, f) for f in _focus_slots(fill.t))
+    return " ".join(_printed(fill, f) if f in fill.forms else f for f in _focus_slots(fill.t))
 
 
 def generate(skill: str, n: int = 40, seed: int = 1, lex: Lexicon | None = None,
@@ -1686,7 +1857,9 @@ def count_template(lex: Lexicon, chapter: int, t: dict, exclude: list | None = N
         for name in other:
             spec = slots[name]
             pos = spec.get("pos")
-            if pos == "ADJ":
+            if pos == "ADJ" and spec.get("adv"):
+                cands = [a for a in adverb_candidates(lex, chapter, spec) if key_of(a.lemma) not in used]
+            elif pos == "ADJ":
                 noun = fill.words[spec["agree"]]
                 case = _slot_case(t, name) or fill.parses[spec["agree"]]["case"]
                 cands = [a for a in adj_candidates(lex, chapter, noun, spec, fill.numbers[spec["agree"]], case)
