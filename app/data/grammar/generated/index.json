@@ -5,8 +5,20 @@
   "ablative-means",
   "accusative-infinitive",
   "accusative-object",
+  "conditions-contrary-to-fact",
+  "cum-causal",
+  "cum-narrative",
   "dative-indirect-object",
+  "deliberative-subjunctive",
+  "dummodo",
+  "indirect-command",
+  "indirect-question",
   "perfect-active",
-  "purpose-clause"
+  "potential-subjunctive",
+  "purpose-clause",
+  "result-clause",
+  "sequence-of-tenses",
+  "subjunctive-wish-command",
+  "wishes-utinam"
  ]
 }
