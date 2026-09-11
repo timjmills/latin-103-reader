@@ -30,13 +30,7 @@ LESSON_ONLY = {"elegiac-couplet", "prosody-scansion", "principal-parts"}
 
 #: (row, class) → why the build has not reached it yet.  Strict: an unexpected
 #: pass fails the suite until the entry is removed.
-NOT_YET_BUILT = {
-    ("3", "sentence"): "row 3 unlimited practice: only the pilot's sentence skills have a "
-                       "templates file and a generated bank yet (§11, §11b); the rest "
-                       "fail until their templates land and the banks are built",
-    ("5", "sentence"): "row 5 mixed practice / axes: the generated set needs the "
-                       "templates and the bank of row 3",
-}
+NOT_YET_BUILT = {}
 
 #: The pilot's eight (§11a): the table-class ones pass row 3 on their tables
 #: and on their generator; the sentence-class ones on the generator alone.

@@ -618,7 +618,7 @@ def test_a_comparative_adjective_agrees_and_is_reparsed(lex):
     assert fill.parses["adj"]["degree"] == "comp"
     assert g.render_en(fill) == "Marcus is much braver than Quintus."
     gloss = g.render_gloss(fill, la, lex)
-    assert [x["m"] for x in gloss] == ["Marcus", "by much", "stronger", "is", "than", "Quintus"]
+    assert [x["m"] for x in gloss] == ["Marcus", "by much", "braver", "is", "than", "Quintus"]
     assert g.check_sentence(lex, 16, t, fill, la, [], g.render_en(fill), gloss) == []
 
 
