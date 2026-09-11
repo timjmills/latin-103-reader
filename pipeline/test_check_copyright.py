@@ -100,5 +100,46 @@ def test_the_public_tree_carries_no_run_of_the_private_text():
     if build is None:
         pytest.skip("data/build (the private library) is not on this machine; the gate runs locally before deploy")
     idx = cc.build_index(build)
-    hits = cc.scan(cc.APP, idx)
+    hits = cc.scan_repo(cc.ROOT, idx)
     assert not hits, "\n".join(f"{h.file} {h.path}: {h.text[:80]!r} <- {' '.join(h.window)}" for h in hits)
+
+
+def test_a_run_of_single_letters_is_not_expression(library: Path):
+    """
+    `['a', 'b', 'c', 'd', 'e']` in a test, and a list of the vowels in a rule,
+    are not the book however exactly they coincide with a unit that enumerates
+    letters. Before this, three tests and a README line were false hits.
+    """
+    assert cc.trivial(("a", "b", "c", "d", "e"))
+    assert cc.trivial(("a", "e", "i", "o", "u"))
+    assert not cc.trivial(("syra", "postquam", "facta", "marci", "narrauit"))
+    assert not cc.trivial(("a", "b", "c", "d", "est"))
+    idx = cc.build_index(library)
+    _write(library.parent / "pub" / "x.json", {"la": "A B C D E"})
+    assert not cc.scan(library.parent / "pub", idx)
+
+
+def test_the_scan_covers_every_tracked_file_not_only_the_app():
+    """
+    GitHub Pages serves `app/`, but the repository is public, so `pipeline/`,
+    `tests/`, `docs/` and the root documents are published too. Both of those
+    leaked the book until 2026-09-11. The walk now comes from `git ls-files`,
+    so a new tracked file is covered the day it is added, and nothing
+    gitignored is ever read.
+    """
+    rels = {f.relative_to(cc.ROOT).as_posix() for f in cc.tracked(cc.ROOT)}
+    assert "app/index.html" in rels
+    assert "pipeline/check_copyright.py" in rels
+    assert "CONTRACT.md" in rels
+    assert not any(r.startswith("data/build/") for r in rels), \
+        "the private library is gitignored and must never be walked as public"
+
+
+def test_the_allow_list_still_applies_when_the_whole_repo_is_scanned():
+    """The allowlist is written app-relative; a repo-wide scan must lift it."""
+    build = cc.find_build(None)
+    if build is None:
+        pytest.skip("data/build (the private library) is not on this machine; the gate runs locally before deploy")
+    idx = cc.build_index(build)
+    assert not cc.scan(cc.APP, idx), "app/ alone should be clean"
+    assert not cc.scan_repo(cc.ROOT, idx)

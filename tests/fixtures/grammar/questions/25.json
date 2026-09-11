@@ -1,123 +1,123 @@
 {
- "chapter": 25,
- "week_id": "w01",
- "title": "Thēseus et Mīnōtaurus",
- "items": [
-  {
-   "id": "q25-01",
-   "qword": "quis",
-   "q": "Quis fābulam dē Thēseō nārrat?",
-   "en": "Who tells the story of Theseus?",
-   "unit_id": "w01:23.1",
-   "answers": [
-    "Syra"
-   ],
-   "input": "tap",
-   "hint": "the storyteller, nominative"
-  },
-  {
-   "id": "q25-02",
-   "qword": "ubi",
-   "q": "Ubi Mīnōtaurus habitābat?",
-   "en": "Where did the Minotaur live?",
-   "unit_id": "w01:25.2",
-   "answers": [
-    "in magnō labyrinthō",
-    "in labyrinthō",
-    "Mīnōtaurus in magnō labyrinthō habitābat."
-   ],
-   "input": "type",
-   "hint": "in + ablative"
-  },
-  {
-   "id": "q25-03",
-   "qword": "quid",
-   "q": "Quid Mīnōtaurus edēbat?",
-   "en": "What did the Minotaur eat?",
-   "unit_id": "w01:36.1",
-   "answers": [
-    "hominēs vīvōs",
-    "nihil praeter hominēs vīvōs"
-   ],
-   "input": "choice",
-   "choices": [
-    "hominēs vīvōs",
-    "bēstiās",
-    "taurōs",
-    "nihil"
-   ],
-   "hint": "the object, accusative"
-  },
-  {
-   "id": "q25-04",
-   "qword": "cui",
-   "q": "Cui nōmen erat Ariadna?",
-   "en": "Who was named Ariadne?",
-   "unit_id": "w01:60.1",
-   "answers": [
-    "fīliae Mīnōis",
-    "fīliae",
-    "Mīnōs fīliam virginem habēbat, cui nōmen erat Ariadna."
-   ],
-   "input": "choice",
-   "choices": [
-    "fīliae Mīnōis",
-    "mātrī Thēseī",
-    "rēgīnae",
-    "sorōrī Quīntī"
-   ],
-   "hint": "the dative of possession"
-  },
-  {
-   "id": "q25-05",
-   "qword": "quis",
-   "q": "Quis Mīnōtaurum necāre cōnstituit?",
-   "en": "Who decided to kill the Minotaur?",
-   "unit_id": "w01:51.3",
-   "answers": [
-    "Thēseus"
-   ],
-   "input": "tap",
-   "hint": "the hero, nominative"
-  },
-  {
-   "id": "q25-06",
-   "qword": "num",
-   "q": "Num Quīntus mōnstra timet?",
-   "en": "Surely Quintus is not afraid of monsters?",
-   "unit_id": "w01:21.2",
-   "answers": [
-    "Nōn",
-    "Minimē",
-    "Timor mōnstrōrum puerum Rōmānum nōn decet!"
-   ],
-   "input": "type",
-   "hint": "num expects no"
-  },
-  {
-   "id": "q25-07",
-   "qword": "quomodo",
-   "q": "Quōmodo vēla nāvis erant?",
-   "en": "What were the ship's sails like?",
-   "unit_id": "w01:36.3",
-   "answers": [
-    "ātra",
-    "vēla ātra"
-   ],
-   "input": "tap",
-   "hint": "a colour, neuter plural"
-  },
-  {
-   "id": "q25-08",
-   "qword": "quando",
-   "q": "Quandō adulēscentēs in Crētam mittēbantur?",
-   "en": "When were the young men sent to Crete?",
-   "unit_id": "w01:36.2",
-   "answers": [
-    "quotannīs"
-   ],
-   "input": "tap",
-   "hint": "an adverb of time"
-  }
- ]
+  "chapter": 25,
+  "week_id": "w01",
+  "title": "Thēseus et Mīnōtaurus",
+  "items": [
+    {
+      "id": "q25-01",
+      "qword": "quis",
+      "q": "Quis fābulam dē Thēseō nārrat?",
+      "en": "Who tells the story of Theseus?",
+      "unit_id": "w01:23.1",
+      "answers": [
+        "Syra"
+      ],
+      "input": "tap",
+      "hint": "the storyteller, nominative"
+    },
+    {
+      "id": "q25-02",
+      "qword": "ubi",
+      "q": "Ubi Mīnōtaurus habitābat?",
+      "en": "Where did the Minotaur live?",
+      "unit_id": "w01:25.2",
+      "answers": [
+        "in magnō labyrinthō",
+        "in labyrinthō",
+        "Mōnstrum in labyrinthō magnō habitābat."
+      ],
+      "input": "type",
+      "hint": "in + ablative"
+    },
+    {
+      "id": "q25-03",
+      "qword": "quid",
+      "q": "Quid Mīnōtaurus edēbat?",
+      "en": "What did the Minotaur eat?",
+      "unit_id": "w01:36.1",
+      "answers": [
+        "hominēs vīvōs",
+        "nihil praeter hominēs vīvōs"
+      ],
+      "input": "choice",
+      "choices": [
+        "hominēs vīvōs",
+        "bēstiās",
+        "taurōs",
+        "nihil"
+      ],
+      "hint": "the object, accusative"
+    },
+    {
+      "id": "q25-04",
+      "qword": "cui",
+      "q": "Cui nōmen erat Ariadna?",
+      "en": "Who was named Ariadne?",
+      "unit_id": "w01:60.1",
+      "answers": [
+        "fīliae Mīnōis",
+        "fīliae",
+        "Fīliae rēgis nōmen erat Ariadna."
+      ],
+      "input": "choice",
+      "choices": [
+        "fīliae Mīnōis",
+        "mātrī Thēseī",
+        "rēgīnae",
+        "sorōrī Quīntī"
+      ],
+      "hint": "the dative of possession"
+    },
+    {
+      "id": "q25-05",
+      "qword": "quis",
+      "q": "Quis Mīnōtaurum necāre cōnstituit?",
+      "en": "Who decided to kill the Minotaur?",
+      "unit_id": "w01:51.3",
+      "answers": [
+        "Thēseus"
+      ],
+      "input": "tap",
+      "hint": "the hero, nominative"
+    },
+    {
+      "id": "q25-06",
+      "qword": "num",
+      "q": "Num Quīntus mōnstra timet?",
+      "en": "Surely Quintus is not afraid of monsters?",
+      "unit_id": "w01:21.2",
+      "answers": [
+        "Nōn",
+        "Minimē",
+        "Minimē, puer Rōmānus mōnstra nōn timet."
+      ],
+      "input": "type",
+      "hint": "num expects no"
+    },
+    {
+      "id": "q25-07",
+      "qword": "quomodo",
+      "q": "Quōmodo vēla nāvis erant?",
+      "en": "What were the ship's sails like?",
+      "unit_id": "w01:36.3",
+      "answers": [
+        "ātra",
+        "vēla ātra"
+      ],
+      "input": "tap",
+      "hint": "a colour, neuter plural"
+    },
+    {
+      "id": "q25-08",
+      "qword": "quando",
+      "q": "Quandō adulēscentēs in Crētam mittēbantur?",
+      "en": "When were the young men sent to Crete?",
+      "unit_id": "w01:36.2",
+      "answers": [
+        "quotannīs"
+      ],
+      "input": "tap",
+      "hint": "an adverb of time"
+    }
+  ]
 }

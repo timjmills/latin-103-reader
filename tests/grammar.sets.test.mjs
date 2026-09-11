@@ -102,7 +102,7 @@ test('sentence references: a span is the words of the sentence, parts weave our 
   assert.equal(resolveRef(la, { span: [0, 4] }), 'Iūlius fīliae suae rosam dat', 'the slice runs word to word');
   assert.equal(resolveRef(la, 'Minimē'), 'Minimē', 'our own wording passes through');
   assert.equal(resolveRef(la, { parts: ['Nōn:', { span: [1, 2] }] }), 'Nōn: fīliae suae');
-  assert.equal(resolveRef('Tiberis nōn est fluvius magnus, Tiberis fluvius parvus est.', { parts: [{ span: [1, 2] }, 'parvus'] }), 'nōn est parvus');
+  assert.equal(resolveRef('Hortus nōn est magnus, hortus parvus est.', { parts: [{ span: [1, 2] }, 'parvus'] }), 'nōn est parvus');
   assert.equal(resolveRef(la, { span: [3, 9] }), null, 'past the end of the sentence');
   assert.equal(resolveRef('', { span: [0, 1] }), null, 'no sentence at all');
   assert.equal(resolveRef(la, { parts: ['Ita', { span: [9, 9] }] }), null, 'one bad part spoils the whole');

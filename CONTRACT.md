@@ -76,8 +76,8 @@ tests/                    node --test for JS, pytest for python
       "block_start": true,           // first unit of a [n] block → show the line number in the margin
       "unit_type": "sentence",       // sentence | verse | turn
       "speaker": null,               // "Syra" for speaker-labelled turns; else null
-      "la": "Syra, postquam facta Mārcī nārrāvit, …",
-      "en": "Syra, after she narrated the deeds of Marcus, …",   // CLEAN: bracket tags stripped
+      "la": "Postquam puer librum lēgit, …",     // invented here; the real text stays out of the repo
+      "en": "After the boy read the book, …",     // CLEAN: bracket tags stripped
       "en_raw": "…",                 // original with brackets (not shown; kept for audit)
       "note": "postquam + perfect …",// per-sentence grammar note or null
       "tags": [                      // seeds extracted from brackets + explicit focus tags

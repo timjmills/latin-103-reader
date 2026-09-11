@@ -26,14 +26,14 @@ Files:
 | `test_build_week.py` | pytest: Week 1 end to end + synthetic fixtures for every format path |
 | `test_docx_to_md.py` | pytest: synthetic Word documents through the converter and the builder; Week 1 docx = week-01.md |
 | `parse_week_reference.py` | the original one-off parser; kept for its format notes, not used |
-| `check_copyright.py` | the copyright gate: nothing under `app/` may carry a run of the private text (below) |
+| `check_copyright.py` | the copyright gate: no tracked file may carry a run of the private text (below) |
 
 Everything under `data/build/` is gitignored (copyrighted text).
 
 ## Copyright gate: `check_copyright.py`
 
 The book and the user's translations live only in `data/build/` and in
-Supabase; `app/` is published. Before anything under `app/` is deployed, run
+Supabase. Before anything is pushed, run
 
 ```
 PYTHONIOENCODING=utf-8 python pipeline/check_copyright.py
@@ -43,12 +43,28 @@ It indexes every **5-word window** of the book's Latin in `data/build/*.json`
 (units' `la` in the weeks, the review shelf and the colloquia; the scanned
 lines; the margin glosses; the pensa; the picture captions; the highlighted
 phrases) and every **8-word window** of the user's English `en` in
-`week-*.json`, then scans every file under `app/` — JSON values one by one,
-`.js`/`.md`/`.html`/`.css` by their text — and prints each hit as
+`week-*.json`, then scans **every file git tracks** — JSON values one by
+one, `.js`/`.md`/`.html`/`.css` by their text — and prints each hit as
 `file → JSON path (or line) → the string → the window and where it came from`.
 Exit 1 on any hit; 0 on none. Matching is over normalised words (lower-case,
 macrons stripped, v→u, j→i, punctuation dropped), so a hit is a hit however
 it is spelt.
+
+**What "public" means here.** GitHub Pages serves `app/`, but the repository
+itself is public, so `pipeline/`, `tests/`, `docs/` and the root documents are
+published just as surely. The gate scanned only `app/` until 2026-09-11, and on
+the day it was widened it found the book quoted in four of them — worked
+examples in `pipeline/README.md` and `CONTRACT.md` that printed a line of Latin
+beside the user's own translation, three sentences baked into
+`tests/fixtures/grammar/questions/25.json`, and two more in test assertions.
+The walk now comes from `git ls-files`, which is both wider and narrower than a
+directory walk: a newly tracked file is covered the day it is added, and
+anything gitignored — `data/build`, `source/`, the audio — is never read. Pass
+`--app <dir>` to scan a single tree instead.
+
+A window of single letters (`a b c d e`, the vowels in a spelling rule) is
+skipped: it is an enumeration, not the book's expression, and it was the only
+source of false hits.
 
 What is *not* indexed: our own prose that also sits in `data/build` (part
 summaries, focus blurbs, notes, the English side of the margin glosses), the
@@ -178,10 +194,13 @@ Each mismatch shows both lists numbered from 0, side by side:
 ```
 ### Block `91` (Pars III, sentence): 8 Latin vs 9 English sentences
 | # | Latin | # | English |
-| 0 | Syra: "Thēseus ē labyrinthō exiēns 'Mīnōtaurus necātus est' inquit, 'Laetāminī, cīvēs meī! | 0 | Syra: "Theseus, exiting out of the labyrinth, said: 'The Minotaur has been killed! |
-| 1 | Intuēminī gladium meum cruentum! | 1 | Rejoice, my citizens! |
+| 0 | Magister: "Tacēte" inquit "puerī, nam fābulam legere volō! | 0 | The teacher said: "Be quiet, boys! |
+| 1 | Aperīte librōs vestrōs! | 1 | I want to read a story!" |
 …
 ```
+
+(The rows above are invented — the report prints the real text, which is not
+reproduced here. See "What never enters the repo" below.)
 
 Here English 0 and 1 belong to Latin 0 (the Latin runs on with `inquit`).
 The fix goes in `pipeline/merges.py`:
@@ -212,11 +231,13 @@ Split after `.` `!` `?` `…` (optionally followed by a closing quote) when the
 next word starts with a capital or an opening quote; also before a lowercase
 `an` after `?` (second half of a double question). Consequences:
 
-- `"Nōlī" inquit "mē relinquere!` is one sentence — `inquit` inside a quotation
+- `"Tacē" inquit "et audī!` is one sentence — `inquit` inside a quotation
   never splits it.
-- `'Thēseu! Thēseu! Revertere ad mē!' neque ūllum respōnsum…` — three
+- `'Audī! Audī! Respondē mihi!' neque quisquam respondit…` — three
   exclamations, but the last runs on with lowercase `neque`, so it stays with
   the narrative.
+
+(Both examples are invented, for the same reason as above.)
 - `possum...' 'Deī' inquit` splits after the ellipsis; the quotes stay on
   their sentences (text is verbatim apart from whitespace).
 - Abbreviations with a full stop before a capital (`M. Tullius`) would split;
@@ -753,8 +774,8 @@ The four hand-checked chapters (I, IX, XVII, XXIV): the first, a middle and the
 last sentence of each were cut out of the MP3 at exactly the span their word
 timings claim and re-transcribed on their own, against a decoy cut of the same
 length 30 s away. Word agreement 64 / 57 / 67 / 71 % against decoys of 14 / 26 /
-13 / 10 %; letter agreement (fairer, since a 1.5 s island comes back as "thans
-tu dos actam bigres" for *tam stultus ac tam piger es*) 51 / 66 / 79 / 80 %
+13 / 10 %; letter agreement (fairer, since a 1.5 s island of five words comes back as
+"thans tu dos actam bigres") 51 / 66 / 79 / 80 %
 against decoys of 22 / 29 / 22 / 20 %. Eleven of the twelve cuts are decisively
 the words the row claims; the twelfth, cap. I's `r01:36.1`, is placed right but
 its word cursor points about 3 s late — the leading-word limit above, made worse
@@ -808,8 +829,8 @@ is the only place rows overlap, and by at most 0.15 s.
 593–648 s stretch — were still 3 to 18 s late. `seek()`, the fuzzy pass that
 places a sentence with no matching block of its own, took the first whisper word
 anywhere in its window that fuzzily matched the sentence's *first distinctive
-word*. "Posthāc Mārcum sine comite ambulāre nōn sinam", spoken at 592 s, has
-"Mārcum" as its first distinctive word, and the reader's "Marcus" in the next
+word*. One sentence of `review-23` (unit 86), spoken at 592 s, has "Mārcum"
+as its first distinctive word, and the reader's "Marcus" in the next
 paragraph at 610 s scores 0.83 against it — so the sentence was pinned there and
 the eight after it were crammed into what was left.
 

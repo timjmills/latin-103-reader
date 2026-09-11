@@ -41,6 +41,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import re
 import sys
 import unicodedata
@@ -54,6 +55,7 @@ ROOT = Path(__file__).resolve().parent.parent
 APP = ROOT / "app"
 DEFAULT_BUILD = ROOT / "data" / "build"
 ENV_BUILD = "LATIN103_BUILD"
+NUL = chr(0)  # git ls-files -z separator
 
 LATIN_WINDOW = 5
 ENGLISH_WINDOW = 8
@@ -132,6 +134,15 @@ def classical(window: tuple) -> bool:
     return False
 
 
+def trivial(window: tuple) -> bool:
+    """
+    Is this window content-free? A run of single letters is an enumeration — a
+    list of the vowels, `['a', 'b', 'c', 'd', 'e']` in a test — and carries none
+    of the book's expression, so it is not a hit however often it coincides.
+    """
+    return all(len(w) <= 1 for w in window)
+
+
 def family(path: Path) -> str:
     stem = path.name.split("-")[0]
     return "".join(c for c in stem if not c.isdigit()).lower()
@@ -166,6 +177,8 @@ class Index:
 
     def add(self, table, text, n, where):
         for w in windows(normalise(text), n):
+            if trivial(w):
+                continue
             if table is self.latin and classical(w):
                 continue
             table.setdefault(w, where)
@@ -256,26 +269,54 @@ def scan_text(rel: str, text: str, idx: Index, allow) -> list[Hit]:
     return hits
 
 
+def scan_one(rel: str, f: Path, idx: Index, allow) -> list[Hit]:
+    """One file, by suffix. Anything else (an image, a font) cannot carry text."""
+    if f.suffix == ".json":
+        try:
+            doc = json.loads(f.read_text(encoding="utf-8"))
+        except (ValueError, UnicodeDecodeError) as e:
+            return [Hit(rel, "-", f"unreadable JSON ({e})", (), "-", "error")]
+        return scan_json(rel, doc, idx, allow)
+    if f.suffix in TEXT_SUFFIXES:
+        try:
+            text = f.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            return []
+        return scan_text(rel, text, idx, allow)
+    return []
+
+
 def scan(app_dir: Path, idx: Index, allow=None) -> list[Hit]:
     allow = ALLOW if allow is None else allow
     hits = []
     for f in sorted(app_dir.rglob("*")):
-        if not f.is_file():
-            continue
-        rel = f.relative_to(app_dir).as_posix()
-        if f.suffix == ".json":
-            try:
-                doc = json.loads(f.read_text(encoding="utf-8"))
-            except (ValueError, UnicodeDecodeError) as e:
-                hits.append(Hit(rel, "-", f"unreadable JSON ({e})", (), "-", "error"))
-                continue
-            hits.extend(scan_json(rel, doc, idx, allow))
-        elif f.suffix in TEXT_SUFFIXES:
-            try:
-                text = f.read_text(encoding="utf-8")
-            except UnicodeDecodeError:
-                continue
-            hits.extend(scan_text(rel, text, idx, allow))
+        if f.is_file():
+            hits.extend(scan_one(f.relative_to(app_dir).as_posix(), f, idx, allow))
+    return hits
+
+
+def tracked(root: Path) -> list[Path]:
+    """
+    Every file git tracks. This is the honest definition of "public" for this
+    repository: GitHub Pages serves `app/`, but the repository itself is public,
+    so `pipeline/`, `tests/`, `docs/` and the root documents are published too.
+    Reading the list from git means a new tracked file is scanned the day it is
+    added, and anything gitignored — `data/build`, `source/`, the audio — is
+    never read.
+    """
+    out = subprocess.run(["git", "-C", str(root), "ls-files", "-z"],
+                         capture_output=True, text=True, check=True).stdout
+    return [root / rel for rel in out.split(NUL) if rel]
+
+
+def scan_repo(root: Path, idx: Index, allow=None) -> list[Hit]:
+    """Every tracked file. The allowlist is written app-relative, so lift it."""
+    if allow is None:
+        allow = {(f"app/{path}", ptr): why for (path, ptr), why in ALLOW.items()}
+    hits = []
+    for f in tracked(root):
+        if f.is_file():
+            hits.extend(scan_one(f.relative_to(root).as_posix(), f, idx, allow))
     return hits
 
 
@@ -303,7 +344,7 @@ def report(hits: list[Hit], out=None) -> None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--build", help=f"data/build directory (default: data/build or ${ENV_BUILD})")
-    ap.add_argument("--app", default=str(APP), help="the public tree to scan (default: app/)")
+    ap.add_argument("--app", help="scan one tree instead of every tracked file (e.g. --app app)")
     args = ap.parse_args(argv)
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -315,11 +356,12 @@ def main(argv=None) -> int:
               f"${ENV_BUILD}, {DEFAULT_BUILD}); nothing to index.")
         return 2
     idx = build_index(build)
-    hits = scan(Path(args.app), idx)
+    where = args.app or f"{ROOT} (every tracked file)"
+    hits = scan(Path(args.app), idx) if args.app else scan_repo(ROOT, idx)
     print(f"check_copyright: indexed {idx.files} files from {build} "
           f"({len(idx.latin)} Latin {LATIN_WINDOW}-word windows, "
           f"{len(idx.english)} English {ENGLISH_WINDOW}-word windows); "
-          f"scanned {args.app}")
+          f"scanned {where}")
     if hits:
         report(hits)
         files = len({h.file for h in hits})

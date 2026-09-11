@@ -107,7 +107,7 @@ gate — nothing in the public shell may carry a run of the book or of your
 translations — and then publish:
 
 ```bash
-PYTHONIOENCODING=utf-8 python pipeline/check_copyright.py   # must print "OK: 0 hits"
+PYTHONIOENCODING=utf-8 python pipeline/check_copyright.py   # every tracked file; must print "OK: 0 hits"
 git subtree push --prefix app origin gh-pages
 ```
 

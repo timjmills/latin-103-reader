@@ -499,8 +499,8 @@ test('prōsum keeps its d before a vowel: prōdest / prōsunt', () => {
 });
 
 test('the table gaps Ørberg fills: fore, īrī, factūrus, factum', () => {
-  // fore = futūrum esse (Ørberg cap. XXXIII margin: "fore (īnf fut) =
-  // futūrum/-am … esse"; Allen & Greenough §170.b)
+  // fore = futūrum esse. Ørberg gives it in the cap. XXXIII margin as the
+  // future infinitive of sum; Allen & Greenough §170.b.
   const sum = paradigm(entry('sum', 'V'), []);
   assertForms(sum, ['fore', 'futūrus esse', 'futūrus esse / fore'], 'sum');
   // "'laudātum īrī' … quī ex supīnō et 'īrī' cōnstat" (Ørberg cap. XXIII)
@@ -610,7 +610,7 @@ const rowOf = (p, label) => p.sections[0].rows.find((r) => r.label === label).ce
 const allCells = (p) => p.sections.flatMap((s) => s.rows.flatMap((r) => r.cells));
 
 test('plūrālia tantum print no singular at all — Ørberg gives them no singular head', () => {
-  //  Alpēs        the margin gloss reads "Alpēs -ium f pl: montēs…"
+  //  Alpēs        the margin gives it as f pl and glosses it as mountains
   //  castra       Index: castra -ōrum n 12.93
   //  moenia       Index: moenia -ium n 25.11
   //  Athēniēnsēs  the project's own name list, "Athēniēnsēs Athēniēnsium m pl"

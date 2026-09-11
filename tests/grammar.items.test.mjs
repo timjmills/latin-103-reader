@@ -68,7 +68,7 @@ const lookup = (form) => ({ form, entries: G[form] ?? [], via: G[form] ? 'exact'
 const plainTable = (() => { const m = new Map(); return (e) => { if (!m.has(e.lemma)) m.set(e.lemma, paradigm(e, [])); return m.get(e.lemma); }; })();
 
 const units = [
-  { id: 'w01:63.10', la: 'Ariadna Thēseō fīlum longum dedit.' },
+  { id: 'w01:63.10', la: 'Ariadna servō librum longum dedit.' },
   { id: 'w07:1.1', la: 'Puellae puerō librum dat.' },
   { id: 'w07:1.2', la: 'Rēgī servum mīsit ut gladiō puellae mitteret.' },
   { id: 'w07:2.1', la: 'Puella in vīllā est.' },
@@ -133,7 +133,7 @@ test('patterns: (?i) becomes a flag; spans are macron-stripped offsets; a token 
 
 test('scanUnit: finds the forms whose parses satisfy the filter, marks ambiguous ones by their case', () => {
   const c = scanUnit(units[0], dat, lookup, { paradigm: plainTable });
-  assert.deepEqual(c.map((x) => [x.token.text, x.ambiguous, x.value, x.ambKey]), [['Thēseō', true, 'dative-indirect-object', 'case']]);   // dat / abl
+  assert.deepEqual(c.map((x) => [x.token.text, x.ambiguous, x.value, x.ambKey]), [['servō', true, 'dative-indirect-object', 'case']]);   // dat / abl
   const c2 = scanUnit(units[1], dat, lookup, { paradigm: plainTable });
   assert.deepEqual(c2.map((x) => [x.token.text, x.ambiguous]), [['Puellae', true], ['puerō', false]]);
   const perf = scanUnit(units[0], S.get('perfect-active'), lookup, { paradigm: plainTable });
