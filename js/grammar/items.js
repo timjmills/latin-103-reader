@@ -1317,7 +1317,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       // A word cap is a tier, not a rule about the skill: a slot that found no short sentence of its own kind
       // asks the other kinds for a short one too, and a chart (no sentence) is left to the caller's wider draw.
       if (maxWords != null) order = order.filter((a) => a !== 'chart');
-      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode, unit, focus, maxWords, exclude }, { full }); if (item) break; }
+      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode, tap, unit, focus, maxWords, exclude }, { full }); if (item) break; }
     }
     return item;
   }
@@ -1342,10 +1342,24 @@ export function tableHelpers({ lookup, paradigm = null }) {
   const safeTable = (entry) => { try { return paradigm ? paradigm(entry, []) : null; } catch { return null; } };
   const tableMemo = new Map();
   const tableOfEntry = (e) => { const k = `${e?.h}|${e?.lemma}`; if (!tableMemo.has(k)) tableMemo.set(k, safeTable(e)); return tableMemo.get(k); };
-  /** A stock or named headword (`'puella'`, or `{ h, key, i, pos }`) as a glossary entry that really renders a table. */
-  function entryFor(word) {
+  /**
+   * A stock or named headword (`'puella'`, or `{ h, key, i, pos }`) as a
+   * glossary entry that really renders a table.
+   *
+   * `fits(got)` is the caller's own test of whether *this* reading of the word
+   * is the one it meant — a chart asks whether the table can answer the cells
+   * the step named. Headwords are not unique: the glossary has both a noun and
+   * an adjective under *mare*, the adjective comes first, its cells carry
+   * gender, and a step that named *mare* and asked for `nom.pl` silently got a
+   * table with no such cell and built itself on the other word instead (N-15).
+   * The first reading that renders a table **and** fits wins; if none fits, the
+   * first that renders a table at all is returned, exactly as before, so a
+   * caller with no test loses nothing.
+   */
+  function entryFor(word, { fits = null } = {}) {
     const w = typeof word === 'string' ? { h: word, key: word } : (word ?? {});
     const forms = [w.key, w.h, w.lemma ? String(w.lemma).split(/[\s,]/)[0] : null].filter(Boolean);
+    let loose = null;
     for (const f of forms) {
       const entries = lookup(f)?.entries ?? [];
       const ranked = [
@@ -1353,9 +1367,15 @@ export function tableHelpers({ lookup, paradigm = null }) {
         ...(Number.isInteger(w.i) && entries[w.i] ? [entries[w.i]] : []),
         ...entries,
       ];
-      for (const e of ranked) { const t = tableOfEntry(e); if (t) return { entry: e, table: t, cells: tableCells(t) }; }
+      for (const e of ranked) {
+        const t = tableOfEntry(e);
+        if (!t) continue;
+        const got = { entry: e, table: t, cells: tableCells(t) };
+        if (!fits || fits(got)) return got;
+        loose = loose ?? got;
+      }
     }
-    return null;
+    return loose;
   }
   /** "dative singular" / "imperfect subjunctive, we (passive)" — the cell named as the chart drills name it. */
   function cellLabelOf(spot, table) {
@@ -1574,7 +1594,7 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
    * item is really asking about, so nothing is claimed falsely. Null when the
    * skill's own sentences yield nothing — the library is never reached.
    */
-  function sentenceItem({ kind = 'recognise', sentence = null, stage = 1, avoid = null, unshownOnly = false, keyed = false } = {}) {
+  function sentenceItem({ kind = 'recognise', sentence = null, stage = 1, avoid = null, unshownOnly = false, keyed = false, tap = undefined } = {}) {
     const named = sentence ? byId.get(sentence) : null;
     const seen = (x) => !!avoid?.has?.(x.id);
     // Sentences this Learn has not shown yet come before the ones it has (A1); `unshownOnly` is the blocked
@@ -1584,7 +1604,10 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     const order = named ? [named, ...rest] : (rest.length ? rest : (unshownOnly ? [] : [...list.filter((x) => !seen(x)), ...list.filter(seen)]));
     let loose = null;
     for (const cand of order) {
-      const item = gen.generate({ skill: skill.id, kind, stage, chapter: null, unit: cand.id, focus: cand.focus });
+      // `tap` rides through: a step that words its own question has already decided which shape of
+      // `recognise` answers it, and the shape must not be re-tossed per sentence (N-3). `undefined`
+      // and `null` both leave the decision to the generator, as a drawn item has always left it.
+      const item = gen.generate({ skill: skill.id, kind, stage, chapter: null, unit: cand.id, focus: cand.focus, tap: tap ?? undefined });
       if (!item) continue;
       // A teaching **step's** check is a moment in the step, not a drawable item: it is logged (the history and
       // the timing stay true) but carries no key, so it never enters "redo what was wrong". `keyed` is the
@@ -1625,13 +1648,25 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     const boxes = [];
     let head = null;
     let sample = null;
+    /** One asked cell on one reading of a word: its id and its spot, or null when that reading has no such cell. */
+    const spotOf = (got, raw) => {
+      const id = resolveCellId(raw, got.cells) ?? (named ? resolveCellId(raw, named) : null);
+      const spot = id ? got.cells.get(id) : null;
+      return spot && spot.cell?.text && spot.cell.text !== '—' ? { id, spot } : null;
+    };
+    // The reading of the word that can answer what the step asked. A headword can be two words — the glossary
+    // has an adjective *mare* in front of the noun — and taking the first that renders any table gave a step
+    // that named *mare* a gendered adjective table with no `nom.pl` in it, dropped every box, and built the
+    // item on the other word while the step's own question went on naming *mare* (N-15).
+    const dropped = [];
     for (const w of lemmas) {
-      const got = entryFor(w);
-      if (!got) continue;
+      const got = entryFor(w, { fits: (g) => asked.some((raw) => spotOf(g, raw)) });
+      if (!got) { dropped.push(typeof w === 'string' ? w : (w?.lemma ?? w?.h ?? '?')); continue; }
+      const before = boxes.length;
       for (const raw of asked) {
-        const id = resolveCellId(raw, got.cells) ?? (named ? resolveCellId(raw, named) : null);
-        const spot = id ? got.cells.get(id) : null;
-        if (!spot || !spot.cell?.text || spot.cell.text === '—') continue;
+        const at = spotOf(got, raw);
+        if (!at) continue;
+        const { id, spot } = at;
         const label = cellLabelOf(spot, got.table);
         boxes.push({
           row: boxes.length, col: 0, cellId: id, key: spot.cell.key, word: firstWord(got.entry.lemma), lemma: got.entry.lemma,
@@ -1641,7 +1676,11 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
         head = head ?? label;
         sample = sample ?? got;
       }
+      if (boxes.length === before) dropped.push(firstWord(got.entry.lemma));
     }
+    // A declared word that yielded no box is a step teaching something other than what it says. It used to
+    // go by in silence; now it is on the console, named, so a lesson author or a build check can see it.
+    if (dropped.length) console.warn(`[grammar] ${skill.id}: chart on ${table?.id ?? key ?? '?'} asked for ${asked.join(', ')} and could not build ${dropped.join(', ')}`);
     if (!boxes.length) return null;
     const oneCell = new Set(boxes.map((b) => b.cellLabel)).size === 1;
     const heads = [...new Set(boxes.map((b) => b.word))];

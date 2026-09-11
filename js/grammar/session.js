@@ -389,7 +389,10 @@ export function createSkillDraw({ skill, steps = [], teachItems = null, libraryI
     }
     if (!item) {
       const kind = check?.kind && check.kind !== 'chart' ? check.kind : 'recognise';
-      item = teachItems.sentenceItem({ kind, sentence: check?.sentence ?? null, stage: 1, avoid: shown });
+      // The step's own wording decides which shape of `recognise` answers it (N-3): a question
+      // that asks which word gets the tap shape, one that asks for a name gets the choices.
+      // `normaliseCheck` settles that once, from `check.tap` or from `check.ask`.
+      item = teachItems.sentenceItem({ kind, sentence: check?.sentence ?? null, stage: 1, avoid: shown, tap: check?.tap ?? undefined });
     }
     if (item) { noteShown(step.show?.kind === 'sentence' ? step.show.id : null); noteShown(step.worked?.sentence ?? null); noteShown(item.taught); for (const id of step.notice?.sentences ?? []) noteShown(id); }
     // A step may word its own question (`check.ask`): "What is lūdat doing here?" over the generator's stock line.
