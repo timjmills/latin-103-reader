@@ -49,6 +49,13 @@ How a sentence is made
      skill's exclusion list.  A failed fill is redrawn; a template that
      cannot be filled is reported, never shipped.
 
+Subordinate clauses (2026-09-11): a verb `form` may offer tense alternatives
+(`pres|perf.ind`, one drawn per fill) and a subordinate verb may take its tense
+from its governor (`form: seq.subj` + `seq: <verb slot>`: primary → present,
+secondary → imperfect subjunctive); a verb slot's `gloss` names an English
+shape (`tense` · `simple` · `had` · `prog` …) or the literal words; `sum` is
+drawn only through `takes: pred`.
+
 Deterministic for a given (skill, seed); `count_template` gives the distinct
 sentences a template can produce at its chapter (exact up to COUNT_CAP
 assignments, a sampled estimate above it).
@@ -257,6 +264,8 @@ EN_VERBS = {
     "intersum": "be between", "īnsum": "be in", "cōnstō": "cost", "conveniō": "suit",
     "tumultuō": "make an uproar", "subeō": "come up", "dēbeō": "owe", "careō": "lack",
     "impōnō": "put on", "remittō": "send back", "pessimō": "ruin",
+    # subordinate-clause skills: the governing verbs their lessons use
+    "imperō": "order", "nesciō": "not know", "sum": "be",
 }
 EN_VERBS.update({"pāreō": "obey", "sum": "be"})   # the independent-subjunctive skills (wishes, conditions, dummodo)
 EN_3SG = {"have": "has", "do": "does", "go": "goes"}
@@ -302,6 +311,7 @@ EN_PLURALS = {
     "wife": "wives", "child": "children", "mouse": "mice", "goose": "geese",
     "person": "people", "mummy": "mummies", "cattle": "cattle", "clothes": "clothes",
     "as": "asses", "helmsman": "helmsmen", "craftsman": "craftsmen", "goods": "goods", "papyrus": "papyri",
+    "clothing": "clothing", "thief": "thieves",
 }
 # nouns the English says without an article in the singular
 EN_MASS = {"water", "money", "bread", "wine", "milk", "meat", "food", "grain", "gold",
@@ -329,7 +339,7 @@ EN_DET = {"meus": "my", "tuus": "your", "noster": "our", "vester": "your", "mult
 # adjectives the English puts after the noun ("the father alone")
 EN_ADJ = {"sōlus": "alone"}
 # an adjective whose first deck sense misleads on the people it describes
-EN_ADJ_SENSE = {"clārus": "famous", "gravis": "serious"}
+EN_ADJ_SENSE = {"clārus": "famous", "gravis": "serious", "fortis": "brave"}
 # English nouns whose plural keeps the Latin ending
 EN_LATIN_PLURALS = {"denarius"}
 # a better first sense than the deck's for the English sentence
@@ -438,6 +448,20 @@ def _roots_disagree(a: str, b: str, dropped_only: bool = False) -> bool:
     return any(x in LONG and LONG[x] == y for x, y in zip(ca, cb))
 
 
+def _drops_inner_macron(head: str, root: str) -> bool:
+    """Does `root` drop a macron `head` carries before the head's last vowel?
+    piscātor / piscator- and frīgus / frigor- are glossary gaps; dēns / dent-,
+    pēs / ped- and coniūnx / coniug- shorten their final syllable, which is Latin."""
+    h, r = unicodedata.normalize("NFC", head), unicodedata.normalize("NFC", root)
+    last_vowel = max((i for i, c in enumerate(h) if _plain(c).lower() in "aeiouy"), default=-1)
+    for i, (a, b) in enumerate(zip(h, r)):
+        if a in LONG and LONG[a] == b:
+            return i < last_vowel
+        if _plain(a) != _plain(b):
+            return False
+    return False
+
+
 def unreliable_reason(w: "Word") -> tuple[str | None, str | None]:
     """(scope, why) when the engine's forms for this deck word cannot be
     shipped: scope "all" keeps the word out of every pool, "perf" only out of
@@ -469,6 +493,8 @@ def unreliable_reason(w: "Word") -> tuple[str | None, str | None]:
         for i, label in ((2, "perfect"), (3, "supine")):
             if len(roots) > i and roots[i] and roots[i] != "-" and roots[0] and _roots_disagree(roots[0], roots[i], True):
                 return "perf", f"{label} root {roots[i]} disagrees with the present root {roots[0]} in macrons"
+    if w.pos == "N" and len(roots) > 1 and roots[0] and roots[1] and _drops_inner_macron(head, roots[1]):
+        return "all", f"oblique root {roots[1]} lacks a macron the head {head} carries (piscātor / piscatorēs)"
     if w.pos == "N" and w.dict:
         m = re.match(r"^\S+,\s+([^\s,]+)", w.dict)
         if m and not m.group(1).startswith("-"):
@@ -641,6 +667,12 @@ def en_verb(base: str, shape: str, number: str = "sg", person: int = 3) -> str:
     """English forms of a base phrase: the first word inflects."""
     head, _, rest = base.partition(" ")
     tail = (" " + rest) if rest else ""
+    if head == "not":                       # "not know": the auxiliary do carries the shape
+        if shape == "ing":
+            return "not " + en_verb(rest, "ing")
+        if shape == "pp":
+            return "not " + en_verb(rest, "pp")
+        return en_verb("do", shape, number, person) + " " + base
     past, pp = EN_IRREGULAR.get(head, (None, None))
     if head == "be":
         forms = {"3sg": "is" if (number == "sg" and person == 3) else ("am" if person == 1 and number == "sg" else "are"),
@@ -740,7 +772,7 @@ def en_adj(word: Word) -> str:
 
 # --------------------------------------------------------------- templates
 
-SLOT_RE = re.compile(r"\{(\w+)(?::([\w.]+))?\}")
+SLOT_RE = re.compile(r"\{(\w+)(?::([\w.|]+))?\}")     # | separates tense alternatives (pres|perf.ind)
 SLOT_POS = ("N", "ADJ", "PRON", "V", "ADV")
 # a verb slot's own gloss pattern (`g`): "let {opron} {base}", "{pron} would {base}", "{pron} had {pp}"
 GLOSS_PLACEHOLDERS = {"base", "pron", "opron", "3sg", "past", "pp", "ing"}
@@ -830,6 +862,10 @@ def validate_template(t: dict) -> None:
                 for r in refs:
                     if r not in t["slots"]:
                         raise TemplateError(f"{t['id']}: verb {name} {role} {r} unknown")
+            if spec["form"].startswith("seq") != bool(spec.get("seq")):
+                raise TemplateError(f"{t['id']}: verb {name}: a seq form needs seq (the governing verb slot), and only then")
+            if spec.get("seq") and t["slots"].get(spec["seq"], {}).get("pos") != "V":
+                raise TemplateError(f"{t['id']}: verb {name} seq {spec['seq']} is not a verb slot")
             if spec["form"].startswith("ptc") and not spec.get("agree"):
                 raise TemplateError(f"{t['id']}: participle {name} must agree with a slot")
             if spec.get("takes") and spec["takes"] not in VERB_TAKES:
@@ -1072,6 +1108,10 @@ def verb_parse(spec: dict, fill: Fill, verb: Word) -> dict:
         return {"mood": "inf", "tense": parts[1] if len(parts) > 1 else "pres",
                 "voice": "pass" if verb.deponent else (parts[2] if len(parts) > 2 else "act")}
     tense, mood, voice = parts[0], parts[1], parts[2] if len(parts) > 2 else "act"
+    if tense == "seq":            # sequence of tenses: the governing verb's tense decides
+        main = fill.parses.get(spec["seq"]) or {}
+        tense = "pres" if main.get("tense", "pres") in PRIMARY_TENSES else "impf"
+    tense = tense.split("|")[0]   # alternatives (pres|perf): fill_template draws one, else the first
     if verb.deponent:
         voice = "pass"
     person, number = 3, "sg"
@@ -1087,6 +1127,18 @@ def verb_parse(spec: dict, fill: Fill, verb: Word) -> dict:
     return {"tense": tense, "mood": mood, "voice": voice, "person": person, "number": number}
 
 
+PRIMARY_TENSES = {"pres", "fut", "futperf"}
+VERB_MODS = {"base", "3sg", "past", "pp", "ing", "prog", "neg", "be", "tense", "had", "simple"}
+
+
+def _choose_tense(spec: dict, rng: random.Random) -> dict:
+    """A verb `form` may offer tense alternatives (pres|perf.ind): draw one."""
+    head, sep, rest = spec["form"].partition(".")
+    if "|" not in head:
+        return spec
+    return dict(spec, form=rng.choice(head.split("|")) + sep + rest)
+
+
 def _resolve_ab(la: str) -> str:
     def rep(m):
         nxt = la[m.end():].lstrip()[:1]
@@ -1100,7 +1152,7 @@ def _fill_order(slots: dict) -> list[str]:
     # a slot that copies another comes after it
     out: list[str] = []
     for n in names:
-        src = slots[n].get("same")
+        src = slots[n].get("same") or slots[n].get("seq")
         if src and src not in out and src in names:
             out.append(src)
         if n not in out:
@@ -1171,6 +1223,7 @@ def fill_template(lex: Lexicon, chapter: int, t: dict, rng: random.Random) -> Fi
             fill.words[name], fill.parses[name], fill.forms[name], fill.numbers[name] = w, {}, w.lemma, "sg"
             used_lemmas.add(key_of(w.lemma))
         else:  # V
+            spec = _choose_tense(spec, rng)
             if spec.get("same"):
                 v = fill.words[spec["same"]]
                 parse = verb_parse(spec, fill, v)
@@ -1318,6 +1371,15 @@ def en_verb_phrase(fill: Fill, name: str, mod: str | None = None) -> str:
                 return f"did not {base}"
             do = "do" if (number == "pl" or person != 3) else "does"
             return f"{do} not {base}"
+        if mod == "tense":            # the indicative English of the parse's own tense, whatever the mood
+            return _en_tensed(base, parse.get("tense"), number, person, passive)
+        if mod == "had":
+            return f"had {en_verb(base, 'pp')}"
+        if mod == "simple":           # a result or outcome: simple present or simple past by tense
+            t = parse.get("tense")
+            if t in ("impf", "perf"):
+                return en_verb(base, "past", number, person)
+            return _en_tensed(base, t, number, person, passive)
         return en_verb(base, mod, number, person)
     if parse.get("mood") == "ptc":
         return en_verb(base, "ing")
@@ -1327,12 +1389,35 @@ def en_verb_phrase(fill: Fill, name: str, mod: str | None = None) -> str:
         return en_verb(base, "past", number, person)
     if parse.get("tense") == "impf":
         be = "was" if number == "sg" and person != 2 else "were"
-        return f"{be} {en_verb(base, 'ing')}"
+        return be if base == "be" else f"{be} {en_verb(base, 'ing')}"
     if parse.get("voice") == "pass" and not w.deponent:
         be = en_verb("be", "3sg", number, person)
         return f"{be} {en_verb(base, 'pp')}"
     if parse.get("mood") == "subj":
         return base
+    return en_verb(base, "3sg", number, person)
+
+
+def _en_tensed(base: str, tense: str | None, number: str, person: int, passive: bool = False) -> str:
+    """The indicative English a tense takes: a subjunctive inside cum, ut or an
+    indirect question reads as plain English (dormīret → was sleeping)."""
+    if tense == "impf":
+        be = "was" if number == "sg" and person != 2 else "were"
+        if base == "be":
+            return be
+        if base in EN_STATIVE or base.startswith("not ") or base.startswith("be "):
+            return en_verb(base, "past", number, person)
+        return f"{be} {en_verb(base, 'pp')}" if passive else f"{be} {en_verb(base, 'ing')}"
+    if tense == "plupf":
+        return "had been " + en_verb(base, "pp") if passive else "had " + en_verb(base, "pp")
+    if tense == "perf":
+        if passive:
+            return ("was " if number == "sg" and person != 2 else "were ") + en_verb(base, "pp")
+        return en_verb(base, "past", number, person)
+    if tense == "fut":
+        return "will be " + en_verb(base, "pp") if passive else "will " + base
+    if passive:
+        return f"{en_verb('be', '3sg', number, person)} {en_verb(base, 'pp')}"
     return en_verb(base, "3sg", number, person)
 
 
@@ -1431,18 +1516,27 @@ def gloss_slot(fill: Fill, name: str, after_prep: bool = False) -> str:
             return en_verb(base, "ing")
         if parse.get("mood") == "inf":
             return ("to be " + en_verb(base, "pp")) if parse.get("voice") == "pass" and not w.deponent else "to " + base
+        if spec.get("gloss"):     # the template names the English shape (tense · had · past …) or the words
+            return en_verb_phrase(fill, name, spec["gloss"]) if spec["gloss"] in VERB_MODS else spec["gloss"]
         if parse.get("mood") == "subj":
+            if parse.get("tense") == "impf":
+                return "might " + base
+            if parse.get("tense") == "plupf":
+                return "had " + en_verb(base, "pp")
+            if parse.get("tense") == "perf":
+                return ("has " if number == "sg" and person == 3 else "have ") + en_verb(base, "pp")
             return "may " + base
         if parse.get("tense") == "perf":
             return en_verb(base, "past", number, person)
         if parse.get("tense") == "impf":
-            return ("was " if number == "sg" and person != 2 else "were ") + en_verb(base, "ing")
+            was = "was " if number == "sg" and person != 2 else "were "
+            return was.strip() if base == "be" else was + en_verb(base, "ing")
         if parse.get("voice") == "pass" and not w.deponent:
             return ("is " if number == "sg" else "are ") + en_verb(base, "pp")
         if person == 1:
-            return ("I " if number == "sg" else "we ") + base
+            return ("I " if number == "sg" else "we ") + en_verb(base, "base")
         if person == 2:
-            return "you " + base
+            return "you " + en_verb(base, "base")
         return en_verb(base, "3sg", number, person)
     if pos == "ADJ":
         if isinstance(w.sem, dict) and w.sem.get("det"):

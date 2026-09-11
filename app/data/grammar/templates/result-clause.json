@@ -1,0 +1,680 @@
+{
+ "skill": "result-clause",
+ "chapter": 28,
+ "templates": [
+  {
+   "id": "rc-t1",
+   "la": "{s:nom} tam {adj:nom} {be:pres.ind} ut {adv} {v:pres.subj}.",
+   "en": "{s} {be:3sg} so {adj} that {s:pron} {v:3sg} {adv}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "fessus",
+      "aeger",
+      "aegrōtus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "lemmas": [
+      "dormiō",
+      "quiēscō",
+      "cubō",
+      "recumbō",
+      "iaceō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "rc-t2",
+   "la": "{s:nom} tam {adj:nom} {be:pres.ind} ut {v:pres.subj}.",
+   "en": "{s} {be:3sg} so {adj} that {s:pron} {v:3sg}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "trīstis",
+      "miser",
+      "maestus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "lemmas": [
+      "plōrō",
+      "lacrimō",
+      "fleō",
+      "maereō",
+      "taceō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "rc-t3",
+   "la": "{s:nom} tam {adj:nom} {be:pres.ind} ut {s2:nom} {v:pres.subj}.",
+   "en": "{s} {be:3sg} so {adj} that {s2} {v:3sg}.",
+   "slots": {
+    "s": {
+     "only": [
+      "dominus",
+      "magister",
+      "pater",
+      "rēx",
+      "dux",
+      "mīles",
+      "erus",
+      "tyrannus",
+      "prīnceps",
+      "gubernātor",
+      "senātor",
+      "Iūlius",
+      "Cornēlius"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "sevērus",
+      "saevus",
+      "ferōx",
+      "īrātus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "s2": {
+     "only": [
+      "servus",
+      "puer",
+      "discipulus",
+      "ancilla",
+      "nauta",
+      "mīles",
+      "fīlius",
+      "colōnus",
+      "agricola",
+      "puella",
+      "cīvis",
+      "incola"
+     ],
+     "number": "pl"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "absolute": true,
+     "lemmas": [
+      "timeō",
+      "taceō",
+      "fugiō",
+      "tremō",
+      "plōrō",
+      "metuō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "rc-t4",
+   "la": "Tantus {be:pres.ind} {n:nom} ut {s2:nom} {v:pres.subj}.",
+   "en": "So great {be:3sg} {n:the} that {s2} {v:3sg}.",
+   "slots": {
+    "n": {
+     "only": [
+      "timor",
+      "metus",
+      "clāmor"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "n",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "s2": {
+     "only": [
+      "servus",
+      "puer",
+      "discipulus",
+      "ancilla",
+      "nauta",
+      "mīles",
+      "fīlius",
+      "colōnus",
+      "agricola",
+      "puella",
+      "cīvis",
+      "incola",
+      "fēmina",
+      "mulier",
+      "pāstor"
+     ],
+     "number": "pl"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "absolute": true,
+     "lemmas": [
+      "fugiō",
+      "tremō",
+      "taceō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "Tantus": "so great",
+    "ut": "that"
+   }
+  },
+  {
+   "id": "rc-t5",
+   "la": "Ita {v1:pres.ind} {s:nom} ut omnēs {v:pres.subj.act.3pl}.",
+   "en": "{s} {v1:3sg} in such a way that all {v:3sg}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "clāmō",
+      "cantō"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj.act.3pl",
+     "absolute": true,
+     "lemmas": [
+      "audiō",
+      "rīdeō",
+      "taceō",
+      "accurrō",
+      "veniō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {
+    "Ita": "so",
+    "ut": "that",
+    "omnēs": "all"
+   }
+  },
+  {
+   "id": "rc-t6",
+   "la": "{s:nom} tam {adv} {v1:pres.ind} ut nēmō {pron:acc} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} so {adv} that nobody {v:3sg} {pron}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person",
+      "animal"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "celeriter"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "currō",
+      "fugiō"
+     ]
+    },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "obj": "pron",
+     "lemmas": [
+      "videō",
+      "audiō",
+      "conspiciō",
+      "cōnsequor"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 8,
+   "fixed_gloss": {
+    "ut": "that",
+    "nēmō": "nobody"
+   }
+  },
+  {
+   "id": "rc-t7",
+   "la": "{s:nom} tam {adj:nom} {be:pres.ind} ut nōn {v:pres.subj}.",
+   "en": "{s} {be:3sg} so {adj} that {s:pron} {v:neg}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "fessus",
+      "aeger",
+      "aegrōtus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "lemmas": [
+      "labōrō",
+      "ambulō",
+      "currō",
+      "surgō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "rc-t8",
+   "la": "{s:nom} tam {adj:nom} {be:impf.ind} ut {adv} {v:impf.subj}.",
+   "en": "{s} {be:past} so {adj} that {s:pron} {v:past} {adv}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "fessus",
+      "aeger",
+      "aegrōtus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "impf.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "statim"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s",
+     "gloss": "past",
+     "lemmas": [
+      "dormiō",
+      "quiēscō",
+      "cubō",
+      "recumbō",
+      "iaceō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "rc-t9",
+   "la": "{s:nom} tam {adv} {v1:pres.ind} ut {s2:nom} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} so {adv} that {s2} {v:3sg}.",
+   "slots": {
+    "s": {
+     "only": [
+      "mīles",
+      "nauta",
+      "Rōmānus"
+     ],
+     "number": "pl"
+    },
+    "adv": {
+     "pos": "ADV",
+     "only": [
+      "fortiter"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "lemmas": [
+      "pugnō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "hostis",
+      "barbarus",
+      "pīrāta"
+     ],
+     "number": "pl"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "absolute": true,
+     "lemmas": [
+      "fugiō",
+      "timeō",
+      "tremō",
+      "metuō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  },
+  {
+   "id": "rc-t10",
+   "la": "{s:nom} tam {adj:nom} {be:pres.ind} ut nōn {v:pres.subj}.",
+   "en": "{s} {be:3sg} so {adj} that {s:pron} {v:neg}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "trīstis",
+      "miser",
+      "maestus"
+     ],
+     "pred": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s",
+     "lemmas": [
+      "rīdeō",
+      "cantō"
+     ]
+    }
+   },
+   "focus": "v",
+   "words": 7,
+   "fixed_gloss": {
+    "ut": "that"
+   }
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 10,
+    "rate": 0.25,
+    "causes": [
+     "'everybody hear' (3pl parse against a singular English subject): 'all' + {v:3sg}",
+     "'so great is fear' wants the article: {n:the}",
+     "any person as the severe one or the frightened ones: authority / subordinate lists",
+     "sad adjectives paired with walking verbs: split into two templates",
+     "sum drawn through takes: pred, added to EN_VERBS"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 2,
+    "rate": 0.05,
+    "causes": [
+     "'all be silent' (base after a plural): {v:3sg}",
+     "'so great is the fear that the slaves fear': timeō / metuō out of the tantus template"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.075,
+    "causes": [
+     "inimīcus as the singer",
+     "lūdō as the thing the sick do not do"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 4,
+    "rate": 0.1,
+    "causes": [
+     "'so great is the shout that the sailors shout': clāmō out of the tantus template",
+     "nymphae: the actor exclusion list applied to every subject slot"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 6,
+    "seed": 16,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   }
+  ],
+  "final_rate": 0.0,
+  "method": "40 fresh sentences per pass, read hostilely for agreement, sense, sequence of tenses, English, gloss and macrons; every cause fixed in a frame, template, gate or check, never the symptom"
+ }
+}
