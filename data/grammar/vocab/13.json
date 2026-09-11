@@ -471,13 +471,13 @@
   },
   {
    "lemma": "nōminō",
-   "dict": "nōminō, nōmināre, nominavī, nominatum",
+   "dict": "nōminō, nōmināre, nōmināvī, nōminātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "name, call",
    "sense_full": "name, call",
-   "parts": "nōminō, nōmināre, nominavī, nominatum",
+   "parts": "nōminō, nōmināre, nōmināvī, nōminātum",
    "unit_id": "r13:17.1",
    "count": 9,
    "sem": {
@@ -589,13 +589,13 @@
   },
   {
    "lemma": "illūstrō",
-   "dict": "illūstrō, illūstrāre, illustravī, illustratum",
+   "dict": "illūstrō, illūstrāre, illūstrāvī, illūstrātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "light up, illuminate",
    "sense_full": "illuminate, light up",
-   "parts": "illūstrō, illūstrāre, illustravī, illustratum",
+   "parts": "illūstrō, illūstrāre, illūstrāvī, illūstrātum",
    "unit_id": "r13:48.1",
    "count": 5,
    "sem": {

@@ -281,13 +281,13 @@
   },
   {
    "lemma": "habitō",
-   "dict": "habitō, habitāre, habitāvī, habitatum",
+   "dict": "habitō, habitāre, habitāvī, habitātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "live, dwell",
    "sense_full": "inhabit, dwell",
-   "parts": "habitō, habitāre, habitāvī, habitatum",
+   "parts": "habitō, habitāre, habitāvī, habitātum",
    "unit_id": "r05:2.1",
    "count": 34,
    "sem": {
@@ -352,13 +352,13 @@
   },
   {
    "lemma": "dēlectō",
-   "dict": "dēlectō, dēlectāre, delectavī, dēlectātum",
+   "dict": "dēlectō, dēlectāre, dēlectāvī, dēlectātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "delight, please",
    "sense_full": "delight, please, amuse, fascinate",
-   "parts": "dēlectō, dēlectāre, delectavī, dēlectātum",
+   "parts": "dēlectō, dēlectāre, dēlectāvī, dēlectātum",
    "unit_id": "r05:60.1",
    "count": 24,
    "sem": {

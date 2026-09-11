@@ -488,13 +488,13 @@
   },
   {
    "lemma": "aegrōtō",
-   "dict": "aegrōtō, aegrōtāre, aegrotavī, aegrotatum",
+   "dict": "aegrōtō, aegrōtāre, aegrōtāvī, aegrōtātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "be ill",
    "sense_full": "be sick",
-   "parts": "aegrōtō, aegrōtāre, aegrotavī, aegrotatum",
+   "parts": "aegrōtō, aegrōtāre, aegrōtāvī, aegrōtātum",
    "unit_id": "r11:48.1",
    "count": 13,
    "sem": {
@@ -641,13 +641,13 @@
   },
   {
    "lemma": "sānō",
-   "dict": "sānō, sānāre, sanavī, sanatum",
+   "dict": "sānō, sānāre, sānāvī, sānātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "cure, heal",
    "sense_full": "cure, heal",
-   "parts": "sānō, sānāre, sanavī, sanatum",
+   "parts": "sānō, sānāre, sānāvī, sānātum",
    "unit_id": "r11:27.1",
    "count": 8,
    "sem": {
@@ -976,13 +976,13 @@
   },
   {
    "lemma": "palpitō",
-   "dict": "palpitō, palpitāre, palpitavī, palpitatum",
+   "dict": "palpitō, palpitāre, palpitāvī, palpitātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "throb, beat",
    "sense_full": "throb, beat, pulsate",
-   "parts": "palpitō, palpitāre, palpitavī, palpitatum",
+   "parts": "palpitō, palpitāre, palpitāvī, palpitātum",
    "unit_id": "r11:98.2",
    "count": 4,
    "sem": {

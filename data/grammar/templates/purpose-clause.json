@@ -365,7 +365,8 @@
       "animal",
       "person"
      ],
-     "number": "any"
+     "number": "any",
+     "through": "door"
     },
     "v2": {
      "pos": "V",

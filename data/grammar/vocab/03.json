@@ -353,13 +353,13 @@
   },
   {
    "lemma": "plōrō",
-   "dict": "plōrō, plōrāre, ploravī, ploratum",
+   "dict": "plōrō, plōrāre, plōrāvī, plōrātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "cry, wail",
    "sense_full": "cry over, cry aloud",
-   "parts": "plōrō, plōrāre, ploravī, ploratum",
+   "parts": "plōrō, plōrāre, plōrāvī, plōrātum",
    "unit_id": "r03:9.1",
    "count": 20,
    "sem": {
@@ -397,13 +397,13 @@
   },
   {
    "lemma": "cantō",
-   "dict": "cantō, cantāre, cantavī, cantatum",
+   "dict": "cantō, cantāre, cantāvī, cantātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "sing",
    "sense_full": "sing",
-   "parts": "cantō, cantāre, cantavī, cantatum",
+   "parts": "cantō, cantāre, cantāvī, cantātum",
    "unit_id": "r03:3.1",
    "count": 12,
    "sem": {
