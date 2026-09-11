@@ -242,7 +242,7 @@ export function createUI(ctx) {
   let pop = null;
   function closePop() { if (pop) { pop.remove(); pop = null; document.removeEventListener('pointerdown', onDocDown, true); } }
   function onDocDown(e) { if (pop && !pop.contains(e.target) && !e.target.closest?.('.g-w')) closePop(); }
-  function showGloss(wordEl, form, text, unitLa = '') {
+  function showGloss(wordEl, form, text, unitLa = '', { hover = false } = {}) {
     closePop();
     const r = dict.lookup(form);
     const entries = r.entries.slice(0, 4);
@@ -269,8 +269,90 @@ export function createUI(ctx) {
     pop.style.left = `${Math.round(left - rr.left)}px`;
     pop.style.top = `${Math.round(wr.bottom - rr.top + 6)}px`;
     document.addEventListener('pointerdown', onDocDown, true);
-    pop.querySelector('.g-pop__close').focus({ preventScroll: true });
+    // A pointer opened it, so the keyboard stays where the reader put it: taking focus here would
+    // pull it out of the answer box just because the pointer crossed a word.
+    pop.dataset.hover = hover ? '1' : '0';
+    if (!hover) pop.querySelector('.g-pop__close').focus({ preventScroll: true });
   }
+
+  /*
+   * The dictionary on the pointer (asked for 2026-09-11: "you should not have to click on the word
+   * in the grammar section"). Delegated from the body, so it covers every `.g-w` the section draws,
+   * now and later. A click still means what it meant — in a tap item, choosing the word.
+   *
+   * Only where hovering is real: a touch screen reports `any-pointer: coarse` and no hover, and there
+   * a "hover" fires on the tap that was meant to choose a word.
+   */
+  const HOVER_IN_MS = 140;   // long enough that crossing a sentence does not strobe
+  let hoverTimer = null;
+  let hoverWord = null;
+  const canHover = () => (typeof window.matchMedia !== 'function') || window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const clearHoverTimer = () => { if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; } };
+  const closeHoverPop = () => { if (pop && pop.dataset.hover === '1') closePop(); };
+  /*
+   * Latin that was drawn as plain text — a chip, a cited form, a table cell, a catalogue example —
+   * becomes words the first time the pointer crosses it. Marked-up Latin (`lang="la"`) is the whole
+   * of what this touches, so an English sentence is never cut into words that happen to look Latin.
+   * Done once per element, and never to a control whose text is its value.
+   */
+  const LA_NO = 'input, textarea, select, option, .g-w, .g-wx, .g-la, .g-pop, .g-blank';
+  function wordsOnDemand(el) {
+    if (!el || el.dataset.laWords === '1') return false;
+    el.dataset.laWords = '1';
+    if (el.matches(LA_NO) || el.closest('input, textarea, select')) return false;
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const text = [];
+    while (walk.nextNode()) {
+      const n = walk.currentNode;
+      if (n.parentElement !== el && n.parentElement?.closest(LA_NO)) continue;
+      if (/\p{L}/u.test(n.textContent)) text.push(n);
+    }
+    let cut = false;
+    for (const n of text) {
+      const frag = document.createDocumentFragment();
+      for (const t of tokenize(n.textContent)) {
+        if (t.isWord) { frag.append(h('span', { class: 'g-wx', lang: 'la', 'data-form': t.form, text: t.text })); cut = true; }
+        else frag.append(t.text);
+      }
+      if (cut) n.replaceWith(frag);
+    }
+    return cut;
+  }
+
+  function onHoverIn(e) {
+    if (!canHover()) return;
+    let w = e.target?.closest?.('.g-w, .g-wx');
+    // Not on a word yet, but on Latin: cut it into words and find the one under the pointer.
+    if (!w) {
+      const la = e.target?.closest?.('[lang="la"]');
+      if (la && root.contains(la) && wordsOnDemand(la)) {
+        w = document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.g-wx');
+      }
+    }
+    if (!w || w === hoverWord || !root.contains(w)) return;
+    clearHoverTimer();
+    hoverWord = w;
+    // A popup opened by a click is the reader's own; leave it alone.
+    if (pop && pop.dataset.hover !== '1') return;
+    hoverTimer = setTimeout(() => {
+      hoverTimer = null;
+      if (!w.isConnected) return;
+      const ctxLa = w.closest('.g-la, [lang="la"]')?.textContent ?? '';
+      showGloss(w, w.dataset.form ?? w.textContent, w.textContent, ctxLa, { hover: true });
+    }, HOVER_IN_MS);
+  }
+  function onHoverOut(e) {
+    const w = e.target?.closest?.('.g-w, .g-wx');
+    if (!w) return;
+    const to = e.relatedTarget;
+    if (to && (w.contains(to) || to.closest?.('.g-pop'))) return;   // into the popup itself, or the word's own punctuation
+    clearHoverTimer();
+    hoverWord = null;
+    closeHoverPop();
+  }
+  // `root` and not `body`: body is rebuilt by every draw(), and is still null when this runs.
+  root.addEventListener('mouseover', onHoverIn);
+  root.addEventListener('mouseout', onHoverOut);
 
   /** A Latin sentence as tappable words. `target`: word index (or a list of them) to mark; `tap(index)`: the words are the answer; a `___` blank is marked as the target. */
   function latin(la, { target = null, tap = null, cls = '' } = {}) {
@@ -881,11 +963,14 @@ export function createUI(ctx) {
         for (const b of group.children) { b.disabled = true; b.classList.toggle('is-answer', a.choices[[...group.children].indexOf(b)]?.correct === true); }
         row(a.label, a.name, a.plain, !!c.correct);
         ctx.say(c.correct ? `${a.label}: ${a.name}. Right.` : `${a.label}: ${a.name}, not ${c.label}.`);
-        // Right or wrong, the example moves on: it is teaching, and nothing here is scored.
-        setTimeout(askNext, c.correct ? 500 : 1400);
+        // Nothing moves on by itself. This used to jump after half a second when right, which is not
+        // long enough to read the answer it just put on the row beside the question.
+        const on = btn(asks.length || plan.why ? 'Next' : 'Now check it', { onclick: askNext }, 'btn btn--primary g-worked__go');
+        group.after(on);
+        on.focus({ preventScroll: true });
       } }, 'g-choice')));
       const q = h('p', { class: 'g-q g-worked__q', tabindex: '-1', text: a.key === 'construction' ? `What is ${plan.word} doing here?` : `Which ${a.label} is ${plan.word}?` });
-      live.replaceChildren(q, group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer.' }));
+      live.replaceChildren(q, group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer; Enter goes on.' }));
       live.onkeydown = (e) => { const n = Number(e.key); if (n >= 1 && n <= a.choices.length && !picked) { e.preventDefault(); group.children[n - 1].click(); } };
       q.focus({ preventScroll: true });
     };
@@ -1751,17 +1836,19 @@ export function createUI(ctx) {
    * arrow, or answering nothing at all skips it; the back arrow cancels it, and
    * stepping back is how the learner re-reads a line they missed.
    */
-  const ADVANCE_MS = 1400;
   /**
    * Drives one runner in the body: item → answer → feedback → on. `open`
    * sessions offer "ten more" at the end; `practiceLink` shows "Practise this
    * skill" in the feedback (a five-item set that returns here afterwards).
    *
    * Session flow (GRAMMAR-CONTRACT.md, 2026-09-06):
-   * - a **right** answer advances by itself after `ADVANCE_MS`; Enter at once;
-   * - a **wrong** answer holds the item, with its result and its explanation,
-   *   and "Try again" builds the same item fresh. Only the forward arrow gets
-   *   past it. The runner logs the first answer and nothing after it;
+   * - **no answer moves on by itself**, right or wrong: the feedback is the
+   *   teaching, and a right answer used to show it for 1.4 s and then take it
+   *   away before it could be read. "Next" takes the focus, so Enter is still
+   *   one key;
+   * - a **wrong** answer additionally holds the item, with its result and its
+   *   explanation, and "Try again" builds the same item fresh. The runner logs
+   *   the first answer and nothing after it;
    * - **back / forward** walk the items already seen. A page is kept exactly as
    *   it was left — its inputs already disabled by `submit()` — so a step back
    *   is a replay, never a second grading. Left and right arrow keys do the
@@ -1778,8 +1865,6 @@ export function createUI(ctx) {
     const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB);
     setBody(stepHolder ?? stepper, nav, wrap);
     const pages = [];        // queue index → the rendered page, kept so a step back shows it as it was left
-    let beat = null;
-    const clearBeat = () => { if (beat) { clearTimeout(beat); beat = null; } };
     /** Human position: the made items up to here, out of the made items in all (skipped slots are not counted). */
     const paintNav = () => {
       const i = runner.position;
@@ -1793,7 +1878,6 @@ export function createUI(ctx) {
       nav.dataset.replay = runner.replay ? 'true' : 'false';
     };
     function finish() {
-      clearBeat();
       const summary = runner.summary();
       if (open && more) {   // open-ended: ten more before the summary
         wrap.replaceChildren(h('div', { class: 'g-open' }, h('p', { class: 'g-lede', text: `${summary.right} of ${summary.total} so far.` }),
@@ -1806,7 +1890,6 @@ export function createUI(ctx) {
     }
     /** Move by one item. -1 back (a replay), +1 forward (past an answered item, whichever way it went). */
     function go(dir) {
-      clearBeat();
       if (dir < 0) { if (!runner.canBack) return; runner.back(); }
       else { if (!runner.canForward) return; runner.forward(); }
       step({ announce: true });
@@ -1833,10 +1916,11 @@ export function createUI(ctx) {
           page.append(fb);
           page.dataset.result = result.correct ? 'ok' : 'bad';
           paintNav();
-          ctx.say(`${fb.querySelector('.g-fb__line')?.textContent ?? ''}${result.correct ? ' Moving on.' : ''}`);
+          ctx.say(fb.querySelector('.g-fb__line')?.textContent ?? '');
           fb.scrollIntoView({ block: 'nearest' });
-          if (result.correct) { fb.querySelector('.g-fb__next')?.focus({ preventScroll: true }); clearBeat(); beat = setTimeout(() => { beat = null; go(1); }, ADVANCE_MS); }
-          else fb.querySelector('.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+          // Nothing moves on by itself, right or wrong: the feedback is the teaching, and it was being
+          // read for 1.4 s and then taken away. "Next" is focused, so Enter is still one key.
+          fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
         },
       });
       page.append(itemEl);
@@ -1851,7 +1935,6 @@ export function createUI(ctx) {
     const focusPage = (page) => { (page.querySelector('.g-fb__retry, .g-fb__next') ?? page.querySelector('.g-worked__ask .g-q') ?? page.querySelector('.g-item:not([hidden]) .g-q') ?? page.querySelector('.g-step__title'))?.focus?.({ preventScroll: true }); };
     function step({ announce = false } = {}) {
       closePop();
-      clearBeat();
       const cur = runner.current;
       if (!cur) { finish(); return; }
       const i = runner.position;
@@ -1888,7 +1971,6 @@ export function createUI(ctx) {
       const skill = skills.get(skillId);
       const sub = createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN() });
       if (!sub.start()) { ctx.say('No more sentences for this skill right now.'); return; }
-      clearBeat();
       const saved = [...wrap.childNodes];
       const subWrap = h('div', { class: 'g-run g-run--sub' });
       wrap.replaceChildren(h('p', { class: 'g-sub__note', text: `A short set on ${skill.title}; the session continues afterwards.` }), subWrap);
@@ -1905,8 +1987,7 @@ export function createUI(ctx) {
                 onRetry: result.correct ? null : paint });
               subWrap.append(fb);
               ctx.say(fb.querySelector('.g-fb__line')?.textContent ?? '');
-              if (result.correct) { fb.querySelector('.g-fb__next')?.focus({ preventScroll: true }); clearBeat(); beat = setTimeout(() => { beat = null; sub.runner.forward(); subStep(); }, ADVANCE_MS); }
-              else fb.querySelector('.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+              fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
             } }));
           subWrap.querySelector('.g-q')?.focus?.({ preventScroll: true });
         };
