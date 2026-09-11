@@ -14098,5 +14098,95 @@
     "mulier"
    ]
   }
+ },
+ "SENSE": {
+  "note": "Judgements about a whole sentence rather than about one word, read by generate_sentences.py directly (build_vocab.py carries any block that is not a part of speech through untouched).  Each was a class the QA audit of 2026-09-11 found in a shipped bank.",
+  "wield": {
+   "note": "What one person holds in one hand.  A bare ablative singular of such a thing beside a plural subject is 'the horsemen fight with a sword' (QA M-8), so the pair is refused; the plural instrument, and the singular subject, are both left alone.",
+   "one_each": [
+    "gladius",
+    "hasta",
+    "virga",
+    "baculum",
+    "stilus",
+    "calamus",
+    "culter",
+    "falx",
+    "ēnsis",
+    "clipeus",
+    "scūtum",
+    "pīlum",
+    "sagitta",
+    "arātrum",
+    "rēmus",
+    "speculum"
+   ]
+  },
+  "exit": {
+   "note": "Verbs whose prefix is 'out of'.  None of them may stand in a clause with in + accusative: 'colōnus in cubiculum exit' goes out into the bedroom (QA N-17).  ad + accusative is untouched — exīre ad forum is good Latin — and so is in + ablative.",
+   "verbs": [
+    "exeō",
+    "ēgredior",
+    "abeō",
+    "discēdō",
+    "recēdō",
+    "excurrō",
+    "ērumpō",
+    "ēvolō",
+    "aufugiō",
+    "effugiō"
+   ]
+  },
+  "carry": {
+   "note": "What nobody picks up and carries.  Without this the generator sends farmers 'to carry the asses' (QA N-17).  The verbs are the carrying verbs; the list is the animals and herds too big to be lifted, and it blocks them as object and as the subject of the passive alike.",
+   "verbs": [
+    "portō",
+    "ferō",
+    "apportō",
+    "perferō",
+    "referō",
+    "afferō",
+    "prōferō",
+    "gestō",
+    "trānsferō",
+    "auferō"
+   ],
+   "not": [
+    "asinus",
+    "equus",
+    "bōs",
+    "taurus",
+    "leō",
+    "lupus",
+    "grex",
+    "pecus",
+    "delphīnus",
+    "mōnstrum",
+    "bēstia",
+    "aquila"
+   ]
+  },
+  "passage": {
+   "note": "What may come and go through an opening, for a slot that declares `through: <the opening's slot>`.  A window keeps out the weather and a bird, not a flock, an ox or a person, so 'they shut the window so the flocks may not come' is refused (QA N-17).  An opening this table does not name lets anything through.",
+   "through": {
+    "fenestra": [
+     "avis",
+     "passer",
+     "corvus",
+     "apis",
+     "arānea",
+     "bēstiola"
+    ]
+   }
+  },
+  "fear": {
+   "note": "Verbs of fearing.  Their English wants what is feared — 'that the enemies fear' stops halfway (QA N-18) — so one may not stand in a clause that names nothing in the accusative.  A clause that prints one (quem, eōs, nēminem, a slot in the accusative) is untouched.",
+   "verbs": [
+    "timeō",
+    "metuō",
+    "vereor",
+    "horreō"
+   ]
+  }
  }
 }

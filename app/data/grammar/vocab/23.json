@@ -168,13 +168,13 @@
   },
   {
    "lemma": "negō",
-   "dict": "negō, negāre, negāvī, negatum",
+   "dict": "negō, negāre, negāvī, negātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "deny, say no",
    "sense_full": "deny, refuse",
-   "parts": "negō, negāre, negāvī, negatum",
+   "parts": "negō, negāre, negāvī, negātum",
    "unit_id": "r23:66.1",
    "count": 11,
    "sem": {
@@ -793,13 +793,13 @@
   },
   {
    "lemma": "amputō",
-   "dict": "amputō, amputāre, amputavī, amputatum",
+   "dict": "amputō, amputāre, amputāvī, amputātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "cut off",
    "sense_full": "lop or cut off, prune, shorten",
-   "parts": "amputō, amputāre, amputavī, amputatum",
+   "parts": "amputō, amputāre, amputāvī, amputātum",
    "unit_id": "r23:25.1",
    "count": 1,
    "sem": {

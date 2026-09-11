@@ -300,3 +300,57 @@ def test_a_plurale_tantum_is_printed_in_the_plural(h, expected, head):
     assert bv.check_dict_line(got, "N") is None
     # the headword — and so the deck's own key — follows the dictionary line
     assert bv.headword(entry) == head
+
+
+# ----------------------------------------- the long a of the 1st conjugation
+#
+# QA N-19: the decks printed "cantō, cantāre, cantavī, cantatum" and "lātrō,
+# lātrāre, latravī, latratum".  A regular 1st-conjugation verb builds -āvī and
+# -ātum on its own present stem, so the line that says -āre says them too;
+# dō, stō, secō, vetō and cubō are not of that kind and keep their short a.
+
+def _strip(s):
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFD", s or "")
+                   if not unicodedata.combining(c))
+
+
+def _shipped_verbs():
+    for c in bv.CHAPTERS:
+        path = bv.OUT_DIR / f"{c:02d}.json"
+        if not path.exists():
+            continue
+        for w in json.loads(path.read_text(encoding="utf-8")).get("words") or []:
+            if w.get("pos") == "V" and w.get("dict"):
+                yield path.name, w
+
+
+@pytest.mark.parametrize("lemma,line", [
+    ("lātrō", "lātrō, lātrāre, lātrāvī, lātrātum"),
+    ("cantō", "cantō, cantāre, cantāvī, cantātum"),
+    ("lūceō", "lūceō, lūcēre, lūxī"),
+    ("dō", "dō, dāre, dedī, datum"),          # a short a the rule must not touch
+    ("stō", "stō, stāre, stetī, statum"),
+])
+def test_the_shipped_dictionary_line_of_a_word_the_audit_named(lemma, line):
+    got = [w for _, w in _shipped_verbs() if w["lemma"] == lemma]
+    assert got, lemma
+    assert got[0]["dict"] == line
+    assert got[0]["parts"] == line
+
+
+def test_no_deck_line_says_are_and_then_avi():
+    bad = []
+    for name, w in _shipped_verbs():
+        parts = [p.strip() for p in w["dict"].split(",")]
+        if len(parts) < 3 or not parts[1].endswith("āre"):
+            continue
+        stem = parts[1][:-3]
+        flat = _strip(stem)
+        if _strip(parts[2]) != flat + "avi":
+            continue        # dō, stō, secō, vetō, cubō: the perfect is not -āvī at all
+        for p in parts[2:]:
+            want = {f"{flat}avi": f"{stem}āvī", f"{flat}atum": f"{stem}ātum"}.get(_strip(p))
+            if want and p != want:
+                bad.append((name, w["dict"]))
+    assert bad == []

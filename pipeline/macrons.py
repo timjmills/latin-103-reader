@@ -172,6 +172,10 @@ HAND_ROOTS: dict[str, list[str]] = {
     "ADJ:tot/tot": ["tōt", "tōt"],
     # verbs (roots: present-1, present-2, perfect, participle)
     "V:am/am/amau/amat": ["am", "am", "amāv", "amāt"],
+    # natō's stem is short — natat, natāre, natant on the page — but it shares
+    # `nat` with nāscor's nātus, and the learnt spelling came back long, so the
+    # line read "natō, nātāre" against itself (QA N-19)
+    "V:nat/nat/natau/natat": ["nat", "nat", "natāv", "natāt"],
     "V:mon/mon/monu/monit": ["mon", "mon", "monu", "monit"],
     "V:reg/reg/rex/rect": ["reg", "reg", "rēx", "rēct"],
     "V:capi/cap/cep/capt": ["capi", "cap", "cēp", "capt"],

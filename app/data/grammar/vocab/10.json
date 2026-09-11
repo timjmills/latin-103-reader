@@ -66,13 +66,13 @@
   },
   {
    "lemma": "volō",
-   "dict": "volō, volāre, volāvī, volatum",
+   "dict": "volō, volāre, volāvī, volātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "want, wish, be willing",
    "sense_full": "want, wish, be willing",
-   "parts": "volō, volāre, volāvī, volatum",
+   "parts": "volō, volāre, volāvī, volātum",
    "unit_id": "r10:10.1",
    "count": 126,
    "sem": {
@@ -726,13 +726,13 @@
   },
   {
    "lemma": "natō",
-   "dict": "natō, nātāre, natavī, natatum",
+   "dict": "natō, natāre, natāvī, natātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "swim",
    "sense_full": "swim",
-   "parts": "natō, nātāre, natavī, natatum",
+   "parts": "natō, natāre, natāvī, natātum",
    "unit_id": "r10:11.1",
    "count": 15,
    "sem": {
@@ -749,13 +749,13 @@
   },
   {
    "lemma": "spīrō",
-   "dict": "spīrō, spīrāre, spiravī, spiratum",
+   "dict": "spīrō, spīrāre, spīrāvī, spīrātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "breathe",
    "sense_full": "breathe",
-   "parts": "spīrō, spīrāre, spiravī, spiratum",
+   "parts": "spīrō, spīrāre, spīrāvī, spīrātum",
    "unit_id": "r10:46.1",
    "count": 15,
    "sem": {

@@ -260,13 +260,13 @@
   },
   {
    "lemma": "comparō",
-   "dict": "comparō, comparāre, comparavī, comparatum",
+   "dict": "comparō, comparāre, comparāvī, comparātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "prepare, get ready",
    "sense_full": "prepare",
-   "parts": "comparō, comparāre, comparavī, comparatum",
+   "parts": "comparō, comparāre, comparāvī, comparātum",
    "unit_id": "r18:77.1",
    "count": 8,
    "sem": {
@@ -356,13 +356,13 @@
   },
   {
    "lemma": "significō",
-   "dict": "significō, significāre, significāvī, significatum",
+   "dict": "significō, significāre, significāvī, significātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "mean, indicate",
    "sense_full": "signify, indicate, show",
-   "parts": "significō, significāre, significāvī, significatum",
+   "parts": "significō, significāre, significāvī, significātum",
    "unit_id": "r18:32.1",
    "count": 7,
    "sem": {
@@ -862,13 +862,13 @@
   },
   {
    "lemma": "signō",
-   "dict": "signō, signāre, signavī, signatum",
+   "dict": "signō, signāre, signāvī, signātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "mark, seal",
    "sense_full": "mark, stamp, designate, sign",
-   "parts": "signō, signāre, signavī, signatum",
+   "parts": "signō, signāre, signāvī, signātum",
    "unit_id": "r18:187.1",
    "count": 2,
    "sem": {

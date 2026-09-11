@@ -356,13 +356,13 @@
   },
   {
    "lemma": "excitō",
-   "dict": "excitō, excitāre, excitavī, excitātum",
+   "dict": "excitō, excitāre, excitāvī, excitātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "wake up, rouse",
    "sense_full": "wake up, stir up",
-   "parts": "excitō, excitāre, excitavī, excitātum",
+   "parts": "excitō, excitāre, excitāvī, excitātum",
    "unit_id": "r14:34.2",
    "count": 16,
    "sem": {
@@ -586,13 +586,13 @@
   },
   {
    "lemma": "vigilō",
-   "dict": "vigilō, vigilāre, vigilavī, vigilatum",
+   "dict": "vigilō, vigilāre, vigilāvī, vigilātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "be awake, stay awake",
    "sense_full": "remain awake, be awake",
-   "parts": "vigilō, vigilāre, vigilavī, vigilatum",
+   "parts": "vigilō, vigilāre, vigilāvī, vigilātum",
    "unit_id": "r14:4.1",
    "count": 9,
    "sem": {

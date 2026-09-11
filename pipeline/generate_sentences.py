@@ -66,6 +66,19 @@ check so the class cannot come back):
   · a clause the conjunction `cum` introduces may not also carry a `cum`
     preposition phrase — `cum_clash` (C-3).
 
+Semantics the same audit's second reading added, all of them driven by the
+`SENSE` block of pipeline/sem.json and gathered in `sense_problems`:
+  · a plural subject does not fight with one sword — a bare ablative singular
+    of a `wield` word beside a plural doer (M-8);
+  · a verb of going out does not govern `in` + accusative — "colōnus in
+    cubiculum exit" goes out into the bedroom (N-17);
+  · nobody carries an ass — `carry` refuses the animals too big to be lifted,
+    as object and as the subject of the passive (N-17);
+  · only what fits comes through a window — a slot that declares
+    `through: <the opening's slot>` is held to `passage` (N-17);
+  · a verb of fearing in a clause that names nothing in the accusative stops
+    halfway in English (N-18).
+
 Subordinate clauses (2026-09-11): a verb `form` may offer tense alternatives
 (`pres|perf.ind`, one drawn per fill) and a subordinate verb may take its tense
 from its governor (`form: seq.subj` + `seq: <verb slot>`: primary → present,
@@ -84,7 +97,7 @@ from __future__ import annotations
 
 #: Bumped whenever generation changes what it would produce. A bank records it
 #: (build_generated.source_of) so a bank built by an older generator is caught.
-VERSION = "2026-09-12"
+VERSION = "2026-09-13"
 
 import argparse
 import hashlib
@@ -945,6 +958,10 @@ def validate_template(t: dict) -> None:
     for name, spec in t["slots"].items():
         if name not in used:
             raise TemplateError(f"{t['id']}: slot {name} declared but not printed")
+        # `through`: the slot holding the opening this one comes and goes by
+        # (SENSE.passage says what each opening lets through).
+        if spec.get("through") and spec["through"] not in t["slots"]:
+            raise TemplateError(f"{t['id']}: slot {name} comes through unknown slot {spec['through']}")
         pos = spec.get("pos", "N")
         if pos not in SLOT_POS:
             raise TemplateError(f"{t['id']}: slot {name} pos {pos}")
@@ -1193,6 +1210,130 @@ def possessive_ok(owner: Word | None, owned: Word,
     return any((k, target) in pairs for k in rel_keys(owner))
 
 
+# ------------------------------------ what the whole sentence may say (SENSE)
+@lru_cache(maxsize=1)
+def sense() -> dict:
+    """The `SENSE` block of pipeline/sem.json: the judgements that are about a
+    whole sentence rather than about one word — what one person holds, what a
+    verb of going out may not govern, what may be carried, what may come
+    through an opening, and the verbs that want something feared."""
+    try:
+        return load_json(SEM_PATH).get("SENSE") or {}
+    except OSError:
+        return {}
+
+
+@lru_cache(maxsize=None)
+def sense_keys(block: str, field: str) -> frozenset:
+    """One list of `SENSE`, normalised the way lemmas are compared."""
+    return frozenset(key_of(x) for x in ((sense().get(block) or {}).get(field) or []))
+
+
+@lru_cache(maxsize=None)
+def passage_through(aperture: str) -> frozenset | None:
+    """What may come and go through this opening, or None when the table does
+    not name it (an opening nobody restricted lets anything through)."""
+    table = (sense().get("passage") or {}).get("through") or {}
+    for name, allowed in table.items():
+        if key_of(name) == key_of(aperture):
+            return frozenset(key_of(x) for x in allowed)
+    return None
+
+
+#: The words that open a clause of their own inside a template's pattern.
+CLAUSE_OPENERS = {"ut", "nē", "cum", "sī", "nisi", "dum", "ubi", "quia", "quod",
+                  "quoniam", "quamquam", "quamvīs", "postquam", "antequam",
+                  "priusquam", "utinam", "quīn", "quandō", "dummodo", "etsī"}
+#: Accusatives a pattern may print as a literal word, so a clause with one of
+#: them has named what the verb is acting on even with no accusative slot.
+ACC_LITERALS = {key_of(x) for x in (
+    "mē", "tē", "sē", "nōs", "vōs", "eum", "eam", "id", "eōs", "eās", "ea",
+    "hunc", "hanc", "hoc", "hōs", "hās", "haec", "illum", "illam", "illōs",
+    "quem", "quam", "quid", "quōs", "quās", "quae", "nēminem", "nihil",
+    "aliquem", "aliquid", "quemquam", "quidquam", "omnia", "omnēs")}
+
+
+@lru_cache(maxsize=None)
+def _pattern_clauses(la: str) -> tuple[tuple[tuple[str, str, str], ...], ...]:
+    """A template's pattern cut into clauses, each a run of tokens — `("slot",
+    name, case)` for `{n:abl}`, `("lit", word, "")` for a printed word. A comma
+    and a subordinator each start a new clause, which is all the structure the
+    sentence-wide checks need."""
+    out: list[list[tuple[str, str, str]]] = []
+    cur: list[tuple[str, str, str]] = []
+    for raw in la.replace(",", " , ").replace(";", " ; ").split():
+        if raw in (",", ";", ":"):
+            out.append(cur)
+            cur = []
+            continue
+        bare = raw.rstrip(".!?")
+        m = SLOT_RE.match(bare)
+        if m and m.start() == 0:
+            cur.append(("slot", m.group(1), m.group(2) or ""))
+            continue
+        word = _bare(bare).lower()
+        if word in CLAUSE_OPENERS and cur:
+            out.append(cur)
+            cur = [("lit", word, "")]
+        else:
+            cur.append(("lit", word, ""))
+    out.append(cur)
+    return tuple(tuple(c) for c in out if c)
+
+
+def _clause_of(t: dict, name: str) -> tuple[tuple[str, str, str], ...]:
+    """The clause of the pattern that prints slot `name` (empty when none)."""
+    for clause in _pattern_clauses(t["la"]):
+        if any(kind == "slot" and n == name for kind, n, _ in clause):
+            return clause
+    return ()
+
+
+def _clause_has_accusative(t: dict, clause) -> bool:
+    """Does this clause name anything in the accusative — a slot, or one of the
+    accusative words a pattern prints itself (quem, eōs, nēminem)?"""
+    for kind, n, case in clause:
+        if kind == "slot":
+            spec = t["slots"].get(n) or {}
+            if spec.get("pos", "N") in ("N", "PRON", "ADJ") and case.split(".")[0] == "acc":
+                return True
+        elif key_of(n) in ACC_LITERALS:
+            return True
+    return False
+
+
+def _plural_subject(t: dict, fill: "Fill", clause) -> bool:
+    """Is the doer of this clause more than one? The verb's `subj` (a list of
+    slots is already more than one), a pronoun subject, or a plural person
+    baked into the verb's own form (`pres.ind.act.3pl`)."""
+    for kind, n, _ in clause:
+        if kind != "slot" or (t["slots"].get(n) or {}).get("pos") != "V":
+            continue
+        spec = t["slots"][n]
+        if any(p[:1] in "123" and p.endswith("pl") for p in spec["form"].split(".")):
+            return True
+        subj = spec.get("subj")
+        names = subj if isinstance(subj, list) else ([subj] if subj else [])
+        if len(names) > 1:
+            return True
+        for s in names:
+            if s in PRONOUN_SUBJECTS:
+                if PRONOUN_SUBJECTS[s][1] == "pl":
+                    return True
+            elif fill.numbers.get(s) == "pl":
+                return True
+    return False
+
+
+def carry_refuses(v: Word, words: list[Word]) -> bool:
+    """`SENSE.carry`: a verb of carrying does not take what nobody picks up.
+    Without this the generator sends farmers "to carry the asses" (QA N-17)."""
+    if key_of(v.lemma) not in sense_keys("carry", "verbs"):
+        return False
+    too_big = sense_keys("carry", "not")
+    return any(key_of(w.lemma) in too_big for w in words)
+
+
 def adj_candidates(lex: Lexicon, chapter: int, noun: Word, spec: dict, number: str,
                    case: str) -> list[Word]:
     only = {key_of(x) for x in spec.get("only") or []}
@@ -1293,6 +1434,8 @@ def verb_admits(v: Word, spec: dict, fill: Fill) -> bool:
             return False
         if not all(_arg_ok(sem, "obj", s) for s in subj_words):
             return False
+        if carry_refuses(v, subj_words):
+            return False          # "the ass is carried" is no better than "carries the ass"
         if agent is not None and not _arg_ok(sem, "subj", agent):
             return False
         if spec.get("dat") and not (v.dative and all(_arg_ok(sem, "dat", d) for d in dats)):
@@ -1310,6 +1453,8 @@ def verb_admits(v: Word, spec: dict, fill: Fill) -> bool:
     if spec.get("obj"):
         if not v.transitive or not all(_arg_ok(sem, "obj", o) for o in objs):
             return False
+        if carry_refuses(v, objs):
+            return False          # nobody carries an ass (QA N-17)
     elif v.transitive and not spec.get("absolute") and not wanted:
         return False              # a transitive verb is not used without its object
     if spec.get("dat"):
@@ -1947,6 +2092,66 @@ def cum_clash(la: str) -> str | None:
     return None
 
 
+def sense_problems(t: dict, fill: Fill) -> list[str]:
+    """The sentence-wide sense checks that read `SENSE` in pipeline/sem.json.
+
+    · **one sword each** — a plural subject does not fight with one sword, so a
+      bare ablative singular of a `wield` word beside a plural doer is refused
+      (QA M-8);
+    · **out of, not into** — a verb of going out does not govern `in` +
+      accusative: *colōnus in cubiculum exit* goes out into the bedroom (N-17);
+    · **through the window** — a slot that declares `through: <the opening's
+      slot>` holds only what `passage` lets through that opening, so the flocks
+      no longer come in at a window (N-17);
+    · **something feared** — a verb of fearing in a clause that names nothing
+      in the accusative stops halfway in English (N-18).
+    """
+    out: list[str] = []
+    for name, spec in t["slots"].items():
+        pos = spec.get("pos", "N")
+        if name not in fill.words:
+            continue
+        word = fill.words[name]
+        clause = _clause_of(t, name)
+        if pos == "N":
+            case = (_slot_case(t, name) or "").split(".")[0]
+            if (case == "abl" and fill.numbers.get(name, "sg") == "sg"
+                    and key_of(word.lemma) in sense_keys("wield", "one_each")
+                    and not _after_preposition(t, name)
+                    and _plural_subject(t, fill, clause)):
+                out.append(f"{name}: more than one of them, one {word.lemma}")
+        if pos == "V":
+            if key_of(word.lemma) in sense_keys("exit", "verbs") and _into_in_clause(t, clause):
+                out.append(f"{name}: {word.lemma} does not go in + accusative")
+            if (key_of(word.lemma) in sense_keys("fear", "verbs")
+                    and not spec.get("takes") and not _clause_has_accusative(t, clause)):
+                out.append(f"{name}: {word.lemma} names nothing feared")
+        ap = spec.get("through")
+        if ap and ap in fill.words:
+            allowed = passage_through(fill.words[ap].lemma)
+            if allowed is not None and key_of(word.lemma) not in allowed:
+                out.append(f"{name}: {word.lemma} does not come through a {fill.words[ap].lemma}")
+    return out
+
+
+def _after_preposition(t: dict, name: str) -> bool:
+    """Does the pattern print a preposition immediately before this slot?"""
+    i = t["la"].find("{%s" % name)
+    before = t["la"][:i].split() if i > 0 else []
+    return bool(before) and _bare(before[-1]).lower() in PREPOSITIONS
+
+
+def _into_in_clause(t: dict, clause) -> bool:
+    """`in` + an accusative slot in this clause — motion into somewhere."""
+    for i, (kind, n, _) in enumerate(clause):
+        if kind != "lit" or n != "in" or i + 1 >= len(clause):
+            continue
+        nxt = clause[i + 1]
+        if nxt[0] == "slot" and nxt[2].split(".")[0] == "acc":
+            return True
+    return False
+
+
 def _possessor(fill: Fill, name: str) -> tuple[Word | None, str]:
     """(the person a possessive determiner in slot `name` points back to, its
     number): the slot's `ref`, else the sentence's subject — the rule
@@ -1972,6 +2177,7 @@ def check_sentence(lex: Lexicon, chapter: int, t: dict, fill: Fill, la: str, exc
     clash = cum_clash(la)
     if clash:
         problems.append(clash)
+    problems.extend(sense_problems(t, fill))
     # no lemma twice (a `same` slot is the deliberate exception)
     seen: Counter = Counter()
     for name, w in fill.words.items():

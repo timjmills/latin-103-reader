@@ -167,7 +167,9 @@ test('aedificium: neuter -ium keeps a plural and never shows a -us nominative', 
 test('vulgus type (virus, N 2 1 neuter) keeps the no-plural -us table', () => {
   const p = paradigm(entry('virus', 'N'), []);
   assert.deepEqual(p.sections[0].headers, ['singular']);
-  assert.deepEqual(column(p, 'cases', 0).slice(0, 6), ['virus', 'virī', 'virō', 'virus', 'virō', 'virus']);
+  // vīrus "venom", not vir "man": the two share Whitaker's stem list, and the
+  // catalogue chip printed the short i until the lexeme table told them apart (QA N-2)
+  assert.deepEqual(column(p, 'cases', 0).slice(0, 6), ['vīrus', 'vīrī', 'vīrō', 'vīrus', 'vīrō', 'vīrus']);
   assert.match(p.note ?? '', /no plural/);
 });
 
