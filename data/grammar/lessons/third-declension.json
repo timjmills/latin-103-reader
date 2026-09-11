@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "The third family of nouns",
-      "say": "Most Latin nouns that do not end in -a or -us or -um belong to a third family: **a 3rd-declension noun (the -is / -ēs pattern: pāstor, pāstōris)**, *dēclīnātiō tertia*. Their first form can end in almost anything — *pāstor*, *ovis*, *canis*, *clāmor*, *mōns* — so you cannot tell one by its look alone. Masculine and feminine nouns of this family share every ending, so the gender has to be learned with the word.",
+      "notice": {
+        "sentences": [
+          "td-03",
+          "td-04"
+        ],
+        "ask": "Which word in each sentence is the thing being acted on? Look at its ending.",
+        "tap": "focus"
+      },
+      "say": "Most nouns that do not end in -a, -us or -um belong to a third family: **a 3rd-declension noun (the -is / -ēs pattern: pāstor, pāstōris)**. Their first form can end in almost anything — *pāstor*, *ovis*, *canis*, *clāmor*, *mōns* — so you cannot tell one by its look alone.",
       "show": {
         "kind": "sentence",
         "id": "td-01"
@@ -26,7 +34,7 @@
     {
       "n": 2,
       "title": "The genitive shows the stem",
-      "say": "Because the first form is unreliable, these nouns are learned in pairs: *pāstor, pāstōris*; *arbor, arboris*; *ovis, ovis*. The second form is the genitive (the 'of' form), it always ends **-is**, and what is left when you take that -is off is the stem every other ending is built on: *pāstōr-*, *arbor-*. Some stems change a good deal — *mōns, montis*; *dēns, dentis*. For more than one owner the genitive ends **-um** after most stems and **-ium** after nouns like *ovis* and *collis*: *pāstōrum*, *ovium*.",
+      "say": "These nouns are learned in pairs: *pāstor, pāstōris*; *ovis, ovis*. The second form is the genitive (the 'of' form); it always ends **-is**, and taking that -is off leaves the stem every other ending is built on: *pāstōr-*. For more than one owner the genitive ends **-um** after most stems and **-ium** after nouns like *ovis*: *pāstōrum*, *ovium*.",
       "show": {
         "kind": "paradigm",
         "key": "decl3",
@@ -53,7 +61,7 @@
     {
       "n": 3,
       "title": "As the object: stem + -em",
-      "say": "When one of these nouns is what the verb acts on, it goes into the accusative (the object form): add **-em** to the stem — *pānem*, *ovem*, *montem*, *pāstōrem*. The -em is the surest sign of the family in these chapters: nothing you have met so far ends that way except a third-declension object. And no neuter noun ever ends in -em, so a word in -em is masculine or feminine.",
+      "say": "When one of these nouns is what the verb acts on, it goes into the accusative (the object form): add **-em** to the stem — *pānem*, *ovem*, *montem*, *pāstōrem*. The -em is the surest sign of the family in these chapters.",
       "show": {
         "kind": "paradigm",
         "key": "decl3",
@@ -112,7 +120,7 @@
     {
       "n": 5,
       "title": "Two plural endings, four jobs",
-      "say": "Once the stem is known, the plural has only two endings left, and each of them does two jobs. **-ēs** is both the nominative (the subject form) and the accusative (the object form): *ovēs herbam edunt*, *dentēs magnōs habet*. **-ibus** is both the dative (the receiver form) and the ablative (the 'by/with/from' form): *pāstor canibus et ovibus aquam dat*. Two endings to learn, and the sentence tells you which job each is doing.",
+      "say": "Once the stem is known, the plural has only two endings, each doing two jobs. **-ēs** is both the nominative (the subject form) and the accusative (the object form): *ovēs herbam edunt*, *dentēs magnōs habet*. **-ibus** is both the dative (the receiver form) and the ablative (the 'by/with/from' form): *pāstor canibus et ovibus aquam dat*.",
       "show": {
         "kind": "paradigm",
         "key": "decl3",
@@ -152,7 +160,7 @@
     {
       "n": 6,
       "title": "The trap: -is and -īs",
-      "say": "*Ovis* can be the nominative (the subject form: one sheep) or the genitive (the owner form) of the very same word, and it looks like nothing in the other declensions — but *servīs* with a long ī is a second-declension plural, not this family at all. In *dominus servīs aquam dat, pāstor ovibus* the two plurals do the same job with different endings, because the nouns come from different families. Check the dictionary pair before you decide.",
+      "say": "*Ovis* can be the nominative (the subject form: one sheep) or the genitive (the owner form) of the same word — but *servīs* with a long ī is a second-declension plural, not this family. In *dominus servīs aquam dat, pāstor ovibus* the two plurals do the same job with different endings. Check the dictionary pair before you decide.",
       "show": {
         "kind": "sentence",
         "id": "td-15"
@@ -215,6 +223,26 @@
     {
       "type": "p",
       "text": "Ørberg cap. IX declines the three declensions side by side: *īnsula*, *servus*, *pāstor* / *ovis*. A nominative in -s often hides a consonant: *rēx* = *rēg-s*, *pēs, pedis*, *vōx, vōcis*; *homō, hominis*. Genitive plural -ium belongs to nouns like *ovis, ovium* and *collis, collium*; -um to *pāstor, pāstōrum* and *homō, hominum*. Rules of thumb: -or and -ō are masculine (*pāstor*, *timor*, *homō*; but *carō* f), -is and -ēs mostly feminine (but *pānis*, *canis*, *collis* m; and *mōns, montis* m). Beware -is: *ovis* is nominative or genitive singular, while *servīs* is dative or ablative plural of the 2nd declension. A&G §64–72."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name is *dēclīnātiō tertia*. Masculine and feminine nouns of this family share every ending, so the gender has to be learned with the word."
+    },
+    {
+      "type": "p",
+      "text": "Because the first form is unreliable, these nouns are learned in pairs — *arbor, arboris* as well. Some stems change a good deal — *mōns, montis*; *dēns, dentis*. The -ium genitive plural belongs to nouns like *ovis* and *collis*."
+    },
+    {
+      "type": "p",
+      "text": "On -em: nothing you have met so far ends that way except a third-declension object. And no neuter noun ever ends in -em, so a word in -em is masculine or feminine."
+    },
+    {
+      "type": "p",
+      "text": "The plural: two endings to learn, and the sentence tells you which job each is doing."
+    },
+    {
+      "type": "p",
+      "text": "*Ovis* looks like nothing in the other declensions. In *dominus servīs aquam dat, pāstor ovibus* the two plurals do the same job with different endings, because the nouns come from different families."
     }
   ],
   "sources": [

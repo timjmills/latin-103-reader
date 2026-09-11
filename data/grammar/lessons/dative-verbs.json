@@ -4,6 +4,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "dvb-01",
+          "dvb-03"
+        ],
+        "ask": "In English these verbs take a plain object: obey the master, hurt the boy. Tap the person each verb acts on — what do the two endings have in common?",
+        "tap": "focus"
+      },
       "say": "A small group of common verbs put the person they act on into **the dative (the 'to/for' form)**, where English simply says 'obey him' or 'harm him'. The Latin verb really means 'be obedient *to*', 'do harm *to*', so a 'to' word follows: *servī dominō pārent*. There is no accusative (the object form) in the sentence at all.",
       "show": {
         "kind": "sentence",
@@ -107,7 +115,7 @@
     {
       "n": 5,
       "title": "Which verbs — and the neighbours that take the accusative",
-      "say": "The list is short enough to learn: *pāreō* obey, *placeō* please, *noceō* harm, *crēdō* believe, *persuādeō* persuade, *ignōscō* forgive, *serviō* serve, *faveō* favour, *invideō* envy, *resistō* resist, *studeō* be keen on, *nūbō* marry, and compounds of *sum* like *adsum*. Near neighbours take the accusative anyway: *iubeō tē* but *imperō tibi*; *iuvō* and *adiuvō* help. Learn each verb with its case, as one item.",
+      "say": "The list is short enough to learn: *pāreō* obey, *placeō* please, *noceō* harm, *crēdō* believe, *persuādeō* persuade, *ignōscō* forgive, *serviō* serve, *faveō* favour, *invideō* envy, *resistō* resist, *studeō* be keen on, *nūbō* marry, and compounds of *sum* like *adsum*. Near neighbours take the accusative: *iubeō tē* but *imperō tibi*; *iuvō* and *adiuvō* help. Learn each verb with its case.",
       "show": {
         "kind": "sentence",
         "id": "dvb-12"

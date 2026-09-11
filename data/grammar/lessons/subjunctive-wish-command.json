@@ -56,6 +56,30 @@
   {
    "type": "p",
    "text": "A wish can be strengthened with *utinam* (if only), and past tenses of the subjunctive make it a wish that cannot come true: *utinam Rōmae essem* — if only I were in Rome. In a question the same form asks what one is to do: *quid faciam?* — what am I to do?"
+  },
+  {
+   "type": "p",
+   "text": "Most verbs report a fact: *ambulāmus*, we are walking. Nothing else in the sentence carries the wanting: the verb ending does all of it."
+  },
+  {
+   "type": "p",
+   "text": "Verbs of other kinds take *-ā-* before the *-mus* instead — *bibāmus*, let us drink — but the *-mus* is always the same."
+  },
+  {
+   "type": "p",
+   "text": "Latin needs the third-person subjunctive because the ordinary command form only exists for the person you are speaking to: you cannot hand an order to somebody who is not there to take it."
+  },
+  {
+   "type": "p",
+   "text": "*nē* at the head of a main clause (the sentence's own verb, with no *ut* or *cum* clause wrapped around it), with no verb of ordering anywhere before it, is the sign that something is being forbidden rather than denied."
+  },
+  {
+   "type": "p",
+   "text": "Who is being talked about is what tells you which reading to take: you can order a slave, but you can only wish at the gods."
+  },
+  {
+   "type": "p",
+   "text": "The subjunctive can soften an order to 'you' as well (*veniās*, 'do come')."
   }
  ],
  "sources": [
@@ -67,7 +91,15 @@
   {
    "n": 1,
    "title": "A verb that wants something",
-   "say": "Most verbs report a fact: *ambulāmus*, we are walking. But a verb standing on its own in a main clause (the sentence's own verb, not one tucked inside another clause), with no *ut* in front of it, can instead say what the speaker wants to happen. That is **the subjunctive as a wish or gentle command (eāmus = let's go; veniat = let him come)** — the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) used by itself. *ambulēmus* is not 'we walk' but 'let us walk'. Nothing else in the sentence carries the wanting: the verb ending does all of it.",
+   "notice": {
+    "sentences": [
+     "swc-01",
+     "swc-02"
+    ],
+    "ask": "Which word in each sentence says what the speaker wants to happen?",
+    "tap": "focus"
+   },
+   "say": "A verb on its own in a main clause (the sentence's own verb, not one tucked inside another clause), with no *ut* in front, can say what the speaker wants to happen: **the subjunctive as a wish or gentle command (eāmus = let's go; veniat = let him come)**. *ambulēmus* is not 'we walk' but 'let us walk'.",
    "show": {
     "kind": "sentence",
     "id": "swc-01"
@@ -93,12 +125,12 @@
   {
    "n": 2,
    "title": "Let us: the 'we' form",
-   "say": "A suggestion that takes you in with it uses the 'we' person. Put the two side by side: *labōrāmus* 'we work' has **-ā-**, *labōrēmus* 'let us work' has **-ē-**. The person ending **-mus** is the ordinary one and never changes; only the vowel in front of it does. (Verbs of other kinds take *-ā-* in that slot instead — *bibāmus*, let us drink — but the *-mus* is always the same.)",
+   "say": "A suggestion that takes you in with it uses the 'we' person. Put the two side by side: *labōrāmus* 'we work' has **-ā-**, *labōrēmus* 'let us work' has **-ē-**. The person ending **-mus** never changes; only the vowel in front of it does.",
    "show": {
     "kind": "paradigm",
     "key": "conj1",
     "reveal": [
-     "pres.subj.act.1pl"
+     "pres.subj.act.1.pl"
     ]
    },
    "check": {
@@ -110,13 +142,13 @@
   {
    "n": 3,
    "title": "Let him, let them: the third person",
-   "say": "For an order aimed at somebody who is not being spoken to, the same present subjunctive is used in the third person: *veniat* 'let him come', *veniant* 'let them come'. The endings are **-t** for one and **-nt** for more than one, on the same stem (what is left of the verb before the ending) the 'we' form stood on. Latin needs this because the ordinary command form only exists for the person you are speaking to: you cannot hand an order to somebody who is not there to take it.",
+   "say": "For an order aimed at somebody not being spoken to, the same present subjunctive is used in the third person, with endings **-t** for one and **-nt** for more than one: *veniat* 'let him come', *veniant* 'let them come'.",
    "show": {
     "kind": "paradigm",
     "key": "conj1",
     "reveal": [
-     "pres.subj.act.3sg",
-     "pres.subj.act.3pl"
+     "pres.subj.act.3.sg",
+     "pres.subj.act.3.pl"
     ]
    },
    "worked": {
@@ -141,7 +173,7 @@
   {
    "n": 4,
    "title": "Saying no: nē",
-   "say": "The negative here is **nē**, not *nōn*: *nē timeās* 'don't be afraid', *nē lūdant* 'they are not to play'. The verb itself does not change at all — only the little word in front of it does. So *nē* at the head of a main clause (the sentence's own verb, with no *ut* or *cum* clause wrapped around it), with no verb of ordering anywhere before it, is the sign that something is being forbidden rather than denied.",
+   "say": "The negative here is **nē**, not *nōn*; it forbids rather than denies: *nē timeās* 'don't be afraid', *nē lūdant* 'they are not to play'. The verb itself does not change at all — only the little word in front of it does.",
    "show": {
     "kind": "sentence",
     "id": "swc-07"
@@ -155,7 +187,7 @@
   {
    "n": 5,
    "title": "May it happen: the plain wish",
-   "say": "The same third-person form can be a wish rather than an order — something the speaker has no power to command: *deī nōs servent*, 'may the gods keep us safe'. English marks this with *may*; Latin does not mark it at all. Who is being talked about is what tells you which reading to take: you can order a slave, but you can only wish at the gods.",
+   "say": "The same third-person form can be a wish rather than an order — something the speaker has no power to command: *deī nōs servent*, 'may the gods keep us safe'. English marks this with *may*; Latin does not mark it at all.",
    "show": {
     "kind": "sentence",
     "id": "swc-09"
@@ -169,7 +201,7 @@
   {
    "n": 6,
    "title": "Not the imperative",
-   "say": "Straight to the person in front of you Latin has **the imperative (the command form)**: *venī!* 'come!'. The subjunctive is what fills in where no imperative exists — *veniat* for 'he', *eāmus* for 'we' — and it can soften an order to 'you' as well (*veniās*, 'do come'). Ask who has to act: if it is the person being spoken to, expect *venī*; if it is anybody else, expect *veniat*.",
+   "say": "Straight to the person in front of you Latin has **the imperative (the command form)**: *venī!* 'come!'. The subjunctive fills in where no imperative exists — *veniat* for 'he', *eāmus* for 'we'. Ask who has to act: the person spoken to, expect *venī*; anybody else, expect *veniat*.",
    "show": {
     "kind": "sentence",
     "id": "swc-11"

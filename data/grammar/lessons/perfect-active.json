@@ -50,10 +50,10 @@
       "title": "What the perfect does",
       "notice": {
         "sentences": [
-          "pa-02",
-          "pa-13"
+          "pa-05",
+          "pa-08"
         ],
-        "ask": "Tap the word in each sentence that says something already over and done.",
+        "ask": "Which word in each sentence says something already over and done?",
         "tap": "focus"
       },
       "say": "When a thing is over and done with, Latin reaches for **the perfect (the 'did / has done' tense)**: *dormīvit* — he slept, or he has slept. One Latin form covers both English pasts, and the rest of the sentence decides which to say. This is the tense stories are told in.",

@@ -74,7 +74,7 @@
         "ask": "Tap the word that says what Julius and Aemilia are about to do — what do the two words share?",
         "tap": "focus"
       },
-      "say": "A person can be described by what they are on the point of doing, and the word that does it is **the future participle (the 'about to' word: ventūrus = about to come)**. *Mārcus longam epistulam scrīptūrus est* — Marcus is about to write a long letter. English has no single word for it, so we say 'about to …'.",
+      "say": "The word for what someone is on the point of doing is **the future participle (the 'about to' word: ventūrus = about to come)**. *Mārcus longam epistulam scrīptūrus est* — Marcus is about to write a long letter. English has no single word for it, so we say 'about to …'.",
       "show": {
         "kind": "sentence",
         "id": "fp-01"
@@ -125,7 +125,7 @@
     {
       "n": 3,
       "title": "It agrees like any adjective",
-      "say": "The ending follows the person described, not the verb: *-ūra* for one woman, *-ūrī* for several men. *Aemilia fīlium suum vocātūra est*; *Puerī in hortō lūsūrī sunt*. The *sum* beside it changes to match as well — *est* for one, *sunt* or *erant* for several. The table below runs the same three endings on *futūrus*: *futūrus*, *futūra*, *futūrī*.",
+      "say": "The ending follows the person described, not the verb: *-ūra* for one woman, *-ūrī* for several men. *Aemilia fīlium suum vocātūra est*; *Puerī in hortō lūsūrī sunt*. The *sum* beside it matches too — *est* for one, *sunt* for several. The table runs the same endings on *futūrus*: *futūra*, *futūrī*.",
       "show": {
         "kind": "sentence",
         "id": "fp-05"
@@ -173,7 +173,7 @@
     {
       "n": 5,
       "title": "Standing without sum",
-      "say": "It does not need *sum* beside it. On its own it sits next to its noun like any other adjective: *Puerī dormītūrī in cubiculum eunt* — the boys, about to sleep, go into the bedroom. And it can keep an object of its own: *flōrem carptūra*, about to pick a flower. *Sum* has *futūrus*, about to be.",
+      "say": "It does not need *sum* beside it. On its own it sits next to its noun like any adjective: *Puerī dormītūrī in cubiculum eunt* — the boys, about to sleep, go into the bedroom. It can keep an object of its own: *flōrem carptūra*, about to pick a flower.",
       "show": {
         "kind": "sentence",
         "id": "fp-11"

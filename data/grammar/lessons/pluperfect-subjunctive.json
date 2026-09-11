@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "For something already over before the past thing you are telling about, Latin has **the pluperfect subjunctive (the 'had / would have' form: cum vēnisset = when he had come)**. It is a subjunctive, so it appears after *cum*, after a question word, after *sī*, after *utinam* — never alone as a plain statement. In pfs-01 the dining is finished before the sleeping begins, and *cēnāvissent* says so.",
+      "notice": {
+        "sentences": [
+          "pfs-01",
+          "pfs-02"
+        ],
+        "ask": "Tap the verb in each sentence that says what had already happened. What do the two endings have in common?",
+        "tap": "focus"
+      },
+      "say": "For something already over before the past thing you are telling about, Latin has **the pluperfect subjunctive (the 'had / would have' form: cum vēnisset = when he had come)**. It follows *cum*, a question word, *sī* or *utinam*, never standing alone as a plain statement. In pfs-01 the dining is finished before the sleeping begins, and *cēnāvissent* says so.",
       "show": {
         "kind": "sentence",
         "id": "pfs-01"

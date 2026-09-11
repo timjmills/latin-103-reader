@@ -58,6 +58,10 @@
   {
    "type": "p",
    "text": "In a present-tense story (the historic present) a writer may still use the imperfect: *rogat ut manēret*; the story is past even if the verb is present. Ørberg's chapter 28 drills the pair with *monet ut pāreat* / *monēbat, monuit ut pārēret*; chapter 29 sets *tempus praesēns* against *tempus praeteritum* for purpose and result alike."
+  },
+  {
+   "type": "p",
+   "text": "Which tense of the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) goes inside an *ut*, *nē* or *cum* clause is not left to you: the verb in the main clause (the sentence's own verb, not one tucked inside another clause) fixes it."
   }
  ],
  "sources": [
@@ -69,7 +73,15 @@
   {
    "n": 1,
    "title": "The main verb decides",
-   "say": "Which tense of the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) goes inside an *ut*, *nē* or *cum* clause is not left to you: the verb in the main clause (the sentence's own verb, not one tucked inside another clause) fixes it. That pairing is **the sequence of tenses (a present main verb takes the present subjunctive, a past one the imperfect)**. *Imperat ut veniat* against *imperāvit ut venīret*: change one word in the main clause and the other clause has to change too.",
+   "notice": {
+    "sentences": [
+     "st-02",
+     "st-06"
+    ],
+    "ask": "Both main verbs are past. Which word in each sentence changed its tense to match?",
+    "tap": "focus"
+   },
+   "say": "The main verb (the sentence's own verb, not one tucked inside another clause) fixes which tense of the subjunctive goes inside an *ut*, *nē* or *cum* clause: **the sequence of tenses (a present main verb takes the present subjunctive, a past one the imperfect)**. *Imperat ut veniat* against *imperāvit ut venīret*: change one and the other must change.",
    "show": {
     "kind": "sentence",
     "id": "st-01"

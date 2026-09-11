@@ -66,10 +66,10 @@
           "ac-02",
           "ac-04"
         ],
-        "ask": "Tap the word that names what the sun and the dog are compared with — what do the two words have in common?",
+        "ask": "Tap the word that names what the sun and the dog are compared with — what form are both words in, and where is the word for 'than'?",
         "tap": "focus"
       },
-      "say": "After a comparative, Latin may drop *quam* (than) and put the thing compared into the ablative instead: **the ablative of comparison (the 'than' form: illō fortior = braver than he)**. *Mārcus Quīntō māior est* — Marcus is bigger than Quintus. Nothing has gone missing; the case is doing the work of the word.",
+      "say": "After a comparative (the '-er / more' form), Latin may drop *quam* (than) and put the thing compared into the ablative instead: **the ablative of comparison (the 'than' form: illō fortior = braver than he)**. *Mārcus Quīntō māior est* — Marcus is bigger than Quintus. Nothing has gone missing; the case is doing the work of the word.",
       "show": {
         "kind": "sentence",
         "id": "ac-01"
@@ -132,7 +132,7 @@
     {
       "n": 4,
       "title": "Two ablatives round one comparative",
-      "say": "*Iūlius multō māior est frātre suō.* Two ablatives, two different jobs: *frātre* is the person compared, and *multō* is **the ablative of degree (the 'by how much' form: multō māior = bigger by much)** — by how much bigger. The measure words are few and worth knowing by sight, *multō* and *paulō*, and each stands immediately in front of its own comparative.",
+      "say": "*Iūlius multō māior est frātre suō.* Two ablatives, two jobs: *frātre* is the person compared, and *multō* is **the ablative of degree (the 'by how much' form: multō māior = bigger by much)**. The measure words are few — *multō*, *paulō* — and each stands right in front of its own comparative.",
       "show": {
         "kind": "sentence",
         "id": "ac-09"

@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "Words that point",
-      "say": "To say *this* one or *that* one, Latin uses **the pointing words hic ('this'), ille ('that'), is ('that / the one we mean')**, *prōnōmina dēmōnstrātīva*. *Hic* points at what is near or has just been said, *ille* at what is further off, *is* at the one already known: *hic ānulus* = this ring, *illa taberna* = that shop, *is servus* = that slave, the one we mean.",
+      "notice": {
+        "sentences": [
+          "dem-01",
+          "dem-02"
+        ],
+        "ask": "Which word in each sentence points at the thing being talked about?",
+        "tap": "focus"
+      },
+      "say": "To say *this* one or *that* one, Latin uses **the pointing words hic ('this'), ille ('that'), is ('that / the one we mean')**. *Hic* points at what is near, *ille* at what is further off, *is* at the one already known: *hic ānulus* = this ring, *illa taberna* = that shop, *is servus* = that slave.",
       "show": {
         "kind": "sentence",
         "id": "dem-01"
@@ -50,7 +58,7 @@
     {
       "n": 3,
       "title": "When the noun is the object",
-      "say": "If the noun is what the verb acts on, the pointing word goes into the accusative (the object form) with it: masculine **hunc**, feminine **hanc**, neuter **hoc** — *hunc ānulum emit*, *hanc margarītam aspicit*. The object forms change more than you expect, so learn *hunc* and *hanc* as words in their own right rather than trying to reach them from *hic* and *haec*.",
+      "say": "If the noun is what the verb acts on, the pointing word goes into the accusative (the object form) with it: masculine **hunc**, feminine **hanc**, neuter **hoc** — *hunc ānulum emit*, *hanc margarītam aspicit*. Learn *hunc* and *hanc* as words in their own right.",
       "show": {
         "kind": "paradigm",
         "key": "hic",
@@ -103,7 +111,7 @@
     {
       "n": 5,
       "title": "ille and is: the four cells to learn",
-      "say": "*Ille* and *is* take the same two odd cells: the genitive (the owner form) **illīus** and **eius**, the dative (the receiver form) **illī** and **eī**, one form each for every gender. Two more cells are not what you would guess either — the first form is *ille, illa, illud* and *is, ea, id*, never *illus* or *ius*, so a neuter thing is **illud** or **id** and never *illum* or *eum*. Everything else does follow an ordinary *-us -a -um* word: *illum*, *illō*, *eum*, *eō*, and *hōc* from *hic*.",
+      "say": "*Ille* and *is* take the same two odd cells: the genitive (the owner form) **illīus** and **eius**, the dative (the receiver form) **illī** and **eī**, one form each for every gender. The first form is *ille, illa, illud* and *is, ea, id*, so a neuter thing is **illud** or **id**, never *illum* or *eum*.",
       "show": {
         "kind": "paradigm",
         "key": "ille",
@@ -139,7 +147,7 @@
     {
       "n": 6,
       "title": "Pointing word, or linking word?",
-      "say": "English *that* does two jobs, and Latin keeps them apart. *That shop* points: *illa taberna*. *The shop that Lydia loves* links a clause to the noun: *taberna quam Lȳdia amat*. If you could say *which* or *who* instead, it is a form of *quī*; if you could say *this*, it is *hic* or *ille*. In *ille servus quī saccum portat* both are at work in one sentence.",
+      "say": "English *that* does two jobs, and Latin keeps them apart. *That shop* points: *illa taberna*. *The shop that Lydia loves* links a clause to the noun: *taberna quam Lȳdia amat*. If you could say *which* or *who* instead, it is a form of *quī*; if you could say *this*, it is *hic* or *ille*.",
       "show": {
         "kind": "sentence",
         "id": "dem-14"
@@ -201,6 +209,22 @@
     {
       "type": "p",
       "text": "Ørberg cap. VIII sets *is* and *ille* beside the question words: *is / ille servus*, *eum / illum*, *eius / illīus*, *eī / illī*, *eō / illō*; plural *iī / illī*, *eōs / illōs*, *eōrum / illōrum*. *Iste* is 'that of yours'; *ipse* is 'himself, the very one' (*lupus ipse*, r09:54.2). Neuter plural *haec* alone = these things. A&G §146, §296–298."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name is *prōnōmina dēmōnstrātīva*. *Hic* also points at what has just been said, and *is servus* is that slave, the one we mean."
+    },
+    {
+      "type": "p",
+      "text": "On *hunc* and *hanc*: the object forms change more than you expect, so learn *hunc* and *hanc* as words in their own right rather than trying to reach them from *hic* and *haec*."
+    },
+    {
+      "type": "p",
+      "text": "The first form of *ille* and *is* is never *illus* or *ius*. Everything else does follow an ordinary *-us -a -um* word: *illum*, *illō*, *eum*, *eō*, and *hōc* from *hic*."
+    },
+    {
+      "type": "p",
+      "text": "Pointing and linking together: in *ille servus quī saccum portat* both are at work in one sentence."
     }
   ],
   "sources": [

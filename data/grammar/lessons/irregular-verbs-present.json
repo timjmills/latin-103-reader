@@ -8,10 +8,10 @@
      "ivp-03",
      "ivp-05"
     ],
-    "ask": "Which word in each sentence is the verb 'to be' (am, are, is)?",
+    "ask": "Which word says 'I am' in the first sentence, and 'we are' in the second?",
     "tap": "focus"
    },
-   "say": "A handful of common verbs refuse the ordinary pattern: **the irregular verbs (be, can, go, want, not want, prefer, carry) in the present**. Their endings are the familiar ones — *-m* or *-ō*, *-s*, *-t*, *-mus*, *-tis*, *-nt* — but the piece in front changes: *sum, es, est* is *su-* in one and *es-* in the next.",
+   "say": "A handful of common verbs refuse the ordinary pattern: **the irregular verbs (be, can, go, want, not want, prefer, carry) in the present**. The endings are the familiar *-m* or *-ō*, *-s*, *-t*, *-mus*, *-tis*, *-nt*; the piece in front changes: *su-m*, *es*, *es-t*. *Mārcus in lūdō est* — Marcus is in the school.",
    "show": {
     "kind": "sentence",
     "id": "ivp-02"

@@ -20,7 +20,15 @@
     {
       "n": 1,
       "title": "What these forms do",
-      "say": "A handful of very common verbs build their past their own way, and they are the ones you meet most: the imperfect of the irregular verbs (eram = I was, poteram = I could, ībam = I was going). They mean what the ordinary imperfect (the 'was doing' tense) means — something going on in the past — but most of them are not made from a plain stem plus *-bā-*, so they are worth learning as their own small set.",
+      "notice": {
+        "sentences": [
+          "iir-01",
+          "iir-10"
+        ],
+        "ask": "Which word in each sentence puts it in the past?",
+        "tap": "focus"
+      },
+      "say": "A handful of verbs build their past their own way: the imperfect of the irregular verbs (eram = I was, poteram = I could, ībam = I was going). They mean what the imperfect (the 'was doing' tense) means, but most are not stem plus *-bā-*. *Iūlius in hortō nōn erat* — Julius was not in the garden.",
       "show": {
         "kind": "sentence",
         "id": "iir-01"
@@ -45,7 +53,7 @@
     {
       "n": 2,
       "title": "sum: the stem erā-, and anything fastened in front of it",
-      "say": "The whole imperfect of *sum* is built on the stem *erā-*, with the endings you already know: *-t* for he, she or it, *-nt* for they. Whatever is fastened to the front of it changes nothing else — *aberat* he was away, *aderat* he was there, and *poteram, poterat, poterant* are simply *pot-* with those same forms behind. If you can build the plain one you can build all of them. What somebody could do follows in the infinitive (the 'to' form): *recitāre nōn poterat*, he could not recite.",
+      "say": "The imperfect of *sum* is built on the stem *erā-* with the endings you know: *-t* for he, she or it, *-nt* for they. Whatever is fastened in front changes nothing: *ab-* gives *aberat* he was away, *pot-* gives *poterat* he could. What somebody could do follows in the infinitive (the 'to' form): *recitāre nōn poterat*.",
       "show": {
         "kind": "paradigm",
         "key": "sum",
@@ -126,7 +134,7 @@
     {
       "n": 5,
       "title": "Telling erat from ībat, and from est",
-      "say": "Two letters decide it. *Est* is now, *erat* is then. And *erat* is 'was', while a verb built on *ī-* is 'was going' — the same past, but a different verb underneath it. When two of these stand in one sentence, what separates them is which verb they come from, not which tense they are in, so ask what the verb *means* before you ask when it happened.",
+      "say": "Two letters decide it: *est* is now, *erat* is then. And *erat* is 'was', while a verb built on *ī-* is 'was going' — the same past, a different verb underneath. So ask what the verb *means* before you ask when it happened.",
       "show": {
         "kind": "sentence",
         "id": "iir-09"

@@ -49,7 +49,7 @@
           "ppp-04",
           "ppp-07"
         ],
-        "ask": "Tap the word in each sentence that says what was done to the water, and to the slaves.",
+        "ask": "Which word in each sentence says what was done to the water, and to the slaves?",
         "tap": "focus"
       },
       "say": "Take a verb and use it to describe a noun, and you have **the perfect participle (the 'having been done' word: laudātus = praised)**. It says what has been done to somebody: *puer laudātus*, the boy who has been praised. It is one word, and it describes its noun exactly as *bonus* or *magnus* would.",

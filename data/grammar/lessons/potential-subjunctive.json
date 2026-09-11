@@ -55,6 +55,26 @@
   {
    "type": "p",
    "text": "With the imperfect subjunctive the possibility moves into the past or becomes unreal: *vellem* — I would wish (but it cannot be); *dīcerēs* — you would have said. The perfect subjunctive is common in cautious statements: *haud sciō an ita dīxerim* — I rather think I said so. In the second person it is the general 'you': *crēdās* — one would believe."
+  },
+  {
+   "type": "p",
+   "text": "Nothing has been wished for and nobody has been told anything: the speaker is holding the idea out at arm's length."
+  },
+  {
+   "type": "p",
+   "text": "Latin reaches for *velim* and *nōlim* exactly where English softens 'I want' into 'I would like'."
+  },
+  {
+   "type": "p",
+   "text": "*Quis haec verba vēra esse crēdat?* is 'who would believe these words are true?', not 'who believes them?'. When one of these stands next to a subjunctive in a main clause (the sentence's own verb, not one tucked inside another clause), read 'could', 'might' or 'would'."
+  },
+  {
+   "type": "p",
+   "text": "The negative is the test that separates the two main-clause uses, wish and possibility: the same verb in the same person, and the negative is the whole difference. Look at which negative is standing there before you decide which reading the sentence wants."
+  },
+  {
+   "type": "p",
+   "text": "Put the right person on the subjunctive stem (what is left of the verb before the ending) and let the rest of the sentence do the softening."
   }
  ],
  "sources": [
@@ -66,7 +86,15 @@
   {
    "n": 1,
    "title": "A verb that only says 'could'",
-   "say": "The same present subjunctive can let go of its force entirely and say only that something is possible. That is **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē iuvāre possim* is not 'let me help you' but 'I could help you'; *possīs* is 'you could'. Nothing has been wished for and nobody has been told anything: the speaker is holding the idea out at arm's length.",
+   "notice": {
+    "sentences": [
+     "ps-01",
+     "ps-05"
+    ],
+    "ask": "Which word in each sentence says something that could happen, not something that does?",
+    "tap": "focus"
+   },
+   "say": "The present subjunctive can let go of its force and say only that something is possible: **the potential subjunctive (the 'could / would / may' form: velim = I would like)**. *Tē iuvāre possim* is not 'let me help you' but 'I could help you'.",
    "show": {
     "kind": "sentence",
     "id": "ps-01"
@@ -92,12 +120,12 @@
   {
    "n": 2,
    "title": "velim and nōlim: the polite ones",
-   "say": "The commonest potentials by far are the little verbs of wanting: **velim** 'I would like', **nōlim** 'I would rather not'. They are the present subjunctive of *volō* and *nōlō*, and Latin reaches for them exactly where English softens 'I want' into 'I would like'. The ending is the ordinary **-m** of the 'I' person, on the subjunctive stem (what is left of the verb before the ending) *veli-* / *nōli-*.",
+   "say": "The commonest potentials are the verbs of wanting: **velim** 'I would like', **nōlim** 'I would rather not' — the present subjunctive of *volō* and *nōlō*, with the ordinary **-m** of the 'I' person on the subjunctive stem (what is left of the verb before the ending) *veli-* / *nōli-*.",
    "show": {
     "kind": "paradigm",
     "key": "volo",
     "reveal": [
-     "pres.subj.act.1sg"
+     "pres.subj.act.1.sg"
     ]
    },
    "check": {
@@ -109,7 +137,7 @@
   {
    "n": 3,
    "title": "The words that point at it",
-   "say": "Latin usually sets a word beside the verb that points at the possibility: *fortasse* 'perhaps', *aliquis* 'someone', *nēmō* 'nobody' — and a question with *quis* 'who': *Quis haec verba vēra esse crēdat?* is 'who would believe these words are true?', not 'who believes them?'. *Aliquis dīcat* is 'someone might say' — an imagined speaker, not one who has spoken. When one of these stands next to a subjunctive in a main clause (the sentence's own verb, not one tucked inside another clause), read 'could', 'might' or 'would'.",
+   "say": "Latin usually sets a word beside the verb that points at the possibility: *fortasse* 'perhaps', *aliquis* 'someone', *nēmō* 'nobody', or a question with *quis* 'who'. *Aliquis dīcat* is 'someone might say' — an imagined speaker, not one who has spoken.",
    "show": {
     "kind": "sentence",
     "id": "ps-05"
@@ -137,7 +165,7 @@
   {
    "n": 4,
    "title": "The negative is nōn",
-   "say": "This is the test that separates the two main-clause uses. A wish or command is denied with *nē*; a possibility is denied with **nōn**: *nōn crēdās*, 'you would not believe'. So *nē crēdās* forbids you to believe, while *nōn crēdās* only doubts — the same verb in the same person, and the negative is the whole difference. Look at which negative is standing there before you decide which reading the sentence wants.",
+   "say": "A wish or command is denied with *nē*; a possibility is denied with **nōn**: *nōn crēdās*, 'you would not believe'. So *nē crēdās* forbids you to believe, while *nōn crēdās* only doubts.",
    "show": {
     "kind": "sentence",
     "id": "ps-07"
@@ -151,7 +179,7 @@
   {
    "n": 5,
    "title": "Using it in any person",
-   "say": "The potential is not only for 'I'. *intellegās* 'you could understand', *emat* 'he would buy', *ferat* 'he could carry' — the endings are the ordinary present subjunctive ones you already know, and the sense stays 'could / would'. Put the right person on the subjunctive stem (what is left of the verb before the ending) and let the rest of the sentence do the softening.",
+   "say": "The potential is not only for 'I': *intellegās* 'you could understand', *emat* 'he would buy', *ferat* 'he could carry' — the ordinary present subjunctive endings, and the sense stays 'could / would'.",
    "show": {
     "kind": "sentence",
     "id": "ps-09"

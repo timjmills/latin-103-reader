@@ -12,14 +12,23 @@
   "more": [
     { "type": "p", "text": "The doer is *ā / ab* + ablative (*ab eā amābātur*); a thing used is a bare ablative (*flūctibus iactābātur* — was tossed by the waves). *vidēbātur* usually means *seemed*, not *was seen*: *sibi fēlīx esse vidēbātur* — he seemed to himself to be happy." },
     { "type": "p", "text": "The learner's notes (week 19): the passive and deponent imperfect use the same marker *(e)ba* as the active, with the passive / deponent endings added; the variable vowels drop after the *a*; the first person singular always takes *-r*, never *-or*: *pōnēbar, pulsābar, vidēbar, fugiēbar, audiēbar; pōnēbāris, pōnēbātur, pōnēbāmur, pōnēbāminī, pōnēbantur*." },
-    { "type": "p", "text": "Ørberg (chapter XIX): *laudābar, laudābāris, laudābātur, laudābāmur, laudābāminī, laudābantur*; *timēbar*; *reprehendēbar, reprehendēbātur*; *pūniēbar*; and in the story *Iūlius uxōrem suam amābat*, then *ab eā amābātur*. A&G §184 give the same table under the first conjugation." }
+    { "type": "p", "text": "Ørberg (chapter XIX): *laudābar, laudābāris, laudābātur, laudābāmur, laudābāminī, laudābantur*; *timēbar*; *reprehendēbar, reprehendēbātur*; *pūniēbar*; and in the story *Iūlius uxōrem suam amābat*, then *ab eā amābātur*. A&G §184 give the same table under the first conjugation." },
+    { "type": "p", "text": "The active and the passive imperfect differ only in their last syllable (*audiēbat* against *audiēbātur*), so read to the end of the word before deciding who is doing what." }
   ],
   "sources": ["notes p66", "Ørberg cap. XIX Grammatica Latina", "A&G §184"],
   "teach": [
     {
       "n": 1,
       "title": "What the form does",
-      "say": "When the subject is not doing something but having it done to it, Latin uses the passive; in the past that is the imperfect passive (the 'was being done' form). *Puerī vocābantur* — the boys were being called. The doer, when it is named at all, comes in behind *ā* or *ab*: *ā magistrō*, by the teacher. The marker *-bā-* is the same one the active imperfect uses; only the endings after it change.",
+      "notice": {
+        "sentences": [
+          "ip-01",
+          "ip-09"
+        ],
+        "ask": "Which word in each sentence says what was being done to the subject?",
+        "tap": "focus"
+      },
+      "say": "When something was being done *to* the subject, Latin uses the imperfect passive (the 'was being done' form). It keeps the active's *-bā-* and changes only the endings after it; the doer, if named, stands behind *ā* or *ab*. *Puerī ā magistrō vocābantur* — the boys were being called by the teacher.",
       "show": {
         "kind": "sentence",
         "id": "ip-01"
@@ -44,7 +53,7 @@
     {
       "n": 2,
       "title": "The third person: -bātur and -bantur",
-      "say": "Take the active imperfect and swap its ending for the passive one: *-bat* becomes *-bātur*, *-bant* becomes *-bantur*. That one syllable is the whole difference, and it turns the subject from the doer into the one it is done to — *audiēbat*, he was listening, against *audiēbātur*, he was being heard. So read to the end of the word before deciding who is doing what.",
+      "say": "Take the active imperfect and swap its ending for the passive one: *-bat* becomes *-bātur*, *-bant* becomes *-bantur*. That one syllable turns the subject from the doer into the one it is done to: *audiēbat*, he was listening, against *audiēbātur*, he was being heard.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",

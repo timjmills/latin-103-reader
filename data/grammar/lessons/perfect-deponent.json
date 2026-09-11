@@ -56,6 +56,10 @@
     {
       "type": "p",
       "text": "Look the verb up: a dictionary infinitive ending in *-ī* or *-rī* rather than *-re* (*loquī* not *loquere*, *laetārī* not *laetāre*, *verērī* not *verēre*) marks a deponent."
+    },
+    {
+      "type": "p",
+      "text": "In the table this is the column headed *deponent*, because the deponent has borrowed the passive's shape; only the shape."
     }
   ],
   "sources": [
@@ -75,7 +79,7 @@
         "ask": "Tap the words that say what Medus did and what Julius did — what do the two pairs have in common?",
         "tap": "focus"
       },
-      "say": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) makes its past out of two words, and the pair together is **the perfect of a deponent verb (locūtus est = he spoke)**. *Mēdus ex vīllā statim profectus est* — the two words *profectus est* say one thing: set out. Never put 'was' or 'been' into it.",
+      "say": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) makes its past out of two words: **the perfect of a deponent verb (locūtus est = he spoke)**. *Mēdus ex vīllā statim profectus est* — *profectus est* says one thing: set out. Never put 'was' or 'been' into it.",
       "show": {
         "kind": "sentence",
         "id": "pd-01"
@@ -97,7 +101,7 @@
     {
       "n": 2,
       "title": "Where the two words come from",
-      "say": "The first word is the verb's perfect participle — *locūtus*, *secūtus*, *profectus* — and the second is the plain present of *sum*: *sum, es, est, sumus, estis, sunt*. In the table this is the column headed *deponent*, because the deponent has borrowed the passive's shape; only the shape. Read *secūta est* as if it were one word: followed.",
+      "say": "The first word is the perfect participle of a deponent verb (active meaning: locūtus = having spoken) — *locūtus*, *secūtus*, *profectus* — and the second is the plain present of *sum*: *sum, es, est, sumus, estis, sunt*. In the table it is the column headed *deponent*. Read *secūta est* as if it were one word: followed.",
       "show": {
         "kind": "paradigm",
         "key": "conj3",

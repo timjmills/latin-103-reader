@@ -70,7 +70,7 @@
         "ask": "Tap the words that report what Julius and Julia will do — what do the two pairs have in common?",
         "tap": "focus"
       },
-      "say": "When Latin reports that something *will* happen, the verb inside the report takes the shape of **the future infinitive (the 'going to' form: ventūrum esse)**. *Mārcus dīcit sē epistulam scrīptūrum esse* — Marcus says that he will write a letter. English needs a 'that' and a 'will'; Latin packs both into the form.",
+      "say": "When Latin reports that something *will* happen, the verb in the report becomes **the future infinitive (the 'going to' form: ventūrum esse)**. *Mārcus dīcit sē epistulam scrīptūrum esse* — Marcus says that he will write a letter. English needs a 'that' and a 'will'; Latin packs both into the form.",
       "show": {
         "kind": "sentence",
         "id": "fi-01"
@@ -95,7 +95,7 @@
     {
       "n": 2,
       "title": "What the two words are",
-      "say": "It is the future participle — the *-ūr-* word — with *esse* after it: *scrīptūrum esse*, *datūrum esse*, *reditūrum esse*. In the table it sits on the future row of the infinitives, beside *scrībere* (now) and *scrīpsisse* (earlier); the table prints its naming form, *scrīptūrus esse*, and inside a report the participle changes to *scrīptūrum* to agree with the accusative person.",
+      "say": "It is the future participle (the 'about to' word: ventūrus = about to come) with *esse* after it: *scrīptūrum esse*, *datūrum esse*. The table prints its naming form, *scrīptūrus esse*, on the future row of the infinitives; inside a report the participle changes to *scrīptūrum* to agree with the accusative person.",
       "show": {
         "kind": "paradigm",
         "key": "conj3",

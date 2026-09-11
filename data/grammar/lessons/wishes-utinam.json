@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What a wish looks like",
-      "say": "A wish in Latin is **utinam + subjunctive (the 'if only …' wish; the tense says whether it can still come true)**. The word *utinam* stands in front and the verb goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). *Utinam* is not one English word: it is the 'if only' or 'may …!' colouring. In wu-01 the verb is *veniat*, not *venit* — nobody is saying father is coming, only wishing it.",
+      "notice": {
+        "sentences": [
+          "wu-01",
+          "wu-03"
+        ],
+        "ask": "Tap the verb in each. Neither is the plain *venit* or *laudat*: what has changed in the ending, and which word opens both sentences?",
+        "tap": "focus"
+      },
+      "say": "A wish in Latin is **utinam + subjunctive (the 'if only …' wish; the tense says whether it can still come true)**. *Utinam* stands in front and the verb goes into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). In wu-01 *veniat*, not *venit*: nobody says father is coming, only wishes it.",
       "show": {
         "kind": "sentence",
         "id": "wu-01"
@@ -29,7 +37,7 @@
     {
       "n": 2,
       "title": "A wish that may still come true: the present subjunctive",
-      "say": "The tense says how possible the wish is. The present subjunctive leaves the door open: it may yet happen. Its mark is a changed vowel in the ending. In the first conjugation the *a* turns to *e*: *laudat* (he praises) becomes *laudet* (may he praise). Everywhere else it runs the other way about: *audit* becomes *audiat*, *ignōscit* becomes *ignōscat*. Either way the ending is not the one a plain statement uses.",
+      "say": "The tense says how possible the wish is. The present subjunctive leaves the door open: it may yet happen. Its mark is a changed vowel in the ending: in the first conjugation *a* turns to *e*, *laudat* (he praises) becomes *laudet* (may he praise); everywhere else the vowel becomes *a*: *audit* becomes *audiat*.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",
@@ -205,6 +213,14 @@
     {
       "type": "p",
       "text": "Softer wishes use *velim* (I would like) and *vellem* (I wish, I would have liked): *vellem sī magis esset anus* — I'd wish it, if she were more of an old woman (Martial, Week 14). Ørberg's chapter 32 gives Medus's *utinam salvī perveniant!* and Lydia's wish to see, *līber*, *patriam* again; chapter 33 turns to the impossible: *utinam ego Rōmae essem!*"
+    },
+    {
+      "type": "p",
+      "text": "*Utinam* is not one English word: it is the 'if only' or 'may …!' colouring."
+    },
+    {
+      "type": "p",
+      "text": "Everywhere else it runs the other way about: *audit* becomes *audiat*, *ignōscit* becomes *ignōscat*. Either way the ending is not the one a plain statement uses."
     }
   ],
   "sources": [

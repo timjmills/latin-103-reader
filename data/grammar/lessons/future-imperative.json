@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Beside the everyday order *venī!* (come, right now) Latin has **the future imperative (the 'you shall …' order for later or for rules: estō! mementō!)**. It gives an instruction for a time that has not come yet, or a rule that holds from now on: *crās venītō* — come tomorrow. Ørberg says the two mean nearly the same thing; the difference is the 'when the time comes' colouring.",
+      "notice": {
+        "sentences": [
+          "fim-01",
+          "fim-02"
+        ],
+        "ask": "Both sentences give an order. Tap the order word in each — what do the two endings have in common?",
+        "tap": "focus"
+      },
+      "say": "Beside the everyday order *venī!* (come, right now) Latin has **the future imperative (the 'you shall …' order for later or for rules: estō! mementō!)**. It gives an instruction for a time that has not come yet, or a rule that holds from now on: *crās venītō* — come tomorrow.",
       "show": {
         "kind": "sentence",
         "id": "fim-01"
@@ -236,6 +244,10 @@
     {
       "type": "p",
       "text": "Allen & Greenough: the future imperative is used for orders whose carrying-out lies in the future, so it is the form of laws, wills and precepts (*rēgiō imperiō duo suntō* — let there be two with royal power), and of verbs that name a standing state: *mementō* (remember), *scītō* (know), *habētō* (consider). The third-person forms are *-tō* (singular, same as the second) and *-ntō* (plural); a deponent verb (passive-looking endings, active meaning: loquitur = he speaks) uses *-tor* (*sequitor*). In laws the negative is *nē* + future imperative. The old-fashioned flavour is why it survives in mottoes (*estō perpetua*) and on tombstones."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg says the two mean nearly the same thing; the difference is the 'when the time comes' colouring."
     }
   ],
   "sources": [

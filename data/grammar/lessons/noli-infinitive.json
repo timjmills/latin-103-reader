@@ -50,7 +50,9 @@
     {
       "type": "p",
       "text": "Other polite refusals use *cavē* (beware) + subjunctive: *cavē cadās* — mind you don't fall."
-    }
+    },
+    { "type": "p", "text": "This is the ordinary, courteous way to forbid something, and it is what you will meet almost every time." },
+    { "type": "p", "text": "It is the *nōlī* in front that makes it a prohibition, not the ending behind: after *nōlī* the verb is always the infinitive, whatever shape that infinitive has — *rīdēre*, *esse*, *īre*, *loquī*." }
   ],
   "sources": [
     "notes p73",
@@ -61,7 +63,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "To tell somebody *not* to do something, Latin does not put a 'not' in front of the command. It uses nōlī / nōlīte + infinitive (the polite 'don't …'): *nōlī clāmāre* is literally 'be unwilling to shout', which is simply 'don't shout'. This is the ordinary, courteous way to forbid something, and it is what you will meet almost every time.",
+      "notice": {
+        "sentences": [
+          "ni-01",
+          "ni-04"
+        ],
+        "ask": "Which word in each sentence tells somebody not to do something?",
+        "tap": "focus"
+      },
+      "say": "To tell somebody *not* to do something, Latin does not put a 'not' in front of the command. It uses nōlī / nōlīte + infinitive (the polite 'don't …'): *nōlī clāmāre* is literally 'be unwilling to shout', which is simply 'don't shout'.",
       "show": {
         "kind": "sentence",
         "id": "ni-01"
@@ -160,7 +170,7 @@
     {
       "n": 5,
       "title": "Telling it from the plain command",
-      "say": "A plain command tells somebody to do something: *tacē!*, be quiet. Put *nōlī* in front and the verb behind it forbids instead: *nōlī rīdēre!*, don't laugh. It is the *nōlī* in front that makes it a prohibition, not the ending behind: after *nōlī* the verb is always the infinitive, whatever shape that infinitive has — *rīdēre*, *esse*, *īre*, *loquī*. A command form standing alone, with no *nōlī* in front of it, is an order.",
+      "say": "A plain command tells somebody to do something: *tacē!*, be quiet. Put *nōlī* in front and the verb behind it forbids instead, and is always the infinitive: *nōlī rīdēre!*, don't laugh. A command form standing alone, with no *nōlī* in front of it, is an order.",
       "show": {
         "kind": "sentence",
         "id": "ni-06"

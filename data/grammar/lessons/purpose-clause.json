@@ -57,6 +57,26 @@
   {
    "type": "p",
    "text": "Other ways Latin says 'in order to': *ad* + gerund (*ad nāvigandum*, for sailing), the supine after a verb of motion (*spectātum veniunt*, they come to watch), *causā* with a genitive gerund. With a comparative, *quō* replaces *ut*: *quō facilius* … = so that … more easily."
+  },
+  {
+   "type": "p",
+   "text": "The clause names the aim and nothing more: whether the doctor is ever called, the sentence does not say."
+  },
+  {
+   "type": "p",
+   "text": "When you are turning English into Latin, an English 'to' that means 'in order to' is your signal to write *ut* and change the verb."
+  },
+  {
+   "type": "p",
+   "text": "The signal words of a result clause: *tam* (so), *ita* (in such a way), *tantus* (so great), *tālis* (of such a kind)."
+  },
+  {
+   "type": "p",
+   "text": "So look at the verb in front of the clause, not at the clause."
+  },
+  {
+   "type": "p",
+   "text": "Read a purpose clause with *quī* as though *quī* were *ut is*: 'a slave to carry it'."
   }
  ],
  "sources": [
@@ -68,7 +88,15 @@
   {
    "n": 1,
    "title": "Saying why",
-   "say": "To say what an action is for, Latin adds a clause: **ut / nē + subjunctive (the 'in order to' clause: venit ut videat = comes to see)**. *Servus ad urbem currit ut medicum vocet* — the slave runs to the city in order to call a doctor. The clause names the aim and nothing more: whether the doctor is ever called, the sentence does not say.",
+   "notice": {
+    "sentences": [
+     "pc-02",
+     "pc-03"
+    ],
+    "ask": "Which word in each sentence says what the person is going there to do?",
+    "tap": "focus"
+   },
+   "say": "To say what an action is for, Latin adds a clause: **ut / nē + subjunctive (the 'in order to' clause: venit ut videat = comes to see)**. *Servus ad urbem currit ut medicum vocet* — the slave runs to the city in order to call a doctor.",
    "show": {
     "kind": "sentence",
     "id": "pc-01"
@@ -94,7 +122,7 @@
   {
    "n": 2,
    "title": "Why the infinitive will not do",
-   "say": "English says 'comes to look'. Latin cannot: it has no 'to' of purpose, so it writes *ut* with a subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) — *venit ut spectet*. Never *venit spectāre*. When you are turning English into Latin, an English 'to' that means 'in order to' is your signal to write *ut* and change the verb.",
+   "say": "English says 'comes to look'. Latin has no 'to' of purpose, so it writes *ut* with a subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) — *venit ut spectet*, never *venit spectāre*.",
    "show": {
     "kind": "sentence",
     "id": "pc-03"
@@ -136,7 +164,7 @@
   {
    "n": 4,
    "title": "Not a result clause",
-   "say": "A result clause uses *ut* too, but it always answers a signal word — *tam* (so), *ita* (in such a way), *tantus* (so great), *tālis* (of such a kind) — and its negative is *ut nōn*. A purpose has no signal word and takes *nē*. The plainest test is to try 'in order' in the English: *runs in order to arrive first* works, so that is purpose; *so fast that nobody sees him* does not, so that is result.",
+   "say": "A result clause uses *ut* too, but it answers a signal word (*tam*, *ita*, *tantus*, *tālis*) and its negative is *ut nōn*; a purpose has no signal word and takes *nē*. Test with 'in order': *runs in order to arrive first* is purpose; *so fast that nobody sees him* is result.",
    "show": {
     "kind": "sentence",
     "id": "pc-08"
@@ -150,7 +178,7 @@
   {
    "n": 5,
    "title": "Not an indirect command",
-   "say": "After a verb of telling (*imperat, ōrat, monet*) the *ut* clause is the order itself: **ut / nē + subjunctive (the form for what someone asks or orders someone to do)**. After any other verb — *mittit*, *dat*, *currit*, *īmus* — the same *ut* gives the aim. So look at the verb in front of the clause, not at the clause.",
+   "say": "After a verb of telling (*imperat, ōrat, monet*) the *ut* clause is the order itself: **ut / nē + subjunctive (the form for what someone asks or orders someone to do)**. After any other verb — *mittit*, *dat*, *currit*, *īmus* — the same *ut* gives the aim.",
    "show": {
     "kind": "sentence",
     "id": "pc-10"
@@ -164,7 +192,7 @@
   {
    "n": 6,
    "title": "quī can do the same work",
-   "say": "A relative word can carry the aim instead of *ut*: *mittit servum quī epistulam ferat*, 'he sends a slave to carry the letter'. It is the subjunctive *ferat* that marks it — a plain description would have the indicative (the plain fact form) *fert*, 'who is carrying the letter'. Read it as though *quī* were *ut is*: 'a slave to carry it'.",
+   "say": "A relative word can carry the aim instead of *ut*: *mittit servum quī epistulam ferat*, 'he sends a slave to carry the letter'. The subjunctive *ferat* marks it — a plain description would have the indicative (the plain fact form) *fert*, 'who is carrying the letter'.",
    "show": {
     "kind": "sentence",
     "id": "pc-12"

@@ -8,10 +8,10 @@
      "ppe-06",
      "ppe-10"
     ],
-    "ask": "Which word in each sentence is the verb, and is the pupil or the goods doing the action, or on the receiving end of it?",
+    "ask": "Which word in each sentence tells you what is being done to the pupil and to the goods?",
     "tap": "focus"
    },
-   "say": "When the subject is not doing but being done to, the verb takes a second set of endings: **the passive person endings (I am …-ed, you are …-ed …)**. *Discipulus ā magistrō pūnītur* — the pupil is punished by the teacher. Nothing is added in front of the verb, as English adds *am, are, is*; the ending alone carries it.",
+   "say": "When the subject is not doing but being done to, the verb takes a second set of endings: **the passive person endings (I am …-ed, you are …-ed …)**. *Discipulus ā magistrō pūnītur* — the pupil is punished by the teacher.",
    "show": {
     "kind": "sentence",
     "id": "ppe-01"
@@ -234,6 +234,10 @@
   {
    "type": "p",
    "text": "Ørberg (chapter XVII): *laudor laudāmur, videor vidēmur, mergor mergimur, audior audīmur*; the deponents *laetor, vereor, sequor, partior* follow the same four patterns; *-iō* verbs go *capior, capiuntur* and *ēgredior, ēgrediuntur*; *ā magistrō laudor = magister mē laudat*."
+  },
+  {
+   "type": "p",
+   "text": "Nothing is added in front of the verb, as English adds *am, are, is*; the ending alone carries it."
   }
  ],
  "sources": [

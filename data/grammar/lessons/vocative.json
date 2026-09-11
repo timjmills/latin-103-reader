@@ -12,7 +12,7 @@
     "ask": "Which word in each sentence is the person being spoken to?",
     "tap": "focus"
    },
-   "say": "When you call somebody by name, or by what they are, that word goes into **the vocative (the calling form)**. It is not the subject and it is not the object — it does no work in the sentence at all. It is the tap on the shoulder, and Latin fences it off with commas, exactly as English does.",
+   "say": "When you call somebody by name, or by what they are, that word goes into **the vocative (the calling form)**: *Venī, Mārce!* — come, Marcus! It is not the subject and not the object — it does no work in the sentence. It is the tap on the shoulder, and Latin fences it off with commas, as English does.",
    "show": {
     "kind": "sentence",
     "id": "voc-01"

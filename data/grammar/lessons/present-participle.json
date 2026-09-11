@@ -56,7 +56,7 @@
           "ptcp-03",
           "ptcp-04"
         ],
-        "ask": "Tap the word for 'carrying' in the first sentence and 'walking' in the second. Each sits beside a name — what do the two words have in common?",
+        "ask": "Tap the word for 'carrying' in the first sentence and 'walking' in the second. Who is carrying, and who is walking — and how do the two words end?",
         "tap": "focus"
       },
       "say": "Take a verb and turn it into a word that describes a noun, and you have **the present participle (the '-ing' word that describes a noun)**. *puer dormiēns* is 'the sleeping boy', or 'the boy, sleeping'. It does two things at once: it keeps the verb's meaning and it agrees with its noun the way any adjective does.",

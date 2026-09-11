@@ -4,7 +4,20 @@
     {
       "n": 1,
       "title": "Feet: the dactyl and the spondee",
-      "say": "Latin verse has no rhyme. What makes it verse is **the metre (the rhythm of a line: the hexameter and pentameter of the elegiac couplet, Catullus's eleven-syllable line)** — a fixed run of long and short syllables. The syllables come in groups called feet, and two matter here: the dactyl, one long and two shorts (– ⏑ ⏑), and the spondee, two longs (– –). Two shorts take about as long to say as one long, which is why either may stand in for the other. Feet are counted in syllables, not in words, so a foot can stop in the middle of a word.",
+      "notice": {
+        "sentences": [
+          "ec-01",
+          "ec-03"
+        ],
+        "ask": "Read both lines aloud. What do they have in common?",
+        "options": [
+          "Both end with the same rhythm: long-short-short, then long-long",
+          "Both rhyme at the end",
+          "Both have the same number of words"
+        ],
+        "answer": "Both end with the same rhythm: long-short-short, then long-long"
+      },
+      "say": "Latin verse runs on **the metre (the rhythm of a line: the hexameter and pentameter of the elegiac couplet, Catullus's eleven-syllable line)**: a fixed run of long and short syllables. Syllables come in feet; two matter: the dactyl, one long and two shorts (– ⏑ ⏑), and the spondee, two longs (– –). Feet count syllables, not words, so a foot can stop mid-word.",
       "show": {
         "kind": "sentence",
         "id": "ec-03"
@@ -52,7 +65,7 @@
     {
       "n": 3,
       "title": "The pentameter, and the couplet",
-      "say": "Under every hexameter of Ovid and Martial stands a shorter line, the pentameter — Greek *pente*, five, because its two halves of two and a half feet come to five. The first half may take spondees; the second half never does, and is always *– ⏑ ⏑ | – ⏑ ⏑ | –*. A clear break, the caesura, falls between the halves. Hexameter then pentameter is the elegiac couplet: ec-01 and ec-02 are one.",
+      "say": "Under every hexameter of Ovid and Martial stands a shorter line, the pentameter — two halves of two and a half feet, five in all. The first half may take spondees; the second never does: *– ⏑ ⏑ | – ⏑ ⏑ | –*. A clear break, the caesura, falls between the halves. Hexameter then pentameter is the elegiac couplet: ec-01 and ec-02 are one.",
       "show": {
         "kind": "sentence",
         "id": "ec-01"
@@ -151,6 +164,14 @@
     {
       "type": "p",
       "text": "Catullus's hendecasyllable (Greek *hendeka*, eleven) has eleven syllables in five feet: spondee, dactyl, trochee, trochee, spondee or trochee — *Vīvā|mus mea | Lesbi(a) | atqu(e) a|mēmus*; *Passer | mortuus | est me|ae pu|ellae*; *Cēnā|bis bene | mī Fa|bull(e) a|pud mē*. Its first foot is occasionally an iamb (⏑ –) or a trochee. Ovid wrote the *Amōrēs* in couplets; Martial's epigrams use both the couplet and the hendecasyllable."
+    },
+    {
+      "type": "p",
+      "text": "Latin verse has no rhyme. Two shorts take about as long to say as one long, which is why either may stand in for the other."
+    },
+    {
+      "type": "p",
+      "text": "The pentameter is Greek *pente*, five, because its two halves of two and a half feet come to five."
     }
   ],
   "sources": [

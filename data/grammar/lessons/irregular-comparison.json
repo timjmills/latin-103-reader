@@ -11,14 +11,23 @@
   "more": [
     { "type": "p", "text": "Only the stems are strange: the comparatives decline like any *-ior* word (*meliōrem*), the superlatives like *bonus -a -um*. *plūs* in the singular is a neuter noun with a genitive after it: *plūs pecūniae* — more money; only the plural *plūrēs, plūra* agrees like an adjective. Related sets: *superus* → *superior* → *suprēmus / summus*; *īnferus* → *īnferior* → *īnfimus / īmus*; *senex* (old) → *senior*; *iuvenis* (young) → *iūnior*." },
     { "type": "p", "text": "*māior* and *minor* also mean *older* and *younger*: Quintus is *māior est quam Iūlia* — older than Julia; *maximus / minimus līberōrum* — the eldest / youngest of the children. *optimus* is the everyday word for *excellent*." },
-    { "type": "p", "text": "The learner's notes (week 19): a handful of adjectives in both languages form their comparative and superlative from very different stems — *bonus / melior / optimus*, *malus / peior / pessimus*, *magnus / māior / maximus*, *parvus / minor / minimus*, *multus / plūs (plūrēs) / plūrimus* — and apart from the stems they act normally. Ørberg (chapter XIX margin): *multum, comp. plūs, sup. plūrimum; paulum, comp. minus, sup. minimum*; A&G §129 give the full list." }
+    { "type": "p", "text": "The learner's notes (week 19): a handful of adjectives in both languages form their comparative and superlative from very different stems — *bonus / melior / optimus*, *malus / peior / pessimus*, *magnus / māior / maximus*, *parvus / minor / minimus*, *multus / plūs (plūrēs) / plūrimus* — and apart from the stems they act normally. Ørberg (chapter XIX margin): *multum, comp. plūs, sup. plūrimum; paulum, comp. minus, sup. minimum*; A&G §129 give the full list." },
+    { "type": "p", "text": "They take the plain first-and-second-declension endings (the ordinary *-us -a -um* set; a declension is which family of endings a noun or adjective takes), so they agree with their noun exactly as *bonus* does — masculine *-us*, feminine *-a*, neuter *-um*." }
   ],
   "sources": ["notes p68", "Ørberg cap. XIX", "A&G §129"],
   "teach": [
     {
       "n": 1,
       "title": "What these words do",
-      "say": "Most adjectives compare by adding to their own stem, but a few of the commonest change word altogether: the irregular comparatives and superlatives (better / best, worse / worst, bigger / biggest). *Bonus* 'good' gives *melior* 'better' and *optimus* 'best' — a different word at each step, with nothing of *bonus* left in it. English does exactly the same thing in good, better, best, so the idea is already familiar; only the Latin words are new.",
+      "notice": {
+        "sentences": [
+          "icc-02",
+          "icc-03"
+        ],
+        "ask": "Which word in each sentence makes the comparison?",
+        "tap": "focus"
+      },
+      "say": "A few of the commonest adjectives compare by changing word altogether: the irregular comparatives and superlatives (better / best, worse / worst, bigger / biggest). Nothing of the plain adjective is left in them, just as in English good, better, best. *Bonus* 'good' gives *melior* 'better' and *optimus* 'best'.",
       "show": {
         "kind": "sentence",
         "id": "icc-02"
@@ -42,7 +51,7 @@
     {
       "n": 2,
       "title": "The comparative: a new stem, the ending -ior / -ius",
-      "say": "The comparative (the '-er / more' form) keeps its ordinary ending and puts it on the new stem. *Bonus* does not build on *bon-* at all: its comparative stem is *meli-*, and *meli-* + *-or* gives *melior*. The other stems are *pēi-* from *malus*, *min-* from *parvus*, *māi-* from *magnus*. For a neuter word the ending is *-ius* instead of *-or*: *melior* beside *melius*. The word for 'than' after any of them is *quam*.",
+      "say": "The comparative (the '-er / more' form) keeps its ordinary ending and puts it on the new stem: *meli-* + *-or* gives *melior*, neuter *melius*. The other stems are *pēi-* from *malus*, *min-* from *parvus*, *māi-* from *magnus*. 'Than' after any of them is *quam*.",
       "show": {
         "kind": "paradigm",
         "key": "adjcomp",
@@ -71,7 +80,7 @@
     {
       "n": 3,
       "title": "The superlative: a new stem, the ordinary -us -a -um",
-      "say": "The superlative (the '-est / most' form) is just as regular once the stem is right. *Bonus* has the superlative stem *opti-*, so *optimus, optima, optimum*; *parvus* has *mini-*, *magnus* has *māxi-*. They take the plain first-and-second-declension endings (the ordinary *-us -a -um* set; a declension is which family of endings a noun or adjective takes), so they agree with their noun exactly as *bonus* does — masculine *-us*, feminine *-a*, neuter *-um*.",
+      "say": "The superlative (the '-est / most' form) is regular once the stem is right: *opti-* from *bonus*, *mini-* from *parvus*, *māxi-* from *magnus*, with the ordinary *-us -a -um* endings, so it agrees with its noun exactly as *bonus* does. *optimus, optima, optimum*.",
       "show": {
         "kind": "paradigm",
         "key": "adj12",
@@ -101,7 +110,7 @@
     {
       "n": 4,
       "title": "multī, plūrēs, plūrimī — and plūs",
-      "say": "*Multī* 'many' compares to *plūrēs* 'more (in number)' and *plūrimī* 'very many'. In the singular the comparative is not an adjective at all but the noun *plūs* 'more', which takes the genitive (the 'of' form) after it: *plūs pecūniae*, more money. So *plūs* weighs an amount and stands alone, while the plural counts things you could number one by one and agrees with them like any adjective.",
+      "say": "*Multī* 'many' compares to *plūrēs* 'more' and *plūrimī* 'very many'. In the singular the comparative is the noun *plūs* 'more', with the genitive (the 'of' form) after it: *plūs pecūniae*, more money. *Plūs* stands alone; plural *plūrēs* agrees with its noun like any adjective.",
       "show": {
         "kind": "sentence",
         "id": "icc-11"
@@ -126,7 +135,7 @@
     {
       "n": 5,
       "title": "Telling it from the regular comparative",
-      "say": "Both kinds end the same way, so look at the stem and not at the ending. *Longus* gives *longior* — the adjective is still there inside it, and you could put the word back together. *Parvus* gives *minor* — the adjective has gone. If you can still see the word you started from, the comparison is regular; if you cannot, it belongs to this short list.",
+      "say": "Both kinds end the same way, so look at the stem, not the ending. If you can still see the adjective you started from, the comparison is regular; if you cannot, it belongs to this short list. *Longus* gives *longior* — *longus* is still inside it; *parvus* gives *minor* — the adjective has gone.",
       "show": {
         "kind": "sentence",
         "id": "icc-04"
@@ -152,7 +161,7 @@
     {
       "n": 6,
       "title": "Using it",
-      "say": "The same irregular pairs work as adverbs too — *bene* 'well' gives *melius* 'better', *male* 'badly' gives *pēius* 'worse' — and there they lose their case endings altogether, as the sentence in front of you shows. But an adjective is what you build here, and it still agrees with its noun like any other: decide first what is being compared and what gender that word is, then write the form that fits it.",
+      "say": "An adjective still agrees with its noun like any other: decide what is being compared and what gender that word is, then write the form that fits. The same pairs work as adverbs, with no case ending at all: *bene* 'well' gives *melius* 'better', *male* 'badly' gives *pēius* 'worse'.",
       "show": {
         "kind": "sentence",
         "id": "icc-14"

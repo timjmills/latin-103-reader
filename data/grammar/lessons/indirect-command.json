@@ -43,6 +43,22 @@
   {
    "type": "p",
    "text": "The clause verb is present subjunctive after a present main verb and imperfect after a past one (*rogāvit ut nārrāret*); that pairing is the sequence of tenses. Two verbs of ordering skip *ut*: *iubeō* and *vetō* take the accusative + infinitive (*iubet eum venīre*). Verbs of saying and thinking never take *ut*; they take the accusative + infinitive (*dīcit eum venīre*). A second negative in the clause is *nēve*: *cūrā nē ovēs aberrent* — and *nēve silvam petant*."
+  },
+  {
+   "type": "p",
+   "text": "English uses a plain 'to'; Latin uses *ut* and puts the verb into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). The *ut* clause is the words that were said."
+  },
+  {
+   "type": "p",
+   "text": "When you write it, the English 'to' is your signal to put in *ut* and change the verb."
+  },
+  {
+   "type": "p",
+   "text": "Meet *ut* or *nē* after any verb of ordering or asking (*imperō, ōrō, moneō, cūrō, postulō, volō*) and the clause is the order itself."
+  },
+  {
+   "type": "p",
+   "text": "What tells an indirect command apart from a purpose clause is the verb in front. Ask: is this clause completing a verb of telling, or explaining an action?"
   }
  ],
  "sources": [
@@ -54,7 +70,15 @@
   {
    "n": 1,
    "title": "Reporting an order",
-   "say": "When a sentence tells you what somebody was told to do, the order itself becomes a clause: **ut / nē + subjunctive (the form for what someone asks or orders someone to do)**. *Dominus servō imperat ut labōret* — the master orders the slave to work. English uses a plain 'to'; Latin uses *ut* and puts the verb into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). The *ut* clause is the words that were said.",
+   "notice": {
+    "sentences": [
+     "ic-02",
+     "ic-04"
+    ],
+    "ask": "Which word in each sentence is the thing somebody is told to do?",
+    "tap": "focus"
+   },
+   "say": "When a sentence tells you what somebody was told to do, the order becomes a clause: **ut / nē + subjunctive (the form for what someone asks or orders someone to do)**. *Dominus servō imperat ut labōret* — the master orders the slave to work.",
    "show": {
     "kind": "sentence",
     "id": "ic-01"
@@ -80,7 +104,7 @@
   {
    "n": 2,
    "title": "ut and a subjunctive, never an infinitive",
-   "say": "The clause opens with **ut** and its verb is always subjunctive. Latin does not say *monet tacēre*; it says *monet ut taceat*. When you read it, translate *ut* as nothing at all — 'warns him to keep quiet' — and turn the subjunctive into the plain English 'to' form. When you write it, the English 'to' is your signal to put in *ut* and change the verb.",
+   "say": "The clause opens with **ut** and its verb is always subjunctive: Latin does not say *monet tacēre*; it says *monet ut taceat*. When you read it, translate *ut* as nothing at all — 'warns him to keep quiet' — and turn the subjunctive into the plain English 'to' form.",
    "show": {
     "kind": "sentence",
     "id": "ic-03"
@@ -122,7 +146,7 @@
   {
    "n": 4,
    "title": "Which verbs set it off",
-   "say": "These clauses hang on one family of verbs: *imperō* (order), *ōrō* (beg), *moneō* (warn), *cūrō* (see to it), *postulō* (demand), *volō* (want). One common verb refuses the pattern: *iubeō* (order) takes a plain infinitive instead — *Dāvum venīre iubet*, 'he orders Davus to come'. Meet *ut* or *nē* after any of the first family and the clause is the order itself.",
+   "say": "These clauses hang on one family of verbs: *imperō* (order), *ōrō* (beg), *moneō* (warn), *cūrō* (see to it), *postulō* (demand), *volō* (want). One common verb refuses the pattern: *iubeō* (order) takes a plain infinitive instead — *Dāvum venīre iubet*, 'he orders Davus to come'.",
    "show": {
     "kind": "sentence",
     "id": "ic-07"
@@ -136,7 +160,7 @@
   {
    "n": 5,
    "title": "Not a purpose clause",
-   "say": "*ut* + subjunctive also says why something is done — **ut / nē + subjunctive (the 'in order to' clause: venit ut videat = comes to see)**. What tells them apart is the verb in front. After a verb of telling (*imperat, ōrat, monet*) the *ut* clause is what was said; after any other verb it is the reason for doing it. Ask: is this clause completing a verb of telling, or explaining an action?",
+   "say": "*ut* + subjunctive also says why something is done — **ut / nē + subjunctive (the 'in order to' clause: venit ut videat = comes to see)**. After a verb of telling (*imperat, ōrat, monet*) the *ut* clause is what was said; after any other verb it is the reason for doing it.",
    "show": {
     "kind": "sentence",
     "id": "ic-09"

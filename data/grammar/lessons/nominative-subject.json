@@ -63,7 +63,7 @@
           "ns-03",
           "ns-06"
         ],
-        "ask": "Each sentence is about one thing. Tap the word that names it in each.",
+        "ask": "Each sentence is about someone or something. Tap the word that names it in each. What job do the two tapped words share?",
         "tap": "focus"
       },
       "say": "Naming who or what the sentence is about — the subject — is the job of the nominative (the plain naming form). Latin marks the subject by its ending, not by its place in the line. In *Nīlus fluvius magnus in Āfricā est* the sentence is about *Nīlus*, so *Nīlus* wears that form.",

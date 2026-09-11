@@ -8,7 +8,7 @@
      "pp-03",
      "pp-09"
     ],
-    "ask": "Which word in each sentence is the one for 'you', the person being spoken to?",
+    "ask": "Which word in each sentence means 'you' — the one, or the ones, being spoken to?",
     "tap": "focus"
    },
    "say": "Latin has its own small words for the one speaking and the one spoken to: **the personal pronouns (I, you, we, you all) and the reflexive sē ('-self')**. *ego* is I, *tū* is you (one person), *nōs* is we, *vōs* is you all. *ego librum legō, tū dormīs* — I am reading, you are sleeping.",
@@ -33,7 +33,7 @@
   },
   {
    "title": "mē and mihi",
-   "say": "*ego* changes shape with the job it does. As the object it is *mē* — the accusative (the object form): *magister mē vocat*, the teacher calls me. When something comes to me it is *mihi* — the dative (the 'to/for' form): *pater mihi librum dat*, father gives me a book. *ego* itself is only ever the subject.",
+   "say": "*ego* changes shape with the job it does. As the object it is *mē* — the accusative (the object form): *magister mē vocat*, the teacher calls me. When something comes to me it is *mihi* — the dative (the 'to/for' form): *pater mihi librum dat*, father gives me a book.",
    "show": {
     "kind": "paradigm",
     "key": "ego",
@@ -210,7 +210,7 @@
   },
   {
    "type": "p",
-   "text": "The verb ending already tells you who is acting, so *ego* and *tū* are put in only when the point is who, as against somebody else: *ego librum legō, tū dormīs* — I am reading, you are sleeping."
+   "text": "The verb ending already tells you who is acting, so *ego* and *tū* are put in only when the point is who, as against somebody else: *ego librum legō, tū dormīs* — I am reading, you are sleeping. *ego* itself is only ever the subject."
   },
   {
    "type": "p",

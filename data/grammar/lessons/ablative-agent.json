@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "Who did it, when the verb is passive",
-      "say": "A passive verb says the action is done *to* its subject: *saccus portātur* — the sack is carried. To name the person doing it, Latin puts *ā* in front (or *ab* when the next word starts with a vowel: *ab amīcō*) and the doer goes into **the ablative (the 'by' form after ā/ab)**, *ablātīvus auctōris*: *ā servō* — by the slave. Nothing else in the sentence moves.",
+      "notice": {
+        "sentences": [
+          "abag-01",
+          "abag-04"
+        ],
+        "ask": "Which word in each sentence names who is doing the action?",
+        "tap": "focus"
+      },
+      "say": "A passive verb says the action is done *to* its subject: *saccus portātur* — the sack is carried. To name the doer, Latin puts *ā* in front (*ab* before a vowel: *ab amīcō*) and the doer goes into **the ablative (the 'by' form after ā/ab)**: *ā servō* — by the slave.",
       "show": {
         "kind": "sentence",
         "id": "abag-01"
@@ -69,7 +77,7 @@
     {
       "n": 4,
       "title": "More than one doer: -īs",
-      "say": "When several people do it, the doer goes into the ablative plural, and both families end **-īs**: *ā servīs*, *ā puerīs*, *ā puellīs*. Watch the verb: it is plural only when the *subject* is plural (*saccī portantur*), never because the doers are many — *ā servīs suīs dominus nōn timētur* has one master and many slaves, and the verb stays singular.",
+      "say": "When several people do it, the doer goes into the ablative plural, and both families end **-īs**: *ā servīs*, *ā puerīs*, *ā puellīs*. Watch the verb: it is plural only when the *subject* is plural (*saccī portantur*), never because the doers are many.",
       "show": {
         "kind": "paradigm",
         "key": "decl2m",
@@ -85,7 +93,7 @@
     {
       "n": 5,
       "title": "A doer, or a thing used?",
-      "say": "*ā/ab* names something alive that chose to act — a person, a god, an animal. A lifeless thing the doer uses takes the bare ablative with no preposition at all: *baculō* — with a stick. In *servus baculō ā dominō verberātur* both are present: the master does it, the stick is what he does it with. Ask of each ablative: could this decide to act?",
+      "say": "*ā/ab* names something alive that chose to act — a person, a god, an animal. A lifeless thing the doer uses takes the bare ablative with no preposition at all: *baculō* — with a stick. In *servus baculō ā dominō verberātur* both are present: the master does it, the stick is what he does it with.",
       "show": {
         "kind": "sentence",
         "id": "abag-09"
@@ -170,6 +178,18 @@
     {
       "type": "p",
       "text": "Ørberg cap. VI and VIII: *ā quō?* — *ab eō / ab illō servō*; *saccus ā servō portātur*. With no passive verb, *ā/ab* is plain origin: *ā vīllā venit*. Later, the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk) names its doer with the dative instead (dative of agent). A&G §405."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name for the doer's case is *ablātīvus auctōris*. When *ā/ab* and the ablative name the doer, nothing else in the sentence moves."
+    },
+    {
+      "type": "p",
+      "text": "On the plural doer and a singular verb: *ā servīs suīs dominus nōn timētur* has one master and many slaves, and the verb stays singular."
+    },
+    {
+      "type": "p",
+      "text": "Doer or thing used? Ask of each ablative: could this decide to act?"
     }
   ],
   "sources": [

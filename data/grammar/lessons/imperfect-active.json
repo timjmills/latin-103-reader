@@ -12,14 +12,24 @@
   "more": [
     { "type": "p", "text": "*-bā-* is long before *-s, -mus, -tis* (*amābās, amābāmus*) and short before *-m, -t, -nt*. It is the tense of background, habit and the setting of a story. Besides *was doing*, it can mean *began to* or *tried to* (*clāmābat* — began to shout) and is the tense of description in a narrative. The imperfect of *esse* is *eram*: see the irregular imperfect." },
     { "type": "p", "text": "The learner's notes (week 19): Latin shows tense with an intermediate ending between the stem and the person ending; the imperfect is one of three past tenses, for ongoing or repeated action and for setting the scene for the main events (*I was walking down the street, when…*; *I used to walk…*); the marker *(e)ba* loses its *e* after *a-* and *e-*stems and keeps it after *(i)-* and *i-*stems (*pōnēbam, pulsābam, vidēbam, fugiēbam, veniēbam*); the person endings lose their variable vowels after the *a*, and the first person always uses *-m*." },
-    { "type": "p", "text": "Ørberg (chapter XIX): tempus praeteritum, 3rd person *-bat / -bant*, *-ēbat / -ēbant*; *computābat, pārēbat, scrībēbat, dormiēbat*; *ante vīgintī annōs Iūlius in lūdō dormiēbat, male computābat, foedē scrībēbat*. A&G §470–471 list the uses: continued action, repeated action, description, and the 'was beginning to' sense." }
+    { "type": "p", "text": "Ørberg (chapter XIX): tempus praeteritum, 3rd person *-bat / -bant*, *-ēbat / -ēbant*; *computābat, pārēbat, scrībēbat, dormiēbat*; *ante vīgintī annōs Iūlius in lūdō dormiēbat, male computābat, foedē scrībēbat*. A&G §470–471 list the uses: continued action, repeated action, description, and the 'was beginning to' sense." },
+    { "type": "p", "text": "When Latin looks back at the past it can report one finished event, or it can paint what was going on. *Iūlius ambulābat* is not 'Julius walked once' but 'Julius was walking', and *Iūlius cotīdiē ambulābat* is 'Julius used to walk every day'." },
+    { "type": "p", "text": "The second conjugation (the *-ēre* family) builds the imperfect exactly as the first does, on its own stem vowel: *tacē-* gives *tacēbat*, *vidē-* gives *vidēbat*." }
   ],
   "sources": ["notes p64–65", "Ørberg cap. XIX Grammatica Latina", "A&G §184, §470–471"],
   "teach": [
     {
       "n": 1,
       "title": "What the tense does",
-      "say": "When Latin looks back at the past it can report one finished event, or it can paint what was going on. For what was going on — and for what went on again and again — it uses the imperfect (the 'was doing' tense). *Iūlius ambulābat* is not 'Julius walked once' but 'Julius was walking', and *Iūlius cotīdiē ambulābat* is 'Julius used to walk every day'. The sign of it is *-bā-* sitting between the verb's stem and its person ending.",
+      "notice": {
+        "sentences": [
+          "ia-01",
+          "ia-04"
+        ],
+        "ask": "Which word in each sentence tells you this was happening in the past?",
+        "tap": "focus"
+      },
+      "say": "For what was going on in the past, or went on again and again, Latin uses the imperfect (the 'was doing' tense). Its sign is *-bā-* between the verb's stem and its person ending. *Iūlius ambulābat* — Julius was walking, or used to walk.",
       "show": {
         "kind": "sentence",
         "id": "ia-01"
@@ -44,7 +54,7 @@
     {
       "n": 2,
       "title": "The stem, then -bā-, then -t",
-      "say": "Build the word in three pieces. Take the stem *ambulā-*, add *-bā-*, then add the ending that says who: *-t* for he, she or it, *-nt* for they. Before a final *-t* or *-nt* that long *ā* shortens, which is why you write *ambulā-ba-t* and *clāmā-ba-nt*. A verb of the second conjugation (the conjugation is which of the four families a Latin verb belongs to; the second is the *-ēre* family) does exactly the same on its own stem vowel: *tacē-* gives *tacēbat*. Nothing else in the word changes.",
+      "say": "Build it in three pieces: the stem, then *-bā-*, then the ending that says who — *-t* for he, she or it, *-nt* for they; the long *ā* shortens before that final *-t* or *-nt*. *ambulābat*, *ambulābant*. A second-conjugation verb (the conjugation is which of the four families a Latin verb belongs to) does the same: *tacēbat*.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",

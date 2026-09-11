@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "It hangs a whole clause on a noun",
-      "say": "To say more about a noun than one adjective can, Latin hangs a small sentence on it with **the relative pronoun quī, quae, quod ('who, which, that')**, *prōnōmen relātīvum*: *puer quī rīdet* = the boy who is laughing. The noun in front is the antecedent, the word the clause is about; the clause has a verb of its own, so the sentence carries two verbs. Close the clause off at its verb and what is left over is the main sentence. The clause usually sits right after its noun, but it can also come after the main verb.",
+      "notice": {
+        "sentences": [
+          "rel-01",
+          "rel-02"
+        ],
+        "ask": "Each sentence has two verbs. Which word joins the second verb to the boy or the girl?",
+        "tap": "focus"
+      },
+      "say": "To say more about a noun than one adjective can, Latin hangs a small sentence on it with **the relative pronoun quī, quae, quod ('who, which, that')**: *puer quī rīdet* = the boy who is laughing. The noun in front is the antecedent; the clause has a verb of its own, so the sentence carries two verbs.",
       "show": {
         "kind": "sentence",
         "id": "rel-01"
@@ -26,7 +34,7 @@
     {
       "n": 2,
       "title": "The nominative: quī, quae, quod",
-      "say": "The pronoun looks back at its antecedent for two of its three labels, gender and number. When it is the subject of its own clause it stands in the nominative (the subject form): a masculine noun takes **quī**, a feminine one **quae**, a neuter one **quod** — *puer quī*, *puella quae*, *ōrnāmentum quod*. A plural noun in front gives a plural pronoun, and for the masculine that is **quī** again: *servī quī saccōs portant*.",
+      "say": "The pronoun takes gender and number from its antecedent. When it is the subject of its own clause it stands in the nominative (the subject form): a masculine noun takes **quī**, a feminine one **quae**, a neuter one **quod** — *puer quī*, *puella quae*, *ōrnāmentum quod*. A plural masculine noun gives **quī** again: *servī quī saccōs portant*.",
       "show": {
         "kind": "paradigm",
         "key": "qui",
@@ -50,7 +58,7 @@
     {
       "n": 3,
       "title": "The accusative: the clause's own object",
-      "say": "The third label is decided inside the clause, not by the noun in front. If the pronoun is what that clause's verb acts on, it takes the accusative (the object form): masculine **quem**, feminine **quam**, neuter **quod**, and in the plural **quōs** and **quās** — *puella quam Mārcus pulsat*, the girl whom Marcus hits; *puellae quās Mārcus videt*. The antecedent is still the subject of the main sentence; only the pronoun's own case has moved.",
+      "say": "The third label is decided inside the clause, not by the noun in front. If the pronoun is what that clause's verb acts on, it takes the accusative (the object form): masculine **quem**, feminine **quam**, neuter **quod**, plural **quōs** and **quās** — *puella quam Mārcus pulsat*, the girl whom Marcus hits; *puellae quās Mārcus videt*.",
       "show": {
         "kind": "paradigm",
         "key": "qui",
@@ -87,7 +95,7 @@
     {
       "n": 4,
       "title": "The odd pair: cuius and cui",
-      "say": "Two more cells break the pattern, and each of them is one form for every gender. The genitive (the owner form) is **cuius** = whose: *puella cuius māter cantat*, the girl whose mother is singing. The dative (the receiver form) is **cui** = to whom: *servus cui dominus nummōs dat*, the slave to whom the master gives coins. Learn them as a pair, exactly as *huius* and *huic* go together.",
+      "say": "Two more cells break the pattern, and each is one form for every gender. The genitive (the owner form) is **cuius** = whose: *puella cuius māter cantat*, the girl whose mother is singing. The dative (the receiver form) is **cui** = to whom: *servus cui dominus nummōs dat*, the slave to whom the master gives coins.",
       "show": {
         "kind": "paradigm",
         "key": "qui",
@@ -107,7 +115,7 @@
     {
       "n": 5,
       "title": "After a preposition, and quibus",
-      "say": "The job left is the ablative (the 'by/with/from' form), the one a preposition takes: **quō** for masculine and neuter, **quā** for feminine — *taberna in quā gemmae sunt*, the shop in which the jewels are. In Latin the preposition comes first and the pronoun follows it. For more than one, the single form **quibus** does that job and the receiver's job as well: *puerī quibus Iūlius pira dat*, the boys to whom Julius gives pears.",
+      "say": "The ablative (the 'by/with/from' form), the one a preposition takes, is **quō** for masculine and neuter, **quā** for feminine — *taberna in quā gemmae sunt*, the shop in which the jewels are. For more than one, **quibus** does that job and the receiver's job as well: *puerī quibus Iūlius pira dat*, the boys to whom Julius gives pears.",
       "show": {
         "kind": "paradigm",
         "key": "qui",
@@ -142,7 +150,7 @@
     {
       "n": 6,
       "title": "Asking, pointing, or linking?",
-      "say": "Three lookalikes share the same letters. *Quis?* asks a question and ends the sentence with a question mark. *Ille* points at a noun and adds no verb. *Quī* links, and it always drags a verb of its own along behind it: *quis est puer quī in viā plōrat?* — the first word asks, the second joins a clause. Find the extra verb and you have found the relative.",
+      "say": "Three lookalikes share the same letters. *Quis?* asks a question and ends the sentence with a question mark. *Ille* points at a noun and adds no verb. *Quī* links, and it always drags a verb of its own along behind it: *quis est puer quī in viā plōrat?* — the first word asks, the second joins a clause.",
       "show": {
         "kind": "sentence",
         "id": "rel-14"
@@ -200,6 +208,30 @@
     {
       "type": "p",
       "text": "Ørberg cap. VIII lines the relative up with the question words *quis? quī? quem? cuius? cui? quō?* and with *is* / *ille*. A relative can open a sentence and refer back to the last one (*Quī …* = and he …). With no antecedent it means 'whoever, anyone who': *quī spīrat vīvus est* (r10:48.2). The neuter *quod* is also the conjunction 'because' (r10:23.1), and *in quā*, *ā quō* put the preposition before the pronoun (r08:1.1). A&G §303–307."
+    },
+    {
+      "type": "p",
+      "text": "The Latin name is *prōnōmen relātīvum*. The antecedent is the word the clause is about. Close the clause off at its verb and what is left over is the main sentence. The clause usually sits right after its noun, but it can also come after the main verb."
+    },
+    {
+      "type": "p",
+      "text": "The pronoun looks back at its antecedent for two of its three labels, gender and number. A plural noun in front gives a plural pronoun, and for the masculine that is **quī** again."
+    },
+    {
+      "type": "p",
+      "text": "When the pronoun is the clause's object, the antecedent is still the subject of the main sentence; only the pronoun's own case has moved."
+    },
+    {
+      "type": "p",
+      "text": "On *cuius* and *cui*: learn them as a pair, exactly as *huius* and *huic* go together."
+    },
+    {
+      "type": "p",
+      "text": "With *quō* and *quā*: in Latin the preposition comes first and the pronoun follows it."
+    },
+    {
+      "type": "p",
+      "text": "Asking, pointing or linking: find the extra verb and you have found the relative."
     }
   ],
   "sources": [
