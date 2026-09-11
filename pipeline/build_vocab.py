@@ -78,11 +78,15 @@ Semantic class — `sem` (contract §11, the sentence generator)
   ship is a thing, Rome is a place, a day is time; `other` is a quantity or
   pronoun-like noun no template should draw — nihil, nēmō, mīlle).
   Every adjective carries
-  `sem: {"of": [classes it may describe], "only"? / "also"?: [lemmas],
-  "number"?: "sg"|"pl", "det"?: true}` — `only` replaces the classes with an
-  exact list (lingua Latīna, vīnum merum); `det` marks a determiner
-  (possessives, quantifiers, ordinals used as such) that is never drawn as a
-  free descriptor, only when a template asks for it by name.
+  `sem: {"of": [classes it may describe], "only"? / "also"? / "not"?: [lemmas],
+  "number"?: "sg"|"pl", "gender"?: "m"|"f"|"n", "det"?: true}` — `only`
+  replaces the classes with an exact list (lingua Latīna, vīnum merum),
+  `also` adds words outside the classes, `not` takes words out of them
+  (pecūnia is never magna, an enemy is never bonus), `gender` limits the
+  adjective to **persons** of that gender and leaves every other class alone
+  (the book calls a woman fōrmōsa, never a wall and never a man); `det` marks
+  a determiner (possessives, quantifiers, ordinals used as such) that is
+  never drawn as a free descriptor, only when a template asks for it by name.
   Every verb carries
   `sem: {"subj": [...], "obj": [...], "dat"?: [...],
   "subj_only"? / "obj_only"? / "dat_only"? / "subj_also"? / "obj_also"? /
@@ -99,7 +103,13 @@ Semantic class — `sem` (contract §11, the sentence generator)
   second, and `--check` fails on any noun, verb or adjective without `sem`,
   on a malformed one, and on a deck disagreeing with the file, so a new word
   is judged before it ships.  `--dump-sem` writes the file back from the
-  decks after a tagging pass.  Nothing derives `sem` automatically.
+  decks after a tagging pass; `--sync-sem` does the reverse and needs no
+  library, so a judgement edited in the file reaches the shipped decks on its
+  own.  Nothing derives `sem` automatically.
+  The file also carries `REL` — who may be called whose, the relation two
+  people must stand in before a possessive between them is written (the
+  sentence generator's `possessive_ok`).  It is not a per-word judgement, so
+  `--dump-sem` carries it over untouched.
 
 Nothing here touches app/js or supabase/.
 """
@@ -2064,6 +2074,10 @@ VERB_TAKES = {"inf", "acc_inf", "ut", "pred", "abl", "gen", "none"}
 
 
 SEM_PATH = PIPELINE_DIR / "sem.json"
+#: The top-level blocks of sem.json that are per-word judgements; anything
+#: else (REL, who may be called whose) belongs to no part of speech and is
+#: read by the generator directly.
+SEM_POS = ("N", "ADJ", "V")
 
 
 def load_sem_file() -> dict[tuple[str, str], object]:
@@ -2074,14 +2088,17 @@ def load_sem_file() -> dict[tuple[str, str], object]:
         return out
     data = json.loads(SEM_PATH.read_text(encoding="utf-8"))
     for pos, entries in data.items():
+        if pos not in SEM_POS:
+            continue
         for lemma, sem in entries.items():
             out[(canonical(lemma), pos)] = sem
     return out
 
 
 def dump_sem() -> None:
-    """Write pipeline/sem.json from the shipped decks (after a tagging pass)."""
-    data: dict[str, dict[str, object]] = {"N": {}, "ADJ": {}, "V": {}}
+    """Write pipeline/sem.json from the shipped decks (after a tagging pass).
+    Blocks that are not per-word judgements (REL) are carried over as they are."""
+    data: dict[str, object] = {pos: {} for pos in SEM_POS}
     for c in CHAPTERS:
         path = OUT_DIR / f"{c:02d}.json"
         if not path.exists():
@@ -2089,10 +2106,42 @@ def dump_sem() -> None:
         for w in json.loads(path.read_text(encoding="utf-8")).get("words") or []:
             if w.get("pos") in data and "sem" in w:
                 data[w["pos"]][w["lemma"]] = w["sem"]
-    for pos in data:
+    for pos in SEM_POS:
         data[pos] = dict(sorted(data[pos].items(), key=lambda kv: strip_macrons(kv[0]).lower()))
+    if SEM_PATH.exists():
+        for key, block in json.loads(SEM_PATH.read_text(encoding="utf-8")).items():
+            if key not in SEM_POS:
+                data[key] = block
     with open(SEM_PATH, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+
+
+def sync_sem() -> list[str]:
+    """The reverse of `--dump-sem`: write each deck's `sem` from
+    pipeline/sem.json, which is the source of the judgement.  Needs no
+    library, so a frame tightened in the file reaches the shipped decks
+    without a full rebuild.  Returns one line per deck changed."""
+    filed = load_sem_file()
+    changed: list[str] = []
+    for c in CHAPTERS:
+        path = OUT_DIR / f"{c:02d}.json"
+        if not path.exists():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        n = 0
+        for w in data.get("words") or []:
+            pos = w.get("pos")
+            if pos not in SEM_POS:
+                continue
+            sem = filed.get((canonical(w.get("lemma") or ""), pos), _MISSING)
+            if sem is not _MISSING and w.get("sem") != sem:
+                w["sem"] = sem
+                n += 1
+        if n:
+            with open(path, "w", encoding="utf-8", newline="\n") as fh:
+                fh.write(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+            changed.append(f"chapter {c:2d}: {n} word(s) re-tagged → {path.relative_to(ROOT)}")
+    return changed
 
 
 def load_sem() -> dict[tuple[str, str], object]:
@@ -2131,9 +2180,12 @@ def check_sem(w: dict) -> str | None:
             return f"adjective sem {sem!r} is not {{'of': [classes]}}"
         if not sem["of"] and not sem.get("only"):
             return f"adjective sem {sem!r} names no class and no word"
-        if set(sem) - {"of", "only", "also", "number", "det"} or sem.get("number") not in (None, "sg", "pl"):
+        if set(sem) - {"of", "only", "also", "not", "number", "gender", "det"} \
+                or sem.get("number") not in (None, "sg", "pl"):
             return f"adjective sem {sem!r} has an unknown key"
-        for key in ("only", "also"):
+        if sem.get("gender") not in (None, "m", "f", "n"):
+            return f"adjective sem gender {sem.get('gender')!r} is not m, f or n"
+        for key in ("only", "also", "not"):
             if key in sem and (not isinstance(sem[key], list) or not all(isinstance(x, str) for x in sem[key])):
                 return f"adjective sem {key} is not a list of lemmas"
         if "det" in sem and sem["det"] is not True:
@@ -2227,7 +2279,16 @@ def main(argv=None) -> int:
     ap.add_argument("--report", action="store_true", help="print every deck")
     ap.add_argument("--dump-sem", action="store_true",
                     help="write pipeline/sem.json from the decks' sem fields (after a tagging pass)")
+    ap.add_argument("--sync-sem", action="store_true",
+                    help="the reverse: write the decks' sem fields from pipeline/sem.json (no library needed)")
     a = ap.parse_args(argv)
+    if a.sync_sem:
+        changed = sync_sem()
+        for line in changed:
+            print(line)
+        print("sem: the decks already say what pipeline/sem.json says" if not changed
+              else f"sem: {len(changed)} deck(s) re-tagged from {SEM_PATH.name}")
+        return 0
     if a.dump_sem:
         dump_sem()
         n = sum(len(v) for v in json.loads(SEM_PATH.read_text(encoding="utf-8")).values())

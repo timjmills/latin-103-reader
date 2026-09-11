@@ -371,10 +371,9 @@
    "count": 18,
    "sem": {
     "of": [
-     "person",
-     "thing",
-     "body"
-    ]
+     "person"
+    ],
+    "gender": "f"
    }
   },
   {

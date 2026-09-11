@@ -7,10 +7,30 @@
    "la": "{pat:nom} {adj:nom} {ab} {ag:abl} {v:pres.ind.pass}.",
    "en": "{pat} {v} by {ag}.",
    "slots": {
-    "pat": {"sem": ["person", "animal", "thing"], "number": "any"},
-    "adj": {"pos": "ADJ", "agree": "pat"},
-    "ag": {"sem": ["person"], "number": "any"},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+    "pat": {
+     "sem": [
+      "person",
+      "animal",
+      "thing"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "pat"
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag"
+    }
    },
    "focus": "ag",
    "words": 5
@@ -20,10 +40,32 @@
    "la": "{pat:nom} {ab} {ag:abl} {v:pres.ind.pass}, nōn {ab} {ag2:abl}.",
    "en": "{pat} {v} by {ag}, not by {ag2}.",
    "slots": {
-    "pat": {"sem": ["person", "animal", "thing"], "number": "any"},
-    "ag": {"sem": ["person"], "number": "any"},
-    "ag2": {"sem": ["person"], "number": "any"},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+    "pat": {
+     "sem": [
+      "person",
+      "animal",
+      "thing"
+     ],
+     "number": "any"
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "ag2": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag"
+    }
    },
    "focus": "ag",
    "words": 7
@@ -33,10 +75,30 @@
    "la": "Cūr {pat:nom} {ab} {ag:abl} {adj:abl} {v:pres.ind.pass}?",
    "en": "Why {v:be} {pat} {v:pp} by {ag}?",
    "slots": {
-    "pat": {"sem": ["person", "animal"], "number": "any"},
-    "ag": {"sem": ["person"], "names": false, "number": "any"},
-    "adj": {"pos": "ADJ", "agree": "ag"},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+    "pat": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "names": false,
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "ag"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag"
+    }
    },
    "focus": "ag",
    "words": 6
@@ -46,11 +108,33 @@
    "la": "{pat:nom} baculō {ab} {ag:abl} {v:pres.ind.pass}.",
    "en": "{pat} {v} with a stick by {ag}.",
    "slots": {
-    "pat": {"sem": ["person", "animal"], "number": "any"},
-    "ag": {"sem": ["person"], "number": "any"},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag", "lemmas": ["verberō", "pulsō"]}
+    "pat": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag",
+     "lemmas": [
+      "verberō",
+      "pulsō"
+     ]
+    }
    },
-   "fixed_gloss": {"baculō": "with a stick"},
+   "fixed_gloss": {
+    "baculō": "with a stick"
+   },
    "focus": "ag",
    "words": 5
   },
@@ -59,10 +143,39 @@
    "la": "{pat:nom} {ab} {ag:abl} ad {p:acc} {v:pres.ind.pass}.",
    "en": "{pat} {v} to {p} by {ag}.",
    "slots": {
-    "pat": {"sem": ["person", "thing", "food"], "number": "any"},
-    "ag": {"sem": ["person"], "number": "any"},
-    "p": {"only": ["hortus", "vīlla", "oppidum", "ātrium", "cubiculum"]},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag", "lemmas": ["portō", "vocō"]}
+    "pat": {
+     "sem": [
+      "person",
+      "thing",
+      "food"
+     ],
+     "number": "any"
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "vīlla",
+      "oppidum",
+      "ātrium",
+      "cubiculum"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag",
+     "lemmas": [
+      "portō",
+      "vocō"
+     ]
+    }
    },
    "focus": "ag",
    "words": 6
@@ -72,10 +185,32 @@
    "la": "{ab} {ag:abl} {suus:abl} {pat:nom} nōn {v:pres.ind.pass}.",
    "en": "{pat} {v:be} not {v:pp} by {suus} {ag:bare}.",
    "slots": {
-    "ag": {"sem": ["person"], "names": false, "number": "pl"},
-    "suus": {"pos": "ADJ", "agree": "ag", "only": ["suus"], "ref": "pat"},
-    "pat": {"sem": ["person"]},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "names": false,
+     "number": "pl"
+    },
+    "suus": {
+     "pos": "ADJ",
+     "agree": "ag",
+     "only": [
+      "suus"
+     ],
+     "ref": "pat"
+    },
+    "pat": {
+     "sem": [
+      "person"
+     ]
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag"
+    }
    },
    "focus": "ag",
    "words": 6
@@ -85,11 +220,33 @@
    "la": "{pat:nom} {ab} {ag:abl}, nōn baculō, {v:pres.ind.pass}.",
    "en": "{pat} {v} by {ag}, not with a stick.",
    "slots": {
-    "pat": {"sem": ["person", "animal"], "number": "any"},
-    "ag": {"sem": ["person"], "number": "any"},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag", "lemmas": ["verberō", "pulsō"]}
+    "pat": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any"
+    },
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag",
+     "lemmas": [
+      "verberō",
+      "pulsō"
+     ]
+    }
    },
-   "fixed_gloss": {"baculō": "with a stick"},
+   "fixed_gloss": {
+    "baculō": "with a stick"
+   },
    "focus": "ag",
    "words": 6
   },
@@ -98,10 +255,30 @@
    "la": "{ab} {ag:abl} {pat:nom} {adj:nom} {v:pres.ind.pass}.",
    "en": "By {ag} {pat} {v}.",
    "slots": {
-    "ag": {"sem": ["person"], "number": "any"},
-    "pat": {"sem": ["person", "animal", "thing"], "number": "any"},
-    "adj": {"pos": "ADJ", "agree": "pat"},
-    "v": {"pos": "V", "form": "pres.ind.pass", "subj": "pat", "agent": "ag"}
+    "ag": {
+     "sem": [
+      "person"
+     ],
+     "number": "any"
+    },
+    "pat": {
+     "sem": [
+      "person",
+      "animal",
+      "thing"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "pat"
+    },
+    "v": {
+     "pos": "V",
+     "form": "pres.ind.pass",
+     "subj": "pat",
+     "agent": "ag"
+    }
    },
    "focus": "ag",
    "words": 5
@@ -110,12 +287,72 @@
  "exclude": [],
  "review": {
   "passes": [
-   {"pass": 1, "generated": 40, "rejected": 20, "rate": 0.5, "causes": ["a systematic gloss slip after prepositions", "over-broad `thing` objects", "unmacronised glossary roots", "determiners drawn as free adjectives"]},
-   {"pass": 2, "generated": 40, "rejected": 4, "rate": 0.11, "causes": ["frame edges"]},
-   {"pass": 3, "generated": 40, "rejected": 3, "rate": 0.063, "causes": ["frame edges"]},
-   {"pass": 4, "generated": 40, "rejected": 3, "rate": 0.066, "causes": ["frame edges"]},
-   {"pass": 5, "generated": 40, "rejected": 1, "rate": 0.028, "causes": ["residual frame edges"]},
-   {"pass": 6, "generated": 40, "rejected": 1, "rate": 0.016, "causes": ["residual frame edges"]}
+   {
+    "pass": 1,
+    "generated": 40,
+    "rejected": 20,
+    "rate": 0.5,
+    "causes": [
+     "a systematic gloss slip after prepositions",
+     "over-broad `thing` objects",
+     "unmacronised glossary roots",
+     "determiners drawn as free adjectives"
+    ]
+   },
+   {
+    "pass": 2,
+    "generated": 40,
+    "rejected": 4,
+    "rate": 0.11,
+    "causes": [
+     "frame edges"
+    ]
+   },
+   {
+    "pass": 3,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.063,
+    "causes": [
+     "frame edges"
+    ]
+   },
+   {
+    "pass": 4,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.066,
+    "causes": [
+     "frame edges"
+    ]
+   },
+   {
+    "pass": 5,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.028,
+    "causes": [
+     "residual frame edges"
+    ]
+   },
+   {
+    "pass": 6,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.016,
+    "causes": [
+     "residual frame edges"
+    ]
+   },
+   {
+    "pass": "qa-2026-09-12",
+    "seed": "40 sampled from the shipped bank, before and after",
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": [],
+    "standard": "This pass counted only the three critical classes of the 2026-09-11 QA audit — a possessive between two people with no relation to stand in (C-1), an adjective on a noun it cannot describe (C-2), and the conjunction cum followed by the preposition cum (C-3). None is left. On the wider hostile standard the same 40 gave 11 rejections before the fix and 3 after, the rest for causes this pass did not own: dominīs glossed 'the mistresses'; Rōmānus / Graecus on the wrong member of the cast."
+   }
   ],
   "final_rate": 0.016,
   "note": "the pilot's six hostile reads (GRAMMAR-CONTRACT.md §11a): the rates are the aggregate over 320 sentences a pass, 40 a skill, a different seed each pass (the seeds were not recorded); every cause became a frame, a gate rule or a check in pipeline/test_generate_sentences.py"

@@ -519,8 +519,8 @@
   },
   {
    "id": "cn-t8",
-   "la": "Cum {s:nom} cum {c:abl} {v1:impf.subj}, {s2:nom} {v2:perf.ind}.",
-   "en": "While {s} {v1:tense} with {c}, {s2} {v2:past}.",
+   "la": "Cum {s:nom} {v1:impf.subj}, {s2:nom} cum {c:abl} {v2:perf.ind}.",
+   "en": "While {s} {v1:tense}, {s2} {v2:past} with {c}.",
    "slots": {
     "s": {
      "only": [
@@ -583,8 +583,7 @@
       "ambulō",
       "cēnō",
       "lūdō",
-      "labōrō",
-      "colloquor"
+      "labōrō"
      ]
     },
     "s2": {
@@ -833,6 +832,15 @@
     "causes": [
      "'as the parent was sick, the father came' (parens beside pater)"
     ]
+   },
+   {
+    "pass": "qa-2026-09-12",
+    "seed": "40 sampled from the shipped bank, before and after",
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": [],
+    "standard": "This pass counted only the three critical classes of the 2026-09-11 QA audit — a possessive between two people with no relation to stand in (C-1), an adjective on a noun it cannot describe (C-2), and the conjunction cum followed by the preposition cum (C-3). None is left. On the wider hostile standard the same 40 gave 5 rejections before the fix and 1 after, the rest for causes this pass did not own: a plural subject taking one egg."
    }
   ],
   "final_rate": 0.025,

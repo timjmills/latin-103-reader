@@ -794,6 +794,15 @@
    "sem": {
     "of": [
      "person"
+    ],
+    "not": [
+     "hostis",
+     "inimīcus",
+     "praedō",
+     "pīrāta",
+     "fūr",
+     "tyrannus",
+     "parricīda"
     ]
    }
   },
@@ -844,6 +853,15 @@
     "of": [
      "person",
      "thing"
+    ],
+    "not": [
+     "hostis",
+     "inimīcus",
+     "praedō",
+     "pīrāta",
+     "fūr",
+     "tyrannus",
+     "parricīda"
     ]
    }
   },

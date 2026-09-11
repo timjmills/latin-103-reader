@@ -394,8 +394,23 @@
    "count": 7,
    "sem": {
     "of": [
-     "thing",
-     "place"
+     "place",
+     "time"
+    ],
+    "also": [
+     "fābula",
+     "carmen",
+     "mōs",
+     "amor",
+     "līber",
+     "nummus",
+     "signum",
+     "statua",
+     "lingua",
+     "littera",
+     "versus",
+     "ars",
+     "nōmen"
     ]
    }
   },

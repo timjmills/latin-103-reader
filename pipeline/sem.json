@@ -679,6 +679,15 @@
   "amīcus": {
    "of": [
     "person"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda"
    ]
   },
   "amoenus": {
@@ -694,8 +703,23 @@
   },
   "antīquus": {
    "of": [
-    "thing",
-    "place"
+    "place",
+    "time"
+   ],
+   "also": [
+    "fābula",
+    "carmen",
+    "mōs",
+    "amor",
+    "līber",
+    "nummus",
+    "signum",
+    "statua",
+    "lingua",
+    "littera",
+    "versus",
+    "ars",
+    "nōmen"
    ]
   },
   "anus": {
@@ -779,6 +803,15 @@
    "of": [
     "person",
     "thing"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda"
    ]
   },
   "bonus": {
@@ -797,6 +830,15 @@
     "carmen",
     "nāvis",
     "vīlla"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda"
    ]
   },
   "brevis": {
@@ -837,6 +879,15 @@
   "carus": {
    "of": [
     "person"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda"
    ]
   },
   "celer": {
@@ -1171,22 +1222,33 @@
    "of": [
     "person",
     "animal"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda"
    ]
   },
   "foedus": {
    "of": [
     "person",
-    "thing",
     "animal",
     "body"
+   ],
+   "also": [
+    "littera",
+    "vulnus"
    ]
   },
   "fōrmōsus": {
    "of": [
-    "person",
-    "thing",
-    "body"
-   ]
+    "person"
+   ],
+   "gender": "f"
   },
   "fortis": {
    "of": [
@@ -1711,6 +1773,20 @@
     "group",
     "nature",
     "abstract"
+   ],
+   "not": [
+    "pecūnia",
+    "aurum",
+    "argentum",
+    "ferrum",
+    "lignum",
+    "frūmentum",
+    "cēra",
+    "lāna",
+    "nix",
+    "nummus",
+    "capitulum",
+    "sacculus"
    ]
   },
   "magus": {
@@ -2113,18 +2189,73 @@
   },
   "parvulus": {
    "of": [
-    "person",
-    "animal",
-    "thing"
+    "animal"
+   ],
+   "also": [
+    "puer",
+    "puella",
+    "fīlius",
+    "fīlia",
+    "fīliola",
+    "īnfans",
+    "līberī",
+    "discipulus",
+    "agnus",
+    "pullus"
+   ],
+   "not": [
+    "pecūnia",
+    "aurum",
+    "argentum",
+    "ferrum",
+    "lignum",
+    "frūmentum",
+    "cēra",
+    "lāna",
+    "nix",
+    "sacculus",
+    "libellus",
+    "lectulus",
+    "ocellus",
+    "fīliola",
+    "capitulum"
    ]
   },
   "parvus": {
    "of": [
-    "person",
     "animal",
     "thing",
     "place",
     "body"
+   ],
+   "also": [
+    "puer",
+    "puella",
+    "fīlius",
+    "fīlia",
+    "fīliola",
+    "īnfans",
+    "līberī",
+    "discipulus",
+    "agnus",
+    "pullus"
+   ],
+   "not": [
+    "pecūnia",
+    "aurum",
+    "argentum",
+    "ferrum",
+    "lignum",
+    "frūmentum",
+    "cēra",
+    "lāna",
+    "nix",
+    "sacculus",
+    "libellus",
+    "lectulus",
+    "ocellus",
+    "fīliola",
+    "capitulum"
    ]
   },
   "paucus": {
@@ -2314,6 +2445,15 @@
   "probus": {
    "of": [
     "person"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda"
    ]
   },
   "propinquus": {
@@ -2341,12 +2481,54 @@
   "pulcher": {
    "of": [
     "person",
-    "thing",
-    "place",
-    "animal",
-    "body",
-    "nature"
-   ]
+    "place"
+   ],
+   "also": [
+    "rosa",
+    "flōs",
+    "līlium",
+    "gemma",
+    "margarīta",
+    "ānulus",
+    "ōrnāmentum",
+    "vestīmentum",
+    "vestis",
+    "toga",
+    "columna",
+    "signum",
+    "speculum",
+    "arbor",
+    "stēlla",
+    "lūna",
+    "sōl",
+    "lūx",
+    "nūbēs",
+    "faciēs",
+    "oculus",
+    "capillus",
+    "corpus",
+    "collum",
+    "umerus",
+    "ōs",
+    "vultus"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda",
+    "carcer",
+    "cloāca",
+    "vorāgō",
+    "stabulum",
+    "humus",
+    "labyrinthus",
+    "castra"
+   ],
+   "gender": "f"
   },
   "pullus": {
    "of": [],
@@ -2890,7 +3072,14 @@
   "turpis": {
    "of": [
     "person",
-    "thing"
+    "abstract"
+   ],
+   "also": [
+    "verbum",
+    "factum",
+    "fābula",
+    "littera",
+    "vulnus"
    ]
   },
   "tūtus": {
@@ -3058,6 +3247,15 @@
   "venustus": {
    "of": [
     "person"
+   ],
+   "not": [
+    "hostis",
+    "inimīcus",
+    "praedō",
+    "pīrāta",
+    "fūr",
+    "tyrannus",
+    "parricīda"
    ]
   },
   "vērus": {
@@ -13693,6 +13891,211 @@
     "scalpellus",
     "ferrum",
     "verbum"
+   ]
+  }
+ },
+ "REL": {
+  "note": "Who may be called whose.  A possessive between two people (suus, or a genitive of a person) is only right for a relation the book has; without this the generator writes 'the mistress gives her woman honey'.  Each pair is symmetric — either side may claim it — and \"*\" stands for any person.  `roles` says what each of the book's cast counts as when it is the owner; a cast name is never the one owned (\"his Julius\" is no relation).  `one` lists the words nobody has two of: such a word is owned in the singular, and where both sides are words of that kind the relation is one to one, so the owner is singular too ('by her husbands' is refused, 'the sons … their father' is not).",
+  "pairs": [
+   {
+    "why": "a household and its people",
+    "a": [
+     "dominus",
+     "domina",
+     "erus"
+    ],
+    "b": [
+     "servus",
+     "ancilla",
+     "ōstiārius",
+     "iānitor",
+     "cocus",
+     "pāstor",
+     "colōnus",
+     "minister",
+     "nūtrīx",
+     "tabellārius",
+     "agricola",
+     "faber",
+     "gubernātor"
+    ]
+   },
+   {
+    "why": "a parent and a child",
+    "a": [
+     "pater",
+     "māter",
+     "parens"
+    ],
+    "b": [
+     "fīlius",
+     "fīlia",
+     "fīliola",
+     "līberī",
+     "īnfans",
+     "puer",
+     "puella",
+     "adulēscēns",
+     "iuvenis",
+     "virgō"
+    ]
+   },
+   {
+    "why": "a husband and a wife",
+    "a": [
+     "vir",
+     "marītus",
+     "coniūnx"
+    ],
+    "b": [
+     "uxor",
+     "femina",
+     "mulier",
+     "coniūnx"
+    ]
+   },
+   {
+    "why": "a brother and a sister",
+    "a": [
+     "frāter",
+     "soror"
+    ],
+    "b": [
+     "frāter",
+     "soror"
+    ]
+   },
+   {
+    "why": "a teacher and a pupil",
+    "a": [
+     "magister",
+     "magistra"
+    ],
+    "b": [
+     "discipulus"
+    ]
+   },
+   {
+    "why": "a commander and his men",
+    "a": [
+     "dux",
+     "imperātor",
+     "rēx",
+     "rēgīna",
+     "prīnceps"
+    ],
+    "b": [
+     "mīles",
+     "eques",
+     "pedēs",
+     "lēgātus",
+     "nūntius",
+     "comes",
+     "servus",
+     "ancilla",
+     "minister",
+     "cīvis"
+    ]
+   },
+   {
+    "why": "anyone may have one",
+    "a": [
+     "*"
+    ],
+    "b": [
+     "amīcus",
+     "inimīcus",
+     "hospes",
+     "comes",
+     "convīva",
+     "medicus",
+     "proximus",
+     "testis",
+     "nūntius"
+    ]
+   }
+  ],
+  "one": [
+   "vir",
+   "marītus",
+   "uxor",
+   "coniūnx",
+   "femina",
+   "mulier",
+   "pater",
+   "māter",
+   "dominus",
+   "domina",
+   "erus",
+   "rēx",
+   "rēgīna",
+   "imperātor",
+   "dux",
+   "gubernātor",
+   "nūtrīx"
+  ],
+  "roles": {
+   "Iūlius": [
+    "dominus",
+    "pater",
+    "vir"
+   ],
+   "Aemilia": [
+    "domina",
+    "māter",
+    "uxor"
+   ],
+   "Mārcus": [
+    "fīlius",
+    "puer",
+    "discipulus",
+    "frāter"
+   ],
+   "Quīntus": [
+    "fīlius",
+    "puer",
+    "discipulus",
+    "frāter"
+   ],
+   "Sextus": [
+    "fīlius",
+    "puer",
+    "discipulus",
+    "frāter"
+   ],
+   "Iūlia": [
+    "fīlia",
+    "puella",
+    "soror"
+   ],
+   "Syra": [
+    "ancilla",
+    "nūtrīx"
+   ],
+   "Dēlia": [
+    "ancilla"
+   ],
+   "Dāvus": [
+    "servus"
+   ],
+   "Mēdus": [
+    "servus"
+   ],
+   "Ursus": [
+    "servus"
+   ],
+   "Cornēlius": [
+    "dominus",
+    "pater",
+    "vir"
+   ],
+   "Albīnus": [
+    "dominus",
+    "vir"
+   ],
+   "Lȳdia": [
+    "femina",
+    "mulier"
    ]
   }
  }
