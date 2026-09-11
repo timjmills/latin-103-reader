@@ -174,13 +174,13 @@
   },
   {
    "lemma": "aestimō",
-   "dict": "aestimō, aestimāre, aestimavī, aestimatum",
+   "dict": "aestimō, aestimāre, aestimāvī, aestimātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "value, assess",
    "sense_full": "value, assess",
-   "parts": "aestimō, aestimāre, aestimavī, aestimatum",
+   "parts": "aestimō, aestimāre, aestimāvī, aestimātum",
    "unit_id": "w07:b1.5",
    "count": 8,
    "sem": {
@@ -299,13 +299,13 @@
   },
   {
    "lemma": "dēspērō",
-   "dict": "dēspērō, dēspērāre, dēspērāvī, desperatum",
+   "dict": "dēspērō, dēspērāre, dēspērāvī, dēspērātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "despair",
    "sense_full": "despair (of)",
-   "parts": "dēspērō, dēspērāre, dēspērāvī, desperatum",
+   "parts": "dēspērō, dēspērāre, dēspērāvī, dēspērātum",
    "unit_id": "w07:b20.8",
    "count": 7,
    "sem": {
@@ -403,13 +403,13 @@
   },
   {
    "lemma": "appropinquō",
-   "dict": "appropinquō, appropinquāre, appropinquavī, appropinquatum",
+   "dict": "appropinquō, appropinquāre, appropinquāvī, appropinquātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "approach, draw near",
    "sense_full": "approach (with the dative or ad+accusative)",
-   "parts": "appropinquō, appropinquāre, appropinquavī, appropinquatum",
+   "parts": "appropinquō, appropinquāre, appropinquāvī, appropinquātum",
    "unit_id": "w07:b38.4",
    "count": 6,
    "sem": {
@@ -1315,13 +1315,13 @@
   },
   {
    "lemma": "dōnō",
-   "dict": "dōnō, dōnāre, donavī, donatum",
+   "dict": "dōnō, dōnāre, dōnāvī, dōnātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "give, present",
    "sense_full": "present, grant",
-   "parts": "dōnō, dōnāre, donavī, donatum",
+   "parts": "dōnō, dōnāre, dōnāvī, dōnātum",
    "unit_id": "w07:b35.1",
    "count": 1,
    "sem": {

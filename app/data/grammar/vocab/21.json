@@ -240,13 +240,13 @@
   },
   {
    "lemma": "dubitō",
-   "dict": "dubitō, dubitāre, dubitāvī, dubitatum",
+   "dict": "dubitō, dubitāre, dubitāvī, dubitātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "doubt, hesitate",
    "sense_full": "doubt",
-   "parts": "dubitō, dubitāre, dubitāvī, dubitatum",
+   "parts": "dubitō, dubitāre, dubitāvī, dubitātum",
    "unit_id": "r21:129.1",
    "count": 12,
    "sem": {
@@ -344,13 +344,13 @@
   },
   {
    "lemma": "excūsō",
-   "dict": "excūsō, excūsāre, excusavī, excusatum",
+   "dict": "excūsō, excūsāre, excūsāvī, excūsātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "excuse",
    "sense_full": "excuse, justify, explain",
-   "parts": "excūsō, excūsāre, excusavī, excusatum",
+   "parts": "excūsō, excūsāre, excūsāvī, excūsātum",
    "unit_id": "r21:45.1",
    "count": 8,
    "sem": {

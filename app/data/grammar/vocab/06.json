@@ -238,13 +238,13 @@
   },
   {
    "lemma": "intrō",
-   "dict": "intrō, intrāre, intrāvī, intratum",
+   "dict": "intrō, intrāre, intrāvī, intrātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "enter, go in",
    "sense_full": "enter",
-   "parts": "intrō, intrāre, intrāvī, intratum",
+   "parts": "intrō, intrāre, intrāvī, intrātum",
    "unit_id": "r06:75.1",
    "count": 55,
    "sem": {
@@ -319,13 +319,13 @@
   },
   {
    "lemma": "portō",
-   "dict": "portō, portāre, portavī, portātum",
+   "dict": "portō, portāre, portāvī, portātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "carry, bring",
    "sense_full": "carry, bring",
-   "parts": "portō, portāre, portavī, portātum",
+   "parts": "portō, portāre, portāvī, portātum",
    "unit_id": "r06:15.2",
    "count": 33,
    "sem": {

@@ -745,13 +745,13 @@
   },
   {
    "lemma": "numerō",
-   "dict": "numerō, numerāre, numeravī, numeratum",
+   "dict": "numerō, numerāre, numerāvī, numerātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "count",
    "sense_full": "count, add up, reckon or compute",
-   "parts": "numerō, numerāre, numeravī, numeratum",
+   "parts": "numerō, numerāre, numerāvī, numerātum",
    "unit_id": "r04:9.1",
    "count": 12,
    "sem": {
@@ -779,13 +779,13 @@
   },
   {
    "lemma": "accūsō",
-   "dict": "accūsō, accūsāre, accusavī, accusatum",
+   "dict": "accūsō, accūsāre, accūsāvī, accūsātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "accuse, blame",
    "sense_full": "accuse, blame, find fault, impugn",
-   "parts": "accūsō, accūsāre, accusavī, accusatum",
+   "parts": "accūsō, accūsāre, accūsāvī, accūsātum",
    "unit_id": "r04:48.1",
    "count": 11,
    "sem": {

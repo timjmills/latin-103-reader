@@ -8,6 +8,7 @@ the §11 checks themselves.  The last tests generate every pilot skill at two
 seeds and hold the shipped set to the invariants a learner would see.
 """
 
+import json
 import re
 
 import pytest
@@ -34,11 +35,7 @@ def word(lex, lemma, pos="N"):
     ("edō", "V", "all"),          # Whitaker's edāre homograph: edāre, edat
     ("līber", "N", "all"),        # liber, līberī in the glossary: līberōs for the book
     ("irascor", "V", "all"),      # deck spelling without macrons
-    ("plōrō", "V", "perf"),       # ploravērunt: the present system is sound
-    ("portō", "V", "perf"),       # portavērunt
-    ("dēlectō", "V", "perf"),     # delectavī
     ("cōnsīdō", "V", "perf"),     # consedērunt: the perfect drops the present's macron
-    ("mīlitō", "V", "perf"),      # militavit reached the page through a `same` slot
 ])
 def test_the_gate_keeps_the_glossary_gaps_off_the_page(lex, lemma, pos, scope):
     assert word(lex, lemma, pos).unreliable_scope == scope
@@ -53,9 +50,26 @@ def test_the_gate_leaves_sound_words_alone(lex, lemma, pos):
     assert word(lex, lemma, pos).unreliable_scope is None
 
 
+@pytest.mark.parametrize("lemma,parts", [
+    # QA N-19: a regular 1st-conjugation verb builds -āvī / -ātum on its own
+    # present stem, so these four are no longer gaps the gate has to hide
+    ("plōrō", "plōrō, plōrāre, plōrāvī, plōrātum"),
+    ("portō", "portō, portāre, portāvī, portātum"),
+    ("dēlectō", "dēlectō, dēlectāre, dēlectāvī, dēlectātum"),
+    ("mīlitō", "mīlitō, mīlitāre, mīlitāvī, mīlitātum"),
+    ("lātrō", "lātrō, lātrāre, lātrāvī, lātrātum"),
+    ("cantō", "cantō, cantāre, cantāvī, cantātum"),
+])
+def test_a_regular_first_conjugation_verb_keeps_its_long_a_all_through(lex, lemma, parts):
+    w = word(lex, lemma, "V")
+    assert w.parts == parts
+    assert w.unreliable_scope is None
+
+
 def test_a_perfect_only_word_is_drawn_in_the_present_but_not_the_perfect(lex):
-    w = word(lex, "portō", "V")
-    assert w in lex.pool("V", 6)
+    w = word(lex, "cōnsīdō", "V")
+    assert w.unreliable_scope == "perf"
+    assert w in lex.pool("V", w.chapter)
     assert g.uses_perfect_system({"tense": "perf", "mood": "ind"})
     assert not g.uses_perfect_system({"tense": "pres", "mood": "ind"})
 
@@ -777,6 +791,18 @@ def _fill_words(lex, t, words, numbers=None):
             number = fill.numbers[spec["agree"]]
             parse = g.adj_parse(spec, case or fill.parses[spec["agree"]]["case"], number,
                                 fill.words[spec["agree"]])
+        elif pos == "PRON":
+            ante = fill.words[spec["agree"]]
+            w = lex.word(spec["lemma"], "PRON")
+            assert w is not None, spec["lemma"]
+            number = fill.numbers[spec["agree"]]
+            parse = {"case": case, "number": number, "gender": g.noun_gender(ante)}
+        elif pos == "ADV":
+            w = lex.word(words[name], "ADV")
+            assert w is not None, words[name]
+            fill.words[name], fill.parses[name] = w, {}
+            fill.forms[name], fill.numbers[name] = w.lemma, "sg"
+            continue
         elif pos == "V":
             spec = g._choose_tense(spec, _random.Random(0))
             w = lex.word(words[name], "V")
@@ -810,21 +836,21 @@ C1_SENTENCES = [
     ("dio-t7", {"s": "puer", "adj": "fōrmōsus", "r": "vir", "suus": "suus", "v": "respondeō"}, None,
      "Puer fōrmōsus virō suō nōn respondet.", "vir is no relation of puer"),
     ("dio-t7", {"s": "inimīcus", "adj": "foedus", "r": "femina", "suus": "suus", "v": "respondeō"}, None,
-     "Inimīcus foedus fēminae suae nōn respondet.", "femina is no relation of inimīcus"),
+     "Inimīcus foedus fēminae suae nōn respondet.", "fēmina is no relation of inimīcus"),
     ("dio-t7", {"s": "fīlia", "adj": "pulcher", "r": "puella", "suus": "suus", "v": "respondeō"}, None,
      "Fīlia pulchra puellae suae nōn respondet.", "puella is no relation of fīlia"),
     ("dio-t7", {"s": "servus", "adj": "bonus", "r": "puer", "suus": "suus", "v": "respondeō"}, None,
      "Servus bonus puerō suō nōn respondet.", "puer is no relation of servus"),
     ("dio-t1", {"g": "domina", "r": "femina", "suus": "suus", "t": "mel", "v": "dō"}, None,
-     "Domina fēminae suae mel dat.", "femina is no relation of domina"),
+     "Domina fēminae suae mel dat.", "fēmina is no relation of domina"),
     ("dio-t3", {"g": "līberī", "r": "puella", "suus": "suus", "t": "speculum", "v": "dō"}, None,
      "Līberī puellīs suīs specula dant.", "puella is no relation of līberī"),
     ("dio-t3", {"g": "amīcus", "r": "vir", "suus": "suus", "t": "nummus", "v": "dō"}, None,
      "Amīcī virīs suīs nummōs dant.", "vir is no relation of amīcus"),
     ("dio-t3", {"g": "fīlius", "r": "femina", "suus": "suus", "t": "pirum", "v": "dō"}, None,
-     "Fīliī fēminīs suīs pira dant.", "femina is no relation of fīlius"),
+     "Fīliī fēminīs suīs pira dant.", "fēmina is no relation of fīlius"),
     ("dio-t3", {"g": "māter", "r": "femina", "suus": "suus", "t": "saccus", "v": "dō"}, None,
-     "Mātrēs fēminīs suīs saccōs dant.", "femina is no relation of māter"),
+     "Mātrēs fēminīs suīs saccōs dant.", "fēmina is no relation of māter"),
 ]
 
 
@@ -1014,3 +1040,218 @@ def test_forty_fresh_sentences_carry_none_of_the_three(lex, skill):
     for s in res["sentences"]:
         assert g.cum_clash(s["la"]) is None, s["la"]
         assert " her man" not in s["en"] and " his woman" not in s["en"], s["en"]
+
+
+# ------------------------------------------------- the 2026-09-12 QA findings
+#
+# M-8, N-17 and N-18: the sentence-wide sense checks that read `SENSE` in
+# pipeline/sem.json.  Every case below is the audit's own sentence, rebuilt and
+# put back through `check_sentence`, with a sound neighbour asserted to ship so
+# that the rule is a judgement and not a ban.
+
+PUR = "purpose-clause"
+RC = "result-clause"
+
+
+def _old_rc_t9():
+    """rc-t9 as it stood before the fix: the fearers with nothing to fear."""
+    t = json.loads(json.dumps(next(x for x in g.load_templates(RC)["templates"]
+                                   if x["id"] == "rc-t9")))
+    t["la"] = "{s:nom} tam {adv} {v1:pres.ind} ut {s2:nom} {v:pres.subj}."
+    t["en"] = "{s} {v1:3sg} so {adv} that {s2} {v:3sg}."
+    del t["slots"]["pron"]
+    t["slots"]["v"] = {"pos": "V", "form": "pres.subj", "subj": "s2", "absolute": True,
+                       "lemmas": ["fugiō", "timeō", "tremō", "metuō"]}
+    t["words"] = 7
+    return t
+
+
+def _check(lex, skill, t, words, numbers=None):
+    """`_rebuild` for a template that is not (or is no longer) in the file."""
+    data = g.load_templates(skill)
+    fill = _fill_words(lex, t, words, numbers)
+    la, en = g.render_la(fill), g.render_en(fill)
+    return la, en, g.check_sentence(lex, data["chapter"], t, fill, la, data["exclude"], en,
+                                    g.render_gloss(fill, la, lex))
+
+
+# --- M-8: a plural subject does not fight with one sword
+def test_m8_a_plural_subject_with_one_sword_is_refused(lex):
+    la, en, problems = _rebuild(lex, ABS, "abs-t6",
+                                {"s": "eques", "inst": "gladius", "n": "mīles",
+                                 "v": "pugnō", "ptc": "spectō"},
+                                {"s": "pl", "n": "pl"})
+    assert la == "Equitēs gladiō pugnant, mīlitibus spectantibus."   # the audit's own sentence
+    assert en == "The horsemen fight with a sword while the soldiers are watching."
+    assert any("one gladius" in p for p in problems), problems
+
+
+def test_m8_one_fighter_with_one_sword_still_ships(lex):
+    la, _, problems = _rebuild(lex, ABS, "abs-t6",
+                               {"s": "eques", "inst": "gladius", "n": "mīles",
+                                "v": "pugnō", "ptc": "spectō"},
+                               {"s": "sg", "n": "pl"})
+    assert la == "Eques gladiō pugnat, mīlitibus spectantibus."
+    assert problems == []
+
+
+def test_m8_an_ablative_nobody_holds_is_left_alone(lex):
+    # abs-t5's ablative is a place, not something one person carries
+    la, _, problems = _rebuild(lex, ABS, "abs-t5",
+                               {"s": "discipulus", "p": "silva", "n": "līberī",
+                                "v": "stō", "ptc": "sedeō"},
+                               {"s": "pl", "n": "pl"})
+    assert la == "Discipulī in silvā stant līberīs sedentibus."
+    assert problems == []
+
+
+# --- N-17: out of, not into
+def test_n17_a_verb_of_going_out_does_not_take_in_and_the_accusative(lex):
+    la, en, problems = _rebuild(lex, PUR, "pur-t2",
+                                {"s": "colōnus", "p": "cubiculum", "go": "exeō", "v": "cubō"})
+    assert la == "Colōnus in cubiculum exit ut cubet."              # the audit's own sentence
+    assert en == "The farmer goes out into the bedroom to lie down."
+    assert any("does not go in + accusative" in p for p in problems), problems
+
+
+@pytest.mark.parametrize("go,latin", [
+    ("intrō", "Colōnus in cubiculum intrat ut cubet."),
+    ("eō", "Colōnus in cubiculum it ut cubet."),
+])
+def test_n17_going_into_a_room_still_ships(lex, go, latin):
+    la, _, problems = _rebuild(lex, PUR, "pur-t2",
+                               {"s": "colōnus", "p": "cubiculum", "go": go, "v": "cubō"})
+    assert la == latin
+    assert problems == []
+
+
+def test_n17_the_same_verb_is_free_with_ad_and_the_accusative(lex):
+    # exīre ad forum is good Latin; only "into" is the contradiction
+    t = json.loads(json.dumps(next(x for x in g.load_templates(PUR)["templates"]
+                                   if x["id"] == "pur-t1")))
+    t["slots"]["go"]["lemmas"].append("exeō")     # the frame's own list has no verb of going out
+    la, _, problems = _check(lex, PUR, t,
+                             {"s": "colōnus", "p": "forum", "go": "exeō", "o": "amīcus",
+                              "v": "salūtō"})
+    assert la == "Colōnus ad forum exit ut amīcum salūtet."
+    assert problems == []
+
+
+# --- N-17: nobody carries an ass
+def test_n17_nobody_is_sent_to_carry_the_asses(lex):
+    la, en, problems = _rebuild(lex, PUR, "pur-t3",
+                                {"s": "uxor", "o": "colōnus", "o2": "asinus",
+                                 "rel": "quī", "send": "arcessō", "v": "portō"},
+                                {"o": "pl", "o2": "pl"})
+    assert la == "Uxor colōnōs arcessit quī asinōs portent."        # the audit's own sentence
+    assert en == "The wife sends for farmers to carry the asses."
+    assert any("does not admit its arguments" in p for p in problems), problems
+
+
+def test_n17_what_a_person_can_carry_still_ships(lex):
+    la, _, problems = _rebuild(lex, PUR, "pur-t3",
+                               {"s": "uxor", "o": "colōnus", "o2": "saccus",
+                                "rel": "quī", "send": "arcessō", "v": "portō"},
+                               {"o": "pl", "o2": "pl"})
+    assert la == "Uxor colōnōs arcessit quī saccōs portent."
+    assert problems == []
+
+
+@pytest.mark.parametrize("verb", ["dūcō", "pāscō", "emō"])
+def test_n17_an_ass_may_still_be_led_fed_and_bought(lex, verb):
+    la, _, problems = _rebuild(lex, PUR, "pur-t3",
+                               {"s": "uxor", "o": "colōnus", "o2": "asinus",
+                                "rel": "quī", "send": "arcessō", "v": verb},
+                               {"o": "pl", "o2": "pl"})
+    assert problems == [], (la, problems)
+
+
+# --- N-17: what comes through a window
+def test_n17_no_flock_comes_in_at_a_window(lex):
+    la, en, problems = _rebuild(lex, PUR, "pur-t5",
+                                {"s": "coniūnx", "door": "fenestra", "a": "grex",
+                                 "v1": "claudō", "v2": "veniō"},
+                                {"s": "pl", "a": "pl"})
+    assert la == "Coniugēs fenestram claudunt nē gregēs veniant."   # the audit's own sentence
+    assert en == "The spouses shut the window so that the flocks may not come."
+    assert any("does not come through a fenestra" in p for p in problems), problems
+
+
+def test_n17_a_bird_comes_in_at_a_window(lex):
+    la, _, problems = _rebuild(lex, PUR, "pur-t5",
+                               {"s": "coniūnx", "door": "fenestra", "a": "avis",
+                                "v1": "claudō", "v2": "veniō"},
+                               {"s": "pl", "a": "pl"})
+    assert la == "Coniugēs fenestram claudunt nē avēs veniant."
+    assert problems == []
+
+
+def test_n17_a_door_is_shut_against_anybody(lex):
+    la, _, problems = _rebuild(lex, PUR, "pur-t5",
+                               {"s": "coniūnx", "door": "ōstium", "a": "grex",
+                                "v1": "claudō", "v2": "veniō"},
+                               {"s": "pl", "a": "pl"})
+    assert la == "Coniugēs ōstium claudunt nē gregēs veniant."
+    assert problems == []
+
+
+# --- N-18: a verb of fearing names what is feared
+def test_n18_an_objectless_verb_of_fearing_is_refused(lex):
+    la, en, problems = _check(lex, RC, _old_rc_t9(),
+                              {"s": "nauta", "adv": "fortiter", "v1": "pugnō",
+                               "s2": "hostis", "v": "timeō"},
+                              {"s": "pl", "s2": "pl"})
+    assert la == "Nautae tam fortiter pugnant ut hostēs timeant."   # the audit's own sentence
+    assert en == "The sailors fight so bravely that the enemies fear."
+    assert any("names nothing feared" in p for p in problems), problems
+
+
+def test_n18_the_same_sentence_with_its_object_ships(lex):
+    la, en, problems = _rebuild(lex, RC, "rc-t9",
+                                {"s": "nauta", "adv": "fortiter", "v1": "pugnō",
+                                 "s2": "hostis", "v": "timeō"},
+                                {"s": "pl", "s2": "pl"})
+    assert la == "Nautae tam fortiter pugnant ut hostēs eōs timeant."
+    assert en == "The sailors fight so bravely that the enemies fear them."
+    assert problems == []
+
+
+def test_n18_a_verb_that_needs_no_object_still_stands_alone(lex):
+    la, _, problems = _check(lex, RC, _old_rc_t9(),
+                             {"s": "nauta", "adv": "fortiter", "v1": "pugnō",
+                              "s2": "hostis", "v": "fugiō"},
+                             {"s": "pl", "s2": "pl"})
+    assert la == "Nautae tam fortiter pugnant ut hostēs fugiant."
+    assert problems == []
+
+
+def test_n18_a_clause_that_prints_its_own_accusative_is_left_alone(lex):
+    # indirect-question's iq-t10 prints "quem": the fearing is not objectless
+    la, _, problems = _rebuild(lex, "indirect-question", "iq-t10",
+                               {"s": "magister", "v1": "nesciō", "s2": "ancilla", "v2": "timeō"})
+    assert la == "Magister nescit quem ancilla timeat."
+    assert problems == []
+
+
+@pytest.mark.parametrize("skill", [ABS, PUR, RC, "ablative-absolute-perfect", "noli-infinitive",
+                                   "indirect-question", "indirect-command"])
+def test_forty_fresh_sentences_carry_none_of_the_2026_09_12_classes(lex, skill):
+    res = g.generate(skill, 40, 31, lex)
+    assert len(res["sentences"]) == 40
+    templates = {t["id"]: t for t in g.load_templates(skill)["templates"]}
+    for s in res["sentences"]:
+        t = templates[s["template"]]
+        for name, w in s["fill"].items():
+            spec = t["slots"].get(name) or {}
+            if spec.get("pos") != "V":
+                continue
+            if g.key_of(w) in g.sense_keys("exit", "verbs"):
+                assert not g._into_in_clause(t, g._clause_of(t, name)), s["la"]
+            if g.key_of(w) in g.sense_keys("fear", "verbs"):
+                assert spec.get("takes") or g._clause_has_accusative(t, g._clause_of(t, name)), s["la"]
+            if g.key_of(w) in g.sense_keys("carry", "verbs"):
+                objs = spec.get("obj")
+                objs = objs if isinstance(objs, list) else ([objs] if objs else [])
+                for o in objs:
+                    o = (t["slots"].get(o) or {}).get("agree", o)
+                    assert g.key_of(s["fill"].get(o, "")) not in g.sense_keys("carry", "not"), s["la"]

@@ -911,13 +911,13 @@
   },
   {
    "lemma": "equitō",
-   "dict": "equitō, equitāre, equitavī, equitātum",
+   "dict": "equitō, equitāre, equitāvī, equitātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "ride a horse",
    "sense_full": "ride (horseback)",
-   "parts": "equitō, equitāre, equitavī, equitātum",
+   "parts": "equitō, equitāre, equitāvī, equitātum",
    "unit_id": "r12:113.1",
    "count": 3,
    "sem": {
@@ -984,13 +984,13 @@
   },
   {
    "lemma": "mīlitō",
-   "dict": "mīlitō, mīlitāre, militavī, militatum",
+   "dict": "mīlitō, mīlitāre, mīlitāvī, mīlitātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "serve as a soldier",
    "sense_full": "serve as soldier, perform military service, serve in the army",
-   "parts": "mīlitō, mīlitāre, militavī, militatum",
+   "parts": "mīlitō, mīlitāre, mīlitāvī, mīlitātum",
    "unit_id": "r12:89.1",
    "count": 1,
    "sem": {

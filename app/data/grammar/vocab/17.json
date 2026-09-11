@@ -301,13 +301,13 @@
   },
   {
    "lemma": "cōgitō",
-   "dict": "cōgitō, cōgitāre, cogitavī, cogitatum",
+   "dict": "cōgitō, cōgitāre, cōgitāvī, cōgitātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "think",
    "sense_full": "think",
-   "parts": "cōgitō, cōgitāre, cogitavī, cogitatum",
+   "parts": "cōgitō, cōgitāre, cōgitāvī, cōgitātum",
    "unit_id": "r17:57.1",
    "count": 16,
    "sem": {
@@ -548,13 +548,13 @@
   },
   {
    "lemma": "dēmōnstrō",
-   "dict": "dēmōnstrō, dēmōnstrāre, dēmōnstrāvī, demonstratum",
+   "dict": "dēmōnstrō, dēmōnstrāre, dēmōnstrāvī, dēmōnstrātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "point out, show",
    "sense_full": "point out, at, to, draw attention to",
-   "parts": "dēmōnstrō, dēmōnstrāre, dēmōnstrāvī, demonstratum",
+   "parts": "dēmōnstrō, dēmōnstrāre, dēmōnstrāvī, dēmōnstrātum",
    "unit_id": "r17:137.1",
    "count": 7,
    "sem": {
@@ -732,13 +732,13 @@
   },
   {
    "lemma": "interpellō",
-   "dict": "interpellō, interpellāre, interpellavī, interpellatum",
+   "dict": "interpellō, interpellāre, interpellāvī, interpellātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "interrupt",
    "sense_full": "interrupt, break in on",
-   "parts": "interpellō, interpellāre, interpellavī, interpellatum",
+   "parts": "interpellō, interpellāre, interpellāvī, interpellātum",
    "unit_id": "r17:22.1",
    "count": 5,
    "sem": {
@@ -764,13 +764,13 @@
   },
   {
    "lemma": "computō",
-   "dict": "computō, computāre, computavī, computatum",
+   "dict": "computō, computāre, computāvī, computātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "count, calculate",
    "sense_full": "reckon, compute, calculate, sum or count (up)",
-   "parts": "computō, computāre, computavī, computatum",
+   "parts": "computō, computāre, computāvī, computātum",
    "unit_id": "r17:101.1",
    "count": 4,
    "sem": {

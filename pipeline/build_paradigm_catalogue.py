@@ -865,6 +865,11 @@ def build() -> tuple[dict, list[str]]:
             cands.sort(key=lambda e: (
                 0 if e["pos"] != "VPAR" else 1,
                 0 if "+" not in (e.get("lemma") or "") else 1,
+                # Whitaker files the common noun and the proper noun of one
+                # word apart (deus "god" and Deus "God"); the table is the
+                # common one, so its own lowercase line leads — the chip and
+                # the column header printed "Deus -ī m" (QA N-2)
+                0 if (e.get("lemma") or "")[:1].islower() else 1,
                 -len(render[id(e)][1]),
                 -(e.get("n") or 0),
             ))

@@ -172,13 +172,13 @@
   },
   {
    "lemma": "ēducō",
-   "dict": "ēducō, ēducāre, educavī, ēducātum",
+   "dict": "ēducō, ēducāre, ēducāvī, ēducātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "bring up, rear",
    "sense_full": "bring up",
-   "parts": "ēducō, ēducāre, educavī, ēducātum",
+   "parts": "ēducō, ēducāre, ēducāvī, ēducātum",
    "unit_id": "w09:b41.2",
    "count": 4,
    "sem": {
@@ -464,13 +464,13 @@
   },
   {
    "lemma": "cruciō",
-   "dict": "cruciō, cruciāre, cruciāvī, cruciatum",
+   "dict": "cruciō, cruciāre, cruciāvī, cruciātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "torture, torment",
    "sense_full": "torment, torture",
-   "parts": "cruciō, cruciāre, cruciāvī, cruciatum",
+   "parts": "cruciō, cruciāre, cruciāvī, cruciātum",
    "unit_id": "w09:b20.3",
    "count": 3,
    "sem": {
@@ -922,13 +922,13 @@
   },
   {
    "lemma": "fabulor",
-   "dict": "fabulor, fābulārī, fabulatus sum",
+   "dict": "fabulor, fābulārī, fabulātus sum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "talk, chat",
    "sense_full": "talk (familiarly), chat, converse",
-   "parts": "fabulor, fābulārī, fabulatus sum",
+   "parts": "fabulor, fābulārī, fabulātus sum",
    "unit_id": "w09:b49.3",
    "count": 1,
    "sem": {

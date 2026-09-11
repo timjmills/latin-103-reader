@@ -193,12 +193,10 @@
      "subj": "s2",
      "absolute": true,
      "lemmas": [
-      "timeō",
       "taceō",
       "fugiō",
       "tremō",
-      "plōrō",
-      "metuō"
+      "plōrō"
      ]
     }
    },
@@ -497,8 +495,8 @@
   },
   {
    "id": "rc-t9",
-   "la": "{s:nom} tam {adv} {v1:pres.ind} ut {s2:nom} {v:pres.subj}.",
-   "en": "{s} {v1:3sg} so {adv} that {s2} {v:3sg}.",
+   "la": "{s:nom} tam {adv} {v1:pres.ind} ut {s2:nom} {pron:acc} {v:pres.subj}.",
+   "en": "{s} {v1:3sg} so {adv} that {s2} {v:3sg} {pron}.",
    "slots": {
     "s": {
      "only": [
@@ -530,21 +528,24 @@
      ],
      "number": "pl"
     },
+    "pron": {
+     "pos": "PRON",
+     "lemma": "is",
+     "agree": "s"
+    },
     "v": {
      "pos": "V",
      "form": "pres.subj",
      "subj": "s2",
-     "absolute": true,
+     "obj": "pron",
      "lemmas": [
-      "fugiō",
       "timeō",
-      "tremō",
       "metuō"
      ]
     }
    },
    "focus": "v",
-   "words": 7,
+   "words": 8,
    "fixed_gloss": {
     "ut": "that"
    }

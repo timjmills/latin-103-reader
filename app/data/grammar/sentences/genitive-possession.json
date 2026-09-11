@@ -7,7 +7,7 @@
    "la": "Iūlius pater Quīntī et Mārcī est.",
    "en": "Julius is the father of Quintus and Marcus.",
    "words": 6,
-   "focus": "Mārcī",
+   "focus": "Quīntī et Mārcī",
    "step": 1,
    "stage": 1,
    "kinds": [
@@ -46,7 +46,7 @@
    "la": "Aemilia māter Iūliae et Mārcī est.",
    "en": "Aemilia is the mother of Julia and Marcus.",
    "words": 6,
-   "focus": "Iūliae",
+   "focus": "Iūliae et Mārcī",
    "step": 1,
    "stage": 1,
    "kinds": [
@@ -471,7 +471,7 @@
    "la": "Līberī Iūliī et Aemiliae in familiā sunt.",
    "en": "The children of Julius and Aemilia are in the household.",
    "words": 7,
-   "focus": "Iūliī",
+   "focus": "Iūliī et Aemiliae",
    "step": 6,
    "stage": 3,
    "kinds": [

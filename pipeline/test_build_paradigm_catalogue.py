@@ -322,3 +322,39 @@ def test_paradigms_js_and_the_catalogue_agree_over_the_whole_glossary(entries, t
         if got is None or [tuple(x) for x in got["cells"]] != py[1]:
             bad.append(entry["h"])
     assert not bad, f"{len(bad)} entries where paradigms.js names cells differently: {bad[:6]}"
+
+
+# ------------------------------------------ the headword a learner is shown
+#
+# The chip in the Tables catalogue, the column header and the drill prompt are
+# all the stock word's dictionary line, so the line is the headword as far as a
+# learner is concerned.  The QA audit of 2026-09-12 (N-2) found three that read
+# against the lesson prose beside them.
+
+@pytest.mark.parametrize("table,h,lemma", [
+    ("decl1", "femina", "fēmina -ae f"),        # was "femina fēminae f": one stem, two spellings
+    ("decl2nus", "virus", "vīrus -ī n"),        # was "virus -ī n": Whitaker files it under vir's stems
+    ("deus", "deus", "deus -ī m"),              # was "Deus -ī m": the Christian homograph led
+    ("conj1", "canto", "cantō, cantāre, cantāvī, cantātum"),   # was cantavī, cantatum
+])
+def test_a_stock_word_is_printed_as_the_lessons_write_it(tables, table, h, lemma):
+    stock = {s["h"]: s for s in tables[table]["stock"]}
+    assert stock[h]["lemma"] == lemma
+
+
+def test_no_stock_line_drops_the_long_a_of_a_first_conjugation_verb(tables):
+    """A line that says -āre says -āvī and -ātum too (QA N-19)."""
+    bad = []
+    for t in tables.values():
+        for s in t["stock"]:
+            parts = [p.strip() for p in (s.get("lemma") or "").split(",")]
+            if len(parts) < 3 or not parts[1].endswith("āre"):
+                continue
+            stem = parts[1][:-3]
+            flat = bpc.strip_macrons(stem)
+            for p in parts[2:]:
+                want = {f"{flat}avi": f"{stem}āvī", f"{flat}atum": f"{stem}ātum"}.get(
+                    bpc.strip_macrons(p))
+                if want and p != want:
+                    bad.append((t["id"], s["h"], s["lemma"]))
+    assert bad == []

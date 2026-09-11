@@ -681,6 +681,7 @@ ROOT_MACRONS: dict[str, dict[int, str]] = {
     "N:comoedi/comoedi": {0: "cōmoedi", 1: "cōmoedi"},                # cōmoedia, cōmoediam, cōmoediās
     "N:coniunx/coniug": {0: "coniūnx"},                               # coniūnx, in the chapter's own vocabulary list
     "N:dens/dent": {0: "dēns"},                                       # dēns
+    "N:femin/femin": {0: "fēmin"},                                    # fēmina: one stem spelt two ways, and the citation form is built on root 0 — the chip and the column header read "femina" against the lesson's fēmina (QA N-2)
     "N:form/form": {1: "fōrm"},                                       # fōrmam (root 0 already fōrm)
     "N:frons/front": {0: "frōns"},                                    # frōns
     "N:ianitor/ianitor": {1: "iānitōr"},                              # iānitōrem, iānitōre, iānitōris, iānitōrēs, iānitōrī
@@ -719,6 +720,7 @@ ROOT_MACRONS: dict[str, dict[int, str]] = {
     "V:lau/lau/lau/lot": {2: "lāv"},                                  # the same verb under Whitaker's other supine
     "V:mou/mou/mou/mot": {2: "mōv"},                                  # mōvit, mōvisse, mōvērunt
     "V:lacrim/lacrim/lacrimau/lacrimat": {2: "lacrimāv", 3: "lacrimāt"},  # lacrimāre x48 and lacrimāns x20 on the page: a regular 1st-conjugation verb builds both later parts on that same -ā- (laudāre / laudāvī / laudātum below)
+    "V:luc/luc/lux/-": {2: "lūx"},                                    # lūceō, lūcēre, lūxī: the perfect of a long stem, which no rule of the 2nd conjugation gives (QA N-19)
     "V:neg/neg/negau/negat": {2: "negāv"},                            # negāverat
     "V:salut/salut/salutau/salutat": {2: "salūtāv"},                  # salūtāvit
     "V:sed/sed/sed/sess": {2: "sēd"},                                 # sēdit, sēdisse (sedeō)
@@ -755,6 +757,11 @@ LEXEME_MACRONS: dict[tuple[str, str, str], dict[int, str]] = {
     ("N", "mal/mal", "mast"): {0: "māl", 1: "māl"},                # mālus -ī m
     ("N", "mal/mal", "apple tree"): {0: "māl", 1: "māl"},          # mālus -ī f
     ("N", "mal/mal", "cheeks, jaws"): {0: "māl", 1: "māl"},        # māla -ae f
+    # vīrus "venom" shares uir/uir with vir "man", whose i is short; the
+    # catalogue's decl2n_us table is the one word, and it printed "virus"
+    # (QA N-2)
+    ("N", "uir/uir", "venom (sg.), poisonous secretion of snakes/creatures/plants"):
+        {0: "vīr", 1: "vīr"},
 }
 #: every LEXEME_MACRONS key that matched, for the build's own report
 LEXEME_MACRONS_USED: set[tuple[str, str, str]] = set()
@@ -848,6 +855,25 @@ class Speller:
                 k += 1
             if k >= 2 and len(strip_macrons(out[1][:k])) == k and has_macron(out[1][:k]):
                 out[0] = out[1][:k] + out[0][k:]
+        # a regular 1st-conjugation verb builds its perfect on -āvī and its
+        # supine on -ātum, both on the present stem: vocō, vocāre, vocāvī,
+        # vocātum.  Whitaker's stem list carries no lengths, so wherever the
+        # source tokens never printed those two stems the dictionary line came
+        # out short — lātrō, lātrāre, latravī, latratum; cantō, cantāre,
+        # cantavī, cantatum (QA N-19).  The length belongs to the conjugation
+        # rather than to the page, so it is written in, and from the present
+        # stem, which also carries the v Whitaker spells u.  Only a verb whose
+        # perfect really is -āvī qualifies: dō, stō, secō, vetō, cubō and the
+        # rest keep their own short a (datum, statum, sectum, vetitum).
+        if rec.lexpos in ("V", "VPAR") and (rec.cat or [])[:2] == [1, 1] and len(out) >= 4:
+            stem, perf, sup = out[0], out[2], out[3]
+            none = ("-", "")
+            av, at = canonical(stem + "āv"), canonical(stem + "āt")
+            if canonical(perf) == av or (perf in none and canonical(sup) == at):
+                if perf not in none:
+                    out[2] = stem + "āv"
+                if sup not in none and canonical(sup) == at:
+                    out[3] = stem + "āt"
         # last word: the macrons the book prints that neither the source
         # tokens nor HAND_ROOTS could give (ROOT_MACRONS above)
         for i, spelled in (ROOT_MACRONS.get(key) or {}).items():

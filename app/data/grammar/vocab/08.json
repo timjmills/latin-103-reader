@@ -109,13 +109,13 @@
   },
   {
    "lemma": "clāmō",
-   "dict": "clāmō, clāmāre, clāmāvī, clamatum",
+   "dict": "clāmō, clāmāre, clāmāvī, clāmātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "shout, cry out",
    "sense_full": "proclaim, declare",
-   "parts": "clāmō, clāmāre, clāmāvī, clamatum",
+   "parts": "clāmō, clāmāre, clāmāvī, clāmātum",
    "unit_id": "r08:36.1",
    "count": 28,
    "sem": {
@@ -836,13 +836,13 @@
   },
   {
    "lemma": "mōnstrō",
-   "dict": "mōnstrō, mōnstrāre, monstravī, monstratum",
+   "dict": "mōnstrō, mōnstrāre, mōnstrāvī, mōnstrātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "show, point out",
    "sense_full": "show",
-   "parts": "mōnstrō, mōnstrāre, monstravī, monstratum",
+   "parts": "mōnstrō, mōnstrāre, mōnstrāvī, mōnstrātum",
    "unit_id": "r08:42.1",
    "count": 8,
    "sem": {
@@ -965,13 +965,13 @@
   },
   {
    "lemma": "gemmō",
-   "dict": "gemmō, gemmāre, gemmavī, gemmātum",
+   "dict": "gemmō, gemmāre, gemmāvī, gemmātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "bud, come into bud, put out buds",
    "sense_full": "bud, come into bud, put out buds",
-   "parts": "gemmō, gemmāre, gemmavī, gemmātum",
+   "parts": "gemmō, gemmāre, gemmāvī, gemmātum",
    "unit_id": "r08:58.1",
    "count": 5,
    "sem": {
