@@ -354,6 +354,41 @@ function normaliseNotice(v) {
   const tap = v.tap === 'focus' || !options.length ? 'focus' : null;
   return { sentences, ask, tap, options, answer: typeof v.answer === 'string' ? v.answer : (Number.isInteger(v.answer) ? options[v.answer] ?? null : null) };
 }
+/**
+ * Does a step's own wording ask the learner for a **word of the sentence** or
+ * for the **name of something**? A `recognise` item has two shapes over one
+ * candidate — tap a word, or choose a label — and each words itself correctly;
+ * the shape was a coin toss, and the step then wrote its own question over
+ * whichever came up, so "Which two words give the circumstances?" was answered
+ * with four construction labels every other time (N-3). The wording is the
+ * honest signal: it is what the learner reads, and the author wrote it knowing
+ * what they were asking for.
+ *
+ * true → tap the word; false → choose the name; null → the wording does not
+ * say, and the generator's own coin toss stands (its stock question then
+ * matches whichever shape it built, as it always did). A step may also declare
+ * `tap` itself, which outranks this. Pure.
+ */
+export function askWantsWord(ask) {
+  const t = String(ask ?? '').toLowerCase();
+  if (!t.trim()) return null;
+  // "Tap the verb that…", "…Tap it." — an imperative naming the act, and nothing else it could mean.
+  if (/\btap\b/.test(t)) return true;
+  // "Which word…", "Which two words…", "Which one is…", "Which of brevis and breviter…" — the answer is in the sentence.
+  // Tested before the `what` rules because these questions often carry one inside them ("Which two words say what is happening?").
+  if (/\bwhich (?:two |three )?(?:words?|verbs?|nouns?|adjectives?|one)\b/.test(t) || /\bwhich of\b/.test(t)) return true;
+  // "What kind of clause…", "Which tense…", "Which ending…" — the answer is a name, and no word in the sentence is it.
+  if (/\bwhat kind\b/.test(t) || /\bwhich (?:tense|case|mood|voice|person|degree|number|gender|ending|construction)\b/.test(t)) return false;
+  // "What is lūdat doing here?", "What does edendus est say about the food?"
+  if (/\bwhat (?:is|does|do)\b/.test(t)) return false;
+  // An either/or or a yes/no over two readings: "Does cum mean 'since' here, or 'although'?", "Is it still a folded question?"
+  if (/\b(?:is|are|does|do|did|could|can)\b[^?]*\bor\b/.test(t)) return false;
+  if (/(?:^|[.:;!?]\s*)(?:is|are|does|do|did)\b/.test(t)) return false;
+  // Any other "which…" is still a choice between things on the page.
+  if (/\bwhich\b/.test(t)) return true;
+  return null;
+}
+
 const CHECK_KINDS = new Set(['recognise', 'parse', 'blank', 'chart']);
 function normaliseCheck(v) {
   if (!v || typeof v !== 'object') return null;
@@ -366,7 +401,12 @@ function normaliseCheck(v) {
     return { kind, key: typeof v.key === 'string' && v.key ? v.key : null, cells, words: words && words.length ? words : null };
   }
   // `ask`: the step's own wording of the question, over the generator's stock line.
-  return { kind, sentence: typeof v.sentence === 'string' && v.sentence ? v.sentence : null, ask: typeof v.ask === 'string' && v.ask.trim() ? v.ask.trim() : null };
+  const ask = typeof v.ask === 'string' && v.ask.trim() ? v.ask.trim() : null;
+  // `tap`: which shape a `recognise` check takes — the step may declare it, and
+  // otherwise its own wording decides (N-3). null leaves the generator's coin toss
+  // alone, which is right only when the step has no wording of its own to honour.
+  const tap = typeof v.tap === 'boolean' ? v.tap : askWantsWord(ask);
+  return { kind, sentence: typeof v.sentence === 'string' && v.sentence ? v.sentence : null, ask, tap };
 }
 const WORKED_FEATURES = new Set(['case', 'number', 'gender', 'tense', 'mood', 'voice', 'person', 'degree', 'construction', 'why']);
 function normaliseWorked(v) {

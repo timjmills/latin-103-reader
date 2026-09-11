@@ -1530,6 +1530,34 @@ every one was right unaided. And a step's check must draw its sentence from the
 skill's own `sentences` file, never from the library, so Learn is entirely
 inside the written material.
 
+**A step's wording chooses the shape of its check** (added 2026-09-11, N-3). A
+`recognise` item has two shapes over one candidate — tap the word in the
+sentence, or choose the name from four labels — and each words itself
+correctly. The shape was a coin toss, and a step that words its own question
+(`check.ask`, 120 of the 161 `recognise` checks) then wrote that question over
+whichever shape came up: "Which two words give the circumstances?" was answered
+with four construction labels every other time. The wording now decides, because
+it is what the learner reads and the author wrote it knowing what they were
+asking for — `askWantsWord` in `lessons.js`, settled once in `normaliseCheck`
+and carried through `sentenceItem` into `generate`. A check with no wording of
+its own keeps the toss, and the generator's own question then matches whatever
+it built, as it always did. A step may also say so outright, and that outranks
+the wording:
+```jsonc
+"check": { "kind": "recognise", "sentence": "abs-09", "tap": true,
+           "ask": "This pair comes at the end. Which two words are they?" }
+```
+The prose is not the thing to change here: where a question and its shape
+disagree, the shape is wrong.
+
+**A chart word is resolved by the cells the step asked for** (added 2026-09-11,
+N-15). Headwords are not unique — the glossary holds an adjective and a noun
+under one head — and taking the first reading that renders any table gave a step
+a table with no such cell, dropped every box in silence, and built the item on
+the step's *other* word while the question went on naming the first. The word is
+now resolved to the reading that can answer the cells named; a word that still
+answers none is named on the console rather than dropped quietly.
+
 ## 9. Design review (Fable 5.1, 2026-09-11) — verdict and two amendments
 
 **Verdict: the approach is right.** Each of the six complaints maps to a cause

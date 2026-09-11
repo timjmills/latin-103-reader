@@ -10,17 +10,23 @@
 //   N-21  "All chapters" leaves the chapter page instead of covering it
 //   N-22  Stats and Progress each name the population their number counts
 //   N-10  §12's catalogue-scaffold decision is written down, not re-litigated
+//   N-3   a step's own wording chooses the shape of its recognise check
+//   N-15  a chart word resolves to the reading that has the cells asked for
 //
-// No Latin from the book appears here: the two sentences below are invented for
-// the test, and everything else is read from the shipped data at run time.
+// No Latin from the book appears here: the sentences and wordings below are
+// invented for the test, and everything else is read from the shipped data at
+// run time.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { catalogueChapters, tallyDenominator, bankUnreachableNote, tapSpan, keptCells } from '../app/js/grammar/ui.js';
-import { createTeachDataLoader, indexCatalogue } from '../app/js/grammar/lessons.js';
+import { createTeachDataLoader, indexCatalogue, indexSkills, normaliseSentences, normaliseLesson, askWantsWord } from '../app/js/grammar/lessons.js';
 import { isGrammarRoute, GRAMMAR_HASH, parseChapterRoute } from '../app/js/chapters.js';
 import { skillsOutOf } from '../app/js/progress.js';
 import { focusIndexes } from '../app/js/grammar/sets.js';
+import { setGlossary, lookup } from '../app/js/dictionary.js';
+import { paradigm } from '../app/js/paradigms.js';
+import { createTeachItems, tableHelpers } from '../app/js/grammar/items.js';
 
 // Line endings normalised: a CRLF checkout must not change what the code says.
 const src = (name) => readFileSync(new URL(`../${name}`, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
@@ -217,6 +223,101 @@ test('N-22 Stats and Progress each say which population their number counts', ()
 });
 
 /* ----------------------------------------------------------------- N-10 */
+
+/* ------------------------------------------------------------ N-3, N-15 */
+
+// The real lessons, built the way Learn builds them. Loaded once: the glossary
+// is large, and both tests want every skill.
+setGlossary(read('app/data/glossary.json'), read('app/data/function-words.json'), read('app/data/glosses.json'));
+const INDEX = indexSkills(read('app/data/grammar/skills.json'));
+const CAT = indexCatalogue(read('app/data/grammar/paradigms.json'));
+const HEADWORDS = read('app/data/glossary-headwords.json').headwords;
+const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k) }; };
+const lessonIds = readdirSync(new URL('../app/data/grammar/lessons/', import.meta.url))
+  .filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)).filter((id) => INDEX.skills.has(id));
+const teachFor = (id) => createTeachItems({
+  skill: INDEX.skills.get(id), sentences: normaliseSentences(read(`app/data/grammar/sentences/${id}.json`), id).sentences,
+  lookup, paradigm, catalogue: CAT, skills: INDEX.skills, headwords: HEADWORDS, storage: mem(), rand: () => 0.3,
+});
+const lessonOf = (id) => normaliseLesson(read(`app/data/grammar/lessons/${id}.json`));
+
+test('N-3 a step\'s own wording chooses the shape of its recognise check, over the coin toss', () => {
+  // The wording, read on its own. Invented questions, in the two shapes the lessons use.
+  assert.equal(askWantsWord('Tap the verb that has not happened yet.'), true);
+  assert.equal(askWantsWord('Which word here is the one being spoken to?'), true);
+  assert.equal(askWantsWord('Which two words carry the construction?'), true);
+  assert.equal(askWantsWord('Which one of the two is the plural?'), true);
+  assert.equal(askWantsWord('Which of the three verbs is the odd one out?'), true);
+  assert.equal(askWantsWord('What kind of clause is this?'), false);
+  assert.equal(askWantsWord('Which tense of the subjunctive is it?'), false);
+  assert.equal(askWantsWord('What does this ending do here?'), false);
+  assert.equal(askWantsWord('Does it mean one thing here, or the other?'), false);
+  assert.equal(askWantsWord('Is it still a folded question?'), false);
+  // A question that asks for a word and contains a "what" clause inside it is still a word question.
+  assert.equal(askWantsWord('Which two words say what had already happened?'), true);
+  assert.equal(askWantsWord(''), null, 'no wording of its own: the generator\'s coin toss stands');
+  assert.equal(askWantsWord(null), null);
+
+  // A step may declare the shape, and that outranks the wording.
+  const declared = normaliseLesson({ skill: 'x', teach: [{ title: 't', say: 's', check: { kind: 'recognise', ask: 'Tap the verb that has not happened yet.', tap: false } }] });
+  assert.equal(declared.teach[0].check.tap, false, 'a declared shape is kept, against the wording');
+  const derived = normaliseLesson({ skill: 'x', teach: [{ title: 't', say: 's', check: { kind: 'recognise', ask: 'Tap the verb that has not happened yet.' } }] });
+  assert.equal(derived.teach[0].check.tap, true, 'and derived from the wording when it is not declared');
+
+  // And over every shipped lesson: every self-worded recognise check gets the shape it asks for.
+  let decided = 0;
+  let tossed = 0;
+  for (const id of lessonIds) {
+    const items = teachFor(id);
+    for (const [i, step] of lessonOf(id).teach.entries()) {
+      const c = step.check;
+      if (c?.kind !== 'recognise') continue;
+      if (c.tap == null) { tossed += 1; assert.equal(c.ask, null, `${id} step ${i}: a step that words its own question must decide its own shape`); continue; }
+      decided += 1;
+      const item = items.sentenceItem({ kind: 'recognise', stage: 1, sentence: c.sentence, tap: c.tap });
+      if (!item || item.kind !== 'recognise') continue;   // a sentence that can carry no recognise item at all is another matter
+      assert.equal(item.input, c.tap ? 'tap' : 'choice', `${id} step ${i}: "${c.ask}" asks for ${c.tap ? 'a word' : 'a name'}`);
+    }
+  }
+  assert.ok(decided >= 110, `the wording decides most of them (${decided} decided, ${tossed} left to the toss)`);
+  assert.ok(tossed > 0, 'a check with no wording of its own still lets the generator word and shape itself');
+});
+
+test('N-15 a chart word resolves to the reading that has the cells the step asked for', () => {
+  // A headword can be two words. `entryFor` used to take the first reading that
+  // rendered any table; with a test of what the caller needs, it keeps looking.
+  const { entryFor } = tableHelpers({ lookup, paradigm });
+  const plain = entryFor('mare');
+  assert.ok(plain, 'the word is in the glossary');
+  const wantsPlural = entryFor('mare', { fits: (g) => [...g.cells.keys()].some((k) => /(^|\.)nom\.pl$/.test(k)) });
+  assert.ok(wantsPlural, 'and a reading that answers the test is found');
+  assert.ok([...wantsPlural.cells.keys()].some((k) => /(^|\.)nom\.pl$/.test(k)), 'the reading chosen has the cell asked for');
+  const none = entryFor('mare', { fits: () => false });
+  assert.equal(none?.entry?.pos, plain.entry.pos, 'with nothing fitting, the old first-table answer stands');
+  assert.notEqual(wantsPlural.entry.pos, plain.entry.pos, 'and the reading the chart needs is not the one that came first');
+
+  // Over every shipped lesson: no chart check declares a word it then builds nothing for.
+  const bare = (x) => String(x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  let charts = 0;
+  for (const id of lessonIds) {
+    const items = teachFor(id);
+    for (const [i, step] of lessonOf(id).teach.entries()) {
+      const c = step.check;
+      if (c?.kind !== 'chart' || !c.words?.length) continue;
+      charts += 1;
+      const item = items.chartItem({ key: c.key ?? null, cells: c.cells, words: c.words });
+      assert.ok(item, `${id} step ${i}: the chart check builds an item`);
+      const built = new Set(item.chart.cells.map((b) => bare(b.word)));
+      for (const w of c.words) {
+        assert.ok(built.has(bare(String(w).split(/[\s,]/)[0])), `${id} step ${i}: the step names ${w}, so the chart must ask it`);
+      }
+    }
+  }
+  assert.ok(charts >= 100, `every chart check with declared words was checked (${charts})`);
+
+  // A word that still builds nothing is named on the console rather than dropped in silence.
+  assert.match(src('app/js/grammar/items.js'), /if \(dropped\.length\) console\.warn\(/);
+});
 
 test('N-10 §12 records the catalogue-scaffold decision, so it is not re-litigated', () => {
   const from = CONTRACT.indexOf('## 12. Feedback everywhere');

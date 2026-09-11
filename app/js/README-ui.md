@@ -2016,3 +2016,26 @@ from it would serve them to the real app on the same origin.
 - **N-10** is a decision, not a fix: the catalogue's whole-table drill does not
   withhold its naming skill's cells, and `GRAMMAR-CONTRACT.md` §12 now records
   why. `ui.js` still passes `taught: []` for a catalogue item.
+- **N-3** a `recognise` check's **shape** is chosen by the step's own wording,
+  not by a coin toss. The two shapes — tap a word, choose a label — each word
+  themselves correctly, and the step then wrote its own question over whichever
+  came up, so "Which two words give the circumstances?" was answered with four
+  construction labels every other time: 79 of the 87 word-questions across the
+  88 lessons, with the coin the other way. `askWantsWord` (`lessons.js`, pure)
+  reads the wording, `normaliseCheck` settles it once as `check.tap`, and
+  `stepItem` → `sentenceItem` → `generate` carry it to `recognise`, whose
+  `opts.tap ?? rand() < 0.5` already accepted it. 120 of the 161 checks are
+  decided by their wording, 41 have none of their own and keep the toss (their
+  question is then the generator's, which matches whatever it built), and a
+  lesson may declare `"tap": true|false` to overrule the reading. No lesson
+  prose changed: where a question and its shape disagreed, the shape was wrong.
+- **N-15** (second case) a chart word is resolved to the reading that has the
+  cells the step asked for. `entryFor` took the first reading that rendered any
+  table; the glossary holds an adjective before the noun under one head, its
+  cells carry gender, `resolveCellId` found nothing, and the step's boxes were
+  dropped by a silent `continue` while the item built itself on the step's other
+  word and the question went on naming the first. `entryFor(word, { fits })`
+  now keeps looking, `chartItem` passes a `fits` that asks whether the reading
+  can answer any named cell, and a word that still answers none is
+  `console.warn`ed with the skill, the table and the cells. Across the 88
+  lessons every chart check now builds every word it declares.
