@@ -1884,6 +1884,24 @@ met in that step or skill, then the rest. **The cell a step is teaching is
 never given.** Given cells carry the same per-cell hint so a learner can ask
 why a given ending is what it is.
 
+**A catalogue table has no taught cell, and withholds none** (decided
+2026-09-11, N-10). "The cell a step is teaching" is a step's rule: it belongs
+to a teaching step, which is asking about one cell and would print its own
+answer above the box. A table opened from the catalogue is not a step. The
+learner chose that table, chose the word it is built on and chose how much of
+it to be given, and what they asked for is the whole table at that level; the
+tables that happen to carry a naming skill would otherwise be scaffolded
+differently from the tables that do not, for a reason the learner never asked
+about and cannot see. So `ui.js` passes `taught: []` for a catalogue item and
+the anchors-then-met ordering decides the rest, exactly as it does elsewhere.
+The 2026-09-11 QA audit put the opposite case — that a naming skill's own
+cells are given away by the drill meant to teach them — and it is a fair
+reading; it is recorded here as considered and declined rather than
+overlooked. It would be reopened by evidence that learners use the catalogue
+drill as a skill's practice rather than as a reference: the skill's own drill
+(§10) and its unlimited practice (§11) are where that cell is asked, and
+neither gives it.
+
 **Mixed practice options** on a table or a skill: whole table · one cell across
 many words · partly filled at a chosen level · the customisation axes of §5 ·
 and for a sentence skill the written set, the generated set, or both. Each is

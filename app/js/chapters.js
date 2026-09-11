@@ -209,9 +209,22 @@ export function readingsMeta(readings, opts) {
 
 /* ------------------------------------------------------------- routing */
 // Deep links (GRAMMAR-CONTRACT.md): "#/chapter/7" is a chapter's readings,
-// "#/chapter/7/grammar" its grammar. Anything else is the reader.
+// "#/chapter/7/grammar" its grammar, "#/grammar" the grammar section itself.
+// Anything else is the reader.
 
 export const CHAPTER_TABS = Object.freeze(['reading', 'grammar']);
+
+/** The hash for the grammar section (GRAMMAR-CONTRACT.md "Where it lives"). */
+export const GRAMMAR_HASH = '#/grammar';
+
+/**
+ * True for the grammar section's own route, "#/grammar". It carries nothing
+ * else: the section keeps its own view history in `history.pushState`, so the
+ * hash names the section and the state names the view within it. Pure.
+ */
+export function isGrammarRoute(hash) {
+  return /^#?\/grammar\/?$/.test(String(hash ?? '').trim());
+}
 
 /** "#/chapter/7/grammar" → { n: 7, tab: 'grammar' }; not a chapter route → null. Pure. */
 export function parseChapterRoute(hash) {

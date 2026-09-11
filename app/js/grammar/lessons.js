@@ -175,21 +175,35 @@ export function createTeachDataLoader({ fetchJson: fetcher = fetchJson } = {}) {
   // skill without a bank is null at once and no request 404s; with no manifest every bank is asked for.
   const banks = new Map();
   let bankManifestP = null;
+  // A bank that is **absent** (no manifest entry, or a 404) and one that could not be **reached** (offline: the
+  // request never got an answer) both leave the skill with no generated sentences, but they are not the same
+  // thing to say to a learner, and saying nothing was the fault (N-13). The ids whose fetch failed for any
+  // reason but absence are kept here, so the practice header can say the sentences are not downloaded yet
+  // rather than quietly promising the book's own as though that were the whole offer.
+  const unreachable = new Set();
   const bankManifest = () => (bankManifestP ??= fetcher('generated/index.json').then((raw) => manifestIds(Array.isArray(raw?.generated) ? raw.generated : raw)).catch(() => null));
   const loadGenerated = (skillId) => {
     if (!banks.has(skillId)) {
       banks.set(skillId, (async () => {
         const ids = await bankManifest();
         if (ids && !ids.has(skillId)) return null;
-        try { return normaliseGenerated(await fetcher(`generated/${skillId}.json`), skillId); }
-        catch (e) { if (!/(^|\D)404(\D|$)/.test(String(e?.message ?? e))) banks.delete(skillId); return null; }
+        try { const bank = normaliseGenerated(await fetcher(`generated/${skillId}.json`), skillId); unreachable.delete(skillId); return bank; }
+        catch (e) {
+          // A 404 is an answer: this skill has no bank, and asking again would only 404 again.
+          if (/(^|\D)404(\D|$)/.test(String(e?.message ?? e))) return null;
+          banks.delete(skillId);   // no answer at all: ask again next time, when the network may be back
+          unreachable.add(skillId);
+          return null;
+        }
       })());
     }
     return banks.get(skillId);
   };
   /** The skills that have a bank, from the manifest; null when there is no manifest (then ask per skill). */
   const generatedIds = () => bankManifest();
-  return { loadSentences, loadCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedIds };
+  /** True when this skill's bank was asked for and the request never got an answer — offline, not absent. */
+  const bankUnreachable = (skillId) => unreachable.has(skillId);
+  return { loadSentences, loadCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedIds, bankUnreachable };
 }
 
 /**
@@ -268,6 +282,8 @@ export const loadOccurrences = () => teachData.loadOccurrences();
 export const loadGenerated = (skillId) => teachData.loadGenerated(skillId);
 /** The ids of the skills with a generated bank (the manifest), or null without one. */
 export const generatedSkillIds = () => teachData.generatedIds();
+/** True when the skill's bank was asked for and could not be reached (offline), as against having none. */
+export const generatedUnreachable = (skillId) => teachData.bankUnreachable(skillId);
 
 /** Pure: a lesson with every block usable, and its teach steps normalised. */
 export function normaliseLesson(l) {

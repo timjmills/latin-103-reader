@@ -35,8 +35,14 @@ const SKILLS = INDEX.skills;
 const RAW_CAT = read('grammar/paradigms.json');
 const CAT = indexCatalogue(RAW_CAT);
 const HEADWORDS = read('glossary-headwords.json').headwords;
-const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
-const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
+// Read with the line endings normalised: `slice`'s end markers below run over
+// two lines, and on a CRLF checkout (git's default on Windows) a literal "\n"
+// in a marker matches nothing, so M-3 and M-5 failed on sources they were happy
+// with. The assertions are about what the code says, never about how the
+// working copy stores its newlines.
+const source = (path) => readFileSync(new URL(path, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const UI = source('../app/js/grammar/ui.js');
+const MAIN = source('../app/js/main.js');
 
 const DIO = 'dative-indirect-object';
 const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k) }; };
