@@ -1591,3 +1591,23 @@ interleaved system. That settles the open pedagogy questions of §9:
   cell, drill it on many words, switch the word — no lesson in the way.
 - Not taken for this goal: the noticing step and the reading tie-in from §9.
   Both are good, both add time; recorded for later, not built now.
+
+**Amended the same day — learner: "fold all of them in."** All four of §9's
+suggestions are built, shaped so none slows the quick path:
+
+- **Noticing, brief and skippable.** Step 1 may open with `"notice"`: two of the
+  skill's written sentences side by side and one question ("what do the two
+  receivers have in common?"), answered by tapping a word or picking an option,
+  then the rule. One screen, skippable with a single tap, never logged.
+  ```jsonc
+  "notice": { "sentences": ["dio-01", "dio-02"], "ask": "…", "tap": "focus" }
+  ```
+- **The reading tie-in, one line.** After Learn or a drill of a skill, the
+  summary says how many times the construction occurs in the learner's current
+  chapter — from the highlights that already exist — with one link that opens
+  the chapter with them lit. Nothing to do; something to see.
+- **The same-session re-test** as in §10.
+- **Step text at sixty words or fewer** as in §10.
+
+Plus "Just drill it", two-tap entry, blocked-and-short by default, and the
+catalogue as the fastest route for a paradigm, as in §10.
