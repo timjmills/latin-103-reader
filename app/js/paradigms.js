@@ -966,8 +966,8 @@ const IRREGULAR_VERBS = {
       plupf: ['fu|issem', 'fu|issēs', 'fu|isset', 'fu|issēmus', 'fu|issētis', 'fu|issent'],
     },
     imper: { sg: 'es', pl: 'es|te', futSg: 'es|tō', futPl: 'es|tōte' },
-    // fore = futūrum esse — Ørberg glosses it so in cap. XXXIII ("fore (īnf fut)
-    // = futūrum/-am … esse", beside "pācem fore spērēmus"); Allen & Greenough
+    // fore = futūrum esse — cap. XXXIII glosses fore in the margin as the future
+    // infinitive of esse, beside the reading's "pācem fore"; Allen & Greenough
     // §170.b. A compound takes it too: adfore, dēfore, prōfore.
     inf: { pres: 'es|se', perf: 'fu|isse', fut: 'fut|ūrus esse / fore' },
     ptc: { fut: 'fut|ūrus -a -um' },

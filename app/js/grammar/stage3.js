@@ -199,7 +199,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
         const got = formFor(c.entry, op.parse);
         if (!got || got.forms.some((f) => stripMacrons(f).toLowerCase() === c.token.form)) continue;   // a change that reads the same is no exercise
         // …and neither is a change the item already prints. The sentence can hold the changed form
-        // itself ("ūnum caput est, nōn duo capita" — make caput plural), and a citation names the
+        // itself ("ūnum caput habet, nōn duo capita" — make caput plural), and a citation names the
         // genitive of a noun and the principal parts of a verb, which is exactly what several ops
         // ask for (diēs -ēī m/f, dormiō … dormīvī). Nothing shown may spell the answer (QA-FINAL B1).
         const { answers } = answersFor(c.entry, got);

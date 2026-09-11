@@ -55,7 +55,7 @@
   "sive": { "lemma": "sīve / seu", "pos": "CONJ", "usage": "'or if'; 'sīve … sīve' = whether … or." },
   "seu": { "lemma": "sīve / seu", "pos": "CONJ", "usage": "'or if'; 'seu … seu' = whether … or." },
   "sed": { "lemma": "sed", "pos": "CONJ", "usage": "'but'. 'nōn modo … sed etiam' = not only … but also." },
-  "at": { "lemma": "at", "pos": "CONJ", "usage": "'but, yet' — a sharper objection than sed, often starting a reply: 'At tāle mōnstrum tē terrēbit' = But such a monster will frighten you." },
+  "at": { "lemma": "at", "pos": "CONJ", "usage": "'but, yet' — a sharper objection than sed, often starting a reply: 'At ego domī manēre nōlō!' = But I don't want to stay at home!" },
   "autem": { "lemma": "autem", "pos": "CONJ", "usage": "'but, however, on the other hand' — a mild contrast. Never first in its sentence (postpositive)." },
   "vero": { "lemma": "vērō", "pos": "ADV", "usage": "'in truth, indeed'; as a connector 'but, however'. Comes second in its sentence: 'Iam vērō … cupiō'." },
   "nam": { "lemma": "nam", "pos": "CONJ", "usage": "'for' (giving the reason for what was just said), starts its sentence." },
