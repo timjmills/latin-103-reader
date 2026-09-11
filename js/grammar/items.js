@@ -787,7 +787,7 @@ export const SHORT_WORDS = 8;
 const blankOut = (la, t) => `${la.slice(0, t.start)}___${la.slice(t.end)}`;
 const meaningsOf = (la) => tokenize(la).filter((t) => t.isWord).map((t) => ({ text: t.text, form: t.form, start: t.start }));
 const firstWord = (lemma) => String(lemma ?? '').split(/[\s,]/)[0];
-const PARSE_WORD = { case: 'case', number: 'number', gender: 'gender', tense: 'tense', mood: 'mood', voice: 'voice', person: 'person', degree: 'degree' };
+const PARSE_WORD = { case: 'case', number: 'number', gender: 'gender', tense: 'tense', mood: 'mood', voice: 'voice', person: 'person', degree: 'degree', form: 'ending' };
 const joinWords = (ws) => (ws.length <= 1 ? ws.join('') : `${ws.slice(0, -1).join(', ')} and ${ws[ws.length - 1]}`);
 
 /**
@@ -895,7 +895,12 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       let poolValues = FILLERS[k] ?? TM_FILLERS;
       if (TM_KEY(k)) poolValues = nonFinite(own) ? [...NONFINITE_FILLERS, ...TM_FILLERS] : TM_FILLERS;
       if (k === 'voice' && c && c.entry?.pos !== 'V' && c.entry?.pos !== 'VPAR') poolValues = ['act', 'pass'];
-      fillers = shuffle(poolValues.filter((v) => v !== own && !seen.has(v) && !valueFits(v, filter, k)), rand).map((value) => ({ skill: null, value }));
+      // A distractor normally may not be a value the skill itself stands for — answering it would be right
+      // too. `form` is the exception: enclitics teaches the *contrast* between -que, -ne and -ve, so its own
+      // values are the only distractors worth offering. Without this the answer -ne is left with one wrong
+      // option, because -que "fits the filter", and a two-way choice is a coin toss.
+      const ownValue = (v) => k !== 'form' && valueFits(v, filter, k);
+      fillers = shuffle(poolValues.filter((v) => v !== own && !seen.has(v) && !ownValue(v)), rand).map((value) => ({ skill: null, value }));
     }
     return { own, conf: conf.filter((x, i) => conf.findIndex((y) => y.value === x.value) === i), fillers };
   };
@@ -1056,6 +1061,9 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     if (p.mood === 'gerund' || p.mood === 'supine') return { values: { mood: p.mood, case: p.case }, required: ['mood', ...(p.case ? ['case'] : [])] };
     if (p.mood === 'inf') return { values: { tense: p.tense, mood: p.mood, voice: dep ? undefined : p.voice }, required: ['tense', 'mood', ...(p.voice && !dep ? ['voice'] : [])] };
     const finite = { tense: p.tense, mood: p.mood, person: p.person != null ? String(p.person) : undefined, number: p.number, voice: dep ? undefined : p.voice };
+    // An enclitic is not a verb: it has no tense and no mood, and asking for them produced the answer
+    // "undefined undefined" on every parse item of the enclitics skill. What is asked is which ending it is.
+    if (k === 'form') return { values: { form: featureValue(p, 'form', c.entry) }, required: ['form'] };
     if (k === 'person') return { values: finite, required: ['person', 'number'] };
     if (k === 'voice') return { values: finite, required: dep ? ['tense', 'mood'] : ['voice', 'tense', 'mood'] };
     if (p.mood === 'imper') return { values: finite, required: ['mood', ...(p.number ? ['number'] : [])] };
@@ -1065,6 +1073,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const k = key(skill);
     const cn = (x) => `${CASE_LABEL[x.case]?.name ?? x.case}${x.number ? ` ${NUMBER_LABEL[x.number]?.name ?? x.number}` : ''}`;
     if (k === 'gender') return `${GENDER_LABEL[p.gender]?.name ?? p.gender ?? ''}${p.case ? `, ${cn(p)}` : ''}`.trim();
+    if (k === 'form') { const v = p.enc ?? featureValue(p, 'form', entry); return FORM_LABEL[v]?.name ?? v ?? ''; }
     if (k === 'case' || k === 'number') return cn(p);
     if (k === 'degree') return `${DEGREE_LABEL[p.degree || 'pos']?.name ?? p.degree}${p.case ? `, ${cn(p)}` : ''}`.trim();
     if (p.mood === 'ptc' || p.mood === 'gerundive') return `${labelOf('tense', featureValue(p, 'tense'), skill).name}${p.voice && !isDeponent(entry) ? ` ${VOICE_LABEL[p.voice]?.name ?? p.voice}` : ''}${p.case ? `, ${cn(p)}${p.gender ? ` ${GENDER_LABEL[p.gender]?.name ?? ''}` : ''}` : ''}`.trim();
@@ -1078,12 +1087,14 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
   };
   const parseQuestion = (skill, c, expect) => {
     const p = c.parse;
+    if (expect.required.length === 1 && expect.required[0] === 'form') return `What does the ending of ${c.token.text} do here?`;
     const req = expect.required.map((r) => PARSE_WORD[r]).filter(Boolean);
     const tail = p.mood === 'ptc' ? ' (it is a participle)' : p.mood === 'gerundive' ? ' (it is a gerundive)' : '';
     return `Parse ${c.token.text}: ${joinWords(req)}${tail}`;
   };
   const parsePlaceholder = (expect) => {
     const r = expect.required;
+    if (r.includes('form')) return 'e.g. -que: and';
     if (r.includes('degree')) return 'e.g. comparative, nominative singular';
     if (r.includes('gender') && r.includes('tense')) return 'e.g. perfect passive, accusative singular feminine';
     if (r.includes('gender')) return 'e.g. feminine, nominative singular';
@@ -1134,6 +1145,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
         if (k === 'number') return { ...p, number: d.value };
         if (k === 'voice') return { ...p, voice: d.value === 'dep' ? 'pass' : d.value };
         if (k === 'person') { const [pe, nu] = d.value.split(' '); return { ...p, person: pe, number: nu }; }
+        if (k === 'form') return { ...p, enc: d.value };
         const [t, m] = d.value.split(' ');
         return m ? { ...p, tense: t, mood: m } : { ...p, mood: t, tense: undefined };
       };
