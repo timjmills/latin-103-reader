@@ -16,7 +16,7 @@
 //   createStage3({ items, paradigm, rand }).generate({ skill, kind, stage, currentWeek, currentWeekN }) → item | null
 
 import { stripMacrons } from '../tokenize.js';
-import { cellsFor, lemmaGloss, spellsAnswer, featureLabel, CASE_LABEL, TENSE_LABEL, MOOD_LABEL, patternSpans, compilePatterns, strippedText, SHORT_WORDS } from './items.js';
+import { cellsFor, lemmaGloss, spellsAnswer, featureLabel, CASE_LABEL, TENSE_LABEL, MOOD_LABEL, patternSpans, compilePatterns, strippedText, SHORT_WORDS, la, partsText } from './items.js';
 import { isShelfWeek } from '../sync.js';
 import { scopeByChapter, scopeNote } from './chapter.js';
 
@@ -222,7 +222,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     return { ...base(skill, 'transform', stage, c, note(c)), key: got.key, input: 'type', repeat: got.wrapped, op: op.op,
       prompt: { la: c.unit.la, question: op.label, gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}; the ${op.what} sits in the table below.`, placeholder: 'the changed form (macrons optional)' },
       answer: answers, choices: null,
-      feedback: { short: `${capped[0]} is the ${op.what} of ${c.entry.lemma}; the book has ${c.token.text}.`, term: skill.plain, label: lab, table: (() => { try { return paradigm ? paradigm(c.entry, [op.parse]) : null; } catch { return null; } })(), lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en || null } };
+      feedback: { ...(() => { const parts = [la(capped[0]), ` is the ${op.what} of `, la(c.entry.lemma), '; the book has ', la(c.token.text), '.']; return { short: partsText(parts), parts }; })(), term: skill.plain, label: lab, table: (() => { try { return paradigm ? paradigm(c.entry, [op.parse]) : null; } catch { return null; } })(), lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en || null } };
   }
 
   function reorder(skill, stage, opts) {
@@ -254,7 +254,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     return { ...base(skill, 'reorder', stage, c, scopeNote(opts.chapter ?? null, scoped.scope, c)), key: got.key, input: 'order', repeat: got.wrapped, chunks, display, scrambled: order,
       prompt: { la: null, question: 'Put the words back in the book\'s order', gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}. ${skill.summary ?? ''}`.trim() },
       answer: [c.unit.la], choices: null,
-      feedback: { short: `The book has: ${c.unit.la}`, term: skill.plain, label: lab, table: null, lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en || null } };
+      feedback: { ...(() => { const parts = ['The book has: ', la(c.unit.la)]; return { short: partsText(parts), parts }; })(), term: skill.plain, label: lab, table: null, lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en || null } };
   }
 
   function translate(skill, stage, opts) {
@@ -291,7 +291,7 @@ export function createStage3({ items, paradigm = null, rand = Math.random }) {
     return { ...base(skill, 'translate', stage, c, scopeNote(opts.chapter ?? null, scoped.scope, c)), key: got.key, input: 'self', repeat: got.wrapped, lit: lit.sort((a, b) => a - b),
       prompt: { la: c.unit.la, question: 'Translate the sentence, then compare', gloss: lemmaGloss(c.entry), hint: `${c.token.text} is ${lab.name} — ${lab.plain}.` },
       answer: [c.unit.en], choices: null,
-      feedback: { short: `${c.token.text} is ${lab.name} — ${lab.plain} — from ${c.entry.lemma}.`, term: skill.plain, label: lab, table: null, lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en } };
+      feedback: { ...(() => { const parts = [la(c.token.text), ` is ${lab.name} — ${lab.plain} — from `, la(c.entry.lemma), '.']; return { short: partsText(parts), parts }; })(), term: skill.plain, label: lab, table: null, lemma: c.entry.lemma, sense: null, paradigm: null, sentence: c.unit.la, sentenceEn: c.unit.en } };
   }
 
   const FNS = { transform, reorder, translate };
