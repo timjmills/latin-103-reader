@@ -33,3 +33,8 @@ data/shelf-notes-*
 tmpcheck/
 .playwright-mcp/
 QA-REPORT.md
+
+# one-off verification scripts written per chapter range during the teaching rebuild
+pipeline/check_teach_words_worked_*.py
+pipeline/check_teaching_ch*.py
+pipeline/validate_teaching_103.py
