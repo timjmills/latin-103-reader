@@ -1734,3 +1734,11 @@ floor. The line therefore reads **"the notes mark 6 in this chapter"** when
 `src` is `h`, and **"occurs about 12 times in this chapter"** when only the
 scanner counted, and opens the chapter with the listed units lit either way.
 Ambiguous scanner matches (`sx`) are never counted in the wording.
+
+**Scaffolding is a switch, always at hand (2026-09-12).** The 80/50/20/auto
+control of §12 can be turned **off** — a blank table — or back on, at any time,
+including in the middle of a session; the next table drawn honours the change,
+the one on screen finishes as it started. The switch sits on the table itself,
+not buried in Settings, and the choice is remembered per table and as a global
+default (`settings.grammar.scaffold = "auto" | 80 | 50 | 20 | "off"`). Turning
+it off is one tap; it never asks for confirmation.
