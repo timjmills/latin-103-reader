@@ -10,7 +10,7 @@ import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
-import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm } from './items.js';
+import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
@@ -890,6 +890,11 @@ export function createUI(ctx) {
     const savedLearn = readJSON(LS_LEARN, null);
     const resume = skill.set && savedLearn?.skill === id && Number(savedLearn.seen) > 0 ? { seen: Number(savedLearn.seen) } : null;
     const onProgress = (pr) => writeJSON(LS_LEARN, pr.seen > 0 && pr.seen < pr.total ? { skill: pr.skill, seen: pr.seen, at: Date.now() } : null);
+    // A teach-step Learn is resumable in the same way (QA M-2): the step on screen is kept beside the skill, so
+    // "Continue learning" after a reload opens where the learner was instead of at step 1, prerequisite warning
+    // and noticing opener and all. `step === steps` means the steps are behind them and the ten is where they were.
+    const savedStep = !skill.set && savedLearn?.skill === id && Number.isFinite(Number(savedLearn.step)) ? Math.max(0, Math.floor(Number(savedLearn.step))) : 0;
+    const noteStep = (n) => writeJSON(LS_LEARN, { skill: id, step: n, at: Date.now() });
     setBody(h('p', { class: 'g-loading', text: 'Preparing the lesson…' }));
     const lesson = skill.set ? null : await lessonOf(id);
     const teachItems = skill.set ? null : await teachItemsOf(skill);
@@ -954,9 +959,10 @@ export function createUI(ctx) {
       return { node: lead, gate };
     };
 
-    const showSteps = () => {
-      const first = learn.startSteps();
+    const showSteps = ({ at = 0 } = {}) => {
+      const first = learn.startSteps({ at, onStep: (pr) => noteStep(pr.step) });
       if (!first) { showNoSteps(); return; }
+      if (at > 0) ctx.say(`Picked up at step ${Math.min(at + 1, nSteps)} of ${nSteps}.`);
       runSession({ runner: learn.runner, title: 'Check', mode: 'learn', hintOpen: false, stepper: (slot) => stepper(slot?.step ?? 0), lesson, before: stepLead, onDone: showBlocked });
     };
     /** No teach steps written yet (or no written sentences): the lesson to read, then the ten. */
@@ -991,6 +997,8 @@ export function createUI(ctx) {
     };
     const tenAt = skill.set ? 1 : nSteps;
     const showBlocked = () => {
+      // The steps are behind the learner now: a reload from here comes back to the ten, not to step one (M-2).
+      if (!skill.set && nSteps) noteStep(nSteps);
       const first = learn.startBlocked();
       if (!first) { setBody(stepper(tenAt), h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, backButton(from, 'btn'))); return; }
       runSession({ runner: learn.runner, title: `Ten items · ${skill.title}`, note: skill.set ? 'Ten more from this set. Six of ten and it joins your mixed practice.' : 'Ten items, this skill only — its own sentences first, then the book\'s. Hints are behind a button; feedback after each.', mode: 'learn', hintOpen: false, stepper: stepper(tenAt), lesson, onDone: async () => showResult(await learn.finishBlocked()) });
@@ -1021,10 +1029,13 @@ export function createUI(ctx) {
           // failed run the honest offer is another ten (below), not a session that would graduate the skill.
           passed && redoMissed.length ? btn(`Redo the ${redoMissed.length} you missed`, { onclick: () => render('redo', { misses: redoMissed, skill: id, from }), 'aria-label': `Redo the ${redoMissed.length} item${redoMissed.length === 1 ? '' : 's'} you missed in this drill` }, 'btn btn--primary') : null,
           passed ? [btn(queue.length ? `Next: ${titleOf(queue[0])}` : (from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills'), { onclick: finishQueue }, redoMissed.length ? 'btn' : 'btn btn--primary'), btn('Practise now', { onclick: () => startBlocked(id, from) }, 'btn')]
-            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn(nSteps ? 'Go through the steps again' : 'Re-read the lesson', { onclick: showSteps }, 'btn'), btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')]));
+            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn(nSteps ? 'Go through the steps again' : 'Re-read the lesson', { onclick: () => showSteps() }, 'btn'), btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')]));
       ctx.say(passed ? `${skill.title} learned.` : 'Not yet; another ten items are ready.');
     };
-    if (skill.set) showGuided(); else showSteps();
+    // Where the sitting left off (M-2): the ten when the steps were finished, else the step on screen.
+    if (skill.set) showGuided();
+    else if (nSteps && savedStep >= nSteps) showBlocked();
+    else showSteps({ at: nSteps ? Math.min(savedStep, nSteps - 1) : 0 });
   }
 
   /* --------------------------------------------- "Just drill it" (§10) */
@@ -1221,8 +1232,12 @@ export function createUI(ctx) {
     const parts = Array.isArray(catalogue.raw?.parts) ? catalogue.raw.parts : [];
     const cats = ['all', ...new Set(parts.flatMap((p) => p.tables.map((t) => t.category)).filter(Boolean))];
     const shown = (t) => (catState.category === 'all' || t.category === catState.category) && (catState.chapter == null || (t.chapter != null && t.chapter <= catState.chapter));
+    // The lede counts what is on screen, not what the catalogue holds: under a filter it went on saying
+    // "65 tables" above four of them (N-9).
+    const allTables = catalogue.tables.size;
+    const listed = parts.reduce((n, p) => n + p.tables.filter(shown).length, 0);
     const head = h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Tables' }),
-      h('p', { class: 'g-lede', text: `Every paradigm the book teaches, by part of speech: ${catalogue.tables.size} tables. Open one to see it filled, practise a cell across several words or the whole table, and switch the word it is built on.` }));
+      h('p', { class: 'g-lede', text: `Every paradigm the book teaches, by part of speech: ${listed === allTables ? `${allTables} tables` : `${listed} of ${allTables} tables under this filter`}. Open one to see it filled, practise a cell across several words or the whole table, and switch the word it is built on.` }));
     const filterNode = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'Filter by category' },
       cats.map((c) => btn(c === 'all' ? 'All' : (CATEGORY_LABEL[c] ?? cap(c.replace('-', ' '))), { 'aria-pressed': String(catState.category === c), onclick: () => { catState.category = c; draw(); } }, 'g-filter__btn')));
     const chapters = [...new Set(parts.flatMap((p) => p.tables.map((t) => t.chapter)).filter((c) => c != null))].sort((a, b) => a - b);
@@ -1266,6 +1281,11 @@ export function createUI(ctx) {
     const cellAxes = (t.axes ?? []).filter((a) => a.scope === 'cell');
     // Of the lemma axes only gender can honestly narrow three to five stock words (§5); chapter and deponency cannot.
     const lemmaAxes = (t.axes ?? []).filter((a) => a.scope === 'lemma' && a.id === 'gender');
+    // The two kinds of axis choose different things and must never be handed to the other's function (§5, QA M-6):
+    // a **cell** axis says which cells are asked (`narrowCells`), a **lemma** axis which words they are asked on
+    // (`stockWords`). Passing gender to `narrowCells` dropped every cell a noun table has, because a noun's cell id
+    // carries no gender slot, and "practise one cell across words" answered "No cell fits these axes."
+    const picked = gen.splitAxes(t, axes);
     const repaint = () => renderTable(got, tableId, { from });
 
     // The word: the stock words as chips, and a search over the library's headwords (§4b).
@@ -1289,8 +1309,15 @@ export function createUI(ctx) {
       h('h2', { id: 'g-cat-filled', class: 'g-h2', text: `Filled in · ${wordHead}` }),
       filled ? h('div', { class: 'g-lesson__pt' }, filled) : h('p', { class: 'g-quiet', text: 'This word renders no table.' }));
 
-    // The words a cell is practised on: the stock words under the lemma axes; the chosen library word joins them.
-    const drillWords = () => { const base = gen.stockWords(t.id, axes); const list = chosen && !base.some((w) => w.h === chosen.h) ? [chosen, ...base] : base; return list.slice(0, 5); };
+    // The words a cell is practised on: the stock words under the lemma axes; the chosen library word joins them,
+    // but only when it answers those axes too — with *masculine* chosen the drill still led on feminine īnsula (N-4).
+    // A word the axis cannot judge (a library word whose gender is unknown to the chip) is kept, as `lemmaFits` says.
+    const chosenWord = chosen ? { ...chosen, gender: chosen.gender ?? word?.entry?.gender ?? null } : null;
+    const drillWords = () => {
+      const base = gen.stockWords(t.id, axes);
+      const join = chosenWord && !base.some((w) => w.h === chosenWord.h) && gen.lemmaFits(t, axes, chosenWord);
+      return (join ? [chosenWord, ...base] : base).slice(0, 5);
+    };
     const start = (list, { title }) => {
       const built = list.filter(Boolean);
       if (!built.length) { ctx.say('Nothing to practise with these choices.'); return; }
@@ -1302,12 +1329,15 @@ export function createUI(ctx) {
     // Practise one cell across words.
     const groupPick = groups.length > 1 ? h('select', { class: 'g-select', 'aria-label': 'Part of the table', onchange: (e) => { catState.group.set(t.id, e.target.value || null); repaint(); } },
       h('option', { value: '', selected: !group ? true : null }, 'Choose a part…'), groups.map((g) => h('option', { value: g.id, selected: group === g.id ? true : null }, g.label))) : null;
-    const cellsOf = group ? gen.narrowCells(gen.cellIdsOf(t, group), axes) : [];
+    const cellsOf = group ? gen.narrowCells(gen.cellIdsOf(t, group), picked.cell) : [];
     const labelOfCell = (id) => { const spot = word?.cells?.get(id); return spot ? gen.helpers.cellLabelOf(spot, word.table) : id; };
     const cellButtons = h('div', { class: 'g-chips g-cells', role: 'group', 'aria-label': 'Cell' }, cellsOf.map((id) => btn(labelOfCell(id), { onclick: () => start([gen.cellItem({ tableId: t.id, cellId: id, words: drillWords() })], { title: `${t.label} · ${labelOfCell(id)}` }), 'aria-label': `Practise the ${labelOfCell(id)} across ${drillWords().length} words` }, 'g-chip')));
     const oneCellNode = h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-cat-cell' },
       h('h2', { id: 'g-cat-cell', class: 'g-h2', text: 'Practise one cell across words' }),
-      h('p', { class: 'g-quiet', text: `The same cell asked on ${drillWords().map((w) => (w.lemma ?? w.h).split(/[\s,]/)[0]).join(', ')} — one box a word, each judged as you leave it, the set one attempt.` }),
+      h('p', { class: 'g-quiet', text: drillWords().length
+        ? `The same cell asked on ${drillWords().map((w) => (w.lemma ?? w.h).split(/[\s,]/)[0]).join(', ')} — one box a word, each judged as you leave it, the set one attempt.`
+        : 'No stock word of this table answers the chosen axes, so there is nothing to ask the cell on. Let one of them go, or search for a word.' }),
+      // A cell axis is what can empty this list; a lemma axis narrows the words above it and never the cells (M-6).
       groupPick, group ? (cellsOf.length ? cellButtons : h('p', { class: 'g-quiet', text: 'No cell fits these axes.' })) : null);
 
     // Axes (§5): only those the data can honestly filter, each value with its count.
@@ -1321,11 +1351,15 @@ export function createUI(ctx) {
     // Practise the whole table (or the chosen part), scaffolded.
     const level = scaffoldLevelOf(t.id);
     const percent = scaffoldPercent(level, scaffoldAutoOf(t.id));
-    const wholeWords = () => { const list = drillWords(); return chosen ? [chosen, ...list.filter((w) => w.h !== chosen.h)] : list; };
-    const whole = () => start(wholeWords().slice(0, 4).map((w) => gen.tableItem({ tableId: t.id, word: w, group: group ?? null, cellIds: Object.keys(axes).length ? gen.narrowCells(gen.cellIdsOf(t, group), axes) : null })), { title: `${t.label}${group && groups.length > 1 ? ` · ${groups.find((g) => g.id === group)?.label ?? group}` : ''}` });
+    // The chosen word leads the whole-table drill — unless a lemma axis rules it out, in which case leading on it
+    // would drill exactly the word the learner had just excluded (N-4).
+    const wholeWords = () => { const list = drillWords(); return chosenWord && gen.lemmaFits(t, axes, chosenWord) ? [chosenWord, ...list.filter((w) => w.h !== chosenWord.h)] : list; };
+    const whole = () => start(wholeWords().slice(0, 4).map((w) => gen.tableItem({ tableId: t.id, word: w, group: group ?? null, cellIds: Object.keys(picked.cell).length ? gen.narrowCells(gen.cellIdsOf(t, group), picked.cell) : null })), { title: `${t.label}${group && groups.length > 1 ? ` · ${groups.find((g) => g.id === group)?.label ?? group}` : ''}` });
     const wholeNode = h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-cat-whole' },
       h('h2', { id: 'g-cat-whole', class: 'g-h2', text: groups.length > 1 ? 'Practise a whole part of the table' : 'Practise the whole table' }),
-      h('p', { class: 'g-quiet', text: `${wordHead ? `${wordHead} first, then the other words, ` : ''}one table an item: every cell a box, judged as you leave it, the table one attempt. Part of it can be given to start with.` }),
+      // The line names the word the drill will really lead on, which under a lemma axis is not always the
+      // chosen one (N-4): saying "īnsula first" while the masculine chip drills nauta was the same untruth.
+      h('p', { class: 'g-quiet', text: `${(() => { const lead = wholeWords()[0]; const n = lead ? (lead.lemma ?? lead.h).split(/[\s,]/)[0] : ''; return n ? `${n} first, then the other words, ` : ''; })()}one table an item: every cell a box, judged as you leave it, the table one attempt. Part of it can be given to start with.` }),
       scaffoldSwitch(t.id, { current: level, percent }),
       h('div', { class: 'g-acts' }, btn(groups.length > 1 && !group ? 'Choose a part above' : 'Practise it', { onclick: whole, disabled: groups.length > 1 && !group ? true : null }, 'btn btn--primary')));
 
@@ -1366,6 +1400,15 @@ export function createUI(ctx) {
     // over skills — it is a session over the very items got wrong and not since put right — so choosing it starts
     // the redo view rather than an ordinary session, and with nothing to redo the choice is simply unavailable.
     const missedTotal = missedCount();
+    // What the empty "Missed items" line may claim. Saying "everything you have missed has since been answered
+    // right" over a hundred wrong answers on generated sentences was the falsest line in the section (QA M-3):
+    // the wording now separates nothing-missed-yet, nothing-that-can-be-offered-back, and all-put-right.
+    const missedUnnamed = missedTotal ? 0 : unnamedMissedCount();
+    const missedEmpty = missedUnnamed
+      ? `Nothing to redo — ${missedUnnamed === 1 ? 'the one answer you got wrong was' : `all ${missedUnnamed} answers you got wrong were`} on a generated sentence, a catalogue table or a step inside a lesson, which are re-drawn rather than offered back.`
+      : answeredHere()
+        ? 'Nothing to redo — everything you have missed has since been answered right.'
+        : 'Nothing to redo — nothing has been missed yet.';
     const CHOICES = [...Object.entries(PRESET_LABEL), ['missed', ['Missed items', 'The items you got wrong and have not since answered right — most recently missed first, still mixed across skills and kinds, up to the size you chose.']]];
     const presetList = h('div', { class: 'g-presets', role: 'radiogroup', 'aria-label': 'Mix' }, CHOICES.map(([key, [label, desc]]) => {
       const disabled = key === 'this-week' ? !cw.some((id) => rotation.includes(id)) : key === 'missed' ? missedTotal === 0 : false;
@@ -1374,7 +1417,7 @@ export function createUI(ctx) {
         h('input', { type: 'radio', name: 'g-preset', value: key, checked: preset === key ? true : null, disabled: disabled ? true : null, onchange: () => { preset = key; skillSelect.closest('.g-preset__pick').hidden = key !== 'one-skill'; } }),
         h('span', { class: 'g-preset__text' }, h('b', { text: key === 'missed' && missedTotal ? `${label} · ${missedTotal}` : label }),
           h('small', { text: key === 'missed'
-            ? (disabled ? 'Nothing to redo — everything you have missed has since been answered right.' : desc)
+            ? (disabled ? missedEmpty : desc)
             : disabled ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in practice yet.')
             : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
     }));
@@ -1402,7 +1445,9 @@ export function createUI(ctx) {
         h('div', { class: 'g-setup__row' }, h('span', { class: 'g-label', text: 'Items' }), sizeGroup),
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick),
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Hints' }), hintList,
-          h('p', { class: 'g-quiet', text: 'Every answer box has its own hint — a typed field, each cell of a chart, each blank of a pensum, each word of an order or match item. A hint never spells the answer; this choice holds for every session.' }))),
+          // What a hint now is (§6 decision 14, §12): it opens as a nudge, and its last step hands over the
+          // form. The old line promised a hint "never spells the answer", which the shipped hint does (M-9).
+          h('p', { class: 'g-quiet', text: 'Every answer box has its own hint — a typed field, each cell of a chart, each blank of a pensum, each word of an order or match item. A hint starts as a nudge: what that box is being asked for, and the rule behind it. Its last step, "Show this form", gives that one box its answer and marks the box hinted, which counts as weaker evidence. This choice holds for every session.' }))),
       h('div', { class: 'g-acts' }, btn('Start', { onclick: start }, 'btn btn--primary'), btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
   }
   function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null, redo = false, skill: redoSkill = null }) {
@@ -1467,6 +1512,10 @@ export function createUI(ctx) {
   const redoScope = ({ skill = null, chapter = null } = {}) => new Set((skill != null ? [skill] : chapter != null ? chapterIds(chapter) : [...skills.keys()]).filter(redoable));
   /** How many items are waiting to be redone here. 0 means the control says so quietly and is not offered. */
   const missedCount = (scope = {}) => (ctx.items ? gstore.countMissed({ skills: redoScope(scope) }) : 0);
+  /** Wrong answers here that name no item, so can never be offered back — what the empty state must own up to (M-3). */
+  const unnamedMissedCount = (scope = {}) => (ctx.items ? gstore.countUnnamedMissed?.({ skills: redoScope(scope) }) ?? 0 : 0);
+  /** Whether anything at all has been answered here — "nothing missed yet" is a different thing from "all put right". */
+  const answeredHere = (scope = {}) => [...redoScope(scope)].some((id) => gstore.countAttempts(id) > 0);
   /**
    * A redo session: the same items, freshly ordered, run as an ordinary
    * session — logged, fed to the scheduler, clearing an item when it is
@@ -1475,7 +1524,7 @@ export function createUI(ctx) {
    * `chapter`. `size` caps it (Practice setup's chosen size); the other routes
    * pass none, because the count on the button is what the learner agreed to.
    */
-  function renderRedo({ misses = null, skill: skillId = null, chapter = null, size = null, from = null, resume = false } = {}) {
+  async function renderRedo({ misses = null, skill: skillId = null, chapter = null, size = null, from = null, resume = false } = {}) {
     if (skillId != null && !skills.has(skillId)) { render('map'); return; }
     // The world the session may reach: only redoable skills, so the re-queue and the filler stay inside the
     // skill or the chapter that was asked for and never touch one that is still being learned.
@@ -1492,8 +1541,16 @@ export function createUI(ctx) {
     const offered = Array.isArray(misses) && misses.length ? misses.filter((m) => scope.has(m.skill)) : gstore.getMissed({ skills: scope });
     const rows = offered;
     if (!usable && !rows.length) { renderNothingToRedo({ skillId, chapter, from }); return; }
+    // An item drawn from a skill's **own written sentences** is keyed `w:…` (items.js) and lives in that
+    // skill's `createTeachItems`, not in the library, so the library generator cannot rebuild it. Its
+    // generator is loaded for the skills that actually have such a miss — one fetch each, usually one skill —
+    // and answers first for those slots; everything else goes to the library exactly as before (M-3).
+    const wantTeach = [...new Set([...(usable?.queue ?? []), ...rows.map((r) => ({ skill: r.skill, itemKey: r.item_key }))]
+      .filter((r) => r && isWrittenKey(r.itemKey)).map((r) => r.skill))].filter((id) => skills.has(id));
+    const teachFor = new Map((await Promise.all(wantTeach.map(async (id) => [id, await teachItemsOf(skills.get(id))]))).filter(([, t]) => t));
+    const rebuild = (slot) => (isWrittenKey(slot.itemKey) ? teachFor.get(slot.skill)?.itemByKey(slot.itemKey, { kind: slot.kind, stage: slot.stage }) ?? null : null);
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, redo: true, at: Date.now() } : null);
-    const redo = createRedo({ misses: rows, gstore, items, skillsIndex: world, size: size ?? rows.length, oneSkill: skillId, chapter: chapter != null ? Number(chapter) : null, currentWeekN: ctx.currentWeekN(), resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
+    const redo = createRedo({ misses: rows, gstore, items, skillsIndex: world, size: size ?? rows.length, oneSkill: skillId, chapter: chapter != null ? Number(chapter) : null, currentWeekN: ctx.currentWeekN(), resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange, rebuild });
     const first = redo.start();
     if (!first) { writeJSON(LS_SESSION, null); renderNothingToRedo({ skillId, chapter, from, gone: rows.length }); return; }
     if (usable) ctx.say('Redo resumed.');
@@ -1504,13 +1561,29 @@ export function createUI(ctx) {
     const note = `${asked} item${asked === 1 ? '' : 's'} you missed before, most recent first.${short} Each counts towards its skill — unlike trying an item again on the spot, which never does — and getting one right takes it off the list.`;
     runSession({ runner: redo.runner, title, note, mode: 'practice', hintOpen: false, practiceLink: true, onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
   }
-  /** Nothing to redo: said quietly, in the place the learner asked from. */
+  /**
+   * Nothing to redo: said quietly, in the place the learner asked from — and
+   * only ever said of what the data supports. Three different emptinesses,
+   * and the old copy told all three as the last one, so a learner who had
+   * just got a hundred generated sentences wrong was told everything they had
+   * missed had since been answered right (QA M-3):
+   *
+   *   gone      items are still marked missed but can no longer be rebuilt
+   *   unnamed   the wrong answers were on items that carry no name at all
+   *   neither   nothing is outstanding: it really has all been put right
+   */
   function renderNothingToRedo({ skillId = null, chapter = null, from = null, gone = 0 } = {}) {
     const where = skillId != null ? titleOf(skillId) : chapter != null ? `chapter ${roman(Number(chapter))}` : 'your practice';
+    const unnamed = gone ? 0 : unnamedMissedCount({ skill: skillId, chapter });
+    const ever = answeredHere({ skill: skillId, chapter });
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to redo' }),
       h('p', { class: 'g-lede', text: gone
         ? `The ${gone} item${gone === 1 ? '' : 's'} still marked missed in ${where} cannot be rebuilt — the sentences or the words they came from have left the library. Nothing is lost; the skills themselves come round in ordinary practice.`
-        : `Everything you have missed in ${where} has since been answered right. Items come back here when one is got wrong and not yet put right.` })),
+        : unnamed
+          ? `${unnamed} answer${unnamed === 1 ? '' : 's'} in ${where} went wrong on something that has no item to come back to — a sentence the app generated for the moment, a table from the catalogue, or a step inside a lesson. Those are re-drawn rather than re-offered: practise the skill again and you will meet the same pattern in new words. Nothing else is outstanding.`
+          : ever
+            ? `Everything you have missed in ${where} has since been answered right. Items come back here when one is got wrong and not yet put right.`
+            : `Nothing has been missed in ${where} yet. Items come back here when one is got wrong and not yet put right.` })),
       h('div', { class: 'g-acts' }, btn('Practice', { onclick: () => render('setup', { from }) }, 'btn btn--primary'), backButton(from, 'btn btn--quiet')));
   }
 
@@ -2033,6 +2106,8 @@ export function createUI(ctx) {
     const boxes = new Map();
     const labelOf = (i) => item.blanks[i]?.note || `ending ${i + 1}`;
     const cells = cellPainter(item, boxes, { live, labelOf });
+    // As on a chart (§3, QA M-5): a pensum is one attempt, so Check waits until something has been written.
+    let syncCheck = () => {};
     // A div, not a p: each blank carries its own hint button beside it, and a button is fine in a paragraph
     // but the hint panel that follows the sentence is not — the sentence keeps its look through `.g-la`.
     const p = h('div', { class: 'g-la g-pensum', lang: 'la' });
@@ -2044,8 +2119,8 @@ export function createUI(ctx) {
       const inp = h('input', { type: 'text', class: 'g-input g-input--end', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': `Ending after ${b.stem || 'the stem'}${b.note ? ` (${b.note})` : ''}`, placeholder: '…', size: String(Math.max(2, Math.min(6, (b.answers[0] ?? '').length + 1))) });
       inputs.set(i, inp);
       // Judged as the learner leaves it, cleared while they are still typing in it (§3).
-      inp.addEventListener('blur', () => { if (!inp.disabled) cells.mark(i, inp.value, { announce: true }); });
-      inp.addEventListener('input', () => cells.paint(i, null));
+      inp.addEventListener('blur', () => { if (!inp.disabled) cells.mark(i, inp.value, { announce: true }); syncCheck(); });
+      inp.addEventListener('input', () => { cells.paint(i, null); syncCheck(); });
       const hint = hintFor(i, { onOpen: () => cells.hinted(i) });
       if (hint) hints.set(i, hint);
       const mark = h('span', { class: 'g-cellmark', 'aria-hidden': 'true' });
@@ -2057,8 +2132,13 @@ export function createUI(ctx) {
       p.append(wrap);
     }
     const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((b, i) => { v[i] = inputs.get(i)?.value ?? ''; }); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next ending and marks it right or wrong; Alt+H opens the hint for that ending; Enter checks.' }));
+    const needOne = h('p', { class: 'g-quiet g-chart__needone', id: 'g-pensum-needone', text: inputs.size === 1 ? 'Write the ending, then Check.' : 'Write at least one ending before checking — the sentence is one attempt, so an empty one would spend it and show every answer.' });
+    check.setAttribute('aria-describedby', 'g-pensum-needone');
+    syncCheck = () => { const on = anyEnding(); check.disabled = !on; needOne.hidden = on; };
+    const anyEnding = () => [...inputs.values()].some((el) => String(el.value ?? '').trim() !== '');
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!anyEnding()) { needOne.hidden = false; return; } const v = {}; item.blanks.forEach((b, i) => { v[i] = inputs.get(i)?.value ?? ''; }); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next ending and marks it right or wrong; Alt+H opens the hint for that ending; Enter checks.' }));
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i, v) => cells.mark(i, v, { announce: true }) }));
+    syncCheck();
     onCells?.(cells.all);
     setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
     return form;
@@ -2183,13 +2263,19 @@ export function createUI(ctx) {
       : scaffoldGiven(item, { percent, taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell });
     chart.given = given;
     const givenSet = new Set(given);
+    // A chart is **one attempt** (§3), so an empty table must not be gradeable: pressing Check on twelve blank
+    // cells spent the attempt and printed the whole answer key, and one stray click destroyed the exercise
+    // (QA M-5). Check waits until at least one cell has something in it and says why; Enter already waited for
+    // every cell (`boxKeys`), so the button no longer promises less than the keyboard does.
+    const filledAny = () => [...inputs.values()].some((el) => String(el.value ?? '').trim() !== '');
+    let syncCheck = () => {};
     const mk = (i, label) => {
       const inp = h('input', { type: 'text', class: 'g-input g-input--cell', id: `gc-${i}`, lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': label, placeholder: '…' });
       inputs.set(i, inp);
       // Judged as the learner leaves it — green or red at once, and red does not block: the cell stays
       // editable, its hint stays there, and the chart is graded when the learner presses Check (§3).
-      inp.addEventListener('blur', () => { if (!inp.disabled) paintCells.mark(i, inp.value, { announce: true }); });
-      inp.addEventListener('input', () => paintCells.paint(i, null));
+      inp.addEventListener('blur', () => { if (!inp.disabled) paintCells.mark(i, inp.value, { announce: true }); syncCheck(); });
+      inp.addEventListener('input', () => { paintCells.paint(i, null); syncCheck(); });
       return inp;
     };
     // Each cell that is filled in carries its own hint: four cells means four hints, each about its own cell.
@@ -2223,7 +2309,9 @@ export function createUI(ctx) {
       metCells.set(tableId, met);
       if (level === 'auto') writeJSON(LS_SCAFFOLD_AUTO + tableId, scaffoldStep(autoAt, { correct, hinted }));
     };
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = collect(); submit(v); afterGrade(v); } });
+    // The guard is on the submit as well as on the button: a disabled button is the visible half, and this is
+    // the half that holds however the form is submitted (Enter, an assistive tech, a script) — M-5.
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!filledAny()) { needOne.hidden = false; if (live) live.textContent = needText; return; } const v = collect(); submit(v); afterGrade(v); } });
     if (chart.byWord) {
       // One box per word (§8): the same cell asked on each stock word in turn, each judged as it is left,
       // the whole set one attempt. Every box is asked on a phone too — a single box would answer the rest.
@@ -2239,7 +2327,9 @@ export function createUI(ctx) {
       form.append(h('div', { class: 'g-chart__one' }, h('label', { class: 'g-label', for: `gc-${i}` }, `${item.lemma.split(/[\s,]/)[0]} · ${c.label}`), cellIn(i, c.label)));
       inputs.get(i).id = `gc-${i}`;
     } else {
-      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent }));
+      // The note says what *this* table gives, not what the switch is set to: after a retry the two can differ,
+      // because the table on screen keeps the cells it was given while the switch may have been moved (N-5).
+      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent: chart.cells.length ? Math.round((given.length / chart.cells.length) * 100) : 0 }));
       // The sections the cells come from: one for an ordinary chart, several for a catalogue table that spans them.
       const secIdx = chart.multi ? [...new Set(chart.cells.map((c) => c.section ?? chart.section))] : [chart.section];
       for (const si of secIdx) {
@@ -2258,8 +2348,15 @@ export function createUI(ctx) {
       if (given.length) form.append(h('p', { class: 'g-quiet g-chart__givennote', text: `${given.length} of ${chart.cells.length} cells are given in grey; fill the ${chart.cells.length - given.length} others. The given ones have their own hint.` }));
     }
     const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
-    form.append(h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H opens the hint for that cell; Enter checks once every cell is filled.' }));
+    const needText = inputs.size === 1 ? 'Write the form, then Check.'
+      : chart.byWord ? 'Write at least one of these before checking — the set is one attempt, so an empty one would spend it and show every answer.'
+      : 'Write at least one cell before checking — the table is one attempt, so an empty one would spend it and show every answer.';
+    const needOne = h('p', { class: 'g-quiet g-chart__needone', id: 'g-chart-needone', text: needText });
+    check.setAttribute('aria-describedby', 'g-chart-needone');
+    syncCheck = () => { const on = filledAny(); check.disabled = !on; needOne.hidden = on; };
+    form.append(h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H opens the hint for that cell; Enter checks once every cell is filled.' }));
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i, v) => paintCells.mark(i, v, { announce: true }) }));
+    syncCheck();
     onCells?.(paintCells.all);
     setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
     return form;
@@ -2575,7 +2672,11 @@ export function createUI(ctx) {
         h('p', { class: 'g-lede', text: 'History' }),
         h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), dueText(st, now))),
       h('div', { class: 'g-acts' }, acts),
-      total && !missedHere ? h('p', { class: 'g-quiet', text: 'Nothing to redo here: every item of this skill you have missed has since been answered right.' }) : null,
+      // The line may only claim what the log supports (M-3): a miss on a generated sentence or a catalogue
+      // table names no item, so it can never be offered back — which is not the same as having been put right.
+      total && !missedHere ? h('p', { class: 'g-quiet', text: unnamedMissedCount({ skill: id })
+        ? `Nothing to redo here: ${unnamedMissedCount({ skill: id }) === 1 ? 'the one answer you got wrong was' : `all ${unnamedMissedCount({ skill: id })} answers you got wrong were`} on a generated sentence, a catalogue table or a step inside a lesson, which are re-drawn rather than offered back.`
+        : 'Nothing to redo here: every item of this skill you have missed has since been answered right.' }) : null,
     ];
 
     if (!total) {

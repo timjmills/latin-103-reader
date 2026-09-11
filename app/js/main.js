@@ -53,6 +53,15 @@ async function boot() {
   ]);
   document.documentElement.dataset.fixture = fixture ? '1' : '0';
 
+  // The service worker caches the shell, and the shell is what shows the sign-in form — so registration must
+  // not wait on a sign-in. It used to be the last line of boot, behind the gate below and behind every await
+  // after it, which meant a first-time visitor who stopped at the form had nothing cached, and a boot that
+  // threw anywhere (a bad week fetch) left the device with no service worker at all until a boot succeeded.
+  // It is fired here, never awaited, so it still costs the first paint nothing. The fixture harness registers
+  // none, deliberately: its responses are the fixture's, and a worker installed from it would serve them to
+  // the real app on the same origin.
+  if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));
+
   // Sign-in gate (real store only): E's auth.js shows its own form and resolves once signed in.
   if (!fixture) {
     if (auth.ensureSignedIn) await auth.ensureSignedIn();
@@ -1850,7 +1859,7 @@ async function boot() {
   positionTimer = 0;
   positionArmed = true;
   document.documentElement.dataset.ready = '1';
-  if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));
+  // (The service worker is registered at the top of boot, before the sign-in gate, and never awaited.)
   // Grammar section: binds the header's Read / Grammar control; loads nothing until Grammar is opened.
   // `onChapterNav` is how a lesson opened from a chapter page finds its way back (the shell owns the route).
   grammarReady = mountGrammar({ store, dict, par, reader, settings, saveSettings })

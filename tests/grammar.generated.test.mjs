@@ -284,7 +284,11 @@ test('a mixed set interleaves the skill with its related skills, each from its o
 
 /* ============================================ 5 · the attempt's meta */
 
-test('a generated item\'s attempt carries meta { generated, template, sentence }; a written one none; neither enters the redo list', async () => {
+// The redo rule changed with QA M-3: a **generated** item still carries no key (§11b — a bank is re-drawn,
+// not re-addressed), but a **written** sentence drawn into a drill now does, so a miss on one can be offered
+// back. The assertion below used to demand `item_key === null` of every item in the ten, which is what kept
+// the redo shelf permanently empty.
+test('a generated item\'s attempt carries meta { generated, template, sentence } and no key; a written one carries a w: key and no meta', async () => {
   const gstore = store();
   await gstore.ready();
   const skill = SKILLS.get(DIO);
@@ -304,10 +308,13 @@ test('a generated item\'s attempt carries meta { generated, template, sentence }
     if (item.pool === 'generated') {
       assert.deepEqual(res.attempt.meta, { generated: true, template: item.template, sentence: item.taught }, 'meta on a generated attempt');
       assert.ok(/^dio-t\d+$/.test(res.attempt.meta.template));
+      assert.equal(res.attempt.item_key, null, 'a generated item names nothing to come back to');
     } else {
       assert.equal(res.attempt.meta, undefined, 'no meta on a written attempt');
+      // A chart over stock words is not addressable by a key (the words are drawn, not named), so it stays keyless.
+      if (item.pool === 'written' && item.kind !== 'chart') assert.ok(/^w:/.test(String(res.attempt.item_key)), 'a written sentence drawn into the ten is redoable');
+      if (item.kind === 'chart') assert.equal(res.attempt.item_key, null);
     }
-    assert.equal(res.attempt.item_key, null);
     i += 1;
     cur = drill.runner.forward();
   }
@@ -322,7 +329,7 @@ test('a generated item\'s attempt carries meta { generated, template, sentence }
   assert.deepEqual(kept.meta, wrongGenerated.attempt.meta);
   assert.equal('meta' in serverAttemptRow(kept), false);
   assert.equal(normaliseAttempt({ ...wrongGenerated.attempt, meta: {} }).meta, undefined, 'an empty meta is no meta');
-  // Wrong or right, an item with no key is not offered back: the same rule as a teaching step's item.
+  // The one wrong answer was on a generated item, which names nothing to come back to, so nothing is offered back.
   assert.deepEqual(sessionMisses(drill.runner.log), []);
   assert.equal(drill.runner.summary().missed.length, 0);
   assert.equal(drill.runner.summary().right, i - 1);
