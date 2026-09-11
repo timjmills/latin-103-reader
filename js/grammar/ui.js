@@ -2431,12 +2431,39 @@ export function createUI(ctx) {
      * whose boxes are buttons the learner taps) sits under the input, after
      * every box, and so keeps its place in the sequence.
      */
-    const control = (id, { label = false, onOpen = null, given = false } = {}) => {
+    const control = (id, { label = false, onOpen = null, given = false, peek = null } = {}) => {
       const row = rows.get(String(id));
       const b = boxes.find((x) => String(x.id) === String(id));
       if (!row || !b) return null;
       // A given cell (§12) already shows its form: its hint keeps the why and drops "Show this form".
       if (given) row.querySelectorAll('.g-hint__more').forEach((x) => { if (x.textContent === 'Show this form') x.remove(); });
+      /**
+       * A cell the learner **types into** answers in place. Pressing "?" used
+       * to open a panel under the input, which grew the page and slid the
+       * table, the question and the learner's own hands out from under them —
+       * the worst place for a jump is the moment you are reading a cell. Now
+       * the press shows that cell's form *inside the cell*, and the next press
+       * takes it away again: nothing below the cell moves, and the answer
+       * belongs visibly to the one box that asked for it.
+       *
+       * The rule behind the form is not lost — it stays where a typed cell can
+       * hold it, in the box's own hint text under *Always show* — because
+       * `always` means "show me the reasons from the start", and filling every
+       * cell with its answer is not that. So a peek is offered only when the
+       * learner presses for a hint themselves.
+       */
+      if (peek && !always) {
+        row.remove();
+        return h('button', { type: 'button', class: 'g-hintb g-hintb--peek', tabindex: '-1', 'aria-pressed': 'false', 'aria-label': `Show the form for ${b.label}`,
+          onclick: (e) => {
+            const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+            e.currentTarget.setAttribute('aria-pressed', String(on));
+            peek(on);
+            // Asked for and given: the answer counts as hinted the first time it is shown, whether or not
+            // the learner presses again to hide it (§3, decision 14).
+            if (on) { onHint?.(); onOpen?.(); }
+          } }, h('span', { 'aria-hidden': 'true', text: '?' }));
+      }
       return h('button', { type: 'button', class: `g-hintb${label ? ' g-hintb--wide' : ''}`, tabindex: label ? null : '-1', 'aria-expanded': String(always), 'aria-controls': row.id, 'aria-label': `Hint for ${b.label}`,
         onclick: (e) => {
           const opening = row.hidden;
@@ -2489,6 +2516,11 @@ export function createUI(ctx) {
     const inputs = new Map();
     const hints = new Map();
     const boxes = new Map();
+    // A blank showing its own ending holds the answer on screen and the learner's writing here — see the
+    // chart's `peeked`, which this mirrors cell for cell.
+    const peeked = new Map();
+    const valueOf = (i) => (peeked.has(i) ? peeked.get(i) : inputs.get(i)?.value ?? '');
+    const closePeeks = () => { for (const btnEl of hints.values()) if (btnEl.getAttribute('aria-pressed') === 'true') btnEl.click(); };
     const labelOf = (i) => item.blanks[i]?.note || `ending ${i + 1}`;
     const cells = cellPainter(item, boxes, { live, labelOf });
     // As on a chart (§3, QA M-5): a pensum is one attempt, so Check waits until something has been written.
@@ -2504,9 +2536,17 @@ export function createUI(ctx) {
       const inp = h('input', { type: 'text', class: 'g-input g-input--end', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', 'aria-label': `Ending after ${b.stem || 'the stem'}${b.note ? ` (${b.note})` : ''}`, placeholder: '…', size: String(Math.max(2, Math.min(6, (b.answers[0] ?? '').length + 1))) });
       inputs.set(i, inp);
       // Judged as the learner leaves it, cleared while they are still typing in it (§3).
-      inp.addEventListener('blur', () => { if (!inp.disabled) cells.mark(i, inp.value, { announce: true }); syncCheck(); });
+      inp.addEventListener('blur', () => { if (!inp.disabled && !peeked.has(i)) cells.mark(i, inp.value, { announce: true }); syncCheck(); });
       inp.addEventListener('input', () => { cells.paint(i, null); syncCheck(); });
-      const hint = hintFor(i, { onOpen: () => cells.hinted(i) });
+      // The blank shows its own ending on a press and puts it away on the next. Only the ending: the stem is
+      // already printed in the sentence in front of it, so the box holds what the box asks for.
+      const ending = b.answers?.[0] ?? null;
+      const peek = ending == null ? null : (on) => {
+        if (on) { peeked.set(i, inp.value); inp.value = ending; inp.readOnly = true; inp.classList.add('is-peek'); cells.paint(i, null); }
+        else { inp.value = peeked.get(i) ?? ''; peeked.delete(i); inp.readOnly = false; inp.classList.remove('is-peek'); }
+        syncCheck();
+      };
+      const hint = hintFor(i, { onOpen: () => cells.hinted(i), peek });
       if (hint) hints.set(i, hint);
       const mark = h('span', { class: 'g-cellmark', 'aria-hidden': 'true' });
       // The stem is already printed: it ends the prose segment before this blank ("Rōma in Itali_ est."). Printing
@@ -2520,9 +2560,9 @@ export function createUI(ctx) {
     const needOne = h('p', { class: 'g-quiet g-chart__needone', id: 'g-pensum-needone', text: inputs.size === 1 ? 'Write the ending, then Check.' : 'Write at least one ending before checking — the sentence is one attempt, so an empty one would spend it and show every answer.' });
     check.setAttribute('aria-describedby', 'g-pensum-needone');
     syncCheck = () => { const on = anyEnding(); check.disabled = !on; needOne.hidden = on; };
-    const anyEnding = () => [...inputs.values()].some((el) => String(el.value ?? '').trim() !== '');
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!anyEnding()) { needOne.hidden = false; return; } const v = {}; item.blanks.forEach((b, i) => { v[i] = inputs.get(i)?.value ?? ''; }); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next ending and marks it right or wrong; Alt+H opens the hint for that ending; Enter checks.' }));
-    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i, v) => cells.mark(i, v, { announce: true }) }));
+    const anyEnding = () => [...inputs.keys()].some((i) => String(valueOf(i)).trim() !== '');
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!anyEnding()) { needOne.hidden = false; return; } const v = {}; item.blanks.forEach((b, i) => { v[i] = valueOf(i); }); closePeeks(); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next ending and marks it right or wrong; Alt+H shows that ending and hides it again; Enter checks.' }));
+    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => cells.mark(i, valueOf(i), { announce: true }) }));
     syncCheck();
     onCells?.(cells.all);
     setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
@@ -2629,6 +2669,12 @@ export function createUI(ctx) {
     const inputs = new Map();   // index into chart.cells → input
     const hints = new Map();    // index into chart.cells → its hint control
     const boxes = new Map();
+    // While a cell is showing its own form (the hint below), the box on screen holds the answer and this
+    // holds what the learner had written. Everything that reads a cell reads `valueOf`, so a peeked answer
+    // is never mistaken for a typed one: it is not what was filled in, and it is not what gets graded.
+    const peeked = new Map();   // index → the learner's own text, while that cell is showing its answer
+    const valueOf = (i) => (peeked.has(i) ? peeked.get(i) : inputs.get(i)?.value ?? '');
+    const closePeeks = () => { for (const btnEl of hints.values()) if (btnEl.getAttribute('aria-pressed') === 'true') btnEl.click(); };
     const labelOf = (i) => chart.cells[i]?.label ?? `cell ${i + 1}`;
     const paintCells = cellPainter(item, boxes, { live, labelOf });
     // The scaffold (§12): only a whole table has anything to give.
@@ -2652,7 +2698,7 @@ export function createUI(ctx) {
     // cells spent the attempt and printed the whole answer key, and one stray click destroyed the exercise
     // (QA M-5). Check waits until at least one cell has something in it and says why; Enter already waited for
     // every cell (`boxKeys`), so the button no longer promises less than the keyboard does.
-    const filledAny = () => [...inputs.values()].some((el) => String(el.value ?? '').trim() !== '');
+    const filledAny = () => [...inputs.keys()].some((i) => String(valueOf(i)).trim() !== '');
     let syncCheck = () => {};
     // A retry keeps what was already right (N-6). "Try again" rebuilds the item, and rebuilding used to hand
     // back a blank table: two cells right and one wrong became three empty boxes, and the learner retyped
@@ -2668,14 +2714,23 @@ export function createUI(ctx) {
       inputs.set(i, inp);
       // Judged as the learner leaves it — green or red at once, and red does not block: the cell stays
       // editable, its hint stays there, and the chart is graded when the learner presses Check (§3).
-      inp.addEventListener('blur', () => { if (!inp.disabled) paintCells.mark(i, inp.value, { announce: true }); syncCheck(); });
+      inp.addEventListener('blur', () => { if (!inp.disabled && !peeked.has(i)) paintCells.mark(i, inp.value, { announce: true }); syncCheck(); });
       inp.addEventListener('input', () => { paintCells.paint(i, null); syncCheck(); });
       return inp;
     };
     // Each cell that is filled in carries its own hint: four cells means four hints, each about its own cell.
     const cellIn = (i, label) => {
       const inp = mk(i, label);
-      const hint = hintFor(i, { onOpen: () => paintCells.hinted(i) });
+      // The hint for a typed cell shows that cell's form in the box itself and takes it away on the next
+      // press. `readOnly`, not `disabled`: the box keeps its place in the tab order and Alt+H still reaches
+      // its hint, so the same key that showed the form puts it away again.
+      const answer = chart.cells[i]?.answer?.[0] ?? null;
+      const peek = answer == null ? null : (on) => {
+        if (on) { peeked.set(i, inp.value); inp.value = answer; inp.readOnly = true; inp.classList.add('is-peek'); paintCells.paint(i, null); }
+        else { inp.value = peeked.get(i) ?? ''; peeked.delete(i); inp.readOnly = false; inp.classList.remove('is-peek'); }
+        syncCheck();
+      };
+      const hint = hintFor(i, { onOpen: () => paintCells.hinted(i), peek });
       if (hint) hints.set(i, hint);
       const mark = h('span', { class: 'g-cellmark', 'aria-hidden': 'true' });
       const wrap = h('span', { class: 'g-cellwrap' }, inp, mark, hint);
@@ -2690,7 +2745,7 @@ export function createUI(ctx) {
       return h('span', { class: 'g-cellwrap g-cellwrap--given' }, h('span', { class: 'g-chart__givenform', lang: 'la', text: c.answer[0] }), h('span', { class: 'visually-hidden', text: ` — ${c.label}, given` }), hint);
     };
     // Cells not shown (phones show one) and cells given are right by definition: only what was asked counts.
-    const collect = () => { const v = {}; chart.cells.forEach((c, i) => { v[i] = inputs.has(i) ? inputs.get(i).value : c.answer[0]; }); return v; };
+    const collect = () => { const v = {}; chart.cells.forEach((c, i) => { v[i] = inputs.has(i) ? valueOf(i) : c.answer[0]; }); return v; };
     const afterGrade = (v) => {
       if (!whole || !tableId) return;
       const r = cellResults(item, v);
@@ -2705,7 +2760,9 @@ export function createUI(ctx) {
     };
     // The guard is on the submit as well as on the button: a disabled button is the visible half, and this is
     // the half that holds however the form is submitted (Enter, an assistive tech, a script) — M-5.
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!filledAny()) { needOne.hidden = false; if (live) live.textContent = needText; return; } const v = collect(); rememberRight(v); submit(v); afterGrade(v); } });
+    // Any cell still showing its form is put back first, so the graded table is the learner's own writing
+    // and nothing on screen claims to be an answer that was only being looked at.
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!filledAny()) { needOne.hidden = false; if (live) live.textContent = needText; return; } const v = collect(); closePeeks(); rememberRight(v); submit(v); afterGrade(v); } });
     if (chart.byWord) {
       // One box per word (§8): the same cell asked on each stock word in turn, each judged as it is left,
       // the whole set one attempt. Every box is asked on a phone too — a single box would answer the rest.
@@ -2753,7 +2810,7 @@ export function createUI(ctx) {
     form.append(h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H opens the hint for that cell; Enter checks once every cell is filled.' }));
     // Said before the keys line, because it explains why boxes already have writing in them.
     if (keptHere) form.insertBefore(h('p', { class: 'g-quiet g-chart__keptnote', text: `The ${keptHere === 1 ? 'cell' : `${keptHere} cells`} you had right ${keptHere === 1 ? 'is' : 'are'} kept; ${emptyHere === 1 ? 'the empty one is the one' : `the ${emptyHere} empty ones are the ones`} that went wrong. Every cell is judged again when you check.` }), form.querySelector('.g-chart__acts'));
-    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i, v) => paintCells.mark(i, v, { announce: true }) }));
+    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => paintCells.mark(i, valueOf(i), { announce: true }) }));
     syncCheck();
     onCells?.(paintCells.all);
     // The first cell still to fill, which on a retry is the first one that went wrong, not the first box.
