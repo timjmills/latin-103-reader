@@ -46,6 +46,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "sup-03",
+          "sup-06"
+        ],
+        "ask": "Tap the word for 'bravest' in the first sentence and 'happiest' in the second. What do the two endings have in common?",
+        "tap": "focus"
+      },
       "say": "Set one thing against the whole group it belongs to and Latin marks the adjective again: **the superlative (the '-est / most' form)**. *clārus* (bright) → *clārissima stēlla*, the brightest star; *fortis* → *mīles fortissimus*, the bravest soldier. It can also mean simply 'very': *aegerrimus*, very sick indeed.",
       "show": {
         "kind": "sentence",

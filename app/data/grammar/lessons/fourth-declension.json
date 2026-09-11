@@ -50,6 +50,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "f4-06",
+          "f4-07"
+        ],
+        "ask": "Tap the word meaning 'of the army' in each sentence. What ending do the two share?",
+        "tap": "focus"
+      },
       "say": "Most nouns you have met run on *a* (*puella*) or on *o* (*servus*). A small family runs on *u* instead, and each of its members is **a 4th-declension noun (the u-pattern: manus, manūs)**: *exercitus* (army), *manus* (hand), *arcus* (bow), *metus* (fear), *impetus* (attack), *passus* (pace). The dictionary always prints one as a pair, *exercitus, exercitūs*.",
       "show": {
         "kind": "sentence",

@@ -51,6 +51,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "ptcp-03",
+          "ptcp-04"
+        ],
+        "ask": "Tap the word for 'carrying' in the first sentence and 'walking' in the second. Each sits beside a name — what do the two words have in common?",
+        "tap": "focus"
+      },
       "say": "Take a verb and turn it into a word that describes a noun, and you have **the present participle (the '-ing' word that describes a noun)**. *puer dormiēns* is 'the sleeping boy', or 'the boy, sleeping'. It does two things at once: it keeps the verb's meaning and it agrees with its noun the way any adjective does.",
       "show": {
         "kind": "sentence",
@@ -133,7 +141,7 @@
     {
       "n": 4,
       "title": "The stem is -nt-",
-      "say": "*-ns* is the form for the subject, and for a neuter noun the object as well (*animal dormiēns* either way). Every other form is built on *-nt-*, with the endings of a 3rd-declension adjective: the accusative (the object form) *-ntem* (*fugientem*), the genitive (the 'of' form) *-ntis* (*plōrantis*), the dative (the 'to/for' form) *-ntī* (*dormientī*), the plural *-ntēs* (*currentēs*) and the neuter plural *-ntia* (*dormientia*). The table shows those endings on an ordinary 3rd-declension adjective.",
+      "say": "Every form but the subject's *-ns* is built on *-nt-*, with the endings of a 3rd-declension adjective: the accusative (the object form) *-ntem* (*fugientem*), the genitive (the 'of' form) *-ntis* (*plōrantis*), the dative (the 'to/for' form) *-ntī* (*dormientī*), the plural *-ntēs* (*currentēs*) and the neuter plural *-ntia* (*dormientia*). The table shows those endings on an ordinary 3rd-declension adjective.",
       "show": {
         "kind": "paradigm",
         "key": "adj3",
@@ -229,6 +237,10 @@
     {
       "type": "p",
       "text": "The learner's notes (week 14): the active participle adds *-(e)ns* to the stem; the *e* drops after *a-* and *e-*stems (*ambulāns, vidēns*) and stays in consonant, *-iō* and *i-*stems (*frangēns, percutiēns, veniēns*); every other form adds *-(e)nt-* plus a 3rd-declension ending, agreeing in case, number and gender; a participle may take an object or a phrase to form a participial phrase (*the soldiers fleeing from the battlefield*). Ørberg (chapter XIV): *vigilāns, iacēns, canēns, dormiēns* are participles, adjectives of the 3rd declension with genitive *-antis / -entis* and ablative *-e* or *-ī*."
+    },
+    {
+      "type": "p",
+      "text": "*-ns* is the form for the subject, and for a neuter noun the object as well (*animal dormiēns* either way)."
     }
   ],
   "sources": [

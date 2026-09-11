@@ -44,7 +44,15 @@
     {
       "n": 1,
       "title": "A word glued to the end of another",
-      "say": "Latin has a few words too small to stand on their own, so they ride on the back of the word in front: the tacked-on words -que ('and') and -ne (turns a sentence into a question). In *Sicilia Sardiniaque īnsulae magnae sunt* the word is *Sardinia* with *-que* stuck on the end. Read the word without its tail first, then add what the tail means.",
+      "notice": {
+        "sentences": [
+          "enc-01",
+          "enc-03"
+        ],
+        "ask": "Tap the word in each sentence that has something extra stuck on its end. What is the extra bit, and what does it mean?",
+        "tap": "focus"
+      },
+      "say": "Latin has a few words too small to stand alone, so they ride on the word in front: the tacked-on words -que ('and') and -ne (turns a sentence into a question). Read the word without its tail first, then add what the tail means. In *Sicilia Sardiniaque īnsulae magnae sunt* the word is *Sardinia* with *-que* stuck on.",
       "show": {
         "kind": "sentence",
         "id": "enc-01"
@@ -80,7 +88,7 @@
     {
       "n": 3,
       "title": "-ne asks a yes-or-no question",
-      "say": "*-ne* is glued to the word the question is really about, and that word moves to the front — most often the verb: *Nīlus fluvius magnus est* becomes *Estne Nīlus fluvius magnus…?* English asks in the same way, by putting the verb first; Latin puts it first and adds the tail. When the question is about something else, that word leads instead: *Aegyptusne prōvincia Rōmāna est?* asks whether it is Egypt that is a Roman province.",
+      "say": "*-ne* is glued to the word the question is really about, and that word moves to the front — most often the verb. *Nīlus fluvius magnus est* becomes *Estne Nīlus fluvius magnus…?*",
       "show": {
         "kind": "sentence",
         "id": "enc-06"
@@ -149,6 +157,10 @@
     {
       "type": "p",
       "text": "Not every word ending in -que is 'and' plus a word: *quoque* (also), *neque* (and not), *itaque* (therefore), *ubīque* (everywhere) and *-cumque* words are whole words. *-que* can join two sentences as well as two words, sitting on the first word of the second: Julius sees Quintus *eumque interrogat* — and asks him (r03:53.1). *-ne* attaches to *nōn* to make *nōnne*, which expects the answer yes; *num* (Num Crēta oppidum est?) expects no. Ørberg cap. I (-ne, -que), cap. III (-que on a pronoun); A&G §121, §332."
+    },
+    {
+      "type": "p",
+      "text": "English asks in the same way, by putting the verb first; Latin puts it first and adds the tail. When the question is about something else, that word leads instead: *Aegyptusne prōvincia Rōmāna est?* asks whether it is Egypt that is a Roman province."
     }
   ],
   "sources": [

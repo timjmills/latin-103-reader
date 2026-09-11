@@ -23,7 +23,8 @@
    "sense_full": "wine",
    "parts": null,
    "unit_id": "w04:45.4",
-   "count": 39
+   "count": 39,
+   "sem": "food"
   },
   {
    "lemma": "ager",
@@ -35,7 +36,8 @@
    "sense_full": "field, ground",
    "parts": null,
    "unit_id": "w04:1.5",
-   "count": 38
+   "count": 38,
+   "sem": "place"
   },
   {
    "lemma": "agricola",
@@ -47,7 +49,8 @@
    "sense_full": "farmer, cultivator, gardener, agriculturist",
    "parts": null,
    "unit_id": "w04:7.4",
-   "count": 26
+   "count": 26,
+   "sem": "person"
   },
   {
    "lemma": "quīdam",
@@ -71,7 +74,8 @@
    "sense_full": "grain",
    "parts": null,
    "unit_id": "w04:7.1",
-   "count": 22
+   "count": 22,
+   "sem": "food"
   },
   {
    "lemma": "perīculum",
@@ -83,7 +87,8 @@
    "sense_full": "danger, peril",
    "parts": null,
    "unit_id": "w03:minos:b6.2",
-   "count": 19
+   "count": 19,
+   "sem": "abstract"
   },
   {
    "lemma": "colōnus",
@@ -95,7 +100,8 @@
    "sense_full": "farmer, cultivator, tiller",
    "parts": null,
    "unit_id": "w04:70.1",
-   "count": 15
+   "count": 15,
+   "sem": "person"
   },
   {
    "lemma": "cēnseō",
@@ -131,7 +137,8 @@
    "sense_full": "pain, trouble, annoyance, distress",
    "parts": null,
    "unit_id": "w04:7.5",
-   "count": 11
+   "count": 11,
+   "sem": "abstract"
   },
   {
    "lemma": "spērō",
@@ -155,7 +162,13 @@
    "sense_full": "country, rural",
    "parts": null,
    "unit_id": "w04:92.6",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "of": [
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "vīnea",
@@ -167,7 +180,8 @@
    "sense_full": "vines in a vineyard or arranged in rows",
    "parts": null,
    "unit_id": "w04:45.2",
-   "count": 10
+   "count": 10,
+   "sem": "place"
   },
   {
    "lemma": "labōrō",
@@ -179,7 +193,14 @@
    "sense_full": "work, labor",
    "parts": "labōrō, labōrāre, laboravī, laboratum",
    "unit_id": "w04:59.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "par",
@@ -239,7 +260,17 @@
    "sense_full": "free",
    "parts": "līberō, līberāre, līberāvī, līberātum",
    "unit_id": "w03:minos:b6.2",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "neglegō",
@@ -251,7 +282,19 @@
    "sense_full": "disregard, neglect, ignore, regard of no consequence",
    "parts": "neglegō, neglegere, neglēxī, neglectum",
    "unit_id": "w04:100.3",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "abstract",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "nēquam",
@@ -287,7 +330,8 @@
    "sense_full": "stall, stable, enclosure, fold",
    "parts": null,
    "unit_id": "w03:minos:b3.1",
-   "count": 8
+   "count": 8,
+   "sem": "place"
   },
   {
    "lemma": "vītō",
@@ -299,7 +343,21 @@
    "sense_full": "avoid, shun",
    "parts": "vītō, vītāre, vītāvī, vitatum",
    "unit_id": "w04:45.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "abstract",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "arō",
@@ -311,7 +369,23 @@
    "sense_full": "plow, till, cultivate",
    "parts": "arō, arāre, aravī, aratum",
    "unit_id": "w04:7.3",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "agricola",
+     "colōnus",
+     "servus",
+     "bōs"
+    ],
+    "obj_only": [
+     "ager",
+     "campus",
+     "terra",
+     "humus"
+    ]
+   }
   },
   {
    "lemma": "fundō",
@@ -335,7 +409,20 @@
    "sense_full": "reap",
    "parts": "metō, metere, messuī, messum",
    "unit_id": "w04:7.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "agricola",
+     "colōnus",
+     "servus"
+    ],
+    "obj_only": [
+     "frūmentum",
+     "frūgēs"
+    ]
+   }
   },
   {
    "lemma": "ōtium",
@@ -347,7 +434,8 @@
    "sense_full": "leisure",
    "parts": null,
    "unit_id": "w04:59.5",
-   "count": 7
+   "count": 7,
+   "sem": "abstract"
   },
   {
    "lemma": "prohibeō",
@@ -383,7 +471,8 @@
    "sense_full": "theft",
    "parts": null,
    "unit_id": "w03:fl-63:b14.4",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "mortālis",
@@ -395,7 +484,12 @@
    "sense_full": "mortal, transient",
    "parts": null,
    "unit_id": "w03:minos:b1.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "pecus",
@@ -407,7 +501,8 @@
    "sense_full": "cattle, herd, flock",
    "parts": null,
    "unit_id": "w04:29.3",
-   "count": 6
+   "count": 6,
+   "sem": "animal"
   },
   {
    "lemma": "prex",
@@ -419,7 +514,8 @@
    "sense_full": "prayer, request",
    "parts": null,
    "unit_id": "w04:109.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "rapiō",
@@ -431,7 +527,20 @@
    "sense_full": "drag off",
    "parts": "rapiō, rapere, rapuī, raptum",
    "unit_id": "w04:92.4",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "serō",
@@ -455,7 +564,8 @@
    "sense_full": "plenty, abundance, supply",
    "parts": null,
    "unit_id": "w04:38.1",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "corvus",
@@ -467,7 +577,8 @@
    "sense_full": "raven",
    "parts": null,
    "unit_id": "w03:coronis:b10.1",
-   "count": 5
+   "count": 5,
+   "sem": "animal"
   },
   {
    "lemma": "īnstrūmentum",
@@ -479,7 +590,8 @@
    "sense_full": "tool, tools",
    "parts": null,
    "unit_id": "w04:12.2",
-   "count": 5
+   "count": 5,
+   "sem": "thing"
   },
   {
    "lemma": "spargō",
@@ -491,7 +603,20 @@
    "sense_full": "scatter, strew, sprinkle",
    "parts": "spargō, spargere, sparsī, sparsum",
    "unit_id": "w04:12.5",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "sēmen",
+     "aqua",
+     "sāl",
+     "flōs",
+     "rosa"
+    ]
+   }
   },
   {
    "lemma": "superbus",
@@ -503,7 +628,12 @@
    "sense_full": "arrogant, overbearing, haughty, proud",
    "parts": null,
    "unit_id": "w03:minos:b1.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "ūva",
@@ -515,7 +645,8 @@
    "sense_full": "grape",
    "parts": null,
    "unit_id": "w04:45.3",
-   "count": 5
+   "count": 5,
+   "sem": "food"
   },
   {
    "lemma": "arātrum",
@@ -527,7 +658,8 @@
    "sense_full": "plow",
    "parts": null,
    "unit_id": "w04:12.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "crēscō",
@@ -539,7 +671,24 @@
    "sense_full": "come forth/to be",
    "parts": "crēscō, crēscere, crēvī, crētum",
    "unit_id": "w04:7.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "abstract"
+    ],
+    "obj": [],
+    "subj_also": [
+     "arbor",
+     "herba",
+     "flōs",
+     "frūmentum",
+     "flūmen",
+     "ūva",
+     "vīnea"
+    ]
+   }
   },
   {
    "lemma": "dēnique",
@@ -575,7 +724,17 @@
    "sense_full": "favor (with the dative), befriend, support, back up",
    "parts": "faveō, favēre, favī, fautum",
    "unit_id": "w03:minos:b1.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "fertilis",
@@ -587,7 +746,12 @@
    "sense_full": "fertile, fruitful",
    "parts": null,
    "unit_id": "w04:29.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "frūgēs",
@@ -599,7 +763,8 @@
    "sense_full": "crops (in the plural), fruits, produce, legumes",
    "parts": null,
    "unit_id": "w04:29.1",
-   "count": 4
+   "count": 4,
+   "sem": "food"
   },
   {
    "lemma": "grex",
@@ -611,7 +776,8 @@
    "sense_full": "flock, herd",
    "parts": null,
    "unit_id": "w04:134.2",
-   "count": 4
+   "count": 4,
+   "sem": "animal"
   },
   {
    "lemma": "inhūmānus",
@@ -623,7 +789,12 @@
    "sense_full": "rude, discourteous, churlish",
    "parts": null,
    "unit_id": "w04:177.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "noceō",
@@ -635,7 +806,22 @@
    "sense_full": "harm, hurt",
    "parts": "noceō, nocēre, nocuī, nocitum",
    "unit_id": "w04:118.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract"
+    ],
+    "obj": [],
+    "dat": [
+     "person",
+     "animal",
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "pāscō",
@@ -647,7 +833,20 @@
    "sense_full": "feed, feed on",
    "parts": "pāscō, pāscere, pavī, pāstum",
    "unit_id": "w04:29.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [],
+    "obj": [
+     "animal"
+    ],
+    "subj_only": [
+     "pāstor",
+     "agricola",
+     "colōnus",
+     "servus",
+     "puer"
+    ]
+   }
   },
   {
    "lemma": "patientia",
@@ -659,7 +858,8 @@
    "sense_full": "endurance or hardiness",
    "parts": null,
    "unit_id": "w04:88.3",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "prōiciō",
@@ -695,7 +895,8 @@
    "sense_full": "area, region",
    "parts": null,
    "unit_id": "w04:23.1",
-   "count": 4
+   "count": 4,
+   "sem": "place"
   },
   {
    "lemma": "sacrificō",
@@ -719,7 +920,12 @@
    "sense_full": "beautiful, attractive, pleasant, agreeable, enjoyable, charming, lovely",
    "parts": null,
    "unit_id": "w04:1.5",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "dōnec",
@@ -743,7 +949,8 @@
    "sense_full": "sickle. scythe",
    "parts": null,
    "unit_id": "w04:17.2",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "mātūrus",
@@ -755,7 +962,12 @@
    "sense_full": "early, speedy",
    "parts": null,
    "unit_id": "w04:12.7",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "food"
+    ]
+   }
   },
   {
    "lemma": "praedium",
@@ -767,7 +979,8 @@
    "sense_full": "farm, estate",
    "parts": null,
    "unit_id": "w04:49.1",
-   "count": 3
+   "count": 3,
+   "sem": "place"
   },
   {
    "lemma": "recognōscō",
@@ -791,7 +1004,27 @@
    "sense_full": "moisten, wet, water, irrigate",
    "parts": "rigō, rigāre, rigavī, rigatum",
    "unit_id": "w04:38.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "subj_also": [
+     "imber",
+     "flūmen"
+    ],
+    "obj_only": [
+     "ager",
+     "hortus",
+     "campus",
+     "vīnea",
+     "terra",
+     "herba",
+     "arbor",
+     "flōs"
+    ]
+   }
   },
   {
    "lemma": "rūs",
@@ -803,7 +1036,8 @@
    "sense_full": "country, farm",
    "parts": null,
    "unit_id": "w04:59.4",
-   "count": 3
+   "count": 3,
+   "sem": "place"
   },
   {
    "lemma": "similis",
@@ -851,7 +1085,8 @@
    "sense_full": "heat",
    "parts": null,
    "unit_id": "w04:118.2",
-   "count": 2
+   "count": 2,
+   "sem": "nature"
   },
   {
    "lemma": "cingō",
@@ -911,7 +1146,8 @@
    "sense_full": "inhabitant",
    "parts": null,
    "unit_id": "w03:minos:b6.2",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "īnfēlīx",
@@ -923,7 +1159,12 @@
    "sense_full": "unfortunate, unhappy, wretched",
    "parts": null,
    "unit_id": "w03:fl-64:b15.5",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "infēstus",
@@ -935,7 +1176,12 @@
    "sense_full": "unsafe, dangerous",
    "parts": null,
    "unit_id": "w03:minos:b6.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "lāna",
@@ -947,7 +1193,8 @@
    "sense_full": "wool",
    "parts": null,
    "unit_id": "w04:29.4",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "pābulum",
@@ -959,7 +1206,8 @@
    "sense_full": "fodder, forage, food for cattle",
    "parts": null,
    "unit_id": "w04:29.3",
-   "count": 2
+   "count": 2,
+   "sem": "food"
   },
   {
    "lemma": "regius",
@@ -971,7 +1219,13 @@
    "sense_full": "royal, of a king, regal",
    "parts": null,
    "unit_id": "w03:minos:b1.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "rudis",
@@ -995,7 +1249,8 @@
    "sense_full": "seed",
    "parts": null,
    "unit_id": "w04:12.5",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "siccus",
@@ -1007,7 +1262,13 @@
    "sense_full": "dry",
    "parts": null,
    "unit_id": "w04:128.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "suburbānus",
@@ -1043,7 +1304,8 @@
    "sense_full": "cold",
    "parts": null,
    "unit_id": "w04:118.2",
-   "count": 1
+   "count": 1,
+   "sem": "nature"
   },
   {
    "lemma": "fūnis",
@@ -1055,7 +1317,8 @@
    "sense_full": "rope",
    "parts": null,
    "unit_id": "w03:minos:b6.2",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "immātūrus",
@@ -1079,7 +1342,8 @@
    "sense_full": "comprehension or understanding",
    "parts": null,
    "unit_id": "w03:fl-63:b13.2",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "invehō",
@@ -1115,7 +1379,8 @@
    "sense_full": "lump, rough piece",
    "parts": null,
    "unit_id": "w03:fl-65:b19.1",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "rūīrrūīrrūīrr",
@@ -1139,7 +1404,13 @@
    "sense_full": "sacred, holy, consecrated",
    "parts": null,
    "unit_id": "w03:minos:b4.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "sēdō",

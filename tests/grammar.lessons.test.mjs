@@ -24,7 +24,7 @@ test('loader: listed lessons are fetched once; unlisted ones are null without a 
   const fetchJson = async (name) => { calls.push(name); if (!(name in files)) throw new Error(`${name}: 404`); return files[name]; };
   const loader = createLessonLoader({ fetchJson });
   const l = await loader.loadLesson('dative-indirect-object');
-  assert.deepEqual(l, { skill: 'dative-indirect-object', core: [{ type: 'p', text: 'x' }], more: [], sources: [], sample: false });
+  assert.deepEqual(l, { skill: 'dative-indirect-object', teach: [], core: [{ type: 'p', text: 'x' }], more: [], sources: [], sample: false });
   assert.equal(await loader.loadLesson('dative-indirect-object'), l, 'cached');
   assert.equal(await loader.loadLesson('genitive-of'), null);
   assert.equal(await loader.hasLesson('genitive-of'), false);

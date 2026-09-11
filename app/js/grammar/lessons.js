@@ -107,10 +107,180 @@ const lessons = createLessonLoader();
 export const loadLesson = (skillId) => lessons.loadLesson(skillId);
 export const lessonExampleUnits = (skillId) => lessons.exampleUnits(skillId);
 
-/** Pure: a lesson with every block usable. */
+/* ------------------------------- the written teaching sentences (§1) */
+/**
+ * `app/data/grammar/sentences/<skill>.json` — our own Latin, five to eight
+ * words, inside the skill's cumulative chapter vocabulary, each sentence with
+ * its `focus`, its English and a word-by-word `gloss`
+ * (GRAMMAR-CONTRACT.md §1). **Learn draws from these and from nothing else**
+ * (§8): a step's check names one of them by id, so the library never reaches
+ * a teaching step.
+ *
+ * Pure: `normaliseSentences` cleans a fetched file; a sentence missing its
+ * Latin or its id is dropped rather than half-shown.
+ */
+export function normaliseSentences(raw, skillId = null) {
+  const list = Array.isArray(raw?.sentences) ? raw.sentences : Array.isArray(raw) ? raw : [];
+  const out = [];
+  for (const s of list) {
+    const id = typeof s?.id === 'string' && s.id ? s.id : null;
+    const la = typeof s?.la === 'string' && s.la.trim() ? s.la.trim() : null;
+    if (!id || !la) continue;
+    const gloss = Array.isArray(s.gloss) ? s.gloss.filter((g) => g && typeof g.w === 'string').map((g) => ({ w: g.w, m: String(g.m ?? '') })) : [];
+    out.push({
+      id, la, en: typeof s.en === 'string' ? s.en : '',
+      focus: typeof s.focus === 'string' && s.focus ? s.focus : null,
+      words: Number(s.words) || la.split(/\s+/).filter(Boolean).length,
+      step: Number(s.step) || null, stage: Number(s.stage) || 1,
+      kinds: Array.isArray(s.kinds) ? s.kinds.filter((k) => typeof k === 'string') : [],
+      note: typeof s.note === 'string' ? s.note : '',
+      gloss,
+    });
+  }
+  return { skill: raw?.skill ?? skillId, chapter: Number(raw?.chapter) || null, sentences: out };
+}
+
+/**
+ * A loader for the two files Learn needs beside the lesson: the skill's
+ * written sentences, and the paradigm catalogue (`paradigms.json`, §4a — every
+ * table's stable id, its cells' ids and its three to five stock words). Both
+ * are fetched once and shared; a miss is null and the step degrades to what it
+ * can still show, never to a crash.
+ */
+export function createTeachDataLoader({ fetchJson: fetcher = fetchJson } = {}) {
+  const cache = new Map();
+  let catalogueP = null;
+  const loadSentences = (skillId) => {
+    if (!cache.has(skillId)) {
+      cache.set(skillId, fetcher(`sentences/${skillId}.json`)
+        .then((raw) => normaliseSentences(raw, skillId))
+        .catch((e) => { if (!/(^|\D)404(\D|$)/.test(String(e?.message ?? e))) cache.delete(skillId); return null; }));
+    }
+    return cache.get(skillId);
+  };
+  const loadCatalogue = () => (catalogueP ??= fetcher('paradigms.json').then(indexCatalogue).catch(() => null));
+  // The headword index (§4b) sits beside the glossary, one level up from data/grammar/: every lemma as
+  // `[h, pos, key, i]`, which is how a written sentence's focus word is found when the glossary has no
+  // key for the form the sentence prints (items.js `createTeachItems`). null when it cannot be loaded.
+  let headwordsP = null;
+  const loadHeadwords = () => (headwordsP ??= fetcher('../glossary-headwords.json').then((raw) => (Array.isArray(raw?.headwords) ? raw.headwords : null)).catch(() => null));
+  return { loadSentences, loadCatalogue, loadHeadwords };
+}
+
+/**
+ * `paradigms.json` indexed for the app: `table(id)`, `tableOfKey(paradigmKey)`
+ * — skills.json's 46 keys mapped onto the catalogue's 65 tables (§4a: the
+ * branches paradigms.js really takes are finer than those keys in twenty
+ * places) — and `cells(tableId)`, the set of cell ids that table names, which
+ * is what a step's `show.reveal` and a chart check's `cells` are matched
+ * against. Pure.
+ */
+export function indexCatalogue(raw) {
+  const tables = new Map();
+  for (const part of Array.isArray(raw?.parts) ? raw.parts : []) {
+    for (const t of Array.isArray(part?.tables) ? part.tables : []) {
+      if (t && typeof t.id === 'string') tables.set(t.id, { ...t, part: t.part ?? part.id ?? null });
+    }
+  }
+  const keys = raw?.keys && typeof raw.keys === 'object' ? raw.keys : {};
+  const cellsOf = new Map();
+  for (const [id, t] of tables) cellsOf.set(id, new Set((t.groups ?? []).flatMap((g) => g.cells ?? [])));
+  return {
+    raw, tables, keys,
+    table: (id) => tables.get(id) ?? null,
+    /** The table a lesson's `paradigm key` names, or null. `adjcomp` names a **group** inside six adjective tables, so it resolves to no table of its own (§4a). */
+    tableOfKey(key) {
+      const named = keys[key];
+      const first = Array.isArray(named?.tables) ? named.tables[0] : null;
+      return (first && tables.get(first)) ?? tables.get(key) ?? null;
+    },
+    cells: (id) => cellsOf.get(id) ?? new Set(),
+    /** The table's stock words (§4a), three to five per table, in the order the catalogue gives them. */
+    stock: (id) => (tables.get(id)?.stock ?? []).map((w) => ({ ...w })),
+  };
+}
+
+const teachData = createTeachDataLoader();
+/** The skill's own written sentences (§1), or null when the file is not there. */
+export const loadSentences = (skillId) => teachData.loadSentences(skillId);
+/** The paradigm catalogue (§4a), indexed; null when it could not be loaded. */
+export const loadParadigmCatalogue = () => teachData.loadCatalogue();
+/** The headword index (§4b) as its rows, or null. */
+export const loadHeadwords = () => teachData.loadHeadwords();
+
+/** Pure: a lesson with every block usable, and its teach steps normalised. */
 export function normaliseLesson(l) {
   const blocks = (arr) => (Array.isArray(arr) ? arr.filter((b) => b && typeof b.type === 'string') : []);
-  return { skill: l.skill, core: blocks(l.core), more: blocks(l.more), sources: Array.isArray(l.sources) ? l.sources : [], sample: l.sample === true };
+  return { skill: l.skill, teach: normaliseTeach(l.teach), core: blocks(l.core), more: blocks(l.more), sources: Array.isArray(l.sources) ? l.sources : [], sample: l.sample === true };
+}
+
+/* ------------------------------------------------ teach steps (§8) */
+/**
+ * The teach steps of a lesson (GRAMMAR-CONTRACT.md §2 and §8), cleaned and
+ * put in `n` order. A step is **one idea**: its `say`, its `show`, an optional
+ * `worked` example to complete, and its single `check` on that idea alone.
+ * Anything unusable is dropped rather than half-rendered — a step with no
+ * `say` and no `show` teaches nothing, so it is not a step.
+ *
+ *   { n, title, say, show: { kind: 'sentence', id } | { kind: 'paradigm', key, reveal: [cell id] },
+ *     worked: { sentence, given: [feature], ask: [feature | 'why'] },
+ *     check:  { kind, sentence } | { kind: 'chart', key, cells: [cell id], words: [headword] } }
+ *
+ * `words` on a chart check is §8's addition: the same cell asked on each word
+ * in turn. Omitted, the table's own stock words answer for it (§4a), which is
+ * why nothing here invents a lemma. Pure.
+ */
+export function normaliseTeach(raw) {
+  const list = Array.isArray(raw) ? raw : [];
+  const str = (v) => (typeof v === 'string' && v.trim() ? v.trim() : null);
+  const ids = (v) => (Array.isArray(v) ? v.map(str).filter(Boolean) : []);
+  const out = [];
+  for (const s of list) {
+    if (!s || typeof s !== 'object') continue;
+    const show = normaliseShow(s.show);
+    const check = normaliseCheck(s.check);
+    const worked = normaliseWorked(s.worked);
+    const say = str(s.say);
+    if (!say && !show && !check && !worked) continue;
+    out.push({ n: Number(s.n) || out.length + 1, title: str(s.title) ?? '', say: say ?? '', show, worked, check });
+  }
+  return out.sort((a, b) => a.n - b.n).map((s, i) => ({ ...s, n: i + 1 }));
+}
+function normaliseShow(v) {
+  if (!v || typeof v !== 'object') return null;
+  const kind = String(v.kind ?? '');
+  if (kind === 'sentence') return typeof v.id === 'string' && v.id ? { kind: 'sentence', id: v.id } : null;
+  if (kind === 'paradigm') {
+    const key = typeof v.key === 'string' && v.key ? v.key : null;
+    const reveal = Array.isArray(v.reveal) ? v.reveal.filter((c) => typeof c === 'string' && c) : [];
+    // A paradigm shown with nothing revealed would be the whole table — the very thing §7.3 measured
+    // (a median of 143 forms printed to teach six). No cells named, no table.
+    return key && reveal.length ? { kind: 'paradigm', key, reveal } : null;
+  }
+  return null;
+}
+const CHECK_KINDS = new Set(['recognise', 'parse', 'blank', 'chart']);
+function normaliseCheck(v) {
+  if (!v || typeof v !== 'object') return null;
+  const kind = String(v.kind ?? '');
+  if (!CHECK_KINDS.has(kind)) return null;
+  if (kind === 'chart') {
+    const cells = Array.isArray(v.cells) ? v.cells.filter((c) => typeof c === 'string' && c) : [];
+    if (!cells.length) return null;
+    const words = Array.isArray(v.words) ? v.words.filter((w) => typeof w === 'string' && w) : null;
+    return { kind, key: typeof v.key === 'string' && v.key ? v.key : null, cells, words: words && words.length ? words : null };
+  }
+  return { kind, sentence: typeof v.sentence === 'string' && v.sentence ? v.sentence : null };
+}
+const WORKED_FEATURES = new Set(['case', 'number', 'gender', 'tense', 'mood', 'voice', 'person', 'degree', 'construction', 'why']);
+function normaliseWorked(v) {
+  if (!v || typeof v !== 'object') return null;
+  const sentence = typeof v.sentence === 'string' && v.sentence ? v.sentence : null;
+  if (!sentence) return null;
+  const feats = (x) => (Array.isArray(x) ? [...new Set(x.filter((f) => WORKED_FEATURES.has(f)))] : []);
+  const given = feats(v.given).filter((f) => f !== 'why');
+  const ask = feats(v.ask);
+  return { sentence, given, ask };
 }
 
 /** Lesson prose: **bold** and *italic* → nodes (no HTML is ever parsed). Pure. */

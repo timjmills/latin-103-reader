@@ -3,7 +3,15 @@
  "teach": [
   {
    "title": "A word that describes the doing",
-   "say": "An adjective describes a thing; to describe a doing Latin uses **an adverb (the '-ly' word: how something is done) and its -ius / -issimē forms**. *Iūlia pulchrē cantat* — Julia sings beautifully. It answers 'how?', it hangs on the verb rather than on any noun, and — this is the useful part — it never changes its ending for anybody.",
+   "notice": {
+    "sentences": [
+     "adv-04",
+     "adv-06"
+    ],
+    "ask": "Which word in each sentence tells you how the action is done: how the teacher blames, how the soldiers fight?",
+    "tap": "focus"
+   },
+   "say": "An adjective describes a thing; to describe a doing Latin uses **an adverb (the '-ly' word: how something is done) and its -ius / -issimē forms**. *Iūlia pulchrē cantat* — Julia sings beautifully. It answers 'how?', hangs on the verb rather than on any noun, and never changes its ending.",
    "show": {
     "kind": "sentence",
     "id": "adv-01"
@@ -90,7 +98,7 @@
   },
   {
    "title": "Adverb or adjective?",
-   "say": "The two are easy to mix up, because both grow from the same word: **an adjective agreeing with its noun (same gender, number and case)** changes to match that noun — *puella laeta*, *puerī laetī* — while the adverb never changes at all, and *laetē* stays *laetē* whoever is singing. In *vōx gravis est, puer graviter respondet* the first word describes the voice and the second the answering. One last trap: the adverb ending *-ē* is long, where the short *-e* of *serve!* is the vocative (the form for calling someone).",
+   "say": "The two are easy to mix up, because both grow from the same word: **an adjective agreeing with its noun (same gender, number and case)** changes to match that noun, while the adverb never changes at all. In *vōx gravis est, puer graviter respondet* the first word describes the voice and the second the answering.",
    "show": {
     "kind": "sentence",
     "id": "adv-14"
@@ -150,6 +158,10 @@
   {
    "type": "p",
    "text": "Ørberg (chapter XVIII): adjective *-us -a -um* → adverb *-ē*; adjective *-is -e* → adverb *-iter*; *rēctius, fortius* are comparatives of the adverb, *rēctissimē, fortissimē* superlatives; *nēmō fortius pugnat quam Rōmānī: Rōmānī fortissimē pugnant*. A&G §214–218 give the full set, including *-ō* adverbs (*subitō* suddenly, *falsō* falsely)."
+  },
+  {
+   "type": "p",
+   "text": "One last trap: the adverb ending *-ē* is long, where the short *-e* of *serve!* is the vocative (the form for calling someone)."
   }
  ],
  "sources": [

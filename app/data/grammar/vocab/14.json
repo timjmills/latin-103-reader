@@ -23,7 +23,16 @@
    "sense_full": "each, every, every one (of a number)",
    "parts": null,
    "unit_id": "r14:119.1",
-   "count": 171
+   "count": 171,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place"
+    ],
+    "number": "pl"
+   }
   },
   {
    "lemma": "rēs",
@@ -35,7 +44,8 @@
    "sense_full": "thing",
    "parts": null,
    "unit_id": "r14:110.1",
-   "count": 89
+   "count": 89,
+   "sem": "abstract"
   },
   {
    "lemma": "nihil",
@@ -47,7 +57,8 @@
    "sense_full": "nothing",
    "parts": null,
    "unit_id": "r14:101.1",
-   "count": 47
+   "count": 47,
+   "sem": "other"
   },
   {
    "lemma": "alter",
@@ -83,7 +94,14 @@
    "sense_full": "rise, lift",
    "parts": "surgō, surgere, surrēxī, surrectum",
    "unit_id": "r14:40.1",
-   "count": 32
+   "count": 32,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "soleō",
@@ -107,7 +125,8 @@
    "sense_full": "writing tablet (wax covered board)",
    "parts": null,
    "unit_id": "r14:109.1",
-   "count": 28
+   "count": 28,
+   "sem": "thing"
   },
   {
    "lemma": "deinde",
@@ -131,7 +150,14 @@
    "sense_full": "dirty, unclean, foul, filthy",
    "parts": null,
    "unit_id": "r14:45.1",
-   "count": 27
+   "count": 27,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "quōmodo",
@@ -155,7 +181,8 @@
    "sense_full": "parent, father, mother",
    "parts": null,
    "unit_id": "r14:89.1",
-   "count": 25
+   "count": 25,
+   "sem": "person"
   },
   {
    "lemma": "afferō",
@@ -191,7 +218,17 @@
    "sense_full": "wash, bathe",
    "parts": "lavō, lavāre, lāvī, lotum",
    "unit_id": "r14:44.1",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "body",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "praeter",
@@ -215,7 +252,13 @@
    "sense_full": "be strong, powerful, influential, healthy",
    "parts": "valeō, valēre, valuī, valitum",
    "unit_id": "r14:11.2",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "gerō",
@@ -251,7 +294,18 @@
    "sense_full": "wake up, stir up",
    "parts": "excitō, excitāre, excitavī, excitātum",
    "unit_id": "r14:34.2",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "abstract"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "uterque",
@@ -299,7 +353,13 @@
    "sense_full": "open, public, free",
    "parts": null,
    "unit_id": "r14:14.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "of": [
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "cubō",
@@ -311,7 +371,14 @@
    "sense_full": "lie (down or asleep)",
    "parts": "cubō, cubāre, cubuī, cubitum",
    "unit_id": "r14:2.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "nūdus",
@@ -323,7 +390,13 @@
    "sense_full": "nude",
    "parts": null,
    "unit_id": "r14:68.2",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "of": [
+     "person",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "vestīmentum",
@@ -335,7 +408,8 @@
    "sense_full": "garment, robe",
    "parts": null,
    "unit_id": "r14:68.2",
-   "count": 11
+   "count": 11,
+   "sem": "thing"
   },
   {
    "lemma": "stilus",
@@ -347,7 +421,8 @@
    "sense_full": "stylus, pencil, iron pen",
    "parts": null,
    "unit_id": "r14:109.1",
-   "count": 10
+   "count": 10,
+   "sem": "thing"
   },
   {
    "lemma": "dexter",
@@ -383,7 +458,14 @@
    "sense_full": "remain awake, be awake",
    "parts": "vigilō, vigilāre, vigilavī, vigilatum",
    "unit_id": "r14:4.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "neuter",
@@ -407,7 +489,21 @@
    "sense_full": "put on, clothe, cover",
    "parts": "induō, induere, induī, indūtum",
    "unit_id": "r14:73.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "toga",
+     "tunica",
+     "calceus",
+     "vestis",
+     "vestīmentum",
+     "pallium"
+    ]
+   }
   },
   {
    "lemma": "toga",
@@ -419,7 +515,8 @@
    "sense_full": "toga",
    "parts": null,
    "unit_id": "r14:68.2",
-   "count": 7
+   "count": 7,
+   "sem": "thing"
   },
   {
    "lemma": "poscō",
@@ -431,7 +528,16 @@
    "sense_full": "ask, demand",
    "parts": "poscō, poscere, poposcī",
    "unit_id": "r14:68.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "gallus",
@@ -455,7 +561,8 @@
    "sense_full": "ruler, straight edge (drawing)",
    "parts": null,
    "unit_id": "r14:109.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "tunica",
@@ -467,7 +574,8 @@
    "sense_full": "undergarment, shirt,tunic",
    "parts": null,
    "unit_id": "r14:68.2",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "vestiō",
@@ -491,7 +599,8 @@
    "sense_full": "shoe",
    "parts": null,
    "unit_id": "r14:85.1",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "frigō",
@@ -527,7 +636,14 @@
    "sense_full": "pure, clean, unsoiled",
    "parts": null,
    "unit_id": "r14:52.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "thing",
+     "food",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "valēns",

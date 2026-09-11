@@ -11,7 +11,8 @@
    "sense_full": "story, tale, fable",
    "parts": null,
    "unit_id": "w01:1.3",
-   "count": 45
+   "count": 45,
+   "sem": "abstract"
   },
   {
    "lemma": "rēx",
@@ -23,7 +24,8 @@
    "sense_full": "king",
    "parts": null,
    "unit_id": "w01:44.1",
-   "count": 45
+   "count": 45,
+   "sem": "person"
   },
   {
    "lemma": "mors",
@@ -35,7 +37,8 @@
    "sense_full": "death",
    "parts": null,
    "unit_id": "w01:36.3",
-   "count": 26
+   "count": 26,
+   "sem": "abstract"
   },
   {
    "lemma": "taurus",
@@ -47,7 +50,8 @@
    "sense_full": "bull",
    "parts": null,
    "unit_id": "w01:25.1",
-   "count": 19
+   "count": 19,
+   "sem": "animal"
   },
   {
    "lemma": "auxilium",
@@ -59,7 +63,8 @@
    "sense_full": "help, assistance",
    "parts": null,
    "unit_id": "w01:63.1",
-   "count": 18
+   "count": 18,
+   "sem": "abstract"
   },
   {
    "lemma": "labyrinthus",
@@ -71,7 +76,8 @@
    "sense_full": "labyrinth, maze",
    "parts": null,
    "unit_id": "w01:25.2",
-   "count": 18
+   "count": 18,
+   "sem": "place"
   },
   {
    "lemma": "necō",
@@ -83,7 +89,18 @@
    "sense_full": "kill or murder",
    "parts": "necō, necāre, necāvī, necātum",
    "unit_id": "w01:44.3",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "dēserō",
@@ -95,7 +112,18 @@
    "sense_full": "leave, depart, quit, desert",
    "parts": "dēserō, dēserere, dēseruī, dēsertum",
    "unit_id": "w01:116.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "coepiō",
@@ -155,7 +183,17 @@
    "sense_full": "kill",
    "parts": "interficiō, interficere, interfēcī, interfectum",
    "unit_id": "w01:8.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "cīvis",
@@ -167,7 +205,8 @@
    "sense_full": "fellow citizen",
    "parts": null,
    "unit_id": "w01:63.3",
-   "count": 10
+   "count": 10,
+   "sem": "person"
   },
   {
    "lemma": "illūc",
@@ -203,7 +242,14 @@
    "sense_full": "savage",
    "parts": null,
    "unit_id": "w01:36.2",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "of": [
+     "animal",
+     "person",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "cōnstituō",
@@ -227,7 +273,14 @@
    "sense_full": "descend, climb, march, come, go",
    "parts": "dēscendō, dēscendere, dēscendī, descensum",
    "unit_id": "w01:101.7",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "glōria",
@@ -239,7 +292,8 @@
    "sense_full": "glory, fame",
    "parts": null,
    "unit_id": "w01:51.1",
-   "count": 7
+   "count": 7,
+   "sem": "abstract"
   },
   {
    "lemma": "maereō",
@@ -251,7 +305,13 @@
    "sense_full": "grieve, be sad, mourn",
    "parts": "maereō, maerēre",
    "unit_id": "w01:101.7",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "regō",
@@ -263,7 +323,17 @@
    "sense_full": "rule, guide",
    "parts": "regō, regere, rēxī, rēctum",
    "unit_id": "w01:4.3",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "place",
+     "group",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "saxum",
@@ -275,7 +345,8 @@
    "sense_full": "stone",
    "parts": null,
    "unit_id": "w01:101.2",
-   "count": 7
+   "count": 7,
+   "sem": "thing"
   },
   {
    "lemma": "terribilis",
@@ -287,7 +358,14 @@
    "sense_full": "frightful, terrible",
    "parts": null,
    "unit_id": "w01:25.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "animal",
+     "abstract",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "trahō",
@@ -299,7 +377,18 @@
    "sense_full": "draw, drag, haul",
    "parts": "trahō, trahere, trāxī, tractum",
    "unit_id": "w01:4.3",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "fīlum",
@@ -311,7 +400,8 @@
    "sense_full": "thread, string, filament, fiber",
    "parts": null,
    "unit_id": "w01:63.8",
-   "count": 6
+   "count": 6,
+   "sem": "thing"
   },
   {
    "lemma": "linō",
@@ -335,7 +425,13 @@
    "sense_full": "wonderful, marvelous, astonishing, extraordinary",
    "parts": null,
    "unit_id": "w01:29.4",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "mora",
@@ -347,7 +443,8 @@
    "sense_full": "delay, hindrance, obstacle",
    "parts": null,
    "unit_id": "w01:81.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "prōspiciō",
@@ -371,7 +468,13 @@
    "sense_full": "timid",
    "parts": null,
    "unit_id": "w01:21.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "aedificō",
@@ -383,7 +486,32 @@
    "sense_full": "build, erect, construct, make",
    "parts": "aedificō, aedificāre, aedificāvī, aedificātum",
    "unit_id": "w01:8.2",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [],
+    "obj_only": [
+     "mūrus",
+     "vīlla",
+     "aedificium",
+     "templum",
+     "nāvis",
+     "urbs",
+     "oppidum",
+     "moenia",
+     "castra",
+     "theātrum",
+     "amphitheatrum",
+     "vāllum",
+     "labyrinthus",
+     "domūs",
+     "carcer",
+     "balneum"
+    ]
+   }
   },
   {
    "lemma": "complūrēs",
@@ -419,7 +547,8 @@
    "sense_full": "shore, beach, coast",
    "parts": null,
    "unit_id": "w01:101.1",
-   "count": 5
+   "count": 5,
+   "sem": "place"
   },
   {
    "lemma": "polliceor",
@@ -431,7 +560,19 @@
    "sense_full": "promise",
    "parts": "polliceor, pollicērī, pollicitus sum",
    "unit_id": "w01:63.16",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "abstract"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "cōnspectus",
@@ -443,7 +584,8 @@
    "sense_full": "view, (range of) sight",
    "parts": null,
    "unit_id": "w01:101.6",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "currus",
@@ -455,7 +597,8 @@
    "sense_full": "chariot, light horse vehicle",
    "parts": null,
    "unit_id": "w01:4.3",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "moenia",
@@ -467,7 +610,8 @@
    "sense_full": "defensive or town walls (in the plural), bulwarks",
    "parts": null,
    "unit_id": "w01:8.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "mōnstrum",
@@ -479,7 +623,8 @@
    "sense_full": "monster",
    "parts": null,
    "unit_id": "w01:20.1",
-   "count": 4
+   "count": 4,
+   "sem": "animal"
   },
   {
    "lemma": "aedificium",
@@ -491,7 +636,8 @@
    "sense_full": "building",
    "parts": null,
    "unit_id": "w01:29.1",
-   "count": 3
+   "count": 3,
+   "sem": "place"
   },
   {
    "lemma": "pateō",
@@ -515,7 +661,18 @@
    "sense_full": "devour, swallow whole, eat greedily",
    "parts": "vorō, -āre, -āvī, -ātum",
    "unit_id": "w01:14.4",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "animal",
+     "person"
+    ],
+    "obj": [
+     "food",
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "agnus",
@@ -527,7 +684,8 @@
    "sense_full": "lamb",
    "parts": null,
    "unit_id": "w01:4.2",
-   "count": 2
+   "count": 2,
+   "sem": "animal"
   },
   {
    "lemma": "humilis",
@@ -539,7 +697,13 @@
    "sense_full": "low, lowly, small, slight, base, mean, humble, obscure, poor, insignificant",
    "parts": null,
    "unit_id": "w01:14.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "nārrātiō",
@@ -551,7 +715,8 @@
    "sense_full": "narration, story, account",
    "parts": null,
    "unit_id": "w01:128.3",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "quotannīs",
@@ -587,7 +752,8 @@
    "sense_full": "enthusiasm, eagerness, passion",
    "parts": null,
    "unit_id": "w01:117.5",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "expugnātiō",
@@ -599,7 +765,8 @@
    "sense_full": "storming, capture (of a city)",
    "parts": null,
    "unit_id": "w01:44.2",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "nex",
@@ -611,7 +778,8 @@
    "sense_full": "death",
    "parts": null,
    "unit_id": "w01:88.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   }
  ]
 }

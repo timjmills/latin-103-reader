@@ -4,6 +4,14 @@
     {
       "n": 1,
       "title": "Where something comes from",
+      "notice": {
+        "sentences": [
+          "abo-01",
+          "abo-04"
+        ],
+        "ask": "Which word in each sentence says where somebody or something comes from?",
+        "tap": "focus"
+      },
       "say": "To say where somebody comes from, or is leaving, Latin uses *ex* (out of), *ab* (away from) or *dē* (down from, about) and changes the noun's ending. That ending is **the ablative (the 'from' form)**: *ex vīllā* — out of the house. It answers *unde?*, from where?",
       "show": {
         "kind": "sentence",

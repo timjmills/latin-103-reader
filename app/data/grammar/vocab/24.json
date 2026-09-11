@@ -35,7 +35,20 @@
    "sense_full": "be amazed, surprised, bewildered(at)",
    "parts": "mīror, mīrārī, mīrātus sum",
    "unit_id": "r24:7.1",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "thing",
+     "place",
+     "abstract",
+     "nature",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "cupiō",
@@ -47,7 +60,18 @@
    "sense_full": "wish, long, be eager for",
    "parts": "cupiō, cupere, cupīvī, cupītum",
    "unit_id": "r24:50.2",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "dolor",
@@ -59,7 +83,8 @@
    "sense_full": "pain, anguish, grief, sorrow, suffering",
    "parts": null,
    "unit_id": "r24:24.1",
-   "count": 13
+   "count": 13,
+   "sem": "abstract"
   },
   {
    "lemma": "subitō",
@@ -95,7 +120,8 @@
    "sense_full": "attempt, effort",
    "parts": null,
    "unit_id": "r24:26.1",
-   "count": 9
+   "count": 9,
+   "sem": "abstract"
   },
   {
    "lemma": "frangō",
@@ -107,7 +133,18 @@
    "sense_full": "break, shatter, crush",
    "parts": "frangō, frangere, frēgī, frāctum",
    "unit_id": "r24:21.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "ignōrō",
@@ -143,7 +180,13 @@
    "sense_full": "cry for",
    "parts": "fleō, flēre, flevī, fletum",
    "unit_id": "r24:36.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "cruentus",
@@ -155,7 +198,13 @@
    "sense_full": "bloody, bleeding, discharging blood",
    "parts": null,
    "unit_id": "r24:63.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "percutiō",
@@ -167,7 +216,19 @@
    "sense_full": "beat, strike",
    "parts": "percutiō, percutere, percussī, percussum",
    "unit_id": "r24:12.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "sonus",
@@ -179,7 +240,8 @@
    "sense_full": "noise, sound",
    "parts": null,
    "unit_id": "r24:9.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "strepitus",
@@ -191,7 +253,8 @@
    "sense_full": "noise, racket",
    "parts": null,
    "unit_id": "r24:12.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "convertō",
@@ -215,7 +278,13 @@
    "sense_full": "recline, lie at ease, sink, lie, settle back, down",
    "parts": "recumbō, recumbere, recubuī",
    "unit_id": "r24:8.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "iūxtā",
@@ -251,7 +320,8 @@
    "sense_full": "side",
    "parts": null,
    "unit_id": "r24:1.2",
-   "count": 4
+   "count": 4,
+   "sem": "body"
   },
   {
    "lemma": "lautus",
@@ -263,7 +333,13 @@
    "sense_full": "elegant, fashionable",
    "parts": null,
    "unit_id": "r24:73.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "aegrōtus",
@@ -275,7 +351,12 @@
    "sense_full": "sick, diseased",
    "parts": null,
    "unit_id": "r24:1.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "dēnuō",
@@ -335,7 +416,8 @@
    "sense_full": "company of soldiers or mercenaries",
    "parts": null,
    "unit_id": "r24:54.1",
-   "count": 1
+   "count": 1,
+   "sem": "group"
   },
   {
    "lemma": "ferōciō",
@@ -371,7 +453,8 @@
    "sense_full": "bite, sting",
    "parts": null,
    "unit_id": "r24:91.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "tumultus",
@@ -383,7 +466,8 @@
    "sense_full": "commotion, confusion, uproar",
    "parts": null,
    "unit_id": "r24:87.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   }
  ]
 }

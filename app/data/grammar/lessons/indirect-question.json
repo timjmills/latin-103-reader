@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "A direct question stands on its own: *Quid facit?* — what is he doing? Fold it into a bigger sentence and you get **an indirect question (a question folded into a sentence: nesciō quid faciat = I don't know what he is doing)**. Two things happen and no more: the question mark goes, and the verb moves into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do). English folds questions the same way — 'Where is he?' becomes 'I don't know where he is'.",
+      "notice": {
+        "sentences": [
+          "iq-03",
+          "iq-06"
+        ],
+        "ask": "Tap the verb at the end of each sentence. What form are both verbs in?",
+        "tap": "focus"
+      },
+      "say": "A question folded into a bigger sentence is **an indirect question (a question folded into a sentence: nesciō quid faciat = I don't know what he is doing)**. The question mark goes and the verb moves into the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do): *Quid facit?* becomes *nesciō quid faciat*.",
       "show": {
         "kind": "sentence",
         "id": "iq-01"
@@ -29,7 +37,7 @@
     {
       "n": 2,
       "title": "The question word keeps its place",
-      "say": "Whatever asked the question stays at the head of the folded clause: *quis* who, *quid* what, *quem* whom, *cūr* why, *ubi* where, *quandō* when, *unde* from where, *quot* how many. Nothing is added and nothing is dropped. *quis* and *quid* are the nominative (the subject form) of that little word: *quis* covers 'who' for a man and for a woman alike, *quid* is the neuter 'what', and *quem* is the accusative (the object form).",
+      "say": "Whatever asked the question stays at the head of the folded clause: *quis* who, *quid* what, *quem* whom, *cūr* why, *ubi* where, *quandō* when, *unde* from where, *quot* how many. *quis* and *quid* are the nominative (the subject form), *quem* the accusative (the object form): *rogat quid puerī faciant*.",
       "show": {
         "kind": "paradigm",
         "key": "quis",
@@ -185,6 +193,14 @@
     {
       "type": "p",
       "text": "The question word can be *-ne* on the first word (*interrogāvī tuane esset pecūnia* — I asked whether the money was yours, Week 7), or *num* / *an* for 'whether'. For a question about something already over, the perfect subjunctive follows a present verb (*nesciō quis advēnerit*, Week 10) and the pluperfect a past one (*nesciēbam quis advēnisset*, Week 12). A deliberative question keeps its subjunctive when folded in: *nesciēbat quid faceret* — he did not know what to do. Ørberg's chapter 29 builds the pattern from *Quid faciam?* to *nesciō quid faciam*; chapter 32 adds *dubitat num … laudāverit*."
+    },
+    {
+      "type": "p",
+      "text": "English folds questions the same way — 'Where is he?' becomes 'I don't know where he is'."
+    },
+    {
+      "type": "p",
+      "text": "*quis* and *quid* are the nominative (the subject form) of that little word: *quis* covers 'who' for a man and for a woman alike, *quid* is the neuter 'what', and *quem* is the accusative (the object form)."
     }
   ],
   "sources": [

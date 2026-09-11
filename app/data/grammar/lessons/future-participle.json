@@ -51,6 +51,10 @@
     {
       "type": "p",
       "text": "*Sum* has *futūrus* — about to be, the future (adjective *futūrus* = future). The participle with *eram* gives 'was going to': *petītūrus eram tabernam* — I was intending to go to the shop."
+    },
+    {
+      "type": "p",
+      "text": "*Sum* does it too: its fourth part is *futūrum*, so its future participle is *futūrus*, about to be."
     }
   ],
   "sources": [
@@ -62,7 +66,15 @@
     {
       "n": 1,
       "title": "Describing someone by what is coming",
-      "say": "A person can be described by what they are on the point of doing, and the word that does it is **the future participle (the 'about to' word: ventūrus = about to come)**. *Mārcus longam epistulam scrīptūrus est* — Marcus is about to write a long letter. English has no single word for it, so we say 'about to …', 'going to …', 'on the point of …'.",
+      "notice": {
+        "sentences": [
+          "fp-02",
+          "fp-05"
+        ],
+        "ask": "Tap the word that says what Julius and Aemilia are about to do — what do the two words share?",
+        "tap": "focus"
+      },
+      "say": "A person can be described by what they are on the point of doing, and the word that does it is **the future participle (the 'about to' word: ventūrus = about to come)**. *Mārcus longam epistulam scrīptūrus est* — Marcus is about to write a long letter. English has no single word for it, so we say 'about to …'.",
       "show": {
         "kind": "sentence",
         "id": "fp-01"
@@ -87,7 +99,7 @@
     {
       "n": 2,
       "title": "How the word is made",
-      "say": "Take the fourth principal part, the one ending in *-tum* or *-sum* (*scrīptum*, *datum*, *nāvigātum*), take off the final *-um* and put *-ūrus* in its place: *scrīpt-ūrus*, *dat-ūrus*, *nāvigāt-ūrus*. The *-ūr-* is the whole signal; what follows it is the ordinary *-us* of *bonus*. *Sum* does it too: its fourth part is *futūrum*, so its future participle is *futūrus*, about to be.",
+      "say": "Take the fourth principal part, the one ending in *-tum* or *-sum* (*scrīptum*, *datum*), take off the final *-um* and put *-ūrus* in its place: *scrīpt-ūrus*, *dat-ūrus*. The *-ūr-* is the whole signal; what follows it is the ordinary *-us* of *bonus*. *Sum* has *futūrus*, about to be.",
       "show": {
         "kind": "paradigm",
         "key": "adj12",

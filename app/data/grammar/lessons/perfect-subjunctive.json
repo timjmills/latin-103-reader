@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "The subjunctive of a finished action is **the perfect subjunctive (the 'have done' form: nesciō quid fēcerit; nē timuerīs = don't be afraid)**. Where a present subjunctive says what is going on — *nesciō quid faciat*, I don't know what he is doing — the perfect says what has been done: *nesciō quid fēcerit*, I don't know what he has done. It follows a main verb in the present.",
+      "notice": {
+        "sentences": [
+          "pfs-04",
+          "pfs-06"
+        ],
+        "ask": "Tap the verb at the end of each sentence. What do the two endings have in common?",
+        "tap": "focus"
+      },
+      "say": "The subjunctive of a finished action is **the perfect subjunctive (the 'have done' form: nesciō quid fēcerit; nē timuerīs = don't be afraid)**. A present subjunctive says what is going on, the perfect what has been done: *nesciō quid faciat*, I don't know what he is doing; *nesciō quid fēcerit*, what he has done.",
       "show": {
         "kind": "sentence",
         "id": "pfs-01"
@@ -86,7 +94,7 @@
     {
       "n": 4,
       "title": "Not the future perfect",
-      "say": "The two share almost every letter. *fēcerō, fēceris, fēcerit* is the future perfect (the 'will have done' tense) and states a plain fact; *fēcerim, fēcerīs, fēcerit* is the subjunctive and sits inside a folded question or after *cum*. *-erit* and *-erint* are spelled the same in both tenses, and *-eris/-erīs*, *-erimus/-erīmus*, *-eritis/-erītis* differ only in the length of the i, so the clause around the verb decides.",
+      "say": "The two share almost every letter. *fēcerō, fēceris, fēcerit* is the future perfect (the 'will have done' tense) and states a plain fact; *fēcerim, fēcerīs, fēcerit* is the subjunctive and sits inside a folded question or after *cum*. Since *-erit* and *-erint* are spelled the same in both, the clause around the verb decides.",
       "show": {
         "kind": "sentence",
         "id": "pfs-11"
@@ -212,6 +220,14 @@
     {
       "type": "p",
       "text": "Ørberg's chapter 32: *Iūlius dubitat num magister Mārcum laudāverit* — the doubting is now, the praising was earlier; *pater dubitat num fīlius laudātus sit*; and the prohibition *nē dubitāverīs dē verbīs meīs!* Irregulars: *fuerim, potuerim, voluerim, ierim*. In the sequence of tenses the perfect subjunctive is the 'before' partner of the present subjunctive; after a past main verb its place is taken by the pluperfect subjunctive (Week 12)."
+    },
+    {
+      "type": "p",
+      "text": "It follows a main verb in the present."
+    },
+    {
+      "type": "p",
+      "text": "*-erit* and *-erint* are spelled the same in both tenses, and *-eris/-erīs*, *-erimus/-erīmus*, *-eritis/-erītis* differ only in the length of the i, so the clause around the verb decides."
     }
   ],
   "sources": [

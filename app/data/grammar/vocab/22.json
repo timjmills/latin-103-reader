@@ -11,7 +11,8 @@
    "sense_full": "doorkeeper, porter",
    "parts": null,
    "unit_id": "r22:4.1",
-   "count": 40
+   "count": 40,
+   "sem": "person"
   },
   {
    "lemma": "solvō",
@@ -23,7 +24,17 @@
    "sense_full": "loosen, release, unbind, untie, free",
    "parts": "solvō, solvere, solvī, solūtum",
    "unit_id": "r22:62.1",
-   "count": 33
+   "count": 33,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "tabellārius",
@@ -35,7 +46,8 @@
    "sense_full": "letter-carrier, courier",
    "parts": null,
    "unit_id": "r22:24.1",
-   "count": 28
+   "count": 28,
+   "sem": "person"
   },
   {
    "lemma": "iste",
@@ -59,7 +71,15 @@
    "sense_full": "remind, advise, warn",
    "parts": "moneō, monēre, monuī, monitum",
    "unit_id": "r22:60.3",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "tandem",
@@ -95,7 +115,19 @@
    "sense_full": "frighten, scare, terrify, deter",
    "parts": "terreō, terrēre, terruī, territum",
    "unit_id": "r22:66.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "accēdō",
@@ -107,7 +139,14 @@
    "sense_full": "come near, approach",
    "parts": "accēdō, accēdere, accessī, accessum",
    "unit_id": "r22:66.1",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "prō",
@@ -131,7 +170,8 @@
    "sense_full": "fact, deed, act",
    "parts": null,
    "unit_id": "r22:13.1",
-   "count": 13
+   "count": 13,
+   "sem": "abstract"
   },
   {
    "lemma": "prehendō",
@@ -143,7 +183,19 @@
    "sense_full": "catch or capture",
    "parts": "prehendō, prehendere, prehendī, prehensum",
    "unit_id": "r22:72.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "catēna",
@@ -155,7 +207,8 @@
    "sense_full": "chain",
    "parts": null,
    "unit_id": "r22:9.1",
-   "count": 11
+   "count": 11,
+   "sem": "thing"
   },
   {
    "lemma": "ferōx",
@@ -167,7 +220,13 @@
    "sense_full": "wild, bold",
    "parts": null,
    "unit_id": "r22:9.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "of": [
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "nūper",
@@ -215,7 +274,19 @@
    "sense_full": "beat",
    "parts": "pellō, pellere, pepulī, pulsum",
    "unit_id": "r22:84.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "rumpō",
@@ -227,7 +298,17 @@
    "sense_full": "break",
    "parts": "rumpō, rumpere, rūpī, ruptum",
    "unit_id": "r22:70.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "nature"
+    ],
+    "obj": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "aureus",
@@ -239,7 +320,12 @@
    "sense_full": "of gold, golden",
    "parts": null,
    "unit_id": "r22:16.2",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "quīn",
@@ -263,7 +349,8 @@
    "sense_full": "salt",
    "parts": null,
    "unit_id": "r22:70.1",
-   "count": 8
+   "count": 8,
+   "sem": "food"
   },
   {
    "lemma": "cēdō",
@@ -275,7 +362,15 @@
    "sense_full": "go/pass (from or away)",
    "parts": "cēdō, cēdere, cessī, cessum",
    "unit_id": "r22:72.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "imāgō",
@@ -287,7 +382,8 @@
    "sense_full": "likeness, image, appearance",
    "parts": null,
    "unit_id": "r22:64.1",
-   "count": 7
+   "count": 7,
+   "sem": "thing"
   },
   {
    "lemma": "scindō",
@@ -299,7 +395,16 @@
    "sense_full": "tear, split, divide",
    "parts": "scindō, scindere, scidī, scissum",
    "unit_id": "r22:100.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "tremō",
@@ -311,7 +416,16 @@
    "sense_full": "tremble, shake, shudder at",
    "parts": "tremō, tremere, tremuī",
    "unit_id": "r22:84.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing",
+     "place"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "dērīdeō",
@@ -323,7 +437,15 @@
    "sense_full": "mock, deride, laugh at, make fun of",
    "parts": "dērīdeō, dērīdēre, derisī, derisum",
    "unit_id": "r22:80.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "extrā",
@@ -347,7 +469,12 @@
    "sense_full": "iron, made of iron",
    "parts": null,
    "unit_id": "r22:13.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "foris",
@@ -371,7 +498,20 @@
    "sense_full": "bite",
    "parts": "mordeō, mordēre, momordī, morsum",
    "unit_id": "r22:60.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "animal",
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "body",
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "prius",
@@ -395,7 +535,16 @@
    "sense_full": "bind, fetter",
    "parts": "vinciō, vincīre, vīnxī, vīnctum",
    "unit_id": "r22:9.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "admittō",
@@ -407,7 +556,16 @@
    "sense_full": "urge on, put to a gallop",
    "parts": "admittō, admittere, admisī, admissum",
    "unit_id": "r22:7.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "anteā",
@@ -431,7 +589,19 @@
    "sense_full": "guard, protect, preserve, watch over, keep safe",
    "parts": "custodiō, cūstōdīre, custodivī, custoditum",
    "unit_id": "r22:4.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "pallium",
@@ -443,7 +613,8 @@
    "sense_full": "cover, coverlet",
    "parts": null,
    "unit_id": "r22:72.1",
-   "count": 5
+   "count": 5,
+   "sem": "thing"
   },
   {
    "lemma": "retineō",
@@ -455,7 +626,17 @@
    "sense_full": "hold back, restrain",
    "parts": "retineō, retinēre, retinuī, retentum",
    "unit_id": "r22:62.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "heus",
@@ -479,7 +660,12 @@
    "sense_full": "wooden, wood-",
    "parts": null,
    "unit_id": "r22:19.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "resistō",
@@ -515,7 +701,8 @@
    "sense_full": "wood",
    "parts": null,
    "unit_id": "r22:18.1",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "līmen",
@@ -527,7 +714,8 @@
    "sense_full": "threshold, entrance",
    "parts": null,
    "unit_id": "r22:1.2",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "prōcēdō",
@@ -539,7 +727,15 @@
    "sense_full": "proceed",
    "parts": "prōcēdō, prōcēdere, processī, processum",
    "unit_id": "r22:75.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "recēdō",
@@ -551,7 +747,14 @@
    "sense_full": "recede, go back, withdraw, ebb",
    "parts": "recēdō, recēdere, recessī, recessum",
    "unit_id": "r22:75.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "rogitō",
@@ -587,7 +790,8 @@
    "sense_full": "hearing",
    "parts": null,
    "unit_id": "r22:45.3",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "aurum",
@@ -599,7 +803,8 @@
    "sense_full": "gold (metal or color), gold money, riches",
    "parts": null,
    "unit_id": "r22:15.1",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "cardo",
@@ -611,7 +816,8 @@
    "sense_full": "hinge",
    "parts": null,
    "unit_id": "r22:2.1",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "dictus",
@@ -623,7 +829,8 @@
    "sense_full": "speech",
    "parts": null,
    "unit_id": "r22:43.1",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "faber",
@@ -635,7 +842,8 @@
    "sense_full": "workman, artisan",
    "parts": null,
    "unit_id": "r22:19.1",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "prope",
@@ -659,7 +867,14 @@
    "sense_full": "roar",
    "parts": "fremō, fremere, fremuī, fremitum",
    "unit_id": "r22:75.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   }
  ]
 }

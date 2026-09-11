@@ -39,7 +39,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Two words in the ablative can set the scene for a whole sentence, and that is **the ablative absolute with a perfect participle ('with X done', 'after X was done')**. It says that something was already finished when the main action happened: *Hōc dictō, Iūlius exiit* — this said, Julius went out. The little package is not the subject of anything; it only says when.",
+      "notice": {
+        "sentences": [
+          "aap-04",
+          "aap-08"
+        ],
+        "ask": "Tap the two words in each sentence that say what had already been done before the rest happened.",
+        "tap": "focus"
+      },
+      "say": "Two words in the ablative can set the scene for a whole sentence, and that is **the ablative absolute with a perfect participle ('with X done', 'after X was done')**. It says that something was already finished when the main action happened: *Hōc dictō, Iūlius exiit* — this said, Julius went out.",
       "show": {
         "kind": "sentence",
         "id": "aap-01"
@@ -91,7 +99,7 @@
     {
       "n": 3,
       "title": "In the plural, both are ablative",
-      "say": "When there is more than one, both words stand in the ablative plural. With nouns like *servus* and *verbum* the two of them end in *-īs*: *servīs vocātīs*, *verbīs dictīs*, *librīs sūmptīs*. A 3rd-declension noun (the *-is / -ēs* pattern: *mīles, mīlitis*) keeps its own *-ibus*, and only the participle shows *-īs*: *mīlitibus victīs*. Either way the two endings answer each other, and that pairing is the plainest sign of this construction anywhere in the book.",
+      "say": "When there is more than one, both words stand in the ablative plural. With nouns like *servus* and *verbum* the two of them end in *-īs*: *servīs vocātīs*, *verbīs dictīs*, *librīs sūmptīs*. A 3rd-declension noun (the *-is / -ēs* pattern: *mīles, mīlitis*) keeps its own *-ibus*, and only the participle shows *-īs*: *mīlitibus victīs*.",
       "show": {
         "kind": "paradigm",
         "key": "adj12",
@@ -180,6 +188,14 @@
     {
       "type": "p",
       "text": "The noun in the absolute is never the subject or object of the main verb; if it were, Latin would use a plain participle agreeing with it instead (*Thēseus fīlum secūtus exiit*). Ørberg glosses the construction as a clause: *cane vīnctō = postquam canis vīnctus est*."
+    },
+    {
+      "type": "p",
+      "text": "The little package is not the subject of anything; it only says when."
+    },
+    {
+      "type": "p",
+      "text": "Either way the two endings answer each other, and that pairing is the plainest sign of this construction anywhere in the book."
     }
   ],
   "sources": [

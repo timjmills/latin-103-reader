@@ -51,6 +51,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "f5-05",
+          "f5-07"
+        ],
+        "ask": "Tap the word meaning 'of the day' in the first sentence and 'of the face' in the second. What ending do they share?",
+        "tap": "focus"
+      },
       "say": "One noun family is left, and it is the smallest: **a 5th-declension noun (the e-pattern: diēs, diēī; rēs, reī)**. Its endings run on *e* the way the first family runs on *a* and the second on *o*. At this point in the book it holds *diēs* (day), *merīdiēs* (midday), *faciēs* (face) and *glaciēs* (ice).",
       "show": {
         "kind": "sentence",
@@ -103,7 +111,7 @@
     {
       "n": 3,
       "title": "The genitive and dative -ēī",
-      "say": "Two cells that are spelt alike. The genitive (the 'of' form) and the dative (the 'to/for' form) are both *-ēī*: *diēī*, of the day or to the day; *faciēī*. Both of the nouns you have met keep the long *-ēī*, because their stem ends in a vowel; one whose stem ends in a consonant shortens it to *-eī* (*rēs, reī*), and you meet none of those yet. In practice you will meet the genitive far more often than the dative: *initium diēī*, the beginning of the day.",
+      "say": "Two cells that are spelt alike. The genitive (the 'of' form) and the dative (the 'to/for' form) are both *-ēī*: *diēī*, of the day or to the day; *faciēī*. In practice you will meet the genitive far more often than the dative: *initium diēī*, the beginning of the day.",
       "show": {
         "kind": "paradigm",
         "key": "decl5",
@@ -222,6 +230,10 @@
     {
       "type": "p",
       "text": "The learner's notes (week 13): in every case but the genitive the pattern matches the *is*-nouns with *e* where they have *e* or *i* (*diēs, diem, diēbus*); the genitive looks like the 2nd declension with an *e* in front (*-eī, -ērum*). Ørberg (chapter XIII) declines *diēs* and adds *merīdiēs* m., *faciēs* and *glaciēs* f. and a few other feminines; *māne* (morning) is an indeclinable neuter that never changes its ending."
+    },
+    {
+      "type": "p",
+      "text": "Both of the nouns you have met keep the long *-ēī*, because their stem ends in a vowel; one whose stem ends in a consonant shortens it to *-eī* (*rēs, reī*), and you meet none of those yet."
     }
   ],
   "sources": [

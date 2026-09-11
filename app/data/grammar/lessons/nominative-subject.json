@@ -58,7 +58,15 @@
     {
       "n": 1,
       "title": "What the naming form does",
-      "say": "A Latin noun changes its tail to show its job in the sentence. Naming who or what the sentence is about — the subject — is the job of the nominative (the plain naming form). In *Nīlus fluvius magnus in Āfricā est* the sentence is about *Nīlus*, so *Nīlus* wears that form. English keeps the subject in its place in front of the verb; Latin lets it stand anywhere and marks it with the ending instead.",
+      "notice": {
+        "sentences": [
+          "ns-03",
+          "ns-06"
+        ],
+        "ask": "Each sentence is about one thing. Tap the word that names it in each.",
+        "tap": "focus"
+      },
+      "say": "Naming who or what the sentence is about — the subject — is the job of the nominative (the plain naming form). Latin marks the subject by its ending, not by its place in the line. In *Nīlus fluvius magnus in Āfricā est* the sentence is about *Nīlus*, so *Nīlus* wears that form.",
       "show": {
         "kind": "sentence",
         "id": "ns-01"
@@ -178,7 +186,7 @@
     {
       "n": 6,
       "title": "-a: one feminine thing, or several neuter ones",
-      "say": "*Īnsula* ends in -a and is one island. *Oppida* ends in -a and is several towns. Two different endings that look alike. The verb settles it — *est* for one, *sunt* for several — and so does the noun itself: an a-noun in -a is one, an um-noun in -a is many. There is a third -a besides: after *in* an a-noun lengthens to -ā (*in Italīā*, *in prōvinciā*), which is neither of those two and comes later, with the cases.",
+      "say": "*Īnsula* ends in -a and is one island; *oppida* ends in -a and is several towns. An a-noun in -a is one, an um-noun in -a is many, and the verb agrees: *est* for one, *sunt* for several. *Oppida Rōmāna in Hispāniā quoque sunt* — several towns, and *sunt*.",
       "show": {
         "kind": "sentence",
         "id": "ns-11"
@@ -212,6 +220,14 @@
     {
       "type": "p",
       "text": "After *est* / *sunt* the word that describes or renames the subject is also nominative (*Nīlus fluvius est*; *Sicilia īnsula magna est*): both halves of an 'A is B' sentence wear the same ending. Ørberg's cap. I sets out singulāris / plūrālis; A&G §339 gives the nominative as the case of the subject and §283 the predicate nominative."
+    },
+    {
+      "type": "p",
+      "text": "A Latin noun changes its tail to show its job in the sentence. English keeps the subject in its place in front of the verb; Latin lets it stand anywhere and marks it with the ending instead."
+    },
+    {
+      "type": "p",
+      "text": "There is a third -a besides: after *in* an a-noun lengthens to -ā (*in Italīā*, *in prōvinciā*), which is neither of those two and comes later, with the cases."
     }
   ],
   "sources": [

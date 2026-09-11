@@ -23,7 +23,17 @@
    "sense_full": "carry, bring, bear",
    "parts": "ferō, ferre, tulī, lātum",
    "unit_id": "r12:33.1",
-   "count": 61
+   "count": 61,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "nōmen",
@@ -35,7 +45,8 @@
    "sense_full": "name, family name",
    "parts": null,
    "unit_id": "r12:3.1",
-   "count": 54
+   "count": 54,
+   "sem": "abstract"
   },
   {
    "lemma": "pars",
@@ -47,7 +58,8 @@
    "sense_full": "part, region",
    "parts": null,
    "unit_id": "r12:64.1",
-   "count": 49
+   "count": 49,
+   "sem": "abstract"
   },
   {
    "lemma": "mīles",
@@ -59,7 +71,8 @@
    "sense_full": "soldier",
    "parts": null,
    "unit_id": "r12:30.2",
-   "count": 45
+   "count": 45,
+   "sem": "person"
   },
   {
    "lemma": "hostis",
@@ -71,7 +84,8 @@
    "sense_full": "enemy (of the state)",
    "parts": null,
    "unit_id": "r12:76.1",
-   "count": 44
+   "count": 44,
+   "sem": "person"
   },
   {
    "lemma": "pugnō",
@@ -83,7 +97,14 @@
    "sense_full": "fight",
    "parts": "pugnō, pugnāre, pugnāvī, pugnātum",
    "unit_id": "r12:37.1",
-   "count": 40
+   "count": 40,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "patria",
@@ -95,7 +116,8 @@
    "sense_full": "native land",
    "parts": null,
    "unit_id": "r12:70.1",
-   "count": 36
+   "count": 36,
+   "sem": "place"
   },
   {
    "lemma": "frāter",
@@ -107,7 +129,8 @@
    "sense_full": "brother",
    "parts": null,
    "unit_id": "r12:1.1",
-   "count": 35
+   "count": 35,
+   "sem": "person"
   },
   {
    "lemma": "brevis",
@@ -119,7 +142,13 @@
    "sense_full": "short, little, small, stunted",
    "parts": null,
    "unit_id": "r12:50.2",
-   "count": 34
+   "count": 34,
+   "sem": {
+    "of": [
+     "thing",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "fugiō",
@@ -131,7 +160,14 @@
    "sense_full": "flee, fly, run away",
    "parts": "fugiō, fugere, fūgī, fugitum",
    "unit_id": "r12:114.1",
-   "count": 32
+   "count": 32,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "gladius",
@@ -143,7 +179,8 @@
    "sense_full": "sword",
    "parts": null,
    "unit_id": "r12:33.1",
-   "count": 31
+   "count": 31,
+   "sem": "thing"
   },
   {
    "lemma": "castra",
@@ -155,7 +192,8 @@
    "sense_full": "camp (military; usually plural castra)",
    "parts": null,
    "unit_id": "r12:93.1",
-   "count": 27
+   "count": 27,
+   "sem": "place"
   },
   {
    "lemma": "altus",
@@ -167,7 +205,14 @@
    "sense_full": "high",
    "parts": null,
    "unit_id": "r12:100.1",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "of": [
+     "place",
+     "thing",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "exercitus",
@@ -179,7 +224,8 @@
    "sense_full": "army, infantry",
    "parts": null,
    "unit_id": "r12:77.1",
-   "count": 26
+   "count": 26,
+   "sem": "group"
   },
   {
    "lemma": "dux",
@@ -191,7 +237,8 @@
    "sense_full": "leader, guide",
    "parts": null,
    "unit_id": "r12:81.1",
-   "count": 24
+   "count": 24,
+   "sem": "person"
   },
   {
    "lemma": "iaciō",
@@ -203,7 +250,15 @@
    "sense_full": "throw, hurl, cast",
    "parts": "iaciō, iacere, iēcī, iactum",
    "unit_id": "r12:106.2",
-   "count": 21
+   "count": 21,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "arma",
@@ -215,7 +270,8 @@
    "sense_full": "arms (in the plural), weapons, armor, shield",
    "parts": null,
    "unit_id": "r12:34.1",
-   "count": 20
+   "count": 20,
+   "sem": "thing"
   },
   {
    "lemma": "dēfendō",
@@ -227,7 +283,19 @@
    "sense_full": "defend, guard, protect, look after",
    "parts": "dēfendō, dēfendere, dēfendī, defensum",
    "unit_id": "r12:106.2",
-   "count": 19
+   "count": 19,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "place",
+     "thing",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "fīnis",
@@ -239,7 +307,8 @@
    "sense_full": "boundary, end, limit, goal",
    "parts": null,
    "unit_id": "r12:68.1",
-   "count": 19
+   "count": 19,
+   "sem": "abstract"
   },
   {
    "lemma": "soror",
@@ -251,7 +320,8 @@
    "sense_full": "sister",
    "parts": null,
    "unit_id": "r12:1.2",
-   "count": 17
+   "count": 17,
+   "sem": "person"
   },
   {
    "lemma": "fortis",
@@ -263,7 +333,13 @@
    "sense_full": "strong, powerful, mighty, vigorous, firm, steadfast, courageous, brave, bold",
    "parts": null,
    "unit_id": "r12:118.1",
-   "count": 15
+   "count": 15,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "trīstis",
@@ -275,7 +351,12 @@
    "sense_full": "sad, sorrowful",
    "parts": null,
    "unit_id": "r12:20.1",
-   "count": 15
+   "count": 15,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "bellum",
@@ -287,7 +368,8 @@
    "sense_full": "war, warfare",
    "parts": null,
    "unit_id": "r12:76.1",
-   "count": 14
+   "count": 14,
+   "sem": "abstract"
   },
   {
    "lemma": "contrā",
@@ -311,7 +393,12 @@
    "sense_full": "heavy",
    "parts": null,
    "unit_id": "r12:52.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "patior",
@@ -359,7 +446,8 @@
    "sense_full": "battle, fight",
    "parts": null,
    "unit_id": "r12:39.1",
-   "count": 11
+   "count": 11,
+   "sem": "abstract"
   },
   {
    "lemma": "armō",
@@ -371,7 +459,16 @@
    "sense_full": "equip, fit with armor",
    "parts": "armō, armāre, armāvī, armātum",
    "unit_id": "r12:35.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "dīvidō",
@@ -395,7 +492,8 @@
    "sense_full": "horseman, cavalryman, rider",
    "parts": null,
    "unit_id": "r12:42.1",
-   "count": 9
+   "count": 9,
+   "sem": "person"
   },
   {
    "lemma": "lātus",
@@ -407,7 +505,13 @@
    "sense_full": "wide, broad",
    "parts": null,
    "unit_id": "r12:104.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "of": [
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "oppugnō",
@@ -419,7 +523,17 @@
    "sense_full": "attack, assault, storm, besiege",
    "parts": "oppugnō, oppugnāre, oppugnāvī, oppugnātum",
    "unit_id": "r12:77.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "place",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "impetūs",
@@ -431,7 +545,8 @@
    "sense_full": "attack, assault, charge",
    "parts": null,
    "unit_id": "r12:113.1",
-   "count": 8
+   "count": 8,
+   "sem": "abstract"
   },
   {
    "lemma": "levis",
@@ -443,7 +558,12 @@
    "sense_full": "light, thin, trivial, trifling, slight",
    "parts": null,
    "unit_id": "r12:54.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "metuō",
@@ -455,7 +575,19 @@
    "sense_full": "fear",
    "parts": "metuō, metuere, metuī",
    "unit_id": "r12:82.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "nature",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "metus",
@@ -467,7 +599,8 @@
    "sense_full": "fear, anxiety",
    "parts": null,
    "unit_id": "r12:85.1",
-   "count": 7
+   "count": 7,
+   "sem": "abstract"
   },
   {
    "lemma": "mīlitāris",
@@ -491,7 +624,8 @@
    "sense_full": "thousand",
    "parts": null,
    "unit_id": "r12:97.1",
-   "count": 7
+   "count": 7,
+   "sem": "other"
   },
   {
    "lemma": "pedēs",
@@ -503,7 +637,8 @@
    "sense_full": "foot soldier, infantryman",
    "parts": null,
    "unit_id": "r12:44.1",
-   "count": 7
+   "count": 7,
+   "sem": "person"
   },
   {
    "lemma": "scūtum",
@@ -515,7 +650,8 @@
    "sense_full": "shield",
    "parts": null,
    "unit_id": "r12:33.1",
-   "count": 7
+   "count": 7,
+   "sem": "thing"
   },
   {
    "lemma": "hasta",
@@ -527,7 +663,8 @@
    "sense_full": "spear, lance, javelin",
    "parts": null,
    "unit_id": "r12:39.2",
-   "count": 6
+   "count": 6,
+   "sem": "thing"
   },
   {
    "lemma": "avunculus",
@@ -539,7 +676,8 @@
    "sense_full": "maternal uncle, mother's brother, mother's sister's husband",
    "parts": null,
    "unit_id": "r12:18.1",
-   "count": 5
+   "count": 5,
+   "sem": "person"
   },
   {
    "lemma": "expugnō",
@@ -551,7 +689,16 @@
    "sense_full": "assault, storm",
    "parts": "expugnō, expugnāre, expugnāvī, expugnātum",
    "unit_id": "r12:112.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "group"
+    ],
+    "obj": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "sagitta",
@@ -563,7 +710,8 @@
    "sense_full": "arrow",
    "parts": null,
    "unit_id": "r12:89.1",
-   "count": 5
+   "count": 5,
+   "sem": "thing"
   },
   {
    "lemma": "incolō",
@@ -587,7 +735,8 @@
    "sense_full": "first name, personal name",
    "parts": null,
    "unit_id": "r12:11.1",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "equitō",
@@ -599,7 +748,13 @@
    "sense_full": "ride (horseback)",
    "parts": "equitō, equitāre, equitavī, equitātum",
    "unit_id": "r12:113.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "fodiō",
@@ -623,7 +778,8 @@
    "sense_full": "surname, family/3rd name",
    "parts": null,
    "unit_id": "r12:11.1",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "passus",
@@ -635,7 +791,8 @@
    "sense_full": "step, pace",
    "parts": null,
    "unit_id": "r12:102.1",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "mīlitō",
@@ -647,7 +804,13 @@
    "sense_full": "serve as soldier, perform military service, serve in the army",
    "parts": "mīlitō, mīlitāre, militavī, militatum",
    "unit_id": "r12:89.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   }
  ]
 }

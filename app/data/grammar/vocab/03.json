@@ -35,7 +35,21 @@
    "sense_full": "see, look at",
    "parts": "videō, vidēre, vīdī, vīsum",
    "unit_id": "r03:11.1",
-   "count": 181
+   "count": 181,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "nature",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "neque",
@@ -71,7 +85,14 @@
    "sense_full": "come",
    "parts": "veniō, venīre, vēnī, ventum",
    "unit_id": "r03:21.1",
-   "count": 129
+   "count": 129,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "audiō",
@@ -83,7 +104,18 @@
    "sense_full": "hear, listen, accept, agree with",
    "parts": "audiō, audīre, audīvī, audītum",
    "unit_id": "r03:42.1",
-   "count": 116
+   "count": 116,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "dormiō",
@@ -95,7 +127,14 @@
    "sense_full": "sleep, rest",
    "parts": "dormiō, dormīre, dormīvī, dormītum",
    "unit_id": "r03:37.1",
-   "count": 92
+   "count": 92,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "respondeō",
@@ -107,7 +146,16 @@
    "sense_full": "answer",
    "parts": "respondeō, respondēre, respondī, respōnsum",
    "unit_id": "r03:25.1",
-   "count": 85
+   "count": 85,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "pulsō",
@@ -119,7 +167,22 @@
    "sense_full": "beat",
    "parts": "pulsō, pulsāre, pulsāvī, pulsātum",
    "unit_id": "r03:8.1",
-   "count": 65
+   "count": 65,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ],
+    "obj_also": [
+     "ōstium",
+     "iānua",
+     "porta",
+     "foris",
+     "mēnsa"
+    ]
+   }
   },
   {
    "lemma": "cūr",
@@ -143,7 +206,15 @@
    "sense_full": "ask, question, interrogate, examine",
    "parts": "interrogō, interrogāre, interrogāvī, interrogātum",
    "unit_id": "r03:23.1",
-   "count": 60
+   "count": 60,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "vocō",
@@ -155,7 +226,16 @@
    "sense_full": "call, summon",
    "parts": "vocō, vocāre, vocāvī, vocātum",
    "unit_id": "r03:16.1",
-   "count": 56
+   "count": 56,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "quia",
@@ -179,7 +259,16 @@
    "sense_full": "beat, strike, lash",
    "parts": "verberō, verberāre, verberāvī, verberātum",
    "unit_id": "r03:45.3",
-   "count": 46
+   "count": 46,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "improbus",
@@ -191,7 +280,13 @@
    "sense_full": "wicked or flagrant",
    "parts": null,
    "unit_id": "r03:32.1",
-   "count": 45
+   "count": 45,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "rīdeō",
@@ -203,7 +298,13 @@
    "sense_full": "laugh at (with dat.), laugh",
    "parts": "rīdeō, rīdēre, risī, risum",
    "unit_id": "r03:10.1",
-   "count": 39
+   "count": 39,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "laetus",
@@ -215,7 +316,12 @@
    "sense_full": "happy, cheerful, joyful, glad",
    "parts": null,
    "unit_id": "r03:3.2",
-   "count": 37
+   "count": 37,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "irascor",
@@ -239,7 +345,13 @@
    "sense_full": "cry over, cry aloud",
    "parts": "plōrō, plōrāre, ploravī, ploratum",
    "unit_id": "r03:9.1",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "probus",
@@ -251,7 +363,12 @@
    "sense_full": "good, honest",
    "parts": null,
    "unit_id": "r03:32.1",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "cantō",
@@ -263,7 +380,13 @@
    "sense_full": "sing",
    "parts": "cantō, cantāre, cantavī, cantatum",
    "unit_id": "r03:3.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "mamma",
@@ -275,7 +398,8 @@
    "sense_full": "breast, udder",
    "parts": null,
    "unit_id": "r03:19.1",
-   "count": 8
+   "count": 8,
+   "sem": "person"
   },
   {
    "lemma": "persōna",
@@ -287,7 +411,8 @@
    "sense_full": "mask",
    "parts": null,
    "unit_id": "r03:2.1",
-   "count": 6
+   "count": 6,
+   "sem": "thing"
   },
   {
    "lemma": "st",
@@ -311,7 +436,8 @@
    "sense_full": "bow, arc, coil, arch",
    "parts": null,
    "unit_id": "r03:32.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "hahahae",

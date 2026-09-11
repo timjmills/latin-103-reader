@@ -44,7 +44,21 @@
     {
       "n": 1,
       "title": "One verb, three shapes",
-      "say": "A dictionary does not give a Latin verb one form but four: *vocō, vocāre, vocāvī, vocātum*. These are **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**. Look at the same verb three times over — *vocat* 'he calls', *vocāvit* 'he called', *vocātus* 'called' — and you are looking at three different stems, each cut out of one of those four forms.",
+      "notice": {
+        "sentences": [
+          "prp-06",
+          "prp-08"
+        ],
+        "ask": "*scrīpsit* and *audīvit* are different verbs. What do the two have in common?",
+        "tap": "choice",
+        "choices": [
+          "Both say something already done, built on the third dictionary form",
+          "Both say something happening now, built on the second dictionary form",
+          "Both describe a noun, built on the fourth dictionary form"
+        ],
+        "answer": "Both say something already done, built on the third dictionary form"
+      },
+      "say": "A dictionary gives a Latin verb four forms: *vocō, vocāre, vocāvī, vocātum*. These are **the principal parts (the four dictionary forms that give a verb's present, perfect and participle stems)**. The same verb three times — *vocat* 'he calls', *vocāvit* 'he called', *vocātus* 'called' — is three different stems, each cut from one of those forms.",
       "show": {
         "kind": "sentence",
         "id": "prp-01"

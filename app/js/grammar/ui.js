@@ -4,13 +4,13 @@
 // Every Latin word in a drill is tappable for its entry (a small popover built
 // from dictionary.describe); the target's dictionary form sits under the item.
 
-import { chapters, roman, inline, loadLesson, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
+import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
-import { createLearn, createPractice, createBlockedFive, createRedo, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers } from './session.js';
-import { featureLabel, featureKey } from './items.js';
+import { createLearn, createPractice, createBlockedFive, createRedo, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy } from './session.js';
+import { featureLabel, createTeachItems } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
@@ -644,6 +644,141 @@ export function createUI(ctx) {
     h('p', { class: 'g-summary', text: skill.summary }));
 
   /* ------------------------------------------------------------ learn */
+  /**
+   * The teaching material behind a skill's Learn (GRAMMAR-CONTRACT.md §1, §4a,
+   * §4b): its written sentences, the paradigm catalogue and the headword
+   * index, as one generator whose whole world is the written set — so a step's
+   * check cannot come from the library. null when the skill has no written
+   * sentences yet; Learn then goes straight to the ten.
+   */
+  const teachCache = new Map();
+  function teachItemsOf(skill) {
+    if (!teachCache.has(skill.id)) {
+      teachCache.set(skill.id, (async () => {
+        const [sents, catalogue, headwords] = await Promise.all([loadSentences(skill.id), loadParadigmCatalogue(), loadHeadwords()]);
+        if (!sents?.sentences?.length) return null;
+        return createTeachItems({ skill, sentences: sents.sentences, lookup: dict.lookup, paradigm: par.paradigm, catalogue, skills, headwords, storage: localStorage });
+      })().catch((e) => { console.warn(`[grammar] the teaching material for ${skill.id} could not be built`, e?.message || e); return null; }));
+    }
+    return teachCache.get(skill.id);
+  }
+
+  /** The gloss of a written sentence, word by word, under the sentence. */
+  const glossLine = (written) => (written?.gloss?.length
+    ? h('ul', { class: 'g-wgloss', 'aria-label': 'Word by word' }, written.gloss.map((g) => h('li', {}, h('span', { lang: 'la', class: 'g-wgloss__la', text: g.w }), ' ', h('span', { class: 'g-wgloss__en', text: g.m }))))
+    : null);
+  /** A written sentence as the step shows it: the Latin with its focus lit, its English, its gloss. */
+  function writtenNode(written, { focus = null, tag = null } = {}) {
+    if (!written) return null;
+    return h('div', { class: 'g-show' },
+      tag ? h('p', { class: 'g-lesson__tag', text: tag }) : null,
+      latin(written.la, { target: focus }),
+      written.en ? h('p', { class: 'g-ex__en', text: written.en }) : null,
+      glossLine(written));
+  }
+  /**
+   * The one or two cells a step reveals, on the table's stock words — never
+   * the whole table (§2, §7.3): one row per cell, one column per word, the
+   * ending set apart from the stem.
+   */
+  function revealNode(teachItems, show) {
+    const r = teachItems?.revealed?.(show.key, show.reveal) ?? null;
+    if (!r?.rows?.length) return null;
+    const words = [...new Set(r.rows.flatMap((row) => row.cols.map((c) => c.word)))];
+    const endings = [...new Set(r.rows.flatMap((row) => row.cols.map((c) => c.ending).filter(Boolean)))];
+    const table = h('table', { class: 'pt g-reveal__t' },
+      h('caption', { class: 'visually-hidden', text: `${r.table?.label ?? show.key}: ${r.rows.map((row) => row.label).join(', ')} on ${words.join(', ')}` }),
+      h('thead', {}, h('tr', {}, h('th', { scope: 'col', class: 'pt__corner', 'aria-label': 'form' }), words.map((w) => h('th', { scope: 'col', lang: 'la', text: w })))),
+      h('tbody', {}, r.rows.map((row) => h('tr', {}, h('th', { scope: 'row', text: row.label }), words.map((w) => {
+        const c = row.cols.find((x) => x.word === w);
+        if (!c) return h('td', { class: 'pt__cell is-empty', lang: 'la', text: '—' });
+        return h('td', { class: 'pt__cell', lang: 'la' }, c.ending != null && (c.stem || c.ending) ? [c.stem ? h('span', { class: 'pt__stem', text: c.stem }) : null, h('span', { class: 'pt__ending g-reveal__end', text: c.ending })] : c.form);
+      })))));
+    return h('div', { class: 'g-show g-show--cells' },
+      h('p', { class: 'g-lesson__tag', text: `${r.table?.label ?? show.key} · ${r.rows.map((row) => row.label).join(' and ')}` }),
+      h('div', { class: 'pt__scroll' }, table),
+      endings.length ? h('p', { class: 'g-reveal__note' }, 'The ending: ', endings.map((e, i) => [i ? ' and ' : null, h('b', { lang: 'la', text: `-${e}` })])) : null);
+  }
+
+  /**
+   * A worked example, completed (§8, decision 2). The first of a skill is
+   * shown fully parsed; every later one prints its `given` features and asks
+   * the rest one at a time — a small choice over that feature's own values,
+   * then the one-line reason, judged generously and never counted. `onDone`
+   * fires when the learner has finished it (at once when there is nothing to
+   * ask), and the step's check follows.
+   */
+  function workedNode(plan, { first = false, onDone = null } = {}) {
+    if (!plan) return null;
+    const node = h('div', { class: 'g-worked' },
+      h('p', { class: 'g-lesson__tag', text: first ? 'Worked example' : 'Your turn: finish the example' }),
+      latin(plan.sentence.la, { target: plan.index }),
+      plan.sentence.en ? h('p', { class: 'g-ex__en', text: plan.sentence.en }) : null,
+      glossLine(plan.sentence));
+    const dl = h('dl', { class: 'g-worked__dl' });
+    node.append(dl);
+    const row = (label, value, plain = '', ok = null) => dl.append(h('div', { class: `g-worked__row${ok == null ? '' : ok ? ' is-right' : ' is-wrong'}` }, h('dt', { text: label }), h('dd', {}, h('b', { text: value }), plain ? h('span', { class: 'g-worked__plain', text: ` — ${plain}` }) : null)));
+    for (const g of plan.given) row(g.label, g.name, g.plain);
+    const asks = [...plan.asks];
+    const live = h('div', { class: 'g-worked__ask' });
+    node.append(live);
+    let done = false;
+    const finish = () => { if (done) return; done = true; live.replaceChildren(); node.classList.add('is-done'); onDone?.(); };
+    const askWhy = () => {
+      const ta = h('textarea', { class: 'g-input g-textarea g-worked__why', rows: '2', lang: 'en', 'aria-label': `Why is ${plan.word} ${[...plan.given, ...plan.asks].map((f) => f.name).join(' ')}?`, placeholder: 'One line: what in the sentence tells you?' });
+      const go = btn('Done', {}, 'btn btn--primary'); go.type = 'submit';
+      const form = h('form', { class: 'g-worked__form', onsubmit: (e) => {
+        e.preventDefault();
+        const v = judgeWhy(ta.value);
+        ta.readOnly = true; go.disabled = true;
+        // Generous, and never counted: a reason is a thought, not a form. The model answer stands beside it either way.
+        row('why', v.empty ? '—' : v.given, '', v.empty ? null : true);
+        form.replaceWith(h('div', { class: 'g-worked__reason' }, h('p', { class: 'g-lesson__tag', text: v.empty ? 'One reason' : 'And in the book\'s words' }), h('p', { class: 'g-worked__reasontext' }, inline(plan.reason)), btn('Now check it', { onclick: finish }, 'btn btn--primary g-worked__go')));
+        form.parentNode?.querySelector('.g-worked__go')?.focus({ preventScroll: true });
+      } }, h('p', { class: 'g-q g-worked__q', text: `Why? What in the sentence tells you?` }), ta, h('div', { class: 'g-chart__acts' }, go));
+      live.replaceChildren(form);
+      setTimeout(() => ta.focus({ preventScroll: true }), 0);
+    };
+    const askNext = () => {
+      const a = asks.shift();
+      if (!a) { if (plan.why) askWhy(); else finish(); return; }
+      let picked = false;
+      const group = h('div', { class: 'g-choices g-choices--worked', role: 'group', 'aria-label': `The ${a.label} of ${plan.word}` }, a.choices.map((c, i) => btn([h('span', { class: 'g-choice__n', 'aria-hidden': 'true', text: `${i + 1}` }), h('span', { class: 'g-choice__label', text: c.label }), c.plain ? h('span', { class: 'g-choice__plain', text: c.plain }) : null], { 'data-value': c.value, onclick: (e) => {
+        if (picked) return; picked = true;
+        e.currentTarget.classList.add('is-picked');
+        for (const b of group.children) { b.disabled = true; b.classList.toggle('is-answer', a.choices[[...group.children].indexOf(b)]?.correct === true); }
+        row(a.label, a.name, a.plain, !!c.correct);
+        ctx.say(c.correct ? `${a.label}: ${a.name}. Right.` : `${a.label}: ${a.name}, not ${c.label}.`);
+        // Right or wrong, the example moves on: it is teaching, and nothing here is scored.
+        setTimeout(askNext, c.correct ? 500 : 1400);
+      } }, 'g-choice')));
+      const q = h('p', { class: 'g-q g-worked__q', tabindex: '-1', text: a.key === 'construction' ? `What is ${plan.word} doing here?` : `Which ${a.label} is ${plan.word}?` });
+      live.replaceChildren(q, group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer.' }));
+      live.onkeydown = (e) => { const n = Number(e.key); if (n >= 1 && n <= a.choices.length && !picked) { e.preventDefault(); group.children[n - 1].click(); } };
+      q.focus({ preventScroll: true });
+    };
+    if (!asks.length && !plan.why) { done = true; node.classList.add('is-done'); }
+    else setTimeout(askNext, 0);
+    return { node, done: () => done };
+  }
+
+  /**
+   * Decision 4: a skill's unmet prerequisites are named and offered — on the
+   * first step's page, above the step, so it is a line to read and a choice to
+   * make rather than a screen to get past — and the learner may go on.
+   */
+  function prereqNode(skill, missing, { queue = [], from = null } = {}) {
+    if (!missing.length) return null;
+    const names = missing.map((id) => h('b', { text: titleOf(id) }));
+    const list = names.flatMap((n, i) => (i === 0 ? [n] : i === names.length - 1 ? [' and ', n] : [', ', n]));
+    const node = h('aside', { class: 'g-prereq', 'aria-label': 'Before this skill' },
+      h('p', { class: 'g-prereq__line' }, 'This builds on ', ...list, `, which ${missing.length === 1 ? 'is' : 'are'} not in your practice yet. You can learn ${missing.length === 1 ? 'it' : 'them'} first and come back here, or go on.`),
+      h('div', { class: 'g-acts' },
+        btn(`Learn ${titleOf(missing[0])} first`, { onclick: () => render('learn', { skill: missing[0], queue: [...missing.slice(1), skill.id, ...queue], from }) }, 'btn'),
+        btn('Go on', { onclick: () => { node.remove(); body.querySelector('.g-step__title')?.focus?.({ preventScroll: true }); } }, 'btn btn--quiet')));
+    return node;
+  }
+
   async function renderLearnStart({ skill: id, queue = [], from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
@@ -653,62 +788,79 @@ export function createUI(ctx) {
     const savedLearn = readJSON(LS_LEARN, null);
     const resume = skill.set && savedLearn?.skill === id && Number(savedLearn.seen) > 0 ? { seen: Number(savedLearn.seen) } : null;
     const onProgress = (pr) => writeJSON(LS_LEARN, pr.seen > 0 && pr.seen < pr.total ? { skill: pr.skill, seen: pr.seen, at: Date.now() } : null);
-    // The learner's own chapter is the ceiling on Learn's sentences too (GRAMMAR-CONTRACT.md §7.2).
-    const learn = createLearn({ skill, gstore, items, currentWeekN: ctx.currentWeekN(), resume, onProgress });
-    await learn.begin();
+    setBody(h('p', { class: 'g-loading', text: 'Preparing the lesson…' }));
     const lesson = skill.set ? null : await lessonOf(id);
-    const steps = skill.set ? [skill.set === 'vocab' ? 'The deck, a batch at a time' : 'The passage\'s questions', 'Blocked 10'] : ['Lesson', 'Examples', 'Guided 5', 'Blocked 10'];
-    const stepper = (i) => h('ol', { class: 'g-steps', 'aria-label': 'Learn steps' }, steps.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': i === j ? 'step' : null, text: s })));
+    const teachItems = skill.set ? null : await teachItemsOf(skill);
+    // The learner's own chapter is the ceiling on Learn's sentences too (GRAMMAR-CONTRACT.md §7.2).
+    const learn = createLearn({ skill, gstore, items, teach: lesson?.teach ?? [], teachItems, currentWeekN: ctx.currentWeekN(), resume, onProgress });
+    await learn.begin();
+    const nSteps = learn.steps.length;
+    /**
+     * Where the sitting is: one mark per step (its number; the title for a
+     * screen reader) and one for the ten. `at` is a step index, or `nSteps`
+     * for the ten. A chapter set keeps its two marks.
+     */
+    const stepper = (at) => {
+      const marks = skill.set ? [skill.set === 'vocab' ? 'The deck, a batch at a time' : 'The passage\'s questions', 'Blocked 10'] : [...learn.steps.map((s, i) => s.title || `Step ${i + 1}`), 'Ten items'];
+      return h('ol', { class: `g-steps${skill.set ? '' : ' g-steps--n'}`, 'aria-label': 'Learn steps' }, marks.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': at === j ? 'step' : null, 'aria-label': skill.set ? null : s, title: skill.set ? null : s }, skill.set ? s : (j === marks.length - 1 ? 'Ten' : ''))));
+    };
     const finishQueue = () => { writeJSON(LS_QUEUE, queue.length ? queue.slice(1) : null); if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else leaveTo(from); };
     if (queue.length) writeJSON(LS_QUEUE, queue);
+    const missing = skill.set ? [] : unmetPrereqs(skill, stateOf);
+    const firstWorked = learn.steps.findIndex((s) => s.worked);
 
-    const showLesson = () => setBody(stepper(0), lessonHeader(skill, stateOf(id)), h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson, { learn: true })),
-      h('div', { class: 'g-acts' }, btn('Continue to the examples', { onclick: showExamples }, 'btn btn--primary'), btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
-
-    const showExamples = () => {
-      const exBlock = (lesson?.core ?? []).find((b) => b.type === 'examples') ?? { units: [], invented: [] };
-      const units = exampleUnits(skill, exBlock.units || [], 3, { maxLen: 150 }).slice(0, 3);
-      const k = featureKey(skill);
-      const rows = units.map(({ unit: u, own }) => {
-        const all = items.scan(u, skill);
-        // Parse aloud the readings the sentence settles; a form that could be read another way is named only when nothing else fits.
-        const cands = all.some((c) => !c.ambiguous) ? all.filter((c) => !c.ambiguous) : all;
-        const focus = cands.find((c) => !c.ambiguous && c.entry.pos === 'N') ?? cands[0] ?? null;
-        const parsed = cands.map((c) => {
-          // The gloss and the label come from the parse that matched, not the entry's first reading (G1-04).
-          const d = dict.describe({ ...c.entry, parses: [c.parse] }, { compact: false, form: c.token.text, context: u.la });
-          const lab = featureLabel(k, c.value, { skills, skill });
-          const what = k === 'construction' && c.parse?.case && c.entry.pos !== 'V' ? `${featureLabel('case', c.parse.case).name}, ${lab.name}` : lab.name;
-          return h('li', {}, h('b', { lang: 'la', text: c.token.text }), ` — ${String(d.meaning).split(/\s+·\s+/)[0]} — ${what}, ${lab.plain}${c.ambiguous ? ' (the ending could also be read another way; the sentence decides)' : ''}.`);
-        });
-        return h('li', { class: 'g-ex__item' }, latin(u.la, { target: focus?.index ?? null }), u.en ? h('p', { class: 'g-ex__en', text: u.en }) : null, h('p', { class: 'g-ex__ref', text: `${own ? '' : 'From the library · '}${unitRefText(u)}` }), h('ul', { class: 'g-ex__parsed' }, parsed));
-      });
-      for (const ex of (exBlock.invented || []).slice(0, Math.max(0, 3 - rows.length))) {
-        const ti = ex.focus ? phraseIndexes(ex.la, ex.focus) : [];
-        rows.push(h('li', { class: 'g-ex__item g-ex__item--inv' }, latin(ex.la, { target: ti.length ? ti : null }), h('p', { class: 'g-ex__en', text: ex.en }), h('p', { class: 'g-ex__ref', text: 'Invented example' })));
-      }
-      setBody(stepper(1), h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Worked examples' }), h('p', { class: 'g-lede', text: `Three sentences with ${skill.plain}, each parsed in plain words. Tap any word for its entry.` })),
-        h('ul', { class: 'g-ex g-ex--worked' }, rows),
-        h('div', { class: 'g-acts' }, btn('Start the guided drill', { onclick: showGuided }, 'btn btn--primary'), btn('Back to the lesson', { onclick: showLesson }, 'btn btn--quiet')));
+    /**
+     * The page of one step, above its check: the title, the `say`, the `show`
+     * (a written sentence with its gloss, or the revealed cells), and the
+     * worked example — which, when it has something to ask, keeps the check
+     * out of sight until it is finished. The whole thing is one page of the
+     * run, so stepping back shows it as it was left.
+     */
+    const stepLead = (i, item, slot) => {
+      const step = learn.steps[slot?.step ?? i];
+      if (!step) return null;
+      const n = (slot?.step ?? i) + 1;
+      const show = step.show?.kind === 'sentence' ? teachItems?.sentence(step.show.id) ?? null : null;
+      const showFocus = show ? teachItems.focusOf(show.id)?.candidate?.index ?? null : null;
+      const worked = step.worked ? workedPlan(step.worked, teachItems.focusOf(step.worked.sentence), { skill, skills, first: (slot?.step ?? i) === firstWorked }) : null;
+      const sameSentence = worked && show && worked.sentence.id === show.id;
+      const wn = worked ? workedNode(worked, { first: (slot?.step ?? i) === firstWorked, onDone: () => lead.dispatchEvent(new CustomEvent('g-lead-done')) }) : null;
+      const lead = h('section', { class: 'g-step', 'aria-label': `Step ${n} of ${nSteps}` },
+        (slot?.step ?? i) === 0 ? prereqNode(skill, missing, { queue, from }) : null,
+        h('p', { class: 'g-kicker', text: `Step ${n} of ${nSteps}` }),
+        h('h2', { class: 'g-step__title', tabindex: '-1', text: step.title || skill.title }),
+        step.say ? h('p', { class: 'g-step__say' }, inline(step.say)) : null,
+        // A shown sentence that the worked example then parses is printed once, with the parse under it.
+        show && !sameSentence ? writtenNode(show, { focus: showFocus }) : null,
+        step.show?.kind === 'paradigm' ? revealNode(teachItems, step.show) : null,
+        wn?.node ?? null);
+      return { node: lead, gate: wn && !wn.done() };
     };
 
-    const guidedStep = skill.set ? 0 : 2;
-    const blockedStep = skill.set ? 1 : 3;
+    const showSteps = () => {
+      const first = learn.startSteps();
+      if (!first) { showNoSteps(); return; }
+      runSession({ runner: learn.runner, title: 'Check', mode: 'learn', hintOpen: false, stepper: (slot) => stepper(slot?.step ?? 0), lesson, before: stepLead, onDone: showBlocked });
+    };
+    /** No teach steps written yet (or no written sentences): the lesson to read, then the ten. */
+    const showNoSteps = () => {
+      setBody(stepper(0), lessonHeader(skill, stateOf(id)), h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson, { learn: true })),
+        h('p', { class: 'g-quiet', text: 'This skill has no step-by-step teaching yet; the lesson stands, and ten items follow.' }),
+        h('div', { class: 'g-acts' }, btn('Start the ten', { onclick: showBlocked }, 'btn btn--primary'), btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
+    };
     const showGuided = (opts = {}) => {
       const first = opts.more ? learn.moreGuided() : learn.startGuided();
-      if (!first) { setBody(stepper(guidedStep), h('p', { class: 'g-quiet', text: skill.set ? 'This set has no items yet.' : 'No sentences in the library fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, backButton(from, 'btn'))); return; }
+      if (!first) { setBody(stepper(0), h('p', { class: 'g-quiet', text: 'This set has no items yet.' }), h('div', { class: 'g-acts' }, backButton(from, 'btn'))); return; }
       const seenBefore = learn.seen;
       const thing = skill.set === 'vocab' ? 'words' : 'questions';
-      const note = skill.set
-        ? `${skill.set === 'vocab' ? 'Each word with its dictionary line after it' : 'Each question with the answering sentence after it'}. ${seenBefore + 1}–${Math.min(learn.total, seenBefore + learn.batchSize)} of ${learn.total} ${thing}; you can stop after any batch and pick it up here.`
-        : 'Five items with the hint open. Take your time.';
-      runSession({ runner: learn.runner, title: `${skill.set ? 'Through the deck' : 'Guided drill'} · ${skill.title}`, note, mode: 'learn', hintOpen: !skill.set, stepper: stepper(guidedStep), lesson, onDone: skill.set ? showBatchEnd : showBlocked });
+      const note = `${skill.set === 'vocab' ? 'Each word with its dictionary line after it' : 'Each question with the answering sentence after it'}. ${seenBefore + 1}–${Math.min(learn.total, seenBefore + learn.batchSize)} of ${learn.total} ${thing}; you can stop after any batch and pick it up here.`;
+      runSession({ runner: learn.runner, title: `Through the deck · ${skill.title}`, note, mode: 'learn', hintOpen: false, stepper: stepper(0), lesson, onDone: showBatchEnd });
     };
     /** After a batch: how far through the deck, and the three honest ways on — another batch, the blocked ten, or stop. */
     const showBatchEnd = (summary) => {
       const left = learn.left;
       const thing = skill.set === 'vocab' ? 'word' : 'question';
-      setBody(stepper(guidedStep), h('header', { class: 'g-head' },
+      setBody(stepper(0), h('header', { class: 'g-head' },
         h('h1', { class: 'g-title', text: left ? 'Batch done' : 'Through the deck' }),
         h('p', { class: 'g-lede', text: left
           ? `${summary.right} of ${summary.total} right · ${learn.seen} of ${learn.total} ${thing}s seen, ${left} to go. Stopping here keeps your place.`
@@ -720,10 +872,11 @@ export function createUI(ctx) {
           btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
       ctx.say(left ? `${learn.seen} of ${learn.total} seen.` : 'Through the deck.');
     };
+    const tenAt = skill.set ? 1 : nSteps;
     const showBlocked = () => {
       const first = learn.startBlocked();
-      if (!first) { leaveTo(from); return; }
-      runSession({ runner: learn.runner, title: `Blocked drill · ${skill.title}`, note: skill.set ? 'Ten more from this set. Six of ten and it joins your mixed practice.' : 'Ten items, this skill only. Hints are behind a button; feedback after each.', mode: 'learn', hintOpen: false, stepper: stepper(blockedStep), lesson, onDone: async () => showResult(await learn.finishBlocked()) });
+      if (!first) { setBody(stepper(tenAt), h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, backButton(from, 'btn'))); return; }
+      runSession({ runner: learn.runner, title: `Ten items · ${skill.title}`, note: skill.set ? 'Ten more from this set. Six of ten and it joins your mixed practice.' : 'Ten items, this skill only — its own sentences first, then the book\'s. Hints are behind a button; feedback after each.', mode: 'learn', hintOpen: false, stepper: stepper(tenAt), lesson, onDone: async () => showResult(await learn.finishBlocked()) });
     };
     const showResult = (r) => {
       const missedKinds = [...new Set(r.missed.map((a) => a.kind))];
@@ -731,7 +884,7 @@ export function createUI(ctx) {
       // The blocked ten's own misses, as items that can be rebuilt (a self-graded "partly" is not one).
       const redoMissed = r.missed.filter((a) => a.item_key && !a.partial);
       if (passed && readJSON(LS_LEARN, null)?.skill === id) writeJSON(LS_LEARN, null);
-      setBody(stepper(blockedStep), h('header', { class: 'g-head' },
+      setBody(stepper(tenAt), h('header', { class: 'g-head' },
         h('h1', { class: 'g-title', text: passed ? 'Learned' : 'Not yet' }),
         h('p', { class: 'g-lede', text: passed
           ? (skill.set ? `${r.correct} of ${r.total}. ${skill.title} joins your mixed practice; its first review is due tomorrow.` : `${r.correct} of ${r.total} across ${r.kinds} kinds. ${skill.title} joins your mixed practice; its first review is due tomorrow.`)
@@ -746,10 +899,10 @@ export function createUI(ctx) {
           // failed run the honest offer is another ten (below), not a session that would graduate the skill.
           passed && redoMissed.length ? btn(`Redo the ${redoMissed.length} you missed`, { onclick: () => render('redo', { misses: redoMissed, skill: id, from }), 'aria-label': `Redo the ${redoMissed.length} item${redoMissed.length === 1 ? '' : 's'} you missed in this drill` }, 'btn btn--primary') : null,
           passed ? [btn(queue.length ? `Next: ${titleOf(queue[0])}` : (from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills'), { onclick: finishQueue }, redoMissed.length ? 'btn' : 'btn btn--primary'), btn('Practise now', { onclick: () => startBlocked(id, from) }, 'btn')]
-            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn('Re-read the lesson', { onclick: showLesson }, 'btn'), btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')]));
+            : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn(nSteps ? 'Go through the steps again' : 'Re-read the lesson', { onclick: showSteps }, 'btn'), btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')]));
       ctx.say(passed ? `${skill.title} learned.` : 'Not yet; another ten items are ready.');
     };
-    if (skill.set) showGuided(); else showLesson();
+    if (skill.set) showGuided(); else showSteps();
   }
 
   /* --------------------------------------------------------- practice */
@@ -1006,13 +1159,16 @@ export function createUI(ctx) {
    *   is a replay, never a second grading. Left and right arrow keys do the
    *   same when focus is not in a field or in an input that uses them itself.
    */
-  function runSession({ runner, title, note = '', mode, hintOpen = false, stepper = null, lesson = null, onDone, practiceLink = false, open = false, more = null }) {
+  function runSession({ runner, title, note = '', mode, hintOpen = false, stepper = null, lesson = null, onDone, practiceLink = false, open = false, more = null, before = null }) {
     const wrap = h('div', { class: 'g-run' });
+    // A stepper given as a function follows the run (Learn's steps): it is repainted for the slot on screen.
+    const stepHolder = typeof stepper === 'function' ? h('div', { class: 'g-stepwrap' }) : null;
+    const paintStepper = () => { if (stepHolder) { const n = stepper(runner.itemAt(runner.position)?.slot ?? runner.current?.slot ?? null); stepHolder.replaceChildren(...(n ? [n] : [])); } };
     const backB = btn([h('span', { 'aria-hidden': 'true', text: '←' })], { 'aria-label': 'Back to the previous item', onclick: () => go(-1) }, 'g-runnav__b');
     const fwdB = btn([h('span', { 'aria-hidden': 'true', text: '→' })], { 'aria-label': 'On to the next item', onclick: () => go(1) }, 'g-runnav__b');
     const posEl = h('span', { class: 'g-runnav__pos' });
     const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB);
-    setBody(stepper, nav, wrap);
+    setBody(stepHolder ?? stepper, nav, wrap);
     const pages = [];        // queue index → the rendered page, kept so a step back shows it as it was left
     let beat = null;
     const clearBeat = () => { if (beat) { clearTimeout(beat); beat = null; } };
@@ -1048,19 +1204,23 @@ export function createUI(ctx) {
       step({ announce: true });
     }
     /** Build (or rebuild, for a retry) the page for the item on screen. */
-    function build(i, item, { fresh = false } = {}) {
+    function build(i, item, { fresh = false, keepLead = null } = {}) {
       const grown = runner.added > 0 ? `${runner.added} item${runner.added === 1 ? '' : 's'} came back after a wrong answer${runner.capped ? '. The session is full now — anything still missed comes back next time' : ''}.` : '';
       // A redo names its items, and a named item can have gone (the sentence left the library, the deck changed).
       // The runner skips those; the count on screen is smaller than the one offered, and this says why.
       const lost = runner.dropped > 0 ? `${runner.dropped} item${runner.dropped === 1 ? '' : 's'} could not be rebuilt and ${runner.dropped === 1 ? 'was' : 'were'} left out.` : '';
       const page = h('div', { class: 'g-page' });
-      page.append(itemNode(item, {
+      // A teaching step's page (Learn): the lead — say, show, worked example — sits above its check. A worked
+      // example with something to ask keeps the check out of sight until it is done; a retry keeps the lead as it was.
+      const lead = keepLead ? { node: keepLead, gate: false } : (before ? before(i, item, runner.itemAt(i)?.slot ?? null) : null);
+      if (lead?.node) page.append(lead.node);
+      const itemEl = itemNode(item, {
         title, note: [note, grown, lost].filter(Boolean).join(' '), position: i, hintOpen, onHint: () => runner.hint(),
         onAnswer: async (value) => {
           const result = await runner.answer(value);
           const fb = feedbackNode(item, result, { lesson, mode, practiceLink,
             onNext: () => go(1),
-            onRetry: result.correct ? null : () => { pages[i] = build(i, item, { fresh: true }); wrap.replaceChildren(pages[i]); paintNav(); focusPage(pages[i]); ctx.say('Try that one again.'); },
+            onRetry: result.correct ? null : () => { pages[i] = build(i, item, { fresh: true, keepLead: lead?.node ?? null }); wrap.replaceChildren(pages[i]); paintNav(); focusPage(pages[i]); ctx.say('Try that one again.'); },
             onPractice: () => nested(item.skill) });
           page.append(fb);
           page.dataset.result = result.correct ? 'ok' : 'bad';
@@ -1070,11 +1230,17 @@ export function createUI(ctx) {
           if (result.correct) { fb.querySelector('.g-fb__next')?.focus({ preventScroll: true }); clearBeat(); beat = setTimeout(() => { beat = null; go(1); }, ADVANCE_MS); }
           else fb.querySelector('.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
         },
-      }));
+      });
+      page.append(itemEl);
+      if (lead?.gate) {
+        itemEl.hidden = true;
+        lead.node.addEventListener('g-lead-done', () => { itemEl.hidden = false; itemEl.querySelector('.g-q')?.focus?.({ preventScroll: true }); itemEl.scrollIntoView?.({ block: 'nearest' }); }, { once: true });
+      }
       if (fresh) page.dataset.retry = 'true';
       return page;
     }
-    const focusPage = (page) => { (page.querySelector('.g-fb__retry, .g-fb__next') ?? page.querySelector('.g-q'))?.focus?.({ preventScroll: true }); };
+    // The first thing to do on the page: the feedback's button, else the worked example's question, else the check's.
+    const focusPage = (page) => { (page.querySelector('.g-fb__retry, .g-fb__next') ?? page.querySelector('.g-worked__ask .g-q') ?? page.querySelector('.g-item:not([hidden]) .g-q') ?? page.querySelector('.g-step__title'))?.focus?.({ preventScroll: true }); };
     function step({ announce = false } = {}) {
       closePop();
       clearBeat();
@@ -1085,6 +1251,7 @@ export function createUI(ctx) {
       wrap.replaceChildren(pages[i]);
       ctx.current = cur.item;
       paintNav();
+      paintStepper();
       if (announce) ctx.say(runner.replay ? `${posEl.textContent}, already answered.` : posEl.textContent);
       // A replayed item is read, not answered, so focus stays on the arrows. The back arrow is disabled at the
       // first item, and focusing a disabled button drops focus on the body — outside `#grammar`, where the
@@ -1161,6 +1328,8 @@ export function createUI(ctx) {
     // as the ordinary, welcome thing it is. Nothing is printed when the sentence is the chapter's own.
     const scopeLine = scopeSentence(item.scope);
     if (scopeLine) node.append(h('p', { class: 'g-quiet g-item__note', text: scopeLine }));
+    // A1: an item in Learn's ten says so only when it had to reach past the skill's own written sentences.
+    if (item.pool === 'library-short' || item.pool === 'library') node.append(h('p', { class: 'g-quiet g-item__note', text: 'From the book — every written sentence for this skill has come up in this sitting.' }));
     let submitted = false;
     // Every answer box paints itself green or red (GRAMMAR-CONTRACT.md §3). A typed box does it as the
     // learner leaves it; grading paints them all, from `cellResults` — the same per-cell truth `judge`
@@ -1183,7 +1352,8 @@ export function createUI(ctx) {
     const boxIn = (ids) => { const want = new Set(ids.map(String)); return boxes.filter((b) => want.has(String(b.id))); };
     const shownBoxes = item.input === 'chart' ? boxIn(chartCells(item).map((c) => item.chart.cells.indexOf(c)))
       : ['inline', 'bank', 'match', 'order'].includes(item.input) ? boxes : [];
-    const hintPanel = shownBoxes.length ? boxHintPanel(shownBoxes, { mode: effMode, onHint: () => { if (!submitted) onHint(); } }) : null;
+    // Decision 14: on a chart the hint may give that one cell's answer, and the answer then counts as hinted.
+    const hintPanel = shownBoxes.length ? boxHintPanel(shownBoxes, { mode: effMode, onHint: () => { if (!submitted) onHint(); }, reveal: item.input === 'chart' ? (id) => item.chart.cells[Number(id)]?.answer?.[0] ?? null : null }) : null;
     const hintFor = (id, opts) => hintPanel?.control(id, opts) ?? null;
     const question = (text) => h('p', { class: 'g-q', tabindex: '-1', text });
     // The English of a question on demand (a question set, Pensum C): never shown first.
@@ -1306,7 +1476,7 @@ export function createUI(ctx) {
    * the box or the sentence. Level two is a second press ("Tell me more").
    * `always` shows every panel from the start and counts the answer as hinted.
    */
-  function boxHintPanel(boxes, { mode, onHint }) {
+  function boxHintPanel(boxes, { mode, onHint, reveal = null }) {
     const always = mode === 'always';
     const uid = `gh${Math.random().toString(36).slice(2, 8)}`;
     const rows = new Map();
@@ -1316,8 +1486,11 @@ export function createUI(ctx) {
       // Level two stays a second press even under *Always show*: "every box shows its hint from the start" is the
       // first level, what the box is being asked for; the rule behind it is still the deeper look.
       const more = b.levels[1] ? btn('Tell me more', { onclick: (e) => { e.currentTarget.remove(); body.append(h('p', { class: 'g-hint__rule g-hint__rule--deep', text: b.levels[1] })); } }, 'g-link g-hint__more') : null;
+      // "Show this form": the one cell's answer (GRAMMAR-CONTRACT.md §3, decision 14), a second press after the
+      // hint, and the box is then marked hinted like any other helped answer.
+      const show = reveal ? btn('Show this form', { onclick: (e) => { const t = reveal(b.id); if (t == null) return; e.currentTarget.replaceWith(h('p', { class: 'g-hint__rule g-hint__answer' }, 'It is ', h('b', { lang: 'la', text: t }), '.')); onHint?.(); } }, 'g-link g-hint__more') : null;
       const row = h('div', { class: 'g-hints__row', id: `${uid}-${b.id}`, hidden: always ? null : true },
-        h('p', { class: 'g-hints__for', text: b.label }), body, more);
+        h('p', { class: 'g-hints__for', text: b.label }), body, more, show);
       rows.set(String(b.id), row);
       list.append(row);
     }
@@ -1501,7 +1674,7 @@ export function createUI(ctx) {
   }
 
   /** The cells a chart item shows: all of them, or the target cell alone on a phone. */
-  const chartCells = (item) => { const { chart } = item; if (phone() && chart.cells.length > 1) return [chart.cells.find((c) => c.row === chart.target.row && c.col === chart.target.col) ?? chart.cells.find((c) => c.row === chart.target.row) ?? chart.cells[0]]; return chart.cells; };
+  const chartCells = (item) => { const { chart } = item; if (chart.byWord) return chart.cells; if (phone() && chart.cells.length > 1) return [chart.cells.find((c) => c.row === chart.target.row && c.col === chart.target.col) ?? chart.cells.find((c) => c.row === chart.target.row) ?? chart.cells[0]]; return chart.cells; };
   /** The question as asked of the cells shown ("Give the accusative singular of cāsus" when a phone shows one cell). */
   const chartQuestion = (item) => { const cells = chartCells(item); return cells.length === 1 && item.chart.cells.length > 1 ? `Give the ${cells[0].label} of ${item.chart.head ?? item.lemma.split(/[\s,]/)[0]}` : item.prompt.question; };
   /** The paradigm section with inputs in the cells to fill (a compact single row on phones). */
@@ -1535,7 +1708,16 @@ export function createUI(ctx) {
     // Cells not shown (phones show one) are judged as right: only what was asked counts.
     const collect = () => { const v = {}; chart.cells.forEach((c, i) => { v[i] = inputs.has(i) ? inputs.get(i).value : c.answer[0]; }); return v; };
     const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); submit(collect()); } });
-    if (cells.length === 1) {
+    if (chart.byWord) {
+      // One box per word (§8): the same cell asked on each stock word in turn, each judged as it is left,
+      // the whole set one attempt. Every box is asked on a phone too — a single box would answer the rest.
+      form.append(h('div', { class: 'g-chart__words' }, cells.map((c) => {
+        const i = chart.cells.indexOf(c);
+        const w = cellIn(i, c.label);
+        inputs.get(i).id = `gc-${i}`;
+        return h('div', { class: 'g-chart__word' }, h('label', { class: 'g-chart__wlabel', for: `gc-${i}` }, h('span', { lang: 'la', class: 'g-chart__wlemma', text: c.word }), h('span', { class: 'g-chart__wcell', text: c.cellLabel ?? c.label })), w);
+      })));
+    } else if (cells.length === 1) {
       const c = cells[0];
       const i = chart.cells.indexOf(c);
       form.append(h('div', { class: 'g-chart__one' }, h('label', { class: 'g-label', for: `gc-${i}` }, `${item.lemma.split(/[\s,]/)[0]} · ${c.label}`), cellIn(i, c.label)));
@@ -1644,7 +1826,9 @@ export function createUI(ctx) {
       // expandable, so a keyboard Enter on Next can never land on it by accident mid-session.
       h('p', { class: 'g-fb__hist' }, h('button', { type: 'button', class: 'g-link', onclick: () => render('history', { skill: item.skill }) }, `How ${skill?.title ?? 'this skill'} has gone`)),
       lit ? h('div', { class: 'g-fb__pt' }, lit) : null,
-      unit && !isSet && item.kind !== 'transform' && item.kind !== 'reorder' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(unit.la, { target: item.target?.index ?? null }), unit.en ? h('p', { class: 'g-ex__en', text: unit.en }) : null) : null);
+      unit && !isSet && item.kind !== 'transform' && item.kind !== 'reorder' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(unit.la, { target: item.target?.index ?? null }), unit.en ? h('p', { class: 'g-ex__en', text: unit.en }) : null)
+        // A teaching step's written sentence (§1): the whole of it, with its English, once the check is answered.
+        : item.written && item.kind !== 'chart' ? h('div', { class: 'g-fb__ctx' }, h('p', { class: 'g-lesson__tag', text: 'In the sentence' }), latin(item.written.la, { target: item.target?.index ?? null }), item.written.en ? h('p', { class: 'g-ex__en', text: item.written.en }) : null) : null);
     details?.addEventListener('toggle', async () => {
       if (!details.open) return;
       const slot = details.querySelector('.g-fb__rule');

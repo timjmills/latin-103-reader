@@ -60,7 +60,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Every neuter noun in Latin keeps one habit, and **a 3rd-declension neuter noun (corpus, mare: nominative = accusative, plural in -a / -ia)** keeps it too: the word it uses as the subject is the very same word it uses as the object. *Corpus* is 'the body' whether the body is doing something or having something done to it. So you cannot tell subject from object by the ending — you read the rest of the sentence.",
+      "notice": {
+        "sentences": [
+          "t3n-03",
+          "t3n-04"
+        ],
+        "ask": "Tap the word for 'mouth' in each sentence. One is the subject and one is the object — what do their endings have in common?",
+        "tap": "focus"
+      },
+      "say": "Every neuter noun in Latin keeps one habit, and **a 3rd-declension neuter noun (corpus, mare: nominative = accusative, plural in -a / -ia)** keeps it too: the word it uses as the subject is the very same word it uses as the object. *Corpus* is 'the body' whether the body is doing something or having something done to it.",
       "show": {
         "kind": "sentence",
         "id": "t3n-01"
@@ -153,7 +161,7 @@
     {
       "n": 4,
       "title": "The -e / -al / -ar group keeps an i",
-      "say": "A small group inside the family — the nouns ending in *-e*, *-al*, *-ar* — keeps an *i* wherever it can. The plural is *-ia*: *mare* → *maria*, *animal* → *animālia*. The genitive plural (the 'of' form) is *-ium*: *marium*. And the ablative singular (the 'by/with/from' form) is *-ī*, not *-e*: *in marī*, in the sea. One extra letter, in three places.",
+      "say": "A small group inside the family — the nouns ending in *-e*, *-al*, *-ar* — keeps an *i* wherever it can. The plural is *-ia*: *mare* → *maria*, *animal* → *animālia*. The genitive plural (the 'of' form) is *-ium*: *marium*. And the ablative singular (the 'by/with/from' form) is *-ī*, not *-e*: *in marī*, in the sea.",
       "show": {
         "kind": "paradigm",
         "key": "decl3in",
@@ -234,6 +242,10 @@
     {
       "type": "p",
       "text": "Ørberg's chapter XI list: *flūmen, ōs, crūs* (leg), *corpus, caput, cor, pectus* (chest), *iecur* (liver); *mare, animal*; and *viscera* (organs), plural only. A&G: the *-e, -al, -ar* nouns are i-stems, which is why they take *-ium* and *-ī*; poetry sometimes shows *mare* as an ablative, but the pattern above holds in prose."
+    },
+    {
+      "type": "p",
+      "text": "So you cannot tell subject from object by the ending — you read the rest of the sentence."
     }
   ],
   "sources": [

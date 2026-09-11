@@ -48,6 +48,14 @@
     {
       "n": 1,
       "title": "What the perfect does",
+      "notice": {
+        "sentences": [
+          "pa-02",
+          "pa-13"
+        ],
+        "ask": "Tap the word in each sentence that says something already over and done.",
+        "tap": "focus"
+      },
       "say": "When a thing is over and done with, Latin reaches for **the perfect (the 'did / has done' tense)**: *dormīvit* — he slept, or he has slept. One Latin form covers both English pasts, and the rest of the sentence decides which to say. This is the tense stories are told in.",
       "show": {
         "kind": "sentence",
@@ -96,7 +104,7 @@
     {
       "n": 3,
       "title": "-it and -ērunt, the two a story lives on",
-      "say": "A story is told about other people, so these two do most of the work: *-it* for one person, *-ērunt* for more than one. *vocāvit* — he called; *lūsērunt* — they played. The *ē* of *-ērunt* is long: *lūsērunt*, never *lūserunt*. The *-ī* of *lēgī* and the *-ī* of *respondistī* are long too; *-it*, *-imus* and *-istis* are the short ones.",
+      "say": "A story is told about other people, so these two do most of the work: *-it* for one person, *-ērunt* for more than one. *vocāvit* — he called; *lūsērunt* — they played. The *ē* of *-ērunt* is long: *lūsērunt*, never *lūserunt*.",
       "show": {
         "kind": "paradigm",
         "key": "conj1",
@@ -209,6 +217,10 @@
     {
       "type": "p",
       "text": "Stem changes to know by heart: *sum → fuī*, *eō → iī* (*iit*, *iērunt*), *ferō → tulī*, *dō → dedī*, *faciō → fēcī*, *videō → vīdī*, *veniō → vēnī*. In verse and speech -ēre can replace -ērunt (*pulsāvēre*)."
+    },
+    {
+      "type": "p",
+      "text": "The *-ī* of *lēgī* and the *-ī* of *respondistī* are long too; *-it*, *-imus* and *-istis* are the short ones."
     }
   ],
   "sources": [

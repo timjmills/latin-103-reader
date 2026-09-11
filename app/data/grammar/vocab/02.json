@@ -35,7 +35,8 @@
    "sense_full": "boy, lad, young man",
    "parts": null,
    "unit_id": "r02:2.1",
-   "count": 224
+   "count": 224,
+   "sem": "person"
   },
   {
    "lemma": "meus",
@@ -59,7 +60,8 @@
    "sense_full": "slave",
    "parts": null,
    "unit_id": "r02:25.2",
-   "count": 174
+   "count": 174,
+   "sem": "person"
   },
   {
    "lemma": "pater",
@@ -71,7 +73,8 @@
    "sense_full": "father",
    "parts": null,
    "unit_id": "r02:9.1",
-   "count": 142
+   "count": 142,
+   "sem": "person"
   },
   {
    "lemma": "tuus",
@@ -95,7 +98,8 @@
    "sense_full": "owner, lord, master",
    "parts": null,
    "unit_id": "r02:26.1",
-   "count": 126
+   "count": 126,
+   "sem": "person"
   },
   {
    "lemma": "fīlius",
@@ -107,7 +111,8 @@
    "sense_full": "son",
    "parts": null,
    "unit_id": "r02:12.1",
-   "count": 106
+   "count": 106,
+   "sem": "person"
   },
   {
    "lemma": "vir",
@@ -119,7 +124,8 @@
    "sense_full": "man",
    "parts": null,
    "unit_id": "r02:1.1",
-   "count": 87
+   "count": 87,
+   "sem": "person"
   },
   {
    "lemma": "māter",
@@ -131,7 +137,8 @@
    "sense_full": "mother, foster mother",
    "parts": null,
    "unit_id": "r02:10.1",
-   "count": 86
+   "count": 86,
+   "sem": "person"
   },
   {
    "lemma": "puella",
@@ -143,7 +150,8 @@
    "sense_full": "girl, (female) child or daughter",
    "parts": null,
    "unit_id": "r02:3.1",
-   "count": 75
+   "count": 75,
+   "sem": "person"
   },
   {
    "lemma": "ecce",
@@ -167,7 +175,8 @@
    "sense_full": "children (in the plural)",
    "parts": null,
    "unit_id": "r02:21.1",
-   "count": 59
+   "count": 59,
+   "sem": "person"
   },
   {
    "lemma": "ancilla",
@@ -179,7 +188,8 @@
    "sense_full": "slave girl",
    "parts": null,
    "unit_id": "r02:30.2",
-   "count": 57
+   "count": 57,
+   "sem": "person"
   },
   {
    "lemma": "cēterus",
@@ -203,7 +213,8 @@
    "sense_full": "woman",
    "parts": null,
    "unit_id": "r02:1.2",
-   "count": 47
+   "count": 47,
+   "sem": "person"
   },
   {
    "lemma": "novus",
@@ -215,7 +226,14 @@
    "sense_full": "new, fresh, young",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 40
+   "count": 40,
+   "sem": {
+    "of": [
+     "thing",
+     "person",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "līber",
@@ -227,7 +245,8 @@
    "sense_full": "book, volume",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 35
+   "count": 35,
+   "sem": "thing"
   },
   {
    "lemma": "fīlia",
@@ -239,7 +258,8 @@
    "sense_full": "daughter",
    "parts": null,
    "unit_id": "r02:19.2",
-   "count": 32
+   "count": 32,
+   "sem": "person"
   },
   {
    "lemma": "familia",
@@ -251,7 +271,8 @@
    "sense_full": "household",
    "parts": null,
    "unit_id": "r02:8.1",
-   "count": 31
+   "count": 31,
+   "sem": "group"
   },
   {
    "lemma": "domina",
@@ -263,7 +284,8 @@
    "sense_full": "mistress of a family, wife",
    "parts": null,
    "unit_id": "r02:31.1",
-   "count": 29
+   "count": 29,
+   "sem": "person"
   },
   {
    "lemma": "quot",
@@ -287,7 +309,8 @@
    "sense_full": "tongue",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 18
+   "count": 18,
+   "sem": "abstract"
   },
   {
    "lemma": "antīquus",
@@ -299,7 +322,13 @@
    "sense_full": "old, ancient, aged",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "mel",
@@ -311,7 +340,8 @@
    "sense_full": "honey",
    "parts": null,
    "unit_id": "r02:68.2",
-   "count": 6
+   "count": 6,
+   "sem": "food"
   },
   {
    "lemma": "titulus",
@@ -323,7 +353,8 @@
    "sense_full": "title (person or book)",
    "parts": null,
    "unit_id": "r02:80.1",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "pāgina",
@@ -335,7 +366,8 @@
    "sense_full": "page, sheet",
    "parts": null,
    "unit_id": "r02:88.1",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   }
  ]
 }

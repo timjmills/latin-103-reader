@@ -23,7 +23,8 @@
    "sense_full": "eye",
    "parts": null,
    "unit_id": "r07:6.1",
-   "count": 59
+   "count": 59,
+   "sem": "body"
   },
   {
    "lemma": "aperiō",
@@ -35,7 +36,25 @@
    "sense_full": "uncover, open, disclose",
    "parts": "aperiō, aperīre, aperuī, apertum",
    "unit_id": "r07:14.1",
-   "count": 41
+   "count": 41,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "ōstium",
+     "fenestra",
+     "iānua",
+     "porta",
+     "līber",
+     "foris",
+     "sacculus",
+     "oculus",
+     "epistula",
+     "saccus"
+    ]
+   }
   },
   {
    "lemma": "nōnne",
@@ -59,7 +78,18 @@
    "sense_full": "hold, keep",
    "parts": "teneō, tenēre, tenuī, tentum",
    "unit_id": "r07:5.3",
-   "count": 33
+   "count": 33,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "person",
+     "animal",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "vertō",
@@ -83,7 +113,8 @@
    "sense_full": "tear",
    "parts": null,
    "unit_id": "r07:6.1",
-   "count": 31
+   "count": 31,
+   "sem": "thing"
   },
   {
    "lemma": "claudō",
@@ -95,7 +126,24 @@
    "sense_full": "close, shut, block up",
    "parts": "claudō, claudere, clausī, clausum",
    "unit_id": "r07:14.1",
-   "count": 28
+   "count": 28,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "ōstium",
+     "fenestra",
+     "iānua",
+     "porta",
+     "līber",
+     "foris",
+     "sacculus",
+     "oculus",
+     "saccus"
+    ]
+   }
   },
   {
    "lemma": "exeō",
@@ -107,7 +155,14 @@
    "sense_full": "come, go, sail, march, leave",
    "parts": "exeō, exīre, exiī, exitum",
    "unit_id": "r07:82.1",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "currō",
@@ -119,7 +174,14 @@
    "sense_full": "run, trot, gallop, hurry, hasten, speed, move, travel, proceed, flow swiftly",
    "parts": "currō, currere, cucurrī, cursum",
    "unit_id": "r07:66.1",
-   "count": 23
+   "count": 23,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "exspectō",
@@ -131,7 +193,21 @@
    "sense_full": "lookout for, await",
    "parts": "exspectō, exspectāre, exspectavī, exspectātum",
    "unit_id": "r07:1.2",
-   "count": 23
+   "count": 23,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ],
+    "obj_also": [
+     "epistula",
+     "nāvis",
+     "nūntius",
+     "tabellārius"
+    ]
+   }
   },
   {
    "lemma": "parō",
@@ -143,7 +219,16 @@
    "sense_full": "prepare",
    "parts": "parō, parāre, parāvī, parātum",
    "unit_id": "r07:19.1",
-   "count": 22
+   "count": 22,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "food",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "fōrmōsus",
@@ -155,7 +240,14 @@
    "sense_full": "beautiful, finely formed, handsome, fair",
    "parts": null,
    "unit_id": "r07:10.1",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "adeō",
@@ -191,7 +283,8 @@
    "sense_full": "pear",
    "parts": null,
    "unit_id": "r07:52.1",
-   "count": 16
+   "count": 16,
+   "sem": "food"
   },
   {
    "lemma": "plēnus",
@@ -215,7 +308,13 @@
    "sense_full": "come to, arrive",
    "parts": "adveniō, advēnīre, advēnī, aduentum",
    "unit_id": "r07:30.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "ōsculum",
@@ -227,7 +326,8 @@
    "sense_full": "kiss",
    "parts": null,
    "unit_id": "r07:62.1",
-   "count": 11
+   "count": 11,
+   "sem": "abstract"
   },
   {
    "lemma": "illīc",
@@ -255,15 +355,21 @@
   },
   {
    "lemma": "lacrimō",
-   "dict": "lacrimō, lacrimāre, lacrimavī, lacrimatum",
+   "dict": "lacrimō, lacrimāre, lacrimāvī, lacrimātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "weep, cry",
    "sense_full": "shed tears, weep",
-   "parts": "lacrimō, lacrimāre, lacrimavī, lacrimatum",
+   "parts": "lacrimō, lacrimāre, lacrimāvī, lacrimātum",
    "unit_id": "r07:6.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "speculum",
@@ -275,7 +381,8 @@
    "sense_full": "mirror, looking glass, reflector",
    "parts": null,
    "unit_id": "r07:8.1",
-   "count": 8
+   "count": 8,
+   "sem": "thing"
   },
   {
    "lemma": "tergeō",
@@ -299,7 +406,8 @@
    "sense_full": "porter, doorkeeper",
    "parts": null,
    "unit_id": "r07:33.1",
-   "count": 4
+   "count": 4,
+   "sem": "person"
   },
   {
    "lemma": "salveō",

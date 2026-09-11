@@ -11,7 +11,8 @@
    "sense_full": "poet",
    "parts": null,
    "unit_id": "w11:b19.4",
-   "count": 19
+   "count": 19,
+   "sem": "person"
   },
   {
    "lemma": "grātia",
@@ -23,7 +24,8 @@
    "sense_full": "popularity, esteem, credit(with bona)",
    "parts": null,
    "unit_id": "w11:b15.4",
-   "count": 13
+   "count": 13,
+   "sem": "abstract"
   },
   {
    "lemma": "pīrāta",
@@ -35,7 +37,8 @@
    "sense_full": "pirate",
    "parts": null,
    "unit_id": "w11:b32.1",
-   "count": 10
+   "count": 10,
+   "sem": "person"
   },
   {
    "lemma": "pingō",
@@ -71,7 +74,8 @@
    "sense_full": "class or division of Romans",
    "parts": null,
    "unit_id": "w11:b3.3",
-   "count": 8
+   "count": 8,
+   "sem": "group"
   },
   {
    "lemma": "servitūs",
@@ -83,7 +87,8 @@
    "sense_full": "slavery",
    "parts": null,
    "unit_id": "w11:b1.1",
-   "count": 8
+   "count": 8,
+   "sem": "abstract"
   },
   {
    "lemma": "utinam",
@@ -155,7 +160,13 @@
    "sense_full": "pleasing, acceptable, agreeable, welcome",
    "parts": null,
    "unit_id": "w11:b4.4",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "cūnctus",
@@ -179,7 +190,13 @@
    "sense_full": "singular",
    "parts": null,
    "unit_id": "w11:b3.4",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "referō",
@@ -203,7 +220,8 @@
    "sense_full": "strength (singular only), force, power, might, violence",
    "parts": null,
    "unit_id": "w11:b2.3",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "aliquot",
@@ -215,7 +233,8 @@
    "sense_full": "some, several, a few people",
    "parts": null,
    "unit_id": "w11:b4.2",
-   "count": 4
+   "count": 4,
+   "sem": "other"
   },
   {
    "lemma": "commūnis",
@@ -251,7 +270,8 @@
    "sense_full": "people, nation, State",
    "parts": null,
    "unit_id": "w11:b3.3",
-   "count": 4
+   "count": 4,
+   "sem": "group"
   },
   {
    "lemma": "tueor",
@@ -275,7 +295,8 @@
    "sense_full": "needle, pin",
    "parts": null,
    "unit_id": "w10:arachne:b1.2",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "amphitheatrum",
@@ -287,7 +308,8 @@
    "sense_full": "amphitheater, double (oval or circular) theater having stage or arena in center",
    "parts": null,
    "unit_id": "w11:b48.3",
-   "count": 3
+   "count": 3,
+   "sem": "place"
   },
   {
    "lemma": "cursūs",
@@ -299,7 +321,8 @@
    "sense_full": "running",
    "parts": null,
    "unit_id": "w11:b51.1",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "dēsistō",
@@ -323,7 +346,12 @@
    "sense_full": "unarmed, without weapons",
    "parts": null,
    "unit_id": "w11:b9.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "inopia",
@@ -335,7 +363,8 @@
    "sense_full": "lack, need",
    "parts": null,
    "unit_id": "w11:b3.2",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "intereā",
@@ -395,7 +424,8 @@
    "sense_full": "conqueror",
    "parts": null,
    "unit_id": "w11:b4.6",
-   "count": 3
+   "count": 3,
+   "sem": "person"
   },
   {
    "lemma": "victōria",
@@ -407,7 +437,8 @@
    "sense_full": "victory",
    "parts": null,
    "unit_id": "w11:b4.3",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "voluntās",
@@ -419,7 +450,8 @@
    "sense_full": "will, desire",
    "parts": null,
    "unit_id": "w11:b8.2",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "aliquandō",
@@ -443,7 +475,8 @@
    "sense_full": "friendship, bond between friends",
    "parts": null,
    "unit_id": "w11:b23.2",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "arānea",
@@ -455,7 +488,8 @@
    "sense_full": "spider's web, cobweb",
    "parts": null,
    "unit_id": "w10:arachne:b9.1",
-   "count": 2
+   "count": 2,
+   "sem": "animal"
   },
   {
    "lemma": "Christiānus",
@@ -503,7 +537,8 @@
    "sense_full": "tribe, clan",
    "parts": null,
    "unit_id": "w11:b4.3",
-   "count": 2
+   "count": 2,
+   "sem": "group"
   },
   {
    "lemma": "ingredior",
@@ -611,7 +646,8 @@
    "sense_full": "neighbor",
    "parts": null,
    "unit_id": "w11:b4.1",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "rēmigō",
@@ -647,7 +683,8 @@
    "sense_full": "1000 sestertii",
    "parts": null,
    "unit_id": "w11:b17.1",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "superbia",
@@ -659,7 +696,8 @@
    "sense_full": "arrogance, pride, haughtiness",
    "parts": null,
    "unit_id": "w10:arachne:b1.3",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "talentum",
@@ -671,7 +709,8 @@
    "sense_full": "talent",
    "parts": null,
    "unit_id": "w11:b35.3",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "advehō",
@@ -695,7 +734,8 @@
    "sense_full": "old woman",
    "parts": null,
    "unit_id": "w10:arachne:b2.1",
-   "count": 1
+   "count": 1,
+   "sem": "person"
   },
   {
    "lemma": "canus",
@@ -719,7 +759,8 @@
    "sense_full": "round or embossed shield (usually bronze)",
    "parts": null,
    "unit_id": "w10:arachne:b4.1",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "condiciō",
@@ -731,7 +772,8 @@
    "sense_full": "agreement or contract",
    "parts": null,
    "unit_id": "w11:b32.3",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "cōnscīscō",
@@ -827,7 +869,8 @@
    "sense_full": "anger",
    "parts": null,
    "unit_id": "w10:arachne:b8.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "īrātus",
@@ -839,7 +882,12 @@
    "sense_full": "angry",
    "parts": null,
    "unit_id": "w10:arachne:b8.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "laqueus",
@@ -851,7 +899,8 @@
    "sense_full": "noose",
    "parts": null,
    "unit_id": "w10:arachne:b8.2",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "magistra",
@@ -863,7 +912,8 @@
    "sense_full": "instructress",
    "parts": null,
    "unit_id": "w10:arachne:b1.2",
-   "count": 1
+   "count": 1,
+   "sem": "person"
   },
   {
    "lemma": "olea",
@@ -875,7 +925,8 @@
    "sense_full": "olive",
    "parts": null,
    "unit_id": "w10:arachne:b4.2",
-   "count": 1
+   "count": 1,
+   "sem": "food"
   },
   {
    "lemma": "peritus",
@@ -887,7 +938,12 @@
    "sense_full": "skilled, skillful",
    "parts": null,
    "unit_id": "w10:arachne:b7.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "praeponō",
@@ -935,7 +991,8 @@
    "sense_full": "warp (in the loom)",
    "parts": null,
    "unit_id": "w10:arachne:b9.1",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "submergō",
@@ -959,7 +1016,8 @@
    "sense_full": "juice, sap",
    "parts": null,
    "unit_id": "w10:arachne:b9.1",
-   "count": 1
+   "count": 1,
+   "sem": "food"
   },
   {
    "lemma": "tēla",
@@ -971,7 +1029,8 @@
    "sense_full": "web",
    "parts": null,
    "unit_id": "w10:arachne:b9.1",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "tridēns",
@@ -1007,7 +1066,8 @@
    "sense_full": "wave",
    "parts": null,
    "unit_id": "w10:arachne:b5.1",
-   "count": 1
+   "count": 1,
+   "sem": "nature"
   },
   {
    "lemma": "vīlis",
@@ -1019,7 +1079,12 @@
    "sense_full": "cheap, common, mean, worthless",
    "parts": null,
    "unit_id": "w11:b4.5",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   }
  ]
 }

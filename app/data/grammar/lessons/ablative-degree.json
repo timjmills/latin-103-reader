@@ -3,7 +3,15 @@
  "teach": [
   {
    "title": "By how much",
-   "say": "When you want to say not just 'taller' but 'much taller', the measure of the gap goes into the ablative: **the ablative of degree (the 'by how much' form: multō māior = bigger by much)**. *Mārcus multō altior est quam Quīntus* — Marcus is taller than Quintus by much. The measuring word stands beside the comparative (the '-er / more' form) and answers one question only: by how much?",
+   "notice": {
+    "sentences": [
+     "adg-03",
+     "adg-04"
+    ],
+    "ask": "Which word in each sentence turns 'better' and 'happier' into 'much better' and 'much happier'?",
+    "tap": "focus"
+   },
+   "say": "When you want to say not just 'taller' but 'much taller', the measure of the gap goes into the ablative: **the ablative of degree (the 'by how much' form: multō māior = bigger by much)**. *Mārcus multō altior est quam Quīntus* — Marcus is taller than Quintus by much.",
    "show": {
     "kind": "sentence",
     "id": "adg-01"
@@ -80,7 +88,7 @@
   },
   {
    "title": "Two ablatives, two jobs",
-   "say": "Not every ablative near a comparative is a measure. In *mīles gladiō pugnat*, *gladiō* is **the ablative (the 'by/with/from' form)** — the tool he fights with. In *multō longiōre gladiō*, *gladiō* is still the tool and *multō* answers 'by how much?'. Ask the question aloud: 'with what?' gives the means, 'by how much?' gives the degree. A plain 'than' is a third thing again, and comes with *quam*: *multō fortior quam ille*.",
+   "say": "Not every ablative near a comparative is a measure. In *multō longiōre gladiō pugnat*, *gladiō* is **the ablative (the 'by/with/from' form)** — the tool he fights with — and *multō* answers 'by how much?'. Ask aloud: 'with what?' gives the means, 'by how much?' gives the degree.",
    "show": {
     "kind": "sentence",
     "id": "adg-13"
@@ -150,6 +158,14 @@
   {
    "type": "p",
    "text": "The learner's notes (week 16): the ablative names the degree of difference between two things compared; it is either a unit of measure (*pēs* foot, *ūncia* inch, *passus* pace) or a general quantity word (*multum, paulum*); it can combine with a *quam* clause or with an ablative of comparison: *hic multō fortior est*, *hic multō fortior est illō*, *hī paulō māiōrēs sunt quam illī*, *mūrus decem pedibus altior est*. Ørberg (chapter XVI): *multō pulchriōrem, multō turbidior, multō altiōrēs, paulō levior*; A&G §414 call it the ablative of degree of difference."
+  },
+  {
+   "type": "p",
+   "text": "The measuring word stands beside the comparative (the '-er / more' form) and answers one question only: by how much?"
+  },
+  {
+   "type": "p",
+   "text": "A plain 'than' is a third thing again, and comes with *quam*: *multō fortior quam ille*."
   }
  ],
  "sources": [

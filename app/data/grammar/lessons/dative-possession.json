@@ -58,6 +58,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "dpo-04",
+          "dpo-07"
+        ],
+        "ask": "Tap the word that says who has something in each sentence. What do the two words have in common?",
+        "tap": "focus"
+      },
       "say": "Latin has *habeō*, I have, but it very often says the same thing another way round: 'to me there is a dog' for 'I have a dog'. That is **the dative of possession (the 'to me there is' way of saying 'I have')**. The owner goes into the dative (the 'to/for' form) and the verb is simply *est* or *sunt*.",
       "show": {
         "kind": "sentence",

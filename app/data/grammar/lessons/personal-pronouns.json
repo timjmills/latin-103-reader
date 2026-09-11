@@ -3,7 +3,15 @@
  "teach": [
   {
    "title": "The word for the speaker",
-   "say": "Latin has its own small words for the one speaking and the one spoken to: **the personal pronouns (I, you, we, you all) and the reflexive sē ('-self')**. *ego* is I, *tū* is you (one person), *nōs* is we, *vōs* is you all. The verb ending already tells you who is acting, so *ego* and *tū* are put in only when the point is who, as against somebody else: *ego librum legō, tū dormīs* — I am reading, you are sleeping.",
+   "notice": {
+    "sentences": [
+     "pp-03",
+     "pp-09"
+    ],
+    "ask": "Which word in each sentence is the one for 'you', the person being spoken to?",
+    "tap": "focus"
+   },
+   "say": "Latin has its own small words for the one speaking and the one spoken to: **the personal pronouns (I, you, we, you all) and the reflexive sē ('-self')**. *ego* is I, *tū* is you (one person), *nōs* is we, *vōs* is you all. *ego librum legō, tū dormīs* — I am reading, you are sleeping.",
    "show": {
     "kind": "sentence",
     "id": "pp-01"
@@ -79,7 +87,7 @@
   },
   {
    "title": "The plurals nōs and vōs",
-   "say": "For more than one Latin has *nōs* (we, us) and *vōs* (you all). Each is the same word as subject and as object — *nōs in hortō sumus*, we are in the garden; *magister nōs vocat*, the teacher calls us — so only the sentence tells you which job it is doing. For 'to or for' them Latin says *nōbīs* and *vōbīs*.",
+   "say": "For more than one Latin has *nōs* (we, us) and *vōs* (you all). Each is the same word as subject and as object, so only the sentence tells you which job it is doing: *magister nōs vocat*, the teacher calls us. For 'to or for' them Latin says *nōbīs* and *vōbīs*.",
    "show": {
     "kind": "paradigm",
     "key": "ego",
@@ -108,7 +116,7 @@
   },
   {
    "title": "sē points back to the subject",
-   "say": "*sē* means the subject itself — himself, herself, itself, themselves — and it has no nominative (the subject form), because it can never be the subject: *Iūlia sē in speculō videt*, Julia sees herself. Its 'to or for' form is *sibi*, to or for himself. When the other person is somebody else, Latin uses a demonstrative used as a pronoun (is = he, ea = she, id = it): *Quīntus eum nōn amat* is about another person, not about Quintus.",
+   "say": "*sē* means the subject itself — himself, herself, itself, themselves — and has no nominative (the subject form), because it can never be the subject: *Iūlia sē in speculō videt*, Julia sees herself. Its 'to or for' form is *sibi*. Somebody else is *eum* (him), *eam* (her), not *sē*.",
    "show": {
     "kind": "paradigm",
     "key": "se",
@@ -126,7 +134,7 @@
   },
   {
    "title": "mēcum, tēcum, sēcum",
-   "say": "With *cum* (with) these pronouns turn round and glue the preposition on the back: *mēcum* with me, *tēcum* with you, *sēcum* with himself, *nōbīscum* with us, *vōbīscum* with you all. Latin never writes *cum mē*. *Mārcus sēcum librum portat* — Marcus carries a book with him. One row of these tables is left for later: the genitive (the 'of' form) — *meī, tuī, nostrum, vestrum, suī* — is rare, and the book comes back to it when it is needed.",
+   "say": "With *cum* (with) these pronouns turn round and glue the preposition on the back: *mēcum* with me, *tēcum* with you, *sēcum* with himself, *nōbīscum* with us, *vōbīscum* with you all. Latin never writes *cum mē*. *Mārcus sēcum librum portat* — Marcus carries a book with him.",
    "show": {
     "kind": "sentence",
     "id": "pp-16"
@@ -199,6 +207,18 @@
   {
    "type": "p",
    "text": "Ørberg (chapter XV): *nōs* and *vōs* are the same in the nominative and the accusative; *ego nōn rīdeō, quia vōs mē rīdētis*. A&G add the emphatic forms *egomet* (I myself), *tūte*, and *sēsē* for *sē*."
+  },
+  {
+   "type": "p",
+   "text": "The verb ending already tells you who is acting, so *ego* and *tū* are put in only when the point is who, as against somebody else: *ego librum legō, tū dormīs* — I am reading, you are sleeping."
+  },
+  {
+   "type": "p",
+   "text": "When the other person is somebody else, Latin uses a demonstrative used as a pronoun (is = he, ea = she, id = it): *Quīntus eum nōn amat* is about another person, not about Quintus."
+  },
+  {
+   "type": "p",
+   "text": "One row of these tables is left for later: the genitive (the 'of' form) — *meī, tuī, nostrum, vestrum, suī* — is rare, and the book comes back to it when it is needed."
   }
  ],
  "sources": [

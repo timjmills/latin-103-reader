@@ -11,7 +11,8 @@
    "sense_full": "infant",
    "parts": null,
    "unit_id": "r20:1.1",
-   "count": 93
+   "count": 93,
+   "sem": "person"
   },
   {
    "lemma": "nōlō",
@@ -35,7 +36,17 @@
    "sense_full": "arrange, see, attend to",
    "parts": "cūrō, cūrāre, cūrāvī, cūrātum",
    "unit_id": "r20:77.1",
-   "count": 34
+   "count": 34,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "officium",
@@ -47,7 +58,8 @@
    "sense_full": "duty, obligation",
    "parts": null,
    "unit_id": "r20:82.1",
-   "count": 22
+   "count": 22,
+   "sem": "abstract"
   },
   {
    "lemma": "dēbeō",
@@ -83,7 +95,14 @@
    "sense_full": "remain, stay, abide",
    "parts": "maneō, manēre, mānsī, mānsum",
    "unit_id": "r20:70.1",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "parvulus",
@@ -95,7 +114,14 @@
    "sense_full": "very small, very young",
    "parts": null,
    "unit_id": "r20:1.1",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "somnus",
@@ -107,7 +133,8 @@
    "sense_full": "sleep",
    "parts": null,
    "unit_id": "r20:2.2",
-   "count": 17
+   "count": 17,
+   "sem": "abstract"
   },
   {
    "lemma": "pergō",
@@ -119,7 +146,13 @@
    "sense_full": "go on, proceed",
    "parts": "pergō, pergere, perrēxī, perrectum",
    "unit_id": "r20:70.2",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "mulier",
@@ -131,7 +164,8 @@
    "sense_full": "woman",
    "parts": null,
    "unit_id": "r20:12.1",
-   "count": 15
+   "count": 15,
+   "sem": "person"
   },
   {
    "lemma": "magis",
@@ -155,7 +189,17 @@
    "sense_full": "demand, claim",
    "parts": "postulō, postulāre, postulāvī, postulātum",
    "unit_id": "r20:6.1",
-   "count": 13
+   "count": 13,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "cūnae",
@@ -167,7 +211,8 @@
    "sense_full": "cradle (usually plural)",
    "parts": null,
    "unit_id": "r20:2.1",
-   "count": 12
+   "count": 12,
+   "sem": "thing"
   },
   {
    "lemma": "mox",
@@ -203,7 +248,16 @@
    "sense_full": "feed, nourish, rear, nurse, suckle",
    "parts": "alō, alere, aluī, alitum",
    "unit_id": "r20:12.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "careō",
@@ -227,7 +281,14 @@
    "sense_full": "utter cries of distress, wail, squall",
    "parts": "vāgiō, vāgīre, vagivī",
    "unit_id": "r20:7.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "īnfans"
+    ]
+   }
   },
   {
    "lemma": "adversus",
@@ -251,7 +312,8 @@
    "sense_full": "nurse",
    "parts": null,
    "unit_id": "r20:14.1",
-   "count": 10
+   "count": 10,
+   "sem": "person"
   },
   {
    "lemma": "colloquor",
@@ -263,7 +325,13 @@
    "sense_full": "talk, speak to, with",
    "parts": "colloquor, colloquī, collocutus sum",
    "unit_id": "r20:47.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "crās",
@@ -299,7 +367,13 @@
    "sense_full": "damp, moist, dank, wet, humid",
    "parts": null,
    "unit_id": "r20:108.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "of": [
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "necessārius",
@@ -323,7 +397,16 @@
    "sense_full": "love, hold dear",
    "parts": "dīligō, dīligere, dilexī, dilectum",
    "unit_id": "r20:141.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "gradūs",
@@ -335,7 +418,8 @@
    "sense_full": "step",
    "parts": null,
    "unit_id": "r20:33.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "silentium",
@@ -347,7 +431,8 @@
    "sense_full": "silence",
    "parts": null,
    "unit_id": "r20:116.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "sileō",
@@ -359,7 +444,14 @@
    "sense_full": "be silent, not to speak (about)",
    "parts": "sileō, silēre, siluī",
    "unit_id": "r20:115.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "fīliola",
@@ -371,7 +463,8 @@
    "sense_full": "little daughter",
    "parts": null,
    "unit_id": "r20:56.2",
-   "count": 5
+   "count": 5,
+   "sem": "person"
   },
   {
    "lemma": "lac",
@@ -383,7 +476,8 @@
    "sense_full": "milk",
    "parts": null,
    "unit_id": "r20:8.2",
-   "count": 5
+   "count": 5,
+   "sem": "food"
   },
   {
    "lemma": "plūs",
@@ -395,7 +489,8 @@
    "sense_full": "more, too much, more than enough",
    "parts": null,
    "unit_id": "r20:37.1",
-   "count": 5
+   "count": 5,
+   "sem": "other"
   },
   {
    "lemma": "sermō",
@@ -407,7 +502,8 @@
    "sense_full": "conversation, discussion",
    "parts": null,
    "unit_id": "r20:50.1",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "occurrō",
@@ -431,7 +527,8 @@
    "sense_full": "talk, conversation",
    "parts": null,
    "unit_id": "r20:71.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "for",
@@ -467,7 +564,18 @@
    "sense_full": "pass/go by",
    "parts": "praetereō, praeterīre, praeteriviī, praeteritum",
    "unit_id": "r20:48.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "place",
+     "thing"
+    ]
+   }
   }
  ]
 }

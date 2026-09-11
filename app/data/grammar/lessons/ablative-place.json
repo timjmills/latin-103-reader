@@ -4,6 +4,14 @@
     {
       "n": 1,
       "title": "Where something is",
+      "notice": {
+        "sentences": [
+          "abp-02",
+          "abp-03"
+        ],
+        "ask": "Which word in each sentence says where something is?",
+        "tap": "focus"
+      },
       "say": "To say where somebody or something is, Latin puts *in* in front of the noun and changes the noun's ending. That changed ending is **the ablative (the 'in/on/under' form)**. *In hortō* — in the garden. It answers one question, *ubi?*, where?",
       "show": {
         "kind": "sentence",

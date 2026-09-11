@@ -11,7 +11,8 @@
    "sense_full": "guest, table companion",
    "parts": null,
    "unit_id": "w08:b21.6",
-   "count": 13
+   "count": 13,
+   "sem": "person"
   },
   {
    "lemma": "triclīnium",
@@ -23,7 +24,8 @@
    "sense_full": "dining couch",
    "parts": null,
    "unit_id": "w08:b20.1",
-   "count": 11
+   "count": 11,
+   "sem": "place"
   },
   {
    "lemma": "carus",
@@ -35,7 +37,12 @@
    "sense_full": "dear, beloved",
    "parts": null,
    "unit_id": "w08:b26.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "gustō",
@@ -95,7 +102,8 @@
    "sense_full": "hunger",
    "parts": null,
    "unit_id": "w08:b12.4",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "iter",
@@ -107,7 +115,8 @@
    "sense_full": "journey",
    "parts": null,
    "unit_id": "w08:b7.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "minister",
@@ -119,7 +128,8 @@
    "sense_full": "attendant, servant, waiter",
    "parts": null,
    "unit_id": "w08:b21.2",
-   "count": 6
+   "count": 6,
+   "sem": "person"
   },
   {
    "lemma": "nūntiō",
@@ -143,7 +153,8 @@
    "sense_full": "vessel or dish",
    "parts": null,
    "unit_id": "w08:b24.3",
-   "count": 6
+   "count": 6,
+   "sem": "thing"
   },
   {
    "lemma": "cocus",
@@ -155,7 +166,8 @@
    "sense_full": "cook",
    "parts": null,
    "unit_id": "w08:b21.1",
-   "count": 5
+   "count": 5,
+   "sem": "person"
   },
   {
    "lemma": "convīvium",
@@ -167,7 +179,8 @@
    "sense_full": "banquet, feast, dinner party",
    "parts": null,
    "unit_id": "w08:b21.4",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "hospes",
@@ -179,7 +192,8 @@
    "sense_full": "host",
    "parts": null,
    "unit_id": "w08:b1.2",
-   "count": 5
+   "count": 5,
+   "sem": "person"
   },
   {
    "lemma": "singulus",
@@ -215,7 +229,13 @@
    "sense_full": "slow, limping",
    "parts": null,
    "unit_id": "w08:b3.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "argenteus",
@@ -227,7 +247,12 @@
    "sense_full": "silver, silvery, of silver",
    "parts": null,
    "unit_id": "w08:b24.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "contrahō",
@@ -251,7 +276,13 @@
    "sense_full": "pleasant, charming",
    "parts": null,
    "unit_id": "w08:b32.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "food",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "equidem",
@@ -311,7 +342,14 @@
    "sense_full": "pleasant, agreeable, delightful, pleasing(experience, person, senses)",
    "parts": null,
    "unit_id": "w08:b11.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "pōtō",
@@ -335,7 +373,8 @@
    "sense_full": "thirst",
    "parts": null,
    "unit_id": "w08:b17.1",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "accubō",
@@ -359,7 +398,12 @@
    "sense_full": "sharp, sharpened, pointed or tapering",
    "parts": null,
    "unit_id": "w08:b26.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "argentum",
@@ -371,7 +415,8 @@
    "sense_full": "silver",
    "parts": null,
    "unit_id": "w08:b24.3",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "aspergō",
@@ -395,7 +440,8 @@
    "sense_full": "bath",
    "parts": null,
    "unit_id": "w08:b1.1",
-   "count": 3
+   "count": 3,
+   "sem": "place"
   },
   {
    "lemma": "culīna",
@@ -407,7 +453,8 @@
    "sense_full": "kitchen",
    "parts": null,
    "unit_id": "w08:b21.1",
-   "count": 3
+   "count": 3,
+   "sem": "place"
   },
   {
    "lemma": "ēligō",
@@ -467,7 +514,13 @@
    "sense_full": "annoying",
    "parts": null,
    "unit_id": "w08:b11.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "paulīsper",
@@ -551,7 +604,12 @@
    "sense_full": "harsh, strident, bitter, sour",
    "parts": null,
    "unit_id": "w08:b32.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "food"
+    ]
+   }
   },
   {
    "lemma": "carō",
@@ -563,7 +621,8 @@
    "sense_full": "meat, flesh",
    "parts": null,
    "unit_id": "w08:b27.1",
-   "count": 2
+   "count": 2,
+   "sem": "food"
   },
   {
    "lemma": "circiter",
@@ -599,7 +658,12 @@
    "sense_full": "careful",
    "parts": null,
    "unit_id": "w08:b9.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "generō",
@@ -683,7 +747,8 @@
    "sense_full": "vegetables",
    "parts": null,
    "unit_id": "w08:b26.1",
-   "count": 1
+   "count": 1,
+   "sem": "food"
   },
   {
    "lemma": "inexspectātus",
@@ -707,7 +772,8 @@
    "sense_full": "nut",
    "parts": null,
    "unit_id": "w08:b26.1",
-   "count": 1
+   "count": 1,
+   "sem": "food"
   },
   {
    "lemma": "patienter",
@@ -767,7 +833,8 @@
    "sense_full": "use, enjoyment",
    "parts": null,
    "unit_id": "w08:b11.3",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   }
  ]
 }

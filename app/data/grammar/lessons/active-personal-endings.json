@@ -3,7 +3,15 @@
  "teach": [
   {
    "title": "The ending says who",
-   "say": "A Latin verb carries its own subject in its last letters: **the person endings (I / you / he / we / you all / they on the verb)**. One verb, three people, no extra word needed: *cantō* I sing, *cantās* you sing, *cantat* he or she sings. English has to put *I, you, he* in front; Latin changes the end of the verb instead.",
+   "notice": {
+    "sentences": [
+     "ape-04",
+     "ape-10"
+    ],
+    "ask": "Which verb in each sentence means 'you' are doing it, and what last letter do the two share?",
+    "tap": "focus"
+   },
+   "say": "A Latin verb carries its own subject in its last letters: **the person endings (I / you / he / we / you all / they on the verb)**. One verb, three people, no extra word needed: *cantō* I sing, *cantās* you sing, *cantat* he or she sings.",
    "show": {
     "kind": "sentence",
     "id": "ape-02"
@@ -28,7 +36,7 @@
   },
   {
    "title": "The singular three: -ō, -s, -t",
-   "say": "On a verb of the first conjugation (the -āre family) the singular endings are *-ō* (I), *-s* (you, one person) and *-t* (he, she, it): *cantō, cantās, cantat*. The *-ā-* in front is not part of the ending; it belongs to the verb's own family. Look at the last letter: *-ō* is the speaker, *-s* the one spoken to, *-t* somebody else.",
+   "say": "On a verb of the first conjugation (the -āre family) the singular endings are *-ō* (I), *-s* (you, one person) and *-t* (he, she, it): *cantō, cantās, cantat*. The *-ā-* in front is not part of the ending; it belongs to the verb's own family.",
    "show": {
     "kind": "paradigm",
     "key": "conj1",
@@ -231,6 +239,14 @@
   {
    "type": "p",
    "text": "Ørberg (chapter XV): persōna prīma *rīdeō rīdēmus*, secunda *rīdēs rīdētis*, tertia *rīdet rīdent*; *clāmō clāmāmus, dīcō dīcimus, faciō facimus, audiō audīmus*; and beside them *esse* (*sum, es, est, sumus, estis, sunt*), *īre* (*eō, īs, it, īmus, ītis, eunt*) and *posse* (*possum, potes, potest, possumus, potestis, possunt*)."
+  },
+  {
+   "type": "p",
+   "text": "English has to put *I, you, he* in front; Latin changes the end of the verb instead."
+  },
+  {
+   "type": "p",
+   "text": "Look at the last letter: *-ō* is the speaker, *-s* the one spoken to, *-t* somebody else."
   }
  ],
  "sources": [

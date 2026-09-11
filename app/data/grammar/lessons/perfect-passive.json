@@ -48,7 +48,15 @@
     {
       "n": 1,
       "title": "Two words, one tense",
-      "say": "To say that a thing was done to somebody, Latin writes two words and means one tense: **the perfect passive (the 'was done / has been done' form: laudātus est)**, which works exactly like English 'was praised'. *Puer laudātus est* — the boy was praised. Do not read *est* as a separate 'is': the two words are working together as one verb.",
+      "notice": {
+        "sentences": [
+          "pfp-03",
+          "pfp-06"
+        ],
+        "ask": "Tap the two words in each sentence that together say 'was shut' and 'were picked'.",
+        "tap": "focus"
+      },
+      "say": "To say that a thing was done to somebody, Latin writes two words and means one tense: **the perfect passive (the 'was done / has been done' form: laudātus est)**. *Puer laudātus est* — the boy was praised. Do not read *est* as a separate 'is': the two words are working together as one verb.",
       "show": {
         "kind": "sentence",
         "id": "pfp-01"

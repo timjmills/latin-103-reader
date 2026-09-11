@@ -4,8 +4,8 @@
 // scheduler; a wrong practice answer re-queues the skill later in the session
 // and records the confusion pair when the chosen distractor names one.
 
-import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer } from './items.js';
-import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession, buildRedoSession } from './scheduler.js';
+import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer, featureChoices, workedFeature, SHORT_WORDS } from './items.js';
+import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession, buildRedoSession, inRotation } from './scheduler.js';
 import { matchQuestion } from './sets.js';
 import { chapterOfWeek } from '../chapters.js';
 import { orderMatches } from './stage3.js';
@@ -339,25 +339,46 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
 }
 
 /**
- * Learn flow for one skill: lesson → worked examples → guided 5 (hint shown)
- * → blocked 10 (hint behind a button) → criterion (6 of 10 across ≥ 2 kinds)
- * → pass (practising, due tomorrow) or redo (fresh blocked 10).
+ * Learn flow for one skill (GRAMMAR-CONTRACT.md "Teaching rebuild" §2, §8, §9
+ * A1; decision 16 replaced the four-screen flow with this):
+ *
+ *   the teach steps, in order — each one idea: its `say`, its `show` (a
+ *   written sentence with its gloss, or the one or two paradigm cells the step
+ *   reveals), a worked example to complete, and the **single check** on that
+ *   idea — then the **blocked ten**, then the 6-of-10 criterion → pass
+ *   (practising, due tomorrow) or another ten.
+ *
+ * Nothing before the first check is a screen of its own: the say / show /
+ * worked example sit above the check on the step's page, so the first thing
+ * the learner does comes at once. A chapter set (vocab, questions) has no
+ * teach steps and keeps its deck walk (`startGuided`).
+ *
+ * **A step's check draws from the skill's own written sentences and never
+ * from the library** (§8): `teachItems` is a generator whose whole world is
+ * `sentences/<skill>.json`, so the library is unreachable from a step.
+ *
+ * **A1.** The blocked ten draw, per slot: the skill's written sentences not
+ * yet shown in this Learn; then chapter-capped library sentences of eight
+ * words or fewer; then the rest under the cap. `shown` and `usedKeys` are
+ * this Learn's own memory, so nothing repeats until both the written and the
+ * short-library pools are spent; an item says which pool it came from
+ * (`item.pool`) only when it had to reach past the written set.
  */
-export function createLearn({ skill, gstore, items, currentWeekN = null, rand = Math.random, resume = null, onProgress = null }) {
+export function createLearn({ skill, gstore, items, teach = null, teachItems = null, currentWeekN = null, rand = Math.random, resume = null, onProgress = null }) {
   // Learn is scoped by the learner's own position like every other session (§7.2): the sentences that
   // teach a skill are the ones they have read. A skill with nothing at or before it reaches outward
   // exactly as chapter.js does, and the item says so.
   const ceiling = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
-  const phases = ['lesson', 'examples', 'guided', 'blocked', 'result'];
-  let phase = 'lesson';
+  const isSet = !!skill.set;
+  const steps = isSet ? [] : (Array.isArray(teach) ? teach : []).filter((s) => s && typeof s === 'object');
+  const phases = ['steps', 'guided', 'blocked', 'result'];
+  let phase = steps.length ? 'steps' : 'guided';
   let runner = null;
   let rounds = 0;
-  const isSet = !!skill.set;
   const kinds = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
-  // Recognition before recall (plan §3): the guided five are stage-1 items (choices, a whole chart);
-  // the blocked ten mix stages 1–2 (typed parse and blank from stage 2).
+  // Recognition before recall (plan §3): the blocked ten mix stages 1–2 (typed parse and blank from stage 2).
   const kindSeq = (n, stageOf) => { const out = []; let last = null; for (let i = 0; i < n; i++) { const pool = kinds.filter((k) => k !== last); const k = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))]; out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false }); last = k; } return out; };
-  const getItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, chapter: ceiling, chapterMode: 'ceiling', currentWeekN, full: phase === 'guided' && slot.kind === 'chart', avoid: opts.avoid, match: isSet && phase === 'guided' ? false : undefined });
+  const libraryItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, chapter: ceiling, chapterMode: 'ceiling', currentWeekN, match: isSet && phase === 'guided' ? false : undefined, ...opts });
   // A chapter set's "guided" phase walks the deck in batches, with feedback after each item; the blocked ten follow.
   const total = isSet ? Math.max(1, Number(skill.count) || 0) : LEARN_GUIDED;
   const deckSize = isSet ? Math.min(SET_LEARN_BATCH, total) : LEARN_GUIDED;
@@ -368,10 +389,73 @@ export function createLearn({ skill, gstore, items, currentWeekN = null, rand = 
     if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(skill.id, attempt.confused_with);
   };
   const batchOf = () => Math.max(1, Math.min(deckSize, total - seen) || deckSize);
+
+  /* ------------------------------------------------------- the steps */
+  // What this Learn has put in front of the learner: written sentence ids (a show, a worked example, a
+  // check) and library item keys. The blocked ten read both, so nothing comes round twice in one sitting.
+  const shown = new Set();
+  const usedKeys = new Set();
+  const stepWords = new Set();   // headwords the steps' chart checks were practised on
+  const noteShown = (id) => { if (id) shown.add(id); };
+  const stepSlots = steps.map((s, i) => ({ skill: skill.id, kind: s.check?.kind ?? 'recognise', stage: 1, step: i, currentWeek: false }));
+  const shownKeyOf = (step) => step.check?.key ?? (step.show?.kind === 'paradigm' ? step.show.key : null) ?? skill.paradigms?.[0] ?? null;
+  /** The check of one step: a chart over its words, else the named written sentence, else another written sentence — never the library. */
+  const stepItem = (slot) => {
+    const step = steps[slot.step];
+    if (!step || !teachItems) return null;
+    const check = step.check;
+    let item = null;
+    if (check?.kind === 'chart') {
+      // A2: a step checks the table it showed unless it names another, so a check with no `key` is on the shown table.
+      item = teachItems.chartItem({ key: shownKeyOf(step), cells: check.cells, words: check.words, step: slot.step });
+      if (item) for (const b of item.chart?.cells ?? []) stepWords.add(b.word);
+    }
+    if (!item) {
+      const kind = check?.kind && check.kind !== 'chart' ? check.kind : 'recognise';
+      item = teachItems.sentenceItem({ kind, sentence: check?.sentence ?? null, stage: 1, avoid: shown });
+    }
+    if (item) { noteShown(step.show?.kind === 'sentence' ? step.show.id : null); noteShown(step.worked?.sentence ?? null); noteShown(item.taught); }
+    return item ? { ...item, step: slot.step } : null;
+  };
+
+  /* ------------------------------------------------- the blocked ten (A1) */
+  const chartSpecs = steps.filter((s) => s.check?.kind === 'chart').map((s) => ({ key: shownKeyOf(s), cells: s.check.cells }));
+  let specAt = 0;
+  /** A taught cell on a stock word the steps did not use — the written pool's answer for a chart slot. */
+  const chartFromSteps = () => {
+    if (!teachItems || !chartSpecs.length) return null;
+    for (let n = 0; n < chartSpecs.length; n++) {
+      const spec = chartSpecs[(specAt + n) % chartSpecs.length];
+      const fresh = teachItems.chartWords({ key: spec.key }).filter((w) => !stepWords.has(w)).slice(0, 3);
+      if (!fresh.length) continue;
+      const item = teachItems.chartItem({ key: spec.key, cells: spec.cells, words: fresh });
+      if (!item) continue;
+      specAt = (specAt + n + 1) % chartSpecs.length;
+      for (const b of item.chart?.cells ?? []) stepWords.add(b.word);
+      return item;
+    }
+    return null;
+  };
+  const blockedItem = (slot, opts = {}) => {
+    // 1 · the skill's own written sentences not yet shown in this Learn.
+    if (teachItems) {
+      const own = slot.kind === 'chart' ? chartFromSteps() : teachItems.sentenceItem({ kind: slot.kind, stage: slot.stage, avoid: shown, unshownOnly: true });
+      if (own) { noteShown(own.taught); return { ...own, pool: 'written' }; }
+    }
+    // 2 · chapter-capped library sentences of eight words or fewer, none shown in this Learn.
+    const short = libraryItem(slot, { avoid: opts.avoid, maxWords: SHORT_WORDS, exclude: usedKeys });
+    if (short) { usedKeys.add(short.key); return { ...short, pool: teachItems ? 'library-short' : null }; }
+    // 3 · the rest under the cap; only when that too is spent may an item come round again.
+    const rest = libraryItem(slot, { avoid: opts.avoid, exclude: usedKeys }) ?? libraryItem(slot, { avoid: opts.avoid });
+    if (rest) { usedKeys.add(rest.key); return { ...rest, pool: teachItems ? 'library' : null }; }
+    return null;
+  };
+
   return {
     skill,
     isSet,
     deckSize,
+    steps,
     get total() { return total; },
     get seen() { return seen; },
     get left() { return Math.max(0, total - seen); },
@@ -379,22 +463,37 @@ export function createLearn({ skill, gstore, items, currentWeekN = null, rand = 
     get phase() { return phase; },
     get runner() { return runner; },
     get rounds() { return rounds; },
+    /** The written sentence ids this Learn has shown so far (a show, a worked example, a check). */
+    get shown() { return shown; },
     async begin() {
       const cur = gstore.getState(skill.id);
       await gstore.setState(startLearning(cur ?? skill.id));
     },
     goto(p) { if (phases.includes(p)) phase = p; return phase; },
-    /** A batch of the guided pass. `fresh` (the default when nothing was resumed) starts the deck from the top. */
+    /** The teach steps, one check each, as one run; null when the skill has no steps (the caller goes to the ten). */
+    startSteps() {
+      if (!steps.length) return null;
+      phase = 'steps';
+      runner = createRunner({ slots: stepSlots, getItem: stepItem, mode: 'learn', onAnswer: record, rand, grows: false });
+      try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ }
+      return runner.start();
+    },
+    /** A batch of a chapter set's guided pass. `fresh` (the default when nothing was resumed) starts the deck from the top. */
     startGuided({ fresh = seen === 0 } = {}) {
       phase = 'guided';
       if (isSet && fresh) { items.pool.reset(skill.id); seen = 0; }   // from the top
-      runner = createRunner({ slots: kindSeq(batchOf(), () => 1), getItem, mode: 'learn', onAnswer: record, rand });
+      runner = createRunner({ slots: kindSeq(batchOf(), () => 1), getItem: (slot, o) => libraryItem(slot, { avoid: o?.avoid }), mode: 'learn', onAnswer: record, rand });
       try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ }
       return runner.start();
     },
     /** The next batch of the same pass: the pool keeps its place, so no word comes round twice. */
     moreGuided() { return this.startGuided({ fresh: false }); },
-    startBlocked() { phase = 'blocked'; rounds += 1; try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ } runner = createRunner({ slots: kindSeq(LEARN_BLOCKED, (k) => (k === 'blank' || k === 'parse' ? 2 : 1)), getItem, mode: 'learn', onAnswer: record, rand }); return runner.start(); },
+    startBlocked() {
+      phase = 'blocked'; rounds += 1;
+      try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ }
+      runner = createRunner({ slots: kindSeq(LEARN_BLOCKED, (k) => (k === 'blank' || k === 'parse' ? 2 : 1)), getItem: isSet ? (slot, o) => libraryItem(slot, { avoid: o?.avoid }) : blockedItem, mode: 'learn', onAnswer: record, rand });
+      return runner.start();
+    },
     /** After the blocked drill: the criterion over its attempts (a set has one kind, so the two-kinds rule does not apply to it). */
     async finishBlocked() {
       phase = 'result';
@@ -404,6 +503,61 @@ export function createLearn({ skill, gstore, items, currentWeekN = null, rand = 
       return { ...c, missed, rounds };
     },
   };
+}
+
+/* ------------------------------------------------ the steps' helpers (pure) */
+/**
+ * The prerequisites of a skill that are not in the rotation yet (new, still in
+ * Learn, or lapsed). Decision 4: Learn names and offers them, then lets the
+ * learner go on — a warning, never a bar. Pure.
+ */
+export function unmetPrereqs(skill, stateOf) {
+  return (skill?.prereqs ?? []).filter((id) => { const s = typeof stateOf === 'function' ? stateOf(id) : null; return !inRotation(s); });
+}
+
+/**
+ * A one-line reason, judged generously (§8: a reason, not a form). It is right
+ * when it says something — two words, or one word long enough to be a word
+ * rather than a keystroke — and it can never fail the step: nothing that
+ * reads it is logged. Pure.
+ */
+export function judgeWhy(text) {
+  const t = String(text ?? '').replace(/\s+/g, ' ').trim();
+  const words = t ? t.split(' ').filter((w) => /[\p{L}\p{N}]/u.test(w)) : [];
+  return { ok: words.length >= 2 || (words.length === 1 && words[0].length >= 4), given: t, empty: !t };
+}
+
+/**
+ * A completed worked example (§8, decision 2), as a plan the view walks:
+ * `given` — the focus word's features printed as read; `asks` — the ones the
+ * learner supplies, one at a time, each a small choice over that feature's
+ * own values; `why` — whether a one-line reason is asked for; `reason` — the
+ * model answer shown after it. Features the word does not carry are dropped
+ * rather than asked (a verb has no gender). `first` prints everything as
+ * given: the first worked example of a skill is shown fully parsed.
+ * `focus` is `teachItems.focusOf(sentence)`; null when the sentence cannot be
+ * parsed at all, and the step then shows the sentence without it. Pure but
+ * for `rand`.
+ */
+export function workedPlan(worked, focus, { skill = null, skills = null, first = false, rand = Math.random } = {}) {
+  if (!worked || !focus?.candidate) return null;
+  const { written, candidate: c } = focus;
+  const feat = (key) => workedFeature(key, c, { skill, skills });
+  const wants = first ? [...worked.given, ...worked.ask.filter((k) => k !== 'why')] : worked.given;
+  const given = [...new Set(wants)].map(feat).filter(Boolean);
+  const asks = first ? [] : worked.ask.filter((k) => k !== 'why').map((key) => {
+    const f = feat(key);
+    if (!f) return null;
+    const choices = featureChoices(key, f.value, { n: 4, rand, skills, skill, pool: f.pool ?? null });
+    return choices.length >= 2 ? { ...f, choices } : null;
+  }).filter(Boolean);
+  const why = !first && worked.ask.includes('why');
+  // "servō is dative singular masculine — the 'to/for' form. <the rule>": the form's features read as one
+  // phrase, the construction (when asked) as a clause of its own.
+  const feats = [...given, ...asks];
+  const what = [feats.filter((f) => f.key !== 'construction').map((f) => f.name).join(' '), ...feats.filter((f) => f.key === 'construction').map((f) => f.name)].filter(Boolean).join(', ');
+  const reason = written.note || (what ? `${c.token.text} is ${what}${skill?.plain ? ` — ${skill.plain}` : ''}.${skill?.summary ? ` ${skill.summary}` : ''}` : (skill?.summary ?? ''));
+  return { sentence: written, word: c.token.text, index: c.index, lemma: c.entry?.lemma ?? '', given, asks, why, reason };
 }
 
 /**
@@ -712,13 +866,18 @@ function chartBoxes(item, { rule, lab }) {
   // whole-row chart (Learn's guided five fill six cells at once) the other cells are other cases, so the gloss is
   // theirs only when the chart is a single cell; otherwise the cell's own label says what it wants and no more.
   const plain = cells.length === 1 ? (clean(String(item.prompt?.hint ?? '').split(/\s+—\s+/).slice(1).join(' — ')) || lab.plain) : '';
-  return cells.map((c, i) => ({
-    id: String(i), index: i, label: c.label || `cell ${i + 1}`,
-    levels: [
-      `This cell wants the ${lower(c.label)}${h ? ` of ${h}` : ''}${plain ? ` — ${plain}` : ''}.`,
-      join(rule, h ? `Only the ending changes; the stem of ${h} stays as it is` : ''),
-    ],
-  }));
+  // A teaching step's chart (one box a word, §8) names each box by its own word and its cell.
+  return cells.map((c, i) => {
+    const word = c.word ?? h;
+    const cellName = c.cellLabel ?? c.label;
+    return {
+      id: String(i), index: i, label: c.label || `cell ${i + 1}`,
+      levels: [
+        `This cell wants the ${lower(cellName)}${word ? ` of ${word}` : ''}${plain ? ` — ${plain}` : ''}.`,
+        join(rule, word ? `Only the ending changes; the stem of ${word} stays as it is` : ''),
+      ],
+    };
+  });
 }
 
 /* ------------------------------------------- Pensum A: typed endings */

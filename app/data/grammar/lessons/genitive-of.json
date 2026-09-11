@@ -46,7 +46,15 @@
     {
       "n": 1,
       "title": "The same form, a different question",
-      "say": "The owner’s ending does more than owning: Latin also uses the genitive (the 'of' form) for plain English ‘of’ — how many of something there are, or what a thing is a part of. *Numerus servōrum* is the number of the slaves, and the slaves own nothing at all. Ask ‘whose?’ first; when that makes no sense, read it as plain ‘of’.",
+      "notice": {
+        "sentences": [
+          "go-01",
+          "go-04"
+        ],
+        "ask": "Tap the word in each sentence that says a number of what. What are these two words doing, when nobody owns anything?",
+        "tap": "focus"
+      },
+      "say": "Latin also uses the genitive (the 'of' form) for plain English ‘of’ — how many of something there are, or what a thing is a part of. Ask ‘whose?’ first; when that makes no sense, read it as plain ‘of’. *Numerus servōrum* is the number of the slaves, and the slaves own nothing at all.",
       "show": {
         "kind": "sentence",
         "id": "go-01"
@@ -123,7 +131,7 @@
     {
       "n": 5,
       "title": "Whose? or of what?",
-      "say": "*Numerus servōrum Iūliī magnus est* has both uses in a row: *servōrum* answers ‘a number of what?’ and *Iūliī* answers ‘whose slaves?’. The Latin form is identical and only the question changes, so try ‘whose?’ on each word and keep the answer that makes sense. This form does two more jobs — describing a thing (*a man of great courage*) and following adjectives like *plēnus*, full — but the words for those come in later chapters, so they are not practised here.",
+      "say": "*Numerus servōrum Iūliī magnus est* has both uses in a row: *servōrum* answers ‘a number of what?’ and *Iūliī* answers ‘whose slaves?’. The form is identical and only the question changes, so try ‘whose?’ on each word and keep the answer that makes sense.",
       "show": {
         "kind": "sentence",
         "id": "go-11"
@@ -155,6 +163,10 @@
     {
       "type": "p",
       "text": "Ørberg cap. VII: *saccus plēnus mālōrum est*, *oculī plēnī lacrimārum*. For 'one of the slaves' or 'many of the children' Latin can say *ūnus servōrum*, *multī līberōrum*, but with numbers it usually prefers *ex* + ablative: *ūnus ex servīs*. Later authors also use *plēnus* with the ablative. A&G §345 (quality), §346 (partitive), §349 (with adjectives)."
+    },
+    {
+      "type": "p",
+      "text": "This form does two more jobs — describing a thing (*a man of great courage*) and following adjectives like *plēnus*, full — but the words for those come in later chapters, so they are not practised here."
     }
   ],
   "sources": [

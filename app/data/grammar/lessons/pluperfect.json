@@ -62,6 +62,14 @@
     {
       "n": 1,
       "title": "The past before the past",
+      "notice": {
+        "sentences": [
+          "pl-02",
+          "pl-04"
+        ],
+        "ask": "Tap the verb that says what had already happened — what ending do the two verbs share?",
+        "tap": "focus"
+      },
       "say": "One past action can be set earlier than another, and the tense that does it is **the pluperfect (the 'had done' tense)**. *Quīntus dormīverat, sed nunc vigilat* — he had slept; now he is awake. English marks it with 'had': had come, had gone, had written. It never stands for the plain past by itself.",
       "show": {
         "kind": "sentence",

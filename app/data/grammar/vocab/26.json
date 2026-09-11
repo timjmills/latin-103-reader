@@ -35,7 +35,20 @@
    "sense_full": "come upon",
    "parts": "inveniō, invēnīre, invēnī, inventum",
    "unit_id": "w02:19.1",
-   "count": 15
+   "count": 15,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "food",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "haud",
@@ -59,7 +72,17 @@
    "sense_full": "help, assist, aid, support, serve, further",
    "parts": "iuvō, iuvāre, iūvī, iutum",
    "unit_id": "w02:23.2",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "celeriter",
@@ -83,7 +106,8 @@
    "sense_full": "debate, discussion, deliberation, consultation",
    "parts": null,
    "unit_id": "w02:23.1",
-   "count": 12
+   "count": 12,
+   "sem": "abstract"
   },
   {
    "lemma": "persequor",
@@ -95,7 +119,17 @@
    "sense_full": "follow up, pursue",
    "parts": "persequor, persequī, persecūtus sum",
    "unit_id": "w02:1.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "quoniam",
@@ -131,7 +165,12 @@
    "sense_full": "bold, daring",
    "parts": null,
    "unit_id": "w02:19.2",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "conficiō",
@@ -155,7 +194,12 @@
    "sense_full": "eager, keen, full of zeal",
    "parts": null,
    "unit_id": "w02:42.1",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "accidō",
@@ -179,7 +223,8 @@
    "sense_full": "prison, jail",
    "parts": null,
    "unit_id": "w02:23.1",
-   "count": 9
+   "count": 9,
+   "sem": "place"
   },
   {
    "lemma": "effugiō",
@@ -191,7 +236,14 @@
    "sense_full": "flee or escape",
    "parts": "effugiō, effūgere, effūgī, effugitum",
    "unit_id": "w02:19.2",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "penna",
@@ -203,7 +255,8 @@
    "sense_full": "feather, wing",
    "parts": null,
    "unit_id": "w02:57.1",
-   "count": 8
+   "count": 8,
+   "sem": "thing"
   },
   {
    "lemma": "reliquus",
@@ -227,7 +280,8 @@
    "sense_full": "top",
    "parts": null,
    "unit_id": "w02:75.1",
-   "count": 8
+   "count": 8,
+   "sem": "other"
   },
   {
    "lemma": "cōnsequor",
@@ -239,7 +293,17 @@
    "sense_full": "follow, go/come after",
    "parts": "cōnsequor, cōnsequī, consecutus sum",
    "unit_id": "w02:3.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "lībertās",
@@ -251,7 +315,8 @@
    "sense_full": "freedom, liberty",
    "parts": null,
    "unit_id": "w02:83.2",
-   "count": 7
+   "count": 7,
+   "sem": "abstract"
   },
   {
    "lemma": "tamquam",
@@ -287,7 +352,8 @@
    "sense_full": "skill, craft, art",
    "parts": null,
    "unit_id": "w02:48.2",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "ōra",
@@ -299,7 +365,8 @@
    "sense_full": "shore, coast",
    "parts": null,
    "unit_id": "w02:102.2",
-   "count": 6
+   "count": 6,
+   "sem": "place"
   },
   {
    "lemma": "caveō",
@@ -311,7 +378,19 @@
    "sense_full": "beware, avoid, take precautions or defensive action",
    "parts": "caveō, cavēre, cavī, cautum",
    "unit_id": "w02:75.3",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "fīgō",
@@ -335,7 +414,16 @@
    "sense_full": "not natural, immoderate",
    "parts": null,
    "unit_id": "w02:61.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "thing",
+     "place",
+     "animal",
+     "group",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "nātūra",
@@ -347,7 +435,8 @@
    "sense_full": "nature",
    "parts": null,
    "unit_id": "w02:42.4",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "paene",
@@ -395,7 +484,17 @@
    "sense_full": "look down on/over",
    "parts": "dēspiciō, dēspicere, despexī, despectum",
    "unit_id": "w02:90.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "fuga",
@@ -407,7 +506,8 @@
    "sense_full": "flight, fleeing, escape",
    "parts": null,
    "unit_id": "w02:3.4",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "ignis",
@@ -419,7 +519,8 @@
    "sense_full": "fire, brightness",
    "parts": null,
    "unit_id": "w02:57.1",
-   "count": 4
+   "count": 4,
+   "sem": "nature"
   },
   {
    "lemma": "imitor",
@@ -431,7 +532,17 @@
    "sense_full": "imitate, copy, mimic",
    "parts": "imitor, imitārī, imitatus sum",
    "unit_id": "w02:32.8",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "lacertus",
@@ -443,7 +554,8 @@
    "sense_full": "upper arm, arm, shoulder",
    "parts": null,
    "unit_id": "w02:57.2",
-   "count": 4
+   "count": 4,
+   "sem": "body"
   },
   {
    "lemma": "orbis",
@@ -455,7 +567,8 @@
    "sense_full": "circle",
    "parts": null,
    "unit_id": "w02:32.6",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "perficiō",
@@ -467,7 +580,16 @@
    "sense_full": "complete, finish",
    "parts": "perficiō, perficere, perfecī, perfectum",
    "unit_id": "w02:54.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "temerārius",
@@ -479,7 +601,12 @@
    "sense_full": "casual, rash, accidental",
    "parts": null,
    "unit_id": "w02:102.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "celer",
@@ -491,7 +618,13 @@
    "sense_full": "swift, quick, agile, rapid, speedy, fast",
    "parts": null,
    "unit_id": "w02:3.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "cōnsūmō",
@@ -503,7 +636,20 @@
    "sense_full": "burn up, destroy or kill",
    "parts": "cōnsūmō, cōnsūmere, cōnsūmpsī, cōnsūmptum",
    "unit_id": "w02:3.4",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "food",
+     "thing"
+    ],
+    "subj_also": [
+     "ignis"
+    ]
+   }
   },
   {
    "lemma": "levō",
@@ -515,7 +661,17 @@
    "sense_full": "lift, raise, hold up",
    "parts": "levō, levāre, levāvī, levatum",
    "unit_id": "w02:68.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "person",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "revocō",
@@ -527,7 +683,16 @@
    "sense_full": "call back, recall",
    "parts": "revocō, revocāre, revocavī, revocatum",
    "unit_id": "w02:141.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "sūrsum",
@@ -551,7 +716,19 @@
    "sense_full": "look up to",
    "parts": "suspiciō, suspicere, suspexī, suspectum",
    "unit_id": "w02:83.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "nature",
+     "thing",
+     "place",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "cāsus",
@@ -563,7 +740,8 @@
    "sense_full": "fall, overthrow",
    "parts": null,
    "unit_id": "w02:124.2",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "deorsum",
@@ -587,7 +765,17 @@
    "sense_full": "fly away, fly up, out, forth",
    "parts": "ēvolō, ēvolāre, ēvolāvī, evolatum",
    "unit_id": "w02:32.9",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "avis",
+     "aquila",
+     "passer",
+     "corvus"
+    ]
+   }
   },
   {
    "lemma": "excogitō",
@@ -611,7 +799,8 @@
    "sense_full": "multitude, great number",
    "parts": null,
    "unit_id": "w02:90.1",
-   "count": 2
+   "count": 2,
+   "sem": "group"
   },
   {
    "lemma": "propinquus",
@@ -647,7 +836,22 @@
    "sense_full": "burn",
    "parts": "ūrō, ūrere, ussī, ustum",
    "unit_id": "w02:75.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "person",
+     "body",
+     "place"
+    ],
+    "subj_also": [
+     "ignis",
+     "sōl"
+    ]
+   }
   },
   {
    "lemma": "iūnctus",
@@ -671,7 +875,8 @@
    "sense_full": "peninsula",
    "parts": null,
    "unit_id": "w02:97.1",
-   "count": 1
+   "count": 1,
+   "sem": "place"
   },
   {
    "lemma": "sīn",

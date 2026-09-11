@@ -4,6 +4,14 @@
     {
       "n": 1,
       "title": "Where somebody is going",
+      "notice": {
+        "sentences": [
+          "acd-01",
+          "acd-06"
+        ],
+        "ask": "Which word in each sentence says where somebody is going?",
+        "tap": "focus"
+      },
       "say": "When somebody moves towards a place, Latin puts *ad* (to) or *in* (into) in front of that place and gives it **the accusative (the 'to/into' form after ad, in)**: *ad vīllam* — to the house. It answers *quō?*, where to? — a different question from *ubi?*, where.",
       "show": {
         "kind": "sentence",
@@ -76,7 +84,7 @@
     {
       "n": 4,
       "title": "*in* with two cases: staying or going",
-      "say": "*In* takes either case, and the ending is the meaning. *In vīllā*, with -ā, is where he already is. *In hortum*, with -um, is where he is heading. The verb tells you which to expect: *est*, *habitat*, *dormit* stay put, so the noun with them takes -ā or -ō; *it*, *venit*, *intrat* move, so the noun with them takes -am or -um.",
+      "say": "*In* takes either case, and the ending is the meaning. *In vīllā*, with -ā, is where he already is. *In hortum*, with -um, is where he is heading. The verb tells you which to expect: *est*, *habitat*, *dormit* stay put, so the noun takes -ā or -ō; *it*, *venit*, *intrat* move, so the noun takes -am or -um.",
       "show": {
         "kind": "sentence",
         "id": "acd-07"

@@ -50,6 +50,10 @@
     {
       "type": "p",
       "text": "Ørberg (cap. XXVI) declines it: *nārrandum, nārrandī, nārrandō*; a deponent verb (passive-looking endings, active meaning: loquitur = he speaks) forms it the same way (*loquendī*). It has no nominative — as a subject Latin uses the infinitive (*dormīre iuvat* — sleeping is pleasant) — and the dative (-ndō) is rare. A gerund with a direct object is usually replaced by the gerundive: *ad flōrēs carpendōs* rather than *ad carpendum flōrēs*."
+    },
+    {
+      "type": "p",
+      "text": "English does the same in 'running is fun' and 'shoes for running': there *running* names the activity, it does not describe anybody."
     }
   ],
   "sources": [
@@ -61,7 +65,15 @@
     {
       "n": 1,
       "title": "A verb doing a noun's job",
-      "say": "A verb can be turned into a noun, so that it takes a case and follows a preposition, and that noun is **the gerund (the '-ing' noun form: ad bibendum = for drinking)**. *Puerī ad lūdendum in hortum currunt* — the boys run into the garden for playing. English does the same in 'running is fun' and 'shoes for running': there *running* names the activity, it does not describe anybody.",
+      "notice": {
+        "sentences": [
+          "g-03",
+          "g-04"
+        ],
+        "ask": "Tap the word after ad that names the activity — what do the two words share?",
+        "tap": "focus"
+      },
+      "say": "A verb can be turned into a noun, so that it takes a case and follows a preposition, and that noun is **the gerund (the '-ing' noun form: ad bibendum = for drinking)**. *Puerī ad lūdendum in hortum currunt* — the boys run into the garden for playing. English does the same in 'shoes for running'.",
       "show": {
         "kind": "sentence",
         "id": "g-01"

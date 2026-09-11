@@ -71,7 +71,8 @@
    "sense_full": "doctor, physician",
    "parts": null,
    "unit_id": "r11:26.1",
-   "count": 55
+   "count": 55,
+   "sem": "person"
   },
   {
    "lemma": "manūs",
@@ -83,7 +84,8 @@
    "sense_full": "hand, fist",
    "parts": null,
    "unit_id": "r11:3.1",
-   "count": 54
+   "count": 54,
+   "sem": "body"
   },
   {
    "lemma": "noster",
@@ -119,7 +121,20 @@
    "sense_full": "observe, watch, look at, see",
    "parts": "spectō, spectāre, spectāvī, spectātum",
    "unit_id": "r11:76.1",
-   "count": 40
+   "count": 40,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "bene",
@@ -155,7 +170,14 @@
    "sense_full": "hurt",
    "parts": "doleō, dolēre, doluī, dolitum",
    "unit_id": "r11:80.1",
-   "count": 32
+   "count": 32,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "caput",
@@ -167,7 +189,8 @@
    "sense_full": "head",
    "parts": null,
    "unit_id": "r11:5.1",
-   "count": 30
+   "count": 30,
+   "sem": "body"
   },
   {
    "lemma": "auris",
@@ -179,7 +202,8 @@
    "sense_full": "ear",
    "parts": null,
    "unit_id": "r11:5.2",
-   "count": 27
+   "count": 27,
+   "sem": "body"
   },
   {
    "lemma": "corpus",
@@ -191,7 +215,8 @@
    "sense_full": "body",
    "parts": null,
    "unit_id": "r11:1.1",
-   "count": 27
+   "count": 27,
+   "sem": "body"
   },
   {
    "lemma": "aeger",
@@ -203,7 +228,13 @@
    "sense_full": "sick or ill, infirm",
    "parts": null,
    "unit_id": "r11:23.1",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "sedeō",
@@ -215,7 +246,14 @@
    "sense_full": "sit, remain",
    "parts": "sedeō, sedēre, sēdī, sessum",
    "unit_id": "r11:31.1",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "bracchium",
@@ -227,7 +265,8 @@
    "sense_full": "arm",
    "parts": null,
    "unit_id": "r11:1.1",
-   "count": 23
+   "count": 23,
+   "sem": "body"
   },
   {
    "lemma": "super",
@@ -251,7 +290,8 @@
    "sense_full": "cup, bowl, drinking vessel",
    "parts": null,
    "unit_id": "r11:36.1",
-   "count": 21
+   "count": 21,
+   "sem": "thing"
   },
   {
    "lemma": "stultus",
@@ -263,7 +303,12 @@
    "sense_full": "foolish, stupid",
    "parts": null,
    "unit_id": "r11:9.1",
-   "count": 21
+   "count": 21,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "stō",
@@ -275,7 +320,14 @@
    "sense_full": "stand, stand still, stand firm",
    "parts": "stō, stāre, stetī, statum",
    "unit_id": "r11:32.1",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "sānus",
@@ -287,7 +339,12 @@
    "sense_full": "sound",
    "parts": null,
    "unit_id": "r11:23.1",
-   "count": 19
+   "count": 19,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "gaudeō",
@@ -299,7 +356,14 @@
    "sense_full": "be glad, rejoice",
    "parts": "gaudeō, gaudēre, gavisus sum",
    "unit_id": "r11:114.1",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "ōs",
@@ -311,7 +375,8 @@
    "sense_full": "mouth, speech, expression",
    "parts": null,
    "unit_id": "r11:5.2",
-   "count": 18
+   "count": 18,
+   "sem": "body"
   },
   {
    "lemma": "sanguis",
@@ -323,7 +388,8 @@
    "sense_full": "blood",
    "parts": null,
    "unit_id": "r11:19.1",
-   "count": 16
+   "count": 16,
+   "sem": "body"
   },
   {
    "lemma": "quiēscō",
@@ -335,7 +401,14 @@
    "sense_full": "rest, keep quiet or calm, be at peace or rest",
    "parts": "quiēscō, quiēscere, quiēvī, quiētum",
    "unit_id": "r11:58.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "aegrōtō",
@@ -347,7 +420,14 @@
    "sense_full": "be sick",
    "parts": "aegrōtō, aegrōtāre, aegrotavī, aegrotatum",
    "unit_id": "r11:48.1",
-   "count": 13
+   "count": 13,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "colō",
@@ -383,7 +463,8 @@
    "sense_full": "heart",
    "parts": null,
    "unit_id": "r11:18.3",
-   "count": 10
+   "count": 10,
+   "sem": "body"
   },
   {
    "lemma": "venter",
@@ -395,7 +476,8 @@
    "sense_full": "stomach, womb",
    "parts": null,
    "unit_id": "r11:20.1",
-   "count": 10
+   "count": 10,
+   "sem": "body"
   },
   {
    "lemma": "capillus",
@@ -407,7 +489,8 @@
    "sense_full": "hair",
    "parts": null,
    "unit_id": "r11:6.1",
-   "count": 9
+   "count": 9,
+   "sem": "body"
   },
   {
    "lemma": "frōns",
@@ -419,7 +502,8 @@
    "sense_full": "forehead, brow",
    "parts": null,
    "unit_id": "r11:8.1",
-   "count": 9
+   "count": 9,
+   "sem": "body"
   },
   {
    "lemma": "membrum",
@@ -431,7 +515,8 @@
    "sense_full": "member, limb, organ",
    "parts": null,
    "unit_id": "r11:1.1",
-   "count": 8
+   "count": 8,
+   "sem": "body"
   },
   {
    "lemma": "sānō",
@@ -443,7 +528,18 @@
    "sense_full": "cure, heal",
    "parts": "sānō, sānāre, sanavī, sanatum",
    "unit_id": "r11:27.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [],
+    "obj": [
+     "person",
+     "animal",
+     "body"
+    ],
+    "subj_only": [
+     "medicus"
+    ]
+   }
   },
   {
    "lemma": "arcessō",
@@ -455,7 +551,15 @@
    "sense_full": "send for, summon, indict",
    "parts": "arcessō, arcessere, arcessīvī, arcessitum",
    "unit_id": "r11:42.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "color",
@@ -467,7 +571,8 @@
    "sense_full": "color",
    "parts": null,
    "unit_id": "r11:77.1",
-   "count": 7
+   "count": 7,
+   "sem": "abstract"
   },
   {
    "lemma": "fluō",
@@ -479,7 +584,20 @@
    "sense_full": "flow, stream",
    "parts": "fluō, fluere, fluxī, fluxum",
    "unit_id": "r11:19.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "aqua",
+     "flūmen",
+     "rīvus",
+     "sanguis",
+     "lacrima",
+     "cruor",
+     "amnis"
+    ]
+   }
   },
   {
    "lemma": "horreō",
@@ -503,7 +621,13 @@
    "sense_full": "red, ruddy, painted red",
    "parts": null,
    "unit_id": "r11:11.2",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "tangō",
@@ -515,7 +639,19 @@
    "sense_full": "touch, strike",
    "parts": "tangō, tangere, tetigī, tāctum",
    "unit_id": "r11:40.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "appōnō",
@@ -539,7 +675,8 @@
    "sense_full": "breast, heart",
    "parts": null,
    "unit_id": "r11:18.2",
-   "count": 6
+   "count": 6,
+   "sem": "body"
   },
   {
    "lemma": "crūs",
@@ -551,7 +688,8 @@
    "sense_full": "leg",
    "parts": null,
    "unit_id": "r11:1.1",
-   "count": 5
+   "count": 5,
+   "sem": "body"
   },
   {
    "lemma": "culter",
@@ -563,7 +701,8 @@
    "sense_full": "knife",
    "parts": null,
    "unit_id": "r11:94.1",
-   "count": 5
+   "count": 5,
+   "sem": "thing"
   },
   {
    "lemma": "hūmānus",
@@ -611,7 +750,8 @@
    "sense_full": "brain",
    "parts": null,
    "unit_id": "r11:8.2",
-   "count": 3
+   "count": 3,
+   "sem": "body"
   },
   {
    "lemma": "dētergeō",
@@ -635,7 +775,8 @@
    "sense_full": "cheeks (in the plural)",
    "parts": null,
    "unit_id": "r11:8.1",
-   "count": 2
+   "count": 2,
+   "sem": "body"
   },
   {
    "lemma": "iecur",
@@ -647,7 +788,8 @@
    "sense_full": "liver",
    "parts": null,
    "unit_id": "r11:20.1",
-   "count": 2
+   "count": 2,
+   "sem": "body"
   },
   {
    "lemma": "labrum",
@@ -659,7 +801,8 @@
    "sense_full": "lip (of person, vessel, ditch, river), rim, edge",
    "parts": null,
    "unit_id": "r11:10.1",
-   "count": 2
+   "count": 2,
+   "sem": "body"
   },
   {
    "lemma": "reveniō",
@@ -671,7 +814,14 @@
    "sense_full": "come back, return",
    "parts": "reveniō, revenīre, revenī, reventum",
    "unit_id": "r11:46.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "vēna",
@@ -683,7 +833,8 @@
    "sense_full": "blood-vessel, vein",
    "parts": null,
    "unit_id": "r11:19.1",
-   "count": 2
+   "count": 2,
+   "sem": "body"
   },
   {
    "lemma": "tuor",
@@ -707,7 +858,8 @@
    "sense_full": "soft fleshy body parts (usually plural), internal organs",
    "parts": null,
    "unit_id": "r11:21.2",
-   "count": 1
+   "count": 1,
+   "sem": "body"
   }
  ]
 }

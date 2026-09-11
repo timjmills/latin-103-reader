@@ -44,6 +44,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "pdp-03",
+          "pdp-14"
+        ],
+        "ask": "Tap the word in each sentence that says what Medus, and the mother, had already done themselves.",
+        "tap": "focus"
+      },
       "say": "A deponent verb builds its participle like any other verb but means the opposite by it: **the perfect participle of a deponent verb (active meaning: locūtus = having spoken)** describes the person who did something, not the person it was done to. *Puer lāpsus surrēxit* — the boy, having slipped, got up. He did the slipping himself; nobody slipped him.",
       "show": {
         "kind": "sentence",

@@ -11,7 +11,8 @@
    "sense_full": "battle, fight, bout, conflict",
    "parts": null,
    "unit_id": "w12:b2.6",
-   "count": 9
+   "count": 9,
+   "sem": "abstract"
   },
   {
    "lemma": "caedō",
@@ -59,7 +60,8 @@
    "sense_full": "line, verse",
    "parts": null,
    "unit_id": "w12:b17.4",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "vulnerō",
@@ -83,7 +85,8 @@
    "sense_full": "legion",
    "parts": null,
    "unit_id": "w12:b1.1",
-   "count": 4
+   "count": 4,
+   "sem": "group"
   },
   {
    "lemma": "praecipuus",
@@ -119,7 +122,8 @@
    "sense_full": "wound",
    "parts": null,
    "unit_id": "w12:b14.3",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "aetās",
@@ -131,7 +135,8 @@
    "sense_full": "lifetime, age, generation",
    "parts": null,
    "unit_id": "w12:b3.1",
-   "count": 3
+   "count": 3,
+   "sem": "time"
   },
   {
    "lemma": "agmen",
@@ -143,7 +148,8 @@
    "sense_full": "stream",
    "parts": null,
    "unit_id": "w12:b2.1",
-   "count": 3
+   "count": 3,
+   "sem": "group"
   },
   {
    "lemma": "cohors",
@@ -155,7 +161,8 @@
    "sense_full": "cohort (a tenth of a legion, about 480 men)",
    "parts": null,
    "unit_id": "w12:b1.1",
-   "count": 3
+   "count": 3,
+   "sem": "group"
   },
   {
    "lemma": "dēsīderō",
@@ -191,7 +198,8 @@
    "sense_full": "row, order or rank",
    "parts": null,
    "unit_id": "w12:b2.2",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "pāx",
@@ -203,7 +211,8 @@
    "sense_full": "peace",
    "parts": null,
    "unit_id": "w12:b15.2",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "prīvātus",
@@ -263,7 +272,8 @@
    "sense_full": "bank",
    "parts": null,
    "unit_id": "w12:b13.10",
-   "count": 3
+   "count": 3,
+   "sem": "place"
   },
   {
    "lemma": "studeō",
@@ -287,7 +297,8 @@
    "sense_full": "eagerness, enthusiasm, zeal, spirit",
    "parts": null,
    "unit_id": "w12:b3.4",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "valētūdō",
@@ -299,7 +310,8 @@
    "sense_full": "good health, soundness",
    "parts": null,
    "unit_id": "w12:b7.1",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "virtūs",
@@ -311,7 +323,8 @@
    "sense_full": "strength or power",
    "parts": null,
    "unit_id": "w12:b3.7",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "aciēs",
@@ -323,7 +336,8 @@
    "sense_full": "sharpness, sharp edge, point",
    "parts": null,
    "unit_id": "w12:b2.5",
-   "count": 2
+   "count": 2,
+   "sem": "group"
   },
   {
    "lemma": "amnis",
@@ -335,7 +349,8 @@
    "sense_full": "river (real or personified), stream",
    "parts": null,
    "unit_id": "w12:b8.5",
-   "count": 2
+   "count": 2,
+   "sem": "place"
   },
   {
    "lemma": "citrā",
@@ -359,7 +374,12 @@
    "sense_full": "awful, dire, dreadful(omen)",
    "parts": null,
    "unit_id": "w12:b17.4",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "ēnsis",
@@ -371,7 +391,8 @@
    "sense_full": "sword",
    "parts": null,
    "unit_id": "w12:b17.4",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "ērumpō",
@@ -431,7 +452,8 @@
    "sense_full": "emperor",
    "parts": null,
    "unit_id": "w12:b15.3",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "incolumis",
@@ -443,7 +465,12 @@
    "sense_full": "unharmed, uninjured",
    "parts": null,
    "unit_id": "w12:b14.5",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "īnstruō",
@@ -467,7 +494,8 @@
    "sense_full": "envoy, ambassador, legate",
    "parts": null,
    "unit_id": "w12:b15.3",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "legiōnārius",
@@ -491,7 +519,12 @@
    "sense_full": "idle",
    "parts": null,
    "unit_id": "w12:b17.3",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "prīdiē",
@@ -515,7 +548,8 @@
    "sense_full": "raft",
    "parts": null,
    "unit_id": "w12:b13.1",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "rīdiculus",
@@ -527,7 +561,13 @@
    "sense_full": "laughable, funny, comic, amusing",
    "parts": null,
    "unit_id": "w12:b10.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "stīpendium",
@@ -539,7 +579,8 @@
    "sense_full": "tribute, stipend",
    "parts": null,
    "unit_id": "w12:b3.5",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "ultrā",
@@ -575,7 +616,12 @@
    "sense_full": "steep, high, lofty, towering, tall",
    "parts": null,
    "unit_id": "w12:b6.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "caedēs",
@@ -587,7 +633,8 @@
    "sense_full": "murder, slaughter, massacre",
    "parts": null,
    "unit_id": "w12:b19.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "circumdō",
@@ -719,7 +766,8 @@
    "sense_full": "javelin, heavy iron-tipped throwing spear",
    "parts": null,
    "unit_id": "w12:b16.2",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "praestō",
@@ -815,7 +863,8 @@
    "sense_full": "wall, rampart",
    "parts": null,
    "unit_id": "w12:b2.9",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   }
  ]
 }

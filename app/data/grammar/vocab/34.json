@@ -11,7 +11,8 @@
    "sense_full": "inscription or epitaph",
    "parts": null,
    "unit_id": "w14:b5.2",
-   "count": 7
+   "count": 7,
+   "sem": "abstract"
   },
   {
    "lemma": "certāmen",
@@ -23,7 +24,8 @@
    "sense_full": "contest, competition",
    "parts": null,
    "unit_id": "w13:b5.1",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "nūbō",
@@ -47,7 +49,8 @@
    "sense_full": "sparrow",
    "parts": null,
    "unit_id": "w13:b23.1",
-   "count": 5
+   "count": 5,
+   "sem": "animal"
   },
   {
    "lemma": "iocōsus",
@@ -59,7 +62,12 @@
    "sense_full": "humorous, funny, droll",
    "parts": null,
    "unit_id": "w14:b2.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "plaudō",
@@ -83,7 +91,8 @@
    "sense_full": "net, snare",
    "parts": null,
    "unit_id": "w13:b8.3",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "spectātor",
@@ -95,7 +104,8 @@
    "sense_full": "spectator",
    "parts": null,
    "unit_id": "w13:b10.1",
-   "count": 4
+   "count": 4,
+   "sem": "person"
   },
   {
    "lemma": "accendō",
@@ -143,7 +153,8 @@
    "sense_full": "utterance, oracle",
    "parts": null,
    "unit_id": "w13:b19.1",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "implicō",
@@ -191,7 +202,8 @@
    "sense_full": "account, reckoning, invoice",
    "parts": null,
    "unit_id": "w13:b14.4",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "turgidus",
@@ -215,7 +227,8 @@
    "sense_full": "kiss",
    "parts": null,
    "unit_id": "w13:b26.7",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "circēnsis",
@@ -239,7 +252,8 @@
    "sense_full": "race course",
    "parts": null,
    "unit_id": "w13:b11.2",
-   "count": 2
+   "count": 2,
+   "sem": "place"
   },
   {
    "lemma": "dēliciae",
@@ -251,7 +265,8 @@
    "sense_full": "pleasure, delight, fun(usually plural), activity affording enjoyment, luxuries",
    "parts": null,
    "unit_id": "w13:b23.1",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "gladiātor",
@@ -263,7 +278,8 @@
    "sense_full": "gladiator",
    "parts": null,
    "unit_id": "w13:b8.2",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "gladiātōrius",
@@ -287,7 +303,8 @@
    "sense_full": "lap, bosom",
    "parts": null,
    "unit_id": "w13:b20.2",
-   "count": 2
+   "count": 2,
+   "sem": "body"
   },
   {
    "lemma": "ingenium",
@@ -299,7 +316,8 @@
    "sense_full": "nature, innate quality",
    "parts": null,
    "unit_id": "w13:b14.4",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "laedō",
@@ -323,7 +341,8 @@
    "sense_full": "oil lamp",
    "parts": null,
    "unit_id": "w13:b22.2",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "mēns",
@@ -335,7 +354,8 @@
    "sense_full": "mind",
    "parts": null,
    "unit_id": "w13:b25.3",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "misellus",
@@ -347,7 +367,13 @@
    "sense_full": "poor, wretched",
    "parts": null,
    "unit_id": "w13:b3.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "perpetuus",
@@ -359,7 +385,12 @@
    "sense_full": "continuous, uninterpreted",
    "parts": null,
    "unit_id": "w13:b25.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "time"
+    ]
+   }
   },
   {
    "lemma": "prīncipium",
@@ -371,7 +402,8 @@
    "sense_full": "beginning",
    "parts": null,
    "unit_id": "w13:b17.2",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "sapiō",
@@ -395,7 +427,8 @@
    "sense_full": "curved or bent surface",
    "parts": null,
    "unit_id": "w14:b5.3",
-   "count": 2
+   "count": 2,
+   "sem": "body"
   },
   {
    "lemma": "tenebrae",
@@ -407,7 +440,8 @@
    "sense_full": "darkness (in the plural), obscurity",
    "parts": null,
    "unit_id": "w13:b22.1",
-   "count": 2
+   "count": 2,
+   "sem": "nature"
   },
   {
    "lemma": "testis",
@@ -419,7 +453,8 @@
    "sense_full": "witness",
    "parts": null,
    "unit_id": "w14:b17.3",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "theātrum",
@@ -431,7 +466,8 @@
    "sense_full": "theater",
    "parts": null,
    "unit_id": "w13:b13.1",
-   "count": 2
+   "count": 2,
+   "sem": "place"
   },
   {
    "lemma": "venustus",
@@ -443,7 +479,12 @@
    "sense_full": "attractive, charming, graceful, pretty, neat",
    "parts": null,
    "unit_id": "w13:b24.2",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "ācer",
@@ -455,7 +496,14 @@
    "sense_full": "sharp, bitter, pointed, piercing, shrill",
    "parts": null,
    "unit_id": "w13:b13.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "aurīga",
@@ -467,7 +515,8 @@
    "sense_full": "charioteer, driver",
    "parts": null,
    "unit_id": "w13:b12.2",
-   "count": 1
+   "count": 1,
+   "sem": "person"
   },
   {
    "lemma": "bellus",
@@ -479,7 +528,13 @@
    "sense_full": "pretty, handsome, charming, pleasant, agreeable, polite",
    "parts": null,
    "unit_id": "w13:b16.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "cachinnus",
@@ -491,7 +546,8 @@
    "sense_full": "loud, excessive, boisterous, derisive laugh, guffaw",
    "parts": null,
    "unit_id": "w14:b4.5",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "circumsiliō",
@@ -515,7 +571,8 @@
    "sense_full": "neck",
    "parts": null,
    "unit_id": "w13:b20.5",
-   "count": 1
+   "count": 1,
+   "sem": "body"
   },
   {
    "lemma": "cōmoedia",
@@ -527,7 +584,8 @@
    "sense_full": "comedy (as form of drama or literature",
    "parts": null,
    "unit_id": "w13:b13.2",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "conturbō",
@@ -623,7 +681,12 @@
    "sense_full": "sweetened with honey",
    "parts": null,
    "unit_id": "w13:b24.6",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "food"
+    ]
+   }
   },
   {
    "lemma": "niveus",
@@ -635,7 +698,13 @@
    "sense_full": "snowy, covered with snow",
    "parts": null,
    "unit_id": "w14:b13.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "ocellus",
@@ -647,7 +716,8 @@
    "sense_full": "(little) eye",
    "parts": null,
    "unit_id": "w13:b24.18",
-   "count": 1
+   "count": 1,
+   "sem": "body"
   },
   {
    "lemma": "odium",
@@ -659,7 +729,8 @@
    "sense_full": "hate, hatred, dislike, antipathy",
    "parts": null,
    "unit_id": "w13:b29.2",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "ops",
@@ -671,7 +742,8 @@
    "sense_full": "power, might",
    "parts": null,
    "unit_id": "w14:b18.2",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "ōscitō",
@@ -695,7 +767,8 @@
    "sense_full": "palm or width of the hand",
    "parts": null,
    "unit_id": "w13:b10.2",
-   "count": 1
+   "count": 1,
+   "sem": "body"
   },
   {
    "lemma": "pīpiō",
@@ -767,7 +840,8 @@
    "sense_full": "scalpel, lancet",
    "parts": null,
    "unit_id": "w13:b3.1",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "sērius",
@@ -779,7 +853,13 @@
    "sense_full": "serious, grave",
    "parts": null,
    "unit_id": "w14:b3.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "tenebricōsus",
@@ -791,7 +871,12 @@
    "sense_full": "dark",
    "parts": null,
    "unit_id": "w13:b24.11",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "turgidulus",
@@ -815,7 +900,8 @@
    "sense_full": "verse",
    "parts": null,
    "unit_id": "w14:b9.3",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   }
  ]
 }

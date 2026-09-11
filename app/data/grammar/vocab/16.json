@@ -11,7 +11,8 @@
    "sense_full": "ship",
    "parts": null,
    "unit_id": "r16:8.1",
-   "count": 91
+   "count": 91,
+   "sem": "thing"
   },
   {
    "lemma": "semper",
@@ -35,7 +36,18 @@
    "sense_full": "steer, drive, pilot, direct, manage, conduct, guide, control, govern",
    "parts": "gubernō, gubernāre, gubernavī, gubernatum",
    "unit_id": "r16:41.2",
-   "count": 46
+   "count": 46,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "gubernātor",
+     "nauta"
+    ],
+    "obj_only": [
+     "nāvis"
+    ]
+   }
   },
   {
    "lemma": "nauta",
@@ -47,7 +59,8 @@
    "sense_full": "sailor, seaman, mariner",
    "parts": null,
    "unit_id": "r16:27.1",
-   "count": 41
+   "count": 41,
+   "sem": "person"
   },
   {
    "lemma": "proficīscor",
@@ -59,7 +72,15 @@
    "sense_full": "depart, set out",
    "parts": "proficīscor, proficīscī, profectus sum",
    "unit_id": "r16:55.1",
-   "count": 38
+   "count": 38,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "group"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "merx",
@@ -71,7 +92,8 @@
    "sense_full": "commodity",
    "parts": null,
    "unit_id": "r16:22.1",
-   "count": 30
+   "count": 30,
+   "sem": "thing"
   },
   {
    "lemma": "ōrō",
@@ -83,7 +105,15 @@
    "sense_full": "beg, ask for, pray",
    "parts": "ōrō, ōrāre, ōrāvī, oratum",
    "unit_id": "r16:18.1",
-   "count": 30
+   "count": 30,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "loquor",
@@ -95,7 +125,13 @@
    "sense_full": "speak, tell",
    "parts": "loquor, loquī, locūtus sum",
    "unit_id": "r16:96.1",
-   "count": 29
+   "count": 29,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "simul",
@@ -119,7 +155,16 @@
    "sense_full": "sail",
    "parts": "nāvigō, nāvigāre, nāvigāvī, navigatum",
    "unit_id": "r16:8.1",
-   "count": 24
+   "count": 24,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "subj_also": [
+     "nāvis"
+    ]
+   }
   },
   {
    "lemma": "occidō",
@@ -131,7 +176,17 @@
    "sense_full": "kill, murder, slaughter, slay",
    "parts": "occidō, occidere, occidī, occīsum",
    "unit_id": "r16:45.2",
-   "count": 24
+   "count": 24,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "fīō",
@@ -167,7 +222,13 @@
    "sense_full": "be glad, joyful, delighted",
    "parts": "laetor, laetārī, laetatus sum",
    "unit_id": "r16:73.1",
-   "count": 22
+   "count": 22,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "sequor",
@@ -179,7 +240,17 @@
    "sense_full": "follow",
    "parts": "sequor, sequī, secūtus sum",
    "unit_id": "r16:66.1",
-   "count": 22
+   "count": 22,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "servō",
@@ -191,7 +262,17 @@
    "sense_full": "watch over",
    "parts": "servō, servāre, servāvī, servātum",
    "unit_id": "r16:125.2",
-   "count": 22
+   "count": 22,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "cōnor",
@@ -227,7 +308,8 @@
    "sense_full": "season, time, weather",
    "parts": null,
    "unit_id": "r16:32.1",
-   "count": 20
+   "count": 20,
+   "sem": "nature"
   },
   {
    "lemma": "paulus",
@@ -275,7 +357,15 @@
    "sense_full": "console, (be source of) comfort or solace",
    "parts": "cōnsōlor, cōnsōlārī, consolatus sum",
    "unit_id": "r16:89.1",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "turbō",
@@ -299,7 +389,8 @@
    "sense_full": "wave",
    "parts": null,
    "unit_id": "r16:32.1",
-   "count": 14
+   "count": 14,
+   "sem": "nature"
   },
   {
    "lemma": "orior",
@@ -311,7 +402,17 @@
    "sense_full": "rise (sun or river)",
    "parts": "orior, orīrī, ortus sum",
    "unit_id": "r16:45.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [],
+    "obj": [],
+    "subj_only": [
+     "sōl",
+     "lūna",
+     "tempestās",
+     "stēlla"
+    ]
+   }
   },
   {
    "lemma": "propter",
@@ -335,7 +436,8 @@
    "sense_full": "seat, rank, position",
    "parts": null,
    "unit_id": "r16:20.1",
-   "count": 12
+   "count": 12,
+   "sem": "place"
   },
   {
    "lemma": "maritimus",
@@ -383,7 +485,13 @@
    "sense_full": "quiet, calm",
    "parts": null,
    "unit_id": "r16:28.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "of": [
+     "nature",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "intueor",
@@ -395,7 +503,19 @@
    "sense_full": "look at",
    "parts": "intueor, intuērī, intuitus sum",
    "unit_id": "r16:79.1",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "portūs",
@@ -407,7 +527,8 @@
    "sense_full": "port, harbor",
    "parts": null,
    "unit_id": "r16:17.1",
-   "count": 10
+   "count": 10,
+   "sem": "place"
   },
   {
    "lemma": "sīve",
@@ -431,7 +552,13 @@
    "sense_full": "black, dark",
    "parts": null,
    "unit_id": "r16:96.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "of": [
+     "nature",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "vēlum",
@@ -443,7 +570,8 @@
    "sense_full": "sail, covering",
    "parts": null,
    "unit_id": "r16:38.1",
-   "count": 8
+   "count": 8,
+   "sem": "thing"
   },
   {
    "lemma": "vereor",
@@ -467,7 +595,16 @@
    "sense_full": "embrace, hug",
    "parts": "complector, complectī, complexus sum",
    "unit_id": "r16:87.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "cōnscendō",
@@ -479,7 +616,19 @@
    "sense_full": "climb up, ascend, scale",
    "parts": "cōnscendō, cōnscendere, cōnscendī, conscensum",
    "unit_id": "r16:55.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "nāvis",
+     "equus",
+     "mōns",
+     "currus"
+    ]
+   }
   },
   {
    "lemma": "locō",
@@ -527,19 +676,33 @@
    "sense_full": "slip, slip and fall",
    "parts": "lābor, lābī, lāpsus sum",
    "unit_id": "r16:85.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "ēgredior",
-   "dict": "ēgredior, ēgredī, egressus sum",
+   "dict": "ēgredior, ēgredī, ēgressus sum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "go out, disembark",
    "sense_full": "go, march, come out",
-   "parts": "ēgredior, ēgredī, egressus sum",
+   "parts": "ēgredior, ēgredī, ēgressus sum",
    "unit_id": "r16:38.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "puppis",
@@ -551,7 +714,8 @@
    "sense_full": "stern or aft (of ship)",
    "parts": null,
    "unit_id": "r16:41.1",
-   "count": 5
+   "count": 5,
+   "sem": "thing"
   },
   {
    "lemma": "septentriō",
@@ -563,7 +727,8 @@
    "sense_full": "Big/Little Dipper (s./plural)",
    "parts": null,
    "unit_id": "r16:47.1",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "serēnus",
@@ -575,7 +740,12 @@
    "sense_full": "clear, fair, bright",
    "parts": null,
    "unit_id": "r16:54.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "flō",
@@ -599,7 +769,8 @@
    "sense_full": "helmsman, pilot",
    "parts": null,
    "unit_id": "r16:92.1",
-   "count": 4
+   "count": 4,
+   "sem": "person"
   },
   {
    "lemma": "iactō",
@@ -623,7 +794,19 @@
    "sense_full": "fill up",
    "parts": "impleō, implēre, implevī, impletum",
    "unit_id": "r16:33.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "saccus",
+     "sacculus",
+     "pōculum",
+     "vāsum"
+    ]
+   }
   },
   {
    "lemma": "contrārius",
@@ -671,7 +854,8 @@
    "sense_full": "thunder",
    "parts": null,
    "unit_id": "r16:107.1",
-   "count": 3
+   "count": 3,
+   "sem": "nature"
   },
   {
    "lemma": "turbidus",
@@ -683,7 +867,12 @@
    "sense_full": "wild or stormy",
    "parts": null,
    "unit_id": "r16:30.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "fulgur",
@@ -695,7 +884,8 @@
    "sense_full": "lightning, flashing, brightness",
    "parts": null,
    "unit_id": "r16:107.1",
-   "count": 2
+   "count": 2,
+   "sem": "nature"
   },
   {
    "lemma": "fulgurō",

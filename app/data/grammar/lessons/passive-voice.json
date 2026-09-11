@@ -4,6 +4,14 @@
     {
       "n": 1,
       "title": "Something is done to the subject",
+      "notice": {
+        "sentences": [
+          "pas-02",
+          "pas-06"
+        ],
+        "ask": "Which word in each sentence says what is being done to the slave, and to the sacks?",
+        "tap": "focus"
+      },
       "say": "Up to now the subject has been the one doing: *māter Mārcum vocat*, mother calls Marcus. Turn it round and Marcus becomes the subject with the calling done to him: *Mārcus vocātur*. That is **the passive (the 'is done' form)**. English needs two words, *is called*; Latin changes the end of the one verb.",
       "show": {
         "kind": "sentence",
@@ -124,7 +132,7 @@
     {
       "n": 6,
       "title": "The other conjugations",
-      "say": "Every verb makes the passive the same way, with its own vowel in front: *vidētur* is seen, *audītur* is heard, *audiuntur* are heard. Consonant stems keep the i and u they use in the active: *pōnit* → *pōnitur*, *sūmunt* → *sūmuntur*, *carpunt* → *carpuntur*. (*Vidētur* also does duty for 'it seems'; in *Vīlla Iūliī ex oppidō vidētur* the *ex oppidō* settles which one is meant.)",
+      "say": "Every verb makes the passive the same way, with its own vowel in front: *vidētur* is seen, *audītur* is heard, *audiuntur* are heard. Consonant stems keep the i and u they use in the active: *pōnit* → *pōnitur*, *sūmunt* → *sūmuntur*, *carpunt* → *carpuntur*.",
       "show": {
         "kind": "paradigm",
         "key": "conj3",
@@ -230,6 +238,10 @@
     {
       "type": "p",
       "text": "Ørberg cap. VI: -tur / -ntur with *ā servō* for the doer. The other persons (-or, -ris, -mur, -minī) come later, and some passives read best as active English: *dēlectātur* = is pleased, likes; *vehitur* = rides. A&G §156, §163."
+    },
+    {
+      "type": "p",
+      "text": "*Vidētur* also does duty for 'it seems'; in *Vīlla Iūliī ex oppidō vidētur* the *ex oppidō* settles which one is meant."
     }
   ],
   "sources": [

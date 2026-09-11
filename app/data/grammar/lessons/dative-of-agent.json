@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "The 'must be done' pattern usually names the person who must do it, and that person goes in the dative (the 'to/for' form). That is **the dative of agent (the person who must do it: mihi legendum est = I must read)**. *Hic liber mihi legendus est* is word for word 'this book is to-be-read for me', and in plain English 'I have to read this book'.",
+      "notice": {
+        "sentences": [
+          "dag-05",
+          "dag-14"
+        ],
+        "ask": "Tap the person who has to do the job in each sentence. What form are both names in?",
+        "tap": "focus"
+      },
+      "say": "The 'must be done' pattern names the person who must do it in the dative (the 'to/for' form): **the dative of agent (the person who must do it: mihi legendum est = I must read)**. *Hic liber mihi legendus est* — word for word 'this book is to-be-read for me': I have to read this book.",
       "show": {
         "kind": "sentence",
         "id": "dag-01"

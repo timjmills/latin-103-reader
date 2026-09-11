@@ -47,7 +47,16 @@
    "sense_full": "shut up/in, imprison, enclose",
    "parts": "inclūdō, inclūdere, inclūsī, inclūsum",
    "unit_id": "r23:101.1",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "prōmittō",
@@ -59,7 +68,19 @@
    "sense_full": "promise",
    "parts": "prōmittō, prōmittere, prōmīsī, prōmissum",
    "unit_id": "r23:89.1",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "abstract"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "herī",
@@ -179,7 +200,21 @@
    "sense_full": "hand over, surrender",
    "parts": "trādō, trādere, trādidī, trāditum",
    "unit_id": "r23:4.1",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "person",
+     "animal"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "fateor",
@@ -215,7 +250,8 @@
    "sense_full": "cause, reason, motive",
    "parts": null,
    "unit_id": "r23:140.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "perdō",
@@ -227,7 +263,17 @@
    "sense_full": "ruin, destroy",
    "parts": "perdō, perdere, perdidī, perditum",
    "unit_id": "r23:72.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "vultus",
@@ -239,7 +285,8 @@
    "sense_full": "face, expression",
    "parts": null,
    "unit_id": "r23:34.1",
-   "count": 5
+   "count": 5,
+   "sem": "body"
   },
   {
    "lemma": "clāvis",
@@ -251,7 +298,8 @@
    "sense_full": "door-key",
    "parts": null,
    "unit_id": "r23:102.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "comes",
@@ -263,7 +311,8 @@
    "sense_full": "comrade, companion, associate, partner",
    "parts": null,
    "unit_id": "r23:107.1",
-   "count": 4
+   "count": 4,
+   "sem": "person"
   },
   {
    "lemma": "dīmittō",
@@ -275,7 +324,17 @@
    "sense_full": "send away or off",
    "parts": "dīmittō, dīmittere, dīmīsī, dīmissum",
    "unit_id": "r23:12.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "illinc",
@@ -311,7 +370,13 @@
    "sense_full": "pale, yellow-green",
    "parts": null,
    "unit_id": "r23:34.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "āvertō",
@@ -335,7 +400,15 @@
    "sense_full": "join as an attendant, guard or escort",
    "parts": "comitor, comitārī, comitātus sum",
    "unit_id": "r23:104.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "laus",
@@ -347,7 +420,8 @@
    "sense_full": "praise, approval, merit",
    "parts": null,
    "unit_id": "r23:48.1",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "pareō",
@@ -359,7 +433,17 @@
    "sense_full": "obey, be subject or obedient to",
    "parts": "pareō, parēre, parvī, pāritum",
    "unit_id": "r23:84.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "contineō",
@@ -395,7 +479,8 @@
    "sense_full": "decency, shame",
    "parts": null,
    "unit_id": "r23:81.1",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "superus",
@@ -419,7 +504,16 @@
    "sense_full": "lop or cut off, prune, shorten",
    "parts": "amputō, amputāre, amputavī, amputatum",
    "unit_id": "r23:25.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [],
+    "obj": [
+     "body"
+    ],
+    "subj_only": [
+     "medicus"
+    ]
+   }
   },
   {
    "lemma": "antehāc",
@@ -443,7 +537,8 @@
    "sense_full": "lash, whip",
    "parts": null,
    "unit_id": "r23:123.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   }
  ]
 }

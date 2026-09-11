@@ -198,6 +198,161 @@ export const lemmaGloss = (entry) => (entry ? `${entry.lemma} — ${headSense(en
 /** The head alone: for the rare item whose full citation would spell its own answer (femina *fēminae* f). */
 export const headGloss = (entry) => (entry ? `${String(entry.lemma ?? '').split(/[\s,]/)[0]} — ${headSense(entry)}` : '');
 
+/**
+ * A small multiple choice over one parse feature: the true value first, then
+ * distractors from the feature's own value set. Used by a completed worked
+ * example (GRAMMAR-CONTRACT.md §8), which asks for one feature at a time.
+ * `[]` when the feature has no value set to draw from. Pure but for `rand`.
+ */
+export function featureChoices(key, own, { n = 4, rand = Math.random, skills = null, skill = null, pool: given = null } = {}) {
+  const pool = given ?? WORKED_POOL[key] ?? (key === 'tm' ? TM_FILLERS : FILLERS[key]);
+  if (!pool || own == null) return [];
+  const others = pool.filter((v) => String(v) !== String(own)).sort(() => rand() - 0.5).slice(0, Math.max(0, n - 1));
+  if (!others.length) return [];
+  const label = (v) => { const l = workedLabel(key, v, { skills, skill }); return { value: String(v), label: l.name, plain: l.plain, correct: String(v) === String(own) }; };
+  const all = [own, ...others].map(label);
+  for (let i = all.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [all[i], all[j]] = [all[j], all[i]]; }
+  return all;
+}
+
+/**
+ * The value sets a **worked example** asks over, one feature at a time (§8):
+ * the tense alone, the mood alone, the person alone — not the tense-and-mood
+ * pair the drills use — because the example is built up a feature at a time.
+ */
+const WORKED_POOL = {
+  case: ['nom', 'gen', 'dat', 'acc', 'abl', 'voc'], number: ['sg', 'pl'], gender: ['m', 'f', 'n'], degree: ['pos', 'comp', 'super'],
+  voice: ['act', 'pass'], tense: ['pres', 'impf', 'fut', 'perf', 'plupf', 'futperf'], mood: ['ind', 'subj', 'imper', 'inf', 'ptc'], person: ['1', '2', '3'], form: ['que', 'ne', 've'],
+};
+/** A single feature value's label as a worked example prints it — a tense or a mood on its own, a person without its number. */
+function workedLabel(key, value, opts = {}) {
+  const mk = (name, plain) => ({ name, plain, full: plain ? `${name} — ${plain}` : name });
+  if (key === 'tense') return mk(TENSE_LABEL[value] ?? String(value), '');
+  if (key === 'mood') return MOOD_ONLY_LABEL[value] ? mk(MOOD_ONLY_LABEL[value][0], MOOD_ONLY_LABEL[value][1]) : mk(value === 'ptc' ? 'participle' : (MOOD_LABEL[value] ?? String(value)), '');
+  if (key === 'person') return mk(PERSON_WORD[value] ?? String(value), '');
+  return featureLabel(key, value, opts);
+}
+/**
+ * One feature of a scanned candidate as a worked example gives or asks it
+ * (§8): `{ key, label, value, name, plain, pool }` — `label` the feature's own
+ * name ("case"), `name` the value's ("dative"). null when the word does not
+ * carry the feature (a verb has no case; a noun no tense), so the step drops
+ * it rather than asks it. A construction's pool is the skill's confusables
+ * and the other constructions of its category. Pure.
+ */
+export function workedFeature(key, c, { skill = null, skills = null } = {}) {
+  const p = c?.parse;
+  if (!p || !key) return null;
+  let value = null;
+  let pool = null;
+  if (key === 'case') value = p.case ?? null;
+  else if (key === 'number') value = p.number ?? null;
+  else if (key === 'gender') value = p.gender ?? (c.entry?.pos === 'N' ? c.entry?.gender : null) ?? null;
+  else if (key === 'degree') value = p.degree || (p.case && (c.entry?.pos === 'ADJ' || c.entry?.pos === 'ADV') ? 'pos' : null);
+  else if (key === 'voice') value = isDeponent(c.entry) ? 'dep' : (p.voice ?? null);
+  else if (key === 'tense') value = p.tense ?? null;
+  else if (key === 'mood') value = p.mood ?? null;
+  else if (key === 'person') value = p.person != null ? String(p.person) : null;
+  else if (key === 'form') value = c.entry?.enc ?? null;
+  else if (key === 'construction') {
+    value = skill?.id ?? null;
+    const same = skills instanceof Map ? [...skills.values()].filter((s) => s.id !== skill?.id && s.feature === 'construction' && s.category === skill?.category).map((s) => s.id) : [];
+    pool = [...new Set([...(skill?.confusable_with ?? []), ...same])].filter((id) => !(skills instanceof Map) || skills.has(id));
+  }
+  if (value == null || value === '' || (value === 'c' && key === 'gender')) return null;
+  if (key === 'voice' && value === 'dep') pool = ['act', 'pass', 'dep'];
+  const l = workedLabel(key, value, { skill, skills });
+  return { key, label: key === 'construction' ? 'what it is doing' : key, value: String(value), name: l.name, plain: l.plain, pool };
+}
+
+/* ------------------------------------------- paradigm cell ids (§4a) */
+/**
+ * The stable id of one paradigm cell, read off the structured `key`
+ * paradigms.js already puts on it and never off a section, row or column index
+ * (GRAMMAR-CONTRACT.md §4a). The slots are written in one fixed order and the
+ * ones the key does not carry are left out; a kind that is neither `nominal`
+ * nor `finite` is prefixed with its kind, so a gerund's accusative and a
+ * noun's cannot collide. On a **noun** table the gender is the lemma's, not the
+ * cell's, so it is left out.
+ *
+ * This is the same scheme `tests/latin_forms/dump_js_cell_ids.mjs` dumps for
+ * `pipeline/test_build_paradigm_catalogue.py`; the two are asserted equal in
+ * `tests/grammar.learn-steps.test.mjs`, so the ids the app computes are the
+ * ids `paradigms.json` holds. Pure.
+ */
+export const CELL_SLOT_ORDER = Object.freeze(['degree', 'tense', 'mood', 'voice', 'person', 'case', 'number', 'gender']);
+const CELL_KIND_PREFIX = new Set(['imper', 'inf', 'ptc', 'gerund', 'supine']);
+export function cellId(key, tableKind) {
+  if (!key) return null;
+  if (key.kind === 'gerundive') return 'gerundive';
+  const slots = Object.fromEntries(CELL_SLOT_ORDER.map((k) => [k, key[k]]));
+  if (key.kind === 'nominal' && tableKind === 'noun') slots.gender = null;
+  if (key.kind === 'imper' && !slots.tense) slots.tense = 'pres';
+  const body = CELL_SLOT_ORDER.filter((k) => slots[k]).map((k) => String(slots[k]));
+  if (key.kind === 'nominal' || key.kind === 'finite') return body.join('.');
+  if (!CELL_KIND_PREFIX.has(key.kind)) return null;
+  return [key.kind, ...body].join('.');
+}
+/** The stable id of one section of a rendered paradigm, from the keys of its cells (§4a). Pure. */
+export function groupId(section) {
+  const keys = (section?.rows ?? []).flatMap((r) => (r.cells ?? []).map((c) => c?.key).filter(Boolean));
+  if (!keys.length) return null;
+  const kinds = new Set(keys.map((k) => k.kind));
+  if (kinds.size === 1 && kinds.has('finite')) {
+    const tenses = new Set(keys.map((k) => k.tense));
+    const moods = new Set(keys.map((k) => k.mood));
+    if (tenses.size === 1 && moods.size === 1) return `${[...tenses][0]}.${[...moods][0]}`;
+  }
+  if (kinds.size === 1 && kinds.has('nominal')) {
+    const degrees = new Set(keys.map((k) => k.degree ?? null));
+    if (degrees.size === 1) return [...degrees][0] ?? 'cases';
+  }
+  if ([...kinds].every((k) => k === 'ptc' || k === 'gerundive')) return 'ptc';
+  if (kinds.size === 1 && CELL_KIND_PREFIX.has([...kinds][0])) return [...kinds][0];
+  return null;
+}
+/**
+ * Every cell of a rendered paradigm by its id: `Map<cell id, { cell, section,
+ * row, col, group, rowLabel, colLabel, sectionTitle }>`. The first cell to
+ * claim an id keeps it. Pure.
+ */
+export function tableCells(table) {
+  const out = new Map();
+  for (const [si, sec] of (table?.sections ?? []).entries()) {
+    const group = groupId(sec);
+    for (const [ri, row] of (sec.rows ?? []).entries()) {
+      for (const [ci, cell] of (row.cells ?? []).entries()) {
+        if (!cell || cell.empty || !cell.key) continue;
+        const id = cellId(cell.key, table?.kind);
+        if (!id || out.has(id)) continue;
+        out.set(id, { cell, section: si, row: ri, col: ci, group, rowLabel: row.label ?? '', colLabel: sec.headers?.[ci] ?? '', sectionTitle: sec.title ?? '' });
+      }
+    }
+  }
+  return out;
+}
+/**
+ * A cell id as written in a lesson, matched against the ids a table really
+ * has. The 88 hand-written teach blocks spell a few of them loosely — the
+ * person and the number run together (`impf.subj.act.3sg` for
+ * `impf.subj.act.3.sg`), and an adjective's degree is left off (`nom.sg.f` for
+ * `pos.nom.sg.f`) — and a step must teach its cell rather than fail on a full
+ * stop. Only these two are forgiven, and only when the table names exactly one
+ * candidate; anything else is null and the caller degrades. Pure.
+ */
+export function resolveCellId(id, have) {
+  const want = String(id ?? '').trim();
+  if (!want) return null;
+  const has = (x) => (have instanceof Set ? have.has(x) : have instanceof Map ? have.has(x) : false);
+  if (has(want)) return want;
+  const split = want.replace(/([123])(sg|pl)(?![a-z0-9])/g, '$1.$2');
+  if (split !== want && has(split)) return split;
+  for (const degree of ['pos', 'comp', 'super']) if (has(`${degree}.${split}`)) return `${degree}.${split}`;
+  return null;
+}
+/** The ending a cell teaches (`-ō`), or null when the table prints no stem / ending split. Pure. */
+export const cellEnding = (cell) => (cell && typeof cell.ending === 'string' && cell.ending ? cell.ending : null);
+
 /* ------------------------------------------------- answer matching */
 /** Macron-optional, case-insensitive, punctuation dropped, spaces collapsed. Pure. */
 export function normaliseAnswer(s) {
@@ -592,9 +747,11 @@ const joinWords = (ws) => (ws.length <= 1 ? ws.join('') : `${ws.slice(0, -1).joi
  * [unit ids] from the lessons' example blocks) and `gold.highlights` (Map unit
  * id → [{ text, label }] from the reader's grammar-focus rows).
  */
-export function createItems({ units = [], lookup, paradigm = null, skills, storage = null, rand = Math.random, gold = null }) {
+export function createItems({ units = [], lookup, paradigm = null, skills, storage = null, rand = Math.random, gold = null, poolKey = undefined, augment = null }) {
   const skillMap = skills instanceof Map ? skills : new Map((skills?.skills ?? skills ?? []).map((s) => [s.id, s]));
-  const pool = createPool(storage);
+  // `poolKey`: a second generator over a different world of sentences keeps its own "already shown" memory —
+  // Learn's written sentences (§1) are not the library, and one must not spend the other's pool.
+  const pool = poolKey === undefined ? createPool(storage) : createPool(storage, poolKey);
   const cache = new Map();   // skill id → candidates
   const unitList = units.map((u) => ({ ...u, week_n: u.week_n ?? weekOf(u.id) }));
 
@@ -634,7 +791,9 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
   const scanOpts = (skill, unit) => ({ paradigm: paradigm ? plainTable : null, patterns: patternsOf(skill), gold: goldSpans(unit, skill), lookup: look, tokens: toks, stripped });
   /** A sentence a sibling construction owns (`exclude_patterns`: a result signal word before ut, a verb of commanding …) yields nothing for this skill unless it is gold. */
   const excluded = (unit, skill) => { const ex = excludesOf(skill); if (!ex.length) return false; const st = stripped(unit.la); return ex.some((re) => { re.lastIndex = 0; return re.test(st.text); }); };
-  const scan = (unit, skill) => { const g = goldSpans(unit, skill); if (!g.length && excluded(unit, skill)) return []; return scanUnit(unit, skill, look, { ...scanOpts(skill, unit), gold: g }); };
+  // `augment(unit, skill, found)`: a caller that knows more about a sentence than its forms say — Learn's written
+  // sentences name their focus word (§1) — may add to or settle what the scan found. The library has no such hook.
+  const scan = (unit, skill) => { const g = goldSpans(unit, skill); if (!g.length && excluded(unit, skill)) return augment ? augment(unit, skill, []) : []; const found = scanUnit(unit, skill, look, { ...scanOpts(skill, unit), gold: g }); return augment ? augment(unit, skill, found) : found; };
 
   function candidates(skillId) {
     if (!cache.has(skillId)) {
@@ -748,9 +907,21 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     };
   };
 
-  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, chapter = null, chapterMode = 'own-first', where = null, itemKey = null }) => {
+  const pickCandidate = (skill, kind, { unambiguous, currentWeek, currentWeekN, chapter = null, chapterMode = 'own-first', where = null, itemKey = null, unit = null, focus = null, maxWords = null, exclude = null }) => {
     let pool_ = candidates(skill.id);
     if (where) pool_ = pool_.filter(where);
+    // A1's short tier: sentences of at most `maxWords` words, or nothing — the caller then widens the draw itself.
+    if (maxWords != null) pool_ = pool_.filter((c) => wordCount(c.unit.la) <= maxWords);
+    // A teaching step names its own written sentence, and the sentence names its focus word
+    // (GRAMMAR-CONTRACT.md §1 and §8): the pool is that one candidate, so the check is on the idea the
+    // step just taught. A focus the scanner did not reach falls back to the sentence's other candidates
+    // rather than to another sentence — a step never quietly teaches a different example.
+    if (unit != null) {
+      const inUnit = pool_.filter((c) => c.unit.id === unit);
+      if (!inUnit.length) return null;
+      const onFocus = focus ? inUnit.filter((c) => matchesForm(c.token.text, [focus])) : [];
+      pool_ = onFocus.length ? onFocus : inUnit;
+    }
     if (unambiguous) pool_ = pool_.filter((c) => !c.ambiguous);
     else { const clear = pool_.filter((c) => !c.ambiguous); if (clear.length >= 5) pool_ = clear; }   // blank: forms the sentence reads one way, while there are enough
     if (!pool_.length) return null;
@@ -760,6 +931,9 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const scoped = itemKey != null ? { list: pool_, scope: null, counts: null } : scopeByChapter(pool_, chapter, undefined, { mode: chapterMode });
     pool_ = scoped.list;
     const keyOf = (c) => `${kind}:${c.unit.id}:${c.token.form}:${c.index}`;
+    // Items already shown in this sitting (A1: nothing repeats until the pool is spent) — when every candidate
+    // has been, the draw is empty and the caller decides whether a repeat is allowed now.
+    if (exclude?.size) { pool_ = pool_.filter((c) => !exclude.has(keyOf(c)) && !exclude.has(keyOf(c).replace(/^recognise:/, 'recognise-tap:'))); if (!pool_.length) return null; }
     const keys = pool_.map(keyOf);
     // Shorter sentences first: a drill reads one sentence, not a paragraph. It is a preference *inside*
     // each tier below (`nest`), so the lesson's own short example still comes before its long one, and
@@ -1007,6 +1181,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const shownOf = (sp) => { const sec = sp.table.sections[sp.si]; return `${firstWord(sp.c.entry.lemma)} ${sec.title ?? ''} ${sec.rows[sp.ri].label ?? ''} ${sec.headers?.[sp.ci] ?? ''}`; };
     const open = spots.map((sp, i) => i).filter((i) => !spellsAnswer(shownOf(spots[i]), answersOf(spots[i])));
     if (open.length) { keys = open.map((i) => keys[i]); spots = open.map((i) => spots[i]); }
+    if (opts.exclude?.size) { const keep = keys.map((k, i) => i).filter((i) => !opts.exclude.has(keys[i])); if (!keep.length) return null; keys = keep.map((i) => keys[i]); spots = keep.map((i) => spots[i]); }
     const got = pool.chooseInfo(skill.id, 'chart', keys, rand, [], opts.itemKey ?? null);
     if (!got) return null;   // a redo whose cell the table no longer has: dropped, never swapped for another cell
     const spot = spots[keys.indexOf(got.key)];
@@ -1063,10 +1238,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
    * kinds are tried — those not in `avoid` (the neighbours' kinds) first — and
    * the item that comes back says which kind it is.
    */
-  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, chapter = null, chapterMode = 'own-first', full = false, tap = undefined, avoid = [], itemKey = null } = {}) {
+  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, chapter = null, chapterMode = 'own-first', full = false, tap = undefined, avoid = [], itemKey = null, unit = null, focus = null, maxWords = null, exclude = null } = {}) {
     const skill = typeof skillId === 'string' ? skillMap.get(skillId) : skillId;
     if (!skill || !skill.parse_filter) return null;
-    const opts = { currentWeek, currentWeekN, chapter, chapterMode, tap, itemKey };
+    const opts = { currentWeek, currentWeekN, chapter, chapterMode, tap, itemKey, unit, focus, maxWords, exclude };
     const fn = FNS[kind];
     if (!fn) return null;
     // A redo asks for one named item (GRAMMAR-CONTRACT.md "Redo what was wrong"). Neither of the two
@@ -1074,14 +1249,318 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     // item wearing the same name. Nothing to rebuild → null, and the session drops the slot quietly.
     if (itemKey != null) return fn(skill, stage, opts, { full });
     let item = fn(skill, stage, opts, { full });
-    if (!item && currentWeek) item = fn(skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode, tap }, { full });
+    // `unit` / `focus` ride through every fallback: a step's sentence is the step's sentence whatever kind
+    // ends up being built on it, and a chart has no sentence at all, so it is not a fallback for one.
+    if (!item && currentWeek) item = fn(skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode, tap, unit, focus, maxWords, exclude }, { full });
     if (!item) { // fall back through the other kinds so a session slot is never empty — the neighbours' kinds last
       const allowed = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
-      const order = ['blank', 'recognise', 'parse', 'chart'].filter((a) => a !== kind && allowed.includes(a));
-      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode }, { full }); if (item) break; }
+      let order = ['blank', 'recognise', 'parse', 'chart'].filter((a) => a !== kind && allowed.includes(a));
+      if (unit != null) order = order.filter((a) => a !== 'chart');
+      // A word cap is a tier, not a rule about the skill: a slot that found no short sentence of its own kind
+      // asks the other kinds for a short one too, and a chart (no sentence) is left to the caller's wider draw.
+      if (maxWords != null) order = order.filter((a) => a !== 'chart');
+      for (const alt of [...order.filter((a) => !avoid.includes(a)), ...order.filter((a) => avoid.includes(a))]) { item = FNS[alt](skill, stage, { currentWeek: false, currentWeekN: null, chapter, chapterMode, unit, focus, maxWords, exclude }, { full }); if (item) break; }
     }
     return item;
   }
 
   return { generate, candidates, drillable, pool, skills: skillMap, scan, meaningsOf };
+}
+
+/* ============================================ Learn's own items (§2, §8) */
+/**
+ * The items a **teaching step** checks with. Two rules from the contract are
+ * structural here rather than checked afterwards:
+ *
+ * - **A step's check draws from the skill's own written sentences and never
+ *   from the library** (§8). The generator below is an ordinary `createItems`
+ *   whose entire world is `sentences/<skill>.json`, so there is no library for
+ *   a Learn item to come from. It keeps its own pool, and it is never given a
+ *   chapter: the written sentences are inside the skill's cumulative
+ *   vocabulary by construction (§1), so a ceiling could only narrow what is
+ *   already inside it.
+ * - **A chart check over several words is one attempt** (§3, §8). The cell is
+ *   asked on each word in turn as one item with one box per word, so `judge`
+ *   folds them into a single verdict — right only if every word was right —
+ *   while `cellResults` still paints each box green or red on its own.
+ *
+ *   createTeachItems({ skill, sentences, lookup, paradigm, catalogue, storage, rand })
+ *     .sentenceItem({ kind, sentence, stage })     → item | null
+ *     .chartItem({ key, cells, words, step })      → item | null
+ *     .sentence(id) / .sentences                   the written material itself
+ */
+export function createTeachItems({ skill, sentences = [], lookup, paradigm = null, catalogue = null, skills = null, headwords = null, storage = null, rand = Math.random }) {
+  const list = (sentences ?? []).filter((s) => s && s.id && s.la);
+  const byId = new Map(list.map((s) => [s.id, s]));
+  const skillMap = skills instanceof Map ? skills : new Map([[skill.id, skill]]);
+  // The written sentences as units. `week_n` is deliberately null: nothing scopes them by chapter, because
+  // every word in them is already at or before the skill's own chapter (§1).
+  const units = list.map((s) => ({ id: s.id, la: s.la, en: s.en || '', week_n: null, part: null }));
+  const safeTable = (entry) => { try { return paradigm ? paradigm(entry, []) : null; } catch { return null; } };
+  const tableMemo = new Map();
+  const tableOfEntry = (e) => { const k = `${e?.h}|${e?.lemma}`; if (!tableMemo.has(k)) tableMemo.set(k, safeTable(e)); return tableMemo.get(k); };
+
+  /* ----------------------------------------------- the focus word (§1) */
+  // The glossary is keyed by the forms the book prints, so a written sentence's *vocet* or *servō*-the-noun
+  // can be a miss for `lookup` and the scanner finds nothing. The sentence names its focus word, and the app's
+  // own morphology can name the form: the headword index (§4b) gives every lemma, the lemma's paradigm gives
+  // every cell, and the cell that spells the form is the parse. What the author declared settles the reading
+  // — *servō* here is the dative, whatever else the ending could be — so the candidate is never ambiguous.
+  const wordsOf = (la) => tokenize(la).filter((t) => t.isWord);
+  const focusIndex = (written) => (written?.focus ? wordsOf(written.la).findIndex((t) => matchesForm(t.text, [written.focus])) : -1);
+  const parseOfKey = (key, entry) => {
+    if (!key) return null;
+    const k = key.kind;
+    if (k === 'nominal') { const p = { case: key.case, number: key.number, gender: key.gender ?? entry?.gender ?? undefined }; if (key.degree) p.degree = key.degree; if (key.mood) { p.mood = key.mood; if (key.tense) p.tense = key.tense; if (key.voice) p.voice = key.voice; } return p; }
+    if (k === 'finite') return { tense: key.tense, mood: key.mood, voice: key.voice, person: Number(key.person), number: key.number };
+    if (k === 'imper') return { mood: 'imper', tense: key.tense ?? 'pres', voice: key.voice, number: key.number, ...(key.person ? { person: Number(key.person) } : {}) };
+    if (k === 'inf') return { mood: 'inf', tense: key.tense, voice: key.voice };
+    if (k === 'ptc') return { mood: 'ptc', tense: key.tense, voice: key.voice, ...(key.case ? { case: key.case, number: key.number, gender: key.gender } : {}) };
+    if (k === 'gerundive') return { mood: 'gerundive', ...(key.case ? { case: key.case, number: key.number, gender: key.gender } : {}) };
+    if (k === 'gerund' || k === 'supine') return { mood: k, case: key.case };
+    return null;
+  };
+  const filterOf = (sk) => (Array.isArray(sk.parse_filter) ? sk.parse_filter : [sk.parse_filter]).filter((f) => f && typeof f === 'object');
+  let hwEntries = null;
+  /** Every headword entry once (the index's rows resolved through the glossary), lazily. */
+  const allEntries = () => {
+    if (hwEntries) return hwEntries;
+    hwEntries = [];
+    const seen = new Set();
+    for (const row of headwords ?? []) {
+      const [h, , key, i] = Array.isArray(row) ? row : [row?.h, row?.pos, row?.key, row?.i];
+      const e = lookup(key ?? h)?.entries?.[i ?? 0];
+      if (!e || e.enc || seen.has(e)) continue;
+      seen.add(e); hwEntries.push(e);
+    }
+    return hwEntries;
+  };
+  const low = (x) => stripMacrons(String(x ?? '')).toLowerCase();
+  /** The entries that could produce `form`: the direct lookup's, then every headword whose head or a root begins the form. */
+  const entriesFor = (form, filters) => {
+    const f = low(form);
+    const out = [];
+    const push = (e) => { if (e && !e.enc && !out.includes(e) && filters.some((fl) => entryAllowed(e, fl))) out.push(e); };
+    for (const e of lookup(form)?.entries ?? []) push(e);
+    if (!headwords) return out;
+    for (const e of allEntries()) {
+      const heads = [String(e.h ?? ''), firstWord(e.lemma), ...(e.roots ?? [])].map(low).filter((r) => r.length >= 2);
+      if (heads.some((r) => f.startsWith(r) || (r.length >= 4 && f.startsWith(r.slice(0, 4))))) push(e);
+    }
+    return out;
+  };
+  /** The scanner's candidate for a written sentence's focus word, made from the word's own paradigm. */
+  const resolveFocus = (unit, sk, written) => {
+    const idx = focusIndex(written);
+    if (idx < 0 || !paradigm) return null;
+    const toks = wordsOf(unit.la);
+    const t = toks[idx];
+    const filters = filterOf(sk);
+    if (!filters.length) return null;
+    const k = featureKey(sk);
+    const printed = t.text.toLowerCase();
+    const macronised = /[āēīōūȳĀĒĪŌŪȲ]/.test(t.text);
+    let best = null;
+    const values = new Set();
+    for (const e of entriesFor(t.text, filters)) {
+      const table = tableOfEntry(e);
+      if (!table) continue;
+      for (const [, spot] of tableCells(table)) {
+        const forms = [spot.cell.text, spot.cell.alt, ...String(spot.cell.text ?? '').split(' / ')].filter(Boolean).map((x) => String(x).trim());
+        const exact = forms.some((x) => x.toLowerCase() === printed);
+        const loose = !exact && forms.some((x) => low(x) === low(printed));
+        if (!exact && !(loose && !macronised)) continue;
+        const parse = parseOfKey(spot.cell.key, e);
+        if (!parse) continue;
+        const fl = filters.find((x) => parseMatches(parse, x) && entryAllowed(e, x));
+        const v = featureValue(parse, k, e, sk);
+        if (v) values.add(v);
+        if (fl && (!best || (exact && !best.exact))) best = { entry: e, parse, exact, value: v };
+      }
+    }
+    if (!best) return null;
+    return { unit, token: t, index: idx, entry: best.entry, parse: best.parse, ambiguous: false, settled: true, values: [...values], ambKey: k, value: best.value, gold: null, verified: true };
+  };
+  /** After every scan of a written sentence: the declared focus is settled if found, and made from its paradigm if not. */
+  const augment = (unit, sk, found) => {
+    const written = byId.get(unit.id);
+    const idx = focusIndex(written);
+    if (idx < 0) return found;
+    if (found.some((c) => c.index === idx)) return found.map((c) => (c.index === idx ? { ...c, ambiguous: false, settled: true } : c));
+    const made = resolveFocus(unit, sk, written);
+    return made ? [...found, made] : found;
+  };
+  const gen = createItems({ units, lookup, paradigm, skills: skillMap, storage, rand, poolKey: `l103.grammar.teach.${skill.id}`, augment });
+
+  /**
+   * One written sentence as a drill item of `kind`. The step names a sentence,
+   * but not every hand-written sentence can carry every kind (a form two cases
+   * can read is no parse question), so the search is in two passes: the asked
+   * kind on the named sentence, then the asked kind on the skill's other
+   * written sentences, and only if no written sentence at all can carry it, a
+   * kind the named sentence *can* carry. `taught` records which sentence the
+   * item is really asking about, so nothing is claimed falsely. Null when the
+   * skill's own sentences yield nothing — the library is never reached.
+   */
+  function sentenceItem({ kind = 'recognise', sentence = null, stage = 1, avoid = null, unshownOnly = false } = {}) {
+    const named = sentence ? byId.get(sentence) : null;
+    const seen = (x) => !!avoid?.has?.(x.id);
+    // Sentences this Learn has not shown yet come before the ones it has (A1); `unshownOnly` is the blocked
+    // ten asking the written pool alone, which answers null once every written sentence has been shown.
+    const fits = (x) => x !== named && (!x.kinds.length || x.kinds.includes(kind));
+    const rest = [...list.filter((x) => fits(x) && !seen(x)), ...(unshownOnly ? [] : list.filter((x) => fits(x) && seen(x)))];
+    const order = named ? [named, ...rest] : (rest.length ? rest : (unshownOnly ? [] : [...list.filter((x) => !seen(x)), ...list.filter(seen)]));
+    let loose = null;
+    for (const cand of order) {
+      const item = gen.generate({ skill: skill.id, kind, stage, chapter: null, unit: cand.id, focus: cand.focus });
+      if (!item) continue;
+      // No `key`: a teaching step's check is a moment in the step, not a drawable item, so it is logged
+      // (the history and the timing stay true) but never enters "redo what was wrong", which offers items
+      // back and must be able to rebuild them. `teachKey` keeps the generator's own key for the tests.
+      // `repeat: false`: a step names its sentence, and the blocked ten's written tier is ordered by what this Learn has
+      // shown (A1), so the generator's own pool wrapping says nothing here and must not print "starting over".
+      const made = { ...item, teach: true, teachKey: item.key, key: null, repeat: false, taught: cand.id, asked: named?.id ?? null, written: cand };
+      if (item.kind === kind) return made;
+      loose = loose ?? made;
+    }
+    return loose;
+  }
+
+  const tableOf = (key) => catalogue?.tableOfKey?.(key) ?? null;
+  /** A stock or named headword as a glossary entry that really renders a table. */
+  function entryFor(word) {
+    const w = typeof word === 'string' ? { h: word, key: word } : (word ?? {});
+    const forms = [w.key, w.h, w.lemma ? String(w.lemma).split(/[\s,]/)[0] : null].filter(Boolean);
+    for (const f of forms) {
+      const entries = lookup(f)?.entries ?? [];
+      const ranked = [
+        ...entries.filter((e) => e.h === w.h && (!w.pos || e.pos === w.pos)),
+        ...(Number.isInteger(w.i) && entries[w.i] ? [entries[w.i]] : []),
+        ...entries,
+      ];
+      for (const e of ranked) { const t = tableOfEntry(e); if (t) return { entry: e, table: t, cells: tableCells(t) }; }
+    }
+    return null;
+  }
+
+  /** "dative singular" / "imperfect subjunctive, we (passive)" — the cell named as the chart drills name it. */
+  function cellLabelOf(spot, table) {
+    const nominal = spot.cell.key?.kind === 'nominal';
+    const title = nominal && (table?.sections?.length ?? 0) > 1 && spot.sectionTitle ? spot.sectionTitle.replace(/\s*\(.*\)\s*$/, '') : '';
+    const deg = /^positive/i.test(title) ? '' : title;
+    if (nominal) return `${deg ? `${deg}, ` : ''}${spot.rowLabel}${spot.colLabel ? ` ${spot.colLabel}` : ''}`.trim();
+    return `${spot.sectionTitle ? `${spot.sectionTitle}, ` : ''}${spot.rowLabel}${spot.colLabel ? ` (${spot.colLabel})` : ''}`.trim();
+  }
+  const cellFormsOf = (cell) => [cell.text, ...(cell.alt ? [cell.alt] : []), ...String(cell.text ?? '').split(' / ')].map((x) => String(x ?? '').trim()).filter(Boolean);
+
+  /**
+   * A chart check: the named cells, asked on each word in turn, as **one
+   * item**. `words` comes from the step (§8) or from the table's own stock
+   * words (§4a) — never invented here. A word whose table does not name the
+   * cell is passed over; with no word left the caller falls back to a sentence.
+   */
+  function chartItem({ key = null, cells = [], words = null, step = null } = {}) {
+    if (!paradigm) return null;
+    const table = tableOf(key);
+    const named = table ? catalogue.cells(table.id) : null;
+    const stock = table ? catalogue.stock(table.id) : [];
+    const lemmas = (words?.length ? words : stock).slice(0, 5);
+    if (!lemmas.length) return null;
+    const boxes = [];
+    let head = null;
+    let sample = null;
+    for (const w of lemmas) {
+      const got = entryFor(w);
+      if (!got) continue;
+      for (const raw of cells) {
+        const id = resolveCellId(raw, got.cells) ?? (named ? resolveCellId(raw, named) : null);
+        const spot = id ? got.cells.get(id) : null;
+        if (!spot || !spot.cell?.text || spot.cell.text === '—') continue;
+        const label = cellLabelOf(spot, got.table);
+        boxes.push({
+          row: boxes.length, col: 0, cellId: id, word: firstWord(got.entry.lemma), lemma: got.entry.lemma,
+          label: `${firstWord(got.entry.lemma)} · ${label}`, cellLabel: label,
+          ending: cellEnding(spot.cell), answer: cellFormsOf(spot.cell),
+        });
+        head = head ?? label;
+        sample = sample ?? got;
+      }
+    }
+    if (!boxes.length) return null;
+    const oneCell = new Set(boxes.map((b) => b.cellLabel)).size === 1;
+    const heads = [...new Set(boxes.map((b) => b.word))];
+    const question = boxes.length === 1 ? `Give the ${boxes[0].cellLabel} of ${boxes[0].word}`
+      : oneCell ? `Give the ${head} of ${heads.join(', ')}`
+        : `Fill in these forms of ${heads.join(', ')}`;
+    return {
+      skill: skill.id, kind: 'chart', stage: 1, teach: true, taught: null, asked: null, written: null,
+      key: null, teachKey: `teach-chart:${table?.id ?? key ?? '?'}#${[...new Set(boxes.map((b) => b.cellId))].join('+')}`,
+      input: 'chart', unit_id: null, week_n: null, scope: null, target: null, parse: null, meanings: [], gold: null,
+      entry: sample?.entry ?? null, lemma: sample?.entry?.lemma ?? '',
+      prompt: { la: null, question, gloss: '', hint: `${head ?? 'this cell'} — the same job, one word at a time` },
+      answer: boxes[0].answer,
+      // `byWord`: the boxes are one word each, not a section of one table, so every one of them is asked (the
+      // phone's one-cell reduction would answer the rest for the learner) and they read down the page in turn.
+      chart: { table: sample?.table ?? null, section: 0, col: 0, target: { row: 0, col: 0 }, cells: boxes, full: false, byWord: true, head: head ?? '', tableId: table?.id ?? null },
+      confuse: { values: {}, indexes: {}, forms: {} },
+      feedback: {
+        short: boxes.length === 1
+          ? `${boxes[0].answer[0]} is the ${boxes[0].cellLabel} of ${boxes[0].lemma}.`
+          : `${boxes.map((b) => `${b.word} → ${b.answer[0]}`).join(', ')}.`,
+        term: skill.plain ?? '', label: { name: head ?? '', plain: '', full: head ?? '' }, table: null, lemma: sample?.entry?.lemma ?? null, sense: null,
+        paradigm: { key: table?.id ?? key ?? null, highlight: null },
+      },
+      step,
+    };
+  }
+
+  /**
+   * The written sentence's focus word as a scanned candidate — its entry, its
+   * parse and where it sits in the sentence. What a **worked example** is
+   * built from (§8): the features it prints as given and the ones it asks for
+   * are this parse's own, never invented. null when the scanner cannot reach
+   * the sentence at all.
+   */
+  function focusOf(sentenceId) {
+    const written = byId.get(sentenceId);
+    const unit = written ? units.find((u) => u.id === written.id) : null;
+    if (!unit) return null;
+    const all = gen.scan(unit, skill);
+    if (!all.length) return null;
+    const clear = all.filter((c) => !c.ambiguous);
+    const pool = clear.length ? clear : all;
+    const hit = all.find((c) => c.settled) ?? (written.focus ? pool.find((c) => matchesForm(c.token.text, [written.focus])) : null);
+    return { written, candidate: hit ?? pool[0] };
+  }
+
+  return {
+    sentenceItem, chartItem, focusOf,
+    get sentences() { return list; },
+    sentence: (id) => byId.get(id) ?? null,
+    /** The lemmas a chart check would really ask about, for the step's own prose and for the tests. */
+    chartWords: ({ key = null, words = null } = {}) => { const t = tableOf(key); return (words?.length ? words : (t ? catalogue.stock(t.id) : [])).map((w) => (typeof w === 'string' ? w : w.h)); },
+    /** The cell a step reveals, on one word: `{ word, lemma, label, form, ending }` — null when the word does not render it. */
+    revealed(key, cellIds, words = null) {
+      const table = tableOf(key);
+      const named = table ? catalogue.cells(table.id) : null;
+      const lemmas = (words?.length ? words : (table ? catalogue.stock(table.id) : [])).slice(0, 3);
+      const rows = [];
+      for (const raw of cellIds) {
+        const cols = [];
+        let label = null;
+        for (const w of lemmas) {
+          const got = entryFor(w);
+          if (!got) continue;
+          const id = resolveCellId(raw, got.cells) ?? (named ? resolveCellId(raw, named) : null);
+          const spot = id ? got.cells.get(id) : null;
+          if (!spot || !spot.cell?.text || spot.cell.text === '—') continue;
+          label = label ?? cellLabelOf(spot, got.table);
+          cols.push({ word: firstWord(got.entry.lemma), lemma: got.entry.lemma, form: spot.cell.text, stem: spot.cell.stem ?? '', ending: cellEnding(spot.cell) });
+        }
+        if (cols.length) rows.push({ cellId: raw, label, cols });
+      }
+      return { table, rows };
+    },
+    pool: gen.pool,
+  };
 }
