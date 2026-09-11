@@ -2165,3 +2165,57 @@ history still holds the leak; removing it needs a rewrite and is not done.**
 6. **`Īlion`** — the catalogue chip is right and the glossary lemma is short;
    only a glossary rebuild fixes it, and that builder reads Supabase-only
    sources. Named in `test_build_paradigm_catalogue.py` rather than passed over.
+
+## 17. Eight asks from the learner, 2026-09-11 — and what they changed
+
+Eight changes were asked for in a single sitting after using the section.
+Five are recorded elsewhere in this file by the sections they amend; the three
+that change a rule written above are set down here.
+
+### 17.1 A typed cell's hint answers **in the cell** (amends §3 decision 14, §12)
+
+> "the hints shoudl not move the page down — instead a cell hint shoudl briefly
+> show the answer … and then when its unclicked the anwser goes away for taht
+> cell … this is for cells where you need to tppe the answer in"
+
+§12 gave every answer box a hint that opened a panel under the input, the last
+step of which offered *Show this form*. The panel grew the page and called
+`scrollIntoView`, so the table, the question and the learner's hands all slid
+while they were reading a cell.
+
+**Now:** in a box the learner types into — a chart cell, a Pensum A ending — the
+"?" is a toggle that shows *that box's own form inside the box* and takes it
+away on the next press. No panel, no growth, no scroll. The rule it rests on:
+
+> **A form only being looked at is not an answer.** The box holds the form and
+> `peeked` holds the learner's writing; every reader goes through `valueOf`, so
+> a shown form is not graded, does not make an empty chart gradeable (M-5), is
+> not painted green on blur or on Enter, and is put back before the item is
+> submitted. The box is `readOnly`, not disabled, so it keeps its place in the
+> tab order and Alt+H still puts the form away.
+
+Unchanged deliberately: **Always show** still hands out the reasons and not the
+answers, so a peek is offered only when the learner presses for a hint; a
+**given** cell (§12) already shows its form, so its hint keeps the panel and the
+why; a **bank**, **order** or **match** box is not typed into and keeps its row.
+
+### 17.2 The pointer dictionary asks the pointer, not the device
+
+`matchMedia('(hover: hover) and (pointer: fine)')` describes only the *primary*
+input. A Windows laptop with a touchscreen answers "coarse, cannot hover" with a
+mouse plugged into it, and the feature was simply off for the learner who asked
+for it. The guard reads `pointerType` off a `pointerover` event instead
+(`app/js/hovergloss.js`), so one machine answers a mouse and ignores a finger.
+Never reintroduce a media query here; `tests/grammar.hover.test.mjs` holds it.
+
+### 17.3 A control may not move between mousedown and mouseup
+
+Found live, and it made 17.1 unusable in the ordinary case. `.g-cellmark` was
+`display: none` while empty, so judging a cell on blur gave it a box and the
+cell's own "?" — which sits after it — jumped 15.4px (13px for a pensum blank).
+Pressing "?" straight from the box you were typing in therefore *missed*. The
+mark now keeps its place from the start in both typed boxes.
+
+**The general rule:** a control the learner reaches from inside an input must
+not move when that input is judged on blur. Reserve the space; do not let a
+mark appear into the flow beside a button.
