@@ -2063,3 +2063,105 @@ Known and deliberately left:
    catalogue but still drive the print charts.
 4. Three written sentences (two in adverbs, one in ablative-accompaniment) and
    the weaker banks still fall back to a sibling sentence of the same skill.
+
+---
+
+## 16. The live QA audit, 2026-09-11
+
+An independent agent walked the running section — every surface, every control,
+at 375, 768 and 1440 — and reported **34 findings: 3 critical, 9 major, 22
+minor**, report-only, fixing nothing. Four agents then fixed them in isolated
+worktrees split by file ownership, and every fix was re-verified in a browser
+before it was merged, not from its diff.
+
+### What the audit confirmed was already right
+
+The two faults fixed just before it were real fixes: tapping the second word of
+a two-word focus is accepted and lights both, and ablative absolute teaches its
+own named sentences at every step. No console error appeared in the whole
+walkthrough. Most of §§1–13 passed on the first reading — the ten-item check
+and its result page, the same-session re-test, the reading tie-in, the mixed
+set's interleave, the scaffold switch and its memory, the print guard.
+
+### The three critical faults, all in the generated sentences
+
+Roughly one bank sentence in ten was absurd Latin. `suus` was attached between
+two people with no relation that admits it; adjectives were attached to nouns
+they cannot describe; and the `cum` narrative opened `Cum X cum Y`. Each is now
+a rule in `generate_sentences.py` reading data in `sem.json` — `REL` says who
+can own whom, an adjective frame says what it may not describe and of which
+gender, and a clause the conjunction `cum` introduces may not carry a `cum`
+phrase. **414 → 0** across all 10,186 sentences, with no bank thinned.
+
+### The rest, by what they turned out to be
+
+Several findings were not what they looked like:
+
+- **A question asking for words, answered with labels** (N-3) read as bad lesson
+  prose. It was the engine: a `recognise` item picks one of two shapes on a coin
+  toss, each shape words itself correctly, and a teaching step then overwrites
+  the wording without choosing the shape. **79 of 87** word-questions got the
+  wrong shape. `askWantsWord` now reads the step's own wording and settles it;
+  120 of 161 checks are decided by their wording, 41 with no wording of their
+  own keep the toss, **0 wrong**. No lesson prose changed.
+- **A declared check word silently dropped** (N-15) was the glossary listing an
+  adjective before the noun of the same spelling, so the chart resolved a
+  reading with no such cell and `continue`d in silence. `entryFor` now keeps
+  looking for a reading that can answer the cells asked, and a dropped word
+  warns instead of vanishing.
+- **An empty table was gradeable** (M-5), spending the one attempt and printing
+  the whole answer key. Check now waits for one filled cell and says why — and
+  refuses a scripted submit, not merely a click.
+- **The service worker never installed for a signed-out visitor** (found while
+  fixing M-2..M-6). Registration was the last line of `boot()`, behind the
+  sign-in gate and every await after it, so the shell that draws the sign-in
+  form cached nothing and any boot error left the device with no worker at all.
+  It is fired at the top of `boot()` now, never awaited. The fixture harness
+  still registers none, deliberately: its responses are the fixture's.
+
+Also closed: a chart retry keeps the cells that were right (N-6); the chapter
+filter offers every chapter, not only the five-gapped list of chapters that
+introduce a table (N-8); the lede counts what the filter shows (N-9); an
+undownloaded bank says so instead of promising sentences it does not have
+(N-13); both words of a two-word focus light in a *check*, as they already did
+in the opener (N-16); `#/grammar` is a real route (N-20); "All chapters" leaves
+the chapter page instead of covering it (N-21); Stats and Progress each name the
+population they count, because they genuinely count different ones (N-22); a
+plural subject no longer fights with one sword (M-8); a purpose clause no longer
+goes out into a room, carries an ass, or sends a herd through a window (N-17); a
+result clause's verb of fearing has something to fear (N-18); and `fēmina`,
+`vīrus` and `deus` have the macrons and the case their own tables print, along
+with 261 dictionary lines whose 1st-conjugation perfect had lost its (N-2, N-19).
+
+### The copyright gate was scanning a tenth of what is public
+
+The gate read `app/`, because that is what GitHub Pages serves. The repository
+is public, so `pipeline/`, `tests/`, `docs/` and the root documents are
+published just as surely — and four of them carried the book, from the first
+commit. `pipeline/README.md` and `CONTRACT.md` printed a line of the book's
+Latin beside the user's own English as worked examples; a question fixture gave
+three questions a full book sentence as an answer, which also breaks the rule
+that an answer may not repeat two words of the sentence it refers to. All are
+our own wording now. The walk comes from `git ls-files`, so a newly tracked file
+is covered the day it is added and nothing gitignored is ever read. **The
+history still holds the leak; removing it needs a rewrite and is not done.**
+
+### Left open, deliberately
+
+1. **N-10** — a catalogue whole-table drill gives away the cells its naming
+   skill teaches. §12's "the cell a step is teaching" is a step's rule, and a
+   catalogue table is not a step but the whole table the learner chose. Recorded
+   in §12 with the case against it.
+2. **N-16's other half** — both words of a two-word focus now light, but
+   `accept` is still one index, so tapping the other half is judged wrong. A
+   data judgement, untouched.
+3. **`elegiac-couplet` and `prosody-scansion`** have `parse_filter: null`, so
+   their 8 `recognise` checks build no item at all. Pre-existing.
+4. **Deck drift** — rebuilding the vocabulary decks moves `ōdī` from chapter 27
+   to 12 and reorders some rows. Not imported; reconcile separately.
+5. **A macron class needing a Latinist** — 156 later principal parts still drop
+   a macron the present stem shows, and it cannot be told mechanically from the
+   many places a perfect legitimately shortens.
+6. **`Īlion`** — the catalogue chip is right and the glossary lemma is short;
+   only a glossary rebuild fixes it, and that builder reads Supabase-only
+   sources. Named in `test_build_paradigm_catalogue.py` rather than passed over.
