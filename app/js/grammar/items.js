@@ -1413,9 +1413,42 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     }
     return out;
   };
-  /** The scanner's candidate for a written sentence's focus word, made from the word's own paradigm. */
+  /**
+   * The scanner's candidate for a written sentence's declared focus, at one index. Two routes, in order: the
+   * dictionary's own parse of the printed form (which is all an adverb or any word with no table can offer),
+   * then the word's paradigm (for the forms the glossary does not key). Null when neither satisfies the skill.
+   */
+  const resolveAt = (unit, sk, idx) => {
+    const toks = wordsOf(unit.la);
+    if (idx < 0 || idx >= toks.length) return null;
+    const filters = filterOf(sk);
+    if (!filters.length) return null;
+    const k = featureKey(sk);
+    const tok = toks[idx];
+    const made = (entry, parse, value, values) => ({ unit, token: tok, index: idx, entry, parse, ambiguous: false, settled: true, values: [...values], ambKey: k, value, gold: null, verified: true });
+    // 1 · the dictionary. A filter that only names the entry (`{pos: 'ADV'}`) is satisfied by the entry alone,
+    // so a word with no parses at all still answers it — that is the whole of what an adverb has.
+    for (const e of lookup(tok.text)?.entries ?? []) {
+      if (e.enc) continue;
+      const ps = (e.parses || []);
+      const values = new Set();
+      let hit = null;
+      for (const p of (ps.length ? ps : [{}])) {
+        const v = featureValue(p, k, e, sk);
+        if (v) values.add(v);
+        if (!hit && filters.some((x) => parseMatches(p, x) && entryAllowed(e, x))) hit = { p, v };
+      }
+      if (hit) return made(e, hit.p, hit.v, values);
+    }
+    return resolveFromTable(unit, sk, idx);
+  };
+  /** The focus of a written sentence: whichever word of the declared span the skill's own filter can settle on. */
   const resolveFocus = (unit, sk, written) => {
-    const idx = focusIndex(written);
+    for (const idx of focusSpan(written)) { const made = resolveAt(unit, sk, idx); if (made) return made; }
+    return null;
+  };
+  /** The candidate made from the word's own paradigm, for the forms the glossary does not key. */
+  const resolveFromTable = (unit, sk, idx) => {
     if (idx < 0 || !paradigm) return null;
     const toks = wordsOf(unit.la);
     const t = toks[idx];
@@ -1448,9 +1481,11 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
   /** After every scan of a written sentence: the declared focus is settled if found, and made from its paradigm if not. */
   const augment = (unit, sk, found) => {
     const written = byId.get(unit.id);
-    const idx = focusIndex(written);
-    if (idx < 0) return found;
-    if (found.some((c) => c.index === idx)) return found.map((c) => (c.index === idx ? { ...c, ambiguous: false, settled: true } : c));
+    const span = focusSpan(written);
+    if (!span.length) return found;
+    // A word of the declared span that the scanner already found is settled by the declaration: the author
+    // said what this sentence is teaching, so the reading is not open.
+    if (found.some((c) => span.includes(c.index))) return found.map((c) => (span.includes(c.index) ? { ...c, ambiguous: false, settled: true } : c));
     const made = resolveFocus(unit, sk, written);
     return made ? [...found, made] : found;
   };
