@@ -28,3 +28,8 @@ data/gloss-abbreviations.json
 data/build/pictures/
 data/pictures-overrides.json
 data/shelf-notes-*
+
+# scratch and tool output, never content
+tmpcheck/
+.playwright-mcp/
+QA-REPORT.md
