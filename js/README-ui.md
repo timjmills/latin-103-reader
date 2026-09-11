@@ -1841,3 +1841,110 @@ wins — every stock word resolves to its own table), `createCatalogueItems`
 run (`createCatalogueDrill`) logs under the first skill that names the table
 **only while that skill is in the rotation** — the run says whether it counts
 — and its items carry no key, so they never enter "redo what was wrong".
+
+## The QA audit's behaviour findings, fixed (2026-09-11)
+
+The live audit of the teaching rebuild (`QA-REPORT.md`, gitignored) left ten
+findings inside `app/js/**`. All in `js/grammar/` (`items.js`, `session.js`,
+`store-grammar.js`, `ui.js`), `js/main.js` and `app/sw.js` (v50), with
+`tests/grammar.qa-logic.test.mjs` holding each one and the live pass in
+`qa/logic-fix/`. Nothing under `app/css/`, `pipeline/` or `app/data/` is
+touched, and no new CSS class is invented that the stylesheet does not
+already carry (`.g-chart__needone` rides on `.g-quiet`).
+
+### An empty table is not an attempt (M-5)
+
+A chart is **one attempt** (§3), and Check was pressable on twelve blank
+cells: one stray click scored the attempt wrong and printed the whole answer
+key. `chartInput` now keeps a `filledAny()` over its editable boxes — Check
+is disabled until one of them has something, a `.g-chart__needone` line says
+why (named by the button's `aria-describedby`, hidden the moment the button
+comes alive), and **the submit handler refuses too**, so Enter, an assistive
+technology or a script cannot get past the button. `inlineInput` (Pensum A)
+had the identical hole and takes the identical guard. Enter is unchanged:
+`boxKeys` still walks to the next empty box until every one is full.
+
+### Lemma axes and cell axes are different things (M-6, N-4)
+
+`narrowCells` keeps a cell only when its id carries a slot for every axis
+named. `paradigms.json` sets `noun_gender_in_cell_id: false`, so handing it
+the **gender** chip dropped every cell a noun table has and "practise one
+cell across words" answered *"No cell fits these axes."* — the route was
+dead. `createCatalogueItems` now exposes **`splitAxes(table, axes)`** (the
+table's own `axes[].scope` decides; an undeclared axis reads as a cell axis)
+and **`lemmaFits(table, axes, word)`** (a word that says nothing about an
+axis is kept, so a library word whose gender the chip cannot know is never
+silently dropped). `renderTable` passes `picked.cell` to `narrowCells` and
+the whole axes object to `stockWords`. The chosen word joins — and leads — a
+drill only when it answers the lemma axes, and the prose names the word the
+drill will really lead on (N-4: with *masculine* chosen the drill still led
+on feminine `īnsula` and said so).
+
+### The redo shelf fills (M-3)
+
+`sentenceItem` took `key: null` for every item, step check and drawn item
+alike, so the whole rebuilt Learn / drill / unlimited path logged
+`item_key: ''` and nothing could ever reach "redo what was wrong". Now:
+
+- `sentenceItem({ keyed: true })` — passed by `createSkillDraw.blockedItem`,
+  which is the blocked ten, "Just drill it" and unlimited practice — gives a
+  **written** sentence's item the generator's own key with `w:` in front
+  (`writtenKey` / `isWrittenKey` / `bareKey` in items.js). A step's check
+  stays keyless (it is a moment in the step), a **generated** sentence stays
+  keyless (§11b: a bank is re-drawn, not re-addressed), and a chart over
+  stock words stays keyless (its words are drawn, not named).
+- `createTeachItems.itemByKey(key, { kind, stage })` rebuilds that exact item
+  from the skill's own sentences, and answers null when it has gone.
+- `createPractice` / `createRedo` take **`rebuild(slot)`**, asked first for a
+  named slot and falling through to the library generator as before.
+  `renderRedo` is `async`: it loads `teachItemsOf` for the skills that
+  actually have a `w:` miss (usually one) and hands the hook in.
+- `store-grammar` adds **`countUnnamedMissed`** — wrong answers carrying no
+  key, one row per answer, because there is no item to collapse them onto.
+
+The wording follows the data. "Nothing to redo — everything you have missed
+has since been answered right" is said only when something *was* missed and
+has since been put right; a profile with nothing missed is told that, and a
+profile whose misses were generated sentences, catalogue tables or lesson
+steps is told those are re-drawn rather than offered back. Three places print
+it: Practice setup's fifth choice, `renderNothingToRedo`, and a skill's
+history page.
+
+### Learn resumes where it was (M-2)
+
+`createLearn.startSteps({ at, onStep })` opens the run on a step (through the
+runner's own `resume`, clamped to the last one) and reports the step on
+screen. `renderLearnStart` keeps it at `localStorage['l103.grammar.learn']`
+as `{ skill, step, at }` beside the chapter-set `{ skill, seen }`, and
+reopens there: `step >= steps.length` means the steps are behind the learner
+and the ten is where they were. Passing the ten clears it, as before.
+
+### A blank's options say nothing by their shape (M-4)
+
+The right option is lifted from the sentence, where a word that opens it is
+capitalised; the three distractors come from the paradigm, which prints them
+lower case — so `mīlitī / Mīlite / mīlitibus / mīlitem` scored 100 % for a
+learner who knows no Latin. `matchCapital(like)` (items.js, pure) shapes
+every distractor like the answer. Grading is untouched: `normaliseAnswer`
+folds case before anything is compared.
+
+### The service worker no longer waits for a sign-in
+
+`registerServiceWorker()` was the last line of `boot()`, behind the Supabase
+gate and behind every `await` after it. The shell the worker caches is what
+shows the sign-in form, so a first-time visitor who stopped at the form had
+nothing cached, and a boot that threw anywhere left the device with no worker
+at all. It is now fired (never awaited) **before** the gate, so it still
+costs the first paint nothing. **Fixture mode is unchanged and registers
+none**, deliberately: its responses are the fixture's, and a worker installed
+from it would serve them to the real app on the same origin.
+
+### Smaller ones
+
+- **N-5** the scaffold note on a table drill is drawn from the cells that
+  table was actually given, not from the switch — after a retry the two
+  differ, and the note used to contradict the caption beneath it.
+- **N-9** the catalogue lede counts the tables the filter left on screen.
+- **M-9** the Practice tab's hint copy no longer promises that "a hint never
+  spells the answer"; it says that the last step, "Show this form", gives
+  that one box its answer and marks the box hinted.
