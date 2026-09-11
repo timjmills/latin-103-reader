@@ -225,6 +225,16 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
    so it sits a little apart from the four — a rule, not a badge or a colour. */
 .g-preset--missed { margin-top: var(--s-2); border-top-width: 2px; }
 .g-select { min-height: 40px; max-width: 100%; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: var(--ui-md); }
+/* "What goes in the mix": the four population toggles in the map's own filter pattern, with the All / None
+   pair beside them. One flow line, so on a phone the pair wraps under the chips instead of squeezing them. */
+.g-mix { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
+.g-mix .g-filter { flex: 0 1 auto; margin-left: calc(-1 * var(--s-2)); }
+/* "All or none" is one control with two ends, not two buttons: neither end stays pressed, so it takes the
+   segmented shell without the pressed state the size and view switches use. */
+.g-seg--allnone { flex: none; }
+.g-seg--allnone .g-seg__btn { min-height: 36px; min-width: 3rem; font-size: var(--ui-sm); }
+.g-mix__empty { color: var(--danger); }
+@media (pointer: coarse) { .g-seg--allnone .g-seg__btn { min-height: var(--tap); } }
 
 /* ------------------------------------------------------------ runner */
 .g-run { display: grid; gap: var(--s-4); }

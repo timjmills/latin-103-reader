@@ -177,6 +177,24 @@ export function addToPractice(s, now = Date.now()) {
   return { ...cur, state: 'practising', stage: Math.max(1, cur.stage), stability_days: Math.max(STABILITY_FLOOR, cur.stability_days), due_at: iso(now), updated_at: iso(now) };
 }
 
+/**
+ * "Take out of mixed practice": the exact undo of `addToPractice`, and the
+ * "none" half of the map's add-all / take-all-out pair. The row leaves the
+ * rotation — `inRotation` is false, so no mixed session reaches it — and
+ * keeps **everything it has learned**: stage, stability, due_at, last_at,
+ * streak, successes and failures all stand, so adding it back later comes
+ * back at the spacing it had rather than at half a day. Nothing is deleted
+ * here; `resetSkill` is the destructive one and stays that way. A row not in
+ * the rotation (new, learning, lapsed) is returned untouched — taking a
+ * half-finished Learn run out of a mix it was never in would only throw the
+ * run away. Pure.
+ */
+export function removeFromPractice(s, now = Date.now()) {
+  const cur = asState(s, now);
+  if (!inRotation(cur)) return cur;
+  return { ...cur, state: 'new', updated_at: iso(now) };
+}
+
 /** The Learn criterion over the last 10 learn-mode attempts: ≥ 6 correct across ≥ 2 kinds. Pure. */
 export function learnCriterion(attempts, { window = LEARN_WINDOW, needed = LEARN_NEEDED, kinds = LEARN_KINDS } = {}) {
   const recent = (attempts || []).slice(-window);
@@ -222,21 +240,40 @@ const confusionWeight = (map, a, b) => (map?.get(`${a}|${b}`) ?? 0) + (map?.get(
 /**
  * The skills a session draws from, in priority order for the preset.
  * `states`: Map skill → row; `skills`: Map id → skill definition.
+ *
+ * `unstudied` is the Practice setup's "Include what you have not studied"
+ * (2026-09-11): without it a mixed session can only reach a row the learner
+ * has already put in the rotation, so a skill or a chapter set that has never
+ * been opened can never come up, however much they want it today. With it,
+ * every id in `skills` that has no row at all — or a row still marked `new` —
+ * joins the candidates carrying a fresh row (stage 1, no history). It is
+ * **appended after** everything in the rotation, and shuffled among itself, so
+ * the ordering the scheduler already has still decides first and untouched
+ * material fills what is left rather than crowding out what is due. A row in
+ * Learn, or a lapsed one, is deliberately not swept in: the first has a run
+ * going that a practice answer would end, the second is asked for by name
+ * through Re-learn or "Practise this skill".
  */
-export function orderCandidates({ states, skills, preset, currentWeek = [], now = Date.now(), rand = Math.random, oneSkill = null }) {
+export function orderCandidates({ states, skills, preset, currentWeek = [], now = Date.now(), rand = Math.random, oneSkill = null, unstudied = false }) {
+  const untouched = (id) => { const r = states.get(id); return !r || asState(r, now).state === 'new'; };
+  const fresh = unstudied ? shuffle([...skills.keys()].filter(untouched).map((id) => newState(id, now)), rand) : [];
   // A blocked set on one skill is asked for on purpose (a lapsed row included: "Practise this skill" re-enters it), so decay does not apply there.
-  if (preset === 'one-skill') return [...states.values()].filter((s) => s.skill === oneSkill && inRotation(s) && skills.has(s.skill));
+  if (preset === 'one-skill') {
+    const picked = [...states.values()].filter((s) => s.skill === oneSkill && inRotation(s) && skills.has(s.skill));
+    return picked.length ? picked : fresh.filter((s) => s.skill === oneSkill);
+  }
   const rows = [...states.values()].map((s) => decay(s, now)).filter((s) => inRotation(s) && skills.has(s.skill));
   const due = rows.filter((s) => isDue(s, now)).sort((a, b) => overdueRatio(b, now) - overdueRatio(a, now) || ms(a.due_at) - ms(b.due_at));
   const rest = rows.filter((s) => !isDue(s, now)).sort((a, b) => ms(a.due_at) - ms(b.due_at));
-  if (preset === 'even') return shuffle(rows, rand);
+  // "Even mix" says random across everything in the mix, and means it: untouched material is shuffled in with the rest.
+  if (preset === 'even') return shuffle([...rows, ...fresh], rand);
   if (preset === 'this-week') {
     const cur = new Set(currentWeek);
-    const week = rows.filter((s) => cur.has(s.skill));
-    const others = [...due, ...rest].filter((s) => !cur.has(s.skill));
+    const week = [...rows, ...fresh].filter((s) => cur.has(s.skill));
+    const others = [...due, ...rest, ...fresh].filter((s) => !cur.has(s.skill));
     return [...shuffle(week, rand), ...others];
   }
-  return [...due, ...rest];   // review-heavy (default)
+  return [...due, ...rest, ...fresh];   // review-heavy (default)
 }
 
 /**
@@ -266,11 +303,16 @@ export function orderCandidates({ states, skills, preset, currentWeek = [], now 
  * at or before the learner's chapter is equally fair game (`chapterMode`).
  * A skill with nothing at or before it still reaches outward exactly as
  * chapter.js has always done, and the item says so.
+ *
+ * `unstudied` widens the candidates to material the learner has never opened
+ * — see `orderCandidates`. Which populations reach this function at all (the
+ * grammar skills, a chapter's questions, its vocabulary, its pensa) is the
+ * caller's: it hands in the `skills` map it wants mixed.
  */
-export function buildSession({ states, skills, confusions = null, preset = 'review-heavy', currentWeek = [], size = 10, now = Date.now(), seed = Date.now(), oneSkill = null, prior = null, chapter = null, currentWeekChapter = null }) {
+export function buildSession({ states, skills, confusions = null, preset = 'review-heavy', currentWeek = [], size = 10, now = Date.now(), seed = Date.now(), oneSkill = null, prior = null, chapter = null, currentWeekChapter = null, unstudied = false }) {
   const rand = rng(seed);
   const n = size == null ? 10 : Math.max(1, size);
-  const ordered = orderCandidates({ states, skills, preset, currentWeek, now, rand, oneSkill });
+  const ordered = orderCandidates({ states, skills, preset, currentWeek, now, rand, oneSkill, unstudied });
   if (!ordered.length) return [];
   const byId = new Map(ordered.map((s) => [s.skill, s]));
   const cmap = confusions instanceof Map ? confusions : confusionMap(confusions);

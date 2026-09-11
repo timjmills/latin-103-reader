@@ -11,6 +11,8 @@
 //   setSkills({ questions, vocab, pensa })    → Map id → pseudo-skill
 //   createSetItems({ sets, units, pool, rand }).generate({ skill, kind, stage }) → item | null
 //   matchQuestion(typed, answers, sentence)   answer matching: macron-stripped, case-insensitive, the full sentence accepted
+//   POPULATIONS / populationOf / normalisePopulations / filterPopulations
+//   mixNote(chosen, offered) / mixTitle(chosen, offered)   what a mixed set mixes, and the copy that says so
 //   resolveRef(la, ref) / resolveList(la, list)  a question's `{ span }` / `{ parts }` references → the Latin they stand for
 //
 // A question set's answers and choices are references into the sentence the
@@ -254,6 +256,71 @@ export function setsOfChapter(sets, chapter) {
 }
 /** Every chapter with a set, ascending. Pure. */
 export const setChapters = (sets) => [...new Set([...sets.values()].map((s) => s.chapter))].sort((a, b) => a - b);
+
+/* --------------------------------------------- what a mixed set may mix */
+/**
+ * The four populations a mixed session draws from, in the order the Practice
+ * setup offers them. They are not a new taxonomy: the first is the book's
+ * grammar skills (`skills.json`), and the other three are exactly the chapter
+ * sets `setSkills` above builds — `set` on the pseudo-skill says which. The
+ * learner turns each on or off, so a mix can be all four, or two, or one kind
+ * alone.
+ */
+export const POPULATIONS = Object.freeze(['skills', 'questions', 'vocab', 'pensum']);
+/** What each is called on screen — the map's own words for the same rows (ui.js SET_ROW_LABEL). */
+export const POPULATION_LABEL = Object.freeze({ skills: 'Skills', questions: 'Questions', vocab: 'Vocabulary', pensum: 'Pensa' });
+/** …and as a phrase a sentence can carry: "only the vocabulary decks and the pensa". */
+export const POPULATION_PHRASE = Object.freeze({ skills: 'the grammar skills', questions: "the chapters' questions", vocab: 'the vocabulary decks', pensum: 'the pensa' });
+
+/** Which population a skill belongs to: a chapter set says so in `set`, everything else is a grammar skill. Pure. */
+export function populationOf(skill) {
+  const set = skill && typeof skill === 'object' ? skill.set : null;
+  return POPULATIONS.includes(set) ? set : 'skills';
+}
+/**
+ * The learner's choice as a clean list, in POPULATIONS order and never naming
+ * a population this library has nothing for. `null` / `undefined` (nothing
+ * chosen yet) means every population offered; an empty array is a real choice
+ * and stays empty, so "none" survives a reload like any other setting. Pure.
+ */
+export function normalisePopulations(value, offered = POPULATIONS) {
+  const can = POPULATIONS.filter((p) => (offered ?? POPULATIONS).includes(p));
+  if (value == null) return can;
+  const list = Array.isArray(value) ? value : Object.entries(value).filter(([, on]) => on).map(([p]) => p);
+  return can.filter((p) => list.includes(p));
+}
+/** The skills of `skills` (Map id → skill) whose population the learner chose. Pure. */
+export function filterPopulations(skills, chosen, offered = POPULATIONS) {
+  const keep = new Set(normalisePopulations(chosen, offered));
+  return new Map([...skills].filter(([, s]) => keep.has(populationOf(s))));
+}
+const andList = (parts) => (parts.length <= 1 ? parts.join('') : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`);
+/**
+ * What a mixed set really holds, said in one sentence — the line the Practice
+ * setup shows under the toggles and the session header repeats. A header that
+ * says "Practice" over a set of nothing but vocabulary is a lie the learner
+ * only finds out item by item, so the copy names the populations that are in
+ * and, when any is missing, the ones that are out. Pure.
+ */
+export function mixNote(chosen, offered = POPULATIONS) {
+  const can = POPULATIONS.filter((p) => (offered ?? POPULATIONS).includes(p));
+  const on = normalisePopulations(chosen, can);
+  const off = can.filter((p) => !on.includes(p));
+  if (!on.length) return 'Nothing is in the mix. Turn at least one of these on.';
+  if (!off.length) return `Everything: ${andList(can.map((p) => POPULATION_PHRASE[p]))}.`;
+  return `Only ${andList(on.map((p) => POPULATION_PHRASE[p]))} — ${andList(off.map((p) => POPULATION_PHRASE[p]))} left out.`;
+}
+/**
+ * The same choice as a few words for a session's own title ("Vocabulary +
+ * Pensa only"), or '' when the mix is everything there is and the title needs
+ * no qualifier. Pure.
+ */
+export function mixTitle(chosen, offered = POPULATIONS) {
+  const can = POPULATIONS.filter((p) => (offered ?? POPULATIONS).includes(p));
+  const on = normalisePopulations(chosen, can);
+  if (!on.length || on.length === can.length) return '';
+  return `${on.map((p) => POPULATION_LABEL[p]).join(' + ')} only`;
+}
 
 /* ------------------------------------------------------ answer matching */
 /** The word tokens of a Latin string, macron-stripped and lower-cased. Pure. */
