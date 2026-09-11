@@ -437,7 +437,60 @@ re-applied on every run — labels missing from the scan's text layer and the
 English captions are filled in there. `upload_pictures.py` writes
 `data/build/sql/pictures-wNN.sql` (delete + insert for the first auth user, the
 seed_sql.py pattern) and copies the PNGs to the private bucket
-`pictures/<user-id>/week-NN/<file>`.
+`pictures/<user-id>/week-NN/<file>`. Every CLI call it makes is made on its own
+and retried on a transient pooler failure (ECIRCUITBREAKER / SASL / EOF), so it
+can be run while another job is uploading.
+
+### The review shelf (Familia Romana I–XXIV, weeks 101–124)
+
+```
+python pipeline/extract_pictures.py shelf        # chapters I–XXIV → weeks 101–124
+python pipeline/extract_pictures.py shelf 2 9    # selected chapters (--debug saves the ink masks)
+python pipeline/upload_pictures.py shelf --user-id <auth user uuid>
+```
+
+Chapters I–XXIV are the most heavily illustrated pages in the book — the drawings
+are how Ørberg teaches the vocabulary — so the shelf gets them too. Shelf mode is
+a second path through the same scan: the units come from
+`data/build/review-NN.json` (`review_shelf.py`), whose page set, column geometry
+and line numbering are the ones used here, so a picture's printed line names a
+shelf unit directly. Ids are `rNN/pPPP-k`, output goes to
+`data/build/pictures-week-1NN.json`, `data/build/pictures/week-1NN/` and
+`data/build/pictures-SHELF-REPORT.md`; storage paths are
+`pictures/<user-id>/week-1NN/<file>`.
+
+Two things differ from the course path.
+
+**Crops that do not clip.** Detection keeps a second ink mask with the text still
+on it. Each box is shrunk to the drawing's real ink and then *grown* while ink
+still touches an edge (up to 0.7 cm), so a stroke can never be sliced. The crop
+then unions in the picture's own labels — including the small capitals Ørberg
+letters over his figures (IVLIVS, MEDVS) — pulls its edges off the column rule
+and off any running-text or gloss word it would show half of, and finally whites
+out whatever printed text still stands inside it (a gloss set level with a margin
+figure). Anything that could not be resolved is listed in the report as an
+override case rather than shipped.
+
+**Placement by what the drawing is doing.** A drawing in the main column stands
+*above* the text it illustrates, so it takes the first numbered line under it; a
+drawing in the gloss column stands *beside* its word, so it takes the line level
+with it. The line names the sentence printed on it (for a main-column picture,
+the sentence that starts there), and a labelled picture is then moved to a
+neighbouring sentence that uses the label's headword — the same stem preference
+`attach_margins.py` uses for the glosses.
+
+Skipped as furniture: the running head, the page number, the chapter title, the
+vertical column rule and the rule under the running head; everything below the
+GRAMMATICA LATINA / PENSVM heading (the shelf's text stops there too); and the
+margin's rules — the family tree of cap. II, the paradigm boxes — which are type
+and rules, not drawings. Ørberg's declension and conjugation tables are set
+entirely in type, so they never reach the ink mask at all. This edition prints no
+running-head ornaments.
+
+`data/pictures-overrides.json` takes two extra keys in shelf mode alongside
+`caption` / `caption_en` / `unit_id`: `"skip": true` leaves a picture out
+altogether, and `"rect": [x0, y0, x1, y1]` (page points) replaces the crop with a
+hand-measured one. Use them rather than shipping a bad image.
 
 ## Pensa: Ørberg's PENSVM A / B / C from the scan
 

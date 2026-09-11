@@ -108,6 +108,7 @@ TENSES = {"pres", "impf", "fut", "perf", "plupf", "futperf"}
 MOODS = {"ind", "subj", "imper", "inf", "ptc"}
 VOICES = {"act", "pass"}
 PERSONS = {"1sg", "2sg", "3sg", "1pl", "2pl", "3pl"}
+DEGREES = {"pos", "comp", "sup"}  # adjective tables, §4a: degree.case.number.gender
 CHECK_KINDS = {"recognise", "parse", "blank", "chart", "translate", "choose"}
 
 
@@ -254,6 +255,8 @@ def cell_key_ok(key: str) -> bool:
     'imper.tense.voice.number' (paradigms.js keys those {kind: 'imper', tense,
     voice, number})."""
     parts = key.split(".")
+    if parts[0] in DEGREES and len(parts) > 1 and parts[1] in CASES:
+        parts = parts[1:]  # §4a adjective cell: strip the degree, check the rest
     if parts[0] in ("supine", "gerund"):
         return len(parts) == 2 and parts[1] in CASES
     if parts[0] == "imper":
@@ -270,6 +273,13 @@ def cell_key_ok(key: str) -> bool:
     if parts[0] == "ptc":
         return len(parts) == 3 and parts[1] in TENSES and parts[2] in VOICES
     if parts[0] in TENSES:
+        if len(parts) == 5:  # §4a finite cell: tense.mood.voice.person.number
+            return (
+                parts[1] in MOODS
+                and parts[2] in VOICES
+                and parts[3] in {"1", "2", "3"}
+                and parts[4] in NUMBERS
+            )
         return (
             len(parts) == 4
             and parts[1] in MOODS

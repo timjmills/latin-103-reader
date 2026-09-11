@@ -14,7 +14,9 @@ What it does
      tokens are normalised (macrons off, v→u, j→i, lowercase, punctuation off)
      and matched with difflib; each sentence takes the time of its first matched
      word. Sentences with no confident match are interpolated between their
-     neighbours and flagged, never silently guessed.
+     neighbours and flagged, never silently guessed. The Colloquia shelf's
+     reader uses the restored pronunciation and needs a looser key — see
+     fold() and key_for(); the alignment records which key it used.
   3. Writes one JSON with the two views the front end wants:
        passage_view  — one entry per block (Ørberg paragraph / [n] block): text,
                        start, end, and the timed words inside it
@@ -64,6 +66,36 @@ def norm(tok: str) -> str:
     return t
 
 
+def fold(tok: str) -> str:
+    """`norm()` plus the four foldings a *restored classical* reader needs.
+
+    The Colloquia Personarum readings (weeks 201–224) are by a different reader
+    from the Familia Romana ones, and he uses the restored pronunciation:
+    Whisper, which writes what it hears, hands back *Iūlius* as "Yulius",
+    *Dāvus* as "Dawus", *cum cane suō* as "kum kane suo", and the long vowels
+    and geminates as single letters (*Iūliī* → "Yuli"). None of that matches
+    `norm()`'s key, so the token stream and the text agreed about only 24 % of
+    colloquium IX's words and half its turns found no anchor.
+
+    Folding y→i, w→u, k→c and every repeated letter to one takes that
+    agreement to 46 % (colloquium IV 34 → 52 %, I 69 → 79 %, II 62 → 74 %).
+    Measured rule by rule, all four earn their place and the digraphs (ch→c,
+    ph→f, th→t) earn nothing, so they are not folded. The cost is that a few
+    genuinely different words become one key — colloquium I is a spelling
+    lesson and *Syria* and *Siria* fold together — which is why this is the
+    Colloquia shelf's key and **not** the library's: weeks 1–14 and 101–124
+    were aligned under `norm()` and keep exactly the rows they were verified
+    with. `key_for()` is the only place the choice is made.
+    """
+    t = norm(tok).replace("y", "i").replace("w", "u").replace("k", "c")
+    return re.sub(r"(.)\1+", r"\1", t)
+
+
+def key_for(n: int):
+    """The token key the week's recording is aligned under; see `fold()`."""
+    return fold if n >= 201 else norm
+
+
 def words_of(text: str) -> list[str]:
     return [w for w in re.findall(r"[A-Za-zĀ-ȳāēīōūȳ]+", text)]
 
@@ -71,7 +103,11 @@ def words_of(text: str) -> list[str]:
 def week_json(n: int) -> Path:
     """The text for week n. Course weeks 1–14 are data/build/week-NN.json; the
     Familia Romana review shelf (weeks 101–124 = chapters I–XXIV) is
-    data/build/review-NN.json, built by review_shelf.py."""
+    data/build/review-NN.json, built by review_shelf.py; the Colloquia
+    Personarum shelf (weeks 201–224 = colloquia I–XXIV) is
+    data/build/collo-NN.json, built by colloquia.py."""
+    if n >= 201:
+        return BUILD / f"collo-{n - 200:02d}.json"
     return BUILD / (f"review-{n - 100:02d}.json" if n >= 101 else f"week-{n:02d}.json")
 
 
@@ -184,7 +220,7 @@ def letter_stream(hyp: list[str]) -> tuple[str, list[int]]:
 
 
 def seek(unit: dict, hyp: list[str], lo: int, hi: int,
-         cache: tuple[str, list[int]] | None = None) -> int | None:
+         cache: tuple[str, list[int]] | None = None, key=norm) -> int | None:
     """Where in hyp[lo:hi] the sentence begins, or None.
 
     Every position is scored by how well the sentence's opening letters agree
@@ -206,7 +242,7 @@ def seek(unit: dict, hyp: list[str], lo: int, hi: int,
     over ten weeks, a sentence's true opening scores 0.84 at the median and 0.73
     at the 5th percentile, while a decoy 25 words away tops out at 0.59.
     """
-    ref = "".join(t for w in words_of(unit["la"]) if (t := norm(w)))[:LOOK]
+    ref = "".join(t for w in words_of(unit["la"]) if (t := key(w)))[:LOOK]
     lo, hi = max(0, lo), min(hi, len(hyp))
     if len(ref) < 8 or lo >= hi:
         return None
@@ -236,8 +272,14 @@ def seek(unit: dict, hyp: list[str], lo: int, hi: int,
     return None
 
 
-def align(units: list[dict], words: list[dict]) -> dict:
-    """Map every unit to a start time. Returns {unit_id: {start, end, matched, source, words}}."""
+def align(units: list[dict], words: list[dict], key=norm) -> dict:
+    """Map every unit to a start time. Returns {unit_id: {start, end, matched, source, words}}.
+
+    `key` is how a token is made comparable — `norm()` for the course weeks and
+    the Familia Romana shelf, `fold()` for the Colloquia shelf's reader. Each
+    heard word carries its key as "k" for the passes below; the cached
+    transcript on disk is untouched by that.
+    """
     # Flatten the unit text into tokens with back-references.
     ref: list[str] = []
     owner: list[int] = []
@@ -245,11 +287,13 @@ def align(units: list[dict], words: list[dict]) -> dict:
     for i, u in enumerate(units):
         tok_start.append(len(ref))
         for w in words_of(u["la"]):
-            n = norm(w)
+            n = key(w)
             if n:
                 ref.append(n)
                 owner.append(i)
-    hyp = [w["n"] for w in words]
+    for w in words:
+        w["k"] = key(w["w"])
+    hyp = [w["k"] for w in words]
     cache = letter_stream(hyp)
 
     sm = difflib.SequenceMatcher(a=ref, b=hyp, autojunk=False)
@@ -280,7 +324,7 @@ def align(units: list[dict], words: list[dict]) -> dict:
             nxt = min((j for j in order if j > i), default=None)
             lo = (last_hit[prev] + 1) if prev is not None else 0
             hi = first_hit[nxt] if nxt is not None else len(hyp)
-            best = seek(u, hyp, lo, hi, cache)
+            best = seek(u, hyp, lo, hi, cache, key)
             if best is not None:
                 first_hit[i] = last_hit[i] = best
                 order = sorted(first_hit)
@@ -316,7 +360,7 @@ def align(units: list[dict], words: list[dict]) -> dict:
                         and words[first_hit[nxt]]["start"] - words[first_hit[i]]["start"] < 0.15)
             if not (late or crams or squeezed):
                 continue
-            k = seek(units[i], hyp, (last_hit[p] + 1) if p is not None else 0, first_hit[i], cache)
+            k = seek(units[i], hyp, (last_hit[p] + 1) if p is not None else 0, first_hit[i], cache, key)
             if k is not None:
                 first_hit[i] = k
                 last_hit[i] = max(k, min(last_hit[i], k + len(words_of(units[i]["la"]))))
@@ -373,7 +417,7 @@ def align(units: list[dict], words: list[dict]) -> dict:
         else:
             ends.append(words[-1]["end"] if words else starts[i])
 
-    timed = [token_times(u["la"], [w for w in words if starts[i] <= w["start"] < ends[i]], starts[i], ends[i])
+    timed = [token_times(u["la"], [w for w in words if starts[i] <= w["start"] < ends[i]], starts[i], ends[i], key)
              for i, u in enumerate(units)]
     respace(timed, {i: starts[i] for i in first_hit})
 
@@ -557,7 +601,7 @@ def _place(rows, flat, x: int, y: int, lo: float, hi: float, anchored_right: boo
         _spread(rows, flat, ks, lo, edge)
 
 
-def token_times(la: str, heard: list[dict], start: float, end: float) -> list[dict]:
+def token_times(la: str, heard: list[dict], start: float, end: float, key=norm) -> list[dict]:
     """One timed entry per word of the sentence. Words Whisper recognised (fuzzy
     match, in order) take their heard times; the rest are interpolated between
     the nearest anchors by letter count and flagged with "i": true, so the
@@ -565,7 +609,7 @@ def token_times(la: str, heard: list[dict], start: float, end: float) -> list[di
     toks = words_of(la)
     if not toks:
         return []
-    ntoks = [norm(t) for t in toks]
+    ntoks = [key(t) for t in toks]
     # Fuzzy in-order matching (tokens × heard words), greedy with a similarity floor.
     anchors: dict[int, dict] = {}
     j = 0
@@ -574,7 +618,7 @@ def token_times(la: str, heard: list[dict], start: float, end: float) -> list[di
             continue
         best_k, best_r = None, 0.0
         for k in range(j, min(j + 6, len(heard))):
-            r = difflib.SequenceMatcher(a=t, b=heard[k]["n"]).ratio()
+            r = difflib.SequenceMatcher(a=t, b=heard[k].get("k") or heard[k]["n"]).ratio()
             if r > best_r:
                 best_k, best_r = k, r
         floor = 0.75 if len(t) >= 4 else 0.9
@@ -714,7 +758,8 @@ def process(n: int, model: str, src: Path | None, do_upload: bool, user_id: str 
     else:
         words, info = transcribe(source_audio, model, quiet)
         raw.write_text(json.dumps({"words": words, "info": info}, ensure_ascii=False), encoding="utf-8")
-    al = align(units, words)
+    key = key_for(n)
+    al = align(units, words, key)
     passage_view, sentence_view = build_views(week, units, al)
     matched = sum(1 for s in sentence_view if s["matched"])
     app_rows = [{"unit_id": s["unit_id"], "start_ms": int(round(s["start"] * 1000)), "end_ms": int(round(s["end"] * 1000)),
@@ -734,7 +779,7 @@ def process(n: int, model: str, src: Path | None, do_upload: bool, user_id: str 
         },
         "transcription": info,
         "alignment": {"sentences": len(units), "matched": matched, "interpolated": len(units) - matched,
-                      "match_rate": round(matched / max(1, len(units)), 3)},
+                      "match_rate": round(matched / max(1, len(units)), 3), "key": key.__name__},
         "passage_view": passage_view,
         "sentence_view": sentence_view,
         "app_rows": app_rows,

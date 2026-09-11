@@ -4,6 +4,10 @@ upload_pictures.py — load a week's pictures into the single user's Supabase li
 
     python pipeline/upload_pictures.py 1 3 10 --user-id <auth user uuid>   # SQL + PNG upload
     python pipeline/upload_pictures.py all --sql-only                       # just write the SQL files
+    python pipeline/upload_pictures.py shelf --user-id <uuid>               # the review shelf, weeks 101–124
+
+Every CLI call is made on its own and retried on a transient pooler failure
+(ECIRCUITBREAKER / SASL / EOF), so this can run while another job is uploading.
 
 For each week it
   1. writes data/build/sql/pictures-wNN.sql — delete + insert of the rows of
@@ -26,6 +30,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 # The Supabase CLI: on Windows the launcher is supabase.cmd, which subprocess only finds by full path.
@@ -72,40 +77,73 @@ def write_sql(n: int, pics: list[dict]) -> Path:
     return out
 
 
-def run(cmd: list[str], input_text: str | None = None) -> str:
-    r = subprocess.run(cmd, input=input_text, capture_output=True, text=True, errors="replace", cwd=ROOT)
-    out = r.stdout + r.stderr
-    if r.returncode != 0 or re.search(r"\berror\b", out, re.I):
-        raise RuntimeError(f"{' '.join(cmd[:3])}…: {out.strip()[-800:]}")
-    return out
+# The pooler drops the odd connection (ECIRCUITBREAKER / SASL / EOF), the more so
+# while another job is uploading at the same time.  Every CLI call here is made
+# one at a time, and a call that fails this way is simply made again after a
+# pause — see pipeline/README.md and data/build/audio/_verify/upload_rows.py,
+# which do the same for the audio rows.
+TRANSIENT = re.compile(
+    r"ECIRCUITBREAKER|circuit breaker|SASL|password authentication failed|server login has been failing|"
+    r"connection reset|broken pipe|unexpected EOF|EOF detected|i/o timeout|timeout expired|deadline exceeded|"
+    r"connection refused|no such host|temporarily unavailable|too many connections|502|503|504",
+    re.I)
+RETRIES = 5
+RETRY_WAIT_S = 6.0
+GAP_S = 0.4          # breathing space between two CLI calls, so a burst never opens two at once
+
+
+def run(cmd: list[str], input_text: str | None = None, retries: int = RETRIES, quiet: bool = True) -> str:
+    """One Supabase CLI call, strictly on its own; retried on a transient pooler
+    failure.  Anything else is raised at once — a bad SQL file is not a hiccup."""
+    last = ""
+    for attempt in range(1, retries + 1):
+        time.sleep(GAP_S)
+        r = subprocess.run(cmd, input=input_text, capture_output=True, text=True, errors="replace", cwd=ROOT)
+        out = r.stdout + r.stderr
+        if r.returncode == 0 and not re.search(r"\berror\b", out, re.I):
+            return out
+        last = out.strip()[-800:]
+        if attempt == retries or not TRANSIENT.search(out):
+            raise RuntimeError(f"{' '.join(cmd[:3])}…: {last}")
+        if not quiet:
+            print(f"    transient failure (attempt {attempt}/{retries}), retrying in {RETRY_WAIT_S:.0f}s: {last[-160:]}",
+                  file=sys.stderr, flush=True)
+        time.sleep(RETRY_WAIT_S * attempt)
+    raise RuntimeError(f"{' '.join(cmd[:3])}…: {last}")
 
 
 def upload(n: int, pics: list[dict], sql_path: Path, user_id: str, quiet: bool) -> None:
-    run([SUPABASE, "db", "query", "--linked", "-f", str(sql_path), "-o", "json"])
+    run([SUPABASE, "db", "query", "--linked", "-f", str(sql_path), "-o", "json"], quiet=quiet)
     if not quiet:
-        print(f"  rows loaded ({sql_path.name}: {len(pics)} pictures)")
+        print(f"  rows loaded ({sql_path.name}: {len(pics)} pictures)", flush=True)
     for p in pics:
         src = ROOT / p["file"]
         if not src.exists():
             raise FileNotFoundError(f"{src} missing — re-run extract_pictures.py {n}")
         dest = f"ss:///pictures/{user_id}/week-{n:02d}/{src.name}"
         # cp refuses to overwrite: drop any previous object first (ignore "not found")
+        time.sleep(GAP_S)
         subprocess.run([SUPABASE, "storage", "rm", dest, "--linked", "--experimental"], input="y\n",
                        capture_output=True, text=True, cwd=ROOT)
-        run([SUPABASE, "storage", "cp", str(src), dest, "--linked", "--experimental"])
+        run([SUPABASE, "storage", "cp", str(src), dest, "--linked", "--experimental"], quiet=quiet)
         if not quiet:
-            print(f"  uploaded pictures/{user_id}/week-{n:02d}/{src.name}")
+            print(f"  uploaded pictures/{user_id}/week-{n:02d}/{src.name}", flush=True)
 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("weeks", nargs="+", help="week numbers or 'all'")
+    ap.add_argument("weeks", nargs="+", help="week numbers, 'all' (course weeks 1–14) or 'shelf' (review weeks 101–124)")
     ap.add_argument("--user-id", default=os.environ.get("LATIN_USER_ID"), help="auth user uuid (bucket folder); or env LATIN_USER_ID")
     ap.add_argument("--sql-only", action="store_true", help="write the SQL files, upload nothing")
     ap.add_argument("--quiet", action="store_true")
     a = ap.parse_args(argv)
-    if a.weeks == ["all"]:
-        nums = sorted(int(p.stem.split("-")[2]) for p in BUILD.glob("pictures-week-??.json"))
+    if a.weeks in (["all"], ["shelf"]):
+        # week-NN for the course, week-1NN (101–124) for the review shelf
+        nums = sorted(int(p.stem.split("-")[2]) for p in BUILD.glob("pictures-week-*.json"))
+        if a.weeks == ["all"]:
+            nums = [n for n in nums if n < 100]
+        else:
+            nums = [n for n in nums if n > 100]
     else:
         nums = [int(x) for x in a.weeks]
     if not a.sql_only and not a.user_id:
