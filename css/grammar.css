@@ -96,7 +96,16 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-chap__count { font-family: var(--face-ui); font-size: var(--ui-sm); color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .g-skills { list-style: none; margin: 0; padding: 0; }
 .g-skill { display: grid; gap: var(--s-2); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
-@media (min-width: 640px) { .g-skill { grid-template-columns: minmax(0, 1fr) auto; align-items: start; } }
+/* The title and the actions share a line only while both fit. As a two-track grid (`minmax(0, 1fr) auto`) the
+   action track took its max-content width and the title track computed to 0, so a skill with seven actions —
+   every skill that has a generated bank — printed its name one word per line over the "Start as new" button
+   (QA M-1). A wrapping flex row instead: the name keeps at least 20rem, and when the actions want more than
+   what is left they drop to their own line under it and the name takes the full column. */
+@media (min-width: 640px) {
+  .g-skill { display: flex; flex-wrap: wrap; align-items: flex-start; column-gap: var(--s-4); }
+  .g-skill__main { flex: 1 1 20rem; }
+  .g-skill__acts { flex: 0 1 auto; max-width: 100%; }
+}
 .g-skill__main { display: grid; gap: 2px; min-width: 0; }
 .g-skill__title { background: none; border: 0; padding: 0; text-align: left; font-family: var(--face-serif); font-size: 1.1rem; line-height: 1.3; color: var(--ink); cursor: pointer; border-radius: 2px; text-wrap: balance; }
 .g-skill__title:hover { color: var(--rubric-ink); }
@@ -332,10 +341,21 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-cellwrap[data-hinted="true"] .g-input--cell, .g-pensum__blank[data-hinted="true"] .g-input--end { border-bottom-style: dashed; }
 .g-match__b.is-right { border-color: var(--success); }
 .g-match__b.is-wrong { border-color: var(--rubric); }
-/* Coarse pointers: the "?" reaches the 44 px target without growing the ring itself. */
-@media (hover: none) and (pointer: coarse) {
-  .g-hintb { position: relative; }
-  .g-hintb::after { content: ""; position: absolute; inset: -50%; }
+/* Coarse pointers: the "?" reaches the 44 px target without growing the ring itself, and without taking the
+   target off its own control. The ring is 1.6rem ≈ 25.6 px and a blank declension table puts twelve of them on
+   screen, each a few pixels from a 230 px answer box, so this is the tightest pair of targets in the app. The
+   old `inset: -50%` sized the target from the ring's *padding* box: 49 px, but reaching 6.5 px back over the
+   right edge of the answer box, so a thumb aimed at the end of the box opened the hint instead. The target is
+   written out instead — 44 px tall, and 25.6 + 4 + 15 ≈ 44.6 px wide, grown mostly rightwards into the cell
+   gutter (2 × var(--s-2) of table-cell padding, so ~1 px short of the next cell's box) and only 4 px leftwards,
+   which the cell's own gap then clears. The wide variant is a labelled button in a row of its own: it grows. */
+@media (pointer: coarse) {
+  .g-cellwrap { gap: var(--s-1); }
+  .g-hintb { position: relative; margin-inline-start: var(--s-1); }
+  .g-hintb:not(.g-hintb--wide)::after {
+    content: ""; position: absolute; top: 50%; left: -4px; right: -15px; height: var(--tap); transform: translateY(-50%);
+  }
+  .g-hintb--wide { min-height: var(--tap); }
 }
 
 /* Feedback: one line, then "Why" */
@@ -373,7 +393,9 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--s-1) var(--s-4); margin: 0; font-size: var(--ui-md); }
 .g-dl dt { color: var(--ink-2); }
 .g-dl dd { margin: 0; font-variant-numeric: tabular-nums; }
-.g-table { max-width: 24rem; }
+/* The Stats history table. Kept to the element: `.g-table` is also on the catalogue's <li> rows, where a 24rem
+   cap cut every row's hairline off short of the section rule above it (QA N-7). */
+table.g-table { max-width: 24rem; }
 .g-perskill { list-style: none; margin: 0; padding: 0; }
 .g-perskill__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1) var(--s-3); align-items: center; padding: var(--s-2) 0; border-bottom: 1px solid var(--line); font-size: var(--ui-sm); }
 .g-perskill__name { display: flex; align-items: center; gap: var(--s-2); color: var(--ink); }
@@ -634,6 +656,9 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-step__say { margin: 0; max-width: 62ch; font-size: calc(var(--ui-lg) * var(--note-scale, 1)); line-height: 1.6; text-wrap: pretty; }
 .g-step__say i { font-family: var(--face-reading); font-style: italic; }
 .g-show { display: grid; gap: var(--s-2); }
+/* The paradigm a step reveals sits on the page ground, not on a white card: `.pt__scroll` defaults --pt-bg to
+   --bg-raised, which painted a white band beside the table on every teaching step (QA N-1). */
+.g-show .pt__scroll { --pt-bg: var(--bg); }
 .g-wgloss { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); font-size: var(--ui-sm); color: var(--ink-2); }
 .g-wgloss__la { font-family: var(--face-reading); font-size: 1.05em; color: var(--ink); }
 .g-wgloss__en::before { content: "— "; color: var(--ink-3); }
@@ -711,10 +736,23 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 /* The switch sits on the table, above it: the same segmented control as the setup's, one tap, no confirmation. */
 .g-scaffold { display: grid; gap: var(--s-1); justify-items: start; }
 .g-seg--scaffold .g-seg__btn { min-width: 3rem; min-height: 36px; font-size: var(--ui-sm); }
+/* Five levels abreast at 375: 36 px tall without this, the one control on the table page a thumb can miss. */
+@media (pointer: coarse) { .g-seg--scaffold .g-seg__btn { min-height: var(--tap); } }
 .g-scaffold__note { max-width: 60ch; }
 /* A wide table scrolls inside its own box on a phone; a grid item's `min-width: auto` would otherwise let the
    box grow to the table and push the whole page sideways. */
 .g-run, .g-page, .g-item, .g-chart, .g-chart .pt__scroll { min-width: 0; max-width: 100%; }
+/* The other way a table pushed the page sideways (QA M-7). `.visually-hidden` (app/css/reader.css) is
+   `position: absolute` with no offsets, so the label a given cell carries (" — genitive plural, given") was laid
+   out at the static position it would have had — and inside a 637 px table scrolling in its own box that is past
+   the right edge of a 375 px page, which widened the document by the overshoot. The utility itself is shared with
+   the reader and stays as it is; inside the grammar section two guards make it inert. First, every box that can
+   hold such a label becomes the containing block, so the label's overflow belongs to the box that scrolls rather
+   than to the page. Second, the label is pinned to that box's own corner, so wherever one appears — a caption, a
+   cell label, a verdict word — it can add nothing to any scrollable area. Both are layout-only: the box is still
+   1 px, still clipped, still read aloud in document order. */
+#grammar .pt__scroll, #grammar .g-cellwrap, #grammar .g-chart__word, #grammar .g-fb__line { position: relative; }
+#grammar .visually-hidden { inset-block-start: 0; inset-inline-start: 0; }
 /* A given cell: the form printed and greyed, not a box; its own hint beside it like a box's. */
 .g-chart__given { padding-block: 2px; background: var(--bg-chrome); }
 .g-cellwrap--given { color: var(--ink-2); }
