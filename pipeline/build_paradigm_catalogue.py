@@ -343,7 +343,7 @@ TABLES: dict[str, dict] = {
                    stock_note="puer and vir are cap. II's own examples of the missing -us; "
                               "magister, ager and liber are the three the course prints most "
                               "often, and they show the stem losing its e (magistrī, agrī)."),
-    "decl2nus": dict(part="noun", label="2nd declension neuter in -us", example="virus -ī n",
+    "decl2nus": dict(part="noun", label="2nd declension neuter in -us", example="vīrus -ī n",
                      decl=2,
                      stock=["virus"],
                      stock_note="The vulgus type: the only word of it in the library."),

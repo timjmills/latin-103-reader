@@ -15,6 +15,7 @@ the app will compute.
 from __future__ import annotations
 
 import json
+import unicodedata
 import shutil
 import subprocess
 import sys
@@ -358,3 +359,34 @@ def test_no_stock_line_drops_the_long_a_of_a_first_conjugation_verb(tables):
                 if want and p != want:
                     bad.append((t["id"], s["h"], s["lemma"]))
     assert bad == []
+
+def strip_macrons(text: str) -> str:
+    d = unicodedata.normalize("NFD", text)
+    return "".join(c for c in d if not unicodedata.combining(c))
+
+def test_a_table_example_is_spelled_like_its_own_stock_word():
+    """
+    The catalogue chip a learner sees is the table's `example`, a hand-written
+    line here; the paradigm beside it is built from the glossary's lemma. They
+    are two spellings of one word and they drifted: `decl2nus` printed
+    "virus -ī n" beside a table of `vīrus` (QA N-2). Any table whose example
+    and whose own first stock word differ by a macron alone is that fault.
+
+    `decl2g8` is the one open case, and it points the other way — the example
+    `Īlion` is right and the glossary's lemma is short, which only a glossary
+    rebuild can fix (`build_glossary.LEXEME_MACRONS`), and that builder reads
+    `source/`, which lives in Supabase. It is listed so the gate stays honest
+    about it rather than silently passing.
+    """
+    cat = json.loads((ROOT / "app" / "data" / "grammar" / "paradigms.json").read_text(encoding="utf-8"))
+    known_gap = {"decl2g8"}
+    bad = []
+    for part in cat.get("parts", []):
+        for t in part.get("tables", []):
+            example, stock = t.get("example", ""), (t.get("stock") or [])
+            if not example or not stock:
+                continue
+            lemma = stock[0].get("lemma", "")
+            if lemma and strip_macrons(example) == strip_macrons(lemma) and example != lemma:
+                bad.append((t["id"], example, lemma))
+    assert {b[0] for b in bad} <= known_gap, f"example disagrees with its own stock lemma: {bad}"
