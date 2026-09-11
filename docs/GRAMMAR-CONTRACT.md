@@ -1725,3 +1725,12 @@ promise. `pipeline/check_skill_coverage.py` fails unless every skill has:
 A skill that cannot meet a row is listed in the check's output with the
 reason, and the map shows that reason on the skill rather than a dead control.
 The check runs in the test suite, so a new skill cannot ship half-wired.
+
+**Reading tie-in wording (2026-09-11).** `app/data/grammar/occurrences.json`
+holds, per skill and chapter, the highlight count `h` and the scanner count
+`s` with the unit ids, no Latin (262 KB, 56 KB gzipped, precached). The
+highlights are a hand-picked subset outside a skill's own chapter, so `h` is a
+floor. The line therefore reads **"the notes mark 6 in this chapter"** when
+`src` is `h`, and **"occurs about 12 times in this chapter"** when only the
+scanner counted, and opens the chapter with the listed units lit either way.
+Ambiguous scanner matches (`sx`) are never counted in the wording.
