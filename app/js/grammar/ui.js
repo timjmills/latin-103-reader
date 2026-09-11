@@ -319,6 +319,16 @@ export function createUI(ctx) {
     return cut;
   }
 
+  /** Has the item this word belongs to been answered? The run stamps `data-result` on the page; a
+   *  teaching step has no stamp, so the feedback node being on screen is the same fact. */
+  function answered(w) {
+    // The run stamps `data-result` on the page; the noticing opener stamps `data-done`; a teaching
+    // step has neither, and there the feedback node being on screen is the same fact.
+    if (w.closest('[data-result], [data-done="1"]')) return true;
+    const scope = w.closest('.g-notice, .g-step__body, .g-run, .g-body') ?? root;
+    return !!scope.querySelector('.g-fb, .g-fb__line');
+  }
+
   function onHoverIn(e) {
     if (!canHover()) return;
     let w = e.target?.closest?.('.g-w, .g-wx');
@@ -330,6 +340,10 @@ export function createUI(ctx) {
       }
     }
     if (!w || w === hoverWord || !root.contains(w)) return;
+    // A tap item asks which word is the ablative; its dictionary entry says "ablative". Hovering would
+    // hand over the answer, which is why a click on these words chooses rather than defines. Once the
+    // item has been answered the feedback is already on screen and the word is only a word again.
+    if (w.classList.contains('g-w--pick') && !answered(w)) return;
     clearHoverTimer();
     hoverWord = w;
     // A popup opened by a click is the reader's own; leave it alone.
@@ -378,7 +392,8 @@ export function createUI(ctx) {
       }
       wi += 1;
       const i = wi;
-      const b = h('button', { type: 'button', class: `g-w${targets.has(i) ? ' g-w--target' : ''}`, 'data-form': t.form, 'data-index': String(i), lang: 'la', text: t.text,
+      // `g-w--pick`: in a tap item the words are the answer, so the dictionary keeps quiet until it is given.
+      const b = h('button', { type: 'button', class: `g-w${targets.has(i) ? ' g-w--target' : ''}${tap ? ' g-w--pick' : ''}`, 'data-form': t.form, 'data-index': String(i), lang: 'la', text: t.text,
         onclick: (e) => { if (tap) tap(i, e.currentTarget); else showGloss(e.currentTarget, t.form, t.text, la); } });
       if (tap) b.setAttribute('aria-label', `${t.text}: choose this word`);
       p.append(b);
@@ -1005,6 +1020,9 @@ export function createUI(ctx) {
     const node = h('section', { class: 'g-notice', 'aria-label': 'Look first' });
     const finish = ({ found = false } = {}) => {
       if (done) return; done = true;
+      // Said in the DOM as well as in the closure: the pointer-dictionary reads this to know the words
+      // have stopped being the answer (they may be hovered again).
+      node.dataset.done = '1';
       node.classList.add('is-done');
       node.querySelectorAll('.g-notice__skip, .g-choices').forEach((el) => el.remove());
       if (!found) line.textContent = '';
