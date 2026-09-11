@@ -81,6 +81,15 @@ test('a pensum ending does the same, and shows the ending alone', () => {
 test('the key help says what the key now does', () => {
   // Alt+H used to open a panel; it toggles the form in the box, and the same key puts it away.
   assert.match(fn('inlineInput'), /Alt\+H shows that ending and hides it again/, 'the help still promises a hint that opens');
+  assert.match(fn('chartInput'), /Alt\+H shows that cell’s form and hides it again/, 'the help still promises a hint that opens');
+});
+
+test('the cell mark keeps its place, so the "?" cannot dodge the pointer', () => {
+  // Measured live: the mark was `display: none` while empty, so judging a cell on blur moved its own
+  // hint button 15.4px — more than half the button's width. Clicking "?" straight from the cell you were
+  // typing in therefore missed, because the row reflowed between mousedown and mouseup.
+  // Both kinds of typed box: a chart cell moved 15.4px, a pensum blank 13px.
+  assert.match(CSS, /\.g-cellwrap > \.g-cellmark:empty, \.g-pensum__blank > \.g-cellmark:empty \{ display: inline-flex; \}/, 'the mark collapses again while empty, and the button moves when a box is judged');
 });
 
 test('a shown form cannot be mistaken for the learner\'s own writing', () => {

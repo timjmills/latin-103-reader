@@ -356,6 +356,13 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-input.is-right:disabled, .g-input.is-wrong:disabled { background: var(--bg-raised); }
 .g-cellmark { display: inline-flex; align-items: center; justify-content: center; min-width: 1em; font-size: var(--ui-sm); font-weight: 700; line-height: 1; }
 .g-cellmark:empty { display: none; }
+/* In a chart cell the mark keeps its place from the start. It used to appear only when the cell was judged,
+   and the cell's own "?" — which sits after it — jumped 15px sideways the moment the learner left the box:
+   pressing it straight from the cell you were typing in *missed*, because the blur judged the cell, the row
+   reflowed between mousedown and mouseup, and the press landed beside the button. That press is now the way
+   a cell shows its own form, so it may not dodge the pointer. The space reserved is the space the cell takes
+   as soon as it is judged, so this also stops the table growing cell by cell as the learner fills it in. */
+.g-cellwrap > .g-cellmark:empty, .g-pensum__blank > .g-cellmark:empty { display: inline-flex; }
 .g-cellmark.is-ok { color: var(--success); }
 .g-cellmark.is-bad { color: var(--rubric); }
 /* A box whose hint was opened keeps a quiet dotted underline, the same mark the stats page uses for a
