@@ -304,9 +304,15 @@ def tracked(root: Path) -> list[Path]:
     added, and anything gitignored — `data/build`, `source/`, the audio — is
     never read.
     """
-    out = subprocess.run(["git", "-C", str(root), "ls-files", "-z"],
-                         capture_output=True, text=True, check=True).stdout
-    return [root / rel for rel in out.split(NUL) if rel]
+    try:
+        done = subprocess.run(["git", "-C", str(root), "ls-files", "-z"],
+                              capture_output=True, text=True, check=True)
+    except (OSError, subprocess.CalledProcessError) as e:
+        raise SystemExit(
+            f"check_copyright: cannot list tracked files in {root} ({e}). The gate's "
+            f"idea of 'public' is what git tracks, so it needs a checkout; pass "
+            f"--app <dir> to scan one tree without git.") from e
+    return [root / rel for rel in done.stdout.split(NUL) if rel]
 
 
 def scan_repo(root: Path, idx: Index, allow=None) -> list[Hit]:
