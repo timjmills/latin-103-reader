@@ -380,7 +380,7 @@ def resolve(word, allowed_lemmas, forms, glossary, fw):
                 tail = enc or (e.get("enc") if want_enc == "any" else None)
                 if e["h"] in allowed_lemmas:
                     return ("deck", e["h"], tail)
-                if e["h"] in NAMES:
+                if e["h"] in NAMES or e.get("proper"):
                     return ("name", e["h"], tail)
         if form in NAMES:
             return ("name", form, enc)
@@ -415,7 +415,7 @@ def filter_hit(parse, f, headword=None):
         if headword is None or strip_macrons(headword) not in [strip_macrons(x) for x in want]:
             return False
     for k, v in f.items():
-        if k in ("pos", "enc", "h"):
+        if k in ("pos", "enc", "h", "deponent", "decl"):
             continue
         got = parse.get(k)
         want = v if isinstance(v, (list, tuple)) else [v]
@@ -441,7 +441,9 @@ def parse_matches(word, skill, glossary, forms, gen_parses=None):
     generated = (gen_parses or {}).get(bare) or []
     if generated:
         for f in filters:
-            if "enc" in f:
+            # `deponent` is an entry-level flag (the glossary's kind == "dep"),
+            # which a generated parse does not carry; the glossary pass decides.
+            if "enc" in f or "deponent" in f or "decl" in f:
                 continue
             for h, p in generated:
                 if filter_hit(p, f, h):
@@ -458,6 +460,11 @@ def parse_matches(word, skill, glossary, forms, gen_parses=None):
             continue
         for e in entries:
             if f.get("pos") and e.get("pos") != f["pos"]:
+                continue
+            if "deponent" in f and bool(f["deponent"]) != (e.get("kind") == "dep"):
+                continue
+            # `decl` is entry-level too: the glossary keeps it in cat[0], never on a parse.
+            if "decl" in f and (e.get("cat") or [None])[0] != f["decl"]:
                 continue
             for p in e.get("parses", []):
                 if filter_hit(p, f, e.get("h")):
