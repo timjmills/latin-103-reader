@@ -5,7 +5,7 @@
 // and records the confusion pair when the chosen distractor names one.
 
 import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer, featureChoices, workedFeature, SHORT_WORDS } from './items.js';
-import { applyAnswer, learnCriterion, passLearn, startLearning, requeue, buildSession, buildRedoSession, inRotation } from './scheduler.js';
+import { applyAnswer, learnCriterion, passLearn, startLearning, addToPractice, requeue, buildSession, buildRedoSession, inRotation } from './scheduler.js';
 import { matchQuestion } from './sets.js';
 import { chapterOfWeek } from '../chapters.js';
 import { orderMatches } from './stage3.js';
@@ -53,7 +53,12 @@ export const sessionCeiling = (asked) => asked + Math.max(REQUEUE_MIN_GROWTH, Ma
 export function cellResults(item, value) {
   const given = value && typeof value === 'object' ? value : {};
   if (item?.input === 'chart') {
-    return (item.chart?.cells ?? []).map((c, i) => ({ i, ok: matchesForm(given[i] ?? '', c.answer), given: given[i] ?? '', expected: c.answer[0], label: c.label ?? '' }));
+    // A scaffolded table's given cells (§12) were printed, not filled: each is right by definition and marked
+    // `given`, so the one attempt is scored on the cells the learner had to fill and nothing else.
+    const givenCells = new Set((item.chart?.given ?? []).map(Number));
+    return (item.chart?.cells ?? []).map((c, i) => (givenCells.has(i)
+      ? { i, ok: true, given: c.answer[0], expected: c.answer[0], label: c.label ?? '', scaffold: true }
+      : { i, ok: matchesForm(given[i] ?? '', c.answer), given: given[i] ?? '', expected: c.answer[0], label: c.label ?? '' }));
   }
   if (item?.input === 'match') {
     const pairs = item.pairs || [];
@@ -220,6 +225,7 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
   // sentence left the library, the deck changed. The session then simply holds fewer items and says so,
   // which is the contract's "drop it quietly and say the count is smaller, never crash".
   let dropped = 0;
+  let lastAt = 0;
   const ceiling = () => (grows ? sessionCeiling(asked) : Infinity);
   const changed = () => { try { onChange?.(snapshot()); } catch { /* storage */ } };
   // A resume restarts the walk at the frontier: the items before it were answered in another sitting and were not kept.
@@ -294,7 +300,10 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       const took = Date.now() - startedAt;
       // A self-graded answer (translate) is weaker evidence: logged self: true and weighted as hinted (the server row has no column; `answer` carries the grade).
       const self = !!result.self;
-      const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date().toISOString() };
+      // `at` is part of an attempt's id (store-grammar `attemptId`: at | skill | item_key), and a teaching step's or
+      // a catalogue's item has no key — so two answers in the same millisecond would be one row. Time only moves forward here.
+      lastAt = Math.max(Date.now(), lastAt + 1);
+      const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date(lastAt).toISOString() };
       log.push(attempt);
       results[index] = { result, attempt, value, hinted: hinted || self };
       if (!result.correct && requeueOn) {
@@ -337,6 +346,284 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
     },
   };
 }
+
+/* ============================================ one skill's items (§8, §9 A1) */
+/**
+ * The draw behind a skill's teaching steps and its blocked ten, shared by
+ * Learn and by "Just drill it" (§10). It keeps one sitting's memory — the
+ * written sentence ids shown, the library keys used, the stock words a chart
+ * was practised on — so nothing comes round twice until both the written and
+ * the short-library pools are spent.
+ *
+ *   stepItem(slot)      the check of one step: a chart over its words, else the
+ *                       named written sentence, else another written sentence
+ *                       — never the library (§8)
+ *   blockedItem(slot)   A1's tiers: the skill's written sentences not yet shown;
+ *                       then chapter-capped library sentences of eight words or
+ *                       fewer; then the rest under the cap. `item.pool` says
+ *                       which tier answered, only when it had to reach past the
+ *                       written set.
+ */
+export function createSkillDraw({ skill, steps = [], teachItems = null, libraryItem, rand = Math.random }) {
+  const shown = new Set();
+  const usedKeys = new Set();
+  const stepWords = new Set();   // headwords the steps' chart checks were practised on
+  const noteShown = (id) => { if (id) shown.add(id); };
+  const stepSlots = steps.map((s, i) => ({ skill: skill.id, kind: s.check?.kind ?? 'recognise', stage: 1, step: i, currentWeek: false }));
+  const shownKeyOf = (step) => step.check?.key ?? (step.show?.kind === 'paradigm' ? step.show.key : null) ?? skill.paradigms?.[0] ?? null;
+  const stepItem = (slot) => {
+    const step = steps[slot.step];
+    if (!step || !teachItems) return null;
+    const check = step.check;
+    let item = null;
+    if (check?.kind === 'chart') {
+      // A2: a step checks the table it showed unless it names another, so a check with no `key` is on the shown table.
+      item = teachItems.chartItem({ key: shownKeyOf(step), cells: check.cells, words: check.words, step: slot.step });
+      if (item) for (const b of item.chart?.cells ?? []) stepWords.add(b.word);
+    }
+    if (!item) {
+      const kind = check?.kind && check.kind !== 'chart' ? check.kind : 'recognise';
+      item = teachItems.sentenceItem({ kind, sentence: check?.sentence ?? null, stage: 1, avoid: shown });
+    }
+    if (item) { noteShown(step.show?.kind === 'sentence' ? step.show.id : null); noteShown(step.worked?.sentence ?? null); noteShown(item.taught); for (const id of step.notice?.sentences ?? []) noteShown(id); }
+    // A step may word its own question (`check.ask`): "What is lūdat doing here?" over the generator's stock line.
+    if (item && check?.ask && item.prompt) item = { ...item, prompt: { ...item.prompt, question: check.ask } };
+    return item ? { ...item, step: slot.step } : null;
+  };
+
+  const chartSpecs = steps.filter((s) => s.check?.kind === 'chart').map((s) => ({ key: shownKeyOf(s), cells: s.check.cells }));
+  // No chart steps (a drill has none): a table skill still drills the cells its focus names, on each of its tables'
+  // stock words — `cells: null` asks chartItem for every cell of the table that fits `skill.paradigm_focus`.
+  if (!chartSpecs.length && skill.paradigm_focus && (skill.paradigms?.length)) for (const key of skill.paradigms) chartSpecs.push({ key, cells: null });
+  let specAt = 0;
+  /** A taught cell on a stock word the steps did not use — the written pool's answer for a chart slot. */
+  const chartFromSteps = () => {
+    if (!teachItems || !chartSpecs.length) return null;
+    for (let n = 0; n < chartSpecs.length; n++) {
+      const spec = chartSpecs[(specAt + n) % chartSpecs.length];
+      const fresh = teachItems.chartWords({ key: spec.key }).filter((w) => !stepWords.has(w)).slice(0, 3);
+      if (!fresh.length) continue;
+      const item = teachItems.chartItem({ key: spec.key, cells: spec.cells, words: fresh });
+      if (!item) continue;
+      specAt = (specAt + n + 1) % chartSpecs.length;
+      for (const b of item.chart?.cells ?? []) stepWords.add(b.word);
+      return item;
+    }
+    return null;
+  };
+  const blockedItem = (slot, opts = {}) => {
+    // 1 · the skill's own written sentences not yet shown in this sitting.
+    if (teachItems) {
+      const own = slot.kind === 'chart' ? chartFromSteps() : teachItems.sentenceItem({ kind: slot.kind, stage: slot.stage, avoid: shown, unshownOnly: true });
+      if (own) { noteShown(own.taught); return { ...own, pool: 'written' }; }
+    }
+    // 2 · chapter-capped library sentences of eight words or fewer, none shown in this sitting.
+    const short = libraryItem(slot, { avoid: opts.avoid, maxWords: SHORT_WORDS, exclude: usedKeys });
+    if (short) { usedKeys.add(short.key); return { ...short, pool: teachItems ? 'library-short' : null }; }
+    // 3 · the rest under the cap; only when that too is spent may an item come round again.
+    const rest = libraryItem(slot, { avoid: opts.avoid, exclude: usedKeys }) ?? libraryItem(slot, { avoid: opts.avoid });
+    if (rest) { usedKeys.add(rest.key); return { ...rest, pool: teachItems ? 'library' : null }; }
+    return null;
+  };
+  return { shown, usedKeys, stepSlots, stepItem, blockedItem, rand };
+}
+
+/** The kinds of a skill in a sequence of `n` slots, no kind twice running. Pure but for `rand`. */
+export function kindSequence(skill, n, stageOf, rand = Math.random) {
+  const kinds = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
+  const out = [];
+  let last = null;
+  for (let i = 0; i < n; i++) {
+    const pool = kinds.filter((k) => k !== last);
+    const k = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))];
+    out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false });
+    last = k;
+  }
+  return out;
+}
+
+/**
+ * **"Just drill it"** (GRAMMAR-CONTRACT.md §10): a blocked set on one skill
+ * alone, its written sentences first (A1), no steps in the way, the rule
+ * pinned at the top of every item (`pin`). Ten by default; the same-session
+ * re-test is the same thing three long (`RETEST_SIZE`).
+ *
+ * It is practice, and logged as practice: the skill enters the rotation now
+ * if it was new or lapsed (as "Practise this skill" has always done), so the
+ * answers that follow are judged as practice rather than as an early review.
+ * A skill still in Learn keeps its `learning` state — its attempts are logged
+ * in learn mode, so the criterion can read them, and nothing here graduates
+ * it (only Learn's own criterion does).
+ */
+export function createDrill({ skill, gstore, items, teachItems = null, currentWeekN = null, size = LEARN_BLOCKED, rand = Math.random, pin = null }) {
+  const ceiling = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
+  const st = gstore.getState(skill.id);
+  const learning = st?.state === 'learning';
+  const mode = learning ? 'learn' : 'practice';
+  const libraryItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, chapter: ceiling, chapterMode: 'ceiling', currentWeekN, ...opts });
+  const draw = createSkillDraw({ skill, steps: [], teachItems, libraryItem, rand });
+  const stage = Math.max(1, Number(st?.stage) || 1);
+  const slots = kindSequence(skill, size, (k) => (k === 'blank' || k === 'parse' ? Math.min(2, Math.max(stage, 1)) : 1), rand);
+  const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
+    await gstore.addAttempt(attempt);
+    if (!learning) {
+      const cur = gstore.getState(item.skill) ?? item.skill;
+      await gstore.setState(applyAnswer(cur, { correct: result.correct, hinted, partial, ms }));
+    }
+    if (!result.correct && attempt.confused_with) await gstore.bumpConfusion(item.skill, attempt.confused_with);
+  };
+  // The pinned rule is swept like a hint (§7.5): a rule that quotes the very form an item wants back is not pinned
+  // above that item — the skill's summary stands in, or nothing — so no item prints its own answer.
+  const pinFor = (it) => pinText([pin, skill.summary], it);
+  const runner = createRunner({ slots, getItem: (slot, o) => { const it = draw.blockedItem(slot, { avoid: o?.avoid }); const p = it ? pinFor(it) : null; return it && p ? { ...it, pin: p } : it; }, mode, onAnswer, requeueOn: false, rand, grows: false });
+  return {
+    runner, skill, size, mode, pin,
+    /** The skill enters the rotation before the first item (new or lapsed → practising, due now); a learning skill is left as it is. */
+    async begin() { if (!learning && (!inRotation(st) || st?.state === 'lapsed')) await gstore.setState(addToPractice(st ?? skill.id)); },
+    start: () => runner.start(),
+  };
+}
+
+/**
+ * The catalogue's practice (§4, decision 10; §11): a run over items already
+ * built — one cell across words, or a whole table on one word after another.
+ * It logs under the skill that names the table **only while that skill is in
+ * the rotation**, where the scheduler can use the evidence; otherwise the run
+ * is practice and nothing more, and the view says so (`counted`). Items carry
+ * no `key`, so a miss here never enters "redo what was wrong", which must be
+ * able to rebuild what it offers.
+ */
+export function createCatalogueDrill({ items = [], gstore, skillId = null, rand = Math.random }) {
+  const state = skillId ? gstore.getState(skillId) : null;
+  const counted = !!(skillId && inRotation(state));
+  const slots = items.map((it, i) => ({ skill: it.skill, kind: 'chart', stage: 1, i, currentWeek: false }));
+  const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
+    if (!counted) return;
+    await gstore.addAttempt({ ...attempt, skill: skillId });
+    const cur = gstore.getState(skillId) ?? skillId;
+    await gstore.setState(applyAnswer(cur, { correct: result.correct, hinted, partial, ms }));
+  };
+  const runner = createRunner({ slots, getItem: (slot) => items[slot.i] ?? null, mode: 'practice', onAnswer, requeueOn: false, rand, grows: false });
+  return { runner, counted, skillId, start: () => runner.start() };
+}
+
+/** The first of `candidates` that spells none of the item's accepted answers (label kinds are exempt, as in `boxHints`); null when none is safe. Pure. */
+export function pinText(candidates, item) {
+  const answers = item && !LABEL_KINDS.has(item.kind) ? acceptedAnswers(item) : [];
+  for (const c of candidates) { const t = String(c ?? '').trim(); if (t && answerLeak(t, answers).length === 0) return t; }
+  return null;
+}
+
+/* ============================================ the same-session re-test (§10) */
+/** How long after a skill is learned or drilled its re-test is offered, and how long the re-test is. */
+export const RETEST_AFTER_MS = 10 * 60 * 1000;
+export const RETEST_SIZE = 3;
+/**
+ * The re-test list: `{ skill, at }` per skill learned or drilled this
+ * session, newest last, one entry a skill. `noteRetest` records a sitting;
+ * `retestDue` is what may be offered now — everything whose ten minutes have
+ * passed — and `retestPending` the rest, soonest first, for the summary that
+ * comes too early. Pure.
+ */
+export function noteRetest(list, skill, now = Date.now()) {
+  const rest = (Array.isArray(list) ? list : []).filter((r) => r && r.skill !== skill && typeof r.skill === 'string');
+  return [...rest, { skill, at: now }];
+}
+export function retestDue(list, now = Date.now(), after = RETEST_AFTER_MS) {
+  return (Array.isArray(list) ? list : []).filter((r) => r && typeof r.skill === 'string' && Number(r.at) + after <= now);
+}
+export function retestPending(list, now = Date.now(), after = RETEST_AFTER_MS) {
+  return (Array.isArray(list) ? list : []).filter((r) => r && typeof r.skill === 'string' && Number(r.at) + after > now).sort((a, b) => Number(a.at) - Number(b.at));
+}
+
+/* ============================================ scaffolded tables (§12, §13) */
+/**
+ * The scaffold levels of a table drill: how much of the table is printed
+ * before the learner starts. `auto` (the default) begins at 80 and fades a
+ * level after each table completed right unaided, stepping back a level after
+ * one completed wrong; `off` is the blank table. `settings.grammar.scaffold`
+ * holds the global default and each table remembers its own.
+ */
+export const SCAFFOLD_LEVELS = Object.freeze(['auto', 80, 50, 20, 'off']);
+export const SCAFFOLD_STEPS = Object.freeze([80, 50, 20, 0]);
+export const normaliseScaffold = (v) => (v === 'auto' || v === 'off' ? v : [80, 50, 20].includes(Number(v)) && v !== '' && v !== true ? Number(v) : v === 0 || v === '0' ? 'off' : 'auto');
+/** The percentage a level gives: `off` is 0; `auto` is read through its remembered step (`autoAt`). */
+export const scaffoldPercent = (level, autoAt = 80) => (level === 'off' ? 0 : level === 'auto' ? (SCAFFOLD_STEPS.includes(Number(autoAt)) ? Number(autoAt) : 80) : Number(level) || 0);
+/** Auto's next step after a table: a level down after one right unaided, a level back after one wrong. Pure. */
+export function scaffoldStep(autoAt, { correct, hinted = false } = {}) {
+  const i = Math.max(0, SCAFFOLD_STEPS.indexOf(SCAFFOLD_STEPS.includes(Number(autoAt)) ? Number(autoAt) : 80));
+  if (correct && !hinted) return SCAFFOLD_STEPS[Math.min(SCAFFOLD_STEPS.length - 1, i + 1)];
+  if (!correct) return SCAFFOLD_STEPS[Math.max(0, i - 1)];
+  return SCAFFOLD_STEPS[i];
+}
+/** The dictionary-form cells (§12's anchors): nominative and genitive singular; first person singular present and the present infinitive. */
+export function isAnchorKey(key) {
+  if (!key) return false;
+  if (key.kind === 'nominal') return key.number === 'sg' && (key.case === 'nom' || key.case === 'gen') && (!key.degree || key.degree === 'pos');
+  if (key.kind === 'finite') return key.tense === 'pres' && key.mood === 'ind' && key.voice === 'act' && String(key.person) === '1' && key.number === 'sg';
+  if (key.kind === 'inf') return key.tense === 'pres' && key.voice === 'act';
+  return false;
+}
+/** The paradigm key behind one cell of a chart item, read off the rendered table it was cut from. */
+export const chartCellKey = (item, c) => (c?.key ?? item?.chart?.table?.sections?.[item.chart.section]?.rows?.[c?.row]?.cells?.[c?.col]?.key ?? null);
+/**
+ * Which cells of a table drill are **given** at a level (§12): deliberate,
+ * never random. The anchors first, then cells the learner has already met
+ * (`met`: cell ids), then the rest in reading order; **the cell a step is
+ * teaching is never given** (`taught`: cell ids); and a given cell must never
+ * be the answer to a cell left to fill — two cells that print the same form
+ * (nominative and vocative, dative and ablative plural) would otherwise hand
+ * one over. At least one cell is always left to fill. Returns the indexes into
+ * `item.chart.cells`. Pure.
+ */
+export function scaffoldGiven(item, { percent = 0, taught = [], met = [], cellIdOf = null } = {}) {
+  const cells = item?.chart?.cells ?? [];
+  if (!cells.length || item?.chart?.byWord || !(percent > 0)) return [];
+  const n = cells.length;
+  const want = Math.min(n - 1, Math.round((n * percent) / 100));
+  if (want <= 0) return [];
+  const idOf = (i) => (typeof cellIdOf === 'function' ? cellIdOf(cells[i], i) : cells[i].cellId ?? null);
+  const taughtSet = new Set(taught);
+  const metSet = new Set(met);
+  const forms = (i) => (cells[i].answer ?? []).map(normaliseAnswer).filter(Boolean);
+  // Cells that print the same form (macrons aside, as the matching is) go together: given all or given none,
+  // so a printed *puellae* never answers a blank *puellae*. A group holding a taught cell is never given.
+  const groupOf = cells.map((_, i) => i);
+  const find = (i) => (groupOf[i] === i ? i : (groupOf[i] = find(groupOf[i])));
+  const byForm = new Map();
+  cells.forEach((_, i) => { for (const f of forms(i)) { if (byForm.has(f)) groupOf[find(i)] = find(byForm.get(f)); else byForm.set(f, i); } });
+  const groups = new Map();
+  cells.forEach((_, i) => { const g = find(i); if (!groups.has(g)) groups.set(g, []); groups.get(g).push(i); });
+  const rank = (i) => {
+    if (isAnchorKey(chartCellKey(item, cells[i]))) return 0;
+    const id = idOf(i);
+    return id && metSet.has(id) ? 1 : 2;
+  };
+  const ordered = [...groups.values()]
+    .filter((g) => !g.some((i) => { const id = idOf(i); return id && taughtSet.has(id); }))
+    .map((g) => ({ g, rank: Math.min(...g.map(rank)), first: Math.min(...g) }))
+    .sort((a, b) => a.rank - b.rank || a.first - b.first);
+  const given = [];
+  for (const { g } of ordered) {
+    if (given.length + g.length > want) continue;   // a whole group or nothing; a smaller one may still fit
+    given.push(...g);
+    if (given.length >= want) break;
+  }
+  return given.sort((a, b) => a - b);
+}
+/** The given cells of a scaffolded item that spell the answer of a cell left to fill — the sweep the tests run. Pure. */
+export function scaffoldLeak(item) {
+  const cells = item?.chart?.cells ?? [];
+  const given = new Set((item?.chart?.given ?? []).map(Number));
+  const out = [];
+  for (const g of given) {
+    const f = new Set((cells[g]?.answer ?? []).map(normaliseAnswer).filter(Boolean));
+    for (let j = 0; j < cells.length; j++) if (!given.has(j) && (cells[j].answer ?? []).some((a) => f.has(normaliseAnswer(a)))) out.push({ given: g, fills: j });
+  }
+  return out;
+}
+/** The item with its given cells set (a copy); `[]` leaves it as it was. */
+export const scaffoldItem = (item, given) => (given?.length && item?.chart ? { ...item, chart: { ...item.chart, given: [...given] } } : item);
 
 /**
  * Learn flow for one skill (GRAMMAR-CONTRACT.md "Teaching rebuild" §2, §8, §9
@@ -390,66 +677,11 @@ export function createLearn({ skill, gstore, items, teach = null, teachItems = n
   };
   const batchOf = () => Math.max(1, Math.min(deckSize, total - seen) || deckSize);
 
-  /* ------------------------------------------------------- the steps */
-  // What this Learn has put in front of the learner: written sentence ids (a show, a worked example, a
-  // check) and library item keys. The blocked ten read both, so nothing comes round twice in one sitting.
-  const shown = new Set();
-  const usedKeys = new Set();
-  const stepWords = new Set();   // headwords the steps' chart checks were practised on
-  const noteShown = (id) => { if (id) shown.add(id); };
-  const stepSlots = steps.map((s, i) => ({ skill: skill.id, kind: s.check?.kind ?? 'recognise', stage: 1, step: i, currentWeek: false }));
-  const shownKeyOf = (step) => step.check?.key ?? (step.show?.kind === 'paradigm' ? step.show.key : null) ?? skill.paradigms?.[0] ?? null;
-  /** The check of one step: a chart over its words, else the named written sentence, else another written sentence — never the library. */
-  const stepItem = (slot) => {
-    const step = steps[slot.step];
-    if (!step || !teachItems) return null;
-    const check = step.check;
-    let item = null;
-    if (check?.kind === 'chart') {
-      // A2: a step checks the table it showed unless it names another, so a check with no `key` is on the shown table.
-      item = teachItems.chartItem({ key: shownKeyOf(step), cells: check.cells, words: check.words, step: slot.step });
-      if (item) for (const b of item.chart?.cells ?? []) stepWords.add(b.word);
-    }
-    if (!item) {
-      const kind = check?.kind && check.kind !== 'chart' ? check.kind : 'recognise';
-      item = teachItems.sentenceItem({ kind, sentence: check?.sentence ?? null, stage: 1, avoid: shown });
-    }
-    if (item) { noteShown(step.show?.kind === 'sentence' ? step.show.id : null); noteShown(step.worked?.sentence ?? null); noteShown(item.taught); }
-    return item ? { ...item, step: slot.step } : null;
-  };
-
-  /* ------------------------------------------------- the blocked ten (A1) */
-  const chartSpecs = steps.filter((s) => s.check?.kind === 'chart').map((s) => ({ key: shownKeyOf(s), cells: s.check.cells }));
-  let specAt = 0;
-  /** A taught cell on a stock word the steps did not use — the written pool's answer for a chart slot. */
-  const chartFromSteps = () => {
-    if (!teachItems || !chartSpecs.length) return null;
-    for (let n = 0; n < chartSpecs.length; n++) {
-      const spec = chartSpecs[(specAt + n) % chartSpecs.length];
-      const fresh = teachItems.chartWords({ key: spec.key }).filter((w) => !stepWords.has(w)).slice(0, 3);
-      if (!fresh.length) continue;
-      const item = teachItems.chartItem({ key: spec.key, cells: spec.cells, words: fresh });
-      if (!item) continue;
-      specAt = (specAt + n + 1) % chartSpecs.length;
-      for (const b of item.chart?.cells ?? []) stepWords.add(b.word);
-      return item;
-    }
-    return null;
-  };
-  const blockedItem = (slot, opts = {}) => {
-    // 1 · the skill's own written sentences not yet shown in this Learn.
-    if (teachItems) {
-      const own = slot.kind === 'chart' ? chartFromSteps() : teachItems.sentenceItem({ kind: slot.kind, stage: slot.stage, avoid: shown, unshownOnly: true });
-      if (own) { noteShown(own.taught); return { ...own, pool: 'written' }; }
-    }
-    // 2 · chapter-capped library sentences of eight words or fewer, none shown in this Learn.
-    const short = libraryItem(slot, { avoid: opts.avoid, maxWords: SHORT_WORDS, exclude: usedKeys });
-    if (short) { usedKeys.add(short.key); return { ...short, pool: teachItems ? 'library-short' : null }; }
-    // 3 · the rest under the cap; only when that too is spent may an item come round again.
-    const rest = libraryItem(slot, { avoid: opts.avoid, exclude: usedKeys }) ?? libraryItem(slot, { avoid: opts.avoid });
-    if (rest) { usedKeys.add(rest.key); return { ...rest, pool: teachItems ? 'library' : null }; }
-    return null;
-  };
+  /* ---------------------------------------------- the steps and the ten */
+  // One draw for the steps' checks and for the blocked ten (A1), shared with "Just drill it" (`createDrill`),
+  // which is the same ten without the steps. It keeps this sitting's memory of what has been shown.
+  const draw = createSkillDraw({ skill, steps, teachItems, libraryItem, rand });
+  const { shown, stepSlots, stepItem, blockedItem } = draw;
 
   return {
     skill,
@@ -866,9 +1098,13 @@ function chartBoxes(item, { rule, lab }) {
   // whole-row chart (Learn's guided five fill six cells at once) the other cells are other cases, so the gloss is
   // theirs only when the chart is a single cell; otherwise the cell's own label says what it wants and no more.
   const plain = cells.length === 1 ? (clean(String(item.prompt?.hint ?? '').split(/\s+—\s+/).slice(1).join(' — ')) || lab.plain) : '';
-  // A teaching step's chart (one box a word, §8) names each box by its own word and its cell.
+  // A teaching step's chart (one box a word, §8) names each box by its own word and its cell. On a whole table the
+  // word's own head is one of its cells (puella is the nominative of puella), and a hint that named it would be
+  // dropped by the leak sweep with the whole box — so where the head is an answer the hint says "this word".
+  const answers = acceptedAnswers(item);
+  const safe = (w) => (w && answerLeak(w, answers).length ? 'this word' : w);
   return cells.map((c, i) => {
-    const word = c.word ?? h;
+    const word = safe(c.word ?? h);
     const cellName = c.cellLabel ?? c.label;
     return {
       id: String(i), index: i, label: c.label || `cell ${i + 1}`,

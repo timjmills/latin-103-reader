@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v46';
+const CACHE_VERSION = 'v47';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -231,6 +231,12 @@ const PRECACHE = [
   './data/grammar/sentences/third-declension.json',
   './data/grammar/sentences/vocative.json',
   './data/grammar/sentences/wishes-utinam.json',
+  // The sentence templates (GRAMMAR-CONTRACT.md §11), one file a skill as they are written.
+  './data/grammar/templates/ablative-agent.json',
+  './data/grammar/templates/ablative-means.json',
+  './data/grammar/templates/accusative-infinitive.json',
+  './data/grammar/templates/accusative-object.json',
+  './data/grammar/templates/dative-indirect-object.json',
   './vendor/supabase.js',
   './data/glossary.json',
   './data/function-words.json',

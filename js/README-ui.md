@@ -1696,3 +1696,114 @@ Tested in `tests/grammar.teach-core.test.mjs` (the ceiling on every session
 type, the fallback, nothing emptied; the word bar; per-cell judging and
 one-attempt-per-chart scoring; the paradigm sweep) and live in
 `qa/teach-core/`.
+
+## Learn is the teach steps — finished (2026-09-11)
+
+GRAMMAR-CONTRACT.md "Teaching rebuild" §2, §3, §8, §9 (A1, A2), §10 with its
+amendment, §11, §12 with its switch, §13. All of it in `js/grammar/`
+(`lessons.js`, `items.js`, `session.js`, `ui.js`), `css/grammar.css`, `sw.js`
+(v47) and `tests/grammar.learn-steps.test.mjs`; live in `qa/learn-steps/`.
+
+### The flow (`renderLearnStart`, `createLearn`)
+
+One page a step, then the ten, then the criterion. A step's page is, in order:
+the **notice opener** (`step.notice`: two of the skill's written sentences side
+by side and one question; tapping either sentence's focus word lights both and
+says so, a wrong tap is marked and the learner tries again, **Skip to the
+rule** is one tap; nothing is logged — `noticeNode`), then `say`, then `show`
+(a written sentence with its word-by-word gloss, or the one or two cells the
+step reveals on the table's stock words — never the whole table), then the
+worked example, then the **single check**. The check and the step's body stay
+hidden until the opener is answered or skipped; the check stays hidden until a
+worked example with something to ask is finished. Unmet prerequisites are
+named above step one and offered; the learner may go on (`prereqNode`).
+
+- **Checks draw only from the skill's written sentences** (`createSkillDraw`
+  in session.js, shared with the drill): a step names its sentence, a
+  `check.ask` words the question, a chart check runs its cells over
+  `check.words` (or the table's stock words) as **one item with one box a
+  word** — per-cell green / red on leaving, a per-cell hint whose "Show this
+  form" reveals that one cell, the set one attempt (`chart.byWord`).
+- **Worked examples**: the first of a skill is fully parsed; later ones print
+  `given` and ask `ask` one feature at a time as a small choice, then `why` in
+  one line, judged generously (`judgeWhy`) and never logged.
+- **The ten (A1)**: `blockedItem` draws the skill's unseen written sentences
+  first (a chart slot takes a taught cell on stock words the steps did not
+  use), then chapter-capped library sentences of eight words or fewer, then
+  the rest under the cap; nothing repeats until both pools are spent, and an
+  item says which pool it came from only when it reached past the written set
+  (`item.pool`).
+
+### Scaffolded tables (§12, §13)
+
+`session.js`: `SCAFFOLD_LEVELS` (`auto` · 80 · 50 · 20 · `off`),
+`normaliseScaffold`, `scaffoldPercent(level, autoAt)`, `scaffoldStep(autoAt,
+{ correct, hinted })` (auto fades a level after a table right unaided, steps
+back after a wrong one), `isAnchorKey`, and **`scaffoldGiven(item, { percent,
+taught, met })`** — the indexes to give: anchors (nominative and genitive
+singular; first person singular present; the present infinitive) first, then
+cells already met, then the rest; the cell a step teaches is never given; and
+cells that print the same form are given together or not at all, so a
+printed *puellae* never answers a blank *puellae* (`scaffoldLeak` is the
+sweep, run over every catalogue table at every level in the tests). At least
+one cell is always left. `cellResults` marks a given cell `scaffold: true` and
+right by definition, so **the table is one attempt scored on the filled
+cells**.
+
+`ui.js` `chartInput`: a whole-table chart (not a step's chart over words)
+reads the table's level — its own remembered one
+(`localStorage['l103.grammar.scaffold.<table id>']`), else
+`settings.grammar.scaffold`, `auto` by default — prints the given cells
+greyed with their own hint (`.g-chart__given`, no "Show this form"), and puts
+**the switch on the table** (`scaffoldSwitch`: one tap, no confirmation,
+remembered per table and as the global default through `ctx.savePrefs`). The
+table on screen finishes as it started; the next one honours the change.
+Auto's step lives at `localStorage['l103.grammar.scaffoldAuto.<table id>']`.
+The table id is the catalogue's where the item names it, else the select
+rules on the item's word (`tableIdOf`), else the word itself.
+
+### "Just drill it", the re-test, the tie-in (§10, §13)
+
+- **`createDrill`** (session.js): a blocked ten on one skill alone, A1's
+  order, the rule **pinned** above every item (`item.pin`; the lesson's rule
+  block, else the skill's summary; `pinText` sweeps it like a hint, so a rule
+  that quotes the very form an item wants is not pinned above that item). A
+  new or lapsed skill enters the rotation first (as "Practise this skill"
+  does); a skill still in Learn keeps its state and its attempts go to the
+  criterion in learn mode. View `drill` (`renderDrill`); **Just drill it**
+  sits on every drillable skill row, on the lesson page and on a catalogue
+  table's page — one tap opens, one tap drills.
+- **The same-session re-test**: `noteRetest` / `retestDue` / `retestPending`
+  over `localStorage['l103.grammar.retest']`; a skill learned or drilled is
+  noted, and ten minutes on (`RETEST_AFTER_MS`) the map's Today section, the
+  Learn result and every session summary offer **three items** on it
+  (`render('drill', { size: RETEST_SIZE, retest: true })`); until then the
+  line says when. A re-test clears its own entry.
+- **The reading tie-in**: `loadOccurrences` / `occurrenceLine` (lessons.js)
+  over `data/grammar/occurrences.json`, one line after Learn or a drill:
+  "The notes mark N in this chapter" when `src` is `h`, "It occurs about N
+  times in this chapter" when only the scanner counted, `sx` never counted.
+  The learner's current chapter first, else the skill's own, named. The link
+  opens the chapter page on its reading tab (`ctx.openChapter`) and leaves
+  the unit ids at `sessionStorage['l103.grammar.lit']` — the reader's own
+  grammar-focus highlights are the `h` units, so they are lit already; a
+  reader hook that lights the scanner's units is main.js / reader.js work.
+
+### The catalogue (§4, decision 10; §11)
+
+View `catalogue` ("Tables" in the nav; `renderCatalogue`, `renderTable`):
+`data/grammar/paradigms.json` by part of speech then table, filtered by
+category and "up to chapter N"; a table opens to the word (stock chips and a
+search over `glossary-headwords.json`, a word of another table offered with
+that table named), **see it filled**, **practise one cell across words**
+(`cellItem`, one box a word), the axes it honestly offers (§5: the cell axes,
+and of the lemma axes gender alone — three to five stock words cannot be
+narrowed by chapter), and **practise the whole table** or one group of it
+(`tableItem`, scaffolded, the chosen word first then the other stock words).
+`items.js`: `tableIdOf(entry, select)` (the select rules as data, first match
+wins — every stock word resolves to its own table), `createCatalogueItems`
+(`search`, `wordEntry`, `cellItem`, `tableItem`, `narrowCells`,
+`stockWords`), and `tableHelpers` shared with `createTeachItems`. A catalogue
+run (`createCatalogueDrill`) logs under the first skill that names the table
+**only while that skill is in the rotation** — the run says whether it counts
+— and its items carry no key, so they never enter "redo what was wrong".
