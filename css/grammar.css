@@ -735,3 +735,10 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-words__results[hidden] { display: none; }
 .g-axis { display: grid; gap: var(--s-1); }
 .g-tables .g-skill__acts .btn { min-height: 36px; }
+
+/* ------------------------------ generated sentences (§11, §11b) */
+/* The English and the word-by-word gloss of a generated item, on demand under the sentence; the same gloss on the feedback. */
+.g-item__en { margin: 0; }
+.g-item__en[open] .g-hint__s::before { transform: rotate(45deg); }
+.g-item__en .g-hint__rule { margin: 0 0 var(--s-1); }
+.g-item__en .g-wgloss, .g-fb__ctx .g-wgloss { margin-top: var(--s-2); }

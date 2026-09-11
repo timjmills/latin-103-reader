@@ -107,5 +107,17 @@
    "words": 5
   }
  ],
- "exclude": []
+ "exclude": [],
+ "review": {
+  "passes": [
+   {"pass": 1, "generated": 40, "rejected": 20, "rate": 0.5, "causes": ["a systematic gloss slip after prepositions", "over-broad `thing` objects", "unmacronised glossary roots", "determiners drawn as free adjectives"]},
+   {"pass": 2, "generated": 40, "rejected": 4, "rate": 0.11, "causes": ["frame edges"]},
+   {"pass": 3, "generated": 40, "rejected": 3, "rate": 0.063, "causes": ["frame edges"]},
+   {"pass": 4, "generated": 40, "rejected": 3, "rate": 0.066, "causes": ["frame edges"]},
+   {"pass": 5, "generated": 40, "rejected": 1, "rate": 0.028, "causes": ["residual frame edges"]},
+   {"pass": 6, "generated": 40, "rejected": 1, "rate": 0.016, "causes": ["residual frame edges"]}
+  ],
+  "final_rate": 0.016,
+  "note": "the pilot's six hostile reads (GRAMMAR-CONTRACT.md §11a): the rates are the aggregate over 320 sentences a pass, 40 a skill, a different seed each pass (the seeds were not recorded); every cause became a frame, a gate rule or a check in pipeline/test_generate_sentences.py"
+ }
 }

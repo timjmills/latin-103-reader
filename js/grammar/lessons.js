@@ -135,6 +135,8 @@ export function normaliseSentences(raw, skillId = null) {
       kinds: Array.isArray(s.kinds) ? s.kinds.filter((k) => typeof k === 'string') : [],
       note: typeof s.note === 'string' ? s.note : '',
       gloss,
+      // A generated sentence (§11a, §11b) says so and names its template; a written one carries neither.
+      ...(s.generated === true ? { generated: true, template: typeof s.template === 'string' ? s.template : null } : {}),
     });
   }
   return { skill: raw?.skill ?? skillId, chapter: Number(raw?.chapter) || null, sentences: out };
@@ -168,7 +170,36 @@ export function createTeachDataLoader({ fetchJson: fetcher = fetchJson } = {}) {
   // with the unit ids, no Latin. null when it cannot be loaded; the summary then simply has no line.
   let occurrencesP = null;
   const loadOccurrences = () => (occurrencesP ??= fetcher('occurrences.json').then((raw) => (raw && typeof raw === 'object' && raw.skills ? raw : null)).catch(() => null));
-  return { loadSentences, loadCatalogue, loadHeadwords, loadOccurrences };
+  // The generated banks (§11b): `generated/<skill>.json`, one per sentence skill with templates, pre-built by
+  // pipeline/build_generated.py in the §11a shape. `generated/index.json` lists the skills that have one, so a
+  // skill without a bank is null at once and no request 404s; with no manifest every bank is asked for.
+  const banks = new Map();
+  let bankManifestP = null;
+  const bankManifest = () => (bankManifestP ??= fetcher('generated/index.json').then((raw) => manifestIds(Array.isArray(raw?.generated) ? raw.generated : raw)).catch(() => null));
+  const loadGenerated = (skillId) => {
+    if (!banks.has(skillId)) {
+      banks.set(skillId, (async () => {
+        const ids = await bankManifest();
+        if (ids && !ids.has(skillId)) return null;
+        try { return normaliseGenerated(await fetcher(`generated/${skillId}.json`), skillId); }
+        catch (e) { if (!/(^|\D)404(\D|$)/.test(String(e?.message ?? e))) banks.delete(skillId); return null; }
+      })());
+    }
+    return banks.get(skillId);
+  };
+  /** The skills that have a bank, from the manifest; null when there is no manifest (then ask per skill). */
+  const generatedIds = () => bankManifest();
+  return { loadSentences, loadCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedIds };
+}
+
+/**
+ * A generated bank cleaned for the app (§11b): the same sentence shape as the
+ * written set, every sentence marked `generated: true` with its template, plus
+ * the bank's `seeds` and `count`. Pure.
+ */
+export function normaliseGenerated(raw, skillId = null) {
+  const base = normaliseSentences({ ...raw, sentences: (Array.isArray(raw?.sentences) ? raw.sentences : []).map((s) => ({ ...s, generated: true })) }, skillId);
+  return { ...base, generated: true, seeds: Array.isArray(raw?.seeds) ? raw.seeds.map(Number).filter(Number.isFinite) : [], count: base.sentences.length };
 }
 
 /**
@@ -233,6 +264,10 @@ export const loadParadigmCatalogue = () => teachData.loadCatalogue();
 export const loadHeadwords = () => teachData.loadHeadwords();
 /** The reading tie-in's counts (`occurrences.json`, §13), or null. */
 export const loadOccurrences = () => teachData.loadOccurrences();
+/** The skill's generated bank (§11b), or null when it has none. */
+export const loadGenerated = (skillId) => teachData.loadGenerated(skillId);
+/** The ids of the skills with a generated bank (the manifest), or null without one. */
+export const generatedSkillIds = () => teachData.generatedIds();
 
 /** Pure: a lesson with every block usable, and its teach steps normalised. */
 export function normaliseLesson(l) {

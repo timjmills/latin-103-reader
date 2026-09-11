@@ -1333,7 +1333,7 @@ export function tableHelpers({ lookup, paradigm = null }) {
  *     .chartItem({ key, cells, words, step })      → item | null
  *     .sentence(id) / .sentences                   the written material itself
  */
-export function createTeachItems({ skill, sentences = [], lookup, paradigm = null, catalogue = null, skills = null, headwords = null, storage = null, rand = Math.random }) {
+export function createTeachItems({ skill, sentences = [], lookup, paradigm = null, catalogue = null, skills = null, headwords = null, storage = null, rand = Math.random, poolKey = null }) {
   const list = (sentences ?? []).filter((s) => s && s.id && s.la);
   const byId = new Map(list.map((s) => [s.id, s]));
   const skillMap = skills instanceof Map ? skills : new Map([[skill.id, skill]]);
@@ -1432,7 +1432,8 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     const made = resolveFocus(unit, sk, written);
     return made ? [...found, made] : found;
   };
-  const gen = createItems({ units, lookup, paradigm, skills: skillMap, storage, rand, poolKey: `l103.grammar.teach.${skill.id}`, augment });
+  // `poolKey`: a second generator over the skill's generated bank (§11b) keeps its own "already shown" memory apart from the written set's.
+  const gen = createItems({ units, lookup, paradigm, skills: skillMap, storage, rand, poolKey: poolKey ?? `l103.grammar.teach.${skill.id}`, augment });
 
   /**
    * One written sentence as a drill item of `kind`. The step names a sentence,
@@ -1461,7 +1462,9 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
       // back and must be able to rebuild them. `teachKey` keeps the generator's own key for the tests.
       // `repeat: false`: a step names its sentence, and the blocked ten's written tier is ordered by what this Learn has
       // shown (A1), so the generator's own pool wrapping says nothing here and must not print "starting over".
-      const made = { ...item, teach: true, teachKey: item.key, key: null, repeat: false, taught: cand.id, asked: named?.id ?? null, written: cand };
+      // A generated sentence's item says so (§11: "labelled as such in its own words") and names its template, so an
+      // attempt on it can be told apart from one on a written sentence (`createRunner` copies both into the attempt's meta).
+      const made = { ...item, teach: true, teachKey: item.key, key: null, repeat: false, taught: cand.id, asked: named?.id ?? null, written: cand, generated: cand.generated === true, template: cand.generated === true ? cand.template ?? null : null };
       if (item.kind === kind) return made;
       loose = loose ?? made;
     }

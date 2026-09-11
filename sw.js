@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v47';
+const CACHE_VERSION = 'v48';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -142,6 +142,16 @@ const PRECACHE = [
   './data/grammar/lessons/third-declension.json',
   './data/grammar/lessons/vocative.json',
   './data/grammar/lessons/wishes-utinam.json',
+  // The generated banks (GRAMMAR-CONTRACT.md §11b): built by pipeline/build_generated.py, one per sentence skill with templates.
+  './data/grammar/generated/index.json',
+  './data/grammar/generated/ablative-absolute.json',
+  './data/grammar/generated/ablative-agent.json',
+  './data/grammar/generated/ablative-means.json',
+  './data/grammar/generated/accusative-infinitive.json',
+  './data/grammar/generated/accusative-object.json',
+  './data/grammar/generated/dative-indirect-object.json',
+  './data/grammar/generated/perfect-active.json',
+  './data/grammar/generated/purpose-clause.json',
   // The written teaching sentences (GRAMMAR-CONTRACT.md §1), one file a skill: the whole of what Learn draws on.
   './data/grammar/sentences/ablative-absolute-perfect.json',
   './data/grammar/sentences/ablative-absolute.json',

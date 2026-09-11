@@ -1789,6 +1789,40 @@ rules on the item's word (`tableIdOf`), else the word itself.
   grammar-focus highlights are the `h` units, so they are lit already; a
   reader hook that lights the scanner's units is main.js / reader.js work.
 
+### Unlimited practice and mixed sets from the generated banks (§11b, §12)
+
+- **Data**: `data/grammar/generated/<skill>.json` (a bank of ≤400 sentences
+  pre-built by `pipeline/build_generated.py`, §11a shape) and
+  `generated/index.json` (the manifest). `loadGenerated(skill)` /
+  `generatedSkillIds()` in lessons.js, fetched lazily and once;
+  `normaliseGenerated` marks every sentence `generated: true` + `template`.
+- **Items**: `generatedItemsOf(skill)` (ui.js) is a second `createTeachItems`
+  over the bank with its own pool key, so `sentenceItem` builds every declared
+  kind exactly as for a written sentence; the item carries `generated`,
+  `template`, `written` (the sentence with its `en` and `gloss`) and
+  `pool: 'generated'`.
+- **Draw**: `createGeneratedTier` (session.js) — a fresh shuffle, none twice
+  until the bank is spent, then a new round (`repeat` on its first item);
+  `createSkillDraw({ generatedItem })` puts it after the written tier and
+  before the library. `createDrill({ generated, open })` uses it; `open` adds
+  `more()` (ten more slots) — view `unlimited` (`renderUnlimited`), run with
+  `runSession({ open: true, more })`. `createMixed` / `mixedMembers` — view
+  `mixed` (`renderMixed`): the skill every other item, its `confusable_with`
+  then `prereqs` between, chapter-capped, at most four related.
+- **Entry**: `practiceButtons` — "Unlimited practice" and "Mixed set" beside
+  "Just drill it" on the lesson page and on the skill row, only for skills in
+  the manifest (`hasBank`, rows repainted when it arrives).
+- **On the item**: a quiet "A generated sentence — …" note; "In English
+  (counts as a hint)" as a `<details class="g-q-en g-item__en">` under the
+  Latin (not on blank or translate), which calls `onHint()` when opened before
+  the answer; the feedback's "In the sentence (generated)" block adds the gloss
+  (`glossLine`). The summary's again-button reads "Keep going" / "Another
+  mixed set" (`params.unlimited` / `params.mixed`, with `params.drill` the
+  skill so the re-test and the tie-in still apply).
+- **Attempts**: `createRunner` adds `meta: { generated, template, sentence }`
+  to a generated item's attempt only; store-grammar keeps it locally and drops
+  it from the server row. Items have no key, so none enters a redo.
+
 ### The catalogue (§4, decision 10; §11)
 
 View `catalogue` ("Tables" in the nav; `renderCatalogue`, `renderTable`):
