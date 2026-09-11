@@ -62,6 +62,7 @@ def _bank(n=csc.MIN_BANK):
          "words": 4, "focus": "servō", "gloss": [{"w": "Iūlius", "m": "Julius"}],
          "generated": True, "template": "x-t1", "seed": 1, "fill": {}}
     return {"skill": "x", "chapter": 3, "seeds": [1], "count": n,
+            "source": __import__("build_generated").source_of("x"),
             "sentences": [dict(s, id=f"x-t1-{i}") for i in range(n)]}
 
 

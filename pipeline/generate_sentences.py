@@ -69,6 +69,10 @@ Nothing here touches app/js, lessons/, sentences/, skills.json or the decks.
 """
 from __future__ import annotations
 
+#: Bumped whenever generation changes what it would produce. A bank records it
+#: (build_generated.source_of) so a bank built by an older generator is caught.
+VERSION = "2026-09-11"
+
 import argparse
 import hashlib
 import itertools

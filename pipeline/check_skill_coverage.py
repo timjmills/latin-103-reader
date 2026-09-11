@@ -548,6 +548,20 @@ def _bank_problems(skill: dict, bank) -> list[str]:
                    and s.get("generated") is True and s.get("template"))]
     if bad:
         p.append(f"{len(bad)} bank sentences without la / en / gloss / generated / template, e.g. {bad[:3]}")
+    # A bank built before its templates were last edited is stale, and every row that reads it is then
+    # reporting on sentences the learner will never see. The fingerprint says so without rebuilding.
+    try:
+        import build_generated as BG
+        want, got = BG.source_of(sid), (bank.get("source") or {})
+        if not got:
+            p.append(f"generated bank records no source — run python pipeline/build_generated.py {sid}")
+        else:
+            moved = [k for k, v in want.items() if got.get(k) != v]
+            if moved:
+                p.append(f"generated bank was built from a different {', '.join(moved)} — "
+                         f"run python pipeline/build_generated.py {sid}")
+    except Exception as e:                                     # the builder is optional for this row
+        p.append(f"could not check the bank against its templates — {e}")
     return p
 
 

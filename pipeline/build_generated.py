@@ -24,6 +24,7 @@ and fails a sentence skill whose bank is missing or under MIN_BANK.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -69,7 +70,65 @@ def build_bank(skill: str, lex: "GS.Lexicon", cap: int = CAP, seeds: int = SEEDS
             if len(out) >= cap:
                 break
     return {"skill": skill, "chapter": chapter, "seeds": used_seeds, "count": len(out),
-            "rejected_by_check": rejected, "sentences": out}
+            "rejected_by_check": rejected, "source": source_of(skill), "sentences": out}
+
+
+def _rel(path: Path) -> str:
+    """The path as the repo sees it, or in full when it is outside the repo."""
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def _sha(path: Path) -> str:
+    """The sha256 of a file, or "" when it is not there."""
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        return ""
+
+
+def source_of(skill: str) -> dict:
+    """What a bank was built from: the templates file, the semantic classes and
+    the generator's own version. `build_generated.py --check` recomputes this
+    and fails when it has moved, so a template edited without a rebuild cannot
+    leave a stale bank passing the coverage check (§13)."""
+    return {"templates": _sha(ROOT / "app" / "data" / "grammar" / "templates" / f"{skill}.json"),
+            "sem": _sha(HERE / "sem.json"),
+            "generator": str(getattr(GS, "VERSION", "0"))}
+
+
+def check_banks(skills: list[str] | None = None, out_dir: Path = OUT_DIR, deep: bool = False) -> list[str]:
+    """Every way a committed bank can be out of date with what would build it
+    now. The cheap check is the fingerprint: a templates file, `sem.json` or
+    the generator itself that has moved since the bank was written. `deep`
+    rebuilds the bank from its own recorded seeds and compares — generation is
+    deterministic per (skill, seed), so anything but an identical list of
+    sentences is drift. Returns one line per problem, empty when all is well."""
+    problems: list[str] = []
+    ids = skills or sorted(p.stem for p in out_dir.glob("*.json") if p.stem != "index")
+    lex = GS.Lexicon() if deep else None
+    for skill in ids:
+        path = out_dir / f"{skill}.json"
+        if not path.exists():
+            problems.append(f"{skill}: no bank")
+            continue
+        bank = json.loads(path.read_text(encoding="utf-8"))
+        want, got = source_of(skill), (bank.get("source") or {})
+        if not got:
+            problems.append(f"{skill}: the bank records no source — re-run build_generated.py")
+            continue
+        moved = [k for k, v in want.items() if got.get(k) != v]
+        if moved:
+            problems.append(f"{skill}: built from a different {', '.join(moved)} — re-run build_generated.py")
+            continue
+        if deep:
+            seeds = bank.get("seeds") or []
+            fresh = build_bank(skill, lex, cap=bank.get("count", CAP), seeds=max(seeds or [1]))
+            if [s["la"] for s in fresh["sentences"]] != [s["la"] for s in bank.get("sentences", [])]:
+                problems.append(f"{skill}: a rebuild does not reproduce the committed bank")
+    return problems
 
 
 def write_bank(bank: dict, out_dir: Path = OUT_DIR) -> Path:
@@ -97,7 +156,16 @@ def main(argv=None) -> int:
     ap.add_argument("--seeds", type=int, default=SEEDS)
     ap.add_argument("--per-seed", type=int, default=PER_SEED)
     ap.add_argument("--out", default=str(OUT_DIR))
+    ap.add_argument("--check", action="store_true", help="do not write: report banks out of date with their templates")
+    ap.add_argument("--deep", action="store_true", help="with --check, also rebuild each bank and compare")
     a = ap.parse_args(argv)
+    if a.check:
+        problems = check_banks(a.skills or None, Path(a.out), deep=a.deep)
+        for line in problems:
+            print(f"FAIL {line}")
+        print("ok: every bank matches its templates, sem.json and generator" if not problems
+              else f"{len(problems)} bank(s) out of date")
+        return 1 if problems else 0
     skills = a.skills or [p.stem for p in sorted(GS.TEMPLATES_DIR.glob("*.json"))]
     if not skills:
         print("no templates files found", file=sys.stderr)
@@ -116,9 +184,9 @@ def main(argv=None) -> int:
         if flag:
             short.append(skill)
         print(f"{skill}: {bank['count']} sentences from seeds {bank['seeds']}, "
-              f"{bank['rejected_by_check']} fills rejected -> {path.relative_to(ROOT)}{flag}")
+              f"{bank['rejected_by_check']} fills rejected -> {_rel(path)}{flag}")
     idx = write_index(Path(a.out))
-    print(f"index: {len(json.loads(idx.read_text(encoding='utf-8'))['generated'])} banks -> {idx.relative_to(ROOT)}")
+    print(f"index: {len(json.loads(idx.read_text(encoding='utf-8'))['generated'])} banks -> {_rel(idx)}")
     return 1 if short else 0
 
 
