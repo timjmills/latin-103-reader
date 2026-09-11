@@ -1,189 +1,189 @@
 {
-  "skill": "future-infinitive",
-  "core": [
+ "skill": "future-infinitive",
+ "core": [
+  {
+   "type": "p",
+   "text": "To report that something *will* happen, Latin uses **the future infinitive (the 'going to' form: venturum esse)**: the future participle plus *esse*. He says *sē epistulam scrīptūrum esse* — that he will write a letter. The participle agrees with the accusative subject of the reported clause, so *sē … scrīptūram esse* for a woman, *eōs … factūrōs esse* for several men. Latin name: *īnfīnītīvus futūrī*."
+  },
+  {
+   "type": "english",
+   "text": "*She hopes that he will come*: English keeps a future verb inside the *that*-clause. Latin puts the future on the infinitive instead."
+  },
+  {
+   "type": "rule",
+   "text": "Future participle (accusative, agreeing) + esse. Esse is often left out: dīcit sē ventūrum. Sum has futūrum esse or the one-word fore."
+  },
+  {
+   "type": "paradigm",
+   "key": "conj1",
+   "highlight": {
+    "mood": "inf",
+    "tense": "fut"
+   }
+  },
+  {
+   "type": "examples",
+   "units": [
+    "w05:fl-67:b40.9",
+    "w07:b2.4",
+    "w10:fl-73:b32.1",
+    "w06:147.1"
+   ],
+   "invented": [
     {
-      "type": "p",
-      "text": "To report that something *will* happen, Latin uses **the future infinitive (the 'going to' form: venturum esse)**: the future participle plus *esse*. He says *sē epistulam scrīptūrum esse* — that he will write a letter. The participle agrees with the accusative subject of the reported clause, so *sē … scrīptūram esse* for a woman, *eōs … factūrōs esse* for several men. Latin name: *īnfīnītīvus futūrī*."
-    },
-    {
-      "type": "english",
-      "text": "*She hopes that he will come*: English keeps a future verb inside the *that*-clause. Latin puts the future on the infinitive instead."
-    },
-    {
-      "type": "rule",
-      "text": "Future participle (accusative, agreeing) + esse. Esse is often left out: dīcit sē ventūrum. Sum has futūrum esse or the one-word fore."
-    },
-    {
-      "type": "paradigm",
-      "key": "conj1",
-      "highlight": {
-        "mood": "inf",
-        "tense": "fut"
-      }
-    },
-    {
-      "type": "examples",
-      "units": [
-        "w05:fl-67:b40.9",
-        "w07:b2.4",
-        "w10:fl-73:b32.1",
-        "w06:147.1"
-      ],
-      "invented": [
-        {
-          "la": "Mārcus prōmittit sē bonum puerum futūrum esse.",
-          "en": "Marcus promises that he will be a good boy.",
-          "focus": "futūrum esse"
-        }
-      ]
-    },
-    {
-      "type": "confusion",
-      "with": "perfect-infinitive",
-      "text": "Three infinitives, three times. *Scrībere* — is writing (same time); **the perfect infinitive (the 'to have done' form)** *scrīpsisse* — wrote (earlier); *scrīptūrum esse* — will write (later). The -ūr- marks the future, the -isse the past."
+     "la": "Mārcus prōmittit sē bonum puerum futūrum esse.",
+     "en": "Marcus promises that he will be a good boy.",
+     "focus": "futūrum esse"
     }
-  ],
-  "more": [
-    {
-      "type": "p",
-      "text": "The learner's notes (week 23) point out that English has nothing like this and translates with a *that*-clause and *will* or *would*: *audīvistis nōs profectūrōs esse* — you heard that we were going to leave. *Fore* is the short form of *futūrum esse*: after *spērō* — I hope — *eum brevī sānum fore*, that he will soon be well."
-    },
-    {
-      "type": "p",
-      "text": "The future passive infinitive is supine + *īrī* (*laudātum īrī* — to be going to be praised); it never changes its ending and is rare. Ørberg shows it in cap. XXIII, where Aemilia fears her son *ā patre verberātum īrī*."
-    }
-  ],
-  "sources": [
-    "notes p89",
-    "Ørberg cap. XXIII Grammatica Latina",
-    "A&G §584"
-  ],
-  "teach": [
-    {
-      "n": 1,
-      "title": "Reporting what will happen",
-      "notice": {
-        "sentences": [
-          "fi-02",
-          "fi-05"
-        ],
-        "ask": "Tap the words that report what Julius and Julia will do — what do the two pairs have in common?",
-        "tap": "focus"
-      },
-      "say": "When Latin reports that something *will* happen, the verb in the report becomes **the future infinitive (the 'going to' form: ventūrum esse)**. *Mārcus dīcit sē epistulam scrīptūrum esse* — Marcus says that he will write a letter. English needs a 'that' and a 'will'; Latin packs both into the form.",
-      "show": {
-        "kind": "sentence",
-        "id": "fi-01"
-      },
-      "check": {
-        "kind": "recognise",
-        "sentence": "fi-02"
-      },
-      "worked": {
-        "sentence": "fi-01",
-        "given": [
-          "mood",
-          "tense",
-          "voice",
-          "case",
-          "number",
-          "gender"
-        ],
-        "ask": []
-      }
-    },
-    {
-      "n": 2,
-      "title": "What the two words are",
-      "say": "It is the future participle (the 'about to' word: ventūrus = about to come) with *esse* after it: *scrīptūrum esse*, *datūrum esse*. The table prints its naming form, *scrīptūrus esse*, on the future row of the infinitives; inside a report the participle changes to *scrīptūrum* to agree with the accusative person.",
-      "show": {
-        "kind": "paradigm",
-        "key": "conj3",
-        "word": "scrībō",
-        "reveal": [
-          "inf.fut.act"
-        ],
-        "say": "scrīptūrus esse — the fourth part scrīpt- with -ūrus, then esse"
-      },
-      "check": {
-        "kind": "chart",
-        "key": "conj3",
-        "word": "scrībō",
-        "cells": [
-          "inf.fut.act"
-        ],
-        "words": [
-          "scribo",
-          "dico",
-          "mitto"
-        ]
-      }
-    },
-    {
-      "n": 3,
-      "title": "The participle agrees with the person reported",
-      "say": "The person reported stands in the accusative (the object form) — *sē*, *Iūlium*, *lupum* — and the participle agrees with it: *sē itūrum esse* for a man, *sē ventūram esse* for a woman, *sē lūsūrōs esse* for several. Only *esse* never changes.",
-      "show": {
-        "kind": "sentence",
-        "id": "fi-05"
-      },
-      "check": {
-        "kind": "parse",
-        "sentence": "fi-06"
-      },
-      "worked": {
-        "sentence": "fi-07",
-        "given": [
-          "mood",
-          "tense",
-          "voice"
-        ],
-        "ask": [
-          "case",
-          "number",
-          "gender"
-        ]
-      }
-    },
-    {
-      "n": 4,
-      "title": "Telling it from the perfect infinitive",
-      "say": "Three infinitives, three times: *cantāre* — singing now; *cantāvisse* — sang, earlier; *cantātūram esse* — will sing, later. The *-isse* is the earlier one, the *-ūrum esse* the later one, and a sentence can carry both at once.",
-      "show": {
-        "kind": "sentence",
-        "id": "fi-10"
-      },
-      "check": {
-        "kind": "recognise",
-        "sentence": "fi-11"
-      }
-    },
-    {
-      "n": 5,
-      "title": "The two short forms",
-      "say": "*Esse* is very often simply left out and understood: *Mārcus dīcit sē statim ventūrum*. And *sum* has a one-word future infinitive of its own, *fore*, beside the fuller *futūrum esse*: *Medicus dīcit puerum sānum fore* — the doctor says the boy will be well.",
-      "show": {
-        "kind": "sentence",
-        "id": "fi-12"
-      },
-      "check": {
-        "kind": "blank",
-        "sentence": "fi-13"
-      },
-      "worked": {
-        "sentence": "fi-14",
-        "given": [
-          "mood",
-          "voice"
-        ],
-        "ask": [
-          "tense",
-          "case",
-          "number",
-          "gender",
-          "why"
-        ]
-      }
-    }
-  ]
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "perfect-infinitive",
+   "text": "Three infinitives, three times. *Scrībere* — is writing (same time); **the perfect infinitive (the 'to have done' form)** *scrīpsisse* — wrote (earlier); *scrīptūrum esse* — will write (later). The -ūr- marks the future, the -isse the past."
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "The learner's notes (week 23) point out that English has nothing like this and translates with a *that*-clause and *will* or *would*: *audīvistis nōs profectūrōs esse* — you heard that we were going to leave. *Fore* is the short form of *futūrum esse*: after *spērō* — I hope — *eum brevī sānum fore*, that he will soon be well."
+  },
+  {
+   "type": "p",
+   "text": "The future passive infinitive is supine + *īrī* (*laudātum īrī* — to be going to be praised); it never changes its ending and is rare. Ørberg shows it in cap. XXIII, where Aemilia fears her son *ā patre verberātum īrī*."
+  }
+ ],
+ "sources": [
+  "notes p89",
+  "Ørberg cap. XXIII Grammatica Latina",
+  "A&G §584"
+ ],
+ "teach": [
+  {
+   "n": 1,
+   "title": "Reporting what will happen",
+   "notice": {
+    "sentences": [
+     "fi-02",
+     "fi-05"
+    ],
+    "ask": "Tap the words that report what Julius and Julia will do — what do the two pairs have in common?",
+    "tap": "focus"
+   },
+   "say": "When Latin reports that something *will* happen, the verb in the report becomes **the future infinitive (the 'going to' form: ventūrum esse)**. *Mārcus dīcit sē longam epistulam scrīptūrum esse* — Marcus says that he will write a long letter. English needs a 'that' and a 'will'; Latin packs both into the form.",
+   "show": {
+    "kind": "sentence",
+    "id": "fi-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "fi-02"
+   },
+   "worked": {
+    "sentence": "fi-01",
+    "given": [
+     "mood",
+     "tense",
+     "voice",
+     "case",
+     "number",
+     "gender"
+    ],
+    "ask": []
+   }
+  },
+  {
+   "n": 2,
+   "title": "What the two words are",
+   "say": "It is the future participle (the 'about to' word: ventūrus = about to come) with *esse* after it: *scrīptūrum esse*, *datūrum esse*. The table prints its naming form, *scrīptūrus esse*, on the future row of the infinitives; inside a report the participle changes to *scrīptūrum* to agree with the accusative person.",
+   "show": {
+    "kind": "paradigm",
+    "key": "conj3",
+    "word": "scrībō",
+    "reveal": [
+     "inf.fut.act"
+    ],
+    "say": "scrīptūrus esse — the fourth part scrīpt- with -ūrus, then esse"
+   },
+   "check": {
+    "kind": "chart",
+    "key": "conj3",
+    "word": "scrībō",
+    "cells": [
+     "inf.fut.act"
+    ],
+    "words": [
+     "scribo",
+     "dico",
+     "mitto"
+    ]
+   }
+  },
+  {
+   "n": 3,
+   "title": "The participle agrees with the person reported",
+   "say": "The person reported stands in the accusative (the object form) — *sē*, *Iūlium*, *lupum* — and the participle agrees with it: *sē itūrum esse* for a man, *sē ventūram esse* for a woman, *sē lūsūrōs esse* for several. Only *esse* never changes.",
+   "show": {
+    "kind": "sentence",
+    "id": "fi-05"
+   },
+   "check": {
+    "kind": "parse",
+    "sentence": "fi-06"
+   },
+   "worked": {
+    "sentence": "fi-07",
+    "given": [
+     "mood",
+     "tense",
+     "voice"
+    ],
+    "ask": [
+     "case",
+     "number",
+     "gender"
+    ]
+   }
+  },
+  {
+   "n": 4,
+   "title": "Telling it from the perfect infinitive",
+   "say": "Three infinitives, three times: *cantāre* — singing now; *cantāvisse* — sang, earlier; *cantātūram esse* — will sing, later. The *-isse* is the earlier one, the *-ūrum esse* the later one, and a sentence can carry both at once.",
+   "show": {
+    "kind": "sentence",
+    "id": "fi-10"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "fi-11"
+   }
+  },
+  {
+   "n": 5,
+   "title": "The two short forms",
+   "say": "*Esse* is very often simply left out and understood: *Mārcus dīcit sē statim ventūrum*. And *sum* has a one-word future infinitive of its own, *fore*, beside the fuller *futūrum esse*: *Medicus dīcit puerum sānum fore* — the doctor says the boy will be well.",
+   "show": {
+    "kind": "sentence",
+    "id": "fi-12"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "fi-13"
+   },
+   "worked": {
+    "sentence": "fi-14",
+    "given": [
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "tense",
+     "case",
+     "number",
+     "gender",
+     "why"
+    ]
+   }
+  }
+ ]
 }

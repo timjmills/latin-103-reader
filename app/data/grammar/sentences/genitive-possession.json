@@ -4,8 +4,8 @@
  "sentences": [
   {
    "id": "gp-01",
-   "la": "Iūlius pater Mārcī et Quīntī est.",
-   "en": "Julius is the father of Marcus and Quintus.",
+   "la": "Iūlius pater Quīntī et Mārcī est.",
+   "en": "Julius is the father of Quintus and Marcus.",
    "words": 6,
    "focus": "Mārcī",
    "step": 1,
@@ -24,16 +24,16 @@
      "m": "father"
     },
     {
-     "w": "Mārcī",
-     "m": "of Marcus"
+     "w": "Quīntī",
+     "m": "of Quintus"
     },
     {
      "w": "et",
      "m": "and"
     },
     {
-     "w": "Quīntī",
-     "m": "of Quintus"
+     "w": "Mārcī",
+     "m": "of Marcus"
     },
     {
      "w": "est",
