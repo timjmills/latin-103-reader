@@ -356,8 +356,27 @@ def row_1c(ctx, skill, cls, lesson, sents):
             p.append(f"notice sentence {sid!r} does not exist")
     if not notice.get("ask"):
         p.append("notice has no question")
-    if not notice.get("tap") and not notice.get("options"):
-        p.append("notice is answered neither by tap nor by options")
+    # Mirror app/js/grammar/lessons.js normaliseNotice exactly: it reads `options`
+    # (+ `answer`) or `tap: "focus"`, and nothing else. Any other spelling falls
+    # back to tap-the-focus, which asks the learner to tap a word that does not
+    # answer the question — so an unread key is a failure here, not a warning.
+    options = notice.get("options")
+    tap = notice.get("tap")
+    if "choices" in notice:
+        p.append('notice uses "choices"; the loader reads "options"')
+    if tap not in (None, "focus"):
+        p.append(f'notice "tap" is {tap!r}; the loader reads only "focus"')
+    if options:
+        if not isinstance(options, list) or len(options) < 2 or not all(isinstance(o, str) and o.strip() for o in options):
+            p.append("notice options must be two or more non-empty strings")
+        ans = notice.get("answer")
+        if isinstance(ans, int):
+            if not (isinstance(options, list) and 0 <= ans < len(options)):
+                p.append("notice answer index is outside its options")
+        elif not isinstance(ans, str) or ans not in (options if isinstance(options, list) else []):
+            p.append("notice answer is not one of its options")
+    elif tap != "focus":
+        p.append("notice is answered neither by tap: focus nor by options")
     return (FAIL, _join(p)) if p else (PASS, "notice on step 1")
 
 
