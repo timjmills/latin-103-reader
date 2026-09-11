@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v52';
+const CACHE_VERSION = 'v53';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -34,6 +34,7 @@ const PRECACHE = [
   './js/dictionary.js',
   './js/paradigms.js',
   './js/tokenize.js',
+  './js/hovergloss.js',
   './js/settings.js',
   './js/chapters.js',
   './js/progress.js',

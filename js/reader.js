@@ -3,6 +3,11 @@
 // createReader() below owns the DOM. Dependencies (tokenize, describe) are
 // injected so this file has no static import of B's modules.
 
+// The one static import: the pointer-dictionary's machine, shared with the
+// Grammar section (hovergloss.js). It carries no data and knows no Latin —
+// it is the open-on-rest / close-on-leave behaviour and nothing else.
+import { attachHoverGloss, cutLatinWords } from './hovergloss.js';
+
 /* ----------------------------------------------------------------- pure */
 
 /**
@@ -507,6 +512,62 @@ export function inViewEnough(visibleHeight, unitHeight, viewportHeight, ratio = 
   return need > 0 && (Number(visibleHeight) || 0) >= ratio * need - 0.5;
 }
 
+/* --- the dictionary on the pointer ------------------------------------ */
+/**
+ * The lines of the tooltip the pointer opens on a Latin word, in the order
+ * they are drawn — the same four things the panel's entry opens with, and
+ * nothing that would need to be pressed: the switcher between readings, the
+ * senses, the paradigm and the learned / forget buttons are the click's, and
+ * the tooltip takes no pointer.
+ *
+ * `gloss` is the shell's `gloss(text, { context, at })`: `{ readings, total }`,
+ * the readings already ranked for this word in this sentence and described.
+ * Pure.
+ *
+ * @returns {{miss: boolean, meanings: string[], parse: ?string, lemma: ?string, category: ?string, more: ?string}}
+ */
+export function glossTipRows(gloss) {
+  const d = gloss?.readings?.[0] ?? null;
+  if (!d) return { miss: true, meanings: [], parse: null, lemma: null, category: null, more: null };
+  const total = Number(gloss.total) > 0 ? Number(gloss.total) : 1;
+  return {
+    miss: false,
+    // "to/for the labyrinth · in/by the labyrinth" → one reading per line, as the panel sets them.
+    meanings: String(d.meaning ?? '').split(/\s+·\s+/).filter(Boolean),
+    parse: d.parse || null,
+    lemma: d.lemma || null,
+    category: d.category || null,
+    // A second reading is not shown: choosing between them is the switcher's, and the switcher
+    // needs a press. The count says so rather than pretending the first is the only one.
+    more: total > 1 ? `${total} entries — tap the word for the rest` : null,
+  };
+}
+
+/**
+ * Is the page already saying what this word means? Then the pointer keeps
+ * quiet: a second copy of a meaning that is on screen already is noise, not
+ * help. Two settings of the reader's put one there —
+ *
+ * - sentence view's "Words you looked up in this sentence": the row beside the
+ *   word prints its meaning, its parse and its citation form, which is the
+ *   whole of what the tooltip would say;
+ * - a margin gloss or a picture caption whose English is showing, either
+ *   because the learner opened that one or because Settings → every gloss's
+ *   English is on. `visible(el)` is asked rather than the setting, so this can
+ *   never drift from the CSS that decides it.
+ *
+ * Everything else stays hoverable, including a word under the Translation
+ * setting: an English rendering of a sentence does not say which word carried
+ * which part of it, which is exactly what the learner is hovering to find out.
+ * Pure (`el` needs only `closest` / `querySelector`).
+ */
+export function glossAlreadyShown(el, visible) {
+  if (el?.closest?.('.lookups__item')) return true;
+  const item = el?.closest?.('.mnotes__item, .pic');
+  const en = item?.querySelector?.('.mnotes__en, .pic__en');
+  return !!en && !!visible(en);
+}
+
 /* ------------------------------------------------------------------ DOM */
 
 /**
@@ -551,6 +612,10 @@ const h = (tag, attrs = {}, ...children) => {
  * @param {HTMLElement} o.root       the <article class="reader">
  * @param {Function}    o.tokenize   B's tokenize(la)
  * @param {Function}    o.describeForm  form → {meaning, parse, lemma} | null (for the sentence-view list)
+ * @param {Function}    [o.gloss]    the pointer-dictionary's lookup: gloss(text, { context, at }) →
+ *                                   { readings: [described], total } — the same ranked call the panel
+ *                                   makes on a click, so the tooltip and the entry agree. Without it
+ *                                   the pointer opens nothing and a click is unchanged.
  * @param {HTMLElement} o.live       aria-live region for navigation announcements
  * @param {HTMLElement} [o.listen]   the listen bar (#listen, owned by main.js): moved into every render —
  *                                   top of the passage (under the first part title) / above the sentence
@@ -559,7 +624,7 @@ const h = (tag, attrs = {}, ...children) => {
  * @param {Function}    [o.readSettled]  progress value → true when the sentence needs no timer now (sync.js readSettled: read within 30 min; default: any entry)
  *                                   like the listen bar — above it in passage view, under the meta line in sentence view
  */
-export function createReader({ root, tokenize, describeForm, live, listen = null, plain = null, progressBar = null, readSettled = (value) => value != null }) {
+export function createReader({ root, tokenize, describeForm, gloss = null, live, listen = null, plain = null, progressBar = null, readSettled = (value) => value != null }) {
   const listeners = {};
   const on = (ev, cb) => { (listeners[ev] ??= []).push(cb); };
   const emit = (ev, detail) => { for (const cb of listeners[ev] ?? []) cb(detail); };
@@ -774,12 +839,16 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('.lightbox__close')) lightbox.close(); });
     lightbox.addEventListener('keydown', (e) => e.stopPropagation());   // the reader's letter shortcuts stay out while it is open (Escape still closes: the dialog's own cancel)
     lightbox.addEventListener('close', () => {
+      hideTip();
       lightbox.querySelector('.lightbox__img').removeAttribute('src');
       const back = lightboxOpener;
       lightboxOpener = null;
       if (back?.isConnected) back.focus({ preventScroll: true });
     });
     document.body.append(lightbox);
+    // The enlarged caption is Latin too, and it is a modal dialog: the pointer-dictionary has to be
+    // given to it by name, and its tooltip is hosted inside it so the backdrop cannot cover it.
+    hoverGloss(lightbox);
     return lightbox;
   }
   function openPicture(id, opener) {
@@ -1020,6 +1089,7 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
   // pictures switched off, Book lines) would otherwise move the page by that much.
   function render() {
     clearReadTimers();
+    hideTip();   // the word the pointer was on is about to be replaced; its tooltip hangs off the document
     if (state.current !== state.shownOrder) { state.shownOrder = state.current; state.currentSince = Date.now(); }
     const y = window.scrollY;
     const anchor = state.view === 'passage' && root.dataset.view === 'passage' ? firstUnitInView() : null;
@@ -1503,6 +1573,120 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     live.textContent = `Sentence ${state.current + 1} of ${state.units.length}${u.line_no != null ? `, line ${u.line_no}` : ''}. ${u.la}`;
   }
 
+  /* --- the dictionary on the pointer ------------------------------ */
+  /*
+   * "All Latin text throughout should be mouse-overable for the meaning" — the
+   * Grammar section got this first (5d2f8c7); the reader is where the learner
+   * actually reads. The pointer resting on a word opens what a click opens,
+   * from the same dictionary call the panel makes, as a tooltip: it takes no
+   * keyboard focus (which would pull the caret out of whatever has it just
+   * because the pointer crossed a word), it takes no pointer, it carries
+   * nothing to press, and it goes when the pointer leaves.
+   *
+   * A click is untouched. It still records the lookup, runs the tap cycle
+   * (look up → learned → back on the list) and opens the panel or the popup.
+   * The tooltip writes nothing and records nothing: resting the pointer on a
+   * word is not the learner saying they had to look it up.
+   *
+   * The machine — the rest delay, the touch-screen guard, and cutting
+   * plain-text Latin into words on demand — is hovergloss.js, shared with the
+   * Grammar section so there are not two different tooltips in one app.
+   */
+  // What must never be cut into words, nor cut inside: a control whose text is its value, anything
+  // already a word, the English that sits inside a Latin block (a margin gloss's rendering, a
+  // caption's), line numbers, and the looked-up list, which says it all in the row already.
+  const LA_NO = 'input, textarea, select, option, [lang="en"], .w, .r-wx, .lineno, .lookups__item, .wtip';
+  let tip = null;
+  function hideTip() {
+    if (!tip) return;
+    tip.remove();
+    tip = null;
+    // It is glued to the document, so it rides a page scroll with its word — but not the scroll of a
+    // box inside one (the weeks menu's list), and a press means something else is happening now: a
+    // chapter row opening a reading, a tab changing under it. Either way it has finished.
+    window.removeEventListener('scroll', hideTip, true);
+    window.removeEventListener('pointerdown', hideTip, true);
+  }
+  function showTip(w) {
+    hideTip();
+    if (!gloss) return;
+    const text = w.textContent;
+    const form = w.dataset.form || text;
+    // The word as the book prints it, with its sentence: the dictionary needs both to say which
+    // reading this is, so the tooltip opens on the reading the panel would open on. Latin outside a
+    // sentence (a caption, a chapter title) takes the run of Latin it stands in as its context.
+    const unitEl = w.closest('[data-id], [data-for]');
+    const unit = unitEl ? state.byId.get(unitEl.dataset.id ?? unitEl.dataset.for) : null;
+    const context = unit?.la ?? w.closest('[lang="la"]')?.textContent ?? '';
+    const at = Number(w.dataset.start);
+    const rows = glossTipRows(gloss(text || form, { context, at: Number.isFinite(at) ? at : undefined }));
+    // aria-hidden: it is the pointer's affordance and nothing else. It can never be reached by the
+    // keyboard, and the keyboard has the panel — Enter on a word opens the entry, which is announced.
+    tip = h('div', { class: 'popup wtip', 'aria-hidden': 'true' },
+      h('div', { class: 'panel__content entry wtip__entry' },
+        h('h2', { class: 'entry__form', lang: 'la', text }),
+        rows.miss
+          ? h('p', { class: 'entry__meaning entry__meaning--miss', text: 'Not in the dictionary' })
+          : h('p', { class: 'entry__meaning' }, rows.meanings.map((m, i) => [i ? h('br') : null, h('span', { class: 'entry__reading', text: m })])),
+        rows.parse ? h('p', { class: 'entry__parse', text: rows.parse }) : null,
+        rows.lemma ? h('p', { class: 'entry__lemma' },
+          h('span', { class: 'entry__cite', lang: 'la', text: rows.lemma }),
+          rows.category ? h('span', { class: 'entry__sep', 'aria-hidden': 'true', text: ' · ' }) : null,
+          rows.category ? h('span', { class: 'entry__cat', text: rows.category }) : null) : null,
+        rows.more ? h('p', { class: 'wtip__more', text: rows.more }) : null));
+    // A word inside an open dialog (the picture lightbox, the weeks menu) needs its tooltip in the
+    // top layer beside it, or the dialog's own backdrop would cover it. Everywhere else the tooltip
+    // hangs off the document, so it scrolls with the word it belongs to instead of floating free.
+    const host = w.closest('dialog[open]') ?? document.body;
+    host.append(tip);
+    const wr = w.getBoundingClientRect();
+    const hr = host === document.body ? { left: -window.scrollX, top: -window.scrollY } : host.getBoundingClientRect();
+    // The box the tooltip has to stay inside. For the document that is the viewport; for a dialog it
+    // is the dialog, which clips what leaves it — a word near its left edge had the tooltip's first
+    // letters cut off before this said so.
+    const box = host === document.body
+      ? { left: 8, right: window.innerWidth - 8, top: 8, bottom: window.innerHeight - 8 }
+      : { left: hr.left + 8, right: hr.right - 8, top: hr.top + 8, bottom: hr.bottom - 8 };
+    const width = Math.min(340, box.right - box.left);
+    tip.style.width = `${width}px`;
+    const left = Math.max(box.left, Math.min(wr.left + wr.width / 2 - width / 2, box.right - width));
+    tip.style.left = `${Math.round(left - hr.left)}px`;
+    tip.style.top = '0px';
+    // Under the word, or over it when there is no room below — the last line of a long passage is
+    // the one most likely to be hovered and the least likely to have room under it.
+    const hgt = tip.offsetHeight;
+    const below = wr.bottom + 6;
+    const above = wr.top - 6 - hgt;
+    const top = below + hgt > box.bottom && above > box.top ? above : Math.min(below, Math.max(box.top, box.bottom - hgt));
+    tip.style.top = `${Math.round(top - hr.top)}px`;
+    window.addEventListener('scroll', hideTip, true);
+    window.addEventListener('pointerdown', hideTip, true);
+  }
+  /**
+   * Attach the same pointer-dictionary to another root the shell owns — the
+   * chapter page, the weeks menu. `off` is a selector for a part of that root
+   * it must not enter at all: neither open there, nor cut the Latin it finds
+   * there into words (a panel another section draws and owns).
+   */
+  function hoverGloss(el, { off = null } = {}) {
+    if (!el) return null;
+    const outside = (node) => !!(off && node.closest?.(off));
+    return attachHoverGloss({
+      root: el,
+      word: '.w, .r-wx',
+      pop: '.wtip',
+      cut: (node) => (outside(node) ? false : cutLatinWords(node, { tokenize, cls: 'r-wx', skip: LA_NO })),
+      // The reader has no items and no answers, so nothing here can be given away by a definition —
+      // the Grammar section's rule about a tap item's words has no counterpart, and that is a
+      // decision, not an omission. What it does keep quiet on is a word whose meaning one of the
+      // reader's own settings is already showing.
+      skip: (w) => outside(w) || glossAlreadyShown(w, (node) => getComputedStyle(node).display !== 'none'),
+      show: showTip,
+      hide: hideTip,
+    });
+  }
+  hoverGloss(root);
+
   /* --- events (delegated) ----------------------------------------- */
   function wordFrom(el) {
     const unitEl = el.closest('[data-id], [data-for]');
@@ -1761,6 +1945,14 @@ export function createReader({ root, tokenize, describeForm, live, listen = null
     highlightsOf(unitId) {
       return [...(state.hl.get(unitId) ?? [])].sort((a, b) => a.start - b.start);
     },
+    /**
+     * Give the pointer-dictionary to another root the shell owns — the chapter
+     * page, the weeks menu — so Latin drawn outside the reading text answers
+     * the pointer too. `off` is a selector for a part of it to stay out of.
+     */
+    hoverGloss,
+    /** Take away a tooltip the pointer opened (the shell re-drawing the surface it sat on). */
+    hideGloss: hideTip,
     /** The unit's word tokens with their lookup form and character offset, in text order. */
     wordTokens(unitId) {
       const u = state.byId.get(unitId);
