@@ -975,7 +975,7 @@ export function workedPlan(worked, focus, { skill = null, skills = null, first =
  * (batches of 10 until the learner stops). Answers update skill_state at
  * once, so a second device sees the change.
  */
-export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, chapter = null, rand = Math.random, resume = null, onChange = null, fill = undefined, pair = null, rebuild = null }) {
+export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, chapter = null, rand = Math.random, resume = null, onChange = null, fill = undefined, pair = null, rebuild = null, unstudied = false }) {
   const skills = skillsIndex.skills;
   // Only skills that can produce an item enter a plan (M8): a metre skill or one with no sentences never becomes a slot.
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
@@ -991,7 +991,9 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
   const scopeOf = (slot) => (slot.chapter != null ? { chapter: slot.chapter, chapterMode: slot.chapterMode ?? 'own-first' }
     : chapter != null ? { chapter, chapterMode: 'own-first' }
     : { chapter: weekChapter, chapterMode: 'ceiling' });
-  const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior, chapter, currentWeekChapter: weekChapter });
+  // `unstudied`: the Practice setup's "Include what you have not studied" — the filler and the open session's
+  // later batches carry it too, so a set that was let in at the start does not quietly stop being let in.
+  const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior, chapter, currentWeekChapter: weekChapter, unstudied });
   const slots = plan ?? build(size ?? 10);
   // `itemKey` (a redo's slot) asks the generator for that exact item and nothing else; an ordinary slot has none.
   // `rebuild` is the caller's answer for a key the library generator cannot know — an item drawn from a skill's

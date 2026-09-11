@@ -125,7 +125,10 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     drillable(id) { return drillableMemo.drillable(id); },
     /** The grammar preferences kept in settings (unknown keys ride along in the settings blob). */
     // `hints` is the per-answer-box hint mode ('press' | 'always' | 'off'), riding in the same blob as the rest.
-    prefs() { const g = ctx.settings?.grammar; return { preset: g?.preset ?? 'review-heavy', size: g?.size === null ? null : (Number(g?.size) || 10), oneSkill: g?.oneSkill ?? null, view: g?.view === 'chapter' ? 'chapter' : 'topic', hints: normaliseHintMode(g?.hints) }; },
+    // `populations` is what the mixed set may mix (sets.js POPULATIONS) and `unstudied` whether it may reach
+    // material never opened. Both are the learner's and ride in the same blob: `null` means "not chosen yet",
+    // which is not the same as the empty choice `[]`, so "none" survives a reload like any other setting.
+    prefs() { const g = ctx.settings?.grammar; return { preset: g?.preset ?? 'review-heavy', size: g?.size === null ? null : (Number(g?.size) || 10), oneSkill: g?.oneSkill ?? null, view: g?.view === 'chapter' ? 'chapter' : 'topic', hints: normaliseHintMode(g?.hints), populations: Array.isArray(g?.populations) ? g.populations : null, unstudied: g?.unstudied == null ? null : !!g.unstudied }; },
     async savePrefs(patch) {
       const next = { ...(ctx.settings?.grammar ?? {}), ...patch };
       ctx.settings = { ...ctx.settings, grammar: next };

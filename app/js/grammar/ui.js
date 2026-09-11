@@ -8,10 +8,10 @@ import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalog
 import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize } from '../tokenize.js';
-import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
+import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey } from './items.js';
-import { setsOfChapter, setChapters, phraseIndexes, focusIndexes } from './sets.js';
+import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATIONS, POPULATION_LABEL, populationOf, normalisePopulations, filterPopulations, mixNote, mixTitle } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
 import { buildToday, fmtMinutes } from './today.js';
@@ -43,7 +43,7 @@ const STATE_LABEL = { new: 'new', learning: 'learning', practising: 'practising'
 const PRESET_LABEL = {
   'review-heavy': ['Review-heavy', 'Due skills first, with confusable pairs. The default.'],
   'this-week': ['This week', "Two thirds from this week's new skills, the rest due reviews."],
-  even: ['Even mix', 'Random across everything in rotation.'],
+  even: ['Even mix', 'Random across everything in the mix.'],
   'one-skill': ['One skill', 'A blocked set on a skill you choose.'],
 };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -158,7 +158,18 @@ export function scopeSentence(scope) {
 const KIND_LABEL = { recognise: 'recognise', chart: 'chart', parse: 'parse', blank: 'blank', transform: 'transform', reorder: 'reorder', translate: 'translate', question: 'question', vocab: 'vocabulary', pensum: 'pensum' };
 const SET_ROW_LABEL = { questions: 'Questions', vocab: 'Vocabulary', pensum: 'Pensa' };
 
-function dueText(s, now = Date.now()) {
+/**
+ * The one line under a row saying where it stands. A row taken out of mixed
+ * practice (scheduler.js `removeFromPractice`, the "None" half of the map's
+ * pair) is `new` again to the scheduler but keeps everything it learned, and
+ * "not started" over forty right answers would be simply false — so a `new`
+ * row with a history says what it really is. Pure.
+ */
+export function dueText(s, now = Date.now()) {
+  if (s && s.state === 'new' && (s.successes || s.failures || s.last_at)) {
+    const n = (Number(s.successes) || 0) + (Number(s.failures) || 0);
+    return `out of the mix · ${n} answer${n === 1 ? '' : 's'} kept`;
+  }
   if (!s || s.state === 'new') return 'not started';
   if (s.state === 'learning') return 'in Learn';
   if (s.state === 'lapsed') return 'lapsed — worth a short re-learn';
@@ -495,8 +506,16 @@ export function createUI(ctx) {
     const filterNode = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'Filter by category' },
       cats.map((c) => btn(c === 'all' ? 'All' : c === 'sets' ? 'Chapter sets' : cap(c.replace('-', ' ')), { 'aria-pressed': String(filter === c), onclick: () => { view.params.category = c; draw(); } }, 'g-filter__btn')));
 
+    // Add all, or none — at the level the list is shown. The category filter above decides the scope, so on
+    // "Noun cases" the pair means that category's rows and on "All" it means the whole map's; the chapter
+    // view has the same pair per chapter. "None" is the exact undo of "All" (scheduler.js removeFromPractice):
+    // the rows leave the rotation and keep every bit of their history, so putting one back brings its spacing with it.
+    const inFilter = (id) => { const s = skills.get(id); if (!s) return false; if (filter === 'all') return true; if (filter === 'sets') return !!s.set; return !s.set && s.category === filter; };
+    const filterName = filter === 'all' ? 'everything here' : filter === 'sets' ? 'the chapter sets' : `the ${filter.replace('-', ' ')} skills`;
     const bulk = h('div', { class: 'g-bulk' },
-      btn('Add all to mixed practice', { onclick: () => bulkAdd() }, 'btn btn--quiet'),
+      h('div', { class: 'g-seg g-seg--allnone', role: 'group', 'aria-label': `Mixed practice · ${filterName}` },
+        btn('Add all', { onclick: () => bulkAdd(inFilter, filterName), 'aria-label': `Add all of ${filterName} to mixed practice` }, 'g-seg__btn'),
+        btn('None', { onclick: () => bulkNone(inFilter, filterName), 'aria-label': `Take all of ${filterName} out of mixed practice` }, 'g-seg__btn')),
       btn('Start all as new', { onclick: () => bulkNew() }, 'btn btn--quiet'),
       btn('Print charts', { onclick: () => printCharts(filter), 'aria-label': filter === 'all' ? 'Print the paradigm charts of every skill' : `Print the paradigm charts of the ${filter.replace('-', ' ')} skills` }, 'btn btn--quiet'),
       btn('Reset all', { onclick: () => resetAll() }, 'btn btn--quiet g-danger'));
@@ -583,12 +602,13 @@ export function createUI(ctx) {
       out.push(h('div', { class: 'g-chap__acts' },
         h('div', { class: 'g-acts' },
           btn('Practise this chapter', { onclick: () => go('session', { chapter: material.chapter }), 'aria-label': `Practise chapter ${row.roman}` }, 'btn btn--primary'),
-          missedHere ? btn(`Redo the ${missedHere} you missed`, { onclick: () => go('redo', { chapter: material.chapter }), 'aria-label': `Redo the ${missedHere} item${missedHere === 1 ? '' : 's'} of chapter ${row.roman} you missed and have not since got right` }, 'btn') : null),
+          missedHere ? btn(`Redo the ${missedHere} you missed`, { onclick: () => go('redo', { chapter: material.chapter }), 'aria-label': `Redo the ${missedHere} item${missedHere === 1 ? '' : 's'} of chapter ${row.roman} you missed and have not since got right` }, 'btn') : null,
+          chapterAllNone(material, row)),
         h('p', { class: 'g-quiet', text: `A mixed session of ten, drawn only from this chapter — its skills, and its own sentences wherever the library has them: ${pool.rotation.length} of the ${progress.drillable} it can drill ${pool.rotation.length === 1 ? 'is' : 'are'} in rotation.${missedHere ? '' : ' Nothing of this chapter is waiting to be redone.'}` })));
     } else if (pool.addable.length) {
       out.push(h('div', { class: 'g-chap__acts' },
-        btn('Add this chapter to mixed practice', { onclick: () => addChapter(material) }, 'btn'),
-        h('p', { class: 'g-quiet', text: 'Nothing from this chapter is in mixed practice yet. Learn a skill above, or add them all and they will come up as they fall due.' })));
+        h('div', { class: 'g-acts' }, chapterAllNone(material, row)),
+        h('p', { class: 'g-quiet', text: 'Nothing from this chapter is in mixed practice yet. Learn a skill above, or add them all and they will come up as they fall due — and the Practice tab can draw on them even before you do, with "Include what you have not studied".' })));
     } else if (progress.drillable) {
       out.push(h('p', { class: 'g-quiet', text: 'Everything here is still being learned.' }));
     } else {
@@ -597,14 +617,18 @@ export function createUI(ctx) {
     return out;
   }
 
-  /** "Add this chapter to mixed practice": the chapter's new, drillable skills and sets, by the same route as the map's bulk add. */
-  async function addChapter(material) {
-    const pool = chapterPool(material, { state: stateOf, drillable });
-    if (!pool.addable.length) { ctx.say('Nothing new to add in this chapter.'); return; }
-    if (!confirm(`Add ${pool.addable.length} item${pool.addable.length === 1 ? '' : 's'} from chapter ${roman(material.chapter)} to mixed practice? Each will be practised as it comes up, without a lesson first.`)) return;
-    for (const id of pool.addable) await gstore.setState(addToPractice(gstore.getState(id) ?? id));
-    ctx.say(`${pool.addable.length} added from chapter ${roman(material.chapter)}.`);
-    repaint();
+  /**
+   * The chapter's own "add all or none", the same pair the map carries over
+   * its filter — one chapter is just the level this list is shown at. Both
+   * ends go through the map's `bulkAdd` / `bulkNone`, so a chapter and the
+   * whole map behave identically and say the same things.
+   */
+  function chapterAllNone(material, row) {
+    const ids = new Set((material.members ?? []).map((s) => s.id));
+    const what = `chapter ${row?.roman ?? roman(material.chapter)}`;
+    return h('div', { class: 'g-seg g-seg--allnone', role: 'group', 'aria-label': `Mixed practice · ${what}` },
+      btn('Add all', { onclick: () => bulkAdd((id) => ids.has(id), what), 'aria-label': `Add all of ${what} to mixed practice` }, 'g-seg__btn'),
+      btn('None', { onclick: () => bulkNone((id) => ids.has(id), what), 'aria-label': `Take all of ${what} out of mixed practice` }, 'g-seg__btn'));
   }
 
   /**
@@ -695,13 +719,38 @@ export function createUI(ctx) {
     if (!drillable(id)) { ctx.say(`${titleOf(id)} has no drillable sentences yet.`); return; }
     await gstore.setState(addToPractice(gstore.getState(id) ?? id)); ctx.say(`${titleOf(id)} added to mixed practice.`); repaint();
   }
-  async function bulkAdd() {
-    // A skill already in Learn keeps its run: the bulk add used to move it to `practising` and throw the round away (m17).
-    const ids = [...skills.keys()].filter((id) => !skills.get(id).rev && !inRotation(stateOf(id)) && stateOf(id).state !== 'learning' && drillable(id));
-    if (!ids.length) { ctx.say('Every skill with sentences is already in mixed practice.'); return; }
-    if (!confirm(`Add ${ids.length} skill${ids.length === 1 ? '' : 's'} to mixed practice? Each will be practised as it comes up, without a lesson first.`)) return;
+  /**
+   * "Add all" over whatever the list is showing. `scope` is the filter the
+   * learner can see (everything, one category, the chapter sets); without one
+   * it is the whole map, as it was before the pair existed.
+   *
+   * Two things stay out, and the confirm says both rather than quietly
+   * differing from the word "all": a skill already in Learn keeps its run (the
+   * bulk add used to move it to `practising` and throw the round away, m17),
+   * and the English → Latin vocabulary decks are extras that each chapter's
+   * own row can add.
+   */
+  async function bulkAdd(scope = () => true, what = 'everything here') {
+    const ids = [...skills.keys()].filter((id) => scope(id) && !skills.get(id).rev && !inRotation(stateOf(id)) && stateOf(id).state !== 'learning' && drillable(id));
+    const learning = [...skills.keys()].filter((id) => scope(id) && stateOf(id).state === 'learning' && drillable(id)).length;
+    if (!ids.length) { ctx.say(`All of ${what} that can be drilled is already in mixed practice.`); return; }
+    const asides = [learning ? `${learning} part-way through Learn ${learning === 1 ? 'keeps its run' : 'keep their runs'} and stays out.` : '', 'The English → Latin decks are extras; add one from its own row.'].filter(Boolean).join(' ');
+    if (!confirm(`Add ${ids.length} of ${what} to mixed practice? Each will be practised as it comes up, without a lesson first. ${asides}`)) return;
     for (const id of ids) await gstore.setState(addToPractice(gstore.getState(id) ?? id));
-    ctx.say(`${ids.length} skills added.`); repaint();
+    ctx.say(`${ids.length} added to mixed practice.`); repaint();
+  }
+  /**
+   * …and "None": the same scope taken back out. Nothing is deleted — every
+   * attempt, every confusion and the whole spacing stay where they are, and
+   * "Add all" brings a row back at the stability it had. `resetSkill` is the
+   * one that throws work away, and it still asks in its own words.
+   */
+  async function bulkNone(scope = () => true, what = 'everything here') {
+    const ids = [...skills.keys()].filter((id) => scope(id) && inRotation(stateOf(id)));
+    if (!ids.length) { ctx.say(`None of ${what} is in mixed practice.`); return; }
+    if (!confirm(`Take ${ids.length} of ${what} out of mixed practice? ${ids.length === 1 ? 'It stops' : 'They stop'} coming round on their own. Nothing is lost — the history and the spacing stay, and adding ${ids.length === 1 ? 'it' : 'them'} back picks up where ${ids.length === 1 ? 'it' : 'they'} left off.`)) return;
+    for (const id of ids) await gstore.setState(removeFromPractice(gstore.getState(id) ?? id));
+    ctx.say(`${ids.length} taken out of mixed practice.`); repaint();
   }
   async function bulkNew() {
     const ids = [...skills.keys()].filter((id) => stateOf(id).state === 'new' && drillable(id) && !skills.get(id).rev && skills.get(id).set !== 'pensum');
@@ -1595,26 +1644,56 @@ export function createUI(ctx) {
   }
 
   /* --------------------------------------------------------- practice */
+  /**
+   * **What a mixed set is allowed to mix** (the learner's four messages of
+   * 2026-09-11). The populations are the app's own four, not a new taxonomy:
+   * the grammar skills of `skills.json`, and each chapter's questions,
+   * vocabulary and pensa, which `setSkills` builds as pseudo-skills and the
+   * map lists under "Chapter sets". A population with nothing drillable in
+   * this library is not offered at all — a control that cannot change
+   * anything is worse than no control.
+   */
+  const populationsOffered = () => POPULATIONS.filter((p) => [...skills.values()].some((s) => populationOf(s) === p && drillable(s.id)));
+  /** The learner's choice, cleaned against what is offered. Never chosen = everything. */
+  const chosenPopulations = () => normalisePopulations(ctx.prefs().populations, populationsOffered());
+  /** True when a skill or set has never been opened at all: no row, or a row still marked new. */
+  const untouched = (id) => stateOf(id).state === 'new';
+  /**
+   * Whether a mixed set may reach material the learner has never opened. Not
+   * chosen yet means: on while nothing is in the rotation — so the Practice
+   * tab is a session rather than the dead end it used to be on a fresh device
+   * — and off once anything has been put there, which is the behaviour the
+   * section has always had.
+   */
+  const unstudiedOn = () => { const p = ctx.prefs().unstudied; return p == null ? ![...skills.keys()].some((id) => inRotation(stateOf(id)) && drillable(id)) : p; };
+  /** Every id a mixed set may draw on, given the chosen populations and whether untouched material is let in. */
+  const mixPool = (pops = chosenPopulations(), withNew = unstudiedOn()) => [...skills.keys()]
+    .filter((id) => drillable(id) && pops.includes(populationOf(skills.get(id))) && (inRotation(stateOf(id)) || (withNew && untouched(id))));
+
   // `from` is the chapter page this was opened from, when it was (the by-chapter view's "Practise"): it names
   // the Back button and the way out. Without the parameter the view crashed on `from` the moment it was drawn.
   function renderSetup({ from = null } = {}) {
     const prefs = ctx.prefs();
-    const states = gstore.getStates();
+    const offered = populationsOffered();
+    let pops = normalisePopulations(prefs.populations, offered);
+    let unstudied = unstudiedOn();
     const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
+    let pool = mixPool(pops, unstudied);
     const cw = [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])];
     const onShelf = isShelfWeek(ctx.currentWeekN());
-    const today = suggestToday({ states, skills, currentWeek: cw });
     let size = prefs.size;
     let preset = prefs.preset;
-    let oneSkill = prefs.oneSkill && rotation.includes(prefs.oneSkill) ? prefs.oneSkill : rotation[0] ?? null;
-    if (!rotation.length) {
-      setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }), h('p', { class: 'g-lede', text: 'Nothing is in mixed practice yet. Learn a skill, or add one straight to practice from the skill map.' })),
+    let oneSkill = prefs.oneSkill && pool.includes(prefs.oneSkill) ? prefs.oneSkill : pool[0] ?? null;
+    // The one emptiness left: this library can drill nothing at all, so no choice on this screen could fill a
+    // session. "Nothing is in mixed practice yet" is no longer one of them — that is what the controls below are for.
+    if (!offered.length) {
+      setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }), h('p', { class: 'g-lede', text: 'Nothing here can be drilled yet — no sentence in the library fits a skill, and no chapter set has arrived. The lessons are there to read.' })),
         h('div', { class: 'g-acts' }, btn('Go to the skills', { onclick: () => render('map') }, 'btn btn--primary')));
       return;
     }
     const sizes = [5, 10, 15, null];
     const sizeGroup = h('div', { class: 'g-seg', role: 'group', 'aria-label': 'Session size' }, sizes.map((n) => btn(n == null ? 'Open' : String(n), { 'aria-pressed': String(size === n), onclick: (e) => { size = n; for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget)); } }, 'g-seg__btn')));
-    const skillSelect = h('select', { class: 'g-select', 'aria-label': 'Skill', onchange: (e) => { oneSkill = e.target.value; } }, rotation.map((id) => h('option', { value: id, selected: id === oneSkill ? true : null }, titleOf(id))));
+    const skillSelect = h('select', { class: 'g-select', 'aria-label': 'Skill', onchange: (e) => { oneSkill = e.target.value; } }, pool.map((id) => h('option', { value: id, selected: id === oneSkill ? true : null }, titleOf(id))));
     // "Missed items" stands beside the four mixes (GRAMMAR-CONTRACT.md "Redo what was wrong"). It is not a mix
     // over skills — it is a session over the very items got wrong and not since put right — so choosing it starts
     // the redo view rather than an ordinary session, and with nothing to redo the choice is simply unavailable.
@@ -1629,18 +1708,77 @@ export function createUI(ctx) {
         ? 'Nothing to redo — everything you have missed has since been answered right.'
         : 'Nothing to redo — nothing has been missed yet.';
     const CHOICES = [...Object.entries(PRESET_LABEL), ['missed', ['Missed items', 'The items you got wrong and have not since answered right — most recently missed first, still mixed across skills and kinds, up to the size you chose.']]];
+    const weekLabels = new Map();   // key → [input, small], so a change to what goes in can re-decide "This week"
     const presetList = h('div', { class: 'g-presets', role: 'radiogroup', 'aria-label': 'Mix' }, CHOICES.map(([key, [label, desc]]) => {
-      const disabled = key === 'this-week' ? !cw.some((id) => rotation.includes(id)) : key === 'missed' ? missedTotal === 0 : false;
+      const disabled = key === 'this-week' ? !cw.some((id) => pool.includes(id)) : key === 'missed' ? missedTotal === 0 : false;
       if (disabled && preset === key) preset = 'review-heavy';
-      return h('label', { class: `g-preset${disabled ? ' is-disabled' : ''}${key === 'missed' ? ' g-preset--missed' : ''}` },
-        h('input', { type: 'radio', name: 'g-preset', value: key, checked: preset === key ? true : null, disabled: disabled ? true : null, onchange: () => { preset = key; skillSelect.closest('.g-preset__pick').hidden = key !== 'one-skill'; } }),
-        h('span', { class: 'g-preset__text' }, h('b', { text: key === 'missed' && missedTotal ? `${label} · ${missedTotal}` : label }),
-          h('small', { text: key === 'missed'
-            ? (disabled ? missedEmpty : desc)
-            : disabled ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in practice yet.')
-            : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) })));
+      const input = h('input', { type: 'radio', name: 'g-preset', value: key, checked: preset === key ? true : null, disabled: disabled ? true : null, onchange: () => { preset = key; skillSelect.closest('.g-preset__pick').hidden = key !== 'one-skill'; } });
+      const small = h('small', { text: key === 'missed'
+        ? (disabled ? missedEmpty : desc)
+        : disabled ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in the mix yet.')
+        : (key === 'this-week' ? `${desc} The week's questions, vocabulary and pensa count as its skills.` : key === 'review-heavy' || key === 'even' ? `${desc} Chapter sets take at most three items in ten.` : desc) });
+      const label_ = h('label', { class: `g-preset${disabled ? ' is-disabled' : ''}${key === 'missed' ? ' g-preset--missed' : ''}` },
+        input, h('span', { class: 'g-preset__text' }, h('b', { text: key === 'missed' && missedTotal ? `${label} · ${missedTotal}` : label }), small));
+      weekLabels.set(key, { input, small, label: label_, desc });
+      return label_;
     }));
     const pick = h('div', { class: 'g-preset__pick', hidden: preset !== 'one-skill' }, h('span', { class: 'g-label', text: 'Skill' }), skillSelect);
+    /* ------------------------------------------- what goes in the mix */
+    // Four toggles in the section's own filter pattern (the map's category filter), one per population, each
+    // saying how many rows it would contribute; an All / None pair beside them; and the switch that decides
+    // whether material never opened may come up. Every change is written to settings at once — the learner may
+    // walk away from this screen and start a session from the Today card, which never passes through here.
+    const popBtn = new Map();
+    const ledeNode = h('p', { class: 'g-lede' });
+    const mixNoteNode = h('p', { class: 'g-quiet' });
+    const startBtn = btn('Start', { onclick: () => start() }, 'btn btn--primary');
+    const emptyNode = h('p', { class: 'g-quiet g-mix__empty', hidden: true });
+    const saveMix = () => ctx.savePrefs({ populations: pops, unstudied, preset, size, oneSkill, hints });
+    const paintMix = () => {
+      pool = mixPool(pops, unstudied);
+      for (const [p, b] of popBtn) {
+        b.setAttribute('aria-pressed', String(pops.includes(p)));
+        b.textContent = `${POPULATION_LABEL[p]} · ${mixPool([p], unstudied).length}`;
+      }
+      mixNoteNode.textContent = mixNote(pops, offered);
+      // Every number here counts **this mix**, not the whole rotation: a lede that said "11 due" over a mix
+      // of four would be a count of something the learner cannot reach from this screen.
+      const extra = pool.filter((id) => !inRotation(stateOf(id))).length;
+      const due = pool.filter((id) => isDue(stateOf(id)));
+      const crossable = new Set();
+      for (const id of due) for (const c of skills.get(id)?.confusable_with ?? []) if (due.includes(c)) crossable.add([id, c].sort().join('|'));
+      ledeNode.textContent = `${pool.length} in the mix${extra ? `, ${extra} of them never opened` : ''} · ${due.length} due${crossable.size ? ` · ${crossable.size} pair${crossable.size === 1 ? '' : 's'} that are easy to cross` : ''}.`;
+      // "This week" can become possible the moment a population or the switch lets one of the week's skills in.
+      const week = weekLabels.get('this-week');
+      if (week) {
+        const off = !cw.some((id) => pool.includes(id));
+        week.input.disabled = off;
+        week.label.classList.toggle('is-disabled', off);
+        week.small.textContent = off ? (onShelf && !cw.length ? 'Reading a shelf chapter — no course week is current.' : 'No skill from this week is in the mix yet.') : `${week.desc} The week's questions, vocabulary and pensa count as its skills.`;
+        if (off && preset === 'this-week') { preset = 'review-heavy'; weekLabels.get('review-heavy').input.checked = true; skillSelect.closest('.g-preset__pick').hidden = true; }
+      }
+      oneSkill = pool.includes(oneSkill) ? oneSkill : pool[0] ?? null;
+      skillSelect.replaceChildren(...pool.map((id) => h('option', { value: id, selected: id === oneSkill ? true : null }, titleOf(id))));
+      startBtn.disabled = !pool.length;
+      emptyNode.hidden = !!pool.length;
+      emptyNode.textContent = !pops.length
+        ? 'Nothing can be built from an empty mix. Turn a population on, or press All.'
+        : unstudied
+          ? 'Nothing in the chosen populations can be drilled yet.'
+          : 'Nothing you have studied is in the chosen populations. Turn on "Include what you have not studied", or add some from the skill map.';
+    };
+    const popFilter = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'What goes in the mix' }, offered.map((p) => {
+      const b = btn('', { onclick: () => { pops = pops.includes(p) ? pops.filter((x) => x !== p) : normalisePopulations([...pops, p], offered); paintMix(); saveMix(); ctx.say(mixNote(pops, offered)); } }, 'g-filter__btn');
+      popBtn.set(p, b);
+      return b;
+    }));
+    const allNone = h('div', { class: 'g-seg g-seg--allnone', role: 'group', 'aria-label': 'All or none' },
+      btn('All', { onclick: () => { pops = [...offered]; paintMix(); saveMix(); ctx.say(mixNote(pops, offered)); } }, 'g-seg__btn'),
+      btn('None', { onclick: () => { pops = []; paintMix(); saveMix(); ctx.say(mixNote(pops, offered)); } }, 'g-seg__btn'));
+    const unstudiedSwitch = h('label', { class: 'switch g-all-switch' },
+      h('input', { type: 'checkbox', role: 'switch', checked: unstudied ? true : null, onchange: (e) => { unstudied = e.target.checked; paintMix(); saveMix(); } }),
+      h('span', { class: 'switch__ui', 'aria-hidden': 'true' }),
+      h('span', { class: 'switch__text', text: 'Include what you have not studied' }));
     // Hints, per answer box (GRAMMAR-CONTRACT.md). One setting for every session, wherever it is started from —
     // the Today card and a chapter page never pass through this screen, so the choice is remembered, not asked for.
     let hints = prefs.hints;
@@ -1651,23 +1789,29 @@ export function createUI(ctx) {
         h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: desc })));
     }));
     const start = async () => {
-      await ctx.savePrefs({ preset, size, oneSkill, hints });
+      await ctx.savePrefs({ populations: pops, unstudied, preset, size, oneSkill, hints });
       if (preset === 'missed') { render('redo', { size, from }); return; }
       render('session', { preset, size, oneSkill, from });
     };
+    paintMix();
     setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }),
       // "Confusion pair" is reserved for a pair the learner's answers have actually crossed (the Stats
       // page's "What you mix up"). This count is of pairs the map *declares* confusable and that are
-      // both due — a different thing, and it said the same words one tab away (QA-B6).
-      h('p', { class: 'g-lede', text: `${rotation.length} skill${rotation.length === 1 ? '' : 's'} in rotation · ${today.due.length + (today.setsDue?.length ?? 0)} due${today.pairs ? ` · ${today.pairs} pair${today.pairs === 1 ? '' : 's'} that are easy to cross` : ''}.` })),
+      // both due — a different thing, and it said the same words one tab away (QA-B6). The count before
+      // it is of what this mix really holds, which is the learner's choice and not the whole rotation.
+      ledeNode),
       h('section', { class: 'g-setup' },
+        h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'What goes in' }),
+          h('div', { class: 'g-mix' }, popFilter, allNone), mixNoteNode, unstudiedSwitch,
+          h('p', { class: 'g-quiet', text: `${rotation.length} of the ${[...skills.keys()].filter(drillable).length} things here have been put into practice. With the switch on, a mixed set also draws on the ones you have never opened — they come after everything that is due, and answering one puts it into practice for good.` }),
+          emptyNode),
         h('div', { class: 'g-setup__row' }, h('span', { class: 'g-label', text: 'Items' }), sizeGroup),
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Mix' }), presetList, pick),
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'Hints' }), hintList,
           // What a hint now is (§6 decision 14, §12): it opens as a nudge, and its last step hands over the
           // form. The old line promised a hint "never spells the answer", which the shipped hint does (M-9).
           h('p', { class: 'g-quiet', text: 'Every answer box has its own hint — a typed field, each cell of a chart, each blank of a pensum, each word of an order or match item. A hint starts as a nudge: what that box is being asked for, and the rule behind it. Its last step, "Show this form", gives that one box its answer and marks the box hinted, which counts as weaker evidence. This choice holds for every session.' }))),
-      h('div', { class: 'g-acts' }, btn('Start', { onclick: start }, 'btn btn--primary'), btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
+      h('div', { class: 'g-acts' }, startBtn, btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
   }
   function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null, redo = false, skill: redoSkill = null }) {
     // "Missed items" is not a mix over skills but a session over named items, so it is its own view. Both routes
@@ -1686,7 +1830,14 @@ export function createUI(ctx) {
     const usable = saved?.queue?.length && saved.index < saved.queue.length ? saved : null;
     if (usable) Object.assign(params, usable.params ?? {});
     const ch = params.chapter ?? null;
-    let world = skillsIndex;
+    // What this mixed set is allowed to mix, and whether it may reach material never opened — the Practice
+    // setup's two new controls, read here rather than carried in the params so a session resumed from the
+    // Today card (which never passes through that screen) obeys the same choice. "Practise this chapter" is
+    // the chapter's own material by definition and is left alone: the learner asked for that chapter, whole.
+    const offered = populationsOffered();
+    const pops = ch != null ? offered : chosenPopulations();
+    const unstudied = ch != null ? false : unstudiedOn();
+    let world = ch != null ? skillsIndex : { ...skillsIndex, skills: filterPopulations(skillsIndex.skills, pops, offered) };
     if (ch != null) {
       const material = chapterMaterial(ch, { skills, order: index.order, sets: ctx.sets ?? new Map() });
       const pool = chapterPool(material, { state: stateOf, drillable });
@@ -1703,12 +1854,16 @@ export function createUI(ctx) {
       world = { skills: pool.map };
     }
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
-    const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, chapter: ch, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange });
+    const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, chapter: ch, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange, unstudied });
     const first = practice.start();
-    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : 'No sentences in the library fit the skills in rotation yet.' })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'))); return; }
+    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : `Nothing in this mix can produce an item. ${mixNote(pops, offered)}` })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'), btn('Change the mix', { onclick: () => render('setup', { from: params.from }) }, 'btn btn--quiet'))); return; }
     if (usable) ctx.say('Session resumed.');
-    const title = ch != null ? `Practise · Cap. ${roman(ch)}` : `Practice · ${(PRESET_LABEL[params.preset] ?? PRESET_LABEL['review-heavy'])[0]}`;
-    runSession({ runner: practice.runner, title, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
+    // The header says what is actually in the set. A mix cut down to one population read "Practice · Review-heavy"
+    // over ten vocabulary cards and named neither the narrowing nor the untouched material it had let in.
+    const narrowed = ch != null ? '' : mixTitle(pops, offered);
+    const title = ch != null ? `Practise · Cap. ${roman(ch)}` : `Practice · ${(PRESET_LABEL[params.preset] ?? PRESET_LABEL['review-heavy'])[0]}${narrowed ? ` · ${narrowed}` : ''}`;
+    const note = ch != null ? '' : `${mixNote(pops, offered)}${unstudied ? ' Material you have never opened is let in, after everything that is due.' : ''}`;
+    runSession({ runner: practice.runner, title, note, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
   }
   /* ------------------------------------------------- redo what was wrong */
   /**
