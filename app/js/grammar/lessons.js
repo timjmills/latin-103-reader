@@ -164,7 +164,31 @@ export function createTeachDataLoader({ fetchJson: fetcher = fetchJson } = {}) {
   // key for the form the sentence prints (items.js `createTeachItems`). null when it cannot be loaded.
   let headwordsP = null;
   const loadHeadwords = () => (headwordsP ??= fetcher('../glossary-headwords.json').then((raw) => (Array.isArray(raw?.headwords) ? raw.headwords : null)).catch(() => null));
-  return { loadSentences, loadCatalogue, loadHeadwords };
+  // The reading tie-in (§10, §13): per skill and chapter, the highlight count `h` and the scanner count `s`
+  // with the unit ids, no Latin. null when it cannot be loaded; the summary then simply has no line.
+  let occurrencesP = null;
+  const loadOccurrences = () => (occurrencesP ??= fetcher('occurrences.json').then((raw) => (raw && typeof raw === 'object' && raw.skills ? raw : null)).catch(() => null));
+  return { loadSentences, loadCatalogue, loadHeadwords, loadOccurrences };
+}
+
+/**
+ * The reading tie-in's one line (GRAMMAR-CONTRACT.md §13 wording): **"the notes
+ * mark N in this chapter"** when the count is the highlights' (`src` h — a
+ * hand-picked subset, so a floor, never shown as a total), **"occurs about N
+ * times in this chapter"** when only the scanner counted (`src` s). Ambiguous
+ * scanner matches (`sx`) are never counted. `units` are the ids to light,
+ * `{ week: 'r07', ids: ['46.1', …] }` per week. null when the file has no row
+ * for the skill and chapter, or the count is nought. Pure.
+ */
+export function occurrenceLine(occurrences, skillId, chapter) {
+  const row = occurrences?.skills?.[skillId]?.[String(chapter)];
+  if (!row || typeof row !== 'object') return null;
+  const src = row.src === 'h' ? 'h' : 's';
+  const n = Number(src === 'h' ? row.h ?? row.n : row.s ?? row.n) || 0;
+  if (n <= 0) return null;
+  const units = Object.entries(row.ids ?? {}).map(([week, ids]) => ({ week, ids: String(ids ?? '').split(/\s+/).filter(Boolean) })).filter((u) => u.ids.length);
+  const text = src === 'h' ? `The notes mark ${n} in this chapter.` : `It occurs about ${n} time${n === 1 ? '' : 's'} in this chapter.`;
+  return { src, n, text, chapter: Number(chapter), units, unitIds: units.flatMap((u) => u.ids.map((id) => `${u.week}:${id}`)) };
 }
 
 /**
@@ -207,6 +231,8 @@ export const loadSentences = (skillId) => teachData.loadSentences(skillId);
 export const loadParadigmCatalogue = () => teachData.loadCatalogue();
 /** The headword index (§4b) as its rows, or null. */
 export const loadHeadwords = () => teachData.loadHeadwords();
+/** The reading tie-in's counts (`occurrences.json`, §13), or null. */
+export const loadOccurrences = () => teachData.loadOccurrences();
 
 /** Pure: a lesson with every block usable, and its teach steps normalised. */
 export function normaliseLesson(l) {
@@ -240,9 +266,10 @@ export function normaliseTeach(raw) {
     const show = normaliseShow(s.show);
     const check = normaliseCheck(s.check);
     const worked = normaliseWorked(s.worked);
+    const notice = normaliseNotice(s.notice);
     const say = str(s.say);
     if (!say && !show && !check && !worked) continue;
-    out.push({ n: Number(s.n) || out.length + 1, title: str(s.title) ?? '', say: say ?? '', show, worked, check });
+    out.push({ n: Number(s.n) || out.length + 1, title: str(s.title) ?? '', say: say ?? '', notice, show, worked, check });
   }
   return out.sort((a, b) => a.n - b.n).map((s, i) => ({ ...s, n: i + 1 }));
 }
@@ -259,6 +286,23 @@ function normaliseShow(v) {
   }
   return null;
 }
+/**
+ * A step's noticing opener (§10, amended): two of the skill's written sentences
+ * side by side and one question, answered by tapping a word (`tap: 'focus'` —
+ * the sentences' own focus words are the answer) or by picking an option
+ * (`options`, with `answer` the right one). One screen, skippable in a tap,
+ * never logged. Needs two sentence ids and a question; anything less is no
+ * opener. Pure.
+ */
+function normaliseNotice(v) {
+  if (!v || typeof v !== 'object') return null;
+  const sentences = (Array.isArray(v.sentences) ? v.sentences : []).filter((id) => typeof id === 'string' && id).slice(0, 2);
+  const ask = typeof v.ask === 'string' && v.ask.trim() ? v.ask.trim() : null;
+  if (sentences.length < 2 || !ask) return null;
+  const options = Array.isArray(v.options) ? v.options.filter((o) => typeof o === 'string' && o.trim()).map((o) => o.trim()) : [];
+  const tap = v.tap === 'focus' || !options.length ? 'focus' : null;
+  return { sentences, ask, tap, options, answer: typeof v.answer === 'string' ? v.answer : (Number.isInteger(v.answer) ? options[v.answer] ?? null : null) };
+}
 const CHECK_KINDS = new Set(['recognise', 'parse', 'blank', 'chart']);
 function normaliseCheck(v) {
   if (!v || typeof v !== 'object') return null;
@@ -270,7 +314,8 @@ function normaliseCheck(v) {
     const words = Array.isArray(v.words) ? v.words.filter((w) => typeof w === 'string' && w) : null;
     return { kind, key: typeof v.key === 'string' && v.key ? v.key : null, cells, words: words && words.length ? words : null };
   }
-  return { kind, sentence: typeof v.sentence === 'string' && v.sentence ? v.sentence : null };
+  // `ask`: the step's own wording of the question, over the generator's stock line.
+  return { kind, sentence: typeof v.sentence === 'string' && v.sentence ? v.sentence : null, ask: typeof v.ask === 'string' && v.ask.trim() ? v.ask.trim() : null };
 }
 const WORKED_FEATURES = new Set(['case', 'number', 'gender', 'tense', 'mood', 'voice', 'person', 'degree', 'construction', 'why']);
 function normaliseWorked(v) {

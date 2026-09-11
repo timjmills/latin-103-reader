@@ -1267,6 +1267,50 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
   return { generate, candidates, drillable, pool, skills: skillMap, scan, meaningsOf };
 }
 
+/** Whether a cell id (§4a: its slots in fixed order) carries every value a skill's `paradigm_focus` names. Pure. */
+export function focusFitsId(id, focus) {
+  if (!id || !focus || typeof focus !== 'object') return false;
+  const slots = new Set(String(id).split('.'));
+  return Object.values(focus).every((v) => v == null || (Array.isArray(v) ? v : [v]).some((x) => slots.has(String(x))));
+}
+
+/* ============================================ tables, words and cells (shared) */
+/**
+ * What a teaching step, the blocked ten and the catalogue all need of a word:
+ * its glossary entry, the paradigm it renders (memoised), that table's cells
+ * by id, and a cell's label as the chart drills name it.
+ */
+export function tableHelpers({ lookup, paradigm = null }) {
+  const safeTable = (entry) => { try { return paradigm ? paradigm(entry, []) : null; } catch { return null; } };
+  const tableMemo = new Map();
+  const tableOfEntry = (e) => { const k = `${e?.h}|${e?.lemma}`; if (!tableMemo.has(k)) tableMemo.set(k, safeTable(e)); return tableMemo.get(k); };
+  /** A stock or named headword (`'puella'`, or `{ h, key, i, pos }`) as a glossary entry that really renders a table. */
+  function entryFor(word) {
+    const w = typeof word === 'string' ? { h: word, key: word } : (word ?? {});
+    const forms = [w.key, w.h, w.lemma ? String(w.lemma).split(/[\s,]/)[0] : null].filter(Boolean);
+    for (const f of forms) {
+      const entries = lookup(f)?.entries ?? [];
+      const ranked = [
+        ...entries.filter((e) => e.h === w.h && (!w.pos || e.pos === w.pos)),
+        ...(Number.isInteger(w.i) && entries[w.i] ? [entries[w.i]] : []),
+        ...entries,
+      ];
+      for (const e of ranked) { const t = tableOfEntry(e); if (t) return { entry: e, table: t, cells: tableCells(t) }; }
+    }
+    return null;
+  }
+  /** "dative singular" / "imperfect subjunctive, we (passive)" — the cell named as the chart drills name it. */
+  function cellLabelOf(spot, table) {
+    const nominal = spot.cell.key?.kind === 'nominal';
+    const title = nominal && (table?.sections?.length ?? 0) > 1 && spot.sectionTitle ? spot.sectionTitle.replace(/\s*\(.*\)\s*$/, '') : '';
+    const deg = /^positive/i.test(title) ? '' : title;
+    if (nominal) return `${deg ? `${deg}, ` : ''}${spot.rowLabel}${spot.colLabel ? ` ${spot.colLabel}` : ''}`.trim();
+    return `${spot.sectionTitle ? `${spot.sectionTitle}, ` : ''}${spot.rowLabel}${spot.colLabel ? ` (${spot.colLabel})` : ''}`.trim();
+  }
+  const cellFormsOf = (cell) => [cell.text, ...(cell.alt ? [cell.alt] : []), ...String(cell.text ?? '').split(' / ')].map((x) => String(x ?? '').trim()).filter(Boolean);
+  return { entryFor, tableOfEntry, cellLabelOf, cellFormsOf };
+}
+
 /* ============================================ Learn's own items (§2, §8) */
 /**
  * The items a **teaching step** checks with. Two rules from the contract are
@@ -1296,9 +1340,7 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
   // The written sentences as units. `week_n` is deliberately null: nothing scopes them by chapter, because
   // every word in them is already at or before the skill's own chapter (§1).
   const units = list.map((s) => ({ id: s.id, la: s.la, en: s.en || '', week_n: null, part: null }));
-  const safeTable = (entry) => { try { return paradigm ? paradigm(entry, []) : null; } catch { return null; } };
-  const tableMemo = new Map();
-  const tableOfEntry = (e) => { const k = `${e?.h}|${e?.lemma}`; if (!tableMemo.has(k)) tableMemo.set(k, safeTable(e)); return tableMemo.get(k); };
+  const { entryFor, tableOfEntry, cellLabelOf, cellFormsOf } = tableHelpers({ lookup, paradigm });
 
   /* ----------------------------------------------- the focus word (§1) */
   // The glossary is keyed by the forms the book prints, so a written sentence's *vocet* or *servō*-the-noun
@@ -1427,32 +1469,6 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
   }
 
   const tableOf = (key) => catalogue?.tableOfKey?.(key) ?? null;
-  /** A stock or named headword as a glossary entry that really renders a table. */
-  function entryFor(word) {
-    const w = typeof word === 'string' ? { h: word, key: word } : (word ?? {});
-    const forms = [w.key, w.h, w.lemma ? String(w.lemma).split(/[\s,]/)[0] : null].filter(Boolean);
-    for (const f of forms) {
-      const entries = lookup(f)?.entries ?? [];
-      const ranked = [
-        ...entries.filter((e) => e.h === w.h && (!w.pos || e.pos === w.pos)),
-        ...(Number.isInteger(w.i) && entries[w.i] ? [entries[w.i]] : []),
-        ...entries,
-      ];
-      for (const e of ranked) { const t = tableOfEntry(e); if (t) return { entry: e, table: t, cells: tableCells(t) }; }
-    }
-    return null;
-  }
-
-  /** "dative singular" / "imperfect subjunctive, we (passive)" — the cell named as the chart drills name it. */
-  function cellLabelOf(spot, table) {
-    const nominal = spot.cell.key?.kind === 'nominal';
-    const title = nominal && (table?.sections?.length ?? 0) > 1 && spot.sectionTitle ? spot.sectionTitle.replace(/\s*\(.*\)\s*$/, '') : '';
-    const deg = /^positive/i.test(title) ? '' : title;
-    if (nominal) return `${deg ? `${deg}, ` : ''}${spot.rowLabel}${spot.colLabel ? ` ${spot.colLabel}` : ''}`.trim();
-    return `${spot.sectionTitle ? `${spot.sectionTitle}, ` : ''}${spot.rowLabel}${spot.colLabel ? ` (${spot.colLabel})` : ''}`.trim();
-  }
-  const cellFormsOf = (cell) => [cell.text, ...(cell.alt ? [cell.alt] : []), ...String(cell.text ?? '').split(' / ')].map((x) => String(x ?? '').trim()).filter(Boolean);
-
   /**
    * A chart check: the named cells, asked on each word in turn, as **one
    * item**. `words` comes from the step (§8) or from the table's own stock
@@ -1466,19 +1482,22 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     const stock = table ? catalogue.stock(table.id) : [];
     const lemmas = (words?.length ? words : stock).slice(0, 5);
     if (!lemmas.length) return null;
+    // No cells named: the cells the skill's focus picks out of the table (a case skill's dat.sg and dat.pl), at most three.
+    const asked = cells?.length ? cells : (named && skill.paradigm_focus ? [...named].filter((id) => focusFitsId(id, skill.paradigm_focus)).slice(0, 3) : []);
+    if (!asked.length) return null;
     const boxes = [];
     let head = null;
     let sample = null;
     for (const w of lemmas) {
       const got = entryFor(w);
       if (!got) continue;
-      for (const raw of cells) {
+      for (const raw of asked) {
         const id = resolveCellId(raw, got.cells) ?? (named ? resolveCellId(raw, named) : null);
         const spot = id ? got.cells.get(id) : null;
         if (!spot || !spot.cell?.text || spot.cell.text === '—') continue;
         const label = cellLabelOf(spot, got.table);
         boxes.push({
-          row: boxes.length, col: 0, cellId: id, word: firstWord(got.entry.lemma), lemma: got.entry.lemma,
+          row: boxes.length, col: 0, cellId: id, key: spot.cell.key, word: firstWord(got.entry.lemma), lemma: got.entry.lemma,
           label: `${firstWord(got.entry.lemma)} · ${label}`, cellLabel: label,
           ending: cellEnding(spot.cell), answer: cellFormsOf(spot.cell),
         });
@@ -1563,4 +1582,168 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     },
     pool: gen.pool,
   };
+}
+
+/* ============================================ the catalogue's items (§4, §11, §12) */
+/**
+ * The table id of a glossary entry, from `paradigms.json`'s `select` rules —
+ * ordered data, first match wins (§4a) — so the app can name any library
+ * word's table without re-implementing paradigms.js. `when` may test `pos`,
+ * `h`, `d` / `v` (the two halves of `cat`), `gender`, `not_v`, `cat_is`,
+ * `root0_ends_i` and `lemma_matches`. null when no rule matches. Pure.
+ */
+export function tableIdOf(entry, select) {
+  if (!entry || !Array.isArray(select)) return null;
+  const cat = Array.isArray(entry.cat) ? entry.cat : [];
+  const [d, v] = [cat[0] ?? null, cat[1] ?? null];
+  for (const rule of select) {
+    const w = rule?.when;
+    if (!w || typeof rule.table !== 'string') continue;
+    if (w.pos && !w.pos.includes(entry.pos)) continue;
+    if (w.h && !w.h.includes(entry.h)) continue;
+    if (w.d != null && Number(d) !== Number(w.d)) continue;
+    if (w.v && !w.v.map(Number).includes(Number(v))) continue;
+    if (w.not_v && w.not_v.map(Number).includes(Number(v))) continue;
+    if (w.gender && !w.gender.includes(entry.gender)) continue;
+    if (w.cat_is && !w.cat_is.some((c) => Number(c[0]) === Number(d) && Number(c[1]) === Number(v))) continue;
+    if (w.root0_ends_i && !/i$/.test(String(entry.roots?.[0] ?? ''))) continue;
+    if (w.lemma_matches) { let re; try { re = new RegExp(w.lemma_matches); } catch { continue; } if (!re.test(String(entry.lemma ?? ''))) continue; }
+    return rule.table;
+  }
+  return null;
+}
+
+/**
+ * The catalogue's own generator (GRAMMAR-CONTRACT.md §4, decision 10; §11 —
+ * "endings are already unlimited"): a table, a word, and the cells to drill.
+ *
+ *   createCatalogueItems({ catalogue, lookup, paradigm, headwords })
+ *     .wordEntry(word)                      a stock word or `{ h, key, i }` → { entry, table, cells } | null
+ *     .tableOf(entry)                       the catalogue table the entry renders, by the select rules
+ *     .search(query, { table })             library headwords beginning with `query`, those that render the table first
+ *     .filled(tableId, word)                the rendered paradigm of a word, for "see it filled"
+ *     .cellItem({ tableId, cellId, words }) one cell across several words — one box a word, one attempt
+ *     .tableItem({ tableId, word, group, cellIds })  the whole table (or one group of it) on one word
+ *
+ * Every item is the ordinary `chart` shape, so the cells get the same per-cell
+ * colour, the same per-cell hint and the same one-attempt scoring as
+ * everywhere else; a table item takes `chart.given` from the scaffold (§12).
+ * The items log under the first skill that names the table (`table.skills`),
+ * which is where the scheduler can use them.
+ */
+export function createCatalogueItems({ catalogue, lookup, paradigm = null, headwords = null, skills = null, rand = Math.random }) {
+  const select = Array.isArray(catalogue?.raw?.select) ? catalogue.raw.select : [];
+  const helpers = tableHelpers({ lookup, paradigm });
+  const { entryFor, tableOfEntry, cellLabelOf, cellFormsOf } = helpers;
+  const skillOf = (table) => (table?.skills ?? []).map((id) => (skills instanceof Map ? skills.get(id) : null)).find(Boolean) ?? null;
+  const tableOf = (entry) => { const id = tableIdOf(entry, select); return id ? catalogue.table(id) : null; };
+  const low = (x) => stripMacrons(String(x ?? '')).toLowerCase();
+  let rows = null;
+  const allRows = () => (rows ??= (headwords ?? []).map((r) => (Array.isArray(r) ? { h: r[0], pos: r[1], key: r[2], i: r[3] } : r)).filter((r) => r && typeof r.h === 'string'));
+  /** Library headwords whose head begins with `query` (macrons ignored); with `table`, those that render it first and marked `fits`. */
+  function search(query, { table = null, limit = 12 } = {}) {
+    const q = low(query).trim();
+    if (q.length < 2) return [];
+    const want = table ? catalogue.table(table) : null;
+    const out = [];
+    for (const r of allRows()) {
+      if (!low(r.h).startsWith(q)) continue;
+      const e = lookup(r.key ?? r.h)?.entries?.[r.i ?? 0] ?? null;
+      if (!e || e.enc) continue;
+      const tid = tableIdOf(e, select);
+      if (want && want.part && !partOfPos(e.pos, want.part)) continue;
+      out.push({ h: r.h, pos: r.pos, key: r.key, i: r.i, lemma: e.lemma, table: tid, fits: !want || tid === want.id, entry: e });
+      if (out.length >= limit * 3) break;
+    }
+    return out.sort((a, b) => Number(b.fits) - Number(a.fits) || a.h.localeCompare(b.h)).slice(0, limit);
+  }
+  const partOfPos = (pos, part) => ({ noun: ['N'], adjective: ['ADJ'], pronoun: ['PRON'], verb: ['V', 'VPAR'], numeral: ['NUM', 'ADJ'] }[part] ?? []).includes(pos);
+  /** The word's rendered table, its cells by id, and the catalogue table it belongs to. */
+  function wordEntry(word, tableId = null) {
+    const got = entryFor(word);
+    if (!got) return null;
+    const table = (tableId && catalogue.table(tableId)) || tableOf(got.entry);
+    return { ...got, catalogue: table };
+  }
+  const cellIdsOf = (table, group = null) => ((typeof table === 'string' ? catalogue.table(table) : table)?.groups ?? []).filter((g) => !group || g.id === group).flatMap((g) => g.cells ?? []);
+  /** The cell ids of a table narrowed by cell axes (§5): `{ case: ['dat'], number: ['sg'], … }` — a cell stays when every named axis holds one of its slots. */
+  function narrowCells(ids, axes = {}) {
+    const wants = Object.entries(axes ?? {}).filter(([, vs]) => Array.isArray(vs) && vs.length);
+    if (!wants.length) return ids;
+    const slotOf = catalogue.raw?.id_scheme?.slot_of ?? {};
+    return ids.filter((id) => { const slots = id.split('.'); return wants.every(([axis, vs]) => slots.some((s) => slotOf[s] === axis && vs.includes(s))); });
+  }
+  /** One cell asked on each of several words as one item (§8's shape): the word generator for a cell. */
+  function cellItem({ tableId, cellId, words = null, step = null } = {}) {
+    const table = catalogue.table(tableId);
+    if (!table) return null;
+    const lemmas = (words?.length ? words : catalogue.stock(table.id)).slice(0, 5);
+    const boxes = [];
+    let sample = null;
+    let head = null;
+    for (const w of lemmas) {
+      const got = entryFor(w);
+      if (!got) continue;
+      const id = resolveCellId(cellId, got.cells);
+      const spot = id ? got.cells.get(id) : null;
+      if (!spot || !spot.cell?.text || spot.cell.text === '—') continue;
+      const label = cellLabelOf(spot, got.table);
+      boxes.push({ row: boxes.length, col: 0, cellId: id, key: spot.cell.key, word: firstWord(got.entry.lemma), lemma: got.entry.lemma, label: `${firstWord(got.entry.lemma)} · ${label}`, cellLabel: label, ending: cellEnding(spot.cell), answer: cellFormsOf(spot.cell) });
+      head = head ?? label; sample = sample ?? got;
+    }
+    if (!boxes.length) return null;
+    const skill = skillOf(table);
+    const heads = [...new Set(boxes.map((b) => b.word))];
+    return chartShape({ skill, table, boxes, sample, head, question: boxes.length === 1 ? `Give the ${head} of ${heads[0]}` : `Give the ${head} of ${heads.join(', ')}`, byWord: true, key: `${table.id}#${boxes[0].cellId}`, step });
+  }
+  /**
+   * The whole table — or one group of it — on one word, as one item with one
+   * box a cell, in the table's own reading order. `cellIds` narrows it (the
+   * axes); a cell the word does not render is passed over.
+   */
+  function tableItem({ tableId, word = null, group = null, cellIds = null } = {}) {
+    const table = catalogue.table(tableId);
+    if (!table) return null;
+    const got = entryFor(word ?? catalogue.stock(table.id)[0]);
+    if (!got) return null;
+    const ids = (cellIds?.length ? cellIds : cellIdsOf(table, group)).map((id) => resolveCellId(id, got.cells)).filter(Boolean);
+    const spots = [...new Set(ids)].map((id) => ({ id, spot: got.cells.get(id) })).filter(({ spot }) => spot && spot.cell?.text && spot.cell.text !== '—');
+    if (!spots.length) return null;
+    // Reading order is the table's own: section, then row, then column.
+    spots.sort((a, b) => a.spot.section - b.spot.section || a.spot.row - b.spot.row || a.spot.col - b.spot.col);
+    const boxes = spots.map(({ id, spot }) => ({ row: spot.row, col: spot.col, section: spot.section, cellId: id, key: spot.cell.key, word: firstWord(got.entry.lemma), lemma: got.entry.lemma, label: cellLabelOf(spot, got.table), cellLabel: cellLabelOf(spot, got.table), ending: cellEnding(spot.cell), answer: cellFormsOf(spot.cell) }));
+    const sections = [...new Set(boxes.map((b) => b.section))];
+    const skill = skillOf(table);
+    const groupLabel = group ? (table.groups.find((g) => g.id === group)?.label ?? group) : null;
+    const what = groupLabel ? `the ${groupLabel}` : sections.length === 1 ? (got.table.sections[sections[0]]?.title ? `the ${got.table.sections[sections[0]].title}` : 'the table') : 'the table';
+    return chartShape({ skill, table, boxes, sample: got, head: groupLabel ?? table.label, question: `Fill in ${what} of ${firstWord(got.entry.lemma)}`, byWord: false, section: sections[0], multi: sections.length > 1, key: `${table.id}@${got.entry.h}#${group ?? 'all'}` });
+  }
+  /** The common item shape (`chart`), so the UI treats a catalogue item exactly like a drill's chart. */
+  function chartShape({ skill, table, boxes, sample, head, question, byWord, section = 0, multi = false, key, step = null }) {
+    return {
+      skill: skill?.id ?? table.id, kind: 'chart', stage: 1, teach: false, taught: null, asked: null, written: null, catalogue: true,
+      key: null, teachKey: key, input: 'chart', unit_id: null, week_n: null, scope: null, target: null, parse: null, meanings: [], gold: null,
+      entry: sample?.entry ?? null, lemma: sample?.entry?.lemma ?? '',
+      prompt: { la: null, question, gloss: '', hint: `${head ?? 'this cell'} — ${table.label}` },
+      answer: boxes[0].answer,
+      chart: { table: sample?.table ?? null, section, col: boxes[0].col, target: { row: boxes[0].row, col: boxes[0].col }, cells: boxes, full: !byWord, byWord, multi, head: head ?? '', tableId: table.id },
+      confuse: { values: {}, indexes: {}, forms: {} },
+      feedback: {
+        short: boxes.length === 1 ? `${boxes[0].answer[0]} is the ${boxes[0].cellLabel} of ${boxes[0].lemma}.` : `${boxes.map((b) => `${byWord ? b.word : b.cellLabel} → ${b.answer[0]}`).join(', ')}.`,
+        term: skill?.plain ?? table.label, label: { name: head ?? '', plain: '', full: head ?? '' }, table: null, lemma: sample?.entry?.lemma ?? null, sense: null,
+        paradigm: { key: table.id, highlight: null },
+      },
+      step,
+    };
+  }
+  /** The rendered paradigm of a word, for "see it filled"; null when the word renders nothing. */
+  const filled = (tableId, word = null) => { const t = catalogue.table(tableId); const got = entryFor(word ?? t?.stock?.[0]); return got?.table ?? null; };
+  /** The stock words of a table narrowed by a lemma axis (§5): gender, chapter, deponent. */
+  function stockWords(tableId, axes = {}) {
+    const t = catalogue.table(tableId);
+    const all = t ? catalogue.stock(t.id) : [];
+    const g = Array.isArray(axes?.gender) && axes.gender.length ? axes.gender : null;
+    return g ? all.filter((w) => !w.gender || g.includes(w.gender)) : all;
+  }
+  return { search, wordEntry, tableOf, cellItem, tableItem, filled, stockWords, narrowCells, cellIdsOf, tableIdOf: (e) => tableIdOf(e, select), helpers, rand };
 }
