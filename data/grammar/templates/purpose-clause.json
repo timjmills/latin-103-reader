@@ -11,7 +11,11 @@
      "sem": [
       "person"
      ],
-     "number": "any"
+     "number": "any",
+     "not": [
+      "īnfans",
+      "fīliola"
+     ]
     },
     "p": {
      "only": [
@@ -54,11 +58,28 @@
      ]
     },
     "o": {
-     "sem": [
-      "person",
-      "animal",
-      "thing",
-      "food"
+     "only": [
+      "amīcus",
+      "pater",
+      "māter",
+      "frāter",
+      "soror",
+      "medicus",
+      "magister",
+      "mercātor",
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "avunculus",
+      "uxor",
+      "marītus",
+      "nauta",
+      "mīles",
+      "dux",
+      "fīlius",
+      "fīlia",
+      "discipulus"
      ],
      "number": "any"
     },
@@ -70,27 +91,15 @@
      "lemmas": [
       "vocō",
       "videō",
-      "emō",
       "quaerō",
       "arcessō",
       "salūtō",
       "audiō",
-      "spectō",
       "laudō",
       "adiuvō",
       "iuvō",
       "inveniō",
-      "capiō",
-      "vēndō",
-      "exspectō",
-      "sequor",
-      "servō",
-      "cūrō",
-      "līberō",
-      "reperiō",
-      "revocō",
-      "occultō",
-      "portō"
+      "exspectō"
      ]
     }
    },
@@ -113,20 +122,10 @@
       "hortus",
       "ātrium",
       "cubiculum",
-      "silva",
-      "urbs",
-      "forum",
-      "lūdus",
-      "taberna",
-      "campus",
       "vīlla",
-      "oppidum",
-      "mare",
-      "flūmen",
-      "templum",
-      "culīna",
-      "theātrum",
-      "peristylum"
+      "peristylum",
+      "silva",
+      "campus"
      ]
     },
     "go": {
@@ -150,18 +149,14 @@
      "form": "pres.subj",
      "subj": "s",
      "lemmas": [
-      "lūdō",
       "dormiō",
       "quiēscō",
       "sedeō",
-      "cēnō",
       "labōrō",
       "ambulō",
       "canō",
       "cantō",
-      "lavō",
       "cubō",
-      "recumbō",
       "vigilō"
      ],
      "absolute": true
@@ -182,10 +177,22 @@
      "number": "any"
     },
     "o": {
-     "sem": [
-      "person"
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "nūntius",
+      "tabellārius",
+      "mercātor",
+      "agricola",
+      "colōnus",
+      "nauta",
+      "medicus",
+      "ōstiārius",
+      "iānitor",
+      "amīcus",
+      "discipulus"
      ],
-     "names": false,
      "number": "any"
     },
     "send": {
@@ -205,11 +212,28 @@
      "agree": "o"
     },
     "o2": {
-     "sem": [
-      "thing",
-      "food",
-      "person",
-      "animal"
+     "only": [
+      "cibus",
+      "pānis",
+      "vīnum",
+      "epistula",
+      "pecūnia",
+      "nummus",
+      "saccus",
+      "sacculus",
+      "gladius",
+      "hasta",
+      "equus",
+      "ovis",
+      "canis",
+      "asinus",
+      "bōs",
+      "vestis",
+      "toga",
+      "tunica",
+      "lignum",
+      "rosa",
+      "flōs"
      ],
      "number": "any"
     },
@@ -223,26 +247,15 @@
       "portō",
       "emō",
       "vēndō",
-      "scrībō",
-      "legō",
       "quaerō",
       "parō",
       "cūrō",
-      "custodiō",
-      "servō",
-      "vocō",
-      "arcessō",
+      "custōdiō",
       "dūcō",
-      "aperiō",
-      "claudō",
-      "lavō",
       "numerō",
-      "spectō",
-      "alō",
-      "pāscō",
       "occultō",
-      "impleō",
-      "ōrnō"
+      "pāscō",
+      "alō"
      ]
     }
    },
@@ -277,10 +290,13 @@
     },
     "s2": {
      "sem": [
-      "person",
-      "animal"
+      "person"
      ],
-     "number": "any"
+     "number": "any",
+     "not": [
+      "īnfans",
+      "fīliola"
+     ]
     },
     "pron": {
      "pos": "PRON",
@@ -320,7 +336,11 @@
      "sem": [
       "person"
      ],
-     "number": "any"
+     "number": "any",
+     "not": [
+      "īnfans",
+      "fīliola"
+     ]
     },
     "door": {
      "only": [
@@ -421,6 +441,10 @@
     "g": {
      "sem": [
       "person"
+     ],
+     "not": [
+      "īnfans",
+      "fīliola"
      ]
     },
     "r": {
@@ -454,7 +478,15 @@
       "food",
       "animal"
      ],
-     "number": "any"
+     "number": "any",
+     "not": [
+      "aquila",
+      "leō",
+      "lupus",
+      "mōnstrum",
+      "bēstia",
+      "ursus"
+     ]
     },
     "v": {
      "pos": "V",
@@ -555,11 +587,28 @@
      ]
     },
     "o": {
-     "sem": [
-      "person",
-      "thing",
-      "animal",
-      "place"
+     "only": [
+      "amīcus",
+      "pater",
+      "māter",
+      "frāter",
+      "soror",
+      "medicus",
+      "magister",
+      "mercātor",
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "avunculus",
+      "uxor",
+      "marītus",
+      "nauta",
+      "mīles",
+      "dux",
+      "fīlius",
+      "fīlia",
+      "discipulus"
      ],
      "number": "pl"
     },
@@ -572,7 +621,6 @@
       "videō",
       "salūtō",
       "audiō",
-      "spectō",
       "quaerō",
       "exspectō",
       "vocō",
@@ -635,5 +683,67 @@
    "words": 5
   }
  ],
- "exclude": []
+ "exclude": [],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11); the pilot's own six reads (50% → 1.6%, contract §11a) preceded these",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 21,
+    "generated": 40,
+    "rejected": 12,
+    "rate": 0.3,
+    "causes": [
+     "objects drawn by frame alone in t1 / t3 / t9 ('to carry the kings', 'to praise the beds', 'to see the strings'): person lists with person verbs, a thing list with thing verbs",
+     "a baby shutting the door, oxen finding the sons: īnfans and fīliola out of the actors, animals out of the pursuers",
+     "'savingses': savings pluralises as savings (EN_PLURALS)"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 22,
+    "generated": 40,
+    "rejected": 4,
+    "rate": 0.1,
+    "causes": [
+     "servō 'save' on togas and wine: dropped from t3",
+     "'a mother goes out into the shop to play': t2's places are house, garden, wood and field",
+     "'to watch the girl / the husbands': spectō dropped from the person-object templates"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 23,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.075,
+    "causes": [
+     "'a farmer to hide water': aqua dropped from t3's objects",
+     "'the mothers / parents go in to play': lūdō dropped from t2"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 24,
+    "generated": 40,
+    "rejected": 3,
+    "rate": 0.075,
+    "causes": [
+     "'sends for kings to carry the bags', 'sends for the enemy to carry wine': t3's person sent is a servant, messenger, tradesman or friend",
+     "'the baby gives the mistress a sesterce': īnfans and fīliola out of the givers"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 25,
+    "generated": 40,
+    "rejected": 2,
+    "rate": 0.05,
+    "causes": [
+     "'so that they may buy an eagle' (twice): wild animals kept out of the bought-object slot after this pass"
+    ]
+   }
+  ],
+  "final_rate": 0.05
+ }
 }

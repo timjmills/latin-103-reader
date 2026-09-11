@@ -1,0 +1,642 @@
+{
+ "skill": "passive-periphrastic",
+ "chapter": 31,
+ "templates": [
+  {
+   "id": "pp-t1",
+   "la": "{dem:nom} {s:nom} hodiē {ger:gerundive} {be:pres.ind}.",
+   "en": "{dem} {s:bare} must be {ger:pp} today.",
+   "slots": {
+    "dem": {
+     "pos": "PRON",
+     "lemma": "hic",
+     "agree": "s"
+    },
+    "s": {
+     "only": [
+      "epistula",
+      "littera",
+      "carmen",
+      "fābula",
+      "vocābulum",
+      "verbum",
+      "nōmen",
+      "titulus"
+     ],
+     "number": "any"
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "lemmas": [
+      "legō",
+      "scrībō",
+      "recitō",
+      "discō"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "ger",
+   "words": 5
+  },
+  {
+   "id": "pp-t2",
+   "la": "{s:nom} {adj:nom} crās {ger:gerundive} {be:pres.ind}.",
+   "en": "{s} must be {ger:pp} tomorrow.",
+   "slots": {
+    "s": {
+     "only": [
+      "vāsum",
+      "pōculum",
+      "mēnsa",
+      "vestis",
+      "tunica",
+      "toga",
+      "pallium"
+     ],
+     "number": "any"
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "novus",
+      "sordidus",
+      "magnus",
+      "parvus",
+      "antīquus",
+      "pulcher"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "lemmas": [
+      "lavō",
+      "vēndō",
+      "emō",
+      "ōrnō"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "ger",
+   "words": 5
+  },
+  {
+   "id": "pp-t3",
+   "la": "{omn:nom} {s:nom} in {p:abl} {ger:gerundive} {be:pres.ind}.",
+   "en": "{omn} the {s:bare} in {p} must be {ger:pp}.",
+   "slots": {
+    "omn": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "omnis"
+     ]
+    },
+    "s": {
+     "only": [
+      "vāsum",
+      "pōculum",
+      "vestis",
+      "tunica",
+      "toga",
+      "mēnsa"
+     ],
+     "number": "pl"
+    },
+    "p": {
+     "only": [
+      "cubiculum",
+      "ātrium",
+      "taberna",
+      "vīlla",
+      "culīna"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "lemmas": [
+      "lavō",
+      "vēndō",
+      "numerō"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "ger",
+   "words": 6
+  },
+  {
+   "id": "pp-t4",
+   "la": "Post {t:acc} statim {ger:gerundive} est.",
+   "en": "After {t} one must {ger:base} at once.",
+   "slots": {
+    "t": {
+     "only": [
+      "cēna",
+      "pugna",
+      "iter",
+      "convīvium"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "lemmas": [
+      "dormiō",
+      "taceō",
+      "labōrō",
+      "surgō",
+      "quiēscō",
+      "lavō",
+      "discēdō",
+      "redeō",
+      "requiēscō"
+     ],
+     "absolute": true
+    }
+   },
+   "focus": "ger",
+   "words": 5,
+   "fixed_gloss": {
+    "Post": "after"
+   }
+  },
+  {
+   "id": "pp-t5",
+   "la": "In {p:abl} {ger:gerundive} est, {n:voc}!",
+   "en": "In {p} one must {ger:base}, {n:bare}!",
+   "slots": {
+    "p": {
+     "only": [
+      "lūdus",
+      "templum",
+      "cubiculum",
+      "ātrium",
+      "silva"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "lemmas": [
+      "taceō",
+      "labōrō",
+      "dormiō",
+      "vigilō",
+      "sedeō",
+      "quiēscō",
+      "maneō"
+     ],
+     "absolute": true
+    },
+    "n": {
+     "only": [
+      "puer",
+      "discipulus",
+      "puella",
+      "servus",
+      "amīcus",
+      "līberī"
+     ],
+     "number": "pl",
+     "art": ""
+    }
+   },
+   "focus": "ger",
+   "words": 5
+  },
+  {
+   "id": "pp-t6",
+   "la": "Crās {adj:nom} {s:nom} {ger:gerundive} erit.",
+   "en": "Tomorrow {s} will have to be {ger:pp}.",
+   "slots": {
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "novus",
+      "magnus",
+      "altus",
+      "parvus",
+      "pulcher",
+      "longus"
+     ]
+    },
+    "s": {
+     "only": [
+      "vīlla",
+      "mūrus",
+      "nāvis",
+      "templum",
+      "porta"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "lemmas": [
+      "aedificō",
+      "ōrnō",
+      "claudō",
+      "aperiō"
+     ]
+    }
+   },
+   "focus": "ger",
+   "words": 5,
+   "fixed_gloss": {
+    "erit": "will be"
+   }
+  },
+  {
+   "id": "pp-t7",
+   "la": "{s:nom} {ag:dat} hodiē {ger:gerundive} {be:pres.ind}.",
+   "en": "{s} must be {ger:pp} by {ag} today.",
+   "slots": {
+    "s": {
+     "only": [
+      "epistula",
+      "littera",
+      "carmen",
+      "fābula",
+      "cibus",
+      "pānis",
+      "ager",
+      "vocābulum",
+      "verbum"
+     ],
+     "number": "any"
+    },
+    "ag": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "discipulus",
+      "fīlius",
+      "fīlia",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "Dāvus",
+      "Mēdus",
+      "Syra",
+      "Dēlia",
+      "Sextus"
+     ],
+     "g": "by"
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "agent": "ag",
+     "lemmas": [
+      "legō",
+      "scrībō",
+      "recitō",
+      "discō",
+      "parō",
+      "colō",
+      "arō"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "takes": "pred",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "ger",
+   "words": 5
+  },
+  {
+   "id": "pp-t8",
+   "la": "{s:nom} nōn {ptc:ptc.perf.pass}, sed {ger:gerundive} est.",
+   "en": "{s} has not been {ptc:pp}, but must be {ger:pp}.",
+   "slots": {
+    "s": {
+     "only": [
+      "epistula",
+      "carmen",
+      "fābula",
+      "cēna",
+      "cibus",
+      "ager",
+      "vīlla",
+      "mūrus",
+      "nāvis"
+     ]
+    },
+    "ptc": {
+     "pos": "V",
+     "form": "ptc.perf.pass",
+     "agree": "s",
+     "lemmas": [
+      "scrībō",
+      "legō",
+      "recitō",
+      "parō",
+      "aedificō",
+      "arō",
+      "colō"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "same": "ptc"
+    }
+   },
+   "focus": "ger",
+   "words": 6
+  },
+  {
+   "id": "pp-t9",
+   "la": "{s:nom} {adj:nom} nōn statim {ger:gerundive} est.",
+   "en": "{s} must not be {ger:pp} at once.",
+   "slots": {
+    "s": {
+     "only": [
+      "servus",
+      "ancilla",
+      "puer",
+      "discipulus",
+      "canis",
+      "equus"
+     ]
+    },
+    "adj": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "improbus",
+      "piger",
+      "fugitīvus",
+      "stultus",
+      "malus",
+      "ferus",
+      "sordidus"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "lemmas": [
+      "pūniō",
+      "verberō",
+      "laudō",
+      "dīmittō"
+     ]
+    }
+   },
+   "focus": "ger",
+   "words": 6
+  },
+  {
+   "id": "pp-t10",
+   "la": "{dem:nom} {s:nom} {omn:nom} {ger:gerundive} sunt.",
+   "en": "{omn} {dem} {s:bare} must be {ger:pp}.",
+   "slots": {
+    "dem": {
+     "pos": "PRON",
+     "lemma": "hic",
+     "agree": "s"
+    },
+    "s": {
+     "only": [
+      "verbum",
+      "epistula",
+      "littera",
+      "carmen",
+      "vocābulum",
+      "fābula",
+      "nōmen"
+     ],
+     "number": "pl"
+    },
+    "omn": {
+     "pos": "ADJ",
+     "agree": "s",
+     "only": [
+      "omnis"
+     ]
+    },
+    "ger": {
+     "pos": "V",
+     "form": "gerundive",
+     "agree": "s",
+     "lemmas": [
+      "discō",
+      "legō",
+      "scrībō",
+      "recitō"
+     ]
+    }
+   },
+   "focus": "ger",
+   "words": 5
+  }
+ ],
+ "exclude": [
+  {
+   "template": "pp-t2",
+   "fill": {
+    "adj": "sordidus",
+    "ger": "emō"
+   }
+  },
+  {
+   "template": "pp-t2",
+   "fill": {
+    "adj": "sordidus",
+    "ger": "ōrnō"
+   }
+  },
+  {
+   "template": "pp-t2",
+   "fill": {
+    "adj": "sordidus",
+    "ger": "vēndō"
+   }
+  },
+  {
+   "template": "pp-t6",
+   "fill": {
+    "adj": "altus",
+    "s": "vīlla"
+   }
+  },
+  {
+   "template": "pp-t6",
+   "fill": {
+    "adj": "altus",
+    "s": "nāvis"
+   }
+  },
+  {
+   "template": "pp-t6",
+   "fill": {
+    "adj": "altus",
+    "s": "porta"
+   }
+  },
+  {
+   "template": "pp-t6",
+   "fill": {
+    "adj": "longus",
+    "s": "vīlla"
+   }
+  },
+  {
+   "template": "pp-t6",
+   "fill": {
+    "adj": "longus",
+    "s": "templum"
+   }
+  },
+  {
+   "template": "pp-t6",
+   "fill": {
+    "adj": "longus",
+    "s": "porta"
+   }
+  },
+  {
+   "template": "pp-t9",
+   "fill": {
+    "ger": "laudō",
+    "s": "equus"
+   }
+  },
+  {
+   "template": "pp-t9",
+   "fill": {
+    "ger": "laudō",
+    "s": "canis"
+   }
+  },
+  {
+   "template": "pp-t9",
+   "fill": {
+    "adj": "fugitīvus",
+    "s": "canis"
+   }
+  },
+  {
+   "template": "pp-t9",
+   "fill": {
+    "adj": "fugitīvus",
+    "s": "equus"
+   }
+  }
+ ],
+ "review": {
+  "reviewer": "hostile read as a Latin teacher: agreement, sense, English, gloss, macrons (Claude Fable 5.1, 2026-09-11)",
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 23,
+    "rate": 0.575,
+    "causes": [
+     "gerundives drawn by frame alone ('must be valued / imported / helped / named'): lemma lists per noun group",
+     "'to be been silent', 'to be gone away': the impersonal gerundive is glossed 'one must …'",
+     "'Every these letters': omnis reads 'all' (EN_ADJ_SENSE); 'clothings': vestis reads 'garment' (EN_NOUN)",
+     "'Post = behind': fixed gloss 'after'",
+     "the enemy as agent, 'the dinners': the dative of agent is the household and the cast, cēna left singular",
+     "necō / interficiō / occīdō dropped from the punishment template"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 7,
+    "rate": 0.175,
+    "causes": [
+     "cross-group gerundives ('the letter washed', 'the letters bought'): each template holds one noun group",
+     "'one must fight in the atrium': pugnō dropped from the impersonal template",
+     "'the son must be freed': līberō dropped"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 7,
+    "rate": 0.175,
+    "causes": [
+     "'the road adorned': via dropped from the building template",
+     "'one must learn on the ship', 'after the war one must run': discō, currō, ambulō and bellum dropped from the impersonal templates",
+     "'the tables in the sack': saccus dropped; 'dirty tunics bought': sordidus excluded with emō / ōrnō / vēndō"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 9,
+    "rate": 0.225,
+    "causes": [
+     "'the cups in the atrium must be bought': emō dropped from the in-a-place template",
+     "'silver cloaks washed': argenteus / aureus dropped; 'a tall villa adorned': altus / longus excluded per noun",
+     "soldiers told to stay in school: the addressees are children and servants, the places house and school",
+     "'the wild horse praised': laudō excluded with the animals"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "'one must work in the temple' (borderline, left)"
+    ]
+   }
+  ],
+  "final_rate": 0.025
+ }
+}
