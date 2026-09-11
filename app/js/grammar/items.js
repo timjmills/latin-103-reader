@@ -32,6 +32,38 @@ import { tokenize, stripMacrons } from '../tokenize.js';
 import { weekOfUnit, isShelfWeek } from '../sync.js';
 import { scopeByChapter, scopeNote } from './chapter.js';
 
+/* ------------------------------------------------------------ parts */
+/**
+ * A feedback line built from **parts** rather than interpolated into one
+ * string ("All Latin text throughout should be mouse-overable for the
+ * meaning", 2026-09-11). A plain string is English; `la('…')` is a Latin
+ * fragment. The view draws each Latin part as its own `lang="la"` element,
+ * which is the whole of what the pointer dictionary needs — `wordsOnDemand`
+ * (ui.js) cuts any `lang="la"` element into words the first time the pointer
+ * crosses it, so nothing here tokenises anything by hand.
+ *
+ * English is never marked, and that is half the point: a marked English word
+ * would open the dictionary on itself and be read out as Latin by a screen
+ * reader.
+ *
+ * `partsText` is the same line as one string. `ctx.say` reads the rendered
+ * `.g-fb__line` textContent, so the parts and the string must agree to the
+ * character; every producer here derives its `short` from its `parts` so the
+ * two cannot drift. Pure.
+ */
+export const la = (text) => ({ la: String(text ?? '') });
+export const partsText = (parts) => (Array.isArray(parts) ? parts : [parts])
+  .map((p) => (p && typeof p === 'object' ? String(p.la ?? '') : String(p ?? '')))
+  .join('');
+/**
+ * A question line built from parts, for a `prompt`. `question` stays the plain
+ * string every reader of a prompt has always had; `questionParts` is the same
+ * line with its Latin marked, which is what the view draws. Pure.
+ */
+export const q = (parts) => ({ question: partsText(parts), questionParts: parts });
+/** A list of words, each its own Latin fragment: "puella, servus, verbum". Pure. */
+export const laList = (words, sep = ', ') => words.flatMap((w, i) => (i ? [sep, la(w)] : [la(w)]));
+
 /* ----------------------------------------------------------- labels */
 export const FEATURES = Object.freeze(['case', 'gender', 'number', 'tense', 'mood', 'voice', 'person', 'degree', 'construction', 'form']);
 export const CASE_LABEL = {
@@ -948,8 +980,13 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const table = paradigm && c?.entry ? safeParadigm(c.entry, c.parse) : null;
     const readings = c?.ambiguous ? c.values.map((v) => labelOf(c.ambKey ?? k, v, skill).name).join(' or ') : null;
     const what = k === 'construction' && c?.parse?.case && c.entry.pos !== 'V' ? `${CASE_LABEL[c.parse.case]?.name ?? c.parse.case}, ${lab.name}` : lab.name;
+    const parts = c
+      ? (c.ambiguous
+        ? [la(c.token.text), ' is the form of ', la(c.entry.lemma), ` that fits; the ending could be ${readings} — the sentence decides.`]
+        : [la(c.token.text), ` is ${what} — ${lab.plain} — from `, la(c.entry.lemma), '.'])
+      : [`${lab.full}.`];
     return {
-      short: c ? (c.ambiguous ? `${c.token.text} is the form of ${c.entry.lemma} that fits; the ending could be ${readings} — the sentence decides.` : `${c.token.text} is ${what} — ${lab.plain} — from ${c.entry.lemma}.`) : `${lab.full}.`,
+      short: partsText(parts), parts,
       term: skill.plain, label: lab, table, lemma: c?.entry?.lemma ?? null, sense: c ? headSense(c.entry) : null,
       paradigm: { key: skill.paradigms?.[0] ?? null, highlight: Array.isArray(skill.parse_filter) ? null : skill.parse_filter },
     };
@@ -1005,14 +1042,20 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     return { c, key: got.key, wrapped: got.wrapped, scope: scopeNote(chapter, scoped.scope, c) };
   };
 
+  // The word the question asks about is Latin and the rest of the line is English, so the two are kept
+  // apart: the pointer opens the dictionary on the word and nowhere else.
   const recogniseQuestion = (skill, c, k) => {
-    const X = c.token.text;
+    const X = la(c.token.text);
     if (k === 'construction') {
-      if (c.parse?.case && (c.entry.pos === 'N' || c.entry.pos === 'PRON' || c.entry.pos === 'ADJ')) return `What is this ${CASE_LABEL[c.parse.case]?.name ?? c.parse.case} (${X}) doing here?`;
-      if (c.parse?.mood === 'subj') return `${X} is subjunctive: what kind of clause is it in?`;
-      return `What is ${X} doing here?`;
+      if (c.parse?.case && (c.entry.pos === 'N' || c.entry.pos === 'PRON' || c.entry.pos === 'ADJ')) return [`What is this ${CASE_LABEL[c.parse.case]?.name ?? c.parse.case} (`, X, ') doing here?'];
+      if (c.parse?.mood === 'subj') return [X, ' is subjunctive: what kind of clause is it in?'];
+      return ['What is ', X, ' doing here?'];
     }
-    return { case: `Which case is ${X} here?`, gender: `Which gender is ${X}?`, number: `Which number is ${X} here?`, voice: `Which voice is ${X} here?`, person: `Which person and number is ${X}?`, degree: `Which degree is ${X}?`, form: skill.id === 'principal-parts' ? `Which stem is ${X} built on?` : `What does the ending of ${X} do here?` }[k] ?? `Which tense and mood is ${X} here?`;
+    const tail = { case: ' here?', gender: '?', number: ' here?', voice: ' here?', person: '?', degree: '?' }[k];
+    const lead = { case: 'Which case is ', gender: 'Which gender is ', number: 'Which number is ', voice: 'Which voice is ', person: 'Which person and number is ', degree: 'Which degree is ' }[k];
+    if (lead) return [lead, X, tail];
+    if (k === 'form') return skill.id === 'principal-parts' ? ['Which stem is ', X, ' built on?'] : ['What does the ending of ', X, ' do here?'];
+    return ['Which tense and mood is ', X, ' here?'];
   };
 
   function recognise(skill, stage, opts) {
@@ -1039,7 +1082,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
         answer: [c.token.text], accept: accept.length ? accept : [c.index], choices: null, confuse, feedback: feedbackFor(skill, c, k) };
     }
     return { ...base(skill, 'recognise', stage, c, scope), key: itemKey, input: 'choice', repeat: wrapped,
-      prompt: { la: c.unit.la, question: recogniseQuestion(skill, c, k), gloss: lemmaGloss(c.entry), hint: skill.summary },
+      prompt: { la: c.unit.la, ...q(recogniseQuestion(skill, c, k)), gloss: lemmaGloss(c.entry), hint: skill.summary },
       answer: [c.value], choices, confuse, feedback: feedbackFor(skill, c, k) };
   }
 
@@ -1080,7 +1123,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const p = c.parse;
     const req = expect.required.map((r) => PARSE_WORD[r]).filter(Boolean);
     const tail = p.mood === 'ptc' ? ' (it is a participle)' : p.mood === 'gerundive' ? ' (it is a gerundive)' : '';
-    return `Parse ${c.token.text}: ${joinWords(req)}${tail}`;
+    return ['Parse ', la(c.token.text), `: ${joinWords(req)}${tail}`];
   };
   const parsePlaceholder = (expect) => {
     const r = expect.required;
@@ -1112,7 +1155,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       for (const ch of choices) if (!ch.correct && ch.skill) for (const kw of functionKeys(skillMap.get(ch.skill))) reject[kw] = ch.skill;
       const expect = { kind: 'function', accept: functionKeys(skill), reject };
       const item = { ...base(skill, 'parse', stage, c, scope), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
-        prompt: { la: c.unit.la, question: caseName ? (stage >= 2 ? `${c.token.text} is ${caseName}: what is it doing here? (its function)` : `${c.token.text}: which case, and what is it doing here?`) : `What is ${c.token.text} doing here? (the construction)`, gloss: lemmaGloss(c.entry), hint: skill.summary, placeholder: 'e.g. indirect object' },
+        prompt: { la: c.unit.la, ...q(caseName ? (stage >= 2 ? [la(c.token.text), ` is ${caseName}: what is it doing here? (its function)`] : [la(c.token.text), ': which case, and what is it doing here?']) : ['What is ', la(c.token.text), ' doing here? (the construction)']), gloss: lemmaGloss(c.entry), hint: skill.summary, placeholder: 'e.g. indirect object' },
         answer: [labelOf(k, c.value, skill).name], expect, choices: null, confuse, feedback: feedbackFor(skill, c, k) };
       if (item.input === 'choice') { item.choices = choices.map(withCase); item.answer = [c.value]; }
       return item;
@@ -1120,7 +1163,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const expect = parseExpect(skill, c);
     const canonical = parseName(skill, c.parse, c.entry);
     const item = { ...base(skill, 'parse', stage, c, scope), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
-      prompt: { la: c.unit.la, question: parseQuestion(skill, c, expect), gloss: lemmaGloss(c.entry), hint: skill.summary, placeholder: parsePlaceholder(expect) },
+      prompt: { la: c.unit.la, ...q(parseQuestion(skill, c, expect)), gloss: lemmaGloss(c.entry), hint: skill.summary, placeholder: parsePlaceholder(expect) },
       answer: [canonical], expect, expectKey: k, choices: null, confuse, feedback: feedbackFor(skill, c, k) };
     if (item.input === 'choice') {
       const { conf, fillers } = distractorValues(skill, c.value, c);
@@ -1168,7 +1211,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const answer = [c.token.text, stripMacrons(c.token.text)];
     const lab = c.value ? labelOf(k, c.value, skill) : { name: skill.title, plain: skill.plain };
     const item = { ...base(skill, 'blank', stage, c, scope), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
-      prompt: { la: blankOut(c.unit.la, c.token), question: `Fill the blank with the right form of ${firstWord(c.entry.lemma)}`, gloss: lemmaGloss(c.entry), hint: `${lab.name} — ${lab.plain}` },
+      prompt: { la: blankOut(c.unit.la, c.token), ...q(['Fill the blank with the right form of ', la(firstWord(c.entry.lemma))]), gloss: lemmaGloss(c.entry), hint: `${lab.name} — ${lab.plain}` },
       answer, choices: null, confuse: confuseMap(skill, c, k), feedback: feedbackFor(skill, c, k) };
     if (item.input === 'choice') {
       const table = plainTable(c.entry);
@@ -1280,14 +1323,15 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     // The line then gives up as much as it must: the citation, then the meaning (QA-FINAL B1).
     const asked = cells.flatMap((x) => x.answer || []);
     const chartGloss = [lemmaGloss(c.entry), headGloss(c.entry), head].find((g) => !spellsAnswer(g, asked)) ?? head;
-    const fullQuestion = full && genderCols && k === 'case' ? `Fill in the ${cellLabel(section.rows[ri], -1)} of ${head} in every gender`
-      : full ? `Fill in the ${finite ? `${section.title}${colLabel ? ` (${colLabel})` : ''}` : (degreeTitle ? `${degreeTitle} ` : '') + (colLabel || section.title)} of ${head}` : null;
+    const fullQuestion = full && genderCols && k === 'case' ? [`Fill in the ${cellLabel(section.rows[ri], -1)} of `, la(head), ' in every gender']
+      : full ? [`Fill in the ${finite ? `${section.title}${colLabel ? ` (${colLabel})` : ''}` : (degreeTitle ? `${degreeTitle} ` : '') + (colLabel || section.title)} of `, la(head)] : null;
     return { ...base(skill, 'chart', stage, null, scopeNote(opts.chapter ?? null, scoped.scope, c)), key: got.key, input: 'chart', entry: c.entry, lemma, repeat: got.wrapped,
-      prompt: { la: null, question: full ? fullQuestion : `Give the ${cellLabel(section.rows[ri])} of ${head}`, gloss: chartGloss, hint: `${lab.name} — ${lab.plain}` },
+      prompt: { la: null, ...q(full ? fullQuestion : [`Give the ${cellLabel(section.rows[ri])} of `, la(head)]), gloss: chartGloss, hint: `${lab.name} — ${lab.plain}` },
       answer: cellAnswers(target),
       chart: { table, section: si, col: ci, target: { row: ri, col: ci }, cells, full, head },
       meanings: [], confuse: { values: {}, indexes: {}, forms: {} },
-      feedback: { ...feedbackFor(skill, null, k), short: `${target.text} is the ${cellLabel(section.rows[ri])} of ${lemma} — ${lab.plain}.`, table, lemma, sense: headSense(c.entry) } };
+      feedback: (() => { const parts = [la(target.text), ` is the ${cellLabel(section.rows[ri])} of `, la(lemma), ` — ${lab.plain}.`];
+        return { ...feedbackFor(skill, null, k), short: partsText(parts), parts, table, lemma, sense: headSense(c.entry) }; })() };
   }
 
   const FNS = { recognise, parse: parseItem, blank, chart: (s, st, o, x) => chart(s, st, o, x) };
@@ -1684,24 +1728,25 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     if (!boxes.length) return null;
     const oneCell = new Set(boxes.map((b) => b.cellLabel)).size === 1;
     const heads = [...new Set(boxes.map((b) => b.word))];
-    const question = boxes.length === 1 ? `Give the ${boxes[0].cellLabel} of ${boxes[0].word}`
-      : oneCell ? `Give the ${head} of ${heads.join(', ')}`
-        : `Fill in these forms of ${heads.join(', ')}`;
+    const question = boxes.length === 1 ? [`Give the ${boxes[0].cellLabel} of `, la(boxes[0].word)]
+      : oneCell ? [`Give the ${head} of `, ...laList(heads)]
+        : ['Fill in these forms of ', ...laList(heads)];
     return {
       skill: skill.id, kind: 'chart', stage: 1, teach: true, taught: null, asked: null, written: null,
       key: null, teachKey: `teach-chart:${table?.id ?? key ?? '?'}#${[...new Set(boxes.map((b) => b.cellId))].join('+')}`,
       input: 'chart', unit_id: null, week_n: null, scope: null, target: null, parse: null, meanings: [], gold: null,
       entry: sample?.entry ?? null, lemma: sample?.entry?.lemma ?? '',
-      prompt: { la: null, question, gloss: '', hint: `${head ?? 'this cell'} — the same job, one word at a time` },
+      prompt: { la: null, ...q(question), gloss: '', hint: `${head ?? 'this cell'} — the same job, one word at a time` },
       answer: boxes[0].answer,
       // `byWord`: the boxes are one word each, not a section of one table, so every one of them is asked (the
       // phone's one-cell reduction would answer the rest for the learner) and they read down the page in turn.
       chart: { table: sample?.table ?? null, section: 0, col: 0, target: { row: 0, col: 0 }, cells: boxes, full: false, byWord: true, head: head ?? '', tableId: table?.id ?? null },
       confuse: { values: {}, indexes: {}, forms: {} },
       feedback: {
-        short: boxes.length === 1
-          ? `${boxes[0].answer[0]} is the ${boxes[0].cellLabel} of ${boxes[0].lemma}.`
-          : `${boxes.map((b) => `${b.word} → ${b.answer[0]}`).join(', ')}.`,
+        ...(() => { const parts = boxes.length === 1
+          ? [la(boxes[0].answer[0]), ` is the ${boxes[0].cellLabel} of `, la(boxes[0].lemma), '.']
+          : [...boxes.flatMap((b, i) => [i ? ', ' : '', la(b.word), ' → ', la(b.answer[0])]), '.'];
+        return { short: partsText(parts), parts }; })(),
         term: skill.plain ?? '', label: { name: head ?? '', plain: '', full: head ?? '' }, table: null, lemma: sample?.entry?.lemma ?? null, sense: null,
         paradigm: { key: table?.id ?? key ?? null, highlight: null },
       },
@@ -1923,7 +1968,7 @@ export function createCatalogueItems({ catalogue, lookup, paradigm = null, headw
     if (!boxes.length) return null;
     const skill = skillOf(table);
     const heads = [...new Set(boxes.map((b) => b.word))];
-    return chartShape({ skill, table, boxes, sample, head, question: boxes.length === 1 ? `Give the ${head} of ${heads[0]}` : `Give the ${head} of ${heads.join(', ')}`, byWord: true, key: `${table.id}#${boxes[0].cellId}`, step });
+    return chartShape({ skill, table, boxes, sample, head, question: [`Give the ${head} of `, ...laList(heads)], byWord: true, key: `${table.id}#${boxes[0].cellId}`, step });
   }
   /**
    * The whole table — or one group of it — on one word, as one item with one
@@ -1945,7 +1990,7 @@ export function createCatalogueItems({ catalogue, lookup, paradigm = null, headw
     const skill = skillOf(table);
     const groupLabel = group ? (table.groups.find((g) => g.id === group)?.label ?? group) : null;
     const what = groupLabel ? `the ${groupLabel}` : sections.length === 1 ? (got.table.sections[sections[0]]?.title ? `the ${got.table.sections[sections[0]].title}` : 'the table') : 'the table';
-    return chartShape({ skill, table, boxes, sample: got, head: groupLabel ?? table.label, question: `Fill in ${what} of ${firstWord(got.entry.lemma)}`, byWord: false, section: sections[0], multi: sections.length > 1, key: `${table.id}@${got.entry.h}#${group ?? 'all'}` });
+    return chartShape({ skill, table, boxes, sample: got, head: groupLabel ?? table.label, question: [`Fill in ${what} of `, la(firstWord(got.entry.lemma))], byWord: false, section: sections[0], multi: sections.length > 1, key: `${table.id}@${got.entry.h}#${group ?? 'all'}` });
   }
   /** The common item shape (`chart`), so the UI treats a catalogue item exactly like a drill's chart. */
   function chartShape({ skill, table, boxes, sample, head, question, byWord, section = 0, multi = false, key, step = null }) {
@@ -1953,12 +1998,16 @@ export function createCatalogueItems({ catalogue, lookup, paradigm = null, headw
       skill: skill?.id ?? table.id, kind: 'chart', stage: 1, teach: false, taught: null, asked: null, written: null, catalogue: true,
       key: null, teachKey: key, input: 'chart', unit_id: null, week_n: null, scope: null, target: null, parse: null, meanings: [], gold: null,
       entry: sample?.entry ?? null, lemma: sample?.entry?.lemma ?? '',
-      prompt: { la: null, question, gloss: '', hint: `${head ?? 'this cell'} — ${table.label}` },
+      prompt: { la: null, ...q(question), gloss: '', hint: `${head ?? 'this cell'} — ${table.label}` },
       answer: boxes[0].answer,
       chart: { table: sample?.table ?? null, section, col: boxes[0].col, target: { row: boxes[0].row, col: boxes[0].col }, cells: boxes, full: !byWord, byWord, multi, head: head ?? '', tableId: table.id },
       confuse: { values: {}, indexes: {}, forms: {} },
       feedback: {
-        short: boxes.length === 1 ? `${boxes[0].answer[0]} is the ${boxes[0].cellLabel} of ${boxes[0].lemma}.` : `${boxes.map((b) => `${byWord ? b.word : b.cellLabel} → ${b.answer[0]}`).join(', ')}.`,
+        // `cellLabel` is English ("dative singular"), the word is Latin: only the Latin halves are marked.
+        ...(() => { const parts = boxes.length === 1
+          ? [la(boxes[0].answer[0]), ` is the ${boxes[0].cellLabel} of `, la(boxes[0].lemma), '.']
+          : [...boxes.flatMap((b, i) => [i ? ', ' : '', byWord ? la(b.word) : String(b.cellLabel ?? ''), ' → ', la(b.answer[0])]), '.'];
+        return { short: partsText(parts), parts }; })(),
         term: skill?.plain ?? table.label, label: { name: head ?? '', plain: '', full: head ?? '' }, table: null, lemma: sample?.entry?.lemma ?? null, sense: null,
         paradigm: { key: table.id, highlight: null },
       },
