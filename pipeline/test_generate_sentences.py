@@ -263,6 +263,180 @@ def test_every_shipped_word_is_inside_the_cumulative_vocabulary(batches, lex, sk
             assert k in forms or k in names or x["w"] in g.FUNCTION_WORDS or x["w"].lower() in g.FUNCTION_WORDS, (s["la"], x["w"])
 
 
+# ------------------------------------------------------------ subordinate clauses (six skills, 2026-09-11)
+
+CLAUSES = ["indirect-command", "result-clause", "sequence-of-tenses", "cum-narrative", "cum-causal",
+           "indirect-question"]
+SUBJ_TENSES = {"indirect-command": {"pres"}, "result-clause": {"pres", "impf"}, "cum-narrative": {"impf", "plupf"},
+               "cum-causal": {"pres", "impf"}, "indirect-question": {"pres", "impf"}}
+
+
+@pytest.mark.parametrize("lemma,scope", [
+    ("piscātor", "all"), ("frīgus", "all"), ("fāma", "all"),   # piscatorēs, frigoris, famae: the oblique root lost its macron
+])
+def test_the_gate_keeps_a_noun_whose_stem_loses_its_macron_off_the_page(lex, lemma, scope):
+    assert word(lex, lemma).unreliable_scope == scope
+
+
+@pytest.mark.parametrize("lemma", ["dēns", "pēs", "mōns", "coniūnx", "bōs", "adulēscēns", "nox", "servus"])
+def test_a_final_syllable_that_shortens_is_latin_not_a_gap(lex, lemma):
+    assert word(lex, lemma).unreliable_scope is None
+
+
+def test_drops_inner_macron_reads_only_the_non_final_syllables():
+    assert g._drops_inner_macron("piscātor", "piscator")
+    assert g._drops_inner_macron("frīgus", "frigor")
+    assert not g._drops_inner_macron("dēns", "dent")
+    assert not g._drops_inner_macron("coniūnx", "coniug")
+    assert not g._drops_inner_macron("puer", "puer")
+
+
+@pytest.mark.parametrize("base,shape,expected", [
+    ("not know", "3sg", "does not know"), ("not know", "past", "did not know"), ("not know", "base", "do not know"),
+    ("be", "past", "was"),
+])
+def test_a_negated_base_puts_the_shape_on_do(base, shape, expected):
+    assert g.en_verb(base, shape, "sg", 3) == expected
+
+
+@pytest.mark.parametrize("base,tense,number,expected", [
+    ("sleep", "impf", "sg", "was sleeping"), ("be", "impf", "pl", "were"), ("fear", "impf", "sg", "feared"),
+    ("not know", "impf", "sg", "did not know"), ("be away", "impf", "sg", "was away"),
+    ("come", "plupf", "sg", "had come"), ("come", "perf", "pl", "came"), ("send", "fut", "sg", "will send"),
+    ("order", "pres", "sg", "orders"),
+])
+def test_the_tense_mod_renders_a_subjunctive_as_plain_english(base, tense, number, expected):
+    assert g._en_tensed(base, tense, number, 3) == expected
+
+
+def _verb_fill(lex, main_form, sub_form, seed=0):
+    t = {"id": "x", "focus": "v", "en": "",
+         "la": "{s:nom} {r:dat} {v1:%s} ut {v:%s}." % (main_form, sub_form),
+         "slots": {"s": {"sem": ["person"]}, "r": {"sem": ["person"]},
+                   "v1": {"pos": "V", "form": main_form, "subj": "s", "dat": "r", "takes": "ut", "lemmas": ["imperō"]},
+                   "v": {"pos": "V", "form": sub_form, "seq": "v1", "subj": "r", "lemmas": ["veniō"]}}}
+    return g.fill_template(lex, 28, t, __import__("random").Random(seed))
+
+
+def test_a_seq_verb_follows_its_governor_s_tense(lex):
+    fill = _verb_fill(lex, "pres.ind", "seq.subj")
+    assert fill.parses["v"]["tense"] == "pres" and fill.parses["v"]["mood"] == "subj"
+    fill = _verb_fill(lex, "perf.ind", "seq.subj")
+    assert fill.parses["v"]["tense"] == "impf" and fill.forms["v"] == "venīret"
+    fill = _verb_fill(lex, "fut.ind", "seq.subj")
+    assert fill.parses["v"]["tense"] == "pres"
+
+
+def test_tense_alternatives_are_drawn_and_the_subordinate_follows(lex):
+    seen = set()
+    for seed in range(12):
+        fill = _verb_fill(lex, "pres|perf.ind", "seq.subj", seed)
+        main, sub = fill.parses["v1"]["tense"], fill.parses["v"]["tense"]
+        assert (main, sub) in (("pres", "pres"), ("perf", "impf"))
+        seen.add(main)
+    assert seen == {"pres", "perf"}
+
+
+def test_verb_parse_takes_the_first_alternative_when_nothing_has_drawn(lex):
+    spec = {"pos": "V", "form": "impf|pres.ind", "subj": "s"}
+    fill = g.Fill({"slots": {"s": {"sem": ["person"]}, "v": spec}, "la": "", "en": "", "id": "x", "focus": "v"})
+    fill.numbers["s"] = "sg"
+    assert g.verb_parse(spec, fill, word(lex, "vocō", "V"))["tense"] == "impf"
+
+
+@pytest.mark.parametrize("slots", [
+    {"v1": {"pos": "V", "form": "pres.ind", "subj": "s"}, "v": {"pos": "V", "form": "seq.subj", "subj": "s"}},           # seq form, no seq
+    {"v1": {"pos": "V", "form": "pres.ind", "subj": "s"}, "v": {"pos": "V", "form": "pres.subj", "seq": "v1", "subj": "s"}},  # seq, no seq form
+    {"v1": {"pos": "V", "form": "pres.ind", "subj": "s"}, "v": {"pos": "V", "form": "seq.subj", "seq": "s", "subj": "s"}},   # seq names a noun
+])
+def test_a_seq_verb_must_name_a_verb_slot_and_a_seq_form_together(slots):
+    t = {"id": "x", "focus": "v", "en": "", "la": "{s:nom} {v1:pres.ind} ut {v:x}.",
+         "slots": {"s": {"sem": ["person"]}, **slots}}
+    with pytest.raises(g.TemplateError):
+        g.validate_template(t)
+
+
+def test_sum_is_drawn_only_into_a_slot_that_asks_for_a_predicate(lex):
+    v = word(lex, "sum", "V")
+    fill = g.Fill({"slots": {"s": {"sem": ["person"]}, "v": {"pos": "V", "form": "pres.ind", "subj": "s"}},
+                   "la": "{s:nom} {v:pres.ind}.", "en": "", "id": "x", "focus": "v"})
+    fill.words["s"], fill.numbers["s"] = word(lex, "puer"), "sg"
+    assert not g.verb_admits(v, fill.t["slots"]["v"], fill)
+    assert g.verb_admits(v, {"pos": "V", "form": "pres.ind", "subj": "s", "takes": "pred"}, fill)
+
+
+@pytest.fixture(scope="module")
+def clause_batches(lex):
+    return {skill: g.generate(skill, 40, 1, lex) for skill in CLAUSES}
+
+
+def _focus_parses(lex, res, s):
+    t = next(t for t in g.load_templates(res["skill"])["templates"] if t["id"] == s["template"])
+    f = t["focus"] if isinstance(t["focus"], str) else t["focus"][0]
+    v = lex.word(s["fill"][f], "V")
+    return v, v.index.get(s["focus"], []), t
+
+
+@pytest.mark.parametrize("skill", CLAUSES)
+def test_forty_clause_sentences_with_the_learner_facing_invariants(clause_batches, lex, skill):
+    res = clause_batches[skill]
+    assert len(res["sentences"]) == 40, res["unfillable"]
+    assert not any(r["la"] in {s["la"] for s in res["sentences"]} for r in res["rejected_by_check"])
+    for s in res["sentences"]:
+        n = len(s["la"].split())
+        assert 5 <= n <= 8 and s["words"] == n, s["la"]
+        assert "{" not in s["en"] and not re.search(r"\b(\w+) \1\b", s["en"].lower()), s["en"]
+        assert len(s["gloss"]) == n and all(x["m"] not in ("", "?") for x in s["gloss"]), s["gloss"]
+        assert not any(x["m"].startswith("may ") and x["w"] in ("Cum", "cum") for x in s["gloss"])
+        v, parses, _ = _focus_parses(lex, res, s)
+        assert parses and all(p.get("mood") == "subj" for p in parses), (s["la"], s["focus"])
+        if skill in SUBJ_TENSES:
+            assert {p.get("tense") for p in parses} <= SUBJ_TENSES[skill], (s["la"], s["focus"])
+
+
+def test_sequence_of_tenses_pairs_every_subordinate_with_its_main_verb(clause_batches, lex):
+    res = clause_batches["sequence-of-tenses"]
+    seen = set()
+    for s in res["sentences"]:
+        v, parses, t = _focus_parses(lex, res, s)
+        f = t["focus"]
+        main_name = t["slots"][f]["seq"]
+        main = lex.word(s["fill"][main_name], "V")
+        tokens = [x.strip(".,") for x in s["la"].split()]
+        main_forms = [tok for tok in tokens if tok in main.index or tok[:1].lower() + tok[1:] in main.index]
+        assert main_forms, s["la"]
+        mf = main_forms[0] if main_forms[0] in main.index else main_forms[0][:1].lower() + main_forms[0][1:]
+        main_tenses = {p.get("tense") for p in main.index[mf] if p.get("mood") == "ind"}
+        sub_tenses = {p.get("tense") for p in parses}
+        assert main_tenses, s["la"]
+        primary = bool(main_tenses & g.PRIMARY_TENSES)
+        assert sub_tenses == ({"pres"} if primary else {"impf"}), (s["la"], main_tenses, sub_tenses)
+        seen.add(primary)
+    assert seen == {True, False}          # both halves of the rule are practised
+
+
+@pytest.mark.parametrize("skill", CLAUSES)
+def test_clause_generation_is_deterministic_and_inside_the_vocabulary(clause_batches, lex, skill):
+    res = clause_batches[skill]
+    again = g.generate(skill, 40, 1, lex)
+    assert [s["la"] for s in again["sentences"]] == [s["la"] for s in res["sentences"]]
+    forms = lex.forms_at(res["chapter"])
+    names = {g.key_of(f) for w in lex.names(res["chapter"]) for f in w.index}
+    for s in res["sentences"]:
+        for x in s["gloss"]:
+            k = g.key_of(x["w"])
+            assert k in forms or k in names or x["w"] in g.FUNCTION_WORDS or x["w"].lower() in g.FUNCTION_WORDS, (s["la"], x["w"])
+
+
+def test_every_clause_file_carries_its_review_record():
+    for skill in CLAUSES:
+        data = g.load_json(g.TEMPLATES_DIR / f"{skill}.json")
+        review = data["review"]
+        assert review["passes"] and review["final_rate"] is not None and review["final_rate"] <= 0.05, skill
+        for p in review["passes"]:
+            assert {"pass", "seed", "generated", "rejected", "rate", "causes"} <= set(p), skill
+
+
 def test_a_count_is_exact_for_a_small_template_and_estimated_for_a_large_one(lex):
     data = g.load_templates("dative-indirect-object")
     small = g.count_template(lex, data["chapter"], data["templates"][0], data["exclude"], cap=10**9)
