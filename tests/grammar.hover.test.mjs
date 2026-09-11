@@ -15,15 +15,23 @@
 //     was missing when this was first written: suppression worked and the
 //     word then stayed silent for ever.
 //
+// The machine the rule rides on now lives in app/js/hovergloss.js, shared with
+// the reader, which was asked for the same thing ("All Latin text throughout
+// should be mouse-overable"). So two of these assertions read that file
+// instead: the touch-screen guard is there, and so is the gate that makes
+// `skip` mean anything. They are the same facts, in their new home.
+//
 // No Latin from the book appears here.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { pointerHovers } from '../app/js/hovergloss.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const UI = readFileSync(join(ROOT, 'app/js/grammar/ui.js'), 'utf8');
+const HOVER = readFileSync(join(ROOT, 'app/js/hovergloss.js'), 'utf8');
 
 test('a tap item marks its words as the answer, so the dictionary can tell them apart', () => {
   assert.match(UI, /g-w--pick/, 'the marker class is gone');
@@ -37,9 +45,22 @@ test('a tap item marks its words as the answer, so the dictionary can tell them 
 test('the pointer-dictionary holds off on an unanswered tap word', () => {
   assert.match(
     UI,
-    /if \(w\.classList\.contains\('g-w--pick'\) && !answered\(w\)\) return;/,
-    'the hover no longer checks the marker before opening',
+    /skip: \(w\) => w\.classList\.contains\('g-w--pick'\) && !answered\(w\)/,
+    'the section no longer tells the shared hover which words must keep quiet',
   );
+});
+
+test('the shared hover asks before opening, and asks before the word is taken as hovered', () => {
+  // The gate itself moved out of ui.js with the rest of the machine. Without it `skip` is a
+  // parameter nobody reads and the rule above is dead wiring — and if it were asked *after* the
+  // word became the hovered one, a word that stopped being the answer would stay silent until the
+  // pointer left it and came back, which is the bug 72a973b's `data-done` half was fixing.
+  const fn = /function onIn\(e\) \{([\s\S]*?)\n  \}/.exec(HOVER);
+  assert.ok(fn, 'onIn() is gone from hovergloss.js');
+  const body = fn[1];
+  assert.match(body, /if \(skip\(w\)\) return;/, 'the shared hover no longer consults skip()');
+  assert.ok(body.indexOf('if (skip(w)) return;') < body.indexOf('at = w;'), 'skip() is consulted after the word is taken as hovered');
+  assert.match(HOVER, /typeof skip !== 'function'\) throw/, 'a section may now attach the hover without saying which words keep quiet');
 });
 
 test('answered() knows every way this section says an item is over', () => {
@@ -62,5 +83,9 @@ test('the noticing opener says in the DOM that it is over', () => {
 
 test('the hover opens as a tooltip: no keyboard focus, and only where hovering is real', () => {
   assert.match(UI, /if \(!hover\) pop\.querySelector\('\.g-pop__close'\)\.focus/, 'a hover popup would take the caret');
-  assert.match(UI, /\(hover: hover\) and \(pointer: fine\)/, 'a touch screen would fire the hover on the tap that chooses a word');
+  assert.match(HOVER, /\(hover: hover\) and \(pointer: fine\)/, 'a touch screen would fire the hover on the tap that chooses a word');
+  // The guard as a function, so the query itself can be held and not only its text.
+  assert.equal(pointerHovers(() => ({ matches: false })), false, 'a touch screen would be treated as a mouse');
+  assert.equal(pointerHovers(() => ({ matches: true })), true, 'a mouse would be treated as a touch screen');
+  assert.equal(pointerHovers(null), true, 'an engine without matchMedia would lose the hover altogether');
 });
