@@ -1,0 +1,143 @@
+{
+ "skill": "wishes-utinam",
+ "chapter": 32,
+ "templates": [
+  {
+   "id": "wu-t1",
+   "la": "Utinam {s:nom} mox domum {v:pres.subj}!",
+   "en": "If only {s} would {v:base} home soon!",
+   "slots": {
+    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "pater", "māter", "frāter", "soror", "fīlius", "fīlia", "amīcus", "servus", "ancilla", "nauta", "mīles", "marītus", "uxor", "puer", "puella"], "number": "any"},
+    "v": {"pos": "V", "form": "pres.subj", "subj": "s", "lemmas": ["veniō", "redeō", "currō"], "g": "may {pron} {base}"}
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {"domum": "home"}
+  },
+  {
+   "id": "wu-t2",
+   "la": "Utinam {s:nom} {o:acc} hodiē {v:pres.subj}!",
+   "en": "If only {s} {v:3sg} {o} today!",
+   "slots": {
+    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "pater", "māter", "magister", "dominus", "domina", "medicus"], "number": "any"},
+    "o": {"only": ["discipulus", "servus", "ancilla", "puer", "puella", "amīcus", "canis", "equus"], "number": "any"},
+    "v": {"pos": "V", "form": "pres.subj", "subj": "s", "obj": "o", "lemmas": ["laudō", "videō", "audiō", "salūtō", "exspectō", "adiuvō", "iuvō"], "g": "may {pron} {base}"}
+   },
+   "focus": "v",
+   "words": 5
+  },
+  {
+   "id": "wu-t3",
+   "la": "Utinam {s:nom} {r:dat} {poss:dat} {v:pres.subj}!",
+   "en": "If only {s} {v:3sg} {r}!",
+   "slots": {
+    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "pater", "māter", "magister", "dominus", "domina", "puer", "puella", "discipulus", "servus", "ancilla", "fīlius", "fīlia"], "number": "any"},
+    "r": {"only": ["pater", "māter", "magister", "dominus", "domina", "fīlius", "fīlia", "amīcus", "frāter", "soror", "servus", "ancilla", "parēns", "discipulus"], "number": "any"},
+    "poss": {"pos": "ADJ", "agree": "r", "only": ["suus"], "ref": "s"},
+    "v": {"pos": "V", "form": "pres.subj", "subj": "s", "dat": "r", "absolute": true, "lemmas": ["ignōscō", "respondeō"], "g": "may {pron} {base}"}
+   },
+   "focus": "v",
+   "words": 5
+  },
+  {
+   "id": "wu-t4",
+   "la": "Utinam ego nunc in {p:abl} {v:impf.subj.act.1sg}!",
+   "en": "If only I were in {p} now!",
+   "slots": {
+    "p": {"only": ["hortus", "vīlla", "forum", "silva", "urbs", "oppidum", "lūdus", "templum", "theātrum"]},
+    "v": {"pos": "V", "form": "impf.subj.act.1sg", "subj": "ego", "takes": "pred", "lemmas": ["sum"], "g": "I were"}
+   },
+   "focus": "v",
+   "words": 6
+  },
+  {
+   "id": "wu-t5",
+   "la": "Utinam {s:nom} {poss:nom} nunc mēcum {v:impf.subj}!",
+   "en": "If only {s} were with me now!",
+   "slots": {
+    "s": {"only": ["pater", "māter", "frāter", "soror", "fīlius", "fīlia", "amīcus", "servus", "ancilla", "marītus", "uxor", "canis", "magister"]},
+    "poss": {"pos": "ADJ", "agree": "s", "only": ["meus"]},
+    "v": {"pos": "V", "form": "impf.subj", "subj": "s", "takes": "pred", "lemmas": ["sum"], "g": "{pron} were"}
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {"mēcum": "with me"}
+  },
+  {
+   "id": "wu-t6",
+   "la": "Utinam {s:nom} {o:acc} {poss:acc} bene {v:impf.subj}!",
+   "en": "If only {s} {v:past} {o} well!",
+   "slots": {
+    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "discipulus", "puer", "puella", "fīlius", "fīlia", "frāter", "soror"], "number": "any"},
+    "o": {"only": ["epistula", "carmen"], "number": "any"},
+    "poss": {"pos": "ADJ", "agree": "o", "only": ["suus"], "ref": "s"},
+    "v": {"pos": "V", "form": "impf.subj", "subj": "s", "obj": "o", "lemmas": ["scrībō", "legō", "discō", "cantō"], "g": "{pron} were {ing}"}
+   },
+   "focus": "v",
+   "words": 6
+  },
+  {
+   "id": "wu-t7",
+   "la": "Utinam {s:nom} in {p:abl} {v:plupf.subj}!",
+   "en": "If only {s} had {v:pp} in {p}!",
+   "slots": {
+    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "pater", "māter", "frāter", "soror", "fīlius", "fīlia", "amīcus", "servus", "ancilla", "puer", "puella", "discipulus"], "number": "any"},
+    "p": {"only": ["hortus", "vīlla", "silva", "urbs", "oppidum", "lūdus", "ātrium", "cubiculum", "culīna", "forum"]},
+    "v": {"pos": "V", "form": "plupf.subj", "subj": "s", "lemmas": ["maneō", "labōrō", "sedeō", "lūdō"], "g": "{pron} had {pp}"}
+   },
+   "focus": "v",
+   "words": 5
+  },
+  {
+   "id": "wu-t8",
+   "la": "Utinam tū {r:dat} {poss:dat} herī {v:plupf.subj.act.2sg}!",
+   "en": "If only you had {v:pp} {r} yesterday!",
+   "slots": {
+    "r": {"only": ["pater", "māter", "magister", "dominus", "domina", "parēns", "medicus"]},
+    "poss": {"pos": "ADJ", "agree": "r", "only": ["tuus"]},
+    "v": {"pos": "V", "form": "plupf.subj.act.2sg", "subj": "tū", "dat": "r", "lemmas": ["pāreō", "respondeō"], "g": "you had {pp}"}
+   },
+   "focus": "v",
+   "words": 6
+  },
+  {
+   "id": "wu-t9",
+   "la": "Utinam nē {s:nom} tam {adj:nom} {v:pres.subj}!",
+   "en": "May {s} not be so {adj}!",
+   "slots": {
+    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "pater", "māter", "magister", "dominus", "domina", "medicus", "nauta", "mīles"]},
+    "adj": {"pos": "ADJ", "agree": "s", "pred": true, "only": ["īrātus", "trīstis", "aeger", "fessus", "sevērus", "timidus", "stultus", "miser"]},
+    "v": {"pos": "V", "form": "pres.subj", "subj": "s", "takes": "pred", "lemmas": ["sum"], "g": "may {pron} {base}"}
+   },
+   "focus": "v",
+   "words": 6,
+   "fixed_gloss": {"nē": "not"}
+  },
+  {
+   "id": "wu-t10",
+   "la": "Utinam nē {s:nom} {o:acc} {v:plupf.subj}!",
+   "en": "If only {s} had not {v:pp} {o}!",
+   "slots": {
+    "s": {"only": ["Iūlius", "Aemilia", "Mārcus", "Quīntus", "Iūlia", "Syra", "Dāvus", "Mēdus", "Dēlia", "Cornēlius", "Lȳdia", "servus", "ancilla", "puer", "puella", "fīlius", "fīlia", "frāter", "soror", "nauta", "mīles", "amīcus"], "number": "any"},
+    "o": {"only": ["pecūnia", "nummus", "dēnārius", "ānulus", "gemma", "gladius", "epistula", "saccus", "pōculum", "vāsum", "speculum", "equus", "canis", "ovis", "agnus", "vīnum", "cibus", "pānis"], "number": "any"},
+    "v": {"pos": "V", "form": "plupf.subj", "subj": "s", "obj": "o", "lemmas": ["capiō", "sūmō", "perdō", "relinquō", "vēndō", "frangō", "emō"], "g": "{pron} had {pp}"}
+   },
+   "focus": "v",
+   "words": 5,
+   "fixed_gloss": {"nē": "not"}
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "reviewed_by": "Claude Fable 5.1, hostile read as a Latin teacher, 2026-09-11",
+  "passes": [
+   {"pass": 1, "seed": 11, "generated": 40, "rejected": 19, "rate": 0.475, "causes": ["hīc 'here' is not a deck spelling (five fills refused by the check, replaced by nunc mēcum)", "subjects and objects too broad (enemies call the slaves, Davus helps the wolves)", "dative pairings inverted (the mistress obeys her daughter, kings obey their citizens)", "littera sg 'letter' of the alphabet", "objects too broad for capiō/tangō (touched the feathers)", "receivers too broad for pāreō (your piper, your doorkeeper)"]},
+   {"pass": 2, "seed": 12, "generated": 40, "rejected": 4, "rate": 0.1, "causes": ["a spouse as receiver (Quintus answers his husband)", "dormiō in the pluperfect wish (the fathers had slept in the forum)"]},
+   {"pass": 3, "seed": 13, "generated": 40, "rejected": 3, "rate": 0.075, "causes": ["kin objects without a possessive (hears the brother)", "amīcus with 'the' as a wish subject"]},
+   {"pass": 4, "seed": 14, "generated": 40, "rejected": 0, "rate": 0.0, "causes": []},
+   {"pass": 5, "seed": 15, "generated": 40, "rejected": 1, "rate": 0.025, "causes": ["dominus 'owner' as the missed companion"]},
+   {"pass": 6, "seed": 16, "generated": 40, "rejected": 1, "rate": 0.025, "causes": ["the mother helps the friend"]}
+  ],
+  "final_rate": 0.025
+ }
+}
