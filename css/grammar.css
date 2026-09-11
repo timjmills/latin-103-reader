@@ -714,6 +714,11 @@ table.g-table { max-width: 24rem; }
 .g-notice__line:empty { display: none; }
 .g-la--tap .g-w.is-wrong { border-color: var(--rubric); border-style: solid; color: var(--rubric-ink); }
 .g-la--tap .g-w.is-right { border-color: transparent; }
+/* A right tap lights the whole construction, and the word under the finger must
+   look exactly like its partner: `is-picked` ("this is the one you chose") is
+   the more specific selector, so without this the tapped half went chrome-grey
+   beside a gold partner and the pair still read as two different things (N-16). */
+.g-la--tap .g-w.is-picked.g-w--target { background: var(--underline); }
 .g-notice.is-done .g-la--tap .g-w { border-color: transparent; }
 .g-notice.is-done .g-la--tap .g-w:hover { background: var(--rubric-soft); }
 .g-step__body { display: grid; gap: var(--s-3); }

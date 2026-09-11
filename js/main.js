@@ -5,10 +5,10 @@ import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, list
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
 // The book's own spine (GRAMMAR-CONTRACT.md "Chapter spine"): the chapter → week
 // mapping lives in chapters.js and nowhere else — never inline it here.
-import { chapter as chapterOf, chapterOfWeek, parseChapterRoute, chapterHash } from './chapters.js';
+import { chapter as chapterOf, chapterOfWeek, parseChapterRoute, chapterHash, isGrammarRoute } from './chapters.js';
 // Progress across every chapter (GRAMMAR-CONTRACT.md): the pure aggregation the
 // #/progress page paints — reading, grammar and the derived timings.
-import { parseProgressRoute, progressHash, chapterRows as bookRows, chapterGrammar, chapterLine, timingLine, bookTotals, fmtEstimate, fmtMeasured, paceNote, estimateNote } from './progress.js';
+import { parseProgressRoute, progressHash, chapterRows as bookRows, chapterGrammar, chapterLine, timingLine, bookTotals, skillsOutOf, fmtEstimate, fmtMeasured, paceNote, estimateNote } from './progress.js';
 import { mountGrammar } from './grammar/index.js';   // the Grammar section (GRAMMAR-CONTRACT.md): mounted once the reader is ready
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -357,8 +357,18 @@ async function boot() {
   // on Chapters (Familia Romana I–XXXIV, the book's own order); My weeks is the
   // list above, unchanged, so the pace, the time-left estimates and the study
   // log keep their home. A chapter page lives at #/chapter/7 and
-  // #/chapter/7/grammar. The mapping is chapters.js's alone.
+  // #/chapter/7/grammar, the grammar section at #/grammar. The mapping is
+  // chapters.js's alone.
   const mk = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  // Every hash the shell sets itself goes through this, so `applyRoute` can tell
+  // the app's own move from the learner's Back. It matters for one thing only:
+  // leaving #/grammar. A chapter page opened *from* the section keeps the
+  // section open underneath (goHome returns to it), so the section must not be
+  // closed when the shell itself moves the route — only when the learner walks
+  // back out of it. `goHome` writes the hash-less URL with pushState, which
+  // fires no hashchange at all, so it never reaches here.
+  let hashIsOurs = false;
+  const routeTo = (h) => { const next = String(h ?? ''); if (location.hash === next) return; hashIsOurs = true; location.hash = next; };
   document.documentElement.dataset.page = 'reader';   // 'chapter' while a chapter page is open (chapters.css hides the reader and the grammar section)
   const chaptersList = $('#chapters-list');
   const chapterEl = $('#chapter');
@@ -500,7 +510,13 @@ async function boot() {
     const wrap = mk('div', 'chapter__inner');
     const back = mk('button', 'chapter__back', '← All chapters');
     back.type = 'button';
-    back.addEventListener('click', () => openMenu('chapters'));
+    // It says "All chapters", so it leaves this chapter: the page closes and the
+    // route goes with it, and the list of all chapters — the menu's Chapters tab,
+    // which is the only list there is — opens over the reader. It used to raise
+    // the menu *over* the chapter page and leave #/chapter/7 in the address bar,
+    // so closing the menu put the learner back on the page they had just left
+    // and Back went somewhere else again (N-21).
+    back.addEventListener('click', () => { goHome(); openMenu('chapters'); });
     const head = mk('header', 'chapter__head');
     const h1 = mk('h1', 'chapter__title', c.title);
     h1.lang = 'la';
@@ -516,13 +532,13 @@ async function boot() {
       b.id = `chapter-tab-${t}`;
       b.setAttribute('aria-controls', `chapter-panel-${t}`);
       b.dataset.tab = t;
-      b.addEventListener('click', () => { location.hash = chapterHash(n, t); });
+      b.addEventListener('click', () => { routeTo(chapterHash(n, t)); });
       b.addEventListener('keydown', (e) => {
         const to = { ArrowRight: 1, ArrowLeft: -1, Home: -99, End: 99 }[e.key];
         if (to == null) return;
         e.preventDefault();
         const next = to === -99 ? 'reading' : to === 99 ? 'grammar' : (t === 'reading' ? 'grammar' : 'reading');
-        location.hash = chapterHash(n, next);
+        routeTo(chapterHash(n, next));
       });
       return b;
     });
@@ -685,11 +701,11 @@ async function boot() {
    * reader it had just moved.
    */
   function goHome() {
-    if (location.hash) { try { history.pushState(null, '', location.pathname + location.search); } catch { location.hash = ''; } }
+    if (location.hash) { try { history.pushState(null, '', location.pathname + location.search); } catch { routeTo(''); } }
     closeChapter();
     closeProgPage();
   }
-  const goToChapter = (n, tab = 'reading') => { const h = chapterHash(n, tab); if (h) location.hash = h; };
+  const goToChapter = (n, tab = 'reading') => { const h = chapterHash(n, tab); if (h) routeTo(h); };
   /** A reading row: open its week in the reader, at the sentence the row names. */
   async function openReading(row, unitId) {
     goHome();
@@ -846,7 +862,9 @@ async function boot() {
     const items = [
       progFigure('Sentences read', String(t.sentencesRead), t.sentencesTotal ? `of ${t.sentencesTotal}` : ''),
       progFigure('Chapters finished', String(t.chaptersFinished), `of ${t.chapters}`),
-      progFigure('Skills mastered', figures ? String(t.skillsMastered) : '—', figures && t.skillsTotal ? `of ${t.skillsTotal}` : ''),
+      // "of 88" named no population, and the section's Stats page tallies the skills and the
+      // chapter sets together and reaches 96; the label now says which of the two this is (N-22).
+      progFigure('Skills mastered', figures ? String(t.skillsMastered) : '—', figures ? skillsOutOf(t.skillsTotal) : ''),
       progFigure('Minutes measured', fmtMeasured(t.measuredMs)),
     ];
     progUI.figs.replaceChildren(...items);
@@ -1057,7 +1075,7 @@ async function boot() {
     if (titleBeforeProg) document.title = titleBeforeProg;
     titleBeforeProg = null;
   }
-  const goToProgress = (n = null) => { location.hash = progressHash(n); };
+  const goToProgress = (n = null) => { routeTo(progressHash(n)); };
   progPageEl?.addEventListener('click', (e) => {
     const b = e.target.closest('.prog__row');
     if (b) toggleProgChapter(Number(b.dataset.n));
@@ -1073,9 +1091,35 @@ async function boot() {
     rows[to].focus();
   });
 
+  /**
+   * The grammar section by deep link (#/grammar). The section is mounted after
+   * the reader is ready, so the route waits for it; `grammarReady` answers null
+   * when it could not be mounted, and the reader then simply stays where it is.
+   */
+  let grammarRouted = false;   // the section is open because #/grammar asked for it
+  function openGrammarSection() {
+    grammarRouted = true;
+    closeChapter();
+    closeProgPage();
+    // The title is the section's own to set (`draw`), and setting it here would
+    // be captured as the reader's title when the section saves it on opening.
+    Promise.resolve(grammarReady)
+      .then((g) => { if (grammarRouted) g?.open?.(); })
+      .catch(() => { /* the section says so itself */ });
+  }
   function applyRoute() {
+    const ours = hashIsOurs;
+    hashIsOurs = false;
+    if (isGrammarRoute(location.hash)) { openGrammarSection(); return; }
     const route = parseChapterRoute(location.hash);
     const prog = route ? null : parseProgressRoute(location.hash);
+    // Walking back out of #/grammar puts the reader back. Only the learner's own
+    // Back does that: a chapter page opened from inside the section moves the
+    // route itself and must leave the section open underneath it, because that
+    // is what the page goes back to. A fragment that is no route of ours (the
+    // "Skip to the text" link's #reader) is left alone, as it always was.
+    const routed = !location.hash || location.hash === '#' || route || prog;
+    if (grammarRouted && !ours && routed) { grammarRouted = false; Promise.resolve(grammarReady).then((g) => g?.close?.()).catch(() => {}); }
     if (route) { closeProgPage(); openChapter(route.n, route.tab); return; }
     closeChapter();
     if (prog) openProgPage(prog.n);

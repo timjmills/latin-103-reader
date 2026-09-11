@@ -285,6 +285,15 @@ export function timingLine(row) {
  * `skills` totals the skill map, not only the chapters' own skills, so
  * "11 of 88 mastered" is the book's whole grammar. Pure.
  */
+/**
+ * What "Skills mastered" is out of, said exactly (N-22): the book's grammar
+ * skills, and not the chapter sets. The grammar section's Stats page tallies
+ * the two together and reaches a larger number; "of 88" alone said neither
+ * which 88 nor why Stats disagreed. '' when the grammar could not be read.
+ * Pure.
+ */
+export const skillsOutOf = (total) => (total ? `of ${total} grammar skills` : '');
+
 export function bookTotals(rows, { measuredMs = 0, skillsTotal = null, skillsMastered = null, grammarKnown = true } = {}) {
   const list = rows ?? [];
   let sentencesRead = 0;
