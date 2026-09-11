@@ -105,11 +105,12 @@
      "tense",
      "mood",
      "voice",
-     "construction"
-    ],
-    "ask": [
      "person",
      "number"
+    ],
+    "ask": [
+     "construction",
+     "why"
     ]
    },
    "check": {

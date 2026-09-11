@@ -27,6 +27,16 @@
         "kind": "recognise",
         "sentence": "icc-01",
         "ask": "Tap the word that compares Quintus with Julia."
+      },
+      "worked": {
+        "sentence": "icc-02",
+        "given": [
+          "degree",
+          "case",
+          "number",
+          "gender"
+        ],
+        "ask": []
       }
     },
     {
@@ -50,6 +60,10 @@
         "cells": [
           "comp.nom.sg.m",
           "comp.nom.sg.n"
+        ],
+        "words": [
+          "magnus",
+          "bonus"
         ],
         "ask": "Now build the same two cells on magnus: the comparative, masculine and neuter."
       }
@@ -76,6 +90,11 @@
           "super.nom.sg.m",
           "super.nom.sg.f"
         ],
+        "words": [
+          "magnus",
+          "bonus",
+          "longus"
+        ],
         "ask": "Now build the same two cells on magnus: the superlative, masculine and feminine."
       }
     },
@@ -91,6 +110,17 @@
         "kind": "parse",
         "sentence": "icc-12",
         "ask": "plūrēs — which noun does it agree with, and how do you know it is not plūs?"
+      },
+      "worked": {
+        "sentence": "icc-11",
+        "given": [
+          "case",
+          "gender"
+        ],
+        "ask": [
+          "number",
+          "why"
+        ]
       }
     },
     {
@@ -105,6 +135,18 @@
         "kind": "recognise",
         "sentence": "icc-13",
         "ask": "Tap the comparative whose stem is no longer the adjective it comes from."
+      },
+      "worked": {
+        "sentence": "icc-04",
+        "given": [
+          "number",
+          "gender"
+        ],
+        "ask": [
+          "degree",
+          "case",
+          "why"
+        ]
       }
     },
     {
@@ -120,6 +162,17 @@
         "sentence": "icc-15",
         "blank": "māius",
         "ask": "Fill the blank with the comparative of magnus, neuter singular."
+      },
+      "worked": {
+        "sentence": "icc-05",
+        "given": [],
+        "ask": [
+          "degree",
+          "case",
+          "number",
+          "gender",
+          "why"
+        ]
       }
     }
   ]

@@ -124,10 +124,10 @@
         ],
         "words": [
           "dico",
-          "scribo",
-          "lego"
+          "lego",
+          "pono"
         ],
-        "ask": "Give the present participle of *dūcere*."
+        "ask": "Give the present participle of *dīcere*, then of *legere* and *pōnere* — each -ere verb makes -ēns."
       }
     },
     {
@@ -163,7 +163,8 @@
         "given": [
           "mood",
           "tense",
-          "voice"
+          "voice",
+          "gender"
         ],
         "ask": [
           "case",

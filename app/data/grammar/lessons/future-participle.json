@@ -103,6 +103,10 @@
         "word": "futūrus",
         "cells": [
           "pos.nom.sg.m"
+        ],
+        "words": [
+          "bonus",
+          "magnus"
         ]
       }
     },
@@ -121,6 +125,11 @@
         "cells": [
           "pos.nom.sg.f",
           "pos.nom.pl.m"
+        ],
+        "words": [
+          "bonus",
+          "magnus",
+          "longus"
         ]
       },
       "worked": {

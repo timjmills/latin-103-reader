@@ -58,9 +58,9 @@
           "imper.fut.act.sg"
         ],
         "words": [
-          "amō",
-          "vocō",
-          "laudō"
+          "amo",
+          "voco",
+          "laudo"
         ],
         "ask": "Write the future imperative singular."
       }
@@ -98,10 +98,10 @@
           "imper.fut.act.2.pl"
         ],
         "words": [
-          "amō",
-          "vocō",
-          "laudō",
-          "ambulō"
+          "amo",
+          "voco",
+          "laudo",
+          "ambulo"
         ],
         "ask": "Write the future imperative plural."
       }

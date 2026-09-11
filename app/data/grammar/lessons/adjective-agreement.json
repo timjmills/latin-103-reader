@@ -61,7 +61,7 @@
         "kind": "paradigm",
         "key": "adj12",
         "reveal": [
-          "nom.sg.f"
+          "pos.nom.sg.f"
         ]
       },
       "check": {
@@ -72,11 +72,11 @@
         ],
         "words": [
           "magnus",
-          "novus"
+          "multus"
         ]
       },
       "worked": {
-        "sentence": "aa-04",
+        "sentence": "aa-03",
         "given": [
           "gender",
           "number"
@@ -92,7 +92,7 @@
         "kind": "paradigm",
         "key": "adj12",
         "reveal": [
-          "nom.sg.m"
+          "pos.nom.sg.m"
         ]
       },
       "check": {
@@ -103,7 +103,7 @@
         ],
         "words": [
           "magnus",
-          "novus"
+          "multus"
         ]
       }
     },
@@ -115,7 +115,7 @@
         "kind": "paradigm",
         "key": "adj12",
         "reveal": [
-          "nom.sg.n"
+          "pos.nom.sg.n"
         ]
       },
       "check": {
@@ -126,7 +126,7 @@
         ],
         "words": [
           "magnus",
-          "novus"
+          "multus"
         ]
       },
       "worked": {
@@ -147,9 +147,9 @@
         "kind": "paradigm",
         "key": "adj12",
         "reveal": [
-          "nom.pl.m",
-          "nom.pl.f",
-          "nom.pl.n"
+          "pos.nom.pl.m",
+          "pos.nom.pl.f",
+          "pos.nom.pl.n"
         ]
       },
       "check": {

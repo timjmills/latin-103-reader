@@ -9,7 +9,7 @@
     "id": "ppe-01"
    },
    "worked": {
-    "sentence": "ppe-01",
+    "sentence": "ppe-03",
     "given": [
      "person",
      "number",
@@ -70,18 +70,6 @@
     ],
     "word": "laudo"
    },
-   "worked": {
-    "sentence": "ppe-07",
-    "given": [
-     "tense",
-     "mood",
-     "voice"
-    ],
-    "ask": [
-     "person",
-     "number"
-    ]
-   },
    "check": {
     "kind": "chart",
     "key": "conj1",
@@ -106,6 +94,18 @@
    "show": {
     "kind": "sentence",
     "id": "ppe-09"
+   },
+   "worked": {
+    "sentence": "ppe-11",
+    "given": [
+     "tense",
+     "mood",
+     "voice"
+    ],
+    "ask": [
+     "person",
+     "number"
+    ]
    },
    "check": {
     "kind": "parse",

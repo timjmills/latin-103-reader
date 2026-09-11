@@ -28,6 +28,17 @@
         "kind": "recognise",
         "sentence": "fa-02",
         "ask": "Tap the verb that has not happened yet."
+      },
+      "worked": {
+        "sentence": "fa-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -51,6 +62,11 @@
         "cells": [
           "fut.ind.act.3.sg",
           "fut.ind.act.3.pl"
+        ],
+        "words": [
+          "voco",
+          "canto",
+          "laudo"
         ],
         "ask": "Now the same two cells on vocō: the future for 'he' and for 'they'."
       }
@@ -81,6 +97,10 @@
           "fut.ind.act.1.pl",
           "fut.ind.act.2.pl"
         ],
+        "words": [
+          "laudo",
+          "amo"
+        ],
         "ask": "Write the future of laudō for I, for you, for we and for you all."
       }
     },
@@ -108,6 +128,11 @@
           "fut.ind.act.3.sg",
           "fut.ind.act.3.pl"
         ],
+        "words": [
+          "mitto",
+          "pono",
+          "dico"
+        ],
         "ask": "Now the same three cells on mittō: the future for I, for 'he' and for 'they'."
       }
     },
@@ -123,6 +148,19 @@
         "kind": "recognise",
         "sentence": "fa-11",
         "ask": "Tap the verb that is about tomorrow, not about now."
+      },
+      "worked": {
+        "sentence": "fa-07",
+        "given": [
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "why"
+        ]
       }
     },
     {
@@ -138,6 +176,19 @@
         "sentence": "fa-13",
         "blank": "aget",
         "ask": "Fill the blank with the future of agō, third person singular."
+      },
+      "worked": {
+        "sentence": "fa-12",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

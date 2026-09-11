@@ -104,7 +104,7 @@
         ],
         "words": [
           "corpus",
-          "nomen",
+          "flumen",
           "caput"
         ],
         "ask": "Fill both singular cells of *corpus*. They are one word — write it twice."
@@ -134,13 +134,13 @@
         ],
         "words": [
           "corpus",
-          "nomen",
+          "flumen",
           "caput"
         ],
         "ask": "Fill both plural cells of *corpus*, using the stem you find in *corporis*."
       },
       "worked": {
-        "sentence": "t3n-06",
+        "sentence": "t3n-05",
         "given": [
           "gender"
         ],

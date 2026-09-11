@@ -71,6 +71,17 @@
         "kind": "recognise",
         "sentence": "fi-02",
         "ask": "Tap the verb that is about tomorrow."
+      },
+      "worked": {
+        "sentence": "fi-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -166,6 +177,19 @@
         "kind": "recognise",
         "sentence": "fi-13",
         "ask": "Tap the verb that is about tomorrow, not about the past."
+      },
+      "worked": {
+        "sentence": "fi-09",
+        "given": [
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "why"
+        ]
       }
     },
     {
@@ -181,6 +205,19 @@
         "sentence": "fi-14",
         "blank": "aderit",
         "ask": "Fill the blank with the future of adsum, third person singular."
+      },
+      "worked": {
+        "sentence": "fi-03",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

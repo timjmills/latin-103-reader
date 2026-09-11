@@ -96,12 +96,8 @@
         "say": "sequere — the stem sequ-, the linking -e-, then -re"
       },
       "check": {
-        "kind": "chart",
-        "key": "conj3",
-        "word": "sequor",
-        "cells": [
-          "imper.pres.pass.sg"
-        ]
+        "kind": "blank",
+        "sentence": "di-03"
       }
     },
     {
@@ -118,12 +114,8 @@
         "say": "sequiminī — the stem sequ-, the linking -i-, then -minī"
       },
       "check": {
-        "kind": "chart",
-        "key": "conj3",
-        "word": "sequor",
-        "cells": [
-          "imper.pres.pass.pl"
-        ]
+        "kind": "blank",
+        "sentence": "di-07"
       },
       "worked": {
         "sentence": "di-09",

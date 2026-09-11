@@ -117,7 +117,7 @@
         ],
         "words": [
           "longus",
-          "brevis",
+          "fortis",
           "gravis"
         ],
         "ask": "Now the neuter comparative of *longus*."
@@ -193,7 +193,7 @@
         "ask": "Dominī laetiōrēs sunt quam ___. The side after *quam* takes the same case as the side before it. (servus, more than one)"
       },
       "worked": {
-        "sentence": "cmp-17",
+        "sentence": "cmp-16",
         "given": [],
         "ask": [
           "degree",
