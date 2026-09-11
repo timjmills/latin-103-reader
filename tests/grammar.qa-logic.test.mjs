@@ -66,7 +66,9 @@ test('M-5: Check waits until a cell has something in it, and the reason is on sc
   // ui.js is DOM and these tests are pure, so the wiring is read off the source that builds the form —
   // the same way tests/grammar.teach-core.test.mjs reads the Tab order. Live proof: qa/logic-fix/.
   const chart = slice('function chartInput(item, submit', 'function formLabel(form)');
-  assert.match(chart, /const filledAny = \(\) => \[\.\.\.inputs\.values\(\)\]\.some/, 'the guard asks whether any editable cell has a value');
+  // `valueOf`, not the box: a cell showing its own form (the hint) holds the answer on screen and the
+  // learner's writing behind it, and an answer only being looked at must not make an empty chart gradeable.
+  assert.match(chart, /const filledAny = \(\) => \[\.\.\.inputs\.keys\(\)\]\.some\(\(i\) => String\(valueOf\(i\)\)/, 'the guard asks whether any editable cell has a value of the learner’s own');
   assert.match(chart, /syncCheck = \(\) => \{ const on = filledAny\(\); check\.disabled = !on;/, 'and Check is disabled until one has');
   assert.match(chart, /needOne\.hidden = on/, 'the note is shown exactly while the button is unavailable');
   assert.match(chart, /aria-describedby', 'g-chart-needone'/, 'and the button names it, so a screen reader is told why');

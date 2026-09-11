@@ -322,6 +322,13 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 }
 .g-hintb:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
 .g-hintb[aria-expanded="true"] { border-color: var(--ink); color: var(--ink); background: var(--bg-chrome); }
+/* A cell the learner types into answers **in place**: the press shows that cell's form inside the box and the
+   next press takes it away, so the hint never grows the page under someone who is reading a cell. The shown
+   form is dressed so it cannot be mistaken for the learner's own writing — dashed edge, the hint's ground,
+   the quieter ink — and it is never what gets graded (`valueOf`, ui.js). */
+.g-hintb--peek[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); background: var(--bg-chrome); }
+.g-input.is-peek { border-style: dashed; border-color: var(--ink-3); background: var(--bg-chrome); color: var(--ink-2); }
+.g-input.is-peek:focus-visible { border-color: var(--focus); }
 /* A word chip's hint is a labelled button in a row under the input: a mark on the chip itself would fight the tap
    and the drag that place it (order), or the pairing tap (match). */
 .g-hintb--wide { width: auto; min-width: 0; height: auto; min-height: 32px; gap: 0.4em; padding: 0 var(--s-2); border-radius: var(--radius); }
