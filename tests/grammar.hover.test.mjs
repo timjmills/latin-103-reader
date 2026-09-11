@@ -15,15 +15,23 @@
 //     was missing when this was first written: suppression worked and the
 //     word then stayed silent for ever.
 //
+// The machine the rule rides on now lives in app/js/hovergloss.js, shared with
+// the reader, which was asked for the same thing ("All Latin text throughout
+// should be mouse-overable"). So two of these assertions read that file
+// instead: the touch-screen guard is there, and so is the gate that makes
+// `skip` mean anything. They are the same facts, in their new home.
+//
 // No Latin from the book appears here.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { pointerHovers } from '../app/js/hovergloss.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const UI = readFileSync(join(ROOT, 'app/js/grammar/ui.js'), 'utf8');
+const HOVER = readFileSync(join(ROOT, 'app/js/hovergloss.js'), 'utf8');
 
 test('a tap item marks its words as the answer, so the dictionary can tell them apart', () => {
   assert.match(UI, /g-w--pick/, 'the marker class is gone');
@@ -37,9 +45,22 @@ test('a tap item marks its words as the answer, so the dictionary can tell them 
 test('the pointer-dictionary holds off on an unanswered tap word', () => {
   assert.match(
     UI,
-    /if \(w\.classList\.contains\('g-w--pick'\) && !answered\(w\)\) return;/,
-    'the hover no longer checks the marker before opening',
+    /skip: \(w\) => w\.classList\.contains\('g-w--pick'\) && !answered\(w\)/,
+    'the section no longer tells the shared hover which words must keep quiet',
   );
+});
+
+test('the shared hover asks before opening, and asks before the word is taken as hovered', () => {
+  // The gate itself moved out of ui.js with the rest of the machine. Without it `skip` is a
+  // parameter nobody reads and the rule above is dead wiring — and if it were asked *after* the
+  // word became the hovered one, a word that stopped being the answer would stay silent until the
+  // pointer left it and came back, which is the bug 72a973b's `data-done` half was fixing.
+  const fn = /function onIn\(e\) \{([\s\S]*?)\n  \}/.exec(HOVER);
+  assert.ok(fn, 'onIn() is gone from hovergloss.js');
+  const body = fn[1];
+  assert.match(body, /if \(skip\(w\)\) return;/, 'the shared hover no longer consults skip()');
+  assert.ok(body.indexOf('if (skip(w)) return;') < body.indexOf('at = w;'), 'skip() is consulted after the word is taken as hovered');
+  assert.match(HOVER, /typeof skip !== 'function'\) throw/, 'a section may now attach the hover without saying which words keep quiet');
 });
 
 test('answered() knows every way this section says an item is over', () => {
@@ -67,13 +88,16 @@ test('the hover opens as a tooltip and takes no keyboard focus', () => {
 test('whether a pointer can hover is asked of the event, not of the device', () => {
   // The first version asked `matchMedia('(hover: hover) and (pointer: fine)')`. Those describe the PRIMARY
   // input only, so a Windows laptop with a touchscreen answered "coarse, cannot hover" with a mouse plugged
-  // in, and the feature was simply off. A pointer event carries what it actually is.
-  assert.match(UI, /const HOVERS = new Set\(\['mouse', 'pen'\]\);/, 'the pointer kinds that can hover are gone');
-  assert.match(UI, /canHover = \(e\) => !e \|\| !e\.pointerType \|\| HOVERS\.has\(e\.pointerType\)/, 'the guard no longer reads the event');
-  assert.match(UI, /root\.addEventListener\('pointerover', onHoverIn\);/, 'mouseover carries no pointerType, so the guard would be blind');
-  assert.match(UI, /root\.addEventListener\('pointerout', onHoverOut\);/);
-  // Only inside a comment explaining why, never as a live test again.
-  const code = UI.split('\n').filter((l) => !l.trim().startsWith('//')).join('\n');
-  assert.ok(!/matchMedia\('\(hover: hover\)/.test(code), 'back to asking the device instead of the event');
-  assert.ok(!/matchMedia\('\(any-hover/.test(code), 'any-hover still describes the device, not this pointer');
+  // into it, and the feature was simply off for the reader who asked for it. A pointer event carries what
+  // it actually is, so the same machine answers a mouse and ignores a finger.
+  assert.equal(pointerHovers({ pointerType: 'mouse' }), true, 'a mouse would no longer hover');
+  assert.equal(pointerHovers({ pointerType: 'pen' }), true, 'a pen would no longer hover');
+  assert.equal(pointerHovers({ pointerType: 'touch' }), false, 'a finger would open the gloss on the tap that chooses a word');
+  assert.equal(pointerHovers({}), true, 'an event that says nothing would lose the hover altogether');
+  assert.equal(pointerHovers(), true);
+  assert.match(HOVER, /root\.addEventListener\('pointerover', onIn\);/, 'mouseover carries no pointerType, so the guard would be blind');
+  assert.match(HOVER, /root\.addEventListener\('pointerout', onOut\);/);
+  // The query may appear only inside a comment explaining why it went, never as a live test again.
+  const code = HOVER.split(/\r?\n/).filter((l) => !l.trim().startsWith('//') && !l.trim().startsWith('*') && !l.trim().startsWith('/*')).join('\n');
+  assert.ok(!/matchMedia/.test(code), 'back to asking the device instead of the event');
 });

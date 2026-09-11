@@ -483,6 +483,13 @@ body.is-resizing .panel { pointer-events: none; }
 }
 .w:hover { background: var(--rubric-soft); }
 .w:focus-visible { outline-offset: 1px; }
+/* Latin that was drawn as plain text — a picture caption enlarged, a cited form, a chapter title —
+   cut into words the first time the pointer crosses it (hovergloss.js). It answers the pointer like
+   a reading word, and it takes the same tint so the learner can see that it will; it is not a
+   control, though, so a click on it is still whatever the click on what holds it always was. */
+.r-wx { border-radius: 2px; transition: background-color var(--t-fast) var(--ease-out); }
+.r-wx:hover { background: var(--rubric-soft); }
+@media (prefers-reduced-motion: reduce) { .w, .r-wx { transition: none; } }
 .reader[data-underlines="on"] .w--seen, .lookups .w--seen, .note--summary .w--seen {
   text-decoration: underline; text-decoration-color: var(--underline);
   text-decoration-thickness: 0.16em; text-underline-offset: 0.14em;

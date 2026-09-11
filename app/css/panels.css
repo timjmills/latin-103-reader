@@ -41,6 +41,23 @@
 .popup[open] { animation: pop var(--t-base) var(--ease-out); }
 @keyframes pop { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
+/* The same box opened by the pointer instead of a click (hovergloss.js): it carries the popup's own
+   border, ground and shadow so the reader never meets a second, different tooltip — only where it
+   hangs from and how it behaves are its own. It takes no pointer, which is what keeps it from
+   flickering as the mouse reaches it, and it holds nothing to press: it goes when the pointer
+   leaves the word. reader.js sets left / top; the host is the document, or an open dialog when the
+   word is inside one. */
+.wtip {
+  position: absolute; z-index: var(--z-tooltip); pointer-events: none;
+  max-height: min(20rem, 60vh);
+  animation: pop var(--t-base) var(--ease-out);
+}
+.wtip__entry { padding: var(--s-3) var(--s-4); }
+.wtip__entry .entry__form { margin-right: 0; }
+.wtip__entry .entry__lemma { margin-bottom: 0; }
+.wtip__more { margin: var(--s-2) 0 0; font-size: var(--ui-xs); color: var(--ink-3); }
+@media (prefers-reduced-motion: reduce) { .wtip { animation: none; } }
+
 /* ---------------------------------------------------------- content */
 .panel__content { position: relative; padding: var(--s-4) var(--s-5) var(--s-5); outline: none; min-width: 0; max-width: 100%; }
 .panel__content:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
