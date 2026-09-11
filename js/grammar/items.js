@@ -31,7 +31,6 @@
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { weekOfUnit, isShelfWeek } from '../sync.js';
 import { scopeByChapter, scopeNote } from './chapter.js';
-import { focusIndexes } from './sets.js';
 
 /* ----------------------------------------------------------- labels */
 export const FEATURES = Object.freeze(['case', 'gender', 'number', 'tense', 'mood', 'voice', 'person', 'degree', 'construction', 'form']);
@@ -160,6 +159,24 @@ export function featureLabel(key, value, opts = {}) {
   const name = m === 'ptc' ? `${TENSE_LABEL[t] ?? t} participle` : m === 'inf' ? `${TENSE_LABEL[t] ?? t} infinitive` : m === 'imper' ? `${t === 'fut' ? 'future ' : ''}imperative` : `${TENSE_LABEL[t] ?? t} ${MOOD_LABEL[m] ?? m}`;
   const plain = TM_PLAIN[value] ?? (m === 'ptc' ? "the '-ing / having been done' form" : m === 'inf' ? "the 'to do' form" : m === 'imper' ? 'the command form' : '');
   return mk(name, plain);
+}
+
+/**
+ * The word indexes of a multi-word focus in a sentence: a contiguous run
+ * first (*Cane lātrante*), else each word on its own, in order (*habērem* …
+ * *emerem*). Macrons and punctuation are ignored. [] when it is not there.
+ * Local to this module on purpose: `sets.js` has the same matcher for the UI,
+ * and importing it here would make the two modules import each other. Pure.
+ */
+function spanIndexes(la, parts) {
+  const words = tokenize(String(la ?? '')).filter((t) => t.isWord).map((t) => t.form);
+  const want = parts.map((w) => tokenize(String(w)).filter((t) => t.isWord).map((t) => t.form)).flat();
+  if (!want.length) return [];
+  for (let i = 0; i + want.length <= words.length; i++) if (want.every((w, j) => words[i + j] === w)) return want.map((_, j) => i + j);
+  const out = [];
+  let from = 0;
+  for (const w of want) { const at = words.indexOf(w, from); if (at < 0) return []; out.push(at); from = at + 1; }
+  return out;
 }
 
 /* ----------------------------------------------------------- parses */
@@ -928,7 +945,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       const parts = focus ? String(focus).trim().split(/\s+/).filter(Boolean) : [];
       const onFocus = !focus ? []
         : parts.length === 1 ? inUnit.filter((c) => matchesForm(c.token.text, [focus]))
-        : inUnit.filter((c) => focusIndexes(c.unit.la, focus).includes(c.index));
+        : inUnit.filter((c) => spanIndexes(c.unit.la, parts).includes(c.index));
       pool_ = onFocus.length ? onFocus : inUnit;
     }
     if (unambiguous) pool_ = pool_.filter((c) => !c.ambiguous);
@@ -1369,7 +1386,7 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
       const i = wordsOf(written.la).findIndex((t) => matchesForm(t.text, [written.focus]));
       return i < 0 ? [] : [i];
     }
-    return focusIndexes(written.la, written.focus);
+    return spanIndexes(written.la, parts);
   };
   const focusIndex = (written) => { const s = focusSpan(written); return s.length ? s[0] : -1; };
   const parseOfKey = (key, entry) => {
