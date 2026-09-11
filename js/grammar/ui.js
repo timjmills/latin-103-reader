@@ -7,13 +7,13 @@
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
-import { tokenize } from '../tokenize.js';
+import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords } from '../hovergloss.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
-import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey } from './items.js';
+import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey, la, partsText } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATIONS, POPULATION_LABEL, populationOf, normalisePopulations, filterPopulations, mixNote, mixTitle } from './sets.js';
-import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
+import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView, chapterOfSentence } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -154,6 +154,183 @@ export function scopeSentence(scope) {
   if (scope.ceiling && !scope.beyond) return `From chapter ${roman(scope.from)} — Latin you have already read.`;
   if (!scope.beyond) return `This skill has no sentence in ${here} itself, so this one is from chapter ${roman(scope.from)} — Latin you have already read.`;
   return `This skill has no sentence in ${here} or earlier, so this one is from chapter ${roman(scope.from)} — further on than you have read.`;
+}
+
+/* ------------------------------------------------- the feedback line */
+/**
+ * Whether what this item is answered *with* is Latin or English. The same rule
+ * the input itself already uses — `itemNode`'s `latinTyped` for a typed box,
+ * and the `lang` a choice button's label carries — so the feedback can never
+ * disagree with the box the answer was written in. A blank, a transform, a
+ * question, a pensum and the reverse vocabulary deck are answered in Latin; a
+ * parse ("dative singular"), a construction and the forward vocabulary deck
+ * are answered in English. Pure.
+ */
+export function answerIsLatin(item, { rev = false } = {}) {
+  if (!item) return false;
+  return item.kind === 'blank' || item.kind === 'transform' || item.kind === 'question' || item.kind === 'pensum' || (item.kind === 'vocab' && !!rev);
+}
+
+/**
+ * "Italia is the nominative singular; here the blank wants the ablative Italiā
+ * — the macron is the whole difference", as parts. `label(form)` is the case
+ * the form carries, read off its own paradigm; null when the dictionary cannot
+ * settle it, and the line then says only that the macron is the difference.
+ * Pure.
+ */
+function macronParts(c, label) {
+  const given = String(c.given ?? '').trim();
+  const want = String(c.expected ?? '').trim();
+  const gl = label(given);
+  const wl = label(want);
+  const head = gl ? [la(given), ` is the ${gl}`] : ['You wrote ', la(given)];
+  const tail = wl ? [`here the blank wants the ${wl}, `, la(want)] : ['the blank wants ', la(want), c.note ? ` (${c.note})` : ''];
+  const note = wl && c.note ? ` (${c.note})` : '';
+  return [...head, '; ', ...tail, note, ' — they differ only in the macron, and that macron is the ending.'];
+}
+
+/**
+ * The one-line verdict, **built from parts rather than interpolated** ("All
+ * Latin text throughout should be mouse-overable for the meaning",
+ * 2026-09-11). Every Latin fragment comes back as `{ la }` and is drawn as its
+ * own `lang="la"` element, which is all the pointer dictionary needs; every
+ * English fragment stays a plain string, because a marked English word would
+ * open the dictionary on itself and be read out as Latin.
+ *
+ * The words, the punctuation and the spacing are exactly what the interpolated
+ * string used to produce — `ctx.say` reads this line's rendered textContent,
+ * and a screen reader must hear the line it always heard.
+ *
+ * Impure edges are handed in, so this stays pure and testable: `parse` is the
+ * dictionary's reading of a tapped word, `formLabel` the case a form carries.
+ * Pure.
+ */
+export function feedbackParts(item, result, fb, { rev = false, parse = null, formLabel = () => null } = {}) {
+  const short = Array.isArray(fb?.parts) ? fb.parts : [String(fb?.short ?? '')];
+  const ans = (t) => (answerIsLatin(item, { rev }) ? la(t) : String(t ?? ''));
+  if (item.input === 'self') {
+    const lead = result.given === 'right' ? 'Right, by your own account. ' : result.given === 'partly' ? 'Partly — worth another look. ' : 'Not this time. ';
+    return [lead, ...short];
+  }
+  if (result.correct) return ['Right. ', ...short];
+  if (item.input === 'tap') {
+    // The tapped word and the word that fits are both the sentence's own Latin; the parse between them is English.
+    return ['You tapped ', la(result.given), ...(parse ? [` — ${parse}`] : []), '; the word that fits is ', la(result.expected), '. ', ...short];
+  }
+  if (item.input === 'choice' && result.choice) {
+    // A choice label is Latin only where the item is answered in Latin; `plain` is always the plain-words gloss.
+    return ['You chose ', ans(result.choice.label), ...(result.choice.plain ? [` (${result.choice.plain})`] : []), '; the answer is ', ans(result.expected), '. ', ...short];
+  }
+  if ((item.input === 'chart' || item.input === 'inline' || item.input === 'bank') && result.cells) {
+    const wrong = result.cells.filter((c) => !c.ok);
+    // A pensum blank is macron-sensitive, so a miss that is *only* a macron gets named for what it is (M3).
+    const macron = wrong.filter((c) => c.macron);
+    if (macron.length === wrong.length) {
+      const out = [];
+      macron.forEach((c, i) => { if (i) out.push(' '); out.push(...macronParts(c, formLabel)); });
+      return [...out, ' ', ...short];
+    }
+    const out = [`${wrong.length === 1 ? 'One blank' : `${wrong.length} blanks`} off: `];
+    // An empty box is a dash, and a dash is not Latin.
+    wrong.forEach((c, i) => { if (i) out.push(', '); out.push(c.given ? la(c.given) : '—', ' → ', la(c.expected)); });
+    return [...out, '. ', ...short];
+  }
+  if (item.input === 'match' && result.cells) {
+    const wrong = result.cells.filter((c) => !c.ok);
+    const out = [`${wrong.length === 1 ? 'One pair' : `${wrong.length} pairs`} off: `];
+    // The word is Latin, the meaning it should have had is English.
+    wrong.forEach((c, i) => { if (i) out.push('; '); out.push(la(c.la), ' is ', String(c.expected ?? '')); });
+    return [...out, '.'];
+  }
+  // The learner's order usually ends on a word that carries its own punctuation, so a full stop after it would read as a typo.
+  if (item.input === 'order') {
+    const given = String(result.given ?? '');
+    return ['Not quite — you had: ', la(given), /[.!?,;:]$/.test(given.trim()) ? '' : '.', ' ', ...short];
+  }
+  return ['You answered ', result.given ? ans(result.given) : '—', '; the answer is ', ans(result.expected), '. ', ...short];
+}
+
+/* ------------------------------- a vocabulary word in a sentence (§2) */
+/**
+ * One real sentence using `lemma`, for a vocabulary item's feedback — right or
+ * wrong ("for the vocab practice — show a sentence when right or wrong that
+ * shows the word used in context — try to use the sentences we already have",
+ * the reader, 2026-09-11). Nothing new is written: `pools` are the sentences
+ * the app already has, in the order they are preferred — our own written
+ * teaching sentences, then the book's own units, then the pre-generated banks.
+ *
+ * Two rules decide between them:
+ *
+ * - **a sentence the learner could have read comes first.** One at or before
+ *   their chapter wins over a later one from any pool; when nothing at all is
+ *   at or before it, a later one is shown and says so, because a sentence they
+ *   have not reached still teaches the word and nothing teaches nothing.
+ * - **the word must be findable in it.** `isForm(token, lemma)` is the
+ *   dictionary's judgement, not string equality — the form in the sentence is
+ *   usually inflected. A sentence where the word cannot be lit is passed over:
+ *   the point is that the eye lands on it.
+ *
+ * null when no pool has one, and the view then shows nothing rather than an
+ * empty block. Pure.
+ */
+export function vocabExample({ lemma, pools = [], chapter = null, isForm = null } = {}) {
+  const want = String(lemma ?? '').trim();
+  if (!want || typeof isForm !== 'function') return null;
+  const here = Number(chapter);
+  const hit = (s, source) => {
+    const la_ = String(s?.la ?? '').trim();
+    if (!la_) return null;
+    const lit = tokenize(la_).filter((t) => t.isWord).map((t, i) => ({ t, i })).filter(({ t }) => isForm(t.text, want)).map(({ i }) => i);
+    if (!lit.length) return null;
+    const c = Number(s.chapter);
+    return { la: la_, en: String(s.en ?? ''), lit, source, sentenceChapter: Number.isFinite(c) ? c : null, ahead: false };
+  };
+  const ahead = [];
+  for (const pool of pools) {
+    for (const s of pool?.sentences ?? []) {
+      const got = hit(s, pool.source ?? null);
+      if (!got) continue;
+      // Number.isFinite(here) false — the learner's chapter is unknown — makes every sentence fair game.
+      if (!Number.isFinite(here) || got.sentenceChapter == null || got.sentenceChapter <= here) return got;
+      ahead.push(got);
+    }
+  }
+  return ahead.length ? { ...ahead[0], ahead: true } : null;
+}
+
+/* --------------------------------------------- the second guess (§3) */
+/**
+ * The inputs a wrong answer leaves **live**, so the learner can change what
+ * they wrote and check it again where it stands ("when a question is wrong
+ * keep it on there and allow a second guess, unless the person says skip or
+ * start again", the reader, 2026-09-11). The item keeps its red marks and its
+ * feedback while they do it — reading the feedback and acting on it is the
+ * whole point — and only the first answer is ever logged (`createRunner.answer`
+ * returns early with `retry: true`, writing nothing).
+ *
+ * These five are the ones with the learner's own work in them, work worth
+ * adjusting rather than redoing: a typed answer, a chart, Pensum A's endings,
+ * Pensum B's bank and a reordered sentence.
+ *
+ * The other four are deliberately left to close as they always did, because a
+ * second guess there is not a guess:
+ *
+ * - **choice** — the list marks the right answer the moment it is graded
+ *   (m13), so picking again is picking the answer off the screen;
+ * - **match** — every pair takes its own ✓ or ✗ and the line names the
+ *   meaning each word wanted;
+ * - **tap** — the words *are* the answer and the line names the one that
+ *   fits; after the answer those words become dictionary words instead
+ *   (`g-w--pick`), which is the more useful thing for them to do;
+ * - **self** (translate) — the learner has already graded themselves against
+ *   the model; there is nothing left to judge.
+ *
+ * Pure.
+ */
+export const SECOND_GUESS_INPUTS = new Set(['type', 'chart', 'inline', 'bank', 'order']);
+export function secondGuess(item, result) {
+  if (!item || !result || result.correct) return false;
+  return SECOND_GUESS_INPUTS.has(item.input);
 }
 
 const KIND_LABEL = { recognise: 'recognise', chart: 'chart', parse: 'parse', blank: 'blank', transform: 'transform', reorder: 'reorder', translate: 'translate', question: 'question', vocab: 'vocabulary', pensum: 'pensum' };
@@ -1005,7 +1182,11 @@ export function createUI(ctx) {
         group.after(on);
         on.focus({ preventScroll: true });
       } }, 'g-choice')));
-      const q = h('p', { class: 'g-q g-worked__q', tabindex: '-1', text: a.key === 'construction' ? `What is ${plan.word} doing here?` : `Which ${a.label} is ${plan.word}?` });
+      // The word being worked through is Latin; the question round it is not. Marked apart, so the
+      // pointer opens the dictionary on the word and the question reads as English to a screen reader.
+      const q = h('p', { class: 'g-q g-worked__q', tabindex: '-1' }, ...(a.key === 'construction'
+        ? ['What is ', h('span', { lang: 'la', text: plan.word }), ' doing here?']
+        : [`Which ${a.label} is `, h('span', { lang: 'la', text: plan.word }), '?']));
       live.replaceChildren(q, group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer; Enter goes on.' }));
       live.onkeydown = (e) => { const n = Number(e.key); if (n >= 1 && n <= a.choices.length && !picked) { e.preventDefault(); group.children[n - 1].click(); } };
       q.focus({ preventScroll: true });
@@ -2055,18 +2236,27 @@ export function createUI(ctx) {
         title, note: [note, grown, lost].filter(Boolean).join(' '), position: i, hintOpen, onHint: () => runner.hint(),
         onAnswer: async (value) => {
           const result = await runner.answer(value);
-          const fb = feedbackNode(item, result, { lesson, mode, practiceLink,
+          // A wrong answer on an input worth adjusting leaves the item live for a second guess (§3): the
+          // boxes stay open and this feedback stays under them to be read and acted on.
+          const live = secondGuess(item, result);
+          const fb = feedbackNode(item, result, { lesson, mode, practiceLink, live,
             onNext: () => go(1),
-            onRetry: result.correct ? null : () => { pages[i] = build(i, item, { fresh: true, keepLead: lead?.node ?? null }); wrap.replaceChildren(pages[i]); paintNav(); focusPage(pages[i]); ctx.say('Try that one again.'); },
+            onRetry: result.correct ? null : () => { pages[i] = build(i, item, { fresh: true, keepLead: lead?.node ?? null }); wrap.replaceChildren(pages[i]); paintNav(); focusPage(pages[i]); ctx.say('Starting that one again.'); },
             onPractice: () => nested(item.skill) });
+          // One verdict on screen at a time: a second guess replaces the first answer's feedback rather
+          // than stacking under it. It is never taken away while the item is still answerable — the
+          // pointer-dictionary reads a feedback node to know a tap item's words may be looked up again.
+          page.querySelector(':scope > .g-fb')?.remove();
           page.append(fb);
           page.dataset.result = result.correct ? 'ok' : 'bad';
           paintNav();
           ctx.say(fb.querySelector('.g-fb__line')?.textContent ?? '');
           fb.scrollIntoView({ block: 'nearest' });
           // Nothing moves on by itself, right or wrong: the feedback is the teaching, and it was being
-          // read for 1.4 s and then taken away. "Next" is focused, so Enter is still one key.
-          fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+          // read for 1.4 s and then taken away. "Next" is focused, so Enter is still one key — except
+          // where the item is live, and there the focus belongs back in the box being corrected (`submit`).
+          if (!live) fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+          return live;
         },
       });
       page.append(itemEl);
@@ -2128,12 +2318,15 @@ export function createUI(ctx) {
           subWrap.replaceChildren(itemNode(cur.item, { title: `Practise · ${skill.title}`, position: sub.runner.position, hintOpen, onHint: () => sub.runner.hint(),
             onAnswer: async (value) => {
               const result = await sub.runner.answer(value);
-              const fb = feedbackNode(cur.item, result, { lesson: null, mode: 'practice', practiceLink: false,
+              const live = secondGuess(cur.item, result);
+              const fb = feedbackNode(cur.item, result, { lesson: null, mode: 'practice', practiceLink: false, live,
                 onNext: () => { sub.runner.forward(); subStep(); },
                 onRetry: result.correct ? null : paint });
+              subWrap.querySelector(':scope > .g-fb')?.remove();
               subWrap.append(fb);
               ctx.say(fb.querySelector('.g-fb__line')?.textContent ?? '');
-              fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+              if (!live) fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+              return live;
             } }));
           subWrap.querySelector('.g-q')?.focus?.({ preventScroll: true });
         };
@@ -2175,14 +2368,48 @@ export function createUI(ctx) {
     // folds into the item's one verdict, so a cell cannot go green here and count wrong there.
     const cellPainters = [];
     const onCells = (fn) => cellPainters.push(fn);
-    const submit = (v) => {
+    // What an input does when the item is handed back for a second guess: a chart, a pensum and a bank
+    // clear the boxes that went wrong and keep the ones that were right, exactly as "Start again" does.
+    const reopeners = [];
+    const onReopen = (fn) => reopeners.push(fn);
+    /**
+     * Grading closes the item's controls. Only the ones this call actually
+     * closed are remembered, so handing the item back cannot *open* something
+     * that was already shut for its own reason — a Check button waiting on an
+     * empty box, a bank tile already used, a given cell of a scaffolded table.
+     */
+    let frozen = [];
+    const freezable = (el) => !el.closest('.g-hint') && !el.closest('.g-hints') && !el.classList.contains('g-hintb') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en');
+    const freeze = () => {
+      frozen = [...node.querySelectorAll('button, input, textarea')].filter((el) => !el.disabled && freezable(el));
+      for (const el of frozen) el.disabled = true;
+    };
+    const thaw = () => { for (const el of frozen) if (el.isConnected) el.disabled = false; frozen = []; };
+    /**
+     * One answer. A **wrong** answer on an input that takes a second guess
+     * (`secondGuess`) hands the item straight back: the boxes open again with
+     * what the learner wrote still in them, the red marks and the feedback
+     * stay on screen to be read and acted on, and checking again is judged
+     * afresh but written down nowhere — the runner logs the first answer only.
+     * "Start again" and "Skip" are still there for the learner who wants them.
+     */
+    const submit = async (v) => {
       if (submitted) return;
       submitted = true;
       const cells = cellResults(item, v);
       if (cells.length) for (const paint of cellPainters) paint(cells);
-      node.querySelectorAll('button, input, textarea').forEach((el) => { if (!el.closest('.g-hint') && !el.closest('.g-hints') && !el.classList.contains('g-hintb') && !el.classList.contains('g-w') && !el.closest('.g-all-switch') && !el.closest('.g-q-en')) el.disabled = true; });
+      freeze();
       node.dispatchEvent(new CustomEvent('g-answered'));
-      onAnswer(v);
+      const again = await onAnswer(v);
+      if (!again) return;
+      submitted = false;
+      thaw();
+      for (const fn of reopeners) { try { fn(cells); } catch { /* an input with nothing to tidy */ } }
+      // The first box still wanting an answer, which after a wrong go is the first one that went wrong.
+      const back = [...node.querySelectorAll('input:not(:disabled), textarea:not(:disabled)')].find((el) => !String(el.value ?? '').trim())
+        ?? node.querySelector('input:not(:disabled), textarea:not(:disabled)')
+        ?? node.querySelector('.g-order__row button:not(:disabled)');
+      back?.focus({ preventScroll: true });
     };
     // The hints for this item's answer boxes. `hintOpen` (Learn's guided five) forces them open, unless the
     // learner has turned hints off altogether — that choice is theirs and outranks the phase's default.
@@ -2204,7 +2431,9 @@ export function createUI(ctx) {
     };
     const hintPanel = shownBoxes.length ? boxHintPanel(shownBoxes, { mode: effMode, onHint: () => { if (!submitted) onHint(); }, reveal: revealOf(item) }) : null;
     const hintFor = (id, opts) => hintPanel?.control(id, opts) ?? null;
-    const question = (text) => h('p', { class: 'g-q', tabindex: '-1', text });
+    // A question line is parts where its generator gave parts (the Latin word it asks about marked as
+    // Latin, the rest left English) and a plain string where it is English through and through.
+    const question = (text) => h('p', { class: 'g-q', tabindex: '-1' }, Array.isArray(text) ? partsNodes(text) : String(text ?? ''));
     // The English of a question on demand (a question set, Pensum C): never shown first.
     const englishOf = (en) => (en ? h('details', { class: 'g-q-en' }, h('summary', { class: 'g-hint__s', text: 'In English' }), h('p', { class: 'g-hint__rule', text: en })) : null);
     const tapMode = item.input === 'tap';
@@ -2242,12 +2471,12 @@ export function createUI(ctx) {
       }
     } else if (item.kind === 'vocab') {
       // Vocabulary withholds the meaning by design (plan §3): the word stands alone, the dictionary line comes after.
-      if (item.input === 'match') node.append(question(item.prompt.question));
-      else node.append(h('p', { class: 'g-la g-vocab__word', lang: item.word && !skill?.rev ? 'la' : null, text: skill?.rev ? item.word.meaning : item.word.lemma }), question(item.prompt.question));
+      if (item.input === 'match') node.append(question(item.prompt.questionParts ?? item.prompt.question));
+      else node.append(h('p', { class: 'g-la g-vocab__word', lang: item.word && !skill?.rev ? 'la' : null, text: skill?.rev ? item.word.meaning : item.word.lemma }), question(item.prompt.questionParts ?? item.prompt.question));
     } else if (item.kind === 'pensum') {
       node.append(question(item.prompt.question));
     } else if (item.input === 'order') {
-      node.append(question(item.prompt.question));
+      node.append(question(item.prompt.questionParts ?? item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));
     } else if (item.prompt.la) {
       node.append(latin(item.prompt.la, { target: tapMode || item.kind === 'blank' ? null : item.target?.index ?? null, tap: tapMode ? tapPick : null, cls: tapMode ? 'g-la--tap' : '' }));
@@ -2259,12 +2488,12 @@ export function createUI(ctx) {
         en.addEventListener('toggle', () => { if (en.open && !submitted) onHint(); });
         node.append(en);
       }
-      node.append(question(item.prompt.question));
+      node.append(question(item.prompt.questionParts ?? item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
       node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
     } else {
-      node.append(question(item.input === 'chart' ? chartQuestion(item) : item.prompt.question));
+      node.append(question(item.input === 'chart' ? chartQuestion(item) : item.prompt.questionParts ?? item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));
     }
     // Input
@@ -2282,7 +2511,7 @@ export function createUI(ctx) {
       node.append(form);
       setTimeout(() => input.focus({ preventScroll: true }), 0);
     } else if (item.input === 'chart') {
-      node.append(chartInput(item, submit, hintFor, { onCells, live: ctx.live }));
+      node.append(chartInput(item, submit, hintFor, { onCells, onReopen, live: ctx.live }));
     } else if (item.input === 'tap') {
       node.append(h('p', { class: 'g-keys g-keys--tap', text: 'Tap a word in the sentence.' }));
     } else if (item.input === 'order') {
@@ -2296,9 +2525,9 @@ export function createUI(ctx) {
       if (hintPanel) w.node.append(hintPanel.row());
       setTimeout(() => w.focus(), 0);
     } else if (item.input === 'inline') {
-      node.append(inlineInput(item, submit, hintFor, { onCells, live: ctx.live }));
+      node.append(inlineInput(item, submit, hintFor, { onCells, onReopen, live: ctx.live }));
     } else if (item.input === 'bank') {
-      node.append(bankInput(item, submit, hintFor, { onCells }));
+      node.append(bankInput(item, submit, hintFor, { onCells, onReopen }));
     } else if (item.input === 'self') {
       node.append(selfInput(item, submit));
     }
@@ -2457,8 +2686,26 @@ export function createUI(ctx) {
     const hinted = (i) => { const b = boxes.get(i); if (b?.wrap) b.wrap.dataset.hinted = 'true'; };
     return { paint, mark, hinted, all: (cells) => { for (const r of cells) if (boxes.has(r.i)) paint(r.i, r); } };
   }
+  /**
+   * Handing a box of typed answers back for a second guess: the boxes that
+   * went wrong are emptied and lose their red, the ones that were right keep
+   * what is in them and keep their green. The same rule a rebuilt chart
+   * follows (N-6), so changing your answer in place and starting the item
+   * again leave the learner looking at the same table.
+   */
+  function reopenCells(cells, inputs, painter, sync = () => {}) {
+    for (const r of cells ?? []) {
+      if (r.ok || r.scaffold) continue;
+      const el = inputs.get(r.i);
+      if (!el) continue;
+      el.value = '';
+      painter.paint(r.i, null);
+    }
+    sync();
+  }
+
   /** Pensum A: the sentence with an input for each ending, inline after its stem. Submits { blankIndex: typed }. */
-  function inlineInput(item, submit, hintFor = () => null, { onCells = null, live = null } = {}) {
+  function inlineInput(item, submit, hintFor = () => null, { onCells = null, onReopen = null, live = null } = {}) {
     const inputs = new Map();
     const hints = new Map();
     const boxes = new Map();
@@ -2511,6 +2758,7 @@ export function createUI(ctx) {
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => cells.mark(i, valueOf(i), { announce: true }) }));
     syncCheck();
     onCells?.(cells.all);
+    onReopen?.((r) => reopenCells(r, inputs, cells, syncCheck));
     setTimeout(() => form.querySelector('input')?.focus({ preventScroll: true }), 0);
     return form;
   }
@@ -2533,7 +2781,7 @@ export function createUI(ctx) {
     if (next) { e.preventDefault(); next[1].focus({ preventScroll: true }); }
   }
   /** Pensum B: the sentence with word blanks and a tappable bank. Submits { blankIndex: word }. */
-  function bankInput(item, submit, hintFor = () => null, { onCells = null } = {}) {
+  function bankInput(item, submit, hintFor = () => null, { onCells = null, onReopen = null } = {}) {
     const filled = {};
     const slots = new Map();
     const hints = new Map();
@@ -2572,6 +2820,12 @@ export function createUI(ctx) {
       hints.get(at[0])?.click();
     });
     onCells?.(cells.all);
+    // A second guess empties the blanks that went wrong — their tiles go back to the bank — and leaves the
+    // ones that were right where they are.
+    onReopen?.((r) => {
+      for (const x of r ?? []) if (!x.ok) { delete filled[x.i]; cells.paint(x.i, null); }
+      paint();
+    });
     paint();
     setTimeout(() => bankBtns[0]?.focus({ preventScroll: true }), 0);
     return form;
@@ -2597,7 +2851,7 @@ export function createUI(ctx) {
   /** The cells a chart item shows: all of them, or the target cell alone on a phone. */
   const chartCells = (item) => { const { chart } = item; if (chart.byWord || item.catalogue) return chart.cells; /* the catalogue's whole table stays whole on a phone: its box scrolls */ if (phone() && chart.cells.length > 1) return [chart.cells.find((c) => c.row === chart.target.row && c.col === chart.target.col) ?? chart.cells.find((c) => c.row === chart.target.row) ?? chart.cells[0]]; return chart.cells; };
   /** The question as asked of the cells shown ("Give the accusative singular of cāsus" when a phone shows one cell). */
-  const chartQuestion = (item) => { const cells = chartCells(item); return cells.length === 1 && item.chart.cells.length > 1 ? `Give the ${cells[0].label} of ${item.chart.head ?? item.lemma.split(/[\s,]/)[0]}` : item.prompt.question; };
+  const chartQuestion = (item) => { const cells = chartCells(item); return cells.length === 1 && item.chart.cells.length > 1 ? [`Give the ${cells[0].label} of `, la(item.chart.head ?? item.lemma.split(/[\s,]/)[0])] : item.prompt.questionParts ?? item.prompt.question; };
   /**
    * The paradigm section with inputs in the cells to fill (a compact single
    * row on phones). A whole-table drill is **scaffolded** (§12): at the table's
@@ -2609,7 +2863,7 @@ export function createUI(ctx) {
    * filled cells alone. A step's chart over words (`byWord`) has nothing to
    * give: every box is the cell being taught.
    */
-  function chartInput(item, submit, hintFor = () => null, { onCells = null, live = null } = {}) {
+  function chartInput(item, submit, hintFor = () => null, { onCells = null, onReopen = null, live = null } = {}) {
     const { chart } = item;
     const cells = chartCells(item);
     const inputs = new Map();   // index into chart.cells → input
@@ -2759,6 +3013,10 @@ export function createUI(ctx) {
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => paintCells.mark(i, valueOf(i), { announce: true }) }));
     syncCheck();
     onCells?.(paintCells.all);
+    // A second guess in place keeps what was right and empties what was not — the very rule the rebuilt
+    // table follows (N-6), so the two ways of trying again behave alike. Every cell is judged afresh on the
+    // next Check (`collect` reads the boxes, `cellResults` grades all of them), never assumed right.
+    onReopen?.((cells) => reopenCells(cells, inputs, paintCells, syncCheck));
     // The first cell still to fill, which on a retry is the first one that went wrong, not the first box.
     setTimeout(() => ([...form.querySelectorAll('input')].find((el) => !String(el.value ?? '').trim()) ?? form.querySelector('input'))?.focus({ preventScroll: true }), 0);
     return form;
@@ -2788,48 +3046,89 @@ export function createUI(ctx) {
       return y ? `${x.replace(/ (singular|plural)$/, '')} or ${y}` : x;
     } catch { return null; }
   }
-  /** "Italia is the nominative singular; after in the blank wants the ablative Italiā — the macron is the whole difference." */
-  function macronLine(c) {
-    const given = String(c.given ?? '').trim();
-    const want = String(c.expected ?? '').trim();
-    const gl = formLabel(given);
-    const wl = formLabel(want);
-    const head = gl ? `${given} is the ${gl}` : `You wrote ${given}`;
-    const tail = wl ? `here the blank wants the ${wl}, ${want}` : `the blank wants ${want}${c.note ? ` (${c.note})` : ''}`;
-    const note = wl && c.note ? ` (${c.note})` : '';
-    return `${head}; ${tail}${note} — they differ only in the macron, and that macron is the ending.`;
+  /**
+   * A feedback line's parts as nodes: a Latin part becomes its own
+   * `lang="la"` span, which `wordsOnDemand` cuts into hoverable words the first
+   * time the pointer crosses it — nothing is tokenised here. An English part
+   * stays a bare string, so the dictionary never opens on an English word.
+   */
+  const partsNodes = (parts) => parts.filter((p) => p !== '' && p != null)
+    .map((p) => (typeof p === 'object' ? h('span', { lang: 'la', text: p.la }) : p));
+
+  /* -------------------------- a vocabulary word in a sentence (task 2) */
+  /**
+   * Is this word in a sentence a form of that headword? The **dictionary**
+   * decides, never the spelling: the form a sentence prints is usually
+   * inflected, so *mēnsā* is a form of *mēnsa* and *fēlem* of *fēlēs*. A word
+   * the glossary has no reading for falls back to the headword itself, which
+   * at least catches the uninflected words (prepositions, conjunctions).
+   */
+  // The glossary's lemma is a citation, not a headword — "nāsus -ī m", "fēlēs, fēlis f" — so the
+  // comparison is on the first word of each side. Macrons are ignored: the deck and the glossary do not
+  // always agree on them, and a missing macron is not a different word.
+  const headWord = (x) => String(x ?? '').trim().split(/[\s,]/)[0] ?? '';
+  const sameWord = (a, b) => { const x = stripMacrons(headWord(a)).toLowerCase(); return !!x && x === stripMacrons(headWord(b)).toLowerCase(); };
+  const isFormOf = (text, lemma) => {
+    if (sameWord(text, lemma)) return true;
+    try { return dict.lookup(text).entries.some((e) => sameWord(e.lemma, lemma)); } catch { return false; }
+  };
+  // How many of a chapter's skills are asked for their written sentences and their bank. A chapter has a
+  // handful, and the point is to use what the app already has without turning one feedback line into
+  // eighty-eight requests; both loaders memoise, so a second word of the same chapter costs nothing.
+  const VOCAB_CTX_SKILLS = 4;
+  /**
+   * The sentences the app already has that could show this word, in the order
+   * §2 prefers them: our own written teaching sentences, then the book's own
+   * unit (the one the deck itself names, reached through the same `unitOf` a
+   * question's feedback uses), then the pre-generated bank. Nothing is written
+   * here and nothing is copied anywhere: every sentence is fetched at the
+   * moment it is shown.
+   */
+  async function vocabPools(lemma, chapter, unitId) {
+    const ids = [...index.skills.values()].filter((s) => Number(s.chapter) === Number(chapter)).map((s) => s.id).slice(0, VOCAB_CTX_SKILLS);
+    const [written, banks] = await Promise.all([
+      Promise.all(ids.map((id) => loadSentences(id).catch(() => null))),
+      Promise.all(ids.map((id) => loadGenerated(id).catch(() => null))),
+    ]);
+    const flat = (docs) => docs.filter(Boolean).flatMap((d) => (d.sentences ?? []).map((s) => ({ la: s.la, en: s.en, chapter: d.chapter ?? Number(chapter) })));
+    const unit = unitId ? unitOf(unitId) : null;
+    return [
+      { source: 'written', sentences: flat(written) },
+      { source: 'book', sentences: unit ? [{ la: unit.la, en: unit.en ?? '', chapter: chapterOfSentence(unit) ?? Number(chapter) }] : [] },
+      { source: 'generated', sentences: flat(banks) },
+    ];
+  }
+  /**
+   * The vocabulary item's "used in a sentence" block, drawn exactly as a
+   * question's answering sentence is (`g-fb__ctx`, the word lit, the English
+   * behind the same disclosure and never shown first). null when no sentence
+   * uses the word — better nothing than an empty block.
+   */
+  async function vocabExampleNode(lemma, chapter, unitId) {
+    if (!lemma) return null;
+    const got = vocabExample({ lemma, chapter: readerChapter(), isForm: isFormOf, pools: await vocabPools(lemma, chapter, unitId) });
+    if (!got) return null;
+    return h('div', { class: 'g-fb__ctx' },
+      h('p', { class: 'g-lesson__tag' }, `${lemma} in a sentence`, got.source === 'generated' ? ' (generated)' : null),
+      latin(got.la, { target: got.lit }),
+      // A sentence the learner has not reached still teaches the word; it says so rather than passing itself off
+      // as chapter work they have read, in the section's own words for exactly this (`scopeSentence`).
+      got.ahead && got.sentenceChapter ? h('p', { class: 'g-quiet g-fb__ahead', text: `From chapter ${roman(got.sentenceChapter)} — further on than you have read.` }) : null,
+      got.en ? h('details', { class: 'g-q-en' }, h('summary', { class: 'g-hint__s', text: 'In English' }), h('p', { class: 'g-hint__rule', text: got.en })) : null);
   }
 
-  function feedbackNode(item, result, { lesson, mode, practiceLink, onNext, onRetry = null, onPractice = null }) {
+  function feedbackNode(item, result, { lesson, mode, practiceLink, onNext, onRetry = null, onPractice = null, live = false }) {
     const skill = skills.get(item.skill);
     const fb = item.feedback;
     const ok = result.correct;
     const isSet = !!item.set;
-    let line;
-    if (item.input === 'self') line = result.given === 'right' ? `Right, by your own account. ${fb.short}` : result.given === 'partly' ? `Partly — worth another look. ${fb.short}` : `Not this time. ${fb.short}`;
-    else if (ok) line = `Right. ${fb.short}`;
-    else if (item.input === 'tap') {
-      const tapped = item.meanings?.find((m) => m.text === result.given);
-      const e = tapped ? dict.lookup(tapped.form).entries[0] : null;
-      const d = e ? dict.describe(e, { compact: false, form: tapped.text }) : null;
-      line = `You tapped ${result.given}${d ? ` — ${d.parse}` : ''}; the word that fits is ${result.expected}. ${fb.short}`;
-    } else if (item.input === 'choice' && result.choice) {
-      const given = result.choice.plain ? `${result.choice.label} (${result.choice.plain})` : result.choice.label;
-      line = `You chose ${given}; the answer is ${result.expected}. ${fb.short}`;
-    } else if ((item.input === 'chart' || item.input === 'inline' || item.input === 'bank') && result.cells) {
-      const wrong = result.cells.filter((c) => !c.ok);
-      // A pensum blank is macron-sensitive, so a miss that is *only* a macron gets named for what it is — the whole
-      // point of Ørberg's Pensum B for chapter I is Italia (nominative) against Italiā (ablative after in) — M3.
-      const macron = wrong.filter((c) => c.macron);
-      line = macron.length === wrong.length
-        ? `${macron.map((c) => macronLine(c)).join(' ')} ${fb.short}`
-        : `${wrong.length === 1 ? 'One blank' : `${wrong.length} blanks`} off: ${wrong.map((c) => `${c.given || '—'} → ${c.expected}`).join(', ')}. ${fb.short}`;
-    } else if (item.input === 'match' && result.cells) {
-      const wrong = result.cells.filter((c) => !c.ok);
-      line = `${wrong.length === 1 ? 'One pair' : `${wrong.length} pairs`} off: ${wrong.map((c) => `${c.la} is ${c.expected}`).join('; ')}.`;
-    // The learner's order usually ends on a word that carries its own punctuation, so a full stop after it would read as a typo.
-    } else if (item.input === 'order') line = `Not quite — you had: ${result.given}${/[.!?,;:]$/.test(String(result.given).trim()) ? '' : '.'} ${fb.short}`;
-    else line = `You answered ${result.given || '—'}; the answer is ${result.expected}. ${fb.short}`;
+    // The dictionary's reading of a tapped word, which is the one impure thing the line needs.
+    const tapped = item.input === 'tap' && !ok ? item.meanings?.find((m) => m.text === result.given) : null;
+    const tappedEntry = tapped ? dict.lookup(tapped.form).entries[0] : null;
+    const tapParse = tappedEntry ? dict.describe(tappedEntry, { compact: false, form: tapped.text })?.parse ?? null : null;
+    // Built from parts, not interpolated, so every Latin fragment carries `lang="la"` and the pointer
+    // dictionary finds it. `partsText` is the very same line as a string, for anything that wants one.
+    const line = feedbackParts(item, result, fb, { rev: !!skill?.rev, parse: tapParse, formLabel });
 
     const unit = item.unit_id ? unitOf(item.unit_id) : null;
     const lit = fb.table ? renderParadigm(fb.table) : null;
@@ -2872,16 +3171,34 @@ export function createUI(ctx) {
     const again = result.retry
       ? h('p', { class: 'g-fb__again' }, ok
         ? 'Right this time. Your first answer to this item is the one already counted, so the skill is unchanged.'
-        : 'Try it once more — your first answer to this item is the one already counted.')
-      : (!ok && onRetry ? h('p', { class: 'g-fb__again', text: 'Have another go. Only your first answer counts towards the skill, so trying again costs nothing.' }) : null);
+        : live
+          ? 'Change it again and check — your first answer to this item is the one already counted.'
+          : 'Try it once more — your first answer to this item is the one already counted.')
+      : (!ok && (live || onRetry) ? h('p', { class: 'g-fb__again', text: live
+        ? 'Your answer is still there: change it and check again. Only your first answer counts towards the skill, so a second go costs nothing.'
+        : 'Have another go. Only your first answer counts towards the skill, so trying again costs nothing.' }) : null);
+    // The word used in a sentence, right or wrong (§2): fetched when the feedback lands, dropped in when it
+    // arrives, and nothing at all when no sentence uses the word. A match item asks about four words at once, so
+    // it gets the sentence for the pair that went wrong — the one that wants the context — and none when all four
+    // were right, where the four dictionary lines already stand.
+    const ctxWord = item.kind !== 'vocab' ? null
+      : item.input !== 'match' ? { lemma: item.word?.lemma ?? null, unitId: item.unit_id ?? null }
+        : (() => { const miss = (result.cells ?? []).find((c) => !c.ok); return miss ? { lemma: miss.la, unitId: null } : null; })();
+    const vocabCtx = ctxWord?.lemma ? h('div', { class: 'g-fb__use' }) : null;
+    if (vocabCtx) vocabExampleNode(ctxWord.lemma, item.chapter ?? skill?.chapter ?? null, ctxWord.unitId)
+      .then((n) => { if (n && vocabCtx.isConnected) vocabCtx.replaceChildren(n); })
+      .catch(() => { /* no sentence to show, and nothing is the right thing to show */ });
     const node = h('div', { class: 'g-fb', 'data-ok': String(ok), 'data-partial': result.partial ? 'true' : null, 'data-retry': result.retry ? 'true' : null },
-      h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? (result.partial ? '~' : '✓') : '✗' }), h('span', { class: 'visually-hidden', text: `${verdict} ` }), ' ', line),
+      h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? (result.partial ? '~' : '✓') : '✗' }), h('span', { class: 'visually-hidden', text: `${verdict} ` }), ' ', partsNodes(line)),
       answerBlock,
+      vocabCtx,
       isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : details,
       again,
       h('div', { class: 'g-fb__acts' },
-        !ok && onRetry ? btn('Try again', { onclick: onRetry }, 'btn btn--primary g-fb__retry') : null,
-        btn(ok ? 'Next' : 'Move on', { onclick: onNext, 'aria-label': ok ? 'Next item' : 'Move on to the next item without getting this one right' }, `btn ${ok ? 'btn--primary' : 'btn--quiet'} g-fb__next`),
+        // Three things to do with an item that went wrong, now that the item itself stays live: change the
+        // answer where it stands (no button — the boxes are open), start the same item over, or skip it.
+        !ok && onRetry ? btn(live ? 'Start again' : 'Try again', { onclick: onRetry }, 'btn btn--quiet g-fb__retry') : null,
+        btn(ok ? 'Next' : live ? 'Skip' : 'Move on', { onclick: onNext, 'aria-label': ok ? 'Next item' : 'Move on to the next item without getting this one right' }, `btn ${ok ? 'btn--primary' : 'btn--quiet'} g-fb__next`),
         practiceLink && mode === 'practice' && onPractice ? btn(`Practise ${skill?.title ?? 'this skill'}`, { onclick: onPractice }, 'btn btn--quiet') : null));
     return node;
   }

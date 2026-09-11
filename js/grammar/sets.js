@@ -28,7 +28,7 @@
 
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { roman, shelfChapter } from '../sync.js';
-import { normaliseAnswer } from './items.js';
+import { normaliseAnswer, la, partsText, q } from './items.js';
 
 export const SET_KINDS = Object.freeze(['question', 'vocab', 'pensum']);
 const pad = (n) => String(n).padStart(2, '0');
@@ -420,6 +420,17 @@ export function pensumFilled(segments, blanks) {
  * skill / kind, so nothing repeats until the set is spent); `units` for the
  * sentences questions refer to.
  */
+/**
+ * "The chapter says: …" as parts: the lead-in is English, the sentence is
+ * Latin and is marked as Latin, so the pointer opens the dictionary on its
+ * words like any other Latin the section draws. `short` is derived from the
+ * parts so the spoken line and the printed one cannot drift. Pure.
+ */
+const saysParts = (unit, answers) => {
+  const parts = unit ? ['The chapter says: ', la(unit.la)] : ['The answer is ', la(answers[0]), '.'];
+  return { short: partsText(parts), parts };
+};
+
 export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
   const unitOf = (id) => units.find((u) => u.id === id) ?? null;
   const meaningsOf = (la) => tokenize(la).filter((t) => t.isWord).map((t) => ({ text: t.text, form: t.form, start: t.start }));
@@ -466,7 +477,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
       prompt: { la: input === 'tap' && unit ? unit.la : null, question: it.q, en: it.en, gloss: null, hint: it.hint || `A ${it.qword ?? 'question'} question: the answer is in the chapter.`, placeholder: 'the answer in Latin (macrons optional)' },
       // The words of the question itself are glossable whatever the input (plan §3: meanings are never assumed).
       answer: answers, choices: null, meanings: input === 'tap' && unit ? meaningsOf(unit.la) : meaningsOf(it.q),
-      feedback: { short: unit ? `The chapter says: ${unit.la}` : `The answer is ${answers[0]}.`, term: skill.plain, label: null, table: null, lemma: null, sense: null, paradigm: null, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, answers, { whole: false }) : [] } };
+      feedback: { ...saysParts(unit, answers), term: skill.plain, label: null, table: null, lemma: null, sense: null, paradigm: null, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, answers, { whole: false }) : [] } };
     if (input === 'choice') {
       const correctSet = new Set(answers.map(normaliseAnswer));
       const opts = choices.map((c) => ({ value: c, label: c, correct: correctSet.has(normaliseAnswer(c)), skill: null }));
@@ -522,7 +533,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     const w = deck.words[keys.indexOf(got.key)];
     const posName = POS_LABEL[w.pos] ?? (w.pos || 'word');
     const common = { ...base(skill, 'vocab', stage), key: got.key, repeat: got.wrapped, word: w, unit_id: w.unit_id,
-      feedback: { short: `${w.lemma} — ${w.meaning}. ${dictLine(w)}`, term: skill.plain, label: null, table: null, lemma: w.lemma, sense: w.meaning, paradigm: null, dict: dictLine(w) } };
+      feedback: { ...(() => { const parts = [la(w.lemma), ` — ${w.meaning}. `, la(dictLine(w))]; return { short: partsText(parts), parts }; })(), term: skill.plain, label: null, table: null, lemma: w.lemma, sense: w.meaning, paradigm: null, dict: dictLine(w) } };
     // Every other Latin → English item is a match: four words of the chapter against their meanings (opts.match forces either way).
     const useMatch = !rev && deck.words.length >= 4 && (opts.match ?? rand() < 0.5);
     if (useMatch) {
@@ -537,7 +548,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
       const others = sameChapterDistractors(deck, w, 3);
       const choices = shuffle([{ value: w.meaning, label: w.meaning, correct: true, skill: null }, ...others.map((o) => ({ value: o.meaning, label: o.meaning, correct: false, skill: null }))], rand);
       if (choices.length < 2) return null;
-      return { ...common, input: 'choice', prompt: { la: null, question: `What does ${w.lemma} mean?`, gloss: null, hint: `A ${posName}${w.gender ? `, ${w.gender}.` : ''}${w.decl ? ` ${w.decl}${['st', 'nd', 'rd'][w.decl - 1] ?? 'th'} declension` : ''}.` }, answer: [w.meaning], choices };
+      return { ...common, input: 'choice', prompt: { la: null, ...q(['What does ', la(w.lemma), ' mean?']), gloss: null, hint: `A ${posName}${w.gender ? `, ${w.gender}.` : ''}${w.decl ? ` ${w.decl}${['st', 'nd', 'rd'][w.decl - 1] ?? 'th'} declension` : ''}.` }, answer: [w.meaning], choices };
     }
     const accepted = [...new Set([w.lemma, stripMacrons(w.lemma), w.dict.split(/[\s,]/)[0]].filter(Boolean))];
     const item = { ...common, input: stage >= 2 ? 'type' : 'choice', prompt: { la: null, question: `Which Latin word means “${w.meaning}”?`, gloss: null, hint: `A ${posName} beginning with ${w.lemma[0]}…`, placeholder: 'the Latin word (macrons optional)' }, answer: accepted, choices: null };
@@ -566,7 +577,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
       return { ...common, input, unit_id: it.unit_id ?? null, question: { q: it.q, answers, en: it.en ?? '' }, accept: input === 'tap' ? accept : null,
         prompt: { la: input === 'tap' ? unit.la : null, question: it.q, en: it.en ?? '', gloss: null, hint: 'Pensum C: answer from the chapter.', placeholder: 'the answer in Latin (macrons optional)' },
         answer: answers, choices: null, meanings: input === 'tap' ? meaningsOf(unit.la) : [],
-        feedback: { ...common.feedback, short: unit ? `The chapter says: ${unit.la}` : `The answer is ${it.answers[0]}.`, sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, it.answers, { whole: false }) : [] } };
+        feedback: { ...common.feedback, ...saysParts(unit, it.answers), sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, it.answers, { whole: false }) : [] } };
     }
     const segments = pensumSegments(it.text);
     // `text` owns the stem ("Rōma in Itali_ est."); `stem` is metadata for the label and for accepting the whole
@@ -577,7 +588,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     const filled = pensumFilled(segments, blanks);
     if (kind === 'A') {
       return { ...common, exact: true, input: 'inline', segments, blanks, prompt: { la: null, question: 'Pensum A: type the endings', gloss: null, hint: blanks.map((b) => b.note).filter(Boolean).join(' · ') || 'Each blank wants an ending; the stem is given. Macrons count here — the length of the vowel is part of the ending.' },
-        answer: blanks.map((b) => b.answers[0]), choices: null, feedback: { ...common.feedback, short: `${filled}`, sentence: filled } };
+        answer: blanks.map((b) => b.answers[0]), choices: null, feedback: { ...common.feedback, short: filled, parts: [la(filled)], sentence: filled } };
     }
     // The bank is a multiset: a sentence that wants the same word twice offers two tiles (M3 / CR M3), plus the
     // distractors the book prints. Tiles are identified by position, never by their text.
@@ -588,7 +599,7 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
     for (const w of new Set(blanks.flatMap((b) => b.bank))) if (!need.has(w)) tiles.push(w);
     const bank = shuffle(tiles, rand);
     return { ...common, exact: true, input: 'bank', segments, blanks, bank, prompt: { la: null, question: 'Pensum B: fill each blank from the words below', gloss: null, hint: 'Tap a word for the next empty blank; tap a filled blank to empty it. Two words that differ only in a macron are two different forms.' },
-      answer: blanks.map((b) => b.answers[0]), choices: null, feedback: { ...common.feedback, short: `${filled}`, sentence: filled } };
+      answer: blanks.map((b) => b.answers[0]), choices: null, feedback: { ...common.feedback, short: filled, parts: [la(filled)], sentence: filled } };
   }
 
   const FNS = { question, vocab, pensum };
