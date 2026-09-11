@@ -23,7 +23,8 @@
    "sense_full": "day",
    "parts": null,
    "unit_id": "r13:7.1",
-   "count": 90
+   "count": 90,
+   "sem": "time"
   },
   {
    "lemma": "mēnsis",
@@ -35,7 +36,8 @@
    "sense_full": "month",
    "parts": null,
    "unit_id": "r13:1.1",
-   "count": 58
+   "count": 58,
+   "sem": "time"
   },
   {
    "lemma": "igitur",
@@ -59,7 +61,8 @@
    "sense_full": "time, condition, right time",
    "parts": null,
    "unit_id": "r13:8.2",
-   "count": 47
+   "count": 47,
+   "sem": "time"
   },
   {
    "lemma": "annus",
@@ -71,7 +74,8 @@
    "sense_full": "year (astronomical or civil)",
    "parts": null,
    "unit_id": "r13:1.1",
-   "count": 45
+   "count": 45,
+   "sem": "time"
   },
   {
    "lemma": "nunc",
@@ -95,7 +99,8 @@
    "sense_full": "city",
    "parts": null,
    "unit_id": "r13:99.1",
-   "count": 33
+   "count": 33,
+   "sem": "place"
   },
   {
    "lemma": "incipiō",
@@ -131,7 +136,8 @@
    "sense_full": "hour",
    "parts": null,
    "unit_id": "r13:40.1",
-   "count": 27
+   "count": 27,
+   "sem": "time"
   },
   {
    "lemma": "nox",
@@ -143,7 +149,8 @@
    "sense_full": "night prima nocte = early in the night",
    "parts": null,
    "unit_id": "r13:37.1",
-   "count": 26
+   "count": 26,
+   "sem": "time"
   },
   {
    "lemma": "dea",
@@ -155,7 +162,8 @@
    "sense_full": "goddess",
    "parts": null,
    "unit_id": "r13:13.1",
-   "count": 24
+   "count": 24,
+   "sem": "person"
   },
   {
    "lemma": "tōtus",
@@ -167,7 +175,15 @@
    "sense_full": "whole, all, entire, total, complete",
    "parts": null,
    "unit_id": "r13:49.1",
-   "count": 24
+   "count": 24,
+   "sem": {
+    "of": [
+     "place",
+     "thing",
+     "group",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "item",
@@ -203,7 +219,8 @@
    "sense_full": "rain, shower, storm",
    "parts": null,
    "unit_id": "r13:89.1",
-   "count": 18
+   "count": 18,
+   "sem": "nature"
   },
   {
    "lemma": "kalendae",
@@ -215,7 +232,8 @@
    "sense_full": "Kalends (in the plural), 1st of month",
    "parts": null,
    "unit_id": "r13:57.1",
-   "count": 16
+   "count": 16,
+   "sem": "time"
   },
   {
    "lemma": "merīdiēs",
@@ -227,7 +245,8 @@
    "sense_full": "noon",
    "parts": null,
    "unit_id": "r13:41.1",
-   "count": 16
+   "count": 16,
+   "sem": "time"
   },
   {
    "lemma": "vel",
@@ -251,7 +270,8 @@
    "sense_full": "beginning, commencement",
    "parts": null,
    "unit_id": "r13:37.2",
-   "count": 14
+   "count": 14,
+   "sem": "abstract"
   },
   {
    "lemma": "lūna",
@@ -263,7 +283,8 @@
    "sense_full": "moon",
    "parts": null,
    "unit_id": "r13:46.1",
-   "count": 14
+   "count": 14,
+   "sem": "nature"
   },
   {
    "lemma": "māne",
@@ -299,7 +320,16 @@
    "sense_full": "cold, cool, chilly, frigid",
    "parts": null,
    "unit_id": "r13:88.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "of": [
+     "nature",
+     "thing",
+     "food",
+     "place",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "hiems",
@@ -311,7 +341,8 @@
    "sense_full": "winter, winter time",
    "parts": null,
    "unit_id": "r13:80.1",
-   "count": 10
+   "count": 10,
+   "sem": "time"
   },
   {
    "lemma": "obscūrus",
@@ -323,7 +354,14 @@
    "sense_full": "dim, dark, obscure",
    "parts": null,
    "unit_id": "r13:49.1",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "of": [
+     "place",
+     "nature",
+     "time"
+    ]
+   }
   },
   {
    "lemma": "operiō",
@@ -347,7 +385,14 @@
    "sense_full": "warm, hot",
    "parts": null,
    "unit_id": "r13:87.1",
-   "count": 9
+   "count": 9,
+   "sem": {
+    "of": [
+     "nature",
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "faciēs",
@@ -359,7 +404,8 @@
    "sense_full": "shape, face, look",
    "parts": null,
    "unit_id": "r13:139.1",
-   "count": 9
+   "count": 9,
+   "sem": "body"
   },
   {
    "lemma": "nōminō",
@@ -383,7 +429,8 @@
    "sense_full": "summer",
    "parts": null,
    "unit_id": "r13:80.1",
-   "count": 8
+   "count": 8,
+   "sem": "time"
   },
   {
    "lemma": "īdūs",
@@ -395,7 +442,8 @@
    "sense_full": "Ides (in the plural), abbreviation Id",
    "parts": null,
    "unit_id": "r13:62.1",
-   "count": 8
+   "count": 8,
+   "sem": "time"
   },
   {
    "lemma": "lūx",
@@ -407,7 +455,8 @@
    "sense_full": "light, daylight, light of day",
    "parts": null,
    "unit_id": "r13:46.2",
-   "count": 7
+   "count": 7,
+   "sem": "nature"
   },
   {
    "lemma": "stēlla",
@@ -419,7 +468,8 @@
    "sense_full": "star",
    "parts": null,
    "unit_id": "r13:46.1",
-   "count": 7
+   "count": 7,
+   "sem": "nature"
   },
   {
    "lemma": "vesper",
@@ -431,7 +481,8 @@
    "sense_full": "evening",
    "parts": null,
    "unit_id": "r13:35.2",
-   "count": 7
+   "count": 7,
+   "sem": "time"
   },
   {
    "lemma": "fōrma",
@@ -443,7 +494,8 @@
    "sense_full": "form, figure, appearance",
    "parts": null,
    "unit_id": "r13:52.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "exiguus",
@@ -455,7 +507,13 @@
    "sense_full": "small",
    "parts": null,
    "unit_id": "r13:51.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "illūstrō",
@@ -479,7 +537,8 @@
    "sense_full": "snow",
    "parts": null,
    "unit_id": "r13:89.1",
-   "count": 5
+   "count": 5,
+   "sem": "nature"
   },
   {
    "lemma": "quandō",
@@ -503,7 +562,8 @@
    "sense_full": "autumn",
    "parts": null,
    "unit_id": "r13:80.1",
-   "count": 4
+   "count": 4,
+   "sem": "time"
   },
   {
    "lemma": "clārus",
@@ -515,7 +575,13 @@
    "sense_full": "clear, bright, gleaming",
    "parts": null,
    "unit_id": "r13:46.2",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "nature",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "lacūs",
@@ -527,7 +593,8 @@
    "sense_full": "basin, tank, tub",
    "parts": null,
    "unit_id": "r13:95.1",
-   "count": 4
+   "count": 4,
+   "sem": "place"
   },
   {
    "lemma": "vēr",
@@ -539,7 +606,8 @@
    "sense_full": "spring",
    "parts": null,
    "unit_id": "r13:80.1",
-   "count": 4
+   "count": 4,
+   "sem": "time"
   },
   {
    "lemma": "dīmidius",
@@ -563,7 +631,8 @@
    "sense_full": "age",
    "parts": null,
    "unit_id": "r13:8.1",
-   "count": 3
+   "count": 3,
+   "sem": "time"
   },
   {
    "lemma": "aequinoctium",
@@ -575,7 +644,8 @@
    "sense_full": "equinox",
    "parts": null,
    "unit_id": "r13:75.1",
-   "count": 2
+   "count": 2,
+   "sem": "time"
   },
   {
    "lemma": "glaciēs",
@@ -587,7 +657,8 @@
    "sense_full": "ice",
    "parts": null,
    "unit_id": "r13:95.1",
-   "count": 2
+   "count": 2,
+   "sem": "nature"
   },
   {
    "lemma": "Iānuārius",

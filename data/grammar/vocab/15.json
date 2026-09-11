@@ -11,7 +11,8 @@
    "sense_full": "teacher, tutor, master, expert, chief",
    "parts": null,
    "unit_id": "r15:4.1",
-   "count": 173
+   "count": 173,
+   "sem": "person"
   },
   {
    "lemma": "tum",
@@ -35,7 +36,8 @@
    "sense_full": "student, pupil, trainee",
    "parts": null,
    "unit_id": "r15:5.1",
-   "count": 72
+   "count": 72,
+   "sem": "person"
   },
   {
    "lemma": "at",
@@ -95,7 +97,8 @@
    "sense_full": "house, building",
    "parts": null,
    "unit_id": "r15:81.1",
-   "count": 37
+   "count": 37,
+   "sem": "place"
   },
   {
    "lemma": "recitō",
@@ -107,7 +110,24 @@
    "sense_full": "read aloud, recite",
    "parts": "recitō, recitāre, recitāvī, recitātum",
    "unit_id": "r15:96.2",
-   "count": 33
+   "count": 33,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "līber",
+     "epistula",
+     "carmen",
+     "versūs",
+     "libellus",
+     "epigramma",
+     "versiculus",
+     "fābula",
+     "sententia"
+    ]
+   }
   },
   {
    "lemma": "nisi",
@@ -131,7 +151,14 @@
    "sense_full": "return, go back, give back",
    "parts": "redeō, redīre, rediī, reditum",
    "unit_id": "r15:66.1",
-   "count": 30
+   "count": 30,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "iānua",
@@ -143,7 +170,8 @@
    "sense_full": "door, entrance",
    "parts": null,
    "unit_id": "r15:27.1",
-   "count": 26
+   "count": 26,
+   "sem": "thing"
   },
   {
    "lemma": "sevērus",
@@ -155,7 +183,12 @@
    "sense_full": "stern, strict, severe",
    "parts": null,
    "unit_id": "r15:5.1",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "reddō",
@@ -167,7 +200,19 @@
    "sense_full": "return",
    "parts": "reddō, reddere, reddidī, redditum",
    "unit_id": "r15:88.1",
-   "count": 24
+   "count": 24,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "lūdus",
@@ -179,7 +224,8 @@
    "sense_full": "game, play, sport, pastime, entertainment, fun",
    "parts": null,
    "unit_id": "r15:2.1",
-   "count": 19
+   "count": 19,
+   "sem": "place"
   },
   {
    "lemma": "cōnsīdō",
@@ -191,7 +237,14 @@
    "sense_full": "sit down/be seated",
    "parts": "cōnsīdō, cōnsīdere, consedī, consessum",
    "unit_id": "r15:17.2",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "licet",
@@ -227,7 +280,15 @@
    "sense_full": "punish (person or offense), inflict punishment",
    "parts": "pūniō, pūnīre, pūnīvī, pūnītum",
    "unit_id": "r15:5.1",
-   "count": 15
+   "count": 15,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "antequam",
@@ -263,7 +324,8 @@
    "sense_full": "back, rear",
    "parts": null,
    "unit_id": "r15:61.1",
-   "count": 12
+   "count": 12,
+   "sem": "body"
   },
   {
    "lemma": "exclāmō",
@@ -275,7 +337,13 @@
    "sense_full": "exclaim, shout",
    "parts": "exclāmō, exclāmāre, exclāmāvī, exclamatum",
    "unit_id": "r15:23.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "sella",
@@ -287,7 +355,8 @@
    "sense_full": "seat (usually no back or arms), stool, chair",
    "parts": null,
    "unit_id": "r15:14.1",
-   "count": 11
+   "count": 11,
+   "sem": "thing"
   },
   {
    "lemma": "virga",
@@ -299,7 +368,8 @@
    "sense_full": "twig, sprout, stalk",
    "parts": null,
    "unit_id": "r15:5.1",
-   "count": 6
+   "count": 6,
+   "sem": "thing"
   },
   {
    "lemma": "īnferus",
@@ -323,7 +393,8 @@
    "sense_full": "bed or couch",
    "parts": null,
    "unit_id": "r15:115.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "prior",
@@ -335,7 +406,8 @@
    "sense_full": "superior or elder monk",
    "parts": null,
    "unit_id": "r15:97.1",
-   "count": 3
+   "count": 3,
+   "sem": "other"
   },
   {
    "lemma": "tacitus",
@@ -347,7 +419,12 @@
    "sense_full": "silent, secret",
    "parts": null,
    "unit_id": "r15:18.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   }
  ]
 }

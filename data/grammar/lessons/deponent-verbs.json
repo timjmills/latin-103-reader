@@ -3,7 +3,15 @@
  "teach": [
   {
    "title": "Passive clothes, active work",
-   "say": "Some verbs have nothing but passive-shaped endings and yet mean something the subject does: **a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)**. *sequitur* is not 'he is followed' but 'he follows'; *verētur* is 'he fears'. There is no active form to fall back on — the dictionary lists them by the passive-looking first person: *sequor, loquor, cōnor, vereor*.",
+   "notice": {
+    "sentences": [
+     "dep-03",
+     "dep-05"
+    ],
+    "ask": "Which verb in each sentence ends in -tur, and is its subject doing the action or having it done to it?",
+    "tap": "focus"
+   },
+   "say": "Some verbs have nothing but passive-shaped endings and yet mean something the subject does: **a deponent verb (passive-looking endings, active meaning: loquitur = he speaks)**. *sequitur* is not 'he is followed' but 'he follows'; *verētur* is 'he fears'.",
    "show": {
     "kind": "sentence",
     "id": "dep-02"
@@ -207,6 +215,10 @@
   {
    "type": "p",
    "text": "Ørberg (chapter XVI): a deponent is a verb that always has the passive form (except the participle) and stands in the place of an active verb; *laetātur = gaudet, verētur = timet, proficīscitur = abit, opperītur = exspectat*. A&G §190 add the semi-deponents, active in the present but passive in the perfect: *audeō, ausus sum* (dare), *gaudeō, gāvīsus sum*, *soleō, solitus sum* (be used to)."
+  },
+  {
+   "type": "p",
+   "text": "There is no active form to fall back on — the dictionary lists them by the passive-looking first person: *sequor, loquor, cōnor, vereor*."
   }
  ],
  "sources": [

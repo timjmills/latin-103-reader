@@ -43,7 +43,15 @@
     {
       "n": 1,
       "title": "What agreeing means",
-      "say": "A describing word has no shape of its own. It is an adjective agreeing with its noun (same gender, number and case): it takes all three from the noun it belongs to. Ørberg prints it *magnus -a -um*, one word with three tails. In *Sicilia īnsula magna … est*, *magna* wears -a because *īnsula* is feminine and single. English has one *big* for an island and for rivers alike, so in Latin the tail, not the place in the line, tells you which noun an adjective belongs to, and it may stand before or after that noun. These steps teach two of the three matches, gender and number. The third, case, is what makes *in prōvinciā Rōmānā* and *in capitulō prīmō* change both words together after *in*; it is taught with the cases themselves, so here you need only notice that the two tails move as a pair.",
+      "notice": {
+        "sentences": [
+          "aa-01",
+          "aa-04"
+        ],
+        "ask": "Tap the describing word in each sentence. What does its ending share with the noun next to it?",
+        "tap": "focus"
+      },
+      "say": "A describing word has no shape of its own: it is an adjective agreeing with its noun (same gender, number and case), taking all three from the noun it belongs to. In *Sicilia īnsula magna … est*, *magna* wears -a because *īnsula* is feminine and single.",
       "show": {
         "kind": "sentence",
         "id": "aa-01"
@@ -198,6 +206,10 @@
     {
       "type": "p",
       "text": "Adjectives in -er drop the e in the other forms (*pulcher, pulchra, pulchrum*; *niger, nigra, nigrum*) though a few keep it (*miser, misera*). An adjective after *est* agrees with the subject (*Iūlia laeta est*). Used alone, an adjective becomes a noun: *multī* = many people, *pauca* = few things; and *mālum* (apple, long a) is a different word from *malum* (a bad thing). Adjectives of the third declension (*fortis*, *brevis*) come later. Ørberg cap. I–V; A&G §286."
+    },
+    {
+      "type": "p",
+      "text": "Ørberg prints it *magnus -a -um*, one word with three tails. English has one *big* for an island and for rivers alike, so in Latin the tail, not the place in the line, tells you which noun an adjective belongs to, and it may stand before or after that noun. These steps teach two of the three matches, gender and number. The third, case, is what makes *in prōvinciā Rōmānā* and *in capitulō prīmō* change both words together after *in*; it is taught with the cases themselves, so here you need only notice that the two tails move as a pair."
     }
   ],
   "sources": [

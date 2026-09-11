@@ -4,6 +4,14 @@
     {
       "n": 1,
       "title": "Who goes along",
+      "notice": {
+        "sentences": [
+          "abc-03",
+          "abc-07"
+        ],
+        "ask": "Which word in each sentence says who somebody is with?",
+        "tap": "focus"
+      },
       "say": "To say who somebody is with, Latin puts *cum* in front of the person and changes that person's ending. The changed ending is **the ablative (the 'with someone' form)**: *cum Syrā* — with Syra. *Cum* is the only preposition that does this job, and it never drops out.",
       "show": {
         "kind": "sentence",
@@ -46,7 +54,7 @@
     {
       "n": 3,
       "title": "A companion in -us, and one like *pater*",
-      "say": "A word in -us gives -ō: *dominus* → *cum dominō*, *Mēdus* → *cum Mēdō*. A second-declension word in -er does the same: *puer* → *cum puerō*. A word like *pater* belongs to a declension you have not met yet and gives a short -e instead, *cum patre* — read it where it comes, but do not build it from this table.",
+      "say": "A word in -us gives -ō: *dominus* → *cum dominō*, *Mēdus* → *cum Mēdō*. A word like *pater* belongs to a declension you have not met yet and gives a short -e instead, *cum patre* — read it where it comes, but do not build it from this table.",
       "show": {
         "kind": "paradigm",
         "key": "decl2m",
@@ -109,7 +117,7 @@
     {
       "n": 6,
       "title": "*cum* glued on behind: *mēcum*",
-      "say": "With *ego*, *tū* and *sē* the preposition does not stand in front at all — it is stuck on the back of the word: *mēcum* with me, *tēcum* with you, *sēcum* with himself. Latin never writes *cum mē*. The ending is the same ablative as ever; only the little word has moved house. (You will also meet the whole *cum* phrase standing first, as in *Cum ancillā suā Aemilia in hortō est*: the endings hold it together, not the order.)",
+      "say": "With *ego*, *tū* and *sē* the preposition does not stand in front at all — it is stuck on the back of the word: *mēcum* with me, *tēcum* with you, *sēcum* with himself. Latin never writes *cum mē*. The ending is the same ablative as ever; only the little word has moved house.",
       "show": {
         "kind": "sentence",
         "id": "abc-13"
@@ -186,6 +194,14 @@
     {
       "type": "p",
       "text": "A personal or relative pronoun takes *cum* glued on behind it: *mēcum*, *tēcum*, *sēcum*, *nōbīscum*, *vōbīscum*, *quōcum* — never *cum mē*. *Ūnā cum* is the same construction with an adverb in front, 'together with' (*ūnā cum Iūliā*, r20:103.1). Verbs of fighting and talking keep the company sense: *pugnāvimus cum puerō māiōre* — we fought with (against) a bigger boy (r21:45.1); *cum Aemiliā colloquitur* — she talks with Aemilia. A&G §413 (accompaniment), §409 (means)."
+    },
+    {
+      "type": "p",
+      "text": "A second-declension word in -er does the same: *puer* → *cum puerō*."
+    },
+    {
+      "type": "p",
+      "text": "You will also meet the whole *cum* phrase standing first, as in *Cum ancillā suā Aemilia in hortō est*: the endings hold it together, not the order."
     }
   ],
   "sources": [

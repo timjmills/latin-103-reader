@@ -52,6 +52,10 @@
     {
       "type": "p",
       "text": "Semi-deponents are active in the present but deponent in the perfect: *audeō, ausus sum* (dare), *gaudeō, gāvīsus sum* (rejoice), *soleō, solitus sum* (be used to). The pluperfect swaps in *erat*: *profectī erant* — they had set out."
+    },
+    {
+      "type": "p",
+      "text": "Look the verb up: a dictionary infinitive ending in *-ī* or *-rī* rather than *-re* (*loquī* not *loquere*, *laetārī* not *laetāre*, *verērī* not *verēre*) marks a deponent."
     }
   ],
   "sources": [
@@ -63,7 +67,15 @@
     {
       "n": 1,
       "title": "Two words, one plain past",
-      "say": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) makes its past out of two words, and the pair together is **the perfect of a deponent verb (locūtus est = he spoke)**. In *Mēdus ex vīllā statim profectus est* the two words *profectus est* say one thing: set out. Never put 'was' or 'been' into it — a deponent is active whatever it looks like.",
+      "notice": {
+        "sentences": [
+          "pd-01",
+          "pd-03"
+        ],
+        "ask": "Tap the words that say what Medus did and what Julius did — what do the two pairs have in common?",
+        "tap": "focus"
+      },
+      "say": "A deponent verb (passive-looking endings, active meaning: loquitur = he speaks) makes its past out of two words, and the pair together is **the perfect of a deponent verb (locūtus est = he spoke)**. *Mēdus ex vīllā statim profectus est* — the two words *profectus est* say one thing: set out. Never put 'was' or 'been' into it.",
       "show": {
         "kind": "sentence",
         "id": "pd-01"
@@ -126,7 +138,7 @@
     {
       "n": 4,
       "title": "Telling it from the perfect passive",
-      "say": "*Vocātus est* and *locūtus est* are built alike, and only the verb decides which is which. *Vocō* has an ordinary active present, so *vocātus est* is **the perfect passive (the 'was done / has been done' form: laudātus est)** — he was called. *Loquor* has no active at all, so *locūtus est* can only mean he spoke. Look the verb up: a dictionary infinitive ending in *-ī* or *-rī* rather than *-re* (*loquī* not *loquere*, *laetārī* not *laetāre*, *verērī* not *verēre*) marks a deponent.",
+      "say": "*Vocātus est* and *locūtus est* are built alike, and only the verb decides which is which. *Vocō* has an ordinary active present, so *vocātus est* is **the perfect passive (the 'was done / has been done' form: laudātus est)** — he was called. *Loquor* has no active at all, so *locūtus est* can only mean he spoke.",
       "show": {
         "kind": "sentence",
         "id": "pd-09"

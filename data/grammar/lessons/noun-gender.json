@@ -51,7 +51,15 @@
     {
       "n": 1,
       "title": "What gender is",
-      "say": "Every Latin noun belongs to one of three groups and stays in it for life: this is its gender (masculine, feminine or neuter, fixed for each noun). It has little to do with being male or female — *fluvius* (river) is masculine and *īnsula* (island) feminine, and neither is alive. It matters because every word that describes a noun has to match it.",
+      "notice": {
+        "sentences": [
+          "ng-03",
+          "ng-04"
+        ],
+        "ask": "Tap the noun each sentence starts with. What ending do both nouns share with the words describing them?",
+        "tap": "focus"
+      },
+      "say": "Every Latin noun belongs to one of three groups for life: this is its gender (masculine, feminine or neuter, fixed for each noun). Every word that describes a noun has to match its group. It has little to do with being male or female: *fluvius* (river) is masculine and *īnsula* (island) feminine, and neither is alive.",
       "show": {
         "kind": "sentence",
         "id": "ng-01"
@@ -133,7 +141,7 @@
     {
       "n": 5,
       "title": "When the ending does not tell you",
-      "say": "*Aegyptus* (Egypt) ends in -us and is feminine, because names of countries and islands are feminine whatever their ending. The describing word is where you see it: *Aegyptus magna est*, but *Nīlus magnus est* — one noun ending, two genders. *Tiberis* (the Tiber) ends in -is and is masculine, because rivers are masculine. Where the ending gives no honest signal the gender is learned with the word, like its meaning.",
+      "say": "*Aegyptus* (Egypt) ends in -us and is feminine, because names of countries and islands are feminine whatever their ending; rivers, like *Tiberis* (the Tiber), are masculine whatever their ending. The describing word shows it: *Aegyptus magna est*, but *Nīlus magnus est*.",
       "show": {
         "kind": "sentence",
         "id": "ng-09"
@@ -147,7 +155,7 @@
     {
       "n": 6,
       "title": "The noun’s gender is fixed; the adjective borrows it",
-      "say": "*Rōmānus*, *Rōmāna*, *Rōmānum* are not three words but one, waiting to take its noun’s gender: *fluvius Rōmānus*, *īnsula Rōmāna*, *oppidum Rōmānum*. So an -a on a describing word tells you its noun is either feminine and single (*īnsula Graeca*) or neuter and several (*vocābula Latīna*), while an -a on the noun is the noun’s own group. The noun decides and the adjective follows, never the other way round.",
+      "say": "*Rōmānus*, *Rōmāna*, *Rōmānum* are not three words but one, waiting to take its noun’s gender: *fluvius Rōmānus*, *īnsula Rōmāna*, *oppidum Rōmānum*. The noun decides and the adjective follows, never the other way round.",
       "show": {
         "kind": "sentence",
         "id": "ng-11"
@@ -176,6 +184,14 @@
     {
       "type": "p",
       "text": "Ørberg cap. II: masculīnum -us (-r), fēminīnum -a, neutrum -um. Allen & Greenough add the rules of meaning that override the ending: names of males, rivers, winds and months are masculine; names of females, countries, towns, islands and trees are feminine (*Rōma*, *Corsica*, but also *Aegyptus* f). Neuter nouns always have the same form for subject and object, and their plural always ends in -a (A&G §31–35)."
+    },
+    {
+      "type": "p",
+      "text": "Where the ending gives no honest signal the gender is learned with the word, like its meaning."
+    },
+    {
+      "type": "p",
+      "text": "So an -a on a describing word tells you its noun is either feminine and single (*īnsula Graeca*) or neuter and several (*vocābula Latīna*), while an -a on the noun is the noun’s own group."
     }
   ],
   "sources": [

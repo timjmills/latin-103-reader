@@ -53,6 +53,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "abt-04",
+          "abt-06"
+        ],
+        "ask": "Tap the word that says when in each sentence. Is there any little word like 'in' or 'at' in front of it?",
+        "tap": "focus"
+      },
       "say": "English needs a little word for time — *at* night, *in* winter, *on* that day. Latin does not: it puts the time word into **the ablative (the 'at / in (a time)' form)** and leaves it bare. *Nocte* on its own means 'at night'; *hieme* means 'in winter'. The ending does the work the English preposition does.",
       "show": {
         "kind": "sentence",
@@ -76,7 +84,7 @@
     {
       "n": 2,
       "title": "The ending on a 1st- or 2nd-declension time word",
-      "say": "One cell. A time word of the 1st declension takes the ablative singular *-ā*, marked with a long vowel: *hōra* → *hōrā*, at the hour. A 2nd-declension one takes *-ō* in just the same way: *annus* → *annō*, in the year; *autumnus* → *autumnō*, in autumn. When the time word brings an adjective with it — *hōrā prīmā*, at the first hour — that word takes the ablative too; step 4 comes back to it.",
+      "say": "One cell. A time word of the 1st declension takes the ablative singular *-ā*, marked with a long vowel: *hōra* → *hōrā*, at the hour. A 2nd-declension one takes *-ō* in just the same way: *annus* → *annō*, in the year; *autumnus* → *autumnō*, in autumn.",
       "show": {
         "kind": "paradigm",
         "key": "decl1",

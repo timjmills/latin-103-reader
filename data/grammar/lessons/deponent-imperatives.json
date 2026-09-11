@@ -62,6 +62,14 @@
     {
       "n": 1,
       "title": "Ordering someone about with a deponent",
+      "notice": {
+        "sentences": [
+          "di-01",
+          "di-05"
+        ],
+        "ask": "Tap the word that tells someone what to do — what do the two words have in common?",
+        "tap": "focus"
+      },
       "say": "A deponent (passive-looking endings, active meaning: loquitur = he speaks) gives its orders with **the deponent command forms (sequere! = follow!, sequiminī! = follow, all of you!)**. *Sequere mē, Mārce, in hortum!* — one word, one order, exactly as blunt as the English 'Follow me!'",
       "show": {
         "kind": "sentence",

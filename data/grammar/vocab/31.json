@@ -23,7 +23,12 @@
    "sense_full": "fugitive",
    "parts": null,
    "unit_id": "w09:b21.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "īnfīdus",
@@ -35,7 +40,12 @@
    "sense_full": "writing without faith",
    "parts": null,
    "unit_id": "w09:b18.3",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "poena",
@@ -47,7 +57,8 @@
    "sense_full": "penalty, punishment",
    "parts": null,
    "unit_id": "w09:b31.5",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "quidquid",
@@ -95,7 +106,12 @@
    "sense_full": "merciful or loving",
    "parts": null,
    "unit_id": "w09:b28.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "crūdēlis",
@@ -107,7 +123,12 @@
    "sense_full": "cruel, hardhearted, unmerciful, severe, bloodthirsty, savage, inhuman",
    "parts": null,
    "unit_id": "w09:b33.7",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "crux",
@@ -119,7 +140,8 @@
    "sense_full": "cross",
    "parts": null,
    "unit_id": "w09:b20.4",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "ēducō",
@@ -143,7 +165,8 @@
    "sense_full": "injury",
    "parts": null,
    "unit_id": "w09:b31.5",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "iūstus",
@@ -155,7 +178,12 @@
    "sense_full": "just, fair, equitable",
    "parts": null,
    "unit_id": "w09:b31.3",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "iuvenis",
@@ -167,7 +195,8 @@
    "sense_full": "youth, young man or woman",
    "parts": null,
    "unit_id": "w09:b22.2",
-   "count": 4
+   "count": 4,
+   "sem": "person"
   },
   {
    "lemma": "memor",
@@ -191,7 +220,8 @@
    "sense_full": "custom, habit",
    "parts": null,
    "unit_id": "w09:b37.1",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "namque",
@@ -227,7 +257,8 @@
    "sense_full": "prize, reward",
    "parts": null,
    "unit_id": "w09:b24.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "rūmor",
@@ -239,7 +270,8 @@
    "sense_full": "hearsay, rumor, gossip",
    "parts": null,
    "unit_id": "w09:b4.1",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "scelus",
@@ -251,7 +283,8 @@
    "sense_full": "crime",
    "parts": null,
    "unit_id": "w09:b33.3",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "senex",
@@ -263,7 +296,8 @@
    "sense_full": "old man",
    "parts": null,
    "unit_id": "w09:b46.6",
-   "count": 4
+   "count": 4,
+   "sem": "person"
   },
   {
    "lemma": "statuō",
@@ -287,7 +321,8 @@
    "sense_full": "punishment, suffering",
    "parts": null,
    "unit_id": "w09:b33.4",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "vetō",
@@ -311,7 +346,12 @@
    "sense_full": "avaricious, greedy",
    "parts": null,
    "unit_id": "w09:b8.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "cōram",
@@ -347,7 +387,13 @@
    "sense_full": "weak, feeble, frail",
    "parts": null,
    "unit_id": "w09:b38.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "ēbrius",
@@ -359,7 +405,12 @@
    "sense_full": "drunk, intoxicated",
    "parts": null,
    "unit_id": "w09:b51.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "invalidus",
@@ -371,7 +422,12 @@
    "sense_full": "infirm, weak feeble ineffectual",
    "parts": null,
    "unit_id": "w09:b35.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "iūs",
@@ -383,7 +439,8 @@
    "sense_full": "law",
    "parts": null,
    "unit_id": "w09:b31.6",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "lēx",
@@ -395,7 +452,8 @@
    "sense_full": "law",
    "parts": null,
    "unit_id": "w09:b31.7",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "mūnus",
@@ -407,7 +465,8 @@
    "sense_full": "service",
    "parts": null,
    "unit_id": "w09:b10.4",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "praesēns",
@@ -443,7 +502,12 @@
    "sense_full": "infamous, wicked",
    "parts": null,
    "unit_id": "w09:b33.4",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "vetus",
@@ -455,7 +519,14 @@
    "sense_full": "old, aged, ancient",
    "parts": null,
    "unit_id": "w09:b34.1",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "fīdō",
@@ -479,7 +550,13 @@
    "sense_full": "faithful, loyal",
    "parts": null,
    "unit_id": "w09:b42.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "funditus",
@@ -503,7 +580,8 @@
    "sense_full": "son-in-law",
    "parts": null,
    "unit_id": "w09:b31.5",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "ignōscō",
@@ -539,7 +617,8 @@
    "sense_full": "murderer of near relative (father?/parent)",
    "parts": null,
    "unit_id": "w09:b32.3",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "pōtiō",
@@ -551,7 +630,8 @@
    "sense_full": "drinking, drink",
    "parts": null,
    "unit_id": "w09:b1.1",
-   "count": 2
+   "count": 2,
+   "sem": "food"
   },
   {
    "lemma": "priusquam",
@@ -575,7 +655,12 @@
    "sense_full": "rational",
    "parts": null,
    "unit_id": "w09:b32.3",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "aliquantus",
@@ -647,7 +732,8 @@
    "sense_full": "graffito, a message scratched on a wall (here one found at Pompeii)",
    "parts": null,
    "unit_id": "w09:b58.1",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   },
   {
    "lemma": "ideō",
@@ -683,7 +769,12 @@
    "sense_full": "unjust, wrongful",
    "parts": null,
    "unit_id": "w09:b31.4",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "līqueō",
@@ -707,7 +798,8 @@
    "sense_full": "memory, recollection",
    "parts": null,
    "unit_id": "w09:b33.3",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "nūgae",
@@ -719,7 +811,8 @@
    "sense_full": "trifles (in the plural), nonsense",
    "parts": null,
    "unit_id": "w09:b55.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "retrahō",

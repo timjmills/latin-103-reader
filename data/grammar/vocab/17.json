@@ -23,7 +23,19 @@
    "sense_full": "recommend",
    "parts": "laudō, laudāre, laudāvī, laudātum",
    "unit_id": "r17:42.1",
-   "count": 47
+   "count": 47,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "thing",
+     "abstract",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "sciō",
@@ -47,7 +59,12 @@
    "sense_full": "right, proper",
    "parts": null,
    "unit_id": "r17:38.2",
-   "count": 39
+   "count": 39,
+   "sem": {
+    "of": [
+     "place"
+    ]
+   }
   },
   {
    "lemma": "quiquam",
@@ -107,7 +124,15 @@
    "sense_full": "teach, show, point out",
    "parts": "doceō, docēre, docuī, doctum",
    "unit_id": "r17:1.2",
-   "count": 23
+   "count": 23,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "numquam",
@@ -179,7 +204,13 @@
    "sense_full": "think",
    "parts": "cōgitō, cōgitāre, cogitavī, cogitatum",
    "unit_id": "r17:57.1",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "assis",
@@ -191,7 +222,8 @@
    "sense_full": "penny, copper coin",
    "parts": null,
    "unit_id": "r17:96.1",
-   "count": 14
+   "count": 14,
+   "sem": "thing"
   },
   {
    "lemma": "piger",
@@ -203,7 +235,13 @@
    "sense_full": "lazy, slow, dull",
    "parts": null,
    "unit_id": "r17:7.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "reprehendō",
@@ -215,7 +253,15 @@
    "sense_full": "hold back, seize, catch",
    "parts": "reprehendō, reprehendere, reprehendī, reprehēnsum",
    "unit_id": "r17:61.2",
-   "count": 13
+   "count": 13,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "tollō",
@@ -227,7 +273,17 @@
    "sense_full": "lift, raise",
    "parts": "tollō, tollere, sustulī, sublātum",
    "unit_id": "r17:17.1",
-   "count": 13
+   "count": 13,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "person",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "industrius",
@@ -239,7 +295,12 @@
    "sense_full": "industrious, diligent",
    "parts": null,
    "unit_id": "r17:8.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "quārē",
@@ -275,7 +336,8 @@
    "sense_full": "denarius (silver coin=10/16/18 asses)",
    "parts": null,
    "unit_id": "r17:96.1",
-   "count": 8
+   "count": 8,
+   "sem": "thing"
   },
   {
    "lemma": "exemplum",
@@ -287,7 +349,8 @@
    "sense_full": "example, sample, specimen",
    "parts": null,
    "unit_id": "r17:137.1",
-   "count": 8
+   "count": 8,
+   "sem": "abstract"
   },
   {
    "lemma": "dēmōnstrō",
@@ -299,7 +362,20 @@
    "sense_full": "point out, at, to, draw attention to",
    "parts": "dēmōnstrō, dēmōnstrāre, dēmōnstrāvī, demonstratum",
    "unit_id": "r17:137.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "place",
+     "body"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "prōmō",
@@ -323,7 +399,12 @@
    "sense_full": "aware, skilled",
    "parts": null,
    "unit_id": "r17:8.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "quique",
@@ -419,7 +500,12 @@
    "sense_full": "lavish",
    "parts": null,
    "unit_id": "r17:132.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "situs",
@@ -431,7 +517,8 @@
    "sense_full": "situation, position, site",
    "parts": null,
    "unit_id": "r17:143.2",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "indoctus",
@@ -443,7 +530,12 @@
    "sense_full": "untaught",
    "parts": null,
    "unit_id": "r17:4.2",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "sēstertius",
@@ -455,7 +547,8 @@
    "sense_full": "sesterce",
    "parts": null,
    "unit_id": "r17:98.1",
-   "count": 1
+   "count": 1,
+   "sem": "thing"
   }
  ]
 }

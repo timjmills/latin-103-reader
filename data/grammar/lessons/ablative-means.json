@@ -4,6 +4,14 @@
     {
       "n": 1,
       "title": "The thing something is done with",
+      "notice": {
+        "sentences": [
+          "abm-01",
+          "abm-05"
+        ],
+        "ask": "Which word in each sentence names the thing that is being used?",
+        "tap": "focus"
+      },
       "say": "When Latin names the tool — what somebody hits with, rides on, writes with — it uses **the ablative (the 'by/with' form)** and puts no preposition in front of it at all: *baculō verberat*, he beats with a stick. English needs the word *with*; Latin needs only the ending.",
       "show": {
         "kind": "sentence",
@@ -109,7 +117,7 @@
     {
       "n": 6,
       "title": "Where it sits in the sentence",
-      "say": "The thing used need not wait for the verb: it can stand first. *Baculō Iūlius servum improbum verberat* — with a stick Julius beats the bad slave. Wherever it stands, what makes it the thing used is the bare ending with no *cum* in front. (A few verbs take it as a matter of course — *dēlectātur* is delighted by, *vehitur* is carried by — so beside those the bare -ō or -īs is nearly always the means.)",
+      "say": "The thing used need not wait for the verb: it can stand first. *Baculō Iūlius servum improbum verberat* — with a stick Julius beats the bad slave. Wherever it stands, what makes it the thing used is the bare ending with no *cum* in front.",
       "show": {
         "kind": "sentence",
         "id": "abm-12"
@@ -181,6 +189,10 @@
     {
       "type": "p",
       "text": "Ørberg cap. VI: *Lydia verbīs Mēdī dēlectātur* = *verba Mēdī Lydiam dēlectant*. The same plain ablative gives the price (*centum nummīs cōnstat* — costs a hundred coins, r08:59.1), the road travelled (*viā Latīnā*, r06:51.1) and, with an adjective, the manner (*magnā vōce clāmat* — shouts in a loud voice, r10:111.2). A&G §409 (means), §413 (accompaniment), §416 (price)."
+    },
+    {
+      "type": "p",
+      "text": "A few verbs take it as a matter of course — *dēlectātur* is delighted by, *vehitur* is carried by — so beside those the bare -ō or -īs is nearly always the means."
     }
   ],
   "sources": [

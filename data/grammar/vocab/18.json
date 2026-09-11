@@ -11,7 +11,29 @@
    "sense_full": "write",
    "parts": "scrībō, scrībere, scrīpsī, scrīptum",
    "unit_id": "r18:48.1",
-   "count": 136
+   "count": 136,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "epistula",
+     "littera",
+     "verbum",
+     "vocābulum",
+     "nōmen",
+     "carmen",
+     "versūs",
+     "sententia",
+     "epigramma",
+     "versiculus",
+     "numerus",
+     "titulus",
+     "syllaba",
+     "libellus"
+    ]
+   }
   },
   {
    "lemma": "epistula",
@@ -23,7 +45,8 @@
    "sense_full": "letter, dispatch, written communication",
    "parts": null,
    "unit_id": "r18:153.1",
-   "count": 62
+   "count": 62,
+   "sem": "thing"
   },
   {
    "lemma": "ita",
@@ -71,7 +94,8 @@
    "sense_full": "pay, recompense, hire, salary, reward",
    "parts": null,
    "unit_id": "r18:181.3",
-   "count": 24
+   "count": 24,
+   "sem": "thing"
   },
   {
    "lemma": "intellegō",
@@ -83,7 +107,16 @@
    "sense_full": "understand",
    "parts": "intellegō, intellegere, intellēxī, intellectum",
    "unit_id": "r18:44.1",
-   "count": 23
+   "count": 23,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "abstract",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "sīc",
@@ -107,7 +140,8 @@
    "sense_full": "wax, beeswax",
    "parts": null,
    "unit_id": "r18:107.1",
-   "count": 17
+   "count": 17,
+   "sem": "thing"
   },
   {
    "lemma": "sententia",
@@ -119,7 +153,8 @@
    "sense_full": "opinion, feeling, way of thinking",
    "parts": null,
    "unit_id": "r18:29.2",
-   "count": 15
+   "count": 15,
+   "sem": "abstract"
   },
   {
    "lemma": "animadvertō",
@@ -215,7 +250,12 @@
    "sense_full": "hard, stern",
    "parts": null,
    "unit_id": "r18:111.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "significō",
@@ -239,7 +279,8 @@
    "sense_full": "master, owner",
    "parts": null,
    "unit_id": "r18:33.1",
-   "count": 6
+   "count": 6,
+   "sem": "person"
   },
   {
    "lemma": "modus",
@@ -251,7 +292,8 @@
    "sense_full": "manner, mode, way, method",
    "parts": null,
    "unit_id": "r18:56.1",
-   "count": 6
+   "count": 6,
+   "sem": "abstract"
   },
   {
    "lemma": "varius",
@@ -287,7 +329,8 @@
    "sense_full": "iron",
    "parts": null,
    "unit_id": "r18:112.2",
-   "count": 5
+   "count": 5,
+   "sem": "thing"
   },
   {
    "lemma": "frequēns",
@@ -335,7 +378,13 @@
    "sense_full": "ugly",
    "parts": null,
    "unit_id": "r18:92.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "addō",
@@ -359,7 +408,8 @@
    "sense_full": "paper or papyrus (sheet)",
    "parts": null,
    "unit_id": "r18:161.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "cōnsonō",
@@ -395,7 +445,8 @@
    "sense_full": "wood (building material), lumber, timber",
    "parts": null,
    "unit_id": "r18:109.1",
-   "count": 4
+   "count": 4,
+   "sem": "thing"
   },
   {
    "lemma": "menda",
@@ -407,7 +458,8 @@
    "sense_full": "bodily defect, blemish",
    "parts": null,
    "unit_id": "r18:102.1",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "premō",
@@ -419,7 +471,19 @@
    "sense_full": "press, press hard, pursue",
    "parts": "premō, premere, pressī, pressum",
    "unit_id": "r18:107.1",
-   "count": 4
+   "count": 4,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing"
+    ],
+    "obj": [
+     "person",
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "turpiter",
@@ -491,7 +555,8 @@
    "sense_full": "reed, cane",
    "parts": null,
    "unit_id": "r18:161.1",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "corrigō",
@@ -503,7 +568,22 @@
    "sense_full": "correct, set right",
    "parts": "corrigō, corrigere, correxī, correctum",
    "unit_id": "r18:104.1",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "menda",
+     "epistula",
+     "verbum",
+     "vocābulum",
+     "sententia",
+     "versūs",
+     "littera"
+    ]
+   }
   },
   {
    "lemma": "graviter",
@@ -527,7 +607,8 @@
    "sense_full": "papyrus, the plant (reed)",
    "parts": null,
    "unit_id": "r18:161.1",
-   "count": 2
+   "count": 2,
+   "sem": "thing"
   },
   {
    "lemma": "quotiēs",
@@ -563,7 +644,8 @@
    "sense_full": "bee",
    "parts": null,
    "unit_id": "r18:156.1",
-   "count": 1
+   "count": 1,
+   "sem": "animal"
   },
   {
    "lemma": "bēstiola",
@@ -575,7 +657,8 @@
    "sense_full": "little creature, insect",
    "parts": null,
    "unit_id": "r18:109.1",
-   "count": 1
+   "count": 1,
+   "sem": "animal"
   },
   {
    "lemma": "dēleō",
@@ -587,7 +670,25 @@
    "sense_full": "erase, wipe, scratch, remove(letters or marks), wipe or blot out, expunge, delete",
    "parts": "dēleō, dēlēre, delevī, deletum",
    "unit_id": "r18:145.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "verbum",
+     "vocābulum",
+     "littera",
+     "nōmen",
+     "menda",
+     "epistula",
+     "versūs",
+     "sententia",
+     "syllaba",
+     "numerus"
+    ]
+   }
   },
   {
    "lemma": "impiger",
@@ -599,7 +700,12 @@
    "sense_full": "active, energetic",
    "parts": null,
    "unit_id": "r18:156.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "imprimō",
@@ -635,7 +741,13 @@
    "sense_full": "soft (cushion or grass)",
    "parts": null,
    "unit_id": "r18:128.1",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "uadō",

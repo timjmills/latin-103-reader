@@ -619,3 +619,59 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-chapter__h { margin: 0; font-family: var(--face-serif); font-weight: 400; font-size: 1.3rem; line-height: 1.2; }
 .g-chapter__sum { margin: 0; color: var(--ink-3); font-size: var(--ui-sm); }
 .g-chapter .g-skills { border-top: 1px solid var(--line-strong); }
+
+/* ------------------------------------------ the teaching steps (Learn) */
+/* One step is one page of the run: its number, its title, one short paragraph, the thing it shows (a
+   written sentence with its gloss, or the one or two cells it reveals), a worked example, and the check.
+   Hairlines and the reading face, as everywhere; the step number in the stepper is the only mark. */
+.g-stepwrap { display: contents; }
+.g-steps--n { gap: var(--s-2); }
+.g-steps--n .g-steps__s { gap: 0; }
+.g-steps--n .g-steps__s:last-child::before { display: none; }   /* the ten is named, not numbered */
+.g-step { display: grid; gap: var(--s-3); padding-bottom: var(--s-4); border-bottom: 1px solid var(--line); }
+.g-step__title { margin: 0; font-family: var(--face-serif); font-weight: 400; font-size: 1.45rem; line-height: 1.25; text-wrap: balance; outline: none; }
+.g-step__title:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
+.g-step__say { margin: 0; max-width: 62ch; font-size: calc(var(--ui-lg) * var(--note-scale, 1)); line-height: 1.6; text-wrap: pretty; }
+.g-step__say i { font-family: var(--face-reading); font-style: italic; }
+.g-show { display: grid; gap: var(--s-2); }
+.g-wgloss { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); font-size: var(--ui-sm); color: var(--ink-2); }
+.g-wgloss__la { font-family: var(--face-reading); font-size: 1.05em; color: var(--ink); }
+.g-wgloss__en::before { content: "— "; color: var(--ink-3); }
+/* The revealed cells: one row a cell, one column a stock word, the ending set apart. Never the whole table. */
+.g-reveal__t { max-width: 32rem; }
+.g-reveal__end { font-weight: 700; color: var(--rubric-ink); }
+.g-reveal__note { margin: 0; color: var(--ink-2); font-size: var(--ui-md); }
+.g-reveal__note b { font-family: var(--face-reading); font-weight: 700; color: var(--rubric-ink); }
+/* The worked example: the sentence, then its features as a list — the given ones read, the asked ones
+   filled in as the learner answers, each taking its green or red mark like an answer box. */
+.g-worked { display: grid; gap: var(--s-2); padding: var(--s-3) var(--s-4); background: var(--bg-chrome); border-radius: var(--radius); }
+.g-worked .g-la { font-size: 1.25rem; }
+.g-worked__dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--s-1) var(--s-3); margin: 0; font-size: var(--ui-md); }
+.g-worked__dl:empty { display: none; }
+.g-worked__row { display: contents; }
+.g-worked__row dt { color: var(--ink-2); }
+.g-worked__row dd { margin: 0; }
+.g-worked__row.is-right dd b::after, .g-worked__row.is-wrong dd b::after { margin-left: 0.35em; font-size: var(--ui-sm); }
+.g-worked__row.is-right dd b::after { content: "✓"; color: var(--success); }
+.g-worked__row.is-wrong dd b::after { content: "✗ (your answer was not this)"; color: var(--rubric); font-weight: 400; }
+.g-worked__plain { color: var(--ink-3); }
+.g-worked__ask { display: grid; gap: var(--s-2); }
+.g-worked__ask:empty { display: none; }
+.g-worked__q { font-size: var(--ui-md); }
+.g-worked__form { display: grid; gap: var(--s-2); }
+.g-worked__why { min-height: 2.8rem; }
+.g-worked__reason { display: grid; gap: var(--s-1); }
+.g-worked__reasontext { margin: 0; max-width: 62ch; text-wrap: pretty; }
+.g-worked__reasontext i { font-family: var(--face-reading); }
+.g-worked__go { justify-self: start; margin-top: var(--s-1); }
+.g-choices--worked .g-choice { background: var(--bg-raised); }
+/* A chart check over several words: one box a word, each with its label and its own hint (§8). */
+.g-chart__words { display: grid; gap: var(--s-2); max-width: 32rem; }
+.g-chart__word { display: grid; grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr); align-items: center; gap: var(--s-2) var(--s-3); }
+.g-chart__wlabel { display: grid; gap: 1px; font-size: var(--ui-sm); color: var(--ink-2); }
+.g-chart__wlemma { font-family: var(--face-reading); font-size: 1.15rem; color: var(--ink); }
+@media (max-width: 479.98px) { .g-chart__word { grid-template-columns: 1fr; gap: var(--s-1); } }
+.g-hint__answer b { font-family: var(--face-reading); font-weight: 700; }
+/* Decision 4: the unmet prerequisites, named on the first step and offered — a rule above the step, not a wall. */
+.g-prereq { display: grid; gap: var(--s-2); padding: var(--s-3) var(--s-4); background: var(--glow-bg); color: var(--glow-ink); border-radius: var(--radius); font-size: var(--ui-md); }
+.g-prereq__line { margin: 0; max-width: 62ch; text-wrap: pretty; }

@@ -35,7 +35,8 @@
    "sense_full": "man, human being, person, fellow",
    "parts": null,
    "unit_id": "r10:5.1",
-   "count": 126
+   "count": 126,
+   "sem": "person"
   },
   {
    "lemma": "volō",
@@ -59,7 +60,8 @@
    "sense_full": "sea",
    "parts": null,
    "unit_id": "r10:35.1",
-   "count": 110
+   "count": 110,
+   "sem": "place"
   },
   {
    "lemma": "enim",
@@ -83,7 +85,31 @@
    "sense_full": "read",
    "parts": "legō, legere, lēgī, lēctum",
    "unit_id": "r10:125.1",
-   "count": 82
+   "count": 82,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "līber",
+     "epistula",
+     "littera",
+     "titulus",
+     "pāgina",
+     "tabula",
+     "tabella",
+     "libellus",
+     "carmen",
+     "versūs",
+     "capitulum",
+     "vocābulum",
+     "verbum",
+     "nōmen",
+     "epigramma",
+     "versiculus"
+    ]
+   }
   },
   {
    "lemma": "pēs",
@@ -95,7 +121,8 @@
    "sense_full": "foot",
    "parts": null,
    "unit_id": "r10:12.2",
-   "count": 68
+   "count": 68,
+   "sem": "body"
   },
   {
    "lemma": "vīvō",
@@ -107,7 +134,14 @@
    "sense_full": "be alive, live",
    "parts": "vīvō, vīvere, vīxī, vīctum",
    "unit_id": "r10:46.1",
-   "count": 56
+   "count": 56,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "nēmō",
@@ -119,7 +153,8 @@
    "sense_full": "no one, nobody",
    "parts": null,
    "unit_id": "r10:44.1",
-   "count": 47
+   "count": 47,
+   "sem": "other"
   },
   {
    "lemma": "ergō",
@@ -155,7 +190,14 @@
    "sense_full": "play, mock, tease, trick",
    "parts": "lūdō, lūdere, lūsī, lūsum",
    "unit_id": "r10:74.2",
-   "count": 37
+   "count": 37,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "mortuus",
@@ -167,7 +209,13 @@
    "sense_full": "dead, deceased",
    "parts": null,
    "unit_id": "r10:48.2",
-   "count": 34
+   "count": 34,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "deus",
@@ -179,7 +227,8 @@
    "sense_full": "god",
    "parts": null,
    "unit_id": "r10:27.1",
-   "count": 31
+   "count": 31,
+   "sem": "person"
   },
   {
    "lemma": "avis",
@@ -191,7 +240,8 @@
    "sense_full": "bird",
    "parts": null,
    "unit_id": "r10:9.1",
-   "count": 30
+   "count": 30,
+   "sem": "animal"
   },
   {
    "lemma": "flūmen",
@@ -203,7 +253,8 @@
    "sense_full": "river, stream",
    "parts": null,
    "unit_id": "r10:40.1",
-   "count": 30
+   "count": 30,
+   "sem": "place"
   },
   {
    "lemma": "capiō",
@@ -215,7 +266,19 @@
    "sense_full": "take hold, seize",
    "parts": "capiō, capere, cēpī, captum",
    "unit_id": "r10:2.1",
-   "count": 29
+   "count": 29,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "food",
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "mercātor",
@@ -227,7 +290,8 @@
    "sense_full": "trader, merchant",
    "parts": null,
    "unit_id": "r10:28.1",
-   "count": 29
+   "count": 29,
+   "sem": "person"
   },
   {
    "lemma": "moveō",
@@ -239,7 +303,17 @@
    "sense_full": "move, stir, agitate, affect, provoke, disturb",
    "parts": "moveō, movēre, mōvī, mōtum",
    "unit_id": "r10:13.2",
-   "count": 29
+   "count": 29,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "piscis",
@@ -251,7 +325,8 @@
    "sense_full": "fish",
    "parts": null,
    "unit_id": "r10:9.1",
-   "count": 26
+   "count": 26,
+   "sem": "animal"
   },
   {
    "lemma": "canō",
@@ -263,7 +338,17 @@
    "sense_full": "sing, celebrate, chant",
    "parts": "canō, canere, cecinī, cantum",
    "unit_id": "r10:79.1",
-   "count": 25
+   "count": 25,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "subj_also": [
+     "avis",
+     "passer"
+    ]
+   }
   },
   {
    "lemma": "pila",
@@ -275,7 +360,8 @@
    "sense_full": "ball (play or decorative)",
    "parts": null,
    "unit_id": "r10:74.2",
-   "count": 23
+   "count": 23,
+   "sem": "thing"
   },
   {
    "lemma": "vōx",
@@ -287,7 +373,8 @@
    "sense_full": "voice, tone, expression",
    "parts": null,
    "unit_id": "r10:82.1",
-   "count": 21
+   "count": 21,
+   "sem": "abstract"
   },
   {
    "lemma": "āla",
@@ -299,7 +386,8 @@
    "sense_full": "wing",
    "parts": null,
    "unit_id": "r10:12.1",
-   "count": 20
+   "count": 20,
+   "sem": "body"
   },
   {
    "lemma": "cadō",
@@ -311,7 +399,21 @@
    "sense_full": "fall, sink, drop, plummet, topple",
    "parts": "cadō, cadere, cecidī, casum",
    "unit_id": "r10:102.1",
-   "count": 19
+   "count": 19,
+   "sem": {
+    "subj": [
+     "person",
+     "animal",
+     "thing"
+    ],
+    "obj": [],
+    "subj_also": [
+     "imber",
+     "nix",
+     "folium",
+     "arbor"
+    ]
+   }
   },
   {
    "lemma": "ascendō",
@@ -323,7 +425,22 @@
    "sense_full": "climb",
    "parts": "ascendō, ascendere, ascendī, ascensum",
    "unit_id": "r10:94.2",
-   "count": 18
+   "count": 18,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": [],
+    "obj_only": [
+     "mōns",
+     "arbor",
+     "nāvis",
+     "collis",
+     "mūrus",
+     "equus"
+    ]
+   }
   },
   {
    "lemma": "audeō",
@@ -347,7 +464,8 @@
    "sense_full": "beast, animal, creature",
    "parts": null,
    "unit_id": "r10:1.1",
-   "count": 16
+   "count": 16,
+   "sem": "animal"
   },
   {
    "lemma": "perterreō",
@@ -359,7 +477,19 @@
    "sense_full": "frighten greatly, terrify",
    "parts": "perterreō, perterrēre, perterruī, perterritum",
    "unit_id": "r10:105.2",
-   "count": 16
+   "count": 16,
+   "sem": {
+    "subj": [
+     "animal",
+     "person",
+     "nature",
+     "abstract"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "āēr",
@@ -371,7 +501,8 @@
    "sense_full": "air (one of 4 elements)",
    "parts": null,
    "unit_id": "r10:10.1",
-   "count": 15
+   "count": 15,
+   "sem": "nature"
   },
   {
    "lemma": "natō",
@@ -383,7 +514,18 @@
    "sense_full": "swim",
    "parts": "natō, nātāre, natavī, natatum",
    "unit_id": "r10:11.1",
-   "count": 15
+   "count": 15,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "subj_also": [
+     "piscis",
+     "delphīnus",
+     "canis"
+    ]
+   }
   },
   {
    "lemma": "spīrō",
@@ -395,19 +537,35 @@
    "sense_full": "breathe",
    "parts": "spīrō, spīrāre, spiravī, spiratum",
    "unit_id": "r10:46.1",
-   "count": 15
+   "count": 15,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "occultō",
-   "dict": "occultō, occultāre, occultāvī, occultatum",
+   "dict": "occultō, occultāre, occultāvī, occultātum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "hide",
    "sense_full": "hide",
-   "parts": "occultō, occultāre, occultāvī, occultatum",
+   "parts": "occultō, occultāre, occultāvī, occultātum",
    "unit_id": "r10:87.1",
-   "count": 14
+   "count": 14,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "anima",
@@ -419,7 +577,8 @@
    "sense_full": "soul, spirit, vital principle",
    "parts": null,
    "unit_id": "r10:51.2",
-   "count": 13
+   "count": 13,
+   "sem": "abstract"
   },
   {
    "lemma": "ferus",
@@ -431,7 +590,12 @@
    "sense_full": "wild, savage",
    "parts": null,
    "unit_id": "r10:2.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "of": [
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "sustineō",
@@ -455,7 +619,8 @@
    "sense_full": "ass, donkey",
    "parts": null,
    "unit_id": "r10:1.1",
-   "count": 11
+   "count": 11,
+   "sem": "animal"
   },
   {
    "lemma": "vīvus",
@@ -467,7 +632,13 @@
    "sense_full": "alive, fresh",
    "parts": null,
    "unit_id": "r10:48.2",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "nīdus",
@@ -479,7 +650,8 @@
    "sense_full": "nest",
    "parts": null,
    "unit_id": "r10:69.1",
-   "count": 10
+   "count": 10,
+   "sem": "thing"
   },
   {
    "lemma": "leō",
@@ -491,7 +663,8 @@
    "sense_full": "lion",
    "parts": null,
    "unit_id": "r10:1.1",
-   "count": 8
+   "count": 8,
+   "sem": "animal"
   },
   {
    "lemma": "aquila",
@@ -503,7 +676,8 @@
    "sense_full": "silver eagle on pole, standard of a legion",
    "parts": null,
    "unit_id": "r10:9.2",
-   "count": 7
+   "count": 7,
+   "sem": "animal"
   },
   {
    "lemma": "folium",
@@ -515,7 +689,8 @@
    "sense_full": "leaf",
    "parts": null,
    "unit_id": "r10:69.1",
-   "count": 7
+   "count": 7,
+   "sem": "thing"
   },
   {
    "lemma": "ovum",
@@ -527,7 +702,8 @@
    "sense_full": "egg",
    "parts": null,
    "unit_id": "r10:71.1",
-   "count": 7
+   "count": 7,
+   "sem": "food"
   },
   {
    "lemma": "pariō",
@@ -551,7 +727,8 @@
    "sense_full": "branch, bough",
    "parts": null,
    "unit_id": "r10:69.1",
-   "count": 7
+   "count": 7,
+   "sem": "thing"
   },
   {
    "lemma": "pullus",
@@ -575,7 +752,8 @@
    "sense_full": "lungs (singular or plural)",
    "parts": null,
    "unit_id": "r10:51.2",
-   "count": 6
+   "count": 6,
+   "sem": "body"
   },
   {
    "lemma": "crassus",
@@ -587,7 +765,14 @@
    "sense_full": "thick or deep",
    "parts": null,
    "unit_id": "r10:100.2",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "nūntius",
@@ -599,7 +784,8 @@
    "sense_full": "messenger, herald, envoy",
    "parts": null,
    "unit_id": "r10:29.1",
-   "count": 5
+   "count": 5,
+   "sem": "person"
   },
   {
    "lemma": "animal",
@@ -611,7 +797,8 @@
    "sense_full": "animal, living thing or offspring",
    "parts": null,
    "unit_id": "r10:54.1",
-   "count": 3
+   "count": 3,
+   "sem": "animal"
   },
   {
    "lemma": "cauda",
@@ -623,7 +810,8 @@
    "sense_full": "tail (animal)",
    "parts": null,
    "unit_id": "r10:14.2",
-   "count": 3
+   "count": 3,
+   "sem": "body"
   },
   {
    "lemma": "tenuis",
@@ -635,7 +823,13 @@
    "sense_full": "thin, fine",
    "parts": null,
    "unit_id": "r10:100.2",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "thing",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "avius",
@@ -659,7 +853,8 @@
    "sense_full": "forequarter or shoulder of pork",
    "parts": null,
    "unit_id": "r10:26.1",
-   "count": 1
+   "count": 1,
+   "sem": "food"
   }
  ]
 }

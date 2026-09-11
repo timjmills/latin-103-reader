@@ -51,6 +51,10 @@
     {
       "type": "p",
       "text": "Ørberg (cap. XXVII) introduces the mood through commands reported with *ut*: *dominus servō imperat ut intret, forem claudat, taceat et audiat*. Where the forms go — wishes, orders, purpose, indirect questions — is the business of the next lessons; this one is about recognising the vowel."
+    },
+    {
+      "type": "p",
+      "text": "Only the 'I' form is shared: *scrībam* is both 'I shall write' and 'that I write', and the sentence decides."
     }
   ],
   "sources": [
@@ -62,6 +66,14 @@
     {
       "n": 1,
       "title": "What the form is for",
+      "notice": {
+        "sentences": [
+          "ps-03",
+          "ps-07"
+        ],
+        "ask": "Tap the verb that says what someone is told to do — what do the two verbs have in common?",
+        "tap": "focus"
+      },
       "say": "For a wish, a purpose, or what one person tells another to do, the verb changes shape into **the present subjunctive (the 'may / let' form: veniat = let him come, may he come)**. *Dominus servō imperat ut intret* — the master orders the slave to come in. *Ut* ('that') usually stands in front of it, or *nē* for 'that … not'.",
       "show": {
         "kind": "sentence",
@@ -174,7 +186,7 @@
     {
       "n": 5,
       "title": "Telling it from the future",
-      "say": "In the third and fourth conjugations the future carries *-e-* exactly where the subjunctive carries *-a-*: *scrībet*, he will write; *scrībat*, that he write. In the first conjugation the two are further apart — *labōrābit* against *labōret* — because the future there has *-bit*. Only the 'I' form is shared: *scrībam* is both 'I shall write' and 'that I write', and the sentence decides.",
+      "say": "In the third and fourth conjugations the future carries *-e-* exactly where the subjunctive carries *-a-*: *scrībet*, he will write; *scrībat*, that he write. In the first conjugation the two are further apart — *labōrābit* against *labōret* — because the future there has *-bit*.",
       "show": {
         "kind": "sentence",
         "id": "ps-12"

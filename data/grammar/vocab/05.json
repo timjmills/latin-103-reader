@@ -23,7 +23,18 @@
    "sense_full": "love, like",
    "parts": "amō, amāre, amāvī, amātum",
    "unit_id": "r05:20.2",
-   "count": 109
+   "count": 109,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal",
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "ab",
@@ -83,7 +94,17 @@
    "sense_full": "pretty",
    "parts": null,
    "unit_id": "r05:15.1",
-   "count": 82
+   "count": 82,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "place",
+     "animal",
+     "body",
+     "nature"
+    ]
+   }
   },
   {
    "lemma": "cubiculum",
@@ -95,7 +116,8 @@
    "sense_full": "bedroom",
    "parts": null,
    "unit_id": "r05:35.1",
-   "count": 61
+   "count": 61,
+   "sem": "place"
   },
   {
    "lemma": "aqua",
@@ -107,7 +129,8 @@
    "sense_full": "water",
    "parts": null,
    "unit_id": "r05:28.1",
-   "count": 57
+   "count": 57,
+   "sem": "food"
   },
   {
    "lemma": "sine",
@@ -131,7 +154,8 @@
    "sense_full": "farm, country home, estate",
    "parts": null,
    "unit_id": "r05:1.1",
-   "count": 54
+   "count": 54,
+   "sem": "place"
   },
   {
    "lemma": "imperō",
@@ -167,7 +191,14 @@
    "sense_full": "inhabit, dwell",
    "parts": "habitō, habitāre, habitāvī, habitatum",
    "unit_id": "r05:2.1",
-   "count": 34
+   "count": 34,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "hortus",
@@ -179,7 +210,8 @@
    "sense_full": "garden, fruit or kitchen garden",
    "parts": null,
    "unit_id": "r05:1.1",
-   "count": 29
+   "count": 29,
+   "sem": "place"
   },
   {
    "lemma": "rosa",
@@ -191,7 +223,8 @@
    "sense_full": "rose",
    "parts": null,
    "unit_id": "r05:13.1",
-   "count": 29
+   "count": 29,
+   "sem": "thing"
   },
   {
    "lemma": "ātrium",
@@ -203,7 +236,8 @@
    "sense_full": "atrium, reception hall in a Roman house",
    "parts": null,
    "unit_id": "r05:27.1",
-   "count": 25
+   "count": 25,
+   "sem": "place"
   },
   {
    "lemma": "ōstium",
@@ -215,7 +249,8 @@
    "sense_full": "doorway",
    "parts": null,
    "unit_id": "r05:25.1",
-   "count": 25
+   "count": 25,
+   "sem": "thing"
   },
   {
    "lemma": "dēlectō",
@@ -227,7 +262,20 @@
    "sense_full": "delight, please, amuse, fascinate",
    "parts": "dēlectō, dēlectāre, delectavī, dēlectātum",
    "unit_id": "r05:60.1",
-   "count": 24
+   "count": 24,
+   "sem": {
+    "subj": [
+     "thing",
+     "abstract",
+     "person",
+     "animal",
+     "nature",
+     "food"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "nāsus",
@@ -239,7 +287,8 @@
    "sense_full": "nose",
    "parts": null,
    "unit_id": "r05:17.2",
-   "count": 24
+   "count": 24,
+   "sem": "body"
   },
   {
    "lemma": "peristylum",
@@ -251,7 +300,8 @@
    "sense_full": "inner courtyard lined with rows of columns, peristyle",
    "parts": null,
    "unit_id": "r05:30.1",
-   "count": 22
+   "count": 22,
+   "sem": "place"
   },
   {
    "lemma": "foedus",
@@ -263,7 +313,15 @@
    "sense_full": "foul",
    "parts": null,
    "unit_id": "r05:17.2",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "animal",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "fenestra",
@@ -275,7 +333,8 @@
    "sense_full": "window, opening for light",
    "parts": null,
    "unit_id": "r05:26.1",
-   "count": 13
+   "count": 13,
+   "sem": "thing"
   },
   {
    "lemma": "impluvium",
@@ -287,7 +346,8 @@
    "sense_full": "basin in atrium floor to receive rain-water from roof",
    "parts": null,
    "unit_id": "r05:27.1",
-   "count": 8
+   "count": 8,
+   "sem": "thing"
   },
   {
    "lemma": "līlium",
@@ -299,7 +359,8 @@
    "sense_full": "lily",
    "parts": null,
    "unit_id": "r05:13.1",
-   "count": 6
+   "count": 6,
+   "sem": "thing"
   },
   {
    "lemma": "carpō",

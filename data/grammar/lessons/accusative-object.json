@@ -58,7 +58,15 @@
     {
       "n": 1,
       "title": "What the object form does",
-      "say": "When a verb does something to someone, the one it is done to takes the accusative (the object form): *Iūlius Mārcum et Quīntum vocat* — Julius calls Marcus and Quintus. English shows this in a few pronouns (*he* / *him*) and otherwise by word order alone; Latin marks the noun itself, so the ending, not the place in the line, says who is on the receiving end.",
+      "notice": {
+        "sentences": [
+          "ao-01",
+          "ao-05"
+        ],
+        "ask": "Tap the person or thing the verb is done to in each sentence. What ending do the two share?",
+        "tap": "focus"
+      },
+      "say": "When a verb does something to someone, the one it is done to takes the accusative (the object form): the ending, not the word order, marks it. *Iūlius Mārcum et Quīntum vocat* — Julius calls Marcus and Quintus.",
       "show": {
         "kind": "sentence",
         "id": "ao-01"
@@ -216,6 +224,10 @@
     {
       "type": "p",
       "text": "Ørberg cap. III gives -um / -am with the question *quem?* (whom?), and cap. V the plurals -ōs / -ās / -a. Pronouns: *mē*, *tē*, *eum*, *eam*, *eōs*, *eās*. The accusative also measures time and distance (*trēs hōrās* — for three hours) and, with towns and *domum*, says where to; some verbs take two accusatives (*mē rogat sententiam* — he asks me my opinion). A&G §387, §423."
+    },
+    {
+      "type": "p",
+      "text": "English shows this in a few pronouns (*he* / *him*) and otherwise by word order alone; Latin marks the noun itself, so the ending, not the place in the line, says who is on the receiving end."
     }
   ],
   "sources": [

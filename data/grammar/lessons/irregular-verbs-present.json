@@ -3,7 +3,15 @@
  "teach": [
   {
    "title": "Same endings, a stem that moves",
-   "say": "A handful of very common verbs refuse the ordinary pattern: **the irregular verbs (be, can, go, want, not want, prefer, carry) in the present**. Their endings are the familiar ones — *-m* or *-ō*, *-s*, *-t*, *-mus*, *-tis*, *-nt* — but the piece in front changes from form to form: *sum, es, est* is *su-* in one and *es-* in the next. Learn each as a small table; there is no rule to work them out from. *est* is so ordinary that Latin often leaves a second one out and lets you supply it: *Mārcus in lūdō est, Iūlia in vīllā*.",
+   "notice": {
+    "sentences": [
+     "ivp-03",
+     "ivp-05"
+    ],
+    "ask": "Which word in each sentence is the verb 'to be' (am, are, is)?",
+    "tap": "focus"
+   },
+   "say": "A handful of common verbs refuse the ordinary pattern: **the irregular verbs (be, can, go, want, not want, prefer, carry) in the present**. Their endings are the familiar ones — *-m* or *-ō*, *-s*, *-t*, *-mus*, *-tis*, *-nt* — but the piece in front changes: *sum, es, est* is *su-* in one and *es-* in the next.",
    "show": {
     "kind": "sentence",
     "id": "ivp-02"
@@ -29,7 +37,7 @@
   {
    "n": 2,
    "title": "sum: all six forms",
-   "say": "*esse* (to be): *sum* I am, *es* you are, *est* he, she or it is; *sumus* we are, *estis* you all are, *sunt* they are. Two stems take turns the whole way through — *su-m*, *es*, *es-t*, *su-mus*, *es-tis*, *su-nt* — while the endings underneath are the ordinary *-s*, *-t*, *-mus*, *-tis*, *-nt* you already know from other verbs. Notice also that the 'I' ending here is *-m*, not the usual *-ō*.",
+   "say": "*esse* (to be): *sum* I am, *es* you are, *est* he, she or it is; *sumus* we are, *estis* you all are, *sunt* they are. Two stems take turns the whole way through — *su-m*, *es*, *es-t*, *su-mus*, *es-tis*, *su-nt*. The 'I' ending here is *-m*, not the usual *-ō*.",
    "show": {
     "kind": "paradigm",
     "key": "sum",
@@ -110,7 +118,7 @@
   {
    "n": 5,
    "title": "volō moves between vol-, vī- and vul-",
-   "say": "*velle* (to want) changes its stem three times over: *volō* I want, *vīs* you want, *vult* he wants, *volumus* we want, *vultis* you all want, *volunt* they want. *vīs* and *vult* have nothing at all between the stem and the ending, and nothing is missing — that is simply their shape. (*nōlle* not to want and *mālle* to prefer are built on *velle* in the same way; the book brings them in later, at chapters XX and XXVIII.)",
+   "say": "*velle* (to want) changes its stem three times over: *volō* I want, *vīs* you want, *vult* he wants, *volumus* we want, *vultis* you all want, *volunt* they want. *vīs* and *vult* have nothing at all between the stem and the ending, and nothing is missing — that is simply their shape.",
    "show": {
     "kind": "paradigm",
     "key": "volo",
@@ -133,7 +141,7 @@
   {
    "n": 6,
    "title": "ferō drops the linking vowel",
-   "say": "*ferre* (to carry) keeps *fer-* the whole way through but drops the linking vowel in front of *s* and *t*: *ferō, fers, fert, ferimus, fertis, ferunt*. So *fers*, *fert* and *fertis* are a syllable shorter than you expect, and *feris* and *ferit* are not Latin at all; *ferimus* and *ferunt* keep their vowel like any other verb of the third conjugation (the -ere family).",
+   "say": "*ferre* (to carry) keeps *fer-* the whole way through but drops the linking vowel in front of *s* and *t*: *ferō, fers, fert, ferimus, fertis, ferunt*. So *fers*, *fert* and *fertis* are a syllable shorter than you expect, and *feris* and *ferit* are not Latin at all.",
    "show": {
     "kind": "paradigm",
     "key": "fero",
@@ -239,6 +247,18 @@
   {
    "type": "p",
    "text": "Ørberg (chapter XV) sets *esse*, *īre* and *posse* beside the regular persons (*pos-sumus, pot-estis, pos-sunt*). A&G §199: the old form *volt, voltis* for *vult, vultis* appears in early texts; *nōn vīs* and *nōn vult* never contract."
+  },
+  {
+   "type": "p",
+   "text": "Learn each as a small table; there is no rule to work them out from. *est* is so ordinary that Latin often leaves a second one out and lets you supply it: *Mārcus in lūdō est, Iūlia in vīllā*."
+  },
+  {
+   "type": "p",
+   "text": "*nōlle* not to want and *mālle* to prefer are built on *velle* in the same way; the book brings them in later, at chapters XX and XXVIII."
+  },
+  {
+   "type": "p",
+   "text": "*ferimus* and *ferunt* keep their vowel like any other verb of the third conjugation (the -ere family)."
   }
  ],
  "sources": [

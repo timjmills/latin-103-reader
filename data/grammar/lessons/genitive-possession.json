@@ -53,7 +53,15 @@
     {
       "n": 1,
       "title": "Whose?",
-      "say": "To say whose something is, Latin changes the owner’s ending instead of adding a word. The owner stands in the genitive (the 'of' form): *Iūlius pater Mārcī et Quīntī est* — Julius is the father of Marcus and Quintus. The question it answers is *cuius?*, whose? English has two ways to say it, *Marcus’s father* and *the father of Marcus*; Latin has one ending for both and no word for ‘of’.",
+      "notice": {
+        "sentences": [
+          "gp-03",
+          "gp-04"
+        ],
+        "ask": "Tap the word in each sentence that says whose. What tail do the two share?",
+        "tap": "focus"
+      },
+      "say": "The owner stands in the genitive (the 'of' form): Latin says whose something is by changing the owner’s ending instead of adding a word. The question it answers is *cuius?*, whose? *Iūlius pater Mārcī et Quīntī est* — Julius is the father of Marcus and Quintus.",
       "show": {
         "kind": "sentence",
         "id": "gp-01"
@@ -170,7 +178,7 @@
     {
       "n": 6,
       "title": "-ae and -ī also make plurals",
-      "say": "*Ancillae* is ‘slave girls’ and *Aemiliae* is ‘of Aemilia’, and they end alike; so do *servī* (slaves) and *dominī* (of the master). Two tests, in this order. An owner hangs on another noun, so ask which of the two the other belongs to. Then the verb confirms it: *Ancillae Aemiliae in familiā sunt* has *sunt*, and only *ancillae* can be the several ones, because Aemilia is one person.",
+      "say": "*Ancillae* is ‘slave girls’ and *Aemiliae* is ‘of Aemilia’, and they end alike; so do *servī* (slaves) and *dominī* (of the master). An owner hangs on another noun, so ask which of the two the other belongs to. *Ancillae Aemiliae in familiā sunt*: Aemilia is one person, so *Aemiliae* is the owner.",
       "show": {
         "kind": "sentence",
         "id": "gp-11"
@@ -200,6 +208,14 @@
     {
       "type": "p",
       "text": "Ørberg cap. II: genetīvus -ī / -ōrum for masculine and neuter, -ae / -ārum for feminine, with the question *cuius?*. Names in -ius have genitive -iī (*Iūliī*), often written with one ī. For 'my', 'your', 'his own' Latin does not use a genitive but the adjectives *meus*, *tuus*, *suus*, which agree with the thing owned: *servus meus*, *ancilla tua*. For 'his' meaning someone else's it uses *eius*. A&G §343."
+    },
+    {
+      "type": "p",
+      "text": "English has two ways to say it, *Marcus’s father* and *the father of Marcus*; Latin has one ending for both and no word for ‘of’."
+    },
+    {
+      "type": "p",
+      "text": "Then the verb confirms it: *Ancillae Aemiliae in familiā sunt* has *sunt*, and only *ancillae* can be the several ones, because Aemilia is one person."
     }
   ],
   "sources": [

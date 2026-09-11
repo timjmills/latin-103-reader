@@ -11,7 +11,27 @@
    "sense_full": "send, throw, hurl, cast",
    "parts": "mittō, mittere, mīsī, missum",
    "unit_id": "r19:76.1",
-   "count": 38
+   "count": 38,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person",
+     "animal"
+    ],
+    "obj_also": [
+     "epistula",
+     "dōnum",
+     "nūntius",
+     "nāvis",
+     "pecūnia",
+     "cibus"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "opus",
@@ -23,7 +43,8 @@
    "sense_full": "need",
    "parts": null,
    "unit_id": "r19:148.1",
-   "count": 37
+   "count": 37,
+   "sem": "abstract"
   },
   {
    "lemma": "tamen",
@@ -47,7 +68,8 @@
    "sense_full": "wife",
    "parts": null,
    "unit_id": "r19:1.1",
-   "count": 33
+   "count": 33,
+   "sem": "person"
   },
   {
    "lemma": "foris",
@@ -59,7 +81,8 @@
    "sense_full": "door, gate",
    "parts": null,
    "unit_id": "r19:47.1",
-   "count": 27
+   "count": 27,
+   "sem": "thing"
   },
   {
    "lemma": "amor",
@@ -71,7 +94,8 @@
    "sense_full": "love",
    "parts": null,
    "unit_id": "r19:18.1",
-   "count": 21
+   "count": 21,
+   "sem": "abstract"
   },
   {
    "lemma": "miser",
@@ -83,7 +107,13 @@
    "sense_full": "poor, miserable, wretched, unfortunate, unhappy, distressing",
    "parts": null,
    "unit_id": "r19:69.1",
-   "count": 20
+   "count": 20,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "marītus",
@@ -95,7 +125,8 @@
    "sense_full": "husband, married man",
    "parts": null,
    "unit_id": "r19:2.1",
-   "count": 19
+   "count": 19,
+   "sem": "person"
   },
   {
    "lemma": "ūllus",
@@ -119,7 +150,12 @@
    "sense_full": "happy, fortunate, bringing happiness",
    "parts": null,
    "unit_id": "r19:86.1",
-   "count": 17
+   "count": 17,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "plūs",
@@ -143,7 +179,12 @@
    "sense_full": "poor, meager, unproductive",
    "parts": null,
    "unit_id": "r19:61.1",
-   "count": 15
+   "count": 15,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "cupidus",
@@ -167,7 +208,12 @@
    "sense_full": "rich or wealthy",
    "parts": null,
    "unit_id": "r19:59.1",
-   "count": 13
+   "count": 13,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "flōs",
@@ -179,7 +225,8 @@
    "sense_full": "flower, blossom",
    "parts": null,
    "unit_id": "r19:76.1",
-   "count": 12
+   "count": 12,
+   "sem": "thing"
   },
   {
    "lemma": "signum",
@@ -191,7 +238,8 @@
    "sense_full": "battle standard",
    "parts": null,
    "unit_id": "r19:2.2",
-   "count": 12
+   "count": 12,
+   "sem": "thing"
   },
   {
    "lemma": "virgō",
@@ -203,7 +251,8 @@
    "sense_full": "maiden, young woman, girl of marriageable age",
    "parts": null,
    "unit_id": "r19:40.1",
-   "count": 12
+   "count": 12,
+   "sem": "person"
   },
   {
    "lemma": "cotīdiē",
@@ -227,7 +276,8 @@
    "sense_full": "gift, present",
    "parts": null,
    "unit_id": "r19:66.1",
-   "count": 11
+   "count": 11,
+   "sem": "thing"
   },
   {
    "lemma": "magnificus",
@@ -239,7 +289,13 @@
    "sense_full": "splendid, excellent, sumptuous, magnificent",
    "parts": null,
    "unit_id": "r19:51.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "of": [
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "coniūnx",
@@ -251,7 +307,8 @@
    "sense_full": "spouse, mate, consort",
    "parts": null,
    "unit_id": "r19:6.2",
-   "count": 10
+   "count": 10,
+   "sem": "person"
   },
   {
    "lemma": "adulēscēns",
@@ -263,7 +320,8 @@
    "sense_full": "young man, youth",
    "parts": null,
    "unit_id": "r19:39.1",
-   "count": 7
+   "count": 7,
+   "sem": "person"
   },
   {
    "lemma": "possideō",
@@ -275,7 +333,18 @@
    "sense_full": "seize, hold, be master of",
    "parts": "possideō, possidēre, possedī, possessum",
    "unit_id": "r19:59.1",
-   "count": 7
+   "count": 7,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "place",
+     "animal",
+     "group"
+    ]
+   }
   },
   {
    "lemma": "dignus",
@@ -299,7 +368,8 @@
    "sense_full": "market",
    "parts": null,
    "unit_id": "r19:74.1",
-   "count": 6
+   "count": 6,
+   "sem": "place"
   },
   {
    "lemma": "ōsculor",
@@ -311,7 +381,15 @@
    "sense_full": "kiss",
    "parts": "ōsculor, ōsculārī, ōsculātus sum",
    "unit_id": "r19:89.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "tegō",
@@ -323,7 +401,20 @@
    "sense_full": "cover, protect",
    "parts": "tegō, tegere, tēxī, tēctum",
    "unit_id": "r19:3.1",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "subj": [
+     "person",
+     "thing",
+     "nature"
+    ],
+    "obj": [
+     "person",
+     "body",
+     "thing",
+     "place"
+    ]
+   }
   },
   {
    "lemma": "gracilis",
@@ -335,7 +426,13 @@
    "sense_full": "slender, thin, slim, slight",
    "parts": null,
    "unit_id": "r19:137.1",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "pulchritūdō",
@@ -347,7 +444,8 @@
    "sense_full": "beauty, excellence",
    "parts": null,
    "unit_id": "r19:20.1",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "templum",
@@ -359,7 +457,8 @@
    "sense_full": "temple, church",
    "parts": null,
    "unit_id": "r19:46.1",
-   "count": 5
+   "count": 5,
+   "sem": "place"
   },
   {
    "lemma": "augeō",
@@ -383,7 +482,8 @@
    "sense_full": "column or pillar (building, monument, pedestal, waterclock), post or prop",
    "parts": null,
    "unit_id": "r19:2.2",
-   "count": 3
+   "count": 3,
+   "sem": "thing"
   },
   {
    "lemma": "ergā",
@@ -407,7 +507,8 @@
    "sense_full": "wife",
    "parts": null,
    "unit_id": "r19:17.1",
-   "count": 3
+   "count": 3,
+   "sem": "person"
   },
   {
    "lemma": "minuō",

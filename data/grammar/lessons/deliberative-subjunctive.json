@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Some questions do not ask for a fact; they ask what to do, and often expect no answer at all. Latin puts the verb in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) and keeps the question mark. That is **the deliberative subjunctive (the 'what am I to do?' question: quid faciam?)**. It is almost always first person: *quid faciam?* what am I to do? *quō eāmus?* where are we to go?",
+      "notice": {
+        "sentences": [
+          "delib-03",
+          "delib-07"
+        ],
+        "ask": "Tap the verb in each question. What is each speaker asking for: a fact, or what to do?",
+        "tap": "focus"
+      },
+      "say": "A question asking what to do, not for a fact, puts its verb in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) and keeps the question mark: **the deliberative subjunctive (the 'what am I to do?' question: quid faciam?)**. Almost always first person: *Quid faciam?* — what am I to do?",
       "show": {
         "kind": "sentence",
         "id": "delib-01"
@@ -193,6 +201,10 @@
     {
       "type": "p",
       "text": "The same form without a question is a wish or an exhortation (*vīvāmus, amēmus* — let us live, let us love); the question mark and a question word make it deliberative. Ørberg's chapter 29 has the merchant's *Quid faciam?* and the steersman's *Quōmodo vīvāmus sine pecūniā?*"
+    },
+    {
+      "type": "p",
+      "text": "Some questions do not ask for a fact; they ask what to do, and often expect no answer at all."
     }
   ],
   "sources": [

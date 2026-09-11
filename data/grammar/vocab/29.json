@@ -11,7 +11,8 @@
    "sense_full": "life, career, livelihood",
    "parts": null,
    "unit_id": "w07:b1.5",
-   "count": 23
+   "count": 23,
+   "sem": "abstract"
   },
   {
    "lemma": "carmen",
@@ -23,7 +24,8 @@
    "sense_full": "song or music",
    "parts": null,
    "unit_id": "w07:b20.8",
-   "count": 15
+   "count": 15,
+   "sem": "abstract"
   },
   {
    "lemma": "tyrannus",
@@ -35,7 +37,8 @@
    "sense_full": "tyrant",
    "parts": null,
    "unit_id": "w07:b32.1",
-   "count": 12
+   "count": 12,
+   "sem": "person"
   },
   {
    "lemma": "āmittō",
@@ -59,7 +62,12 @@
    "sense_full": "happy",
    "parts": null,
    "unit_id": "w07:b9.6",
-   "count": 10
+   "count": 10,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "abiciō",
@@ -83,7 +91,8 @@
    "sense_full": "chord, instrument string",
    "parts": null,
    "unit_id": "w07:b17.2",
-   "count": 9
+   "count": 9,
+   "sem": "thing"
   },
   {
    "lemma": "fortūna",
@@ -95,7 +104,8 @@
    "sense_full": "chance, luck, fate",
    "parts": null,
    "unit_id": "w07:b37.2",
-   "count": 9
+   "count": 9,
+   "sem": "abstract"
   },
   {
    "lemma": "suādeō",
@@ -131,7 +141,8 @@
    "sense_full": "kindness, favor, benefit, service, help",
    "parts": null,
    "unit_id": "w07:b30.3",
-   "count": 8
+   "count": 8,
+   "sem": "abstract"
   },
   {
    "lemma": "pretiōsus",
@@ -143,7 +154,12 @@
    "sense_full": "expensive, costly, of great value, precious",
    "parts": null,
    "unit_id": "w07:b2.2",
-   "count": 8
+   "count": 8,
+   "sem": {
+    "of": [
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "spēs",
@@ -155,7 +171,8 @@
    "sense_full": "hope, anticipation, expectation",
    "parts": null,
    "unit_id": "w07:b3.1",
-   "count": 8
+   "count": 8,
+   "sem": "abstract"
   },
   {
    "lemma": "appāreō",
@@ -203,7 +220,8 @@
    "sense_full": "riches (in the plural), wealth",
    "parts": null,
    "unit_id": "w07:b5.3",
-   "count": 7
+   "count": 7,
+   "sem": "thing"
   },
   {
    "lemma": "expōnō",
@@ -275,7 +293,12 @@
    "sense_full": "noble, well born",
    "parts": null,
    "unit_id": "w07:b17.2",
-   "count": 6
+   "count": 6,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "rēmus",
@@ -287,7 +310,8 @@
    "sense_full": "oar",
    "parts": null,
    "unit_id": "w07:b40.2",
-   "count": 6
+   "count": 6,
+   "sem": "thing"
   },
   {
    "lemma": "maleficium",
@@ -299,7 +323,8 @@
    "sense_full": "crime, misdeed, offense",
    "parts": null,
    "unit_id": "w07:b21.7",
-   "count": 5
+   "count": 5,
+   "sem": "abstract"
   },
   {
    "lemma": "mīrus",
@@ -311,7 +336,13 @@
    "sense_full": "wonderful, strange, remarkable, amazing, surprising, extraordinary",
    "parts": null,
    "unit_id": "w07:b3.3",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "thing",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "perturbātus",
@@ -323,7 +354,12 @@
    "sense_full": "troubled",
    "parts": null,
    "unit_id": "w07:b14.3",
-   "count": 5
+   "count": 5,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "prōtinus",
@@ -407,7 +443,8 @@
    "sense_full": "song, chant",
    "parts": null,
    "unit_id": "w07:b20.11",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "dēterreō",
@@ -431,7 +468,8 @@
    "sense_full": "thief, robber",
    "parts": null,
    "unit_id": "w07:b27.2",
-   "count": 4
+   "count": 4,
+   "sem": "person"
   },
   {
    "lemma": "inde",
@@ -455,7 +493,8 @@
    "sense_full": "joy or happiness",
    "parts": null,
    "unit_id": "w07:b10.4",
-   "count": 4
+   "count": 4,
+   "sem": "abstract"
   },
   {
    "lemma": "permittō",
@@ -503,7 +542,8 @@
    "sense_full": "dolphin",
    "parts": null,
    "unit_id": "w07:b15.2",
-   "count": 3
+   "count": 3,
+   "sem": "animal"
   },
   {
    "lemma": "fidicen",
@@ -515,7 +555,8 @@
    "sense_full": "lyre-player",
    "parts": null,
    "unit_id": "w07:b18.3",
-   "count": 3
+   "count": 3,
+   "sem": "person"
   },
   {
    "lemma": "lāpsus",
@@ -527,7 +568,8 @@
    "sense_full": "gliding, sliding",
    "parts": null,
    "unit_id": "w07:b31.5",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "maestus",
@@ -539,7 +581,12 @@
    "sense_full": "sad or unhappy",
    "parts": null,
    "unit_id": "w07:b3.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "nōnnūllus",
@@ -599,7 +646,13 @@
    "sense_full": "rapid, swift",
    "parts": null,
    "unit_id": "w07:b18.3",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "place",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "remaneō",
@@ -623,7 +676,8 @@
    "sense_full": "health",
    "parts": null,
    "unit_id": "w07:b23.1",
-   "count": 3
+   "count": 3,
+   "sem": "abstract"
   },
   {
    "lemma": "secō",
@@ -647,7 +701,13 @@
    "sense_full": "swift, quick, fleet, rapid, speedy",
    "parts": null,
    "unit_id": "w07:b38.4",
-   "count": 3
+   "count": 3,
+   "sem": {
+    "of": [
+     "animal",
+     "person"
+    ]
+   }
   },
   {
    "lemma": "affectus",
@@ -659,7 +719,8 @@
    "sense_full": "affection, passion, love",
    "parts": null,
    "unit_id": "w07:b35.3",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "celsus",
@@ -671,7 +732,13 @@
    "sense_full": "high, lofty, tall",
    "parts": null,
    "unit_id": "w07:b20.10",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "desiliō",
@@ -695,7 +762,8 @@
    "sense_full": "back, range, ridge",
    "parts": null,
    "unit_id": "w07:b21.1",
-   "count": 2
+   "count": 2,
+   "sem": "body"
   },
   {
    "lemma": "fallāx",
@@ -707,7 +775,12 @@
    "sense_full": "deceitful, treacherous",
    "parts": null,
    "unit_id": "w07:b21.3",
-   "count": 2
+   "count": 2,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "fēlīcitās",
@@ -719,7 +792,8 @@
    "sense_full": "luck, good fortune",
    "parts": null,
    "unit_id": "w07:b34.3",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "ignārus",
@@ -743,7 +817,8 @@
    "sense_full": "gain, profit",
    "parts": null,
    "unit_id": "w07:b2.4",
-   "count": 2
+   "count": 2,
+   "sem": "abstract"
   },
   {
    "lemma": "magus",
@@ -767,7 +842,8 @@
    "sense_full": "fisherman",
    "parts": null,
    "unit_id": "w07:b35.1",
-   "count": 2
+   "count": 2,
+   "sem": "person"
   },
   {
    "lemma": "redūcō",
@@ -851,7 +927,14 @@
    "sense_full": "unknown, strange",
    "parts": null,
    "unit_id": "w07:b17.3",
-   "count": 1
+   "count": 1,
+   "sem": {
+    "of": [
+     "person",
+     "place",
+     "thing"
+    ]
+   }
   },
   {
    "lemma": "invidia",
@@ -863,7 +946,8 @@
    "sense_full": "hate, hatred, dislike",
    "parts": null,
    "unit_id": "w07:b34.3",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "nāvigātiō",
@@ -875,7 +959,8 @@
    "sense_full": "sailing",
    "parts": null,
    "unit_id": "w07:b11.2",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "trīstitia",
@@ -887,7 +972,8 @@
    "sense_full": "sadness",
    "parts": null,
    "unit_id": "w07:b11.1",
-   "count": 1
+   "count": 1,
+   "sem": "abstract"
   },
   {
    "lemma": "vēlōciter",

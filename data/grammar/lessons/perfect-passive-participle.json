@@ -44,6 +44,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "ppp-04",
+          "ppp-07"
+        ],
+        "ask": "Tap the word in each sentence that says what was done to the water, and to the slaves.",
+        "tap": "focus"
+      },
       "say": "Take a verb and use it to describe a noun, and you have **the perfect participle (the 'having been done' word: laudātus = praised)**. It says what has been done to somebody: *puer laudātus*, the boy who has been praised. It is one word, and it describes its noun exactly as *bonus* or *magnus* would.",
       "show": {
         "kind": "sentence",
@@ -165,7 +173,7 @@
     {
       "n": 5,
       "title": "Done to him, or done by him?",
-      "say": "Latin has a second participle, **the present participle (the '-ing' word that describes a noun)**, and once you know the signal the two never blur. *-ns* means he is doing it; *-tus* or *-sus* means it was done to him. *puer vocātus* was called; *puer vocāns* is calling. (The one exception is a deponent — *locūtus* means he spoke; that comes next chapter.)",
+      "say": "Latin has a second participle, **the present participle (the '-ing' word that describes a noun)**, and once you know the signal the two never blur. *-ns* means he is doing it; *-tus* or *-sus* means it was done to him. *puer vocātus* was called; *puer vocāns* is calling.",
       "show": {
         "kind": "sentence",
         "id": "ppp-10"
@@ -213,6 +221,10 @@
     {
       "type": "p",
       "text": "Endings vary: -tus (*laudātus, audītus, scrīptus*), -sus after certain consonants (*vīsus, missus, clausus, pulsus*). Many have become plain adjectives or nouns: *parātus* (ready), *factum* (a deed), *dictum* (a saying)."
+    },
+    {
+      "type": "p",
+      "text": "The one exception is a deponent — *locūtus* means he spoke; that comes next chapter."
     }
   ],
   "sources": [

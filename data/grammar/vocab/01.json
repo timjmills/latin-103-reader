@@ -83,7 +83,18 @@
    "sense_full": "large, great, big, vast",
    "parts": null,
    "unit_id": "r01:22.1",
-   "count": 202
+   "count": 202,
+   "sem": {
+    "of": [
+     "thing",
+     "place",
+     "animal",
+     "body",
+     "group",
+     "nature",
+     "abstract"
+    ]
+   }
   },
   {
    "lemma": "multus",
@@ -119,7 +130,16 @@
    "sense_full": "small, little, cheap",
    "parts": null,
    "unit_id": "r01:22.2",
-   "count": 102
+   "count": 102,
+   "sem": {
+    "of": [
+     "person",
+     "animal",
+     "thing",
+     "place",
+     "body"
+    ]
+   }
   },
   {
    "lemma": "prīmus",
@@ -143,7 +163,8 @@
    "sense_full": "letter (alphabet)",
    "parts": null,
    "unit_id": "r01:66.1",
-   "count": 78
+   "count": 78,
+   "sem": "thing"
   },
   {
    "lemma": "quoque",
@@ -179,7 +200,8 @@
    "sense_full": "town",
    "parts": null,
    "unit_id": "r01:33.1",
-   "count": 58
+   "count": 58,
+   "sem": "place"
   },
   {
    "lemma": "numerus",
@@ -191,7 +213,8 @@
    "sense_full": "number, sum, total, rank",
    "parts": null,
    "unit_id": "r01:62.1",
-   "count": 47
+   "count": 47,
+   "sem": "abstract"
   },
   {
    "lemma": "num",
@@ -215,7 +238,8 @@
    "sense_full": "island",
    "parts": null,
    "unit_id": "r01:27.1",
-   "count": 38
+   "count": 38,
+   "sem": "place"
   },
   {
    "lemma": "vocābulum",
@@ -227,7 +251,8 @@
    "sense_full": "noun, common or concrete noun",
    "parts": null,
    "unit_id": "r01:71.1",
-   "count": 38
+   "count": 38,
+   "sem": "abstract"
   },
   {
    "lemma": "fluvius",
@@ -239,7 +264,8 @@
    "sense_full": "river, stream",
    "parts": null,
    "unit_id": "r01:18.1",
-   "count": 28
+   "count": 28,
+   "sem": "place"
   },
   {
    "lemma": "Rōmānus",
@@ -311,7 +337,8 @@
    "sense_full": "command",
    "parts": null,
    "unit_id": "r01:55.1",
-   "count": 17
+   "count": 17,
+   "sem": "abstract"
   },
   {
    "lemma": "syllaba",
@@ -323,7 +350,8 @@
    "sense_full": "syllable",
    "parts": null,
    "unit_id": "r01:74.1",
-   "count": 16
+   "count": 16,
+   "sem": "abstract"
   },
   {
    "lemma": "prōvincia",
@@ -335,7 +363,8 @@
    "sense_full": "province",
    "parts": null,
    "unit_id": "r01:56.1",
-   "count": 13
+   "count": 13,
+   "sem": "place"
   },
   {
    "lemma": "capitulum",
@@ -347,7 +376,8 @@
    "sense_full": "chapter or article (in book)",
    "parts": null,
    "unit_id": "r01:73.1",
-   "count": 8
+   "count": 8,
+   "sem": "thing"
   }
  ]
 }

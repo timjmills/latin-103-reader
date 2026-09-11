@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Latin marks an action that will be finished before another future one with **the future perfect (the 'will have done' tense)**. Latin is strict where English is lazy: English says 'when I come to Rome, I shall see you', but Latin says *cum Rōmam vēnerō* — when I shall have come. Whenever a clause opens with *cum, sī, ubi, postquam, antequam* and the main verb is future, expect this tense.",
+      "notice": {
+        "sentences": [
+          "futp-03",
+          "futp-14"
+        ],
+        "ask": "Tap the verb in the opening clause of each sentence. What do the two endings have in common?",
+        "tap": "focus"
+      },
+      "say": "Latin marks an action finished before another future one with **the future perfect (the 'will have done' tense)**. English says 'when I come to Rome, I shall see you'; Latin says *cum Rōmam vēnerō* — when I shall have come. When a clause opens with *cum, sī, ubi, postquam, antequam* and the main verb is future, expect this tense.",
       "show": {
         "kind": "sentence",
         "id": "futp-01"
@@ -125,7 +133,7 @@
     {
       "n": 6,
       "title": "Use it",
-      "say": "Put the finished action into the future perfect and leave the main verb in the plain future. 'If Davus runs away, his master will look for him' becomes *Sī Dāvus fūgerit, dominus eum quaeret* — word for word 'if he will have fled'. When the verb is passive the tense is two words instead, the perfect participle (a verb used like an adjective) with the future of *sum*: *epistula scrīpta erit*, the letter will have been written.",
+      "say": "Put the finished action into the future perfect and leave the main verb in the plain future: *Sī Dāvus fūgerit, dominus eum quaeret* — if Davus runs away, his master will look for him. A passive verb uses two words, the perfect participle (a verb used like an adjective) with the future of *sum*: *epistula scrīpta erit*.",
       "show": {
         "kind": "sentence",
         "id": "futp-13"
@@ -210,6 +218,10 @@
     {
       "type": "p",
       "text": "Ørberg's chapter 30: *dux mīlitem laudābit, sī fortiter pugnāverit*; *discipulus laudābitur sī magistrō pāruerit et industrius fuerit*; passive *pater gaudēbit sī fīlius laudātus erit*. Irregulars follow the perfect stem: *fuerō, potuerō, voluerō, ierō*. In a main clause on its own it is rare and means a confident 'will have': *vīderimus*, we will have seen. With *cum* it stays in the indicative (the plain statement form) because it is a real future time, not story background (compare cum + subjunctive, Week 6)."
+    },
+    {
+      "type": "p",
+      "text": "Latin is strict where English is lazy: English says 'when I come to Rome, I shall see you', but Latin says *cum Rōmam vēnerō* — when I shall have come."
     }
   ],
   "sources": [

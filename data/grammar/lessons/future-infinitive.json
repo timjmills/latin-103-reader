@@ -62,6 +62,14 @@
     {
       "n": 1,
       "title": "Reporting what will happen",
+      "notice": {
+        "sentences": [
+          "fi-02",
+          "fi-05"
+        ],
+        "ask": "Tap the words that report what Julius and Julia will do — what do the two pairs have in common?",
+        "tap": "focus"
+      },
       "say": "When Latin reports that something *will* happen, the verb inside the report takes the shape of **the future infinitive (the 'going to' form: ventūrum esse)**. *Mārcus dīcit sē epistulam scrīptūrum esse* — Marcus says that he will write a letter. English needs a 'that' and a 'will'; Latin packs both into the form.",
       "show": {
         "kind": "sentence",

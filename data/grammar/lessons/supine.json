@@ -46,7 +46,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Latin keeps one special form for saying what you go somewhere to do: **the supine (the special purpose form after a verb of going: dormītum it = goes to sleep)**. It answers that one question and no other: *Iūlius in cubiculum it dormītum* — Julius goes into the bedroom to sleep. It turns up only when somebody is going, coming, or being sent somewhere. There is a second supine as well, ending in *-ū*, and it does something else; that is step 3.",
+      "notice": {
+        "sentences": [
+          "su-03",
+          "su-04"
+        ],
+        "ask": "Tap the word in each sentence that says what they are going there to do.",
+        "tap": "focus"
+      },
+      "say": "Latin keeps one special form for saying what you go somewhere to do: **the supine (the special purpose form after a verb of going: dormītum it = goes to sleep)**. It answers that one question and no other: *Iūlius in cubiculum it dormītum* — Julius goes into the bedroom to sleep.",
       "show": {
         "kind": "sentence",
         "id": "su-01"
@@ -168,6 +176,10 @@
     {
       "type": "p",
       "text": "Ørberg (cap. XXII) lists everyday supines: *lavātum īre*, *dormītum īre*, *cubitum īre*. Supine + *īrī* makes the rare future passive infinitive (*laudātum īrī*, cap. XXIII). For purpose in general Latin prefers *ut* + subjunctive or *ad* + gerund; the supine stays with going and sending."
+    },
+    {
+      "type": "p",
+      "text": "It turns up only when somebody is going, coming, or being sent somewhere."
     }
   ],
   "sources": [

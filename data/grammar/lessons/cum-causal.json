@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Latin can put **cum** in front of a verb in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do), and the clause then gives the *reason* for the rest of the sentence. That is **cum + subjunctive meaning 'since' (or, with tamen, 'although')**. In *Cum aeger sim, in cubiculō maneō* the cum clause says why I stay in the bedroom: because I am ill. Read 'since' for cum and see whether the sentence makes sense.",
+      "notice": {
+        "sentences": [
+          "cumc-09",
+          "cumc-12"
+        ],
+        "ask": "Tap the verb that follows cum in each sentence. What form are both verbs in?",
+        "tap": "focus"
+      },
+      "say": "**cum** with a verb in the subjunctive (the form Latin uses for wishes, purposes and what someone tells someone to do) gives the *reason* for the rest of the sentence: **cum + subjunctive meaning 'since' (or, with tamen, 'although')**. *Cum aeger sim, in cubiculō maneō* — since I am ill, I stay in the bedroom.",
       "show": {
         "kind": "sentence",
         "id": "cumc-01"
@@ -29,7 +37,7 @@
     {
       "n": 2,
       "title": "The mood is the tell-tale",
-      "say": "Plain *cum* with an indicative verb (the everyday statement form) means 'when' or 'whenever'. Put that verb into the subjunctive and *cum* can give the reason instead. Look at the one verb inside the clause: *verberat* is indicative, 'he is beating'; *verberet* is subjunctive, and the clause becomes 'since he is beating'. In a story about the past the same subjunctive *cum* is the 'when' of chapter 28; with a present main verb, as here, it is the reason.",
+      "say": "Plain *cum* with an indicative verb (the everyday statement form) means 'when'; put that verb into the subjunctive and *cum* gives the reason instead. *Mārcus plōrat, cum Iūlius eum verberet*: *verberat* would be 'when he beats him', *verberet* is 'since he is beating him'.",
       "show": {
         "kind": "sentence",
         "id": "cumc-03"
@@ -83,7 +91,7 @@
     {
       "n": 5,
       "title": "Present now, imperfect for the past",
-      "say": "The tense inside the cum clause follows the main verb. A present main verb takes the present subjunctive: *plōrat, cum pater absit*. A past main verb takes the imperfect subjunctive (the '-rem, -ret' subjunctive, built on the infinitive): *plōrābat, cum pater abesset*. In past time this is also the shape of the story *cum* of chapter 28, so ask what the clause is doing: if it answers *why*, read 'since'; if it only says *when*, read 'while'.",
+      "say": "The tense inside the cum clause follows the main verb: a present main verb takes the present subjunctive, a past main verb the imperfect subjunctive (the '-rem, -ret' subjunctive, built on the infinitive). *Plōrat, cum pater absit*; *plōrābat, cum pater abesset*.",
       "show": {
         "kind": "sentence",
         "id": "cumc-10"
@@ -174,6 +182,18 @@
     {
       "type": "p",
       "text": "For a finished reason after a present verb the perfect subjunctive is used (Week 10): *nōn possum exīre cum aliquis portam clauserit* — I cannot go out since someone has shut the gate; after a past verb the pluperfect: *nōn poteram exīre cum … clausisset*. *cum* + indicative still means plain 'when(ever)': *gaudeō cum dē līberīs cōgitō*. Ørberg writes 'although' with *quamquam* + indicative (*quamquam valdē dolēbat, tamen …*); *cum … tamen* is the subjunctive version of the same idea."
+    },
+    {
+      "type": "p",
+      "text": "Read 'since' for cum and see whether the sentence makes sense."
+    },
+    {
+      "type": "p",
+      "text": "In a story about the past the same subjunctive *cum* is the 'when' of chapter 28; with a present main verb, as here, it is the reason."
+    },
+    {
+      "type": "p",
+      "text": "In past time this is also the shape of the story *cum* of chapter 28, so ask what the clause is doing: if it answers *why*, read 'since'; if it only says *when*, read 'while'."
     }
   ],
   "sources": [

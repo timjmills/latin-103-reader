@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "Put a gerundive beside a part of *sum* and Latin has said 'must'. That is **the gerundive with sum (the 'must be done' pattern: liber legendus est = the book must be read)**. *Hic liber hodiē legendus est* — this book must be read today. There is no separate word for 'must'; the *-nd-* and the *est* carry it between them.",
+      "notice": {
+        "sentences": [
+          "pp-05",
+          "pp-12"
+        ],
+        "ask": "Tap the -nd- word beside est or sunt in each sentence. What do the two have in common?",
+        "tap": "focus"
+      },
+      "say": "Put a gerundive beside a part of *sum* and Latin has said 'must': **the gerundive with sum (the 'must be done' pattern: liber legendus est = the book must be read)**. *Hic liber hodiē legendus est* — this book must be read today. There is no separate word for 'must'; the *-nd-* and the *est* carry it between them.",
       "show": {
         "kind": "sentence",
         "id": "pp-01"

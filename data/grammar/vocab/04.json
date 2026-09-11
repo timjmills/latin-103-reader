@@ -23,7 +23,16 @@
    "sense_full": "have, hold, consider, think, reason",
    "parts": "habeō, habēre, habuī, habitum",
    "unit_id": "r04:4.1",
-   "count": 164
+   "count": 164,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "dē",
@@ -47,7 +56,15 @@
    "sense_full": "good, honest, brave, noble, kind, pleasant, right, useful",
    "parts": null,
    "unit_id": "r04:68.2",
-   "count": 100
+   "count": 100,
+   "sem": {
+    "of": [
+     "person",
+     "thing",
+     "food",
+     "animal"
+    ]
+   }
   },
   {
    "lemma": "dō",
@@ -59,7 +76,19 @@
    "sense_full": "give",
    "parts": "dō, dāre, dedī, datum",
    "unit_id": "r04:27.1",
-   "count": 97
+   "count": 97,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ],
+    "dat": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "pecūnia",
@@ -71,7 +100,8 @@
    "sense_full": "money",
    "parts": null,
    "unit_id": "r04:3.2",
-   "count": 88
+   "count": 88,
+   "sem": "thing"
   },
   {
    "lemma": "tantus",
@@ -107,7 +137,8 @@
    "sense_full": "word",
    "parts": null,
    "unit_id": "r04:45.1",
-   "count": 49
+   "count": 49,
+   "sem": "abstract"
   },
   {
    "lemma": "sacculus",
@@ -119,7 +150,8 @@
    "sense_full": "little bag (as a filter for wine)",
    "parts": null,
    "unit_id": "r04:3.1",
-   "count": 39
+   "count": 39,
+   "sem": "thing"
   },
   {
    "lemma": "salūtō",
@@ -131,7 +163,15 @@
    "sense_full": "greet",
    "parts": "salūtō, salūtāre, salūtāvī, salūtātum",
    "unit_id": "r04:33.3",
-   "count": 34
+   "count": 34,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "absum",
@@ -167,7 +207,14 @@
    "sense_full": "go/march off, depart, withdraw",
    "parts": "discēdō, discēdere, discessī, discessum",
    "unit_id": "r04:73.1",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "subj": [
+     "person",
+     "animal"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "sūmō",
@@ -179,7 +226,16 @@
    "sense_full": "take up",
    "parts": "sūmō, sūmere, sūmpsī, sūmptum",
    "unit_id": "r04:73.1",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "thing",
+     "food"
+    ]
+   }
   },
   {
    "lemma": "taceō",
@@ -191,7 +247,13 @@
    "sense_full": "be silent",
    "parts": "taceō, tacēre, tacuī, tacitum",
    "unit_id": "r04:37.2",
-   "count": 26
+   "count": 26,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": []
+   }
   },
   {
    "lemma": "adsum",
@@ -215,7 +277,8 @@
    "sense_full": "coin",
    "parts": null,
    "unit_id": "r04:5.1",
-   "count": 22
+   "count": 22,
+   "sem": "thing"
   },
   {
    "lemma": "salvus",
@@ -227,7 +290,12 @@
    "sense_full": "well, unharmed, sound",
    "parts": null,
    "unit_id": "r04:34.1",
-   "count": 22
+   "count": 22,
+   "sem": {
+    "of": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "mēnsa",
@@ -239,7 +307,8 @@
    "sense_full": "table",
    "parts": null,
    "unit_id": "r04:60.1",
-   "count": 21
+   "count": 21,
+   "sem": "thing"
   },
   {
    "lemma": "rūrsus",
@@ -263,7 +332,8 @@
    "sense_full": "stick, walking stick, staff",
    "parts": null,
    "unit_id": "r04:62.1",
-   "count": 14
+   "count": 14,
+   "sem": "thing"
   },
   {
    "lemma": "numerō",
@@ -275,7 +345,29 @@
    "sense_full": "count, add up, reckon or compute",
    "parts": "numerō, numerāre, numeravī, numeratum",
    "unit_id": "r04:9.1",
-   "count": 12
+   "count": 12,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [],
+    "obj_only": [
+     "pecūnia",
+     "nummus",
+     "ōrnāmentum",
+     "gemma",
+     "margarīta",
+     "dēnārius",
+     "sēstertius",
+     "assis",
+     "ovis",
+     "servus",
+     "mīles",
+     "nāvis",
+     "līber",
+     "epistula"
+    ]
+   }
   },
   {
    "lemma": "accūsō",
@@ -287,7 +379,15 @@
    "sense_full": "accuse, blame, find fault, impugn",
    "parts": "accūsō, accūsāre, accusavī, accusatum",
    "unit_id": "r04:48.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "subj": [
+     "person"
+    ],
+    "obj": [
+     "person"
+    ]
+   }
   },
   {
    "lemma": "vacuus",
@@ -299,7 +399,13 @@
    "sense_full": "empty, vacant, unoccupied",
    "parts": null,
    "unit_id": "r04:66.1",
-   "count": 11
+   "count": 11,
+   "sem": {
+    "of": [
+     "thing",
+     "place"
+    ]
+   }
   }
  ]
 }

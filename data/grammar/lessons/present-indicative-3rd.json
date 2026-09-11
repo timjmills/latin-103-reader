@@ -59,6 +59,14 @@
     {
       "n": 1,
       "title": "-t for one, -nt for several",
+      "notice": {
+        "sentences": [
+          "pi-01",
+          "pi-07"
+        ],
+        "ask": "Tap the word in each sentence that says what someone is doing. What do the two words end in?",
+        "tap": "focus"
+      },
       "say": "A Latin verb is a stem with an ending, and the ending says who is doing it. These two are the present tense, 3rd person (-t 'he does', -nt 'they do'): *Mārcus rīdet* — Marcus laughs; *Puerī rīdent* — the boys laugh. No word for ‘he’ or ‘they’ is needed, because the tail already carries it.",
       "show": {
         "kind": "sentence",
@@ -192,7 +200,7 @@
     {
       "n": 6,
       "title": "The singulars rhyme, the plurals do not",
-      "say": "*Videt* and *dormit* end a single letter apart — an e in one, an i in the other — and both mean one person doing something. Their plurals part company: *vident*, but *dormiunt*. So before you make a verb plural, look at the vowel in front of the -t: in every verb you have met so far an e gives -ent and an i gives -iunt.",
+      "say": "Before you make a verb plural, look at the vowel in front of the -t: in every verb you have met so far an e gives -ent and an i gives -iunt. *Videt* and *dormit* end a letter apart, but their plurals part company: *vident*, but *dormiunt*.",
       "show": {
         "kind": "sentence",
         "id": "pi-12"

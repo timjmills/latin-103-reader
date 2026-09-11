@@ -3,6 +3,14 @@
  "teach": [
   {
    "title": "A scene set beside the sentence",
+   "notice": {
+    "sentences": [
+     "abs-03",
+     "abs-05"
+    ],
+    "ask": "Which two words in each sentence set the scene in the background while the main thing happens?",
+    "tap": "focus"
+   },
    "say": "Latin can give the circumstances of an action in two words: **the ablative absolute (a noun + participle set apart in the ablative: 'with X doing')**. *Sōle oriente nautae nāvigant* — with the sun rising, the sailors sail; in ordinary English, as the sun rises. The pair says when or why, and the main sentence goes on without needing it.",
    "show": {
     "kind": "sentence",
@@ -79,7 +87,7 @@
   },
   {
    "title": "One ablative, or two?",
-   "say": "A single ablative beside a verb is usually the ablative (the 'by/with/from' form) of the thing used: *gladiō pugnat*, he fights with a sword. An ablative absolute is two words that agree and one of them is a participle: *hostibus clāmantibus*. *Mīles gladiō pugnat, hostibus clāmantibus* carries both in one line — the sword is the tool, the shouting enemy the scene.",
+   "say": "A single ablative beside a verb is usually the ablative (the 'by/with/from' form) of the thing used; an ablative absolute is two words that agree, one of them a participle. *Mīles gladiō pugnat, hostibus clāmantibus* — the sword is the tool, the shouting enemy the scene.",
    "show": {
     "kind": "sentence",
     "id": "abs-10"

@@ -4,7 +4,15 @@
     {
       "n": 1,
       "title": "What it does",
-      "say": "A verb turned into an adjective and hung on a noun is **the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk)**. It does not say what the noun is doing; it says what is to be done to it. *liber legendus* is 'a book to be read', *aqua bibenda* 'water to be drunk'. English has no single word for it, so we say 'to be …ed'.",
+      "notice": {
+        "sentences": [
+          "ger-03",
+          "ger-10"
+        ],
+        "ask": "Tap the word with -nd- in each sentence. What is it saying about the noun beside it?",
+        "tap": "focus"
+      },
+      "say": "A verb turned into an adjective and hung on a noun is **the gerundive (the '-nd-' adjective: 'to be done'; aqua bibenda = water to be drunk)**. It does not say what the noun is doing; it says what is to be done to it: *liber legendus* is 'a book to be read'.",
       "show": {
         "kind": "sentence",
         "id": "ger-01"
@@ -202,6 +210,10 @@
     {
       "type": "p",
       "text": "Ørberg's chapter 31: *laudandus -a -um* is an adjective of the first and second declension; joined to *esse* it means what ought to be done (see the next lesson). Chapter 26 keeps gerund + accusative (*ad ālās faciendum*); from chapter 31 the book prefers the gerundive (*ad castra dēfendenda*, *ad eōs persequendōs*). A few gerundives have become plain words: *secundus* (following), *agenda* (things to be done), the names *Amanda* and *Miranda*."
+    },
+    {
+      "type": "p",
+      "text": "English has no single word for it, so we say 'to be …ed'."
     }
   ],
   "sources": [

@@ -3,6 +3,14 @@
  "teach": [
   {
    "title": "The subject on the receiving end",
+   "notice": {
+    "sentences": [
+     "ppe-06",
+     "ppe-10"
+    ],
+    "ask": "Which word in each sentence is the verb, and is the pupil or the goods doing the action, or on the receiving end of it?",
+    "tap": "focus"
+   },
    "say": "When the subject is not doing but being done to, the verb takes a second set of endings: **the passive person endings (I am …-ed, you are …-ed …)**. *Discipulus ā magistrō pūnītur* — the pupil is punished by the teacher. Nothing is added in front of the verb, as English adds *am, are, is*; the ending alone carries it.",
    "show": {
     "kind": "sentence",

@@ -61,6 +61,14 @@
     {
       "n": 1,
       "title": "The word for 'than' can disappear",
+      "notice": {
+        "sentences": [
+          "ac-02",
+          "ac-04"
+        ],
+        "ask": "Tap the word that names what the sun and the dog are compared with — what do the two words have in common?",
+        "tap": "focus"
+      },
       "say": "After a comparative, Latin may drop *quam* (than) and put the thing compared into the ablative instead: **the ablative of comparison (the 'than' form: illō fortior = braver than he)**. *Mārcus Quīntō māior est* — Marcus is bigger than Quintus. Nothing has gone missing; the case is doing the work of the word.",
       "show": {
         "kind": "sentence",

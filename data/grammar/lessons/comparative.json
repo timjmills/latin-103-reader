@@ -46,6 +46,14 @@
     {
       "n": 1,
       "title": "What it does",
+      "notice": {
+        "sentences": [
+          "cmp-03",
+          "cmp-04"
+        ],
+        "ask": "Tap the word for 'happier' in the first sentence and 'taller' in the second. What has been added to the plain adjective in both?",
+        "tap": "focus"
+      },
       "say": "Put two things side by side and Latin marks the adjective: **the comparative (the '-er / more' form)**. *longus* (long) → *longior* (longer); *fortis* (brave) → *fortior* (braver). It says one of the two has more of the quality than the other — no more than that.",
       "show": {
         "kind": "sentence",
