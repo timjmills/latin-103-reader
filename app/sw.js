@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v48';
+const CACHE_VERSION = 'v49';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -143,33 +143,7 @@ const PRECACHE = [
   './data/grammar/lessons/vocative.json',
   './data/grammar/lessons/wishes-utinam.json',
   // The generated banks (GRAMMAR-CONTRACT.md §11b): built by pipeline/build_generated.py, one per sentence skill with templates.
-  './data/grammar/generated/conditions-contrary-to-fact.json',
-  './data/grammar/generated/cum-causal.json',
-  './data/grammar/generated/cum-narrative.json',
-  './data/grammar/generated/deliberative-subjunctive.json',
-  './data/grammar/generated/dummodo.json',
-  './data/grammar/generated/indirect-command.json',
-  './data/grammar/generated/indirect-question.json',
-  './data/grammar/generated/potential-subjunctive.json',
-  './data/grammar/generated/result-clause.json',
-  './data/grammar/generated/sequence-of-tenses.json',
-  './data/grammar/generated/subjunctive-wish-command.json',
-  './data/grammar/generated/wishes-utinam.json',
-  './data/grammar/generated/ablative-absolute-perfect.json',
-  './data/grammar/generated/ablative-degree.json',
-  './data/grammar/generated/adverbs.json',
-  './data/grammar/generated/enclitics.json',
-  './data/grammar/generated/noli-infinitive.json',
-  './data/grammar/generated/passive-periphrastic.json',
   './data/grammar/generated/index.json',
-  './data/grammar/generated/ablative-absolute.json',
-  './data/grammar/generated/ablative-agent.json',
-  './data/grammar/generated/ablative-means.json',
-  './data/grammar/generated/accusative-infinitive.json',
-  './data/grammar/generated/accusative-object.json',
-  './data/grammar/generated/dative-indirect-object.json',
-  './data/grammar/generated/perfect-active.json',
-  './data/grammar/generated/purpose-clause.json',
   // The written teaching sentences (GRAMMAR-CONTRACT.md §1), one file a skill: the whole of what Learn draws on.
   './data/grammar/sentences/ablative-absolute-perfect.json',
   './data/grammar/sentences/ablative-absolute.json',

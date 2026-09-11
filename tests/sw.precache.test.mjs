@@ -27,6 +27,10 @@ function shellFiles(dir = APP) {
     }
     if (rel === 'sw.js' || /README|\.md$/i.test(name)) continue;
     if (rel === 'js/store-fixture.js') continue;        // dev only
+    // The generated sentence banks (§11b) are fetched when a skill's unlimited practice is first opened and
+    // held by the runtime cache from then on, so they are deliberately out of the install. Their manifest is
+    // precached, because the app reads it to know which skills have a bank at all.
+    if (/^data\/grammar\/generated\/(?!index\.json$)/.test(rel)) continue;
     if (/\.(html|css|js|json|webmanifest|svg|png|woff2?)$/i.test(name)) out.push(rel);
   }
   return out;

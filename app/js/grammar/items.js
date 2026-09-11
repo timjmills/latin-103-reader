@@ -31,6 +31,7 @@
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { weekOfUnit, isShelfWeek } from '../sync.js';
 import { scopeByChapter, scopeNote } from './chapter.js';
+import { focusIndexes } from './sets.js';
 
 /* ----------------------------------------------------------- labels */
 export const FEATURES = Object.freeze(['case', 'gender', 'number', 'tense', 'mood', 'voice', 'person', 'degree', 'construction', 'form']);
@@ -207,7 +208,11 @@ export const headGloss = (entry) => (entry ? `${String(entry.lemma ?? '').split(
 export function featureChoices(key, own, { n = 4, rand = Math.random, skills = null, skill = null, pool: given = null } = {}) {
   const pool = given ?? WORKED_POOL[key] ?? (key === 'tm' ? TM_FILLERS : FILLERS[key]);
   if (!pool || own == null) return [];
-  const others = pool.filter((v) => String(v) !== String(own)).sort(() => rand() - 0.5).slice(0, Math.max(0, n - 1));
+  // Fisher-Yates: `sort(() => rand() - 0.5)` is not a shuffle — it leaves the first choices near the front,
+  // so the same distractors kept coming up first.
+  const others = pool.filter((v) => String(v) !== String(own));
+  for (let i = others.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [others[i], others[j]] = [others[j], others[i]]; }
+  others.splice(Math.max(0, n - 1));
   if (!others.length) return [];
   const label = (v) => { const l = workedLabel(key, v, { skills, skill }); return { value: String(v), label: l.name, plain: l.plain, correct: String(v) === String(own) }; };
   const all = [own, ...others].map(label);
@@ -919,7 +924,11 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     if (unit != null) {
       const inUnit = pool_.filter((c) => c.unit.id === unit);
       if (!inUnit.length) return null;
-      const onFocus = focus ? inUnit.filter((c) => matchesForm(c.token.text, [focus])) : [];
+      // `focus` may name two words; a candidate counts when it sits anywhere in that span.
+      const parts = focus ? String(focus).trim().split(/\s+/).filter(Boolean) : [];
+      const onFocus = !focus ? []
+        : parts.length === 1 ? inUnit.filter((c) => matchesForm(c.token.text, [focus]))
+        : inUnit.filter((c) => focusIndexes(c.unit.la, focus).includes(c.index));
       pool_ = onFocus.length ? onFocus : inUnit;
     }
     if (unambiguous) pool_ = pool_.filter((c) => !c.ambiguous);
@@ -1349,7 +1358,20 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
   // every cell, and the cell that spells the form is the parse. What the author declared settles the reading
   // — *servō* here is the dative, whatever else the ending could be — so the candidate is never ambiguous.
   const wordsOf = (la) => tokenize(la).filter((t) => t.isWord);
-  const focusIndex = (written) => (written?.focus ? wordsOf(written.la).findIndex((t) => matchesForm(t.text, [written.focus])) : -1);
+  // A focus of two words (an ablative absolute, *itūrum esse*, a contrary-to-fact pair) names a span, not a
+  // token: `focusSpan` is every index it covers and `focusIndex` the head, the one a parse settles on. Matching
+  // only one token used to leave these sentences with no candidate at all, so the step quietly taught another
+  // sentence and the noticing opener could not be answered (§8).
+  const focusSpan = (written) => {
+    if (!written?.focus) return [];
+    const parts = String(written.focus).trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 1) {
+      const i = wordsOf(written.la).findIndex((t) => matchesForm(t.text, [written.focus]));
+      return i < 0 ? [] : [i];
+    }
+    return focusIndexes(written.la, written.focus);
+  };
+  const focusIndex = (written) => { const s = focusSpan(written); return s.length ? s[0] : -1; };
   const parseOfKey = (key, entry) => {
     if (!key) return null;
     const k = key.kind;

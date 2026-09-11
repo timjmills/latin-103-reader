@@ -11,7 +11,7 @@ import { tokenize } from '../tokenize.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, reviewFirst, suggestToday, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm } from './items.js';
-import { setsOfChapter, setChapters, phraseIndexes } from './sets.js';
+import { setsOfChapter, setChapters, phraseIndexes, focusIndexes } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
 import { buildToday, fmtMinutes } from './today.js';
@@ -817,7 +817,15 @@ export function createUI(ctx) {
     if (!notice || !teachItems) return null;
     const pair = notice.sentences.map((id) => teachItems.sentence(id)).filter(Boolean);
     if (pair.length < 2) return null;
-    const focusOf = (w) => { const f = teachItems.focusOf(w.id); const idx = f?.candidate?.index; return Number.isInteger(idx) && idx >= 0 ? idx : (w.focus ? tokenize(w.la).filter((t) => t.isWord).findIndex((t) => matchesForm(t.text, [w.focus])) : -1); };
+    // Every index the focus covers: a two-word construction lights both, and a tap on either is right.
+    const focusSpanOf = (w) => {
+      const f = teachItems.focusOf(w.id); const idx = f?.candidate?.index;
+      const span = w.focus ? focusIndexes(w.la, w.focus) : [];
+      if (span.length > 1) return span;
+      if (Number.isInteger(idx) && idx >= 0) return [idx];
+      return span;
+    };
+    const focusOf = (w) => { const s = focusSpanOf(w); return s.length ? s[0] : -1; };
     let done = false;
     const line = h('p', { class: 'g-notice__line', role: 'status' });
     const node = h('section', { class: 'g-notice', 'aria-label': 'Look first' });
@@ -829,13 +837,14 @@ export function createUI(ctx) {
       onDone?.();
     };
     const columns = pair.map((w) => {
-      const fi = focusOf(w);
+      const fi = focusSpanOf(w);
       const p = latin(w.la, { tap: notice.tap === 'focus' ? (i, el) => {
         if (done) { showGloss(el, el.dataset.form, el.textContent, w.la); return; }
-        if (i === fi) {
-          // Both focus words light — that is what the two have in common.
+        if (fi.includes(i)) {
+          // Both sentences' focus words light — that is what the two have in common. A focus of two words
+          // (an ablative absolute, *itūrum esse*) lights both of its own words, and a tap on either is right.
           node.querySelectorAll('.g-w.is-wrong').forEach((b) => b.classList.remove('is-wrong'));
-          columns.forEach((c, k) => { const idx = focusOf(pair[k]); c.querySelector(`.g-w[data-index="${idx}"]`)?.classList.add('g-w--target', 'is-right'); });
+          columns.forEach((c, k) => { for (const idx of focusSpanOf(pair[k])) c.querySelector(`.g-w[data-index="${idx}"]`)?.classList.add('g-w--target', 'is-right'); });
           line.textContent = `Yes — ${pair.map((x) => x.focus || '').filter(Boolean).join(' and ')}. Here is why.`;
           ctx.say('Right. The rule follows.');
           finish({ found: true });
@@ -1794,7 +1803,17 @@ export function createUI(ctx) {
     const shownBoxes = item.input === 'chart' ? boxIn(chartCells(item).map((c) => item.chart.cells.indexOf(c)))
       : ['inline', 'bank', 'match', 'order'].includes(item.input) ? boxes : [];
     // Decision 14: on a chart the hint may give that one cell's answer, and the answer then counts as hinted.
-    const hintPanel = shownBoxes.length ? boxHintPanel(shownBoxes, { mode: effMode, onHint: () => { if (!submitted) onHint(); }, reveal: item.input === 'chart' ? (id) => item.chart.cells[Number(id)]?.answer?.[0] ?? null : null }) : null;
+    // §12: every box has its own hint, and the last step of that hint gives that box's answer. A chart cell
+    // gives its form, a pensum blank its word (with the stem it is written after), and a typed single box its
+    // answer. A choice, a tap and a self-graded translate are left out: there the "answer" is the whole item,
+    // and translate already has its own Reveal.
+    const revealOf = (it) => {
+      if (it.input === 'chart') return (id) => it.chart.cells[Number(id)]?.answer?.[0] ?? null;
+      if (it.input === 'inline' || it.input === 'bank') return (id) => { const b = it.blanks?.[Number(id)]; const a = b?.answers?.[0]; return a == null ? null : `${b.stem ?? ''}${a}`; };
+      if (['blank', 'parse', 'transform'].includes(it.kind) && Array.isArray(it.answer) && it.answer.length) return () => it.answer[0];
+      return null;
+    };
+    const hintPanel = shownBoxes.length ? boxHintPanel(shownBoxes, { mode: effMode, onHint: () => { if (!submitted) onHint(); }, reveal: revealOf(item) }) : null;
     const hintFor = (id, opts) => hintPanel?.control(id, opts) ?? null;
     const question = (text) => h('p', { class: 'g-q', tabindex: '-1', text });
     // The English of a question on demand (a question set, Pensum C): never shown first.
@@ -2081,7 +2100,7 @@ export function createUI(ctx) {
       // A tapped word is not typed and is never "left", so a bank blank is not judged as it is filled — that
       // would turn the bank into a game of trying each tile. It takes its colour when the item is graded (§3).
       boxes.set(i, { input: slot, wrap: slot, mark });
-      p.append(slot, mark, hint);
+      p.append(...[slot, mark, hint].filter(Boolean));
     }
     // Tiles are identified by their position in the bank, never by their text: a sentence that wants the same word
     // twice offers two tiles (sets.js builds the bank as a multiset), and disabling "by text" left Check unreachable (M3).
@@ -2155,7 +2174,13 @@ export function createUI(ctx) {
     const percent = whole ? scaffoldPercent(level, autoAt) : 0;
     const idOfCell = (c) => c.cellId ?? cellId(chartCellKey(item, c), chart.table?.kind) ?? null;
     // A catalogue table has no step teaching a cell, so nothing there is withheld on that account.
-    const given = whole ? scaffoldGiven(item, { percent, taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell }) : [];
+    // The given cells are decided once, when the item is first built, and kept on the item. A retry rebuilds
+    // this input, and re-deciding here would re-read the switch: flipping it to off after a wrong answer would
+    // hand back a different table from the one the first attempt was scored on (§12 — the table on screen
+    // finishes as it started; the switch applies to the next one).
+    const given = !whole ? []
+      : Array.isArray(chart.given) ? chart.given
+      : scaffoldGiven(item, { percent, taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell });
     chart.given = given;
     const givenSet = new Set(given);
     const mk = (i, label) => {
@@ -2182,7 +2207,7 @@ export function createUI(ctx) {
       const c = chart.cells[i];
       const hint = hintFor(i, { onOpen: () => {}, given: true });
       // No visually-hidden span here: positioned inside a scrolling table it would sit past the page's right edge on a phone.
-      return h('span', { class: 'g-cellwrap g-cellwrap--given' }, h('span', { class: 'g-chart__givenform', lang: 'la', role: 'img', 'aria-label': `${c.answer[0]} — ${c.label}, given`, text: c.answer[0] }), hint);
+      return h('span', { class: 'g-cellwrap g-cellwrap--given' }, h('span', { class: 'g-chart__givenform', lang: 'la', text: c.answer[0] }), h('span', { class: 'visually-hidden', text: ` — ${c.label}, given` }), hint);
     };
     // Cells not shown (phones show one) and cells given are right by definition: only what was asked counts.
     const collect = () => { const v = {}; chart.cells.forEach((c, i) => { v[i] = inputs.has(i) ? inputs.get(i).value : c.answer[0]; }); return v; };

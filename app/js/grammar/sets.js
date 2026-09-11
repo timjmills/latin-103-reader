@@ -286,6 +286,31 @@ export function phraseIndexes(la, phrase) {
   return [];
 }
 /**
+ * The word indexes of a sentence's declared `focus`. A focus is usually one
+ * word, but a construction can need two — an ablative absolute (*Cane
+ * lātrante*), a periphrastic form (*itūrum esse*, *clausum est*), the two
+ * verbs of a contrary-to-fact pair (*habērem* … *emerem*). A contiguous
+ * phrase is matched as a phrase; when the two words are apart, each is
+ * matched on its own, in order, to its first free index. [] when the focus is
+ * not in the sentence. The head (first) index is the one a parse settles on.
+ * Pure.
+ */
+export function focusIndexes(la, focus) {
+  const want = wordsOf(focus || '');
+  if (!want.length) return [];
+  const run = phraseIndexes(la, focus);
+  if (run.length || want.length === 1) return run;
+  const words = wordsOf(la);
+  const out = [];
+  let from = 0;
+  for (const w of want) {
+    const at = words.indexOf(w, from);
+    if (at < 0) return [];
+    out.push(at); from = at + 1;
+  }
+  return out;
+}
+/**
  * The word indexes an accepted answer occupies in the sentence. `whole` (the
  * default) accepts only the indexes of answers that are **one word**: a tap is
  * a single word, so accepting any word of "in vīllā" would mark a tap on *in*
