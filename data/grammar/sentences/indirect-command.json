@@ -197,8 +197,8 @@
   },
   {
    "id": "ic-06",
-   "la": "Servus dominum ōrat nē sē verberet.",
-   "en": "The slave begs his master not to beat him.",
+   "la": "Ancilla dominum ōrat nē puerum verberet.",
+   "en": "The slave-girl begs the master not to beat the boy.",
    "words": 6,
    "focus": "verberet",
    "step": 3,
@@ -210,8 +210,8 @@
    ],
    "gloss": [
     {
-     "w": "Servus",
-     "m": "the slave"
+     "w": "Ancilla",
+     "m": "the slave-girl"
     },
     {
      "w": "dominum",
@@ -226,8 +226,8 @@
      "m": "that not"
     },
     {
-     "w": "sē",
-     "m": "himself"
+     "w": "puerum",
+     "m": "the boy"
     },
     {
      "w": "verberet",
