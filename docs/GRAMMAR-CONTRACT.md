@@ -1701,6 +1701,16 @@ the passive; `lemmas` / `not`; `takes` inf · acc_inf · ut; `absolute`,
 sound. English modifiers: verbs `base` · `3sg` · `past` · `pp` · `ing` · `prog`
 · `neg` · `be`; nouns `a` · `the` · `bare` · `poss` · `pron` · `be`.
 
+A verb slot may carry its own gloss pattern, `g`, for the independent uses
+of the subjunctive whose English is not the mood's "may …": `"g": "let
+{opron} {base}"`, `"{pron} would {base}"`, `"{pron} had {pp}"`, `"am I to
+{base}"`; placeholders `base` · `3sg` · `past` · `pp` · `ing` · `pron` ·
+`opron` (the subject / object pronoun from the verb's person, number and its
+subject slot's gender). A fixed printed finite verb (`potest`, `possim`)
+needs a fixed-number subject beside it. Each file's `review` record holds
+`passes` (`pass`, `seed`, `generated`, `rejected`, `rate`, `causes`) and
+`final_rate`.
+
 **A deck word's frame** (`app/data/grammar/vocab/NN.json`, source
 `pipeline/sem.json`): a noun carries one class; an adjective
 `{"of": [classes], "only"?/"also"?: [lemmas], "number"?, "det"?: true}`; a verb

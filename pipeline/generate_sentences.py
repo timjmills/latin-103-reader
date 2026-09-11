@@ -258,6 +258,7 @@ EN_VERBS = {
     "tumultuō": "make an uproar", "subeō": "come up", "dēbeō": "owe", "careō": "lack",
     "impōnō": "put on", "remittō": "send back", "pessimō": "ruin",
 }
+EN_VERBS.update({"pāreō": "obey", "sum": "be"})   # the independent-subjunctive skills (wishes, conditions, dummodo)
 EN_3SG = {"have": "has", "do": "does", "go": "goes"}
 # verbs whose English has no progressive ("loves", not "is loving")
 EN_STATIVE = {"love", "fear", "have", "know", "see", "hear", "want", "own", "hate", "need", "believe",
@@ -741,6 +742,8 @@ def en_adj(word: Word) -> str:
 
 SLOT_RE = re.compile(r"\{(\w+)(?::([\w.]+))?\}")
 SLOT_POS = ("N", "ADJ", "PRON", "V", "ADV")
+# a verb slot's own gloss pattern (`g`): "let {opron} {base}", "{pron} would {base}", "{pron} had {pp}"
+GLOSS_PLACEHOLDERS = {"base", "pron", "opron", "3sg", "past", "pp", "ing"}
 
 
 class TemplateError(Exception):
@@ -833,6 +836,8 @@ def validate_template(t: dict) -> None:
                 raise TemplateError(f"{t['id']}: verb {name} takes {spec['takes']!r}")
             if set(spec.get("subj_sem") or []) - SEM_CLASSES:
                 raise TemplateError(f"{t['id']}: verb {name} subj_sem names an unknown class")
+            if set(re.findall(r"\{(\w+)\}", spec.get("g") or "")) - GLOSS_PLACEHOLDERS:
+                raise TemplateError(f"{t['id']}: verb {name} g uses a placeholder outside {sorted(GLOSS_PLACEHOLDERS)}")
         elif pos == "PRON":
             if spec.get("agree") not in t["slots"] or not spec.get("lemma"):
                 raise TemplateError(f"{t['id']}: pronoun {name} needs lemma and agree")
@@ -1252,6 +1257,9 @@ def _en_np(fill: Fill, name: str, mod: str | None = None) -> str:
     if w.pos == "PRON":
         g, n = fill.parses[name]["gender"], fill.parses[name]["number"]
         if key_of(w.lemma) == "is":
+            ante = fill.ref(spec.get("agree"))
+            if ante is not None and not (ante.is_name or ante.classes & {"person", "animal"}):
+                g = "n"                    # a thing is "it", whatever its Latin gender
             return {"m": "him", "f": "her", "n": "it"}[g] if n == "sg" else "them"
         if key_of(w.lemma) == "qui":
             return "who"
@@ -1381,11 +1389,43 @@ def _bare(tok: str) -> str:
     return re.sub(r"^[\"'“‘(\[]+|[\"'”’)\].,;:!?]+$", "", tok)
 
 
+def _verb_pronouns(fill: Fill, name: str) -> tuple[str, str]:
+    """(subject, object) English pronouns for verb slot `name`: from its
+    person and number, and its subject slot's gender when it has one."""
+    spec, parse = fill.t["slots"][name], fill.parses[name]
+    number, person = parse.get("number", "sg"), parse.get("person", 3)
+    subj = spec.get("subj")
+    if isinstance(subj, list) or number == "pl":
+        return ("we", "us") if person == 1 else ("you", "you") if person == 2 else ("they", "them")
+    if person == 1:
+        return "I", "me"
+    if person == 2:
+        return "you", "you"
+    w = fill.ref(subj) if isinstance(subj, str) else None
+    if w is None or not (w.is_name or "person" in w.classes):
+        return ("he", "him") if w is None else ("it", "it")
+    return {"m": ("he", "him"), "f": ("she", "her"), "n": ("it", "it")}[noun_gender(w)]
+
+
+def _verb_gloss_pattern(fill: Fill, name: str, base: str) -> str:
+    """A verb slot's own `g`: a gloss pattern such as "let {opron} {base}",
+    "{pron} would {base}", "{pron} had {pp}", for the independent uses of
+    the subjunctive whose English is not the mood's own "may …"."""
+    parse = fill.parses[name]
+    number, person = parse.get("number", "sg"), parse.get("person", 3)
+    pron, opron = _verb_pronouns(fill, name)
+    forms = {"base": base, "pron": pron, "opron": opron, "3sg": en_verb(base, "3sg", number, person),
+             "past": en_verb(base, "past", number, person), "pp": en_verb(base, "pp"), "ing": en_verb(base, "ing")}
+    return re.sub(r"\{(\w+)\}", lambda m: forms[m.group(1)], fill.t["slots"][name]["g"])
+
+
 def gloss_slot(fill: Fill, name: str, after_prep: bool = False) -> str:
     w, spec, parse = fill.words[name], fill.t["slots"][name], fill.parses[name]
     pos = spec.get("pos", "N")
     if pos == "V":
         base = EN_VERBS[w.lemma]
+        if spec.get("g"):
+            return _verb_gloss_pattern(fill, name, base)
         number, person = parse.get("number", "sg"), parse.get("person", 3)
         if parse.get("mood") == "ptc":
             return en_verb(base, "ing")

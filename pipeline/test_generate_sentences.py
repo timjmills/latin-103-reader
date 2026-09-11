@@ -263,6 +263,88 @@ def test_every_shipped_word_is_inside_the_cumulative_vocabulary(batches, lex, sk
             assert k in forms or k in names or x["w"] in g.FUNCTION_WORDS or x["w"].lower() in g.FUNCTION_WORDS, (s["la"], x["w"])
 
 
+# ------------------------------------------------------------ the independent subjunctive
+
+SUBJ = ["subjunctive-wish-command", "wishes-utinam", "potential-subjunctive", "deliberative-subjunctive",
+        "conditions-contrary-to-fact", "dummodo"]
+
+
+@pytest.mark.parametrize("lemma,tense,person,number,form", [
+    ("vocō", "impf", 3, "sg", "vocāret"), ("habeō", "plupf", 1, "sg", "habuissem"), ("emō", "pres", 1, "pl", "emāmus"),
+    ("capiō", "perf", 3, "pl", "cēperint"), ("dormiō", "impf", 2, "sg", "dormīrēs"),
+    ("sum", "impf", 1, "sg", "essem"), ("sum", "plupf", 2, "pl", "fuissētis"), ("possum", "pres", 1, "sg", "possim"),
+    ("eō", "pres", 1, "pl", "eāmus"), ("eō", "impf", 3, "sg", "īret"), ("volō", "pres", 1, "sg", "velim"),
+    ("nōlō", "impf", 3, "sg", "nōllet"), ("adsum", "plupf", 3, "sg", "adfuisset"),
+])
+def test_every_subjunctive_tense_inflects_through_the_engine(lex, lemma, tense, person, number, form):
+    w = word(lex, lemma, "V")
+    parse = {"tense": tense, "mood": "subj", "voice": "act", "person": person, "number": number}
+    assert g.inflect(w, parse) == form
+    assert g.has_parse(w, form, parse)
+
+
+def test_a_two_clause_template_fills_both_verbs_from_one_subject(lex):
+    t = {"id": "x", "la": "Sī {s:nom} {v1:impf.subj}, {o:acc} {v2:impf.subj}.",
+         "en": "If {s} {v1:past}, {s:pron} would {v2:base} {o}.",
+         "slots": {"s": {"only": ["Mārcus"]},
+                   "v1": {"pos": "V", "form": "impf.subj", "subj": "s", "lemmas": ["labōrō"], "g": "{pron} {past}"},
+                   "o": {"only": ["pecūnia"]},
+                   "v2": {"pos": "V", "form": "impf.subj", "subj": "s", "obj": "o", "lemmas": ["habeō"], "g": "{pron} would {base}"}},
+         "focus": ["v1", "v2"]}
+    g.validate_template(t)
+    fill = g.fill_template(lex, 33, t, __import__("random").Random(1))
+    assert fill is not None
+    la = g.render_la(fill)
+    assert la == "Sī Mārcus labōrāret, pecūniam habēret."
+    assert g.render_en(fill) == "If Marcus worked, he would have money."
+    gloss = {x["w"]: x["m"] for x in g.render_gloss(fill, la, lex)}
+    assert gloss["labōrāret"] == "he worked" and gloss["habēret"] == "he would have"
+    assert g.check_sentence(lex, 33, t, fill, la, [], g.render_en(fill), g.render_gloss(fill, la, lex)) == []
+
+
+def test_a_verb_gloss_pattern_names_only_known_placeholders():
+    t = {"id": "x", "la": "{s:nom} {v:pres.subj}.", "en": "Let {s} {v:base}.", "focus": "v",
+         "slots": {"s": {"sem": ["person"]}, "v": {"pos": "V", "form": "pres.subj", "subj": "s", "g": "let {opron} {bogus}"}}}
+    with pytest.raises(g.TemplateError):
+        g.validate_template(t)
+
+
+def test_the_pronoun_for_a_thing_is_it(lex):
+    t = {"id": "x", "la": "{o:acc} tibi dabō, dummodo {pron:acc} {v:pres.subj.act.2sg}.",
+         "en": "I will give you {o:a}, provided you {v:base} {pron}.", "focus": "v",
+         "slots": {"o": {"only": ["epistula"]}, "pron": {"pos": "PRON", "lemma": "is", "agree": "o"},
+                   "v": {"pos": "V", "form": "pres.subj.act.2sg", "subj": "tū", "obj": "pron", "lemmas": ["legō"]}}}
+    fill = g.fill_template(lex, 34, t, __import__("random").Random(1))
+    assert fill is not None
+    assert g.render_en(fill) == "I will give you a letter, provided you read it."
+
+
+@pytest.fixture(scope="module")
+def subj_batches(lex):
+    return {skill: g.generate(skill, 40, 1, lex) for skill in SUBJ}
+
+
+@pytest.mark.parametrize("skill", SUBJ)
+def test_the_subjunctive_skills_ship_forty_reviewed_sentences(subj_batches, lex, skill):
+    res = subj_batches[skill]
+    assert len(res["sentences"]) == 40
+    data = g.load_templates(skill)
+    assert data["review"]["passes"] and data["review"]["final_rate"] <= 0.05
+    chapter = res["chapter"]
+    forms = lex.forms_at(chapter)
+    names = {g.key_of(f) for w in lex.names(chapter) for f in w.index}
+    for s in res["sentences"]:
+        n = len(s["la"].split())
+        assert 5 <= n <= 8 and s["words"] == n, s["la"]
+        assert "{" not in s["en"] and len(s["gloss"]) == n and all(x["m"] not in ("", "?") for x in s["gloss"]), s
+        assert not re.search(r"\b(\w+) \1\b", s["en"].lower()), s["en"]
+        for x in s["gloss"]:
+            k = g.key_of(x["w"])
+            assert k in forms or k in names or x["w"] in g.FUNCTION_WORDS or x["w"].lower() in g.FUNCTION_WORDS, (s["la"], x["w"])
+        # the focus is a subjunctive verb (or the fixed potential form the lesson teaches)
+        assert s["focus"].split()[0].lower() in [t.strip(".,;:!?").lower() for t in s["la"].split()], s
+
+
 def test_a_count_is_exact_for_a_small_template_and_estimated_for_a_large_one(lex):
     data = g.load_templates("dative-indirect-object")
     small = g.count_template(lex, data["chapter"], data["templates"][0], data["exclude"], cap=10**9)
