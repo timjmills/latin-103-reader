@@ -1962,3 +1962,58 @@ Open, in the order they matter:
    sentence skills fail coverage rows 3 and 5 until their templates land and
    `python pipeline/build_generated.py` has been run for them (and the new
    banks added to `app/sw.js` PRECACHE with a `CACHE_VERSION` bump).
+
+## 15. The review gate, 2026-09-11
+
+An independent review of the whole undeployed range found two blocking faults
+and several lesser ones. What was fixed, and what was left:
+
+**Copyright.** One written teaching sentence was a book sentence word for word,
+and the question sets shipped in wave 2 reproduced 110 of Ørberg's own pensum
+and colloquium questions, some of the user's English among them. Every hit is
+rewritten in our own words. `pipeline/check_copyright.py` now indexes every
+five-word window of the library's Latin and every eight-word window of the
+user's English and scans all of `app/`; it exits non-zero on a hit and **runs
+before every deploy**. Its pytest skips, rather than fails, where `data/build`
+is absent, so a checkout without the library still passes.
+
+**A step must teach the sentence it names (§8).** `sentenceItem` falls back to
+another sentence of the same skill when the named one cannot carry the asked
+kind. That is right in itself, but it hid a class of bug: a focus the scanner
+could not resolve made *every* step of a skill teach a different example, the
+noticing opener unanswerable, and two banks yield nothing at all. Three causes,
+all now handled in `resolveFocus`: a focus of two words is a span, and the
+parse-bearing word is not always the first (*Cane lātrante*); a word with no
+paradigm table has only the dictionary's parse (an adverb); a periphrastic form
+(*ventūrum esse*) has no single word that carries the reading, so the parse the
+skill declares settles it. Enclitic readings are admitted for the skill that
+teaches them. Measured: written sentences that can be taught on themselves went
+from 88% to **99.1%**, bank sentences to **93.7%**, no bank dead.
+`tests/grammar.sentence-yield.test.mjs` holds those bars; they may only rise.
+
+**The banks are not installed any more.** 4.5 MB of generated sentences left
+the precache; `generated/index.json` stays, and a bank joins the runtime cache
+the first time its skill's unlimited practice is opened. This supersedes §11b's
+"precached" wording.
+
+Also fixed: the per-box hint gives that box's answer on pensum blanks and typed
+boxes, not only chart cells (§12); a retried table keeps the cells it was given,
+so flipping the switch after a wrong answer cannot re-score it against a
+different table; a pensum with hints off no longer prints the word "null"; the
+distractor shuffle is a real shuffle; a given cell's form is readable text
+rather than an image role.
+
+Known and deliberately left:
+
+1. **Bank drift.** Nothing yet ties a committed bank to the templates it was
+   built from, so editing a template without re-running `build_generated.py`
+   leaves a stale bank that still passes the coverage check. The fix is a
+   source hash in the bank header and a `--check` mode, as
+   `build_paradigm_catalogue.py` has.
+2. **Small controls are 36px** where `tokens.css` sets `--tap: 44px`. This is
+   the grammar section's house pattern in a dozen places and predates the
+   rebuild; changing it is a visual decision, not a bug fix.
+3. `KEY_CLASS` / `KEY_MODELS` in `lessons.js` are marked superseded by the
+   catalogue but still drive the print charts.
+4. Three written sentences (two in adverbs, one in ablative-accompaniment) and
+   the weaker banks still fall back to a sibling sentence of the same skill.
