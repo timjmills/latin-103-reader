@@ -289,10 +289,10 @@
   },
   {
    "id": "fim-09",
-   "la": "Mementō, Quīnte: magister sevērus est.",
-   "en": "Remember, Quintus: the teacher is strict.",
+   "la": "Scītōte, puerī: magister sevērus est.",
+   "en": "Know this, boys: the teacher is strict.",
    "words": 5,
-   "focus": "Mementō",
+   "focus": "Scītōte",
    "step": 4,
    "stage": 2,
    "kinds": [
@@ -301,12 +301,12 @@
    ],
    "gloss": [
     {
-     "w": "Mementō",
-     "m": "remember!"
+     "w": "Scītōte",
+     "m": "know! (you all, from now on)"
     },
     {
-     "w": "Quīnte",
-     "m": "Quintus! (calling him)"
+     "w": "puerī",
+     "m": "boys! (calling them)"
     },
     {
      "w": "magister",

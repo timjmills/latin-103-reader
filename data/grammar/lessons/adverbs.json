@@ -65,12 +65,20 @@
    "say": "To say 'more …ly', Latin uses **the comparative (the '-er / more' form)** in its neuter singular, ending *-ius*: *rēctius* more correctly, *fortius* more bravely, *gravius* more heavily. It is the same word as the neuter 'more X thing', doing an adverb's work; with *quam* it sets two doers side by side.",
    "show": {
     "kind": "sentence",
-    "id": "adv-09"
+    "id": "adv-10"
+   },
+   "worked": {
+    "sentence": "adv-10",
+    "given": [],
+    "ask": [
+     "degree",
+     "why"
+    ]
    },
    "check": {
     "kind": "recognise",
-    "sentence": "adv-10",
-    "ask": "Which word here says how Quintus shouts, rather than what Quintus is like?"
+    "sentence": "adv-09",
+    "ask": "Which word here says how Sextus writes, rather than what Sextus is like?"
    },
    "n": 4
   },
