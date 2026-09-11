@@ -1,0 +1,802 @@
+{
+ "skill": "indirect-question",
+ "chapter": 29,
+ "templates": [
+  {
+   "id": "iq-t1",
+   "la": "{s:nom} {v1:pres.ind} quid {s2:nom} {v2:pres.subj}.",
+   "en": "{s} {v1:tense} what {s2} {v2:prog}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "videō",
+      "sciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "absolute": true,
+     "gloss": "prog",
+     "lemmas": [
+      "portō",
+      "legō",
+      "scrībō",
+      "emō",
+      "parō",
+      "dīcō",
+      "quaerō",
+      "spectō",
+      "bibō",
+      "cantō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5,
+   "fixed_gloss": {
+    "quid": "what"
+   }
+  },
+  {
+   "id": "iq-t2",
+   "la": "{s:nom} {v1:pres.ind} {q} {s2:nom} {v2:pres.subj}.",
+   "en": "{s} {v1:tense} {q} {s2} {v2:prog}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "q": {
+     "pos": "ADV",
+     "only": [
+      "cūr",
+      "quandō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "gloss": "prog",
+     "lemmas": [
+      "plōrō",
+      "rīdeō",
+      "currō",
+      "fugiō",
+      "dormiō",
+      "cantō",
+      "labōrō",
+      "veniō",
+      "redeō",
+      "discēdō",
+      "lacrimō",
+      "clāmō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5
+  },
+  {
+   "id": "iq-t3",
+   "la": "{s:nom} {v1:pres.ind} ubi {s2:nom} {be:pres.subj}.",
+   "en": "{s} {v1:tense} where {s2} {be:tense}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr",
+      "pecus",
+      "grex"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 5
+  },
+  {
+   "id": "iq-t4",
+   "la": "{v1:pres.ind.act.1sg} ubi {s2:nom} {poss:nom} {be:pres.subj}.",
+   "en": "I {v1:base} where {s2} {be:tense}.",
+   "slots": {
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind.act.1sg",
+     "subj": "ego",
+     "absolute": true,
+     "lemmas": [
+      "nesciō"
+     ]
+    },
+    "s2": {
+     "only": [
+      "fīlius",
+      "fīlia",
+      "frāter",
+      "soror",
+      "amīcus",
+      "servus",
+      "ancilla",
+      "canis",
+      "equus",
+      "ovis",
+      "discipulus",
+      "nauta",
+      "mīles",
+      "grex",
+      "magister"
+     ],
+     "number": "any"
+    },
+    "poss": {
+     "pos": "ADJ",
+     "agree": "s2",
+     "only": [
+      "meus",
+      "tuus",
+      "noster"
+     ],
+     "det": true
+    },
+    "be": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 5
+  },
+  {
+   "id": "iq-t5",
+   "la": "{s:nom} {v1:pres.ind} unde {s2:nom} {v2:pres.subj}.",
+   "en": "{s} {v1:tense} where {s2} {v2:prog} from.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "gloss": "prog",
+     "lemmas": [
+      "veniō",
+      "currō",
+      "fugiō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5
+  },
+  {
+   "id": "iq-t6",
+   "la": "{s:nom} {v1:pres.ind} num {s2:nom} {o:acc} {v2:pres.subj}.",
+   "en": "{s} {v1:tense} whether {s2} {v2:prog} {o}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "o": {
+     "only": [
+      "vīnum",
+      "aqua",
+      "cibus",
+      "pānis",
+      "mālum",
+      "epistula",
+      "libellus",
+      "rosa",
+      "flōs",
+      "saccus",
+      "gladius",
+      "baculum",
+      "pōculum",
+      "equus",
+      "canis",
+      "ovis",
+      "Mārcus",
+      "Quīntus",
+      "Iūlia",
+      "servus",
+      "ancilla",
+      "puer",
+      "puella",
+      "magister",
+      "dominus",
+      "amīcus"
+     ],
+     "number": "any"
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "obj": "o",
+     "gloss": "prog",
+     "lemmas": [
+      "bibō",
+      "amō",
+      "videō",
+      "habeō",
+      "timeō",
+      "quaerō",
+      "emō",
+      "legō",
+      "exspectō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 6,
+   "fixed_gloss": {
+    "num": "whether"
+   }
+  },
+  {
+   "id": "iq-t7",
+   "la": "{s:nom} {v1:impf.ind} cūr {s2:nom} {v2:impf.subj}.",
+   "en": "{s} {v1:tense} why {s2} {v2:tense}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.ind",
+     "subj": "s",
+     "absolute": true,
+     "gloss": "tense",
+     "lemmas": [
+      "rogō",
+      "nesciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s2",
+     "gloss": "tense",
+     "lemmas": [
+      "plōrō",
+      "lacrimō",
+      "rīdeō",
+      "taceō",
+      "fugiō",
+      "currō",
+      "clāmō",
+      "dormiō",
+      "cantō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5
+  },
+  {
+   "id": "iq-t8",
+   "la": "{s:nom} {v1:impf.ind} ubi {s2:nom} {be:impf.subj}.",
+   "en": "{s} {v1:tense} where {s2} {be:tense}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "impf.ind",
+     "subj": "s",
+     "absolute": true,
+     "gloss": "tense",
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person",
+      "animal"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr",
+      "pecus",
+      "grex"
+     ]
+    },
+    "be": {
+     "pos": "V",
+     "form": "impf.subj",
+     "subj": "s2",
+     "takes": "pred",
+     "gloss": "tense",
+     "lemmas": [
+      "sum"
+     ]
+    }
+   },
+   "focus": "be",
+   "words": 5
+  },
+  {
+   "id": "iq-t9",
+   "la": "{s:nom} {v1:pres.ind} quis in {p:abl} {v2:pres.subj}.",
+   "en": "{s} {v1:tense} who {v2:prog} in {p}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "p": {
+     "only": [
+      "hortus",
+      "vīlla",
+      "ātrium",
+      "cubiculum",
+      "silva",
+      "culīna",
+      "lūdus",
+      "taberna"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "gloss": "prog",
+     "lemmas": [
+      "dormiō",
+      "sedeō",
+      "labōrō",
+      "cantō",
+      "clāmō",
+      "lūdō",
+      "ambulō",
+      "maneō",
+      "vigilō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 6,
+   "fixed_gloss": {
+    "quis": "who"
+   }
+  },
+  {
+   "id": "iq-t10",
+   "la": "{s:nom} {v1:pres.ind} quem {s2:nom} {v2:pres.subj}.",
+   "en": "{s} {v1:tense} whom {s2} {v2:prog}.",
+   "slots": {
+    "s": {
+     "sem": [
+      "person"
+     ],
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v1": {
+     "pos": "V",
+     "form": "pres.ind",
+     "subj": "s",
+     "absolute": true,
+     "lemmas": [
+      "rogō",
+      "nesciō",
+      "sciō"
+     ]
+    },
+    "s2": {
+     "sem": [
+      "person"
+     ],
+     "number": "any",
+     "not": [
+      "īnfāns",
+      "homō",
+      "hostis",
+      "inimīcus",
+      "nympha",
+      "praedō",
+      "pīrāta",
+      "tyrannus",
+      "fūr"
+     ]
+    },
+    "v2": {
+     "pos": "V",
+     "form": "pres.subj",
+     "subj": "s2",
+     "absolute": true,
+     "gloss": "prog",
+     "lemmas": [
+      "vocō",
+      "exspectō",
+      "quaerō",
+      "amō",
+      "timeō",
+      "videō",
+      "laudō",
+      "salūtō"
+     ]
+    }
+   },
+   "focus": "v2",
+   "words": 5,
+   "fixed_gloss": {
+    "quem": "whom"
+   }
+  }
+ ],
+ "exclude": [],
+ "review": {
+  "passes": [
+   {
+    "pass": 1,
+    "seed": 11,
+    "generated": 40,
+    "rejected": 1,
+    "rate": 0.025,
+    "causes": [
+     "sciēbat glossed 'was knowing': the tense gloss on the imperfect asker"
+    ]
+   },
+   {
+    "pass": 2,
+    "seed": 12,
+    "generated": 40,
+    "rejected": 6,
+    "rate": 0.15,
+    "causes": [
+     "homō, hostis, īnfāns as the asker",
+     "'is running up from', 'is going back from' after unde"
+    ]
+   },
+   {
+    "pass": 3,
+    "seed": 13,
+    "generated": 40,
+    "rejected": 6,
+    "rate": 0.15,
+    "causes": [
+     "'my fathers' (possessive on a plural parent): curated possessed nouns",
+     "faciō = 'make' ('what the pupils are making')",
+     "'hears what the farmer is watching': audiō out of the quid template",
+     "'buying the ships', 'buy the coin': curated objects after num"
+    ]
+   },
+   {
+    "pass": 4,
+    "seed": 14,
+    "generated": 40,
+    "rejected": 4,
+    "rate": 0.1,
+    "causes": [
+     "fūrēs / īnfāns as the second subject: exclusion list on s2",
+     "'carrying the friends': portō out of the num template",
+     "'where cattle was': pecus / grex out",
+     "'thiefs': English plural"
+    ]
+   },
+   {
+    "pass": 5,
+    "seed": 15,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   },
+   {
+    "pass": 6,
+    "seed": 16,
+    "generated": 40,
+    "rejected": 0,
+    "rate": 0.0,
+    "causes": []
+   }
+  ],
+  "final_rate": 0.0,
+  "method": "40 fresh sentences per pass, read hostilely for agreement, sense, sequence of tenses, English, gloss and macrons; every cause fixed in a frame, template, gate or check, never the symptom"
+ }
+}
