@@ -418,9 +418,11 @@ export function createSkillDraw({ skill, steps = [], teachItems = null, libraryI
     return null;
   };
   const blockedItem = (slot, opts = {}) => {
-    // 1 · the skill's own written sentences not yet shown in this sitting.
+    // 1 · the skill's own written sentences not yet shown in this sitting. `keyed`: a drawn item is a real
+    //     item, so it carries the key that lets a miss on it come back through "redo what was wrong" (M-3);
+    //     only a step's check, which is a moment in the step, stays keyless. A chart has no rebuildable key.
     if (teachItems) {
-      const own = slot.kind === 'chart' ? chartFromSteps() : teachItems.sentenceItem({ kind: slot.kind, stage: slot.stage, avoid: shown, unshownOnly: true });
+      const own = slot.kind === 'chart' ? chartFromSteps() : teachItems.sentenceItem({ kind: slot.kind, stage: slot.stage, avoid: shown, unshownOnly: true, keyed: true });
       if (own) { noteShown(own.taught); return { ...own, pool: 'written' }; }
     }
     // 2 · the skill's generated bank (§11b): the endless supply once the written set is spent, none shown twice
@@ -865,11 +867,21 @@ export function createLearn({ skill, gstore, items, teach = null, teachItems = n
       await gstore.setState(startLearning(cur ?? skill.id));
     },
     goto(p) { if (phases.includes(p)) phase = p; return phase; },
-    /** The teach steps, one check each, as one run; null when the skill has no steps (the caller goes to the ten). */
-    startSteps() {
+    /**
+     * The teach steps, one check each, as one run; null when the skill has no
+     * steps (the caller goes to the ten). `at` opens the run on that step
+     * rather than the first: a sitting interrupted by a reload comes back
+     * where it was, instead of making the learner walk the prerequisite
+     * warning and the noticing opener again (QA M-2). `onStep` reports the
+     * step on screen so the caller can keep that place.
+     */
+    startSteps({ at = 0, onStep = null } = {}) {
       if (!steps.length) return null;
       phase = 'steps';
-      runner = createRunner({ slots: stepSlots, getItem: stepItem, mode: 'learn', onAnswer: record, rand, grows: false });
+      const from = Math.min(Math.max(0, Math.floor(Number(at) || 0)), steps.length - 1);
+      const onChange = onStep ? (snap) => { try { onStep({ skill: skill.id, step: Math.min(snap.index, steps.length), steps: steps.length }); } catch { /* storage */ } } : null;
+      // `resume` is the runner's own: it starts the walk at that slot and never re-makes the ones before it.
+      runner = createRunner({ slots: stepSlots, getItem: stepItem, mode: 'learn', onAnswer: record, rand, grows: false, onChange, resume: from > 0 ? { queue: stepSlots, index: from, log: [] } : null });
       try { onProgress?.({ skill: skill.id, seen, total, phase }); } catch { /* storage */ }
       return runner.start();
     },
@@ -960,7 +972,7 @@ export function workedPlan(worked, focus, { skill = null, skills = null, first =
  * (batches of 10 until the learner stops). Answers update skill_state at
  * once, so a second device sees the change.
  */
-export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, chapter = null, rand = Math.random, resume = null, onChange = null, fill = undefined, pair = null }) {
+export function createPractice({ plan = null, gstore, items, skillsIndex, currentWeekN = null, currentWeekSkills = [], preset = 'review-heavy', size = 10, oneSkill = null, chapter = null, rand = Math.random, resume = null, onChange = null, fill = undefined, pair = null, rebuild = null }) {
   const skills = skillsIndex.skills;
   // Only skills that can produce an item enter a plan (M8): a metre skill or one with no sentences never becomes a slot.
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
@@ -979,7 +991,11 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
   const build = (n, exclude = null, prior = null) => buildSession({ states: gstore.getStates(), skills: exclude ? new Map([...drillSkills].filter(([id]) => id !== exclude)) : drillSkills, confusions: gstore.getConfusions(), preset: exclude && preset === 'one-skill' ? 'review-heavy' : preset, currentWeek: currentWeekSkills, size: n, oneSkill, seed: Math.floor(rand() * 1e9), prior, chapter, currentWeekChapter: weekChapter });
   const slots = plan ?? build(size ?? 10);
   // `itemKey` (a redo's slot) asks the generator for that exact item and nothing else; an ordinary slot has none.
-  const getItem = (slot, opts = {}) => items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, ...scopeOf(slot), avoid: opts.avoid, itemKey: slot.itemKey ?? null });
+  // `rebuild` is the caller's answer for a key the library generator cannot know — an item drawn from a skill's
+  // own written sentences, whose pool is that skill's `createTeachItems` and not the library (M-3). It is asked
+  // first for a named slot, and null from it falls through to the library exactly as before.
+  const getItem = (slot, opts = {}) => (slot.itemKey && rebuild ? rebuild(slot, opts) : null)
+    ?? items.generate({ skill: slot.skill, kind: slot.kind, stage: slot.stage, currentWeek: slot.currentWeek, currentWeekN, ...scopeOf(slot), avoid: opts.avoid, itemKey: slot.itemKey ?? null });
   const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
     await gstore.addAttempt(attempt);
     const cur = gstore.getState(item.skill) ?? item.skill;
@@ -1033,11 +1049,11 @@ export function createPractice({ plan = null, gstore, items, skillsIndex, curren
  * became slots; the runner's `dropped` counts those that turned out to build
  * nothing after all. The view prints the difference rather than pretending.
  */
-export function createRedo({ misses = [], gstore, items, skillsIndex, size = 10, oneSkill = null, chapter = null, currentWeekN = null, rand = Math.random, resume = null, onChange = null }) {
+export function createRedo({ misses = [], gstore, items, skillsIndex, size = 10, oneSkill = null, chapter = null, currentWeekN = null, rand = Math.random, resume = null, onChange = null, rebuild = null }) {
   const skills = skillsIndex.skills;
   const drillSkills = new Map([...skills].filter(([id]) => items.drillable?.(id) ?? true));
   const plan = buildRedoSession({ misses, skills: drillSkills, states: gstore.getStates(), size: size ?? 10, seed: Math.floor(rand() * 1e9) });
-  const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN, chapter, preset: oneSkill ? 'one-skill' : 'review-heavy', size: plan.length || 1, oneSkill, rand, resume, onChange });
+  const practice = createPractice({ plan, gstore, items, skillsIndex, currentWeekN, chapter, preset: oneSkill ? 'one-skill' : 'review-heavy', size: plan.length || 1, oneSkill, rand, resume, onChange, rebuild });
   return { ...practice, redo: true, plan, requested: misses.length, size: plan.length, open: false };
 }
 

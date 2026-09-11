@@ -90,12 +90,13 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
   // count on every repaint, and the answer means finding the *latest* attempt on each item. Walking thousands
   // of rows per repaint on a phone is what this avoids; like `bySkill` it is built once and dropped on any write.
   let missedList = null;
+  let unnamedList = null;         // wrong answers that carry no item_key: countable, never redoable
   const confusions = new Map();   // key → row
   const pensa = new Map();        // `${chapter}:${kind}` → row (private, read-only on the device)
   const listeners = new Set();
   let readyP = null;
   let db = null;
-  const dropIndex = () => { bySkill = null; missedList = null; };
+  const dropIndex = () => { bySkill = null; missedList = null; unnamedList = null; };
   /** The per-skill index, built once and kept until the next write. Rows are the stored objects, not copies. */
   const index = () => {
     if (!bySkill) {
@@ -124,6 +125,18 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       missedList = [...last.values()].filter(isMissedAttempt).sort((a, b) => ts(b.at) - ts(a.at));
     }
     return missedList;
+  };
+  /**
+   * Wrong answers that name **no item** — a generated sentence, a catalogue
+   * table, a teaching step's check. They can never be offered back, so they
+   * stay out of `missed()`; but they are not nothing, and the empty state
+   * must not say "everything you have missed has since been answered right"
+   * over the top of a hundred of them (QA M-3). One row per answer, because
+   * without a key there is no item to collapse them onto.
+   */
+  const unnamed = () => {
+    if (!unnamedList) unnamedList = [...attempts.values()].filter((a) => !a.item_key && isMissedAttempt(a)).sort((a, b) => ts(b.at) - ts(a.at));
+    return unnamedList;
   };
   const emit = () => { for (const cb of listeners) { try { cb('grammar'); } catch (e) { console.error('[grammar] listener failed', e); } } };
 
@@ -354,6 +367,19 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       const only = skills == null ? null : (skills instanceof Set ? skills : new Set(skills));
       let n = 0;
       for (const a of missed()) { if (skill != null && a.skill !== skill) continue; if (only && !only.has(a.skill)) continue; n += 1; }
+      return n;
+    },
+    /**
+     * How many wrong answers in scope name no item, so could never be offered
+     * back — a generated sentence, a catalogue table, a teaching step. The
+     * empty state prints it rather than claiming nothing was missed
+     * (GRAMMAR-CONTRACT.md "Redo what was wrong"; QA M-3). Answers, not items:
+     * without a key there is nothing to collapse them onto.
+     */
+    countUnnamedMissed({ skill = null, skills = null } = {}) {
+      const only = skills == null ? null : (skills instanceof Set ? skills : new Set(skills));
+      let n = 0;
+      for (const a of unnamed()) { if (skill != null && a.skill !== skill) continue; if (only && !only.has(a.skill)) continue; n += 1; }
       return n;
     },
     addAttempt,

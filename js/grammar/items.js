@@ -380,6 +380,32 @@ export const cellEnding = (cell) => (cell && typeof cell.ending === 'string' && 
 export function normaliseAnswer(s) {
   return stripMacrons(String(s ?? '')).toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
+/* ------------------------------- the key of an item on a written sentence */
+// A skill's own written sentences (§1) are a pool of their own, beside the library's. An item drawn from them
+// carries the ordinary generator key with `w:` in front, so "redo what was wrong" can tell the two apart from
+// the key alone and rebuild the item where it came from (`createTeachItems.itemByKey`) rather than looking for
+// a sentence the library has never heard of. Pure, and the shape is the only contract between them.
+export const WRITTEN_PREFIX = 'w:';
+export const writtenKey = (key) => (key ? `${WRITTEN_PREFIX}${key}` : null);
+export const isWrittenKey = (key) => typeof key === 'string' && key.startsWith(WRITTEN_PREFIX);
+export const bareKey = (key) => (isWrittenKey(key) ? key.slice(WRITTEN_PREFIX.length) : key);
+/**
+ * A shaper that gives a form the same initial capital as `like`. A multiple
+ * choice must not be answerable by the shape of its options: the right one is
+ * lifted from the sentence, where a word that opens it is capitalised, while
+ * the distractors come from the paradigm, which prints them lower case — so
+ * the capital alone gave the answer away (QA M-4). Only what is shown
+ * changes; `normaliseAnswer` folds case before anything is graded. Pure.
+ */
+export function matchCapital(like) {
+  const first = String(like ?? '').charAt(0);
+  const upper = !!first && first === first.toUpperCase() && first !== first.toLowerCase();
+  return (form) => {
+    const s = String(form ?? '');
+    if (!s) return s;
+    return (upper ? s.charAt(0).toUpperCase() : s.charAt(0).toLowerCase()) + s.slice(1);
+  };
+}
 /**
  * Does a line the item *shows* spell one of the forms it accepts? Whole words,
  * macrons optional — the same reading the grader does. Nothing an item prints
@@ -1151,7 +1177,13 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       const norm = normaliseAnswer(c.token.text);
       const others = shuffle([...forms].filter((f) => normaliseAnswer(f) !== norm), rand).slice(0, 3);
       if (!others.length) return null;
-      item.choices = shuffle([{ value: c.token.text, correct: true }, ...others.map((f) => ({ value: f, correct: false }))], rand).map((o) => ({ ...o, label: o.value, skill: null }));
+      // The four options must not differ in anything but the ending. The right one is taken from the sentence,
+      // where a sentence-initial word is capitalised (*Mīlite canente…*), while the distractors come from the
+      // paradigm, which prints them lower case — so the capital alone answered the item (QA M-4). Every option
+      // is shaped like the answer: capital when the blank opens the sentence, lower case otherwise. Grading is
+      // unaffected — `normaliseAnswer` folds case before anything is compared.
+      const shape = matchCapital(c.token.text);
+      item.choices = shuffle([{ value: c.token.text, correct: true }, ...others.map((f) => ({ value: shape(f), correct: false }))], rand).map((o) => ({ ...o, label: o.value, skill: null }));
     }
     return item;
   }
@@ -1542,7 +1574,7 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
    * item is really asking about, so nothing is claimed falsely. Null when the
    * skill's own sentences yield nothing — the library is never reached.
    */
-  function sentenceItem({ kind = 'recognise', sentence = null, stage = 1, avoid = null, unshownOnly = false } = {}) {
+  function sentenceItem({ kind = 'recognise', sentence = null, stage = 1, avoid = null, unshownOnly = false, keyed = false } = {}) {
     const named = sentence ? byId.get(sentence) : null;
     const seen = (x) => !!avoid?.has?.(x.id);
     // Sentences this Learn has not shown yet come before the ones it has (A1); `unshownOnly` is the blocked
@@ -1554,14 +1586,19 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     for (const cand of order) {
       const item = gen.generate({ skill: skill.id, kind, stage, chapter: null, unit: cand.id, focus: cand.focus });
       if (!item) continue;
-      // No `key`: a teaching step's check is a moment in the step, not a drawable item, so it is logged
-      // (the history and the timing stay true) but never enters "redo what was wrong", which offers items
-      // back and must be able to rebuild them. `teachKey` keeps the generator's own key for the tests.
+      // A teaching **step's** check is a moment in the step, not a drawable item: it is logged (the history and
+      // the timing stay true) but carries no key, so it never enters "redo what was wrong". `keyed` is the
+      // drawn item — the blocked ten, "Just drill it", unlimited practice — and a **written** sentence there
+      // does get its key, prefixed `w:` so the redo knows to rebuild it from the skill's own sentences rather
+      // than from the library (`itemByKey`). Without that the whole rebuilt path logged `item_key: ''` and the
+      // redo shelf could never fill (QA M-3). A **generated** sentence stays keyless: §11b, and a bank is
+      // re-drawn, not re-addressed. `teachKey` keeps the generator's own key for the tests either way.
       // `repeat: false`: a step names its sentence, and the blocked ten's written tier is ordered by what this Learn has
       // shown (A1), so the generator's own pool wrapping says nothing here and must not print "starting over".
       // A generated sentence's item says so (§11: "labelled as such in its own words") and names its template, so an
       // attempt on it can be told apart from one on a written sentence (`createRunner` copies both into the attempt's meta).
-      const made = { ...item, teach: true, teachKey: item.key, key: null, repeat: false, taught: cand.id, asked: named?.id ?? null, written: cand, generated: cand.generated === true, template: cand.generated === true ? cand.template ?? null : null };
+      const isGen = cand.generated === true;
+      const made = { ...item, teach: true, teachKey: item.key, key: keyed && !isGen && item.key ? writtenKey(item.key) : null, repeat: false, taught: cand.id, asked: named?.id ?? null, written: cand, generated: isGen, template: isGen ? cand.template ?? null : null };
       if (item.kind === kind) return made;
       loose = loose ?? made;
     }
@@ -1652,8 +1689,28 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     return { written, candidate: hit ?? pool[0] };
   }
 
+  /**
+   * One item back by the exact key it was logged under — what "redo what was
+   * wrong" needs for an item drawn from a **written** sentence. The key names
+   * the kind, the sentence and the token, so the item is rebuilt as it was;
+   * null when it cannot be (the sentence was rewritten, the word re-parsed),
+   * and the redo then drops that slot quietly, exactly as it does for a
+   * library item that has gone. `kind` is the attempt's own, because the key
+   * is the pool's key for that kind.
+   */
+  function itemByKey(key, { kind = null, stage = 1 } = {}) {
+    const want = bareKey(key);
+    if (!want) return null;
+    const k = kind || String(want).split(':')[0].replace(/^recognise-tap$/, 'recognise');
+    if (!k) return null;
+    const item = gen.generate({ skill: skill.id, kind: k, stage, chapter: null, itemKey: want });
+    if (!item) return null;
+    const cand = byId.get(item.unit_id) ?? null;
+    return { ...item, key: writtenKey(item.key), teachKey: item.key, repeat: false, taught: item.unit_id ?? null, asked: null, written: cand, generated: false, template: null, pool: 'written' };
+  }
+
   return {
-    sentenceItem, chartItem, focusOf,
+    sentenceItem, chartItem, focusOf, itemByKey,
     get sentences() { return list; },
     sentence: (id) => byId.get(id) ?? null,
     /** The lemmas a chart check would really ask about, for the step's own prose and for the tests. */
@@ -1766,6 +1823,39 @@ export function createCatalogueItems({ catalogue, lookup, paradigm = null, headw
     return { ...got, catalogue: table };
   }
   const cellIdsOf = (table, group = null) => ((typeof table === 'string' ? catalogue.table(table) : table)?.groups ?? []).filter((g) => !group || g.id === group).flatMap((g) => g.cells ?? []);
+  /**
+   * The chosen axes split by what they select (§5). A **cell** axis (case,
+   * number, tense …) says which cells of the table are asked; a **lemma**
+   * axis (the gender of the headword, its chapter, deponency) says which
+   * words they are asked on. The table's own `axes` declare the scope; an
+   * axis it does not declare is read as a cell axis, which is what every slot
+   * of a cell id is.
+   *
+   * Keeping the two apart is the whole point: `narrowCells` keeps a cell only
+   * when its id carries a slot for every axis named, and `noun_gender_in_cell_id`
+   * is false, so handing it the gender chip dropped every cell of a noun table
+   * and emptied "practise one cell across words" outright (QA M-6). Pure.
+   */
+  function splitAxes(table, axes = {}) {
+    const t = typeof table === 'string' ? catalogue.table(table) : table;
+    const scope = new Map((t?.axes ?? []).map((a) => [a.id, a.scope === 'lemma' ? 'lemma' : 'cell']));
+    const out = { cell: {}, lemma: {} };
+    for (const [id, vs] of Object.entries(axes ?? {})) {
+      if (!Array.isArray(vs) || !vs.length) continue;
+      out[scope.get(id) === 'lemma' ? 'lemma' : 'cell'][id] = [...vs];
+    }
+    return out;
+  }
+  /**
+   * Does one word answer the lemma axes chosen? A word that says nothing
+   * about an axis (a library word whose gender the chip cannot know) is kept
+   * — the axis narrows what it can, and never silently drops what it cannot
+   * judge. Pure.
+   */
+  function lemmaFits(table, axes = {}, word = null) {
+    const { lemma } = splitAxes(table, axes);
+    return Object.entries(lemma).every(([id, vs]) => { const v = word?.[id]; return v == null || vs.map(String).includes(String(v)); });
+  }
   /** The cell ids of a table narrowed by cell axes (§5): `{ case: ['dat'], number: ['sg'], … }` — a cell stays when every named axis holds one of its slots. */
   function narrowCells(ids, axes = {}) {
     const wants = Object.entries(axes ?? {}).filter(([, vs]) => Array.isArray(vs) && vs.length);
@@ -1838,12 +1928,11 @@ export function createCatalogueItems({ catalogue, lookup, paradigm = null, headw
   }
   /** The rendered paradigm of a word, for "see it filled"; null when the word renders nothing. */
   const filled = (tableId, word = null) => { const t = catalogue.table(tableId); const got = entryFor(word ?? t?.stock?.[0]); return got?.table ?? null; };
-  /** The stock words of a table narrowed by a lemma axis (§5): gender, chapter, deponent. */
+  /** The stock words of a table narrowed by the **lemma** axes (§5): gender, chapter, deponency. Cell axes are not the words' business. */
   function stockWords(tableId, axes = {}) {
     const t = catalogue.table(tableId);
     const all = t ? catalogue.stock(t.id) : [];
-    const g = Array.isArray(axes?.gender) && axes.gender.length ? axes.gender : null;
-    return g ? all.filter((w) => !w.gender || g.includes(w.gender)) : all;
+    return all.filter((w) => lemmaFits(t, axes, w));
   }
-  return { search, wordEntry, tableOf, cellItem, tableItem, filled, stockWords, narrowCells, cellIdsOf, tableIdOf: (e) => tableIdOf(e, select), helpers, rand };
+  return { search, wordEntry, tableOf, cellItem, tableItem, filled, stockWords, narrowCells, splitAxes, lemmaFits, cellIdsOf, tableIdOf: (e) => tableIdOf(e, select), helpers, rand };
 }
