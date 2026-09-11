@@ -1611,3 +1611,50 @@ suggestions are built, shaped so none slows the quick path:
 
 Plus "Just drill it", two-tap entry, blocked-and-short by default, and the
 catalogue as the fastest route for a paradigm, as in §10.
+
+## 11. Unlimited practice per skill (2026-09-11)
+
+Learner: to nail a skill down there must be unlimited practice of it, by a
+word generator or a sentence generator. Two supplies, one existing:
+
+**Endings are already unlimited.** A paradigm cell can be built on any of the
+2,735 table-bearing headwords (§4a), so the catalogue's "practise this cell"
+and "practise this table" are the word generator: cell × word, drawn without
+repeat, filtered by the customisation axes (§5). Every morphology skill routes
+its unlimited practice there.
+
+**Constructions need a sentence generator.** For a syntax skill (purpose,
+result, ablative absolute, indirect statement, cum clauses …) and for a case
+used as a construction (indirect object, agent, means):
+
+```
+app/data/grammar/templates/<skill>.json    hand-written patterns, public (our own)
+app/data/grammar/vocab/NN.json             gains "sem": semantic class per word
+```
+```jsonc
+{ "skill": "dative-indirect-object",
+  "templates": [
+    { "id": "dio-t1", "la": "{giver:nom} {receiver:dat} {gift:acc} dat.",
+      "en": "{giver} gives {receiver} {gift}.",
+      "slots": { "giver": { "sem": "person" }, "receiver": { "sem": "person" }, "gift": { "sem": "thing" } },
+      "focus": "receiver", "words": 4 } ] }
+```
+- **Templates are written by a Latinist per skill**, five to ten each, in the
+  book's register, every one five to eight words when filled, the English
+  carried alongside so a generated sentence has its translation and its gloss.
+- **Slots fill from the chapter's cumulative vocabulary** (§1's rule), by
+  semantic class (`person · animal · thing · place · time · abstract`, tagged
+  on every deck word by a reviewed pass), and are **inflected by the paradigm
+  engine** (paradigms.js in the app, latin_forms.py in the pipeline — the two
+  are held cell-for-cell equal), so agreement is by construction correct.
+- A generated sentence is checked before it is shown: length, agreement with
+  the template's constraints, no slot filled twice with the same word, and a
+  per-skill exclusion list for combinations a Latinist has rejected.
+- **Generated sentences never enter Learn.** The hand-written set teaches; the
+  generator is the endless supply for "Just drill it", the blocked ten's
+  overflow, the same-session re-test and any practice beyond the written set.
+- Every generated item is labelled as such in its own words, and the learner
+  can report one, which adds it to the exclusion list.
+- **Pilot first**: eight skills across the categories, generated output sampled
+  and reviewed adversarially by a second Latinist, the rejection rate reported,
+  before the remaining skills are written.
