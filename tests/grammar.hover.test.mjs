@@ -60,7 +60,20 @@ test('the noticing opener says in the DOM that it is over', () => {
   );
 });
 
-test('the hover opens as a tooltip: no keyboard focus, and only where hovering is real', () => {
+test('the hover opens as a tooltip and takes no keyboard focus', () => {
   assert.match(UI, /if \(!hover\) pop\.querySelector\('\.g-pop__close'\)\.focus/, 'a hover popup would take the caret');
-  assert.match(UI, /\(hover: hover\) and \(pointer: fine\)/, 'a touch screen would fire the hover on the tap that chooses a word');
+});
+
+test('whether a pointer can hover is asked of the event, not of the device', () => {
+  // The first version asked `matchMedia('(hover: hover) and (pointer: fine)')`. Those describe the PRIMARY
+  // input only, so a Windows laptop with a touchscreen answered "coarse, cannot hover" with a mouse plugged
+  // in, and the feature was simply off. A pointer event carries what it actually is.
+  assert.match(UI, /const HOVERS = new Set\(\['mouse', 'pen'\]\);/, 'the pointer kinds that can hover are gone');
+  assert.match(UI, /canHover = \(e\) => !e \|\| !e\.pointerType \|\| HOVERS\.has\(e\.pointerType\)/, 'the guard no longer reads the event');
+  assert.match(UI, /root\.addEventListener\('pointerover', onHoverIn\);/, 'mouseover carries no pointerType, so the guard would be blind');
+  assert.match(UI, /root\.addEventListener\('pointerout', onHoverOut\);/);
+  // Only inside a comment explaining why, never as a live test again.
+  const code = UI.split('\n').filter((l) => !l.trim().startsWith('//')).join('\n');
+  assert.ok(!/matchMedia\('\(hover: hover\)/.test(code), 'back to asking the device instead of the event');
+  assert.ok(!/matchMedia\('\(any-hover/.test(code), 'any-hover still describes the device, not this pointer');
 });

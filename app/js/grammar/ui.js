@@ -21,7 +21,7 @@ import { buildChart, buildSheet, printDocument } from './print.js';
 
 const LS_SESSION = 'l103.grammar.session';      // the practice session in progress (plan, position, log) — Back / Reload can resume it
 const LS_QUEUE = 'l103.grammar.learnQueue';     // "Start all as new": the skills still to go through Learn
-const LS_LEARN = 'l103.grammar.learn';          // a chapter set's Learn pass in progress: how far through the deck (session.js batches it)
+const LS_LEARN = 'l103.grammar.learn';          // where the learner is in each skill: `{ <skill id>: { step | seen, at } }`
 const readJSON = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const writeJSON = (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } };
 
@@ -286,7 +286,13 @@ export function createUI(ctx) {
   const HOVER_IN_MS = 140;   // long enough that crossing a sentence does not strobe
   let hoverTimer = null;
   let hoverWord = null;
-  const canHover = () => (typeof window.matchMedia !== 'function') || window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  // Whether *this* pointer can hover, asked of the event rather than of the device. The first version asked
+  // `matchMedia('(hover: hover) and (pointer: fine)')`, which describes only the **primary** input: a Windows
+  // laptop with a touchscreen answers "coarse, cannot hover" even with a mouse plugged in, and the feature was
+  // simply off for the reader who asked for it. A pointer event says what it actually is, so a mouse on a
+  // touch laptop hovers and a finger on the same machine does not.
+  const HOVERS = new Set(['mouse', 'pen']);
+  const canHover = (e) => !e || !e.pointerType || HOVERS.has(e.pointerType);
   const clearHoverTimer = () => { if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; } };
   const closeHoverPop = () => { if (pop && pop.dataset.hover === '1') closePop(); };
   /*
@@ -330,7 +336,7 @@ export function createUI(ctx) {
   }
 
   function onHoverIn(e) {
-    if (!canHover()) return;
+    if (!canHover(e)) return;
     let w = e.target?.closest?.('.g-w, .g-wx');
     // Not on a word yet, but on Latin: cut it into words and find the one under the pointer.
     if (!w) {
@@ -365,8 +371,9 @@ export function createUI(ctx) {
     closeHoverPop();
   }
   // `root` and not `body`: body is rebuilt by every draw(), and is still null when this runs.
-  root.addEventListener('mouseover', onHoverIn);
-  root.addEventListener('mouseout', onHoverOut);
+  // `pointerover` / `pointerout` and not the mouse pair, so `pointerType` is there to be read.
+  root.addEventListener('pointerover', onHoverIn);
+  root.addEventListener('pointerout', onHoverOut);
 
   /** A Latin sentence as tappable words. `target`: word index (or a list of them) to mark; `tap(index)`: the words are the answer; a `___` blank is marked as the target. */
   function latin(la, { target = null, tap = null, cls = '' } = {}) {
@@ -703,9 +710,28 @@ export function createUI(ctx) {
     writeJSON(LS_QUEUE, ids.slice(1));   // the run survives a detour, a reload or Back (G1-11)
     render('learn', { skill: ids[0], queue: ids.slice(1) });
   }
+  /**
+   * Where the learner is in each skill: `{ <skill id>: { step | seen, at } }`.
+   * Reads the one-slot shape this replaced (`{ skill, step, at }`) and keeps that
+   * single place, so nobody mid-lesson loses it on the update.
+   */
+  function learnAll() {
+    const raw = readJSON(LS_LEARN, null);
+    if (!raw || typeof raw !== 'object') return {};
+    if (typeof raw.skill === 'string') return { [raw.skill]: { step: raw.step, seen: raw.seen, at: raw.at } };
+    return raw;
+  }
+  const learnPlace = (id) => learnAll()[id] ?? null;
+  function setLearnPlace(id, place) {
+    const all = learnAll();
+    if (place) all[id] = { ...place, at: Date.now() };
+    else delete all[id];
+    writeJSON(LS_LEARN, Object.keys(all).length ? all : null);
+  }
+
   async function resetSkill(id) {
     if (!confirm(`Reset ${titleOf(id)}? Its progress, attempts and confusions are removed.`)) return;
-    await gstore.resetSkill(id); items.pool.reset(id); ctx.say(`${titleOf(id)} reset.`); repaint();
+    await gstore.resetSkill(id); items.pool.reset(id); setLearnPlace(id, null); ctx.say(`${titleOf(id)} reset.`); repaint();
   }
   async function resetAll() {
     if (!confirm('Reset every skill? All grammar progress, attempts and confusions are removed, including any session in progress. The reading progress and looked-up words are untouched.')) return;
@@ -1077,16 +1103,17 @@ export function createUI(ctx) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
     if (skill.set === 'pensum') { startBlocked(id, from); return; }   // pensa are practised, never learned in a sitting
-    // A chapter set's Learn pass is resumable: how far through the deck it is survives Back, a reload and a detour
-    // (the pool already remembers which items have been shown, so a resumed batch never repeats one) — CR M8.
-    const savedLearn = readJSON(LS_LEARN, null);
-    const resume = skill.set && savedLearn?.skill === id && Number(savedLearn.seen) > 0 ? { seen: Number(savedLearn.seen) } : null;
-    const onProgress = (pr) => writeJSON(LS_LEARN, pr.seen > 0 && pr.seen < pr.total ? { skill: pr.skill, seen: pr.seen, at: Date.now() } : null);
+    // Where the learner is, kept per skill. This used to be one slot for the whole section — `{ skill, step }` —
+    // so opening any second lesson overwrote the first one's place and coming back to it started at step 1. It is
+    // now a place for each skill, so "I left this one half way" survives going and doing something else.
+    const savedLearn = learnPlace(id);
+    const resume = skill.set && Number(savedLearn?.seen) > 0 ? { seen: Number(savedLearn.seen) } : null;
+    const onProgress = (pr) => setLearnPlace(pr.skill, pr.seen > 0 && pr.seen < pr.total ? { seen: pr.seen } : null);
     // A teach-step Learn is resumable in the same way (QA M-2): the step on screen is kept beside the skill, so
     // "Continue learning" after a reload opens where the learner was instead of at step 1, prerequisite warning
     // and noticing opener and all. `step === steps` means the steps are behind them and the ten is where they were.
-    const savedStep = !skill.set && savedLearn?.skill === id && Number.isFinite(Number(savedLearn.step)) ? Math.max(0, Math.floor(Number(savedLearn.step))) : 0;
-    const noteStep = (n) => writeJSON(LS_LEARN, { skill: id, step: n, at: Date.now() });
+    const savedStep = !skill.set && Number.isFinite(Number(savedLearn?.step)) ? Math.max(0, Math.floor(Number(savedLearn.step))) : 0;
+    const noteStep = (n) => setLearnPlace(id, { step: n });
     setBody(h('p', { class: 'g-loading', text: 'Preparing the lesson…' }));
     const lesson = skill.set ? null : await lessonOf(id);
     const teachItems = skill.set ? null : await teachItemsOf(skill);
@@ -1200,7 +1227,7 @@ export function createUI(ctx) {
       const passed = r.passed;
       // The blocked ten's own misses, as items that can be rebuilt (a self-graded "partly" is not one).
       const redoMissed = r.missed.filter((a) => a.item_key && !a.partial);
-      if (passed && readJSON(LS_LEARN, null)?.skill === id) writeJSON(LS_LEARN, null);
+      if (passed) setLearnPlace(id, null);
       // The same-session re-test (§10) and the reading tie-in (§13) belong to a skill that has just been learned.
       if (passed && !skill.set) noteRetestFor(id);
       const after = h('div', { class: 'g-after' }, passed ? retestNode({ only: id, from }) : null);

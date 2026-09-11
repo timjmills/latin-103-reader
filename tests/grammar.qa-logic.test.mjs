@@ -281,8 +281,11 @@ test('M-2: startSteps opens on the step it is given and reports the one on scree
 
 test('M-2: the view keeps the step beside the skill and reopens there', () => {
   const learnView = slice('async function renderLearnStart(', '/* --------------------------------------------- "Just drill it" (§10) */');
-  assert.match(learnView, /const savedStep = !skill\.set && savedLearn\?\.skill === id/, 'the saved place is read for a teach-step skill too');
-  assert.match(learnView, /const noteStep = \(n\) => writeJSON\(LS_LEARN, \{ skill: id, step: n/, 'and written as the learner moves');
+  // The place is now kept per skill rather than in one slot for the whole section — see the test below,
+  // which is the reason this assertion no longer names `savedLearn?.skill === id`.
+  assert.match(learnView, /const savedLearn = learnPlace\(id\);/, 'the saved place is read for this skill');
+  assert.match(learnView, /const savedStep = !skill\.set && Number\.isFinite\(Number\(savedLearn\?\.step\)\)/, 'the saved place is read for a teach-step skill too');
+  assert.match(learnView, /const noteStep = \(n\) => setLearnPlace\(id, \{ step: n \}\);/, 'and written as the learner moves');
   assert.match(learnView, /learn\.startSteps\(\{ at, onStep: \(pr\) => noteStep\(pr\.step\) \}\)/);
   assert.match(learnView, /else if \(nSteps && savedStep >= nSteps\) showBlocked\(\);/, 'past the last step the ten is where they were');
   assert.match(learnView, /else showSteps\(\{ at: nSteps \? Math\.min\(savedStep, nSteps - 1\) : 0 \}\)/);
@@ -343,4 +346,49 @@ test('N-9: the catalogue lede counts what the filter left on screen', () => {
 test('M-9: the hint copy says what the shipped hint does', () => {
   assert.doesNotMatch(UI, /A hint never spells the answer/, 'the promise the per-box hint breaks is gone');
   assert.match(UI, /Its last step, "Show this form", gives that one box its answer and marks the box hinted/, 'and the copy says what it costs');
+});
+
+test('the place is kept for every skill at once, not one slot for the section', () => {
+  // The fault the reader hit: LS_LEARN held `{ skill, step }`, so opening any second lesson overwrote
+  // the first one's place and coming back to it started at step 1 again.
+  const ui = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  const helpers = /function learnAll\(\)\s*\{([\s\S]*?)^ {2}\}/m.exec(ui);
+  assert.ok(helpers, 'learnAll() is gone');
+  assert.match(helpers[1], /typeof raw\.skill === 'string'/, 'the one-slot shape is no longer migrated, so an in-progress lesson loses its place on update');
+  assert.match(ui, /const learnPlace = \(id\) => learnAll\(\)\[id\] \?\? null;/);
+  assert.match(ui, /function setLearnPlace\(id, place\)/);
+  // "unless I reset it": a per-skill reset must forget where that skill was.
+  const reset = /async function resetSkill\(id\)\s*\{([\s\S]*?)^ {2}\}/m.exec(ui);
+  assert.ok(reset, 'resetSkill() is gone');
+  assert.match(reset[1], /setLearnPlace\(id, null\)/, 'resetting a skill leaves its saved place behind');
+  // And no caller may go back to writing the whole key as one slot.
+  assert.ok(!/writeJSON\(LS_LEARN, \{ skill:/.test(ui), 'something still writes LS_LEARN as a single slot');
+});
+
+/* ============ the enclitics parse item asked a noun for its tense and mood ============ */
+
+test('enclitics: a parse item asks which ending it is, never its tense and mood', () => {
+  // `skills.json` gives enclitics `"feature": "form"`, but parseExpect/parseName/withValue had no `form`
+  // branch and fell through to the finite-verb one. Sardiniaque is a noun: it has no tense and no mood,
+  // so the correct answer rendered as the string "undefined undefined" and two of the three options as
+  // "undefined ne" / "undefined ve". Every parse item of the skill was unanswerable, and it was live.
+  const items = teachFor('enclitics');
+  const ids = sentencesOf('enclitics').sentences.map((s) => s.id);
+  let built = 0;
+  for (const id of ids) {
+    const it = items.sentenceItem({ kind: 'parse', sentence: id });
+    if (!it || it.kind !== 'parse') continue;
+    built += 1;
+    const shown = JSON.stringify([it.prompt?.question, it.answer, it.choices]);
+    assert.ok(!shown.includes('undefined'), `${id}: "undefined" reached the learner — ${shown.slice(0, 160)}`);
+    assert.match(it.prompt.question, /What does the ending of .+ do here\?/, `${id}: the question is not about the ending`);
+    assert.match(it.answer[0], /^-(que|ne|ve): /, `${id}: the answer is not an ending — ${it.answer[0]}`);
+    if (it.input === 'choice') {
+      // -que, -ne and -ve. The skill teaches the contrast, so its own values are the distractors: excluding
+      // them as "values the skill stands for" left a two-way choice, which is a coin toss.
+      assert.equal(it.choices.length, 3, `${id}: ${it.choices.length} options, not three`);
+      assert.ok(it.choices.some((c) => c.correct), `${id}: no option is the right one`);
+    }
+  }
+  assert.ok(built >= 5, `only ${built} parse items could be built from the skill's own sentences`);
 });
