@@ -1,602 +1,606 @@
 {
-  "skill": "third-declension",
-  "chapter": 9,
-  "sentences": [
+ "skill": "third-declension",
+ "chapter": 9,
+ "sentences": [
+  {
+   "id": "td-01",
+   "la": "Pāstor fessus in silvā dormit.",
+   "en": "The tired shepherd is sleeping in the wood.",
+   "words": 5,
+   "focus": "Pāstor",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
     {
-      "id": "td-01",
-      "la": "Pāstor fessus in silvā dormit.",
-      "en": "The tired shepherd is sleeping in the wood.",
-      "words": 5,
-      "focus": "Pāstor",
-      "step": 1,
-      "stage": 1,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Pāstor",
-          "m": "the shepherd"
-        },
-        {
-          "w": "fessus",
-          "m": "tired"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "silvā",
-          "m": "the wood"
-        },
-        {
-          "w": "dormit",
-          "m": "is sleeping"
-        }
-      ]
+     "w": "Pāstor",
+     "m": "the shepherd"
     },
     {
-      "id": "td-02",
-      "la": "Canis pāstōris in umbrā iacet.",
-      "en": "The shepherd's dog is lying in the shade.",
-      "words": 5,
-      "focus": "pāstōris",
-      "step": 2,
-      "stage": 1,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Canis",
-          "m": "the dog"
-        },
-        {
-          "w": "pāstōris",
-          "m": "of the shepherd"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "umbrā",
-          "m": "the shade"
-        },
-        {
-          "w": "iacet",
-          "m": "is lying"
-        }
-      ]
+     "w": "fessus",
+     "m": "tired"
     },
     {
-      "id": "td-03",
-      "la": "Puerī fessī pānem pāstōris edunt.",
-      "en": "The tired boys are eating the shepherd's bread.",
-      "words": 5,
-      "focus": "pānem",
-      "step": 3,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Puerī",
-          "m": "the boys"
-        },
-        {
-          "w": "fessī",
-          "m": "tired"
-        },
-        {
-          "w": "pānem",
-          "m": "the bread"
-        },
-        {
-          "w": "pāstōris",
-          "m": "of the shepherd"
-        },
-        {
-          "w": "edunt",
-          "m": "eat"
-        }
-      ]
+     "w": "in",
+     "m": "in"
     },
     {
-      "id": "td-04",
-      "la": "Lupus niger ovem parvam petit.",
-      "en": "The black wolf goes for the little sheep.",
-      "words": 5,
-      "focus": "ovem",
-      "step": 3,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Lupus",
-          "m": "the wolf"
-        },
-        {
-          "w": "niger",
-          "m": "black"
-        },
-        {
-          "w": "ovem",
-          "m": "the sheep"
-        },
-        {
-          "w": "parvam",
-          "m": "little"
-        },
-        {
-          "w": "petit",
-          "m": "goes for"
-        }
-      ]
+     "w": "silvā",
+     "m": "the wood"
     },
     {
-      "id": "td-05",
-      "la": "Pāstor canī suō pānem dat.",
-      "en": "The shepherd gives his dog bread.",
-      "words": 5,
-      "focus": "canī",
-      "step": 4,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Pāstor",
-          "m": "the shepherd"
-        },
-        {
-          "w": "canī",
-          "m": "to the dog"
-        },
-        {
-          "w": "suō",
-          "m": "his own"
-        },
-        {
-          "w": "pānem",
-          "m": "the bread"
-        },
-        {
-          "w": "dat",
-          "m": "gives"
-        }
-      ]
-    },
-    {
-      "id": "td-06",
-      "la": "Ovis alba sub arbore magnā iacet.",
-      "en": "The white sheep is lying under the big tree.",
-      "words": 6,
-      "focus": "arbore",
-      "step": 4,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Ovis",
-          "m": "the sheep"
-        },
-        {
-          "w": "alba",
-          "m": "white"
-        },
-        {
-          "w": "sub",
-          "m": "under"
-        },
-        {
-          "w": "arbore",
-          "m": "the tree"
-        },
-        {
-          "w": "magnā",
-          "m": "big"
-        },
-        {
-          "w": "iacet",
-          "m": "is lying"
-        }
-      ]
-    },
-    {
-      "id": "td-07",
-      "la": "Ovēs in campō herbam edunt.",
-      "en": "The sheep are eating grass in the field.",
-      "words": 5,
-      "focus": "Ovēs",
-      "step": 5,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Ovēs",
-          "m": "the sheep"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "campō",
-          "m": "the field"
-        },
-        {
-          "w": "herbam",
-          "m": "grass"
-        },
-        {
-          "w": "edunt",
-          "m": "eat"
-        }
-      ]
-    },
-    {
-      "id": "td-08",
-      "la": "Pāstor bonus ovibus suīs aquam dat.",
-      "en": "The good shepherd gives his sheep water.",
-      "words": 6,
-      "focus": "ovibus",
-      "step": 5,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Pāstor",
-          "m": "the shepherd"
-        },
-        {
-          "w": "bonus",
-          "m": "good"
-        },
-        {
-          "w": "ovibus",
-          "m": "to the sheep"
-        },
-        {
-          "w": "suīs",
-          "m": "his own"
-        },
-        {
-          "w": "aquam",
-          "m": "water"
-        },
-        {
-          "w": "dat",
-          "m": "gives"
-        }
-      ]
-    },
-    {
-      "id": "td-09",
-      "la": "Magnus est numerus ovium in campō.",
-      "en": "The number of sheep in the field is great.",
-      "words": 6,
-      "focus": "ovium",
-      "step": 2,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Magnus",
-          "m": "great"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        },
-        {
-          "w": "numerus",
-          "m": "the number"
-        },
-        {
-          "w": "ovium",
-          "m": "of sheep"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "campō",
-          "m": "the field"
-        }
-      ]
-    },
-    {
-      "id": "td-10",
-      "la": "Pāstor ovēs ad montem dūcit.",
-      "en": "The shepherd leads the sheep to the mountain.",
-      "words": 5,
-      "focus": "montem",
-      "step": 3,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Pāstor",
-          "m": "the shepherd"
-        },
-        {
-          "w": "ovēs",
-          "m": "the sheep"
-        },
-        {
-          "w": "ad",
-          "m": "to"
-        },
-        {
-          "w": "montem",
-          "m": "the mountain"
-        },
-        {
-          "w": "dūcit",
-          "m": "leads"
-        }
-      ]
-    },
-    {
-      "id": "td-11",
-      "la": "Lupus niger dentēs magnōs habet.",
-      "en": "The black wolf has big teeth.",
-      "words": 5,
-      "focus": "dentēs",
-      "step": 5,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Lupus",
-          "m": "the wolf"
-        },
-        {
-          "w": "niger",
-          "m": "black"
-        },
-        {
-          "w": "dentēs",
-          "m": "teeth"
-        },
-        {
-          "w": "magnōs",
-          "m": "big"
-        },
-        {
-          "w": "habet",
-          "m": "has"
-        }
-      ]
-    },
-    {
-      "id": "td-12",
-      "la": "Pāstor canibus et ovibus aquam dat.",
-      "en": "The shepherd gives water to the dogs and the sheep.",
-      "words": 6,
-      "focus": "canibus",
-      "step": 5,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Pāstor",
-          "m": "the shepherd"
-        },
-        {
-          "w": "canibus",
-          "m": "to the dogs"
-        },
-        {
-          "w": "et",
-          "m": "and"
-        },
-        {
-          "w": "ovibus",
-          "m": "to the sheep"
-        },
-        {
-          "w": "aquam",
-          "m": "water"
-        },
-        {
-          "w": "dat",
-          "m": "gives"
-        }
-      ]
-    },
-    {
-      "id": "td-13",
-      "la": "Ovis pāstōris in valle est.",
-      "en": "The shepherd's sheep is in the valley.",
-      "words": 5,
-      "focus": "Ovis",
-      "step": 6,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Ovis",
-          "m": "the sheep"
-        },
-        {
-          "w": "pāstōris",
-          "m": "of the shepherd"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "valle",
-          "m": "the valley"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        }
-      ]
-    },
-    {
-      "id": "td-14",
-      "la": "Clāmor pāstōris in silvā audītur.",
-      "en": "The shepherd's shout is heard in the wood.",
-      "words": 5,
-      "focus": "Clāmor",
-      "step": 1,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Clāmor",
-          "m": "the shout"
-        },
-        {
-          "w": "pāstōris",
-          "m": "of the shepherd"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "silvā",
-          "m": "the wood"
-        },
-        {
-          "w": "audītur",
-          "m": "is heard"
-        }
-      ]
-    },
-    {
-      "id": "td-15",
-      "la": "Dominus servīs aquam dat, pāstor ovibus.",
-      "en": "The master gives the slaves water, the shepherd his sheep.",
-      "words": 6,
-      "focus": "ovibus",
-      "step": 6,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Dominus",
-          "m": "the master"
-        },
-        {
-          "w": "servīs",
-          "m": "to the slaves"
-        },
-        {
-          "w": "aquam",
-          "m": "water"
-        },
-        {
-          "w": "dat",
-          "m": "gives"
-        },
-        {
-          "w": "pāstor",
-          "m": "the shepherd"
-        },
-        {
-          "w": "ovibus",
-          "m": "to the sheep"
-        }
-      ]
-    },
-    {
-      "id": "td-16",
-      "la": "Canis in umbrā arboris dormit.",
-      "en": "The dog is sleeping in the shade of the tree.",
-      "words": 5,
-      "focus": "arboris",
-      "step": 2,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Canis",
-          "m": "the dog"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "umbrā",
-          "m": "the shade"
-        },
-        {
-          "w": "arboris",
-          "m": "of the tree"
-        },
-        {
-          "w": "dormit",
-          "m": "is sleeping"
-        }
-      ]
+     "w": "dormit",
+     "m": "is sleeping"
     }
-  ]
+   ]
+  },
+  {
+   "id": "td-02",
+   "la": "Canis pāstōris in umbrā iacet.",
+   "en": "The shepherd's dog is lying in the shade.",
+   "words": 5,
+   "focus": "pāstōris",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Canis",
+     "m": "the dog"
+    },
+    {
+     "w": "pāstōris",
+     "m": "of the shepherd"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "umbrā",
+     "m": "the shade"
+    },
+    {
+     "w": "iacet",
+     "m": "is lying"
+    }
+   ]
+  },
+  {
+   "id": "td-03",
+   "la": "Puerī fessī pānem pāstōris edunt.",
+   "en": "The tired boys are eating the shepherd's bread.",
+   "words": 5,
+   "focus": "pānem",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "fessī",
+     "m": "tired"
+    },
+    {
+     "w": "pānem",
+     "m": "the bread"
+    },
+    {
+     "w": "pāstōris",
+     "m": "of the shepherd"
+    },
+    {
+     "w": "edunt",
+     "m": "eat"
+    }
+   ]
+  },
+  {
+   "id": "td-04",
+   "la": "Lupus niger ovem parvam petit.",
+   "en": "The black wolf goes for the little sheep.",
+   "words": 5,
+   "focus": "ovem",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Lupus",
+     "m": "the wolf"
+    },
+    {
+     "w": "niger",
+     "m": "black"
+    },
+    {
+     "w": "ovem",
+     "m": "the sheep"
+    },
+    {
+     "w": "parvam",
+     "m": "little"
+    },
+    {
+     "w": "petit",
+     "m": "goes for"
+    }
+   ]
+  },
+  {
+   "id": "td-05",
+   "la": "Pāstor canī suō pānem dat.",
+   "en": "The shepherd gives his dog bread.",
+   "words": 5,
+   "focus": "canī",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pāstor",
+     "m": "the shepherd"
+    },
+    {
+     "w": "canī",
+     "m": "to the dog"
+    },
+    {
+     "w": "suō",
+     "m": "his own"
+    },
+    {
+     "w": "pānem",
+     "m": "the bread"
+    },
+    {
+     "w": "dat",
+     "m": "gives"
+    }
+   ]
+  },
+  {
+   "id": "td-06",
+   "la": "Ovis alba sub arbore magnā iacet.",
+   "en": "The white sheep is lying under the big tree.",
+   "words": 6,
+   "focus": "arbore",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ovis",
+     "m": "the sheep"
+    },
+    {
+     "w": "alba",
+     "m": "white"
+    },
+    {
+     "w": "sub",
+     "m": "under"
+    },
+    {
+     "w": "arbore",
+     "m": "the tree"
+    },
+    {
+     "w": "magnā",
+     "m": "big"
+    },
+    {
+     "w": "iacet",
+     "m": "is lying"
+    }
+   ]
+  },
+  {
+   "id": "td-07",
+   "la": "Ovēs albae in campō herbam edunt.",
+   "en": "The white sheep are eating grass in the field.",
+   "words": 6,
+   "focus": "Ovēs",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ovēs",
+     "m": "the sheep"
+    },
+    {
+     "w": "albae",
+     "m": "white"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "campō",
+     "m": "the field"
+    },
+    {
+     "w": "herbam",
+     "m": "grass"
+    },
+    {
+     "w": "edunt",
+     "m": "eat"
+    }
+   ]
+  },
+  {
+   "id": "td-08",
+   "la": "Pāstor bonus ovibus suīs aquam dat.",
+   "en": "The good shepherd gives his sheep water.",
+   "words": 6,
+   "focus": "ovibus",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pāstor",
+     "m": "the shepherd"
+    },
+    {
+     "w": "bonus",
+     "m": "good"
+    },
+    {
+     "w": "ovibus",
+     "m": "to the sheep"
+    },
+    {
+     "w": "suīs",
+     "m": "his own"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "dat",
+     "m": "gives"
+    }
+   ]
+  },
+  {
+   "id": "td-09",
+   "la": "Magnus est numerus ovium in campō.",
+   "en": "The number of sheep in the field is great.",
+   "words": 6,
+   "focus": "ovium",
+   "step": 2,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Magnus",
+     "m": "great"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    },
+    {
+     "w": "numerus",
+     "m": "the number"
+    },
+    {
+     "w": "ovium",
+     "m": "of sheep"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "campō",
+     "m": "the field"
+    }
+   ]
+  },
+  {
+   "id": "td-10",
+   "la": "Pāstor ovēs ad montem dūcit.",
+   "en": "The shepherd leads the sheep to the mountain.",
+   "words": 5,
+   "focus": "montem",
+   "step": 3,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pāstor",
+     "m": "the shepherd"
+    },
+    {
+     "w": "ovēs",
+     "m": "the sheep"
+    },
+    {
+     "w": "ad",
+     "m": "to"
+    },
+    {
+     "w": "montem",
+     "m": "the mountain"
+    },
+    {
+     "w": "dūcit",
+     "m": "leads"
+    }
+   ]
+  },
+  {
+   "id": "td-11",
+   "la": "Lupus niger dentēs magnōs habet.",
+   "en": "The black wolf has big teeth.",
+   "words": 5,
+   "focus": "dentēs",
+   "step": 5,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Lupus",
+     "m": "the wolf"
+    },
+    {
+     "w": "niger",
+     "m": "black"
+    },
+    {
+     "w": "dentēs",
+     "m": "teeth"
+    },
+    {
+     "w": "magnōs",
+     "m": "big"
+    },
+    {
+     "w": "habet",
+     "m": "has"
+    }
+   ]
+  },
+  {
+   "id": "td-12",
+   "la": "Pāstor canibus et ovibus aquam dat.",
+   "en": "The shepherd gives water to the dogs and the sheep.",
+   "words": 6,
+   "focus": "canibus",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Pāstor",
+     "m": "the shepherd"
+    },
+    {
+     "w": "canibus",
+     "m": "to the dogs"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "ovibus",
+     "m": "to the sheep"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "dat",
+     "m": "gives"
+    }
+   ]
+  },
+  {
+   "id": "td-13",
+   "la": "Ovis pāstōris in valle est.",
+   "en": "The shepherd's sheep is in the valley.",
+   "words": 5,
+   "focus": "Ovis",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Ovis",
+     "m": "the sheep"
+    },
+    {
+     "w": "pāstōris",
+     "m": "of the shepherd"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "valle",
+     "m": "the valley"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "td-14",
+   "la": "Clāmor pāstōris in silvā audītur.",
+   "en": "The shepherd's shout is heard in the wood.",
+   "words": 5,
+   "focus": "Clāmor",
+   "step": 1,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Clāmor",
+     "m": "the shout"
+    },
+    {
+     "w": "pāstōris",
+     "m": "of the shepherd"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "silvā",
+     "m": "the wood"
+    },
+    {
+     "w": "audītur",
+     "m": "is heard"
+    }
+   ]
+  },
+  {
+   "id": "td-15",
+   "la": "Dominus servīs aquam dat, pāstor ovibus.",
+   "en": "The master gives the slaves water, the shepherd his sheep.",
+   "words": 6,
+   "focus": "ovibus",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Dominus",
+     "m": "the master"
+    },
+    {
+     "w": "servīs",
+     "m": "to the slaves"
+    },
+    {
+     "w": "aquam",
+     "m": "water"
+    },
+    {
+     "w": "dat",
+     "m": "gives"
+    },
+    {
+     "w": "pāstor",
+     "m": "the shepherd"
+    },
+    {
+     "w": "ovibus",
+     "m": "to the sheep"
+    }
+   ]
+  },
+  {
+   "id": "td-16",
+   "la": "Canis in umbrā arboris dormit.",
+   "en": "The dog is sleeping in the shade of the tree.",
+   "words": 5,
+   "focus": "arboris",
+   "step": 2,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Canis",
+     "m": "the dog"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "umbrā",
+     "m": "the shade"
+    },
+    {
+     "w": "arboris",
+     "m": "of the tree"
+    },
+    {
+     "w": "dormit",
+     "m": "is sleeping"
+    }
+   ]
+  }
+ ]
 }

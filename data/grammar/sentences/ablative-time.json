@@ -1,578 +1,578 @@
 {
-  "skill": "ablative-time",
-  "chapter": 13,
-  "sentences": [
+ "skill": "ablative-time",
+ "chapter": 13,
+ "sentences": [
+  {
+   "id": "abt-01",
+   "la": "Nocte lūna lūcet, sōl nōn lūcet.",
+   "en": "At night the moon shines, the sun does not shine.",
+   "words": 6,
+   "focus": "Nocte",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
     {
-      "id": "abt-01",
-      "la": "Nocte sōl nōn lūcet, sed lūna lūcet.",
-      "en": "At night the sun does not shine, but the moon shines.",
-      "words": 7,
-      "focus": "Nocte",
-      "step": 1,
-      "stage": 1,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Nocte",
-          "m": "at night"
-        },
-        {
-          "w": "sōl",
-          "m": "sun"
-        },
-        {
-          "w": "nōn",
-          "m": "not"
-        },
-        {
-          "w": "lūcet",
-          "m": "shines"
-        },
-        {
-          "w": "sed",
-          "m": "but"
-        },
-        {
-          "w": "lūna",
-          "m": "moon"
-        },
-        {
-          "w": "lūcet",
-          "m": "shines"
-        }
-      ]
+     "w": "Nocte",
+     "m": "at night"
     },
     {
-      "id": "abt-02",
-      "la": "Hieme nix in montibus est.",
-      "en": "In winter there is snow in the mountains.",
-      "words": 5,
-      "focus": "Hieme",
-      "step": 1,
-      "stage": 1,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Hieme",
-          "m": "in winter"
-        },
-        {
-          "w": "nix",
-          "m": "snow"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "montibus",
-          "m": "the mountains"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        }
-      ]
+     "w": "lūna",
+     "m": "moon"
     },
     {
-      "id": "abt-03",
-      "la": "Hōrā prīmā lūx in caelō est.",
-      "en": "At the first hour there is light in the sky.",
-      "words": 6,
-      "focus": "Hōrā",
-      "step": 2,
-      "stage": 1,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Hōrā",
-          "m": "at the hour"
-        },
-        {
-          "w": "prīmā",
-          "m": "first"
-        },
-        {
-          "w": "lūx",
-          "m": "light"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "caelō",
-          "m": "the sky"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        }
-      ]
+     "w": "lūcet",
+     "m": "shines"
     },
     {
-      "id": "abt-04",
-      "la": "Autumnō folia dē arboribus cadunt.",
-      "en": "In autumn the leaves fall from the trees.",
-      "words": 5,
-      "focus": "Autumnō",
-      "step": 2,
-      "stage": 1,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Autumnō",
-          "m": "in autumn"
-        },
-        {
-          "w": "folia",
-          "m": "leaves"
-        },
-        {
-          "w": "dē",
-          "m": "down from"
-        },
-        {
-          "w": "arboribus",
-          "m": "the trees"
-        },
-        {
-          "w": "cadunt",
-          "m": "fall"
-        }
-      ]
+     "w": "sōl",
+     "m": "sun"
     },
     {
-      "id": "abt-05",
-      "la": "Hōc annō Quīntus aeger est.",
-      "en": "This year Quintus is sick.",
-      "words": 5,
-      "focus": "annō",
-      "step": 4,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Hōc",
-          "m": "this"
-        },
-        {
-          "w": "annō",
-          "m": "in the year"
-        },
-        {
-          "w": "Quīntus",
-          "m": "Quintus"
-        },
-        {
-          "w": "aeger",
-          "m": "sick"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        }
-      ]
+     "w": "nōn",
+     "m": "not"
     },
     {
-      "id": "abt-06",
-      "la": "Vespere familia in ātriō sedet.",
-      "en": "In the evening the household sits in the hall.",
-      "words": 5,
-      "focus": "Vespere",
-      "step": 3,
-      "stage": 1,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Vespere",
-          "m": "in the evening"
-        },
-        {
-          "w": "familia",
-          "m": "household"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "ātriō",
-          "m": "the hall"
-        },
-        {
-          "w": "sedet",
-          "m": "sits"
-        }
-      ]
-    },
-    {
-      "id": "abt-07",
-      "la": "Eō tempore nūllus mīles adest.",
-      "en": "At that time no soldier is here.",
-      "words": 5,
-      "focus": "tempore",
-      "step": 3,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Eō",
-          "m": "that"
-        },
-        {
-          "w": "tempore",
-          "m": "at the time"
-        },
-        {
-          "w": "nūllus",
-          "m": "no"
-        },
-        {
-          "w": "mīles",
-          "m": "soldier"
-        },
-        {
-          "w": "adest",
-          "m": "is here"
-        }
-      ]
-    },
-    {
-      "id": "abt-08",
-      "la": "Merīdiē sōl in caelō clārus est.",
-      "en": "At midday the sun is bright in the sky.",
-      "words": 6,
-      "focus": "Merīdiē",
-      "step": 3,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Merīdiē",
-          "m": "at midday"
-        },
-        {
-          "w": "sōl",
-          "m": "sun"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "caelō",
-          "m": "the sky"
-        },
-        {
-          "w": "clārus",
-          "m": "bright"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        }
-      ]
-    },
-    {
-      "id": "abt-09",
-      "la": "Mēnse Iānuāriō nix in viīs cadit.",
-      "en": "In the month of January snow falls in the streets.",
-      "words": 6,
-      "focus": "Mēnse",
-      "step": 4,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Mēnse",
-          "m": "in the month"
-        },
-        {
-          "w": "Iānuāriō",
-          "m": "of January"
-        },
-        {
-          "w": "nix",
-          "m": "snow"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "viīs",
-          "m": "the streets"
-        },
-        {
-          "w": "cadit",
-          "m": "falls"
-        }
-      ]
-    },
-    {
-      "id": "abt-10",
-      "la": "Illō diē Iūlius in oppidō est.",
-      "en": "On that day Julius is in the town.",
-      "words": 6,
-      "focus": "diē",
-      "step": 4,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Illō",
-          "m": "that"
-        },
-        {
-          "w": "diē",
-          "m": "on the day"
-        },
-        {
-          "w": "Iūlius",
-          "m": "Julius"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "oppidō",
-          "m": "the town"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        }
-      ]
-    },
-    {
-      "id": "abt-11",
-      "la": "Aestāte calidā puerī in fluviō natant.",
-      "en": "In the warm summer the boys swim in the river.",
-      "words": 6,
-      "focus": "Aestāte",
-      "step": 4,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Aestāte",
-          "m": "in summer"
-        },
-        {
-          "w": "calidā",
-          "m": "warm"
-        },
-        {
-          "w": "puerī",
-          "m": "the boys"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "fluviō",
-          "m": "the river"
-        },
-        {
-          "w": "natant",
-          "m": "swim"
-        }
-      ]
-    },
-    {
-      "id": "abt-12",
-      "la": "Nocte Iūlius in cubiculō dormit.",
-      "en": "At night Julius sleeps in his bedroom.",
-      "words": 5,
-      "focus": "Nocte",
-      "step": 5,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Nocte",
-          "m": "at night"
-        },
-        {
-          "w": "Iūlius",
-          "m": "Julius"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "cubiculō",
-          "m": "the bedroom"
-        },
-        {
-          "w": "dormit",
-          "m": "sleeps"
-        }
-      ]
-    },
-    {
-      "id": "abt-13",
-      "la": "Vēre rosae in hortō sunt.",
-      "en": "In spring there are roses in the garden.",
-      "words": 5,
-      "focus": "Vēre",
-      "step": 5,
-      "stage": 2,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Vēre",
-          "m": "in spring"
-        },
-        {
-          "w": "rosae",
-          "m": "roses"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "hortō",
-          "m": "the garden"
-        },
-        {
-          "w": "sunt",
-          "m": "are"
-        }
-      ]
-    },
-    {
-      "id": "abt-14",
-      "la": "Illō annō bellum in prōvinciā est.",
-      "en": "In that year there is war in the province.",
-      "words": 6,
-      "focus": "annō",
-      "step": 6,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Illō",
-          "m": "that"
-        },
-        {
-          "w": "annō",
-          "m": "in the year"
-        },
-        {
-          "w": "bellum",
-          "m": "war"
-        },
-        {
-          "w": "in",
-          "m": "in"
-        },
-        {
-          "w": "prōvinciā",
-          "m": "the province"
-        },
-        {
-          "w": "est",
-          "m": "is"
-        }
-      ]
-    },
-    {
-      "id": "abt-15",
-      "la": "Nocte et diē flūmen fluit.",
-      "en": "By night and by day the river flows.",
-      "words": 5,
-      "focus": "diē",
-      "step": 6,
-      "stage": 3,
-      "kinds": [
-        "recognise",
-        "parse",
-        "blank"
-      ],
-      "gloss": [
-        {
-          "w": "Nocte",
-          "m": "by night"
-        },
-        {
-          "w": "et",
-          "m": "and"
-        },
-        {
-          "w": "diē",
-          "m": "by day"
-        },
-        {
-          "w": "flūmen",
-          "m": "river"
-        },
-        {
-          "w": "fluit",
-          "m": "flows"
-        }
-      ]
+     "w": "lūcet",
+     "m": "shines"
     }
-  ]
+   ]
+  },
+  {
+   "id": "abt-02",
+   "la": "Hieme nix in montibus est.",
+   "en": "In winter there is snow in the mountains.",
+   "words": 5,
+   "focus": "Hieme",
+   "step": 1,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hieme",
+     "m": "in winter"
+    },
+    {
+     "w": "nix",
+     "m": "snow"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "montibus",
+     "m": "the mountains"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abt-03",
+   "la": "Hōrā prīmā lūx in caelō est.",
+   "en": "At the first hour there is light in the sky.",
+   "words": 6,
+   "focus": "Hōrā",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hōrā",
+     "m": "at the hour"
+    },
+    {
+     "w": "prīmā",
+     "m": "first"
+    },
+    {
+     "w": "lūx",
+     "m": "light"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "caelō",
+     "m": "the sky"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abt-04",
+   "la": "Autumnō multa folia dē arboribus cadunt.",
+   "en": "In autumn many leaves fall from the trees.",
+   "words": 6,
+   "focus": "Autumnō",
+   "step": 2,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Autumnō",
+     "m": "in autumn"
+    },
+    {
+     "w": "multa",
+     "m": "many"
+    },
+    {
+     "w": "folia",
+     "m": "leaves"
+    },
+    {
+     "w": "dē",
+     "m": "down from"
+    },
+    {
+     "w": "arboribus",
+     "m": "the trees"
+    },
+    {
+     "w": "cadunt",
+     "m": "fall"
+    }
+   ]
+  },
+  {
+   "id": "abt-05",
+   "la": "Hōc annō Quīntus aeger est.",
+   "en": "This year Quintus is sick.",
+   "words": 5,
+   "focus": "annō",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Hōc",
+     "m": "this"
+    },
+    {
+     "w": "annō",
+     "m": "in the year"
+    },
+    {
+     "w": "Quīntus",
+     "m": "Quintus"
+    },
+    {
+     "w": "aeger",
+     "m": "sick"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abt-06",
+   "la": "Vespere familia in ātriō sedet.",
+   "en": "In the evening the household sits in the hall.",
+   "words": 5,
+   "focus": "Vespere",
+   "step": 3,
+   "stage": 1,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vespere",
+     "m": "in the evening"
+    },
+    {
+     "w": "familia",
+     "m": "household"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "ātriō",
+     "m": "the hall"
+    },
+    {
+     "w": "sedet",
+     "m": "sits"
+    }
+   ]
+  },
+  {
+   "id": "abt-07",
+   "la": "Eō tempore nūllus mīles adest.",
+   "en": "At that time no soldier is here.",
+   "words": 5,
+   "focus": "tempore",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Eō",
+     "m": "that"
+    },
+    {
+     "w": "tempore",
+     "m": "at the time"
+    },
+    {
+     "w": "nūllus",
+     "m": "no"
+    },
+    {
+     "w": "mīles",
+     "m": "soldier"
+    },
+    {
+     "w": "adest",
+     "m": "is here"
+    }
+   ]
+  },
+  {
+   "id": "abt-08",
+   "la": "Merīdiē sōl in caelō clārus est.",
+   "en": "At midday the sun is bright in the sky.",
+   "words": 6,
+   "focus": "Merīdiē",
+   "step": 3,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Merīdiē",
+     "m": "at midday"
+    },
+    {
+     "w": "sōl",
+     "m": "sun"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "caelō",
+     "m": "the sky"
+    },
+    {
+     "w": "clārus",
+     "m": "bright"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abt-09",
+   "la": "Mēnse Iānuāriō nix in viīs cadit.",
+   "en": "In the month of January snow falls in the streets.",
+   "words": 6,
+   "focus": "Mēnse",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Mēnse",
+     "m": "in the month"
+    },
+    {
+     "w": "Iānuāriō",
+     "m": "of January"
+    },
+    {
+     "w": "nix",
+     "m": "snow"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "viīs",
+     "m": "the streets"
+    },
+    {
+     "w": "cadit",
+     "m": "falls"
+    }
+   ]
+  },
+  {
+   "id": "abt-10",
+   "la": "Illō diē Iūlius in oppidō est.",
+   "en": "On that day Julius is in the town.",
+   "words": 6,
+   "focus": "diē",
+   "step": 4,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Illō",
+     "m": "that"
+    },
+    {
+     "w": "diē",
+     "m": "on the day"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "oppidō",
+     "m": "the town"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abt-11",
+   "la": "Aestāte calidā puerī in fluviō natant.",
+   "en": "In the warm summer the boys swim in the river.",
+   "words": 6,
+   "focus": "Aestāte",
+   "step": 4,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Aestāte",
+     "m": "in summer"
+    },
+    {
+     "w": "calidā",
+     "m": "warm"
+    },
+    {
+     "w": "puerī",
+     "m": "the boys"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "fluviō",
+     "m": "the river"
+    },
+    {
+     "w": "natant",
+     "m": "swim"
+    }
+   ]
+  },
+  {
+   "id": "abt-12",
+   "la": "Nocte Iūlius in cubiculō dormit.",
+   "en": "At night Julius sleeps in his bedroom.",
+   "words": 5,
+   "focus": "Nocte",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nocte",
+     "m": "at night"
+    },
+    {
+     "w": "Iūlius",
+     "m": "Julius"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "cubiculō",
+     "m": "the bedroom"
+    },
+    {
+     "w": "dormit",
+     "m": "sleeps"
+    }
+   ]
+  },
+  {
+   "id": "abt-13",
+   "la": "Vēre rosae in hortō sunt.",
+   "en": "In spring there are roses in the garden.",
+   "words": 5,
+   "focus": "Vēre",
+   "step": 5,
+   "stage": 2,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Vēre",
+     "m": "in spring"
+    },
+    {
+     "w": "rosae",
+     "m": "roses"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "hortō",
+     "m": "the garden"
+    },
+    {
+     "w": "sunt",
+     "m": "are"
+    }
+   ]
+  },
+  {
+   "id": "abt-14",
+   "la": "Illō annō bellum in prōvinciā est.",
+   "en": "In that year there is war in the province.",
+   "words": 6,
+   "focus": "annō",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Illō",
+     "m": "that"
+    },
+    {
+     "w": "annō",
+     "m": "in the year"
+    },
+    {
+     "w": "bellum",
+     "m": "war"
+    },
+    {
+     "w": "in",
+     "m": "in"
+    },
+    {
+     "w": "prōvinciā",
+     "m": "the province"
+    },
+    {
+     "w": "est",
+     "m": "is"
+    }
+   ]
+  },
+  {
+   "id": "abt-15",
+   "la": "Nocte et diē flūmen fluit.",
+   "en": "By night and by day the river flows.",
+   "words": 5,
+   "focus": "diē",
+   "step": 6,
+   "stage": 3,
+   "kinds": [
+    "recognise",
+    "parse",
+    "blank"
+   ],
+   "gloss": [
+    {
+     "w": "Nocte",
+     "m": "by night"
+    },
+    {
+     "w": "et",
+     "m": "and"
+    },
+    {
+     "w": "diē",
+     "m": "by day"
+    },
+    {
+     "w": "flūmen",
+     "m": "river"
+    },
+    {
+     "w": "fluit",
+     "m": "flows"
+    }
+   ]
+  }
+ ]
 }

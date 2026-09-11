@@ -1,226 +1,226 @@
 {
-  "skill": "genitive-possession",
-  "core": [
+ "skill": "genitive-possession",
+ "core": [
+  {
+   "type": "p",
+   "text": "To say whose something is, Latin puts the owner into **the genitive (the 'of' form)**, *genitīvus possessīvus*: *fīlius Iūliī* = the son of Julius, Julius's son; *ancilla Aemiliae* = Aemilia's maid. Owner and thing owned need not stand side by side; the ending shows the link. The question word is *cuius?* (whose?)."
+  },
+  {
+   "type": "english",
+   "text": "English shows possession with *'s* or *of*: *the man's house*, *the roof of the house*. Latin uses one ending for both and no *of*."
+  },
+  {
+   "type": "rule",
+   "text": "The owner takes the genitive: singular -ae (a-nouns), -ī (us- and um-nouns); plural -ārum, -ōrum. It may stand before or after the noun it belongs to."
+  },
+  {
+   "type": "paradigm",
+   "key": "decl1",
+   "highlight": {
+    "case": "gen"
+   }
+  },
+  {
+   "type": "paradigm",
+   "key": "decl2m",
+   "highlight": {
+    "case": "gen"
+   }
+  },
+  {
+   "type": "examples",
+   "units": [
+    "r02:10.2",
+    "r02:12.2",
+    "r02:33.2",
+    "r02:29.1"
+   ],
+   "invented": [
     {
-      "type": "p",
-      "text": "To say whose something is, Latin puts the owner into **the genitive (the 'of' form)**, *genitīvus possessīvus*: *fīlius Iūliī* = the son of Julius, Julius's son; *ancilla Aemiliae* = Aemilia's maid. Owner and thing owned need not stand side by side; the ending shows the link. The question word is *cuius?* (whose?)."
-    },
-    {
-      "type": "english",
-      "text": "English shows possession with *'s* or *of*: *the man's house*, *the roof of the house*. Latin uses one ending for both and no *of*."
-    },
-    {
-      "type": "rule",
-      "text": "The owner takes the genitive: singular -ae (a-nouns), -ī (us- and um-nouns); plural -ārum, -ōrum. It may stand before or after the noun it belongs to."
-    },
-    {
-      "type": "paradigm",
-      "key": "decl1",
-      "highlight": {
-        "case": "gen"
-      }
-    },
-    {
-      "type": "paradigm",
-      "key": "decl2m",
-      "highlight": {
-        "case": "gen"
-      }
-    },
-    {
-      "type": "examples",
-      "units": [
-        "r02:10.2",
-        "r02:12.2",
-        "r02:33.2",
-        "r02:29.1"
-      ],
-      "invented": [
-        {
-          "la": "Baculum dominī in hortō est.",
-          "en": "The master's stick is in the garden.",
-          "focus": "dominī"
-        }
-      ]
-    },
-    {
-      "type": "confusion",
-      "with": "dative-indirect-object",
-      "text": "*Puellae* is the genitive (of the girl) and also the dative (the 'to/for' form), to the girl; *servī* is genitive singular (of the slave) and nominative plural (slaves). Look at the neighbours: a genitive hangs on another noun (*liber puellae* — the girl's book); a dative hangs on a verb of giving (*puellae librum dat* — gives the girl a book)."
+     "la": "Baculum dominī in hortō est.",
+     "en": "The master's stick is in the garden.",
+     "focus": "dominī"
     }
-  ],
-  "teach": [
-    {
-      "n": 1,
-      "title": "Whose?",
-      "notice": {
-        "sentences": [
-          "gp-03",
-          "gp-04"
-        ],
-        "ask": "Tap the word in each sentence that says whose. What tail do the two share?",
-        "tap": "focus"
-      },
-      "say": "The owner stands in the genitive (the 'of' form): Latin says whose something is by changing the owner’s ending instead of adding a word. The question it answers is *cuius?*, whose? *Iūlius pater Mārcī et Quīntī est* — Julius is the father of Marcus and Quintus.",
-      "show": {
-        "kind": "sentence",
-        "id": "gp-01"
-      },
-      "check": {
-        "kind": "recognise",
-        "sentence": "gp-02"
-      }
-    },
-    {
-      "n": 2,
-      "title": "a-nouns: -ae",
-      "say": "An a-noun makes this form by turning -a into -ae: *domina* (mistress) becomes *dominae*, of the mistress. So *ancilla dominae* is the mistress’s slave girl.",
-      "show": {
-        "kind": "paradigm",
-        "key": "decl1",
-        "reveal": [
-          "gen.sg"
-        ]
-      },
-      "check": {
-        "kind": "chart",
-        "key": "decl1",
-        "cells": [
-          "gen.sg"
-        ],
-        "words": [
-          "puella",
-          "femina",
-          "ancilla"
-        ]
-      },
-      "worked": {
-        "sentence": "gp-03",
-        "given": [
-          "case",
-          "number",
-          "gender"
-        ],
-        "ask": []
-      }
-    },
-    {
-      "n": 3,
-      "title": "us-nouns and um-nouns: -ī",
-      "say": "*Dominus* (master) becomes *dominī*, and *capitulum* (chapter) becomes *capitulī*: both groups take the same tail, -ī. So *servus dominī* is the master’s slave and *titulus capitulī* the chapter’s title.",
-      "show": {
-        "kind": "paradigm",
-        "key": "decl2m",
-        "reveal": [
-          "gen.sg"
-        ]
-      },
-      "check": {
-        "kind": "chart",
-        "key": "decl2m",
-        "cells": [
-          "gen.sg"
-        ],
-        "words": [
-          "servus",
-          "dominus",
-          "filius"
-        ]
-      }
-    },
-    {
-      "n": 4,
-      "title": "Several owners: -ōrum, and -ārum for a-nouns",
-      "say": "When the owners are more than one the tail grows: us- and um-nouns take -ōrum (*puerōrum*, of the boys) and a-nouns -ārum (*puellārum*, of the girls). *Pater puerōrum* is the boys’ father, *māter puellārum* the girls’ mother. The us-noun’s cell is filled in for you; the a-noun’s is the one to write.",
-      "show": {
-        "kind": "paradigm",
-        "key": "decl2m",
-        "reveal": [
-          "gen.pl"
-        ]
-      },
-      "check": {
-        "kind": "chart",
-        "key": "decl1",
-        "cells": [
-          "gen.pl"
-        ],
-        "words": [
-          "puella",
-          "femina",
-          "ancilla"
-        ]
-      },
-      "worked": {
-        "sentence": "gp-07",
-        "given": [
-          "case"
-        ],
-        "ask": [
-          "number",
-          "gender"
-        ]
-      }
-    },
-    {
-      "n": 5,
-      "title": "The owner may stand on either side",
-      "say": "*Mārcī pater* and *pater Mārcī* both mean Marcus’s father, and another word may even come between the two. Latin does not fix the order, because the ending has already done the work. Find the -ae or -ī word, then ask which noun it belongs to.",
-      "show": {
-        "kind": "sentence",
-        "id": "gp-10"
-      },
-      "check": {
-        "kind": "blank",
-        "sentence": "gp-09"
-      }
-    },
-    {
-      "n": 6,
-      "title": "-ae and -ī also make plurals",
-      "say": "*Ancillae* is ‘slave girls’ and *Aemiliae* is ‘of Aemilia’, and they end alike; so do *servī* (slaves) and *dominī* (of the master). An owner hangs on another noun, so ask which of the two the other belongs to. *Ancillae Aemiliae in familiā sunt*: Aemilia is one person, so *Aemiliae* is the owner.",
-      "show": {
-        "kind": "sentence",
-        "id": "gp-11"
-      },
-      "check": {
-        "kind": "recognise",
-        "sentence": "gp-12"
-      },
-      "worked": {
-        "sentence": "gp-13",
-        "given": [
-          "gender"
-        ],
-        "ask": [
-          "case",
-          "number",
-          "why"
-        ]
-      }
-    }
-  ],
-  "more": [
-    {
-      "type": "p",
-      "text": "From the learner's notes: grammatical 'possession' is broad. It covers holding something (the student's library book), owning it (my book on your shelf), and simply a close tie (the man's wife). English pronouns still have a genitive (*his*, *her*, *whose*), and English always puts the possessor first; Latin may put it either side of its noun and even split the two with another word (*pānēs sunt fēminae*)."
-    },
-    {
-      "type": "p",
-      "text": "Ørberg cap. II: genetīvus -ī / -ōrum for masculine and neuter, -ae / -ārum for feminine, with the question *cuius?*. Names in -ius have genitive -iī (*Iūliī*), often written with one ī. For 'my', 'your', 'his own' Latin does not use a genitive but the adjectives *meus*, *tuus*, *suus*, which agree with the thing owned: *servus meus*, *ancilla tua*. For 'his' meaning someone else's it uses *eius*. A&G §343."
-    },
-    {
-      "type": "p",
-      "text": "English has two ways to say it, *Marcus’s father* and *the father of Marcus*; Latin has one ending for both and no word for ‘of’."
-    },
-    {
-      "type": "p",
-      "text": "Then the verb confirms it: *Ancillae Aemiliae in familiā sunt* has *sunt*, and only *ancillae* can be the several ones, because Aemilia is one person."
-    }
-  ],
-  "sources": [
-    "notes p5",
-    "Ørberg cap. II Grammatica Latina",
-    "A&G §343"
-  ]
+   ]
+  },
+  {
+   "type": "confusion",
+   "with": "dative-indirect-object",
+   "text": "*Puellae* is the genitive (of the girl) and also the dative (the 'to/for' form), to the girl; *servī* is genitive singular (of the slave) and nominative plural (slaves). Look at the neighbours: a genitive hangs on another noun (*liber puellae* — the girl's book); a dative hangs on a verb of giving (*puellae librum dat* — gives the girl a book)."
+  }
+ ],
+ "teach": [
+  {
+   "n": 1,
+   "title": "Whose?",
+   "notice": {
+    "sentences": [
+     "gp-03",
+     "gp-04"
+    ],
+    "ask": "Tap the word in each sentence that says whose. What tail do the two share?",
+    "tap": "focus"
+   },
+   "say": "The owner stands in the genitive (the 'of' form): Latin says whose something is by changing the owner’s ending instead of adding a word. The question it answers is *cuius?*, whose? *Iūlius pater Quīntī et Mārcī est* — Julius is the father of Quintus and Marcus.",
+   "show": {
+    "kind": "sentence",
+    "id": "gp-01"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "gp-02"
+   }
+  },
+  {
+   "n": 2,
+   "title": "a-nouns: -ae",
+   "say": "An a-noun makes this form by turning -a into -ae: *domina* (mistress) becomes *dominae*, of the mistress. So *ancilla dominae* is the mistress’s slave girl.",
+   "show": {
+    "kind": "paradigm",
+    "key": "decl1",
+    "reveal": [
+     "gen.sg"
+    ]
+   },
+   "check": {
+    "kind": "chart",
+    "key": "decl1",
+    "cells": [
+     "gen.sg"
+    ],
+    "words": [
+     "puella",
+     "femina",
+     "ancilla"
+    ]
+   },
+   "worked": {
+    "sentence": "gp-03",
+    "given": [
+     "case",
+     "number",
+     "gender"
+    ],
+    "ask": []
+   }
+  },
+  {
+   "n": 3,
+   "title": "us-nouns and um-nouns: -ī",
+   "say": "*Dominus* (master) becomes *dominī*, and *capitulum* (chapter) becomes *capitulī*: both groups take the same tail, -ī. So *servus dominī* is the master’s slave and *titulus capitulī* the chapter’s title.",
+   "show": {
+    "kind": "paradigm",
+    "key": "decl2m",
+    "reveal": [
+     "gen.sg"
+    ]
+   },
+   "check": {
+    "kind": "chart",
+    "key": "decl2m",
+    "cells": [
+     "gen.sg"
+    ],
+    "words": [
+     "servus",
+     "dominus",
+     "filius"
+    ]
+   }
+  },
+  {
+   "n": 4,
+   "title": "Several owners: -ōrum, and -ārum for a-nouns",
+   "say": "When the owners are more than one the tail grows: us- and um-nouns take -ōrum (*puerōrum*, of the boys) and a-nouns -ārum (*puellārum*, of the girls). *Pater puerōrum* is the boys’ father, *māter puellārum* the girls’ mother. The us-noun’s cell is filled in for you; the a-noun’s is the one to write.",
+   "show": {
+    "kind": "paradigm",
+    "key": "decl2m",
+    "reveal": [
+     "gen.pl"
+    ]
+   },
+   "check": {
+    "kind": "chart",
+    "key": "decl1",
+    "cells": [
+     "gen.pl"
+    ],
+    "words": [
+     "puella",
+     "femina",
+     "ancilla"
+    ]
+   },
+   "worked": {
+    "sentence": "gp-07",
+    "given": [
+     "case"
+    ],
+    "ask": [
+     "number",
+     "gender"
+    ]
+   }
+  },
+  {
+   "n": 5,
+   "title": "The owner may stand on either side",
+   "say": "*Mārcī pater* and *pater Mārcī* both mean Marcus’s father, and another word may even come between the two. Latin does not fix the order, because the ending has already done the work. Find the -ae or -ī word, then ask which noun it belongs to.",
+   "show": {
+    "kind": "sentence",
+    "id": "gp-10"
+   },
+   "check": {
+    "kind": "blank",
+    "sentence": "gp-09"
+   }
+  },
+  {
+   "n": 6,
+   "title": "-ae and -ī also make plurals",
+   "say": "*Ancillae* is ‘slave girls’ and *Aemiliae* is ‘of Aemilia’, and they end alike; so do *servī* (slaves) and *dominī* (of the master). An owner hangs on another noun, so ask which of the two the other belongs to. *Ancillae Aemiliae in familiā sunt*: Aemilia is one person, so *Aemiliae* is the owner.",
+   "show": {
+    "kind": "sentence",
+    "id": "gp-11"
+   },
+   "check": {
+    "kind": "recognise",
+    "sentence": "gp-12"
+   },
+   "worked": {
+    "sentence": "gp-13",
+    "given": [
+     "gender"
+    ],
+    "ask": [
+     "case",
+     "number",
+     "why"
+    ]
+   }
+  }
+ ],
+ "more": [
+  {
+   "type": "p",
+   "text": "From the learner's notes: grammatical 'possession' is broad. It covers holding something (the student's library book), owning it (my book on your shelf), and simply a close tie (the man's wife). English pronouns still have a genitive (*his*, *her*, *whose*), and English always puts the possessor first; Latin may put it either side of its noun and even split the two with another word (*pānēs sunt fēminae*)."
+  },
+  {
+   "type": "p",
+   "text": "Ørberg cap. II: genetīvus -ī / -ōrum for masculine and neuter, -ae / -ārum for feminine, with the question *cuius?*. Names in -ius have genitive -iī (*Iūliī*), often written with one ī. For 'my', 'your', 'his own' Latin does not use a genitive but the adjectives *meus*, *tuus*, *suus*, which agree with the thing owned: *servus meus*, *ancilla tua*. For 'his' meaning someone else's it uses *eius*. A&G §343."
+  },
+  {
+   "type": "p",
+   "text": "English has two ways to say it, *Marcus’s father* and *the father of Marcus*; Latin has one ending for both and no word for ‘of’."
+  },
+  {
+   "type": "p",
+   "text": "Then the verb confirms it: *Ancillae Aemiliae in familiā sunt* has *sunt*, and only *ancillae* can be the several ones, because Aemilia is one person."
+  }
+ ],
+ "sources": [
+  "notes p5",
+  "Ørberg cap. II Grammatica Latina",
+  "A&G §343"
+ ]
 }
