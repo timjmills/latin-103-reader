@@ -58,9 +58,9 @@
           "plupf.subj.act.3.sg"
         ],
         "words": [
-          "scrībō",
-          "dīcō",
-          "legō"
+          "scribo",
+          "dico",
+          "lego"
         ],
         "ask": "Write the pluperfect subjunctive, third person singular."
       }
@@ -98,11 +98,11 @@
           "plupf.subj.act.2.pl"
         ],
         "words": [
-          "scrībō",
-          "dīcō",
-          "legō",
-          "mittō",
-          "pōnō"
+          "scribo",
+          "dico",
+          "lego",
+          "mitto",
+          "pono"
         ],
         "ask": "Write the pluperfect subjunctive, second person plural."
       }

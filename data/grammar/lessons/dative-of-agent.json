@@ -56,11 +56,11 @@
       "worked": {
         "sentence": "dag-12",
         "given": [
-          "case",
+          "number",
           "gender"
         ],
         "ask": [
-          "number",
+          "case",
           "why"
         ]
       },

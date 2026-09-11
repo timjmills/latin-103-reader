@@ -72,6 +72,17 @@
         "kind": "recognise",
         "sentence": "fp-02",
         "ask": "Tap the verb that says the table will have something done to it."
+      },
+      "worked": {
+        "sentence": "fp-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -95,6 +106,11 @@
         "cells": [
           "fut.ind.pass.3.sg",
           "fut.ind.pass.3.pl"
+        ],
+        "words": [
+          "amo",
+          "laudo",
+          "canto"
         ],
         "ask": "Now the same two cells on amō: the future passive for 'he, she, it' and for 'they'."
       }
@@ -125,6 +141,10 @@
           "fut.ind.pass.1.pl",
           "fut.ind.pass.2.pl"
         ],
+        "words": [
+          "laudo",
+          "amo"
+        ],
         "ask": "Write the future passive of laudō for I, for you, for we and for you all."
       }
     },
@@ -152,6 +172,11 @@
           "fut.ind.pass.3.sg",
           "fut.ind.pass.3.pl"
         ],
+        "words": [
+          "dico",
+          "pono",
+          "lego"
+        ],
         "ask": "Now the same three cells on dīcō: the future passive for I, for 'he, she, it' and for 'they'."
       }
     },
@@ -167,6 +192,19 @@
         "kind": "parse",
         "sentence": "fp-12",
         "ask": "loquētur — who will be doing the talking?"
+      },
+      "worked": {
+        "sentence": "fp-11",
+        "given": [
+          "tense",
+          "mood",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "voice",
+          "why"
+        ]
       }
     },
     {
@@ -182,6 +220,19 @@
         "sentence": "fp-14",
         "blank": "pōnētur",
         "ask": "Fill the blank with the future passive of pōnō, third person singular."
+      },
+      "worked": {
+        "sentence": "fp-03",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "tense",
+          "voice",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

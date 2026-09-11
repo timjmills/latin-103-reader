@@ -28,6 +28,17 @@
         "kind": "recognise",
         "sentence": "ip-02",
         "ask": "Tap the verb that says the table was having something done to it."
+      },
+      "worked": {
+        "sentence": "ip-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -51,6 +62,11 @@
         "cells": [
           "impf.ind.pass.3.sg",
           "impf.ind.pass.3.pl"
+        ],
+        "words": [
+          "laudo",
+          "amo",
+          "canto"
         ],
         "ask": "Now the same two cells on laudō: the imperfect passive for 'he, she, it' and for 'they'."
       }
@@ -81,6 +97,10 @@
           "impf.ind.pass.1.pl",
           "impf.ind.pass.2.pl"
         ],
+        "words": [
+          "amo",
+          "laudo"
+        ],
         "ask": "Write the imperfect passive of amō for I, for you, for we and for you all."
       }
     },
@@ -106,6 +126,11 @@
           "impf.ind.pass.3.sg",
           "impf.ind.pass.3.pl"
         ],
+        "words": [
+          "dico",
+          "lego",
+          "pono"
+        ],
         "ask": "Now the same two cells on dīcō: the imperfect passive for 'he, she, it' and for 'they'."
       }
     },
@@ -121,6 +146,19 @@
         "kind": "parse",
         "sentence": "ip-11",
         "ask": "ōsculābātur — who is doing the kissing, Aemilia or her daughter?"
+      },
+      "worked": {
+        "sentence": "ip-10",
+        "given": [
+          "tense",
+          "mood",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "voice",
+          "why"
+        ]
       }
     },
     {
@@ -136,6 +174,19 @@
         "sentence": "ip-14",
         "blank": "dūcēbantur",
         "ask": "Fill the blank with the imperfect passive of dūcō, third person plural."
+      },
+      "worked": {
+        "sentence": "ip-09",
+        "given": [
+          "mood"
+        ],
+        "ask": [
+          "tense",
+          "voice",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

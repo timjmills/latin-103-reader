@@ -10,7 +10,7 @@
     "id": "voc-01"
    },
    "worked": {
-    "sentence": "voc-01",
+    "sentence": "voc-04",
     "given": [
      "case",
      "number",
@@ -38,7 +38,7 @@
     "say": "serve — -us becomes -e when you call him"
    },
    "worked": {
-    "sentence": "voc-04",
+    "sentence": "voc-10",
     "given": [
      "number",
      "gender"
@@ -130,7 +130,7 @@
     "id": "voc-12"
    },
    "worked": {
-    "sentence": "voc-14",
+    "sentence": "voc-12",
     "given": [],
     "ask": [
      "case",

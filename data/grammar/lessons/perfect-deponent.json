@@ -96,12 +96,8 @@
         "say": "secūtus est — the participle with est, in the column headed deponent"
       },
       "check": {
-        "kind": "chart",
-        "key": "conj3",
-        "word": "sequor",
-        "cells": [
-          "perf.ind.pass.3.sg"
-        ]
+        "kind": "blank",
+        "sentence": "pd-03"
       }
     },
     {

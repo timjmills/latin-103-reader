@@ -89,6 +89,15 @@
      "dat.pl"
     ]
    },
+   "worked": {
+    "sentence": "pp-09",
+    "given": [],
+    "ask": [
+     "case",
+     "number",
+     "why"
+    ]
+   },
    "check": {
     "kind": "blank",
     "sentence": "pp-10",
@@ -121,15 +130,6 @@
    "show": {
     "kind": "sentence",
     "id": "pp-16"
-   },
-   "worked": {
-    "sentence": "pp-17",
-    "given": [],
-    "ask": [
-     "case",
-     "number",
-     "why"
-    ]
    },
    "check": {
     "kind": "blank",

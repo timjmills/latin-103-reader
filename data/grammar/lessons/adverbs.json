@@ -59,13 +59,6 @@
     "kind": "sentence",
     "id": "adv-09"
    },
-   "worked": {
-    "sentence": "adv-09",
-    "given": [],
-    "ask": [
-     "degree"
-    ]
-   },
    "check": {
     "kind": "recognise",
     "sentence": "adv-10",

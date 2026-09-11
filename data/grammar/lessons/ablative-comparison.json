@@ -152,7 +152,6 @@
         "ask": [
           "case",
           "number",
-          "gender",
           "why"
         ]
       }

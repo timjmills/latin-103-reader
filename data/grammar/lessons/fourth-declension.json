@@ -122,7 +122,6 @@
         "words": [
           "exercitus",
           "manus",
-          "portus",
           "impetus"
         ],
         "ask": "Give the genitive (the 'of' form) of *exercitus* — the one cell that proves the family."
@@ -213,7 +212,7 @@
         "ask": "Amīcus servī venit, sed dux ___ abest. The 'of' form is what proves the family. (exercitus)"
       },
       "worked": {
-        "sentence": "f4-16",
+        "sentence": "f4-15",
         "given": [],
         "ask": [
           "case",

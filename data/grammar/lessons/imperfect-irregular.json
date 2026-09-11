@@ -29,6 +29,17 @@
         "kind": "recognise",
         "sentence": "iir-02",
         "ask": "Tap the verb that puts this sentence into the past."
+      },
+      "worked": {
+        "sentence": "iir-01",
+        "given": [
+          "tense",
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -124,6 +135,19 @@
         "kind": "recognise",
         "sentence": "iir-13",
         "ask": "Tap the verb that means 'was going', not 'was'."
+      },
+      "worked": {
+        "sentence": "iir-09",
+        "given": [
+          "mood",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": [
+          "tense",
+          "why"
+        ]
       }
     },
     {
@@ -139,6 +163,19 @@
         "sentence": "iir-14",
         "blank": "erat",
         "ask": "Fill the blank with the imperfect of sum, third person singular."
+      },
+      "worked": {
+        "sentence": "iir-06",
+        "given": [
+          "mood",
+          "voice"
+        ],
+        "ask": [
+          "tense",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]

@@ -77,8 +77,8 @@
         "kind": "paradigm",
         "key": "conj1",
         "reveal": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
         ]
       },
       "check": {
@@ -97,8 +97,10 @@
         "sentence": "pi-03",
         "given": [
           "tense",
+          "mood",
           "voice",
-          "person"
+          "person",
+          "number"
         ],
         "ask": []
       }
@@ -111,8 +113,8 @@
         "kind": "paradigm",
         "key": "conj2",
         "reveal": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
         ]
       },
       "check": {
@@ -136,8 +138,8 @@
         "kind": "paradigm",
         "key": "conj4",
         "reveal": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
         ]
       },
       "check": {
@@ -149,17 +151,20 @@
         ],
         "words": [
           "audio",
-          "dormio"
+          "dormio",
+          "venio"
         ]
       },
       "worked": {
         "sentence": "pi-09",
         "given": [
           "tense",
+          "mood",
           "voice"
         ],
         "ask": [
-          "person"
+          "person",
+          "number"
         ]
       }
     },
@@ -171,8 +176,8 @@
         "kind": "paradigm",
         "key": "sum",
         "reveal": [
-          "pres.ind.act.3sg",
-          "pres.ind.act.3pl"
+          "pres.ind.act.3.sg",
+          "pres.ind.act.3.pl"
         ]
       },
       "check": {
@@ -199,11 +204,13 @@
       "worked": {
         "sentence": "pi-14",
         "given": [
+          "mood",
           "voice"
         ],
         "ask": [
           "tense",
           "person",
+          "number",
           "why"
         ]
       }

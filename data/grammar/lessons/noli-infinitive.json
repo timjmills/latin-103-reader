@@ -70,6 +70,17 @@
         "kind": "recognise",
         "sentence": "ni-02",
         "ask": "Tap the word that turns this order into a 'don't'."
+      },
+      "worked": {
+        "sentence": "ni-01",
+        "given": [
+          "mood",
+          "tense",
+          "voice",
+          "person",
+          "number"
+        ],
+        "ask": []
       }
     },
     {
@@ -105,6 +116,18 @@
         "kind": "parse",
         "sentence": "ni-06",
         "ask": "legere — which form of the verb is it, and why not lege?"
+      },
+      "worked": {
+        "sentence": "ni-05",
+        "given": [
+          "mood",
+          "tense",
+          "voice",
+          "person"
+        ],
+        "ask": [
+          "number"
+        ]
       }
     },
     {
@@ -119,6 +142,19 @@
         "kind": "recognise",
         "sentence": "ni-09",
         "ask": "Tap the infinitive that this prohibition forbids."
+      },
+      "worked": {
+        "sentence": "ni-08",
+        "given": [
+          "mood",
+          "tense",
+          "voice",
+          "person"
+        ],
+        "ask": [
+          "number",
+          "why"
+        ]
       }
     },
     {
@@ -133,6 +169,19 @@
         "kind": "recognise",
         "sentence": "ni-11",
         "ask": "Tap the word that forbids, not the one that orders."
+      },
+      "worked": {
+        "sentence": "ni-06",
+        "given": [
+          "tense",
+          "voice",
+          "person"
+        ],
+        "ask": [
+          "mood",
+          "number",
+          "why"
+        ]
       }
     },
     {
@@ -148,6 +197,19 @@
         "sentence": "ni-13",
         "blank": "cadere",
         "ask": "Nōlī iterum in aquam ____ ! Write the form of cadō that has to follow nōlī."
+      },
+      "worked": {
+        "sentence": "ni-12",
+        "given": [
+          "tense",
+          "voice"
+        ],
+        "ask": [
+          "mood",
+          "person",
+          "number",
+          "why"
+        ]
       }
     }
   ]
