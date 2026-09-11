@@ -383,6 +383,15 @@
    "sem": {
     "of": [
      "person"
+    ],
+    "not": [
+     "hostis",
+     "inimīcus",
+     "praedō",
+     "pīrāta",
+     "fūr",
+     "tyrannus",
+     "parricīda"
     ]
    }
   },

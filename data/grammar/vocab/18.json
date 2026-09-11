@@ -556,7 +556,14 @@
    "sem": {
     "of": [
      "person",
-     "thing"
+     "abstract"
+    ],
+    "also": [
+     "verbum",
+     "factum",
+     "fābula",
+     "littera",
+     "vulnus"
     ]
    }
   },

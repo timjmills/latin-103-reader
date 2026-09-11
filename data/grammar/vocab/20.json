@@ -161,9 +161,36 @@
    "count": 18,
    "sem": {
     "of": [
-     "person",
-     "animal",
-     "thing"
+     "animal"
+    ],
+    "also": [
+     "puer",
+     "puella",
+     "fīlius",
+     "fīlia",
+     "fīliola",
+     "īnfans",
+     "līberī",
+     "discipulus",
+     "agnus",
+     "pullus"
+    ],
+    "not": [
+     "pecūnia",
+     "aurum",
+     "argentum",
+     "ferrum",
+     "lignum",
+     "frūmentum",
+     "cēra",
+     "lāna",
+     "nix",
+     "sacculus",
+     "libellus",
+     "lectulus",
+     "ocellus",
+     "fīliola",
+     "capitulum"
     ]
    }
   },
