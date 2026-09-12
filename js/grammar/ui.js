@@ -1900,8 +1900,10 @@ export function createUI(ctx) {
    * here: `metCells` is an in-memory Map rebuilt every sitting, and the
    * attempt log does not say which table a chart was on (a drill chart's
    * `item_key` is a cell key; a catalogue chart's is empty by design, so a
-   * miss never enters "redo what was wrong") — and a catalogue run outside the
-   * rotation logs nothing at all, which is the very run the learner described.
+   * miss never enters "redo what was wrong"). §19 gave a second reason — that
+   * a catalogue run outside the rotation logged nothing at all — which §20 has
+   * since removed: such a run is logged now, and marked `meta.uncounted`. The
+   * first reason stands on its own and the count stays here.
    * The first table of one a learner has never answered is variant 0: the
    * settled anchors-first arrangement, unchanged.
    */
@@ -2051,7 +2053,19 @@ export function createUI(ctx) {
       if (!built.length) { ctx.say('Nothing to practise with these choices.'); return; }
       const drill = createCatalogueDrill({ items: built, gstore, skillId: namingSkill?.id ?? null });
       drill.start();
-      const note = drill.counted ? `Counts towards ${namingSkill.title}, which is in your practice.` : (namingSkill ? `Practice only — ${namingSkill.title} is not in your practice yet, so nothing is counted.` : 'Practice only; nothing is counted.');
+      // What this run does, said in the two directions it now differs in (§20). It always reaches the
+      // skill's progress sheet; it reaches the review schedule only while the skill is in mixed
+      // practice. The old line said "nothing is counted", which stopped being true the day the sheet
+      // started reading these tables — and a table with no skill to its name still records nothing,
+      // which is a third thing and says so.
+      //
+      // Two sentences, not one with a colon in the middle: a skill's title may carry a colon of its
+      // own ("Imperfect subjunctive: forms (infinitive + endings)"), and two in a line read as a fault.
+      const note = drill.counted
+        ? `Counts towards ${namingSkill.title}, which is in your practice.`
+        : (namingSkill
+          ? `Counts towards ${namingSkill.title} on the progress sheet, not towards review. It is not in your mixed practice, so nothing here changes what is due.`
+          : 'Practice only — no skill names this table, so there is nothing to record it under.');
       runSession({ runner: drill.runner, title, note, mode: 'practice', hintOpen: false, onDone: (summary) => renderSummary(summary, { catalogue: t.id, from }) });
     };
     // Practise one cell across words.

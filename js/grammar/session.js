@@ -664,21 +664,45 @@ export function createMixed({ members, gstore, items, currentWeekN = null, size 
 }
 
 /**
- * The catalogue's practice (§4, decision 10; §11): a run over items already
- * built — one cell across words, or a whole table on one word after another.
- * It logs under the skill that names the table **only while that skill is in
- * the rotation**, where the scheduler can use the evidence; otherwise the run
- * is practice and nothing more, and the view says so (`counted`). Items carry
- * no `key`, so a miss here never enters "redo what was wrong", which must be
- * able to rebuild what it offers.
+ * The catalogue's practice (§4, decision 10; §11; §20): a run over items
+ * already built — one cell across words, or a whole table on one word after
+ * another.
+ *
+ * **It always logs; it schedules only when it counts.** One flag used to gate
+ * both, so a table filled in from the Tables tab left no trace at all unless
+ * the skill was already in mixed practice — and the Tables tab is the obvious
+ * place to practise a table, so the progress sheet's chart part never moved
+ * from the very run the learner meant to do (§20). The attempt is therefore
+ * written under the skill that names the table whatever that skill's state,
+ * and marked `meta.uncounted` while the skill is out of the rotation
+ * (`isUncounted`, scheduler.js): the sheet reads it, and everything with a
+ * scheduling flavour — `applyAnswer`, the Learn replay, a redo — skips it.
+ * `counted` stays the run's own word, and the view says which it is.
+ *
+ * The scheduler is reached only on a counted run: an uncounted answer never
+ * calls `setState`, so no due date, stability or state moves for it, ever.
+ *
+ * Items carry no `key`, so a miss here never enters "redo what was wrong",
+ * which must be able to rebuild what it offers — uncounted or not.
+ *
+ * **A table no skill names logs nothing.** `skill` on an attempt is the id of
+ * a skill in the map; a catalogue item falls back to the table's id when no
+ * skill names it (`items.js` `chartShape`), and a row under that id would sit
+ * on no sheet and be read by nothing. There is nowhere to record it, and the
+ * view says so.
  */
 export function createCatalogueDrill({ items = [], gstore, skillId = null, rand = Math.random }) {
   const state = skillId ? gstore.getState(skillId) : null;
   const counted = !!(skillId && inRotation(state));
   const slots = items.map((it, i) => ({ skill: it.skill, kind: 'chart', stage: 1, i, currentWeek: false }));
   const onAnswer = async ({ item, result, attempt, hinted, partial, ms }) => {
+    if (!skillId) return;
+    // The marker rides in `meta` beside §11b's `generated` and §18.3's `given`: free-form, kept on the
+    // device, no column and no schema change. It is added, never substituted — a table's `given` must
+    // survive, because the rung is exactly what the sheet has to say about this run.
+    const meta = counted ? attempt.meta : { ...attempt.meta, uncounted: true };
+    await gstore.addAttempt({ ...attempt, skill: skillId, ...(meta ? { meta } : {}) });
     if (!counted) return;
-    await gstore.addAttempt({ ...attempt, skill: skillId });
     const cur = gstore.getState(skillId) ?? skillId;
     await gstore.setState(applyAnswer(cur, { correct: result.correct, hinted, partial, ms }));
   };
