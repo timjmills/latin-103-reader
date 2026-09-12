@@ -117,7 +117,7 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 
 /* ------------------------------------ how much of a skill is done */
 /* Three signals for one fact, so no reader depends on the one they have not
-   got: the count ("3 of 6") in words, the ticks filled or hollow (a shape,
+   got: the count ("3 of 6 parts" — the unit named, §22.1) in words, the ticks filled or hollow (a shape,
    which survives a greyscale print), and the colour. The colour ramp is the
    section's own — ink-3 while a skill is begun, full ink past halfway, green
    only when every part is done. Because "mastered" is one of the parts, green
@@ -210,6 +210,10 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-ex__parsed { margin: var(--s-1) 0 0; padding-left: 1.2em; font-family: var(--face-ui); font-size: var(--note-md); color: var(--ink-2); display: grid; gap: var(--s-1); }
 .g-ex__parsed b { font-family: var(--face-reading); font-weight: 600; color: var(--ink); }
 .g-ex--worked { gap: var(--s-5); }
+/* The stepper above a lesson. A chapter set's two marks keep the CSS counter and their text; a lesson's
+   steps carry their glyph in the DOM (`.g-steps__g`) instead, because a finished one is a tick and not a
+   numeral and a finished one is also a button back to itself (§22.2). `.visually-hidden` never appears
+   here — a mark that is not a control names itself with aria-label on its own <li>. */
 .g-steps { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin: 0; padding: 0; list-style: none; font-size: var(--ui-sm); color: var(--ink-3); counter-reset: step; }
 .g-steps__s { display: flex; align-items: center; gap: var(--s-1); }
 .g-steps__s::before { counter-increment: step; content: counter(step); width: 1.4em; height: 1.4em; display: inline-grid; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: var(--ui-xs); }
@@ -741,11 +745,24 @@ table.g-table { max-width: 24rem; }
 /* ------------------------------------------ the teaching steps (Learn) */
 /* One step is one page of the run: its number, its title, one short paragraph, the thing it shows (a
    written sentence with its gloss, or the one or two cells it reveals), a worked example, and the check.
-   Hairlines and the reading face, as everywhere; the step number in the stepper is the only mark. */
+   Hairlines and the reading face, as everywhere; the stepper carries one small mark a step, and since
+   §22.2 that mark also says whether the step is finished and is the way back to it. */
 .g-stepwrap { display: contents; }
 .g-steps--n { gap: var(--s-2); }
-.g-steps--n .g-steps__s { gap: 0; }
-.g-steps--n .g-steps__s:last-child::before { display: none; }   /* the ten is named, not numbered */
+.g-steps--n .g-steps__s { gap: 0; position: relative; }
+.g-steps--n .g-steps__s::before { display: none; }   /* the mark is in the DOM here, so it can be a tick and a control */
+/* Three states, and the colour is the third signal and never the first (§3, §22.2): the glyph differs in
+   SHAPE — a tick, a numeral, the word "Ten" — so the row reads in greyscale and on paper, and the whole
+   fact is in the aria-label either way. Nothing here changes size between the states: the pip is a
+   control now, and a control the learner is reaching for may not move (§17.3). */
+.g-steps__go { display: inline-flex; align-items: center; justify-content: center; margin: 0; padding: 0; background: none; border: 0; border-radius: var(--radius-sm); color: inherit; font: inherit; }
+button.g-steps__go { cursor: pointer; }
+button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--ink); }
+.g-steps__go:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.g-steps__g { width: 1.4em; height: 1.4em; display: inline-grid; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: var(--ui-xs); }
+.g-steps--n .g-steps__s:last-child .g-steps__g { width: auto; height: auto; border: 0; border-radius: 0; font-size: inherit; }   /* the ten is named, not numbered */
+.g-steps__s[data-state="done"] { color: var(--success); }
+.g-steps__s[data-state="now"] .g-steps__g { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
 .g-step { display: grid; gap: var(--s-3); padding-bottom: var(--s-4); border-bottom: 1px solid var(--line); }
 .g-step__title { margin: 0; font-family: var(--face-serif); font-weight: 400; font-size: 1.45rem; line-height: 1.25; text-wrap: balance; outline: none; }
 .g-step__title:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
@@ -931,3 +948,14 @@ table.g-table { max-width: 24rem; }
 }
 
 @media (pointer: coarse) { .g-seg--scaffold .g-seg__btn { min-height: var(--tap); } }
+
+@media (pointer: coarse) {
+  /* A pip is a control now (§22.2), so it needs a real target. The visible circle stays exactly the size
+     it is on a mouse — this row sits above every lesson and is a status line, not a dashboard — and the
+     target is grown around it instead: the full --tap in both directions, on every mark whether or not it
+     is pressable, so the row does not re-lay itself out as steps are finished. Seven marks is the most a
+     lesson can have (six steps and the ten) and 7 × 44 = 308px, which still sits on one row of a 375px
+     screen. The gap goes to zero so no two targets overlap, the way a tab bar's do not. */
+  .g-steps--n { gap: 0; }
+  .g-steps--n .g-steps__go { min-height: var(--tap); min-width: var(--tap); }
+}
