@@ -490,6 +490,13 @@ body.is-resizing .panel { pointer-events: none; }
 .r-wx { border-radius: 2px; transition: background-color var(--t-fast) var(--ease-out); }
 .r-wx:hover { background: var(--rubric-soft); }
 @media (prefers-reduced-motion: reduce) { .w, .r-wx { transition: none; } }
+/* The finger's dictionary (GRAMMAR-CONTRACT.md §17.4): holding a word opens its entry, so the
+   browser's own long press must not put a share sheet or a pair of selection handles over the top
+   of it. The iOS callout is refused outright — touch-only, a mouse never meets it — and selection
+   only while a finger is actually down on a word (`<html data-hold>`, set by hovergloss.js off a
+   real pointer event), so a mouse can still select and copy a passage on a touchscreen laptop. */
+.w, .r-wx { -webkit-touch-callout: none; }
+:root[data-hold="1"] .w, :root[data-hold="1"] .r-wx { user-select: none; -webkit-user-select: none; }
 .reader[data-underlines="on"] .w--seen, .lookups .w--seen, .note--summary .w--seen {
   text-decoration: underline; text-decoration-color: var(--underline);
   text-decoration-thickness: 0.16em; text-underline-offset: 0.14em;

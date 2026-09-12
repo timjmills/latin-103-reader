@@ -2220,6 +2220,101 @@ mark now keeps its place from the start in both typed boxes.
 not move when that input is judged on blur. Reserve the space; do not let a
 mark appear into the flow beside a button.
 
+### 17.4 Long-press defines, tap answers (2026-09-12)
+
+§17.2 settled *how* the dictionary decides a pointer can hover. It did not
+give the finger a way in. On a phone or a tablet there is no hover, and the tap
+was already spoken for: on a tap item, tapping a word **chooses** it as the
+answer. So the pointer dictionary was unreachable on exactly the device the
+learner reads on.
+
+Three ways out were put to the learner (a second tap; a long press; a "define"
+mode toggle). Their answer, and it is settled:
+
+> **Long-press defines, tap answers.** Hold a word ~450 ms and the definition
+> opens; a quick tap still chooses it. One rule everywhere in the app — long
+> press always asks the dictionary — so it works the same on a tap item, in the
+> reading passage, and on a chart. Taught in the item's own key help line, not
+> in a pop-up tip and not in onboarding.
+
+**Where it lives.** `app/js/hovergloss.js`, beside the hover, because both
+sections attach the same machine and there must not be two answers to one
+question. The Grammar section and the reader got the gesture without a line of
+their own; the reader's chapter page and weeks menu got it too, because they go
+through `hoverGloss()`.
+
+**The gesture, and why these numbers.**
+
+| | | |
+| --- | --- | --- |
+| `HOLD_MS` | 450 ms | Above the ~200 ms a deliberate tap takes to lift, and just *below* the ~500 ms at which Android Chrome raises its context menu and iOS Safari its selection callout. Opening first is what lets us take those away while the press is still ours. |
+| `HOLD_SLIP` | 10 px | A shade over the 8 px slop a touch engine itself allows before it calls a press a scroll. The map and the reading pages are long; a flick past a word must open nothing. |
+| `HOLD_CLICK_MS` | 500 ms | How long the lift's click may take to arrive. The swallower is one shot — it goes the moment it eats that click — so this only bounds the wait when no click comes at all. |
+
+**The click the opening lift fires is swallowed.** This is the fault the whole
+feature turns on: without it one gesture hands out a definition *and* commits
+an answer. When the hold has opened a gloss, the lift installs a one-shot
+`click` listener in the **capture** phase on `window`, which
+`stopImmediatePropagation()`s the click before it can reach the word's own
+`onclick` or a section's delegated `click`. One shot, so the learner's next tap
+is their own; and it is installed at the *lift*, not when the gloss opens, so a
+five-second press is swallowed as surely as a half-second one.
+
+**Rules the gesture obeys, all of them the hover's own rules:**
+
+- **The parse rule (§17.2, c590389) is inherited, not restated.** The hold goes
+  through the same `skip` and the same `show`, so a tap item's unanswered word
+  gives its meaning and dictionary form and holds back its parse — for a finger
+  exactly as for a mouse. A touch learner gets no more than a mouse learner,
+  and no less.
+- **The browser's own long press is refused, and only while ours is running.**
+  `contextmenu` and `selectstart` are `preventDefault`ed while a finger is down
+  on a word; `-webkit-touch-callout: none` sits on the words permanently (a
+  touch-only property a mouse never meets); `user-select: none` is applied
+  through `<html data-hold="1">`, set at the press and removed at the lift — so
+  selecting and copying Latin **with a mouse** on a touchscreen laptop is
+  exactly what it was.
+- **A press anywhere puts the last hold's gloss away.** Both sections already
+  close their popup on a `pointerdown`, and both make an exception for a word —
+  so without this, holding one word and then tapping the next left the first
+  word's gloss standing over the second.
+- **`pointerout` is guarded by `pointerHovers` now.** A touch fires
+  `pointerout` at the *lift*, after the hold has opened the gloss; unguarded,
+  the gesture closed what it had just opened.
+- **Plain Latin is cut into words at the hold, not at the press**, so a quick
+  tap never rewrites the DOM under the finger.
+
+**"Touch" is decided the way §17.2 decides everything here: off a real pointer
+event, never off the device.** `hovergloss.js` watches the document for the
+first `pointerdown` that `pointerHovers()` rejects and then sets
+`<html data-touch="1">` (and answers `touchUsed()`). A media query would have
+made the same mistake §17.2 records — a touchscreen laptop with a mouse in it
+answering "coarse" — and it has shipped twice.
+
+The honest limit is that the flag is false until the first touch. That is
+accepted, for two reasons: a learner on a touch screen cannot reach an item
+without tapping something first, and the flag is watched from the **document**,
+not from a section's root, so any tap anywhere in the app sets it. The
+alternative — wording the help line so it is true on both — was rejected: on a
+mouse there is no such gesture, and teaching one the reader cannot make is
+worse than saying nothing.
+
+**The key help line.** `.g-keys` is now built by one helper (`keyHelp()` in
+`ui.js`) out of two spans, because the two halves are true on different
+machines: `.g-keys__main` is the keyboard model, and `.g-keys__hold` says
+"Hold a word to see what it means." — shown only under
+`:root[data-touch="1"]`. The m12 rule that clips the keyboard model from sight
+on a coarse pointer, while keeping it in the accessibility tree for a tablet
+with a Bluetooth keyboard, now clips the **`__main` span** and not the
+paragraph: hiding the whole line hid the hold sentence too, on exactly the
+machine it is for.
+
+Known and accepted: in a non-tap Grammar item a *tap* already opens the full
+click popup, and while that popup is up `busy()` holds the hover — and so the
+hold — off, exactly as it does for a mouse. The learner closes it by its × or
+by a tap elsewhere. Tests: `tests/ui.touch-define.test.mjs` drives the real
+module over a small fake DOM with synthesised `PointerEvent`s.
+
 ## 18. The selection page as a progress sheet, 2026-09-12
 
 > "use a bit of color to show how many parts of a lesson skill extra have been

@@ -40,6 +40,17 @@ const h = (tag, attrs = {}, ...children) => {
   return el;
 };
 const btn = (label, attrs = {}, cls = 'btn') => h('button', { type: 'button', class: cls, ...attrs }, label);
+/**
+ * The grey help line under an item — how this item is worked, said once, in place of a tip anyone
+ * has to dismiss. Two spans and not one string, because the two halves are true on different
+ * machines: `__main` is the keyboard model (clipped from sight, but not from the accessibility
+ * tree, on a coarse pointer — grammar.css), and `__hold` is the finger's dictionary, said only
+ * once a finger has actually been used here (`<html data-touch>`, set by hovergloss.js from a real
+ * pointer event and never from a media query — GRAMMAR-CONTRACT.md §17.2, §17.4).
+ */
+const keyHelp = (text, cls = '') => h('p', { class: `g-keys${cls ? ` ${cls}` : ''}` },
+  h('span', { class: 'g-keys__main', text }),
+  h('span', { class: 'g-keys__hold', text: ' Hold a word to see what it means.' }));
 const phone = () => matchMedia('(max-width: 767.98px)').matches;
 const STATE_LABEL = { new: 'new', learning: 'learning', practising: 'practising', mastered: 'mastered', lapsed: 'lapsed' };
 const PRESET_LABEL = {
@@ -1511,7 +1522,7 @@ export function createUI(ctx) {
       const q = h('p', { class: 'g-q g-worked__q', tabindex: '-1' }, ...(a.key === 'construction'
         ? ['What is ', h('span', { lang: 'la', text: plan.word }), ' doing here?']
         : [`Which ${a.label} is `, h('span', { lang: 'la', text: plan.word }), '?']));
-      live.replaceChildren(q, group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer; Enter goes on.' }));
+      live.replaceChildren(q, group, keyHelp('Keys 1–4 choose an answer; Enter goes on.'));
       live.onkeydown = (e) => { const n = Number(e.key); if (n >= 1 && n <= a.choices.length && !picked) { e.preventDefault(); group.children[n - 1].click(); } };
       q.focus({ preventScroll: true });
     };
@@ -1577,7 +1588,7 @@ export function createUI(ctx) {
     node.append(h('p', { class: 'g-lesson__tag', text: 'Look first' }), h('div', { class: 'g-notice__pair' }, columns), h('p', { class: 'g-q g-notice__q', tabindex: '-1', text: notice.ask }));
     if (notice.tap !== 'focus' && notice.options.length) {
       node.append(h('div', { class: 'g-choices g-choices--worked', role: 'group', 'aria-label': 'Answers' }, notice.options.map((o, i) => btn([h('span', { class: 'g-choice__n', 'aria-hidden': 'true', text: `${i + 1}` }), h('span', { class: 'g-choice__label', text: o })], { onclick: (e) => { const ok = !notice.answer || o === notice.answer; e.currentTarget.classList.add(ok ? 'is-answer' : 'is-wrong'); line.textContent = ok ? 'Yes. Here is why.' : `Not quite — ${notice.answer ?? 'look again'}.`; finish({ found: true }); } }, 'g-choice'))));
-    } else node.append(h('p', { class: 'g-keys g-keys--tap', text: 'Tap the word in either sentence.' }));
+    } else node.append(keyHelp('Tap the word in either sentence.', 'g-keys--tap'));
     node.append(line, h('div', { class: 'g-acts' }, btn('Skip to the rule', { onclick: () => finish() }, 'btn btn--quiet g-notice__skip')));
     return { node, done: () => done };
   }
@@ -2856,7 +2867,7 @@ export function createUI(ctx) {
     const latinTyped = item.kind === 'blank' || item.kind === 'transform' || item.kind === 'question' || item.kind === 'pensum' || (item.kind === 'vocab' && skill?.rev);
     if (item.input === 'choice') {
       const group = h('div', { class: 'g-choices', role: 'group', 'aria-label': 'Answers' }, item.choices.map((c, i) => btn([h('span', { class: 'g-choice__n', 'aria-hidden': 'true', text: `${i + 1}` }), h('span', { class: 'g-choice__label', lang: item.kind === 'blank' || item.kind === 'question' || (item.kind === 'vocab' && skill?.rev) ? 'la' : null, text: c.label }), c.plain ? h('span', { class: 'g-choice__plain', text: c.plain }) : null], { 'data-value': c.value, onclick: (e) => { e.currentTarget.classList.add('is-picked'); submit(c.value); } }, 'g-choice')));
-      node.append(group, h('p', { class: 'g-keys', text: 'Keys 1–4 choose an answer.' }));
+      node.append(group, keyHelp('Keys 1–4 choose an answer.'));
       // After an answer the list itself says which was right, not only the prose beneath it (m13).
       node.addEventListener('g-answered', () => { for (const b of group.children) b.classList.toggle('is-answer', item.choices[[...group.children].indexOf(b)]?.correct === true); });
       node.addEventListener('keydown', (e) => { const n = Number(e.key); if (n >= 1 && n <= item.choices.length && !submitted && e.target.tagName !== 'INPUT') { e.preventDefault(); group.children[n - 1].click(); } });
@@ -2869,7 +2880,7 @@ export function createUI(ctx) {
     } else if (item.input === 'chart') {
       node.append(chartInput(item, submit, hintFor, { onCells, onReopen, live: ctx.live }));
     } else if (item.input === 'tap') {
-      node.append(h('p', { class: 'g-keys g-keys--tap', text: 'Tap a word in the sentence.' }));
+      node.append(keyHelp('Tap a word in the sentence.', 'g-keys--tap'));
     } else if (item.input === 'order') {
       const w = orderInput({ chunks: item.chunks, display: item.display ?? null, scrambled: item.scrambled, onSubmit: submit, live: ctx.live });
       node.append(w.node);
@@ -3119,7 +3130,7 @@ export function createUI(ctx) {
     check.setAttribute('aria-describedby', 'g-pensum-needone');
     syncCheck = () => { const on = anyEnding(); check.disabled = !on; needOne.hidden = on; };
     const anyEnding = () => [...inputs.keys()].some((i) => String(valueOf(i)).trim() !== '');
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!anyEnding()) { needOne.hidden = false; return; } const v = {}; item.blanks.forEach((b, i) => { v[i] = valueOf(i); }); closePeeks(); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next ending and marks it right or wrong; Alt+H shows that ending and hides it again; Enter checks.' }));
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); if (!anyEnding()) { needOne.hidden = false; return; } const v = {}; item.blanks.forEach((b, i) => { v[i] = valueOf(i); }); closePeeks(); submit(v); } }, p, h('div', { class: 'g-chart__acts' }, check), needOne, keyHelp('Tab moves to the next ending and marks it right or wrong; Alt+H shows that ending and hides it again; Enter checks.'));
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => cells.mark(i, valueOf(i), { announce: true }) }));
     syncCheck();
     onCells?.(cells.all);
@@ -3176,7 +3187,7 @@ export function createUI(ctx) {
       bankBtns.forEach((b, t) => { b.disabled = used.has(t); b.classList.toggle('is-used', used.has(t)); });
       check.disabled = item.blanks.some((_, i) => filled[i] == null);
     };
-    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((_, i) => { v[i] = filled[i] == null ? '' : item.bank[filled[i]]; }); submit(v); } }, p, h('div', { class: 'g-order__bank', role: 'group', 'aria-label': 'Word bank' }, bankBtns), h('div', { class: 'g-chart__acts' }, check), h('p', { class: 'g-keys', text: 'Tab to a word and press Enter to put it in the next empty blank; a filled blank empties when chosen; Alt+H on a blank opens its hint.' }));
+    const form = h('form', { class: 'g-chart', onsubmit: (e) => { e.preventDefault(); const v = {}; item.blanks.forEach((_, i) => { v[i] = filled[i] == null ? '' : item.bank[filled[i]]; }); submit(v); } }, p, h('div', { class: 'g-order__bank', role: 'group', 'aria-label': 'Word bank' }, bankBtns), h('div', { class: 'g-chart__acts' }, check), keyHelp('Tab to a word and press Enter to put it in the next empty blank; a filled blank empties when chosen; Alt+H on a blank opens its hint.'));
     form.addEventListener('keydown', (e) => {
       if (!e.altKey || (e.key !== 'h' && e.key !== 'H')) return;
       const at = [...slots.entries()].find(([, el]) => el === e.target);
@@ -3391,7 +3402,7 @@ export function createUI(ctx) {
     syncCheck = () => { const on = filledAny(); check.disabled = !on; needOne.hidden = on; };
     const keptHere = [...inputs.keys()].filter((i) => kept(i)).length;
     const emptyHere = inputs.size - keptHere;
-    form.append(h('div', { class: 'g-chart__acts' }, check), needOne, h('p', { class: 'g-keys', text: 'Tab moves to the next cell and marks the one you leave; Alt+H shows that cell’s form and hides it again; Enter checks once every cell is filled.' }));
+    form.append(h('div', { class: 'g-chart__acts' }, check), needOne, keyHelp('Tab moves to the next cell and marks the one you leave; Alt+H shows that cell’s form and hides it again; Enter checks once every cell is filled.'));
     // Said before the keys line, because it explains why boxes already have writing in them.
     if (keptHere) form.insertBefore(h('p', { class: 'g-quiet g-chart__keptnote', text: `The ${keptHere === 1 ? 'cell' : `${keptHere} cells`} you had right ${keptHere === 1 ? 'is' : 'are'} kept; ${emptyHere === 1 ? 'the empty one is the one' : `the ${emptyHere} empty ones are the ones`} that went wrong. Every cell is judged again when you check.` }), form.querySelector('.g-chart__acts'));
     form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => paintCells.mark(i, valueOf(i), { announce: true }) }));
