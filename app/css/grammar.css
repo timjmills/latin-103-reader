@@ -71,14 +71,6 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-today, .g-review { display: grid; gap: var(--s-1); }
 .g-today__line { margin: 0; line-height: 1.6; }
 .g-today__btn { margin-left: var(--s-1); vertical-align: middle; min-height: 36px; }
-@media (pointer: coarse) {
-  .g-today__btn, .g-chip, .g-filter__btn, .g-bulk .btn, .g-skill__acts .btn, .g-fb__more-s, .g-all-switch, .g-pop__close { min-height: var(--tap); }
-  .g-pop__close { width: var(--tap); }
-  .g-skill__title { min-height: var(--tap); display: flex; align-items: center; }
-  /* Words stay inline (the line box is untouched); the hit area grows above and below the text. */
-  .g-w { position: relative; }
-  .g-w::after { content: ""; position: absolute; left: 0; right: 0; top: -0.45em; bottom: -0.45em; }
-}
 .g-chips { list-style: none; margin: var(--s-1) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .g-chip { min-height: 36px; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--ink); font-size: var(--ui-sm); text-align: left; }
 .g-chip:hover { border-color: var(--ink-3); background: var(--bg-raised); }
@@ -150,7 +142,6 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-parts__count { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .g-parts[data-level="most"] { color: var(--ink-2); }
 .g-parts[data-level="all"] { color: var(--success); }
-@media (pointer: coarse) { .g-parts { min-height: 32px; } }
 
 /* The panel: fixed, over the page, and appended to the body — so it can never
    reflow the row, the list or the page (§17.1), and so it works the same from
@@ -162,6 +153,11 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
   box-shadow: var(--shadow-pop); color: var(--ink-2);
   font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.45;
   animation: pop var(--t-fast) var(--ease-out);
+  /* It must fit the screen it is on. At 320x401 with no cap it ran 230px past the bottom of a phone in
+     landscape — where it can *never* fit — and was clipped over a third of a 375x667 portrait screen, with
+     no way to reach the rest. The placement code keeps it inside the viewport; these two lines are what
+     let it, by making the panel able to be short and to scroll rather than simply be cut off. */
+  max-height: min(60vh, 420px); overflow-y: auto; overscroll-behavior: contain;
 }
 /* Opened by the pointer alone: it takes no pointer, which is what keeps it from
    flickering as the mouse reaches it. Opened by a finger or the keyboard it does
@@ -300,7 +296,6 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-seg--allnone { flex: none; }
 .g-seg--allnone .g-seg__btn { min-height: 36px; min-width: 3rem; font-size: var(--ui-sm); }
 .g-mix__empty { color: var(--danger); }
-@media (pointer: coarse) { .g-seg--allnone .g-seg__btn { min-height: var(--tap); } }
 
 /* ------------------------------------------------------------ runner */
 .g-run { display: grid; gap: var(--s-4); }
@@ -358,9 +353,6 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
    otherwise lose the only statement of the order / match key model (m12). It is the keyboard *half* that is clipped
    now, not the paragraph: the hold sentence beside it is the one part of this line a finger can act on, and hiding
    the whole line would have hidden it on exactly the machine it is for. */
-@media (hover: none) and (pointer: coarse) {
-  .g-keys:not(.g-keys--tap) .g-keys__main { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-}
 .g-type { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .g-input { min-height: var(--tap); flex: 1 1 14rem; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: var(--ui-lg); }
 .g-input[lang="la"] { font-family: var(--face-reading); font-size: 1.15rem; }
@@ -461,14 +453,6 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
    written out instead — 44 px tall, and 25.6 + 4 + 15 ≈ 44.6 px wide, grown mostly rightwards into the cell
    gutter (2 × var(--s-2) of table-cell padding, so ~1 px short of the next cell's box) and only 4 px leftwards,
    which the cell's own gap then clears. The wide variant is a labelled button in a row of its own: it grows. */
-@media (pointer: coarse) {
-  .g-cellwrap { gap: var(--s-1); }
-  .g-hintb { position: relative; margin-inline-start: var(--s-1); }
-  .g-hintb:not(.g-hintb--wide)::after {
-    content: ""; position: absolute; top: 50%; left: -4px; right: -15px; height: var(--tap); transform: translateY(-50%);
-  }
-  .g-hintb--wide { min-height: var(--tap); }
-}
 
 /* Feedback: one line, then "Why" */
 .g-fb { display: grid; gap: var(--s-2); padding: var(--s-3) var(--s-4); border-radius: var(--radius); background: var(--bg-chrome); animation: rise-in var(--t-base) var(--ease-out); }
@@ -574,12 +558,6 @@ table.g-table { max-width: 24rem; }
 .g-order__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 /* 44 px on both axes under a coarse pointer: `et`, `in` and `ā` are two-letter chips, and a Pensum A ending box is
    ~26 px tall without this (m15 / CR m1). */
-@media (pointer: coarse) {
-  .g-order__w, .g-match__b, .g-pensum__slot, .g-plan__go, .g-self__grade .btn { min-height: var(--tap); }
-  .g-order__w { min-width: var(--tap); }
-  .g-input--end, .g-pensum__slot { min-height: var(--tap); min-width: 3.5em; }
-  .g-pensum { line-height: 2.6; }
-}
 
 /* Match: two columns, Latin left, meanings right; a pending pick is outlined, a pair filled. */
 .g-match { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-3); }
@@ -860,7 +838,6 @@ table.g-table { max-width: 24rem; }
 .g-scaffold { display: grid; gap: var(--s-1); justify-items: start; }
 .g-seg--scaffold .g-seg__btn { min-width: 3rem; min-height: 36px; font-size: var(--ui-sm); }
 /* Five levels abreast at 375: 36 px tall without this, the one control on the table page a thumb can miss. */
-@media (pointer: coarse) { .g-seg--scaffold .g-seg__btn { min-height: var(--tap); } }
 .g-scaffold__note { max-width: 60ch; }
 /* A wide table scrolls inside its own box on a phone; a grid item's `min-width: auto` would otherwise let the
    box grow to the table and push the whole page sideways. */
@@ -903,3 +880,54 @@ table.g-table { max-width: 24rem; }
 .g-item__en[open] .g-hint__s::before { transform: rotate(45deg); }
 .g-item__en .g-hint__rule { margin: 0 0 var(--s-1); }
 .g-item__en .g-wgloss, .g-fb__ctx .g-wgloss { margin-top: var(--s-2); }
+
+
+/* ============================================================== touch last
+   Every `pointer: coarse` rule in this file lives here, at the end, and that
+   position is the whole of what makes it work. A media query adds **no**
+   specificity: a coarse block placed above `.g-chip { min-height: 36px }`
+   matches on a phone and then loses to the later plain rule, so the 44px
+   target it declares never applies. Eleven of these were dead that way, and
+   nothing caught it, because a narrowed desktop window never matches
+   `pointer: coarse` at all — the rules were never even evaluated in testing.
+   Keep new touch rules in this section. A coarse rule written next to the
+   thing it overrides is a rule that does nothing. */
+
+@media (pointer: coarse) {
+  .g-today__btn, .g-chip, .g-filter__btn, .g-bulk .btn, .g-skill__acts .btn, .g-fb__more-s, .g-all-switch, .g-pop__close { min-height: var(--tap); }
+  .g-pop__close { width: var(--tap); }
+  .g-skill__title { min-height: var(--tap); display: flex; align-items: center; }
+  /* Words stay inline (the line box is untouched); the hit area grows above and below the text. */
+  .g-w { position: relative; }
+  .g-w::after { content: ""; position: absolute; left: 0; right: 0; top: -0.45em; bottom: -0.45em; }
+}
+
+@media (pointer: coarse) {
+  /* 32px was below the project's own --tap standard, and the row gives it no slack: "Start as new" sits
+     8px under it, so a near miss starts a lesson instead of opening a panel. */
+  .g-parts { min-height: var(--tap); }
+}
+
+@media (pointer: coarse) { .g-seg--allnone .g-seg__btn { min-height: var(--tap); } }
+
+@media (hover: none) and (pointer: coarse) {
+  .g-keys:not(.g-keys--tap) .g-keys__main { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+}
+
+@media (pointer: coarse) {
+  .g-cellwrap { gap: var(--s-1); }
+  .g-hintb { position: relative; margin-inline-start: var(--s-1); }
+  .g-hintb:not(.g-hintb--wide)::after {
+    content: ""; position: absolute; top: 50%; left: -4px; right: -15px; height: var(--tap); transform: translateY(-50%);
+  }
+  .g-hintb--wide { min-height: var(--tap); }
+}
+
+@media (pointer: coarse) {
+  .g-order__w, .g-match__b, .g-pensum__slot, .g-plan__go, .g-self__grade .btn { min-height: var(--tap); }
+  .g-order__w { min-width: var(--tap); }
+  .g-input--end, .g-pensum__slot { min-height: var(--tap); min-width: 3.5em; }
+  .g-pensum { line-height: 2.6; }
+}
+
+@media (pointer: coarse) { .g-seg--scaffold .g-seg__btn { min-height: var(--tap); } }

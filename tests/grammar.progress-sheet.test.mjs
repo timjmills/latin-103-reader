@@ -95,9 +95,18 @@ test('a row near the foot of a long map flips its panel above, not off the scree
   assert.ok(y + 300 < 900, 'the flipped panel still runs off the bottom');
 });
 
-test('with room neither above nor below it stays below rather than going off the top', () => {
-  const { y } = panelPlace(box(300), { h: 800, w: 320, vw: 1440, vh: 900 });
-  assert.equal(y, 332);
+test('with room neither above nor below it stays on the screen, top and bottom', () => {
+  // It used to answer `below` unclamped here, which on a phone put 68 measured px of the panel past the
+  // bottom of the screen with no way to reach it. Preferring below is still right; running off the edge
+  // never was. A panel taller than the screen starts at the top margin and scrolls (the CSS caps it).
+  const gap = 8;
+  for (const [ph, vh] of [[800, 900], [401, 727], [300, 390]]) {
+    const { y } = panelPlace(box(300), { h: ph, w: 320, vw: 1440, vh });
+    assert.ok(y >= gap, `h=${ph} vh=${vh}: y=${y} is off the top`);
+    assert.ok(y + ph <= vh - gap || y === gap, `h=${ph} vh=${vh}: y=${y} runs ${y + ph - vh} past the bottom`);
+  }
+  // And it still prefers below whenever below actually fits.
+  assert.equal(panelPlace(box(300), { h: 200, w: 320, vw: 1440, vh: 900 }).y, 332);
 });
 
 test('the panel is pulled back inside a 375px phone', () => {
