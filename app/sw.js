@@ -349,6 +349,8 @@ const PRECACHE = [
   './js/grammar/print.js',
   // the chapter spine (GRAMMAR-CONTRACT.md "Chapter spine"): ./js/chapters.js and ./css/chapters.css are above
   './js/grammar/chapter.js',
+  // how much of a skill has been worked through, for the colour and the hover on a skill map row
+  './js/grammar/progress.js',
 ];
 
 const abs = (rel) => new URL(rel, self.location.href).href;
