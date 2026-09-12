@@ -2257,6 +2257,7 @@ cells answered right", ticking only on a whole table unaided) is already in the
 module and switches on the moment a caller passes `metCells` and `cellCount`;
 enabling it means persisting an in-memory Map and a catalogue lookup per row per
 paint, which is a state-and-data change, not a change to this page.
+*Superseded on the same day by §18.3, which keeps the tick and adds the rung.*
 
 ### 18.2 Two rules this work adds
 
@@ -2271,3 +2272,47 @@ answered right*, because `session.js` logs one attempt per item and keeps no
 per-box record — and a chart item is a whole table on a wide screen, a single
 cell on a phone, and a single cell again in "practise one cell". Neither "cells"
 nor "tables" is true everywhere; "charts" is.
+
+### 18.3 Which rung the table was completed at (2026-09-12)
+
+> "OR we coudl show the completed at 20% completed at 60% at 80%"
+
+§18.1's second behaviour, answered rather than kept. The tick stays; what it
+never said was *how*, and the learner asked for exactly that. The ladder is
+`SCAFFOLD_STEPS = [80, 50, 20, 0]` — a percentage **given**, so 80 is the
+easiest rung and 0 is the table from memory.
+
+**Written down.** A chart attempt carries `meta.given`, the percentage of its
+table that was printed before the learner started (`session.js` `chartGiven`,
+alongside §11b's `meta.generated`; kept on the device, the server row has no
+column). It is the only durable record of the level: the per-table setting and
+`metCells` live in `localStorage` and are rebuilt each sitting, which is why
+§18.1 could not tell an 80 % table from a blank one.
+
+**`null` is unknown, and is never 0.** A question that was not a whole table
+records no level at all, because every available number would be a lie: a phone
+shows ONE cell of a twelve-cell table and hands the other eleven to the grader,
+which is the opposite of an unaided table; a step's chart over words gives
+nothing and withholds nothing; a one-cell item has no table to scaffold. The
+view therefore writes `chart.shown` — how many cells it put on screen — because
+`chart.given` is `[]` for a blank table and for a phone's single cell alike.
+Attempts written before today have no `meta` and are unknown in the same way.
+
+**A table read off its own hints sets no rung.** §12's ladder only fades on
+`correct && !hinted`, and §17.1 is explicit that a form only being looked at is
+not an answer; "completed unaided" may not be said about a blank table whose
+cells were shown. Such an attempt is still a chart answered right.
+
+**The part is done at any rung, and the rung is reported beside it.** The tick
+means the learner completed the table the app put in front of them, which is
+what the app scores as a correct chart. Two reasons not to gate it on a level:
+an unknown must read as neither an achievement nor a failure, and gating would
+untick every chart part already earned — §18 has already ruled that a sheet
+whose ticks come off by themselves is a nag, not a record. `skillProgress`
+therefore reports the **hardest rung ever completed** (the lowest percentage
+given, whenever it was) on the part as `given`, a number or null; every part
+carries the field so a view reads one shape, and only `chart` ever fills it.
+The panel words it — `givenNote` in `ui.js`: "completed unaided", "completed
+with 20% given", and the line leads with it, "completed unaided · 3 charts
+answered right". **Never "completed at 80 %"**, which reads as nearly finished
+and is the wrong way round.
