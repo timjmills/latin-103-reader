@@ -181,6 +181,41 @@ installed copies pick up the new files.
 - No paid services, no runtime API calls to anything except your own
   Supabase project.
 
+## Deleting things that are not in git
+
+`source/`, `data/build/`, `audio/` and `scans/` are gitignored, which is what
+keeps the copyrighted text off GitHub — and also means **git cannot give any of
+it back**. Two rules, both bought the hard way.
+
+**Look inside a directory before deleting it.** On 2026-09-12 an agent working in
+a git worktree left a junction at `<worktree>/data/build` pointing at the real
+`data/build`. `git worktree remove --force --force` followed the junction and
+emptied the target: 177 files of built text, gone, and not in the Recycle Bin.
+Nothing was permanently lost — Supabase held every row and the scans were still
+on disk — but it cost an hour to establish that and a new script to act on it.
+
+**Remove a worktree with the guard, not by hand:**
+
+```
+node scripts/rm-worktree.mjs .claude/worktrees/agent-xxxx   # one
+node scripts/rm-worktree.mjs --all --dry-run                # look first
+```
+
+It walks the tree for junctions and symlinks, refuses (exit 1) if any points
+outside it, and names the offending link. A link pointing *inside* the worktree
+is fine. `--force --force` is precisely the flag you reach for when the plain
+command refuses, so the rule "be careful with force" is not enough on its own:
+the check has to be something that does not get bored.
+
+**If `data/build` is lost again:** `python pipeline/build_week.py 1` … `14`
+rebuilds the course weeks from `source/`; `node scripts/pull-build.mjs --verify`
+pulls the shelf, colloquia, highlights, pictures, alignments and pensa back out
+of Supabase and checks the unit count against the database;
+`python pipeline/extract_margins.py` re-reads the line and margin data from
+`scans/`. Then `python pipeline/check_copyright.py` must index the full corpus
+again — a gate run against a partial corpus reports clean because it has less to
+compare against, which is the most dangerous way for this cache to be wrong.
+
 ## Folder map
 
 ```
