@@ -1844,9 +1844,27 @@ export function createUI(ctx) {
   /* ---------------------------------------------- scaffolded tables (§12) */
   const LS_SCAFFOLD = 'l103.grammar.scaffold.';       // + table id: that table's remembered level
   const LS_SCAFFOLD_AUTO = 'l103.grammar.scaffoldAuto.';   // + table id: where `auto` has faded to
+  const LS_SCAFFOLD_RUN = 'l103.grammar.scaffoldRun.';     // + table id: how many tables of it have been answered
   const scaffoldGlobal = () => normaliseScaffold(ctx.settings?.grammar?.scaffold);
   const scaffoldLevelOf = (tableId) => { const own = tableId ? readJSON(LS_SCAFFOLD + tableId, null) : null; return own != null ? normaliseScaffold(own) : scaffoldGlobal(); };
   const scaffoldAutoOf = (tableId) => { const v = tableId ? Number(readJSON(LS_SCAFFOLD_AUTO + tableId, 80)) : 80; return [80, 50, 20, 0].includes(v) ? v : 80; };
+  /**
+   * Which arrangement of a level this table is drawn in (§19): the count of
+   * tables of this one the learner has already answered, so practising 80%
+   * three times is three different exercises rather than one memorised
+   * picture. It lives beside the level and auto's step because it is the same
+   * kind of fact — durable, per table, this device's — and because the two
+   * durable per-table records the learner actually produces are not usable
+   * here: `metCells` is an in-memory Map rebuilt every sitting, and the
+   * attempt log does not say which table a chart was on (a drill chart's
+   * `item_key` is a cell key; a catalogue chart's is empty by design, so a
+   * miss never enters "redo what was wrong") — and a catalogue run outside the
+   * rotation logs nothing at all, which is the very run the learner described.
+   * The first table of one a learner has never answered is variant 0: the
+   * settled anchors-first arrangement, unchanged.
+   */
+  const scaffoldRunOf = (tableId) => { const v = tableId ? Number(readJSON(LS_SCAFFOLD_RUN + tableId, 0)) : 0; return Number.isFinite(v) && v > 0 ? Math.floor(v) : 0; };
+  const noteScaffoldRun = (tableId) => { if (tableId) writeJSON(LS_SCAFFOLD_RUN + tableId, scaffoldRunOf(tableId) + 1); };
   /** The switch's choice: remembered for this table and as the default for every other (`settings.grammar.scaffold`). */
   const setScaffold = (tableId, level) => { const v = normaliseScaffold(level); if (tableId) writeJSON(LS_SCAFFOLD + tableId, v); ctx.savePrefs?.({ scaffold: v }); };
   /** Cells the learner has answered right this sitting, per table — the "already met" tier of what is given. */
@@ -3170,10 +3188,12 @@ export function createUI(ctx) {
     // The given cells are decided once, when the item is first built, and kept on the item. A retry rebuilds
     // this input, and re-deciding here would re-read the switch: flipping it to off after a wrong answer would
     // hand back a different table from the one the first attempt was scored on (§12 — the table on screen
-    // finishes as it started; the switch applies to the next one).
+    // finishes as it started; the switch applies to the next one). It is also why the *variant* (§19) is read
+    // here and not again: the run count advances as this very table is graded, and a retry must hand back the
+    // arrangement the first attempt was scored on, not the next one.
     const given = !whole ? []
       : Array.isArray(chart.given) ? chart.given
-      : scaffoldGiven(item, { percent, taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell });
+      : scaffoldGiven(item, { percent, taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell, variant: scaffoldRunOf(tableId) });
     chart.given = given;
     const givenSet = new Set(given);
     // A chart is **one attempt** (§3), so an empty table must not be gradeable: pressing Check on twelve blank
@@ -3239,6 +3259,9 @@ export function createUI(ctx) {
       for (const x of filled) if (x.ok) { const id = idOfCell(chart.cells[x.i]); if (id) met.add(id); }
       metCells.set(tableId, met);
       if (level === 'auto') writeJSON(LS_SCAFFOLD_AUTO + tableId, scaffoldStep(autoAt, { correct, hinted }));
+      // One more table of this one answered, right or wrong: the next is drawn in the next arrangement (§19).
+      // Here, not on the way in, so a retry of *this* table keeps the arrangement it was scored on.
+      noteScaffoldRun(tableId);
     };
     // The guard is on the submit as well as on the button: a disabled button is the visible half, and this is
     // the half that holds however the form is submitted (Enter, an assistive tech, a script) — M-5.
