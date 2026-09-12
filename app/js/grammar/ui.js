@@ -1585,18 +1585,31 @@ export function createUI(ctx) {
       if (!found) line.textContent = '';
       onDone?.();
     };
-    const columns = pair.map((w) => {
+    const found = new Set();   // which of the two examples the learner has found for themselves
+    const columns = pair.map((w, ci) => {
       const fi = focusSpanOf(w);
       const p = latin(w.la, { tap: notice.tap === 'focus' ? (i, el) => {
         if (done) { showGloss(el, el.dataset.form, el.textContent, w.la); return; }
         if (fi.includes(i)) {
-          // Both sentences' focus words light — that is what the two have in common. A focus of two words
-          // (an ablative absolute, *itūrum esse*) lights both of its own words, and a tap on either is right.
+          // **Only this sentence lights.** It used to light both and finish on the first tap, which
+          // answered the second example for the learner: "I clicked on the first circled word which was
+          // correct but it revealed both examples so I did not have a hcance to guess the second"
+          // (2026-09-12). Two examples are two chances to notice; the shared pattern is the payoff for
+          // having found both, not a reason to hand the second one over. A focus of two words (an
+          // ablative absolute, *itūrum esse*) still lights both of its own words — that is one answer.
           node.querySelectorAll('.g-w.is-wrong').forEach((b) => b.classList.remove('is-wrong'));
-          columns.forEach((c, k) => { for (const idx of focusSpanOf(pair[k])) c.querySelector(`.g-w[data-index="${idx}"]`)?.classList.add('g-w--target', 'is-right'); });
-          line.textContent = `Yes — ${pair.map((x) => x.focus || '').filter(Boolean).join(' and ')}. Here is why.`;
-          ctx.say('Right. The rule follows.');
-          finish({ found: true });
+          for (const idx of fi) p.querySelector(`.g-w[data-index="${idx}"]`)?.classList.add('g-w--target', 'is-right');
+          found.add(ci);
+          const named = pair.map((x, k) => (found.has(k) ? x.focus || '' : '')).filter(Boolean);
+          if (found.size < pair.length) {
+            // Say what they got and point at the one still to do, without naming it.
+            line.textContent = `Yes — ${named.join(' and ')}. Now find it in the other sentence.`;
+            ctx.say(line.textContent);
+          } else {
+            line.textContent = `Yes — ${pair.map((x) => x.focus || '').filter(Boolean).join(' and ')}. Here is why.`;
+            ctx.say('Right. The rule follows.');
+            finish({ found: true });
+          }
         } else {
           el.classList.add('is-wrong');
           line.textContent = `Not ${el.textContent} — look at the word that answers the question in each sentence.`;
