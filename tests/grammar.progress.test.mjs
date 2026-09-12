@@ -292,3 +292,20 @@ test('a detail line never fills its slot with a dash', () => {
     }
   }
 });
+
+test('the chart part says what was actually written down, not what it wishes it knew', () => {
+  // session.js logs one attempt per ITEM and keeps no per-box record, and a chart item is a whole table on
+  // a wide screen and a single cell on a phone or in "practise one cell". So the log can count charts
+  // answered and nothing finer. The first wording said "1 cell answered right" for a whole table.
+  const s = { id: 'k', paradigm: ['decl1'] };
+  const p = skillProgress(s, { attempts: [{ kind: 'chart', correct: true, mode: 'practice' }], drillable: true });
+  const chart = p.parts.find((x) => x.key === 'chart');
+  if (chart) {
+    assert.match(chart.detail ?? '', /chart/, 'the detail no longer says what it counted');
+    assert.ok(!/\bcells?\b/.test(chart.detail ?? ''), 'the detail claims to count cells, which nothing records');
+  }
+  // A wrong chart is not a chart answered right.
+  const miss = skillProgress(s, { attempts: [{ kind: 'chart', correct: false, mode: 'practice' }], drillable: true });
+  const chartMiss = miss.parts.find((x) => x.key === 'chart');
+  if (chartMiss) assert.equal(chartMiss.done, false, 'a chart got wrong ticks the chart part');
+});
