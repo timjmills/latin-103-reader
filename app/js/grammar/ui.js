@@ -487,6 +487,116 @@ export function meterLabel(title, p) {
   return `${Number(p?.done) || 0} of ${total} part${total === 1 ? '' : 's'} of ${title} practised — show which`;
 }
 
+/* ------------------------------ where the learner is in a lesson (§22) */
+
+const MAX_STEPS = 64;   // a lesson has four to six; this only stops a corrupt file becoming a long loop
+
+/** Whatever was stored as a list of step indices, as clean whole numbers, lowest first, no repeats. Pure. */
+const stepList = (v) => {
+  const out = new Set();
+  for (const x of Array.isArray(v) ? v : []) {
+    // `Number(null)` is 0 and `Number(true)` is 1: a stray null in a hand-edited file must not become step 1.
+    const n = Math.floor(typeof x === 'number' ? x : (typeof x === 'string' && x.trim() ? Number(x) : NaN));
+    if (Number.isFinite(n) && n >= 0 && n < MAX_STEPS) out.add(n);
+  }
+  return [...out].sort((a, b) => a - b);
+};
+
+/**
+ * Every skill's place in Learn, migrated forward:
+ * `{ <skill id>: { done: [<step index>…], seen, at } }`.
+ *
+ * **Why a set and not a position.** What was kept before was one number —
+ * `{ step }`, the runner's own frontier — and a position cannot say *which*
+ * steps are finished. Jumping back to step 2 rewrote it to 1 and the three
+ * steps already behind the learner were gone; a tick drawn from that would
+ * have lied, which is worse than the blank pips it replaced. A set only grows,
+ * so going back to re-read a step costs nothing.
+ *
+ * **The migration, and what an existing record becomes.** Two older shapes
+ * reach here and neither may reset anybody — 5599f09 migrated the first of
+ * them the same way:
+ *
+ *     { skill, step, at }               one slot for the whole section
+ *     { <id>: { step | seen, at } }     a place per skill, still a position
+ *
+ * `step: n` was written from the runner's snapshot — the frontier, or the
+ * frontier plus one once the item standing there had been answered — so under
+ * either reading the checks of steps 1…n have been answered and step n+1 has
+ * not. It becomes `done: [0 … n-1]`, which is exactly what that learner had
+ * finished: "Continue" opens the step it opened yesterday, `step: 0` (a lesson
+ * opened and nothing answered) keeps nothing, and `step === the lesson's step
+ * count` — the steps behind them, the ten on screen — becomes every step and
+ * still sends "Continue" to the ten. The migration needs no lesson to hand,
+ * which is why it can run here, in the reader.
+ *
+ * A deck's `seen` counts something else entirely (how far through a chapter
+ * set's deck the learner is) and passes through untouched. Pure.
+ */
+export function normaliseLearn(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  const src = typeof raw.skill === 'string' ? { [raw.skill]: { step: raw.step, seen: raw.seen, at: raw.at } } : raw;
+  const out = {};
+  for (const [id, v] of Object.entries(src)) {
+    if (!v || typeof v !== 'object' || Array.isArray(v)) continue;
+    const done = Array.isArray(v.done) ? stepList(v.done)
+      : stepList(Array.from({ length: Math.min(MAX_STEPS, Math.max(0, Math.floor(Number(v.step) || 0))) }, (_, i) => i));
+    const seen = Math.floor(Number(v.seen));
+    const at = Number(v.at);
+    const place = { ...(done.length ? { done } : null), ...(Number.isFinite(seen) && seen > 0 ? { seen } : null), ...(Number.isFinite(at) && at > 0 ? { at } : null) };
+    if (Object.keys(place).length) out[id] = place;
+  }
+  return out;
+}
+
+/** The steps of one skill whose check has been answered, lowest first. Pure. */
+export const stepsDone = (place) => stepList(place?.done);
+
+/**
+ * The place with those step indices added — the only way the set is ever
+ * written to, and it has no other direction: re-reading step 2 cannot take the
+ * tick off step 3, and a lesson walked from the middle keeps what was done
+ * before it. Everything else on the place is carried through. Pure.
+ */
+export function withSteps(place, list) {
+  const done = new Set(stepsDone(place));
+  for (const n of stepList(list)) done.add(n);
+  return { ...(place && typeof place === 'object' ? place : null), done: [...done].sort((a, b) => a - b) };
+}
+
+/**
+ * Which step "Continue learning" opens: **the first whose check has not been
+ * answered**, and `steps` itself — meaning the ten — when every one has.
+ * Never where the learner happened to be last, which is the whole of the
+ * complaint ("it should direct me to the unfinished parts unless I purposely
+ * want to retry"): going back is a press on a pip, never the default. Pure.
+ */
+export function continueAt(place, steps) {
+  const n = Math.max(0, Math.floor(Number(steps) || 0));
+  const done = new Set(stepsDone(place));
+  for (let i = 0; i < n; i++) if (!done.has(i)) return i;
+  return n;
+}
+
+/**
+ * One mark of the Learn stepper, in one of three states: `done` (its check has
+ * been answered), `now` (the step on screen) and `todo`.
+ *
+ * **Colour is never the only signal (§3).** The glyph differs in *shape* — a
+ * tick, a numeral, the word "Ten" — so the row still reads in greyscale and on
+ * paper, and `label` carries the whole fact in words for a reader who sees no
+ * glyph at all. The colour is the third signal and says nothing the other two
+ * do not. Pure.
+ */
+export function stepMark(i, { title = '', state = 'todo', steps = 0, go = false } = {}) {
+  const n = Math.max(0, Math.floor(Number(steps) || 0));
+  const ten = i >= n;
+  const what = ten ? 'The ten items' : `Step ${i + 1} of ${n}${title ? `, ${title}` : ''}`;
+  const says = { done: 'done', now: 'in progress' }[state] ?? 'not started';
+  const invite = go ? (state === 'done' ? ' Go back to it.' : ' Go to it.') : '';
+  return { glyph: state === 'done' ? '✓' : ten ? 'Ten' : String(i + 1), label: `${what}: ${says}.${invite}` };
+}
+
 const partsData = new WeakMap();   // the meter button → what its panel should say
 let partsPanel = null;
 let partsFor = null;               // the button the panel is open against
@@ -638,7 +748,11 @@ function partsMeter(title, p) {
     type: 'button', class: 'g-parts', 'data-level': p.level, 'aria-expanded': 'false', 'aria-label': meterLabel(title, p),
   },
   h('span', { class: 'g-parts__ticks', 'aria-hidden': 'true' }, p.parts.map((part) => h('span', { class: 'g-parts__tick', 'data-done': part.done ? '1' : '0' }))),
-  h('span', { class: 'g-parts__count', 'aria-hidden': 'true', text: `${p.done} of ${p.total}` }));
+  // **The unit is named** (§22.1). A bare "3 of 6" beside a skill whose lesson happens to have six teaching
+  // steps reads as lesson progress, and the learner read it exactly that way: they pressed Continue expecting
+  // to land at step 4. The word is the whole fix — the meter still counts the skill's parts (§18), and the
+  // aria-label and the panel's summary have said "parts" from the start, so all three now agree.
+  h('span', { class: 'g-parts__count', 'aria-hidden': 'true', text: `${p.done} of ${p.total} part${p.total === 1 ? '' : 's'}` }));
   partsData.set(b, { title, summary: p.summary, parts: p.parts });
   return b;
 }
@@ -1229,9 +1343,9 @@ export function createUI(ctx) {
     render('learn', { skill: ids[0], queue: ids.slice(1) });
   }
   /**
-   * Where the learner is in each skill: `{ <skill id>: { step | seen, at } }`.
-   * Reads the one-slot shape this replaced (`{ skill, step, at }`) and keeps that
-   * single place, so nobody mid-lesson loses it on the update.
+   * Where the learner is in each skill: `{ <skill id>: { done: [<step index>…] | seen, at } }`.
+   * `normaliseLearn` (§22) holds the reading of it, including the two older
+   * shapes — the section's one slot, and the position-per-skill this replaced.
    */
   // Memoised on the stored string itself, so any write anywhere — here, a reset, another tab — is its own
   // invalidation. It became worth having when the map's progress meters started asking 88 times a paint:
@@ -1243,10 +1357,8 @@ export function createUI(ctx) {
     if (text === learnMemo.text) return learnMemo.value;
     let raw = null;
     try { raw = text ? JSON.parse(text) : null; } catch { raw = null; }
-    let value = {};
-    if (raw && typeof raw === 'object') value = typeof raw.skill === 'string' ? { [raw.skill]: { step: raw.step, seen: raw.seen, at: raw.at } } : raw;
-    learnMemo = { text, value };
-    return value;
+    learnMemo = { text, value: normaliseLearn(raw) };
+    return learnMemo.value;
   }
   const learnPlace = (id) => learnAll()[id] ?? null;
   function setLearnPlace(id, place) {
@@ -1652,12 +1764,38 @@ export function createUI(ctx) {
     // now a place for each skill, so "I left this one half way" survives going and doing something else.
     const savedLearn = learnPlace(id);
     const resume = skill.set && Number(savedLearn?.seen) > 0 ? { seen: Number(savedLearn.seen) } : null;
-    const onProgress = (pr) => setLearnPlace(pr.skill, pr.seen > 0 && pr.seen < pr.total ? { seen: pr.seen } : null);
-    // A teach-step Learn is resumable in the same way (QA M-2): the step on screen is kept beside the skill, so
-    // "Continue learning" after a reload opens where the learner was instead of at step 1, prerequisite warning
-    // and noticing opener and all. `step === steps` means the steps are behind them and the ten is where they were.
-    const savedStep = !skill.set && Number.isFinite(Number(savedLearn?.step)) ? Math.max(0, Math.floor(Number(savedLearn.step))) : 0;
-    const noteStep = (n) => setLearnPlace(id, { step: n });
+    // **A deck's count, and a deck's only.** `seen` is how far through a chapter set's cards the learner
+    // is; for a skill with teach steps it is 0 at every report, so this line used to write `null` — the
+    // whole place deleted — each time `startSteps` or `startBlocked` began. It looked harmless because
+    // `onStep` wrote a position back a moment later, which is what made the bug invisible for as long as
+    // the place *was* a position. A set of finished steps has nothing to rewrite: without this guard,
+    // opening a lesson forgot which steps were done, and reaching the ten and reloading came back to step
+    // one — M-2 exactly. Found on the live device pass, not by a test; there is one now.
+    const onProgress = (pr) => { if (skill.set) setLearnPlace(pr.skill, pr.seen > 0 && pr.seen < pr.total ? { seen: pr.seen } : null); };
+    /**
+     * Which steps of this lesson are finished (§22.2) — a set, not a position,
+     * so stepping back to re-read one does not unfinish the three after it.
+     *
+     * **A step is done when its check has been answered — right or wrong.**
+     * Three things decide that threshold. §17.1: a form only being looked at
+     * is not an answer, so scrolling past a step is not finishing it and the
+     * check is the one thing the step asks the learner to *do*. §18: a mark
+     * that comes off by itself is a nag and not a record, so once answered it
+     * stays answered, and the row of pips is a place-keeper rather than a
+     * score. And getting a check wrong is ordinary in learning — what comes
+     * back because of it is the scheduler's business and the blocked ten's,
+     * not this line's; a red pip would only punish the learner for the thing
+     * the lesson exists to fix.
+     */
+    const doneSteps = new Set(stepsDone(savedLearn));
+    const markSteps = (list) => {
+      const { done } = withSteps({ done: [...doneSteps] }, list);
+      if (done.length === doneSteps.size) return;               // every write is a localStorage write; only news is worth one
+      for (const n of done) doneSteps.add(n);
+      setLearnPlace(id, { ...(learnPlace(id) ?? {}), done });
+    };
+    /** The steps answered in a run that began at `from`, given the runner's own position report. */
+    const answeredIn = (from, to) => { const out = []; for (let i = Math.max(0, from); i < to; i++) out.push(i); return out; };
     setBody(h('p', { class: 'g-loading', text: 'Preparing the lesson…' }));
     const lesson = skill.set ? null : await lessonOf(id);
     const teachItems = skill.set ? null : await teachItemsOf(skill);
@@ -1666,13 +1804,38 @@ export function createUI(ctx) {
     await learn.begin();
     const nSteps = learn.steps.length;
     /**
-     * Where the sitting is: one mark per step (its number; the title for a
-     * screen reader) and one for the ten. `at` is a step index, or `nSteps`
-     * for the ten. A chapter set keeps its two marks.
+     * Where the sitting is: one mark per step and one for the ten. `at` is a
+     * step index, or `nSteps` for the ten. A chapter set keeps its two marks,
+     * plain text and no states — it has no teach steps to finish.
+     *
+     * **A finished step says so, and it is a way back** (§22.2). The pips used
+     * to mark only `aria-current`, so a step behind the learner and one they
+     * had never reached were drawn identically; the row said nothing about
+     * what was done, which is what sent the learner into a lesson not knowing
+     * where they were. A done step now carries a tick and is a button that
+     * jumps to it — the deliberate "unless I purposely want to retry". A step
+     * not yet answered is not a control: the runner has never let anyone past
+     * an unanswered check, and a pip that could would be a way round the
+     * teaching rather than through it.
      */
     const stepper = (at) => {
-      const marks = skill.set ? [skill.set === 'vocab' ? 'The deck, a batch at a time' : 'The passage\'s questions', 'Blocked 10'] : [...learn.steps.map((s, i) => s.title || `Step ${i + 1}`), 'Ten items'];
-      return h('ol', { class: `g-steps${skill.set ? '' : ' g-steps--n'}`, 'aria-label': 'Learn steps' }, marks.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': at === j ? 'step' : null, 'aria-label': skill.set ? null : s, title: skill.set ? null : s }, skill.set ? s : (j === marks.length - 1 ? 'Ten' : ''))));
+      if (skill.set) {
+        const marks = [skill.set === 'vocab' ? 'The deck, a batch at a time' : 'The passage\'s questions', 'Blocked 10'];
+        return h('ol', { class: 'g-steps', 'aria-label': 'Learn steps' }, marks.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': at === j ? 'step' : null }, s)));
+      }
+      const marks = [...learn.steps.map((s, i) => s.title || `Step ${i + 1}`), 'Ten items'];
+      const allDone = learn.steps.every((_, i) => doneSteps.has(i));
+      return h('ol', { class: 'g-steps g-steps--n', 'aria-label': 'Learn steps' }, marks.map((title, j) => {
+        const ten = j === nSteps;
+        const state = at === j ? 'now' : (!ten && doneSteps.has(j) ? 'done' : 'todo');
+        // The ten is a destination and never a tick: passing it ends the sitting and clears this record.
+        const go = at !== j && (ten ? allDone : doneSteps.has(j));
+        const m = stepMark(j, { title, state, steps: nSteps, go });
+        const glyph = h('span', { class: 'g-steps__g', 'aria-hidden': 'true', text: m.glyph });
+        return h('li', { class: 'g-steps__s', 'data-state': state, 'aria-current': at === j ? 'step' : null, 'aria-label': go ? null : m.label, title },
+          go ? btn([glyph], { 'aria-label': m.label, onclick: () => (ten ? showBlocked() : showSteps({ at: j, back: true })) }, 'g-steps__go')
+            : h('span', { class: 'g-steps__go' }, glyph));
+      }));
     };
     const finishQueue = () => { writeJSON(LS_QUEUE, queue.length ? queue.slice(1) : null); if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else leaveTo(from); };
     if (queue.length) writeJSON(LS_QUEUE, queue);
@@ -1722,10 +1885,14 @@ export function createUI(ctx) {
       return { node: lead, gate };
     };
 
-    const showSteps = ({ at = 0 } = {}) => {
-      const first = learn.startSteps({ at, onStep: (pr) => noteStep(pr.step) });
+    const showSteps = ({ at = 0, back = false } = {}) => {
+      // `pr.step` is the runner's own frontier, moved on by one the moment the item standing there is
+      // answered — so everything from where this run began up to it has had its check answered, and that
+      // is exactly the set to write down. Steps before `at` are untouched: the set only grows.
+      const first = learn.startSteps({ at, onStep: (pr) => markSteps(answeredIn(at, pr.step)) });
       if (!first) { showNoSteps(); return; }
-      if (at > 0) ctx.say(`Picked up at step ${Math.min(at + 1, nSteps)} of ${nSteps}.`);
+      if (back) ctx.say(`Back at step ${Math.min(at + 1, nSteps)} of ${nSteps}.`);
+      else if (at > 0) ctx.say(`Picked up at step ${Math.min(at + 1, nSteps)} of ${nSteps}, the first you have not finished.`);
       runSession({ runner: learn.runner, title: 'Check', mode: 'learn', hintOpen: false, stepper: (slot) => stepper(slot?.step ?? 0), lesson, before: stepLead, onDone: showBlocked });
     };
     /** No teach steps written yet (or no written sentences): the lesson to read, then the ten. */
@@ -1761,7 +1928,9 @@ export function createUI(ctx) {
     const tenAt = skill.set ? 1 : nSteps;
     const showBlocked = () => {
       // The steps are behind the learner now: a reload from here comes back to the ten, not to step one (M-2).
-      if (!skill.set && nSteps) noteStep(nSteps);
+      // Every one of them, and honestly so — the ten is reachable only by answering the last step's check, by
+      // the "Ten" pip, which is a control only once they are all answered, or from a Learn already finished.
+      if (!skill.set && nSteps) markSteps(learn.steps.map((_, i) => i));
       const first = learn.startBlocked();
       if (!first) { setBody(stepper(tenAt), h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' }), h('div', { class: 'g-acts' }, backButton(from, 'btn'))); return; }
       runSession({ runner: learn.runner, title: `Ten items · ${skill.title}`, note: skill.set ? 'Ten more from this set. Six of ten and it joins your mixed practice.' : 'Ten items, this skill only — its own sentences first, then the book\'s. Hints are behind a button; feedback after each.', mode: 'learn', hintOpen: false, stepper: stepper(tenAt), lesson, onDone: async () => showResult(await learn.finishBlocked()) });
@@ -1795,10 +1964,13 @@ export function createUI(ctx) {
             : [btn('Another ten', { onclick: showBlocked }, 'btn btn--primary'), skill.set ? btn(learn.left ? `The next ${Math.min(learn.batchSize, learn.left)}` : 'Through the deck again', { onclick: () => showGuided({ more: !!learn.left }) }, 'btn') : btn(nSteps ? 'Go through the steps again' : 'Re-read the lesson', { onclick: () => showSteps() }, 'btn'), btn('Stop for now', { onclick: () => leaveTo(from) }, 'btn btn--quiet')]));
       ctx.say(passed ? `${skill.title} learned.` : 'Not yet; another ten items are ready.');
     };
-    // Where the sitting left off (M-2): the ten when the steps were finished, else the step on screen.
+    // **The first unfinished step, always** (§22.3). It used to be wherever the learner last stood, which is
+    // the fault they reported: they left a lesson in the middle of step 2 having already done 3 and 4 by
+    // another route, and "Continue learning" put them back on 2 with nothing on the page saying so. Going
+    // back is a press on a pip now, and never what the button does by itself. All of them answered → the ten.
     if (skill.set) showGuided();
-    else if (nSteps && savedStep >= nSteps) showBlocked();
-    else showSteps({ at: nSteps ? Math.min(savedStep, nSteps - 1) : 0 });
+    else if (nSteps && continueAt(savedLearn, nSteps) >= nSteps) showBlocked();
+    else showSteps({ at: nSteps ? continueAt(savedLearn, nSteps) : 0 });
   }
 
   /* --------------------------------------------- "Just drill it" (§10) */

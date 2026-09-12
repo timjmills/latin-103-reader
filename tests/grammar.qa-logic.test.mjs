@@ -281,16 +281,21 @@ test('M-2: startSteps opens on the step it is given and reports the one on scree
   assert.equal(over.startSteps({ at: 99 })?.slot.step, teach.length - 1);
 });
 
-test('M-2: the view keeps the step beside the skill and reopens there', () => {
+test('M-2: the view keeps the sitting\'s place beside the skill and reopens in it', () => {
   const learnView = slice('async function renderLearnStart(', '/* --------------------------------------------- "Just drill it" (§10) */');
-  // The place is now kept per skill rather than in one slot for the whole section — see the test below,
+  // The place is kept per skill rather than in one slot for the whole section — see the test below,
   // which is the reason this assertion no longer names `savedLearn?.skill === id`.
+  //
+  // §22 then changed *what* is kept: a **set** of finished steps rather than one position. The M-2 rule
+  // is unchanged and still held here — a reload does not put the learner back at step 1 — but "where they
+  // were" is now read as "the first step they have not finished", which is §22.3. The assertion that used
+  // to name `savedStep` would now be holding the very fault the learner reported.
   assert.match(learnView, /const savedLearn = learnPlace\(id\);/, 'the saved place is read for this skill');
-  assert.match(learnView, /const savedStep = !skill\.set && Number\.isFinite\(Number\(savedLearn\?\.step\)\)/, 'the saved place is read for a teach-step skill too');
-  assert.match(learnView, /const noteStep = \(n\) => setLearnPlace\(id, \{ step: n \}\);/, 'and written as the learner moves');
-  assert.match(learnView, /learn\.startSteps\(\{ at, onStep: \(pr\) => noteStep\(pr\.step\) \}\)/);
-  assert.match(learnView, /else if \(nSteps && savedStep >= nSteps\) showBlocked\(\);/, 'past the last step the ten is where they were');
-  assert.match(learnView, /else showSteps\(\{ at: nSteps \? Math\.min\(savedStep, nSteps - 1\) : 0 \}\)/);
+  assert.match(learnView, /const doneSteps = new Set\(stepsDone\(savedLearn\)\);/, 'the saved place is read for a teach-step skill too');
+  assert.match(learnView, /const markSteps = \(list\) => \{/, 'and written as the learner answers');
+  assert.match(learnView, /learn\.startSteps\(\{ at, onStep: \(pr\) => markSteps\(answeredIn\(at, pr\.step\)\) \}\)/);
+  assert.match(learnView, /else if \(nSteps && continueAt\(savedLearn, nSteps\) >= nSteps\) showBlocked\(\);/, 'past the last step the ten is where they were');
+  assert.match(learnView, /else showSteps\(\{ at: nSteps \? continueAt\(savedLearn, nSteps\) : 0 \}\)/);
 });
 
 /* ==================================================== M-4 · the options say nothing by their shape */
@@ -356,7 +361,11 @@ test('the place is kept for every skill at once, not one slot for the section', 
   const ui = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
   const helpers = /function learnAll\(\)\s*\{([\s\S]*?)^ {2}\}/m.exec(ui);
   assert.ok(helpers, 'learnAll() is gone');
-  assert.match(helpers[1], /typeof raw\.skill === 'string'/, 'the one-slot shape is no longer migrated, so an in-progress lesson loses its place on update');
+  // The migration moved into `normaliseLearn` when §22 added a second one on top of it (a position to a
+  // set of finished steps); both are held for real in tests/grammar.learn-place.test.mjs. What this
+  // assertion keeps is that the one read of the key is still the thing that migrates.
+  assert.match(helpers[1], /normaliseLearn\(raw\)/, 'the one-slot shape is no longer migrated, so an in-progress lesson loses its place on update');
+  assert.match(ui, /export function normaliseLearn\(raw\) \{[\s\S]{0,400}typeof raw\.skill === 'string'/, 'the migration no longer reads the section\'s one slot');
   assert.match(ui, /const learnPlace = \(id\) => learnAll\(\)\[id\] \?\? null;/);
   assert.match(ui, /function setLearnPlace\(id, place\)/);
   // "unless I reset it": a per-skill reset must forget where that skill was.

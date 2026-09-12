@@ -2687,3 +2687,133 @@ emulation; each needs a phone in a hand:
    proves it.
 3. **Pensum B and order items on touch** — the dev fixture never served one in
    four walks, so the drag and the bank tiles are untested by finger.
+
+## 22. The lesson says what is finished, 2026-09-12
+
+> "on the previous screen it showned me this but wehn I went in I did not know
+> what was finished. It shoudl direct me to the unfinsihed parts unless I
+> pruposfully want to retry"
+
+They pressed **Continue learning** on a row reading `in Learn · ▮▮▯▯ 3 of 6`.
+Two unrelated faults met on that one press, and a third was found proving the
+fix. All four sections below are settled.
+
+### 22.1 Two unrelated sixes: the meter names its unit
+
+§18's meter counts **parts of the skill** — Lesson, Learn, Practised, Chart, In
+mixed practice, Mastered — and the lesson behind the row has **six teaching
+steps**. Confirmed for `gerund`: six parts, six steps. So `3 of 6` beside a
+lesson of six steps reads as lesson progress, and the learner read it that way
+and expected to land on step 4.
+
+The meter still counts parts; the count now **says so**: `3 of 6 parts`. The
+aria-label (`meterLabel`) and the panel's summary (`summaryOf`) have said
+"parts" from the start, so the three agree. Nothing else about the meter moves:
+it is the whole skill's progress, exactly as §18 settled.
+
+### 22.2 What the pips say, and a finished step is a way back
+
+`.g-steps__s` marked only `aria-current`, so a step behind the learner and one
+they had never reached were drawn identically. The row said nothing about what
+was done, which is the second half of the complaint.
+
+**Three states.** A finished step carries a tick and is a **button** that jumps
+to it; the step on screen is marked in progress; the rest are plain.
+
+**Colour is never the only signal (§3).** The glyph differs in *shape* — `✓`, a
+numeral, the word "Ten" — so the row reads in greyscale and on paper, and the
+whole fact is in words for a reader who sees no glyph. What a screen reader
+hears, one mark at a time, inside a list named "Learn steps":
+
+| state | heard |
+| --- | --- |
+| done | "Step 2 of 6, A servus-type receiver ends in -ō: done. Go back to it." — as a **button** |
+| in progress | "Step 3 of 6, An ancilla-type receiver ends in -ae: in progress." — on an `aria-current="step"` list item |
+| not started | "Step 4 of 6, More than one receiver: -īs: not started." |
+
+The ten is never ticked (passing it ends the sitting and clears the record); it
+reads "The ten items: not started." and gains " Go to it." once every step is
+answered. A mark that is *not* pressable is named by its own `<li>` and a mark
+that is carries the name on its button, so nothing is announced twice. The
+glyph is `aria-hidden` and lives in the DOM rather than in a CSS counter,
+because a tick is not a numeral and the mark has to be a control.
+
+**Only a finished step is a control.** The runner has never let anybody past an
+unanswered check (`canForward` is closed at the frontier until the item is
+answered), and a pip that could jump forward would be a way *round* the
+teaching rather than through it. Going back is the learner's "unless I
+purposely want to retry".
+
+**A pip needs a real target (§21.1).** `--tap` in both directions, on every
+mark whether or not it is pressable, so the row does not re-lay itself out as
+steps are finished; the visible circle is unchanged, because this line sits
+above every lesson and is a status line, not a dashboard. Seven marks is the
+most a lesson can have and 7 × 44 = 308px, so the row still fits one line of a
+375px screen with the gap at zero. The rule lives at the **end** of
+`app/css/grammar.css` under "touch last", where a coarse rule is the last word.
+
+**When is a step done? Its check has been answered — right or wrong.** Three
+things fix that threshold. §17.1: a form only being looked at is not an answer,
+so scrolling past a step is not finishing it, and the check is the one thing
+the step asks the learner to *do*. §18: a mark that comes off by itself is a
+nag and not a record, so once answered it stays answered. And getting a check
+wrong is ordinary in learning — what comes back because of it is the
+scheduler's business and the blocked ten's, not this row's; a red pip would
+punish the learner for the thing the lesson exists to fix.
+
+### 22.3 The stored shape: a set of finished steps, and what an old record becomes
+
+To say *which* steps are done you need a record that did not exist. `LS_LEARN`
+held one **position** per skill (`{ step, seen, at }`). A position cannot
+answer the question: jumping back to step 2 rewrote it to 1 and the steps
+already behind the learner were gone, so a tick drawn from it would have lied —
+worse than the blankness it replaces.
+
+It is now a **set**: `{ <skill id>: { done: [<step index>…], seen, at } }`.
+`done` only ever grows, so going back to re-read a step costs nothing.
+`normaliseLearn` (ui.js) is the one reader and the one migration, memoised on
+the stored string exactly as before; `withSteps` is the one writer and has no
+other direction.
+
+**What an existing learner's saved place becomes.** Two older shapes reach the
+reader and neither may reset anybody — 5599f09 migrated the first of them the
+same careful way:
+
+| stored | becomes |
+| --- | --- |
+| `{ skill, step, at }` (one slot for the whole section, pre-5599f09) | that skill's set |
+| `{ <id>: { step: n } }` | `{ <id>: { done: [0 … n-1] } }` |
+| `{ <id>: { step: 0 } }` | nothing — a lesson opened and nothing answered held nothing |
+| `{ <id>: { step: <the lesson's step count> } }` | every step, so "Continue" still opens the ten |
+| `{ <id>: { seen: n } }` (a deck) | untouched — a different count of a different thing |
+
+`step: n` was written from the runner's own snapshot — the frontier, or the
+frontier plus one once the item standing there had been answered — so under
+either reading the checks of steps 1…n are answered and step n+1 is not.
+`[0 … n-1]` is therefore exactly what that learner had finished, the migration
+needs no lesson in hand, and a test walks every position of a six-step lesson
+to show the step "Continue" opens is the step it opened the day before.
+
+`progress.js` reads the set for §18's Lesson part (the size of `done`, and a
+bare `step` still read beside it so no caller is told a lie); the part is done
+when every step is. A pass clears the whole place, as it always has, and so
+does resetting the skill.
+
+**Continue learning opens the first unfinished step, always.** Not where the
+learner last stood. If every step is answered it opens the ten, which is what
+it did before. Going back is a press on a pip and never the default.
+
+### 22.4 Found on the live pass: a deck's counter was deleting a lesson's place
+
+`onProgress` wrote the place from `seen`, a chapter set's deck count —
+`seen > 0 ? { seen } : null`. For a skill with teach steps `seen` is 0 at every
+report, and `createLearn` reports the moment `startSteps` or `startBlocked`
+begins: so **opening a lesson deleted that skill's whole place**. It was
+invisible for as long as the place was a position, because `onStep` wrote one
+back a moment later. A set has nothing to rewrite, and without a guard the
+lesson forgot which steps were done and reaching the ten and reloading came
+back to step one — M-2 exactly, undone.
+
+The writer is now fenced to `skill.set`. This is §21's case in one line: the
+fault was on screen in the first device-emulated walk and no test had it. There
+is one now (`tests/grammar.learn-place.test.mjs`), over the real `createLearn`.

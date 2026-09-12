@@ -216,8 +216,10 @@ function partKeys(skill, { drillable, hasBank }) {
  *   attempts   {Array}    this skill's attempt rows oldest first (`gstore.getAttempts({ skill })`).
  *                         **null means unknown**, `[]` means none: unknown suppresses a `detail`
  *                         rather than asserting a part is unstarted on no evidence.
- *   learn      {object}   where the learner is in Learn: `{ step }` for a skill, `{ seen }` for a deck.
- *                         The app clears it on a pass, so it only ever describes an unfinished one.
+ *   learn      {object}   where the learner is in Learn: `{ done: [<step index>…] }` for a skill (§22,
+ *                         `normaliseLearn` in ui.js migrates the `{ step }` this replaced, and a bare
+ *                         `{ step }` is still read here so a caller may pass either), `{ seen }` for a
+ *                         deck. The app clears it on a pass, so it only ever describes an unfinished one.
  *   steps      {number}   how many teach steps the lesson has, when the caller has the lesson to hand.
  *                         Without it a half-read lesson still says which step, just not out of how many —
  *                         and a skill with nothing drillable needs it to show its lesson finished at all.
@@ -250,7 +252,12 @@ export function skillProgress(skill, o = {}) {
   const log = readLog(attempts);
   const nSteps = int(steps);
   const place = learn && typeof learn === 'object' ? learn : null;
-  const atStep = int(place?.step);
+  // How many teaching steps have had their check answered (§22). The saved place is a **set** of step
+  // indices now, so this is its size; a bare `{ step }` — the position the set replaced, and what a
+  // caller with an unmigrated record still has — is read the same way, and the larger of the two wins so
+  // neither reading can take a step away from a learner who had finished it.
+  const doneSteps = Array.isArray(place?.done) ? new Set(place.done.map((n) => Math.floor(Number(n))).filter((n) => Number.isFinite(n) && n >= 0)).size : 0;
+  const atStep = Math.max(int(place?.step), doneSteps);
   const seen = int(place?.seen);
   const deck = int(s.count);
   const named = STATES.includes(state?.state) ? state.state : null;
