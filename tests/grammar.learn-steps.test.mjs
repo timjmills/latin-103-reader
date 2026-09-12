@@ -393,7 +393,10 @@ test('the catalogue generator: one cell across words, a whole table or a group o
   assert.equal(cellId({ kind: 'nominal', case: 'dat', number: 'sg', gender: 'f' }, 'noun'), 'dat.sg');
 });
 
-test('a catalogue drill logs under the naming skill only while that skill is in the rotation', async () => {
+test('a catalogue drill always logs under the naming skill, and schedules only while that skill is in the rotation', async () => {
+  // §20 split what used to be one flag: the log is written either way, the scheduler only when the
+  // run counts. Before it, a table practised from the Tables tab on a skill out of the rotation
+  // wrote nothing at all, and the progress sheet could not see the very run the learner meant.
   const ci = catalogueGen();
   const items = [ci.cellItem({ tableId: 'decl2m', cellId: 'dat.sg' }), ci.tableItem({ tableId: 'decl2m', word: 'servus' })];
   const gstore = store(); await gstore.ready();
@@ -401,15 +404,32 @@ test('a catalogue drill logs under the naming skill only while that skill is in 
   assert.equal(quiet.counted, false);
   let cur = quiet.start();
   while (cur) { await quiet.runner.answer(answerRight(cur.item)); cur = quiet.runner.forward(); }
-  assert.equal(gstore.getAttempts().length, 0, 'not in the rotation: practice only');
-  const { addToPractice } = await import('../app/js/grammar/scheduler.js');
+  const uncounted = gstore.getAttempts({ skill: DIO });
+  assert.equal(uncounted.length, 2, 'out of the rotation the table is still written down');
+  for (const a of uncounted) assert.equal(a.meta?.uncounted, true, 'and marked, so every scheduling reader can skip it');
+  assert.equal(gstore.getState(DIO), null, 'not in the rotation: nothing was scheduled');
+  const { addToPractice, isUncounted } = await import('../app/js/grammar/scheduler.js');
+  for (const a of uncounted) assert.equal(isUncounted(a), true, 'the marker the writer spells is the one the readers read');
   await gstore.setState(addToPractice(DIO));
   const counted = createCatalogueDrill({ items, gstore, skillId: DIO });
   assert.equal(counted.counted, true);
   cur = counted.start();
   while (cur) { await counted.runner.answer(answerRight(cur.item)); cur = counted.runner.forward(); }
-  assert.equal(gstore.getAttempts({ skill: DIO }).length, 2);
+  const all = gstore.getAttempts({ skill: DIO });
+  assert.equal(all.length, 4);
+  assert.equal(all.filter(isUncounted).length, 2, 'a counted run carries no marker');
   assert.deepEqual(gstore.getMissed({ skill: DIO }), [], 'nothing here can enter the redo list');
+});
+
+test('a catalogue table no skill names records nothing: there is no row to record it under', async () => {
+  const ci = catalogueGen();
+  const items = [ci.tableItem({ tableId: 'decl2m', word: 'servus' })];
+  const gstore = store(); await gstore.ready();
+  const drill = createCatalogueDrill({ items, gstore, skillId: null });
+  assert.equal(drill.counted, false);
+  let cur = drill.start();
+  while (cur) { await drill.runner.answer(answerRight(cur.item)); cur = drill.runner.forward(); }
+  assert.equal(gstore.getAttempts().length, 0, 'an attempt under a table id would sit on no sheet');
 });
 
 /* ============================================ 6 · the precache */

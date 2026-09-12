@@ -112,6 +112,11 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
    * survives the `isMissedAttempt` filter is what a redo may draw from.
    * An attempt with no `item_key` is left out: it names no item, so it could
    * never be rebuilt, and counting it would promise a redo that cannot happen.
+   * That is also what keeps an **uncounted** table out of the redo (§20): a
+   * catalogue item carries no key by design, so a miss on one has never been
+   * offered back, whether the run counted or not. A redo is a review device
+   * and an uncounted attempt asks for no review; the key rule already says so,
+   * and `isUncounted` is not needed here to make it true.
    */
   const missed = () => {
     if (!missedList) {
@@ -133,6 +138,13 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
    * must not say "everything you have missed has since been answered right"
    * over the top of a hundred of them (QA M-3). One row per answer, because
    * without a key there is no item to collapse them onto.
+   *
+   * An **uncounted** table (§20) belongs here with the rest. This is not a
+   * review device — it offers nothing back and schedules nothing; it is the
+   * honesty counter that stops the empty state claiming a clean sheet, and a
+   * table the learner got wrong from the Tables tab is a wrong answer they
+   * really gave. The line that prints it already names "a catalogue table" as
+   * one of the three things it means.
    */
   const unnamed = () => {
     if (!unnamedList) unnamedList = [...attempts.values()].filter((a) => !a.item_key && isMissedAttempt(a)).sort((a, b) => ts(b.at) - ts(a.at));
