@@ -146,6 +146,7 @@ function wireEvents() {
   auth.onSignOut(async () => {
     await teardown();
     await db.clearAll();
+    clearGrammarLocal();
     clearRuntimeCache();
   });
   auth.onChange((u) => {
@@ -544,6 +545,15 @@ async function sendOp(sb, op) {
     case 'skill_state:upsert':
       res = await sb.from('skill_state').upsert({ ...op.row, user_id: uid }, { onConflict: 'user_id,skill' });
       break;
+    // The lesson place alone (skill_state.learn_place, migration 0020 / GRAMMAR-CONTRACT.md §25).
+    // PostgREST writes only the columns in the body, so this upsert touches `learn_place` and
+    // nothing else: it cannot regress the scheduler's fields, and — because `updated_at` is not in
+    // the body either — it cannot flip last-write-wins for the row it lands on. On insert the
+    // table's own defaults fill the rest, which is the right row for a skill whose only history is
+    // that a lesson was opened.
+    case 'skill_state:learn_place':
+      res = await sb.from('skill_state').upsert({ user_id: uid, skill: op.skill, learn_place: op.learn_place ?? null }, { onConflict: 'user_id,skill' });
+      break;
     case 'skill_state:delete': {
       let q = sb.from('skill_state').delete().eq('user_id', uid);
       if (op.skill != null) q = q.eq('skill', op.skill);
@@ -927,6 +937,20 @@ export async function registerServiceWorker() {
     console.warn('[store] service worker registration failed', e);
     return null;
   }
+}
+
+/**
+ * The grammar section's own localStorage, cleared with the rest of the cache
+ * on sign-out. `db.clearAll()` has always emptied IndexedDB; these keys sat
+ * outside it and survived, which was untidy when they were only this device's
+ * working state and is wrong now that one of them — `l103.grammar.learn`, the
+ * lesson place — is a cache of synced rows (GRAMMAR-CONTRACT.md §25). A second
+ * learner signing in on the same machine must not find the first one's ticks.
+ */
+function clearGrammarLocal() {
+  try {
+    for (const k of Object.keys(localStorage)) if (k.startsWith('l103.grammar.')) localStorage.removeItem(k);
+  } catch { /* private mode */ }
 }
 
 function clearRuntimeCache() {
