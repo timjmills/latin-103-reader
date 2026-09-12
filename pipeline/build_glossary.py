@@ -232,6 +232,22 @@ SENSE_OVERRIDES = {
     ("ADV", "vero"): ["truly, indeed", "but, however (second word of its sentence)"],
 }
 
+#: SENSE_OVERRIDES is keyed on part of speech and headword, and that is one
+#: discriminator short wherever two lexemes share both: volō, velle "want" and
+#: volō, volāre "fly" are both ("V", "volo"), so velle's senses were stamped on
+#: the fly-verb and *volat* was defined "he/she/it wants".  HAND_LEMMA_CAT
+#: above already gates the citation form by Whitaker category for exactly this
+#: pair, which is why volat was captioned "volō, volāre, volāvī, volātum" while
+#: being glossed "want" — the lemma was gated and the senses were not.
+#:
+#: An override listed here fires only for the categories named; every other
+#: category keeps what Whitaker gave it.  Gate an override the moment its
+#: (pos, headword) covers two paradigms — `test_sense_overrides.py` fails the
+#: build if one does not.
+SENSE_OVERRIDE_CAT: dict[tuple[str, str], set[tuple[int, int]]] = {
+    ("V", "volo"): {(6, 2)},        # velle "want"; (1,1) volāre is "fly"
+}
+
 CASE_ORDER = {"nom": 0, "gen": 1, "dat": 2, "acc": 3, "abl": 4, "voc": 5, "loc": 6}
 VPAR_ORDER = {"ptc": 0, "gerundive": 1, "gerund": 2, "supine": 3}
 
@@ -1321,7 +1337,10 @@ def build_entry(rec: Rec, speller: Speller) -> dict | None:
         allowed = HAND_LEMMA_CAT.get(hand_key)
         if allowed is None or tuple((cat + [0, 0])[:2] if cat else (0, 0)) in allowed:
             lemma = HAND_LEMMAS.get(hand_key, lemma)
-    senses = SENSE_OVERRIDES.get((lexpos if lexpos != "VPAR" else "V", h), senses)
+    ov_key = (lexpos if lexpos != "VPAR" else "V", h)
+    ov_cat = SENSE_OVERRIDE_CAT.get(ov_key)
+    if ov_cat is None or tuple((cat + [0, 0])[:2] if cat else (0, 0)) in ov_cat:
+        senses = SENSE_OVERRIDES.get(ov_key, senses)
     if not senses:
         return None
     parses = learner_parse_order(parses, pos, rec.form)
@@ -1456,10 +1475,37 @@ def derive_missing_forms(glossary: dict[str, list[dict]], form_set: set[str],
 # ranking / merging
 
 
+def hand_table_denies(e: dict, form: str) -> bool:
+    """Whitaker filed this form under a verb whose paradigm we write by hand,
+    and the hand table does not have it.
+
+    He matches stems, so `vol-` + a 1st-conjugation ending hands volandī,
+    volandō, volandum and volantēs to `volō, velle, voluī` — velle has no gerund
+    at all, and its participle stem is `volent-`, not `volant-`.  They are
+    volāre's, and until the two volōs were told apart there was no volāre in
+    the glossary to hold them.  Now there is, so the wrong reading can simply
+    go: where we have written the table ourselves, the table decides which
+    forms the verb has, not his stem match.
+
+    Only for the eight hand-tabled irregulars, and only when the category says
+    the entry really is that verb (`irregular_table` makes the same check), so
+    an ordinary verb is never second-guessed.
+    """
+    if e["pos"] != "VPAR" or not latin_forms.irregular_table(e):
+        return False
+    try:
+        idx = latin_forms.form_index(e)
+    except Exception:                                           # noqa: BLE001
+        return False
+    return bool(idx) and canonical(form) not in {canonical(f) for f in idx}
+
+
 def rank_and_filter(recs: list[Rec], entries: list[dict], form: str | None = None) -> list[dict]:
     scored = []
     for rec, e in zip(recs, entries):
         if e is None:
+            continue
+        if form and hand_table_denies(e, form):
             continue
         score = freq_rank(rec) - (5.0 if form and FORM_FIRST.get(form) == (e["h"], e["pos"]) else 0) - POS_BONUS.get(e["pos"], 0) - (PREFERRED_BONUS if ((e["h"], e["pos"]) in PREFERRED or (e["pos"] == "VPAR" and (e["h"], "V") in PREFERRED)) else 0)
         # Whitaker's V 8 lexemes are a second, archaic-stem copy of a verb he

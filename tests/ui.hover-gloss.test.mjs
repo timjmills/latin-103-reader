@@ -41,6 +41,43 @@ test('glossTipRows: the ranked-first reading, split the way the panel splits it'
   assert.equal(rows.more, null, 'one entry needs no count');
 });
 
+test('glossTipRows: every sense of the ranked-first reading, not just the head word', () => {
+  // The learner's own example (2026-09-12): the tooltip said "game" and kept "school" back, because
+  // `meaning` is built from the head word of senses[0] alone. Senses need no press, so they are in.
+  const rows = glossTipRows({
+    readings: [{
+      meaning: 'the game (object)',
+      parse: 'accusative singular',
+      lemma: 'lūdus -ī m',
+      category: '2nd declension',
+      senses: ['game, play, sport, pastime, entertainment, fun', 'school, elementary school'],
+    }],
+    total: 1,
+  });
+  assert.deepEqual(rows.senses, [
+    'game, play, sport, pastime, entertainment, fun',
+    'school, elementary school',
+  ]);
+  // The case line is still the case line: the list widens it, it does not replace it.
+  assert.deepEqual(rows.meanings, ['the game (object)']);
+});
+
+test('glossTipRows: a reading with no senses yields an empty list, never undefined', () => {
+  for (const r of [{ meaning: 'a wave' }, { meaning: 'a wave', senses: null }, { meaning: 'a wave', senses: [] }]) {
+    assert.deepEqual(glossTipRows({ readings: [r], total: 1 }).senses, []);
+  }
+  assert.deepEqual(glossTipRows(null).senses, [], 'a miss still has the field');
+});
+
+test('glossTipRows: the senses shown are the first reading’s only', () => {
+  const rows = glossTipRows({
+    readings: [{ meaning: 'I want', senses: ['want, wish, be willing'] }, { meaning: 'I fly', senses: ['fly'] }],
+    total: 2,
+  });
+  assert.deepEqual(rows.senses, ['want, wish, be willing']);
+  assert.match(rows.more, /^2 entries\b/, 'the other reading is reached by pressing');
+});
+
 test('glossTipRows: a second reading is counted, not shown — choosing between them needs a press', () => {
   const rows = glossTipRows({ readings: [{ meaning: 'a wave' }], total: 3 });
   assert.match(rows.more, /^3 entries\b/);

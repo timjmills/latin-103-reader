@@ -55,6 +55,11 @@
 .wtip__entry { padding: var(--s-3) var(--s-4); }
 .wtip__entry .entry__form { margin-right: 0; }
 .wtip__entry .entry__lemma { margin-bottom: 0; }
+/* The sense list is the tooltip's new last line, so the dictionary form above it needs its space
+   back and the list itself takes none below. Tighter than the panel's copy: this is a glance, and
+   the tooltip cannot be scrolled (`pointer-events: none`), so it has to fit. */
+.wtip__entry .entry__lemma:has(+ .wtip__senses) { margin-bottom: var(--s-2); }
+.wtip__senses { margin: 0; font-size: var(--note-sm); line-height: 1.45; color: var(--ink-2); }
 .wtip__more { margin: var(--s-2) 0 0; font-size: var(--ui-xs); color: var(--ink-3); }
 @media (prefers-reduced-motion: reduce) { .wtip { animation: none; } }
 

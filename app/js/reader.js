@@ -515,20 +515,39 @@ export function inViewEnough(visibleHeight, unitHeight, viewportHeight, ratio = 
 /* --- the dictionary on the pointer ------------------------------------ */
 /**
  * The lines of the tooltip the pointer opens on a Latin word, in the order
- * they are drawn — the same four things the panel's entry opens with, and
- * nothing that would need to be pressed: the switcher between readings, the
- * senses, the paradigm and the learned / forget buttons are the click's, and
- * the tooltip takes no pointer.
+ * they are drawn — the same things the panel's entry opens with, and nothing
+ * that would need to be pressed: the switcher between readings, the paradigm
+ * and the learned / forget buttons are the click's, and the tooltip takes no
+ * pointer.
+ *
+ * **The senses used to be on that list and are not any more** (learner,
+ * 2026-09-12: "the dictionary popups give only one definition when sometimes
+ * there is more … 'Lūdum' … means 'game', 'play', 'sport,' or 'school'. But
+ * the dictionary only says 'game'."). They were excluded for needing a press,
+ * but they do not: they are static text, unlike the switcher and the table.
+ * What the learner met was `meaning` alone — and `meaning` is built from the
+ * *head word* of the first sense, so lūdum read "the game (object)" and the
+ * whole second sense, school, was unreachable without opening the panel.
+ *
+ * The list goes under the dictionary form, not over the meaning: the first
+ * line answers "what is this word doing in THIS sentence", the list answers
+ * "what can it mean at all". The reader's own panel (`wordpanel.js`
+ * `entryParts`) and the Grammar section's popup (`grammar/ui.js` `showGloss`)
+ * put it in the same place, so all three surfaces read alike.
+ *
+ * Only the first reading's senses, and no second cap on the list:
+ * `pipeline/senses.py` already stops at MAX_SENSES = 4, and `more` below
+ * already says how to reach the other readings.
  *
  * `gloss` is the shell's `gloss(text, { context, at })`: `{ readings, total }`,
  * the readings already ranked for this word in this sentence and described.
  * Pure.
  *
- * @returns {{miss: boolean, meanings: string[], parse: ?string, lemma: ?string, category: ?string, more: ?string}}
+ * @returns {{miss: boolean, meanings: string[], parse: ?string, lemma: ?string, category: ?string, senses: string[], more: ?string}}
  */
 export function glossTipRows(gloss) {
   const d = gloss?.readings?.[0] ?? null;
-  if (!d) return { miss: true, meanings: [], parse: null, lemma: null, category: null, more: null };
+  if (!d) return { miss: true, meanings: [], parse: null, lemma: null, category: null, senses: [], more: null };
   const total = Number(gloss.total) > 0 ? Number(gloss.total) : 1;
   return {
     miss: false,
@@ -537,6 +556,7 @@ export function glossTipRows(gloss) {
     parse: d.parse || null,
     lemma: d.lemma || null,
     category: d.category || null,
+    senses: Array.isArray(d.senses) ? d.senses.filter(Boolean) : [],
     // A second reading is not shown: choosing between them is the switcher's, and the switcher
     // needs a press. The count says so rather than pretending the first is the only one.
     more: total > 1 ? `${total} entries — tap the word for the rest` : null,
@@ -1633,6 +1653,11 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
           h('span', { class: 'entry__cite', lang: 'la', text: rows.lemma }),
           rows.category ? h('span', { class: 'entry__sep', 'aria-hidden': 'true', text: ' · ' }) : null,
           rows.category ? h('span', { class: 'entry__cat', text: rows.category }) : null) : null,
+        // Every sense of this reading, the panel's own `.entry__senses` list reused so the tooltip
+        // and the panel cannot drift apart.
+        rows.senses?.length
+          ? h('ol', { class: 'entry__senses wtip__senses', 'aria-label': 'Meanings' }, rows.senses.map((s) => h('li', { text: s })))
+          : null,
         rows.more ? h('p', { class: 'wtip__more', text: rows.more }) : null));
     // A word inside an open dialog (the picture lightbox, the weeks menu) needs its tooltip in the
     // top layer beside it, or the dialog's own backdrop would cover it. Everywhere else the tooltip

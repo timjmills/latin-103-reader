@@ -562,17 +562,26 @@ def test_parity_with_paradigms_js():
 
 
 #: How many attested (lemma, form, parse) facts the generator still does not
-#: reproduce and that `attestation.divergence` cannot name.  All 38 were read
-#: one by one on 2026-09-06 — `python tests/latin_forms/attestation.py` prints
-#: them — and they fall into three groups:
+#: reproduce and that `attestation.divergence` cannot name.  All were read one
+#: by one on 2026-09-06 — `python tests/latin_forms/attestation.py` prints them
+#: — and they fall into three groups:
 #:
-#:   5  what is left of the `volo` headword collision.  The tables are now
-#:      claimed by category as well as headword (IRREGULAR_CAT, on both sides),
-#:      so volō volāre "fly" [1,1] is a 1st-conjugation verb again and velle
-#:      [6,2] keeps velle's table.  Whitaker still files Ørberg's volāre forms
-#:      volandī / volandō / volandum / volantēs under his velle lexeme, and mālī
-#:      under mālō; velle and mālle have no gerund and no participle to hold
-#:      them, and inventing one to satisfy his analysis would be a worse table.
+#:   1  what is left of the `volo` headword collision: mālī under mālō.  The
+#:      tables are claimed by category as well as headword (IRREGULAR_CAT, on
+#:      both sides), so volō volāre "fly" [1,1] is a 1st-conjugation verb again
+#:      and velle [6,2] keeps velle's table.
+#:
+#:      This group was 5 until 2026-09-12.  The other four were Ørberg's volāre
+#:      forms volandī / volandō / volandum / volantēs, which Whitaker files
+#:      under his velle lexeme — velle has no gerund at all and its participle
+#:      stem is volent-, not volant-.  They are gone because the two volōs are
+#:      now told apart in the glossary (SENSE_OVERRIDE_CAT), so there is a
+#:      volāre to hold them, and because `hand_table_denies` in
+#:      build_glossary.py now drops a participle reading of a hand-tabled
+#:      irregular that the hand table does not have.  Inventing a row to
+#:      satisfy his analysis would still be a worse table; deleting the reading
+#:      is the honest answer, and it took itane / itaque off eō and latine off
+#:      ferō as well.
 #:   8  Whitaker lexemes filed under a table that is not theirs: ciō "set in
 #:      motion" and vēneō sit in his V 6 1, the eō class, so the generator
 #:      builds them as compounds of eō and ciam / cit / cīs / venientem fall
@@ -592,7 +601,7 @@ def test_parity_with_paradigms_js():
 #: adjective gap: uterque and plērīque no longer decline as uter / plērus.
 #:
 #: A rise is a regression unless the new rows belong to one of these three.
-UNEXPLAINED_BASELINE = 38
+UNEXPLAINED_BASELINE = 34
 
 
 def test_glossary_attestation():
