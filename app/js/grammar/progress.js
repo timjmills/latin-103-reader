@@ -246,7 +246,10 @@ export function skillProgress(skill, o = {}) {
         return [true, `next review ${whenDue(state.due_at, now)}`];
       }
       case 'mastered': {
-        if (named === 'mastered') return [true, `stable for ${fmtStability(state.stability_days)}`];
+        // `fmtStability` answers "—" when there is no stability to report, which is right in a table of
+        // figures and wrong inside a sentence: the panel would read "stable for —". A part that is done
+        // says so on its own; the detail is there to add something, never to fill a slot.
+        if (named === 'mastered') { const s = Number(state?.stability_days) > 0 ? fmtStability(state.stability_days) : null; return [true, s ? `stable for ${s}` : null]; }
         const k = int(state?.successes_spaced);
         if (k) return [false, `${k} of ${MASTERED_SUCCESSES} spaced successes`];
         return [false, null];

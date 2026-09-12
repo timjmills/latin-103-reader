@@ -277,3 +277,18 @@ test('a bare skill id is tolerated: it reads as a skill nothing is known about',
   assert.equal(res.done, 0);
   assert.equal(part(res, 'chart'), undefined, 'nothing says it has a table');
 });
+
+test('a detail line never fills its slot with a dash', () => {
+  // `fmtStability` answers "—" when there is nothing to report, which is right in a table of figures and
+  // wrong inside a sentence: the panel read "stable for —". A part that is done says so on its own.
+  const none = skillProgress({ id: 'vocab-01', set: 'vocab' }, { state: { state: 'mastered' } });
+  assert.equal(none.parts.find((p) => p.key === 'mastered').detail, null, 'the panel says "stable for —"');
+  const some = skillProgress({ id: 'vocab-01', set: 'vocab' }, { state: { state: 'mastered', stability_days: 21 } });
+  assert.equal(some.parts.find((p) => p.key === 'mastered').detail, 'stable for 21 days');
+  // Nothing anywhere may hand the view a sentence that trails off in punctuation.
+  for (const st of [{ state: 'mastered' }, { state: 'practising' }, { state: 'lapsed' }, { state: 'new' }]) {
+    for (const p of skillProgress({ id: 'vocab-01', set: 'vocab' }, { state: st }).parts) {
+      if (p.detail != null) assert.ok(!/[—–-]\s*$/.test(p.detail), `"${p.detail}" trails off`);
+    }
+  }
+});
