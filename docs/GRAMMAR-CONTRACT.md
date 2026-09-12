@@ -2644,3 +2644,46 @@ change.
 two legs: "a catalogue run outside the rotation logs nothing at all" is no
 longer true. The other leg stands on its own and the count stays where it is —
 the attempt log still does not record **which table** a chart was on.
+
+## 21. Device truth, 2026-09-12
+
+> "make sure it all works on phone tablet and computer"
+> "OK make sure the design and checks are truley for phone, tablet and computer"
+
+### 21.1 A narrowed window is not a phone
+
+`@media (pointer: coarse)` **never matches** in a desktop browser window,
+however narrow. Every "phone check" in this project's history was therefore
+blind to every touch rule in the stylesheet: eleven of them were dead — they
+matched on a real device and then lost to a later plain rule, because a media
+query adds no specificity — and nothing caught it for months.
+
+**The rule:** a change to touch behaviour or touch sizing is not verified until
+it has been driven under real device emulation — `hasTouch`, a mobile user
+agent, the right `deviceScaleFactor` — with touch dispatched as touch. Resizing
+the window tests layout and nothing else.
+
+**Where the touch rules live:** the end of `app/css/grammar.css`, under
+"touch last". A coarse rule written next to the thing it overrides does nothing.
+
+### 21.2 A method trap that invalidates evidence
+
+Playwright's `page.screenshot({ fullPage: true })` silently drops the mobile
+flag, and `(pointer: coarse)` stops matching for the rest of that page's life.
+Any touch measurement taken after a full-page screenshot in the same context is
+worthless. Screenshot the viewport, or take the measurement first.
+
+### 21.3 What emulation cannot settle — check these on a real device
+
+Three things are **unverified**, and honestly so. None can be reached by
+emulation; each needs a phone in a hand:
+
+1. **The on-screen keyboard.** The geometry is measured — about 290px between a
+   chart cell and the Check button, against a keyboard 260–355px tall — so the
+   button is plausibly covered while typing. What emulation cannot reproduce is
+   the browser's own focus-scrolling, which may already solve it.
+2. **iOS's native long-press UI** layering over the gloss the hold opens. The
+   callout and selection handles are suppressed (§17.4), but only a real iPhone
+   proves it.
+3. **Pensum B and order items on touch** — the dev fixture never served one in
+   four walks, so the drag and the bank tiles are untested by finger.
