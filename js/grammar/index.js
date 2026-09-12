@@ -15,7 +15,7 @@ import { createStage3 } from './stage3.js';
 import { createSetLoader, createSetItems, setSkills, groupPensa, chapterOfWeek, manifestChapters } from './sets.js';
 import { roman, isShelfWeek } from '../sync.js';
 import { createGenerator } from './generate.js';
-import { createUI } from './ui.js';
+import { createUI, learnCache } from './ui.js';
 import { normaliseHintMode } from './session.js';
 import { CHAPTER_MAX } from './chapter.js';
 
@@ -173,7 +173,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       root.replaceChildren(Object.assign(document.createElement('p'), { className: 'g-loading', textContent: 'Loading the grammar section…' }));
       ctx.index = await loadSkills();
       ctx.chapters = ctx.chapters ?? await loadChapters();
-      ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa });
+      ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa, learnCache: learnCache() });
       await ctx.gstore.ready();
       // Every week in the library, review shelf included: the sentences the items are built from — with the
       // reader's grammar-focus highlights (gold items for the construction they name) and the lessons' own examples.
@@ -231,7 +231,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     lightP = (async () => {
       ctx.index = ctx.index ?? await loadSkills();
       ctx.chapters = ctx.chapters ?? await loadChapters();
-      if (!ctx.gstore) { ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa }); await ctx.gstore.ready(); }
+      if (!ctx.gstore) { ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa, learnCache: learnCache() }); await ctx.gstore.ready(); }
       if (!ctx.weeks.length) ctx.weeks = await store.getWeeks();
       const chapter = ctx.currentChapter();
       const loaded = chapter != null ? await loader.loadChapter(chapter) : { questions: new Map(), vocab: new Map() };
