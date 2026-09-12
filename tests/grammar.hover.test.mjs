@@ -42,12 +42,18 @@ test('a tap item marks its words as the answer, so the dictionary can tell them 
   );
 });
 
-test('the pointer-dictionary holds off on an unanswered tap word', () => {
-  assert.match(
-    UI,
-    /skip: \(w\) => w\.classList\.contains\('g-w--pick'\) && !answered\(w\)/,
-    'the section no longer tells the shared hover which words must keep quiet',
-  );
+test('an unanswered tap word gives its meaning and holds back its parse', () => {
+  // The first rule kept the whole entry back, which also took the meaning away. On a comprehension
+  // question — tap the words that answer it — knowing what the words mean *is* the reading, not the
+  // answer. So the entry is split: meaning and dictionary form always, the parse only once answered,
+  // because "which word is in the ablative?" is answered outright by an entry that says "ablative".
+  assert.match(UI, /const held = w\.classList\.contains\('g-w--pick'\) && !answered\(w\);/, 'nothing works out whether this word is still the answer');
+  assert.match(UI, /showGloss\([^)]*\{ hover: true, parse: !held \}\)/, 'the parse is no longer held back on an unanswered tap word');
+  assert.match(UI, /d\.parse && parse \? h\('p', \{ class: 'g-pop__parse'/, 'the popup prints the parse whatever it was told');
+  assert.match(UI, /text: 'The parse is held back until you answer\.'/, 'the popup goes quiet about the parse without saying why');
+  // And the whole entry is never withheld again: every word answers with something.
+  const code = UI.split(/\r?\n/).filter((l) => !l.trim().startsWith('//') && !l.trim().startsWith('*')).join('\n');
+  assert.match(code, /skip: \(\) => false,/, 'a word is being silenced entirely again');
 });
 
 test('the shared hover asks before opening, and asks before the word is taken as hovered', () => {

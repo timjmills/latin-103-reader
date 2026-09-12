@@ -699,7 +699,7 @@ export function createUI(ctx) {
   let pop = null;
   function closePop() { if (pop) { pop.remove(); pop = null; document.removeEventListener('pointerdown', onDocDown, true); } }
   function onDocDown(e) { if (pop && !pop.contains(e.target) && !e.target.closest?.('.g-w')) closePop(); }
-  function showGloss(wordEl, form, text, unitLa = '', { hover = false } = {}) {
+  function showGloss(wordEl, form, text, unitLa = '', { hover = false, parse = true } = {}) {
     closePop();
     const r = dict.lookup(form);
     // A pointer resting on a word the dictionary has never heard of — a grammatical term in the prose
@@ -712,12 +712,15 @@ export function createUI(ctx) {
     // Every reading the dictionary has (the reader's panel offers them too): the first in full, the others compact.
     const block = (d, i) => h('div', { class: `g-pop__entry${i ? ' g-pop__entry--alt' : ''}` },
       h('p', { class: 'g-pop__meaning' }, String(d.meaning ?? '').split(/\s+·\s+/).map((m, j) => [j ? h('br') : null, m])),
-      d.parse ? h('p', { class: 'g-pop__parse', text: d.parse }) : null,
+      d.parse && parse ? h('p', { class: 'g-pop__parse', text: d.parse }) : null,
       h('p', { class: 'g-pop__lemma' }, h('span', { lang: 'la', class: 'entry__cite', text: d.lemma }), d.category ? ` · ${d.category}` : ''));
     pop = h('div', { class: 'g-pop', role: 'dialog', 'aria-label': `Word: ${text}` },
       h('p', { class: 'g-pop__form', lang: 'la', text }),
       described.length ? described.map(block) : h('p', { class: 'g-pop__meaning g-pop__miss', text: 'Not in the dictionary' }),
       r.entries.length > 1 ? h('p', { class: 'g-pop__more', text: `${r.entries.length} entries${r.entries.length > entries.length ? ` — the first ${entries.length} shown` : ''}` }) : null,
+      // Said, not silently omitted: a learner who knows the entry has a parse line would otherwise wonder
+      // where it went, and this way the popup states the rule it is keeping rather than appearing broken.
+      parse ? null : h('p', { class: 'g-pop__more', text: 'The parse is held back until you answer.' }),
       btn('×', { class: 'g-pop__close', 'aria-label': 'Close' }, 'g-pop__close'));
     pop.querySelector('.g-pop__close').addEventListener('click', closePop);
     pop.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePop(); wordEl.focus(); } });
@@ -774,14 +777,20 @@ export function createUI(ctx) {
     word: '.g-w, .g-wx',
     pop: '.g-pop',
     cut: (el) => cutLatinWords(el, { tokenize, cls: 'g-wx', skip: LA_NO }),
-    // A tap item asks which word is the ablative; its dictionary entry says "ablative". Hovering would
-    // hand over the answer, which is why a click on these words chooses rather than defines. Once the
-    // item has been answered the feedback is already on screen and the word is only a word again.
-    skip: (w) => w.classList.contains('g-w--pick') && !answered(w),
+    // No word is silent. The first version kept the whole entry back on an unanswered tap item, because a
+    // grammar item asking "which word is in the ablative?" is answered outright by an entry that says
+    // "ablative". But that also took the *meaning* away, and on a comprehension question — tap the words
+    // that answer "Quālēs esse videntur illae īnsulae?" — knowing what the words mean is the reading, not
+    // the answer (learner, 2026-09-12: "I want the latin in these questions to also mouse/touch over so
+    // that they show the definition"). So the entry is split: the meaning and the dictionary form always,
+    // the **parse** held back while a tap item is unanswered. Hovering every word in turn can no longer
+    // find the ablative, and the learner can still read the sentence.
+    skip: () => false,
     busy: () => !!pop && pop.dataset.hover !== '1',   // a popup opened by a click is the reader's own; leave it alone
     show: (w) => {
       const ctxLa = w.closest('.g-la, [lang="la"]')?.textContent ?? '';
-      showGloss(w, w.dataset.form ?? w.textContent, w.textContent, ctxLa, { hover: true });
+      const held = w.classList.contains('g-w--pick') && !answered(w);
+      showGloss(w, w.dataset.form ?? w.textContent, w.textContent, ctxLa, { hover: true, parse: !held });
     },
     hide: () => { if (pop && pop.dataset.hover === '1') closePop(); },
   });
