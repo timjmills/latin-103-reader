@@ -420,14 +420,19 @@ function normaliseWorked(v) {
 }
 
 /** Lesson prose: **bold** and *italic* → nodes (no HTML is ever parsed). Pure. */
-export function inline(text) {
+export function inline(text, { latin = null } = {}) {
   const frag = document.createDocumentFragment();
   const re = /(\*\*[^*]+\*\*|\*[^*]+\*)/g;
   let last = 0;
   for (const m of String(text ?? '').matchAll(re)) {
     frag.append(text.slice(last, m.index));
     const s = m[0];
-    if (s.startsWith('**')) { const b = document.createElement('b'); b.textContent = s.slice(2, -2); frag.append(b); }
+    // Italic is always a Latin form in this prose. **Bold is not**: it carries a Latin word or ending
+    // (*legere*, *-erit*, *quī*) and an English grammar term alike ("the dative (the 'to/for' form)").
+    // So the caller is asked — and the only caller asks the *dictionary*, which is the same question as
+    // "would hovering this say anything?". A bold the dictionary cannot answer for is left as English,
+    // which is what it almost always is, and a screen reader is never told to read English as Latin.
+    if (s.startsWith('**')) { const b = document.createElement('b'); b.textContent = s.slice(2, -2); if (latin?.(b.textContent)) b.lang = 'la'; frag.append(b); }
     else { const i = document.createElement('i'); i.lang = 'la'; i.textContent = s.slice(1, -1); frag.append(i); }
     last = m.index + s.length;
   }

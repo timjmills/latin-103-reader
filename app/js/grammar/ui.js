@@ -366,6 +366,23 @@ export function createUI(ctx) {
   // The grammar skills and the chapter sets (questions-NN, vocab-NN[-rev], pensum-NN) as one map: the scheduler treats them alike.
   const skills = ctx.skills ?? index.skills;
   const skillsIndex = { skills };
+  /**
+   * Is every word here one the dictionary can answer for? This is what decides
+   * whether a **bold** fragment of teaching prose is Latin: the prose bolds a
+   * Latin word or ending (*legere*, *-erit*, *quī*) and an English grammar term
+   * ("the dative (the 'to/for' form)") with the same mark, and the dictionary
+   * is the only honest way to tell them apart. It is also exactly the question
+   * "would hovering this say anything?", so a bold that is marked is a bold the
+   * pointer can answer on, and an ending the dictionary has never heard of is
+   * left alone rather than promising a definition it has not got.
+   */
+  const laKnown = (t) => {
+    const words = String(t ?? '').match(/\p{L}+/gu) ?? [];
+    if (!words.length) return false;
+    try { return words.every((w) => dict.lookup(w).entries.length > 0); } catch { return false; }
+  };
+  /** Teaching prose: `*italic*` is always Latin, `**bold**` when the dictionary knows it. */
+  const prose = (text) => inline(text, { latin: laKnown });
   const items = ctx.items;
   let view = { name: 'map', params: {} };
   let body = null;
@@ -434,6 +451,11 @@ export function createUI(ctx) {
   function showGloss(wordEl, form, text, unitLa = '', { hover = false } = {}) {
     closePop();
     const r = dict.lookup(form);
+    // A pointer resting on a word the dictionary has never heard of — a grammatical term in the prose
+    // (nōminātīvus), a bare ending — says nothing at all. A box reading "Not in the dictionary" is what
+    // the learner met as "it's not showing the Latin when hovering". A **click** still answers plainly:
+    // there they asked a direct question, and silence would be the worse reply.
+    if (hover && !r.entries.length) return;
     const entries = r.entries.slice(0, 4);
     const described = entries.map((entry) => dict.describe(entry, { compact: !!ctx.settings?.compact, form: text, context: unitLa }));
     // Every reading the dictionary has (the reader's panel offers them too): the first in full, the others compact.
@@ -950,14 +972,14 @@ export function createUI(ctx) {
   function lessonBlocks(skill, lesson, { learn = false } = {}) {
     const out = [];
     for (const b of lesson?.core ?? []) {
-      if (b.type === 'p') out.push(h('p', { class: 'g-lesson__p' }, inline(b.text)));
-      else if (b.type === 'english') out.push(h('p', { class: 'g-lesson__english' }, h('span', { class: 'g-lesson__tag', text: 'In English' }), ' ', inline(b.text)));
-      else if (b.type === 'rule') out.push(h('p', { class: 'g-lesson__rule', 'data-rule': '' }, inline(b.text)));
+      if (b.type === 'p') out.push(h('p', { class: 'g-lesson__p' }, prose(b.text)));
+      else if (b.type === 'english') out.push(h('p', { class: 'g-lesson__english' }, h('span', { class: 'g-lesson__tag', text: 'In English' }), ' ', prose(b.text)));
+      else if (b.type === 'rule') out.push(h('p', { class: 'g-lesson__rule', 'data-rule': '' }, prose(b.text)));
       else if (b.type === 'paradigm') { const t = paradigmFor(skill, b); const node = t && renderParadigm(t); if (node) { node.open = true; out.push(h('div', { class: 'g-lesson__pt' }, node)); } }
       else if (b.type === 'examples') out.push(examplesBlock(skill, b));
-      else if (b.type === 'confusion') out.push(h('div', { class: 'g-lesson__conf', 'data-conf': '' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, inline(b.text))));
+      else if (b.type === 'confusion') out.push(h('div', { class: 'g-lesson__conf', 'data-conf': '' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, prose(b.text))));
     }
-    if (lesson?.more?.length) out.push(h('details', { class: 'g-more' }, h('summary', { class: 'g-more__s', text: 'More' }), lesson.more.map((b) => h('p', { class: 'g-lesson__p' }, inline(b.text)))));
+    if (lesson?.more?.length) out.push(h('details', { class: 'g-more' }, h('summary', { class: 'g-more__s', text: 'More' }), lesson.more.map((b) => h('p', { class: 'g-lesson__p' }, prose(b.text)))));
     if (lesson?.sources?.length) out.push(h('p', { class: 'g-sources', text: `Sources: ${lesson.sources.join(' · ')}` }));
     if (!lesson) out.push(h('p', { class: 'g-lesson__p g-quiet', text: 'This lesson has not been written yet. The summary above and the examples below still stand.' }), examplesBlock(skill, { units: [], invented: [] }, { fallback: 3 }));
     return out;
@@ -1160,7 +1182,7 @@ export function createUI(ctx) {
         ta.readOnly = true; go.disabled = true;
         // Generous, and never counted: a reason is a thought, not a form. The model answer stands beside it either way.
         row('why', v.empty ? '—' : v.given, '', v.empty ? null : true);
-        form.replaceWith(h('div', { class: 'g-worked__reason' }, h('p', { class: 'g-lesson__tag', text: v.empty ? 'One reason' : 'And in the book\'s words' }), h('p', { class: 'g-worked__reasontext' }, inline(plan.reason)), btn('Now check it', { onclick: finish }, 'btn btn--primary g-worked__go')));
+        form.replaceWith(h('div', { class: 'g-worked__reason' }, h('p', { class: 'g-lesson__tag', text: v.empty ? 'One reason' : 'And in the book\'s words' }), h('p', { class: 'g-worked__reasontext' }, prose(plan.reason)), btn('Now check it', { onclick: finish }, 'btn btn--primary g-worked__go')));
         form.parentNode?.querySelector('.g-worked__go')?.focus({ preventScroll: true });
       } }, h('p', { class: 'g-q g-worked__q', text: `Why? What in the sentence tells you?` }), ta, h('div', { class: 'g-chart__acts' }, go));
       live.replaceChildren(form);
@@ -1333,7 +1355,7 @@ export function createUI(ctx) {
       const fillBody = () => {
         wn = worked ? workedNode(worked, { first: (slot?.step ?? i) === firstWorked, onDone: leadDone }) : null;
         body.append(...[
-          step.say ? h('p', { class: 'g-step__say' }, inline(step.say)) : null,
+          step.say ? h('p', { class: 'g-step__say' }, prose(step.say)) : null,
           // A shown sentence that the worked example then parses is printed once, with the parse under it.
           show && !sameSentence ? writtenNode(show, { focus: showFocus }) : null,
           step.show?.kind === 'paradigm' ? revealNode(teachItems, step.show) : null,
@@ -1416,7 +1438,7 @@ export function createUI(ctx) {
         !passed && r.missed.length ? h('section', { class: 'g-missed' }, h('h2', { class: 'g-h2', text: 'What was missed' }),
           h('ul', { class: 'g-missed__list' }, r.missed.map((a) => h('li', {}, h('span', { class: 'g-missed__kind', text: a.kind }), ' ', h('span', { lang: 'la', text: a.answer || '—' }), ' → ', h('span', { lang: 'la', text: a.expected })))),
           skill.set ? null : h('p', { class: 'g-quiet', text: `Kinds missed: ${missedKinds.join(', ')}. The lesson's rule and the confusion note are below.` }),
-          skill.set ? null : h('article', { class: 'g-lesson g-lesson--lit' }, (lesson?.core ?? []).filter((b) => b.type === 'rule' || b.type === 'confusion').map((b) => b.type === 'rule' ? h('p', { class: 'g-lesson__rule is-lit' }, inline(b.text)) : h('div', { class: 'g-lesson__conf is-lit' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, inline(b.text)))))) : null,
+          skill.set ? null : h('article', { class: 'g-lesson g-lesson--lit' }, (lesson?.core ?? []).filter((b) => b.type === 'rule' || b.type === 'confusion').map((b) => b.type === 'rule' ? h('p', { class: 'g-lesson__rule is-lit' }, prose(b.text)) : h('div', { class: 'g-lesson__conf is-lit' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, prose(b.text)))))) : null,
         after,
         h('div', { class: 'g-acts' },
           // "Redo the N you missed" from a Learn run, but only once the run has **passed**: the skill is in the
@@ -2347,7 +2369,7 @@ export function createUI(ctx) {
     if (note) node.append(h('p', { class: 'g-quiet g-item__note', text: note }));
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
     // "Just drill it" pins the rule at the top of every item (§10), so the learner can look without leaving.
-    if (item.pin) node.append(h('p', { class: 'g-pin' }, h('span', { class: 'g-lesson__tag', text: 'The rule' }), ' ', inline(item.pin)));
+    if (item.pin) node.append(h('p', { class: 'g-pin' }, h('span', { class: 'g-lesson__tag', text: 'The rule' }), ' ', prose(item.pin)));
     // Pool exhaustion, said of the pool the item was actually drawn from: a chapter session draws that
     // chapter's sentences, so "every sentence for this skill" would be a wider claim than the truth.
     if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.'
@@ -2546,8 +2568,8 @@ export function createUI(ctx) {
     else if (effMode !== 'off' && boxes[0]) {
       const box = boxes[0];
       const alwaysOn = effMode === 'always';
-      const body = h('div', { class: 'g-hint__body' }, h('p', { class: 'g-hint__rule', text: box.levels[0] }));
-      const deep = () => { if (box.levels[1]) body.append(h('p', { class: 'g-hint__rule g-hint__rule--deep', text: box.levels[1] })); if (pt) body.append(pt); };
+      const body = h('div', { class: 'g-hint__body' }, hintRule(box, 0));
+      const deep = () => { if (box.levels[1]) body.append(hintRule(box, 1, 'g-hint__rule g-hint__rule--deep')); if (pt) body.append(pt); };
       const more = (box.levels[1] || pt) ? btn('Tell me more', { onclick: (e) => { e.currentTarget.remove(); deep(); } }, 'g-link g-hint__more') : null;
       const hint = h('details', { class: 'g-hint', open: alwaysOn ? true : null },
         h('summary', { class: 'g-hint__s' }, h('span', { 'aria-hidden': 'true', text: 'Hint' }), h('span', { class: 'visually-hidden', text: `Hint for ${box.label}` })),
@@ -2562,6 +2584,15 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------- hints */
   /** The learner's hint mode: *Press for a hint* (default), *Always show*, *No hints*. */
   const hintMode = () => normaliseHintMode(ctx.prefs?.().hints);
+  /**
+   * One hint line. `levels` is the plain string the no-leak sweep reads;
+   * `levelParts` is the same line with its Latin marked, and where the hint
+   * knows which fragments are Latin ("the accusative of **īnsula**") the line
+   * is drawn from those, so the pointer answers on the word the way it does
+   * everywhere else. A hint with no Latin in it stays plain text.
+   */
+  const hintRule = (box, i, cls = 'g-hint__rule') => h('p', { class: cls },
+    box.levelParts?.[i] ? partsNodes(box.levelParts[i]) : String(box.levels[i] ?? ''));
   /** A word's dictionary line, for the hints on a reorder item's chips (their words cannot be tapped: tapping places them). */
   const describeWord = (form, text) => {
     try {
@@ -2583,10 +2614,10 @@ export function createUI(ctx) {
     const rows = new Map();
     const list = h('div', { class: 'g-hints', role: 'group', 'aria-label': 'Hints' });
     for (const b of boxes) {
-      const body = h('div', { class: 'g-hints__body' }, h('p', { class: 'g-hint__rule', text: b.levels[0] }));
+      const body = h('div', { class: 'g-hints__body' }, hintRule(b, 0));
       // Level two stays a second press even under *Always show*: "every box shows its hint from the start" is the
       // first level, what the box is being asked for; the rule behind it is still the deeper look.
-      const more = b.levels[1] ? btn('Tell me more', { onclick: (e) => { e.currentTarget.remove(); body.append(h('p', { class: 'g-hint__rule g-hint__rule--deep', text: b.levels[1] })); } }, 'g-link g-hint__more') : null;
+      const more = b.levels[1] ? btn('Tell me more', { onclick: (e) => { e.currentTarget.remove(); body.append(hintRule(b, 1, 'g-hint__rule g-hint__rule--deep')); } }, 'g-link g-hint__more') : null;
       // "Show this form": the one cell's answer (GRAMMAR-CONTRACT.md §3, decision 14), a second press after the
       // hint, and the box is then marked hinted like any other helped answer.
       const show = reveal ? btn('Show this form', { onclick: (e) => { const t = reveal(b.id); if (t == null) return; e.currentTarget.replaceWith(h('p', { class: 'g-hint__rule g-hint__answer' }, 'It is ', h('b', { lang: 'la', text: t }), '.')); onHint?.(); } }, 'g-link g-hint__more') : null;
@@ -3159,8 +3190,8 @@ export function createUI(ctx) {
       const l = lesson ?? await lessonOf(item.skill);
       const rule = (l?.core ?? []).find((b) => b.type === 'rule');
       const conf = (l?.core ?? []).find((b) => b.type === 'confusion' && (!result.attempt?.confused_with || b.with === result.attempt.confused_with));
-      if (rule) slot.append(h('p', { class: 'g-lesson__rule is-lit' }, inline(rule.text)));
-      if (!ok && conf) slot.append(h('div', { class: 'g-lesson__conf' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(conf.with)}` }), h('p', {}, inline(conf.text))));
+      if (rule) slot.append(h('p', { class: 'g-lesson__rule is-lit' }, prose(rule.text)));
+      if (!ok && conf) slot.append(h('div', { class: 'g-lesson__conf' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(conf.with)}` }), h('p', {}, prose(conf.text))));
     }, { once: false });
     // Green for right, red for wrong — and never colour alone. The mark (✓ / ✗ / ~) survives greyscale and a
     // black-and-white print, the line says the word, and the visually-hidden label says it again for a screen
@@ -3294,10 +3325,10 @@ export function createUI(ctx) {
       const a = skills.get(c.a);
       const b = skills.get(c.b);
       // The reason is lesson prose, so it carries the lessons' own emphasis (*servīs* set in Latin italics).
-      const why = h('p', { class: 'g-pair__why' }, inline(stats.confusionReason(a, b, {})));
+      const why = h('p', { class: 'g-pair__why' }, prose(stats.confusionReason(a, b, {})));
       // The lessons say it better than the glosses do; they are fetched once and swapped in.
       Promise.all([lessonOf(c.a), lessonOf(c.b)])
-        .then(([lessonA, lessonB]) => { why.replaceChildren(inline(stats.confusionReason(a, b, { lessonA, lessonB }))); })
+        .then(([lessonA, lessonB]) => { why.replaceChildren(prose(stats.confusionReason(a, b, { lessonA, lessonB }))); })
         .catch(() => { /* the gloss line already stands */ });
       const direction = c.ba
         ? `${c.ab} × ${titleOf(c.a)} answered as ${titleOf(c.b)} · ${c.ba} the other way round`
