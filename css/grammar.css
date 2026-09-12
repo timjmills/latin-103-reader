@@ -280,6 +280,11 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
   position: absolute; z-index: var(--z-popover); padding: var(--s-3) var(--tap) var(--s-3) var(--s-4);
   background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-pop);
   animation: pop var(--t-base) var(--ease-out);
+  /* A backstop, not the plan: the sense list is bounded (one reading, ≤ 4 senses) so the popup is
+     meant to fit outright, and showGloss() flips it above the word rather than off the screen. This
+     only stops a pathological entry from running past the viewport. A clicked popup can scroll to
+     the rest; a hover one is `pointer-events: none` and cannot, which is why the bound comes first. */
+  max-height: min(60vh, 420px); overflow-y: auto; overscroll-behavior: contain;
 }
 .g-pop p { margin: 0; }
 /* Opened by the pointer crossing a word, not by a click: it behaves as a tooltip, so it never takes the
@@ -292,6 +297,10 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-pop__miss { color: var(--ink-2); font-style: italic; font-size: 1rem; }
 .g-pop__parse { margin-top: var(--s-1); font-size: var(--ui-sm); color: var(--ink-2); }
 .g-pop__lemma { margin-top: var(--s-1); font-size: var(--ui-sm); color: var(--ink-2); }
+/* What the word means, under the dictionary form — the same block the reader's panel prints as
+   `.entry__senses` (panels.css), so the two surfaces read alike. Only the first reading gets one. */
+.g-pop__senses { margin: var(--s-1) 0 0; padding-left: 1.25em; font-size: var(--ui-sm); line-height: 1.45; color: var(--ink-2); }
+.g-pop__senses li::marker { color: var(--ink-3); font-size: var(--ui-xs); }
 .g-pop__more { margin-top: var(--s-1); font-size: var(--ui-xs); color: var(--ink-3); }
 .g-pop__entry--alt { margin-top: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line); }
 .g-pop__entry--alt .g-pop__meaning { font-size: 1.05rem; }
