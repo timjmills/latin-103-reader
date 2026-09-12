@@ -1758,21 +1758,33 @@ named above step one and offered; the learner may go on (`prereqNode`).
   item says which pool it came from only when it reached past the written set
   (`item.pool`).
 
-### Scaffolded tables (§12, §13)
+### Scaffolded tables (§12, §13, §19)
 
 `session.js`: `SCAFFOLD_LEVELS` (`auto` · 80 · 50 · 20 · `off`),
 `normaliseScaffold`, `scaffoldPercent(level, autoAt)`, `scaffoldStep(autoAt,
 { correct, hinted })` (auto fades a level after a table right unaided, steps
-back after a wrong one), `isAnchorKey`, and **`scaffoldGiven(item, { percent,
-taught, met })`** — the indexes to give: anchors (nominative and genitive
-singular; first person singular present; the present infinitive) first, then
-cells already met, then the rest; the cell a step teaches is never given; and
-cells that print the same form are given together or not at all, so a
-printed *puellae* never answers a blank *puellae* (`scaffoldLeak` is the
-sweep, run over every catalogue table at every level in the tests). At least
-one cell is always left. `cellResults` marks a given cell `scaffold: true` and
-right by definition, so **the table is one attempt scored on the filled
-cells**.
+back after a wrong one), `isAnchorKey`, `scaffoldVariant(n)`, and
+**`scaffoldGiven(item, { percent, taught, met, cellIdOf, variant })`** — the
+indexes to give: anchors (nominative and genitive singular; first person
+singular present; the present infinitive) first, then cells already met, then
+the rest; the cell a step teaches is never given; and cells that print the
+same form are given together or not at all, so a printed *puellae* never
+answers a blank *puellae* (`scaffoldLeak` is the sweep, run over every
+catalogue table at every level in the tests). At least one cell is always
+left. `cellResults` marks a given cell `scaffold: true` and right by
+definition, so **the table is one attempt scored on the filled cells**.
+
+**`variant` (§19)** is *which* arrangement of that level to draw, so
+practising 80% three times is three exercises and not one memorised picture.
+Deterministic, never random: the same variant over the same table at the same
+level is always the same table, and `variant: 0` — the first meeting, and the
+default — is the settled arrangement. It reorders groups only *within* a tier,
+so a variant never demotes an anchor; and the **count is the level's, not the
+variant's**, because what is taken is the largest total of whole groups that
+fits `want`, an amount fixed by the group sizes that no reordering changes
+(`tests/grammar.scaffold-variants.test.mjs` measures all of it over the real
+catalogue). `scaffoldVariant` is the reader: a whole number above zero, and
+anything else — nothing, a negative, rubbish — is 0.
 
 `ui.js` `chartInput`: a whole-table chart (not a step's chart over words)
 reads the table's level — its own remembered one
@@ -1783,8 +1795,13 @@ greyed with their own hint (`.g-chart__given`, no "Show this form"), and puts
 remembered per table and as the global default through `ctx.savePrefs`). The
 table on screen finishes as it started; the next one honours the change.
 Auto's step lives at `localStorage['l103.grammar.scaffoldAuto.<table id>']`.
-The table id is the catalogue's where the item names it, else the select
-rules on the item's word (`tableIdOf`), else the word itself.
+The variant is **how many tables of this one have been answered**,
+`localStorage['l103.grammar.scaffoldRun.<table id>']`, read as the item is
+first built and incremented in `afterGrade` — that way a retry hands back the
+arrangement its first attempt was scored on (`chart.given` is memoised on the
+item) and the *next* table is the next arrangement. The table id is the
+catalogue's where the item names it, else the select rules on the item's word
+(`tableIdOf`), else the word itself.
 
 ### "Just drill it", the re-test, the tie-in (§10, §13)
 

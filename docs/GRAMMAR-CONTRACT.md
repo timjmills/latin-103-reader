@@ -2316,3 +2316,68 @@ The panel words it — `givenNote` in `ui.js`: "completed unaided", "completed
 with 20% given", and the line leads with it, "completed unaided · 3 charts
 answered right". **Never "completed at 80 %"**, which reads as nearly finished
 and is the wrong way round.
+
+## 19. Several tables at one level, 2026-09-12
+
+> "on these you shoudl be able to do mutiple versions at 80% and different
+> cells would be filled and be empty"
+
+`scaffoldGiven` was entirely deterministic: the same table at the same percent
+with the same `met` set gave the same cells every time, and `met` is an
+in-memory Map rebuilt every sitting, so across sittings a learner saw one fixed
+arrangement for ever. Practising 80% three times was one exercise done three
+times — and the fifth of the table left blank was always the same fifth.
+
+It now takes a **`variant`**: which arrangement of that level to draw. Still
+deliberate, still never random — deterministic from the variant, so the same
+variant is always the same table and a test can pin one.
+
+**The variant is how many tables of this one the learner has already
+answered**, kept per table at `localStorage['l103.grammar.scaffoldRun.<table
+id>']` beside the level and auto's step, and incremented as each table is
+graded. The attempt log would have been the better home — it is durable and it
+syncs — but it cannot answer this question: it does not record which table a
+chart was on (a drill chart's `item_key` is a cell key; a catalogue chart's is
+empty by design, so a miss never enters "redo what was wrong"), and a catalogue
+run outside the rotation logs nothing at all, which is exactly the run the
+learner described. `metCells` is not durable. So the count lives where the
+scaffold's other durable per-table facts already live, with the same lifetime
+and the same reset. **The first attempt at a table is variant 0: the settled
+anchors-first arrangement, unchanged** — the first meeting is still the one
+§12 designed, and variety starts from the second.
+
+Every invariant of §12 is held, and a test holds each one over the real
+catalogue (`tests/grammar.scaffold-variants.test.mjs`):
+
+- **The same count.** What is given is the largest total of whole same-form
+  groups that fits `want` — a property of the group sizes, which no reordering
+  changes — so 80% is the same size table on every attempt. (The old greedy
+  walk could fall short of that total; on 52 of 2,097 table/level pairs the
+  level now gives the cell or two it always meant to.)
+- **Same-form cells go all or none**, unchanged: the union-find grouping is
+  untouched and a variant only reorders whole groups.
+- **A taught cell is never given**, unchanged: its group is filtered out first.
+- **Anchors are still preferred.** The rank tier (anchor · already met · the
+  rest) stays the *primary* key at every level and a variant shuffles only
+  inside a tier. §12 puts the anchors first and calls 20% "anchors only"; a
+  variant that could demote one would be telling a different story from the
+  switch the learner pressed, and at 80% and 50% the whole of the variety is in
+  the ordinary cells anyway. The preference stops being a rule only where it
+  already did: an anchor group is passed over when taking it would put the
+  level's count out of reach.
+- **The table on screen finishes as it started.** The variant is read when the
+  item is first built and `chart.given` memoised on it; the count is
+  incremented after the table is graded. A retry gets its own arrangement back;
+  the next table gets the next one.
+
+Measured over every table of the catalogue on two stock words each (4,876
+cells), eight variants against one fixed arrangement:
+
+| level | given, fixed → over 8 | **filled by the learner, fixed → over 8** |
+| --- | --- | --- |
+| 80% | 80.1% → 99.9% | 19.9% → **75.4%** |
+| 50% | 50.2% → 95.3% | 49.8% → **89.2%** |
+| 20% | 19.9% → 71.2% | 80.1% → **95.1%** |
+
+The right-hand column is the one the learner feels: at 80% the cells they are
+ever asked to write go from a fixed fifth of the table to three quarters of it.

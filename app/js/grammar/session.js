@@ -745,22 +745,44 @@ export function isAnchorKey(key) {
 }
 /** The paradigm key behind one cell of a chart item, read off the rendered table it was cut from. */
 export const chartCellKey = (item, c) => (c?.key ?? item?.chart?.table?.sections?.[item.chart.section]?.rows?.[c?.row]?.cells?.[c?.col]?.key ?? null);
+/** A small deterministic hash (FNV-1a, 32 bits) — the seed behind a scaffold variant, so a variant a test pins is the variant the learner sees. Pure. */
+const hash32 = (s) => { let h = 0x811c9dc5; const t = String(s); for (let i = 0; i < t.length; i += 1) h = Math.imul(h ^ t.charCodeAt(i), 0x01000193); return h >>> 0; };
+/** Where a variant puts one group of same-form cells: a number in [0,1), the same for the same variant and the same group. Pure. */
+const groupJitter = (variant, sig) => hash32(`${variant} ${sig}`) / 4294967296;
 /**
- * Which cells of a table drill are **given** at a level (§12): deliberate,
- * never random. The anchors first, then cells the learner has already met
- * (`met`: cell ids), then the rest in reading order; **the cell a step is
- * teaching is never given** (`taught`: cell ids); and a given cell must never
- * be the answer to a cell left to fill — two cells that print the same form
- * (nominative and vocative, dative and ablative plural) would otherwise hand
- * one over. At least one cell is always left to fill. Returns the indexes into
- * `item.chart.cells`. Pure.
+ * The variant a run count names (§19): how many tables of this one the learner
+ * has already answered. `0` — the first ever, and anything unreadable — is the
+ * settled arrangement, the anchors-then-met-then-reading-order table this
+ * function has always drawn. Pure.
  */
-export function scaffoldGiven(item, { percent = 0, taught = [], met = [], cellIdOf = null } = {}) {
+export const scaffoldVariant = (n) => { const v = Math.floor(Number(n)); return Number.isFinite(v) && v > 0 ? v : 0; };
+/**
+ * Which cells of a table drill are **given** at a level (§12, §19): deliberate,
+ * never random. The anchors first, then cells the learner has already met
+ * (`met`: cell ids), then the rest; **the cell a step is teaching is never
+ * given** (`taught`: cell ids); and a given cell must never be the answer to a
+ * cell left to fill — two cells that print the same form (nominative and
+ * vocative, dative and ablative plural) would otherwise hand one over. At
+ * least one cell is always left to fill. Returns the indexes into
+ * `item.chart.cells`. Pure.
+ *
+ * **`variant`** (§19) is which arrangement of that level to draw — deliberate
+ * still, and deterministic: the same variant over the same table at the same
+ * level is always the same table, and `0` (the first meeting) is the settled
+ * arrangement this function drew before variants existed. It reorders only
+ * *within* a tier, so the anchors never lose their place to a variant; and the
+ * count is a property of the level alone, not of the variant, because what is
+ * taken is the largest total of whole groups that fits `want` — an amount
+ * fixed by the group sizes, which no reordering changes. Practising 80% three
+ * times is three different tables of the same size, not one memorised picture.
+ */
+export function scaffoldGiven(item, { percent = 0, taught = [], met = [], cellIdOf = null, variant = 0 } = {}) {
   const cells = item?.chart?.cells ?? [];
   if (!cells.length || item?.chart?.byWord || !(percent > 0)) return [];
   const n = cells.length;
   const want = Math.min(n - 1, Math.round((n * percent) / 100));
   if (want <= 0) return [];
+  const v = scaffoldVariant(variant);
   const idOf = (i) => (typeof cellIdOf === 'function' ? cellIdOf(cells[i], i) : cells[i].cellId ?? null);
   const taughtSet = new Set(taught);
   const metSet = new Set(met);
@@ -778,15 +800,36 @@ export function scaffoldGiven(item, { percent = 0, taught = [], met = [], cellId
     const id = idOf(i);
     return id && metSet.has(id) ? 1 : 2;
   };
+  // The tier is the primary key at every level, variant or no variant: §12 puts the anchors first and calls
+  // 20% "anchors only", and a variant that could demote one would be telling a different story from the
+  // switch the learner pressed. A variant shuffles *inside* a tier — which of the ordinary cells are the ones
+  // withheld this time — and that is where the whole of the variety lives at 80% and 50% anyway.
   const ordered = [...groups.values()]
     .filter((g) => !g.some((i) => { const id = idOf(i); return id && taughtSet.has(id); }))
-    .map((g) => ({ g, rank: Math.min(...g.map(rank)), first: Math.min(...g) }))
-    .sort((a, b) => a.rank - b.rank || a.first - b.first);
+    .map((g) => ({ g, rank: Math.min(...g.map(rank)), first: Math.min(...g), sig: g.join(',') }))
+    .sort((a, b) => a.rank - b.rank || (v ? groupJitter(v, a.sig) - groupJitter(v, b.sig) : 0) || a.first - b.first);
+  // How many cells a level gives must not depend on which variant is drawn, or 80% would be a harder
+  // exercise on some attempts than on others. The old walk took groups greedily and could fall short of
+  // `want` by however the sizes happened to land, which is exactly the kind of thing a reordering changes.
+  // So: `target` is the largest total these group sizes can make without passing `want` — a property of the
+  // sizes, and every ordering of them has it — and a group is taken only while the rest can still reach it.
+  // That is also where the anchors' preference stops being a rule: an anchor group is passed over when
+  // taking it would put `target` out of reach, and §12 asks for a preference, not a guarantee.
+  const sizes = ordered.map((o) => o.g.length);
+  const reach = new Array(sizes.length + 1);
+  reach[sizes.length] = new Uint8Array(want + 1); reach[sizes.length][0] = 1;
+  for (let i = sizes.length - 1; i >= 0; i -= 1) {
+    const rest = reach[i + 1];
+    const here = Uint8Array.from(rest);
+    for (let s = 0; s + sizes[i] <= want; s += 1) if (rest[s]) here[s + sizes[i]] = 1;
+    reach[i] = here;
+  }
+  let target = 0;
+  for (let s = want; s >= 0; s -= 1) if (reach[0][s]) { target = s; break; }
   const given = [];
-  for (const { g } of ordered) {
-    if (given.length + g.length > want) continue;   // a whole group or nothing; a smaller one may still fit
-    given.push(...g);
-    if (given.length >= want) break;
+  let left = target;
+  for (let i = 0; i < ordered.length && left > 0; i += 1) {
+    if (sizes[i] <= left && reach[i + 1][left - sizes[i]]) { given.push(...ordered[i].g); left -= sizes[i]; }
   }
   return given.sort((a, b) => a - b);
 }
