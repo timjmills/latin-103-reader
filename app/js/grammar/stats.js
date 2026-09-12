@@ -2,7 +2,7 @@
 // skill_state rows and the drill_attempts log. Never merged into the reading
 // study log.
 
-import { STATES, applyAnswer, newState, passLearn, learnCriterion } from './scheduler.js';
+import { STATES, applyAnswer, newState, passLearn, learnCriterion, isUncounted } from './scheduler.js';
 
 const DAY = 24 * 60 * 60 * 1000;
 const ms = (v) => { const n = typeof v === 'number' ? v : Date.parse(v || ''); return Number.isFinite(n) ? n : 0; };
@@ -184,6 +184,10 @@ export function skillHistory(attempts, { last = 20, days = 21, now = Date.now(),
  * "Add to mixed practice" needs no replay: it sets `due_at` to now, which is
  * what a fresh row's null `due_at` already means to `applyAnswer`.
  *
+ * One kind of row is **left out** of the replay altogether: an uncounted
+ * attempt (§20), which the live scheduler never saw. It is in the log and in
+ * the history page's counts, and it is not on this curve.
+ *
  * Returns `{ trail, stageChanges, learnPasses }`. Pure.
  */
 export function progressTrail(attempts, { now = Date.now() } = {}) {
@@ -214,6 +218,12 @@ export function progressTrail(attempts, { now = Date.now() } = {}) {
     if (point) { point.stability = Number(state.stability_days) || 0; point.stage = state.stage; point.state = state.state; }
   };
   for (const a of list) {
+    // An uncounted attempt moved nothing when it was answered (§20: a table practised from the Tables
+    // tab while the skill was out of the rotation), so the replay may not move for it either — neither
+    // through `applyAnswer`, which would draw a curve the skill never had, nor by closing a Learn run,
+    // which would judge the criterion at a point the flow never judged it. It is not a point on this
+    // curve at all; the history page counts it among the attempts, where it is an answer like any other.
+    if (isUncounted(a)) continue;
     const at = ms(a.at) || now;
     if (a.mode === 'learn') {
       learnRun.push(a);

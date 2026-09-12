@@ -2246,9 +2246,11 @@ zero.
 **A row may read "not started · 1 of 6".** Both halves are true and they mean
 different things: "not started" is the *scheduler's* word about the review
 rotation, and the count is *parts done*. A skill can be drilled without being
-added to practice ("Practice only — … nothing is counted"), so one part can be
-finished while the rotation has never begun. It reads like a contradiction and
-is not one. Do not "fix" it by hiding either half.
+added to practice, so one part can be finished while the rotation has never
+begun. It reads like a contradiction and is not one. Do not "fix" it by hiding
+either half. *(The copy quoted here — "Practice only — … nothing is counted" —
+was reworded by §20, which made the count itself the reason a part can move
+before the rotation starts. The rule above is unchanged.)*
 
 **The chart part ticks on the first complete table, at whatever scaffolding was
 up** — a table finished with 80 % of its cells given ticks it. That is exactly
@@ -2340,7 +2342,9 @@ syncs — but it cannot answer this question: it does not record which table a
 chart was on (a drill chart's `item_key` is a cell key; a catalogue chart's is
 empty by design, so a miss never enters "redo what was wrong"), and a catalogue
 run outside the rotation logs nothing at all, which is exactly the run the
-learner described. `metCells` is not durable. So the count lives where the
+learner described *(no longer true after §20 — that run is logged now; the
+first reason stands and the count stays here)*. `metCells` is not durable. So
+the count lives where the
 scaffold's other durable per-table facts already live, with the same lifetime
 and the same reset. **The first attempt at a table is variant 0: the settled
 anchors-first arrangement, unchanged** — the first meeting is still the one
@@ -2381,3 +2385,102 @@ cells), eight variants against one fixed arrangement:
 
 The right-hand column is the one the learner feels: at 80% the cells they are
 ever asked to write go from a fixed fifth of the table to three quarters of it.
+
+## 20. Table practice counts towards the sheet, not towards review, 2026-09-12
+
+> "Practising a table from the **Tables** tab records nothing unless that skill
+> is already in mixed practice, so the Tables tab — the obvious place to
+> practise tables — never moves the Chart line on the progress sheet. Want
+> table practice to count toward the sheet without counting toward review
+> scheduling?"
+> — "yes please"
+
+**One flag was gating two different things.** `createCatalogueDrill` computed
+`counted = skillId && inRotation(state)` and, when it was false, returned from
+`onAnswer` before anything: no attempt row *and* no scheduler call. So a
+learner who opened Tables, chose a table, chose a level and completed four of
+them wrote nothing down at all — the variant counter advanced to 4 (§19, which
+is `localStorage`), the attempt log held zero rows, and §18's chart part stayed
+blank for the run the learner would most reasonably expect to fill it.
+
+The two are now separate. **Always log; schedule only when counted.**
+
+**The marker: `meta.uncounted: true`.** It sits beside §11b's `generated` and
+§18.3's `given` in the attempt's free-form `meta` — the device's own field,
+dropped from the outbox row by `serverAttemptRow`, so there is no column and no
+migration. It is **added** to `meta`, never substituted for it: the rung §18.3
+writes is exactly what the sheet has to say about such a run. `scheduler.js`
+exports the one reader, `isUncounted(a)`, so the marker is spelt in one place
+and every module asks the same question.
+
+**A table no skill names logs nothing.** `attempt.skill` is the id of a skill
+in the map; a catalogue item falls back to the *table's* id when no skill names
+it (`items.js` `chartShape`), and a row under that id would sit on no sheet and
+be read by nothing. There is nowhere to record it, and the copy says so.
+
+### 20.1 Every reader of the log, and what it does with one
+
+| reader | uncounted attempt | why |
+| --- | --- | --- |
+| `applyAnswer` / `setState` (session.js) | **never reached** | the whole point: no due date, no stability, no state, ever |
+| `progress.js` · `chart` part | **counted**, rung included | what the run proves: that this table was filled in, at that rung |
+| `progress.js` · `practice` part | not counted | see 20.2 |
+| `progress.js` · `lesson`, `learn`, the Learn replay | not seen at all | it is not part of that story; closing a run on one would judge the criterion early |
+| `progress.js` · `generated` | not seen | a catalogue item is never a §11 generated sentence, so the skip costs nothing and keeps one rule |
+| `progress.js` · `rotation`, `mastered` | unaffected | they read `skill_state`, which an uncounted answer never touches |
+| `getMissed` / `countMissed` (the redo) | never | a catalogue item carries no `key`, so it has never been offerable — the key rule already holds this, and a redo is a review device an uncounted answer does not ask for |
+| `countUnnamedMissed` | counted | not a review device: it is the honesty counter that stops the empty state claiming a clean sheet. A table got wrong is a wrong answer really given, and the line already names "a catalogue table" |
+| `bumpConfusion` / the confusion rows | untouched | `createCatalogueDrill` has never called `bumpConfusion`, counted or not — a chart's distractors name no rival skill. Checked: nothing else writes a confusion from a catalogue run |
+| `stats.js` · `progressTrail` (the history curve) | **skipped** | it replays the real scheduler; a point for an answer the scheduler never saw would draw a curve the skill never had, and it would close a Learn run |
+| `stats.js` · `totals`, `perDay`, `perSkill`, `skillHistory` counts | counted | activity, honestly recorded: the learner did answer it, and the history page is a record of answers, not of the schedule |
+| `countAttempts`, the "History" button | counted | the same reason; a skill whose table has been practised has a history worth opening |
+| `today.js` (`itemSeconds`) | counted | it measures how long an item takes, and the table really took that long |
+| `main.js` chapter-set counting | unreachable | it counts distinct `item_key`s for chapter sets; a catalogue attempt has no key and its skill is never a set |
+
+### 20.2 Chart only, put to the learner (their answer: Chart)
+
+The open question was whether these attempts should also advance **Practised**
+— §18's `practice` part, "a blocked set of 10 on this skill alone". The learner
+chose the chart part alone, and the reason is the one to keep: practising a
+table proves you can fill *that table* in, at a stated rung, which is exactly
+what the chart part claims. "Practised" claims something more specific — §10's
+blocked ten on the skill as a whole. Letting tables tick it would quietly
+redefine that part as "ten of anything", and a learner who had only ever
+drilled one paradigm would read the same row as one who had worked the whole
+skill through. A **counted** catalogue run still counts there, unchanged: the
+live scheduler took it as practice, and the sheet says what was written down.
+
+### 20.3 The interface stops saying "nothing is counted"
+
+The old line was `Practice only — <skill> is not in your practice yet, so
+nothing is counted.` It is now false in the half that matters. The three cases
+the run can be in, each said as it is (`ui.js`, shown under every item):
+
+- in the rotation — "Counts towards <skill>, which is in your practice."
+- out of it — "Counts towards <skill> on the progress sheet, not towards
+  review. It is not in your mixed practice, so nothing here changes what is
+  due." *(Two sentences: a skill's title may carry a colon of its own —
+  "Imperfect subjunctive: forms (infinitive + endings)" — and two colons in
+  one line read as a fault. Seen on the live pass and fixed there.)*
+- no skill names the table — "Practice only — no skill names this table, so
+  there is nothing to record it under."
+
+§18.1's first kept behaviour reads the same as before and still holds: "not
+started · 1 of 6" is two true statements about different things. Its wording
+quoted the old copy, and the copy is the part that changed, not the rule.
+
+### 20.4 What this does not fix
+
+`meta` is local to the device (that is what keeps it off the server row). A row
+that reaches a **second** device through the pull arrives without its `meta`,
+so there it reads as an ordinary practice attempt: it would count towards that
+device's `practice` part and could close a Learn run in the replay. This is the
+same limitation §18.3's `given` already carries — there it degrades to
+"unknown", which is safe; here it degrades towards over-counting. The fix is a
+column on `drill_attempts`, which is a migration and was ruled out for this
+change.
+
+§19's reason for keeping the variant count in `localStorage` loses one of its
+two legs: "a catalogue run outside the rotation logs nothing at all" is no
+longer true. The other leg stands on its own and the count stays where it is —
+the attempt log still does not record **which table** a chart was on.

@@ -18,7 +18,7 @@
 // list every time would leave a quarter of the map permanently unfinishable,
 // which is the opposite of what was asked for.
 
-import { STATES, learnCriterion, LEARN_NEEDED, LEARN_WINDOW, MASTERED_SUCCESSES, DAY_MS } from './scheduler.js';
+import { STATES, learnCriterion, isUncounted, LEARN_NEEDED, LEARN_WINDOW, MASTERED_SUCCESSES, DAY_MS } from './scheduler.js';
 import { fmtStability } from './stats.js';
 
 /**
@@ -120,6 +120,9 @@ function whenDue(at, now) {
  * consecutive learn-mode attempts are a run, and a run is judged by
  * `learnCriterion` when practice resumes or when the log ends — because
  * `skill_state` keeps only today's row and a pass leaves no other trace.
+ *
+ * An **uncounted** attempt (§20, `isUncounted`) reaches the chart part and
+ * nothing else here, for the reasons set out at the top of the loop.
  */
 function readLog(attempts) {
   if (!Array.isArray(attempts)) return null;
@@ -132,22 +135,43 @@ function readLog(attempts) {
     out.lastRun = judged;
     run = [];
   };
+  // A chart answered right counts whichever mode asked it: Learn's chart checks are the same
+  // items as practice's. What one such attempt covers is not recorded — see the `chart` part.
+  const noteChart = (a) => {
+    if (a.kind !== 'chart' || !a.correct) return;
+    out.charts += 1;
+    // …and which rung of the scaffold it was completed at, where the attempt says. The **hardest**
+    // stands: the lowest percentage given, whenever it was, because a sheet whose achievements come
+    // off again when the learner drops back a level is a nag rather than a record (the rule ROTATION
+    // already follows above). A table completed with its cells peeked sets no level: §12's ladder only
+    // fades on `correct && !hinted`, and §17.1 is explicit that a form only being looked at is not an
+    // answer, so "completed unaided" may not be said about a blank table that was read off its hints.
+    const g = a.hinted ? null : givenOf(a);
+    if (g != null && (out.chartGiven == null || g < out.chartGiven)) out.chartGiven = g;
+  };
   for (const a of attempts) {
     if (!a) continue;
+    // A table practised from the Tables tab while the skill is out of the rotation (§20). It is
+    // durable evidence of one thing — that the table was filled in, at a rung — and of nothing else,
+    // so the **chart part alone** reads it and the rest of this pass does not see it at all. The
+    // learner was asked and chose exactly that (§20):
+    //
+    //   the `chart` part      is what such a run proves: that the learner can fill that table in, at
+    //                         the rung the attempt records. It is the claim they made.
+    //   the `practice` part   claims something different and more specific — §10's blocked ten on the
+    //                         skill *as a whole*. Ticking it off the back of four tables would quietly
+    //                         redefine it as "ten of anything", and a learner who had drilled one
+    //                         paradigm would read the same row as one who had worked the skill
+    //                         through. (A *counted* catalogue run still counts there: the scheduler
+    //                         took it as practice, and this sheet says what was written down.)
+    //   the Learn replay      an uncounted attempt is not part of that story. Closing a run on one
+    //                         would judge the criterion early, so a Learn pass either side of a table
+    //                         is judged exactly as if the table had not happened.
+    //
+    // `rotation` and `mastered` read the skill_state row, which an uncounted answer never touches.
+    if (isUncounted(a)) { noteChart(a); continue; }
     if (a.meta?.generated) out.generated += 1;
-    // A chart answered right counts whichever mode asked it: Learn's chart checks are the same
-    // items as practice's. What one such attempt covers is not recorded — see the `chart` part.
-    if (a.kind === 'chart' && a.correct) {
-      out.charts += 1;
-      // …and which rung of the scaffold it was completed at, where the attempt says. The **hardest**
-      // stands: the lowest percentage given, whenever it was, because a sheet whose achievements come
-      // off again when the learner drops back a level is a nag rather than a record (the rule ROTATION
-      // already follows above). A table completed with its cells peeked sets no level: §12's ladder only
-      // fades on `correct && !hinted`, and §17.1 is explicit that a form only being looked at is not an
-      // answer, so "completed unaided" may not be said about a blank table that was read off its hints.
-      const g = a.hinted ? null : givenOf(a);
-      if (g != null && (out.chartGiven == null || g < out.chartGiven)) out.chartGiven = g;
-    }
+    noteChart(a);
     if (a.mode === 'learn') { out.learn += 1; run.push(a); continue; }
     close();
     out.practice += 1;

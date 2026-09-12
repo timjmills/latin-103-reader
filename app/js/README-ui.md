@@ -1888,9 +1888,16 @@ narrowed by chapter), and **practise the whole table** or one group of it
 wins — every stock word resolves to its own table), `createCatalogueItems`
 (`search`, `wordEntry`, `cellItem`, `tableItem`, `narrowCells`,
 `stockWords`), and `tableHelpers` shared with `createTeachItems`. A catalogue
-run (`createCatalogueDrill`) logs under the first skill that names the table
-**only while that skill is in the rotation** — the run says whether it counts
-— and its items carry no key, so they never enter "redo what was wrong".
+run (`createCatalogueDrill`) **always logs** under the first skill that names
+the table, and feeds the **scheduler** only while that skill is in the
+rotation (§20): out of it the attempt carries `meta.uncounted` and
+`scheduler.js`'s `isUncounted` is what every other module asks — the progress
+sheet's chart part (and §18.3's rung) reads it, `progress.js`'s practice
+tally and Learn replay and `stats.js`'s `progressTrail` step over it, and
+`applyAnswer` is never called for it. A table no skill names logs nothing;
+the run's own line says which of the three it is (two sentences, because a
+skill title may carry a colon of its own). Its items carry no key, so they never
+enter "redo what was wrong", counted or not.
 
 ## The QA audit's behaviour findings, fixed (2026-09-11)
 

@@ -103,6 +103,20 @@ export const asState = (s, now = Date.now()) => (typeof s === 'string' ? newStat
 /** True when the skill takes part in mixed practice. */
 export const inRotation = (s) => !!s && (s.state === 'practising' || s.state === 'mastered');
 
+/**
+ * True when an attempt was written down but must move nothing the scheduler
+ * owns (GRAMMAR-CONTRACT.md §20): a table practised from the Tables tab while
+ * its skill is out of the rotation. `session.js` marks such an attempt
+ * `meta.uncounted` as it logs it and never calls `applyAnswer` for it; this is
+ * the reader every other module uses, so the marker is spelt once.
+ *
+ * What it means, exactly: the attempt is evidence that the table was filled
+ * in — the progress sheet's chart part reads it (§18.3's rung included) — and
+ * it is evidence of nothing else. No due date, no stability, no state, no
+ * place in the Learn replay, no review to redo. Pure.
+ */
+export const isUncounted = (a) => a?.meta?.uncounted === true;
+
 /** True when the skill is due now (never reviewed counts as due). */
 export function isDue(s, now = Date.now()) {
   if (!inRotation(s)) return false;
