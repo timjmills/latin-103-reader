@@ -331,8 +331,10 @@ test('Tab runs cell to cell: a box\'s own hint control is out of the sequence, t
   const control = UI.slice(UI.indexOf('const control = (id, {'), UI.indexOf('/** For order and match, whose boxes are buttons'));
   assert.match(control, /tabindex: label \? null : '-1'/, 'the inline "?" is out of the tab sequence; the labelled row form is not');
   assert.match(control, /aria-label.{0,3}: `Hint for/, 'and it is still a control a screen reader can find');
-  // The key help says what Tab now does, and how a keyboard still reaches the hint.
-  const keys = [...UI.matchAll(/class: 'g-keys', text: '([^']+)'/g)].map((m) => m[1]);
+  // The key help says what Tab now does, and how a keyboard still reaches the hint. Every one of
+  // these lines is built by `keyHelp()` now, which puts the finger's half beside the keyboard's
+  // (GRAMMAR-CONTRACT.md §17.4); the keyboard half is still the first string it is given.
+  const keys = [...UI.matchAll(/keyHelp\('([^']+)'/g)].map((m) => m[1]);
   const cellKeys = keys.filter((t) => /next (cell|ending)/.test(t));
   assert.equal(cellKeys.length, 2, 'the chart and Pensum A both state the model');
   for (const t of cellKeys) {
