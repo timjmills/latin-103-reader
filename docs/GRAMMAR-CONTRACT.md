@@ -399,8 +399,9 @@ learner answer by shape.
     { "id": "q07-01", "qword": "quis", "q": "Quis Mārcum pulsat?", "en": "Who hits Marcus?",
       "unit_id": "r07:12.1",                  // the sentence that answers it (shown after)
       "answers": ["Iūlius", { "span": [0, 4] }],   // accepted Latin: our own wording, or where it is in the sentence
-      "input": "type",                         // type | choice | tap  (tap: the answer is a word in unit_id's sentence)
-      "choices": [{ "span": [0, 0] }, "Mārcus", "Quīntus", "Iūlia"],   // for choice; ≥ 3 plausible from the passage
+                                                   // answers[0] is the model answer, and the option shown as correct
+      "input": "choice",                       // choice | tap  (tap: the answer is a word in unit_id's sentence)
+      "choices": [{ "span": [0, 0] }, "Mārcus", "Quīntus", "Iūlia"],   // exactly 4, answers[0] among them
       "hint": "a name in the nominative" } ] }
 ```
 ≥ 24 items per chapter across the question words quis/quid/cūr/ubi/quō/unde/
@@ -427,6 +428,70 @@ files are held to, and the checks that enforce it, live in
 `pipeline/latin_text.py`; `pipeline/span_questions.py` writes the references and
 `pipeline/check_questions.py` validates them (and sweeps `lessons/`, `vocab/`
 and `skills.json` for the same rule).
+
+#### Every comprehension question is answered by choosing (2026-09-12)
+
+`input: "type"` is gone from the shipped sets. A learner asked to type a Latin
+answer had to reproduce it exactly — several words, in the right order, with
+the right endings — and the comprehension the item wanted to test was buried
+under the transcription. All **495** typed items are now `choice`; `tap` (438)
+and the choice items that were already there (389) are untouched, so the sets
+hold **884 choice + 438 tap** and nothing else. `input` still accepts `"type"`
+(`sets.js` also falls back to it when a choice item has fewer than two usable
+choices), but no shipped item uses it.
+
+The item shape is unchanged — this is the existing `choice` shape applied more
+widely. Per item: exactly four options, `answers[0]` among them, the other
+three written for it. What is *not* in the shape and matters most:
+
+- **`answers` is never narrowed.** Every reading the typed item accepted is
+  still accepted; the conversion only moves the option to be displayed to
+  `answers[0]`, because `check_questions.py` compares it with the choices
+  character for character. Nothing a learner could have typed and been marked
+  right for has been taken away.
+- **No distractor may be an accepted answer.** `sets.js` marks a choice correct
+  when its normalised text is in `answers` — *any* of them, not only the first
+  — so a distractor that is also an accepted answer silently gives the item two
+  right options. `check_questions.py` now fails on it. Zero items violate it.
+- **A distractor ships nothing new.** It is our own wording, held to the same
+  line as an answer: `span_questions.py` turns any run of the item's own
+  sentence into a reference, and what is left literal is checked for two
+  consecutive words of that sentence and for five consecutive words of the book
+  anywhere. So a distractor built by negating or re-pointing the sentence
+  ("Italia in Asiā est") ships as `{"parts": [{"span": [0, 1]}, "Asiā est"]}`.
+- **Not eliminable by shape.** Distractors match the right answer's length and
+  grammatical form — a one-word answer gets three words of the same case,
+  number and part of speech; a *cūr* clause gets three clauses with the same
+  conjunction. Over all 884 choice items, 73% have every option within one word
+  of the longest.
+- **Yes/no questions become statements.** For `-ne` / `num` / `nōnne` a
+  particle-only option set cannot work: any second particle that means the same
+  thing ("Nōn" beside "Minimē") is *also* a correct answer, so the four options
+  always end up three of one polarity and one of the other, and the odd one out
+  is the answer. These items therefore show four statements about the sentence,
+  one true — which is what the two hand-written `-ne` choice items (q02-30,
+  q04-32) already did. Where the hint still read "yes or no, in Latin" it now
+  says the sentence answers yes or no and to choose the statement that agrees.
+
+The feedback path is unchanged and needed no work: a `question` item already
+carries `unit_id`, and `ui.js` `feedbackNode` renders **"The sentence that
+answers it"** — the book sentence from the private text, with the answer's own
+words lit (`fb.lit` = `answerIndexes`) and its English behind a disclosure — on
+a right answer and a wrong one alike, above the "Why" panel. A wrong choice
+also names the right one ("You chose X; the answer is Y"). 83 of the 884 choice
+items have no accepted answer that occurs in their sentence as a contiguous
+run, so their feedback shows the sentence without lighting anything; 38 of
+those were already choice items, and reordering `answers` changed no item's
+lighting either way.
+
+`pipeline/validate_questions.py` — the older, shallower validator — could not
+run at all against the shipped sets and was repaired in passing: it compared
+answers and choices as raw values, so a `{ "span": … }` choice crashed it on
+`set()`; it indexed only `data/build/week-*.json`, so every chapter 1–24 item
+read as "unit missing"; and its question-word list lacked the case-forms of
+*quis*/*quī*, so 64 shipped items read as "bad qword". It now resolves
+references first, indexes the whole of `data/build`, and carries the same list
+as `check_questions.py`. Both validators pass on all 34 chapters.
 
 ### Pensa (P → Supabase → E)
 `public.pensa` rows: `{ chapter, kind: "A"|"B"|"C", items: [...] }`, private.
