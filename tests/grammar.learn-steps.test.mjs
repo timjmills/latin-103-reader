@@ -402,8 +402,14 @@ test('a catalogue drill always logs under the naming skill, and schedules only w
   const gstore = store(); await gstore.ready();
   const quiet = createCatalogueDrill({ items, gstore, skillId: DIO });
   assert.equal(quiet.counted, false);
+  // A tick between answers, and it is not politeness. An attempt's id is `at|skill|item_key`, and a
+  // catalogue item carries **no** item_key (that is what keeps these rows out of the redo list), so two
+  // answers landing in the same millisecond under the same skill produce the same id and the store keeps
+  // one. The counts below are then short by one and this test fails perhaps one run in three — which is
+  // worse than failing always, because an intermittent gate teaches you to re-run instead of to look.
+  const tick = () => new Promise((r) => setTimeout(r, 2));
   let cur = quiet.start();
-  while (cur) { await quiet.runner.answer(answerRight(cur.item)); cur = quiet.runner.forward(); }
+  while (cur) { await quiet.runner.answer(answerRight(cur.item)); await tick(); cur = quiet.runner.forward(); }
   const uncounted = gstore.getAttempts({ skill: DIO });
   assert.equal(uncounted.length, 2, 'out of the rotation the table is still written down');
   for (const a of uncounted) assert.equal(a.meta?.uncounted, true, 'and marked, so every scheduling reader can skip it');
@@ -414,7 +420,7 @@ test('a catalogue drill always logs under the naming skill, and schedules only w
   const counted = createCatalogueDrill({ items, gstore, skillId: DIO });
   assert.equal(counted.counted, true);
   cur = counted.start();
-  while (cur) { await counted.runner.answer(answerRight(cur.item)); cur = counted.runner.forward(); }
+  while (cur) { await counted.runner.answer(answerRight(cur.item)); await tick(); cur = counted.runner.forward(); }
   const all = gstore.getAttempts({ skill: DIO });
   assert.equal(all.length, 4);
   assert.equal(all.filter(isUncounted).length, 2, 'a counted run carries no marker');
