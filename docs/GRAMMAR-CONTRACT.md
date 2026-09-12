@@ -2817,3 +2817,140 @@ back to step one — M-2 exactly, undone.
 The writer is now fenced to `skill.set`. This is §21's case in one line: the
 fault was on screen in the first device-emulated walk and no test had it. There
 is one now (`tests/grammar.learn-place.test.mjs`), over the real `createLearn`.
+
+
+## 23. The line says what it means, 2026-09-12
+
+> "I don't kknow what these mean- can you put a pop up that practically
+> explains them" — two lines of a chapter row circled: the summary
+> (`1 skill · 4 sets · 3 of 5 started`) and a skill's state (`◐ in Learn`).
+
+Offered the same facts in other words — "this chapter has 1 grammar skill and
+4 chapter sets; you have opened 3 of those 5" — the answer was:
+
+> "Yes but I still don't know waht 1 grammar skill is and 4 chapter sets I
+> dont know what this means"
+
+### 23.1 Naming beats defining
+
+**"Skill" and "set" are themselves the jargon, so defining the category only
+moves the problem.** The explainer names *the things in front of the learner*,
+by the names the rows under them already use. For cap. XXVI that is:
+
+> Cap. XXVI — The 5 things this chapter gives you to work through — 1 grammar
+> skill and 4 chapter sets — by name:
+> **Gerund: the verb as a noun (-ndum, -ndī, -ndō)** · grammar skill · in Learn
+> · **Questions** · chapter set · 12 questions · **Vocabulary** · chapter set ·
+> 20 words, Latin → English · **Vocabulary · English → Latin** · **Pensa** ·
+> chapter set · Pensa A, B and C, practise only
+
+A definition of "chapter set" is still there, but *attached to real names*
+rather than standing in for them. Assume the reader knows Latin and knows
+nothing of this app's vocabulary.
+
+### 23.2 Three rules the explainers keep
+
+**Built from the learner's own figures.** `chapterTip` is handed the same
+`chapterMaterial` / `chapterProgress` the line was printed from, and
+`stateTip` is handed the state row *and the phrase the caller printed*. A
+panel therefore cannot contradict the line above it — the failure mode of
+every hand-written help text. All three builders (`chapterTip`, `stateTip`,
+`partsTip`) are pure, take no DOM and read no storage, and are exercised over
+the real chapter helpers in `tests/grammar.explainers.test.mjs`.
+
+**The ticks follow the number the line is printing.** `chapterSummary` counts
+"started" until something is mastered and "mastered" after, so the panel's
+marks switch with it: the ✓s always add up to the figure the learner is
+looking at. "Started" is said to mean **opened** — "it says nothing about how
+well any of them is going" — and the panel names the line that will replace
+it ("1 of 5 mastered").
+
+**The scheduler's numbers, never remembered ones.** "3 successes spaced out
+over time", "more than 21 days between reviews", "6 right of the last 10,
+across 2 kinds of question" are `MASTERED_SUCCESSES`, `MASTERED_DAYS`,
+`LEARN_NEEDED`, `LEARN_WINDOW` and `LEARN_KINDS`, interpolated. Change the
+spacing rule and the explanation changes with it.
+
+### 23.3 One explainer, everywhere a state word appears
+
+The five words are explained **wherever they are printed** — a skill row, a
+chapter-set row, the "Review first" chips, the Today card's lines, the lesson
+header and the history header — by one builder, so they cannot come to mean
+different things on different pages. The panel explains **the phrase on
+screen first**, then lists the other four briefly with the one in play marked
+(a `▸`, the word "this row", and only then a colour).
+
+Two readings are not states at all, and they say plainly *why there is no
+practice*, which `drillable` (`parse_filter && candidates.length`) settles in
+two different ways:
+
+| the row says | because |
+| --- | --- |
+| lesson only — no drill | the skill has no way of pointing at itself in a sentence, so no question can be built for it; the lesson is the whole of it |
+| no sentences in the library yet | it has the rule, but no sentence in this library uses it yet — it gains a drill as soon as a reading does |
+| no items yet (a set) | the chapter's own material has not been read into the library |
+
+A "Review first" chip prints the scheduler's bare word ("new", "learning")
+where a row prints "not started" or "in Learn". Rather than let the list under
+it appear to be missing the word the learner pressed, the panel joins them:
+*The rows call this state "not started".*
+
+### 23.4 Generalised, not written twice
+
+§18's parts meter already had the whole machine: one panel node and one
+delegated set of listeners for an 88-row page, `position: fixed` off the body
+so nothing can reflow (§17.1, §17.3), flipped and clamped to the viewport
+(§21), the hover question asked of the **event** and never the device (§17.2),
+and the tap toggle measured from before the press (§21). A second popup beside
+it would have been a second set of all of those, and of all of those bugs.
+
+**What was extracted** (ui.js, same file, new names): the panel node
+(`tipNode`), its placement (`placeTip`, still through the exported, tested
+`panelPlace`), the open/close bookkeeping (`syncTip`, `closeTip`, `tipCheck`),
+the one delegated wiring (`wireTips`), one renderer (`tipBody`) and one
+trigger factory (`tipTrigger`). A trigger is now anything carrying
+`data-tip`; its content is a **thunk** in one WeakMap, called when the panel
+opens and not at paint, because a map paint draws ~88 meters and as many
+labels. The panel's CSS vocabulary moved with it: `.g-parts__panel` and its
+children are `.g-tip`, `.g-tip__h`, `.g-tip__list`, `.g-tip__item` …
+
+**What stayed the meter's:** `.g-parts` and its ticks, `meterLabel`,
+`partLine`, `givenNote` and the parts content itself (now the pure
+`partsTip`). §18's own rules are unchanged and still hold; the panel rules
+that moved took their tests with them, from
+`tests/grammar.progress-sheet.test.mjs` to `tests/grammar.explainers.test.mjs`.
+
+### 23.5 The affordance
+
+A trigger is a **button** whose face is the printed text plus a small "?" in a
+ring — a shape, so the invitation is never colour alone — and it inherits the
+line's own font and colour, so no page changes look. It carries the whole fact
+in its `aria-label` ("Chapter XXVI: 1 skill · 4 sets · 3 of 5 started — name
+the things it counts") and the panel becomes its `aria-describedby` while it
+is open. Nothing in the trigger changes size on hover or focus (§17.3), and
+the 44px target lives at the **end** of `app/css/grammar.css` under "touch
+last", the only place a coarse rule wins (§21.1).
+
+One new hazard: the chapter trigger sits inside the spine's `<summary>`, where
+a press would fold the chapter away. The click's **default action** is
+cancelled and only that — the event still reaches the document, where the one
+delegated toggle lives.
+
+### 23.6 Device-emulated evidence
+
+Driven under real device emulation (§21.1), viewport screenshots only (§21.2),
+on the dev fixture, whose chapter sets are cap. VII's — the learner's shape,
+one skill and four sets:
+
+| | desktop 1440×900 | phone (Pixel 7, 412×839) | tablet (iPad, 810×1080) |
+| --- | --- | --- | --- |
+| `(pointer: coarse)` | false | **true** | **true** |
+| shortest `.g-why` | 20px (a mouse) | **44px** | **44px** |
+| one tap opens it | — | yes | yes |
+| the chapter folded away | — | no | no |
+| layout moved when it opened | no | no | no |
+| panel inside the viewport | yes | yes, at the foot of the page too | yes |
+
+Escape closes it and hands the focus back to the trigger; a hover-opened panel
+takes no pointer (`data-hover="1"`) and a tapped one does, so it can be
+scrolled by finger when it is taller than the cap.
