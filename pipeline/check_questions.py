@@ -9,7 +9,8 @@ chapter may also cite the supplementary week that carries its extra stories
 Checks: JSON parses; required fields; ids unique, sequential and of the form
 qNN-KK; unit ids exist; items in text order (contiguous per source week, and
 by unit order inside each week); tap answers occur as a word of the referenced
-sentence; choice items have 4 distinct choices containing answers[0]; answers
+sentence; choice items have 4 distinct choices containing answers[0] and no
+distractor that is itself an accepted answer; answers
 non-empty; `en` and `hint` present and non-empty; `q` ends with "?"; no two
 items share a `q`; >= 24 items; >= 8 distinct question words; for 25-34 the
 week_id names a week whose `chapter` is the Roman numeral of the chapter.
@@ -36,7 +37,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from latin_text import (CLASSICAL, MAX_BOOK_RUN, MAX_LITERAL_WORDS,  # noqa: E402
                         MAX_QUESTION_WORDS, MIN_SPAN_WORDS, Corpus, find_run,
-                        forms, resolve_ref)
+                        forms, normalise_answer, resolve_ref)
 
 ROOT = Path(__file__).resolve().parent.parent
 QDIR = ROOT / "app" / "data" / "grammar" / "questions"
@@ -265,6 +266,18 @@ def check(n, index, weeks, corpus):
                 errs.append(f"{pid}: needs 4 distinct choices")
             if answers and answers[0] not in choices:
                 errs.append(f"{pid}: answers[0] not among choices")
+            # A distractor that is also an accepted answer gives the item two
+            # right options: app/js/grammar/sets.js marks a choice correct when
+            # its normalised text is in `answers`, not only when it is
+            # answers[0]. Cheap to check, and the only way to keep 884 choice
+            # items honest now that none of them is typed.
+            model = normalise_answer(answers[0]) if answers else None
+            accepted = {normalise_answer(a) for a in answers}
+            for c in choices:
+                key = normalise_answer(c)
+                if key != model and key in accepted:
+                    errs.append(f"{pid}: the distractor {c!r} is also an accepted "
+                                f"answer — it would be graded right")
         elif "choices" in it:
             errs.append(f"{pid}: choices on a non-choice item")
 
