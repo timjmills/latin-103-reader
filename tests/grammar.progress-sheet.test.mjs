@@ -13,10 +13,15 @@
 //   a detail, the panel must flip rather than open off-screen, and the label
 //   must carry the whole count for a reader who cannot see the ticks.
 //
-//   Wiring. The delegation, the pointer guard and the class names cannot be
+//   Wiring. The meter's markup and the builder it hands the panel cannot be
 //   run without a DOM, so they are read out of the source — with every comment
 //   line stripped first, because a test that passes against the comment
 //   explaining the rule is worse than no test (it has happened in this repo).
+//   The **panel** machinery this file used to hold is no longer the meter's
+//   own: §23 gave it to the chapter line and the state word as well, and its
+//   rules (the pointer guard, the seven listeners, one tap opening it, the
+//   fixed body-mounted panel and its clamp) moved to
+//   tests/grammar.explainers.test.mjs with it.
 //
 // One of these is a regression, not a precaution: `.g-prog` was already the
 // `<progress>` bar of a chapter set's Learn pass, and the meter took that class
@@ -137,10 +142,14 @@ test('the meter is not the class of the progress bar that was already there', ()
   assert.match(UI_CODE, /class: 'g-parts', 'data-level'/, 'the meter no longer carries its own class and its level');
 });
 
-test('every class the panel and the meter draw is styled', () => {
+test('every class the meter draws is styled', () => {
   const used = new Set([...UI_CODE.matchAll(/'(g-parts(?:__[a-z]+)?)'/g)].map((m) => m[1]));
-  assert.ok(used.size >= 8, `only ${used.size} progress classes found in ui.js — the markup moved`);
+  assert.ok(used.size >= 4, `only ${used.size} meter classes found in ui.js — the markup moved`);
   for (const cls of used) assert.match(CSS_CODE, new RegExp(`\\.${cls}[\\s,:[{]`), `.${cls} is drawn but never styled`);
+  // The panel's own classes are no longer the meter's: §23 gave the panel to three labels, so it is
+  // `.g-tip*` and is styled and held next door. Nothing may go on drawing the old ones.
+  assert.ok(!/g-parts__panel/.test(UI_CODE), 'the meter is drawing the old panel class again');
+  assert.ok(!/g-parts__panel/.test(CSS_CODE), 'the old panel class is still styled — two panels, or a dead rule');
 });
 
 test('colour is never the only signal: a count and a tick shape carry it too', () => {
@@ -154,56 +163,25 @@ test('colour is never the only signal: a count and a tick shape carry it too', (
   assert.ok(!/data-ratio/.test(UI_CODE), 'the row is colouring itself from the raw ratio instead of the band');
 });
 
-test('the hover is asked of the pointer, not of the device', () => {
-  // A Windows laptop with a touchscreen answers "coarse, cannot hover" to a media query with a
-  // mouse plugged into it, and this is the learner's machine (GRAMMAR-CONTRACT.md §17.2).
-  const block = /function wireParts\(\) \{([\s\S]*?)\n\}/.exec(UI_CODE);
-  assert.ok(block, 'wireParts() is gone');
-  assert.match(block[1], /if \(!b \|\| !pointerHovers\(e\) \|\| b === partsHover\) return;/, 'the meter no longer asks the event whether it can hover');
-  assert.ok(!/matchMedia/.test(block[1]), 'back to asking the device instead of the event');
-  assert.match(UI_CODE, /import \{ attachHoverGloss, cutLatinWords, pointerHovers \} from '\.\.\/hovergloss\.js';/, 'the shared guard is no longer imported');
+/* --------------------------- the meter's end of the shared panel */
+// §18 built the panel machinery here for the meter; §23 generalised it — one panel node, one delegated
+// set of listeners, one `[data-tip]` selector — and gave it to the chapter line and the state word too.
+// The machinery's own rules (the pointer guard, the seven listeners, one tap opening it, the fixed
+// body-mounted panel, the clamp, the dictionary keeping quiet) moved with it to
+// tests/grammar.explainers.test.mjs. What is the *meter's* is still held here.
+
+test('the meter is a trigger of the shared panel, and hands it a builder', () => {
+  assert.match(UI_CODE, /type: 'button', class: 'g-parts', 'data-level': p\.level, 'data-tip': 'parts'/, 'the meter is no longer a button, or no longer opens the shared panel');
+  assert.match(UI_CODE, /tipData\.set\(b, \(\) => partsTip\(title, p\)\);/, 'the meter no longer registers what its panel should say');
+  assert.match(UI_CODE, /'aria-label': meterLabel\(title, p\)/, 'the meter stopped carrying its whole count for a screen reader');
+  assert.match(UI_CODE, /tipCheck\(\);/, 'a panel left open against a row a redraw replaced is no longer closed');
+  // Built when it opens, not at paint: the map draws ~88 meters and three triggers a row.
+  assert.match(UI_CODE, /const d = tipData\.get\(el\)\?\.\(\);/, 'the panel content is no longer a thunk, so every row formats one at every paint');
 });
 
-test('a keyboard and a finger reach the panel, not only a pointer', () => {
-  const block = /function wireParts\(\) \{([\s\S]*?)\n\}/.exec(UI_CODE)[1];
-  for (const kind of ['pointerover', 'pointerout', 'focusin', 'focusout', 'click', 'pointerdown', 'keydown']) {
-    assert.match(block, new RegExp(`addEventListener\\('${kind}'`), `${kind} is no longer handled — one of the three ways in is gone`);
-  }
-  assert.match(block, /e\.key === 'Escape'/, 'Escape no longer closes it');
-  assert.match(UI_CODE, /type: 'button', class: 'g-parts'/, 'the meter is no longer a button, so it cannot be focused or tapped');
-});
-
-test('one panel and one set of listeners for all 88 rows', () => {
-  // The map draws this ~88 times a paint. A node or a listener per row is the thing to avoid.
-  assert.match(UI_CODE, /if \(partsWired \|\| typeof document === 'undefined'\) return;/, 'the listeners are no longer installed once');
-  assert.match(UI_CODE, /partsWired = true;/);
-  const block = /function wireParts\(\) \{([\s\S]*?)\n\}/.exec(UI_CODE)[1];
-  assert.ok(!/root\.addEventListener|el\.addEventListener/.test(block), 'the delegation moved off the document onto something per-row');
-  assert.match(UI_CODE, /if \(partsPanel\?\.isConnected\) return partsPanel;/, 'the one shared panel node is being rebuilt');
-});
-
-test('the panel overlays the page and can never reflow the row', () => {
-  // §17.1 and §17.3: a hint panel that grew the page is the complaint this answers, and a control
-  // must not move under the hand reaching for it.
-  assert.match(CSS_CODE, /\.g-parts__panel \{[^}]*position: fixed/, 'the panel is back in the flow');
-  assert.match(UI_CODE, /document\.body\.append\(partsPanel\);/, 'the panel is no longer hung off the body, so a clipping ancestor can cut it');
-  assert.match(CSS_CODE, /\.g-parts__panel\[data-hover="1"\] \{ pointer-events: none; \}/, 'a hover-opened panel takes the pointer again, which makes it flicker');
+test('nothing in the meter changes size under the hand reaching for it', () => {
+  // §17.3: a control the learner reaches from inside the row must not move when the row is judged.
   assert.ok(!/\.g-parts:hover \{[^}]*(padding|font-size|border-width)/.test(CSS_CODE), 'the meter changes size on hover, so it moves under the hand');
-});
-
-test('replaceChildren is not handed a null, which it would print as the word', () => {
-  // `h()` filters nulls out of its children; `replaceChildren` is the DOM's own and does not.
-  // A skill with every part showed a literal "null" at the foot of its panel.
-  const body = /function partsBody\(el\) \{([\s\S]*?)\n\}/.exec(UI_CODE);
-  assert.ok(body, 'partsBody() is gone');
-  assert.ok(!/replaceChildren\([\s\S]*?: null\)/.test(body[1]), 'a null is being passed to replaceChildren again');
-  assert.match(body[1], /\.\.\.\(missing\.length \? \[/, 'the foot line is no longer spread in conditionally');
-});
-
-test('where the two popups meet, the progress panel wins and the dictionary keeps quiet', () => {
-  // The word dictionary cuts Latin drawn as plain text into words on the pointer. The panel is a
-  // report about the learner, not reading text, and two popups on one rest of the pointer is a mess.
-  assert.match(UI_CODE, /const LA_NO = '[^']*\.g-parts, \.g-parts__panel'/, 'the progress panel is no longer out of the dictionary’s reach');
 });
 
 test('the map asks progress.js, and asks it per row', () => {

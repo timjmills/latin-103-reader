@@ -10,7 +10,7 @@ import { isShelfWeek } from '../sync.js';
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
 import { PARTS, skillProgress } from './progress.js';
-import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
+import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey, la, partsText } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATIONS, POPULATION_LABEL, populationOf, normalisePopulations, filterPopulations, mixNote, mixTitle } from './sets.js';
@@ -397,8 +397,6 @@ export function dueText(s, now = Date.now()) {
  * set's Learn pass draws (grammar.css), and taking the name gave every row a
  * 26rem grey stripe. Found live; do not rename it back.
  */
-const PARTS_PANEL_ID = 'g-parts-panel';
-
 /**
  * One part's line in the panel: the mark, whether "not yet" is said out loud,
  * and the rest.
@@ -485,6 +483,175 @@ export function panelPlace({ top, bottom, left }, { h: ph, w, vw, vh, gap = 8 })
 export function meterLabel(title, p) {
   const total = Number(p?.total) || 0;
   return `${Number(p?.done) || 0} of ${total} part${total === 1 ? '' : 's'} of ${title} practised — show which`;
+}
+
+/* ============================== what a line on the page means (§23) */
+/*
+ * > "I don't kknow what these mean- can you put a pop up that practically
+ * > explains them" — and, when the words were put another way:
+ * > "Yes but I still don't know waht 1 grammar skill is and 4 chapter sets
+ * > I dont know what this means"
+ *
+ * Two lines of a chapter row: its summary (`1 skill · 4 sets · 3 of 5
+ * started`) and a row's state (`◐ in Learn`). "Skill" and "set" are themselves
+ * the jargon, so saying them again in other words only moves the problem.
+ * **The explainer names the things in front of the learner**: for cap. XXVI,
+ * the one skill is *Gerund: the verb as a noun* and the four sets are that
+ * chapter's questions, its two word decks and its pensa, by the names the rows
+ * under it already use.
+ *
+ * Three rules hold these three builders together:
+ *
+ *   **Built from the learner's own figures.** Every builder is handed the same
+ *   data the line was printed from — `chapterProgress`, the skill_state row —
+ *   and quotes the printed phrase back, so a panel can never contradict the
+ *   line above it. None of them takes a DOM or reads storage.
+ *
+ *   **One shape for all three.** `{ title, summary, lines, foot }`, where a
+ *   line is `{ key, mark, label, flag, text, done, here }`: the mark is the
+ *   shape half of the signal, `flag` the word half (it is never colour alone),
+ *   and one renderer draws all of them into one panel node.
+ *
+ *   **The numbers come from the scheduler, not from memory.** "Three spaced
+ *   successes", "21 days", "6 right of the last 10" are its constants, so a
+ *   change to the spacing rewrites the explanation with it.
+ */
+
+/** A chapter member as the rows name it: a skill's own title, a set's row label (the reverse deck after its own). Pure. */
+export const memberLabel = (s) => (s?.set ? (s.rev ? `${SET_ROW_LABEL[s.set]} · English → Latin` : (SET_ROW_LABEL[s.set] ?? s.id)) : (s?.title ?? s?.id ?? ''));
+
+const SET_WHAT = {
+  questions: (s) => `${s.count ?? 0} question${s.count === 1 ? '' : 's'}`,
+  vocab: (s) => `${s.count ?? 0} word${s.count === 1 ? '' : 's'}, ${s.rev ? 'English → Latin' : 'Latin → English'}`,
+  pensum: () => 'Pensa A, B and C, practise only',
+};
+/** Which of the two kinds a chapter member is, and what it holds — the half of the answer "1 skill · 4 sets" never gives. Pure. */
+export const memberWhat = (s) => (s?.set ? `chapter set · ${(SET_WHAT[s.set] ?? ((x) => `${x.count ?? 0} items`))(s)}` : 'grammar skill');
+
+/**
+ * The chapter line, explained by naming what it counts. `material` and
+ * `progress` are chapter.js's own (`chapterMaterial`, `chapterProgress`), so
+ * the five lines here *are* the five things the line counted.
+ *
+ * The marks follow whichever number the line is printing: `chapterSummary`
+ * switches from "started" to "mastered" the moment anything is mastered, and a
+ * panel whose ticks did not switch with it would be answering a question the
+ * learner is no longer looking at. Pure.
+ */
+export function chapterTip({ roman: rom = '', material = null, progress = null, state = () => null, now = Date.now() } = {}) {
+  const title = `Cap. ${rom}`;
+  const members = material?.members ?? [];
+  const total = progress?.total ?? members.length;
+  if (!total) {
+    return { title, summary: 'This chapter introduces no grammar of its own, and your library has no questions, no word deck and no pensa for it. There is nothing here to work through.', lines: [], foot: null };
+  }
+  // "Started" is `state !== 'new'` and "mastered" is the state itself — chapterProgress's own tests, read
+  // here rather than re-derived, so a row can never be ticked by one rule and counted by the other.
+  const counting = progress?.mastered ? 'mastered' : 'started';
+  const nSkills = progress?.skills ?? material?.skills?.length ?? 0;
+  const nSets = progress?.sets ?? material?.sets?.length ?? 0;
+  const both = [nSkills ? `${nSkills} grammar skill${nSkills === 1 ? '' : 's'}` : null, nSets ? `${nSets} chapter set${nSets === 1 ? '' : 's'}` : null].filter(Boolean).join(' and ');
+  const lines = members.map((s) => {
+    const st = state(s.id);
+    const name = st?.state ?? 'new';
+    const done = counting === 'mastered' ? name === 'mastered' : name !== 'new';
+    const says = dueText(st, now);
+    const what = memberWhat(s);
+    // The row's own words, unless they would only repeat the flag: "not started — grammar skill · not
+    // started" was the first draft of an unopened row, and it says one thing twice.
+    const detail = !done && says === 'not started' ? what : `${what} · ${says}`;
+    return { key: s.id, mark: done ? '✓' : '–', label: memberLabel(s), flag: done ? null : `not ${counting}`, text: done ? detail : ` — ${detail}`, done, here: false };
+  });
+  const foot = counting === 'mastered'
+    ? `"${progress.mastered} of ${total} mastered" counts the ones the app calls mastered: ${MASTERED_SUCCESSES} successes spaced out over time, and more than ${MASTERED_DAYS} days now between reviews. Until the first of them, the line counted what you had opened instead.`
+    : progress?.started
+      ? `"${progress.started} of ${total} started" counts the ones you have opened at least once — it says nothing about how well any of them is going. Master one and the line counts those instead: "1 of ${total} mastered".`
+      : `"not started" means you have opened none of the ${total} yet. Open one and the line says "1 of ${total} started".`;
+  return { title, summary: `The ${total} things this chapter gives you to work through — ${both} — by name:`, lines, foot };
+}
+
+/** The five words the state line can say, each in one clause. The numbers are the scheduler's own. */
+const STATE_MEANS = Object.freeze([
+  ['new', 'not started', 'never opened. Nothing is scheduled.'],
+  ['learning', 'in Learn', `the one-sitting lesson is under way. It passes at ${LEARN_NEEDED} right of the last ${LEARN_WINDOW}, across ${LEARN_KINDS} kinds of question.`],
+  ['practising', 'practising', 'in mixed practice, with the date it next comes up.'],
+  ['mastered', 'mastered', `${MASTERED_SUCCESSES} successes spaced out over time, and more than ${MASTERED_DAYS} days between reviews.`],
+  ['lapsed', 'lapsed', 'more than twice its own gap past its due date, so it counts as faded.'],
+]);
+const SAYS = { row: 'This row says', chip: 'This chip says', plan: 'This skill stands at' };
+
+/**
+ * The state line, explained: what the words on screen mean for *this* row
+ * first, then the other four briefly, so the vocabulary is learned once and
+ * read everywhere. `shown` is the phrase the caller printed — passed in rather
+ * than guessed, so the panel quotes the row and cannot drift from it.
+ *
+ * `can === false` is the row that has no practice at all, and it says **why**:
+ * `drillable` is `parse_filter && candidates.length` (items.js), which is two
+ * different silences — a skill with no way of pointing at itself in a sentence
+ * and a skill whose sentences are simply not in this library yet. Pure.
+ */
+export function stateTip(title, s, { shown = null, where = 'row', can = true, parse = true, isSet = false, now = Date.now() } = {}) {
+  const says = SAYS[where] ?? SAYS.row;
+  const line = shown ?? (can === false ? (isSet ? 'no items yet' : parse ? 'no sentences in the library yet' : 'lesson only — no drill') : dueText(s, now));
+  const name = can === false ? null : (s?.state ?? 'new');
+  // One place prints the scheduler's bare word: a "Review first" chip says "new" or "learning" where a row
+  // says "not started" or "in Learn". The list below uses the rows' words, so the panel joins the two up
+  // rather than leaving the learner to guess that the word they pressed is missing from it.
+  const word = STATE_MEANS.find(([k]) => k === name)?.[1] ?? null;
+  const bridge = word && !String(line).startsWith(word) ? ` The rows call this state "${word}".` : '';
+  const head = `${says} "${line}".${bridge}`;
+  const kept = (Number(s?.successes) || 0) + (Number(s?.failures) || 0);
+  const outOfMix = name === 'new' && kept > 0;
+  let summary;
+  if (can === false && isSet) summary = `${head} A chapter set is the chapter's own material — its questions, its words, its pensa — and none of this one has been read into your library yet, so there is nothing here to practise.`;
+  else if (can === false && !parse) summary = `${head} Every question in this section is built by finding the grammar in a real sentence, and this skill has no way of pointing at itself in one — so no question can be made for it. The lesson is the whole of it, and it is never scheduled.`;
+  else if (can === false) summary = `${head} Questions are built out of the sentences in your library, and no sentence in your library uses this yet — so there is nothing to build one on. It gets its drill as soon as a reading does.`;
+  else if (outOfMix) summary = `${head} You took it out of mixed practice, so nothing is scheduled — and all ${kept} of those answers, its spacing and its stage are kept, so putting it back carries on where it left off.`;
+  else if (name === 'learning') summary = `${head} The one-sitting lesson is open and unfinished; "Continue learning" picks up at the first step you have not answered. Pass it — ${LEARN_NEEDED} right of the last ${LEARN_WINDOW}, across ${LEARN_KINDS} kinds of question — and it joins mixed practice.`;
+  else if (name === 'practising') summary = `${head} It is in mixed practice: the app spaces it out for you, and that is when it next comes up. Answer it right and the gap widens; get it wrong and it shortens.`;
+  else if (name === 'mastered') summary = `${head} Mastered is the app's own word for ${MASTERED_SUCCESSES} successes spaced out over time with more than ${MASTERED_DAYS} days now between reviews. It still comes back, just rarely.`;
+  else if (name === 'lapsed') summary = `${head} It went more than twice its own gap past its due date, so the app takes it as faded. Nothing is lost: a short re-learn puts it back.`;
+  else summary = `${head} You have not opened it — nothing read, nothing answered, nothing scheduled.`;
+  const lines = STATE_MEANS.map(([key, word, means]) => {
+    const here = can !== false && !outOfMix && key === name;
+    return { key, mark: here ? '▸' : '·', label: word, flag: here ? 'this row' : null, text: here ? ` — ${means}` : means, done: false, here };
+  });
+  const foot = can === false
+    ? `On a skill that can be practised this line says where it stands instead — ${STATE_MEANS.map(([, w]) => w).join(', ')}. This row is never any of them.`
+    : outOfMix
+      ? 'Two more readings this line has: "lesson only — no drill" and "no sentences in the library yet", for a skill no question can be built for.'
+      : 'Three more readings this line has: "out of the mix", with the count of answers it keeps — taken out of mixed practice, with nothing lost; and "lesson only — no drill" or "no sentences in the library yet", for a skill no question can be built for.';
+  return { title, summary, lines, foot };
+}
+
+/**
+ * The parts meter's panel, in the shared shape (§18, §18.3 unchanged — this is
+ * the same content `partsBody` built inline, lifted out so it is pure and the
+ * one renderer can draw it). Pure.
+ */
+export function partsTip(title, p) {
+  const parts = p?.parts ?? [];
+  const lines = parts.map((part) => {
+    // A part that records which rung it was completed at leads with it, so a chart part finished with 80 %
+    // of its cells printed never reads like one finished from memory (§12, §18.1). It goes in front of the
+    // count rather than beside it: "completed unaided · 3 charts answered right" answers *how* before *how
+    // many*, which is the order the learner asked the question in.
+    const note = givenNote(part);
+    const line = partLine(note ? { ...part, detail: part.detail ? `${note} · ${part.detail}` : note } : part);
+    return { key: part.key, mark: line.mark, label: part.label, flag: line.notYet ? 'not yet' : null, text: line.text, done: !!part.done, here: false };
+  });
+  const missing = PARTS.filter((part) => !parts.some((x) => x.key === part.key));
+  return { title, summary: p?.summary ?? '', lines, foot: missing.length ? `Not part of this skill: ${missing.map((m) => m.label).join(', ')}.` : null };
+}
+
+/**
+ * What a trigger says to a screen reader: the label as printed, then the thing
+ * the panel will add. Colour and a "?" glyph are the sighted half; this is the
+ * whole fact for a reader who has neither. Pure.
+ */
+export function tipLabel(what, shown, verb = 'explain what this means') {
+  return `${what}: ${shown} — ${verb}`;
 }
 
 /* ------------------------------ where the learner is in a lesson (§22) */
@@ -597,28 +764,44 @@ export function stepMark(i, { title = '', state = 'todo', steps = 0, go = false 
   return { glyph: state === 'done' ? '✓' : ten ? 'Ten' : String(i + 1), label: `${what}: ${says}.${invite}` };
 }
 
-const partsData = new WeakMap();   // the meter button → what its panel should say
-let partsPanel = null;
-let partsFor = null;               // the button the panel is open against
-let partsHover = null;             // open because the pointer is resting on it
-let partsHeld = null;              // open because the keyboard is on it, or a finger pressed it
-let partsWired = false;
+/* ------------------------------------ the panel the labels share (§23) */
+/*
+ * §18 built this for the parts meter: ONE panel node and ONE delegated set of
+ * listeners for an 88-row page, `position: fixed` off the body so it can never
+ * reflow the row (§17.1, §17.3), flipped and clamped to the viewport (§21),
+ * and the hover question asked of the event (§17.2). The machine was right;
+ * only its contents were specific to the meter.
+ *
+ * So it is now general: a trigger is anything carrying `data-tip`, its content
+ * is a `() => { title, summary, lines, foot }` in one WeakMap, and the meter
+ * is simply the first of three callers. Nothing about the behaviour moved —
+ * the same seven listeners, the same `wasHeld` tap toggle, the same placer.
+ */
+const TIP_ID = 'g-tip-panel';
+const TIP_SEL = '[data-tip]';
+const tipData = new WeakMap();   // a trigger → () => what its panel should say, built only when it opens
+let tipPanel = null;
+let tipFor = null;               // the trigger the panel is open against
+let tipHover = null;             // open because the pointer is resting on it
+let tipHeld = null;              // open because the keyboard is on it, or a finger pressed it
+let tipWired = false;
 
-/** What the panel is for: the learner's own reading of the row, so it never takes the keyboard. */
-function partsNode() {
-  if (partsPanel?.isConnected) return partsPanel;
-  partsPanel = h('div', { class: 'g-parts__panel', id: PARTS_PANEL_ID, role: 'tooltip', hidden: true });
-  document.body.append(partsPanel);
-  return partsPanel;
+/** What the panel is for: the learner's own reading of the line, so it never takes the keyboard. */
+function tipNode() {
+  if (tipPanel?.isConnected) return tipPanel;
+  tipPanel = h('div', { class: 'g-tip', id: TIP_ID, role: 'tooltip', hidden: true });
+  document.body.append(tipPanel);
+  return tipPanel;
 }
 
 /**
  * Measure, then place with `panelPlace`. Appended to the body and fixed, so it
- * works the same from the map, from the chapter spine and from a chapter
- * page's grammar panel, which is mounted outside the section's own root.
+ * works the same from the map, from the chapter spine, from a chapter page's
+ * grammar panel and from the weeks menu's Today card — three of the four are
+ * mounted outside the section's own root.
  */
-function placeParts(el) {
-  const p = partsNode();
+function placeTip(el) {
+  const p = tipNode();
   const w = Math.min(320, window.innerWidth - 16);
   p.style.width = `${w}px`;
   p.hidden = false;                                     // measured before it is placed: a hidden box has no height
@@ -627,109 +810,148 @@ function placeParts(el) {
   p.style.top = `${y}px`;
 }
 
-function partsBody(el) {
-  const d = partsData.get(el);
-  const p = partsNode();
+/** One renderer for every kind of explainer: the mark is the shape, `flag` the word, and neither is colour. */
+function tipBody(el) {
+  const p = tipNode();
+  const d = tipData.get(el)?.();
   if (!d) { p.replaceChildren(); return; }
-  const missing = PARTS.filter((part) => !d.parts.some((x) => x.key === part.key));
-  p.replaceChildren(
-    h('p', { class: 'g-parts__h', text: d.title }),
-    h('p', { class: 'g-parts__sum', text: d.summary }),
-    h('ul', { class: 'g-parts__list' }, d.parts.map((part) => {
-      // A part that records which rung it was completed at leads with it, so a chart part finished with
-      // 80 % of its cells printed never reads like one finished from memory (§12, §18.1). It goes in front
-      // of the count rather than beside it: "completed unaided · 3 charts answered right" answers *how*
-      // before *how many*, which is the order the learner asked the question in.
-      const note = givenNote(part);
-      const line = partLine(note ? { ...part, detail: part.detail ? `${note} · ${part.detail}` : note } : part);
-      return h('li', { class: 'g-parts__item', 'data-done': part.done ? '1' : '0', 'data-part': part.key },
-        h('span', { class: 'g-parts__mark', 'aria-hidden': 'true', text: line.mark }),
-        h('span', { class: 'g-parts__what' },
-          h('span', { class: 'g-parts__part', text: part.label }),
-          h('span', { class: 'g-parts__detail' },
-            line.notYet ? h('span', { class: 'g-parts__not', text: 'not yet' }) : null,
-            line.text)));
-    })),
-    // `replaceChildren` is the DOM's, not `h`'s: a null passed to it is appended as the text "null".
-    ...(missing.length ? [h('p', { class: 'g-parts__foot', text: `Not part of this skill: ${missing.map((m) => m.label).join(', ')}.` })] : []));
+  // `replaceChildren` is the DOM's, not `h`'s: a null passed to it is appended as the text "null".
+  p.replaceChildren(...[
+    h('p', { class: 'g-tip__h', text: d.title }),
+    d.summary ? h('p', { class: 'g-tip__sum', text: d.summary }) : null,
+    d.lines?.length ? h('ul', { class: 'g-tip__list' }, d.lines.map((line) => h('li', { class: 'g-tip__item', 'data-done': line.done ? '1' : '0', 'data-here': line.here ? '1' : null, 'data-line': line.key },
+      h('span', { class: 'g-tip__mark', 'aria-hidden': 'true', text: line.mark }),
+      h('span', { class: 'g-tip__what' },
+        h('span', { class: 'g-tip__label', text: line.label }),
+        h('span', { class: 'g-tip__detail' },
+          line.flag ? h('span', { class: 'g-tip__not', text: line.flag }) : null,
+          line.text))))) : null,
+    d.foot ? h('p', { class: 'g-tip__foot', text: d.foot }) : null,
+  ].filter(Boolean));
 }
 
-function syncParts() {
-  const want = partsHeld ?? partsHover;
-  if (want !== partsFor) {
-    if (partsFor) { partsFor.setAttribute('aria-expanded', 'false'); partsFor.removeAttribute('aria-describedby'); }
-    partsFor = want ?? null;
-    if (!partsFor) { if (partsPanel) { partsPanel.hidden = true; partsPanel.replaceChildren(); } return; }
-    partsFor.setAttribute('aria-expanded', 'true');
-    partsFor.setAttribute('aria-describedby', PARTS_PANEL_ID);
-    partsBody(partsFor);
+function syncTip() {
+  const want = tipHeld ?? tipHover;
+  if (want !== tipFor) {
+    if (tipFor) { tipFor.setAttribute('aria-expanded', 'false'); tipFor.removeAttribute('aria-describedby'); }
+    tipFor = want ?? null;
+    if (!tipFor) { if (tipPanel) { tipPanel.hidden = true; tipPanel.replaceChildren(); } return; }
+    tipFor.setAttribute('aria-expanded', 'true');
+    tipFor.setAttribute('aria-describedby', TIP_ID);
+    tipBody(tipFor);
   }
-  if (!partsFor) return;
+  if (!tipFor) return;
   // A panel the pointer alone opened takes no pointer (it would flicker as the mouse reached it, and it
   // has nothing to press); one a finger or the keyboard opened does, so a tap on it is not a tap on the
   // row underneath — where "Reset" is.
-  partsNode().dataset.hover = partsHeld ? '0' : '1';
-  placeParts(partsFor);
+  tipNode().dataset.hover = tipHeld ? '0' : '1';
+  placeTip(tipFor);
 }
 
-const closeParts = () => { partsHover = null; partsHeld = null; syncParts(); };
+const closeTip = () => { tipHover = null; tipHeld = null; syncTip(); };
+
+/** Every paint passes a trigger through here: a panel open against a node the redraw has replaced must go. */
+function tipCheck() {
+  wireTips();
+  if (tipFor && !tipFor.isConnected) closeTip();
+}
 
 /**
- * One set of listeners for every meter the section ever draws. Whether the
+ * One set of listeners for every label the section ever draws. Whether the
  * pointer can hover is asked of the **event** (`pointerHovers`), never of the
  * device: the learner's Windows laptop has a touchscreen and a mouse, and
  * `matchMedia('(hover: hover)')` answers "no" for both (§17.2).
  */
 let wasHeld = null;   // what was pinned when the current press began (see the click handler)
 
-function wireParts() {
-  if (partsWired || typeof document === 'undefined') return;
-  partsWired = true;
-  const meter = (e) => e.target?.closest?.('.g-parts') ?? null;
-  const inPanel = (t) => !!t?.closest?.('.g-parts__panel');
+function wireTips() {
+  if (tipWired || typeof document === 'undefined') return;
+  tipWired = true;
+  const trigger = (e) => e.target?.closest?.(TIP_SEL) ?? null;
+  const inPanel = (t) => !!t?.closest?.('.g-tip');
   document.addEventListener('pointerover', (e) => {
-    const b = meter(e);
-    if (!b || !pointerHovers(e) || b === partsHover) return;
-    partsHover = b;
-    syncParts();
+    const b = trigger(e);
+    if (!b || !pointerHovers(e) || b === tipHover) return;
+    tipHover = b;
+    syncTip();
   });
   document.addEventListener('pointerout', (e) => {
-    const b = meter(e);
-    if (!b || b !== partsHover) return;
+    const b = trigger(e);
+    if (!b || b !== tipHover) return;
     if (e.relatedTarget && (b.contains(e.relatedTarget) || inPanel(e.relatedTarget))) return;
-    partsHover = null;
-    syncParts();
+    tipHover = null;
+    syncTip();
   });
-  document.addEventListener('focusin', (e) => { const b = meter(e); if (b) { partsHeld = b; syncParts(); } else if (partsHeld && !inPanel(e.target)) { partsHeld = null; syncParts(); } });
-  document.addEventListener('focusout', (e) => { const b = meter(e); if (b && b === partsHeld) { partsHeld = null; syncParts(); } });
+  document.addEventListener('focusin', (e) => { const b = trigger(e); if (b) { tipHeld = b; syncTip(); } else if (tipHeld && !inPanel(e.target)) { tipHeld = null; syncTip(); } });
+  document.addEventListener('focusout', (e) => { const b = trigger(e); if (b && b === tipHeld) { tipHeld = null; syncTip(); } });
   document.addEventListener('click', (e) => {
-    const b = meter(e);
+    const b = trigger(e);
     if (!b) return;
     // A tap has no hover to open the panel and no leave to close it, so the press itself is the toggle —
     // but the toggle must be measured from **before the gesture began**, not from the state now. Tapping a
-    // meter focuses it, `focusin` opens the panel, and the click arrives a few ms later: asking "is it open?"
-    // at that point always answers yes, so one tap opened and then instantly shut it again. It needed two
-    // taps, or three with another panel open, and desktop hid the bug because `pointerover` had already set
-    // `partsHover`. `wasHeld` is read at pointerdown, before focus moves.
-    partsHeld = wasHeld === b ? null : b;
+    // trigger focuses it, `focusin` opens the panel, and the click arrives a few ms later: asking "is it
+    // open?" at that point always answers yes, so one tap opened and then instantly shut it again. It needed
+    // two taps, or three with another panel open, and desktop hid the bug because `pointerover` had already
+    // set `tipHover`. `wasHeld` is read at pointerdown, before focus moves.
+    tipHeld = wasHeld === b ? null : b;
     wasHeld = null;
-    syncParts();
+    syncTip();
   });
   // A press anywhere else puts it away — the finger's equivalent of the pointer leaving. The same press
   // records what was pinned before it, which is what the click above toggles against. Hover is deliberately
-  // not consulted: a click on a meter the mouse is merely resting over should pin it, not close it.
+  // not consulted: a click on a trigger the mouse is merely resting over should pin it, not close it.
   document.addEventListener('pointerdown', (e) => {
-    const b = meter(e);
-    wasHeld = b ? partsHeld : null;
-    if (partsHeld && !b && !inPanel(e.target)) { partsHeld = null; syncParts(); }
+    const b = trigger(e);
+    wasHeld = b ? tipHeld : null;
+    if (tipHeld && !b && !inPanel(e.target)) { tipHeld = null; syncTip(); }
   }, true);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && partsFor) { const b = partsFor; closeParts(); b.focus?.({ preventScroll: true }); } });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && tipFor) { const b = tipFor; closeTip(); b.focus?.({ preventScroll: true }); } });
   // The panel is fixed, so a scroll or a resize would leave it hanging over the wrong row. It follows
   // its own row rather than vanishing — the map is long and the learner reads it by scrolling — and it
   // goes only when the row it belongs to has left the document, which is what a redraw does to it.
-  const follow = () => { if (!partsFor) return; if (partsFor.isConnected) placeParts(partsFor); else closeParts(); };
+  const follow = () => { if (!tipFor) return; if (tipFor.isConnected) placeTip(tipFor); else closeTip(); };
   window.addEventListener('scroll', follow, true);
   window.addEventListener('resize', follow);
+}
+
+/**
+ * A label that explains itself: the printed text, a quiet "?" after it (a
+ * shape, so the affordance is not colour), and the panel behind it. `build` is
+ * called when it opens and not at paint — 88 rows draw three of these each.
+ */
+function tipTrigger(kind, build, { cls = '', label = '', ...attrs } = {}, ...children) {
+  tipCheck();
+  const b = h('button', {
+    type: 'button', class: `g-why${cls ? ` ${cls}` : ''}`, 'data-tip': kind, 'aria-expanded': 'false', 'aria-label': label, ...attrs,
+  }, ...children, h('span', { class: 'g-why__q', 'aria-hidden': 'true', text: '?' }));
+  tipData.set(b, build);
+  return b;
+}
+
+/**
+ * The chapter's own summary line, made to explain itself. It sits inside the
+ * spine's `<summary>`, so the press must be stopped from folding the chapter
+ * away: the default action is cancelled, and *only* the default — the click
+ * still reaches the document, where the one delegated toggle lives.
+ */
+function chapterTipButton(rom, material, progress, state) {
+  const shown = chapterSummary(progress);
+  return tipTrigger('chapter', () => chapterTip({ roman: rom, material, progress, state }), {
+    cls: 'g-chap__count', label: tipLabel(`Chapter ${rom}`, shown, 'name the things it counts'), onclick: (e) => e.preventDefault(),
+  }, shown);
+}
+
+/**
+ * The state line, made to explain itself — one builder for every place a state
+ * word is printed, so the five words can never come to mean different things
+ * on different pages. `text` is what the button shows (the Today card shows
+ * its own label and explains the state behind it); `shown` is the phrase the
+ * panel quotes, and it is always the one the caller printed.
+ */
+function stateTipButton(title, st, { shown, text = shown, where = 'row', can = true, parse = true, isSet = false, cls = '' } = {}) {
+  return tipTrigger('state', () => stateTip(title, st, { shown, where, can, parse, isSet }), {
+    cls, label: tipLabel(title, shown, 'explain what this means'),
+  }, ...(text ? [text] : []));
 }
 
 /**
@@ -740,12 +962,9 @@ function wireParts() {
  */
 function partsMeter(title, p) {
   if (!p || !p.total) return null;
-  wireParts();
-  // Every paint passes through here, which is the one place that reliably knows a redraw happened: a panel
-  // whose row has just been replaced is answering about a node no longer on the page, so it goes.
-  if (partsFor && !partsFor.isConnected) closeParts();
+  tipCheck();
   const b = h('button', {
-    type: 'button', class: 'g-parts', 'data-level': p.level, 'aria-expanded': 'false', 'aria-label': meterLabel(title, p),
+    type: 'button', class: 'g-parts', 'data-level': p.level, 'data-tip': 'parts', 'aria-expanded': 'false', 'aria-label': meterLabel(title, p),
   },
   h('span', { class: 'g-parts__ticks', 'aria-hidden': 'true' }, p.parts.map((part) => h('span', { class: 'g-parts__tick', 'data-done': part.done ? '1' : '0' }))),
   // **The unit is named** (§22.1). A bare "3 of 6" beside a skill whose lesson happens to have six teaching
@@ -753,7 +972,7 @@ function partsMeter(title, p) {
   // to land at step 4. The word is the whole fix — the meter still counts the skill's parts (§18), and the
   // aria-label and the panel's summary have said "parts" from the start, so all three now agree.
   h('span', { class: 'g-parts__count', 'aria-hidden': 'true', text: `${p.done} of ${p.total} part${p.total === 1 ? '' : 's'}` }));
-  partsData.set(b, { title, summary: p.summary, parts: p.parts });
+  tipData.set(b, () => partsTip(title, p));
   return b;
 }
 
@@ -900,11 +1119,11 @@ export function createUI(ctx) {
    * keep quiet. `LA_NO` is what must never be cut, nor cut inside: a control whose text is its
    * value, and everything that is already a word or a popup.
    */
-  // `.g-parts` and its panel are in here for a reason, not for symmetry: the progress sheet is a report
-  // about the learner, not reading text, and two popups answering one rest of the pointer is a mess. So
-  // where they meet, the progress panel wins and the dictionary keeps quiet — nothing inside either is
-  // ever cut into words, even if a `detail` line one day cites a form.
-  const LA_NO = 'input, textarea, select, option, .g-w, .g-wx, .g-la, .g-pop, .g-blank, .g-parts, .g-parts__panel';
+  // Every explainer trigger (`[data-tip]`) and the panel they share (`.g-tip`) are in here for a reason,
+  // not for symmetry: an explainer is a report about the learner, not reading text, and two popups
+  // answering one rest of the pointer is a mess. So where they meet, the explainer wins and the dictionary
+  // keeps quiet — nothing inside either is ever cut into words, even if a line one day cites a form.
+  const LA_NO = 'input, textarea, select, option, .g-w, .g-wx, .g-la, .g-pop, .g-blank, .g-parts, .g-tip, [data-tip]';
 
   /** Has the item this word belongs to been answered? The run stamps `data-result` on the page; a
    *  teaching step has no stamp, so the feedback node being on screen is the same fact. */
@@ -1054,7 +1273,10 @@ export function createUI(ctx) {
     const reviewNode = rf.length ? h('section', { class: 'g-review', 'aria-labelledby': 'g-review-h' },
       h('h2', { id: 'g-review-h', class: 'g-h2', text: `Review first · week ${ctx.currentCourseWeekN()}` }),   // the last course week: a shelf chapter being read keeps it (G1-12)
       h('p', { class: 'g-quiet', text: "The prerequisites of this week's new skills, the most decayed first." }),
-      h('ul', { class: 'g-chips' }, rf.map((r) => h('li', {}, h('button', { type: 'button', class: 'g-chip', 'data-state': r.state, onclick: () => render('lesson', { skill: r.skill }) }, titleOf(r.skill), h('span', { class: 'g-chip__state', text: ` · ${STATE_LABEL[r.state]}` })))))) : null;
+      // The chip is already a button, so its state word cannot become one too (a button inside a button is
+      // not markup). The explainer is its own small control beside it — the same panel, one target each.
+      h('ul', { class: 'g-chips' }, rf.map((r) => h('li', { class: 'g-chips__li' }, h('button', { type: 'button', class: 'g-chip', 'data-state': r.state, onclick: () => render('lesson', { skill: r.skill }) }, titleOf(r.skill), h('span', { class: 'g-chip__state', text: ` · ${STATE_LABEL[r.state]}` })),
+        stateTipButton(titleOf(r.skill), stateOf(r.skill), { shown: STATE_LABEL[r.state], text: '', where: 'chip', cls: 'g-why--bare' }))))) : null;
 
     const cats = ['all', ...index.categories, ...(ctx.sets?.size ? ['sets'] : [])];
     const filterNode = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'Filter by category' },
@@ -1123,7 +1345,7 @@ export function createUI(ctx) {
         h('details', { class: 'g-chap__d', open: open || null, ontoggle: onToggle },
           h('summary', { class: 'g-chap__sum' },
             h('h2', { class: 'g-chap__h g-chap__h--sum' }, h('span', { class: 'g-chap__num', text: `Cap. ${c.roman}` }), c.title ? h('span', { class: 'g-chap__title', text: c.title }) : null),
-            h('span', { class: 'g-chap__count', text: chapterSummary(c.progress) })),
+            chapterTipButton(c.roman, c.material, c.progress, stateOf)),
           h('div', { class: 'g-chap__body' }, chapterBody(c))));
     });
     setBody(head, viewSwitch(), todaySection(), sections);
@@ -1210,7 +1432,7 @@ export function createUI(ctx) {
         // The chapter page's own tab already says "Grammar"; the heading is there for a screen reader
         // walking the page's structure, and the line under it is what the eye needs — the counts.
         h('h2', { class: 'g-chapter__h visually-hidden', text: `Grammar of chapter ${entry?.roman ?? roman(n)}` }),
-        h('p', { class: 'g-chapter__sum', text: chapterSummary(progress) })),
+        h('p', { class: 'g-chapter__sum' }, chapterTipButton(row.roman, material, progress, stateOf))),
       ...chapterBody(row, { nav, known })));
   }
 
@@ -1267,7 +1489,8 @@ export function createUI(ctx) {
       h('div', { class: 'g-skill__main' },
         h('button', { type: 'button', class: 'g-skill__title', onclick: () => nav('lesson', { skill: s.id }) }, s.title),
         h('p', { class: 'g-skill__plain', text: `${s.plain} · ${s.course} week ${s.week ?? '—'}` }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill') : dueText(st),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }),
+          stateTipButton(s.title, st, { shown: can === false ? (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill') : dueText(st), can: can !== false, parse: !!s.parse_filter }),
           partsMeter(s.title, progressOf(s, known)))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
@@ -1291,9 +1514,10 @@ export function createUI(ctx) {
     const what = s.set === 'questions' ? `${s.count} question${s.count === 1 ? '' : 's'}${s.data?.title ? ` · ${s.data.title}` : ''}` : s.set === 'vocab' ? `${s.count} word${s.count === 1 ? '' : 's'}${s.rev ? ' · English → Latin, an optional extra deck' : ' · Latin → English'}` : `${s.data?.A.length ?? 0} A · ${s.data?.B.length ?? 0} B · ${s.data?.C.length ?? 0} C · practise only`;
     return h('li', { class: 'g-skill g-skill--set', 'data-state': st.state, 'data-set': s.set },
       h('div', { class: 'g-skill__main' },
-        h('p', { class: 'g-skill__title g-skill__title--set', text: s.rev ? `${SET_ROW_LABEL[s.set]} · English → Latin` : SET_ROW_LABEL[s.set] }),
+        h('p', { class: 'g-skill__title g-skill__title--set', text: memberLabel(s) }),
         h('p', { class: 'g-skill__plain', text: what }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? 'no items yet' : dueText(st),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }),
+          stateTipButton(memberLabel(s), st, { shown: can === false ? 'no items yet' : dueText(st), can: can !== false, isSet: true }),
           partsMeter(SET_ROW_LABEL[s.set] ?? s.id, progressOf(s, known)))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
@@ -1503,7 +1727,8 @@ export function createUI(ctx) {
     h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(skill.category.replace('-', ' '))}` }),
     h('h1', { class: 'g-title', text: skill.title }),
     h('p', { class: 'g-lede' }, skill.plain, skill.latin_label ? [' · ', h('i', { lang: 'la', text: skill.latin_label })] : null),
-    h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), dueText(st)),
+    h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
+      stateTipButton(skill.title, st, { shown: dueText(st) })),
     h('p', { class: 'g-summary', text: skill.summary }));
 
   /* ------------------------------------------------------------ learn */
@@ -3829,7 +4054,11 @@ export function createUI(ctx) {
     }
     const go = (action) => { if (!action) return; if (place === 'weeks') { document.getElementById('weeks')?.close?.(); ctx.go?.(action.view, action.params ?? {}); } else render(action.view, action.params ?? {}); };
     const rows = plan.lines.map((l) => h('li', { class: 'g-plan__row', 'data-kind': l.kind },
-      h('span', { class: 'g-plan__label', text: l.label }),
+      // The plan's own word for the line ("Continue learning", "Re-learn") is chosen by the skill's state,
+      // so the label explains the state behind it — the same panel as the row it came from.
+      h('span', { class: 'g-plan__label' }, l.skill && skills.has(l.skill)
+        ? stateTipButton(titleOf(l.skill), stateOf(l.skill), { shown: dueText(stateOf(l.skill), now), text: l.label, where: 'plan' })
+        : l.label),
       h('span', { class: 'g-plan__detail' }, l.detail, l.minutes != null ? h('span', { class: 'g-plan__min', text: ` · ${fmtMinutes(l.minutes)}` }) : null),
       btn(l.kind === 'read' ? 'Read' : 'Start', { onclick: () => go(l.action), 'aria-label': `${l.kind === 'read' ? 'Read' : 'Start'}: ${l.label} — ${l.detail}` }, `btn g-plan__go${l.kind === 'learn' || (l.kind === 'practice' && !plan.lines.some((x) => x.kind === 'learn')) ? ' btn--primary' : ''}`)));
     const node = h('section', { class: `g-plan${bare ? '' : ' g-plan--card'}`, 'aria-label': bare ? null : 'Today' },
@@ -3989,7 +4218,8 @@ export function createUI(ctx) {
         skill.set ? null : h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(String(skill.category ?? '').replace('-', ' '))}` }),
         h('h1', { class: 'g-title', text: skill.title }),
         h('p', { class: 'g-lede', text: 'History' }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), dueText(st, now))),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
+          stateTipButton(skill.title, st, { shown: dueText(st, now) }))),
       h('div', { class: 'g-acts' }, acts),
       // The line may only claim what the log supports (M-3): a miss on a generated sentence or a catalogue
       // table names no item, so it can never be offered back — which is not the same as having been put right.

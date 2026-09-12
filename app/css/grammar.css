@@ -67,6 +67,31 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-danger { color: var(--danger); }
 .g-danger:hover:not(:disabled) { color: var(--danger); }
 
+/* ----------------------------- a label that explains itself (§23) */
+/* The learner could not read two lines of a chapter row ("I don't kknow what
+   these mean"), so the lines themselves open the explainer. The affordance is
+   a shape, never a colour: the printed text, then a small "?" in a ring. The
+   button inherits its font and colour from the line it replaces, so nothing
+   about the page's look moves — and nothing in here changes size on hover or
+   focus, because a control must not move under the hand reaching for it
+   (§17.3). The 44px target is in the "touch last" section at the end of this
+   file, which is the only place a coarse rule wins (§21.1). */
+.g-why {
+  display: inline-flex; align-items: center; gap: 0.3em;
+  margin: 0; padding: 0; border: 0; border-radius: var(--radius-sm);
+  background: none; color: inherit; font: inherit; text-align: inherit; cursor: help;
+}
+.g-why__q {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 1.15em; height: 1.15em; border: 1px solid var(--line-strong); border-radius: 999px;
+  color: var(--ink-3); font-family: var(--face-ui); font-size: 0.75em; line-height: 1;
+}
+.g-why:hover .g-why__q, .g-why[aria-expanded="true"] .g-why__q { border-color: var(--ink-3); color: var(--ink); }
+.g-why:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+/* Beside a chip, which is a button already and cannot hold another: the "?" alone, and its own target. */
+.g-why--bare { align-self: center; }
+.g-chips__li { display: flex; align-items: center; gap: var(--s-1); }
+
 /* ------------------------------------------------------------- map */
 .g-today, .g-review { display: grid; gap: var(--s-1); }
 .g-today__line { margin: 0; line-height: 1.6; }
@@ -143,11 +168,14 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-parts[data-level="most"] { color: var(--ink-2); }
 .g-parts[data-level="all"] { color: var(--success); }
 
-/* The panel: fixed, over the page, and appended to the body — so it can never
-   reflow the row, the list or the page (§17.1), and so it works the same from
-   the map, from the chapter spine and from a chapter page's grammar panel,
-   which is mounted outside the section's own root. */
-.g-parts__panel {
+/* ------------------------- the panel every label opens (§23) */
+/* One panel, shared by the parts meter, the chapter line and the state word:
+   fixed, over the page, and appended to the body — so it can never reflow the
+   row, the list or the page (§17.1), and so it works the same from the map,
+   from the chapter spine, from a chapter page's grammar panel and from the
+   weeks menu's Today card, three of which are mounted outside the section's
+   own root. */
+.g-tip {
   position: fixed; z-index: var(--z-tooltip); margin: 0; padding: var(--s-3);
   background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow-pop); color: var(--ink-2);
@@ -163,20 +191,21 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
    flickering as the mouse reaches it. Opened by a finger or the keyboard it does
    take one, so a tap on the panel is not a tap on the row underneath — where
    "Reset" is. Same rule as the word popover above. */
-.g-parts__panel[data-hover="1"] { pointer-events: none; }
-.g-parts__panel p { margin: 0; }
-.g-parts__h { font-family: var(--face-serif); font-size: 1rem; color: var(--ink); text-wrap: balance; }
-.g-parts__panel .g-parts__sum { margin-top: 2px; color: var(--ink-3); font-size: var(--ui-xs); }
-.g-parts__list { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-1); }
-.g-parts__item { display: grid; grid-template-columns: 1em 1fr; gap: var(--s-2); align-items: baseline; }
-.g-parts__mark { color: var(--ink-3); text-align: center; }
-.g-parts__item[data-done="1"] .g-parts__mark { color: var(--success); }
-.g-parts__what { display: block; min-width: 0; }
-.g-parts__part { color: var(--ink-3); }
-.g-parts__item[data-done="1"] .g-parts__part { color: var(--ink); }
-.g-parts__detail { display: block; color: var(--ink-3); font-size: var(--ui-xs); text-wrap: pretty; }
-.g-parts__not { font-weight: 600; }
-.g-parts__panel .g-parts__foot { margin-top: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line); color: var(--ink-3); font-size: var(--ui-xs); text-wrap: pretty; }
+.g-tip[data-hover="1"] { pointer-events: none; }
+.g-tip p { margin: 0; }
+.g-tip__h { font-family: var(--face-serif); font-size: 1rem; color: var(--ink); text-wrap: balance; }
+.g-tip .g-tip__sum { margin-top: 2px; color: var(--ink-3); font-size: var(--ui-xs); }
+.g-tip__list { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-1); }
+.g-tip__item { display: grid; grid-template-columns: 1em 1fr; gap: var(--s-2); align-items: baseline; }
+.g-tip__mark { color: var(--ink-3); text-align: center; }
+.g-tip__item[data-done="1"] .g-tip__mark { color: var(--success); }
+.g-tip__what { display: block; min-width: 0; }
+.g-tip__label { color: var(--ink-3); }
+.g-tip__item[data-done="1"] .g-tip__label { color: var(--ink); }
+.g-tip__item[data-here="1"] .g-tip__mark, .g-tip__item[data-here="1"] .g-tip__label { color: var(--ink); }
+.g-tip__detail { display: block; color: var(--ink-3); font-size: var(--ui-xs); text-wrap: pretty; }
+.g-tip__not { font-weight: 600; }
+.g-tip .g-tip__foot { margin-top: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line); color: var(--ink-3); font-size: var(--ui-xs); text-wrap: pretty; }
 
 /* ---------------------------------------------------------- lesson */
 /* Lesson prose follows Settings → Type "Notes" (--note-scale), like the reader's notes; the Latin follows the reading size. */
@@ -923,6 +952,11 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
   /* 32px was below the project's own --tap standard, and the row gives it no slack: "Start as new" sits
      8px under it, so a near miss starts a lesson instead of opening a panel. */
   .g-parts { min-height: var(--tap); }
+  /* The same for the labels that explain themselves (§23). They sit in running text, so the target grows
+     around the words rather than pushing the line about: the min-height does the work, and a bare "?"
+     beside a chip gets a square one of its own. */
+  .g-why { min-height: var(--tap); }
+  .g-why--bare { min-width: var(--tap); justify-content: center; }
 }
 
 @media (pointer: coarse) { .g-seg--allnone .g-seg__btn { min-height: var(--tap); } }
