@@ -1074,10 +1074,38 @@ export function createUI(ctx) {
     const entries = r.entries.slice(0, 4);
     const described = entries.map((entry) => dict.describe(entry, { compact: !!ctx.settings?.compact, form: text, context: unitLa }));
     // Every reading the dictionary has (the reader's panel offers them too): the first in full, the others compact.
+    //
+    // The sense list, in the same place and the same order the reader's panel puts it (wordpanel.js
+    // `entryParts`): meaning · parse · dictionary form · **what the word means**. The learner asked for
+    // it — "lūdum … the dictionary only says 'game'" — and the senses were in `describe()` all along,
+    // thrown away here.
+    //
+    // Why it sits *under* the case line and not over it. The first line answers "what is this word
+    // doing in THIS sentence" ("the game (object)"); the list answers "what can this word mean at
+    // all" ("game, play, sport…" / "school"). Putting the general list first would bury the
+    // contextual answer under it and would print "game" twice before saying anything new.
+    //
+    // Why only the first reading gets a list. A hover popup cannot be scrolled — it is
+    // `pointer-events: none` so it does not flicker as the mouse enters it (and §17.4's long press
+    // opens the same popup), so it has to *fit*, not scroll. Four readings × four senses is a wall
+    // on a phone. The first reading is the one the ranking chose for this sentence; the alternates
+    // keep their one-line meaning, which already carries their head sense, and the "N entries" line
+    // below says they are there.
+    //
+    // No second cap on the list itself: `pipeline/senses.py` already stops at MAX_SENSES = 4, so the
+    // longest list this can print is four short lines. Capping at three here would hide a sense on
+    // 36% of the glossary's keys to save one line.
     const block = (d, i) => h('div', { class: `g-pop__entry${i ? ' g-pop__entry--alt' : ''}` },
       h('p', { class: 'g-pop__meaning' }, String(d.meaning ?? '').split(/\s+·\s+/).map((m, j) => [j ? h('br') : null, m])),
       d.parse && parse ? h('p', { class: 'g-pop__parse', text: d.parse }) : null,
-      h('p', { class: 'g-pop__lemma' }, h('span', { lang: 'la', class: 'entry__cite', text: d.lemma }), d.category ? ` · ${d.category}` : ''));
+      h('p', { class: 'g-pop__lemma' }, h('span', { lang: 'la', class: 'entry__cite', text: d.lemma }), d.category ? ` · ${d.category}` : ''),
+      // Senses are meaning, not parse, so §17.1's holdback does not touch them: they name no case,
+      // no number and no person. The meaning line already shown above says "(object)" or "to/for"
+      // outright, so a list of English senses gives an unanswered tap item strictly less away than
+      // what the popup prints today.
+      !i && d.senses?.length
+        ? h('ol', { class: 'g-pop__senses', 'aria-label': 'Meanings' }, d.senses.map((s) => h('li', { text: s })))
+        : null);
     pop = h('div', { class: 'g-pop', role: 'dialog', 'aria-label': `Word: ${text}` },
       h('p', { class: 'g-pop__form', lang: 'la', text }),
       described.length ? described.map(block) : h('p', { class: 'g-pop__meaning g-pop__miss', text: 'Not in the dictionary' }),
@@ -1093,10 +1121,24 @@ export function createUI(ctx) {
     const rr = root.getBoundingClientRect();
     const w = Math.min(340, window.innerWidth - 16);
     pop.style.width = `${w}px`;
-    let left = wr.left + wr.width / 2 - w / 2;
-    left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
-    pop.style.left = `${Math.round(left - rr.left)}px`;
-    pop.style.top = `${Math.round(wr.bottom - rr.top + 6)}px`;
+    // The sense list made this popup taller, so where it goes started to matter: a word near the foot
+    // of a phone screen put the senses under the fold, and a *hover* popup cannot be scrolled to
+    // (`pointer-events: none`). `panelPlace` is the explainer panel's placement, reused rather than
+    // written again — it flips above when below would overflow AND clamps either way, which the
+    // obvious hand-rolled flip does not: when neither side fits (a 727px phone, a word halfway down)
+    // an unclamped "below" leaves the foot of the popup off the screen. Measured after the width is
+    // set, because the width decides the wrapping and so the height.
+    //
+    // Two differences from `.g-tip`, both because this popup is `position: absolute` inside `root`
+    // rather than fixed on the body: the viewport coordinates come back through `rr`, and the left
+    // asked for is the word's centre rather than its left edge (panelPlace clamps it the same way).
+    const centred = wr.left + wr.width / 2 - w / 2;
+    const { x, y } = panelPlace(
+      { top: wr.top, bottom: wr.bottom, left: centred },
+      { h: pop.getBoundingClientRect().height, w, vw: window.innerWidth, vh: window.innerHeight },
+    );
+    pop.style.left = `${Math.round(x - rr.left)}px`;
+    pop.style.top = `${Math.round(y - rr.top)}px`;
     document.addEventListener('pointerdown', onDocDown, true);
     // A pointer opened it, so the keyboard stays where the reader put it: taking focus here would
     // pull it out of the answer box just because the pointer crossed a word.

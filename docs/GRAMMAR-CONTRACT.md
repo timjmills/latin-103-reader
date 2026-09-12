@@ -2954,3 +2954,148 @@ one skill and four sets:
 Escape closes it and hands the focus back to the trigger; a hover-opened panel
 takes no pointer (`data-hover="1"`) and a tapped one does, so it can be
 scrolled by finger when it is taller than the cap.
+
+## 24. The dictionary says every meaning a word has, 2026-09-12
+
+> "the dictionary popups give only one definition when sometimes there is more-
+> for example volo could be I want or I fly and when its fly, the definition
+> only says want. Similar with 'Lūdum' is the accusative singular form of the
+> Latin noun lūdus, which means 'game,' 'play,' 'sport,' or 'school'. But the
+> dictionary only says 'game'. Can we fix this?"
+
+One complaint, **two unrelated faults in two layers**. They are set down apart
+because conflating them is what kept the second one hidden.
+
+### 24.1 Display: the senses were there and the popups threw them away
+
+`meaningLine()` (`dictionary.js`) builds the first line out of the **head word
+of `senses[0]`** — "the game (object)" — and that is right and stays: it is the
+line that tells the learner `lūdum` is the object of its sentence. But
+`describe()` has returned the whole list as `senses` all along, and the popups
+never printed it. For `lūdus` that threw away *school* outright.
+
+**Where the list goes, and why there.** Under the dictionary form, last:
+
+| line | answers |
+| --- | --- |
+| `the game (object)` | what is this word doing in **this** sentence |
+| `accusative singular` | its parse |
+| `lūdus -ī m · 2nd declension` | which word it is |
+| `1. game, play… 2. school…` | what the word can mean **at all** |
+
+Putting the list first would bury the contextual answer under a general one and
+print "game" twice before saying anything new.
+
+**Three surfaces, not two.** The brief named two; the live pass found a third,
+and it was the one the learner actually reads in:
+
+| surface | file | before |
+| --- | --- | --- |
+| the reader's full panel | `wordpanel.js` `entryParts` | already listed every sense |
+| the reader's pointer / long-press tooltip | `reader.js` `glossTipRows` + `wtip` | **no list** — its docstring excluded senses as "the click's" |
+| the Grammar section's popup | `grammar/ui.js` `showGloss` | **no list** |
+
+The tooltip's exclusion was wrong on its own terms: the switcher and the
+paradigm need a press, senses are static text. All three now print the list in
+the same place, and `tests/dictionary.senses.test.mjs` asserts that ordering on
+all three so they cannot drift apart.
+
+**How many, and how the rest are reached.** *All of them, and no second cap* —
+`pipeline/senses.py` already stops at `MAX_SENSES = 4`, so the longest list is
+four short lines. Capping at three would hide a sense on **36% of the
+glossary's 12,028 keys** to save one line. What *is* capped is which readings
+get a list: **the first only**. A hover popup is `pointer-events: none`, so it
+cannot be scrolled and has to fit; four readings × four senses is a wall on a
+phone. Alternate readings keep their one-line meaning, which already carries
+their head sense, and the existing "N entries — tap the word for the rest"
+says how to reach them.
+
+**§17.1 is untouched.** On an unanswered tap item the **parse** is still held
+back and the senses are not. They name no case, number or person — and the
+meaning line already shown says "(object)" or "to/for" outright, so the list
+gives strictly less away than what the popup already printed. Confirmed live:
+the popup shows four senses *and* "The parse is held back until you answer."
+
+**Placement.** The list made `.g-pop` taller, so `showGloss` now places it with
+**`panelPlace`** — the explainer panel's own placement (§23), reused rather
+than written again. The obvious hand-rolled flip is not enough: when neither
+side fits (a 727px phone, a word halfway down) it leaves the foot of the popup
+off the screen, which `panelPlace` clamps either way. `.g-pop` gets
+`max-height: min(60vh, 420px)` as a backstop only.
+
+### 24.2 Data: two different verbs shared one sense list
+
+```
+volō, velle, voluī             cat [6,2]   "want, wish, be willing"
+volō, volāre, volāvī, volātum  cat [1,1]   "want, wish, be willing"   <- wrong: this is "fly"
+```
+
+`SENSE_OVERRIDES` in `build_glossary.py` is keyed on **(part of speech,
+headword)**, and that is one discriminator short when two lexemes share both.
+`HAND_LEMMA_CAT` directly above it already gates the *citation form* by
+category for this very pair — its comment names volō "fly" — so `volat` was
+captioned `volō, volāre, volāvī, volātum` while being glossed "want". The lemma
+was gated and the senses were not.
+
+**Fixed at the builder**, because a hand-patched `glossary.json` is overwritten
+by the next build: `SENSE_OVERRIDE_CAT` gates an override by category, exactly
+as `HAND_LEMMA_CAT` does.
+
+**Measured blast radius — it is nearly one word.** Of 4,532 distinct
+(headword, dictionary form, part of speech, category) lexemes, **18 headwords**
+have two lexemes sharing one sense list across differing paradigms. Seventeen
+are the *same word* listed twice, where sharing a gloss is correct: an
+alternate supine or perfect (`alō … alitum/altum`, `tendō … tensum/tentum`), a
+variant conjugation (`bovō -ere/-āre`), one noun in two declensions (`colus
+-ī/-ūs`, `cornus`), a gens name beside its adjective (`quintilius`,
+`sextius`), a bare duplicate (`mittō`, `servō`). **`volō` is the only true
+homograph**, and the only wrong meaning.
+`tests/dictionary.senses.test.mjs` holds that list, so a new clash fails and
+the seventeen are named as accepted.
+
+**A second fault the fix exposed.** While both verbs carried one sense list the
+builder's duplicate-merge (its docstring, point 6) had been *deleting* the
+fly-verb: the form `volō` had no "fly" reading at all. Separating them brought
+it back — and with it Whitaker's mis-analysis of `volandī`, `volandō`,
+`volandum` and `volantēs` as forms of **velle**, which has no gerund and whose
+participle stem is `volent-`, not `volant-`. `hand_table_denies` now drops a
+participle reading of a hand-tabled irregular that the hand table does not
+have. It took three more wrong readings with it — `itane` and `itaque` filed
+under **eō**, `latine` under **ferō** — and dropped
+`tests/latin_forms/test_latin_forms.py`'s `UNEXPLAINED_BASELINE` from **38 to
+34**, closing four of the five facts that ledger listed as "what is left of the
+`volo` headword collision".
+
+### 24.3 Why `glossary.json` was patched surgically and not rebuilt
+
+A rebuild is the honest way to ship a builder fix, and it was tried first. An
+**unpatched** rebuild from the current private corpus already differs from the
+committed file on **1,619 keys**, adds 169 and **drops 47** — the library has
+grown and the macron table has moved since that file was last built. Shipping
+that inside a bug-fix commit would be unreviewable, and losing 47 keys is a
+real regression hiding inside an unrelated diff.
+
+So the patch's own effect was isolated: two builds from the *same* inputs, one
+with the change and one without, and only the keys whose difference the change
+causes were transplanted onto the committed file. That is **21 keys**, changed
+in place — nothing added, nothing removed. One key the patched build gains
+(`volaret`) was deliberately skipped: it is absent from the committed file
+because the corpus grew, not because of this fix.
+`glossary-headwords.json` was rebuilt from the result with
+`build_glossary.py --headword-index`, which is what that flag is for. A later
+full rebuild reproduces all of it, because the builder itself is fixed.
+
+### 24.4 Device-emulated evidence
+
+Driven under real device emulation (§21.1), viewport screenshots only (§21.2),
+`before` = the tree this branch forked from, served on its own port:
+
+| | before | after |
+| --- | --- | --- |
+| `volat` in "Intuēre illam aquilam … volat!" | **"he/she/it wants"** | "he/she/it flies" · `1. fly` |
+| `lūdum` in "inter lūdum et certāmen" | "the game (object)", no list | + `1. game, play, sport, pastime, entertainment, fun` `2. school, elementary school` |
+
+Phone (412×839, `pointer: coarse` true, dpr 2.625, long-press per §17.4),
+tablet (810×1080, coarse) and desktop (1440×900, hover): the popup was fully
+on screen in all six, and the worst case — a four-sense entry in the Grammar
+section on the phone — is 196px tall and fits. No JS errors in any run.
