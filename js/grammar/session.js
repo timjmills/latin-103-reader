@@ -4,7 +4,7 @@
 // scheduler; a wrong practice answer re-queues the skill later in the session
 // and records the confusion pair when the chosen distractor names one.
 
-import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer, featureChoices, workedFeature, SHORT_WORDS } from './items.js';
+import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer, featureChoices, workedFeature, la, partsText, SHORT_WORDS } from './items.js';
 import { applyAnswer, learnCriterion, passLearn, startLearning, addToPractice, requeue, buildSession, buildRedoSession, inRotation } from './scheduler.js';
 import { matchQuestion } from './sets.js';
 import { chapterOfWeek } from '../chapters.js';
@@ -1202,6 +1202,52 @@ const lower = (s) => { const t = clean(s); return t ? t.charAt(0).toLowerCase() 
 const join = (...parts) => parts.map((p, i) => stop(i ? cap(p) : p)).filter(Boolean).join(' ');
 const head = (lemma) => String(lemma ?? '').split(/[\s,]/)[0];
 
+/* ------------------------------------------------ a hint's Latin, marked
+ * A hint level is *always* a string — `hintTexts`, the no-leak sweep and the
+ * tests all read it as one, and that invariant is what keeps an answer from
+ * reaching the screen inside a hint. What is added beside it is `parts`: the
+ * same line with its Latin fragments marked, which is what the view draws, so
+ * "the accusative of īnsula" offers the dictionary on the word the way every
+ * other Latin on the screen now does ("All Latin text throughout").
+ *
+ * The string is *derived from* the parts (`partsText`), never written twice,
+ * so what the sweep reads and what the learner sees cannot drift apart. Where
+ * a clause has no Latin the level stays a plain string and `parts` is null.
+ */
+/** One clause's parts, from a string or a list. Empty fragments drop out. */
+const clauseParts = (c) => (Array.isArray(c) ? c : [c]).filter((p) => p != null && p !== '' && (typeof p === 'object' || String(p).trim() !== '' || String(p) === ' '));
+/** Is any clause here marked Latin? Nothing is gained by the parts path otherwise. */
+const anyLatin = (cs) => cs.some((c) => (Array.isArray(c) ? c : [c]).some((p) => p && typeof p === 'object'));
+/**
+ * `join` for clauses whose Latin is marked. Same two rules: the first clause
+ * keeps its own case — it may open with a Latin word, which must not be
+ * capitalised into a proper noun — and every clause is a sentence, so it ends
+ * with a full stop. A clause ending in Latin takes its stop as its own
+ * fragment, so the mark never swallows the punctuation.
+ */
+const joinParts = (...clauses) => {
+  const kept = clauses.filter((c) => partsText(clauseParts(c)).trim());
+  if (!anyLatin(kept)) return null;   // a plain line: the string path says it better
+  const out = [];
+  kept.forEach((c, i) => {
+    const parts = clauseParts(c).map((p) => (typeof p === 'object' ? p : String(p).replace(/\s+/g, ' ')));
+    const firstText = parts.findIndex((p) => typeof p !== 'object');
+    if (i && firstText === 0) parts[0] = cap(parts[0]);
+    const lastText = [...parts].reverse().findIndex((p) => typeof p !== 'object');
+    const tail = lastText === -1 ? null : parts.length - 1 - lastText;
+    if (tail == null) parts.push('.');
+    else if (!/[.!?…]$/.test(String(parts[tail]).trim())) parts[tail] = `${String(parts[tail]).trimEnd()}.`;
+    if (i) out.push(' ');
+    out.push(...parts);
+  });
+  return out;
+};
+/** A level from clauses: the string every reader has always had, and the marked line the view draws. */
+const level = (...clauses) => {
+  const parts = joinParts(...clauses);
+  return parts ? { text: partsText(parts), parts } : join(...clauses.map((c) => partsText(clauseParts(c))));
+};
+
 /** The item's grammar term and its plain gloss, whichever the generator settled. */
 const labelOf = (item) => {
   const l = item?.feedback?.label;
@@ -1255,8 +1301,18 @@ export function boxHints(item, { skill = null, describe = null } = {}) {
   // happens to print a form this item accepts must not take the general statement of the level down with it.
   const rule = safe(rawRule);
   const raw = build(item, { skill, describe, rule, term, lab, safe });
+  // A level arrives as a plain string or as `{ text, parts }` from `level()`. `levels` stays strings — the
+  // no-leak sweep, `hintTexts` and the tests all read it as one, and that is what keeps an answer out of a
+  // hint. `levelParts` rides beside it for the view, and a level whose text `clean` moved loses its parts
+  // rather than letting the swept line and the drawn line differ.
   return raw
-    .map((b) => ({ ...b, levels: b.levels.map(clean).filter(Boolean).filter((t) => answerLeak(t, answers).length === 0) }))
+    .map((b) => {
+      const kept = b.levels
+        .map((l) => (l && typeof l === 'object' && !Array.isArray(l) ? l : { text: l, parts: null }))
+        .map(({ text, parts }) => { const t = clean(text); return { text: t, parts: parts && partsText(parts) === t ? parts : null }; })
+        .filter(({ text }) => text && answerLeak(text, answers).length === 0);
+      return { ...b, levels: kept.map((k) => k.text), levelParts: kept.map((k) => k.parts) };
+    })
     .filter((b) => b.levels.length);
 }
 
@@ -1288,13 +1344,16 @@ function chartBoxes(item, { rule, lab }) {
   const answers = acceptedAnswers(item);
   const safe = (w) => (w && answerLeak(w, answers).length ? 'this word' : w);
   return cells.map((c, i) => {
-    const word = safe(c.word ?? h);
+    const own = clean(c.word ?? h);
+    const word = safe(own);
+    // `safe` answers "this word" where naming the head would give an answer away — English, and never marked Latin.
+    const name = word && word === own ? [la(word)] : word ? [word] : null;
     const cellName = c.cellLabel ?? c.label;
     return {
       id: String(i), index: i, label: c.label || `cell ${i + 1}`,
       levels: [
-        `This cell wants the ${lower(cellName)}${word ? ` of ${word}` : ''}${plain ? ` — ${plain}` : ''}.`,
-        join(rule, word ? `Only the ending changes; the stem of ${word} stays as it is` : ''),
+        level([`This cell wants the ${lower(cellName)}`, ...(name ? [' of ', ...name] : []), ...(plain ? [` — ${plain}`] : [])]),
+        level(rule, name ? ['Only the ending changes; the stem of ', ...name, ' stays as it is'] : ''),
       ],
     };
   });
@@ -1336,7 +1395,7 @@ function matchBoxes(item, { rule }) {
   return pairs.map((p, i) => ({
     id: String(i), index: i, label: p.la,
     levels: [
-      join('Pick the meaning that belongs to this word', p.dict ? `its dictionary line is ${p.dict}` : ''),
+      level('Pick the meaning that belongs to this word', p.dict ? ['its dictionary line is ', la(p.dict)] : ''),
       join(p.dict ? 'The dictionary line gives its declension and gender, not its meaning — but it tells you what kind of word you are looking for' : '', rule),
     ],
   }));
@@ -1356,11 +1415,12 @@ function orderBoxes(item, { rule, describe }) {
   return chunks.map((word, i) => {
     const text = shown[i] ?? word;
     const d = (() => { try { return describe ? describe(word, text) : null; } catch { return null; } })();
-    const line = d ? [d.lemma ? `from ${d.lemma}` : '', d.meaning ? `“${d.meaning}”` : ''].filter(Boolean).join(', ') : '';
+    // "From rosa -ae f, “a rose”" — the dictionary line is Latin, the meaning in quotes is not.
+    const line = d ? [d.lemma ? ['From ', la(d.lemma)] : null, d.meaning ? [`${d.lemma ? ', ' : ''}“${d.meaning}”`] : null].filter(Boolean).flat() : [];
     return {
       id: String(i), index: i, label: text,
       levels: [
-        join(line ? cap(line) : `Where does ${text} belong in the book's sentence?`, d?.parse || ''),
+        level(line.length ? line : ['Where does ', la(text), ' belong in the book\'s sentence?'], d?.parse || ''),
         join('The endings, not the order, say who does what; the book\'s own order is what is being asked for, and Latin usually keeps the verb near the end', rule),
       ],
     };
@@ -1372,9 +1432,9 @@ function singleBox(item, { rule, term, lab }) {
   const target = clean(item.target?.text ?? '');
   const h = head(item.feedback?.lemma ?? item.word?.lemma ?? item.lemma ?? '');
   let first = '';
-  if (item.kind === 'blank') first = join(`The blank wants the ${lower(lab.name) || 'right'} form${h ? ` of ${h}` : ''}`, lab.plain);
-  else if (item.kind === 'recognise') first = join(target ? `You are asked what ${target} is in this sentence — read its ending, not its place in the line` : 'You are asked what the marked word is in this sentence', item.prompt?.gloss ? 'the dictionary form is under the sentence' : '');
-  else if (item.kind === 'parse') first = join(target ? `Name what ${target} is: ${item.prompt?.placeholder ? `answer in the shape “${item.prompt.placeholder.replace(/^e\.g\.\s*/i, '')}”` : 'the ending carries it'}` : 'Name what the marked word is; the ending carries it');
+  if (item.kind === 'blank') first = level([`The blank wants the ${lower(lab.name) || 'right'} form`, ...(h ? [' of ', la(h)] : [])], lab.plain);
+  else if (item.kind === 'recognise') first = level(target ? ['You are asked what ', la(target), ' is in this sentence — read its ending, not its place in the line'] : 'You are asked what the marked word is in this sentence', item.prompt?.gloss ? 'the dictionary form is under the sentence' : '');
+  else if (item.kind === 'parse') first = level(target ? ['Name what ', la(target), ` is: ${item.prompt?.placeholder ? `answer in the shape “${item.prompt.placeholder.replace(/^e\.g\.\s*/i, '')}”` : 'the ending carries it'}`] : 'Name what the marked word is; the ending carries it');
   else if (item.kind === 'transform') first = join(`Change the marked word as the question asks and leave the rest of it alone`, lab.plain ? `it is now ${lower(lab.name)} — ${lab.plain}` : '');
   else if (item.kind === 'translate') first = 'Write what the sentence says in English, then reveal the book\'s version and grade yourself — the lit words are the ones that carry the construction.';
   else if (item.kind === 'question') first = join('The answer is in the chapter\'s own sentence, in Latin, in the case the question asks for', item.prompt?.en ? 'the English of the question is behind “In English”' : '');
