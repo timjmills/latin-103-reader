@@ -912,7 +912,9 @@ Shapes and ownership: `docs/GRAMMAR-CONTRACT.md` "Wave 2 — depth".
 - **A chapter set's Learn is a capped, resumable pass.** `SET_LEARN_BATCH` (15)
   items with feedback, then "another 15" / "go on to the ten" / "stop for now",
   with a progress bar reading *n of N seen*. The place lives in
-  `localStorage['l103.grammar.learn']`; the item pool remembers which items have
+  `skill_state.learn_place` and is cached at `localStorage['l103.grammar.learn']`
+  (§25: the store owns the record and mirrors it there; `seen` merges by the
+  larger of the two devices); the item pool remembers which items have
   been shown, so a resumed batch never repeats one. A deck of 119 words is not
   a sitting.
 - **The weeks-menu Today card is cheap.** `mountGrammar().todayCard()` runs
@@ -1863,6 +1865,11 @@ catalogue's where the item names it, else the select rules on the item's word
 - **Attempts**: `createRunner` adds `meta: { generated, template, sentence }`
   to a generated item's attempt only; store-grammar keeps it locally and drops
   it from the server row. Items have no key, so none enters a redo.
+  *(`meta` syncs since GRAMMAR-CONTRACT.md §25 — `drill_attempts.meta`,
+  migration 0020 — so a second device can tell a made-up sentence from a
+  written one, and an uncounted table from ordinary practice. A row with no
+  `meta` at all reads as **counted**, not as unknown: before §20 an uncounted
+  attempt was never written down.)*
 - **A bank that could not be fetched says so** (N-13). Offline the request is
   refused and the drill falls back to the book's sentences — which is right —
   but the header said only "then the book's", as though that were the whole

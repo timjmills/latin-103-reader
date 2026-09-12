@@ -324,11 +324,13 @@ test('a generated item\'s attempt carries meta { generated, template, sentence }
   const withMeta = rows.filter((a) => a.meta);
   assert.ok(withMeta.length >= 1 && withMeta.every((a) => a.meta.generated === true && a.meta.template && a.meta.sentence));
   assert.ok(rows.some((a) => !a.meta), 'the written attempts carry none');
-  // The store keeps meta on the device and drops it from the server row.
+  // The store keeps meta on the device **and sends it** (drill_attempts.meta, migration 0020 / §25):
+  // it used to be dropped here, so a second device could not tell a made-up sentence from a written one.
   const kept = normaliseAttempt({ ...wrongGenerated.attempt });
   assert.deepEqual(kept.meta, wrongGenerated.attempt.meta);
-  assert.equal('meta' in serverAttemptRow(kept), false);
+  assert.deepEqual(serverAttemptRow(kept).meta, wrongGenerated.attempt.meta);
   assert.equal(normaliseAttempt({ ...wrongGenerated.attempt, meta: {} }).meta, undefined, 'an empty meta is no meta');
+  assert.equal(serverAttemptRow({ ...kept, meta: null }).meta, null, '…and nothing to say is sent as NULL, which every reader takes as an ordinary counted attempt');
   // The one wrong answer was on a generated item, which names nothing to come back to, so nothing is offered back.
   assert.deepEqual(sessionMisses(drill.runner.log), []);
   assert.equal(drill.runner.summary().missed.length, 0);

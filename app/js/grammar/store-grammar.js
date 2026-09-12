@@ -11,11 +11,13 @@
 //   g.getAttempts() → rows (oldest first) g.addAttempt(row)
 //   g.getMissed() → rows, newest first    g.countMissed()      ("Redo what was wrong")
 //   g.getConfusions() → rows              g.bumpConfusion(a, b)
+//   g.getLearnPlace(skill) → place|null   g.setLearnPlace(skill, place)   (skill_state.learn_place, §25)
+//   g.getLearnPlaces() → { skill: place } g.importLearnPlaces(obj)        (the localStorage cache, both ways)
 //   g.getPensa() → rows { chapter, kind, items }   (public.pensa, private: pulled with the grammar rows into the
 //                                                  IndexedDB `pensa` store (db v7); the fixture store reads `localPensa()`)
 //   g.onChange(cb) → unsubscribe          (cb() after a pull / realtime change)
 
-import { normaliseState } from './scheduler.js';
+import { normaliseState, mergeLearnPlace, normaliseLearnPlace, samePlace, newState } from './scheduler.js';
 
 const LS = { states: 'l103.grammar.states', attempts: 'l103.grammar.attempts', confusions: 'l103.grammar.confusions' };
 const ATTEMPT_PULL = 2000;
@@ -33,19 +35,34 @@ export function normalisePensum(r) {
   return { id: `${chapter}:${kind}`, chapter, kind, items, updated_at: r.updated_at ?? null };
 }
 
-/** The columns the server table has (anything else stays local). */
+/**
+ * The scheduler's columns of `skill_state` (anything else stays local).
+ *
+ * **`learn_place` is deliberately not here** (§25). It is a column the table
+ * has, but it rides its own outbox op (`skill_state:learn_place`), which sends
+ * that one field and nothing else. PostgREST's upsert only writes the columns
+ * in the body, so a state row that leaves this function can never null the
+ * place the server holds — and it would, every time a device answered an item
+ * before its first pull had finished.
+ */
 export function serverStateRow(row) {
   // `successes_spaced` (migration 0017): the successes that count towards mastery — correct, unaided, and given when
   // the skill was already due. Mastery reads this, not the raw `successes` count.
   const { skill, state, stage, stability_days, due_at, last_at, streak, successes, successes_spaced, failures, updated_at } = normaliseState(row);
   return { skill, state, stage, stability_days, due_at, last_at, streak, successes, successes_spaced, failures, updated_at };
 }
+/** The free-form `meta` of an attempt, or null when there is nothing in it. Pure. */
+export const cleanMeta = (m) => (m && typeof m === 'object' && !Array.isArray(m) && Object.keys(m).length ? { ...m } : null);
 const SELF = ['right', 'partly', 'wrong'];
 export function serverAttemptRow(a) {
   // `self` (migration 0017): the learner's own grade on a translate item, so stats can tell a self-graded attempt from
   // a judged one instead of inferring it from the `answer` string. null on every other kind.
   const self = a.self === true ? String(a.answer ?? '').replace(/^self:\s*/, '') : a.self;
-  return { skill: a.skill, kind: a.kind, item_key: a.item_key, mode: a.mode, correct: !!a.correct, hinted: !!a.hinted, self: SELF.includes(self) ? self : null, answer: a.answer ?? null, expected: a.expected ?? null, confused_with: a.confused_with ?? null, ms: a.ms == null ? null : Math.round(a.ms), at: a.at };
+  // `meta` (migration 0020, §25): the device's own facts about the attempt — §18.3's `given` (the scaffold rung a
+  // chart was finished at), §20's `uncounted` (practised from the Tables tab: it counts towards the progress sheet
+  // and never towards review) and §11b's `generated`. It used to be dropped here, which is what §20.4 owned up to:
+  // an uncounted row reached a second device looking like ordinary practice and could close a Learn run there.
+  return { skill: a.skill, kind: a.kind, item_key: a.item_key, mode: a.mode, correct: !!a.correct, hinted: !!a.hinted, self: SELF.includes(self) ? self : null, answer: a.answer ?? null, expected: a.expected ?? null, confused_with: a.confused_with ?? null, ms: a.ms == null ? null : Math.round(a.ms), at: a.at, meta: cleanMeta(a.meta) };
 }
 /**
  * True when an attempt row leaves its item **missed** (GRAMMAR-CONTRACT.md
@@ -72,13 +89,43 @@ export function normaliseAttempt(a) {
   const t = Date.parse(a.at);
   if (!Number.isFinite(t)) return null;
   const row = { ...serverAttemptRow({ ...a, at: new Date(t).toISOString(), item_key: String(a.item_key ?? ''), mode: a.mode === 'learn' ? 'learn' : 'practice' }) };
-  // `meta` stays local (the server table has no column for it — `serverAttemptRow` drops it from the outbox row): a
-  // generated item's `{ generated: true, template, sentence }` (§11b), so the analytics can tell it from a written one.
-  const meta = a.meta && typeof a.meta === 'object' && !Array.isArray(a.meta) && Object.keys(a.meta).length ? { ...a.meta } : null;
+  /*
+   * `meta` syncs now (`drill_attempts.meta`, migration 0020): a generated item's
+   * `{ generated: true, template, sentence }` (§11b), §18.3's `given` and §20's `uncounted`.
+   *
+   * **A missing `meta` means the attempt was counted — it does not mean unknown.** This is the one
+   * place in §25 where the "null is unknown" rule does *not* apply, and the next reader will assume
+   * it does, so: before §20 an uncounted attempt was never written down at all — `createCatalogueDrill`
+   * returned from `onAnswer` before logging — so every row that predates the column is genuinely an
+   * ordinary counted attempt. Reading a null `meta` as "might be uncounted" would take real practice
+   * off the learner's record; reading it as counted is what actually happened. `isUncounted` asks for
+   * `meta.uncounted === true` and so answers false here, which is the right answer and not a fallback.
+   * `meta.given` is the opposite and stays unknown when absent (§18.3: never 0, never a failure).
+   *
+   * The key is left off the row entirely when there is nothing in it, so an attempt from before the
+   * column and one written today with no meta are the same object.
+   */
+  const meta = cleanMeta(a.meta);
+  delete row.meta;
   return { ...row, id: attemptId(row), ...(meta ? { meta } : {}) };
 }
 
-export function createGrammarStore({ mode = 'local', hooks = null, storage = typeof localStorage !== 'undefined' ? localStorage : null, localPensa = null } = {}) {
+/**
+ * @param {object} o
+ *   mode        'idb' (the real store, through store.js's outbox) or 'local' (the fixture store)
+ *   hooks       store.js's `grammarHooks` — the outbox, the client, the user id, realtime (idb only)
+ *   storage     the localStorage the fixture store persists to
+ *   localPensa  the fixture store's pensa loader
+ *   learnCache  the lesson place's **offline cache** (§25): `{ read() → { skill: place }, write(obj) }`.
+ *               `read()` is the device's own record, unioned into the store at `ready()` so a device
+ *               that has been working offline pushes its place up rather than being overwritten by an
+ *               empty server; `write()` mirrors the merged truth back after every change, so a reader
+ *               with no network still draws the pips. Optional: without it the store keeps the place
+ *               in its rows and nothing else.
+ *   dbModule    the IndexedDB module (app/js/db.js). Injected only by the tests, which model two
+ *               devices over one backend; in the app it is imported.
+ */
+export function createGrammarStore({ mode = 'local', hooks = null, storage = typeof localStorage !== 'undefined' ? localStorage : null, localPensa = null, learnCache = null, dbModule = null } = {}) {
   const states = new Map();
   const attempts = new Map();     // id → row
   // A per-skill index over the attempts, built on demand and dropped on any write. The history view
@@ -163,7 +210,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
 
   async function loadLocal() {
     if (mode === 'idb') {
-      db = await import('../db.js');
+      db = dbModule ?? await import('../db.js');
       for (const r of await db.getAll('skill_state')) { const s = normaliseState(r); if (s) states.set(s.skill, s); }
       for (const r of await db.getAll('drill_attempts')) { const a = normaliseAttempt(r); if (a) attempts.set(a.id, a); }
       dropIndex();
@@ -194,7 +241,13 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
         if (!r) continue;
         remote.add(r.skill);
         const cur = states.get(r.skill);
-        if (!cur || ts(r.updated_at) > ts(cur.updated_at)) { states.set(r.skill, r); await db.put('skill_state', r); changed = true; }
+        const row = mergeState(cur, r);
+        if (row !== cur) { states.set(r.skill, row); await db.put('skill_state', row); changed = true; }
+        // The server holds less of the lesson place than we now do — because this device worked
+        // offline, or because the other device's row won on `updated_at` and carried a smaller
+        // `done`. Send the union back; `updated_at` is untouched, so the push settles nothing
+        // the scheduler owns and cannot flip last-write-wins the wrong way (§25).
+        if (!samePlace(row.learn_place, r.learn_place)) await pushPlace(row);
       }
       if (empty) for (const k of [...states.keys()]) if (!remote.has(k)) { states.delete(k); await db.del('skill_state', k); changed = true; }
     } catch (e) { console.warn('[grammar] skill_state not synced', e?.message || e); }
@@ -217,22 +270,50 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       for (const [id, p] of remote) { const cur = pensa.get(id); if (!cur || ts(p.updated_at) > ts(cur.updated_at) || cur.items.length !== p.items.length || JSON.stringify(cur.items) !== JSON.stringify(p.items)   /* content, not only the count: an edited item with the same updated_at never reached a device that already had the row (CR m3) */) { pensa.set(id, p); await db.put('pensa', p); changed = true; } }
       for (const id of [...pensa.keys()]) if (!remote.has(id)) { pensa.delete(id); await db.del('pensa', id); changed = true; }
     } catch (e) { console.warn('[grammar] pensa not synced', e?.message || e); }
-    if (changed) emit();
+    if (changed) { mirrorPlaces(); emit(); }
+  }
+
+  /**
+   * A remote `skill_state` row against the one we hold. The scheduler's
+   * fields are **last-write-wins on `updated_at`**, exactly as before; the
+   * lesson place is **merged**, whichever side wins, because two devices may
+   * each hold part of one lesson and a union is the only merge that cannot
+   * lose a step the learner really answered (§25, `mergeLearnPlace`).
+   *
+   * Returns `cur` itself when there is no news — the callers test identity to
+   * decide whether anything has to be written or repainted. Pure.
+   */
+  function mergeState(cur, remote) {
+    if (!cur) return remote;
+    const place = mergeLearnPlace(cur.learn_place, remote.learn_place);
+    const winner = ts(remote.updated_at) > ts(cur.updated_at) ? remote : cur;
+    if (winner === cur && samePlace(cur.learn_place, place)) return cur;
+    return samePlace(winner.learn_place, place) ? winner : { ...winner, learn_place: place };
+  }
+  /** Send one row's lesson place, and nothing else, to the server (§25). */
+  async function pushPlace(row) {
+    if (mode !== 'idb' || !hooks) return;
+    // Its own outbox key: coalescing keeps the last op per (table, key), and a place write and a
+    // state write must never swallow one another — they carry different columns.
+    await hooks.enqueue({ table: 'skill_state', key: `place:${row.skill}`, op: 'learn_place', skill: row.skill, learn_place: row.learn_place ?? null });
   }
 
   async function onRealtime(payload) {
     const type = payload?.eventType;
     if (type === 'DELETE') {
       const skill = payload.old?.skill;
-      if (skill && states.has(skill)) { states.delete(skill); await db.del('skill_state', skill); emit(); }
+      if (skill && states.has(skill)) { states.delete(skill); await db.del('skill_state', skill); mirrorPlaces(); emit(); }
       return;
     }
     const r = normaliseState(payload?.new);
     if (!r) return;
     const cur = states.get(r.skill);
-    if (cur && ts(r.updated_at) <= ts(cur.updated_at)) return;   // own echo or older
-    states.set(r.skill, r);
-    await db.put('skill_state', r);
+    const row = mergeState(cur, r);
+    if (!samePlace(row.learn_place, r.learn_place)) await pushPlace(row);
+    if (row === cur) return;   // own echo or older, and the place says nothing new either
+    states.set(r.skill, row);
+    await db.put('skill_state', row);
+    mirrorPlaces();
     emit();
   }
 
@@ -241,6 +322,16 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       readyP = (async () => {
         if (mode === 'idb' && hooks) await hooks.ready();
         await loadLocal();
+        // The lesson place the device already had, unioned in **before the first pull** (§25). The
+        // learner's computer is holding a finished lesson in localStorage right now and nothing has
+        // ever sent it up; this is the write that does. It has to come first for two reasons: the
+        // pull prunes local rows the server does not have, and it checks an empty outbox to decide
+        // whether it may — so the push has to be queued before that check is made, or a place
+        // created a moment later could be deleted locally while its own write was still in flight.
+        let cached = null;
+        try { cached = learnCache?.read?.() ?? null; } catch (e) { console.warn('[grammar] learn place cache not read', e?.message || e); }
+        await importLearnPlaces(cached);
+        mirrorPlaces();
         if (mode === 'idb' && hooks) {
           hooks.onRealtime('skill_state', (p) => { onRealtime(p).catch((e) => console.warn('[grammar] realtime', e)); });
           hooks.onSynced(() => pull());
@@ -255,11 +346,102 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
   async function setState(row) {
     const s = normaliseState({ ...row, updated_at: nowIso() });
     if (!s) return null;
+    /*
+     * The lesson place is not the scheduler's to set (§25). Callers build a state row from
+     * `getState(id) ?? id` and the second half of that is a bare `newState`, whose `learn_place`
+     * is null — *unknown*. Merging rather than assigning is what stops "add this skill to mixed
+     * practice" quietly erasing the four steps the learner has finished in it. Taking a place off
+     * is `setLearnPlace(skill, null)`'s job, and a reset's, and nothing else's.
+     */
+    const before = states.get(s.skill)?.learn_place ?? null;
+    s.learn_place = mergeLearnPlace(before, s.learn_place);
+    const placeMoved = !samePlace(before, s.learn_place);
     states.set(s.skill, s);
-    if (mode === 'idb') { await db.put('skill_state', s); await hooks.enqueue({ table: 'skill_state', key: `skill:${s.skill}`, op: 'upsert', row: serverStateRow(s) }); }
-    else persistLocal();
+    if (mode === 'idb') {
+      await db.put('skill_state', s);
+      await hooks.enqueue({ table: 'skill_state', key: `skill:${s.skill}`, op: 'upsert', row: serverStateRow(s) });
+      if (placeMoved) await pushPlace(s);
+    } else persistLocal();
+    if (placeMoved) mirrorPlaces();
     return s;
   }
+  /* ------------------------------------------- the lesson place (§25) */
+  /** Every skill's place, as the object the localStorage cache holds: `{ <skill id>: { done, seen, at } }`. */
+  const placesObject = () => {
+    const out = {};
+    for (const [skill, s] of states) if (s.learn_place) out[skill] = { ...s.learn_place, ...(s.learn_place.done ? { done: [...s.learn_place.done] } : null) };
+    return out;
+  };
+  /**
+   * Write the merged truth back to the offline cache. Called after every
+   * change to a place from any direction — a local write, a pull, a realtime
+   * row, a reset — so the cache is a mirror and never a second opinion: a
+   * device with no network draws its pips from it, and a reset or a pruned
+   * row takes the cached place with it.
+   */
+  const mirrorPlaces = () => { try { learnCache?.write?.(placesObject()); } catch (e) { console.warn('[grammar] learn place cache not written', e?.message || e); } };
+  /**
+   * One skill's place, merged into what is already known and written down.
+   *
+   *   place  the place to record — **added** to the stored one, never
+   *          substituted for it (`mergeLearnPlace`), so a step that is already
+   *          ticked cannot come off by writing a smaller set over it
+   *   null   clear it: the deliberate erase the app does when a Learn pass is
+   *          finished, and when a skill is reset
+   *
+   * A skill with no `skill_state` row yet gets a fresh one (`newState`) to
+   * carry the place. That row is `state: 'new'`, which every reader already
+   * treats exactly as no row at all — `stateOf` answers `getState(id) ??
+   * newState(id)` — so nothing is claimed about the skill by recording where
+   * the learner is in its lesson.
+   */
+  async function setLearnPlace(skill, place) {
+    if (typeof skill !== 'string' || !skill) return null;
+    const cur = states.get(skill) ?? null;
+    const next = place === null ? null : mergeLearnPlace(cur?.learn_place, normaliseLearnPlace(place));
+    // Clearing a place a skill with no row has not got: the app does exactly this a line after a
+    // reset. Making a row to record the absence of a place would undo the reset it follows.
+    if (!cur && next === null) return null;
+    if (cur && samePlace(cur.learn_place, next)) return placesObject()[skill] ?? null;   // no news; a copy, never the stored object
+    /*
+     * A row made only to carry a place is stamped at the **epoch**, so it loses last-write-wins to
+     * any real row from anywhere. It has to: this device knows nothing about the skill's schedule,
+     * and a row stamped `now` would beat the server's true state — a phone that had only opened the
+     * lesson would tell the pull to ignore a `practising` row written on the computer an hour ago.
+     * The place itself is unaffected; the merge never consults `updated_at` for it.
+     */
+    const row = { ...(cur ?? normaliseState(newState(skill, 0))), learn_place: next };
+    states.set(skill, row);
+    // `updated_at` is not touched. A place is not one of the scheduler's fields, and bumping it
+    // would let a device that only opened a lesson win last-write-wins over another that really
+    // did answer something — the wrong row would then stand for the scheduler too.
+    if (mode === 'idb') { await db.put('skill_state', row); await pushPlace(row); }
+    else persistLocal();
+    mirrorPlaces();
+    return next;
+  }
+  /**
+   * The device's own cached places, unioned in (§25). This is the migration
+   * of what is already on disk: `l103.grammar.learn` has never left the
+   * browser, so on the first run after this change every place it holds is
+   * news to the server and is pushed up. Nothing is overwritten in either
+   * direction — each skill is merged, and a skill the cache says nothing
+   * about is left exactly as the store has it.
+   */
+  async function importLearnPlaces(obj) {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return 0;
+    let n = 0;
+    for (const [skill, place] of Object.entries(obj)) {
+      const clean = normaliseLearnPlace(place);
+      if (!clean) continue;
+      const before = states.get(skill)?.learn_place ?? null;
+      if (samePlace(before, mergeLearnPlace(before, clean))) continue;   // the store already knows it all
+      await setLearnPlace(skill, clean);
+      n += 1;
+    }
+    return n;
+  }
+
   async function addAttempt(row) {
     const a = normaliseAttempt({ ...row, at: row.at ?? nowIso() });
     if (!a) return null;
@@ -303,6 +485,7 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       await hooks.enqueue({ table: 'drill_attempts', key: `attempts-reset:${skill}:${t}`, op: 'delete', skill });
       await hooks.enqueue({ table: 'confusions', key: `conf-reset:${skill}:${t}`, op: 'delete', skill });
     } else persistLocal();
+    mirrorPlaces();   // the row is gone and the lesson place went with it: the cache must not keep a copy
     emit();
   }
   async function resetAll() {
@@ -314,13 +497,14 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
       await hooks.enqueue({ table: 'drill_attempts', key: `attempts-reset:all:${t}`, op: 'delete', skill: null });
       await hooks.enqueue({ table: 'confusions', key: `conf-reset:all:${t}`, op: 'delete', skill: null });
     } else persistLocal();
+    mirrorPlaces();
     emit();
   }
 
   // Cross-tab changes with the fixture store look like sync events.
   if (mode !== 'idb' && typeof window !== 'undefined') {
     window.addEventListener('storage', (e) => {
-      if (Object.values(LS).includes(e.key)) { states.clear(); attempts.clear(); confusions.clear(); dropIndex(); loadLocal().then(emit); }
+      if (Object.values(LS).includes(e.key)) { states.clear(); attempts.clear(); confusions.clear(); dropIndex(); loadLocal().then(() => { mirrorPlaces(); emit(); }); }
     });
   }
 
@@ -329,6 +513,15 @@ export function createGrammarStore({ mode = 'local', hooks = null, storage = typ
     getStates: () => new Map([...states].map(([k, v]) => [k, { ...v }])),
     getState: (skill) => (states.has(skill) ? { ...states.get(skill) } : null),
     setState, resetSkill, resetAll,
+    /**
+     * Where the learner is in this skill's lesson (§25), or **null** — which
+     * means *nothing is known here*, never "no steps done". A caller drawing
+     * the pips treats null as "not started" only because that is all it can
+     * draw; nothing may be *written* on the strength of it.
+     */
+    getLearnPlace: (skill) => { const p = states.get(skill)?.learn_place ?? null; return p ? { ...p, ...(p.done ? { done: [...p.done] } : null) } : null; },
+    getLearnPlaces: placesObject,
+    setLearnPlace, importLearnPlaces,
     /**
      * The attempt log, oldest first. `skill` reads one skill's rows through a
      * per-skill index built once and dropped on the next write; `limit` keeps

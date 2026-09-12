@@ -10,7 +10,7 @@ import { isShelfWeek } from '../sync.js';
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
 import { PARTS, skillProgress } from './progress.js';
-import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
+import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, stepList, normaliseLearnPlace, MAX_STEPS, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey, la, partsText } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATIONS, POPULATION_LABEL, populationOf, normalisePopulations, filterPopulations, mixNote, mixTitle } from './sets.js';
@@ -23,7 +23,11 @@ import { buildChart, buildSheet, printDocument } from './print.js';
 
 const LS_SESSION = 'l103.grammar.session';      // the practice session in progress (plan, position, log) — Back / Reload can resume it
 const LS_QUEUE = 'l103.grammar.learnQueue';     // "Start all as new": the skills still to go through Learn
-const LS_LEARN = 'l103.grammar.learn';          // where the learner is in each skill: `{ <skill id>: { step | seen, at } }`
+// Where the learner is in each skill: `{ <skill id>: { done: [step index…] | seen, at } }`. Since §25 this
+// is the **offline cache** of `skill_state.learn_place` and no longer the only copy: the grammar store owns
+// the record, mirrors it here after every change, and reads this key once at startup to push up whatever
+// the device had before it ever synced. Cleared on sign-out with the rest of the cache (store.js).
+export const LS_LEARN = 'l103.grammar.learn';
 const readJSON = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const writeJSON = (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } };
 
@@ -656,18 +660,10 @@ export function tipLabel(what, shown, verb = 'explain what this means') {
 
 /* ------------------------------ where the learner is in a lesson (§22) */
 
-const MAX_STEPS = 64;   // a lesson has four to six; this only stops a corrupt file becoming a long loop
-
-/** Whatever was stored as a list of step indices, as clean whole numbers, lowest first, no repeats. Pure. */
-const stepList = (v) => {
-  const out = new Set();
-  for (const x of Array.isArray(v) ? v : []) {
-    // `Number(null)` is 0 and `Number(true)` is 1: a stray null in a hand-edited file must not become step 1.
-    const n = Math.floor(typeof x === 'number' ? x : (typeof x === 'string' && x.trim() ? Number(x) : NaN));
-    if (Number.isFinite(n) && n >= 0 && n < MAX_STEPS) out.add(n);
-  }
-  return [...out].sort((a, b) => a - b);
-};
+// `MAX_STEPS`, `stepList` and `normaliseLearnPlace` moved to scheduler.js when the place
+// started syncing (§25): the store has to clean a place arriving from the server with the
+// same reading this view gives one arriving from localStorage, and two copies of that
+// reading would be two chances to disagree about what the learner has finished.
 
 /**
  * Every skill's place in Learn, migrated forward:
@@ -706,14 +702,45 @@ export function normaliseLearn(raw) {
   const out = {};
   for (const [id, v] of Object.entries(src)) {
     if (!v || typeof v !== 'object' || Array.isArray(v)) continue;
-    const done = Array.isArray(v.done) ? stepList(v.done)
-      : stepList(Array.from({ length: Math.min(MAX_STEPS, Math.max(0, Math.floor(Number(v.step) || 0))) }, (_, i) => i));
-    const seen = Math.floor(Number(v.seen));
-    const at = Number(v.at);
-    const place = { ...(done.length ? { done } : null), ...(Number.isFinite(seen) && seen > 0 ? { seen } : null), ...(Number.isFinite(at) && at > 0 ? { at } : null) };
-    if (Object.keys(place).length) out[id] = place;
+    const done = Array.isArray(v.done) ? v.done
+      : Array.from({ length: Math.min(MAX_STEPS, Math.max(0, Math.floor(Number(v.step) || 0))) }, (_, i) => i);
+    // The shape itself is `normaliseLearnPlace`'s (scheduler.js), shared with the store so a place
+    // read off the server and one read off this device are cleaned by the same function; the
+    // migration above — the section's one slot, and the position this set replaced — is the part
+    // that is only ever needed here, at the cache.
+    const place = normaliseLearnPlace({ done, seen: v.seen, at: v.at });
+    if (place) out[id] = place;
   }
   return out;
+}
+
+/**
+ * The lesson place's offline cache, in the shape `createGrammarStore` wants
+ * (§25). `read()` is what this device had before it ever synced — the
+ * learner's computer is holding a finished lesson in it right now — and the
+ * store unions that in and pushes it up on its first run. `write()` is the
+ * mirror back: the merged truth of every device, so a reader with no network
+ * still draws the pips, and a reset or a pruned row takes the cached place
+ * with it rather than resurrecting it on the next start.
+ *
+ * The migrations live in `normaliseLearn`, which is why the cache is built
+ * here and not in the store: the two shapes it reads forward
+ * (`{ skill, step }` and `{ <id>: { step } }`) only ever existed on a device.
+ */
+export function learnCache(storage = typeof localStorage !== 'undefined' ? localStorage : null) {
+  return {
+    read() {
+      let text = null;
+      try { text = storage?.getItem(LS_LEARN); } catch { return null; }
+      let raw = null;
+      try { raw = text ? JSON.parse(text) : null; } catch { return null; }
+      return normaliseLearn(raw);
+    },
+    write(all) {
+      const n = all && typeof all === 'object' ? Object.keys(all).length : 0;
+      try { if (n) storage?.setItem(LS_LEARN, JSON.stringify(all)); else storage?.removeItem(LS_LEARN); } catch { /* private mode */ }
+    },
+  };
 }
 
 /** The steps of one skill whose check has been answered, lowest first. Pure. */
@@ -1612,10 +1639,17 @@ export function createUI(ctx) {
    * Where the learner is in each skill: `{ <skill id>: { done: [<step index>…] | seen, at } }`.
    * `normaliseLearn` (§22) holds the reading of it, including the two older
    * shapes — the section's one slot, and the position-per-skill this replaced.
+   *
+   * **The record is `skill_state.learn_place` now and this is its cache
+   * (§25).** The view still reads the cache, because a paint must not wait on
+   * a network and must work with none; the store mirrors the merged truth
+   * into it after every change, from whichever device. Writes go the other
+   * way — the cache first, so the next paint is right this instant, then the
+   * store, which unions, persists and queues the push.
    */
-  // Memoised on the stored string itself, so any write anywhere — here, a reset, another tab — is its own
-  // invalidation. It became worth having when the map's progress meters started asking 88 times a paint:
-  // 88 parses of the whole object become 88 `getItem`s and one parse.
+  // Memoised on the stored string itself, so any write anywhere — here, the store's mirror, a reset,
+  // another tab — is its own invalidation. It became worth having when the map's progress meters started
+  // asking 88 times a paint: 88 parses of the whole object become 88 `getItem`s and one parse.
   let learnMemo = { text: Symbol('unread'), value: {} };
   function learnAll() {
     let text = null;
@@ -1632,6 +1666,9 @@ export function createUI(ctx) {
     if (place) all[id] = { ...place, at: Date.now() };
     else delete all[id];
     writeJSON(LS_LEARN, Object.keys(all).length ? all : null);
+    // …and up. `null` is the deliberate erase (a Learn pass finished, a skill reset); anything else is
+    // **added** to what is already recorded, here and on every other device, so a step cannot come off.
+    gstore.setLearnPlace?.(id, place ? all[id] : null)?.catch?.((e) => console.warn('[grammar] learn place not synced', e?.message || e));
   }
 
   async function resetSkill(id) {

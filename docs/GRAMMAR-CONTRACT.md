@@ -2638,7 +2638,10 @@ device's `practice` part and could close a Learn run in the replay. This is the
 same limitation §18.3's `given` already carries — there it degrades to
 "unknown", which is safe; here it degrades towards over-counting. The fix is a
 column on `drill_attempts`, which is a migration and was ruled out for this
-change.
+change. *(Done in §25: `drill_attempts.meta`, migration 0020. Rows written
+between this section and that one keep the fault on a second device — there is
+no way to backfill them through an append-only insert — but nothing written
+since does.)*
 
 §19's reason for keeping the variant count in `localStorage` loses one of its
 two legs: "a catalogue run outside the rotation logs nothing at all" is no
@@ -3099,3 +3102,191 @@ Phone (412×839, `pointer: coarse` true, dpr 2.625, long-press per §17.4),
 tablet (810×1080, coarse) and desktop (1440×900, hover): the popup was fully
 on screen in all six, and the worst case — a four-sense entry in the Grammar
 section on the phone — is 196px tall and fits. No JS errors in any run.
+
+## 25. The same lesson on the phone as on the computer, 2026-09-12
+
+> "On the phone it is not tracking the same progress as on the computer."
+
+They finished a lesson's six steps on their computer, opened the same skill on
+their phone, and were shown step 1 with nothing done.
+
+**What was actually synced.** `store-grammar.js` syncs `skill_state`,
+`drill_attempts`, `confusions` and `pensa`. Everything else the grammar
+section writes is `localStorage` and **has never left the browser** —
+including `l103.grammar.learn` (`LS_LEARN`), which is where §22's set of
+finished steps lives and what the row of pips draws from. There was no bug in
+the pips. There was no record for them to read.
+
+It was wider than the pips. `drill_attempts` had **no `meta` column**, so an
+attempt's `meta` never travelled either — and `meta` carries §18.3's `given`
+(the scaffold rung a chart was finished at) and §20's `uncounted` (practised
+from the Tables tab: it counts towards the progress sheet, never towards
+review). §20.4 owned up to the second of those and named the fix as "a column
+on `drill_attempts`, which is a migration and was ruled out for this change".
+This is that change.
+
+### 25.1 The schema (migration 0020, applied)
+
+| column | | |
+| --- | --- | --- |
+| `public.skill_state.learn_place` | `jsonb` | `{ done: [step index…], seen, at }` |
+| `public.drill_attempts.meta` | `jsonb` | `{ given, uncounted, generated }` |
+
+Both are NULL on every row that existed before. `meta` needs no merge —
+`drill_attempts` is append-only and a row is written once, by the device that
+took the answer. `learn_place` needs one, and that is the whole of §25.2.
+
+### 25.2 The merge: `done` is a union
+
+The learner may finish steps 1–3 on the computer and 4–6 on the phone. Both
+records are true, and **last-write-wins would throw one of them away** — which
+is the complaint arriving by a different road. So the place merges rather than
+replaces (`mergeLearnPlace`, scheduler.js):
+
+- **`done` is a union.** §18 settled that a progress mark must not come off by
+  itself, and a union is the only merge that cannot lose a step the learner
+  really answered. It is commutative, so the two devices reach the same answer
+  whichever of them syncs first.
+- **`seen` takes the larger.** It is a deck's high-water mark — how far
+  through a chapter set's cards the learner has been — so the bigger number is
+  the one that happened.
+- **`at` takes the later.** It is a timestamp, not evidence: it records when
+  the place was last touched. **It decides nothing** — no field of the merge
+  is settled by it, and it is deliberately not the tie-breaker anywhere.
+
+**The rest of the row is unchanged: last-write-wins on `updated_at`, exactly
+as before.** The place is not one of the scheduler's fields and the scheduler
+never reads it. `mergeState` does both at once: the newer row wins for state,
+stage, stability and the counts; the place is the union either way.
+
+**Convergence, since there is no server-side trigger.** A pull that finds the
+server holding less than this device does pushes the union straight back
+(`pushPlace`), so the two devices agree after one round each. The push carries
+`learn_place` **and nothing else** — a dedicated outbox op
+(`skill_state:learn_place`), because PostgREST writes only the columns in the
+body. Two things follow, and both matter: a place write can never regress the
+scheduler's fields, and — `updated_at` not being in the body either — it can
+never flip last-write-wins for the row it lands on. For the same reason
+`serverStateRow` deliberately does **not** carry the column: a full state row
+that did would null the server's place every time a device answered an item
+before its first pull had finished.
+
+A row invented only to carry a place (a skill with no `skill_state` row yet)
+is stamped `updated_at` at the **epoch**, so it loses last-write-wins to any
+real row from anywhere. That row is `state: 'new'`, which every reader already
+treats exactly as no row at all (`stateOf` answers `getState(id) ??
+newState(id)`), so recording where the learner is in a lesson claims nothing
+else about the skill.
+
+**What a pass still does, and what the union does to it.** Passing the blocked
+ten clears the place, as it always has. That clear is a local erase with no
+tombstone, so a second device still holding the place will union it back on
+its next sync. This is honest rather than harmful: the restored place is true
+— every step really was answered — and the only visible effect is that
+"Continue learning" then opens the ten instead of step 1, which is exactly
+what §22.3 prescribes for a lesson whose steps are all answered. A **reset**
+is different and still propagates: it deletes the whole row, the pull's prune
+removes it on the other device, and the cached place goes with it.
+
+### 25.3 NULL, three times, meaning three different things
+
+**`learn_place` NULL → unknown, and never "no steps done".** This is the rule
+that decides whether the sync helps or hurts. Read as an empty set it would
+let a phone one second out of its first sync wipe the record of a lesson
+finished on the computer. So: null loses to anything the other side knows, in
+either position, and erases nothing. Only `setLearnPlace(skill, null)` — the
+deliberate erase — and a reset take a place off. In particular `setState`
+**merges** the place instead of assigning it, because callers build a row from
+`getState(id) ?? id` and the second half of that is a bare `newState`, whose
+place is null: without the merge, "add this skill to mixed practice" would
+quietly erase four finished steps.
+
+**`meta.given` NULL → unknown rung.** Unchanged from §18.3: never 0, never a
+failure. The part is still ticked at any rung; the panel simply has nothing to
+say about which one.
+
+**`meta` NULL → counted.** This is the one place where "NULL is unknown" does
+**not** apply, and the next reader will assume it does, so it is written down
+in the code as well as here. Before §20 an uncounted attempt was *not logged
+at all* — `createCatalogueDrill` returned from `onAnswer` before writing
+anything — so every row that predates the column is genuinely an ordinary
+counted attempt. Reading a null `meta` as "might be uncounted" would take real
+practice off the learner's record. `isUncounted` asks for `meta.uncounted ===
+true` and therefore answers false, which is the right answer and not a
+fallback.
+
+**What this does not fix.** A row already on the server from before migration
+0020 has `meta` NULL there for ever; the device that wrote it still holds its
+own copy (a pull never overwrites a local attempt), but a second device reads
+those historical rows as counted. That is the correct reading for all but the
+handful of table runs logged between §20 and this change, and backfilling them
+is not possible through an append-only, `ignoreDuplicates` insert path.
+
+### 25.4 What is still on the disk, and what happens on the first run
+
+`l103.grammar.learn` stays, as the **offline cache** — a paint must not wait
+on a network and must work with none. The store owns the record and mirrors
+the merged truth into the key after every change, from any direction; the view
+reads the cache (memoised on the stored string) and writes the cache first, so
+the next paint is right this instant, then the store, which unions, persists
+and queues the push. `learnCache()` in ui.js is the adapter, and it is built
+there because the two shapes `normaliseLearn` migrates forward — the section's
+one slot, and the position-per-skill §22 replaced — only ever existed on a
+device.
+
+The cache is read **once at `ready()`, before the first pull**
+(`importLearnPlaces`). That order is load-bearing twice over: the pull prunes
+local rows the server does not have, and it checks an empty outbox to decide
+whether it may, so the push has to be queued before that check is made.
+
+Three first runs, which is where work gets lost if this is wrong:
+
+| | what happens |
+| --- | --- |
+| **(a) this device has a place, the server has none** — the learner's computer today | The cache is unioned in at `ready()` and queued before the first pull. The empty server is read as *unknown*, so it takes nothing off; the place is pushed up and the row now holds it. Nothing is lost, and this is the run that rescues what is on their disk. |
+| **(b) a fresh device, the server has a place** — their phone | It starts knowing nothing, the pull hands it the place, the store mirrors it into this device's cache, and the pips draw — offline too, from then on. |
+| **(c) both, and they disagree** | The union. Whoever pulls first ends up with every step either device recorded and pushes that back; the other catches up on its next pull. No order of syncs loses a step. |
+
+Signing out clears the cache with the rest: `db.clearAll()` has always emptied
+IndexedDB, and `clearGrammarLocal()` now sweeps the `l103.grammar.` keys
+beside it. It was untidy when they were only this device's working state; it
+is wrong once one of them mirrors synced rows, because a second learner on the
+same machine would find the first one's ticks.
+
+### 25.5 What stays on the device, deliberately
+
+Four records are **not** synced, and the line was drawn on purpose rather than
+by omission. Each is about *this sitting on this screen*, not about what the
+learner has learned:
+
+- **The scaffold level and the per-table `metCells`** (`localStorage`, rebuilt
+  each sitting). §18.3 already says why they cannot be the durable record of a
+  rung: the attempt's `meta.given` is. The switch itself is a preference about
+  the table in front of you.
+- **§19's variant counter** (`l103.grammar.scaffoldRun.<table id>`). §19 gave
+  two reasons for keeping it here and §20 took one of them away; the surviving
+  one stands on its own — the attempt log does not record *which table* a
+  chart was on, so it could not answer the question even if it synced. A phone
+  starting its own variety at 0 is not a loss.
+- **The session in progress** (`l103.grammar.session`) and the "start all as
+  new" queue (`l103.grammar.learnQueue`). Half an exercise is not a thing to
+  resume on another screen; the answers within it are logged as they are given,
+  and those do sync.
+- **§10's same-session re-test offer.** Its own words: *same session*. It is an
+  offer made on one screen, not a record of anything.
+
+### 25.6 Tests, and the limit of what was verified
+
+`tests/grammar.sync-place.test.mjs` drives **two grammar stores over one
+in-memory backend** — a faithful model of two devices, and where the merge
+actually lives: partial `done` sets converging on the union in either order;
+the union surviving a newer row from the other device; a local-only place
+surviving a first sync against an empty server and being pushed up; a fresh
+device being given the place and mirroring it; a `learn_place` NULL taking
+nothing off; a state write never erasing a place; a `meta` NULL reading as
+counted and a `given` NULL as unknown. `createGrammarStore` takes a `dbModule`
+for this and for nothing else.
+
+**A true two-device test needs the learner's own account and is outstanding.**
+It belongs to them: finish a lesson's steps on the computer, open the same
+skill on the phone, and the pips should already be ticked.
