@@ -52,10 +52,26 @@
   --reading-leading: 1.55;
   --measure: 34em;                          /* ≈ 65–70 ch in the serif */
 
-  --ui-xs: 0.75rem;
-  --ui-sm: 0.8125rem;
-  --ui-md: 0.9375rem;
-  --ui-lg: 1.0625rem;
+  /* The chrome's sizes. The four --ui-base-* are the fixed steps; --ui-* are those
+     under --ui-scale, which the Type control moves with the reading size (learner,
+     2026-09-12: "much of the app text giving directions and explanation does not
+     change when you ask for larger text"). Someone who needs 20pt Latin needs the
+     sentence telling them what to do at 20pt too.
+
+     It follows the reading size but does not match it: the reading scale runs to
+     2.75, and a 15px label at 2.75 is 41px, which no longer fits a phone's tabs or
+     an 88-row map. The steps below are gentler at the top on purpose, and step 3 is
+     exactly 1 so today's look is unchanged. Tune them here; nothing else needs to
+     know. */
+  --ui-base-xs: 0.75rem;
+  --ui-base-sm: 0.8125rem;
+  --ui-base-md: 0.9375rem;
+  --ui-base-lg: 1.0625rem;
+  --ui-scale: 1;
+  --ui-xs: calc(var(--ui-base-xs) * var(--ui-scale));
+  --ui-sm: calc(var(--ui-base-sm) * var(--ui-scale));
+  --ui-md: calc(var(--ui-base-md) * var(--ui-scale));
+  --ui-lg: calc(var(--ui-base-lg) * var(--ui-scale));
 
   /* Notes size (Settings → Type "Notes", data-note-size on <html>): one
      factor over everything note-like — margin glosses, captions, the
@@ -64,9 +80,9 @@
      --note-* tokens are the --ui-* steps under that factor; em-sized notes
      in the text multiply the factor in themselves. */
   --note-scale: 1;
-  --note-xs: calc(var(--ui-xs) * var(--note-scale));
-  --note-sm: calc(var(--ui-sm) * var(--note-scale));
-  --note-md: calc(var(--ui-md) * var(--note-scale));
+  --note-xs: calc(var(--ui-base-xs) * var(--note-scale));
+  --note-sm: calc(var(--ui-base-sm) * var(--note-scale));
+  --note-md: calc(var(--ui-base-md) * var(--note-scale));
 
   /* Space */
   --s-1: 0.25rem;
@@ -103,14 +119,14 @@
 }
 
 /* Reading size: eight steps — 16 18 20 23 27 32 38 44 px */
-html[data-size="1"] { --reading-scale: 1; }
-html[data-size="2"] { --reading-scale: 1.125; }
-html[data-size="3"] { --reading-scale: 1.25; }
-html[data-size="4"] { --reading-scale: 1.4375; }
-html[data-size="5"] { --reading-scale: 1.6875; }
-html[data-size="6"] { --reading-scale: 2; }
-html[data-size="7"] { --reading-scale: 2.375; }
-html[data-size="8"] { --reading-scale: 2.75; }
+html[data-size="1"] { --reading-scale: 1; --ui-scale: 0.92; }
+html[data-size="2"] { --reading-scale: 1.125; --ui-scale: 0.96; }
+html[data-size="3"] { --reading-scale: 1.25; --ui-scale: 1; }
+html[data-size="4"] { --reading-scale: 1.4375; --ui-scale: 1.06; }
+html[data-size="5"] { --reading-scale: 1.6875; --ui-scale: 1.14; }
+html[data-size="6"] { --reading-scale: 2; --ui-scale: 1.26; }
+html[data-size="7"] { --reading-scale: 2.375; --ui-scale: 1.4; }
+html[data-size="8"] { --reading-scale: 2.75; --ui-scale: 1.55; }
 
 /* Notes size: seven steps in finer increments than the reading scale (~8% apart) */
 html[data-note-size="1"] { --note-scale: 0.76; }
