@@ -468,9 +468,16 @@ export function givenNote(part) {
 export function panelPlace({ top, bottom, left }, { h: ph, w, vw, vh, gap = 8 }) {
   const below = bottom + gap;
   const above = top - gap - ph;
+  // Below by choice, above when below would overflow and above has room — and **clamped either way**.
+  // The old form returned `below` unclamped whenever neither side fitted, which is the ordinary case on a
+  // phone: a meter halfway down a 727px screen, a 401px panel, nothing above it either. Measured 68px of
+  // the panel hanging past the bottom of the screen with no way to reach it. When a panel is taller than
+  // the screen it now starts at the top margin and scrolls (the CSS caps its height), which is the only
+  // honest answer — a phone in landscape is 390px tall and some panels simply cannot fit.
+  const y = below + ph > vh - gap && above > gap ? above : below;
   return {
     x: Math.round(Math.max(gap, Math.min(left, vw - w - gap))),
-    y: Math.round(below + ph > vh - gap && above > gap ? above : below),
+    y: Math.round(Math.max(gap, Math.min(y, vh - ph - gap))),
   };
 }
 
@@ -563,6 +570,8 @@ const closeParts = () => { partsHover = null; partsHeld = null; syncParts(); };
  * device: the learner's Windows laptop has a touchscreen and a mouse, and
  * `matchMedia('(hover: hover)')` answers "no" for both (§17.2).
  */
+let wasHeld = null;   // what was pinned when the current press began (see the click handler)
+
 function wireParts() {
   if (partsWired || typeof document === 'undefined') return;
   partsWired = true;
@@ -586,13 +595,24 @@ function wireParts() {
   document.addEventListener('click', (e) => {
     const b = meter(e);
     if (!b) return;
-    // A tap has no hover to open the panel and no leave to close it, so the press itself is the toggle.
-    // A mouse click must not shut a panel its own hover is holding open, so the pointer is asked first.
-    partsHeld = partsHeld === b && !partsHover ? null : b;
+    // A tap has no hover to open the panel and no leave to close it, so the press itself is the toggle —
+    // but the toggle must be measured from **before the gesture began**, not from the state now. Tapping a
+    // meter focuses it, `focusin` opens the panel, and the click arrives a few ms later: asking "is it open?"
+    // at that point always answers yes, so one tap opened and then instantly shut it again. It needed two
+    // taps, or three with another panel open, and desktop hid the bug because `pointerover` had already set
+    // `partsHover`. `wasHeld` is read at pointerdown, before focus moves.
+    partsHeld = wasHeld === b ? null : b;
+    wasHeld = null;
     syncParts();
   });
-  // A press anywhere else puts it away — the finger's equivalent of the pointer leaving.
-  document.addEventListener('pointerdown', (e) => { if (partsHeld && !meter(e) && !inPanel(e.target)) { partsHeld = null; syncParts(); } }, true);
+  // A press anywhere else puts it away — the finger's equivalent of the pointer leaving. The same press
+  // records what was pinned before it, which is what the click above toggles against. Hover is deliberately
+  // not consulted: a click on a meter the mouse is merely resting over should pin it, not close it.
+  document.addEventListener('pointerdown', (e) => {
+    const b = meter(e);
+    wasHeld = b ? partsHeld : null;
+    if (partsHeld && !b && !inPanel(e.target)) { partsHeld = null; syncParts(); }
+  }, true);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && partsFor) { const b = partsFor; closeParts(); b.focus?.({ preventScroll: true }); } });
   // The panel is fixed, so a scroll or a resize would leave it hanging over the wrong row. It follows
   // its own row rather than vanishing — the map is long and the learner reads it by scrolling — and it
