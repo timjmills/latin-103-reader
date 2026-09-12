@@ -11,7 +11,7 @@ import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
 import { PARTS, skillProgress } from './progress.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
-import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
+import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey, la, partsText } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATIONS, POPULATION_LABEL, populationOf, normalisePopulations, filterPopulations, mixNote, mixTitle } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView, chapterOfSentence } from './chapter.js';
@@ -429,7 +429,18 @@ export function givenNote(part) {
   if (!part?.done || typeof part.given !== 'number') return null;
   const g = part.given;
   if (!Number.isFinite(g) || g < 0 || g > 100) return null;
-  return g === 0 ? 'completed unaided' : `completed with ${g}% given`;
+  // Said in the ladder's own numbers, not the table's arithmetic. A twelve-cell table at the 80 % rung
+  // gives ten cells, which is 83 %, and a panel reading "completed with 83 % given" beside a switch the
+  // learner set to 80 % looks like a fault. `want` is always within half a cell of the rung, so the
+  // nearest rung recovers the setting exactly. The attempt keeps the true fraction; only the sentence
+  // rounds, and it rounds to the words the learner chose from.
+  // **Only a true zero is "unaided".** Rounding to the nearest rung must never turn a table that had a
+  // cell printed for it into one done from memory: that is the one claim here a learner would notice as
+  // a lie. A table with anything given rounds among the rungs that give something.
+  if (g === 0) return 'completed unaided';
+  const rungs = SCAFFOLD_STEPS.filter((s) => s > 0);
+  const rung = rungs.reduce((best, s) => (Math.abs(s - g) < Math.abs(best - g) ? s : best), rungs[0]);
+  return `completed with ${rung}% given`;
 }
 
 /**

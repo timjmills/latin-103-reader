@@ -130,3 +130,33 @@ test('a level line never trails off in punctuation', () => {
   // §18.2: a detail exists to add something, and nothing may hand the view a sentence that trails away.
   for (const g of SCAFFOLD_STEPS) assert.ok(!/[—–\-·:,;]\s*$/.test(givenNote({ done: true, given: g })));
 });
+
+test('the rung is said in the ladder\'s numbers, not the table\'s arithmetic', async () => {
+  // A twelve-cell table at the 80 % rung gives ten cells — 83 % — and a panel reading "completed with
+  // 83 % given" beside a switch the learner set to 80 % looks like a fault. `want` is always within half
+  // a cell of the rung, so the nearest rung recovers the setting. The attempt keeps the true fraction.
+  const { givenNote } = await import('../app/js/grammar/ui.js');
+  assert.equal(givenNote({ done: true, given: 83 }), 'completed with 80% given');
+  assert.equal(givenNote({ done: true, given: 17 }), 'completed with 20% given');
+  assert.equal(givenNote({ done: true, given: 57 }), 'completed with 50% given');
+  assert.equal(givenNote({ done: true, given: 0 }), 'completed unaided');
+  // Only a real zero is "unaided": a table with any cell given must never claim it.
+  for (const g of [1, 8, 17, 20, 50, 83]) assert.notEqual(givenNote({ done: true, given: g }), 'completed unaided', `${g}% given read as unaided`);
+  assert.equal(givenNote({ done: true, given: null }), null, 'an unrecorded level claims a rung');
+});
+
+test('varying which cells are given never varies the rung recorded', async () => {
+  // The two halves of one ask meet here: the arrangement varies, the difficulty may not. If a variant
+  // changed the count it would change the rung, and the sheet would credit the wrong level.
+  const { scaffoldGiven, chartGiven } = await import('../app/js/grammar/session.js');
+  const cells = Array.from({ length: 12 }, (_, i) => ({ label: `c${i}`, answer: [`forma${i}`], cellId: `id${i}` }));
+  const item = { input: 'chart', lemma: 'fīcta -ae f', chart: { cells, head: 'fīcta' } };
+  for (const percent of [80, 50, 20]) {
+    const rungs = new Set();
+    for (let v = 0; v < 8; v += 1) {
+      const given = scaffoldGiven(item, { percent, variant: v, cellIdOf: (c) => c.cellId });
+      rungs.add(chartGiven({ input: 'chart', chart: { cells, given, shown: cells.length } }));
+    }
+    assert.equal(rungs.size, 1, `${percent}%: variants recorded ${[...rungs].join('/')} — the arrangement changed the difficulty`);
+  }
+});
