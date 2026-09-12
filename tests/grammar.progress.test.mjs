@@ -309,3 +309,76 @@ test('the chart part says what was actually written down, not what it wishes it 
   const chartMiss = miss.parts.find((x) => x.key === 'chart');
   if (chartMiss) assert.equal(chartMiss.done, false, 'a chart got wrong ticks the chart part');
 });
+
+/* ------------------------------------- which level a chart was completed at */
+// §18.1 ticked the chart part on the first complete table "at whatever scaffolding was up", so a table
+// finished with 80 % of its cells already printed read exactly like one finished from memory. A chart
+// attempt now says how much of the table was given (`meta.given`, a percentage GIVEN: 80 is the easiest
+// rung of §12's ladder, 0 the blank table), and the part reports the hardest rung it was completed at.
+
+/** One chart attempt on TABLE. `given` null writes no meta at all — an old attempt, or one whose level says nothing. */
+const chartAttempt = (given, o = {}) => ({
+  skill: TABLE.id, kind: 'chart', mode: 'practice', correct: true, hinted: false,
+  at: new Date(NOW - DAY_MS).toISOString(), item_key: 'c-1',
+  ...(given == null ? null : { meta: { given } }), ...o,
+});
+/** The chart part of TABLE's sheet, read off a log. */
+const chartPart = (rows) => {
+  const p = skillProgress(TABLE, { now: NOW, drillable: true, attempts: rows });
+  const c = part(p, 'chart');
+  assert.ok(c, 'the skill names a catalogue table, so it has a chart part');
+  return c;
+};
+
+test('a chart completed at each rung of the ladder is reported at that rung, and the four do not read alike', () => {
+  for (const g of [80, 50, 20, 0]) {
+    const c = chartPart([chartAttempt(g)]);
+    assert.equal(c.done, true, `a table completed with ${g}% given is a table completed`);
+    assert.equal(c.given, g, `completed with ${g}% given`);
+  }
+  const said = [80, 50, 20, 0].map((g) => chartPart([chartAttempt(g)]).given);
+  assert.equal(new Set(said).size, 4, 'a learner who has only ever finished one at 80% must not read the same line as one who finished it unaided');
+});
+
+test('the hardest level completed is what is reported, not the most recent', () => {
+  const later = new Date(NOW - 60000).toISOString();
+  assert.equal(chartPart([chartAttempt(0), chartAttempt(80, { at: later })]).given, 0, 'a later easy table does not take away the one done from memory');
+  assert.equal(chartPart([chartAttempt(80), chartAttempt(50), chartAttempt(20)]).given, 20);
+  assert.equal(chartPart([chartAttempt(20), chartAttempt(80, { at: later })]).given, 20);
+});
+
+test('a chart attempt with no level recorded is unknown: neither an achievement nor a failure', () => {
+  const c = chartPart([chartAttempt(null)]);
+  assert.equal(c.done, true, 'an attempt from before the level was written down still ticks the part');
+  assert.equal(c.given, null, 'unknown is null — never 0, which would claim it was done unaided, and never 80');
+  assert.match(c.detail, /chart/, 'and the line says only what was written down');
+  assert.equal(chartPart([chartAttempt(null), chartAttempt(50)]).given, 50, 'a known rung beside an unknown one is still reported');
+  assert.equal(chartPart([chartAttempt(null), chartAttempt(null)]).given, null);
+  for (const junk of [-1, 101, 'lots', NaN, true, null]) {
+    assert.equal(chartPart([{ ...chartAttempt(0), meta: { given: junk } }]).given, null, `"${junk}" is not a level`);
+  }
+});
+
+test('a chart got wrong is a completion at no level', () => {
+  const wrong = chartPart([chartAttempt(0, { correct: false })]);
+  assert.equal(wrong.done, false, 'a chart got wrong does not tick the part');
+  assert.equal(wrong.given, null, 'and a table that was not completed was not completed unaided either');
+  assert.equal(chartPart([chartAttempt(0, { correct: false }), chartAttempt(80)]).given, 80, 'the right one decides, however hard the wrong one was');
+});
+
+test('a table completed with its cells peeked sets no level', () => {
+  // §17.1: a form only being looked at is not an answer, and §12's ladder only fades on `correct && !hinted`.
+  // So "completed unaided" may not be said of a blank table whose cells were shown.
+  assert.equal(chartPart([chartAttempt(0, { hinted: true })]).done, true, 'it is still a chart answered right');
+  assert.equal(chartPart([chartAttempt(0, { hinted: true })]).given, null);
+  assert.equal(chartPart([chartAttempt(0, { hinted: true }), chartAttempt(80)]).given, 80);
+});
+
+test('the level never moves the count, the ratio or the band', () => {
+  const bare = skillProgress(TABLE, { now: NOW, drillable: true, attempts: [chartAttempt(null)] });
+  const known = skillProgress(TABLE, { now: NOW, drillable: true, attempts: [chartAttempt(0)] });
+  assert.equal(bare.done, known.done);
+  assert.equal(bare.total, known.total);
+  assert.equal(bare.level, known.level);
+  assert.equal(bare.summary, known.summary);
+});
