@@ -8,7 +8,8 @@ import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalog
 import { renderParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize, stripMacrons } from '../tokenize.js';
-import { attachHoverGloss, cutLatinWords } from '../hovergloss.js';
+import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
+import { PARTS, skillProgress } from './progress.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, DAY_MS } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey, la, partsText } from './items.js';
@@ -361,6 +362,214 @@ export function dueText(s, now = Date.now()) {
   return `${STATE_LABEL[s.state]} · ${when}`;
 }
 
+/* --------------------------------------------- progress, on the row */
+/*
+ * "use a bit of color to show how many parts of a lesson skill extra have been
+ * practice. maybe have it mouse over it popsup with whats done or not."
+ *
+ * The map is the page the learner already opens, so this rides on the row that
+ * is already there — the state line, after the dot and the due text — rather
+ * than becoming a region of its own. Three things carry the same fact, so
+ * none of them is doing it alone (GRAMMAR-CONTRACT.md "Session flow", the
+ * colour rule): the **count** ("3 of 6"), the **filled ticks** (a shape, which
+ * survives a greyscale print), and the **colour**, which is the only one of the
+ * three a colour-blind reader may lose. The colour ramp is the section's own
+ * and nothing new: grey while a skill is begun, ink past halfway, `--success`
+ * only when every part is done — and because "mastered" is one of the parts,
+ * green here means exactly what green already means on the state dot.
+ *
+ * The panel is ONE node for the whole map, positioned on demand, and the
+ * listeners are ONE set, delegated from the document. 88 rows a paint means
+ * neither a panel nor a listener per row.
+ *
+ * `g-parts`, not `g-prog`: `.g-prog` is already the `<progress>` bar a chapter
+ * set's Learn pass draws (grammar.css), and taking the name gave every row a
+ * 26rem grey stripe. Found live; do not rename it back.
+ */
+const PARTS_PANEL_ID = 'g-parts-panel';
+
+/**
+ * One part's line in the panel: the mark, whether "not yet" is said out loud,
+ * and the rest.
+ *
+ * **"Not yet" is always written, and always first.** A part that is not done
+ * can still carry a `detail` — a lapsed skill's stability, a chart three cells
+ * in — and "Mastered · 3 days of stability" under a tick whose colour the
+ * reader cannot see reads as an achievement. The mark, the word and the colour
+ * must say the same thing (GRAMMAR-CONTRACT.md "Session flow"). A part with
+ * nothing to report falls back to its `blurb`, which says what the part *is*,
+ * so a line is never bare. Pure.
+ */
+export function partLine(part) {
+  const done = !!part?.done;
+  const tail = String(part?.detail || '').trim() || (done ? 'done' : String(part?.blurb || '').trim());
+  return { mark: done ? '✓' : '–', notYet: !done, text: done ? tail : (tail ? ` — ${tail}` : '') };
+}
+
+/**
+ * Where the panel goes, in viewport coordinates. It is `position: fixed` and
+ * hangs off the body, so this is the whole of its placement — and the whole
+ * reason it can never reflow the row, the list or the page (§17.1, §17.3: a
+ * panel that grew the page is the complaint this answers).
+ *
+ * Below the meter by default; above it when there is no room below **and**
+ * there is room above, so a row near the foot of a long map does not open a
+ * panel off the bottom of the screen. Left-aligned with the meter, then pulled
+ * back inside the viewport, which is what keeps it on a 375px phone. Pure.
+ */
+export function panelPlace({ top, bottom, left }, { h: ph, w, vw, vh, gap = 8 }) {
+  const below = bottom + gap;
+  const above = top - gap - ph;
+  return {
+    x: Math.round(Math.max(gap, Math.min(left, vw - w - gap))),
+    y: Math.round(below + ph > vh - gap && above > gap ? above : below),
+  };
+}
+
+/** The meter's whole fact in one string, for a screen reader: it never depends on seeing the ticks. Pure. */
+export function meterLabel(title, p) {
+  const total = Number(p?.total) || 0;
+  return `${Number(p?.done) || 0} of ${total} part${total === 1 ? '' : 's'} of ${title} practised — show which`;
+}
+
+const partsData = new WeakMap();   // the meter button → what its panel should say
+let partsPanel = null;
+let partsFor = null;               // the button the panel is open against
+let partsHover = null;             // open because the pointer is resting on it
+let partsHeld = null;              // open because the keyboard is on it, or a finger pressed it
+let partsWired = false;
+
+/** What the panel is for: the learner's own reading of the row, so it never takes the keyboard. */
+function partsNode() {
+  if (partsPanel?.isConnected) return partsPanel;
+  partsPanel = h('div', { class: 'g-parts__panel', id: PARTS_PANEL_ID, role: 'tooltip', hidden: true });
+  document.body.append(partsPanel);
+  return partsPanel;
+}
+
+/**
+ * Measure, then place with `panelPlace`. Appended to the body and fixed, so it
+ * works the same from the map, from the chapter spine and from a chapter
+ * page's grammar panel, which is mounted outside the section's own root.
+ */
+function placeParts(el) {
+  const p = partsNode();
+  const w = Math.min(320, window.innerWidth - 16);
+  p.style.width = `${w}px`;
+  p.hidden = false;                                     // measured before it is placed: a hidden box has no height
+  const { x, y } = panelPlace(el.getBoundingClientRect(), { h: p.getBoundingClientRect().height, w, vw: window.innerWidth, vh: window.innerHeight });
+  p.style.left = `${x}px`;
+  p.style.top = `${y}px`;
+}
+
+function partsBody(el) {
+  const d = partsData.get(el);
+  const p = partsNode();
+  if (!d) { p.replaceChildren(); return; }
+  const missing = PARTS.filter((part) => !d.parts.some((x) => x.key === part.key));
+  p.replaceChildren(
+    h('p', { class: 'g-parts__h', text: d.title }),
+    h('p', { class: 'g-parts__sum', text: d.summary }),
+    h('ul', { class: 'g-parts__list' }, d.parts.map((part) => {
+      const line = partLine(part);
+      return h('li', { class: 'g-parts__item', 'data-done': part.done ? '1' : '0', 'data-part': part.key },
+        h('span', { class: 'g-parts__mark', 'aria-hidden': 'true', text: line.mark }),
+        h('span', { class: 'g-parts__what' },
+          h('span', { class: 'g-parts__part', text: part.label }),
+          h('span', { class: 'g-parts__detail' },
+            line.notYet ? h('span', { class: 'g-parts__not', text: 'not yet' }) : null,
+            line.text)));
+    })),
+    // `replaceChildren` is the DOM's, not `h`'s: a null passed to it is appended as the text "null".
+    ...(missing.length ? [h('p', { class: 'g-parts__foot', text: `Not part of this skill: ${missing.map((m) => m.label).join(', ')}.` })] : []));
+}
+
+function syncParts() {
+  const want = partsHeld ?? partsHover;
+  if (want !== partsFor) {
+    if (partsFor) { partsFor.setAttribute('aria-expanded', 'false'); partsFor.removeAttribute('aria-describedby'); }
+    partsFor = want ?? null;
+    if (!partsFor) { if (partsPanel) { partsPanel.hidden = true; partsPanel.replaceChildren(); } return; }
+    partsFor.setAttribute('aria-expanded', 'true');
+    partsFor.setAttribute('aria-describedby', PARTS_PANEL_ID);
+    partsBody(partsFor);
+  }
+  if (!partsFor) return;
+  // A panel the pointer alone opened takes no pointer (it would flicker as the mouse reached it, and it
+  // has nothing to press); one a finger or the keyboard opened does, so a tap on it is not a tap on the
+  // row underneath — where "Reset" is.
+  partsNode().dataset.hover = partsHeld ? '0' : '1';
+  placeParts(partsFor);
+}
+
+const closeParts = () => { partsHover = null; partsHeld = null; syncParts(); };
+
+/**
+ * One set of listeners for every meter the section ever draws. Whether the
+ * pointer can hover is asked of the **event** (`pointerHovers`), never of the
+ * device: the learner's Windows laptop has a touchscreen and a mouse, and
+ * `matchMedia('(hover: hover)')` answers "no" for both (§17.2).
+ */
+function wireParts() {
+  if (partsWired || typeof document === 'undefined') return;
+  partsWired = true;
+  const meter = (e) => e.target?.closest?.('.g-parts') ?? null;
+  const inPanel = (t) => !!t?.closest?.('.g-parts__panel');
+  document.addEventListener('pointerover', (e) => {
+    const b = meter(e);
+    if (!b || !pointerHovers(e) || b === partsHover) return;
+    partsHover = b;
+    syncParts();
+  });
+  document.addEventListener('pointerout', (e) => {
+    const b = meter(e);
+    if (!b || b !== partsHover) return;
+    if (e.relatedTarget && (b.contains(e.relatedTarget) || inPanel(e.relatedTarget))) return;
+    partsHover = null;
+    syncParts();
+  });
+  document.addEventListener('focusin', (e) => { const b = meter(e); if (b) { partsHeld = b; syncParts(); } else if (partsHeld && !inPanel(e.target)) { partsHeld = null; syncParts(); } });
+  document.addEventListener('focusout', (e) => { const b = meter(e); if (b && b === partsHeld) { partsHeld = null; syncParts(); } });
+  document.addEventListener('click', (e) => {
+    const b = meter(e);
+    if (!b) return;
+    // A tap has no hover to open the panel and no leave to close it, so the press itself is the toggle.
+    // A mouse click must not shut a panel its own hover is holding open, so the pointer is asked first.
+    partsHeld = partsHeld === b && !partsHover ? null : b;
+    syncParts();
+  });
+  // A press anywhere else puts it away — the finger's equivalent of the pointer leaving.
+  document.addEventListener('pointerdown', (e) => { if (partsHeld && !meter(e) && !inPanel(e.target)) { partsHeld = null; syncParts(); } }, true);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && partsFor) { const b = partsFor; closeParts(); b.focus?.({ preventScroll: true }); } });
+  // The panel is fixed, so a scroll or a resize would leave it hanging over the wrong row. It follows
+  // its own row rather than vanishing — the map is long and the learner reads it by scrolling — and it
+  // goes only when the row it belongs to has left the document, which is what a redraw does to it.
+  const follow = () => { if (!partsFor) return; if (partsFor.isConnected) placeParts(partsFor); else closeParts(); };
+  window.addEventListener('scroll', follow, true);
+  window.addEventListener('resize', follow);
+}
+
+/**
+ * The meter itself: the ticks, the count, and the button that holds them. Null
+ * when the skill has no parts at all, so nothing empty is drawn. The label
+ * carries the whole count for a screen reader, and the panel is its
+ * description, so the fact is never colour's alone.
+ */
+function partsMeter(title, p) {
+  if (!p || !p.total) return null;
+  wireParts();
+  // Every paint passes through here, which is the one place that reliably knows a redraw happened: a panel
+  // whose row has just been replaced is answering about a node no longer on the page, so it goes.
+  if (partsFor && !partsFor.isConnected) closeParts();
+  const b = h('button', {
+    type: 'button', class: 'g-parts', 'data-level': p.level, 'aria-expanded': 'false', 'aria-label': meterLabel(title, p),
+  },
+  h('span', { class: 'g-parts__ticks', 'aria-hidden': 'true' }, p.parts.map((part) => h('span', { class: 'g-parts__tick', 'data-done': part.done ? '1' : '0' }))),
+  h('span', { class: 'g-parts__count', 'aria-hidden': 'true', text: `${p.done} of ${p.total}` }));
+  partsData.set(b, { title, summary: p.summary, parts: p.parts });
+  return b;
+}
+
 export function createUI(ctx) {
   const { root, index, gstore, dict, par } = ctx;
   // The grammar skills and the chapter sets (questions-NN, vocab-NN[-rev], pensum-NN) as one map: the scheduler treats them alike.
@@ -501,7 +710,11 @@ export function createUI(ctx) {
    * keep quiet. `LA_NO` is what must never be cut, nor cut inside: a control whose text is its
    * value, and everything that is already a word or a popup.
    */
-  const LA_NO = 'input, textarea, select, option, .g-w, .g-wx, .g-la, .g-pop, .g-blank';
+  // `.g-parts` and its panel are in here for a reason, not for symmetry: the progress sheet is a report
+  // about the learner, not reading text, and two popups answering one rest of the pointer is a mess. So
+  // where they meet, the progress panel wins and the dictionary keeps quiet — nothing inside either is
+  // ever cut into words, even if a `detail` line one day cites a form.
+  const LA_NO = 'input, textarea, select, option, .g-w, .g-wx, .g-la, .g-pop, .g-blank, .g-parts, .g-parts__panel';
 
   /** Has the item this word belongs to been answered? The run stamps `data-result` on the page; a
    *  teaching step has no stamp, so the feedback node being on screen is the same fact. */
@@ -677,6 +890,10 @@ export function createUI(ctx) {
       // The count is of what the filter is showing: "0 of 4 mastered" over three set rows read as a miscount (m18).
       const counted = [...shown, ...shownSets];
       const mastered = counted.filter((s) => stateOf(s.id).state === 'mastered').length;
+      // The chapter heading keeps the one count it had. `progressSummary` was tried here and taken out
+      // again: beside "1 of 7 mastered" it read "1 of 7 skills fully worked through", two identical-looking
+      // fractions meaning different things, on a line that then wrapped on a phone. The rows under it
+      // carry the parts already, which is where the learner asked for them.
       return h('section', { class: 'g-chap', 'aria-labelledby': `g-chap-${chapter}` },
         h('h2', { id: `g-chap-${chapter}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(chapter)}` }), counted.length ? h('span', { class: 'g-chap__count', text: `${mastered} of ${counted.length} mastered` }) : null),
         shown.length ? h('ul', { class: 'g-skills' }, shown.map((s) => skillRow(s))) : null,
@@ -801,6 +1018,29 @@ export function createUI(ctx) {
       ...chapterBody(row, { nav, known })));
   }
 
+  /**
+   * One row's progress sheet (progress.js). Built per row, which is what the
+   * model asks for: `getAttempts({ skill })` reads a per-skill index, so 88
+   * calls a paint are 88 array lookups, and `learnAll()` memoises on the
+   * stored string, so they are 88 reads of one parsed object.
+   *
+   * `attempts: null` would mean "not known"; the log is always loaded by the
+   * time a row is drawn, so the rows are passed and an empty log honestly
+   * means none. `known` false is the one case where nothing is claimed: the
+   * generator has not been read yet, so what the skill can even have is
+   * unknown and the row shows no meter at all rather than a wrong denominator.
+   */
+  function progressOf(s, known = true) {
+    if (!known) return null;
+    return skillProgress(s, {
+      state: stateOf(s.id),
+      attempts: gstore.getAttempts({ skill: s.id }),
+      learn: learnPlace(s.id),
+      drillable: drillable(s.id),
+      hasBank: hasBank(s.id),
+    });
+  }
+
   function skillRow(s, { go = null, known = true } = {}) {
     const nav = go ?? ((name, params) => render(name, params));
     const st = stateOf(s.id);
@@ -831,7 +1071,8 @@ export function createUI(ctx) {
       h('div', { class: 'g-skill__main' },
         h('button', { type: 'button', class: 'g-skill__title', onclick: () => nav('lesson', { skill: s.id }) }, s.title),
         h('p', { class: 'g-skill__plain', text: `${s.plain} · ${s.course} week ${s.week ?? '—'}` }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill') : dueText(st))),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? (s.parse_filter ? 'no sentences in the library yet' : 'lesson only — no drill') : dueText(st),
+          partsMeter(s.title, progressOf(s, known)))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
   /** A chapter set as a row: Questions · Vocabulary (· English → Latin, optional) · Pensa — the same actions and states as a skill; pensa have no Learn. */
@@ -856,7 +1097,8 @@ export function createUI(ctx) {
       h('div', { class: 'g-skill__main' },
         h('p', { class: 'g-skill__title g-skill__title--set', text: s.rev ? `${SET_ROW_LABEL[s.set]} · English → Latin` : SET_ROW_LABEL[s.set] }),
         h('p', { class: 'g-skill__plain', text: what }),
-        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? 'no items yet' : dueText(st))),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': can === false ? 'none' : st.state, 'aria-hidden': 'true' }), can === false ? 'no items yet' : dueText(st),
+          partsMeter(SET_ROW_LABEL[s.set] ?? s.id, progressOf(s, known)))),
       h('div', { class: 'g-skill__acts' }, acts));
   }
   const drillable = (id) => ctx.drillable(id);
@@ -909,11 +1151,20 @@ export function createUI(ctx) {
    * Reads the one-slot shape this replaced (`{ skill, step, at }`) and keeps that
    * single place, so nobody mid-lesson loses it on the update.
    */
+  // Memoised on the stored string itself, so any write anywhere — here, a reset, another tab — is its own
+  // invalidation. It became worth having when the map's progress meters started asking 88 times a paint:
+  // 88 parses of the whole object become 88 `getItem`s and one parse.
+  let learnMemo = { text: Symbol('unread'), value: {} };
   function learnAll() {
-    const raw = readJSON(LS_LEARN, null);
-    if (!raw || typeof raw !== 'object') return {};
-    if (typeof raw.skill === 'string') return { [raw.skill]: { step: raw.step, seen: raw.seen, at: raw.at } };
-    return raw;
+    let text = null;
+    try { text = localStorage.getItem(LS_LEARN); } catch { /* private mode */ }
+    if (text === learnMemo.text) return learnMemo.value;
+    let raw = null;
+    try { raw = text ? JSON.parse(text) : null; } catch { raw = null; }
+    let value = {};
+    if (raw && typeof raw === 'object') value = typeof raw.skill === 'string' ? { [raw.skill]: { step: raw.step, seen: raw.seen, at: raw.at } } : raw;
+    learnMemo = { text, value };
+    return value;
   }
   const learnPlace = (id) => learnAll()[id] ?? null;
   function setLearnPlace(id, place) {

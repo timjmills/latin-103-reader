@@ -123,6 +123,65 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-skill__acts .btn { min-height: 36px; font-size: var(--ui-sm); padding-inline: var(--s-3); }
 .g-skill__reset { color: var(--ink-3); }
 
+/* ------------------------------------ how much of a skill is done */
+/* Three signals for one fact, so no reader depends on the one they have not
+   got: the count ("3 of 6") in words, the ticks filled or hollow (a shape,
+   which survives a greyscale print), and the colour. The colour ramp is the
+   section's own — ink-3 while a skill is begun, full ink past halfway, green
+   only when every part is done. Because "mastered" is one of the parts, green
+   here means what green already means on the state dot beside it.
+   Nothing in this block changes size on hover or focus: the meter must not
+   move under the finger reaching for it (GRAMMAR-CONTRACT.md §17.3). */
+.g-skill__state { flex-wrap: wrap; row-gap: 2px; }
+.g-parts {
+  display: inline-flex; align-items: center; gap: var(--s-1);
+  margin: 0; padding: 2px var(--s-1); border: 0; border-radius: var(--radius-sm);
+  background: none; color: var(--ink-3); font: inherit; cursor: pointer;
+}
+.g-parts:hover { background: var(--bg-chrome); color: var(--ink-2); }
+.g-parts:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.g-parts__ticks { display: inline-flex; align-items: flex-end; gap: 2px; height: 10px; }
+/* Not-done parts are a short stub, done parts a full stroke: the height is the
+   shape half of the signal, and it reads with the colour switched off. */
+.g-parts__tick { width: 3px; height: 4px; border-radius: 1px; background: var(--line-strong); }
+.g-parts__tick[data-done="1"] { height: 10px; background: var(--ink-3); }
+.g-parts[data-level="most"] .g-parts__tick[data-done="1"] { background: var(--ink); }
+.g-parts[data-level="all"] .g-parts__tick[data-done="1"] { background: var(--success); }
+.g-parts__count { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.g-parts[data-level="most"] { color: var(--ink-2); }
+.g-parts[data-level="all"] { color: var(--success); }
+@media (pointer: coarse) { .g-parts { min-height: 32px; } }
+
+/* The panel: fixed, over the page, and appended to the body — so it can never
+   reflow the row, the list or the page (§17.1), and so it works the same from
+   the map, from the chapter spine and from a chapter page's grammar panel,
+   which is mounted outside the section's own root. */
+.g-parts__panel {
+  position: fixed; z-index: var(--z-tooltip); margin: 0; padding: var(--s-3);
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow-pop); color: var(--ink-2);
+  font-family: var(--face-ui); font-size: var(--ui-sm); line-height: 1.45;
+  animation: pop var(--t-fast) var(--ease-out);
+}
+/* Opened by the pointer alone: it takes no pointer, which is what keeps it from
+   flickering as the mouse reaches it. Opened by a finger or the keyboard it does
+   take one, so a tap on the panel is not a tap on the row underneath — where
+   "Reset" is. Same rule as the word popover above. */
+.g-parts__panel[data-hover="1"] { pointer-events: none; }
+.g-parts__panel p { margin: 0; }
+.g-parts__h { font-family: var(--face-serif); font-size: 1rem; color: var(--ink); text-wrap: balance; }
+.g-parts__panel .g-parts__sum { margin-top: 2px; color: var(--ink-3); font-size: var(--ui-xs); }
+.g-parts__list { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-1); }
+.g-parts__item { display: grid; grid-template-columns: 1em 1fr; gap: var(--s-2); align-items: baseline; }
+.g-parts__mark { color: var(--ink-3); text-align: center; }
+.g-parts__item[data-done="1"] .g-parts__mark { color: var(--success); }
+.g-parts__what { display: block; min-width: 0; }
+.g-parts__part { color: var(--ink-3); }
+.g-parts__item[data-done="1"] .g-parts__part { color: var(--ink); }
+.g-parts__detail { display: block; color: var(--ink-3); font-size: var(--ui-xs); text-wrap: pretty; }
+.g-parts__not { font-weight: 600; }
+.g-parts__panel .g-parts__foot { margin-top: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line); color: var(--ink-3); font-size: var(--ui-xs); text-wrap: pretty; }
+
 /* ---------------------------------------------------------- lesson */
 /* Lesson prose follows Settings → Type "Notes" (--note-scale), like the reader's notes; the Latin follows the reading size. */
 .g-lesson { display: grid; gap: var(--s-4); max-width: 62ch; font-size: calc(var(--ui-lg) * var(--note-scale, 1)); line-height: 1.6; }
