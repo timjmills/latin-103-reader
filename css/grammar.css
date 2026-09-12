@@ -238,6 +238,13 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-la--tap .g-w:hover { border-color: var(--ink); border-style: solid; }
 .g-la--tap .g-w.is-picked { border-style: solid; border-color: var(--ink); background: var(--bg-chrome); }
 .g-la--tap .g-w:disabled { opacity: 1; cursor: default; }
+/* The finger's dictionary (GRAMMAR-CONTRACT.md §17.4): a long press on a word asks the dictionary,
+   so the browser's own long press must not answer over the top of it. The iOS callout is refused
+   outright — the property is touch-only and a mouse never meets it — and selection is refused only
+   while a finger is actually down on a word (`<html data-hold>`, set by hovergloss.js from a real
+   pointer event), so selecting Latin with a mouse on a touchscreen laptop is exactly what it was. */
+.g-w, .g-wx { -webkit-touch-callout: none; }
+:root[data-hold="1"] .g-w, :root[data-hold="1"] .g-wx { user-select: none; -webkit-user-select: none; }
 
 /* Word popover (tap-to-gloss) */
 .g-pop {
@@ -341,10 +348,18 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-choice__label[lang="la"] { font-family: var(--face-reading); font-size: 1.1rem; }
 .g-choice__plain { grid-column: 2; font-size: var(--ui-xs); color: var(--ink-3); }
 .g-keys { margin: calc(-1 * var(--s-1)) 0 0; font-size: var(--ui-xs); color: var(--ink-3); }
+/* The finger's half of the help line, said only once a finger has actually been used here
+   (GRAMMAR-CONTRACT.md §17.4). `data-touch` is set by hovergloss.js off a real pointer event, never
+   by a media query about the device (§17.2): on a mouse the gesture does not exist, and a line
+   teaching a gesture the reader has no way to make is worse than no line. */
+.g-keys__hold { display: none; }
+:root[data-touch="1"] .g-keys__hold { display: inline; }
 /* Hidden from sight on a touch device, but kept in the accessibility tree: a tablet with a Bluetooth keyboard would
-   otherwise lose the only statement of the order / match key model (m12). */
+   otherwise lose the only statement of the order / match key model (m12). It is the keyboard *half* that is clipped
+   now, not the paragraph: the hold sentence beside it is the one part of this line a finger can act on, and hiding
+   the whole line would have hidden it on exactly the machine it is for. */
 @media (hover: none) and (pointer: coarse) {
-  .g-keys:not(.g-keys--tap) { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .g-keys:not(.g-keys--tap) .g-keys__main { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 }
 .g-type { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .g-input { min-height: var(--tap); flex: 1 1 14rem; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: var(--ui-lg); }
