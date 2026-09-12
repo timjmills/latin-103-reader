@@ -312,11 +312,22 @@ def sweep_public(corpus):
             continue
         for text in latin_strings(d):
             run = corpus.book_run(text)
-            if run:
+            if run and run not in ALLOWED_RUNS:
                 errs.append(f"{f.relative_to(GRAMMAR)}: reproduces "
                             f"{MAX_BOOK_RUN + 1}+ consecutive words of the book "
                             f"({run!r}) in {text[:90]!r}")
     return errs, f"public grammar files  scanned={len(files)}"
+
+
+# Runs the copyright gate has already considered and exempted by name, kept here so the
+# two sweeps agree. A gate that prints a known-acceptable error on every run is training
+# to ignore it, which is how the next real hit gets waved through. Keep this list tiny,
+# and keep each entry's reason next to it — the same reasons `check_copyright.ALLOW` gives.
+ALLOWED_RUNS = {
+    # The Roman date formula, shared with the cap. XXXIII margin gloss. Not the book's
+    # expression: it is how every Roman wrote a date. `check_copyright.py` exempts it too.
+    "a d vii kal mai",
+}
 
 
 def main():
