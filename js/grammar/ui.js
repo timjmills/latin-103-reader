@@ -407,6 +407,32 @@ export function partLine(part) {
 }
 
 /**
+ * How a part that records a scaffold level says which one it was completed at
+ * (§12's ladder, §18.1's limitation — the learner: "we could show the completed
+ * at 20%, completed at 60%, at 80%"). `part.given` is a percentage **given**,
+ * so 0 is the table from memory and 80 the easiest rung, and the wording says
+ * which way round that is: "completed at 80%" would read as nearly finished.
+ *
+ * Null when there is nothing to say, and each null is a different silence:
+ *
+ *   the part is not done      — nothing was completed, at any level
+ *   the level is unknown      — an attempt from before it was written down, or
+ *                               a question that was not a whole table. It must
+ *                               read as neither an achievement nor a failure,
+ *                               so the line simply says what the log counted.
+ *
+ * The model knows the rung and the view says it, which is why this is here and
+ * not in `progress.js`: that module reports facts about a skill, and how hard
+ * a table was is a sentence about this panel. Pure.
+ */
+export function givenNote(part) {
+  if (!part?.done || typeof part.given !== 'number') return null;
+  const g = part.given;
+  if (!Number.isFinite(g) || g < 0 || g > 100) return null;
+  return g === 0 ? 'completed unaided' : `completed with ${g}% given`;
+}
+
+/**
  * Where the panel goes, in viewport coordinates. It is `position: fixed` and
  * hangs off the body, so this is the whole of its placement — and the whole
  * reason it can never reflow the row, the list or the page (§17.1, §17.3: a
@@ -471,7 +497,12 @@ function partsBody(el) {
     h('p', { class: 'g-parts__h', text: d.title }),
     h('p', { class: 'g-parts__sum', text: d.summary }),
     h('ul', { class: 'g-parts__list' }, d.parts.map((part) => {
-      const line = partLine(part);
+      // A part that records which rung it was completed at leads with it, so a chart part finished with
+      // 80 % of its cells printed never reads like one finished from memory (§12, §18.1). It goes in front
+      // of the count rather than beside it: "completed unaided · 3 charts answered right" answers *how*
+      // before *how many*, which is the order the learner asked the question in.
+      const note = givenNote(part);
+      const line = partLine(note ? { ...part, detail: part.detail ? `${note} · ${part.detail}` : note } : part);
       return h('li', { class: 'g-parts__item', 'data-done': part.done ? '1' : '0', 'data-part': part.key },
         h('span', { class: 'g-parts__mark', 'aria-hidden': 'true', text: line.mark }),
         h('span', { class: 'g-parts__what' },
@@ -3130,8 +3161,22 @@ export function createUI(ctx) {
     return wrap;
   }
 
-  /** The cells a chart item shows: all of them, or the target cell alone on a phone. */
-  const chartCells = (item) => { const { chart } = item; if (chart.byWord || item.catalogue) return chart.cells; /* the catalogue's whole table stays whole on a phone: its box scrolls */ if (phone() && chart.cells.length > 1) return [chart.cells.find((c) => c.row === chart.target.row && c.col === chart.target.col) ?? chart.cells.find((c) => c.row === chart.target.row) ?? chart.cells[0]]; return chart.cells; };
+  /**
+   * The cells a chart item shows: all of them, or the target cell alone on a
+   * phone. How many is written onto the chart (`shown`), because the attempt's
+   * record of how much of the table was given cannot be read without it: a
+   * phone shows one cell of a twelve-cell table and hands the other eleven to
+   * the grader, which is the opposite of an unaided table and must never be
+   * written down as one (session.js `chartGiven`). `chart.given` is `[]` for
+   * both, so the item alone cannot tell them apart.
+   */
+  const chartCells = (item) => {
+    const { chart } = item;
+    const note = (cells) => { chart.shown = cells.length; return cells; };
+    if (chart.byWord || item.catalogue) return note(chart.cells);   /* the catalogue's whole table stays whole on a phone: its box scrolls */
+    if (phone() && chart.cells.length > 1) return note([chart.cells.find((c) => c.row === chart.target.row && c.col === chart.target.col) ?? chart.cells.find((c) => c.row === chart.target.row) ?? chart.cells[0]]);
+    return note(chart.cells);
+  };
   /** The question as asked of the cells shown ("Give the accusative singular of cāsus" when a phone shows one cell). */
   const chartQuestion = (item) => { const cells = chartCells(item); return cells.length === 1 && item.chart.cells.length > 1 ? [`Give the ${cells[0].label} of `, la(item.chart.head ?? item.lemma.split(/[\s,]/)[0])] : item.prompt.questionParts ?? item.prompt.question; };
   /**

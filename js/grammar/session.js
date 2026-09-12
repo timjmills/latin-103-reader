@@ -306,7 +306,18 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       // A generated sentence's attempt says so (§11b): `meta` carries the template and the sentence id, kept on
       // the device (store-grammar `normaliseAttempt`; the server row has no column), so the analytics can tell
       // a generated item from a written one. A written item's attempt carries no meta at all.
-      const meta = item.generated === true ? { generated: true, template: item.template ?? null, sentence: item.taught ?? null } : null;
+      //
+      // A chart's attempt says how much of the table was printed before the learner started (§12, §18.1):
+      // `given: 0` is the table from memory and `given: 80` the easiest rung, so the progress sheet can say
+      // which level a table was completed at instead of ticking all four alike. Absent — never 0 — when the
+      // question was not a whole table, because an unknown level must read as neither an achievement nor a
+      // failure (`chartGiven`). The fact belongs to the attempt either way: it is what was on screen.
+      const given = chartGiven(item);
+      const metaFields = {
+        ...(item.generated === true ? { generated: true, template: item.template ?? null, sentence: item.taught ?? null } : null),
+        ...(given == null ? null : { given }),
+      };
+      const meta = Object.keys(metaFields).length ? metaFields : null;
       const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date(lastAt).toISOString(), ...(meta ? { meta } : {}) };
       log.push(attempt);
       results[index] = { result, attempt, value, hinted: hinted || self };
@@ -792,6 +803,36 @@ export function scaffoldLeak(item) {
 }
 /** The item with its given cells set (a copy); `[]` leaves it as it was. */
 export const scaffoldItem = (item, given) => (given?.length && item?.chart ? { ...item, chart: { ...item.chart, given: [...given] } } : item);
+
+/**
+ * How much of a chart item's table was printed before the learner started: the
+ * scaffold level as a percentage **given**, so 80 is the easiest rung of §12's
+ * ladder and 0 is the table from memory. This is what a chart attempt writes
+ * down (`attempt.meta.given`) and it is the only durable record of it — the
+ * per-table level and `metCells` live in localStorage and are rebuilt each
+ * sitting, which is exactly why §18.1 could not tell the two apart.
+ *
+ * `null` means **unknown**, and it is never 0. A question that was not a whole
+ * table has no level, and writing one down would be the worst reading
+ * available in each case:
+ *
+ *   a phone shows ONE cell of a twelve-cell table and hands the other eleven
+ *     to the grader (`collect` in ui.js) — the opposite of an unaided table;
+ *   a step's chart over words (`byWord`) gives nothing and withholds nothing,
+ *     because every box there is the cell being taught (§12);
+ *   a one-cell item has no table to scaffold at all.
+ *
+ * The view says how many cells it put on screen (`chart.shown`), because the
+ * item alone cannot tell a blank table from a single cell of one: `chart.given`
+ * is `[]` for both. An item no view has drawn says nothing. Pure.
+ */
+export function chartGiven(item) {
+  const chart = item?.input === 'chart' ? item.chart : null;
+  const cells = chart?.cells ?? [];
+  if (!chart || chart.byWord || cells.length < 2) return null;
+  if (!Array.isArray(chart.given) || Number(chart.shown) !== cells.length) return null;
+  return Math.round((chart.given.length / cells.length) * 100);
+}
 
 /**
  * Learn flow for one skill (GRAMMAR-CONTRACT.md "Teaching rebuild" §2, §8, §9

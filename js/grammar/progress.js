@@ -79,6 +79,21 @@ const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 const ms = (v) => { if (!v) return 0; const n = typeof v === 'number' ? v : Date.parse(v); return Number.isFinite(n) ? n : 0; };
 const int = (v) => { const n = Math.round(Number(v)); return Number.isFinite(n) && n > 0 ? n : 0; };
 
+/**
+ * The percentage of a chart's table that was **given** before the learner
+ * started, off the attempt's own record (`session.js` `chartGiven`): 80 is the
+ * easiest rung of §12's ladder and 0 is the table from memory.
+ *
+ * `null` is *unknown* and is never read as 0 or as 80. An attempt written
+ * before the level was recorded has no `meta`, and so does a question that was
+ * not a whole table — a phone's single cell, a step's chart over words. An
+ * unknown level must be reported as neither an achievement nor a failure.
+ */
+const givenOf = (a) => {
+  const g = Number(a?.meta?.given);
+  return typeof a?.meta?.given === 'number' && Number.isFinite(g) && g >= 0 && g <= 100 ? g : null;
+};
+
 /** How many cells of a table are known to be answered right, from whichever shape the caller has to hand. */
 const cellsMet = (v) => {
   if (v == null) return 0;
@@ -108,7 +123,7 @@ function whenDue(at, now) {
  */
 function readLog(attempts) {
   if (!Array.isArray(attempts)) return null;
-  const out = { learn: 0, learnPasses: 0, lastRun: null, practice: 0, practiceRight: 0, generated: 0, charts: 0 };
+  const out = { learn: 0, learnPasses: 0, lastRun: null, practice: 0, practiceRight: 0, generated: 0, charts: 0, chartGiven: null };
   let run = [];
   const close = () => {
     if (!run.length) return;
@@ -122,7 +137,17 @@ function readLog(attempts) {
     if (a.meta?.generated) out.generated += 1;
     // A chart answered right counts whichever mode asked it: Learn's chart checks are the same
     // items as practice's. What one such attempt covers is not recorded — see the `chart` part.
-    if (a.kind === 'chart' && a.correct) out.charts += 1;
+    if (a.kind === 'chart' && a.correct) {
+      out.charts += 1;
+      // …and which rung of the scaffold it was completed at, where the attempt says. The **hardest**
+      // stands: the lowest percentage given, whenever it was, because a sheet whose achievements come
+      // off again when the learner drops back a level is a nag rather than a record (the rule ROTATION
+      // already follows above). A table completed with its cells peeked sets no level: §12's ladder only
+      // fades on `correct && !hinted`, and §17.1 is explicit that a form only being looked at is not an
+      // answer, so "completed unaided" may not be said about a blank table that was read off its hints.
+      const g = a.hinted ? null : givenOf(a);
+      if (g != null && (out.chartGiven == null || g < out.chartGiven)) out.chartGiven = g;
+    }
     if (a.mode === 'learn') { out.learn += 1; run.push(a); continue; }
     close();
     out.practice += 1;
@@ -178,11 +203,18 @@ function partKeys(skill, { drillable, hasBank }) {
  *   cellCount  {number}   how many cells those tables hold. 0 = unknown, and the chart part then falls
  *                         back to the durable evidence (chart items answered right) instead of a fraction.
  *
- * @returns {{ parts: Array<{key,label,blurb,done,detail}>, done: number, total: number,
+ * @returns {{ parts: Array<{key,label,blurb,done,detail,given}>, done: number, total: number,
  *            ratio: number, level: 'none'|'started'|'most'|'all', summary: string }}
  *          `parts` holds only the parts this skill can have, in PARTS order, so
  *          `parts.length === total`. `detail` is the sentence the hover shows
  *          for that part, or null when there is honestly nothing to say.
+ *          `given` is the scaffold level a part that records one was completed
+ *          at — a percentage **given**, 80 the easiest rung and 0 unaided (§12)
+ *          — and null on every part that records none and whenever the level is
+ *          unknown. Only `chart` ever carries a number; it is on every part so
+ *          a view can read one shape. It is a fact and not a sentence: the view
+ *          words it (`givenNote` in ui.js), because how hard a table was is the
+ *          panel's business and the model's job is to know which rung it was.
  */
 export function skillProgress(skill, o = {}) {
   const s = asSkill(skill);
@@ -229,15 +261,28 @@ export function skillProgress(skill, o = {}) {
         return [false, null];
       }
       case 'chart': {
+        // Which rung the table was completed at (§12's ladder, as a percentage GIVEN: 80 is the easiest
+        // and 0 is from memory). §18.1 ticked this part on the first complete table "at whatever
+        // scaffolding was up", so a table finished with 80 % of its cells printed read exactly like one
+        // finished from memory; the attempt now writes the level down and the part reports the hardest.
+        //
+        // **The part is still done at any rung**, and deliberately. The tick means the learner completed
+        // the table the app put in front of them, which is what the app itself scores as a correct chart;
+        // the rung is how, not whether. Making a tick conditional on a level would also untick every
+        // chart part already earned, because an attempt from before this was recorded has no level at all
+        // — and an unknown must never be read as a failure any more than as an achievement. So the
+        // distinction the learner asked for is carried by `given`, which the panel says in words, and a
+        // row finished at 80 % given never reads like one finished unaided.
+        const given = log?.chartGiven ?? null;
         // With the table's size known this is the real thing: every cell answered right at least once.
-        if (cells) return [met >= cells, `${met} of ${plural(cells, 'cell')} answered right`];
+        if (cells) return [met >= cells, `${met} of ${plural(cells, 'cell')} answered right`, met >= cells ? given : null];
         // Without it, all the log can count is **chart items answered right**, which is durable where the
         // app's own `metCells` is not — that is rebuilt each sitting. Say exactly that and nothing more:
         // session.js logs one attempt per item and keeps no per-box record, and a chart item is a whole
         // table on a wide screen, a single cell on a phone, and a single cell again in "practise one cell".
         // So this is neither a count of cells (the first wording, which read one table as one cell) nor of
         // tables. It is charts answered, and the sheet may not claim to know more than was written down.
-        if (log?.charts) return [true, `${plural(log.charts, 'chart')} answered right`];
+        if (log?.charts) return [true, `${plural(log.charts, 'chart')} answered right`, given];
         return [false, null];
       }
       case 'generated': {
@@ -264,8 +309,8 @@ export function skillProgress(skill, o = {}) {
 
   const parts = partKeys(s, { drillable: !!drillable, hasBank: !!hasBank }).map((key) => {
     const { label, blurb } = PART_BY_KEY.get(key);
-    const [done, detail] = decide(key);
-    return { key, label, blurb, done: !!done, detail: detail ?? null };
+    const [done, detail, given] = decide(key);
+    return { key, label, blurb, done: !!done, detail: detail ?? null, given: given ?? null };
   });
 
   const total = parts.length;
