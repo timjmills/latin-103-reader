@@ -71,9 +71,13 @@ export function setFloorSlots(n, rand = Math.random) {
 const iso = (t) => new Date(t).toISOString();
 const ms = (v) => { if (!v) return 0; const n = typeof v === 'number' ? v : Date.parse(v); return Number.isFinite(n) ? n : 0; };
 
-/** A fresh row for a skill. Pure. */
+/**
+ * A fresh row for a skill. `learn_place` is null — *unknown*, which is the
+ * honest answer for a skill nothing has been said about, and which the merge
+ * (`mergeLearnPlace`) treats as no news rather than as "no steps done". Pure.
+ */
 export function newState(skill, now = Date.now()) {
-  return { skill, state: 'new', stage: 1, stability_days: STABILITY_FLOOR, due_at: null, last_at: null, streak: 0, successes: 0, successes_spaced: 0, failures: 0, updated_at: iso(now) };
+  return { skill, state: 'new', stage: 1, stability_days: STABILITY_FLOOR, due_at: null, last_at: null, streak: 0, successes: 0, successes_spaced: 0, failures: 0, updated_at: iso(now), learn_place: null };
 }
 
 /** A row from any source with every field usable (missing → defaults, bad numbers clamped). Pure. */
@@ -94,6 +98,11 @@ export function normaliseState(row, now = Date.now()) {
     successes_spaced: Math.round(num(row.successes_spaced, 0)),
     failures: Math.round(num(row.failures, 0)),
     updated_at: row.updated_at || base.updated_at,
+    // The lesson place travels on the row (skill_state.learn_place, §25) but is *not* one of the
+    // scheduler's fields: nothing here reads it and last-write-wins never decides it. A row from
+    // anywhere — the server, IndexedDB, a hand-edited file — is cleaned here so every later reader
+    // sees one shape, and an absent or unreadable value becomes null: unknown, not empty.
+    learn_place: normaliseLearnPlace(row.learn_place),
   };
 }
 
@@ -116,6 +125,91 @@ export const inRotation = (s) => !!s && (s.state === 'practising' || s.state ===
  * place in the Learn replay, no review to redo. Pure.
  */
 export const isUncounted = (a) => a?.meta?.uncounted === true;
+
+/* --------------------------------------- where the learner is in a lesson */
+
+/** A lesson has four to six steps; this only stops a corrupt record becoming a long loop. */
+export const MAX_STEPS = 64;
+
+/** Whatever was stored as a list of step indices, as clean whole numbers, lowest first, no repeats. Pure. */
+export const stepList = (v) => {
+  const out = new Set();
+  for (const x of Array.isArray(v) ? v : []) {
+    // `Number(null)` is 0 and `Number(true)` is 1: a stray null in a hand-edited file must not become step 1.
+    const n = Math.floor(typeof x === 'number' ? x : (typeof x === 'string' && x.trim() ? Number(x) : NaN));
+    if (Number.isFinite(n) && n >= 0 && n < MAX_STEPS) out.add(n);
+  }
+  return [...out].sort((a, b) => a - b);
+};
+
+/**
+ * One skill's place in its lesson, clean — `{ done: [step index…], seen, at }`
+ * (GRAMMAR-CONTRACT.md §22.3) — or **null**.
+ *
+ * **`null` means unknown, and never "no steps done."** It is what a device
+ * that has not been told reads, and what `skill_state.learn_place` holds for
+ * every row written before §25. Reading it as an empty set would let a phone
+ * fresh out of its first sync say "nothing done" about a lesson the learner
+ * finished on their computer, and §18 has already ruled that a progress mark
+ * must not come off by itself. Every reader here treats null as *no news*: it
+ * loses to anything the other side knows, and it erases nothing. Pure.
+ */
+export function normaliseLearnPlace(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return null;
+  const done = stepList(v.done);
+  const seen = Math.floor(Number(v.seen));
+  const at = Number(v.at);
+  const out = {
+    ...(done.length ? { done } : null),
+    ...(Number.isFinite(seen) && seen > 0 ? { seen } : null),
+    ...(Number.isFinite(at) && at > 0 ? { at } : null),
+  };
+  return Object.keys(out).length ? out : null;
+}
+
+/**
+ * Two devices' places for one skill, merged (§25). The learner finished steps
+ * 1–3 on the computer and 4–6 on the phone; both records are true and the
+ * merge has to keep both.
+ *
+ * - **`done` is a union.** §18 settled that a progress mark must not come off
+ *   by itself, and a union is the only merge that cannot lose a step the
+ *   learner really answered. Last-write-wins would drop whichever device
+ *   synced first, which is exactly the complaint this work answers.
+ * - **`seen` takes the larger.** It is a deck's high-water mark — how far
+ *   through a chapter set's cards the learner has been — so the bigger number
+ *   is the one that happened.
+ * - **`at` takes the later.** It is a timestamp, not evidence: it says when
+ *   this place was last touched, and the later touch is the true answer. It
+ *   decides nothing — no field of the merge is settled by it.
+ *
+ * **A null side is unknown and stands aside**, so the other one comes through
+ * whole. That is what stops a first sync against an empty server (or an
+ * older row that never had the column) wiping a lesson already finished.
+ * Pure.
+ */
+export function mergeLearnPlace(a, b) {
+  const x = normaliseLearnPlace(a);
+  const y = normaliseLearnPlace(b);
+  if (!x) return y;
+  if (!y) return x;
+  const done = stepList([...(x.done ?? []), ...(y.done ?? [])]);
+  const seen = Math.max(x.seen ?? 0, y.seen ?? 0);
+  const at = Math.max(x.at ?? 0, y.at ?? 0);
+  return {
+    ...(done.length ? { done } : null),
+    ...(seen > 0 ? { seen } : null),
+    ...(at > 0 ? { at } : null),
+  };
+}
+
+/**
+ * True when two places say the same thing — so a write, a mirror or a push
+ * back to the server can be skipped. `normaliseLearnPlace` builds its keys in
+ * one fixed order, which is what makes the comparison safe to do this way.
+ * Pure.
+ */
+export const samePlace = (a, b) => JSON.stringify(normaliseLearnPlace(a) ?? null) === JSON.stringify(normaliseLearnPlace(b) ?? null);
 
 /** True when the skill is due now (never reviewed counts as due). */
 export function isDue(s, now = Date.now()) {
