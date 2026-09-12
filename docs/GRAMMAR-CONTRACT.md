@@ -2219,3 +2219,55 @@ mark now keeps its place from the start in both typed boxes.
 **The general rule:** a control the learner reaches from inside an input must
 not move when that input is judged on blur. Reserve the space; do not let a
 mark appear into the flow beside a button.
+
+## 18. The selection page as a progress sheet, 2026-09-12
+
+> "use a bit of color to show how many parts of a lesson skill extra have been
+> practice. maybe have it mouse over it popsup with whats done or not. So that
+> it becoes like a progress sheet."
+> — and then: "don't make a new progress sheet, just improve the selection page"
+
+No new view. The skill map's own rows carry it: after the state word, a row of
+ticks and a count (`5 of 6`), and a panel on hover, focus or tap listing every
+part with what is done, what is not, and what that skill **cannot** have.
+
+`app/js/grammar/progress.js` is the model — pure, no DOM, no storage, the way
+`chapter.js` next door works. Seven parts: `lesson`, `learn`, `practice`,
+`chart`, `generated`, `rotation`, `mastered`. Three things that look like parts
+are deliberately absent (the same-session re-test, the confusable pair, the
+reading tie-in) because nothing durable records them, and a tick that can never
+turn on is worse than no tick. **A part a skill cannot have is not a part it is
+failing:** `total` counts only what that skill can have, so no row is
+unfinishable. Verified over the real 88: 73 at six parts, 15 at five, none at
+zero.
+
+### 18.1 Two behaviours put to the learner and kept (their answer: "those are OK to keep")
+
+**A row may read "not started · 1 of 6".** Both halves are true and they mean
+different things: "not started" is the *scheduler's* word about the review
+rotation, and the count is *parts done*. A skill can be drilled without being
+added to practice ("Practice only — … nothing is counted"), so one part can be
+finished while the rotation has never begun. It reads like a contradiction and
+is not one. Do not "fix" it by hiding either half.
+
+**The chart part ticks on the first complete table, at whatever scaffolding was
+up** — a table finished with 80 % of its cells given ticks it. That is exactly
+what the app itself scores as a correct chart. The strict reading ("3 of 12
+cells answered right", ticking only on a whole table unaided) is already in the
+module and switches on the moment a caller passes `metCells` and `cellCount`;
+enabling it means persisting an in-memory Map and a catalogue lookup per row per
+paint, which is a state-and-data change, not a change to this page.
+
+### 18.2 Two rules this work adds
+
+**A detail line never fills its slot.** `fmtStability` answers `—` when there is
+nothing to report, which is right in a table of figures and meaningless in a
+sentence ("Mastered — stable for —"). A part that is done says so on its own;
+the detail exists to add something. Held by a test that no detail may end in
+punctuation.
+
+**Say what was written down, and no more.** The chart part counts *charts
+answered right*, because `session.js` logs one attempt per item and keeps no
+per-box record — and a chart item is a whole table on a wide screen, a single
+cell on a phone, and a single cell again in "practise one cell". Neither "cells"
+nor "tables" is true everywhere; "charts" is.
