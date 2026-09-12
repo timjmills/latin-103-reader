@@ -108,7 +108,7 @@ function whenDue(at, now) {
  */
 function readLog(attempts) {
   if (!Array.isArray(attempts)) return null;
-  const out = { learn: 0, learnPasses: 0, lastRun: null, practice: 0, practiceRight: 0, generated: 0, cells: 0 };
+  const out = { learn: 0, learnPasses: 0, lastRun: null, practice: 0, practiceRight: 0, generated: 0, charts: 0 };
   let run = [];
   const close = () => {
     if (!run.length) return;
@@ -120,9 +120,9 @@ function readLog(attempts) {
   for (const a of attempts) {
     if (!a) continue;
     if (a.meta?.generated) out.generated += 1;
-    // A cell answered right is a cell answered right whichever mode asked it: §12's own `metCells`
-    // is filled by any chart submitted, and Learn's chart checks are the same boxes.
-    if (a.kind === 'chart' && a.correct) out.cells += 1;
+    // A chart answered right counts whichever mode asked it: Learn's chart checks are the same
+    // items as practice's. What one such attempt covers is not recorded — see the `chart` part.
+    if (a.kind === 'chart' && a.correct) out.charts += 1;
     if (a.mode === 'learn') { out.learn += 1; run.push(a); continue; }
     close();
     out.practice += 1;
@@ -231,9 +231,13 @@ export function skillProgress(skill, o = {}) {
       case 'chart': {
         // With the table's size known this is the real thing: every cell answered right at least once.
         if (cells) return [met >= cells, `${met} of ${plural(cells, 'cell')} answered right`];
-        // Without it, the log still knows how many chart cells were answered right, which is durable where the
-        // app's own `metCells` is not — it is rebuilt each sitting. Weaker, and it says only what it knows.
-        if (log?.cells) return [true, `${plural(log.cells, 'cell')} answered right`];
+        // Without it, all the log can count is **chart items answered right**, which is durable where the
+        // app's own `metCells` is not — that is rebuilt each sitting. Say exactly that and nothing more:
+        // session.js logs one attempt per item and keeps no per-box record, and a chart item is a whole
+        // table on a wide screen, a single cell on a phone, and a single cell again in "practise one cell".
+        // So this is neither a count of cells (the first wording, which read one table as one cell) nor of
+        // tables. It is charts answered, and the sheet may not claim to know more than was written down.
+        if (log?.charts) return [true, `${plural(log.charts, 'chart')} answered right`];
         return [false, null];
       }
       case 'generated': {
