@@ -960,6 +960,22 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
    than to the page. Second, the label is pinned to that box's own corner, so wherever one appears — a caption, a
    cell label, a verdict word — it can add nothing to any scrollable area. Both are layout-only: the box is still
    1 px, still clipped, still read aloud in document order. */
+/* A paradigm may use the gutter the prose does not need (learner, 2026-09-13: "Even on the tablet the
+   space for the tables is not large enough"). `.g` caps the column at 44rem so a line of prose stays
+   readable — 65-70 characters — and that same cap was squeezing a twelve-cell table into 640px on a
+   1080px iPad, with 440px going spare either side. A table is not read line by line, so the measure that
+   is right for a sentence is wrong for it.
+
+   `--bleed` is half of whatever is left over after the column and a 1rem gutter, and it is zero on a
+   phone, where nothing is left over. Nothing else has to change: §27's fold is decided by measuring the
+   box, so a table that now fits simply unfolds itself. Negative margins rather than a transform, because
+   a transform would make this box the containing block for anything `position: fixed` inside it. */
+#grammar .pt__scroll {
+  --bleed: clamp(0px, calc((100vw - 2rem - 100%) / 2), 22rem);
+  margin-inline: calc(-1 * var(--bleed));
+  max-width: calc(100% + 2 * var(--bleed));
+}
+
 #grammar .pt__scroll, #grammar .g-cellwrap, #grammar .g-chart__word, #grammar .g-fb__line, #grammar .g-mixg__scroll { position: relative; }
 #grammar .visually-hidden { inset-block-start: 0; inset-inline-start: 0; }
 /* A given cell: the form printed and greyed, not a box; its own hint beside it like a box's. */
