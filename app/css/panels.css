@@ -138,6 +138,7 @@
    at either end) says there is more without a scrollbar. */
 .pt__scroll {
   overflow-x: auto; max-width: 100%; padding: 0 var(--s-2) var(--s-2); overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+  position: relative;   /* a stacked block's hidden prefix is pinned to this box, never to the page (see .pt__stack below, and grammar.css QA M-7) */
   --pt-bg: var(--bg-raised);
   background:
     linear-gradient(to right, var(--pt-bg) 40%, transparent) left / 2.5rem 100% no-repeat local,
@@ -187,6 +188,30 @@
   .panel .pt--wide .pt__cell { font-size: 0.92em; }
   .panel .pt__scroll:has(.pt--wide) { padding-inline: var(--s-1); }
 }
+/* ---- Stacked: a paradigm that does not fit its box (GRAMMAR-CONTRACT.md §26).
+   Nothing here is a width breakpoint, and none of it may become one. The
+   `pt--folded` class is put on by the fit watcher in wordpanel.js, which asks
+   the box itself whether the table overflows it — a wide verb table overflows
+   a tablet and a narrow desktop window as readily as a phone, and a two-column
+   noun table fits all three. The table stays in the document with its cells
+   moved out of it, so it may never be shown again by any other rule (a print
+   override would print empty rows). */
+.pt.pt--folded { display: none; }
+.pt__stack { display: grid; gap: var(--s-3); min-width: 0; }
+.pt__stack > .pt + .pt { margin-top: 0; }   /* the gap already separates the blocks */
+.pt__stackcap { margin: 0; }                /* the table's own caption, said once above its blocks */
+/* Pinned like the grammar section pins its own (QA M-7): the block's
+   screen-reader-only prefix belongs to this box's corner and can widen
+   nothing. */
+.pt__stack .visually-hidden { inset-block-start: 0; inset-inline-start: 0; }
+/* The room the second column gave back goes to the row label, which may now
+   wrap ("imperfect subjunctive" over two lines) instead of forcing a scroll. */
+/* The row label is the half of a stacked line that says which cell it is, so it gets a column of its
+   own rather than the narrowest one the table can give it: unstacked it is `width: 1%`, shrunk to
+   nothing beside the value, and a chart's box would have squeezed "he / she / it" into three lines.
+   It may still wrap — a long label is better wrapped than scrolled — but not for want of room. */
+.pt--stack tbody th { width: auto; white-space: normal; text-wrap: pretty; padding-right: var(--s-2); }
+.pt--stack .pt__caption { padding-inline: 0; }
 .pt__stem { color: var(--ink-2); }
 .pt__ending { color: var(--ink); font-weight: 600; }
 .pt__stem::after { content: "‑"; color: var(--ink-3); font-weight: 400; margin: 0 0.02em; }

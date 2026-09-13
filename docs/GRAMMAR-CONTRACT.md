@@ -3290,3 +3290,143 @@ for this and for nothing else.
 **A true two-device test needs the learner's own account and is outstanding.**
 It belongs to them: finish a lesson's steps on the computer, open the same
 skill on the phone, and the pips should already be ticked.
+
+## 26. A paradigm never scrolls sideways, 2026-09-13
+
+> "For the phone, parts of paradym charts should stack underneith each other so
+> that you dont have to scroll sidewise."
+
+Settled with the learner as one rule for the whole app: **anywhere a paradigm
+appears, whenever it does not fit its box, it stacks.** The Tables tab, a
+lesson's "Full paradigm", the word panel and the popup, a hint's table, a
+teaching step's reveal, the feedback table and the drill chart — the same `.pt`
+table in the same `.pt__scroll` box, so one rule reaches all of them and a
+paradigm never scrolls sideways on any screen.
+
+### 26.1 "Does not fit" is a measurement, not a breakpoint
+
+CSS cannot ask "is this table wider than its box", so a width media query is not
+the answer and neither is a guess at phone width. Two measurements from this
+build say why:
+
+- the 1st-conjugation tables **fit** a 375px phone (a 341px box, a 341px table)
+  and should stay tables there;
+- the drill chart for one tense **does not fit** a **1440px desktop** — the
+  grammar section caps its own measure at 704px, so the box is 640 and the
+  table, with a box in every cell, wants 666. A width query would have left that
+  one scrolling on the largest screen the learner owns.
+
+So a `ResizeObserver` watches each `.pt__scroll` (for its width) **and its
+table** (for its height, which is how a type-size change shows up when the box
+has not moved), and `stackStep` in `wordpanel.js` decides from `scrollWidth`
+against `clientWidth`, with a pixel of slop.
+
+**Why it settles.** Stacking narrows the content, so re-asking the *stacked*
+layout whether it fits would always answer yes and unstack it straight back — a
+flap, once a frame, for ever. The watcher therefore remembers `need`, the width
+the table asked for when it was folded, and unfolds only when the box is at
+least that wide again. If the table still overflows there, the width it then
+reports is larger than a box that was already ≥ the old `need`, so `need` can
+only rise and the next step settles: at most two flips, and the bound in the
+loop is a guard rather than a schedule. A type-size change forgets `need` (it
+was measured of a different font) and the next measurement sets it afresh. A box
+with no width — a closed `<details>`, a hidden panel, a node not yet in the
+document — decides nothing.
+
+### 26.2 What a stacked cell is called
+
+**One block per value column, in the table's own column order**: singular then
+plural, active then passive, masculine then feminine then neuter, one block per
+stock word on a teaching step's reveal. A table names a cell by a row *and* a
+column, and stacked it still does: the block carries the column heading under
+the table's own caption, and every line inside it keeps its row label. The
+caption is printed once above the blocks and repeated inside each one for a
+screen reader only (`.pt__stack .visually-hidden`, pinned to the box like §12's
+given-cell labels, QA M-7), so the eye reads "present indicative" and then
+"active", while a screen reader hears "present indicative · active" as that
+table's name. A table with one value column has nothing to tell apart, so its
+single block takes the whole name and the caption is not printed twice.
+`stackPlan` is that rule, and it is pure.
+
+Each block is a real `<table>` with real `<th scope="row">` row headings, so
+nothing about how a cell is announced changes.
+
+### 26.3 The cells are moved, never rebuilt
+
+The drill chart is this same table with a box in its cells (`chartInput`), and
+that is what decided the mechanism. `foldable()` moves each `<td>` — with its
+input, its ✓/✗ mark, its "?" and everything the learner has typed — into its
+block, using `moveBefore` where the browser has it, so a cell being typed into
+keeps the focus and the caret; where it does not, the focus is put back by hand.
+Only the row label is copied, and a row label is plain text. The emptied table
+stays in the document as the skeleton to move back into, hidden by
+`.pt--folded`, which is why **no other rule may ever show it again** — it would
+print empty rows.
+
+Measured across a fold and an unfold under the hands: the value, the caret and
+the focus survive both directions, every time.
+
+Because the DOM really is column-major when stacked, Tab runs down each block in
+turn — the order on screen. Enter's "next empty box" was the one thing still
+walking the map's build order, along the table's rows; it now sorts by document
+position, so both keys follow whichever layout is up.
+
+### 26.4 Two things that had to be fixed before the question could be asked
+
+- **The box has to be the box.** `.g-lesson__pt` is a grid item, so
+  `min-width: auto`: the catalogue's filled-in table made the whole *page* 463px
+  wide on a 375px phone, the `.pt__scroll` inside it was 445px, and it therefore
+  never overflowed and could never be told to stack. The learner's sideways
+  scroll on the Tables tab was the page's, not the box's. Every box a paradigm
+  sits in now carries `min-width: 0; max-width: 100%`.
+- **A touch target that reaches past the edge is scrollable overflow.** The "?"
+  extender (`.g-hintb::after`, `right: -15px`) lands outside the box on the last
+  cell of a row, so a stacked table still reported itself 6px too wide and still
+  had a sliver of sideways scroll in it. The last cell in a row reserves the room
+  instead — §17.3's rule one step out: reserve the space, do not let something
+  appear beside a control.
+
+Two sizing rules follow from stacking rather than precede it: a chart cell is
+`var(--tap)` tall on a coarse pointer (36px was under this project's own
+standard, and an unstacked table had no room to give it more), and a stacked
+chart's box is `width: 6rem` with `flex-grow` rather than `width: auto` — an
+input's intrinsic width is about 180px, and a table sizes a column by what is in
+it, so the box claimed the row and squeezed "he / she / it" into three lines.
+
+### 26.5 Print
+
+Nothing changes. `print.js` builds its own `.pr-t` tables into `#g-print` from
+the paradigm itself, and `html[data-printing]` hides everything else on the
+page, so the screen's stacking never reaches paper. A plain Ctrl+P of the app
+prints the page as it stands, stacked blocks and all, which is what is on the
+screen.
+
+### 26.6 Device-emulated evidence (§21.1, §21.2)
+
+Emulated phone (375×667, touch, mobile UA), tablet (768×1024, touch) and desktop
+1440×900; viewport screenshots only. Every `.pt__scroll` on every surface
+reached: `scrollWidth === clientWidth`, and `document.scrollWidth ===
+clientWidth` — **no sideways scroll anywhere**.
+
+| | phone 375 | tablet 768 | desktop 1440 |
+| --- | --- | --- | --- |
+| catalogue, 1st conjugation (15 tables) | 341/341, 1 stacked | 510/510 | 510/510 |
+| catalogue, `magnus` (3 genders) | 341/341, 3 blocks each | 510/510 | 510/510 |
+| catalogue, `ipse` (3 genders) | 341/341, 3 blocks | 510/510 | 510/510 |
+| drill chart, one tense, 0% given | 343/343, 2 blocks | 640/640, 2 blocks | 640/640, 2 blocks |
+| word panel / popup, 29 words | 307/307 | 288/288 | 334/334 |
+| word panel at type size 5 | 307/307 | 288/288, 2 blocks | 334/334, 2 blocks |
+
+The drill chart, twelve cells, on each device: all twelve "?" buttons inside the
+viewport (0 outside; the worst right edge is 343 on a 375px phone, where before
+this the table scrolled and they sat off it); the "?" does not move when the cell
+beside it is judged (§17.3); a typed cell grades on blur (✗, `is-bad`, the input
+red); the box is 44px tall on both touch devices. At 80% given the ten given
+cells print greyed with their own "?" inside the viewport and the note is
+unchanged (§12); `chart.shown` and `meta.given` are read off the item, not the
+DOM, so §18.3's rung is untouched. Tab order runs down the active block and then
+the passive one — the order on screen.
+
+**Still unverified, and honestly so** (§21.3): the on-screen keyboard, and a real
+finger on a real phone. Nothing here needed a gesture, so §21.3's list is
+unchanged.
