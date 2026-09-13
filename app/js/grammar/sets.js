@@ -11,8 +11,10 @@
 //   setSkills({ questions, vocab, pensa })    → Map id → pseudo-skill
 //   createSetItems({ sets, units, pool, rand }).generate({ skill, kind, stage }) → item | null
 //   matchQuestion(typed, answers, sentence)   answer matching: macron-stripped, case-insensitive, the full sentence accepted
-//   POPULATIONS / populationOf / normalisePopulations / filterPopulations
-//   mixNote(chosen, offered) / mixTitle(chosen, offered)   what a mixed set mixes, and the copy that says so
+//   POPULATIONS / populationOf                the four kinds, and which one a skill is
+//   mixGrid({ chapters, skills, order, sets, drillable })  the chapters × kinds the library can offer
+//   normaliseMix / mixIn / mixWhole / mixHolds / filterMix / mixToggle / mixCounts   the learner's ticks
+//   mixNote(sel, grid) / mixTitle(sel, grid)   what a mixed set mixes, and the copy that says so
 //   resolveRef(la, ref) / resolveList(la, list)  a question's `{ span }` / `{ parts }` references → the Latin they stand for
 //
 // A question set's answers and choices are references into the sentence the
@@ -29,6 +31,7 @@
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { roman, shelfChapter } from '../sync.js';
 import { normaliseAnswer, la, partsText, q } from './items.js';
+import { spine, chapterMaterial } from './chapter.js';
 
 export const SET_KINDS = Object.freeze(['question', 'vocab', 'pensum']);
 const pad = (n) => String(n).padStart(2, '0');
@@ -260,11 +263,10 @@ export const setChapters = (sets) => [...new Set([...sets.values()].map((s) => s
 /* --------------------------------------------- what a mixed set may mix */
 /**
  * The four populations a mixed session draws from, in the order the Practice
- * setup offers them. They are not a new taxonomy: the first is the book's
- * grammar skills (`skills.json`), and the other three are exactly the chapter
- * sets `setSkills` above builds — `set` on the pseudo-skill says which. The
- * learner turns each on or off, so a mix can be all four, or two, or one kind
- * alone.
+ * setup lays them across the top of its grid. They are not a new taxonomy:
+ * the first is the book's grammar skills (`skills.json`), and the other three
+ * are exactly the chapter sets `setSkills` above builds — `set` on the
+ * pseudo-skill says which.
  */
 export const POPULATIONS = Object.freeze(['skills', 'questions', 'vocab', 'pensum']);
 /** What each is called on screen — the map's own words for the same rows (ui.js SET_ROW_LABEL). */
@@ -277,49 +279,269 @@ export function populationOf(skill) {
   const set = skill && typeof skill === 'object' ? skill.set : null;
   return POPULATIONS.includes(set) ? set : 'skills';
 }
+
+/* ------------------------------------------ the mix, chapter by chapter */
 /**
- * The learner's choice as a clean list, in POPULATIONS order and never naming
- * a population this library has nothing for. `null` / `undefined` (nothing
- * chosen yet) means every population offered; an empty array is a real choice
- * and stays empty, so "none" survives a reload like any other setting. Pure.
+ * **What the learner ticks** (their ask of 2026-09-13: "a menu with the
+ * chapters laid out vertically and horizontally you can select the pense,
+ * practice, vocab, or story questions to include in the practice"). The mix
+ * is no longer four switches over the whole library but a grid: a chapter a
+ * row, a population a column, and one **cell** — a chapter's things of one
+ * kind — the unit the learner turns on and off.
+ *
+ * A selection is a list of **tokens**, and there are two kinds of token,
+ * because the grid has two kinds of control and they mean different things:
+ *
+ *   `'vocab'`      a whole **column**: that kind, every chapter, including
+ *                  chapters that reach the library later. This is exactly
+ *                  what the old global toggle meant, so a stored
+ *                  `settings.grammar.populations` — `['pensum']`, "Pensa
+ *                  only" — **is already a selection in the new shape** and
+ *                  goes on meaning what it meant. There is no migration step,
+ *                  nothing to rewrite and nothing to lose; and an older
+ *                  device, which can read only these, degrades to the columns
+ *                  it understands rather than to nothing.
+ *   `'vocab:26'`   one **cell**: chapter XXVI's vocabulary, that chapter and
+ *                  no other.
+ *
+ * …and `null` — never chosen, or "All" — is everything there is, now and
+ * whatever arrives.
+ *
+ * **A chapter that arrives later** joins the mix in every column the learner
+ * took whole, and stays out of every column they picked chapter by chapter.
+ * Neither answer is right for both learners, so the selection records which
+ * was made: "all the vocabulary" goes on meaning all the vocabulary, and
+ * "these three chapters" is not quietly widened to four. Being out is never
+ * silent — the grid draws the row, with its boxes unticked, and the note
+ * under it counts the chapters in each column.
+ *
+ * **Material that has gone** — a deck that failed to fetch, pensa before
+ * sign-in — leaves its token naming nothing: it matches no skill, so it
+ * filters nothing, and the grid draws no control where there is nothing to
+ * drill. The token is **kept** in the stored selection rather than pruned, so
+ * the tick comes back with the material. Nothing here ever turns a cell *on*,
+ * so a library that shrinks can never widen the mix.
  */
-export function normalisePopulations(value, offered = POPULATIONS) {
-  const can = POPULATIONS.filter((p) => (offered ?? POPULATIONS).includes(p));
-  if (value == null) return can;
-  const list = Array.isArray(value) ? value : Object.entries(value).filter(([, on]) => on).map(([p]) => p);
-  return can.filter((p) => list.includes(p));
+/** One cell of the grid, as a token. Pure. */
+export const mixCell = (kind, chapter) => `${kind}:${Math.round(Number(chapter))}`;
+/**
+ * A token read back: `{ kind, chapter }` for a cell, `{ kind, chapter: null }`
+ * for a whole column, `null` for anything that is neither — a population this
+ * app does not have, or a chapter that is not a number. Pure.
+ */
+export function mixToken(token) {
+  const s = typeof token === 'string' ? token : '';
+  const i = s.indexOf(':');
+  const kind = i < 0 ? s : s.slice(0, i);
+  if (!POPULATIONS.includes(kind)) return null;
+  if (i < 0) return { kind, chapter: null };
+  const n = Math.round(Number(s.slice(i + 1)));
+  return Number.isFinite(n) && n >= 1 ? { kind, chapter: n } : null;
 }
-/** The skills of `skills` (Map id → skill) whose population the learner chose. Pure. */
-export function filterPopulations(skills, chosen, offered = POPULATIONS) {
-  const keep = new Set(normalisePopulations(chosen, offered));
-  return new Map([...skills].filter(([, s]) => keep.has(populationOf(s))));
+
+/**
+ * **What this library can actually offer**, chapter by chapter and kind by
+ * kind: the rows and columns the grid draws, and the only cells a selection
+ * can name. A row appears for a chapter that holds something drillable and
+ * for no other, and a cell carries the ids it stands for — so a cell that
+ * could not produce a question is never offered in the first place.
+ *
+ * The material is `chapter.js`'s answer and not a second one: `chapterMaterial`
+ * already says which skills and which sets are a chapter's, and the map's
+ * by-chapter view is drawn from the same call.
+ *
+ *   { kinds, rows: [ { chapter, roman, title, cells, ids } ], loose }
+ *
+ * `kinds` are the populations with something in them, in POPULATIONS order —
+ * the columns. `loose` is anything drillable that no chapter owns (a grammar
+ * skill with no chapter of its own; no shipped skill is one). It has no cell,
+ * so it can only ever ride in on a whole column, and it is named here rather
+ * than lost without a word. Pure.
+ */
+export function mixGrid({ chapters = null, skills = new Map(), order = null, sets = new Map(), drillable = () => true } = {}) {
+  const entries = new Map(spine(chapters).map((c) => [c.n, c]));
+  // A chapter set may reach this either way round — as its own Map, or already merged into `skills` —
+  // and `chapterMaterial` reads the two lists from different places, so the set map is completed here.
+  const allSets = new Map([...[...skills].filter(([, s]) => s?.set), ...sets]);
+  const claimed = new Set(entries.keys());
+  for (const s of [...skills.values(), ...sets.values()]) {
+    const n = Math.round(Number(s?.chapter));
+    if (Number.isFinite(n) && n >= 1) claimed.add(n);
+  }
+  const rows = [];
+  const placed = new Set();
+  for (const n of [...claimed].sort((a, b) => a - b)) {
+    const material = chapterMaterial(n, { skills, order, sets: allSets, entry: entries.get(n) ?? null });
+    const cells = {};
+    const ids = [];
+    for (const k of POPULATIONS) {
+      const here = material.members.filter((s) => populationOf(s) === k && drillable(s.id)).map((s) => s.id);
+      if (!here.length) continue;
+      cells[k] = here;
+      ids.push(...here);
+      for (const id of here) placed.add(id);
+    }
+    if (!ids.length) continue;
+    const e = entries.get(n);
+    rows.push({ chapter: n, roman: e?.roman ?? roman(n), title: e?.title ?? '', cells, ids });
+  }
+  const loose = {};
+  for (const s of new Map([...skills, ...allSets]).values()) {
+    if (!s || placed.has(s.id) || !drillable(s.id)) continue;
+    (loose[populationOf(s)] ||= []).push(s.id);
+  }
+  return { kinds: POPULATIONS.filter((k) => rows.some((r) => r.cells[k]) || loose[k]?.length), rows, loose };
+}
+
+/** Every chapter the grid offers one kind in, ascending. Pure. */
+const kindChapters = (grid, kind) => (grid?.rows ?? []).filter((r) => r.cells?.[kind]).map((r) => r.chapter);
+
+/**
+ * The learner's selection, cleaned. `null` in — never chosen — is `null` out:
+ * everything, now and whatever arrives. Anything else comes back as a
+ * canonical token list: no duplicates, cells dropped where their own column
+ * is already in whole, columns in POPULATIONS order and cells by chapter
+ * inside them. A token this app cannot read at all is dropped; a token naming
+ * material the library does not hold **today** is kept. Given a grid, a
+ * selection holding every column the library offers is everything, and comes
+ * back as `null` — so a population that was missing when the choice was saved
+ * (pensa before sign-in) is not shut out when it arrives. Pure.
+ */
+export function normaliseMix(value, grid = null) {
+  if (value == null) return null;
+  const list = Array.isArray(value)
+    ? value
+    : (value && typeof value === 'object' ? Object.entries(value).filter(([, on]) => on).map(([k]) => k) : []);
+  const kinds = new Set();
+  const cells = new Map();
+  for (const t of list) {
+    const tok = mixToken(t);
+    if (!tok) continue;
+    if (tok.chapter == null) { kinds.add(tok.kind); continue; }
+    if (!cells.has(tok.kind)) cells.set(tok.kind, new Set());
+    cells.get(tok.kind).add(tok.chapter);
+  }
+  const offered = grid?.kinds ?? null;
+  if (offered?.length && offered.every((k) => kinds.has(k))) return null;
+  const out = [];
+  for (const k of POPULATIONS) {
+    if (kinds.has(k)) { out.push(k); continue; }
+    for (const n of [...(cells.get(k) ?? [])].sort((a, b) => a - b)) out.push(mixCell(k, n));
+  }
+  return out;
+}
+/** Is one cell of the grid in the mix? Pure. */
+export function mixIn(sel, kind, chapter) {
+  if (sel == null) return true;
+  if (!Array.isArray(sel)) return false;
+  if (sel.includes(kind)) return true;
+  const n = Math.round(Number(chapter));
+  return Number.isFinite(n) && n >= 1 && sel.includes(mixCell(kind, n));
+}
+/** Is a whole column in — that kind, every chapter, including ones that arrive later? Pure. */
+export const mixWhole = (sel, kind) => sel == null || (Array.isArray(sel) && sel.includes(kind));
+/** Does the mix hold this skill (or chapter set)? A thing no chapter owns rides only on a whole column. Pure. */
+export const mixHolds = (sel, skill) => mixIn(sel, populationOf(skill), skill?.chapter);
+/** The skills of `skills` (Map id → skill) the selection lets through. Pure. */
+export function filterMix(skills, sel) {
+  if (sel == null) return new Map(skills);
+  return new Map([...skills].filter(([, s]) => mixHolds(sel, s)));
+}
+/**
+ * The selection after one control on the grid is pressed. `what` is the
+ * control: `{ kind }` a column heading, `{ chapter }` a chapter name,
+ * `{ kind, chapter }` one cell, and `'all'` / `'none'` the pair beside the
+ * grid.
+ *
+ * A column heading is not a bulk tick over the rows on screen: it says "this
+ * kind, whole", so pressing it writes the column token and pressing it again
+ * empties the column. Taking one cell out of a column that was taken whole
+ * **writes the column out first** — the other chapters stay in by name, and
+ * the column stops speaking for chapters that have not arrived. Pure.
+ */
+export function mixToggle(sel, what, grid = null) {
+  if (what === 'all') return null;
+  if (what === 'none') return [];
+  const kinds = new Set();
+  const cells = new Set();
+  if (sel == null) for (const k of (grid?.kinds ?? POPULATIONS)) kinds.add(k);
+  else for (const t of Array.isArray(sel) ? sel : []) {
+    const tok = mixToken(t);
+    if (!tok) continue;
+    if (tok.chapter == null) kinds.add(tok.kind); else cells.add(mixCell(tok.kind, tok.chapter));
+  }
+  const dropColumn = (k) => { kinds.delete(k); for (const c of [...cells]) if (mixToken(c)?.kind === k) cells.delete(c); };
+  const setCell = (k, n, on) => {
+    if (on) { if (!kinds.has(k)) cells.add(mixCell(k, n)); return; }
+    if (kinds.delete(k)) for (const m of kindChapters(grid, k)) cells.add(mixCell(k, m));
+    cells.delete(mixCell(k, n));
+  };
+  const kind = typeof what?.kind === 'string' ? what.kind : null;
+  const chapter = what?.chapter == null ? null : Math.round(Number(what.chapter));
+  if (kind && chapter != null) setCell(kind, chapter, !mixIn(sel, kind, chapter));
+  else if (kind) { const whole = kinds.has(kind); dropColumn(kind); if (!whole) kinds.add(kind); }
+  else if (chapter != null) {
+    const here = (grid?.rows ?? []).find((r) => r.chapter === chapter)?.cells ?? {};
+    const ks = POPULATIONS.filter((k) => here[k]);
+    const allOn = ks.length > 0 && ks.every((k) => mixIn(sel, k, chapter));
+    for (const k of ks) setCell(k, chapter, !allOn);
+  }
+  return normaliseMix([...kinds, ...cells], grid);
+}
+/**
+ * What the grid's own labels count, and what the copy below it reads off: per
+ * column the chapters in it (and whether the column was taken whole, which is
+ * a different thing from every chapter of it being ticked), per row how many
+ * of that chapter's kinds are in. Pure.
+ */
+export function mixCounts(sel, grid) {
+  const kinds = {};
+  for (const k of grid?.kinds ?? []) {
+    const chaps = kindChapters(grid, k);
+    kinds[k] = { whole: mixWhole(sel, k), on: chaps.filter((n) => mixIn(sel, k, n)).length, of: chaps.length };
+  }
+  const rows = new Map((grid?.rows ?? []).map((r) => {
+    const ks = (grid?.kinds ?? []).filter((k) => r.cells?.[k]);
+    return [r.chapter, { on: ks.filter((k) => mixIn(sel, k, r.chapter)).length, of: ks.length }];
+  }));
+  return { kinds, rows };
 }
 const andList = (parts) => (parts.length <= 1 ? parts.join('') : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`);
 /**
  * What a mixed set really holds, said in one sentence — the line the Practice
- * setup shows under the toggles and the session header repeats. A header that
+ * setup shows under the grid and the session header repeats. A header that
  * says "Practice" over a set of nothing but vocabulary is a lie the learner
- * only finds out item by item, so the copy names the populations that are in
- * and, when any is missing, the ones that are out. Pure.
+ * only finds out item by item, so the copy names the populations that are in,
+ * how many chapters of each when it is not all of them, and, when any kind is
+ * missing altogether, the ones that are out. Pure.
  */
-export function mixNote(chosen, offered = POPULATIONS) {
-  const can = POPULATIONS.filter((p) => (offered ?? POPULATIONS).includes(p));
-  const on = normalisePopulations(chosen, can);
-  const off = can.filter((p) => !on.includes(p));
-  if (!on.length) return 'Nothing is in the mix. Turn at least one of these on.';
-  if (!off.length) return `Everything: ${andList(can.map((p) => POPULATION_PHRASE[p]))}.`;
-  return `Only ${andList(on.map((p) => POPULATION_PHRASE[p]))} — ${andList(off.map((p) => POPULATION_PHRASE[p]))} left out.`;
+export function mixNote(sel, grid) {
+  const can = grid?.kinds ?? [];
+  const c = mixCounts(sel, grid);
+  const on = can.filter((k) => c.kinds[k].on);
+  const off = can.filter((k) => !c.kinds[k].on);
+  if (!can.length) return 'Nothing here can be drilled yet.';
+  if (!on.length) return 'Nothing is in the mix. Tick a box, or press All.';
+  if (!off.length && on.every((k) => c.kinds[k].on === c.kinds[k].of)) return `Everything: ${andList(can.map((k) => POPULATION_PHRASE[k]))}.`;
+  const phrase = (k) => `${POPULATION_PHRASE[k]}${c.kinds[k].on < c.kinds[k].of ? ` (${c.kinds[k].on} of ${c.kinds[k].of} chapters)` : ''}`;
+  return `Only ${andList(on.map(phrase))}${off.length ? ` — ${andList(off.map((k) => POPULATION_PHRASE[k]))} left out` : ''}.`;
 }
 /**
  * The same choice as a few words for a session's own title ("Vocabulary +
- * Pensa only"), or '' when the mix is everything there is and the title needs
- * no qualifier. Pure.
+ * Pensa · 3 chapters"), or '' when the mix is everything there is and the
+ * title needs no qualifier. Pure.
  */
-export function mixTitle(chosen, offered = POPULATIONS) {
-  const can = POPULATIONS.filter((p) => (offered ?? POPULATIONS).includes(p));
-  const on = normalisePopulations(chosen, can);
-  if (!on.length || on.length === can.length) return '';
-  return `${on.map((p) => POPULATION_LABEL[p]).join(' + ')} only`;
+export function mixTitle(sel, grid) {
+  const can = grid?.kinds ?? [];
+  const c = mixCounts(sel, grid);
+  const on = can.filter((k) => c.kinds[k].on);
+  if (!on.length) return '';
+  const chapters = (grid?.rows ?? []).filter((r) => on.some((k) => r.cells?.[k] && mixIn(sel, k, r.chapter))).map((r) => r.chapter);
+  const could = (grid?.rows ?? []).filter((r) => on.some((k) => r.cells?.[k])).length;
+  const kindPart = on.length === can.length ? '' : on.map((k) => POPULATION_LABEL[k]).join(' + ');
+  if (chapters.length >= could) return kindPart ? `${kindPart} only` : '';
+  const where = chapters.length === 1 ? `Cap. ${roman(chapters[0])}` : `${chapters.length} chapters`;
+  return kindPart ? `${kindPart} · ${where}` : where;
 }
 
 /* ------------------------------------------------------ answer matching */

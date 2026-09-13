@@ -329,10 +329,52 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
    so it sits a little apart from the four — a rule, not a badge or a colour. */
 .g-preset--missed { margin-top: var(--s-2); border-top-width: 2px; }
 .g-select { min-height: 40px; max-width: 100%; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: var(--ui-md); }
-/* "What goes in the mix": the four population toggles in the map's own filter pattern, with the All / None
-   pair beside them. One flow line, so on a phone the pair wraps under the chips instead of squeezing them. */
+/* "What goes in the mix": the grid (§26) — the chapters down the side, the four kinds across the top, a box
+   in every cell that holds something — with the All / None pair under it. One flow line for the pair, so on a
+   phone it wraps rather than squeezing. */
 .g-mix { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
-.g-mix .g-filter { flex: 0 1 auto; margin-left: calc(-1 * var(--s-2)); }
+/* The grid scrolls inside its own box rather than pushing the page sideways. It fits 375px as it is — four
+   44px targets and the chapter name inside 343px of content — but the whole section rides on --ui-scale, which
+   the Type control moves, so at the largest type the box is what gives instead of the document. */
+.g-mixg__scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.g-mixg { border-collapse: collapse; width: 100%; font-size: var(--ui-sm); }
+.g-mixg th, .g-mixg td { padding: 0; border: 0; text-align: center; vertical-align: middle; }
+/* The heading row is drawn as one, and it is **not** sticky — tried, and taken out again on the live pass for
+   two reasons, either of which is enough. The box above is the nearest scrollport and it never scrolls
+   vertically, so a sticky heading can only sit where it already sits; and a sticky cell inside a
+   `border-collapse: collapse` table hit-tests wrongly in Chromium — the corner cell claimed the point over the
+   first chapter's name, and pressing that row did nothing. A heading that scrolls away is the smaller loss:
+   every box says its own column and chapter to a screen reader, and the note under the grid says the rest. */
+.g-mixg thead td, .g-mixg thead th { background: var(--bg); border-bottom: 1px solid var(--line-strong); }
+.g-mixg__corner { text-align: left; padding: 0 var(--s-2) var(--s-1); color: var(--ink-3); font-size: var(--ui-xs); }
+.g-mixg__colh { width: 1%; }
+.g-mixg__col, .g-mixg__row { display: flex; width: 100%; background: none; border: 0; border-radius: var(--radius-sm); color: var(--ink); }
+.g-mixg__col { flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 38px; padding: var(--s-1) var(--s-2); }
+.g-mixg__col b { font-weight: 600; font-size: var(--ui-xs); white-space: nowrap; }
+.g-mixg__col small, .g-mixg__row small { color: var(--ink-3); font-size: var(--ui-xs); white-space: nowrap; }
+.g-mixg__col[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.g-mixg__col[aria-pressed="true"] small { color: var(--bg); }
+.g-mixg__rowh { text-align: left; }
+.g-mixg__row { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; min-height: 38px; padding: var(--s-1) var(--s-2); text-align: left; }
+.g-mixg__row b { font-weight: 500; font-size: var(--ui-sm); white-space: nowrap; }
+.g-mixg__row small { max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.g-mixg__row[aria-pressed="true"] b { font-weight: 700; }
+.g-mixg__col:hover, .g-mixg__row:hover { background: var(--bg-chrome); }
+.g-mixg__col[aria-pressed="true"]:hover { background: var(--ink); }
+.g-mixg tbody th, .g-mixg tbody td { border-bottom: 1px solid var(--line); }
+/* The reader's own bar is sticky at the top of every page, so a row the browser scrolls into view — which is
+   what the arrow keys do, and what a Tab does — would arrive underneath it and be neither readable nor
+   tappable. The margin is the slack for it (--bar-h, set by main.js). */
+.g-mixg tbody tr { scroll-margin-top: calc(var(--bar-h, 0px) + var(--s-3)); scroll-margin-bottom: var(--s-5); }
+.g-mixg__cell { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 38px; padding: var(--s-1); background: none; border: 0; border-radius: var(--radius-sm); }
+/* Colour is never the only signal (§3): in is a tick inside a filled box, out is an empty outline, and an
+   empty cell carries no box at all — a dash and the words "nothing here" for a screen reader. */
+.g-mixg__box { display: grid; place-items: center; width: 20px; height: 20px; border: 1.5px solid var(--line-strong); border-radius: var(--radius-sm); font-size: 13px; line-height: 1; }
+.g-mixg__cell:hover .g-mixg__box { border-color: var(--ink); }
+.g-mixg__cell[aria-pressed="true"] .g-mixg__box { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.g-mixg__cell[aria-pressed="true"] .g-mixg__box::after { content: "\2713"; }
+.g-mixg__td--none { color: var(--ink-3); font-size: var(--ui-sm); }
+@media (max-width: 767.98px) { .g-mixg__row small { display: none; } }
 /* "All or none" is one control with two ends, not two buttons: neither end stays pressed, so it takes the
    segmented shell without the pressed state the size and view switches use. */
 .g-seg--allnone { flex: none; }
@@ -906,7 +948,7 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
    than to the page. Second, the label is pinned to that box's own corner, so wherever one appears — a caption, a
    cell label, a verdict word — it can add nothing to any scrollable area. Both are layout-only: the box is still
    1 px, still clipped, still read aloud in document order. */
-#grammar .pt__scroll, #grammar .g-cellwrap, #grammar .g-chart__word, #grammar .g-fb__line { position: relative; }
+#grammar .pt__scroll, #grammar .g-cellwrap, #grammar .g-chart__word, #grammar .g-fb__line, #grammar .g-mixg__scroll { position: relative; }
 #grammar .visually-hidden { inset-block-start: 0; inset-inline-start: 0; }
 /* A given cell: the form printed and greyed, not a box; its own hint beside it like a box's. */
 .g-chart__given { padding-block: 2px; background: var(--bg-chrome); }
@@ -1001,4 +1043,14 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
      screen. The gap goes to zero so no two targets overlap, the way a tab bar's do not. */
   .g-steps--n { gap: 0; }
   .g-steps--n .g-steps__go { min-height: var(--tap); min-width: var(--tap); }
+}
+
+@media (pointer: coarse) {
+  /* The mix grid (§26). Four boxes and a chapter name abreast: 4 × 44 = 176px of the 343px a 375px phone
+     leaves inside .g (16px of padding each side), and the chapter name takes what is left — "Cap. XXVIII" at
+     the small UI size is about 80px, so it fits without abbreviating anything. The headings carry the long
+     words ("Vocabulary") at the extra-small size and set the real column width, a little over the 44px floor.
+     The row's own name and each column heading are targets too: a miss on a box is a miss on the whole row. */
+  .g-mixg__cell, .g-mixg__col, .g-mixg__row { min-height: var(--tap); }
+  .g-mixg__cell { min-width: var(--tap); }
 }

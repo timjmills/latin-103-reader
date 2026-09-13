@@ -125,9 +125,12 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     drillable(id) { return drillableMemo.drillable(id); },
     /** The grammar preferences kept in settings (unknown keys ride along in the settings blob). */
     // `hints` is the per-answer-box hint mode ('press' | 'always' | 'off'), riding in the same blob as the rest.
-    // `populations` is what the mixed set may mix (sets.js POPULATIONS) and `unstudied` whether it may reach
-    // material never opened. Both are the learner's and ride in the same blob: `null` means "not chosen yet",
-    // which is not the same as the empty choice `[]`, so "none" survives a reload like any other setting.
+    // `populations` is what the mixed set may mix and `unstudied` whether it may reach material never opened.
+    // Both are the learner's and ride in the same blob: `null` means "not chosen yet", which is not the same as
+    // the empty choice `[]`, so "none" survives a reload like any other setting. Since the grid (§26) the list
+    // holds two kinds of token — a whole column, `'vocab'`, or one cell, `'vocab:26'` — and the key keeps its
+    // name because the old whole-column values are still valid ones: a device on an older build reads the
+    // columns it knows and ignores the cells, rather than reading the whole setting as nothing.
     prefs() { const g = ctx.settings?.grammar; return { preset: g?.preset ?? 'review-heavy', size: g?.size === null ? null : (Number(g?.size) || 10), oneSkill: g?.oneSkill ?? null, view: g?.view === 'chapter' ? 'chapter' : 'topic', hints: normaliseHintMode(g?.hints), populations: Array.isArray(g?.populations) ? g.populations : null, unstudied: g?.unstudied == null ? null : !!g.unstudied }; },
     async savePrefs(patch) {
       const next = { ...(ctx.settings?.grammar ?? {}), ...patch };

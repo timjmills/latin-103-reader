@@ -13,7 +13,7 @@ import { PARTS, skillProgress } from './progress.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, stepList, normaliseLearnPlace, MAX_STEPS, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
 import { createLearn, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, matchesForm, isWrittenKey, la, partsText } from './items.js';
-import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATIONS, POPULATION_LABEL, populationOf, normalisePopulations, filterPopulations, mixNote, mixTitle } from './sets.js';
+import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATION_LABEL, mixGrid, normaliseMix, mixIn, mixHolds, filterMix, mixToggle, mixCounts, mixNote, mixTitle } from './sets.js';
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView, chapterOfSentence } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
 import { buildToday, fmtMinutes } from './today.js';
@@ -2649,16 +2649,19 @@ export function createUI(ctx) {
   /* --------------------------------------------------------- practice */
   /**
    * **What a mixed set is allowed to mix** (the learner's four messages of
-   * 2026-09-11). The populations are the app's own four, not a new taxonomy:
-   * the grammar skills of `skills.json`, and each chapter's questions,
-   * vocabulary and pensa, which `setSkills` builds as pseudo-skills and the
-   * map lists under "Chapter sets". A population with nothing drillable in
-   * this library is not offered at all — a control that cannot change
-   * anything is worse than no control.
+   * 2026-09-11, and their grid of 2026-09-13). The columns are the app's own
+   * four populations, not a new taxonomy: the grammar skills of `skills.json`,
+   * and each chapter's questions, vocabulary and pensa, which `setSkills`
+   * builds as pseudo-skills and the map lists under "Chapter sets". The rows
+   * are the chapters that hold something drillable. Both come from `mixGrid`,
+   * which reads each chapter's material through `chapterMaterial` — the same
+   * call the map's by-chapter view is drawn from, so the two cannot drift. A
+   * cell with nothing drillable is not offered at all: a control that cannot
+   * change anything is worse than no control.
    */
-  const populationsOffered = () => POPULATIONS.filter((p) => [...skills.values()].some((s) => populationOf(s) === p && drillable(s.id)));
-  /** The learner's choice, cleaned against what is offered. Never chosen = everything. */
-  const chosenPopulations = () => normalisePopulations(ctx.prefs().populations, populationsOffered());
+  const mixGridNow = () => mixGrid({ chapters: ctx.chapters ?? null, skills, order: index.order, sets: ctx.sets ?? new Map(), drillable });
+  /** The learner's ticks, cleaned against what the library offers. Never chosen = everything. */
+  const chosenMix = (grid = mixGridNow()) => normaliseMix(ctx.prefs().populations, grid);
   /** True when a skill or set has never been opened at all: no row, or a row still marked new. */
   const untouched = (id) => stateOf(id).state === 'new';
   /**
@@ -2669,19 +2672,19 @@ export function createUI(ctx) {
    * section has always had.
    */
   const unstudiedOn = () => { const p = ctx.prefs().unstudied; return p == null ? ![...skills.keys()].some((id) => inRotation(stateOf(id)) && drillable(id)) : p; };
-  /** Every id a mixed set may draw on, given the chosen populations and whether untouched material is let in. */
-  const mixPool = (pops = chosenPopulations(), withNew = unstudiedOn()) => [...skills.keys()]
-    .filter((id) => drillable(id) && pops.includes(populationOf(skills.get(id))) && (inRotation(stateOf(id)) || (withNew && untouched(id))));
+  /** Every id a mixed set may draw on, given the ticked cells and whether untouched material is let in. */
+  const mixPool = (sel = chosenMix(), withNew = unstudiedOn()) => [...skills.keys()]
+    .filter((id) => drillable(id) && mixHolds(sel, skills.get(id)) && (inRotation(stateOf(id)) || (withNew && untouched(id))));
 
   // `from` is the chapter page this was opened from, when it was (the by-chapter view's "Practise"): it names
   // the Back button and the way out. Without the parameter the view crashed on `from` the moment it was drawn.
   function renderSetup({ from = null } = {}) {
     const prefs = ctx.prefs();
-    const offered = populationsOffered();
-    let pops = normalisePopulations(prefs.populations, offered);
+    const grid = mixGridNow();
+    let sel = normaliseMix(prefs.populations, grid);
     let unstudied = unstudiedOn();
     const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
-    let pool = mixPool(pops, unstudied);
+    let pool = mixPool(sel, unstudied);
     const cw = [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])];
     const onShelf = isShelfWeek(ctx.currentWeekN());
     let size = prefs.size;
@@ -2689,7 +2692,7 @@ export function createUI(ctx) {
     let oneSkill = prefs.oneSkill && pool.includes(prefs.oneSkill) ? prefs.oneSkill : pool[0] ?? null;
     // The one emptiness left: this library can drill nothing at all, so no choice on this screen could fill a
     // session. "Nothing is in mixed practice yet" is no longer one of them — that is what the controls below are for.
-    if (!offered.length) {
+    if (!grid.kinds.length) {
       setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Practice' }), h('p', { class: 'g-lede', text: 'Nothing here can be drilled yet — no sentence in the library fits a skill, and no chapter set has arrived. The lessons are there to read.' })),
         h('div', { class: 'g-acts' }, btn('Go to the skills', { onclick: () => render('map') }, 'btn btn--primary')));
       return;
@@ -2727,23 +2730,41 @@ export function createUI(ctx) {
     }));
     const pick = h('div', { class: 'g-preset__pick', hidden: preset !== 'one-skill' }, h('span', { class: 'g-label', text: 'Skill' }), skillSelect);
     /* ------------------------------------------- what goes in the mix */
-    // Four toggles in the section's own filter pattern (the map's category filter), one per population, each
-    // saying how many rows it would contribute; an All / None pair beside them; and the switch that decides
-    // whether material never opened may come up. Every change is written to settings at once — the learner may
-    // walk away from this screen and start a session from the Today card, which never passes through here.
-    const popBtn = new Map();
+    // The grid the learner asked for (§26): the chapters down the side, the four kinds across the top, a box in
+    // every cell that holds something. A column heading takes that whole kind — every chapter, and the ones that
+    // arrive later — which is what the four global toggles that stood here used to do; a chapter name takes its
+    // whole row; the All / None pair still sits under it. Real table semantics, so a screen reader reads each box
+    // under its own two headings, and the arrow keys walk the grid. Every change is written to settings at once —
+    // the learner may walk away from this screen and start a session from the Today card, which never comes here.
+    const cellBtn = new Map();          // 'kind:chapter' → { b, kind, chapter }
+    const colBtn = new Map();           // kind           → { b, small }
+    const rowBtn = new Map();           // chapter        → { b, r }
     const ledeNode = h('p', { class: 'g-lede' });
     const mixNoteNode = h('p', { class: 'g-quiet' });
     const startBtn = btn('Start', { onclick: () => start() }, 'btn btn--primary');
     const emptyNode = h('p', { class: 'g-quiet g-mix__empty', hidden: true });
-    const saveMix = () => ctx.savePrefs({ populations: pops, unstudied, preset, size, oneSkill, hints });
+    const saveMix = () => ctx.savePrefs({ populations: sel, unstudied, preset, size, oneSkill, hints });
     const paintMix = () => {
-      pool = mixPool(pops, unstudied);
-      for (const [p, b] of popBtn) {
-        b.setAttribute('aria-pressed', String(pops.includes(p)));
-        b.textContent = `${POPULATION_LABEL[p]} · ${mixPool([p], unstudied).length}`;
+      pool = mixPool(sel, unstudied);
+      const counts = mixCounts(sel, grid);
+      for (const [k, { b, small }] of colBtn) {
+        const c = counts.kinds[k];
+        // "all 12" and "12 of 12" look alike today and behave differently tomorrow: the first is the
+        // column itself and takes in a chapter that has not arrived yet, the second is those twelve chapters.
+        // The heading is pressed for the first only, because pressing it is what makes a column the first.
+        b.setAttribute('aria-pressed', String(c.whole));
+        small.textContent = c.whole ? `all ${c.of}` : c.on ? `${c.on} of ${c.of}` : 'none';
+        b.setAttribute('aria-label', c.whole
+          ? `${POPULATION_LABEL[k]} — the whole column: every chapter, including chapters that arrive later. Press to take it out of the mix.`
+          : `${POPULATION_LABEL[k]} — ${c.on ? `${c.on} of ${c.of} chapters` : 'no chapter'} in the mix. Press to take the whole column.`);
       }
-      mixNoteNode.textContent = mixNote(pops, offered);
+      for (const [n, { b, r }] of rowBtn) {
+        const c = counts.rows.get(n) ?? { on: 0, of: 0 };
+        b.setAttribute('aria-pressed', String(c.of > 0 && c.on === c.of));
+        b.setAttribute('aria-label', `Chapter ${r.roman}${r.title ? `, ${r.title}` : ''} — ${c.on} of its ${c.of} in the mix. Press to take the whole row ${c.of > 0 && c.on === c.of ? 'out' : 'in'}.`);
+      }
+      for (const { b, kind, chapter } of cellBtn.values()) b.setAttribute('aria-pressed', String(mixIn(sel, kind, chapter)));
+      mixNoteNode.textContent = mixNote(sel, grid);
       // Every number here counts **this mix**, not the whole rotation: a lede that said "11 due" over a mix
       // of four would be a count of something the learner cannot reach from this screen.
       const extra = pool.filter((id) => !inRotation(stateOf(id))).length;
@@ -2751,7 +2772,7 @@ export function createUI(ctx) {
       const crossable = new Set();
       for (const id of due) for (const c of skills.get(id)?.confusable_with ?? []) if (due.includes(c)) crossable.add([id, c].sort().join('|'));
       ledeNode.textContent = `${pool.length} in the mix${extra ? `, ${extra} of them never opened` : ''} · ${due.length} due${crossable.size ? ` · ${crossable.size} pair${crossable.size === 1 ? '' : 's'} that are easy to cross` : ''}.`;
-      // "This week" can become possible the moment a population or the switch lets one of the week's skills in.
+      // "This week" can become possible the moment a cell or the switch lets one of the week's skills in.
       const week = weekLabels.get('this-week');
       if (week) {
         const off = !cw.some((id) => pool.includes(id));
@@ -2764,20 +2785,78 @@ export function createUI(ctx) {
       skillSelect.replaceChildren(...pool.map((id) => h('option', { value: id, selected: id === oneSkill ? true : null }, titleOf(id))));
       startBtn.disabled = !pool.length;
       emptyNode.hidden = !!pool.length;
-      emptyNode.textContent = !pops.length
-        ? 'Nothing can be built from an empty mix. Turn a population on, or press All.'
+      emptyNode.textContent = Array.isArray(sel) && !sel.length
+        ? 'Nothing can be built from an empty mix. Tick a box, or press All.'
         : unstudied
-          ? 'Nothing in the chosen populations can be drilled yet.'
-          : 'Nothing you have studied is in the chosen populations. Turn on "Include what you have not studied", or add some from the skill map.';
+          ? 'Nothing you have ticked can be drilled yet.'
+          : 'Nothing you have studied is in the cells you ticked. Turn on "Include what you have not studied", or add some from the skill map.';
     };
-    const popFilter = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'What goes in the mix' }, offered.map((p) => {
-      const b = btn('', { onclick: () => { pops = pops.includes(p) ? pops.filter((x) => x !== p) : normalisePopulations([...pops, p], offered); paintMix(); saveMix(); ctx.say(mixNote(pops, offered)); } }, 'g-filter__btn');
-      popBtn.set(p, b);
-      return b;
-    }));
+    const press = (what) => { sel = mixToggle(sel, what, grid); paintMix(); saveMix(); ctx.say(mixNote(sel, grid)); };
+    // The arrow keys walk the grid, as they do in any grid of controls, and Home / End go to the ends of a row.
+    // Tab still reaches every box in document order, so nothing here has to be known to use the thing; a cell with
+    // nothing in it carries no control, and the walk steps over it rather than landing on an empty square.
+    const gridKeys = (e) => {
+      const step = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
+      const cell = e.target?.closest?.('th, td');
+      const table = cell?.closest?.('table');
+      if (!cell || !table || (!step && e.key !== 'Home' && e.key !== 'End')) return;
+      const rows = [...table.rows];
+      let y = rows.indexOf(cell.parentElement);
+      let x = [...cell.parentElement.cells].indexOf(cell);
+      if (y < 0 || x < 0) return;
+      const at = (yy, xx) => rows[yy]?.cells?.[xx]?.querySelector('button') ?? null;
+      let next = null;
+      if (!step) {
+        const across = [...rows[y].cells].map((_, i) => i);
+        for (const xx of (e.key === 'Home' ? across : across.reverse())) { next = at(y, xx); if (next) break; }
+      } else {
+        for (let i = rows.length + rows[y].cells.length; i > 0 && !next; i--) {
+          y += step[0];
+          x += step[1];
+          if (y < 0 || y >= rows.length || x < 0 || x >= (rows[y]?.cells?.length ?? 0)) break;
+          next = at(y, x);
+        }
+      }
+      if (!next) return;
+      e.preventDefault();
+      next.focus();
+    };
+    const mixTable = h('div', { class: 'g-mixg__scroll', onkeydown: gridKeys },
+      h('table', { class: 'g-mixg' },
+        h('caption', { class: 'visually-hidden', text: 'What goes in the mix: a chapter a row, a kind a column.' }),
+        h('thead', {}, h('tr', {},
+          h('td', { class: 'g-mixg__corner', text: 'Chapter' }),
+          grid.kinds.map((k) => {
+            const small = h('small', {});
+            const b = h('button', { type: 'button', class: 'g-mixg__col', onclick: () => press({ kind: k }) },
+              h('b', { text: POPULATION_LABEL[k] }), small);
+            colBtn.set(k, { b, small });
+            return h('th', { scope: 'col', class: 'g-mixg__colh' }, b);
+          }))),
+        h('tbody', {}, grid.rows.map((r) => h('tr', {},
+          (() => {
+            const b = h('button', { type: 'button', class: 'g-mixg__row', onclick: () => press({ chapter: r.chapter }) },
+              h('b', { text: `Cap. ${r.roman}` }), r.title ? h('small', { text: r.title }) : null);
+            rowBtn.set(r.chapter, { b, r });
+            return h('th', { scope: 'row', class: 'g-mixg__rowh' }, b);
+          })(),
+          grid.kinds.map((k) => {
+            const ids = r.cells[k];
+            // An empty cell is not an unticked one. It carries no control at all and says so in words, so it
+            // cannot be read — by eye or by a screen reader — as a box that merely happens to be off.
+            if (!ids) return h('td', { class: 'g-mixg__td g-mixg__td--none' },
+              h('span', { 'aria-hidden': 'true', text: '–' }), h('span', { class: 'visually-hidden', text: 'nothing here' }));
+            const b = h('button', { type: 'button', class: 'g-mixg__cell',
+              'aria-label': `${POPULATION_LABEL[k]}, chapter ${r.roman}, ${ids.length === 1 ? '1 thing' : `${ids.length} things`}, in the mix`,
+              onclick: () => press({ kind: k, chapter: r.chapter }) },
+              h('span', { class: 'g-mixg__box', 'aria-hidden': 'true' }));
+            cellBtn.set(`${k}:${r.chapter}`, { b, kind: k, chapter: r.chapter });
+            return h('td', { class: 'g-mixg__td' }, b);
+          }))))));
+    const gridHelp = h('p', { class: 'g-quiet', text: "Tick a box to put that chapter's things of that kind into the mix. A chapter name takes its whole row, and a column heading takes the whole kind. The figure under each heading counts the chapters in that column: “all 34” is the kind itself, so a chapter that reaches your library later joins it; “8 of 34” is those eight chapters and no more." });
     const allNone = h('div', { class: 'g-seg g-seg--allnone', role: 'group', 'aria-label': 'All or none' },
-      btn('All', { onclick: () => { pops = [...offered]; paintMix(); saveMix(); ctx.say(mixNote(pops, offered)); } }, 'g-seg__btn'),
-      btn('None', { onclick: () => { pops = []; paintMix(); saveMix(); ctx.say(mixNote(pops, offered)); } }, 'g-seg__btn'));
+      btn('All', { onclick: () => press('all') }, 'g-seg__btn'),
+      btn('None', { onclick: () => press('none') }, 'g-seg__btn'));
     const unstudiedSwitch = h('label', { class: 'switch g-all-switch' },
       h('input', { type: 'checkbox', role: 'switch', checked: unstudied ? true : null, onchange: (e) => { unstudied = e.target.checked; paintMix(); saveMix(); } }),
       h('span', { class: 'switch__ui', 'aria-hidden': 'true' }),
@@ -2792,7 +2871,7 @@ export function createUI(ctx) {
         h('span', { class: 'g-preset__text' }, h('b', { text: label }), h('small', { text: desc })));
     }));
     const start = async () => {
-      await ctx.savePrefs({ populations: pops, unstudied, preset, size, oneSkill, hints });
+      await ctx.savePrefs({ populations: sel, unstudied, preset, size, oneSkill, hints });
       if (preset === 'missed') { render('redo', { size, from }); return; }
       render('session', { preset, size, oneSkill, from });
     };
@@ -2805,7 +2884,7 @@ export function createUI(ctx) {
       ledeNode),
       h('section', { class: 'g-setup' },
         h('div', { class: 'g-setup__row g-setup__row--col' }, h('span', { class: 'g-label', text: 'What goes in' }),
-          h('div', { class: 'g-mix' }, popFilter, allNone), mixNoteNode, unstudiedSwitch,
+          gridHelp, mixTable, h('div', { class: 'g-mix' }, allNone), mixNoteNode, unstudiedSwitch,
           h('p', { class: 'g-quiet', text: `${rotation.length} of the ${[...skills.keys()].filter(drillable).length} things here have been put into practice. With the switch on, a mixed set also draws on the ones you have never opened — they come after everything that is due, and answering one puts it into practice for good.` }),
           emptyNode),
         h('div', { class: 'g-setup__row' }, h('span', { class: 'g-label', text: 'Items' }), sizeGroup),
@@ -2837,10 +2916,10 @@ export function createUI(ctx) {
     // setup's two new controls, read here rather than carried in the params so a session resumed from the
     // Today card (which never passes through that screen) obeys the same choice. "Practise this chapter" is
     // the chapter's own material by definition and is left alone: the learner asked for that chapter, whole.
-    const offered = populationsOffered();
-    const pops = ch != null ? offered : chosenPopulations();
+    const grid = ch != null ? null : mixGridNow();
+    const sel = ch != null ? null : chosenMix(grid);
     const unstudied = ch != null ? false : unstudiedOn();
-    let world = ch != null ? skillsIndex : { ...skillsIndex, skills: filterPopulations(skillsIndex.skills, pops, offered) };
+    let world = ch != null ? skillsIndex : { ...skillsIndex, skills: filterMix(skillsIndex.skills, sel) };
     if (ch != null) {
       const material = chapterMaterial(ch, { skills, order: index.order, sets: ctx.sets ?? new Map() });
       const pool = chapterPool(material, { state: stateOf, drillable });
@@ -2859,13 +2938,13 @@ export function createUI(ctx) {
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
     const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, chapter: ch, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange, unstudied });
     const first = practice.start();
-    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : `Nothing in this mix can produce an item. ${mixNote(pops, offered)}` })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'), btn('Change the mix', { onclick: () => render('setup', { from: params.from }) }, 'btn btn--quiet'))); return; }
+    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : `Nothing in this mix can produce an item. ${mixNote(sel, grid)}` })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'), btn('Change the mix', { onclick: () => render('setup', { from: params.from }) }, 'btn btn--quiet'))); return; }
     if (usable) ctx.say('Session resumed.');
     // The header says what is actually in the set. A mix cut down to one population read "Practice · Review-heavy"
     // over ten vocabulary cards and named neither the narrowing nor the untouched material it had let in.
-    const narrowed = ch != null ? '' : mixTitle(pops, offered);
+    const narrowed = ch != null ? '' : mixTitle(sel, grid);
     const title = ch != null ? `Practise · Cap. ${roman(ch)}` : `Practice · ${(PRESET_LABEL[params.preset] ?? PRESET_LABEL['review-heavy'])[0]}${narrowed ? ` · ${narrowed}` : ''}`;
-    const note = ch != null ? '' : `${mixNote(pops, offered)}${unstudied ? ' Material you have never opened is let in, after everything that is due.' : ''}`;
+    const note = ch != null ? '' : `${mixNote(sel, grid)}${unstudied ? ' Material you have never opened is let in, after everything that is due.' : ''}`;
     runSession({ runner: practice.runner, title, note, mode: 'practice', hintOpen: false, practiceLink: true, open: practice.open, more: () => practice.more(), onDone: (summary) => { writeJSON(LS_SESSION, null); renderSummary(summary, params); } });
   }
   /* ------------------------------------------------- redo what was wrong */
