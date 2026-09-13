@@ -776,11 +776,15 @@ export function continueAt(place, steps) {
  * One mark of the Learn stepper, in one of three states: `done` (its check has
  * been answered), `now` (the step on screen) and `todo`.
  *
- * **Colour is never the only signal (§3).** The glyph differs in *shape* — a
- * tick, a numeral, the word "Ten" — so the row still reads in greyscale and on
- * paper, and `label` carries the whole fact in words for a reader who sees no
- * glyph at all. The colour is the third signal and says nothing the other two
- * do not. Pure.
+ * **The glyph is the step's number in every state** (§22.5). A finished step
+ * used to become a bare tick, so six finished steps read "✓ ✓ ✓ ✓ ✓ ✓ Ten" and
+ * which was step 4 took a hover over each. The state moved to the mark's fill,
+ * which the stylesheet draws from `data-state`.
+ *
+ * **Colour is still never the only signal (§3).** The fills differ in *shape* —
+ * a solid disc (done), a solid disc inside a ring (now), an empty ring (todo) —
+ * so the row reads in greyscale, and `label` carries the whole fact in words for
+ * a reader who sees no glyph at all. Pure.
  */
 export function stepMark(i, { title = '', state = 'todo', steps = 0, go = false } = {}) {
   const n = Math.max(0, Math.floor(Number(steps) || 0));
@@ -788,7 +792,35 @@ export function stepMark(i, { title = '', state = 'todo', steps = 0, go = false 
   const what = ten ? 'The ten items' : `Step ${i + 1} of ${n}${title ? `, ${title}` : ''}`;
   const says = { done: 'done', now: 'in progress' }[state] ?? 'not started';
   const invite = go ? (state === 'done' ? ' Go back to it.' : ' Go to it.') : '';
-  return { glyph: state === 'done' ? '✓' : ten ? 'Ten' : String(i + 1), label: `${what}: ${says}.${invite}` };
+  return { glyph: ten ? 'Ten' : String(i + 1), label: `${what}: ${says}.${invite}` };
+}
+
+/**
+ * The stepper, explained (§22.5): what the row is, then every mark **by name**
+ * — the chapter line was answered the same way, because defining the category
+ * ("a step") told the learner nothing they could use. `titles` are the steps'
+ * own titles in order, `done` the indexes answered, `at` the mark on screen
+ * (`titles.length` for the ten). The ten's bar is the scheduler's, not retyped. Pure.
+ */
+export function stepsTip({ titles = [], done = [], at = 0 } = {}) {
+  const n = titles.length;
+  const finished = new Set(done);
+  const count = titles.filter((_, i) => finished.has(i)).length;
+  const lines = titles.map((t, i) => {
+    const d = finished.has(i);
+    const here = at === i;
+    const text = here ? (d ? 'on screen now — you finished it before' : 'on screen now') : d ? 'finished — press its circle to go over it again' : 'not reached yet';
+    // Plain text, the print sheet's way: ten titles mark their Latin (`*sine*`), and a panel line cannot italicise.
+    return { key: `step-${i}`, mark: String(i + 1), label: String(t ?? '').replace(/\*\*?/g, '') || `Step ${i + 1}`, flag: null, text, done: d, here };
+  });
+  const open = at === n ? 'On screen now.' : n && count === n ? 'Open now — press "Ten".' : 'It opens once every step is finished.';
+  lines.push({ key: 'ten', mark: '', label: 'Ten', flag: null, text: `ten questions on this skill alone. ${LEARN_NEEDED} of ${LEARN_WINDOW} right, across ${LEARN_KINDS} kinds of question, and it joins your mixed practice. ${open}`, done: false, here: at === n });
+  return {
+    title: 'The parts of this lesson',
+    summary: `${n} step${n === 1 ? '' : 's'}, then ten questions. A filled green circle is a step you have finished; the red one with a ring round it is on screen. ${count} of ${n} finished so far.`,
+    lines,
+    foot: 'You cannot skip ahead: each step opens once the one before it is answered. A finished step can always be reopened by pressing its circle.',
+  };
 }
 
 /* ------------------------------------ the panel the labels share (§23) */
@@ -2118,9 +2150,10 @@ export function createUI(ctx) {
      * to mark only `aria-current`, so a step behind the learner and one they
      * had never reached were drawn identically; the row said nothing about
      * what was done, which is what sent the learner into a lesson not knowing
-     * where they were. A done step now carries a tick and is a button that
-     * jumps to it — the deliberate "unless I purposely want to retry". A step
-     * not yet answered is not a control: the runner has never let anyone past
+     * where they were. A done step now fills green, keeps its number (§22.5)
+     * and is a button that jumps to it — the deliberate "unless I purposely
+     * want to retry". A step not yet answered is not a control: the runner has
+     * never let anyone past
      * an unanswered check, and a pip that could would be a way round the
      * teaching rather than through it.
      */
@@ -2129,9 +2162,10 @@ export function createUI(ctx) {
         const marks = [skill.set === 'vocab' ? 'The deck, a batch at a time' : 'The passage\'s questions', 'Blocked 10'];
         return h('ol', { class: 'g-steps', 'aria-label': 'Learn steps' }, marks.map((s, j) => h('li', { class: 'g-steps__s', 'aria-current': at === j ? 'step' : null }, s)));
       }
-      const marks = [...learn.steps.map((s, i) => s.title || `Step ${i + 1}`), 'Ten items'];
+      // A title's `*Latin*` stars would be read out in the mark's label and shown in its tooltip, neither of which italicises.
+      const marks = [...learn.steps.map((s, i) => String(s.title ?? '').replace(/\*\*?/g, '') || `Step ${i + 1}`), 'Ten items'];
       const allDone = learn.steps.every((_, i) => doneSteps.has(i));
-      return h('ol', { class: 'g-steps g-steps--n', 'aria-label': 'Learn steps' }, marks.map((title, j) => {
+      const row = h('ol', { class: 'g-steps g-steps--n', 'aria-label': 'Learn steps' }, marks.map((title, j) => {
         const ten = j === nSteps;
         const state = at === j ? 'now' : (!ten && doneSteps.has(j) ? 'done' : 'todo');
         // The ten is a destination and never a tick: passing it ends the sitting and clears this record.
@@ -2142,6 +2176,14 @@ export function createUI(ctx) {
           go ? btn([glyph], { 'aria-label': m.label, onclick: () => (ten ? showBlocked() : showSteps({ at: j, back: true })) }, 'g-steps__go')
             : h('span', { class: 'g-steps__go' }, glyph));
       }));
+      // The row explains itself (§22.5), from outside the list: inside it, a screen reader counts the "?" as an
+      // eighth mark of "Learn steps". The panel is built when it opens, so it reads the steps finished by then.
+      // A lesson with no steps has only the ten, and "0 of 0 finished" would explain nothing.
+      const nDone = learn.steps.filter((_, i) => doneSteps.has(i)).length;
+      const why = nSteps ? tipTrigger('steps', () => stepsTip({ titles: learn.steps.map((s) => s.title), done: [...doneSteps], at }), {
+        cls: 'g-why--bare', label: tipLabel('Lesson steps', `${nDone} of ${nSteps} finished`, 'explain this row'),
+      }) : null;
+      return h('div', { class: 'g-stepbar' }, row, why);
     };
     const finishQueue = () => { writeJSON(LS_QUEUE, queue.length ? queue.slice(1) : null); if (queue.length) render('learn', { skill: queue[0], queue: queue.slice(1) }); else leaveTo(from); };
     if (queue.length) writeJSON(LS_QUEUE, queue);
@@ -2182,7 +2224,8 @@ export function createUI(ctx) {
       const lead = h('section', { class: 'g-step', 'aria-label': `Step ${n} of ${nSteps}` },
         (slot?.step ?? i) === 0 ? prereqNode(skill, missing, { queue, from }) : null,
         h('p', { class: 'g-kicker', text: `Step ${n} of ${nSteps}` }),
-        h('h2', { class: 'g-step__title', tabindex: '-1', text: step.title || skill.title }),
+        // Through `prose`, as `say` is: ten titles mark their Latin (`*cum* glued on behind: *mēcum*`) and printed the stars.
+        h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(step.title || skill.title)),
         nn?.node ?? null,
         body);
       let gate = false;

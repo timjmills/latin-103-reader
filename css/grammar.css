@@ -845,10 +845,24 @@ table.g-table { max-width: 24rem; }
 button.g-steps__go { cursor: pointer; }
 button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--ink); }
 .g-steps__go:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
-.g-steps__g { width: 1.4em; height: 1.4em; display: inline-grid; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: var(--ui-xs); }
+.g-steps__g { width: 1.4em; height: 1.4em; display: inline-grid; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: var(--ui-xs); line-height: 1; }   /* 1: the inherited line box sat the numeral low in its disc */
 .g-steps--n .g-steps__s:last-child .g-steps__g { width: auto; height: auto; border: 0; border-radius: 0; font-size: inherit; }   /* the ten is named, not numbered */
 .g-steps__s[data-state="done"] { color: var(--success); }
-.g-steps__s[data-state="now"] .g-steps__g { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
+/* §22.5: a finished step keeps its number and says it is finished by its fill — six bare ticks could not be
+   told apart. Colour is still not the only signal: done is a solid disc, the step on screen a solid disc inside
+   a ring, a step not reached an empty ring, and the three shapes survive greyscale. The ring is a box-shadow so
+   no state changes the mark's size (§17.3). The number is --bg on the fill, the pairing the step on screen has
+   always used; --success and --rubric sit at the same lightness in both themes, so it reads as well on either. */
+.g-steps__s[data-state="done"] .g-steps__g { background: var(--success); border-color: var(--success); color: var(--bg); }
+.g-steps__s[data-state="done"] button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--bg); }
+.g-steps__s[data-state="now"] .g-steps__g { background: var(--rubric); border-color: var(--rubric); color: var(--bg); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--rubric); }
+/* Forced colours paint over backgrounds and drop shadows, which would leave all three states the same empty ring. */
+@media (forced-colors: active) {
+  .g-steps__s[data-state="done"] .g-steps__g { forced-color-adjust: none; background: CanvasText; border-color: CanvasText; color: Canvas; }
+  .g-steps__s[data-state="now"] .g-steps__g { box-shadow: none; outline: 1px solid CanvasText; outline-offset: 2px; }
+}
+/* The row and the "?" that explains it (§22.5). The "?" sits outside the list, so it is not counted as a mark. */
+.g-stepbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); }
 .g-step { display: grid; gap: var(--s-3); padding-bottom: var(--s-4); border-bottom: 1px solid var(--line); }
 .g-step__title { margin: 0; font-family: var(--face-serif); font-weight: 400; font-size: 1.45rem; line-height: 1.25; text-wrap: balance; outline: none; }
 .g-step__title:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
@@ -1085,8 +1099,11 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
      is pressable, so the row does not re-lay itself out as steps are finished. Seven marks is the most a
      lesson can have (six steps and the ten) and 7 × 44 = 308px, which still sits on one row of a 375px
      screen. The gap goes to zero so no two targets overlap, the way a tab bar's do not. */
-  .g-steps--n { gap: 0; }
+  .g-steps--n, .g-stepbar { gap: 0; }
   .g-steps--n .g-steps__go { min-height: var(--tap); min-width: var(--tap); }
+  /* The row's "?" (§22.5) makes eight 44px targets, 352px: one row on a 393px phone. Narrower, it wraps — and
+     at the start of its own line it read as belonging to nothing, so it keeps to the row's end, under "Ten". */
+  .g-stepbar > .g-why { margin-inline-start: auto; }
 }
 
 @media (pointer: coarse) {
