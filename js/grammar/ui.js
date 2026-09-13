@@ -5,7 +5,7 @@
 // from dictionary.describe); the target's dictionary form sits under the item.
 
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
-import { renderParadigm } from '../wordpanel.js';
+import { renderParadigm, fitParadigm } from '../wordpanel.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
@@ -1892,9 +1892,11 @@ export function createUI(ctx) {
         if (!c) return h('td', { class: 'pt__cell is-empty', lang: 'la', text: '—' });
         return h('td', { class: 'pt__cell', lang: 'la' }, c.ending != null && (c.stem || c.ending) ? [c.stem ? h('span', { class: 'pt__stem', text: c.stem }) : null, h('span', { class: 'pt__ending g-reveal__end', text: c.ending })] : c.form);
       })))));
+    const scroll = h('div', { class: 'pt__scroll' }, table);
+    fitParadigm(scroll, table);      // §26: one block per stock word when the reveal does not fit its box
     return h('div', { class: 'g-show g-show--cells' },
       h('p', { class: 'g-lesson__tag', text: `${r.table?.label ?? show.key} · ${r.rows.map((row) => row.label).join(' and ')}` }),
-      h('div', { class: 'pt__scroll' }, table),
+      scroll,
       endings.length ? h('p', { class: 'g-reveal__note' }, 'The ending: ', endings.map((e, i) => [i ? ' and ' : null, h('b', { lang: 'la', text: `-${e}` })])) : null);
   }
 
@@ -3662,8 +3664,13 @@ export function createUI(ctx) {
     if (e.altKey && (e.key === 'h' || e.key === 'H')) { e.preventDefault(); hints.get(i)?.click(); return; }
     if (e.key !== 'Enter' || e.altKey || e.ctrlKey || e.metaKey) return;
     mark(i, inp.value);
-    const next = [...inputs.entries()].find(([, el]) => !el.value.trim());
-    if (next) { e.preventDefault(); next[1].focus({ preventScroll: true }); }
+    // The next empty box is the next one **on screen**, which is where Tab goes too. A stacked chart (§26)
+    // reads down each block in turn, so the map's own order — the order the cells were built in, along the
+    // table's rows — would send Enter jumping between blocks. Document order is the order either layout reads in.
+    const next = [...inputs.values()]
+      .filter((el) => !el.value.trim())
+      .sort((a, b) => ((a.compareDocumentPosition(b) & 4 /* DOCUMENT_POSITION_FOLLOWING */) ? -1 : 1))[0];
+    if (next) { e.preventDefault(); next.focus({ preventScroll: true }); }
   }
   /** Pensum B: the sentence with word blanks and a tappable bank. Submits { blankIndex: word }. */
   function bankInput(item, submit, hintFor = () => null, { onCells = null, onReopen = null } = {}) {
@@ -3898,7 +3905,12 @@ export function createUI(ctx) {
             if (idx >= 0) return h('td', { class: 'pt__cell g-chart__in' }, cellIn(idx, chart.cells[idx].label));
             return h('td', { class: `pt__cell${cell?.empty ? ' is-empty' : ''}`, lang: 'la', text: cell?.empty ? '—' : cell?.text ?? '—' });
           })))));
-        form.append(h('div', { class: 'pt__scroll' }, tbl));
+        // §26: the drill chart is this same table with a box in its cells, so it stacks by the same rule —
+        // and stacking is what brings a cell's "?" back inside a 375px screen, where the scrolling table
+        // held it past the right edge. The cells are moved, not rebuilt, so every box keeps what is in it.
+        const scroll = h('div', { class: 'pt__scroll' }, tbl);
+        fitParadigm(scroll, tbl);
+        form.append(scroll);
       }
       if (given.length) form.append(h('p', { class: 'g-quiet g-chart__givennote', text: `${given.length} of ${chart.cells.length} cells are given in grey; fill the ${chart.cells.length - given.length} others. The given ones have their own hint.` }));
     }
