@@ -17,16 +17,18 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { POPULATIONS, POPULATION_LABEL, populationOf, normalisePopulations, filterPopulations, mixNote, mixTitle, setSkills, groupPensa } from '../app/js/grammar/sets.js';
+import { POPULATIONS, POPULATION_LABEL, populationOf, mixGrid, normaliseMix, filterMix, mixNote, mixTitle, setSkills, groupPensa } from '../app/js/grammar/sets.js';
 import { buildSession, orderCandidates, addToPractice, removeFromPractice, newState, applyAnswer, inRotation, DAY_MS } from '../app/js/grammar/scheduler.js';
 import { dueText } from '../app/js/grammar/ui.js';
 
 const src = (name) => readFileSync(new URL(`../${name}`, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
-const UI = src('app/js/grammar/ui.js');
+/** A file with its comment lines taken out: an assertion that matches the comment above the code proves nothing. */
+const code = (name) => src(name).split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n');
+const UI = code('app/js/grammar/ui.js');
 const CSS = src('app/css/grammar.css');
 
 const NOW = Date.parse('2026-09-11T12:00:00Z');
-const grammarSkill = (id) => ({ id, set: null, title: id, plain: id, category: 'noun-case', kinds: ['recognise', 'chart', 'parse', 'blank'], parse_filter: { case: 'nom' }, confusable_with: [], prereqs: [] });
+const grammarSkill = (id, chapter = 1) => ({ id, set: null, chapter, title: id, plain: id, category: 'noun-case', kinds: ['recognise', 'chart', 'parse', 'blank'], parse_filter: { case: 'nom' }, confusable_with: [], prereqs: [] });
 /** The three chapter-set shapes exactly as `setSkills` builds them, from invented material. */
 const SETS = setSkills({
   questions: new Map([[1, { items: [{ q: 'Ubi?' }, { q: 'Quis?' }], title: 'Fābula prīma', week_id: null }]]),
@@ -42,6 +44,9 @@ const SKILLS = new Map([
   ...['g1', 'g2', 'g3', 'g4'].map((id) => [id, grammarSkill(id)]),
   ...SETS,
 ]);
+/** The grid this invented library offers: one chapter, with all four kinds in it. */
+const GRID = mixGrid({ skills: SKILLS, sets: SETS });
+const ONLY_SKILLS = mixGrid({ skills: new Map([['g1', grammarSkill('g1')]]) });
 const stateMap = (ids, patch = {}) => new Map(ids.map((id) => [id, { ...addToPractice(newState(id, NOW), NOW), due_at: new Date(NOW - DAY_MS).toISOString(), stability_days: 2, ...patch }]));
 const popsOf = (plan) => [...new Set(plan.map((s) => populationOf(SKILLS.get(s.skill))))].sort();
 
@@ -59,16 +64,16 @@ test('the four populations are the app\'s own, and every shipped skill shape lan
   for (const label of ['Questions', 'Vocabulary', 'Pensa']) assert.ok(UI.includes(`'${label}'`), `${label} is the row label the map already uses`);
 });
 
-test('the choice is cleaned, ordered and honest about "none": null is everything, [] is nothing, and a population the library lacks is never offered', () => {
-  assert.deepEqual(normalisePopulations(null), ['skills', 'questions', 'vocab', 'pensum']);
-  assert.deepEqual(normalisePopulations(undefined), ['skills', 'questions', 'vocab', 'pensum']);
-  assert.deepEqual(normalisePopulations([]), [], 'an empty choice is a real choice and survives');
-  assert.deepEqual(normalisePopulations(['pensum', 'skills']), ['skills', 'pensum'], 'canonical order, whatever order it was stored in');
-  assert.deepEqual(normalisePopulations(['skills', 'nonsense']), ['skills']);
-  assert.deepEqual(normalisePopulations(null, ['skills', 'vocab']), ['skills', 'vocab'], 'only what this library holds');
-  assert.deepEqual(normalisePopulations(['skills', 'pensum'], ['skills', 'vocab']), ['skills']);
+test('the choice is cleaned, ordered and honest about "none": never chosen is everything, [] is nothing, and a token this app cannot read is dropped', () => {
+  assert.equal(normaliseMix(null), null, 'never chosen is everything there is — now and whatever arrives');
+  assert.equal(normaliseMix(undefined), null);
+  assert.deepEqual(normaliseMix([]), [], 'an empty choice is a real choice and survives');
+  assert.deepEqual(normaliseMix(['pensum', 'skills']), ['skills', 'pensum'], 'canonical order, whatever order it was stored in');
+  assert.deepEqual(normaliseMix(['skills', 'nonsense']), ['skills']);
+  assert.deepEqual(normaliseMix(['vocab', 'vocab:1']), ['vocab'], 'a cell its own column already holds is not said twice');
+  assert.equal(normaliseMix(POPULATIONS, GRID), null, 'every column this library offers is everything, and comes back as such');
   // The object form a settings blob could arrive in.
-  assert.deepEqual(normalisePopulations({ skills: true, vocab: false, pensum: true }), ['skills', 'pensum']);
+  assert.deepEqual(normaliseMix({ skills: true, vocab: false, pensum: true }), ['skills', 'pensum']);
 });
 
 test('turning a population off takes it out of the map the session is built from, and out of the plan', () => {
@@ -77,25 +82,25 @@ test('turning a population off takes it out of the map the session is built from
   const whole = buildSession({ states, skills: SKILLS, size: 20, now: NOW, seed: 7 });
   assert.deepEqual(popsOf(whole), ['pensum', 'questions', 'skills', 'vocab'], 'everything on: all four turn up');
 
-  const noSkills = filterPopulations(SKILLS, ['questions', 'vocab', 'pensum']);
+  const noSkills = filterMix(SKILLS, ['questions', 'vocab', 'pensum']);
   assert.equal([...noSkills.keys()].some((id) => populationOf(SKILLS.get(id)) === 'skills'), false);
   const without = buildSession({ states, skills: noSkills, size: 20, now: NOW, seed: 7 });
   assert.ok(without.length, 'a mix of three populations still builds');
   assert.equal(popsOf(without).includes('skills'), false, 'no grammar skill reaches a plan that excludes them');
 
-  const onlyVocab = buildSession({ states, skills: filterPopulations(SKILLS, ['vocab']), size: 10, now: NOW, seed: 7 });
+  const onlyVocab = buildSession({ states, skills: filterMix(SKILLS, ['vocab']), size: 10, now: NOW, seed: 7 });
   assert.deepEqual(popsOf(onlyVocab), ['vocab'], 'mixing can be turned off entirely: one kind and nothing else');
 });
 
 test('the header says what is really in the set, and says nothing extra when the set is everything', () => {
-  assert.equal(mixTitle(POPULATIONS), '', 'a whole mix needs no qualifier');
-  assert.equal(mixTitle(['vocab', 'pensum']), 'Vocabulary + Pensa only');
-  assert.equal(mixTitle(['skills'], ['skills']), '', 'the only population there is is not a narrowing');
-  assert.match(mixNote(POPULATIONS), /^Everything: the grammar skills, the chapters' questions, the vocabulary decks and the pensa\.$/);
-  assert.equal(mixNote(['vocab', 'pensum']), "Only the vocabulary decks and the pensa — the grammar skills and the chapters' questions left out.");
-  assert.match(mixNote([]), /Nothing is in the mix/);
+  assert.equal(mixTitle(null, GRID), '', 'a whole mix needs no qualifier');
+  assert.equal(mixTitle(['vocab', 'pensum'], GRID), 'Vocabulary + Pensa only');
+  assert.equal(mixTitle(['skills'], ONLY_SKILLS), '', 'the only population there is is not a narrowing');
+  assert.match(mixNote(null, GRID), /^Everything: the grammar skills, the chapters' questions, the vocabulary decks and the pensa\.$/);
+  assert.equal(mixNote(['vocab', 'pensum'], GRID), "Only the vocabulary decks and the pensa — the grammar skills and the chapters' questions left out.");
+  assert.match(mixNote([], GRID), /Nothing is in the mix/);
   // One sentence, one full stop in the middle of nothing: the note is read aloud by the live region too.
-  assert.equal(mixNote(['vocab']).includes('. the'), false, 'no sentence starts lower-case');
+  assert.equal(mixNote(['vocab'], GRID).includes('. the'), false, 'no sentence starts lower-case');
 });
 
 /* ----------------------------------- 2 · anything, studied or not */
@@ -176,13 +181,15 @@ test('a row taken out of the mix does not claim to be untouched', () => {
 test('the Practice setup carries the chooser, in the section\'s own control vocabulary', () => {
   const setup = UI.slice(UI.indexOf('function renderSetup'), UI.indexOf('function renderPracticeStart'));
   assert.ok(setup.includes("text: 'What goes in'"), 'the row is labelled');
-  assert.ok(/class: 'g-filter'[^\n]*aria-label': 'What goes in the mix'/.test(setup), 'the population toggles reuse the map\'s filter pattern, not a new one');
-  assert.ok(setup.includes("'g-filter__btn'"), 'and its button class');
+  // The four global toggles are gone: the same choice is now a cell of the grid (§26), and the column
+  // heading is what says "this whole kind". Their `.g-filter` row must not have been left behind beside it.
+  assert.equal(/class: 'g-filter'[^\n]*aria-label': 'What goes in the mix'/.test(setup), false, 'the four global toggles no longer stand here');
+  assert.ok(setup.includes("h('table', { class: 'g-mixg' }"), 'the chooser is a real table');
   assert.ok(/g-seg g-seg--allnone/.test(setup) && setup.includes("btn('All'") && setup.includes("btn('None'"), 'All / None is one segmented control');
   assert.ok(setup.includes("class: 'switch g-all-switch'") && setup.includes('Include what you have not studied'), 'the switch is the section\'s own switch');
   assert.equal(setup.includes('Nothing is in mixed practice yet. Learn a skill, or add one straight to practice from the skill map.'), false, 'the Practice tab is no longer a dead end on a fresh device');
   // The choice rides in the settings blob beside the rest, and is written the moment it changes.
-  assert.ok(setup.includes('ctx.savePrefs({ populations: pops, unstudied'), 'saved the way every other practice setting is');
+  assert.ok(setup.includes('ctx.savePrefs({ populations: sel, unstudied'), 'saved the way every other practice setting is');
   assert.ok(src('app/js/grammar/index.js').includes('populations') && src('app/js/grammar/index.js').includes('unstudied'), 'and read back by prefs()');
 });
 
@@ -190,7 +197,7 @@ test('the map and each chapter carry the same add-all / none pair, and the sessi
   assert.ok(UI.includes("btn('Add all', { onclick: () => bulkAdd(inFilter, filterName)"), 'the map\'s pair is scoped to the category filter on screen');
   assert.ok(UI.includes('function chapterAllNone'), 'a chapter has the same pair');
   assert.ok(UI.includes('bulkNone'), 'and "none" is a real action, not a label');
-  assert.ok(UI.includes('mixTitle(pops, offered)') && UI.includes('mixNote(pops, offered)'), 'the running session names the mix in its title and its note');
+  assert.ok(UI.includes('mixTitle(sel, grid)') && UI.includes('mixNote(sel, grid)'), 'the running session names the mix in its title and its note');
   assert.ok(CSS.includes('.g-seg--allnone'), 'the pair has its own rule and does not hard-code anything');
   assert.equal(/\.g-mix[^{]*\{[^}]*#[0-9a-fA-F]{3}/.test(CSS), false, 'no hard-coded colour in the new rules');
 });

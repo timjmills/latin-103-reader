@@ -3290,3 +3290,184 @@ for this and for nothing else.
 **A true two-device test needs the learner's own account and is outstanding.**
 It belongs to them: finish a lesson's steps on the computer, open the same
 skill on the phone, and the pips should already be ticked.
+
+## 26. The mix is chosen chapter by chapter, 2026-09-13
+
+> "for selecting things for mixed practice- I want a menu with the chapters
+> laid out vertically and horizontablly you can select the pense, practice,
+> vocab, or story questions to include in teh practice."
+
+A grid: the chapters down the side, the four kinds across the top, a box in
+each cell you tick. Their "practice" is the chapter's **grammar skills** and
+their "story questions" the chapter's **Questions** set, so the columns are the
+app's own four populations (Wave 2) under the names the map already uses —
+Skills, Questions, Vocabulary, Pensa.
+
+The grid **replaces** the four global toggles `renderSetup` drew. A column
+heading does what a toggle did, a chapter name does the same for a row, and
+Add all / None stay where they were.
+
+### 26.1 The shape: two kinds of token, and why there are two
+
+A selection is a list of tokens (`app/js/grammar/sets.js`), and a token is
+either a **column** or a **cell**:
+
+| token | means |
+| --- | --- |
+| `'vocab'` | that kind, **every chapter** — including chapters that reach the library later |
+| `'vocab:26'` | chapter XXVI's vocabulary, that chapter and no other |
+| `null` | everything there is, now and whatever arrives (never chosen, or **All**) |
+| `[]` | nothing — a real choice, which survives a reload like any other |
+
+The two exist because the grid has two controls that mean different things, and
+collapsing them into one would make the interface lie in one direction or the
+other. A column heading is not a bulk tick over the rows on screen: it is the
+claim "this kind, whole".
+
+**The migration is the identity function.** A stored
+`settings.grammar.populations` is already a list of column tokens —
+`['pensum']` is "Pensa only" — so a learner who has that set today keeps
+exactly that, with nothing rewritten and nothing to lose. The key keeps its
+name for the same reason, and it buys one more thing: a device still on an
+older build reads the columns it understands and ignores the cells, so a
+narrowing degrades to a wider narrowing rather than to "nothing in the mix".
+All four columns stored is everything, and `normaliseMix` returns `null` for
+it — which also lets a column the library did not hold when the choice was
+saved (the pensa, before sign-in) in when it arrives.
+
+### 26.2 A chapter that arrives later, and material that has gone
+
+**A new chapter joins every column that was taken whole and stays out of every
+column picked chapter by chapter.** Neither answer is right for both learners,
+so the selection records which was made. "All the vocabulary" goes on meaning
+all the vocabulary; "these three chapters" is not quietly widened to four by a
+pipeline build. Being out is never silent: the grid draws the new row with its
+boxes unticked, the column's own figure changes from `all 34` to `34 of 35`,
+and the note under the grid says "(34 of 35 chapters)".
+
+This is why the heading's figure reads `all 34` and not `34 of 34`. Those two
+states look identical in today's mix and behave differently tomorrow, so the
+interface distinguishes them in words and the heading is pressed for the first
+only — pressing it is what makes a column the first.
+
+**Material that has gone** — a deck that failed to fetch, the pensa before
+sign-in — leaves its token naming nothing. It matches no skill, so it filters
+nothing, and the grid draws no control where there is nothing to drill. The
+token is **kept** in the stored selection rather than pruned, so the tick comes
+back with the material. Nothing in the selection algebra ever turns a cell
+*on*, so a library that shrinks can never widen the mix.
+
+Taking one cell out of a column that was taken whole **writes the column out**
+first: `['vocab']` becomes `['vocab:1', 'vocab:3']`, the other chapters stay in
+by name, and the column stops speaking for chapters that have not arrived.
+
+### 26.3 Never a control that cannot produce a question
+
+`mixGrid` builds the rows and columns from `chapterMaterial` — the same call
+the map's by-chapter view is drawn from, so "what does this chapter have" is
+answered in one place and the two cannot drift. A row appears for a chapter
+that holds something drillable and for no other; a cell carries the ids it
+stands for, and a kind with nothing anywhere is not a column at all. Anything
+drillable that no chapter owns (a grammar skill with no chapter of its own; no
+shipped skill is one) comes back in `grid.loose`: it has no cell, so it can
+only ever ride in on a whole column, and it is named rather than lost.
+
+### 26.4 The interface
+
+A real `<table>`: a `<th scope="col">` per kind holding the column button, a
+`<th scope="row">` per chapter holding the chapter button, and a `<td>` per
+cell. Each box's accessible name is its own two headings and what ticking it
+does — "Vocabulary, chapter XXVI, 2 things, in the mix" — never a bare
+checkbox. Colour is never the only signal (§3): in is a tick inside a filled
+box, out is an empty outline.
+
+**An empty cell is not an unticked one.** It carries no control at all: a dash,
+and the words "nothing here" for a screen reader. It cannot be pressed, and it
+cannot be read as a box that merely happens to be off.
+
+The arrow keys walk the grid and step over the empty cells; Home and End go to
+the ends of a row. Nothing is taken out of the tab order to make that work, so
+Tab still reaches every box in document order.
+
+### 26.5 Thirty-four rows by four columns, on a 375px phone
+
+Measured, not assumed. Inside `.g` a 375px phone leaves 343px of content. The
+four columns take the width their headings need — Skills 46, Questions 70,
+Vocabulary 77, Pensa 47 = 240px — and the chapter name takes the remaining
+102px, which holds "Cap. XXVIII" at the small UI size with room to spare. No
+heading is abbreviated and nothing is hidden; the chapter's *title* is the one
+thing that goes, under 768px, because the numeral is what names the row.
+
+Every box is 46 × 44 on a coarse pointer, and every column heading and chapter
+name is a target of its own — a miss on a box is a miss on the whole row or the
+whole column, not on nothing. Those rules live at the **end** of
+`app/css/grammar.css` under "touch last" (§21.1).
+
+The grid still scrolls inside its own box (`.g-mixg__scroll`), because the whole
+section rides on `--ui-scale` and at the largest type the box is what should
+give rather than the document. Its hidden labels are pinned to that box's own
+corner, as every other scrolling box in the section is (QA M-7).
+
+**The heading row is not sticky, and that was tried.** Two reasons, either
+enough: the overflow box above it is the nearest scrollport and never scrolls
+vertically, so a sticky heading can only sit where it already sits; and a
+sticky cell inside a `border-collapse: collapse` table hit-tests wrongly in
+Chromium — on the live pass the corner cell claimed the point over the first
+chapter's name and pressing that row did nothing. What is kept is
+`scroll-margin-top` on the rows, so a row the browser scrolls into view (the
+arrow keys do exactly that) does not arrive under the reader's own sticky bar.
+
+### 26.6 What the copy says now
+
+`mixNote` names the kinds that are in, how many chapters of each when it is not
+all of them, and the kinds that are out; `mixTitle` carries the same into the
+session header, chapters included:
+
+- everything → `Everything: the grammar skills, the chapters' questions, the vocabulary decks and the pensa.` · title `''`
+- kinds narrowed → `Only the vocabulary decks and the pensa — …left out.` · title `Vocabulary + Pensa only`
+- chapters narrowed → `Only the vocabulary decks (2 of 3 chapters) …` · title `Vocabulary · 2 chapters`, or `Vocabulary · Cap. XXVI` for one
+- nothing → `Nothing is in the mix. Tick a box, or press All.`
+
+The lede above the grid goes on counting **this mix** and not the rotation, as
+it did before.
+
+### 26.7 Device-emulated evidence
+
+Driven under real device emulation (§21.1) — `hasTouch`, mobile UA, the right
+`deviceScaleFactor` — viewport screenshots only (§21.2), fixture library
+(`?fixture=1`: 34 chapters of skills, questions in VII and XXV, vocabulary and
+pensa in I and VII), own port, every measurement guarded on `location.origin`.
+
+| | phone 375×812 | tablet 810×1080 | desktop 1440×900 |
+| --- | --- | --- | --- |
+| `(pointer: coarse)` | true | true | false |
+| page overflow | 0px | 0px | 0px |
+| grid overflow | 0px | 0px | 0px |
+| grid / row-header width | 343 / 102 | 640 / 399 | 640 / 399 |
+| smallest box | 46 × 44 | 46 × 44 | 46 × 38 |
+| rows × cells drawn | 34 × (40 boxes, 96 empty) | same | same |
+
+Pressing the **Vocabulary** heading took the column out (`all 2` → `none`, 40
+boxes ticked → 38) and the note became "Only the grammar skills, the chapters'
+questions and the pensa — the vocabulary decks left out."; pressing it again
+restored "Everything: …". **None** emptied the grid and the note said so.
+Pressing **Cap. I** ticked its three boxes and left the fourth (it has no
+questions) alone, and the session that followed was headed
+`Practice · Review-heavy · Skills + Vocabulary + Pensa · Cap. I` and drew only
+chapter I's material. The arrow keys walked the grid and stepped over the empty
+cells — ArrowDown from the Questions heading landed on chapter VII, the first
+chapter that has one — Home reached the chapter name, End the last box, and
+Space toggled it. Dark mode checked. No JS errors in any run; the only console
+entries are the fixture's pre-existing 404s for the week's audio and pictures.
+
+The choice survives a reload, and the stored value is the shape above. Chapter
+VII's whole row and chapter I's vocabulary box alone were written as
+
+```json
+["skills:7", "questions:7", "vocab:1", "vocab:7", "pensum:7"]
+```
+
+and came back tick for tick after a full reload — with the Vocabulary heading
+reading `2 of 2` and **unpressed**, which is §26.2 working in the live app: two
+chapters ticked is not the column, and a third chapter's deck would arrive
+outside the mix rather than inside it.
