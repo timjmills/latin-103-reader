@@ -28,7 +28,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { normaliseLearn, stepsDone, withSteps, continueAt, stepMark } from '../app/js/grammar/ui.js';
+import { normaliseLearn, stepsDone, withSteps, continueAt, stepMark, stepsTip } from '../app/js/grammar/ui.js';
+import { LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS } from '../app/js/grammar/scheduler.js';
 import { skillProgress } from '../app/js/grammar/progress.js';
 import { indexSkills, normaliseLesson, normaliseSentences } from '../app/js/grammar/lessons.js';
 import { createItems, createTeachItems } from '../app/js/grammar/items.js';
@@ -133,19 +134,43 @@ test('a lesson with no steps asks for step 0, which the view reads as "no steps"
 
 /* ================================================= what a mark says, and in what */
 
-test('the three states differ in shape, not only in colour, and each says the whole thing in words', () => {
+test('every mark prints its own number, and each says the whole thing in words', () => {
   const opts = { title: 'The ending', steps: 6 };
   const done = stepMark(1, { ...opts, state: 'done', go: true });
   const now = stepMark(2, { ...opts, state: 'now' });
   const todo = stepMark(3, { ...opts, state: 'todo' });
-  assert.equal(done.glyph, '✓');
-  assert.equal(now.glyph, '3');
-  assert.equal(todo.glyph, '4');
-  const glyphs = [done.glyph, now.glyph, todo.glyph];
-  assert.equal(new Set(glyphs).size, 3, 'two states print the same glyph, so greyscale and print cannot tell them apart');
+  // §22.5: the state is the mark's fill (the stylesheet's, tested below), never a glyph that replaces the number.
+  assert.deepEqual([done.glyph, now.glyph, todo.glyph], ['2', '3', '4']);
   assert.equal(done.label, 'Step 2 of 6, The ending: done. Go back to it.');
   assert.equal(now.label, 'Step 3 of 6, The ending: in progress.');
   assert.equal(todo.label, 'Step 4 of 6, The ending: not started.');
+});
+
+test('§22.5: a finished step keeps its number, so six finished steps can still be told apart', () => {
+  assert.deepEqual([0, 1, 2, 3, 4, 5].map((i) => stepMark(i, { state: 'done', steps: 6 }).glyph), ['1', '2', '3', '4', '5', '6']);
+  assert.equal(stepMark(6, { state: 'todo', steps: 6 }).glyph, 'Ten');
+});
+
+test('§22.5: the row explains itself by naming every step, and says what the ten asks', () => {
+  const tip = stepsTip({ titles: ['What it does', 'a-nouns', 'us-nouns'], done: [0, 1], at: 2 });
+  assert.equal(tip.title, 'The parts of this lesson');
+  assert.match(tip.summary, /3 steps, then ten questions/);
+  assert.match(tip.summary, /2 of 3 finished so far/);
+  assert.deepEqual(tip.lines.map((l) => l.label), ['What it does', 'a-nouns', 'us-nouns', 'Ten']);
+  assert.deepEqual(tip.lines.map((l) => l.mark), ['1', '2', '3', '']);
+  assert.deepEqual(tip.lines.map((l) => l.done), [true, true, false, false]);
+  assert.deepEqual(tip.lines.map((l) => l.here), [false, false, true, false]);
+  assert.match(tip.lines[0].text, /press its circle/);
+  assert.equal(tip.lines[2].text, 'on screen now');
+  assert.ok(tip.lines[3].text.includes(`${LEARN_NEEDED} of ${LEARN_WINDOW} right, across ${LEARN_KINDS} kinds of question`), "the ten's bar is not the scheduler's");
+  assert.match(tip.lines[3].text, /opens once every step is finished/);
+  // Every step answered: the ten says it is open; on the ten itself, that it is on screen.
+  assert.match(stepsTip({ titles: ['a', 'b'], done: [0, 1], at: 1 }).lines[2].text, /Open now/);
+  assert.match(stepsTip({ titles: ['a', 'b'], done: [0, 1], at: 2 }).lines[2].text, /On screen now/);
+  assert.equal(stepsTip({ titles: ['a', 'b'], done: [0], at: 0 }).lines[0].text, 'on screen now — you finished it before');
+  assert.equal(stepsTip({ titles: ['', 'b'], done: [], at: 0 }).lines[0].label, 'Step 1', 'an untitled step went unnamed');
+  assert.equal(stepsTip({ titles: ['a', 'b', 'c'], done: [], at: 1 }).lines[2].text, 'not reached yet');
+  assert.equal(stepsTip({ titles: ['*in* says where, *cum* says with whom'], done: [], at: 0 }).lines[0].label, 'in says where, cum says with whom', 'a title\'s Latin stars reached the panel');
 });
 
 test('a mark is only invited to be pressed when it is one; the ten is named, never ticked', () => {
@@ -294,6 +319,9 @@ test('§22.2: the stepper draws three states, and a done pip is a button that ju
   assert.match(stepper, /go \? btn\(/, 'a pip that can be pressed is not a button');
   assert.match(stepper, /'aria-label': go \? null : m\.label/, 'a pip is named twice, or not at all');
   assert.match(stepper, /const go = at !== j && \(ten \? allDone : doneSteps\.has\(j\)\)/, 'an unanswered step can be jumped to, which is a way round the teaching');
+  assert.match(stepper, /tipTrigger\('steps', \(\) => stepsTip\(/, 'the row lost its explainer');
+  assert.ok(stepper.includes(String.raw`String(s.title ?? '').replace(/\*\*?/g, '')`), "a mark's label and tooltip print the title's Latin stars");
+  assert.match(stepper, /h\('div', \{ class: 'g-stepbar' \}, row, why\)/, 'the "?" moved inside the list, where it is counted as a mark');
 });
 
 test('§22.3: continue routes by the set, and nothing reads a saved position any more', () => {
@@ -305,8 +333,16 @@ test('§22.3: continue routes by the set, and nothing reads a saved position any
   assert.match(UI_CODE, /learnMemo = \{ text, value: normaliseLearn\(raw\) \}/, 'the reader does not migrate');
 });
 
-test('§3: the done state is told by a glyph in the DOM, so the stylesheet only has to add the colour', () => {
+test('§22.5: a step heading renders its Latin in italics instead of printing the stars', () => {
+  assert.ok(UI_CODE.includes("h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(step.title || skill.title))"), 'the step heading prints its title as plain text again');
+  assert.ok(!UI_CODE.includes("text: step.title || skill.title"), 'a step heading still sets its title as text, stars and all');
+});
+
+test("§3 / §22.5: the number is in the DOM, and the state is told by the fill's shape as well as its colour", () => {
   assert.match(CSS_CODE, /\.g-steps__s\[data-state="done"\] \{ color: var\(--success\); \}/);
+  assert.match(CSS_CODE, /\.g-steps__s\[data-state="done"\] \.g-steps__g \{[^}]*background: var\(--success\)/, 'a finished step is no longer a filled disc, so only colour says it is finished');
+  assert.match(CSS_CODE, /\.g-steps__s\[data-state="now"\] \.g-steps__g \{[^}]*box-shadow:/, 'the step on screen lost its ring, and is now the same shape as a finished one');
+  assert.match(CSS_CODE, /@media \(forced-colors: active\) \{\s*\.g-steps__s\[data-state="done"\]/, 'high contrast paints every state as the same empty ring');
   assert.match(CSS_CODE, /\.g-steps__g \{[^}]*border-radius: 50%/, 'the mark lost its own box');
   assert.match(CSS_CODE, /\.g-steps--n \.g-steps__s::before \{ display: none/, 'the CSS counter still draws over the DOM glyph');
   assert.match(CSS_CODE, /\.g-steps__go:focus-visible \{ outline:/, 'a pip takes the keyboard with no focus ring');

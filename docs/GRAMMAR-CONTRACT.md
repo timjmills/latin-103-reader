@@ -2723,6 +2723,9 @@ was done, which is the second half of the complaint.
 **Three states.** A finished step carries a tick and is a **button** that jumps
 to it; the step on screen is marked in progress; the rest are plain.
 
+*The tick was replaced on 2026-09-13 by §22.5: a finished step keeps its number
+and fills green. The button, the labels and the three states are unchanged.*
+
 **Colour is never the only signal (§3).** The glyph differs in *shape* — `✓`, a
 numeral, the word "Ten" — so the row reads in greyscale and on paper, and the
 whole fact is in words for a reader who sees no glyph. What a screen reader
@@ -2821,6 +2824,58 @@ The writer is now fenced to `skill.set`. This is §21's case in one line: the
 fault was on screen in the first device-emulated walk and no test had it. There
 is one now (`tests/grammar.learn-place.test.mjs`), over the real `createLearn`.
 
+
+### 22.5 A finished step keeps its number, and the row explains itself, 2026-09-13
+
+Six finished steps read "✓ ✓ ✓ ✓ ✓ ✓ Ten", and which one was step 4 took a
+hover over each. Offered three answers, the learner chose **the number inside a
+green circle** (over a tick-and-number badge, or leaving it), and **a "?" after
+"Ten"** (over explaining the row on the lesson page, or nothing).
+
+**The glyph is the number in every state.** `stepMark` returns `String(i + 1)`
+for done, now and todo alike, and "Ten" for the ten. The state is
+`data-state`, and the stylesheet draws it.
+
+**§3 still holds, by shape.** Losing the tick lost a shape, so the fill carries
+one instead:
+
+| state | drawn | in greyscale |
+| --- | --- | --- |
+| done | disc filled `--success`, number in `--bg` | a solid disc |
+| now | disc filled `--rubric`, number in `--bg`, a ring 2px out (`box-shadow`) | a solid disc inside a ring |
+| todo | a 1px ring in `currentColor` | an empty ring |
+
+The ring is a shadow so no state changes the mark's size (§17.3). `--success`
+and `--rubric` sit at the same lightness in both themes (0.5 light, 0.75 / 0.72
+dark), so the number reads on green exactly as it always has on red. Forced
+colours paint over backgrounds and drop shadows, which would have left all three
+an empty ring: under `forced-colors: active` done is filled `CanvasText` with
+`forced-color-adjust: none`, and now takes an outline in place of the shadow.
+The marks now carry `line-height: 1` — the inherited line box had always sat
+the numeral low in its disc, and a filled disc made it plain. The words a
+screen reader hears (§22.2) did not change.
+
+**The explainer** is `tipTrigger('steps', …)` over `stepsTip`, placed after the
+list and outside it: inside, "Learn steps" would count the "?" as an eighth
+mark. It names every step by its own title with where it stands — finished and
+reopened by pressing its circle, on screen, or not reached — then the ten, with
+its bar read from the scheduler (`LEARN_NEEDED` of `LEARN_WINDOW` right, across
+`LEARN_KINDS` kinds) and whether it is open yet, and a foot saying a step cannot
+be skipped. A chapter set's two-mark stepper has no steps to name and no "?".
+
+**Titles are plain text where they cannot be anything else.** Ten step titles
+mark their Latin (`*cum* glued on behind: *mēcum*`). The panel line, each mark's
+tooltip and its label strip the stars the print sheet's way,
+`.replace(/\*\*?/g, '')`. The step page's own heading had been printing the
+stars too; it now goes through `prose`, as the step's `say` does, and shows the
+Latin in italics.
+
+**Touch (§21.1).** Seven 44px marks and the 44px "?" are 352px. Measured with
+touch emulation: one row on a 393px phone (361px inside `.g`); on a 375px phone
+(343px) and a 320px one (288px) the "?" wraps, and `margin-inline-start: auto`
+keeps it at the row's end under "Ten" rather than alone at the start of a line,
+where it read as belonging to nothing. No target shrank, and nothing scrolls
+sideways at any of the three.
 
 ## 23. The line says what it means, 2026-09-12
 
