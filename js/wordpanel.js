@@ -99,6 +99,215 @@ export function markTerms(text, glosses, idBase = 'g') {
   return frag;
 }
 
+/* -------------------------------------------- pure: a table that does not fit */
+
+/**
+ * One step of "does this paradigm fit its box" (docs/GRAMMAR-CONTRACT.md §26).
+ * A paradigm that does not fit is stacked — one block per value column, the
+ * blocks under one another — instead of scrolling sideways. The question is
+ * asked of the box's own geometry, never of a width breakpoint: a verb's table
+ * overflows a tablet and a narrow desktop window exactly as it overflows a
+ * phone, and a two-cell noun table fits all three.
+ *
+ * `need` is the width the table asked for when it was last stacked, and it is
+ * what stops the decision oscillating. Stacking narrows the content, so asking
+ * the *stacked* layout "do you fit now" would always answer yes and unstack it
+ * straight back. Unstacking therefore waits until the box is at least `need`
+ * wide again; if the table still overflows there, the width it then reports is
+ * larger than a box that was already ≥ the old `need`, so `need` can only rise
+ * and the next step settles. `reset` forgets `need` — the type size changed, so
+ * the remembered width is a measurement of a different font.
+ *
+ * Returns `{ stacked, need, again }`. `again` asks the caller to measure once
+ * more: the layout it has just been told to change to is the one to judge.
+ * Pure.
+ */
+export function stackStep({ stacked = false, need = 0, scrollWidth = 0, clientWidth = 0, reset = false, slop = 1 } = {}) {
+  if (reset) need = 0;
+  // A closed <details>, a hidden panel, a node not yet in the document: nothing
+  // has been laid out, so nothing can be decided. Leave the layout alone.
+  if (!(clientWidth > 0)) return { stacked, need, again: false };
+  if (stacked) {
+    if (need > 0 && clientWidth < need) return { stacked: true, need, again: false };
+    return { stacked: false, need: 0, again: true };
+  }
+  if (scrollWidth - clientWidth > slop) return { stacked: true, need: scrollWidth, again: false };
+  return { stacked: false, need: 0, again: false };
+}
+
+/**
+ * How a table reads once it is stacked: **one block per value column**, in the
+ * table's own column order — singular then plural, active then passive,
+ * masculine then feminine then neuter, one block per stock word on a teaching
+ * step's reveal.
+ *
+ * A stacked cell is named by the same two things a table named it by. The
+ * block carries the column heading under the table's own caption ("present
+ * indicative · passive"), and inside the block every line keeps its row label
+ * ("we"), so nothing that identified a cell is dropped on the way down. A
+ * table with one value column has nothing to tell apart, so its single block
+ * takes the whole name and the caption is not printed twice.
+ * Pure.
+ */
+export function stackPlan({ caption = '', headers = [], rowLabels = [], cols = headers.length } = {}) {
+  const cap = String(caption ?? '').trim();
+  const n = Math.max(0, Math.trunc(Number(cols) || 0));
+  return Array.from({ length: n }, (_, col) => {
+    const head = String(headers[col] ?? '').trim();
+    const name = [cap, head].filter(Boolean).join(' · ') || `column ${col + 1}`;
+    const solo = n === 1;
+    return {
+      col,
+      name,
+      head: solo || !head ? name : head,           // what the block's caption shows
+      pre: solo || !head || !cap ? '' : `${cap} · `,   // …and what only a screen reader hears before it
+      rows: rowLabels.map((label, row) => ({ row, label: String(label ?? ''), name: `${name} · ${String(label ?? '')}` })),
+    };
+  });
+}
+
+/* ------------------------------------------- the same cells, stacked or not */
+
+/**
+ * A move that keeps the node's state. `moveBefore` re-parents without removing
+ * the node from the document, so a chart cell that is being typed into keeps
+ * the focus and the caret; `append` is the fallback, and the caller puts the
+ * focus back after it.
+ */
+function place(parent, node) {
+  if (typeof parent.moveBefore === 'function' && node.isConnected && parent.isConnected) {
+    try { parent.moveBefore(node, null); return; } catch { /* not movable here — fall through */ }
+  }
+  parent.append(node);
+}
+
+/**
+ * Read a built `.pt` table's shape and give back the two layouts of it. The
+ * cells are **moved**, never rebuilt: a drill chart's `<td>` carries its input,
+ * its ✓/✗ mark and its "?" button, with whatever the learner has typed, the
+ * green or red it has been painted, the green of a given cell (§12) and every
+ * listener on it. Only the row label is copied, and a row label is plain text.
+ *
+ * `null` when the table cannot be stacked sensibly — no rows, no value column,
+ * or rows of different widths — and the box keeps its sideways scroll, which is
+ * what it had before.
+ */
+export function foldable(table) {
+  const body = table.tBodies?.[0];
+  const rows = body ? [...body.rows] : [];
+  if (!rows.length) return null;
+  if (new Set(rows.map((r) => r.cells.length)).size !== 1) return null;
+  const cols = rows[0].cells.length - 1;
+  if (cols < 1) return null;
+  const headCells = table.tHead?.rows?.[0] ? [...table.tHead.rows[0].cells] : [];
+  // The last `cols` heading cells are the value columns: the first is the blank
+  // corner above the row labels, where there is one.
+  const headers = headCells.slice(Math.max(0, headCells.length - cols)).map((c) => c.textContent);
+  const capEl = table.caption ?? null;
+  const caption = capEl ? capEl.textContent : '';
+  // A teaching step's reveal names itself in a caption only a screen reader
+  // hears; that text belongs in the blocks' hidden prefix, not on the screen.
+  const capShown = !!capEl && !capEl.classList?.contains('visually-hidden');
+  const plan = stackPlan({ caption, headers, rowLabels: rows.map((r) => r.cells[0].textContent), cols });
+  let stackEl = null;
+  const slots = [];        // slots[col][row] → the <tr> that holds that cell when stacked
+
+  const build = () => {
+    stackEl = h('div', { class: 'pt__stack' });
+    if (capShown && plan.length > 1) stackEl.append(h('p', { class: 'pt__caption pt__stackcap', text: caption }));
+    for (const b of plan) {
+      const trs = rows.map((r) => h('tr', {}, r.cells[0].cloneNode(true)));
+      slots.push(trs);
+      stackEl.append(h('table', { class: 'pt pt--stack' },
+        h('caption', { class: 'pt__caption' }, b.pre ? h('span', { class: 'visually-hidden', text: b.pre }) : null, b.head),
+        h('tbody', {}, trs)));
+    }
+  };
+
+  return {
+    plan,
+    stack: () => stackEl,
+    /** Move every cell into its block, and hide the table it came from. */
+    fold(host) {
+      if (!stackEl) build();
+      if (stackEl.parentNode !== host) host.append(stackEl);
+      rows.forEach((r, ri) => [...r.cells].slice(1).forEach((td, ci) => place(slots[ci][ri], td)));
+      table.classList.add('pt--folded');
+    },
+    /** Move every cell back into its own row, and take the blocks away. */
+    unfold() {
+      if (!stackEl) return;
+      rows.forEach((r, ri) => { for (let ci = 0; ci < cols; ci++) { const td = slots[ci][ri].cells[1]; if (td) place(r, td); } });
+      stackEl.remove();
+      table.classList.remove('pt--folded');
+    },
+  };
+}
+
+/* ------------------------------------------------------ the fit watcher */
+// One ResizeObserver for every paradigm box on the page. Both the box (its
+// width) and the table (its height, which is how a type-size change shows up
+// when the box has not moved) are watched, and both point at the same state.
+const fitting = new Map();
+let fitObserver = null;
+
+const fontOf = (el) => { try { return parseFloat(getComputedStyle(el).fontSize) || 0; } catch { return 0; } };
+
+function settle(st) {
+  if (st.busy) return;
+  const fs = fontOf(st.table);
+  const reset = st.fs > 0 && fs > 0 && fs !== st.fs;
+  if (fs > 0) st.fs = fs;
+  // Two steps is the most this can take (see stackStep); the bound is a guard,
+  // not a schedule.
+  for (let i = 0; i < 4; i++) {
+    const r = stackStep({ stacked: st.stacked, need: st.need, scrollWidth: st.scroll.scrollWidth, clientWidth: st.scroll.clientWidth, reset: i === 0 && reset });
+    st.need = r.need;
+    if (r.stacked !== st.stacked) {
+      st.stacked = r.stacked;
+      st.busy = true;
+      try {
+        const active = document.activeElement;
+        const held = active && st.scroll.contains(active) ? active : null;
+        const sel = held && typeof held.selectionStart === 'number' ? [held.selectionStart, held.selectionEnd] : null;
+        if (r.stacked) { st.f.fold(st.scroll); const el = st.f.stack(); if (el) st.watch(el); } else st.f.unfold();
+        // `moveBefore` keeps the focus; where it is not available the cell was
+        // momentarily out of the document, so put the learner back in it.
+        if (held && document.activeElement !== held && held.isConnected) {
+          held.focus({ preventScroll: true });
+          if (sel) { try { held.setSelectionRange(sel[0], sel[1]); } catch { /* not a text field */ } }
+        }
+      } finally { st.busy = false; }
+    }
+    if (!r.again) return;
+  }
+}
+
+/**
+ * Watch one paradigm box and stack the table inside it whenever it does not fit
+ * (§26). Called wherever a `.pt__scroll` is built — the word panel and the
+ * popup, a lesson's "Full paradigm", a hint's table, the catalogue's filled-in
+ * table, a teaching step's reveal, the feedback table and the drill chart — so
+ * there is one rule and a paradigm never scrolls sideways anywhere.
+ */
+export function fitParadigm(scroll, table) {
+  if (!scroll || !table || typeof ResizeObserver !== 'function') return;
+  const f = foldable(table);
+  if (!f) return;
+  const st = { scroll, table, f, stacked: false, need: 0, fs: 0, busy: false };
+  if (!fitObserver) {
+    fitObserver = new ResizeObserver((entries) => {
+      const done = new Set();
+      for (const e of entries) { const s = fitting.get(e.target); if (s && !done.has(s)) { done.add(s); settle(s); } }
+      // A box that has left the document is no longer ours to watch.
+      for (const [el, s] of fitting) if (!s.scroll.isConnected) { fitObserver.unobserve(el); fitting.delete(el); }
+    });
+  }
+  st.watch = (el) => { if (!fitting.has(el)) { fitting.set(el, st); fitObserver.observe(el); } };
+  st.watch(scroll);
+  st.watch(table);
+}
+
 /** One paradigm cell: stem‑ending, an alternate after " / ", an em dash when empty. */
 function cellContent(c) {
   if (!c || c.empty || (c.text === '—' && !c.ending)) return '—';
@@ -131,7 +340,9 @@ export function renderParadigm(p) {
         r.cells.map((c) => h('td', { class: 'pt__cell' + (c.hit ? ' is-hit' : '') + (c.empty ? ' is-empty' : ''), lang: 'la' }, cellContent(c)))));
     }
     table.append(body);
-    details.append(h('div', { class: 'pt__scroll' }, table));
+    const scroll = h('div', { class: 'pt__scroll' }, table);
+    fitParadigm(scroll, table);      // §26: stacked when it does not fit, scrolling only as the last resort
+    details.append(scroll);
   }
   return details;
 }

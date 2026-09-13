@@ -20,6 +20,15 @@ html[data-printing] #g-print { display: block !important; }
    on paper and never in the page. This one is the belt to that brace. */
 #g-print:not(.pr) { display: none; }
 
+/* A printed chart is not a screen table made smaller: print.js builds its own
+   `.pr-t` tables into #g-print from the paradigm itself, and the rule above
+   hides everything else on the page. So the screen's stacking (§26) never
+   reaches paper, and nothing here needs to undo it. It also must not try:
+   `.pt--folded` is the table whose cells have been *moved* into its stacked
+   blocks, so showing it again would print empty rows. A plain Ctrl+P of the
+   app (no #g-print) prints the page as it stands, stacked blocks and all,
+   which is what is on the screen. */
+
 html[data-printing] {
   background: #fff;
   color: #000;
