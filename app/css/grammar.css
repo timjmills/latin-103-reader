@@ -445,7 +445,13 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-input:disabled { color: var(--ink-2); background: var(--bg-chrome); }
 .g-chart { display: grid; gap: var(--s-3); }
 .g-chart .pt__scroll { --pt-bg: var(--bg); padding-inline: 0; }
-.g-chart__t { max-width: 32rem; }
+.g-chart__t, .g-chart .pt__stack { max-width: 32rem; }   /* the stacked blocks keep the table's own measure (§26) */
+/* Stacked (§26) a chart row is "label — box" on one line. `width: auto` is an input's own intrinsic
+   width — about 180px — and a table sizes a column by what is in it, so the box claimed the row and
+   the label was squeezed to its narrowest: "he /" over "she" over "/ it". Naming a width gives the
+   column an honest figure to work from; `flex-grow` still hands the box everything left over, so it
+   is no narrower on screen. Only the stacked layout: a table's own columns are unchanged. */
+.pt--stack .g-cellwrap .g-input--cell { flex: 1 1 auto; width: 6rem; }
 .g-chart__in { padding-block: 2px; }
 .g-input--cell { min-height: 36px; width: 100%; min-width: 6.5rem; flex: none; padding-inline: var(--s-2); font-size: 1.05rem; }
 .g-chart__one { display: grid; gap: var(--s-1); max-width: 22rem; }
@@ -939,6 +945,12 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 /* A wide table scrolls inside its own box on a phone; a grid item's `min-width: auto` would otherwise let the
    box grow to the table and push the whole page sideways. */
 .g-run, .g-page, .g-item, .g-chart, .g-chart .pt__scroll { min-width: 0; max-width: 100%; }
+/* The same guard for every other box a paradigm sits in — and it is what makes §26 possible at all.
+   A grid or flex item is `min-width: auto`, so `.g-lesson__pt` grew to the table it held: the
+   catalogue's filled-in table made the whole *page* 463px wide on a 375px phone, which meant the
+   `.pt__scroll` inside it was 445px, never overflowed, and so could never be told it did not fit.
+   The box has to be the box before it can be asked the question. */
+#grammar :is(.g-lesson__pt, .g-fb__pt, .g-show, .g-hint__body, .g-cat__sec) { min-width: 0; max-width: 100%; }
 /* The other way a table pushed the page sideways (QA M-7). `.visually-hidden` (app/css/reader.css) is
    `position: absolute` with no offsets, so the label a given cell carries (" — genitive plural, given") was laid
    out at the static position it would have had — and inside a 637 px table scrolling in its own box that is past
@@ -1033,6 +1045,22 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 }
 
 @media (pointer: coarse) { .g-seg--scaffold .g-seg__btn { min-height: var(--tap); } }
+
+/* A chart cell was 36px tall on a finger, under this project's own --tap. The
+   table had no room to give it more: a taller box on a 12-cell table is a
+   taller *and wider* table, and the table already did not fit. Stacked (§26)
+   the room is there — one cell to a line — so the box a finger has to land in
+   is a full target, in both layouts, everywhere a chart appears. */
+@media (pointer: coarse) { .g-input--cell { min-height: var(--tap); } }
+
+/* The "?" target reaches 15px past the button (above), and at the right-hand edge of a table that
+   15px lands outside the box — which is scrollable overflow, so the box reported itself 6px too
+   wide on a phone and a stacked table still had a sliver of sideways scroll in it. The last cell
+   in a row reserves the room instead. §17.3's rule, one step out: reserve the space rather than
+   let something appear beside a control. */
+@media (pointer: coarse) {
+  .pt :is(.g-chart__in, .g-chart__given):last-child { padding-right: 16px; }
+}
 
 @media (pointer: coarse) {
   /* A pip is a control now (§22.2), so it needs a real target. The visible circle stays exactly the size
