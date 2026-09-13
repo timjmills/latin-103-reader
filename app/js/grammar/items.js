@@ -94,6 +94,8 @@ const FORM_LABEL = {
   que: { name: '-que: and', plain: 'joins to the word before it' }, ne: { name: '-ne: a question', plain: 'turns the sentence into a yes/no question' }, ve: { name: '-ve: or', plain: 'an alternative' },
   stem1: { name: 'present stem', plain: 'from the 1st / 2nd principal part' }, stem2: { name: 'perfect stem', plain: 'from the 3rd principal part' }, stem3: { name: 'participle stem', plain: 'from the 4th principal part' },
 };
+/** A mood on its own, told by what it does rather than by a tense it is paired with. */
+const MOOD_PLAIN = { ind: 'it simply happens', subj: "the 'may / might / would' forms", imper: 'the command forms', inf: "the 'to do' forms" };
 const MOOD_ONLY_LABEL = { gerund: ['gerund', "the '-ing' noun"], gerundive: ['gerundive', "the 'to be done' adjective"], supine: ['supine', "the '-um / -u' form after motion or an adjective"] };
 const CASE_FILLERS = ['nom', 'gen', 'dat', 'acc', 'abl'];
 const TM_FILLERS = ['pres ind', 'impf ind', 'perf ind', 'fut ind', 'plupf ind', 'pres subj', 'impf subj', 'perf subj', 'plupf subj'];
@@ -188,6 +190,12 @@ export function featureLabel(key, value, opts = {}) {
   if (key == null) return opts.skill ? mk(opts.skill.title, opts.skill.plain) : mk(String(value ?? ''), '');
   if (MOOD_ONLY_LABEL[value]) { const [name, plain] = MOOD_ONLY_LABEL[value]; return mk(name, plain); }
   const [t, m] = String(value).split(' ');
+  // A value with no mood beside it is **one half** of the pair: a catalogue's cell axes hand over
+  // `pres` or `ind` on their own, where a drill key names both at once (`'pres ind'`). Only the pair
+  // had a branch, so a half fell through it and came out of the join with the missing side still
+  // attached — the verb tables' "Narrow it" chips read "present undefined" and "ind undefined".
+  // Anything else with no space (a lemma axis's chapter number) is its own best name.
+  if (!m) return mk(TENSE_LABEL[t] ?? MOOD_LABEL[t] ?? String(value), MOOD_PLAIN[t] ?? '');
   const name = m === 'ptc' ? `${TENSE_LABEL[t] ?? t} participle` : m === 'inf' ? `${TENSE_LABEL[t] ?? t} infinitive` : m === 'imper' ? `${t === 'fut' ? 'future ' : ''}imperative` : `${TENSE_LABEL[t] ?? t} ${MOOD_LABEL[m] ?? m}`;
   const plain = TM_PLAIN[value] ?? (m === 'ptc' ? "the '-ing / having been done' form" : m === 'inf' ? "the 'to do' form" : m === 'imper' ? 'the command form' : '');
   return mk(name, plain);

@@ -113,6 +113,13 @@ test('featureValue / stemOf / featureLabel over the features', () => {
   assert.equal(stemOf({ tense: 'perf', mood: 'ptc', voice: 'pass' }), 'stem3');
   assert.equal(featureLabel('case', 'dat').full, "dative — the 'to/for' form");
   assert.equal(featureLabel('tense', 'impf subj').name, 'imperfect subjunctive');
+  // The catalogue's axes hand over one half of the pair; neither half may borrow the other's word.
+  assert.equal(featureLabel('tense', 'pres').name, 'present');
+  assert.equal(featureLabel('mood', 'ind').name, 'indicative');
+  assert.equal(featureLabel('mood', 'subj').full, "subjunctive — the 'may / might / would' forms");
+  for (const v of ['pres', 'impf', 'fut', 'perf', 'plupf', 'futperf']) assert.ok(!featureLabel('tense', v).name.includes('undefined'), v);
+  for (const v of ['ind', 'subj']) assert.ok(!featureLabel('mood', v).name.includes('undefined'), v);
+  assert.equal(featureLabel('chapter', '14').name, '14');
   assert.equal(featureLabel('person', '1 pl').name, '1st person plural');
   assert.equal(featureLabel('construction', 'purpose-clause', { skills: S }).name, 'purpose');
   assert.equal(featureLabel('construction', 'purpose-clause', { skills: S }).plain, 'in order to');
