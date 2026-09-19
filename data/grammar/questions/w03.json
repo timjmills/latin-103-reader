@@ -301,6 +301,37 @@
   },
   {
    "id": "qw03-08",
+   "qword": "num",
+   "q": "Num Neptūnus rēgis dolum ignōrāvit?",
+   "en": "Surely Neptune did not fail to notice the king's trick?",
+   "part": "FS",
+   "unit_id": "w03:minos:b5.1",
+   "answers": [
+    {
+     "span": [
+      2,
+      4
+     ]
+    },
+    "Nōn",
+    "Minimē"
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      2,
+      4
+     ]
+    },
+    "nihil sēnsit",
+    "taurum nōn vīdit",
+    "Mīnōī crēdidit"
+   ],
+   "hint": "num expects the answer 'no'"
+  },
+  {
+   "id": "qw03-09",
    "qword": "quid",
    "q": "Quid Neptūnus in stabulō vīdit?",
    "en": "What did Neptune see in the stable?",
@@ -329,7 +360,7 @@
    "hint": "a perfect passive participle agreeing with taurum"
   },
   {
-   "id": "qw03-09",
+   "id": "qw03-10",
    "qword": "quid",
    "q": "In quid Neptūnus taurum mūtārī efficiet?",
    "en": "Into what will Neptune cause the bull to be changed?",
@@ -342,7 +373,7 @@
    "hint": "efficiam ut + subjunctive (a result brought about); in + accusative for the change"
   },
   {
-   "id": "qw03-10",
+   "id": "qw03-11",
    "qword": "quis",
    "q": "Quis taurum saevissimum tandem cēpit?",
    "en": "Who at last captured the savage bull?",
@@ -355,7 +386,7 @@
    "hint": "the nominative subject of the dōnec clause"
   },
   {
-   "id": "qw03-11",
+   "id": "qw03-12",
    "qword": "ubi",
    "q": "Ubi Corōnis puella habitābat?",
    "en": "Where was the girl Coronis living?",
@@ -384,7 +415,7 @@
    "hint": "in + ablative for where"
   },
   {
-   "id": "qw03-12",
+   "id": "qw03-13",
    "qword": "quandō",
    "q": "Quandō Apollō Corōnidem amāre coepit?",
    "en": "When did Apollo begin to love Coronis?",
@@ -423,7 +454,7 @@
    "hint": "cum prīmum + perfect indicative = 'as soon as'"
   },
   {
-   "id": "qw03-13",
+   "id": "qw03-14",
    "qword": "quid",
    "q": "Quid Corōnis dē sē occultāvit?",
    "en": "What did Coronis conceal about herself?",
@@ -452,7 +483,7 @@
    "hint": "an indirect statement: accusative + infinitive"
   },
   {
-   "id": "qw03-14",
+   "id": "qw03-15",
    "qword": "cūr",
    "q": "Cūr Corōnis in silvā valdē gaudēbat?",
    "en": "Why was Coronis rejoicing greatly in the wood?",
@@ -481,7 +512,7 @@
    "hint": "quod + imperfect indicative gives the reason"
   },
   {
-   "id": "qw03-15",
+   "id": "qw03-16",
    "qword": "quālis",
    "q": "Quālem corvum Apollō habēbat?",
    "en": "What sort of raven did Apollo have?",
@@ -494,7 +525,7 @@
    "hint": "an adjective agreeing with corvum"
   },
   {
-   "id": "qw03-16",
+   "id": "qw03-17",
    "qword": "quid",
    "q": "Quid corvus Apollinem monēre voluit?",
    "en": "What did the raven want to warn Apollo about?",
@@ -513,7 +544,7 @@
    "hint": "nē + subjunctive after monēre: an indirect command"
   },
   {
-   "id": "qw03-17",
+   "id": "qw03-18",
    "qword": "quōmodo",
    "q": "Quōmodo Apollō Corōnidem interfēcit?",
    "en": "How did Apollo kill Coronis?",
@@ -542,7 +573,7 @@
    "hint": "cum prīmum + perfect: what he did the moment he saw her"
   },
   {
-   "id": "qw03-18",
+   "id": "qw03-19",
    "qword": "quōmodo",
    "q": "Quōmodo Apollō corvum pūnīvit?",
    "en": "How did Apollo punish the raven?",
@@ -571,7 +602,39 @@
    "hint": "in + accusative for what something is turned into"
   },
   {
-   "id": "qw03-19",
+   "id": "qw03-20",
+   "qword": "nōnne",
+   "q": "Nōnne omnēs corvī nunc nigrī sunt?",
+   "en": "Aren't all ravens black now?",
+   "part": "FS",
+   "unit_id": "w03:coronis:b12.4",
+   "answers": [
+    {
+     "span": [
+      4,
+      7
+     ]
+    },
+    "Ita",
+    "Ita est",
+    "Sunt"
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      4,
+      7
+     ]
+    },
+    "Corvī albī manent",
+    "Avēs rubrae sunt",
+    "Corvus ūnus niger est"
+   ],
+   "hint": "nōnne expects the answer 'yes'"
+  },
+  {
+   "id": "qw03-21",
    "qword": "quid",
    "q": "Quid duo servī Iūliī iūxtā viam vīdērunt?",
    "en": "What did Julius's two slaves see beside the road?",
@@ -600,7 +663,20 @@
    "hint": "an accusative object of vīdērunt"
   },
   {
-   "id": "qw03-20",
+   "id": "qw03-22",
+   "qword": "quot",
+   "q": "Quot servī Iūliī pugnam vīdērunt?",
+   "en": "How many of Julius's slaves saw the fight?",
+   "part": "FL",
+   "unit_id": "w03:fl-63:b13.1",
+   "answers": [
+    "duo"
+   ],
+   "input": "tap",
+   "hint": "the numeral before ex servīs"
+  },
+  {
+   "id": "qw03-23",
    "qword": "quem",
    "q": "Quem canis momordit?",
    "en": "Whom did the dog bite?",
@@ -613,7 +689,7 @@
    "hint": "the man's name is given in a relative clause (cui nōmen erat)"
   },
   {
-   "id": "qw03-21",
+   "id": "qw03-24",
    "qword": "quid",
    "q": "Quid alter vir petītūrus erat?",
    "en": "What was the other man about to head for?",
@@ -626,7 +702,7 @@
    "hint": "a future active participle: 'was about to make for'"
   },
   {
-   "id": "qw03-22",
+   "id": "qw03-25",
    "qword": "quid",
    "q": "Quid Dāvus Syrum posthāc cavēre iubet?",
    "en": "What does Davus tell Syrus to beware of from now on?",
@@ -655,7 +731,7 @@
    "hint": "cavē + accusative"
   },
   {
-   "id": "qw03-23",
+   "id": "qw03-26",
    "qword": "cūr",
    "q": "Cūr Syrus ad illum hominem accessit?",
    "en": "Why did Syrus approach that man?",
@@ -684,7 +760,7 @@
    "hint": "the supine in -um after a verb of motion: purpose"
   },
   {
-   "id": "qw03-24",
+   "id": "qw03-27",
    "qword": "quid",
    "q": "Quid dominus canis servīs Iūliī pollicitus est?",
    "en": "What did the dog's master promise Julius's slaves?",
@@ -713,7 +789,7 @@
    "hint": "the future passive infinitive: the supine + īrī"
   },
   {
-   "id": "qw03-25",
+   "id": "qw03-28",
    "qword": "quis",
    "q": "Quis epistulam ad domum Iūliī attulit?",
    "en": "Who brought the letter to Julius's house?",
@@ -726,7 +802,7 @@
    "hint": "the nominative subject of vēnit"
   },
   {
-   "id": "qw03-26",
+   "id": "qw03-29",
    "qword": "cuius",
    "q": "Cuius signum Aemilia in cērā cognōvit?",
    "en": "Whose seal did Aemilia recognise in the wax?",
@@ -739,7 +815,7 @@
    "hint": "the name is given in a relative clause (cui nōmen erat)"
   },
   {
-   "id": "qw03-27",
+   "id": "qw03-30",
    "qword": "quō",
    "q": "Quō amīcus Metellae profectus erat?",
    "en": "Where had Metella's friend set out for?",
@@ -768,7 +844,7 @@
    "hint": "in + accusative for motion towards; proficīscī is deponent"
   },
   {
-   "id": "qw03-28",
+   "id": "qw03-31",
    "qword": "ubi",
    "q": "Ubi Metella amīcum proficīscentem salūtāvit?",
    "en": "Where did Metella greet her friend as he set out?",
@@ -797,7 +873,7 @@
    "hint": "ad + accusative; salūtātum is a supine of purpose"
   },
   {
-   "id": "qw03-29",
+   "id": "qw03-32",
    "qword": "quid",
    "q": "Quid amīcus ex Graeciā Metellae attulit?",
    "en": "What did the friend bring Metella from Greece?",
@@ -826,7 +902,39 @@
    "hint": "a genitive of value with ānulum"
   },
   {
-   "id": "qw03-30",
+   "id": "qw03-33",
+   "qword": "-ne",
+   "q": "Eratne Metella laetissima?",
+   "en": "Was Metella very happy?",
+   "part": "FL",
+   "unit_id": "w03:fl-64:b16.5",
+   "answers": [
+    {
+     "span": [
+      0,
+      2
+     ]
+    },
+    "Ita",
+    "Ita est",
+    "Erat"
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      0,
+      2
+     ]
+    },
+    "Metella trīstis manēbat",
+    "Amīcus nōn rediit",
+    "Ānulum vēndidit"
+   ],
+   "hint": "-ne on the first word simply asks the question"
+  },
+  {
+   "id": "qw03-34",
    "qword": "quid",
    "q": "Quid Leander in forō Tūsculānō ēmit?",
    "en": "What did Leander buy in the forum of Tusculum?",
@@ -855,7 +963,7 @@
    "hint": "two accusative objects joined by et"
   },
   {
-   "id": "qw03-31",
+   "id": "qw03-35",
    "qword": "cui",
    "q": "Cui Leander in viā angustā occurrit?",
    "en": "Whom did Leander meet in the narrow street?",
@@ -884,7 +992,7 @@
    "hint": "occurrere takes the dative"
   },
   {
-   "id": "qw03-32",
+   "id": "qw03-36",
    "qword": "cūr",
    "q": "Cūr neuter eōrum prōcēdere potuit?",
    "en": "Why could neither of them go forward?",
@@ -923,7 +1031,20 @@
    "hint": "neuter = 'neither of the two'; nimis + adjective"
   },
   {
-   "id": "qw03-33",
+   "id": "qw03-37",
+   "qword": "uter",
+   "q": "Uter recēdere voluit, Cornēlius an Leander?",
+   "en": "Which of the two was willing to back up, Cornelius or Leander?",
+   "part": "FL",
+   "unit_id": "w03:fl-65:b17.5",
+   "answers": [
+    "neuter"
+   ],
+   "input": "tap",
+   "hint": "uter asks which of two; the sentence answers with neuter — neither of them"
+  },
+  {
+   "id": "qw03-38",
    "qword": "quid",
    "q": "Quid Cornēlius factūrus est, nisi Leander cēdit?",
    "en": "What will Cornelius do unless Leander yields?",
@@ -962,7 +1083,7 @@
    "hint": "nisi + present indicative; hōc baculō is an ablative of means"
   },
   {
-   "id": "qw03-34",
+   "id": "qw03-39",
    "qword": "quid",
    "q": "Quid asinus turpissimō sonō facere coepit?",
    "en": "What did the donkey begin to do with a foul sound?",
@@ -975,7 +1096,7 @@
    "hint": "a present infinitive after coepit"
   },
   {
-   "id": "qw03-35",
+   "id": "qw03-40",
    "qword": "cūr",
    "q": "Cūr equus Cornēliī ē locō fūgit?",
    "en": "Why did Cornelius's horse flee from the spot?",
@@ -1004,7 +1125,7 @@
    "hint": "a perfect passive participle with an ablative of cause"
   },
   {
-   "id": "qw03-36",
+   "id": "qw03-41",
    "qword": "cūr",
    "q": "Cūr Cornēlius rubēbat?",
    "en": "Why was Cornelius blushing?",
