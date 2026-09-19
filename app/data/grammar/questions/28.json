@@ -5,6 +5,52 @@
  "items": [
   {
    "id": "q28-01",
+   "qword": "quod",
+   "q": "Quod fretum Siciliam ab Italiā disiungit?",
+   "en": "Which strait separates Sicily from Italy?",
+   "unit_id": "w06:1.1",
+   "answers": [
+    {
+     "span": [
+      12,
+      13
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      12,
+      13
+     ]
+    },
+    "fretum Aegaeum",
+    "mare Hadriāticum",
+    "mare Superum"
+   ],
+   "hint": "quod is the neuter of quī, to match fretum"
+  },
+  {
+   "id": "q28-02",
+   "qword": "cuius",
+   "q": "Cuius mercēs ē nāve ēiectae sunt?",
+   "en": "Whose goods were thrown out of the ship?",
+   "unit_id": "w06:1.2",
+   "answers": [
+    "mercātōris"
+   ],
+   "input": "choice",
+   "choices": [
+    "mercātōris",
+    "gubernātōris",
+    "Mēdī",
+    "Lydiae"
+   ],
+   "hint": "cuius is answered by a genitive: the 'of' form"
+  },
+  {
+   "id": "q28-03",
    "qword": "quandō",
    "q": "Quandō tempestās tam subitō cessāvit?",
    "en": "When did the storm cease so suddenly?",
@@ -64,7 +110,7 @@
    "hint": "a postquam clause with the perfect indicative"
   },
   {
-   "id": "q28-02",
+   "id": "q28-04",
    "qword": "uter",
    "q": "Utrum corpus an animus Mēdī turbātus est?",
    "en": "Is it Medus' body or his mind that is troubled?",
@@ -76,7 +122,7 @@
    "hint": "utrum … an offers two subjects; tap the one that is turbātus"
   },
   {
-   "id": "q28-03",
+   "id": "q28-05",
    "qword": "quis",
    "q": "Quis est Chrīstus, ut Lydia dīcit?",
    "en": "Who is Christ, according to Lydia?",
@@ -122,7 +168,7 @@
    "hint": "a nominative predicate with a relative clause (factus est = 'was made')"
   },
   {
-   "id": "q28-04",
+   "id": "q28-06",
    "qword": "ubi",
    "q": "In quō oppidō Chrīstus nātus est?",
    "en": "In what town was Christ born?",
@@ -134,7 +180,19 @@
    "hint": "in + ablative; the town's name does not decline"
   },
   {
-   "id": "q28-05",
+   "id": "q28-07",
+   "qword": "quem",
+   "q": "Quem rēgēs velut deum adōrāvērunt?",
+   "en": "Whom did the kings worship as a god?",
+   "unit_id": "w06:21.3",
+   "answers": [
+    "puerum"
+   ],
+   "input": "tap",
+   "hint": "quem is the accusative of quis: the object of adōrāvērunt"
+  },
+  {
+   "id": "q28-08",
    "qword": "quid",
    "q": "Quid Iēsūs in Iūdaeā verbīs efficiēbat?",
    "en": "What did Jesus bring about in Judea by his words?",
@@ -186,7 +244,7 @@
    "hint": "efficiēbat ut + the imperfect subjunctive (past main verb → imperfect subjunctive)"
   },
   {
-   "id": "q28-06",
+   "id": "q28-09",
    "qword": "unde",
    "q": "Unde hominēs aegrī ad Iēsum conveniēbant?",
    "en": "From where did the sick come to Jesus?",
@@ -226,7 +284,7 @@
    "hint": "ex + ablative for place from which"
   },
   {
-   "id": "q28-07",
+   "id": "q28-10",
    "qword": "quis",
    "q": "Ā quō libellus Lydiae scrīptus est?",
    "en": "By whom was Lydia's little book written?",
@@ -239,7 +297,7 @@
    "hint": "the ablative of agent after ā (a certain Jew, named …)"
   },
   {
-   "id": "q28-08",
+   "id": "q28-11",
    "qword": "quid",
    "q": "Quid Mēdus Lydiam rogat?",
    "en": "What does Medus ask Lydia to do?",
@@ -295,7 +353,35 @@
    "hint": "an indirect command: rogat ut + present subjunctive (sibi = to him)"
   },
   {
-   "id": "q28-09",
+   "id": "q28-12",
+   "qword": "cui",
+   "q": "Cui surgere imperātum est?",
+   "en": "Whom did Jesus order to get up?",
+   "unit_id": "w06:56.1",
+   "answers": [
+    {
+     "span": [
+      23,
+      24
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      23,
+      24
+     ]
+    },
+    "puellae mortuae",
+    "Petrō timidō",
+    "turbae tumultuantī"
+   ],
+   "hint": "imperāre takes a dative: the one commanded"
+  },
+  {
+   "id": "q28-13",
    "qword": "quid",
    "q": "Quid Iāīrus Iēsum rogāvit?",
    "en": "What did Jairus ask Jesus to do?",
@@ -350,7 +436,7 @@
    "hint": "rogāvit ut + imperfect subjunctive (the main verb is past)"
   },
   {
-   "id": "q28-10",
+   "id": "q28-14",
    "qword": "num",
    "q": "Num Iuppiter mortuōs ab Īnferīs revocāre potest?",
    "en": "Jupiter can't call the dead back from the Underworld, can he?",
@@ -434,7 +520,7 @@
    "hint": "num expects 'no'; nē … quidem = 'not even'"
   },
   {
-   "id": "q28-11",
+   "id": "q28-15",
    "qword": "quot",
    "q": "Quot diī mundum ūniversum inter sē dīvīsērunt?",
    "en": "How many gods divided the whole world among themselves?",
@@ -469,7 +555,7 @@
    "hint": "a numeral in the nominative; the ita … ut clause that follows is a result clause"
   },
   {
-   "id": "q28-12",
+   "id": "q28-16",
    "qword": "quandō",
    "q": "Quandō Iēsūs ad discipulōs super mare ambulāns vēnit?",
    "en": "When did Jesus come to the disciples walking on the sea?",
@@ -529,7 +615,7 @@
    "hint": "an ablative of time when with an ordinal number"
   },
   {
-   "id": "q28-13",
+   "id": "q28-17",
    "qword": "cūr",
    "q": "Cūr discipulī prae timōre clāmāvērunt?",
    "en": "Why did the disciples cry out in fear?",
@@ -584,7 +670,7 @@
    "hint": "they saw him walking (a present participle in the accusative) and took him for a ghost"
   },
   {
-   "id": "q28-14",
+   "id": "q28-18",
    "qword": "cūr",
    "q": "Cūr Petrus super aquam ambulābat?",
    "en": "Why was Peter walking on the water?",
@@ -624,7 +710,7 @@
    "hint": "a purpose clause: ut + imperfect subjunctive after a past main verb"
   },
   {
-   "id": "q28-15",
+   "id": "q28-19",
    "qword": "quandō",
    "q": "Quandō ventus cessāvit?",
    "en": "When did the wind stop?",
@@ -693,7 +779,7 @@
    "hint": "an ablative absolute with a present participle (ascendentibus eīs = as they were climbing in)"
   },
   {
-   "id": "q28-16",
+   "id": "q28-20",
    "qword": "quid",
    "q": "Quid accidit cum tempestās magna in marī facta est?",
    "en": "What happened when a great storm arose at sea?",
@@ -729,7 +815,7 @@
    "hint": "a result clause: ita ut + imperfect subjunctive (operīrētur)"
   },
   {
-   "id": "q28-17",
+   "id": "q28-21",
    "qword": "quid",
    "q": "Quid factum est postquam Iēsūs ventīs et marī imperāvit?",
    "en": "What happened after Jesus commanded the winds and the sea?",
@@ -741,7 +827,7 @@
    "hint": "the nominative subject of facta est; imperāre takes the dative (ventīs et marī)"
   },
   {
-   "id": "q28-18",
+   "id": "q28-22",
    "qword": "quis",
    "q": "Cui mare et ventī oboediunt, ut gubernātor dīcit?",
    "en": "Whom do the sea and the winds obey, according to the helmsman?",
@@ -753,7 +839,7 @@
    "hint": "oboedīre takes the dative; nēminī … nisi = 'no one except'"
   },
   {
-   "id": "q28-19",
+   "id": "q28-23",
    "qword": "quid",
    "q": "Quid Neptūnus cūrāvit, ut gubernātor cēnset?",
    "en": "What did Neptune see to, in the helmsman's view?",
@@ -834,7 +920,7 @@
    "hint": "cūrāvit ut … nēve + imperfect subjunctive (past main verb)"
   },
   {
-   "id": "q28-20",
+   "id": "q28-24",
    "qword": "quālis",
    "q": "Quālia perīcula nautīs impendent?",
    "en": "What kinds of danger threaten sailors?",
@@ -874,7 +960,25 @@
    "hint": "three nominative subjects introduced by ut ('such as'), each with a relative clause; the last has a purpose clause (ut … rapiant)"
   },
   {
-   "id": "q28-21",
+   "id": "q28-25",
+   "qword": "quibus",
+   "q": "Quibus in marī nāvēs frangī solent?",
+   "en": "By what are ships broken?",
+   "unit_id": "w06:126.4",
+   "answers": [
+    "saxīs"
+   ],
+   "input": "choice",
+   "choices": [
+    "saxīs",
+    "flūctibus",
+    "ventīs",
+    "praedōnibus"
+   ],
+   "hint": "quibus is the ablative plural of quī: the means"
+  },
+  {
+   "id": "q28-26",
    "qword": "quid",
    "q": "Quid gubernātor cūrābit?",
    "en": "What will the helmsman see to?",
@@ -954,7 +1058,7 @@
    "hint": "cūrābō ut + present subjunctive (a future main verb keeps the present subjunctive)"
   },
   {
-   "id": "q28-22",
+   "id": "q28-27",
    "qword": "quot",
    "q": "Intrā quot diēs nāvis in Graeciam perveniet, ut gubernātor spērat?",
    "en": "Within how many days will the ship reach Greece, as the helmsman hopes?",
@@ -967,7 +1071,7 @@
    "hint": "intrā + accusative ('within six days, or rather eight')"
   },
   {
-   "id": "q28-23",
+   "id": "q28-28",
    "qword": "uter",
    "q": "Utrum gubernātor Rōmae an in Graeciā vīvere māvult?",
    "en": "Does the helmsman prefer to live at Rome or in Greece?",
@@ -1019,7 +1123,7 @@
    "hint": "utrum … an; Rōmae is the locative ('at Rome'); mālō = prefer"
   },
   {
-   "id": "q28-24",
+   "id": "q28-29",
    "qword": "quid",
    "q": "Quid cīvēs Rōmānī mālunt quam servīre?",
    "en": "What do Roman citizens prefer to being slaves?",
@@ -1049,7 +1153,7 @@
    "hint": "a deponent infinitive after mālō … quam"
   },
   {
-   "id": "q28-25",
+   "id": "q28-30",
    "qword": "cūr",
    "q": "Cūr Mēdus herī ē vīllā fūgit?",
    "en": "Why did Medus flee from the villa yesterday?",
@@ -1163,7 +1267,7 @@
    "hint": "purpose clauses: ut + imperfect subjunctive (vītāret, vidēret, esset)"
   },
   {
-   "id": "q28-26",
+   "id": "q28-31",
    "qword": "quōmodo",
    "q": "Quōmodo Mēdus Lydiae persuāsit ut sēcum ex Italiā proficīscerētur?",
    "en": "How did Medus persuade Lydia to set out with him from Italy?",
@@ -1202,7 +1306,7 @@
    "hint": "an ablative of means; persuādeō takes the dative and ut + subjunctive"
   },
   {
-   "id": "q28-27",
+   "id": "q28-32",
    "qword": "ubi",
    "q": "Ubi Mēdus et Lydia nāvem cōnscendērunt?",
    "en": "Where did Medus and Lydia board the ship?",
@@ -1214,7 +1318,7 @@
    "hint": "the locative of a town name ('at Ostia'); ut nāvigārēmus is a purpose clause"
   },
   {
-   "id": "q28-28",
+   "id": "q28-33",
    "qword": "-ne",
    "q": "Servitne Lydia dominō Rōmānō?",
    "en": "Does Lydia serve a Roman master?",
@@ -1296,7 +1400,7 @@
    "hint": "a yes/no question with -ne; servīre takes the dative (nēminī … nisi dominō)"
   },
   {
-   "id": "q28-29",
+   "id": "q28-34",
    "qword": "quot",
    "q": "Quot dominīs nēmō servīre potest?",
    "en": "How many masters can no one serve?",
@@ -1308,7 +1412,7 @@
    "hint": "a numeral in the dative plural, because servīre takes the dative"
   },
   {
-   "id": "q28-30",
+   "id": "q28-35",
    "qword": "quid",
    "q": "Quid Mēdus Lydiae prope centum sēstertiīs ēmit?",
    "en": "What did Medus buy for Lydia for nearly a hundred sesterces?",
@@ -1328,7 +1432,7 @@
    "hint": "the accusative object of ēmit; sēstertiīs is an ablative of price"
   },
   {
-   "id": "q28-31",
+   "id": "q28-36",
    "qword": "quid",
    "q": "Quid Mēdus rubēns nescit?",
    "en": "What does the blushing Medus not know?",
@@ -1373,7 +1477,7 @@
    "hint": "an indirect question: quid + present subjunctive after nescit"
   },
   {
-   "id": "q28-32",
+   "id": "q28-37",
    "qword": "quis",
    "q": "Quem Mēdus celeriter accēdere videt?",
    "en": "Whom does Medus see approaching quickly?",
