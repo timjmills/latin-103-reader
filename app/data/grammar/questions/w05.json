@@ -63,6 +63,35 @@
   },
   {
    "id": "qw05-03",
+   "qword": "unde",
+   "q": "Unde Coriolānus tandem discessit?",
+   "en": "Where did Coriolanus finally withdraw from?",
+   "part": "FS",
+   "unit_id": "w05:coriolanus:139.2",
+   "answers": [
+    {
+     "span": [
+      16,
+      18
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      16,
+      18
+     ]
+    },
+    "ā castrīs hostium",
+    "ex Italiā tōtā",
+    "ā domō suā"
+   ],
+   "hint": "ab + ablative answers unde: the place gone from"
+  },
+  {
+   "id": "qw05-04",
    "qword": "quid",
    "q": "Quid Volscī īrātī fierī iussērunt?",
    "en": "What did the angry Volscians order to be done?",
@@ -91,7 +120,7 @@
    "hint": "iubēre + accusative and a passive infinitive"
   },
   {
-   "id": "qw05-04",
+   "id": "qw05-05",
    "qword": "cuius",
    "q": "Cuius fīlia Nausicaa fuit?",
    "en": "Whose daughter was Nausicaa?",
@@ -104,7 +133,36 @@
    "hint": "a genitive attached to fīlia"
   },
   {
-   "id": "qw05-05",
+   "id": "qw05-06",
+   "qword": "ubi",
+   "q": "Ubi Nausicaa pilā lūdēbat?",
+   "en": "Where was Nausicaa playing ball?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:147.2",
+   "answers": [
+    {
+     "span": [
+      8,
+      10
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      8,
+      10
+     ]
+    },
+    "in rēgiā patris",
+    "in silvā altā",
+    "in hortō suō"
+   ],
+   "hint": "in + ablative answers ubi"
+  },
+  {
+   "id": "qw05-07",
    "qword": "quid",
    "q": "Quid Nausicaa ancillīs imperābat?",
    "en": "What was Nausicaa ordering the maids to do?",
@@ -166,7 +224,7 @@
    "hint": "imperābat ut + imperfect subjunctive (past main verb); sē refers back to Nausicaa"
   },
   {
-   "id": "qw05-06",
+   "id": "qw05-08",
    "qword": "cūr",
    "q": "Cūr pila numquam ad terram cadēbat?",
    "en": "Why did the ball never fall to the ground?",
@@ -258,7 +316,7 @@
    "hint": "a quia clause containing a result clause (tam … ut + imperfect subjunctive) and a genitive gerund with an object (eam capiendī)"
   },
   {
-   "id": "qw05-07",
+   "id": "qw05-09",
    "qword": "cūr",
    "q": "Cūr Ulixēs subitō excitātus est?",
    "en": "Why was Ulysses suddenly woken?",
@@ -287,7 +345,7 @@
    "hint": "a result clause: tam … ut + imperfect subjunctive"
   },
   {
-   "id": "qw05-08",
+   "id": "qw05-10",
    "qword": "cūr",
    "q": "Cūr Ulixēs in Phaeācum lītus ēiectus est?",
    "en": "Why was Ulysses cast up on the shore of the Phaeacians?",
@@ -316,7 +374,7 @@
    "hint": "another tam … ut result clause, with an ablative absolute inside it"
   },
   {
-   "id": "qw05-09",
+   "id": "qw05-11",
    "qword": "cūr",
    "q": "Cūr Ulixēs rāmum ex arbore frēgit?",
    "en": "Why did Ulysses break a branch from a tree?",
@@ -356,7 +414,7 @@
    "hint": "a purpose clause: ut + imperfect subjunctive"
   },
   {
-   "id": "qw05-10",
+   "id": "qw05-12",
    "qword": "quālis",
    "q": "Quālis Ulixēs puellīs vīsū erat?",
    "en": "What was Ulysses like for the girls to look at?",
@@ -385,7 +443,7 @@
    "hint": "a supine in -ū with an adjective (terribilis vīsū)"
   },
   {
-   "id": "qw05-11",
+   "id": "qw05-13",
    "qword": "quis",
    "q": "Quae sōla ex puellīs mānsit?",
    "en": "Which girl alone stayed?",
@@ -398,7 +456,7 @@
    "hint": "the nominative subject with a genitive attached (Alcinoī fīlia); metū dēpositō is an ablative absolute"
   },
   {
-   "id": "qw05-12",
+   "id": "qw05-14",
    "qword": "quid",
    "q": "Quid Nausicaa Ulixī ostendere prōmīsit?",
    "en": "What did Nausicaa promise to show Ulysses?",
@@ -411,7 +469,7 @@
    "hint": "the accusative object, the first word of her promise"
   },
   {
-   "id": "qw05-13",
+   "id": "qw05-15",
    "qword": "quid",
    "q": "Quid ancillae Ulixī facere iussae sunt?",
    "en": "What were the maids told to do for Ulysses?",
@@ -440,7 +498,7 @@
    "hint": "imperāre ut + imperfect subjunctive, after a past main verb"
   },
   {
-   "id": "qw05-14",
+   "id": "qw05-16",
    "qword": "quid",
    "q": "Quid Nausicaa dē Ulixe optat?",
    "en": "What does Nausicaa wish about Ulysses?",
@@ -479,7 +537,7 @@
    "hint": "optō ut + present subjunctive (a wish); manendō is an ablative gerund"
   },
   {
-   "id": "qw05-15",
+   "id": "qw05-17",
    "qword": "quid",
    "q": "Quid rēx parārī imperāvit?",
    "en": "What did the king order to be made ready?",
@@ -492,7 +550,7 @@
    "hint": "the subject of a passive subjunctive inside an indirect command"
   },
   {
-   "id": "qw05-16",
+   "id": "qw05-18",
    "qword": "quō",
    "q": "Quō Nausicaa trīstis ascendit?",
    "en": "Where did the sad Nausicaa climb?",
@@ -521,7 +579,7 @@
    "hint": "in + accusative for motion"
   },
   {
-   "id": "qw05-17",
+   "id": "qw05-19",
    "qword": "quid",
    "q": "Quid Dāvus praeter rēs Mārcī fert?",
    "en": "What does Davus carry besides Marcus's things?",
@@ -534,7 +592,7 @@
    "hint": "nōn modo … sed etiam joins the two things he carries"
   },
   {
-   "id": "qw05-18",
+   "id": "qw05-20",
    "qword": "quid",
    "q": "Quid pater Mārcī solvere nōn vult?",
    "en": "What does Marcus's father not want to pay?",
@@ -547,7 +605,7 @@
    "hint": "the accusative object of solvere"
   },
   {
-   "id": "qw05-19",
+   "id": "qw05-21",
    "qword": "quid",
    "q": "Quid dominus dē magistrō plānē scrībit?",
    "en": "What does the master write plainly about the teacher?",
@@ -576,7 +634,7 @@
    "hint": "an indirect statement in a letter: accusative + infinitive"
   },
   {
-   "id": "qw05-20",
+   "id": "qw05-22",
    "qword": "cūr",
    "q": "Cūr oppida in collibus aedificantur?",
    "en": "Why are towns built on hills?",
@@ -605,7 +663,7 @@
    "hint": "a comparative adverb with an infinitive as its subject"
   },
   {
-   "id": "qw05-21",
+   "id": "qw05-23",
    "qword": "quandō",
    "q": "Quandō Mārcus fessus esse dīcit?",
    "en": "When does Marcus say he is tired?",
@@ -634,7 +692,7 @@
    "hint": "cum + perfect indicative for the moment it happens"
   },
   {
-   "id": "qw05-22",
+   "id": "qw05-24",
    "qword": "quae",
    "q": "Quae est patria Dāvī?",
    "en": "What is Davus's homeland?",
@@ -647,7 +705,7 @@
    "hint": "the predicate of est"
   },
   {
-   "id": "qw05-23",
+   "id": "qw05-25",
    "qword": "quid",
    "q": "Quid puerīs barbarīs discere nōn licet?",
    "en": "What are barbarian boys not allowed to learn?",
@@ -676,7 +734,7 @@
    "hint": "licet + dative + infinitive"
   },
   {
-   "id": "qw05-24",
+   "id": "qw05-26",
    "qword": "cūr",
    "q": "Cūr parentēs Dāvī necātī sunt?",
    "en": "Why were Davus's parents killed?",
@@ -705,7 +763,20 @@
    "hint": "a quia clause with a complementary infinitive"
   },
   {
-   "id": "qw05-25",
+   "id": "qw05-27",
+   "qword": "quot",
+   "q": "Quot annōrum erat Dāvus cum Rōmam missus est?",
+   "en": "How old was Davus when he was sent to Rome?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b38.1",
+   "answers": [
+    "quīndecim"
+   ],
+   "input": "tap",
+   "hint": "a genitive of description: so many years old"
+  },
+  {
+   "id": "qw05-28",
    "qword": "cūr",
    "q": "Cūr Syra et Dēlia Tūsculum eunt?",
    "en": "Why are Syra and Delia going to Tusculum?",
@@ -734,7 +805,7 @@
    "hint": "dēbēre + infinitive for what they have to do"
   },
   {
-   "id": "qw05-26",
+   "id": "qw05-29",
    "qword": "quid",
    "q": "Quid Dēlia in viā obscūrā audit?",
    "en": "What does Delia hear in the dark street?",
@@ -763,7 +834,7 @@
    "hint": "an accusative object of audit"
   },
   {
-   "id": "qw05-27",
+   "id": "qw05-30",
    "qword": "quid",
    "q": "Quid in saccō inest?",
    "en": "What is inside the sack?",
@@ -812,7 +883,7 @@
    "hint": "inesse + in + ablative"
   },
   {
-   "id": "qw05-28",
+   "id": "qw05-31",
    "qword": "quid",
    "q": "Quid Dēlia dē sonō intellegit?",
    "en": "What does Delia work out about the sound?",
@@ -841,7 +912,20 @@
    "hint": "an indirect statement with a perfect infinitive"
   },
   {
-   "id": "qw05-29",
+   "id": "qw05-32",
+   "qword": "uter",
+   "q": "Utra īnfantem sustulit, Syra an Dēlia?",
+   "en": "Which of the two picked the baby up, Syra or Delia?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b40.4",
+   "answers": [
+    "Syra"
+   ],
+   "input": "tap",
+   "hint": "uter asks which of exactly two; utra is its feminine"
+  },
+  {
+   "id": "qw05-33",
    "qword": "quid",
    "q": "Quid vir mulierī dē īnfante dīxit?",
    "en": "What did the husband tell the woman about the infant?",
@@ -870,7 +954,20 @@
    "hint": "a future infinitive in an indirect statement"
   },
   {
-   "id": "qw05-30",
+   "id": "qw05-34",
+   "qword": "quem",
+   "q": "Quem Syra mulierī ostendit?",
+   "en": "Whom does Syra show to the woman?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b41.1",
+   "answers": [
+    "īnfantem"
+   ],
+   "input": "tap",
+   "hint": "quem is the accusative of quis: the object of ostendit"
+  },
+  {
+   "id": "qw05-35",
    "qword": "quid",
    "q": "Quid māter statim fēcit?",
    "en": "What did the mother do at once?",
@@ -899,7 +996,7 @@
    "hint": "two deponent verbs, joined by -que and atque"
   },
   {
-   "id": "qw05-31",
+   "id": "qw05-36",
    "qword": "quandō",
    "q": "Quandō Aemilia parvulum īnfantem habēbit?",
    "en": "When will Aemilia have a tiny infant?",
@@ -928,7 +1025,7 @@
    "hint": "intrā + accusative for the time within which"
   },
   {
-   "id": "qw05-32",
+   "id": "qw05-37",
    "qword": "quālis",
    "q": "Quālis somnus Aemiliae erat?",
    "en": "What was Aemilia's sleep like?",
@@ -941,7 +1038,7 @@
    "hint": "a perfect passive participle used as a predicate"
   },
   {
-   "id": "qw05-33",
+   "id": "qw05-38",
    "qword": "cūr",
    "q": "Cūr īnfāns in somniō semper vāgiēbat?",
    "en": "Why was the infant in the dream always crying?",
@@ -980,7 +1077,7 @@
    "hint": "neque … neque … neque lists the three things she failed to do"
   },
   {
-   "id": "qw05-34",
+   "id": "qw05-39",
    "qword": "cūr",
    "q": "Cūr Iūlia plōrābat?",
    "en": "Why was Julia crying?",
@@ -1019,7 +1116,7 @@
    "hint": "the reason she gives in her own words, in a quia clause"
   },
   {
-   "id": "qw05-35",
+   "id": "qw05-40",
    "qword": "quid",
    "q": "Quid Aemilia fīliae suae nōn dīcit?",
    "en": "What does Aemilia not tell her daughter?",
