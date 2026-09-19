@@ -112,7 +112,9 @@ export function buildToday({ states, skills, currentWeek = [], weekChapter = nul
     } else if (isDue(st, now)) { const n = Math.min(PRACTICE_ITEMS, qs.count); lines.push({ id: 'questions', kind: 'questions', skill: qid, label: 'Questions', detail: `${qs.title} · ${n} due`, minutes: minutesOf(n, secondsFor('question')), action: { view: 'session', params: { preset: 'one-skill', size: n, oneSkill: qid } } }); }
   }
   // Vocabulary due: every deck in rotation that is due, ten items each; the current week's deck first while new.
-  const vid = weekChapter != null ? `vocab-${pad(weekChapter)}` : null;
+  // The week's own deck first, for the same reason as its questions (§29).
+  const ownVid = weekId ? `vocab-${weekId}` : null;
+  const vid = (ownVid && skills.get(ownVid)) ? ownVid : (weekChapter != null ? `vocab-${pad(weekChapter)}` : null);
   const vs = vid && skills.get(vid);
   if (vs && vs.count > 0 && ['new', 'learning', 'lapsed'].includes(stateOf(vid).state)) {
     const n = Math.min(SET_LEARN_BATCH, vs.count);

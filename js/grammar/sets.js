@@ -32,6 +32,7 @@ import { tokenize, stripMacrons } from '../tokenize.js';
 import { roman, shelfChapter } from '../sync.js';
 import { normaliseAnswer, la, partsText, q } from './items.js';
 import { spine, chapterMaterial } from './chapter.js';
+import { chunksOf, scramble, REORDER_MAX_WORDS } from './stage3.js';
 
 export const SET_KINDS = Object.freeze(['question', 'vocab', 'pensum']);
 const pad = (n) => String(n).padStart(2, '0');
@@ -105,9 +106,10 @@ export function createSetLoader({ fetchJson }) {
       const docs = await Promise.all(chapters.map((c) => chapter(dir, c)));
       docs.forEach((d, i) => { const norm = normOf(dir, d); if (norm) out[dir].set(norm.chapter ?? chapters[i], norm); else out.failed.push(`${dir}/${pad(chapters[i])}.json`); });
     }
-    // A week that reads no Familia Romana chapter of its own keeps its questions in a file named for the
-    // week (§28): weeks 3 and 4 are both "chapter XXVII", so one chapter-numbered file cannot hold both,
-    // and the week reading Fabulae Syrae was being asked about the week reading the chapter.
+    // A week that reads no Familia Romana chapter of its own keeps its questions in a file named for
+    // the week (§28): weeks 3 and 4 are both "chapter XXVII", so one chapter-numbered file cannot hold
+    // both, and the week reading Fabulae Syrae was being asked about the week reading the chapter.
+    // Its *vocabulary* stays in the chapter file and is split per week in `setSkills` (§29).
     const listedWeeks = await weekList('questions');
     const wanted = listedWeeks.filter((w) => weeksWanted == null || weeksWanted.includes(w));
     const weekDocs = await Promise.all(wanted.map((w) => weekFile('questions', w)));
@@ -266,10 +268,28 @@ export function setSkills({ questions = new Map(), weekQuestions = new Map(), vo
     const what = set.title || wk?.title || wid;
     out.set(id, common(id, 'questions', chapter, `Questions · ${what}`, `quis / quid / ubi … about the stories week ${wk?.n ?? '?'} reads (${what})`, ['question'], set.items.length, { data: set, week_n: wk?.n ?? null, week_id: wid }));
   }
+  /** A deck row and its English → Latin twin. */
+  const addVocab = (id, what, plain, data, chapter, wk) => {
+    out.set(id, common(id, 'vocab', chapter, `Vocabulary · ${what}`, plain, ['vocab'], data.words.length, { data, rev: false, week_n: wk?.n ?? null, week_id: wk?.id ?? null }));
+    out.set(`${id}-rev`, common(`${id}-rev`, 'vocab', chapter, `Vocabulary · ${what} · English → Latin`, `${plain.replace(', Latin → English', '')}, English → Latin (an optional extra deck)`, ['vocab'], data.words.length, { data, rev: true, week_n: wk?.n ?? null, week_id: wk?.id ?? null }));
+  };
   for (const [chapter, deck] of vocab) {
-    const wk = weekOf(chapter, null);
-    out.set(`vocab-${pad(chapter)}`, common(`vocab-${pad(chapter)}`, 'vocab', chapter, `Vocabulary · Cap. ${roman(chapter)}`, `the chapter's new words, Latin → English`, ['vocab'], deck.words.length, { data: deck, rev: false, week_n: wk?.n ?? null }));
-    out.set(`vocab-${pad(chapter)}-rev`, common(`vocab-${pad(chapter)}-rev`, 'vocab', chapter, `Vocabulary · Cap. ${roman(chapter)} · English → Latin`, `the chapter's new words, English → Latin (an optional extra deck)`, ['vocab'], deck.words.length, { data: deck, rev: true, week_n: wk?.n ?? null }));
+    // **A chapter two weeks read carries both weeks' words** (§29). Week 3 reads Fabulae Syrae and
+    // the Fabellae, week 4 reads chapter XXVII itself, and `build_vocab` files a word under the
+    // chapter it is first met in — so one deck held Mīnōs and Rēs Rūsticae together and taught each
+    // week the other's vocabulary. The split is made here rather than in the file because the
+    // pipeline files by chapter on purpose: the cumulative vocabulary of chapter XXVII, which the
+    // teaching checks and the paradigm catalogue are built from, takes in both weeks.
+    const weekOfWord = (w) => weeks.find((x) => x.id === String(w.unit_id ?? '').split(':')[0]) ?? null;
+    const groups = new Map();
+    for (const w of deck.words) { const wk = weekOfWord(w); if (wk?.source === 'FS+FL') groups.set(wk.id, [...(groups.get(wk.id) ?? []), w]); }
+    const own = groups.size ? deck.words.filter((w) => weekOfWord(w)?.source !== 'FS+FL') : deck.words;
+    const chapterWk = weeks.find((w) => w.source !== 'FS+FL' && chapterOfWeek(w) === chapter) ?? weekOf(chapter, null);
+    addVocab(`vocab-${pad(chapter)}`, `Cap. ${roman(chapter)}`, "the chapter's new words, Latin → English", { ...deck, words: own }, chapter, chapterWk);
+    for (const [wid, words] of groups) {
+      const wk = weeks.find((x) => x.id === wid) ?? null;
+      addVocab(`vocab-${wid}`, wk?.title ?? wid, 'the words these stories bring in, Latin → English', { ...deck, words }, chapter, wk);
+    }
   }
   for (const [chapter, p] of pensa) {
     const count = p.A.length + p.B.length + p.C.length;
@@ -645,6 +665,28 @@ export function answerIndexes(la, answers, { whole = true } = {}) {
   }
   return [...out].sort((a, b) => a - b);
 }
+/** The most words of an answer a learner can reasonably be asked to type out (§29). */
+export const PENSUM_TYPE_MAX = 3;
+/**
+ * Which input a Pensum C answer can honestly be given in (§29).
+ *
+ * Ørberg's model answers are whole sentences: two thirds of the 383 run to four
+ * words or more and some past thirty. "Type the answer" was therefore asking for
+ * dictation rather than Latin — the learner met a question about a coin and a
+ * purse, and an empty box wanting the chapter's whole eight-word sentence back.
+ *
+ * One to three words are typed, or tapped in the sentence when the answer is a
+ * single word it contains (`answerIndexes` offers only those, since it drops a
+ * phrase spanning more than one word). Four to eight: the answer's own words
+ * come back scrambled and are put in order — the same cap the generated reorder
+ * items use. Longer than that: answer it from the chapter and mark yourself,
+ * which is how the pensum is done on paper. Pure given `rand`.
+ */
+export function pensumCInput(words, canTap, rand = Math.random) {
+  if (words <= PENSUM_TYPE_MAX) return canTap && rand() < 0.5 ? 'tap' : 'type';
+  if (words <= REORDER_MAX_WORDS) return 'order';
+  return 'self';
+}
 /** The blanks of a pensum text, in order: segments of prose and `{ blank: i }` for each run of underscores. Pure. */
 export function pensumSegments(text) {
   const out = [];
@@ -822,10 +864,21 @@ export function createSetItems({ sets, units = [], pool, rand = Math.random }) {
       const unit = it.unit_id ? unitOf(it.unit_id) : null;
       const answers = [...new Set(it.answers.flatMap((a) => [a, stripMacrons(a)]))];
       const accept = unit ? answerIndexes(unit.la, it.answers) : [];
-      const input = unit && accept.length && rand() < 0.5 ? 'tap' : 'type';
+      const model = String(it.answers[0] ?? '');
+      const chunks = chunksOf(model);
+      let input = pensumCInput(chunks.length, !!(unit && accept.length), rand);
+      // A sentence of one repeated word cannot be scrambled; it falls to the self-graded form.
+      const order = input === 'order' ? scramble(chunks, rand) : null;
+      if (input === 'order' && !order) input = 'self';
+      // The last chip drops the full stop, which would otherwise say "put me last" (§27's rule for reorder).
+      const display = chunks.map((w, i) => (i === chunks.length - 1 ? w.replace(/[.!?]+$/, '') : w));
+      const hint = input === 'order' ? 'Pensum C: the chapter\u2019s own answer, its words out of order.'
+        : input === 'self' ? 'Pensum C: answer from the chapter, then compare and mark yourself.'
+          : 'Pensum C: answer from the chapter.';
       return { ...common, input, unit_id: it.unit_id ?? null, question: { q: it.q, answers, en: it.en ?? '' }, accept: input === 'tap' ? accept : null,
-        prompt: { la: input === 'tap' ? unit.la : null, question: it.q, en: it.en ?? '', gloss: null, hint: 'Pensum C: answer from the chapter.', placeholder: 'the answer in Latin (macrons optional)' },
-        answer: answers, choices: null, meanings: input === 'tap' ? meaningsOf(unit.la) : [],
+        ...(input === 'order' ? { chunks, display, scrambled: order } : null),
+        prompt: { la: input === 'tap' ? unit.la : null, question: it.q, en: it.en ?? '', gloss: null, hint, placeholder: 'the answer in Latin (macrons optional)' },
+        answer: input === 'order' ? [model] : answers, choices: null, meanings: input === 'tap' ? meaningsOf(unit.la) : [],
         feedback: { ...common.feedback, ...saysParts(unit, it.answers), sentence: unit?.la ?? null, sentenceEn: unit?.en || null, lit: unit ? answerIndexes(unit.la, it.answers, { whole: false }) : [] } };
     }
     const segments = pensumSegments(it.text);
