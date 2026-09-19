@@ -89,12 +89,15 @@ export function createSetLoader({ fetchJson }) {
     if (!cache.has(name)) cache.set(name, fn().catch((e) => { cache.delete(name); console.warn(`[grammar] chapter set ${name} could not be loaded`, e?.message || e); return null; }));
     return cache.get(name);
   };
-  const manifest = (dir) => once(`${dir}/index.json`, async () => { const raw = await fetchJson(`${dir}/index.json`); return manifestChapters(raw); });
+  const manifestDoc = (dir) => once(`${dir}/index.json`, () => fetchJson(`${dir}/index.json`));
+  const manifest = async (dir) => manifestChapters(await manifestDoc(dir));
+  const weekList = async (dir) => manifestWeeks(await manifestDoc(dir));
   const chapter = (dir, c) => once(`${dir}/${pad(c)}.json`, () => fetchJson(`${dir}/${pad(c)}.json`));
+  const weekFile = (dir, w) => once(`${dir}/${w}.json`, () => fetchJson(`${dir}/${w}.json`));
   /** { questions: Map chapter → set, vocab: Map chapter → deck } — every listed chapter loaded. */
   const normOf = (dir, d) => (dir === 'questions' ? normaliseQuestionSet(d) : normaliseVocab(d));
-  async function load(chaptersWanted = null) {
-    const out = { questions: new Map(), vocab: new Map(), failed: [] };
+  async function load(chaptersWanted = null, weeksWanted = null) {
+    const out = { questions: new Map(), weekQuestions: new Map(), vocab: new Map(), failed: [] };
     for (const dir of ['questions', 'vocab']) {
       const listed = await manifest(dir);
       if (listed == null) out.failed.push(`${dir}/index.json`);
@@ -102,13 +105,26 @@ export function createSetLoader({ fetchJson }) {
       const docs = await Promise.all(chapters.map((c) => chapter(dir, c)));
       docs.forEach((d, i) => { const norm = normOf(dir, d); if (norm) out[dir].set(norm.chapter ?? chapters[i], norm); else out.failed.push(`${dir}/${pad(chapters[i])}.json`); });
     }
+    // A week that reads no Familia Romana chapter of its own keeps its questions in a file named for the
+    // week (§28): weeks 3 and 4 are both "chapter XXVII", so one chapter-numbered file cannot hold both,
+    // and the week reading Fabulae Syrae was being asked about the week reading the chapter.
+    const listedWeeks = await weekList('questions');
+    const wanted = listedWeeks.filter((w) => weeksWanted == null || weeksWanted.includes(w));
+    const weekDocs = await Promise.all(wanted.map((w) => weekFile('questions', w)));
+    weekDocs.forEach((d, i) => { const norm = normaliseQuestionSet(d); if (norm) out.weekQuestions.set(norm.week_id ?? wanted[i], norm); else out.failed.push(`questions/${wanted[i]}.json`); });
     return out;
   }
-  /** Every listed chapter. */
-  const loadAll = () => load(null);
-  /** One chapter only — what the weeks-menu Today card needs (M6): two files, not 68. */
-  const loadChapter = (c) => load([Number(c)]);
+  /** Every listed chapter, and every week that has a set of its own. */
+  const loadAll = () => load(null, null);
+  /** One chapter, and (when named) the current week's own set — what the weeks-menu Today card needs (M6): a few files, not 68. */
+  const loadChapter = (c, weekId = null) => load([Number(c)], weekId ? [weekId] : []);
   return { loadAll, loadChapter };
+}
+/** `{ "weeks": ["w03"] }` → ['w03']; anything else → []. A week's set is named for its week, never a number. Pure. */
+export function manifestWeeks(raw) {
+  const list = Array.isArray(raw?.weeks) ? raw.weeks : null;
+  if (!list) return [];
+  return [...new Set(list.map((x) => String(x).replace(/\.json$/i, '')).filter((w) => /^w\d{2}$/.test(w)))].sort();
 }
 /** `{ "chapters": [1, 7] }` (or a list) → [1, 7]; anything else → null. Pure. */
 export function manifestChapters(raw) {
@@ -228,7 +244,7 @@ export const SET_CATEGORY = { questions: 'questions', vocab: 'vocabulary', pensu
  * ('questions' | 'vocab' | 'pensum'), `chapter`, `count`, `kinds` (one),
  * `rev` for the English → Latin deck, `data` (the set itself). Pure.
  */
-export function setSkills({ questions = new Map(), vocab = new Map(), pensa = new Map(), weeks = [] } = {}) {
+export function setSkills({ questions = new Map(), weekQuestions = new Map(), vocab = new Map(), pensa = new Map(), weeks = [] } = {}) {
   const out = new Map();
   const weekOf = (chapter, weekId) => weekId ? weeks.find((w) => w.id === weekId) ?? null : weeks.find((w) => chapterOfWeek(w) === chapter) ?? null;
   const common = (id, set, chapter, title, plain, kinds, count, extra = {}) => ({
@@ -238,6 +254,17 @@ export function setSkills({ questions = new Map(), vocab = new Map(), pensa = ne
   for (const [chapter, set] of questions) {
     const wk = weekOf(chapter, set.week_id);
     out.set(`questions-${pad(chapter)}`, common(`questions-${pad(chapter)}`, 'questions', chapter, `Questions · Cap. ${roman(chapter)}`, `quis / quid / ubi … about chapter ${roman(chapter)}${set.title ? ` (${set.title})` : ''}`, ['question'], set.items.length, { data: set, week_n: wk?.n ?? null, week_id: set.week_id ?? wk?.id ?? null }));
+  }
+  // The weeks whose reading is not a chapter of Familia Romana (§28). The row is named for the stories
+  // themselves rather than "Cap. XXVII", because the chapter of that number is the *other* week's
+  // reading, and two rows with one name is the confusion this set exists to end. It still sits under
+  // that chapter in the map and the mix grid, which is where the week's material belongs.
+  for (const [wid, set] of weekQuestions) {
+    const wk = weeks.find((w) => w.id === wid) ?? null;
+    const chapter = set.chapter ?? (wk ? chapterOfWeek(wk) : null);
+    const id = `questions-${wid}`;
+    const what = set.title || wk?.title || wid;
+    out.set(id, common(id, 'questions', chapter, `Questions · ${what}`, `quis / quid / ubi … about the stories week ${wk?.n ?? '?'} reads (${what})`, ['question'], set.items.length, { data: set, week_n: wk?.n ?? null, week_id: wid }));
   }
   for (const [chapter, deck] of vocab) {
     const wk = weekOf(chapter, null);
