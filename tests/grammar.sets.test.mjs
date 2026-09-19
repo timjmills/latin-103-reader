@@ -281,20 +281,30 @@ test('§28: a week that reads no chapter of its own carries its questions in a f
   assert.ok(built.get('questions-07'), 'the chapter set and the week set are two rows, not one');
 });
 
-test('§28: the shipped week-3 set asks about week 3 and nothing else', () => {
+test('§28: every shipped week set asks about its own week, and covers all of that week\'s readings', () => {
   const dir = new URL('../app/data/grammar/questions/', import.meta.url);
   const index = JSON.parse(readFileSync(new URL('index.json', dir), 'utf8'));
-  assert.ok(manifestWeeks(index).includes('w03'), 'the manifest no longer lists the week set, so nothing fetches it');
-  const w03 = JSON.parse(readFileSync(new URL('w03.json', dir), 'utf8'));
-  assert.equal(w03.week_id, 'w03');
-  assert.ok(w03.items.length >= 24, `a set needs 24 items, this has ${w03.items.length}`);
-  for (const it of w03.items) assert.ok(it.unit_id.startsWith('w03:'), `${it.id} asks about ${it.unit_id}`);
-  // Every one of the week's three readings is asked about — the complaint was Fabulae Syrae and the
-  // Fabellae having nothing at all, which a set drawn only from the first story would repeat.
-  const parts = new Set(w03.items.map((it) => it.unit_id.split(':')[1]));
-  assert.deepEqual([...parts].sort(), ['coronis', 'fl-63', 'fl-64', 'fl-65', 'minos']);
-  // And chapter 27's own file is left to week 4 alone.
-  const ch27 = JSON.parse(readFileSync(new URL('27.json', dir), 'utf8'));
-  assert.equal(ch27.week_id, 'w04');
-  for (const it of ch27.items) assert.ok(it.unit_id.startsWith('w04:'), `${it.id} asks about ${it.unit_id}`);
+  // Weeks 3, 5 and 10 read Fabulae Syrae and Fabellae Latinae beside a chapter their neighbour reads.
+  assert.deepEqual(manifestWeeks(index), ['w03', 'w05', 'w10'], 'the manifest no longer lists a week set, so nothing fetches it');
+  // Every reading of the week is asked about: the complaint was whole stories having nothing at all,
+  // which a set drawn only from the first story of the week would repeat.
+  const readings = {
+    w03: ['coronis', 'fl-63', 'fl-64', 'fl-65', 'minos'],
+    w05: ['coriolanus', 'fl-66', 'fl-67', 'fl-68', 'nausicaa'],
+    w10: ['arachne', 'fl-69', 'fl-70', 'fl-71', 'fl-72', 'fl-73', 'fl-74'],
+  };
+  for (const [wid, stories] of Object.entries(readings)) {
+    const set = JSON.parse(readFileSync(new URL(`${wid}.json`, dir), 'utf8'));
+    assert.equal(set.week_id, wid);
+    assert.ok(set.items.length >= 24, `${wid} needs 24 items, it has ${set.items.length}`);
+    for (const it of set.items) assert.ok(it.unit_id.startsWith(`${wid}:`), `${it.id} asks about ${it.unit_id}`);
+    assert.deepEqual([...new Set(set.items.map((it) => it.unit_id.split(':')[1]))].sort(), stories, `${wid} leaves a reading unasked`);
+  }
+  // And each neighbour's chapter file is left to its own week alone.
+  for (const [file, wid] of [['27.json', 'w04'], ['28.json', 'w06'], ['32.json', 'w11']]) {
+    const set = JSON.parse(readFileSync(new URL(file, dir), 'utf8'));
+    assert.equal(set.week_id, wid);
+    for (const it of set.items) assert.ok(it.unit_id.startsWith(`${wid}:`), `${file} ${it.id} asks about ${it.unit_id}`);
+    assert.ok(set.items.length >= 24, `${file} fell to ${set.items.length} items`);
+  }
 });

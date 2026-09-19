@@ -282,6 +282,14 @@ def check(key, index, weeks, corpus):
         if find_run(sf, qw_words) is not None:
             errs.append(f"{pid}: q is a run of its own sentence, word for word "
                         f"— reword it: {it['q']!r}")
+        # Clause 1 of the line binds the question too. It is not enough that the whole of `q`
+        # is not the sentence: "Quid Iūlius duōbus aliīs servīs imperāvit?" repeated five of
+        # the book's words inside a question of its own, which check_copyright.py scans for
+        # and this gate did not — so a file could pass here and fail the repo-wide sweep.
+        run = corpus.book_run(it["q"])
+        if run and run not in ALLOWED_RUNS:
+            errs.append(f"{pid}: q reproduces {MAX_BOOK_RUN + 1}+ consecutive words of "
+                        f"the book ({run!r}): {it['q']!r}")
 
         if it["input"] == "tap":
             if answers and answers[0] not in words(la):
