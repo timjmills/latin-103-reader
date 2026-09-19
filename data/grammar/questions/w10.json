@@ -1,0 +1,1362 @@
+{
+ "chapter": 32,
+ "week_id": "w10",
+ "title": "Arachnē · Fabellae LXIX–LXXIV",
+ "items": [
+  {
+   "id": "qw10-01",
+   "qword": "cūr",
+   "q": "Cūr nymphae silvās suās relinquēbant?",
+   "en": "Why did the nymphs leave their woods?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b1.1",
+   "answers": [
+    "ut opera eius aspicerent",
+    {
+     "parts": [
+      {
+       "span": [
+        17,
+        20
+       ]
+      },
+      "Arachnē",
+      {
+       "span": [
+        22,
+        23
+       ]
+      }
+     ]
+    },
+    {
+     "span": [
+      17,
+      23
+     ]
+    },
+    "ut opera Arachnēs aspicerent"
+   ],
+   "input": "choice",
+   "choices": [
+    "ut opera eius aspicerent",
+    "ut Minervam adōrārent",
+    "ut Arachnēn reprehenderent",
+    "ut aquam flūminis biberent"
+   ],
+   "hint": "a purpose clause: ut + imperfect subjunctive"
+  },
+  {
+   "id": "qw10-02",
+   "qword": "quid",
+   "q": "Quid omnēs dē Minervā dīcēbant?",
+   "en": "What was everyone saying about Minerva?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b1.2",
+   "answers": [
+    {
+     "span": [
+      13,
+      17
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      13,
+      17
+     ]
+    },
+    "Arachnēn deam esse",
+    "Minervam īrātam esse",
+    "Arachnēn nymphās docēre"
+   ],
+   "hint": "an indirect statement: accusative + perfect infinitive"
+  },
+  {
+   "id": "qw10-03",
+   "qword": "quōmodo",
+   "q": "Quōmodo Minerva sē anuī similem fēcit?",
+   "en": "How did Minerva make herself like an old woman?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b2.1",
+   "answers": [
+    {
+     "span": [
+      5,
+      7
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      5,
+      7
+     ]
+    },
+    "in avem mūtāta",
+    "armīs lūcentibus indūta",
+    "flōribus ōrnāta"
+   ],
+   "hint": "a participle with an ablative; ita … ut + imperfect subjunctive is the result"
+  },
+  {
+   "id": "qw10-04",
+   "qword": "quid",
+   "q": "Quid Minerva timet, ut Arachnē dīcit?",
+   "en": "What does Minerva fear, according to Arachne?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b2.5",
+   "answers": [
+    {
+     "parts": [
+      {
+       "span": [
+        5,
+        6
+       ]
+      },
+      "ab Arachnē vincātur"
+     ]
+    },
+    {
+     "span": [
+      5,
+      9
+     ]
+    },
+    "nē ab Arachnē vincātur"
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      {
+       "span": [
+        5,
+        6
+       ]
+      },
+      "ab Arachnē vincātur"
+     ]
+    },
+    "nē nymphae fugiant",
+    "nē anus eam reprehendat",
+    "nē vestis sordida sit"
+   ],
+   "hint": "a fear clause: timet nē + present subjunctive passive"
+  },
+  {
+   "id": "qw10-05",
+   "qword": "cūr",
+   "q": "Cūr nymphae perterritae fūgērunt?",
+   "en": "Why did the terrified nymphs flee?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b3.1",
+   "answers": [
+    {
+     "parts": [
+      "quia timēbant",
+      {
+       "span": [
+        24,
+        25
+       ]
+      },
+      {
+       "span": [
+        29,
+        30
+       ]
+      }
+     ]
+    },
+    {
+     "span": [
+      23,
+      30
+     ]
+    },
+    {
+     "parts": [
+      "quia timēbant nē",
+      {
+       "span": [
+        26,
+        30
+       ]
+      }
+     ]
+    },
+    {
+     "parts": [
+      "nē",
+      {
+       "span": [
+        26,
+        27
+       ]
+      },
+      {
+       "span": [
+        29,
+        30
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      "quia timēbant",
+      {
+       "span": [
+        24,
+        25
+       ]
+      },
+      {
+       "span": [
+        29,
+        30
+       ]
+      }
+     ]
+    },
+    "quia deam vidēre nōlēbant",
+    "quia Arachnē eās vocāvit",
+    "quia opera Arachnēs foeda erant"
+   ],
+   "hint": "a fear clause after a participle: timentēs nē + imperfect subjunctive; poenā is an ablative with afficere"
+  },
+  {
+   "id": "qw10-06",
+   "qword": "quid",
+   "q": "Quid Minerva Arachnae optat?",
+   "en": "What does Minerva wish for Arachne?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b3.4",
+   "answers": [
+    {
+     "parts": [
+      {
+       "span": [
+        0,
+        3
+       ]
+      },
+      "discat"
+     ]
+    },
+    {
+     "parts": [
+      "ut",
+      {
+       "span": [
+        1,
+        3
+       ]
+      },
+      "discat"
+     ]
+    },
+    {
+     "span": [
+      0,
+      4
+     ]
+    },
+    {
+     "parts": [
+      "ut",
+      {
+       "span": [
+        2,
+        3
+       ]
+      },
+      "discat"
+     ]
+    },
+    {
+     "parts": [
+      "utinam",
+      {
+       "span": [
+        2,
+        3
+       ]
+      },
+      "discat"
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      {
+       "span": [
+        0,
+        3
+       ]
+      },
+      "discat"
+     ]
+    },
+    {
+     "parts": [
+      {
+       "span": [
+        0,
+        1
+       ]
+      },
+      "melius texat"
+     ]
+    },
+    {
+     "parts": [
+      {
+       "span": [
+        0,
+        1
+       ]
+      },
+      "taceat"
+     ]
+    },
+    {
+     "parts": [
+      {
+       "span": [
+        0,
+        1
+       ]
+      },
+      "in silvīs vīvat"
+     ]
+    }
+   ],
+   "hint": "utinam + present subjunctive (a wish); verērī is a deponent infinitive"
+  },
+  {
+   "id": "qw10-07",
+   "qword": "quid",
+   "q": "Quid Minerva extrēmīs vestis ōrīs addidit?",
+   "en": "What did Minerva add to the edges of the garment?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b4.2",
+   "answers": [
+    {
+     "span": [
+      7,
+      8
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      7,
+      8
+     ]
+    },
+    "flōribus pulcherrimīs",
+    "gemmīs parvīs",
+    "avibus pictīs"
+   ],
+   "hint": "cūrāvit ut + imperfect subjunctive; an ablative of means"
+  },
+  {
+   "id": "qw10-08",
+   "qword": "quid",
+   "q": "Quid Arachnē prīmum imāginibus illūstrat?",
+   "en": "What does Arachne first show in pictures?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b5.1",
+   "answers": [
+    {
+     "span": [
+      5,
+      12
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      5,
+      12
+     ]
+    },
+    "quōmodo Minerva nāta sit",
+    "quōmodo Iuppiter rēgnet",
+    "quōmodo nymphae saltent"
+   ],
+   "hint": "an indirect question: quōmodo + perfect subjunctive passive"
+  },
+  {
+   "id": "qw10-09",
+   "qword": "uter",
+   "q": "Utra melius opus fēcisse intellegēbātur?",
+   "en": "Which of the two was understood to have made the better work?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b6.1",
+   "answers": [
+    "Arachnēn"
+   ],
+   "input": "tap",
+   "hint": "the Greek accusative subject of an indirect statement (Arachnēn … fēcisse); dubitāvit num introduces an indirect question"
+  },
+  {
+   "id": "qw10-10",
+   "qword": "quōmodo",
+   "q": "Quōmodo Arachnē sibi mortem cōnscīvit?",
+   "en": "How did Arachne take her own life?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b8.2",
+   "answers": [
+    "laqueō"
+   ],
+   "input": "tap",
+   "hint": "an ablative of means, a single word"
+  },
+  {
+   "id": "qw10-11",
+   "qword": "quōmodo",
+   "q": "Quōmodo Arachnē arānea facta est?",
+   "en": "How was Arachne turned into a spider?",
+   "part": "FS",
+   "unit_id": "w10:arachne:b9.1",
+   "answers": [
+    "sūcō herbae ā Minervā aspersa",
+    {
+     "parts": [
+      {
+       "span": [
+        8,
+        10
+       ]
+      },
+      "aspersa"
+     ]
+    },
+    {
+     "parts": [
+      "sūcō",
+      {
+       "span": [
+        8,
+        9
+       ]
+      }
+     ]
+    },
+    {
+     "parts": [
+      {
+       "span": [
+        1,
+        2
+       ]
+      },
+      {
+       "span": [
+        8,
+        11
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    "sūcō herbae ā Minervā aspersa",
+    "laqueō",
+    "acū picta",
+    "ā nymphīs mūtāta"
+   ],
+   "hint": "an ablative of means; quō factum est ut + imperfect subjunctive is a result clause"
+  },
+  {
+   "id": "qw10-12",
+   "qword": "quem",
+   "q": "Quem Marcus improbus pulsāvit?",
+   "en": "Whom did wicked Marcus strike?",
+   "part": "FL",
+   "unit_id": "w10:fl-69:b10.1",
+   "answers": [
+    "Iūliam"
+   ],
+   "input": "tap",
+   "hint": "nōn sōlum … sed etiam joins his two misdeeds"
+  },
+  {
+   "id": "qw10-13",
+   "qword": "quid",
+   "q": "Quid māter marītum ōrāvit?",
+   "en": "What did the mother beg her husband?",
+   "part": "FL",
+   "unit_id": "w10:fl-69:b10.2",
+   "answers": [
+    {
+     "span": [
+      20,
+      25
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      20,
+      25
+     ]
+    },
+    "ut Marcum laudāret",
+    "ut servum verberāret",
+    "ut Marcum ad lūdum mitteret"
+   ],
+   "hint": "ōrāre nē + imperfect subjunctive, after a past main verb"
+  },
+  {
+   "id": "qw10-14",
+   "qword": "cūr",
+   "q": "Cūr servus in cubiculum Mārcī intrāvit?",
+   "en": "Why did the slave come into Marcus's room?",
+   "part": "FL",
+   "unit_id": "w10:fl-69:b10.5",
+   "answers": [
+    {
+     "span": [
+      20,
+      23
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      20,
+      23
+     ]
+    },
+    "ut eum verberāret",
+    "ut forem frangeret",
+    "ut dominum vocāret"
+   ],
+   "hint": "a purpose clause after a verb of motion"
+  },
+  {
+   "id": "qw10-15",
+   "qword": "quid",
+   "q": "Quid servus Mārcum docēre posse dīcit?",
+   "en": "What does the slave say he can teach Marcus?",
+   "part": "FL",
+   "unit_id": "w10:fl-69:b11.7",
+   "answers": [
+    {
+     "span": [
+      19,
+      20
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      19,
+      20
+     ]
+    },
+    "litterās Latīnās",
+    "numerōs difficilēs",
+    "carmina pulchra"
+   ],
+   "hint": "a genitive gerund depending on artem"
+  },
+  {
+   "id": "qw10-16",
+   "qword": "ubi",
+   "q": "Ubi Daedalus et Icarus inclūsī erant?",
+   "en": "Where had Daedalus and Icarus been shut up?",
+   "part": "FL",
+   "unit_id": "w10:fl-69:b12.5",
+   "answers": [
+    {
+     "span": [
+      0,
+      1
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      0,
+      1
+     ]
+    },
+    "in silvā",
+    "in nāvī",
+    "in cubiculō"
+   ],
+   "hint": "in + ablative with a perfect passive participle"
+  },
+  {
+   "id": "qw10-17",
+   "qword": "cūr",
+   "q": "Cūr Marcus tam procul fugere nōn audēbat?",
+   "en": "Why did Marcus not dare to flee so far?",
+   "part": "FL",
+   "unit_id": "w10:fl-69:b13.2",
+   "answers": [
+    {
+     "parts": [
+      "quia",
+      {
+       "span": [
+        2,
+        4
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      "quia",
+      {
+       "span": [
+        2,
+        4
+       ]
+      }
+     ]
+    },
+    "quia fenestra clausa erat",
+    "quia servō nōn crēdēbat",
+    "quia fessus erat"
+   ],
+   "hint": "ita … ut + imperfect subjunctive: a result"
+  },
+  {
+   "id": "qw10-18",
+   "qword": "quid",
+   "q": "Quid Iūlius duōbus servīs imperāvit?",
+   "en": "What did Julius order two other slaves to do?",
+   "part": "FL",
+   "unit_id": "w10:fl-69:b14.8",
+   "answers": [
+    {
+     "span": [
+      5,
+      11
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      5,
+      11
+     ]
+    },
+    "ut Mārcum quaererent",
+    "ut forem aperīrent",
+    "ut cibum ferrent"
+   ],
+   "hint": "imperāre ut + imperfect subjunctive"
+  },
+  {
+   "id": "qw10-19",
+   "qword": "cūr",
+   "q": "Cūr magister Mārcum verberāvit?",
+   "en": "Why did the teacher beat Marcus?",
+   "part": "FL",
+   "unit_id": "w10:fl-70:b15.1",
+   "answers": [
+    {
+     "span": [
+      5,
+      8
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      5,
+      8
+     ]
+    },
+    "quia sērō vēnit",
+    "quia mercēdem nōn tulit",
+    "quia in lūdō dormīvit"
+   ],
+   "hint": "quia + pluperfect indicative for the reason behind the beating"
+  },
+  {
+   "id": "qw10-20",
+   "qword": "quid",
+   "q": "Quid pater epistulā acceptā intellēxit?",
+   "en": "What did the father understand once he had the letter?",
+   "part": "FL",
+   "unit_id": "w10:fl-70:b15.3",
+   "answers": [
+    {
+     "span": [
+      6,
+      13
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      6,
+      13
+     ]
+    },
+    "magistrum mentītum esse",
+    "fīlium bonum discipulum esse",
+    "Mārcum aegrum esse"
+   ],
+   "hint": "an indirect statement with a result clause inside it"
+  },
+  {
+   "id": "qw10-21",
+   "qword": "quid",
+   "q": "Quid Iūlius ad magistrum scrīpsit?",
+   "en": "What did Julius write to the teacher?",
+   "part": "FL",
+   "unit_id": "w10:fl-70:b15.5",
+   "answers": [
+    {
+     "span": [
+      16,
+      19
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      16,
+      19
+     ]
+    },
+    "sē Mārcum pūnītūrum esse",
+    "sē magistrum laudāre",
+    "sē fīlium domī tentūrum esse"
+   ],
+   "hint": "an indirect statement with a present infinitive"
+  },
+  {
+   "id": "qw10-22",
+   "qword": "quandō",
+   "q": "Quandō Marcus ē cubiculō effūgit?",
+   "en": "When did Marcus escape from the bedroom?",
+   "part": "FL",
+   "unit_id": "w10:fl-70:b16.4",
+   "answers": [
+    {
+     "span": [
+      11,
+      16
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      11,
+      16
+     ]
+    },
+    "post cēnam",
+    "nocte mediā",
+    "cum pater abiit"
+   ],
+   "hint": "cum prīmum + perfect indicative: the moment it happened"
+  },
+  {
+   "id": "qw10-23",
+   "qword": "ubi",
+   "q": "Ubi puer tandem repertus est?",
+   "en": "Where was the boy finally found?",
+   "part": "FL",
+   "unit_id": "w10:fl-70:b16.9",
+   "answers": [
+    {
+     "span": [
+      2,
+      3
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      2,
+      3
+     ]
+    },
+    "in hortō",
+    "in cubiculō",
+    "in viā"
+   ],
+   "hint": "in + ablative; sē occultābat says what he was doing there"
+  },
+  {
+   "id": "qw10-24",
+   "qword": "quid",
+   "q": "Quid Philippa ancilla dominae suae facit?",
+   "en": "What is Philippa the maid doing for her mistress?",
+   "part": "FL",
+   "unit_id": "w10:fl-71:b17.1",
+   "answers": [
+    {
+     "span": [
+      8,
+      10
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      8,
+      10
+     ]
+    },
+    "cibum parat",
+    "vestem lavat",
+    "epistulam legit"
+   ],
+   "hint": "dum + present indicative for what goes on meanwhile"
+  },
+  {
+   "id": "qw10-25",
+   "qword": "quālis",
+   "q": "Quālis Philippa sibi vidērī dīcit?",
+   "en": "What does Philippa say she seems to herself to be?",
+   "part": "FL",
+   "unit_id": "w10:fl-71:b18.2",
+   "answers": [
+    {
+     "span": [
+      0,
+      2
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      0,
+      2
+     ]
+    },
+    "beātissima omnium",
+    "similis dominae",
+    "fortissima ancillārum"
+   ],
+   "hint": "a superlative with a partitive genitive"
+  },
+  {
+   "id": "qw10-26",
+   "qword": "quid",
+   "q": "Quid dominus Proculī crās iubēbit?",
+   "en": "What will Proculus's master order tomorrow?",
+   "part": "FL",
+   "unit_id": "w10:fl-71:b20.2",
+   "answers": [
+    {
+     "span": [
+      3,
+      6
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      3,
+      6
+     ]
+    },
+    "eum līberārī",
+    "eum in Aegyptum mittī",
+    "eum verberārī"
+   ],
+   "hint": "iubēre + accusative and a passive infinitive"
+  },
+  {
+   "id": "qw10-27",
+   "qword": "quandō",
+   "q": "Quandō Proculus ferīs vorandus dabitur?",
+   "en": "When will Proculus be given to the beasts?",
+   "part": "FL",
+   "unit_id": "w10:fl-71:b22.4",
+   "answers": [
+    "crās"
+   ],
+   "input": "tap",
+   "hint": "a gerundive of purpose (vorandus) with dabitur"
+  },
+  {
+   "id": "qw10-28",
+   "qword": "quid",
+   "q": "Quid Philippa dominae suae cōnfitētur?",
+   "en": "What does Philippa confess to her mistress?",
+   "part": "FL",
+   "unit_id": "w10:fl-71:b22.5",
+   "answers": [
+    "amīcum suum Christiānum esse"
+   ],
+   "input": "choice",
+   "choices": [
+    "amīcum suum Christiānum esse",
+    "sē in carcerem itūram esse",
+    "sē dominam fefellisse",
+    "amīcum suum fūrem esse"
+   ],
+   "hint": "cōnfitērī is deponent; what follows is an indirect statement"
+  },
+  {
+   "id": "qw10-29",
+   "qword": "quid",
+   "q": "Quid Philippa dominam scīre dīcit?",
+   "en": "What does Philippa say her mistress knows?",
+   "part": "FL",
+   "unit_id": "w10:fl-71:b24.3",
+   "answers": [
+    {
+     "span": [
+      2,
+      6
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      2,
+      6
+     ]
+    },
+    "sē Christiānam esse",
+    "sē dominam amāre",
+    "sē fugere velle"
+   ],
+   "hint": "a deponent perfect infinitive in an indirect statement"
+  },
+  {
+   "id": "qw10-30",
+   "qword": "quid",
+   "q": "Quid dē Christiānīs nārrārī Philippa dīcit?",
+   "en": "What does Philippa say is told about Christians?",
+   "part": "FL",
+   "unit_id": "w10:fl-72:b27.1",
+   "answers": [
+    {
+     "span": [
+      2,
+      4
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      2,
+      4
+     ]
+    },
+    "multa vēra",
+    "nihil omnīnō",
+    "carmina pulchra"
+   ],
+   "hint": "the nominative subject of a passive verb"
+  },
+  {
+   "id": "qw10-31",
+   "qword": "cūr",
+   "q": "Cūr Christiānī accūsantur?",
+   "en": "Why are Christians accused?",
+   "part": "FL",
+   "unit_id": "w10:fl-72:b27.4",
+   "answers": [
+    {
+     "span": [
+      12,
+      15
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      12,
+      15
+     ]
+    },
+    "quod pecūniam poscunt",
+    "quod bellum gerunt",
+    "quod deōs timent"
+   ],
+   "hint": "quod + subjunctive: a reason reported as someone else's, not the writer's"
+  },
+  {
+   "id": "qw10-32",
+   "qword": "quandō",
+   "q": "Quandō Christiānī convenīre solent?",
+   "en": "When do Christians gather?",
+   "part": "FL",
+   "unit_id": "w10:fl-72:b27.7",
+   "answers": [
+    {
+     "span": [
+      0,
+      3
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      0,
+      3
+     ]
+    },
+    "merīdiē",
+    "nocte mediā",
+    "septimō quōque mēnse"
+   ],
+   "hint": "an ablative of time when, with ante + accusative"
+  },
+  {
+   "id": "qw10-33",
+   "qword": "quandō",
+   "q": "Quandō Chrīstus ā mortuīs surrēxit?",
+   "en": "When did Christ rise from the dead?",
+   "part": "FL",
+   "unit_id": "w10:fl-72:b27.12",
+   "answers": [
+    {
+     "span": [
+      13,
+      14
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      13,
+      14
+     ]
+    },
+    "eōdem diē",
+    "post ūnum mēnsem",
+    "proximā nocte"
+   ],
+   "hint": "an ablative of time when"
+  },
+  {
+   "id": "qw10-34",
+   "qword": "quid",
+   "q": "Quid Aemilia Philippae prōmittit?",
+   "en": "What does Aemilia promise Philippa?",
+   "part": "FL",
+   "unit_id": "w10:fl-72:b29.6",
+   "answers": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    },
+    "sē Proculum līberātūram esse",
+    "sē Christiānam fierī",
+    "sē dominō omnia dictūram esse"
+   ],
+   "hint": "cuiquam is the dative of quisquam, which follows a negative"
+  },
+  {
+   "id": "qw10-35",
+   "qword": "quid",
+   "q": "Quid Dēlia tandem dominae confessa est?",
+   "en": "What did Delia finally confess to her mistress?",
+   "part": "FL",
+   "unit_id": "w10:fl-73:b30.2",
+   "answers": [
+    {
+     "span": [
+      18,
+      23
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      18,
+      23
+     ]
+    },
+    "sē fūrtum fēcisse",
+    "sē fugere velle",
+    "eum iam mortuum esse"
+   ],
+   "hint": "an indirect statement after a deponent verb"
+  },
+  {
+   "id": "qw10-36",
+   "qword": "cūr",
+   "q": "Cūr cēterī servī Proculō invidēbant?",
+   "en": "Why were the other slaves envious of Proculus?",
+   "part": "FL",
+   "unit_id": "w10:fl-73:b31.2",
+   "answers": [
+    {
+     "parts": [
+      "quia",
+      {
+       "span": [
+        1,
+        3
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      "quia",
+      {
+       "span": [
+        1,
+        3
+       ]
+      }
+     ]
+    },
+    "quia pecūniam habēbat",
+    "quia Christiānus erat",
+    "quia ē vīllā fūgerat"
+   ],
+   "hint": "ita … ut + imperfect subjunctive; ā + ablative is the agent"
+  },
+  {
+   "id": "qw10-37",
+   "qword": "quis",
+   "q": "Quis Proculum in fugiendō iūvit?",
+   "en": "Who helped Proculus escape?",
+   "part": "FL",
+   "unit_id": "w10:fl-73:b32.4",
+   "answers": [
+    "domina"
+   ],
+   "input": "tap",
+   "hint": "the nominative subject of iūvit, inside a long cum clause"
+  },
+  {
+   "id": "qw10-38",
+   "qword": "quot",
+   "q": "Quot mēnsēs Proculus in locīs dēsertīs habitāvit?",
+   "en": "How many months did Proculus live in deserted places?",
+   "part": "FL",
+   "unit_id": "w10:fl-73:b33.1",
+   "answers": [
+    "trēs"
+   ],
+   "input": "tap",
+   "hint": "an accusative of duration: how long it lasted"
+  },
+  {
+   "id": "qw10-39",
+   "qword": "quis",
+   "q": "Quis Proculum ad mortem dūcī iussit?",
+   "en": "Who ordered Proculus to be led to death?",
+   "part": "FL",
+   "unit_id": "w10:fl-73:b33.3",
+   "answers": [
+    "Prīnceps"
+   ],
+   "input": "tap",
+   "hint": "the nominative subject of iussit"
+  },
+  {
+   "id": "qw10-40",
+   "qword": "quālis",
+   "q": "Quālis tyrannus Dionysius erat?",
+   "en": "What kind of tyrant was Dionysius?",
+   "part": "FL",
+   "unit_id": "w10:fl-74:b34.1",
+   "answers": [
+    "Siculus"
+   ],
+   "input": "tap",
+   "hint": "an adjective of nationality beside tyrannus"
+  },
+  {
+   "id": "qw10-41",
+   "qword": "quid",
+   "q": "Quid Damoclēs in sermōne laudāvit?",
+   "en": "What did Damocles praise in conversation?",
+   "part": "FL",
+   "unit_id": "w10:fl-74:b34.2",
+   "answers": [
+    {
+     "span": [
+      14,
+      17
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      14,
+      17
+     ]
+    },
+    "mīlitēs fortēs",
+    "agrōs lātōs",
+    "nāvēs celerēs"
+   ],
+   "hint": "a list of accusative objects; ita … ut + subjunctive follows"
+  },
+  {
+   "id": "qw10-42",
+   "qword": "quōmodo",
+   "q": "Quōmodo tībīcinēs fidicinēsque carmina canēbant?",
+   "en": "How were the flute and lyre players singing?",
+   "part": "FL",
+   "unit_id": "w10:fl-74:b35.3",
+   "answers": [
+    {
+     "span": [
+      2,
+      3
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      2,
+      3
+     ]
+    },
+    "turpiter",
+    "lentē et graviter",
+    "nimis clārē"
+   ],
+   "hint": "tam + adverb, answered by ut + imperfect subjunctive"
+  },
+  {
+   "id": "qw10-43",
+   "qword": "quid",
+   "q": "Quid suprā Damoclis caput dēmittī iussum est?",
+   "en": "What was ordered to be let down above Damocles's head?",
+   "part": "FL",
+   "unit_id": "w10:fl-74:b36.1",
+   "answers": [
+    {
+     "span": [
+      15,
+      16
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      15,
+      16
+     ]
+    },
+    "corōnam auream",
+    "imāginem deī",
+    "vāsa argentea"
+   ],
+   "hint": "a present participle with gladium; fīlō is the ablative it hangs by"
+  },
+  {
+   "id": "qw10-44",
+   "qword": "quid",
+   "q": "Quid Dionysius hōc modō dēmōnstrāvit?",
+   "en": "What did Dionysius show by doing this?",
+   "part": "FL",
+   "unit_id": "w10:fl-74:b36.4",
+   "answers": [
+    {
+     "span": [
+      5,
+      9
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      5,
+      9
+     ]
+    },
+    "tyrannōs beātōs esse",
+    "dīvitiās nihil valēre",
+    "Damoclem fortem esse"
+   ],
+   "hint": "a gerundive inside an indirect statement (dīcendum)"
+  }
+ ]
+}

@@ -1,0 +1,1051 @@
+{
+ "chapter": 28,
+ "week_id": "w05",
+ "title": "Coriolānus · Nausicaa · Fabellae LXVI–LXVIII",
+ "items": [
+  {
+   "id": "qw05-01",
+   "qword": "quid",
+   "q": "Quid Veturia et Volumnia Coriolānum ōrāvērunt?",
+   "en": "What did Veturia and Volumnia beg Coriolanus to do?",
+   "part": "FS",
+   "unit_id": "w05:coriolanus:139.1",
+   "answers": [
+    {
+     "span": [
+      17,
+      19
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      17,
+      19
+     ]
+    },
+    "ut sēcum redīret",
+    "ut Volscōs vinceret",
+    "ut pecūniam daret"
+   ],
+   "hint": "ōrāre + nē + imperfect subjunctive: a negative indirect command"
+  },
+  {
+   "id": "qw05-02",
+   "qword": "quōmodo",
+   "q": "Quōmodo māter et uxor animum Coriolānī mōvērunt?",
+   "en": "How did his mother and wife move the mind of Coriolanus?",
+   "part": "FS",
+   "unit_id": "w05:coriolanus:139.2",
+   "answers": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    },
+    "multam pecūniam offerentēs",
+    "mīlitēs vocantēs",
+    "epistulam mittentēs"
+   ],
+   "hint": "two participles: a deponent perfect (complexī) beside a present one"
+  },
+  {
+   "id": "qw05-03",
+   "qword": "quid",
+   "q": "Quid Volscī īrātī fierī iussērunt?",
+   "en": "What did the angry Volscians order to be done?",
+   "part": "FS",
+   "unit_id": "w05:coriolanus:139.3",
+   "answers": [
+    {
+     "span": [
+      3,
+      6
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      3,
+      6
+     ]
+    },
+    "eum rēgem creārī",
+    "urbem oppugnārī",
+    "castra movērī"
+   ],
+   "hint": "iubēre + accusative and a passive infinitive"
+  },
+  {
+   "id": "qw05-04",
+   "qword": "cuius",
+   "q": "Cuius fīlia Nausicaa fuit?",
+   "en": "Whose daughter was Nausicaa?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:147.1",
+   "answers": [
+    "Alcinoī"
+   ],
+   "input": "tap",
+   "hint": "a genitive attached to fīlia"
+  },
+  {
+   "id": "qw05-05",
+   "qword": "quid",
+   "q": "Quid Nausicaa ancillīs imperābat?",
+   "en": "What was Nausicaa ordering the maids to do?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:147.4",
+   "answers": [
+    {
+     "span": [
+      2,
+      6
+     ]
+    },
+    {
+     "parts": [
+      "ut pilam",
+      {
+       "span": [
+        3,
+        4
+       ]
+      },
+      "mitterent"
+     ]
+    },
+    {
+     "parts": [
+      "imperābat",
+      {
+       "span": [
+        2,
+        6
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      2,
+      6
+     ]
+    },
+    "ut vestem lavārent",
+    "ut cantārent et saltārent",
+    {
+     "parts": [
+      {
+       "span": [
+        2,
+        3
+       ]
+      },
+      "mare īrent"
+     ]
+    }
+   ],
+   "hint": "imperābat ut + imperfect subjunctive (past main verb); sē refers back to Nausicaa"
+  },
+  {
+   "id": "qw05-06",
+   "qword": "cūr",
+   "q": "Cūr pila numquam ad terram cadēbat?",
+   "en": "Why did the ball never fall to the ground?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:147.5",
+   "answers": [
+    {
+     "parts": [
+      {
+       "span": [
+        11,
+        12
+       ]
+      },
+      "eam",
+      {
+       "span": [
+        19,
+        20
+       ]
+      },
+      "sinēbant"
+     ]
+    },
+    {
+     "span": [
+      11,
+      21
+     ]
+    },
+    {
+     "span": [
+      11,
+      17
+     ]
+    },
+    {
+     "parts": [
+      "quod",
+      {
+       "span": [
+        12,
+        17
+       ]
+      }
+     ]
+    },
+    {
+     "parts": [
+      {
+       "span": [
+        11,
+        12
+       ]
+      },
+      {
+       "span": [
+        14,
+        17
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      {
+       "span": [
+        11,
+        12
+       ]
+      },
+      "eam",
+      {
+       "span": [
+        19,
+        20
+       ]
+      },
+      "sinēbant"
+     ]
+    },
+    "quia ventus eam sustinēbat",
+    "quia terra mollis erat",
+    "quia pila levissima erat"
+   ],
+   "hint": "a quia clause containing a result clause (tam … ut + imperfect subjunctive) and a genitive gerund with an object (eam capiendī)"
+  },
+  {
+   "id": "qw05-07",
+   "qword": "cūr",
+   "q": "Cūr Ulixēs subitō excitātus est?",
+   "en": "Why was Ulysses suddenly woken?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:158.1",
+   "answers": [
+    {
+     "span": [
+      39,
+      42
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      39,
+      42
+     ]
+    },
+    "quia flūctūs eum tulērunt",
+    "quia pila eum percussit",
+    "quia tempestās coorta est"
+   ],
+   "hint": "a result clause: tam … ut + imperfect subjunctive"
+  },
+  {
+   "id": "qw05-08",
+   "qword": "cūr",
+   "q": "Cūr Ulixēs in Phaeācum lītus ēiectus est?",
+   "en": "Why was Ulysses cast up on the shore of the Phaeacians?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:165.1",
+   "answers": [
+    {
+     "span": [
+      12,
+      16
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      12,
+      16
+     ]
+    },
+    "quia nāvem vēndidit",
+    "quia ā rēge missus est",
+    "quia puellās quaerēbat"
+   ],
+   "hint": "another tam … ut result clause, with an ablative absolute inside it"
+  },
+  {
+   "id": "qw05-09",
+   "qword": "cūr",
+   "q": "Cūr Ulixēs rāmum ex arbore frēgit?",
+   "en": "Why did Ulysses break a branch from a tree?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:176.1",
+   "answers": [
+    {
+     "span": [
+      15,
+      19
+     ]
+    },
+    {
+     "parts": [
+      {
+       "span": [
+        15,
+        17
+       ]
+      },
+      "tegeret"
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      15,
+      19
+     ]
+    },
+    "ut puellās terrēret",
+    "ut pilam caperet",
+    "ut leōnem pelleret"
+   ],
+   "hint": "a purpose clause: ut + imperfect subjunctive"
+  },
+  {
+   "id": "qw05-10",
+   "qword": "quālis",
+   "q": "Quālis Ulixēs puellīs vīsū erat?",
+   "en": "What was Ulysses like for the girls to look at?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:176.2",
+   "answers": [
+    {
+     "span": [
+      9,
+      11
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      9,
+      11
+     ]
+    },
+    "pulcher et mundus",
+    "fessus sed laetus",
+    "similis deō"
+   ],
+   "hint": "a supine in -ū with an adjective (terribilis vīsū)"
+  },
+  {
+   "id": "qw05-11",
+   "qword": "quis",
+   "q": "Quae sōla ex puellīs mānsit?",
+   "en": "Which girl alone stayed?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:182.1",
+   "answers": [
+    "fīlia"
+   ],
+   "input": "tap",
+   "hint": "the nominative subject with a genitive attached (Alcinoī fīlia); metū dēpositō is an ablative absolute"
+  },
+  {
+   "id": "qw05-12",
+   "qword": "quid",
+   "q": "Quid Nausicaa Ulixī ostendere prōmīsit?",
+   "en": "What did Nausicaa promise to show Ulysses?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:200.3",
+   "answers": [
+    "Urbem"
+   ],
+   "input": "tap",
+   "hint": "the accusative object, the first word of her promise"
+  },
+  {
+   "id": "qw05-13",
+   "qword": "quid",
+   "q": "Quid ancillae Ulixī facere iussae sunt?",
+   "en": "What were the maids told to do for Ulysses?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:206.1",
+   "answers": [
+    {
+     "span": [
+      12,
+      16
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      12,
+      16
+     ]
+    },
+    "ut cibum parārent",
+    "ut nāvem parārent",
+    "ut ad rēgem currerent"
+   ],
+   "hint": "imperāre ut + imperfect subjunctive, after a past main verb"
+  },
+  {
+   "id": "qw05-14",
+   "qword": "quid",
+   "q": "Quid Nausicaa dē Ulixe optat?",
+   "en": "What does Nausicaa wish about Ulysses?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:211.3",
+   "answers": [
+    {
+     "parts": [
+      "ut",
+      {
+       "span": [
+        9,
+        11
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      "ut",
+      {
+       "span": [
+        9,
+        11
+       ]
+      }
+     ]
+    },
+    "ut statim discēdat",
+    "ut pater eum pūniat",
+    "ut ancillae taceant"
+   ],
+   "hint": "optō ut + present subjunctive (a wish); manendō is an ablative gerund"
+  },
+  {
+   "id": "qw05-15",
+   "qword": "quid",
+   "q": "Quid rēx parārī imperāvit?",
+   "en": "What did the king order to be made ready?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:225.2",
+   "answers": [
+    "nāvis"
+   ],
+   "input": "tap",
+   "hint": "the subject of a passive subjunctive inside an indirect command"
+  },
+  {
+   "id": "qw05-16",
+   "qword": "quō",
+   "q": "Quō Nausicaa trīstis ascendit?",
+   "en": "Where did the sad Nausicaa climb?",
+   "part": "FS",
+   "unit_id": "w05:nausicaa:230.1",
+   "answers": [
+    {
+     "span": [
+      11,
+      13
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      11,
+      13
+     ]
+    },
+    "in nāvem",
+    "ad rēgiam patris",
+    "in silvam propinquam"
+   ],
+   "hint": "in + accusative for motion"
+  },
+  {
+   "id": "qw05-17",
+   "qword": "quid",
+   "q": "Quid Dāvus praeter rēs Mārcī fert?",
+   "en": "What does Davus carry besides Marcus's things?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b15.2",
+   "answers": [
+    "epistulam"
+   ],
+   "input": "tap",
+   "hint": "nōn modo … sed etiam joins the two things he carries"
+  },
+  {
+   "id": "qw05-18",
+   "qword": "quid",
+   "q": "Quid pater Mārcī solvere nōn vult?",
+   "en": "What does Marcus's father not want to pay?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b18.1",
+   "answers": [
+    "mercēdem"
+   ],
+   "input": "tap",
+   "hint": "the accusative object of solvere"
+  },
+  {
+   "id": "qw05-19",
+   "qword": "quid",
+   "q": "Quid dominus dē magistrō plānē scrībit?",
+   "en": "What does the master write plainly about the teacher?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b20.1",
+   "answers": [
+    {
+     "span": [
+      11,
+      15
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      11,
+      15
+     ]
+    },
+    "magistrum bonum esse",
+    "magistrum aegrum esse",
+    "magistrum pecūniam meruisse"
+   ],
+   "hint": "an indirect statement in a letter: accusative + infinitive"
+  },
+  {
+   "id": "qw05-20",
+   "qword": "cūr",
+   "q": "Cūr oppida in collibus aedificantur?",
+   "en": "Why are towns built on hills?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b24.1",
+   "answers": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    },
+    "quia aqua in colle est",
+    "quia agrī in valle sunt",
+    "quia viae breviōrēs sunt"
+   ],
+   "hint": "a comparative adverb with an infinitive as its subject"
+  },
+  {
+   "id": "qw05-21",
+   "qword": "quandō",
+   "q": "Quandō Mārcus fessus esse dīcit?",
+   "en": "When does Marcus say he is tired?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b25.2",
+   "answers": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      4,
+      8
+     ]
+    },
+    "cum ē lūdō redit",
+    "cum in hortō lūdit",
+    "cum epistulam legit"
+   ],
+   "hint": "cum + perfect indicative for the moment it happens"
+  },
+  {
+   "id": "qw05-22",
+   "qword": "quae",
+   "q": "Quae est patria Dāvī?",
+   "en": "What is Davus's homeland?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b30.1",
+   "answers": [
+    "Britannia"
+   ],
+   "input": "tap",
+   "hint": "the predicate of est"
+  },
+  {
+   "id": "qw05-23",
+   "qword": "quid",
+   "q": "Quid puerīs barbarīs discere nōn licet?",
+   "en": "What are barbarian boys not allowed to learn?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b32.1",
+   "answers": [
+    {
+     "span": [
+      11,
+      13
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      11,
+      13
+     ]
+    },
+    "equōs regere",
+    "ferās occīdere",
+    "in flūminibus natāre"
+   ],
+   "hint": "licet + dative + infinitive"
+  },
+  {
+   "id": "qw05-24",
+   "qword": "cūr",
+   "q": "Cūr parentēs Dāvī necātī sunt?",
+   "en": "Why were Davus's parents killed?",
+   "part": "FL",
+   "unit_id": "w05:fl-66:b36.1",
+   "answers": [
+    {
+     "span": [
+      7,
+      11
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      7,
+      11
+     ]
+    },
+    "quia pecūniam cēlāvērunt",
+    "quia ex patriā fūgērunt",
+    "quia servī erant"
+   ],
+   "hint": "a quia clause with a complementary infinitive"
+  },
+  {
+   "id": "qw05-25",
+   "qword": "cūr",
+   "q": "Cūr Syra et Dēlia Tūsculum eunt?",
+   "en": "Why are Syra and Delia going to Tusculum?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b39.1",
+   "answers": [
+    {
+     "span": [
+      6,
+      13
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      6,
+      13
+     ]
+    },
+    "quia dominum quaerunt",
+    "quia īnfantem portant",
+    "quia ad lūdum eunt"
+   ],
+   "hint": "dēbēre + infinitive for what they have to do"
+  },
+  {
+   "id": "qw05-26",
+   "qword": "quid",
+   "q": "Quid Dēlia in viā obscūrā audit?",
+   "en": "What does Delia hear in the dark street?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b39.3",
+   "answers": [
+    {
+     "span": [
+      14,
+      15
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      14,
+      15
+     ]
+    },
+    "clāmōrem mīlitum",
+    "cantum avium",
+    "vōcem dominī"
+   ],
+   "hint": "an accusative object of audit"
+  },
+  {
+   "id": "qw05-27",
+   "qword": "quid",
+   "q": "Quid in saccō inest?",
+   "en": "What is inside the sack?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b40.1",
+   "answers": [
+    {
+     "parts": [
+      {
+       "span": [
+        10,
+        10
+       ]
+      },
+      {
+       "span": [
+        12,
+        14
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      {
+       "span": [
+        10,
+        10
+       ]
+      },
+      {
+       "span": [
+        12,
+        14
+       ]
+      }
+     ]
+    },
+    "pānis et vīnum",
+    "vestēs sordidae",
+    "pecūnia multa"
+   ],
+   "hint": "inesse + in + ablative"
+  },
+  {
+   "id": "qw05-28",
+   "qword": "quid",
+   "q": "Quid Dēlia dē sonō intellegit?",
+   "en": "What does Delia work out about the sound?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b40.2",
+   "answers": [
+    {
+     "span": [
+      6,
+      9
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      6,
+      9
+     ]
+    },
+    "ventum fuisse",
+    "canem lātrāvisse",
+    "aquam fluxisse"
+   ],
+   "hint": "an indirect statement with a perfect infinitive"
+  },
+  {
+   "id": "qw05-29",
+   "qword": "quid",
+   "q": "Quid vir mulierī dē īnfante dīxit?",
+   "en": "What did the husband tell the woman about the infant?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b40.9",
+   "answers": [
+    {
+     "span": [
+      12,
+      17
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      12,
+      17
+     ]
+    },
+    "sē īnfantem ad nūtrīcem lātūrum esse",
+    "sē puerum vēnditūrum esse",
+    "sē domum reditūrum esse"
+   ],
+   "hint": "a future infinitive in an indirect statement"
+  },
+  {
+   "id": "qw05-30",
+   "qword": "quid",
+   "q": "Quid māter statim fēcit?",
+   "en": "What did the mother do at once?",
+   "part": "FL",
+   "unit_id": "w05:fl-67:b41.2",
+   "answers": [
+    {
+     "span": [
+      7,
+      10
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      7,
+      10
+     ]
+    },
+    "tacita discessit",
+    "ancillās vituperāvit",
+    "īnfantem nōn cognōvit"
+   ],
+   "hint": "two deponent verbs, joined by -que and atque"
+  },
+  {
+   "id": "qw05-31",
+   "qword": "quandō",
+   "q": "Quandō Aemilia parvulum īnfantem habēbit?",
+   "en": "When will Aemilia have a tiny infant?",
+   "part": "FL",
+   "unit_id": "w05:fl-68:b42.1",
+   "answers": [
+    {
+     "span": [
+      0,
+      2
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      0,
+      2
+     ]
+    },
+    "post trēs annōs",
+    "crās māne",
+    "hieme proximā"
+   ],
+   "hint": "intrā + accusative for the time within which"
+  },
+  {
+   "id": "qw05-32",
+   "qword": "quālis",
+   "q": "Quālis somnus Aemiliae erat?",
+   "en": "What was Aemilia's sleep like?",
+   "part": "FL",
+   "unit_id": "w05:fl-68:b43.2",
+   "answers": [
+    "turbātus"
+   ],
+   "input": "tap",
+   "hint": "a perfect passive participle used as a predicate"
+  },
+  {
+   "id": "qw05-33",
+   "qword": "cūr",
+   "q": "Cūr īnfāns in somniō semper vāgiēbat?",
+   "en": "Why was the infant in the dream always crying?",
+   "part": "FL",
+   "unit_id": "w05:fl-68:b43.3",
+   "answers": [
+    {
+     "parts": [
+      "quia nūtrīx eum",
+      {
+       "span": [
+        16,
+        17
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      "quia nūtrīx eum",
+      {
+       "span": [
+        16,
+        17
+       ]
+      }
+     ]
+    },
+    "quia mātrem vidēre volēbat",
+    "quia frīgidum erat",
+    "quia lūna lūcēbat"
+   ],
+   "hint": "neque … neque … neque lists the three things she failed to do"
+  },
+  {
+   "id": "qw05-34",
+   "qword": "cūr",
+   "q": "Cūr Iūlia plōrābat?",
+   "en": "Why was Julia crying?",
+   "part": "FL",
+   "unit_id": "w05:fl-68:b44.3",
+   "answers": [
+    {
+     "parts": [
+      "quod",
+      {
+       "span": [
+        16,
+        18
+       ]
+      }
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "parts": [
+      "quod",
+      {
+       "span": [
+        16,
+        18
+       ]
+      }
+     ]
+    },
+    "quod somnum vīdit",
+    "quod māter aberat",
+    "quod aegra erat"
+   ],
+   "hint": "the reason she gives in her own words, in a quia clause"
+  },
+  {
+   "id": "qw05-35",
+   "qword": "quid",
+   "q": "Quid Aemilia fīliae suae nōn dīcit?",
+   "en": "What does Aemilia not tell her daughter?",
+   "part": "FL",
+   "unit_id": "w05:fl-68:b45.5",
+   "answers": [
+    {
+     "span": [
+      10,
+      16
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      10,
+      16
+     ]
+    },
+    "sē fessam esse",
+    "sē īnfantem exspectāre",
+    "sē ad nūtrīcem itūram esse"
+   ],
+   "hint": "an indirect statement she keeps back: accusative + perfect infinitive"
+  }
+ ]
+}
