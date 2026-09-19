@@ -112,3 +112,15 @@ test('§28: a week with a question set of its own is offered that set, not the c
   const unknown = buildToday({ states: new Map(), skills: all, currentWeek: [], weekChapter: 7, weekId: 'w99', now: NOW });
   assert.equal(unknown.lines.find((l) => l.kind === 'questions').skill, 'questions-07');
 });
+
+test('§29: a week with a vocabulary deck of its own is offered that deck, not the chapter\'s', () => {
+  const withOwn = new Map([...all,
+    ['vocab-w03', { id: 'vocab-w03', set: 'vocab', chapter: 27, week_n: 3, week_id: 'w03', title: 'Vocabulary · Mīnōs · Corōnis · Fabellae LXIII–LXV', count: 31, kinds: ['vocab'], confusable_with: [] }],
+    ['vocab-27', { id: 'vocab-27', set: 'vocab', chapter: 27, week_n: 4, title: 'Vocabulary · Cap. XXVII', count: 65, kinds: ['vocab'], confusable_with: [] }]]);
+  const onW03 = buildToday({ states: new Map(), skills: withOwn, currentWeek: [], weekChapter: 27, weekId: 'w03', now: NOW });
+  const v = onW03.lines.find((l) => l.kind === 'vocab');
+  assert.equal(v.skill, 'vocab-w03', 'week 3 was offered the chapter deck, which is week 4\'s words');
+  // Week 4 has no deck of its own, so it still gets its chapter's.
+  const onW04 = buildToday({ states: new Map(), skills: withOwn, currentWeek: [], weekChapter: 27, weekId: 'w04', now: NOW });
+  assert.equal(onW04.lines.find((l) => l.kind === 'vocab').skill, 'vocab-27');
+});

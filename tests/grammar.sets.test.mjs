@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   createSetLoader, manifestChapters, manifestWeeks, normaliseQuestionSet, normaliseVocab, groupPensa, setSkills, setsOfChapter, setChapters,
+  pensumCInput, PENSUM_TYPE_MAX,
   matchQuestion, phraseIndexes, answerIndexes, pensumSegments, createSetItems, fromRoman, chapterOfWeek,
   resolveRef, resolveList, withStripped,
 } from '../app/js/grammar/sets.js';
@@ -21,7 +22,7 @@ const fetchJson = async (name) => { try { return read(name); } catch { throw new
 // The fixture's own invented sentences (tests/fixtures/grammar/units.json) — the sentences the fixture question
 // set refers to, and the ones its span references index. `?fixture=1` merges the same file over the store's units.
 const units = read('units.json').units;
-const weeks = [{ n: 1, id: 'w01', chapter: 'XXV' }, { n: 3, id: 'w03', chapter: 'XXVII (FS 1, 5); FL 63–65' }, { n: 101, id: 'r01' }, { n: 107, id: 'r07' }];
+const weeks = [{ n: 1, id: 'w01', chapter: 'XXV', title: 'Thēseus et Mīnōtaurus' }, { n: 3, id: 'w03', chapter: 'XXVII (FS 1, 5); FL 63–65', title: 'Mīnōs · Corōnis · Fabellae LXIII–LXV' }, { n: 101, id: 'r01' }, { n: 107, id: 'r07' }];
 const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v) }; };
 async function loadSets() {
   const loaded = await createSetLoader({ fetchJson }).loadAll();
@@ -307,4 +308,101 @@ test('§28: every shipped week set asks about its own week, and covers all of th
     for (const it of set.items) assert.ok(it.unit_id.startsWith(`${wid}:`), `${file} ${it.id} asks about ${it.unit_id}`);
     assert.ok(set.items.length >= 24, `${file} fell to ${set.items.length} items`);
   }
+});
+
+
+/* ===================== Pensum C: nothing long is typed (§29) ============== */
+
+test('§29: a Pensum C answer is typed only while it is short; longer ones are ordered, longest are self-marked', () => {
+  assert.equal(PENSUM_TYPE_MAX, 3);
+  // One to three words: typed, or tapped when the sentence holds the answer as one word.
+  assert.equal(pensumCInput(1, false, () => 0.9), 'type');
+  assert.equal(pensumCInput(3, false, () => 0.1), 'type');
+  assert.equal(pensumCInput(1, true, () => 0.1), 'tap');
+  assert.equal(pensumCInput(1, true, () => 0.9), 'type');
+  // Four to eight: the answer's own words, out of order.
+  for (const n of [4, 5, 8]) assert.equal(pensumCInput(n, true, () => 0.1), 'order', `${n} words`);
+  // Longer than the reorder cap: answered from the chapter and self-marked.
+  for (const n of [9, 12, 37]) assert.equal(pensumCInput(n, true, () => 0.1), 'self', `${n} words`);
+  // Never typed once it is long, however the coin falls.
+  for (const r of [0, 0.25, 0.5, 0.75, 0.99]) for (const n of [4, 9, 20]) assert.notEqual(pensumCInput(n, true, () => r), 'type');
+});
+
+test('§29: a whole-sentence Pensum C answer is put in order, not typed out', () => {
+  // The shape the learner met: a question whose model answer is a whole sentence. The Latin here is
+  // our own — the book's own pensum lines never enter a public file, this one included (PROMPT.md §5).
+  const long = 'Puella parvam rosam in hortō suō cotīdiē carpēbat.';
+  const rows = [{ chapter: 9, kind: 'C', items: [{ q: 'Quid puella in hortō carpēbat?', answers: [long], unit_id: null }] }];
+  const sets = setSkills({ pensa: groupPensa(rows), weeks });
+  const gen = createSetItems({ sets, units: [], pool: createPool(mem()), rand: seq([0.05, 0.5, 0.95, 0.3]) });
+  const it = gen.generate({ skill: 'pensum-09', kind: 'pensum', stage: 1 });
+  assert.ok(it, 'the item is built');
+  assert.equal(it.pensum, 'C');
+  assert.equal(it.input, 'order', 'seven words: put them in order');
+  assert.deepEqual(it.chunks, ['Puella', 'parvam', 'rosam', 'in', 'hortō', 'suō', 'cotīdiē', 'carpēbat.']);
+  assert.equal(it.display[it.display.length - 1], 'carpēbat', 'the last chip drops the full stop, which would say "put me last"');
+  assert.ok(Array.isArray(it.scrambled) && it.scrambled.length === it.chunks.length);
+  assert.ok(!orderMatches(it.chunks, it.scrambled), 'it is actually scrambled');
+  // The book's order is right; any other is not.
+  assert.equal(judge(it, it.chunks.map((_, i) => i)).correct, true);
+  assert.equal(judge(it, [1, 0, 2, 3, 4, 5, 6, 7]).correct, false);
+});
+
+test('§29: a Pensum C answer past the reorder cap is answered from the chapter and marked by the learner', () => {
+  const veryLong = 'Nauta fessus post longum iter ad parvum portum tandem pervēnit atque amīcōs suōs ibi laetus salūtāvit.';
+  const rows = [{ chapter: 11, kind: 'C', items: [{ q: 'Quid nauta fēcit?', answers: [veryLong], unit_id: null }] }];
+  const sets = setSkills({ pensa: groupPensa(rows), weeks });
+  const gen = createSetItems({ sets, units: [], pool: createPool(mem()), rand: seq([0.05, 0.5]) });
+  const it = gen.generate({ skill: 'pensum-11', kind: 'pensum', stage: 1 });
+  assert.equal(it.input, 'self');
+  assert.equal(it.answer[0], veryLong, 'the chapter\'s own answer is what the learner compares against');
+  assert.equal(judge(it, 'right').correct, true);
+  assert.equal(judge(it, 'partly').correct, true);
+  assert.equal(judge(it, 'wrong').correct, false);
+});
+
+
+/* ================== a week's own vocabulary (§29) ========================= */
+
+test('§29: a chapter two weeks read becomes two vocabulary rows, one per week', () => {
+  // Weeks as course.json has them: week 3 reads Fabulae Syrae and the Fabellae, week 4 the chapter.
+  const both = [{ n: 3, id: 'w03', chapter: 'XXVII (FS 1, 5); FL 63–65', source: 'FS+FL', title: 'Mīnōs · Corōnis · Fabellae LXIII–LXV' },
+    { n: 4, id: 'w04', chapter: 'XXVII', source: 'FR', title: 'Rēs Rūsticae' }];
+  const w = (lemma, unit_id) => ({ lemma, dict: `${lemma}, -ī m.`, pos: 'N', meaning: 'a word', unit_id, count: 1 });
+  const deck = { chapter: 27, words: [w('taurus', 'w03:minos:b2.2'), w('corvus', 'w03:coronis:b10.1'), w('arātrum', 'w04:12.2')] };
+  const built = setSkills({ vocab: new Map([[27, deck]]), weeks: both });
+
+  const chapterRow = built.get('vocab-27');
+  const weekRow = built.get('vocab-w03');
+  assert.ok(weekRow, 'the week that reads its own stories has no vocabulary row');
+  assert.equal(chapterRow.count, 1, "the chapter keeps only the chapter's own words");
+  assert.equal(weekRow.count, 2, "the week takes the words its own stories bring in");
+  assert.equal(chapterRow.week_n, 4, 'the chapter row belongs to the week that reads the chapter');
+  assert.equal(weekRow.week_n, 3);
+  assert.equal(weekRow.chapter, 27, 'the week row still sits under the chapter in the map');
+  assert.match(weekRow.title, /Mīnōs/);
+  assert.ok(!weekRow.title.includes('Cap.'), weekRow.title);
+  // No word is taught twice, and each row has an English → Latin twin.
+  const ids = new Set([...chapterRow.data.words, ...weekRow.data.words].map((x) => x.lemma));
+  assert.equal(ids.size, 3);
+  assert.equal(built.get('vocab-w03-rev')?.rev, true);
+  assert.equal(built.get('vocab-27-rev')?.count, 1);
+  // A chapter only one week reads is untouched: one row, every word.
+  const solo = setSkills({ vocab: new Map([[7, { chapter: 7, words: [w('mālum', 'r07:45.1')] }]]), weeks: both });
+  assert.equal(solo.get('vocab-07').count, 1);
+  assert.equal([...solo.keys()].filter((k) => k.startsWith('vocab-w')).length, 0);
+});
+
+test('§29: the shipped chapter XXVII deck really does split into week 3\'s words and week 4\'s', () => {
+  const deck = JSON.parse(readFileSync(new URL('../app/data/grammar/vocab/27.json', import.meta.url), 'utf8'));
+  const course = JSON.parse(readFileSync(new URL('../app/data/course.json', import.meta.url), 'utf8'));
+  const built = setSkills({ vocab: new Map([[27, normaliseVocab(deck)]]), weeks: course });
+  const chapterRow = built.get('vocab-27');
+  const weekRow = built.get('vocab-w03');
+  assert.ok(weekRow && weekRow.count > 10, `week 3 gets ${weekRow?.count ?? 0} words of its own`);
+  assert.ok(chapterRow.count > 10, `chapter XXVII keeps ${chapterRow.count}`);
+  assert.equal(chapterRow.count + weekRow.count, deck.words.length, 'every word is in exactly one row');
+  for (const x of weekRow.data.words) assert.ok(x.unit_id.startsWith('w03:'), `${x.lemma} is from ${x.unit_id}`);
+  for (const x of chapterRow.data.words) assert.ok(!x.unit_id.startsWith('w03:'), `${x.lemma} is still in the chapter row`);
+  assert.match(weekRow.title, /Mīnōs/);
 });
