@@ -53,6 +53,10 @@ def resolved(la, refs):
 def check(path, units):
     d = json.load(open(path, encoding='utf-8'))
     ch, items, errs = d['chapter'], d['items'], []
+    # The id prefix follows the file: 27.json -> q27-01, w03.json -> qw03-01. A week
+    # whose reading is not a Familia Romana chapter (week 3 and week 4 are both
+    # "chapter XXVII") owns a file named for the week instead of the chapter.
+    prefix = 'q' + os.path.basename(path)[:-len('.json')]
     for k in ('chapter', 'week_id', 'title', 'items'):
         if k not in d:
             errs.append(f'missing top-level {k}')
@@ -60,7 +64,7 @@ def check(path, units):
     if len(set(ids)) != len(ids):
         errs.append('duplicate ids')
     for n, i in enumerate(items, 1):
-        exp = f'q{ch:02d}-{n:02d}'
+        exp = f'{prefix}-{n:02d}'
         if i['id'] != exp:
             errs.append(f"{i['id']}: expected id {exp}")
         for k in ('qword', 'q', 'en', 'unit_id', 'answers', 'input', 'hint'):

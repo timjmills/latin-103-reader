@@ -119,6 +119,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     currentWeekSkills() { const n = ctx.currentCourseWeekN(); return n ? weekSkills(ctx.index, n) : []; },
     /** The chapter the current week reads (a shelf chapter or the course week's Familia Romana chapter), for its question set and vocabulary deck. */
     currentChapter() { const n = ctx.currentWeekN(); const w = ctx.weeks.find((x) => x.n === n); return w ? chapterOfWeek(w) : null; },
+    /** The current week's own id, for a week that has a question set of its own rather than its chapter's (§28). */
+    currentWeekId() { const n = ctx.currentWeekN(); return ctx.weeks.find((x) => x.n === n)?.id ?? null; },
     /** The chapter sets that belong to the current week (its chapter's questions, vocabulary and pensa), for the "this week" preset. */
     currentWeekSets() { const c = ctx.currentChapter(); return c == null ? [] : [...ctx.sets.values()].filter((s) => s.chapter === c && !s.rev).map((s) => s.id); },
     /** True when a skill can produce a drill item at all (a parse filter and at least one sentence in the library; a set with items), memoised — see createDrillableMemo. */
@@ -165,7 +167,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   /** The chapter sets as skills, from the public files and the store's pensa; rebuilt when the pensa change. */
   function buildSets(loaded) {
     drillableMemo.clear();   // a new generator answers afresh (QA-1)
-    ctx.sets = setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
+    ctx.sets = setSkills({ questions: loaded.questions, weekQuestions: loaded.weekQuestions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
     ctx.skills = new Map([...ctx.index.skills, ...ctx.sets]);
     const setItems = createSetItems({ sets: ctx.sets, units: ctx.units, pool: baseItems.pool });
     ctx.items = createGenerator({ items: baseItems, stage3: createStage3({ items: baseItems, paradigm: par.paradigm }), sets: setItems, skills: ctx.skills });
@@ -237,8 +239,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       if (!ctx.gstore) { ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa, learnCache: learnCache() }); await ctx.gstore.ready(); }
       if (!ctx.weeks.length) ctx.weeks = await store.getWeeks();
       const chapter = ctx.currentChapter();
-      const loaded = chapter != null ? await loader.loadChapter(chapter) : { questions: new Map(), vocab: new Map() };
-      const sets = setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
+      const loaded = chapter != null ? await loader.loadChapter(chapter, ctx.currentWeekId()) : { questions: new Map(), weekQuestions: new Map(), vocab: new Map() };
+      const sets = setSkills({ questions: loaded.questions, weekQuestions: loaded.weekQuestions, vocab: loaded.vocab, pensa: groupPensa(ctx.gstore.getPensa()), weeks: ctx.weeks });
       // A vocabulary deck in rotation from another chapter: the card names it and offers ten due items; its own file
       // is fetched when the section opens. `count` is unknown here, so the row claims no more than a session holds.
       for (const [id] of ctx.gstore.getStates()) {

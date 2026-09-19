@@ -96,3 +96,19 @@ test('dismissed for the day only', () => {
   assert.equal(buildToday({ states: new Map(), skills: all, currentWeek: week1, now: NOW + DAY_MS, dismissed: day }).dismissed, false);
   assert.equal(fmtMinutes(0.4), 'under a minute'); assert.equal(fmtMinutes(12), 'about 12 min'); assert.equal(fmtMinutes(null), '');
 });
+
+test('§28: a week with a question set of its own is offered that set, not the chapter\'s', () => {
+  // Weeks 3 and 4 both read "chapter XXVII": week 4 the chapter, week 3 Fabulae Syrae and the Fabellae.
+  const withOwn = new Map([...all, ['questions-w03', { id: 'questions-w03', set: 'questions', chapter: 27, week_n: 3, week_id: 'w03', title: 'Questions · Mīnōs · Corōnis · Fabellae LXIII–LXV', count: 36, kinds: ['question'], confusable_with: [] }],
+    ['questions-27', { id: 'questions-27', set: 'questions', chapter: 27, week_n: 4, title: 'Questions · Cap. XXVII', count: 34, kinds: ['question'], confusable_with: [] }]]);
+  const onW03 = buildToday({ states: new Map(), skills: withOwn, currentWeek: [], weekChapter: 27, weekId: 'w03', now: NOW });
+  const q = onW03.lines.find((l) => l.kind === 'questions');
+  assert.equal(q.skill, 'questions-w03', 'week 3 was offered the chapter set, which is week 4\'s story');
+  assert.ok(q.detail.includes('Mīnōs'), q.detail);
+  // Week 4 has no set of its own, so it still gets its chapter's.
+  const onW04 = buildToday({ states: new Map(), skills: withOwn, currentWeek: [], weekChapter: 27, weekId: 'w04', now: NOW });
+  assert.equal(onW04.lines.find((l) => l.kind === 'questions').skill, 'questions-27');
+  // And a week id nothing is filed under falls back to the chapter too.
+  const unknown = buildToday({ states: new Map(), skills: all, currentWeek: [], weekChapter: 7, weekId: 'w99', now: NOW });
+  assert.equal(unknown.lines.find((l) => l.kind === 'questions').skill, 'questions-07');
+});

@@ -791,7 +791,7 @@ async function boot() {
         const base = new URL(fixture ? '../../tests/fixtures/grammar/' : '../data/grammar/', import.meta.url);
         const fetchJson = async (name) => { const res = await fetch(new URL(name, base)); if (!res.ok) throw new Error(`${name}: ${res.status}`); return res.json(); };
         const loaded = await setsMod.createSetLoader({ fetchJson }).loadAll();
-        sets = setsMod.setSkills({ questions: loaded.questions, vocab: loaded.vocab, pensa: setsMod.groupPensa(ctx.gstore.getPensa()), weeks });
+        sets = setsMod.setSkills({ questions: loaded.questions, weekQuestions: loaded.weekQuestions, vocab: loaded.vocab, pensa: setsMod.groupPensa(ctx.gstore.getPensa()), weeks });
       }
       // One walk of the attempt log for both figures it has to answer: how many
       // distinct items of a set have been met, and how long an item takes.

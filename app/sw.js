@@ -9,7 +9,7 @@
  * Bump CACHE_VERSION whenever a precached file changes.
  */
 
-const CACHE_VERSION = 'v69';
+const CACHE_VERSION = 'v70';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 
@@ -270,6 +270,7 @@ const PRECACHE = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/maskable-512.png',
+  './data/grammar/questions/w03.json',
   './data/grammar/questions/01.json',
   './data/grammar/questions/02.json',
   './data/grammar/questions/03.json',

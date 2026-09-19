@@ -7,7 +7,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  createSetLoader, manifestChapters, normaliseQuestionSet, normaliseVocab, groupPensa, setSkills, setsOfChapter, setChapters,
+  createSetLoader, manifestChapters, manifestWeeks, normaliseQuestionSet, normaliseVocab, groupPensa, setSkills, setsOfChapter, setChapters,
   matchQuestion, phraseIndexes, answerIndexes, pensumSegments, createSetItems, fromRoman, chapterOfWeek,
   resolveRef, resolveList, withStripped,
 } from '../app/js/grammar/sets.js';
@@ -250,4 +250,51 @@ test('self-graded (translate) judging: right / partly count as correct (partly p
   assert.deepEqual(judge(item, 'right'), { correct: true, partial: false, self: true, expected: 'Julius gives his daughter a rose.', given: 'right' });
   assert.equal(judge(item, 'partly').partial, true);
   assert.equal(judge(item, 'wrong').correct, false);
+});
+
+/* ============================ a week with no chapter of its own (§28) ====== */
+
+test('§28: a week that reads no chapter of its own carries its questions in a file named for the week', async () => {
+  assert.deepEqual(manifestWeeks({ version: 1, weeks: ['w03', 'w03.json', 'nope', 'w3'] }), ['w03']);
+  assert.deepEqual(manifestWeeks({ version: 1, chapters: [7] }), [], 'a manifest with no weeks lists none');
+  const item = { id: 'qw03-01', qword: 'quis', q: 'Quis taurum cēpit?', en: 'Who caught the bull?', unit_id: 'w03:minos:b6.2', answers: ['Herculēs'], input: 'tap', hint: 'the subject' };
+  const docs = {
+    'questions/index.json': { version: 1, chapters: [7], weeks: ['w03'] },
+    'questions/07.json': read('questions/07.json'),
+    'questions/w03.json': { chapter: 27, week_id: 'w03', title: 'Mīnōs · Corōnis · Fabellae LXIII–LXV', items: [item] },
+    'vocab/index.json': { version: 1, chapters: [] },
+  };
+  const loaded = await createSetLoader({ fetchJson: async (n) => { if (!(n in docs)) throw new Error(`${n}: 404`); return docs[n]; } }).loadAll();
+  assert.deepEqual([...loaded.questions.keys()], [7], 'the week file was filed under a chapter number');
+  assert.deepEqual([...loaded.weekQuestions.keys()], ['w03']);
+  const built = setSkills({ ...loaded, weeks });
+  const own = built.get('questions-w03');
+  assert.ok(own, 'the week has no question set of its own');
+  assert.equal(own.week_id, 'w03');
+  assert.equal(own.week_n, 3);
+  assert.equal(own.chapter, 27, 'the row still sits under the chapter the week belongs to');
+  assert.equal(own.count, 1);
+  // The row is named for the stories, never "Cap. XXVII": that chapter number is week 4's reading, and
+  // two rows with one name is the very confusion this set exists to end.
+  assert.match(own.title, /Mīnōs/);
+  assert.ok(!own.title.includes('Cap.'), own.title);
+  assert.ok(built.get('questions-07'), 'the chapter set and the week set are two rows, not one');
+});
+
+test('§28: the shipped week-3 set asks about week 3 and nothing else', () => {
+  const dir = new URL('../app/data/grammar/questions/', import.meta.url);
+  const index = JSON.parse(readFileSync(new URL('index.json', dir), 'utf8'));
+  assert.ok(manifestWeeks(index).includes('w03'), 'the manifest no longer lists the week set, so nothing fetches it');
+  const w03 = JSON.parse(readFileSync(new URL('w03.json', dir), 'utf8'));
+  assert.equal(w03.week_id, 'w03');
+  assert.ok(w03.items.length >= 24, `a set needs 24 items, this has ${w03.items.length}`);
+  for (const it of w03.items) assert.ok(it.unit_id.startsWith('w03:'), `${it.id} asks about ${it.unit_id}`);
+  // Every one of the week's three readings is asked about — the complaint was Fabulae Syrae and the
+  // Fabellae having nothing at all, which a set drawn only from the first story would repeat.
+  const parts = new Set(w03.items.map((it) => it.unit_id.split(':')[1]));
+  assert.deepEqual([...parts].sort(), ['coronis', 'fl-63', 'fl-64', 'fl-65', 'minos']);
+  // And chapter 27's own file is left to week 4 alone.
+  const ch27 = JSON.parse(readFileSync(new URL('27.json', dir), 'utf8'));
+  assert.equal(ch27.week_id, 'w04');
+  for (const it of ch27.items) assert.ok(it.unit_id.startsWith('w04:'), `${it.id} asks about ${it.unit_id}`);
 });

@@ -153,23 +153,46 @@ def resolve_all(errs, pid, la, refs, what):
     return out
 
 
-def check(n, index, weeks, corpus):
+def check(key, index, weeks, corpus):
+    """One question file. `key` is a chapter number (NN.json) or, for a week
+    that reads no Familia Romana chapter of its own, a week id (wNN.json).
+
+    Weeks 3, 5 and 10 read Fabulae Syrae and Fabellae Latinae beside the
+    chapter their neighbour reads, so they cannot own a chapter-numbered file:
+    week 3 and week 4 are both "chapter XXVII". A week file is named for the
+    week, its ids run qw03-01…, and every item must cite that week's own text —
+    otherwise the set would ask week 3 about week 4's story, which is what sent
+    it here.
+    """
     errs = []
-    qf = QDIR / f"{n:02d}.json"
+    week_file = isinstance(key, str)
+    # The loop below reuses the name `key` for its own purposes, so the file's own is kept here.
+    file_key = key
+    qf = QDIR / (f"{key}.json" if week_file else f"{key:02d}.json")
     d = json.loads(qf.read_text(encoding="utf-8"))
     wid = d.get("week_id")
+    n = d.get("chapter")
+    prefix = f"q{key}" if week_file else f"q{key:02d}"
 
-    if d.get("chapter") != n:
-        errs.append(f"chapter field {d.get('chapter')} != {n}")
+    if week_file:
+        if wid != key:
+            errs.append(f"week_id {wid!r} != {key!r} (the file is named for its week)")
+        if not isinstance(n, int) or n < 1:
+            errs.append(f"chapter field {n!r} should be the chapter this week sits under")
+        if wid not in weeks:
+            return ([f"week_id {wid!r} names no week in data/build"],
+                    f"{key} {d.get('title','?'):<22} (unchecked)")
+    elif n != key:
+        errs.append(f"chapter field {n} != {key}")
     if not d.get("title"):
         errs.append("missing title")
 
-    rf = BUILD / f"review-{n:02d}.json"
-    if rf.exists():
+    rf = None if week_file else BUILD / f"review-{n:02d}.json"
+    if rf is not None and rf.exists():
         home = json.loads(rf.read_text(encoding="utf-8"))["week"]["id"]
         if wid != home:
             errs.append(f"week_id {wid} != {home} (review-{n:02d}.json)")
-    else:
+    elif not week_file:
         if wid not in weeks:
             return ([f"week_id {wid!r} names no week in data/build"],
                     f"ch {n:02d} {d.get('title','?'):<22} (unchecked)")
@@ -193,8 +216,8 @@ def check(n, index, weeks, corpus):
         if missing:
             errs.append(f"{pid}: missing {sorted(missing)}")
             continue
-        if it["id"] != f"q{n:02d}-{i:02d}":
-            errs.append(f"{pid}: id should be q{n:02d}-{i:02d}")
+        if it["id"] != f"{prefix}-{i:02d}":
+            errs.append(f"{pid}: id should be {prefix}-{i:02d}")
         if it["id"] in ids:
             errs.append(f"{pid}: duplicate id")
         ids.add(it["id"])
@@ -226,6 +249,9 @@ def check(n, index, weeks, corpus):
             errs.append(f"{pid}: unit {it['unit_id']} not in data/build")
             continue
         uwid, uorder, u = entry
+        # A week file asks about its own week and nothing else (see check's docstring).
+        if week_file and uwid != wid:
+            errs.append(f"{pid}: unit {it['unit_id']} belongs to {uwid}, not {wid}")
         if uwid not in file_seq:
             file_seq.append(uwid)
         key = (file_seq.index(uwid), uorder)
@@ -285,7 +311,8 @@ def check(n, index, weeks, corpus):
         errs.append(f"only {len(items)} items (< 24)")
     if len(qw) < 8:
         errs.append(f"only {len(qw)} question words (< 8): {sorted(qw)}")
-    summary = (f"ch {n:02d} {d.get('title','?'):<22} items={len(items):>2}  "
+    label = f"{file_key}  " if week_file else f"ch {n:02d}"
+    summary = (f"{label} {d.get('title','?'):<22} items={len(items):>2}  "
                f"tap={split['tap']:>2} choice={split['choice']:>2} type={split['type']:>2}  "
                f"qwords({len(qw)})={' '.join(sorted(qw))}")
     return errs, summary
@@ -331,8 +358,11 @@ ALLOWED_RUNS = {
 
 
 def main():
-    chapters = [int(a) for a in sys.argv[1:]] or sorted(
-        int(p.stem) for p in QDIR.glob("[0-9][0-9].json"))
+    args = sys.argv[1:]
+    # A week file is named for its week ("w03"), a chapter file for its number.
+    chapters = [a if a.startswith("w") else int(a) for a in args] or (
+        sorted(int(p.stem) for p in QDIR.glob("[0-9][0-9].json"))
+        + sorted(p.stem for p in QDIR.glob("w[0-9][0-9].json")))
     index, weeks = load_index()
     corpus = Corpus(BUILD)
     bad = 0

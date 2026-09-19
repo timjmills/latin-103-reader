@@ -6,7 +6,7 @@
 // each until twenty attempts say otherwise), the reading line at the study
 // log's pace. Pure; ui.js and main.js render it (tests/grammar.today.test.mjs).
 //
-//   buildToday({ states, skills, currentWeek, weekChapter, attempts, unread, pace, now, dismissed, drillable })
+//   buildToday({ states, skills, currentWeek, weekChapter, weekId, attempts, unread, pace, now, dismissed, drillable })
 //     → { day, dismissed, lines: [{ id, kind, label, detail, minutes, action }], minutes }
 
 import { decay, isDue, newState, suggestToday, inRotation } from './scheduler.js';
@@ -72,7 +72,7 @@ export const isDismissed = (dismissed, day) => !!dismissed && dismissed === day;
  * without it a skill counts as drillable when it has a parse filter at all, so
  * the two metre skills (lesson only) never reach the Learn line either way.
  */
-export function buildToday({ states, skills, currentWeek = [], weekChapter = null, attempts = [], unread = 0, pace = null, now = Date.now(), dismissed = null, size = PRACTICE_ITEMS, drillable = null } = {}) {
+export function buildToday({ states, skills, currentWeek = [], weekChapter = null, weekId = null, attempts = [], unread = 0, pace = null, now = Date.now(), dismissed = null, size = PRACTICE_ITEMS, drillable = null } = {}) {
   const day = localDay(now);
   const secondsFor = itemSecondsBy(attempts);
   const s = secondsFor();
@@ -98,7 +98,10 @@ export function buildToday({ states, skills, currentWeek = [], weekChapter = nul
     lines.push({ id: 'practice', kind: 'practice', label: 'Practice', detail, minutes: minutesOf(size, s), due, pairs: today.pairs, action: { view: 'session', params: { preset: 'review-heavy', size, oneSkill: null } } });
   }
   // Questions for the current week's passage: Learn while new, a set of ten when in rotation (and due or never practised).
-  const qid = weekChapter != null ? `questions-${pad(weekChapter)}` : null;
+  // The week's own set comes first (§28). Weeks 3 and 4 both read "chapter XXVII", so the chapter's set
+  // is week 4's story: on week 3 this card offered questions about a passage the learner had not read.
+  const ownQid = weekId ? `questions-${weekId}` : null;
+  const qid = (ownQid && skills.get(ownQid)) ? ownQid : (weekChapter != null ? `questions-${pad(weekChapter)}` : null);
   const qs = qid && skills.get(qid);
   if (qs && qs.count > 0) {
     const st = stateOf(qid);
