@@ -56,6 +56,30 @@
   },
   {
    "id": "q27-03",
+   "qword": "cuius",
+   "q": "Cuius virī negōtium est agrōs colere?",
+   "en": "Which man's business is it to till the fields?",
+   "unit_id": "w04:7.5",
+   "answers": [
+    "Agricola"
+   ],
+   "input": "tap",
+   "hint": "cuius is answered by a genitive — the relative pronoun carries it here"
+  },
+  {
+   "id": "q27-04",
+   "qword": "quod",
+   "q": "Quod īnstrūmentum agrōs arat?",
+   "en": "Which tool ploughs the fields?",
+   "unit_id": "w04:12.2",
+   "answers": [
+    "Arātrum"
+   ],
+   "input": "tap",
+   "hint": "quod is the neuter of quī, to match īnstrūmentum"
+  },
+  {
+   "id": "q27-05",
    "qword": "quōmodo",
    "q": "Quōmodo agricola sēmen spargit?",
    "en": "How does the farmer scatter the seed?",
@@ -67,7 +91,7 @@
    "hint": "an ablative of means (with what)"
   },
   {
-   "id": "q27-04",
+   "id": "q27-06",
    "qword": "quōmodo",
    "q": "Quōmodo frūmentum metitur?",
    "en": "How is the grain reaped?",
@@ -102,7 +126,7 @@
    "hint": "an ablative of instrument with a passive verb"
   },
   {
-   "id": "q27-05",
+   "id": "q27-07",
    "qword": "quid",
    "q": "Quō īnstrūmentō ūtitur quī arat?",
    "en": "What instrument does the one who ploughs use?",
@@ -114,7 +138,7 @@
    "hint": "ūtor (a deponent) takes the ablative"
   },
   {
-   "id": "q27-06",
+   "id": "q27-08",
    "qword": "quis",
    "q": "Quis Latīnōs agrōs colere docuit?",
    "en": "Who taught the Latins to cultivate fields?",
@@ -133,7 +157,7 @@
    "hint": "the nominative subject; docēre takes an accusative person plus an infinitive"
   },
   {
-   "id": "q27-07",
+   "id": "q27-09",
    "qword": "unde",
    "q": "Unde Sāturnus ā fīliō suō pulsus est?",
    "en": "From where was Saturn driven out by his son?",
@@ -184,7 +208,7 @@
    "hint": "ē/ex + ablative for place from which; Iove is the ablative of agent"
   },
   {
-   "id": "q27-08",
+   "id": "q27-10",
    "qword": "quālis",
    "q": "Quālis ager fertilis esse dīcitur?",
    "en": "What kind of field is said to be fertile?",
@@ -254,7 +278,7 @@
    "hint": "a relative clause describing ager; multum takes a partitive genitive (multum frūmentī)"
   },
   {
-   "id": "q27-09",
+   "id": "q27-11",
    "qword": "cūr",
    "q": "Cūr frūmentum minōris pretiī est?",
    "en": "Why is grain of lesser value?",
@@ -328,7 +352,7 @@
    "hint": "a quia clause with a passive verb; minōris pretiī is a genitive of value"
   },
   {
-   "id": "q27-10",
+   "id": "q27-12",
    "qword": "quot",
    "q": "Quotiēns in annō agricolae prope Nīlum metere possunt?",
    "en": "How many times a year can farmers near the Nile reap?",
@@ -341,7 +365,7 @@
    "hint": "a numeral adverb ('twice or three times')"
   },
   {
-   "id": "q27-11",
+   "id": "q27-13",
    "qword": "ubi",
    "q": "Ubi sitī sunt agrī Iūliī?",
    "en": "Where are Julius' fields situated?",
@@ -375,7 +399,25 @@
    "hint": "sub + ablative for place where"
   },
   {
-   "id": "q27-12",
+   "id": "q27-14",
+   "qword": "quibus",
+   "q": "Quibus in agrīs vītēs crēscunt?",
+   "en": "In what fields do vines grow?",
+   "unit_id": "w04:45.2",
+   "answers": [
+    "in vīneīs"
+   ],
+   "input": "choice",
+   "choices": [
+    "in vīneīs",
+    "in hortīs",
+    "in silvīs",
+    "in campīs siccīs"
+   ],
+   "hint": "quibus is the ablative plural of quī, here after in"
+  },
+  {
+   "id": "q27-15",
    "qword": "cūr",
    "q": "Cūr Iūlius agricolās aspiciēns gaudet?",
    "en": "Why does Julius rejoice as he watches the farmers?",
@@ -457,7 +499,7 @@
    "hint": "a quod clause; necesse est takes a dative of the person (ipsī = for himself)"
   },
   {
-   "id": "q27-13",
+   "id": "q27-16",
    "qword": "quandō",
    "q": "Quandō Iūlius in praedium suum proficīscitur?",
    "en": "When does Julius set out for his estate?",
@@ -561,7 +603,7 @@
    "hint": "a cum prīmum clause ('as soon as') with the perfect indicative"
   },
   {
-   "id": "q27-14",
+   "id": "q27-17",
    "qword": "quis",
    "q": "Ā quibus agrī Iūliī coluntur?",
    "en": "By whom are Julius' fields cultivated?",
@@ -573,7 +615,35 @@
    "hint": "the ablative of agent after ā/ab with a passive verb"
   },
   {
-   "id": "q27-15",
+   "id": "q27-18",
+   "qword": "quem",
+   "q": "Quem Iūlius in agrō cōnspicit?",
+   "en": "Whom does Julius catch sight of in the field?",
+   "unit_id": "w04:74.3",
+   "answers": [
+    {
+     "span": [
+      1,
+      2
+     ]
+    }
+   ],
+   "input": "choice",
+   "choices": [
+    {
+     "span": [
+      1,
+      2
+     ]
+    },
+    "pāstōrem pigrum",
+    "servum fugientem",
+    "uxōrem gravidam"
+   ],
+   "hint": "quem is the accusative of quis: the object of cōnspicit"
+  },
+  {
+   "id": "q27-19",
    "qword": "quot",
    "q": "Quot sēstertiōs colōnus Iūliō dēbet?",
    "en": "How many sesterces does the tenant owe Julius?",
@@ -598,7 +668,19 @@
    "hint": "a numeral adjective in the accusative agreeing with sēstertiōs"
   },
   {
-   "id": "q27-16",
+   "id": "q27-20",
+   "qword": "cui",
+   "q": "Cui colōnus octingentōs sēstertiōs dēbet?",
+   "en": "To whom does the tenant owe eight hundred sesterces?",
+   "unit_id": "w04:74.5",
+   "answers": [
+    "mihi"
+   ],
+   "input": "tap",
+   "hint": "dēbēre takes a dative: the one owed"
+  },
+  {
+   "id": "q27-21",
    "qword": "quid",
    "q": "Quid Iūlius colōnō imperat?",
    "en": "What does Julius order the tenant to do?",
@@ -638,7 +720,7 @@
    "hint": "an indirect command: ut + present subjunctive after imperat"
   },
   {
-   "id": "q27-17",
+   "id": "q27-22",
    "qword": "quid",
    "q": "Quid Iūlius servīs imperābit, nisi colōnus mercēdem solvet?",
    "en": "What will Julius order his slaves to do, unless the tenant pays the rent?",
@@ -658,7 +740,7 @@
    "hint": "ut + subjunctive after imperābō; agrīs is an ablative of separation ('from the fields')"
   },
   {
-   "id": "q27-18",
+   "id": "q27-23",
    "qword": "quid",
    "q": "Quid colōnus dominum ōrat?",
    "en": "What does the tenant beg the master to do?",
@@ -703,7 +785,7 @@
    "hint": "an indirect command: ut + subjunctive after ōrat"
   },
   {
-   "id": "q27-19",
+   "id": "q27-24",
    "qword": "quot",
    "q": "Quot līberī colōnō sunt?",
    "en": "How many children does the tenant have?",
@@ -715,7 +797,7 @@
    "hint": "a numeral with a dative of possession (mihi sunt = I have)"
   },
   {
-   "id": "q27-20",
+   "id": "q27-25",
    "qword": "quis",
    "q": "Cuius officium est īnfantēs cūrāre?",
    "en": "Whose duty is it to look after infants?",
@@ -727,7 +809,7 @@
    "hint": "a genitive of possession before officium"
   },
   {
-   "id": "q27-21",
+   "id": "q27-26",
    "qword": "num",
    "q": "Num colōnī uxor officium neglegit?",
    "en": "The tenant's wife doesn't neglect her duty, does she?",
@@ -827,7 +909,7 @@
    "hint": "num expects 'no'; the sentence also has a negative indirect command (nec postulat ut … cūrem)"
   },
   {
-   "id": "q27-22",
+   "id": "q27-27",
    "qword": "cūr",
    "q": "Cūr Iūlius colōnum domum abīre iubet?",
    "en": "Why does Julius tell the tenant to go home?",
@@ -909,7 +991,7 @@
    "hint": "a quoniam clause ('since') with the indicative"
   },
   {
-   "id": "q27-23",
+   "id": "q27-28",
    "qword": "quid",
    "q": "Quid colōnus prīmum cūrāre dēbet?",
    "en": "What must the tenant see to first?",
@@ -958,7 +1040,7 @@
    "hint": "cūrā ut + subjunctive ('see to it that')"
   },
   {
-   "id": "q27-24",
+   "id": "q27-29",
    "qword": "quōmodo",
    "q": "Quōmodo hōc annō vīneae sē habent?",
    "en": "How are the vineyards doing this year?",
@@ -970,7 +1052,7 @@
    "hint": "a superlative adverb"
   },
   {
-   "id": "q27-25",
+   "id": "q27-30",
    "qword": "quid",
    "q": "Quid Iūlius agricolās monet?",
    "en": "What does Julius warn the farmers to do?",
@@ -1020,7 +1102,7 @@
    "hint": "moneō ut + subjunctive (an indirect command)"
   },
   {
-   "id": "q27-26",
+   "id": "q27-31",
    "qword": "-ne",
    "q": "Nocuitne lupus ovī?",
    "en": "Did the wolf harm the sheep?",
@@ -1094,7 +1176,7 @@
    "hint": "a yes/no question with -ne; noceō takes the dative (ovī)"
   },
   {
-   "id": "q27-27",
+   "id": "q27-32",
    "qword": "quis",
    "q": "Quis ovem ē dentibus lupī servāvit?",
    "en": "Who saved the sheep from the wolf's teeth?",
@@ -1106,7 +1188,7 @@
    "hint": "the nominative subject of the nam clause"
   },
   {
-   "id": "q27-28",
+   "id": "q27-33",
    "qword": "quid",
    "q": "Quid est officium pāstōris?",
    "en": "What is the shepherd's duty?",
@@ -1167,7 +1249,7 @@
    "hint": "a negative indirect command: nē … nēve + subjunctive after cūrāre"
   },
   {
-   "id": "q27-29",
+   "id": "q27-34",
    "qword": "quālis",
    "q": "Quālēs sunt omnēs pāstōrēs, ut Iūlius dīcit?",
    "en": "What are all the shepherds like, according to Julius?",
@@ -1198,7 +1280,7 @@
    "hint": "predicate adjectives in the nominative plural"
   },
   {
-   "id": "q27-30",
+   "id": "q27-35",
    "qword": "unde",
    "q": "Unde pāstor cum grege revertitur?",
    "en": "From where does the shepherd return with the flock?",
@@ -1233,7 +1315,7 @@
    "hint": "ē + ablative for place from which; revertitur is deponent"
   },
   {
-   "id": "q27-31",
+   "id": "q27-36",
    "qword": "quid",
    "q": "Quid pāstor dominum ōrat?",
    "en": "What does the shepherd beg the master?",
@@ -1289,7 +1371,7 @@
    "hint": "a negative indirect command: nē + subjunctive after ōrat (sē refers back to the shepherd)"
   },
   {
-   "id": "q27-32",
+   "id": "q27-37",
    "qword": "cūr",
    "q": "Cūr Iūlius pāstōrem verberābit?",
    "en": "Why will Julius beat the shepherd?",
@@ -1352,7 +1434,7 @@
    "hint": "propter + accusative, explained by a quod clause with the perfect indicative"
   },
   {
-   "id": "q27-33",
+   "id": "q27-38",
    "qword": "quō",
    "q": "Quō ovēs sine pāstōre relictae aberrant?",
    "en": "Where do the sheep, left without a shepherd, wander off to?",
@@ -1364,7 +1446,7 @@
    "hint": "in + accusative for place to which (dē viā is where they come from)"
   },
   {
-   "id": "q27-34",
+   "id": "q27-39",
    "qword": "quid",
    "q": "Quid Iūlius pāstōrem facere iubet?",
    "en": "What does Julius tell the shepherd to make happen?",
