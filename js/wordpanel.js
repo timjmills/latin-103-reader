@@ -366,6 +366,8 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
   let seq = 0;                  // ids for aria-controls
   let switching = false;        // the breakpoint handler closes the dialog itself
   let userClosed = false;       // the learner closed the aside (× / Escape): sentence view leaves it closed until they open something
+  let pressedKey = null;        // the row of the word pressed last: boxed in the panel, so the eye finds it
+  const pressed = new Set();    // `${unitId}␟${rowKey}` — words pressed but not added to the list keep their row
   const emptyState = aside.firstElementChild?.cloneNode(true) ?? document.createElement('div');
   const resetAside = () => aside.replaceChildren(emptyState.cloneNode(true));
 
@@ -488,17 +490,27 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       plainDisclosure(hl.simple, plain));
   }
 
-  function actions(form) {
+  /**
+   * The underline's own control (2026-09-25). A press on a word used to change it — the first
+   * underlined the word, the second marked it learned, the third brought it back — so reading a
+   * definition rewrote the page. Now a press only shows the word, and this one small button is
+   * the whole of the list: + underlines it (adds it to the words being learned, or brings a
+   * learned one back), − takes the underline off (moves it to the learned words).
+   */
+  function markButton(form, text) {
+    const rec = getLookupRecord(form);
+    const on = !!(rec && !rec.learned_at);
+    const act = on ? 'learned' : rec ? 'unlearn' : 'add';
+    const label = on ? `Take the underline off ${text}: it moves to your learned words`
+      : rec ? `Underline ${text} again: it goes back on your learning words` : `Underline ${text}: add it to your learning words`;
+    return h('button', { type: 'button', class: 'mark' + (on ? ' mark--on' : ''), 'data-act': act, 'aria-label': label, title: label, text: on ? '−' : '+' });
+  }
+  function actions(form, text = form) {
     const rec = getLookupRecord(form);
     const row = h('div', { class: 'entry__actions' });
-    if (!rec) return row;
-    if (rec.learned_at) {
-      row.append(h('span', { class: 'entry__learned', text: 'Learned' }),
-        h('button', { type: 'button', class: 'btn btn--quiet', 'data-act': 'unlearn', text: 'Unlearn' }));
-    } else {
-      row.append(h('button', { type: 'button', class: 'btn', 'data-act': 'learned', text: 'Mark as learned' }));
-    }
-    row.append(h('button', { type: 'button', class: 'btn btn--quiet', 'data-act': 'remove', text: 'Forget' }));
+    const on = !!(rec && !rec.learned_at);
+    row.append(h('span', { class: 'entry__marknote', text: on ? 'Underlined: you are learning it' : rec ? 'Learned' : 'Not underlined' }));
+    if (rec) row.append(h('button', { type: 'button', class: 'btn btn--quiet', 'data-act': 'remove', text: 'Forget' }));
     return row;
   }
 
@@ -522,7 +534,9 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     const { form, text, hl, result } = item;
     const parts = [];
     if (hl && !stack) parts.push(focusBlock(hl));
-    if (!stack) parts.push(h('h2', { class: 'entry__form', lang: 'la', text }));
+    // The popup's + / − stands beside the word it acts on: at the foot of a long entry it sat
+    // below the fold on a phone, where nobody would find it.
+    if (!stack) parts.push(h('div', { class: 'entry__head' }, h('h2', { class: 'entry__form', lang: 'la', text }), result.entries.length ? markButton(form, text) : null));
     if (result.enclitic && ENCLITIC[result.enclitic]) parts.push(h('p', { class: 'entry__enclitic', text: ENCLITIC[result.enclitic] }));
 
     if (!result.entries.length) {
@@ -561,7 +575,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     const p = d.paradigm ?? paradigm?.(entry, entry.parses ?? null);
     const pt = renderParadigm(p);
     if (pt) parts.push(pt);
-    parts.push(actions(form));
+    parts.push(actions(form, text));
     return parts;
   }
 
@@ -698,8 +712,11 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     const open = expanded.has(key);
     const id = `stack-row-${++seq}`;
     const learned = row.kind === 'word' && !!getLookupRecord(row.form)?.learned_at;
-    return h('li', { class: `stack__row stack__row--${row.kind}` + (open ? ' is-open' : '') + (learned ? ' is-learned' : ''), 'data-row': key },
-      h('button', { type: 'button', class: 'stack__btn', 'aria-expanded': String(open), 'aria-controls': id }, rowHead(row)),
+    const isPressed = row.kind === 'word' && key === pressedKey;
+    return h('li', { class: `stack__row stack__row--${row.kind}` + (open ? ' is-open' : '') + (learned ? ' is-learned' : '') + (isPressed ? ' is-pressed' : ''), 'data-row': key, 'aria-current': isPressed ? 'true' : null },
+      row.kind === 'word' ? h('div', { class: 'stack__head' },
+        h('button', { type: 'button', class: 'stack__btn', 'aria-expanded': String(open), 'aria-controls': id }, rowHead(row)),
+        markButton(row.form, row.text)) : h('button', { type: 'button', class: 'stack__btn', 'aria-expanded': String(open), 'aria-controls': id }, rowHead(row)),
       h('div', { class: 'stack__body', id, hidden: !open }, open ? rowBody(row) : null));
   }
   function stackContent() {
@@ -763,7 +780,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     const before = (stacks.get(stackUnit) ?? []).map(rowKey).join(' ');
     seedStack(stackUnit);
     const map = getLookups?.();
-    if (map) stacks.set(stackUnit, (stacks.get(stackUnit) ?? []).filter((r) => r.kind !== 'word' || map.has(r.form)));
+    if (map) stacks.set(stackUnit, (stacks.get(stackUnit) ?? []).filter((r) => r.kind !== 'word' || map.has(r.form) || pressed.has(`${stackUnit}\u241f${rowKey(r)}`)));
     const rows = stacks.get(stackUnit) ?? [];
     const keys = rows.map(rowKey);
     if (keys.join(' ') === before) { for (const r of rows) swapRow(rowKey(r)); return; }
@@ -773,6 +790,8 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     showStack(stackUnit, { focus: key && keys.includes(key) ? key : inside ? 'root' : null });
   }
   function removeRow(key) {
+    pressed.delete(`${stackUnit}\u241f${key}`);
+    if (pressedKey === key) pressedKey = null;
     stacks.set(stackUnit, stackWithout(stacks.get(stackUnit) ?? [], key));
     expanded.delete(key);
     const old = rowEl(key);
@@ -812,10 +831,10 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       const item = itemFor(act);
       if (!item) return;
       const form = item.form;
-      const fn = { learned: () => store.markLearned(form), unlearn: () => store.unlearn(form), remove: () => store.removeLookup(form) }[act.dataset.act];
+      const fn = { add: () => store.addLookup(form, item.unitId ?? null), learned: () => store.markLearned(form), unlearn: () => store.unlearn(form), remove: () => store.removeLookup(form) }[act.dataset.act];
       Promise.resolve(fn()).then(async () => {
         await onLookupsChanged();
-        if (live) live.textContent = { learned: `${item.text ?? form} marked as learned`, unlearn: `${item.text ?? form} back to underlined`, remove: `${item.text ?? form} removed from your list` }[act.dataset.act];
+        if (live) live.textContent = { add: `${item.text ?? form} underlined: added to your learning words`, learned: `${item.text ?? form}: underline off, moved to your learned words`, unlearn: `${item.text ?? form} underlined again`, remove: `${item.text ?? form} removed from your list` }[act.dataset.act];
         if (item === current) { if (act.dataset.act === 'remove') close(); else rerender(true); }
         else if (act.dataset.act === 'remove') removeRow(rowKey(item));
         else swapRow(rowKey(item));
@@ -898,16 +917,11 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
       const toStack = isWide();
       opened();
       if (!toStack) current = item;
-      if (result.entries.length) {
-        // The tap cycle: the first tap looks the word up (yellow everywhere); the
-        // next tap marks it learned (underline gone); the tap after that puts it
-        // back on the learning list — no buttons needed.
-        const rec = getLookupRecord(form);
-        if (rec && !rec.learned_at) { await store.markLearned(form); if (live) live.textContent = `${text} marked as learned. Tap it again to bring it back.`; }
-        else if (rec && rec.learned_at) { await store.unlearn(form); if (live) live.textContent = `${text} is back on your list.`; }
-        else await store.addLookup(form, unitId ?? null);   // a word outside any sentence (a section summary) records no unit
-        await onLookupsChanged();
-      }
+      // A press only shows the word (2026-09-25). It used to run a tap cycle — underline it, then
+      // mark it learned, then bring it back — so reading a definition changed the page under the
+      // learner. The underline is the + / − button's now, beside the word in the panel.
+      pressedKey = rowKey(item);
+      pressed.add(`${unitId ?? stackUnit ?? ''}\u241f${pressedKey}`);
       if (toStack) {
         // The word joins its sentence's stack, collapsed: it stays quiet in
         // the panel until its row is pressed. A word in another sentence
