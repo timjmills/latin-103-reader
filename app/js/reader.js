@@ -1617,6 +1617,11 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
   // caption's), line numbers, and the looked-up list, which says it all in the row already.
   const LA_NO = 'input, textarea, select, option, [lang="en"], .w, .r-wx, .lineno, .lookups__item, .wtip';
   let tip = null;
+  // The word the learner has just pressed (2026-09-25). A press opens the panel or the popup, and
+  // that is the only definition that should show: the tooltip's rest timer, started as the pointer
+  // arrived, could fire a moment after a quick click and put a second copy on top. The pressed word
+  // keeps its tooltip away until the pointer leaves it.
+  let pressedWord = null;
   function hideTip() {
     if (!tip) return;
     tip.remove();
@@ -1628,6 +1633,7 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
     window.removeEventListener('pointerdown', hideTip, true);
   }
   function showTip(w) {
+    if (w === pressedWord) return;
     hideTip();
     if (!gloss) return;
     const text = w.textContent;
@@ -1722,9 +1728,14 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
       hl: hlEl ? { label: hlEl.dataset.hlLabel, note: hlEl.dataset.hlNote, text: hlEl.dataset.hlText, simple: hlEl.dataset.hlSimple ?? null } : null,
     };
   }
+  root.addEventListener('pointerout', (e) => {
+    if (!pressedWord) return;
+    const w = e.target.closest?.('.w, .r-wx');
+    if (w === pressedWord && !(e.relatedTarget && pressedWord.contains(e.relatedTarget))) pressedWord = null;
+  });
   root.addEventListener('click', (e) => {
     const w = e.target.closest('.w');
-    if (w) { setCurrentFrom(w); emit('word', wordFrom(w)); return; }
+    if (w) { pressedWord = w; hideTip(); setCurrentFrom(w); emit('word', wordFrom(w)); return; }
     const gt = e.target.closest('[data-gloss-toggle]');
     if (gt) { toggleGloss(gt.dataset.glossToggle); return; }
     const po = e.target.closest('[data-pic-open]');
@@ -1952,7 +1963,15 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
         }
       }
       const el = root.querySelector(`[data-id="${CSS.escape(unitId)}"]`);
-      if (el) { el.classList.add('is-playing'); el.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'auto' : 'smooth' }); }
+      if (el) {
+        el.classList.add('is-playing');
+        // The text stays where the learner put it while a sentence is read (2026-09-25): it used to
+        // be pulled to the middle of the screen at every sentence, so pressing play moved the page.
+        // Only a sentence that has gone wholly out of sight — a whole passage read on past the
+        // bottom of the screen — is brought back, and then only as far as the nearest edge.
+        const r = el.getBoundingClientRect();
+        if (r.bottom <= 0 || r.top >= window.innerHeight) el.scrollIntoView({ block: 'nearest', behavior: reduced.matches ? 'auto' : 'smooth' });
+      }
       const u = state.byId.get(unitId);
       if (u && u.order !== state.current) { state.current = u.order; emitPosition(); }   // the played sentence is the current one
     },

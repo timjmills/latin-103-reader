@@ -66,3 +66,39 @@ test('firstLine: the first non-empty line, trimmed', () => {
   assert.equal(firstLine('\n  \nOnly this'), 'Only this');
   assert.equal(firstLine(null), '');
 });
+
+/* ======== 2026-09-25: a press shows the word; the underline is a + / − ======== */
+import { readFileSync } from 'node:fs';
+const PANEL = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
+const READER = readFileSync(new URL('../app/js/reader.js', import.meta.url), 'utf8');
+const PANEL_CSS = readFileSync(new URL('../app/css/panels.css', import.meta.url), 'utf8');
+
+test('a press on a word only shows it: it no longer underlines, learns or un-learns the word', () => {
+  const start = PANEL.indexOf('async showWord(');
+  const body = PANEL.slice(start, PANEL.indexOf('showNote(', start));
+  assert.ok(body.length > 200, 'showWord moved; this test is reading the wrong lines');
+  assert.doesNotMatch(body, /store\.(addLookup|markLearned|unlearn|removeLookup)/, 'a press still changes the word\'s underline');
+  assert.doesNotMatch(body, /onLookupsChanged\(/, 'a press still rewrites the page\'s underlines');
+  assert.match(body, /pressedKey = rowKey\(item\)/, 'the pressed word is no longer marked for its box');
+});
+
+test('the underline has its own small button: + underlines, − moves it to the learned words', () => {
+  const fn = PANEL.slice(PANEL.indexOf('function markButton('), PANEL.indexOf('function actions('));
+  assert.match(fn, /on \? 'learned' : rec \? 'unlearn' : 'add'/, 'the button no longer picks add / learned / unlearn from the word\'s state');
+  assert.match(fn, /on \? '\u2212' : '\+'/, 'the button no longer reads + or −');
+  assert.match(PANEL, /add: \(\) => store\.addLookup\(form/, '+ does not add the word to the learning list');
+  assert.match(PANEL, /markButton\(row\.form, row\.text\)/, 'the panel row has lost its + / −');
+});
+
+test('the word just pressed is boxed in the panel — a frame and a tint, not colour alone', () => {
+  assert.match(PANEL, /key === pressedKey/);
+  assert.match(PANEL_CSS, /\.stack__row\.is-pressed \{[^}]*box-shadow: inset 0 0 0 2px/, 'the pressed row lost its frame');
+  assert.match(PANEL_CSS, /\.stack__row\.is-pressed \{[^}]*background:/, 'the pressed row lost its tint');
+});
+
+test('reading a sentence aloud leaves the text where it is', () => {
+  const fn = READER.slice(READER.indexOf('setPlayingUnit(unitId) {'), READER.indexOf('setPlayingWord('));
+  assert.ok(fn.length > 200, 'setPlayingUnit moved; this test is reading the wrong lines');
+  assert.doesNotMatch(fn, /block: 'center'/, 'the sentence being read is pulled to the middle of the screen again');
+  assert.match(fn, /r\.bottom <= 0 \|\| r\.top >= window\.innerHeight/, 'the only scroll left is for a sentence wholly out of sight');
+});

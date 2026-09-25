@@ -155,8 +155,11 @@ test('the tooltip takes no focus and no pointer, and the click is untouched', ()
   assert.doesNotMatch(fn[1], /store\.|addLookup|markLearned/, 'resting the pointer on a word would record a lookup');
   assert.match(fn[1], /aria-hidden': 'true'/, 'the tooltip would be announced twice over, and cannot be reached');
   assert.match(PANELS, /\.wtip \{[^}]*pointer-events: none/, 'the tooltip would take the pointer and flicker as the mouse reached it');
-  // The click path: still the one `word` event the panel listens for.
-  assert.match(READER, /if \(w\) \{ setCurrentFrom\(w\); emit\('word', wordFrom\(w\)\); return; \}/, 'a click no longer does what it did');
+  // The click path: still the one `word` event the panel listens for. Since 2026-09-25 it also
+  // puts the tooltip away and keeps it away while the pointer stays on the pressed word, so a press
+  // shows its definition once, in the panel, and not twice.
+  assert.match(READER, /if \(w\) \{ pressedWord = w; hideTip\(\); setCurrentFrom\(w\); emit\('word', wordFrom\(w\)\); return; \}/, 'a click no longer does what it did');
+  assert.match(fn[1], /if \(w === pressedWord\) return;/, 'the pressed word\'s tooltip can open over its panel entry');
 });
 
 test('the shell hands the pointer the same ranked lookup the panel makes on a click', () => {
