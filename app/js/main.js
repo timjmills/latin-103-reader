@@ -1233,9 +1233,15 @@ async function boot() {
     }, store);
     let lastError = null;
     let lastMode = 'idle';
+    let lastShape = 'idle|false';
     audio.onState?.((st) => {
-      paintTransport(st);
-      paintListen(st);
+      // Play, Pause and Stop change the listen bar's buttons and show / hide the transport; left to
+      // itself, Chrome's scroll anchoring moved a phone's page some 25px at that (2026-09-25), so the
+      // repaint that changes the bar's shape holds the sentence in view. The per-sentence updates
+      // (the position, the status line) repaint plainly: a hold then would fight a learner's scroll.
+      const paint = () => { paintTransport(st); paintListen(st); };
+      const shape = `${st.mode}|${!!st.playing}`;
+      if (shape !== lastShape) { lastShape = shape; reader.keepInView(paint, { sentence: true }); } else paint();
       if (st.mode === 'idle' && lastMode !== 'idle') listenRate?.close();   // playback over: the speed row folds away too
       lastMode = st.mode;
       if (st.error !== lastError) { lastError = st.error; if (st.error) notify(st.error); }

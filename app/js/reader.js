@@ -1919,9 +1919,23 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
      * (play buttons or pictures switched off, the translation shown) — and
      * put the first sentence in view back where it was on screen. The
      * browser's own scroll anchoring compensates only for the node it picked;
-     * this holds the text the learner is reading. No-op outside passage view.
+     * this holds the text the learner is reading. No-op outside passage view,
+     * unless `sentence`: then sentence view's Latin keeps its place on screen
+     * too (the listen bar above it changing height as playback starts / stops).
      */
-    keepInView(fn) {
+    keepInView(fn, { sentence = false } = {}) {
+      if (sentence && state.view === 'sentence') {
+        const la = () => root.querySelector('.sentence__la');
+        const top = la()?.getBoundingClientRect().top;
+        fn();
+        if (top == null) return;
+        holdScroll(() => {
+          const el = la();
+          const d = el ? el.getBoundingClientRect().top - top : 0;
+          if (Math.abs(d) > 0.5) window.scrollTo({ top: window.scrollY + d, behavior: 'auto' });
+        });
+        return;
+      }
       const anchor = state.view === 'passage' ? firstUnitInView() : null;
       const seq = holdSeq;
       fn();
@@ -1957,7 +1971,11 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
           render();   // re-renders with .is-playing; moves #listen (which blurs whatever it held)
           if (inListen && focused.isConnected && !focused.hidden) focused.focus({ preventScroll: true });
           else if (inListen || inRoot) root.querySelector('.sentence')?.focus({ preventScroll: true });
-          root.querySelector('.sentence')?.scrollIntoView({ block: 'start', behavior: reduced.matches ? 'auto' : 'smooth' });
+          // The page stays where it is (2026-09-25): the new sentence is drawn in the old one's
+          // place, so it moves only when its start is out of sight.
+          const s = root.querySelector('.sentence');
+          const r = s?.getBoundingClientRect();
+          if (r && (r.top < barHeight() || r.top >= window.innerHeight)) s.scrollIntoView({ block: 'start', behavior: reduced.matches ? 'auto' : 'smooth' });
           emit('navigate', { unit: u, order: u.order });
           return;
         }
@@ -1968,9 +1986,10 @@ export function createReader({ root, tokenize, describeForm, gloss = null, live,
         // The text stays where the learner put it while a sentence is read (2026-09-25): it used to
         // be pulled to the middle of the screen at every sentence, so pressing play moved the page.
         // Only a sentence that has gone wholly out of sight — a whole passage read on past the
-        // bottom of the screen — is brought back, and then only as far as the nearest edge.
+        // bottom of the screen — turns the page, once, to put it at the reading line; the
+        // sentences after it are then read with the page still again.
         const r = el.getBoundingClientRect();
-        if (r.bottom <= 0 || r.top >= window.innerHeight) el.scrollIntoView({ block: 'nearest', behavior: reduced.matches ? 'auto' : 'smooth' });
+        if (r.bottom <= barHeight() || r.top >= window.innerHeight) scrollUnitToThird(el);
       }
       const u = state.byId.get(unitId);
       if (u && u.order !== state.current) { state.current = u.order; emitPosition(); }   // the played sentence is the current one

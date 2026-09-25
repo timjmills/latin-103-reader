@@ -72,6 +72,7 @@ import { readFileSync } from 'node:fs';
 const PANEL = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
 const READER = readFileSync(new URL('../app/js/reader.js', import.meta.url), 'utf8');
 const PANEL_CSS = readFileSync(new URL('../app/css/panels.css', import.meta.url), 'utf8');
+const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
 
 test('a press on a word only shows it: it no longer underlines, learns or un-learns the word', () => {
   const start = PANEL.indexOf('async showWord(');
@@ -100,5 +101,13 @@ test('reading a sentence aloud leaves the text where it is', () => {
   const fn = READER.slice(READER.indexOf('setPlayingUnit(unitId) {'), READER.indexOf('setPlayingWord('));
   assert.ok(fn.length > 200, 'setPlayingUnit moved; this test is reading the wrong lines');
   assert.doesNotMatch(fn, /block: 'center'/, 'the sentence being read is pulled to the middle of the screen again');
-  assert.match(fn, /r\.bottom <= 0 \|\| r\.top >= window\.innerHeight/, 'the only scroll left is for a sentence wholly out of sight');
+  assert.match(fn, /r\.bottom <= barHeight\(\) \|\| r\.top >= window\.innerHeight\) scrollUnitToThird\(el\)/, 'the only scroll left is for a sentence wholly out of sight');
+  // Sentence view draws the next sentence in place and scrolls only when its start is out of sight.
+  assert.doesNotMatch(fn, /\?\.scrollIntoView\(\{ block: 'start'/, 'sentence view pulls every new sentence to the top again');
+});
+
+test('starting, pausing or stopping playback holds the sentence in view', () => {
+  // The listen bar swapping Play for Pause / Stop and the transport appearing let Chrome's scroll
+  // anchoring move a phone's page some 25px; main.js repaints those under reader.keepInView().
+  assert.match(MAIN, /if \(shape !== lastShape\) \{ lastShape = shape; reader\.keepInView\(paint, \{ sentence: true \}\); \} else paint\(\);/, 'the playback repaint no longer holds the text');
 });
