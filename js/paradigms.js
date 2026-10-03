@@ -1311,19 +1311,44 @@ function numeralParadigm(entry, parses) {
 // ---------------------------------------------------------------------------
 // entry point
 
+/**
+ * A cell key as a parse ({case, number, tense, mood, voice, person, …}) — the
+ * shape the dictionary reads and the skill filters name. null for a key it
+ * cannot say. Pure.
+ */
+export function keyParse(key) {
+  if (!key) return null;
+  let p = null;
+  if (key.kind === 'nominal') p = { case: key.case, number: key.number, gender: key.gender, degree: key.degree, mood: key.mood, tense: key.tense, voice: key.voice };
+  else if (key.kind === 'finite') p = { tense: key.tense, mood: key.mood, voice: key.voice, person: key.person, number: key.number };
+  else if (key.kind === 'imper') p = { mood: 'imper', tense: key.tense, voice: key.voice, number: key.number, person: key.person ?? '2' };
+  else if (key.kind === 'inf' || key.kind === 'ptc') p = { mood: key.kind, tense: key.tense, voice: key.voice };
+  else if (key.kind === 'gerundive') p = { mood: 'gerundive' };
+  else if (key.kind === 'gerund' || key.kind === 'supine') p = { mood: key.kind, case: key.case };
+  if (!p) return null;
+  for (const k of Object.keys(p)) if (p[k] == null) delete p[k];
+  return p;
+}
+
 export function paradigm(entry, parse) {
   if (!entry) return null;
   const parses = asList(parse);
   try {
-    switch (entry.pos) {
-      case 'N': return nounParadigm(entry, parses);
-      case 'ADJ': return adjectiveParadigm(entry, parses);
-      case 'V':
-      case 'VPAR': return verbParadigm(entry, parses);
-      case 'PRON': return pronounParadigm(entry, parses);
-      case 'NUM': return numeralParadigm(entry, parses);
-      default: return null;
-    }
+    const table = (() => {
+      switch (entry.pos) {
+        case 'N': return nounParadigm(entry, parses);
+        case 'ADJ': return adjectiveParadigm(entry, parses);
+        case 'V':
+        case 'VPAR': return verbParadigm(entry, parses);
+        case 'PRON': return pronounParadigm(entry, parses);
+        case 'NUM': return numeralParadigm(entry, parses);
+        default: return null;
+      }
+    })();
+    // The word the table is of, for the English under each form (wordpanel.js renderParadigm).
+    // Not enumerable: a copy ({...table}, maskParadigm) or a JSON dump leaves it behind.
+    if (table) Object.defineProperty(table, 'entry', { value: entry, enumerable: false, configurable: true });
+    return table;
   } catch (err) {
     console.error('paradigm failed for', entry?.h, err);
     return null;

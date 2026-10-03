@@ -329,6 +329,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
 
   return {
     open: () => setSection('grammar'), close: () => setSection('read'), ctx,
+    /** Open the section on its Paradigms page (the #/paradigms route): the whole-table practice on its own. */
+    openParadigms() { setSection('grammar'); init().then(() => ui?.render('paradigms', {}, { push: false })); },
     /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */
     async todayCard(opts = {}) { await lightInit(); return ui ? ui.todayCard({ ...opts, place: 'weeks' }) : null; },
     /** A chapter page's grammar section (also exported on its own, below). */

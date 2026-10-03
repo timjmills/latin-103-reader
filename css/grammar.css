@@ -43,6 +43,14 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
   transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
 }
 .g-nav__btn:hover { color: var(--ink); }
+@media (max-width: 399.98px) { .g-nav__btn { padding: 0 var(--s-2); } }   /* five tabs fit a 375px phone without scrolling */
+@media (max-width: 359.98px) { .g-nav { gap: 0; } .g-nav__btn { padding: 0 var(--s-1); } }   /* …and a 320px one */
+/* The Paradigms page (ui.js renderParadigms): a word's type over its table, and the types to practise by. */
+.g-para, .g-para__table { min-width: 0; }
+.g-para__type { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: 0 0 var(--s-3); }
+.g-para__typename { font-size: var(--ui-sm); color: var(--ink-2); padding: 0.15em 0.6em; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
+.g-para__group { display: grid; gap: var(--s-2); margin-top: var(--s-3); }
+.g-para__typewords { display: grid; gap: var(--s-2); margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line); scroll-margin-top: var(--s-6); }
 .g-nav__btn[aria-current="page"] { color: var(--ink); border-bottom-color: var(--rubric); }
 .g-nav__btn:focus-visible { outline-offset: -3px; border-radius: var(--radius-sm); }
 .g-body { display: grid; gap: var(--s-5); }
@@ -989,6 +997,11 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
   margin-inline: calc(-1 * var(--bleed));
   max-width: calc(100% + 2 * var(--bleed));
 }
+/* …but not inside a "Full paradigm" box (2026-10-03). `.paradigm` clips to its border (panels.css), so a
+   scroll box widened past it was cut off on both sides: on a desktop the Tables page showed the right half
+   of a verb's table and none of its row labels. Inside the box the table keeps to the box, and stacks
+   (§26) when it does not fit. */
+#grammar .paradigm .pt__scroll { margin-inline: 0; max-width: 100%; }
 
 #grammar .pt__scroll, #grammar .g-cellwrap, #grammar .g-chart__word, #grammar .g-fb__line, #grammar .g-mixg__scroll { position: relative; }
 #grammar .visually-hidden { inset-block-start: 0; inset-inline-start: 0; }

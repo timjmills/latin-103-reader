@@ -10,6 +10,10 @@
 // sentence restores its rows. Phones keep the one-entry popup.
 
 import { plainDisclosure, unitRef } from './reader.js';
+import { cellMeaning } from './dictionary.js';
+import { cellChapter, loadFormSkills } from './paradigm-chapters.js';
+import { chapterOfWeek } from './chapters.js';
+import { roman } from './sync.js';
 
 const ENCLITIC = { que: '-que "and" is attached to the end', ne: '-ne turns the sentence into a yes/no question', ve: '-ve "or" is attached to the end' };
 
@@ -317,16 +321,327 @@ function cellContent(c) {
   return c.alt ? [...main, h('span', { class: 'pt__alt', text: ` / ${c.alt}` })] : main;
 }
 
-export function renderParadigm(p) {
+/* ------------------------------------------- practising a whole table */
+// "I need a feature to be quizzed on any word for its paradigms — when it's
+// correct it turns green … so I can practise the whole paradigm", "tie these
+// to the chapters for the specific parts of the paradigm", "options to turn on
+// or off parts if wanted but can show all and just turn green or red what is
+// completed" (2026-10-03).
+//
+// The tables that show a word's forms to learn from (its popup or panel, a
+// lesson's Full paradigm, the Tables page) carry the chapter that teaches each
+// part (paradigm-chapters.js, read from the skill map) and can be turned into
+// blanks: every form a box with its English under it as the cue, judged as the
+// learner leaves it — green with a ✓ when right, red with a ✗ (and still
+// editable) when not. The parts are switched on and off by chapter, all on to
+// begin with; a part switched off shows its forms and is not asked. Macrons
+// are optional, as in every drill; v/u and j/i are one letter.
+
+/** A typed form or an answer, folded for comparison: no macrons, case or punctuation; v→u, j→i. Pure. */
+export function foldForm(s) {
+  return String(s ?? '').normalize('NFD').replace(/\p{Mn}/gu, '').toLowerCase()
+    .replace(/[^\p{L}\s]/gu, ' ').replace(/v/g, 'u').replace(/j/g, 'i').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * The forms a cell accepts: its text, its alternate, each of two forms printed
+ * "eī / iī" (a pronoun's, a numeral's, sum's "futūrus esse / fore"), a form
+ * without its bracketed note ("iēns (euntis)"), and for a participle printed
+ * "amātus -a -um" the masculine alone. The first is the cell's own form, the
+ * one Show fills in. [] for an empty cell. Pure.
+ */
+export function cellAnswers(c) {
+  if (!c || c.empty || !c.text || c.text === '—') return [];
+  const out = [];
+  const add = (f) => { const t = String(f ?? '').trim(); if (t && t !== '—') out.push(t); };
+  for (const whole of [c.text, c.alt]) {
+    if (!whole) continue;
+    for (const part of String(whole).split(' / ')) {
+      const bare = part.replace(/\s*\([^)]*\)\s*$/, '');
+      add(bare);
+      const m = /^(.+?)(?:\s+-\S+)+$/.exec(bare);
+      if (m) add(m[1]);
+    }
+  }
+  return [...new Set(out)];
+}
+
+/** True when `typed` is one of the cell's forms (macrons optional). Pure. */
+export function cellRight(typed, answers) {
+  const t = foldForm(typed);
+  return !!t && (answers ?? []).some((a) => foldForm(a) === t);
+}
+
+/**
+ * The table's parts by chapter: [{ ch, name, names }] in chapter order, `ch`
+ * null last ("other forms" — no skill teaches them). `cells` are
+ * [{ ch, section, col, row }]. A part is named by what it covers in each
+ * section it reaches into: the whole section ("imperfect indicative"), or the
+ * columns and rows of it that it has ("present indicative active: he / she /
+ * it, they"); in a one-section table (a noun's cases) the section is left out.
+ * Pure.
+ */
+export function chapterParts(cells) {
+  const uniq = (xs) => [...new Set(xs.filter(Boolean))];
+  const sections = uniq(cells.map((c) => c.section));
+  const bySection = new Map(sections.map((sec) => [sec, cells.filter((c) => c.section === sec)]));
+  const chs = [...new Set(cells.map((c) => c.ch ?? null))]
+    .sort((a, b) => (a == null) - (b == null) || (a ?? 0) - (b ?? 0));
+  return chs.map((ch) => {
+    const names = [];
+    for (const [sec, all] of bySection) {
+      const mine = all.filter((c) => (c.ch ?? null) === ch);
+      if (!mine.length) continue;
+      const cols = uniq(mine.map((c) => c.col));
+      const rows = uniq(mine.map((c) => c.row));
+      const colsPart = cols.length < uniq(all.map((c) => c.col)).length ? cols.join(' / ') : '';
+      const rowsPart = rows.length < uniq(all.map((c) => c.row)).length ? rows.join(', ') : '';
+      const head = [sections.length > 1 ? sec : '', colsPart].filter(Boolean).join(' ');
+      names.push(head && rowsPart ? `${head}: ${rowsPart}` : head || rowsPart || sec);
+    }
+    return { ch, name: names.length > 2 ? `${names.slice(0, 2).join('; ')} …` : names.join('; '), names };
+  });
+}
+
+const capName = (ch) => (ch == null ? 'other forms' : `cap. ${roman(ch)}`);
+
+// Three helps for learning the table, not only testing it ("add anything that might be pedagogically
+// effective", 2026-10-03): *Endings only* prints the unchanging stem before the box and asks the ending —
+// the pattern is the thing to learn; *Practise my misses* blanks again only what was wrong or revealed,
+// the greens staying put; and the best whole-table score of each word is kept on this device.
+const BEST_KEY = 'l103.paradigm.best.';
+function readBest(id) { try { return JSON.parse(localStorage.getItem(BEST_KEY + id) || 'null'); } catch { return null; } }
+function writeBest(id, v) { try { localStorage.setItem(BEST_KEY + id, JSON.stringify(v)); } catch { /* private mode: the score just is not kept */ } }
+
+function practiseControls(details, { sheet, chapter, id }) {
+  const cells = () => sheet.filter((x) => x.answers.length);
+  const status = h('p', { class: 'paradigm__score', role: 'status', 'aria-live': 'polite' });
+  const btn = (text, hidden = true, cls = 'btn btn--quiet') => h('button', { type: 'button', class: cls, text, hidden });
+  const startBtn = btn('Practise this table', false, 'btn paradigm__go');
+  const showBtn = btn('Show answers');
+  const againBtn = btn('Start again');
+  const stopBtn = btn('Stop');
+  const missesBtn = btn('Practise my misses');
+  const endBtn = h('button', { type: 'button', class: 'btn btn--quiet paradigm__toggle', 'aria-pressed': 'false', hidden: true, text: 'Endings only' });
+  let endings = false;
+  // Endings only asks the ending of a form whose stem the table splits off; an irregular form (sum, est) is asked whole.
+  const byEnding = (x) => endings && !!x.stem && !!x.ending;
+  const parts = h('div', { class: 'paradigm__parts', role: 'group', 'aria-label': 'Parts to practise, by chapter', hidden: true });
+  const bar = h('div', { class: 'paradigm__acts' }, startBtn, endBtn, missesBtn, showBtn, againBtn, stopBtn);
+  const off = new Set();   // chapters switched off ('' for the forms no chapter teaches)
+  const chKey = (ch) => (ch == null ? '' : String(ch));
+  const on = (x) => !off.has(chKey(x.ch));
+
+  const score = () => {
+    const all = cells().filter(on);
+    const right = all.filter((x) => x.td.dataset.state === 'right').length;
+    const shown = all.filter((x) => x.td.dataset.state === 'shown').length;
+    const wrong = all.filter((x) => x.td.dataset.state === 'wrong').length;
+    // The best is a whole-table score: a run with parts switched off is not the same test.
+    let best = id ? readBest(id) : null;
+    if (id && !off.size && right && (!best || best.total !== all.length || right > best.right)) {
+      best = { right, total: all.length, at: new Date().toISOString() };
+      writeBest(id, best);
+    }
+    const bestLine = best && best.total === cells().length && best.right > right ? ` · your best: ${best.right} of ${best.total}` : '';
+    status.textContent = !all.length ? 'Every part is switched off.'
+      : right === all.length ? `All ${all.length} right — well done.`
+        : `${right} of ${all.length} right${wrong ? ` · ${wrong} to fix` : ''}${shown ? ` · ${shown} shown` : ''}${bestLine}`;
+    details.classList.toggle('is-complete', !!all.length && right === all.length);
+    missesBtn.hidden = !details.classList.contains('is-practising') || !(wrong + shown);
+  };
+  const mark = ({ td }, state) => {
+    if (state) td.dataset.state = state; else delete td.dataset.state;
+    const input = td.querySelector('.pt__in');
+    const m = td.querySelector('.pt__mark');
+    if (m) m.textContent = state === 'right' ? '✓' : state === 'wrong' ? '✗' : '';
+    if (input) {
+      input.readOnly = state === 'right' || state === 'shown';
+      if (state === 'wrong') input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    }
+  };
+  const done = (x) => x.td.dataset.state === 'right' || x.td.dataset.state === 'shown';
+  const judge = (x) => {
+    const input = x.td.querySelector('.pt__in');
+    if (!input || done(x)) return;
+    const typed = input.value.trim();
+    // In Endings only the box holds the ending; a learner who types the whole form anyway is right too.
+    const ok = cellRight(typed, x.answers) || (byEnding(x) && cellRight(x.stem + typed, x.answers));
+    mark(x, !typed ? '' : ok ? 'right' : 'wrong');
+    score();
+  };
+  const nextOpen = (x) => {
+    const all = cells().filter(on);
+    const i = all.indexOf(x);
+    return [...all.slice(i + 1), ...all.slice(0, i)].find((y) => !done(y));
+  };
+  // A part switched off shows its forms; a part switched on asks them, keeping what was typed.
+  const paintParts = () => {
+    for (const x of cells()) x.td.classList.toggle('is-off', !on(x));
+    for (const b of parts.querySelectorAll('[data-ch]')) b.setAttribute('aria-pressed', String(!off.has(b.dataset.ch)));
+    score();
+  };
+  const buildParts = () => {
+    const list = chapterParts(cells());
+    const here = chapter?.() ?? null;
+    const quick = [];
+    quick.push(h('button', { type: 'button', class: 'paradigm__part paradigm__part--all', text: 'All' }));
+    quick[0].addEventListener('click', () => { off.clear(); paintParts(); });
+    if (here != null && list.some((p) => p.ch != null && p.ch > here) && list.some((p) => p.ch != null && p.ch <= here)) {
+      const upTo = h('button', { type: 'button', class: 'paradigm__part paradigm__part--all', text: `Up to ${capName(here)} (where you are)` });
+      upTo.addEventListener('click', () => { off.clear(); for (const p of list) if (p.ch == null || p.ch > here) off.add(chKey(p.ch)); paintParts(); });
+      quick.push(upTo);
+    }
+    const chips = list.map((p) => {
+      const b = h('button', { type: 'button', class: 'paradigm__part', 'data-ch': chKey(p.ch), 'aria-pressed': 'true', title: p.names.join('; ') },
+        h('span', { class: 'paradigm__partch', text: capName(p.ch) }), p.name ? h('span', { class: 'paradigm__partname', text: ` · ${p.name}` }) : null);
+      b.addEventListener('click', () => { const k = chKey(p.ch); if (off.has(k)) off.delete(k); else off.add(k); paintParts(); });
+      return b;
+    });
+    // A verb's table has twenty-odd parts: the quick choices stay in sight, the chapters fold away.
+    const more = h('details', { class: 'paradigm__more' }, h('summary', { class: 'paradigm__moresum', text: `Choose parts by chapter (${list.length})` }), h('div', { class: 'paradigm__chips' }, chips));
+    parts.replaceChildren(...(list.length > 1 ? [h('div', { class: 'paradigm__quick' }, quick), more] : []));
+  };
+  const start = () => {
+    details.classList.add('is-practising');
+    for (const x of cells()) {
+      let input = x.td.querySelector('.pt__in');
+      if (!input) {
+        input = h('input', { type: 'text', class: 'pt__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'next', 'aria-label': x.label });
+        input.addEventListener('blur', () => judge(x));
+        input.addEventListener('input', () => { if (x.td.dataset.state === 'wrong') { mark(x, ''); score(); } });
+        input.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          judge(x);
+          nextOpen(x)?.td.querySelector('.pt__in')?.focus();
+        });
+        // Reveal one box (the learner's ask, 2026-10-03): its form is filled in and marked shown, not right.
+        const reveal = h('button', { type: 'button', class: 'pt__reveal', text: 'Show', 'aria-label': `Show the form: ${x.label}` });
+        reveal.addEventListener('click', () => {
+          input.value = byEnding(x) ? x.ending : x.answers[0];
+          mark(x, 'shown');
+          score();
+          nextOpen(x)?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
+        });
+        const given = x.stem && x.ending ? h('span', { class: 'pt__given', lang: 'la', 'aria-hidden': 'true', text: `${x.stem}‑` }) : null;
+        x.td.querySelector('.pt__form').after(h('span', { class: 'pt__answer' }, given, input, reveal, h('span', { class: 'pt__mark', 'aria-hidden': 'true' })));
+      }
+      input.value = '';
+      mark(x, '');
+    }
+    buildParts();
+    parts.hidden = !parts.childElementCount;
+    startBtn.hidden = true; showBtn.hidden = false; againBtn.hidden = false; stopBtn.hidden = false;
+    endBtn.hidden = !cells().some((x) => x.stem && x.ending);
+    paintParts();
+    cells().find(on)?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
+  };
+  startBtn.addEventListener('click', start);
+  againBtn.addEventListener('click', () => {
+    for (const x of cells().filter(on)) { x.td.querySelector('.pt__in').value = ''; mark(x, ''); }
+    score();
+    cells().find(on)?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
+  });
+  showBtn.addEventListener('click', () => {
+    for (const x of cells().filter(on)) {
+      if (x.td.dataset.state === 'right') continue;
+      x.td.querySelector('.pt__in').value = byEnding(x) ? x.ending : x.answers[0];
+      mark(x, 'shown');
+    }
+    score();
+  });
+  missesBtn.addEventListener('click', () => {
+    const misses = cells().filter(on).filter((x) => x.td.dataset.state === 'wrong' || x.td.dataset.state === 'shown');
+    for (const x of misses) { x.td.querySelector('.pt__in').value = ''; mark(x, ''); }
+    score();
+    misses[0]?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
+  });
+  endBtn.addEventListener('click', () => {
+    endings = !endings;
+    endBtn.setAttribute('aria-pressed', String(endings));
+    details.classList.toggle('is-endings', endings);
+    for (const x of cells()) {
+      const input = x.td.querySelector('.pt__in');
+      if (!input) continue;
+      // A box still being answered starts over in the new mode; a judged box keeps its colour.
+      if (!done(x) && x.td.dataset.state !== 'right') { input.value = ''; mark(x, ''); }
+      input.setAttribute('aria-label', byEnding(x) ? `${x.label} — the ending after ${x.stem}` : x.label);
+    }
+    score();
+  });
+  stopBtn.addEventListener('click', () => {
+    details.classList.remove('is-practising', 'is-complete', 'is-endings');
+    endings = false; endBtn.setAttribute('aria-pressed', 'false'); endBtn.hidden = true; missesBtn.hidden = true;
+    for (const x of cells()) { x.td.querySelector('.pt__answer')?.remove(); delete x.td.dataset.state; x.td.classList.remove('is-off'); }
+    parts.hidden = true;
+    startBtn.hidden = false; showBtn.hidden = true; againBtn.hidden = true; stopBtn.hidden = true;
+    status.textContent = '';
+    startBtn.focus({ preventScroll: true });
+  });
+  // The chapters arrive after the table (renderParadigm): a practice already under way gets its choices then.
+  details.addEventListener('paradigm:chapters', () => {
+    if (!details.classList.contains('is-practising')) return;
+    buildParts();
+    parts.hidden = !parts.childElementCount;
+    paintParts();
+  });
+  return [bar, parts, status];
+}
+
+/**
+ * Put each part's chapter on the table: on the caption when a whole section
+ * is taught in one chapter (the imperfect), else on each row whose cells
+ * share one (a noun's dative, the present's 3rd person). `sheet` rows are
+ * { td, th, caption, section, ch }.
+ */
+function tagChapters(sheet) {
+  const tag = (el, ch) => { if (el && !el.querySelector('.pt__ch')) el.append(h('span', { class: 'pt__ch', text: el.tagName === 'TD' ? capName(ch) : ` · ${capName(ch)}` })); };
+  const bySection = new Map();
+  for (const x of sheet) { if (!bySection.has(x.section)) bySection.set(x.section, []); bySection.get(x.section).push(x); }
+  for (const xs of bySection.values()) {
+    const chs = new Set(xs.map((x) => x.ch ?? null));
+    if (chs.size === 1 && !chs.has(null) && xs[0].caption) { tag(xs[0].caption, xs[0].ch); continue; }
+    const byRow = new Map();
+    for (const x of xs) { if (!byRow.has(x.th)) byRow.set(x.th, []); byRow.get(x.th).push(x); }
+    for (const [th, rs] of byRow) {
+      const rc = new Set(rs.map((x) => x.ch ?? null));
+      if (rc.size === 1 && !rc.has(null)) tag(th, rs[0].ch);
+      else for (const x of rs) if (x.ch != null) tag(x.td, x.ch);
+    }
+  }
+  // Stacked (§26) the table's captions and row labels are copies made when it first folded — before
+  // the chapters arrived — so each cell also carries its own tag, which only a stacked block shows.
+  for (const x of sheet) {
+    if (x.ch == null || x.td.querySelector('.pt__ch')) continue;
+    x.td.append(h('span', { class: 'pt__ch pt__ch--stack', text: capName(x.ch) }));
+  }
+}
+
+/**
+ * `opts.english` prints each form's English under it (the table's word is
+ * `p.entry`, set by paradigms.js) and tags each part with the chapter that
+ * teaches it; `opts.practise` offers "Practise this table"; `opts.chapter()`
+ * is the chapter the learner is reading, for "Up to cap. N". These are for
+ * tables that show a word's forms to learn from; a drill's hint or feedback
+ * table is rendered without them, where the English could answer the
+ * question being asked.
+ */
+export function renderParadigm(p, opts = {}) {
   if (!p) return null;
+  const entry = opts.english ? (p.entry ?? null) : null;
   const details = h('details', { class: 'paradigm' },
     h('summary', { class: 'paradigm__summary' },
       h('span', { class: 'paradigm__label' }, 'Full paradigm', p.title ? h('span', { class: 'paradigm__title', lang: 'la', text: ` — ${p.title}` }) : null)));
   if (p.note) details.append(h('p', { class: 'paradigm__note', text: p.note }));
-  for (const s of p.sections ?? []) {
+  const practise = !!opts.practise && (p.sections ?? []).some((s) => (s.rows ?? []).some((r) => r.cells.some((c) => cellAnswers(c).length)));
+  const sheet = [];   // every value cell: { td, th, caption, section, row, key, answers, label, ch }
+  if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null }));
+  (p.sections ?? []).forEach((s, si) => {
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).
-    const table = h('table', { class: 'pt' + ((s.headers?.length ?? 0) >= 3 ? ' pt--wide' : '') });
-    if (s.title) table.append(h('caption', { class: 'pt__caption', text: s.title }));
+    const table = h('table', { class: 'pt' + ((s.headers?.length ?? 0) >= 3 ? ' pt--wide' : '') + (entry ? ' pt--en' : '') });
+    const caption = s.title ? h('caption', { class: 'pt__caption', text: s.title }) : null;
+    if (caption) table.append(caption);
     if (s.headers?.length) {
       // The body rows start with a row-label cell (I / you / singular …); the
       // header row needs a blank cell above it, or "active / passive" slides
@@ -336,13 +651,35 @@ export function renderParadigm(p) {
     }
     const body = h('tbody');
     for (const r of s.rows) {
-      body.append(h('tr', {}, h('th', { scope: 'row', text: r.label }),
-        r.cells.map((c) => h('td', { class: 'pt__cell' + (c.hit ? ' is-hit' : '') + (c.empty ? ' is-empty' : ''), lang: 'la' }, cellContent(c)))));
+      const th = h('th', { scope: 'row', text: r.label });
+      body.append(h('tr', {}, th,
+        r.cells.map((c, ci) => {
+          const en = entry && !c.empty ? cellMeaning(entry, c.key) : '';
+          const answers = practise ? cellAnswers(c) : [];
+          const td = h('td', { class: 'pt__cell' + (c.hit ? ' is-hit' : '') + (c.empty ? ' is-empty' : ''), lang: 'la' },
+            en || answers.length ? h('span', { class: 'pt__form' }, cellContent(c)) : cellContent(c),
+            en ? h('span', { class: 'pt__en', lang: 'en', text: en }) : null);
+          if (!c.empty && c.key) {
+            // What a screen reader hears for the box: where it is in the table, and its English.
+            const label = [s.title, s.headers?.[ci], r.label].filter(Boolean).join(' · ') + (en ? ` — ${en}` : '');
+            sheet.push({ td, th, caption, section: s.title || `part ${si + 1}`, col: s.headers?.[ci] ?? '', row: r.label, key: c.key, answers, label, ch: null, stem: c.stem || '', ending: c.ending || '' });
+          }
+          return td;
+        })));
     }
     table.append(body);
     const scroll = h('div', { class: 'pt__scroll' }, table);
     fitParadigm(scroll, table);      // §26: stacked when it does not fit, scrolling only as the last resort
     details.append(scroll);
+  });
+  // The chapters come from the skill map, fetched once; the table is usable before they arrive.
+  if (entry && sheet.length) {
+    loadFormSkills().then((skills) => {
+      if (!skills.length) return;
+      for (const x of sheet) x.ch = cellChapter(skills, entry, x.key);
+      tagChapters(sheet);
+      details.dispatchEvent(new Event('paradigm:chapters'));
+    });
   }
   return details;
 }
@@ -573,7 +910,7 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     if (d.usage) parts.push(h('p', { class: 'entry__usage' }, markTerms(d.usage, d.glosses, 'gu')));
     const entry = entryOf(item);
     const p = d.paradigm ?? paradigm?.(entry, entry.parses ?? null);
-    const pt = renderParadigm(p);
+    const pt = renderParadigm(p, { english: true, practise: true, chapter: () => chapterOfWeek(getWeek?.()?.n) });
     if (pt) parts.push(pt);
     parts.push(actions(form, text));
     return parts;
