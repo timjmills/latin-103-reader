@@ -19,7 +19,7 @@
 // (subjunctive)"); the parse line is the label ("dative or ablative singular").
 
 import { stripMacrons, normalizeForm, tokenize } from './tokenize.js';
-import { paradigm, declensionName, adjectiveName, conjugationName } from './paradigms.js';
+import { paradigm, declensionName, adjectiveName, conjugationName, keyParse } from './paradigms.js';
 
 let GLOSSARY = null;
 let FUNCTION_WORDS = {};
@@ -1042,6 +1042,39 @@ export function describe(entry, opts = {}) {
     usage: usageFor(entry),
     paradigm: table,
   };
+}
+
+/**
+ * The English of one paradigm cell (paradigms.js `cell.key`) for `entry` — what
+ * the table prints under each form and what the paradigm practice asks with
+ * (2026-10-03: "there needs to be a translation for each of the words"). The
+ * meaning line's own wording, one reading per cell, with what the table already
+ * says left out: a subjunctive section is captioned, so its cells give the
+ * subjunctive reading alone ("we may love"), and a command loses the "(command
+ * to one person)" its row label carries. '' when the cell has no reading. Pure.
+ */
+export function cellMeaning(entry, key) {
+  if (!entry || !key) return '';
+  const p = keyParse(key);
+  if (!p) return '';
+  const pos = entry.pos;
+  // An adjective's meaning line is its gloss whatever the case; in a table the case frame is the point.
+  if ((pos === 'ADJ' || pos === 'NUM') && p.case && !p.mood) {
+    const short = headWord(entry.senses?.[0] || '') || entry.h;
+    const word = p.degree === 'comp' ? `more ${short}` : p.degree === 'super' ? `most ${short}` : short;
+    return caseMeaning(p.case, word, '');
+  }
+  let line = '';
+  try { line = meaningLine({ ...entry, parses: [p] }); } catch { return ''; }
+  line = String(line ?? '');
+  if (p.mood === 'subj') {
+    line = line.replace(/\s*\(subjunctive\)\s*$/, '');
+    const alts = line.split(' / ');
+    line = alts[alts.length - 1];
+  } else if (p.mood === 'imper') {
+    line = line.replace(/\s*\((?:command|future command)[^)]*\)\s*$/, p.tense === 'fut' && String(p.person) !== '3' ? ' (later)' : '');
+  }
+  return line.trim();
 }
 
 export const _internal = { thirdSg, pastTense, pastParticiple, ingForm, pluralNoun, headWord, finiteMeaning, verbForms, countRanks, fitPenalties };

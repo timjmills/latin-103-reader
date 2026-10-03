@@ -219,6 +219,64 @@
 .pt__cell.is-hit .pt__stem, .pt__cell.is-hit .pt__ending, .pt__cell.is-hit .pt__stem::after { color: oklch(0.2 0.02 95); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pt__cell.is-hit { color: oklch(0.15 0.02 95); } }
 
+/* Each form's English under it, and the chapter that teaches each part (wordpanel.js renderParadigm,
+   paradigm-chapters.js). The English is quiet UI type and may wrap; the Latin above it stays whole. */
+.pt__form { display: block; }
+.pt__en { display: block; font-family: var(--face-ui); font-size: var(--ui-xs); line-height: 1.3; color: var(--ink-3); white-space: normal; text-wrap: pretty; min-width: 7em; margin-top: 1px; }
+.pt--en td { padding-block: 0.35em; }
+.pt__ch { font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 400; color: var(--ink-3); white-space: nowrap; }
+.pt__cell > .pt__ch { display: block; }
+.pt:not(.pt--stack) .pt__ch--stack, .pt--stack th .pt__ch { display: none; }   /* a stacked block names each cell's chapter; a table its rows' */
+
+/* Practising a table (2026-10-03): every form a box, judged as it is left. The whole cell takes the
+   colour, as in the Grammar drills (grammar.css .g-input.is-right) — green with a ✓, red with a ✗ —
+   and the mark keeps the meaning in greyscale. A right (or shown) box gives way to the form itself,
+   the unchanging stem plain and the ending lit, so the pattern is what is left on the page. */
+.paradigm__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); padding: 0 var(--s-3) var(--s-2); }
+.paradigm__score { margin: 0; padding: 0 var(--s-3) var(--s-2); font-size: var(--ui-sm); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.paradigm__score:empty { display: none; }
+.paradigm.is-complete .paradigm__score { color: var(--success); font-weight: 600; }
+.paradigm__acts .btn { min-height: 36px; padding-inline: var(--s-3); }
+.paradigm__parts { display: grid; gap: var(--s-2); padding: 0 var(--s-3) var(--s-2); }
+.paradigm__parts[hidden] { display: none; }
+.paradigm__quick, .paradigm__chips { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-2); }
+.paradigm__chips { padding-top: var(--s-2); }
+.paradigm__moresum { cursor: pointer; font-size: var(--ui-sm); color: var(--ink-2); min-height: 36px; display: flex; align-items: center; }
+@media (pointer: coarse) { .paradigm__moresum { min-height: var(--tap); } }
+.paradigm__part { min-height: 36px; padding: 0.2em 0.75em; border: 1px solid var(--line-strong); border-radius: var(--radius); background: transparent; color: var(--ink-3); font: inherit; font-size: var(--ui-sm); cursor: pointer; text-align: left; }
+.paradigm__part[aria-pressed="true"] { border-color: var(--ink-2); background: var(--bg-chrome); color: var(--ink); }
+.paradigm__part[aria-pressed="false"] { text-decoration: line-through; text-decoration-color: var(--ink-3); }
+.paradigm__part--all { border-style: dashed; color: var(--ink-2); }
+.paradigm__partch { font-weight: 600; }
+@media (pointer: coarse) { .paradigm__part { min-height: var(--tap); } }
+
+.pt__answer { display: flex; align-items: center; gap: 0.25em; }
+.pt__in { flex: 1 1 auto; width: 100%; min-width: 6rem; min-height: 36px; padding: 0 var(--s-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--bg-raised); color: var(--ink); font-family: var(--face-reading); font-size: 1rem; }
+@media (pointer: coarse) { .pt__in { min-height: var(--tap); font-size: 16px; } }   /* 16px: iOS does not zoom the page into the box */
+.pt__mark { display: inline-flex; justify-content: center; min-width: 1em; font-family: var(--face-ui); font-size: var(--ui-sm); font-weight: 700; }
+.paradigm.is-practising .pt__cell:has(.pt__answer):not(.is-off, [data-state="right"], [data-state="shown"]) .pt__form { display: none; }
+.pt__cell:is([data-state="right"], [data-state="shown"]) :is(.pt__in, .pt__reveal), .pt__cell.is-off .pt__answer { display: none; }
+.pt__given { display: none; flex: none; font-family: var(--face-reading); color: var(--ink-2); }
+.paradigm.is-endings .pt__cell:not([data-state="right"], [data-state="shown"]) .pt__given { display: inline; }
+.paradigm.is-endings .pt__in { min-width: 3.5rem; }
+.paradigm__toggle[aria-pressed="true"] { background: var(--bg-chrome); border-color: var(--ink-3); color: var(--ink); }
+.pt__reveal { flex: none; min-height: 36px; padding: 0 0.5em; border: 1px solid transparent; border-radius: var(--radius-sm); background: transparent; color: var(--ink-3); font-family: var(--face-ui); font-size: var(--ui-xs); cursor: pointer; }
+.pt__reveal:hover { background: var(--bg-chrome); color: var(--ink); }
+@media (pointer: coarse) { .pt__reveal { min-height: var(--tap); } }
+.pt__cell.is-off { opacity: 0.55; }
+.pt__cell[data-state="right"] { background: oklch(from var(--success) l c h / 0.14); box-shadow: inset 0 0 0 1px var(--success); }
+.pt__cell[data-state="right"] .pt__mark { color: var(--success); }
+.pt__cell[data-state="right"] .pt__ending { background: oklch(from var(--success) l c h / 0.3); border-radius: 2px; padding-inline: 1px; }
+.pt__cell[data-state="wrong"] { background: var(--rubric-soft); box-shadow: inset 0 0 0 1px var(--rubric); }
+.pt__cell[data-state="wrong"] .pt__in { border-color: var(--rubric); }
+.pt__cell[data-state="wrong"] .pt__mark { color: var(--rubric-ink); }
+.pt__cell[data-state="shown"] { background: var(--bg-chrome); }
+.pt__cell[data-state="shown"] .pt__ending { text-decoration: underline; text-decoration-color: var(--ink-3); text-underline-offset: 0.15em; }
+.paradigm.is-practising .pt__cell.is-hit:not([data-state]) { background: none; }   /* the looked-up form's yellow would give its box away */
+.paradigm.is-practising .pt__cell.is-hit, .paradigm.is-practising .pt__cell.is-hit :is(.pt__stem, .pt__ending, .pt__stem::after) { color: inherit; }
+.paradigm.is-practising .pt__cell.is-hit .pt__stem { color: var(--ink-2); }
+.paradigm.is-practising .pt__cell.is-hit .pt__ending { color: var(--ink); }
+
 /* Notes */
 .note__meta { margin: 0 var(--tap) var(--s-2) 0; font-size: var(--ui-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--ink-3); }
 .note__la { margin: 0 0 var(--s-3); overflow-wrap: anywhere; font-family: var(--face-reading); font-size: calc(1.05rem * var(--note-scale)); line-height: 1.45; color: var(--ink-2); }

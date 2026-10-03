@@ -1115,20 +1115,22 @@ async function boot() {
    * when it could not be mounted, and the reader then simply stays where it is.
    */
   let grammarRouted = false;   // the section is open because #/grammar asked for it
-  function openGrammarSection() {
+  function openGrammarSection(view = null) {
     grammarRouted = true;
     closeChapter();
     closeProgPage();
     // The title is the section's own to set (`draw`), and setting it here would
     // be captured as the reader's title when the section saves it on opening.
     Promise.resolve(grammarReady)
-      .then((g) => { if (grammarRouted) g?.open?.(); })
+      .then((g) => { if (grammarRouted) (view === 'paradigms' && g?.openParadigms ? g.openParadigms() : g?.open?.()); })
       .catch(() => { /* the section says so itself */ });
   }
   function applyRoute() {
     const ours = hashIsOurs;
     hashIsOurs = false;
     if (isGrammarRoute(location.hash)) { openGrammarSection(); return; }
+    // #/paradigms: the Grammar section's Paradigms page, a link of its own (2026-10-03).
+    if (/^#?\/paradigms\/?$/.test(location.hash)) { openGrammarSection('paradigms'); return; }
     const route = parseChapterRoute(location.hash);
     const prog = route ? null : parseProgressRoute(location.hash);
     // Walking back out of #/grammar puts the reader back. Only the learner's own

@@ -1070,11 +1070,11 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------ shell */
   function draw() {
     const nav = h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'practice', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
-        { map: 'Skills', practice: 'Practice', catalogue: 'Tables', stats: 'Stats' }[v])));
+      ['map', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
+        { map: 'Skills', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
     document.title = `Grammar — Latin 103`;
   }
@@ -1755,7 +1755,7 @@ export function createUI(ctx) {
       if (b.type === 'p') out.push(h('p', { class: 'g-lesson__p' }, prose(b.text)));
       else if (b.type === 'english') out.push(h('p', { class: 'g-lesson__english' }, h('span', { class: 'g-lesson__tag', text: 'In English' }), ' ', prose(b.text)));
       else if (b.type === 'rule') out.push(h('p', { class: 'g-lesson__rule', 'data-rule': '' }, prose(b.text)));
-      else if (b.type === 'paradigm') { const t = paradigmFor(skill, b); const node = t && renderParadigm(t); if (node) { node.open = true; out.push(h('div', { class: 'g-lesson__pt' }, node)); } }
+      else if (b.type === 'paradigm') { const t = paradigmFor(skill, b); const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => ctx.currentChapter?.() ?? null }); if (node) { node.open = true; out.push(h('div', { class: 'g-lesson__pt' }, node)); } }
       else if (b.type === 'examples') out.push(examplesBlock(skill, b));
       else if (b.type === 'confusion') out.push(h('div', { class: 'g-lesson__conf', 'data-conf': '' }, h('p', { class: 'g-lesson__tag', text: `Not to be confused with ${titleOf(b.with)}` }), h('p', {}, prose(b.text))));
     }
@@ -2513,6 +2513,177 @@ export function createUI(ctx) {
     return h('div', { class: 'g-scaffold' }, h('span', { class: 'g-label', text: 'Given' }), seg, note);
   }
 
+  /* ------------------------------------------------------- paradigms */
+  /**
+   * **Paradigms** — the whole-table practice on a page of its own (the learner, 2026-10-03: "make this
+   * feature easy to get to on its own", "note the type of verb and type of noun so I can practise
+   * specific types"). Any word: typed, one of the learner's own learning words (the underlined ones),
+   * one of the book's model words, or the words of one type — a conjugation, a declension, a kind of
+   * adjective — with "Another word of this type" to drill one pattern across many words. The table is
+   * the word popup's (wordpanel.js renderParadigm): every form with its English and the chapter that
+   * teaches it, and "Practise this table" ready. This page only finds the word.
+   */
+  const MODEL_WORDS = ['amō', 'moneō', 'regō', 'capiō', 'audiō', 'sum', 'possum', 'eō', 'volō', 'ferō',
+    'puella', 'servus', 'dōnum', 'puer', 'rēx', 'nōmen', 'manus', 'rēs', 'bonus', 'fortis', 'ego', 'is', 'hic', 'ille', 'quī'];
+  const tableOf = (e) => { try { return par.paradigm(e, []); } catch { return null; } };
+  const headOf = (e) => String(e?.lemma ?? e?.h ?? '').split(/[\s,]/)[0];
+  /** The entries a typed form or headword may be, that have a table; one per headword and part of speech. */
+  const tableEntries = (form) => {
+    let r = null;
+    try { r = dict.lookup(String(form ?? '').trim()); } catch { return []; }
+    const seen = new Set();
+    return (r?.entries ?? []).filter((e) => { const k = `${e.h}|${e.pos}`; if (seen.has(k) || !tableOf(e)) return false; seen.add(k); return true; });
+  };
+  /** A word's type — its conjugation, declension or kind of adjective (paradigms.js names them) — or null. */
+  const typeOf = (e) => {
+    try {
+      if (e?.pos === 'V' || e?.pos === 'VPAR') { const n = par.conjugationName(e); return n ? { group: 'Verbs', name: n.replace(/^((?:semi-)?deponent, .*?) \(deponent\)$/, '$1') } : null; }
+      if (e?.pos === 'N') { const n = par.declensionName(e); return n ? { group: 'Nouns', name: n } : null; }
+      if (e?.pos === 'ADJ') { const n = par.adjectiveName(e); return n ? { group: 'Adjectives', name: n } : null; }
+    } catch { /* an entry the namer cannot read has no type */ }
+    return null;
+  };
+  const shortType = (name) => String(name ?? '').replace('conjugation', 'conj.').replace('declension', 'decl.').replace(' adjective', ' adj.');
+  const TYPE_ORDER = ['1st conjugation', '2nd conjugation', '3rd conjugation', '3rd conjugation (-iō)', '4th conjugation', 'irregular verb',
+    'deponent, 1st conjugation', 'deponent, 2nd conjugation', 'deponent, 3rd conjugation', 'deponent, 3rd conjugation (-iō)', 'deponent, 4th conjugation',
+    '1st declension', '2nd declension', '2nd declension (-er / -ir)', '2nd declension, neuter', '3rd declension', '3rd declension, neuter',
+    '3rd declension (i-stem)', '3rd declension (i-stem), neuter', '4th declension', '4th declension, neuter', '5th declension',
+    '1st/2nd declension adjective', '1st/2nd declension adjective (-er)', '1st/2nd declension adjective (genitive -īus)',
+    '3rd declension adjective (one ending)', '3rd declension adjective (two endings)', '3rd declension adjective (three endings)'];
+  // Every common noun, verb and adjective of the library by its type, most frequent first. Built once, on
+  // first use; a type needs five words to be offered, and the Greek, indeclinable and defective are left out.
+  let typeIndexMemo = null;
+  const typeIndex = () => {
+    if (typeIndexMemo) return typeIndexMemo;
+    const byKey = new Map();
+    const g = dict.glossaryEntries?.() ?? {};
+    for (const list of (g instanceof Map ? g.values() : Object.values(g))) {
+      for (const e of [].concat(list)) {
+        if (!e || !['V', 'N', 'ADJ'].includes(e.pos) || /^\p{Lu}/u.test(e.lemma ?? '')) continue;   // a capital is a proper name
+        const k = `${e.h}|${e.pos}|${e.lemma}`;
+        const had = byKey.get(k);
+        if (!had) byKey.set(k, { e, n: Number(e.n) || 0 });
+        else had.n = Math.max(had.n, Number(e.n) || 0);
+      }
+    }
+    const types = new Map();
+    for (const { e, n } of byKey.values()) {
+      const t = typeOf(e);
+      if (!t || /indeclinable|defective|impersonal|Greek|comparative/.test(t.name)) continue;
+      if (!types.has(t.name)) types.set(t.name, { ...t, words: [] });
+      types.get(t.name).words.push({ e, n });
+    }
+    for (const t of types.values()) t.words.sort((a, b) => b.n - a.n || String(a.e.lemma).localeCompare(String(b.e.lemma)));
+    const rank = (name) => { const i = TYPE_ORDER.indexOf(name); return i < 0 ? 1000 : i; };
+    typeIndexMemo = [...types.values()].filter((t) => t.words.length >= 5)
+      .sort((a, b) => rank(a.name) - rank(b.name) || b.words.length - a.words.length);
+    return typeIndexMemo;
+  };
+  /** The words of a type the page offers: the model word, the learner's own, then the most frequent. */
+  const wordsOfType = (name, extra = []) => {
+    const t = typeIndex().find((x) => x.name === name);
+    if (!t) return [];
+    const out = [];
+    const seen = new Set();
+    for (const e of [...extra.filter((x) => typeOf(x)?.name === name), ...t.words.slice(0, 80).map((w) => w.e)]) {
+      if (seen.has(e.h) || !tableOf(e)) continue;
+      seen.add(e.h);
+      out.push(e);
+    }
+    return out;
+  };
+
+  async function renderParadigms({ word = null, pos = null, type = null } = {}) {
+    const results = h('ul', { class: 'g-chips g-words__results', 'aria-label': 'Words found', hidden: true });
+    const tableBox = h('div', { class: 'g-para__table' });
+    const pick = (e, t = type) => render('paradigms', { word: e.h, pos: e.pos, type: t ?? typeOf(e)?.name ?? null });
+    const chip = (e, note = shortType(typeOf(e)?.name)) => h('li', {}, btn([h('span', { lang: 'la', text: headOf(e) }), note ? h('span', { class: 'g-chip__state', text: ` · ${note}` }) : null],
+      { onclick: () => pick(e), 'aria-pressed': String(!!word && e.h === word && (!pos || e.pos === pos)), 'aria-label': `Practise the table of ${e.lemma ?? e.h}${typeOf(e) ? `, ${typeOf(e).name}` : ''}` }, 'g-chip'));
+    let timer = 0;
+    const search = h('input', { type: 'search', class: 'g-input g-words__search', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', enterkeyhint: 'search',
+      placeholder: 'Type any Latin word — amāvit, rēgibus, fortis…', 'aria-label': 'Find a word to practise its table' });
+    const find = () => {
+      const list = tableEntries(search.value).slice(0, 8);
+      results.replaceChildren(...list.map((e) => chip(e)));
+      results.hidden = !list.length;
+    };
+    search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(find, 120); });
+    search.addEventListener('keydown', (ev) => { if (ev.key !== 'Enter') return; ev.preventDefault(); const first = tableEntries(search.value)[0]; if (first) pick(first, null); });
+
+    // The learner's own words: the ones underlined while reading (store.getLookups), newest first.
+    let mine = [];
+    try {
+      const looks = await ctx.store?.getLookups?.();
+      const rows = looks ? [...looks.entries()].filter(([, v]) => !v?.learned_at).sort((a, b) => String(b[1]?.created_at ?? '').localeCompare(String(a[1]?.created_at ?? ''))) : [];
+      const seen = new Set();
+      for (const [form] of rows) {
+        const e = tableEntries(form)[0];
+        if (e && !seen.has(e.h)) { seen.add(e.h); mine.push(e); }
+        if (mine.length >= 24) break;
+      }
+    } catch { mine = []; }
+    const models = MODEL_WORDS.map((w) => tableEntries(w).find((e) => stripMacrons(headOf(e)) === stripMacrons(w)) ?? tableEntries(w)[0]).filter(Boolean);
+    const typeWords = type ? wordsOfType(type, [...models, ...mine]) : [];
+
+    let chosen = null;
+    if (word) {
+      chosen = [...typeWords, ...mine, ...models].find((e) => e.h === word && (!pos || e.pos === pos)) ?? tableEntries(word).find((e) => e.h === word && (!pos || e.pos === pos)) ?? null;
+    }
+    if (chosen) {
+      const t = tableOf(chosen);
+      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => ctx.currentChapter?.() ?? null });
+      const kind = typeOf(chosen);
+      // Another word of the same type: one of the most frequent, never the one on screen.
+      const pool = kind ? wordsOfType(kind.name).slice(0, 40).filter((e) => e.h !== chosen.h) : [];
+      const another = pool.length ? btn('Another word of this type →', { onclick: () => pick(pool[Math.floor(Math.random() * pool.length)], kind.name) }, 'btn') : null;
+      if (node) {
+        node.open = true;
+        tableBox.append(
+          h('h2', { class: 'g-h2', id: 'g-para-word' }, h('span', { lang: 'la', text: chosen.lemma ?? chosen.h })),
+          kind ? h('p', { class: 'g-para__type' }, h('span', { class: 'g-para__typename', text: kind.name }), another) : null,
+          h('div', { class: 'g-lesson__pt' }, node));   // the lesson's wrapper: it holds the table to the column, and the table stacks (§26) inside it
+      }
+    } else if (word) {
+      tableBox.append(h('p', { class: 'g-quiet', text: 'That word has no table to practise.' }));
+    }
+
+    // Practise by type: every conjugation, declension and kind of adjective, with how many words it has.
+    const groups = ['Verbs', 'Nouns', 'Adjectives'].map((g) => ({ g, types: typeIndex().filter((t) => t.group === g) })).filter((x) => x.types.length);
+    const typeNode = h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-types' },
+      h('h2', { id: 'g-para-types', class: 'g-h2', text: 'Practise by type' }),
+      h('p', { class: 'g-quiet', text: 'Choose a conjugation, a declension or a kind of adjective, then take its words one after another: the same pattern on new stems.' }),
+      groups.map(({ g, types }) => h('div', { class: 'g-para__group' },
+        h('h3', { class: 'g-label', text: g }),
+        h('ul', { class: 'g-chips', 'aria-label': `${g} by type` }, types.map((t) => h('li', {}, btn([t.name, h('span', { class: 'g-chip__state', text: ` · ${t.words.length}` })],
+          { onclick: () => render('paradigms', { type: t.name }), 'aria-pressed': String(type === t.name), 'aria-label': `${t.name}: ${t.words.length} words` }, 'g-chip')))))),
+      type ? h('div', { class: 'g-para__typewords' },
+        h('h3', { class: 'g-label', text: `${cap(type)} — its words` }),
+        typeWords.length
+          ? [h('ul', { class: 'g-chips g-words', 'aria-label': `Words of the ${type}` }, typeWords.slice(0, 24).map((e) => chip(e, ''))),
+            h('div', { class: 'g-acts' }, btn('Start with a random one', { onclick: () => pick(typeWords[Math.floor(Math.random() * Math.min(typeWords.length, 40))], type) }, 'btn btn--primary'))]
+          : h('p', { class: 'g-quiet', text: 'No word of this type has a table.' })) : null);
+
+    setBody(
+      h('header', { class: 'g-head' },
+        h('p', { class: 'g-kicker', text: 'Practise a whole table' }),
+        h('h1', { class: 'g-title', text: 'Paradigms' }),
+        h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — right turns green, the ending lit against the stem — or only the endings, or only the parts you have reached.' })),
+      h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-find' },
+        h('h2', { id: 'g-para-find', class: 'g-h2', text: 'Find a word' }), search, results),
+      chosen ? h('section', { class: 'g-cat__sec g-para', 'aria-labelledby': 'g-para-word' }, tableBox) : (word ? tableBox : null),
+      typeNode,
+      mine.length ? h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-mine' },
+        h('h2', { id: 'g-para-mine', class: 'g-h2', text: 'Your learning words' }),
+        h('p', { class: 'g-quiet', text: 'The words you have underlined while reading, newest first.' }),
+        h('ul', { class: 'g-chips g-words', 'aria-label': 'Your learning words' }, mine.map((e) => chip(e)))) : null,
+      h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-models' },
+        h('h2', { id: 'g-para-models', class: 'g-h2', text: 'The model words' }),
+        h('p', { class: 'g-quiet', text: 'One of each pattern: the four conjugations and the irregular verbs, the five declensions, adjectives and pronouns.' }),
+        h('ul', { class: 'g-chips g-words', 'aria-label': 'Model words' }, models.map((e) => chip(e)))));
+    if (chosen) tableBox.querySelector('.paradigm__go')?.focus({ preventScroll: true });
+    else if (type) body.querySelector('.g-para__typewords')?.scrollIntoView({ block: 'start' });
+  }
+
   /* ---------------------------------------------- the catalogue (§4, §11) */
   let catalogueItemsP = null;
   /** The catalogue's generator: the catalogue, the headword index and the dictionary, built once. */
@@ -2607,7 +2778,7 @@ export function createUI(ctx) {
       wordChips, search, results);
 
     // See it filled.
-    const filled = word ? renderParadigm(word.table) : null;
+    const filled = word ? renderParadigm(word.table, { english: true, practise: true, chapter: () => ctx.currentChapter?.() ?? null }) : null;
     if (filled) filled.open = true;
     const filledNode = h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-cat-filled' },
       h('h2', { id: 'g-cat-filled', class: 'g-h2', text: `Filled in · ${wordHead}` }),
