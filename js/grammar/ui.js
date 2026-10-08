@@ -6,6 +6,8 @@
 
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm } from '../wordpanel.js';
+import { chapter as bookChapter, chapters as bookChapters } from '../chapters.js';
+import { cellChapter, loadFormSkills } from '../paradigm-chapters.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
@@ -1069,14 +1071,18 @@ export function createUI(ctx) {
 
   /* ------------------------------------------------------------ shell */
   function draw() {
-    const nav = h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
+    // Word Work (html[data-section-mode="words"]) draws its own two tabs, not Grammar's five.
+    const words = document.documentElement.dataset.sectionMode === 'words';
+    const nav = words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
+      [['wordwork', 'This chapter'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': view.name === v ? 'page' : null, onclick: () => render(v) }, label)))
+      : h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
       ['map', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
         { map: 'Skills', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
-    document.title = `Grammar — Latin 103`;
+    document.title = words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
   }
   /** Show a view. Each is a history entry (Back walks the section's views; a session in progress resumes); the new heading takes focus. */
   function render(name, params = {}, { push = true, focus = true } = {}) {
@@ -2683,6 +2689,139 @@ export function createUI(ctx) {
     if (chosen) tableBox.querySelector('.paradigm__go')?.focus({ preventScroll: true });
     else if (type) body.querySelector('.g-para__typewords')?.scrollIntoView({ block: 'start' });
   }
+
+  /* ------------------------------------------------------- word work */
+  /**
+   * **Word Work** — a chapter's table practice (the learner, 2026-10-08: "for each lesson/chapter/week
+   * there should be a word work button that practises just those word work skills that are taught in
+   * that chapter"). The parts of the tables a chapter teaches are read from the skill map
+   * (paradigm-chapters.js), and they are practised on the nouns, verbs and adjectives of that chapter's
+   * own readings, most frequent first; the book's model word stands in where the readings have no word
+   * of a pattern. Three ways through, the first the default:
+   *   mix   the parts new in the chapter, then a short review — the parts of the last few chapters before it
+   *   new   only the parts new in the chapter
+   *   all   every part taught up to and including it
+   * Each table opens already in practice with just those parts switched on (renderParadigm's `preset`);
+   * the others show their forms, and the part toggles still turn any of them on.
+   */
+  const WW_MODES = [['mix', 'New + review'], ['new', 'Only the new'], ['all', 'Everything so far']];
+  const WW_NEW_WORDS = 4;
+  const WW_REVIEW_WORDS = 2;
+  const WW_REVIEW_CHAPTERS = 3;   // a review round asks the parts of the last three chapters that taught this word's table anything
+  const wwWords = new Map();      // chapter → its readings' words, counted (loaded once per chapter)
+  /** The nouns, verbs, adjectives and pronouns of a chapter's readings, most frequent first: [{ e, count }]. */
+  async function chapterWords(n) {
+    if (wwWords.has(n)) return wwWords.get(n);
+    const c = bookChapter(n);
+    const weeksOf = c?.weeks ?? [];
+    const lists = await Promise.all(weeksOf.map((w) => Promise.resolve(ctx.store?.getUnits?.(w)).catch(() => [])));
+    const counts = new Map();
+    for (const u of lists.flat()) {
+      for (const t of tokenize(u?.la ?? '')) {
+        if (!t.isWord) continue;
+        let e = null;
+        try { e = dict.lookup(t.form || t.text).entries?.[0] ?? null; } catch { e = null; }
+        if (!e || !['N', 'V', 'VPAR', 'ADJ', 'PRON'].includes(e.pos) || /^\p{Lu}/u.test(e.lemma ?? '')) continue;
+        const k = `${e.h}|${e.pos}`;
+        const had = counts.get(k);
+        if (had) had.count++; else counts.set(k, { e, count: 1 });
+      }
+    }
+    const out = [...counts.values()].sort((a, b) => b.count - a.count);
+    wwWords.set(n, out);
+    return out;
+  }
+  /** Each cell's chapter for one word: [chapter|null, …] in table order, or null when the word has no table. */
+  const cellChaptersOf = (skills, e) => {
+    const t = tableOf(e);
+    if (!t) return null;
+    const out = [];
+    for (const s of t.sections) for (const r of s.rows) for (const c of r.cells) if (!c.empty && c.key) out.push(cellChapter(skills, e, c.key));
+    return out;
+  };
+  /** Up to `max` words, a new type before a second word of a type already chosen. */
+  const spread = (list, max) => {
+    const out = [];
+    const types = new Set();
+    for (const x of list) { const k = typeOf(x.e)?.name ?? x.e.pos; if (!types.has(k)) { types.add(k); out.push(x); } if (out.length >= max) return out; }
+    for (const x of list) { if (!out.includes(x)) out.push(x); if (out.length >= max) break; }
+    return out;
+  };
+
+  async function renderWordWork({ chapter: n = null, mode = 'mix' } = {}) {
+    const here = ctx.currentChapter?.() ?? null;
+    n = Number(n ?? here ?? 1);
+    if (!bookChapter(n)) n = here ?? 1;
+    if (!WW_MODES.some(([m]) => m === mode)) mode = 'mix';
+    const c = bookChapter(n);
+    const picker = h('select', { class: 'g-select', 'aria-label': 'Chapter', onchange: (ev) => render('wordwork', { chapter: Number(ev.target.value), mode }) },
+      bookChapters().map((x) => h('option', { value: String(x.n), selected: x.n === n ? true : null }, `Cap. ${x.roman} · ${x.title}${x.n === here ? ' (where you are)' : ''}`)));
+    const modes = h('div', { class: 'g-chips', role: 'group', 'aria-label': 'What to practise' },
+      WW_MODES.map(([m, label]) => btn(label, { 'aria-pressed': String(m === mode), onclick: () => render('wordwork', { chapter: n, mode: m }) }, 'g-chip')));
+    const head = h('header', { class: 'g-head' },
+      h('p', { class: 'g-kicker', text: 'Word Work' }),
+      h('h1', { class: 'g-title' }, `Cap. ${c.roman} · `, h('span', { lang: 'la', text: c.title })),
+      h('p', { class: 'g-lede', text: 'The forms this chapter teaches, practised on the words of its own readings: every form a box, right turns green with its ending lit. The parts are tagged by chapter; any of them can be switched on or off.' }),
+      h('div', { class: 'g-ww__controls' }, picker, modes));
+    const more = h('div', { class: 'g-acts' }, btn('Any word, or a whole type →', { onclick: () => render('paradigms') }, 'btn btn--quiet'));
+    setBody(head, h('p', { class: 'g-loading', text: 'Finding this chapter’s words…' }));
+
+    const [skills, words] = await Promise.all([loadFormSkills(), chapterWords(n)]);
+    if (view.name !== 'wordwork' || Number(view.params?.chapter ?? n) !== n) return;   // the learner moved on while this loaded
+    if (!skills.length) { setBody(head, h('p', { class: 'g-quiet', text: 'The chapter map could not be loaded, so the parts cannot be chosen. Try again online.' }), more); return; }
+
+    // Each candidate's table, read once: how many cells this chapter teaches, and which earlier chapters it has.
+    const scored = [];
+    for (const x of words.slice(0, 80)) {
+      const chs = cellChaptersOf(skills, x.e);
+      if (!chs) continue;
+      scored.push({ ...x, fresh: chs.filter((k) => k === n).length, earlier: [...new Set(chs.filter((k) => k != null && k < n))].sort((a, b) => b - a), model: false });
+    }
+    // The model words stand in where the readings give nothing: a pattern they lack, or readings not in the library.
+    let modelMemo = null;
+    const modelScored = () => (modelMemo ??= MODEL_WORDS.map((w) => tableEntries(w).find((e) => stripMacrons(headOf(e)) === stripMacrons(w)) ?? tableEntries(w)[0]).filter(Boolean)
+      .map((e) => { const chs = cellChaptersOf(skills, e) ?? []; return { e, count: 0, fresh: chs.filter((k) => k === n).length, earlier: [...new Set(chs.filter((k) => k != null && k < n))].sort((a, b) => b - a), model: true }; }));
+    const pool = scored.length ? scored : modelScored();
+    let fresh = spread(pool.filter((x) => x.fresh > 0), WW_NEW_WORDS);
+    if (!fresh.length && scored.length) fresh = spread(modelScored().filter((x) => x.fresh > 0), WW_NEW_WORDS);
+    const review = spread(pool.filter((x) => x.earlier.length && !fresh.some((f) => f.e.h === x.e.h)), WW_REVIEW_WORDS);
+    const everything = spread(pool.filter((x) => x.fresh > 0 || x.earlier.length), WW_NEW_WORDS);
+
+    const card = (x, preset, note) => {
+      const t = tableOf(x.e);
+      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => n, preset });
+      if (!node) return null;
+      node.open = true;
+      const kind = typeOf(x.e);
+      return h('article', { class: 'g-ww__word' },
+        h('h3', { class: 'g-ww__lemma' }, h('span', { lang: 'la', text: x.e.lemma ?? x.e.h })),
+        h('p', { class: 'g-para__type' },
+          kind ? h('span', { class: 'g-para__typename', text: kind.name }) : null,
+          h('span', { class: 'g-quiet', text: x.model ? (scored.length ? 'a model word — the readings have none of this pattern' : 'a model word — this chapter’s readings are not in your library') : `${x.count}× in this chapter’s readings` }),
+          note ? h('span', { class: 'g-quiet', text: note }) : null),
+        h('div', { class: 'g-lesson__pt' }, node));
+    };
+    const block = (id, title, lede, cards) => h('section', { class: 'g-cat__sec g-ww', 'aria-labelledby': id },
+      h('h2', { id, class: 'g-h2', text: title }), lede ? h('p', { class: 'g-quiet', text: lede }) : null, cards.filter(Boolean));
+
+    const parts = [];
+    if (mode === 'all') {
+      parts.push(block('g-ww-all', `Everything up to Cap. ${c.roman}`, 'Every part these words’ tables have from chapter I to this one.',
+        everything.map((x) => card(x, (ch) => ch != null && ch <= n))));
+    } else {
+      parts.push(fresh.length
+        ? block('g-ww-new', `New in Cap. ${c.roman}`, 'Only the parts this chapter teaches are asked; the rest of each table shows its forms.',
+          fresh.map((x) => card(x, (ch) => ch === n)))
+        : block('g-ww-new', `New in Cap. ${c.roman}`, `Cap. ${c.roman} teaches no new forms of nouns, verbs, adjectives or pronouns — its grammar is in how they are used. ${mode === 'new' ? 'Choose New + review for the forms before it.' : 'The review below keeps the earlier ones fresh.'}`, []));
+      if (mode === 'mix' && review.length) {
+        parts.push(block('g-ww-review', 'Review', `A short round of earlier parts: on each word, the last ${WW_REVIEW_CHAPTERS} chapters before this one that taught its table anything.`,
+          review.map((x) => { const keep = new Set(x.earlier.slice(0, WW_REVIEW_CHAPTERS)); return card(x, (ch) => keep.has(ch), `cap. ${[...keep].sort((a, b) => a - b).map(roman).join(', ')}`); })));
+      }
+    }
+    if (!scored.length) parts.unshift(h('p', { class: 'g-quiet g-ww__note', text: 'This chapter’s readings are not in your library yet, so the model words stand in.' }));
+    setBody(head, parts, more);
+  }
+
 
   /* ---------------------------------------------- the catalogue (§4, §11) */
   let catalogueItemsP = null;

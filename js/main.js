@@ -539,7 +539,11 @@ async function boot() {
     const h1 = mk('h1', 'chapter__title', c.title);
     h1.lang = 'la';
     h1.tabIndex = -1;
-    head.append(mk('p', 'chapter__kicker', `Cap. ${c.roman}`), h1);
+    // Word Work for this chapter (2026-10-08): the table parts it teaches, on words from its own readings.
+    const ww = mk('button', 'btn chapter__ww', `Word Work for Cap. ${c.roman}`);
+    ww.type = 'button';
+    ww.addEventListener('click', () => { routeTo(`#/words/${n}`); });
+    head.append(mk('p', 'chapter__kicker', `Cap. ${c.roman}`), h1, ww);
     const tabs = mk('div', 'chapter__tabs');
     tabs.setAttribute('role', 'tablist');
     tabs.setAttribute('aria-label', `Chapter ${c.roman}`);
@@ -1115,14 +1119,19 @@ async function boot() {
    * when it could not be mounted, and the reader then simply stays where it is.
    */
   let grammarRouted = false;   // the section is open because #/grammar asked for it
-  function openGrammarSection(view = null) {
+  function openGrammarSection(view = null, chapterArg = null) {
     grammarRouted = true;
     closeChapter();
     closeProgPage();
     // The title is the section's own to set (`draw`), and setting it here would
     // be captured as the reader's title when the section saves it on opening.
     Promise.resolve(grammarReady)
-      .then((g) => { if (grammarRouted) (view === 'paradigms' && g?.openParadigms ? g.openParadigms() : g?.open?.()); })
+      .then((g) => {
+        if (!grammarRouted) return;
+        if (view === 'words' && g?.openWordWork) g.openWordWork(chapterArg);
+        else if (view === 'paradigms' && g?.openParadigms) g.openParadigms();
+        else g?.open?.();
+      })
       .catch(() => { /* the section says so itself */ });
   }
   function applyRoute() {
@@ -1131,6 +1140,9 @@ async function boot() {
     if (isGrammarRoute(location.hash)) { openGrammarSection(); return; }
     // #/paradigms: the Grammar section's Paradigms page, a link of its own (2026-10-03).
     if (/^#?\/paradigms\/?$/.test(location.hash)) { openGrammarSection('paradigms'); return; }
+    // #/words, #/words/19: Word Work, on the reader's chapter or the one named (a chapter page's button).
+    const words = /^#?\/words(?:\/(\d{1,2}))?\/?$/.exec(location.hash);
+    if (words) { openGrammarSection('words', words[1] ? Number(words[1]) : null); return; }
     const route = parseChapterRoute(location.hash);
     const prog = route ? null : parseProgressRoute(location.hash);
     // Walking back out of #/grammar puts the reader back. Only the learner's own

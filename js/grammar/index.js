@@ -273,18 +273,27 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   // The reader's place and title are kept while Grammar is open and put back on return (G1-06 / G1-07).
   let readerScroll = 0;
   let readerTitle = null;
-  function setSection(name, { focus = false } = {}) {
-    const grammar = name === 'grammar';
+  // Three sections share two surfaces (2026-10-08): Read is the reader; Grammar and Word Work are both
+  // this section's root, told apart by html[data-section-mode]. html[data-section] stays 'grammar' for
+  // both, so every rule that hides the reader's own controls holds for Word Work too. Word Work opens on
+  // a chapter's table practice (ui.js renderWordWork) and draws no Grammar tabs.
+  const modeOf = () => (document.documentElement.dataset.section === 'grammar' ? (document.documentElement.dataset.sectionMode === 'words' ? 'words' : 'grammar') : 'read');
+  function setSection(name, { focus = false, chapter = null } = {}) {
+    const mode = name === 'grammar' || name === 'words' ? name : 'read';
+    const grammar = mode !== 'read';
     const was = document.documentElement.dataset.section;
+    const wasMode = modeOf();
     if (grammar && was !== 'grammar') { readerScroll = window.scrollY; readerTitle = document.title; }
     document.documentElement.dataset.section = grammar ? 'grammar' : 'read';
+    if (mode === 'words') document.documentElement.dataset.sectionMode = 'words'; else delete document.documentElement.dataset.sectionMode;
     layout.hidden = grammar;
     root.hidden = !grammar;
-    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === (grammar ? 'grammar' : 'read')));
-    try { localStorage.setItem(LS_SECTION, grammar ? 'grammar' : 'read'); } catch { /* ignore */ }
-    if (grammar) { init().then(() => { if (was !== 'grammar' && ui && !root.querySelector('.g')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === mode));
+    try { localStorage.setItem(LS_SECTION, mode); } catch { /* ignore */ }
+    if (mode === 'words') { init().then(() => { if (ui && (wasMode !== 'words' || chapter != null || !root.querySelector('.g'))) ui.render('wordwork', chapter != null ? { chapter } : {}, { push: wasMode === 'words', focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
+    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || wasMode === 'words')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
     else {
-      document.title = readerTitle && !/^Grammar — /.test(readerTitle) ? readerTitle : document.title.replace(/^Grammar — /, '');
+      document.title = readerTitle && !/^(Grammar|Word Work) — /.test(readerTitle) ? readerTitle : document.title.replace(/^(Grammar|Word Work) — /, '');
       if (was === 'grammar') { const y = readerScroll; requestAnimationFrame(() => window.scrollTo({ top: y })); if (focus) document.querySelector('#reader h1, #main [tabindex="-1"], #main h2')?.focus?.({ preventScroll: true }); }
     }
   }
@@ -294,7 +303,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
 
   let last = 'read';
   try { last = localStorage.getItem(LS_SECTION) || 'read'; } catch { /* ignore */ }
-  if (last === 'grammar') setSection('grammar');
+  if (last === 'grammar' || last === 'words') setSection(last);
   else setSection('read');
 
   /**
@@ -329,6 +338,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
 
   return {
     open: () => setSection('grammar'), close: () => setSection('read'), ctx,
+    /** Open Word Work on a chapter's table practice (the header's third button, a chapter page, #/words/N); null: the reader's chapter. */
+    openWordWork(chapter = null) { setSection('words', { chapter: chapter == null ? null : Number(chapter) }); },
     /** Open the section on its Paradigms page (the #/paradigms route): the whole-table practice on its own. */
     openParadigms() { setSection('grammar'); init().then(() => ui?.render('paradigms', {}, { push: false })); },
     /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */
