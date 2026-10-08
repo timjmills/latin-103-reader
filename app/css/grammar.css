@@ -11,6 +11,7 @@
    sits in the first row beside the view switch. */
 .bar__main { grid-template-columns: minmax(0, 1fr) auto auto auto; grid-template-areas: "week section view view" "tools tools tools settings"; }
 .seg--section { grid-area: section; }
+.seg__short { display: none; }   /* "Words" on a phone, where "Word Work" would take the week title's room */
 #settings-btn { grid-area: settings; }
 @media (max-width: 767.98px) {
   /* On a phone the control shows the *other* section only ("Grammar" while reading, "Read" in grammar):
@@ -18,11 +19,20 @@
   .seg--section .seg__btn[aria-pressed="true"] { display: none; }
   .seg--section .seg__btn { border-left: 0; }
   .seg--section .seg__btn, .seg--view .seg__btn { padding-inline: var(--s-2); }
+  .seg__full { display: none; }
+  .seg__short { display: inline; }
   .bar__main { column-gap: var(--s-1); }
   .week__btn { padding-right: 1.4rem; background-position: calc(100% - 0.75rem) 50%, calc(100% - 0.45rem) 50%; }
 }
 @media (min-width: 768px) {
   .bar__main { grid-template-columns: minmax(0, 1fr) auto auto auto; grid-template-areas: "week section view settings" "tools tools tools tools"; }
+}
+/* A phone under 390px has no room for the week, two section buttons and Passage / Sentence on one row:
+   the week button — the way to every other week — was clipped at 375px and squeezed out of sight at 320px.
+   There the section switch takes a row of its own under the week. */
+@media (max-width: 389.98px) {
+  html:not([data-section="grammar"]) .bar__main { grid-template-areas: "week week view view" "section section section section" "tools tools tools settings"; }
+  html:not([data-section="grammar"]) .seg--section { justify-self: start; }
 }
 html[data-section="grammar"] .seg--view, html[data-section="grammar"] .bar__tools, html[data-section="grammar"] #hint-translation { display: none; }
 html[data-section="grammar"] .bar__main { grid-template-areas: "week week section settings" "tools tools tools tools"; }
@@ -47,6 +57,12 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 @media (max-width: 359.98px) { .g-nav { gap: 0; } .g-nav__btn { padding: 0 var(--s-1); } }   /* …and a 320px one */
 /* The Paradigms page (ui.js renderParadigms): a word's type over its table, and the types to practise by. */
 .g-para, .g-para__table { min-width: 0; }
+/* Word Work (ui.js renderWordWork): a chapter picker and the three ways through, then one card a word. */
+.g-ww__controls { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-3); margin-top: var(--s-3); }
+.g-ww__controls .g-select { width: 100%; min-width: 0; max-width: 100%; text-overflow: ellipsis; }
+.g-ww, .g-ww__word { min-width: 0; }
+.g-ww__word + .g-ww__word { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line); }
+.g-ww__lemma { margin: 0 0 var(--s-2); font-family: var(--face-reading); font-size: 1.25rem; font-weight: 400; }
 .g-para__type { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: 0 0 var(--s-3); }
 .g-para__typename { font-size: var(--ui-sm); color: var(--ink-2); padding: 0.15em 0.6em; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
 .g-para__group { display: grid; gap: var(--s-2); margin-top: var(--s-3); }

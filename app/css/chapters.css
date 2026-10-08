@@ -141,3 +141,5 @@ html[data-page="chapter"] .bar__main {
   .creads__item { grid-template-columns: minmax(0, 1fr); }
   .creads__continue { justify-self: start; margin: 0 0 var(--s-2) calc(-1 * var(--s-2)); }
 }
+/* A chapter's Word Work (2026-10-08): its table parts, practised on words from its own readings. */
+.chapter__ww { margin-top: var(--s-3); }

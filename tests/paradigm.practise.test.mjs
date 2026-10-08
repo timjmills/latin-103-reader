@@ -155,3 +155,20 @@ test('the Paradigms page is a tab and a link of its own, and a table in a box ke
   // `.paradigm` clips to its border; the Grammar section's bleed must not widen a scroll box past it.
   assert.match(GCSS, /#grammar \.paradigm \.pt__scroll \{ margin-inline: 0; max-width: 100%; \}/);
 });
+
+test('Word Work is a section of its own, opened per chapter', () => {
+  const HTML = readFileSync(new URL('../app/index.html', import.meta.url), 'utf8');
+  const IDX = readFileSync(new URL('../app/js/grammar/index.js', import.meta.url), 'utf8');
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
+  assert.match(HTML, /data-section="words"[^>]*aria-label="Word Work"/, 'the header has the third button');
+  assert.match(IDX, /openWordWork\(chapter = null\)/);
+  assert.match(IDX, /if \(last === 'grammar' \|\| last === 'words'\) setSection\(last\);/, 'Word Work is remembered like Grammar');
+  assert.match(UI, /wordwork: renderWordWork/);
+  assert.ok(MAIN.includes("openGrammarSection('words'"), 'the #/words/N route is gone');
+  assert.ok(MAIN.includes('routeTo(`#/words/${n}`)'), 'the chapter page lost its Word Work button');
+  // A chapter's tables open in practice with only the chosen chapters switched on.
+  const WP = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
+  assert.match(WP, /if \(preset && !details\.dataset\.preset\)/);
+  assert.match(UI, /fresh\.map\(\(x\) => card\(x, \(ch\) => ch === n\)\)/, 'New in Cap. N asks only that chapter');
+});

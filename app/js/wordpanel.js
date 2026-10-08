@@ -413,7 +413,7 @@ const BEST_KEY = 'l103.paradigm.best.';
 function readBest(id) { try { return JSON.parse(localStorage.getItem(BEST_KEY + id) || 'null'); } catch { return null; } }
 function writeBest(id, v) { try { localStorage.setItem(BEST_KEY + id, JSON.stringify(v)); } catch { /* private mode: the score just is not kept */ } }
 
-function practiseControls(details, { sheet, chapter, id }) {
+function practiseControls(details, { sheet, chapter, id, preset = null }) {
   const cells = () => sheet.filter((x) => x.answers.length);
   const status = h('p', { class: 'paradigm__score', role: 'status', 'aria-live': 'polite' });
   const btn = (text, hidden = true, cls = 'btn btn--quiet') => h('button', { type: 'button', class: cls, text, hidden });
@@ -502,7 +502,7 @@ function practiseControls(details, { sheet, chapter, id }) {
     const more = h('details', { class: 'paradigm__more' }, h('summary', { class: 'paradigm__moresum', text: `Choose parts by chapter (${list.length})` }), h('div', { class: 'paradigm__chips' }, chips));
     parts.replaceChildren(...(list.length > 1 ? [h('div', { class: 'paradigm__quick' }, quick), more] : []));
   };
-  const start = () => {
+  const start = ({ focus = true } = {}) => {
     details.classList.add('is-practising');
     for (const x of cells()) {
       let input = x.td.querySelector('.pt__in');
@@ -535,9 +535,9 @@ function practiseControls(details, { sheet, chapter, id }) {
     startBtn.hidden = true; showBtn.hidden = false; againBtn.hidden = false; stopBtn.hidden = false;
     endBtn.hidden = !cells().some((x) => x.stem && x.ending);
     paintParts();
-    cells().find(on)?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
+    if (focus) cells().find(on)?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
   };
-  startBtn.addEventListener('click', start);
+  startBtn.addEventListener('click', () => start());
   againBtn.addEventListener('click', () => {
     for (const x of cells().filter(on)) { x.td.querySelector('.pt__in').value = ''; mark(x, ''); }
     score();
@@ -581,6 +581,14 @@ function practiseControls(details, { sheet, chapter, id }) {
   });
   // The chapters arrive after the table (renderParadigm): a practice already under way gets its choices then.
   details.addEventListener('paradigm:chapters', () => {
+    // A table opened for a chapter's Word Work starts in practice, with only the chapters `preset` keeps.
+    if (preset && !details.dataset.preset) {
+      details.dataset.preset = '1';
+      off.clear();
+      for (const x of cells()) if (!preset(x.ch ?? null)) off.add(chKey(x.ch));
+      start({ focus: false });
+      return;
+    }
     if (!details.classList.contains('is-practising')) return;
     buildParts();
     parts.hidden = !parts.childElementCount;
@@ -622,7 +630,8 @@ function tagChapters(sheet) {
  * `opts.english` prints each form's English under it (the table's word is
  * `p.entry`, set by paradigms.js) and tags each part with the chapter that
  * teaches it; `opts.practise` offers "Practise this table"; `opts.chapter()`
- * is the chapter the learner is reading, for "Up to cap. N". These are for
+ * is the chapter the learner is reading, for "Up to cap. N". `opts.preset(ch)` opens the table already in
+ * practice with only the chapters it keeps switched on (a chapter's Word Work). These are for
  * tables that show a word's forms to learn from; a drill's hint or feedback
  * table is rendered without them, where the English could answer the
  * question being asked.
@@ -636,7 +645,7 @@ export function renderParadigm(p, opts = {}) {
   if (p.note) details.append(h('p', { class: 'paradigm__note', text: p.note }));
   const practise = !!opts.practise && (p.sections ?? []).some((s) => (s.rows ?? []).some((r) => r.cells.some((c) => cellAnswers(c).length)));
   const sheet = [];   // every value cell: { td, th, caption, section, row, key, answers, label, ch }
-  if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null }));
+  if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null }));
   (p.sections ?? []).forEach((s, si) => {
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).
     const table = h('table', { class: 'pt' + ((s.headers?.length ?? 0) >= 3 ? ' pt--wide' : '') + (entry ? ' pt--en' : '') });
@@ -675,10 +684,11 @@ export function renderParadigm(p, opts = {}) {
   // The chapters come from the skill map, fetched once; the table is usable before they arrive.
   if (entry && sheet.length) {
     loadFormSkills().then((skills) => {
-      if (!skills.length) return;
-      for (const x of sheet) x.ch = cellChapter(skills, entry, x.key);
-      tagChapters(sheet);
-      details.dispatchEvent(new Event('paradigm:chapters'));
+      if (skills.length) {
+        for (const x of sheet) x.ch = cellChapter(skills, entry, x.key);
+        tagChapters(sheet);
+      }
+      details.dispatchEvent(new Event('paradigm:chapters'));   // also without chapters: a preset table still starts
     });
   }
   return details;
