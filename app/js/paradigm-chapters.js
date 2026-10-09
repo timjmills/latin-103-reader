@@ -118,3 +118,28 @@ export function loadFormSkills() {
     .catch(() => { skillsPromise = null; return []; });
   return skillsPromise;
 }
+
+/**
+ * Does `skill` (a skills.json row) teach the cell `key` of `entry`'s table? True when one branch of its
+ * parse_filter fits the word and names features the cell has — the imperfect subjunctive's {tense: impf,
+ * mood: subj} every person of both voices, a declension skill its cases. A participle, an infinitive, a
+ * command or a gerund is a skill's only when the skill names that mood; the compound perfect passive
+ * (amātus sum) belongs to a skill about the perfect passive participle it is built on. Word Work's "whole
+ * table" for a skill asks just these cells (2026-10-09). Pure.
+ */
+export function skillCovers(skill, entry, key) {
+  const p = keyParse(key);
+  if (!skill || !entry || !p) return false;
+  const alt = p.voice === 'pass' && ['perf', 'plupf', 'futperf'].includes(p.tense) && (p.mood === 'ind' || p.mood === 'subj')
+    ? { mood: 'ptc', tense: 'perf', voice: 'pass' } : null;
+  for (const f of branches(skill.parse_filter)) {
+    if (!hasCellDims(f) || !wordFits(f, entry)) continue;
+    for (const q of alt ? [p, alt] : [p]) {
+      if (!dimsMatch(f, q)) continue;
+      if (q.mood && NONFINITE.has(q.mood) && f.mood == null) continue;
+      if (q === alt && f.tense == null) continue;   // a bare "participles" skill does not take the whole perfect passive
+      return true;
+    }
+  }
+  return false;
+}

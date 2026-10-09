@@ -7,7 +7,7 @@
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm } from '../wordpanel.js';
 import { chapter as bookChapter, chapters as bookChapters } from '../chapters.js';
-import { cellChapter, loadFormSkills } from '../paradigm-chapters.js';
+import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
 import { isShelfWeek } from '../sync.js';
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
@@ -1078,14 +1078,14 @@ export function createUI(ctx) {
     root.dataset.drawnMode = words ? 'words' : 'grammar';   // index.js setSection: what the root holds now
     const nav = words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
       [['wordwork', 'This chapter'], ['wwdrills', 'Skill drills'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn',
-        'aria-current': view.name === v || (v === 'wwdrills' && view.params?.from?.wordwork != null) ? 'page' : null,
+        'aria-current': view.name === v || (v === 'wwdrills' && (view.params?.from?.wordwork != null || view.name === 'wwtable')) ? 'page' : null,
         onclick: () => render(v, v === 'paradigms' ? {} : { chapter: wwChapter() }) }, label)))
       : h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
       ['map', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
         { map: 'Skills', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
     document.title = words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
   }
@@ -2978,12 +2978,81 @@ export function createUI(ctx) {
   /** The bar above a Word Work drill: the chapter's skills in a dropdown (choosing one starts it), and the way back. */
   function wwSkillBar(n, current) {
     const list = wwSkillsOf(n);
-    const select = h('select', { class: 'g-select', 'aria-label': `Cap. ${roman(n)}: drill another skill`, onchange: (ev) => { if (ev.target.value) render('drill', { skill: ev.target.value, from: { wordwork: n } }); } },
+    // On a whole table the dropdown moves to another skill's whole table when it has one; else to the skill's drill.
+    const to = (id) => (view.name === 'wwtable' && skills.get(id)?.paradigms?.length ? render('wwtable', { chapter: n, skill: id }) : render('drill', { skill: id, from: { wordwork: n } }));
+    const select = h('select', { class: 'g-select', 'aria-label': `Cap. ${roman(n)}: another skill`, onchange: (ev) => { if (ev.target.value) to(ev.target.value); } },
       list.map((sk) => h('option', { value: sk.id, selected: sk.id === current ? true : null }, wwSkillLabel(sk))));
+    const sk = skills.get(current);
     return h('div', { class: 'g-ww__bar' },
       btn(`← Skill drills · Cap. ${roman(n)}`, { onclick: () => render('wwdrills', { chapter: n }) }, 'btn btn--quiet g-back'),
-      h('label', { class: 'g-ww__barlabel' }, h('span', { class: 'g-label', text: `Cap. ${roman(n)} skills` }), select));
+      h('label', { class: 'g-ww__barlabel' }, h('span', { class: 'g-label', text: `Cap. ${roman(n)} skills` }), select),
+      sk?.paradigms?.length && view.name !== 'wwtable' ? btn('Whole table →', { onclick: () => render('wwtable', { chapter: n, skill: current }) }, 'btn btn--quiet') : null,
+      sk && view.name === 'wwtable' && drillable(current) ? btn('Drill in sentences →', { onclick: () => render('drill', { skill: current, from: { wordwork: n } }) }, 'btn btn--quiet') : null);
   }
+  /**
+   * **A skill's whole table, word after word** (the learner, 2026-10-09: "I want the skill drill to be able to be
+   * used for the whole paradigm and then with all the words"). The part of the table the skill teaches — the
+   * imperfect subjunctive's twelve forms, both voices; a case's two — opened ready to practise on one word, the
+   * rest of the table left out (renderParadigm `only`, paradigm-chapters.js skillCovers). Next word walks on
+   * through every word it applies to: the chapter's own readings first, most frequent first, then the model
+   * words and the library's commonest words of that kind.
+   */
+  const wwTableWords = new Map();   // `${chapter}|${skill}` → [entry, …]
+  async function skillWords(n, sk) {
+    const k = `${n}|${sk.id}`;
+    if (wwTableWords.has(k)) return wwTableWords.get(k);
+    const fits = (e) => { const t = tableOf(e); if (!t) return false; for (const s of t.sections) for (const r of s.rows) for (const c of r.cells) if (!c.empty && c.key && skillCovers(sk, e, c.key)) return true; return false; };
+    const out = [];
+    const seen = new Set();
+    const add = (e) => { const key = `${e.h}|${e.pos}`; if (seen.has(key) || out.length >= 40 || !fits(e)) return; seen.add(key); out.push(e); };
+    let words = [];
+    try { words = await chapterWords(n); } catch { words = []; }
+    for (const x of words) add(x.e);
+    for (const w of MODEL_WORDS) { const e = tableEntries(w)[0]; if (e) add(e); }
+    for (const x of suggestPool()) { if (out.length >= 40) break; if (x.n > 0 || out.length < 12) add(x.e); }
+    wwTableWords.set(k, out);
+    return out;
+  }
+  async function renderWordWorkTable({ chapter: n = null, skill: id = null, i = 0 } = {}) {
+    n = Number(n ?? ctx.currentChapter?.() ?? 1);
+    const sk = skills.get(id);
+    if (!sk || !sk.paradigms?.length) { render('wwdrills', { chapter: n }); return; }
+    const seq = ++wwSeq;
+    setBody(wwSkillBar(n, id), h('p', { class: 'g-loading', text: 'Finding the words for this table…' }));
+    const list = await skillWords(n, sk);
+    if (seq !== wwSeq || view.name !== 'wwtable') return;
+    if (!list.length) { setBody(wwSkillBar(n, id), h('p', { class: 'g-quiet', text: 'No word with a table fits this skill.' })); return; }
+    const k = ((Number(i) || 0) % list.length + list.length) % list.length;
+    const e = list[k];
+    const t = tableOf(e);
+    const node = renderParadigm(t, { english: true, practise: true, chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true });
+    node.open = true;
+    const step = (d) => render('wwtable', { chapter: n, skill: id, i: k + d });
+    const wordPick = h('select', { class: 'g-select', 'aria-label': 'Word', onchange: (ev) => render('wwtable', { chapter: n, skill: id, i: Number(ev.target.value) }) },
+      list.map((w, j) => h('option', { value: String(j), selected: j === k ? true : null }, `${headOf(w)}${typeOf(w) ? ` · ${shortType(typeOf(w).name)}` : ''}`)));
+    const next = btn('Next word →', { onclick: () => step(1) }, 'btn btn--primary');
+    // When every box of this word is right, Next word is the thing to press: it takes the focus.
+    node.addEventListener('focusout', () => { setTimeout(() => { if (node.classList.contains('is-complete') && !node.contains(document.activeElement)) next.focus({ preventScroll: true }); }, 0); });
+    const kind = typeOf(e);
+    setBody(
+      wwSkillBar(n, id),
+      h('header', { class: 'g-head' },
+        h('p', { class: 'g-kicker', text: `Word Work · whole table · Cap. ${roman(n)}` }),
+        h('h1', { class: 'g-title', text: sk.title }),
+        h('p', { class: 'g-lede', text: 'Every form of this skill on one word — every box, right turns green with its ending lit — then the next word, through all of them.' })),
+      h('div', { class: 'g-ww__wordnav' },
+        btn('← Previous', { onclick: () => step(-1), 'aria-label': 'Previous word' }, 'btn btn--quiet'),
+        h('span', { class: 'g-ww__count', text: `Word ${k + 1} of ${list.length}` }),
+        h('label', { class: 'g-ww__barlabel' }, h('span', { class: 'visually-hidden', text: 'Choose a word' }), wordPick),
+        next),
+      h('section', { class: 'g-cat__sec g-ww', 'aria-labelledby': 'g-wwt-word' },
+        h('h2', { class: 'g-ww__lemma', id: 'g-wwt-word' }, h('span', { lang: 'la', text: e.lemma ?? e.h })),
+        kind ? h('p', { class: 'g-para__type' }, h('span', { class: 'g-para__typename', text: kind.name })) : null,
+        h('div', { class: 'g-lesson__pt' }, node)),
+      h('div', { class: 'g-acts' }, next.cloneNode(true)));
+    body.querySelector('.g-acts:last-child .btn')?.addEventListener('click', () => step(1));
+  }
+
   function renderWordWorkDrills({ chapter: n = null } = {}) {
     const here = ctx.currentChapter?.() ?? null;
     n = Number(n ?? here ?? 1);
@@ -2996,6 +3065,10 @@ export function createUI(ctx) {
     const skillPick = h('select', { class: 'g-select', 'aria-label': `Cap. ${c.roman}: the skill to drill` },
       list.map((sk) => h('option', { value: sk.id, selected: sk === first ? true : null }, wwSkillLabel(sk))));
     const go = (id) => render('drill', { skill: id, from: { wordwork: n } });
+    const wholeBtn = btn('Whole table', { onclick: () => skillPick.value && render('wwtable', { chapter: n, skill: skillPick.value }) }, 'btn');
+    const paintWhole = () => { wholeBtn.disabled = !skills.get(skillPick.value)?.paradigms?.length; };
+    skillPick.addEventListener('change', paintWhole);
+    paintWhole();
     setBody(
       h('header', { class: 'g-head' },
         h('p', { class: 'g-kicker', text: 'Word Work · Skill drills' }),
@@ -3005,13 +3078,17 @@ export function createUI(ctx) {
       list.length
         ? [h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-wwd-pick' },
           h('h2', { id: 'g-wwd-pick', class: 'g-h2', text: `Drill a skill of Cap. ${c.roman}` }),
-          h('div', { class: 'g-ww__pickrow' }, skillPick, btn('Start', { onclick: () => skillPick.value && go(skillPick.value) }, 'btn btn--primary'))),
+          h('div', { class: 'g-ww__pickrow' }, skillPick, h('div', { class: 'g-acts g-ww__pickacts' },
+            btn('Drill', { onclick: () => skillPick.value && go(skillPick.value) }, 'btn btn--primary'),
+            wholeBtn)),
+          h('p', { class: 'g-quiet', text: 'Drill asks the skill in sentences and questions. Whole table asks every form of it — every person, both voices — on one word, then the next, through all the words.' })),
         h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-wwd-all' },
           h('h2', { id: 'g-wwd-all', class: 'g-h2', text: 'All of them' }),
           h('ul', { class: 'g-ww__drills' }, list.map((sk) => h('li', { class: 'g-ww__drill', 'data-forms': sk.paradigms?.length ? 'true' : null },
             h('span', { class: 'g-ww__drilltitle', text: sk.title }),
             h('span', { class: 'g-ww__skillnote', text: sk.paradigms?.length ? 'forms' : 'use' }),
-            drillable(sk.id) ? btn('Drill', { onclick: () => go(sk.id), 'aria-label': `Drill ${sk.title}` }, 'btn btn--quiet') : h('span', { class: 'g-quiet', text: 'nothing to drill yet' })))))]
+            drillable(sk.id) ? btn('Drill', { onclick: () => go(sk.id), 'aria-label': `Drill ${sk.title}` }, 'btn btn--quiet') : h('span', { class: 'g-quiet', text: 'nothing to drill yet' }),
+            sk.paradigms?.length ? btn('Whole table', { onclick: () => render('wwtable', { chapter: n, skill: sk.id }), 'aria-label': `${sk.title}: its whole table, word after word` }, 'btn btn--quiet') : null))))]
         : h('p', { class: 'g-quiet', text: `No grammar skill is listed for Cap. ${c.roman}. Its table work is on This chapter.` }));
   }
 

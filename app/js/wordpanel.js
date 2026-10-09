@@ -643,10 +643,15 @@ export function renderParadigm(p, opts = {}) {
     h('summary', { class: 'paradigm__summary' },
       h('span', { class: 'paradigm__label' }, 'Full paradigm', p.title ? h('span', { class: 'paradigm__title', lang: 'la', text: ` — ${p.title}` }) : null)));
   if (p.note) details.append(h('p', { class: 'paradigm__note', text: p.note }));
-  const practise = !!opts.practise && (p.sections ?? []).some((s) => (s.rows ?? []).some((r) => r.cells.some((c) => cellAnswers(c).length)));
+  // `opts.only(key)`: the table is one skill's (Word Work's whole-table drill) — only the cells it keeps are asked,
+  // and a section with none of them is left out.
+  const only = typeof opts.only === 'function' ? opts.only : null;
+  const asked = (c) => !c.empty && (!only || only(c.key));
+  const practise = !!opts.practise && (p.sections ?? []).some((s) => (s.rows ?? []).some((r) => r.cells.some((c) => asked(c) && cellAnswers(c).length)));
   const sheet = [];   // every value cell: { td, th, caption, section, row, key, answers, label, ch }
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null }));
   (p.sections ?? []).forEach((s, si) => {
+    if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).
     const table = h('table', { class: 'pt' + ((s.headers?.length ?? 0) >= 3 ? ' pt--wide' : '') + (entry ? ' pt--en' : '') });
     const caption = s.title ? h('caption', { class: 'pt__caption', text: s.title }) : null;
@@ -664,7 +669,7 @@ export function renderParadigm(p, opts = {}) {
       body.append(h('tr', {}, th,
         r.cells.map((c, ci) => {
           const en = entry && !c.empty ? cellMeaning(entry, c.key) : '';
-          const answers = practise ? cellAnswers(c) : [];
+          const answers = practise && asked(c) ? cellAnswers(c) : [];
           const td = h('td', { class: 'pt__cell' + (c.hit ? ' is-hit' : '') + (c.empty ? ' is-empty' : ''), lang: 'la' },
             en || answers.length ? h('span', { class: 'pt__form' }, cellContent(c)) : cellContent(c),
             en ? h('span', { class: 'pt__en', lang: 'en', text: en }) : null);

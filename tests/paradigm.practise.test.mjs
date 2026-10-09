@@ -201,3 +201,20 @@ test('Word Work drills every grammar skill of the chapter, with a dropdown to mo
   assert.match(UI, /if \(from\?\.wordwork != null\) body\.prepend\(wwSkillBar\(Number\(from\.wordwork\), id\)\);/, 'the dropdown stays above a drill');
   assert.match(UI, /if \(from\?\.wordwork != null\) \{ render\('wwdrills'/, 'a Word Work drill goes back to Word Work');
 });
+
+test('a skill drills as its whole table, word after word', async () => {
+  const { skillCovers } = await import('../app/js/paradigm-chapters.js');
+  const verb = cells('vestit');
+  const subj = skills.find((s) => s.id === 'imperfect-subjunctive');
+  const asked = verb.out.filter((x) => skillCovers(subj, verb.e, x.key));
+  assert.equal(asked.length, 12, 'every person, both voices');
+  assert.ok(asked.every((x) => x.section === 'imperfect subjunctive'));
+  const noun = cells('puellam');
+  const dat = skills.find((s) => s.id === 'dative-indirect-object');
+  assert.deepEqual(noun.out.filter((x) => skillCovers(dat, noun.e, x.key)).map((x) => x.text).sort(), ['puellae', 'puellīs']);
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  assert.match(UI, /wwtable: renderWordWorkTable/);
+  assert.match(UI, /only: \(key\) => skillCovers\(sk, e, key\), preset: \(\) => true/, 'only the skill\'s cells, practice already on');
+  const WP = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
+  assert.match(WP, /if \(only && !\(s\.rows \?\? \[\]\)\.some\(\(r\) => r\.cells\.some\(asked\)\)\) return;/, 'sections without the skill are left out');
+});
