@@ -2606,22 +2606,107 @@ export function createUI(ctx) {
     return out;
   };
 
+  /** A typed beginning folded for comparison: no macrons, case or punctuation; v→u, j→i. */
+  const foldStart = (x) => stripMacrons(String(x ?? '')).toLowerCase().replace(/v/g, 'u').replace(/j/g, 'i').replace(/[^a-z]/g, '');
+  /** Every word with a table, by headword, most frequent first — built once from the type index and the model words. */
+  let suggestMemo = null;
+  const suggestPool = () => {
+    if (suggestMemo) return suggestMemo;
+    const seen = new Set();
+    const out = [];
+    const add = (e, n) => { const k = `${e.h}|${e.pos}`; if (seen.has(k)) return; seen.add(k); out.push({ e, n, key: foldStart(headOf(e)), stems: [...new Set((e.roots ?? []).map(foldStart).filter((r) => r.length >= 3))] }); };
+    for (const w of MODEL_WORDS) { const e = tableEntries(w)[0]; if (e) add(e, 1e9); }
+    for (const t of typeIndex()) for (const w of t.words) add(w.e, w.n);
+    out.sort((a, b) => b.n - a.n);
+    suggestMemo = out;
+    return out;
+  };
+  /** The words for what has been typed so far: a form it already is first, then headwords that begin so. */
+  const suggestWords = (typed, max = 8) => {
+    const q = foldStart(typed);
+    if (!q) return [];
+    const out = [];
+    const seen = new Set();
+    const add = (e) => { const k = `${e.h}|${e.pos}`; if (!seen.has(k) && out.length < max) { seen.add(k); out.push(e); } };
+    for (const e of tableEntries(typed)) add(e);
+    for (const x of suggestPool()) { if (out.length >= max) break; if (x.key.startsWith(q)) add(x.e); }
+    // A form on its way (rēgib… for rēgibus): the words whose stem the letters already begin with.
+    if (q.length >= 4) for (const x of suggestPool()) { if (out.length >= max) break; if (x.stems.some((r) => q.startsWith(r))) add(x.e); }
+    return out;
+  };
+  /** A random common word with a table: of `type` when given, else of any type; from the most frequent few hundred. */
+  const randomWord = (type = null) => {
+    // Appropriate means common and of every kind: a noun, a verb or an adjective in turn (the counts the library
+    // has are mostly adjectives', so ranking by count alone gave adjectives only), then one of the main types of
+    // it, then one of that type's most frequent words — those it has counted when there are enough.
+    const any = (xs) => xs[Math.floor(Math.random() * xs.length)];
+    let t = type ? typeIndex().find((x) => x.name === type) : null;
+    if (!t) {
+      const group = any(['Verbs', 'Nouns', 'Adjectives']);
+      const types = typeIndex().filter((x) => x.group === group && x.words.length >= 8 && !/deponent/.test(x.name));
+      t = types.length ? any(types) : null;
+    }
+    if (!t) return null;
+    const counted = t.words.filter((w) => w.n > 0);
+    const pool = (counted.length >= 8 ? counted : t.words).slice(0, 40).map((w) => w.e).filter((e) => tableOf(e));
+    return pool.length ? any(pool) : null;
+  };
+
   async function renderParadigms({ word = null, pos = null, type = null } = {}) {
-    const results = h('ul', { class: 'g-chips g-words__results', 'aria-label': 'Words found', hidden: true });
     const tableBox = h('div', { class: 'g-para__table' });
     const pick = (e, t = type) => render('paradigms', { word: e.h, pos: e.pos, type: t ?? typeOf(e)?.name ?? null });
     const chip = (e, note = shortType(typeOf(e)?.name)) => h('li', {}, btn([h('span', { lang: 'la', text: headOf(e) }), note ? h('span', { class: 'g-chip__state', text: ` · ${note}` }) : null],
       { onclick: () => pick(e), 'aria-pressed': String(!!word && e.h === word && (!pos || e.pos === pos)), 'aria-label': `Practise the table of ${e.lemma ?? e.h}${typeOf(e) ? `, ${typeOf(e).name}` : ''}` }, 'g-chip'));
-    let timer = 0;
+
+    // Find a word (2026-10-09: "when spelling a word have a drop down menu that appears with the search of the
+    // words that match so far"): a combobox. Each letter typed lists the words that begin so — macrons, case
+    // and v/u not needed — most frequent first, with any form the letters already are (rēgibus → rēx) at the
+    // top. Arrows move, Enter takes, Escape closes; a tap takes too.
     const search = h('input', { type: 'search', class: 'g-input g-words__search', lang: 'la', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', enterkeyhint: 'search',
-      placeholder: 'Type any Latin word — amāvit, rēgibus, fortis…', 'aria-label': 'Find a word to practise its table' });
-    const find = () => {
-      const list = tableEntries(search.value).slice(0, 8);
-      results.replaceChildren(...list.map((e) => chip(e)));
-      results.hidden = !list.length;
+      role: 'combobox', 'aria-autocomplete': 'list', 'aria-expanded': 'false', 'aria-controls': 'g-suggest',
+      placeholder: 'Start typing a Latin word — am…, rēg…, fort…', 'aria-label': 'Find a word to practise its table' });
+    const list = h('ul', { class: 'g-suggest', id: 'g-suggest', role: 'listbox', 'aria-label': 'Matching words', hidden: true });
+    let options = [];
+    let active = -1;
+    const gloss = (e) => String(e.senses?.[0] ?? '').split(/[;,(]/)[0].trim().slice(0, 40);
+    const setActive = (i) => {
+      active = i;
+      [...list.children].forEach((li, k) => li.setAttribute('aria-selected', String(k === i)));
+      if (i >= 0) { search.setAttribute('aria-activedescendant', `g-suggest-${i}`); list.children[i]?.scrollIntoView({ block: 'nearest' }); } else search.removeAttribute('aria-activedescendant');
     };
-    search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(find, 120); });
-    search.addEventListener('keydown', (ev) => { if (ev.key !== 'Enter') return; ev.preventDefault(); const first = tableEntries(search.value)[0]; if (first) pick(first, null); });
+    const close = () => { list.hidden = true; search.setAttribute('aria-expanded', 'false'); setActive(-1); };
+    const suggest = () => {
+      options = suggestWords(search.value, 8);
+      list.replaceChildren(...options.map((e, i) => {
+        const li = h('li', { id: `g-suggest-${i}`, class: 'g-suggest__opt', role: 'option', 'aria-selected': 'false' },
+          h('span', { class: 'g-suggest__la', lang: 'la', text: e.lemma ?? e.h }),
+          h('span', { class: 'g-suggest__meta', text: [shortType(typeOf(e)?.name), gloss(e)].filter(Boolean).join(' · ') }));
+        li.addEventListener('pointerdown', (ev) => { ev.preventDefault(); pick(e, null); });   // before the box loses focus
+        return li;
+      }));
+      list.hidden = !options.length;
+      search.setAttribute('aria-expanded', String(!!options.length));
+      setActive(options.length ? 0 : -1);
+    };
+    let timer = 0;
+    search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(suggest, 80); });
+    search.addEventListener('blur', () => setTimeout(close, 150));
+    search.addEventListener('keydown', (ev) => {
+      if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+        if (list.hidden) suggest();
+        if (!options.length) return;
+        ev.preventDefault();
+        setActive((active + (ev.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length);
+      } else if (ev.key === 'Enter') {
+        ev.preventDefault();
+        const e = options[active] ?? suggestWords(search.value, 1)[0];
+        if (e) pick(e, null);
+      } else if (ev.key === 'Escape' && !list.hidden) { ev.preventDefault(); close(); }
+    });
+    // A random word (2026-10-09: "select a random (but appropriate) word, as I don't know how to spell the
+    // words"): one of the library's common nouns, verbs and adjectives, any type — a type's own random word is
+    // "Start with a random one" and "Another word of this type", below.
+    const randomBtn = btn('Random word', { onclick: () => { const e = randomWord(); if (e) render('paradigms', { word: e.h, pos: e.pos }); } }, 'btn');
 
     // The learner's own words: the ones underlined while reading (store.getLookups), newest first.
     let mine = [];
@@ -2682,7 +2767,9 @@ export function createUI(ctx) {
         h('h1', { class: 'g-title', text: 'Paradigms' }),
         h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — right turns green, the ending lit against the stem — or only the endings, or only the parts you have reached.' })),
       h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-find' },
-        h('h2', { id: 'g-para-find', class: 'g-h2', text: 'Find a word' }), search, results),
+        h('h2', { id: 'g-para-find', class: 'g-h2', text: 'Find a word' }),
+        h('div', { class: 'g-find' }, h('div', { class: 'g-find__box' }, search, list), randomBtn),
+        h('p', { class: 'g-quiet', text: 'Not sure how a word is spelled? Type its first letters and choose it from the list, or take a random one.' })),
       chosen ? h('section', { class: 'g-cat__sec g-para', 'aria-labelledby': 'g-para-word' }, tableBox) : (word ? tableBox : null),
       typeNode,
       mine.length ? h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-mine' },
@@ -2712,6 +2799,9 @@ export function createUI(ctx) {
    * the others show their forms, and the part toggles still turn any of them on.
    */
   let wwSeq = 0;   // the latest Word Work render; an older one still loading draws nothing
+  const LS_WW_COLS = 'l103.wordwork.cols';
+  const wwCols = () => { try { const k = Number(localStorage.getItem(LS_WW_COLS)); return k >= 1 && k <= 3 ? k : 1; } catch { return 1; } };
+  const setWwCols = (k) => { try { localStorage.setItem(LS_WW_COLS, String(k)); } catch { /* the choice just is not kept */ } };
   const WW_MODES = [['mix', 'New + review'], ['new', 'Only the new'], ['all', 'Everything so far']];
   const WW_NEW_WORDS = 4;
   const WW_REVIEW_WORDS = 2;
@@ -2769,29 +2859,51 @@ export function createUI(ctx) {
       bookChapters().map((x) => h('option', { value: String(x.n), selected: x.n === n ? true : null }, `Cap. ${x.roman} · ${x.title}${x.n === here ? ' (where you are)' : ''}`)));
     const modes = h('div', { class: 'g-chips', role: 'group', 'aria-label': 'What to practise' },
       WW_MODES.map(([m, label]) => btn(label, { 'aria-pressed': String(m === mode), onclick: () => render('wordwork', { chapter: n, mode: m }) }, 'g-chip')));
+    // Columns (2026-10-09: "have the option to have multiple columns"): the word cards side by side on a wide
+    // screen, the choice kept on the device. A phone has room for one, and the control is not shown there.
+    const cols = wwCols();
+    const colsCtl = h('div', { class: 'g-chips g-ww__cols', role: 'group', 'aria-label': 'Columns' },
+      h('span', { class: 'g-label', text: 'Columns' }),
+      [1, 2, 3].map((k) => btn(String(k), { 'aria-pressed': String(k === cols), 'aria-label': `${k} column${k === 1 ? '' : 's'}`, onclick: () => { setWwCols(k); for (const g of body.querySelectorAll('.g-ww__cards')) g.dataset.cols = String(k); for (const b2 of colsCtl.querySelectorAll('button')) b2.setAttribute('aria-pressed', String(b2.textContent === String(k))); } }, 'g-chip')));
+    // What this chapter teaches, said plainly at the top (2026-10-09: "clearly mark in the word work what are the
+    // skills for that chapter/week"): every skill of the chapter, the ones with forms to practise first — those
+    // are the tables below, their cells marked — and the rest (how the forms are used) one press from their lesson.
+    const weekNs = (c.weeks ?? []).filter((w) => w < 100);
+    const taught = [...skills.values()].filter((sk) => Number(sk.chapter) === n && !sk.set && !sk.rev && sk.title)
+      .sort((x, y) => (y.paradigms?.length ? 1 : 0) - (x.paradigms?.length ? 1 : 0));
+    const openLesson = (id) => { ctx.setMode?.('grammar'); render('lesson', { skill: id }); };
+    const taughtNode = h('section', { class: 'g-ww__taught', 'aria-labelledby': 'g-ww-taught' },
+      h('h2', { id: 'g-ww-taught', class: 'g-ww__taughth' }, `Taught in Cap. ${c.roman}`, weekNs.length ? h('span', { class: 'g-quiet', text: ` · week ${weekNs.join(' and ')}` }) : null),
+      taught.length
+        ? h('ul', { class: 'g-ww__skills' }, taught.map((sk) => h('li', { class: 'g-ww__skill', 'data-forms': sk.paradigms?.length ? 'true' : null },
+          btn(sk.title, { onclick: () => openLesson(sk.id), 'aria-label': `${sk.title}: open its lesson in Grammar` }, 'g-link'),
+          h('span', { class: 'g-ww__skillnote', text: sk.paradigms?.length ? 'forms — practised below' : 'use — in Grammar' }))))
+        : h('p', { class: 'g-quiet', text: 'No grammar skill is listed for this chapter.' }),
+      h('p', { class: 'g-ww__legend' }, h('span', { class: 'g-ww__swatch', 'aria-hidden': 'true' }), `In every table, the forms Cap. ${c.roman} teaches are marked like this.`));
     const head = h('header', { class: 'g-head' },
-      h('p', { class: 'g-kicker', text: 'Word Work' }),
+      h('p', { class: 'g-kicker', text: weekNs.length ? `Word Work · week ${weekNs.join(' and ')}` : 'Word Work' }),
       h('h1', { class: 'g-title' }, `Cap. ${c.roman} · `, h('span', { lang: 'la', text: c.title })),
       h('p', { class: 'g-lede', text: 'The forms this chapter teaches, practised on the words of its own readings: every form a box, right turns green with its ending lit. The parts are tagged by chapter; any of them can be switched on or off.' }),
-      h('div', { class: 'g-ww__controls' }, picker, modes));
+      h('div', { class: 'g-ww__controls' }, picker, modes, colsCtl),
+      taughtNode);
     const more = h('div', { class: 'g-acts' }, btn('Any word, or a whole type →', { onclick: () => render('paradigms') }, 'btn btn--quiet'));
     setBody(head, h('p', { class: 'g-loading', text: 'Finding this chapter’s words…' }));
 
-    const [skills, words] = await Promise.all([loadFormSkills(), chapterWords(n)]);
+    const [formSkills, words] = await Promise.all([loadFormSkills(), chapterWords(n)]);
     if (seq !== wwSeq || view.name !== 'wordwork') return;   // the learner moved on (another chapter or mode, another view) while this loaded
-    if (!skills.length) { setBody(head, h('p', { class: 'g-quiet', text: 'The chapter map could not be loaded, so the parts cannot be chosen. Try again online.' }), more); return; }
+    if (!formSkills.length) { setBody(head, h('p', { class: 'g-quiet', text: 'The chapter map could not be loaded, so the parts cannot be chosen. Try again online.' }), more); return; }
 
     // Each candidate's table, read once: how many cells this chapter teaches, and which earlier chapters it has.
     const scored = [];
     for (const x of words.slice(0, 80)) {
-      const chs = cellChaptersOf(skills, x.e);
+      const chs = cellChaptersOf(formSkills, x.e);
       if (!chs) continue;
       scored.push({ ...x, fresh: chs.filter((k) => k === n).length, earlier: [...new Set(chs.filter((k) => k != null && k < n))].sort((a, b) => b - a), model: false });
     }
     // The model words stand in where the readings give nothing: a pattern they lack, or readings not in the library.
     let modelMemo = null;
     const modelScored = () => (modelMemo ??= MODEL_WORDS.map((w) => tableEntries(w).find((e) => stripMacrons(headOf(e)) === stripMacrons(w)) ?? tableEntries(w)[0]).filter(Boolean)
-      .map((e) => { const chs = cellChaptersOf(skills, e) ?? []; return { e, count: 0, fresh: chs.filter((k) => k === n).length, earlier: [...new Set(chs.filter((k) => k != null && k < n))].sort((a, b) => b - a), model: true }; }));
+      .map((e) => { const chs = cellChaptersOf(formSkills, e) ?? []; return { e, count: 0, fresh: chs.filter((k) => k === n).length, earlier: [...new Set(chs.filter((k) => k != null && k < n))].sort((a, b) => b - a), model: true }; }));
     const pool = scored.length ? scored : modelScored();
     let fresh = spread(pool.filter((x) => x.fresh > 0), WW_NEW_WORDS);
     if (!fresh.length && scored.length) fresh = spread(modelScored().filter((x) => x.fresh > 0), WW_NEW_WORDS);
@@ -2800,7 +2912,7 @@ export function createUI(ctx) {
 
     const card = (x, preset, note) => {
       const t = tableOf(x.e);
-      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => n, preset });
+      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => n, preset, focus: n });
       if (!node) return null;
       node.open = true;
       const kind = typeOf(x.e);
@@ -2813,7 +2925,8 @@ export function createUI(ctx) {
         h('div', { class: 'g-lesson__pt' }, node));
     };
     const block = (id, title, lede, cards) => h('section', { class: 'g-cat__sec g-ww', 'aria-labelledby': id },
-      h('h2', { id, class: 'g-h2', text: title }), lede ? h('p', { class: 'g-quiet', text: lede }) : null, cards.filter(Boolean));
+      h('h2', { id, class: 'g-h2', text: title }), lede ? h('p', { class: 'g-quiet', text: lede }) : null,
+      h('div', { class: 'g-ww__cards', 'data-cols': String(cols) }, cards.filter(Boolean)));
 
     const parts = [];
     if (mode === 'all') {

@@ -1147,3 +1147,46 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 
 /* A vocabulary word answered right moves on by itself (ui.js autoNextVocab): a quiet word says so. */
 .g-fb__auto { color: var(--ink-3); font-size: var(--ui-sm); font-weight: 400; }
+
+/* Find a word (ui.js renderParadigms): the box with its dropdown of matching words, and a random word beside it. */
+.g-find { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--s-2); }
+.g-find__box { position: relative; flex: 1 1 16rem; min-width: 0; }
+.g-find__box .g-words__search { width: 100%; }
+.g-suggest { position: absolute; z-index: 20; inset-inline: 0; top: calc(100% + 2px); margin: 0; padding: var(--s-1) 0; list-style: none; max-height: 20rem; overflow-y: auto;
+  background: var(--bg-raised); border: 1px solid var(--line-strong); border-radius: var(--radius); box-shadow: 0 8px 24px oklch(0 0 0 / 0.14); }
+.g-suggest[hidden] { display: none; }
+.g-suggest__opt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s-2); min-height: 40px; padding: var(--s-1) var(--s-3); cursor: pointer; }
+@media (pointer: coarse) { .g-suggest__opt { min-height: var(--tap); } }
+.g-suggest__opt[aria-selected="true"], .g-suggest__opt:hover { background: var(--bg-chrome); }
+.g-suggest__la { font-family: var(--face-reading); font-size: 1.05rem; color: var(--ink); }
+.g-suggest__meta { font-size: var(--ui-sm); color: var(--ink-3); }
+
+/* Word Work: what the chapter teaches, said at the top; its forms marked in every table. */
+.g-ww__taught { margin-top: var(--s-4); padding: var(--s-3) var(--s-4); border: 1px solid var(--line-strong); border-left: 4px solid var(--rubric); border-radius: var(--radius); background: var(--bg-raised); }
+.g-ww__taughth { margin: 0 0 var(--s-2); font-family: var(--face-reading); font-size: 1.15rem; font-weight: 400; }
+.g-ww__skills { display: grid; gap: var(--s-1); margin: 0 0 var(--s-2); padding: 0; list-style: none; }
+.g-ww__skill { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s-2); }
+.g-ww__skill[data-forms="true"] .g-link { font-weight: 600; }
+.g-ww__skillnote { font-size: var(--ui-sm); color: var(--ink-3); }
+.g-ww__skill[data-forms="true"] .g-ww__skillnote { color: var(--rubric-ink); }
+.g-ww__legend { display: flex; align-items: center; gap: var(--s-2); margin: 0; font-size: var(--ui-sm); color: var(--ink-2); }
+.g-ww__swatch { display: inline-block; width: 1.4rem; height: 1rem; border-radius: 2px; background: var(--rubric-soft); box-shadow: inset 3px 0 0 var(--rubric); }
+.pt__cell.is-focus { background: var(--rubric-soft); box-shadow: inset 3px 0 0 var(--rubric); }
+.pt__cell.is-focus .pt__ch { color: var(--rubric-ink); font-weight: 600; }
+.pt__cell.is-focus[data-state="right"] { background: oklch(from var(--success) l c h / 0.14); box-shadow: inset 3px 0 0 var(--rubric), inset 0 0 0 1px var(--success); }
+.pt__cell.is-focus[data-state="wrong"] { box-shadow: inset 3px 0 0 var(--rubric), inset 0 0 0 1px var(--rubric); }
+
+/* Word Work's columns: the word cards side by side, and the page widened to hold them (a wide screen only). */
+.g-ww__cols { align-items: center; }
+.g-ww__cards { display: grid; gap: var(--s-5) var(--s-5); min-width: 0; }
+.g-ww__cards > .g-ww__word + .g-ww__word { margin-top: 0; }
+.g-ww__cards[data-cols="1"] > .g-ww__word + .g-ww__word { padding-top: var(--s-4); border-top: 1px solid var(--line); }
+.g-ww__cards > .g-ww__word { min-width: 0; }
+@media (max-width: 899.98px) { .g-ww__cols { display: none; } }
+@media (min-width: 900px) {
+  .g-ww__cards[data-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g-ww__cards[data-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .g-ww__cards:is([data-cols="2"], [data-cols="3"]) .g-lesson__pt .paradigm { max-width: none; }
+  #grammar .g:has(.g-ww__cards[data-cols="2"]) { max-width: 74rem; }
+  #grammar .g:has(.g-ww__cards[data-cols="3"]) { max-width: 104rem; }
+}
