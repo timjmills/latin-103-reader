@@ -1174,7 +1174,9 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 .pt__cell.is-focus { background: var(--rubric-soft); box-shadow: inset 3px 0 0 var(--rubric); }
 .pt__cell.is-focus .pt__ch { color: var(--rubric-ink); font-weight: 600; }
 .pt__cell.is-focus[data-state="right"] { background: oklch(from var(--success) l c h / 0.14); box-shadow: inset 3px 0 0 var(--rubric), inset 0 0 0 1px var(--success); }
-.pt__cell.is-focus[data-state="wrong"] { box-shadow: inset 3px 0 0 var(--rubric), inset 0 0 0 1px var(--rubric); }
+/* A marked cell keeps its verdict readable: wrong a deeper red than the mark's own tint, shown the grey it has elsewhere. */
+.pt__cell.is-focus[data-state="wrong"] { background: oklch(from var(--rubric) l c h / 0.24); box-shadow: inset 3px 0 0 var(--rubric), inset 0 0 0 2px var(--rubric); }
+.pt__cell.is-focus[data-state="shown"] { background: var(--bg-chrome); }
 
 /* Word Work's columns: the word cards side by side, and the page widened to hold them (a wide screen only). */
 .g-ww__cols { align-items: center; }
