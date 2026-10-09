@@ -1192,3 +1192,18 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
   #grammar .g:has(.g-ww__cards[data-cols="2"]) { max-width: 74rem; }
   #grammar .g:has(.g-ww__cards[data-cols="3"]) { max-width: 104rem; }
 }
+
+/* Word Work · Skill drills (ui.js renderWordWorkDrills, wwSkillBar): the chapter's skills in a dropdown, a list of
+   them with a Drill each, and the bar kept above a drill to move to another. */
+/* A skill's name is long ("Imperfect subjunctive: forms (infinitive + endings)"): the list keeps to the column and
+   the button keeps its place — beside it, or under it on a phone — instead of the list growing over it. */
+.g-ww__pickrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2); align-items: center; }
+.g-ww__pickrow .g-select, .g-ww__barlabel .g-select { width: 100%; min-width: 0; max-width: 100%; text-overflow: ellipsis; }
+@media (max-width: 559.98px) { .g-ww__pickrow { grid-template-columns: minmax(0, 1fr); } .g-ww__pickrow .btn { justify-self: start; } }
+.g-ww__drills { display: grid; margin: 0; padding: 0; list-style: none; }
+.g-ww__drill { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); min-height: var(--tap); padding: var(--s-1) 0; border-top: 1px solid var(--line); }
+.g-ww__drilltitle { flex: 1 1 14rem; min-width: 0; }
+.g-ww__drill[data-forms="true"] .g-ww__drilltitle { font-weight: 600; }
+.g-ww__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: 0 0 var(--s-3); padding-bottom: var(--s-3); border-bottom: 1px solid var(--line); }
+.g-ww__barlabel { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-1); flex: 1 1 16rem; min-width: 0; }
+.g-ww__lessonlink { font-size: var(--ui-sm); }
