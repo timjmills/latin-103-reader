@@ -2681,7 +2681,9 @@ export function createUI(ctx) {
         const li = h('li', { id: `g-suggest-${i}`, class: 'g-suggest__opt', role: 'option', 'aria-selected': 'false' },
           h('span', { class: 'g-suggest__la', lang: 'la', text: e.lemma ?? e.h }),
           h('span', { class: 'g-suggest__meta', text: [shortType(typeOf(e)?.name), gloss(e)].filter(Boolean).join(' · ') }));
-        li.addEventListener('pointerdown', (ev) => { ev.preventDefault(); pick(e, null); });   // before the box loses focus
+        // A tap takes the word on `click`, which a scroll of the list never fires: picking on pointerdown made the
+        // list impossible to scroll with a finger.
+        li.addEventListener('click', () => pick(e, null));
         return li;
       }));
       list.hidden = !options.length;
@@ -2689,16 +2691,23 @@ export function createUI(ctx) {
       setActive(options.length ? 0 : -1);
     };
     let timer = 0;
-    search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(suggest, 80); });
-    search.addEventListener('blur', () => setTimeout(close, 150));
+    const flush = () => { if (timer) { clearTimeout(timer); timer = 0; suggest(); } };   // the list for what is typed now, not 80 ms ago
+    search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { timer = 0; suggest(); }, 80); });
+    // A press on the list (an option, its scrollbar, a finger scrolling it) is not leaving the box.
+    let inList = false;
+    list.addEventListener('pointerdown', (ev) => { inList = true; if (ev.pointerType === 'mouse') ev.preventDefault(); });
+    for (const t of ['pointerup', 'pointercancel']) list.addEventListener(t, () => { setTimeout(() => { inList = false; }, 0); });   // a finger's scroll ends in pointercancel
+    search.addEventListener('focus', () => { inList = false; });
+    search.addEventListener('blur', () => setTimeout(() => { if (!inList) close(); }, 150));
     search.addEventListener('keydown', (ev) => {
       if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
-        if (list.hidden) suggest();
-        if (!options.length) return;
         ev.preventDefault();
+        if (list.hidden || timer) { flush(); if (list.hidden) suggest(); return; }   // opening the list lands on its first word
+        if (!options.length) return;
         setActive((active + (ev.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length);
       } else if (ev.key === 'Enter') {
         ev.preventDefault();
+        flush();
         const e = options[active] ?? suggestWords(search.value, 1)[0];
         if (e) pick(e, null);
       } else if (ev.key === 'Escape' && !list.hidden) { ev.preventDefault(); close(); }
@@ -2706,7 +2715,7 @@ export function createUI(ctx) {
     // A random word (2026-10-09: "select a random (but appropriate) word, as I don't know how to spell the
     // words"): one of the library's common nouns, verbs and adjectives, any type — a type's own random word is
     // "Start with a random one" and "Another word of this type", below.
-    const randomBtn = btn('Random word', { onclick: () => { const e = randomWord(); if (e) render('paradigms', { word: e.h, pos: e.pos }); } }, 'btn');
+    const randomBtn = btn('Random word', { onclick: () => { const e = randomWord() ?? randomWord(); if (e) render('paradigms', { word: e.h, pos: e.pos }); else ctx.say('No word could be chosen just now.'); } }, 'btn');
 
     // The learner's own words: the ones underlined while reading (store.getLookups), newest first.
     let mine = [];
@@ -2926,7 +2935,7 @@ export function createUI(ctx) {
     };
     const block = (id, title, lede, cards) => h('section', { class: 'g-cat__sec g-ww', 'aria-labelledby': id },
       h('h2', { id, class: 'g-h2', text: title }), lede ? h('p', { class: 'g-quiet', text: lede }) : null,
-      h('div', { class: 'g-ww__cards', 'data-cols': String(cols) }, cards.filter(Boolean)));
+      h('div', { class: 'g-ww__cards', 'data-cols': String(wwCols()) }, cards.filter(Boolean)));   // read now: a choice made while the page loaded counts
 
     const parts = [];
     if (mode === 'all') {
