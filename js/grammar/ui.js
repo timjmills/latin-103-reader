@@ -66,6 +66,8 @@ const PRESET_LABEL = {
   'one-skill': ['One skill', 'A blocked set on a skill you choose.'],
 };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+/** Which of the two sections on this root is showing: 'words' (Word Work) or 'grammar'. */
+const sectionMode = () => (document.documentElement.dataset.sectionMode === 'words' ? 'words' : 'grammar');
 /**
  * What an item says about where its sentence came from (`item.scope`, set by
  * the generators through chapter.js's `scopeNote`). A chapter's practice
@@ -1072,7 +1074,8 @@ export function createUI(ctx) {
   /* ------------------------------------------------------------ shell */
   function draw() {
     // Word Work (html[data-section-mode="words"]) draws its own two tabs, not Grammar's five.
-    const words = document.documentElement.dataset.sectionMode === 'words';
+    const words = sectionMode() === 'words';
+    root.dataset.drawnMode = words ? 'words' : 'grammar';   // index.js setSection: what the root holds now
     const nav = words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
       [['wordwork', 'This chapter'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': view.name === v ? 'page' : null, onclick: () => render(v) }, label)))
       : h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
@@ -1091,7 +1094,10 @@ export function createUI(ctx) {
     // for the skill you left (QA-B10). Its place is kept and restored; every other view opens at the top.
     if (view.name === 'map' && name !== 'map') mapScroll[mapView] = window.scrollY;
     view = { name, params };
-    if (push) { try { history.pushState({ grammar: { name, params: name === 'session' || name === 'redo' ? { ...params, resume: true } : params } }, ''); } catch { /* file: URLs */ } }
+    // Each entry carries the section mode it was drawn in (Grammar or Word Work), so Back never draws one
+    // section's view under the other's tabs; a redraw in place re-marks the entry it is on.
+    const state = { grammar: { name, params: name === 'session' || name === 'redo' ? { ...params, resume: true } : params, mode: sectionMode() } };
+    try { if (push) history.pushState(state, ''); else history.replaceState(state, ''); } catch { /* file: URLs */ }
     draw();
     // Each of the two map views keeps its own place: coming back from a lesson lands where it was left, in the view it was left in.
     window.scrollTo({ top: name === 'map' ? (params.chapter != null ? 0 : mapScroll[mapView]) : 0 });
@@ -1119,6 +1125,7 @@ export function createUI(ctx) {
   const onPop = (e) => {
     const g = e.state?.grammar;
     if (!g || ctx.section?.() === 'read') return;
+    if (g.mode && g.mode !== sectionMode()) ctx.setMode?.(g.mode);   // Back across Grammar ↔ Word Work switches the header too
     render(g.name, g.params ?? {}, { push: false });
   };
   window.addEventListener('popstate', onPop);
@@ -2704,14 +2711,19 @@ export function createUI(ctx) {
    * Each table opens already in practice with just those parts switched on (renderParadigm's `preset`);
    * the others show their forms, and the part toggles still turn any of them on.
    */
+  let wwSeq = 0;   // the latest Word Work render; an older one still loading draws nothing
   const WW_MODES = [['mix', 'New + review'], ['new', 'Only the new'], ['all', 'Everything so far']];
   const WW_NEW_WORDS = 4;
   const WW_REVIEW_WORDS = 2;
   const WW_REVIEW_CHAPTERS = 3;   // a review round asks the parts of the last three chapters that taught this word's table anything
   const wwWords = new Map();      // chapter → its readings' words, counted (loaded once per chapter)
   /** The nouns, verbs, adjectives and pronouns of a chapter's readings, most frequent first: [{ e, count }]. */
-  async function chapterWords(n) {
-    if (wwWords.has(n)) return wwWords.get(n);
+  function chapterWords(n) {
+    // The promise is kept, not the result: two renders of one chapter share one load.
+    if (!wwWords.has(n)) wwWords.set(n, loadChapterWords(n).catch((e) => { wwWords.delete(n); throw e; }));
+    return wwWords.get(n);
+  }
+  async function loadChapterWords(n) {
     const c = bookChapter(n);
     const weeksOf = c?.weeks ?? [];
     const lists = await Promise.all(weeksOf.map((w) => Promise.resolve(ctx.store?.getUnits?.(w)).catch(() => [])));
@@ -2727,9 +2739,7 @@ export function createUI(ctx) {
         if (had) had.count++; else counts.set(k, { e, count: 1 });
       }
     }
-    const out = [...counts.values()].sort((a, b) => b.count - a.count);
-    wwWords.set(n, out);
-    return out;
+    return [...counts.values()].sort((a, b) => b.count - a.count);
   }
   /** Each cell's chapter for one word: [chapter|null, …] in table order, or null when the word has no table. */
   const cellChaptersOf = (skills, e) => {
@@ -2749,6 +2759,7 @@ export function createUI(ctx) {
   };
 
   async function renderWordWork({ chapter: n = null, mode = 'mix' } = {}) {
+    const seq = ++wwSeq;
     const here = ctx.currentChapter?.() ?? null;
     n = Number(n ?? here ?? 1);
     if (!bookChapter(n)) n = here ?? 1;
@@ -2767,7 +2778,7 @@ export function createUI(ctx) {
     setBody(head, h('p', { class: 'g-loading', text: 'Finding this chapter’s words…' }));
 
     const [skills, words] = await Promise.all([loadFormSkills(), chapterWords(n)]);
-    if (view.name !== 'wordwork' || Number(view.params?.chapter ?? n) !== n) return;   // the learner moved on while this loaded
+    if (seq !== wwSeq || view.name !== 'wordwork') return;   // the learner moved on (another chapter or mode, another view) while this loaded
     if (!skills.length) { setBody(head, h('p', { class: 'g-quiet', text: 'The chapter map could not be loaded, so the parts cannot be chosen. Try again online.' }), more); return; }
 
     // Each candidate's table, read once: how many cells this chapter teaches, and which earlier chapters it has.

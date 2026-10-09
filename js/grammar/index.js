@@ -207,7 +207,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       let pensaCount = ctx.gstore.getPensa().length;
       ctx.gstore.onChange(() => { const n = ctx.gstore.getPensa().length; if (n !== pensaCount) { pensaCount = n; buildSets(loaded); } ui.refresh(); });
       try { history.replaceState({ grammar: { name: 'map', params: {} } }, ''); } catch { /* file: */ }
-      if (ctx.section() === 'grammar') ui.render('map', {}, { push: false, focus: false });
+      // Opening into Word Work, setSection draws its page; the map would mark the root as drawn first.
+      if (ctx.section() === 'grammar' && document.documentElement.dataset.sectionMode !== 'words') ui.render('map', {}, { push: false, focus: false });
       // The pools of the other skills warm up in idle time, so the map's "no sentences yet" rows appear without a stall.
       const rest = [...ctx.index.skills.keys()];
       const warm = (deadline) => { while (rest.length && (deadline?.timeRemaining?.() ?? 8) > 4) ctx.drillable(rest.shift()); if (rest.length) schedule(warm); else ui.refresh(); };
@@ -277,12 +278,19 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   // this section's root, told apart by html[data-section-mode]. html[data-section] stays 'grammar' for
   // both, so every rule that hides the reader's own controls holds for Word Work too. Word Work opens on
   // a chapter's table practice (ui.js renderWordWork) and draws no Grammar tabs.
-  const modeOf = () => (document.documentElement.dataset.section === 'grammar' ? (document.documentElement.dataset.sectionMode === 'words' ? 'words' : 'grammar') : 'read');
+  /** Switch the header between Grammar and Word Work without drawing (a Back across the two: ui.js onPop draws). */
+  ctx.setMode = (m) => {
+    if (m === 'words') document.documentElement.dataset.sectionMode = 'words'; else delete document.documentElement.dataset.sectionMode;
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === m));
+    try { localStorage.setItem(LS_SECTION, m); } catch { /* ignore */ }
+  };
   function setSection(name, { focus = false, chapter = null } = {}) {
     const mode = name === 'grammar' || name === 'words' ? name : 'read';
     const grammar = mode !== 'read';
     const was = document.documentElement.dataset.section;
-    const wasMode = modeOf();
+    // What the root was last drawn as (ui.js draw sets it): leaving through Read does not change it, so
+    // Word Work → Read → Grammar draws Grammar, and Word Work → Read → Word Work keeps the learner's page.
+    const drawn = root.dataset.drawnMode ?? null;
     if (grammar && was !== 'grammar') { readerScroll = window.scrollY; readerTitle = document.title; }
     document.documentElement.dataset.section = grammar ? 'grammar' : 'read';
     if (mode === 'words') document.documentElement.dataset.sectionMode = 'words'; else delete document.documentElement.dataset.sectionMode;
@@ -290,8 +298,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     root.hidden = !grammar;
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === mode));
     try { localStorage.setItem(LS_SECTION, mode); } catch { /* ignore */ }
-    if (mode === 'words') { init().then(() => { if (ui && (wasMode !== 'words' || chapter != null || !root.querySelector('.g'))) ui.render('wordwork', chapter != null ? { chapter } : {}, { push: wasMode === 'words', focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
-    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || wasMode === 'words')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
+    if (mode === 'words') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'words' || chapter != null || !root.querySelector('.g'))) ui.render('wordwork', chapter != null ? { chapter } : {}, { push: drawn === 'words' && was === 'grammar', focus: false }); else document.title = 'Word Work — Latin 103'; /* the page kept as it was: only the title was the reader's */ if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
+    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
     else {
       document.title = readerTitle && !/^(Grammar|Word Work) — /.test(readerTitle) ? readerTitle : document.title.replace(/^(Grammar|Word Work) — /, '');
       if (was === 'grammar') { const y = readerScroll; requestAnimationFrame(() => window.scrollTo({ top: y })); if (focus) document.querySelector('#reader h1, #main [tabindex="-1"], #main h2')?.focus?.({ preventScroll: true }); }
