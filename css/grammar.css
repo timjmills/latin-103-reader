@@ -1207,3 +1207,9 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 .g-ww__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: 0 0 var(--s-3); padding-bottom: var(--s-3); border-bottom: 1px solid var(--line); }
 .g-ww__barlabel { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-1); flex: 1 1 16rem; min-width: 0; }
 .g-ww__lessonlink { font-size: var(--ui-sm); }
+
+/* A skill's whole table, word after word (ui.js renderWordWorkTable). */
+.g-ww__wordnav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: 0 0 var(--s-3); }
+.g-ww__count { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: var(--ui-sm); }
+.g-ww__wordnav .g-ww__barlabel { flex: 1 1 12rem; }
+.g-ww__pickacts { margin: 0; }
