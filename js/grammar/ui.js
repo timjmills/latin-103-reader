@@ -3576,7 +3576,9 @@ export function createUI(ctx) {
           // Nothing moves on by itself, right or wrong: the feedback is the teaching, and it was being
           // read for 1.4 s and then taken away. "Next" is focused, so Enter is still one key — except
           // where the item is live, and there the focus belongs back in the box being corrected (`submit`).
+          // The one exception is a vocabulary word answered right (autoNextVocab).
           if (!live) fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+          autoNextVocab(fb, item, result, () => { if (runner.position === i) go(1); });
           return live;
         },
       });
@@ -3647,6 +3649,7 @@ export function createUI(ctx) {
               subWrap.append(fb);
               ctx.say(fb.querySelector('.g-fb__line')?.textContent ?? '');
               if (!live) fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
+              autoNextVocab(fb, cur.item, result, () => { if (sub.runner.current === cur) { sub.runner.forward(); subStep(); } });
               return live;
             } }));
           subWrap.querySelector('.g-q')?.focus?.({ preventScroll: true });
@@ -3656,6 +3659,27 @@ export function createUI(ctx) {
       subStep();
     }
     step();
+  }
+
+  /**
+   * A vocabulary word answered right moves on by itself (the learner, 2026-10-09: "when you get a vocab right
+   * it should shift to the next word automatically"): the green ✓ and the dictionary line stay
+   * VOCAB_NEXT_MS, then the next word comes. A wrong answer, a half-right one and every other kind of item
+   * still wait for Next. Touching the page in that moment — a click, a key, a tap on the example sentence —
+   * keeps it where it is, and Next is there as ever; the move never fires twice or after Next was pressed.
+   */
+  const VOCAB_NEXT_MS = 1100;
+  function autoNextVocab(fb, item, result, next) {
+    if (item?.kind !== 'vocab' || !result?.correct || result.partial) return;
+    const line = fb.querySelector('.g-fb__line');
+    const note = h('span', { class: 'g-fb__auto', text: ' Next word…' });
+    line?.append(note);
+    let timer = 0;
+    // Anywhere on the page counts, not only the item: a learner reaching for the example sentence or the margin is staying.
+    const stop = () => { clearTimeout(timer); note.remove(); document.removeEventListener('pointerdown', stop, true); document.removeEventListener('keydown', stop, true); };
+    document.addEventListener('pointerdown', stop, true);
+    document.addEventListener('keydown', stop, true);
+    timer = setTimeout(() => { stop(); if (fb.isConnected) next(); }, VOCAB_NEXT_MS);
   }
 
   function itemNode(item, { title, note = '', position, hintOpen, onHint, onAnswer }) {

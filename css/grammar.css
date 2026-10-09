@@ -1144,3 +1144,6 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
   .g-mixg__cell, .g-mixg__col, .g-mixg__row { min-height: var(--tap); }
   .g-mixg__cell { min-width: var(--tap); }
 }
+
+/* A vocabulary word answered right moves on by itself (ui.js autoNextVocab): a quiet word says so. */
+.g-fb__auto { color: var(--ink-3); font-size: var(--ui-sm); font-weight: 400; }
