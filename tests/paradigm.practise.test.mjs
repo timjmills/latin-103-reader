@@ -192,3 +192,12 @@ test('Word Work says what the chapter teaches, offers columns, and finding a wor
   assert.match(UI, /const randomBtn = btn\('Random word'/, 'a random word');
   assert.match(UI, /if \(q\.length >= 4\) for \(const x of suggestPool\(\)\)/, 'a form on its way finds its word by the stem');
 });
+
+test('Word Work drills every grammar skill of the chapter, with a dropdown to move between them', () => {
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  assert.match(UI, /\['wwdrills', 'Skill drills'\]/, 'Word Work has the Skill drills tab');
+  assert.match(UI, /wwdrills: renderWordWorkDrills/);
+  assert.match(UI, /const wwSkillsOf = \(n\) => \[\.\.\.skills\.values\(\)\]\.filter\(\(sk\) => Number\(sk\.chapter\) === n && !sk\.set && !sk\.rev && sk\.title\)/, 'every grammar skill of the chapter');
+  assert.match(UI, /if \(from\?\.wordwork != null\) body\.prepend\(wwSkillBar\(Number\(from\.wordwork\), id\)\);/, 'the dropdown stays above a drill');
+  assert.match(UI, /if \(from\?\.wordwork != null\) \{ render\('wwdrills'/, 'a Word Work drill goes back to Word Work');
+});

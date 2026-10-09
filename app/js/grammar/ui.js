@@ -1077,13 +1077,15 @@ export function createUI(ctx) {
     const words = sectionMode() === 'words';
     root.dataset.drawnMode = words ? 'words' : 'grammar';   // index.js setSection: what the root holds now
     const nav = words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
-      [['wordwork', 'This chapter'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': view.name === v ? 'page' : null, onclick: () => render(v) }, label)))
+      [['wordwork', 'This chapter'], ['wwdrills', 'Skill drills'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn',
+        'aria-current': view.name === v || (v === 'wwdrills' && view.params?.from?.wordwork != null) ? 'page' : null,
+        onclick: () => render(v, v === 'paradigms' ? {} : { chapter: wwChapter() }) }, label)))
       : h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
       ['map', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
         { map: 'Skills', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
     document.title = words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
   }
@@ -2362,8 +2364,10 @@ export function createUI(ctx) {
     const note = retest ? `Three items on ${skill.title}, a little after you last met it: the first review, the same day.`
       : `${n} items, this skill only — its own sentences first, then ${drill.bank ? 'ones the app generates from the chapter\'s words, then ' : ''}the book's.${bankUnreachableNote(drill.bank, generatedUnreachable(id))} The rule stays at the top of each; feedback after every one.${drill.mode === 'learn' ? ' This skill is still in Learn, so these count towards its criterion.' : ''}`;
     runSession({ runner: drill.runner, title: retest ? `Re-test · ${skill.title}` : `Drill · ${skill.title}`, note, mode: drill.mode, hintOpen: false, onDone: (summary) => { if (retest) clearRetest(id); renderSummary(summary, { drill: id, size: n, retest, from }); } });
+    // A drill started in Word Work keeps the chapter's skills a choice away above it (wwSkillBar).
+    if (from?.wordwork != null) body.prepend(wwSkillBar(Number(from.wordwork), id));
   }
-  const nothingToDrill = (skill, from) => [h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: skill.title }), h('p', { class: 'g-lede', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' })), h('div', { class: 'g-acts' }, backButton(from, 'btn'))];
+  const nothingToDrill = (skill, from) => [from?.wordwork != null ? wwSkillBar(Number(from.wordwork), skill.id) : null, h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: skill.title }), h('p', { class: 'g-lede', text: 'No sentences fit this skill yet, so there is nothing to drill. Add the review shelf or another week and come back.' })), h('div', { class: 'g-acts' }, backButton(from, 'btn'))];
 
   /* ------------------------------------- unlimited and mixed practice (§11, §12) */
   /**
@@ -2881,14 +2885,17 @@ export function createUI(ctx) {
     const taught = [...skills.values()].filter((sk) => Number(sk.chapter) === n && !sk.set && !sk.rev && sk.title)
       .sort((x, y) => (y.paradigms?.length ? 1 : 0) - (x.paradigms?.length ? 1 : 0));
     const openLesson = (id) => { ctx.setMode?.('grammar'); render('lesson', { skill: id }); };
+    const drillHere = (id) => render('drill', { skill: id, from: { wordwork: n } });
     const taughtNode = h('section', { class: 'g-ww__taught', 'aria-labelledby': 'g-ww-taught' },
       h('h2', { id: 'g-ww-taught', class: 'g-ww__taughth' }, `Taught in Cap. ${c.roman}`, weekNs.length ? h('span', { class: 'g-quiet', text: ` · week ${weekNs.join(' and ')}` }) : null),
       taught.length
         ? h('ul', { class: 'g-ww__skills' }, taught.map((sk) => h('li', { class: 'g-ww__skill', 'data-forms': sk.paradigms?.length ? 'true' : null },
-          btn(sk.title, { onclick: () => openLesson(sk.id), 'aria-label': `${sk.title}: open its lesson in Grammar` }, 'g-link'),
-          h('span', { class: 'g-ww__skillnote', text: sk.paradigms?.length ? 'forms — practised below' : 'use — in Grammar' }))))
+          btn(sk.title, { onclick: () => drillHere(sk.id), 'aria-label': `${sk.title}: drill it here` }, 'g-link'),
+          h('span', { class: 'g-ww__skillnote', text: sk.paradigms?.length ? 'forms — in the tables below too' : 'how the forms are used' }),
+          btn('lesson', { onclick: () => openLesson(sk.id), 'aria-label': `${sk.title}: open its lesson in Grammar` }, 'g-link g-ww__lessonlink'))))
         : h('p', { class: 'g-quiet', text: 'No grammar skill is listed for this chapter.' }),
-      h('p', { class: 'g-ww__legend' }, h('span', { class: 'g-ww__swatch', 'aria-hidden': 'true' }), `In every table, the forms Cap. ${c.roman} teaches are marked like this.`));
+      h('p', { class: 'g-ww__legend' }, h('span', { class: 'g-ww__swatch', 'aria-hidden': 'true' }), `In every table, the forms Cap. ${c.roman} teaches are marked like this. A skill's name drills it here.`),
+      h('div', { class: 'g-acts' }, btn(`Skill drills for Cap. ${c.roman} →`, { onclick: () => render('wwdrills', { chapter: n }) }, 'btn')));
     const head = h('header', { class: 'g-head' },
       h('p', { class: 'g-kicker', text: weekNs.length ? `Word Work · week ${weekNs.join(' and ')}` : 'Word Work' }),
       h('h1', { class: 'g-title' }, `Cap. ${c.roman} · `, h('span', { lang: 'la', text: c.title })),
@@ -2953,6 +2960,59 @@ export function createUI(ctx) {
     }
     if (!scored.length) parts.unshift(h('p', { class: 'g-quiet g-ww__note', text: 'This chapter’s readings are not in your library yet, so the model words stand in.' }));
     setBody(head, parts, more);
+  }
+
+  /* ------------------------------------------------------- word work · skill drills */
+  /**
+   * **Skill drills** — Word Work's second tab (the learner, 2026-10-09: "have all of these types of skills appear
+   * in the word work for each chapter, for every grammar topic covered in that chapter; have a drop down menu so
+   * you can easily navigate"). Every grammar skill the chapter teaches — the forms (the imperfect subjunctive's
+   * chart) and their uses — in a dropdown, each drilled here with the Grammar section's own drill (renderDrill,
+   * `from: { wordwork: n }`), the same dropdown kept above the drill to move to another of the chapter's skills.
+   */
+  const wwChapter = () => { const n = Number(view.params?.chapter ?? view.params?.from?.wordwork ?? ctx.currentChapter?.() ?? 1); return bookChapter(n) ? n : (ctx.currentChapter?.() ?? 1); };
+  /** The grammar skills a chapter teaches: the ones with forms first, then their uses, in the map's own order. */
+  const wwSkillsOf = (n) => [...skills.values()].filter((sk) => Number(sk.chapter) === n && !sk.set && !sk.rev && sk.title)
+    .sort((x, y) => (y.paradigms?.length ? 1 : 0) - (x.paradigms?.length ? 1 : 0));
+  const wwSkillLabel = (sk) => `${sk.title}${sk.paradigms?.length ? ' · forms' : ''}${drillable(sk.id) ? '' : ' (nothing to drill yet)'}`;
+  /** The bar above a Word Work drill: the chapter's skills in a dropdown (choosing one starts it), and the way back. */
+  function wwSkillBar(n, current) {
+    const list = wwSkillsOf(n);
+    const select = h('select', { class: 'g-select', 'aria-label': `Cap. ${roman(n)}: drill another skill`, onchange: (ev) => { if (ev.target.value) render('drill', { skill: ev.target.value, from: { wordwork: n } }); } },
+      list.map((sk) => h('option', { value: sk.id, selected: sk.id === current ? true : null }, wwSkillLabel(sk))));
+    return h('div', { class: 'g-ww__bar' },
+      btn(`← Skill drills · Cap. ${roman(n)}`, { onclick: () => render('wwdrills', { chapter: n }) }, 'btn btn--quiet g-back'),
+      h('label', { class: 'g-ww__barlabel' }, h('span', { class: 'g-label', text: `Cap. ${roman(n)} skills` }), select));
+  }
+  function renderWordWorkDrills({ chapter: n = null } = {}) {
+    const here = ctx.currentChapter?.() ?? null;
+    n = Number(n ?? here ?? 1);
+    if (!bookChapter(n)) n = here ?? 1;
+    const c = bookChapter(n);
+    const list = wwSkillsOf(n);
+    const picker = h('select', { class: 'g-select', 'aria-label': 'Chapter', onchange: (ev) => render('wwdrills', { chapter: Number(ev.target.value) }) },
+      bookChapters().map((x) => h('option', { value: String(x.n), selected: x.n === n ? true : null }, `Cap. ${x.roman} · ${x.title}${x.n === here ? ' (where you are)' : ''}`)));
+    const first = list.find((sk) => drillable(sk.id)) ?? list[0] ?? null;
+    const skillPick = h('select', { class: 'g-select', 'aria-label': `Cap. ${c.roman}: the skill to drill` },
+      list.map((sk) => h('option', { value: sk.id, selected: sk === first ? true : null }, wwSkillLabel(sk))));
+    const go = (id) => render('drill', { skill: id, from: { wordwork: n } });
+    setBody(
+      h('header', { class: 'g-head' },
+        h('p', { class: 'g-kicker', text: 'Word Work · Skill drills' }),
+        h('h1', { class: 'g-title' }, `Cap. ${c.roman} · `, h('span', { lang: 'la', text: c.title })),
+        h('p', { class: 'g-lede', text: 'Every grammar skill this chapter teaches — its forms and how they are used — drilled one at a time: give the form, choose the reading, fill the chart. Pick one from the list; the list stays above the drill to move to another.' }),
+        h('div', { class: 'g-ww__controls' }, picker)),
+      list.length
+        ? [h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-wwd-pick' },
+          h('h2', { id: 'g-wwd-pick', class: 'g-h2', text: `Drill a skill of Cap. ${c.roman}` }),
+          h('div', { class: 'g-ww__pickrow' }, skillPick, btn('Start', { onclick: () => skillPick.value && go(skillPick.value) }, 'btn btn--primary'))),
+        h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-wwd-all' },
+          h('h2', { id: 'g-wwd-all', class: 'g-h2', text: 'All of them' }),
+          h('ul', { class: 'g-ww__drills' }, list.map((sk) => h('li', { class: 'g-ww__drill', 'data-forms': sk.paradigms?.length ? 'true' : null },
+            h('span', { class: 'g-ww__drilltitle', text: sk.title }),
+            h('span', { class: 'g-ww__skillnote', text: sk.paradigms?.length ? 'forms' : 'use' }),
+            drillable(sk.id) ? btn('Drill', { onclick: () => go(sk.id), 'aria-label': `Drill ${sk.title}` }, 'btn btn--quiet') : h('span', { class: 'g-quiet', text: 'nothing to drill yet' })))))]
+        : h('p', { class: 'g-quiet', text: `No grammar skill is listed for Cap. ${c.roman}. Its table work is on This chapter.` }));
   }
 
 
@@ -3552,12 +3612,13 @@ export function createUI(ctx) {
    * carries `from`.
    */
   function leaveTo(from) {
+    if (from?.wordwork != null) { render('wwdrills', { chapter: Number(from.wordwork) }); return; }   // a drill opened in Word Work goes back there
     // The shell's own router (`onChapterNav`): back to the chapter page, on its Grammar tab.
     if (from?.chapter != null && typeof ctx.openChapter === 'function') { ctx.openChapter(Number(from.chapter), 'grammar'); return; }
     if (from?.chapter != null) { mapView = 'chapter'; render('map', { chapter: Number(from.chapter) }); return; }
     render('map');
   }
-  const backLabel = (from) => (from?.chapter != null ? `← Cap. ${roman(Number(from.chapter))}` : '← Skills');
+  const backLabel = (from) => (from?.wordwork != null ? `← Skill drills · Cap. ${roman(Number(from.wordwork))}` : from?.chapter != null ? `← Cap. ${roman(Number(from.chapter))}` : '← Skills');
   const backButton = (from, cls = 'btn btn--quiet g-back') => btn(backLabel(from), { onclick: () => leaveTo(from) }, cls);
   function renderSummary(summary, params) {
     view = { name: 'summary', params };
