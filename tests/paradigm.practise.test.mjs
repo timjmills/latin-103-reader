@@ -172,3 +172,10 @@ test('Word Work is a section of its own, opened per chapter', () => {
   assert.match(WP, /if \(preset && !details\.dataset\.preset\)/);
   assert.match(UI, /fresh\.map\(\(x\) => card\(x, \(ch\) => ch === n\)\)/, 'New in Cap. N asks only that chapter');
 });
+
+test('a vocabulary word answered right moves on by itself; nothing else does', () => {
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  assert.match(UI, /if \(item\?\.kind !== 'vocab' \|\| !result\?\.correct \|\| result\.partial\) return;/, 'only a right vocabulary answer moves on');
+  assert.match(UI, /document\.addEventListener\('pointerdown', stop, true\)/, 'a touch anywhere keeps the word on screen');
+  assert.equal((UI.match(/autoNextVocab\(fb, /g) ?? []).length, 2, 'both the session and its short sub-set move on');
+});
