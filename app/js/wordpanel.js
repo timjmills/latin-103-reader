@@ -687,6 +687,8 @@ export function renderParadigm(p, opts = {}) {
       if (skills.length) {
         for (const x of sheet) x.ch = cellChapter(skills, entry, x.key);
         tagChapters(sheet);
+        // A chapter's Word Work marks the forms that chapter teaches (`opts.focus`), in every table on the page.
+        if (opts.focus != null) for (const x of sheet) if (x.ch === opts.focus) x.td.classList.add('is-focus');
       }
       details.dispatchEvent(new Event('paradigm:chapters'));   // also without chapters: a preset table still starts
     });

@@ -179,3 +179,16 @@ test('a vocabulary word answered right moves on by itself; nothing else does', (
   assert.match(UI, /document\.addEventListener\('pointerdown', stop, true\)/, 'a touch anywhere keeps the word on screen');
   assert.equal((UI.match(/autoNextVocab\(fb, (?:item|cur\.item), result, \(\) =>/g) ?? []).length, 2, 'both the session and its short sub-set move on');
 });
+
+test('Word Work says what the chapter teaches, offers columns, and finding a word needs no spelling', () => {
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  const WP = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
+  const GCSS = readFileSync(new URL('../app/css/grammar.css', import.meta.url), 'utf8');
+  assert.match(UI, /`Taught in Cap\. \$\{c\.roman\}`/, 'the chapter\'s skills box');
+  assert.match(WP, /if \(opts\.focus != null\) for \(const x of sheet\) if \(x\.ch === opts\.focus\) x\.td\.classList\.add\('is-focus'\);/, 'the chapter\'s forms are marked in each table');
+  assert.match(UI, /\[1, 2, 3\]\.map\(\(k\) => btn\(String\(k\)/, 'the columns control');
+  assert.match(GCSS, /\.g-ww__cards\[data-cols="2"\] \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
+  assert.match(UI, /role: 'combobox', 'aria-autocomplete': 'list'/, 'the search is a combobox with a list');
+  assert.match(UI, /const randomBtn = btn\('Random word'/, 'a random word');
+  assert.match(UI, /if \(q\.length >= 4\) for \(const x of suggestPool\(\)\)/, 'a form on its way finds its word by the stem');
+});
