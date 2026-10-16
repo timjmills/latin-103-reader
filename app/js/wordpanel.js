@@ -470,8 +470,13 @@ function practiseControls(details, { sheet, chapter, id, preset = null }) {
     mark(x, !typed ? '' : ok ? 'right' : 'wrong');
     score();
   };
+  // The cells in the order they are **on screen**. A stacked table (§26) reads down each block in turn, so the
+  // sheet's own order — along the table's rows — sent Enter from a block to the next and back at every box: on
+  // a phone, a page of scrolling each time (the learner, 2026-10-16: "it scrolls off the word and goes too far
+  // down"). Document order is the order either layout reads in, as the drill chart's boxKeys has it.
+  const onScreen = (xs) => [...xs].sort((a, b) => ((a.td.compareDocumentPosition(b.td) & 4 /* DOCUMENT_POSITION_FOLLOWING */) ? -1 : 1));
   const nextOpen = (x) => {
-    const all = cells().filter(on);
+    const all = onScreen(cells().filter(on));
     const i = all.indexOf(x);
     return [...all.slice(i + 1), ...all.slice(0, i)].find((y) => !done(y));
   };
@@ -552,7 +557,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null }) {
     score();
   });
   missesBtn.addEventListener('click', () => {
-    const misses = cells().filter(on).filter((x) => x.td.dataset.state === 'wrong' || x.td.dataset.state === 'shown');
+    const misses = onScreen(cells().filter(on)).filter((x) => x.td.dataset.state === 'wrong' || x.td.dataset.state === 'shown');
     for (const x of misses) { x.td.querySelector('.pt__in').value = ''; mark(x, ''); }
     score();
     misses[0]?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
