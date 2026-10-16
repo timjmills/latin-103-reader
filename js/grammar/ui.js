@@ -2673,10 +2673,19 @@ export function createUI(ctx) {
     let options = [];
     let active = -1;
     const gloss = (e) => String(e.senses?.[0] ?? '').split(/[;,(]/)[0].trim().slice(0, 40);
+    // The chosen word is kept in sight by scrolling the list alone. `scrollIntoView` scrolled the page too: on a
+    // phone, with the keyboard up, each letter typed carried the page down to the list and the box went off the
+    // top (the learner, 2026-10-16: "it scrolls off the word and goes too far down").
+    const showOpt = (li) => {
+      if (!li) return;
+      const top = li.offsetTop, bottom = top + li.offsetHeight;
+      if (top < list.scrollTop) list.scrollTop = top;
+      else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight;
+    };
     const setActive = (i) => {
       active = i;
       [...list.children].forEach((li, k) => li.setAttribute('aria-selected', String(k === i)));
-      if (i >= 0) { search.setAttribute('aria-activedescendant', `g-suggest-${i}`); list.children[i]?.scrollIntoView({ block: 'nearest' }); } else search.removeAttribute('aria-activedescendant');
+      if (i >= 0) { search.setAttribute('aria-activedescendant', `g-suggest-${i}`); showOpt(list.children[i]); } else search.removeAttribute('aria-activedescendant');
     };
     const close = () => { list.hidden = true; search.setAttribute('aria-expanded', 'false'); setActive(-1); };
     const suggest = () => {
@@ -2691,6 +2700,7 @@ export function createUI(ctx) {
         return li;
       }));
       list.hidden = !options.length;
+      list.scrollTop = 0;   // a new list starts at its first word
       search.setAttribute('aria-expanded', String(!!options.length));
       setActive(options.length ? 0 : -1);
     };
