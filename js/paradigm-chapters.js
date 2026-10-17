@@ -133,7 +133,11 @@ export function skillCovers(skill, entry, key) {
   const alt = p.voice === 'pass' && ['perf', 'plupf', 'futperf'].includes(p.tense) && (p.mood === 'ind' || p.mood === 'subj')
     ? { mood: 'ptc', tense: 'perf', voice: 'pass' } : null;
   for (const f of branches(skill.parse_filter)) {
-    if (!hasCellDims(f) || !wordFits(f, entry)) continue;
+    if (!wordFits(f, entry)) continue;
+    // A skill about a kind of word — a declension (decl), a set of pronouns (h) — names no forms: it is the
+    // whole table of a word it fits (the 4th declension's every case). One that names only a part of speech
+    // (principal parts: pos V) is not a table of forms at all.
+    if (!hasCellDims(f)) { if (f.decl != null || f.h != null) return true; continue; }
     for (const q of alt ? [p, alt] : [p]) {
       if (!dimsMatch(f, q)) continue;
       if (q.mood && NONFINITE.has(q.mood) && f.mood == null) continue;

@@ -543,7 +543,10 @@ async function boot() {
     const ww = mk('button', 'btn chapter__ww', `Word Work for Cap. ${c.roman}`);
     ww.type = 'button';
     ww.addEventListener('click', () => { routeTo(`#/words/${n}`); });
-    head.append(mk('p', 'chapter__kicker', `Cap. ${c.roman}`), h1, ww);
+    const sh = mk('button', 'btn btn--quiet chapter__ww', `Cheat sheet for Cap. ${c.roman}`);
+    sh.type = 'button';
+    sh.addEventListener('click', () => { routeTo(`#/sheets/${n}`); });
+    head.append(mk('p', 'chapter__kicker', `Cap. ${c.roman}`), h1, ww, sh);
     const tabs = mk('div', 'chapter__tabs');
     tabs.setAttribute('role', 'tablist');
     tabs.setAttribute('aria-label', `Chapter ${c.roman}`);
@@ -1129,6 +1132,7 @@ async function boot() {
       .then((g) => {
         if (!grammarRouted) return;
         if (view === 'words' && g?.openWordWork) g.openWordWork(chapterArg);
+        else if (view === 'sheets' && g?.openSheets) g.openSheets(chapterArg);
         else if (view === 'paradigms' && g?.openParadigms) g.openParadigms();
         else g?.open?.();
       })
@@ -1143,6 +1147,9 @@ async function boot() {
     // #/words, #/words/19: Word Work, on the reader's chapter or the one named (a chapter page's button).
     const words = /^#?\/words(?:\/(\d{1,2}))?\/?$/.exec(location.hash);
     if (words) { openGrammarSection('words', words[1] ? Number(words[1]) : null); return; }
+    // #/sheets, #/sheets/19: a chapter's cheat sheet.
+    const sheets = /^#?\/sheets(?:\/(\d{1,2}))?\/?$/.exec(location.hash);
+    if (sheets) { openGrammarSection('sheets', sheets[1] ? Number(sheets[1]) : null); return; }
     const route = parseChapterRoute(location.hash);
     const prog = route ? null : parseProgressRoute(location.hash);
     // Walking back out of #/grammar puts the reader back. Only the learner's own

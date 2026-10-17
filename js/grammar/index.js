@@ -280,12 +280,13 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   // a chapter's table practice (ui.js renderWordWork) and draws no Grammar tabs.
   /** Switch the header between Grammar and Word Work without drawing (a Back across the two: ui.js onPop draws). */
   ctx.setMode = (m) => {
-    if (m === 'words') document.documentElement.dataset.sectionMode = 'words'; else delete document.documentElement.dataset.sectionMode;
+    if (m === 'words' || m === 'sheets') document.documentElement.dataset.sectionMode = m; else delete document.documentElement.dataset.sectionMode;
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === m));
     try { localStorage.setItem(LS_SECTION, m); } catch { /* ignore */ }
   };
   function setSection(name, { focus = false, chapter = null } = {}) {
-    const mode = name === 'grammar' || name === 'words' ? name : 'read';
+    // Sheets (2026-10-17) is a fourth: a chapter's cheat sheet of charts, on the same root as Word Work.
+    const mode = ['grammar', 'words', 'sheets'].includes(name) ? name : 'read';
     const grammar = mode !== 'read';
     const was = document.documentElement.dataset.section;
     // What the root was last drawn as (ui.js draw sets it): leaving through Read does not change it, so
@@ -293,15 +294,16 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     const drawn = root.dataset.drawnMode ?? null;
     if (grammar && was !== 'grammar') { readerScroll = window.scrollY; readerTitle = document.title; }
     document.documentElement.dataset.section = grammar ? 'grammar' : 'read';
-    if (mode === 'words') document.documentElement.dataset.sectionMode = 'words'; else delete document.documentElement.dataset.sectionMode;
+    if (mode === 'words' || mode === 'sheets') document.documentElement.dataset.sectionMode = mode; else delete document.documentElement.dataset.sectionMode;
     layout.hidden = grammar;
     root.hidden = !grammar;
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === mode));
     try { localStorage.setItem(LS_SECTION, mode); } catch { /* ignore */ }
-    if (mode === 'words') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'words' || chapter != null || !root.querySelector('.g'))) ui.render('wordwork', chapter != null ? { chapter } : {}, { push: drawn === 'words' && was === 'grammar', focus: false }); else document.title = 'Word Work — Latin 103'; /* the page kept as it was: only the title was the reader's */ if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
-    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
+    if (mode === 'sheets') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'sheets' || chapter != null || !root.querySelector('.g'))) ui.render('sheets', chapter != null ? { chapter } : {}, { push: drawn === 'sheets' && was === 'grammar', focus: false }); else document.title = 'Sheets — Latin 103'; if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
+    else if (mode === 'words') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'words' || chapter != null || !root.querySelector('.g'))) ui.render('wordwork', chapter != null ? { chapter } : {}, { push: drawn === 'words' && was === 'grammar', focus: false }); else document.title = 'Word Work — Latin 103'; /* the page kept as it was: only the title was the reader's */ if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
+    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words' || root.dataset.drawnMode === 'sheets')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
     else {
-      document.title = readerTitle && !/^(Grammar|Word Work) — /.test(readerTitle) ? readerTitle : document.title.replace(/^(Grammar|Word Work) — /, '');
+      document.title = readerTitle && !/^(Grammar|Word Work|Sheets) — /.test(readerTitle) ? readerTitle : document.title.replace(/^(Grammar|Word Work|Sheets) — /, '');
       if (was === 'grammar') { const y = readerScroll; requestAnimationFrame(() => window.scrollTo({ top: y })); if (focus) document.querySelector('#reader h1, #main [tabindex="-1"], #main h2')?.focus?.({ preventScroll: true }); }
     }
   }
@@ -311,7 +313,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
 
   let last = 'read';
   try { last = localStorage.getItem(LS_SECTION) || 'read'; } catch { /* ignore */ }
-  if (last === 'grammar' || last === 'words') setSection(last);
+  if (last === 'grammar' || last === 'words' || last === 'sheets') setSection(last);
   else setSection('read');
 
   /**
@@ -348,6 +350,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     open: () => setSection('grammar'), close: () => setSection('read'), ctx,
     /** Open Word Work on a chapter's table practice (the header's third button, a chapter page, #/words/N); null: the reader's chapter. */
     openWordWork(chapter = null) { setSection('words', { chapter: chapter == null ? null : Number(chapter) }); },
+    /** Open Sheets on a chapter's cheat sheet (the header's fourth button, a chapter page, #/sheets/N). */
+    openSheets(chapter = null) { setSection('sheets', { chapter: chapter == null ? null : Number(chapter) }); },
     /** Open the section on its Paradigms page (the #/paradigms route): the whole-table practice on its own. */
     openParadigms() { setSection('grammar'); init().then(() => ui?.render('paradigms', {}, { push: false })); },
     /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */

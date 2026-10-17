@@ -27,12 +27,13 @@
 @media (min-width: 768px) {
   .bar__main { grid-template-columns: minmax(0, 1fr) auto auto auto; grid-template-areas: "week section view settings" "tools tools tools tools"; }
 }
-/* A phone under 390px has no room for the week, two section buttons and Passage / Sentence on one row:
-   the week button — the way to every other week — was clipped at 375px and squeezed out of sight at 320px.
-   There the section switch takes a row of its own under the week. */
-@media (max-width: 389.98px) {
+/* A phone has no room for the week, three section buttons and Passage / Sentence on one row: the week
+   button — the way to every other week — was squeezed to 32px on a 393px phone once Sheets came (2026-10-17),
+   and out of sight at 320px with two. Under 600px the section switch takes a row of its own under the week,
+   in the reader and in the sections alike. */
+@media (max-width: 599.98px) {
   html:not([data-section="grammar"]) .bar__main { grid-template-areas: "week week view view" "section section section section" "tools tools tools settings"; }
-  html:not([data-section="grammar"]) .seg--section { justify-self: start; }
+  .seg--section { justify-self: start; }
 }
 html[data-section="grammar"] .seg--view, html[data-section="grammar"] .bar__tools, html[data-section="grammar"] #hint-translation { display: none; }
 html[data-section="grammar"] .bar__main { grid-template-areas: "week week section settings" "tools tools tools tools"; }
@@ -1213,3 +1214,75 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 .g-ww__count { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: var(--ui-sm); }
 .g-ww__wordnav .g-ww__barlabel { flex: 1 1 12rem; }
 .g-ww__pickacts { margin: 0; }
+
+/* Sheets (ui.js renderSheets): a chapter's cheat sheet — the skills to switch on, then one card a skill, the
+   charts side by side on a wide screen. */
+#grammar .g:has(.g-sheet) { max-width: 78rem; }
+.g-sheet__toggles { display: grid; gap: var(--s-2); margin-bottom: var(--s-5); padding-bottom: var(--s-4); border-bottom: 1px solid var(--line); }
+.g-sheet__group { display: grid; gap: var(--s-2); }
+.g-sheet__groupsum { cursor: pointer; font-size: var(--ui-sm); color: var(--ink-2); min-height: 36px; display: flex; align-items: center; }
+@media (pointer: coarse) { .g-sheet__groupsum { min-height: var(--tap); } }
+.g-sheet__earlier { display: grid; gap: var(--s-2); }
+.g-sheet__earlier > .g-sheet__group { margin-left: var(--s-3); }
+.g-sheet__chip[aria-pressed="false"] { color: var(--ink-3); }
+.g-sheet { display: grid; gap: var(--s-6); }
+.g-sheet__card { display: grid; gap: var(--s-2); padding: var(--s-4); border: 1px solid var(--line-strong); border-left: 4px solid var(--rubric); border-radius: var(--radius); background: var(--bg-raised); min-width: 0; }
+.g-sheet__card:not([data-forms]) { border-left-color: var(--line-strong); }
+.g-sheet__title { margin: 0; font-family: var(--face-reading); font-size: 1.3rem; font-weight: 400; }
+.g-sheet__cap { font-family: var(--face-ui); font-size: var(--ui-sm); color: var(--ink-3); }
+.g-sheet__plain { margin: 0; color: var(--ink-2); }
+.g-sheet__how { margin: 0; max-width: 70ch; }
+.g-sheet__howlabel { font-weight: 600; color: var(--rubric-ink); }
+.g-sheet__charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: var(--s-4); align-items: start; min-width: 0; }
+.g-sheet__chart { min-width: 0; }
+.g-sheet__chart .g-lesson__pt .paradigm { max-width: none; }
+.g-sheet__word { margin: 0 0 var(--s-1); }
+.g-sheet__lemma { font-family: var(--face-reading); font-size: 1.05rem; }
+.g-sheet__examples { display: grid; gap: var(--s-2); margin: 0; padding-left: 1.2em; }
+.g-sheet__la { display: block; font-family: var(--face-reading); font-size: 1.1rem; }
+.g-sheet__en { display: block; color: var(--ink-3); font-size: var(--ui-sm); }
+.g-sheet__focus { background: var(--rubric-soft); color: var(--ink); box-shadow: inset 0 -2px 0 var(--rubric); padding-inline: 1px; }
+.g-sheet__empty[hidden] { display: none; }
+@media print {
+  .bar, .g-nav, .g-sheet__toggles, .g-ww__controls, .g-sheet__more, .paradigm__summary::before { display: none !important; }
+  .g-sheet__card { break-inside: avoid; border-left-width: 3px; }
+  #grammar .g:has(.g-sheet) { max-width: none; padding: 0; }
+}
+
+/* In the sections three buttons and Aa share the week's row; that holds from 375px, but a 320px phone squeezed
+   the week to 49px, so there the switch drops under it (after the 767px rule above, which it must outrank). */
+@media (max-width: 359.98px) {
+  html[data-section="grammar"] .bar__main { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "week settings" "section section"; }
+}
+
+.g-sheet ~ * , .g-head .g-ww__controls .g-select { max-width: 40rem; }
+#grammar .g:has(.g-sheet) .g-head, #grammar .g:has(.g-sheet) .g-sheet__toggles > p { max-width: 44rem; }
+.g-sheet__chip[aria-pressed="true"] { background: var(--bg-chrome); color: var(--ink); border-color: var(--ink-2); }
+.g-sheet__chip[aria-pressed="true"]::before { content: "✓ "; color: var(--success); font-weight: 700; }
+
+/* A Sheets chart reads down its columns: the stem quiet, the ending in the accent and a step bolder, every row the
+   same height so a stem lines up with the one above it; the English under each form stays small. */
+.g-sheet .pt__stem { color: var(--ink-2); }
+.g-sheet .pt__ending { color: var(--rubric-ink); font-weight: 700; }
+.g-sheet .pt__cell { vertical-align: top; }
+.g-sheet .pt__en { font-size: 0.72rem; }
+.g-sheet .pt tbody th { color: var(--ink); font-weight: 500; }
+
+/* Sheets' colours, one meaning each (2026-10-17): a verb's stem quiet, its tense / mood sign in the blue the app
+   gives grammar, its personal ending in the rubric; a noun's case rows each their own soft tint, the same case the
+   same tint in every chart, so the declensions line up side by side. Built from the palette's own tokens, so the
+   dark theme follows. */
+.g-sheet .pt__sign { color: var(--glow-ink); font-weight: 700; background: var(--glow-bg); border-radius: 2px; padding-inline: 1px; }
+.g-sheet .pt__person, .g-sheet__key .pt__person { color: var(--rubric-ink); font-weight: 700; }
+.g-sheet__key .pt__sign { color: var(--glow-ink); font-weight: 700; background: var(--glow-bg); border-radius: 2px; padding-inline: 2px; }
+.g-sheet__key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); margin: var(--s-1) 0 var(--s-2); font-size: var(--ui-sm); color: var(--ink-3); }
+.g-sheet__keyitem { white-space: nowrap; }
+.g-sheet__case { padding: 0.1em 0.55em; border-radius: var(--radius-sm); color: var(--ink); font-size: var(--ui-xs); }
+.g-sheet [data-case="nom"] { background: oklch(from var(--glow-bg) l c h / 0.9); }
+.g-sheet [data-case="gen"] { background: oklch(from var(--success) l c h / 0.12); }
+.g-sheet [data-case="dat"] { background: oklch(from var(--underline) l c h / 0.28); }
+.g-sheet [data-case="acc"] { background: var(--rubric-soft); }
+.g-sheet [data-case="abl"] { background: oklch(from var(--glow-ink) l c h / 0.12); }
+.g-sheet [data-case="voc"] { background: var(--bg-chrome); }
+.g-sheet td.pt__cell[data-case] .pt__ending { color: var(--ink); }
+.g-sheet td.pt__cell[data-case].is-focus { box-shadow: inset 3px 0 0 var(--rubric); }

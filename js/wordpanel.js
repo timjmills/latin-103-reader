@@ -312,11 +312,35 @@ export function fitParadigm(scroll, table) {
   st.watch(table);
 }
 
-/** One paradigm cell: stem‑ending, an alternate after " / ", an em dash when empty. */
-function cellContent(c) {
+/**
+ * A finite verb's ending split into its two jobs (Sheets, 2026-10-17: "use highlight and color to your
+ * advantage"): the tense / mood sign and the vowel that joins it (the -bā- of amābam, the -ē- of amem, the -i- of
+ * regit) and the personal ending (-m, -s, -t, -mus, -tis, -nt; -r, -ris, -tur, -mur, -minī, -ntur; the perfect's
+ * -ī, -istī, -it …). { sign, person }, the sign '' when the ending is the personal ending alone. Pure.
+ */
+const PERSON_ENDINGS = ['ntur', 'minī', 'mini', 'mur', 'tur', 'ris', 'nt', 'tis', 'mus', 'or', 'ō', 'o', 'm', 's', 't', 'r'];
+const PERFECT_ENDINGS = ['ērunt', 'ēre', 'istis', 'imus', 'istī', 'it', 'ī'];
+export function splitEnding(ending, key) {
+  const e = String(ending ?? '');
+  if (!e || key?.kind !== 'finite') return { sign: '', person: e };
+  if (key.tense === 'perf' && key.mood === 'ind' && key.voice === 'act') {
+    const p = PERFECT_ENDINGS.find((x) => e.endsWith(x));
+    return p ? { sign: e.slice(0, e.length - p.length), person: p } : { sign: '', person: e };
+  }
+  const p = PERSON_ENDINGS.find((x) => e.endsWith(x) && e.length >= x.length);
+  return p ? { sign: e.slice(0, e.length - p.length), person: p } : { sign: '', person: e };
+}
+
+/** One paradigm cell: stem‑ending, an alternate after " / ", an em dash when empty. `segment`: a verb's ending in its two parts. */
+function cellContent(c, segment = false) {
   if (!c || c.empty || (c.text === '—' && !c.ending)) return '—';
+  let ending = [h('span', { class: 'pt__ending', text: c.ending })];
+  if (segment && c.ending && c.key?.kind === 'finite') {
+    const { sign, person } = splitEnding(c.ending, c.key);
+    ending = [sign ? h('span', { class: 'pt__ending pt__sign', text: sign }) : null, h('span', { class: 'pt__ending pt__person', text: person })];
+  }
   const main = c.stem != null && c.ending != null && (c.stem || c.ending)
-    ? [c.stem ? h('span', { class: 'pt__stem', text: c.stem }) : null, h('span', { class: 'pt__ending', text: c.ending })]
+    ? [c.stem ? h('span', { class: 'pt__stem', text: c.stem }) : null, ...ending]
     : [c.text ?? '—'];
   return c.alt ? [...main, h('span', { class: 'pt__alt', text: ` / ${c.alt}` })] : main;
 }
@@ -646,7 +670,7 @@ export function renderParadigm(p, opts = {}) {
   const entry = opts.english ? (p.entry ?? null) : null;
   const details = h('details', { class: 'paradigm' },
     h('summary', { class: 'paradigm__summary' },
-      h('span', { class: 'paradigm__label' }, 'Full paradigm', p.title ? h('span', { class: 'paradigm__title', lang: 'la', text: ` — ${p.title}` }) : null)));
+      h('span', { class: 'paradigm__label' }, opts.label ?? 'Full paradigm', p.title ? h('span', { class: 'paradigm__title', lang: 'la', text: ` — ${p.title}` }) : null)));
   if (p.note) details.append(h('p', { class: 'paradigm__note', text: p.note }));
   // `opts.only(key)`: the table is one skill's (Word Work's whole-table drill) — only the cells it keeps are asked,
   // and a section with none of them is left out.
@@ -654,6 +678,22 @@ export function renderParadigm(p, opts = {}) {
   const asked = (c) => !c.empty && (!only || only(c.key));
   const practise = !!opts.practise && (p.sections ?? []).some((s) => (s.rows ?? []).some((r) => r.cells.some((c) => asked(c) && cellAnswers(c).length)));
   const sheet = [];   // every value cell: { td, th, caption, section, row, key, answers, label, ch }
+  // `opts.resplit` (Sheets): the subjunctives built on an infinitive are split where they are made — the imperfect
+  // on the present active infinitive (excitāre-m, excitārē-s, esse-m), the pluperfect active on the perfect
+  // (amāvisse-m) — so the chart shows the rule its card states, not the dictionary's stem (excit-ārem).
+  const infOf = {};
+  if (opts.resplit) for (const sec of p.sections ?? []) for (const r of sec.rows ?? []) for (const c of r.cells) {
+    if (c.key?.kind === 'inf' && c.key.voice === 'act' && !c.empty && c.text) infOf[c.key.tense] = String(c.text).split(' / ')[0];
+  }
+  const fold = (x) => String(x ?? '').normalize('NFD').replace(/\p{Mn}/gu, '').toLowerCase();
+  const resplit = (c) => {
+    const k = c?.key;
+    if (!opts.resplit || c.empty || k?.kind !== 'finite' || k.mood !== 'subj' || c.alt) return c;
+    const inf = k.tense === 'impf' ? infOf.pres : k.tense === 'plupf' && k.voice === 'act' ? infOf.perf : null;
+    const text = String(c.text ?? '');
+    if (!inf || text.includes(' ') || !fold(text).startsWith(fold(inf)) || text.length <= inf.length) return c;
+    return { ...c, stem: text.slice(0, inf.length), ending: text.slice(inf.length) };
+  };
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
@@ -672,11 +712,14 @@ export function renderParadigm(p, opts = {}) {
     for (const r of s.rows) {
       const th = h('th', { scope: 'row', text: r.label });
       body.append(h('tr', {}, th,
-        r.cells.map((c, ci) => {
+        r.cells.map((c0, ci) => {
+          const c = resplit(c0);
           const en = entry && !c.empty ? cellMeaning(entry, c.key) : '';
           const answers = practise && asked(c) ? cellAnswers(c) : [];
-          const td = h('td', { class: 'pt__cell' + (c.hit ? ' is-hit' : '') + (c.empty ? ' is-empty' : ''), lang: 'la' },
-            en || answers.length ? h('span', { class: 'pt__form' }, cellContent(c)) : cellContent(c),
+          // `opts.mark(key)` (a Sheets chart): the forms of the skill on the sheet, marked as Word Work marks a chapter's.
+          const marked = typeof opts.mark === 'function' && !c.empty && c.key && opts.mark(c.key);
+          const td = h('td', { class: 'pt__cell' + (c.hit ? ' is-hit' : '') + (c.empty ? ' is-empty' : '') + (marked ? ' is-focus' : ''), lang: 'la', 'data-case': opts.segment && c.key?.kind === 'nominal' ? c.key.case : null },
+            en || answers.length ? h('span', { class: 'pt__form' }, cellContent(c, !!opts.segment)) : cellContent(c, !!opts.segment),
             en ? h('span', { class: 'pt__en', lang: 'en', text: en }) : null);
           if (!c.empty && c.key) {
             // What a screen reader hears for the box: where it is in the table, and its English.
@@ -696,7 +739,7 @@ export function renderParadigm(p, opts = {}) {
     loadFormSkills().then((skills) => {
       if (skills.length) {
         for (const x of sheet) x.ch = cellChapter(skills, entry, x.key);
-        tagChapters(sheet);
+        if (opts.tags !== false) tagChapters(sheet);   // a Sheets chart names its chapter once, on the card
         // A chapter's Word Work marks the forms that chapter teaches (`opts.focus`), in every table on the page.
         if (opts.focus != null) for (const x of sheet) if (x.ch === opts.focus) x.td.classList.add('is-focus');
       }

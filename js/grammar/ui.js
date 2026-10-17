@@ -67,7 +67,7 @@ const PRESET_LABEL = {
 };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 /** Which of the two sections on this root is showing: 'words' (Word Work) or 'grammar'. */
-const sectionMode = () => (document.documentElement.dataset.sectionMode === 'words' ? 'words' : 'grammar');
+const sectionMode = () => { const m = document.documentElement.dataset.sectionMode; return m === 'words' || m === 'sheets' ? m : 'grammar'; };
 /**
  * What an item says about where its sentence came from (`item.scope`, set by
  * the generators through chapter.js's `scopeNote`). A chapter's practice
@@ -1075,8 +1075,9 @@ export function createUI(ctx) {
   function draw() {
     // Word Work (html[data-section-mode="words"]) draws its own two tabs, not Grammar's five.
     const words = sectionMode() === 'words';
-    root.dataset.drawnMode = words ? 'words' : 'grammar';   // index.js setSection: what the root holds now
-    const nav = words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
+    const sheets = sectionMode() === 'sheets';
+    root.dataset.drawnMode = sectionMode();   // index.js setSection: what the root holds now
+    const nav = sheets ? null : words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
       [['wordwork', 'This chapter'], ['wwdrills', 'Skill drills'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn',
         'aria-current': view.name === v || (v === 'wwdrills' && (view.params?.from?.wordwork != null || view.name === 'wwtable')) ? 'page' : null,
         onclick: () => render(v, v === 'paradigms' ? {} : { chapter: wwChapter() }) }, label)))
@@ -1085,9 +1086,9 @@ export function createUI(ctx) {
         { map: 'Skills', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, stats: renderStats, history: renderHistory, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, sheets: renderSheets, stats: renderStats, history: renderHistory, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(view.params);
-    document.title = words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
+    document.title = sheets ? 'Sheets — Latin 103' : words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
   }
   /** Show a view. Each is a history entry (Back walks the section's views; a session in progress resumes); the new heading takes focus. */
   function render(name, params = {}, { push = true, focus = true } = {}) {
@@ -3061,6 +3062,161 @@ export function createUI(ctx) {
         h('div', { class: 'g-lesson__pt' }, node)),
       h('div', { class: 'g-acts' }, next.cloneNode(true)));
     body.querySelector('.g-acts:last-child .btn')?.addEventListener('click', () => step(1));
+  }
+
+  /* ------------------------------------------------------- sheets */
+  /**
+   * **Sheets** — a chapter's cheat sheet (the learner, 2026-10-17: "a cheat sheet for each unit … the key
+   * grammar / morphology charts for that chapter / week … click it on or off for each skill … with an example or
+   * two … one scrolling page of the morphology charts that are easy to read, to see the stems and differences …
+   * a short explanation of the transformation"; "needs to show all forms of that particular skill").
+   *
+   * One card a skill, on one scrolling page. A skill with forms gets its rule — how the form is made — and every
+   * form it covers (paradigm-chapters.js skillCovers), charted on the book's model word and up to two words of
+   * the chapter's own reading side by side, each form with its English, the stem plain and the ending lit, the
+   * skill's own forms marked; "More examples" adds three words at a time. A skill about how the forms are used
+   * (a purpose clause) gets its rule and two of its sentences, the key word marked, with their English.
+   * The chapter's skills start on, every earlier chapter's are offered off, grouped by chapter; the choice is
+   * kept per chapter on the device.
+   */
+  const LS_SHEET = 'l103.sheets.';
+  const sheetOn = (n, fallback) => { try { const v = JSON.parse(localStorage.getItem(LS_SHEET + n) ?? 'null'); return Array.isArray(v) ? new Set(v) : new Set(fallback); } catch { return new Set(fallback); } };
+  const saveSheet = (n, on) => { try { localStorage.setItem(LS_SHEET + n, JSON.stringify([...on])); } catch { /* the choice just is not kept */ } };
+  /** The words a sheet charts a skill on: the model word, then the chapter's own words it applies to, then the rest. */
+  async function sheetWords(n, sk) {
+    const model = (() => { try { return entryForKey(sk.paradigms?.[0], sk); } catch { return null; } })();
+    const fits = (e) => { const t = tableOf(e); if (!t) return false; for (const sec of t.sections) for (const r of sec.rows) for (const c of r.cells) if (!c.empty && c.key && skillCovers(sk, e, c.key)) return true; return false; };
+    const out = [];
+    const seen = new Set();
+    const add = (e) => { if (!e) return; const k = `${e.h}|${e.pos}`; if (seen.has(k) || !fits(e)) return; seen.add(k); out.push(e); };
+    add(model);
+    // A skill that names its words (ego, tū, sē; hic, ille, is) charts each of them, in its own order.
+    for (const f of Array.isArray(sk.parse_filter) ? sk.parse_filter : sk.parse_filter ? [sk.parse_filter] : []) {
+      for (const w of [].concat(f.h ?? [])) add(tableEntries(w).find((e) => e.h === w) ?? null);
+    }
+    let words = [];
+    try { words = await chapterWords(n); } catch { words = []; }
+    for (const x of words) add(x.e);
+    for (const e of await skillWords(n, sk)) add(e);
+    // Side by side, a chart teaches most when its neighbours are other patterns (fīlia beside servus beside rēx,
+    // not three of the first declension): a new type first, the model word leading; the rest after.
+    const types = new Set();
+    const fresh = [];
+    const rest = [];
+    const named = new Set((Array.isArray(sk.parse_filter) ? sk.parse_filter : [sk.parse_filter]).flatMap((f) => [].concat(f?.h ?? [])));
+    for (const e of out) { const t = named.has(e.h) ? `h:${e.h}` : typeOf(e)?.name ?? e.pos; if (!types.has(t)) { types.add(t); fresh.push(e); } else rest.push(e); }
+    return [...fresh, ...rest];
+  }
+  async function renderSheets({ chapter: n = null } = {}) {
+    const here = ctx.currentChapter?.() ?? null;
+    n = Number(n ?? here ?? 1);
+    if (!bookChapter(n)) n = here ?? 1;
+    const c = bookChapter(n);
+    const seq = ++wwSeq;
+    const ofChapter = (k) => wwSkillsOf(k);
+    const mine = ofChapter(n);
+    const on = sheetOn(n, mine.map((sk) => sk.id));
+    const weekNs = (c.weeks ?? []).filter((w) => w < 100);
+    const picker = h('select', { class: 'g-select', 'aria-label': 'Chapter', onchange: (ev) => render('sheets', { chapter: Number(ev.target.value) }) },
+      bookChapters().map((x) => h('option', { value: String(x.n), selected: x.n === n ? true : null }, `Cap. ${x.roman} · ${x.title}${x.n === here ? ' (where you are)' : ''}`)));
+    const sheet = h('div', { class: 'g-sheet' });
+    const cards = new Map();   // skill id → its card, built once and shown or hidden as it is switched
+    const order = [];
+    for (let k = 1; k <= n; k++) for (const sk of ofChapter(k)) order.push(sk);
+    const chip = (sk) => {
+      const b = btn(sk.title, { 'aria-pressed': String(on.has(sk.id)), 'data-skill': sk.id, onclick: () => { if (on.has(sk.id)) on.delete(sk.id); else on.add(sk.id); saveSheet(n, on); paint(); } }, 'g-chip g-sheet__chip');
+      return b;
+    };
+    const group = (k, open) => {
+      const list = ofChapter(k);
+      if (!list.length) return null;
+      const chips = h('div', { class: 'g-chips' }, list.map(chip));
+      if (k === n) return h('div', { class: 'g-sheet__group' }, h('p', { class: 'g-label', text: `Cap. ${roman(k)} — this chapter` }), chips);
+      return h('details', { class: 'g-sheet__group', open: open ? true : null }, h('summary', { class: 'g-sheet__groupsum', text: `Cap. ${roman(k)} · ${bookChapter(k)?.title ?? ''}` }), chips);
+    };
+    const earlier = [];
+    for (let k = n - 1; k >= 1; k--) { const g = group(k, ofChapter(k).some((sk) => on.has(sk.id))); if (g) earlier.push(g); }
+    const quick = h('div', { class: 'g-acts' },
+      btn('Only this chapter', { onclick: () => { on.clear(); for (const sk of mine) on.add(sk.id); saveSheet(n, on); paint(); } }, 'btn btn--quiet'),
+      btn('Everything so far', { onclick: () => { for (const sk of order) on.add(sk.id); saveSheet(n, on); paint(); } }, 'btn btn--quiet'),
+      btn('Print', { onclick: () => window.print() }, 'btn btn--quiet'));
+    const toggles = h('section', { class: 'g-sheet__toggles', 'aria-labelledby': 'g-sheet-on' },
+      h('h2', { id: 'g-sheet-on', class: 'g-h2', text: 'On this sheet' }),
+      h('p', { class: 'g-quiet', text: 'Switch a skill on or off; earlier chapters are below. Your choice is kept for this chapter.' }),
+      group(n, true),
+      earlier.length ? h('details', { class: 'g-sheet__earlier' }, h('summary', { class: 'g-sheet__groupsum', text: `Earlier chapters (${earlier.length})` }), earlier) : null,
+      quick);
+    const empty = h('p', { class: 'g-quiet g-sheet__empty', text: 'Nothing is switched on. Choose a skill above.' });
+    setBody(
+      h('header', { class: 'g-head' },
+        h('p', { class: 'g-kicker', text: weekNs.length ? `Sheets · week ${weekNs.join(' and ')}` : 'Sheets' }),
+        h('h1', { class: 'g-title' }, `Cap. ${c.roman} · `, h('span', { lang: 'la', text: c.title })),
+        h('p', { class: 'g-lede', text: 'The chapter’s charts on one page: how each form is made, every form of it on a model word and words from the reading, the stem plain and the ending lit.' }),
+        h('div', { class: 'g-ww__controls' }, picker)),
+      toggles, empty, sheet);
+    if (!mine.length) toggles.prepend(h('p', { class: 'g-quiet', text: `Cap. ${c.roman} lists no grammar skill of its own; switch on an earlier chapter’s below.` }));
+
+    const skillsReady = loadFormSkills();
+    async function buildCard(sk) {
+      const card = h('article', { class: 'g-sheet__card', 'data-forms': sk.paradigms?.length ? 'true' : null, 'aria-labelledby': `g-sheet-${sk.id}` },
+        h('h2', { class: 'g-sheet__title', id: `g-sheet-${sk.id}` }, sk.title, h('span', { class: 'g-sheet__cap', text: ` · cap. ${roman(Number(sk.chapter))}` })),
+        sk.plain ? h('p', { class: 'g-sheet__plain', text: sk.plain }) : null,
+        sk.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: sk.paradigms?.length ? 'How it is made ' : 'How it works ' }), prose(sk.summary)) : null);
+      if (sk.paradigms?.length) {
+        await skillsReady;
+        const words = await sheetWords(n, sk);
+        const charts = h('div', { class: 'g-sheet__charts' });
+        let shown = 0;
+        const more = btn('More examples', {}, 'btn btn--quiet g-sheet__more');
+        const show = (k) => {
+          for (const e of words.slice(shown, shown + k)) {
+            const t = tableOf(e);
+            const node = t && renderParadigm(t, { english: true, label: headOf(e), only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true });
+            if (!node) continue;
+            node.open = true;
+            // The mark says which forms are the skill's; on a chart that is nothing but the skill's, it says nothing.
+            const cellsHere = [...node.querySelectorAll('td.pt__cell:not(.is-empty)')];
+            if (cellsHere.length && cellsHere.every((td) => td.classList.contains('is-focus'))) cellsHere.forEach((td) => td.classList.remove('is-focus'));
+            charts.append(h('div', { class: 'g-sheet__chart' }, h('div', { class: 'g-lesson__pt' }, node)));   // the table's own heading names the word and its type
+          }
+          shown = Math.min(words.length, shown + k);
+          more.hidden = shown >= words.length;
+        };
+        more.addEventListener('click', () => show(3));
+        show(3);
+        // What the colours mean, said on the card that uses them: a verb's three parts, or a noun's cases.
+        const verbal = words.some((w) => w.pos === 'V' || w.pos === 'VPAR');
+        const key = verbal
+          ? h('p', { class: 'g-sheet__key' }, h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__stem', lang: 'la', text: 'stem' })), ' + ',
+            h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__sign', text: 'tense / mood sign' })), ' + ',
+            h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__person', text: 'personal ending' })))
+          : h('p', { class: 'g-sheet__key' }, ['nom', 'gen', 'dat', 'acc', 'abl', 'voc'].map((cs) => h('span', { class: 'g-sheet__case', 'data-case': cs, text: { nom: 'nominative', gen: 'genitive', dat: 'dative', acc: 'accusative', abl: 'ablative', voc: 'vocative' }[cs] })));
+        card.append(key, words.length ? charts : h('p', { class: 'g-quiet', text: 'No word with a table fits this skill.' }), more);
+      } else {
+        let sents = [];
+        try { sents = (await loadSentences(sk.id))?.sentences ?? []; } catch { sents = []; }
+        const two = sents.filter((x) => x.la).slice(0, 2);
+        const mark = (la, focus) => {
+          if (!focus) return la;
+          const i = la.indexOf(focus);
+          return i < 0 ? la : [la.slice(0, i), h('mark', { class: 'g-sheet__focus', text: focus }), la.slice(i + focus.length)];
+        };
+        if (two.length) card.append(h('ul', { class: 'g-sheet__examples' }, two.map((x) => h('li', {},
+          h('span', { class: 'g-sheet__la', lang: 'la' }, mark(x.la, x.focus)),
+          x.en ? h('span', { class: 'g-sheet__en', text: x.en }) : null))));
+      }
+      return card;
+    }
+    async function paint() {
+      for (const b of toggles.querySelectorAll('[data-skill]')) b.setAttribute('aria-pressed', String(on.has(b.dataset.skill)));
+      const want = order.filter((sk) => on.has(sk.id));
+      empty.hidden = !!want.length;
+      for (const sk of want) if (!cards.has(sk.id)) cards.set(sk.id, buildCard(sk));
+      const built = await Promise.all(want.map((sk) => cards.get(sk.id)));
+      if (seq !== wwSeq || view.name !== 'sheets') return;
+      sheet.replaceChildren(...built);   // in chapter order, then the map's own order within a chapter
+    }
+    paint();
   }
 
   function renderWordWorkDrills({ chapter: n = null } = {}) {
