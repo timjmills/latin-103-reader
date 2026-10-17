@@ -163,7 +163,7 @@ test('Word Work is a section of its own, opened per chapter', () => {
   const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
   assert.match(HTML, /data-section="words"[^>]*aria-label="Word Work"/, 'the header has the third button');
   assert.match(IDX, /openWordWork\(chapter = null\)/);
-  assert.match(IDX, /if \(last === 'grammar' \|\| last === 'words'\) setSection\(last\);/, 'Word Work is remembered like Grammar');
+  assert.match(IDX, /if \(last === 'grammar' \|\| last === 'words' \|\| last === 'sheets'\) setSection\(last\);/, 'Word Work and Sheets are remembered like Grammar');
   assert.match(UI, /wordwork: renderWordWork/);
   assert.ok(MAIN.includes("openGrammarSection('words'"), 'the #/words/N route is gone');
   assert.ok(MAIN.includes('routeTo(`#/words/${n}`)'), 'the chapter page lost its Word Work button');
@@ -217,4 +217,22 @@ test('a skill drills as its whole table, word after word', async () => {
   assert.match(UI, /only: \(key\) => skillCovers\(sk, e, key\), preset: \(\) => true/, 'only the skill\'s cells, practice already on');
   const WP = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
   assert.match(WP, /if \(only && !\(s\.rows \?\? \[\]\)\.some\(\(r\) => r\.cells\.some\(asked\)\)\) return;/, 'sections without the skill are left out');
+});
+
+test('Sheets: a chapter\'s charts on one page, each form split so its parts can be coloured', async () => {
+  const { splitEnding } = await import('../app/js/wordpanel.js');
+  const k = (tense, mood = 'ind', voice = 'act') => ({ kind: 'finite', tense, mood, voice });
+  assert.deepEqual(splitEnding('ābam', k('impf')), { sign: 'āba', person: 'm' });
+  assert.deepEqual(splitEnding('ābāmus', k('impf')), { sign: 'ābā', person: 'mus' });
+  assert.deepEqual(splitEnding('ētur', k('pres', 'subj', 'pass')), { sign: 'ē', person: 'tur' });
+  assert.deepEqual(splitEnding('istī', k('perf')), { sign: '', person: 'istī' }, 'the perfect\'s own endings stay whole');
+  assert.deepEqual(splitEnding('eram', k('plupf')), { sign: 'era', person: 'm' });
+  assert.deepEqual(splitEnding('ō', k('pres')), { sign: '', person: 'ō' });
+  const HTML = readFileSync(new URL('../app/index.html', import.meta.url), 'utf8');
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
+  assert.match(HTML, /data-section="sheets"[^>]*>Sheets</, 'the header has Sheets');
+  assert.match(UI, /sheets: renderSheets/);
+  assert.ok(MAIN.includes("openGrammarSection('sheets'"), 'the #/sheets/N route');
+  assert.match(UI, /resplit: true, tags: false, segment: true/, 'a sheet chart splits the subjunctive on its infinitive and colours the parts');
 });
