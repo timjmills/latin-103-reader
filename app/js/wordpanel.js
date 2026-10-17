@@ -318,16 +318,19 @@ export function fitParadigm(scroll, table) {
  * regit) and the personal ending (-m, -s, -t, -mus, -tis, -nt; -r, -ris, -tur, -mur, -minī, -ntur; the perfect's
  * -ī, -istī, -it …). { sign, person }, the sign '' when the ending is the personal ending alone. Pure.
  */
-const PERSON_ENDINGS = ['ntur', 'minī', 'mini', 'mur', 'tur', 'ris', 'nt', 'tis', 'mus', 'or', 'ō', 'o', 'm', 's', 't', 'r'];
+// Chosen by voice: an active -ris is the future perfect's eri-s, not the passive -ris.
+const PERSON_ACTIVE = ['nt', 'tis', 'mus', 'ō', 'o', 'm', 's', 't'];
+const PERSON_PASSIVE = ['ntur', 'minī', 'mini', 'mur', 'tur', 'ris', 're', 'or', 'r'];
 const PERFECT_ENDINGS = ['ērunt', 'ēre', 'istis', 'imus', 'istī', 'it', 'ī'];
 export function splitEnding(ending, key) {
   const e = String(ending ?? '');
-  if (!e || key?.kind !== 'finite') return { sign: '', person: e };
+  // A compound (amātus sum, amātī erant) is a participle and a form of sum, not one ending: left whole.
+  if (!e || key?.kind !== 'finite' || /\s/.test(e)) return { sign: '', person: e };
   if (key.tense === 'perf' && key.mood === 'ind' && key.voice === 'act') {
     const p = PERFECT_ENDINGS.find((x) => e.endsWith(x));
     return p ? { sign: e.slice(0, e.length - p.length), person: p } : { sign: '', person: e };
   }
-  const p = PERSON_ENDINGS.find((x) => e.endsWith(x) && e.length >= x.length);
+  const p = (key.voice === 'pass' ? PERSON_PASSIVE : PERSON_ACTIVE).find((x) => e.endsWith(x));
   return p ? { sign: e.slice(0, e.length - p.length), person: p } : { sign: '', person: e };
 }
 

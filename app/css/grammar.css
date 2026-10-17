@@ -1246,6 +1246,7 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 @media print {
   .bar, .g-nav, .g-sheet__toggles, .g-ww__controls, .g-sheet__more, .paradigm__summary::before { display: none !important; }
   .g-sheet__card { break-inside: avoid; border-left-width: 3px; }
+  .g-sheet { -webkit-print-color-adjust: exact; print-color-adjust: exact; }   /* the case tints and the signs are backgrounds: keep them on paper*/
   #grammar .g:has(.g-sheet) { max-width: none; padding: 0; }
 }
 
@@ -1255,7 +1256,7 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
   html[data-section="grammar"] .bar__main { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "week settings" "section section"; }
 }
 
-.g-sheet ~ * , .g-head .g-ww__controls .g-select { max-width: 40rem; }
+.g-head .g-ww__controls .g-select { max-width: 40rem; }
 #grammar .g:has(.g-sheet) .g-head, #grammar .g:has(.g-sheet) .g-sheet__toggles > p { max-width: 44rem; }
 .g-sheet__chip[aria-pressed="true"] { background: var(--bg-chrome); color: var(--ink); border-color: var(--ink-2); }
 .g-sheet__chip[aria-pressed="true"]::before { content: "✓ "; color: var(--success); font-weight: 700; }

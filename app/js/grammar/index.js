@@ -208,7 +208,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       ctx.gstore.onChange(() => { const n = ctx.gstore.getPensa().length; if (n !== pensaCount) { pensaCount = n; buildSets(loaded); } ui.refresh(); });
       try { history.replaceState({ grammar: { name: 'map', params: {} } }, ''); } catch { /* file: */ }
       // Opening into Word Work, setSection draws its page; the map would mark the root as drawn first.
-      if (ctx.section() === 'grammar' && document.documentElement.dataset.sectionMode !== 'words') ui.render('map', {}, { push: false, focus: false });
+      if (ctx.section() === 'grammar' && !document.documentElement.dataset.sectionMode) ui.render('map', {}, { push: false, focus: false });   // not under Word Work or Sheets
       // The pools of the other skills warm up in idle time, so the map's "no sentences yet" rows appear without a stall.
       const rest = [...ctx.index.skills.keys()];
       const warm = (deadline) => { while (rest.length && (deadline?.timeRemaining?.() ?? 8) > 4) ctx.drillable(rest.shift()); if (rest.length) schedule(warm); else ui.refresh(); };

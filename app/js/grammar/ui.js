@@ -3207,13 +3207,16 @@ export function createUI(ctx) {
       }
       return card;
     }
+    let paintSeq = 0;   // the latest paint: a slower earlier one (a skill switched off meanwhile) draws nothing
     async function paint() {
+      const mine = ++paintSeq;
       for (const b of toggles.querySelectorAll('[data-skill]')) b.setAttribute('aria-pressed', String(on.has(b.dataset.skill)));
       const want = order.filter((sk) => on.has(sk.id));
       empty.hidden = !!want.length;
-      for (const sk of want) if (!cards.has(sk.id)) cards.set(sk.id, buildCard(sk));
+      // A card that fails to build says so in its place, and is built again next time, rather than blanking the sheet.
+      for (const sk of want) if (!cards.has(sk.id)) cards.set(sk.id, buildCard(sk).catch((err) => { console.warn('[sheets] card', sk.id, err); cards.delete(sk.id); return h('p', { class: 'g-quiet', text: `${sk.title}: this chart could not be drawn.` }); }));
       const built = await Promise.all(want.map((sk) => cards.get(sk.id)));
-      if (seq !== wwSeq || view.name !== 'sheets') return;
+      if (mine !== paintSeq || seq !== wwSeq || view.name !== 'sheets') return;
       sheet.replaceChildren(...built);   // in chapter order, then the map's own order within a chapter
     }
     paint();
