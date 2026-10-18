@@ -251,6 +251,7 @@
 @media (pointer: coarse) { .paradigm__part { min-height: var(--tap); } }
 
 .pt__answer { display: flex; align-items: center; gap: 0.25em; }
+.pt__in { scroll-margin-top: calc(var(--bar-h, 0px) + var(--s-3)); }   /* clear of the sticky bar when Enter brings a box into sight */
 .pt__in { flex: 1 1 auto; width: 100%; min-width: 6rem; min-height: 36px; padding: 0 var(--s-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--bg-raised); color: var(--ink); font-family: var(--face-reading); font-size: 1rem; }
 @media (pointer: coarse) { .pt__in { min-height: var(--tap); font-size: 16px; } }   /* 16px: iOS does not zoom the page into the box */
 .pt__mark { display: inline-flex; justify-content: center; min-width: 1em; font-family: var(--face-ui); font-size: var(--ui-sm); font-weight: 700; }
