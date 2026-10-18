@@ -507,6 +507,20 @@ function practiseControls(details, { sheet, chapter, id, preset = null }) {
     const i = all.indexOf(x);
     return [...all.slice(i + 1), ...all.slice(0, i)].find((y) => !done(y));
   };
+  // The next box is brought into sight by as little scrolling as it needs, above the keyboard. A plain `focus()`
+  // let the browser centre it in the whole screen — the keyboard ignored — so on a phone each Enter jumped half a
+  // page, the box often landing under the keyboard, and typing in it scrolled again (the learner, 2026-10-18:
+  // "it scrolls off the word and goes down. Keep it on the word"). The part of the screen the keyboard covers
+  // is the box's bottom scroll margin, so `scrollIntoView` stops above it, in a dialog as on the page.
+  const goTo = (y) => {
+    const input = y?.td.querySelector('.pt__in');
+    if (!input) return;
+    input.focus({ preventScroll: true });
+    const vv = window.visualViewport;
+    const covered = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+    input.style.scrollMarginBottom = `${covered + 16}px`;
+    input.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  };
   // A part switched off shows its forms; a part switched on asks them, keeping what was typed.
   const paintParts = () => {
     for (const x of cells()) x.td.classList.toggle('is-off', !on(x));
@@ -546,7 +560,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null }) {
           if (e.key !== 'Enter') return;
           e.preventDefault();
           judge(x);
-          nextOpen(x)?.td.querySelector('.pt__in')?.focus();
+          goTo(nextOpen(x));
         });
         // Reveal one box (the learner's ask, 2026-10-03): its form is filled in and marked shown, not right.
         const reveal = h('button', { type: 'button', class: 'pt__reveal', text: 'Show', 'aria-label': `Show the form: ${x.label}` });
@@ -554,7 +568,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null }) {
           input.value = byEnding(x) ? x.ending : x.answers[0];
           mark(x, 'shown');
           score();
-          nextOpen(x)?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
+          goTo(nextOpen(x));
         });
         const given = x.stem && x.ending ? h('span', { class: 'pt__given', lang: 'la', 'aria-hidden': 'true', text: `${x.stem}‑` }) : null;
         x.td.querySelector('.pt__form').after(h('span', { class: 'pt__answer' }, given, input, reveal, h('span', { class: 'pt__mark', 'aria-hidden': 'true' })));
