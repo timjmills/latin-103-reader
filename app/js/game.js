@@ -196,7 +196,9 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // the screen shows (above a phone's keyboard), full size and clear; the bands either side tilt away round the
   // drum — the next ones large and a little faded, the outer ones smaller and fainter — and the reel rolls as the
   // learner goes. REEL[d]: [scale, tilt in degrees, opacity] at d bands from the middle.
-  const REEL = [[1, 0, 1], [0.95, 28, 0.62], [0.82, 52, 0.34], [0.7, 72, 0]];
+  // Bigger off the middle than at first (2026-10-19: "the others that are off center … a bit bigger"), and only a
+  // little faded ("more visible and less transparent"), so each band is read as a card of its own.
+  const REEL = [[1, 0, 1], [0.97, 22, 0.95], [0.9, 42, 0.85], [0.8, 64, 0]];   // the opacities are the CSS's (data-dist)
   function place() {
     if (!rows[at]) return;
     const stageH = stage.clientHeight || window.innerHeight;
@@ -302,6 +304,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     seq += 1;
     if (r.slot.contains(document.activeElement)) root.focus({ preventScroll: true });   // the box leaves; the focus stays in the game
     r.li.dataset.state = state;
+    r.li.toggleAttribute('data-missed', r.missed);   // answered, it shows green for first time, red for missed
     r.li.classList.remove('is-parse');
     r.slot.replaceChildren(el('span', { class: 'gm__form', lang: 'la' }, formNode(r.x)), el('span', { class: 'gm__mark', 'aria-hidden': 'true', text: state === 'right' ? '✓' : '·' }));
     place();

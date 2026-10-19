@@ -625,15 +625,18 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__stage { -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
 .gm__track { position: relative; height: 100%; list-style: none; margin: 0 auto; padding: 0; max-width: 38rem; perspective: 900px; }
 .gm__row { position: absolute; top: 0; left: 1.4rem; right: 1.4rem; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: var(--s-1);
-  padding: var(--s-3); border-radius: 0.9rem; background: color-mix(in srgb, var(--bg-raised) 80%, transparent); box-shadow: inset 0 0 0 1px var(--line);
+  padding: var(--s-3); border-radius: 0.9rem; background: var(--bg-raised); box-shadow: 0 0 0 2px var(--line-strong);
   transform-origin: 50% 50%; backface-visibility: hidden; transition: opacity 260ms, background-color 200ms, filter 260ms; }
 .gm__track.is-rolling .gm__row { transition: transform 380ms cubic-bezier(.2, .8, .25, 1), opacity 260ms, background-color 200ms, filter 260ms; }
 /* Where one column ends and the next begins (active → passive, singular → plural), and where the redos begin. */
-.gm__row--newgroup { box-shadow: inset 0 3px 0 color-mix(in srgb, var(--gm-a) 45%, transparent), inset 0 0 0 1px var(--line); }
+.gm__row--newgroup { border-top: 3px dashed var(--ink-3); }
 .gm__row[data-pos="far"] { opacity: 0; pointer-events: none; }
-.gm__row[data-dist="1"] { opacity: 0.62; }
-.gm__row[data-dist="2"] { opacity: 0.34; filter: blur(0.3px); }
-.gm__row[data-pos="above"][data-dist="1"] { opacity: 0.72; }   /* what has been answered stays readable: the pattern building is the point */
+.gm__row[data-dist="1"] { opacity: 0.95; }
+.gm__row[data-dist="2"] { opacity: 0.85; }   /* only a little faded: "more visible and less transparent" */
+/* Each band its own card (2026-10-19: "have their own defined background. The top ones do green or red but the bottom
+   ones should look how they will look when they are in the center with the white and purple"): those to come are
+   white with the purple edge, as they will be in the middle; those answered are green, or red where missed. */
+.gm__row[data-pos="below"] { background: var(--bg-raised); box-shadow: 0 0 0 3px var(--gm-a); }
 .gm__row:not([data-pos="current"]) { pointer-events: none; }
 .gm__row[data-pos="current"] { opacity: 1; padding: var(--s-4) var(--s-5); background: var(--bg-raised);
   box-shadow: 0 0 0 3px var(--gm-a), 0 0 0 6px color-mix(in srgb, var(--gm-a) 22%, transparent), 0 16px 40px color-mix(in srgb, var(--gm-a) 30%, transparent); }
@@ -656,7 +659,9 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__row[data-pos="current"] .gm__form { font-size: 1.9rem; }
 .gm__form .pt__ending { font-weight: 700; color: var(--rubric-ink); }
 .gm__mark { font-weight: 800; font-size: 1.2rem; }
-.gm__row[data-state="right"] { background: color-mix(in srgb, var(--gm-ok) 18%, var(--bg-raised)); }
+.gm__row[data-state="right"] { background: color-mix(in srgb, var(--gm-ok) 22%, var(--bg-raised)); box-shadow: 0 0 0 3px var(--gm-ok); }
+.gm__row:is([data-state="right"], [data-state="shown"])[data-missed]:not([data-pos="current"]) { background: color-mix(in srgb, var(--rubric) 16%, var(--bg-raised)); box-shadow: 0 0 0 3px var(--rubric); }
+.gm__row:is([data-state="right"], [data-state="shown"])[data-missed] .gm__mark { color: var(--rubric-ink); }
 .gm__row[data-state="right"][data-pos="current"]::before { border-left-color: var(--gm-ok); }
 .gm__row[data-state="right"][data-pos="current"]::after { border-right-color: var(--gm-ok); }
 .gm__row[data-state="right"][data-pos="current"] { box-shadow: 0 0 0 3px var(--gm-ok), 0 0 0 6px color-mix(in srgb, var(--gm-ok) 25%, transparent); animation: gm-pop 380ms cubic-bezier(.2, .8, .2, 1.4); }
@@ -664,7 +669,7 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__row[data-state="wrong"] { background: var(--rubric-soft); }
 .gm__row[data-state="wrong"][data-pos="current"] { box-shadow: 0 0 0 3px var(--rubric), 0 0 0 6px color-mix(in srgb, var(--rubric) 22%, transparent); }
 .gm__row[data-state="wrong"] .gm__in { border-color: var(--rubric); }
-.gm__row[data-state="shown"] { background: var(--bg-chrome); }
+.gm__row[data-state="shown"] { background: color-mix(in srgb, var(--rubric) 16%, var(--bg-raised)); }
 .gm__shake { animation: gm-shake 320ms ease; }
 @keyframes gm-shake { 20% { translate: -6px 0; } 40% { translate: 6px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }
 @keyframes gm-pop { 0% { scale: 1; } 45% { scale: 1.08; } 100% { scale: 1; } }
