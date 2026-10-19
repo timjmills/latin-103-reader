@@ -593,7 +593,7 @@
   background: var(--bg); color: var(--ink); font-family: var(--face-ui); }
 .gm[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 .gm::backdrop { background: var(--bg); }
-html.gm-open { overflow: hidden; }
+html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--line); background: var(--bg-chrome); }
 .gm__titles { flex: 1 1 14rem; min-width: 0; }
 .gm__title { margin: 0; font-family: var(--face-reading); font-size: 1.15rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -75,6 +75,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const started = Date.now();
   let timer = 0;
   let closed = false;
+  let missSeq = 0;
 
   const progress = el('span', { class: 'gm__progress' });
   const streakEl = el('span', { class: 'gm__streak', 'aria-label': 'Streak' });
@@ -149,6 +150,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     focusCurrent();
   }
   function settle(r, state) {
+    if (r.slot.contains(document.activeElement)) root.focus({ preventScroll: true });   // the box leaves; the focus stays in the game
     r.li.dataset.state = state;
     r.slot.replaceChildren(el('span', { class: 'gm__form', lang: 'la' }, formNode(r.x)), el('span', { class: 'gm__mark', 'aria-hidden': 'true', text: state === 'right' ? '✓' : '·' }));
   }
@@ -176,7 +178,14 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       live.textContent = 'Not that. Try again.';
       paintStats();
       input.select();
-      setTimeout(() => { if (closed || rows[at] !== r) return; input.value = ''; delete r.li.dataset.state; input.focus({ preventScroll: true }); }, 750);
+      // The box empties a moment later — unless the learner has already moved on, answered, or started again.
+      const tok = ++missSeq;
+      setTimeout(() => {
+        if (closed || tok !== missSeq || rows[at] !== r || r.li.dataset.state !== 'wrong') return;
+        delete r.li.dataset.state;
+        if (input.value.trim() === typed) input.value = '';
+        input.focus({ preventScroll: true });
+      }, 750);
     }
   }
   function reveal() {
@@ -191,7 +200,17 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     setTimeout(() => { if (!closed) advance(); }, reduced ? 300 : 1100);
   }
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
-  root.addEventListener('cancel', (e) => { e.preventDefault(); close(); });   // Escape
+  // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down.
+  input.addEventListener('input', () => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { missSeq += 1; delete r.li.dataset.state; } });
+  root.tabIndex = -1;   // between two forms the dialog itself holds the focus, so no key falls through to the page
+  root.addEventListener('cancel', (e) => { e.preventDefault(); close(); });   // Escape, where the browser sends it
+  root.addEventListener('close', () => close());   // a close the browser makes on its own (a second Escape, Android back)
+  // Every key stays in the game: the reader's letter shortcuts (e, h, m, a …) and its Escape (which closes the word
+  // panel) listen on the document, and a learner typing the next form early must not reach them.
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
+    if (!e.ctrlKey && !e.metaKey && !e.altKey) e.stopPropagation();
+  });
   window.addEventListener('resize', place);
 
   function finish() {
