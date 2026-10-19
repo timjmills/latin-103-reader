@@ -165,19 +165,22 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   paintGroups();
   /** Shuffle switched mid-round: the forms still to come are put in the new order; those answered stay. */
   function reorderRest() {
-    const rest = rows.splice(at);
-    const firsts = rest.filter((r) => !r.again);
-    const agains = rest.filter((r) => r.again);
-    const order = shuffle ? shuffled(firsts) : firsts.sort((a, b) => base.indexOf(a.x) - base.indexOf(b.x));
-    rows.push(...order, ...agains);
-    for (const r of rows.slice(at)) track.append(r.li);
+    // Only the unanswered forms after the one on screen change places (the wheel can be turned back, so some
+    // before it may be unanswered too: they stay where they are).
+    const slots = rows.map((r, i) => i).filter((i) => i > at && !rows[i].again && !isDone(rows[i]));
+    const these = slots.map((i) => rows[i]);
+    const order = shuffle ? shuffled(these) : these.sort((a, b) => base.indexOf(a.x) - base.indexOf(b.x));
+    slots.forEach((i, k) => { rows[i] = order[k]; });
     paintGroups();
+    place();
   }
 
+  const isDone = (r) => r.li.dataset.state === 'right' || r.li.dataset.state === 'shown';
   const formNode = (x) => (splits(x) ? [el('span', { class: 'pt__stem', text: x.stem }), el('span', { class: 'pt__ending', text: x.ending })] : [x.answers[0]]);
   const paintStats = () => {
+    const answered = rows.filter(isDone).length;
     progress.textContent = `${Math.min(at + 1, rows.length)} / ${rows.length}`;
-    meterFill.style.width = `${Math.round((Math.min(at, rows.length) / rows.length) * 100)}%`;
+    meterFill.style.width = `${Math.round((answered / rows.length) * 100)}%`;   // how many are answered: the wheel can be turned either way
     streakEl.textContent = streak >= 2 ? `🔥 ${streak}` : '';
     scoreEl.textContent = `⭐ ${score}`;
     reviewBtn.hidden = ended || !firstMiss.size;
@@ -288,9 +291,35 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     place(); paintStats();
     focusIn(input);
   }
+  /**
+   * Turning the wheel (2026-10-19: "have it to where you can scroll up and down and it moves the wheel to the next or
+   * before"): the form `i` comes to the middle. One still to answer is asked; one answered is shown as it was
+   * answered. The form left keeps nothing half done: its box, choices or look go, and its red with them.
+   */
+  function go(i) {
+    if (closed || ended || panel) return;
+    const to = Math.max(0, Math.min(rows.length - 1, i));
+    if (to === at) return;
+    const was = rows[at];
+    if (was && !isDone(was)) {
+      seq += 1;   // its timers stand down
+      if (was.slot.contains(document.activeElement)) root.focus({ preventScroll: true });
+      was.slot.replaceChildren();
+      was.li.classList.remove('is-parse');
+      delete was.li.dataset.state;
+    }
+    at = to;
+    hintSeen();
+    if (isDone(rows[at])) { seq += 1; place(); paintStats(); live.textContent = `${rows[at].x.cue}: ${rows[at].x.answers[0]}.`; root.focus({ preventScroll: true }); }
+    else ask();
+  }
+  /** After an answer: the next form still to answer after this one, else the first one before it; else the redos; else the end. */
   function advance() {
-    at += 1;
-    if (at >= rows.length && redo) {
+    const next = rows.findIndex((r, i) => i > at && !isDone(r));
+    const back = next < 0 ? rows.findIndex((r) => !isDone(r)) : -1;
+    if (next >= 0 || back >= 0) { at = next >= 0 ? next : back; ask(); return; }
+    at = rows.length;
+    if (redo) {
       // Redo misses: each form missed this round comes back at the end — twice at most, so Show on every one
       // cannot keep the round going for ever.
       const back = rows.filter((r) => r.missed && !r.requeued && (comeBack.get(r.x.key) ?? 0) < 2);
@@ -300,6 +329,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (at >= rows.length) { finish(); return; }
     ask();
   }
+  // A timer for the form on screen: it stands down if the wheel has been turned or the form answered meanwhile.
+  const later = (fn, ms) => { const tok = seq; setTimeout(() => { if (!closed && tok === seq) fn(); }, ms); };
   function settle(r, state) {
     seq += 1;
     if (r.slot.contains(document.activeElement)) root.focus({ preventScroll: true });   // the box leaves; the focus stays in the game
@@ -318,7 +349,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     sounds.right();
     live.textContent = `Right: ${r.x.answers[0]}${mode === 'parse' ? `, ${r.x.cue}` : ''}.`;
     paintStats();
-    setTimeout(() => { if (!closed) advance(); }, reduced ? 120 : 380);
+    later(advance, reduced ? 120 : 380);
   }
   function wrong(r) {
     firstMiss.add(r.x.key);
@@ -358,11 +389,46 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     settle(r, 'shown');
     live.textContent = `It is ${r.x.answers[0]}${mode === 'parse' ? `: ${r.x.cue}` : ''}.`;
     paintStats();
-    setTimeout(() => { if (!closed) advance(); }, reduced ? 300 : 1400);
+    later(advance, reduced ? 300 : 1400);
   }
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
   // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down.
   input.addEventListener('input', () => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; } });
+
+  /* ---- turning the wheel: a scroll, a swipe, the arrow keys, a tap on a band */
+  let wheelSum = 0;
+  let wheelLock = 0;
+  // The end card scrolls as a page does: the wheel's own scroll and swipe stop with the round.
+  stage.addEventListener('wheel', (e) => {
+    if (ended) return;
+    e.preventDefault();
+    if (Date.now() < wheelLock) return;
+    wheelSum += e.deltaY;
+    if (Math.abs(wheelSum) < 40) return;   // a trackpad's small steps add up to one turn
+    go(at + Math.sign(wheelSum));
+    wheelSum = 0;
+    wheelLock = Date.now() + 220;          // one turn per flick, not one per event
+  }, { passive: false });
+  let touchY = null;
+  stage.addEventListener('touchstart', (e) => { touchY = !ended && e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
+  stage.addEventListener('touchmove', (e) => { if (touchY != null) e.preventDefault(); }, { passive: false });   // the swipe is the wheel's, not the page's
+  stage.addEventListener('touchend', (e) => {
+    if (touchY == null) return;
+    const dy = e.changedTouches[0].clientY - touchY;
+    touchY = null;
+    if (Math.abs(dy) < 36) return;   // a tap, not a swipe
+    // A swipe up brings the next form up into the middle, as a list scrolls; a long swipe turns two.
+    go(at + (dy < 0 ? 1 : -1) * (Math.abs(dy) > 220 ? 2 : 1));
+  });
+  track.addEventListener('click', (e) => {
+    const li = e.target.closest('.gm__row');
+    const i = rows.findIndex((r) => r.li === li);
+    if (i >= 0 && i !== at) go(i);
+  });
+  // The first time, a word on how: it goes once the wheel has been turned.
+  const hint = read('hinted', false) ? null : el('p', { class: 'gm__hint', 'aria-hidden': 'true', text: '↕ Scroll or swipe to turn the wheel' });
+  if (hint) stage.append(hint);
+  function hintSeen() { if (hint?.isConnected) { hint.remove(); write('hinted', true); } }
 
   /* ---- panels over the column: Review and ⚙. The clock stops while one is open. */
   function openPanel(node, focus) {
@@ -432,6 +498,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // panel) listen on the document, and a learner typing the next form early must not reach them.
   root.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { e.preventDefault(); if (panel) panel.resume(); else close(); }
+    // ↑ ↓ turn the wheel (in the box too, where they do nothing else).
+    else if (!panel && !ended && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); go(at + (e.key === 'ArrowDown' ? 1 : -1)); }
     // 1–4 take a choice (Choose, What is it?).
     else if (!panel && /^[1-4]$/.test(e.key) && e.target !== input) {
       const b = rows[at]?.slot.querySelectorAll('.gm__choice')[Number(e.key) - 1];
@@ -444,6 +512,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   function finish() {
     ended = true;
+    root.classList.add('gm--ended');
     clearInterval(timer);
     sounds.done();
     const secs = Math.round((Date.now() - started) / 1000);
