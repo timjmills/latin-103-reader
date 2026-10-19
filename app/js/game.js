@@ -11,6 +11,19 @@
 // sounds and a buzz behind a speaker switch that starts off. The end: a result card, the misses again, the next
 // word where the caller has one.
 //
+// The table's settings play too (2026-10-19: "the game mode should work with all the settings, endings only etc."):
+// the parts switched on are the items, and Endings only asks a split form's ending after its stem, as the table
+// does — switchable in the game as well, and kept in step with the table (`endings`, `onEndings`). And at any
+// moment "Review" lays the misses so far out with their right forms, then Continue or Quit ("you should be able
+// at any time to review the ones you got wrong and then continue or quit"); the clock stops while it is open.
+//
+// Ways to play (2026-10-19: "think of modes that would be good for learning"), chosen under ⚙ and kept on the
+// device: Type it (recall, the default); Choose (pick the form from four of the same table — recognition, the
+// easier first step with a new table); Flash (the form shows a moment, then goes — type it back: study, then
+// recall); What is it? (the form shown, its person or case to pick — the reader's own question). With them,
+// Shuffle (random order, so the column's rhythm cannot carry the answer) and Redo misses (a form missed comes
+// back at the end of the round until it is right).
+//
 // items: [{ key, cue, en, answers, stem, ending, group }] — `cue` the row and part ("we · imperfect active"),
 // `en` its English, `answers` the forms accepted (wordpanel.js cellAnswers), `group` the column it belongs to.
 
@@ -61,28 +74,64 @@ export function setSound(on) { write('sound', !!on); }
 export function savedMisses(id) { return id ? read(`misses.${id}`, []) : []; }
 
 /* ---------------------------------------------------------------- the game */
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null } = {}) {
-  const list = items.filter((x) => x && x.answers?.length);
-  if (!list.length) return null;
+export const MODES = [
+  ['type', 'Type it', 'Type each form.'],
+  ['choose', 'Choose', 'Pick the form from four.'],
+  ['flash', 'Flash', 'See the form a moment, then type it back.'],
+  ['parse', 'What is it?', 'See a form, pick what it is.'],
+];
+const modeOf = (m) => (MODES.some(([k]) => k === m) ? m : 'type');
+const shuffled = (xs) => { const a = [...xs]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/**
+ * Up to three wrong choices beside the right one, shuffled: `text(y)` what a choice shows, `right(t)` whether a
+ * text is a right answer (such a text is never offered as a wrong one). Null when the table has no wrong choice.
+ */
+export function choicesFor(x, pool, text, right) {
+  const want = text(x);
+  const seen = new Set([want]);
+  const wrong = [];
+  for (const y of shuffled(pool)) {
+    const t = text(y);
+    if (!t || seen.has(t) || right(t)) continue;
+    seen.add(t); wrong.push(t);
+    if (wrong.length === 3) break;
+  }
+  return wrong.length ? shuffled([want, ...wrong]) : null;
+}
+
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null } = {}) {
+  const base = items.filter((x) => x && x.answers?.length);
+  if (!base.length) return null;
   const opener = document.activeElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let mode = modeOf(read('mode', 'type'));
+  let shuffle = !!read('shuffle', false);
+  let redo = !!read('redo', false);
   let at = 0;
   let streak = 0;
   let bestStreak = 0;
   let score = 0;
   const firstMiss = new Set();
   const shown = new Set();
-  const started = Date.now();
+  let started = Date.now();   // moved on by the time a panel is open, so the clock counts only the playing
   let timer = 0;
+  let panel = null;   // the open review or ⚙ panel
+  let ended = false;
   let closed = false;
-  let missSeq = 0;
+  let seq = 0;        // the form on screen's turn: a timer from an earlier one stands down
 
   const progress = el('span', { class: 'gm__progress' });
+  const meterFill = el('span', { class: 'gm__meterfill' });
+  const meter = el('div', { class: 'gm__meter', 'aria-hidden': 'true' }, meterFill);
   const streakEl = el('span', { class: 'gm__streak', 'aria-label': 'Streak' });
   const scoreEl = el('span', { class: 'gm__score' });
   const clock = el('span', { class: 'gm__clock', hidden: !read('timer', true) });
-  const soundBtn = el('button', { type: 'button', class: 'gm__tool', 'aria-pressed': String(!!read('sound', false)), 'aria-label': 'Sound', title: 'Sound', onclick: () => { const on = !read('sound', false); write('sound', on); soundBtn.setAttribute('aria-pressed', String(on)); soundBtn.textContent = on ? '🔊' : '🔈'; if (on) sounds.right(); } }, read('sound', false) ? '🔊' : '🔈');
-  const timerBtn = el('button', { type: 'button', class: 'gm__tool', 'aria-pressed': String(!!read('timer', true)), 'aria-label': 'Timer', title: 'Timer', onclick: () => { const on = !read('timer', true); write('timer', on); timerBtn.setAttribute('aria-pressed', String(on)); clock.hidden = !on; } }, '⏱');
+  // Endings only, as the table has it: a form the table splits into stem and ending is asked by its ending.
+  const splits = (x) => !!x.stem && !!x.ending;
+  const byEnding = (x) => endings && splits(x) && mode !== 'parse';
+  const reviewBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__review', hidden: true, onclick: () => openReview() });
+  const modeBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__modebtn', 'aria-haspopup': 'dialog', onclick: () => openSettings() });
   const closeBtn = el('button', { type: 'button', class: 'gm__tool gm__close', 'aria-label': 'Leave the game', title: 'Leave (Esc)', onclick: () => close() }, '✕');
   const live = el('p', { class: 'visually-hidden', 'aria-live': 'polite' });
   const track = el('ol', { class: 'gm__track', 'aria-label': 'Forms' });
@@ -95,33 +144,55 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     el('header', { class: 'gm__bar' },
       el('div', { class: 'gm__titles' }, el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub', text: subtitle }) : null),
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock),
-      el('div', { class: 'gm__tools' }, timerBtn, soundBtn, closeBtn)),
+      el('div', { class: 'gm__tools' }, reviewBtn, modeBtn, closeBtn),
+      meter),
     stage, live);
 
-  const rows = list.map((x, i) => {
+  /* ---- the rows: one per form, in play order; a redo is a row of its own */
+  const rows = [];
+  const comeBack = new Map();   // key → how many times Redo misses has brought it back
+  const makeRow = (x, again = false) => {
     const slot = el('span', { class: 'gm__slot' });
-    const li = el('li', { class: 'gm__row', 'data-i': String(i), 'data-group': x.group ?? '' },
-      el('span', { class: 'gm__cue' }, el('span', { class: 'gm__label', text: x.cue }), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
+    const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
+      el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label', text: x.cue }), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
       slot);
-    track.append(li);
-    return { li, slot, x };
-  });
-  // A thin rule where one column ends and the next begins (active → passive, singular → plural).
-  rows.forEach((r, i) => { if (i && r.x.group !== rows[i - 1].x.group) r.li.classList.add('gm__row--newgroup'); });
-
-  const formNode = (x) => (x.stem != null && x.ending != null && (x.stem || x.ending)
-    ? [x.stem ? el('span', { class: 'pt__stem', text: x.stem }) : null, el('span', { class: 'pt__ending', text: x.ending })]
-    : [x.answers[0]]);
-  const paintStats = () => {
-    progress.textContent = `${Math.min(at + 1, list.length)} / ${list.length}`;
-    streakEl.textContent = streak >= 2 ? `🔥 ${streak}` : '';
-    scoreEl.textContent = `${score} pts`;
+    return { li, slot, x, again, missed: false, requeued: false };
   };
-  const tick = () => { const s = Math.floor((Date.now() - started) / 1000); clock.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+  // A thin rule where one column ends and the next begins (active → passive, singular → plural), and where the
+  // redos begin; none in a shuffled round, which has no columns.
+  const paintGroups = () => rows.forEach((r, i) => r.li.classList.toggle('gm__row--newgroup', i > 0 && (r.again !== rows[i - 1].again || (!shuffle && !r.again && r.x.group !== rows[i - 1].x.group))));
+  for (const x of shuffle ? shuffled(base) : base) { const r = makeRow(x); rows.push(r); track.append(r.li); }
+  paintGroups();
+  /** Shuffle switched mid-round: the forms still to come are put in the new order; those answered stay. */
+  function reorderRest() {
+    const rest = rows.splice(at);
+    const firsts = rest.filter((r) => !r.again);
+    const agains = rest.filter((r) => r.again);
+    const order = shuffle ? shuffled(firsts) : firsts.sort((a, b) => base.indexOf(a.x) - base.indexOf(b.x));
+    rows.push(...order, ...agains);
+    for (const r of rows.slice(at)) track.append(r.li);
+    paintGroups();
+  }
+
+  const formNode = (x) => (splits(x) ? [el('span', { class: 'pt__stem', text: x.stem }), el('span', { class: 'pt__ending', text: x.ending })] : [x.answers[0]]);
+  const paintStats = () => {
+    progress.textContent = `${Math.min(at + 1, rows.length)} / ${rows.length}`;
+    meterFill.style.width = `${Math.round((Math.min(at, rows.length) / rows.length) * 100)}%`;
+    streakEl.textContent = streak >= 2 ? `🔥 ${streak}` : '';
+    scoreEl.textContent = `⭐ ${score}`;
+    reviewBtn.hidden = ended || !firstMiss.size;
+    reviewBtn.textContent = `Review ${firstMiss.size} missed`;
+    root.classList.toggle('gm--parse', mode === 'parse');   // What is it?: a form's person or case is the question, so no row to come shows its own
+    modeBtn.textContent = `⚙ ${MODES.find(([k]) => k === mode)[1]}`;
+    modeBtn.setAttribute('aria-label', `Ways to play — now ${MODES.find(([k]) => k === mode)[1]}`);
+  };
+  const tick = () => { const s = Math.floor((Date.now() - started) / 1000); clock.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
   timer = setInterval(tick, 500);
   tick();
 
-  // The column glides so the current form sits a third of the way down — above where a phone's keyboard comes up.
+  // The column glides so the current form sits in the middle of the screen (2026-10-19: "bring the game mode to the
+  // center of the screen") — the middle of what the keyboard leaves showing, on a phone. The track's own padding
+  // (CSS) lets even the first and last forms come to the middle.
   function place() {
     rows.forEach((r, i) => {
       const d = i - at;
@@ -131,106 +202,244 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const cur = rows[at]?.li;
     if (!cur) return;
     const stageH = stage.clientHeight || window.innerHeight;
-    const y = cur.offsetTop + cur.offsetHeight / 2 - stageH * 0.36;
+    const vv = window.visualViewport;
+    const seen = vv ? Math.min(stageH, vv.offsetTop + vv.height - stage.getBoundingClientRect().top) : stageH;
+    const y = cur.offsetTop + cur.offsetHeight / 2 - Math.max(seen, 120) / 2;
     track.style.transform = `translateY(${-Math.max(0, y)}px)`;
   }
-  function focusCurrent() {
+  const focusIn = (n) => { if (!panel && !closed) n?.focus({ preventScroll: true }); };
+
+  /* ---- asking: what the box (or the choices) holds for the form on screen, in the mode chosen */
+  const isRight = (x, t) => cellRight(t, x.answers) || (byEnding(x) && cellRight(x.stem + t, x.answers));
+  function ask() {
     const r = rows[at];
     if (!r) return;
-    r.slot.replaceChildren(input, showBtn);
+    const tok = ++seq;
+    delete r.li.dataset.state;
+    r.li.classList.toggle('is-parse', mode === 'parse');
+    const cue = `${r.x.cue}${r.x.en ? ` — ${r.x.en}` : ''}`;
+    let kids = null;
+    if (mode === 'choose' || mode === 'parse') {
+      const parse = mode === 'parse';
+      const form = r.x.answers[0];
+      const opts = parse
+        ? choicesFor(r.x, base, (y) => y.cue, (t) => base.some((y) => y.cue === t && cellRight(form, y.answers)))
+        : choicesFor(r.x, base, (y) => (byEnding(y) ? y.ending : y.answers[0]), (t) => isRight(r.x, t));
+      if (opts) {
+        const pick = (b, t) => {
+          if (tok !== seq || r.li.dataset.state === 'right') return;
+          const ok = parse ? base.some((y) => y.cue === t && cellRight(form, y.answers)) : isRight(r.x, t);
+          if (ok) { right(r); return; }
+          b.disabled = true; b.classList.add('is-wrong');
+          wrong(r);
+          focusIn(r.slot.querySelector('.gm__choice:not(:disabled)'));
+        };
+        const list = el('div', { class: `gm__choices${parse ? ' gm__choices--cues' : ''}`, role: 'group', 'aria-label': parse ? `What is ${form}?` : `Choose: ${cue}` },
+          opts.map((t, i) => { const b = el('button', { type: 'button', class: 'gm__choice', lang: parse ? null : 'la' }, el('span', { class: 'gm__key', 'aria-hidden': 'true', text: String(i + 1) }), t); b.addEventListener('click', () => pick(b, t)); return b; }));
+        kids = [parse ? el('span', { class: 'gm__form gm__ask', lang: 'la', text: form }) : null,
+          byEnding(r.x) && !parse ? el('span', { class: 'gm__given', lang: 'la', 'aria-hidden': 'true', text: `${r.x.stem}‑` }) : null,
+          list, showBtn];
+        r.slot.replaceChildren(...kids.filter(Boolean));
+        place(); paintStats();
+        focusIn(list.querySelector('button'));
+        return;
+      }
+      // A table too small for wrong choices is typed instead.
+      r.li.classList.remove('is-parse');
+    }
+    const given = byEnding(r.x) ? el('span', { class: 'gm__given', lang: 'la', 'aria-hidden': 'true', text: `${r.x.stem}‑` }) : null;
     input.value = '';
-    input.setAttribute('aria-label', `${r.x.cue}${r.x.en ? ` — ${r.x.en}` : ''}`);
-    place();
-    paintStats();
-    input.focus({ preventScroll: true });
+    input.setAttribute('aria-label', `${cue}${given ? ` — the ending after ${r.x.stem}` : ''}`);
+    if (mode === 'flash') {
+      // A look first: the form a moment, then the box. A key or a tap skips the look.
+      const look = el('button', { type: 'button', class: 'gm__look', lang: 'la', 'aria-label': `Remember it: ${r.x.answers[0]}. Then type it.` }, el('span', { class: 'gm__form' }, formNode(r.x)), el('span', { class: 'gm__looktag', text: 'Remember it…' }));
+      const toBox = () => { if (tok !== seq || !look.isConnected) return; r.slot.replaceChildren(...[given, input, showBtn].filter(Boolean)); focusIn(input); };
+      look.addEventListener('click', toBox);
+      look.addEventListener('keydown', (e) => { if (e.key.length === 1 || e.key === 'Enter') { e.preventDefault(); toBox(); } });
+      r.slot.replaceChildren(look);
+      place(); paintStats();
+      focusIn(look);
+      setTimeout(toBox, reduced ? 2200 : 1800);
+      return;
+    }
+    r.slot.replaceChildren(...[given, input, showBtn].filter(Boolean));
+    place(); paintStats();
+    focusIn(input);
   }
   function advance() {
     at += 1;
-    if (at >= list.length) { finish(); return; }
-    focusCurrent();
+    if (at >= rows.length && redo) {
+      // Redo misses: each form missed this round comes back at the end — twice at most, so Show on every one
+      // cannot keep the round going for ever.
+      const back = rows.filter((r) => r.missed && !r.requeued && (comeBack.get(r.x.key) ?? 0) < 2);
+      for (const r of back) { r.requeued = true; comeBack.set(r.x.key, (comeBack.get(r.x.key) ?? 0) + 1); const n = makeRow(r.x, true); rows.push(n); track.append(n.li); }
+      if (back.length) { paintGroups(); live.textContent = `${back.length} more: the ones missed, again.`; }
+    }
+    if (at >= rows.length) { finish(); return; }
+    ask();
   }
   function settle(r, state) {
+    seq += 1;
     if (r.slot.contains(document.activeElement)) root.focus({ preventScroll: true });   // the box leaves; the focus stays in the game
     r.li.dataset.state = state;
+    r.li.classList.remove('is-parse');
     r.slot.replaceChildren(el('span', { class: 'gm__form', lang: 'la' }, formNode(r.x)), el('span', { class: 'gm__mark', 'aria-hidden': 'true', text: state === 'right' ? '✓' : '·' }));
+  }
+  function right(r) {
+    const clean = !r.again && !firstMiss.has(r.x.key) && !shown.has(r.x.key);
+    streak = clean ? streak + 1 : 0;
+    bestStreak = Math.max(bestStreak, streak);
+    if (clean) score += 10 + Math.min(streak, 10);
+    settle(r, 'right');
+    sounds.right();
+    live.textContent = `Right: ${r.x.answers[0]}${mode === 'parse' ? `, ${r.x.cue}` : ''}.`;
+    paintStats();
+    setTimeout(() => { if (!closed) advance(); }, reduced ? 120 : 380);
+  }
+  function wrong(r) {
+    firstMiss.add(r.x.key);
+    r.missed = true;
+    streak = 0;
+    r.li.dataset.state = 'wrong';
+    r.li.classList.remove('gm__shake'); void r.li.offsetWidth; r.li.classList.add('gm__shake');
+    sounds.wrong();
+    live.textContent = 'Not that. Try again.';
+    paintStats();
   }
   function submit() {
     const r = rows[at];
-    if (!r) return;
+    if (!r || !r.slot.contains(input)) return;
     const typed = input.value.trim();
     if (!typed) return;
-    if (cellRight(typed, r.x.answers)) {
-      const clean = !firstMiss.has(r.x.key) && !shown.has(r.x.key);
-      streak = clean ? streak + 1 : 0;
-      bestStreak = Math.max(bestStreak, streak);
-      if (clean) score += 10 + Math.min(streak, 10);
-      settle(r, 'right');
-      sounds.right();
-      live.textContent = `Right: ${r.x.answers[0]}.`;
-      paintStats();
-      setTimeout(() => { if (!closed) advance(); }, reduced ? 120 : 380);
-    } else {
-      firstMiss.add(r.x.key);
-      streak = 0;
-      r.li.dataset.state = 'wrong';
-      r.li.classList.remove('gm__shake'); void r.li.offsetWidth; r.li.classList.add('gm__shake');
-      sounds.wrong();
-      live.textContent = 'Not that. Try again.';
-      paintStats();
-      input.select();
-      // The box empties a moment later — unless the learner has already moved on, answered, or started again.
-      const tok = ++missSeq;
-      setTimeout(() => {
-        if (closed || tok !== missSeq || rows[at] !== r || r.li.dataset.state !== 'wrong') return;
-        delete r.li.dataset.state;
-        if (input.value.trim() === typed) input.value = '';
-        input.focus({ preventScroll: true });
-      }, 750);
-    }
+    // In Endings only the box holds the ending; the whole form typed anyway is right too.
+    if (isRight(r.x, typed)) { right(r); return; }
+    wrong(r);
+    input.select();
+    // The box empties a moment later — unless the learner has already moved on, answered, or started again.
+    const tok = seq;
+    setTimeout(() => {
+      if (closed || tok !== seq || rows[at] !== r || r.li.dataset.state !== 'wrong') return;
+      delete r.li.dataset.state;
+      if (input.value.trim() === typed) input.value = '';
+      focusIn(input);
+    }, 750);
   }
   function reveal() {
     const r = rows[at];
-    if (!r) return;
+    if (!r || r.li.dataset.state === 'right' || r.li.dataset.state === 'shown') return;
     firstMiss.add(r.x.key);
     shown.add(r.x.key);
+    r.missed = true;
     streak = 0;
     settle(r, 'shown');
-    live.textContent = `It is ${r.x.answers[0]}.`;
+    live.textContent = `It is ${r.x.answers[0]}${mode === 'parse' ? `: ${r.x.cue}` : ''}.`;
     paintStats();
-    setTimeout(() => { if (!closed) advance(); }, reduced ? 300 : 1100);
+    setTimeout(() => { if (!closed) advance(); }, reduced ? 300 : 1400);
   }
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
   // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down.
-  input.addEventListener('input', () => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { missSeq += 1; delete r.li.dataset.state; } });
+  input.addEventListener('input', () => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; } });
+
+  /* ---- panels over the column: Review and ⚙. The clock stops while one is open. */
+  function openPanel(node, focus) {
+    if (panel || closed) return;
+    const pausedAt = Date.now();
+    clearInterval(timer);
+    stage.inert = true; stage.setAttribute('aria-hidden', 'true');
+    panel = node;
+    panel.resume = (after) => {
+      if (panel !== node) return;
+      node.remove();
+      panel = null;
+      stage.inert = false; stage.removeAttribute('aria-hidden');
+      if (!ended) { started += Date.now() - pausedAt; timer = setInterval(tick, 500); tick(); }
+      after?.();
+      if (ended) { stage.querySelector('.gm__acts button')?.focus({ preventScroll: true }); return; }
+      const r = rows[at];
+      if (r && r.li.dataset.state !== 'right' && r.li.dataset.state !== 'shown') ask(); else root.focus({ preventScroll: true });
+    };
+    root.append(node);
+    live.textContent = node.querySelector('h2')?.textContent ?? '';
+    focus?.focus({ preventScroll: true });
+  }
+  // Review, at any moment: the forms missed so far, each with its right form; then on with the game, or out of it.
+  function openReview() {
+    if (!firstMiss.size) return;
+    const misses = base.filter((x) => firstMiss.has(x.key));
+    const goOn = el('button', { type: 'button', class: 'btn btn--primary', onclick: () => node.resume() }, 'Continue');
+    const node = el('section', { class: 'gm__end gm__panel', role: 'region', 'aria-labelledby': 'gm-rev-h' },
+      el('h2', { id: 'gm-rev-h', class: 'gm__endh', text: `The ${misses.length} you missed so far` }),
+      el('ul', { class: 'gm__revlist' }, misses.map((x) => el('li', {},
+        el('span', { class: 'gm__cue' }, el('span', { class: 'gm__label', text: x.cue }), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
+        el('span', { class: 'gm__form', lang: 'la' }, formNode(x))))),
+      el('div', { class: 'gm__acts' }, goOn, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Quit the game')));
+    openPanel(node, goOn);
+  }
+  // ⚙ Ways to play: the mode, and the switches. Each change is kept on the device and plays from the form on screen.
+  function openSettings() {
+    const sw = (label, note, on, set) => {
+      const b = el('button', { type: 'button', class: 'gm__switch', 'aria-pressed': String(!!on) }, el('span', { class: 'gm__switchname', text: label }), el('span', { class: 'gm__switchnote', text: note }));
+      b.addEventListener('click', () => { const v = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(v)); set(v); });
+      return b;
+    };
+    const modes = el('div', { class: 'gm__modes', role: 'radiogroup', 'aria-label': 'Way to play' }, MODES.map(([k, name, note]) => {
+      const b = el('button', { type: 'button', class: 'gm__modecard', role: 'radio', 'aria-checked': String(k === mode) }, el('span', { class: 'gm__switchname', text: name }), el('span', { class: 'gm__switchnote', text: note }));
+      b.addEventListener('click', () => { mode = k; write('mode', k); for (const c of modes.children) c.setAttribute('aria-checked', String(c === b)); paintStats(); });
+      return b;
+    }));
+    const done = el('button', { type: 'button', class: 'btn btn--primary', onclick: () => node.resume() }, 'Play');
+    const node = el('section', { class: 'gm__end gm__panel', role: 'region', 'aria-labelledby': 'gm-set-h' },
+      el('h2', { id: 'gm-set-h', class: 'gm__endh', text: 'Ways to play' }),
+      modes,
+      el('div', { class: 'gm__switches' },
+        base.some(splits) ? sw('Endings only', 'Type just the ending after the stem.', endings, (v) => { endings = v; onEndings?.(v); }) : null,
+        sw('Shuffle', 'Mix up the order.', shuffle, (v) => { shuffle = v; write('shuffle', v); if (!ended) reorderRest(); }),
+        sw('Redo misses', 'Missed forms come back at the end.', redo, (v) => { redo = v; write('redo', v); }),
+        sw('Timer', 'Show the clock.', read('timer', true), (v) => { write('timer', v); clock.hidden = !v; }),
+        sw('Sound', 'Beeps for right and wrong.', read('sound', false), (v) => { write('sound', v); if (v) sounds.right(); })),
+      el('div', { class: 'gm__acts' }, done, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Quit the game')));
+    openPanel(node, modes.querySelector('[aria-checked="true"]'));
+  }
+
   root.tabIndex = -1;   // between two forms the dialog itself holds the focus, so no key falls through to the page
-  root.addEventListener('cancel', (e) => { e.preventDefault(); close(); });   // Escape, where the browser sends it
+  root.addEventListener('cancel', (e) => { e.preventDefault(); if (panel) panel.resume(); else close(); });   // Escape, where the browser sends it
   root.addEventListener('close', () => close());   // a close the browser makes on its own (a second Escape, Android back)
   // Every key stays in the game: the reader's letter shortcuts (e, h, m, a …) and its Escape (which closes the word
   // panel) listen on the document, and a learner typing the next form early must not reach them.
   root.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { e.preventDefault(); close(); }
+    if (e.key === 'Escape') { e.preventDefault(); if (panel) panel.resume(); else close(); }
+    // 1–4 take a choice (Choose, What is it?).
+    else if (!panel && /^[1-4]$/.test(e.key) && e.target !== input) {
+      const b = rows[at]?.slot.querySelectorAll('.gm__choice')[Number(e.key) - 1];
+      if (b && !b.disabled) { e.preventDefault(); b.click(); }
+    }
     if (!e.ctrlKey && !e.metaKey && !e.altKey) e.stopPropagation();
   });
   window.addEventListener('resize', place);
+  window.visualViewport?.addEventListener('resize', place);   // the keyboard coming up or going
 
   function finish() {
+    ended = true;
     clearInterval(timer);
     sounds.done();
     const secs = Math.round((Date.now() - started) / 1000);
-    const clean = list.filter((x) => !firstMiss.has(x.key)).length;
-    const misses = list.filter((x) => firstMiss.has(x.key));
+    const clean = base.filter((x) => !firstMiss.has(x.key)).length;
+    const misses = base.filter((x) => firstMiss.has(x.key));
     let best = id ? read(`best.${id}`, null) : null;
     const isBest = !best || score > best.score || (score === best.score && secs < best.secs);
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings }); };
     const acts = el('div', { class: 'gm__acts' },
-      misses.length ? el('button', { type: 'button', class: 'btn btn--primary', onclick: () => { close(true); playTable({ title, subtitle: 'The ones missed', items: misses, id: null, onNext, nextLabel, onClose }); } }, `Replay the ${misses.length} I missed`) : null,
+      misses.length ? el('button', { type: 'button', class: 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
       onNext ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
-      el('button', { type: 'button', class: 'btn', onclick: () => { close(true); playTable({ title, subtitle, items: list, id, onNext, nextLabel, onClose }); } }, 'Play again'),
+      el('button', { type: 'button', class: 'btn', onclick: again(base, subtitle, id) }, 'Play again'),
       el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Close'));
+    const stars = clean === base.length ? 3 : clean >= base.length * 0.7 ? 2 : clean > 0 ? 1 : 0;
     const card = el('section', { class: 'gm__end', 'aria-labelledby': 'gm-end-h' },
-      el('h2', { id: 'gm-end-h', class: 'gm__endh', text: clean === list.length ? 'Every form, first time' : `${clean} of ${list.length} first time` }),
+      el('p', { class: 'gm__stars', 'aria-label': `${stars} of 3 stars` }, [0, 1, 2].map((i) => el('span', { class: i < stars ? 'is-on' : '', 'aria-hidden': 'true', text: '★' }))),
+      el('h2', { id: 'gm-end-h', class: 'gm__endh', text: clean === base.length ? 'Every form, first time!' : `${clean} of ${base.length} first time` }),
       el('dl', { class: 'gm__result' },
         el('div', {}, el('dt', { text: 'Score' }), el('dd', { text: `${score}${isBest && id ? ' · best' : best ? ` · best ${best.score}` : ''}` })),
         el('div', {}, el('dt', { text: 'Longest streak' }), el('dd', { text: String(bestStreak) })),
@@ -239,15 +448,18 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         el('ul', {}, misses.map((x) => el('li', {}, el('span', { class: 'gm__label', text: x.cue }), ' ', el('span', { class: 'gm__form', lang: 'la' }, formNode(x)))))) : null,
       acts);
     stage.replaceChildren(card);
-    progress.textContent = `${list.length} / ${list.length}`;
+    progress.textContent = `${rows.length} / ${rows.length}`;
+    meterFill.style.width = '100%';
+    paintStats();
     live.textContent = card.querySelector('h2').textContent;
-    acts.querySelector('button')?.focus({ preventScroll: true });
+    focusIn(acts.querySelector('button'));
   }
   function close(silent = false) {
     if (closed) return;
     closed = true;
     clearInterval(timer);
     window.removeEventListener('resize', place);
+    window.visualViewport?.removeEventListener('resize', place);
     try { root.close(); } catch { /* already closed */ }
     root.remove();
     document.documentElement.classList.remove('gm-open');
@@ -257,6 +469,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   document.documentElement.classList.add('gm-open');
   document.body.append(root);
   try { root.showModal(); } catch { root.setAttribute('open', ''); }
-  requestAnimationFrame(() => focusCurrent());
+  paintStats();
+  requestAnimationFrame(() => ask());
   return { close };
 }
