@@ -464,13 +464,17 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     .sort((a, b) => a.si - b.si || a.ci - b.ci || a.ri - b.ri)
     .map((x) => ({ key: x.label, cue: [x.row, [x.section, x.col].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en: x.en, answers: x.answers, stem: x.stem, ending: x.ending, group: `${x.si}|${x.ci}` }));
   const paintPlayMiss = () => {
-    const n = id ? savedMisses(id).filter((k) => cells().some((x) => x.label === k)).length : 0;
+    const n = id ? savedMisses(gameId()).filter((k) => cells().some((x) => x.label === k)).length : 0;
     playMissBtn.hidden = !n;
     playMissBtn.textContent = `▶ Play my ${n} miss${n === 1 ? '' : 'es'}`;
   };
-  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : id, onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss });
+  // A game's best and its misses belong to the forms it asked: the whole table, a skill's six, a chapter's part
+  // are three games, not one (their keys' signature in the id).
+  const sig = (keys) => { let x = 0; for (const ch of [...keys].sort().join('|')) x = (x * 31 + ch.charCodeAt(0)) >>> 0; return x.toString(36); };
+  const gameId = () => (id ? `${id}|${sig(gameItems().map((g) => g.key))}` : null);
+  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : gameId(), onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss });
   playBtn.addEventListener('click', () => play());
-  playMissBtn.addEventListener('click', () => play(new Set(savedMisses(id))));
+  playMissBtn.addEventListener('click', () => play(new Set(savedMisses(gameId()))));
   details.addEventListener('toggle', paintPlayMiss);
   setTimeout(paintPlayMiss, 0);
   const off = new Set();   // chapters switched off ('' for the forms no chapter teaches)

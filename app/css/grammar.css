@@ -1306,3 +1306,6 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 .g-game__prev[hidden], .g-game__next[hidden] { display: none; }
 .g-game__shake { animation: gm-shake 320ms ease; }
 @media (prefers-reduced-motion: reduce) { .g-game__shake { animation: none; } }
+
+/* 6: a word tapped in a drill's game mode opens its gloss above the game, not behind it. */
+html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }

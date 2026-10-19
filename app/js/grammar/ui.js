@@ -1088,21 +1088,28 @@ export function createUI(ctx) {
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
     const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, sheets: renderSheets, stats: renderStats, history: renderHistory, summary: () => renderMap() };
-    (fn[view.name] ?? renderMap)(view.params);
+    (fn[view.name] ?? renderMap)(playOnce ? { ...view.params, play: true } : view.params);
     document.title = sheets ? 'Sheets — Latin 103' : words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
   }
   /** Show a view. Each is a history entry (Back walks the section's views; a session in progress resumes); the new heading takes focus. */
+  let playOnce = false;
   function render(name, params = {}, { push = true, focus = true } = {}) {
     closePop();
     // The map is 87 rows long: coming back from a lesson or a history page at scrollY 0 means hunting
     // for the skill you left (QA-B10). Its place is kept and restored; every other view opens at the top.
     if (view.name === 'map' && name !== 'map') mapScroll[mapView] = window.scrollY;
+    // `play` (start this view's game) is for this render alone: kept in the view or the history entry, a Back
+    // onto it or any redraw would start the game again by itself.
+    const { play: playNow = false, ...kept } = params ?? {};
+    params = kept;
+    playOnce = !!playNow;
     view = { name, params };
     // Each entry carries the section mode it was drawn in (Grammar or Word Work), so Back never draws one
     // section's view under the other's tabs; a redraw in place re-marks the entry it is on.
     const state = { grammar: { name, params: name === 'session' || name === 'redo' ? { ...params, resume: true } : params, mode: sectionMode() } };
     try { if (push) history.pushState(state, ''); else history.replaceState(state, ''); } catch { /* file: URLs */ }
     draw();
+    playOnce = false;   // this render's game has been started; a later redraw is just a redraw
     // Each of the two map views keeps its own place: coming back from a lesson lands where it was left, in the view it was left in.
     window.scrollTo({ top: name === 'map' ? (params.chapter != null ? 0 : mapScroll[mapView]) : 0 });
     if (focus) body.querySelector('h1')?.focus?.({ preventScroll: true });
@@ -1125,7 +1132,7 @@ export function createUI(ctx) {
   // The new heading takes focus whenever the body is replaced and focus has nowhere to be (a view arriving after a lesson fetch, the end of a session) — G1-09.
   let gameKey = null;   // the running session's Escape-leaves-game-mode listener
   // Any new view leaves a drill's game mode (its summary, a lesson): only a running session draws it full screen.
-  const setBody = (...nodes) => { body.classList.remove('g-game'); document.documentElement.classList.remove('gm-open'); body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
+  const setBody = (...nodes) => { body.classList.remove('g-game'); document.documentElement.classList.remove('g-game-open'); body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
   // The section may be built twice in a life: once cheaply for the weeks-menu Today card, then in full when Grammar is
   // opened. `dispose()` takes the first instance's listener off so the two never both answer a Back.
   const onPop = (e) => {
@@ -2821,8 +2828,7 @@ export function createUI(ctx) {
         h('h2', { id: 'g-para-models', class: 'g-h2', text: 'The model words' }),
         h('p', { class: 'g-quiet', text: 'One of each pattern: the four conjugations and the irregular verbs, the five declensions, adjectives and pronouns.' }),
         h('ul', { class: 'g-chips g-words', 'aria-label': 'Model words' }, models.map((e) => chip(e)))));
-    if (chosen) tableBox.querySelector('.paradigm__go')?.focus({ preventScroll: true });
-    if (chosen && play) autoPlay(tableBox);
+    if (chosen) { tableBox.querySelector('.paradigm__go')?.focus({ preventScroll: true }); if (play) autoPlay(tableBox); }
     else if (type) body.querySelector('.g-para__typewords')?.scrollIntoView({ block: 'start' });
   }
 
@@ -3977,7 +3983,7 @@ export function createUI(ctx) {
     };
     function setGame(on) {
       body.classList.toggle('g-game', on);
-      document.documentElement.classList.toggle('gm-open', on);
+      document.documentElement.classList.toggle('g-game-open', on);
       try { localStorage.setItem('l103.game.drill', on ? '1' : '0'); } catch { /* not kept */ }
       paintGame();
       if (runner.current) paintNav();   // the strips, after the position is counted
@@ -4006,7 +4012,7 @@ export function createUI(ctx) {
     // Game mode, once chosen, is how the next session opens too.
     let wantGame = false;
     try { wantGame = localStorage.getItem('l103.game.drill') === '1'; } catch { /* not kept */ }
-    if (wantGame) { body.classList.add('g-game'); document.documentElement.classList.add('gm-open'); }
+    if (wantGame) { body.classList.add('g-game'); document.documentElement.classList.add('g-game-open'); }
     paintGame();        // queue index → the rendered page, kept so a step back shows it as it was left
     /** Human position: the made items up to here, out of the made items in all (skipped slots are not counted). */
     const paintNav = () => {
@@ -4066,6 +4072,7 @@ export function createUI(ctx) {
           page.querySelector(':scope > .g-fb')?.remove();
           page.append(fb);
           page.dataset.result = result.correct ? 'ok' : 'bad';
+          page.dataset.answers = String(Number(page.dataset.answers ?? 0) + 1);   // the drill game's clear checks it is still this answer
           paintNav();
           ctx.say(fb.querySelector('.g-fb__line')?.textContent ?? '');
           fb.scrollIntoView({ block: 'nearest' });
@@ -4084,11 +4091,15 @@ export function createUI(ctx) {
               page.classList.remove('g-game__shake'); void page.offsetWidth; page.classList.add('g-game__shake');
               // Red, a moment, then empty for another go: the boxes that were wrong (every box when none is
               // marked), or — for an item whose buttons are spent — the item afresh, as "Try again" would.
+              // …unless the learner has already answered again, started typing, or moved on.
+              const tok = String(Number(page.dataset.answers ?? 0));
+              const typed = new Map([...page.querySelectorAll('.g-item input[type="text"], .g-item textarea')].map((b) => [b, b.value]));
               setTimeout(() => {
-                if (runner.position !== i || !page.isConnected || !gameOn()) return;
+                if (runner.position !== i || !page.isConnected || !gameOn() || page.dataset.answers !== tok || page.dataset.result !== 'bad') return;
                 if (live) {
                   const wrong = [...page.querySelectorAll('.g-item input.is-wrong, .g-item textarea.is-wrong')];
-                  const boxes = wrong.length ? wrong : [...page.querySelectorAll('.g-item input[type="text"]:not([readonly]):not([disabled]), .g-item textarea:not([readonly]):not([disabled])')];
+                  const boxes = (wrong.length ? wrong : [...page.querySelectorAll('.g-item input[type="text"]:not([readonly]):not([disabled]), .g-item textarea:not([readonly]):not([disabled])')])
+                    .filter((b) => typed.get(b) === b.value);   // a box the learner is already retyping is theirs
                   for (const b of boxes) { b.value = ''; b.dispatchEvent(new Event('input', { bubbles: true })); }
                   boxes[0]?.focus({ preventScroll: true });
                 } else page.querySelector('.g-fb__retry')?.click();

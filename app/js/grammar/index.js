@@ -297,6 +297,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     if (mode === 'words' || mode === 'sheets') document.documentElement.dataset.sectionMode = mode; else delete document.documentElement.dataset.sectionMode;
     layout.hidden = grammar;
     root.hidden = !grammar;
+    document.documentElement.classList.toggle('g-game-open', grammar && !!root.querySelector('.g-body.g-game'));   // a drill's game mode locks the page only while it shows
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === mode));
     try { localStorage.setItem(LS_SECTION, mode); } catch { /* ignore */ }
     if (mode === 'sheets') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'sheets' || chapter != null || !root.querySelector('.g'))) ui.render('sheets', chapter != null ? { chapter } : {}, { push: drawn === 'sheets' && was === 'grammar', focus: false }); else document.title = 'Sheets — Latin 103'; if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
