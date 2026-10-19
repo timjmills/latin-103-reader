@@ -651,14 +651,15 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 /* A band still to come holds a "?", as every band on a reel shows its value. */
 .gm__row:not([data-pos="current"]):not([data-state]) .gm__slot:empty::before { content: "?"; font-family: var(--face-reading); font-size: 1.35rem; font-weight: 700; color: var(--ink-3); }
 .gm__cue { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0 var(--s-2); }
-.gm__label { font-weight: 700; color: var(--ink-2); font-size: var(--ui-sm); }
+/* The form's name a quiet grey tag, the English a colour of its own ("differentiate them by color"). */
+.gm__label { font-weight: 700; color: var(--ink-2); font-size: var(--ui-sm); padding: 0.1em 0.6em; border-radius: 999px; background: color-mix(in srgb, var(--ink) 8%, transparent); }
 /* The English on a line of its own under the form's name, large and dark (2026-10-19: "have both the form and the
    translation but make the translation below and more prominent"). */
-.gm__en { flex-basis: 100%; order: 1; color: var(--ink); font-size: 1.05rem; font-weight: 600; }
+.gm__en { flex-basis: 100%; order: 1; color: color-mix(in srgb, var(--gm-a) 70%, var(--ink)); font-size: 1.05rem; font-weight: 700; }
 .gm__en::before { content: "“"; } .gm__en::after { content: "”"; }
 .gm__againtag { order: -2; flex-basis: 100%; }
-.gm__row[data-pos="current"] .gm__label { font-size: 1rem; color: var(--ink-2); }
-.gm__row[data-pos="current"] .gm__en { font-size: 1.45rem; font-weight: 700; color: color-mix(in srgb, var(--gm-a) 55%, var(--ink)); }
+.gm__row[data-pos="current"] .gm__label { font-size: 0.95rem; color: var(--ink-2); }
+.gm__row[data-pos="current"] .gm__en { font-size: 1.45rem; }
 .gm__slot { display: flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: 2.6rem; width: 100%; }
 .gm__in { flex: 1 1 auto; min-width: 0; max-width: 22rem; min-height: 3.6rem; padding: 0 var(--s-3); text-align: center; font-family: var(--face-reading); font-size: 1.9rem; border: 3px solid color-mix(in srgb, var(--gm-a) 45%, var(--line-strong)); border-radius: 1rem; background: var(--bg); color: var(--ink); }
 .gm__in:focus-visible { outline: none; border-color: var(--gm-a); }
