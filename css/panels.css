@@ -637,7 +637,11 @@ html.gm-open, html.g-game-open { overflow: hidden; }
    ones should look how they will look when they are in the center with the white and purple"): those to come are
    white with the purple edge, as they will be in the middle; those answered are green, or red where missed. */
 .gm__row[data-pos="below"] { background: var(--bg-raised); box-shadow: 0 0 0 3px var(--gm-a); }
-.gm__row:not([data-pos="current"]) { pointer-events: none; }
+.gm__row:not([data-pos="current"]) { cursor: pointer; }   /* a tap on a band turns the wheel to it */
+.gm__row:not([data-pos="current"]) * { pointer-events: none; }
+.gm__stage { touch-action: none; }   /* a swipe turns the wheel */
+.gm--ended .gm__stage { touch-action: auto; }   /* the end card scrolls as a page does */
+.gm__hint { position: absolute; inset: auto 0 var(--s-5); margin: 0; text-align: center; font-size: var(--ui-sm); font-weight: 700; color: var(--ink-2); z-index: 20; pointer-events: none; }
 .gm__row[data-pos="current"] { opacity: 1; padding: var(--s-4) var(--s-5); background: var(--bg-raised);
   box-shadow: 0 0 0 3px var(--gm-a), 0 0 0 6px color-mix(in srgb, var(--gm-a) 22%, transparent), 0 16px 40px color-mix(in srgb, var(--gm-a) 30%, transparent); }
 /* The pointer, both sides of the band in play. */
