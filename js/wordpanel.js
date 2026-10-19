@@ -14,6 +14,7 @@ import { cellMeaning } from './dictionary.js';
 import { cellChapter, loadFormSkills } from './paradigm-chapters.js';
 import { chapterOfWeek } from './chapters.js';
 import { roman } from './sync.js';
+import { playTable, savedMisses } from './game.js';
 
 const ENCLITIC = { que: '-que "and" is attached to the end', ne: '-ne turns the sentence into a yes/no question', ve: '-ve "or" is attached to the end' };
 
@@ -440,7 +441,7 @@ const BEST_KEY = 'l103.paradigm.best.';
 function readBest(id) { try { return JSON.parse(localStorage.getItem(BEST_KEY + id) || 'null'); } catch { return null; } }
 function writeBest(id, v) { try { localStorage.setItem(BEST_KEY + id, JSON.stringify(v)); } catch { /* private mode: the score just is not kept */ } }
 
-function practiseControls(details, { sheet, chapter, id, preset = null }) {
+function practiseControls(details, { sheet, chapter, id, preset = null, game = {} }) {
   const cells = () => sheet.filter((x) => x.answers.length);
   const status = h('p', { class: 'paradigm__score', role: 'status', 'aria-live': 'polite' });
   const btn = (text, hidden = true, cls = 'btn btn--quiet') => h('button', { type: 'button', class: cls, text, hidden });
@@ -454,7 +455,24 @@ function practiseControls(details, { sheet, chapter, id, preset = null }) {
   // Endings only asks the ending of a form whose stem the table splits off; an irregular form (sum, est) is asked whole.
   const byEnding = (x) => endings && !!x.stem && !!x.ending;
   const parts = h('div', { class: 'paradigm__parts', role: 'group', 'aria-label': 'Parts to practise, by chapter', hidden: true });
-  const bar = h('div', { class: 'paradigm__acts' }, startBtn, endBtn, missesBtn, showBtn, againBtn, stopBtn);
+  // ▶ Play (2026-10-19): the same table as a game, full screen, down each column (game.js). It plays the parts
+  // switched on, so a chapter's Word Work plays its chapter; "Play my misses" the forms missed last time.
+  const playBtn = h('button', { type: 'button', class: 'btn paradigm__play', 'aria-label': 'Play this table as a game' }, h('span', { 'aria-hidden': 'true', text: '▶ ' }), 'Play');
+  const playMissBtn = h('button', { type: 'button', class: 'btn btn--quiet paradigm__playmiss', hidden: true });
+  const bar = h('div', { class: 'paradigm__acts' }, playBtn, playMissBtn, startBtn, endBtn, missesBtn, showBtn, againBtn, stopBtn);
+  const gameItems = (only = null) => cells().filter(on).filter((x) => !only || only.has(x.label))
+    .sort((a, b) => a.si - b.si || a.ci - b.ci || a.ri - b.ri)
+    .map((x) => ({ key: x.label, cue: [x.row, [x.section, x.col].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en: x.en, answers: x.answers, stem: x.stem, ending: x.ending, group: `${x.si}|${x.ci}` }));
+  const paintPlayMiss = () => {
+    const n = id ? savedMisses(id).filter((k) => cells().some((x) => x.label === k)).length : 0;
+    playMissBtn.hidden = !n;
+    playMissBtn.textContent = `▶ Play my ${n} miss${n === 1 ? '' : 'es'}`;
+  };
+  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : id, onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss });
+  playBtn.addEventListener('click', () => play());
+  playMissBtn.addEventListener('click', () => play(new Set(savedMisses(id))));
+  details.addEventListener('toggle', paintPlayMiss);
+  setTimeout(paintPlayMiss, 0);
   const off = new Set();   // chapters switched off ('' for the forms no chapter teaches)
   const chKey = (ch) => (ch == null ? '' : String(ch));
   const on = (x) => !off.has(chKey(x.ch));
@@ -711,7 +729,8 @@ export function renderParadigm(p, opts = {}) {
     if (!inf || text.includes(' ') || !fold(text).startsWith(fold(inf)) || text.length <= inf.length) return c;
     return { ...c, stem: text.slice(0, inf.length), ending: text.slice(inf.length) };
   };
-  if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null }));
+  if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
+    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel } }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).
@@ -726,7 +745,9 @@ export function renderParadigm(p, opts = {}) {
       table.append(h('thead', {}, h('tr', {}, ...labelCol, s.headers.map((hd) => h('th', { scope: 'col', text: hd })))));
     }
     const body = h('tbody');
+    let ri = -1;   // the row's place, for game.js's order: down each column
     for (const r of s.rows) {
+      ri += 1;
       const th = h('th', { scope: 'row', text: r.label });
       body.append(h('tr', {}, th,
         r.cells.map((c0, ci) => {
@@ -741,7 +762,7 @@ export function renderParadigm(p, opts = {}) {
           if (!c.empty && c.key) {
             // What a screen reader hears for the box: where it is in the table, and its English.
             const label = [s.title, s.headers?.[ci], r.label].filter(Boolean).join(' · ') + (en ? ` — ${en}` : '');
-            sheet.push({ td, th, caption, section: s.title || `part ${si + 1}`, col: s.headers?.[ci] ?? '', row: r.label, key: c.key, answers, label, ch: null, stem: c.stem || '', ending: c.ending || '' });
+            sheet.push({ td, th, caption, section: s.title || `part ${si + 1}`, col: s.headers?.[ci] ?? '', row: r.label, key: c.key, answers, label, en, ch: null, stem: c.stem || '', ending: c.ending || '', si, ci, ri });
           }
           return td;
         })));

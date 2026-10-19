@@ -34,6 +34,7 @@ const PRECACHE = [
   './js/dictionary.js',
   './js/paradigms.js',
   './js/paradigm-chapters.js',
+  './js/game.js',
   './js/tokenize.js',
   './js/hovergloss.js',
   './js/settings.js',
