@@ -467,12 +467,15 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     const n = id ? savedMisses(gameId()).filter((k) => cells().some((x) => x.label === k)).length : 0;
     playMissBtn.hidden = !n;
     playMissBtn.textContent = `▶ Play my ${n} miss${n === 1 ? '' : 'es'}`;
+    // Endings only is a setting of the game too, so it is there before practice starts as well as during it.
+    endBtn.hidden = !cells().some((x) => x.stem && x.ending);
   };
   // A game's best and its misses belong to the forms it asked: the whole table, a skill's six, a chapter's part
   // are three games, not one (their keys' signature in the id).
   const sig = (keys) => { let x = 0; for (const ch of [...keys].sort().join('|')) x = (x * 31 + ch.charCodeAt(0)) >>> 0; return x.toString(36); };
   const gameId = () => (id ? `${id}|${sig(gameItems().map((g) => g.key))}` : null);
-  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : gameId(), onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss });
+  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : gameId(), onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss,
+    endings, onEndings: (want) => { if (want !== endings) endBtn.click(); } });   // Endings only plays as the table has it, and a switch in the game is the table's too
   playBtn.addEventListener('click', () => play());
   playMissBtn.addEventListener('click', () => play(new Set(savedMisses(gameId()))));
   details.addEventListener('toggle', paintPlayMiss);
@@ -636,11 +639,11 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       if (!done(x) && x.td.dataset.state !== 'right') { input.value = ''; mark(x, ''); }
       input.setAttribute('aria-label', byEnding(x) ? `${x.label} — the ending after ${x.stem}` : x.label);
     }
-    score();
+    if (details.classList.contains('is-practising')) score();   // set before ▶ Play, with no practice under way: no score to tell
   });
   stopBtn.addEventListener('click', () => {
-    details.classList.remove('is-practising', 'is-complete', 'is-endings');
-    endings = false; endBtn.setAttribute('aria-pressed', 'false'); endBtn.hidden = true; missesBtn.hidden = true;
+    details.classList.remove('is-practising', 'is-complete');
+    missesBtn.hidden = true;   // Endings only stays as it was set: it is ▶ Play's setting too
     for (const x of cells()) { x.td.querySelector('.pt__answer')?.remove(); delete x.td.dataset.state; x.td.classList.remove('is-off'); }
     parts.hidden = true;
     startBtn.hidden = false; showBtn.hidden = true; againBtn.hidden = true; stopBtn.hidden = true;
