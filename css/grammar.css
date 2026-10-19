@@ -1309,3 +1309,13 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 
 /* 6: a word tapped in a drill's game mode opens its gloss above the game, not behind it. */
 html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
+
+/* ▶ Play wherever a skill is listed: the one button that reads as the game (ui.js playSkill). */
+.g-play { font-weight: 600; }
+.g-play:not(.btn--primary) { border-color: var(--ink-2); }
+.g-ww__drill .g-play { min-height: 36px; padding-inline: var(--s-3); }
+@media (pointer: coarse) { .g-ww__drill .g-play { min-height: var(--tap); } }
+
+.g-ww__wordhead, .g-sheet__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-3); }
+.g-ww__wordhead .g-ww__lemma { margin: 0; }
+.g-ww__playall { margin: 0 0 var(--s-4); }

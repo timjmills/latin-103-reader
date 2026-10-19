@@ -646,3 +646,11 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 @media (prefers-reduced-motion: reduce) { .gm__track, .gm__row { transition: none; } .gm__shake { animation: none; } }
 .paradigm__play { font-weight: 600; }
+
+.entry__play { margin: 0 0 var(--s-2); }
+.g-play, .entry__play .g-play { font-weight: 600; }
+
+.entry__head .g-play { margin-left: auto; min-height: 36px; padding-inline: var(--s-3); }
+@media (pointer: coarse) { .entry__head .g-play { min-height: var(--tap); } }
+
+.entry__head { flex-wrap: wrap; }   /* the word, its + / − and ▶ Play: on a 320px phone Play drops under, the word keeps its line */
