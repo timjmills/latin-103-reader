@@ -190,22 +190,42 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   timer = setInterval(tick, 500);
   tick();
 
-  // The column glides so the current form sits in the middle of the screen (2026-10-19: "bring the game mode to the
-  // center of the screen") — the middle of what the keyboard leaves showing, on a phone. The track's own padding
-  // (CSS) lets even the first and last forms come to the middle.
+  // A reel (2026-10-19, a game-show wheel for the picture: "the center is clear with the current word and the ones
+  // below and above are still larger but are faded a bit and the ones above and below that are smaller so 5 cells
+  // are seen at once"). Each form is a band laid edge to edge with the next, the one in play in the middle of what
+  // the screen shows (above a phone's keyboard), full size and clear; the bands either side tilt away round the
+  // drum — the next ones large and a little faded, the outer ones smaller and fainter — and the reel rolls as the
+  // learner goes. REEL[d]: [scale, tilt in degrees, opacity] at d bands from the middle.
+  const REEL = [[1, 0, 1], [0.95, 28, 0.62], [0.82, 52, 0.34], [0.7, 72, 0]];
   function place() {
+    if (!rows[at]) return;
+    const stageH = stage.clientHeight || window.innerHeight;
+    const vv = window.visualViewport;
+    const seen = vv ? Math.min(stageH, vv.offsetTop + vv.height - stage.getBoundingClientRect().top) : stageH;
+    const mid = Math.max(seen, 120) / 2;
+    const look = (d) => REEL[Math.min(Math.abs(d), 3)];
+    const tall = (d, h) => { const [k, deg] = look(d); return h * k * Math.cos((deg * Math.PI) / 180); };   // its height on the drum
+    // Each band's place first (the middle one's padding is larger), then its height, then where it goes.
     rows.forEach((r, i) => {
       const d = i - at;
       r.li.dataset.pos = d === 0 ? 'current' : Math.abs(d) <= 2 ? (d < 0 ? 'above' : 'below') : 'far';
       r.li.dataset.dist = String(Math.min(Math.abs(d), 3));
     });
-    const cur = rows[at]?.li;
-    if (!cur) return;
-    const stageH = stage.clientHeight || window.innerHeight;
-    const vv = window.visualViewport;
-    const seen = vv ? Math.min(stageH, vv.offsetTop + vv.height - stage.getBoundingClientRect().top) : stageH;
-    const y = cur.offsetTop + cur.offsetHeight / 2 - Math.max(seen, 120) / 2;
-    track.style.transform = `translateY(${-Math.max(0, y)}px)`;
+    const hs = rows.map((r) => r.li.offsetHeight);
+    const centre = new Array(rows.length);
+    centre[at] = mid;
+    for (let i = at + 1, edge = mid + hs[at] / 2; i < rows.length; i++) { const t = tall(i - at, hs[i]); centre[i] = edge + t / 2; edge += t; }
+    for (let i = at - 1, edge = mid - hs[at] / 2; i >= 0; i--) { const t = tall(i - at, hs[i]); centre[i] = edge - t / 2; edge -= t; }
+    track.style.perspectiveOrigin = `50% ${Math.round(mid)}px`;
+    rows.forEach((r, i) => {
+      const d = i - at;
+      const [k, deg] = look(d);
+      r.li.style.zIndex = String(10 - Math.min(Math.abs(d), 9));
+      // A band above the middle leans its top away, one below its foot: the curve of the drum.
+      r.li.style.transform = `translateY(${Math.round(centre[i] - hs[i] / 2)}px) rotateX(${d < 0 ? deg : -deg}deg) scale(${k})`;
+    });
+    // The first placing is not a roll: the reel starts where it is.
+    if (!track.classList.contains('is-rolling')) requestAnimationFrame(() => track.classList.add('is-rolling'));
   }
   const focusIn = (n) => { if (!panel && !closed) n?.focus({ preventScroll: true }); };
 
@@ -284,6 +304,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     r.li.dataset.state = state;
     r.li.classList.remove('is-parse');
     r.slot.replaceChildren(el('span', { class: 'gm__form', lang: 'la' }, formNode(r.x)), el('span', { class: 'gm__mark', 'aria-hidden': 'true', text: state === 'right' ? '✓' : '·' }));
+    place();
   }
   function right(r) {
     const clean = !r.again && !firstMiss.has(r.x.key) && !shown.has(r.x.key);
