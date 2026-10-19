@@ -1608,8 +1608,10 @@ export function createUI(ctx) {
       acts.push(btn('Practise this skill', { onclick: () => nav('blocked', { skill: s.id }) }, 'btn'), lessonBtn);
     }
     if (drillBtn) acts.splice(1, 0, drillBtn);
+
     // Unlimited and mixed practice (§11, §12), the same two taps, on the skills that have a generated bank.
     if (drillBtn && hasBank(s.id)) acts.splice(2, 0, ...practiceButtons(s, nav));
+    if (!s.set && (can || (known && s.paradigms?.length))) acts.unshift(playButton(s.id, { nav: go, chapter: s.chapter }));
     if (gstore.countAttempts(s.id)) acts.push(btn('History', { onclick: () => nav('history', { skill: s.id }), 'aria-label': `History of ${s.title}` }, 'btn btn--quiet'));
     if (known) acts.push(btn('Reset', { onclick: () => resetSkill(s.id), 'aria-label': `Reset ${s.title}` }, 'btn btn--quiet g-skill__reset'));
     return h('li', { class: 'g-skill', 'data-state': st.state },
@@ -1844,6 +1846,7 @@ export function createUI(ctx) {
     if (st.state === 'new') acts.push(btn('Add to mixed practice', { onclick: async () => { await addSkill(id); render('lesson', { skill: id, from }); } }, 'btn'));
     if (inRotation(st)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id, from) }, 'btn btn--primary'));
     // Two taps to a drill (§10): the row opened this; one more starts ten items on the skill alone.
+    if (!skill.set && (drillable(id) || skill.paradigms?.length)) acts.push(playButton(id, { from }));
     if (!skill.set && drillable(id)) acts.push(btn('Just drill it', { onclick: () => render('drill', { skill: id, from }), 'aria-label': `Just drill ${skill.title}: ten items, the rule pinned above each` }, st.state === 'new' ? 'btn' : 'btn btn--quiet'));
     // Unlimited practice and a mixed set (§11, §12): one more tap, on a skill with a generated bank. The manifest is
     // awaited here (the page is async anyway), so the first lesson opened after a cold start offers them too.
@@ -2541,6 +2544,33 @@ export function createUI(ctx) {
     return h('div', { class: 'g-scaffold' }, h('span', { class: 'g-label', text: 'Given' }), seg, note);
   }
 
+  /* ------------------------------------------------------- game mode: playing a skill */
+  /**
+   * ▶ Play for a skill, from a list of skills (the learner, 2026-10-19: "I don't see any place where it says
+   * play for any skill or table"). A skill with forms plays its whole table as the game, word after word
+   * (Word Work's whole table, started); a skill about how forms are used plays its drill in game mode. The
+   * game-mode choice is the drill's own kept one, so it stays on for the next drill too.
+   */
+  // ▶ Play opens the next session in game mode, once: a plain Start / Drill beside it stays plain. Only the
+  // session's own "▶ Game mode" switch is a kept choice (l103.game.drill).
+  let playGameOnce = false;
+  const gameDrillOn = () => { playGameOnce = true; };
+  function playSkill(id, { chapter = null, from = null, nav = null } = {}) {
+    const sk = skills.get(id);
+    if (!sk) return;
+    const go = nav ?? ((name, params) => render(name, params));
+    const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
+    // A whole table is Word Work's: from Grammar's list the header moves there with it (a chapter page's
+    // router does the same, index.js go). A drill stays where it is, its way back the section it came from.
+    if (sk.paradigms?.length) { if (!nav && sectionMode() !== 'words') ctx.setMode?.('words'); go('wwtable', { chapter: n, skill: id, play: true }); return; }
+    gameDrillOn();
+    go('drill', { skill: id, from: from ?? (sectionMode() === 'words' ? { wordwork: n } : null) });
+  }
+  const playable = (id) => { const sk = skills.get(id); return !!sk && !sk.set && (!!sk.paradigms?.length || drillable(id)); };
+  const playLabel = (text = 'Play') => [h('span', { 'aria-hidden': 'true', text: '▶ ' }), text];
+  const playButton = (id, opts = {}, cls = 'btn g-play') => btn(playLabel(),
+    { onclick: () => playSkill(id, opts), 'aria-label': `Play ${skills.get(id)?.title ?? 'this skill'} as a game` }, cls);
+
   /* ------------------------------------------------------- game mode: the next table */
   /** After a game on `node`'s table, the next table on the page plays (Word Work's cards, a sheet's charts). */
   const playNextAfter = (getNode, more = null) => () => {
@@ -2753,6 +2783,7 @@ export function createUI(ctx) {
     // A random word (2026-10-09: "select a random (but appropriate) word, as I don't know how to spell the
     // words"): one of the library's common nouns, verbs and adjectives, any type — a type's own random word is
     // "Start with a random one" and "Another word of this type", below.
+    const randomPlay = btn(playLabel('Play a random word'), { onclick: () => { const e = randomWord() ?? randomWord(); if (e) render('paradigms', { word: e.h, pos: e.pos, play: true }); else ctx.say('No word could be chosen just now.'); } }, 'btn g-play');
     const randomBtn = btn('Random word', { onclick: () => { const e = randomWord() ?? randomWord(); if (e) render('paradigms', { word: e.h, pos: e.pos }); else ctx.say('No word could be chosen just now.'); } }, 'btn');
 
     // The learner's own words: the ones underlined while reading (store.getLookups), newest first.
@@ -2786,7 +2817,8 @@ export function createUI(ctx) {
         node.open = true;
         tableBox.append(
           h('h2', { class: 'g-h2', id: 'g-para-word' }, h('span', { lang: 'la', text: chosen.lemma ?? chosen.h })),
-          kind ? h('p', { class: 'g-para__type' }, h('span', { class: 'g-para__typename', text: kind.name }), another) : null,
+          h('p', { class: 'g-para__type' }, kind ? h('span', { class: 'g-para__typename', text: kind.name }) : null,
+            btn(playLabel(), { onclick: () => node?.querySelector('.paradigm__play')?.click(), 'aria-label': `Play ${chosen.lemma ?? chosen.h} as a game` }, 'btn btn--primary g-play'), another),
           h('div', { class: 'g-lesson__pt' }, node));   // the lesson's wrapper: it holds the table to the column, and the table stacks (§26) inside it
       }
     } else if (word) {
@@ -2806,7 +2838,9 @@ export function createUI(ctx) {
         h('h3', { class: 'g-label', text: `${cap(type)} — its words` }),
         typeWords.length
           ? [h('ul', { class: 'g-chips g-words', 'aria-label': `Words of the ${type}` }, typeWords.slice(0, 24).map((e) => chip(e, ''))),
-            h('div', { class: 'g-acts' }, btn('Start with a random one', { onclick: () => pick(typeWords[Math.floor(Math.random() * Math.min(typeWords.length, 40))], type) }, 'btn btn--primary'))]
+            h('div', { class: 'g-acts' },
+              btn(playLabel('Play a random one'), { onclick: () => { const e = typeWords[Math.floor(Math.random() * Math.min(typeWords.length, 40))]; render('paradigms', { word: e.h, pos: e.pos, type, play: true }); } }, 'btn btn--primary g-play'),
+              btn('Start with a random one', { onclick: () => pick(typeWords[Math.floor(Math.random() * Math.min(typeWords.length, 40))], type) }, 'btn'))]
           : h('p', { class: 'g-quiet', text: 'No word of this type has a table.' })) : null);
 
     setBody(
@@ -2816,7 +2850,7 @@ export function createUI(ctx) {
         h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — right turns green, the ending lit against the stem — or only the endings, or only the parts you have reached.' })),
       h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-find' },
         h('h2', { id: 'g-para-find', class: 'g-h2', text: 'Find a word' }),
-        h('div', { class: 'g-find' }, h('div', { class: 'g-find__box' }, search, list), randomBtn),
+        h('div', { class: 'g-find' }, h('div', { class: 'g-find__box' }, search, list), randomBtn, randomPlay),
         h('p', { class: 'g-quiet', text: 'Not sure how a word is spelled? Type its first letters and choose it from the list, or take a random one.' })),
       chosen ? h('section', { class: 'g-cat__sec g-para', 'aria-labelledby': 'g-para-word' }, tableBox) : (word ? tableBox : null),
       typeNode,
@@ -2968,7 +3002,8 @@ export function createUI(ctx) {
       node.open = true;
       const kind = typeOf(x.e);
       return h('article', { class: 'g-ww__word' },
-        h('h3', { class: 'g-ww__lemma' }, h('span', { lang: 'la', text: x.e.lemma ?? x.e.h })),
+        h('div', { class: 'g-ww__wordhead' }, h('h3', { class: 'g-ww__lemma' }, h('span', { lang: 'la', text: x.e.lemma ?? x.e.h })),
+          btn(playLabel(), { onclick: () => node.querySelector('.paradigm__play')?.click(), 'aria-label': `Play ${x.e.lemma ?? x.e.h} as a game` }, 'btn g-play')),
         h('p', { class: 'g-para__type' },
           kind ? h('span', { class: 'g-para__typename', text: kind.name }) : null,
           h('span', { class: 'g-quiet', text: x.model ? (scored.length ? 'a model word — the readings have none of this pattern' : 'a model word — this chapter’s readings are not in your library') : `${x.count}× in this chapter’s readings` }),
@@ -2994,7 +3029,11 @@ export function createUI(ctx) {
       }
     }
     if (!scored.length) parts.unshift(h('p', { class: 'g-quiet g-ww__note', text: 'This chapter’s readings are not in your library yet, so the model words stand in.' }));
-    setBody(head, parts, more);
+    // ▶ Play this chapter: its first card's game, each "Next word →" the card after.
+    const playAll = parts.some((x) => x?.querySelector?.('.paradigm__play'))
+      ? h('div', { class: 'g-acts g-ww__playall' }, btn(playLabel(`Play this chapter`), { onclick: () => body.querySelector('.g-ww .paradigm__play')?.click(), 'aria-label': `Play Cap. ${c.roman}'s word work as a game, word after word` }, 'btn btn--primary g-play'))
+      : null;
+    setBody(head, playAll, parts, more);
   }
 
   /* ------------------------------------------------------- word work · skill drills */
@@ -3021,6 +3060,12 @@ export function createUI(ctx) {
     return h('div', { class: 'g-ww__bar' },
       btn(`← Skill drills · Cap. ${roman(n)}`, { onclick: () => render('wwdrills', { chapter: n }) }, 'btn btn--quiet g-back'),
       h('label', { class: 'g-ww__barlabel' }, h('span', { class: 'g-label', text: `Cap. ${roman(n)} skills` }), select),
+      // ▶ Play here: on a whole table, its game; in a drill, the session switches to game mode where it stands.
+      playable(current) ? btn([h('span', { 'aria-hidden': 'true', text: '▶ ' }), 'Play'], { 'aria-label': 'Play this as a game', onclick: () => {
+        if (view.name === 'wwtable') { body.querySelector('.g-ww .paradigm__play')?.click(); return; }
+        const g = body.querySelector('.g-runnav__game');
+        if (g && g.getAttribute('aria-pressed') !== 'true') g.click(); else if (!g) playSkill(current, { chapter: n });
+      } }, 'btn g-play') : null,
       sk?.paradigms?.length && view.name !== 'wwtable' ? btn('Whole table →', { onclick: () => render('wwtable', { chapter: n, skill: current }) }, 'btn btn--quiet') : null,
       sk && view.name === 'wwtable' && drillable(current) ? btn('Drill in sentences →', { onclick: () => render('drill', { skill: current, from: { wordwork: n } }) }, 'btn btn--quiet') : null);
   }
@@ -3056,7 +3101,10 @@ export function createUI(ctx) {
     setBody(wwSkillBar(n, id), h('p', { class: 'g-loading', text: 'Finding the words for this table…' }));
     const list = await skillWords(n, sk);
     if (seq !== wwSeq || view.name !== 'wwtable') return;
-    if (!list.length) { setBody(wwSkillBar(n, id), h('p', { class: 'g-quiet', text: 'No word with a table fits this skill.' })); return; }
+    if (!list.length) {
+      if (play && drillable(id)) { gameDrillOn(); render('drill', { skill: id, from: { wordwork: n } }); return; }   // ▶ Play: the drill, since no table can be
+      setBody(wwSkillBar(n, id), h('p', { class: 'g-quiet', text: 'No word with a table fits this skill.' })); return;
+    }
     const k = ((Number(i) || 0) % list.length + list.length) % list.length;
     const e = list[k];
     const t = tableOf(e);
@@ -3184,8 +3232,14 @@ export function createUI(ctx) {
 
     const skillsReady = loadFormSkills();
     async function buildCard(sk) {
+      // ▶ Play: a form skill's charts, one after another (each "Next word →" the next chart); a use skill's drill.
+      const cardPlay = btn(playLabel(), { 'aria-label': `Play ${sk.title} as a game`, onclick: () => {
+        const first = card.querySelector('.paradigm__play');
+        if (first) first.click(); else playSkill(sk.id, { chapter: n });
+      } }, 'btn g-play g-sheet__play');
+      if (!sk.paradigms?.length && !drillable(sk.id)) cardPlay.hidden = true;
       const card = h('article', { class: 'g-sheet__card', 'data-forms': sk.paradigms?.length ? 'true' : null, 'aria-labelledby': `g-sheet-${sk.id}` },
-        h('h2', { class: 'g-sheet__title', id: `g-sheet-${sk.id}` }, sk.title, h('span', { class: 'g-sheet__cap', text: ` · cap. ${roman(Number(sk.chapter))}` })),
+        h('div', { class: 'g-sheet__head' }, h('h2', { class: 'g-sheet__title', id: `g-sheet-${sk.id}` }, sk.title, h('span', { class: 'g-sheet__cap', text: ` · cap. ${roman(Number(sk.chapter))}` })), cardPlay),
         sk.plain ? h('p', { class: 'g-sheet__plain', text: sk.plain }) : null,
         sk.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: sk.paradigms?.length ? 'How it is made ' : 'How it works ' }), prose(sk.summary)) : null);
       if (sk.paradigms?.length) {
@@ -3262,7 +3316,8 @@ export function createUI(ctx) {
       list.map((sk) => h('option', { value: sk.id, selected: sk === first ? true : null }, wwSkillLabel(sk))));
     const go = (id) => render('drill', { skill: id, from: { wordwork: n } });
     const wholeBtn = btn('Whole table', { onclick: () => skillPick.value && render('wwtable', { chapter: n, skill: skillPick.value }) }, 'btn');
-    const paintWhole = () => { wholeBtn.disabled = !skills.get(skillPick.value)?.paradigms?.length; };
+    const pickPlay = btn(playLabel(), { onclick: () => skillPick.value && playable(skillPick.value) && playSkill(skillPick.value, { chapter: n }), 'aria-label': 'Play the chosen skill as a game' }, 'btn btn--primary g-play');
+    const paintWhole = () => { wholeBtn.disabled = !skills.get(skillPick.value)?.paradigms?.length; pickPlay.disabled = !playable(skillPick.value); };
     skillPick.addEventListener('change', paintWhole);
     paintWhole();
     setBody(
@@ -3275,14 +3330,16 @@ export function createUI(ctx) {
         ? [h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-wwd-pick' },
           h('h2', { id: 'g-wwd-pick', class: 'g-h2', text: `Drill a skill of Cap. ${c.roman}` }),
           h('div', { class: 'g-ww__pickrow' }, skillPick, h('div', { class: 'g-acts g-ww__pickacts' },
-            btn('Drill', { onclick: () => skillPick.value && go(skillPick.value) }, 'btn btn--primary'),
+            pickPlay,
+            btn('Drill', { onclick: () => skillPick.value && go(skillPick.value) }, 'btn'),
             wholeBtn)),
-          h('p', { class: 'g-quiet', text: 'Drill asks the skill in sentences and questions. Whole table asks every form of it — every person, both voices — on one word, then the next, through all the words.' })),
+          h('p', { class: 'g-quiet', text: '▶ Play is the game: the forms one at a time, full screen, green as you go. Drill asks the skill in sentences and questions. Whole table shows every form of it on one word, then the next, through all the words.' })),
         h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-wwd-all' },
           h('h2', { id: 'g-wwd-all', class: 'g-h2', text: 'All of them' }),
           h('ul', { class: 'g-ww__drills' }, list.map((sk) => h('li', { class: 'g-ww__drill', 'data-forms': sk.paradigms?.length ? 'true' : null },
             h('span', { class: 'g-ww__drilltitle', text: sk.title }),
             h('span', { class: 'g-ww__skillnote', text: sk.paradigms?.length ? 'forms' : 'use' }),
+            sk.paradigms?.length || drillable(sk.id) ? playButton(sk.id, { chapter: n }, 'btn g-play') : null,
             drillable(sk.id) ? btn('Drill', { onclick: () => go(sk.id), 'aria-label': `Drill ${sk.title}` }, 'btn btn--quiet') : h('span', { class: 'g-quiet', text: 'nothing to drill yet' }),
             sk.paradigms?.length ? btn('Whole table', { onclick: () => render('wwtable', { chapter: n, skill: sk.id }), 'aria-label': `${sk.title}: its whole table, word after word` }, 'btn btn--quiet') : null))))]
         : h('p', { class: 'g-quiet', text: `No grammar skill is listed for Cap. ${c.roman}. Its table work is on This chapter.` }));
@@ -3453,9 +3510,11 @@ export function createUI(ctx) {
       // chosen one (N-4): saying "īnsula first" while the masculine chip drills nauta was the same untruth.
       h('p', { class: 'g-quiet', text: `${(() => { const lead = wholeWords()[0]; const n = lead ? (lead.lemma ?? lead.h).split(/[\s,]/)[0] : ''; return n ? `${n} first, then the other words, ` : ''; })()}one table an item: every cell a box, judged as you leave it, the table one attempt. Part of it can be given to start with.` }),
       scaffoldSwitch(t.id, { current: level, percent }),
-      h('div', { class: 'g-acts' }, btn(groups.length > 1 && !group ? 'Choose a part above' : 'Practise it', { onclick: whole, disabled: groups.length > 1 && !group ? true : null }, 'btn btn--primary')));
+      h('div', { class: 'g-acts' }, groups.length > 1 && !group ? null : btn(playLabel(), { onclick: () => { gameDrillOn(); whole(); }, 'aria-label': 'Practise the whole table as a game' }, 'btn btn--primary g-play'),
+        btn(groups.length > 1 && !group ? 'Choose a part above' : 'Practise it', { onclick: whole, disabled: groups.length > 1 && !group ? true : null }, groups.length > 1 && !group ? 'btn btn--primary' : 'btn')));
 
     const acts = [];
+    if (namingSkill) acts.push(playButton(namingSkill.id, { from }));
     if (namingSkill) acts.push(btn(`Just drill ${namingSkill.title}`, { onclick: () => render('drill', { skill: namingSkill.id, from }) }, 'btn'), btn('Its lesson', { onclick: () => render('lesson', { skill: namingSkill.id, from }) }, 'btn btn--quiet'));
     setBody(
       btn('← Tables', { onclick: () => render('catalogue', { from }) }, 'btn btn--quiet g-back'),
@@ -3562,7 +3621,8 @@ export function createUI(ctx) {
     const rowBtn = new Map();           // chapter        → { b, r }
     const ledeNode = h('p', { class: 'g-lede' });
     const mixNoteNode = h('p', { class: 'g-quiet' });
-    const startBtn = btn('Start', { onclick: () => start() }, 'btn btn--primary');
+    const startBtn = btn('Start', { onclick: () => start() }, 'btn');
+    const playStartBtn = btn(playLabel(), { onclick: () => { gameDrillOn(); start(); }, 'aria-label': 'Start this practice as a game' }, 'btn btn--primary g-play');
     const emptyNode = h('p', { class: 'g-quiet g-mix__empty', hidden: true });
     const saveMix = () => ctx.savePrefs({ populations: sel, unstudied, preset, size, oneSkill, hints });
     const paintMix = () => {
@@ -3605,6 +3665,7 @@ export function createUI(ctx) {
       oneSkill = pool.includes(oneSkill) ? oneSkill : pool[0] ?? null;
       skillSelect.replaceChildren(...pool.map((id) => h('option', { value: id, selected: id === oneSkill ? true : null }, titleOf(id))));
       startBtn.disabled = !pool.length;
+      playStartBtn.disabled = !pool.length;
       emptyNode.hidden = !!pool.length;
       emptyNode.textContent = Array.isArray(sel) && !sel.length
         ? 'Nothing can be built from an empty mix. Tick a box, or press All.'
@@ -3714,7 +3775,7 @@ export function createUI(ctx) {
           // What a hint now is (§6 decision 14, §12): it opens as a nudge, and its last step hands over the
           // form. The old line promised a hint "never spells the answer", which the shipped hint does (M-9).
           h('p', { class: 'g-quiet', text: 'Every answer box has its own hint — a typed field, each cell of a chart, each blank of a pensum, each word of an order or match item. A hint starts as a nudge: what that box is being asked for, and the rule behind it. Its last step, "Show this form", gives that one box its answer and marks the box hinted, which counts as weaker evidence. This choice holds for every session.' }))),
-      h('div', { class: 'g-acts' }, startBtn, btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
+      h('div', { class: 'g-acts' }, playStartBtn, startBtn, btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
   }
   function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null, redo = false, skill: redoSkill = null }) {
     // "Missed items" is not a mix over skills but a session over named items, so it is its own view. Both routes
@@ -4011,7 +4072,8 @@ export function createUI(ctx) {
     const pages = [];
     // Game mode, once chosen, is how the next session opens too.
     let wantGame = false;
-    try { wantGame = localStorage.getItem('l103.game.drill') === '1'; } catch { /* not kept */ }
+    try { wantGame = playGameOnce || localStorage.getItem('l103.game.drill') === '1'; } catch { wantGame = playGameOnce; }
+    playGameOnce = false;
     if (wantGame) { body.classList.add('g-game'); document.documentElement.classList.add('g-game-open'); }
     paintGame();        // queue index → the rendered page, kept so a step back shows it as it was left
     /** Human position: the made items up to here, out of the made items in all (skipped slots are not counted). */

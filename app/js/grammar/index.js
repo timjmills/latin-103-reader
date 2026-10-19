@@ -152,7 +152,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     go(view, params = {}) {
       leaveChapterPage();
       if (view === 'read') { setSection('read', { focus: true }); return; }
-      setSection('grammar');
+      // Word Work's own views open in Word Work (a chapter page's ▶ Play on a skill with forms: its whole table).
+      setSection(['wordwork', 'wwdrills', 'wwtable'].includes(view) ? 'words' : 'grammar');
       init().then(() => ui?.render(view, params));
     },
   };

@@ -251,3 +251,23 @@ test('game mode: every table plays, down its columns; a drill plays full screen'
   assert.match(UI, /practise: true, label: headOf\(e\)/, 'a Sheets chart can be practised and played');
   assert.ok(SW.includes("'./js/game.js'"), 'the installed app has the game');
 });
+
+test('▶ Play wherever something plays, and it is one-off', () => {
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  const WP = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
+  const IDX = readFileSync(new URL('../app/js/grammar/index.js', import.meta.url), 'utf8');
+  // Each page has its Play: skill rows, Practice, lesson, Tables, Paradigms, Word Work cards and chapter, Skill drills, Sheets cards, the word popup.
+  assert.match(UI, /acts\.unshift\(playButton\(s\.id, \{ nav: go, chapter: s\.chapter \}\)\)/, 'skill rows (with the caller\'s own router)');
+  assert.match(UI, /const playStartBtn = btn\(playLabel\(\)/, 'Practice');
+  assert.match(UI, /acts\.push\(playButton\(id, \{ from \}\)\)/, 'a lesson');
+  assert.match(UI, /playLabel\('Play a random word'\)/, 'Paradigms');
+  assert.match(UI, /playLabel\(`Play this chapter`\)/, 'Word Work');
+  assert.match(UI, /'btn g-play g-sheet__play'/, 'Sheets cards');
+  assert.match(WP, /'Play its table' : 'Play'/, 'the word popup and panel');
+  // Only when there is something to play; and Play does not make the plain buttons beside it play too.
+  assert.match(UI, /const playAll = parts\.some\(\(x\) => x\?\.querySelector\?\.\('\.paradigm__play'\)\)/);
+  assert.match(UI, /const playable = \(id\) =>/);
+  assert.match(UI, /wantGame = playGameOnce \|\| localStorage\.getItem\('l103\.game\.drill'\) === '1'/);
+  assert.ok(!/const gameDrillOn = \(\) => \{ try \{ localStorage\.setItem\('l103\.game\.drill', '1'\)/.test(UI), 'Play no longer keeps game mode on for good');
+  assert.match(IDX, /\['wordwork', 'wwdrills', 'wwtable'\]\.includes\(view\) \? 'words' : 'grammar'/, 'a chapter page\'s Play on a table opens Word Work');
+});

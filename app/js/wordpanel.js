@@ -1018,6 +1018,15 @@ export function createWordPanel({ dialog, aside, layout, lookup, describe, parad
     const entry = entryOf(item);
     const p = d.paradigm ?? paradigm?.(entry, entry.parses ?? null);
     const pt = renderParadigm(p, { english: true, practise: true, chapter: () => chapterOfWeek(getWeek?.()?.n) });
+    // ▶ Play the word's table without opening "Full paradigm" first (2026-10-19: a Play wherever something plays).
+    // In the popup it stands in the heading beside + / −: on a phone the popup is short and a row under the
+    // meanings sat below its fold. In the panel's stack it is a row of its own above the table.
+    if (pt?.querySelector('.paradigm__play')) {
+      const b = h('button', { type: 'button', class: 'btn g-play', 'aria-label': `Play ${text}'s table as a game` }, h('span', { 'aria-hidden': 'true', text: '▶ ' }), stack ? 'Play its table' : 'Play');
+      b.addEventListener('click', () => { pt.open = true; pt.querySelector('.paradigm__play')?.click(); });
+      const head = !stack ? parts.find((x) => x?.classList?.contains('entry__head')) : null;
+      if (head) head.append(b); else parts.push(h('div', { class: 'entry__play' }, b));
+    }
     if (pt) parts.push(pt);
     parts.push(actions(form, text));
     return parts;
