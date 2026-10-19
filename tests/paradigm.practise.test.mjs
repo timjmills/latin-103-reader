@@ -173,9 +173,9 @@ test('Word Work is a section of its own, opened per chapter', () => {
   assert.match(UI, /fresh\.map\(\(x\) => card\(x, \(ch\) => ch === n\)\)/, 'New in Cap. N asks only that chapter');
 });
 
-test('a vocabulary word answered right moves on by itself; nothing else does', () => {
+test('a vocabulary word answered right moves on by itself; in game mode every item does', () => {
   const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
-  assert.match(UI, /if \(item\?\.kind !== 'vocab' \|\| !result\?\.correct \|\| result\.partial\) return;/, 'only a right vocabulary answer moves on');
+  assert.match(UI, /if \(\(item\?\.kind !== 'vocab' && !game\) \|\| !result\?\.correct \|\| result\.partial\) return;/, 'a right vocabulary answer, or any right answer in game mode, moves on');
   assert.match(UI, /document\.addEventListener\('pointerdown', stop, true\)/, 'a touch anywhere keeps the word on screen');
   assert.equal((UI.match(/autoNextVocab\(fb, (?:item|cur\.item), result, \(\) =>/g) ?? []).length, 2, 'both the session and its short sub-set move on');
 });
@@ -235,4 +235,19 @@ test('Sheets: a chapter\'s charts on one page, each form split so its parts can 
   assert.match(UI, /sheets: renderSheets/);
   assert.ok(MAIN.includes("openGrammarSection('sheets'"), 'the #/sheets/N route');
   assert.match(UI, /resplit: true, tags: false, segment: true/, 'a sheet chart splits the subjunctive on its infinitive and colours the parts');
+});
+
+test('game mode: every table plays, down its columns; a drill plays full screen', async () => {
+  const WP = readFileSync(new URL('../app/js/wordpanel.js', import.meta.url), 'utf8');
+  const GAME = readFileSync(new URL('../app/js/game.js', import.meta.url), 'utf8');
+  const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
+  const SW = readFileSync(new URL('../app/sw.js', import.meta.url), 'utf8');
+  assert.match(WP, /\.sort\(\(a, b\) => a\.si - b\.si \|\| a\.ci - b\.ci \|\| a\.ri - b\.ri\)/, 'down each column, section by section');
+  assert.match(WP, /class: 'btn paradigm__play'/, 'every practisable table has Play');
+  assert.match(GAME, /firstMiss\.add\(r\.x\.key\);/, 'a first-try miss is kept');
+  assert.match(GAME, /write\(`misses\.\$\{id\}`/, 'and kept on the device for next time');
+  assert.match(GAME, /root\.showModal\(\)/, 'a modal dialog: above the word popup, focus kept inside');
+  assert.match(UI, /'▶ Game mode'/, 'a drill session has its game mode');
+  assert.match(UI, /practise: true, label: headOf\(e\)/, 'a Sheets chart can be practised and played');
+  assert.ok(SW.includes("'./js/game.js'"), 'the installed app has the game');
 });

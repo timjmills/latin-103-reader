@@ -1287,3 +1287,22 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 .g-sheet [data-case="voc"] { background: var(--bg-chrome); }
 .g-sheet td.pt__cell[data-case] .pt__ending { color: var(--ink); }
 .g-sheet td.pt__cell[data-case].is-focus { box-shadow: inset 3px 0 0 var(--rubric); }
+
+/* A drill in game mode (ui.js runSession, 2026-10-19): the session full screen and larger, one question at a time,
+   the last one answered faint above it and a word on the next below. */
+#grammar .g-body.g-game { position: fixed; inset: 0; z-index: 60; overflow-y: auto; background: var(--bg); padding: 0 max(var(--s-4), calc((100vw - 46rem) / 2)) var(--s-7); }
+#grammar .g-game .g-runnav { position: sticky; top: 0; z-index: 2; background: var(--bg-chrome); margin: 0 calc(-1 * max(var(--s-4), calc((100vw - 46rem) / 2))) var(--s-4); padding: var(--s-2) max(var(--s-4), calc((100vw - 46rem) / 2)); }
+#grammar .g-game .g-item { font-size: 1.15rem; }
+#grammar .g-game .g-item input[type="text"], #grammar .g-game .g-item textarea { font-size: 1.35rem; min-height: 3rem; }
+#grammar .g-game .g-choice { min-height: 3.2rem; font-size: 1.1rem; }
+.g-runnav__game { margin-left: auto; min-height: 36px; padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font: inherit; font-size: var(--ui-sm); cursor: pointer; }
+.g-runnav__game[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+@media (pointer: coarse) { .g-runnav__game { min-height: var(--tap); } }
+.g-runnav__stats { font-variant-numeric: tabular-nums; font-size: var(--ui-sm); color: var(--rubric-ink); font-weight: 600; }
+.g-game__prev { margin: 0 0 var(--s-3); padding: var(--s-2) var(--s-3); border-radius: var(--radius); font-size: var(--ui-sm); color: var(--ink-3); opacity: 0.7; }
+.g-game__prev[data-ok="ok"] { background: oklch(from var(--success) l c h / 0.12); }
+.g-game__prev[data-ok="bad"] { background: var(--rubric-soft); }
+.g-game__next { margin: var(--s-4) 0 0; font-size: var(--ui-sm); color: var(--ink-3); opacity: 0.6; }
+.g-game__prev[hidden], .g-game__next[hidden] { display: none; }
+.g-game__shake { animation: gm-shake 320ms ease; }
+@media (prefers-reduced-motion: reduce) { .g-game__shake { animation: none; } }

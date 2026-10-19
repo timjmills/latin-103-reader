@@ -6,6 +6,7 @@
 
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm } from '../wordpanel.js';
+import { gameSound } from '../game.js';
 import { chapter as bookChapter, chapters as bookChapters } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
 import { isShelfWeek } from '../sync.js';
@@ -1122,7 +1123,9 @@ export function createUI(ctx) {
   /** Redraw what is on screen: the current view when the section is showing, and every mounted chapter panel. */
   function repaint() { if (showing() && body) draw(); repaintPanels(); }
   // The new heading takes focus whenever the body is replaced and focus has nowhere to be (a view arriving after a lesson fetch, the end of a session) — G1-09.
-  const setBody = (...nodes) => { body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
+  let gameKey = null;   // the running session's Escape-leaves-game-mode listener
+  // Any new view leaves a drill's game mode (its summary, a lesson): only a running session draws it full screen.
+  const setBody = (...nodes) => { body.classList.remove('g-game'); document.documentElement.classList.remove('gm-open'); body.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
   // The section may be built twice in a life: once cheaply for the weeks-menu Today card, then in full when Grammar is
   // opened. `dispose()` takes the first instance's listener off so the two never both answer a Back.
   const onPop = (e) => {
@@ -2531,6 +2534,19 @@ export function createUI(ctx) {
     return h('div', { class: 'g-scaffold' }, h('span', { class: 'g-label', text: 'Given' }), seg, note);
   }
 
+  /* ------------------------------------------------------- game mode: the next table */
+  /** After a game on `node`'s table, the next table on the page plays (Word Work's cards, a sheet's charts). */
+  const playNextAfter = (getNode, more = null) => () => {
+    const node = getNode();
+    let plays = [...body.querySelectorAll('.paradigm__play')];
+    let i = plays.indexOf(node?.querySelector('.paradigm__play'));
+    if (i >= 0 && i === plays.length - 1 && more) { more(); plays = [...body.querySelectorAll('.paradigm__play')]; i = plays.indexOf(node?.querySelector('.paradigm__play')); }
+    const next = plays[i + 1];
+    if (next) { next.closest('.paradigm')?.scrollIntoView({ block: 'start' }); next.click(); }
+  };
+  /** A view opened with `play: true` starts its table's game as soon as the table is there. */
+  const autoPlay = (scope) => setTimeout(() => scope?.querySelector('.paradigm__play')?.click(), 60);
+
   /* ------------------------------------------------------- paradigms */
   /**
    * **Paradigms** — the whole-table practice on a page of its own (the learner, 2026-10-03: "make this
@@ -2657,7 +2673,7 @@ export function createUI(ctx) {
     return pool.length ? any(pool) : null;
   };
 
-  async function renderParadigms({ word = null, pos = null, type = null } = {}) {
+  async function renderParadigms({ word = null, pos = null, type = null, play = false } = {}) {
     const tableBox = h('div', { class: 'g-para__table' });
     const pick = (e, t = type) => render('paradigms', { word: e.h, pos: e.pos, type: t ?? typeOf(e)?.name ?? null });
     const chip = (e, note = shortType(typeOf(e)?.name)) => h('li', {}, btn([h('span', { lang: 'la', text: headOf(e) }), note ? h('span', { class: 'g-chip__state', text: ` · ${note}` }) : null],
@@ -2753,10 +2769,11 @@ export function createUI(ctx) {
     }
     if (chosen) {
       const t = tableOf(chosen);
-      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => ctx.currentChapter?.() ?? null });
       const kind = typeOf(chosen);
       // Another word of the same type: one of the most frequent, never the one on screen.
       const pool = kind ? wordsOfType(kind.name).slice(0, 40).filter((e) => e.h !== chosen.h) : [];
+      const nextOfType = pool.length ? () => { const e = pool[Math.floor(Math.random() * pool.length)]; render('paradigms', { word: e.h, pos: e.pos, type: kind.name, play: true }); } : null;
+      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => ctx.currentChapter?.() ?? null, gameNext: nextOfType, gameNextLabel: 'Another word of this type →' });
       const another = pool.length ? btn('Another word of this type →', { onclick: () => pick(pool[Math.floor(Math.random() * pool.length)], kind.name) }, 'btn') : null;
       if (node) {
         node.open = true;
@@ -2805,6 +2822,7 @@ export function createUI(ctx) {
         h('p', { class: 'g-quiet', text: 'One of each pattern: the four conjugations and the irregular verbs, the five declensions, adjectives and pronouns.' }),
         h('ul', { class: 'g-chips g-words', 'aria-label': 'Model words' }, models.map((e) => chip(e)))));
     if (chosen) tableBox.querySelector('.paradigm__go')?.focus({ preventScroll: true });
+    if (chosen && play) autoPlay(tableBox);
     else if (type) body.querySelector('.g-para__typewords')?.scrollIntoView({ block: 'start' });
   }
 
@@ -2939,7 +2957,7 @@ export function createUI(ctx) {
 
     const card = (x, preset, note) => {
       const t = tableOf(x.e);
-      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => n, preset, focus: n });
+      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => n, preset, focus: n, gameNext: playNextAfter(() => node), gameNextLabel: 'Next word →' });
       if (!node) return null;
       node.open = true;
       const kind = typeOf(x.e);
@@ -3024,7 +3042,7 @@ export function createUI(ctx) {
     wwTableWords.set(k, out);
     return out;
   }
-  async function renderWordWorkTable({ chapter: n = null, skill: id = null, i = 0 } = {}) {
+  async function renderWordWorkTable({ chapter: n = null, skill: id = null, i = 0, play = false } = {}) {
     n = Number(n ?? ctx.currentChapter?.() ?? 1);
     const sk = skills.get(id);
     if (!sk || !sk.paradigms?.length) { render('wwdrills', { chapter: n }); return; }
@@ -3036,7 +3054,8 @@ export function createUI(ctx) {
     const k = ((Number(i) || 0) % list.length + list.length) % list.length;
     const e = list[k];
     const t = tableOf(e);
-    const node = renderParadigm(t, { english: true, practise: true, chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true });
+    const node = renderParadigm(t, { english: true, practise: true, chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true,
+      gameSubtitle: sk.title, gameNext: () => render('wwtable', { chapter: n, skill: id, i: k + 1, play: true }), gameNextLabel: `Next word → (${(k + 1) % list.length + 1} of ${list.length})` });
     node.open = true;
     const step = (d) => render('wwtable', { chapter: n, skill: id, i: k + d });
     const wordPick = h('select', { class: 'g-select', 'aria-label': 'Word', onchange: (ev) => render('wwtable', { chapter: n, skill: id, i: Number(ev.target.value) }) },
@@ -3062,6 +3081,7 @@ export function createUI(ctx) {
         h('div', { class: 'g-lesson__pt' }, node)),
       h('div', { class: 'g-acts' }, next.cloneNode(true)));
     body.querySelector('.g-acts:last-child .btn')?.addEventListener('click', () => step(1));
+    if (play) autoPlay(node.parentNode);
   }
 
   /* ------------------------------------------------------- sheets */
@@ -3171,7 +3191,8 @@ export function createUI(ctx) {
         const show = (k) => {
           for (const e of words.slice(shown, shown + k)) {
             const t = tableOf(e);
-            const node = t && renderParadigm(t, { english: true, label: headOf(e), only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true });
+            const node = t && renderParadigm(t, { english: true, practise: true, label: headOf(e), only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true,
+              gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →' });
             if (!node) continue;
             node.open = true;
             // The mark says which forms are the skill's; on a chart that is nothing but the skill's, it says nothing.
@@ -3939,9 +3960,54 @@ export function createUI(ctx) {
     const backB = btn([h('span', { 'aria-hidden': 'true', text: '←' })], { 'aria-label': 'Back to the previous item', onclick: () => go(-1) }, 'g-runnav__b');
     const fwdB = btn([h('span', { 'aria-hidden': 'true', text: '→' })], { 'aria-label': 'On to the next item', onclick: () => go(1) }, 'g-runnav__b');
     const posEl = h('span', { class: 'g-runnav__pos' });
-    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB);
+    // Game mode for a drill (2026-10-19): the session full screen, one question large, the last one answered
+    // above it and the next below; right moves on by itself, wrong turns red and empties for another try. The
+    // first answer is still the one the skill counts, so a miss is still a miss to redo. Kept on the device.
+    const gameBtn = btn('', { 'aria-pressed': 'false', onclick: () => setGame(!gameOn()) }, 'g-runnav__game');
+    const gameStats = h('span', { class: 'g-runnav__stats', 'aria-live': 'polite' });
+    let streak = 0;
+    let score = 0;
+    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB, gameStats, gameBtn);
+    const gameOn = () => body.classList.contains('g-game');
+    const paintGame = () => {
+      const on = gameOn();
+      gameBtn.setAttribute('aria-pressed', String(on));
+      gameBtn.textContent = on ? '✕ Leave game mode' : '▶ Game mode';
+      gameStats.textContent = on ? `${streak >= 2 ? `🔥 ${streak} · ` : ''}${score} pts` : '';
+    };
+    function setGame(on) {
+      body.classList.toggle('g-game', on);
+      document.documentElement.classList.toggle('gm-open', on);
+      try { localStorage.setItem('l103.game.drill', on ? '1' : '0'); } catch { /* not kept */ }
+      paintGame();
+      if (runner.current) paintNav();   // the strips, after the position is counted
+      (wrap.querySelector('.g-item:not([hidden]) input, .g-item:not([hidden]) button.g-choice, .g-fb__next') ?? gameBtn).focus({ preventScroll: true });
+    }
+    const onGameKey = (e) => { if (e.key === 'Escape' && gameOn() && body.contains(wrap)) { e.preventDefault(); setGame(false); } };
+    if (gameKey) document.removeEventListener('keydown', gameKey);   // one session's Escape at a time
+    gameKey = onGameKey;
+    document.addEventListener('keydown', onGameKey);
+    // The question before (as it was answered) and a word on the next, either side of the one on screen.
+    const prevStrip = h('p', { class: 'g-game__prev', 'aria-hidden': 'true' });
+    const nextStrip = h('p', { class: 'g-game__next', 'aria-hidden': 'true' });
+    function paintStrips(at = null, total = null) {
+      const i = runner.position;
+      const prev = i > 0 ? pages[i - 1] : null;
+      const line = prev?.querySelector('.g-fb__line')?.textContent?.trim() ?? '';
+      prevStrip.textContent = line;
+      prevStrip.dataset.ok = prev?.dataset.result ?? '';
+      prevStrip.hidden = !gameOn() || !line;
+      nextStrip.textContent = at != null && total != null ? (at < total ? `Next: ${at + 1} of ${total}` : 'The last one') : '';
+      nextStrip.hidden = !gameOn();
+      if (gameOn()) { wrap.prepend(prevStrip); wrap.append(nextStrip); }
+    }
     setBody(stepHolder ?? stepper, nav, wrap);
-    const pages = [];        // queue index → the rendered page, kept so a step back shows it as it was left
+    const pages = [];
+    // Game mode, once chosen, is how the next session opens too.
+    let wantGame = false;
+    try { wantGame = localStorage.getItem('l103.game.drill') === '1'; } catch { /* not kept */ }
+    if (wantGame) { body.classList.add('g-game'); document.documentElement.classList.add('gm-open'); }
+    paintGame();        // queue index → the rendered page, kept so a step back shows it as it was left
     /** Human position: the made items up to here, out of the made items in all (skipped slots are not counted). */
     const paintNav = () => {
       const i = runner.position;
@@ -3953,6 +4019,7 @@ export function createUI(ctx) {
       backB.disabled = !runner.canBack;
       fwdB.disabled = !runner.canForward;
       nav.dataset.replay = runner.replay ? 'true' : 'false';
+      paintStrips(at, total);   // game mode's strips follow the position, after it is counted
     };
     function finish() {
       const summary = runner.summary();
@@ -4007,7 +4074,28 @@ export function createUI(ctx) {
           // where the item is live, and there the focus belongs back in the box being corrected (`submit`).
           // The one exception is a vocabulary word answered right (autoNextVocab).
           if (!live) fb.querySelector(result.correct ? '.g-fb__next' : '.g-fb__retry, .g-fb__next')?.focus({ preventScroll: true });
-          autoNextVocab(fb, item, result, () => { if (runner.position === i) go(1); });
+          autoNextVocab(fb, item, result, () => { if (runner.position === i) go(1); }, { game: gameOn() });
+          if (gameOn()) {
+            const clean = result.correct && !result.partial && !result.retry;
+            streak = clean ? streak + 1 : result.correct ? streak : 0;
+            if (clean) score += 10 + Math.min(streak, 10);
+            gameSound(result.correct ? 'right' : 'wrong');
+            if (!result.correct) {
+              page.classList.remove('g-game__shake'); void page.offsetWidth; page.classList.add('g-game__shake');
+              // Red, a moment, then empty for another go: the boxes that were wrong (every box when none is
+              // marked), or — for an item whose buttons are spent — the item afresh, as "Try again" would.
+              setTimeout(() => {
+                if (runner.position !== i || !page.isConnected || !gameOn()) return;
+                if (live) {
+                  const wrong = [...page.querySelectorAll('.g-item input.is-wrong, .g-item textarea.is-wrong')];
+                  const boxes = wrong.length ? wrong : [...page.querySelectorAll('.g-item input[type="text"]:not([readonly]):not([disabled]), .g-item textarea:not([readonly]):not([disabled])')];
+                  for (const b of boxes) { b.value = ''; b.dispatchEvent(new Event('input', { bubbles: true })); }
+                  boxes[0]?.focus({ preventScroll: true });
+                } else page.querySelector('.g-fb__retry')?.click();
+              }, 900);
+            }
+            paintGame();
+          }
           return live;
         },
       });
@@ -4098,17 +4186,17 @@ export function createUI(ctx) {
    * keeps it where it is, and Next is there as ever; the move never fires twice or after Next was pressed.
    */
   const VOCAB_NEXT_MS = 1100;
-  function autoNextVocab(fb, item, result, next) {
-    if (item?.kind !== 'vocab' || !result?.correct || result.partial) return;
+  function autoNextVocab(fb, item, result, next, { game = false } = {}) {
+    if ((item?.kind !== 'vocab' && !game) || !result?.correct || result.partial) return;
     const line = fb.querySelector('.g-fb__line');
-    const note = h('span', { class: 'g-fb__auto', text: ' Next word…' });
+    const note = h('span', { class: 'g-fb__auto', text: game ? ' Next…' : ' Next word…' });
     line?.append(note);
     let timer = 0;
     // Anywhere on the page counts, not only the item: a learner reaching for the example sentence or the margin is staying.
     const stop = () => { clearTimeout(timer); note.remove(); document.removeEventListener('pointerdown', stop, true); document.removeEventListener('keydown', stop, true); };
     document.addEventListener('pointerdown', stop, true);
     document.addEventListener('keydown', stop, true);
-    timer = setTimeout(() => { stop(); if (fb.isConnected) next(); }, VOCAB_NEXT_MS);
+    timer = setTimeout(() => { stop(); if (fb.isConnected) next(); }, game ? 750 : VOCAB_NEXT_MS);
   }
 
   function itemNode(item, { title, note = '', position, hintOpen, onHint, onAnswer }) {

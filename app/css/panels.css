@@ -583,3 +583,66 @@
 
 /* 3+-column paradigm tables on tablets: one notch smaller so the superlative fits the panel */
 @media (min-width: 768px) and (max-width: 1099.98px) { .panel .pt--wide { font-size: 0.72rem; } .panel .pt--wide td, .panel .pt--wide th { padding-inline: 0.2em; } }
+
+/* ------------------------------------------------------------------ game mode (game.js, 2026-10-19)
+   Full screen on a computer and a phone alike: a bar of stats, then the column of forms, the current one
+   large and a third of the way down (clear of a phone's keyboard), two above and two below, the rest gone.
+   Green right, red wrong with a shake, grey shown — the drills' own colours. Motion is a glide, and none
+   with reduced motion. */
+.gm { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  background: var(--bg); color: var(--ink); font-family: var(--face-ui); }
+.gm[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.gm::backdrop { background: var(--bg); }
+html.gm-open { overflow: hidden; }
+.gm__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--line); background: var(--bg-chrome); }
+.gm__titles { flex: 1 1 14rem; min-width: 0; }
+.gm__title { margin: 0; font-family: var(--face-reading); font-size: 1.15rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm__sub { margin: 0; font-size: var(--ui-sm); color: var(--ink-3); }
+.gm__stats { display: flex; align-items: center; gap: var(--s-3); font-variant-numeric: tabular-nums; font-size: var(--ui-sm); color: var(--ink-2); }
+.gm__streak { color: var(--rubric-ink); font-weight: 700; min-width: 3ch; }
+.gm__score { font-weight: 600; color: var(--ink); }
+.gm__clock[hidden] { display: none; }
+.gm__tools { display: flex; gap: var(--s-1); }
+.gm__tool { min-width: var(--tap); min-height: var(--tap); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); color: var(--ink); font-size: 1.05rem; cursor: pointer; }
+.gm__tool[aria-pressed="false"] { color: var(--ink-3); }
+.gm__stage { position: relative; overflow: hidden; min-height: 0; }
+.gm__track { list-style: none; margin: 0 auto; padding: 0 var(--s-4); max-width: 40rem; transition: transform 320ms cubic-bezier(.2, .7, .2, 1); will-change: transform; }
+.gm__row { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-1); padding: var(--s-3); border-radius: var(--radius); transition: opacity 260ms, transform 260ms, background-color 200ms; transform-origin: left center; }
+.gm__row--newgroup { margin-top: var(--s-4); border-top: 1px dashed var(--line-strong); }
+.gm__row[data-pos="far"] { opacity: 0; pointer-events: none; }
+.gm__row[data-pos="above"], .gm__row[data-pos="below"] { opacity: 0.6; transform: scale(0.9); }
+.gm__row[data-dist="2"] { opacity: 0.35; transform: scale(0.84); }
+/* What has been answered stays readable above: the pattern building is the point. */
+.gm__row[data-pos="above"] { opacity: 0.9; }
+.gm__row[data-pos="above"][data-dist="2"] { opacity: 0.7; }
+.gm__row[data-pos="current"] { opacity: 1; transform: none; background: var(--bg-raised); box-shadow: 0 0 0 2px var(--ink-2), 0 10px 30px oklch(0 0 0 / 0.12); }
+.gm__cue { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s-2); }
+.gm__label { font-weight: 600; color: var(--ink-2); font-size: var(--ui-sm); }
+.gm__en { color: var(--ink-3); font-size: var(--ui-sm); }
+.gm__row[data-pos="current"] .gm__label { font-size: 1rem; color: var(--ink); }
+.gm__row[data-pos="current"] .gm__en { font-size: 1rem; }
+.gm__slot { display: flex; align-items: center; gap: var(--s-2); min-height: 2.6rem; }
+.gm__in { flex: 1 1 auto; min-width: 0; min-height: 3.2rem; padding: 0 var(--s-3); font-family: var(--face-reading); font-size: 1.6rem; border: 2px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); }
+.gm__in:focus-visible { outline: none; border-color: var(--ink); }
+.gm__show { min-height: var(--tap); padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: transparent; color: var(--ink-2); cursor: pointer; }
+.gm__form { font-family: var(--face-reading); font-size: 1.35rem; }
+.gm__row[data-pos="current"] .gm__form { font-size: 1.6rem; }
+.gm__form .pt__ending { font-weight: 700; color: var(--rubric-ink); }
+.gm__mark { font-weight: 700; }
+.gm__row[data-state="right"] { background: oklch(from var(--success) l c h / 0.14); }
+.gm__row[data-state="right"] .gm__mark { color: var(--success); }
+.gm__row[data-state="wrong"] { background: var(--rubric-soft); }
+.gm__row[data-state="wrong"] .gm__in { border-color: var(--rubric); }
+.gm__row[data-state="shown"] { background: var(--bg-chrome); }
+.gm__shake { animation: gm-shake 320ms ease; }
+@keyframes gm-shake { 20% { translate: -6px 0; } 40% { translate: 6px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }
+.gm__end { max-width: 34rem; margin: var(--s-6) auto; padding: 0 var(--s-4); display: grid; gap: var(--s-3); overflow-y: auto; max-height: 100%; }
+.gm__endh { margin: 0; font-family: var(--face-reading); font-weight: 400; font-size: 1.6rem; }
+.gm__result { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); margin: 0; }
+.gm__result div { padding: var(--s-2) var(--s-3); border: 1px solid var(--line); border-radius: var(--radius); }
+.gm__result dt { font-size: var(--ui-xs); color: var(--ink-3); }
+.gm__result dd { margin: 0; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+.gm__misses ul { margin: var(--s-1) 0 0; padding-left: 1.2em; display: grid; gap: var(--s-1); }
+.gm__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+@media (prefers-reduced-motion: reduce) { .gm__track, .gm__row { transition: none; } .gm__shake { animation: none; } }
+.paradigm__play { font-weight: 600; }
