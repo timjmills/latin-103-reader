@@ -28,6 +28,7 @@
 // `en` its English, `answers` the forms accepted (wordpanel.js cellAnswers), `group` the column it belongs to.
 
 import { cellRight } from './wordpanel.js';
+import { ruleCard } from './wordrule.js';
 
 const LS = 'l103.game.';
 const read = (k, d) => { try { const v = localStorage.getItem(LS + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
@@ -100,7 +101,7 @@ export function choicesFor(x, pool, text, right) {
   return wrong.length ? shuffled([want, ...wrong]) : null;
 }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true } = {}) {
   const base = items.filter((x) => x && x.answers?.length);
   if (!base.length) return null;
   const opener = document.activeElement;
@@ -132,6 +133,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const byEnding = (x) => endings && splits(x) && mode !== 'parse';
   const reviewBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__review', hidden: true, onclick: () => openReview() });
   const modeBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__modebtn', 'aria-haspopup': 'dialog', onclick: () => openSettings() });
+  // The word's type and the rule for its forms (wordrule.js): the game opens on it, and 📖 brings it back.
+  const ruleBtn = rule ? el('button', { type: 'button', class: 'gm__tool', 'aria-label': 'How its forms are made', title: 'How its forms are made', onclick: () => openRule() }, '📖') : null;
   const closeBtn = el('button', { type: 'button', class: 'gm__tool gm__close', 'aria-label': 'Leave the game', title: 'Leave (Esc)', onclick: () => close() }, '✕');
   const live = el('p', { class: 'visually-hidden', 'aria-live': 'polite' });
   const track = el('ol', { class: 'gm__track', 'aria-label': 'Forms' });
@@ -144,7 +147,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     el('header', { class: 'gm__bar' },
       el('div', { class: 'gm__titles' }, el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub', text: subtitle }) : null),
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock),
-      el('div', { class: 'gm__tools' }, reviewBtn, modeBtn, closeBtn),
+      el('div', { class: 'gm__tools' }, reviewBtn, ruleBtn, modeBtn, closeBtn),
       meter),
     stage, live);
 
@@ -465,6 +468,16 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('div', { class: 'gm__acts' }, goOn, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Quit the game')));
     openPanel(node, goOn);
   }
+  function openRule() {
+    if (!rule) return;
+    const fresh = !rows.some(isDone) && !firstMiss.size;
+    const goOn = el('button', { type: 'button', class: 'btn btn--primary gm__start', onclick: () => node.resume() }, fresh ? 'Start ▶' : 'Back to the game');
+    const node = el('section', { class: 'gm__end gm__panel gm__rulep', role: 'region', 'aria-labelledby': 'gm-rule-h' },
+      el('h2', { id: 'gm-rule-h', class: 'gm__endh', lang: 'la', text: title }),
+      ruleCard(rule, { open: true }),
+      el('div', { class: 'gm__acts' }, goOn));
+    openPanel(node, goOn);
+  }
   // ⚙ Ways to play: the mode, and the switches. Each change is kept on the device and plays from the form on screen.
   function openSettings() {
     const sw = (label, note, on, set) => {
@@ -523,7 +536,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false }); };
     const acts = el('div', { class: 'gm__acts' },
       misses.length ? el('button', { type: 'button', class: 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
       onNext ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
@@ -563,6 +576,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   document.body.append(root);
   try { root.showModal(); } catch { root.setAttribute('open', ''); }
   paintStats();
-  requestAnimationFrame(() => ask());
+  // The rule first, where there is one (a replay goes straight in); the clock starts with Start.
+  requestAnimationFrame(() => { if (rule && ruleFirst) { place(); openRule(); } else ask(); });
   return { close };
 }

@@ -15,6 +15,7 @@ import { cellChapter, loadFormSkills } from './paradigm-chapters.js';
 import { chapterOfWeek } from './chapters.js';
 import { roman } from './sync.js';
 import { playTable, savedMisses } from './game.js';
+import { wordRule, ruleCard } from './wordrule.js';
 
 const ENCLITIC = { que: '-que "and" is attached to the end', ne: '-ne turns the sentence into a yes/no question', ve: '-ve "or" is attached to the end' };
 
@@ -474,7 +475,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
   // are three games, not one (their keys' signature in the id).
   const sig = (keys) => { let x = 0; for (const ch of [...keys].sort().join('|')) x = (x * 31 + ch.charCodeAt(0)) >>> 0; return x.toString(36); };
   const gameId = () => (id ? `${id}|${sig(gameItems().map((g) => g.key))}` : null);
-  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : gameId(), onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss,
+  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : gameId(), onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss, rule: game.rule ?? null,
     endings, onEndings: (want) => { if (want !== endings) endBtn.click(); } });   // Endings only plays as the table has it, and a switch in the game is the table's too
   playBtn.addEventListener('click', () => play());
   playMissBtn.addEventListener('click', () => play(new Set(savedMisses(gameId()))));
@@ -736,8 +737,12 @@ export function renderParadigm(p, opts = {}) {
     if (!inf || text.includes(' ') || !fold(text).startsWith(fold(inf)) || text.length <= inf.length) return c;
     return { ...c, stem: text.slice(0, inf.length), ending: text.slice(inf.length) };
   };
+  // A practised table opens with what kind of word it is and the rule that makes its forms (wordrule.js), the
+  // type in sight and the steps a tap away; the game opens on the same card.
+  const rule = practise && p.entry ? wordRule(p.entry, p) : null;
+  if (rule) details.append(ruleCard(rule, { open: false }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
-    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel } }));
+    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule } }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).

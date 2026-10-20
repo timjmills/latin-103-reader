@@ -598,11 +598,11 @@
   --gm-ok: var(--success);
   background: radial-gradient(ellipse 90% 70% at 50% 50%, color-mix(in srgb, var(--gm-b) 16%, var(--bg)), color-mix(in srgb, var(--gm-a) 14%, var(--bg)));
   color: var(--ink); font-family: var(--face-ui); }
-.gm[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.gm[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); overflow-x: hidden; }   /* never wider than the screen, whatever the text size ("a little too wide for my phone") */
 .gm::backdrop { background: var(--bg); }
 html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__bar { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-3) var(--s-4) calc(var(--s-3) + 6px); background: color-mix(in srgb, var(--bg-raised) 85%, transparent); }
-.gm__titles { flex: 1 1 14rem; min-width: 0; }
+.gm__titles { flex: 1 1 10rem; min-width: 0; }
 .gm__title { margin: 0; font-family: var(--face-reading); font-size: 1.25rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gm__sub { margin: 0; font-size: var(--ui-sm); color: var(--ink-3); }
 .gm__stats { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); font-variant-numeric: tabular-nums; font-size: var(--ui-sm); font-weight: 700; }
@@ -615,6 +615,11 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__meter { position: absolute; inset: auto 0 0 0; height: 6px; background: color-mix(in srgb, var(--gm-a) 15%, var(--bg)); }
 .gm__meterfill { display: block; height: 100%; width: 0; border-radius: 0 999px 999px 0; background: linear-gradient(90deg, var(--gm-b), var(--gm-a)); transition: width 320ms ease; }
 .gm__tools { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+@media (max-width: 480px) {
+  .gm__bar { gap: var(--s-1) var(--s-2); padding: var(--s-2) var(--s-3) calc(var(--s-2) + 6px); }
+  .gm__title { font-size: 1.1rem; }
+  .gm__stats > span { min-height: 1.75rem; padding: 0 0.6em; }
+}
 .gm__tool { min-width: var(--tap); min-height: var(--tap); border: 2px solid var(--line-strong); border-radius: 0.9rem; background: var(--bg-raised); color: var(--ink); font-size: 1.05rem; cursor: pointer; }
 .gm__tool[aria-pressed="false"] { color: var(--ink-3); }
 .gm__tool[aria-pressed="true"].gm__text { border-color: var(--gm-a); background: color-mix(in srgb, var(--gm-a) 14%, var(--bg-raised)); }
@@ -624,7 +629,7 @@ html.gm-open, html.g-game-open { overflow: hidden; }
    like a drum turning away. */
 .gm__stage { -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
 .gm__track { position: relative; height: 100%; list-style: none; margin: 0 auto; padding: 0; max-width: 38rem; perspective: 900px; }
-.gm__row { position: absolute; top: 0; left: 1.4rem; right: 1.4rem; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: var(--s-1);
+.gm__row { position: absolute; top: 0; left: max(1.6rem, 6vw); right: max(1.6rem, 6vw); margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: var(--s-1);
   padding: var(--s-3); border-radius: 0.9rem; background: var(--bg-raised); box-shadow: 0 0 0 2px var(--line-strong);
   transform-origin: 50% 50%; backface-visibility: hidden; transition: opacity 260ms, background-color 200ms, filter 260ms; }
 .gm__track.is-rolling .gm__row { transition: transform 380ms cubic-bezier(.2, .8, .25, 1), opacity 260ms, background-color 200ms, filter 260ms; }
@@ -732,6 +737,31 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__stars .is-on { color: var(--gm-gold); text-shadow: 0 2px 0 color-mix(in srgb, var(--gm-gold) 50%, var(--ink)); }
 @media (prefers-reduced-motion: reduce) { .gm__track, .gm__row, .gm__track.is-rolling .gm__row, .gm__meterfill { transition: none; } .gm__shake, .gm__row[data-state] { animation: none !important; } }
 .paradigm__play { font-weight: 600; }
+/* How it's made (wordrule.js): the word's type and the rule for its forms, at the head of a practised table and on
+   the game's first card. The type is always in sight; the steps open beneath, each with this word's own forms. */
+.wr { margin: 0 var(--s-3) var(--s-2); padding: var(--s-2) var(--s-3); border: 1px solid var(--line-strong); border-left: 4px solid var(--rubric); border-radius: var(--radius); background: var(--bg-raised); }
+.wr__sum { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s-2); cursor: pointer; min-height: 36px; padding-block: var(--s-1); }
+@media (pointer: coarse) { .wr__sum { min-height: var(--tap); } }
+.wr__head { font-size: var(--ui-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); flex-basis: 100%; }
+.wr__type { font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+.wr__parts { font-family: var(--face-reading); color: var(--ink-2); }
+.wr__steps { margin: var(--s-2) 0 var(--s-1); padding: 0; list-style: none; display: grid; gap: var(--s-2); }
+.wr__step { display: grid; gap: 2px; }
+.wr__stephead { font-size: var(--ui-sm); font-weight: 700; color: var(--rubric-ink); }
+.wr__text { font-size: var(--ui-sm); color: var(--ink); }
+.wr__eg { font-family: var(--face-reading); color: var(--ink-2); }
+/* In the game: the card large, with Start under it. */
+.gm__rulep .wr { margin: 0; border-left-color: var(--gm-a); }
+.gm__rulep .wr__sum { cursor: default; pointer-events: none; }
+.gm__rulep .wr__sum::-webkit-details-marker { display: none; }
+.gm__rulep .wr__sum { list-style: none; }
+.gm__rulep .wr__type { font-size: 1.2rem; }
+.gm__rulep .wr__stephead { color: color-mix(in srgb, var(--gm-a) 70%, var(--ink)); }
+.gm__rulep .wr__text { font-size: 1rem; }
+.gm__rulep .wr__eg { font-size: 1.05rem; }
+.gm__start { font-size: 1.15rem; min-height: 3rem; padding-inline: var(--s-5); }
+.gm__rulep .gm__acts { position: sticky; bottom: 0; padding: var(--s-3) 0 var(--s-4); background: linear-gradient(transparent, var(--bg) 35%); }   /* Start always in reach under a long verb card */
+
 
 .entry__play { margin: 0 0 var(--s-2); }
 .g-play, .entry__play .g-play { font-weight: 600; }
