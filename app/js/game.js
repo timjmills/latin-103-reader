@@ -396,7 +396,16 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   }
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
   // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down.
-  input.addEventListener('input', () => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; } });
+  // Right moves on by itself (2026-10-20: "if you type the correct answer or ending it will automatically move on
+  // without pressing enter"): the moment the box holds an accepted answer it is taken. A wrong one still waits for
+  // Enter, so a word half typed is never marked wrong; a keyboard still composing a word is waited for.
+  const autoTake = (e) => {
+    if (e?.isComposing || !read('auto', true)) return;
+    const r = rows[at];
+    if (r && r.slot.contains(input) && r.li.dataset.state !== 'right' && input.value.trim() && isRight(r.x, input.value.trim())) submit();
+  };
+  input.addEventListener('input', (e) => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; } autoTake(e); });
+  input.addEventListener('compositionend', () => autoTake());
 
   /* ---- turning the wheel: a scroll, a swipe, the arrow keys, a tap on a band */
   let wheelSum = 0;
@@ -498,6 +507,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         base.some(splits) ? sw('Endings only', 'Type just the ending after the stem.', endings, (v) => { endings = v; onEndings?.(v); }) : null,
         sw('Shuffle', 'Mix up the order.', shuffle, (v) => { shuffle = v; write('shuffle', v); if (!ended) reorderRest(); }),
         sw('Redo misses', 'Missed forms come back at the end.', redo, (v) => { redo = v; write('redo', v); }),
+        sw('Move on when right', 'No need to press Enter for a right answer.', read('auto', true), (v) => { write('auto', v); }),
         sw('Timer', 'Show the clock.', read('timer', true), (v) => { write('timer', v); clock.hidden = !v; }),
         sw('Sound', 'Beeps for right and wrong.', read('sound', false), (v) => { write('sound', v); if (v) sounds.right(); })),
       el('div', { class: 'gm__acts' }, done, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Quit the game')));

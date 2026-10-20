@@ -574,6 +574,18 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     const more = h('details', { class: 'paradigm__more' }, h('summary', { class: 'paradigm__moresum', text: `Choose parts by chapter (${list.length})` }), h('div', { class: 'paradigm__chips' }, chips));
     parts.replaceChildren(...(list.length > 1 ? [h('div', { class: 'paradigm__quick' }, quick), more] : []));
   };
+  // A right answer moves on by itself, as in the game (2026-10-20: "it will automatically move on without pressing
+  // enter"), with the game's own switch (⚙ Move on when right). A wrong one waits for Enter or for leaving the box.
+  const autoTake = (x, input, e) => {
+    if (e?.isComposing || done(x)) return;
+    let on = true;
+    try { on = JSON.parse(localStorage.getItem('l103.game.auto') ?? 'true') !== false; } catch { /* on */ }
+    const typed = input.value.trim();
+    if (!on || !typed) return;
+    // The box turns green and stops taking keys at once; the move comes a moment later, so a key typed past the
+    // answer (puella + e) is not carried into the next box.
+    if (cellRight(typed, x.answers) || (byEnding(x) && cellRight(x.stem + typed, x.answers))) { judge(x); setTimeout(() => { if (input === document.activeElement || !document.activeElement || document.activeElement === document.body) goTo(nextOpen(x)); }, 260); }
+  };
   const start = ({ focus = true } = {}) => {
     details.classList.add('is-practising');
     for (const x of cells()) {
@@ -581,7 +593,11 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       if (!input) {
         input = h('input', { type: 'text', class: 'pt__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'next', 'aria-label': x.label });
         input.addEventListener('blur', () => judge(x));
-        input.addEventListener('input', () => { if (x.td.dataset.state === 'wrong') { mark(x, ''); score(); } });
+        input.addEventListener('input', (e) => {
+          if (x.td.dataset.state === 'wrong') { mark(x, ''); score(); }
+          autoTake(x, input, e);
+        });
+        input.addEventListener('compositionend', () => autoTake(x, input));
         input.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter') return;
           e.preventDefault();
