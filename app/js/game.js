@@ -24,7 +24,17 @@
 // Shuffle (random order, so the column's rhythm cannot carry the answer) and Redo misses (a form missed comes
 // back at the end of the round until it is right).
 //
-// items: [{ key, cue, en, answers, stem, ending, group }] — `cue` the row and part ("we · imperfect active"),
+// The word's charts (2026-10-21: "a simple way once a word is selected to pick which paradigm charts you will play
+// … and when something ends to practise more with the neighbouring paradigms or a list of all the options"; "at
+// the top, where the timer is"; "on the initial play it has that one selected plus a menu of more"). `charts`:
+// { list: [{ id, section, col, n }], on: [ids], play(ids) } — every chart of the word's table (a column of one
+// part: present indicative · active; cases · plural), the ones this game plays, and how to play others. The bar's
+// Charts button names what is playing and opens them all; the end offers the next chart and the whole list.
+//
+// `how(item)`: how that one form is made for this word (wordrule.js formRule), behind the ? before Show — the
+// steps without their examples, since the examples are the answers.
+//
+// items: [{ key, cue, en, answers, stem, ending, group, form }] — `cue` the row and part ("we · imperfect active"),
 // `en` its English, `answers` the forms accepted (wordpanel.js cellAnswers), `group` the column it belongs to.
 
 import { cellRight } from './wordpanel.js';
@@ -101,7 +111,7 @@ export function choicesFor(x, pool, text, right) {
   return wrong.length ? shuffled([want, ...wrong]) : null;
 }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null } = {}) {
   const base = items.filter((x) => x && x.answers?.length);
   if (!base.length) return null;
   const opener = document.activeElement;
@@ -135,11 +145,86 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const modeBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__modebtn', 'aria-haspopup': 'dialog', onclick: () => openSettings() });
   // The word's type and the rule for its forms (wordrule.js): the game opens on it, and 📖 brings it back.
   const ruleBtn = rule ? el('button', { type: 'button', class: 'gm__tool', 'aria-label': 'How its forms are made', title: 'How its forms are made', onclick: () => openRule() }, '📖') : null;
+  // The word's charts: by part, in the table's order; a part of one column is one chart.
+  const chartList = charts?.list?.length > 1 ? charts.list : null;
+  const chartOn = new Set((charts?.on ?? []).filter((c) => chartList?.some((x) => x.id === c)));
+  const parts = [];
+  for (const c of chartList ?? []) { const last = parts[parts.length - 1]; if (last && last.section === c.section) last.cols.push(c); else parts.push({ section: c.section, cols: [c] }); }
+  const chartName = (ids) => {
+    const set = new Set(ids);
+    if (!chartList || !set.size) return '';
+    if (set.size === chartList.length) return 'every chart';
+    const whole = parts.filter((p) => p.cols.every((c) => set.has(c.id)));
+    if (whole.length === 1 && whole[0].cols.length === set.size) return whole[0].section;
+    if (set.size === 1) { const c = chartList.find((x) => set.has(x.id)); const p = parts.find((x) => x.cols.includes(c)); return p.cols.length > 1 && c.col ? `${c.section} · ${c.col}` : c.section; }
+    return `${set.size} of ${chartList.length} charts`;
+  };
+  const chartsBtn = chartList ? el('button', { type: 'button', class: 'gm__tool gm__text gm__chartsbtn', 'aria-haspopup': 'dialog', 'aria-label': `Charts — playing ${chartName(chartOn)}. Choose others`, onclick: () => openCharts() },
+    el('span', { class: 'gm__chartskey', text: 'Charts ' }), el('span', { class: 'gm__chartsname', text: chartName(chartOn) })) : null;
+  /** The next chart along the table: the next part when whole parts are playing, else the next column. */
+  const nextCharts = () => {
+    if (!chartList || !chartOn.size) return null;
+    const onParts = parts.filter((p) => p.cols.some((c) => chartOn.has(c.id)));
+    if (onParts.every((p) => p.cols.every((c) => chartOn.has(c.id)))) {
+      const nx = parts[parts.indexOf(onParts[onParts.length - 1]) + 1];
+      return nx ? nx.cols.map((c) => c.id) : null;
+    }
+    const last = Math.max(...[...chartOn].map((c) => chartList.findIndex((x) => x.id === c)));
+    return chartList[last + 1] ? [chartList[last + 1].id] : null;
+  };
+  /** Every chart as a switch, by part: a part's name switches all its columns. `sel` is changed in place. */
+  function chartPicker(sel, onChange) {
+    const box = el('div', { class: 'gm__charts' });
+    const paint = () => {
+      for (const b of box.querySelectorAll('[data-chart]')) b.setAttribute('aria-pressed', String(sel.has(b.dataset.chart)));
+      for (const b of box.querySelectorAll('[data-part]')) b.setAttribute('aria-pressed', String(parts[Number(b.dataset.part)].cols.every((c) => sel.has(c.id))));
+      onChange?.();
+    };
+    const chip = (text, attrs, cls, click) => el('button', { type: 'button', class: `gm__chip${cls ? ` ${cls}` : ''}`, ...attrs, onclick: () => { click(); paint(); } }, text);
+    const toggle = (c) => (sel.has(c.id) ? sel.delete(c.id) : sel.add(c.id));
+    box.append(
+      el('div', { class: 'gm__chartquick' },
+        chip('All', {}, 'gm__chip--quiet', () => chartList.forEach((c) => sel.add(c.id))),
+        chip('None', {}, 'gm__chip--quiet', () => sel.clear())),
+      ...parts.map((p, i) => el('div', { class: 'gm__chartpart', role: 'group', 'aria-label': p.section },
+        p.cols.length > 1
+          ? [chip(p.section, { 'data-part': String(i), 'aria-label': `All of ${p.section}` }, 'gm__chip--part', () => { const all = p.cols.every((c) => sel.has(c.id)); p.cols.forEach((c) => (all ? sel.delete(c.id) : sel.add(c.id))); }),
+            ...p.cols.map((c) => chip(c.col || c.section, { 'data-chart': c.id, 'aria-label': `${p.section} · ${c.col}` }, '', () => toggle(c)))]
+          : [chip(p.section, { 'data-chart': p.cols[0].id }, 'gm__chip--part', () => toggle(p.cols[0]))])));
+    paint();
+    return box;
+  }
+  const formsIn = (sel) => (chartList ?? []).filter((c) => sel.has(c.id)).reduce((n, c) => n + (c.n ?? 0), 0);
+  const sameAs = (sel) => sel.size === chartOn.size && [...sel].every((c) => chartOn.has(c));
+  const playCharts = (ids) => { close(true); charts.play([...ids]); };
+  /** A picker and its Play button, for the Charts panel and the end. With `resume`, the charts already playing go back to the game. */
+  function chartChooser(sel, { resumeLabel = '', resume = null } = {}) {
+    const go = el('button', { type: 'button', class: 'btn btn--primary gm__chartgo', onclick: () => { if (resume && sameAs(sel)) resume(); else if (sel.size) playCharts(sel); } });
+    const paintGo = () => {
+      go.disabled = !sel.size;
+      go.textContent = !sel.size ? 'Choose a chart' : resume && sameAs(sel) ? resumeLabel : `Play ${chartName(sel)} (${formsIn(sel)} forms) ▶`;
+    };
+    const picker = chartPicker(sel, () => paintGo());
+    return { picker, go };
+  }
+  function openCharts() {
+    if (!chartList || panel) return;
+    const sel = new Set(chartOn);
+    const fresh = !rows.some(isDone) && !firstMiss.size;
+    const { picker, go } = chartChooser(sel, { resumeLabel: ended ? 'Back' : fresh ? 'Start ▶' : 'Back to the game', resume: () => node.resume() });
+    const node = el('section', { class: 'gm__end gm__panel gm__chartsp', role: 'region', 'aria-labelledby': 'gm-charts-h' },
+      el('h2', { id: 'gm-charts-h', class: 'gm__endh', text: 'Which charts?' }),
+      el('p', { class: 'gm__sub' }, el('span', { lang: 'la', text: title }), ' — switch on the ones to play. A part’s name switches all its columns.'),
+      picker,
+      el('div', { class: 'gm__acts' }, go, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => node.resume() }, 'Cancel')));
+    openPanel(node, go);
+  }
   const closeBtn = el('button', { type: 'button', class: 'gm__tool gm__close', 'aria-label': 'Leave the game', title: 'Leave (Esc)', onclick: () => close() }, '✕');
   const live = el('p', { class: 'visually-hidden', 'aria-live': 'polite' });
   const track = el('ol', { class: 'gm__track', 'aria-label': 'Forms' });
   const input = el('input', { type: 'text', class: 'gm__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'go', 'aria-label': 'Your answer' });
   const showBtn = el('button', { type: 'button', class: 'gm__show', onclick: () => reveal() }, 'Show');
+  const howBtn = how ? el('button', { type: 'button', class: 'gm__how', 'aria-haspopup': 'dialog', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: () => openHow() }, '?') : null;
   const stage = el('div', { class: 'gm__stage' }, track);
   // A <dialog> shown modal: it stacks above the word popup (itself a modal dialog, in the top layer, where no
   // z-index reaches), keeps the focus inside, and Escape closes it.
@@ -147,7 +232,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     el('header', { class: 'gm__bar' },
       el('div', { class: 'gm__titles' }, el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub', text: subtitle }) : null),
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock),
-      el('div', { class: 'gm__tools' }, reviewBtn, ruleBtn, modeBtn, closeBtn),
+      el('div', { class: 'gm__tools' }, reviewBtn, chartsBtn, ruleBtn, modeBtn, closeBtn),
       meter),
     stage, live);
 
@@ -266,7 +351,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
           opts.map((t, i) => { const b = el('button', { type: 'button', class: 'gm__choice', lang: parse ? null : 'la' }, el('span', { class: 'gm__key', 'aria-hidden': 'true', text: String(i + 1) }), t); b.addEventListener('click', () => pick(b, t)); return b; }));
         kids = [parse ? el('span', { class: 'gm__form gm__ask', lang: 'la', text: form }) : null,
           byEnding(r.x) && !parse ? el('span', { class: 'gm__given', lang: 'la', 'aria-hidden': 'true', text: `${r.x.stem}‑` }) : null,
-          list, showBtn];
+          parse ? null : howBtn, list, showBtn];
         r.slot.replaceChildren(...kids.filter(Boolean));
         place(); paintStats();
         focusIn(list.querySelector('button'));
@@ -281,7 +366,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (mode === 'flash') {
       // A look first: the form a moment, then the box. A key or a tap skips the look.
       const look = el('button', { type: 'button', class: 'gm__look', lang: 'la', 'aria-label': `Remember it: ${r.x.answers[0]}. Then type it.` }, el('span', { class: 'gm__form' }, formNode(r.x)), el('span', { class: 'gm__looktag', text: 'Remember it…' }));
-      const toBox = () => { if (tok !== seq || !look.isConnected) return; r.slot.replaceChildren(...[given, input, showBtn].filter(Boolean)); focusIn(input); };
+      const toBox = () => { if (tok !== seq || !look.isConnected) return; r.slot.replaceChildren(...[given, input, howBtn, showBtn].filter(Boolean)); focusIn(input); };
       look.addEventListener('click', toBox);
       look.addEventListener('keydown', (e) => { if (e.key.length === 1 || e.key === 'Enter') { e.preventDefault(); toBox(); } });
       r.slot.replaceChildren(look);
@@ -290,7 +375,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       setTimeout(toBox, reduced ? 2200 : 1800);
       return;
     }
-    r.slot.replaceChildren(...[given, input, showBtn].filter(Boolean));
+    r.slot.replaceChildren(...[given, input, howBtn, showBtn].filter(Boolean));
     place(); paintStats();
     focusIn(input);
   }
@@ -449,6 +534,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       after?.();
       if (ended) { stage.querySelector('.gm__acts button')?.focus({ preventScroll: true }); return; }
       const r = rows[at];
+      // A look aside (the ?) leaves the form as it was: what is typed stays, the choices stay, no second Flash.
+      if (node.keep && r?.slot.childNodes.length) { focusIn(r.slot.querySelector('.gm__in, .gm__choice:not(:disabled), .gm__look') ?? root); return; }
       if (r && r.li.dataset.state !== 'right' && r.li.dataset.state !== 'shown') ask(); else root.focus({ preventScroll: true });
     };
     root.append(node);
@@ -472,10 +559,28 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (!rule) return;
     const fresh = !rows.some(isDone) && !firstMiss.size;
     const goOn = el('button', { type: 'button', class: 'btn btn--primary gm__start', onclick: () => node.resume() }, fresh ? 'Start ▶' : 'Back to the game');
+    // What this game plays, and a way to others, before it starts.
+    const playing = chartList ? el('p', { class: 'gm__playing' }, 'Playing ', el('strong', { text: chartName(chartOn) }), ' ',
+      el('button', { type: 'button', class: 'btn btn--quiet gm__change', onclick: () => { node.resume(); openCharts(); } }, 'Change charts')) : null;
     const node = el('section', { class: 'gm__end gm__panel gm__rulep', role: 'region', 'aria-labelledby': 'gm-rule-h' },
       el('h2', { id: 'gm-rule-h', class: 'gm__endh', lang: 'la', text: title }),
+      playing,
       ruleCard(rule, { open: true }),
       el('div', { class: 'gm__acts' }, goOn));
+    openPanel(node, goOn);
+  }
+  // ? How this form is made: its own steps for this word, over the column; the clock stops while it is open.
+  function openHow() {
+    const r = rows[at];
+    const card = r && how ? how(r.x) : null;
+    if (!card) return;
+    const goOn = el('button', { type: 'button', class: 'btn btn--primary', onclick: () => node.resume() }, 'Back to it');
+    const node = el('section', { class: 'gm__end gm__panel gm__howp', role: 'region', 'aria-labelledby': 'gm-how-h' },
+      el('h2', { id: 'gm-how-h', class: 'gm__endh', text: 'How it’s made' }),
+      el('p', { class: 'gm__howcue' }, el('span', { class: 'gm__label', text: r.x.cue }), r.x.en ? el('span', { class: 'gm__en', text: r.x.en }) : null),
+      ruleCard(card, { open: true, heading: 'For this word' }),
+      el('div', { class: 'gm__acts' }, goOn));
+    node.keep = true;
     openPanel(node, goOn);
   }
   // ⚙ Ways to play: the mode, and the switches. Each change is kept on the device and plays from the form on screen.
@@ -536,10 +641,19 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false, charts }); };
+    // More of the word: the next chart along, or any of them.
+    const nx = nextCharts();
+    const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;
+    let more = null;
+    if (chartList) {
+      const { picker, go } = chartChooser(new Set());
+      more = el('details', { class: 'gm__more' }, el('summary', { class: 'gm__moresum', text: `Choose another chart (${chartList.length})` }), picker, el('div', { class: 'gm__acts' }, go));
+    }
     const acts = el('div', { class: 'gm__acts' },
       misses.length ? el('button', { type: 'button', class: 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
-      onNext ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
+      nextChartBtn,
+      onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
       el('button', { type: 'button', class: 'btn', onclick: again(base, subtitle, id) }, 'Play again'),
       el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Close'));
     const stars = clean === base.length ? 3 : clean >= base.length * 0.7 ? 2 : clean > 0 ? 1 : 0;
@@ -552,7 +666,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         el('div', {}, el('dt', { text: 'Time' }), el('dd', { text: mmss(secs) }))),
       misses.length ? el('div', { class: 'gm__misses' }, el('p', { class: 'gm__sub', text: 'Missed on the first try:' }),
         el('ul', {}, misses.map((x) => el('li', {}, el('span', { class: 'gm__label', text: x.cue }), ' ', el('span', { class: 'gm__form', lang: 'la' }, formNode(x)))))) : null,
-      acts);
+      acts, more);
     stage.replaceChildren(card);
     progress.textContent = `${rows.length} / ${rows.length}`;
     meterFill.style.width = '100%';

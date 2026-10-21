@@ -15,7 +15,7 @@ import { cellChapter, loadFormSkills } from './paradigm-chapters.js';
 import { chapterOfWeek } from './chapters.js';
 import { roman } from './sync.js';
 import { playTable, savedMisses } from './game.js';
-import { wordRule, ruleCard, focusRule } from './wordrule.js';
+import { wordRule, ruleCard, focusRule, formRule } from './wordrule.js';
 
 const ENCLITIC = { que: '-que "and" is attached to the end', ne: '-ne turns the sentence into a yes/no question', ve: '-ve "or" is attached to the end' };
 
@@ -461,9 +461,21 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
   const playBtn = h('button', { type: 'button', class: 'btn paradigm__play', 'aria-label': 'Play this table as a game' }, h('span', { 'aria-hidden': 'true', text: '▶ ' }), 'Play');
   const playMissBtn = h('button', { type: 'button', class: 'btn btn--quiet paradigm__playmiss', hidden: true });
   const bar = h('div', { class: 'paradigm__acts' }, playBtn, playMissBtn, startBtn, endBtn, missesBtn, showBtn, againBtn, stopBtn);
-  const gameItems = (only = null) => cells().filter(on).filter((x) => !only || only.has(x.label))
+  // `groups` (chart ids, "si|ci"): the charts chosen in the game (2026-10-21), whatever the chapter switches say.
+  const chartOf = (x) => `${x.si}|${x.ci}`;
+  const gameItems = (only = null, groups = null) => cells().filter(groups ? (x) => groups.has(chartOf(x)) : on).filter((x) => !only || only.has(x.label))
     .sort((a, b) => a.si - b.si || a.ci - b.ci || a.ri - b.ri)
-    .map((x) => ({ key: x.label, cue: [x.row, [x.section, x.col].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en: x.en, answers: x.answers, stem: x.stem, ending: x.ending, group: `${x.si}|${x.ci}` }));
+    .map((x) => ({ key: x.label, cue: [x.row, [x.section, x.col].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en: x.en, answers: x.answers, stem: x.stem, ending: x.ending, group: chartOf(x), form: x.key }));
+  /** Every chart of the table, in its order: a column of one part, with how many forms it asks. */
+  const chartList = () => {
+    const seen = new Map();
+    for (const x of [...cells()].sort((a, b) => a.si - b.si || a.ci - b.ci)) {
+      const k = chartOf(x);
+      if (!seen.has(k)) seen.set(k, { id: k, section: x.section, col: x.col, n: 0 });
+      seen.get(k).n++;
+    }
+    return [...seen.values()];
+  };
   const paintPlayMiss = () => {
     const n = id ? savedMisses(gameId()).filter((k) => cells().some((x) => x.label === k)).length : 0;
     playMissBtn.hidden = !n;
@@ -475,8 +487,22 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
   // are three games, not one (their keys' signature in the id).
   const sig = (keys) => { let x = 0; for (const ch of [...keys].sort().join('|')) x = (x * 31 + ch.charCodeAt(0)) >>> 0; return x.toString(36); };
   const gameId = () => (id ? `${id}|${sig(gameItems().map((g) => g.key))}` : null);
-  const play = (only = null) => playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items: gameItems(only), id: only ? null : gameId(), onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss, rule: game.rule ?? null,
-    endings, onEndings: (want) => { if (want !== endings) endBtn.click(); } });   // Endings only plays as the table has it, and a switch in the game is the table's too
+  const play = (only = null, groups = null) => {
+    const items = gameItems(only, groups);
+    const gid = only || !id ? null : groups ? `${id}|${sig(items.map((g) => g.key))}` : gameId();
+    // Charts chosen in the game: the card it opens on says how those are made, each step once, in the rule's order.
+    let rule = game.rule ?? null;
+    if (groups && game.whole) {
+      const steps = [];
+      for (const g of new Set(items.map((it) => it.group))) for (const st of formRule(game.whole, items.find((it) => it.group === g).form, { examples: true })?.steps ?? []) if (!steps.some((x) => x.head === st.head && x.text === st.text)) steps.push(st);
+      if (steps.length) rule = { ...game.whole, steps };
+    }
+    return playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items, id: gid, onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss, rule,
+      endings, onEndings: (want) => { if (want !== endings) endBtn.click(); },   // Endings only plays as the table has it, and a switch in the game is the table's too
+      // The charts: the ones this game plays selected, every other one a choice away (the bar, the start, the end).
+      charts: { list: chartList(), on: [...new Set(items.map((g) => g.group))], play: (ids) => play(null, new Set(ids)) },
+      how: game.whole ? (it) => formRule(game.whole, it.form) : null });
+  };
   playBtn.addEventListener('click', () => play());
   playMissBtn.addEventListener('click', () => play(new Set(savedMisses(gameId()))));
   details.addEventListener('toggle', paintPlayMiss);
@@ -574,6 +600,34 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     const more = h('details', { class: 'paradigm__more' }, h('summary', { class: 'paradigm__moresum', text: `Choose parts by chapter (${list.length})` }), h('div', { class: 'paradigm__chips' }, chips));
     parts.replaceChildren(...(list.length > 1 ? [h('div', { class: 'paradigm__quick' }, quick), more] : []));
   };
+  // ? How this form is made (2026-10-21), beside a box: its own steps for this word, without the examples (the
+  // answers), in a small card by the box that a tap outside or Escape puts away.
+  const pop = game.whole ? h('div', { class: 'pt__pop', popover: 'auto', role: 'dialog', 'aria-label': 'How this form is made' }) : null;
+  if (pop) {
+    details.append(pop);
+    // Escape puts the card away and no more: the reader's own Escape (main.js) would close the whole word view.
+    pop.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault(); e.stopPropagation();
+      try { pop.hidePopover(); } catch { pop.hidden = true; }
+      pop.anchor?.focus();
+    });
+  }
+  const openHow = (x, anchor) => {
+    const card = formRule(game.whole, x.key);
+    if (!card || !pop) return;
+    pop.anchor = anchor;
+    const shut = h('button', { type: 'button', class: 'btn btn--quiet pt__popclose', text: 'Close', onclick: () => { try { pop.hidePopover(); } catch { pop.hidden = true; } anchor.focus(); } });
+    pop.replaceChildren(h('p', { class: 'pt__popcue', text: x.label }), ruleCard(card, { open: true, heading: 'How it’s made, for this word' }), shut);
+    try { pop.showPopover(); } catch { pop.hidden = false; }
+    const r = anchor.getBoundingClientRect();
+    const w = Math.min(352, window.innerWidth - 24);
+    pop.style.width = `${w}px`;
+    pop.style.left = `${Math.max(12, Math.min(r.left, window.innerWidth - w - 12))}px`;
+    const below = r.bottom + 6;
+    pop.style.top = `${below + pop.offsetHeight > window.innerHeight - 12 ? Math.max(12, r.top - pop.offsetHeight - 6) : below}px`;
+    shut.focus({ preventScroll: true });
+  };
   const start = ({ focus = true } = {}) => {
     details.classList.add('is-practising');
     for (const x of cells()) {
@@ -597,7 +651,9 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
           goTo(nextOpen(x));
         });
         const given = x.stem && x.ending ? h('span', { class: 'pt__given', lang: 'la', 'aria-hidden': 'true', text: `${x.stem}‑` }) : null;
-        x.td.querySelector('.pt__form').after(h('span', { class: 'pt__answer' }, given, input, reveal, h('span', { class: 'pt__mark', 'aria-hidden': 'true' })));
+        const how = pop ? h('button', { type: 'button', class: 'pt__how', text: '?', 'aria-haspopup': 'dialog', 'aria-label': `How it’s made: ${x.label}`, title: 'How this form is made' }) : null;
+        how?.addEventListener('click', () => openHow(x, how));
+        x.td.querySelector('.pt__form').after(h('span', { class: 'pt__answer' }, given, input, how, reveal, h('span', { class: 'pt__mark', 'aria-hidden': 'true' })));
       }
       input.value = '';
       mark(x, '');
@@ -741,12 +797,11 @@ export function renderParadigm(p, opts = {}) {
   // type in sight and the steps a tap away; the game opens on the same card.
   // `opts.ruleFor` (a skill): the table is that skill's (Sheets, a skill's whole table) — its card says just the
   // steps that make the skill's forms for this word's type, and opens, so words of other types beside it differ.
-  // A 1st-conjugation verb's stem ends in ā, a 2nd's in ē, a 4th's in ī: the vowel a coloured chart keeps on the stem.
   const whole = practise && p.entry ? wordRule(p.entry, p) : null;
   const rule = opts.ruleFor ? focusRule(whole, opts.ruleFor) : whole;
   if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && rule !== whole, heading: rule !== whole ? 'How this type makes it' : 'How it’s made' }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
-    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule } }));
+    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole } }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).

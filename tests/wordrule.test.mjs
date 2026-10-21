@@ -131,3 +131,31 @@ test('dō: its a is short, and its card and table say so', async () => {
   const sk = (Array.isArray(skills) ? skills : skills.skills).find((s) => s.id === 'imperfect-active');
   assert.ok(focusRule(r, sk).steps.some((s) => s.head === 'Short a'));
 });
+
+test('the ? beside a box: how that one form is made, without its answer', async () => {
+  const { formRule } = await import('../app/js/wordrule.js');
+  const cellsOf = (w, pos) => { const e = lookup(w).entries.find((x) => x.pos === pos); const t = paradigm(e, []); return { r: wordRule(e, t), cells: t.sections.flatMap((s) => s.rows.flatMap((x) => x.cells)).filter((c) => c && c.key && !c.empty) }; };
+  const say = (f) => f.steps.map((s) => `${s.head}: ${s.text}`).join(' | ');
+  const { r, cells } = cellsOf('amat', 'V');
+  const impf = cells.find((c) => c.key.tense === 'impf' && c.key.mood === 'ind' && c.key.voice === 'act');
+  const f = formRule(r, impf.key);
+  assert.match(say(f), /Imperfect: Stem \+ -bam/);
+  assert.ok(f.steps.every((s) => !s.eg), 'no examples: they are the answers');
+  assert.ok(!/amābam/.test(say(f)));
+  // a passive subjunctive: its tense's way and the passive endings
+  const v = cellsOf('regit', 'V');
+  assert.match(say(formRule(v.r, v.cells.find((c) => c.key.tense === 'impf' && c.key.mood === 'subj' && c.key.voice === 'pass').key)), /-r, -ris, -tur/);
+  // an infinitive has its own line, not the whole card
+  const inf = formRule(v.r, v.cells.find((c) => c.key.kind === 'inf' && c.key.tense === 'perf' && c.key.voice === 'act').key);
+  assert.ok(inf.steps.length <= 3 && /perfect stem \+ -isse/.test(say(inf)));
+  // a noun: its number's endings only
+  const n = cellsOf('rex', 'N');
+  const pl = say(formRule(n.r, n.cells.find((c) => c.key.number === 'pl').key));
+  assert.match(pl, /Plural/);
+  assert.ok(!/Singular/.test(pl));
+  // every cell of every kind of word gets something
+  for (const [w, pos] of [['monet', 'V'], ['capit', 'V'], ['audit', 'V'], ['hortatur', 'V'], ['est', 'V'], ['puella', 'N'], ['bonus', 'ADJ'], ['fortis', 'ADJ']]) {
+    const x = cellsOf(w, pos);
+    for (const c of x.cells) assert.ok(formRule(x.r, c.key)?.steps.length, `${w} ${c.text}`);
+  }
+});

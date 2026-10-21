@@ -256,7 +256,7 @@
 @media (pointer: coarse) { .pt__in { min-height: var(--tap); font-size: 16px; } }   /* 16px: iOS does not zoom the page into the box */
 .pt__mark { display: inline-flex; justify-content: center; min-width: 1em; font-family: var(--face-ui); font-size: var(--ui-sm); font-weight: 700; }
 .paradigm.is-practising .pt__cell:has(.pt__answer):not(.is-off, [data-state="right"], [data-state="shown"]) .pt__form { display: none; }
-.pt__cell:is([data-state="right"], [data-state="shown"]) :is(.pt__in, .pt__reveal), .pt__cell.is-off .pt__answer { display: none; }
+.pt__cell:is([data-state="right"], [data-state="shown"]) :is(.pt__in, .pt__reveal, .pt__how), .pt__cell.is-off .pt__answer { display: none; }
 .pt__given { display: none; flex: none; font-family: var(--face-reading); color: var(--ink-2); }
 .paradigm.is-endings .pt__cell:not([data-state="right"], [data-state="shown"]) .pt__given { display: inline; }
 .paradigm.is-endings .pt__in { min-width: 3.5rem; }
@@ -770,3 +770,36 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 @media (pointer: coarse) { .entry__head .g-play { min-height: var(--tap); } }
 
 .entry__head { flex-wrap: wrap; }   /* the word, its + / − and ▶ Play: on a 320px phone Play drops under, the word keeps its line */
+
+/* ? How this form is made (2026-10-21): a round key before Show, in the table and in the game. */
+.pt__how { flex: none; width: 28px; min-height: 28px; padding: 0; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--bg-raised); color: var(--ink-2); font-family: var(--face-ui); font-size: var(--ui-xs); font-weight: 700; cursor: pointer; }
+.pt__how:hover { background: var(--bg-chrome); color: var(--ink); }
+.pt__how:focus-visible, .gm__how:focus-visible, .gm__chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (pointer: coarse) { .pt__how { width: var(--tap); min-height: var(--tap); } }
+.pt__pop { position: fixed; inset: auto; margin: 0; max-height: min(70vh, 28rem); overflow-y: auto; padding: var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); box-shadow: 0 8px 24px oklch(0 0 0 / 0.18); }
+.pt__pop[hidden] { display: none; }
+.pt__pop .wr { margin: 0 0 var(--s-2); }
+.pt__pop .wr__sum { pointer-events: none; list-style: none; }
+.pt__popcue { margin: 0 0 var(--s-2); font-size: var(--ui-sm); color: var(--ink-3); }
+.gm__how { flex: none; width: var(--tap); min-height: var(--tap); border: 2px solid var(--line-strong); border-radius: 999px; background: var(--bg-raised); color: var(--ink-2); font-weight: 700; font-size: 1.05rem; cursor: pointer; }
+.gm__howcue { margin: 0; display: grid; gap: 2px; }
+.gm__howp .wr { margin: 0; border-left-color: var(--gm-a); }
+.gm__howp .wr__sum { pointer-events: none; list-style: none; }
+/* The word's charts: in the bar (what is playing), on the first card, in their own panel and at the end. */
+.gm__chartsbtn { max-width: min(22rem, 46vw); display: inline-flex; align-items: center; gap: 0.35em; }
+.gm__chartskey { color: var(--ink-3); font-weight: 600; }
+.gm__chartsname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.gm__playing { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); }
+.gm__change { min-height: 36px; }
+.gm__charts { display: grid; gap: var(--s-2); }
+.gm__chartquick, .gm__chartpart { display: flex; flex-wrap: wrap; gap: var(--s-1); align-items: center; }
+.gm__chartpart + .gm__chartpart { padding-top: var(--s-2); border-top: 1px solid var(--line); }
+.gm__chip { min-height: 36px; padding: 0 var(--s-3); border: 2px solid var(--line-strong); border-radius: 999px; background: var(--bg-raised); color: var(--ink-2); font: inherit; font-size: var(--ui-sm); cursor: pointer; }
+@media (pointer: coarse) { .gm__chip { min-height: var(--tap); } }
+.gm__chip[aria-pressed="true"] { border-color: var(--gm-a); background: color-mix(in srgb, var(--gm-a) 16%, var(--bg-raised)); color: var(--ink); font-weight: 700; }
+.gm__chip--part { font-weight: 700; }
+.gm__chip--quiet { border-style: dashed; }
+.gm__more { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s-2) var(--s-3); }
+.gm__more[open] { display: grid; gap: var(--s-3); }
+.gm__moresum { cursor: pointer; font-weight: 700; min-height: 36px; display: flex; align-items: center; }
+.gm__chartsp .gm__acts { position: sticky; bottom: 0; padding: var(--s-3) 0 var(--s-4); background: linear-gradient(transparent, var(--bg) 35%); }
