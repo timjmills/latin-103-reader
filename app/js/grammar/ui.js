@@ -7,6 +7,7 @@
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm } from '../wordpanel.js';
 import { gameSound } from '../game.js';
+import { wordRule, ruleCard, focusRule } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
 import { isShelfWeek } from '../sync.js';
@@ -2997,7 +2998,10 @@ export function createUI(ctx) {
 
     const card = (x, preset, note) => {
       const t = tableOf(x.e);
-      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => n, preset, focus: n, gameNext: playNextAfter(() => node), gameNextLabel: 'Next word →' });
+      // The card's "how it's made" is the chapter's skills for this word's type (the review's, its own chapters').
+      const chs = note ? [...String(note).matchAll(/[IVXL]+/g)].map((m) => m[0]) : null;
+      const ruleSkills = [...skills.values()].filter((s) => s.paradigms?.length && !s.set && !s.rev && (chs ? chs.includes(roman(Number(s.chapter))) : mode === 'all' ? Number(s.chapter) <= n : Number(s.chapter) === n));
+      const node = t && renderParadigm(t, { english: true, practise: true, chapter: () => n, preset, focus: n, gameNext: playNextAfter(() => node), gameNextLabel: 'Next word →', ruleFor: mode === 'all' ? null : ruleSkills.length ? ruleSkills : null });
       if (!node) return null;
       node.open = true;
       const kind = typeOf(x.e);
@@ -3108,7 +3112,7 @@ export function createUI(ctx) {
     const k = ((Number(i) || 0) % list.length + list.length) % list.length;
     const e = list[k];
     const t = tableOf(e);
-    const node = renderParadigm(t, { english: true, practise: true, chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true,
+    const node = renderParadigm(t, { english: true, practise: true, chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
       gameSubtitle: sk.title, gameNext: () => render('wwtable', { chapter: n, skill: id, i: k + 1, play: true }), gameNextLabel: `Next word → (${(k + 1) % list.length + 1} of ${list.length})` });
     node.open = true;
     const step = (d) => render('wwtable', { chapter: n, skill: id, i: k + d });
@@ -3241,7 +3245,8 @@ export function createUI(ctx) {
       const card = h('article', { class: 'g-sheet__card', 'data-forms': sk.paradigms?.length ? 'true' : null, 'aria-labelledby': `g-sheet-${sk.id}` },
         h('div', { class: 'g-sheet__head' }, h('h2', { class: 'g-sheet__title', id: `g-sheet-${sk.id}` }, sk.title, h('span', { class: 'g-sheet__cap', text: ` · cap. ${roman(Number(sk.chapter))}` })), cardPlay),
         sk.plain ? h('p', { class: 'g-sheet__plain', text: sk.plain }) : null,
-        sk.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: sk.paradigms?.length ? 'How it is made ' : 'How it works ' }), prose(sk.summary)) : null);
+        sk.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: sk.paradigms?.length ? 'The rule ' : 'How it works ' }), prose(sk.summary)) : null,
+        sk.paradigms?.length ? h('p', { class: 'g-quiet g-sheet__bytype', text: 'Each chart below says how its own type makes it — the conjugations and declensions differ.' }) : null);
       if (sk.paradigms?.length) {
         await skillsReady;
         const words = await sheetWords(n, sk);
@@ -3252,7 +3257,7 @@ export function createUI(ctx) {
           for (const e of words.slice(shown, shown + k)) {
             const t = tableOf(e);
             const node = t && renderParadigm(t, { english: true, practise: true, label: headOf(e), only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true,
-              gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →' });
+              gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →', ruleFor: sk });
             if (!node) continue;
             node.open = true;
             // The mark says which forms are the skill's; on a chart that is nothing but the skill's, it says nothing.
@@ -4019,6 +4024,7 @@ export function createUI(ctx) {
    *   is a replay, never a second grading. Left and right arrow keys do the
    *   same when focus is not in a field or in an input that uses them itself.
    */
+  let ruleSeq = 0;   // ids for each session's 📖 panel
   function runSession({ runner, title, note = '', mode, hintOpen = false, stepper = null, lesson = null, onDone, practiceLink = false, open = false, more = null, before = null }) {
     const wrap = h('div', { class: 'g-run' });
     // A stepper given as a function follows the run (Learn's steps): it is repainted for the slot on screen.
@@ -4031,16 +4037,42 @@ export function createUI(ctx) {
     // above it and the next below; right moves on by itself, wrong turns red and empties for another try. The
     // first answer is still the one the skill counts, so a miss is still a miss to redo. Kept on the device.
     const gameBtn = btn('', { 'aria-pressed': 'false', onclick: () => setGame(!gameOn()) }, 'g-runnav__game');
+    // 📖 in a drill's game (2026-10-21: "make sure this works with the game — when you play and ask how it's made"):
+    // how the question's own word makes this skill's form, for its type (wordrule.js focusRule); the skill's rule
+    // when the question has no one word. A second press, or the next question, puts it away.
+    const ruleId = `g-rule-${++ruleSeq}`;
+    const ruleBtn = btn('📖', { 'aria-label': 'How it is made', title: 'How it is made', 'aria-expanded': 'false', 'aria-controls': ruleId, onclick: () => toggleRule() }, 'g-runnav__rule');
+    const rulePanel = h('section', { class: 'g-game__rule', id: ruleId, hidden: true, 'aria-label': 'How it is made' });
+    // Closed whenever the page under it changes (a new question, Try again) or game mode ends.
+    const closeRule = () => { rulePanel.hidden = true; rulePanel.remove(); ruleBtn.setAttribute('aria-expanded', 'false'); };
+    function toggleRule() {
+      if (!rulePanel.hidden && rulePanel.isConnected) { closeRule(); return; }
+      const item = runner.current?.item;
+      const sk = item ? skills.get(item.skill) : null;
+      const entry = item?.entry ?? item?.word?.entry ?? null;
+      let rule = null;
+      try { if (entry) rule = focusRule(wordRule(entry, par.paradigm(entry, [])), sk); } catch { rule = null; }
+      rulePanel.replaceChildren(...[   // replaceChildren writes a null as the text "null"
+        rule ? ruleCard(rule, { open: true, heading: 'How this type makes it' }) : null,
+        !rule && sk?.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: 'The rule ' }), prose(sk.summary)) : null,
+        !rule && !sk?.summary ? h('p', { class: 'g-quiet', text: 'No rule to show for this question.' }) : null].filter(Boolean));
+      rulePanel.hidden = false;
+      ruleBtn.setAttribute('aria-expanded', 'true');
+      wrap.prepend(rulePanel);
+      rulePanel.scrollIntoView({ block: 'nearest' });
+    }
     const gameStats = h('span', { class: 'g-runnav__stats', 'aria-live': 'polite' });
     let streak = 0;
     let score = 0;
-    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB, gameStats, gameBtn);
+    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB, gameStats, ruleBtn, gameBtn);
     const gameOn = () => body.classList.contains('g-game');
     const paintGame = () => {
       const on = gameOn();
       gameBtn.setAttribute('aria-pressed', String(on));
       gameBtn.textContent = on ? '✕ Leave game mode' : '▶ Game mode';
       gameStats.textContent = on ? `${streak >= 2 ? `🔥 ${streak} · ` : ''}${score} pts` : '';
+      ruleBtn.hidden = !on;
+      if (!on) closeRule();
     };
     function setGame(on) {
       body.classList.toggle('g-game', on);
@@ -4126,7 +4158,7 @@ export function createUI(ctx) {
           const live = secondGuess(item, result);
           const fb = feedbackNode(item, result, { lesson, mode, practiceLink, live,
             onNext: () => go(1),
-            onRetry: result.correct ? null : () => { pages[i] = build(i, item, { fresh: true, keepLead: lead?.node ?? null }); wrap.replaceChildren(pages[i]); paintNav(); focusPage(pages[i]); ctx.say('Starting that one again.'); },
+            onRetry: result.correct ? null : () => { closeRule(); pages[i] = build(i, item, { fresh: true, keepLead: lead?.node ?? null }); wrap.replaceChildren(pages[i]); paintNav(); focusPage(pages[i]); ctx.say('Starting that one again.'); },
             onPractice: () => nested(item.skill) });
           // One verdict on screen at a time: a second guess replaces the first answer's feedback rather
           // than stacking under it. It is never taken away while the item is still answerable — the
@@ -4189,6 +4221,7 @@ export function createUI(ctx) {
       const i = runner.position;
       if (!pages[i]) pages[i] = build(i, cur.item);
       wrap.replaceChildren(pages[i]);
+      closeRule();
       ctx.current = cur.item;
       paintNav();
       paintStepper();
@@ -4222,6 +4255,7 @@ export function createUI(ctx) {
       if (!sub.start()) { ctx.say('No more sentences for this skill right now.'); return; }
       const saved = [...wrap.childNodes];
       const subWrap = h('div', { class: 'g-run g-run--sub' });
+      closeRule();
       wrap.replaceChildren(h('p', { class: 'g-sub__note', text: `A short set on ${skill.title}; the session continues afterwards.` }), subWrap);
       const subStep = () => {
         closePop();

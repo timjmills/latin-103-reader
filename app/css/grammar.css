@@ -1319,3 +1319,9 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 .g-ww__wordhead, .g-sheet__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-3); }
 .g-ww__wordhead .g-ww__lemma { margin: 0; }
 .g-ww__playall { margin: 0 0 var(--s-4); }
+
+/* 📖 in a drill's game: the question's word, how its type makes the form. */
+.g-runnav__rule { min-width: 36px; min-height: 36px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-raised); cursor: pointer; font-size: 1rem; }
+@media (pointer: coarse) { .g-runnav__rule { min-width: var(--tap); min-height: var(--tap); } }
+.g-runnav__rule[hidden], .g-game__rule[hidden] { display: none; }
+.g-game__rule { margin: 0 0 var(--s-4); }
