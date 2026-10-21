@@ -27,13 +27,13 @@
   },
   {
    "lemma": "inveniō",
-   "dict": "inveniō, invēnīre, invēnī, inventum",
+   "dict": "inveniō, invenīre, invēnī, inventum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "find, come upon",
    "sense_full": "come upon",
-   "parts": "inveniō, invēnīre, invēnī, inventum",
+   "parts": "inveniō, invenīre, invēnī, inventum",
    "unit_id": "w02:19.1",
    "count": 15,
    "sem": {
@@ -368,13 +368,13 @@
   },
   {
    "lemma": "effugiō",
-   "dict": "effugiō, effūgere, effūgī, effugitum",
+   "dict": "effugiō, effugere, effūgī, effugitum",
    "pos": "V",
    "gender": null,
    "decl": null,
    "meaning": "escape, flee",
    "sense_full": "flee or escape",
-   "parts": "effugiō, effūgere, effūgī, effugitum",
+   "parts": "effugiō, effugere, effūgī, effugitum",
    "unit_id": "w02:19.2",
    "count": 8,
    "sem": {

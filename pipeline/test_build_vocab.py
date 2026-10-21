@@ -329,7 +329,7 @@ def _shipped_verbs():
     ("lātrō", "lātrō, lātrāre, lātrāvī, lātrātum"),
     ("cantō", "cantō, cantāre, cantāvī, cantātum"),
     ("lūceō", "lūceō, lūcēre, lūxī"),
-    ("dō", "dō, dāre, dedī, datum"),          # a short a the rule must not touch
+    ("dō", "dō, dare, dedī, datum"),          # a short a the rule must not touch
     ("stō", "stō, stāre, stetī, statum"),
 ])
 def test_the_shipped_dictionary_line_of_a_word_the_audit_named(lemma, line):

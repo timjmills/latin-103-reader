@@ -90,3 +90,44 @@ test('a skill\'s rule says how each type makes its forms', async () => {
   // A deponent's imperfect subjunctive names the stem it adds -rer to.
   assert.match(say(rule('hortatur', 'imperfect-subjunctive')), /Present stem: hortā-/);
 });
+
+test('a card reads its parts past an enclitic and a bracketed note, and follows a one-number noun', () => {
+  const byLemma = (w, lemma) => { const e = lookup(w).entries.find((x) => x.lemma === lemma); assert.ok(e, lemma); return wordRule(e, paradigm(e, [])); };
+  // dāve = dā + -ve: the card is dō's, without the "+ -ue"
+  const dave = byLemma('dave', 'dō, dare, dedī, datum + -ue');
+  assert.equal(dave.parts, 'dō, dare, dedī, datum');
+  assert.match(step(dave, 'Perfect passive').text, /datus, -a, -um \(from datum\)/);
+  // "placēre (impersonal)" and "ēsse (edere)": the stem from the infinitive itself
+  assert.match(step(byLemma('placet', 'placet, placēre (impersonal)'), 'Present stem').text, /^placē- \(placēre,/);
+  assert.match(step(byLemma('edat', 'edō, ēsse (edere), ēdī, ēsum'), 'Present stem').text, /^ed- \(edere,/);
+  // a plural-only noun says so and takes its stem from the plural; a singular-only one has no plural step
+  const castra = ruleOf('castra', 'N');
+  assert.ok(step(castra, 'Plural only'));
+  assert.match(step(castra, 'Stem').text, /genitive plural castrōrum/);
+  assert.ok(!step(castra, 'Singular'));
+  const roma = ruleOf('romae', 'N');
+  assert.ok(step(roma, 'Singular only'));
+  assert.ok(!step(roma, 'Plural'));
+  // an adjective with no positive: its comparative and superlative, and no positive endings
+  const ult = byLemma('ulterior', 'ulterior, ulterius (comparative)');
+  assert.ok(step(ult, 'No positive'));
+  assert.ok(!step(ult, 'Endings'));
+});
+
+test('dō: its a is short, and its card and table say so', async () => {
+  const { focusRule } = await import('../app/js/wordrule.js');
+  const e = lookup('dat').entries.find((x) => x.pos === 'V');
+  const t = paradigm(e, []);
+  const r = wordRule(e, t);
+  assert.equal(r.parts, 'dō, dare, dedī, datum');
+  assert.match(step(r, 'Present stem').text, /^da- \(dare,/);
+  assert.ok(step(r, 'Short a'));
+  assert.match(step(r, 'Subjunctive').text, /the a becomes e/);
+  const forms = t.sections.flatMap((s) => s.rows.flatMap((x) => x.cells.map((c) => c?.text)));
+  for (const f of ['damus', 'dabam', 'dabō', 'darem', 'dās', 'dāns']) assert.ok(forms.some((x) => x?.split(' / ').includes(f)), f);
+  for (const f of ['dāmus', 'dābam', 'dārem']) assert.ok(!forms.includes(f), f);
+  // the note stays on a game's focused card
+  const skills = read('../app/data/grammar/skills.json');
+  const sk = (Array.isArray(skills) ? skills : skills.skills).find((s) => s.id === 'imperfect-active');
+  assert.ok(focusRule(r, sk).steps.some((s) => s.head === 'Short a'));
+});

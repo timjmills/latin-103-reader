@@ -107,6 +107,7 @@ import math
 import os
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -724,11 +725,18 @@ ROOT_MACRONS: dict[str, dict[int, str]] = {
     "V:prosili/prosil/prosiliu/-": {1: "prōsil"},                     # prōsilīre, prōsiliunt
     "V:sed/sed/sedau/sedat": {0: "sēd", 1: "sēd"},                    # sēdāre (sedō "settle", not sedeō)
     "V:transe/transi/transiu/transit": {0: "trānse"},                 # trānsīre, trānsībant, trānsīrent, trānsisse
+    # A present stem spelt like the perfect's (aduen/aduen) learns the perfect's long vowel from the page — advēnit,
+    # effūgit — and gives advēnīre, effūgere. The present keeps its short vowel; the perfect rows below keep theirs.
+    "V:adueni/aduen/aduen/aduent": {1: "adven"},                     # advenīre, advenit — advēnī
+    "V:inueni/inuen/inuen/inuent": {1: "inven"},                     # invenīre, invenit, inveniunt — invēnī
+    "V:perueni/peruen/peruen/peruent": {1: "perven"},                # pervenīre, perveniunt — pervēnī
+    "V:deserui/deseru/deseruiu/deseruit": {0: "dēservi", 1: "dēserv", 2: "dēservīv", 3: "dēservīt"},  # dēserviō, dēservīre, dēservīvī, dēservītum: the u of Whitaker's stem is a v
+    "V:lib/lib/libau/libat": {1: "līb"},                              # lībāre (lībō, lībāvī, lībātum)
     # --- perfect stems
     "V:caed/caed/cecid/caes": {2: "cecīd"},                           # the margin "caedere cecīdisse caesum" — cadō keeps its short cecid-
     "V:conueni/conuen/conuen/conuent": {2: "convēn"},                 # convēnerant
     "V:deb/deb/debu/debit": {2: "dēbu"},                              # dēbuit
-    "V:effugi/effug/effug/effugit": {2: "effūg"},                     # effūgisse, effūgit, effūgī, effūgimus
+    "V:effugi/effug/effug/effugit": {1: "effug", 2: "effūg"},         # effugere, effugit — effūgisse, effūgit, effūgī, effūgimus
     "V:em/em/em/empt": {2: "ēm"},                                     # ēmit, ēmistī, ēmerat, ēmisse
     "V:fugi/fug/fug/fugit": {2: "fūg"},                               # fūgī, fūgit, fūgisse, fūgērunt — the present stem stays short
     "V:iuu/iuu/iuu/iut": {2: "iūv"},                                  # iūvit, iūvisse, iūvistī
@@ -943,6 +951,12 @@ def noun_lemma(roots: list[str], cat: list, gender: str | None, proper: bool) ->
     r0 = roots[0] if roots else ""
     r1 = roots[1] if len(roots) > 1 and roots[1] not in ("-", "") else r0
     g = GENDER_LABEL.get(gender, "")
+    # A noun Whitaker has only in the plural (multae "many women", multī "many men") has no first root: it is
+    # cited in the plural, as Īnferī -ōrum m pl is — not "-a multae f" under the headword "a".
+    if r0 in ("-", "") and r1 not in ("-", "") and d in (1, 2):
+        pl = f"{r1}ae -ārum" if d == 1 else (f"{r1}a -ōrum" if gender == "n" else f"{r1}ī -ōrum")
+        lemma = f"{pl} {g} pl".replace("  ", " ")
+        return lemma, ascii_head(lemma)
 
     def hy(nom_end: str, gen_end: str, gen_stem: str | None = None) -> str:
         nom = r0 + nom_end
@@ -1036,6 +1050,13 @@ VERB_ENDINGS = {
 }
 
 
+def short_a_verb(r1: str, r2: str) -> bool:
+    """dō and its 1st-conjugation compounds (circumdō, vēnumdō, pessumdō): the a of dare, damus, dabam is short.
+    Known by the stems Whitaker gives them: a present stem ending in d, a perfect in -ded."""
+    plain = lambda x: unicodedata.normalize("NFD", x or "").encode("ascii", "ignore").decode()
+    return plain(r1).endswith("d") and plain(r2).endswith("ded")
+
+
 def verb_lemma(roots: list[str], cat: list, lexform: list[str]) -> tuple[str, str]:
     d, v = (cat + [0, 0])[:2] if cat else (0, 0)
     r = roots + ["-"] * (4 - len(roots))
@@ -1067,6 +1088,8 @@ def verb_lemma(roots: list[str], cat: list, lexform: list[str]) -> tuple[str, st
         return lemma, ascii_head(r2 + "i")
     if conj:
         end1, inf, infpass = VERB_ENDINGS[conj]
+        if conj == 1 and short_a_verb(r1, r2):
+            inf, infpass = "are", "arī"   # dō, dare (dās, dā alone keep the long ā); circumdō, circumdare
         if conj in (3, 4) and r0.endswith("i"):
             end1 = "ō"  # capi + ō = capiō, audi + ō = audiō
         if dep:
@@ -1261,6 +1284,8 @@ def build_entry(rec: Rec, speller: Speller) -> dict | None:
         lemma, h = noun_lemma(roots, cat or [], gender, proper)
         if not lemma:
             return None
+        if roots and roots[0] in ("-", "") and len(roots) > 1 and roots[1] not in ("-", "") and (cat or [0])[0] in (1, 2):
+            roots = [roots[1]] + roots[1:]   # a plural-only noun (multī): its table is built on the stem it has
     elif lexpos == "ADJ":
         lemma, h = adj_lemma(roots, cat or [], rec.lexform)
         degs = {p.get("degree") for p in parses}
@@ -1269,6 +1294,10 @@ def build_entry(rec: Rec, speller: Speller) -> dict | None:
             lemma += f" · comparative {r[2]}or, {r[2]}us"
         if "super" in degs and r[3] not in ("-", "") and not lemma.startswith(r[3]):
             lemma += f" · superlative {r[3]}mus -a -um"
+        if r[0] in ("-", "") and " · " in lemma:
+            # no positive (ulterior, ultimus): the degree forms are the headword, not "- (gen. -is) · …"
+            lemma = " · ".join(f"{x.split(' ', 1)[1]} ({x.split(' ', 1)[0]})" for x in lemma.split(" · ")[1:])
+            h = ascii_head(lemma)
     elif lexpos == "V":
         if rec.unique:
             # sum / est / vult … : the port has no lexeme; the inflection carries [5,1]/[6,2]
@@ -1343,6 +1372,12 @@ def build_entry(rec: Rec, speller: Speller) -> dict | None:
         senses = SENSE_OVERRIDES.get(ov_key, senses)
     if not senses:
         return None
+    # Whitaker files ciō with the compounds of eō (6 1), so its table came out as c- + eō: cieō, ciiī, ciitum.
+    # It is a 4th-conjugation verb: ciō, cīre, cīvī, citum.
+    if lexpos == "V" and h == "cio" and cat and tuple(cat[:2]) == (6, 1):
+        if canonical(rec.form).startswith("cib"):
+            return None   # cibō was ciō's eō-type future c-ībō; the 4th conjugation's is ciam (cibō is cibus)
+        cat, roots, lemma = [3, 4], ["ci", "c", "cīv", "cit"], lemma.replace("ciō, cīre, cīviī, citum", "ciō, cīre, cīvī, citum")
     parses = learner_parse_order(parses, pos, rec.form)
     entry = {
         "lemma": lemma,
@@ -1833,16 +1868,21 @@ def supplement_entry(form: str, s: dict) -> dict | None:
             if conj == 4:
                 r1 = stem[:-1] if canonical(stem).endswith("i") else stem
             perf, sup = "-", "-"
+            # A tail that brings its own i (sapiō -iī, audiō -īvī -ītum) goes on the stem without one: sap + iī,
+            # not sapi + iī = "sapiiī".
+            base = lambda t: r1 if canonical(stem).endswith("i") and canonical(t).startswith("-i") else stem
             for t in rest:
                 tc = canonical(t)
                 if t.startswith("-") and tc.endswith("i") and not tc.endswith("ri"):
-                    perf = stem + t[1:-1]
+                    perf = base(t) + t[1:-1]
                 elif t.startswith("-") and tc.endswith("um"):
-                    sup = stem + t[1:-2]
+                    sup = base(t) + t[1:-2]
                 elif tc.endswith("us") and "sum" in rest:
                     sup = t[:-2]
                 elif not t.startswith("-") and tc.endswith("i") and t != head and not tc.endswith("ri"):
                     perf = t[:-1]
+                elif not t.startswith("-") and tc.endswith("um") and t != head and t != "sum":
+                    sup = t[:-2]   # a whole supine: nōscō -ere, nōvī, nōtum
             roots = [stem, r1, perf, sup]
             if dep:
                 kind = "dep"

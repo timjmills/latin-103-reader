@@ -30,7 +30,6 @@ def word(lex, lemma, pos="N"):
 # ------------------------------------------------------------ reliability gate
 
 @pytest.mark.parametrize("lemma,pos,scope", [
-    ("adveniō", "V", "all"),      # present roots adveni / advēn: advēniente was shipped in pass 1
     ("custodiō", "V", "all"),     # cūstōdiat
     ("edō", "V", "all"),          # Whitaker's edāre homograph: edāre, edat
     ("līber", "N", "all"),        # liber, līberī in the glossary: līberōs for the book
@@ -44,6 +43,7 @@ def test_the_gate_keeps_the_glossary_gaps_off_the_page(lex, lemma, pos, scope):
 @pytest.mark.parametrize("lemma,pos", [
     ("videō", "V"), ("veniō", "V"), ("capiō", "V"), ("legō", "V"),   # a lengthened perfect is Latin, not a gap
     ("dō", "V"), ("stō", "V"),                                        # a short supine vowel is Latin too
+    ("adveniō", "V"),   # its present roots agree now (adveni / adven); the gap shipped advēniente in pass 1
     ("puer", "N"), ("magnus", "ADJ"), ("vocō", "V"),
 ])
 def test_the_gate_leaves_sound_words_alone(lex, lemma, pos):

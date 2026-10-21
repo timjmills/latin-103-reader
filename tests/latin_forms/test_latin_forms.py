@@ -469,9 +469,9 @@ def test_sum_future_infinitive_fore():
     sum_ = E("sum, esse, fuī, futūrum", ["s", "es", "fu", "fut"], "V", [5, 1])
     assert has(sum_, "fore", mood="inf", tense="fut", voice="act")
     assert has(sum_, "esse", mood="inf", tense="pres", voice="act")
-    # a compound carries the prefix onto it too
+    # a compound carries its prefix onto it too — the perfect's, as in āfuī, āfutūrus: āfore
     assert has(E("absum, abesse, āfuī, āfutūrum", ["abs", "abes", "āfu", "āfut"], "V", [5, 1]),
-               "abfore", mood="inf", tense="fut", voice="act")
+               "āfore", mood="inf", tense="fut", voice="act")
 
 
 def test_eo_present_passive_infinitive_iri():
@@ -513,6 +513,45 @@ def test_compounds_of_sum_eo_fero():
     idx = lf.form_index(affero)
     for f in ("affert", "afferunt", "afferēbat", "afferet", "attulit", "afferre", "allātus"):
         assert f in idx, f
+
+
+def test_compounds_of_sum_take_their_prefix_from_their_roots():
+    # as-sum but ad-es, ad-esse, af-fuī (the roots Whitaker gives: ass / ad / affu)
+    idx = lf.form_index(E("assum, adesse, affuī, affutūrum", ["ass", "ad", "affu", "affut"], "V", [5, 1], h="assum"))
+    for f in ("assum", "ades", "adest", "assunt", "adesse", "aderat", "affuī", "affuit", "affutūrus"):
+        assert f in idx, f
+    for f in ("ases", "asesse", "asfuī"):
+        assert f not in idx, f
+    # ab-sum, ab-es, ā-fuī
+    idx = lf.form_index(E("absum, abesse, āfuī, āfutūrum", ["abs", "ab", "āfu", "āfut"], "V", [5, 1], h="absum"))
+    for f in ("absum", "abes", "abesse", "āfuī", "āfuisse"):
+        assert f in idx, f
+    assert "abfuī" not in idx
+
+
+def test_do_has_a_short_a():
+    # dō, dare: the a is short everywhere but dās, dā and dāns (Allen & Greenough §202)
+    for e in (E("dō, dare, dedī, datum", ["d", "d", "ded", "dat"], "V", [1, 1], h="do"),
+              E("circumdō, circumdare, circumdedī, circumdatum", ["circumd", "circumd", "circumded", "circumdat"],
+                "V", [1, 1], h="circumdo")):
+        idx = lf.form_index(e)
+        p = "circum" if e["h"] == "circumdo" else ""
+        for f in ("dās", "dat", "damus", "datis", "dabam", "dabō", "dabit", "darem", "dare", "darī", "datur",
+                  "date", "dā", "dāns", "dem"):
+            assert p + f in idx, p + f
+        for f in ("dāmus", "dābam", "dābō", "dārem", "dāre"):
+            assert p + f not in idx, p + f
+    # an ordinary 1st-conjugation verb keeps its long ā
+    idx = lf.form_index(E("amō, amāre, amāvī, amātum", ["am", "am", "amāv", "amāt"], "V", [1, 1], h="amo"))
+    for f in ("amāmus", "amābam", "amāre"):
+        assert f in idx, f
+
+
+def test_an_adjective_with_no_positive_has_no_positive_table():
+    e = E("ulterior, ulterius (comparative)", ["-", "-", "ulteri", "ulti"], "ADJ", [3, 1], h="ulterior")
+    t = lf.paradigm(e)
+    assert [s["title"].split(" ")[0] for s in t["sections"]] == ["comparative", "superlative"]
+    assert lf.adjective_name(e).startswith("adjective with no positive")
 
 
 # ------------------------------------------------------------------ pronouns

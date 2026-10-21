@@ -506,9 +506,13 @@ function adjSection(title, stemFor, table, degree, extraKey = {}, suffix = '') {
   return { title, headers: ['masculine', 'feminine', 'neuter'], rows };
 }
 
+// An adjective Whitaker has no positive for (ulterior, ultimus): its first two roots are "-".
+const noPositive = (entry) => (entry.pos === 'ADJ') && [0, 1].every((i) => !entry.roots?.[i] || entry.roots[i] === '-') && [2, 3].some((i) => entry.roots?.[i] && entry.roots[i] !== '-');
+
 export function adjectiveName(entry) {
   const [d, v] = entry.cat || [0, 0];
   if (entry.kind === 'comp' || d === 0) return 'comparative adjective';
+  if (noPositive(entry)) return 'adjective with no positive (comparative and superlative only)';
   if (d === 1) return v === 2 ? '1st/2nd declension adjective (-er)' : (v === 3 || v === 4 || v === 5) ? '1st/2nd declension adjective (genitive -īus)' : '1st/2nd declension adjective';
   if (d === 3) return v === 1 ? '3rd declension adjective (one ending)' : v === 2 ? '3rd declension adjective (two endings)' : v === 3 ? '3rd declension adjective (three endings)' : '3rd declension adjective';
   if (d === 9) return 'indeclinable adjective';
@@ -535,7 +539,7 @@ function adjectiveParadigm(entry, parses) {
   const suffix = ADJ_SUFFIX[entry.h] || '';
   const compOnly = entry.lemma?.endsWith('or -us') && !d;
 
-  if (!compOnly && (d === 1 || d === 3)) {
+  if (!compOnly && !noPositive(entry) && (d === 1 || d === 3)) {
     let stemFor;
     if (d === 1) {
       const iusType = v === 3 || v === 4 || v === 5;
@@ -766,6 +770,15 @@ export function conjugationName(entry) {
   return name;
 }
 
+// dō and its 1st-conjugation compounds (circumdō, vēnumdō): the a is short everywhere but dās, dā and dāns —
+// damus, dabam, dabō, darem, dare, datur. Known by their stems: a present stem in d, a perfect in -ded.
+// Kept in step with CONJ_DO in pipeline/latin_forms.py.
+const KEEP_LONG_A = new Set(['ās', 'ā', 'āns']);
+const shortA = (x) => (typeof x === 'string' ? (KEEP_LONG_A.has(x) ? x : x.replace(/^ā/, 'a'))
+  : Array.isArray(x) ? x.map(shortA) : Object.fromEntries(Object.entries(x).map(([k, v]) => [k, shortA(v)])));
+const CONJ_DO = shortA(CONJ[1]);
+const isDoVerb = (r1, r2) => /d$/.test(plain(r1)) && /ded$/.test(plain(r2));
+
 function conjKey(entry) {
   const [d, v] = entry.cat || [0, 0];
   const r0 = root(entry, 0);
@@ -803,11 +816,11 @@ function verbParadigm(entry, parses) {
   if (d === 3 && v === 2 && h !== 'fero') return compoundOf(entry, 'fero', parses);
   const ck = conjKey(entry);
   if (!ck) return null;
-  const C = CONJ[ck];
   const r0 = root(entry, 0);
   const r1 = root(entry, 1, r0);
   const r2 = root(entry, 2);
   const r3 = root(entry, 3);
+  const C = ck === 1 && isDoVerb(r1, r2) ? CONJ_DO : CONJ[ck];
   const kind = entry.kind;
   const dep = kind === 'dep';
   const semi = kind === 'semidep';
@@ -1153,7 +1166,9 @@ function irregularTable(entry) {
   return t;
 }
 
-function irregularVerb(entry, t, parses, prefix = '') {
+// `sumPrefix` (a compound of sum): the prefix before a vowel and before f, from the entry's own roots — as-sum but
+// ad-es, ad-esse, af-fuī; ab-sum, ab-es, ā-fuī; dē-sum, de-est, dē-fuī.
+function irregularVerb(entry, t, parses, prefix = '', sumPrefix = null) {
   const sections = [];
   const P = (s) => {
     if (!prefix || !s || s === '—' || s.startsWith('nōn ')) return s;
@@ -1163,7 +1178,8 @@ function irregularVerb(entry, t, parses, prefix = '') {
     // prōsunt, prōfuī. Ørberg prints the pair in the margin of cap. XXVII
     // ("prōd-est prō-sunt", "prōd-esse prō-fuisse"); Allen & Greenough §204
     // gives the whole table. (The same d shows in prōdeō, prōdīs, prōdit.)
-    const p = prefix === 'prō' && /^[aeiou]/i.test(plain(s)) ? prefix + 'd' : prefix;
+    const p = sumPrefix ? (/^[aeiou]/i.test(plain(s)) ? sumPrefix.vowel : /^f/i.test(plain(s)) ? sumPrefix.f : prefix)
+      : prefix === 'prō' && /^[aeiou]/i.test(plain(s)) ? prefix + 'd' : prefix;
     return p + s;
   };
   const voiceOfTense = (tense) => (t.perfIsPassive && ['perf', 'plupf', 'futperf'].includes(tense) ? 'pass' : 'act');
@@ -1269,6 +1285,15 @@ function compoundOf(entry, baseKey, parses) {
       if (c.text.includes('\u0000')) { c.text = c.text.replace(prefix + '\u0000', '').replace('\u0000', ''); c.stem = c.stem.replace(prefix + '\u0000', '').replace('\u0000', ''); }
     }
     return p;
+  }
+  if (baseKey === 'sum') {
+    // Before a vowel, the prefix the second root gives (ad, ab, prōd, de); before f, the perfect's when it is
+    // assimilated (af-fuī, ā-fuī) — otherwise the first root's (dē-fuī, īn-fuī).
+    const r1 = root(entry, 1).replace(/es$/, '');   // the prefix itself (ab), or the prefix + es (abes)
+    const fu = root(entry, 2);
+    const f = fu && fu.endsWith('fu') ? fu.slice(0, -2) : '';
+    const sumPrefix = { vowel: r1 || prefix, f: f && plain(f) !== plain(prefix) ? f : prefix };
+    return irregularVerb(entry, base, parses, prefix, sumPrefix);
   }
   return irregularVerb(entry, base, parses, prefix);
 }

@@ -515,10 +515,18 @@ def _adj_section(title, stem_for, table, degree, extra=None, suffix=""):
     return {"title": title, "headers": ["masculine", "feminine", "neuter"], "rows": rows}
 
 
+def _no_positive(entry: dict) -> bool:
+    """An adjective Whitaker has no positive for (ulterior, ultimus): its first two roots are "-"."""
+    r = (entry.get("roots") or []) + ["-"] * 4
+    return entry.get("pos") == "ADJ" and all(x in ("-", "") for x in r[:2]) and any(x not in ("-", "") for x in r[2:4])
+
+
 def adjective_name(entry: dict) -> str:
     d, v = _cat(entry)
     if entry.get("kind") == "comp" or d == 0:
         return "comparative adjective"
+    if _no_positive(entry):
+        return "adjective with no positive (comparative and superlative only)"
     if d == 1:
         return ("1st/2nd declension adjective (-er)" if v == 2 else
                 "1st/2nd declension adjective (genitive -īus)" if v in (3, 4, 5) else
@@ -551,7 +559,7 @@ def _adjective_paradigm(entry: dict) -> dict | None:
     suffix = ADJ_SUFFIX.get(entry.get("h") or "", "")
     comp_only = bool((entry.get("lemma") or "").endswith("or -us")) and not d
 
-    if not comp_only and d in (1, 3):
+    if not comp_only and not _no_positive(entry) and d in (1, 3):
         if d == 1:
             ius_type = v in (3, 4, 5)
 
@@ -836,6 +844,27 @@ def conjugation_name(entry: dict) -> str | None:
     return name
 
 
+# dō and its 1st-conjugation compounds (circumdō, vēnumdō): the a is short everywhere but dās, dā and dāns —
+# damus, dabam, dabō, darem, dare, datur. Known by their stems: a present stem in d, a perfect in -ded.
+# Kept in step with CONJ_DO in app/js/paradigms.js.
+_KEEP_LONG_A = {"ās", "ā", "āns"}
+
+
+def _short_a(x):
+    if isinstance(x, str):
+        return x if x in _KEEP_LONG_A or not x.startswith("ā") else "a" + x[1:]
+    if isinstance(x, list):
+        return [_short_a(v) for v in x]
+    return {k: _short_a(v) for k, v in x.items()}
+
+
+CONJ_DO = _short_a(CONJ[1])
+
+
+def _is_do_verb(r1: str, r2: str) -> bool:
+    return _plain(r1).endswith("d") and _plain(r2).endswith("ded")
+
+
 def conj_key(entry: dict):
     d, v = _cat(entry)
     r0 = root(entry, 0)
@@ -859,11 +888,11 @@ def _regular_verb_paradigm(entry: dict) -> dict | None:
     ck = conj_key(entry)
     if not ck:
         return None
-    C = CONJ[ck]
     r0 = root(entry, 0)
     r1 = root(entry, 1, r0)
     r2 = root(entry, 2)
     r3 = root(entry, 3)
+    C = CONJ_DO if ck == 1 and _is_do_verb(r1, r2) else CONJ[ck]
     kind = entry.get("kind")
     dep, semi, impers = kind == "dep", kind == "semidep", kind == "impers"
     sections = []
@@ -1184,7 +1213,9 @@ IRREGULAR_VERBS = {
 }
 
 
-def _irregular_verb(entry: dict, t: dict, prefix: str = "") -> dict:
+# `sum_prefix` (a compound of sum): the prefix before a vowel and before f, from the entry's own roots — as-sum
+# but ad-es, ad-esse, af-fuī; ab-sum, ab-es, ā-fuī; dē-sum, de-est, dē-fuī.
+def _irregular_verb(entry: dict, t: dict, prefix: str = "", sum_prefix: dict | None = None) -> dict:
     sections = []
     empty = lambda: {"stem": "", "ending": "—", "text": "—", "key": None, "empty": True}
 
@@ -1199,7 +1230,11 @@ def _irregular_verb(entry: dict, t: dict, prefix: str = "") -> dict:
         # cap. XXVII ("prōd-est prō-sunt", "prōd-esse prō-fuisse"); Allen &
         # Greenough §204 gives the whole table.  (The same d shows in prōdeō,
         # prōdīs, prōdit, prōdīre.)
-        p = prefix + "d" if prefix == "prō" and re.match(r"[aeiou]", _plain(s), re.I) else prefix
+        if sum_prefix:
+            b = _plain(s)
+            p = sum_prefix["vowel"] if re.match(r"[aeiou]", b, re.I) else sum_prefix["f"] if re.match(r"f", b, re.I) else prefix
+        else:
+            p = prefix + "d" if prefix == "prō" and re.match(r"[aeiou]", _plain(s), re.I) else prefix
         return p + s
 
     def voice_of(tense):
@@ -1336,6 +1371,14 @@ def _compound_of(entry: dict, base_key: str) -> dict | None:
                 for c in r["cells"]:
                     c["text"], c["stem"] = unmark(c["text"]), unmark(c["stem"])
         return para
+    if base_key == "sum":
+        # Before a vowel, the prefix the second root gives (ad, ab, prōd, de); before f, the perfect's when it
+        # is assimilated (af-fuī, ā-fuī) — otherwise the first root's (dē-fuī, īn-fuī).
+        r1 = re.sub(r"es$", "", root(entry, 1))   # the prefix itself (ab), or the prefix + es (abes)
+        fu = root(entry, 2)
+        f = fu[:-2] if fu and fu.endswith("fu") else ""
+        sum_prefix = {"vowel": r1 or prefix, "f": f if f and _plain(f) != _plain(prefix) else prefix}
+        return _irregular_verb(entry, base, prefix, sum_prefix)
     return _irregular_verb(entry, base, prefix)
 
 
