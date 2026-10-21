@@ -635,7 +635,13 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       if (!input) {
         input = h('input', { type: 'text', class: 'pt__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'next', 'aria-label': x.label });
         input.addEventListener('blur', () => judge(x));
-        input.addEventListener('input', () => { if (x.td.dataset.state === 'wrong') { mark(x, ''); score(); } });
+        // A right form is taken as it is typed, and the next box comes up; a wrong one waits for Enter or leaving the box.
+        input.addEventListener('input', (e) => {
+          if (x.td.dataset.state === 'wrong') { mark(x, ''); score(); }
+          if (e.isComposing || done(x)) return;
+          const typed = input.value.trim();
+          if (typed && (cellRight(typed, x.answers) || (byEnding(x) && cellRight(x.stem + typed, x.answers)))) { judge(x); goTo(nextOpen(x)); }
+        });
         input.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter') return;
           e.preventDefault();
