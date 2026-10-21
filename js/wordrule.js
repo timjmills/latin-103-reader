@@ -60,7 +60,19 @@ function conjKeyOf(name) {
 
 function verbRule(entry, table) {
   const name = conjugationName(entry);
-  const parts = String(entry.lemma ?? '').split(/,\s*/);
+  // The principal parts, whole: a short-form entry ("vorō -āre -āvī -ātum") has its stems in `roots`, so its
+  // infinitive is the present stem + -āre and its perfect the perfect stem + -āvī (2026-10-21: vorō had no stem step).
+  const raw = String(entry.lemma ?? '').split(/,\s*|\s+(?=-)/);
+  const roots = entry.roots ?? [];
+  const whole = (part, i) => {
+    if (!part || !part.startsWith('-')) return part;
+    const tail = part.slice(1);
+    if (i === 1) return `${roots[1] ?? roots[0] ?? ''}${tail}`;
+    if (i === 2) return roots[2] ? `${roots[2]}${tail.replace(/^(āv|ēv|īv|u|s|x)?/, '').replace(/^.*?(ī)$/, '$1')}` : part;
+    if (i === 3) return roots[3] ? `${roots[3]}${tail.replace(/^.*?(um|us)$/, '$1')}` : part;
+    return part;
+  };
+  const parts = raw.map(whole);
   const type = name ? `${name} verb`.replace(/ verb verb$/, ' verb') : 'verb';
   const steps = [];
   const k = conjKeyOf(name);
@@ -181,4 +193,107 @@ export function ruleCard(rule, { open = true, heading = 'How it’s made' } = {}
   }
   card.append(sum, list);
   return card;
+}
+
+/**
+ * The rule for one skill (2026-10-21: "explain how a form is made — it might change between the types: 1st, 2nd,
+ * 3rd conjugation … a word with an a or an e"): of a word's steps, the ones that make the skill's forms, with the
+ * stem they start from — the imperfect's step for an imperfect skill (amō keeps its ā and adds -bam; regō adds
+ * -ēbam), the subjunctive's for a subjunctive (amō's ā becomes e; moneō adds -am). A table of one skill on Sheets
+ * or a skill's whole table shows this, open, so the words side by side show how their types differ. The whole rule
+ * when the skill names nothing the steps divide by (an infinitive, a participle, a declension's every case). Pure.
+ */
+export function focusRule(rule, skill) {
+  if (!rule || !skill) return rule;
+  if (Array.isArray(skill)) {
+    // Several skills (a chapter's Word Work): every step any of them needs, in the rule's order; the whole rule
+    // as soon as one of them asks for it.
+    // A skill about another kind of word (an adjective's comparison beside a verb's tenses) says nothing here.
+    const fits = (sk) => {
+      const f = [].concat(sk?.parse_filter ?? []).find((x) => x && (x.tense || x.mood || x.case || x.degree || x.voice)) ?? null;
+      if (!f) return false;
+      const verbal = !!(f.tense || f.mood || f.voice) && !f.degree && !(f.case && !f.mood);
+      const pos = [].concat(f.pos ?? []);
+      if (pos.length && !pos.some((x) => (x === 'V' && rule.kind === 'Verb') || (x === 'N' && rule.kind === 'Noun') || (x === 'ADJ' && rule.kind === 'Adjective'))) return false;
+      return rule.kind === 'Verb' ? verbal : !verbal;
+    };
+    const parts = skill.filter(fits).map((sk) => focusRule(rule, sk));
+    if (!parts.length || parts.some((r) => r === rule)) return rule;
+    const heads = new Set(parts.flatMap((r) => r.steps.map((s) => s.head)));
+    const byHead = new Map(parts.flatMap((r) => r.steps.map((s) => [s.head, s])));
+    return { ...rule, steps: rule.steps.map((s) => byHead.get(s.head) ?? s).filter((s) => heads.has(s.head)).concat([...byHead.values()].filter((s) => !rule.steps.some((t) => t.head === s.head))), focus: skill.map((sk) => sk.title).join(' · ') };
+  }
+  const f = [].concat(skill.parse_filter ?? []).find((x) => x && (x.tense || x.mood || x.case || x.degree || x.voice)) ?? null;
+  if (!f) return rule;
+  const has = (k, v) => [].concat(f[k] ?? []).map(String).includes(v);
+  const want = new Set(['Deponent', 'Irregular']);
+  if (rule.kind === 'Verb') {
+    const perfectish = ['perf', 'plupf', 'futperf'].some((t) => has('tense', t));
+    const passive = has('voice', 'pass');
+    const dep = rule.steps.some((s) => s.head === 'Deponent');
+    if (has('mood', 'subj') && perfectish) return perfectSubjunctive(rule, has, dep, skill.title);
+    if (has('mood', 'subj')) { want.add('Subjunctive'); if (dep || !has('tense', 'impf') || has('tense', 'pres')) want.add('Present stem'); }
+    else if (perfectish) { if (passive) want.add('Perfect passive'); else want.add('Perfect stem'); want.add('Perfect'); }
+    else if (!f.mood || has('mood', 'ind')) {
+      // A passive skill on an ordinary verb is the passive step (its tense steps are the active's); a deponent's
+      // tense steps are already passive, so they stand.
+      want.add('Present stem');
+      if (passive && !dep) {
+        // …with the tense's own step where the tense has a sign that differs by type (-ba-, -ēba-, -bi-, -ē-).
+        want.add('Passive');
+        if (has('tense', 'impf')) want.add('Imperfect');
+        if (has('tense', 'fut')) want.add('Future');
+      } else {
+        if (has('tense', 'pres') || !f.tense) want.add('Present');
+        if (has('tense', 'impf')) want.add('Imperfect');
+        if (has('tense', 'fut')) want.add('Future');
+      }
+    } else return rule;   // a command, an infinitive, a participle: the whole rule
+  } else if (rule.kind === 'Adjective' && (has('degree', 'comp') || has('degree', 'super'))) {
+    want.add('Stem'); want.add('Comparison');
+  } else return rule;     // a noun's or an adjective's cases: its every step is about them
+  let steps = rule.steps.filter((s) => want.has(s.head));
+  // The subjunctive step says the present and the imperfect together; a skill of one of them keeps its own half.
+  const onlyPres = has('tense', 'pres') && !has('tense', 'impf');
+  const onlyImpf = has('tense', 'impf') && !has('tense', 'pres');
+  if (rule.kind === 'Verb' && has('mood', 'subj') && (onlyPres || onlyImpf)) {
+    steps = steps.map((s) => {
+      if (s.head !== 'Subjunctive' || !/ Imperfect: /.test(s.text)) return s;
+      const [pres, impf] = s.text.split(/ Imperfect: /);
+      const eg = s.eg ?? [];
+      return onlyPres
+        ? { ...s, head: 'Present subjunctive', text: pres.replace(/^Present: /, '').replace(/^the /, 'The ').replace(/^stem/, 'Stem'), eg: eg.slice(0, Math.max(1, eg.length - 1)) }
+        : { ...s, head: 'Imperfect subjunctive', text: impf.replace(/^the /, 'The ').replace(/^stem/, 'Stem'), eg: eg.slice(-1) };
+    });
+  }
+  return steps.length ? { ...rule, steps, focus: skill.title } : rule;
+}
+
+// The perfect and pluperfect subjunctive: the active from the perfect stem (amāv- + -erim; amāvisse + -m), the
+// passive and a deponent's from the participle (amātus, hortātus + sim / essem). The rule's own perfect steps say
+// the indicative, so these are built from the stem and the participle they name.
+function perfectSubjunctive(rule, has, dep, title) {
+  const perf = has('tense', 'perf');
+  const plupf = has('tense', 'plupf');
+  const both = perf === plupf;
+  const find = (head) => rule.steps.find((s) => s.head === head);
+  const steps = rule.steps.filter((s) => s.head === 'Deponent' || s.head === 'Irregular');
+  const stepActive = find('Perfect stem') ?? (!dep ? find('Perfect') : null);
+  const pf = stepActive?.text.match(/^(?:The perfect is regular: stem )?(\S+?)- \(/)?.[1] ?? null;
+  const partStep = dep ? find('Perfect') : find('Perfect passive');
+  const part = partStep?.text.split(' + ')[0] ?? null;
+  const active = !dep && (has('voice', 'act') || !has('voice', 'pass'));
+  const passive = dep || has('voice', 'pass') || !has('voice', 'act');
+  const name = both ? 'Perfect and pluperfect subjunctive' : perf ? 'Perfect subjunctive' : 'Pluperfect subjunctive';
+  if (active && pf) {
+    const pe = `the perfect stem ${pf}- + -erim, -eris, -erit, -erimus, -eritis, -erint`;
+    const pl = `the perfect infinitive ${pf}isse + -m, -s, -t, -mus, -tis, -nt`;
+    const text = both ? `Perfect: ${pe}. Pluperfect: ${pl}.` : `${(perf ? pe : pl).replace(/^the/, 'The')}.`;
+    steps.push({ head: name, text, eg: [perf ? `${pf}erim` : null, plupf ? `${pf}issem` : null].filter(Boolean) });
+  }
+  if (passive && part) {
+    const ends = [perf ? 'sim, sīs, sit …' : null, plupf ? 'essem, essēs, esset …' : null].filter(Boolean);
+    steps.push({ head: dep ? name : `${name}, passive`, text: `${part} + ${ends.join(' (perfect); ')}${both ? ' (pluperfect)' : ''}.` });
+  }
+  return steps.length ? { ...rule, steps, focus: title } : rule;
 }

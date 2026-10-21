@@ -15,7 +15,7 @@ import { cellChapter, loadFormSkills } from './paradigm-chapters.js';
 import { chapterOfWeek } from './chapters.js';
 import { roman } from './sync.js';
 import { playTable, savedMisses } from './game.js';
-import { wordRule, ruleCard } from './wordrule.js';
+import { wordRule, ruleCard, focusRule } from './wordrule.js';
 
 const ENCLITIC = { que: '-que "and" is attached to the end', ne: '-ne turns the sentence into a yes/no question', ve: '-ve "or" is attached to the end' };
 
@@ -739,8 +739,12 @@ export function renderParadigm(p, opts = {}) {
   };
   // A practised table opens with what kind of word it is and the rule that makes its forms (wordrule.js), the
   // type in sight and the steps a tap away; the game opens on the same card.
-  const rule = practise && p.entry ? wordRule(p.entry, p) : null;
-  if (rule) details.append(ruleCard(rule, { open: false }));
+  // `opts.ruleFor` (a skill): the table is that skill's (Sheets, a skill's whole table) — its card says just the
+  // steps that make the skill's forms for this word's type, and opens, so words of other types beside it differ.
+  // A 1st-conjugation verb's stem ends in ā, a 2nd's in ē, a 4th's in ī: the vowel a coloured chart keeps on the stem.
+  const whole = practise && p.entry ? wordRule(p.entry, p) : null;
+  const rule = opts.ruleFor ? focusRule(whole, opts.ruleFor) : whole;
+  if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && rule !== whole, heading: rule !== whole ? 'How this type makes it' : 'How it’s made' }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
     game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule } }));
   (p.sections ?? []).forEach((s, si) => {
