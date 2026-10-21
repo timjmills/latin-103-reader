@@ -480,8 +480,17 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     later(advance, reduced ? 300 : 1400);
   }
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
-  // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down.
-  input.addEventListener('input', () => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; } });
+  // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down. And a right
+  // form is taken as soon as it is typed (2026-10-21, on a phone: "when I put in the correct answer it did not
+  // automatically move down … I still had to press enter") — a wrong one still waits for Enter, so a form half
+  // typed is never marked wrong.
+  input.addEventListener('input', (e) => {
+    const r = rows[at];
+    if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; }
+    if (e.isComposing || !r || !r.slot.contains(input)) return;
+    const typed = input.value.trim();
+    if (typed && isRight(r.x, typed)) right(r);
+  });
 
   /* ---- turning the wheel: a scroll, a swipe, the arrow keys, a tap on a band */
   let wheelSum = 0;
