@@ -324,3 +324,54 @@ function perfectSubjunctive(rule, has, dep, title) {
   }
   return steps.length ? { ...rule, steps, focus: title } : rule;
 }
+
+/**
+ * How one form is made (2026-10-21: "a question mark for each to pop up how it's made for that particular word,
+ * before the Show button"): of the word's steps, those that make this cell — a verb's by its tense, mood and voice
+ * (focusRule), a noun's by its number, an adjective's comparative or superlative by its degree. The examples are
+ * left out: they are the answers (`examples` keeps them, for the card a game opens on). `key` is the paradigm cell's
+ * key (paradigms.js). Pure.
+ */
+// The forms outside the person tables, said once: [kind, tense, voice] → how, and the step it builds on.
+const NONFINITE = [
+  ['inf', 'pres', 'act', 'The present infinitive: the second dictionary form.', 'Present stem'],
+  ['inf', 'pres', 'pass', 'The present passive infinitive: the active’s -re becomes -rī (3rd conjugation: -ere becomes -ī).', 'Present stem'],
+  ['inf', 'perf', 'act', 'The perfect infinitive: perfect stem + -isse.', 'Perfect stem'],
+  ['inf', 'perf', 'pass', 'The perfect passive infinitive: the perfect participle + esse.', 'Perfect passive'],
+  ['inf', 'fut', 'act', 'The future infinitive: the future participle (-ūrus) + esse.', 'Perfect passive'],
+  ['inf', 'fut', 'pass', 'The future passive infinitive: the supine (-um) + īrī.', 'Perfect passive'],
+  ['imper', 'pres', 'act', 'The command: the present stem alone to one person (3rd conjugation + -e), + -te to more than one.', 'Present stem'],
+  ['imper', 'pres', 'pass', 'The passive (and deponent) command: stem + -re to one person, + -minī to more than one.', 'Present stem'],
+  ['imper', 'fut', 'act', 'The future command: stem + -tō (you / he), -tōte (you all), -ntō (they).', 'Present stem'],
+  ['ptc', 'pres', 'act', 'The present participle: stem + -ns (genitive -ntis), a 3rd-declension adjective.', 'Present stem'],
+  ['ptc', 'perf', 'pass', 'The perfect participle: from the fourth principal part, -us, -a, -um.', 'Perfect passive'],
+  ['ptc', 'fut', 'act', 'The future participle: the perfect participle’s stem + -ūrus, -a, -um.', 'Perfect passive'],
+  ['gerund', null, null, 'The gerund (the verb as a noun, “-ing”): stem + -nd- + -ī, -ō, -um.', 'Present stem'],
+  ['gerundive', null, null, 'The gerundive (“to be …-ed”): stem + -ndus, -a, -um.', 'Present stem'],
+  ['supine', null, null, 'The supine: the fourth principal part, -um (and -ū).', 'Perfect passive'],
+];
+
+export function formRule(rule, key, { examples = false } = {}) {
+  if (!rule || !key) return null;
+  let out = rule;
+  const nf = rule.kind === 'Verb' ? NONFINITE.find(([k, t, v]) => k === key.kind && (t == null || t === key.tense) && (v == null || v === key.voice)) : null;
+  if (rule.kind === 'Verb' && key.kind === 'finite') {
+    out = focusRule(rule, { title: '', parse_filter: [{ tense: key.tense, mood: key.mood, voice: key.voice }] });
+    // A passive subjunctive is the active's way with the passive endings: both steps.
+    const pass = rule.steps.find((s) => s.head === 'Passive');
+    if (key.voice === 'pass' && key.mood === 'subj' && pass && !['perf', 'plupf'].includes(key.tense) && !out.steps.includes(pass)) out = { ...out, steps: [...out.steps, pass] };
+  } else if (nf) {
+    // A deponent's (and an irregular's) participle or perfect is its step headed Perfect.
+    const base = rule.steps.find((s) => s.head === nf[4]) ?? (nf[4] !== 'Present stem' ? rule.steps.find((s) => s.head === 'Perfect') : null);
+    out = { ...rule, steps: [...rule.steps.filter((s) => ['Deponent', 'Irregular', 'Short a'].includes(s.head)), ...(base ? [base] : []), { head: 'This form', text: nf[3] }] };
+  } else if (rule.kind === 'Noun' && key.number) {
+    const keep = new Set(['Stem', 'Plural only', 'Singular only', 'Neuter', 'i-stem', key.number === 'pl' ? 'Plural' : 'Singular']);
+    if (key.number === 'sg') keep.add('Nominative');
+    out = { ...rule, steps: rule.steps.filter((s) => keep.has(s.head)) };
+  } else if (rule.kind === 'Adjective' && (key.degree === 'comp' || key.degree === 'super')) {
+    out = focusRule(rule, { title: '', parse_filter: [{ degree: key.degree }] });
+  }
+  // Without the examples, a step that ended by pointing at them ("This word's:") ends at its rule.
+  if (examples) return out;
+  return { ...out, steps: out.steps.map(({ eg, ...st }) => ({ ...st, text: st.text.replace(/\s*This word’s:\s*$/, '') })) };
+}
