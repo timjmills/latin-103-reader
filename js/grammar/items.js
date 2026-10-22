@@ -892,7 +892,21 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     }
     return cache.get(skillId);
   }
-  const drillable = (skillId) => { const s = skillMap.get(skillId); return !!s?.parse_filter && candidates(skillId).length > 0; };
+  // Can the skill be drilled? One sentence with a candidate is enough to say yes, so the check stops at the first
+  // (the skill map asks it of every skill as it draws; the full list is built when a drill needs it). The same
+  // answer as candidates(skillId).length > 0, since scan is the same.
+  const anyMemo = new Map();
+  const drillable = (skillId) => {
+    const s = skillMap.get(skillId);
+    if (!s?.parse_filter) return false;
+    if (cache.has(skillId)) return cache.get(skillId).length > 0;
+    if (!anyMemo.has(skillId)) {
+      let found = false;
+      for (const u of unitList) if (typeof u.la === 'string' && u.la && scan(u, s).length) { found = true; break; }
+      anyMemo.set(skillId, found);
+    }
+    return anyMemo.get(skillId);
+  };
 
   const key = (skill) => featureKey(skill);
   const labelOf = (k, v, skill = null) => featureLabel(k, v, { skills: skillMap, skill });

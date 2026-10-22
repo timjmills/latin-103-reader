@@ -224,6 +224,11 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const track = el('ol', { class: 'gm__track', 'aria-label': 'Forms' });
   const input = el('input', { type: 'text', class: 'gm__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'go', 'aria-label': 'Your answer' });
   const showBtn = el('button', { type: 'button', class: 'gm__show', onclick: () => reveal() }, 'Show');
+  // A wrong answer is tried again until it is right, or skipped (2026-10-20: "when you get it wrong mark red but force
+  // to do again unless skip is pressed, then review at the end of that section of table; if gotten correct then turn
+  // green"). Skip is the way past a form the first time round; Show is only for a form come back for review.
+  const skipBtn = el('button', { type: 'button', class: 'gm__show gm__skip', onclick: () => skip() }, 'Skip');
+  const passBtn = (r) => (r.again ? showBtn : skipBtn);
   const howBtn = how ? el('button', { type: 'button', class: 'gm__how', 'aria-haspopup': 'dialog', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: () => openHow() }, '?') : null;
   const stage = el('div', { class: 'gm__stage' }, track);
   // A <dialog> shown modal: it stacks above the word popup (itself a modal dialog, in the top layer, where no
@@ -244,7 +249,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
       el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label', text: x.cue }), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
       slot);
-    return { li, slot, x, again, missed: false, requeued: false };
+    return { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
   };
   // A thin rule where one column ends and the next begins (active → passive, singular → plural), and where the
   // redos begin; none in a shuffled round, which has no columns.
@@ -263,7 +268,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     place();
   }
 
-  const isDone = (r) => r.li.dataset.state === 'right' || r.li.dataset.state === 'shown';
+  const isDone = (r) => r.li.dataset.state === 'right' || r.li.dataset.state === 'shown' || r.li.dataset.state === 'skipped';
   const formNode = (x) => (splits(x) ? [el('span', { class: 'pt__stem', text: x.stem }), el('span', { class: 'pt__ending', text: x.ending })] : [x.answers[0]]);
   const paintStats = () => {
     const answered = rows.filter(isDone).length;
@@ -351,7 +356,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
           opts.map((t, i) => { const b = el('button', { type: 'button', class: 'gm__choice', lang: parse ? null : 'la' }, el('span', { class: 'gm__key', 'aria-hidden': 'true', text: String(i + 1) }), t); b.addEventListener('click', () => pick(b, t)); return b; }));
         kids = [parse ? el('span', { class: 'gm__form gm__ask', lang: 'la', text: form }) : null,
           byEnding(r.x) && !parse ? el('span', { class: 'gm__given', lang: 'la', 'aria-hidden': 'true', text: `${r.x.stem}‑` }) : null,
-          parse ? null : howBtn, list, showBtn];
+          parse ? null : howBtn, list, passBtn(r)];
         r.slot.replaceChildren(...kids.filter(Boolean));
         place(); paintStats();
         focusIn(list.querySelector('button'));
@@ -366,7 +371,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (mode === 'flash') {
       // A look first: the form a moment, then the box. A key or a tap skips the look.
       const look = el('button', { type: 'button', class: 'gm__look', lang: 'la', 'aria-label': `Remember it: ${r.x.answers[0]}. Then type it.` }, el('span', { class: 'gm__form' }, formNode(r.x)), el('span', { class: 'gm__looktag', text: 'Remember it…' }));
-      const toBox = () => { if (tok !== seq || !look.isConnected) return; r.slot.replaceChildren(...[given, input, howBtn, showBtn].filter(Boolean)); focusIn(input); };
+      const toBox = () => { if (tok !== seq || !look.isConnected) return; r.slot.replaceChildren(...[given, input, howBtn, passBtn(r)].filter(Boolean)); focusIn(input); };
       look.addEventListener('click', toBox);
       look.addEventListener('keydown', (e) => { if (e.key.length === 1 || e.key === 'Enter') { e.preventDefault(); toBox(); } });
       r.slot.replaceChildren(look);
@@ -375,7 +380,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       setTimeout(toBox, reduced ? 2200 : 1800);
       return;
     }
-    r.slot.replaceChildren(...[given, input, howBtn, showBtn].filter(Boolean));
+    r.slot.replaceChildren(...[given, input, howBtn, passBtn(r)].filter(Boolean));
     place(); paintStats();
     focusIn(input);
   }
@@ -434,6 +439,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     bestStreak = Math.max(bestStreak, streak);
     if (clean) score += 10 + Math.min(streak, 10);
     settle(r, 'right');
+    if (r.reviewOf && r.reviewOf.li.dataset.state === 'skipped') {
+      // The skipped form, got right on review: it turns green where it stands too.
+      r.reviewOf.missed = false;
+      settle(r.reviewOf, 'right');
+      r.reviewOf.li.classList.add('is-reviewed');
+    }
     sounds.right();
     live.textContent = `Right: ${r.x.answers[0]}${mode === 'parse' ? `, ${r.x.cue}` : ''}.`;
     paintStats();
@@ -467,6 +478,37 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       focusIn(input);
     }, 750);
   }
+  /** The section a form is in: its column of the table (one section in all when shuffled, which has no columns). */
+  const secOf = (row) => (row.again ? row.sec : (shuffle ? '*' : row.x.group ?? '*'));
+  function skip() {
+    const r = rows[at];
+    if (!r || isDone(r)) return;
+    firstMiss.add(r.x.key);
+    r.missed = true;
+    r.requeued = true;   // it comes back at its section's end, not again at the round's
+    streak = 0;
+    seq += 1;
+    if (r.slot.contains(document.activeElement)) root.focus({ preventScroll: true });
+    r.li.dataset.state = 'skipped';
+    r.li.setAttribute('data-missed', '');
+    r.li.classList.remove('is-parse');
+    r.slot.replaceChildren(el('span', { class: 'gm__skipped', text: 'Skipped — it comes back at the end of this section' }));
+    // Its review goes after the last form of its section (and after any review already there).
+    const sec = secOf(r);
+    let end = at;
+    for (let i = at + 1; i < rows.length; i++) { const y = rows[i]; if (secOf(y) === sec && (!y.again || y.sec === sec)) end = i; else if (!y.again && secOf(y) !== sec) break; }
+    const back = makeRow(r.x, true);
+    back.sec = sec;
+    back.reviewOf = r;
+    back.li.querySelector('.gm__againtag').textContent = '↻ review';
+    rows.splice(end + 1, 0, back);
+    track.append(back.li);
+    paintGroups();
+    place();
+    live.textContent = 'Skipped. It comes back at the end of this section.';
+    paintStats();
+    later(advance, reduced ? 120 : 500);
+  }
   function reveal() {
     const r = rows[at];
     if (!r || r.li.dataset.state === 'right' || r.li.dataset.state === 'shown') return;
@@ -480,17 +522,19 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     later(advance, reduced ? 300 : 1400);
   }
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
-  // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down. And a right
-  // form is taken as soon as it is typed (2026-10-21, on a phone: "when I put in the correct answer it did not
-  // automatically move down … I still had to press enter") — a wrong one still waits for Enter, so a form half
-  // typed is never marked wrong.
-  input.addEventListener('input', (e) => {
+  // Typing again after a miss is a new try: the red goes at once, and the pending clear stands down.
+  // (2026-10-21, on a phone: "when I put in the correct answer it did not automatically move down … I still had to
+  // press enter".)
+  // Right moves on by itself (2026-10-20: "if you type the correct answer or ending it will automatically move on
+  // without pressing enter"): the moment the box holds an accepted answer it is taken. A wrong one still waits for
+  // Enter, so a word half typed is never marked wrong; a keyboard still composing a word is waited for.
+  const autoTake = (e) => {
+    if (e?.isComposing || !read('auto', true)) return;
     const r = rows[at];
-    if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; }
-    if (e.isComposing || !r || !r.slot.contains(input)) return;
-    const typed = input.value.trim();
-    if (typed && isRight(r.x, typed)) right(r);
-  });
+    if (r && r.slot.contains(input) && r.li.dataset.state !== 'right' && input.value.trim() && isRight(r.x, input.value.trim())) submit();
+  };
+  input.addEventListener('input', (e) => { const r = rows[at]; if (r?.li.dataset.state === 'wrong') { seq += 1; delete r.li.dataset.state; } autoTake(e); });
+  input.addEventListener('compositionend', () => autoTake());
 
   /* ---- turning the wheel: a scroll, a swipe, the arrow keys, a tap on a band */
   let wheelSum = 0;
@@ -612,6 +656,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         base.some(splits) ? sw('Endings only', 'Type just the ending after the stem.', endings, (v) => { endings = v; onEndings?.(v); }) : null,
         sw('Shuffle', 'Mix up the order.', shuffle, (v) => { shuffle = v; write('shuffle', v); if (!ended) reorderRest(); }),
         sw('Redo misses', 'Missed forms come back at the end.', redo, (v) => { redo = v; write('redo', v); }),
+        sw('Move on when right', 'No need to press Enter for a right answer.', read('auto', true), (v) => { write('auto', v); }),
         sw('Timer', 'Show the clock.', read('timer', true), (v) => { write('timer', v); clock.hidden = !v; }),
         sw('Sound', 'Beeps for right and wrong.', read('sound', false), (v) => { write('sound', v); if (v) sounds.right(); })),
       el('div', { class: 'gm__acts' }, done, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Quit the game')));

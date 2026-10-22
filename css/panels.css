@@ -683,6 +683,9 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__row[data-state="wrong"] { background: var(--rubric-soft); }
 .gm__row[data-state="wrong"][data-pos="current"] { box-shadow: 0 0 0 3px var(--rubric), 0 0 0 6px color-mix(in srgb, var(--rubric) 22%, transparent); }
 .gm__row[data-state="wrong"] .gm__in { border-color: var(--rubric); }
+.gm__row[data-state="skipped"] { background: color-mix(in srgb, var(--rubric) 16%, var(--bg-raised)); box-shadow: 0 0 0 3px var(--rubric); }
+.gm__skipped { font-size: var(--ui-sm); font-weight: 700; color: var(--rubric-ink); }
+.gm__skip { border-color: var(--rubric); color: var(--rubric-ink); }
 .gm__row[data-state="shown"] { background: color-mix(in srgb, var(--rubric) 16%, var(--bg-raised)); }
 .gm__shake { animation: gm-shake 320ms ease; }
 @keyframes gm-shake { 20% { translate: -6px 0; } 40% { translate: 6px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }

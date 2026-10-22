@@ -261,6 +261,10 @@ const fontOf = (el) => { try { return parseFloat(getComputedStyle(el).fontSize) 
 
 function settle(st) {
   if (st.busy) return;
+  // A box the browser has not laid out (off screen under content-visibility: auto, or hidden) has nothing to
+  // fit yet; it is fitted when it is drawn, which the observer reports. Reading its font now would only force
+  // a style pass for nothing (the Words page: 82 tables, most of them far down).
+  if (!st.scroll.clientWidth) return;
   const fs = fontOf(st.table);
   const reset = st.fs > 0 && fs > 0 && fs !== st.fs;
   if (fs > 0) st.fs = fs;
@@ -600,6 +604,18 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     const more = h('details', { class: 'paradigm__more' }, h('summary', { class: 'paradigm__moresum', text: `Choose parts by chapter (${list.length})` }), h('div', { class: 'paradigm__chips' }, chips));
     parts.replaceChildren(...(list.length > 1 ? [h('div', { class: 'paradigm__quick' }, quick), more] : []));
   };
+  // A right answer moves on by itself, as in the game (2026-10-20: "it will automatically move on without pressing
+  // enter"), with the game's own switch (⚙ Move on when right). A wrong one waits for Enter or for leaving the box.
+  const autoTake = (x, input, e) => {
+    if (e?.isComposing || done(x)) return;
+    let on = true;
+    try { on = JSON.parse(localStorage.getItem('l103.game.auto') ?? 'true') !== false; } catch { /* on */ }
+    const typed = input.value.trim();
+    if (!on || !typed) return;
+    // The box turns green and stops taking keys at once; the move comes a moment later, so a key typed past the
+    // answer (puella + e) is not carried into the next box.
+    if (cellRight(typed, x.answers) || (byEnding(x) && cellRight(x.stem + typed, x.answers))) { judge(x); setTimeout(() => { if (input === document.activeElement || !document.activeElement || document.activeElement === document.body) goTo(nextOpen(x)); }, 260); }
+  };
   // ? How this form is made (2026-10-21), beside a box: its own steps for this word, without the examples (the
   // answers), in a small card by the box that a tap outside or Escape puts away.
   const pop = game.whole ? h('div', { class: 'pt__pop', popover: 'auto', role: 'dialog', 'aria-label': 'How this form is made' }) : null;
@@ -635,13 +651,11 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       if (!input) {
         input = h('input', { type: 'text', class: 'pt__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'next', 'aria-label': x.label });
         input.addEventListener('blur', () => judge(x));
-        // A right form is taken as it is typed, and the next box comes up; a wrong one waits for Enter or leaving the box.
         input.addEventListener('input', (e) => {
           if (x.td.dataset.state === 'wrong') { mark(x, ''); score(); }
-          if (e.isComposing || done(x)) return;
-          const typed = input.value.trim();
-          if (typed && (cellRight(typed, x.answers) || (byEnding(x) && cellRight(x.stem + typed, x.answers)))) { judge(x); goTo(nextOpen(x)); }
+          autoTake(x, input, e);
         });
+        input.addEventListener('compositionend', () => autoTake(x, input));
         input.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter') return;
           e.preventDefault();
