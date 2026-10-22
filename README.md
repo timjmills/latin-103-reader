@@ -107,6 +107,7 @@ gate — nothing in the public shell may carry a run of the book or of your
 translations — and then publish:
 
 ```bash
+node scripts/sw-hashes.mjs                                  # file fingerprints in app/sw.js: an update fetches only what changed
 PYTHONIOENCODING=utf-8 python pipeline/check_copyright.py   # every tracked file; must print "OK: 0 hits"
 git subtree push --prefix app origin gh-pages
 ```

@@ -1319,3 +1319,10 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 .g-ww__wordhead, .g-sheet__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-3); }
 .g-ww__wordhead .g-ww__lemma { margin: 0; }
 .g-ww__playall { margin: 0 0 var(--s-4); }
+
+/* Speed (2026-10-22: "the site now is working quite slowly"): the skill map's chapters, a long page of blocks
+   with no tables in them, lay out and paint only what is on or near the screen; the rest keeps the size it last had
+   (or a guess) until it is scrolled to. Not for blocks holding a paradigm: its fit (wordpanel.js fitParadigm) must
+   be measured as it is drawn, and a block skipped by the browser has no width to measure. */
+.g-chap { content-visibility: auto; contain-intrinsic-size: auto 220px; }
+@media print { .g-chap { content-visibility: visible; } }

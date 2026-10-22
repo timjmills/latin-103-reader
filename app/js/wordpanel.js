@@ -261,6 +261,10 @@ const fontOf = (el) => { try { return parseFloat(getComputedStyle(el).fontSize) 
 
 function settle(st) {
   if (st.busy) return;
+  // A box the browser has not laid out (off screen under content-visibility: auto, or hidden) has nothing to
+  // fit yet; it is fitted when it is drawn, which the observer reports. Reading its font now would only force
+  // a style pass for nothing (the Words page: 82 tables, most of them far down).
+  if (!st.scroll.clientWidth) return;
   const fs = fontOf(st.table);
   const reset = st.fs > 0 && fs > 0 && fs !== st.fs;
   if (fs > 0) st.fs = fs;

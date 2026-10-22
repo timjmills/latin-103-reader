@@ -71,8 +71,26 @@ const hasCellDims = (f) => CELL_DIMS.some((k) => f[k] != null) || (f.gender != n
  * The chapter that teaches `key` (a paradigms.js cell key) of `entry`, from
  * `skills` (skills.json rows). null when no skill covers it. Pure.
  */
+// The answer never changes for one skills list, one dictionary entry and one cell, and a page asks it again and
+// again (Word Work: every cell of every candidate word, each time the page opens): it is kept, per skills list and
+// per entry, so it goes when they do.
+const chapterMemo = new WeakMap();
+const KEY_FIELDS = ['kind', 'case', 'number', 'gender', 'degree', 'mood', 'tense', 'voice', 'person'];
+const keyId = (key) => KEY_FIELDS.map((k) => key[k] ?? '').join('|');
+
 export function cellChapter(skills, entry, key) {
   if (!entry || !key) return null;
+  if (!skills || typeof skills !== 'object' || typeof entry !== 'object') return cellChapterOf(skills, entry, key);
+  let bySkills = chapterMemo.get(skills);
+  if (!bySkills) chapterMemo.set(skills, (bySkills = new WeakMap()));
+  let byKey = bySkills.get(entry);
+  if (!byKey) bySkills.set(entry, (byKey = new Map()));
+  const id = keyId(key);
+  if (!byKey.has(id)) byKey.set(id, cellChapterOf(skills, entry, key));
+  return byKey.get(id);
+}
+
+function cellChapterOf(skills, entry, key) {
   const p = keyParse(key);
   if (!p) return null;
   let floor = null;
