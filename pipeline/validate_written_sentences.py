@@ -123,21 +123,6 @@ DECK_ALIASES = {
 # standing repair job on app/data/glossary.json (and, for `modo`, on the deck
 # built from it) - not a licence to write these words any other way.
 GLOSSARY_DEFECTS = {
-    "perveniant": (
-        "perveniant", "deck 28 (perveniō)",
-        "the glossary root is pervēn-, so it generates pervēniant; the verb is "
-        "perveniō, pervenīre, pervēnī with a short e in the present stem",
-    ),
-    "cenavissent": (
-        "cēnāvissent", "deck 30 (cēnō)",
-        "the glossary prints cēnō's perfect stems without macrons (cenavī, cenatum), "
-        "so it generates cenavissent for cēnāvissent",
-    ),
-    "dabo": (
-        "dabō", "deck 04 (dō)",
-        "dō is generated as a plain first conjugation, giving dāre and dābō; its a is "
-        "short everywhere but dā and dās",
-    ),
     "memento": (
         "mementō", "deck 32 (meminī)",
         "meminī's defective table generates no imperative at all, so mementō is missing",

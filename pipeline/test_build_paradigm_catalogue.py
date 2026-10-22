@@ -38,10 +38,14 @@ INDEX_PATH = ROOT / "app" / "data" / "glossary-headwords.json"
 #: What §7.4 of the contract measured over the whole glossary, on 2026-09-09
 #: (2,735 headwords, 157,908 cells), moved on 2026-09-11 when the written
 #: teaching sentences joined the glossary's token set (build_glossary.py,
-#: collect_teaching_tokens): arx, arcs and puteō gained tables.
+#: collect_teaching_tokens): arx, arcs and puteō gained tables.  Moved on
+#: 2026-10-21 by the glossary repairs: the plural-only multae / multī and the
+#: positive-less ulterior / ultimus got real headwords (they had been filed
+#: under "a", "us" and ""), and dō, ciō, the compounds of sum and five present
+#: stems were corrected.
 #: One table per headword — the first entry of that headword that has one.
-MEASURED_HEADWORDS = 2738
-MEASURED_CELLS = 158007
+MEASURED_HEADWORDS = 2739
+MEASURED_CELLS = 158146
 
 
 @pytest.fixture(scope="module")

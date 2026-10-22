@@ -661,8 +661,9 @@ class Lexicon:
 # --------------------------------------------------------------- inflection
 
 def _dō_fix(lemma: str, form: str) -> str:
-    """dō is generated as a plain first conjugation (dāre, dābat, dātur); its a
-    is short everywhere but dā, dās, dāns.  Repair the generated spelling."""
+    """dō's a is short everywhere but dā, dās, dāns.  The engine now makes it so
+    itself (CONJ_DO in latin_forms.py); this keeps a long-ā spelling from any
+    other source (an older table, a glossary spelling) from reaching a sentence."""
     if key_of(lemma) != "do" or form in ("dā", "dās", "dāns"):
         return form
     return form.replace("dā", "da", 1) if form.startswith("dā") else form

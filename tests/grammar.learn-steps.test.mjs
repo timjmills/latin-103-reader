@@ -443,5 +443,5 @@ test('a catalogue table no skill names records nothing: there is no row to recor
 test('sw.js precaches every file Learn and the catalogue read', () => {
   const sw = readFileSync(new URL('../app/sw.js', import.meta.url), 'utf8');
   for (const f of ['./data/grammar/paradigms.json', './data/glossary-headwords.json', './data/grammar/occurrences.json', `./data/grammar/sentences/${DIO}.json`, './data/grammar/sentences/purpose-clause.json']) assert.ok(sw.includes(`'${f}'`), f);
-  assert.match(sw, /CACHE_VERSION = 'v4[7-9]'|CACHE_VERSION = 'v[5-9]\d'/);
+  assert.match(sw, /CACHE_VERSION = 'v(4[7-9]|[5-9]\d|[1-9]\d{2,})'/);
 });
