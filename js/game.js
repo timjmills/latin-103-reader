@@ -27,7 +27,7 @@
 // The word's charts (2026-10-21: "a simple way once a word is selected to pick which paradigm charts you will play
 // … and when something ends to practise more with the neighbouring paradigms or a list of all the options"; "at
 // the top, where the timer is"; "on the initial play it has that one selected plus a menu of more"). `charts`:
-// { list: [{ id, section, col, n }], on: [ids], play(ids) } — every chart of the word's table (a column of one
+// { list: [{ id, section, col, n }], on: [ids], play(ids), noun? } (noun: what one is called, 'chart' by default) — every chart of the word's table (a column of one
 // part: present indicative · active; cases · plural), the ones this game plays, and how to play others. The bar's
 // Charts button names what is playing and opens them all; the end offers the next chart and the whole list.
 //
@@ -169,20 +169,23 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const ruleBtn = rule ? el('button', { type: 'button', class: 'gm__tool', 'aria-label': 'How its forms are made', title: 'How its forms are made', onclick: () => openRule() }, '📖') : null;
   // The word's charts: by part, in the table's order; a part of one column is one chart.
   const chartList = charts?.list?.length > 1 ? charts.list : null;
+  // What one chart is called: a column of the word's table, or (a skill's every-word game) a word.
+  const noun = charts?.noun ?? 'chart';
+  const Noun = noun[0].toUpperCase() + noun.slice(1);
   const chartOn = new Set((charts?.on ?? []).filter((c) => chartList?.some((x) => x.id === c)));
   const parts = [];
   for (const c of chartList ?? []) { const last = parts[parts.length - 1]; if (last && last.section === c.section) last.cols.push(c); else parts.push({ section: c.section, cols: [c] }); }
   const chartName = (ids) => {
     const set = new Set(ids);
     if (!chartList || !set.size) return '';
-    if (set.size === chartList.length) return 'every chart';
+    if (set.size === chartList.length) return `every ${noun}`;
     const whole = parts.filter((p) => p.cols.every((c) => set.has(c.id)));
     if (whole.length === 1 && whole[0].cols.length === set.size) return whole[0].section;
     if (set.size === 1) { const c = chartList.find((x) => set.has(x.id)); const p = parts.find((x) => x.cols.includes(c)); return p.cols.length > 1 && c.col ? `${c.section} · ${c.col}` : c.section; }
-    return `${set.size} of ${chartList.length} charts`;
+    return `${set.size} of ${chartList.length} ${noun}s`;
   };
-  const chartsBtn = chartList ? el('button', { type: 'button', class: 'gm__tool gm__text gm__chartsbtn', 'aria-haspopup': 'dialog', 'aria-label': `Charts — playing ${chartName(chartOn)}. Choose others`, onclick: () => openCharts() },
-    el('span', { class: 'gm__chartskey', text: 'Charts ' }), el('span', { class: 'gm__chartsname', text: chartName(chartOn) })) : null;
+  const chartsBtn = chartList ? el('button', { type: 'button', class: 'gm__tool gm__text gm__chartsbtn', 'aria-haspopup': 'dialog', 'aria-label': `${Noun}s — playing ${chartName(chartOn)}. Choose others`, onclick: () => openCharts() },
+    el('span', { class: 'gm__chartskey', text: `${Noun}s ` }), el('span', { class: 'gm__chartsname', text: chartName(chartOn) })) : null;
   /** The next chart along the table: the next part when whole parts are playing, else the next column. */
   const nextCharts = () => {
     if (!chartList || !chartOn.size) return null;
@@ -224,7 +227,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const go = el('button', { type: 'button', class: 'btn btn--primary gm__chartgo', onclick: () => { if (resume && sameAs(sel)) resume(); else if (sel.size) playCharts(sel); } });
     const paintGo = () => {
       go.disabled = !sel.size;
-      go.textContent = !sel.size ? 'Choose a chart' : resume && sameAs(sel) ? resumeLabel : `Play ${chartName(sel)} (${formsIn(sel)} forms) ▶`;
+      go.textContent = !sel.size ? `Choose a ${noun}` : resume && sameAs(sel) ? resumeLabel : `Play ${chartName(sel)} (${formsIn(sel)} forms) ▶`;
     };
     const picker = chartPicker(sel, () => paintGo());
     return { picker, go };
@@ -235,7 +238,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const fresh = !rows.some(isDone) && !firstMiss.size;
     const { picker, go } = chartChooser(sel, { resumeLabel: ended ? 'Back' : fresh ? 'Start ▶' : 'Back to the game', resume: () => node.resume() });
     const node = el('section', { class: 'gm__end gm__panel gm__chartsp', role: 'region', 'aria-labelledby': 'gm-charts-h' },
-      el('h2', { id: 'gm-charts-h', class: 'gm__endh', text: 'Which charts?' }),
+      el('h2', { id: 'gm-charts-h', class: 'gm__endh', text: `Which ${noun}s?` }),
       el('p', { class: 'gm__sub' }, el('span', { lang: 'la', text: title }), ' — switch on the ones to play. A part’s name switches all its columns.'),
       picker,
       el('div', { class: 'gm__acts' }, go, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => node.resume() }, 'Cancel')));
@@ -639,7 +642,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const goOn = el('button', { type: 'button', class: 'btn btn--primary gm__start', onclick: () => node.resume() }, fresh ? 'Start ▶' : 'Back to the game');
     // What this game plays, and a way to others, before it starts.
     const playing = chartList ? el('p', { class: 'gm__playing' }, 'Playing ', el('strong', { text: chartName(chartOn) }), ' ',
-      el('button', { type: 'button', class: 'btn btn--quiet gm__change', onclick: () => { node.resume(); openCharts(); } }, 'Change charts')) : null;
+      el('button', { type: 'button', class: 'btn btn--quiet gm__change', onclick: () => { node.resume(); openCharts(); } }, `Change ${noun}s`)) : null;
     const node = el('section', { class: 'gm__end gm__panel gm__rulep', role: 'region', 'aria-labelledby': 'gm-rule-h' },
       el('h2', { id: 'gm-rule-h', class: 'gm__endh', lang: 'la', text: title }),
       playing,
@@ -742,7 +745,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     let more = null;
     if (chartList) {
       const { picker, go } = chartChooser(new Set());
-      more = el('details', { class: 'gm__more' }, el('summary', { class: 'gm__moresum', text: `Choose another chart (${chartList.length})` }), picker, el('div', { class: 'gm__acts' }, go));
+      more = el('details', { class: 'gm__more' }, el('summary', { class: 'gm__moresum', text: `Choose another ${noun} (${chartList.length})` }), picker, el('div', { class: 'gm__acts' }, go));
     }
     const acts = el('div', { class: 'gm__acts' },
       misses.length ? el('button', { type: 'button', class: 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,

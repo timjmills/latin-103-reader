@@ -416,6 +416,46 @@ const PERFECT_ENDS = {
 };
 const PASSIVE_AUX = { perf: { ind: 'sum, es, est …', subj: 'sim, sīs, sit …' }, plupf: { ind: 'eram, erās, erat …', subj: 'essem, essēs, esset …' }, futperf: { ind: 'erō, eris, erit …' } };
 
+/**
+ * The irregular verbs' own rules (2026-10-23: the irregular verbs' "How to make it" told the regular conjugations
+ * only). Each says where its stem comes from and what goes on it, never the whole table: the card can sit above a
+ * question. Keyed as skills.json names the tables.
+ */
+const IRREG = {
+  sum: { name: 'sum, esse, fuī', pres: 'su- + -m, -mus, -nt; es- alone for you (sg.), es- + -t, -tis — no vowel between.', impf: 'er- + -am, -ās, -at, -āmus, -ātis, -ant.', fut: 'er- + -ō, -is, -it, -imus, -itis, -unt.', subj: 's- + -im, -īs, -it, -īmus, -ītis, -int.', inf: 'esse', perf: 'fu- (fuī)', imper: 'Commands: es, este; the future estō, estōte, suntō.' },
+  possum: { name: 'possum, posse, potuī', pres: 'pot- (able) + the forms of sum; pot- becomes pos- before an s.', impf: 'pot- + the imperfect of sum (er- + -am …).', fut: 'pot- + the future of sum (er- + -ō …).', subj: 'pos- + the subjunctive of sum (s- + -im …).', inf: 'posse', perf: 'potu- (potuī)' },
+  eo: { name: 'eō, īre, iī', pres: 'the stem ī- (from īre) + -s, -t, -mus, -tis; it becomes e- before a vowel (-ō, -unt).', impf: 'ī- + -bam, -bās, -bat … (like the 1st and 2nd).', fut: 'ī- + -bō, -bis, -bit … -bunt (like the 1st and 2nd).', subj: 'e- + -am, -ās, -at …', inf: 'īre', perf: 'i- (iī; also īv-, īvī)', imper: 'Commands: ī, īte.' },
+  fero: { name: 'ferō, ferre, tulī, lātum', pres: 'fer- + the 3rd conjugation’s endings, but no vowel before -s, -t, -tis (and in the passive -ris, -tur).', impf: 'fer- + -ēbam, -ēbās … (like the 3rd).', fut: 'fer- + -am, -ēs, -et … (like the 3rd).', subj: 'fer- + -am, -ās, -at …', inf: 'ferre (passive ferrī)', perf: 'tul- (tulī); the participle lātus', imper: 'Commands: fer, ferte.' },
+  volo: { name: 'volō, velle, voluī', pres: 'vol- + -ō, -umus, -unt; you (sg.), he and you (pl.) have their own: vīs, vult, vultis.', impf: 'vol- + -ēbam, -ēbās …', fut: 'vol- + -am, -ēs, -et …', subj: 'vel- + -im, -īs, -it, -īmus, -ītis, -int.', inf: 'velle', perf: 'volu- (voluī)' },
+  nolo: { name: 'nōlō, nōlle, nōluī', pres: 'nē + volō: nōl- where volō has vol- (I, we, they); nōn + volō’s own forms for the rest.', impf: 'nōl- + -ēbam, -ēbās …', fut: 'nōl- + -am, -ēs, -et …', subj: 'nōl- + -im, -īs, -it …', inf: 'nōlle', perf: 'nōlu- (nōluī)', imper: 'Commands: nōlī (to one), nōlīte (to more) + an infinitive — “don’t …”.' },
+  malo: { name: 'mālō, mālle, māluī', pres: 'magis + volō: māl- where volō has vol- (I, we, they); mā- in front of volō’s own forms for the rest.', impf: 'māl- + -ēbam, -ēbās …', fut: 'māl- + -am, -ēs, -et …', subj: 'māl- + -im, -īs, -it …', inf: 'mālle', perf: 'mālu- (māluī)' },
+  fio: { name: 'fīō, fierī, factus sum', pres: 'fī- + -ō, -s, -t, -mus, -tis, -unt: the passive of faciō, with active endings.', impf: 'fī- + -ēbam, -ēbās …', fut: 'fī- + -am, -ēs, -et …', subj: 'fī- + -am, -ās, -at …', inf: 'fierī', isubj: 'fier- + -em, -ēs, -et …', perf: 'none of its own: factus sum, from faciō' },
+};
+/** The irregular verbs' steps for the tenses and moods a skill asks for. */
+function irregularSteps(ids, { tenses, moods, presentSystem, perfectSystem, finite, alone }) {
+  const want = (t) => !tenses.length || tenses.includes(t);
+  const ind = !moods.length || moods.includes('ind');
+  const subj = moods.includes('subj');
+  const out = [];
+  if (alone) out.push({ head: 'Start', text: `These verbs follow no one conjugation: learn each from its own principal parts (${ids.map((id) => IRREG[id].name.split(',').slice(0, 2).join(',')).join('; ')}). The person endings are the usual ones: -ō or -m, -s, -t, -mus, -tis, -nt.` });
+  for (const id of ids) {
+    const v = IRREG[id];
+    const bits = [];
+    if (finite && presentSystem) {
+      if (ind && want('pres') && v.pres) bits.push(`Present: ${v.pres}`);
+      if (ind && want('impf') && v.impf) bits.push(`Imperfect: ${v.impf}`);
+      if (ind && want('fut') && v.fut) bits.push(`Future: ${v.fut}`);
+      if (subj && want('pres') && v.subj) bits.push(`Present subjunctive: ${v.subj}`);
+      if (subj && want('impf')) bits.push(`Imperfect subjunctive: ${v.isubj ?? `${v.inf.split(' ')[0]} + -m, -s, -t …`}`);
+    }
+    if (perfectSystem && v.perf) bits.push(`Perfect stem: ${v.perf}${/^none/.test(v.perf) ? '' : ' — then as every verb'}.`);
+    if (moods.includes('inf')) bits.push(`Infinitive: ${v.inf}.`);
+    if (moods.includes('imper') && v.imper) bits.push(v.imper);
+    if (bits.length) out.push({ head: v.name.split(',')[0], text: bits.join(' ') });
+  }
+  return out;
+}
+
 export function skillHow(skill) {
   if (skill?.id === 'principal-parts') {
     return { kind: 'Verb', type: 'How to make it', parts: '', steps: [{ head: 'The four parts', text: '1st: the present (I …). 2nd: the infinitive (to …) — the present stem comes from it. 3rd: the perfect (I have …, I did) — the perfect stem comes from it. 4th: the supine (-um) — the perfect participle (-us, -a, -um) and the future participle (-ūrus) come from it.' }] };
@@ -476,7 +516,13 @@ export function skillHow(skill) {
       for (const x of these) nonfinite.push({ head: 'Then', text: say(x) });
     }
   }
-  if (!finite) return nonfinite.length ? { kind: 'Verb', type: 'How to make it', parts: '', steps: nonfinite } : null;
+  if (!finite) {
+    const irrNf = (skill?.paradigms ?? []).filter((id) => IRREG[id]);
+    const own = irrNf.length ? irregularSteps(irrNf, { tenses, moods, presentSystem: false, perfectSystem: false, finite, alone: false }) : [];
+    if (irrNf.length && !conjTables.length && own.length) return { kind: 'Verb', type: 'How to make it', parts: '', steps: own };
+    const all = [...nonfinite, ...own];
+    return all.length ? { kind: 'Verb', type: 'How to make it', parts: '', steps: all } : null;
+  }
   if (presentSystem && (tenses.length ? tenses.some((t) => ['pres', 'impf', 'fut'].includes(t)) : true)) {
     steps.push({ head: 'Start', text: presStart });
     const subj = has(moods, 'subj');
@@ -503,5 +549,13 @@ export function skillHow(skill) {
     }
   }
   steps.push(...nonfinite.filter((x) => !(x.head === 'Start' && steps.some((y) => y.text === x.text))));
+  // The irregular verbs a skill lists: their own rules — instead of the conjugations' when it lists only them.
+  const irr = (skill?.paradigms ?? []).filter((id) => IRREG[id]);
+  if (irr.length) {
+    const alone = !conjTables.length;
+    const own = irregularSteps(irr, { tenses, moods, presentSystem, perfectSystem, finite, alone });
+    if (alone && own.length) return { kind: 'Verb', type: 'How to make it', parts: '', steps: own };
+    steps.push(...own);
+  }
   return steps.length ? { kind: 'Verb', type: 'How to make it', parts: '', steps } : null;
 }
