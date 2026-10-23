@@ -810,3 +810,6 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 /* The game's end: "Going on in 4… Stop", and "What next?" at the end of the line (game.js). */
 .gm__auto { display: flex; align-items: center; justify-content: center; gap: var(--s-2); margin: var(--s-2) 0; color: var(--ink-2); }
 .gm__suggest { margin-top: var(--s-4); }
+/* ◂ Easier · Harder ▸ beside the way to play (game.js stepMode). */
+.gm__step { min-width: 36px; font-weight: 700; }
+.gm__step:disabled { opacity: 0.35; cursor: default; }

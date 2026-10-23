@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v107';
+const CACHE_VERSION = 'v111';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -23,8 +23,8 @@ const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it
 const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
-  "./css/grammar.css": '0ff12337d802',
-  "./css/panels.css": '4afa365e7110',
+  "./css/grammar.css": 'e566943f1581',
+  "./css/panels.css": '31699cb4d2ae',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
   "./css/reader.css": '39a5f952ffb3',
@@ -350,7 +350,7 @@ const HASHES = {
   "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": '6ee05d8d79eb',
+  "./js/game.js": 'c62604ec2162',
   "./js/grammar/applies.js": 'c6029e34b6b4',
   "./js/grammar/chapter.js": '3f1a0ef3892d',
   "./js/grammar/continuum.js": 'a51affc0ef89',
@@ -359,21 +359,22 @@ const HASHES = {
   "./js/grammar/inputs.js": '2ff1da2f09fb',
   "./js/grammar/items.js": '7f5614202473',
   "./js/grammar/lessons.js": 'b64c65fbe898',
+  "./js/grammar/practicelog.js": '7b72c81dce9d',
   "./js/grammar/print.js": '29a9fe1bdc4a',
   "./js/grammar/progress.js": '921fba3ee99e',
   "./js/grammar/scheduler.js": '013a30c9cf3d',
-  "./js/grammar/session.js": '424a93b80a5a',
+  "./js/grammar/session.js": '896b9e96c994',
   "./js/grammar/sets.js": 'eba8496a4bad',
   "./js/grammar/stage3.js": '32ab140b63e1',
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": '311d2c8e36ab',
+  "./js/grammar/ui.js": '32dadfa6d463',
   "./js/hovergloss.js": 'db78916cb67b',
   "./js/main.js": 'd0f32d75f894',
   "./js/paradigm-chapters.js": 'a2ee337ad019',
   "./js/paradigms.js": 'decea54a54e8',
-  "./js/practised.js": '34c999b88cba',
+  "./js/practised.js": '0737df7b3409',
   "./js/progress.js": '4d0115152d15',
   "./js/reader.js": 'd64cddb4b717',
   "./js/settings.js": '07b902b58a49',
@@ -381,8 +382,8 @@ const HASHES = {
   "./js/store.js": '4ed7f6b56e4c',
   "./js/sync.js": '58f8ce7ca83b',
   "./js/tokenize.js": '2581885bc1a3',
-  "./js/wordpanel.js": '96ce45c59f37',
-  "./js/wordrule.js": 'fa11d2847d96',
+  "./js/wordpanel.js": 'c11f57486af5',
+  "./js/wordrule.js": '81ce9e45901d',
   "./manifest.webmanifest": 'd74be85f6b51',
   "./vendor/supabase.js": '700acd9a4322',
 };
@@ -428,6 +429,7 @@ const PRECACHE = [
   './js/grammar/session.js',
   './js/grammar/continuum.js',
   './js/grammar/applies.js',
+  './js/grammar/practicelog.js',
   './js/grammar/stats.js',
   './js/grammar/ui.js',
   './js/grammar/store-grammar.js',

@@ -58,7 +58,9 @@ export function cellResults(item, value) {
     const givenCells = new Set((item.chart?.given ?? []).map(Number));
     return (item.chart?.cells ?? []).map((c, i) => (givenCells.has(i)
       ? { i, ok: true, given: c.answer[0], expected: c.answer[0], label: c.label ?? '', scaffold: true }
-      : { i, ok: matchesForm(given[i] ?? '', c.answer), given: given[i] ?? '', expected: c.answer[0], label: c.label ?? '' }));
+      // The whole form or its ending alone, always (2026-10-23: "always accept full spelling or just the correct ending";
+      // no setting for it): a cell the table splits into stem + ending takes either.
+      : { i, ok: matchesForm(given[i] ?? '', c.answer) || (!!c.stem && !!String(given[i] ?? '').trim() && matchesForm(c.stem + String(given[i]).trim(), c.answer)), given: given[i] ?? '', expected: c.answer[0], label: c.label ?? '' }));
   }
   if (item?.input === 'match') {
     const pairs = item.pairs || [];
@@ -316,6 +318,9 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       const metaFields = {
         ...(item.generated === true ? { generated: true, template: item.template ?? null, sentence: item.taught ?? null } : null),
         ...(given == null ? null : { given }),
+        // Which part of its lesson an item checked (Learn's steps, a part practised on its own), so the practice chart
+        // can count parts on every device: meta syncs (migration 0020) where the device's own counters do not.
+        ...(Number.isInteger(item.step) ? { step: item.step } : null),
       };
       const meta = Object.keys(metaFields).length ? metaFields : null;
       const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date(lastAt).toISOString(), ...(meta ? { meta } : {}) };

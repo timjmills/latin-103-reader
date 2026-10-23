@@ -7,7 +7,7 @@
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm } from '../wordpanel.js';
 import { gameSound, playTable } from '../game.js';
-import { wordRule, ruleCard, focusRule, formRule } from '../wordrule.js';
+import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
 import { isShelfWeek } from '../sync.js';
@@ -22,7 +22,8 @@ import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapte
 import { orderInput, matchInput } from './inputs.js';
 import { buildPath, climbFrom } from './continuum.js';
 import { appliesTo, exampleOf } from './applies.js';
-import { practised, notePractised, timesText } from '../practised.js';
+import { practised, notePractised, timesText, setSyncedCounts } from '../practised.js';
+import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
 import { localDay } from './stats.js';
@@ -1102,6 +1103,15 @@ export function createUI(ctx) {
   const unitOf = (id) => ctx.units.find((u) => u.id === id) ?? null;
   const stateOf = (id) => decay(gstore.getState(id) ?? newState(id), Date.now());
   const titleOf = (id) => skills.get(id)?.title ?? id;
+  // The practice log, from the synced attempts (practicelog.js): rebuilt when the log grows, so a round played on
+  // another device counts here as soon as it has synced, and the "×N" everywhere reads it (practised.js).
+  let logMemo = null;
+  const pLog = () => {
+    const n = gstore?.countAttempts?.() ?? 0;   // the cheap total; the log is only rebuilt when it has changed
+    if (!logMemo || logMemo.n !== n) logMemo = { n, log: practiceLog(gstore?.getAttempts?.() ?? []) };
+    return logMemo.log;
+  };
+  setSyncedCounts((key) => pLog().count(key));
 
   /* ------------------------------------------------------------ shell */
   function draw() {
@@ -1114,11 +1124,11 @@ export function createUI(ctx) {
         'aria-current': view.name === v || (v === 'wwdrills' && (view.params?.from?.wordwork != null || view.name === 'wwtable')) ? 'page' : null,
         onclick: () => render(v, v === 'paradigms' ? {} : { chapter: wwChapter() }) }, label)))
       : h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'path', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
-        { map: 'Skills', path: 'Path', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
+      ['map', 'path', 'chart', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
+        { map: 'Skills', path: 'Path', chart: 'Chart', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, sheets: renderSheets, stats: renderStats, history: renderHistory, path: renderPath, part: renderPart, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, sheets: renderSheets, stats: renderStats, history: renderHistory, path: renderPath, part: renderPart, chart: renderChart, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(playOnce ? { ...view.params, play: true } : view.params);
     document.title = sheets ? 'Sheets — Latin 103' : words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
   }
@@ -1444,7 +1454,9 @@ export function createUI(ctx) {
     const head = h('header', { class: 'g-head' },
       h('h1', { class: 'g-title', text: 'Skills' }),
       // The pensa arrive from the private library, so the lede only promises them once some are here.
-      h('p', { class: 'g-lede', text: `${index.skills.size} skills in book order, with each chapter's questions, vocabulary${[...skills.values()].some((s) => s.set === 'pensum') ? ' and pensa' : ''}. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }));
+      h('p', { class: 'g-lede', text: `${index.skills.size} skills in book order, with each chapter's questions, vocabulary${[...skills.values()].some((s) => s.set === 'pensum') ? ' and pensa' : ''}. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }),
+      // The practice chart, a tap from the top of the map: what is practised, how much, and what is still to do.
+      h('p', { class: 'g-acts' }, btn('📊 Practice chart: what is practised, what is still to do', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet g-chartlink')));
 
     const todayNode = todaySection();
 
@@ -1611,7 +1623,10 @@ export function createUI(ctx) {
         // walking the page's structure, and the line under it is what the eye needs — the counts.
         h('h2', { class: 'g-chapter__h visually-hidden', text: `Grammar of chapter ${entry?.roman ?? roman(n)}` }),
         h('p', { class: 'g-chapter__sum' }, chapterTipButton(row.roman, material, progress, stateOf))),
-      ...chapterBody(row, { nav, known })));
+      ...chapterBody(row, { nav, known }),
+      // This chapter's part of the practice chart: practised or not, how much, and what is still to do.
+      h('div', { class: 'g-chapter__chart' }, h('h3', { class: 'g-h2', text: 'Practice chart' }), chartChapter(n, { compact: true }),
+        h('div', { class: 'g-acts' }, btn('The whole chart →', { to: ['chart', { chapter: n }], onclick: () => goView('chart', { chapter: n }) }, 'btn btn--quiet')))));
   }
 
   /**
@@ -1886,7 +1901,7 @@ export function createUI(ctx) {
     const anyOwn = units.some((x) => x.own);
     return h('div', { class: 'g-lesson__ex' }, h('p', { class: 'g-lesson__tag', text: anyOwn ? 'From the book' : (units.length ? 'From the library' : 'Examples') }), list);
   }
-  async function renderLessonView({ skill: id, from = null }) {
+  async function renderLessonView({ skill: id, from = null, play = false }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
     const st = stateOf(id);
@@ -1921,6 +1936,8 @@ export function createUI(ctx) {
       h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson)),
       skill.set ? null : partsNode(id, stepsOf(lesson), { heading: 'Practise one part of the lesson' }),
       h('div', { class: 'g-acts' }, acts));
+    // Opened to play (the next skill, when the learner's way in is its table game): the game over this lesson.
+    if (play && skill.paradigms?.length && !skill.set && view.name === 'lesson') playTablePart(id, { chapter: skill.chapter });
   }
   const lessonHeader = (skill, st) => h('header', { class: 'g-head' },
     h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(skill.category.replace('-', ' '))}` }),
@@ -1929,7 +1946,8 @@ export function createUI(ctx) {
     h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
       stateTipButton(skill.title, st, { shown: dueText(st) }), countBadge(`skill:${skill.id}`)),
     h('p', { class: 'g-summary', text: skill.summary }),
-    skill.set ? null : appliesNode(skill));
+    skill.set ? null : appliesNode(skill),
+    skill.set ? null : howNode(skill, { open: false }));
 
   /* ------------------------------------------------------------ learn */
   /**
@@ -2203,6 +2221,7 @@ export function createUI(ctx) {
   async function renderLearnStart({ skill: id, queue = [], from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    if (!skill.set) keepEntry('learn');
     if (skill.set === 'pensum') { startBlocked(id, from); return; }   // pensa are practised, never learned in a sitting
     // Where the learner is, kept per skill. This used to be one slot for the whole section — `{ skill, step }` —
     // so opening any second lesson overwrote the first one's place and coming back to it started at step 1. It is
@@ -2328,7 +2347,8 @@ export function createUI(ctx) {
           const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = explain.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
           explain.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q),
             ...[step.say ? h('p', { class: 'g-step__say' }, prose(step.say)) : null,
-              appliesNode(skill, step.show?.kind === 'paradigm' ? step.show.key : (step.check?.key ?? null)), more.length ? h('div', { class: 'g-explain__more' }, more) : null].filter(Boolean));
+              appliesNode(skill, step.show?.kind === 'paradigm' ? step.show.key : (step.check?.key ?? null)),
+              howNode(skill, { open: false }), more.length ? h('div', { class: 'g-explain__more' }, more) : null].filter(Boolean));
         }
         body.append(...[explain,
           wn?.node ?? null].filter(Boolean));   // `Element.append` prints a null as the word "null"
@@ -2463,6 +2483,7 @@ export function createUI(ctx) {
   async function renderDrill({ skill: id, size = null, retest = false, from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    if (!retest) keepEntry('drill');
     if (skill.set) { startBlocked(id, from); return; }   // a chapter set keeps its own practice
     setBody(h('p', { class: 'g-loading', text: 'Preparing the drill…' }));
     const [lesson, teachItems, generated] = await Promise.all([lessonOf(id), teachItemsOf(skill), generatedItemsOf(skill)]);
@@ -2488,6 +2509,7 @@ export function createUI(ctx) {
   async function renderUnlimited({ skill: id, from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    keepEntry('unlimited');
     if (skill.set) { startBlocked(id, from); return; }
     setBody(h('p', { class: 'g-loading', text: 'Preparing the practice…' }));
     const [lesson, teachItems, generated] = await Promise.all([lessonOf(id), teachItemsOf(skill), generatedItemsOf(skill)]);
@@ -2638,6 +2660,62 @@ export function createUI(ctx) {
       d.length <= 5 ? h('p', { class: 'g-explain__diff' }, h('span', { class: 'g-explain__for', text: `Each ${kind}: ` }), each)
         : h('details', { class: 'g-explain__diff' }, h('summary', { text: `How each ${kind} does it (${d.length})` }), h('p', {}, each)));
   };
+  /**
+   * How to make the skill's forms, for every type it covers, with no one word in it (2026-10-23: "say which
+   * principal part to start with and then how to transform it per conjugation … everywhere"): a verb's from the
+   * principal parts (wordrule.js skillHow), a case's from the genitive and each declension's endings, read off its
+   * model table as endings only. It can sit above a question: it names the rule, never a word's form.
+   */
+  const howMemo = new Map();
+  let howOpen = true;   // the question's "How to make it", as the learner last left it this visit
+  function howOf(skill) {
+    if (!skill || skill.set) return null;
+    if (howMemo.has(skill.id)) return howMemo.get(skill.id);
+    let rule = null;
+    try { rule = skillHow(skill); } catch { rule = null; }
+    if (!rule) rule = caseHow(skill);
+    if (rule) rule = { ...rule, type: skill.title };   // the card's heading says "How to make it"; its title is the skill
+    if (catTables || !rule) howMemo.set(skill.id, rule);
+    return rule;
+  }
+  function caseHow(skill) {
+    const f = [].concat(skill.parse_filter ?? []).find((x) => x && (x.case || x.degree)) ?? null;
+    const tables = (skill.paradigms ?? []).filter((id) => /^(decl|adj|domus)/.test(id));
+    if (f?.degree) {
+      return { kind: 'Adjective', type: 'How to make it', parts: '', steps: [
+        { head: 'Start', text: 'Start from the stem: the genitive without its ending (or, for -us, -a, -um adjectives, the feminine without -a).' },
+        ...([].concat(f.degree).includes('comp') ? [{ head: 'Comparative', text: 'Stem + -ior (masculine and feminine), -ius (neuter); it declines like a 3rd-declension noun (-iōris …).' }] : []),
+        ...([].concat(f.degree).includes('super') ? [{ head: 'Superlative', text: 'Stem + -issimus, -a, -um. After -er: the masculine + -rimus. Six in -lis (facilis, difficilis, similis, dissimilis, gracilis, humilis): stem + -limus.' }] : []),
+        { head: 'Irregular', text: 'A few have their own forms: bonus → melior, optimus; malus → peior, pessimus; magnus → maior, maximus; parvus → minor, minimus; multus → plūs, plūrimus.' }] };
+    }
+    if (!f?.case || !tables.length) return null;
+    const steps = [{ head: 'Start', text: 'Start from the genitive singular (the 2nd part of the dictionary entry: -ae, -ī, -is, -ūs, -ēī) and drop that ending: what is left is the stem.' }];
+    for (const id of tables) {
+      let e = null;
+      try { e = entryForKey(id, skill); } catch { e = null; }
+      const t = e ? tableOf(e) : null;
+      if (!t) continue;
+      const ends = [];
+      for (const sec of t.sections ?? []) for (const r of sec.rows ?? []) for (const c of r.cells ?? []) {
+        if (!c || c.empty || !c.key) continue;
+        let ok = false;
+        try { ok = skillCovers(skill, e, c.key); } catch { ok = false; }
+        if (!ok) continue;
+        const end = c.ending ? `-${c.ending}` : 'the dictionary form itself';
+        if (!ends.includes(end)) ends.push(end);
+      }
+      if (!ends.length) continue;
+      // Declensions that do it alike are said once: "2nd declension masculine, neuter: Stem + -ō, -īs".
+      const text = `Stem + ${ends.join(', ')}`;
+      const name = (catTables?.get?.(id)?.label ?? id).replace(/\s*\(.*\)$/, '');
+      const same = steps.find((x) => x.text === text && x.head !== 'Start');
+      if (same) same.head = `${same.head}, ${name.replace(/^(\d\w\w declension)\s*/, (m, d) => (same.head.startsWith(d) ? '' : m))}`;
+      else steps.push({ head: name, text });
+    }
+    return steps.length > 1 ? { kind: 'Noun', type: 'How to make it', parts: '', steps } : null;
+  }
+  /** The card itself: "How to make it", open, under a question or beside a lesson (ruleCard). */
+  const howNode = (skill, { open = true } = {}) => { const r = howOf(skill); return r ? ruleCard(r, { open, heading: 'How to make it' }) : null; };
   const WORD_TABLES = new Set(['sum', 'possum', 'eo', 'fero', 'volo', 'nolo', 'malo', 'fio']);
   /** Each of a skill's tables, by its model word: its name and its first forms of the skill (two at most). */
   const diffMemo = new Map();
@@ -2749,6 +2827,7 @@ export function createUI(ctx) {
   async function playTablePart(id, { chapter = null, i = 0 } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length) return false;
+    keepEntry('tablepart');
     const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
     const list = await skillWords(n, sk);
     if (!list.length) { ctx.say('No word with a table fits this skill.'); return false; }
@@ -2756,10 +2835,10 @@ export function createUI(ctx) {
     const e = list[k];
     const t = tableOf(e);
     if (!t) return false;
-    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
+    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk, ruleHow: howOf(sk),
       gameSubtitle: `${sk.title} · just its part of the table`,
       gameNext: k + 1 < Math.min(list.length, TABLE_PART_WORDS) ? () => playTablePart(id, { chapter: n, i: k + 1 }) : null, gameNextLabel: `Next word → (${k + 2} of ${Math.min(list.length, TABLE_PART_WORDS)})`,
-      gameSuggest: gameSuggest(id) });
+      gameSuggest: gameSuggest(id) });   // shown on every word's end, beside Next word and Same again, harder
     partHolder().replaceChildren(node);
     node.querySelector('.paradigm__play')?.click();
     return true;
@@ -2775,17 +2854,67 @@ export function createUI(ctx) {
   let pathMemo = null;
   const thePath = () => (pathMemo ??= buildPath(skills));
   /** Where a skill is best met from here: a lesson still to learn, a drill once it is in the rotation. */
-  const skillTo = (id) => (inRotation(stateOf(id)) && drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }]);
+  /**
+   * The way the learner last went into a skill — its table game, a drill, unlimited practice, its lesson, one part —
+   * kept until they go in another way (2026-10-23: "for the next skill it should go to the same entry point as the
+   * previous skill was set … unless changed"). Every "next skill" (What next?, the path, Too hard? Too easy?, a
+   * game's end) opens the next skill the same way; the game's own way to play (Type it, shuffled …) and game mode
+   * are kept already. A skill that has no such entry (no table, nothing to drill) falls back to the usual one.
+   */
+  const ENTRY_KEY = 'l103.grammar.entry';
+  // Once changed it is the default (2026-10-23: "once changed it can be default"): kept in the synced settings
+  // (settings.grammar.entry), so every device opens the next skill the same way; this device's copy stands in
+  // until the settings have loaded.
+  const entryKept = () => { const g = ctx.settings?.grammar?.entry; if (typeof g === 'string' && g) return g; try { return localStorage.getItem(ENTRY_KEY) || 'auto'; } catch { return 'auto'; } };
+  const keepEntry = (e) => {
+    if (entryKept() === e) return;
+    try { localStorage.setItem(ENTRY_KEY, e); } catch { /* not kept */ }
+    ctx.savePrefs?.({ entry: e });
+  };
+  const usualTo = (id) => (inRotation(stateOf(id)) && drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }]);
+  const skillTo = (id) => {
+    const sk = skills.get(id);
+    switch (entryKept()) {
+      case 'tablepart': return sk?.paradigms?.length && !sk.set ? ['lesson', { skill: id, play: true }] : usualTo(id);
+      case 'drill': return drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }];
+      case 'unlimited': return drillable(id) && hasBank(id) ? ['unlimited', { skill: id }] : drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }];
+      case 'learn': return ['learn', { skill: id }];
+      case 'part': return sk && !sk.set ? ['part', { skill: id, step: 0 }] : usualTo(id);
+      default: return usualTo(id);
+    }
+  };
   /** A view in its own section (Grammar or Word Work), game mode kept as it is. */
   const goView = (name, params = {}, mode = 'grammar') => { if (sectionMode() !== mode) ctx.setMode?.(mode); if (gameKept()) gameDrillOn(); render(name, params); };
   const goSkill = (id) => { const [name, params] = skillTo(id); goView(name, params); };
   /** One skill as a link of the path: its state, its name, its chapter. */
+  /** "2 days ago", "today", "3 weeks ago": when a skill was last practised. */
+  const agoText = (t) => {
+    if (!t) return '';
+    const days = Math.floor((startOfToday() - new Date(t).setHours(0, 0, 0, 0)) / DAY_MS);
+    if (days <= 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 14) return `${days} days ago`;
+    if (days < 60) return `${Math.round(days / 7)} weeks ago`;
+    return `${Math.round(days / 30)} months ago`;
+  };
+  const startOfToday = () => new Date().setHours(0, 0, 0, 0);
+  /**
+   * Whether a skill has been practised and how much (2026-10-23: "these things should show if they have been
+   * practised and how much"), from the synced log: "×3 · 2 days ago", or "Not practised yet".
+   */
+  const practiceTag = (id) => {
+    const l = pLog().skill(id);
+    const n = Math.max(l.rounds, practised(`skill:${id}`));
+    return n || l.answers
+      ? h('span', { class: 'g-ptag', title: `${n} time${n === 1 ? '' : 's'} · ${l.answers} answers, ${l.right} right${l.last ? ` · last ${agoText(l.last)}` : ''}` }, h('b', { text: `×${Math.max(1, n)}` }), l.last ? ` · ${agoText(l.last)}` : '')
+      : h('span', { class: 'g-ptag g-ptag--none', text: 'Not practised yet' });
+  };
   const pathLink = (id, { cls = 'g-pathlink' } = {}) => {
     const sk = skills.get(id);
     if (!sk) return null;
     return navEl({ class: cls, to: skillTo(id), onclick: () => { closeGameMenu(); goSkill(id); } },
       h('span', { class: 'g-dot', 'data-state': stateOf(id).state, 'aria-hidden': 'true' }),
-      h('span', { class: 'g-pathlink__t', text: sk.title }), countBadge(`skill:${id}`),
+      h('span', { class: 'g-pathlink__t' }, sk.title, h('br'), practiceTag(id)),
       h('span', { class: 'g-pathlink__c', text: `Cap. ${roman(sk.chapter)}` }));
   };
   /** "Too hard? / Too easy?": what it builds on, and what builds on it — both a tap away. */
@@ -2844,33 +2973,8 @@ export function createUI(ctx) {
       h('ul', { class: 'g-level__list' }, list.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: x.why }), pathLink(x.id))))) : null;
   };
   /** The same for a game's end screen (game.js `suggest`). */
-  const gameSuggest = (id) => suggestionsOf(id).map((x) => ({ label: `${x.why}: ${titleOf(x.id)} →`, go: () => goSkill(x.id) }));
-  /**
-   * Go on by itself (2026-10-23: "suggest the next part … to keep going on automatically"): `button` is pressed for
-   * the learner after a few seconds, unless they touch anything first or the page moves on. Returns the note to
-   * show beside it ("Going on in 4… Stop").
-   */
-  const AUTO_S = 4;
-  function autoGo(button, { seconds = AUTO_S } = {}) {
-    if (!button) return null;
-    let n = seconds;
-    const label = button.textContent;
-    const text = h('span', { class: 'g-auto__text' });
-    const stopB = btn('Stop', { onclick: () => stop() }, 'btn btn--quiet g-auto__stop');
-    const note = h('p', { class: 'g-auto', role: 'status' }, text, ' ', stopB);
-    const paint = () => { text.textContent = `Going on in ${n}…`; button.textContent = `${label} (${n})`; };
-    const onTouch = (e) => { if (e.target === button || button.contains(e.target)) return; stop(); };
-    const timer = setInterval(() => {
-      if (!button.isConnected) { stop(); return; }
-      n -= 1;
-      if (n > 0) { paint(); return; }
-      stop(); button.click();
-    }, 1000);
-    function stop() { clearInterval(timer); if (button.isConnected) button.textContent = label; note.remove(); document.removeEventListener('pointerdown', onTouch, true); document.removeEventListener('keydown', onTouch, true); }
-    paint();
-    setTimeout(() => { document.addEventListener('pointerdown', onTouch, true); document.addEventListener('keydown', onTouch, true); }, 0);
-    return note;
-  }
+  const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
+  const gameSuggest = (id) => suggestionsOf(id).map((x) => ({ label: `${x.why}: ${titleOf(x.id)} (${practiceText(x.id)}) →`, go: () => goSkill(x.id) }));
   /** After a skill: the next one on the path, as the thing to press. */
   const nextOnPath = (id) => { const nx = thePath().harder(id)[0] ?? thePath().next(id); return nx ? btn(`Next on the path: ${titleOf(nx)} →`, { to: skillTo(nx), onclick: () => goSkill(nx) }, 'btn g-play') : null; };
 
@@ -2920,6 +3024,65 @@ export function createUI(ctx) {
     if (at) body.querySelector(`#g-path-${CSS.escape(at)}`)?.scrollIntoView({ block: 'center' });
   }
 
+  /* ------------------------------------------------------- the practice chart */
+  /**
+   * **The practice chart** (2026-10-23: "a chart to show which skills have been practised … save across devices …
+   * within the chapters … and what still needs to be practised"): every chapter's skills as tiles, each with its
+   * state, how many times it has been practised and when (the synced log, practicelog.js), its progress sheet, and
+   * what is still to do; the chapter's tables with theirs. "Still to do" at the top lists what needs practice most,
+   * due reviews first. It reads only what syncs, so it is the same chart on every device.
+   */
+  const todoOf = (id) => needsPractice(stateOf(id), pLog().skill(id));
+  function chartTile(id, { compact = false } = {}) {
+    const sk = skills.get(id);
+    const st = stateOf(id);
+    const need = todoOf(id);
+    return h('li', { class: `g-ptile${need ? ' is-todo' : ' is-done'}`, 'data-state': st.state },
+      navEl({ class: 'g-ptile__t', to: ['lesson', { skill: id }], onclick: () => goView('lesson', { skill: id }) },
+        h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), sk.title),
+      h('p', { class: 'g-ptile__meta' }, practiceTag(id), need ? h('span', { class: 'g-ptile__need', text: ` · ${need.why}` }) : h('span', { class: 'g-ptile__ok', text: ' · up to date' })),
+      compact ? null : partsMeter(sk.title, progressOf(sk, !!ctx.items)),
+      need ? btn(playLabel(need.rank <= 1 ? 'Review' : need.rank === 2 ? 'Continue' : 'Learn'), { to: skillTo(id), onclick: () => goSkill(id), 'aria-label': `${need.rank <= 1 ? 'Review' : 'Learn'} ${sk.title}` }, 'btn btn--quiet g-play g-ptile__go') : null);
+  }
+  /** One chapter's part of the chart: its skills, then the tables it introduces. */
+  function chartChapter(n, { todoOnly = false, compact = false } = {}) {
+    const ids = thePath().order.filter((id) => skills.get(id)?.chapter === n);
+    const shown = todoOnly ? ids.filter((id) => todoOf(id)) : ids;
+    const tables = thePath().steps.filter((st) => st.kind === 'table' && st.chapter === n);
+    if (!shown.length && (todoOnly || !tables.length)) return null;
+    const done = ids.filter((id) => pLog().skill(id).answers > 0 || practised(`skill:${id}`)).length;
+    return h('section', { class: 'g-chap g-pchart', id: `g-pchart-${n}`, 'aria-labelledby': `g-pchart-h${n}` },
+      h('h2', { id: `g-pchart-h${n}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(n)}` }), h('span', { class: 'g-chap__count', text: `${bookChapter(n)?.title ?? ''} · ${done} of ${ids.length} practised` })),
+      shown.length ? h('ul', { class: 'g-ptiles' }, shown.map((id) => chartTile(id, { compact }))) : null,
+      !todoOnly && tables.length ? h('p', { class: 'g-ptables' }, h('span', { class: 'g-explain__for', text: 'Tables: ' }),
+        tables.map((t, i) => [i ? ' · ' : '', navEl({ class: 'g-link', to: ['catalogue', { table: t.id }], onclick: () => goView('catalogue', { table: t.id }) }, catTables?.get?.(t.id)?.label ?? t.id), ' ',
+          practised(`table:${t.id}`) ? h('b', { class: 'g-count', text: `×${practised(`table:${t.id}`)}` }) : h('span', { class: 'g-ptag--none', text: '(not yet)' })])) : null);
+  }
+  async function renderChart({ chapter = null, todo = false } = {}) {
+    try { await catalogueItemsOf(); } catch { /* the tables' names fall back to their ids */ }
+    if (view.name !== 'chart') return;
+    const ids = thePath().order;
+    const todoList = ids.map((id) => ({ id, need: todoOf(id) })).filter((x) => x.need)
+      .sort((a, b) => a.need.rank - b.need.rank || thePath().of(a.id) - thePath().of(b.id));
+    const here = ctx.currentChapter?.() ?? null;
+    // What is pressing: the due reviews, a lesson half done, then what comes next in the chapter being read.
+    const top = todoList.filter((x) => x.need.rank <= 2 || skills.get(x.id).chapter <= (here ?? 99)).slice(0, 8);
+    const practisedN = ids.filter((id) => pLog().skill(id).answers > 0 || practised(`skill:${id}`)).length;
+    const chapters = [...new Set(ids.map((id) => skills.get(id).chapter))].sort((a, b) => a - b);
+    setBody(
+      h('header', { class: 'g-head' },
+        h('p', { class: 'g-kicker', text: 'Grammar · practice chart' }),
+        h('h1', { class: 'g-title', text: 'What you have practised' }),
+        h('p', { class: 'g-lede', text: `${practisedN} of ${ids.length} skills practised; ${todoList.length} still to do. It is kept with your account, so every device shows the same chart.` })),
+      h('div', { class: 'g-acts g-acts--top', role: 'group', 'aria-label': 'Show' },
+        btn('Every skill', { 'aria-pressed': String(!todo), to: ['chart', {}], onclick: () => render('chart', {}) }, 'g-filter__btn'),
+        btn(`Still to do (${todoList.length})`, { 'aria-pressed': String(!!todo), to: ['chart', { todo: true }], onclick: () => render('chart', { todo: true }) }, 'g-filter__btn')),
+      top.length ? h('section', { class: 'g-ptodo' }, h('h2', { class: 'g-h2', text: 'Still to practise first' }),
+        h('ol', { class: 'g-level__list' }, top.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: `${x.need.why} · Cap. ${roman(skills.get(x.id).chapter)}` }), pathLink(x.id))))) : h('p', { class: 'g-quiet', text: 'Nothing is waiting: every skill you have started is up to date.' }),
+      chapters.map((n) => chartChapter(n, { todoOnly: !!todo })));
+    if (chapter != null) body.querySelector(`#g-pchart-${Number(chapter)}`)?.scrollIntoView({ block: 'start' });
+  }
+
   /* ------------------------------------------------------- one part of a lesson */
   const stepsOf = (lesson) => (Array.isArray(lesson?.teach) ? lesson.teach : []).filter((x) => x && typeof x === 'object');
   const stepTitle = (step, i) => String(step?.title ?? '').replace(/\*\*?/g, '') || `Part ${i + 1}`;
@@ -2932,6 +3095,7 @@ export function createUI(ctx) {
   async function renderPart({ skill: id, step = 0, from = null }) {
     const skill = skills.get(id);
     if (!skill || skill.set) return renderMap();
+    keepEntry('part');
     setBody(h('p', { class: 'g-loading', text: 'Preparing that part…' }));
     const [lesson, teachItems] = await Promise.all([lessonOf(id), teachItemsOf(skill)]);
     const steps = stepsOf(lesson);
@@ -2952,7 +3116,7 @@ export function createUI(ctx) {
       const ex = h('div', { class: `g-explain g-explain--part${i === 0 ? ' g-explain--first' : ''}` });
       const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = ex.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
       ex.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q), h('p', { class: 'g-step__say' }, prose(st.say)),
-        ...[appliesNode(skill, st.show?.kind === 'paradigm' ? st.show.key : (st.check?.key ?? null))].filter(Boolean));
+        ...[appliesNode(skill, st.show?.kind === 'paradigm' ? st.show.key : (st.check?.key ?? null)), howNode(skill, { open: false })].filter(Boolean));
       return { node: h('section', { class: 'g-step', 'aria-label': `Part ${at + 1}` }, h('p', { class: 'g-kicker', text: `${skill.title} · part ${at + 1} of ${steps.length}` }), h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(title)), ex), gate: false };
     };
     runSession({ runner: run.runner, title: `Part ${at + 1} · ${title}`, mode: 'learn', hintOpen: false, before: lead,
@@ -2966,13 +3130,12 @@ export function createUI(ctx) {
           h('p', { class: 'g-kicker', text: `${skill.title} · part ${at + 1} of ${steps.length}` }),
           h('h1', { class: 'g-title' }, prose(title)),
           h('p', { class: 'g-lede', text: `${summary.right} of ${summary.total} right.` })),
-          // All right: the next part is taken by itself in a few seconds. The last part: what to do next.
-          clean && nextPart ? autoGo(nextPart) : null,
+          // Nothing goes on by itself (2026-10-23): the next part is a button, the primary one after a clean round.
           h('div', { class: 'g-acts' },
             btn('Again', { to: ['part', { skill: id, step: at }], onclick: () => goView('part', { skill: id, step: at }) }, summary.right < summary.total ? 'btn btn--primary' : 'btn'),
             nextPart, backB,
             tablePartButton(id, { chapter: skill.chapter }), levelButton(id)),
-          more ? null : suggestNode(id),
+          suggestNode(id, { heading: more ? 'Or another skill' : 'What next?' }),
           partsNode(id, steps, { heading: 'Another part', current: at }));
       } });
   }
@@ -3014,7 +3177,7 @@ export function createUI(ctx) {
         h('div', { class: 'g-acts' }, climbButton(id ?? null, id ? '▶ Climb on from here' : '▶ Climb the path'), btn('The whole path', { to: ['path', id ? { at: id } : {}], onclick: () => { closeGameMenu(); goView('path', id ? { at: id } : {}); } }, 'btn'))),
       only === 'level' ? null : h('section', { class: 'g-gmenu__sec' },
         h('h3', { class: 'g-gmenu__sh', text: 'Grammar' }),
-        h('ul', { class: 'g-gmenu__list' }, go('Skills', 'map'), go('Practice', 'setup'), go('Paradigms', 'paradigms'), go('Tables', 'catalogue'), go('Stats', 'stats')),
+        h('ul', { class: 'g-gmenu__list' }, go('Skills', 'map'), go('Practice chart', 'chart'), go('Practice', 'setup'), go('Paradigms', 'paradigms'), go('Tables', 'catalogue'), go('Stats', 'stats')),
         h('h3', { class: 'g-gmenu__sh', text: 'Word Work' }),
         h('ul', { class: 'g-gmenu__list' }, go(`This chapter · Cap. ${roman(here)}`, 'wordwork', { chapter: here }, 'words'), go('Skill drills', 'wwdrills', { chapter: here }, 'words'), go('Any word & types', 'paradigms', {}, 'words'))),
       only === 'level' ? null : h('div', { class: 'g-acts' }, btn('✕ Leave game mode', { onclick: () => { closeGameMenu(); keepGame(false); body.classList.remove('g-game'); document.documentElement.classList.remove('g-game-open'); draw(); } }, 'btn btn--quiet')));
@@ -3312,7 +3475,7 @@ export function createUI(ctx) {
       h('header', { class: 'g-head' },
         h('p', { class: 'g-kicker', text: 'Practise a whole table' }),
         h('h1', { class: 'g-title', text: 'Paradigms' }),
-        h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — right turns green, the ending lit against the stem — or only the endings, or only the parts you have reached.' })),
+        h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — the whole form or just its ending, right turns green with the ending lit against the stem — or only the parts you have reached.' })),
       h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-find' },
         h('h2', { id: 'g-para-find', class: 'g-h2', text: 'Find a word' }),
         h('div', { class: 'g-find' }, h('div', { class: 'g-find__box' }, search, list), randomBtn, randomPlay),
@@ -3576,7 +3739,7 @@ export function createUI(ctx) {
     const k = ((Number(i) || 0) % list.length + list.length) % list.length;
     const e = list[k];
     const t = tableOf(e);
-    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
+    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk, ruleHow: howOf(sk),
       gameSubtitle: sk.title, gameNext: () => render('wwtable', { chapter: n, skill: id, i: k + 1, play: true }), gameNextLabel: `Next word → (${(k + 1) % list.length + 1} of ${list.length})` });
     node.open = true;
     const step = (d) => render('wwtable', { chapter: n, skill: id, i: k + d });
@@ -3711,6 +3874,7 @@ export function createUI(ctx) {
         sk.plain ? h('p', { class: 'g-sheet__plain', text: sk.plain }) : null,
         sk.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: sk.paradigms?.length ? 'The rule ' : 'How it works ' }), prose(sk.summary)) : null,
         appliesNode(sk),
+        howNode(sk, { open: false }),
         sk.paradigms?.length ? h('p', { class: 'g-quiet g-sheet__bytype', text: 'Each chart below says how its own type makes it — the conjugations and declensions differ.' }) : null);
       if (sk.paradigms?.length) {
         await skillsReady;
@@ -3722,7 +3886,7 @@ export function createUI(ctx) {
           for (const e of words.slice(shown, shown + k)) {
             const t = tableOf(e);
             const node = t && renderParadigm(t, { english: true, practise: true, label: headOf(e), countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true,
-              gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →', ruleFor: sk });
+              gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →', ruleFor: sk, ruleHow: howOf(sk) });
             if (!node) continue;
             node.open = true;
             // The mark says which forms are the skill's; on a chart that is nothing but the skill's, it says nothing.
@@ -4534,6 +4698,7 @@ export function createUI(ctx) {
         rule ? ruleCard(rule, { open: true, heading: 'How this type makes it' }) : null,
         !rule && !stepEx && sk?.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: 'The rule ' }), prose(sk.summary)) : null,
         !stepEx && sk ? appliesNode(sk, null, { diff: false }) : null,
+        sk ? howNode(sk) : null,
         !rule && !stepEx && !sk?.summary ? h('p', { class: 'g-quiet', text: 'No rule to show for this question.' }) : null].filter(Boolean));
       rulePanel.hidden = false;
       ruleBtn.setAttribute('aria-expanded', 'true');
@@ -4813,6 +4978,10 @@ export function createUI(ctx) {
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
     // "Just drill it" pins the rule at the top of every item (§10), so the learner can look without leaving.
     if (item.pin) node.append(h('p', { class: 'g-pin' }, h('span', { class: 'g-lesson__tag', text: 'The rule' }), ' ', prose(item.pin)), ...[appliesNode(skills.get(item.skill), null, { diff: false })].filter(Boolean));
+    // Above every question about forms, in or out of game mode: which principal part to start from, and what each
+    // conjugation (or declension) does with it. Folded away once the learner folds it, for the rest of the visit.
+    { const how = !item.set && item.input !== 'self' ? howNode(skills.get(item.skill), { open: howOpen }) : null;
+      if (how) { how.classList.add('g-how'); how.addEventListener('toggle', () => { howOpen = how.open; }); node.append(how); } }
     // Pool exhaustion, said of the pool the item was actually drawn from: a chapter session draws that
     // chapter's sentences, so "every sentence for this skill" would be a wider claim than the truth.
     if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.'
@@ -5546,9 +5715,12 @@ export function createUI(ctx) {
       const lead = form.closest('.g-page')?.querySelector('.g-step');
       const say = [(lead?.querySelector('.g-step__say') ?? lead?.gExplain?.()?.querySelector('.g-step__say'))?.textContent?.trim() ?? '', lead?.querySelector('.g-explain__applies')?.textContent?.trim() ?? ''].filter(Boolean).join(' ');
       const partTitle = lead?.querySelector('.g-step__title')?.textContent?.trim() ?? '';
-      const chartRule = say ? { ...(formsRule ?? { kind: '', parts: '' }), type: formsRule?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(formsRule?.steps ?? [])] } : formsRule;
+      const skillSteps = (howOf(chartSkill)?.steps ?? []).map((x) => ({ ...x, head: x.head === 'Start' ? 'Start (every word)' : x.head }));
+      const baseRule = formsRule ?? (skillSteps.length ? { kind: '', parts: '', type: chartSkill?.title ?? '', steps: [] } : null);
+      const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
+      const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const howOf = (it) => { const c = chart.cells[Number(it.key)]; const r = ruleOfEntry(entryOfCell(c)); const key = chartCellKey(item, c); try { return r && key ? formRule(r, key) : r; } catch { return r; } };
-      playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, rule: chartRule, ruleFirst: !!chartRule, how: howOf, continueLabel: 'Go on →',
+      playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, rule: chartRule, ruleFirst: !!chartRule, how: howOf, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
         onDone: ({ firstMiss }) => {
           for (const i of asked) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(String(i)) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
@@ -5811,7 +5983,8 @@ export function createUI(ctx) {
     const per = stats.perSkill(attempts, ids);
     const pairs = stats.confusionPairs(gstore.getConfusions(), skills);
     const dl = (label, value) => [h('dt', { text: label }), h('dd', { text: String(value) })];
-    setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Stats' }), h('p', { class: 'g-lede', text: 'Grammar only — the reading study log is in Settings.' })),
+    setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Stats' }), h('p', { class: 'g-lede', text: 'Grammar only — the reading study log is in Settings.' }),
+      h('p', { class: 'g-acts' }, btn('📊 Practice chart, by chapter', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet g-chartlink'))),
       // The tally runs over the map *and* the chapter sets, so it reaches 96 where the Progress page
       // says "of 88". The heading names both populations and the line names both tallies (QA-B7, N-22).
       h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: ctx.sets?.size ? 'Skills and chapter sets' : 'Skills' }),
