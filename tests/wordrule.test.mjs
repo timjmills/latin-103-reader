@@ -181,3 +181,20 @@ test('a skill’s own rule: which principal part to start from, and what each co
   assert.equal(skillHow(sk('ablative-place')), null);
   assert.match(say('principal-parts'), /2nd: the infinitive/);
 });
+
+test('skillHow: the irregular verbs get their own rules, not the conjugations’', async () => {
+  const { skillHow } = await import('../app/js/wordrule.js');
+  const { readFileSync } = await import('node:fs');
+  const raw = JSON.parse(readFileSync(new URL('../app/data/grammar/skills.json', import.meta.url)));
+  const list = Array.isArray(raw) ? raw : raw.skills;
+  const say = (id) => skillHow(list.find((s) => s.id === id)).steps.map((s) => `${s.head}: ${s.text}`).join(' | ');
+  const pres = say('irregular-verbs-present');
+  for (const v of ['sum', 'possum', 'eō', 'ferō', 'volō', 'nōlō', 'mālō']) assert.match(pres, new RegExp(`${v}: Present:`));
+  assert.ok(!/1st \(-āre\)/.test(pres), 'no regular conjugation in an irregular-only skill');
+  assert.match(say('imperfect-irregular'), /sum: Imperfect: er- \+ -am/);
+  assert.match(say('noli-infinitive'), /nōlī \(to one\), nōlīte/);
+  // a skill with both keeps the conjugations and adds the irregulars
+  const perf = say('perfect-active');
+  assert.match(perf, /Every conjugation/);
+  assert.match(perf, /ferō: Perfect stem: tul-/);
+});

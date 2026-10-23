@@ -1937,7 +1937,7 @@ export function createUI(ctx) {
       skill.set ? null : partsNode(id, stepsOf(lesson), { heading: 'Practise one part of the lesson' }),
       h('div', { class: 'g-acts' }, acts));
     // Opened to play (the next skill, when the learner's way in is its table game): the game over this lesson.
-    if (play && skill.paradigms?.length && !skill.set && view.name === 'lesson') playTablePart(id, { chapter: skill.chapter });
+    if (play && skill.paradigms?.length && !skill.set && view.name === 'lesson') playSkillTables(id, { chapter: skill.chapter });
   }
   const lessonHeader = (skill, st) => h('header', { class: 'g-head' },
     h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(skill.category.replace('-', ' '))}` }),
@@ -2815,39 +2815,84 @@ export function createUI(ctx) {
   /** ▶ Learn as a game: the skill's lesson, every step of it, in game mode (its explanations a box away, ? for the whole). */
   const learnGameButton = (id, { nav = null, from = null } = {}) => btn(playLabel('Learn as a game'),
     { to: ['learn', { skill: id, game: true }], onclick: () => { gameDrillOn(); (nav ?? ((name, params) => render(name, params)))('learn', { skill: id, ...(from ? { from } : {}) }); }, 'aria-label': `Learn ${skills.get(id)?.title ?? 'this skill'} as a game` }, 'btn g-play');
+  const TABLE_PART_WORDS = 6;   // a skill with one table: its part of it, for this many of the chapter's words
   /**
-   * ▦ Practise this part of the table (2026-10-23: "on any skill/lesson … an option at the top to practise just
-   * that section of the paradigm table, and then go back to the lesson part in the game at the end"): the
-   * skill's own cells of a word's table (paradigm-chapters.js skillCovers), played in the reel over the page —
-   * so closing it leaves the learner on the same lesson part. Next word walks through the words it applies to
-   * (skillWords). null for a skill without forms.
+   * ▦ Every word's table (2026-10-23: "there was no place where I could practise all of the conjugations for each
+   * of these verbs … when I used the table button it did not have each of the words but only this one"): one game
+   * with the skill's part of the table for one word of each table it lists — sum, possum, eō, volō, nōlō, mālō,
+   * ferō; amō, moneō, regō, capiō, audiō — word after word, every person and number. The game's Charts button picks
+   * fewer words. Each word played is logged as its table practised (tableGameDone). The words: the skill's own
+   * (entryForKey, as its lessons use), and from the chapter's words when it lists only one table.
    */
-  const partHolder = () => document.getElementById('g-part-holder') ?? document.body.appendChild(h('div', { id: 'g-part-holder', hidden: true, 'aria-hidden': 'true' }));
-  const TABLE_PART_WORDS = 6;   // a skill's part of the table, word after word, then what next
-  async function playTablePart(id, { chapter = null, i = 0 } = {}) {
+  async function tableWords(n, sk) {
+    if (!selectRules) { try { await loadParadigmCatalogue(); } catch { /* the words are found without it */ } }
+    const out = [];
+    const has = (e) => out.some((x) => x.h === e.h && x.pos === e.pos);
+    for (const pid of sk.paradigms ?? []) {
+      let e = null;
+      try { e = entryForKey(pid, sk); } catch { e = null; }
+      if (e && !has(e) && tableOf(e) && skillWordFits(sk, e)) out.push(e);
+    }
+    if (out.length < 2) for (const e of await skillWords(n, sk)) { if (out.length >= TABLE_PART_WORDS) break; if (!has(e)) out.push(e); }
+    return out;
+  }
+  const skillWordFits = (sk, e) => { const t = tableOf(e); return !!t && (t.sections ?? []).some((s) => (s.rows ?? []).some((r) => (r.cells ?? []).some((c) => c && !c.empty && c.key && skillCovers(sk, e, c.key)))); };
+  async function playSkillTables(id, { chapter = null, only = null } = {}) {
     const sk = skills.get(id);
-    if (!sk?.paradigms?.length) return false;
+    if (!sk?.paradigms?.length || sk.set) return false;
     keepEntry('tablepart');
     const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
-    const list = await skillWords(n, sk);
-    if (!list.length) { ctx.say('No word with a table fits this skill.'); return false; }
-    const k = ((Number(i) || 0) % list.length + list.length) % list.length;
-    const e = list[k];
-    const t = tableOf(e);
-    if (!t) return false;
-    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk, ruleHow: howOf(sk),
-      gameSubtitle: `${sk.title} · just its part of the table`,
-      gameNext: k + 1 < Math.min(list.length, TABLE_PART_WORDS) ? () => playTablePart(id, { chapter: n, i: k + 1 }) : null, gameNextLabel: `Next word → (${k + 2} of ${Math.min(list.length, TABLE_PART_WORDS)})`,
-      gameSuggest: gameSuggest(id) });   // shown on every word's end, beside Next word and Same again, harder
-    partHolder().replaceChildren(node);
-    node.querySelector('.paradigm__play')?.click();
+    const all = await tableWords(n, sk);
+    if (!all.length) { ctx.say('No word with a table fits this skill.'); return false; }
+    const words = only ? all.filter((e) => only.includes(`${e.h}|${e.pos}`)) : all;
+    const rules = new Map();
+    const ruleOf = (e) => { const k = `${e.h}|${e.pos}`; if (!rules.has(k)) { let r = null; try { r = wordRule(e, tableOf(e)); } catch { r = null; } rules.set(k, r); } return rules.get(k); };
+    const cards = [];
+    const counts = new Map();
+    for (const e of all) {
+      const t = tableOf(e);
+      if (!t) continue;
+      const head = headOf(e);
+      const playing = words.includes(e);
+      (t.sections ?? []).forEach((sec, si) => (sec.rows ?? []).forEach((r) => (r.cells ?? []).forEach((c, ci) => {
+        if (!c || c.empty || !c.key || !skillCovers(sk, e, c.key)) return;
+        const answers = cellAnswers(c);
+        if (!answers.length) return;
+        if (!playing) { counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1); return; }
+        let en = '';
+        try { en = dict.cellMeaning?.(e, c.key) ?? ''; } catch { en = ''; }
+        cards.push({ key: `${e.h}|${e.pos}|${si}|${r.label}|${ci}`, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${e.pos}`, entry: e, form: c.key });
+        counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1);
+      })));
+    }
+    if (!cards.length) { ctx.say('No word with a table fits this skill.'); return false; }
+    const how = howOf(sk);
+    const one = words.length === 1 ? ruleOf(words[0]) : null;
+    const rule = one ? { ...focusRule(one, sk), steps: [...(how?.steps ?? []), ...(focusRule(one, sk)?.steps ?? [])] }
+      : { kind: '', parts: '', type: sk.title, steps: [...(appliesTo(sk.paradigms) ? [{ head: 'For', text: `${appliesTo(sk.paradigms)}.` }] : []), ...(how?.steps ?? [])] };
+    const list = all.filter((e) => counts.has(`${e.h}|${e.pos}`)).map((e) => ({ id: `${e.h}|${e.pos}`, section: 'Words', col: headOf(e), n: counts.get(`${e.h}|${e.pos}`) ?? 0 }));
+    playTable({ title: words.length > 1 ? `${sk.title}: every word` : String(words[0].lemma ?? words[0].h),
+      subtitle: words.length > 1 ? `${words.map((e) => headOf(e)).join(', ')} — its part of each table` : `${sk.title} · just its part of the table`,
+      items: cards, rule: rule.steps?.length ? rule : null, ruleFirst: true,
+      how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
+      charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids }), noun: 'word' } : null,
+      countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
+      suggest: gameSuggest(id),
+      onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
+        for (const e of words) {
+          const k = `${e.h}|${e.pos}|`;
+          const mine = (set) => new Set([...set].filter((x) => String(x).startsWith(k)));
+          tableGameDone(sk, e)({ firstMiss: mine(firstMiss), shown: mine(shown) });
+        }
+      } });
     return true;
   }
   const tablePartButton = (id, { chapter = null, short = false } = {}) => {
     const sk = skills.get(id);
     if (!sk || sk.set || !sk.paradigms?.length) return null;
-    return btn([h('span', { 'aria-hidden': 'true', text: '▦ ' }), short ? 'Its table' : 'Practise its part of the table', countBadge(`tablepart:${id}`)],
-      { onclick: (e) => { const b = e.currentTarget; if (b.dataset.busy) return; b.dataset.busy = '1'; playTablePart(id, { chapter }).finally(() => { delete b.dataset.busy; }); }, 'aria-label': `Practise just the part of the table ${sk.title} covers, as a game, then come back here` }, 'btn g-play g-partbtn');
+    const many = sk.paradigms.length > 1;
+    return btn([h('span', { 'aria-hidden': 'true', text: '▦ ' }), short ? (many ? `Its tables (${sk.paradigms.length})` : 'Its table') : (many ? `Play its tables: every word (${sk.paradigms.length})` : 'Practise its part of the table'), countBadge(`tablepart:${id}`)],
+      { onclick: (e) => { const b = e.currentTarget; if (b.dataset.busy) return; b.dataset.busy = '1'; playSkillTables(id, { chapter }).finally(() => { delete b.dataset.busy; }); }, 'aria-label': many ? `Play ${sk.title}: its part of the table for every word it covers, in one game, then come back here` : `Practise just the part of the table ${sk.title} covers, as a game, then come back here` }, 'btn g-play g-partbtn');
   };
   /* ------------------------------------------------------- the path (continuum.js) */
   // Every skill and table from the easiest to the hardest (2026-10-23): built once from the skills' prerequisites.
@@ -4711,9 +4756,10 @@ export function createUI(ctx) {
     // ▦ The skill's own part of the table, as a game over this page; closing it comes back to this item.
     const partSkillAny = () => { const sid = runner.current?.item?.skill ?? runner.itemAt(runner.position)?.item?.skill ?? null; const sk = sid ? skills.get(sid) : null; return sk && !sk.set ? sid : null; };
     const partSkill = () => { const sid = runner.current?.item?.skill ?? runner.itemAt(runner.position)?.item?.skill ?? null; const sk = sid ? skills.get(sid) : null; return sk && !sk.set && sk.paradigms?.length ? sid : null; };
-    const partB = btn([h('span', { 'aria-hidden': 'true', text: '▦' }), h('span', { class: 'g-runnav__parttext', text: ' Its table' })],
-      { title: 'Practise just its part of the table', 'aria-label': 'Practise just this skill\'s part of the table, then come back here', hidden: true,
-        onclick: () => { const sid = partSkill(); if (sid && !partB.dataset.busy) { partB.dataset.busy = '1'; closeRule(); playTablePart(sid).finally(() => { delete partB.dataset.busy; }); } } }, 'g-runnav__part');
+    const partText = h('span', { class: 'g-runnav__parttext', text: ' Its table' });
+    const partB = btn([h('span', { 'aria-hidden': 'true', text: '▦' }), partText],
+      { title: 'Practise its part of the table, for every word it covers', 'aria-label': 'Practise this skill\'s part of the table, for every word it covers, then come back here', hidden: true,
+        onclick: () => { const sid = partSkill(); if (sid && !partB.dataset.busy) { partB.dataset.busy = '1'; closeRule(); playSkillTables(sid).finally(() => { delete partB.dataset.busy; }); } } }, 'g-runnav__part');
     // ⇅ Too hard? Too easy? for the skill on screen, and ☰ for everywhere else without leaving game mode.
     const levelB = btn([h('span', { 'aria-hidden': 'true', text: '⇅' }), h('span', { class: 'g-runnav__parttext', text: ' Too hard? Too easy?' })],
       { title: 'Too hard? Too easy?', 'aria-haspopup': 'dialog', 'aria-label': 'Too hard or too easy? The skills before and after this one', hidden: true, onclick: () => { const sid = partSkillAny(); if (sid) openGameMenu({ skill: sid, only: 'level' }); } }, 'g-runnav__level');
@@ -4776,6 +4822,7 @@ export function createUI(ctx) {
       fwdB.disabled = !runner.canForward;
       nav.dataset.replay = runner.replay ? 'true' : 'false';
       partB.hidden = !partSkill();
+      { const pn = skills.get(partSkill())?.paradigms?.length ?? 0; partText.textContent = pn > 1 ? ` Its tables (${pn})` : ' Its table'; }
       { const sid = partSkillAny(); levelB.hidden = !sid || !levelNode(sid); }
       paintStrips(at, total);   // game mode's strips follow the position, after it is counted
     };
