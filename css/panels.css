@@ -806,3 +806,7 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__more[open] { display: grid; gap: var(--s-3); }
 .gm__moresum { cursor: pointer; font-weight: 700; min-height: 36px; display: flex; align-items: center; }
 .gm__chartsp .gm__acts { position: sticky; bottom: 0; padding: var(--s-3) 0 var(--s-4); background: linear-gradient(transparent, var(--bg) 35%); }
+
+/* The game's end: "Going on in 4… Stop", and "What next?" at the end of the line (game.js). */
+.gm__auto { display: flex; align-items: center; justify-content: center; gap: var(--s-2); margin: var(--s-2) 0; color: var(--ink-2); }
+.gm__suggest { margin-top: var(--s-4); }
