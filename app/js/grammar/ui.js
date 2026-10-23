@@ -2832,7 +2832,7 @@ export function createUI(ctx) {
     const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk, ruleHow: howOf(sk),
       gameSubtitle: `${sk.title} · just its part of the table`,
       gameNext: k + 1 < Math.min(list.length, TABLE_PART_WORDS) ? () => playTablePart(id, { chapter: n, i: k + 1 }) : null, gameNextLabel: `Next word → (${k + 2} of ${Math.min(list.length, TABLE_PART_WORDS)})`,
-      gameSuggest: gameSuggest(id) });
+      gameSuggest: gameSuggest(id) });   // shown on every word's end, beside Next word and Same again, harder
     partHolder().replaceChildren(node);
     node.querySelector('.paradigm__play')?.click();
     return true;
@@ -2941,32 +2941,6 @@ export function createUI(ctx) {
   /** The same for a game's end screen (game.js `suggest`). */
   const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
   const gameSuggest = (id) => suggestionsOf(id).map((x) => ({ label: `${x.why}: ${titleOf(x.id)} (${practiceText(x.id)}) →`, go: () => goSkill(x.id) }));
-  /**
-   * Go on by itself (2026-10-23: "suggest the next part … to keep going on automatically"): `button` is pressed for
-   * the learner after a few seconds, unless they touch anything first or the page moves on. Returns the note to
-   * show beside it ("Going on in 4… Stop").
-   */
-  const AUTO_S = 4;
-  function autoGo(button, { seconds = AUTO_S } = {}) {
-    if (!button) return null;
-    let n = seconds;
-    const label = button.textContent;
-    const text = h('span', { class: 'g-auto__text' });
-    const stopB = btn('Stop', { onclick: () => stop() }, 'btn btn--quiet g-auto__stop');
-    const note = h('p', { class: 'g-auto', role: 'status' }, text, ' ', stopB);
-    const paint = () => { text.textContent = `Going on in ${n}…`; button.textContent = `${label} (${n})`; };
-    const onTouch = (e) => { if (e.target === button || button.contains(e.target)) return; stop(); };
-    const timer = setInterval(() => {
-      if (!button.isConnected) { stop(); return; }
-      n -= 1;
-      if (n > 0) { paint(); return; }
-      stop(); button.click();
-    }, 1000);
-    function stop() { clearInterval(timer); if (button.isConnected) button.textContent = label; note.remove(); document.removeEventListener('pointerdown', onTouch, true); document.removeEventListener('keydown', onTouch, true); }
-    paint();
-    setTimeout(() => { document.addEventListener('pointerdown', onTouch, true); document.addEventListener('keydown', onTouch, true); }, 0);
-    return note;
-  }
   /** After a skill: the next one on the path, as the thing to press. */
   const nextOnPath = (id) => { const nx = thePath().harder(id)[0] ?? thePath().next(id); return nx ? btn(`Next on the path: ${titleOf(nx)} →`, { to: skillTo(nx), onclick: () => goSkill(nx) }, 'btn g-play') : null; };
 
@@ -3121,13 +3095,12 @@ export function createUI(ctx) {
           h('p', { class: 'g-kicker', text: `${skill.title} · part ${at + 1} of ${steps.length}` }),
           h('h1', { class: 'g-title' }, prose(title)),
           h('p', { class: 'g-lede', text: `${summary.right} of ${summary.total} right.` })),
-          // All right: the next part is taken by itself in a few seconds. The last part: what to do next.
-          clean && nextPart ? autoGo(nextPart) : null,
+          // Nothing goes on by itself (2026-10-23): the next part is a button, the primary one after a clean round.
           h('div', { class: 'g-acts' },
             btn('Again', { to: ['part', { skill: id, step: at }], onclick: () => goView('part', { skill: id, step: at }) }, summary.right < summary.total ? 'btn btn--primary' : 'btn'),
             nextPart, backB,
             tablePartButton(id, { chapter: skill.chapter }), levelButton(id)),
-          more ? null : suggestNode(id),
+          suggestNode(id, { heading: more ? 'Or another skill' : 'What next?' }),
           partsNode(id, steps, { heading: 'Another part', current: at }));
       } });
   }
@@ -3467,7 +3440,7 @@ export function createUI(ctx) {
       h('header', { class: 'g-head' },
         h('p', { class: 'g-kicker', text: 'Practise a whole table' }),
         h('h1', { class: 'g-title', text: 'Paradigms' }),
-        h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — right turns green, the ending lit against the stem — or only the endings, or only the parts you have reached.' })),
+        h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — the whole form or just its ending, right turns green with the ending lit against the stem — or only the parts you have reached.' })),
       h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-find' },
         h('h2', { id: 'g-para-find', class: 'g-h2', text: 'Find a word' }),
         h('div', { class: 'g-find' }, h('div', { class: 'g-find__box' }, search, list), randomBtn, randomPlay),
@@ -5712,7 +5685,7 @@ export function createUI(ctx) {
       const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const howOf = (it) => { const c = chart.cells[Number(it.key)]; const r = ruleOfEntry(entryOfCell(c)); const key = chartCellKey(item, c); try { return r && key ? formRule(r, key) : r; } catch { return r; } };
-      playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, rule: chartRule, ruleFirst: !!chartRule, how: howOf, continueLabel: 'Go on →',
+      playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, rule: chartRule, ruleFirst: !!chartRule, how: howOf, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
         onDone: ({ firstMiss }) => {
           for (const i of asked) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(String(i)) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();

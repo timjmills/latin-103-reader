@@ -58,7 +58,9 @@ export function cellResults(item, value) {
     const givenCells = new Set((item.chart?.given ?? []).map(Number));
     return (item.chart?.cells ?? []).map((c, i) => (givenCells.has(i)
       ? { i, ok: true, given: c.answer[0], expected: c.answer[0], label: c.label ?? '', scaffold: true }
-      : { i, ok: matchesForm(given[i] ?? '', c.answer), given: given[i] ?? '', expected: c.answer[0], label: c.label ?? '' }));
+      // The whole form or its ending alone, always (2026-10-23: "always accept full spelling or just the correct ending";
+      // no setting for it): a cell the table splits into stem + ending takes either.
+      : { i, ok: matchesForm(given[i] ?? '', c.answer) || (!!c.stem && !!String(given[i] ?? '').trim() && matchesForm(c.stem + String(given[i]).trim(), c.answer)), given: given[i] ?? '', expected: c.answer[0], label: c.label ?? '' }));
   }
   if (item?.input === 'match') {
     const pairs = item.pairs || [];

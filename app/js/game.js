@@ -12,8 +12,8 @@
 // word where the caller has one.
 //
 // The table's settings play too (2026-10-19: "the game mode should work with all the settings, endings only etc."):
-// the parts switched on are the items, and Endings only asks a split form's ending after its stem, as the table
-// does — switchable in the game as well, and kept in step with the table (`endings`, `onEndings`). And at any
+// the parts switched on are the items. A box takes the whole form or its ending alone, always, with no setting for
+// it (2026-10-23: "always accept full spelling or just the correct ending"). And at any
 // moment "Review" lays the misses so far out with their right forms, then Continue or Quit ("you should be able
 // at any time to review the ones you got wrong and then continue or quit"); the clock stops while it is open.
 //
@@ -112,10 +112,16 @@ export function choicesFor(x, pool, text, right) {
   return wrong.length ? shuffled([want, ...wrong]) : null;
 }
 
-/** Seconds the end screen waits before going on to the next part by itself, after a clean round. */
-export const AUTO_GO_S = 4;
+/** The way to play one step harder than `mode` (and shuffle), or null at the top: What is it? → Choose → Flash → Type it → Type it, shuffled. */
+export function harderThan(mode, shuffle = false) {
+  const ladder = ['parse', 'choose', 'flash', 'type'];
+  const i = ladder.indexOf(mode);
+  if (i < 0) return null;
+  if (i < ladder.length - 1) { const next = ladder[i + 1]; return { mode: next, shuffle: false, label: MODES.find(([k]) => k === next)[1] }; }
+  return shuffle ? null : { mode: 'type', shuffle: true, label: 'Type it, shuffled' };
+}
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null } = {}) {
   const base = items.filter((x) => x && x.answers?.length);
   if (!base.length) return null;
   const opener = document.activeElement;
@@ -135,7 +141,6 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   let ended = false;
   let closed = false;
   let seq = 0;        // the form on screen's turn: a timer from an earlier one stands down
-  let autoTimer = 0;  // the end screen's countdown to the next part
 
   const progress = el('span', { class: 'gm__progress' });
   const meterFill = el('span', { class: 'gm__meterfill' });
@@ -145,7 +150,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const clock = el('span', { class: 'gm__clock', hidden: !read('timer', true) });
   // Endings only, as the table has it: a form the table splits into stem and ending is asked by its ending.
   const splits = (x) => !!x.stem && !!x.ending;
-  const byEnding = (x) => endings && splits(x) && mode !== 'parse';
+  // The whole form or its ending alone is right, always (2026-10-23: "always accept full spelling or just the correct
+  // ending — don't have it as separate settings"); the box is the whole form's, with no stem printed before it.
   const reviewBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__review', hidden: true, onclick: () => openReview() });
   const modeBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__modebtn', 'aria-haspopup': 'dialog', onclick: () => openSettings() });
   // The word's type and the rule for its forms (wordrule.js): the game opens on it, and 📖 brings it back.
@@ -333,7 +339,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const focusIn = (n) => { if (!panel && !closed) n?.focus({ preventScroll: true }); };
 
   /* ---- asking: what the box (or the choices) holds for the form on screen, in the mode chosen */
-  const isRight = (x, t) => cellRight(t, x.answers) || (byEnding(x) && cellRight(x.stem + t, x.answers));
+  const isRight = (x, t) => cellRight(t, x.answers) || (splits(x) && !!String(t ?? '').trim() && cellRight(x.stem + String(t).trim(), x.answers));
   function ask() {
     const r = rows[at];
     if (!r) return;
@@ -347,7 +353,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       const form = r.x.answers[0];
       const opts = parse
         ? choicesFor(r.x, base, (y) => y.cue, (t) => base.some((y) => y.cue === t && cellRight(form, y.answers)))
-        : choicesFor(r.x, base, (y) => (byEnding(y) ? y.ending : y.answers[0]), (t) => isRight(r.x, t));
+        : choicesFor(r.x, base, (y) => y.answers[0], (t) => isRight(r.x, t));
       if (opts) {
         const pick = (b, t) => {
           if (tok !== seq || r.li.dataset.state === 'right') return;
@@ -360,7 +366,6 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         const list = el('div', { class: `gm__choices${parse ? ' gm__choices--cues' : ''}`, role: 'group', 'aria-label': parse ? `What is ${form}?` : `Choose: ${cue}` },
           opts.map((t, i) => { const b = el('button', { type: 'button', class: 'gm__choice', lang: parse ? null : 'la' }, el('span', { class: 'gm__key', 'aria-hidden': 'true', text: String(i + 1) }), t); b.addEventListener('click', () => pick(b, t)); return b; }));
         kids = [parse ? el('span', { class: 'gm__form gm__ask', lang: 'la', text: form }) : null,
-          byEnding(r.x) && !parse ? el('span', { class: 'gm__given', lang: 'la', 'aria-hidden': 'true', text: `${r.x.stem}‑` }) : null,
           parse ? null : howBtn, list, passBtn(r)];
         r.slot.replaceChildren(...kids.filter(Boolean));
         place(); paintStats();
@@ -370,13 +375,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       // A table too small for wrong choices is typed instead.
       r.li.classList.remove('is-parse');
     }
-    const given = byEnding(r.x) ? el('span', { class: 'gm__given', lang: 'la', 'aria-hidden': 'true', text: `${r.x.stem}‑` }) : null;
     input.value = '';
-    input.setAttribute('aria-label', `${cue}${given ? ` — the ending after ${r.x.stem}` : ''}`);
+    input.setAttribute('aria-label', cue);
     if (mode === 'flash') {
       // A look first: the form a moment, then the box. A key or a tap skips the look.
       const look = el('button', { type: 'button', class: 'gm__look', lang: 'la', 'aria-label': `Remember it: ${r.x.answers[0]}. Then type it.` }, el('span', { class: 'gm__form' }, formNode(r.x)), el('span', { class: 'gm__looktag', text: 'Remember it…' }));
-      const toBox = () => { if (tok !== seq || !look.isConnected) return; r.slot.replaceChildren(...[given, input, howBtn, passBtn(r)].filter(Boolean)); focusIn(input); };
+      const toBox = () => { if (tok !== seq || !look.isConnected) return; r.slot.replaceChildren(...[input, howBtn, passBtn(r)].filter(Boolean)); focusIn(input); };
       look.addEventListener('click', toBox);
       look.addEventListener('keydown', (e) => { if (e.key.length === 1 || e.key === 'Enter') { e.preventDefault(); toBox(); } });
       r.slot.replaceChildren(look);
@@ -385,7 +389,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       setTimeout(toBox, reduced ? 2200 : 1800);
       return;
     }
-    r.slot.replaceChildren(...[given, input, howBtn, passBtn(r)].filter(Boolean));
+    r.slot.replaceChildren(...[input, howBtn, passBtn(r)].filter(Boolean));
     place(); paintStats();
     focusIn(input);
   }
@@ -658,7 +662,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('h2', { id: 'gm-set-h', class: 'gm__endh', text: 'Ways to play' }),
       modes,
       el('div', { class: 'gm__switches' },
-        base.some(splits) ? sw('Endings only', 'Type just the ending after the stem.', endings, (v) => { endings = v; onEndings?.(v); }) : null,
+        null,   // (Endings only is no longer a switch: the whole form or its ending is always right)
         sw('Shuffle', 'Mix up the order.', shuffle, (v) => { shuffle = v; write('shuffle', v); if (!ended) reorderRest(); }),
         sw('Redo misses', 'Missed forms come back at the end.', redo, (v) => { redo = v; write('redo', v); }),
         sw('Move on when right', 'No need to press Enter for a right answer.', read('auto', true), (v) => { write('auto', v); }),
@@ -703,7 +707,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone }); };
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
     const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;
@@ -720,25 +724,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       continueLabel && !onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => close() }, continueLabel) : null,
       el('button', { type: 'button', class: 'btn', onclick: again(base, subtitle, id) }, 'Play again'),
       el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Close'));
-    // The next part, suggested and then taken (2026-10-23: "when you finish a part … it should suggest the next
-    // part … to keep going on automatically"): after a clean round the way on is pressed for you in a few seconds,
-    // unless you touch anything first. A round with misses waits, its replay offered first.
-    const goBtn = nextChartBtn ?? acts.querySelector('.btn--primary:not([data-replay])');
-    let autoNote = null;
-    if (!misses.length && goBtn && goBtn !== acts.lastElementChild) {
-      let n = AUTO_GO_S;
-      const label = goBtn.textContent;
-      const stop = el('button', { type: 'button', class: 'btn btn--quiet gm__autostop', onclick: () => cancelAuto() }, 'Stop');
-      const text = el('span', { class: 'gm__autotext' });
-      autoNote = el('p', { class: 'gm__auto', role: 'status' }, text, ' ', stop);
-      const paint = () => { text.textContent = `Going on in ${n}…`; goBtn.textContent = `${label} (${n})`; };
-      const cancelAuto = () => { clearInterval(autoTimer); autoTimer = 0; goBtn.textContent = label; autoNote.remove(); root.removeEventListener('pointerdown', onTouch, true); root.removeEventListener('keydown', onTouch, true); };
-      const onTouch = (e) => { if (e.target === goBtn) return; cancelAuto(); };
-      paint();
-      autoTimer = setInterval(() => { n -= 1; if (n > 0) { paint(); return; } cancelAuto(); goBtn.click(); }, 1000);
-      root.addEventListener('pointerdown', onTouch, true);
-      root.addEventListener('keydown', onTouch, true);
-    }
+    // Nothing goes on by itself (2026-10-23: "in game mode make it so the person must press a button to continue to
+    // the next thing"); beside the way on, the same forms again a step harder ("OR that they practise the same thing
+    // using a harder setting — typing is harder than flash, flash is harder than multiple choice"; "shuffled type is
+    // the hardest"). The ladder: What is it? → Choose → Flash → Type it → Type it, shuffled.
+    const up = harderThan(mode, shuffle);
+    if (up) acts.insertBefore(el('button', { type: 'button', class: 'btn gm__harder', onclick: () => { write('mode', up.mode); write('shuffle', up.shuffle); again(base, subtitle, id)(); } }, `Same again, harder: ${up.label} ↑`), acts.querySelector('button:nth-last-child(2)'));
     const stars = clean === base.length ? 3 : clean >= base.length * 0.7 ? 2 : clean > 0 ? 1 : 0;
     const card = el('section', { class: 'gm__end', 'aria-labelledby': 'gm-end-h' },
       el('p', { class: 'gm__stars', 'aria-label': `${stars} of 3 stars` }, [0, 1, 2].map((i) => el('span', { class: i < stars ? 'is-on' : '', 'aria-hidden': 'true', text: '★' }))),
@@ -749,10 +740,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         el('div', {}, el('dt', { text: 'Time' }), el('dd', { text: mmss(secs) }))),
       misses.length ? el('div', { class: 'gm__misses' }, el('p', { class: 'gm__sub', text: 'Missed on the first try:' }),
         el('ul', {}, misses.map((x) => el('li', {}, el('span', { class: 'gm__label', text: x.cue }), ' ', el('span', { class: 'gm__form', lang: 'la' }, formNode(x)))))) : null,
-      autoNote, acts,
+      acts,
       // The end of the line (the last word, nothing after it): the skills to go to next — on the path, under it, beside it.
-      suggest?.length && !onNext && !nx ? el('section', { class: 'gm__suggest', 'aria-label': 'What next' }, el('p', { class: 'gm__sub', text: 'What next?' }),
-        el('div', { class: 'gm__acts' }, suggest.map((x, i) => el('button', { type: 'button', class: i === 0 && !misses.length ? 'btn btn--primary' : 'btn', onclick: () => { close(true); x.go(); } }, x.label)))) : null,
+      // …and always the other ways on (2026-10-23: "they can also go to the next skill/part OR the recommendations"):
+      // the skills to go to next — on the path, under it, beside it, in the chapter.
+      suggest?.length ? el('section', { class: 'gm__suggest', 'aria-label': 'Or another skill' }, el('p', { class: 'gm__sub', text: onNext || nx || continueLabel ? 'Or another skill:' : 'What next?' }),
+        el('div', { class: 'gm__acts' }, suggest.map((x, i) => el('button', { type: 'button', class: i === 0 && !misses.length && !onNext && !nx && !continueLabel ? 'btn btn--primary' : 'btn', onclick: () => { close(true); x.go(); } }, x.label)))) : null,
       more);
     stage.replaceChildren(card);
     progress.textContent = `${rows.length} / ${rows.length}`;
@@ -765,7 +758,6 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (closed) return;
     closed = true;
     clearInterval(timer);
-    clearInterval(autoTimer);
     window.removeEventListener('resize', place);
     window.visualViewport?.removeEventListener('resize', place);
     try { root.close(); } catch { /* already closed */ }

@@ -456,16 +456,15 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
   const againBtn = btn('Start again');
   const stopBtn = btn('Stop');
   const missesBtn = btn('Practise my misses');
-  const endBtn = h('button', { type: 'button', class: 'btn btn--quiet paradigm__toggle', 'aria-pressed': 'false', hidden: true, text: 'Endings only' });
-  let endings = false;
-  // Endings only asks the ending of a form whose stem the table splits off; an irregular form (sum, est) is asked whole.
-  const byEnding = (x) => endings && !!x.stem && !!x.ending;
   const parts = h('div', { class: 'paradigm__parts', role: 'group', 'aria-label': 'Parts to practise, by chapter', hidden: true });
   // ▶ Play (2026-10-19): the same table as a game, full screen, down each column (game.js). It plays the parts
   // switched on, so a chapter's Word Work plays its chapter; "Play my misses" the forms missed last time.
   const playBtn = h('button', { type: 'button', class: 'btn paradigm__play', 'aria-label': 'Play this table as a game' }, h('span', { 'aria-hidden': 'true', text: '▶ ' }), 'Play');
   const playMissBtn = h('button', { type: 'button', class: 'btn btn--quiet paradigm__playmiss', hidden: true });
-  const bar = h('div', { class: 'paradigm__acts' }, playBtn, playMissBtn, startBtn, endBtn, missesBtn, showBtn, againBtn, stopBtn);
+  // No Endings-only switch (2026-10-23: "always accept full spelling or just the correct ending — don't have it as
+  // separate settings"): a box takes the whole form or its ending alone (`either`), the stem never printed before it.
+  const bar = h('div', { class: 'paradigm__acts' }, playBtn, playMissBtn, startBtn, missesBtn, showBtn, againBtn, stopBtn);
+  const either = (x, typed) => cellRight(typed, x.answers) || (!!x.stem && !!x.ending && !!String(typed ?? '').trim() && cellRight(x.stem + String(typed).trim(), x.answers));
   // `groups` (chart ids, "si|ci"): the charts chosen in the game (2026-10-21), whatever the chapter switches say.
   const chartOf = (x) => `${x.si}|${x.ci}`;
   const gameItems = (only = null, groups = null) => cells().filter(groups ? (x) => groups.has(chartOf(x)) : on).filter((x) => !only || only.has(x.label))
@@ -486,7 +485,6 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     playMissBtn.hidden = !n;
     playMissBtn.textContent = `▶ Play my ${n} miss${n === 1 ? '' : 'es'}`;
     // Endings only is a setting of the game too, so it is there before practice starts as well as during it.
-    endBtn.hidden = !cells().some((x) => x.stem && x.ending);
   };
   // A game's best and its misses belong to the forms it asked: the whole table, a skill's six, a chapter's part
   // are three games, not one (their keys' signature in the id).
@@ -503,7 +501,6 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       if (steps.length) rule = { ...game.whole, steps };
     }
     return playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items, id: gid, onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss, rule,
-      endings, onEndings: (want) => { if (want !== endings) endBtn.click(); },   // Endings only plays as the table has it, and a switch in the game is the table's too
       // The charts: the ones this game plays selected, every other one a choice away (the bar, the start, the end).
       charts: { list: chartList(), on: [...new Set(items.map((g) => g.group))], play: (ids) => play(null, new Set(ids)) },
       how: game.whole ? (it) => formRule(game.whole, it.form) : null, countKey: game.countKey ?? null, onDone: game.onDone ?? null, suggest: game.suggest ?? null });
@@ -550,7 +547,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     if (!input || done(x)) return;
     const typed = input.value.trim();
     // In Endings only the box holds the ending; a learner who types the whole form anyway is right too.
-    const ok = cellRight(typed, x.answers) || (byEnding(x) && cellRight(x.stem + typed, x.answers));
+    const ok = either(x, typed);
     mark(x, !typed ? '' : ok ? 'right' : 'wrong');
     score();
   };
@@ -615,7 +612,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     if (!on || !typed) return;
     // The box turns green and stops taking keys at once; the move comes a moment later, so a key typed past the
     // answer (puella + e) is not carried into the next box.
-    if (cellRight(typed, x.answers) || (byEnding(x) && cellRight(x.stem + typed, x.answers))) { judge(x); setTimeout(() => { if (input === document.activeElement || !document.activeElement || document.activeElement === document.body) goTo(nextOpen(x)); }, 260); }
+    if (either(x, typed)) { judge(x); setTimeout(() => { if (input === document.activeElement || !document.activeElement || document.activeElement === document.body) goTo(nextOpen(x)); }, 260); }
   };
   // ? How this form is made (2026-10-21), beside a box: its own steps for this word, without the examples (the
   // answers), in a small card by the box that a tap outside or Escape puts away.
@@ -666,7 +663,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
         // Reveal one box (the learner's ask, 2026-10-03): its form is filled in and marked shown, not right.
         const reveal = h('button', { type: 'button', class: 'pt__reveal', text: 'Show', 'aria-label': `Show the form: ${x.label}` });
         reveal.addEventListener('click', () => {
-          input.value = byEnding(x) ? x.ending : x.answers[0];
+          input.value = x.answers[0];
           mark(x, 'shown');
           score();
           goTo(nextOpen(x));
@@ -682,7 +679,6 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     buildParts();
     parts.hidden = !parts.childElementCount;
     startBtn.hidden = true; showBtn.hidden = false; againBtn.hidden = false; stopBtn.hidden = false;
-    endBtn.hidden = !cells().some((x) => x.stem && x.ending);
     paintParts();
     if (focus) cells().find(on)?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
   };
@@ -695,7 +691,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
   showBtn.addEventListener('click', () => {
     for (const x of cells().filter(on)) {
       if (x.td.dataset.state === 'right') continue;
-      x.td.querySelector('.pt__in').value = byEnding(x) ? x.ending : x.answers[0];
+      x.td.querySelector('.pt__in').value = x.answers[0];
       mark(x, 'shown');
     }
     score();
@@ -706,22 +702,9 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     score();
     misses[0]?.td.querySelector('.pt__in')?.focus({ preventScroll: true });
   });
-  endBtn.addEventListener('click', () => {
-    endings = !endings;
-    endBtn.setAttribute('aria-pressed', String(endings));
-    details.classList.toggle('is-endings', endings);
-    for (const x of cells()) {
-      const input = x.td.querySelector('.pt__in');
-      if (!input) continue;
-      // A box still being answered starts over in the new mode; a judged box keeps its colour.
-      if (!done(x) && x.td.dataset.state !== 'right') { input.value = ''; mark(x, ''); }
-      input.setAttribute('aria-label', byEnding(x) ? `${x.label} — the ending after ${x.stem}` : x.label);
-    }
-    if (details.classList.contains('is-practising')) score();   // set before ▶ Play, with no practice under way: no score to tell
-  });
   stopBtn.addEventListener('click', () => {
     details.classList.remove('is-practising', 'is-complete');
-    missesBtn.hidden = true;   // Endings only stays as it was set: it is ▶ Play's setting too
+    missesBtn.hidden = true;
     for (const x of cells()) { x.td.querySelector('.pt__answer')?.remove(); delete x.td.dataset.state; x.td.classList.remove('is-off'); }
     parts.hidden = true;
     startBtn.hidden = false; showBtn.hidden = true; againBtn.hidden = true; stopBtn.hidden = true;
