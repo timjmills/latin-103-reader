@@ -159,3 +159,25 @@ test('the ? beside a box: how that one form is made, without its answer', async 
     for (const c of x.cells) assert.ok(formRule(x.r, c.key)?.steps.length, `${w} ${c.text}`);
   }
 });
+
+test('a skill’s own rule: which principal part to start from, and what each conjugation does', async () => {
+  const { skillHow } = await import('../app/js/wordrule.js');
+  const data = JSON.parse(readFileSync(new URL('../app/data/grammar/skills.json', import.meta.url), 'utf8'));
+  const sk = (id) => (Array.isArray(data) ? data : data.skills).find((s) => s.id === id);
+  const say = (id) => skillHow(sk(id)).steps.map((s) => `${s.head}: ${s.text}`).join(' | ');
+  // the future: the 2nd principal part, then -bō for the 1st and 2nd, -am for the 3rd and 4th
+  assert.match(say('future-active'), /^Start: Start from the 2nd principal part/);
+  assert.match(say('future-active'), /1st \(-āre\), 2nd \(-ēre\): Future: \+ -bō/);
+  assert.match(say('future-active'), /3rd \(-ere\): Future: \+ -am, -ēs/);
+  // the perfect: the 3rd principal part, alike in every conjugation; the passive from the 4th
+  assert.match(say('perfect-active'), /3rd principal part \(the perfect\) and drop -ī/);
+  assert.match(say('pluperfect'), /4th principal part .* \| Every conjugation: The participle \+ eram/);
+  // a deponent's names its own infinitives, and no active forms it does not have
+  assert.match(say('deponent-verbs'), /drop -rī \(1st, 2nd, 4th\) or -ī \(3rd\)/);
+  assert.ok(!/future passive infinitive/.test(say('deponent-verbs')));
+  // no one word's form in it: the rule only (the example words in the conjugation names are the book's labels)
+  assert.ok(!/portā|amā-|vocā/.test(say('future-active')));
+  // a case is not a verb's
+  assert.equal(skillHow(sk('ablative-place')), null);
+  assert.match(say('principal-parts'), /2nd: the infinitive/);
+});

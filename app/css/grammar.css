@@ -1485,3 +1485,7 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: var(--ink); }
 /* Shown on a page outside game mode too: the line sits under the step's text. */
 .g-explain .g-explain__applies, .g-explain .g-explain__appliesbox { display: block; }
+
+/* "How to make it" above a question (ui.js howNode): the rule card, a little quieter than the question. */
+.g-item .g-how { margin: var(--s-2) 0 var(--s-3); }
+.g-item .g-how .wr__steps { font-size: var(--ui-sm); }

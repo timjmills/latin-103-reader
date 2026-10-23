@@ -7,7 +7,7 @@
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm } from '../wordpanel.js';
 import { gameSound, playTable } from '../game.js';
-import { wordRule, ruleCard, focusRule, formRule } from '../wordrule.js';
+import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
 import { isShelfWeek } from '../sync.js';
@@ -1929,7 +1929,8 @@ export function createUI(ctx) {
     h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
       stateTipButton(skill.title, st, { shown: dueText(st) }), countBadge(`skill:${skill.id}`)),
     h('p', { class: 'g-summary', text: skill.summary }),
-    skill.set ? null : appliesNode(skill));
+    skill.set ? null : appliesNode(skill),
+    skill.set ? null : howNode(skill, { open: false }));
 
   /* ------------------------------------------------------------ learn */
   /**
@@ -2328,7 +2329,8 @@ export function createUI(ctx) {
           const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = explain.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
           explain.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q),
             ...[step.say ? h('p', { class: 'g-step__say' }, prose(step.say)) : null,
-              appliesNode(skill, step.show?.kind === 'paradigm' ? step.show.key : (step.check?.key ?? null)), more.length ? h('div', { class: 'g-explain__more' }, more) : null].filter(Boolean));
+              appliesNode(skill, step.show?.kind === 'paradigm' ? step.show.key : (step.check?.key ?? null)),
+              howNode(skill, { open: false }), more.length ? h('div', { class: 'g-explain__more' }, more) : null].filter(Boolean));
         }
         body.append(...[explain,
           wn?.node ?? null].filter(Boolean));   // `Element.append` prints a null as the word "null"
@@ -2638,6 +2640,62 @@ export function createUI(ctx) {
       d.length <= 5 ? h('p', { class: 'g-explain__diff' }, h('span', { class: 'g-explain__for', text: `Each ${kind}: ` }), each)
         : h('details', { class: 'g-explain__diff' }, h('summary', { text: `How each ${kind} does it (${d.length})` }), h('p', {}, each)));
   };
+  /**
+   * How to make the skill's forms, for every type it covers, with no one word in it (2026-10-23: "say which
+   * principal part to start with and then how to transform it per conjugation … everywhere"): a verb's from the
+   * principal parts (wordrule.js skillHow), a case's from the genitive and each declension's endings, read off its
+   * model table as endings only. It can sit above a question: it names the rule, never a word's form.
+   */
+  const howMemo = new Map();
+  let howOpen = true;   // the question's "How to make it", as the learner last left it this visit
+  function howOf(skill) {
+    if (!skill || skill.set) return null;
+    if (howMemo.has(skill.id)) return howMemo.get(skill.id);
+    let rule = null;
+    try { rule = skillHow(skill); } catch { rule = null; }
+    if (!rule) rule = caseHow(skill);
+    if (rule) rule = { ...rule, type: skill.title };   // the card's heading says "How to make it"; its title is the skill
+    if (catTables || !rule) howMemo.set(skill.id, rule);
+    return rule;
+  }
+  function caseHow(skill) {
+    const f = [].concat(skill.parse_filter ?? []).find((x) => x && (x.case || x.degree)) ?? null;
+    const tables = (skill.paradigms ?? []).filter((id) => /^(decl|adj|domus)/.test(id));
+    if (f?.degree) {
+      return { kind: 'Adjective', type: 'How to make it', parts: '', steps: [
+        { head: 'Start', text: 'Start from the stem: the genitive without its ending (or, for -us, -a, -um adjectives, the feminine without -a).' },
+        ...([].concat(f.degree).includes('comp') ? [{ head: 'Comparative', text: 'Stem + -ior (masculine and feminine), -ius (neuter); it declines like a 3rd-declension noun (-iōris …).' }] : []),
+        ...([].concat(f.degree).includes('super') ? [{ head: 'Superlative', text: 'Stem + -issimus, -a, -um. After -er: the masculine + -rimus. Six in -lis (facilis, difficilis, similis, dissimilis, gracilis, humilis): stem + -limus.' }] : []),
+        { head: 'Irregular', text: 'A few have their own forms: bonus → melior, optimus; malus → peior, pessimus; magnus → maior, maximus; parvus → minor, minimus; multus → plūs, plūrimus.' }] };
+    }
+    if (!f?.case || !tables.length) return null;
+    const steps = [{ head: 'Start', text: 'Start from the genitive singular (the 2nd part of the dictionary entry: -ae, -ī, -is, -ūs, -ēī) and drop that ending: what is left is the stem.' }];
+    for (const id of tables) {
+      let e = null;
+      try { e = entryForKey(id, skill); } catch { e = null; }
+      const t = e ? tableOf(e) : null;
+      if (!t) continue;
+      const ends = [];
+      for (const sec of t.sections ?? []) for (const r of sec.rows ?? []) for (const c of r.cells ?? []) {
+        if (!c || c.empty || !c.key) continue;
+        let ok = false;
+        try { ok = skillCovers(skill, e, c.key); } catch { ok = false; }
+        if (!ok) continue;
+        const end = c.ending ? `-${c.ending}` : 'the dictionary form itself';
+        if (!ends.includes(end)) ends.push(end);
+      }
+      if (!ends.length) continue;
+      // Declensions that do it alike are said once: "2nd declension masculine, neuter: Stem + -ō, -īs".
+      const text = `Stem + ${ends.join(', ')}`;
+      const name = (catTables?.get?.(id)?.label ?? id).replace(/\s*\(.*\)$/, '');
+      const same = steps.find((x) => x.text === text && x.head !== 'Start');
+      if (same) same.head = `${same.head}, ${name.replace(/^(\d\w\w declension)\s*/, (m, d) => (same.head.startsWith(d) ? '' : m))}`;
+      else steps.push({ head: name, text });
+    }
+    return steps.length > 1 ? { kind: 'Noun', type: 'How to make it', parts: '', steps } : null;
+  }
+  /** The card itself: "How to make it", open, under a question or beside a lesson (ruleCard). */
+  const howNode = (skill, { open = true } = {}) => { const r = howOf(skill); return r ? ruleCard(r, { open, heading: 'How to make it' }) : null; };
   const WORD_TABLES = new Set(['sum', 'possum', 'eo', 'fero', 'volo', 'nolo', 'malo', 'fio']);
   /** Each of a skill's tables, by its model word: its name and its first forms of the skill (two at most). */
   const diffMemo = new Map();
@@ -2756,7 +2814,7 @@ export function createUI(ctx) {
     const e = list[k];
     const t = tableOf(e);
     if (!t) return false;
-    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
+    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk, ruleHow: howOf(sk),
       gameSubtitle: `${sk.title} · just its part of the table`,
       gameNext: k + 1 < Math.min(list.length, TABLE_PART_WORDS) ? () => playTablePart(id, { chapter: n, i: k + 1 }) : null, gameNextLabel: `Next word → (${k + 2} of ${Math.min(list.length, TABLE_PART_WORDS)})`,
       gameSuggest: gameSuggest(id) });
@@ -2952,7 +3010,7 @@ export function createUI(ctx) {
       const ex = h('div', { class: `g-explain g-explain--part${i === 0 ? ' g-explain--first' : ''}` });
       const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = ex.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
       ex.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q), h('p', { class: 'g-step__say' }, prose(st.say)),
-        ...[appliesNode(skill, st.show?.kind === 'paradigm' ? st.show.key : (st.check?.key ?? null))].filter(Boolean));
+        ...[appliesNode(skill, st.show?.kind === 'paradigm' ? st.show.key : (st.check?.key ?? null)), howNode(skill, { open: false })].filter(Boolean));
       return { node: h('section', { class: 'g-step', 'aria-label': `Part ${at + 1}` }, h('p', { class: 'g-kicker', text: `${skill.title} · part ${at + 1} of ${steps.length}` }), h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(title)), ex), gate: false };
     };
     runSession({ runner: run.runner, title: `Part ${at + 1} · ${title}`, mode: 'learn', hintOpen: false, before: lead,
@@ -3576,7 +3634,7 @@ export function createUI(ctx) {
     const k = ((Number(i) || 0) % list.length + list.length) % list.length;
     const e = list[k];
     const t = tableOf(e);
-    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
+    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk, ruleHow: howOf(sk),
       gameSubtitle: sk.title, gameNext: () => render('wwtable', { chapter: n, skill: id, i: k + 1, play: true }), gameNextLabel: `Next word → (${(k + 1) % list.length + 1} of ${list.length})` });
     node.open = true;
     const step = (d) => render('wwtable', { chapter: n, skill: id, i: k + d });
@@ -3711,6 +3769,7 @@ export function createUI(ctx) {
         sk.plain ? h('p', { class: 'g-sheet__plain', text: sk.plain }) : null,
         sk.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: sk.paradigms?.length ? 'The rule ' : 'How it works ' }), prose(sk.summary)) : null,
         appliesNode(sk),
+        howNode(sk, { open: false }),
         sk.paradigms?.length ? h('p', { class: 'g-quiet g-sheet__bytype', text: 'Each chart below says how its own type makes it — the conjugations and declensions differ.' }) : null);
       if (sk.paradigms?.length) {
         await skillsReady;
@@ -3722,7 +3781,7 @@ export function createUI(ctx) {
           for (const e of words.slice(shown, shown + k)) {
             const t = tableOf(e);
             const node = t && renderParadigm(t, { english: true, practise: true, label: headOf(e), countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true,
-              gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →', ruleFor: sk });
+              gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →', ruleFor: sk, ruleHow: howOf(sk) });
             if (!node) continue;
             node.open = true;
             // The mark says which forms are the skill's; on a chart that is nothing but the skill's, it says nothing.
@@ -4534,6 +4593,7 @@ export function createUI(ctx) {
         rule ? ruleCard(rule, { open: true, heading: 'How this type makes it' }) : null,
         !rule && !stepEx && sk?.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: 'The rule ' }), prose(sk.summary)) : null,
         !stepEx && sk ? appliesNode(sk, null, { diff: false }) : null,
+        sk ? howNode(sk) : null,
         !rule && !stepEx && !sk?.summary ? h('p', { class: 'g-quiet', text: 'No rule to show for this question.' }) : null].filter(Boolean));
       rulePanel.hidden = false;
       ruleBtn.setAttribute('aria-expanded', 'true');
@@ -4813,6 +4873,10 @@ export function createUI(ctx) {
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
     // "Just drill it" pins the rule at the top of every item (§10), so the learner can look without leaving.
     if (item.pin) node.append(h('p', { class: 'g-pin' }, h('span', { class: 'g-lesson__tag', text: 'The rule' }), ' ', prose(item.pin)), ...[appliesNode(skills.get(item.skill), null, { diff: false })].filter(Boolean));
+    // Above every question about forms, in or out of game mode: which principal part to start from, and what each
+    // conjugation (or declension) does with it. Folded away once the learner folds it, for the rest of the visit.
+    { const how = !item.set && item.input !== 'self' ? howNode(skills.get(item.skill), { open: howOpen }) : null;
+      if (how) { how.classList.add('g-how'); how.addEventListener('toggle', () => { howOpen = how.open; }); node.append(how); } }
     // Pool exhaustion, said of the pool the item was actually drawn from: a chapter session draws that
     // chapter's sentences, so "every sentence for this skill" would be a wider claim than the truth.
     if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.'
@@ -5546,7 +5610,10 @@ export function createUI(ctx) {
       const lead = form.closest('.g-page')?.querySelector('.g-step');
       const say = [(lead?.querySelector('.g-step__say') ?? lead?.gExplain?.()?.querySelector('.g-step__say'))?.textContent?.trim() ?? '', lead?.querySelector('.g-explain__applies')?.textContent?.trim() ?? ''].filter(Boolean).join(' ');
       const partTitle = lead?.querySelector('.g-step__title')?.textContent?.trim() ?? '';
-      const chartRule = say ? { ...(formsRule ?? { kind: '', parts: '' }), type: formsRule?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(formsRule?.steps ?? [])] } : formsRule;
+      const skillSteps = (howOf(chartSkill)?.steps ?? []).map((x) => ({ ...x, head: x.head === 'Start' ? 'Start (every word)' : x.head }));
+      const baseRule = formsRule ?? (skillSteps.length ? { kind: '', parts: '', type: chartSkill?.title ?? '', steps: [] } : null);
+      const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
+      const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const howOf = (it) => { const c = chart.cells[Number(it.key)]; const r = ruleOfEntry(entryOfCell(c)); const key = chartCellKey(item, c); try { return r && key ? formRule(r, key) : r; } catch { return r; } };
       playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, rule: chartRule, ruleFirst: !!chartRule, how: howOf, continueLabel: 'Go on →',
         onDone: ({ firstMiss }) => {

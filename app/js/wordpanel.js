@@ -827,8 +827,12 @@ export function renderParadigm(p, opts = {}) {
   const forWhat = opts.ruleFor ? appliesTo(opts.ruleFor.paradigms) : '';
   const forStep = forWhat ? { head: 'For', text: `${forWhat[0].toUpperCase()}${forWhat.slice(1)}.` } : null;
   // A word with no card of its own (a pronoun: is, ea, id) still opens on the skill's: what it is for, and its rule.
-  const rule = focused && forStep ? { ...focused, steps: [forStep, ...focused.steps] }
-    : !focused && opts.ruleFor && forStep ? { kind: '', type: opts.ruleFor.title ?? '', parts: p.entry?.lemma ?? '', steps: [forStep, ...(opts.ruleFor.summary ? [{ head: 'The rule', text: opts.ruleFor.summary }] : [])] }
+  // …and how to make the skill's forms for every type, from the principal parts (opts.ruleHow, ui.js howOf), before
+  // this word's own steps: the rule first, then the word.
+  const howSteps = (opts.ruleHow?.steps ?? []).map((x) => ({ ...x, head: x.head === 'Start' ? 'Start (every word)' : x.head }));
+  const lead = [forStep, ...howSteps].filter(Boolean);
+  const rule = focused && lead.length ? { ...focused, steps: [...lead, ...focused.steps] }
+    : !focused && opts.ruleFor && lead.length ? { kind: '', type: opts.ruleFor.title ?? '', parts: p.entry?.lemma ?? '', steps: [...lead, ...(opts.ruleFor.summary ? [{ head: 'The rule', text: opts.ruleFor.summary }] : [])] }
     : focused;
   if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && focused !== whole, heading: !focused ? 'The rule' : focused !== whole ? 'How this type makes it' : 'How it’s made' }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,

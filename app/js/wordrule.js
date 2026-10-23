@@ -394,3 +394,114 @@ export function formRule(rule, key, { examples = false } = {}) {
   if (examples) return out;
   return { ...out, steps: out.steps.map(({ eg, ...st }) => ({ ...st, text: st.text.replace(/\s*This word’s:\s*$/, '').replace(/ — this word’s:\s*$/, '.') })) };
 }
+
+/* ------------------------------------------------------------ a skill's own rule, for any verb */
+/**
+ * How to make a skill's forms from the principal parts, for every conjugation, with no one word in it
+ * (2026-10-23: "it does not tell here how to form the verb from the principal parts. Have this everywhere …
+ * say which principal part to start with and then how to transform it per conjugation"). Shown above a question
+ * as well as beside a table, so it names no word the question could be about: the rule, never a form.
+ *
+ * skillHow(skill) → { kind: 'Verb', type, parts: '', steps: [{ head, text }] } | null (not a verb skill).
+ * The per-conjugation lines are the same strings the word cards use (PRESENT, DEP), so the two never disagree;
+ * conjugations that make the form alike are said once ("1st, 2nd: …").
+ */
+const CONJ_NAME = { 1: '1st (-āre)', 2: '2nd (-ēre)', 3: '3rd (-ere)', '3io': '3rd -iō (capiō)', 4: '4th (-īre)' };
+const DEP_NAME = { 1: '1st (-ārī)', 2: '2nd (-ērī)', 3: '3rd (-ī)', '3io': '3rd -iō (patior)', 4: '4th (-īrī)' };
+const CONJ_KEYS = [1, 2, 3, '3io', 4];
+const PERFECT_ENDS = {
+  perf: { ind: 'Perfect: + -ī, -istī, -it, -imus, -istis, -ērunt', subj: 'Perfect subjunctive: + -erim, -eris, -erit, -erimus, -eritis, -erint' },
+  plupf: { ind: 'Pluperfect: + -eram, -erās, -erat, -erāmus, -erātis, -erant', subj: 'Pluperfect subjunctive: + -issem, -issēs, -isset … (the perfect infinitive + -m, -s, -t)' },
+  futperf: { ind: 'Future perfect: + -erō, -eris, -erit, -erimus, -eritis, -erint' },
+};
+const PASSIVE_AUX = { perf: { ind: 'sum, es, est …', subj: 'sim, sīs, sit …' }, plupf: { ind: 'eram, erās, erat …', subj: 'essem, essēs, esset …' }, futperf: { ind: 'erō, eris, erit …' } };
+
+export function skillHow(skill) {
+  if (skill?.id === 'principal-parts') {
+    return { kind: 'Verb', type: 'How to make it', parts: '', steps: [{ head: 'The four parts', text: '1st: the present (I …). 2nd: the infinitive (to …) — the present stem comes from it. 3rd: the perfect (I have …, I did) — the perfect stem comes from it. 4th: the supine (-um) — the perfect participle (-us, -a, -um) and the future participle (-ūrus) come from it.' }] };
+  }
+  const filters = [].concat(skill?.parse_filter ?? []).filter(Boolean);
+  const f = filters.find((x) => x.tense || x.mood || x.voice || x.deponent) ?? null;
+  const verbish = f && !f.case && !f.degree && ![].concat(f.pos ?? []).some((p) => p === 'N' || p === 'ADJ' || p === 'PRON');
+  const conjTables = (skill?.paradigms ?? []).filter((id) => /^conj/.test(id));
+  if (!verbish && !(conjTables.length && [].concat(f?.pos ?? []).includes('V'))) return null;
+  const list = (v) => [].concat(v ?? []).map(String);
+  const tenses = list(f?.tense);
+  const moods = list(f?.mood);
+  const voices = list(f?.voice);
+  const dep = f?.deponent === true;
+  const has = (arr, v) => arr.includes(v);
+  const steps = [];
+  const byConj = (pick) => {
+    const groups = new Map();
+    for (const k of CONJ_KEYS) {
+      const t = pick(k);
+      if (!t) continue;
+      if (!groups.has(t)) groups.set(t, []);
+      groups.get(t).push(dep ? DEP_NAME[k] : CONJ_NAME[k]);
+    }
+    return [...groups].map(([text, names]) => ({ head: names.join(', '), text }));
+  };
+  const presStart = dep
+    ? 'Start from the 2nd principal part (the infinitive) and drop -rī (1st, 2nd, 4th) or -ī (3rd): what is left is the present stem.'
+    : 'Start from the 2nd principal part (the infinitive) and drop -re (1st, 2nd, 4th) or -ere (3rd): what is left is the present stem — it ends in ā (1st), ē (2nd), ī (4th), or a consonant (3rd).';
+  const perfStart = 'Start from the 3rd principal part (the perfect) and drop -ī: what is left is the perfect stem — made the same way in every conjugation.';
+  const supStart = dep
+    ? 'Start from the 3rd principal part (…-us sum): its participle in -us, -a, -um.'
+    : 'Start from the 4th principal part (the supine, -um) and change -um to -us, -a, -um: the perfect participle.';
+  const presentSystem = !tenses.length || tenses.some((t) => ['pres', 'impf', 'fut'].includes(t));
+  const perfectSystem = tenses.some((t) => ['perf', 'plupf', 'futperf'].includes(t));
+  const passive = dep || has(voices, 'pass');
+  const active = !dep && (!voices.length || has(voices, 'act'));
+  const finite = !moods.length || moods.some((m) => m === 'ind' || m === 'subj');
+
+  // Forms outside the person tables: each from the part it starts from. A deponent has no active present or perfect
+  // infinitive (its forms are passive), and keeps its future one.
+  const nonfinite = [];
+  if (moods.some((m) => ['imper', 'inf', 'ptc', 'gerund', 'gerundive', 'supine'].includes(m))) {
+    const nf = NONFINITE.filter(([kind, t, v]) => moods.includes(kind) && (!tenses.length || t == null || tenses.includes(t))
+      && (dep ? (v !== 'act' || t === 'fut' || kind === 'ptc') && !(kind === 'inf' && t === 'fut' && v === 'pass') && !(kind === 'imper' && v === 'act') : (!voices.length || v == null || voices.includes(v))));
+    const say = (x) => {
+      if (x[0] === 'ptc' && x[1] === 'perf') return dep ? 'With sum, es, est … it makes the deponent’s perfect (…-us est, …-ī sunt), active in meaning.' : 'With sum, es, est … it makes the perfect passive (…-us est, …-ī sunt).';
+      if (dep && x[0] === 'inf' && x[1] === 'pres') return 'The present infinitive: the 2nd principal part itself (-ārī, -ērī, -ī, -īrī).';
+      return x[3];
+    };
+    const supineOnly = moods.length === 1 && moods[0] === 'supine';
+    const starts = [['Present stem', presStart], ['Perfect stem', perfStart], ['Perfect passive', supineOnly ? 'Start from the 4th principal part (the supine, -um).' : supStart]];
+    for (const [base, text] of starts) {
+      const these = nf.filter((x) => x[4] === base);
+      if (!these.length) continue;
+      nonfinite.push({ head: 'Start', text });
+      // The perfect participle *is* the start: said once, with what it makes.
+      for (const x of these) nonfinite.push({ head: 'Then', text: say(x) });
+    }
+  }
+  if (!finite) return nonfinite.length ? { kind: 'Verb', type: 'How to make it', parts: '', steps: nonfinite } : null;
+  if (presentSystem && (tenses.length ? tenses.some((t) => ['pres', 'impf', 'fut'].includes(t)) : true)) {
+    steps.push({ head: 'Start', text: presStart });
+    const subj = has(moods, 'subj');
+    const ind = !moods.length || has(moods, 'ind');
+    const want = (t) => !tenses.length || tenses.includes(t);
+    const T = (k) => (passive ? DEP[k] : PRESENT[k]);
+    const clean = (t) => String(t ?? '').replace(/^Add /, '+ ').replace(/^Stem \+/, '+').replace(/^-/, '+ -');
+    if (ind && want('pres')) { if (!dep && passive && active) steps.push(...byConj((k) => `Present: ${clean(PRESENT[k].pres)}`)); steps.push(...byConj((k) => `Present${passive && !dep ? ' passive' : ''}: ${clean(T(k).pres)}`)); }
+    if (ind && want('impf')) steps.push(...byConj((k) => `Imperfect${passive && !dep ? ' passive' : ''}: ${clean(T(k).impf)}`));
+    if (ind && want('fut')) steps.push(...byConj((k) => `Future${passive && !dep ? ' passive' : ''}: ${clean(T(k).fut)}`));
+    if (subj && want('pres')) steps.push(...byConj((k) => `Present subjunctive: ${clean(T(k).subj).replace(/^The /, 'the ')}`));
+    if (subj && want('impf')) steps.push({ head: 'Every conjugation', text: passive ? 'Imperfect subjunctive: the 2nd principal part (the active infinitive, -re) + -r, -ris, -tur, -mur, -minī, -ntur.' : 'Imperfect subjunctive: the 2nd principal part (the infinitive) + -m, -s, -t, -mus, -tis, -nt.' });
+    if (passive && !dep && ind) steps.push({ head: 'Passive', text: 'The same stem and tense sign as the active, with the passive endings -r, -ris, -tur, -mur, -minī, -ntur.' });
+  }
+  if (perfectSystem) {
+    const mood = has(moods, 'subj') ? 'subj' : 'ind';
+    if (active) {
+      steps.push({ head: 'Start', text: perfStart });
+      for (const t of ['perf', 'plupf', 'futperf']) if (tenses.includes(t) && PERFECT_ENDS[t][mood]) steps.push({ head: 'Every conjugation', text: PERFECT_ENDS[t][mood] });
+    }
+    if (passive || !voices.length) {
+      steps.push({ head: active ? 'Passive' : 'Start', text: active ? `For the passive: ${supStart[0].toLowerCase()}${supStart.slice(1)}` : supStart });
+      for (const t of ['perf', 'plupf', 'futperf']) if (tenses.includes(t) && PASSIVE_AUX[t][mood]) steps.push({ head: 'Every conjugation', text: `The participle + ${PASSIVE_AUX[t][mood]}` });
+    }
+  }
+  steps.push(...nonfinite.filter((x) => !(x.head === 'Start' && steps.some((y) => y.text === x.text))));
+  return steps.length ? { kind: 'Verb', type: 'How to make it', parts: '', steps } : null;
+}
