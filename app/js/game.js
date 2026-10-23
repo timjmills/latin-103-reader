@@ -112,14 +112,21 @@ export function choicesFor(x, pool, text, right) {
   return wrong.length ? shuffled([want, ...wrong]) : null;
 }
 
-/** The way to play one step harder than `mode` (and shuffle), or null at the top: What is it? → Choose → Flash → Type it → Type it, shuffled. */
-export function harderThan(mode, shuffle = false) {
-  const ladder = ['parse', 'choose', 'flash', 'type'];
-  const i = ladder.indexOf(mode);
-  if (i < 0) return null;
-  if (i < ladder.length - 1) { const next = ladder[i + 1]; return { mode: next, shuffle: false, label: MODES.find(([k]) => k === next)[1] }; }
-  return shuffle ? null : { mode: 'type', shuffle: true, label: 'Type it, shuffled' };
+/** The ways to play, easiest first (2026-10-23: "typing is harder than flash, flash is harder than multiple choice";
+ * "shuffled type is the hardest"). */
+export const LADDER = [['parse', false], ['choose', false], ['flash', false], ['type', false], ['type', true]];
+const rung = (mode, shuffle) => { const i = LADDER.findIndex(([m, sh]) => m === mode && sh === (mode === 'type' && !!shuffle)); return i < 0 ? LADDER.findIndex(([m]) => m === mode) : i; };
+export const ladderLabel = (mode, shuffle) => `${MODES.find(([k]) => k === mode)?.[1] ?? mode}${mode === 'type' && shuffle ? ', shuffled' : ''}`;
+/** The way to play `d` steps along the ladder from `mode` (and shuffle): { mode, shuffle, label } or null past either end. */
+export function stepThan(mode, shuffle = false, d = 1) {
+  const i = rung(mode, shuffle);
+  const j = i + d;
+  if (i < 0 || j < 0 || j >= LADDER.length) return null;
+  const [m, sh] = LADDER[j];
+  return { mode: m, shuffle: sh, label: ladderLabel(m, sh) };
 }
+/** One step harder, or null at the top: What is it? → Choose → Flash → Type it → Type it, shuffled. */
+export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
 
 export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null } = {}) {
   const base = items.filter((x) => x && x.answers?.length);
@@ -154,6 +161,10 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // ending — don't have it as separate settings"); the box is the whole form's, with no stem printed before it.
   const reviewBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__review', hidden: true, onclick: () => openReview() });
   const modeBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__modebtn', 'aria-haspopup': 'dialog', onclick: () => openSettings() });
+  // ◂ Easier · Harder ▸ (2026-10-23: "an easier / harder setting button to shuffle through the ways to practise"):
+  // one step along the ladder, from the form on screen; kept on the device like the ⚙ choice.
+  const easierBtn = el('button', { type: 'button', class: 'gm__tool gm__step', onclick: () => stepMode(-1) }, '◂');
+  const harderBtn = el('button', { type: 'button', class: 'gm__tool gm__step', onclick: () => stepMode(1) }, '▸');
   // The word's type and the rule for its forms (wordrule.js): the game opens on it, and 📖 brings it back.
   const ruleBtn = rule ? el('button', { type: 'button', class: 'gm__tool', 'aria-label': 'How its forms are made', title: 'How its forms are made', onclick: () => openRule() }, '📖') : null;
   // The word's charts: by part, in the table's order; a part of one column is one chart.
@@ -248,7 +259,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     el('header', { class: 'gm__bar' },
       el('div', { class: 'gm__titles' }, el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub', text: subtitle }) : null),
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock),
-      el('div', { class: 'gm__tools' }, reviewBtn, chartsBtn, ruleBtn, modeBtn, closeBtn),
+      el('div', { class: 'gm__tools' }, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
       meter),
     stage, live);
 
@@ -290,8 +301,13 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     reviewBtn.hidden = ended || !firstMiss.size;
     reviewBtn.textContent = `Review ${firstMiss.size} missed`;
     root.classList.toggle('gm--parse', mode === 'parse');   // What is it?: a form's person or case is the question, so no row to come shows its own
-    modeBtn.textContent = `⚙ ${MODES.find(([k]) => k === mode)[1]}`;
-    modeBtn.setAttribute('aria-label', `Ways to play — now ${MODES.find(([k]) => k === mode)[1]}`);
+    modeBtn.textContent = `⚙ ${ladderLabel(mode, shuffle)}`;
+    modeBtn.setAttribute('aria-label', `Ways to play — now ${ladderLabel(mode, shuffle)}`);
+    const down = stepThan(mode, shuffle, -1);
+    const up = stepThan(mode, shuffle, 1);
+    easierBtn.disabled = !down; harderBtn.disabled = !up;
+    easierBtn.setAttribute('aria-label', down ? `Easier: ${down.label}` : 'Already the easiest way to play'); easierBtn.title = easierBtn.getAttribute('aria-label');
+    harderBtn.setAttribute('aria-label', up ? `Harder: ${up.label}` : 'Already the hardest way to play'); harderBtn.title = harderBtn.getAttribute('aria-label');
   };
   const tick = () => { const s = Math.floor((Date.now() - started) / 1000); clock.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
   timer = setInterval(tick, 500);
@@ -644,6 +660,18 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('div', { class: 'gm__acts' }, goOn));
     node.keep = true;
     openPanel(node, goOn);
+  }
+  /** One step easier (-1) or harder (+1): the form on screen is asked again the new way; a change of shuffle orders the next round. */
+  function stepMode(d) {
+    const to = stepThan(mode, shuffle, d);
+    if (!to || panel || closed) return;
+    const reorders = to.shuffle !== shuffle;
+    mode = to.mode; shuffle = to.shuffle;
+    write('mode', mode); write('shuffle', shuffle);
+    paintStats();
+    live.textContent = `${d > 0 ? 'Harder' : 'Easier'}: ${to.label}${reorders ? (shuffle ? ' — the next round is shuffled' : ' — the next round goes in order') : ''}.`;
+    const r = rows[at];
+    if (!ended && r && r.li.dataset.state !== 'right' && r.li.dataset.state !== 'shown') ask();
   }
   // ⚙ Ways to play: the mode, and the switches. Each change is kept on the device and plays from the form on screen.
   function openSettings() {

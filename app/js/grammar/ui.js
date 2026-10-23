@@ -1901,7 +1901,7 @@ export function createUI(ctx) {
     const anyOwn = units.some((x) => x.own);
     return h('div', { class: 'g-lesson__ex' }, h('p', { class: 'g-lesson__tag', text: anyOwn ? 'From the book' : (units.length ? 'From the library' : 'Examples') }), list);
   }
-  async function renderLessonView({ skill: id, from = null }) {
+  async function renderLessonView({ skill: id, from = null, play = false }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
     const st = stateOf(id);
@@ -1936,6 +1936,8 @@ export function createUI(ctx) {
       h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson)),
       skill.set ? null : partsNode(id, stepsOf(lesson), { heading: 'Practise one part of the lesson' }),
       h('div', { class: 'g-acts' }, acts));
+    // Opened to play (the next skill, when the learner's way in is its table game): the game over this lesson.
+    if (play && skill.paradigms?.length && !skill.set && view.name === 'lesson') playTablePart(id, { chapter: skill.chapter });
   }
   const lessonHeader = (skill, st) => h('header', { class: 'g-head' },
     h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(skill.category.replace('-', ' '))}` }),
@@ -2219,6 +2221,7 @@ export function createUI(ctx) {
   async function renderLearnStart({ skill: id, queue = [], from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    if (!skill.set) keepEntry('learn');
     if (skill.set === 'pensum') { startBlocked(id, from); return; }   // pensa are practised, never learned in a sitting
     // Where the learner is, kept per skill. This used to be one slot for the whole section — `{ skill, step }` —
     // so opening any second lesson overwrote the first one's place and coming back to it started at step 1. It is
@@ -2480,6 +2483,7 @@ export function createUI(ctx) {
   async function renderDrill({ skill: id, size = null, retest = false, from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    if (!retest) keepEntry('drill');
     if (skill.set) { startBlocked(id, from); return; }   // a chapter set keeps its own practice
     setBody(h('p', { class: 'g-loading', text: 'Preparing the drill…' }));
     const [lesson, teachItems, generated] = await Promise.all([lessonOf(id), teachItemsOf(skill), generatedItemsOf(skill)]);
@@ -2505,6 +2509,7 @@ export function createUI(ctx) {
   async function renderUnlimited({ skill: id, from = null }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    keepEntry('unlimited');
     if (skill.set) { startBlocked(id, from); return; }
     setBody(h('p', { class: 'g-loading', text: 'Preparing the practice…' }));
     const [lesson, teachItems, generated] = await Promise.all([lessonOf(id), teachItemsOf(skill), generatedItemsOf(skill)]);
@@ -2822,6 +2827,7 @@ export function createUI(ctx) {
   async function playTablePart(id, { chapter = null, i = 0 } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length) return false;
+    keepEntry('tablepart');
     const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
     const list = await skillWords(n, sk);
     if (!list.length) { ctx.say('No word with a table fits this skill.'); return false; }
@@ -2848,7 +2854,35 @@ export function createUI(ctx) {
   let pathMemo = null;
   const thePath = () => (pathMemo ??= buildPath(skills));
   /** Where a skill is best met from here: a lesson still to learn, a drill once it is in the rotation. */
-  const skillTo = (id) => (inRotation(stateOf(id)) && drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }]);
+  /**
+   * The way the learner last went into a skill — its table game, a drill, unlimited practice, its lesson, one part —
+   * kept until they go in another way (2026-10-23: "for the next skill it should go to the same entry point as the
+   * previous skill was set … unless changed"). Every "next skill" (What next?, the path, Too hard? Too easy?, a
+   * game's end) opens the next skill the same way; the game's own way to play (Type it, shuffled …) and game mode
+   * are kept already. A skill that has no such entry (no table, nothing to drill) falls back to the usual one.
+   */
+  const ENTRY_KEY = 'l103.grammar.entry';
+  // Once changed it is the default (2026-10-23: "once changed it can be default"): kept in the synced settings
+  // (settings.grammar.entry), so every device opens the next skill the same way; this device's copy stands in
+  // until the settings have loaded.
+  const entryKept = () => { const g = ctx.settings?.grammar?.entry; if (typeof g === 'string' && g) return g; try { return localStorage.getItem(ENTRY_KEY) || 'auto'; } catch { return 'auto'; } };
+  const keepEntry = (e) => {
+    if (entryKept() === e) return;
+    try { localStorage.setItem(ENTRY_KEY, e); } catch { /* not kept */ }
+    ctx.savePrefs?.({ entry: e });
+  };
+  const usualTo = (id) => (inRotation(stateOf(id)) && drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }]);
+  const skillTo = (id) => {
+    const sk = skills.get(id);
+    switch (entryKept()) {
+      case 'tablepart': return sk?.paradigms?.length && !sk.set ? ['lesson', { skill: id, play: true }] : usualTo(id);
+      case 'drill': return drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }];
+      case 'unlimited': return drillable(id) && hasBank(id) ? ['unlimited', { skill: id }] : drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }];
+      case 'learn': return ['learn', { skill: id }];
+      case 'part': return sk && !sk.set ? ['part', { skill: id, step: 0 }] : usualTo(id);
+      default: return usualTo(id);
+    }
+  };
   /** A view in its own section (Grammar or Word Work), game mode kept as it is. */
   const goView = (name, params = {}, mode = 'grammar') => { if (sectionMode() !== mode) ctx.setMode?.(mode); if (gameKept()) gameDrillOn(); render(name, params); };
   const goSkill = (id) => { const [name, params] = skillTo(id); goView(name, params); };
@@ -3061,6 +3095,7 @@ export function createUI(ctx) {
   async function renderPart({ skill: id, step = 0, from = null }) {
     const skill = skills.get(id);
     if (!skill || skill.set) return renderMap();
+    keepEntry('part');
     setBody(h('p', { class: 'g-loading', text: 'Preparing that part…' }));
     const [lesson, teachItems] = await Promise.all([lessonOf(id), teachItemsOf(skill)]);
     const steps = stepsOf(lesson);
