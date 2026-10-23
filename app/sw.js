@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v102';
+const CACHE_VERSION = 'v103';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -23,7 +23,7 @@ const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it
 const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
-  "./css/grammar.css": 'bd4af7fab309',
+  "./css/grammar.css": 'b9e89573313c',
   "./css/panels.css": 'fc7782db7486',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
@@ -350,7 +350,7 @@ const HASHES = {
   "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": 'f6e8e96979eb',
+  "./js/game.js": 'e580ef04c642',
   "./js/grammar/chapter.js": '3f1a0ef3892d',
   "./js/grammar/continuum.js": 'a51affc0ef89',
   "./js/grammar/generate.js": 'c312891ee45c',
@@ -367,11 +367,12 @@ const HASHES = {
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": '740804857c9e',
+  "./js/grammar/ui.js": '4db92825c7f6',
   "./js/hovergloss.js": 'db78916cb67b',
   "./js/main.js": '5b04ccb3a50a',
   "./js/paradigm-chapters.js": 'a2ee337ad019',
   "./js/paradigms.js": 'decea54a54e8',
+  "./js/practised.js": '34c999b88cba',
   "./js/progress.js": '4d0115152d15',
   "./js/reader.js": 'd64cddb4b717',
   "./js/settings.js": '07b902b58a49',
@@ -379,7 +380,7 @@ const HASHES = {
   "./js/store.js": '4ed7f6b56e4c',
   "./js/sync.js": '58f8ce7ca83b',
   "./js/tokenize.js": '2581885bc1a3',
-  "./js/wordpanel.js": '9d8145547ec3',
+  "./js/wordpanel.js": 'e19fd489e02d',
   "./js/wordrule.js": 'ca4599383ee0',
   "./manifest.webmanifest": 'd74be85f6b51',
   "./vendor/supabase.js": '700acd9a4322',
@@ -408,6 +409,7 @@ const PRECACHE = [
   './js/paradigms.js',
   './js/paradigm-chapters.js',
   './js/game.js',
+  './js/practised.js',
   './js/wordrule.js',
   './js/tokenize.js',
   './js/hovergloss.js',

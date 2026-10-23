@@ -39,6 +39,7 @@
 
 import { cellRight } from './wordpanel.js';
 import { ruleCard } from './wordrule.js';
+import { notePractised } from './practised.js';
 
 const LS = 'l103.game.';
 const read = (k, d) => { try { const v = localStorage.getItem(LS + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
@@ -111,7 +112,7 @@ export function choicesFor(x, pool, text, right) {
   return wrong.length ? shuffled([want, ...wrong]) : null;
 }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null } = {}) {
   const base = items.filter((x) => x && x.answers?.length);
   if (!base.length) return null;
   const opener = document.activeElement;
@@ -686,6 +687,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     ended = true;
     // A caller playing its own boxes (a lesson's chart, ui.js) is told which were missed on the first try.
     try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown) }); } catch (e) { console.warn('[game] onDone', e); }
+    notePractised(countKey);   // the table's "×N" (practised.js): a game played to its end
     root.classList.add('gm--ended');
     clearInterval(timer);
     sounds.done();
@@ -697,7 +699,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false, charts }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false, charts, how, countKey }); };
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
     const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;

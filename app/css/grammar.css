@@ -1450,3 +1450,7 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 #grammar a.g-chip, #grammar a.g-skill__title, #grammar a.btn, #grammar a.g-choice { text-decoration: none; }
 #grammar a.g-chip { display: inline-flex; align-items: center; }
 #grammar a.g-skill__title { display: inline; }
+
+/* "×3": how many times it has been practised (practised.js). Small, beside the name it counts. */
+.g-count { display: inline-flex; align-items: center; margin-inline-start: 0.4em; padding: 0 0.45em; min-height: 1.35em; border-radius: 999px; background: color-mix(in srgb, var(--gm-a, var(--rubric)) 12%, var(--bg-raised)); color: var(--ink-2); font-family: var(--face-ui); font-size: 0.75rem; font-weight: 700; line-height: 1; vertical-align: middle; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.g-title .g-count { font-size: 0.9rem; }
