@@ -5,7 +5,7 @@ import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, list
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
 // The book's own spine (GRAMMAR-CONTRACT.md "Chapter spine"): the chapter → week
 // mapping lives in chapters.js and nowhere else — never inline it here.
-import { chapter as chapterOf, chapterOfWeek, parseChapterRoute, chapterHash, isGrammarRoute } from './chapters.js';
+import { chapter as chapterOf, chapterOfWeek, parseChapterRoute, chapterHash, isGrammarRoute, parseGrammarView } from './chapters.js';
 // Progress across every chapter (GRAMMAR-CONTRACT.md): the pure aggregation the
 // #/progress page paints — reading, grammar and the derived timings.
 import { parseProgressRoute, progressHash, chapterRows as bookRows, chapterGrammar, chapterLine, timingLine, bookTotals, skillsOutOf, fmtEstimate, fmtMeasured, paceNote, estimateNote } from './progress.js';
@@ -1131,16 +1131,23 @@ async function boot() {
     Promise.resolve(grammarReady)
       .then((g) => {
         if (!grammarRouted) return;
-        if (view === 'words' && g?.openWordWork) g.openWordWork(chapterArg);
+        if (view === 'view' && g?.openView) g.openView(chapterArg.name, chapterArg.params);
+        else if (view === 'words' && g?.openWordWork) g.openWordWork(chapterArg);
         else if (view === 'sheets' && g?.openSheets) g.openSheets(chapterArg);
         else if (view === 'paradigms' && g?.openParadigms) g.openParadigms();
         else g?.open?.();
       })
       .catch(() => { /* the section says so itself */ });
   }
-  function applyRoute() {
+  function applyRoute(event = null) {
     const ours = hashIsOurs;
     hashIsOurs = false;
+    // A Grammar view by its address (#/grammar/learn?skill=…). Back and Forward between the section's own views
+    // carry their state, and the section draws them (ui.js onPop): only an address arrived at some other way —
+    // a new tab, a bookmark, a reload — is opened here.
+    const gv = parseGrammarView(location.hash);
+    if (event && (gv || isGrammarRoute(location.hash)) && history.state?.grammar && document.documentElement.dataset.section === 'grammar') { grammarRouted = true; return; }
+    if (gv) { openGrammarSection('view', gv); return; }
     if (isGrammarRoute(location.hash)) { openGrammarSection(); return; }
     // #/paradigms: the Grammar section's Paradigms page, a link of its own (2026-10-03).
     if (/^#?\/paradigms\/?$/.test(location.hash)) { openGrammarSection('paradigms'); return; }

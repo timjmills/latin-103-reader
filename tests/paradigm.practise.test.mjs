@@ -148,7 +148,7 @@ test('the Paradigms page is a tab and a link of its own, and a table in a box ke
   const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
   const GCSS = readFileSync(new URL('../app/css/grammar.css', import.meta.url), 'utf8');
   const MANIFEST = JSON.parse(readFileSync(new URL('../app/manifest.webmanifest', import.meta.url), 'utf8'));
-  assert.match(UI, /\['map', 'practice', 'paradigms', 'catalogue', 'stats'\]/);
+  assert.match(UI, /\['map', 'path', 'practice', 'paradigms', 'catalogue', 'stats'\]/);
   assert.match(UI, /paradigms: renderParadigms/);
   assert.ok(MAIN.includes("openGrammarSection('paradigms')"), 'the #/paradigms route is gone');
   assert.ok(MANIFEST.shortcuts?.some((s) => s.url === './#/paradigms'));
@@ -247,7 +247,7 @@ test('game mode: every table plays, down its columns; a drill plays full screen'
   assert.match(GAME, /firstMiss\.add\(r\.x\.key\);/, 'a first-try miss is kept');
   assert.match(GAME, /write\(`misses\.\$\{id\}`/, 'and kept on the device for next time');
   assert.match(GAME, /root\.showModal\(\)/, 'a modal dialog: above the word popup, focus kept inside');
-  assert.match(UI, /'▶ Game mode'/, 'a drill session has its game mode');
+  assert.match(UI, /on \? ' Leave game mode' : ' Game mode'/, 'a drill session has its game mode');
   assert.match(UI, /practise: true, label: headOf\(e\)/, 'a Sheets chart can be practised and played');
   assert.ok(SW.includes("'./js/game.js'"), 'the installed app has the game');
 });
@@ -268,6 +268,9 @@ test('▶ Play wherever something plays, and it is one-off', () => {
   assert.match(UI, /const playAll = parts\.some\(\(x\) => x\?\.querySelector\?\.\('\.paradigm__play'\)\)/);
   assert.match(UI, /const playable = \(id\) =>/);
   assert.match(UI, /wantGame = playGameOnce \|\| localStorage\.getItem\('l103\.game\.drill'\) === '1'/);
-  assert.ok(!/const gameDrillOn = \(\) => \{ try \{ localStorage\.setItem\('l103\.game\.drill', '1'\)/.test(UI), 'Play no longer keeps game mode on for good');
+  // Since 2026-10-23 ("everything can be easily navigated to within the game mode so you don't have to leave the
+  // game mode each time") Play enters game mode and it stays, for every view, until "Leave game mode".
+  assert.match(UI, /const gameDrillOn = \(\) => \{ playGameOnce = true; keepGame\(true\); \}/, 'Play enters game mode, kept');
+  assert.match(UI, /const game = gameKept\(\) && sectionMode\(\) !== 'sheets'/, 'every view is drawn in it');
   assert.match(IDX, /\['wordwork', 'wwdrills', 'wwtable'\]\.includes\(view\) \? 'words' : 'grammar'/, 'a chapter page\'s Play on a table opens Word Work');
 });

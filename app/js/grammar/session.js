@@ -534,6 +534,62 @@ export function kindSequence(skill, n, stageOf, rand = Math.random) {
  * another `size` slots, as often as the learner asks, the bank reshuffled and
  * started over only when every sentence in it has come round.
  */
+/**
+ * **One part of a lesson, practised on its own** (2026-10-23: "the option to practise fully any part within the
+ * section … at the end of each part, in the suggested skills at the end, or when you open the full menu of
+ * skills"). `size` checks of the kind that step asks, drawn as the step draws its own: a chart step's cells on
+ * the table's other stock words (its own words first), a sentence step's kind on the skill's other written
+ * sentences (its own sentence first). Nothing repeats until the pool is spent; then it starts over. The
+ * attempts are logged like a drill's, and the skill's state is left as it is: practising a part is never a way
+ * through Learn or round its criterion. null when the step or the material is missing.
+ */
+export function createStepPractice({ skill, steps = [], at = 0, gstore, teachItems = null, size = STEP_PRACTICE, rand = Math.random }) {
+  const step = steps?.[at];
+  if (!skill || !step || !teachItems) return null;
+  const check = step.check ?? null;
+  const chart = check?.kind === 'chart';
+  const key = check?.key ?? (step.show?.kind === 'paradigm' ? step.show.key : null) ?? skill.paradigms?.[0] ?? null;
+  const kind = check?.kind && !chart ? check.kind : 'recognise';
+  const usedWords = new Set();
+  const shown = new Set();
+  let n = 0;
+  const chartNext = () => {
+    const own = (check?.words ?? []).map((w) => (typeof w === 'string' ? w : w?.h)).filter(Boolean);
+    const stock = teachItems.chartWords({ key });
+    const pool = [...new Set([...(n === 0 ? own : []), ...stock])];
+    let fresh = pool.filter((w) => !usedWords.has(w));
+    if (!fresh.length) { usedWords.clear(); fresh = pool; }
+    const words = fresh.slice(0, Math.max(1, own.length || 1));
+    const item = teachItems.chartItem({ key, cells: check?.cells, words: words.length ? words : null, step: at });
+    for (const w of words) usedWords.add(w);
+    return item;
+  };
+  const sentenceNext = () => {
+    const first = n === 0 && check?.sentence ? teachItems.sentenceItem({ kind, sentence: check.sentence, stage: 1, tap: check?.tap ?? undefined }) : null;
+    let item = first ?? teachItems.sentenceItem({ kind, stage: 1, avoid: shown, tap: check?.tap ?? undefined });
+    if (!item && shown.size) { shown.clear(); item = teachItems.sentenceItem({ kind, stage: 1, avoid: shown, tap: check?.tap ?? undefined }); }
+    if (item?.taught) shown.add(item.taught);
+    if (item?.sentence?.id) shown.add(item.sentence.id);
+    return item;
+  };
+  const getItem = () => {
+    let item = null;
+    try { item = chart ? chartNext() : sentenceNext(); } catch { item = null; }
+    if (!item) return null;
+    n += 1;
+    if (check?.ask && item.prompt && n === 1) item = { ...item, prompt: { ...item.prompt, question: check.ask } };
+    return { ...item, step: at };
+  };
+  const slots = Array.from({ length: Math.max(1, size) }, (_, i) => ({ skill: skill.id, kind: chart ? 'chart' : kind, stage: 1, step: at, rep: i, currentWeek: false }));
+  const onAnswer = async ({ item, result, attempt }) => {
+    await gstore?.addAttempt?.(attempt);
+    if (!result.correct && attempt.confused_with) await gstore?.bumpConfusion?.(item.skill, attempt.confused_with);
+  };
+  const runner = createRunner({ slots, getItem, mode: 'learn', onAnswer, requeueOn: false, rand, grows: false });
+  return { runner, skill, step, at, size, start: () => runner.start() };
+}
+export const STEP_PRACTICE = 6;
+
 export function createDrill({ skill, gstore, items, teachItems = null, generated = null, currentWeekN = null, size = LEARN_BLOCKED, rand = Math.random, pin = null, open = false }) {
   const ceiling = currentWeekN == null ? null : chapterOfWeek(currentWeekN);
   const st = gstore.getState(skill.id);

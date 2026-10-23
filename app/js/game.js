@@ -111,7 +111,7 @@ export function choicesFor(x, pool, text, right) {
   return wrong.length ? shuffled([want, ...wrong]) : null;
 }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null } = {}) {
   const base = items.filter((x) => x && x.answers?.length);
   if (!base.length) return null;
   const opener = document.activeElement;
@@ -684,6 +684,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   function finish() {
     ended = true;
+    // A caller playing its own boxes (a lesson's chart, ui.js) is told which were missed on the first try.
+    try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown) }); } catch (e) { console.warn('[game] onDone', e); }
     root.classList.add('gm--ended');
     clearInterval(timer);
     sounds.done();

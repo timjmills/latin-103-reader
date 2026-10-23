@@ -305,6 +305,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     else if (mode === 'words') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'words' || chapter != null || !root.querySelector('.g'))) ui.render('wordwork', chapter != null ? { chapter } : {}, { push: drawn === 'words' && was === 'grammar', focus: false }); else document.title = 'Word Work — Latin 103'; /* the page kept as it was: only the title was the reader's */ if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
     else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words' || root.dataset.drawnMode === 'sheets')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
     else {
+      // Back to the reader by its own button: the address no longer names a Grammar view, so a reload reads on.
+      if (was === 'grammar' && /^#\/grammar(\/|$)/.test(location.hash)) { try { history.replaceState(history.state, '', location.pathname + location.search); } catch { /* file: */ } }
       document.title = readerTitle && !/^(Grammar|Word Work|Sheets) — /.test(readerTitle) ? readerTitle : document.title.replace(/^(Grammar|Word Work|Sheets) — /, '');
       if (was === 'grammar') { const y = readerScroll; requestAnimationFrame(() => window.scrollTo({ top: y })); if (focus) document.querySelector('#reader h1, #main [tabindex="-1"], #main h2')?.focus?.({ preventScroll: true }); }
     }
@@ -355,6 +357,12 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     /** Open Sheets on a chapter's cheat sheet (the header's fourth button, a chapter page, #/sheets/N). */
     openSheets(chapter = null) { setSection('sheets', { chapter: chapter == null ? null : Number(chapter) }); },
     /** Open the section on its Paradigms page (the #/paradigms route): the whole-table practice on its own. */
+    /** One view by its address (#/grammar/learn?skill=…, main.js): the section it belongs to, then the view itself. */
+    openView(name, params = {}) {
+      const mode = ['wordwork', 'wwtable', 'wwdrills'].includes(name) ? 'words' : name === 'sheets' ? 'sheets' : 'grammar';
+      setSection(mode);
+      init().then(() => { ctx.setMode?.(mode); ui?.render(name, params, { push: false }); });
+    },
     openParadigms() { setSection('grammar'); init().then(() => ui?.render('paradigms', {}, { push: false })); },
     /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */
     async todayCard(opts = {}) { await lightInit(); return ui ? ui.todayCard({ ...opts, place: 'weeks' }) : null; },

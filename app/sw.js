@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v101';
+const CACHE_VERSION = 'v102';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -23,7 +23,7 @@ const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it
 const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
-  "./css/grammar.css": 'a55d433ecbd1',
+  "./css/grammar.css": 'bd4af7fab309',
   "./css/panels.css": 'fc7782db7486',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
@@ -347,28 +347,29 @@ const HASHES = {
   "./index.html": 'b9dd244b20f1',
   "./js/audio.js": '2e1d36c01a62',
   "./js/auth.js": '22086691f460',
-  "./js/chapters.js": '433eae3ef5f9',
+  "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": 'a4182cb039e9',
+  "./js/game.js": 'f6e8e96979eb',
   "./js/grammar/chapter.js": '3f1a0ef3892d',
+  "./js/grammar/continuum.js": 'a51affc0ef89',
   "./js/grammar/generate.js": 'c312891ee45c',
-  "./js/grammar/index.js": '5240d7aeb4e4',
+  "./js/grammar/index.js": '676c0f29a7cd',
   "./js/grammar/inputs.js": '2ff1da2f09fb',
   "./js/grammar/items.js": '7f5614202473',
   "./js/grammar/lessons.js": 'b64c65fbe898',
   "./js/grammar/print.js": '29a9fe1bdc4a',
   "./js/grammar/progress.js": '921fba3ee99e',
   "./js/grammar/scheduler.js": '013a30c9cf3d',
-  "./js/grammar/session.js": 'dcc6f490b89e',
+  "./js/grammar/session.js": '424a93b80a5a',
   "./js/grammar/sets.js": 'eba8496a4bad',
   "./js/grammar/stage3.js": '32ab140b63e1',
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": 'ca0d6a264bc2',
+  "./js/grammar/ui.js": '740804857c9e',
   "./js/hovergloss.js": 'db78916cb67b',
-  "./js/main.js": '102f0733e92c',
+  "./js/main.js": '5b04ccb3a50a',
   "./js/paradigm-chapters.js": 'a2ee337ad019',
   "./js/paradigms.js": 'decea54a54e8',
   "./js/progress.js": '4d0115152d15',
@@ -422,6 +423,7 @@ const PRECACHE = [
   './js/grammar/items.js',
   './js/grammar/scheduler.js',
   './js/grammar/session.js',
+  './js/grammar/continuum.js',
   './js/grammar/stats.js',
   './js/grammar/ui.js',
   './js/grammar/store-grammar.js',
