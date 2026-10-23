@@ -2860,6 +2860,20 @@ export function createUI(ctx) {
   /** The cells of a word's table a skill's game asks: those it names, or every one when it names none. */
   const skillCell = (sk, e, key) => skillCovers(sk, e, key) || (wholeTables(sk) && (key?.degree == null || key.degree === 'pos'));   // the whole: a plain adjective's own forms
   const skillWordFits = (sk, e) => coversAny(sk, e);
+  /**
+   * A game over several words in order, a column at a time (2026-10-23: "unless it's on shuffle have all the active
+   * first then all the passive … most important is that it keeps order and doesn't jump between active and
+   * passive"): every word's active, then every word's passive; each word's own forms in its table's order. `col`
+   * names the column (its part and header); columns go in the order they are first met. In place, stable.
+   */
+  function columnsFirst(cards) {
+    const cols = new Map();
+    const words = new Map();
+    for (const c of cards) { if (!cols.has(c.col ?? '')) cols.set(c.col ?? '', cols.size); const w = c.entry ? `${c.entry.h}|${c.entry.pos}` : ''; if (!words.has(w)) words.set(w, words.size); }
+    const at = new Map(cards.map((c, i) => [c, i]));
+    const wordOf = (c) => words.get(c.entry ? `${c.entry.h}|${c.entry.pos}` : '');
+    return cards.sort((a, b) => cols.get(a.col ?? '') - cols.get(b.col ?? '') || wordOf(a) - wordOf(b) || at.get(a) - at.get(b));
+  }
   async function playSkillTables(id, { chapter = null, only = null } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length || sk.set) return false;
@@ -2884,11 +2898,12 @@ export function createUI(ctx) {
         if (!playing) { counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1); return; }
         let en = '';
         try { en = dict.cellMeaning?.(e, c.key) ?? ''; } catch { en = ''; }
-        cards.push({ key: `${e.h}|${e.pos}|${si}|${r.label}|${ci}`, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${e.pos}`, entry: e, form: c.key });
+        cards.push({ key: `${e.h}|${e.pos}|${si}|${r.label}|${ci}`, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${e.pos}|${si}|${ci}`, col: [sec.title, sec.headers?.[ci]].filter(Boolean).join(' '), entry: e, form: c.key });
         counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1);
       })));
     }
     if (!cards.length) { ctx.say('No word with a table fits this skill.'); return false; }
+    columnsFirst(cards);
     const how = howOf(sk);
     const one = words.length === 1 ? ruleOf(words[0]) : null;
     const rule = one ? { ...focusRule(one, sk), steps: [...(how?.steps ?? []), ...(focusRule(one, sk)?.steps ?? [])] }
@@ -2910,7 +2925,27 @@ export function createUI(ctx) {
       } });
     return true;
   }
-  const tablePartButton = (id, { chapter = null, short = false } = {}) => {
+  /**
+   * ▶ A mixed game, for every skill (2026-10-23: "add a mixed game for those 15 skills too … do that for all"): its mixed set
+   * — the skill on every other item, between them the skills it is confused with and builds on — played in game
+   * mode; the skill's own drill, every kind of question, when nothing else can be mixed in.
+   */
+  const playMixedGame = (id, { from = null } = {}) => {
+    const sk = skills.get(id);
+    if (!sk || sk.set || !drillable(id)) return;
+    keepEntry('tablepart');
+    gameDrillOn();
+    const mix = mixedMembers(sk, skills, { chapter: ctx.currentChapter?.() ?? null, drillable }).length > 1;
+    goView(mix ? 'mixed' : 'drill', { skill: id, ...(from ? { from } : {}) });
+  };
+  const mixedGameButton = (id, { short = false } = {}) => {
+    const sk = skills.get(id);
+    if (!sk || sk.set || !drillable(id)) return null;
+    return btn(playLabel(short ? 'Mixed game' : 'Play a mixed game'), { onclick: () => { closeGameMenu?.(); playMixedGame(id); }, 'aria-label': `A mixed game: ${sk.title} with the skills it is confused with and builds on, every kind of question` }, 'btn g-play g-partbtn');
+  };
+  /** The skill's games, side by side: its tables, every word (when it has a table), and its mixed game. */
+  const tablePartButton = (id, opts = {}) => [tableGameButton(id, opts), mixedGameButton(id, opts)].filter(Boolean);
+  const tableGameButton = (id, { chapter = null, short = false } = {}) => {
     const sk = skills.get(id);
     if (!sk || sk.set || !sk.paradigms?.length) return null;
     const many = sk.paradigms.length > 1;
@@ -2945,7 +2980,9 @@ export function createUI(ctx) {
   const skillTo = (id) => {
     const sk = skills.get(id);
     switch (entryKept()) {
-      case 'tablepart': return sk?.paradigms?.length && !sk.set ? ['lesson', { skill: id, play: true }] : usualTo(id);
+      // The skill as one game: its tables, every word — or, with no table, its mixed game.
+      case 'tablepart': return sk?.paradigms?.length && !sk.set ? ['lesson', { skill: id, play: true }]
+        : sk && !sk.set && drillable(id) ? [mixedMembers(sk, skills, { chapter: ctx.currentChapter?.() ?? null, drillable }).length > 1 ? 'mixed' : 'drill', { skill: id }] : usualTo(id);
       case 'drill': return drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }];
       case 'unlimited': return drillable(id) && hasBank(id) ? ['unlimited', { skill: id }] : drillable(id) ? ['drill', { skill: id }] : ['learn', { skill: id }];
       case 'learn': return ['learn', { skill: id }];
@@ -4784,12 +4821,16 @@ export function createUI(ctx) {
     const partText = h('span', { class: 'g-runnav__parttext', text: ' Its table' });
     const partB = btn([h('span', { 'aria-hidden': 'true', text: '▦' }), partText],
       { title: 'Practise its part of the table, for every word it covers', 'aria-label': 'Practise this skill\'s part of the table, for every word it covers, then come back here', hidden: true,
-        onclick: () => { const sid = partSkill(); if (sid && !partB.dataset.busy) { partB.dataset.busy = '1'; closeRule(); playSkillTables(sid).finally(() => { delete partB.dataset.busy; }); } } }, 'g-runnav__part');
+        onclick: () => { const sid = partSkill(); if (!sid || partB.dataset.busy) return; closeRule(); partB.dataset.busy = '1'; playSkillTables(sid).finally(() => { delete partB.dataset.busy; }); } }, 'g-runnav__part');
+    // ▶ The skill's mixed game, from wherever it is being practised.
+    const mixSkill = () => { const sid = partSkillAny(); return sid && drillable(sid) ? sid : null; };
+    const mixB = btn([h('span', { 'aria-hidden': 'true', text: '▶' }), h('span', { class: 'g-runnav__parttext', text: ' Mixed game' })],
+      { title: 'A mixed game: this skill with the ones it is confused with and builds on', 'aria-label': 'Play a mixed game of this skill', hidden: true, onclick: () => { const sid = mixSkill(); if (sid) { closeRule(); playMixedGame(sid); } } }, 'g-runnav__part g-runnav__mix');
     // ⇅ Too hard? Too easy? for the skill on screen, and ☰ for everywhere else without leaving game mode.
     const levelB = btn([h('span', { 'aria-hidden': 'true', text: '⇅' }), h('span', { class: 'g-runnav__parttext', text: ' Too hard? Too easy?' })],
       { title: 'Too hard? Too easy?', 'aria-haspopup': 'dialog', 'aria-label': 'Too hard or too easy? The skills before and after this one', hidden: true, onclick: () => { const sid = partSkillAny(); if (sid) openGameMenu({ skill: sid, only: 'level' }); } }, 'g-runnav__level');
     const menuB = menuButton(() => partSkillAny());
-    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB, gameStats, levelB, partB, ruleBtn, menuB, gameBtn);
+    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB, gameStats, levelB, partB, mixB, ruleBtn, menuB, gameBtn);
     const gameOn = () => body.classList.contains('g-game');
     const paintGame = () => {
       const on = gameOn();
@@ -4848,6 +4889,7 @@ export function createUI(ctx) {
       nav.dataset.replay = runner.replay ? 'true' : 'false';
       partB.hidden = !partSkill();
       { const pn = skills.get(partSkill())?.paradigms?.length ?? 0; partText.textContent = pn > 1 ? ` Its tables (${pn})` : ' Its table'; }
+      mixB.hidden = !mixSkill();
       { const sid = partSkillAny(); levelB.hidden = !sid || !levelNode(sid); }
       paintStrips(at, total);   // game mode's strips follow the position, after it is counted
     };
@@ -5805,13 +5847,14 @@ export function createUI(ctx) {
           const key = `${e.h}|${e.pos}|${si}|${r.label}|${ci}`;
           let en = '';
           try { en = dict.cellMeaning?.(e, c.key) ?? ''; } catch { en = ''; }
-          cards.push({ key, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${si}|${ci}`, entry: e, form: c.key });
+          cards.push({ key, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${si}|${ci}`, col: [sec.title, sec.headers?.[ci]].filter(Boolean).join(' '), entry: e, form: c.key });
           const box = boxes.find((i) => sameKey(chartCellKey(item, chart.cells[i]), c.key));
           if (box != null) boxOf.set(key, box);
         })));
       }
       // Anything the tables could not give (a form the word's table does not have) is still asked, as the chart has it.
       for (const i of asked) if (![...boxOf.values()].includes(i)) { const c = chart.cells[i]; const key = `box|${i}`; cards.push({ key, cue: c.label ?? `cell ${i + 1}`, en: c.en ?? '', answers: c.answer, stem: c.stem ?? null, ending: c.ending ?? null, group: 'box', entry: entryOfCell(c), form: chartCellKey(item, c) }); boxOf.set(key, i); }
+      columnsFirst(cards);
       return { cards, boxOf, words: words.length };
     };
     const playChart = () => {
