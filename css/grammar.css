@@ -1331,3 +1331,126 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 @media (pointer: coarse) { .g-runnav__rule { min-width: var(--tap); min-height: var(--tap); } }
 .g-runnav__rule[hidden], .g-game__rule[hidden] { display: none; }
 .g-game__rule { margin: 0 0 var(--s-4); }
+
+/* Game mode for a session — a lesson's steps, a drill (2026-10-23: "everything should be able to be put into the game
+   mode … the lessons included"): the table game's look (panels.css .gm), each step and each question a card of its
+   own ringed in the game's violet, the bar a game's bar. */
+#grammar .g-body.g-game {
+  --gm-a: oklch(0.62 0.2 285); --gm-b: oklch(0.7 0.14 210); --gm-gold: oklch(0.8 0.16 80);
+  background: radial-gradient(ellipse 90% 70% at 50% 40%, color-mix(in srgb, var(--gm-b) 16%, var(--bg)), color-mix(in srgb, var(--gm-a) 14%, var(--bg)));
+}
+#grammar .g-game .g-runnav { background: color-mix(in srgb, var(--bg-raised) 90%, transparent); box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--gm-a) 35%, transparent); }
+#grammar .g-game .g-runnav__stats:not(:empty) { padding: 0.15em 0.7em; border-radius: 999px; background: var(--bg-raised); box-shadow: inset 0 0 0 2px var(--gm-gold); font-weight: 700; }
+#grammar .g-game .g-stepwrap { margin-top: var(--s-3); }
+#grammar .g-game .g-step, #grammar .g-game .g-item {
+  margin-block: var(--s-4); padding: var(--s-4) var(--s-5); border-radius: 1.25rem; background: var(--bg-raised);
+  box-shadow: 0 0 0 3px var(--gm-a), 0 0 0 7px color-mix(in srgb, var(--gm-a) 18%, transparent), 0 14px 36px color-mix(in srgb, var(--gm-a) 22%, transparent);
+}
+#grammar .g-game .g-step .g-kicker { display: inline-block; padding: 0.1em 0.7em; border-radius: 999px; background: color-mix(in srgb, var(--gm-a) 14%, var(--bg-raised)); color: color-mix(in srgb, var(--gm-a) 70%, var(--ink)); font-weight: 700; }
+#grammar .g-game .g-step__title { font-size: 1.5rem; }
+#grammar .g-game .g-notice, #grammar .g-game .g-worked { border-radius: 1rem; }
+@media (max-width: 480px) { #grammar .g-game .g-step, #grammar .g-game .g-item { padding: var(--s-3); } }
+
+/* A step's explanation (ui.js stepLead): on a page, as it always was — the box shows nothing of its own. In game mode,
+   a small box of its first lines; ? opens the whole of it, the shown sentence and the tables with it. */
+.g-explain__head { display: none; }
+#grammar .g-game .g-explain { margin-block: var(--s-3); padding: var(--s-3); border-radius: 1rem; border: 2px dashed color-mix(in srgb, var(--gm-b) 55%, transparent); background: color-mix(in srgb, var(--gm-b) 10%, var(--bg-raised)); }
+#grammar .g-game .g-explain__head { display: flex; align-items: center; gap: var(--s-1); margin: 0 0 var(--s-1); font-weight: 700; font-size: var(--ui-sm); color: var(--ink-2); }
+.g-explain__q { margin-left: auto; min-height: 36px; padding: 0 0.8em; border: 2px solid color-mix(in srgb, var(--gm-a, var(--ink-3)) 55%, transparent); border-radius: 999px; background: var(--bg-raised); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+@media (pointer: coarse) { .g-explain__q { min-height: var(--tap); } }
+#grammar .g-game .g-explain:not(.is-open) .g-step__say { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+#grammar .g-game .g-explain:not(.is-open) .g-explain__more { display: none; }
+#grammar .g-game .g-explain.is-open .g-explain__qtext { display: none; }
+#grammar .g-game .g-explain.is-open .g-explain__q::after { content: " Less"; }
+/* ▶ Play this chart, beside Check. */
+.g-chart__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+#grammar .g-game .g-runnav { background: var(--bg-raised); flex-wrap: nowrap; gap: var(--s-1); }
+#grammar .g-game .g-runnav > * { white-space: nowrap; flex: none; }
+@media (max-width: 480px) { #grammar .g-game .g-runnav__game { font-size: var(--ui-sm); padding-inline: var(--s-2); } #grammar .g-game .g-runnav__stats:not(:empty) { font-size: var(--ui-sm); } }
+
+/* Six tabs since the path (2026-10-23): on a narrow phone the row scrolls rather than wrapping. */
+.g-nav { overflow-x: auto; scrollbar-width: none; }
+.g-nav::-webkit-scrollbar { display: none; }
+.g-nav__btn { flex: none; }
+.g-acts--top { margin: 0 0 var(--s-4); }
+.g-acts--path { margin-block: var(--s-4); }
+
+/* The game's own bar on a view that is not a session (ui.js gameBar), and the session bar's ☰ ⇅ ▦. */
+.g-gamebar { display: flex; align-items: center; gap: var(--s-2); }
+.g-gamebar__t { font-weight: 700; flex: 1 1 auto !important; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.g-runnav__menu, .g-runnav__level, .g-runnav__part, .g-gamebar__leave {
+  min-height: 40px; padding: 0 0.75em; border: 2px solid color-mix(in srgb, var(--gm-a, var(--rubric)) 45%, transparent); border-radius: 999px;
+  background: var(--bg-raised); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3em; white-space: pre;
+}
+.g-runnav__menu[hidden], .g-runnav__level[hidden], .g-runnav__part[hidden] { display: none; }
+@media (pointer: coarse) { .g-runnav__menu, .g-runnav__level, .g-runnav__part, .g-gamebar__leave { min-height: var(--tap); } }
+/* A phone's bar keeps to one line: the icons alone, the words in their labels. */
+@media (max-width: 560px) {
+  #grammar .g-game .g-runnav__parttext, #grammar .g-game .g-runnav__menut, #grammar .g-game .g-gamebar__lt, #grammar .g-game .g-runnav .g-levelbtn__t, #grammar .g-game .g-runnav__gamet { display: none; }
+  #grammar .g-game .g-runnav__menu, #grammar .g-game .g-runnav__level, #grammar .g-game .g-runnav__part, #grammar .g-game .g-gamebar__leave, #grammar .g-game .g-runnav__rule { padding-inline: 0.55em; }
+  #grammar .g-game .g-runnav__b { padding-inline: 0.4em; }
+}
+@media (max-width: 400px) { #grammar .g-game .g-runnav { gap: 2px; } #grammar .g-game .g-runnav__part { display: none; } }
+
+/* ☰ The game's menu (ui.js openGameMenu): a sheet over the page, from the bottom on a phone. */
+.g-gmenu { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; padding: var(--s-4); background: color-mix(in srgb, #000 45%, transparent); }
+.g-gmenu__in { width: min(36rem, 100%); max-height: calc(100dvh - 2 * var(--s-4)); overflow-y: auto; padding: var(--s-4) var(--s-5) var(--s-5); border-radius: 1.25rem; background: var(--bg-raised); color: var(--ink); box-shadow: 0 0 0 3px var(--gm-a, var(--rubric)), 0 20px 50px rgba(0, 0, 0, 0.35); }
+@media (max-width: 560px) { .g-gmenu { align-items: flex-end; padding: 0; } .g-gmenu__in { border-radius: 1.25rem 1.25rem 0 0; max-height: 88dvh; padding: var(--s-3) var(--s-4) calc(var(--s-5) + env(safe-area-inset-bottom)); } }
+.g-gmenu__top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); position: sticky; top: calc(-1 * var(--s-4)); background: var(--bg-raised); padding-block: var(--s-1); z-index: 1; }
+.g-gmenu__h { margin: 0; font-size: 1.3rem; }
+.g-gmenu__x { min-width: 44px; min-height: 44px; border: 0; border-radius: 999px; background: var(--bg); color: var(--ink); font: inherit; font-size: 1.2rem; cursor: pointer; }
+.g-gmenu__sec { margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+.g-gmenu__sk { margin: var(--s-1) 0 var(--s-2); font-size: 1.15rem; }
+.g-gmenu__sh { margin: var(--s-3) 0 var(--s-2); font-size: var(--ui-sm); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); }
+.g-gmenu__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: var(--s-2); }
+.g-gmenu__go { display: flex; align-items: center; min-height: var(--tap, 44px); padding: 0 var(--s-3); border-radius: 0.8rem; background: var(--bg); color: var(--ink); text-decoration: none; font-weight: 600; }
+.g-gmenu__go:hover, .g-gmenu__go:focus-visible { background: color-mix(in srgb, var(--gm-a, var(--rubric)) 14%, var(--bg)); }
+
+/* ⇅ Too hard? Too easy? */
+.g-level { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: var(--s-3); margin-block: var(--s-2); }
+.g-level__side { padding: var(--s-3); border-radius: 1rem; background: var(--bg); }
+.g-level__h { margin: 0 0 var(--s-1); font-size: 1rem; }
+.g-level__list { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-1); }
+.g-pathlink { display: flex; align-items: center; gap: var(--s-2); min-height: var(--tap, 44px); padding: 0 var(--s-2); border-radius: 0.7rem; background: var(--bg-raised); color: var(--ink); text-decoration: none; }
+.g-pathlink:hover, .g-pathlink:focus-visible { background: color-mix(in srgb, var(--gm-a, var(--rubric)) 14%, var(--bg-raised)); }
+.g-pathlink__t { flex: 1; font-weight: 600; }
+.g-pathlink__c { font-size: var(--ui-sm); color: var(--ink-3); white-space: nowrap; }
+
+/* The path (ui.js renderPath). */
+.g-path__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.g-path__s { display: grid; grid-template-columns: 2.2rem 1fr auto; align-items: center; gap: var(--s-2) var(--s-3); padding: var(--s-2) var(--s-3); border-radius: 0.9rem; background: var(--bg-raised); box-shadow: inset 0 0 0 1px var(--line); }
+.g-path__s--table { background: color-mix(in srgb, var(--rubric) 6%, var(--bg-raised)); }
+.g-path__n { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 999px; background: var(--bg); font-weight: 700; font-size: var(--ui-sm); }
+.g-path__t { margin: 0; display: flex; align-items: center; gap: var(--s-1); flex-wrap: wrap; font-weight: 600; }
+.g-path__sub { margin: 0.15em 0 0; font-size: var(--ui-sm); }
+.g-path__acts { display: flex; flex-wrap: wrap; gap: var(--s-1); justify-content: flex-end; }
+.g-path__main { min-width: 0; }
+@media (max-width: 560px) { .g-path__s { grid-template-columns: 2.2rem 1fr; } .g-path__acts { grid-column: 1 / -1; justify-content: flex-start; } }
+
+/* A lesson's parts, each practised on its own. */
+.g-lparts { margin-block: var(--s-5); }
+.g-lparts__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.g-lparts__go { display: flex; align-items: center; gap: var(--s-3); min-height: var(--tap, 44px); padding: var(--s-2) var(--s-3); border-radius: 0.9rem; background: var(--bg-raised); box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); text-decoration: none; }
+.g-lparts__go:hover, .g-lparts__go:focus-visible { box-shadow: inset 0 0 0 2px var(--gm-a, var(--rubric)); }
+.g-lparts__i[aria-current] .g-lparts__go { box-shadow: inset 0 0 0 2px var(--gm-a, var(--rubric)); }
+.g-lparts__n { display: grid; place-items: center; flex: none; width: 2rem; height: 2rem; border-radius: 999px; background: color-mix(in srgb, var(--gm-a, var(--rubric)) 16%, var(--bg)); font-weight: 700; }
+.g-lparts__t { font-weight: 600; }
+.g-partmore { margin-top: var(--s-2); }
+/* A part practised on its own: its explanation is folded to its first lines, in or out of game mode. */
+.g-explain--part .g-explain__head { display: flex; align-items: center; gap: var(--s-1); margin: 0 0 var(--s-1); font-weight: 700; font-size: var(--ui-sm); color: var(--ink-2); }
+.g-explain--part { padding: var(--s-3); border-radius: 1rem; border: 2px dashed color-mix(in srgb, var(--gm-b, var(--rubric)) 45%, transparent); }
+.g-explain--part:not(.is-open) .g-step__say { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.g-explain--part.is-open .g-explain__qtext { display: none; }
+.g-explain--part.is-open .g-explain__q::after { content: " Less"; }
+/* 📖 in a lesson: the part's own explanation above the type's rule. */
+.g-game__rulestep { margin-bottom: var(--s-3); }
+.g-game__rulestep .g-explain__more { display: block !important; }
+
+/* A control that became a link (2026-10-23, its own address) keeps the look it had as a button. */
+#grammar a.g-chip, #grammar a.g-skill__title, #grammar a.btn, #grammar a.g-choice { text-decoration: none; }
+#grammar a.g-chip { display: inline-flex; align-items: center; }
+#grammar a.g-skill__title { display: inline; }
+
+/* "×3": how many times it has been practised (practised.js). Small, beside the name it counts. */
+.g-count { display: inline-flex; align-items: center; margin-inline-start: 0.4em; padding: 0 0.45em; min-height: 1.35em; border-radius: 999px; background: color-mix(in srgb, var(--gm-a, var(--rubric)) 12%, var(--bg-raised)); color: var(--ink-2); font-family: var(--face-ui); font-size: 0.75rem; font-weight: 700; line-height: 1; vertical-align: middle; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.g-title .g-count { font-size: 0.9rem; }

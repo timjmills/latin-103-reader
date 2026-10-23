@@ -226,6 +226,33 @@ export function isGrammarRoute(hash) {
   return /^#?\/grammar\/?$/.test(String(hash ?? '').trim());
 }
 
+/**
+ * The address of one view of the section (2026-10-23: "why when I right click on the link it does not say I can
+ * open it in a new window or tab"): "#/grammar/learn?skill=present-tense". A text value is written as it is, any
+ * other (a number, an object such as `from`) as `j:` + its JSON, so it reads back the same. The skill map is
+ * plain "#/grammar". Pure.
+ */
+export function grammarViewHash(name, params = {}) {
+  const q = new URLSearchParams();
+  for (const [k, v] of Object.entries(params ?? {})) {
+    if (v == null) continue;
+    q.set(k, typeof v === 'string' && !v.startsWith('j:') ? v : `j:${JSON.stringify(v)}`);
+  }
+  const s = q.toString();
+  if (name === 'map' && !s) return GRAMMAR_HASH;
+  return `${GRAMMAR_HASH}/${name}${s ? `?${s}` : ''}`;
+}
+/** "#/grammar/learn?skill=x" → { name: 'learn', params: { skill: 'x' } }; any other hash → null. Pure. */
+export function parseGrammarView(hash) {
+  const m = /^#?\/grammar\/([a-z]+)(?:\?(.*))?$/i.exec(String(hash ?? '').trim());
+  if (!m) return null;
+  const params = {};
+  for (const [k, v] of new URLSearchParams(m[2] ?? '')) {
+    if (v.startsWith('j:')) { try { params[k] = JSON.parse(v.slice(2)); } catch { /* a value spoilt in the address: left out */ } } else params[k] = v;
+  }
+  return { name: m[1], params };
+}
+
 /** "#/chapter/7/grammar" → { n: 7, tab: 'grammar' }; not a chapter route → null. Pure. */
 export function parseChapterRoute(hash) {
   const m = /^#?\/chapter\/(\d{1,2})(?:\/(reading|grammar))?\/?$/.exec(String(hash ?? '').trim());

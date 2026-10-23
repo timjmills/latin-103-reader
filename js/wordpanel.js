@@ -505,7 +505,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       endings, onEndings: (want) => { if (want !== endings) endBtn.click(); },   // Endings only plays as the table has it, and a switch in the game is the table's too
       // The charts: the ones this game plays selected, every other one a choice away (the bar, the start, the end).
       charts: { list: chartList(), on: [...new Set(items.map((g) => g.group))], play: (ids) => play(null, new Set(ids)) },
-      how: game.whole ? (it) => formRule(game.whole, it.form) : null });
+      how: game.whole ? (it) => formRule(game.whole, it.form) : null, countKey: game.countKey ?? null });
   };
   playBtn.addEventListener('click', () => play());
   playMissBtn.addEventListener('click', () => play(new Set(savedMisses(gameId()))));
@@ -782,7 +782,8 @@ function tagChapters(sheet) {
  * practice with only the chapters it keeps switched on (a chapter's Word Work). These are for
  * tables that show a word's forms to learn from; a drill's hint or feedback
  * table is rendered without them, where the English could answer the
- * question being asked.
+ * question being asked. `opts.countKey` (a key or keys of practised.js) counts a game of the table played to
+ * its end, for the "×N" beside the table.
  */
 export function renderParadigm(p, opts = {}) {
   if (!p) return null;
@@ -821,7 +822,7 @@ export function renderParadigm(p, opts = {}) {
   const rule = opts.ruleFor ? focusRule(whole, opts.ruleFor) : whole;
   if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && rule !== whole, heading: rule !== whole ? 'How this type makes it' : 'How it’s made' }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
-    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole } }));
+    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole, countKey: opts.countKey ?? null } }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).
