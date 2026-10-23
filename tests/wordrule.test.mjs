@@ -14,12 +14,12 @@ const step = (r, head) => r.steps.find((s) => s.head === head);
 test('a verb: its conjugation, its stems from its parts, and its own forms as examples', () => {
   const r = ruleOf('amō', 'V');
   assert.equal(r.type, '1st conjugation verb');
-  assert.match(step(r, 'Present stem').text, /^amā- \(amāre/);
+  assert.match(step(r, 'Present stem').text, /^1st conjugation: take the 2nd principal part, amāre, and drop -re → amā-\./);
   assert.deepEqual(step(r, 'Present').eg, ['amō', 'amās', 'amat', 'amāmus', 'amātis', 'amant']);
-  assert.match(step(r, 'Perfect stem').text, /^amāv- \(amāvī without -ī\)/);
-  assert.match(step(r, 'Perfect passive').text, /^amātus, -a, -um/);
+  assert.match(step(r, 'Perfect stem').text, /^Take the 3rd principal part, amāvī, and drop -ī → amāv-\./);
+  assert.match(step(r, 'Perfect passive').text, /^Take the 4th principal part, amātum, and change -um to -us, -a, -um → amātus/);
   assert.equal(ruleOf('regō', 'V').type, '3rd conjugation verb');
-  assert.match(step(ruleOf('regō', 'V'), 'Present stem').text, /^reg- /);
+  assert.match(step(ruleOf('regō', 'V'), 'Present stem').text, /^3rd conjugation: take the 2nd principal part, regere, and drop -ere → reg-\./);
   assert.equal(ruleOf('capiō', 'V').type, '3rd conjugation (-iō) verb');
   assert.equal(ruleOf('audiō', 'V').type, '4th conjugation verb');
 });
@@ -27,8 +27,8 @@ test('a verb: its conjugation, its stems from its parts, and its own forms as ex
 test('a deponent is ruled as one: passive endings, its infinitive without -rī or -ī', () => {
   const h = ruleOf('hortor', 'V');
   assert.match(h.type, /^deponent, 1st conjugation/);
-  assert.match(step(h, 'Present stem').text, /^hortā- \(hortārī, the infinitive without -rī\)/);
-  assert.match(step(ruleOf('sequor', 'V'), 'Present stem').text, /^sequ- \(sequī, the infinitive without -ī\)/);
+  assert.match(step(h, 'Present stem').text, /take the 2nd principal part, hortārī, and drop -rī → hortā-\./);
+  assert.match(step(ruleOf('sequor', 'V'), 'Present stem').text, /take the 2nd principal part, sequī, and drop -ī → sequ-\./);
 });
 
 test('an irregular verb says so, and gives its forms', () => {
@@ -40,7 +40,7 @@ test('an irregular verb says so, and gives its forms', () => {
 test('a noun: declension and gender, the stem from the genitive, the endings case by case', () => {
   const p = ruleOf('puella', 'N');
   assert.equal(p.type, '1st declension noun, feminine');
-  assert.match(step(p, 'Stem').text, /^puell- \(the genitive singular puellae without -ae\)/);
+  assert.match(step(p, 'Stem').text, /^1st declension: take the genitive singular, puellae \(the 2nd part of the dictionary entry\), and drop -ae → puell-\./);
   assert.match(step(p, 'Plural').text, /gen -ārum/);
   const r = ruleOf('rēx', 'N');
   assert.match(step(r, 'Singular').text, /nom rēx, gen -is/, 'a nominative not made as stem + ending is shown whole');
@@ -50,7 +50,7 @@ test('a noun: declension and gender, the stem from the genitive, the endings cas
 test('an adjective: its kind, its stem, and its comparison', () => {
   const b = ruleOf('bonus', 'ADJ');
   assert.equal(b.type, '1st/2nd declension adjective');
-  assert.match(step(b, 'Stem').text, /^bon- /);
+  assert.match(step(b, 'Stem').text, /take the feminine, bona \(the 2nd dictionary form\), and drop -a → bon-\./);
   assert.deepEqual(step(b, 'Comparison').eg, ['melior, melius', 'optimus -a -um']);
   assert.match(ruleOf('fortis', 'ADJ').type, /^3rd declension adjective/);
 });
@@ -71,10 +71,10 @@ test('a skill\'s rule says how each type makes its forms', async () => {
   assert.match(say(rule('monet', 'present-subjunctive')), /-am, -ās, -at/);
   assert.ok(!/Imperfect/.test(say(rule('amat', 'present-subjunctive'))), 'only the tense the skill is about');
   // The imperfect: 1st and 2nd keep their vowel and add -bam; 3rd adds -ēbam.
-  assert.match(say(rule('amat', 'imperfect-active')), /Stem \+ -bam/);
+  assert.match(say(rule('amat', 'imperfect-active')), /amā- \+ -bam/);
   assert.match(say(rule('regit', 'imperfect-active')), /-ēbam/);
   // The imperfect subjunctive is the infinitive + the endings, said with this verb's own infinitive.
-  assert.match(say(rule('regit', 'imperfect-subjunctive')), /The infinitive regere \+ -m/);
+  assert.match(say(rule('regit', 'imperfect-subjunctive')), /The 2nd principal part, regere, \+ -m/);
   // A passive skill on an ordinary verb: the passive endings and the tense's own sign, not the active endings.
   const ip = say(rule('regit', 'imperfect-passive'));
   assert.match(ip, /-ēbam/);
@@ -88,7 +88,7 @@ test('a skill\'s rule says how each type makes its forms', async () => {
   assert.match(say(rule('amat', 'pluperfect-subjunctive')), /amāvisse \+ -m/);
   assert.match(say(rule('hortatur', 'perfect-subjunctive')), /hortātus, -a, -um \+ sim/);
   // A deponent's imperfect subjunctive names the stem it adds -rer to.
-  assert.match(say(rule('hortatur', 'imperfect-subjunctive')), /Present stem: hortā-/);
+  assert.match(say(rule('hortatur', 'imperfect-subjunctive')), /Present stem: .*→ hortā-/);
 });
 
 test('a card reads its parts past an enclitic and a bracketed note, and follows a one-number noun', () => {
@@ -96,14 +96,14 @@ test('a card reads its parts past an enclitic and a bracketed note, and follows 
   // dāve = dā + -ve: the card is dō's, without the "+ -ue"
   const dave = byLemma('dave', 'dō, dare, dedī, datum + -ue');
   assert.equal(dave.parts, 'dō, dare, dedī, datum');
-  assert.match(step(dave, 'Perfect passive').text, /datus, -a, -um \(from datum\)/);
+  assert.match(step(dave, 'Perfect passive').text, /the 4th principal part, datum, .*→ datus/);
   // "placēre (impersonal)" and "ēsse (edere)": the stem from the infinitive itself
-  assert.match(step(byLemma('placet', 'placet, placēre (impersonal)'), 'Present stem').text, /^placē- \(placēre,/);
-  assert.match(step(byLemma('edat', 'edō, ēsse (edere), ēdī, ēsum'), 'Present stem').text, /^ed- \(edere,/);
+  assert.match(step(byLemma('placet', 'placet, placēre (impersonal)'), 'Present stem').text, /principal part, placēre, and drop -re → placē-/);
+  assert.match(step(byLemma('edat', 'edō, ēsse (edere), ēdī, ēsum'), 'Present stem').text, /principal part, edere, and drop -ere → ed-/);
   // a plural-only noun says so and takes its stem from the plural; a singular-only one has no plural step
   const castra = ruleOf('castra', 'N');
   assert.ok(step(castra, 'Plural only'));
-  assert.match(step(castra, 'Stem').text, /genitive plural castrōrum/);
+  assert.match(step(castra, 'Stem').text, /genitive plural, castrōrum/);
   assert.ok(!step(castra, 'Singular'));
   const roma = ruleOf('romae', 'N');
   assert.ok(step(roma, 'Singular only'));
@@ -120,7 +120,7 @@ test('dō: its a is short, and its card and table say so', async () => {
   const t = paradigm(e, []);
   const r = wordRule(e, t);
   assert.equal(r.parts, 'dō, dare, dedī, datum');
-  assert.match(step(r, 'Present stem').text, /^da- \(dare,/);
+  assert.match(step(r, 'Present stem').text, /principal part, dare, and drop -re → da-/);
   assert.ok(step(r, 'Short a'));
   assert.match(step(r, 'Subjunctive').text, /the a becomes e/);
   const forms = t.sections.flatMap((s) => s.rows.flatMap((x) => x.cells.map((c) => c?.text)));
@@ -139,7 +139,7 @@ test('the ? beside a box: how that one form is made, without its answer', async 
   const { r, cells } = cellsOf('amat', 'V');
   const impf = cells.find((c) => c.key.tense === 'impf' && c.key.mood === 'ind' && c.key.voice === 'act');
   const f = formRule(r, impf.key);
-  assert.match(say(f), /Imperfect: Stem \+ -bam/);
+  assert.match(say(f), /Imperfect: amā- \+ -bam/);
   assert.ok(f.steps.every((s) => !s.eg), 'no examples: they are the answers');
   assert.ok(!/amābam/.test(say(f)));
   // a passive subjunctive: its tense's way and the passive endings

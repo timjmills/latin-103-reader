@@ -8,6 +8,7 @@
 
 import { conjugationName, declensionName, adjectiveName } from './paradigms.js';
 
+const cap = (t) => String(t ?? '').replace(/^./, (c) => c.toUpperCase());
 const strip = (s) => String(s ?? '').normalize('NFD').replace(/\p{Mn}/gu, '');
 const cut = (word, tail) => (strip(word).endsWith(strip(tail)) ? word.slice(0, word.length - tail.length) : null);
 const first = (t) => String(t ?? '').split(' / ')[0];
@@ -34,24 +35,24 @@ function cellOf(table, title, rowLabel, header = null) {
 /* ------------------------------------------------------------------ verbs */
 // The present system, said once per conjugation; {s} is this verb's present stem.
 const PRESENT = {
-  1: { stem: (inf) => cut(inf, 're'), from: 'the infinitive without -re',
+  1: { stem: (inf) => cut(inf, 're'), drop: '-re',
     pres: 'Add -ō, -s, -t, -mus, -tis, -nt (the ā drops before -ō).', impf: 'Stem + -bam, -bās, -bat …', fut: 'Stem + -bō, -bis, -bit …', subj: 'The ā becomes e: -em, -ēs, -et …' },
-  2: { stem: (inf) => cut(inf, 're'), from: 'the infinitive without -re',
+  2: { stem: (inf) => cut(inf, 're'), drop: '-re',
     pres: 'Add -ō, -s, -t, -mus, -tis, -nt.', impf: 'Stem + -bam, -bās, -bat …', fut: 'Stem + -bō, -bis, -bit …', subj: 'Stem + -am, -ās, -at …, the ē shortened (moneam).' },
-  3: { stem: (inf) => cut(inf, 'ere'), from: 'the infinitive without -ere',
+  3: { stem: (inf) => cut(inf, 'ere'), drop: '-ere',
     pres: 'Add -ō, -is, -it, -imus, -itis, -unt.', impf: 'Stem + -ēbam, -ēbās, -ēbat …', fut: 'Stem + -am, -ēs, -et, -ēmus …', subj: 'Stem + -am, -ās, -at …' },
-  '3io': { stem: (inf) => cut(inf, 'ere'), from: 'the infinitive without -ere — an i comes in before most vowels',
+  '3io': { stem: (inf) => cut(inf, 'ere'), drop: '-ere', note: 'an i comes in before most vowels',
     pres: 'Add -iō, -is, -it, -imus, -itis, -iunt.', impf: 'Stem + -iēbam, -iēbās …', fut: 'Stem + -iam, -iēs, -iet …', subj: 'Stem + -iam, -iās, -iat …' },
-  4: { stem: (inf) => cut(inf, 're'), from: 'the infinitive without -re',
+  4: { stem: (inf) => cut(inf, 're'), drop: '-re',
     pres: 'Add -ō, -s, -t, -mus, -tis, -unt (audiō, audiunt).', impf: 'Stem + -ēbam, -ēbās …, the ī shortened (audiēbam).', fut: 'Stem + -am, -ēs, -et …, the ī shortened.', subj: 'Stem + -am, -ās, -at …, the ī shortened.' },
 };
 // A deponent's infinitive is passive (-ārī, -ērī, -ī, -īrī), and its every present-system form is passive.
 const DEP = {
-  1: { inf: 'rī', from: 'the infinitive without -rī', pres: '-or, -āris, -ātur, -āmur, -āminī, -antur (the ā drops before -or).', impf: 'Stem + -bar, -bāris, -bātur …', fut: 'Stem + -bor, -beris, -bitur …', subj: 'The ā becomes e: -er, -ēris, -ētur …', isubj: 'Stem + -rer, -rēris, -rētur …' },
-  2: { inf: 'rī', from: 'the infinitive without -rī', pres: '-or, -ris, -tur, -mur, -minī, -ntur.', impf: 'Stem + -bar, -bāris, -bātur …', fut: 'Stem + -bor, -beris, -bitur …', subj: 'Stem + -ar, -āris, -ātur …, the ē shortened (verear).', isubj: 'Stem + -rer, -rēris, -rētur …' },
-  3: { inf: 'ī', from: 'the infinitive without -ī', pres: '-or, -eris, -itur, -imur, -iminī, -untur.', impf: 'Stem + -ēbar, -ēbāris …', fut: 'Stem + -ar, -ēris, -ētur …', subj: 'Stem + -ar, -āris, -ātur …', isubj: 'Stem + -erer, -erēris …' },
-  '3io': { inf: 'ī', from: 'the infinitive without -ī', pres: '-ior, -eris, -itur, -imur, -iminī, -iuntur.', impf: 'Stem + -iēbar, -iēbāris …', fut: 'Stem + -iar, -iēris …', subj: 'Stem + -iar, -iāris …', isubj: 'Stem + -erer, -erēris …' },
-  4: { inf: 'rī', from: 'the infinitive without -rī', pres: '-or, -ris, -tur, -mur, -minī, -untur (partior, partiuntur).', impf: 'Stem + -ēbar, -ēbāris …', fut: 'Stem + -ar, -ēris …', subj: 'Stem + -ar, -āris …', isubj: 'Stem + -rer, -rēris …' },
+  1: { inf: 'rī', drop: '-rī', pres: '-or, -āris, -ātur, -āmur, -āminī, -antur (the ā drops before -or).', impf: 'Stem + -bar, -bāris, -bātur …', fut: 'Stem + -bor, -beris, -bitur …', subj: 'The ā becomes e: -er, -ēris, -ētur …', isubj: 'Stem + -rer, -rēris, -rētur …' },
+  2: { inf: 'rī', drop: '-rī', pres: '-or, -ris, -tur, -mur, -minī, -ntur.', impf: 'Stem + -bar, -bāris, -bātur …', fut: 'Stem + -bor, -beris, -bitur …', subj: 'Stem + -ar, -āris, -ātur …, the ē shortened (verear).', isubj: 'Stem + -rer, -rēris, -rētur …' },
+  3: { inf: 'ī', drop: '-ī', pres: '-or, -eris, -itur, -imur, -iminī, -untur.', impf: 'Stem + -ēbar, -ēbāris …', fut: 'Stem + -ar, -ēris, -ētur …', subj: 'Stem + -ar, -āris, -ātur …', isubj: 'Stem + -erer, -erēris …' },
+  '3io': { inf: 'ī', drop: '-ī', note: 'an i comes in before most vowels', pres: '-ior, -eris, -itur, -imur, -iminī, -iuntur.', impf: 'Stem + -iēbar, -iēbāris …', fut: 'Stem + -iar, -iēris …', subj: 'Stem + -iar, -iāris …', isubj: 'Stem + -erer, -erēris …' },
+  4: { inf: 'rī', drop: '-rī', pres: '-or, -ris, -tur, -mur, -minī, -untur (partior, partiuntur).', impf: 'Stem + -ēbar, -ēbāris …', fut: 'Stem + -ar, -ēris …', subj: 'Stem + -ar, -āris …', isubj: 'Stem + -rer, -rēris …' },
 };
 
 function conjKeyOf(name) {
@@ -92,7 +93,7 @@ function verbRule(entry, table) {
   if (!P) {
     steps.push({ head: 'Irregular', text: 'Its forms follow no single pattern: learn them as a set. The person endings are the usual ones: -ō / -m, -s, -t, -mus, -tis, -nt.', eg: column(table, 'present indicative') });
     const pf = parts[2] ? cut(parts[2], 'ī') : null;
-    if (pf) steps.push({ head: 'Perfect', text: `The perfect is regular: stem ${pf}- (${parts[2]} without -ī) + -ī, -istī, -it, -imus, -istis, -ērunt.`, eg: column(table, 'perfect indicative', null, 3) });
+    if (pf) steps.push({ head: 'Perfect', stem: pf, text: `The perfect is regular: take the 3rd principal part, ${parts[2]}, and drop -ī → ${pf}-. Then ${pf}- + -ī, -istī, -it, -imus, -istis, -ērunt.`, eg: column(table, 'perfect indicative', null, 3) });
     return { kind: 'Verb', type, parts: lemma, steps };
   }
   const D = dep ? DEP[k] : null;
@@ -102,25 +103,33 @@ function verbRule(entry, table) {
   const s = stemOf(inf);
   const voice = dep ? 'passive' : 'active';
   const low = (t) => t.replace(/^Stem/, 'stem').replace(/^The/, 'the');
-  if (dep) steps.push({ head: 'Deponent', text: 'Passive forms, active meaning. Three parts: the present, the infinitive and the perfect.' });
-  if (s) steps.push({ head: 'Present stem', text: `${s}- (${inf}, ${dep ? D.from : P.from}).` });
+  // Each step says where its stem comes from (2026-10-23: "make sure it is saying for this conjugation, take the
+  // 2nd principal part … add …"): which principal part, what comes off, what goes on.
+  const conj = name ? name.replace(/^deponent,\s*/, '') : 'this conjugation';
+  const st = (t) => (s ? t.replace(/\bStem\b/g, `${s}-`).replace(/\bstem\b/g, `${s}-`) : t);
+  if (dep) steps.push({ head: 'Deponent', text: `Passive forms, active meaning. Three principal parts: the present (${parts[0] ?? ''}), the infinitive (${parts[1] ?? ''}) and the perfect (${parts[2] ?? ''}).` });
+  const note = (dep ? D.note : P.note);
+  if (s) steps.push({ head: 'Present stem', stem: s, text: `${cap(conj)}: take the 2nd principal part, ${inf}, and drop ${dep ? D.drop : P.drop} → ${s}-${note ? ` (${note})` : ''}.` });
   // dō and its compounds: the stem's a is short (da-), so the 1st conjugation's "ā" is this verb's "a".
   const shortA = k === 1 && !dep && /a$/.test(s ?? '');
   const say = (t) => (shortA ? t.replace(/ā|(?<=The |the )ā/g, 'a') : t);
   if (shortA) { const d = s.slice(0, -1); steps.push({ head: 'Short a', text: `Its a is short — ${s}mus, ${s}bam, ${inf} — except in ${d}ās, ${d}ā and ${d}āns.` }); }
-  steps.push({ head: 'Present', text: dep ? `Add ${D.pres}` : say(P.pres), eg: column(table, 'present indicative', voice) });
-  steps.push({ head: 'Imperfect', text: dep ? D.impf : P.impf, eg: column(table, 'imperfect indicative', voice, 3) });
-  steps.push({ head: 'Future', text: dep ? D.fut : P.fut, eg: column(table, 'future indicative', voice, 3) });
-  steps.push({ head: 'Subjunctive', text: dep ? `Present: ${low(D.subj)} Imperfect: ${low(D.isubj)}` : `Present: ${say(low(P.subj))} Imperfect: the infinitive ${inf} + -m, -s, -t …`, eg: [...column(table, 'present subjunctive', voice, 2), ...column(table, 'imperfect subjunctive', voice, 1)] });
+  const plus = (t) => (s ? `${s}- + ${t.replace(/^Add /, '')}` : t);
+  steps.push({ head: 'Present', text: dep ? plus(D.pres) : plus(say(P.pres)), eg: column(table, 'present indicative', voice) });
+  steps.push({ head: 'Imperfect', text: st(dep ? D.impf : P.impf), eg: column(table, 'imperfect indicative', voice, 3) });
+  steps.push({ head: 'Future', text: st(dep ? D.fut : P.fut), eg: column(table, 'future indicative', voice, 3) });
+  // The 1st conjugation's present subjunctive drops the stem's ā for e: say what is left (portā- → port- + -em).
+  const ae = (t) => (k === 1 && s && /ā$|a$/.test(s) ? t.replace(/becomes e: -e/, `becomes e: ${s.slice(0, -1)}- + -e`) : t);
+  steps.push({ head: 'Subjunctive', text: dep ? ae(`Present: ${st(low(D.subj))} Imperfect: ${st(low(D.isubj))}`) : ae(`Present: ${st(say(low(P.subj)))} Imperfect: the 2nd principal part, ${inf}, + -m, -s, -t …`), eg: [...column(table, 'present subjunctive', voice, 2), ...column(table, 'imperfect subjunctive', voice, 1)] });
   if (!dep) {
     const pf = parts[2] ? cut(parts[2], 'ī') : null;
-    if (pf) steps.push({ head: 'Perfect stem', text: `${pf}- (${parts[2]} without -ī). Perfect -ī, -istī, -it, -imus, -istis, -ērunt; pluperfect -eram …; future perfect -erō …`, eg: [...column(table, 'perfect indicative', 'active', 2), ...column(table, 'pluperfect indicative', 'active', 1)] });
-    steps.push({ head: 'Passive', text: 'Present, imperfect and future: the endings -r, -ris, -tur, -mur, -minī, -ntur.', eg: column(table, 'present indicative', 'passive', 3) });
+    if (pf) steps.push({ head: 'Perfect stem', stem: pf, text: `Take the 3rd principal part, ${parts[2]}, and drop -ī → ${pf}-. Perfect: ${pf}- + -ī, -istī, -it, -imus, -istis, -ērunt; pluperfect ${pf}- + -eram …; future perfect ${pf}- + -erō …`, eg: [...column(table, 'perfect indicative', 'active', 2), ...column(table, 'pluperfect indicative', 'active', 1)] });
+    steps.push({ head: 'Passive', text: 'Present, imperfect and future: the same stem and tense sign, with the passive endings -r, -ris, -tur, -mur, -minī, -ntur.', eg: column(table, 'present indicative', 'passive', 3) });
     const sup = parts[3] ? (cut(parts[3], 'um') ?? cut(parts[3], 'us')) : null;
-    if (sup) steps.push({ head: 'Perfect passive', text: `${sup}us, -a, -um (from ${parts[3]}) + sum, es, est …`, eg: column(table, 'perfect indicative', 'passive', 2) });
+    if (sup) steps.push({ head: 'Perfect passive', part: `${sup}us, -a, -um`, text: `Take the 4th principal part, ${parts[3]}, and change -um to -us, -a, -um → ${sup}us; then + sum, es, est … (${sup}us sum).`, eg: column(table, 'perfect indicative', 'passive', 2) });
   } else {
     const pp = parts[2] ? parts[2].split(' ')[0] : null;
-    if (pp) steps.push({ head: 'Perfect', text: `${pp}, -a, -um + sum, es, est …`, eg: column(table, 'perfect indicative', voice, 2) });
+    if (pp) steps.push({ head: 'Perfect', part: `${pp}, -a, -um`, text: `Take the 3rd principal part, ${parts[2]}: ${pp}, -a, -um + sum, es, est …`, eg: column(table, 'perfect indicative', voice, 2) });
   }
   return { kind: 'Verb', type, parts: lemma, steps };
 }
@@ -147,12 +156,14 @@ function nounRule(entry, table) {
   const gen = cellOf(table, 'cases', 'genitive', num);
   const nom = cellOf(table, 'cases', 'nominative', num);
   const steps = [];
-  if (gen?.stem) steps.push({ head: 'Stem', text: `${gen.stem}- (the genitive ${num} ${first(gen.text)} without -${gen.ending}).` });
+  const decl = name.replace(/, neuter$/, '');
+  if (gen?.stem) steps.push({ head: 'Stem', stem: gen.stem, text: `${cap(decl)}: take the genitive ${num}, ${first(gen.text)} (the 2nd part of the dictionary entry), and drop -${gen.ending} → ${gen.stem}-.` });
   if (sg && nom && gen && nom.stem !== gen.stem) steps.push({ head: 'Nominative', text: `The nominative singular is the dictionary form, ${first(nom.text)}; every other case is built on the stem ${gen.stem}-.` });
   if (!sg && pl) steps.push({ head: 'Plural only', text: `Used only in the plural (${[nom, gen].filter(Boolean).map((c) => first(c.text)).join(', ')}).` });
   if (sg && !pl) steps.push({ head: 'Singular only', text: 'Used only in the singular.' });
-  if (sg) steps.push({ head: 'Singular', text: `Stem + ${endings(table, 'cases', 'singular', gen?.stem)}.`, eg: column(table, 'cases', 'singular') });
-  if (pl) steps.push({ head: 'Plural', text: `Stem + ${endings(table, 'cases', 'plural', gen?.stem)}.`, eg: column(table, 'cases', 'plural') });
+  const base = gen?.stem ? `${gen.stem}-` : 'Stem';
+  if (sg) steps.push({ head: 'Singular', text: `${base} + ${endings(table, 'cases', 'singular', gen?.stem)}.`, eg: column(table, 'cases', 'singular') });
+  if (pl) steps.push({ head: 'Plural', text: `${base} + ${endings(table, 'cases', 'plural', gen?.stem)}.`, eg: column(table, 'cases', 'plural') });
   if (entry.gender === 'n') steps.push({ head: 'Neuter', text: 'The accusative is the same as the nominative, and in the plural both end in -a.' });
   if (/i-stem/.test(name)) steps.push({ head: 'i-stem', text: 'Genitive plural -ium (and, if neuter, ablative singular -ī and plural -ia).' });
   const g = GENDER[entry.gender];
@@ -171,21 +182,29 @@ function adjectiveRule(entry, table) {
   const nomEg = (nomRow?.cells ?? []).filter((c) => !c.empty).map((c) => first(c.text));
   if (/^1st\/2nd/.test(name)) {
     const f = nomRow?.cells?.[1];
-    if (f?.stem) steps.push({ head: 'Stem', text: `${f.stem}- (the feminine ${first(f.text)} without -${f.ending}).` });
-    steps.push({ head: 'Endings', text: 'Masculine like a 2nd-declension noun (servus), feminine like 1st (puella), neuter like 2nd neuter (dōnum).', eg: nomEg });
+    if (f?.stem) steps.push({ head: 'Stem', stem: f.stem, text: `1st/2nd declension: take the feminine, ${first(f.text)} (the 2nd dictionary form), and drop -${f.ending} → ${f.stem}-.` });
+    steps.push({ head: 'Endings', text: `${f?.stem ? `${f.stem}- + ` : ''}the endings of a 2nd-declension noun for the masculine (servus), of the 1st for the feminine (puella), of the 2nd neuter for the neuter (dōnum).`, eg: nomEg });
     if (/-er/.test(name)) steps.push({ head: 'Masculine -er', text: 'The masculine nominative singular ends in -er; the other forms are built on the stem.' });
     if (/-īus/.test(name)) steps.push({ head: 'Genitive -īus', text: 'Genitive singular -īus and dative -ī, in all three genders.', eg: (genRow?.cells ?? []).filter((c) => !c.empty).map((c) => first(c.text)) });
   } else if (/no positive/.test(name)) {
     steps.push({ head: 'No positive', text: 'There is no plain form: only the comparative and the superlative, each on its own stem.' });
   } else if (/^3rd/.test(name)) {
     const g = genRow?.cells?.[0];
-    if (g?.stem) steps.push({ head: 'Stem', text: `${g.stem}- (the genitive ${first(g.text)} without -${g.ending}).` });
-    steps.push({ head: 'Endings', text: '3rd-declension i-stem: ablative singular -ī, genitive plural -ium, neuter plural -ia.', eg: nomEg });
+    if (g?.stem) steps.push({ head: 'Stem', stem: g.stem, text: `3rd declension: take the genitive, ${first(g.text)}, and drop -${g.ending} → ${g.stem}-.` });
+    steps.push({ head: 'Endings', text: `${g?.stem ? `${g.stem}- + ` : ''}3rd-declension i-stem endings: ablative singular -ī, genitive plural -ium, neuter plural -ia.`, eg: nomEg });
   } else {
     steps.push({ head: 'Endings', text: 'Learn its forms from the table.', eg: nomEg });
   }
   const more = (table?.sections ?? []).filter((s) => /^(comparative|superlative)/.test(s.title ?? '')).map((s) => s.title);
-  if (more.length) steps.push({ head: 'Comparison', text: 'Comparative: stem + -ior (m/f), -ius (n), a 3rd-declension adjective. Superlative: stem + -issimus, -a, -um (-rimus after -er; a few are irregular). This word’s:', eg: more.map((m) => m.replace(/^(comparative|superlative) \((.*)\)$/, '$2')) });
+  const aStem = steps.find((x) => x.head === 'Stem')?.stem;
+  const sb = aStem ? `${aStem}-` : 'stem';
+  // The superlative's base: the masculine itself after -er (pulcher → pulcherrimus), the stem otherwise.
+  const masc = nomRow?.cells?.find((c) => !c.empty) ? first(nomRow.cells.find((c) => !c.empty).text) : '';
+  const sup = /er$/.test(strip(masc)) ? `the masculine ${masc} + -rimus, -a, -um (after -er)` : /lis$/.test(strip(masc)) && ['facilis', 'difficilis', 'similis', 'dissimilis', 'gracilis', 'humilis'].includes(strip(masc)) ? `${sb} + -limus, -a, -um (one of the six in -lis)` : `${sb} + -issimus, -a, -um`;
+  // A comparative not made as stem + -ior (bonus → melior) is named as irregular.
+  const compEg = more.find((m) => /^comparative/.test(m))?.replace(/^comparative \((.*)\)$/, '$1') ?? '';
+  const irregular = !!(aStem && compEg && !strip(compEg).startsWith(strip(`${aStem}ior`)));
+  if (more.length) steps.push({ head: 'Comparison', text: `Comparative: ${sb} + -ior (m/f), -ius (n), a 3rd-declension adjective. Superlative: ${sup}; a few are irregular. ${irregular ? 'This one is irregular — this word’s:' : 'This word’s:'}`, eg: more.map((m) => m.replace(/^(comparative|superlative) \((.*)\)$/, '$2')) });
   return { kind: 'Adjective', type: name, parts: bare(entry.lemma), steps };
 }
 
@@ -306,9 +325,9 @@ function perfectSubjunctive(rule, has, dep, title) {
   const find = (head) => rule.steps.find((s) => s.head === head);
   const steps = rule.steps.filter((s) => s.head === 'Deponent' || s.head === 'Irregular');
   const stepActive = find('Perfect stem') ?? (!dep ? find('Perfect') : null);
-  const pf = stepActive?.text.match(/^(?:The perfect is regular: stem )?(\S+?)- \(/)?.[1] ?? null;
+  const pf = stepActive?.stem ?? null;
   const partStep = dep ? find('Perfect') : find('Perfect passive');
-  const part = partStep?.text.split(' + ')[0] ?? null;
+  const part = partStep?.part ?? null;
   const active = !dep && (has('voice', 'act') || !has('voice', 'pass'));
   const passive = dep || has('voice', 'pass') || !has('voice', 'act');
   const name = both ? 'Perfect and pluperfect subjunctive' : perf ? 'Perfect subjunctive' : 'Pluperfect subjunctive';
@@ -334,7 +353,7 @@ function perfectSubjunctive(rule, has, dep, title) {
  */
 // The forms outside the person tables, said once: [kind, tense, voice] → how, and the step it builds on.
 const NONFINITE = [
-  ['inf', 'pres', 'act', 'The present infinitive: the second dictionary form.', 'Present stem'],
+  ['inf', 'pres', 'act', 'The present infinitive: the 2nd principal part.', 'Present stem'],
   ['inf', 'pres', 'pass', 'The present passive infinitive: the active’s -re becomes -rī (3rd conjugation: -ere becomes -ī).', 'Present stem'],
   ['inf', 'perf', 'act', 'The perfect infinitive: perfect stem + -isse.', 'Perfect stem'],
   ['inf', 'perf', 'pass', 'The perfect passive infinitive: the perfect participle + esse.', 'Perfect passive'],
@@ -344,11 +363,11 @@ const NONFINITE = [
   ['imper', 'pres', 'pass', 'The passive (and deponent) command: stem + -re to one person, + -minī to more than one.', 'Present stem'],
   ['imper', 'fut', 'act', 'The future command: stem + -tō (you / he), -tōte (you all), -ntō (they).', 'Present stem'],
   ['ptc', 'pres', 'act', 'The present participle: stem + -ns (genitive -ntis), a 3rd-declension adjective.', 'Present stem'],
-  ['ptc', 'perf', 'pass', 'The perfect participle: from the fourth principal part, -us, -a, -um.', 'Perfect passive'],
+  ['ptc', 'perf', 'pass', 'The perfect participle: from the 4th principal part, -us, -a, -um.', 'Perfect passive'],
   ['ptc', 'fut', 'act', 'The future participle: the perfect participle’s stem + -ūrus, -a, -um.', 'Perfect passive'],
   ['gerund', null, null, 'The gerund (the verb as a noun, “-ing”): stem + -nd- + -ī, -ō, -um.', 'Present stem'],
   ['gerundive', null, null, 'The gerundive (“to be …-ed”): stem + -ndus, -a, -um.', 'Present stem'],
-  ['supine', null, null, 'The supine: the fourth principal part, -um (and -ū).', 'Perfect passive'],
+  ['supine', null, null, 'The supine: the 4th principal part, -um (and -ū).', 'Perfect passive'],
 ];
 
 export function formRule(rule, key, { examples = false } = {}) {
@@ -373,5 +392,5 @@ export function formRule(rule, key, { examples = false } = {}) {
   }
   // Without the examples, a step that ended by pointing at them ("This word's:") ends at its rule.
   if (examples) return out;
-  return { ...out, steps: out.steps.map(({ eg, ...st }) => ({ ...st, text: st.text.replace(/\s*This word’s:\s*$/, '') })) };
+  return { ...out, steps: out.steps.map(({ eg, ...st }) => ({ ...st, text: st.text.replace(/\s*This word’s:\s*$/, '').replace(/ — this word’s:\s*$/, '.') })) };
 }
