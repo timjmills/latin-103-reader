@@ -328,7 +328,7 @@ test('every paradigm box on the page is watched — one rule, so none of them sc
   assert.equal(watched(WP) >= 1, true, 'renderParadigm no longer watches the box it builds');
   assert.match(UI, /fitParadigm\(scroll, table\)/, 'a teaching step’s reveal is not watched');
   assert.match(UI, /fitParadigm\(scroll, tbl\)/, 'the drill chart is not watched');
-  assert.match(UI, /import \{ renderParadigm, fitParadigm \} from '\.\.\/wordpanel\.js';/);
+  assert.match(UI, /import \{ renderParadigm, fitParadigm[^}]*\} from '\.\.\/wordpanel\.js';/);
 });
 
 test('the stacked table is hidden by a class the fit watcher sets, never by a width query', () => {

@@ -5,7 +5,7 @@
 // from dictionary.describe); the target's dictionary form sits under the item.
 
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
-import { renderParadigm, fitParadigm } from '../wordpanel.js';
+import { renderParadigm, fitParadigm, cellAnswers } from '../wordpanel.js';
 import { gameSound, playTable } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
@@ -5697,21 +5697,61 @@ export function createUI(ctx) {
     // the boxes right first time are filled in and the missed ones marked wrong ('?'), and the chart is checked —
     // so a lesson counts the game as it counts the chart. In a session's game mode it starts by itself, once.
     const asked = [...inputs.keys()].filter((i) => chart.cells[i]?.answer?.length);
+    // ▶ Play this whole chart (2026-10-23: "have the button say play this whole chart and then it has all of them in
+    // this mood and time for all persons … and a similar thing in the game mode"): every form of each word on the
+    // chart in the same tense, mood and voice — all persons and both numbers (a noun's case in both numbers) — as the
+    // reel game, the chart's own boxes among them. At the end those boxes are filled from how the game went (missed
+    // ones marked '?') and the chart is checked, so the lesson counts it as before; in game mode it starts by itself.
+    const ruleMemo = new Map();
+    // A box's own word: the entry its chart was built on (its lemma, "vocō, vocāre, vocāvī, vocātum"), never another
+    // word that happens to share the spelling.
+    const entryOfCell = (c) => {
+      if (!c?.word) return item.entry ?? null;
+      const es = tableEntries(c.word);
+      return es.find((e) => e.lemma === c.lemma) ?? es.find((e) => stripMacrons(e.h) === stripMacrons(c.word)) ?? es[0] ?? item.entry ?? null;
+    };
+    const ruleOfEntry = (e) => { if (!e) return null; const k = `${e.h}|${e.pos}`; if (!ruleMemo.has(k)) { let r = null; try { r = wordRule(e, par.paradigm(e, [])); } catch { r = null; } ruleMemo.set(k, r); } return ruleMemo.get(k); };
+    // A form's family: its key without person and number — the tense, mood and voice (or the case) it shares.
+    const famOf = (k) => (k && typeof k === 'object' ? JSON.stringify(Object.entries(k).filter(([f, v]) => f !== 'person' && f !== 'number' && v != null).sort()) : null);
+    const sameKey = (a, b) => !!a && !!b && JSON.stringify(Object.entries(a).filter(([, v]) => v != null).sort()) === JSON.stringify(Object.entries(b).filter(([, v]) => v != null).sort());
+    /** The whole chart's cards, word after word in the chart's order, and which card is which of the chart's boxes. */
+    const wholeChart = () => {
+      const cards = [];
+      const boxOf = new Map();   // card key → the chart's box index
+      const words = [];
+      for (const i of asked) { const e = entryOfCell(chart.cells[i]); if (e && !words.some((w) => w.e === e || (w.e.h === e.h && w.e.pos === e.pos))) words.push({ e, boxes: [] }); (words.find((w) => w.e.h === e?.h && w.e.pos === e?.pos) ?? { boxes: [] }).boxes.push(i); }
+      for (const { e, boxes } of words) {
+        let t = null;
+        try { t = par.paradigm(e, []); } catch { t = null; }
+        const fams = new Set(boxes.map((i) => famOf(chartCellKey(item, chart.cells[i]))).filter(Boolean));
+        if (!t || !fams.size) continue;
+        const head = String(e.lemma ?? e.h).split(/[\s,]/)[0];
+        (t.sections ?? []).forEach((sec, si) => (sec.rows ?? []).forEach((r) => (r.cells ?? []).forEach((c, ci) => {
+          if (!c || c.empty || !c.key || !fams.has(famOf(c.key))) return;
+          const answers = cellAnswers(c);
+          if (!answers.length) return;
+          const key = `${e.h}|${e.pos}|${si}|${r.label}|${ci}`;
+          let en = '';
+          try { en = dict.cellMeaning?.(e, c.key) ?? ''; } catch { en = ''; }
+          cards.push({ key, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${si}|${ci}`, entry: e, form: c.key });
+          const box = boxes.find((i) => sameKey(chartCellKey(item, chart.cells[i]), c.key));
+          if (box != null) boxOf.set(key, box);
+        })));
+      }
+      // Anything the tables could not give (a form the word's table does not have) is still asked, as the chart has it.
+      for (const i of asked) if (![...boxOf.values()].includes(i)) { const c = chart.cells[i]; const key = `box|${i}`; cards.push({ key, cue: c.label ?? `cell ${i + 1}`, en: c.en ?? '', answers: c.answer, stem: c.stem ?? null, ending: c.ending ?? null, group: 'box', entry: entryOfCell(c), form: chartCellKey(item, c) }); boxOf.set(key, i); }
+      return { cards, boxOf, words: words.length };
+    };
     const playChart = () => {
       if (!asked.length) return;
       closePeeks();
-      const items = asked.map((i) => { const c = chart.cells[i]; return { key: String(i), cue: c.label ?? `cell ${i + 1}`, en: c.en ?? '', answers: c.answer, stem: c.stem ?? null, ending: c.ending ?? null, group: String(c.section ?? chart.section ?? 0) + '|' + String(c.col ?? 0) }; });
-      // How it's made, as on every table's game (2026-10-23: "even on these cards the how its made / explanation / help
-      // button should be there"; "at the beginning the explanation should be shown for each chart"): the game opens on
-      // the rule for this skill, and each card's ? says how its own word makes its form — a chart across words asks
-      // each word on its own terms.
-      const ruleMemo = new Map();
-      const entryOfCell = (c) => (c?.word ? (tableEntries(c.word).find((e) => e.h === c.word) ?? tableEntries(c.word)[0]) : null) ?? item.entry ?? null;
-      const ruleOfEntry = (e) => { if (!e) return null; const k = `${e.h}|${e.pos}`; if (!ruleMemo.has(k)) { let r = null; try { r = wordRule(e, par.paradigm(e, [])); } catch { r = null; } ruleMemo.set(k, r); } return ruleMemo.get(k); };
+      const { cards, boxOf, words } = wholeChart();
+      if (!cards.length) return;
+      // How it's made, as on every table's game: the game opens on the rule for this skill (and, in a lesson, the
+      // part's own explanation first), and each card's ? says how its own word makes its form.
       const chartSkill = skills.get(item.skill) ?? null;
-      const whole0 = ruleOfEntry(entryOfCell(chart.cells[asked[0]]));
+      const whole0 = ruleOfEntry(cards[0].entry);
       const formsRule = whole0 ? (chartSkill ? focusRule(whole0, chartSkill) : whole0) : null;
-      // In a lesson, the part's own explanation comes first on that card, then how the forms are made.
       const lead = form.closest('.g-page')?.querySelector('.g-step');
       const say = [(lead?.querySelector('.g-step__say') ?? lead?.gExplain?.()?.querySelector('.g-step__say'))?.textContent?.trim() ?? '', lead?.querySelector('.g-explain__applies')?.textContent?.trim() ?? ''].filter(Boolean).join(' ');
       const partTitle = lead?.querySelector('.g-step__title')?.textContent?.trim() ?? '';
@@ -5719,16 +5759,16 @@ export function createUI(ctx) {
       const baseRule = formsRule ?? (skillSteps.length ? { kind: '', parts: '', type: chartSkill?.title ?? '', steps: [] } : null);
       const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
-      const howOf = (it) => { const c = chart.cells[Number(it.key)]; const r = ruleOfEntry(entryOfCell(c)); const key = chartCellKey(item, c); try { return r && key ? formRule(r, key) : r; } catch { return r; } };
-      playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, rule: chartRule, ruleFirst: !!chartRule, how: howOf, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
+      const cardHow = (it) => { const r = ruleOfEntry(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } };
+      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: 'The whole chart, as a game', items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
         onDone: ({ firstMiss }) => {
-          for (const i of asked) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(String(i)) ? '?' : chart.cells[i].answer[0]; }
+          for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
         },
         onClose: () => { if (form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check); } });
     };
-    const playBtn = asked.length > 1 ? btn(playLabel('Play this chart'), { onclick: playChart, 'aria-label': 'Play this chart as a game' }, 'btn g-play') : null;
-    if (asked.length > 1 && body.classList.contains('g-game') && !chart.autoPlayed) { chart.autoPlayed = true; setTimeout(() => { if (form.isConnected) playChart(); }, 350); }
+    const playBtn = asked.length ? btn(playLabel('Play this whole chart'), { onclick: playChart, 'aria-label': 'Play the whole chart as a game: every person and number of this tense, mood and voice' }, 'btn g-play') : null;
+    if (asked.length && body.classList.contains('g-game') && !chart.autoPlayed) { chart.autoPlayed = true; setTimeout(() => { if (form.isConnected) playChart(); }, 350); }
     form.append(h('div', { class: 'g-chart__acts' }, check, playBtn), needOne, keyHelp('Tab moves to the next cell and marks the one you leave; Alt+H shows that cell’s form and hides it again; Enter checks once every cell is filled.'));
     // Said before the keys line, because it explains why boxes already have writing in them.
     if (keptHere) form.insertBefore(h('p', { class: 'g-quiet g-chart__keptnote', text: `The ${keptHere === 1 ? 'cell' : `${keptHere} cells`} you had right ${keptHere === 1 ? 'is' : 'are'} kept; ${emptyHere === 1 ? 'the empty one is the one' : `the ${emptyHere} empty ones are the ones`} that went wrong. Every cell is judged again when you check.` }), form.querySelector('.g-chart__acts'));
