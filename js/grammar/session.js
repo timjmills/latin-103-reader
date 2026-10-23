@@ -558,23 +558,34 @@ export function createStepPractice({ skill, steps = [], at = 0, gstore, teachIte
   const usedWords = new Set();
   const shown = new Set();
   let n = 0;
+  // Nothing is asked twice (2026-10-23: "I press next after filling the chart but it just reshows the same page"):
+  // a part whose table has one word (volō, sum, hic) asked that same chart six times over. Each check is new — the
+  // step's own words, then the table's other stock words, then (once) the same word's other forms of the skill —
+  // and when there is nothing new left the practice ends early rather than repeating.
+  let otherCells = false;
   const chartNext = () => {
     const own = (check?.words ?? []).map((w) => (typeof w === 'string' ? w : w?.h)).filter(Boolean);
     const stock = teachItems.chartWords({ key });
     const pool = [...new Set([...(n === 0 ? own : []), ...stock])];
-    let fresh = pool.filter((w) => !usedWords.has(w));
-    if (!fresh.length) { usedWords.clear(); fresh = pool; }
+    const fresh = pool.filter((w) => !usedWords.has(w));
+    if (!fresh.length) {
+      if (otherCells || !check?.cells?.length) return null;
+      otherCells = true;   // the same word(s), the skill's other forms: a different chart, asked once
+      const again = [...usedWords].slice(0, Math.max(1, own.length || 1));
+      const item = teachItems.chartItem({ key, cells: null, words: again.length ? again : null, step: at });
+      return item && JSON.stringify(item.chart?.cells?.map((c) => c.cellId)) !== JSON.stringify(check.cells) ? item : null;
+    }
     const words = fresh.slice(0, Math.max(1, own.length || 1));
-    const item = teachItems.chartItem({ key, cells: check?.cells, words: words.length ? words : null, step: at });
+    const item = teachItems.chartItem({ key, cells: check?.cells, words, step: at });
     for (const w of words) usedWords.add(w);
     return item;
   };
   const sentenceNext = () => {
     const first = n === 0 && check?.sentence ? teachItems.sentenceItem({ kind, sentence: check.sentence, stage: 1, tap: check?.tap ?? undefined }) : null;
-    let item = first ?? teachItems.sentenceItem({ kind, stage: 1, avoid: shown, tap: check?.tap ?? undefined });
-    if (!item && shown.size) { shown.clear(); item = teachItems.sentenceItem({ kind, stage: 1, avoid: shown, tap: check?.tap ?? undefined }); }
+    const item = first ?? teachItems.sentenceItem({ kind, stage: 1, avoid: shown, tap: check?.tap ?? undefined });
     if (item?.taught) shown.add(item.taught);
     if (item?.sentence?.id) shown.add(item.sentence.id);
+    if (check?.sentence) shown.add(check.sentence);
     return item;
   };
   const getItem = () => {
@@ -585,7 +596,15 @@ export function createStepPractice({ skill, steps = [], at = 0, gstore, teachIte
     if (check?.ask && item.prompt && n === 1) item = { ...item, prompt: { ...item.prompt, question: check.ask } };
     return { ...item, step: at };
   };
-  const slots = Array.from({ length: Math.max(1, size) }, (_, i) => ({ skill: skill.id, kind: chart ? 'chart' : kind, stage: 1, step: at, rep: i, currentWeek: false }));
+  // As many checks as there is material for, so the count on screen ("2 of 2") is the truth: a chart's words, a
+  // word at a time, and once more for the same word's other forms.
+  let room = size;
+  if (chart) {
+    const per = Math.max(1, (check?.words ?? []).length || 1);
+    const words = new Set([...(check?.words ?? []).map((w) => (typeof w === 'string' ? w : w?.h)).filter(Boolean), ...teachItems.chartWords({ key })]);
+    room = Math.min(size, Math.ceil(words.size / per) + (check?.cells?.length ? 1 : 0));
+  }
+  const slots = Array.from({ length: Math.max(1, room) }, (_, i) => ({ skill: skill.id, kind: chart ? 'chart' : kind, stage: 1, step: at, rep: i, currentWeek: false }));
   const onAnswer = async ({ item, result, attempt }) => {
     await gstore?.addAttempt?.(attempt);
     if (!result.correct && attempt.confused_with) await gstore?.bumpConfusion?.(item.skill, attempt.confused_with);
