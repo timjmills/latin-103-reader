@@ -16,6 +16,7 @@ import { chapterOfWeek } from './chapters.js';
 import { roman } from './sync.js';
 import { playTable, savedMisses } from './game.js';
 import { wordRule, ruleCard, focusRule, formRule } from './wordrule.js';
+import { appliesTo } from './grammar/applies.js';
 
 const ENCLITIC = { que: '-que "and" is attached to the end', ne: '-ne turns the sentence into a yes/no question', ve: '-ve "or" is attached to the end' };
 
@@ -505,7 +506,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       endings, onEndings: (want) => { if (want !== endings) endBtn.click(); },   // Endings only plays as the table has it, and a switch in the game is the table's too
       // The charts: the ones this game plays selected, every other one a choice away (the bar, the start, the end).
       charts: { list: chartList(), on: [...new Set(items.map((g) => g.group))], play: (ids) => play(null, new Set(ids)) },
-      how: game.whole ? (it) => formRule(game.whole, it.form) : null, countKey: game.countKey ?? null });
+      how: game.whole ? (it) => formRule(game.whole, it.form) : null, countKey: game.countKey ?? null, onDone: game.onDone ?? null, suggest: game.suggest ?? null });
   };
   playBtn.addEventListener('click', () => play());
   playMissBtn.addEventListener('click', () => play(new Set(savedMisses(gameId()))));
@@ -783,7 +784,9 @@ function tagChapters(sheet) {
  * tables that show a word's forms to learn from; a drill's hint or feedback
  * table is rendered without them, where the English could answer the
  * question being asked. `opts.countKey` (a key or keys of practised.js) counts a game of the table played to
- * its end, for the "×N" beside the table.
+ * its end, for the "×N" beside the table; `opts.gameDone({ firstMiss, shown })` hears the same end (a skill's
+ * table records it as that skill's chart); `opts.gameSuggest` ([{ label, go }]) is what the end offers when there
+ * is no next word.
  */
 export function renderParadigm(p, opts = {}) {
   if (!p) return null;
@@ -819,10 +822,17 @@ export function renderParadigm(p, opts = {}) {
   // `opts.ruleFor` (a skill): the table is that skill's (Sheets, a skill's whole table) — its card says just the
   // steps that make the skill's forms for this word's type, and opens, so words of other types beside it differ.
   const whole = practise && p.entry ? wordRule(p.entry, p) : null;
-  const rule = opts.ruleFor ? focusRule(whole, opts.ruleFor) : whole;
-  if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && rule !== whole, heading: rule !== whole ? 'How this type makes it' : 'How it’s made' }));
+  const focused = opts.ruleFor ? focusRule(whole, opts.ruleFor) : whole;
+  // A skill's table says what the skill's rule is for — every conjugation, two declensions … (grammar/applies.js).
+  const forWhat = opts.ruleFor ? appliesTo(opts.ruleFor.paradigms) : '';
+  const forStep = forWhat ? { head: 'For', text: `${forWhat[0].toUpperCase()}${forWhat.slice(1)}.` } : null;
+  // A word with no card of its own (a pronoun: is, ea, id) still opens on the skill's: what it is for, and its rule.
+  const rule = focused && forStep ? { ...focused, steps: [forStep, ...focused.steps] }
+    : !focused && opts.ruleFor && forStep ? { kind: '', type: opts.ruleFor.title ?? '', parts: p.entry?.lemma ?? '', steps: [forStep, ...(opts.ruleFor.summary ? [{ head: 'The rule', text: opts.ruleFor.summary }] : [])] }
+    : focused;
+  if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && focused !== whole, heading: !focused ? 'The rule' : focused !== whole ? 'How this type makes it' : 'How it’s made' }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
-    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole, countKey: opts.countKey ?? null } }));
+    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole, countKey: opts.countKey ?? null, onDone: opts.gameDone ?? null, suggest: opts.gameSuggest ?? null } }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).

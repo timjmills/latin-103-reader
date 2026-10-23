@@ -7,7 +7,7 @@
 import { chapters, roman, inline, loadLesson, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm } from '../wordpanel.js';
 import { gameSound, playTable } from '../game.js';
-import { wordRule, ruleCard, focusRule } from '../wordrule.js';
+import { wordRule, ruleCard, focusRule, formRule } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
 import { isShelfWeek } from '../sync.js';
@@ -21,6 +21,7 @@ import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATION_LAB
 import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapterSummary, normaliseView, chapterOfSentence } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
 import { buildPath, climbFrom } from './continuum.js';
+import { appliesTo, exampleOf } from './applies.js';
 import { practised, notePractised, timesText } from '../practised.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -1927,7 +1928,8 @@ export function createUI(ctx) {
     h('p', { class: 'g-lede' }, skill.plain, skill.latin_label ? [' · ', h('i', { lang: 'la', text: skill.latin_label })] : null),
     h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
       stateTipButton(skill.title, st, { shown: dueText(st) }), countBadge(`skill:${skill.id}`)),
-    h('p', { class: 'g-summary', text: skill.summary }));
+    h('p', { class: 'g-summary', text: skill.summary }),
+    skill.set ? null : appliesNode(skill));
 
   /* ------------------------------------------------------------ learn */
   /**
@@ -2325,7 +2327,8 @@ export function createUI(ctx) {
         if (explain) {
           const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = explain.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
           explain.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q),
-            ...[step.say ? h('p', { class: 'g-step__say' }, prose(step.say)) : null, more.length ? h('div', { class: 'g-explain__more' }, more) : null].filter(Boolean));
+            ...[step.say ? h('p', { class: 'g-step__say' }, prose(step.say)) : null,
+              appliesNode(skill, step.show?.kind === 'paradigm' ? step.show.key : (step.check?.key ?? null)), more.length ? h('div', { class: 'g-explain__more' }, more) : null].filter(Boolean));
         }
         body.append(...[explain,
           wn?.node ?? null].filter(Boolean));   // `Element.append` prints a null as the word "null"
@@ -2424,6 +2427,7 @@ export function createUI(ctx) {
         // What next, on the path (2026-10-23): the next skill once this one is learned, the ones under it when
         // it is not yet — and any part of the lesson to practise on its own.
         skill.set ? null : h('div', { class: 'g-acts g-acts--path' }, passed ? nextOnPath(id) : null, tablePartButton(id, { chapter: skill.chapter }), levelButton(id)),
+        skill.set ? null : suggestNode(id),
         skill.set ? null : partsNode(id, learn.steps, { heading: passed ? 'Practise one part again' : 'Practise one part on its own' }),
         h('div', { class: 'g-acts' },
           // "Redo the N you missed" from a Learn run, but only once the run has **passed**: the skill is in the
@@ -2611,12 +2615,77 @@ export function createUI(ctx) {
   /** Cells the learner has answered right this sitting, per table — the "already met" tier of what is given. */
   const metCells = new Map();
   let selectRules = null;
-  loadParadigmCatalogue().then((c) => { selectRules = Array.isArray(c?.raw?.select) ? c.raw.select : null; }).catch(() => {});
+  let catTables = null;   // the catalogue's tables (labels and model words), once loaded
+  loadParadigmCatalogue().then((c) => { selectRules = Array.isArray(c?.raw?.select) ? c.raw.select : null; catTables = c?.tables ?? null; }).catch(() => {});
+  /**
+   * "For: all four conjugations …" — what a skill's rule covers, and what the step's own table is an example of
+   * (2026-10-23: "it should always say which conjugations it applies for, if it applies to all"). applies.js.
+   */
+  const appliesNode = (skill, tableId = null, { diff = true } = {}) => {
+    const what = appliesTo(skill?.paradigms);
+    if (!what) return null;
+    const t = tableId ? catTables?.get?.(tableId) : null;
+    const ex = tableId ? exampleOf(tableId, { label: t?.label ?? '', example: t?.example ?? '' }) : '';
+    const line = h('p', { class: 'g-explain__applies' }, h('span', { class: 'g-explain__for', text: 'For: ' }), what, '.', ex ? h('span', { class: 'g-explain__ex', text: ` ${ex}` }) : null);
+    // Where the types differ, how each one does it (2026-10-23: "if different for other conjugations or declensions
+    // you can say what the difference is"), read off each type's own model table. Never above a question: a drill
+    // can ask the very model word, so `diff: false` there.
+    const d = diff ? differencesOf(skill) : [];
+    if (d.length < 2) return line;
+    const each = d.map((x, i) => [i ? h('span', { class: 'g-diff__sep', 'aria-hidden': 'true', text: ' · ' }) : null, h('span', { class: 'g-diff__i' }, h('b', { text: x.name }), ' ', h('i', { lang: 'la', text: x.forms.join(', ') }))]);
+    const kind = d.every((x) => /conj/.test(x.id) || WORD_TABLES.has(x.id)) ? 'conjugation' : d.every((x) => /^decl|^domus/.test(x.id)) ? 'declension' : 'kind of word';
+    return h('div', { class: 'g-explain__appliesbox' }, line,
+      d.length <= 5 ? h('p', { class: 'g-explain__diff' }, h('span', { class: 'g-explain__for', text: `Each ${kind}: ` }), each)
+        : h('details', { class: 'g-explain__diff' }, h('summary', { text: `How each ${kind} does it (${d.length})` }), h('p', {}, each)));
+  };
+  const WORD_TABLES = new Set(['sum', 'possum', 'eo', 'fero', 'volo', 'nolo', 'malo', 'fio']);
+  /** Each of a skill's tables, by its model word: its name and its first forms of the skill (two at most). */
+  const diffMemo = new Map();
+  function differencesOf(skill) {
+    if (!skill?.paradigms || skill.paradigms.length < 2) return [];
+    if (diffMemo.has(skill.id)) return diffMemo.get(skill.id);
+    const out = [];
+    for (const id of skill.paradigms) {
+      let e = null;
+      try { e = entryForKey(id, skill); } catch { e = null; }
+      const t = e ? tableOf(e) : null;
+      if (!t) continue;
+      const forms = [];
+      for (const sec of t.sections ?? []) for (const r of sec.rows ?? []) for (const c of r.cells ?? []) {
+        if (forms.length >= 2 || !c || c.empty || !c.key) continue;
+        let ok = false;
+        try { ok = skillCovers(skill, e, c.key); } catch { ok = false; }
+        if (!ok) continue;
+        const txt = String(c.text ?? '').split(' / ')[0];
+        forms.push(c.stem && c.ending && txt === c.stem + c.ending ? `${c.stem}-${c.ending}` : txt);
+      }
+      const label = catTables?.get?.(id)?.label ?? id;
+      if (forms.length) out.push({ id, name: label.replace(/\s*\|.*$/, ''), forms });
+    }
+    if (catTables) diffMemo.set(skill.id, out);   // before the catalogue's labels arrive, not kept
+    return out;
+  }
   /** The table a chart item is on: the catalogue's id where the item names it, else the select rules on its word, else the word itself. */
   /** "×3": how many times it has been practised (practised.js), or nothing when never. */
   const countBadge = (key, what = 'Practised') => { const n = practised(key); return n ? h('span', { class: 'g-count', title: `${what} ${n} time${n === 1 ? '' : 's'}`, 'aria-label': `${what.toLowerCase()} ${n} time${n === 1 ? '' : 's'}`, text: timesText(n) }) : null; };
   /** The "×N" key of a word's table (practised.js): its catalogue table, decl1, pres-act-1 … */
   const tableKey = (e) => { const t = e && selectRules ? tableIdOf(e, selectRules) : null; return t ? `table:${t}` : null; };
+  /**
+   * A game played to its end on a skill's own cells of a table (its part of the table, Word Work's whole-table drill,
+   * a Sheets chart) is that skill's chart, practised (2026-10-23: "practice in game mode should also be recorded in
+   * the lesson mode … as long as the content is the same"). It is logged as the Tables tab logs a table practised on
+   * its own (§20): one chart attempt, `meta.uncounted`, so it ticks the skill's Chart part and its history and
+   * never moves the scheduler or stands in for the blocked ten. Right when nothing had to be shown; a first-try miss
+   * is a hint, as a chart's hinted cells are. Nothing is redrawn here: the game's own end screen is still open over
+   * the page, and the next view drawn reads the log.
+   */
+  const tableGameDone = (sk, e) => ({ firstMiss = new Set(), shown = new Set() } = {}) => {
+    if (!sk?.id || !gstore?.addAttempt) return;
+    const table = tableKey(e)?.slice('table:'.length) ?? null;
+    gstore.addAttempt({ skill: sk.id, kind: 'chart', item_key: '', mode: 'practice', correct: shown.size === 0, hinted: firstMiss.size > 0, self: false, partial: false,
+      answer: 'the table, played as a game', expected: '', confused_with: null, ms: 0, at: new Date().toISOString(), meta: { uncounted: true, game: true, ...(table ? { table } : {}) } })
+      .catch((err) => console.warn('[grammar] the game was not written down', err?.message || err));
+  };
   const tableIdOfItem = (item) => item?.chart?.tableId ?? (selectRules ? tableIdOf(item?.entry, selectRules) : null) ?? item?.entry?.h ?? null;
   /** The cells a skill teaches on a table: those its `paradigm_focus` names — never given (§12). */
   const taughtCellsOf = (item, skill) => {
@@ -2676,6 +2745,7 @@ export function createUI(ctx) {
    * (skillWords). null for a skill without forms.
    */
   const partHolder = () => document.getElementById('g-part-holder') ?? document.body.appendChild(h('div', { id: 'g-part-holder', hidden: true, 'aria-hidden': 'true' }));
+  const TABLE_PART_WORDS = 6;   // a skill's part of the table, word after word, then what next
   async function playTablePart(id, { chapter = null, i = 0 } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length) return false;
@@ -2686,9 +2756,10 @@ export function createUI(ctx) {
     const e = list[k];
     const t = tableOf(e);
     if (!t) return false;
-    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
+    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
       gameSubtitle: `${sk.title} · just its part of the table`,
-      gameNext: list.length > 1 ? () => playTablePart(id, { chapter: n, i: k + 1 }) : null, gameNextLabel: `Next word → (${(k + 1) % list.length + 1} of ${list.length})` });
+      gameNext: k + 1 < Math.min(list.length, TABLE_PART_WORDS) ? () => playTablePart(id, { chapter: n, i: k + 1 }) : null, gameNextLabel: `Next word → (${k + 2} of ${Math.min(list.length, TABLE_PART_WORDS)})`,
+      gameSuggest: gameSuggest(id) });
     partHolder().replaceChildren(node);
     node.querySelector('.paradigm__play')?.click();
     return true;
@@ -2745,6 +2816,61 @@ export function createUI(ctx) {
     const q = climbFrom(thePath(), id, (x) => !inRotation(stateOf(x)), 1);
     return q.length ? btn(label, { onclick: () => climb(id), 'aria-label': `${label.replace(/^▶ /, '')}: learn the next skills on the path in order, starting with ${titleOf(q[0])}` }, 'btn btn--primary g-play') : null;
   };
+  /**
+   * What to do after a skill (2026-10-23: "if it's at the end it should give next suggested skills to do — related,
+   * prerequisite, or next"): the next on the path, what it builds on (the ones not yet in the practice first), and
+   * the skills it is most often confused with, and others taught in the same chapter. Each once, at most seven.
+   */
+  const suggestionsOf = (id) => {
+    const sk = skills.get(id);
+    if (!sk || sk.set) return [];
+    const p = thePath();
+    const out = [];
+    const add = (x, why) => { if (x && x !== id && skills.has(x) && !skills.get(x).set && !out.some((o) => o.id === x)) out.push({ id: x, why }); };
+    for (const x of p.harder(id).slice(0, 2)) add(x, 'Next');
+    const unmet = new Set(unmetPrereqs(sk, stateOf));
+    for (const x of [...p.easier(id)].sort((a, b) => Number(unmet.has(b)) - Number(unmet.has(a))).slice(0, 2)) add(x, unmet.has(x) ? 'Builds on (not learned yet)' : 'Builds on');
+    for (const x of (sk.confusable_with ?? []).slice(0, 2)) add(x, 'Related');
+    // …and the chapter's other skills, related or not (2026-10-23: "suggested skills can also be unrelated skills that
+    // are taught in the same chapter"): the ones still to learn first, in the path's order.
+    const sameCh = p.order.filter((x) => x !== id && skills.get(x)?.chapter === sk.chapter);
+    for (const x of [...sameCh.filter((x) => !inRotation(stateOf(x))), ...sameCh.filter((x) => inRotation(stateOf(x)))].slice(0, 2)) add(x, `Also in Cap. ${roman(sk.chapter)}`);
+    return out.slice(0, 7);
+  };
+  /** The suggestions as a section of links: why, then the skill. */
+  const suggestNode = (id, { heading = 'What next?' } = {}) => {
+    const list = suggestionsOf(id);
+    return list.length ? h('section', { class: 'g-suggest', 'aria-label': heading }, h('h2', { class: 'g-h2', text: heading }),
+      h('ul', { class: 'g-level__list' }, list.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: x.why }), pathLink(x.id))))) : null;
+  };
+  /** The same for a game's end screen (game.js `suggest`). */
+  const gameSuggest = (id) => suggestionsOf(id).map((x) => ({ label: `${x.why}: ${titleOf(x.id)} →`, go: () => goSkill(x.id) }));
+  /**
+   * Go on by itself (2026-10-23: "suggest the next part … to keep going on automatically"): `button` is pressed for
+   * the learner after a few seconds, unless they touch anything first or the page moves on. Returns the note to
+   * show beside it ("Going on in 4… Stop").
+   */
+  const AUTO_S = 4;
+  function autoGo(button, { seconds = AUTO_S } = {}) {
+    if (!button) return null;
+    let n = seconds;
+    const label = button.textContent;
+    const text = h('span', { class: 'g-auto__text' });
+    const stopB = btn('Stop', { onclick: () => stop() }, 'btn btn--quiet g-auto__stop');
+    const note = h('p', { class: 'g-auto', role: 'status' }, text, ' ', stopB);
+    const paint = () => { text.textContent = `Going on in ${n}…`; button.textContent = `${label} (${n})`; };
+    const onTouch = (e) => { if (e.target === button || button.contains(e.target)) return; stop(); };
+    const timer = setInterval(() => {
+      if (!button.isConnected) { stop(); return; }
+      n -= 1;
+      if (n > 0) { paint(); return; }
+      stop(); button.click();
+    }, 1000);
+    function stop() { clearInterval(timer); if (button.isConnected) button.textContent = label; note.remove(); document.removeEventListener('pointerdown', onTouch, true); document.removeEventListener('keydown', onTouch, true); }
+    paint();
+    setTimeout(() => { document.addEventListener('pointerdown', onTouch, true); document.addEventListener('keydown', onTouch, true); }, 0);
+    return note;
+  }
   /** After a skill: the next one on the path, as the thing to press. */
   const nextOnPath = (id) => { const nx = thePath().harder(id)[0] ?? thePath().next(id); return nx ? btn(`Next on the path: ${titleOf(nx)} →`, { to: skillTo(nx), onclick: () => goSkill(nx) }, 'btn g-play') : null; };
 
@@ -2820,26 +2946,33 @@ export function createUI(ctx) {
     }
     const title = stepTitle(st, at);
     // The part's explanation above each check, folded to its first lines (? opens the whole of it).
-    const lead = () => {
+    const lead = (i) => {
       if (!st.say) return null;
-      const ex = h('div', { class: 'g-explain g-explain--part' });
+      // Whole on the first check of the part; folded to its first lines on the ones after it.
+      const ex = h('div', { class: `g-explain g-explain--part${i === 0 ? ' g-explain--first' : ''}` });
       const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = ex.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
-      ex.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q), h('p', { class: 'g-step__say' }, prose(st.say)));
+      ex.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q), h('p', { class: 'g-step__say' }, prose(st.say)),
+        ...[appliesNode(skill, st.show?.kind === 'paradigm' ? st.show.key : (st.check?.key ?? null))].filter(Boolean));
       return { node: h('section', { class: 'g-step', 'aria-label': `Part ${at + 1}` }, h('p', { class: 'g-kicker', text: `${skill.title} · part ${at + 1} of ${steps.length}` }), h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(title)), ex), gate: false };
     };
     runSession({ runner: run.runner, title: `Part ${at + 1} · ${title}`, mode: 'learn', hintOpen: false, before: lead,
       onDone: (summary) => {
         if (summary.total) notePractised(`part:${id}:${at}`);
         const more = at + 1 < steps.length;
+        const clean = summary.total > 0 && summary.right === summary.total;
+        const nextPart = more ? btn(`Next part: ${stepTitle(steps[at + 1], at + 1)} →`, { to: ['part', { skill: id, step: at + 1 }], onclick: () => goView('part', { skill: id, step: at + 1 }) }, clean ? 'btn btn--primary' : 'btn') : null;
+        const backB = btn('Back to the lesson', { to: ['learn', { skill: id }], onclick: () => goView('learn', { skill: id }) }, !more && clean ? 'btn btn--primary' : 'btn');
         setBody(h('header', { class: 'g-head' },
           h('p', { class: 'g-kicker', text: `${skill.title} · part ${at + 1} of ${steps.length}` }),
           h('h1', { class: 'g-title' }, prose(title)),
           h('p', { class: 'g-lede', text: `${summary.right} of ${summary.total} right.` })),
+          // All right: the next part is taken by itself in a few seconds. The last part: what to do next.
+          clean && nextPart ? autoGo(nextPart) : null,
           h('div', { class: 'g-acts' },
             btn('Again', { to: ['part', { skill: id, step: at }], onclick: () => goView('part', { skill: id, step: at }) }, summary.right < summary.total ? 'btn btn--primary' : 'btn'),
-            more ? btn(`Next part: ${stepTitle(steps[at + 1], at + 1)} →`, { to: ['part', { skill: id, step: at + 1 }], onclick: () => goView('part', { skill: id, step: at + 1 }) }, summary.right < summary.total ? 'btn' : 'btn btn--primary') : null,
-            btn('Back to the lesson', { to: ['learn', { skill: id }], onclick: () => goView('learn', { skill: id }) }, 'btn'),
+            nextPart, backB,
             tablePartButton(id, { chapter: skill.chapter }), levelButton(id)),
+          more ? null : suggestNode(id),
           partsNode(id, steps, { heading: 'Another part', current: at }));
       } });
   }
@@ -3443,7 +3576,7 @@ export function createUI(ctx) {
     const k = ((Number(i) || 0) % list.length + list.length) % list.length;
     const e = list[k];
     const t = tableOf(e);
-    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
+    const node = renderParadigm(t, { english: true, practise: true, countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), chapter: () => n, only: (key) => skillCovers(sk, e, key), preset: () => true, ruleFor: sk,
       gameSubtitle: sk.title, gameNext: () => render('wwtable', { chapter: n, skill: id, i: k + 1, play: true }), gameNextLabel: `Next word → (${(k + 1) % list.length + 1} of ${list.length})` });
     node.open = true;
     const step = (d) => render('wwtable', { chapter: n, skill: id, i: k + d });
@@ -3577,6 +3710,7 @@ export function createUI(ctx) {
         h('div', { class: 'g-sheet__head' }, h('h2', { class: 'g-sheet__title', id: `g-sheet-${sk.id}` }, sk.title, h('span', { class: 'g-sheet__cap', text: ` · cap. ${roman(Number(sk.chapter))}` })), cardPlay),
         sk.plain ? h('p', { class: 'g-sheet__plain', text: sk.plain }) : null,
         sk.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: sk.paradigms?.length ? 'The rule ' : 'How it works ' }), prose(sk.summary)) : null,
+        appliesNode(sk),
         sk.paradigms?.length ? h('p', { class: 'g-quiet g-sheet__bytype', text: 'Each chart below says how its own type makes it — the conjugations and declensions differ.' }) : null);
       if (sk.paradigms?.length) {
         await skillsReady;
@@ -3587,7 +3721,7 @@ export function createUI(ctx) {
         const show = (k) => {
           for (const e of words.slice(shown, shown + k)) {
             const t = tableOf(e);
-            const node = t && renderParadigm(t, { english: true, practise: true, label: headOf(e), countKey: [tableKey(t.entry), `tablepart:${sk.id}`], only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true,
+            const node = t && renderParadigm(t, { english: true, practise: true, label: headOf(e), countKey: [tableKey(t.entry), `tablepart:${sk.id}`], gameDone: tableGameDone(sk, t.entry), only: (key) => skillCovers(sk, e, key), mark: (key) => skillCovers(sk, e, key), resplit: true, tags: false, segment: true,
               gameSubtitle: sk.title, gameNext: playNextAfter(() => node, () => { if (!more.hidden) show(3); }), gameNextLabel: 'Next word →', ruleFor: sk });
             if (!node) continue;
             node.open = true;
@@ -4321,6 +4455,7 @@ export function createUI(ctx) {
       missed.length ? h('p', { class: 'g-quiet', text: 'They come back as ordinary items, later: each answer counts towards its skill, and getting one right takes it off your missed list.' }) : null,
       after,
       params?.drill && skills.has(params.drill) ? h('div', { class: 'g-acts g-acts--path' }, nextOnPath(params.drill), tablePartButton(params.drill), levelButton(params.drill)) : null,
+      params?.drill && skills.has(params.drill) ? suggestNode(params.drill) : null,
       h('div', { class: 'g-acts' },
         // The redo is narrowed exactly as the session was, and no further: `oneSkill` rides in the params of
         // every mixed session as the remembered choice for the "One skill" preset, so it names the session's
@@ -4398,6 +4533,7 @@ export function createUI(ctx) {
         stepEx,
         rule ? ruleCard(rule, { open: true, heading: 'How this type makes it' }) : null,
         !rule && !stepEx && sk?.summary ? h('p', { class: 'g-sheet__how' }, h('span', { class: 'g-sheet__howlabel', text: 'The rule ' }), prose(sk.summary)) : null,
+        !stepEx && sk ? appliesNode(sk, null, { diff: false }) : null,
         !rule && !stepEx && !sk?.summary ? h('p', { class: 'g-quiet', text: 'No rule to show for this question.' }) : null].filter(Boolean));
       rulePanel.hidden = false;
       ruleBtn.setAttribute('aria-expanded', 'true');
@@ -4676,7 +4812,7 @@ export function createUI(ctx) {
     if (note) node.append(h('p', { class: 'g-quiet g-item__note', text: note }));
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
     // "Just drill it" pins the rule at the top of every item (§10), so the learner can look without leaving.
-    if (item.pin) node.append(h('p', { class: 'g-pin' }, h('span', { class: 'g-lesson__tag', text: 'The rule' }), ' ', prose(item.pin)));
+    if (item.pin) node.append(h('p', { class: 'g-pin' }, h('span', { class: 'g-lesson__tag', text: 'The rule' }), ' ', prose(item.pin)), ...[appliesNode(skills.get(item.skill), null, { diff: false })].filter(Boolean));
     // Pool exhaustion, said of the pool the item was actually drawn from: a chapter session draws that
     // chapter's sentences, so "every sentence for this skill" would be a wider claim than the truth.
     if (item.repeat) node.append(h('p', { class: 'g-quiet g-item__note', text: item.set ? 'Every item of this set has come up once; starting over.'
@@ -5396,7 +5532,23 @@ export function createUI(ctx) {
       if (!asked.length) return;
       closePeeks();
       const items = asked.map((i) => { const c = chart.cells[i]; return { key: String(i), cue: c.label ?? `cell ${i + 1}`, en: c.en ?? '', answers: c.answer, stem: c.stem ?? null, ending: c.ending ?? null, group: String(c.section ?? chart.section ?? 0) + '|' + String(c.col ?? 0) }; });
-      playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, ruleFirst: false,
+      // How it's made, as on every table's game (2026-10-23: "even on these cards the how its made / explanation / help
+      // button should be there"; "at the beginning the explanation should be shown for each chart"): the game opens on
+      // the rule for this skill, and each card's ? says how its own word makes its form — a chart across words asks
+      // each word on its own terms.
+      const ruleMemo = new Map();
+      const entryOfCell = (c) => (c?.word ? (tableEntries(c.word).find((e) => e.h === c.word) ?? tableEntries(c.word)[0]) : null) ?? item.entry ?? null;
+      const ruleOfEntry = (e) => { if (!e) return null; const k = `${e.h}|${e.pos}`; if (!ruleMemo.has(k)) { let r = null; try { r = wordRule(e, par.paradigm(e, [])); } catch { r = null; } ruleMemo.set(k, r); } return ruleMemo.get(k); };
+      const chartSkill = skills.get(item.skill) ?? null;
+      const whole0 = ruleOfEntry(entryOfCell(chart.cells[asked[0]]));
+      const formsRule = whole0 ? (chartSkill ? focusRule(whole0, chartSkill) : whole0) : null;
+      // In a lesson, the part's own explanation comes first on that card, then how the forms are made.
+      const lead = form.closest('.g-page')?.querySelector('.g-step');
+      const say = [(lead?.querySelector('.g-step__say') ?? lead?.gExplain?.()?.querySelector('.g-step__say'))?.textContent?.trim() ?? '', lead?.querySelector('.g-explain__applies')?.textContent?.trim() ?? ''].filter(Boolean).join(' ');
+      const partTitle = lead?.querySelector('.g-step__title')?.textContent?.trim() ?? '';
+      const chartRule = say ? { ...(formsRule ?? { kind: '', parts: '' }), type: formsRule?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(formsRule?.steps ?? [])] } : formsRule;
+      const howOf = (it) => { const c = chart.cells[Number(it.key)]; const r = ruleOfEntry(entryOfCell(c)); const key = chartCellKey(item, c); try { return r && key ? formRule(r, key) : r; } catch { return r; } };
+      playTable({ title: item.lemma ?? chart.head ?? '', subtitle: 'This chart, as a game', items, rule: chartRule, ruleFirst: !!chartRule, how: howOf, continueLabel: 'Go on →',
         onDone: ({ firstMiss }) => {
           for (const i of asked) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(String(i)) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
@@ -5541,6 +5693,7 @@ export function createUI(ctx) {
       : null;
     const details = isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : h('details', { class: 'g-fb__more' }, h('summary', { class: 'g-fb__more-s', text: 'Why' }),
       h('p', { class: 'g-fb__term' }, h('b', { text: skill?.plain ?? fb.term }), ` — ${skill?.summary ?? ''}`),
+      skill ? appliesNode(skill, null, { diff: false }) : null,
       h('div', { class: 'g-fb__rule' }),
       // "Reached from the skill map and from an item's feedback" (GRAMMAR-CONTRACT.md, wave 3). Inside the
       // expandable, so a keyboard Enter on Next can never land on it by accident mid-session.

@@ -112,7 +112,10 @@ export function choicesFor(x, pool, text, right) {
   return wrong.length ? shuffled([want, ...wrong]) : null;
 }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null } = {}) {
+/** Seconds the end screen waits before going on to the next part by itself, after a clean round. */
+export const AUTO_GO_S = 4;
+
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, endings = false, onEndings = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null } = {}) {
   const base = items.filter((x) => x && x.answers?.length);
   if (!base.length) return null;
   const opener = document.activeElement;
@@ -132,6 +135,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   let ended = false;
   let closed = false;
   let seq = 0;        // the form on screen's turn: a timer from an earlier one stands down
+  let autoTimer = 0;  // the end screen's countdown to the next part
 
   const progress = el('span', { class: 'gm__progress' });
   const meterFill = el('span', { class: 'gm__meterfill' });
@@ -699,7 +703,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false, charts, how, countKey }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, endings, onEndings, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone }); };
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
     const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;
@@ -712,8 +716,29 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       misses.length ? el('button', { type: 'button', class: 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
       nextChartBtn,
       onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
+      // A game played inside something (a lesson's chart): the way back into it is the way on.
+      continueLabel && !onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => close() }, continueLabel) : null,
       el('button', { type: 'button', class: 'btn', onclick: again(base, subtitle, id) }, 'Play again'),
       el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Close'));
+    // The next part, suggested and then taken (2026-10-23: "when you finish a part … it should suggest the next
+    // part … to keep going on automatically"): after a clean round the way on is pressed for you in a few seconds,
+    // unless you touch anything first. A round with misses waits, its replay offered first.
+    const goBtn = nextChartBtn ?? acts.querySelector('.btn--primary:not([data-replay])');
+    let autoNote = null;
+    if (!misses.length && goBtn && goBtn !== acts.lastElementChild) {
+      let n = AUTO_GO_S;
+      const label = goBtn.textContent;
+      const stop = el('button', { type: 'button', class: 'btn btn--quiet gm__autostop', onclick: () => cancelAuto() }, 'Stop');
+      const text = el('span', { class: 'gm__autotext' });
+      autoNote = el('p', { class: 'gm__auto', role: 'status' }, text, ' ', stop);
+      const paint = () => { text.textContent = `Going on in ${n}…`; goBtn.textContent = `${label} (${n})`; };
+      const cancelAuto = () => { clearInterval(autoTimer); autoTimer = 0; goBtn.textContent = label; autoNote.remove(); root.removeEventListener('pointerdown', onTouch, true); root.removeEventListener('keydown', onTouch, true); };
+      const onTouch = (e) => { if (e.target === goBtn) return; cancelAuto(); };
+      paint();
+      autoTimer = setInterval(() => { n -= 1; if (n > 0) { paint(); return; } cancelAuto(); goBtn.click(); }, 1000);
+      root.addEventListener('pointerdown', onTouch, true);
+      root.addEventListener('keydown', onTouch, true);
+    }
     const stars = clean === base.length ? 3 : clean >= base.length * 0.7 ? 2 : clean > 0 ? 1 : 0;
     const card = el('section', { class: 'gm__end', 'aria-labelledby': 'gm-end-h' },
       el('p', { class: 'gm__stars', 'aria-label': `${stars} of 3 stars` }, [0, 1, 2].map((i) => el('span', { class: i < stars ? 'is-on' : '', 'aria-hidden': 'true', text: '★' }))),
@@ -724,7 +749,11 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         el('div', {}, el('dt', { text: 'Time' }), el('dd', { text: mmss(secs) }))),
       misses.length ? el('div', { class: 'gm__misses' }, el('p', { class: 'gm__sub', text: 'Missed on the first try:' }),
         el('ul', {}, misses.map((x) => el('li', {}, el('span', { class: 'gm__label', text: x.cue }), ' ', el('span', { class: 'gm__form', lang: 'la' }, formNode(x)))))) : null,
-      acts, more);
+      autoNote, acts,
+      // The end of the line (the last word, nothing after it): the skills to go to next — on the path, under it, beside it.
+      suggest?.length && !onNext && !nx ? el('section', { class: 'gm__suggest', 'aria-label': 'What next' }, el('p', { class: 'gm__sub', text: 'What next?' }),
+        el('div', { class: 'gm__acts' }, suggest.map((x, i) => el('button', { type: 'button', class: i === 0 && !misses.length ? 'btn btn--primary' : 'btn', onclick: () => { close(true); x.go(); } }, x.label)))) : null,
+      more);
     stage.replaceChildren(card);
     progress.textContent = `${rows.length} / ${rows.length}`;
     meterFill.style.width = '100%';
@@ -736,6 +765,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (closed) return;
     closed = true;
     clearInterval(timer);
+    clearInterval(autoTimer);
     window.removeEventListener('resize', place);
     window.visualViewport?.removeEventListener('resize', place);
     try { root.close(); } catch { /* already closed */ }

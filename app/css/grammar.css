@@ -1358,7 +1358,8 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 #grammar .g-game .g-explain__head { display: flex; align-items: center; gap: var(--s-1); margin: 0 0 var(--s-1); font-weight: 700; font-size: var(--ui-sm); color: var(--ink-2); }
 .g-explain__q { margin-left: auto; min-height: 36px; padding: 0 0.8em; border: 2px solid color-mix(in srgb, var(--gm-a, var(--ink-3)) 55%, transparent); border-radius: 999px; background: var(--bg-raised); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
 @media (pointer: coarse) { .g-explain__q { min-height: var(--tap); } }
-#grammar .g-game .g-explain:not(.is-open) .g-step__say { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+/* The explanation itself is always read whole at the start of its part (2026-10-23: "at the beginning the explanation
+   should be shown"); what ? adds is the rest — the sentence shown and the tables. */
 #grammar .g-game .g-explain:not(.is-open) .g-explain__more { display: none; }
 #grammar .g-game .g-explain.is-open .g-explain__qtext { display: none; }
 #grammar .g-game .g-explain.is-open .g-explain__q::after { content: " Less"; }
@@ -1439,7 +1440,7 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 /* A part practised on its own: its explanation is folded to its first lines, in or out of game mode. */
 .g-explain--part .g-explain__head { display: flex; align-items: center; gap: var(--s-1); margin: 0 0 var(--s-1); font-weight: 700; font-size: var(--ui-sm); color: var(--ink-2); }
 .g-explain--part { padding: var(--s-3); border-radius: 1rem; border: 2px dashed color-mix(in srgb, var(--gm-b, var(--rubric)) 45%, transparent); }
-.g-explain--part:not(.is-open) .g-step__say { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.g-explain--part:not(.is-open):not(.g-explain--first) .g-step__say { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .g-explain--part.is-open .g-explain__qtext { display: none; }
 .g-explain--part.is-open .g-explain__q::after { content: " Less"; }
 /* 📖 in a lesson: the part's own explanation above the type's rule. */
@@ -1462,3 +1463,25 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 /* Outside game mode too, a phone's session bar keeps to its width: ⇅ and ▦ as icons, the count on one line. */
 .g-runnav__pos { white-space: nowrap; }
 @media (max-width: 560px) { .g-runnav { flex-wrap: wrap; } .g-runnav .g-runnav__parttext { display: none; } }
+
+/* "Going on in 4… Stop" (ui.js autoGo) and "What next?" (suggestNode). */
+.g-auto { display: flex; align-items: center; gap: var(--s-2); margin: var(--s-3) 0 0; color: var(--ink-2); font-size: var(--ui-sm); }
+.g-suggest { margin-block: var(--s-4); }
+.g-suggest__i { display: grid; gap: 2px; }
+.g-suggest__why { font-size: var(--ui-sm); font-weight: 700; color: var(--ink-2); }
+
+/* A table inside a card or the explanation box keeps to the box (2026-10-23: "the overflow should be fixed on the
+   cards"): the page's bleed (above) would carry it past the card's border, so here it scrolls inside instead. */
+#grammar .g-explain .pt__scroll, #grammar .g-game .g-step .pt__scroll, #grammar .g-game .g-item .pt__scroll { margin-inline: 0; max-width: 100%; }
+#grammar .g-explain .pt__scroll { --pt-bg: color-mix(in srgb, var(--gm-b, var(--rubric)) 10%, var(--bg-raised)); }
+#grammar .g-explain, #grammar .g-explain__more { min-width: 0; max-width: 100%; }
+
+/* "For: all four conjugations …" and how each one does it (ui.js appliesNode). */
+.g-explain__applies, .g-explain__diff { margin: var(--s-2) 0 0; font-size: var(--ui-sm); color: var(--ink-2); line-height: 1.45; }
+.g-explain__for { font-weight: 700; color: var(--ink); }
+.g-explain__ex { color: var(--ink-3); }
+.g-explain__diff i { font-family: var(--face-reading); font-style: normal; color: var(--ink); }
+.g-diff__i { white-space: nowrap; }
+details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+/* Shown on a page outside game mode too: the line sits under the step's text. */
+.g-explain .g-explain__applies, .g-explain .g-explain__appliesbox { display: block; }
