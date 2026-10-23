@@ -148,7 +148,7 @@ test('the Paradigms page is a tab and a link of its own, and a table in a box ke
   const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
   const GCSS = readFileSync(new URL('../app/css/grammar.css', import.meta.url), 'utf8');
   const MANIFEST = JSON.parse(readFileSync(new URL('../app/manifest.webmanifest', import.meta.url), 'utf8'));
-  assert.match(UI, /\['map', 'path', 'practice', 'paradigms', 'catalogue', 'stats'\]/);
+  assert.match(UI, /\['map', 'path', 'chart', 'practice', 'paradigms', 'catalogue', 'stats'\]/);
   assert.match(UI, /paradigms: renderParadigms/);
   assert.ok(MAIN.includes("openGrammarSection('paradigms')"), 'the #/paradigms route is gone');
   assert.ok(MANIFEST.shortcuts?.some((s) => s.url === './#/paradigms'));

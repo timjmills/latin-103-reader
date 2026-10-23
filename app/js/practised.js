@@ -13,17 +13,25 @@ const load = () => {
   return memo;
 };
 
+// The synced count (grammar/practicelog.js, from the attempt log every device shares), set by the Grammar section
+// once it has its store. The higher of it and this device's own counter is the count: a round played on another
+// device shows here, and one this device counted before the log knew of it is not lost.
+let synced = null;
+export function setSyncedCounts(fn) { synced = typeof fn === 'function' ? fn : null; }
+
+const local = (key) => { const n = Number(load()[key]); return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0; };
 /** How many times `key` has been practised (0 when never). */
 export function practised(key) {
-  const n = Number(load()[key]);
-  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+  let s = 0;
+  try { s = Number(synced?.(key)) || 0; } catch { s = 0; }
+  return Math.max(local(key), s);
 }
 
 /** One more round of each key given (a key, or a list; empty ones are skipped). */
 export function notePractised(keys) {
   const m = load();
   let changed = false;
-  for (const k of [].concat(keys ?? [])) { if (typeof k !== 'string' || !k) continue; m[k] = practised(k) + 1; changed = true; }
+  for (const k of [].concat(keys ?? [])) { if (typeof k !== 'string' || !k) continue; m[k] = local(k) + 1; changed = true; }
   if (!changed) return;
   try { localStorage.setItem(KEY, JSON.stringify(m)); } catch { /* private mode: the count is kept for this visit only */ }
 }

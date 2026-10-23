@@ -316,6 +316,9 @@ function createRunner({ slots, getItem, mode, onAnswer, requeueOn = false, skill
       const metaFields = {
         ...(item.generated === true ? { generated: true, template: item.template ?? null, sentence: item.taught ?? null } : null),
         ...(given == null ? null : { given }),
+        // Which part of its lesson an item checked (Learn's steps, a part practised on its own), so the practice chart
+        // can count parts on every device: meta syncs (migration 0020) where the device's own counters do not.
+        ...(Number.isInteger(item.step) ? { step: item.step } : null),
       };
       const meta = Object.keys(metaFields).length ? metaFields : null;
       const attempt = { skill: item.skill, kind: item.kind, item_key: item.key, mode, correct: result.correct, hinted: hinted || self, self, partial: !!result.partial, answer: self ? `self: ${result.given}` : String(result.given ?? '').slice(0, 200), expected: String(result.expected ?? '').slice(0, 200), confused_with: result.correct ? null : confusedWith(item, result), ms: took, at: new Date(lastAt).toISOString(), ...(meta ? { meta } : {}) };

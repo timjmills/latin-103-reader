@@ -22,7 +22,8 @@ import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapte
 import { orderInput, matchInput } from './inputs.js';
 import { buildPath, climbFrom } from './continuum.js';
 import { appliesTo, exampleOf } from './applies.js';
-import { practised, notePractised, timesText } from '../practised.js';
+import { practised, notePractised, timesText, setSyncedCounts } from '../practised.js';
+import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
 import { localDay } from './stats.js';
@@ -1102,6 +1103,15 @@ export function createUI(ctx) {
   const unitOf = (id) => ctx.units.find((u) => u.id === id) ?? null;
   const stateOf = (id) => decay(gstore.getState(id) ?? newState(id), Date.now());
   const titleOf = (id) => skills.get(id)?.title ?? id;
+  // The practice log, from the synced attempts (practicelog.js): rebuilt when the log grows, so a round played on
+  // another device counts here as soon as it has synced, and the "×N" everywhere reads it (practised.js).
+  let logMemo = null;
+  const pLog = () => {
+    const n = gstore?.countAttempts?.() ?? 0;   // the cheap total; the log is only rebuilt when it has changed
+    if (!logMemo || logMemo.n !== n) logMemo = { n, log: practiceLog(gstore?.getAttempts?.() ?? []) };
+    return logMemo.log;
+  };
+  setSyncedCounts((key) => pLog().count(key));
 
   /* ------------------------------------------------------------ shell */
   function draw() {
@@ -1114,11 +1124,11 @@ export function createUI(ctx) {
         'aria-current': view.name === v || (v === 'wwdrills' && (view.params?.from?.wordwork != null || view.name === 'wwtable')) ? 'page' : null,
         onclick: () => render(v, v === 'paradigms' ? {} : { chapter: wwChapter() }) }, label)))
       : h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'path', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
-        { map: 'Skills', path: 'Path', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
+      ['map', 'path', 'chart', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
+        { map: 'Skills', path: 'Path', chart: 'Chart', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, nav, body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, sheets: renderSheets, stats: renderStats, history: renderHistory, path: renderPath, part: renderPart, summary: () => renderMap() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, sheets: renderSheets, stats: renderStats, history: renderHistory, path: renderPath, part: renderPart, chart: renderChart, summary: () => renderMap() };
     (fn[view.name] ?? renderMap)(playOnce ? { ...view.params, play: true } : view.params);
     document.title = sheets ? 'Sheets — Latin 103' : words ? 'Word Work — Latin 103' : `Grammar — Latin 103`;
   }
@@ -1444,7 +1454,9 @@ export function createUI(ctx) {
     const head = h('header', { class: 'g-head' },
       h('h1', { class: 'g-title', text: 'Skills' }),
       // The pensa arrive from the private library, so the lede only promises them once some are here.
-      h('p', { class: 'g-lede', text: `${index.skills.size} skills in book order, with each chapter's questions, vocabulary${[...skills.values()].some((s) => s.set === 'pensum') ? ' and pensa' : ''}. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }));
+      h('p', { class: 'g-lede', text: `${index.skills.size} skills in book order, with each chapter's questions, vocabulary${[...skills.values()].some((s) => s.set === 'pensum') ? ' and pensa' : ''}. Start a skill as new to learn it in one sitting, or add it straight to mixed practice.` }),
+      // The practice chart, a tap from the top of the map: what is practised, how much, and what is still to do.
+      h('p', { class: 'g-acts' }, btn('📊 Practice chart: what is practised, what is still to do', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet g-chartlink')));
 
     const todayNode = todaySection();
 
@@ -1611,7 +1623,10 @@ export function createUI(ctx) {
         // walking the page's structure, and the line under it is what the eye needs — the counts.
         h('h2', { class: 'g-chapter__h visually-hidden', text: `Grammar of chapter ${entry?.roman ?? roman(n)}` }),
         h('p', { class: 'g-chapter__sum' }, chapterTipButton(row.roman, material, progress, stateOf))),
-      ...chapterBody(row, { nav, known })));
+      ...chapterBody(row, { nav, known }),
+      // This chapter's part of the practice chart: practised or not, how much, and what is still to do.
+      h('div', { class: 'g-chapter__chart' }, h('h3', { class: 'g-h2', text: 'Practice chart' }), chartChapter(n, { compact: true }),
+        h('div', { class: 'g-acts' }, btn('The whole chart →', { to: ['chart', { chapter: n }], onclick: () => goView('chart', { chapter: n }) }, 'btn btn--quiet')))));
   }
 
   /**
@@ -2838,12 +2853,34 @@ export function createUI(ctx) {
   const goView = (name, params = {}, mode = 'grammar') => { if (sectionMode() !== mode) ctx.setMode?.(mode); if (gameKept()) gameDrillOn(); render(name, params); };
   const goSkill = (id) => { const [name, params] = skillTo(id); goView(name, params); };
   /** One skill as a link of the path: its state, its name, its chapter. */
+  /** "2 days ago", "today", "3 weeks ago": when a skill was last practised. */
+  const agoText = (t) => {
+    if (!t) return '';
+    const days = Math.floor((startOfToday() - new Date(t).setHours(0, 0, 0, 0)) / DAY_MS);
+    if (days <= 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 14) return `${days} days ago`;
+    if (days < 60) return `${Math.round(days / 7)} weeks ago`;
+    return `${Math.round(days / 30)} months ago`;
+  };
+  const startOfToday = () => new Date().setHours(0, 0, 0, 0);
+  /**
+   * Whether a skill has been practised and how much (2026-10-23: "these things should show if they have been
+   * practised and how much"), from the synced log: "×3 · 2 days ago", or "Not practised yet".
+   */
+  const practiceTag = (id) => {
+    const l = pLog().skill(id);
+    const n = Math.max(l.rounds, practised(`skill:${id}`));
+    return n || l.answers
+      ? h('span', { class: 'g-ptag', title: `${n} time${n === 1 ? '' : 's'} · ${l.answers} answers, ${l.right} right${l.last ? ` · last ${agoText(l.last)}` : ''}` }, h('b', { text: `×${Math.max(1, n)}` }), l.last ? ` · ${agoText(l.last)}` : '')
+      : h('span', { class: 'g-ptag g-ptag--none', text: 'Not practised yet' });
+  };
   const pathLink = (id, { cls = 'g-pathlink' } = {}) => {
     const sk = skills.get(id);
     if (!sk) return null;
     return navEl({ class: cls, to: skillTo(id), onclick: () => { closeGameMenu(); goSkill(id); } },
       h('span', { class: 'g-dot', 'data-state': stateOf(id).state, 'aria-hidden': 'true' }),
-      h('span', { class: 'g-pathlink__t', text: sk.title }), countBadge(`skill:${id}`),
+      h('span', { class: 'g-pathlink__t' }, sk.title, h('br'), practiceTag(id)),
       h('span', { class: 'g-pathlink__c', text: `Cap. ${roman(sk.chapter)}` }));
   };
   /** "Too hard? / Too easy?": what it builds on, and what builds on it — both a tap away. */
@@ -2902,7 +2939,8 @@ export function createUI(ctx) {
       h('ul', { class: 'g-level__list' }, list.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: x.why }), pathLink(x.id))))) : null;
   };
   /** The same for a game's end screen (game.js `suggest`). */
-  const gameSuggest = (id) => suggestionsOf(id).map((x) => ({ label: `${x.why}: ${titleOf(x.id)} →`, go: () => goSkill(x.id) }));
+  const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
+  const gameSuggest = (id) => suggestionsOf(id).map((x) => ({ label: `${x.why}: ${titleOf(x.id)} (${practiceText(x.id)}) →`, go: () => goSkill(x.id) }));
   /**
    * Go on by itself (2026-10-23: "suggest the next part … to keep going on automatically"): `button` is pressed for
    * the learner after a few seconds, unless they touch anything first or the page moves on. Returns the note to
@@ -2976,6 +3014,65 @@ export function createUI(ctx) {
         h('h2', { id: `g-path-c${c}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(c)}` }), h('span', { class: 'g-chap__count', text: bookChapter(c)?.title ?? '' })),
         h('ol', { class: 'g-path__list' }, list.map(row)))));
     if (at) body.querySelector(`#g-path-${CSS.escape(at)}`)?.scrollIntoView({ block: 'center' });
+  }
+
+  /* ------------------------------------------------------- the practice chart */
+  /**
+   * **The practice chart** (2026-10-23: "a chart to show which skills have been practised … save across devices …
+   * within the chapters … and what still needs to be practised"): every chapter's skills as tiles, each with its
+   * state, how many times it has been practised and when (the synced log, practicelog.js), its progress sheet, and
+   * what is still to do; the chapter's tables with theirs. "Still to do" at the top lists what needs practice most,
+   * due reviews first. It reads only what syncs, so it is the same chart on every device.
+   */
+  const todoOf = (id) => needsPractice(stateOf(id), pLog().skill(id));
+  function chartTile(id, { compact = false } = {}) {
+    const sk = skills.get(id);
+    const st = stateOf(id);
+    const need = todoOf(id);
+    return h('li', { class: `g-ptile${need ? ' is-todo' : ' is-done'}`, 'data-state': st.state },
+      navEl({ class: 'g-ptile__t', to: ['lesson', { skill: id }], onclick: () => goView('lesson', { skill: id }) },
+        h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), sk.title),
+      h('p', { class: 'g-ptile__meta' }, practiceTag(id), need ? h('span', { class: 'g-ptile__need', text: ` · ${need.why}` }) : h('span', { class: 'g-ptile__ok', text: ' · up to date' })),
+      compact ? null : partsMeter(sk.title, progressOf(sk, !!ctx.items)),
+      need ? btn(playLabel(need.rank <= 1 ? 'Review' : need.rank === 2 ? 'Continue' : 'Learn'), { to: skillTo(id), onclick: () => goSkill(id), 'aria-label': `${need.rank <= 1 ? 'Review' : 'Learn'} ${sk.title}` }, 'btn btn--quiet g-play g-ptile__go') : null);
+  }
+  /** One chapter's part of the chart: its skills, then the tables it introduces. */
+  function chartChapter(n, { todoOnly = false, compact = false } = {}) {
+    const ids = thePath().order.filter((id) => skills.get(id)?.chapter === n);
+    const shown = todoOnly ? ids.filter((id) => todoOf(id)) : ids;
+    const tables = thePath().steps.filter((st) => st.kind === 'table' && st.chapter === n);
+    if (!shown.length && (todoOnly || !tables.length)) return null;
+    const done = ids.filter((id) => pLog().skill(id).answers > 0 || practised(`skill:${id}`)).length;
+    return h('section', { class: 'g-chap g-pchart', id: `g-pchart-${n}`, 'aria-labelledby': `g-pchart-h${n}` },
+      h('h2', { id: `g-pchart-h${n}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(n)}` }), h('span', { class: 'g-chap__count', text: `${bookChapter(n)?.title ?? ''} · ${done} of ${ids.length} practised` })),
+      shown.length ? h('ul', { class: 'g-ptiles' }, shown.map((id) => chartTile(id, { compact }))) : null,
+      !todoOnly && tables.length ? h('p', { class: 'g-ptables' }, h('span', { class: 'g-explain__for', text: 'Tables: ' }),
+        tables.map((t, i) => [i ? ' · ' : '', navEl({ class: 'g-link', to: ['catalogue', { table: t.id }], onclick: () => goView('catalogue', { table: t.id }) }, catTables?.get?.(t.id)?.label ?? t.id), ' ',
+          practised(`table:${t.id}`) ? h('b', { class: 'g-count', text: `×${practised(`table:${t.id}`)}` }) : h('span', { class: 'g-ptag--none', text: '(not yet)' })])) : null);
+  }
+  async function renderChart({ chapter = null, todo = false } = {}) {
+    try { await catalogueItemsOf(); } catch { /* the tables' names fall back to their ids */ }
+    if (view.name !== 'chart') return;
+    const ids = thePath().order;
+    const todoList = ids.map((id) => ({ id, need: todoOf(id) })).filter((x) => x.need)
+      .sort((a, b) => a.need.rank - b.need.rank || thePath().of(a.id) - thePath().of(b.id));
+    const here = ctx.currentChapter?.() ?? null;
+    // What is pressing: the due reviews, a lesson half done, then what comes next in the chapter being read.
+    const top = todoList.filter((x) => x.need.rank <= 2 || skills.get(x.id).chapter <= (here ?? 99)).slice(0, 8);
+    const practisedN = ids.filter((id) => pLog().skill(id).answers > 0 || practised(`skill:${id}`)).length;
+    const chapters = [...new Set(ids.map((id) => skills.get(id).chapter))].sort((a, b) => a - b);
+    setBody(
+      h('header', { class: 'g-head' },
+        h('p', { class: 'g-kicker', text: 'Grammar · practice chart' }),
+        h('h1', { class: 'g-title', text: 'What you have practised' }),
+        h('p', { class: 'g-lede', text: `${practisedN} of ${ids.length} skills practised; ${todoList.length} still to do. It is kept with your account, so every device shows the same chart.` })),
+      h('div', { class: 'g-acts g-acts--top', role: 'group', 'aria-label': 'Show' },
+        btn('Every skill', { 'aria-pressed': String(!todo), to: ['chart', {}], onclick: () => render('chart', {}) }, 'g-filter__btn'),
+        btn(`Still to do (${todoList.length})`, { 'aria-pressed': String(!!todo), to: ['chart', { todo: true }], onclick: () => render('chart', { todo: true }) }, 'g-filter__btn')),
+      top.length ? h('section', { class: 'g-ptodo' }, h('h2', { class: 'g-h2', text: 'Still to practise first' }),
+        h('ol', { class: 'g-level__list' }, top.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: `${x.need.why} · Cap. ${roman(skills.get(x.id).chapter)}` }), pathLink(x.id))))) : h('p', { class: 'g-quiet', text: 'Nothing is waiting: every skill you have started is up to date.' }),
+      chapters.map((n) => chartChapter(n, { todoOnly: !!todo })));
+    if (chapter != null) body.querySelector(`#g-pchart-${Number(chapter)}`)?.scrollIntoView({ block: 'start' });
   }
 
   /* ------------------------------------------------------- one part of a lesson */
@@ -3072,7 +3169,7 @@ export function createUI(ctx) {
         h('div', { class: 'g-acts' }, climbButton(id ?? null, id ? '▶ Climb on from here' : '▶ Climb the path'), btn('The whole path', { to: ['path', id ? { at: id } : {}], onclick: () => { closeGameMenu(); goView('path', id ? { at: id } : {}); } }, 'btn'))),
       only === 'level' ? null : h('section', { class: 'g-gmenu__sec' },
         h('h3', { class: 'g-gmenu__sh', text: 'Grammar' }),
-        h('ul', { class: 'g-gmenu__list' }, go('Skills', 'map'), go('Practice', 'setup'), go('Paradigms', 'paradigms'), go('Tables', 'catalogue'), go('Stats', 'stats')),
+        h('ul', { class: 'g-gmenu__list' }, go('Skills', 'map'), go('Practice chart', 'chart'), go('Practice', 'setup'), go('Paradigms', 'paradigms'), go('Tables', 'catalogue'), go('Stats', 'stats')),
         h('h3', { class: 'g-gmenu__sh', text: 'Word Work' }),
         h('ul', { class: 'g-gmenu__list' }, go(`This chapter · Cap. ${roman(here)}`, 'wordwork', { chapter: here }, 'words'), go('Skill drills', 'wwdrills', { chapter: here }, 'words'), go('Any word & types', 'paradigms', {}, 'words'))),
       only === 'level' ? null : h('div', { class: 'g-acts' }, btn('✕ Leave game mode', { onclick: () => { closeGameMenu(); keepGame(false); body.classList.remove('g-game'); document.documentElement.classList.remove('g-game-open'); draw(); } }, 'btn btn--quiet')));
@@ -5878,7 +5975,8 @@ export function createUI(ctx) {
     const per = stats.perSkill(attempts, ids);
     const pairs = stats.confusionPairs(gstore.getConfusions(), skills);
     const dl = (label, value) => [h('dt', { text: label }), h('dd', { text: String(value) })];
-    setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Stats' }), h('p', { class: 'g-lede', text: 'Grammar only — the reading study log is in Settings.' })),
+    setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Stats' }), h('p', { class: 'g-lede', text: 'Grammar only — the reading study log is in Settings.' }),
+      h('p', { class: 'g-acts' }, btn('📊 Practice chart, by chapter', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet g-chartlink'))),
       // The tally runs over the map *and* the chapter sets, so it reaches 96 where the Progress page
       // says "of 88". The heading names both populations and the line names both tallies (QA-B7, N-22).
       h('section', { class: 'g-stat' }, h('h2', { class: 'g-h2', text: ctx.sets?.size ? 'Skills and chapter sets' : 'Skills' }),

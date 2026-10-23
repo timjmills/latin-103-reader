@@ -1448,7 +1448,8 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 .g-game__rulestep .g-explain__more { display: block !important; }
 
 /* A control that became a link (2026-10-23, its own address) keeps the look it had as a button. */
-#grammar a.g-chip, #grammar a.g-skill__title, #grammar a.btn, #grammar a.g-choice { text-decoration: none; }
+#grammar a.g-chip, #grammar a.g-skill__title, #grammar a.btn, #grammar a.g-choice, #grammar a.g-filter__btn { text-decoration: none; }
+#grammar a.g-filter__btn { display: inline-flex; align-items: center; color: inherit; }
 #grammar a.g-chip { display: inline-flex; align-items: center; }
 #grammar a.g-skill__title { display: inline; }
 
@@ -1489,3 +1490,25 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 /* "How to make it" above a question (ui.js howNode): the rule card, a little quieter than the question. */
 .g-item .g-how { margin: var(--s-2) 0 var(--s-3); }
 .g-item .g-how .wr__steps { font-size: var(--ui-sm); }
+
+/* The practice chart (ui.js renderChart, chartChapter): a tile a skill, done or still to do. */
+.g-ptiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: var(--s-2); }
+.g-ptile { display: grid; gap: var(--s-1); align-content: start; padding: var(--s-2) var(--s-3); border-radius: 0.9rem; background: var(--bg-raised); box-shadow: inset 0 0 0 1px var(--line); border-left: 5px solid var(--line-strong); }
+.g-ptile.is-done { border-left-color: var(--success); }
+.g-ptile.is-todo[data-state="lapsed"], .g-ptile.is-todo[data-state="practising"], .g-ptile.is-todo[data-state="mastered"] { border-left-color: var(--danger); }
+.g-ptile.is-todo[data-state="learning"] { border-left-color: var(--rubric); }
+.g-ptile__t { display: flex; align-items: baseline; gap: var(--s-1); font-weight: 600; color: var(--ink); text-decoration: none; }
+.g-ptile__t:hover { color: var(--rubric-ink); }
+.g-ptile__meta { margin: 0; font-size: var(--ui-sm); color: var(--ink-2); }
+.g-ptile__need { color: var(--rubric-ink); font-weight: 600; }
+.g-ptile__ok { color: var(--success); }
+.g-ptile__go { justify-self: start; min-height: 36px; }
+.g-ptag { font-size: var(--ui-sm); color: var(--ink-2); }
+.g-ptag b { color: var(--ink); }
+.g-ptag--none { font-size: var(--ui-sm); color: var(--ink-3); font-style: italic; }
+.g-ptables { margin: var(--s-2) 0 0; font-size: var(--ui-sm); color: var(--ink-2); }
+.g-ptodo { margin-bottom: var(--s-4); }
+.g-chapter__chart { margin-top: var(--s-4); }
+.g-chapter__chart .g-chap__h { font-size: var(--ui-md); }
+.g-chartlink { font-weight: 600; }
+.g-pathlink__t .g-ptag { font-weight: 400; }
