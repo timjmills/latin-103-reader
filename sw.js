@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v104';
+const CACHE_VERSION = 'v105';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -354,7 +354,7 @@ const HASHES = {
   "./js/grammar/chapter.js": '3f1a0ef3892d',
   "./js/grammar/continuum.js": 'a51affc0ef89',
   "./js/grammar/generate.js": 'c312891ee45c',
-  "./js/grammar/index.js": '676c0f29a7cd',
+  "./js/grammar/index.js": '575753aa5313',
   "./js/grammar/inputs.js": '2ff1da2f09fb',
   "./js/grammar/items.js": '7f5614202473',
   "./js/grammar/lessons.js": 'b64c65fbe898',
@@ -369,7 +369,7 @@ const HASHES = {
   "./js/grammar/today.js": '88110a22383f',
   "./js/grammar/ui.js": 'cf59af03952c',
   "./js/hovergloss.js": 'db78916cb67b',
-  "./js/main.js": '5b04ccb3a50a',
+  "./js/main.js": 'd0f32d75f894',
   "./js/paradigm-chapters.js": 'a2ee337ad019',
   "./js/paradigms.js": 'decea54a54e8',
   "./js/practised.js": '34c999b88cba',

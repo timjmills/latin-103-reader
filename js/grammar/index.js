@@ -15,7 +15,10 @@ import { createStage3 } from './stage3.js';
 import { createSetLoader, createSetItems, setSkills, groupPensa, chapterOfWeek, manifestChapters } from './sets.js';
 import { roman, isShelfWeek } from '../sync.js';
 import { createGenerator } from './generate.js';
-import { createUI, learnCache } from './ui.js';
+// The views (ui.js, the section's largest file) are fetched when the section is first drawn, or in idle time once
+// it is mounted — never in front of the reader's first page (2026-10-23).
+let uiP = null;
+const loadUI = () => (uiP ??= import('./ui.js'));
 import { normaliseHintMode } from './session.js';
 import { CHAPTER_MAX } from './chapter.js';
 
@@ -179,7 +182,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       root.replaceChildren(Object.assign(document.createElement('p'), { className: 'g-loading', textContent: 'Loading the grammar section…' }));
       ctx.index = await loadSkills();
       ctx.chapters = ctx.chapters ?? await loadChapters();
-      ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa, learnCache: learnCache() });
+      ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa, learnCache: (await loadUI()).learnCache() });
       await ctx.gstore.ready();
       // Every week in the library, review shelf included: the sentences the items are built from — with the
       // reader's grammar-focus highlights (gold items for the construction they name) and the lessons' own examples.
@@ -203,7 +206,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       const loaded = await loader.loadAll();
       buildSets(loaded);
       ui?.dispose?.();
-      ui = createUI(ctx);
+      ui = (await loadUI()).createUI(ctx);
       window.latinGrammar = ctx;   // documented hook (like window.latinReader): the section's context and the item on screen
       let pensaCount = ctx.gstore.getPensa().length;
       ctx.gstore.onChange(() => { const n = ctx.gstore.getPensa().length; if (n !== pensaCount) { pensaCount = n; buildSets(loaded); } ui.refresh(); });
@@ -238,7 +241,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     lightP = (async () => {
       ctx.index = ctx.index ?? await loadSkills();
       ctx.chapters = ctx.chapters ?? await loadChapters();
-      if (!ctx.gstore) { ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa, learnCache: learnCache() }); await ctx.gstore.ready(); }
+      if (!ctx.gstore) { ctx.gstore = createGrammarStore({ mode: hooks ? 'idb' : 'local', hooks, localPensa, learnCache: (await loadUI()).learnCache() }); await ctx.gstore.ready(); }
       if (!ctx.weeks.length) ctx.weeks = await store.getWeeks();
       const chapter = ctx.currentChapter();
       const loaded = chapter != null ? await loader.loadChapter(chapter, ctx.currentWeekId()) : { questions: new Map(), weekQuestions: new Map(), vocab: new Map() };
@@ -254,7 +257,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       }
       ctx.sets = sets;
       ctx.skills = new Map([...ctx.index.skills, ...ctx.sets]);
-      ui = createUI(ctx);   // no `items`: the card falls back to "a skill with a parse filter is drillable"
+      ui = (await loadUI()).createUI(ctx);   // no `items`: the card falls back to "a skill with a parse filter is drillable"
     })().catch((e) => { console.warn('[grammar] the Today card could not be built', e?.message || e); lightP = null; throw e; });
     return lightP;
   }
@@ -349,6 +352,9 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     return { chapter: n, refresh: () => ui?.chapterPanel?.(el, { chapter: n }), destroy: () => el.replaceChildren() };
   }
   mounted = { mountChapterPanel };
+  // The views next, in idle time, so the first press on Grammar finds them already here.
+  const idle = (fn) => (typeof requestIdleCallback === 'function' ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1500));
+  idle(() => { loadUI().catch((e) => { uiP = null; console.warn('[grammar] the views could not be fetched ahead', e?.message || e); }); });
 
   return {
     open: () => setSection('grammar'), close: () => setSection('read'), ctx,

@@ -9,7 +9,6 @@ import { chapter as chapterOf, chapterOfWeek, parseChapterRoute, chapterHash, is
 // Progress across every chapter (GRAMMAR-CONTRACT.md): the pure aggregation the
 // #/progress page paints — reading, grammar and the derived timings.
 import { parseProgressRoute, progressHash, chapterRows as bookRows, chapterGrammar, chapterLine, timingLine, bookTotals, skillsOutOf, fmtEstimate, fmtMeasured, paceNote, estimateNote } from './progress.js';
-import { mountGrammar } from './grammar/index.js';   // the Grammar section (GRAMMAR-CONTRACT.md): mounted once the reader is ready
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const LS_WEEK = 'l103.week';
@@ -81,7 +80,11 @@ async function boot() {
   let onRemoteChange = (kind) => { remote[kind] = true; };   // buffered until the UI exists
   store.onChange?.((kind) => onRemoteChange(kind));
 
-  await Promise.all([store.ready(), dict.loadGlossary('./data/glossary.json').catch((e) => console.warn('[dict] glossary not loaded', e))]);
+  // The dictionary (5 MB of forms) loads beside the reading rather than in front of it (2026-10-23, "would that
+  // help with loading times"): the text is drawn as soon as the store is ready, and a word tapped in the second
+  // before the dictionary has arrived waits for it (reader.on('word') below). Grammar mounts once it is there.
+  const glossaryP = dict.loadGlossary('./data/glossary.json').catch((e) => console.warn('[dict] glossary not loaded', e));
+  await store.ready();
 
   const synced = await store.getSettings();
   if (JSON.stringify(synced) !== JSON.stringify(settings)) { settings = synced; applyToDocument(settings); mirror(settings); }
@@ -173,7 +176,10 @@ async function boot() {
   });
   window.latinReader = { reader, panel, store, audio };   // documented hooks (see README-ui.md)
 
-  reader.on('word', (w) => panel.showWord(w));
+  reader.on('word', async (w) => {
+    if (!dict.glossaryLoaded()) { notify('Loading the dictionary…'); await glossaryP; noticeEl.hidden = true; }
+    panel.showWord(w);
+  });
   reader.on('note', (n) => panel.showNote(n));
   // Sentence view's "Section summary" button: the part's summary in the panel / popup.
   reader.on('summary', ({ part, unitId, el, body }) => panel.showSummary({ part: part.part, body, unitId, el }));
@@ -1958,8 +1964,17 @@ async function boot() {
   // (The service worker is registered at the top of boot, before the sign-in gate, and never awaited.)
   // Grammar section: binds the header's Read / Grammar control; loads nothing until Grammar is opened.
   // `onChapterNav` is how a lesson opened from a chapter page finds its way back (the shell owns the route).
-  grammarReady = mountGrammar({ store, dict, par, reader, settings, saveSettings })
+  // The section's code (over 500 KB) is fetched only now, after the reading is on screen and the dictionary it
+  // drills from has arrived (the two fetched side by side); a press on Grammar, Word Work or Sheets before then is kept and honoured on arrival.
+  const sectionBtns = [...document.querySelectorAll('[data-section]')];
+  let pendingSection = null;
+  const early = (e) => { if (grammar) return; const s = e.currentTarget.dataset.section; if (s && s !== 'read') { pendingSection = s; e.currentTarget.setAttribute('aria-busy', 'true'); notify('Opening…'); } };
+  for (const b of sectionBtns) b.addEventListener('click', early);
+  grammarReady = Promise.all([import('./grammar/index.js'), glossaryP]).then(([m]) => m.mountGrammar({ store, dict, par, reader, settings, saveSettings }))
     .then((g) => {
+      for (const b of sectionBtns) { b.removeEventListener('click', early); b.removeAttribute('aria-busy'); }
+      if (g && pendingSection) { noticeEl.hidden = true; if (pendingSection === 'words') g.openWordWork?.(); else if (pendingSection === 'sheets') g.openSheets?.(); else g.open?.(); }
+      pendingSection = null;
       grammar = g;
       // Two hooks the section asks for (README-ui.md "Grammar by chapter"): how to reach a
       // chapter page, and how to leave one first — the chapter page hides the whole section.
