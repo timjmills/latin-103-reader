@@ -1454,3 +1454,11 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 /* "×3": how many times it has been practised (practised.js). Small, beside the name it counts. */
 .g-count { display: inline-flex; align-items: center; margin-inline-start: 0.4em; padding: 0 0.45em; min-height: 1.35em; border-radius: 999px; background: color-mix(in srgb, var(--gm-a, var(--rubric)) 12%, var(--bg-raised)); color: var(--ink-2); font-family: var(--face-ui); font-size: 0.75rem; font-weight: 700; line-height: 1; vertical-align: middle; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .g-title .g-count { font-size: 0.9rem; }
+
+/* A prerequisite in the blue "This builds on" box: a link to its lesson, in a new tab. */
+.g-prereq__skill { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.g-prereq__skill:hover { text-decoration-thickness: 2px; }
+.g-prereq__new { font-size: 0.85em; }
+/* Outside game mode too, a phone's session bar keeps to its width: ⇅ and ▦ as icons, the count on one line. */
+.g-runnav__pos { white-space: nowrap; }
+@media (max-width: 560px) { .g-runnav { flex-wrap: wrap; } .g-runnav .g-runnav__parttext { display: none; } }
