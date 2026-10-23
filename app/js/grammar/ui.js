@@ -2834,9 +2834,32 @@ export function createUI(ctx) {
       if (e && !has(e) && tableOf(e) && skillWordFits(sk, e)) out.push(e);
     }
     if (out.length < 2) for (const e of await skillWords(n, sk)) { if (out.length >= TABLE_PART_WORDS) break; if (!has(e)) out.push(e); }
+    // A skill that names no forms (adjective agreement: any adjective, any case) has the whole of its tables.
+    if (!out.length && wholeTables(sk)) {
+      const pids = new Set(sk.paradigms);
+      for (const pid of sk.paradigms) { let e = null; try { e = entryForKey(pid, sk); } catch { e = null; } if (e && !has(e) && tableOf(e)) out.push(e); }
+      for (const c of items.candidates(sk.id) ?? []) {
+        if (out.length >= 3) break;   // a whole table is long: three words, more from the game's Words
+        const e = c.entry;
+        if (e && !has(e) && tableOf(e) && selectRules && pids.has(tableIdOf(e, selectRules))) out.push(e);
+      }
+    }
     return out;
   }
-  const skillWordFits = (sk, e) => { const t = tableOf(e); return !!t && (t.sections ?? []).some((s) => (s.rows ?? []).some((r) => (r.cells ?? []).some((c) => c && !c.empty && c.key && skillCovers(sk, e, c.key)))); };
+  const coversAny = (sk, e) => { const t = tableOf(e); return !!t && (t.sections ?? []).some((s) => (s.rows ?? []).some((r) => (r.cells ?? []).some((c) => c && !c.empty && c.key && skillCovers(sk, e, c.key)))); };
+  const wholeMemo = new Map();
+  /** No word of any of the skill's tables has a cell it names: the skill is about the whole of them. */
+  const wholeTables = (sk) => {
+    if (!wholeMemo.has(sk.id)) {
+      let whole = true;
+      for (const pid of sk.paradigms ?? []) { let e = null; try { e = entryForKey(pid, sk); } catch { e = null; } if (e && coversAny(sk, e)) { whole = false; break; } }
+      wholeMemo.set(sk.id, whole);
+    }
+    return wholeMemo.get(sk.id);
+  };
+  /** The cells of a word's table a skill's game asks: those it names, or every one when it names none. */
+  const skillCell = (sk, e, key) => skillCovers(sk, e, key) || (wholeTables(sk) && (key?.degree == null || key.degree === 'pos'));   // the whole: a plain adjective's own forms
+  const skillWordFits = (sk, e) => coversAny(sk, e);
   async function playSkillTables(id, { chapter = null, only = null } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length || sk.set) return false;
@@ -2855,7 +2878,7 @@ export function createUI(ctx) {
       const head = headOf(e);
       const playing = words.includes(e);
       (t.sections ?? []).forEach((sec, si) => (sec.rows ?? []).forEach((r) => (r.cells ?? []).forEach((c, ci) => {
-        if (!c || c.empty || !c.key || !skillCovers(sk, e, c.key)) return;
+        if (!c || c.empty || !c.key || !skillCell(sk, e, c.key)) return;
         const answers = cellAnswers(c);
         if (!answers.length) return;
         if (!playing) { counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1); return; }
@@ -2891,7 +2914,9 @@ export function createUI(ctx) {
     const sk = skills.get(id);
     if (!sk || sk.set || !sk.paradigms?.length) return null;
     const many = sk.paradigms.length > 1;
-    return btn([h('span', { 'aria-hidden': 'true', text: '▦ ' }), short ? (many ? `Its tables (${sk.paradigms.length})` : 'Its table') : (many ? `Play its tables: every word (${sk.paradigms.length})` : 'Practise its part of the table'), countBadge(`tablepart:${id}`)],
+    // One table of one word (nōlō) is that word's; any other table is played over several of its words.
+    const oneWord = !many && WORD_TABLES.has(sk.paradigms[0]);
+    return btn([h('span', { 'aria-hidden': 'true', text: '▦ ' }), short ? (many ? `Its tables (${sk.paradigms.length})` : 'Its table') : (many ? `Play its tables: every word (${sk.paradigms.length})` : oneWord ? 'Practise its part of the table' : 'Play its table: every word'), countBadge(`tablepart:${id}`)],
       { onclick: (e) => { const b = e.currentTarget; if (b.dataset.busy) return; b.dataset.busy = '1'; playSkillTables(id, { chapter }).finally(() => { delete b.dataset.busy; }); }, 'aria-label': many ? `Play ${sk.title}: its part of the table for every word it covers, in one game, then come back here` : `Practise just the part of the table ${sk.title} covers, as a game, then come back here` }, 'btn g-play g-partbtn');
   };
   /* ------------------------------------------------------- the path (continuum.js) */
