@@ -1916,6 +1916,7 @@ export function createUI(ctx) {
       backButton(from),
       lessonHeader(skill, st),
       top.length ? h('div', { class: 'g-acts g-acts--top' }, top) : null,
+      prereqNode(skill, unmetPrereqs(skill, stateOf), { canDismiss: false }),
       h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson)),
       skill.set ? null : partsNode(id, stepsOf(lesson), { heading: 'Practise one part of the lesson' }),
       h('div', { class: 'g-acts' }, acts));
@@ -2167,15 +2168,33 @@ export function createUI(ctx) {
    * first step's page, above the step, so it is a line to read and a choice to
    * make rather than a screen to get past — and the learner may go on.
    */
-  function prereqNode(skill, missing, { queue = [], from = null } = {}) {
-    if (!missing.length) return null;
-    const names = missing.map((id) => h('b', { text: titleOf(id) }));
-    const list = names.flatMap((n, i) => (i === 0 ? [n] : i === names.length - 1 ? [' and ', n] : [', ', n]));
-    const node = h('aside', { class: 'g-prereq', 'aria-label': 'Before this skill' },
-      h('p', { class: 'g-prereq__line' }, 'This builds on ', ...list, `, which ${missing.length === 1 ? 'is' : 'are'} not in your practice yet. You can learn ${missing.length === 1 ? 'it' : 'them'} first and come back here, or go on.`),
-      h('div', { class: 'g-acts' },
-        btn(`Learn ${titleOf(missing[0])} first`, { to: ['learn', { skill: missing[0], queue: [...missing.slice(1), skill.id, ...queue], from }], onclick: () => render('learn', { skill: missing[0], queue: [...missing.slice(1), skill.id, ...queue], from }) }, 'btn'),
-        btn('Go on', { onclick: () => { node.remove(); body.querySelector('.g-step__title')?.focus?.({ preventScroll: true }); } }, 'btn btn--quiet')));
+  /**
+   * The blue "This builds on" box of a lesson, from the path (continuum.js): what the skill builds on, nearest
+   * first, and what it leads on to (2026-10-23: "make sure all the prerequisite links are up to date with our new
+   * data about easier or harder skills … add the harder as well"). Each name opens its lesson in a new tab ("when
+   * it's clicked have it open up in a new tab"), so this lesson stays where it is. A prerequisite not yet in the
+   * practice is named as such, with "Learn it first" and "Go on"; the lesson can always go on (decision 4).
+   */
+  function prereqNode(skill, missing = [], { canDismiss = true } = {}) {
+    if (!skill || skill.set) return null;
+    const path = thePath();
+    const before = (skill.prereqs ?? []).length ? path.easier(skill.id) : [];
+    const after = path.harder(skill.id);
+    if (!before.length && !after.length) return null;
+    const unmet = new Set(missing);
+    const newTab = (view, params, attrs, ...kids) => h('a', { href: grammarViewHash(view, params), target: '_blank', rel: 'noopener', ...attrs }, ...kids);
+    const skillLink = (id) => newTab(...skillTo(id), { class: 'g-prereq__skill', title: `Open ${titleOf(id)} in a new tab` },
+      h('b', { text: titleOf(id) }), h('span', { class: 'g-prereq__new', 'aria-hidden': 'true', text: ' ↗' }), h('span', { class: 'visually-hidden', text: ` (${unmet.has(id) ? 'not in your practice yet; ' : ''}opens in a new tab)` }),
+      countBadge(`skill:${id}`));
+    const listOf = (ids) => ids.flatMap((id, i) => (i === 0 ? [skillLink(id)] : i === ids.length - 1 ? [' and ', skillLink(id)] : [', ', skillLink(id)]));
+    const waiting = before.filter((id) => unmet.has(id));
+    const node = h('aside', { class: 'g-prereq', 'aria-label': 'Before and after this skill' },
+      before.length ? h('p', { class: 'g-prereq__line' }, h('span', { 'aria-hidden': 'true', text: '😓 ' }), 'Builds on ', ...listOf(before),
+        waiting.length ? `. ${waiting.length === before.length ? (waiting.length === 1 ? 'It is' : 'They are') : `${waiting.map(titleOf).join(', ')} ${waiting.length === 1 ? 'is' : 'are'}`} not in your practice yet — tap to learn it in a new tab (this lesson stays open here), or go on.` : '.') : null,
+      after.length ? h('p', { class: 'g-prereq__line' }, h('span', { 'aria-hidden': 'true', text: '😎 ' }), 'Leads on to ', ...listOf(after), '.') : null,
+      waiting.length && canDismiss ? h('div', { class: 'g-acts' },
+        newTab(...skillTo(waiting[0]), { class: 'btn', 'aria-label': `Learn ${titleOf(waiting[0])} first, in a new tab` }, `Learn ${titleOf(waiting[0])} first`, h('span', { 'aria-hidden': 'true', text: ' ↗' })),
+        btn('Go on', { onclick: () => { node.remove(); body.querySelector('.g-step__title')?.focus?.({ preventScroll: true }); } }, 'btn btn--quiet')) : null);
     return node;
   }
 
@@ -2315,7 +2334,7 @@ export function createUI(ctx) {
       // The noticing opener first (§10): the rest of the step, and its check, wait on it — one tap skips it.
       const nn = step.notice ? noticeNode(step.notice, teachItems, { onDone: () => { const gated = fillBody(); body.hidden = false; if (!gated) leadDone(); body.querySelector('.g-step__say, .g-worked__ask .g-q')?.scrollIntoView?.({ block: 'nearest' }); } }) : null;
       const lead = h('section', { class: 'g-step', 'aria-label': `Step ${n} of ${nSteps}` },
-        (slot?.step ?? i) === 0 ? prereqNode(skill, missing, { queue, from }) : null,
+        (slot?.step ?? i) === 0 ? prereqNode(skill, missing) : null,
         h('p', { class: 'g-kicker', text: `Step ${n} of ${nSteps}` }),
         // Through `prose`, as `say` is: ten titles mark their Latin (`*cum* glued on behind: *mēcum*`) and printed the stars.
         h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(step.title || skill.title)),
