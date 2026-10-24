@@ -1512,3 +1512,8 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-chapter__chart .g-chap__h { font-size: var(--ui-md); }
 .g-chartlink { font-weight: 600; }
 .g-pathlink__t .g-ptag { font-weight: 400; }
+
+/* How it's made, for the box last asked about (the ? beside a chart's box shows the form and why) */
+.g-chart__how { margin: var(--s-2) 0; padding: var(--s-2) var(--s-3); border: 1px solid var(--line); border-radius: 10px; background: var(--bg-raised); display: grid; gap: var(--s-2); justify-items: start; }
+.g-chart__how .wr { width: 100%; }
+.g-chart__howfor { margin: 0; font-weight: 600; }
