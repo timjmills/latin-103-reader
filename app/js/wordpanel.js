@@ -555,7 +555,10 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
   // sheet's own order — along the table's rows — sent Enter from a block to the next and back at every box: on
   // a phone, a page of scrolling each time (the learner, 2026-10-16: "it scrolls off the word and goes too far
   // down"). Document order is the order either layout reads in, as the drill chart's boxKeys has it.
-  const onScreen = (xs) => [...xs].sort((a, b) => ((a.td.compareDocumentPosition(b.td) & 4 /* DOCUMENT_POSITION_FOLLOWING */) ? -1 : 1));
+  // Every active form before any passive one (2026-10-24: "across all lessons and forms, games, charts, I want all
+  // active first then passive"): down the active column, then the passive; otherwise as on screen.
+  const passiveOf = (x) => (x.key && typeof x.key === 'object' && x.key.voice === 'pass' ? 1 : 0);
+  const onScreen = (xs) => [...xs].sort((a, b) => passiveOf(a) - passiveOf(b) || ((a.td.compareDocumentPosition(b.td) & 4 /* DOCUMENT_POSITION_FOLLOWING */) ? -1 : 1));
   const nextOpen = (x) => {
     const all = onScreen(cells().filter(on));
     const i = all.indexOf(x);
@@ -655,6 +658,13 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
         });
         input.addEventListener('compositionend', () => autoTake(x, input));
         input.addEventListener('keydown', (e) => {
+          // Tab goes in the same order as Enter (the active column, then the passive); past either end, as usual.
+          if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+            const all = onScreen(cells().filter(on));
+            const to = all[all.indexOf(x) + (e.shiftKey ? -1 : 1)];
+            if (to) { e.preventDefault(); judge(x); goTo(to); }
+            return;
+          }
           if (e.key !== 'Enter') return;
           e.preventDefault();
           judge(x);

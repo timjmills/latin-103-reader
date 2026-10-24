@@ -5540,19 +5540,30 @@ export function createUI(ctx) {
    * only once every box has something in it, so a half-written chart is never
    * graded by a key the learner meant as "next" (GRAMMAR-CONTRACT.md §3).
    */
-  function boxKeys(e, { inputs, hints, mark }) {
+  function boxKeys(e, { inputs, hints, mark, passive = () => false }) {
     const at = [...inputs.entries()].find(([, el]) => el === e.target);
     if (!at) return;
     const [i, inp] = at;
     if (e.altKey && (e.key === 'h' || e.key === 'H')) { e.preventDefault(); hints.get(i)?.click(); return; }
+    // The boxes in the order they are filled: every active form before any passive one (2026-10-24: "across all
+    // lessons and forms, games, charts, I want all active first then passive"), and otherwise the order **on
+    // screen**. A stacked chart (§26) reads down each block in turn, so the map's own order — the order the cells
+    // were built in, along the table's rows — would jump between blocks; document order is how either layout reads.
+    const order = [...inputs.entries()]
+      .sort(([a, x], [b, y]) => (passive(a) ? 1 : 0) - (passive(b) ? 1 : 0) || ((x.compareDocumentPosition(y) & 4 /* DOCUMENT_POSITION_FOLLOWING */) ? -1 : 1))
+      .map(([, el]) => el);
+    const usable = (el) => !el.disabled && !el.readOnly;
+    // Tab and Shift+Tab go along that order too, so a table with an active and a passive column is filled down
+    // the active column first; past either end Tab leaves the boxes as usual.
+    if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey && inputs.size > 1) {
+      const live = order.filter(usable);
+      const to = live[live.indexOf(inp) + (e.shiftKey ? -1 : 1)];
+      if (to) { e.preventDefault(); to.focus({ preventScroll: false }); }
+      return;
+    }
     if (e.key !== 'Enter' || e.altKey || e.ctrlKey || e.metaKey) return;
     mark(i, inp.value);
-    // The next empty box is the next one **on screen**, which is where Tab goes too. A stacked chart (§26)
-    // reads down each block in turn, so the map's own order — the order the cells were built in, along the
-    // table's rows — would send Enter jumping between blocks. Document order is the order either layout reads in.
-    const next = [...inputs.values()]
-      .filter((el) => !el.value.trim())
-      .sort((a, b) => ((a.compareDocumentPosition(b) & 4 /* DOCUMENT_POSITION_FOLLOWING */) ? -1 : 1))[0];
+    const next = order.filter((el) => usable(el) && !el.value.trim())[0];
     if (next) { e.preventDefault(); next.focus({ preventScroll: true }); }
   }
   /** Pensum B: the sentence with word blanks and a tappable bank. Submits { blankIndex: word }. */
@@ -5709,6 +5720,30 @@ export function createUI(ctx) {
       inp.addEventListener('input', () => { paintCells.paint(i, null); syncCheck(); });
       return inp;
     };
+    // How it's made, box by box (2026-10-24: "I don't know why cantō is not cantāverō but if I had a how it's made
+    // button I could see why … it is cantātus erō"): that word's own steps for that one form (wordrule.js formRule).
+    // One card under the chart, for the box last asked about.
+    const howBox = h('div', { class: 'g-chart__how', hidden: true, 'aria-live': 'polite' });
+    let howAt = null;
+    // The ? is both (2026-10-24: "maybe combine these: what it is and how it's made"): it shows the form in its box
+    // and, under the chart, why the form is that — and putting the form away puts the card away too.
+    const showHow = (i, on = true) => {
+      const c = chart.cells[i];
+      if (!on) { if (howAt === i) { howBox.hidden = true; howAt = null; } return; }
+      if (!c || !chartCellKey(item, c)) return;
+      const e = entryOfCell(c);
+      const r = ruleOfEntry(e);
+      let card = null;
+      try { card = r ? formRule(r, chartCellKey(item, c)) : null; } catch { card = r; }
+      if (!card) return;
+      howBox.replaceChildren(
+        h('p', { class: 'g-chart__howfor' }, h('span', { lang: 'la', text: c.word ?? String(e?.lemma ?? item.lemma ?? '').split(/[\s,]/)[0] }), ' · ', c.cellLabel ?? c.label ?? '', c.answer?.[0] ? [' = ', h('b', { lang: 'la', text: c.answer[0] })] : null),
+        ruleCard(card, { open: true, heading: 'How it’s made' }),
+        h('button', { type: 'button', class: 'btn btn--quiet', text: 'Close', onclick: () => { howBox.hidden = true; howAt = null; } }));
+      howBox.hidden = false;
+      howAt = i;
+      howBox.scrollIntoView({ block: 'nearest' });
+    };
     // Each cell that is filled in carries its own hint: four cells means four hints, each about its own cell.
     const cellIn = (i, label) => {
       const inp = mk(i, label);
@@ -5719,9 +5754,10 @@ export function createUI(ctx) {
       const peek = answer == null ? null : (on) => {
         if (on) { peeked.set(i, inp.value); inp.value = answer; inp.readOnly = true; inp.classList.add('is-peek'); paintCells.paint(i, null); }
         else { inp.value = peeked.get(i) ?? ''; peeked.delete(i); inp.readOnly = false; inp.classList.remove('is-peek'); }
+        showHow(i, on);
         syncCheck();
       };
-      const hint = hintFor(i, { onOpen: () => paintCells.hinted(i), peek });
+      const hint = hintFor(i, { onOpen: () => { paintCells.hinted(i); if (!peek) showHow(i); }, peek });
       if (hint) hints.set(i, hint);
       const mark = h('span', { class: 'g-cellmark', 'aria-hidden': 'true' });
       const wrap = h('span', { class: 'g-cellwrap' }, inp, mark, hint);
@@ -5731,7 +5767,7 @@ export function createUI(ctx) {
     // A given cell: printed filled and greyed, not editable, with the same hint so the learner can ask why (§12).
     const cellGiven = (i) => {
       const c = chart.cells[i];
-      const hint = hintFor(i, { onOpen: () => {}, given: true });
+      const hint = hintFor(i, { onOpen: () => showHow(i), given: true });
       // No visually-hidden span here: positioned inside a scrolling table it would sit past the page's right edge on a phone.
       return h('span', { class: 'g-cellwrap g-cellwrap--given' }, h('span', { class: 'g-chart__givenform', lang: 'la', text: c.answer[0] }), h('span', { class: 'visually-hidden', text: ` — ${c.label}, given` }), hint);
     };
@@ -5884,10 +5920,10 @@ export function createUI(ctx) {
     };
     const playBtn = asked.length ? btn(playLabel('Play this whole chart'), { onclick: playChart, 'aria-label': 'Play the whole chart as a game: every person and number of this tense, mood and voice' }, 'btn g-play') : null;
     if (asked.length && body.classList.contains('g-game') && !chart.autoPlayed) { chart.autoPlayed = true; setTimeout(() => { if (form.isConnected) playChart(); }, 350); }
-    form.append(h('div', { class: 'g-chart__acts' }, check, playBtn), needOne, keyHelp('Tab moves to the next cell and marks the one you leave; Alt+H shows that cell’s form and hides it again; Enter checks once every cell is filled.'));
+    form.append(howBox, h('div', { class: 'g-chart__acts' }, check, playBtn), needOne, keyHelp('Tab moves to the next cell and marks the one you leave; Alt+H shows that cell’s form and hides it again; Enter checks once every cell is filled.'));
     // Said before the keys line, because it explains why boxes already have writing in them.
     if (keptHere) form.insertBefore(h('p', { class: 'g-quiet g-chart__keptnote', text: `The ${keptHere === 1 ? 'cell' : `${keptHere} cells`} you had right ${keptHere === 1 ? 'is' : 'are'} kept; ${emptyHere === 1 ? 'the empty one is the one' : `the ${emptyHere} empty ones are the ones`} that went wrong. Every cell is judged again when you check.` }), form.querySelector('.g-chart__acts'));
-    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => paintCells.mark(i, valueOf(i), { announce: true }) }));
+    form.addEventListener('keydown', (e) => boxKeys(e, { inputs, hints, mark: (i) => paintCells.mark(i, valueOf(i), { announce: true }), passive: (i) => chartCellKey(item, chart.cells[i])?.voice === 'pass' }));
     syncCheck();
     onCells?.(paintCells.all);
     // A second guess in place keeps what was right and empties what was not — the very rule the rebuilt

@@ -368,12 +368,13 @@ test('print does not try to bring the emptied table back — its cells are somew
 
 test('Enter walks the boxes in the order they are on screen, not the order they were built in', () => {
   assert.match(UI, /compareDocumentPosition/, 'the next empty box is still found in build order, which a stacked chart reads out of order');
-  assert.match(UI, /const next = \[\.\.\.inputs\.values\(\)\]\s*\n?\s*\.filter\(\(el\) => !el\.value\.trim\(\)\)/);
+  assert.match(UI, /const order = \[\.\.\.inputs\.entries\(\)\]\s*\n?\s*\.sort\(\(\[a, x\], \[b, y\]\) => \(passive\(a\) \? 1 : 0\) - \(passive\(b\) \? 1 : 0\) \|\| \(\(x\.compareDocumentPosition\(y\)/, 'every active box before any passive one, then screen order');
+  assert.match(UI, /const next = order\.filter\(\(el\) => usable\(el\) && !el\.value\.trim\(\)\)\[0\];/);
 });
 
 test('a practised paradigm walks its boxes in screen order too, so a stacked one on a phone goes down a block, not between blocks', () => {
   // Measured at 390px before this: Enter went active "I" → passive "I" → active "you" …, ±500–900px of page each box.
-  assert.match(WP, /const onScreen = \(xs\) => \[\.\.\.xs\]\.sort\(\(a, b\) => \(\(a\.td\.compareDocumentPosition\(b\.td\) & 4/);
+  assert.match(WP, /const onScreen = \(xs\) => \[\.\.\.xs\]\.sort\(\(a, b\) => passiveOf\(a\) - passiveOf\(b\) \|\| \(\(a\.td\.compareDocumentPosition\(b\.td\) & 4/, 'every active box before any passive one, then screen order');
   assert.match(WP, /const nextOpen = \(x\) => \{\s*\n\s*const all = onScreen\(cells\(\)\.filter\(on\)\);/);
   assert.match(WP, /const misses = onScreen\(cells\(\)\.filter\(on\)\)/);
 });

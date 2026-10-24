@@ -126,10 +126,10 @@ function verbRule(entry, table) {
     if (pf) steps.push({ head: 'Perfect stem', stem: pf, text: `Take the 3rd principal part, ${parts[2]}, and drop -ī → ${pf}-. Perfect: ${pf}- + -ī, -istī, -it, -imus, -istis, -ērunt; pluperfect ${pf}- + -eram …; future perfect ${pf}- + -erō …`, eg: [...column(table, 'perfect indicative', 'active', 2), ...column(table, 'pluperfect indicative', 'active', 1)] });
     steps.push({ head: 'Passive', text: 'Present, imperfect and future: the same stem and tense sign, with the passive endings -r, -ris, -tur, -mur, -minī, -ntur.', eg: column(table, 'present indicative', 'passive', 3) });
     const sup = parts[3] ? (cut(parts[3], 'um') ?? cut(parts[3], 'us')) : null;
-    if (sup) steps.push({ head: 'Perfect passive', part: `${sup}us, -a, -um`, text: `Take the 4th principal part, ${parts[3]}, and change -um to -us, -a, -um → ${sup}us; then + sum, es, est … (${sup}us sum).`, eg: column(table, 'perfect indicative', 'passive', 2) });
+    if (sup) steps.push({ head: 'Perfect passive', part: `${sup}us, -a, -um`, text: `Take the 4th principal part, ${parts[3]}, and change -um to -us, -a, -um → ${sup}us; then + sum, es, est … (${sup}us sum). The tense is sum’s: perfect + sum …, pluperfect + eram …, future perfect + erō, eris, erit … — never the active’s -v- endings.`, eg: column(table, 'perfect indicative', 'passive', 2) });
   } else {
     const pp = parts[2] ? parts[2].split(' ')[0] : null;
-    if (pp) steps.push({ head: 'Perfect', part: `${pp}, -a, -um`, text: `Take the 3rd principal part, ${parts[2]}: ${pp}, -a, -um + sum, es, est …`, eg: column(table, 'perfect indicative', voice, 2) });
+    if (pp) steps.push({ head: 'Perfect', part: `${pp}, -a, -um`, text: `Take the 3rd principal part, ${parts[2]}: ${pp}, -a, -um + sum, es, est … The tense is sum’s: perfect + sum …, pluperfect + eram …, future perfect + erō, eris, erit ….`, eg: column(table, 'perfect indicative', voice, 2) });
   }
   return { kind: 'Verb', type, parts: lemma, steps };
 }

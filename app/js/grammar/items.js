@@ -32,6 +32,11 @@ import { tokenize, stripMacrons } from '../tokenize.js';
 import { weekOfUnit, isShelfWeek } from '../sync.js';
 import { scopeByChapter, scopeNote } from './chapter.js';
 
+/** 1 for a passive form, 0 for any other (active, deponent, a noun's case): actives come first (2026-10-24). */
+const voiceRank = (key) => (key && typeof key === 'object' && key.voice === 'pass' ? 1 : 0);
+/** Boxes with every active form first, in place and stable. */
+const activeFirst = (boxes) => { const at = new Map(boxes.map((b, i) => [b, i])); return boxes.sort((a, b) => voiceRank(a.key) - voiceRank(b.key) || at.get(a) - at.get(b)); };
+
 /* ------------------------------------------------------------ parts */
 /**
  * A feedback line built from **parts** rather than interpolated into one
@@ -1760,6 +1765,9 @@ export function createTeachItems({ skill, sentences = [], lookup, paradigm = nul
     // go by in silence; now it is on the console, named, so a lesson author or a build check can see it.
     if (dropped.length) console.warn(`[grammar] ${skill.id}: chart on ${table?.id ?? key ?? '?'} asked for ${asked.join(', ')} and could not build ${dropped.join(', ')}`);
     if (!boxes.length) return null;
+    // Every active form before any passive one (2026-10-24: "across all lessons and forms, games, charts, I want
+    // all active first then passive. I don't want them mixed"); each word's own in the order asked.
+    activeFirst(boxes).forEach((b, i) => { b.row = i; });
     const oneCell = new Set(boxes.map((b) => b.cellLabel)).size === 1;
     const heads = [...new Set(boxes.map((b) => b.word))];
     const question = boxes.length === 1 ? [`Give the ${boxes[0].cellLabel} of `, la(boxes[0].word)]
@@ -2017,8 +2025,9 @@ export function createCatalogueItems({ catalogue, lookup, paradigm = null, headw
     const ids = (cellIds?.length ? cellIds : cellIdsOf(table, group)).map((id) => resolveCellId(id, got.cells)).filter(Boolean);
     const spots = [...new Set(ids)].map((id) => ({ id, spot: got.cells.get(id) })).filter(({ spot }) => spot && spot.cell?.text && spot.cell.text !== '—');
     if (!spots.length) return null;
-    // Reading order is the table's own: section, then row, then column.
-    spots.sort((a, b) => a.spot.section - b.spot.section || a.spot.row - b.spot.row || a.spot.col - b.spot.col);
+    // Reading order is the table's own — section, then row, then column — with every active form before any
+    // passive one (2026-10-24: "I want all active first then passive"): down the active column, then the passive.
+    spots.sort((a, b) => voiceRank(a.spot.cell?.key) - voiceRank(b.spot.cell?.key) || a.spot.section - b.spot.section || a.spot.row - b.spot.row || a.spot.col - b.spot.col);
     const boxes = spots.map(({ id, spot }) => ({ row: spot.row, col: spot.col, section: spot.section, cellId: id, key: spot.cell.key, word: firstWord(got.entry.lemma), lemma: got.entry.lemma, label: cellLabelOf(spot, got.table), cellLabel: cellLabelOf(spot, got.table), ending: cellEnding(spot.cell), answer: cellFormsOf(spot.cell) }));
     const sections = [...new Set(boxes.map((b) => b.section))];
     const skill = skillOf(table);
