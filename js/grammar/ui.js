@@ -22,6 +22,7 @@ import { spine, spineRows, chapterMaterial, chapterProgress, chapterPool, chapte
 import { orderInput, matchInput } from './inputs.js';
 import { buildPath, climbFrom } from './continuum.js';
 import { appliesTo, exampleOf } from './applies.js';
+import { withPassive } from './voices.js';
 import { practised, notePractised, timesText, setSyncedCounts } from '../practised.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
@@ -1099,7 +1100,8 @@ export function createUI(ctx) {
   let body = null;
   let allMeanings = false;   // the "show all meanings" switch, for the session
   const lessonCache = new Map();
-  const lessonOf = async (id) => { if (!lessonCache.has(id)) lessonCache.set(id, await loadLesson(id)); return lessonCache.get(id); };
+  // Both voices on one page where the skill is both voices' (voices.js): the passive below the active, with how it is made.
+  const lessonOf = async (id) => { if (!lessonCache.has(id)) lessonCache.set(id, withPassive(skills.get(id), await loadLesson(id))); return lessonCache.get(id); };
   const unitOf = (id) => ctx.units.find((u) => u.id === id) ?? null;
   const stateOf = (id) => decay(gstore.getState(id) ?? newState(id), Date.now());
   const titleOf = (id) => skills.get(id)?.title ?? id;
@@ -2347,6 +2349,7 @@ export function createUI(ctx) {
           const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = explain.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
           explain.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q),
             ...[step.say ? h('p', { class: 'g-step__say' }, prose(step.say)) : null,
+              step.passive ? h('p', { class: 'g-step__say g-step__passive' }, h('b', { text: 'And the passive, below the active: ' }), step.passive) : null,
               appliesNode(skill, step.show?.kind === 'paradigm' ? step.show.key : (step.check?.key ?? null)),
               howNode(skill, { open: false }), more.length ? h('div', { class: 'g-explain__more' }, more) : null].filter(Boolean));
         }
@@ -2363,7 +2366,7 @@ export function createUI(ctx) {
         h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(step.title || skill.title)),
         nn?.node ?? null,
         body);
-      lead.gExplain = () => (step.say ? h('div', { class: 'g-explain' }, h('p', { class: 'g-step__say' }, prose(step.say))) : null);
+      lead.gExplain = () => (step.say ? h('div', { class: 'g-explain' }, h('p', { class: 'g-step__say' }, prose(step.say)), step.passive ? h('p', { class: 'g-step__say g-step__passive' }, h('b', { text: 'And the passive, below the active: ' }), step.passive) : null) : null);
       let gate = false;
       if (nn && !nn.done()) { body.hidden = true; gate = true; }
       else gate = fillBody();
@@ -3223,7 +3226,7 @@ export function createUI(ctx) {
       const ex = h('div', { class: `g-explain g-explain--part${i === 0 ? ' g-explain--first' : ''}` });
       const q = btn([h('span', { 'aria-hidden': 'true', text: '?' }), h('span', { class: 'g-explain__qtext', text: ' The whole explanation' })], { 'aria-expanded': 'false', onclick: () => { const open = ex.classList.toggle('is-open'); q.setAttribute('aria-expanded', String(open)); } }, 'g-explain__q');
       ex.append(h('p', { class: 'g-explain__head' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), 'How it works', q), h('p', { class: 'g-step__say' }, prose(st.say)),
-        ...[appliesNode(skill, st.show?.kind === 'paradigm' ? st.show.key : (st.check?.key ?? null)), howNode(skill, { open: false })].filter(Boolean));
+        ...[st.passive ? h('p', { class: 'g-step__say g-step__passive' }, h('b', { text: 'And the passive, below the active: ' }), st.passive) : null, appliesNode(skill, st.show?.kind === 'paradigm' ? st.show.key : (st.check?.key ?? null)), howNode(skill, { open: false })].filter(Boolean));
       return { node: h('section', { class: 'g-step', 'aria-label': `Part ${at + 1}` }, h('p', { class: 'g-kicker', text: `${skill.title} · part ${at + 1} of ${steps.length}` }), h('h2', { class: 'g-step__title', tabindex: '-1' }, prose(title)), ex), gate: false };
     };
     runSession({ runner: run.runner, title: `Part ${at + 1} · ${title}`, mode: 'learn', hintOpen: false, before: lead,
