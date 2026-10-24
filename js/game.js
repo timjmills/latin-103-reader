@@ -93,6 +93,17 @@ export const MODES = [
   ['parse', 'What is it?', 'See a form, pick what it is.'],
 ];
 const modeOf = (m) => (MODES.some(([k]) => k === m) ? m : 'type');
+/**
+ * Forms of one group (a column: active, passive; singular, plural) together, the groups in first-come order — and
+ * every active form before any passive one (2026-10-23: "have all the active first then all the passive … don't
+ * jump between active and passive"), read off each form's key. Stable: a table's own order otherwise.
+ */
+export function byGroup(xs) {
+  const order = new Map();
+  for (const x of xs) if (!order.has(x.group ?? null)) order.set(x.group ?? null, order.size);
+  const voice = (x) => (x?.form && typeof x.form === 'object' && x.form.voice === 'pass' ? 1 : 0);
+  return xs.map((x, i) => [x, i]).sort((a, b) => voice(a[0]) - voice(b[0]) || order.get(a[0].group ?? null) - order.get(b[0].group ?? null) || a[1] - b[1]).map(([x]) => x);
+}
 const shuffled = (xs) => { const a = [...xs]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
 /**
@@ -129,7 +140,9 @@ export function stepThan(mode, shuffle = false, d = 1) {
 export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
 
 export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null } = {}) {
-  const base = items.filter((x) => x && x.answers?.length);
+  // In order, a column at a time (2026-10-23: "unless it's on shuffle have all the active first then all the passive"):
+  // each group's forms together, the groups in the order they first come, the forms in each as given.
+  const base = byGroup(items.filter((x) => x && x.answers?.length));
   if (!base.length) return null;
   const opener = document.activeElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
