@@ -227,10 +227,22 @@ export function ruleCard(rule, { open = true, heading = 'How it’s made' } = {}
   card.open = open;
   const sum = el('summary', 'wr__sum');
   const type = el('span', 'wr__type', rule.type);
-  const parts = el('span', 'wr__parts', rule.parts ?? '');
+  // A word's own card opens on its principal parts and its type (2026-10-25: "on the ? of how it's made include the
+  // principal parts"): a step of their own, so they are read first, not only in the card's heading.
+  const own = !!(rule.parts && ['Verb', 'Noun', 'Adjective', 'Pronoun'].includes(rule.kind));
+  const parts = el('span', 'wr__parts', own ? '' : (rule.parts ?? ''));
   parts.lang = 'la';
   sum.append(el('span', 'wr__head', heading), type, parts);
   const list = el('ol', 'wr__steps');
+  if (own) {
+    const li = el('li', 'wr__step wr__step--parts');
+    const pp = el('span', 'wr__partsline', rule.parts);
+    pp.lang = 'la';
+    const text = el('span', 'wr__text');
+    text.append(pp);   // the type is the card's heading, just above
+    li.append(el('span', 'wr__stephead', rule.kind === 'Verb' ? 'Principal parts' : 'Dictionary form'), text);
+    list.append(li);
+  }
   for (const st of rule.steps) {
     const li = el('li', 'wr__step');
     li.append(el('span', 'wr__stephead', st.head), el('span', 'wr__text', st.text));

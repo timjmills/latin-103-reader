@@ -2904,7 +2904,7 @@ export function createUI(ctx) {
         if (!playing) { counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1); return; }
         let en = '';
         try { en = dict.cellMeaning?.(e, c.key) ?? ''; } catch { en = ''; }
-        cards.push({ key: `${e.h}|${e.pos}|${si}|${r.label}|${ci}`, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${e.pos}|${si}|${ci}`, col: [sec.title, sec.headers?.[ci]].filter(Boolean).join(' '), entry: e, form: c.key });
+        cards.push({ key: `${e.h}|${e.pos}|${si}|${r.label}|${ci}`, cue: [words.length > 1 ? wordWithType(e) : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${e.pos}|${si}|${ci}`, col: [sec.title, sec.headers?.[ci]].filter(Boolean).join(' '), entry: e, form: c.key });
         counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1);
       })));
     }
@@ -3529,6 +3529,8 @@ export function createUI(ctx) {
     return null;
   };
   const shortType = (name) => String(name ?? '').replace('conjugation', 'conj.').replace('declension', 'decl.').replace(' adjective', ' adj.');
+  /** A word and its type, wherever a form of it is asked (2026-10-25: "say what conjugation the verb is"): "vocō (1st conj.)". */
+  const wordWithType = (e) => { const t = typeOf(e)?.name; return `${headOf(e)}${t ? ` (${shortType(t)})` : ''}`; };
   const TYPE_ORDER = ['1st conjugation', '2nd conjugation', '3rd conjugation', '3rd conjugation (-iō)', '4th conjugation', 'irregular verb',
     'deponent, 1st conjugation', 'deponent, 2nd conjugation', 'deponent, 3rd conjugation', 'deponent, 3rd conjugation (-iō)', 'deponent, 4th conjugation',
     '1st declension', '2nd declension', '2nd declension (-er / -ir)', '2nd declension, neuter', '3rd declension', '3rd declension, neuter',
@@ -5995,7 +5997,9 @@ export function createUI(ctx) {
         const i = chart.cells.indexOf(c);
         const w = cellIn(i, c.label);
         inputs.get(i).id = `gc-${i}`;
-        return h('div', { class: 'g-chart__word' }, h('label', { class: 'g-chart__wlabel', for: `gc-${i}` }, h('span', { lang: 'la', class: 'g-chart__wlemma', text: c.word }), h('span', { class: 'g-chart__wcell', text: c.cellLabel ?? c.label })), w);
+        const es = c.word ? tableEntries(c.word) : [];
+        const t = typeOf(es.find((e) => e.lemma === c.lemma) ?? es[0])?.name;
+        return h('div', { class: 'g-chart__word' }, h('label', { class: 'g-chart__wlabel', for: `gc-${i}` }, h('span', { lang: 'la', class: 'g-chart__wlemma', text: c.word }), t ? h('span', { class: 'g-chart__wtype', text: ` · ${shortType(t)}` }) : null, h('span', { class: 'g-chart__wcell', text: c.cellLabel ?? c.label })), w);
       })));
     } else if (cells.length === 1) {
       const c = cells[0];
@@ -6011,7 +6015,7 @@ export function createUI(ctx) {
       for (const si of secIdx) {
         const sec = chart.table.sections[si];
         if (!sec) continue;
-        const tbl = h('table', { class: 'pt g-chart__t' }, sec.title ? h('caption', { class: 'pt__caption', text: `${item.lemma} · ${sec.title}` }) : null,
+        const tbl = h('table', { class: 'pt g-chart__t' }, sec.title ? h('caption', { class: 'pt__caption', text: `${item.lemma}${typeOf(item.entry)?.name ? ` (${typeOf(item.entry).name})` : ''} · ${sec.title}` }) : null,
           sec.headers?.length ? h('thead', {}, h('tr', {}, h('th', { scope: 'col', class: 'pt__corner', 'aria-label': 'form' }), sec.headers.map((hd) => h('th', { scope: 'col', text: hd })))) : null,
           h('tbody', {}, sec.rows.map((r, ri) => h('tr', {}, h('th', { scope: 'row', text: r.label }), r.cells.map((cell, ci) => {
             const idx = chart.cells.findIndex((c) => (c.section ?? chart.section) === si && c.row === ri && c.col === ci);
@@ -6078,7 +6082,7 @@ export function createUI(ctx) {
           const key = `${e.h}|${e.pos}|${si}|${r.label}|${ci}`;
           let en = '';
           try { en = dict.cellMeaning?.(e, c.key) ?? ''; } catch { en = ''; }
-          cards.push({ key, cue: [words.length > 1 ? head : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${si}|${ci}`, col: [sec.title, sec.headers?.[ci]].filter(Boolean).join(' '), entry: e, form: c.key });
+          cards.push({ key, cue: [words.length > 1 ? wordWithType(e) : null, r.label, [sec.title, sec.headers?.[ci]].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en, answers, stem: c.stem || null, ending: c.ending || null, group: `${e.h}|${si}|${ci}`, col: [sec.title, sec.headers?.[ci]].filter(Boolean).join(' '), entry: e, form: c.key });
           const box = boxes.find((i) => sameKey(chartCellKey(item, chart.cells[i]), c.key));
           if (box != null) boxOf.set(key, box);
         })));

@@ -1550,3 +1550,4 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-tlinks__sep { color: var(--ink-3, var(--ink-2)); }
 .g-tlinks__all { border: 0; background: none; padding: 0; font: inherit; color: var(--rubric); cursor: pointer; white-space: nowrap; }
 .g-tlinks__all:hover { text-decoration: underline; }
+.g-chart__wtype { font-size: var(--ui-sm); color: var(--ink-2); font-weight: 600; }
