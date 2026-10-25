@@ -813,3 +813,5 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 /* ◂ Easier · Harder ▸ beside the way to play (game.js stepMode). */
 .gm__step { min-width: 36px; font-weight: 700; }
 .gm__step:disabled { opacity: 0.35; cursor: default; }
+.wr__partsline { font-family: var(--face-reading); font-size: 1.05em; font-weight: 600; }
+.wr__parttype { color: var(--ink-2); }
