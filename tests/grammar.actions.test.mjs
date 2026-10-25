@@ -23,6 +23,7 @@ test('acrossLabel names what the skill goes across', () => {
   assert.equal(acrossLabel(['sum', 'possum', 'eo']), 'Across the irregular verbs (3)');
   assert.equal(acrossLabel(['hic', 'ille', 'is']), 'Across the pronouns (3)');
   assert.equal(acrossLabel(['decl1', 'decl2m', 'ego', 'tu']), 'Across the declensions (4)');
+  assert.equal(acrossLabel(['conj1', 'conj2', 'conj3', 'conj3io', 'conj4', 'sum', 'possum', 'eo', 'fero', 'volo', 'nolo', 'malo', 'fio']), 'Across the conjugations (13)');
   assert.equal(acrossLabel(['adj12']), 'Its table');
   assert.equal(acrossLabel([]), '');
 });

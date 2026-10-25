@@ -28,7 +28,8 @@ export function acrossLabel(paradigms = []) {
   const adjs = n(/^adj/);
   const irregular = n(/^(sum|possum|eo|fero|volo|nolo|malo|fio)$/);
   const pronouns = n(/^(hic|ille|is|iste|ipse|qui|quis|ego|tu|se)$/);
-  const what = verbs >= ids.length / 2 ? 'conjugations' : nouns >= ids.length / 2 ? 'declensions' : adjs >= ids.length / 2 ? 'adjective types'
-    : irregular === ids.length ? 'irregular verbs' : pronouns === ids.length ? 'pronouns' : 'tables';
+  // The regular conjugations name it whenever they are there (the irregular verbs come along: sum, eō, ferō …).
+  const what = irregular === ids.length ? 'irregular verbs' : verbs && verbs + irregular >= ids.length / 2 ? 'conjugations'
+    : nouns >= ids.length / 2 ? 'declensions' : adjs >= ids.length / 2 ? 'adjective types' : pronouns === ids.length ? 'pronouns' : 'tables';
   return `Across the ${what} (${ids.length})`;
 }

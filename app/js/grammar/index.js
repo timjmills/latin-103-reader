@@ -155,8 +155,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     go(view, params = {}) {
       leaveChapterPage();
       if (view === 'read') { setSection('read', { focus: true }); return; }
-      // Word Work's own views open in Word Work (a chapter page's ▶ Play on a skill with forms: its whole table).
-      setSection(['wordwork', 'wwdrills', 'wwtable', 'wwpath'].includes(view) ? 'words' : 'grammar');
+      // Every view opens in Study (Word Work's and Sheets' pages are Study's now).
+      setSection('grammar');
       init().then(() => ui?.render(view, params));
     },
   };
@@ -283,14 +283,17 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
   // both, so every rule that hides the reader's own controls holds for Word Work too. Word Work opens on
   // a chapter's table practice (ui.js renderWordWork) and draws no Grammar tabs.
   /** Switch the header between Grammar and Word Work without drawing (a Back across the two: ui.js onPop draws). */
-  ctx.setMode = (m) => {
-    if (m === 'words' || m === 'sheets') document.documentElement.dataset.sectionMode = m; else delete document.documentElement.dataset.sectionMode;
-    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === m));
-    try { localStorage.setItem(LS_SECTION, m); } catch { /* ignore */ }
+  // Grammar, Word Work and Sheets are one section now, Study (docs/SIMPLIFY-PLAN.md): a call for Word Work or Sheets
+  // is a call for Study, and opens that page inside it.
+  ctx.setMode = () => {
+    delete document.documentElement.dataset.sectionMode;
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === 'grammar'));
+    try { localStorage.setItem(LS_SECTION, 'grammar'); } catch { /* ignore */ }
   };
   function setSection(name, { focus = false, chapter = null } = {}) {
-    // Sheets (2026-10-17) is a fourth: a chapter's cheat sheet of charts, on the same root as Word Work.
-    const mode = ['grammar', 'words', 'sheets'].includes(name) ? name : 'read';
+    const page = name === 'words' ? 'wordwork' : name === 'sheets' ? 'sheets' : null;
+    if (page) { setSection('grammar'); init().then(() => { ui?.render(page, chapter != null ? { chapter } : {}, { push: true, focus }); }); return; }
+    const mode = name === 'grammar' ? 'grammar' : 'read';
     const grammar = mode !== 'read';
     const was = document.documentElement.dataset.section;
     // What the root was last drawn as (ui.js draw sets it): leaving through Read does not change it, so
@@ -298,15 +301,14 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     const drawn = root.dataset.drawnMode ?? null;
     if (grammar && was !== 'grammar') { readerScroll = window.scrollY; readerTitle = document.title; }
     document.documentElement.dataset.section = grammar ? 'grammar' : 'read';
-    if (mode === 'words' || mode === 'sheets') document.documentElement.dataset.sectionMode = mode; else delete document.documentElement.dataset.sectionMode;
+    delete document.documentElement.dataset.sectionMode;
     layout.hidden = grammar;
     root.hidden = !grammar;
     document.documentElement.classList.toggle('g-game-open', grammar && !!root.querySelector('.g-body.g-game'));   // a drill's game mode locks the page only while it shows
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === mode));
     try { localStorage.setItem(LS_SECTION, mode); } catch { /* ignore */ }
-    if (mode === 'sheets') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'sheets' || chapter != null || !root.querySelector('.g'))) ui.render('sheets', chapter != null ? { chapter } : {}, { push: drawn === 'sheets' && was === 'grammar', focus: false }); else document.title = 'Sheets — Latin 103'; if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
-    else if (mode === 'words') { init().then(() => { if (ui && (root.dataset.drawnMode !== 'words' || chapter != null || !root.querySelector('.g'))) ui.render('wordwork', chapter != null ? { chapter } : {}, { push: drawn === 'words' && was === 'grammar', focus: false }); else document.title = 'Word Work — Latin 103'; /* the page kept as it was: only the title was the reader's */ if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); }
-    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words' || root.dataset.drawnMode === 'sheets')) ui.render('map', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
+    if (false) { /* Word Work and Sheets open inside Study (above) */ }
+    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words' || root.dataset.drawnMode === 'sheets')) ui.render('today', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
     else {
       // Back to the reader by its own button: the address no longer names a Grammar view, so a reload reads on.
       if (was === 'grammar' && /^#\/grammar(\/|$)/.test(location.hash)) { try { history.replaceState(history.state, '', location.pathname + location.search); } catch { /* file: */ } }
@@ -320,7 +322,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
 
   let last = 'read';
   try { last = localStorage.getItem(LS_SECTION) || 'read'; } catch { /* ignore */ }
-  if (last === 'grammar' || last === 'words' || last === 'sheets') setSection(last);
+  if (last === 'grammar' || last === 'words' || last === 'sheets') setSection('grammar');
   else setSection('read');
 
   /**
@@ -365,9 +367,8 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     /** Open the section on its Paradigms page (the #/paradigms route): the whole-table practice on its own. */
     /** One view by its address (#/grammar/learn?skill=…, main.js): the section it belongs to, then the view itself. */
     openView(name, params = {}) {
-      const mode = ['wordwork', 'wwtable', 'wwdrills', 'wwpath'].includes(name) ? 'words' : name === 'sheets' ? 'sheets' : 'grammar';
-      setSection(mode);
-      init().then(() => { ctx.setMode?.(mode); ui?.render(name, params, { push: false }); });
+      setSection('grammar');
+      init().then(() => { ctx.setMode?.('grammar'); ui?.render(name, params, { push: false }); });
     },
     openParadigms() { setSection('grammar'); init().then(() => ui?.render('paradigms', {}, { push: false })); },
     /** The Today card for the weeks menu (main.js): null while the plan is dismissed for the day or the section failed to start. */

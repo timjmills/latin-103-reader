@@ -156,14 +156,16 @@ test('the Paradigms page is a tab and a link of its own, and a table in a box ke
   assert.match(GCSS, /#grammar \.paradigm \.pt__scroll \{ margin-inline: 0; max-width: 100%; \}/);
 });
 
-test('Word Work is a section of its own, opened per chapter', () => {
+test('Word Work is a page of Study, opened per chapter (docs/SIMPLIFY-PLAN.md: one section)', () => {
   const HTML = readFileSync(new URL('../app/index.html', import.meta.url), 'utf8');
   const IDX = readFileSync(new URL('../app/js/grammar/index.js', import.meta.url), 'utf8');
   const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
   const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
-  assert.match(HTML, /data-section="words"[^>]*aria-label="Word Work"/, 'the header has the third button');
+  assert.match(HTML, /data-section="grammar"[^>]*>Study</, 'the header has Study');
+  assert.ok(!/data-section="words"/.test(HTML), 'Word Work is no longer a header button of its own');
   assert.match(IDX, /openWordWork\(chapter = null\)/);
-  assert.match(IDX, /if \(last === 'grammar' \|\| last === 'words' \|\| last === 'sheets'\) setSection\(last\);/, 'Word Work and Sheets are remembered like Grammar');
+  assert.match(IDX, /if \(last === 'grammar' \|\| last === 'words' \|\| last === 'sheets'\) setSection\('grammar'\);/, 'a device last on Word Work or Sheets opens Study');
+  assert.match(IDX, /const page = name === 'words' \? 'wordwork' : name === 'sheets' \? 'sheets' : null;/, 'a call for Word Work or Sheets opens that page inside Study');
   assert.match(UI, /wordwork: renderWordWork/);
   assert.ok(MAIN.includes("openGrammarSection('words'"), 'the #/words/N route is gone');
   assert.ok(MAIN.includes('routeTo(`#/words/${n}`)'), 'the chapter page lost its Word Work button');
@@ -231,7 +233,7 @@ test('Sheets: a chapter\'s charts on one page, each form split so its parts can 
   const HTML = readFileSync(new URL('../app/index.html', import.meta.url), 'utf8');
   const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
   const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
-  assert.match(HTML, /data-section="sheets"[^>]*>Sheets</, 'the header has Sheets');
+  assert.ok(!/data-section="sheets"/.test(HTML), 'Sheets is a page of Study, not a header button');
   assert.match(UI, /sheets: renderSheets/);
   assert.ok(MAIN.includes("openGrammarSection('sheets'"), 'the #/sheets/N route');
   assert.match(UI, /resplit: true, tags: false, segment: true/, 'a sheet chart splits the subjunctive on its infinitive and colours the parts');
@@ -272,5 +274,5 @@ test('▶ Play wherever something plays, and it is one-off', () => {
   // game mode each time") Play enters game mode and it stays, for every view, until "Leave game mode".
   assert.match(UI, /const gameDrillOn = \(\) => \{ playGameOnce = true; keepGame\(true\); \}/, 'Play enters game mode, kept');
   assert.match(UI, /const game = gameKept\(\) && sectionMode\(\) !== 'sheets'/, 'every view is drawn in it');
-  assert.match(IDX, /\['wordwork', 'wwdrills', 'wwtable', 'wwpath'\]\.includes\(view\) \? 'words' : 'grammar'/, 'a chapter page\'s Play on a table opens Word Work');
+  assert.match(IDX, /\/\/ Every view opens in Study[^\n]*\n\s*setSection\('grammar'\);/, 'a chapter page\'s Play on a table opens its page in Study');
 });

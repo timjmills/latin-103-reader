@@ -203,9 +203,26 @@ def validate_vocab(chapters: list[int]) -> list[str]:
     return errs
 
 
+def lesson_parts(ids: list[str]) -> dict[str, list[str]]:
+    """Each lesson's part titles, in order (docs/SIMPLIFY-PLAN.md §3.3): Course's rows number a skill's parts and
+    name them without loading 89 lessons. Markdown emphasis is dropped; a part with no title is "Part n"."""
+    out: dict[str, list[str]] = {}
+    for i in ids:
+        doc = _read(LESSONS / f"{i}.json") or {}
+        teach = doc.get("teach") if isinstance(doc.get("teach"), list) else []
+        titles = []
+        for n, st in enumerate(t for t in teach if isinstance(t, dict)):
+            title = re.sub(r"\*+", "", str(st.get("title") or "")).strip()
+            titles.append(title or f"Part {n + 1}")
+        if titles:
+            out[i] = titles
+    return out
+
+
 def build() -> dict[Path, dict]:
+    ids = lesson_ids()
     return {
-        LESSONS / "index.json": {"version": 1, "lessons": lesson_ids()},
+        LESSONS / "index.json": {"version": 1, "lessons": ids, "parts": lesson_parts(ids)},
         QUESTIONS / "index.json": {"version": 1, "chapters": chapter_files(QUESTIONS)},
         VOCAB / "index.json": {"version": 1, "chapters": chapter_files(VOCAB)},
     }

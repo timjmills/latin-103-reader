@@ -14,10 +14,7 @@
 .seg__short { display: none; }   /* "Words" on a phone, where "Word Work" would take the week title's room */
 #settings-btn { grid-area: settings; }
 @media (max-width: 767.98px) {
-  /* On a phone the control shows the *other* section only ("Grammar" while reading, "Read" in grammar):
-     one button, so the week title keeps its room and the reader stays at two header rows. */
-  .seg--section .seg__btn[aria-pressed="true"] { display: none; }
-  .seg--section .seg__btn { border-left: 0; }
+  /* Two sections now, Read and Study (docs/SIMPLIFY-PLAN.md): both always show, so the one you are in is named. */
   .seg--section .seg__btn, .seg--view .seg__btn { padding-inline: var(--s-2); }
   .seg__full { display: none; }
   .seg__short { display: inline; }
@@ -1576,3 +1573,30 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
   .g-skillfab:not([hidden]) { display: flex; align-items: center; gap: var(--s-3); position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; padding: var(--s-2) var(--s-3) calc(var(--s-2) + env(safe-area-inset-bottom, 0px)); background: var(--bg); box-shadow: 0 -1px 0 var(--line), 0 -6px 14px rgb(0 0 0 / 0.08); }
   .g-plink__t { display: none; }
 }
+
+/* Study (docs/SIMPLIFY-PLAN.md §3.1): four tabs and the Lesson / Game switch; a tab's own second row */
+.g-nav--study { align-items: center; }
+.g-modetoggle { margin-left: auto; display: inline-flex; align-items: center; gap: 0; padding: 2px; min-height: 36px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--bg-raised); cursor: pointer; font: inherit; font-size: var(--ui-sm); white-space: nowrap; }
+.g-modetoggle__opt { padding: 0.2em 0.7em; border-radius: 999px; color: var(--ink-2); }
+.g-modetoggle__opt[data-on="true"] { background: var(--ink); color: var(--bg); font-weight: 600; }
+.g-subnav { display: flex; flex-wrap: wrap; gap: var(--s-1); margin: calc(-1 * var(--s-3)) 0 var(--s-4); }
+.g-subnav__btn { min-height: 32px; padding: 0 var(--s-3); border: 0; border-radius: 999px; background: transparent; color: var(--ink-2); font: inherit; font-size: var(--ui-sm); cursor: pointer; }
+.g-subnav__btn[aria-current="page"] { background: var(--bg-chrome); color: var(--ink); font-weight: 600; }
+/* Find, Course rows */
+.g-find { margin: var(--s-3) 0 var(--s-4); }
+.g-find__label { display: block; font-weight: 600; font-size: var(--ui-sm); margin-bottom: 0.25em; }
+.g-find__in { width: 100%; max-width: 36rem; min-height: 44px; }
+.g-find__count { margin: 0.3em 0; }
+.g-crow__ways { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-3); margin-top: 0.15em; }
+.g-plinks--row { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.15em; margin: 0; }
+.g-plink--n { min-width: 28px; justify-content: center; padding: 0 0.4em; font-weight: 700; }
+.g-thischap__links { margin-top: var(--s-2); }
+@media (max-width: 600px) {
+  .g-nav--study { flex-wrap: nowrap; gap: 0; }
+  .g-nav--study .g-nav__btn { padding-inline: 0.55em; }
+  .g-modetoggle__opt { padding: 0.2em 0.45em; }
+  .g-modetoggle__opt[data-on="false"] { display: none; }
+}
+
+/* The chosen area tab keeps its own colour readable (a link pressed is otherwise ink on its tint) */
+#grammar a.g-areatab[aria-pressed="true"], #grammar button.g-areatab[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
