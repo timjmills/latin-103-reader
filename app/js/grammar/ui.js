@@ -23,6 +23,7 @@ import { orderInput, matchInput } from './inputs.js';
 import { buildPath, climbFrom } from './continuum.js';
 import { appliesTo, exampleOf } from './applies.js';
 import { withPassive } from './voices.js';
+import { mainAction, acrossLabel } from './actions.js';
 import { practised, notePractised, timesText, setSyncedCounts } from '../practised.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
@@ -1068,7 +1069,8 @@ function partsMeter(title, p) {
   // steps reads as lesson progress, and the learner read it exactly that way: they pressed Continue expecting
   // to land at step 4. The word is the whole fix — the meter still counts the skill's parts (§18), and the
   // aria-label and the panel's summary have said "parts" from the start, so all three now agree.
-  h('span', { class: 'g-parts__count', 'aria-hidden': 'true', text: `${p.done} of ${p.total} part${p.total === 1 ? '' : 's'}` }));
+  // Renamed "progress" (docs/SIMPLIFY-PLAN.md §3.4), so "part" only ever means a part of the lesson.
+  h('span', { class: 'g-parts__count', 'aria-hidden': 'true', text: `progress ${p.done} of ${p.total}` }));
   tipData.set(b, () => partsTip(title, p));
   return b;
 }
@@ -1907,6 +1909,7 @@ export function createUI(ctx) {
   async function renderLessonView({ skill: id, from = null, play = false }) {
     const skill = skills.get(id);
     if (!skill) return renderMap();
+    if (!skill.set) return renderSkillPage({ skill: id, from, play });
     const st = stateOf(id);
     setBody(h('p', { class: 'g-loading', text: 'Loading the lesson…' }));
     const lesson = await lessonOf(id);
@@ -1942,6 +1945,117 @@ export function createUI(ctx) {
       h('div', { class: 'g-acts' }, acts));
     // Opened to play (the next skill, when the learner's way in is its table game): the game over this lesson.
     if (play && skill.paradigms?.length && !skill.set && view.name === 'lesson') playSkillTables(id, { chapter: skill.chapter });
+  }
+  /**
+   * **The skill page** (docs/SIMPLIFY-PLAN.md §3.4): one page per skill, the main button at the top (and fixed at the
+   * bottom on a phone), the other ways in as small links beside it, then its parts, its tables (and Across the
+   * conjugations), its related skills with ▶ Mix them, the lesson itself, What next, and the rare actions under More.
+   * Every start follows the one Lesson / Game switch and comes back here.
+   */
+  const startSkill = (id, verb, params = {}) => {
+    const sk = skills.get(id);
+    if (!sk) return;
+    const here = view.name === 'lesson' ? { view: 'lesson', params: { skill: id }, label: sk.title } : null;
+    const from = params.from ?? here ?? (MENUS.has(view.name) ? hereFrom(id) : null);
+    if (verb === 'learn' || verb === 'continue' || verb === 'relearn') { keepEntry('learn'); goView('learn', { skill: id, ...(from ? { from } : {}) }); return; }
+    if (verb === 'review') { goView('blocked', { skill: id, ...(from ? { from } : {}) }); return; }
+    if (verb === 'practise') { keepEntry('drill'); goView('drill', { skill: id, ...(from ? { from } : {}) }); return; }
+    if (verb === 'more') { keepEntry('unlimited'); goView('unlimited', { skill: id, ...(from ? { from } : {}) }); return; }
+    if (verb === 'mix') { goView(mixedMembers(sk, skills, { chapter: ctx.currentChapter?.() ?? null, drillable }).length > 1 ? 'mixed' : 'drill', { skill: id, ...(from ? { from } : {}) }); return; }
+    if (verb === 'part') { keepEntry('part'); goView('part', { skill: id, step: Number(params.step) || 0, ...(from ? { from } : {}) }); return; }
+    if (verb === 'across') {
+      if (gameKept()) { playSkillTables(id, { chapter: sk.chapter }); return; }
+      goView('wwtable', { chapter: sk.chapter, skill: id }); return;
+    }
+    if (verb === 'read' || verb === 'lesson') goView('lesson', { skill: id, ...(from ? { from } : {}) });
+  };
+  /** The main button: the verb the skill's state calls for (actions.js), in the look the switch says. */
+  const mainButton = (id, { cls = 'btn btn--primary g-mainbtn', from = null } = {}) => {
+    const sk = skills.get(id);
+    if (!sk) return null;
+    const a = mainAction(stateOf(id), { drillable: drillable(id), set: !!sk.set });
+    const game = gameKept() && a.verb !== 'read';
+    return btn(game ? playLabel(a.label) : a.label, { to: [a.view, { skill: id }], onclick: () => (a.verb === 'read' && view.name === 'lesson' && view.params?.skill === id ? body.querySelector('.g-lesson')?.scrollIntoView({ block: 'start' }) : startSkill(id, a.verb, from ? { from } : {})), 'aria-label': `${a.label}: ${sk.title}` }, cls);
+  };
+  /** The other ways in, as small links: Learn · Practise · Mix · Across … (the main button's own verb left out). */
+  const verbLinks = (id, { main = null, level = true } = {}) => {
+    const sk = skills.get(id);
+    if (!sk || sk.set) return null;
+    const a = main ?? mainAction(stateOf(id), { drillable: drillable(id) });
+    const link = (text, verb, extra = {}) => h('button', { type: 'button', class: 'g-vlink', onclick: () => startSkill(id, verb, extra) }, text);
+    const items = [];
+    if (!['learn', 'continue', 'relearn'].includes(a.verb)) items.push(link('Learn', 'learn'));
+    if (drillable(id) && a.verb !== 'practise') items.push(link('Practise', 'practise'));
+    if (drillable(id)) items.push(link('Mix', 'mix'));
+    if (sk.paradigms?.length) items.push(link(`▦ ${acrossLabel(sk.paradigms)}`, 'across'));
+    const lv = level ? levelButton(id, 'g-vlink g-levelbtn') : null;
+    if (lv) items.push(lv);
+    return items.length ? h('p', { class: 'g-vlinks' }, items.map((x, i) => [i ? h('span', { class: 'g-vlinks__sep', 'aria-hidden': 'true', text: ' · ' }) : null, x])) : null;
+  };
+  /** Its parts, numbered, each opening that part on its own. */
+  const partLinks = (id, steps) => (steps.length ? h('p', { class: 'g-plinks' }, h('span', { class: 'g-plinks__k', text: 'Parts ' }),
+    steps.map((st, i) => [i ? ' ' : null, navEl({ class: 'g-plink', to: ['part', { skill: id, step: i }], onclick: () => startSkill(id, 'part', { step: i }), title: stepTitle(st, i), 'aria-label': `Part ${i + 1}: ${stepTitle(st, i)}` },
+      h('b', { text: String(i + 1) }), h('span', { class: 'g-plink__t', text: ` ${stepTitle(st, i)}` }), countBadge(`part:${id}:${i}`))])) : null);
+  /** Related: what Mix draws on — what it builds on, its look-alikes — each a link, and ▶ Mix them. */
+  const relatedNode = (id) => {
+    const sk = skills.get(id);
+    const members = drillable(id) ? mixedMembers(sk, skills, { chapter: ctx.currentChapter?.() ?? null, drillable }).filter((m) => m.id !== id) : [];
+    const ids = members.length ? members.map((m) => m.id) : [...new Set([...(sk.prereqs ?? []), ...(sk.confusable_with ?? [])])].filter((x) => skills.has(x)).slice(0, 4);
+    if (!ids.length) return null;
+    const conf = new Set(sk.confusable_with ?? []);
+    return h('p', { class: 'g-related' }, h('span', { class: 'g-plinks__k', text: 'Related ' }),
+      ids.map((x, i) => [i ? ' · ' : null, h('span', { class: 'g-related__why', text: conf.has(x) ? 'looks like ' : 'builds on ' }), navEl({ class: 'g-link', to: ['lesson', { skill: x }], onclick: () => goView('lesson', { skill: x }), 'data-area': areaOf(x) }, titleOf(x))]),
+      members.length ? [' ', h('button', { type: 'button', class: 'btn btn--quiet g-play g-related__mix', onclick: () => startSkill(id, 'mix') }, playLabel('Mix them'))] : null);
+  };
+  async function renderSkillPage({ skill: id, from = null, play = false }) {
+    const skill = skills.get(id);
+    const st = stateOf(id);
+    setBody(h('p', { class: 'g-loading', text: 'Loading the lesson…' }));
+    const lesson = await lessonOf(id);
+    if (view.name !== 'lesson' || view.params?.skill !== id) return;
+    const steps = stepsOf(lesson);
+    const a = mainAction(st, { drillable: drillable(id) });
+    const more = h('details', { class: 'g-more' }, h('summary', { text: 'More' }),
+      h('div', { class: 'g-acts' },
+        drillable(id) && await hasBankAsync(id) ? btn('Ten more, and more (unlimited)', { onclick: () => startSkill(id, 'more') }, 'btn btn--quiet') : null,
+        st.state === 'new' ? btn('Add to review without the lesson', { onclick: async () => { await addSkill(id); render('lesson', { skill: id, from }); } }, 'btn btn--quiet') : null,
+        inRotation(st) ? btn('Start again as new', { onclick: () => startSkill(id, 'learn') }, 'btn btn--quiet') : null,
+        gstore.countAttempts(id) ? btn('History', { to: ['history', { skill: id, from }], onclick: () => render('history', { skill: id, from }) }, 'btn btn--quiet') : null,
+        chartTable(skill) ? btn('Print chart', { onclick: () => printChart(skill) }, 'btn btn--quiet') : null,
+        btn('Print sheet', { onclick: () => printSheet(skill) }, 'btn btn--quiet'),
+        st.state !== 'new' ? btn('Reset…', { onclick: () => resetSkill(id) }, 'btn btn--quiet g-skill__reset') : null));
+    const bar = h('div', { class: 'g-skillbar' }, mainButton(id, { from }), verbLinks(id, { main: a }));
+    setBody(
+      backButton(from),
+      h('header', { class: 'g-head g-skillhead', 'data-area': areaOf(id) },
+        h('p', { class: 'g-kicker' }, areaTag(id), `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'}`),
+        h('h1', { class: 'g-title', text: skill.title }),
+        h('p', { class: 'g-lede' }, skill.plain, skill.latin_label ? [' · ', h('i', { lang: 'la', text: skill.latin_label })] : null),
+        h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
+          stateTipButton(skill.title, st, { shown: dueText(st) }), countBadge(`skill:${skill.id}`), ' ', partsMeter(skill.title, progressOf(skill, !!ctx.items)))),
+      areaNav(id),
+      bar,
+      partLinks(id, steps),
+      tableLinks(id),
+      relatedNode(id),
+      prereqNode(skill, unmetPrereqs(skill, stateOf), { canDismiss: false }),
+      h('section', { class: 'g-skillesson', 'aria-label': 'The lesson' },
+        h('h2', { class: 'g-h2', text: 'The lesson' }),
+        h('p', { class: 'g-summary', text: skill.summary }),
+        appliesNode(skill),
+        howNode(skill, { open: false }),
+        h('article', { class: 'g-lesson' }, lessonBlocks(skill, lesson))),
+      suggestNode(id),
+      more);
+    // On a phone the main button stays in reach while the lesson is read: a bar fixed at the bottom of the screen,
+    // shown once the page's own button has scrolled away.
+    const fab = h('div', { class: 'g-skillfab', hidden: true }, mainButton(id, { from, cls: 'btn btn--primary g-mainbtn' }), h('button', { type: 'button', class: 'g-vlink', onclick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) }, '↑ Parts, tables, related'));
+    body.append(fab);
+    if (typeof IntersectionObserver === 'function') {
+      const io = new IntersectionObserver(([en]) => { if (!fab.isConnected) { io.disconnect(); return; } fab.hidden = en.isIntersecting || en.boundingClientRect.top > 0; });
+      io.observe(bar);
+    }
+    if (play && skill.paradigms?.length && view.name === 'lesson') playSkillTables(id, { chapter: skill.chapter });
   }
   const lessonHeader = (skill, st) => h('header', { class: 'g-head' },
     h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(skill.category.replace('-', ' '))}` }),

@@ -156,7 +156,8 @@ test('colour is never the only signal: a count and a tick shape carry it too', (
   // The count is text and the tick heights differ, so the row reads in greyscale and to a
   // colour-blind reader. The colour ramp is keyed off `level`, never off `ratio`.
   // §22.1 named the unit in that count: a bare "3 of 6" beside a six-step lesson was read as steps.
-  assert.match(UI_CODE, /class: 'g-parts__count'[^)]*text: `\$\{p\.done\} of \$\{p\.total\} part\$\{p\.total === 1 \? '' : 's'\}`/, 'the row stopped printing its count, or stopped naming its unit');
+  // The unit is now "progress" (docs/SIMPLIFY-PLAN.md §3.4), so "part" only ever means a part of the lesson.
+  assert.match(UI_CODE, /class: 'g-parts__count'[^)]*text: `progress \$\{p\.done\} of \$\{p\.total\}`/, 'the row stopped printing its count, or stopped naming its unit');
   assert.match(CSS_CODE, /\.g-parts__tick \{[^}]*height: 4px/, 'an unfinished tick is no longer a short stub');
   assert.match(CSS_CODE, /\.g-parts__tick\[data-done="1"\] \{[^}]*height: 10px/, 'a finished tick is no longer a full stroke');
   for (const level of ['most', 'all']) assert.match(CSS_CODE, new RegExp(`\\.g-parts\\[data-level="${level}"\\]`), `the ${level} band lost its colour`);

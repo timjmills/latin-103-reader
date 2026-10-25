@@ -1551,3 +1551,28 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-tlinks__all { border: 0; background: none; padding: 0; font: inherit; color: var(--rubric); cursor: pointer; white-space: nowrap; }
 .g-tlinks__all:hover { text-decoration: underline; }
 .g-chart__wtype { font-size: var(--ui-sm); color: var(--ink-2); font-weight: 600; }
+
+/* The skill page (docs/SIMPLIFY-PLAN.md §3.4): the main button and the other ways in, its parts, tables, related */
+.g-skillhead .g-kicker { display: flex; align-items: center; gap: 0.4em; flex-wrap: wrap; }
+.g-skillbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: var(--s-3) 0; }
+.g-mainbtn { min-height: 44px; font-size: 1.05rem; padding-inline: var(--s-5); }
+.g-vlinks, .g-plinks, .g-related { margin: var(--s-1) 0; line-height: 2; font-size: var(--ui-sm); }
+.g-vlinks { margin: 0; }
+.g-vlink { border: 0; background: none; padding: 0 0.2em; min-height: 28px; font: inherit; color: var(--rubric); cursor: pointer; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--rubric) 40%, transparent); text-underline-offset: 3px; }
+.g-vlink:hover { text-decoration-color: currentColor; }
+.g-vlinks__sep { color: var(--ink-3, var(--ink-2)); }
+.g-plinks__k, .g-tlinks__k { color: var(--ink-2); font-weight: 700; margin-right: 0.3em; }
+.g-plink { display: inline-flex; align-items: center; gap: 0.15em; min-height: 28px; padding: 0 0.55em; margin: 0.1em 0.1em; border-radius: 999px; background: var(--bg-raised); box-shadow: inset 0 0 0 1px var(--line); color: inherit; text-decoration: none; white-space: nowrap; }
+.g-plink:hover { box-shadow: inset 0 0 0 1px var(--rubric); }
+.g-plink__t { color: var(--ink-2); max-width: 16em; overflow: hidden; text-overflow: ellipsis; }
+.g-related__why { color: var(--ink-2); }
+.g-related__mix { min-height: 32px; }
+.g-tlinks__a, .g-tlinks__all { display: inline-block; min-height: 28px; line-height: 28px; }
+.g-skillesson { margin-top: var(--s-5); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+.g-more { margin: var(--s-5) 0 var(--s-3); }
+.g-more > summary { cursor: pointer; font-weight: 600; color: var(--ink-2); min-height: 32px; }
+.g-skillfab { display: none; }
+@media (max-width: 600px) {
+  .g-skillfab:not([hidden]) { display: flex; align-items: center; gap: var(--s-3); position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; padding: var(--s-2) var(--s-3) calc(var(--s-2) + env(safe-area-inset-bottom, 0px)); background: var(--bg); box-shadow: 0 -1px 0 var(--line), 0 -6px 14px rgb(0 0 0 / 0.08); }
+  .g-plink__t { display: none; }
+}

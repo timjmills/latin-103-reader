@@ -305,7 +305,7 @@ test('the progress sheet reads the set: every step answered is the lesson part d
 /* ================================================= the wiring, read out of the source */
 
 test('§22.1: the row\'s count names its unit, and the label and the panel already did', () => {
-  assert.match(UI_CODE, /g-parts__count[^\n]*\$\{p\.done\} of \$\{p\.total\} part/, 'the meter still prints a bare "3 of 6"');
+  assert.match(UI_CODE, /g-parts__count[^\n]*progress \$\{p\.done\} of \$\{p\.total\}/, 'the meter still prints a bare "3 of 6" (its unit is named: progress)');
   assert.match(UI_CODE, /export function meterLabel[\s\S]{0,200}of \$\{title\} practised/, 'the aria-label stopped saying parts');
 });
 
