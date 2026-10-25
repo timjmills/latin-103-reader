@@ -1630,7 +1630,9 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 html.g-game-open .g-side { z-index: 70; }
 /* With the side bar open the page column moves left so nothing runs under it, and the session's buttons wrap */
 @media (min-width: 1280px) {
-  html.g-side-on #grammar .g { margin-left: max(1rem, calc((100vw - 44rem - 22rem) / 2)); margin-right: auto; }
+  html.g-side-on.g-side-right #grammar .g { margin-left: max(1rem, calc((100vw - 44rem - 22rem) / 2)); margin-right: auto; }
+  html.g-side-on.g-side-left #grammar .g { margin-right: max(1rem, calc((100vw - 44rem - 22rem) / 2)); margin-left: auto; }
+  .g-side--left { right: auto; left: 1rem; }
   html.g-side-on .g-side { width: min(22rem, calc(100vw - 44rem - 4rem)); }
   html.g-side-on .g-runnav { flex-wrap: wrap; }
 }
@@ -1645,3 +1647,13 @@ html.g-game-open .g-side { z-index: 70; }
 .g-side__sum::after { content: "▸"; color: var(--ink-3); transition: transform var(--t-fast, 0.15s); }
 .g-side__sec[open] > .g-side__sum::after { transform: rotate(90deg); }
 .g-side__body { padding-bottom: var(--s-1); }
+
+.g-side__bar { display: flex; gap: 4px; align-items: center; }
+.g-side--right .g-side__bar { justify-content: flex-end; }
+.g-side__bar .g-side__toggle { margin-left: 0; }
+.g-side__move { min-width: 32px; }
+.g-side.is-collapsed .g-side__move { display: none; }
+.g-side { overflow-anchor: none; }
+.g-side__sub { margin: 2px 0; }
+.g-side__sub > .g-side__sum { min-height: 30px; padding-left: var(--s-2); font-weight: 600; color: var(--ink-2); font-size: var(--ui-sm); }
+.g-side__sub > .g-next__row { padding-left: var(--s-2); }
