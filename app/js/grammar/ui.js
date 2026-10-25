@@ -1134,14 +1134,14 @@ export function createUI(ctx) {
     root.dataset.drawnMode = sectionMode();   // index.js setSection: what the root holds now
     // One section, Study (docs/SIMPLIFY-PLAN.md §3.1): four tabs and the one Lesson / Game switch.
     const tab = view.name === 'map' && view.params?.chapter != null ? 'course' : tabOf(view.name);
-    const sub = (items) => h('nav', { class: 'g-subnav', 'aria-label': 'In this tab' }, items.map(([v, label, params = {}]) => h('button', { type: 'button', class: 'g-subnav__btn', 'aria-current': view.name === v ? 'page' : null, onclick: () => render(v, params) }, label)));
+    const sub = (items) => h('nav', { class: 'g-subnav', 'aria-label': 'In this tab' }, items.map(([v, label, params = {}]) => h('button', { type: 'button', class: 'g-subnav__btn', 'aria-current': view.name === v ? 'page' : null, onclick: () => (v === '#reading' ? (location.hash = '#/progress') : render(v, params)) }, label)));
     const here = wwChapterN();
     const studyNav = [h('nav', { class: 'g-nav g-nav--study', 'aria-label': 'Study' },
       STUDY_TABS.map((t) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': tab === t.id ? 'page' : null, onclick: () => render(t.view, {}) }, t.label)),
       modeToggle()),
       tab === 'tables' ? sub([['catalogue', 'All tables'], ['paradigms', 'Any word & types']])
-        : tab === 'progress' ? sub([['chart', 'Practice chart'], ['stats', 'Stats']])
-          : ['wordwork', 'wwdrills', 'sheets', 'wwtable'].includes(view.name) ? sub([['course', '← Course', { by: 'chapter' }], ['wordwork', `Forms · Cap. ${roman(here)}`, { chapter: here }], ['wwdrills', 'Skill drills', { chapter: here }], ['sheets', 'Sheet', { chapter: here }]])
+        : tab === 'progress' ? sub([['chart', 'Practice chart'], ['stats', 'Stats'], ['#reading', 'Reading ↗']])
+          : ['chapter', 'wordwork', 'sheets', 'wwtable'].includes(view.name) ? sub([['course', '← Course', { by: 'chapter', at: `c${here}` }], ['chapter', `Cap. ${roman(here)} · Grammar`, { chapter: here }], ['wordwork', 'Forms', { chapter: here }], ['sheets', 'Sheet', { chapter: here }]])
             : null];
     const nav = true ? studyNav : sheets ? null : words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
       [['wordwork', 'This chapter'], ['wwdrills', 'Skill drills'], ['wwpath', 'Progressions'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn',
@@ -1152,7 +1152,7 @@ export function createUI(ctx) {
         { map: 'Skills', path: 'Path', chart: 'Chart', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, ...[].concat(nav).filter(Boolean), body));
-    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, today: renderToday, course: renderCourse, wwpath: async (p) => { await renderArea({ area: p?.area ?? 'verbs', words: true }); if (p?.at) body.querySelector(`#g-path-${CSS.escape(p.at)}`)?.scrollIntoView({ block: 'center' }); }, sheets: renderSheets, stats: renderStats, history: renderHistory, path: renderPath, part: renderPart, chart: renderChart, summary: () => renderToday() };
+    const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, today: renderToday, course: renderCourse, chapter: renderChapterPage, wwpath: async (p) => { await renderArea({ area: p?.area ?? 'verbs', words: true }); if (p?.at) body.querySelector(`#g-path-${CSS.escape(p.at)}`)?.scrollIntoView({ block: 'center' }); }, sheets: renderSheets, stats: renderStats, history: renderHistory, path: renderPath, part: renderPart, chart: renderChart, summary: () => renderToday() };
     (fn[view.name] ?? renderMap)(playOnce ? { ...view.params, play: true } : view.params);
     document.title = `${STUDY_TABS.find((t) => t.id === tab)?.label ?? 'Study'} — Latin 103`;
   }
@@ -3136,7 +3136,7 @@ export function createUI(ctx) {
   // that was clicked on"): it is given the screen it was opened from as its `from`, unless it already has one or
   // it was opened from inside another lesson or practice (which keeps its own way back).
   const LAUNCHED = new Set(['lesson', 'learn', 'part', 'drill', 'blocked', 'unlimited', 'mixed', 'redo', 'catalogue']);
-  const MENUS = new Set(['map', 'path', 'wwpath', 'chart', 'wordwork', 'wwdrills', 'paradigms', 'stats', 'setup', 'sheets', 'today', 'course', 'catalogue']);
+  const MENUS = new Set(['map', 'path', 'wwpath', 'chart', 'wordwork', 'wwdrills', 'paradigms', 'stats', 'setup', 'sheets', 'today', 'course', 'catalogue', 'chapter']);
   const goView = (name, params = {}, mode = 'grammar') => {
     if (LAUNCHED.has(name) && params?.from == null && MENUS.has(view.name)) params = { ...params, from: hereFrom(params?.skill ?? null) };
     if (sectionMode() !== mode) ctx.setMode?.(mode);
@@ -3360,7 +3360,7 @@ export function createUI(ctx) {
           btn('Its forms', { to: ['wordwork', { chapter: n }], onclick: () => render('wordwork', { chapter: n }) }, 'g-vlink'), ' · ',
           btn('Its sheet', { to: ['sheets', { chapter: n }], onclick: () => render('sheets', { chapter: n }) }, 'g-vlink'), ' · ',
           h('button', { type: 'button', class: 'g-vlink', onclick: () => { render('sheets', { chapter: n }); setTimeout(() => window.print(), 900); } }, '🖨 Print sheet'), ' · ',
-          btn('All of Cap. ' + roman(n), { to: ['course', { by: 'chapter', at: `c${n}` }], onclick: () => render('course', { by: 'chapter', at: `c${n}` }) }, 'g-vlink'))),
+          btn(`Cap. ${roman(n)} page`, { to: ['chapter', { chapter: n }], onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))),
       nextUp ? h('section', { class: 'g-chap', 'aria-labelledby': 'g-next-h' },
         h('h2', { id: 'g-next-h', class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: 'Next on your path' }), h('span', { class: 'g-chap__count', text: `${AREAS.find((a) => a.id === areaOf(nextUp))?.label ?? ''} · ${p.of(nextUp) + 1} of ${p.order.length}` })),
         h('ol', { class: 'g-path__list g-area' }, courseRow(nextUp, p.of(nextUp) + 1, titles))) : null,
@@ -3409,7 +3409,8 @@ export function createUI(ctx) {
         const sets = setsOfChapter(ctx.sets ?? new Map(), ch);
         return h('section', { class: 'g-chap g-path', id: `g-path-c${ch}`, 'aria-labelledby': `g-cc-${ch}` },
           h('h2', { id: `g-cc-${ch}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `Cap. ${roman(ch)}` }), h('span', { class: 'g-chap__count', text: bookChapter(ch)?.title ?? '' })),
-          h('p', { class: 'g-vlinks' }, btn('Practise this chapter', { to: ['session', { chapter: ch }], onclick: () => goView('session', { chapter: ch }) }, 'g-vlink'), ' · ',
+          h('p', { class: 'g-vlinks' }, btn(`Cap. ${roman(ch)} page`, { to: ['chapter', { chapter: ch }], onclick: () => render('chapter', { chapter: ch }) }, 'g-vlink'), ' · ',
+            btn('Practise this chapter', { to: ['session', { chapter: ch }], onclick: () => goView('session', { chapter: ch }) }, 'g-vlink'), ' · ',
             btn('Its forms', { to: ['wordwork', { chapter: ch }], onclick: () => render('wordwork', { chapter: ch }) }, 'g-vlink'), ' · ',
             btn('Its sheet', { to: ['sheets', { chapter: ch }], onclick: () => render('sheets', { chapter: ch }) }, 'g-vlink')),
           h('ol', { class: 'g-path__list g-area' }, list.map((st) => (st.kind === 'skill' ? courseRow(st.id, p.of(st.id) + 1, titles) : courseTableRow(st, tables))), sets.map((sk) => courseRow(sk.id, null))));
@@ -3439,6 +3440,38 @@ export function createUI(ctx) {
     if (target) (body.querySelector(`#g-path-${CSS.escape(target)}`))?.scrollIntoView({ block: at ? 'center' : 'start' });
   }
   /**
+   * **The chapter page** (§3.5): Grammar · Forms · Sheet, one page per chapter. Grammar is the chapter's skills and
+   * tables as Course rows, its Questions · Vocabulary · Pensa, Practise this chapter and its practice chart; Forms is
+   * Word Work's This chapter; Sheet is the cheat sheet. Reading opens the chapter in Read.
+   */
+  async function renderChapterPage({ chapter = null } = {}) {
+    let n = Number(chapter ?? ctx.currentChapter?.() ?? 1);
+    if (!bookChapter(n)) n = ctx.currentChapter?.() ?? 1;
+    const c = bookChapter(n);
+    const titles = await partTitles();
+    let tables = null;
+    try { tables = (await catalogueItemsOf())?.catalogue?.tables ?? null; } catch { tables = null; }
+    if (view.name !== 'chapter') return;
+    view.params = { ...(view.params ?? {}), chapter: n };
+    const p = thePath();
+    const steps = p.steps.filter((st) => st.chapter === n);
+    const sets = setsOfChapter(ctx.sets ?? new Map(), n);
+    const weekNs = (c?.weeks ?? []).filter((w) => w < 100);
+    setBody(
+      h('header', { class: 'g-head' },
+        h('p', { class: 'g-kicker', text: `Study · chapter${weekNs.length ? ` · week ${weekNs.join(' and ')}` : ''}` }),
+        h('h1', { class: 'g-title' }, `Cap. ${roman(n)} · `, h('span', { lang: 'la', text: c?.title ?? '' })),
+        h('div', { class: 'g-acts' },
+          btn('Practise this chapter', { to: ['session', { chapter: n }], onclick: () => goView('session', { chapter: n }) }, 'btn btn--primary'),
+          typeof ctx.openChapter === 'function' ? btn('📖 Read it', { onclick: () => ctx.openChapter(n, 'reading') }, 'btn btn--quiet') : null,
+          btn('◂ Cap. ' + roman(Math.max(1, n - 1)), { to: ['chapter', { chapter: n - 1 }], onclick: () => render('chapter', { chapter: n - 1 }), disabled: n <= 1 ? true : null }, 'btn btn--quiet'),
+          btn('Cap. ' + roman(n + 1) + ' ▸', { to: ['chapter', { chapter: n + 1 }], onclick: () => render('chapter', { chapter: n + 1 }), disabled: bookChapter(n + 1) ? null : true }, 'btn btn--quiet'))),
+      steps.length ? h('ol', { class: 'g-path__list g-area' }, steps.map((st) => (st.kind === 'skill' ? courseRow(st.id, p.of(st.id) + 1, titles) : courseTableRow(st, tables))))
+        : h('p', { class: 'g-quiet', text: 'No grammar skill is taught in this chapter.' }),
+      sets.length ? h('section', { class: 'g-sets' }, h('h2', { class: 'g-h2', text: 'This chapter’s sets' }), h('ol', { class: 'g-path__list g-area' }, sets.map((sk) => courseRow(sk.id, null)))) : null,
+      chartChapter(n, { compact: true }));
+  }
+  /**
    * **Progressions by area** (2026-10-25: "a skill progression that I can work through in lesson and game for each
    * area of grammar (verbs/nouns etc.) from easiest to hardest … a chart for each and then when I click it takes me
    * to that specific page/lesson/lesson section/charts … for both the lesson and game mode"; "integrate it into the
@@ -3449,8 +3482,8 @@ export function createUI(ctx) {
    */
   const WW_VIEWS = new Set(['wordwork', 'wwdrills', 'wwtable', 'wwpath']);
   /** The screen on now, as a `from`: where a table's practice opened from it comes back to (at its row, `at`). */
-  const VIEW_LABEL = { today: 'Today', course: 'Course', catalogue: 'Tables', path: 'The path', wwpath: 'Progressions', chart: 'Practice chart', lesson: 'The lesson', learn: 'The lesson', part: 'The lesson part', map: 'Skills', wordwork: 'This chapter', wwdrills: 'Skill drills' };
-  const hereFrom = (at = null) => ({ view: view.name, params: (({ from: _f, play: _p, at: _a, ...rest }) => ({ ...rest, ...(at ? { at } : {}) }))(view.params ?? {}), label: view.params?.area ? `${AREAS.find((a) => a.id === view.params.area)?.label ?? ''} progression` : VIEW_LABEL[view.name] ?? 'Back' });
+  const VIEW_LABEL = { today: 'Today', course: 'Course', catalogue: 'Tables', chapter: 'The chapter', path: 'The path', wwpath: 'Progressions', chart: 'Practice chart', lesson: 'The lesson', learn: 'The lesson', part: 'The lesson part', map: 'Skills', wordwork: 'This chapter', wwdrills: 'Skill drills' };
+  const hereFrom = (at = null) => ({ view: view.name, params: (({ from: _f, play: _p, at: _a, ...rest }) => ({ ...rest, ...(at ? { at } : {}) }))(view.params ?? {}), label: view.params?.area ? `${AREAS.find((a) => a.id === view.params.area)?.label ?? ''} progression` : view.name === 'chapter' && view.params?.chapter ? `Cap. ${roman(Number(view.params.chapter))}` : VIEW_LABEL[view.name] ?? 'Back' });
   /** A table's practice, started at once, coming back here when it is done. */
   const tableTo = (t, at = null) => ['catalogue', { table: t, from: hereFrom(at), play: true }];
   const goTable = (t, at = null) => { closeGameMenu(); const [n, p] = tableTo(t, at); goView(n, p); };
@@ -4235,9 +4268,16 @@ export function createUI(ctx) {
           note ? h('span', { class: 'g-quiet', text: note }) : null),
         h('div', { class: 'g-lesson__pt' }, node));
     };
-    const block = (id, title, lede, cards) => h('section', { class: 'g-cat__sec g-ww', 'aria-labelledby': id },
-      h('h2', { id, class: 'g-h2', text: title }), lede ? h('p', { class: 'g-quiet', text: lede }) : null,
-      h('div', { class: 'g-ww__cards', 'data-cols': String(wwCols()) }, cards.filter(Boolean)));   // read now: a choice made while the page loaded counts
+    // At most six words at first, the rest a press away (docs/SIMPLIFY-PLAN.md §3.5: not 50 screens on a phone).
+    const WW_FIRST = 6;
+    const block = (id, title, lede, cards) => {
+      const all = cards.filter(Boolean);
+      const grid = h('div', { class: 'g-ww__cards', 'data-cols': String(wwCols()) }, all.slice(0, WW_FIRST));   // read now: a choice made while the page loaded counts
+      const rest = all.slice(WW_FIRST);
+      const moreBtn = rest.length ? btn(`More words (${rest.length})`, { onclick: (e) => { grid.append(...rest); e.currentTarget.remove(); } }, 'btn btn--quiet g-ww__more') : null;
+      return h('section', { class: 'g-cat__sec g-ww', 'aria-labelledby': id },
+        h('h2', { id, class: 'g-h2', text: title }), lede ? h('p', { class: 'g-quiet', text: lede }) : null, grid, moreBtn);
+    };
 
     const parts = [];
     if (mode === 'all') {
