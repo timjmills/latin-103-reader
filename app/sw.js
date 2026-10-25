@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v118';
+const CACHE_VERSION = 'v119';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -363,7 +363,7 @@ const HASHES = {
   "./js/grammar/print.js": '29a9fe1bdc4a',
   "./js/grammar/progress.js": '921fba3ee99e',
   "./js/grammar/scheduler.js": '013a30c9cf3d',
-  "./js/grammar/session.js": '57fd636af217',
+  "./js/grammar/session.js": '711319c067d5',
   "./js/grammar/sets.js": 'eba8496a4bad',
   "./js/grammar/stage3.js": '32ab140b63e1',
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
