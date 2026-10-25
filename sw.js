@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v116';
+const CACHE_VERSION = 'v117';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -23,7 +23,7 @@ const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it
 const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
-  "./css/grammar.css": 'ebf58102d2f6',
+  "./css/grammar.css": '2acfa8830f47',
   "./css/panels.css": '31699cb4d2ae',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
@@ -355,7 +355,7 @@ const HASHES = {
   "./js/grammar/chapter.js": '3f1a0ef3892d',
   "./js/grammar/continuum.js": 'a51affc0ef89',
   "./js/grammar/generate.js": 'c312891ee45c',
-  "./js/grammar/index.js": '575753aa5313',
+  "./js/grammar/index.js": '1bcc3ddac9b4',
   "./js/grammar/inputs.js": '2ff1da2f09fb',
   "./js/grammar/items.js": '814723be5dcc',
   "./js/grammar/lessons.js": 'b64c65fbe898',
@@ -369,7 +369,7 @@ const HASHES = {
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": '5a45b6ef8559',
+  "./js/grammar/ui.js": '5a7e54536cfd',
   "./js/grammar/voices.js": '79e178e05437',
   "./js/hovergloss.js": 'db78916cb67b',
   "./js/main.js": 'd0f32d75f894',
