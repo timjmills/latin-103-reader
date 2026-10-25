@@ -1137,7 +1137,7 @@ export function createUI(ctx) {
     const sub = (items) => h('nav', { class: 'g-subnav', 'aria-label': 'In this tab' }, items.map(([v, label, params = {}]) => h('button', { type: 'button', class: 'g-subnav__btn', 'aria-current': view.name === v ? 'page' : null, onclick: () => (v === '#reading' ? (location.hash = '#/progress') : render(v, params)) }, label)));
     const here = wwChapterN();
     const studyNav = [h('nav', { class: 'g-nav g-nav--study', 'aria-label': 'Study' },
-      STUDY_TABS.map((t) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': tab === t.id ? 'page' : null, onclick: () => render(t.view, {}) }, t.label)),
+      STUDY_TABS.map((t) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': tab === t.id ? 'page' : null, 'aria-label': t.label, onclick: () => render(t.view, {}) }, h('span', { class: 'g-nav__full', text: t.label }), t.short ? h('span', { class: 'g-nav__short', 'aria-hidden': 'true', text: t.short }) : null)),
       modeToggle()),
       tab === 'progress' ? sub([['chart', 'Practice chart'], ['stats', 'Stats'], ['#reading', 'Reading ↗']])
           : ['chapter', 'wordwork', 'sheets', 'wwtable'].includes(view.name) ? sub([['course', '← Course', { by: 'chapter', at: `c${here}` }], ['chapter', `Cap. ${roman(here)} · Grammar`, { chapter: here }], ['wordwork', 'Forms', { chapter: here }], ['sheets', 'Sheet', { chapter: here }]])
@@ -1437,7 +1437,7 @@ export function createUI(ctx) {
     return h('section', { class: 'g-today', 'aria-labelledby': 'g-today-h' },
       h('h2', { id: 'g-today-h', class: 'g-h2', text: heading }),
       saved?.queue?.length && saved.index < saved.queue.length ? h('p', { class: 'g-today__line' }, `${saved.redo ? 'A redo' : 'A practice session'} is in progress (${Math.min(saved.index, saved.queue.length)} of ${saved.queue.length} answered). `, btn('Resume', { onclick: () => render(saved.redo ? 'redo' : 'session', { ...(saved.params ?? {}), resume: true }) }, 'btn btn--primary g-today__btn'), ' ', btn('Discard', { onclick: () => { writeJSON(LS_SESSION, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
-      retestNode(),
+      reviewButton(),
       queue.length ? h('p', { class: 'g-today__line' }, `Learning in book order: ${queue.length} skill${queue.length === 1 ? '' : 's'} to go, next `, navEl({ class: 'g-link', to: ['learn', { skill: queue[0], queue: queue.slice(1) }], onclick: () => render('learn', { skill: queue[0], queue: queue.slice(1) }) }, titleOf(queue[0])), '. ', btn('Stop the run', { onclick: () => { writeJSON(LS_QUEUE, null); draw(); } }, 'btn btn--quiet g-today__btn')) : null,
       todayCard({ place: 'map', bare: true }));
   }
@@ -2564,6 +2564,44 @@ export function createUI(ctx) {
    * the soonest will be. `only` narrows it to one skill (a result screen
    * speaks of its own skill). null when there is nothing to say.
    */
+  /**
+   * **Review** (2026-10-25: "get rid of the review pills and have a review button that will list needed review items"):
+   * one button with the count; it opens the list — the short re-tests ready, the skills due, what was missed — each a
+   * start, and Practise everything due at the top.
+   */
+  function reviewItems() {
+    const now = Date.now();
+    const retests = retestDue(retestList().filter((r) => skills.has(r.skill)), now).map((r) => r.skill);
+    const due = [...skills.keys()].filter((x) => !skills.get(x).set && inRotation(stateOf(x)) && isDue(stateOf(x), now)).sort((a, b) => thePath().of(a) - thePath().of(b));
+    const missed = missedCount();
+    return { retests, due, missed, n: retests.length + due.length + (missed ? 1 : 0) };
+  }
+  function reviewButton() {
+    const r = reviewItems();
+    const count = r.retests.length + r.due.length;
+    return h('p', { class: 'g-acts' }, btn(r.n ? `🔁 Review (${count}${r.missed ? ` + ${r.missed} missed` : ''})` : '🔁 Review · nothing due', { 'aria-haspopup': 'dialog', onclick: () => openReview() }, `btn ${r.n ? 'btn--primary' : ''} g-reviewbtn`.trim()));
+  }
+  function openReview() {
+    const r = reviewItems();
+    const d = h('dialog', { class: 'g-pmenu', 'aria-labelledby': 'g-pmenu-h' });
+    const go = (fn) => () => { d.close(); fn(); };
+    const row = (id, label, fn) => h('li', {}, h('button', { type: 'button', class: 'g-pmenu__part', onclick: go(fn) },
+      h('span', { class: 'g-pmenu__n g-pmenu__cap', text: capOf(id).replace('Cap. ', '') }), h('span', { class: 'g-pmenu__t', text: label })));
+    d.append(...[
+      h('div', { class: 'g-pmenu__top' }, h('p', { class: 'g-kicker', text: 'Review · what needs it now' }), btn('×', { 'aria-label': 'Close', onclick: () => d.close() }, 'g-pop__close g-pmenu__close')),
+      h('h2', { id: 'g-pmenu-h', class: 'g-pmenu__h', text: 'Review' }),
+      r.due.length ? h('p', { class: 'g-acts' }, btn('▶ Practise everything due', { onclick: go(() => goView('session', {})) }, 'btn btn--primary')) : null,
+      r.retests.length ? [h('h3', { class: 'g-pmenu__sh', text: `Short re-tests ready (${r.retests.length}) · three items each` }), h('ol', { class: 'g-pmenu__list' }, r.retests.map((x) => row(x, titleOf(x), () => render('drill', { skill: x, size: RETEST_SIZE, retest: true }))))] : null,
+      r.due.length ? [h('h3', { class: 'g-pmenu__sh', text: `Due for review (${r.due.length})` }), h('ol', { class: 'g-pmenu__list' }, r.due.map((x) => row(x, titleOf(x), () => startSkill(x, 'review'))))] : null,
+      r.missed ? [h('h3', { class: 'g-pmenu__sh', text: 'Missed before' }), h('p', { class: 'g-acts' }, btn(`Redo the ${r.missed} you missed`, { onclick: go(() => goView('redo', {})) }, 'btn'))] : null,
+      r.n ? null : h('p', { class: 'g-quiet', text: 'Nothing needs review just now.' }),
+    ].flat().filter(Boolean));
+    d.addEventListener('close', () => d.remove());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    document.body.append(d);
+    d.showModal();
+    d.querySelector('button.btn, .g-pmenu__part')?.focus();
+  }
   function retestNode({ only = null, from = null } = {}) {
     const now = Date.now();
     const list = retestList().filter((r) => skills.has(r.skill) && (!only || r.skill === only));
@@ -3298,11 +3336,11 @@ export function createUI(ctx) {
     // Every page of Study (2026-10-25: "add a side bar to all the study section; the goal is that one does not need to
     // leave the page to get exactly what one wants or needs"): Find, what to do now, and this chapter.
     const nextUp = climbFrom(thePath(), null, (x) => !inRotation(stateOf(x)) && !skills.get(x)?.set, 1)[0] ?? null;
-    const due = [...skills.keys()].filter((x) => stateOf(x).state === 'due').length;
     parts.push(sec('Now',
       nextUp ? btn(playLabel(`Next to learn: ${titleOf(nextUp)}`), { onclick: () => startSkill(nextUp, 'learn') }, 'btn btn--primary g-side__btn') : null,
       h('ul', { class: 'g-side__list' },
-        h('li', {}, h('button', { type: 'button', class: 'g-side__go', onclick: () => goView('setup', {}) }, due ? `Review: ${due} due` : 'Mixed practice')),
+        h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'aria-haspopup': 'dialog', onclick: () => openReview() }, `🔁 Review${reviewItems().n ? ` (${reviewItems().retests.length + reviewItems().due.length})` : ''}`)),
+        h('li', {}, h('button', { type: 'button', class: 'g-side__go', onclick: () => goView('setup', {}) }, 'Mixed practice')),
         h('li', {}, h('button', { type: 'button', class: 'g-side__go', onclick: () => goView('session', { chapter: ctx.currentChapter?.() ?? 1 }) }, `Practise this chapter (Cap. ${roman(ctx.currentChapter?.() ?? 1)})`)),
         h('li', {}, h('button', { type: 'button', class: 'g-side__go', onclick: () => goView('chart', {}) }, 'Practice chart: what is still to do')))));
     const n = Number(ctx.currentChapter?.() ?? 1);
@@ -3586,7 +3624,7 @@ export function createUI(ctx) {
     const nextUp = climbFrom(p, null, (x) => !inRotation(stateOf(x)) && !skills.get(x)?.set, 1)[0] ?? null;
     const rf = reviewFirst({ weekSkills: ctx.currentWeekSkills(), skills, states: gstore.getStates(), now: Date.now() });
     const content = h('div', { class: 'g-today-body' },
-      todaySection({ heading: 'Your plan for today' }),
+      todaySection({ heading: 'Your plan' }),
       h('section', { class: 'g-chap g-thischap', 'aria-labelledby': 'g-thischap-h' },
         h('h2', { id: 'g-thischap-h', class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: `This chapter · Cap. ${roman(n)}` }), h('span', { class: 'g-chap__count', text: c?.title ?? '' })),
         chapterIds.length ? h('ol', { class: 'g-path__list g-area' }, chapterIds.map((id) => courseRow(id, p.of(id) + 1, titles))) : h('p', { class: 'g-quiet', text: 'No grammar skill is taught in this chapter.' }),
@@ -3604,7 +3642,7 @@ export function createUI(ctx) {
         h('ul', { class: 'g-chips' }, rf.map((r) => h('li', { class: 'g-chips__li' }, navEl({ class: 'g-chip', 'data-state': r.state, 'data-area': areaOf(r.skill), to: ['lesson', { skill: r.skill }], onclick: () => goView('lesson', { skill: r.skill }) }, titleOf(r.skill), h('span', { class: 'g-chip__state', text: ` · ${STATE_LABEL[r.state]}` })))))) : null,
       h('p', { class: 'g-acts' }, btn('Choose your own practice…', { to: ['setup', {}], onclick: () => render('setup', {}) }, 'btn btn--quiet'), btn('📊 Practice chart', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet')));
     setBody(
-      h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'Today' })),
+      h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'New This Week' })),
       findBox(content),
       content);
   }
