@@ -1450,6 +1450,7 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 /* A control that became a link (2026-10-23, its own address) keeps the look it had as a button. */
 #grammar a.g-chip, #grammar a.g-skill__title, #grammar a.btn, #grammar a.g-choice, #grammar a.g-filter__btn { text-decoration: none; }
 #grammar a.g-filter__btn { display: inline-flex; align-items: center; color: inherit; }
+#grammar a.g-filter__btn[aria-pressed="true"] { color: var(--bg); }
 #grammar a.g-chip { display: inline-flex; align-items: center; }
 #grammar a.g-skill__title { display: inline; }
 
@@ -1540,3 +1541,12 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-areatab[data-area][aria-pressed="true"] { background: color-mix(in srgb, var(--area) 18%, var(--bg-raised)); }
 .g-area__head[data-area] .g-title { color: var(--area); }
 .g-areanav { margin: var(--s-2) 0; padding: var(--s-1) var(--s-2); border-left: 4px solid var(--area); border-radius: 0.5rem; background: color-mix(in srgb, var(--area) 7%, transparent); font-size: var(--ui-sm); }
+
+/* A skill's tables, in small links under it (path, progressions) */
+.g-tlinks { margin: 0.3em 0 0; font-size: var(--ui-sm); line-height: 1.7; }
+.g-tlinks__k { color: var(--ink-2); font-weight: 600; }
+.g-tlinks__a { color: inherit; text-decoration: underline; text-decoration-color: var(--area, var(--line-strong)); text-decoration-thickness: 2px; text-underline-offset: 2px; white-space: nowrap; }
+.g-tlinks__a:hover { color: var(--area, var(--rubric)); }
+.g-tlinks__sep { color: var(--ink-3, var(--ink-2)); }
+.g-tlinks__all { border: 0; background: none; padding: 0; font: inherit; color: var(--rubric); cursor: pointer; white-space: nowrap; }
+.g-tlinks__all:hover { text-decoration: underline; }
