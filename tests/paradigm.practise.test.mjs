@@ -148,8 +148,9 @@ test('the Paradigms page is a tab and a link of its own, and a table in a box ke
   const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
   const GCSS = readFileSync(new URL('../app/css/grammar.css', import.meta.url), 'utf8');
   const MANIFEST = JSON.parse(readFileSync(new URL('../app/manifest.webmanifest', import.meta.url), 'utf8'));
-  // Paradigms is the second item of Study's Tables tab now (docs/SIMPLIFY-PLAN.md §3.6).
-  assert.match(UI, /tab === 'tables' \? sub\(\[\['catalogue', 'All tables'\], \['paradigms', 'Any word & types'\]\]\)/);
+  // Paradigms is Study's Tables page now, with every table listed under it (docs/SIMPLIFY-PLAN.md §3.6).
+  assert.match(readFileSync(new URL('../app/js/grammar/routes.js', import.meta.url), 'utf8'), /\{ id: 'tables', label: 'Tables', view: 'paradigms' \}/);
+  assert.match(UI, /got \? tablesListNode\(got\) : null,/);
   assert.match(UI, /paradigms: renderParadigms/);
   assert.ok(MAIN.includes("openGrammarSection('paradigms')"), 'the #/paradigms route is gone');
   assert.ok(MANIFEST.shortcuts?.some((s) => s.url === './#/paradigms'));

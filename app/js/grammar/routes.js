@@ -16,6 +16,8 @@ export function resolveView(name, params = {}) {
       if (p.category && p.category !== 'all') return p.category === 'sets' ? { name: 'course', params: { by: 'chapter' } } : { name: 'course', params: { by: 'area', area: AREA_OF_CATEGORY[p.category] ?? 'verbs' } };
       return { name: 'today', params: {} };
     case 'path': return p.area ? { name: 'course', params: { by: 'area', area: p.area, ...(p.at ? { at: p.at } : {}) } } : { name: 'course', params: { by: 'chapter', ...(p.at ? { at: p.at } : {}) } };
+    // Tables is one page (§3.6): the list of every table sits under Find a word and Practise by type.
+    case 'catalogue': return p.table ? { name, params: p } : { name: 'paradigms', params: { list: true } };
     case 'wwdrills': return { name: 'chapter', params: p.chapter != null ? { chapter: Number(p.chapter) } : {} };
     case 'wwpath': return { name: 'course', params: { by: 'area', area: p.area ?? 'verbs', ...(p.at ? { at: p.at } : {}) } };
     default: return { name, params: p };
@@ -36,6 +38,6 @@ export function tabOf(name) {
 export const STUDY_TABS = [
   { id: 'today', label: 'Today', view: 'today' },
   { id: 'course', label: 'Course', view: 'course' },
-  { id: 'tables', label: 'Tables', view: 'catalogue' },
+  { id: 'tables', label: 'Tables', view: 'paradigms' },
   { id: 'progress', label: 'Progress', view: 'chart' },
 ];

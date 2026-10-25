@@ -1592,11 +1592,22 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-plink--n { min-width: 28px; justify-content: center; padding: 0 0.4em; font-weight: 700; }
 .g-thischap__links { margin-top: var(--s-2); }
 @media (max-width: 600px) {
-  .g-nav--study { flex-wrap: nowrap; gap: 0; }
-  .g-nav--study .g-nav__btn { padding-inline: 0.55em; }
-  .g-modetoggle__opt { padding: 0.2em 0.45em; }
+  /* Four tabs and the switch on one row at 320 px: the switch shows only its mode's icon */
+  .g-nav--study { flex-wrap: nowrap; gap: 0; overflow: visible; }
+  .g-nav--study .g-nav__btn { padding-inline: 0.5em; font-size: var(--ui-sm); }
+  .g-modetoggle { min-width: 44px; justify-content: center; }
+  .g-modetoggle__opt { padding: 0.2em 0.5em; font-size: 0; }
+  .g-modetoggle__opt::first-letter { font-size: 1rem; }
   .g-modetoggle__opt[data-on="false"] { display: none; }
+  /* The area tabs: one row that scrolls sideways, so the first skill is near the top */
+  .g-areatabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .g-areatabs .g-filter__btn { flex: none; }
 }
+@media (max-width: 359.98px) { .g-nav--study .g-nav__btn { padding-inline: 0.35em; } }
+/* Every small link at least 24 px tall to tap (§9) */
+.g-vlink, a.g-vlink { display: inline-flex; align-items: center; min-height: 28px; }
+.g-crow .g-path__t .g-link, .g-path__s--table .g-path__t .g-link, .g-areanav .g-link, .g-related .g-link { display: inline-block; min-height: 24px; line-height: 24px; }
 
 /* The chosen area tab keeps its own colour readable (a link pressed is otherwise ink on its tint) */
 #grammar a.g-areatab[aria-pressed="true"], #grammar button.g-areatab[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
+.g-ptile__t, .g-ptables .g-link, .g-today .g-link, .g-prereq__skill { display: inline-block; min-height: 24px; line-height: 24px; }

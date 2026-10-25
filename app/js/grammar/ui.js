@@ -1136,8 +1136,7 @@ export function createUI(ctx) {
     const studyNav = [h('nav', { class: 'g-nav g-nav--study', 'aria-label': 'Study' },
       STUDY_TABS.map((t) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': tab === t.id ? 'page' : null, onclick: () => render(t.view, {}) }, t.label)),
       modeToggle()),
-      tab === 'tables' ? sub([['catalogue', 'All tables'], ['paradigms', 'Any word & types']])
-        : tab === 'progress' ? sub([['chart', 'Practice chart'], ['stats', 'Stats'], ['#reading', 'Reading ↗']])
+      tab === 'progress' ? sub([['chart', 'Practice chart'], ['stats', 'Stats'], ['#reading', 'Reading ↗']])
           : ['chapter', 'wordwork', 'sheets', 'wwtable'].includes(view.name) ? sub([['course', '← Course', { by: 'chapter', at: `c${here}` }], ['chapter', `Cap. ${roman(here)} · Grammar`, { chapter: here }], ['wordwork', 'Forms', { chapter: here }], ['sheets', 'Sheet', { chapter: here }]])
             : null];
     const nav = studyNav;
@@ -3179,8 +3178,8 @@ export function createUI(ctx) {
         h('p', { class: 'g-quiet', text: 'The next skills that use it.' }), h('ul', { class: 'g-level__list' }, harder.map((x) => h('li', {}, pathLink(x))))) : null);
   };
   const levelButton = (id, cls = 'btn btn--quiet g-levelbtn') => (skills.get(id) && !skills.get(id).set && levelNode(id)
-    ? btn([h('span', { 'aria-hidden': 'true', text: '⇅ ' }), h('span', { class: 'g-levelbtn__t', text: 'Too hard? Too easy?' })],
-      { 'aria-haspopup': 'dialog', 'aria-label': `Too hard or too easy? Skills before and after ${skills.get(id).title}`, title: 'Too hard? Too easy?', onclick: () => openGameMenu({ skill: id, only: 'level' }) }, cls)
+    ? btn([h('span', { 'aria-hidden': 'true', text: '⇅ ' }), h('span', { class: 'g-levelbtn__t', text: 'Easier or harder skill?' })],
+      { 'aria-haspopup': 'dialog', 'aria-label': `Easier or harder skill? The skills before and after ${skills.get(id).title}`, title: 'Easier or harder skill? (another skill, before or after this one)', onclick: () => openGameMenu({ skill: id, only: 'level' }) }, cls)
     : null);
   /** Climb the path: the next skills on it still to learn, one after the other (Learn's queue), from `id` or the start. */
   const climb = (id = null) => {
@@ -3473,7 +3472,7 @@ export function createUI(ctx) {
    */
   const WW_VIEWS = new Set(['wordwork', 'wwdrills', 'wwtable', 'wwpath']);
   /** The screen on now, as a `from`: where a table's practice opened from it comes back to (at its row, `at`). */
-  const VIEW_LABEL = { today: 'Today', course: 'Course', catalogue: 'Tables', chapter: 'The chapter', path: 'The path', wwpath: 'Progressions', chart: 'Practice chart', lesson: 'The lesson', learn: 'The lesson', part: 'The lesson part', map: 'Skills', wordwork: 'This chapter', wwdrills: 'Skill drills' };
+  const VIEW_LABEL = { today: 'Today', course: 'Course', catalogue: 'Tables', paradigms: 'Tables', chapter: 'The chapter', path: 'The path', wwpath: 'Progressions', chart: 'Practice chart', lesson: 'The lesson', learn: 'The lesson', part: 'The lesson part', map: 'Skills', wordwork: 'This chapter', wwdrills: 'Skill drills' };
   const hereFrom = (at = null) => ({ view: view.name, params: (({ from: _f, play: _p, at: _a, ...rest }) => ({ ...rest, ...(at ? { at } : {}) }))(view.params ?? {}), label: view.params?.area ? `${AREAS.find((a) => a.id === view.params.area)?.label ?? ''} progression` : view.name === 'chapter' && view.params?.chapter ? `Cap. ${roman(Number(view.params.chapter))}` : VIEW_LABEL[view.name] ?? 'Back' });
   /** A table's practice, started at once, coming back here when it is done. */
   const tableTo = (t, at = null) => ['catalogue', { table: t, from: hereFrom(at), play: true }];
@@ -3780,7 +3779,7 @@ export function createUI(ctx) {
     const here = ctx.currentChapter?.() ?? 1;
     const parts = h('div', { class: 'g-gmenu__parts' });
     const inner = h('div', { class: 'g-gmenu__in' },
-      h('div', { class: 'g-gmenu__top' }, h('h2', { class: 'g-gmenu__h', text: only === 'level' ? 'Too hard? Too easy?' : 'Go anywhere' }), close),
+      h('div', { class: 'g-gmenu__top' }, h('h2', { class: 'g-gmenu__h', text: only === 'level' ? 'Easier or harder skill?' : 'Go anywhere' }), close),
       sk ? h('section', { class: 'g-gmenu__sec' },
         h('p', { class: 'g-kicker', text: `Cap. ${roman(sk.chapter)} · this skill` }), h('h3', { class: 'g-gmenu__sk', text: sk.title }),
         levelNode(id),
@@ -3797,7 +3796,7 @@ export function createUI(ctx) {
         h('h3', { class: 'g-gmenu__sh', text: `This chapter · Cap. ${roman(here)}` }),
         h('ul', { class: 'g-gmenu__list' }, go('All of it', 'course', { by: 'chapter', at: `c${here}` }), go('Its forms', 'wordwork', { chapter: here }), go('Its sheet', 'sheets', { chapter: here }), go('Any word & types', 'paradigms', {}))),
       only === 'level' ? null : h('div', { class: 'g-acts' }, btn('✕ Leave game mode', { onclick: () => { closeGameMenu(); keepGame(false); body.classList.remove('g-game'); document.documentElement.classList.remove('g-game-open'); draw(); } }, 'btn btn--quiet')));
-    const panel = h('div', { class: 'g-gmenu', role: 'dialog', 'aria-modal': 'true', 'aria-label': only === 'level' ? 'Too hard? Too easy?' : 'Menu', onclick: (e) => { if (e.target === panel) closeGameMenu(); } }, inner);
+    const panel = h('div', { class: 'g-gmenu', role: 'dialog', 'aria-modal': 'true', 'aria-label': only === 'level' ? 'Easier or harder skill?' : 'Menu', onclick: (e) => { if (e.target === panel) closeGameMenu(); } }, inner);
     const onKey = (e) => {
       if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeGameMenu(); return; }
       if (e.key !== 'Tab') return;
@@ -3956,7 +3955,7 @@ export function createUI(ctx) {
     return pool.length ? any(pool) : null;
   };
 
-  async function renderParadigms({ word = null, pos = null, type = null, play = false } = {}) {
+  async function renderParadigms({ word = null, pos = null, type = null, play = false, list: showList = false, at = null } = {}) {
     const tableBox = h('div', { class: 'g-para__table' });
     const pick = (e, t = type) => render('paradigms', { word: e.h, pos: e.pos, type: t ?? typeOf(e)?.name ?? null });
     const chip = (e, note = shortType(typeOf(e)?.name)) => h('li', {}, btn([h('span', { lang: 'la', text: headOf(e) }), note ? h('span', { class: 'g-chip__state', text: ` · ${note}` }) : null],
@@ -4089,10 +4088,13 @@ export function createUI(ctx) {
               btn('Start with a random one', { onclick: () => pick(typeWords[Math.floor(Math.random() * Math.min(typeWords.length, 40))], type) }, 'btn'))]
           : h('p', { class: 'g-quiet', text: 'No word of this type has a table.' })) : null);
 
+    let got = null;
+    try { got = await catalogueItemsOf(); } catch { got = null; }
+    if (view.name !== 'paradigms') return;
     setBody(
       h('header', { class: 'g-head' },
-        h('p', { class: 'g-kicker', text: 'Practise a whole table' }),
-        h('h1', { class: 'g-title', text: 'Paradigms' }),
+        h('p', { class: 'g-kicker', text: 'Study' }),
+        h('h1', { class: 'g-title', text: 'Tables' }),
         h('p', { class: 'g-lede', text: 'Any word, its whole table: every form with its English and the chapter that teaches it. Practise it box by box — the whole form or just its ending, right turns green with the ending lit against the stem — or only the parts you have reached.' })),
       h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-find' },
         h('h2', { id: 'g-para-find', class: 'g-h2', text: 'Find a word' }),
@@ -4100,6 +4102,7 @@ export function createUI(ctx) {
         h('p', { class: 'g-quiet', text: 'Not sure how a word is spelled? Type its first letters and choose it from the list, or take a random one.' })),
       chosen ? h('section', { class: 'g-cat__sec g-para', 'aria-labelledby': 'g-para-word' }, tableBox) : (word ? tableBox : null),
       typeNode,
+      got ? tablesListNode(got) : null,
       mine.length ? h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-mine' },
         h('h2', { id: 'g-para-mine', class: 'g-h2', text: 'Your learning words' }),
         h('p', { class: 'g-quiet', text: 'The words you have underlined while reading, newest first.' }),
@@ -4110,6 +4113,8 @@ export function createUI(ctx) {
         h('ul', { class: 'g-chips g-words', 'aria-label': 'Model words' }, models.map((e) => chip(e)))));
     if (chosen) { tableBox.querySelector('.paradigm__go')?.focus({ preventScroll: true }); if (play) autoPlay(tableBox); }
     else if (type) body.querySelector('.g-para__typewords')?.scrollIntoView({ block: 'start' });
+    else if (at) body.querySelector(`#g-path-${CSS.escape(at)}`)?.scrollIntoView({ block: 'center' });
+    else if (showList) body.querySelector('#g-tables-all')?.scrollIntoView({ block: 'start' });
   }
 
   /* ------------------------------------------------------- word work */
@@ -4624,6 +4629,11 @@ export function createUI(ctx) {
     if (table) { renderTable(got, table, { from, play }); return; }
     if (category) catState.category = category;
     if (chapter !== undefined) catState.chapter = chapter;
+    // The list is part of Tables' one page now (routes.js sends here only with a table).
+    render('paradigms', { list: true }, { push: false });
+  }
+  /** Every paradigm table, by part of speech, with its filters: the bottom of the Tables page (§3.6). */
+  function tablesListNode(got, { from = null } = {}) {
     const { catalogue } = got;
     const parts = Array.isArray(catalogue.raw?.parts) ? catalogue.raw.parts : [];
     const cats = ['all', ...new Set(parts.flatMap((p) => p.tables.map((t) => t.category)).filter(Boolean))];
@@ -4632,7 +4642,7 @@ export function createUI(ctx) {
     // "65 tables" above four of them (N-9).
     const allTables = catalogue.tables.size;
     const listed = parts.reduce((n, p) => n + p.tables.filter(shown).length, 0);
-    const head = h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Tables' }),
+    const head = h('div', {}, h('h2', { class: 'g-h2', id: 'g-tables-all', text: 'Every table' }),
       h('p', { class: 'g-lede', text: `Every paradigm the book teaches, by part of speech: ${listed === allTables ? `${allTables} tables` : `${listed} of ${allTables} tables under this filter`}. Open one to see it filled, practise a cell across several words or the whole table, and switch the word it is built on.` }));
     const filterNode = h('div', { class: 'g-filter', role: 'group', 'aria-label': 'Filter by category' },
       cats.map((c) => btn(c === 'all' ? 'All' : (CATEGORY_LABEL[c] ?? cap(c.replace('-', ' '))), { 'aria-pressed': String(catState.category === c), onclick: () => { catState.category = c; draw(); } }, 'g-filter__btn')));
@@ -4646,13 +4656,13 @@ export function createUI(ctx) {
       if (!tables.length) return null;
       return h('section', { class: 'g-chap', 'aria-labelledby': `g-cat-${p.id}` },
         h('h2', { id: `g-cat-${p.id}`, class: 'g-chap__h' }, h('span', { class: 'g-chap__num', text: p.label ?? cap(p.id) }), h('span', { class: 'g-chap__count', text: `${tables.length} table${tables.length === 1 ? '' : 's'}` })),
-        h('ul', { class: 'g-skills g-tables' }, tables.map((t) => h('li', { class: 'g-skill g-table' },
+        h('ul', { class: 'g-skills g-tables' }, tables.map((t) => h('li', { class: 'g-skill g-table', id: `g-path-t-${t.id}`, 'data-area': tableArea(t.id) },
           h('div', { class: 'g-skill__main' },
             navEl({ class: 'g-skill__title', to: ['catalogue', { table: t.id, from }], onclick: () => render('catalogue', { table: t.id, from }) }, t.label), countBadge(`table:${t.id}`),
             h('p', { class: 'g-skill__plain' }, h('span', { lang: 'la', class: 'g-table__ex', text: t.example }), t.chapter != null ? ` · from chapter ${roman(t.chapter)}` : ' · not in a chapter', t.skills?.length ? ` · ${t.skills.length} skill${t.skills.length === 1 ? '' : 's'}` : '')),
-          h('div', { class: 'g-skill__acts' }, btn('Open', { to: ['catalogue', { table: t.id, from }], onclick: () => render('catalogue', { table: t.id, from }), 'aria-label': `Open ${t.label}` }, 'btn'))))));
+          h('div', { class: 'g-skill__acts' }, btn(gameKept() ? playLabel('Practise') : 'Practise', { to: tableTo(t.id, `t-${t.id}`), onclick: () => goTable(t.id, `t-${t.id}`), 'aria-label': `Practise ${t.label}` }, 'btn g-play'), btn('Open', { to: ['catalogue', { table: t.id, from }], onclick: () => render('catalogue', { table: t.id, from }), 'aria-label': `Open ${t.label}` }, 'btn btn--quiet'))))));
     });
-    setBody(head, h('div', { class: 'g-cat__filters' }, filterNode, chapterSel), sections.filter(Boolean).length ? sections : h('p', { class: 'g-quiet', text: 'No table matches this filter.' }));
+    return h('section', { class: 'g-cat__sec g-tables-all', 'aria-labelledby': 'g-tables-all' }, head, h('div', { class: 'g-cat__filters' }, filterNode, chapterSel), sections.filter(Boolean).length ? sections : h('p', { class: 'g-quiet', text: 'No table matches this filter.' }));
   }
 
   /**
@@ -5361,10 +5371,13 @@ export function createUI(ctx) {
     const mixB = btn([h('span', { 'aria-hidden': 'true', text: '▶' }), h('span', { class: 'g-runnav__parttext', text: ' Mixed game' })],
       { title: 'A mixed game: this skill with the ones it is confused with and builds on', 'aria-label': 'Play a mixed game of this skill', hidden: true, onclick: () => { const sid = mixSkill(); if (sid) { closeRule(); playMixedGame(sid); } } }, 'g-runnav__part g-runnav__mix');
     // ⇅ Too hard? Too easy? for the skill on screen, and ☰ for everywhere else without leaving game mode.
-    const levelB = btn([h('span', { 'aria-hidden': 'true', text: '⇅' }), h('span', { class: 'g-runnav__parttext', text: ' Too hard? Too easy?' })],
-      { title: 'Too hard? Too easy?', 'aria-haspopup': 'dialog', 'aria-label': 'Too hard or too easy? The skills before and after this one', hidden: true, onclick: () => { const sid = partSkillAny(); if (sid) openGameMenu({ skill: sid, only: 'level' }); } }, 'g-runnav__level');
+    const levelB = btn([h('span', { 'aria-hidden': 'true', text: '⇅' }), h('span', { class: 'g-runnav__parttext', text: ' Easier or harder skill?' })],
+      { title: 'Easier or harder skill? (another skill, before or after this one)', 'aria-haspopup': 'dialog', 'aria-label': 'Easier or harder skill? The skills before and after this one', hidden: true, onclick: () => { const sid = partSkillAny(); if (sid) openGameMenu({ skill: sid, only: 'level' }); } }, 'g-runnav__level');
     const menuB = menuButton(() => partSkillAny());
-    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB, gameStats, levelB, partB, mixB, ruleBtn, menuB, gameBtn);
+    // ← this skill: its page, from inside any of its practice (docs/SIMPLIFY-PLAN.md §3.4).
+    const skillB = btn([h('span', { 'aria-hidden': 'true', text: '←' }), h('span', { class: 'g-runnav__parttext', text: ' This skill' })],
+      { title: 'This skill’s page: its lesson, parts, tables and related skills', 'aria-label': 'Go to this skill’s page', hidden: true, onclick: () => { const sid = partSkillAny(); if (sid) { closeRule(); goView('lesson', { skill: sid }); } } }, 'g-runnav__part g-runnav__skill');
+    const nav = h('nav', { class: 'g-runnav', 'aria-label': 'This session' }, backB, posEl, fwdB, gameStats, skillB, levelB, partB, mixB, ruleBtn, menuB, gameBtn);
     const gameOn = () => body.classList.contains('g-game');
     const paintGame = () => {
       const on = gameOn();
@@ -5422,8 +5435,9 @@ export function createUI(ctx) {
       fwdB.disabled = !runner.canForward;
       nav.dataset.replay = runner.replay ? 'true' : 'false';
       partB.hidden = !partSkill();
-      { const pn = skills.get(partSkill())?.paradigms?.length ?? 0; partText.textContent = pn > 1 ? ` Its tables (${pn})` : ' Its table'; }
+      { const pp = skills.get(partSkill())?.paradigms ?? []; partText.textContent = ` ${acrossLabel(pp) || 'Its table'}`; }
       mixB.hidden = !mixSkill();
+      skillB.hidden = !partSkillAny() || view.name === 'lesson';
       { const sid = partSkillAny(); levelB.hidden = !sid || !levelNode(sid); }
       paintStrips(at, total);   // game mode's strips follow the position, after it is counted
     };

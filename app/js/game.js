@@ -176,8 +176,9 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const modeBtn = el('button', { type: 'button', class: 'gm__tool gm__text gm__modebtn', 'aria-haspopup': 'dialog', onclick: () => openSettings() });
   // ◂ Easier · Harder ▸ (2026-10-23: "an easier / harder setting button to shuffle through the ways to practise"):
   // one step along the ladder, from the form on screen; kept on the device like the ⚙ choice.
-  const easierBtn = el('button', { type: 'button', class: 'gm__tool gm__step', onclick: () => stepMode(-1) }, '◂');
-  const harderBtn = el('button', { type: 'button', class: 'gm__tool gm__step', onclick: () => stepMode(1) }, '▸');
+  // Named apart from "Easier or harder skill?" (another skill): these change the way to play the same forms.
+  const easierBtn = el('button', { type: 'button', class: 'gm__tool gm__step', title: 'Easier way to play', 'aria-label': 'Easier way to play', onclick: () => stepMode(-1) }, '◂');
+  const harderBtn = el('button', { type: 'button', class: 'gm__tool gm__step', title: 'Harder way to play', 'aria-label': 'Harder way to play', onclick: () => stepMode(1) }, '▸');
   // The word's type and the rule for its forms (wordrule.js): the game opens on it, and 📖 brings it back.
   const ruleBtn = rule ? el('button', { type: 'button', class: 'gm__tool', 'aria-label': 'How its forms are made', title: 'How its forms are made', onclick: () => openRule() }, '📖') : null;
   // The word's charts: by part, in the table's order; a part of one column is one chart.
@@ -322,8 +323,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const down = stepThan(mode, shuffle, -1);
     const up = stepThan(mode, shuffle, 1);
     easierBtn.disabled = !down; harderBtn.disabled = !up;
-    easierBtn.setAttribute('aria-label', down ? `Easier: ${down.label}` : 'Already the easiest way to play'); easierBtn.title = easierBtn.getAttribute('aria-label');
-    harderBtn.setAttribute('aria-label', up ? `Harder: ${up.label}` : 'Already the hardest way to play'); harderBtn.title = harderBtn.getAttribute('aria-label');
+    easierBtn.setAttribute('aria-label', down ? `Easier way to play: ${down.label}` : 'Already the easiest way to play'); easierBtn.title = easierBtn.getAttribute('aria-label');
+    harderBtn.setAttribute('aria-label', up ? `Harder way to play: ${up.label}` : 'Already the hardest way to play'); harderBtn.title = harderBtn.getAttribute('aria-label');
   };
   const tick = () => { const s = Math.floor((Date.now() - started) / 1000); clock.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
   timer = setInterval(tick, 500);

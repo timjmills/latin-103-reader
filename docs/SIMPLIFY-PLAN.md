@@ -14,12 +14,16 @@ Built with the review's suggested answers to §12 (Study; Course opens by area; 
 | §3.0 Find | ✓ | skills by name, topic, ending; tables by name or model word; macrons ignored; Enter opens the first |
 | §3.4 Skill page | ✓ | main button on top, fixed at the bottom on a phone while reading; Related + ▶ Mix them; More; meter reads "progress" |
 | §3.5 Chapter page | ✓, in Study | Grammar · Forms · Sheet, Read it, chapters either side. **Differs:** it lives in Study, not inside the reader's chapter page; the reader's page keeps its own Grammar tab and its Word Work / Cheat sheet buttons now open these tabs |
-| §3.6 Tables | interim | the Tables tab has two items, All tables · Any word & types; one merged page is still to do |
+| §3.6 Tables | ✓ | one page: Find a word, Practise by type, **Every table** (filters; Practise and Open on each), your learning words, the model words; the old Tables list address opens it at Every table |
 | §3.7 Progress | interim | Practice chart · Stats · Reading ↗ |
 | §7 Old addresses | ✓ | `routes.js` with tests |
 | v119/v120 | ✓ | practice goes across the tables; anything started from a menu comes back to it; conjugation named on cards; How it's made opens on the principal parts |
 
-Still to do: one merged Tables page (§3.6); the "← this skill" link in the session bar; renaming the two "easier/harder" ladders (§3.8); retiring the old Skills / Path page code (their addresses already redirect).
+| §3.4 session bar | ✓ | "← This skill"; "▦ Across the declensions (4)" in place of "Its tables" |
+| §3.8 two ladders | ✓ | "⇅ Easier or harder skill?" (another skill); the game's ◂ ▸ are "Easier / Harder way to play" |
+| §9 phone pass | ✓ | at 320 and 375 px, on Today, Course (both views), a skill page, a chapter page, Tables, the practice chart and a drill: no sideways scroll, the four tabs and the switch fit (the switch shows its mode's icon), every link at least 24 px tall, the skill page's main button on the first screen (523–617 px) |
+
+Still to do: retiring the old Skills / Path page code (their addresses already redirect); Course by area on a phone still opens with its first row's button below the first screen (Next to learn is above it).
 
 ## The brief, in your words
 
