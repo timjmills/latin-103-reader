@@ -307,12 +307,11 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     document.documentElement.classList.toggle('g-game-open', grammar && !!root.querySelector('.g-body.g-game'));   // a drill's game mode locks the page only while it shows
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.section === mode));
     try { localStorage.setItem(LS_SECTION, mode); } catch { /* ignore */ }
-    if (false) { /* Word Work and Sheets open inside Study (above) */ }
-    else if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words' || root.dataset.drawnMode === 'sheets')) ui.render('today', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
+    if (grammar) { init().then(() => { if (ui && ((was !== 'grammar' && !root.querySelector('.g')) || root.dataset.drawnMode === 'words' || root.dataset.drawnMode === 'sheets')) ui.render('today', {}, { push: false, focus: false }); if (focus) root.querySelector('h1, h2, [tabindex="-1"]')?.focus?.({ preventScroll: true }); }); ui?.refresh(); }
     else {
       // Back to the reader by its own button: the address no longer names a Grammar view, so a reload reads on.
       if (was === 'grammar' && /^#\/grammar(\/|$)/.test(location.hash)) { try { history.replaceState(history.state, '', location.pathname + location.search); } catch { /* file: */ } }
-      document.title = readerTitle && !/^(Grammar|Word Work|Sheets) — /.test(readerTitle) ? readerTitle : document.title.replace(/^(Grammar|Word Work|Sheets) — /, '');
+      document.title = readerTitle && !/^(Grammar|Study|Today|Course|Tables|Progress|Word Work|Sheets) — /.test(readerTitle) ? readerTitle : document.title.replace(/^(Grammar|Study|Today|Course|Tables|Progress|Word Work|Sheets) — /, '');
       if (was === 'grammar') { const y = readerScroll; requestAnimationFrame(() => window.scrollTo({ top: y })); if (focus) document.querySelector('#reader h1, #main [tabindex="-1"], #main h2')?.focus?.({ preventScroll: true }); }
     }
   }
