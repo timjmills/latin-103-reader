@@ -815,3 +815,7 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__step:disabled { opacity: 0.35; cursor: default; }
 .wr__partsline { font-family: var(--face-reading); font-size: 1.05em; font-weight: 600; }
 .wr__parttype { color: var(--ink-2); }
+/* The end of a game: its ways on, in groups under a heading each (game.js suggest `{ head }`) */
+.gm__suggest { display: flex; flex-wrap: wrap; gap: var(--s-1); align-items: center; }
+.gm__suggest > .gm__sub { flex-basis: 100%; margin: var(--s-2) 0 0; }
+.gm__suggesthead { font-weight: 700; }

@@ -790,7 +790,9 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       // …and always the other ways on (2026-10-23: "they can also go to the next skill/part OR the recommendations"):
       // the skills to go to next — on the path, under it, beside it, in the chapter.
       suggest?.length ? el('section', { class: 'gm__suggest', 'aria-label': 'Or another skill' }, el('p', { class: 'gm__sub', text: onNext || nx || continueLabel ? 'Or another skill:' : 'What next?' }),
-        el('div', { class: 'gm__acts' }, suggest.map((x, i) => el('button', { type: 'button', class: i === 0 && !misses.length && !onNext && !nx && !continueLabel ? 'btn btn--primary' : 'btn', onclick: () => { close(true); x.go(); } }, x.label)))) : null,
+        // A `{ head }` entry starts a group under its own heading (its tables, easier or harder, what next…).
+        suggest.map((x, i) => (x.head ? el('p', { class: 'gm__sub gm__suggesthead', text: x.head })
+          : el('button', { type: 'button', class: i === 0 && !misses.length && !onNext && !nx && !continueLabel ? 'btn btn--primary' : 'btn gm__suggestbtn', onclick: () => { close(true); x.go(); } }, x.label)))) : null,
       more);
     stage.replaceChildren(card);
     progress.textContent = `${rows.length} / ${rows.length}`;
