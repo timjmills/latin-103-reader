@@ -426,7 +426,7 @@ export function createSkillDraw({ skill, steps = [], teachItems = null, libraryI
     if (!teachItems || !chartSpecs.length) return null;
     for (let n = 0; n < chartSpecs.length; n++) {
       const spec = chartSpecs[(specAt + n) % chartSpecs.length];
-      const fresh = teachItems.chartWords({ key: spec.key }).filter((w) => !stepWords.has(w)).slice(0, 3);
+      const fresh = wordsAcross(teachItems, skill, spec.key).filter((w) => !stepWords.has(w)).slice(0, 3);
       if (!fresh.length) continue;
       const item = teachItems.chartItem({ key: spec.key, cells: spec.cells, words: fresh });
       if (!item) continue;
@@ -565,7 +565,7 @@ export function createStepPractice({ skill, steps = [], at = 0, gstore, teachIte
   let otherCells = false;
   const chartNext = () => {
     const own = (check?.words ?? []).map((w) => (typeof w === 'string' ? w : w?.h)).filter(Boolean);
-    const stock = teachItems.chartWords({ key });
+    const stock = wordsAcross(teachItems, skill, key);
     const pool = [...new Set([...(n === 0 ? own : []), ...stock])];
     const fresh = pool.filter((w) => !usedWords.has(w));
     if (!fresh.length) {
@@ -601,7 +601,7 @@ export function createStepPractice({ skill, steps = [], at = 0, gstore, teachIte
   let room = size;
   if (chart) {
     const per = Math.max(1, (check?.words ?? []).length || 1);
-    const words = new Set([...(check?.words ?? []).map((w) => (typeof w === 'string' ? w : w?.h)).filter(Boolean), ...teachItems.chartWords({ key })]);
+    const words = new Set([...(check?.words ?? []).map((w) => (typeof w === 'string' ? w : w?.h)).filter(Boolean), ...wordsAcross(teachItems, skill, key)]);
     room = Math.min(size, Math.ceil(words.size / per) + (check?.cells?.length ? 1 : 0));
   }
   const slots = Array.from({ length: Math.max(1, room) }, (_, i) => ({ skill: skill.id, kind: chart ? 'chart' : kind, stage: 1, step: at, rep: i, currentWeek: false }));
@@ -1007,6 +1007,22 @@ export function chartGiven(item) {
  * short-library pools are spent; an item says which pool it came from
  * (`item.pool`) only when it had to reach past the written set.
  */
+/**
+ * The words a skill's chart practice draws on, **across its tables** (2026-10-25: "important to be able to practise
+ * the same skill across conjugations"): the shown table's stock words interleaved with each of the skill's other
+ * tables' — amō, moneō, regō, capiō, audiō, sum … — so the checks after a step's own go round the conjugations
+ * (or declensions) instead of staying on the one the step showed. A word whose table lacks the asked form is
+ * passed over by chartItem. Each word once.
+ */
+export function wordsAcross(teachItems, skill, key) {
+  const tables = [...new Set([key, ...(skill?.paradigms ?? [])].filter(Boolean))];
+  const lists = tables.map((t) => { try { return teachItems.chartWords({ key: t }) ?? []; } catch { return []; } });
+  const out = [];
+  const seen = new Set();
+  for (let i = 0; lists.some((l) => i < l.length); i++) for (const l of lists) { const w = l[i]; if (w && !seen.has(w)) { seen.add(w); out.push(w); } }
+  return out;
+}
+
 export function createLearn({ skill, gstore, items, teach = null, teachItems = null, currentWeekN = null, rand = Math.random, resume = null, onProgress = null }) {
   // Learn is scoped by the learner's own position like every other session (§7.2): the sentences that
   // teach a skill are the ones they have read. A skill with nothing at or before it reaches outward

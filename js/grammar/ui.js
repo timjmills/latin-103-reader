@@ -2997,7 +2997,17 @@ export function createUI(ctx) {
     }
   };
   /** A view in its own section (Grammar or Word Work), game mode kept as it is. */
-  const goView = (name, params = {}, mode = 'grammar') => { if (sectionMode() !== mode) ctx.setMode?.(mode); if (gameKept()) gameDrillOn(); render(name, params); };
+  // A lesson or a practice started from a menu comes back to that menu (2026-10-25: "bring one back to the menu
+  // that was clicked on"): it is given the screen it was opened from as its `from`, unless it already has one or
+  // it was opened from inside another lesson or practice (which keeps its own way back).
+  const LAUNCHED = new Set(['lesson', 'learn', 'part', 'drill', 'blocked', 'unlimited', 'mixed', 'redo', 'catalogue']);
+  const MENUS = new Set(['map', 'path', 'wwpath', 'chart', 'wordwork', 'wwdrills', 'paradigms', 'stats', 'setup', 'sheets']);
+  const goView = (name, params = {}, mode = 'grammar') => {
+    if (LAUNCHED.has(name) && params?.from == null && MENUS.has(view.name)) params = { ...params, from: hereFrom(params?.skill ?? null) };
+    if (sectionMode() !== mode) ctx.setMode?.(mode);
+    if (gameKept()) gameDrillOn();
+    render(name, params);
+  };
   const goSkill = (id) => { const [name, params] = skillTo(id); goView(name, params); };
   /** One skill as a link of the path: its state, its name, its chapter. */
   /** "2 days ago", "today", "3 weeks ago": when a skill was last practised. */
@@ -3138,7 +3148,7 @@ export function createUI(ctx) {
   const WW_VIEWS = new Set(['wordwork', 'wwdrills', 'wwtable', 'wwpath']);
   /** The screen on now, as a `from`: where a table's practice opened from it comes back to (at its row, `at`). */
   const VIEW_LABEL = { path: 'The path', wwpath: 'Progressions', chart: 'Practice chart', lesson: 'The lesson', learn: 'The lesson', part: 'The lesson part', map: 'Skills', wordwork: 'This chapter', wwdrills: 'Skill drills' };
-  const hereFrom = (at = null) => ({ view: view.name, params: { ...(view.params ?? {}), ...(at ? { at } : {}) }, label: view.params?.area ? `${AREAS.find((a) => a.id === view.params.area)?.label ?? ''} progression` : VIEW_LABEL[view.name] ?? 'Back' });
+  const hereFrom = (at = null) => ({ view: view.name, params: (({ from: _f, play: _p, at: _a, ...rest }) => ({ ...rest, ...(at ? { at } : {}) }))(view.params ?? {}), label: view.params?.area ? `${AREAS.find((a) => a.id === view.params.area)?.label ?? ''} progression` : VIEW_LABEL[view.name] ?? 'Back' });
   /** A table's practice, started at once, coming back here when it is done. */
   const tableTo = (t, at = null) => ['catalogue', { table: t, from: hereFrom(at), play: true }];
   const goTable = (t, at = null) => { closeGameMenu(); const [n, p] = tableTo(t, at); goView(n, p); };
@@ -4918,7 +4928,7 @@ export function createUI(ctx) {
         // world only when that preset was the one actually used (a redo of five mixed skills is not one skill's).
         missed.length ? btn(`Redo the ${missed.length} you missed`, { to: ['redo', { misses: missed, skill: params?.skill ?? (params?.preset === 'one-skill' ? params.oneSkill : null) ?? null, chapter: params?.chapter ?? null, from: params?.from ?? null }], onclick: () => render('redo', { misses: missed, skill: params?.skill ?? (params?.preset === 'one-skill' ? params.oneSkill : null) ?? null, chapter: params?.chapter ?? null, from: params?.from ?? null }), 'aria-label': `Redo the ${missed.length} item${missed.length === 1 ? '' : 's'} you missed in this session` }, 'btn btn--primary') : null,
         btn(againLabel, { onclick: again }, `btn ${missed.length ? '' : 'btn--primary'}`.trim()),
-        btn(params?.from?.chapter != null ? backLabel(params.from).replace('← ', '') : 'Skills', { onclick: () => leaveTo(params?.from ?? null) }, 'btn btn--quiet'), btn('Stats', { to: ['stats'], onclick: () => render('stats') }, 'btn btn--quiet')));
+        btn(params?.from?.chapter != null || params?.from?.view ? backLabel(params.from).replace('← ', '') : 'Skills', { onclick: () => leaveTo(params?.from ?? null) }, params?.from?.view && !missed.length ? 'btn' : 'btn btn--quiet'), btn('Stats', { to: ['stats'], onclick: () => render('stats') }, 'btn btn--quiet')));
     body.querySelector('h1')?.focus?.({ preventScroll: true });   // a keyboard session ends on the summary, not at the top of the page (G1-09)
     ctx.say(`Session over: ${summary.right} of ${summary.total} right.`);
   }
