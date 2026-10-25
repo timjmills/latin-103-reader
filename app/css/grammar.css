@@ -1517,3 +1517,26 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-chart__how { margin: var(--s-2) 0; padding: var(--s-2) var(--s-3); border: 1px solid var(--line); border-radius: 10px; background: var(--bg-raised); display: grid; gap: var(--s-2); justify-items: start; }
 .g-chart__how .wr { width: 100%; }
 .g-chart__howfor { margin: 0; font-weight: 600; }
+
+/* Progressions by area: a skill's parts and tables, opened under its row */
+.g-area__more { margin-top: var(--s-1); font-size: var(--ui-sm); }
+.g-area__more > summary { cursor: pointer; color: var(--ink-2); }
+.g-area__parts { margin: var(--s-1) 0 var(--s-2); padding-left: 1.4em; display: grid; gap: 0.2em; }
+.g-area__tables { margin: var(--s-1) 0 0; }
+.g-modeswitch .g-label, .g-areatabs .g-label { align-self: center; }
+
+/* The areas of grammar, colour-coded (2026-10-25): a stripe on the row, a named tag, the area's tab */
+[data-area="verbs"] { --area: oklch(0.58 0.15 255); }
+[data-area="nouns"] { --area: oklch(0.58 0.14 150); }
+[data-area="adjectives"] { --area: oklch(0.64 0.15 65); }
+[data-area="pronouns"] { --area: oklch(0.56 0.16 310); }
+[data-area="sentences"] { --area: oklch(0.58 0.09 200); }
+[data-area="metre"] { --area: oklch(0.58 0.15 0); }
+.g-areatag { display: inline-block; margin-right: 0.4em; padding: 0.05em 0.5em; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; vertical-align: middle; color: var(--area); background: color-mix(in srgb, var(--area) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--area) 40%, transparent); }
+.g-path__s[data-area], .g-ptile[data-area] { box-shadow: inset 4px 0 0 var(--area), inset 0 0 0 1px var(--line); }
+.g-skill[data-area] { border-left: 4px solid var(--area); padding-left: var(--s-2); }
+.g-pathlink[data-area] { border-left: 3px solid var(--area); padding-left: 0.5em; }
+.g-areatab[data-area] { border-bottom: 3px solid var(--area); }
+.g-areatab[data-area][aria-pressed="true"] { background: color-mix(in srgb, var(--area) 18%, var(--bg-raised)); }
+.g-area__head[data-area] .g-title { color: var(--area); }
+.g-areanav { margin: var(--s-2) 0; padding: var(--s-1) var(--s-2); border-left: 4px solid var(--area); border-radius: 0.5rem; background: color-mix(in srgb, var(--area) 7%, transparent); font-size: var(--ui-sm); }

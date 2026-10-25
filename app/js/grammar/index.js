@@ -156,7 +156,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
       leaveChapterPage();
       if (view === 'read') { setSection('read', { focus: true }); return; }
       // Word Work's own views open in Word Work (a chapter page's ▶ Play on a skill with forms: its whole table).
-      setSection(['wordwork', 'wwdrills', 'wwtable'].includes(view) ? 'words' : 'grammar');
+      setSection(['wordwork', 'wwdrills', 'wwtable', 'wwpath'].includes(view) ? 'words' : 'grammar');
       init().then(() => ui?.render(view, params));
     },
   };
@@ -365,7 +365,7 @@ export async function mountGrammar({ store, dict, par, reader = null, settings =
     /** Open the section on its Paradigms page (the #/paradigms route): the whole-table practice on its own. */
     /** One view by its address (#/grammar/learn?skill=…, main.js): the section it belongs to, then the view itself. */
     openView(name, params = {}) {
-      const mode = ['wordwork', 'wwtable', 'wwdrills'].includes(name) ? 'words' : name === 'sheets' ? 'sheets' : 'grammar';
+      const mode = ['wordwork', 'wwtable', 'wwdrills', 'wwpath'].includes(name) ? 'words' : name === 'sheets' ? 'sheets' : 'grammar';
       setSection(mode);
       init().then(() => { ctx.setMode?.(mode); ui?.render(name, params, { push: false }); });
     },

@@ -272,5 +272,5 @@ test('▶ Play wherever something plays, and it is one-off', () => {
   // game mode each time") Play enters game mode and it stays, for every view, until "Leave game mode".
   assert.match(UI, /const gameDrillOn = \(\) => \{ playGameOnce = true; keepGame\(true\); \}/, 'Play enters game mode, kept');
   assert.match(UI, /const game = gameKept\(\) && sectionMode\(\) !== 'sheets'/, 'every view is drawn in it');
-  assert.match(IDX, /\['wordwork', 'wwdrills', 'wwtable'\]\.includes\(view\) \? 'words' : 'grammar'/, 'a chapter page\'s Play on a table opens Word Work');
+  assert.match(IDX, /\['wordwork', 'wwdrills', 'wwtable', 'wwpath'\]\.includes\(view\) \? 'words' : 'grammar'/, 'a chapter page\'s Play on a table opens Word Work');
 });
