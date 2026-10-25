@@ -1601,3 +1601,7 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-pmenu__part:hover, .g-pmenu__part:focus-visible { background: var(--bg-chrome); }
 .g-pmenu__n { display: grid; place-items: center; flex: none; width: 1.8rem; height: 1.8rem; border-radius: 999px; background: var(--bg-chrome); font-weight: 700; font-size: var(--ui-sm); }
 .g-pmenu__t { flex: 1; }
+/* A table's lessons (ui.js openTableLessons): the chapter in the circle, two groups */
+.g-pmenu__sh { margin: var(--s-4) 0 0; font-size: var(--ui-sm); font-weight: 700; color: var(--ink-2); }
+.g-pmenu__cap { width: auto; min-width: 1.8rem; padding: 0 0.35em; border-radius: 0.5em; font-size: var(--ui-xs); }
+.g-tlessons { font-size: inherit; font-weight: 600; }

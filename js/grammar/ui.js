@@ -3150,6 +3150,35 @@ export function createUI(ctx) {
     btn([h('span', { 'aria-hidden': 'true', text: '📖 ' }), 'Lesson ▾'], { 'aria-haspopup': 'dialog', 'aria-label': `The lesson: all ${titles.length} parts of ${titleOf(id)}`, onclick: () => openPartsMenu(id, titles) }, 'g-vlink g-partsbtn'),
     titles.map((t, i) => navEl({ class: 'g-plink g-plink--n', to: ['part', { skill: id, step: i }], onclick: () => startSkill(id, 'part', { step: i }), 'aria-label': `Part ${i + 1}: ${t}` },
       String(i + 1), h('span', { class: 'g-plink__card', 'aria-hidden': 'true' }, h('b', { text: `Part ${i + 1} of ${titles.length}` }), h('br'), t), countBadge(`part:${id}:${i}`)))) : null);
+  /**
+   * The lessons a table is in (2026-10-25: "when it speaks of 15 skills and 34 skills what is it referencing?"): the
+   * ones that teach a piece of it (its forms) apart from the ones that only use forms already taught (syntax, uses).
+   */
+  const USE_CATS = new Set(['verb-use', 'syntax', 'metre']);
+  const lessonsOfTable = (t) => {
+    const ids = (t?.skills ?? []).filter((x) => skills.has(x) && !skills.get(x).set);
+    const byBook = (a, b) => (Number(skills.get(a).chapter) || 99) - (Number(skills.get(b).chapter) || 99);
+    return { taught: ids.filter((x) => !USE_CATS.has(skills.get(x).category)).sort(byBook), used: ids.filter((x) => USE_CATS.has(skills.get(x).category)).sort(byBook) };
+  };
+  const lessonsText = (t) => { const { taught, used } = lessonsOfTable(t); return [taught.length ? `taught in ${taught.length} lesson${taught.length === 1 ? '' : 's'}` : '', used.length ? `${taught.length ? 'used in ' : 'used in '}${used.length}${taught.length ? ' more' : ` lesson${used.length === 1 ? '' : 's'}`}` : ''].filter(Boolean).join(' · '); };
+  const lessonsLink = (t) => (lessonsText(t) ? btn(`${lessonsText(t)} ▾`, { 'aria-haspopup': 'dialog', 'aria-label': `The lessons ${t.label} is in: ${lessonsText(t)}`, onclick: () => openTableLessons(t) }, 'g-vlink g-partsbtn g-tlessons') : null);
+  /** A table's lessons in a popup, in book order, each with its chapter: the ones that teach its forms, then the ones that use them. */
+  function openTableLessons(t) {
+    const { taught, used } = lessonsOfTable(t);
+    const d = h('dialog', { class: 'g-pmenu', 'aria-labelledby': 'g-pmenu-h' });
+    const row = (x) => h('li', {}, navEl({ class: 'g-pmenu__part', to: ['lesson', { skill: x }], onclick: () => { d.close(); goView('lesson', { skill: x }); } },
+      h('span', { class: 'g-pmenu__n g-pmenu__cap', text: capOf(x).replace('Cap. ', '') }), h('span', { class: 'g-pmenu__t', text: titleOf(x) })));
+    d.append(...[
+      h('div', { class: 'g-pmenu__top' }, h('p', { class: 'g-kicker', text: 'The lessons this table is in · by chapter of the book' }), btn('×', { 'aria-label': 'Close', onclick: () => d.close() }, 'g-pop__close g-pmenu__close')),
+      h('h2', { id: 'g-pmenu-h', class: 'g-pmenu__h', text: t.label }),
+      taught.length ? [h('h3', { class: 'g-pmenu__sh', text: `Teach a piece of it (${taught.length})` }), h('ol', { class: 'g-pmenu__list' }, taught.map(row))] : null,
+      used.length ? [h('h3', { class: 'g-pmenu__sh', text: `Use its forms (${used.length})` }), h('p', { class: 'g-quiet', text: 'These add no new forms: they practise what the forms do in a sentence.' }), h('ol', { class: 'g-pmenu__list' }, used.map(row))] : null].flat().filter(Boolean));   // `append` prints an array as text
+    d.addEventListener('close', () => d.remove());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    document.body.append(d);
+    d.showModal();
+    d.querySelector('.g-pmenu__part')?.focus();
+  }
   /** The whole lesson in a popup: the skill, its chapter, the lesson from the start, then each part by its title. */
   function openPartsMenu(id, titles) {
     const sk = skills.get(id);
@@ -4387,7 +4416,7 @@ export function createUI(ctx) {
         h('ul', { class: 'g-skills g-tables' }, tables.map((t) => h('li', { class: 'g-skill g-table', id: `g-path-t-${t.id}`, 'data-area': tableArea(t.id) },
           h('div', { class: 'g-skill__main' },
             navEl({ class: 'g-skill__title', to: ['catalogue', { table: t.id, from }], onclick: () => render('catalogue', { table: t.id, from }) }, t.label), countBadge(`table:${t.id}`),
-            h('p', { class: 'g-skill__plain' }, h('span', { lang: 'la', class: 'g-table__ex', text: t.example }), t.chapter != null ? ` · from chapter ${roman(t.chapter)}` : ' · not in a chapter', t.skills?.length ? ` · ${t.skills.length} skill${t.skills.length === 1 ? '' : 's'}` : '')),
+            h('p', { class: 'g-skill__plain' }, h('span', { lang: 'la', class: 'g-table__ex', text: t.example }), t.chapter != null ? ` · from chapter ${roman(t.chapter)}` : ' · not in a chapter', lessonsLink(t) ? [' · ', lessonsLink(t)] : null)),
           h('div', { class: 'g-skill__acts' }, btn(gameKept() ? playLabel('Practise') : 'Practise', { to: tableTo(t.id, `t-${t.id}`), onclick: () => goTable(t.id, `t-${t.id}`), 'aria-label': `Practise ${t.label}` }, 'btn g-play'), btn('Open', { to: ['catalogue', { table: t.id, from }], onclick: () => render('catalogue', { table: t.id, from }), 'aria-label': `Open ${t.label}` }, 'btn btn--quiet'))))));
     });
     return h('section', { class: 'g-cat__sec g-tables-all', 'aria-labelledby': 'g-tables-all' }, head, h('div', { class: 'g-cat__filters' }, filterNode, chapterSel), sections.filter(Boolean).length ? sections : h('p', { class: 'g-quiet', text: 'No table matches this filter.' }));
@@ -4529,7 +4558,7 @@ export function createUI(ctx) {
       h('header', { class: 'g-head' },
         h('p', { class: 'g-kicker', text: `${cap(t.part ?? '')} · ${CATEGORY_LABEL[t.category] ?? t.category}${t.chapter != null ? ` · from chapter ${roman(t.chapter)}` : ''}` }),
         h('h1', { class: 'g-title' }, t.label, countBadge(`table:${t.id}`)),
-        h('p', { class: 'g-lede' }, 'The model word: ', h('span', { lang: 'la', text: t.example }), t.skills?.length ? `. Used by ${t.skills.slice(0, 3).map(titleOf).join(', ')}${t.skills.length > 3 ? ` and ${t.skills.length - 3} more skills` : ''}.` : '.'),
+        h('p', { class: 'g-lede' }, 'The model word: ', h('span', { lang: 'la', text: t.example }), lessonsLink(t) ? ['. It is ', lessonsLink(t)] : '.'),
         acts.length ? h('div', { class: 'g-acts' }, acts) : null),
       wordNode, filledNode, oneCellNode, axesNode, wholeNode);
     // Opened to play (a table from a menu): the whole table at once, as a game when game mode is on.
