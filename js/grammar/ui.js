@@ -3142,6 +3142,20 @@ export function createUI(ctx) {
   /** A table's practice, started at once, coming back here when it is done. */
   const tableTo = (t, at = null) => ['catalogue', { table: t, from: hereFrom(at), play: true }];
   const goTable = (t, at = null) => { closeGameMenu(); const [n, p] = tableTo(t, at); goView(n, p); };
+  /**
+   * A skill's tables, in small links under it (2026-10-25: "show all the associated tables underneath the skill …
+   * just show them in small links … so it's all there to see. We don't want too much clicking"): each table straight
+   * to its practice (coming back here), and one link that plays every word of them in one game.
+   */
+  const tableLinks = (id, at = id) => {
+    const sk = skills.get(id);
+    if (!sk || sk.set || !sk.paradigms?.length) return null;
+    return h('p', { class: 'g-tlinks' }, h('span', { class: 'g-tlinks__k', text: sk.paradigms.length > 1 ? 'Tables: ' : 'Table: ' }),
+      sk.paradigms.map((t, i) => [i ? h('span', { class: 'g-tlinks__sep', 'aria-hidden': 'true', text: ' · ' }) : null,
+        navEl({ class: 'g-tlinks__a', 'data-area': tableArea(t), to: tableTo(t, at), onclick: () => goTable(t, at) }, tableName(t)), countBadge(`table:${t}`)]),
+      sk.paradigms.length > 1 ? [h('span', { class: 'g-tlinks__sep', 'aria-hidden': 'true', text: ' · ' }),
+        h('button', { type: 'button', class: 'g-tlinks__all', onclick: (e) => { const b = e.currentTarget; if (b.dataset.busy) return; b.dataset.busy = '1'; playSkillTables(id, { chapter: sk.chapter }).finally(() => { delete b.dataset.busy; }); } }, '▶ all of them in one game')] : null);
+  };
   const AREAS = [
     { id: 'verbs', label: 'Verbs', short: 'Verb', cats: ['verb-form', 'vocabulary'], table: (t) => /^conj/.test(t) || WORD_TABLES.has(t) },
     { id: 'nouns', label: 'Nouns', short: 'Noun', cats: ['noun-case'], table: (t) => /^(decl|domus)/.test(t) },
@@ -3180,10 +3194,7 @@ export function createUI(ctx) {
     const sk = skills.get(id);
     const stt = stateOf(id);
     const parts = h('ol', { class: 'g-area__parts' }, h('li', { class: 'g-quiet', text: 'Loading the parts…' }));
-    const more = h('details', { class: 'g-area__more' }, h('summary', { text: 'Its parts and tables' }),
-      h('p', { class: 'g-label', text: 'The lesson, part by part' }), parts,
-      sk.paradigms?.length ? [h('p', { class: 'g-label', text: 'Its tables' }), h('p', { class: 'g-area__tables' }, sk.paradigms.map((t, i) => [i ? ' · ' : '',
-        navEl({ class: 'g-link', to: tableTo(t, id), onclick: () => goTable(t, id) }, tables?.get?.(t)?.label ?? catTables?.get?.(t)?.label ?? t), ' ', countBadge(`table:${t}`)]))] : null);
+    const more = h('details', { class: 'g-area__more' }, h('summary', { text: 'The lesson, part by part' }), parts);
     more.addEventListener('toggle', () => {
       if (!more.open || more.dataset.loaded) return;
       more.dataset.loaded = '1';
@@ -3200,10 +3211,11 @@ export function createUI(ctx) {
         h('p', { class: 'g-path__t' }, areaTag(id), h('span', { class: 'g-dot', 'data-state': stt.state, 'aria-hidden': 'true' }),
           navEl({ class: 'g-link', to: ['learn', { skill: id }], onclick: () => goView('learn', { skill: id }) }, sk.title)),
         h('p', { class: 'g-quiet g-path__sub' }, `Cap. ${roman(sk.chapter)} · `, practiceTag(id)),
+        tableLinks(id),
         more),
       h('div', { class: 'g-path__acts' },
         btn(gameKept() ? playLabel('Learn') : '📖 Learn', { to: ['learn', { skill: id }], onclick: () => goView('learn', { skill: id }), 'aria-label': `The lesson: ${sk.title}` }, 'btn g-play'),
-        tablePartButton(id, { chapter: sk.chapter, short: true })));
+        mixedGameButton(id, { short: true })));
   }
   async function renderArea({ area, words = false }) {
     const a = AREAS.find((x) => x.id === area) ?? AREAS[0];
@@ -3268,10 +3280,11 @@ export function createUI(ctx) {
         h('span', { class: 'g-path__n', text: String(n) }),
         h('div', { class: 'g-path__main' },
           h('p', { class: 'g-path__t' }, areaTag(st.id), h('span', { class: 'g-dot', 'data-state': stt.state, 'aria-hidden': 'true' }), navEl({ class: 'g-link', to: ['lesson', { skill: st.id }], onclick: () => render('lesson', { skill: st.id }) }, sk.title), countBadge(`skill:${st.id}`)),
-          h('p', { class: 'g-quiet g-path__sub', text: `${sk.plain}${sk.prereqs?.length ? ` · builds on ${sk.prereqs.map(titleOf).join(', ')}` : ''}` })),
+          h('p', { class: 'g-quiet g-path__sub', text: `${sk.plain}${sk.prereqs?.length ? ` · builds on ${sk.prereqs.map(titleOf).join(', ')}` : ''}` }),
+          tableLinks(st.id)),
         h('div', { class: 'g-path__acts' },
           btn(playLabel(inRotation(stt) ? 'Practise' : 'Learn'), { to: skillTo(st.id), onclick: () => goSkill(st.id), 'aria-label': `${inRotation(stt) ? 'Practise' : 'Learn'} ${sk.title}` }, 'btn g-play'),
-          tablePartButton(st.id, { chapter: sk.chapter, short: true })));
+          mixedGameButton(st.id, { short: true })));
     };
     setBody(
       h('header', { class: 'g-head' },
