@@ -1204,6 +1204,7 @@ export function createUI(ctx) {
     document.documentElement.classList.toggle('g-game-open', game && showing());
     if (game && !flat.some((n) => n.classList?.contains('g-runnav'))) flat.unshift(gameBar());
     body.replaceChildren(...flat);
+    paintSide();
     const f = body.querySelector('h1'); if (f) { f.tabIndex = -1; const a = document.activeElement; if (!a || a === document.body || !body.contains(a)) f.focus({ preventScroll: true }); } };
   // The section may be built twice in a life: once cheaply for the weeks-menu Today card, then in full when Grammar is
   // opened. `dispose()` takes the first instance's listener off so the two never both answer a Back.
@@ -2780,6 +2781,32 @@ export function createUI(ctx) {
     const fits = (key) => key && Object.entries(focus).every(([k, v]) => v == null || (Array.isArray(v) ? v.map(String) : [String(v)]).includes(String(key[k] ?? '')));
     return (item.chart?.cells ?? []).map((c, i) => (fits(chartCellKey(item, c)) ? (c.cellId ?? cellId(chartCellKey(item, c), item.chart?.table?.kind) ?? `#${i}`) : null)).filter(Boolean);
   };
+  /** Practise only… on a table (ui.js chartInput): the choices its cells allow — both voices, both numbers. */
+  const CHART_FOCUS = 'l103.chart.focus';
+  /** A game's cards narrowed to Practise only… (the same choice as the tables'); nothing is dropped if it would leave none. */
+  const focusCards = (cards) => {
+    const f = chartFocus();
+    if (f === 'all') return cards;
+    const kept = cards.filter((c) => { const k = c.form ?? {}; return f === 'act' || f === 'pass' ? !k.voice || k.voice === f : !k.number || k.number === f; });
+    if (kept.length) cards.splice(0, cards.length, ...kept);
+    return cards;
+  };
+  /** Practise only… for a skill's games: the choices its forms allow (both voices on a verb form, both numbers). */
+  const skillFocusOptions = (sk) => {
+    if (!sk?.paradigms?.length) return [];
+    const f = sk.paradigm_focus ?? {};
+    const verb = sk.paradigms.some((t) => /^conj|^(sum|possum|eo|fero|volo)$/.test(t));
+    return chartFocusOptions([...(verb && !f.voice ? [{ voice: 'act' }, { voice: 'pass' }] : []), ...(!f.number ? [{ number: 'sg' }, { number: 'pl' }] : [])]);
+  };
+  const chartFocus = () => { try { return localStorage.getItem(CHART_FOCUS) || 'all'; } catch { return 'all'; } };
+  const setChartFocus = (f) => { try { localStorage.setItem(CHART_FOCUS, f); } catch { /* this visit only */ } };
+  function chartFocusOptions(keys) {
+    const has = (k, v) => keys.some((x) => x?.[k] === v);
+    const out = [{ id: 'all', label: 'All' }];
+    if (has('voice', 'act') && has('voice', 'pass')) out.push({ id: 'act', label: 'Active only' }, { id: 'pass', label: 'Passive only' });
+    if (has('number', 'sg') && has('number', 'pl')) out.push({ id: 'sg', label: 'Singular only' }, { id: 'pl', label: 'Plural only' });
+    return out;
+  }
   const scaffoldLabel = (level) => (level === 'auto' ? 'auto' : level === 'off' ? 'off' : `${level}%`);
   /**
    * The switch on the table itself (§13): auto · 80 · 50 · 20 · off, one tap,
@@ -2882,14 +2909,17 @@ export function createUI(ctx) {
     const wordOf = (c) => words.get(c.entry ? `${c.entry.h}|${c.entry.pos}` : '');
     return cards.sort((a, b) => cols.get(a.col ?? '') - cols.get(b.col ?? '') || wordOf(a) - wordOf(b) || at.get(a) - at.get(b));
   }
-  async function playSkillTables(id, { chapter = null, only = null } = {}) {
+  async function playSkillTables(id, { chapter = null, only = null, table = null } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length || sk.set) return false;
     keepEntry('tablepart');
     const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
     const all = await tableWords(n, sk);
     if (!all.length) { ctx.say('No word with a table fits this skill.'); return false; }
-    const words = only ? all.filter((e) => only.includes(`${e.h}|${e.pos}`)) : all;
+    // `table`: the words of one of its tables only (the ▦ popup's one-table choice).
+    const ofTable = table ? all.filter((e) => (tableIdOf(e, selectRules) ?? '') === table) : all;
+    const words = only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : ofTable;
+    if (!words.length) { ctx.say('No word of that table fits this skill.'); return false; }
     const rules = new Map();
     const ruleOf = (e) => { const k = `${e.h}|${e.pos}`; if (!rules.has(k)) { let r = null; try { r = wordRule(e, tableOf(e)); } catch { r = null; } rules.set(k, r); } return rules.get(k); };
     const cards = [];
@@ -2910,6 +2940,7 @@ export function createUI(ctx) {
         counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1);
       })));
     }
+    focusCards(cards);
     if (!cards.length) { ctx.say('No word with a table fits this skill.'); return false; }
     columnsFirst(cards);
     const how = howOf(sk);
@@ -2923,7 +2954,7 @@ export function createUI(ctx) {
       how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
       charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids }), noun: 'word' } : null,
       countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
-      suggest: gameSuggest(id),
+      suggest: gameWays({ skill: id }),
       onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
         for (const e of words) {
           const k = `${e.h}|${e.pos}|`;
@@ -3112,6 +3143,49 @@ export function createUI(ctx) {
   /** The same for a game's end screen (game.js `suggest`). */
   const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
   const tableName = (t) => catTables?.get?.(t)?.label ?? t;
+  /**
+   * The end of a game, with everything the side bar has (2026-10-25, for the phone): a skill's tables (across them, or
+   * one), easier or harder skills, then what next; a table's same forms on its sibling conjugations or declensions,
+   * and the tables before and after it. `{ head }` entries head each group (game.js).
+   */
+  const gameWays = ({ skill: id = null, table = null } = {}) => {
+    const out = [];
+    const sk = id ? skills.get(id) : null;
+    if (sk && !sk.set && sk.paradigms?.length) {
+      out.push({ head: 'Its tables' });
+      if (sk.paradigms.length > 1) out.push({ label: `▦ ${acrossLabel(sk.paradigms)}`, go: () => playSkillTables(id, { chapter: sk.chapter }) });
+      for (const t of sk.paradigms) out.push({ label: `▦ ${tableName(t)}`, go: () => playSkillTables(id, { chapter: sk.chapter, table: t }) });
+    }
+    const fo = sk && !sk.set ? skillFocusOptions(sk) : [];
+    if (fo.length > 1) {
+      out.push({ head: 'Practise only' });
+      for (const o of fo) out.push({ label: `${chartFocus() === o.id ? '✓ ' : ''}${o.label}`, go: () => { setChartFocus(o.id); playSkillTables(id, { chapter: sk.chapter }); } });
+    }
+    if (sk && !sk.set) {
+      const p = thePath();
+      const e = p.easier(id)[0];
+      const hd = p.harder(id)[0];
+      if (e || hd) out.push({ head: 'Easier or harder' });
+      if (e) out.push({ label: `😓 Easier: ${titleOf(e)} (${capOf(e)})`, go: () => goSkill(e) });
+      if (hd) out.push({ label: `😎 Harder: ${titleOf(hd)} (${capOf(hd)})`, go: () => goSkill(hd) });
+    }
+    const t = table ? catTables?.get?.(table) : null;
+    if (t) {
+      const fam = String(t.id).replace(/\d.*$/, '');
+      const sibs = fam.length > 2 ? [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part && String(x.id).replace(/\d.*$/, '') === fam) : [];
+      if (sibs.length) { out.push({ head: `The same forms, another ${fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : 'table'}` }); for (const x of sibs) out.push({ label: `▦ ${x.label}`, go: () => goTable(x.id) }); }
+      const steps = thePath().steps.filter((st) => st.kind === 'table' && tableArea(st.id) === tableArea(t.id) && catTables.has(st.id));
+      const at = steps.findIndex((st) => st.id === t.id);
+      const easier = at > 0 ? steps[at - 1].id : null;
+      const harder = at >= 0 && at + 1 < steps.length ? steps[at + 1].id : null;
+      if (easier || harder) out.push({ head: 'Easier or harder table' });
+      if (easier) out.push({ label: `😓 ${catTables.get(easier).label}`, go: () => goTable(easier) });
+      if (harder) out.push({ label: `😎 ${catTables.get(harder).label}`, go: () => goTable(harder) });
+    }
+    const next = id ? gameSuggest(id) : [];
+    if (next.length) out.push({ head: 'What next' }, ...next);
+    return out;
+  };
   const gameSuggest = (id) => suggestionsOf(id).map((x) => (x.table
     ? { label: `${x.why}: ${tableName(x.table)} (${practised(`table:${x.table}`) ? `×${practised(`table:${x.table}`)}` : 'not practised yet'}) →`, go: () => goTable(x.table) }
     : { label: `${x.why}: ${titleOf(x.id)} (${practiceText(x.id)}) →`, go: () => goSkill(x.id) }));
@@ -3179,6 +3253,160 @@ export function createUI(ctx) {
     d.showModal();
     d.querySelector('.g-pmenu__part')?.focus();
   }
+  /**
+   * **The side bar** on a wide screen (2026-10-25: "on a large screen these can just sit fully opened on the side in a
+   * collapsible side bar … including the end-of-table stuff: across conjugations, narrowed practice, and easier/harder
+   * progression steps; but they should also all show up at the bottom as well"). Beside a practice of a skill or a
+   * table: its tables (across them, or one), Practise only…, Keep going (another word, another conjugation, easier,
+   * harder), easier or harder skills, related skills and the lesson's parts. Hidden under 1280 px, where the
+   * popups and the end screen carry the same things. Collapsed or open is remembered on this device.
+   */
+  const SIDE_KEY = 'l103.side.open';
+  const sideOpen = () => { try { return localStorage.getItem(SIDE_KEY) !== '0'; } catch { return true; } };
+  function paintSide() {
+    document.querySelector('.g-side')?.remove();
+    document.documentElement.classList.remove('g-side-on');
+    if (!showing() || !ctx.items) return;
+    const name = view.name;
+    const pr = view.params ?? {};
+    const table = name === 'catalogue' ? pr.table ?? null : name === 'summary' ? pr.catalogue ?? null : null;
+    const sid = ['drill', 'learn', 'part', 'unlimited', 'mixed', 'blocked', 'lesson'].includes(name) ? pr.skill : name === 'summary' ? pr.drill : null;
+    const sk = sid && skills.get(sid) && !skills.get(sid).set ? skills.get(sid) : null;
+    // An accordion (2026-10-25: "when one part of the side bar opens it opens further down other options … so it's easy
+    // to use"): each section a heading that opens its options under it. What is about this page starts open, the rest
+    // (Now, This chapter) starts closed; each choice is remembered on this device by the section's kind.
+    const secOpen = (key, dflt) => { try { const v = localStorage.getItem(`l103.side.sec.${key}`); return v == null ? dflt : v === '1'; } catch { return dflt; } };
+    const sec = (title, ...kids) => {
+      const k = kids.flat(Infinity).filter(Boolean);
+      if (!k.length) return null;
+      const key = title.replace(/\s*[·,(].*$/, '').toLowerCase().replace(/[^a-z]+/g, '-');
+      const general = /^(now|this-chapter)/.test(key);
+      const d = h('details', { class: 'g-side__sec', open: secOpen(key, !general) || null, ontoggle: (e) => { try { localStorage.setItem(`l103.side.sec.${key}`, e.currentTarget.open ? '1' : '0'); } catch { /* this visit only */ } } },
+        h('summary', { class: 'g-side__sum' }, h('span', { text: title })), h('div', { class: 'g-side__body' }, k));
+      return d;
+    };
+    const parts = contextSections(sk, table, sec, pr);
+    const ctxCount = parts.length;
+    // Every page of Study (2026-10-25: "add a side bar to all the study section; the goal is that one does not need to
+    // leave the page to get exactly what one wants or needs"): Find, what to do now, and this chapter.
+    const nextUp = climbFrom(thePath(), null, (x) => !inRotation(stateOf(x)) && !skills.get(x)?.set, 1)[0] ?? null;
+    const due = [...skills.keys()].filter((x) => stateOf(x).state === 'due').length;
+    parts.push(sec('Now',
+      nextUp ? btn(playLabel(`Next to learn: ${titleOf(nextUp)}`), { onclick: () => startSkill(nextUp, 'learn') }, 'btn btn--primary g-side__btn') : null,
+      h('ul', { class: 'g-side__list' },
+        h('li', {}, h('button', { type: 'button', class: 'g-side__go', onclick: () => goView('setup', {}) }, due ? `Review: ${due} due` : 'Mixed practice')),
+        h('li', {}, h('button', { type: 'button', class: 'g-side__go', onclick: () => goView('session', { chapter: ctx.currentChapter?.() ?? 1 }) }, `Practise this chapter (Cap. ${roman(ctx.currentChapter?.() ?? 1)})`)),
+        h('li', {}, h('button', { type: 'button', class: 'g-side__go', onclick: () => goView('chart', {}) }, 'Practice chart: what is still to do')))));
+    const n = Number(ctx.currentChapter?.() ?? 1);
+    const chIds = thePath().order.filter((x) => Number(skills.get(x)?.chapter) === n && !skills.get(x)?.set);
+    const chTables = thePath().steps.filter((st) => st.kind === 'table' && Number(st.chapter) === n);
+    parts.push(sec(`This chapter · Cap. ${roman(n)}`,
+      h('ul', { class: 'g-side__list' },
+        chIds.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x)))),
+        chTables.map((st) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(st.id), onclick: () => goTable(st.id) }, `▦ ${tableName(st.id)}`)))),
+      h('p', {}, btn('The whole chapter →', { onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))));
+    const kids = [...parts.slice(0, ctxCount), ...progressionSections(sk, table, sec, nextUp), ...parts.slice(ctxCount)].filter(Boolean);
+    if (!kids.length) return;
+    const open = sideOpen();
+    const aside = h('aside', { class: `g-side${open ? '' : ' is-collapsed'}`, 'aria-label': 'Ways to keep going' });
+    const toggle = btn(open ? 'Hide ›' : '‹ More ways', { 'aria-expanded': String(open), onclick: () => {
+      const now = aside.classList.toggle('is-collapsed');
+      try { localStorage.setItem(SIDE_KEY, now ? '0' : '1'); } catch { /* this visit only */ }
+      toggle.textContent = now ? '‹ More ways' : 'Hide ›';
+      toggle.setAttribute('aria-expanded', String(!now));
+      document.documentElement.classList.toggle('g-side-on', !now);
+    } }, 'g-side__toggle');
+    const here = sk ? `${capOf(sk.id)} · ${sk.title}` : table ? catTables?.get?.(table)?.label ?? '' : '';
+    aside.append(toggle, h('div', { class: 'g-side__in' }, sideFind(), here ? h('p', { class: 'g-kicker g-side__here', text: here }) : null, kids));
+    (root ?? document.body).append(aside);
+    document.documentElement.classList.toggle('g-side-on', open);
+  }
+  /**
+   * The progression, always in sight (2026-10-25: "see the progression always, within a strand, OR if in lesson view
+   * the lesson progression"): the lesson's parts while in a lesson, the part on screen marked; and the strand — the
+   * area's skills and tables from easiest to hardest — with this skill or table marked and scrolled to.
+   */
+  function progressionSections(sk, table, sec, nextUp = null) {
+    const out = [];
+    const pr = view.params ?? {};
+    if (sk && ['lesson', 'learn', 'part'].includes(view.name)) {
+      const here = view.name === 'part' ? Number(pr.step) || 0 : null;
+      const ol = h('ol', { class: 'g-side__list g-side__steps' }, h('li', { class: 'g-quiet', text: 'Loading the parts…' }));
+      lessonOf(sk.id).then((lesson) => {
+        ol.replaceChildren(...stepsOf(lesson).map((st, j) => h('li', {}, h('button', { type: 'button', class: `g-side__go${j === here ? ' is-here' : ''}`, 'aria-current': j === here ? 'step' : null, onclick: () => goView('part', { skill: sk.id, step: j }) },
+          h('b', { text: `${j + 1}. ` }), stepTitle(st, j), ' ', countBadge(`part:${sk.id}:${j}`)))));
+      }).catch(() => ol.replaceChildren(h('li', { class: 'g-quiet', text: 'The parts could not be loaded.' })));
+      out.push(sec('The lesson, part by part', ol, btn('📖 The whole lesson, from the start', { onclick: () => startSkill(sk.id, 'learn') }, 'g-vlink')));
+    }
+    const areaId = sk ? areaOf(sk.id) : table ? tableArea(table) : (view.name === 'course' && view.params?.area) || (nextUp ? areaOf(nextUp) : 'verbs');
+    const a = AREAS.find((x) => x.id === areaId);
+    if (a) {
+      const steps = thePath().steps.filter((st) => (st.kind === 'skill' ? areaOf(st.id) === a.id && !skills.get(st.id)?.set : st.kind === 'table' && a.table(st.id)));
+      let n = 0;
+      const ol = h('ol', { class: 'g-side__list g-side__strand', 'data-area': a.id }, steps.map((st) => {
+        const here = st.id === sk?.id || st.id === table;
+        const isTable = st.kind === 'table';
+        return h('li', {}, h('button', { type: 'button', class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id,
+          onclick: () => (isTable ? goTable(st.id) : goView('lesson', { skill: st.id })) },
+          isTable ? `▦ ${tableName(st.id)}` : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)}`]));
+      }));
+      // Scrolled inside the list only: scrollIntoView would move the page under it as well.
+      requestAnimationFrame(() => { const at = ol.querySelector('.is-here'); if (at) ol.scrollTop = at.offsetTop - ol.clientHeight / 2; });
+      out.push(sec(`${a.label}, easiest to hardest`, ol, h('p', {}, btn(`All of ${a.label} →`, { onclick: () => render('course', { by: 'area', area: a.id, ...(sk ? { at: sk.id } : {}) }) }, 'g-vlink'))));
+    }
+    return out;
+  }
+  /** What belongs to this skill or table, as sections (`sec` makes each): the side bar's, and the end screens' too. */
+  function contextSections(sk, table, sec, pr = {}, { keepGoing = true } = {}) {
+    const parts = [];
+    if (table) {
+      // Practise only…: the chart's own switch, pressed from here; with no table on screen it is kept for the next one.
+      const t = catTables?.get?.(table);
+      const opts = chartFocusOptions((t?.groups ?? []).length ? [{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }] : []);
+      const hasVoice = /^conj|^(sum|possum|eo|fero|volo)$/.test(table);
+      const shown = opts.filter((o) => o.id === 'all' || (hasVoice ? true : o.id === 'sg' || o.id === 'pl'));
+      if (shown.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, shown.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
+        const there = [...document.querySelectorAll('.g-focus .g-seg__btn')].find((b) => b.textContent === o.label);
+        if (there) there.click(); else setChartFocus(o.id);
+        for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
+      } }, 'g-chip')))));
+      const next = tableNextNode(table, { group: catState.group.get(table) ?? pr.group ?? null, word: catState.word.get(table)?.h ?? pr.word ?? null, from: pr.from ?? null });
+      if (next && keepGoing) parts.push(sec('Keep going', [...next.querySelectorAll('.g-next__row')]));
+    }
+    if (sk && !table) {
+      const fo = skillFocusOptions(sk);
+      if (fo.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, fo.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
+        const there = [...document.querySelectorAll('.g-focus .g-seg__btn')].find((b) => b.textContent === o.label);
+        if (there) there.click(); else setChartFocus(o.id);
+        for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
+      } }, 'g-chip'))), h('p', { class: 'g-quiet', text: 'For its tables and games, from the next one.' })));
+    }
+    if (sk) {
+      if (sk.paradigms?.length) parts.push(sec('Its tables',
+        sk.paradigms.length > 1 ? btn(`▦ ${acrossLabel(sk.paradigms)}`, { onclick: () => playSkillTables(sk.id, { chapter: sk.chapter }) }, 'btn btn--primary g-side__btn') : null,
+        h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)}`))))));
+      parts.push(sec('Easier or harder', levelNode(sk.id)));
+      parts.push(sec('Related', relatedNode(sk.id)));
+      if (!['lesson', 'learn', 'part'].includes(view.name)) parts.push(sec('The lesson', btn('📖 All its parts', { 'aria-haspopup': 'dialog', onclick: async () => { const lesson = await lessonOf(sk.id); openPartsMenu(sk.id, stepsOf(lesson).map((st, j) => stepTitle(st, j))); } }, 'btn btn--quiet g-side__btn')));
+    }
+    return parts;
+  }
+  /** Find, in the side bar: the same search as Today's, its first matches as one-tap links. */
+  function sideFind() {
+    const out = h('ul', { class: 'g-side__list' });
+    const input = h('input', { type: 'search', class: 'g-input g-side__find', placeholder: 'e.g. future passive verb', 'aria-label': 'Find a skill or a table', autocomplete: 'off', spellcheck: 'false' });
+    input.addEventListener('input', () => {
+      const q = input.value.trim();
+      if (!q) { out.replaceChildren(); return; }
+      const m = findMatches(q);
+      out.replaceChildren(
+        ...m.skills.slice(0, 8).map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, titleOf(x), ' ', capTag(x)))),
+        ...m.tables.slice(0, 4).map((t) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(t), onclick: () => goTable(t) }, `▦ ${tableName(t)}`))),
+        ...(m.skills.length + m.tables.length ? [] : [h('li', { class: 'g-quiet', text: m.also.length ? `Only mentioned in ${m.also.length}; see Today's Find.` : 'Nothing matches.' })]));
+    });
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') out.querySelector('button')?.click(); });
+    return h('div', { class: 'g-side__findbox' }, input, out);
+  }
   /** The whole lesson in a popup: the skill, its chapter, the lesson from the start, then each part by its title. */
   function openPartsMenu(id, titles) {
     const sk = skills.get(id);
@@ -3232,18 +3460,66 @@ export function createUI(ctx) {
    * ("-bam"); tables by name or model word — macrons and case ignored. The matches are ordinary rows.
    */
   const fold = (x) => stripMacrons(String(x ?? '')).toLowerCase();
+  /**
+   * A skill's grammar as words a search can name (2026-10-25: "search any skill combination like passive future verb
+   * and get all skill lessons that meet that"): its tense, mood, voice, case, number, declension, degree and part of
+   * speech, from the features it practises (paradigm_focus / parse_filter), plus its kind and area.
+   */
+  const FEATURE_WORDS = {
+    tense: { pres: 'present', impf: 'imperfect', fut: 'future', perf: 'perfect', plupf: 'pluperfect', futperf: 'future-perfect futureperfect' },
+    mood: { ind: 'indicative', imper: 'imperative command', inf: 'infinitive', ptc: 'participle', supine: 'supine', gerund: 'gerund', subj: 'subjunctive', gerundive: 'gerundive' },
+    voice: { act: 'active', pass: 'passive' },
+    case: { nom: 'nominative', gen: 'genitive', acc: 'accusative', voc: 'vocative', abl: 'ablative', dat: 'dative' },
+    pos: { N: 'noun', ADJ: 'adjective', V: 'verb', PRON: 'pronoun', ADV: 'adverb' },
+    degree: { comp: 'comparative', super: 'superlative' },
+    decl: { 1: '1st first declension', 2: '2nd second declension', 3: '3rd third declension', 4: '4th fourth declension', 5: '5th fifth declension' },
+    gender: { m: 'masculine', f: 'feminine', n: 'neuter', c: 'common' },
+  };
+  const CATEGORY_WORDS = { 'verb-form': 'verb form', 'verb-use': 'verb use', 'noun-case': 'noun case', adjective: 'adjective', pronoun: 'pronoun', syntax: 'syntax sentence', metre: 'metre meter poetry', vocabulary: 'vocabulary' };
+  const tagsCache = new Map();
+  function skillTags(s) {
+    if (tagsCache.has(s.id)) return tagsCache.get(s.id);
+    const out = [CATEGORY_WORDS[s.category] ?? ''];
+    for (const f of [s.paradigm_focus, s.parse_filter, s.feature]) {
+      if (!f || typeof f !== 'object' || Array.isArray(f)) continue;
+      for (const [k, v] of Object.entries(f)) for (const x of [v].flat()) { const w = FEATURE_WORDS[k]?.[x]; if (w) out.push(w); }
+      if (f.deponent) out.push('deponent');
+    }
+    const t = fold(out.join(' '));
+    tagsCache.set(s.id, t);
+    return t;
+  }
+  /** One search word as it is matched: folded, a plural's -s dropped ("verbs", "passives"), a few short forms widened. */
+  const SEARCH_ALIAS = { fut: 'future', pres: 'present', impf: 'imperfect', perf: 'perfect', plupf: 'pluperfect', subj: 'subjunctive', pass: 'passive', act: 'active', abl: 'ablative', acc: 'accusative', gen: 'genitive', dat: 'dative', nom: 'nominative', meter: 'metre' };
+  const searchWord = (w) => { const a = SEARCH_ALIAS[w] ?? w; return a.length > 4 && a.endsWith('s') && !a.endsWith('ss') && !a.endsWith('us') ? a.slice(0, -1) : a; };
   function findMatches(q) {
-    const words = fold(q).split(/\s+/).filter(Boolean);
+    const words = fold(q).split(/[\s,+]+/).filter(Boolean).map(searchWord);
     if (!words.length) return { skills: [], tables: [] };
-    const hit = (text) => words.every((w) => text.includes(w));
-    const sk = thePath().order.filter((id) => { const s = skills.get(id); return s && !s.set && hit(fold(`${s.title} ${s.plain ?? ''} ${s.latin_label ?? ''} ${s.summary ?? ''} ${s.id.replace(/-/g, ' ')}`)); });
-    const tb = [...(catTables?.values?.() ?? [])].filter((t) => hit(fold(`${t.label ?? ''} ${t.example ?? ''} ${t.id}`))).map((t) => t.id);
-    return { skills: sk, tables: tb };
+    // Whole words, or the start of one: "perfect" is not found inside "imperfect", "abl" still finds "ablative".
+    const res = words.map((w) => new RegExp(`(^|[^a-z0-9])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
+    const has = (text, i) => (/^[a-z]/.test(words[i]) ? res[i].test(text) : text.includes(words[i]));   // an ending ("-bam") anywhere
+    const hit = (text) => words.every((_, i) => has(text, i));
+    // Every word must be found in the skill (its name, what it is about, or its grammar); the ones whose grammar or
+    // name carries every word come first, so "future passive verb" lists the future passive before a lesson that
+    // only mentions the future in passing.
+    const scored = [];
+    for (const id of thePath().order) {
+      const s = skills.get(id);
+      if (!s || s.set) continue;
+      const strong = `${fold(`${s.title} ${s.latin_label ?? ''}`)} ${skillTags(s)}`;
+      if (!hit(`${strong} ${fold(`${s.plain ?? ''} ${s.summary ?? ''} ${s.id.replace(/-/g, ' ')}`)}`)) continue;
+      scored.push({ id, score: words.filter((_, i) => has(strong, i)).length });
+    }
+    // The skills that are every word asked (by name or grammar) apart from the ones that only mention a word in passing.
+    const sk = scored.filter((x) => x.score === words.length).map((x) => x.id);
+    const also = scored.filter((x) => x.score < words.length).sort((a, b) => b.score - a.score).map((x) => x.id);
+    const tb = [...(catTables?.values?.() ?? [])].filter((t) => hit(fold(`${t.label ?? ''} ${t.example ?? ''} ${t.id} ${CATEGORY_LABEL[t.category] ?? ''}`))).map((t) => t.id);
+    return { skills: sk, also, tables: tb };
   }
   function findBox(content) {
     const results = h('div', { class: 'g-find__results', 'aria-live': 'polite' });
     const count = h('p', { class: 'g-quiet g-find__count' });
-    const input = h('input', { type: 'search', class: 'g-input g-find__in', id: 'g-find', placeholder: 'e.g. ablative, perfect, -bam, puella', autocomplete: 'off', spellcheck: 'false' });
+    const input = h('input', { type: 'search', class: 'g-input g-find__in', id: 'g-find', placeholder: 'e.g. future passive verb, ablative, -bam, puella', autocomplete: 'off', spellcheck: 'false' });
     let first = null;
     const paint = async () => {
       const q = input.value.trim();
@@ -3252,10 +3528,13 @@ export function createUI(ctx) {
       const titles = await partTitles();
       const m = findMatches(q);
       first = m.skills[0] ? () => goView('lesson', { skill: m.skills[0] }) : m.tables[0] ? () => goTable(m.tables[0]) : null;
-      count.textContent = `${m.skills.length} skill${m.skills.length === 1 ? '' : 's'} and ${m.tables.length} table${m.tables.length === 1 ? '' : 's'} match.`;
+      first = m.skills[0] ? () => goView('lesson', { skill: m.skills[0] }) : m.tables[0] ? () => goTable(m.tables[0]) : m.also[0] ? () => goView('lesson', { skill: m.also[0] }) : null;
+      count.textContent = `${m.skills.length} skill${m.skills.length === 1 ? '' : 's'} and ${m.tables.length} table${m.tables.length === 1 ? '' : 's'} match${m.also.length ? `; ${m.also.length} more mention it` : ''}.`;
       results.replaceChildren(h('ol', { class: 'g-path__list g-area' },
-        m.skills.slice(0, 20).map((id) => courseRow(id, thePath().of(id) + 1, titles)),
-        m.tables.slice(0, 10).map((t) => courseTableRow({ id: t }, null))));
+        m.skills.slice(0, 30).map((id) => courseRow(id, thePath().of(id) + 1, titles)),
+        m.tables.slice(0, 10).map((t) => courseTableRow({ id: t }, null))),
+        m.also.length ? h('details', { class: 'g-more g-find__also', open: !m.skills.length && !m.tables.length ? true : null }, h('summary', { text: `Also mentioned in ${m.also.length} more` }),
+          h('ol', { class: 'g-path__list g-area' }, m.also.slice(0, 20).map((id) => courseRow(id, thePath().of(id) + 1, titles)))) : null);
     };
     input.addEventListener('input', () => { paint(); });
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && first) { e.preventDefault(); first(); } if (e.key === 'Escape' && input.value) { input.value = ''; paint(); } });
@@ -3584,7 +3863,16 @@ export function createUI(ctx) {
     const go = (label, name, params = {}, mode = 'grammar') => h('li', {}, navEl({ class: 'g-gmenu__go', to: [name, params], onclick: () => { closeGameMenu(); goView(name, params, mode); } }, label));
     const here = ctx.currentChapter?.() ?? 1;
     const parts = h('div', { class: 'g-gmenu__parts' });
-    const inner = h('div', { class: 'g-gmenu__in' },
+    // ▦ Its tables: the skill's forms on every table it covers in one game, or on one table, each over this page.
+    const playOver = (opts) => { closeGameMenu(); playSkillTables(id, opts); };
+    const tablesInner = only === 'tables' && sk?.paradigms?.length ? h('div', { class: 'g-gmenu__in' },
+      h('div', { class: 'g-gmenu__top' }, h('h2', { class: 'g-gmenu__h', text: 'Its tables' }), close),
+      h('p', { class: 'g-kicker', text: `Cap. ${roman(sk.chapter)} · this skill` }), h('h3', { class: 'g-gmenu__sk', text: sk.title }),
+      h('p', { class: 'g-quiet', text: 'Its forms on every table at once, or on one table. It opens over this page and comes back here.' }),
+      sk.paradigms.length > 1 ? h('div', { class: 'g-acts' }, btn(`▦ ${acrossLabel(sk.paradigms)}`, { onclick: () => playOver({ chapter: sk.chapter }) }, 'btn btn--primary')) : null,
+      h('ul', { class: 'g-gmenu__list' }, sk.paradigms.map((t) => h('li', {}, h('button', { type: 'button', class: 'g-gmenu__go', 'data-area': tableArea(t), onclick: () => playOver({ chapter: sk.chapter, table: t }) }, `▦ ${tableName(t)}`)))),
+      h('div', { class: 'g-acts' }, mixedGameButton(id))) : null;
+    const inner = tablesInner ?? h('div', { class: 'g-gmenu__in' },
       h('div', { class: 'g-gmenu__top' }, h('h2', { class: 'g-gmenu__h', text: only === 'level' ? 'Easier or harder skill?' : 'Go anywhere' }), close),
       sk ? h('section', { class: 'g-gmenu__sec' },
         h('p', { class: 'g-kicker', text: `Cap. ${roman(sk.chapter)} · this skill` }), h('h3', { class: 'g-gmenu__sk', text: sk.title }),
@@ -3602,7 +3890,7 @@ export function createUI(ctx) {
         h('h3', { class: 'g-gmenu__sh', text: `This chapter · Cap. ${roman(here)}` }),
         h('ul', { class: 'g-gmenu__list' }, go('All of it', 'course', { by: 'chapter', at: `c${here}` }), go('Its forms', 'wordwork', { chapter: here }), go('Its sheet', 'sheets', { chapter: here }), go('Any word & types', 'paradigms', {}))),
       only === 'level' ? null : h('div', { class: 'g-acts' }, btn('✕ Leave game mode', { onclick: () => { closeGameMenu(); keepGame(false); body.classList.remove('g-game'); document.documentElement.classList.remove('g-game-open'); draw(); } }, 'btn btn--quiet')));
-    const panel = h('div', { class: 'g-gmenu', role: 'dialog', 'aria-modal': 'true', 'aria-label': only === 'level' ? 'Easier or harder skill?' : 'Menu', onclick: (e) => { if (e.target === panel) closeGameMenu(); } }, inner);
+    const panel = h('div', { class: 'g-gmenu', role: 'dialog', 'aria-modal': 'true', 'aria-label': only === 'level' ? 'Easier or harder skill?' : only === 'tables' ? 'Its tables' : 'Menu', onclick: (e) => { if (e.target === panel) closeGameMenu(); } }, inner);
     const onKey = (e) => {
       if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeGameMenu(); return; }
       if (e.key !== 'Tab') return;
@@ -3614,7 +3902,7 @@ export function createUI(ctx) {
     document.addEventListener('keydown', onKey, true);
     (root.querySelector('.g') ?? document.body).append(panel);
     close.focus({ preventScroll: true });
-    if (sk && only !== 'level') lessonOf(id).then((lesson) => { if (gameMenu?.panel === panel) { const n = partsNode(id, stepsOf(lesson), { heading: 'Practise one part of it' }); if (n) parts.replaceChildren(n); } }).catch(() => {});
+    if (sk && !only) lessonOf(id).then((lesson) => { if (gameMenu?.panel === panel) { const n = partsNode(id, stepsOf(lesson), { heading: 'Practise one part of it' }); if (n) parts.replaceChildren(n); } }).catch(() => {});
   }
 
   const playButton = (id, opts = {}, cls = 'btn g-play') => btn(playLabel(),
@@ -4503,13 +4791,9 @@ export function createUI(ctx) {
       runSession({ runner: drill.runner, title, note, mode: 'practice', hintOpen: false, onDone: (summary) => {
         // Opened from a menu (the progressions, the path, a chart, a game's What next?): straight back to it, the
         // score said on the way; the table's own page keeps its summary.
-        if (from?.view) {
-          if (summary.total) notePractised([`table:${t.id}`, ...summary.skills.filter((x) => skills.has(x)).map((x) => `skill:${x}`)]);
-          ctx.say(`${t.label}: ${summary.right} of ${summary.total} right.`);
-          leaveTo(from);
-          return;
-        }
-        renderSummary(summary, { catalogue: t.id, from });
+        // The end (2026-10-25: "at the end … have options to practise other words OR conjugations … easier harder; have
+        // it all at the end"): the summary, with ← Back to the menu it came from first, then the ways to keep going.
+        renderSummary(summary, { catalogue: t.id, group, word: chosen?.h ?? null, from });
       } });
     };
     // Practise one cell across words.
@@ -4996,6 +5280,60 @@ export function createUI(ctx) {
   }
   const backLabel = (from) => (from?.view ? `← ${from.label ?? 'Back'}` : from?.wordwork != null ? `← Cap. ${roman(Number(from.wordwork))}` : from?.chapter != null ? `← Cap. ${roman(Number(from.chapter))}` : '← Today');
   const backButton = (from, cls = 'btn btn--quiet g-back') => btn(backLabel(from), { onclick: () => leaveTo(from) }, cls);
+  /**
+   * Keep going after a table (2026-10-25): another word of the same table; the same forms on the other conjugations or
+   * declensions (its siblings: conj1 … conj4, decl1 … decl5, the adjective classes), the part kept where they have it;
+   * the tables before and after it in its area's progression (easier, harder); and the lessons it is taught in.
+   */
+  function tableNextNode(tableId, { group = null, word = null, from = null } = {}) {
+    const all = catTables;
+    const t = all?.get?.(tableId);
+    if (!t) return null;
+    const play = (id, { w = null } = {}) => {
+      const t2 = all.get(id);
+      if (w) catState.word.set(id, w); else catState.word.delete(id);
+      // The same part of the table where the other one has it ("present indicative" on every conjugation).
+      if (group && (t2?.groups ?? []).some((g) => g.id === group)) catState.group.set(id, group);
+      render('catalogue', { table: id, from, play: true });
+    };
+    const family = (x) => String(x).replace(/\d.*$/, '');
+    const fam = family(t.id);
+    const siblings = [...all.values()].filter((x) => x.id !== t.id && x.part === t.part && (family(x.id) === fam && fam.length > 2 ? true : false));
+    const words = (t.stock ?? []).filter((w) => w.h !== word);
+    const p = thePath();
+    const area = tableArea(t.id);
+    const steps = p.steps.filter((st) => st.kind === 'table' && tableArea(st.id) === area && all.has(st.id));
+    const at = steps.findIndex((st) => st.id === t.id);
+    const easier = at > 0 ? steps[at - 1].id : null;
+    const harder = at >= 0 && at + 1 < steps.length ? steps[at + 1].id : null;
+    const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : 'table';
+    const groupLabel = group ? (t.groups ?? []).find((g) => g.id === group)?.label ?? null : null;
+    const chip = (label, onclick, extra = {}) => btn(label, { onclick, ...extra }, 'g-chip');
+    const rows = [
+      words.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Another word, the same table' }),
+        h('div', { class: 'g-chips' }, words.slice(0, 5).map((w) => chip(w.lemma.split(/[\s,]/)[0], () => play(t.id, { w }), { lang: 'la' })))) : null,
+      siblings.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: `The same${groupLabel ? ` ${groupLabel}` : ' forms'}, another ${kind}` }),
+        h('div', { class: 'g-chips' }, siblings.map((x) => chip(x.label, () => play(x.id), { 'data-area': tableArea(x.id) })))) : null,
+      easier || harder ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Easier or harder' }),
+        h('div', { class: 'g-chips' }, easier ? chip(`😓 Easier: ${all.get(easier).label}`, () => play(easier)) : null, harder ? chip(`😎 Harder: ${all.get(harder).label}`, () => play(harder)) : null)) : null,
+      lessonsLink(t) ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Its lessons' }), h('p', {}, 'This table is ', lessonsLink(t), '.')) : null,
+    ].filter(Boolean);
+    if (!rows.length) return null;
+    return h('section', { class: 'g-next', 'aria-labelledby': 'g-next-h' }, h('h2', { id: 'g-next-h', class: 'g-h2', text: 'Keep going' }), rows);
+  }
+  /**
+   * Everything the side bar offers, at the end too (2026-10-25: "put all the information at the end of a table or game as
+   * well so the phone can access it"): the skill's tables, easier or harder, related, its lesson part by part, and its
+   * strand; for a table, Practise only… and its strand (Keep going is already above).
+   */
+  function endWays(params = {}) {
+    const sk = params.drill && skills.get(params.drill) && !skills.get(params.drill).set ? skills.get(params.drill) : null;
+    const table = params.catalogue ?? null;
+    if (!sk && !table) return null;
+    const sec = (title, ...kids) => { const k = kids.flat(Infinity).filter(Boolean); return k.length ? h('details', { class: 'g-side__sec g-end__sec', open: true }, h('summary', { class: 'g-side__sum' }, h('span', { text: title })), h('div', { class: 'g-side__body' }, k)) : null; };
+    const list = [...contextSections(sk, table, sec, params, { keepGoing: false }), ...progressionSections(sk, table, sec)].filter(Boolean);
+    return list.length ? h('section', { class: 'g-end', 'aria-label': 'More ways to keep going' }, h('h2', { class: 'g-h2', text: 'More ways to keep going' }), list) : null;
+  }
   function renderSummary(summary, params) {
     view = { name: 'summary', params };
     // One more round of each skill the session asked, and of a table practised from Tables (the "×N", practised.js).
@@ -5028,6 +5366,8 @@ export function createUI(ctx) {
       after,
       params?.drill && skills.has(params.drill) ? h('div', { class: 'g-acts g-acts--path' }, nextOnPath(params.drill), tablePartButton(params.drill), levelButton(params.drill)) : null,
       params?.drill && skills.has(params.drill) ? suggestNode(params.drill) : null,
+      params?.catalogue ? tableNextNode(params.catalogue, { group: params.group ?? null, word: params.word ?? null, from: params.from ?? null }) : null,
+      endWays(params),
       h('div', { class: 'g-acts' },
         // The redo is narrowed exactly as the session was, and no further: `oneSkill` rides in the params of
         // every mixed session as the remembered choice for the "One skill" preset, so it names the session's
@@ -5121,8 +5461,10 @@ export function createUI(ctx) {
     const partSkill = () => { const sid = runner.current?.item?.skill ?? runner.itemAt(runner.position)?.item?.skill ?? null; const sk = sid ? skills.get(sid) : null; return sk && !sk.set && sk.paradigms?.length ? sid : null; };
     const partText = h('span', { class: 'g-runnav__parttext', text: ' Its table' });
     const partB = btn([h('span', { 'aria-hidden': 'true', text: '▦' }), partText],
-      { title: 'Practise its part of the table, for every word it covers', 'aria-label': 'Practise this skill\'s part of the table, for every word it covers, then come back here', hidden: true,
-        onclick: () => { const sid = partSkill(); if (!sid || partB.dataset.busy) return; closeRule(); partB.dataset.busy = '1'; playSkillTables(sid).finally(() => { delete partB.dataset.busy; }); } }, 'g-runnav__part');
+      { title: 'Its tables: practise its forms on every table, or on one', 'aria-label': 'Its tables: practise this skill\'s forms on every table, or on one', hidden: true,
+        // A popup, not another page (2026-10-25: "when pressing the table button it should not take you to another
+        // page but just a popup like the easier and harder skill have"): across every table, or one of them.
+        'aria-haspopup': 'dialog', onclick: () => { const sid = partSkill(); if (!sid) return; closeRule(); openGameMenu({ skill: sid, only: 'tables' }); } }, 'g-runnav__part');
     // ▶ The skill's mixed game, from wherever it is being practised.
     const mixSkill = () => { const sid = partSkillAny(); return sid && drillable(sid) ? sid : null; };
     const mixB = btn([h('span', { 'aria-hidden': 'true', text: '▶' }), h('span', { class: 'g-runnav__parttext', text: ' Mixed game' })],
@@ -5999,8 +6341,24 @@ export function createUI(ctx) {
     const given = !whole ? []
       : Array.isArray(chart.given) ? chart.given
       : scaffoldGiven(item, { percent, taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell, variant: scaffoldRunOf(tableId) });
-    chart.given = given;
-    const givenSet = new Set(given);
+    // **Practise only…** (2026-10-25: "a button that says practice only active or passive etc."): the cells outside
+    // the choice are given, printed in grey and right by definition, exactly as the scaffold's are, so the attempt is
+    // scored on the cells practised. The scaffold's own choice is kept apart (`baseGiven`) so a change of focus never
+    // compounds it; the focus is one choice for every table, kept on this device.
+    const baseGiven = Array.isArray(chart.baseGiven) ? chart.baseGiven : (chart.baseGiven = given.slice());
+    const keyAt = (i) => chartCellKey(item, chart.cells[i]) ?? {};
+    const focusOpts = whole ? chartFocusOptions(chart.cells.map((_, i) => keyAt(i))) : [];
+    let focus = focusOpts.some((o) => o.id === chartFocus()) ? chartFocus() : 'all';
+    const offCells = (f) => (f === 'all' ? [] : chart.cells.map((_, i) => i).filter((i) => { const k = keyAt(i); return f === 'act' || f === 'pass' ? k.voice && k.voice !== f : k.number && k.number !== f; }));
+    // The scaffold still gives some of the cells practised; if it would give every one of them, it gives none.
+    const givenFor = (f) => {
+      const off = new Set(offCells(f));
+      const inGiven = baseGiven.filter((i) => !off.has(i));
+      const left = chart.cells.length - off.size - inGiven.length;
+      return new Set([...off, ...(left > 0 ? inGiven : [])]);
+    };
+    let givenSet = givenFor(focus);
+    chart.given = [...givenSet];
     // A chart is **one attempt** (§3), so an empty table must not be gradeable: pressing Check on twelve blank
     // cells spent the attempt and printed the whole answer key, and one stray click destroyed the exercise
     // (QA M-5). Check waits until at least one cell has something in it and says why; Enter already waited for
@@ -6117,7 +6475,10 @@ export function createUI(ctx) {
     } else {
       // The note says what *this* table gives, not what the switch is set to: after a retry the two can differ,
       // because the table on screen keeps the cells it was given while the switch may have been moved (N-5).
-      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent: chart.cells.length ? Math.round((given.length / chart.cells.length) * 100) : 0 }));
+      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent: chart.cells.length ? Math.round((baseGiven.length / chart.cells.length) * 100) : 0 }));
+      const tablesBox = h('div', { class: 'g-chart__tables' });
+      const drawTables = () => {
+      tablesBox.replaceChildren();
       // The sections the cells come from: one for an ordinary chart, several for a catalogue table that spans them.
       const secIdx = chart.multi ? [...new Set(chart.cells.map((c) => c.section ?? chart.section))] : [chart.section];
       for (const si of secIdx) {
@@ -6135,10 +6496,34 @@ export function createUI(ctx) {
         // and stacking is what brings a cell's "?" back inside a 375px screen, where the scrolling table
         // held it past the right edge. The cells are moved, not rebuilt, so every box keeps what is in it.
         const scroll = h('div', { class: 'pt__scroll' }, tbl);
+        tablesBox.append(scroll);
         fitParadigm(scroll, tbl);
-        form.append(scroll);
       }
-      if (given.length) form.append(h('p', { class: 'g-quiet g-chart__givennote', text: `${given.length} of ${chart.cells.length} cells are given in grey; fill the ${chart.cells.length - given.length} others. The given ones have their own hint.` }));
+      const nGiven = givenSet.size;
+      if (nGiven) tablesBox.append(h('p', { class: 'g-quiet g-chart__givennote', text: `${nGiven} of ${chart.cells.length} cells are given in grey; fill the ${chart.cells.length - nGiven} others. The given ones have their own hint.` }));
+      };
+      if (focusOpts.length > 1) {
+        const seg = h('div', { class: 'g-seg g-seg--scaffold', role: 'group', 'aria-label': 'Which cells to practise' },
+          focusOpts.map((o) => btn(o.label, { 'aria-pressed': String(o.id === focus), onclick: (e) => {
+            if (o.id === focus) return;
+            for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
+            setChartFocus(o.id);
+            focus = o.id;
+            // What was typed stays typed: a box that comes back keeps its text; a box going grey keeps nothing.
+            const typed = new Map([...inputs.keys()].map((i) => [i, valueOf(i)]));
+            closePeeks();
+            inputs.clear(); hints.clear(); boxes.clear(); peeked.clear();
+            givenSet = givenFor(focus);
+            chart.given = [...givenSet];
+            drawTables();
+            for (const [i, v] of typed) if (inputs.has(i)) inputs.get(i).value = v;
+            syncCheck();
+            tablesBox.querySelector('input:not([readonly])')?.focus({ preventScroll: true });
+          } }, 'g-seg__btn')));
+        form.append(h('div', { class: 'g-scaffold g-focus' }, h('span', { class: 'g-label', text: 'Practise' }), seg));
+      }
+      form.append(tablesBox);
+      drawTables();
     }
     const check = btn('Check', {}, 'btn btn--primary'); check.type = 'submit';
     const needText = inputs.size === 1 ? 'Write the form, then Check.'
@@ -6218,7 +6603,7 @@ export function createUI(ctx) {
       const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const cardHow = (it) => { const r = ruleOfEntry(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } };
-      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: 'The whole chart, as a game', items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
+      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: chartFocus() === 'all' ? 'The whole chart, as a game' : `The whole chart, as a game · ${chartFocusOptions([{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }]).find((o) => o.id === chartFocus())?.label.toLowerCase() ?? ''}`, suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
         onDone: ({ firstMiss }) => {
           for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();

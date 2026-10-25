@@ -340,8 +340,8 @@ test('SW: the shell is cached without waiting for a sign-in, and the fixture sti
 
 test('N-5: the scaffold note on a table reports the cells that table was given', () => {
   const chart = slice('function chartInput(item, submit', 'function formLabel(form)');
-  assert.match(chart, /scaffoldSwitch\(tableId, \{ current: level, percent: chart\.cells\.length \? Math\.round\(\(given\.length \/ chart\.cells\.length\) \* 100\) : 0 \}\)/,
-    'the note is drawn from the given cells, not from the switch — after a retry the two differ');
+  assert.match(chart, /scaffoldSwitch\(tableId, \{ current: level, percent: chart\.cells\.length \? Math\.round\(\(baseGiven\.length \/ chart\.cells\.length\) \* 100\) : 0 \}\)/,
+    'the note is drawn from the given cells (the scaffold\'s own, before Practise only…), not from the switch — after a retry the two differ');
 });
 
 test('N-9: the catalogue lede counts what the filter left on screen', () => {
