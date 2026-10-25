@@ -36,7 +36,7 @@ export function tabOf(name) {
 }
 /** The four tabs, in order, with the view each opens: one list for the tab row and the game's ☰ menu. */
 export const STUDY_TABS = [
-  { id: 'today', label: 'Today', view: 'today' },
+  { id: 'today', label: 'New This Week', short: 'This Week', view: 'today' },
   { id: 'course', label: 'Course', view: 'course' },
   { id: 'tables', label: 'Tables', view: 'paradigms' },
   { id: 'progress', label: 'Progress', view: 'chart' },

@@ -1657,3 +1657,6 @@ html.g-game-open .g-side { z-index: 70; }
 .g-side__sub { margin: 2px 0; }
 .g-side__sub > .g-side__sum { min-height: 30px; padding-left: var(--s-2); font-weight: 600; color: var(--ink-2); font-size: var(--ui-sm); }
 .g-side__sub > .g-next__row { padding-left: var(--s-2); }
+/* "New This Week" is "This Week" where four tabs and the switch have to share 320 px */
+.g-nav__short { display: none; }
+@media (max-width: 359.98px) { .g-nav__btn:has(.g-nav__short) .g-nav__full { display: none; } .g-nav__short { display: inline; } }

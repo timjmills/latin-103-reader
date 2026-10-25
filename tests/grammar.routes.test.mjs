@@ -18,7 +18,7 @@ test('old addresses land on their new home', () => {
 });
 
 test('every view sits under one of the four tabs', () => {
-  assert.deepEqual(STUDY_TABS.map((t) => t.label), ['Today', 'Course', 'Tables', 'Progress']);
+  assert.deepEqual(STUDY_TABS.map((t) => t.label), ['New This Week', 'Course', 'Tables', 'Progress']);
   assert.equal(tabOf('lesson'), 'course');
   assert.equal(tabOf('wordwork'), 'course');
   assert.equal(tabOf('paradigms'), 'tables');
