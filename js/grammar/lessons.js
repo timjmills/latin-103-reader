@@ -41,7 +41,9 @@ export function manifestIds(raw) {
 export function createLessonLoader({ fetchJson: fetcher = fetchJson } = {}) {
   const cache = new Map();
   let manifestP = null;
-  const manifest = () => (manifestP ??= fetcher('lessons/index.json').then(manifestIds).catch(() => null));
+  let rawP = null;
+  const raw = () => (rawP ??= fetcher('lessons/index.json').catch(() => null));
+  const manifest = () => (manifestP ??= raw().then(manifestIds).catch(() => null));
   async function loadLesson(skillId) {
     if (cache.has(skillId)) return cache.get(skillId);
     const p = (async () => {
@@ -61,7 +63,9 @@ export function createLessonLoader({ fetchJson: fetcher = fetchJson } = {}) {
   }
   /** The unit ids a lesson's examples block quotes (for the gold drill items); [] without a lesson. */
   const exampleUnits = async (skillId) => ((await loadLesson(skillId))?.core ?? []).filter((b) => b.type === 'examples').flatMap((b) => (Array.isArray(b.units) ? b.units.filter((u) => typeof u === 'string') : []));
-  return { loadLesson, manifest, exampleUnits, hasLesson: async (skillId) => { const ids = await manifest(); return ids ? ids.has(skillId) : (await loadLesson(skillId)) != null; } };
+  /** Each lesson's part titles, from the manifest (`parts`): { skill: [title, …] }; {} without them. */
+  const partTitles = async () => { const r = await raw(); return r && typeof r.parts === 'object' && r.parts ? r.parts : {}; };
+  return { loadLesson, manifest, exampleUnits, partTitles, hasLesson: async (skillId) => { const ids = await manifest(); return ids ? ids.has(skillId) : (await loadLesson(skillId)) != null; } };
 }
 
 /** Pure: the loaded map indexed for the section. */
@@ -105,6 +109,7 @@ export function weekSkills(index, weekN) {
 const lessons = createLessonLoader();
 /** The lesson for a skill, or null (the "lesson coming" placeholder) when the manifest does not list it. */
 export const loadLesson = (skillId) => lessons.loadLesson(skillId);
+export const loadPartTitles = () => lessons.partTitles();
 export const lessonExampleUnits = (skillId) => lessons.exampleUnits(skillId);
 
 /* ------------------------------- the written teaching sentences (§1) */

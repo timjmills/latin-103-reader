@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v120';
+const CACHE_VERSION = 'v122';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -23,7 +23,7 @@ const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it
 const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
-  "./css/grammar.css": 'c51a08785c49',
+  "./css/grammar.css": 'de06317d5c7d',
   "./css/panels.css": '41a629accd0f',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
@@ -111,7 +111,7 @@ const HASHES = {
   "./data/grammar/lessons/imperfect-irregular.json": '9a8f39600403',
   "./data/grammar/lessons/imperfect-passive.json": '9e83577c9eab',
   "./data/grammar/lessons/imperfect-subjunctive.json": '54a5aa0442c7',
-  "./data/grammar/lessons/index.json": 'c54323189a71',
+  "./data/grammar/lessons/index.json": 'dff8e9758e65',
   "./data/grammar/lessons/indirect-command.json": 'c248cbde59a1',
   "./data/grammar/lessons/indirect-question.json": '7652696d09dd',
   "./data/grammar/lessons/infinitive.json": '492cb8daf9da',
@@ -344,24 +344,26 @@ const HASHES = {
   "./icons/icon-512.png": '30eb3f189cef',
   "./icons/icon.svg": 'c1f5c8520853',
   "./icons/maskable-512.png": '38654d50c164',
-  "./index.html": 'b9dd244b20f1',
+  "./index.html": 'd18a0679353b',
   "./js/audio.js": '2e1d36c01a62',
   "./js/auth.js": '22086691f460',
   "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": 'eb59b8fa1c91',
+  "./js/game.js": '3d7032c4d76c',
+  "./js/grammar/actions.js": '2a29e9421251',
   "./js/grammar/applies.js": 'c6029e34b6b4',
   "./js/grammar/chapter.js": '3f1a0ef3892d',
   "./js/grammar/continuum.js": 'a51affc0ef89',
   "./js/grammar/generate.js": 'c312891ee45c',
-  "./js/grammar/index.js": '1bcc3ddac9b4',
+  "./js/grammar/index.js": 'a509faa14911',
   "./js/grammar/inputs.js": '2ff1da2f09fb',
   "./js/grammar/items.js": '814723be5dcc',
-  "./js/grammar/lessons.js": 'b64c65fbe898',
+  "./js/grammar/lessons.js": '29a9836e267c',
   "./js/grammar/practicelog.js": '7b72c81dce9d',
   "./js/grammar/print.js": '29a9fe1bdc4a',
   "./js/grammar/progress.js": '921fba3ee99e',
+  "./js/grammar/routes.js": 'e41d121d2185',
   "./js/grammar/scheduler.js": '013a30c9cf3d',
   "./js/grammar/session.js": '711319c067d5',
   "./js/grammar/sets.js": 'eba8496a4bad',
@@ -369,7 +371,7 @@ const HASHES = {
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": '42aae32218be',
+  "./js/grammar/ui.js": 'bbea28124115',
   "./js/grammar/voices.js": '79e178e05437',
   "./js/hovergloss.js": 'db78916cb67b',
   "./js/main.js": 'd0f32d75f894',
@@ -431,6 +433,8 @@ const PRECACHE = [
   './js/grammar/continuum.js',
   './js/grammar/applies.js',
   './js/grammar/voices.js',
+  './js/grammar/actions.js',
+  './js/grammar/routes.js',
   './js/grammar/practicelog.js',
   './js/grammar/stats.js',
   './js/grammar/ui.js',

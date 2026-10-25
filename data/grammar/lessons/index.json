@@ -89,5 +89,686 @@
   "third-declension",
   "vocative",
   "wishes-utinam"
- ]
+ ],
+ "parts": {
+  "ablative-absolute-perfect": [
+   "What it does",
+   "Both words wear the same ablative ending",
+   "In the plural, both are ablative",
+   "No est, and no tie to the main verb",
+   "Turning it into English"
+  ],
+  "ablative-absolute": [
+   "A scene set beside the sentence",
+   "Both words ablative, and agreeing",
+   "Loose from the rest of the sentence",
+   "It may come first or last",
+   "One ablative, or two?",
+   "Present participle means at the same time"
+  ],
+  "ablative-accompaniment": [
+   "Who goes along",
+   "A companion whose name ends in -a",
+   "A companion in -us, and one like pater",
+   "More than one companion: -īs",
+   "With whom, not where and not with what",
+   "cum glued on behind: mēcum"
+  ],
+  "ablative-agent": [
+   "Who did it, when the verb is passive",
+   "A servus-type doer ends in -ō",
+   "An ancilla-type doer ends in -ā",
+   "More than one doer: -īs",
+   "A doer, or a thing used?",
+   "It can stand anywhere in the sentence"
+  ],
+  "ablative-comparison": [
+   "The word for 'than' can disappear",
+   "Where it stands, and what it looks like",
+   "Pronouns do it too",
+   "Two ablatives round one comparative",
+   "Using it"
+  ],
+  "ablative-degree": [
+   "By how much",
+   "multō: by much",
+   "paulō: by a little",
+   "paulō ante, paulō post",
+   "Two ablatives, two jobs"
+  ],
+  "ablative-means": [
+   "The thing something is done with",
+   "Tools in -us and -um end in -ō",
+   "Tools in -a end in a long -ā",
+   "More than one thing: -īs",
+   "cum is for company, never for a tool",
+   "Where it sits in the sentence"
+  ],
+  "ablative-origin": [
+   "Where something comes from",
+   "The endings are the ones you already know",
+   "ab — away from a person or a thing",
+   "dē keeps the case even when it means 'about'",
+   "The preposition decides, not the ending",
+   "Several places, and sine"
+  ],
+  "ablative-place": [
+   "Where something is",
+   "Words in -a: the ending is a long -ā",
+   "Words in -us and -um: the ending is -ō",
+   "More than one place: -īs",
+   "in says where, cum says with whom",
+   "Where the phrase sits"
+  ],
+  "ablative-time": [
+   "What it does",
+   "The ending on a 1st- or 2nd-declension time word",
+   "The 3rd declension -e and the 5th -ē",
+   "An adjective with it goes into the ablative too",
+   "Telling it from the ablative of place",
+   "Using it: put the time word in the ablative"
+  ],
+  "accusative-destination": [
+   "Where somebody is going",
+   "Words in -a take -am",
+   "Words in -us and -um take -um",
+   "in with two cases: staying or going",
+   "More than one place: -ās and -ōs",
+   "Towns need no preposition"
+  ],
+  "accusative-infinitive": [
+   "Latin has no word for 'that'",
+   "The accusative word is the one doing it",
+   "What sets it off",
+   "esse in the clause, and being-done verbs",
+   "A plain 'to' form, or a reported clause?"
+  ],
+  "accusative-object": [
+   "What the object form does",
+   "a-nouns: -am",
+   "us-nouns: -um",
+   "More than one: -ōs, and -ās for a-nouns",
+   "Neuter nouns do not change at all",
+   "The ending, not the order"
+  ],
+  "active-personal-endings": [
+   "The ending says who",
+   "The singular three: -ō, -s, -t",
+   "The plural three: -mus, -tis, -nt",
+   "The vowel in front belongs to the verb",
+   "-unt and -iunt are still 'they'",
+   "One or many: -t against -nt"
+  ],
+  "adjective-agreement": [
+   "What agreeing means",
+   "With a feminine noun: -a",
+   "With a masculine noun: -us",
+   "With a neuter noun: -um",
+   "More than one: -ī, -ae, -a",
+   "Copy the gender, not the letters"
+  ],
+  "adverbs": [
+   "A word that describes the doing",
+   "-us -a -um adjectives take -ē",
+   "Third-declension adjectives take -iter",
+   "More: the -ius form",
+   "Most: the -issimē form",
+   "Adverb or adjective?"
+  ],
+  "comparative": [
+   "What it does",
+   "How it is built: stem + -ior",
+   "The neuter is -ius",
+   "The rest of the endings are 3rd-declension ones",
+   "-ior or -ius? the noun decides",
+   "Using it: quam = than"
+  ],
+  "conditions-contrary-to-fact": [
+   "What it does",
+   "Not so now: the imperfect subjunctive in both halves",
+   "Not so back then: the pluperfect subjunctive in both halves",
+   "Each half is timed on its own",
+   "Telling it from a real condition",
+   "Using it"
+  ],
+  "cum-causal": [
+   "What it does",
+   "The mood is the tell-tale",
+   "Not the preposition cum",
+   "With tamen it means 'although'",
+   "Present now, imperfect for the past",
+   "Say one yourself"
+  ],
+  "cum-narrative": [
+   "Setting the scene",
+   "cum + imperfect subjunctive: while",
+   "cum + pluperfect subjunctive: when … had",
+   "Two different cums",
+   "When 'since' reads better than 'when'"
+  ],
+  "dative-indirect-object": [
+   "The person who gets it",
+   "A servus-type receiver ends in -ō",
+   "An ancilla-type receiver ends in -ae",
+   "More than one receiver: -īs",
+   "The pater family: -ī and -ibus",
+   "Two words in -ae: which one receives?"
+  ],
+  "dative-of-agent": [
+   "What it does",
+   "The pronouns: mihi, tibi, nōbīs, vōbīs",
+   "Nouns take their ordinary dative endings",
+   "Not ā or ab with the ablative",
+   "Not the plain 'to / for' dative",
+   "Use it"
+  ],
+  "dative-possession": [
+   "What it does",
+   "Who owns, and what is owned",
+   "The owner's ending on a noun",
+   "The person-words: mihi, tibi, eī",
+   "Telling it from the dative of the indirect object",
+   "Telling it from the genitive owner, and using it"
+  ],
+  "dative-verbs": [
+   "What it does",
+   "The ending to look for: -ō",
+   "The same case on a first declension noun: -ae",
+   "mihi, tibi, sibi",
+   "Which verbs — and the neighbours that take the accusative",
+   "Using it"
+  ],
+  "deliberative-subjunctive": [
+   "What it does",
+   "The 'I' form ends in -m",
+   "The 'we' form ends in -mus",
+   "Not the plain future",
+   "For past time, the imperfect",
+   "Ask one yourself"
+  ],
+  "demonstrative-pronouns": [
+   "No noun beside it",
+   "Its gender comes from the noun it stands for",
+   "When the pronoun is the object",
+   "eius and eī: whose, and to whom",
+   "Pronoun, or pointing word?"
+  ],
+  "demonstratives": [
+   "Words that point",
+   "It dresses like its noun",
+   "When the noun is the object",
+   "The odd pair: huius and huic",
+   "ille and is: the four cells to learn",
+   "Pointing word, or linking word?"
+  ],
+  "deponent-imperatives": [
+   "Ordering someone about with a deponent",
+   "To one person: -re",
+   "To several: -minī",
+   "Why -re here is not 'to do'",
+   "Saying 'don't'"
+  ],
+  "deponent-verbs": [
+   "Passive clothes, active work",
+   "The singular endings: -or, -ris, -tur",
+   "The plural: -mur, -minī, -ntur",
+   "The infinitive ends in -ī, never -re",
+   "A deponent can take an object",
+   "Telling it from a real passive"
+  ],
+  "dummodo": [
+   "What it does",
+   "The tense: present after a present or future main verb",
+   "The negative: dummodo nē",
+   "modo and dum do the same work",
+   "Its two neighbours: dum + indicative, and sī",
+   "Using it"
+  ],
+  "elegiac-couplet": [
+   "Feet: the dactyl and the spondee",
+   "The hexameter: six feet",
+   "The pentameter, and the couplet",
+   "Catullus's eleven-syllable line"
+  ],
+  "enclitics": [
+   "A word glued to the end of another",
+   "-que means ‘and’",
+   "-ne asks a yes-or-no question",
+   "Not every -que is ‘and’",
+   "The word under the tail keeps its own job"
+  ],
+  "fifth-declension": [
+   "What it does",
+   "Subject -ēs, object -em",
+   "The genitive and dative -ēī",
+   "The ablative -ē and the plural",
+   "Telling it from a 3rd-declension -ēs",
+   "Using it: which gender?"
+  ],
+  "fourth-declension": [
+   "What it does",
+   "Subject -us, object -um",
+   "The genitive -ūs is the family's mark",
+   "The last two singular endings: -uī and -ū",
+   "The plural: -ūs, -uum, -ibus",
+   "Telling it from the other -us nouns"
+  ],
+  "future-active": [
+   "What the tense does",
+   "1st and 2nd conjugations: the endings -bit and -bunt",
+   "The other persons, and -bō for 'I'",
+   "3rd and 4th conjugations: -am, then -ē- everywhere else",
+   "Telling pōnet from pōnit",
+   "Using it"
+  ],
+  "future-imperative": [
+   "What it does",
+   "The singular ending: -tō",
+   "The plural ending: -tōte",
+   "The ones to learn by heart: estō, estōte, mementō, scītō",
+   "Telling it from the plain imperative",
+   "Using it"
+  ],
+  "future-infinitive": [
+   "Reporting what will happen",
+   "What the two words are",
+   "The participle agrees with the person reported",
+   "Telling it from the perfect infinitive",
+   "The two short forms"
+  ],
+  "future-irregular": [
+   "What these forms do",
+   "sum: the stem er-, and anything fastened in front of it",
+   "sum: the other four persons",
+   "eō takes -b-; volō, nōlō and ferō need nothing new",
+   "Telling erit from erat, and ībit from ībat",
+   "Using it"
+  ],
+  "future-participle": [
+   "Describing someone by what is coming",
+   "How the word is made",
+   "It agrees like any adjective",
+   "Telling -ūrus from -tus",
+   "Standing without sum"
+  ],
+  "future-passive": [
+   "What the form does",
+   "The third person: -bitur and -buntur",
+   "The other four persons: -bor, -beris, -bimur, -biminī",
+   "3rd and 4th conjugations: -ar, then -ē-",
+   "Deponent verbs wear these endings and mean something active",
+   "Using it"
+  ],
+  "future-perfect": [
+   "What it does",
+   "The singular: perfect stem + -erō, -eris, -erit",
+   "The plural: -erimus, -eritis, -erint",
+   "Not the plain perfect",
+   "Where it turns up",
+   "Use it"
+  ],
+  "genitive-of": [
+   "The same form, a different question",
+   "After a word of number or amount",
+   "A part of a whole",
+   "Latin has no word for ‘of’",
+   "Whose? or of what?"
+  ],
+  "genitive-possession": [
+   "Whose?",
+   "a-nouns: -ae",
+   "us-nouns and um-nouns: -ī",
+   "Several owners: -ōrum, and -ārum for a-nouns",
+   "The owner may stand on either side",
+   "-ae and -ī also make plurals"
+  ],
+  "gerund": [
+   "A verb doing a noun's job",
+   "The accusative: ad + -ndum",
+   "The genitive: -ndī",
+   "The ablative: -ndō",
+   "The verbs that keep their i",
+   "Using it"
+  ],
+  "gerundive": [
+   "What it does",
+   "How it is built: stem + -nd-",
+   "It agrees like bonus -a -um",
+   "Not the present participle",
+   "After ad, and with causā: what it is for",
+   "Build one"
+  ],
+  "imperative": [
+   "An order has no -t on it",
+   "One person, an -āre verb: the bare stem",
+   "More than one person: add -te",
+   "Other verbs keep their own vowel",
+   "Stems ending in a consonant slip in an e or an i",
+   "Order or statement?"
+  ],
+  "imperfect-active": [
+   "What the tense does",
+   "The stem, then -bā-, then -t",
+   "The other persons, and -m for 'I'",
+   "The 3rd and 4th conjugations put -ē- first",
+   "Telling it from the present",
+   "Using it"
+  ],
+  "imperfect-irregular": [
+   "What these forms do",
+   "sum: the stem erā-, and anything fastened in front of it",
+   "sum: the other four persons",
+   "eō: ī- with the same -bā-",
+   "Telling erat from ībat, and from est",
+   "Using it"
+  ],
+  "imperfect-passive": [
+   "What the form does",
+   "The third person: -bātur and -bantur",
+   "The other four persons",
+   "The 3rd and 4th conjugations put -ē- first",
+   "Deponent verbs wear these endings and mean something active",
+   "Using it"
+  ],
+  "imperfect-subjunctive": [
+   "Where you meet it",
+   "Infinitive plus -m, -s, -t",
+   "The plural: -mus, -tis, -nt",
+   "The passive endings",
+   "The irregular verbs go the same way",
+   "Not the present subjunctive, not the infinitive"
+  ],
+  "indirect-command": [
+   "Reporting an order",
+   "ut and a subjunctive, never an infinitive",
+   "nē for what must not happen",
+   "Which verbs set it off",
+   "Not a purpose clause"
+  ],
+  "indirect-question": [
+   "What it does",
+   "The question word keeps its place",
+   "The verb turns subjunctive",
+   "Yes-or-no questions",
+   "Not a relative clause",
+   "Present now, imperfect for the past"
+  ],
+  "infinitive": [
+   "An action with nobody attached",
+   "Add -re to the stem vowel",
+   "The third family: -ere, with a short e",
+   "To be done: -rī, or a bare -ī",
+   "The handful that double a consonant",
+   "The 'to' form, or the verb itself?"
+  ],
+  "irregular-comparison": [
+   "What these words do",
+   "The comparative: a new stem, the ending -ior / -ius",
+   "The superlative: a new stem, the ordinary -us -a -um",
+   "multī, plūrēs, plūrimī — and plūs",
+   "Telling it from the regular comparative",
+   "Using it"
+  ],
+  "irregular-verbs-present": [
+   "Same endings, a stem that moves",
+   "sum: all six forms",
+   "possum is pot- with sum on the end",
+   "eō: a verb that is almost only an ending",
+   "volō moves between vol-, vī- and vul-",
+   "ferō drops the linking vowel"
+  ],
+  "noli-infinitive": [
+   "What it does",
+   "nōlī to one person, nōlīte to more than one",
+   "The verb that follows is the infinitive",
+   "Any verb at all, even the odd ones",
+   "Telling it from the plain command",
+   "Using it"
+  ],
+  "nominative-subject": [
+   "What the naming form does",
+   "a-nouns: -a for one, -ae for several",
+   "us-nouns: -us for one, -ī for several",
+   "um-nouns: -um for one, -a for several",
+   "The word after est or sunt names the subject too",
+   "-a: one feminine thing, or several neuter ones"
+  ],
+  "noun-gender": [
+   "What gender is",
+   "a-nouns are feminine",
+   "us-nouns are masculine",
+   "um-nouns are neuter, and go to -a for several",
+   "When the ending does not tell you",
+   "The noun’s gender is fixed; the adjective borrows it"
+  ],
+  "passive-periphrastic": [
+   "What it does",
+   "It agrees with the thing that must be done",
+   "With no subject at all: 'one must'",
+   "Not the perfect passive",
+   "Only sum changes tense",
+   "Say it yourself"
+  ],
+  "passive-personal-endings": [
+   "The subject on the receiving end",
+   "The singular: -or, -ris, -tur",
+   "The plural: -mur, -minī, -ntur",
+   "Who did it: ā or ab with the ablative",
+   "The vowel in front still belongs to the verb",
+   "The same endings serve a deponent"
+  ],
+  "passive-voice": [
+   "Something is done to the subject",
+   "One subject: -tur",
+   "More than one subject: -ntur",
+   "Read the tail: -t or -tur",
+   "Who does it, and what it is done with",
+   "The other conjugations"
+  ],
+  "perfect-active": [
+   "What the perfect does",
+   "The stem, and the ending for 'I'",
+   "-it and -ērunt, the two a story lives on",
+   "The three endings that carry -is-",
+   "Perfect or imperfect?",
+   "Using it"
+  ],
+  "perfect-deponent-participle": [
+   "What it does",
+   "Built exactly like the other perfect participle",
+   "It agrees with the doer, in the plural too",
+   "The same shape, the opposite meaning",
+   "Using it"
+  ],
+  "perfect-deponent": [
+   "Two words, one plain past",
+   "Where the two words come from",
+   "The first word agrees with the subject",
+   "Telling it from the perfect passive",
+   "Reading it in a real sentence"
+  ],
+  "perfect-infinitive": [
+   "What it does",
+   "The active form: perfect stem + -isse",
+   "The passive form: participle + esse",
+   "Now, or already?",
+   "Using it"
+  ],
+  "perfect-passive-participle": [
+   "What it does",
+   "Where it comes from, and its first three endings",
+   "It follows its noun into the object form",
+   "More than one",
+   "Done to him, or done by him?",
+   "Using it"
+  ],
+  "perfect-passive": [
+   "Two words, one tense",
+   "How the pair is built: participle + est",
+   "More than one: -ī or -ae, and sunt",
+   "Talking about yourself",
+   "One word, or two?",
+   "Using it"
+  ],
+  "perfect-subjunctive": [
+   "What it does",
+   "The singular: perfect stem + -erim, -erīs, -erit",
+   "The plural: -erīmus, -erītis, -erint",
+   "Not the future perfect",
+   "nē with this form means 'don't'",
+   "Use it"
+  ],
+  "personal-pronouns": [
+   "The word for the speaker",
+   "mē and mihi",
+   "tē and tibi",
+   "The plurals nōs and vōs",
+   "sē points back to the subject",
+   "mēcum, tēcum, sēcum"
+  ],
+  "pluperfect-subjunctive": [
+   "What it does",
+   "Building the singular: -issem, -issēs, -isset",
+   "The plural: -issēmus, -issētis, -issent",
+   "The passive is two words",
+   "Telling it from the imperfect subjunctive",
+   "Using it"
+  ],
+  "pluperfect": [
+   "The past before the past",
+   "Building the active: the perfect stem plus -erat",
+   "The other five persons",
+   "Passive and deponent take two words",
+   "Telling it from the perfect"
+  ],
+  "potential-subjunctive": [
+   "A verb that only says 'could'",
+   "velim and nōlim: the polite ones",
+   "The words that point at it",
+   "The negative is nōn",
+   "Using it in any person"
+  ],
+  "present-indicative-3rd": [
+   "-t for one, -nt for several",
+   "a-verbs: -at and -ant",
+   "e-verbs: -et and -ent",
+   "i-verbs: -it and -iunt",
+   "Est and sunt",
+   "The singulars rhyme, the plurals do not"
+  ],
+  "present-participle": [
+   "What it does",
+   "How it is built: -āns from the 1st conjugation",
+   "-ēns and -iēns from the others",
+   "The stem is -nt-",
+   "Telling it from the sentence's own verb",
+   "Using it: make it agree"
+  ],
+  "present-subjunctive": [
+   "What the form is for",
+   "First conjugation: -a- becomes -e-",
+   "Every other conjugation: slide an -a- in",
+   "The verbs that go their own way",
+   "Telling it from the future",
+   "Using it with no ut at all"
+  ],
+  "principal-parts": [
+   "One verb, three shapes",
+   "Part two gives the present stem",
+   "Part three gives the perfect stem: cut the -ī",
+   "Part four gives the participle stem: cut the -um",
+   "Which part was this word cut from?"
+  ],
+  "prosody-scansion": [
+   "Long by nature",
+   "Long by position",
+   "Elision: a swallowed vowel",
+   "Putting it together"
+  ],
+  "purpose-clause": [
+   "Saying why",
+   "Why the infinitive will not do",
+   "nē for an aim to avoid",
+   "Not a result clause",
+   "Not an indirect command",
+   "quī can do the same work"
+  ],
+  "relative-pronoun": [
+   "It hangs a whole clause on a noun",
+   "The nominative: quī, quae, quod",
+   "The accusative: the clause's own object",
+   "The odd pair: cuius and cui",
+   "After a preposition, and quibus",
+   "Asking, pointing, or linking?"
+  ],
+  "result-clause": [
+   "So far that something follows",
+   "The signal words",
+   "The negative is ut nōn",
+   "Result, not purpose",
+   "The same pattern in a past story"
+  ],
+  "sequence-of-tenses": [
+   "The main verb decides",
+   "Present and future take the present subjunctive",
+   "Any past tense takes the imperfect subjunctive",
+   "The same rule in every kind of clause",
+   "Every past tense counts as past"
+  ],
+  "subjunctive-wish-command": [
+   "A verb that wants something",
+   "Let us: the 'we' form",
+   "Let him, let them: the third person",
+   "Saying no: nē",
+   "May it happen: the plain wish",
+   "Not the imperative"
+  ],
+  "superlative": [
+   "What it does",
+   "How it is built: stem + -issimus",
+   "It declines like bonus -a -um",
+   "Adjectives in -er double the r",
+   "Telling it from the comparative",
+   "Using it: naming the group"
+  ],
+  "supine": [
+   "What it does",
+   "How it is built, and that it never changes",
+   "The other supine, in -ū",
+   "Supine, or participle?",
+   "Using it"
+  ],
+  "third-declension-neuter": [
+   "What it does",
+   "The singular: one form for two jobs",
+   "The plural ends in -a",
+   "The -e / -al / -ar group keeps an i",
+   "Telling it from a masculine or feminine one",
+   "Using it: let the verb decide"
+  ],
+  "third-declension": [
+   "The third family of nouns",
+   "The genitive shows the stem",
+   "As the object: stem + -em",
+   "Receiving with -ī, and -e for the rest",
+   "Two plural endings, four jobs",
+   "The trap: -is and -īs"
+  ],
+  "vocative": [
+   "The word for the person you are talking to",
+   "A word in -us calls with -e",
+   "A name in -ius calls with a single -ī",
+   "Everything else is unchanged",
+   "Calling him, or talking about him?",
+   "What travels with it, and where it sits"
+  ],
+  "wishes-utinam": [
+   "What a wish looks like",
+   "A wish that may still come true: the present subjunctive",
+   "A wish about now that cannot come true: the imperfect subjunctive",
+   "A wish about the past: the pluperfect subjunctive",
+   "Wishing for something not to happen: utinam nē",
+   "Choosing the tense, and not mistaking a wish for an 'if'"
+  ]
+ }
 }
