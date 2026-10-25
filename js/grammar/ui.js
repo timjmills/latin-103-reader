@@ -3263,9 +3263,17 @@ export function createUI(ctx) {
    */
   const SIDE_KEY = 'l103.side.open';
   const sideOpen = () => { try { return localStorage.getItem(SIDE_KEY) !== '0'; } catch { return true; } };
+  // Which side it sits on (2026-10-25: "have the more ways side bar movable and open on the left side by default").
+  const SIDE_AT = 'l103.side.at';
+  const sideAt = () => { try { return localStorage.getItem(SIDE_AT) === 'right' ? 'right' : 'left'; } catch { return 'left'; } };
   function paintSide() {
-    document.querySelector('.g-side')?.remove();
-    document.documentElement.classList.remove('g-side-on');
+    // Redrawn with every view, so it keeps its place (2026-10-25: "it's jerking the bar to other places when I click
+    // to open or close something"): the bar's own scroll and each list's are put back as they were; a list is only
+    // centred on its marked row when that row is new to it.
+    const prev = document.querySelector('.g-side');
+    const keep = { top: prev?.scrollTop ?? 0, lists: new Map([...(prev?.querySelectorAll('[data-keep]') ?? [])].map((x) => [x.dataset.keep, { top: x.scrollTop, here: x.dataset.here ?? '' }])) };
+    prev?.remove();
+    document.documentElement.classList.remove('g-side-on', 'g-side-left', 'g-side-right');
     if (!showing() || !ctx.items) return;
     const name = view.name;
     const pr = view.params ?? {};
@@ -3308,18 +3316,37 @@ export function createUI(ctx) {
     const kids = [...parts.slice(0, ctxCount), ...progressionSections(sk, table, sec, nextUp), ...parts.slice(ctxCount)].filter(Boolean);
     if (!kids.length) return;
     const open = sideOpen();
-    const aside = h('aside', { class: `g-side${open ? '' : ' is-collapsed'}`, 'aria-label': 'Ways to keep going' });
-    const toggle = btn(open ? 'Hide ›' : '‹ More ways', { 'aria-expanded': String(open), onclick: () => {
+    let at = sideAt();
+    const aside = h('aside', { class: `g-side g-side--${at}${open ? '' : ' is-collapsed'}`, 'aria-label': 'More ways' });
+    const hideText = () => (at === 'left' ? '‹ Hide' : 'Hide ›');
+    const showText = () => (at === 'left' ? 'More ways ›' : '‹ More ways');
+    const toggle = btn(open ? hideText() : showText(), { 'aria-expanded': String(open), onclick: () => {
       const now = aside.classList.toggle('is-collapsed');
       try { localStorage.setItem(SIDE_KEY, now ? '0' : '1'); } catch { /* this visit only */ }
-      toggle.textContent = now ? '‹ More ways' : 'Hide ›';
+      toggle.textContent = now ? showText() : hideText();
       toggle.setAttribute('aria-expanded', String(!now));
       document.documentElement.classList.toggle('g-side-on', !now);
     } }, 'g-side__toggle');
     const here = sk ? `${capOf(sk.id)} · ${sk.title}` : table ? catTables?.get?.(table)?.label ?? '' : '';
-    aside.append(toggle, h('div', { class: 'g-side__in' }, sideFind(), here ? h('p', { class: 'g-kicker g-side__here', text: here }) : null, kids));
+    // ⇄ moves it to the other side of the page, and the page column moves out of its way.
+    const move = btn('⇄', { title: 'Move to the other side', 'aria-label': 'Move the side bar to the other side of the page', onclick: () => {
+      at = at === 'left' ? 'right' : 'left';
+      try { localStorage.setItem(SIDE_AT, at); } catch { /* this visit only */ }
+      aside.classList.toggle('g-side--left', at === 'left'); aside.classList.toggle('g-side--right', at === 'right');
+      document.documentElement.classList.toggle('g-side-left', at === 'left'); document.documentElement.classList.toggle('g-side-right', at === 'right');
+      toggle.textContent = aside.classList.contains('is-collapsed') ? showText() : hideText();
+      const bar = aside.querySelector('.g-side__bar'); if (bar) bar.replaceChildren(...(at === 'left' ? [toggle, move] : [move, toggle]));
+    } }, 'g-side__toggle g-side__move');
+    aside.append(h('div', { class: 'g-side__bar' }, at === 'left' ? [toggle, move] : [move, toggle]), h('div', { class: 'g-side__in' }, sideFind(), here ? h('p', { class: 'g-kicker g-side__here', text: here }) : null, kids));
     (root ?? document.body).append(aside);
+    aside.scrollTop = keep.top;
+    for (const x of aside.querySelectorAll('[data-keep]')) {
+      const was = keep.lists.get(x.dataset.keep);
+      if (was && was.here === (x.dataset.here ?? '')) x.scrollTop = was.top;
+      else { const at = x.querySelector('.is-here'); if (at) x.scrollTop = at.offsetTop - x.clientHeight / 2; }
+    }
     document.documentElement.classList.toggle('g-side-on', open);
+    document.documentElement.classList.add(`g-side-${at}`);
   }
   /**
    * The progression, always in sight (2026-10-25: "see the progression always, within a strand, OR if in lesson view
@@ -3331,7 +3358,7 @@ export function createUI(ctx) {
     const pr = view.params ?? {};
     if (sk && ['lesson', 'learn', 'part'].includes(view.name)) {
       const here = view.name === 'part' ? Number(pr.step) || 0 : null;
-      const ol = h('ol', { class: 'g-side__list g-side__steps' }, h('li', { class: 'g-quiet', text: 'Loading the parts…' }));
+      const ol = h('ol', { class: 'g-side__list g-side__steps', 'data-keep': `steps:${sk.id}`, 'data-here': String(here ?? '') }, h('li', { class: 'g-quiet', text: 'Loading the parts…' }));
       lessonOf(sk.id).then((lesson) => {
         ol.replaceChildren(...stepsOf(lesson).map((st, j) => h('li', {}, h('button', { type: 'button', class: `g-side__go${j === here ? ' is-here' : ''}`, 'aria-current': j === here ? 'step' : null, onclick: () => goView('part', { skill: sk.id, step: j }) },
           h('b', { text: `${j + 1}. ` }), stepTitle(st, j), ' ', countBadge(`part:${sk.id}:${j}`)))));
@@ -3343,15 +3370,15 @@ export function createUI(ctx) {
     if (a) {
       const steps = thePath().steps.filter((st) => (st.kind === 'skill' ? areaOf(st.id) === a.id && !skills.get(st.id)?.set : st.kind === 'table' && a.table(st.id)));
       let n = 0;
-      const ol = h('ol', { class: 'g-side__list g-side__strand', 'data-area': a.id }, steps.map((st) => {
+      const ol = h('ol', { class: 'g-side__list g-side__strand', 'data-area': a.id, 'data-keep': `strand:${a.id}`, 'data-here': sk?.id ?? table ?? '' }, steps.map((st) => {
         const here = st.id === sk?.id || st.id === table;
         const isTable = st.kind === 'table';
         return h('li', {}, h('button', { type: 'button', class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id,
           onclick: () => (isTable ? goTable(st.id) : goView('lesson', { skill: st.id })) },
           isTable ? `▦ ${tableName(st.id)}` : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)}`]));
       }));
-      // Scrolled inside the list only: scrollIntoView would move the page under it as well.
-      requestAnimationFrame(() => { const at = ol.querySelector('.is-here'); if (at) ol.scrollTop = at.offsetTop - ol.clientHeight / 2; });
+      // Scrolled inside the list only (paintSide), never with scrollIntoView, which would move the page under it as well.
+      if (!document.querySelector('.g-side')) requestAnimationFrame(() => { const at = ol.querySelector('.is-here'); if (at) ol.scrollTop = at.offsetTop - ol.clientHeight / 2; });
       out.push(sec(`${a.label}, easiest to hardest`, ol, h('p', {}, btn(`All of ${a.label} →`, { onclick: () => render('course', { by: 'area', area: a.id, ...(sk ? { at: sk.id } : {}) }) }, 'g-vlink'))));
     }
     return out;
@@ -3371,7 +3398,14 @@ export function createUI(ctx) {
         for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
       } }, 'g-chip')))));
       const next = tableNextNode(table, { group: catState.group.get(table) ?? pr.group ?? null, word: catState.word.get(table)?.h ?? pr.word ?? null, from: pr.from ?? null });
-      if (next && keepGoing) parts.push(sec('Keep going', [...next.querySelectorAll('.g-next__row')]));
+      // A second level (2026-10-25: "when something is pressed it … opens up the second or third level of options"):
+      // each way on is its own fold under Keep going, the first one open.
+      if (next && keepGoing) parts.push(sec('Keep going', [...next.querySelectorAll('.g-next__row')].map((row, i) => {
+        const head = row.querySelector('.g-next__h');
+        const title = head?.textContent ?? '';
+        head?.remove();
+        return h('details', { class: 'g-side__sub', open: i === 0 || null }, h('summary', { class: 'g-side__sum', text: title }), row);
+      })));
     }
     if (sk && !table) {
       const fo = skillFocusOptions(sk);
