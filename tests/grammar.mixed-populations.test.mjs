@@ -193,8 +193,9 @@ test('the Practice setup carries the chooser, in the section\'s own control voca
   assert.ok(src('app/js/grammar/index.js').includes('populations') && src('app/js/grammar/index.js').includes('unstudied'), 'and read back by prefs()');
 });
 
-test('the map and each chapter carry the same add-all / none pair, and the session header repeats the mix', () => {
-  assert.ok(UI.includes("btn('Add all', { onclick: () => bulkAdd(inFilter, filterName)"), 'the map\'s pair is scoped to the category filter on screen');
+test('Course and each chapter carry the same add-all / none pair, and the session header repeats the mix', () => {
+  assert.ok(UI.includes("btn('Add all to review', { onclick: () => bulkAdd(() => true, 'every skill') }"), 'Course\'s Manage has the pair for every skill');
+  assert.ok(UI.includes("btn('Take all out of review', { onclick: () => bulkNone(() => true, 'every skill') }"), 'and its undo');
   assert.ok(UI.includes('function chapterAllNone'), 'a chapter has the same pair');
   assert.ok(UI.includes('bulkNone'), 'and "none" is a real action, not a label');
   assert.ok(UI.includes('mixTitle(sel, grid)') && UI.includes('mixNote(sel, grid)'), 'the running session names the mix in its title and its note');

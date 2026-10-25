@@ -127,8 +127,6 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-filter__btn { min-height: 36px; padding: 0 var(--s-3); border: 0; border-radius: 999px; background: transparent; color: var(--ink-2); font-size: var(--ui-sm); }
 .g-filter__btn:hover { background: var(--bg-chrome); color: var(--ink); }
 .g-filter__btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-.g-bulk { display: flex; flex-wrap: wrap; gap: var(--s-1); margin: calc(-1 * var(--s-3)) 0 0 calc(-1 * var(--s-3)); }
-.g-bulk .btn { min-height: 36px; font-size: var(--ui-sm); }
 
 .g-chap { display: grid; gap: 0; }
 .g-chap__h { display: flex; align-items: baseline; gap: var(--s-3); margin: 0; padding-bottom: var(--s-2); border-bottom: 1px solid var(--line-strong); font-family: var(--face-serif); font-weight: 400; font-size: 1.1rem; }
@@ -468,6 +466,9 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-chart { display: grid; gap: var(--s-3); }
 .g-chart .pt__scroll { --pt-bg: var(--bg); padding-inline: 0; }
 .g-chart__t, .g-chart .pt__stack { max-width: 32rem; }   /* the stacked blocks keep the table's own measure (§26) */
+/* Centred on the column (2026-10-25, "the table is off center"): the scroll box bleeds into the gutters on a wide
+   screen (--bleed below), so a table kept to its measure sat at the box's left edge, far left of the page's text. */
+#grammar .g-chart__t, #grammar .g-chart .pt__stack, #grammar .g-reveal__t { margin-inline: auto; }
 /* Stacked (§26) a chart row is "label — box" on one line. `width: auto` is an input's own intrinsic
    width — about 180px — and a table sizes a column by what is in it, so the box claimed the row and
    the label was squeezed to its narrowest: "he /" over "she" over "/ it". Naming a width gives the
@@ -807,39 +808,13 @@ table.g-table { max-width: 24rem; }
 }
 
 /* --------------------------------------- the chapter spine (by chapter) */
-/* Two ways of browsing the same grammar: By topic (the category map) and By
-   chapter (the book's own spine). The switch sits under the page title, in the
-   segmented control the practice setup already uses. */
-.g-seg--views { margin-bottom: calc(-1 * var(--s-2)); }
-
-/* A chapter of the spine: the numeral and title in the summary, its counts on
-   the right, its skills and sets inside. Folded away by default — the chapter
-   being read opens itself — so 34 chapters stay a page you can read down. */
-.g-chap--spine { display: block; }
-.g-chap__d { border-bottom: 1px solid var(--line); }
-.g-chap__sum {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-3);
-  min-height: var(--tap); padding: var(--s-2) 0; cursor: pointer; list-style: none;
-}
-.g-chap__sum::-webkit-details-marker { display: none; }
-.g-chap__sum::before {
-  content: ""; flex: none; width: 0.4em; height: 0.4em; margin-right: var(--s-1); align-self: center;
-  border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3); transform: rotate(-45deg);
-  transition: transform var(--t-fast) var(--ease-out);
-}
-.g-chap__d[open] > .g-chap__sum::before { transform: rotate(45deg); }
-.g-chap__sum:hover .g-chap__num { color: var(--rubric-ink); }
-.g-chap__sum:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; border-radius: var(--radius-sm); }
-.g-chap__h--sum { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2); padding: 0; border: 0; font-size: 1.1rem; }
+/* A chapter's heading (Course by chapter, the chapter panel): the numeral, then its count or title on the right. */
 .g-chap__num { white-space: nowrap; }
-.g-chap__title { color: var(--ink-2); font-size: 1rem; }
 .g-chap__count { margin-left: auto; }
 /* Wrapped onto its own line (a phone, a long title), the count reads better under the title than pinned right. */
 @media (max-width: 559.98px) { .g-chap__count { margin-left: 0; } }
-.g-chap__body { padding-bottom: var(--s-3); }
 .g-chap__acts { display: grid; justify-items: start; gap: var(--s-1); padding-top: var(--s-3); }
 .g-chap__acts .g-quiet { max-width: 60ch; }
-@media (prefers-reduced-motion: reduce) { .g-chap__d[open] > .g-chap__sum::before, .g-chap__sum::before { transition: none; } }
 
 /* The chapter page's own grammar panel (mountChapterGrammar): the same rows,
    in the shell's element, under an h2 — the page owns the chapter's title. */
@@ -1060,7 +1035,7 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
    thing it overrides is a rule that does nothing. */
 
 @media (pointer: coarse) {
-  .g-today__btn, .g-chip, .g-filter__btn, .g-bulk .btn, .g-skill__acts .btn, .g-fb__more-s, .g-all-switch, .g-pop__close { min-height: var(--tap); }
+  .g-today__btn, .g-chip, .g-filter__btn, .g-skill__acts .btn, .g-fb__more-s, .g-all-switch, .g-pop__close { min-height: var(--tap); }
   .g-pop__close { width: var(--tap); }
   .g-skill__title { min-height: var(--tap); display: flex; align-items: center; }
   /* Words stay inline (the line box is untouched); the hit area grows above and below the text. */
@@ -1191,17 +1166,9 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
   #grammar .g:has(.g-ww__cards[data-cols="3"]) { max-width: 104rem; }
 }
 
-/* Word Work · Skill drills (ui.js renderWordWorkDrills, wwSkillBar): the chapter's skills in a dropdown, a list of
-   them with a Drill each, and the bar kept above a drill to move to another. */
-/* A skill's name is long ("Imperfect subjunctive: forms (infinitive + endings)"): the list keeps to the column and
-   the button keeps its place — beside it, or under it on a phone — instead of the list growing over it. */
-.g-ww__pickrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2); align-items: center; }
-.g-ww__pickrow .g-select, .g-ww__barlabel .g-select { width: 100%; min-width: 0; max-width: 100%; text-overflow: ellipsis; }
-@media (max-width: 559.98px) { .g-ww__pickrow { grid-template-columns: minmax(0, 1fr); } .g-ww__pickrow .btn { justify-self: start; } }
-.g-ww__drills { display: grid; margin: 0; padding: 0; list-style: none; }
-.g-ww__drill { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); min-height: var(--tap); padding: var(--s-1) 0; border-top: 1px solid var(--line); }
-.g-ww__drilltitle { flex: 1 1 14rem; min-width: 0; }
-.g-ww__drill[data-forms="true"] .g-ww__drilltitle { font-weight: 600; }
+/* The bar kept above a drill opened from a chapter's forms (ui.js wwSkillBar): the chapter's skills in a dropdown.
+   A skill's name is long ("Imperfect subjunctive: forms (infinitive + endings)"): the list keeps to the column. */
+.g-ww__barlabel .g-select { width: 100%; min-width: 0; max-width: 100%; text-overflow: ellipsis; }
 .g-ww__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: 0 0 var(--s-3); padding-bottom: var(--s-3); border-bottom: 1px solid var(--line); }
 .g-ww__barlabel { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-1); flex: 1 1 16rem; min-width: 0; }
 .g-ww__lessonlink { font-size: var(--ui-sm); }
@@ -1210,7 +1177,6 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 .g-ww__wordnav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin: 0 0 var(--s-3); }
 .g-ww__count { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: var(--ui-sm); }
 .g-ww__wordnav .g-ww__barlabel { flex: 1 1 12rem; }
-.g-ww__pickacts { margin: 0; }
 
 /* Sheets (ui.js renderSheets): a chapter's cheat sheet — the skills to switch on, then one card a skill, the
    charts side by side on a wide screen. */
@@ -1310,8 +1276,6 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 /* ▶ Play wherever a skill is listed: the one button that reads as the game (ui.js playSkill). */
 .g-play { font-weight: 600; }
 .g-play:not(.btn--primary) { border-color: var(--ink-2); }
-.g-ww__drill .g-play { min-height: 36px; padding-inline: var(--s-3); }
-@media (pointer: coarse) { .g-ww__drill .g-play { min-height: var(--tap); } }
 
 .g-ww__wordhead, .g-sheet__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-3); }
 .g-ww__wordhead .g-ww__lemma { margin: 0; }
@@ -1420,7 +1384,6 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 .g-path__s--table { background: color-mix(in srgb, var(--rubric) 6%, var(--bg-raised)); }
 .g-path__n { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 999px; background: var(--bg); font-weight: 700; font-size: var(--ui-sm); }
 .g-path__t { margin: 0; display: flex; align-items: center; gap: var(--s-1); flex-wrap: wrap; font-weight: 600; }
-.g-path__sub { margin: 0.15em 0 0; font-size: var(--ui-sm); }
 .g-path__acts { display: flex; flex-wrap: wrap; gap: var(--s-1); justify-content: flex-end; }
 .g-path__main { min-width: 0; }
 @media (max-width: 560px) { .g-path__s { grid-template-columns: 2.2rem 1fr; } .g-path__acts { grid-column: 1 / -1; justify-content: flex-start; } }
@@ -1516,12 +1479,9 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-chart__how .wr { width: 100%; }
 .g-chart__howfor { margin: 0; font-weight: 600; }
 
-/* Progressions by area: a skill's parts and tables, opened under its row */
-.g-area__more { margin-top: var(--s-1); font-size: var(--ui-sm); }
-.g-area__more > summary { cursor: pointer; color: var(--ink-2); }
-.g-area__parts { margin: var(--s-1) 0 var(--s-2); padding-left: 1.4em; display: grid; gap: 0.2em; }
+/* A skill's tables, under its row */
 .g-area__tables { margin: var(--s-1) 0 0; }
-.g-modeswitch .g-label, .g-areatabs .g-label { align-self: center; }
+.g-areatabs .g-label { align-self: center; }
 
 /* The areas of grammar, colour-coded (2026-10-25): a stripe on the row, a named tag, the area's tab */
 [data-area="verbs"] { --area: oklch(0.58 0.15 255); }
@@ -1536,7 +1496,6 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-pathlink[data-area] { border-left: 3px solid var(--area); padding-left: 0.5em; }
 .g-areatab[data-area] { border-bottom: 3px solid var(--area); }
 .g-areatab[data-area][aria-pressed="true"] { background: color-mix(in srgb, var(--area) 18%, var(--bg-raised)); }
-.g-area__head[data-area] .g-title { color: var(--area); }
 .g-areanav { margin: var(--s-2) 0; padding: var(--s-1) var(--s-2); border-left: 4px solid var(--area); border-radius: 0.5rem; background: color-mix(in srgb, var(--area) 7%, transparent); font-size: var(--ui-sm); }
 
 /* A skill's tables, in small links under it (path, progressions) */
@@ -1603,6 +1562,14 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
   .g-areatabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
   .g-areatabs .g-filter__btn { flex: none; }
 }
+/* A Course row on a phone: its main button straight under the title, then the small links (Practise · Mix · parts,
+   its tables), so the button is not pushed below them. The main column's pieces become the row's own grid items. */
+@media (max-width: 560px) {
+  .g-crow > .g-path__main { display: contents; }
+  .g-crow > .g-path__main > *, .g-crow > .g-path__acts { grid-column: 2; min-width: 0; }
+  .g-crow > .g-path__acts { order: 1; }
+  .g-crow > .g-path__main > :not(.g-path__t) { order: 2; }
+}
 @media (max-width: 359.98px) { .g-nav--study .g-nav__btn { padding-inline: 0.35em; } }
 /* Every small link at least 24 px tall to tap (§9) */
 .g-vlink, a.g-vlink { display: inline-flex; align-items: center; min-height: 28px; }
@@ -1611,3 +1578,26 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 /* The chosen area tab keeps its own colour readable (a link pressed is otherwise ink on its tint) */
 #grammar a.g-areatab[aria-pressed="true"], #grammar button.g-areatab[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
 .g-ptile__t, .g-ptables .g-link, .g-today .g-link, .g-prereq__skill { display: inline-block; min-height: 24px; line-height: 24px; }
+
+/* The chapter a skill belongs to, beside its name wherever it is listed (ui.js capTag) */
+.g-captag { display: inline-block; padding: 0 0.4em; border-radius: 0.4em; background: var(--bg-chrome); color: var(--ink-2); font-size: var(--ui-xs, 0.75rem); font-weight: 600; white-space: nowrap; vertical-align: middle; }
+
+/* A part number's card: the part's title, on hover or keyboard focus (ui.js partNums) */
+.g-plink--n { position: relative; }
+.g-plink__card { display: none; position: absolute; z-index: 20; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); width: max-content; max-width: min(18rem, 80vw); padding: 0.4em 0.65em; border-radius: 0.5em; background: var(--ink); color: var(--bg); font-size: var(--ui-sm); font-weight: 400; line-height: 1.35; text-align: left; white-space: normal; pointer-events: none; box-shadow: 0 4px 14px rgb(0 0 0 / 0.18); }
+.g-plink--n:hover .g-plink__card, .g-plink--n:focus-visible .g-plink__card { display: block; }
+@media (hover: none) { .g-plink--n:hover .g-plink__card { display: none; } }
+.g-partsbtn { border: 0; background: none; padding: 0 0.3em 0 0; font: inherit; font-weight: 600; color: var(--rubric-ink, var(--ink)); cursor: pointer; }
+
+/* The lesson's parts in a popup (ui.js openPartsMenu) */
+.g-pmenu { width: min(32rem, calc(100vw - 2rem)); max-height: calc(100vh - 3rem); overflow: auto; padding: var(--s-4); border: 0; border-radius: 1rem; background: var(--bg-raised); color: var(--ink); box-shadow: 0 12px 40px rgb(0 0 0 / 0.25); }
+.g-pmenu::backdrop { background: rgb(0 0 0 / 0.35); }
+.g-pmenu__top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.g-pmenu__top .g-kicker { margin: 0; }
+.g-pmenu__close { position: static; }
+.g-pmenu__h { margin: var(--s-1) 0 var(--s-3); font-family: var(--face-serif); font-weight: 400; font-size: 1.35rem; }
+.g-pmenu__list { display: grid; gap: var(--s-1); margin: var(--s-3) 0 0; padding: 0; list-style: none; }
+.g-pmenu__part { display: flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: var(--s-1) var(--s-2); border-radius: 0.6rem; background: var(--bg); color: inherit; text-decoration: none; }
+.g-pmenu__part:hover, .g-pmenu__part:focus-visible { background: var(--bg-chrome); }
+.g-pmenu__n { display: grid; place-items: center; flex: none; width: 1.8rem; height: 1.8rem; border-radius: 999px; background: var(--bg-chrome); font-weight: 700; font-size: var(--ui-sm); }
+.g-pmenu__t { flex: 1; }

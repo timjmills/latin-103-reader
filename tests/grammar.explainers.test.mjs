@@ -315,8 +315,7 @@ test('one tap opens it: the toggle is measured from before the press', () => {
 });
 
 test('every label the learner asked about is a trigger, and says what it is', () => {
-  // The chapter line, in both places it is printed: the spine's rows and the chapter page's panel.
-  assert.match(UI_CODE, /chapterTipButton\(c\.roman, c\.material, c\.progress, stateOf\)/, 'the spine chapter line stopped explaining itself');
+  // The chapter line, where it is printed: the chapter page's panel (the old by-chapter spine is gone; Course replaced it).
   assert.match(UI_CODE, /chapterTipButton\(row\.roman, material, progress, stateOf\)/, 'the chapter page summary stopped explaining itself');
   // The state word, everywhere it is printed: a skill row, a set row, the Review-first chips, the Today
   // card and the lesson header. One shared builder, so they can never drift apart.

@@ -23,7 +23,7 @@ Built with the review's suggested answers to §12 (Study; Course opens by area; 
 | §3.8 two ladders | ✓ | "⇅ Easier or harder skill?" (another skill); the game's ◂ ▸ are "Easier / Harder way to play" |
 | §9 phone pass | ✓ | at 320 and 375 px, on Today, Course (both views), a skill page, a chapter page, Tables, the practice chart and a drill: no sideways scroll, the four tabs and the switch fit (the switch shows its mode's icon), every link at least 24 px tall, the skill page's main button on the first screen (523–617 px) |
 
-Still to do: retiring the old Skills / Path page code (their addresses already redirect); Course by area on a phone still opens with its first row's button below the first screen (Next to learn is above it).
+Done in v123: the old Skills, Path, progression and Skill drills page code is retired (their addresses redirect, `routes.js`) with its CSS; on a phone a Course row's main button sits under its title; every skill listed names its chapter; a lesson's parts open from **📖 Lesson ▾** (the whole sequence in a popup) or by number (a card shows the part's title); a practised table is centred on the page. The redesign is complete.
 
 ## The brief, in your words
 

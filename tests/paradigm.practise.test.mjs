@@ -197,15 +197,15 @@ test('Word Work says what the chapter teaches, offers columns, and finding a wor
   assert.match(UI, /if \(q\.length >= 4\) for \(const x of suggestPool\(\)\)/, 'a form on its way finds its word by the stem');
 });
 
-test('Word Work drills every grammar skill of the chapter, with a dropdown to move between them', () => {
+test('a drill opened from a chapter\'s forms keeps every grammar skill of the chapter in a dropdown above it', () => {
   const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
-  // Skill drills is the chapter page's Grammar tab now (routes.js: wwdrills → chapter); its view still draws for a
-  // drill opened from Word Work's page, with the dropdown above it.
+  // Skill drills is the chapter page's Grammar tab now (routes.js: wwdrills → chapter); its old page is gone, and a
+  // drill opened from the chapter's Forms keeps the dropdown above it.
   assert.match(readFileSync(new URL('../app/js/grammar/routes.js', import.meta.url), 'utf8'), /case 'wwdrills': return \{ name: 'chapter'/, 'Skill drills lands on the chapter page');
-  assert.match(UI, /wwdrills: renderWordWorkDrills/);
+  assert.ok(!/renderWordWorkDrills/.test(UI), 'the old Skill drills page is gone');
   assert.match(UI, /const wwSkillsOf = \(n\) => \[\.\.\.skills\.values\(\)\]\.filter\(\(sk\) => Number\(sk\.chapter\) === n && !sk\.set && !sk\.rev && sk\.title\)/, 'every grammar skill of the chapter');
   assert.match(UI, /if \(from\?\.wordwork != null\) body\.prepend\(wwSkillBar\(Number\(from\.wordwork\), id\)\);/, 'the dropdown stays above a drill');
-  assert.match(UI, /if \(from\?\.wordwork != null\) \{ render\('wwdrills'/, 'a Word Work drill goes back to Word Work');
+  assert.match(UI, /if \(from\?\.wordwork != null\) \{ render\('chapter', \{ chapter: Number\(from\.wordwork\) \}\)/, 'the drill goes back to the chapter page');
 });
 
 test('a skill drills as its whole table, word after word', async () => {
