@@ -1128,9 +1128,6 @@ export function createUI(ctx) {
   }
   const wwChapterN = () => { const n = Number(view.params?.chapter ?? view.params?.from?.wordwork ?? ctx.currentChapter?.() ?? 1); return bookChapter(n) ? n : 1; };
   function draw() {
-    // Word Work (html[data-section-mode="words"]) draws its own two tabs, not Grammar's five.
-    const words = sectionMode() === 'words';
-    const sheets = sectionMode() === 'sheets';
     root.dataset.drawnMode = sectionMode();   // index.js setSection: what the root holds now
     // One section, Study (docs/SIMPLIFY-PLAN.md §3.1): four tabs and the one Lesson / Game switch.
     const tab = view.name === 'map' && view.params?.chapter != null ? 'course' : tabOf(view.name);
@@ -1143,13 +1140,7 @@ export function createUI(ctx) {
         : tab === 'progress' ? sub([['chart', 'Practice chart'], ['stats', 'Stats'], ['#reading', 'Reading ↗']])
           : ['chapter', 'wordwork', 'sheets', 'wwtable'].includes(view.name) ? sub([['course', '← Course', { by: 'chapter', at: `c${here}` }], ['chapter', `Cap. ${roman(here)} · Grammar`, { chapter: here }], ['wordwork', 'Forms', { chapter: here }], ['sheets', 'Sheet', { chapter: here }]])
             : null];
-    const nav = true ? studyNav : sheets ? null : words ? h('nav', { class: 'g-nav', 'aria-label': 'Word Work' },
-      [['wordwork', 'This chapter'], ['wwdrills', 'Skill drills'], ['wwpath', 'Progressions'], ['paradigms', 'Any word & types']].map(([v, label]) => h('button', { type: 'button', class: 'g-nav__btn',
-        'aria-current': view.name === v || (v === 'wwdrills' && (view.params?.from?.wordwork != null || view.name === 'wwtable')) ? 'page' : null,
-        onclick: () => render(v, v === 'paradigms' ? {} : v === 'wwpath' ? {} : { chapter: wwChapter() }) }, label)))
-      : h('nav', { class: 'g-nav', 'aria-label': 'Grammar' },
-      ['map', 'path', 'chart', 'practice', 'paradigms', 'catalogue', 'stats'].map((v) => h('button', { type: 'button', class: 'g-nav__btn', 'aria-current': (view.name === v || (v === 'practice' && ['setup', 'session', 'blocked', 'redo', 'summary', 'drill', 'unlimited', 'mixed'].includes(view.name)) || (v === 'map' && ['lesson', 'learn'].includes(view.name)) || (v === 'stats' && view.name === 'history')) ? 'page' : null, onclick: () => render(v === 'practice' ? 'setup' : v) },
-        { map: 'Skills', path: 'Path', chart: 'Chart', practice: 'Practice', paradigms: 'Paradigms', catalogue: 'Tables', stats: 'Stats' }[v])));
+    const nav = studyNav;
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, ...[].concat(nav).filter(Boolean), body));
     const fn = { map: renderMap, lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwdrills: renderWordWorkDrills, wwtable: renderWordWorkTable, today: renderToday, course: renderCourse, chapter: renderChapterPage, wwpath: async (p) => { await renderArea({ area: p?.area ?? 'verbs', words: true }); if (p?.at) body.querySelector(`#g-path-${CSS.escape(p.at)}`)?.scrollIntoView({ block: 'center' }); }, sheets: renderSheets, stats: renderStats, history: renderHistory, path: renderPath, part: renderPart, chart: renderChart, summary: () => renderToday() };

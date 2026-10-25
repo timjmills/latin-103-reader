@@ -2,6 +2,25 @@
 
 *2026-10-25. Written after v118, then independently reviewed and revised the same day against v119 (see "Review notes"). Goal: one simple place for grammar and forms in place of Grammar, Word Work and Sheets, keeping every feature, game mode and the newer options (progressions, table games, mixed games, both voices, how-it's-made), with fewer taps, not more.*
 
+## What is built (v122, 2026-10-25)
+
+Built with the review's suggested answers to §12 (Study; Course opens by area; per-device Lesson / Game; parts as numbers on rows; rare actions under More; the reading Progress page linked, not moved; "Across the conjugations / declensions").
+
+| Plan | Built | Notes |
+|---|---|---|
+| §3.1 Read · Study, four tabs, one switch | ✓ | both sections always show on a phone; the switch ends the tab row; the game's ☰ lists the same tabs |
+| §3.2 Today | ✓ | Find; today's plan, in progress, re-tests; This chapter (rows, Practise this chapter, forms, sheet, 🖨 Print sheet, its page); Next on your path; Review first; Choose your own practice |
+| §3.3 Course | ✓ | By area / By chapter; one main button per row (`actions.js`); Practise · Mix · Parts 1–n; ▦ Across + each table; Manage folded |
+| §3.0 Find | ✓ | skills by name, topic, ending; tables by name or model word; macrons ignored; Enter opens the first |
+| §3.4 Skill page | ✓ | main button on top, fixed at the bottom on a phone while reading; Related + ▶ Mix them; More; meter reads "progress" |
+| §3.5 Chapter page | ✓, in Study | Grammar · Forms · Sheet, Read it, chapters either side. **Differs:** it lives in Study, not inside the reader's chapter page; the reader's page keeps its own Grammar tab and its Word Work / Cheat sheet buttons now open these tabs |
+| §3.6 Tables | interim | the Tables tab has two items, All tables · Any word & types; one merged page is still to do |
+| §3.7 Progress | interim | Practice chart · Stats · Reading ↗ |
+| §7 Old addresses | ✓ | `routes.js` with tests |
+| v119/v120 | ✓ | practice goes across the tables; anything started from a menu comes back to it; conjugation named on cards; How it's made opens on the principal parts |
+
+Still to do: one merged Tables page (§3.6); the "← this skill" link in the session bar; renaming the two "easier/harder" ladders (§3.8); retiring the old Skills / Path page code (their addresses already redirect).
+
 ## The brief, in your words
 
 > "Redesign to a simple-feeling app that can go **by skill progression**, or **by chapter**, or **by an isolated skill** wanting to be practised (and its related skills); also important to be able to **practise the same skill across conjugations**."

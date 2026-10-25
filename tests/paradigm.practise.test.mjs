@@ -148,7 +148,8 @@ test('the Paradigms page is a tab and a link of its own, and a table in a box ke
   const MAIN = readFileSync(new URL('../app/js/main.js', import.meta.url), 'utf8');
   const GCSS = readFileSync(new URL('../app/css/grammar.css', import.meta.url), 'utf8');
   const MANIFEST = JSON.parse(readFileSync(new URL('../app/manifest.webmanifest', import.meta.url), 'utf8'));
-  assert.match(UI, /\['map', 'path', 'chart', 'practice', 'paradigms', 'catalogue', 'stats'\]/);
+  // Paradigms is the second item of Study's Tables tab now (docs/SIMPLIFY-PLAN.md §3.6).
+  assert.match(UI, /tab === 'tables' \? sub\(\[\['catalogue', 'All tables'\], \['paradigms', 'Any word & types'\]\]\)/);
   assert.match(UI, /paradigms: renderParadigms/);
   assert.ok(MAIN.includes("openGrammarSection('paradigms')"), 'the #/paradigms route is gone');
   assert.ok(MANIFEST.shortcuts?.some((s) => s.url === './#/paradigms'));
@@ -197,7 +198,9 @@ test('Word Work says what the chapter teaches, offers columns, and finding a wor
 
 test('Word Work drills every grammar skill of the chapter, with a dropdown to move between them', () => {
   const UI = readFileSync(new URL('../app/js/grammar/ui.js', import.meta.url), 'utf8');
-  assert.match(UI, /\['wwdrills', 'Skill drills'\]/, 'Word Work has the Skill drills tab');
+  // Skill drills is the chapter page's Grammar tab now (routes.js: wwdrills → chapter); its view still draws for a
+  // drill opened from Word Work's page, with the dropdown above it.
+  assert.match(readFileSync(new URL('../app/js/grammar/routes.js', import.meta.url), 'utf8'), /case 'wwdrills': return \{ name: 'chapter'/, 'Skill drills lands on the chapter page');
   assert.match(UI, /wwdrills: renderWordWorkDrills/);
   assert.match(UI, /const wwSkillsOf = \(n\) => \[\.\.\.skills\.values\(\)\]\.filter\(\(sk\) => Number\(sk\.chapter\) === n && !sk\.set && !sk\.rev && sk\.title\)/, 'every grammar skill of the chapter');
   assert.match(UI, /if \(from\?\.wordwork != null\) body\.prepend\(wwSkillBar\(Number\(from\.wordwork\), id\)\);/, 'the dropdown stays above a drill');
