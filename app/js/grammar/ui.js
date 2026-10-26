@@ -2441,7 +2441,7 @@ export function createUI(ctx) {
       if (passed) setLearnPlace(id, null);
       // The same-session re-test (§10) and the reading tie-in (§13) belong to a skill that has just been learned.
       if (passed && !skill.set) noteRetestFor(id);
-      const after = h('div', { class: 'g-after' }, passed ? retestNode({ only: id, from }) : null);
+      const after = h('div', { class: 'g-after' }, skill.set ? null : firstNextNode(id), passed ? retestNode({ only: id, from }) : null);
       if (passed && !skill.set) tieInNode(id).then((n) => { if (n) after.append(n); }).catch(() => {});
       setBody(stepper(tenAt), h('header', { class: 'g-head' },
         h('h1', { class: 'g-title', text: passed ? 'Learned' : 'Not yet' }),
@@ -3180,6 +3180,32 @@ export function createUI(ctx) {
       h('ul', { class: 'g-level__list' }, list.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: x.why }), x.table ? tableLink(x.table) : pathLink(x.id))))) : null;
   };
   /** The same for a game's end screen (game.js `suggest`). */
+  /** "practised ×3" or "not practised yet", for a practised.js key (skill:, tablepart:, table:, part:). */
+  const timesOf = (key) => { const n = practised(key); return n ? `practised ×${n}` : 'not practised yet'; };
+  /**
+   * First at the end of a skill (2026-10-26: "when finished with a skill … first show the practising across
+   * conjugations, then the next skills down the course order; also show how many practices have been done of all of
+   * them; put these first"): ▦ across its tables, then the next three skills of its area in course order, each with
+   * its count. Everything else the end screen offers follows.
+   */
+  const firstNextList = (id) => {
+    const sk = skills.get(id);
+    if (!sk || sk.set) return { across: null, next: [] };
+    const a = areaOf(id);
+    const order = thePath().order.filter((x) => !skills.get(x)?.set && areaOf(x) === a);
+    const i = order.indexOf(id);
+    return { across: sk.paradigms?.length ? { label: `▦ ${acrossLabel(sk.paradigms)}`, times: timesOf(`tablepart:${id}`) } : null, next: i < 0 ? [] : order.slice(i + 1, i + 4), area: AREAS.find((x) => x.id === a) };
+  };
+  function firstNextNode(id) {
+    const { across, next, area } = firstNextList(id);
+    if (!across && !next.length) return null;
+    return h('section', { class: 'g-firstnext', 'aria-labelledby': 'g-firstnext-h' },
+      h('h2', { id: 'g-firstnext-h', class: 'g-h2', text: 'Next' }),
+      across ? h('div', { class: 'g-acts' }, btn([across.label, h('span', { class: 'g-firstnext__n', text: ` · ${across.times}` })], { onclick: () => startSkill(id, 'across') }, 'btn btn--primary g-play')) : null,
+      next.length ? h('h3', { class: 'g-next__h', text: `Next in ${area?.label ?? 'the course'}, in course order` }) : null,
+      next.length ? h('ol', { class: 'g-firstnext__list' }, next.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goSkill(x) },
+        h('b', { text: titleOf(x) }), ' ', capTag(x), h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`skill:${x}`)}` }))))) : null);
+  }
   const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
   const tableName = (t) => catTables?.get?.(t)?.label ?? t;
   /**
@@ -3190,10 +3216,16 @@ export function createUI(ctx) {
   const gameWays = ({ skill: id = null, table = null } = {}) => {
     const out = [];
     const sk = id ? skills.get(id) : null;
+    // First: across its tables, then the next skills of its area in course order, each with its count (firstNextList).
+    const first = id ? firstNextList(id) : { across: null, next: [] };
+    if (first.across || first.next.length) {
+      out.push({ head: 'Next' });
+      if (first.across) out.push({ label: () => `${first.across.label} · ${timesOf(`tablepart:${id}`)}`, go: () => playSkillTables(id, { chapter: sk.chapter }) });
+      for (const x of first.next) out.push({ label: () => `${titleOf(x)} (${capOf(x)}) · ${timesOf(`skill:${x}`)}`, go: () => goSkill(x) });
+    }
     if (sk && !sk.set && sk.paradigms?.length) {
-      out.push({ head: 'Its tables' });
-      if (sk.paradigms.length > 1) out.push({ label: `▦ ${acrossLabel(sk.paradigms)}`, go: () => playSkillTables(id, { chapter: sk.chapter }) });
-      for (const t of sk.paradigms) out.push({ label: `▦ ${tableName(t)}`, go: () => playSkillTables(id, { chapter: sk.chapter, table: t }) });
+      out.push({ head: 'Its tables, one at a time' });
+      for (const t of sk.paradigms) out.push({ label: () => `▦ ${tableName(t)} · ${timesOf(`table:${t}`)}`, go: () => playSkillTables(id, { chapter: sk.chapter, table: t }) });
     }
     const fo = sk && !sk.set ? skillFocusOptions(sk) : [];
     if (fo.length > 1) {
@@ -5425,7 +5457,7 @@ export function createUI(ctx) {
     // offer for anything already due, and the reading tie-in (§13). After any session: the re-tests now due.
     const drilled = params?.drill && skills.has(params.drill) && !params.retest ? params.drill : null;
     if (drilled) noteRetestFor(drilled);
-    const after = h('div', { class: 'g-after' }, retestNode({ from: params?.from ?? null }));
+    const after = h('div', { class: 'g-after' }, params?.drill && skills.has(params.drill) ? firstNextNode(params.drill) : null, retestNode({ from: params?.from ?? null }));
     if (params?.drill && skills.has(params.drill)) tieInNode(params.drill).then((n) => { if (n) after.append(n); }).catch(() => {});
     const againLabel = params?.unlimited ? 'Keep going' : params?.mixed ? 'Another mixed set' : params?.drill ? (params.retest ? `Drill ${titleOf(params.drill)}` : 'Another ten') : params?.catalogue ? 'Back to the table' : params?.redo ? 'Another redo' : params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session';
     const again = () => (params?.unlimited || params?.mixed ? render(params.unlimited ? 'unlimited' : 'mixed', { skill: params.drill, from: params.from ?? null })

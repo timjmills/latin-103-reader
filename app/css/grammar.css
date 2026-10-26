@@ -1668,3 +1668,12 @@ html.g-game-open .g-side { z-index: 70; }
 .g-scaffold { grid-template-columns: minmax(0, 1fr); }
 .g-focus .g-seg { flex-wrap: wrap; width: auto; max-width: 100%; }
 .g-focus .g-seg__btn { flex: 1 1 auto; }
+/* First at the end of a skill: across its tables, then the next in course order, with counts (ui.js firstNextNode) */
+.g-firstnext { margin: var(--s-3) 0; }
+.g-firstnext__list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.g-firstnext__n { font-weight: 400; color: var(--ink-2); font-size: var(--ui-sm); }
+.btn .g-firstnext__n { color: inherit; opacity: 0.85; }
+/* An explanation's "for each declension" line (the endings run together) breaks rather than widening the page */
+.g-explain__appliesbox, .g-explain__diff, .g-explain__applies { min-width: 0; overflow-wrap: anywhere; }
+/* Each declension's item keeps together where it fits, and wraps inside itself where it does not (a phone) */
+@media (max-width: 559.98px) { .g-diff__i { white-space: normal; } }
