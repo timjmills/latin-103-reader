@@ -3004,6 +3004,7 @@ export function createUI(ctx) {
       charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids, table }), noun: 'word' } : null,
       countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
+      settings: gameSettings({ table, skill: id, word: words.length === 1 ? words[0].h : null }),
       onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
         for (const e of words) {
           const k = `${e.h}|${e.pos}|`;
@@ -3499,7 +3500,7 @@ export function createUI(ctx) {
     return out;
   }
   /** What belongs to this skill or table, as sections (`sec` makes each): the side bar's, and the end screens' too. */
-  function contextSections(sk, table, sec, pr = {}, { keepGoing = true } = {}) {
+  function contextSections(sk, table, sec, pr = {}, { keepGoing = true, inGame = false } = {}) {
     const parts = [];
     if (table) {
       // Practise only…: the chart's own switch, pressed from here; with no table on screen it is kept for the next one.
@@ -3508,6 +3509,8 @@ export function createUI(ctx) {
       const gendered = t?.part === 'adjective' || t?.part === 'pronoun' || t?.part === 'numeral';
       const shown = chartFocusOptions([...(hasVoice ? [{ voice: 'act' }, { voice: 'pass' }] : []), { number: 'sg' }, { number: 'pl' }, ...(gendered ? [{ gender: 'm' }, { gender: 'f' }, { gender: 'n' }] : [])]);
       if (shown.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, shown.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
+        // In a game's menu: the table again, played with only these (the game itself has closed).
+        if (inGame) { setChartFocus(o.id); render('catalogue', { table, from: pr.from ?? null, play: true }); return; }
         const there = [...document.querySelectorAll('.g-focus .g-seg__btn')].find((b) => b.textContent === o.label);
         if (there) there.click(); else setChartFocus(o.id);
         for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
@@ -3525,6 +3528,7 @@ export function createUI(ctx) {
     if (sk && !table) {
       const fo = skillFocusOptions(sk);
       if (fo.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, fo.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
+        if (inGame) { setChartFocus(o.id); playSkillTables(sk.id, { chapter: sk.chapter }); return; }
         const there = [...document.querySelectorAll('.g-focus .g-seg__btn')].find((b) => b.textContent === o.label);
         if (there) there.click(); else setChartFocus(o.id);
         for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
@@ -5043,9 +5047,9 @@ export function createUI(ctx) {
         node.dataset.drawn = '1';
         const n = selAll.filter((x) => sel.has(x)).length;
         node.replaceChildren(
-          h('div', { class: 'g-chips' }, btn('All', { onclick: () => setMany(selAll, true) }, 'g-chip'), btn('None', { onclick: () => setMany(selAll, false) }, 'g-chip'),
+          h('div', { class: 'g-chips', 'data-stay': '' }, btn('All', { onclick: () => setMany(selAll, true) }, 'g-chip'), btn('None', { onclick: () => setMany(selAll, false) }, 'g-chip'),
             hasVoices ? btn('Active only', { onclick: () => only('act') }, 'g-chip') : null, hasVoices ? btn('Passive only', { onclick: () => only('pass') }, 'g-chip') : null),
-          h('div', { class: 'g-pick__list' }, groups.map((g) => {
+          h('div', { class: 'g-pick__list', 'data-stay': '' }, groups.map((g) => {
             const cells = g.cells ?? [];
             const vs = ['act', 'pass'].filter((v) => cells.some((c) => voiceOf(c) === v));
             const cellTicks = (list) => list.map((c) => tick([c], labelOfCell(c), 'g-pick__cell'));
@@ -5510,6 +5514,33 @@ export function createUI(ctx) {
   }
   const backLabel = (from) => (from?.view ? `← ${from.label ?? 'Back'}` : from?.wordwork != null ? `← Cap. ${roman(Number(from.wordwork))}` : from?.chapter != null ? `← Cap. ${roman(Number(from.chapter))}` : '← Today');
   const backButton = (from, cls = 'btn btn--quiet g-back') => btn(backLabel(from), { onclick: () => leaveTo(from) }, cls);
+  /**
+   * A game's title opens these (2026-10-26: "when you click up here bring the menu of options of what is being played,
+   * so you can change it: passive only → passive and active, or switch what is being practised"): the table's own
+   * "Choose what to practise" where its page made one, else the way to it; then the ways on (another word, the next
+   * conjugation, easier, harder); for a skill, its Next. A button here starts its choice and leaves the game.
+   */
+  function gameSettings({ table = null, skill = null, word = null, group = null } = {}) {
+    if (!table && !skill) return null;
+    // The same as the side bar (2026-10-26: "that menu needs to have all the options the one on the left has, to turn
+    // on or off"): Choose what to practise, Practise only, Keep going, the skill's tables, easier or harder, related,
+    // its lesson, and the strand from easiest to hardest. Each a fold, the first two open.
+    return () => {
+      const sk = skill && skills.has(skill) && !skills.get(skill).set ? skills.get(skill) : null;
+      let n = 0;
+      const sec = (title, ...kids) => { const k = kids.flat(Infinity).filter(Boolean); return k.length ? h('details', { class: 'g-side__sec gm__setsec', open: n++ < 2 || null }, h('summary', { class: 'g-side__sum' }, h('span', { text: title })), h('div', { class: 'g-side__body' }, k)) : null; };
+      const choose = table && tableChooser?.table === table ? tableChooser.node()
+        : table && catTables?.get?.(table) ? h('div', { class: 'g-acts' }, btn('Choose the forms, on its table', { onclick: () => render('catalogue', { table }) }, 'btn')) : null;
+      const list = [table ? sec('Choose what to practise', choose) : null,
+        ...contextSections(sk, table, sec, { group, word, from: view.params?.from ?? null }, { inGame: true }),
+        ...(sk && !table ? [sec('Next', firstNextNode(sk.id))] : []),
+        ...progressionSections(sk, table, sec)].filter(Boolean);
+      // Opening a fold only opens it: [data-stay] keeps the game.
+      for (const d of list) d.querySelector('summary')?.setAttribute('data-stay', '');
+      return h('div', { class: 'gm__sets' }, list);
+    };
+  }
+
   /**
    * Keep going after a table (2026-10-25): another word of the same table; the same forms on the other conjugations or
    * declensions (its siblings: conj1 … conj4, decl1 … decl5, the adjective classes), the part kept where they have it;
@@ -6861,7 +6892,8 @@ export function createUI(ctx) {
       const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const cardHow = (it) => { const r = ruleOfEntry(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } };
-      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: testedLine(cards), suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →',
+      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: testedLine(cards), suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }),
+        settings: gameSettings({ table: tableIdOfItem(item), skill: item.catalogue || tableIdOfItem(item) ? null : item.skill ?? null, word: words > 1 ? null : cards[0].entry?.h ?? null, group: item.chart?.group ?? null }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Back to the table →',
         // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
         // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.
         // (A lesson's Learn already counts its part on the part's first item, so only a part practised on its own adds one here;

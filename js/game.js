@@ -142,7 +142,7 @@ export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
 export const playWay = () => { const mode = modeOf(read('mode', 'type')); const shuffle = mode === 'type' && !!read('shuffle', false); return { mode, shuffle, label: ladderLabel(mode, shuffle) }; };
 export function setPlayWay({ mode, shuffle = false }) { write('mode', modeOf(mode)); write('shuffle', !!shuffle); }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null } = {}) {
   // In order, a column at a time (2026-10-23: "unless it's on shuffle have all the active first then all the passive"):
   // each group's forms together, the groups in the order they first come, the forms in each as given.
   const base = byGroup(items.filter((x) => x && x.answers?.length));
@@ -261,6 +261,34 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('div', { class: 'gm__acts' }, go, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => node.resume() }, 'Cancel')));
     openPanel(node, go);
   }
+  // The title is the way to change what is played (2026-10-26: "when you click up here I want it to bring the menu of
+  // options of what is being played so you can change the settings: it says passive only, I want options to do passive
+  // and active, or to switch what is being practised"). `settings()` is the caller's: a node of choices. A button in it
+  // starts something else, and closes this game first, unless it sits in a [data-stay] (a chip that only ticks a box).
+  function titlesNode() {
+    const inner = [el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub', text: subtitle }) : null];
+    if (!settings && !chartList) return el('div', { class: 'gm__titles' }, inner);
+    return el('button', { type: 'button', class: 'gm__titles gm__titlesbtn', 'aria-haspopup': 'dialog', title: 'Change what is played', 'aria-label': `${title}${subtitle ? ` — ${subtitle}` : ''}. Change what is played`, onclick: () => openWhat() },
+      inner, el('span', { class: 'gm__titlesmore', 'aria-hidden': 'true', text: ' ⚙ change ▾' }));
+  }
+  function openWhat() {
+    if (panel?.querySelector('#gm-set-h')) return;
+    panel?.resume();   // the rule, Review or ⚙ open: this one takes its place
+    const back = el('button', { type: 'button', class: 'btn btn--primary', 'data-stay': '', onclick: () => node.resume() }, ended ? 'Back' : 'Back to the game');
+    let picker = null;
+    if (chartList) { const c = chartChooser(new Set(chartOn), { resumeLabel: ended ? 'Back' : 'Back to the game', resume: () => node.resume() }); picker = el('div', { class: 'gm__setsec', 'data-stay': '' }, el('h3', { class: 'gm__seth', text: `Which ${noun}s` }), c.picker, el('div', { class: 'gm__acts' }, c.go)); }
+    let more = null;
+    try { more = settings?.() ?? null; } catch { more = null; }
+    const node = el('section', { class: 'gm__end gm__panel gm__setsp', role: 'region', 'aria-labelledby': 'gm-set-h' },
+      el('div', { class: 'gm__sethead' }, el('h2', { id: 'gm-set-h', class: 'gm__endh', text: 'What you are playing' }),
+        el('button', { type: 'button', class: 'btn btn--quiet', 'data-stay': '', onclick: () => node.resume() }, ended ? '← Back' : '← Back to the game')),
+      el('p', { class: 'gm__sub' }, el('span', { lang: 'la', text: title }), subtitle ? ` — ${subtitle}` : ''),
+      picker, more,
+      el('div', { class: 'gm__acts' }, back));
+    // A choice that starts something else leaves this game first (quietly: no grading of a half-played round).
+    node.addEventListener('click', (e) => { const b = e.target.closest?.('button, a[href]'); if (b && !b.disabled && !b.closest('[data-stay]')) close(true); }, true);
+    openPanel(node, back);
+  }
   const closeBtn = el('button', { type: 'button', class: 'gm__tool gm__close', 'aria-label': 'Leave the game', title: 'Leave (Esc)', onclick: () => close() }, '✕');
   const live = el('p', { class: 'visually-hidden', 'aria-live': 'polite' });
   const track = el('ol', { class: 'gm__track', 'aria-label': 'Forms' });
@@ -277,7 +305,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // z-index reaches), keeps the focus inside, and Escape closes it.
   const root = el('dialog', { class: 'gm', 'aria-label': `Game: ${title}` },
     el('header', { class: 'gm__bar' },
-      el('div', { class: 'gm__titles' }, el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub', text: subtitle }) : null),
+      titlesNode(),
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock),
       el('div', { class: 'gm__tools' }, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
       meter),
@@ -507,21 +535,32 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   }
   function submit() {
     const r = rows[at];
-    if (!r || !r.slot.contains(input)) return;
+    if (!r || !r.slot.contains(input) || input.readOnly) return;   // not while the right form is flashed
     const typed = input.value.trim();
     if (!typed) return;
     // In Endings only the box holds the ending; the whole form typed anyway is right too.
     if (isRight(r.x, typed)) { right(r); return; }
     wrong(r);
-    input.select();
-    // The box empties a moment later — unless the learner has already moved on, answered, or started again.
+    // The right form flashes in the box for half a second, then the box empties for another try (2026-10-26: "if one
+    // gets it wrong in the game mode show the correct answer for .5 a second and clear it") — unless the learner has
+    // already moved on, answered, or started again.
+    const shown = splits(r.x) ? r.x.ending : r.x.answers[0];
     const tok = seq;
     setTimeout(() => {
-      if (closed || tok !== seq || rows[at] !== r || r.li.dataset.state !== 'wrong') return;
-      delete r.li.dataset.state;
-      if (input.value.trim() === typed) input.value = '';
-      focusIn(input);
-    }, 750);
+      if (closed || tok !== seq || rows[at] !== r || r.li.dataset.state !== 'wrong' || input.value.trim() !== typed) return;
+      input.value = shown;
+      input.readOnly = true;
+      input.classList.add('gm__in--answer');
+      live.textContent = `The form is ${r.x.answers[0]}.`;
+      setTimeout(() => {
+        input.readOnly = false;
+        input.classList.remove('gm__in--answer');
+        if (closed || tok !== seq || rows[at] !== r) return;
+        if (input.value === shown) input.value = '';
+        delete r.li.dataset.state;
+        focusIn(input);
+      }, 500);
+    }, 250);
   }
   /** The section a form is in: its column of the table (one section in all when shuffled, which has no columns). */
   const secOf = (row) => (row.again ? row.sec : (shuffle ? '*' : row.x.group ?? '*'));
@@ -755,7 +794,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings }); };
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
     const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;

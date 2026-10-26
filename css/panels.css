@@ -605,6 +605,14 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__titles { flex: 1 1 10rem; min-width: 0; }
 .gm__title { margin: 0; font-family: var(--face-reading); font-size: 1.25rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gm__sub { margin: 0; font-size: var(--ui-sm); color: var(--ink-3); }
+/* The title is a button: what is played, and a way to change it. */
+.gm__titlesbtn { display: block; text-align: start; padding: var(--s-1) var(--s-2); margin: calc(-1 * var(--s-1)) calc(-1 * var(--s-2)); border: 2px solid transparent; border-radius: 0.9rem; background: none; color: inherit; font: inherit; cursor: pointer; }
+.gm__titlesbtn:hover, .gm__titlesbtn:focus-visible { border-color: color-mix(in srgb, var(--gm-a) 45%, transparent); background: color-mix(in srgb, var(--gm-a) 8%, transparent); }
+.gm__titlesmore { font-size: var(--ui-sm); font-weight: 700; color: var(--gm-a); }
+.gm__setsp { overflow-y: auto; }
+.gm__sethead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.gm__setsec { margin-top: var(--s-4); }
+.gm__seth { margin: 0 0 var(--s-2); font-size: var(--ui-md, 1rem); }
 .gm__stats { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); font-variant-numeric: tabular-nums; font-size: var(--ui-sm); font-weight: 700; }
 /* Each stat a chunky pill, like a game's HUD. */
 .gm__stats > span { display: inline-flex; align-items: center; min-height: 2rem; padding: 0 0.75em; border-radius: 999px; background: var(--bg-raised); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--gm-a) 35%, transparent); color: var(--ink); }
@@ -645,7 +653,10 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__row:not([data-pos="current"]) { cursor: pointer; }   /* a tap on a band turns the wheel to it */
 .gm__row:not([data-pos="current"]) * { pointer-events: none; }
 .gm__stage { touch-action: none; }   /* a swipe turns the wheel */
-.gm--ended .gm__stage { touch-action: auto; }   /* the end card scrolls as a page does */
+/* The end card scrolls as a page does, from anywhere on the stage (2026-10-26: "it won't let me scroll down to see the
+   easier to harder and all the other things"): the stage itself scrolls, unfaded, and the card is as long as it is. */
+.gm--ended .gm__stage { touch-action: auto; overflow-y: auto; -webkit-mask-image: none; mask-image: none; }
+.gm--ended .gm__stage > .gm__end { max-height: none; overflow: visible; padding-bottom: var(--s-6); }
 .gm__hint { position: absolute; inset: auto 0 var(--s-5); margin: 0; text-align: center; font-size: var(--ui-sm); font-weight: 700; color: var(--ink-2); z-index: 20; pointer-events: none; }
 .gm__row[data-pos="current"] { opacity: 1; padding: var(--s-4) var(--s-5); background: var(--bg-raised);
   box-shadow: 0 0 0 3px var(--gm-a), 0 0 0 6px color-mix(in srgb, var(--gm-a) 22%, transparent), 0 16px 40px color-mix(in srgb, var(--gm-a) 30%, transparent); }
@@ -683,6 +694,7 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__row[data-state="wrong"] { background: var(--rubric-soft); }
 .gm__row[data-state="wrong"][data-pos="current"] { box-shadow: 0 0 0 3px var(--rubric), 0 0 0 6px color-mix(in srgb, var(--rubric) 22%, transparent); }
 .gm__row[data-state="wrong"] .gm__in { border-color: var(--rubric); }
+.gm__in--answer { color: var(--rubric-ink); font-weight: 700; background: color-mix(in srgb, var(--rubric) 8%, var(--bg)); }   /* the right form, flashed after a miss */
 .gm__row[data-state="skipped"] { background: color-mix(in srgb, var(--rubric) 16%, var(--bg-raised)); box-shadow: 0 0 0 3px var(--rubric); }
 .gm__skipped { font-size: var(--ui-sm); font-weight: 700; color: var(--rubric-ink); }
 .gm__skip { border-color: var(--rubric); color: var(--rubric-ink); }
