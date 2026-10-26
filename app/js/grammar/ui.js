@@ -2685,6 +2685,7 @@ export function createUI(ctx) {
   const metCells = new Map();
   let selectRules = null;
   let catTables = null;   // the catalogue's tables (labels and model words), once loaded
+  let gameCountedTable = null;   // a table a chart game has already counted this session (renderSummary skips it)
   loadParadigmCatalogue().then((c) => { selectRules = Array.isArray(c?.raw?.select) ? c.raw.select : null; catTables = c?.tables ?? null; }).catch(() => {});
   /**
    * "For: all four conjugations …" — what a skill's rule covers, and what the step's own table is an example of
@@ -5409,7 +5410,9 @@ export function createUI(ctx) {
   function renderSummary(summary, params) {
     view = { name: 'summary', params };
     // One more round of each skill the session asked, and of a table practised from Tables (the "×N", practised.js).
-    if (summary.total) notePractised([...summary.skills.filter((x) => skills.has(x)).map((x) => `skill:${x}`), params?.catalogue ? `table:${params.catalogue}` : null]);
+    const tableCounted = params?.catalogue && gameCountedTable === params.catalogue;
+    gameCountedTable = null;
+    if (summary.total) notePractised([...summary.skills.filter((x) => skills.has(x)).map((x) => `skill:${x}`), params?.catalogue && !tableCounted ? `table:${params.catalogue}` : null]);
     // A self-graded "partly" counts towards the scheduler but is not a clean right: it is named, not folded in (m4).
     const partly = summary.partly ?? 0;
     const clean = summary.right - partly;
@@ -6675,10 +6678,18 @@ export function createUI(ctx) {
       const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const cardHow = (it) => { const r = ruleOfEntry(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } };
-      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: chartFocus() === 'all' ? 'The whole chart, as a game' : `The whole chart, as a game · ${chartFocusOptions([{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }]).find((o) => o.id === chartFocus())?.label.toLowerCase() ?? ''}`, suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
+      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: chartFocus() === 'all' ? 'The whole chart, as a game' : `The whole chart, as a game · ${chartFocusOptions([{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }]).find((o) => o.id === chartFocus())?.label.toLowerCase() ?? ''}`, suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →',
+        // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
+        // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.
+        // (A lesson's Learn already counts its part on the part's first item, so only a part practised on its own adds one here;
+        // a table session's end skips the table once the game has counted it, so one round is one ×.)
+        countKey: [tableIdOfItem(item) ? `table:${tableIdOfItem(item)}` : null, view.name === 'part' && view.params?.skill ? `part:${view.params.skill}:${Number(view.params.step) || 0}` : null].filter(Boolean),
         onDone: ({ firstMiss }) => {
+          if (view.name === 'catalogue' && tableIdOfItem(item)) gameCountedTable = tableIdOfItem(item);
           for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
+          // Graded now, not only when the game is closed: leaving by one of its end buttons used to skip this.
+          if (form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check);
         },
         onClose: () => { if (form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check); } });
     };
