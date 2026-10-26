@@ -3574,7 +3574,8 @@ export function createUI(ctx) {
         chIds.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x), ' ', sideCount(`skill:${x}`)))),
         chTables.map((st) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(st.id), onclick: () => goTable(st.id) }, `▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`))))),
       h('p', {}, btn('The whole chapter →', { onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))));
-    const kids = [...parts.slice(0, ctxCount), ...progressionSections(sk, table, sec, nextUp), ...parts.slice(ctxCount)].filter(Boolean);
+    // Where you are first (the lesson's parts, the strand), then this skill's or table's own options, then the rest.
+    const kids = [...progressionSections(sk, table, sec, nextUp), ...parts.slice(0, ctxCount), ...parts.slice(ctxCount)].filter(Boolean);
     if (!kids.length) return;
     const open = sideOpen();
     let at = sideAt();
@@ -3614,6 +3615,50 @@ export function createUI(ctx) {
    * the lesson progression"): the lesson's parts while in a lesson, the part on screen marked; and the strand — the
    * area's skills and tables from easiest to hardest — with this skill or table marked and scrolled to.
    */
+  /**
+   * Where you are (2026-10-26: "this section at the top of all the menus, which shows where one is at; and some type of
+   * back button so one can access all available skills / charts by the type of skill, easiest to hardest"): an area's
+   * skills and tables in course order, this one marked; ‹ All skills by type lists every area, each opening its own
+   * list here, and ↩ comes back to where you are. It redraws itself in place (side bar, end screen, a game's menu).
+   */
+  function strandNode(areaId, hereId = null) {
+    const box = h('div', { class: 'g-strand' });
+    let showing = areaId;   // an area's id, or null for the list of areas
+    const stepsOf = (a) => thePath().steps.filter((st) => (st.kind === 'skill' ? areaOf(st.id) === a.id && !skills.get(st.id)?.set : st.kind === 'table' && a.table(st.id)));
+    const paint = () => {
+      const a = AREAS.find((x) => x.id === showing);
+      if (!a) {
+        box.replaceChildren(
+          h('p', { class: 'g-strand__h', text: 'All skills and tables, by type' }),
+          h('ul', { class: 'g-side__list' }, AREAS.map((x) => {
+            const steps = stepsOf(x);
+            const done = steps.filter((st) => st.kind === 'skill' && inRotation(stateOf(st.id))).length;
+            return h('li', {}, h('button', { type: 'button', class: `g-side__go${x.id === areaId ? ' is-here' : ''}`, 'data-area': x.id, 'aria-current': x.id === areaId ? 'true' : null, onclick: () => { showing = x.id; paint(); } },
+              `${x.label} `, h('span', { class: 'g-firstnext__n', text: `· ${steps.length} · ${done} learnt` }), ' ›'));
+          })));
+        return;
+      }
+      let n = 0;
+      const ol = h('ol', { class: 'g-side__list g-side__strand', 'data-area': a.id, 'data-keep': `strand:${a.id}`, 'data-here': a.id === areaId ? hereId ?? '' : '' }, stepsOf(a).map((st) => {
+        const here = a.id === areaId && st.id === hereId;
+        const isTable = st.kind === 'table';
+        return h('li', {}, h('button', { type: 'button', class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id,
+          onclick: () => (isTable ? goTable(st.id) : goView('lesson', { skill: st.id })) },
+          isTable ? [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)] : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)} `, sideCount(`skill:${st.id}`)]));
+      }));
+      box.replaceChildren(
+        h('div', { class: 'g-strand__nav' },
+          btn('‹ All skills by type', { onclick: () => { showing = null; paint(); }, 'aria-label': 'All skills and tables, by type' }, 'g-chip g-strand__back'),
+          a.id !== areaId && AREAS.some((x) => x.id === areaId) ? btn('↩ Where you are', { onclick: () => { showing = areaId; paint(); } }, 'g-chip') : null),
+        a.id !== areaId ? h('p', { class: 'g-strand__h', text: `${a.label}, easiest to hardest` }) : null,
+        ol,
+        h('p', {}, btn(`All of ${a.label} →`, { onclick: () => render('course', { by: 'area', area: a.id, ...(hereId && skills.has(hereId) ? { at: hereId } : {}) }) }, 'g-vlink')));
+      // The marked row in view, inside the list only (never scrollIntoView, which would move the page under it).
+      requestAnimationFrame(() => { if (ol.closest('.g-side') && a.id === areaId) return; /* the side bar puts its lists back itself (paintSide) */ const at = ol.querySelector('.is-here'); if (at) ol.scrollTop = at.offsetTop - ol.clientHeight / 2; });
+    };
+    paint();
+    return box;
+  }
   function progressionSections(sk, table, sec, nextUp = null) {
     const out = [];
     const pr = view.params ?? {};
@@ -3628,20 +3673,8 @@ export function createUI(ctx) {
     }
     const areaId = sk ? areaOf(sk.id) : table ? tableArea(table) : (view.name === 'course' && view.params?.area) || (nextUp ? areaOf(nextUp) : 'verbs');
     const a = AREAS.find((x) => x.id === areaId);
-    if (a) {
-      const steps = thePath().steps.filter((st) => (st.kind === 'skill' ? areaOf(st.id) === a.id && !skills.get(st.id)?.set : st.kind === 'table' && a.table(st.id)));
-      let n = 0;
-      const ol = h('ol', { class: 'g-side__list g-side__strand', 'data-area': a.id, 'data-keep': `strand:${a.id}`, 'data-here': sk?.id ?? table ?? '' }, steps.map((st) => {
-        const here = st.id === sk?.id || st.id === table;
-        const isTable = st.kind === 'table';
-        return h('li', {}, h('button', { type: 'button', class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id,
-          onclick: () => (isTable ? goTable(st.id) : goView('lesson', { skill: st.id })) },
-          isTable ? [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)] : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)} `, sideCount(`skill:${st.id}`)]));
-      }));
-      // Scrolled inside the list only (paintSide), never with scrollIntoView, which would move the page under it as well.
-      if (!document.querySelector('.g-side')) requestAnimationFrame(() => { const at = ol.querySelector('.is-here'); if (at) ol.scrollTop = at.offsetTop - ol.clientHeight / 2; });
-      out.push(sec(`${a.label}, easiest to hardest`, ol, h('p', {}, btn(`All of ${a.label} →`, { onclick: () => render('course', { by: 'area', area: a.id, ...(sk ? { at: sk.id } : {}) }) }, 'g-vlink'))));
-    }
+    // Where you are leads, above the lesson's own parts.
+    if (a) out.unshift(sec(`Where you are · ${a.label}, easiest to hardest`, strandNode(a.id, sk?.id ?? table ?? null)));
     return out;
   }
   /** What belongs to this skill or table, as sections (`sec` makes each): the side bar's, and the end screens' too. */
@@ -5680,10 +5713,10 @@ export function createUI(ctx) {
       const sec = (title, ...kids) => { const k = kids.flat(Infinity).filter(Boolean); return k.length ? h('details', { class: 'g-side__sec gm__setsec', open: n++ < 2 || null }, h('summary', { class: 'g-side__sum' }, h('span', { text: title })), h('div', { class: 'g-side__body' }, k)) : null; };
       const choose = table && tableChooser?.table === table ? tableChooser.node()
         : table && catTables?.get?.(table) ? h('div', { class: 'g-acts' }, btn('Choose the forms, on its table', { onclick: () => render('catalogue', { table }) }, 'btn')) : null;
-      const list = [table ? sec('Choose what to practise', choose) : null,
+      const list = [...progressionSections(sk, table, sec),
+        table ? sec('Choose what to practise', choose) : null,
         ...contextSections(sk, table, sec, { group, word, from: view.params?.from ?? null }, { inGame: true }),
-        ...(sk && !table ? [sec('Next', firstNextNode(sk.id))] : []),
-        ...progressionSections(sk, table, sec)].filter(Boolean);
+        ...(sk && !table ? [sec('Next', firstNextNode(sk.id))] : [])].filter(Boolean);
       // Opening a fold only opens it: [data-stay] keeps the game.
       for (const d of list) d.querySelector('summary')?.setAttribute('data-stay', '');
       return h('div', { class: 'gm__sets' }, list);
@@ -5756,7 +5789,7 @@ export function createUI(ctx) {
     const table = params.catalogue ?? null;
     if (!sk && !table) return null;
     const sec = (title, ...kids) => { const k = kids.flat(Infinity).filter(Boolean); return k.length ? h('details', { class: 'g-side__sec g-end__sec', open: true }, h('summary', { class: 'g-side__sum' }, h('span', { text: title })), h('div', { class: 'g-side__body' }, k)) : null; };
-    const list = [...contextSections(sk, table, sec, params, { keepGoing: false }), ...progressionSections(sk, table, sec)].filter(Boolean);
+    const list = [...progressionSections(sk, table, sec), ...contextSections(sk, table, sec, params, { keepGoing: false })].filter(Boolean);
     return list.length ? h('section', { class: 'g-end', 'aria-label': 'More ways to keep going' }, h('h2', { class: 'g-h2', text: 'More ways to keep going' }), list) : null;
   }
   function renderSummary(summary, params) {

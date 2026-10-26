@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v142';
+const CACHE_VERSION = 'v143';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -23,11 +23,11 @@ const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it
 const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
-  "./css/grammar.css": '6f89efb36a45',
+  "./css/grammar.css": 'f915ef1f8567',
   "./css/panels.css": '085b842a5d26',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
-  "./css/reader.css": '5e0386f184ae',
+  "./css/reader.css": 'c99be4cec6d6',
   "./css/tokens.css": '3689d7a8f3e7',
   "./data/course.json": '518feda188f8',
   "./data/function-words.json": 'f2aac73beb75',
@@ -345,7 +345,7 @@ const HASHES = {
   "./icons/icon.svg": 'c1f5c8520853',
   "./icons/maskable-512.png": '38654d50c164',
   "./index.html": 'd18a0679353b',
-  "./js/activetime.js": '4c7db2062ef7',
+  "./js/activetime.js": 'ec088d9200b9',
   "./js/audio.js": '2e1d36c01a62',
   "./js/auth.js": '22086691f460',
   "./js/chapters.js": '58df66c43383',
@@ -372,7 +372,7 @@ const HASHES = {
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": '5e0572b23a79',
+  "./js/grammar/ui.js": '9219b5e410c2',
   "./js/grammar/voices.js": '79e178e05437',
   "./js/hovergloss.js": 'db78916cb67b',
   "./js/main.js": 'b6d09bd42371',
