@@ -790,8 +790,11 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   function finish() {
     ended = true;
     // A caller playing its own boxes (a lesson's chart, ui.js) is told which were missed on the first try.
-    try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown) }); } catch (e) { console.warn('[game] onDone', e); }
+    try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown), typed: mode === 'type' }); } catch (e) { console.warn('[game] onDone', e); }
     notePractised(countKey);   // the table's "×N" (practised.js): a game played to its end
+    // Played to its end by typing (Type it, shuffled or not): marked too, so menus can show it green (2026-10-26:
+    // "change the colour of a skill to a green background if it's been practised by the typing option").
+    if (mode === 'type') notePractised([].concat(countKey ?? []).filter((k) => typeof k === 'string' && k).map((k) => `typed:${k}`));
     root.classList.add('gm--ended');
     clearInterval(timer);
     sounds.done();
