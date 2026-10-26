@@ -1326,7 +1326,8 @@ html.g-game-open .g-pop, html.g-game-open .g-tip { z-index: 61; }
 #grammar .g-game .g-explain.is-open .g-explain__q::after { content: " Less"; }
 /* ▶ Play this chart, beside Check. */
 .g-chart__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-#grammar .g-game .g-runnav { background: var(--bg-raised); flex-wrap: nowrap; gap: var(--s-1); }
+#grammar .g-game .g-runnav { background: var(--bg-raised); flex-wrap: wrap; gap: var(--s-1); justify-content: flex-start; }
+#grammar .g-game .g-runnav > .g-gamebar__leave, #grammar .g-game .g-runnav > :last-child { margin-left: auto; }   /* never past the screen's edge (2026-10-27): a second row when it must */
 #grammar .g-game .g-runnav > * { white-space: nowrap; flex: none; }
 @media (max-width: 480px) { #grammar .g-game .g-runnav__game { font-size: var(--ui-sm); padding-inline: var(--s-2); } #grammar .g-game .g-runnav__stats:not(:empty) { font-size: var(--ui-sm); } }
 
@@ -1721,3 +1722,11 @@ html.g-game-open .g-side { z-index: 70; }
 .g-side__go[aria-expanded="true"] { box-shadow: inset 0 0 0 2px var(--rubric); }
 /* A choice this word or table does not have (possum: no passive): there, greyed, with why on hover. */
 .g-chip.is-missing, .g-chip:disabled { opacity: 0.45; text-decoration: line-through; cursor: not-allowed; }
+/* Game mode with the side bar shown: the game's column sits beside it, not under it, and its bar with it
+   (2026-10-27: the buttons ran off the screen's edge and the card slipped under the side bar). */
+@media (min-width: 900px) {
+  html.g-side-on.g-side-left #grammar .g-body.g-game { --gpl: max(calc(var(--side-w) + 2rem), calc((100vw - 46rem) / 2)); --gpr: max(var(--s-4), calc((100vw - 46rem) / 2)); }
+  html.g-side-on.g-side-right #grammar .g-body.g-game { --gpr: max(calc(var(--side-w) + 2rem), calc((100vw - 46rem) / 2)); --gpl: max(var(--s-4), calc((100vw - 46rem) / 2)); }
+  html.g-side-on #grammar .g-body.g-game { padding-left: var(--gpl); padding-right: var(--gpr); }
+  html.g-side-on #grammar .g-game .g-runnav { margin-left: calc(-1 * var(--gpl)); margin-right: calc(-1 * var(--gpr)); padding-left: var(--gpl); padding-right: var(--gpr); }
+}
