@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v134';
+const CACHE_VERSION = 'v135';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -371,7 +371,7 @@ const HASHES = {
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": 'bd9408b72983',
+  "./js/grammar/ui.js": 'bca14fc75d33',
   "./js/grammar/voices.js": '79e178e05437',
   "./js/hovergloss.js": 'db78916cb67b',
   "./js/main.js": 'd0f32d75f894',
@@ -385,7 +385,7 @@ const HASHES = {
   "./js/store.js": '4ed7f6b56e4c',
   "./js/sync.js": '58f8ce7ca83b',
   "./js/tokenize.js": '2581885bc1a3',
-  "./js/wordpanel.js": '320990db1b32',
+  "./js/wordpanel.js": '0e2f40b23fcc',
   "./js/wordrule.js": '7189dc8f0a94',
   "./manifest.webmanifest": 'd74be85f6b51',
   "./vendor/supabase.js": '700acd9a4322',

@@ -3016,7 +3016,7 @@ export function createUI(ctx) {
       : { kind: '', parts: '', type: sk.title, steps: [...(appliesTo(sk.paradigms) ? [{ head: 'For', text: `${appliesTo(sk.paradigms)}.` }] : []), ...(how?.steps ?? [])] };
     const list = (table ? ofTable : all).filter((e) => counts.has(`${e.h}|${e.pos}`) || table).map((e) => ({ id: `${e.h}|${e.pos}`, section: table ? `${tableName(table)} · words` : 'Words', col: headOf(e), n: counts.get(`${e.h}|${e.pos}`) ?? 0 }));
     playTable({ title: words.length > 1 ? `${sk.title}: every word` : String(words[0].lemma ?? words[0].h),
-      subtitle: words.length > 1 ? `${words.map((e) => headOf(e)).join(', ')} — its part of each table` : `${sk.title} · just its part of the table`,
+      subtitle: `${sk.title}: ${testedLine(cards)}`,
       items: cards, rule: rule.steps?.length ? rule : null, ruleFirst: true,
       how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
       charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids, table }), noun: 'word' } : null,
@@ -4113,6 +4113,20 @@ export function createUI(ctx) {
     return (r?.entries ?? []).filter((e) => { const k = `${e.h}|${e.pos}`; if (seen.has(k) || !tableOf(e)) return false; seen.add(k); return true; });
   };
   /** A word's type — its conjugation, declension or kind of adjective (paradigms.js names them) — or null. */
+  /**
+   * What a game is testing, for its header (2026-10-26: "on the progress at the top always tell what is being tested:
+   * what type of word, and what specifically"): the words' types (3rd conjugation -iō verb) and the parts asked
+   * (present indicative passive), the first two named and the rest counted, then Practise only… when it is on.
+   */
+  const testedLine = (cards) => {
+    const uniq = (xs) => [...new Set(xs.filter(Boolean))];
+    const types = uniq(cards.map((c) => { const t = c.entry ? typeOf(c.entry)?.name : null; return t ? `${t}${/conjugation/.test(t) ? ' verb' : /declension/.test(t) ? ' noun' : ''}` : null; }));
+    const parts = uniq(cards.map((c) => c.col));
+    const name = (xs, n) => (xs.length <= n ? xs.join(' · ') : `${xs.slice(0, n).join(' · ')} +${xs.length - n} more`);
+    const f = chartFocus();
+    const focus = f !== 'all' ? (chartFocusOptions([{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }, { gender: 'm' }, { gender: 'f' }, { gender: 'n' }]).find((o) => o.id === f)?.label.toLowerCase() ?? '') : '';
+    return [name(types, 2), name(parts, 2), focus].filter(Boolean).join(' — ');
+  };
   const typeOf = (e) => {
     try {
       if (e?.pos === 'V' || e?.pos === 'VPAR') { const n = par.conjugationName(e); return n ? { group: 'Verbs', name: n.replace(/^((?:semi-)?deponent, .*?) \(deponent\)$/, '$1') } : null; }
@@ -6858,7 +6872,7 @@ export function createUI(ctx) {
       const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const cardHow = (it) => { const r = ruleOfEntry(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } };
-      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: chartFocus() === 'all' ? 'The whole chart, as a game' : `The whole chart, as a game · ${chartFocusOptions([{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }]).find((o) => o.id === chartFocus())?.label.toLowerCase() ?? ''}`, suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →',
+      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: testedLine(cards), suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →',
         // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
         // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.
         // (A lesson's Learn already counts its part on the part's first item, so only a part practised on its own adds one here;

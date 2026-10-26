@@ -500,7 +500,11 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
       for (const g of new Set(items.map((it) => it.group))) for (const st of formRule(game.whole, items.find((it) => it.group === g).form, { examples: true })?.steps ?? []) if (!steps.some((x) => x.head === st.head && x.text === st.text)) steps.push(st);
       if (steps.length) rule = { ...game.whole, steps };
     }
-    return playTable({ title: game.title ?? '', subtitle: game.subtitle ?? '', items, id: gid, onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss, rule,
+    // What is being tested, in the header (2026-10-26): the word's type and the parts asked, the first two named.
+    const parts = [...new Set(items.map((it) => String(it.cue ?? '').split(' · ').slice(1).join(' ')).filter(Boolean))];
+    const kindWord = game.kind ? `${game.kind}${/conjugation/.test(game.kind) ? ' verb' : /declension/.test(game.kind) ? ' noun' : ''}` : '';
+    const tested = [kindWord, parts.length <= 2 ? parts.join(' · ') : `${parts.slice(0, 2).join(' · ')} +${parts.length - 2} more`].filter(Boolean).join(' — ');
+    return playTable({ title: game.title ?? '', subtitle: [game.subtitle, tested].filter(Boolean).join(' · '), items, id: gid, onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss, rule,
       // The charts: the ones this game plays selected, every other one a choice away (the bar, the start, the end).
       charts: { list: chartList(), on: [...new Set(items.map((g) => g.group))], play: (ids) => play(null, new Set(ids)) },
       how: game.whole ? (it) => formRule(game.whole, it.form) : null, countKey: game.countKey ?? null, onDone: game.onDone ?? null, suggest: game.suggest ?? null });
@@ -829,7 +833,7 @@ export function renderParadigm(p, opts = {}) {
     : focused;
   if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && focused !== whole, heading: !focused ? 'The rule' : focused !== whole ? 'How this type makes it' : 'How it’s made' }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
-    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole, countKey: opts.countKey ?? null, onDone: opts.gameDone ?? null, suggest: opts.gameSuggest ?? null } }));
+    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', kind: String(p.title ?? '').split(' · ').slice(1).join(' · '), onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole, countKey: opts.countKey ?? null, onDone: opts.gameDone ?? null, suggest: opts.gameSuggest ?? null } }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).
