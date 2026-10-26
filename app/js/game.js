@@ -296,7 +296,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const closeBtn = el('button', { type: 'button', class: 'gm__tool gm__close', 'aria-label': 'Leave the game', title: 'Leave (Esc)', onclick: () => close() }, '✕');
   const live = el('p', { class: 'visually-hidden', 'aria-live': 'polite' });
   const track = el('ol', { class: 'gm__track', 'aria-label': 'Forms' });
-  const input = el('input', { type: 'text', class: 'gm__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'go', 'aria-label': 'Your answer' });
+  const input = el('input', { type: 'text', class: 'gm__in', lang: 'la', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'go', 'aria-label': 'Your answer: the whole word, or just its ending' });
   const showBtn = el('button', { type: 'button', class: 'gm__show', onclick: () => reveal() }, 'Show');
   // A wrong answer is tried again until it is right, or skipped (2026-10-20: "when you get it wrong mark red but force
   // to do again unless skip is pressed, then review at the end of that section of table; if gotten correct then turn
@@ -407,7 +407,10 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const focusIn = (n) => { if (!panel && !closed) n?.focus({ preventScroll: true }); };
 
   /* ---- asking: what the box (or the choices) holds for the form on screen, in the mode chosen */
-  const isRight = (x, t) => cellRight(t, x.answers) || (splits(x) && !!String(t ?? '').trim() && cellRight(x.stem + String(t).trim(), x.answers));
+  // The whole word or just its ending, always (2026-10-26: "in game mode one should always be able to write the whole
+  // word or just the correct ending"): an ending may be typed with its dash ("-unt").
+  const endOf = (t) => String(t ?? '').trim().replace(/^[-–—]\s*/, '');
+  const isRight = (x, t) => cellRight(t, x.answers) || (splits(x) && !!endOf(t) && (cellRight(x.stem + endOf(t), x.answers) || cellRight(endOf(t), [x.ending])));
   function ask() {
     const r = rows[at];
     if (!r) return;
@@ -444,7 +447,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       r.li.classList.remove('is-parse');
     }
     input.value = '';
-    input.setAttribute('aria-label', cue);
+    input.setAttribute('aria-label', splits(r.x) ? `${cue} — the whole word, or just its ending` : cue);
+    input.placeholder = splits(r.x) ? 'the word, or its ending' : '';
     if (mode === 'flash') {
       // A look first: the form a moment, then the box. A key or a tap skips the look.
       const look = el('button', { type: 'button', class: 'gm__look', lang: 'la', 'aria-label': `Remember it: ${r.x.answers[0]}. Then type it.` }, el('span', { class: 'gm__form' }, formNode(r.x)), el('span', { class: 'gm__looktag', text: 'Remember it…' }));
