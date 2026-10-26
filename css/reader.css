@@ -695,3 +695,31 @@ html[data-transport="on"] { scroll-padding-bottom: calc(var(--transport-h, 0px) 
 .empty-library { max-width: 34rem; margin: var(--s-7) auto; padding: 0 var(--s-4); font-family: var(--face-ui); color: var(--ink-2); line-height: 1.55; }
 .empty-library h2 { font-family: var(--face-serif); font-weight: 400; font-size: 1.4rem; color: var(--ink); margin: 0 0 var(--s-3); }
 .empty-library code { font-size: 0.95em; background: var(--bg-chrome); padding: 0.1em 0.4em; border-radius: var(--radius-sm); }
+
+/* Active time today (activetime.js), in the top bar by Aa: on every page, dim while paused. */
+.bar__aa { grid-area: settings; display: flex; align-items: center; gap: 2px; }
+.g-activetime { flex: 0 0 auto; align-self: center; min-height: 36px; padding: 0 var(--s-2, 0.5rem); border: 1px solid transparent; border-radius: 999px; background: none; font: inherit; font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; cursor: pointer; }
+.g-activetime:hover { border-color: var(--line-strong, #ccc); }
+/* Working: colourful, the colours moving (2026-10-26: "make it colourful if it's working and turn red if it's idle");
+   idle: red. A goal met: green, with confetti (activetime.js). */
+.g-activetime[data-on="true"] { background: linear-gradient(90deg, #ff006e, #fb5607, #ffbe0b, #3a86ff, #8338ec, #ff006e); background-size: 300% 100%; color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.35); animation: at-flow 6s linear infinite; }
+.g-activetime[data-on="false"] { background: #c62828; color: #fff; font-weight: 700; }
+.g-activetime[data-goal="met"] { background: #1f7a3a; color: #fff; animation: none; }
+@keyframes at-flow { to { background-position: 300% 0; } }
+@media (prefers-reduced-motion: reduce) { .g-activetime[data-on="true"] { animation: none; } }
+.at-confetti { position: fixed; inset: 0; z-index: 2000; pointer-events: none; overflow: hidden; }
+.at-confetti i { position: absolute; top: -12px; width: 9px; height: 14px; animation: at-fall 3s cubic-bezier(.25,.6,.4,1) forwards; }
+@keyframes at-fall { to { transform: translate(var(--dx), 105vh) rotate(var(--rot)); opacity: 0.9; } }
+.g-activetime.is-met { animation: at-met 0.6s ease 3 !important; }
+@keyframes at-met { 50% { transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .g-activetime.is-met { animation: none; } }
+.at-pop { position: fixed; z-index: 1000; width: min(19rem, calc(100vw - 16px)); padding: 0.75rem; border-radius: 0.9rem; background: var(--bg-raised, #fff); color: var(--ink); box-shadow: 0 10px 32px rgb(0 0 0 / 0.22); }
+.at-pop p { margin: 0 0 0.35rem; }
+.at-pop__big { font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.at-pop__q { font-size: 0.8rem; color: var(--ink-3); }
+.at-pop__h { margin-top: 0.6rem !important; font-weight: 700; font-size: 0.9rem; }
+.at-pop__goals { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.35rem; }
+.at-pop__goal { min-width: 2.75rem; min-height: 40px; border: 1px solid var(--line-strong, #ccc); border-radius: 999px; background: var(--bg, #fff); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+.at-pop__goal[aria-pressed="true"] { background: #1f7a3a; border-color: #1f7a3a; color: #fff; }
+.at-pop__clear { margin-top: 0.25rem; min-height: 36px; padding: 0 0.75rem; border: 0; background: none; color: var(--rubric-ink, #8b1a1a); font: inherit; text-decoration: underline; cursor: pointer; }
+@media (max-width: 380px) { .g-activetime { padding: 0 2px; font-size: 0.8rem; } }

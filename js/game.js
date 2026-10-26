@@ -37,6 +37,7 @@
 // items: [{ key, cue, en, answers, stem, ending, group, form }] — `cue` the row and part ("we · imperfect active"),
 // `en` its English, `answers` the forms accepted (wordpanel.js cellAnswers), `group` the column it belongs to.
 
+import { activeTimer } from './activetime.js';
 import { cellRight } from './wordpanel.js';
 import { ruleCard } from './wordrule.js';
 import { notePractised } from './practised.js';
@@ -310,7 +311,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const root = el('dialog', { class: 'gm', 'aria-label': `Game: ${title}` },
     el('header', { class: 'gm__bar' },
       titlesNode(),
-      el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock),
+      el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock, activeTimer()),
       el('div', { class: 'gm__tools' }, studyBtn, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
       meter),
     stage, live);

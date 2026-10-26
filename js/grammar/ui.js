@@ -2801,6 +2801,8 @@ export function createUI(ctx) {
   /** The table a chart item is on: the catalogue's id where the item names it, else the select rules on its word, else the word itself. */
   /** "×3": how many times it has been practised (practised.js), or nothing when never. */
   const countBadge = (key, what = 'Practised') => { const n = practised(key); return n ? h('span', { class: 'g-count', title: `${what} ${n} time${n === 1 ? '' : 's'}`, 'aria-label': `${what.toLowerCase()} ${n} time${n === 1 ? '' : 's'}`, text: timesText(n) }) : null; };
+  /** The side bar's count: ×N, and a faint ×0 where nothing has been practised yet, so every row says (2026-10-26). */
+  const sideCount = (key) => countBadge(key) ?? h('span', { class: 'g-count g-count--zero', title: 'Not practised yet', 'aria-label': 'not practised yet', text: '×0' });
   /** The "×N" key of a word's table (practised.js): its catalogue table, decl1, pres-act-1 … */
   const tableKey = (e) => { const t = e && selectRules ? tableIdOf(e, selectRules) : null; return t ? `table:${t}` : null; };
   /**
@@ -3569,8 +3571,8 @@ export function createUI(ctx) {
     const chTables = thePath().steps.filter((st) => st.kind === 'table' && Number(st.chapter) === n);
     parts.push(sec(`This chapter · Cap. ${roman(n)}`,
       h('ul', { class: 'g-side__list' },
-        chIds.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x)))),
-        chTables.map((st) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(st.id), onclick: () => goTable(st.id) }, `▦ ${tableName(st.id)}`)))),
+        chIds.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x), ' ', sideCount(`skill:${x}`)))),
+        chTables.map((st) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(st.id), onclick: () => goTable(st.id) }, `▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`))))),
       h('p', {}, btn('The whole chapter →', { onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))));
     const kids = [...parts.slice(0, ctxCount), ...progressionSections(sk, table, sec, nextUp), ...parts.slice(ctxCount)].filter(Boolean);
     if (!kids.length) return;
@@ -3620,7 +3622,7 @@ export function createUI(ctx) {
       const ol = h('ol', { class: 'g-side__list g-side__steps', 'data-keep': `steps:${sk.id}`, 'data-here': String(here ?? '') }, h('li', { class: 'g-quiet', text: 'Loading the parts…' }));
       lessonOf(sk.id).then((lesson) => {
         ol.replaceChildren(...stepsOf(lesson).map((st, j) => h('li', {}, h('button', { type: 'button', class: `g-side__go${j === here ? ' is-here' : ''}`, 'aria-current': j === here ? 'step' : null, onclick: () => goView('part', { skill: sk.id, step: j }) },
-          h('b', { text: `${j + 1}. ` }), stepTitle(st, j), ' ', countBadge(`part:${sk.id}:${j}`)))));
+          h('b', { text: `${j + 1}. ` }), stepTitle(st, j), ' ', sideCount(`part:${sk.id}:${j}`)))));
       }).catch(() => ol.replaceChildren(h('li', { class: 'g-quiet', text: 'The parts could not be loaded.' })));
       out.push(sec('The lesson, part by part', ol, btn('📖 The whole lesson, from the start', { onclick: () => startSkill(sk.id, 'learn') }, 'g-vlink')));
     }
@@ -3634,7 +3636,7 @@ export function createUI(ctx) {
         const isTable = st.kind === 'table';
         return h('li', {}, h('button', { type: 'button', class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id,
           onclick: () => (isTable ? goTable(st.id) : goView('lesson', { skill: st.id })) },
-          isTable ? `▦ ${tableName(st.id)}` : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)}`]));
+          isTable ? [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)] : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)} `, sideCount(`skill:${st.id}`)]));
       }));
       // Scrolled inside the list only (paintSide), never with scrollIntoView, which would move the page under it as well.
       if (!document.querySelector('.g-side')) requestAnimationFrame(() => { const at = ol.querySelector('.is-here'); if (at) ol.scrollTop = at.offsetTop - ol.clientHeight / 2; });
@@ -3683,7 +3685,7 @@ export function createUI(ctx) {
       if (!sk.set && !inGame) parts.push(sec('More ways to practise it', moreWaysNode(sk.id)?.querySelector('ul')));
       if (sk.paradigms?.length) parts.push(sec('Its tables',
         sk.paradigms.length > 1 ? btn(`▦ ${acrossLabel(sk.paradigms)}`, { onclick: () => playSkillTables(sk.id, { chapter: sk.chapter }) }, 'btn btn--primary g-side__btn') : null,
-        h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)}`))))));
+        h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)} `, sideCount(`table:${x}`)))))));
       parts.push(sec('Easier or harder', levelNode(sk.id)));
       parts.push(sec('Related', relatedNode(sk.id)));
       if (!['lesson', 'learn', 'part'].includes(view.name)) parts.push(sec('The lesson', btn('📖 All its parts', { 'aria-haspopup': 'dialog', onclick: async () => { const lesson = await lessonOf(sk.id); openPartsMenu(sk.id, stepsOf(lesson).map((st, j) => stepTitle(st, j))); } }, 'btn btn--quiet g-side__btn')));
@@ -3699,8 +3701,8 @@ export function createUI(ctx) {
       if (!q) { out.replaceChildren(); return; }
       const m = findMatches(q);
       out.replaceChildren(
-        ...m.skills.slice(0, 8).map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, titleOf(x), ' ', capTag(x)))),
-        ...m.tables.slice(0, 4).map((t) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(t), onclick: () => goTable(t) }, `▦ ${tableName(t)}`))),
+        ...m.skills.slice(0, 8).map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, titleOf(x), ' ', capTag(x), ' ', sideCount(`skill:${x}`)))),
+        ...m.tables.slice(0, 4).map((t) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(t), onclick: () => goTable(t) }, `▦ ${tableName(t)} `, sideCount(`table:${t}`)))),
         ...(m.skills.length + m.tables.length ? [] : [h('li', { class: 'g-quiet', text: m.also.length ? `Only mentioned in ${m.also.length}; see Today's Find.` : 'Nothing matches.' })]));
     });
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') out.querySelector('button')?.click(); });
