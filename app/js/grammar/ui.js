@@ -3188,6 +3188,28 @@ export function createUI(ctx) {
       h('ul', { class: 'g-level__list' }, list.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: x.why }), x.table ? tableLink(x.table) : pathLink(x.id))))) : null;
   };
   /** The same for a game's end screen (game.js `suggest`). */
+  /**
+   * Just one case, across the declensions (2026-10-26: "practise next declensions 1 2 3 … OR just cases across
+   * declensions"): for each case, the noun skill that asks it on the most declensions; ▦ across plays that case on
+   * every one of them.
+   */
+  /** The table after this one among its siblings, in the course's own order (thePath); the rare variants (Greek -os,
+   * decl2g6) only when nothing else follows. */
+  const nextSibling = (t, sibs) => {
+    const order = thePath().steps.filter((st) => st.kind === 'table').map((st) => st.id);
+    const main = sibs.filter((x) => !/g\d/.test(x.id));
+    const at = order.indexOf(t.id);
+    const byPath = main.filter((x) => order.indexOf(x.id) > at).sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id))[0];
+    if (at >= 0 && byPath) return byPath;
+    const keys = [...(catTables?.keys?.() ?? [])];
+    return main.find((x) => keys.indexOf(x.id) > keys.indexOf(t.id)) ?? null;
+  };
+  const CASE_NAMES = [['nom', 'Nominative'], ['gen', 'Genitive'], ['dat', 'Dative'], ['acc', 'Accusative'], ['abl', 'Ablative'], ['voc', 'Vocative']];
+  const caseSkills = () => CASE_NAMES.map(([c, label]) => {
+    const best = [...skills.values()].filter((x) => x.category === 'noun-case' && x.paradigm_focus?.case === c && (x.paradigms ?? []).some((t) => /^decl/.test(t)))
+      .sort((a, b) => (b.paradigms?.length ?? 0) - (a.paradigms?.length ?? 0))[0];
+    return best ? { c, label, id: best.id, n: best.paradigms.filter((t) => /^decl|^domus/.test(t)).length } : null;
+  }).filter(Boolean);
   /** "practised ×3" or "not practised yet", for a practised.js key (skill:, tablepart:, table:, part:). */
   const timesOf = (key) => { const n = practised(key); return n ? `practised ×${n}` : 'not practised yet'; };
   /**
@@ -3210,6 +3232,8 @@ export function createUI(ctx) {
     return h('section', { class: 'g-firstnext', 'aria-labelledby': 'g-firstnext-h' },
       h('h2', { id: 'g-firstnext-h', class: 'g-h2', text: 'Next' }),
       across ? h('div', { class: 'g-acts' }, btn([across.label, h('span', { class: 'g-firstnext__n', text: ` · ${across.times}` })], { onclick: () => startSkill(id, 'across') }, 'btn btn--primary g-play')) : null,
+      area?.id === 'nouns' ? h('h3', { class: 'g-next__h', text: 'Or just one case, across the declensions' }) : null,
+      area?.id === 'nouns' ? h('div', { class: 'g-chips' }, caseSkills().map((x) => btn([x.label, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`tablepart:${x.id}`)}` })], { onclick: () => startSkill(x.id, 'across') }, 'g-chip'))) : null,
       next.length ? h('h3', { class: 'g-next__h', text: `Next in ${area?.label ?? 'the course'}, in course order` }) : null,
       next.length ? h('ol', { class: 'g-firstnext__list' }, next.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goSkill(x) },
         h('b', { text: titleOf(x) }), ' ', capTag(x), h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`skill:${x}`)}` }))))) : null);
@@ -3230,6 +3254,10 @@ export function createUI(ctx) {
       out.push({ head: 'Next' });
       if (first.across) out.push({ label: () => `${first.across.label} · ${timesOf(`tablepart:${id}`)}`, go: () => playSkillTables(id, { chapter: sk.chapter }) });
       for (const x of first.next) out.push({ label: () => `${titleOf(x)} (${capOf(x)}) · ${timesOf(`skill:${x}`)}`, go: () => goSkill(x) });
+    }
+    if (sk && !sk.set && areaOf(id) === 'nouns') {
+      out.push({ head: 'Or just one case, across the declensions' });
+      for (const x of caseSkills()) out.push({ label: () => `${x.label} · ${timesOf(`tablepart:${x.id}`)}`, go: () => playSkillTables(x.id, { chapter: skills.get(x.id)?.chapter }) });
     }
     if (sk && !sk.set && sk.paradigms?.length) {
       out.push({ head: 'Its tables, one at a time' });
@@ -3254,6 +3282,9 @@ export function createUI(ctx) {
       const ofFam = fam.length > 2 ? [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part && String(x.id).replace(/\d.*$/, '') === fam) : [];
       const sibs = (ofFam.length ? ofFam : [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part)).slice(0, 10);
       const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : fam === 'adj' ? 'adjective type' : t.part === 'pronoun' ? 'pronoun' : t.part === 'numeral' ? 'numeral' : t.part === 'noun' ? 'noun' : 'table';
+      const nextSib = nextSibling(t, sibs);
+      if (nextSib) out.unshift({ head: `The next ${kind}` }, { label: () => `▶ ${nextSib.label} · ${timesOf(`table:${nextSib.id}`)}`, go: () => goTable(nextSib.id) });
+      if (t.part === 'noun') { out.push({ head: 'Just one case, across the declensions' }); for (const x of caseSkills()) out.push({ label: () => `${x.label} · ${timesOf(`tablepart:${x.id}`)}`, go: () => playSkillTables(x.id, { chapter: skills.get(x.id)?.chapter }) }); }
       if (sibs.length) { out.push({ head: `The same forms, another ${kind}` }); for (const x of sibs) out.push({ label: () => `▦ ${x.label} · ${timesOf(`table:${x.id}`)}`, go: () => goTable(x.id) }); }
       const steps = thePath().steps.filter((st) => st.kind === 'table' && tableArea(st.id) === tableArea(t.id) && catTables.has(st.id));
       const at = steps.findIndex((st) => st.id === t.id);
@@ -5427,7 +5458,13 @@ export function createUI(ctx) {
     const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : fam === 'adj' ? 'adjective type' : t.part === 'pronoun' ? 'pronoun' : t.part === 'numeral' ? 'numeral' : t.part === 'noun' ? 'noun' : 'table';
     const groupLabel = group ? (t.groups ?? []).find((g) => g.id === group)?.label ?? null : null;
     const chip = (label, onclick, extra = {}) => btn(label, { onclick, ...extra }, 'g-chip');
+    const nextSib = nextSibling(t, siblings);
+    const nouns = t.part === 'noun';
     const rows = [
+      nextSib ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: `The next ${kind}` }),
+        h('div', { class: 'g-chips' }, chip([`▶ ${nextSib.label}`, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`table:${nextSib.id}`)}` })], () => play(nextSib.id), { 'data-area': tableArea(nextSib.id) }))) : null,
+      nouns ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Just one case, across the declensions' }),
+        h('div', { class: 'g-chips' }, caseSkills().map((x) => chip([x.label, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`tablepart:${x.id}`)}` })], () => startSkill(x.id, 'across'))))) : null,
       words.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Another word, the same table' }),
         h('div', { class: 'g-chips' }, words.slice(0, 5).map((w) => chip(w.lemma.split(/[\s,]/)[0], () => play(t.id, { w }), { lang: 'la' })))) : null,
       siblings.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: `The same${groupLabel ? ` ${groupLabel}` : ' forms'}, another ${kind}` }),
