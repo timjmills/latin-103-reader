@@ -5280,10 +5280,15 @@ export function createUI(ctx) {
       const more = btn(open ? '▾' : '▸', { 'aria-expanded': String(open), 'aria-label': `${open ? 'Hide' : 'Show'} the forms`, onclick: () => { if (open) catState.open.delete(`${t.id}|${key}`); else catState.open.add(`${t.id}|${key}`); paintChoosers(); } }, 'g-pick__more');
       return h('div', { class: 'g-pick__g' }, h('div', { class: 'g-pick__row' }, more, head), open ? h('div', { class: 'g-pick__kids' }, kids) : null);
     };
-    const practiseSel = (nWords) => {
+    // `game`: true plays it as a game whatever the mode (2026-10-27: "I am pressing the red button to play but it only
+    // takes you to the practice; it felt like nothing was happening — a button that leads me to the game with the
+    // options and content I set"); false practises it in lesson mode; null follows the Lesson / Game switch.
+    const practiseSel = (nWords, game = null) => {
       const ids = selAll.filter((x) => sel.has(x));
       if (!ids.length) return;
-      if (gameKept()) gameDrillOn();
+      if (game === true || (game == null && gameKept())) gameDrillOn();
+      else if (game === false) keepGame(false);
+      window.scrollTo({ top: 0 });
       // The forms chosen are all asked: the table starts blank (Given can still put some in, on this table).
       const items = wholeWords().slice(0, nWords).map((w) => gen.tableItem({ tableId: t.id, word: w, group: null, cellIds: ids })).filter(Boolean);
       for (const it of items) if (it.chart) it.chart.given = [];
@@ -5306,8 +5311,11 @@ export function createUI(ctx) {
               : cellTicks(cells));
           })),
           h('div', { class: 'g-acts' },
-            btn(playLabel(`Practise these ${n} on ${wordHead || 'this word'}`), { disabled: n ? null : true, onclick: () => practiseSel(1) }, 'btn btn--primary g-play'),
-            btn('On 3 words, mixed', { disabled: n ? null : true, onclick: () => practiseSel(3) }, 'btn')));
+            btn(playLabel(`${n === 1 ? 'Play this form' : `Play these ${n}`} on ${wordHead || 'this word'}`), { disabled: n ? null : true, onclick: () => practiseSel(1, true), 'aria-label': `Play these ${n} forms as a game` }, 'btn btn--primary g-play'),
+            btn(playLabel('Play on 3 words, mixed'), { disabled: n ? null : true, onclick: () => practiseSel(3, true) }, 'btn g-play')),
+          h('div', { class: 'g-acts g-pick__lesson' },
+            btn(`📖 Practise in lesson mode`, { disabled: n ? null : true, onclick: () => practiseSel(1, false), 'aria-label': `Practise these ${n} forms in lesson mode, on the page` }, 'btn btn--quiet'),
+            btn('📖 3 words, lesson mode', { disabled: n ? null : true, onclick: () => practiseSel(3, false) }, 'btn btn--quiet')));
       };
       choosers.add(node);
       node.paint();
