@@ -1608,8 +1608,11 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 
 /* The side bar beside a practice on a wide screen (ui.js paintSide); the same choices sit at the bottom and in popups */
 .g-side { display: none; }
-@media (min-width: 1280px) {
-  .g-side { display: block; position: fixed; z-index: 30; top: 9rem; right: 1rem; width: min(20rem, calc((100vw - 46rem) / 2 - 2rem)); max-height: calc(100vh - 11rem); overflow: auto; padding: var(--s-3); border-radius: 1rem; background: var(--bg-raised); box-shadow: 0 6px 24px rgb(0 0 0 / 0.1), inset 0 0 0 1px var(--line); font-size: var(--ui-sm); }
+/* On every computer screen (2026-10-26: "have it on all computer screens"): 900 px and up, which a laptop at 125% or
+   150% display scaling still is. Its width (--side-w) narrows on a smaller screen, and the page column gives way. */
+:root { --side-w: clamp(15rem, 26vw, 22rem); }
+@media (min-width: 900px) {
+  .g-side { display: block; position: fixed; z-index: 30; top: 9rem; right: 1rem; width: var(--side-w); max-height: calc(100vh - 11rem); overflow: auto; padding: var(--s-3); border-radius: 1rem; background: var(--bg-raised); box-shadow: 0 6px 24px rgb(0 0 0 / 0.1), inset 0 0 0 1px var(--line); font-size: var(--ui-sm); }
   .g-side.is-collapsed { width: auto; padding: var(--s-1); overflow: visible; }
   .g-side.is-collapsed .g-side__in { display: none; }
 }
@@ -1629,11 +1632,12 @@ details.g-explain__diff > summary { cursor: pointer; font-weight: 700; color: va
 .g-next__h { margin: var(--s-3) 0 var(--s-1); font-size: var(--ui-sm); font-weight: 700; color: var(--ink-2); }
 html.g-game-open .g-side { z-index: 70; }
 /* With the side bar open the page column moves left so nothing runs under it, and the session's buttons wrap */
-@media (min-width: 1280px) {
-  html.g-side-on.g-side-right #grammar .g { margin-left: max(1rem, calc((100vw - 44rem - 22rem) / 2)); margin-right: auto; }
-  html.g-side-on.g-side-left #grammar .g { margin-right: max(1rem, calc((100vw - 44rem - 22rem) / 2)); margin-left: auto; }
+@media (min-width: 900px) {
+  /* The column sits centred in the room beside the bar, never under it, and narrows where that room is small. */
+  html.g-side-on #grammar .g { max-width: min(44rem, calc(100vw - var(--side-w) - 3rem)); }
+  html.g-side-on.g-side-left #grammar .g { margin-left: max(calc(var(--side-w) + 2rem), calc((100vw - 44rem) / 2)); margin-right: auto; }
+  html.g-side-on.g-side-right #grammar .g { margin-right: max(calc(var(--side-w) + 2rem), calc((100vw - 44rem) / 2)); margin-left: auto; }
   .g-side--left { right: auto; left: 1rem; }
-  html.g-side-on .g-side { width: min(22rem, calc(100vw - 44rem - 4rem)); }
   html.g-side-on .g-runnav { flex-wrap: wrap; }
 }
 .g-side__find { width: 100%; min-height: 36px; margin-bottom: var(--s-1); }
@@ -1677,3 +1681,14 @@ html.g-game-open .g-side { z-index: 70; }
 .g-explain__appliesbox, .g-explain__diff, .g-explain__applies { min-width: 0; overflow-wrap: anywhere; }
 /* Each declension's item keeps together where it fits, and wraps inside itself where it does not (a phone) */
 @media (max-width: 559.98px) { .g-diff__i { white-space: normal; } }
+/* Choose what to practise (ui.js renderTable chooser): parts, their voices, and each form, a box to tick */
+.g-pick { display: grid; gap: var(--s-2); }
+.g-pick__list { display: grid; gap: 2px; }
+.g-pick__row { display: flex; align-items: center; gap: 4px; min-height: 32px; }
+.g-pick__more { flex: none; width: 28px; height: 28px; border: 0; border-radius: 0.4rem; background: var(--bg-chrome); color: var(--ink-2); font: inherit; cursor: pointer; }
+.g-pick__tick { display: inline-flex; align-items: center; gap: 2px; min-height: 28px; cursor: pointer; }
+.g-pick__tick input { width: 1.05rem; height: 1.05rem; margin: 0 0.3em 0 0; accent-color: var(--rubric, currentColor); }
+.g-pick__kids { display: grid; gap: 2px; padding-left: 1.6rem; border-left: 2px solid var(--line); margin-left: 13px; }
+.g-pick__cell { padding-left: 0.2rem; }
+/* On a computer it lives in the side bar; on the page only where there is none (a phone, the bar hidden) */
+@media (min-width: 900px) { html.g-side-on .g-chooser--inline { display: none; } }

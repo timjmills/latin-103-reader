@@ -2862,7 +2862,15 @@ export function createUI(ctx) {
    */
   function scaffoldSwitch(tableId, { current, percent, onChange = null } = {}) {
     const seg = h('div', { class: 'g-seg g-seg--scaffold', role: 'group', 'aria-label': 'How much of the table is given' },
-      SCAFFOLD_LEVELS.map((lv) => btn(scaffoldLabel(lv), { 'aria-pressed': String(lv === current), onclick: (e) => { setScaffold(tableId, lv); for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget)); note.textContent = noteText(lv); ctx.say(`Given cells: ${scaffoldLabel(lv)} from the next table.`); onChange?.(lv); } }, 'g-seg__btn')));
+      SCAFFOLD_LEVELS.map((lv) => btn(scaffoldLabel(lv), { 'aria-pressed': String(lv === current), onclick: (e) => {
+        setScaffold(tableId, lv);
+        for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
+        // On a table not yet checked the change is made on it at once (2026-10-26: "when the fill-in is off and I say I
+        // want to practise passive forms it still fills many of them"); after a Check it waits for the next table.
+        const now = onChange?.(lv) === true;
+        note.textContent = now ? (lv === 'off' ? 'A blank table.' : `${scaffoldLabel(lv)} of this table is given.`) : noteText(lv);
+        ctx.say(`Given cells: ${scaffoldLabel(lv)} ${now ? 'on this table' : 'from the next table'}.`);
+      } }, 'g-seg__btn')));
     const noteText = (lv) => (lv === current ? (percent > 0 ? `${percent}% of this table is given${lv === 'auto' ? ' — auto fades a level after a table right unaided' : ''}.` : 'A blank table.')
       : `From the next table: ${lv === 'auto' ? 'auto, starting at 80%' : lv === 'off' ? 'a blank table' : `${lv}% given`}. This one finishes as it started.`);
     const note = h('p', { class: 'g-quiet g-scaffold__note', text: noteText(current) });
@@ -3382,7 +3390,7 @@ export function createUI(ctx) {
    * collapsible side bar … including the end-of-table stuff: across conjugations, narrowed practice, and easier/harder
    * progression steps; but they should also all show up at the bottom as well"). Beside a practice of a skill or a
    * table: its tables (across them, or one), Practise only…, Keep going (another word, another conjugation, easier,
-   * harder), easier or harder skills, related skills and the lesson's parts. Hidden under 1280 px, where the
+   * harder), easier or harder skills, related skills and the lesson's parts. Hidden under 900 px (a phone, a tablet upright), where the
    * popups and the end screen carry the same things. Collapsed or open is remembered on this device.
    */
   const SIDE_KEY = 'l103.side.open';
@@ -3418,6 +3426,7 @@ export function createUI(ctx) {
       return d;
     };
     const parts = contextSections(sk, table, sec, pr);
+    if (name === 'catalogue' && tableChooser?.table === table) parts.unshift(sec('Choose what to practise', tableChooser.node()));
     const ctxCount = parts.length;
     // Every page of Study (2026-10-25: "add a side bar to all the study section; the goal is that one does not need to
     // leave the page to get exactly what one wants or needs"): Find, what to do now, and this chapter.
@@ -4820,7 +4829,8 @@ export function createUI(ctx) {
   let catalogueItemsP = null;
   /** The catalogue's generator: the catalogue, the headword index and the dictionary, built once. */
   const catalogueItemsOf = () => (catalogueItemsP ??= Promise.all([loadParadigmCatalogue(), loadHeadwords()]).then(([catalogue, headwords]) => (catalogue ? { catalogue, gen: createCatalogueItems({ catalogue, lookup: dict.lookup, paradigm: par.paradigm, headwords, skills }) } : null)).catch(() => null));
-  const catState = { category: 'all', chapter: null, word: new Map(), group: new Map(), axes: new Map() };
+  const catState = { category: 'all', chapter: null, word: new Map(), group: new Map(), axes: new Map(), sel: new Map(), open: new Set() };
+  let tableChooser = null;   // the table page's "Choose what to practise", for the side bar (renderTable sets it)
   const CATEGORY_LABEL = { 'noun-case': 'Noun cases', 'verb-form': 'Verb forms', pronoun: 'Pronouns', adjective: 'Adjectives', numeral: 'Numerals' };
   const readerChapter = () => ctx.currentChapter?.() ?? null;
   /**
@@ -4995,6 +5005,69 @@ export function createUI(ctx) {
       h('div', { class: 'g-acts' }, groups.length > 1 && !group ? null : btn(playLabel(), { onclick: () => { gameDrillOn(); whole(); }, 'aria-label': 'Practise the whole table as a game' }, 'btn btn--primary g-play'),
         btn(groups.length > 1 && !group ? 'Choose a part above' : 'Practise it', { onclick: whole, disabled: groups.length > 1 && !group ? true : null }, groups.length > 1 && !group ? 'btn btn--primary' : 'btn')));
 
+    // **Choose what to practise** (2026-10-26: "a side bar where I can check which parts / forms of the verb chart I want
+    // to practise; I can click it on or off: the type, active, passive, all … down to every verb form for that word"):
+    // every part of the table with its voices and, opened, each form, each a box to tick; then the chosen forms
+    // practised on this word, or on three words mixed, in lesson or game mode alike. On the page, and in the side bar
+    // on a computer; the choice is kept for the table.
+    const selAll = groups.flatMap((g) => g.cells ?? []);
+    const sel = catState.sel.get(t.id) ?? new Set(group ? (groups.find((g) => g.id === group)?.cells ?? selAll) : selAll);
+    catState.sel.set(t.id, sel);
+    const voiceOf = (id) => { const parts = String(id).split('.'); return parts.includes('act') ? 'act' : parts.includes('pass') ? 'pass' : null; };
+    const hasVoices = selAll.some((c) => voiceOf(c) === 'act') && selAll.some((c) => voiceOf(c) === 'pass');
+    const choosers = new Set();
+    const paintChoosers = () => { for (const c of [...choosers]) { if (!c.isConnected && c.dataset.drawn) { choosers.delete(c); continue; } c.paint(); } };
+    const setMany = (ids, on) => { for (const id of ids) { if (on) sel.add(id); else sel.delete(id); } paintChoosers(); };
+    const only = (v) => { sel.clear(); for (const id of selAll) if (voiceOf(id) === v) sel.add(id); paintChoosers(); };
+    const tick = (ids, label, cls = '') => {
+      const on = ids.filter((x) => sel.has(x)).length;
+      const cb = h('input', { type: 'checkbox', 'aria-label': `${label}: ${on} of ${ids.length} chosen` });
+      cb.checked = on === ids.length && on > 0;
+      cb.indeterminate = on > 0 && on < ids.length;
+      cb.addEventListener('change', () => setMany(ids, cb.checked));
+      return h('label', { class: `g-pick__tick ${cls}`.trim() }, cb, h('span', { text: ` ${label}` }), ids.length > 1 ? h('span', { class: 'g-firstnext__n', text: ` ${on}/${ids.length}` }) : null);
+    };
+    const fold = (key, head, kids) => {
+      const open = catState.open.has(`${t.id}|${key}`);
+      const more = btn(open ? '▾' : '▸', { 'aria-expanded': String(open), 'aria-label': `${open ? 'Hide' : 'Show'} the forms`, onclick: () => { if (open) catState.open.delete(`${t.id}|${key}`); else catState.open.add(`${t.id}|${key}`); paintChoosers(); } }, 'g-pick__more');
+      return h('div', { class: 'g-pick__g' }, h('div', { class: 'g-pick__row' }, more, head), open ? h('div', { class: 'g-pick__kids' }, kids) : null);
+    };
+    const practiseSel = (nWords) => {
+      const ids = selAll.filter((x) => sel.has(x));
+      if (!ids.length) return;
+      if (gameKept()) gameDrillOn();
+      // The forms chosen are all asked: the table starts blank (Given can still put some in, on this table).
+      const items = wholeWords().slice(0, nWords).map((w) => gen.tableItem({ tableId: t.id, word: w, group: null, cellIds: ids })).filter(Boolean);
+      for (const it of items) if (it.chart) it.chart.given = [];
+      start(items, { title: `${t.label} · your choice (${ids.length} form${ids.length === 1 ? '' : 's'})` });
+    };
+    const chooserNode = () => {
+      const node = h('div', { class: 'g-pick' });
+      node.paint = () => {
+        node.dataset.drawn = '1';
+        const n = selAll.filter((x) => sel.has(x)).length;
+        node.replaceChildren(
+          h('div', { class: 'g-chips' }, btn('All', { onclick: () => setMany(selAll, true) }, 'g-chip'), btn('None', { onclick: () => setMany(selAll, false) }, 'g-chip'),
+            hasVoices ? btn('Active only', { onclick: () => only('act') }, 'g-chip') : null, hasVoices ? btn('Passive only', { onclick: () => only('pass') }, 'g-chip') : null),
+          h('div', { class: 'g-pick__list' }, groups.map((g) => {
+            const cells = g.cells ?? [];
+            const vs = ['act', 'pass'].filter((v) => cells.some((c) => voiceOf(c) === v));
+            const cellTicks = (list) => list.map((c) => tick([c], labelOfCell(c), 'g-pick__cell'));
+            return fold(g.id, tick(cells, g.label), vs.length > 1
+              ? vs.map((v) => { const vc = cells.filter((c) => voiceOf(c) === v); return fold(`${g.id}.${v}`, tick(vc, v === 'act' ? 'active' : 'passive'), cellTicks(vc)); })
+              : cellTicks(cells));
+          })),
+          h('div', { class: 'g-acts' },
+            btn(playLabel(`Practise these ${n} on ${wordHead || 'this word'}`), { disabled: n ? null : true, onclick: () => practiseSel(1) }, 'btn btn--primary g-play'),
+            btn('On 3 words, mixed', { disabled: n ? null : true, onclick: () => practiseSel(3) }, 'btn')));
+      };
+      choosers.add(node);
+      node.paint();
+      return node;
+    };
+    tableChooser = { table: t.id, node: chooserNode };
+    const chooseNode = selAll.length > 1 ? h('section', { class: 'g-cat__sec g-chooser--inline', 'aria-labelledby': 'g-cat-choose' },
+      h('h2', { id: 'g-cat-choose', class: 'g-h2', text: 'Choose what to practise' }), chooserNode()) : null;
     const acts = [];
     if (namingSkill) acts.push(playButton(namingSkill.id, { from }));
     if (namingSkill) acts.push(btn(`Just drill ${namingSkill.title}`, { to: ['drill', { skill: namingSkill.id, from }], onclick: () => render('drill', { skill: namingSkill.id, from }) }, 'btn'), btn('Its lesson', { to: ['lesson', { skill: namingSkill.id, from }], onclick: () => render('lesson', { skill: namingSkill.id, from }) }, 'btn btn--quiet'));
@@ -5005,7 +5078,7 @@ export function createUI(ctx) {
         h('h1', { class: 'g-title' }, t.label, countBadge(`table:${t.id}`)),
         h('p', { class: 'g-lede' }, 'The model word: ', h('span', { lang: 'la', text: t.example }), lessonsLink(t) ? ['. It is ', lessonsLink(t)] : '.'),
         acts.length ? h('div', { class: 'g-acts' }, acts) : null),
-      wordNode, filledNode, oneCellNode, axesNode, wholeNode);
+      chooseNode, wordNode, filledNode, oneCellNode, axesNode, wholeNode);
     // Opened to play (a table from a menu): the whole table at once, as a game when game mode is on.
     if (play && !(groups.length > 1 && !group)) { if (gameKept()) gameDrillOn(); whole(); }
   }
@@ -6517,7 +6590,7 @@ export function createUI(ctx) {
     // the choice are given, printed in grey and right by definition, exactly as the scaffold's are, so the attempt is
     // scored on the cells practised. The scaffold's own choice is kept apart (`baseGiven`) so a change of focus never
     // compounds it; the focus is one choice for every table, kept on this device.
-    const baseGiven = Array.isArray(chart.baseGiven) ? chart.baseGiven : (chart.baseGiven = given.slice());
+    let baseGiven = Array.isArray(chart.baseGiven) ? chart.baseGiven : (chart.baseGiven = given.slice());
     const keyAt = (i) => chartCellKey(item, chart.cells[i]) ?? {};
     const focusOpts = whole ? chartFocusOptions(chart.cells.map((_, i) => keyAt(i))) : [];
     let focus = focusOpts.some((o) => o.id === chartFocus()) ? chartFocus() : 'all';
@@ -6647,7 +6720,26 @@ export function createUI(ctx) {
     } else {
       // The note says what *this* table gives, not what the switch is set to: after a retry the two can differ,
       // because the table on screen keeps the cells it was given while the switch may have been moved (N-5).
-      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent: chart.cells.length ? Math.round((baseGiven.length / chart.cells.length) * 100) : 0 }));
+      // Redraw the cells for a new choice (Practise only…, or Given on a table not yet checked): what was typed stays.
+      const redrawCells = () => {
+        const typed = new Map([...inputs.keys()].map((i) => [i, valueOf(i)]));
+        closePeeks();
+        inputs.clear(); hints.clear(); boxes.clear(); peeked.clear();
+        givenSet = givenFor(focus);
+        chart.given = [...givenSet];
+        drawTables();
+        for (const [i, v] of typed) if (inputs.has(i)) inputs.get(i).value = v;
+        syncCheck();
+        tablesBox.querySelector('input:not([readonly])')?.focus({ preventScroll: true });
+      };
+      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent: chart.cells.length ? Math.round((baseGiven.length / chart.cells.length) * 100) : 0,
+        onChange: (lv) => {
+          if (chart.keep) return false;   // checked once already: the table finishes as it was scored (§12)
+          baseGiven = scaffoldGiven(item, { percent: scaffoldPercent(lv, autoAt), taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell, variant: scaffoldRunOf(tableId) });
+          chart.baseGiven = baseGiven;
+          redrawCells();
+          return true;
+        } }));
       const tablesBox = h('div', { class: 'g-chart__tables' });
       const drawTables = () => {
       tablesBox.replaceChildren();
@@ -6681,16 +6773,7 @@ export function createUI(ctx) {
             for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
             setChartFocus(o.id);
             focus = o.id;
-            // What was typed stays typed: a box that comes back keeps its text; a box going grey keeps nothing.
-            const typed = new Map([...inputs.keys()].map((i) => [i, valueOf(i)]));
-            closePeeks();
-            inputs.clear(); hints.clear(); boxes.clear(); peeked.clear();
-            givenSet = givenFor(focus);
-            chart.given = [...givenSet];
-            drawTables();
-            for (const [i, v] of typed) if (inputs.has(i)) inputs.get(i).value = v;
-            syncCheck();
-            tablesBox.querySelector('input:not([readonly])')?.focus({ preventScroll: true });
+            redrawCells();
           } }, 'g-seg__btn')));
         form.append(h('div', { class: 'g-scaffold g-focus' }, h('span', { class: 'g-label', text: 'Practise' }), seg));
       }
