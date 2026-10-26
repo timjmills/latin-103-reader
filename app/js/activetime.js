@@ -30,6 +30,19 @@ export function clockText(s) {
 }
 const isActive = () => document.visibilityState === 'visible' && Date.now() - last < IDLE;
 
+/**
+ * A goal (2026-10-26: "a goal timer, where I can set 5–60 minutes; when on, the clock turns green and counts down as
+ * long as I am working; the timer stops" when I am not): minutes of active time, counted down by the same seconds as
+ * the day's total. Kept on this device ('l103.goal': { total, left, met }), so a reload carries on.
+ */
+const GOAL_KEY = 'l103.goal';
+export const GOALS = [5, 10, 15, 20, 30, 45, 60];
+export function goal() { try { const g = JSON.parse(localStorage.getItem(GOAL_KEY) || 'null'); return g && g.total > 0 ? g : null; } catch { return null; } }
+export function setGoal(minutes) {
+  try { if (minutes) localStorage.setItem(GOAL_KEY, JSON.stringify({ total: minutes * 60, left: minutes * 60, met: false })); else localStorage.removeItem(GOAL_KEY); } catch { /* this visit only */ }
+  for (const v of views) paint(v);
+}
+
 function tick() {
   if (isActive()) {
     const m = read();
@@ -38,16 +51,65 @@ function tick() {
     const keys = Object.keys(m).sort();
     while (keys.length > KEEP_DAYS) delete m[keys.shift()];
     write(m);
+    const g = goal();
+    if (g && !g.met) {
+      g.left = Math.max(0, g.left - 1);
+      if (!g.left) { g.met = true; for (const v of views) v.dispatchEvent(new CustomEvent('goalmet', { bubbles: true })); }
+      try { localStorage.setItem(GOAL_KEY, JSON.stringify(g)); } catch { /* this visit only */ }
+    }
   }
   for (const v of [...views]) { if (!v.isConnected) { views.delete(v); continue; } paint(v); }
 }
 function paint(v) {
   const { today: t, week } = activeSeconds();
   const on = isActive();
-  v.textContent = `⏱ ${clockText(t)}`;
+  const g = goal();
   v.dataset.on = String(on);
-  v.title = `Active today: ${clockText(t)} · last 7 days: ${clockText(week)}. It counts while you type, click, tap or scroll; after a minute with none it pauses.`;
-  v.setAttribute('aria-label', `Active time today ${clockText(t)}${on ? '' : ', paused'}`);
+  v.dataset.goal = g ? (g.met ? 'met' : 'on') : '';
+  if (g && !g.met) {
+    v.textContent = `⏳ ${clockText(g.left)}${on ? '' : ' ⏸'}`;
+    v.title = `Goal: ${g.total / 60} min of active time — ${clockText(g.left)} to go${on ? '' : ' (paused: type, click or scroll to carry on)'}. Today: ${clockText(t)}.`;
+    v.setAttribute('aria-label', `Goal timer, ${clockText(g.left)} to go${on ? '' : ', paused'}. Change the goal`);
+  } else if (g) {
+    v.textContent = `✓ ${g.total / 60} min`;
+    v.title = `Goal met: ${g.total / 60} minutes of active time. Today: ${clockText(t)}.`;
+    v.setAttribute('aria-label', `Goal of ${g.total / 60} minutes met. Set another`);
+  } else {
+    v.textContent = `⏱ ${clockText(t)}`;
+    v.title = `Active today: ${clockText(t)} · last 7 days: ${clockText(week)}. It counts while you type, click, tap or scroll; after a minute with none it pauses. Tap to set a goal.`;
+    v.setAttribute('aria-label', `Active time today ${clockText(t)}${on ? '' : ', paused'}. Set a goal`);
+  }
+}
+/** The menu under the timer: today and the week, and a goal to set or clear. */
+function openMenu(v) {
+  document.querySelector('.at-pop')?.remove();
+  const { today: t, week } = activeSeconds();
+  const g = goal();
+  const pop = document.createElement('div');
+  pop.className = 'at-pop';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-label', 'Active time and goal');
+  const p = (text, cls = '') => { const e = document.createElement('p'); e.className = cls; e.textContent = text; return e; };
+  const b = (text, on, fn, cls = 'at-pop__goal') => { const e = document.createElement('button'); e.type = 'button'; e.className = cls; e.textContent = text; if (on) e.setAttribute('aria-pressed', 'true'); e.addEventListener('click', () => { fn(); close(); }); return e; };
+  pop.append(p(`Active today: ${clockText(t)}`, 'at-pop__big'), p(`Last 7 days: ${clockText(week)}`, 'at-pop__q'),
+    p(g ? (g.met ? `Goal met: ${g.total / 60} min ✓` : `Goal: ${g.total / 60} min — ${clockText(g.left)} to go`) : 'Set a goal of active time:', 'at-pop__h'));
+  const row = document.createElement('div');
+  row.className = 'at-pop__goals';
+  for (const m of GOALS) row.append(b(`${m}`, g && !g.met && g.total === m * 60, () => setGoal(m)));
+  pop.append(row, p('minutes. It counts down only while you type, click, tap or scroll.', 'at-pop__q'));
+  if (g) pop.append(b(g.met ? 'Clear' : 'Stop the goal', false, () => setGoal(0), 'at-pop__clear'));
+  const r = v.getBoundingClientRect();
+  pop.style.top = `${Math.round(r.bottom + 6)}px`;
+  document.body.append(pop);
+  // Under the timer, its right edges lined up, and never past either side of the screen.
+  const w = pop.offsetWidth;
+  pop.style.left = `${Math.round(Math.max(8, Math.min(r.right - w, innerWidth - w - 8)))}px`;
+  v.setAttribute('aria-expanded', 'true');
+  const outside = (e) => { if (!pop.contains(e.target) && e.target !== v) close(); };
+  const esc = (e) => { if (e.key === 'Escape') { close(); v.focus(); } };
+  function close() { pop.remove(); v.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', esc, true); }
+  setTimeout(() => { document.addEventListener('pointerdown', outside, true); document.addEventListener('keydown', esc, true); });
+  pop.querySelector('button')?.focus();
 }
 /** Starts the count (once): typing, clicking, tapping and scrolling anywhere in the app keep it going. */
 export function startActiveTime() {
@@ -62,9 +124,14 @@ export function startActiveTime() {
 /** The timer for the top of a page: a span kept up to date while it is in the document. */
 export function activeTimer() {
   startActiveTime();
-  const v = document.createElement('span');
+  const v = document.createElement('button');
+  v.type = 'button';
   v.className = 'g-activetime';
-  v.setAttribute('role', 'timer');
+  v.setAttribute('aria-haspopup', 'dialog');
+  v.setAttribute('aria-expanded', 'false');
+  v.addEventListener('click', () => (document.querySelector('.at-pop') ? document.querySelector('.at-pop').remove() : openMenu(v)));
+  // Met: a moment's flourish, and said aloud.
+  v.addEventListener('goalmet', () => { v.classList.add('is-met'); setTimeout(() => v.classList.remove('is-met'), 2400); const live = document.createElement('p'); live.className = 'visually-hidden'; live.setAttribute('role', 'status'); live.textContent = 'Goal met.'; document.body.append(live); setTimeout(() => live.remove(), 4000); });
   views.add(v);
   paint(v);
   return v;

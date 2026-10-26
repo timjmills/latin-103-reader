@@ -1997,4 +1997,5 @@ boot().catch((err) => {
 });
 
 // Active time today, at the top of every page (activetime.js): it counts while something is typed, clicked or scrolled.
-{ const aa = document.getElementById('settings-btn'); if (aa) aa.before(activeTimer()); }
+// It shares Aa's place in the bar (one cell of its grid, whatever the layout).
+{ const aa = document.getElementById('settings-btn'); if (aa) { const box = document.createElement('div'); box.className = 'bar__aa'; aa.replaceWith(box); box.append(activeTimer(), aa); } }
