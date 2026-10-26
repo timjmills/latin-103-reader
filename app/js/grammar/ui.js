@@ -4846,7 +4846,7 @@ export function createUI(ctx) {
     const start = (list, { title }) => {
       const built = list.filter(Boolean);
       if (!built.length) { ctx.say('Nothing to practise with these choices.'); return; }
-      const drill = createCatalogueDrill({ items: built, gstore, skillId: namingSkill?.id ?? null });
+      const drill = createCatalogueDrill({ items: built, gstore, skillId: namingSkill?.id ?? null, table: t.id });
       drill.start();
       // What this run does, said in the two directions it now differs in (§20). It always reaches the
       // skill's progress sheet; it reaches the review schedule only while the skill is in mixed

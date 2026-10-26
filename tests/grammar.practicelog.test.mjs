@@ -34,3 +34,15 @@ test('what still needs practice, most pressing first', () => {
   assert.equal(needsPractice({ state: 'new' }, { answers: 3 }, now).why, 'Started, not learned');
   assert.equal(needsPractice(null, {}, now).why, 'Not started');
 });
+
+test('one tracking for both modes: a table practised in study mode counts as a round, as a game on it does', () => {
+  const minute = 60 * 1000;
+  const at = (m) => new Date(Date.UTC(2026, 9, 26, 9, 0) + m * minute).toISOString();
+  const row = (m, meta) => ({ skill: 'active-personal-endings', kind: 'chart', correct: true, at: at(m), meta });
+  const log = practiceLog([
+    row(0, { table: 'conj1', uncounted: true }), row(1, { table: 'conj1', uncounted: true }),   // study mode: one sitting
+    row(90, { table: 'conj1', uncounted: true }),                                               // a later sitting
+    row(95, { table: 'conj1', game: true, uncounted: true }),                                    // a game: a round by itself
+  ]);
+  assert.equal(log.table('conj1'), 3);
+});
