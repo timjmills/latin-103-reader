@@ -4,6 +4,7 @@
 // Learn), a table's game played to its end.
 //
 //   skill:<id>        part:<id>:<step>        table:<catalogue table id>        tablepart:<skill id>
+//   typed:<any of those>   the same round, played to its end in the game's Type it
 
 const KEY = 'l103.practised';
 let memo = null;

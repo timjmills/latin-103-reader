@@ -2801,6 +2801,46 @@ export function createUI(ctx) {
   /** The table a chart item is on: the catalogue's id where the item names it, else the select rules on its word, else the word itself. */
   /** "×3": how many times it has been practised (practised.js), or nothing when never. */
   const countBadge = (key, what = 'Practised') => { const n = practised(key); return n ? h('span', { class: 'g-count', title: `${what} ${n} time${n === 1 ? '' : 's'}`, 'aria-label': `${what.toLowerCase()} ${n} time${n === 1 ? '' : 's'}`, text: timesText(n) }) : null; };
+  /**
+   * Typed in lesson mode too (2026-10-26: "or if it has been typed in the lesson section as well"): an item answered
+   * right by typing (a chart, a typed box, a sentence's blanks; not a choice, a tap, a match or an order) marks its
+   * skill, its table and, on a part's page, that part.
+   */
+  const noteTyped = (item) => {
+    if (!item || ['choice', 'tap', 'match', 'order', 'self'].includes(item.input)) return;
+    const t = tableIdOfItem(item);
+    if (item.input === 'chart' && item.chart?.tableId) noteTypedCells(item.chart.tableId, (item.chart.cells ?? []).map((b) => b.cellId));
+    notePractised([skills.has(item.skill) && !item.catalogue ? `typed:skill:${item.skill}` : null, item.input === 'chart' && t ? `typed:table:${t}` : null,
+      view.name === 'part' && view.params?.skill ? `typed:part:${view.params.skill}:${Number(view.params.step) || 0}` : null].filter(Boolean));
+  };
+  /**
+   * Done by typing, each piece on its own (2026-10-26: "this goes for each section, subsection, conjugation,
+   * declension …; they must each be done separately"; "I want to be able to quickly see what has been done"). A table's
+   * cells are marked one by one (typed:cell:<table>:<cell>) when typed right in a game's Type it or in lesson mode; a
+   * part of a table (present indicative passive …) is done when all its cells are, a table when all its parts are. A
+   * skill or a lesson part is marked as a whole. `typedAttr` gives a row's data-typed: 'true' (done: green, ✓ typed),
+   * 'k/n' (that many of its parts done: ✓ k/n), or null.
+   */
+  const cellTyped = (t, c) => practised(`typed:cell:${t}:${c}`) > 0;
+  const groupTyped = (t, g) => (g?.cells ?? []).length > 0 && g.cells.every((c) => cellTyped(t, c));
+  // A table's parts: each of its groups, a group with both voices as two (present indicative active, … passive).
+  const voiceOfCell = (id) => { const p = String(id).split('.'); return p.includes('act') ? 'act' : p.includes('pass') ? 'pass' : null; };
+  const tableParts = (t) => (catTables?.get?.(t)?.groups ?? []).filter((g) => g.cells?.length).flatMap((g) => {
+    const vs = ['act', 'pass'].filter((v) => g.cells.some((c) => voiceOfCell(c) === v));
+    return vs.length > 1 ? vs.map((v) => ({ id: `${g.id}.${v}`, cells: g.cells.filter((c) => voiceOfCell(c) === v) })) : [g];
+  });
+  const tableTyped = (t) => {
+    const parts = tableParts(t);
+    if (!parts.length) return { done: practised(`typed:table:${t}`) > 0 ? 1 : 0, total: 1 };
+    return { done: parts.filter((g) => groupTyped(t, g)).length, total: parts.length };
+  };
+  const typedAttr = (kind, id) => {
+    if (kind === 'table') { const { done, total } = tableTyped(id); return done && done === total ? 'true' : done ? `${done}/${total}` : null; }
+    const k = kind === 'part' ? [`typed:part:${id}`] : [`typed:tablepart:${id}`, `typed:skill:${id}`];
+    return k.some((x) => practised(x) > 0) ? 'true' : null;
+  };
+  /** The cells of a table typed right, each marked. */
+  const noteTypedCells = (t, cellIds) => { if (t) notePractised([...new Set(cellIds)].filter(Boolean).map((c) => `typed:cell:${t}:${c}`)); };
   /** The side bar's count: ×N, and a faint ×0 where nothing has been practised yet, so every row says (2026-10-26). */
   const sideCount = (key) => countBadge(key) ?? h('span', { class: 'g-count g-count--zero', title: 'Not practised yet', 'aria-label': 'not practised yet', text: '×0' });
   /** The "×N" key of a word's table (practised.js): its catalogue table, decl1, pres-act-1 … */
@@ -3383,7 +3423,7 @@ export function createUI(ctx) {
       area?.id === 'nouns' ? h('h3', { class: 'g-next__h', text: 'Or just one case, across the declensions' }) : null,
       area?.id === 'nouns' ? h('div', { class: 'g-chips' }, caseSkills().map((x) => btn([x.label, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`tablepart:${x.id}`)}` })], { onclick: () => startSkill(x.id, 'across') }, 'g-chip'))) : null,
       next.length ? h('h3', { class: 'g-next__h', text: `Next in ${area?.label ?? 'the course'}, in course order` }) : null,
-      next.length ? h('ol', { class: 'g-firstnext__list' }, next.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goSkill(x) },
+      next.length ? h('ol', { class: 'g-firstnext__list' }, next.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x), onclick: () => goSkill(x) },
         h('b', { text: titleOf(x) }), ' ', capTag(x), h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`skill:${x}`)}` }))))) : null);
   }
   const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
@@ -3571,8 +3611,8 @@ export function createUI(ctx) {
     const chTables = thePath().steps.filter((st) => st.kind === 'table' && Number(st.chapter) === n);
     parts.push(sec(`This chapter · Cap. ${roman(n)}`,
       h('ul', { class: 'g-side__list' },
-        chIds.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x), ' ', sideCount(`skill:${x}`)))),
-        chTables.map((st) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(st.id), onclick: () => goTable(st.id) }, `▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`))))),
+        chIds.map((x) => sideRow('skill', x, [h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x), ' ', sideCount(`skill:${x}`)], { class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x) })),
+        chTables.map((st) => sideRow('table', st.id, [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)], { class: 'g-side__go', 'data-area': tableArea(st.id), 'data-typed': typedAttr('table', st.id) }))),
       h('p', {}, btn('The whole chapter →', { onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))));
     // Where you are first (the lesson's parts, the strand), then this skill's or table's own options, then the rest.
     const kids = [...progressionSections(sk, table, sec, nextUp), ...parts.slice(0, ctxCount), ...parts.slice(ctxCount)].filter(Boolean);
@@ -3621,6 +3661,32 @@ export function createUI(ctx) {
    * skills and tables in course order, this one marked; ‹ All skills by type lists every area, each opening its own
    * list here, and ↩ comes back to where you are. It redraws itself in place (side bar, end screen, a game's menu).
    */
+  /**
+   * A row of the side bar's lists that opens in place (2026-10-26: "clicking them brings the options for them, and also a
+   * play button"): ▶ Play first, then the way into its lesson or table and its parts; a second click folds it.
+   */
+  function sideRow(kind, id, content, attrs = {}) {
+    const sk = kind === 'skill' ? skills.get(id) : null;
+    const opts = h('div', { class: 'g-side__opts', hidden: true });
+    const paintOpts = () => {
+      const b = (label, onclick, cls = 'g-chip') => btn(label, { onclick }, cls);
+      opts.replaceChildren(...(kind === 'table'
+        ? [b(playLabel('Play'), () => { if (gameKept()) gameDrillOn(); render('catalogue', { table: id, play: true }); }, 'btn btn--primary g-play g-side__optplay'),
+          b('▦ Open the table', () => goTable(id)), b('Choose its forms', () => goTable(id))]
+        : [sk?.paradigms?.length && !sk.set ? b(playLabel('Play'), () => openGameSetup(id), 'btn btn--primary g-play g-side__optplay')
+            : drillable(id) ? b(playLabel('Practise'), () => goView('drill', { skill: id, asIs: true }), 'btn btn--primary g-play g-side__optplay') : null,
+          b('📖 The lesson', () => goView('lesson', { skill: id, asIs: true })),
+          b('Its parts', async () => { const lesson = await lessonOf(id); openPartsMenu(id, stepsOf(lesson).map((st, j) => stepTitle(st, j))); }),
+          sk?.paradigms?.length > 1 ? b(`▦ ${acrossLabel(sk.paradigms)}`, () => playSkillTables(id, { chapter: sk.chapter })) : null].filter(Boolean)));
+    };
+    const go = h('button', { type: 'button', ...attrs, 'aria-expanded': 'false', onclick: () => {
+      const open = opts.hidden;
+      if (open) paintOpts();
+      opts.hidden = !open;
+      go.setAttribute('aria-expanded', String(open));
+    } }, content);
+    return h('li', {}, go, opts);
+  }
   function strandNode(areaId, hereId = null) {
     const box = h('div', { class: 'g-strand' });
     let showing = areaId;   // an area's id, or null for the list of areas
@@ -3642,15 +3708,15 @@ export function createUI(ctx) {
       const ol = h('ol', { class: 'g-side__list g-side__strand', 'data-area': a.id, 'data-keep': `strand:${a.id}`, 'data-here': a.id === areaId ? hereId ?? '' : '' }, stepsOf(a).map((st) => {
         const here = a.id === areaId && st.id === hereId;
         const isTable = st.kind === 'table';
-        return h('li', {}, h('button', { type: 'button', class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id,
-          onclick: () => (isTable ? goTable(st.id) : goView('lesson', { skill: st.id })) },
-          isTable ? [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)] : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)} `, sideCount(`skill:${st.id}`)]));
+        return sideRow(isTable ? 'table' : 'skill', st.id,
+          isTable ? [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)] : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)} `, sideCount(`skill:${st.id}`)],
+          { class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id, 'data-typed': typedAttr(isTable ? 'table' : 'skill', st.id) });
       }));
       box.replaceChildren(
         h('div', { class: 'g-strand__nav' },
           btn('‹ All skills by type', { onclick: () => { showing = null; paint(); }, 'aria-label': 'All skills and tables, by type' }, 'g-chip g-strand__back'),
           a.id !== areaId && AREAS.some((x) => x.id === areaId) ? btn('↩ Where you are', { onclick: () => { showing = areaId; paint(); } }, 'g-chip') : null),
-        a.id !== areaId ? h('p', { class: 'g-strand__h', text: `${a.label}, easiest to hardest` }) : null,
+        ...(a.id !== areaId ? [h('p', { class: 'g-strand__h', text: `${a.label}, easiest to hardest` })] : []),
         ol,
         h('p', {}, btn(`All of ${a.label} →`, { onclick: () => render('course', { by: 'area', area: a.id, ...(hereId && skills.has(hereId) ? { at: hereId } : {}) }) }, 'g-vlink')));
       // The marked row in view, inside the list only (never scrollIntoView, which would move the page under it).
@@ -3666,7 +3732,7 @@ export function createUI(ctx) {
       const here = view.name === 'part' ? Number(pr.step) || 0 : null;
       const ol = h('ol', { class: 'g-side__list g-side__steps', 'data-keep': `steps:${sk.id}`, 'data-here': String(here ?? '') }, h('li', { class: 'g-quiet', text: 'Loading the parts…' }));
       lessonOf(sk.id).then((lesson) => {
-        ol.replaceChildren(...stepsOf(lesson).map((st, j) => h('li', {}, h('button', { type: 'button', class: `g-side__go${j === here ? ' is-here' : ''}`, 'aria-current': j === here ? 'step' : null, onclick: () => goView('part', { skill: sk.id, step: j }) },
+        ol.replaceChildren(...stepsOf(lesson).map((st, j) => h('li', {}, h('button', { type: 'button', class: `g-side__go${j === here ? ' is-here' : ''}`, 'aria-current': j === here ? 'step' : null, 'data-typed': typedAttr('part', `${sk.id}:${j}`), onclick: () => goView('part', { skill: sk.id, step: j }) },
           h('b', { text: `${j + 1}. ` }), stepTitle(st, j), ' ', sideCount(`part:${sk.id}:${j}`)))));
       }).catch(() => ol.replaceChildren(h('li', { class: 'g-quiet', text: 'The parts could not be loaded.' })));
       out.push(sec('The lesson, part by part', ol, btn('📖 The whole lesson, from the start', { onclick: () => startSkill(sk.id, 'learn') }, 'g-vlink')));
@@ -3718,7 +3784,7 @@ export function createUI(ctx) {
       if (!sk.set && !inGame) parts.push(sec('More ways to practise it', moreWaysNode(sk.id)?.querySelector('ul')));
       if (sk.paradigms?.length) parts.push(sec('Its tables',
         sk.paradigms.length > 1 ? btn(`▦ ${acrossLabel(sk.paradigms)}`, { onclick: () => playSkillTables(sk.id, { chapter: sk.chapter }) }, 'btn btn--primary g-side__btn') : null,
-        h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)} `, sideCount(`table:${x}`)))))));
+        h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), 'data-typed': typedAttr('table', x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)} `, sideCount(`table:${x}`)))))));
       parts.push(sec('Easier or harder', levelNode(sk.id)));
       parts.push(sec('Related', relatedNode(sk.id)));
       if (!['lesson', 'learn', 'part'].includes(view.name)) parts.push(sec('The lesson', btn('📖 All its parts', { 'aria-haspopup': 'dialog', onclick: async () => { const lesson = await lessonOf(sk.id); openPartsMenu(sk.id, stepsOf(lesson).map((st, j) => stepTitle(st, j))); } }, 'btn btn--quiet g-side__btn')));
@@ -3734,8 +3800,8 @@ export function createUI(ctx) {
       if (!q) { out.replaceChildren(); return; }
       const m = findMatches(q);
       out.replaceChildren(
-        ...m.skills.slice(0, 8).map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goView('lesson', { skill: x }) }, titleOf(x), ' ', capTag(x), ' ', sideCount(`skill:${x}`)))),
-        ...m.tables.slice(0, 4).map((t) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(t), onclick: () => goTable(t) }, `▦ ${tableName(t)} `, sideCount(`table:${t}`)))),
+        ...m.skills.slice(0, 8).map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x), onclick: () => goView('lesson', { skill: x }) }, titleOf(x), ' ', capTag(x), ' ', sideCount(`skill:${x}`)))),
+        ...m.tables.slice(0, 4).map((t) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(t), 'data-typed': typedAttr('table', t), onclick: () => goTable(t) }, `▦ ${tableName(t)} `, sideCount(`table:${t}`)))),
         ...(m.skills.length + m.tables.length ? [] : [h('li', { class: 'g-quiet', text: m.also.length ? `Only mentioned in ${m.also.length}; see Today's Find.` : 'Nothing matches.' })]));
     });
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') out.querySelector('button')?.click(); });
@@ -3773,7 +3839,7 @@ export function createUI(ctx) {
         h('div', { class: 'g-path__main' }, h('p', { class: 'g-path__t' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), navEl({ class: 'g-link', to: ['lesson', { skill: id }], onclick: () => goView('lesson', { skill: id }) }, sk.title), ' ', practiceTag(id))),
         h('div', { class: 'g-path__acts' }, mainButton(id, { cls: 'btn g-play' })));
     }
-    return h('li', { class: 'g-path__s g-crow', id: `g-path-${id}`, 'data-state': st.state, 'data-area': areaOf(id) },
+    return h('li', { class: 'g-path__s g-crow', id: `g-path-${id}`, 'data-state': st.state, 'data-area': areaOf(id), 'data-typed': typedAttr('skill', id) },
       h('span', { class: 'g-path__n', text: String(n ?? '') }),
       h('div', { class: 'g-path__main' },
         h('p', { class: 'g-path__t' }, areaTag(id), h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
@@ -5235,8 +5301,8 @@ export function createUI(ctx) {
             const cells = g.cells ?? [];
             const vs = ['act', 'pass'].filter((v) => cells.some((c) => voiceOf(c) === v));
             const cellTicks = (list) => list.map((c) => tick([c], labelOfCell(c), 'g-pick__cell'));
-            return fold(g.id, tick(cells, g.label), vs.length > 1
-              ? vs.map((v) => { const vc = cells.filter((c) => voiceOf(c) === v); return fold(`${g.id}.${v}`, tick(vc, v === 'act' ? 'active' : 'passive'), cellTicks(vc)); })
+            return fold(g.id, [tick(cells, g.label), groupTyped(t.id, g) ? h('span', { class: 'g-typedtag', title: 'Every form of this part typed', text: '✓ typed' }) : null], vs.length > 1
+              ? vs.map((v) => { const vc = cells.filter((c) => voiceOf(c) === v); return fold(`${g.id}.${v}`, [tick(vc, v === 'act' ? 'active' : 'passive'), groupTyped(t.id, { cells: vc }) ? h('span', { class: 'g-typedtag', title: 'Every form of this part typed', text: '✓ typed' }) : null], cellTicks(vc)); })
               : cellTicks(cells));
           })),
           h('div', { class: 'g-acts' },
@@ -6034,6 +6100,7 @@ export function createUI(ctx) {
         title, note: [note, grown, lost].filter(Boolean).join(' '), position: i, hintOpen, onHint: () => runner.hint(),
         onAnswer: async (value) => {
           const result = await runner.answer(value);
+          if (result?.correct) noteTyped(item);
           // A wrong answer on an input worth adjusting leaves the item live for a second guess (§3): the
           // boxes stay open and this feedback stays under them to be read and acted on.
           const live = secondGuess(item, result);
@@ -6149,6 +6216,7 @@ export function createUI(ctx) {
           subWrap.replaceChildren(itemNode(cur.item, { title: `Practise · ${skill.title}`, position: sub.runner.position, hintOpen, onHint: () => sub.runner.hint(),
             onAnswer: async (value) => {
               const result = await sub.runner.answer(value);
+              if (result?.correct) noteTyped(cur.item);
               const live = secondGuess(cur.item, result);
               const fb = feedbackNode(cur.item, result, { lesson: null, mode: 'practice', practiceLink: false, live,
                 onNext: () => { sub.runner.forward(); subStep(); },
@@ -7086,8 +7154,10 @@ export function createUI(ctx) {
         // (A lesson's Learn already counts its part on the part's first item, so only a part practised on its own adds one here;
         // a table session's end skips the table once the game has counted it, so one round is one ×.)
         countKey: [tableIdOfItem(item) ? `table:${tableIdOfItem(item)}` : null, view.name === 'part' && view.params?.skill ? `part:${view.params.skill}:${Number(view.params.step) || 0}` : null].filter(Boolean),
-        onDone: ({ firstMiss }) => {
+        onDone: ({ firstMiss, shown = new Set(), typed = false }) => {
           if (view.name === 'catalogue' && tableIdOfItem(item)) gameCountedTable = tableIdOfItem(item);
+          // Typed in Type it: each cell typed (not shown) is marked done, its table's parts by them.
+          if (typed && chart.tableId) noteTypedCells(chart.tableId, [...boxOf].filter(([key]) => !shown.has(key)).map(([, i]) => chart.cells[i]?.cellId));
           for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
           // Graded now, not only when the game is closed: leaving by one of its end buttons used to skip this.
