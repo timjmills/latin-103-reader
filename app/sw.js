@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v141';
+const CACHE_VERSION = 'v142';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -27,7 +27,7 @@ const HASHES = {
   "./css/panels.css": '085b842a5d26',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
-  "./css/reader.css": '5c9f55364153',
+  "./css/reader.css": '5e0386f184ae',
   "./css/tokens.css": '3689d7a8f3e7',
   "./data/course.json": '518feda188f8',
   "./data/function-words.json": 'f2aac73beb75',
@@ -345,13 +345,13 @@ const HASHES = {
   "./icons/icon.svg": 'c1f5c8520853',
   "./icons/maskable-512.png": '38654d50c164',
   "./index.html": 'd18a0679353b',
-  "./js/activetime.js": '38dafaed1afb',
+  "./js/activetime.js": '4c7db2062ef7',
   "./js/audio.js": '2e1d36c01a62',
   "./js/auth.js": '22086691f460',
   "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": 'eb721926cbfb',
+  "./js/game.js": '7ec63be9d44c',
   "./js/grammar/actions.js": '2a29e9421251',
   "./js/grammar/applies.js": 'c6029e34b6b4',
   "./js/grammar/chapter.js": '3f1a0ef3892d',

@@ -75,7 +75,7 @@ function paint(v) {
     v.title = `Goal met: ${g.total / 60} minutes of active time. Today: ${clockText(t)}.`;
     v.setAttribute('aria-label', `Goal of ${g.total / 60} minutes met. Set another`);
   } else {
-    v.textContent = `⏱ ${clockText(t)}`;
+    v.textContent = `⚡ ${clockText(t)}`;
     v.title = `Active today: ${clockText(t)} · last 7 days: ${clockText(week)}. It counts while you type, click, tap or scroll; after a minute with none it pauses. Tap to set a goal.`;
     v.setAttribute('aria-label', `Active time today ${clockText(t)}${on ? '' : ', paused'}. Set a goal`);
   }
@@ -100,7 +100,7 @@ function openMenu(v) {
   if (g) pop.append(b(g.met ? 'Clear' : 'Stop the goal', false, () => setGoal(0), 'at-pop__clear'));
   const r = v.getBoundingClientRect();
   pop.style.top = `${Math.round(r.bottom + 6)}px`;
-  document.body.append(pop);
+  (v.closest('dialog') ?? document.body).append(pop);   // in a game (a modal dialog) it must be in the dialog to be seen
   // Under the timer, its right edges lined up, and never past either side of the screen.
   const w = pop.offsetWidth;
   pop.style.left = `${Math.round(Math.max(8, Math.min(r.right - w, innerWidth - w - 8)))}px`;
@@ -131,8 +131,30 @@ export function activeTimer() {
   v.setAttribute('aria-expanded', 'false');
   v.addEventListener('click', () => (document.querySelector('.at-pop') ? document.querySelector('.at-pop').remove() : openMenu(v)));
   // Met: a moment's flourish, and said aloud.
-  v.addEventListener('goalmet', () => { v.classList.add('is-met'); setTimeout(() => v.classList.remove('is-met'), 2400); const live = document.createElement('p'); live.className = 'visually-hidden'; live.setAttribute('role', 'status'); live.textContent = 'Goal met.'; document.body.append(live); setTimeout(() => live.remove(), 4000); });
+  v.addEventListener('goalmet', () => { if (v.isConnected && v.offsetParent && !document.querySelector('.at-confetti')) confetti(v.closest('dialog') ?? document.body); v.classList.add('is-met'); setTimeout(() => v.classList.remove('is-met'), 2400); const live = document.createElement('p'); live.className = 'visually-hidden'; live.setAttribute('role', 'status'); live.textContent = 'Goal met.'; document.body.append(live); setTimeout(() => live.remove(), 4000); });
   views.add(v);
   paint(v);
   return v;
+}
+
+/** Confetti for a goal met (2026-10-26: "confetti if it meets"): a burst of paper, gone in a few seconds; none with reduced motion. */
+export function confetti(where = document.body) {
+  if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = document.createElement('div');
+  box.className = 'at-confetti';
+  box.setAttribute('aria-hidden', 'true');
+  const colours = ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#457b9d', '#8338ec', '#ff006e', '#3a86ff'];
+  for (let i = 0; i < 140; i++) {
+    const p = document.createElement('i');
+    p.style.left = `${Math.random() * 100}%`;
+    p.style.background = colours[i % colours.length];
+    p.style.setProperty('--dx', `${Math.round((Math.random() - 0.5) * 240)}px`);
+    p.style.setProperty('--rot', `${Math.round(Math.random() * 1080 - 540)}deg`);
+    p.style.animationDelay = `${Math.random() * 0.6}s`;
+    p.style.animationDuration = `${2.2 + Math.random() * 1.6}s`;
+    if (i % 3 === 0) p.style.borderRadius = '50%';
+    box.append(p);
+  }
+  where.append(box);
+  setTimeout(() => box.remove(), 4600);
 }
