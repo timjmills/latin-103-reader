@@ -1719,3 +1719,5 @@ html.g-game-open .g-side { z-index: 70; }
 .g-side__opts[hidden] { display: none; }
 .g-side__optplay { min-height: 36px; padding: 0 var(--s-3); }
 .g-side__go[aria-expanded="true"] { box-shadow: inset 0 0 0 2px var(--rubric); }
+/* A choice this word or table does not have (possum: no passive): there, greyed, with why on hover. */
+.g-chip.is-missing, .g-chip:disabled { opacity: 0.45; text-decoration: line-through; cursor: not-allowed; }
