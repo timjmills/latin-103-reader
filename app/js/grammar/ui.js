@@ -5311,8 +5311,9 @@ export function createUI(ctx) {
               : cellTicks(cells));
           })),
           h('div', { class: 'g-acts' },
-            btn(playLabel(`${n === 1 ? 'Play this form' : `Play these ${n}`} on ${wordHead || 'this word'}`), { disabled: n ? null : true, onclick: () => practiseSel(1, true), 'aria-label': `Play these ${n} forms as a game` }, 'btn btn--primary g-play'),
+            btn(playLabel(`Play on ${wordHead || 'this word'}`), { disabled: n ? null : true, onclick: () => practiseSel(1, true), 'aria-label': `Play these ${n} forms as a game` }, 'btn btn--primary g-play'),
             btn(playLabel('Play on 3 words, mixed'), { disabled: n ? null : true, onclick: () => practiseSel(3, true) }, 'btn g-play')),
+          h('p', { class: 'g-quiet g-pick__note', text: `${n} chosen · the game plays each with its whole set of persons and numbers (at least six).` }),
           h('div', { class: 'g-acts g-pick__lesson' },
             btn(`📖 Practise in lesson mode`, { disabled: n ? null : true, onclick: () => practiseSel(1, false), 'aria-label': `Practise these ${n} forms in lesson mode, on the page` }, 'btn btn--quiet'),
             btn('📖 3 words, lesson mode', { disabled: n ? null : true, onclick: () => practiseSel(3, false) }, 'btn btn--quiet')));
@@ -7165,7 +7166,10 @@ export function createUI(ctx) {
         onDone: ({ firstMiss, shown = new Set(), typed = false }) => {
           if (view.name === 'catalogue' && tableIdOfItem(item)) gameCountedTable = tableIdOfItem(item);
           // Typed in Type it: each cell typed (not shown) is marked done, its table's parts by them.
-          if (typed && chart.tableId) noteTypedCells(chart.tableId, [...boxOf].filter(([key]) => !shown.has(key)).map(([, i]) => chart.cells[i]?.cellId));
+          // Every card typed counts, the whole column the game played (2026-10-27: "you should always be playing through the
+          // 6 at least, with the differing persons and numbers"), not only the boxes ticked.
+          if (typed && chart.tableId) noteTypedCells(chart.tableId, [...[...boxOf].filter(([key]) => !shown.has(key)).map(([, i]) => chart.cells[i]?.cellId),
+            ...cards.filter((c) => !shown.has(c.key) && c.form && (!c.entry || !selectRules || (tableIdOf(c.entry, selectRules) ?? chart.tableId) === chart.tableId)).map((c) => cellId(c.form, chart.table?.kind))]);
           for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
           // Graded now, not only when the game is closed: leaving by one of its end buttons used to skip this.
