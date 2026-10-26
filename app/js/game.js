@@ -142,7 +142,7 @@ export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
 export const playWay = () => { const mode = modeOf(read('mode', 'type')); const shuffle = mode === 'type' && !!read('shuffle', false); return { mode, shuffle, label: ladderLabel(mode, shuffle) }; };
 export function setPlayWay({ mode, shuffle = false }) { write('mode', modeOf(mode)); write('shuffle', !!shuffle); }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null, study = null } = {}) {
   // In order, a column at a time (2026-10-23: "unless it's on shuffle have all the active first then all the passive"):
   // each group's forms together, the groups in the order they first come, the forms in each as given.
   const base = byGroup(items.filter((x) => x && x.answers?.length));
@@ -289,6 +289,10 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     node.addEventListener('click', (e) => { const b = e.target.closest?.('button, a[href]'); if (b && !b.disabled && !b.closest('[data-stay]')) close(true); }, true);
     openPanel(node, back);
   }
+  // Its place in lesson mode (2026-10-26: "a link at the top in the game to the correct study section part").
+  // In the 📖 explanation (the rule's panel); in the bar only when the game has no explanation.
+  const studyGo = () => { close(true); study.go(); };
+  const studyBtn = study && !rule ? el('button', { type: 'button', class: 'gm__tool gm__text gm__studybtn', title: study.title ?? 'Open this in lesson mode', onclick: studyGo }, study.label ?? '📖 Study it') : null;
   const closeBtn = el('button', { type: 'button', class: 'gm__tool gm__close', 'aria-label': 'Leave the game', title: 'Leave (Esc)', onclick: () => close() }, '✕');
   const live = el('p', { class: 'visually-hidden', 'aria-live': 'polite' });
   const track = el('ol', { class: 'gm__track', 'aria-label': 'Forms' });
@@ -307,7 +311,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     el('header', { class: 'gm__bar' },
       titlesNode(),
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock),
-      el('div', { class: 'gm__tools' }, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
+      el('div', { class: 'gm__tools' }, studyBtn, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
       meter),
     stage, live);
 
@@ -703,7 +707,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('h2', { id: 'gm-rule-h', class: 'gm__endh', lang: 'la', text: title }),
       playing,
       ruleCard(rule, { open: true }),
-      el('div', { class: 'gm__acts' }, goOn));
+      el('div', { class: 'gm__acts' }, goOn, study ? el('button', { type: 'button', class: 'btn gm__studylink', title: study.title ?? '', onclick: studyGo }, `${study.label ?? '📖 Study it'}: ${study.title ?? 'in lesson mode'}`) : null));
     openPanel(node, goOn);
   }
   // ? How this form is made: its own steps for this word, over the column; the clock stops while it is open.
@@ -794,7 +798,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings, study }); };
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
     const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;

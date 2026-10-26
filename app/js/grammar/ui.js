@@ -6,7 +6,7 @@
 
 import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -1151,6 +1151,8 @@ export function createUI(ctx) {
   }
   /** Show a view. Each is a history entry (Back walks the section's views; a session in progress resumes); the new heading takes focus. */
   let playOnce = false;
+  const GAMED = new Set(['learn', 'part', 'drill', 'mixed', 'unlimited']);   // a skill's views that game mode puts on the wheel
+  let studyFor = null;   // the skill (one with no forms) whose view this is, shown in lesson mode though game mode is on
   function render(name, params = {}, { push = true, focus = true } = {}) {
     closePop();
     // Old names land on their new home (routes.js: Skills → Today, Path and the progressions → Course …).
@@ -1158,10 +1160,25 @@ export function createUI(ctx) {
     // `play` (start this view's game) is for this render alone: kept in the view or the history entry, a Back
     // onto it or any redraw would start the game again by itself.
     // `game` (an address such as a ▶ Play link opened in a new tab): the session opens in game mode, once.
-    const { play: playNow = false, game: gameNow = false, ...kept } = params ?? {};
+    const { play: playNow = false, game: gameNow = false, asIs = false, ...kept } = params ?? {};
     params = kept;
     playOnce = !!playNow;
     if (gameNow) gameDrillOn();
+    // Game mode is the wheel only (2026-10-26: "lessons cannot be multiple choice, but their skills with words can … for
+    // the 15 note it, and for the 73 open the menu of what to practise"): a skill's lesson, part, drill or mixed set
+    // opened in game mode is its lesson page with Set up the game over it; a skill with no forms opens in lesson mode,
+    // with a note.
+    let setupFor = null;
+    studyFor = null;
+    const sk0 = params?.skill ? skills.get(params.skill) : null;
+    // (2026-10-26: "for the 73 the lesson parts will be removed and left in the study section, but their skills will be
+    // encountered / practised in game mode".) So a lesson, or a part of one, is always in lesson mode; Learn, a drill or
+    // ▶ Play of a skill with forms is Set up the game.
+    if (sk0 && !sk0.set && !asIs && (GAMED.has(name) || name === 'lesson') && (playGameOnce || gameKept())) {
+      if (sk0.paradigms?.length && name !== 'part' && (name !== 'lesson' || playNow)) { setupFor = sk0.id; name = 'lesson'; params = { skill: sk0.id, ...(params.from ? { from: params.from } : {}) }; playOnce = false; }
+      studyFor = sk0.id;
+      playGameOnce = false;
+    }
     view = { name, params };
     // Each entry carries the section mode it was drawn in (Grammar or Word Work), so Back never draws one
     // section's view under the other's tabs; a redraw in place re-marks the entry it is on.
@@ -1172,6 +1189,7 @@ export function createUI(ctx) {
     try { if (push) history.pushState(state, '', url); else history.replaceState(state, '', url); } catch { /* file: URLs */ }
     draw();
     playOnce = false;   // this render's game has been started; a later redraw is just a redraw
+    if (setupFor) openGameSetup(setupFor, { chapter: params?.chapter ?? null });
     window.scrollTo({ top: 0 });
     if (focus) body.querySelector('h1')?.focus?.({ preventScroll: true });
   }
@@ -1199,7 +1217,14 @@ export function createUI(ctx) {
     // A reel opened over the page goes with it (a chart's own game, a table's part), so it never sits over the next view.
     for (const d of document.querySelectorAll('dialog.gm[open]')) { try { d.close(); } catch { /* already going */ } }
     const flat = nodes.flat(Infinity).filter(Boolean);
-    const game = gameKept() && sectionMode() !== 'sheets';
+    const study = studyFor && view.params?.skill === studyFor && (GAMED.has(view.name) || view.name === 'lesson');
+    const game = gameKept() && sectionMode() !== 'sheets' && !study;
+    if (study && gameKept()) flat.unshift(wheelless(studyFor) ? wheellessNote(studyFor) : wheelNote(studyFor));
+    // In lesson mode, a skill's lesson, part or drill has its game a tap away (and a game has its lesson: studyLink).
+    else if (!game && ['learn', 'part', 'drill'].includes(view.name) && skills.get(view.params?.skill)?.paradigms?.length && !skills.get(view.params.skill).set) {
+      const at = flat.findIndex((n) => n.classList?.contains('g-head'));
+      flat.splice(at + 1, 0, h('div', { class: 'g-gamelinkbar' }, gameLink(view.params.skill, view.name === 'part' ? 'Play this skill on the wheel' : 'Play it on the wheel')));
+    }
     body.classList.toggle('g-game', game);
     document.documentElement.classList.toggle('g-game-open', game && showing());
     if (game && !flat.some((n) => n.classList?.contains('g-runnav'))) flat.unshift(gameBar());
@@ -2877,7 +2902,8 @@ export function createUI(ctx) {
     const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
     // A whole table is Word Work's: from Grammar's list the header moves there with it (a chapter page's
     // router does the same, index.js go). A drill stays where it is, its way back the section it came from.
-    if (sk.paradigms?.length) { if (!nav && sectionMode() !== 'words') ctx.setMode?.('words'); go('wwtable', { chapter: n, skill: id, play: true }); return; }
+    // A skill with forms: the setup first (what to play, and how), then the wheel.
+    if (sk.paradigms?.length) { keepGame(true); openGameSetup(id, { chapter: n }); return; }
     gameDrillOn();
     go('drill', { skill: id, from: from ?? (sectionMode() === 'words' ? { wordwork: n } : null) });
   }
@@ -2946,7 +2972,7 @@ export function createUI(ctx) {
     const wordOf = (c) => words.get(c.entry ? `${c.entry.h}|${c.entry.pos}` : '');
     return cards.sort((a, b) => cols.get(a.col ?? '') - cols.get(b.col ?? '') || wordOf(a) - wordOf(b) || at.get(a) - at.get(b));
   }
-  async function playSkillTables(id, { chapter = null, only = null, table = null } = {}) {
+  async function playSkillTables(id, { chapter = null, only = null, table = null, tables = null } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length || sk.set) return false;
     keepEntry('tablepart');
@@ -2956,11 +2982,12 @@ export function createUI(ctx) {
     // `table`: the words of one of its tables only (the ▦ popup's one-table choice, a conjugation under a skill): every
     // model word of that table (2026-10-26: "give me a word in that conjugation just to practise that part of the
     // chart, and other words in that same conjugation that I could choose or mix"), the game's Words to pick from.
-    if (table) {
+    // `tables` (the game's setup): the model words of each table chosen, so any of them can be played.
+    for (const tid of table ? [table] : tables ?? []) {
       try {
         const got = await catalogueItemsOf();
-        for (const w of got?.catalogue?.stock?.(table) ?? []) {
-          const e = got.gen.wordEntry(w, table)?.entry ?? null;
+        for (const w of got?.catalogue?.stock?.(tid) ?? []) {
+          const e = got.gen.wordEntry(w, tid)?.entry ?? null;
           if (e && !all.some((x) => x.h === e.h && x.pos === e.pos) && skillWordFits(sk, e)) all.push(e);
         }
       } catch { /* the skill's own word for the table is still there */ }
@@ -3005,6 +3032,7 @@ export function createUI(ctx) {
       countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
       settings: gameSettings({ table, skill: id, word: words.length === 1 ? words[0].h : null }),
+      study: table ? studyLink('catalogue', { table }, `The ${tableName(table)} table, in lesson mode`) : studyLink('lesson', { skill: id }, 'This skill\'s lesson, in lesson mode'),
       onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
         for (const e of words) {
           const k = `${e.h}|${e.pos}|`;
@@ -3014,6 +3042,121 @@ export function createUI(ctx) {
       } });
     return true;
   }
+  /**
+   * **Set up the game** (2026-10-26: "in game mode … for the 73 open the menu of what to practise: one word vs.
+   * multiple, one declension / conjugation or multiple, or show the menus, what forms etc., and which mode to start
+   * in"; "so they are all unified"): one node, the same in the popup a game-mode lesson opens with, in the side bar
+   * and in a game's title menu. Its tables, its words (grouped by table), its forms (Practise only) and the way to
+   * play first; then ▶ Play, on the wheel. Null for a skill with no forms (`wheelless`).
+   */
+  const wheelless = (id) => { const sk = skills.get(id); return !!sk && !sk.set && !sk.paradigms?.length; };
+  const setupState = new Map();   // skill → { tables, words } chosen, kept for the visit
+  function gameSetupNode(id, { chapter = null, onPlay = null } = {}) {
+    const sk = skills.get(id);
+    if (!sk?.paradigms?.length || sk.set) return null;
+    const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
+    const node = h('div', { class: 'g-setup' }, h('p', { class: 'g-quiet', text: 'Finding its words…' }));
+    (async () => {
+      const all = await tableWords(n, sk);
+      try {
+        const got = await catalogueItemsOf();
+        for (const tid of sk.paradigms) for (const w of (got?.catalogue?.stock?.(tid) ?? []).slice(0, 4)) {
+          const e = got.gen.wordEntry(w, tid)?.entry ?? null;
+          if (e && !all.some((x) => x.h === e.h && x.pos === e.pos) && skillWordFits(sk, e)) all.push(e);
+        }
+      } catch { /* its own words are still there */ }
+      const tOf = (e) => tableIdOf(e, selectRules) ?? sk.paradigms[0];
+      const order = [...new Set([...sk.paradigms, ...all.map(tOf)])].filter((t) => all.some((e) => tOf(e) === t));
+      const wid = (e) => `${e.h}|${e.pos}`;
+      if (!all.length || !order.length) { node.replaceChildren(h('p', { class: 'g-quiet', text: 'No word with a table fits this skill.' })); return; }
+      const st = setupState.get(id) ?? { tables: new Set(order), words: new Set(all.filter((e) => tOf(e) === order[0]).slice(0, 1).map(wid)) };
+      setupState.set(id, st);
+      const chip = (label, on, onclick, extra = {}) => btn(label, { 'aria-pressed': String(!!on), onclick: () => { onclick(); paint(); }, ...extra }, 'g-chip');
+      const wordsOf = (t) => all.filter((e) => tOf(e) === t);
+      const inTables = () => all.filter((e) => st.tables.has(tOf(e)));
+      const paint = () => {
+        // A word of a table switched off is not played.
+        for (const w of [...st.words]) if (!inTables().some((e) => wid(e) === w)) st.words.delete(w);
+        const chosen = inTables().filter((e) => st.words.has(wid(e)));
+        const fo = skillFocusOptions(sk);
+        const way = playWay();
+        node.replaceChildren(
+          order.length > 1 ? h('div', { class: 'g-setup__sec', 'data-stay': '' }, h('h3', { class: 'g-setup__h', text: `Which ${sk.paradigms.some((t) => /^conj/.test(t)) ? 'conjugations' : sk.paradigms.some((t) => /^decl/.test(t)) ? 'declensions' : 'tables'}` }),
+            h('div', { class: 'g-chips' }, chip('All', order.every((t) => st.tables.has(t)), () => order.forEach((t) => st.tables.add(t))),
+              order.map((t) => chip(tableName(t), st.tables.has(t), () => { if (st.tables.has(t)) st.tables.delete(t); else st.tables.add(t); }, { 'data-area': tableArea(t) })))) : null,
+          h('div', { class: 'g-setup__sec', 'data-stay': '' }, h('h3', { class: 'g-setup__h', text: 'Which words' }),
+            h('div', { class: 'g-chips' },
+              chip('One word', chosen.length === 1, () => { const first = inTables()[0]; st.words = new Set(first ? [wid(first)] : []); }),
+              order.length > 1 ? chip('One of each', false, () => { st.words = new Set(order.filter((t) => st.tables.has(t)).map((t) => wordsOf(t)[0]).filter(Boolean).map(wid)); }) : null,
+              chip('All of them', chosen.length === inTables().length, () => { st.words = new Set(inTables().map(wid)); })),
+            // One row when each table has a word or none; else a row a table, under its name.
+            ((wordChip) => (order.every((t) => wordsOf(t).length <= 1)
+              ? h('div', { class: 'g-chips' }, inTables().map(wordChip))
+              : order.filter((t) => st.tables.has(t)).map((t) => h('div', { class: 'g-setup__words' }, order.length > 1 ? h('span', { class: 'g-label', text: tableName(t) }) : null,
+                h('div', { class: 'g-chips' }, wordsOf(t).map(wordChip))))))((e) => chip(headOf(e), st.words.has(wid(e)), () => { if (st.words.has(wid(e))) st.words.delete(wid(e)); else st.words.add(wid(e)); }, { lang: 'la' }))),
+          fo.length > 1 ? h('div', { class: 'g-setup__sec', 'data-stay': '' }, h('h3', { class: 'g-setup__h', text: 'Which forms' }),
+            h('div', { class: 'g-chips' }, fo.map((o) => chip(o.label, chartFocus() === o.id, () => setChartFocus(o.id))))) : null,
+          h('div', { class: 'g-setup__sec', 'data-stay': '' }, h('h3', { class: 'g-setup__h', text: 'Start in' }),
+            h('div', { class: 'g-chips' }, LADDER.map(([m, sh]) => chip(ladderLabel(m, sh), way.mode === m && way.shuffle === sh, () => setPlayWay({ mode: m, shuffle: sh }))))),
+          h('div', { class: 'g-acts' }, btn(playLabel(chosen.length ? `Play ${chosen.length === 1 ? headOf(chosen[0]) : `${chosen.length} words`} · ${playWay().label}` : 'Choose a word'),
+            { disabled: chosen.length ? null : true, 'data-go': '', onclick: () => { onPlay?.(); playSkillTables(id, { chapter: n, only: chosen.map(wid), tables: [...st.tables] }); } }, 'btn btn--primary g-play')));
+      };
+      paint();
+    })().catch(() => node.replaceChildren(h('p', { class: 'g-quiet', text: 'Its words could not be found just now.' })));
+    return node;
+  }
+  /** The setup as a popup: what a game-mode lesson, drill or ▶ Play opens with. */
+  function openGameSetup(id, { chapter = null } = {}) {
+    const sk = skills.get(id);
+    if (!sk) return;
+    const d = h('dialog', { class: 'g-pmenu g-setupd', 'aria-labelledby': 'g-setup-h' });
+    const setup = gameSetupNode(id, { chapter, onPlay: () => d.close() });
+    if (!setup) return;
+    d.append(
+      h('div', { class: 'g-pmenu__top' }, h('p', { class: 'g-kicker', text: `${capOf(id) ? `${capOf(id)} · ` : ''}▶ set up the game` }),
+        btn('×', { 'aria-label': 'Close', onclick: () => d.close() }, 'g-pop__close g-pmenu__close')),
+      h('h2', { id: 'g-setup-h', class: 'g-pmenu__h', text: sk.title }),
+      setup,
+      moreWaysNode(id, () => d.close()));
+    d.addEventListener('close', () => d.remove());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    document.body.append(d);
+    d.showModal();
+  }
+  /**
+   * Every other way in, kept and in one place (2026-10-26: "don't get rid of any skills or options but organise them
+   * and present them in an organised way for the player"): the lesson, its parts, Learn as a game, the drill and the
+   * mixed game, each opened as it always was (`asIs`: not turned into the wheel).
+   */
+  function moreWaysNode(id, before = null) {
+    const sk = skills.get(id);
+    if (!sk || sk.set) return null;
+    const go = (fn) => () => { before?.(); fn(); };
+    const row = (label, note, onclick, cls = 'btn') => h('li', { class: 'g-setup__way' }, btn(label, { onclick }, cls), note ? h('span', { class: 'g-quiet', text: ` ${note}` }) : null);
+    return h('details', { class: 'g-setup__more' }, h('summary', { class: 'g-side__sum', 'data-stay': '' }, h('span', { text: 'More ways to practise it' })),
+      h('ul', { class: 'g-setup__ways' },
+        row('📖 The lesson', 'in lesson mode', go(() => render('lesson', { skill: id }))),
+        row('Its parts', 'one at a time, in lesson mode', go(async () => { const lesson = await lessonOf(id); openPartsMenu(id, stepsOf(lesson).map((st, j) => stepTitle(st, j))); })),
+
+        drillable(id) ? row('Drill it', 'its questions, mixed kinds', go(() => render('drill', { skill: id, asIs: true }))) : null,
+        drillable(id) ? row(playLabel('Mixed game'), 'with the skills it is confused with', go(() => { gameDrillOn(); render(mixedMembers(sk, skills, { chapter: ctx.currentChapter?.() ?? null, drillable }).length > 1 ? 'mixed' : 'drill', { skill: id, asIs: true }); })) : null));
+  }
+  /** In game mode a lesson is read in lesson mode; its skill is played on the wheel, a button away. */
+  const wheelNote = (id) => h('p', { class: 'g-note g-wheelless', role: 'note' }, h('b', { text: 'Game mode: ' }),
+    'the lesson and its parts are read in lesson mode; the skill is played on the wheel. ',
+    btn(playLabel('Set up the game'), { onclick: () => openGameSetup(id) }, 'btn btn--primary g-play'));
+  /**
+   * The way across, both ways (2026-10-26: "a link at the top in the game to the correct study section part, and vice
+   * versa a link to the game for each part of a unit / lesson / skill / chart"): `studyLink` for a game's bar (its
+   * place in lesson mode), `gameLink` for a page of lesson mode (Set up the game).
+   */
+  const studyLink = (name, params = {}, title = 'Open this in lesson mode') => ({ label: '📖 Study it', title, go: () => { keepGame(false); render(name, params); } });
+  const gameLink = (id, label = 'Play it on the wheel') => (skills.get(id)?.paradigms?.length && !skills.get(id)?.set
+    ? btn(playLabel(label), { onclick: () => openGameSetup(id), 'aria-label': `${label}: ${skills.get(id)?.title ?? ''}` }, 'btn g-play g-gamelink') : null);
+  /** The note for a skill with no forms to play (the 15 about how forms are used): it opens as a lesson. */
+  const wheellessNote = (id) => h('p', { class: 'g-note g-wheelless', role: 'note' }, h('b', { text: 'No wheel game for this one. ' }),
+    `${skills.get(id)?.title ?? 'This skill'} is about how forms are used, not a set of forms to type, so in game mode it opens in lesson mode.`);
+
   /**
    * ▶ A mixed game, for every skill (2026-10-23: "add a mixed game for those 15 skills too … do that for all"): its mixed set
    * — the skill on every other item, between them the skills it is confused with and builds on — played in game
@@ -3525,7 +3668,7 @@ export function createUI(ctx) {
         return h('details', { class: 'g-side__sub', open: i === 0 || null }, h('summary', { class: 'g-side__sum', text: title }), row);
       })));
     }
-    if (sk && !table) {
+    if (sk && !table && (sk.set || !sk.paradigms?.length)) {   // a skill with forms has them in Set up the game
       const fo = skillFocusOptions(sk);
       if (fo.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, fo.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
         if (inGame) { setChartFocus(o.id); playSkillTables(sk.id, { chapter: sk.chapter }); return; }
@@ -3535,6 +3678,9 @@ export function createUI(ctx) {
       } }, 'g-chip'))), h('p', { class: 'g-quiet', text: 'For its tables and games, from the next one.' })));
     }
     if (sk) {
+      // The game, the same setup as the popup's and the game's own menu (one place to choose what and how).
+      if (!sk.set) parts.unshift(sec(sk.paradigms?.length ? '▶ Set up the game' : 'Game mode', sk.paradigms?.length ? gameSetupNode(sk.id, { chapter: sk.chapter }) : wheellessNote(sk.id)));
+      if (!sk.set && !inGame) parts.push(sec('More ways to practise it', moreWaysNode(sk.id)?.querySelector('ul')));
       if (sk.paradigms?.length) parts.push(sec('Its tables',
         sk.paradigms.length > 1 ? btn(`▦ ${acrossLabel(sk.paradigms)}`, { onclick: () => playSkillTables(sk.id, { chapter: sk.chapter }) }, 'btn btn--primary g-side__btn') : null,
         h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)}`))))));
@@ -3570,7 +3716,8 @@ export function createUI(ctx) {
       h('div', { class: 'g-pmenu__top' }, h('p', { class: 'g-kicker', text: `${capOf(id) ? `${capOf(id)} · ` : ''}the lesson, part by part` }),
         btn('×', { 'aria-label': 'Close', onclick: () => d.close() }, 'g-pop__close g-pmenu__close')),
       h('h2', { id: 'g-pmenu-h', class: 'g-pmenu__h', text: sk.title }),
-      h('p', { class: 'g-acts' }, btn('📖 The whole lesson, from the start', { onclick: go(() => startSkill(id, 'learn')) }, 'btn btn--primary')),
+      h('p', { class: 'g-acts' }, btn('📖 The whole lesson, from the start', { onclick: go(() => startSkill(id, 'learn')) }, 'btn btn--primary'),
+        sk.paradigms?.length ? btn(playLabel('Play it on the wheel'), { onclick: go(() => openGameSetup(id)) }, 'btn g-play') : null),
       h('ol', { class: 'g-pmenu__list' }, titles.map((t, i) => h('li', {},
         navEl({ class: 'g-pmenu__part', to: ['part', { skill: id, step: i }], onclick: go(() => startSkill(id, 'part', { step: i })) },
           h('span', { class: 'g-pmenu__n', text: String(i + 1) }), h('span', { class: 'g-pmenu__t', text: t }), countBadge(`part:${id}:${i}`))))));
@@ -5798,6 +5945,7 @@ export function createUI(ctx) {
     // Game mode, once chosen, is how the next session opens too.
     let wantGame = false;
     try { wantGame = playGameOnce || localStorage.getItem('l103.game.drill') === '1'; } catch { wantGame = playGameOnce; }
+    if (studyFor && view.params?.skill === studyFor) wantGame = false;   // no wheel for it: lesson mode, noted
     playGameOnce = false;
     if (wantGame) { body.classList.add('g-game'); document.documentElement.classList.add('g-game-open'); }
     paintGame();        // queue index → the rendered page, kept so a step back shows it as it was left
@@ -6893,6 +7041,10 @@ export function createUI(ctx) {
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const cardHow = (it) => { const r = ruleOfEntry(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } };
       playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: testedLine(cards), suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }),
+        // Its place in lesson mode: the lesson part it is in, the skill's lesson, or its table.
+        study: view.name === 'part' ? studyLink('part', view.params, 'This part of the lesson, in lesson mode')
+          : !item.catalogue && skills.has(item.skill) ? studyLink('lesson', { skill: item.skill }, 'This skill\'s lesson, in lesson mode')
+            : tableIdOfItem(item) ? studyLink('catalogue', { table: tableIdOfItem(item) }, 'This table, in lesson mode') : null,
         settings: gameSettings({ table: tableIdOfItem(item), skill: item.catalogue || tableIdOfItem(item) ? null : item.skill ?? null, word: words > 1 ? null : cards[0].entry?.h ?? null, group: item.chart?.group ?? null }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Back to the table →',
         // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
         // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.

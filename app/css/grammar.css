@@ -1692,3 +1692,17 @@ html.g-game-open .g-side { z-index: 70; }
 .g-pick__cell { padding-left: 0.2rem; }
 /* On a computer it lives in the side bar; on the page only where there is none (a phone, the bar hidden) */
 @media (min-width: 900px) { html.g-side-on .g-chooser--inline { display: none; } }
+
+/* Set up the game (ui.js gameSetupNode): the popup, the side bar and the game's own menu share it. */
+.g-setup { display: grid; gap: var(--s-3); }
+.g-setup__sec { display: grid; gap: var(--s-1); }
+.g-setup__h { margin: 0; font-size: var(--ui-sm); font-weight: 700; color: var(--ink-2); }
+.g-setup__words { display: grid; gap: 2px; }
+.g-setup__words .g-label { font-size: var(--ui-xs); color: var(--ink-3); }
+.g-setup .g-chip[aria-pressed="true"] { border-color: var(--rubric); background: color-mix(in srgb, var(--rubric) 14%, var(--bg-raised)); color: var(--ink); font-weight: 700; }
+.g-setup .g-chip[aria-pressed="true"]::before { content: "✓ "; }
+.g-setup__more { margin-top: var(--s-3); border-top: 1px solid var(--line); padding-top: var(--s-2); }
+.g-setup__ways { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-2); }
+.g-setup__way { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); }
+.g-wheelless { margin: 0 0 var(--s-3); padding: var(--s-2) var(--s-3); border-left: 4px solid var(--gm-a, var(--rubric)); background: var(--bg-raised); border-radius: 0.5rem; }
+.g-gamelinkbar { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: 0 0 var(--s-3); }
