@@ -2826,7 +2826,7 @@ export function createUI(ctx) {
   const focusCards = (cards) => {
     const f = chartFocus();
     if (f === 'all') return cards;
-    const kept = cards.filter((c) => { const k = c.form ?? {}; return f === 'act' || f === 'pass' ? !k.voice || k.voice === f : !k.number || k.number === f; });
+    const kept = cards.filter((c) => !offFocus(f, c.form ?? {}));
     if (kept.length) cards.splice(0, cards.length, ...kept);
     return cards;
   };
@@ -2835,15 +2835,23 @@ export function createUI(ctx) {
     if (!sk?.paradigms?.length) return [];
     const f = sk.paradigm_focus ?? {};
     const verb = sk.paradigms.some((t) => /^conj|^(sum|possum|eo|fero|volo)$/.test(t));
-    return chartFocusOptions([...(verb && !f.voice ? [{ voice: 'act' }, { voice: 'pass' }] : []), ...(!f.number ? [{ number: 'sg' }, { number: 'pl' }] : [])]);
+    const gendered = sk.paradigms.some((t) => /^adj|^(is|hic|ille|iste|ipse|idem|qui|quis|aliquis|quisque|quidam|unus|duo|tres)$/.test(t));
+    return chartFocusOptions([...(verb && !f.voice ? [{ voice: 'act' }, { voice: 'pass' }] : []), ...(!f.number ? [{ number: 'sg' }, { number: 'pl' }] : []), ...(gendered && !f.gender ? [{ gender: 'm' }, { gender: 'f' }, { gender: 'n' }] : [])]);
   };
   const chartFocus = () => { try { return localStorage.getItem(CHART_FOCUS) || 'all'; } catch { return 'all'; } };
   const setChartFocus = (f) => { try { localStorage.setItem(CHART_FOCUS, f); } catch { /* this visit only */ } };
+  // Each choice narrows one feature of a cell (2026-10-26, "do similar things for the nouns, adjectives, adverbs … all
+  // study subjects"): voice for a verb, number for every table, gender for an adjective or a pronoun.
+  const FOCUS_AXIS = { act: ['voice', 'act'], pass: ['voice', 'pass'], sg: ['number', 'sg'], pl: ['number', 'pl'], m: ['gender', 'm'], f: ['gender', 'f'], n: ['gender', 'n'] };
+  /** Does a cell's key fall outside the focus? A key without that feature (an infinitive's number) is never left out. */
+  const offFocus = (f, k) => { const ax = FOCUS_AXIS[f]; return !!ax && k?.[ax[0]] != null && k[ax[0]] !== ax[1]; };
   function chartFocusOptions(keys) {
     const has = (k, v) => keys.some((x) => x?.[k] === v);
     const out = [{ id: 'all', label: 'All' }];
     if (has('voice', 'act') && has('voice', 'pass')) out.push({ id: 'act', label: 'Active only' }, { id: 'pass', label: 'Passive only' });
     if (has('number', 'sg') && has('number', 'pl')) out.push({ id: 'sg', label: 'Singular only' }, { id: 'pl', label: 'Plural only' });
+    const genders = [['m', 'Masculine only'], ['f', 'Feminine only'], ['n', 'Neuter only']].filter(([g]) => has('gender', g));
+    if (genders.length > 1) out.push(...genders.map(([id, label]) => ({ id, label })));
     return out;
   }
   const scaffoldLabel = (level) => (level === 'auto' ? 'auto' : level === 'off' ? 'off' : `${level}%`);
@@ -3243,8 +3251,10 @@ export function createUI(ctx) {
     const t = table ? catTables?.get?.(table) : null;
     if (t) {
       const fam = String(t.id).replace(/\d.*$/, '');
-      const sibs = fam.length > 2 ? [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part && String(x.id).replace(/\d.*$/, '') === fam) : [];
-      if (sibs.length) { out.push({ head: `The same forms, another ${fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : 'table'}` }); for (const x of sibs) out.push({ label: `▦ ${x.label}`, go: () => goTable(x.id) }); }
+      const ofFam = fam.length > 2 ? [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part && String(x.id).replace(/\d.*$/, '') === fam) : [];
+      const sibs = (ofFam.length ? ofFam : [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part)).slice(0, 10);
+      const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : fam === 'adj' ? 'adjective type' : t.part === 'pronoun' ? 'pronoun' : t.part === 'numeral' ? 'numeral' : t.part === 'noun' ? 'noun' : 'table';
+      if (sibs.length) { out.push({ head: `The same forms, another ${kind}` }); for (const x of sibs) out.push({ label: () => `▦ ${x.label} · ${timesOf(`table:${x.id}`)}`, go: () => goTable(x.id) }); }
       const steps = thePath().steps.filter((st) => st.kind === 'table' && tableArea(st.id) === tableArea(t.id) && catTables.has(st.id));
       const at = steps.findIndex((st) => st.id === t.id);
       const easier = at > 0 ? steps[at - 1].id : null;
@@ -3460,9 +3470,9 @@ export function createUI(ctx) {
     if (table) {
       // Practise only…: the chart's own switch, pressed from here; with no table on screen it is kept for the next one.
       const t = catTables?.get?.(table);
-      const opts = chartFocusOptions((t?.groups ?? []).length ? [{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }] : []);
       const hasVoice = /^conj|^(sum|possum|eo|fero|volo)$/.test(table);
-      const shown = opts.filter((o) => o.id === 'all' || (hasVoice ? true : o.id === 'sg' || o.id === 'pl'));
+      const gendered = t?.part === 'adjective' || t?.part === 'pronoun' || t?.part === 'numeral';
+      const shown = chartFocusOptions([...(hasVoice ? [{ voice: 'act' }, { voice: 'pass' }] : []), { number: 'sg' }, { number: 'pl' }, ...(gendered ? [{ gender: 'm' }, { gender: 'f' }, { gender: 'n' }] : [])]);
       if (shown.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, shown.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
         const there = [...document.querySelectorAll('.g-focus .g-seg__btn')].find((b) => b.textContent === o.label);
         if (there) there.click(); else setChartFocus(o.id);
@@ -5403,7 +5413,10 @@ export function createUI(ctx) {
     };
     const family = (x) => String(x).replace(/\d.*$/, '');
     const fam = family(t.id);
-    const siblings = [...all.values()].filter((x) => x.id !== t.id && x.part === t.part && (family(x.id) === fam && fam.length > 2 ? true : false));
+    // Its family (conj1 … conj4, decl1 … decl5, adj12 … adj3); a table with none (a pronoun, a numeral, deus) has the
+    // other tables of its part.
+    const ofFam = [...all.values()].filter((x) => x.id !== t.id && x.part === t.part && fam.length > 2 && family(x.id) === fam);
+    const siblings = (ofFam.length ? ofFam : [...all.values()].filter((x) => x.id !== t.id && x.part === t.part)).slice(0, 10);
     const words = (t.stock ?? []).filter((w) => w.h !== word);
     const p = thePath();
     const area = tableArea(t.id);
@@ -5411,14 +5424,14 @@ export function createUI(ctx) {
     const at = steps.findIndex((st) => st.id === t.id);
     const easier = at > 0 ? steps[at - 1].id : null;
     const harder = at >= 0 && at + 1 < steps.length ? steps[at + 1].id : null;
-    const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : 'table';
+    const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : fam === 'adj' ? 'adjective type' : t.part === 'pronoun' ? 'pronoun' : t.part === 'numeral' ? 'numeral' : t.part === 'noun' ? 'noun' : 'table';
     const groupLabel = group ? (t.groups ?? []).find((g) => g.id === group)?.label ?? null : null;
     const chip = (label, onclick, extra = {}) => btn(label, { onclick, ...extra }, 'g-chip');
     const rows = [
       words.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Another word, the same table' }),
         h('div', { class: 'g-chips' }, words.slice(0, 5).map((w) => chip(w.lemma.split(/[\s,]/)[0], () => play(t.id, { w }), { lang: 'la' })))) : null,
       siblings.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: `The same${groupLabel ? ` ${groupLabel}` : ' forms'}, another ${kind}` }),
-        h('div', { class: 'g-chips' }, siblings.map((x) => chip(x.label, () => play(x.id), { 'data-area': tableArea(x.id) })))) : null,
+        h('div', { class: 'g-chips' }, siblings.map((x) => chip([x.label, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`table:${x.id}`)}` })], () => play(x.id), { 'data-area': tableArea(x.id) })))) : null,
       easier || harder ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Easier or harder' }),
         h('div', { class: 'g-chips' }, easier ? chip(`😓 Easier: ${all.get(easier).label}`, () => play(easier)) : null, harder ? chip(`😎 Harder: ${all.get(harder).label}`, () => play(harder)) : null)) : null,
       lessonsLink(t) ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Its lessons' }), h('p', {}, 'This table is ', lessonsLink(t), '.')) : null,
@@ -6456,7 +6469,7 @@ export function createUI(ctx) {
     const keyAt = (i) => chartCellKey(item, chart.cells[i]) ?? {};
     const focusOpts = whole ? chartFocusOptions(chart.cells.map((_, i) => keyAt(i))) : [];
     let focus = focusOpts.some((o) => o.id === chartFocus()) ? chartFocus() : 'all';
-    const offCells = (f) => (f === 'all' ? [] : chart.cells.map((_, i) => i).filter((i) => { const k = keyAt(i); return f === 'act' || f === 'pass' ? k.voice && k.voice !== f : k.number && k.number !== f; }));
+    const offCells = (f) => (f === 'all' ? [] : chart.cells.map((_, i) => i).filter((i) => offFocus(f, keyAt(i))));
     // The scaffold still gives some of the cells practised; if it would give every one of them, it gives none.
     const givenFor = (f) => {
       const off = new Set(offCells(f));
