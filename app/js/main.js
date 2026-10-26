@@ -1,5 +1,6 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader, firstUnread, queueReads, playbackRead, weekHasLines } from './reader.js';
+import { activeTimer } from './activetime.js';
 import { createWordPanel } from './wordpanel.js';
 import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, SHELF_GROUPS, shelfKind, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek, chapterRows, readingRows, menuTab, MENU_TABS } from './settings.js';
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
@@ -1994,3 +1995,6 @@ boot().catch((err) => {
   el.hidden = false;
   el.querySelector('code').textContent = err?.message ?? String(err);
 });
+
+// Active time today, at the top of every page (activetime.js): it counts while something is typed, clicked or scrolled.
+{ const aa = document.getElementById('settings-btn'); if (aa) aa.before(activeTimer()); }

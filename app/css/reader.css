@@ -695,3 +695,8 @@ html[data-transport="on"] { scroll-padding-bottom: calc(var(--transport-h, 0px) 
 .empty-library { max-width: 34rem; margin: var(--s-7) auto; padding: 0 var(--s-4); font-family: var(--face-ui); color: var(--ink-2); line-height: 1.55; }
 .empty-library h2 { font-family: var(--face-serif); font-weight: 400; font-size: 1.4rem; color: var(--ink); margin: 0 0 var(--s-3); }
 .empty-library code { font-size: 0.95em; background: var(--bg-chrome); padding: 0.1em 0.4em; border-radius: var(--radius-sm); }
+
+/* Active time today (activetime.js), in the top bar by Aa: on every page, dim while paused. */
+.g-activetime { align-self: center; padding: 0 var(--s-2, 0.5rem); font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; }
+.g-activetime[data-on="false"] { color: var(--ink-3); font-weight: 400; }
+@media (max-width: 380px) { .g-activetime { padding: 0 2px; font-size: 0.8rem; } }
