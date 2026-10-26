@@ -138,6 +138,9 @@ export function stepThan(mode, shuffle = false, d = 1) {
 }
 /** One step harder, or null at the top: What is it? → Choose → Flash → Type it → Type it, shuffled. */
 export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
+/** The way to play last chosen ({ mode, shuffle, label }), and setting it, for a screen outside the game (ui.js's end). */
+export const playWay = () => { const mode = modeOf(read('mode', 'type')); const shuffle = mode === 'type' && !!read('shuffle', false); return { mode, shuffle, label: ladderLabel(mode, shuffle) }; };
+export function setPlayWay({ mode, shuffle = false }) { write('mode', modeOf(mode)); write('shuffle', !!shuffle); }
 
 export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null } = {}) {
   // In order, a column at a time (2026-10-23: "unless it's on shuffle have all the active first then all the passive"):

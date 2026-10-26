@@ -6,7 +6,7 @@
 
 import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers } from '../wordpanel.js';
-import { gameSound, playTable } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -2441,7 +2441,7 @@ export function createUI(ctx) {
       if (passed) setLearnPlace(id, null);
       // The same-session re-test (§10) and the reading tie-in (§13) belong to a skill that has just been learned.
       if (passed && !skill.set) noteRetestFor(id);
-      const after = h('div', { class: 'g-after' }, skill.set ? null : firstNextNode(id), passed ? retestNode({ only: id, from }) : null);
+      const after = h('div', { class: 'g-after' }, skill.set ? null : firstNextNode(id), passed ? reviewButton() : null);
       if (passed && !skill.set) tieInNode(id).then((n) => { if (n) after.append(n); }).catch(() => {});
       setBody(stepper(tenAt), h('header', { class: 'g-head' },
         h('h1', { class: 'g-title', text: passed ? 'Learned' : 'Not yet' }),
@@ -2601,24 +2601,6 @@ export function createUI(ctx) {
     document.body.append(d);
     d.showModal();
     d.querySelector('button.btn, .g-pmenu__part')?.focus();
-  }
-  function retestNode({ only = null, from = null } = {}) {
-    const now = Date.now();
-    const list = retestList().filter((r) => skills.has(r.skill) && (!only || r.skill === only));
-    const due = retestDue(list, now);
-    const pending = retestPending(list, now);
-    if (!due.length && !pending.length) return null;
-    const node = h('div', { class: 'g-retest' });
-    if (due.length) {
-      node.append(h('p', { class: 'g-retest__line' }, `${due.length === 1 ? 'A short re-test is ready' : 'Short re-tests are ready'}: three items each, on what you learned or drilled earlier.`),
-        h('div', { class: 'g-acts' }, due.map((r) => btn(`Re-test ${titleOf(r.skill)}`, { to: ['drill', { skill: r.skill, size: RETEST_SIZE, retest: true, from }], onclick: () => render('drill', { skill: r.skill, size: RETEST_SIZE, retest: true, from }), 'aria-label': `Re-test ${titleOf(r.skill)}: three items` }, 'btn btn--primary'))));
-    }
-    if (pending.length) {
-      const soon = pending[0];
-      const mins = Math.max(1, Math.ceil((Number(soon.at) + RETEST_AFTER_MS - now) / 60000));
-      node.append(h('p', { class: 'g-retest__line g-quiet' }, `A three-item re-test of ${pending.map((r) => titleOf(r.skill)).join(' and ')} will be offered in about ${mins} minute${mins === 1 ? '' : 's'}, or at the end of your next session.`));
-    }
-    return node;
   }
 
   /* --------------------------------------------- the reading tie-in (§13) */
@@ -5562,7 +5544,13 @@ export function createUI(ctx) {
     const chip = (label, onclick, extra = {}) => btn(label, { onclick, ...extra }, 'g-chip');
     const nextSib = nextSibling(t, siblings);
     const nouns = t.part === 'noun';
+    // First, in game mode (2026-10-26: "always ask me if I want to do the same word but using a higher mode, because I
+    // used Flash"): the same table and word again, one step up the ladder (What is it? → Choose → Flash → Type it →
+    // Type it, shuffled).
+    const up = gameKept() ? harderThan(playWay().mode, playWay().shuffle) : null;
     const rows = [
+      up ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: `The same word, a harder way to play (you played ${playWay().label})` }),
+        h('div', { class: 'g-chips' }, chip(`▶ Same again: ${up.label}`, () => { setPlayWay(up); const w = word ? (all.get(t.id)?.stock ?? []).find((x) => x.h === word) : null; play(t.id, { w }); }, { 'aria-label': `Play the same word again, ${up.label}` }))) : null,
       nextSib ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: `The next ${kind}` }),
         h('div', { class: 'g-chips' }, chip([`▶ ${nextSib.label}`, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`table:${nextSib.id}`)}` })], () => play(nextSib.id), { 'data-area': tableArea(nextSib.id) }))) : null,
       nouns ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Just one case, across the declensions' }),
@@ -5609,7 +5597,8 @@ export function createUI(ctx) {
     // offer for anything already due, and the reading tie-in (§13). After any session: the re-tests now due.
     const drilled = params?.drill && skills.has(params.drill) && !params.retest ? params.drill : null;
     if (drilled) noteRetestFor(drilled);
-    const after = h('div', { class: 'g-after' }, params?.drill && skills.has(params.drill) ? firstNextNode(params.drill) : null, retestNode({ from: params?.from ?? null }));
+    // The re-tests behind one Review button here too (2026-10-26: "all of those review chips should not be there").
+    const after = h('div', { class: 'g-after' }, params?.drill && skills.has(params.drill) ? firstNextNode(params.drill) : null, reviewButton());
     if (params?.drill && skills.has(params.drill)) tieInNode(params.drill).then((n) => { if (n) after.append(n); }).catch(() => {});
     const againLabel = params?.unlimited ? 'Keep going' : params?.mixed ? 'Another mixed set' : params?.drill ? (params.retest ? `Drill ${titleOf(params.drill)}` : 'Another ten') : params?.catalogue ? 'Back to the table' : params?.redo ? 'Another redo' : params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session';
     const again = () => (params?.unlimited || params?.mixed ? render(params.unlimited ? 'unlimited' : 'mixed', { skill: params.drill, from: params.from ?? null })
