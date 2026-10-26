@@ -3751,14 +3751,18 @@ export function createUI(ctx) {
       const t = catTables?.get?.(table);
       const hasVoice = /^conj|^(sum|possum|eo|fero|volo)$/.test(table);
       const gendered = t?.part === 'adjective' || t?.part === 'pronoun' || t?.part === 'numeral';
-      const shown = chartFocusOptions([...(hasVoice ? [{ voice: 'act' }, { voice: 'pass' }] : []), { number: 'sg' }, { number: 'pl' }, ...(gendered ? [{ gender: 'm' }, { gender: 'f' }, { gender: 'n' }] : [])]);
-      if (shown.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, shown.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
+      // Every choice its kind of word has, a choice this table lacks greyed out with why (2026-10-27: "for any word, if
+      // that is not available, show it in the menus / side bars as greyed out" — possum has no passive).
+      const slots = new Set((t?.groups ?? []).flatMap((g) => g.cells ?? []).flatMap((c) => String(c).split('.')));
+      const shown = chartFocusOptions([...(hasVoice ? [{ voice: 'act' }, { voice: 'pass' }] : []), { number: 'sg' }, { number: 'pl' }, ...(gendered ? [{ gender: 'm' }, { gender: 'f' }, { gender: 'n' }] : [])])
+        .map((o) => ({ ...o, missing: o.id !== 'all' && slots.size > 0 && !slots.has(FOCUS_AXIS[o.id]?.[1]) }));
+      if (shown.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, shown.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), disabled: o.missing ? true : null, title: o.missing ? ((o.id === 'm' || o.id === 'f') && slots.has('c') ? `${t?.label ?? 'This table'} has one form for masculine and feminine together (common), none for either alone` : `${t?.label ?? 'This table'} has no ${({ act: 'active', pass: 'passive', sg: 'singular', pl: 'plural', m: 'masculine', f: 'feminine', n: 'neuter' })[o.id]} forms`) : null, onclick: (e) => {
         // In a game's menu: the table again, played with only these (the game itself has closed).
         if (inGame) { setChartFocus(o.id); render('catalogue', { table, from: pr.from ?? null, play: true }); return; }
         const there = [...document.querySelectorAll('.g-focus .g-seg__btn')].find((b) => b.textContent === o.label);
         if (there) there.click(); else setChartFocus(o.id);
         for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
-      } }, 'g-chip')))));
+      } }, o.missing ? 'g-chip is-missing' : 'g-chip')))));
       const next = tableNextNode(table, { group: catState.group.get(table) ?? pr.group ?? null, word: catState.word.get(table)?.h ?? pr.word ?? null, from: pr.from ?? null });
       // A second level (2026-10-25: "when something is pressed it … opens up the second or third level of options"):
       // each way on is its own fold under Keep going, the first one open.
@@ -5263,6 +5267,10 @@ export function createUI(ctx) {
     catState.sel.set(t.id, sel);
     const voiceOf = (id) => { const parts = String(id).split('.'); return parts.includes('act') ? 'act' : parts.includes('pass') ? 'pass' : null; };
     const hasVoices = selAll.some((c) => voiceOf(c) === 'act') && selAll.some((c) => voiceOf(c) === 'pass');
+    // A verb's table with one voice only (possum, sum): Active only and Passive only are shown, the one it lacks greyed.
+    const isVerbTable = /^conj|^(sum|possum|eo|fero|volo|nolo|malo)$/.test(t.id) || t.part === 'verb';
+    const voiceChip = (v) => { const has = selAll.some((c) => voiceOf(c) === v); const name = v === 'act' ? 'active' : 'passive';
+      return btn(`${v === 'act' ? 'Active' : 'Passive'} only`, has ? { onclick: () => only(v) } : { disabled: true, title: `${t.label} has no ${name} forms` }, has ? 'g-chip' : 'g-chip is-missing'); };
     const choosers = new Set();
     const paintChoosers = () => { for (const c of [...choosers]) { if (!c.isConnected && c.dataset.drawn) { choosers.delete(c); continue; } c.paint(); } };
     const setMany = (ids, on) => { for (const id of ids) { if (on) sel.add(id); else sel.delete(id); } paintChoosers(); };
@@ -5301,7 +5309,7 @@ export function createUI(ctx) {
         const n = selAll.filter((x) => sel.has(x)).length;
         node.replaceChildren(
           h('div', { class: 'g-chips', 'data-stay': '' }, btn('All', { onclick: () => setMany(selAll, true) }, 'g-chip'), btn('None', { onclick: () => setMany(selAll, false) }, 'g-chip'),
-            hasVoices ? btn('Active only', { onclick: () => only('act') }, 'g-chip') : null, hasVoices ? btn('Passive only', { onclick: () => only('pass') }, 'g-chip') : null),
+            hasVoices || isVerbTable ? voiceChip('act') : null, hasVoices || isVerbTable ? voiceChip('pass') : null),
           h('div', { class: 'g-pick__list', 'data-stay': '' }, groups.map((g) => {
             const cells = g.cells ?? [];
             const vs = ['act', 'pass'].filter((v) => cells.some((c) => voiceOf(c) === v));
@@ -5311,8 +5319,9 @@ export function createUI(ctx) {
               : cellTicks(cells));
           })),
           h('div', { class: 'g-acts' },
-            btn(playLabel(`${n === 1 ? 'Play this form' : `Play these ${n}`} on ${wordHead || 'this word'}`), { disabled: n ? null : true, onclick: () => practiseSel(1, true), 'aria-label': `Play these ${n} forms as a game` }, 'btn btn--primary g-play'),
+            btn(playLabel(`Play on ${wordHead || 'this word'}`), { disabled: n ? null : true, onclick: () => practiseSel(1, true), 'aria-label': `Play these ${n} forms as a game` }, 'btn btn--primary g-play'),
             btn(playLabel('Play on 3 words, mixed'), { disabled: n ? null : true, onclick: () => practiseSel(3, true) }, 'btn g-play')),
+          h('p', { class: 'g-quiet g-pick__note', text: `${n} chosen · the game plays each with its whole set of persons and numbers (at least six).` }),
           h('div', { class: 'g-acts g-pick__lesson' },
             btn(`📖 Practise in lesson mode`, { disabled: n ? null : true, onclick: () => practiseSel(1, false), 'aria-label': `Practise these ${n} forms in lesson mode, on the page` }, 'btn btn--quiet'),
             btn('📖 3 words, lesson mode', { disabled: n ? null : true, onclick: () => practiseSel(3, false) }, 'btn btn--quiet')));
@@ -7165,7 +7174,10 @@ export function createUI(ctx) {
         onDone: ({ firstMiss, shown = new Set(), typed = false }) => {
           if (view.name === 'catalogue' && tableIdOfItem(item)) gameCountedTable = tableIdOfItem(item);
           // Typed in Type it: each cell typed (not shown) is marked done, its table's parts by them.
-          if (typed && chart.tableId) noteTypedCells(chart.tableId, [...boxOf].filter(([key]) => !shown.has(key)).map(([, i]) => chart.cells[i]?.cellId));
+          // Every card typed counts, the whole column the game played (2026-10-27: "you should always be playing through the
+          // 6 at least, with the differing persons and numbers"), not only the boxes ticked.
+          if (typed && chart.tableId) noteTypedCells(chart.tableId, [...[...boxOf].filter(([key]) => !shown.has(key)).map(([, i]) => chart.cells[i]?.cellId),
+            ...cards.filter((c) => !shown.has(c.key) && c.form && (!c.entry || !selectRules || (tableIdOf(c.entry, selectRules) ?? chart.tableId) === chart.tableId)).map((c) => cellId(c.form, chart.table?.kind))]);
           for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
           // Graded now, not only when the game is closed: leaving by one of its end buttons used to skip this.
