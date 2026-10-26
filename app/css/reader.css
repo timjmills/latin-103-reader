@@ -723,3 +723,10 @@ html[data-transport="on"] { scroll-padding-bottom: calc(var(--transport-h, 0px) 
 .at-pop__goal[aria-pressed="true"] { background: #1f7a3a; border-color: #1f7a3a; color: #fff; }
 .at-pop__clear { margin-top: 0.25rem; min-height: 36px; padding: 0 0.75rem; border: 0; background: none; color: var(--rubric-ink, #8b1a1a); font: inherit; text-decoration: underline; cursor: pointer; }
 @media (max-width: 380px) { .g-activetime { padding: 0 2px; font-size: 0.8rem; } }
+.at-days { margin: 0.25rem 0 0.5rem; font-size: 0.85rem; }
+.at-days summary { cursor: pointer; font-weight: 700; min-height: 32px; display: flex; align-items: center; }
+.at-days ol { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 3px; max-height: 14rem; overflow-y: auto; }
+.at-days li { display: grid; grid-template-columns: 6.5rem 1fr 3.5rem; align-items: center; gap: 0.4rem; }
+.at-days__bar { height: 0.6rem; border-radius: 999px; background: linear-gradient(90deg, #3a86ff, #8338ec) left / var(--w) 100% no-repeat, color-mix(in srgb, var(--ink-3, #888) 18%, transparent); }
+.at-days__t { text-align: right; font-variant-numeric: tabular-nums; }
+.at-pop { max-height: calc(100vh - 80px); overflow-y: auto; }

@@ -1707,3 +1707,5 @@ html.g-game-open .g-side { z-index: 70; }
 .g-wheelless { margin: 0 0 var(--s-3); padding: var(--s-2) var(--s-3); border-left: 4px solid var(--gm-a, var(--rubric)); background: var(--bg-raised); border-radius: 0.5rem; }
 .g-gamelinkbar { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: 0 0 var(--s-3); }
 .g-count--zero { opacity: 0.55; font-weight: 400; }
+.g-strand__nav { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-bottom: var(--s-2); }
+.g-strand__h { margin: 0 0 var(--s-1); font-weight: 700; font-size: var(--ui-sm); }

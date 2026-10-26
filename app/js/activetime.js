@@ -80,7 +80,37 @@ function paint(v) {
     v.setAttribute('aria-label', `Active time today ${clockText(t)}${on ? '' : ', paused'}. Set a goal`);
   }
 }
-/** The menu under the timer: today and the week, and a goal to set or clear. */
+/** Each day's active time, kept (2026-10-26: "keep track of time as well for each day"): the last `n` days, newest first. */
+export function activeDays(n = 14) {
+  const m = read();
+  const out = [];
+  for (let i = 0; i < n; i++) { const d = new Date(); d.setDate(d.getDate() - i); out.push({ date: d, key: today(d), seconds: m[today(d)] ?? 0 }); }
+  return out;
+}
+/** The days as a little chart in the menu: a bar a day, its time beside it. */
+function daysNode() {
+  const days = activeDays(14);
+  const most = Math.max(60, ...days.map((d) => d.seconds));
+  const box = document.createElement('details');
+  box.className = 'at-days';
+  const sum = document.createElement('summary');
+  sum.textContent = 'Day by day (last 14 days)';
+  box.append(sum);
+  const ol = document.createElement('ol');
+  for (const [i, d] of days.entries()) {
+    const li = document.createElement('li');
+    const name = i === 0 ? 'Today' : i === 1 ? 'Yesterday' : d.date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+    const label = document.createElement('span'); label.className = 'at-days__d'; label.textContent = name;
+    const bar = document.createElement('span'); bar.className = 'at-days__bar'; bar.style.setProperty('--w', `${Math.round((d.seconds / most) * 100)}%`);
+    const t = document.createElement('span'); t.className = 'at-days__t'; t.textContent = d.seconds ? clockText(d.seconds) : '—';
+    li.append(label, bar, t);
+    li.setAttribute('aria-label', `${name}: ${d.seconds ? clockText(d.seconds) : 'none'}`);
+    ol.append(li);
+  }
+  box.append(ol);
+  return box;
+}
+/** The menu under the timer: today and the week, each day, and a goal to set or clear. */
 function openMenu(v) {
   document.querySelector('.at-pop')?.remove();
   const { today: t, week } = activeSeconds();
@@ -91,7 +121,7 @@ function openMenu(v) {
   pop.setAttribute('aria-label', 'Active time and goal');
   const p = (text, cls = '') => { const e = document.createElement('p'); e.className = cls; e.textContent = text; return e; };
   const b = (text, on, fn, cls = 'at-pop__goal') => { const e = document.createElement('button'); e.type = 'button'; e.className = cls; e.textContent = text; if (on) e.setAttribute('aria-pressed', 'true'); e.addEventListener('click', () => { fn(); close(); }); return e; };
-  pop.append(p(`Active today: ${clockText(t)}`, 'at-pop__big'), p(`Last 7 days: ${clockText(week)}`, 'at-pop__q'),
+  pop.append(p(`Active today: ${clockText(t)}`, 'at-pop__big'), p(`Last 7 days: ${clockText(week)}`, 'at-pop__q'), daysNode(),
     p(g ? (g.met ? `Goal met: ${g.total / 60} min ✓` : `Goal: ${g.total / 60} min — ${clockText(g.left)} to go`) : 'Set a goal of active time:', 'at-pop__h'));
   const row = document.createElement('div');
   row.className = 'at-pop__goals';
