@@ -2862,7 +2862,15 @@ export function createUI(ctx) {
    */
   function scaffoldSwitch(tableId, { current, percent, onChange = null } = {}) {
     const seg = h('div', { class: 'g-seg g-seg--scaffold', role: 'group', 'aria-label': 'How much of the table is given' },
-      SCAFFOLD_LEVELS.map((lv) => btn(scaffoldLabel(lv), { 'aria-pressed': String(lv === current), onclick: (e) => { setScaffold(tableId, lv); for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget)); note.textContent = noteText(lv); ctx.say(`Given cells: ${scaffoldLabel(lv)} from the next table.`); onChange?.(lv); } }, 'g-seg__btn')));
+      SCAFFOLD_LEVELS.map((lv) => btn(scaffoldLabel(lv), { 'aria-pressed': String(lv === current), onclick: (e) => {
+        setScaffold(tableId, lv);
+        for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
+        // On a table not yet checked the change is made on it at once (2026-10-26: "when the fill-in is off and I say I
+        // want to practise passive forms it still fills many of them"); after a Check it waits for the next table.
+        const now = onChange?.(lv) === true;
+        note.textContent = now ? (lv === 'off' ? 'A blank table.' : `${scaffoldLabel(lv)} of this table is given.`) : noteText(lv);
+        ctx.say(`Given cells: ${scaffoldLabel(lv)} ${now ? 'on this table' : 'from the next table'}.`);
+      } }, 'g-seg__btn')));
     const noteText = (lv) => (lv === current ? (percent > 0 ? `${percent}% of this table is given${lv === 'auto' ? ' — auto fades a level after a table right unaided' : ''}.` : 'A blank table.')
       : `From the next table: ${lv === 'auto' ? 'auto, starting at 80%' : lv === 'off' ? 'a blank table' : `${lv}% given`}. This one finishes as it started.`);
     const note = h('p', { class: 'g-quiet g-scaffold__note', text: noteText(current) });
@@ -6517,7 +6525,7 @@ export function createUI(ctx) {
     // the choice are given, printed in grey and right by definition, exactly as the scaffold's are, so the attempt is
     // scored on the cells practised. The scaffold's own choice is kept apart (`baseGiven`) so a change of focus never
     // compounds it; the focus is one choice for every table, kept on this device.
-    const baseGiven = Array.isArray(chart.baseGiven) ? chart.baseGiven : (chart.baseGiven = given.slice());
+    let baseGiven = Array.isArray(chart.baseGiven) ? chart.baseGiven : (chart.baseGiven = given.slice());
     const keyAt = (i) => chartCellKey(item, chart.cells[i]) ?? {};
     const focusOpts = whole ? chartFocusOptions(chart.cells.map((_, i) => keyAt(i))) : [];
     let focus = focusOpts.some((o) => o.id === chartFocus()) ? chartFocus() : 'all';
@@ -6647,7 +6655,26 @@ export function createUI(ctx) {
     } else {
       // The note says what *this* table gives, not what the switch is set to: after a retry the two can differ,
       // because the table on screen keeps the cells it was given while the switch may have been moved (N-5).
-      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent: chart.cells.length ? Math.round((baseGiven.length / chart.cells.length) * 100) : 0 }));
+      // Redraw the cells for a new choice (Practise only…, or Given on a table not yet checked): what was typed stays.
+      const redrawCells = () => {
+        const typed = new Map([...inputs.keys()].map((i) => [i, valueOf(i)]));
+        closePeeks();
+        inputs.clear(); hints.clear(); boxes.clear(); peeked.clear();
+        givenSet = givenFor(focus);
+        chart.given = [...givenSet];
+        drawTables();
+        for (const [i, v] of typed) if (inputs.has(i)) inputs.get(i).value = v;
+        syncCheck();
+        tablesBox.querySelector('input:not([readonly])')?.focus({ preventScroll: true });
+      };
+      if (tableId) form.append(scaffoldSwitch(tableId, { current: level, percent: chart.cells.length ? Math.round((baseGiven.length / chart.cells.length) * 100) : 0,
+        onChange: (lv) => {
+          if (chart.keep) return false;   // checked once already: the table finishes as it was scored (§12)
+          baseGiven = scaffoldGiven(item, { percent: scaffoldPercent(lv, autoAt), taught: item.catalogue ? [] : taughtCellsOf(item, skills.get(item.skill)), met: [...(metCells.get(tableId) ?? [])], cellIdOf: idOfCell, variant: scaffoldRunOf(tableId) });
+          chart.baseGiven = baseGiven;
+          redrawCells();
+          return true;
+        } }));
       const tablesBox = h('div', { class: 'g-chart__tables' });
       const drawTables = () => {
       tablesBox.replaceChildren();
@@ -6681,16 +6708,7 @@ export function createUI(ctx) {
             for (const b of e.currentTarget.parentNode.children) b.setAttribute('aria-pressed', String(b === e.currentTarget));
             setChartFocus(o.id);
             focus = o.id;
-            // What was typed stays typed: a box that comes back keeps its text; a box going grey keeps nothing.
-            const typed = new Map([...inputs.keys()].map((i) => [i, valueOf(i)]));
-            closePeeks();
-            inputs.clear(); hints.clear(); boxes.clear(); peeked.clear();
-            givenSet = givenFor(focus);
-            chart.given = [...givenSet];
-            drawTables();
-            for (const [i, v] of typed) if (inputs.has(i)) inputs.get(i).value = v;
-            syncCheck();
-            tablesBox.querySelector('input:not([readonly])')?.focus({ preventScroll: true });
+            redrawCells();
           } }, 'g-seg__btn')));
         form.append(h('div', { class: 'g-scaffold g-focus' }, h('span', { class: 'g-label', text: 'Practise' }), seg));
       }
