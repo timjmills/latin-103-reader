@@ -2963,9 +2963,21 @@ export function createUI(ctx) {
     const n = Number(chapter ?? sk.chapter ?? ctx.currentChapter?.() ?? 1);
     const all = await tableWords(n, sk);
     if (!all.length) { ctx.say('No word with a table fits this skill.'); return false; }
-    // `table`: the words of one of its tables only (the ▦ popup's one-table choice).
+    // `table`: the words of one of its tables only (the ▦ popup's one-table choice, a conjugation under a skill): every
+    // model word of that table (2026-10-26: "give me a word in that conjugation just to practise that part of the
+    // chart, and other words in that same conjugation that I could choose or mix"), the game's Words to pick from.
+    if (table) {
+      try {
+        const got = await catalogueItemsOf();
+        for (const w of got?.catalogue?.stock?.(table) ?? []) {
+          const e = got.gen.wordEntry(w, table)?.entry ?? null;
+          if (e && !all.some((x) => x.h === e.h && x.pos === e.pos) && skillWordFits(sk, e)) all.push(e);
+        }
+      } catch { /* the skill's own word for the table is still there */ }
+    }
     const ofTable = table ? all.filter((e) => (tableIdOf(e, selectRules) ?? '') === table) : all;
-    const words = only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : ofTable;
+    // One word to start on a single table; the rest wait in the game's Words, to choose or mix.
+    const words = only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : table ? ofTable.slice(0, 1) : ofTable;
     if (!words.length) { ctx.say('No word of that table fits this skill.'); return false; }
     const rules = new Map();
     const ruleOf = (e) => { const k = `${e.h}|${e.pos}`; if (!rules.has(k)) { let r = null; try { r = wordRule(e, tableOf(e)); } catch { r = null; } rules.set(k, r); } return rules.get(k); };
@@ -2994,12 +3006,12 @@ export function createUI(ctx) {
     const one = words.length === 1 ? ruleOf(words[0]) : null;
     const rule = one ? { ...focusRule(one, sk), steps: [...(how?.steps ?? []), ...(focusRule(one, sk)?.steps ?? [])] }
       : { kind: '', parts: '', type: sk.title, steps: [...(appliesTo(sk.paradigms) ? [{ head: 'For', text: `${appliesTo(sk.paradigms)}.` }] : []), ...(how?.steps ?? [])] };
-    const list = all.filter((e) => counts.has(`${e.h}|${e.pos}`)).map((e) => ({ id: `${e.h}|${e.pos}`, section: 'Words', col: headOf(e), n: counts.get(`${e.h}|${e.pos}`) ?? 0 }));
+    const list = (table ? ofTable : all).filter((e) => counts.has(`${e.h}|${e.pos}`) || table).map((e) => ({ id: `${e.h}|${e.pos}`, section: table ? `${tableName(table)} · words` : 'Words', col: headOf(e), n: counts.get(`${e.h}|${e.pos}`) ?? 0 }));
     playTable({ title: words.length > 1 ? `${sk.title}: every word` : String(words[0].lemma ?? words[0].h),
       subtitle: words.length > 1 ? `${words.map((e) => headOf(e)).join(', ')} — its part of each table` : `${sk.title} · just its part of the table`,
       items: cards, rule: rule.steps?.length ? rule : null, ruleFirst: true,
       how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
-      charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids }), noun: 'word' } : null,
+      charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids, table }), noun: 'word' } : null,
       countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
       onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
@@ -3849,7 +3861,10 @@ export function createUI(ctx) {
       : h('span', { class: 'g-tlinks__k', text: '▦ Its table: ' });
     return h('p', { class: 'g-tlinks' }, across,
       sk.paradigms.map((t, i) => [sk.paradigms.length > 1 || i ? h('span', { class: 'g-tlinks__sep', 'aria-hidden': 'true', text: ' · ' }) : null,
-        navEl({ class: 'g-tlinks__a', 'data-area': tableArea(t), to: tableTo(t, at), onclick: () => goTable(t, at) }, tableName(t)), countBadge(`table:${t}`)]));
+        navEl({ class: 'g-tlinks__a', 'data-area': tableArea(t), to: tableTo(t, at), title: `${sk.title} on the ${tableName(t)}: one word, more to choose or mix`,
+          // In game mode, just this skill's part of that table, over the page: one word, the table's other words in the
+          // game's Words to choose or mix (2026-10-26). In lesson mode, the table's page opened on the skill's part.
+          onclick: () => (gameKept() ? playSkillTables(id, { chapter: sk.chapter, table: t }) : goTable(t, at)) }, tableName(t)), countBadge(`table:${t}`)]));
   };
   const AREAS = [
     { id: 'verbs', label: 'Verbs', short: 'Verb', cats: ['verb-form', 'vocabulary'], table: (t) => /^conj/.test(t) || WORD_TABLES.has(t) },
