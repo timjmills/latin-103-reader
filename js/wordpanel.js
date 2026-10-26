@@ -864,7 +864,11 @@ export function renderParadigm(p, opts = {}) {
             sheet.push({ td, th, caption, section: s.title || `part ${si + 1}`, col: s.headers?.[ci] ?? '', row: r.label, key: c.key, answers, label, en, ch: null, stem: c.stem || '', ending: c.ending || '', si, ci, ri });
           }
           return td;
-        })));
+        }),
+        // A row with fewer forms than the table has columns (ferō's future imperative has no passive) is filled out
+        // with empty cells: rows of equal length are what lets the table stack on a phone (foldable) instead of
+        // scrolling sideways.
+        Array.from({ length: Math.max(0, (s.headers?.length ?? 0) - r.cells.length) }, () => h('td', { class: 'pt__cell is-empty', lang: 'la', text: '—' }))));
     }
     table.append(body);
     const scroll = h('div', { class: 'pt__scroll' }, table);

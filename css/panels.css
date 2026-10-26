@@ -819,3 +819,6 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__suggest { display: flex; flex-wrap: wrap; gap: var(--s-1); align-items: center; }
 .gm__suggest > .gm__sub { flex-basis: 100%; margin: var(--s-2) 0 0; }
 .gm__suggesthead { font-weight: 700; }
+/* A practice cell on the narrowest phones (2026-10-26, "tables in study mode don't fit"): the box, its ? and Show wrap
+   onto a second line rather than pushing the stacked table past the screen. */
+@media (max-width: 359.98px) { .pt__answer { flex-wrap: wrap; } .pt__answer .pt__in { flex: 1 1 5rem; min-width: 0; } }

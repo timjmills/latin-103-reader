@@ -905,7 +905,7 @@ button.g-steps__go:hover .g-steps__g { border-color: var(--ink); color: var(--in
 .g-chart__word { display: grid; grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr); align-items: center; gap: var(--s-2) var(--s-3); }
 .g-chart__wlabel { display: grid; gap: 1px; font-size: var(--ui-sm); color: var(--ink-2); }
 .g-chart__wlemma { font-family: var(--face-reading); font-size: 1.15rem; color: var(--ink); }
-@media (max-width: 479.98px) { .g-chart__word { grid-template-columns: 1fr; gap: var(--s-1); } }
+@media (max-width: 479.98px) { .g-chart__word { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); } .g-chart__wlabel { min-width: 0; overflow-wrap: anywhere; } }
 .g-hint__answer b { font-family: var(--face-reading); font-weight: 700; }
 /* Decision 4: the unmet prerequisites, named on the first step and offered — a rule above the step, not a wall. */
 .g-prereq { display: grid; gap: var(--s-2); padding: var(--s-3) var(--s-4); background: var(--glow-bg); color: var(--glow-ink); border-radius: var(--radius); font-size: var(--ui-md); }
@@ -1660,3 +1660,20 @@ html.g-game-open .g-side { z-index: 70; }
 /* "New This Week" is "This Week" where four tabs and the switch have to share 320 px */
 .g-nav__short { display: none; }
 @media (max-width: 359.98px) { .g-nav__btn:has(.g-nav__short) .g-nav__full { display: none; } .g-nav__short { display: inline; } }
+/* The chart's tables box (ui.js chartInput drawTables) keeps to the column: a grid item with no min-width grows to
+   its table, and then the table can neither stack nor scroll on a phone (2026-10-26: "charts and tables are not
+   fitting on the phone"). */
+.g-chart__tables { display: grid; gap: var(--s-2); min-width: 0; max-width: 100%; }
+/* Practise only… wraps on a narrow screen rather than pushing the page sideways */
+.g-scaffold { grid-template-columns: minmax(0, 1fr); }
+.g-focus .g-seg { flex-wrap: wrap; width: auto; max-width: 100%; }
+.g-focus .g-seg__btn { flex: 1 1 auto; }
+/* First at the end of a skill: across its tables, then the next in course order, with counts (ui.js firstNextNode) */
+.g-firstnext { margin: var(--s-3) 0; }
+.g-firstnext__list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.g-firstnext__n { font-weight: 400; color: var(--ink-2); font-size: var(--ui-sm); }
+.btn .g-firstnext__n { color: inherit; opacity: 0.85; }
+/* An explanation's "for each declension" line (the endings run together) breaks rather than widening the page */
+.g-explain__appliesbox, .g-explain__diff, .g-explain__applies { min-width: 0; overflow-wrap: anywhere; }
+/* Each declension's item keeps together where it fits, and wraps inside itself where it does not (a phone) */
+@media (max-width: 559.98px) { .g-diff__i { white-space: normal; } }

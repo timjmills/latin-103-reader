@@ -771,7 +771,7 @@ export function createMixed({ members, gstore, items, currentWeekN = null, size 
  * on no sheet and be read by nothing. There is nowhere to record it, and the
  * view says so.
  */
-export function createCatalogueDrill({ items = [], gstore, skillId = null, rand = Math.random }) {
+export function createCatalogueDrill({ items = [], gstore, skillId = null, table = null, rand = Math.random }) {
   const state = skillId ? gstore.getState(skillId) : null;
   const counted = !!(skillId && inRotation(state));
   const slots = items.map((it, i) => ({ skill: it.skill, kind: 'chart', stage: 1, i, currentWeek: false }));
@@ -780,7 +780,10 @@ export function createCatalogueDrill({ items = [], gstore, skillId = null, rand 
     // The marker rides in `meta` beside §11b's `generated` and §18.3's `given`: free-form, kept on the
     // device, no column and no schema change. It is added, never substituted — a table's `given` must
     // survive, because the rung is exactly what the sheet has to say about this run.
-    const meta = counted ? attempt.meta : { ...attempt.meta, uncounted: true };
+    // Which table (2026-10-26: "one unified tracking system for the game and study mode"): a table practised in study
+    // mode is counted on every device as a game on it is (practicelog.js), from the same synced attempt log.
+    const withTable = table ? { ...(attempt.meta ?? {}), table } : attempt.meta;
+    const meta = counted ? withTable : { ...withTable, uncounted: true };
     await gstore.addAttempt({ ...attempt, skill: skillId, ...(meta ? { meta } : {}) });
     if (!counted) return;
     const cur = gstore.getState(skillId) ?? skillId;

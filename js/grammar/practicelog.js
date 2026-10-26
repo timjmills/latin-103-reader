@@ -8,7 +8,7 @@
 //   practiceLog(attempts) → {
 //     skill(id)       → { rounds, answers, right, last }   last = ms of the latest answer, 0 when never
 //     part(id, step)  → rounds
-//     table(tableId)  → rounds   (games on a table, meta.table)
+//     table(tableId)  → rounds   (a table practised, game or study mode, meta.table)
 //     tablePart(id)   → rounds   (games on a skill's own part of a table, meta.game)
 //   }
 //   needsPractice(state, log, now) → null | { why, rank }   what is still to do, and how pressing it is
@@ -39,7 +39,8 @@ export function practiceLog(attempts = []) {
     bump(`skill:${a.skill}`, t, game);
     if (Number.isInteger(a.meta?.step)) bump(`part:${a.skill}:${a.meta.step}`, t);
     if (game) bump(`tablepart:${a.skill}`, t, true);
-    if (game && a.meta?.table) bump(`table:${a.meta.table}`, t, true);
+    // A table, whichever mode it was practised in: a game is a round by itself, study-mode answers a sitting.
+    if (a.meta?.table) bump(`table:${a.meta.table}`, t, game);
   }
   for (const [id, s] of skills) s.rounds = rounds.get(`skill:${id}`)?.n ?? 0;
   const n = (key) => rounds.get(key)?.n ?? 0;

@@ -792,7 +792,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       suggest?.length ? el('section', { class: 'gm__suggest', 'aria-label': 'Or another skill' }, el('p', { class: 'gm__sub', text: onNext || nx || continueLabel ? 'Or another skill:' : 'What next?' }),
         // A `{ head }` entry starts a group under its own heading (its tables, easier or harder, what next…).
         suggest.map((x, i) => (x.head ? el('p', { class: 'gm__sub gm__suggesthead', text: x.head })
-          : el('button', { type: 'button', class: i === 0 && !misses.length && !onNext && !nx && !continueLabel ? 'btn btn--primary' : 'btn gm__suggestbtn', onclick: () => { close(true); x.go(); } }, x.label)))) : null,
+          : el('button', { type: 'button', class: i === 0 && !misses.length && !onNext && !nx && !continueLabel ? 'btn btn--primary' : 'btn gm__suggestbtn', onclick: () => { close(true); x.go(); } }, typeof x.label === 'function' ? x.label() : x.label)))) : null,   // a function: read at the end, so a count includes this round
       more);
     stage.replaceChildren(card);
     progress.textContent = `${rows.length} / ${rows.length}`;

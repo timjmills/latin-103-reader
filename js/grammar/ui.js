@@ -2441,7 +2441,7 @@ export function createUI(ctx) {
       if (passed) setLearnPlace(id, null);
       // The same-session re-test (§10) and the reading tie-in (§13) belong to a skill that has just been learned.
       if (passed && !skill.set) noteRetestFor(id);
-      const after = h('div', { class: 'g-after' }, passed ? retestNode({ only: id, from }) : null);
+      const after = h('div', { class: 'g-after' }, skill.set ? null : firstNextNode(id), passed ? retestNode({ only: id, from }) : null);
       if (passed && !skill.set) tieInNode(id).then((n) => { if (n) after.append(n); }).catch(() => {});
       setBody(stepper(tenAt), h('header', { class: 'g-head' },
         h('h1', { class: 'g-title', text: passed ? 'Learned' : 'Not yet' }),
@@ -2685,6 +2685,7 @@ export function createUI(ctx) {
   const metCells = new Map();
   let selectRules = null;
   let catTables = null;   // the catalogue's tables (labels and model words), once loaded
+  let gameCountedTable = null;   // a table a chart game has already counted this session (renderSummary skips it)
   loadParadigmCatalogue().then((c) => { selectRules = Array.isArray(c?.raw?.select) ? c.raw.select : null; catTables = c?.tables ?? null; }).catch(() => {});
   /**
    * "For: all four conjugations …" — what a skill's rule covers, and what the step's own table is an example of
@@ -2825,7 +2826,7 @@ export function createUI(ctx) {
   const focusCards = (cards) => {
     const f = chartFocus();
     if (f === 'all') return cards;
-    const kept = cards.filter((c) => { const k = c.form ?? {}; return f === 'act' || f === 'pass' ? !k.voice || k.voice === f : !k.number || k.number === f; });
+    const kept = cards.filter((c) => !offFocus(f, c.form ?? {}));
     if (kept.length) cards.splice(0, cards.length, ...kept);
     return cards;
   };
@@ -2834,15 +2835,23 @@ export function createUI(ctx) {
     if (!sk?.paradigms?.length) return [];
     const f = sk.paradigm_focus ?? {};
     const verb = sk.paradigms.some((t) => /^conj|^(sum|possum|eo|fero|volo)$/.test(t));
-    return chartFocusOptions([...(verb && !f.voice ? [{ voice: 'act' }, { voice: 'pass' }] : []), ...(!f.number ? [{ number: 'sg' }, { number: 'pl' }] : [])]);
+    const gendered = sk.paradigms.some((t) => /^adj|^(is|hic|ille|iste|ipse|idem|qui|quis|aliquis|quisque|quidam|unus|duo|tres)$/.test(t));
+    return chartFocusOptions([...(verb && !f.voice ? [{ voice: 'act' }, { voice: 'pass' }] : []), ...(!f.number ? [{ number: 'sg' }, { number: 'pl' }] : []), ...(gendered && !f.gender ? [{ gender: 'm' }, { gender: 'f' }, { gender: 'n' }] : [])]);
   };
   const chartFocus = () => { try { return localStorage.getItem(CHART_FOCUS) || 'all'; } catch { return 'all'; } };
   const setChartFocus = (f) => { try { localStorage.setItem(CHART_FOCUS, f); } catch { /* this visit only */ } };
+  // Each choice narrows one feature of a cell (2026-10-26, "do similar things for the nouns, adjectives, adverbs … all
+  // study subjects"): voice for a verb, number for every table, gender for an adjective or a pronoun.
+  const FOCUS_AXIS = { act: ['voice', 'act'], pass: ['voice', 'pass'], sg: ['number', 'sg'], pl: ['number', 'pl'], m: ['gender', 'm'], f: ['gender', 'f'], n: ['gender', 'n'] };
+  /** Does a cell's key fall outside the focus? A key without that feature (an infinitive's number) is never left out. */
+  const offFocus = (f, k) => { const ax = FOCUS_AXIS[f]; return !!ax && k?.[ax[0]] != null && k[ax[0]] !== ax[1]; };
   function chartFocusOptions(keys) {
     const has = (k, v) => keys.some((x) => x?.[k] === v);
     const out = [{ id: 'all', label: 'All' }];
     if (has('voice', 'act') && has('voice', 'pass')) out.push({ id: 'act', label: 'Active only' }, { id: 'pass', label: 'Passive only' });
     if (has('number', 'sg') && has('number', 'pl')) out.push({ id: 'sg', label: 'Singular only' }, { id: 'pl', label: 'Plural only' });
+    const genders = [['m', 'Masculine only'], ['f', 'Feminine only'], ['n', 'Neuter only']].filter(([g]) => has('gender', g));
+    if (genders.length > 1) out.push(...genders.map(([id, label]) => ({ id, label })));
     return out;
   }
   const scaffoldLabel = (level) => (level === 'auto' ? 'auto' : level === 'off' ? 'off' : `${level}%`);
@@ -3179,6 +3188,32 @@ export function createUI(ctx) {
       h('ul', { class: 'g-level__list' }, list.map((x) => h('li', { class: 'g-suggest__i' }, h('span', { class: 'g-suggest__why', text: x.why }), x.table ? tableLink(x.table) : pathLink(x.id))))) : null;
   };
   /** The same for a game's end screen (game.js `suggest`). */
+  /** "practised ×3" or "not practised yet", for a practised.js key (skill:, tablepart:, table:, part:). */
+  const timesOf = (key) => { const n = practised(key); return n ? `practised ×${n}` : 'not practised yet'; };
+  /**
+   * First at the end of a skill (2026-10-26: "when finished with a skill … first show the practising across
+   * conjugations, then the next skills down the course order; also show how many practices have been done of all of
+   * them; put these first"): ▦ across its tables, then the next three skills of its area in course order, each with
+   * its count. Everything else the end screen offers follows.
+   */
+  const firstNextList = (id) => {
+    const sk = skills.get(id);
+    if (!sk || sk.set) return { across: null, next: [] };
+    const a = areaOf(id);
+    const order = thePath().order.filter((x) => !skills.get(x)?.set && areaOf(x) === a);
+    const i = order.indexOf(id);
+    return { across: sk.paradigms?.length ? { label: `▦ ${acrossLabel(sk.paradigms)}`, times: timesOf(`tablepart:${id}`) } : null, next: i < 0 ? [] : order.slice(i + 1, i + 4), area: AREAS.find((x) => x.id === a) };
+  };
+  function firstNextNode(id) {
+    const { across, next, area } = firstNextList(id);
+    if (!across && !next.length) return null;
+    return h('section', { class: 'g-firstnext', 'aria-labelledby': 'g-firstnext-h' },
+      h('h2', { id: 'g-firstnext-h', class: 'g-h2', text: 'Next' }),
+      across ? h('div', { class: 'g-acts' }, btn([across.label, h('span', { class: 'g-firstnext__n', text: ` · ${across.times}` })], { onclick: () => startSkill(id, 'across') }, 'btn btn--primary g-play')) : null,
+      next.length ? h('h3', { class: 'g-next__h', text: `Next in ${area?.label ?? 'the course'}, in course order` }) : null,
+      next.length ? h('ol', { class: 'g-firstnext__list' }, next.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), onclick: () => goSkill(x) },
+        h('b', { text: titleOf(x) }), ' ', capTag(x), h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`skill:${x}`)}` }))))) : null);
+  }
   const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
   const tableName = (t) => catTables?.get?.(t)?.label ?? t;
   /**
@@ -3189,10 +3224,16 @@ export function createUI(ctx) {
   const gameWays = ({ skill: id = null, table = null } = {}) => {
     const out = [];
     const sk = id ? skills.get(id) : null;
+    // First: across its tables, then the next skills of its area in course order, each with its count (firstNextList).
+    const first = id ? firstNextList(id) : { across: null, next: [] };
+    if (first.across || first.next.length) {
+      out.push({ head: 'Next' });
+      if (first.across) out.push({ label: () => `${first.across.label} · ${timesOf(`tablepart:${id}`)}`, go: () => playSkillTables(id, { chapter: sk.chapter }) });
+      for (const x of first.next) out.push({ label: () => `${titleOf(x)} (${capOf(x)}) · ${timesOf(`skill:${x}`)}`, go: () => goSkill(x) });
+    }
     if (sk && !sk.set && sk.paradigms?.length) {
-      out.push({ head: 'Its tables' });
-      if (sk.paradigms.length > 1) out.push({ label: `▦ ${acrossLabel(sk.paradigms)}`, go: () => playSkillTables(id, { chapter: sk.chapter }) });
-      for (const t of sk.paradigms) out.push({ label: `▦ ${tableName(t)}`, go: () => playSkillTables(id, { chapter: sk.chapter, table: t }) });
+      out.push({ head: 'Its tables, one at a time' });
+      for (const t of sk.paradigms) out.push({ label: () => `▦ ${tableName(t)} · ${timesOf(`table:${t}`)}`, go: () => playSkillTables(id, { chapter: sk.chapter, table: t }) });
     }
     const fo = sk && !sk.set ? skillFocusOptions(sk) : [];
     if (fo.length > 1) {
@@ -3210,8 +3251,10 @@ export function createUI(ctx) {
     const t = table ? catTables?.get?.(table) : null;
     if (t) {
       const fam = String(t.id).replace(/\d.*$/, '');
-      const sibs = fam.length > 2 ? [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part && String(x.id).replace(/\d.*$/, '') === fam) : [];
-      if (sibs.length) { out.push({ head: `The same forms, another ${fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : 'table'}` }); for (const x of sibs) out.push({ label: `▦ ${x.label}`, go: () => goTable(x.id) }); }
+      const ofFam = fam.length > 2 ? [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part && String(x.id).replace(/\d.*$/, '') === fam) : [];
+      const sibs = (ofFam.length ? ofFam : [...catTables.values()].filter((x) => x.id !== t.id && x.part === t.part)).slice(0, 10);
+      const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : fam === 'adj' ? 'adjective type' : t.part === 'pronoun' ? 'pronoun' : t.part === 'numeral' ? 'numeral' : t.part === 'noun' ? 'noun' : 'table';
+      if (sibs.length) { out.push({ head: `The same forms, another ${kind}` }); for (const x of sibs) out.push({ label: () => `▦ ${x.label} · ${timesOf(`table:${x.id}`)}`, go: () => goTable(x.id) }); }
       const steps = thePath().steps.filter((st) => st.kind === 'table' && tableArea(st.id) === tableArea(t.id) && catTables.has(st.id));
       const at = steps.findIndex((st) => st.id === t.id);
       const easier = at > 0 ? steps[at - 1].id : null;
@@ -3427,9 +3470,9 @@ export function createUI(ctx) {
     if (table) {
       // Practise only…: the chart's own switch, pressed from here; with no table on screen it is kept for the next one.
       const t = catTables?.get?.(table);
-      const opts = chartFocusOptions((t?.groups ?? []).length ? [{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }] : []);
       const hasVoice = /^conj|^(sum|possum|eo|fero|volo)$/.test(table);
-      const shown = opts.filter((o) => o.id === 'all' || (hasVoice ? true : o.id === 'sg' || o.id === 'pl'));
+      const gendered = t?.part === 'adjective' || t?.part === 'pronoun' || t?.part === 'numeral';
+      const shown = chartFocusOptions([...(hasVoice ? [{ voice: 'act' }, { voice: 'pass' }] : []), { number: 'sg' }, { number: 'pl' }, ...(gendered ? [{ gender: 'm' }, { gender: 'f' }, { gender: 'n' }] : [])]);
       if (shown.length > 1) parts.push(sec('Practise only', h('div', { class: 'g-chips' }, shown.map((o) => btn(o.label, { 'aria-pressed': String(chartFocus() === o.id), onclick: (e) => {
         const there = [...document.querySelectorAll('.g-focus .g-seg__btn')].find((b) => b.textContent === o.label);
         if (there) there.click(); else setChartFocus(o.id);
@@ -4845,7 +4888,7 @@ export function createUI(ctx) {
     const start = (list, { title }) => {
       const built = list.filter(Boolean);
       if (!built.length) { ctx.say('Nothing to practise with these choices.'); return; }
-      const drill = createCatalogueDrill({ items: built, gstore, skillId: namingSkill?.id ?? null });
+      const drill = createCatalogueDrill({ items: built, gstore, skillId: namingSkill?.id ?? null, table: t.id });
       drill.start();
       // What this run does, said in the two directions it now differs in (§20). It always reaches the
       // skill's progress sheet; it reaches the review schedule only while the skill is in mixed
@@ -5370,7 +5413,10 @@ export function createUI(ctx) {
     };
     const family = (x) => String(x).replace(/\d.*$/, '');
     const fam = family(t.id);
-    const siblings = [...all.values()].filter((x) => x.id !== t.id && x.part === t.part && (family(x.id) === fam && fam.length > 2 ? true : false));
+    // Its family (conj1 … conj4, decl1 … decl5, adj12 … adj3); a table with none (a pronoun, a numeral, deus) has the
+    // other tables of its part.
+    const ofFam = [...all.values()].filter((x) => x.id !== t.id && x.part === t.part && fam.length > 2 && family(x.id) === fam);
+    const siblings = (ofFam.length ? ofFam : [...all.values()].filter((x) => x.id !== t.id && x.part === t.part)).slice(0, 10);
     const words = (t.stock ?? []).filter((w) => w.h !== word);
     const p = thePath();
     const area = tableArea(t.id);
@@ -5378,14 +5424,14 @@ export function createUI(ctx) {
     const at = steps.findIndex((st) => st.id === t.id);
     const easier = at > 0 ? steps[at - 1].id : null;
     const harder = at >= 0 && at + 1 < steps.length ? steps[at + 1].id : null;
-    const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : 'table';
+    const kind = fam === 'conj' ? 'conjugation' : fam === 'decl' ? 'declension' : fam === 'adj' ? 'adjective type' : t.part === 'pronoun' ? 'pronoun' : t.part === 'numeral' ? 'numeral' : t.part === 'noun' ? 'noun' : 'table';
     const groupLabel = group ? (t.groups ?? []).find((g) => g.id === group)?.label ?? null : null;
     const chip = (label, onclick, extra = {}) => btn(label, { onclick, ...extra }, 'g-chip');
     const rows = [
       words.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Another word, the same table' }),
         h('div', { class: 'g-chips' }, words.slice(0, 5).map((w) => chip(w.lemma.split(/[\s,]/)[0], () => play(t.id, { w }), { lang: 'la' })))) : null,
       siblings.length ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: `The same${groupLabel ? ` ${groupLabel}` : ' forms'}, another ${kind}` }),
-        h('div', { class: 'g-chips' }, siblings.map((x) => chip(x.label, () => play(x.id), { 'data-area': tableArea(x.id) })))) : null,
+        h('div', { class: 'g-chips' }, siblings.map((x) => chip([x.label, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`table:${x.id}`)}` })], () => play(x.id), { 'data-area': tableArea(x.id) })))) : null,
       easier || harder ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Easier or harder' }),
         h('div', { class: 'g-chips' }, easier ? chip(`😓 Easier: ${all.get(easier).label}`, () => play(easier)) : null, harder ? chip(`😎 Harder: ${all.get(harder).label}`, () => play(harder)) : null)) : null,
       lessonsLink(t) ? h('div', { class: 'g-next__row' }, h('h3', { class: 'g-next__h', text: 'Its lessons' }), h('p', {}, 'This table is ', lessonsLink(t), '.')) : null,
@@ -5409,7 +5455,9 @@ export function createUI(ctx) {
   function renderSummary(summary, params) {
     view = { name: 'summary', params };
     // One more round of each skill the session asked, and of a table practised from Tables (the "×N", practised.js).
-    if (summary.total) notePractised([...summary.skills.filter((x) => skills.has(x)).map((x) => `skill:${x}`), params?.catalogue ? `table:${params.catalogue}` : null]);
+    const tableCounted = params?.catalogue && gameCountedTable === params.catalogue;
+    gameCountedTable = null;
+    if (summary.total) notePractised([...summary.skills.filter((x) => skills.has(x)).map((x) => `skill:${x}`), params?.catalogue && !tableCounted ? `table:${params.catalogue}` : null]);
     // A self-graded "partly" counts towards the scheduler but is not a clean right: it is named, not folded in (m4).
     const partly = summary.partly ?? 0;
     const clean = summary.right - partly;
@@ -5422,7 +5470,7 @@ export function createUI(ctx) {
     // offer for anything already due, and the reading tie-in (§13). After any session: the re-tests now due.
     const drilled = params?.drill && skills.has(params.drill) && !params.retest ? params.drill : null;
     if (drilled) noteRetestFor(drilled);
-    const after = h('div', { class: 'g-after' }, retestNode({ from: params?.from ?? null }));
+    const after = h('div', { class: 'g-after' }, params?.drill && skills.has(params.drill) ? firstNextNode(params.drill) : null, retestNode({ from: params?.from ?? null }));
     if (params?.drill && skills.has(params.drill)) tieInNode(params.drill).then((n) => { if (n) after.append(n); }).catch(() => {});
     const againLabel = params?.unlimited ? 'Keep going' : params?.mixed ? 'Another mixed set' : params?.drill ? (params.retest ? `Drill ${titleOf(params.drill)}` : 'Another ten') : params?.catalogue ? 'Back to the table' : params?.redo ? 'Another redo' : params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session';
     const again = () => (params?.unlimited || params?.mixed ? render(params.unlimited ? 'unlimited' : 'mixed', { skill: params.drill, from: params.from ?? null })
@@ -6421,7 +6469,7 @@ export function createUI(ctx) {
     const keyAt = (i) => chartCellKey(item, chart.cells[i]) ?? {};
     const focusOpts = whole ? chartFocusOptions(chart.cells.map((_, i) => keyAt(i))) : [];
     let focus = focusOpts.some((o) => o.id === chartFocus()) ? chartFocus() : 'all';
-    const offCells = (f) => (f === 'all' ? [] : chart.cells.map((_, i) => i).filter((i) => { const k = keyAt(i); return f === 'act' || f === 'pass' ? k.voice && k.voice !== f : k.number && k.number !== f; }));
+    const offCells = (f) => (f === 'all' ? [] : chart.cells.map((_, i) => i).filter((i) => offFocus(f, keyAt(i))));
     // The scaffold still gives some of the cells practised; if it would give every one of them, it gives none.
     const givenFor = (f) => {
       const off = new Set(offCells(f));
@@ -6675,10 +6723,18 @@ export function createUI(ctx) {
       const withHow = baseRule ? { ...baseRule, steps: [...skillSteps, ...baseRule.steps] } : null;
       const chartRule = say ? { ...(withHow ?? { kind: '', parts: '' }), type: withHow?.type ?? (partTitle || chartSkill?.title || ''), steps: [{ head: partTitle ? `This part: ${partTitle}` : 'This part of the lesson', text: say }, ...(withHow?.steps ?? [])] } : withHow;
       const cardHow = (it) => { const r = ruleOfEntry(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } };
-      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: chartFocus() === 'all' ? 'The whole chart, as a game' : `The whole chart, as a game · ${chartFocusOptions([{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }]).find((o) => o.id === chartFocus())?.label.toLowerCase() ?? ''}`, suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →', suggest: chartSkill ? gameSuggest(chartSkill.id) : null,
+      playTable({ title: words > 1 ? (item.lemma ?? chart.head ?? '') : String(cards[0].entry?.lemma ?? item.lemma ?? chart.head ?? ''), subtitle: chartFocus() === 'all' ? 'The whole chart, as a game' : `The whole chart, as a game · ${chartFocusOptions([{ voice: 'act' }, { voice: 'pass' }, { number: 'sg' }, { number: 'pl' }]).find((o) => o.id === chartFocus())?.label.toLowerCase() ?? ''}`, suggest: gameWays({ skill: item.catalogue ? null : item.skill ?? null, table: tableIdOfItem(item) }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Go on →',
+        // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
+        // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.
+        // (A lesson's Learn already counts its part on the part's first item, so only a part practised on its own adds one here;
+        // a table session's end skips the table once the game has counted it, so one round is one ×.)
+        countKey: [tableIdOfItem(item) ? `table:${tableIdOfItem(item)}` : null, view.name === 'part' && view.params?.skill ? `part:${view.params.skill}:${Number(view.params.step) || 0}` : null].filter(Boolean),
         onDone: ({ firstMiss }) => {
+          if (view.name === 'catalogue' && tableIdOfItem(item)) gameCountedTable = tableIdOfItem(item);
           for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
+          // Graded now, not only when the game is closed: leaving by one of its end buttons used to skip this.
+          if (form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check);
         },
         onClose: () => { if (form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check); } });
     };
