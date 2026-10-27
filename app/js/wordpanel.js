@@ -785,8 +785,18 @@ function tagChapters(sheet) {
  * table records it as that skill's chart); `opts.gameSuggest` ([{ label, go }]) is what the end offers when there
  * is no next word.
  */
+// The cases in one order everywhere (2026-10-27: "have the order be nominative, genitive, dative, ablative, accusative,
+// vocative"): a table's rows of cases are put in it before they are drawn; other rows keep theirs.
+const CASE_ROWS = ['nom', 'gen', 'dat', 'abl', 'acc', 'voc', 'loc'];
+function caseOrdered(p) {
+  const rank = (r) => { const c = (r.cells ?? []).find((x) => x?.key?.case)?.key.case; const i = CASE_ROWS.indexOf(c); return i < 0 ? CASE_ROWS.length : i; };
+  if (!(p.sections ?? []).some((s) => (s.rows ?? []).some((r) => rank(r) < CASE_ROWS.length))) return p;
+  return { ...p, sections: p.sections.map((s) => ({ ...s, rows: (s.rows ?? []).map((r, i) => [r, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([r]) => r) })) };
+}
+
 export function renderParadigm(p, opts = {}) {
   if (!p) return null;
+  p = caseOrdered(p);
   const entry = opts.english ? (p.entry ?? null) : null;
   const details = h('details', { class: 'paradigm' },
     h('summary', { class: 'paradigm__summary' },
