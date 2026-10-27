@@ -41,6 +41,7 @@ import { activeTimer } from './activetime.js';
 import { cellRight } from './wordpanel.js';
 import { ruleCard } from './wordrule.js';
 import { notePractised, noteBest } from './practised.js';
+import { noteRound } from './misses.js';
 
 const LS = 'l103.game.';
 const read = (k, d) => { try { const v = localStorage.getItem(LS + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
@@ -908,6 +909,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // Played to its end by typing (Type it, shuffled or not): marked too, so menus can show it green (2026-10-26:
     // "change the colour of a skill to a green background if it's been practised by the typing option").
     noteBest(roundKeys, rung(mode, shuffle) + 1);   // the hardest way it was played to the end
+    noteRound(base, firstMiss, { typed: mode === 'type' });   // the forms missed come back (misses.js)
     if (mode === 'type') notePractised([].concat(roundKeys ?? []).filter((k) => typeof k === 'string' && k).map((k) => `typed:${k}`));
     root.classList.add('gm--ended');
     clearInterval(timer);
@@ -979,6 +981,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // handed back as played, so their cells count as typed; the round itself is not counted as finished.
     if (!ended) {
       const answered = new Set(rows.filter((r) => r.li.dataset.state === 'right').map((r) => r.x.key));
+      noteRound(rows.filter((r) => isDone(r) && !r.again).map((r) => r.x), firstMiss, { typed: mode === 'type' });
       if (answered.size) { try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown), typed: mode === 'type', played: answered, last: false, partial: true }); } catch (e) { console.warn('[game] onDone', e); } }
     }
     closed = true;

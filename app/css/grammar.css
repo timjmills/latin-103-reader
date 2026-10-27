@@ -1760,3 +1760,5 @@ html.g-game-open .g-side { z-index: 70; }
 .g-plan__set { margin-top: var(--s-3); font-size: var(--ui-sm); }
 .g-plan__set summary { cursor: pointer; color: var(--ink-2); }
 .g-plan__set label { display: inline-block; margin: var(--s-1) var(--s-2) 0 0; }
+.g-missed { list-style: none; margin: var(--s-1) 0 0; padding: 0; display: grid; gap: 2px; font-size: var(--ui-sm); }
+.g-missed__cue { color: var(--ink-2); }

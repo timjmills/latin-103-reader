@@ -27,6 +27,7 @@ import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
 import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday } from '../practised.js';
 import { planToday, DEFAULT_PLAN, isoDay } from './plan.js';
+import { missedForms, missedDue } from '../misses.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -2595,12 +2596,21 @@ export function createUI(ctx) {
    * one button with the count; it opens the list — the short re-tests ready, the skills due, what was missed — each a
    * start, and Practise everything due at the top.
    */
+  /** The forms missed that are due, played on the wheel (misses.js schedules them; this game counts like any other). */
+  function playMisses() {
+    const due = missedForms({ due: true });
+    const list = (due.length ? due : missedForms()).slice(0, 16).map((r) => r.card);
+    if (!list.length) { ctx.say('No missed forms to review.'); return; }
+    if (gameKept()) gameDrillOn();
+    playTable({ title: 'Forms you missed', subtitle: `${list.length} form${list.length === 1 ? '' : 's'} missed before: right twice running and they leave the list`, items: list, rule: null, ruleFirst: false });
+  }
   function reviewItems() {
     const now = Date.now();
     const retests = retestDue(retestList().filter((r) => skills.has(r.skill)), now).map((r) => r.skill);
     const due = [...skills.keys()].filter((x) => !skills.get(x).set && inRotation(stateOf(x)) && isDue(stateOf(x), now)).sort((a, b) => thePath().of(a) - thePath().of(b));
     const missed = missedCount();
-    return { retests, due, missed, n: retests.length + due.length + (missed ? 1 : 0) };
+    const forms = missedDue();
+    return { retests, due, missed, forms, n: retests.length + due.length + (missed ? 1 : 0) + (forms ? 1 : 0) };
   }
   function reviewButton() {
     const r = reviewItems();
@@ -2620,7 +2630,11 @@ export function createUI(ctx) {
       r.retests.length ? [h('h3', { class: 'g-pmenu__sh', text: `Short re-tests ready (${r.retests.length}) · three items each` }), h('ol', { class: 'g-pmenu__list' }, r.retests.map((x) => row(x, titleOf(x), () => render('drill', { skill: x, size: RETEST_SIZE, retest: true }))))] : null,
       r.due.length ? [h('h3', { class: 'g-pmenu__sh', text: `Due for review (${r.due.length})` }), h('ol', { class: 'g-pmenu__list' }, r.due.map((x) => row(x, titleOf(x), () => startSkill(x, 'review'))))] : null,
       r.missed ? [h('h3', { class: 'g-pmenu__sh', text: 'Missed before' }), h('p', { class: 'g-acts' }, btn(`Redo the ${r.missed} you missed`, { onclick: go(() => goView('redo', {})) }, 'btn'))] : null,
-      r.n ? null : h('p', { class: 'g-quiet', text: 'Nothing needs review just now.' }),
+      // Forms missed in games, brought back on their days until typed right twice running (misses.js).
+      (() => { const all = missedForms(); if (!all.length) return null; return [h('h3', { class: 'g-pmenu__sh', text: `Forms you keep missing (${all.length}${r.forms ? ` · ${r.forms} due now` : ''})` }),
+        h('p', { class: 'g-acts' }, btn(playLabel(r.forms ? `Play the ${Math.min(16, r.forms)} due` : 'Play them anyway'), { onclick: go(() => playMisses()) }, r.forms ? 'btn btn--primary g-play' : 'btn g-play')),
+        h('ul', { class: 'g-missed' }, all.slice(0, 12).map((x) => h('li', {}, h('span', { class: 'g-missed__cue', text: x.card.cue }), ' ', h('b', { lang: 'la', text: x.card.answers[0] }), x.misses > 1 ? h('span', { class: 'g-count', text: ` missed ×${x.misses}` }) : null)))]; })(),
+      r.n || missedForms().length ? null : h('p', { class: 'g-quiet', text: 'Nothing needs review just now.' }),
     ].flat().filter(Boolean));
     d.addEventListener('close', () => d.remove());
     d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
@@ -4087,7 +4101,9 @@ export function createUI(ctx) {
     const today = planToday({ order, learned, today: isoDay(), plan: planOf() });
     const steps = [];
     const r = reviewItems();
-    if (r.n || today.kind !== 'rest') steps.push({ key: 'review', label: r.n ? `Review what is due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: nothing due', done: !r.n, go: () => openReview() });
+    const rn = r.retests.length + r.due.length + (r.missed ? 1 : 0);
+    if (rn || today.kind !== 'rest') steps.push({ key: 'review', label: rn ? `Review the skills due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: no skill due', done: !rn, go: () => openReview() });
+    if (r.forms) steps.push({ key: 'forms', label: `Forms you missed before (${r.forms} due)`, sub: 'right twice and they leave', done: false, go: () => playMisses() });
     // Everything the day needs, here (2026-10-27: "have it all there in the day, what I need to practise, so I don't need
     // to go looking around"): each new skill learnt, then its forms played on the wheel.
     for (const id of today.newToday) {
