@@ -6,7 +6,7 @@
 
 import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -25,7 +25,7 @@ import { appliesTo, exampleOf } from './applies.js';
 import { withPassive } from './voices.js';
 import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
-import { practised, notePractised, timesText, setSyncedCounts } from '../practised.js';
+import { practised, notePractised, timesText, setSyncedCounts, bestOf } from '../practised.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -2839,6 +2839,24 @@ export function createUI(ctx) {
     const k = kind === 'part' ? [`typed:part:${id}`] : [`typed:tablepart:${id}`, `typed:skill:${id}`];
     return k.some((x) => practised(x) > 0) ? 'true' : null;
   };
+  /**
+   * How done it is, as a green fill (2026-10-27: "as I have practised these, shade a green; gradients depending on how
+   * done the skill is and if it's been typed or just flash"): the fill's width how much is done (a table: its parts
+   * typed; a skill or part: played, or typed in full), its strength the hardest way it was played (What is it? and
+   * Choose faint, Flash more, Type it strong, shuffled strongest). Nothing when never practised.
+   */
+  const doneMark = (kind, id) => {
+    const keys = kind === 'table' ? [`table:${id}`] : kind === 'part' ? [`part:${id}`] : [`skill:${id}`, `tablepart:${id}`];
+    const played = keys.some((k) => practised(k) > 0);
+    const typed = typedAttr(kind, id);
+    if (!played && !typed) return {};
+    const best = Math.max(0, ...keys.map(bestOf));
+    let frac = typed === 'true' ? 1 : 0.4;
+    if (kind === 'table') { const { done, total } = tableTyped(id); frac = Math.max(played ? 0.25 : 0, total ? done / total : 0); }
+    const alpha = [0.14, 0.16, 0.18, 0.24, 0.34, 0.45][best] ?? 0.14;
+    const how = ['practised', 'played: What is it?', 'played: Choose', 'played: Flash', 'played: Type it', 'played: Type it, shuffled'][best];
+    return { 'data-done': '', style: `--done:${Math.round(Math.max(frac, 0.12) * 100)}%;--done-a:${Math.max(alpha, typed ? 0.3 : 0)}`, 'data-done-how': how };
+  };
   /** The cells of a table typed right, each marked. */
   const noteTypedCells = (t, cellIds) => { if (t) notePractised([...new Set(cellIds)].filter(Boolean).map((c) => `typed:cell:${t}:${c}`)); };
   /** The side bar's count: ×N, and a faint ×0 where nothing has been practised yet, so every row says (2026-10-26). */
@@ -3006,6 +3024,46 @@ export function createUI(ctx) {
    * passive"): every word's active, then every word's passive; each word's own forms in its table's order. `col`
    * names the column (its part and header); columns go in the order they are first met. In place, stable.
    */
+  /**
+   * The complete tables of a game's words (2026-10-27: "when hitting this button I want to see a completed table of
+   * whatever is being practised; if multiple, show multiple tables; label by conjugation or declension, mood, tense,
+   * voice; highlight stem, ending, connecting vowels, so the patterns can be easily seen"): each word's table, headed by
+   * the word and its type, its parts that the game plays (present indicative …), the forms played marked, in Sheets'
+   * colours — the stem quiet, the tense sign or connecting vowel blue, the personal ending red, each case its tint.
+   */
+  // `one` (a card: the ? of a form): that word's table only, with only that form marked.
+  const completedTables = (cards) => (one = null) => {
+    const byWord = new Map();
+    for (const c of one ? [one] : cards ?? []) {
+      if (!c?.entry || !c.form || typeof c.form !== 'object') continue;
+      const k = `${c.entry.h}|${c.entry.pos}`;
+      if (!byWord.has(k)) byWord.set(k, { e: c.entry, keys: [] });
+      byWord.get(k).keys.push(c.form);
+    }
+    if (!byWord.size) return null;
+    const norm = (k) => JSON.stringify(Object.entries(k ?? {}).filter(([, v]) => v != null).sort());
+    const fam = (k) => JSON.stringify(Object.entries(k ?? {}).filter(([f, v]) => f !== 'person' && f !== 'number' && v != null).sort());
+    const verbs = [...byWord.values()].some(({ keys }) => keys.some((k) => k.kind === 'finite'));
+    const key = h('p', { class: 'g-sheet__key' },
+      h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__stem', text: 'stem' })),
+      verbs ? h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__ending pt__sign', text: 'tense sign / connecting vowel' })) : null,
+      h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__ending pt__person', text: verbs ? 'personal ending' : 'ending' })),
+      h('span', { class: 'g-sheet__keyitem', text: '· the forms played are marked' }));
+    const box = h('div', { class: `g-sheet gm__tablesin${one ? ' is-one' : ''}` }, key);
+    for (const { e, keys } of byWord.values()) {
+      let p = null;
+      try { p = par.paradigm(e, []); } catch { p = null; }
+      if (!p) continue;
+      // The cases in the game's order: nominative, genitive, dative, ablative, accusative, vocative.
+      const caseAt = (r) => { const c = (r.cells ?? []).find((x) => x?.key?.case)?.key.case; const i = CASE_ORDER.indexOf(c); return i < 0 ? CASE_ORDER.length : i; };
+      p = { ...p, sections: (p.sections ?? []).map((sec) => ({ ...sec, rows: [...(sec.rows ?? [])].map((r, i) => [r, i]).sort((a, b) => caseAt(a[0]) - caseAt(b[0]) || a[1] - b[1]).map(([r]) => r) })) };
+      const fams = new Set(keys.map(fam));
+      const played = new Set(keys.map(norm));
+      const d = renderParadigm(p, { label: wordWithType(e), only: (k) => !!k && fams.has(fam(k)), segment: true, resplit: true, mark: (k) => played.has(norm(k)), tags: false });
+      if (d) { d.open = true; box.append(d); }
+    }
+    return box.children.length > 1 ? box : null;
+  };
   function columnsFirst(cards) {
     const cols = new Map();
     const words = new Map();
@@ -3074,6 +3132,7 @@ export function createUI(ctx) {
       countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
       settings: gameSettings({ table, skill: id, word: words.length === 1 ? words[0].h : null }),
+      tables: completedTables(cards),
       study: table ? studyLink('catalogue', { table }, `The ${tableName(table)} table, in lesson mode`) : studyLink('lesson', { skill: id }, 'This skill\'s lesson, in lesson mode'),
       onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
         for (const e of words) {
@@ -3423,7 +3482,7 @@ export function createUI(ctx) {
       area?.id === 'nouns' ? h('h3', { class: 'g-next__h', text: 'Or just one case, across the declensions' }) : null,
       area?.id === 'nouns' ? h('div', { class: 'g-chips' }, caseSkills().map((x) => btn([x.label, h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`tablepart:${x.id}`)}` })], { onclick: () => startSkill(x.id, 'across') }, 'g-chip'))) : null,
       next.length ? h('h3', { class: 'g-next__h', text: `Next in ${area?.label ?? 'the course'}, in course order` }) : null,
-      next.length ? h('ol', { class: 'g-firstnext__list' }, next.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x), onclick: () => goSkill(x) },
+      next.length ? h('ol', { class: 'g-firstnext__list' }, next.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x), ...doneMark('skill', x), onclick: () => goSkill(x) },
         h('b', { text: titleOf(x) }), ' ', capTag(x), h('span', { class: 'g-firstnext__n', text: ` · ${timesOf(`skill:${x}`)}` }))))) : null);
   }
   const practiceText = (id) => { const l = pLog().skill(id); const n = Math.max(l.rounds, practised(`skill:${id}`)); return n || l.answers ? `×${Math.max(1, n)}${l.last ? `, ${agoText(l.last)}` : ''}` : 'not practised yet'; };
@@ -3611,8 +3670,8 @@ export function createUI(ctx) {
     const chTables = thePath().steps.filter((st) => st.kind === 'table' && Number(st.chapter) === n);
     parts.push(sec(`This chapter · Cap. ${roman(n)}`,
       h('ul', { class: 'g-side__list' },
-        chIds.map((x) => sideRow('skill', x, [h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x), ' ', sideCount(`skill:${x}`)], { class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x) })),
-        chTables.map((st) => sideRow('table', st.id, [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)], { class: 'g-side__go', 'data-area': tableArea(st.id), 'data-typed': typedAttr('table', st.id) }))),
+        chIds.map((x) => sideRow('skill', x, [h('span', { class: 'g-dot', 'data-state': stateOf(x).state, 'aria-hidden': 'true' }), ' ', titleOf(x), ' ', sideCount(`skill:${x}`)], { class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x), ...doneMark('skill', x) })),
+        chTables.map((st) => sideRow('table', st.id, [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)], { class: 'g-side__go', 'data-area': tableArea(st.id), 'data-typed': typedAttr('table', st.id), ...doneMark('table', st.id) }))),
       h('p', {}, btn('The whole chapter →', { onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))));
     // Where you are first (the lesson's parts, the strand), then this skill's or table's own options, then the rest.
     const kids = [...progressionSections(sk, table, sec, nextUp), ...parts.slice(0, ctxCount), ...parts.slice(ctxCount)].filter(Boolean);
@@ -3710,7 +3769,7 @@ export function createUI(ctx) {
         const isTable = st.kind === 'table';
         return sideRow(isTable ? 'table' : 'skill', st.id,
           isTable ? [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)] : [h('span', { class: 'g-dot', 'data-state': stateOf(st.id).state, 'aria-hidden': 'true' }), ` ${++n}. ${titleOf(st.id)} `, sideCount(`skill:${st.id}`)],
-          { class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id, 'data-typed': typedAttr(isTable ? 'table' : 'skill', st.id) });
+          { class: `g-side__go${here ? ' is-here' : ''}`, 'aria-current': here ? 'true' : null, 'data-area': a.id, 'data-typed': typedAttr(isTable ? 'table' : 'skill', st.id), ...doneMark(isTable ? 'table' : 'skill', st.id) });
       }));
       box.replaceChildren(
         h('div', { class: 'g-strand__nav' },
@@ -3732,7 +3791,7 @@ export function createUI(ctx) {
       const here = view.name === 'part' ? Number(pr.step) || 0 : null;
       const ol = h('ol', { class: 'g-side__list g-side__steps', 'data-keep': `steps:${sk.id}`, 'data-here': String(here ?? '') }, h('li', { class: 'g-quiet', text: 'Loading the parts…' }));
       lessonOf(sk.id).then((lesson) => {
-        ol.replaceChildren(...stepsOf(lesson).map((st, j) => h('li', {}, h('button', { type: 'button', class: `g-side__go${j === here ? ' is-here' : ''}`, 'aria-current': j === here ? 'step' : null, 'data-typed': typedAttr('part', `${sk.id}:${j}`), onclick: () => goView('part', { skill: sk.id, step: j }) },
+        ol.replaceChildren(...stepsOf(lesson).map((st, j) => h('li', {}, h('button', { type: 'button', class: `g-side__go${j === here ? ' is-here' : ''}`, 'aria-current': j === here ? 'step' : null, 'data-typed': typedAttr('part', `${sk.id}:${j}`), ...doneMark('part', `${sk.id}:${j}`), onclick: () => goView('part', { skill: sk.id, step: j }) },
           h('b', { text: `${j + 1}. ` }), stepTitle(st, j), ' ', sideCount(`part:${sk.id}:${j}`)))));
       }).catch(() => ol.replaceChildren(h('li', { class: 'g-quiet', text: 'The parts could not be loaded.' })));
       out.push(sec('The lesson, part by part', ol, btn('📖 The whole lesson, from the start', { onclick: () => startSkill(sk.id, 'learn') }, 'g-vlink')));
@@ -3788,7 +3847,7 @@ export function createUI(ctx) {
       if (!sk.set && !inGame) parts.push(sec('More ways to practise it', moreWaysNode(sk.id)?.querySelector('ul')));
       if (sk.paradigms?.length) parts.push(sec('Its tables',
         sk.paradigms.length > 1 ? btn(`▦ ${acrossLabel(sk.paradigms)}`, { onclick: () => playSkillTables(sk.id, { chapter: sk.chapter }) }, 'btn btn--primary g-side__btn') : null,
-        h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), 'data-typed': typedAttr('table', x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)} `, sideCount(`table:${x}`)))))));
+        h('ul', { class: 'g-side__list' }, sk.paradigms.map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(x), 'data-typed': typedAttr('table', x), ...doneMark('table', x), onclick: () => playSkillTables(sk.id, { chapter: sk.chapter, table: x }) }, `▦ ${tableName(x)} `, sideCount(`table:${x}`)))))));
       parts.push(sec('Easier or harder', levelNode(sk.id)));
       parts.push(sec('Related', relatedNode(sk.id)));
       if (!['lesson', 'learn', 'part'].includes(view.name)) parts.push(sec('The lesson', btn('📖 All its parts', { 'aria-haspopup': 'dialog', onclick: async () => { const lesson = await lessonOf(sk.id); openPartsMenu(sk.id, stepsOf(lesson).map((st, j) => stepTitle(st, j))); } }, 'btn btn--quiet g-side__btn')));
@@ -3804,8 +3863,8 @@ export function createUI(ctx) {
       if (!q) { out.replaceChildren(); return; }
       const m = findMatches(q);
       out.replaceChildren(
-        ...m.skills.slice(0, 8).map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x), onclick: () => goView('lesson', { skill: x }) }, titleOf(x), ' ', capTag(x), ' ', sideCount(`skill:${x}`)))),
-        ...m.tables.slice(0, 4).map((t) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(t), 'data-typed': typedAttr('table', t), onclick: () => goTable(t) }, `▦ ${tableName(t)} `, sideCount(`table:${t}`)))),
+        ...m.skills.slice(0, 8).map((x) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': areaOf(x), 'data-typed': typedAttr('skill', x), ...doneMark('skill', x), onclick: () => goView('lesson', { skill: x }) }, titleOf(x), ' ', capTag(x), ' ', sideCount(`skill:${x}`)))),
+        ...m.tables.slice(0, 4).map((t) => h('li', {}, h('button', { type: 'button', class: 'g-side__go', 'data-area': tableArea(t), 'data-typed': typedAttr('table', t), ...doneMark('table', t), onclick: () => goTable(t) }, `▦ ${tableName(t)} `, sideCount(`table:${t}`)))),
         ...(m.skills.length + m.tables.length ? [] : [h('li', { class: 'g-quiet', text: m.also.length ? `Only mentioned in ${m.also.length}; see Today's Find.` : 'Nothing matches.' })]));
     });
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') out.querySelector('button')?.click(); });
@@ -3843,7 +3902,7 @@ export function createUI(ctx) {
         h('div', { class: 'g-path__main' }, h('p', { class: 'g-path__t' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }), navEl({ class: 'g-link', to: ['lesson', { skill: id }], onclick: () => goView('lesson', { skill: id }) }, sk.title), ' ', practiceTag(id))),
         h('div', { class: 'g-path__acts' }, mainButton(id, { cls: 'btn g-play' })));
     }
-    return h('li', { class: 'g-path__s g-crow', id: `g-path-${id}`, 'data-state': st.state, 'data-area': areaOf(id), 'data-typed': typedAttr('skill', id) },
+    return h('li', { class: 'g-path__s g-crow', id: `g-path-${id}`, 'data-state': st.state, 'data-area': areaOf(id), 'data-typed': typedAttr('skill', id), ...doneMark('skill', id) },
       h('span', { class: 'g-path__n', text: String(n ?? '') }),
       h('div', { class: 'g-path__main' },
         h('p', { class: 'g-path__t' }, areaTag(id), h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
@@ -3855,7 +3914,7 @@ export function createUI(ctx) {
   /** A table as a Course row, where its first forms are taught. */
   const courseTableRow = (st, tables) => {
     const t = tables?.get?.(st.id) ?? catTables?.get?.(st.id);
-    return h('li', { class: 'g-path__s g-path__s--table', id: `g-path-t-${st.id}`, 'data-area': tableArea(st.id) },
+    return h('li', { class: 'g-path__s g-path__s--table', id: `g-path-t-${st.id}`, 'data-area': tableArea(st.id), 'data-typed': typedAttr('table', st.id), ...doneMark('table', st.id) },
       h('span', { class: 'g-path__n', 'aria-hidden': 'true', text: '▦' }),
       h('div', { class: 'g-path__main' }, h('p', { class: 'g-path__t' }, areaTag(st.id, { table: true }), 'The table: ', navEl({ class: 'g-link', to: tableTo(st.id, `t-${st.id}`), onclick: () => goTable(st.id, `t-${st.id}`) }, t?.label ?? st.id), t?.example ? h('span', { class: 'g-quiet', lang: 'la', text: ` · ${t.example}` }) : null, countBadge(`table:${st.id}`))),
       h('div', { class: 'g-path__acts' }, btn(gameKept() ? playLabel('Practise') : 'Practise', { to: tableTo(st.id, `t-${st.id}`), onclick: () => goTable(st.id, `t-${st.id}`) }, 'btn g-play')));
@@ -7165,6 +7224,7 @@ export function createUI(ctx) {
         study: view.name === 'part' ? studyLink('part', view.params, 'This part of the lesson, in lesson mode')
           : !item.catalogue && skills.has(item.skill) ? studyLink('lesson', { skill: item.skill }, 'This skill\'s lesson, in lesson mode')
             : tableIdOfItem(item) ? studyLink('catalogue', { table: tableIdOfItem(item) }, 'This table, in lesson mode') : null,
+        tables: completedTables(cards),
         settings: gameSettings({ table: tableIdOfItem(item), skill: item.catalogue || tableIdOfItem(item) ? null : item.skill ?? null, word: words > 1 ? null : cards[0].entry?.h ?? null, group: item.chart?.group ?? null }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Back to the table →',
         // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
         // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.

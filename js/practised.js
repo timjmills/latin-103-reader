@@ -39,3 +39,17 @@ export function notePractised(keys) {
 
 /** "×3", or '' for never. */
 export const timesText = (n) => (n > 0 ? `×${n}` : '');
+
+/**
+ * The hardest way each was played to the end (2026-10-27: "shade a green … gradients depending on how done the skill is
+ * and if it's been typed or just flash"): 1 What is it? · 2 Choose · 3 Flash · 4 Type it · 5 Type it, shuffled. Kept
+ * beside the counts as best:<key>, the highest only.
+ */
+export function noteBest(keys, level) {
+  const m = load();
+  let changed = false;
+  for (const k of [].concat(keys ?? [])) { if (typeof k !== 'string' || !k) continue; const b = `best:${k}`; if ((Number(m[b]) || 0) < level) { m[b] = level; changed = true; } }
+  if (!changed) return;
+  try { localStorage.setItem(KEY, JSON.stringify(m)); } catch { /* this visit only */ }
+}
+export const bestOf = (key) => Number(load()[`best:${key}`]) || 0;
