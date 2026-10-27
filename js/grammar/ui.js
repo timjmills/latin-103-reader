@@ -5,7 +5,7 @@
 // from dictionary.describe); the target's dictionary form sits under the item.
 
 import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
-import { renderParadigm, fitParadigm, cellAnswers } from '../wordpanel.js';
+import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
 import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
@@ -25,8 +25,9 @@ import { appliesTo, exampleOf } from './applies.js';
 import { withPassive } from './voices.js';
 import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
-import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday } from '../practised.js';
+import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday, daysSince } from '../practised.js';
 import { planToday, DEFAULT_PLAN, isoDay } from './plan.js';
+import { missedForms, missedDue } from '../misses.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -1300,9 +1301,12 @@ export function createUI(ctx) {
       btn('×', { class: 'g-pop__close', 'aria-label': 'Close' }, 'g-pop__close'));
     pop.querySelector('.g-pop__close').addEventListener('click', closePop);
     pop.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePop(); wordEl.focus(); } });
-    root.append(pop);
+    // In the game's window (a modal dialog) a popup put in `root` would sit behind it: it goes in the dialog.
+    const host = wordEl.closest('dialog[open]') ?? root;
+    host.append(pop);
     const wr = wordEl.getBoundingClientRect();
-    const rr = root.getBoundingClientRect();
+    const rr = host.getBoundingClientRect();
+    const scrolled = host === root ? 0 : host.scrollTop;
     const w = Math.min(340, window.innerWidth - 16);
     pop.style.width = `${w}px`;
     // The sense list made this popup taller, so where it goes started to matter: a word near the foot
@@ -1322,7 +1326,7 @@ export function createUI(ctx) {
       { h: pop.getBoundingClientRect().height, w, vw: window.innerWidth, vh: window.innerHeight },
     );
     pop.style.left = `${Math.round(x - rr.left)}px`;
-    pop.style.top = `${Math.round(y - rr.top)}px`;
+    pop.style.top = `${Math.round(y - rr.top + scrolled)}px`;
     document.addEventListener('pointerdown', onDocDown, true);
     // A pointer opened it, so the keyboard stays where the reader put it: taking focus here would
     // pull it out of the answer box just because the pointer crossed a word.
@@ -1362,8 +1366,8 @@ export function createUI(ctx) {
   }
 
   // `root` and not `body`: body is rebuilt by every draw(), and is still null when this runs.
-  attachHoverGloss({
-    root,
+  // Kept as one config so a sentence in the game's own window (outside `root`) hovers the same way (`hoverIn`).
+  const glossHover = {
     word: '.g-w, .g-wx',
     pop: '.g-pop',
     cut: (el) => cutLatinWords(el, { tokenize, cls: 'g-wx', skip: LA_NO }),
@@ -1383,7 +1387,9 @@ export function createUI(ctx) {
       showGloss(w, w.dataset.form ?? w.textContent, w.textContent, ctxLa, { hover: true, parse: !held });
     },
     hide: () => { if (pop && pop.dataset.hover === '1') closePop(); },
-  });
+  };
+  attachHoverGloss({ root, ...glossHover });
+  const hoverIn = (node) => { attachHoverGloss({ root: node, ...glossHover }); return node; };
 
   /** A Latin sentence as tappable words. `target`: word index (or a list of them) to mark; `tap(index)`: the words are the answer; a `___` blank is marked as the target. */
   function latin(la, { target = null, tap = null, cls = '' } = {}) {
@@ -2595,12 +2601,21 @@ export function createUI(ctx) {
    * one button with the count; it opens the list — the short re-tests ready, the skills due, what was missed — each a
    * start, and Practise everything due at the top.
    */
+  /** The forms missed that are due, played on the wheel (misses.js schedules them; this game counts like any other). */
+  function playMisses() {
+    const due = missedForms({ due: true });
+    const list = (due.length ? due : missedForms()).slice(0, 16).map((r) => r.card);
+    if (!list.length) { ctx.say('No missed forms to review.'); return; }
+    if (gameKept()) gameDrillOn();
+    playTable({ title: 'Forms you missed', subtitle: `${list.length} form${list.length === 1 ? '' : 's'} missed before: right twice running and they leave the list`, items: list, rule: null, ruleFirst: false });
+  }
   function reviewItems() {
     const now = Date.now();
     const retests = retestDue(retestList().filter((r) => skills.has(r.skill)), now).map((r) => r.skill);
     const due = [...skills.keys()].filter((x) => !skills.get(x).set && inRotation(stateOf(x)) && isDue(stateOf(x), now)).sort((a, b) => thePath().of(a) - thePath().of(b));
     const missed = missedCount();
-    return { retests, due, missed, n: retests.length + due.length + (missed ? 1 : 0) };
+    const forms = missedDue();
+    return { retests, due, missed, forms, n: retests.length + due.length + (missed ? 1 : 0) + (forms ? 1 : 0) };
   }
   function reviewButton() {
     const r = reviewItems();
@@ -2620,7 +2635,11 @@ export function createUI(ctx) {
       r.retests.length ? [h('h3', { class: 'g-pmenu__sh', text: `Short re-tests ready (${r.retests.length}) · three items each` }), h('ol', { class: 'g-pmenu__list' }, r.retests.map((x) => row(x, titleOf(x), () => render('drill', { skill: x, size: RETEST_SIZE, retest: true }))))] : null,
       r.due.length ? [h('h3', { class: 'g-pmenu__sh', text: `Due for review (${r.due.length})` }), h('ol', { class: 'g-pmenu__list' }, r.due.map((x) => row(x, titleOf(x), () => startSkill(x, 'review'))))] : null,
       r.missed ? [h('h3', { class: 'g-pmenu__sh', text: 'Missed before' }), h('p', { class: 'g-acts' }, btn(`Redo the ${r.missed} you missed`, { onclick: go(() => goView('redo', {})) }, 'btn'))] : null,
-      r.n ? null : h('p', { class: 'g-quiet', text: 'Nothing needs review just now.' }),
+      // Forms missed in games, brought back on their days until typed right twice running (misses.js).
+      (() => { const all = missedForms(); if (!all.length) return null; return [h('h3', { class: 'g-pmenu__sh', text: `Forms you keep missing (${all.length}${r.forms ? ` · ${r.forms} due now` : ''})` }),
+        h('p', { class: 'g-acts' }, btn(playLabel(r.forms ? `Play the ${Math.min(16, r.forms)} due` : 'Play them anyway'), { onclick: go(() => playMisses()) }, r.forms ? 'btn btn--primary g-play' : 'btn g-play')),
+        h('ul', { class: 'g-missed' }, all.slice(0, 12).map((x) => h('li', {}, h('span', { class: 'g-missed__cue', text: x.card.cue }), ' ', h('b', { lang: 'la', text: x.card.answers[0] }), x.misses > 1 ? h('span', { class: 'g-count', text: ` missed ×${x.misses}` }) : null)))]; })(),
+      r.n || missedForms().length ? null : h('p', { class: 'g-quiet', text: 'Nothing needs review just now.' }),
     ].flat().filter(Boolean));
     d.addEventListener('close', () => d.remove());
     d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
@@ -2846,17 +2865,37 @@ export function createUI(ctx) {
    * typed; a skill or part: played, or typed in full), its strength the hardest way it was played (What is it? and
    * Choose faint, Flash more, Type it strong, shuffled strongest). Nothing when never practised.
    */
+  /**
+   * Green means mastered (2026-10-27, the plan to 15 December): how well each is known, 0–1. A skill: its scheduler
+   * state (learning, practising, mastered — which already decays when not reviewed), and typed in a game. A table: its
+   * parts typed and the hardest way it was played, fading when not practised for two weeks, more after four. A lesson
+   * part: typed, or played. The green fill is as wide as this and as strong as the hardest way played.
+   */
+  const fade = (key) => { const d = daysSince(key); return d > 28 && d !== Infinity ? 0.5 : d > 14 && d !== Infinity ? 0.75 : 1; };
+  function masteryOf(kind, id) {
+    if (kind === 'skill') {
+      const m = { new: 0, learning: 0.25, lapsed: 0.3, practising: 0.6, mastered: 0.9 }[stateOf(id).state] ?? 0;
+      return Math.min(1, m + (typedAttr('skill', id) === 'true' ? 0.1 : 0));
+    }
+    if (kind === 'table') {
+      if (!practised(`table:${id}`) && typedAttr('table', id) == null) return 0;
+      const { done, total } = tableTyped(id);
+      return Math.min(1, ((total ? done / total : 0) * 0.7 + (bestOf(`table:${id}`) / 5) * 0.3) * fade(`table:${id}`)) || 0.1;
+    }
+    const played = practised(`part:${id}`) > 0;
+    return (typedAttr('part', id) === 'true' ? 1 : played ? 0.5 : 0) * fade(`part:${id}`);
+  }
   const doneMark = (kind, id) => {
     const keys = kind === 'table' ? [`table:${id}`] : kind === 'part' ? [`part:${id}`] : [`skill:${id}`, `tablepart:${id}`];
+    const m = masteryOf(kind, id);
     const played = keys.some((k) => practised(k) > 0);
-    const typed = typedAttr(kind, id);
-    if (!played && !typed) return {};
+    if (!m && !played) return {};
     const best = Math.max(0, ...keys.map(bestOf));
-    let frac = typed === 'true' ? 1 : 0.4;
-    if (kind === 'table') { const { done, total } = tableTyped(id); frac = Math.max(played ? 0.25 : 0, total ? done / total : 0); }
+    const typed = typedAttr(kind, id);
     const alpha = [0.14, 0.16, 0.18, 0.24, 0.34, 0.45][best] ?? 0.14;
+    const pct = Math.round(Math.max(m, 0.08) * 100);
     const how = ['practised', 'played: What is it?', 'played: Choose', 'played: Flash', 'played: Type it', 'played: Type it, shuffled'][best];
-    return { 'data-done': '', style: `--done:${Math.round(Math.max(frac, 0.12) * 100)}%;--done-a:${Math.max(alpha, typed ? 0.3 : 0)}`, 'data-done-how': how };
+    return { 'data-done': '', style: `--done:${pct}%;--done-a:${Math.max(alpha, typed ? 0.3 : 0, m >= 0.9 ? 0.4 : 0)}`, 'data-done-how': `${Math.round(m * 100)}% mastered · ${how}`, title: `${Math.round(m * 100)}% mastered · ${how}` };
   };
   /** The cells of a table typed right, each marked. */
   const noteTypedCells = (t, cellIds) => { if (t) notePractised([...new Set(cellIds)].filter(Boolean).map((c) => `typed:cell:${t}:${c}`)); };
@@ -3096,6 +3135,45 @@ export function createUI(ctx) {
     }
     return box.children.length > 1 ? box : null;
   };
+  /**
+   * A form just played, in a sentence (2026-10-27, the plan: "forms in reading context"): the library's sentences for
+   * the skills played (grammar/sentences/<skill>.json, our own Latin with its English) searched for one of the forms
+   * of the round; the sentence with the form marked and named, the English a tap away. Null when none has one.
+   */
+  const sentenceMemo = new Map();
+  const sentencesOfSkill = (id) => { if (!sentenceMemo.has(id)) sentenceMemo.set(id, loadSentences(id).then((d) => d?.sentences ?? (Array.isArray(d) ? d : [])).catch(() => [])); return sentenceMemo.get(id); };
+  const foldW = (x) => stripMacrons(String(x ?? '')).toLowerCase().replace(/v/g, 'u').replace(/j/g, 'i');
+  const inContext = (skillIds) => async (cards) => {
+    const ids = [...new Set(skillIds.filter((x) => skills.has(x)))].slice(0, 8);
+    if (!ids.length) return null;
+    const forms = new Map();
+    for (const c of cards ?? []) for (const a of c.answers ?? []) if (a && !/\s/.test(a)) forms.set(foldW(a), c);
+    if (!forms.size) return null;
+    const found = [];
+    for (const id of ids) {
+      for (const st of await sentencesOfSkill(id)) {
+        const words = String(st.la ?? '').split(/(\s+)/);
+        const hit = words.findIndex((w) => forms.has(foldW(w.replace(/[^\p{L}]/gu, ''))));
+        if (hit >= 0) found.push({ st, words, hit, card: forms.get(foldW(words[hit].replace(/[^\p{L}]/gu, ''))) });
+      }
+      if (found.length >= 6) break;
+    }
+    if (!found.length) return null;
+    const { st, words, hit, card } = found[Math.floor(Math.random() * found.length)];
+    const en = h('p', { class: 'gm__ctx-en', hidden: true, text: st.en ?? '' });
+    return h('div', { class: 'gm__ctx' },
+      h('p', { class: 'gm__sub gm__ctx-h', text: 'In a sentence — find the form you practised:' }),
+      // The reader's words: hover (or hold) for the dictionary, tap for the full entry; the form practised marked.
+      hoverIn(latin(st.la ?? '', { target: tokenize(st.la ?? '').filter((t) => t.isWord).findIndex((t) => foldW(t.text) === foldW(words[hit].replace(/[^\p{L}]/gu, ''))), cls: 'gm__ctx-la' })),
+      h('p', { class: 'gm__ctx-what' }, h('mark', { class: 'gm__ctx-hit', lang: 'la', text: words[hit].replace(/[^\p{L}]/gu, '') }), ` is ${String(card.cue ?? '').replace(/\bcases\s+/gi, '').replace(/ · /g, ', ')}`),
+      st.en ? h('button', { type: 'button', class: 'btn btn--quiet gm__ctx-btn', onclick: (e) => { en.hidden = !en.hidden; e.currentTarget.textContent = en.hidden ? 'Show the English' : 'Hide the English'; } }, 'Show the English') : null,
+      en);
+  };
+  // A table's own game (wordpanel.js) gets the same: the complete tables and a sentence (its table's skills).
+  setParadigmGameExtras({
+    tables: (cards) => completedTables(cards)(),
+    context: (cards, entry) => { const t = selectRules ? tableIdOf(entry, selectRules) : null; return inContext(t ? catTables?.get?.(t)?.skills ?? [] : [])(cards); },
+  });
   function columnsFirst(cards) {
     const cols = new Map();
     const words = new Map();
@@ -3164,6 +3242,7 @@ export function createUI(ctx) {
       countKey: (played) => [`tablepart:${id}`, ...words.filter((e) => cards.some((c) => c.entry === e && played.has(c.key))).map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
       settings: gameSettings({ table, skill: id, word: words.length === 1 ? words[0].h : null }),
+      context: inContext([id]),
       tables: completedTables(cards),
       study: table ? studyLink('catalogue', { table }, `The ${tableName(table)} table, in lesson mode`) : studyLink('lesson', { skill: id }, 'This skill\'s lesson, in lesson mode'),
       onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
@@ -4087,7 +4166,9 @@ export function createUI(ctx) {
     const today = planToday({ order, learned, today: isoDay(), plan: planOf() });
     const steps = [];
     const r = reviewItems();
-    if (r.n || today.kind !== 'rest') steps.push({ key: 'review', label: r.n ? `Review what is due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: nothing due', done: !r.n, go: () => openReview() });
+    const rn = r.retests.length + r.due.length + (r.missed ? 1 : 0);
+    if (rn || today.kind !== 'rest') steps.push({ key: 'review', label: rn ? `Review the skills due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: no skill due', done: !rn, go: () => openReview() });
+    if (r.forms) steps.push({ key: 'forms', label: `Forms you missed before (${r.forms} due)`, sub: 'right twice and they leave', done: false, go: () => playMisses() });
     // Everything the day needs, here (2026-10-27: "have it all there in the day, what I need to practise, so I don't need
     // to go looking around"): each new skill learnt, then its forms played on the wheel.
     for (const id of today.newToday) {
@@ -4120,7 +4201,7 @@ export function createUI(ctx) {
       h('h2', { id: 'g-plan-h', class: 'g-h2', text: `🎯 Master all ${today.total} skills by ${planDay(p.goal)}` }),
       h('p', { class: 'g-plan__meta' }, `${today.daysLeft} study day${today.daysLeft === 1 ? '' : 's'} left · 45–60 min a day · rest: ${REST_DAYS[p.rest]}`),
       h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
-      h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · `, h('b', { text: statusText })),
+      h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · ${planOrder().filter((id) => stateOf(id).state === 'mastered').length} mastered · `, h('b', { text: statusText })),
       h('p', { class: 'g-plan__phase', text: phase }),
       h('h3', { class: 'g-plan__h3', text: `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}` }),
       next ? btn(playLabel(`Today's session: ${next.label.replace(/^Learn: /, 'learn ')}`), { onclick: () => next.go() }, 'btn btn--primary g-play g-plan__go') : h('p', { class: 'g-plan__done', text: steps.length ? '✓ Done for today. Anything more is extra.' : '' }),
@@ -4529,6 +4610,7 @@ export function createUI(ctx) {
    */
   const MODEL_WORDS = ['amō', 'moneō', 'regō', 'capiō', 'audiō', 'sum', 'possum', 'eō', 'volō', 'ferō',
     'puella', 'servus', 'dōnum', 'puer', 'rēx', 'nōmen', 'manus', 'rēs', 'bonus', 'fortis', 'ego', 'is', 'hic', 'ille', 'quī'];
+  // The table knows its word (its own game's complete tables and sentences need it: wordpanel.js game.entry).
   const tableOf = (e) => { try { return par.paradigm(e, []); } catch { return null; } };
   const headOf = (e) => String(e?.lemma ?? e?.h ?? '').split(/[\s,]/)[0];
   /** The entries a typed form or headword may be, that have a table; one per headword and part of speech. */
@@ -7354,6 +7436,7 @@ export function createUI(ctx) {
           : !item.catalogue && skills.has(item.skill) ? studyLink('lesson', { skill: item.skill }, 'This skill\'s lesson, in lesson mode')
             : tableIdOfItem(item) ? studyLink('catalogue', { table: tableIdOfItem(item) }, 'This table, in lesson mode') : null,
         tables: completedTables(cards),
+        context: inContext([...(item.catalogue ? (catTables?.get?.(tableIdOfItem(item))?.skills ?? []) : [item.skill])]),
         settings: gameSettings({ table: tableIdOfItem(item), skill: item.catalogue || tableIdOfItem(item) ? null : item.skill ?? null, word: words > 1 ? null : cards[0].entry?.h ?? null, group: item.chart?.group ?? null }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Back to the table →',
         // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
         // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.
