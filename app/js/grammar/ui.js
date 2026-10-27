@@ -6,7 +6,7 @@
 
 import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -3006,6 +3006,45 @@ export function createUI(ctx) {
    * passive"): every word's active, then every word's passive; each word's own forms in its table's order. `col`
    * names the column (its part and header); columns go in the order they are first met. In place, stable.
    */
+  /**
+   * The complete tables of a game's words (2026-10-27: "when hitting this button I want to see a completed table of
+   * whatever is being practised; if multiple, show multiple tables; label by conjugation or declension, mood, tense,
+   * voice; highlight stem, ending, connecting vowels, so the patterns can be easily seen"): each word's table, headed by
+   * the word and its type, its parts that the game plays (present indicative …), the forms played marked, in Sheets'
+   * colours — the stem quiet, the tense sign or connecting vowel blue, the personal ending red, each case its tint.
+   */
+  const completedTables = (cards) => () => {
+    const byWord = new Map();
+    for (const c of cards ?? []) {
+      if (!c?.entry || !c.form || typeof c.form !== 'object') continue;
+      const k = `${c.entry.h}|${c.entry.pos}`;
+      if (!byWord.has(k)) byWord.set(k, { e: c.entry, keys: [] });
+      byWord.get(k).keys.push(c.form);
+    }
+    if (!byWord.size) return null;
+    const norm = (k) => JSON.stringify(Object.entries(k ?? {}).filter(([, v]) => v != null).sort());
+    const fam = (k) => JSON.stringify(Object.entries(k ?? {}).filter(([f, v]) => f !== 'person' && f !== 'number' && v != null).sort());
+    const verbs = [...byWord.values()].some(({ keys }) => keys.some((k) => k.kind === 'finite'));
+    const key = h('p', { class: 'g-sheet__key' },
+      h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__stem', text: 'stem' })),
+      verbs ? h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__ending pt__sign', text: 'tense sign / connecting vowel' })) : null,
+      h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__ending pt__person', text: verbs ? 'personal ending' : 'ending' })),
+      h('span', { class: 'g-sheet__keyitem', text: '· the forms played are marked' }));
+    const box = h('div', { class: 'g-sheet gm__tablesin' }, key);
+    for (const { e, keys } of byWord.values()) {
+      let p = null;
+      try { p = par.paradigm(e, []); } catch { p = null; }
+      if (!p) continue;
+      // The cases in the game's order: nominative, genitive, dative, ablative, accusative, vocative.
+      const caseAt = (r) => { const c = (r.cells ?? []).find((x) => x?.key?.case)?.key.case; const i = CASE_ORDER.indexOf(c); return i < 0 ? CASE_ORDER.length : i; };
+      p = { ...p, sections: (p.sections ?? []).map((sec) => ({ ...sec, rows: [...(sec.rows ?? [])].map((r, i) => [r, i]).sort((a, b) => caseAt(a[0]) - caseAt(b[0]) || a[1] - b[1]).map(([r]) => r) })) };
+      const fams = new Set(keys.map(fam));
+      const played = new Set(keys.map(norm));
+      const d = renderParadigm(p, { label: wordWithType(e), only: (k) => !!k && fams.has(fam(k)), segment: true, resplit: true, mark: (k) => played.has(norm(k)), tags: false });
+      if (d) { d.open = true; box.append(d); }
+    }
+    return box.children.length > 1 ? box : null;
+  };
   function columnsFirst(cards) {
     const cols = new Map();
     const words = new Map();
@@ -3074,6 +3113,7 @@ export function createUI(ctx) {
       countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
       settings: gameSettings({ table, skill: id, word: words.length === 1 ? words[0].h : null }),
+      tables: completedTables(cards),
       study: table ? studyLink('catalogue', { table }, `The ${tableName(table)} table, in lesson mode`) : studyLink('lesson', { skill: id }, 'This skill\'s lesson, in lesson mode'),
       onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
         for (const e of words) {
@@ -7165,6 +7205,7 @@ export function createUI(ctx) {
         study: view.name === 'part' ? studyLink('part', view.params, 'This part of the lesson, in lesson mode')
           : !item.catalogue && skills.has(item.skill) ? studyLink('lesson', { skill: item.skill }, 'This skill\'s lesson, in lesson mode')
             : tableIdOfItem(item) ? studyLink('catalogue', { table: tableIdOfItem(item) }, 'This table, in lesson mode') : null,
+        tables: completedTables(cards),
         settings: gameSettings({ table: tableIdOfItem(item), skill: item.catalogue || tableIdOfItem(item) ? null : item.skill ?? null, word: words > 1 ? null : cards[0].entry?.h ?? null, group: item.chart?.group ?? null }), items: cards, rule: chartRule, ruleFirst: !!chartRule, how: cardHow, continueLabel: 'Back to the table →',
         // Counted the moment the game ends (2026-10-26: "when playing the game mode it does not update that you have
         // practised that chart, table or part of lesson"): the table's ×N, the lesson part's, and the chart itself graded.

@@ -200,7 +200,7 @@ export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
 export const playWay = () => { const mode = modeOf(read('mode', 'type')); const shuffle = mode === 'type' && !!read('shuffle', false); return { mode, shuffle, label: ladderLabel(mode, shuffle) }; };
 export function setPlayWay({ mode, shuffle = false }) { write('mode', modeOf(mode)); write('shuffle', !!shuffle); }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null, study = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null, study = null, tables = null } = {}) {
   // In order, a column at a time (2026-10-23: "unless it's on shuffle have all the active first then all the passive"):
   // each group's forms together, the groups in the order they first come, the forms in each as given.
   const base = byGroup(items.filter((x) => x && x.answers?.length));
@@ -241,7 +241,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const easierBtn = el('button', { type: 'button', class: 'gm__tool gm__step', title: 'Easier way to play', 'aria-label': 'Easier way to play', onclick: () => stepMode(-1) }, '◂');
   const harderBtn = el('button', { type: 'button', class: 'gm__tool gm__step', title: 'Harder way to play', 'aria-label': 'Harder way to play', onclick: () => stepMode(1) }, '▸');
   // The word's type and the rule for its forms (wordrule.js): the game opens on it, and 📖 brings it back.
-  const ruleBtn = rule ? el('button', { type: 'button', class: 'gm__tool', 'aria-label': 'How its forms are made', title: 'How its forms are made', onclick: () => openRule() }, '📖') : null;
+  const ruleBtn = rule || tables ? el('button', { type: 'button', class: 'gm__tool', 'aria-label': 'The complete table, and how its forms are made', title: 'The complete table, and how its forms are made', onclick: () => openRule({ full: true }) }, '📖') : null;
   // The word's charts: by part, in the table's order; a part of one column is one chart.
   const chartList = charts?.list?.length > 1 ? charts.list : null;
   // What one chart is called: a column of the word's table, or (a skill's every-word game) a word.
@@ -779,8 +779,13 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('div', { class: 'gm__acts' }, goOn, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Quit the game')));
     openPanel(node, goOn);
   }
-  function openRule() {
-    if (!rule) return;
+  // `full` (the 📖 button, 2026-10-27: "when hitting this button I want to see a completed table of whatever is being
+  // practised; if multiple, show multiple tables"): the complete tables first, then how they are made. Not on the card
+  // the game opens with, which would give the answers away before the first one.
+  function openRule({ full = false } = {}) {
+    if (!rule && !(full && tables)) return;
+    let tbl = null;
+    if (full && tables) { try { tbl = tables(); } catch { tbl = null; } }
     const fresh = !rows.some(isDone) && !firstMiss.size;
     const goOn = el('button', { type: 'button', class: 'btn btn--primary gm__start', onclick: () => node.resume() }, fresh ? 'Start ▶' : 'Back to the game');
     // What this game plays, and a way to others, before it starts.
@@ -789,7 +794,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const node = el('section', { class: 'gm__end gm__panel gm__rulep', role: 'region', 'aria-labelledby': 'gm-rule-h' },
       el('h2', { id: 'gm-rule-h', class: 'gm__endh', lang: 'la', text: title }),
       playing,
-      ruleCard(rule, { open: true }),
+      tbl ? el('section', { class: 'gm__tables', 'aria-label': 'The complete table' }, el('h3', { class: 'gm__seth', text: 'The complete table' }), tbl) : null,
+      rule ? ruleCard(rule, { open: !tbl }) : null,
       el('div', { class: 'gm__acts' }, goOn, study ? el('button', { type: 'button', class: 'btn gm__studylink', title: study.title ?? '', onclick: studyGo }, `${study.label ?? '📖 Study it'}: ${study.title ?? 'in lesson mode'}`) : null));
     openPanel(node, goOn);
   }
@@ -884,7 +890,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings, study }); };
+    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings, study, tables }); };
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
     const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;

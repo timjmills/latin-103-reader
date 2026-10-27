@@ -876,3 +876,8 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__builtr.is-miss { background: color-mix(in srgb, #c62828 13%, var(--bg-raised)); border-left-color: #c62828; }
 .gm__builtr.is-miss .gm__builtf { color: #b71c1c; }
 .gm__builtr.is-todo .gm__builtf { color: var(--ink-3); }
+
+/* The complete tables in the 📖 panel (ui.js completedTables, in Sheets' colours: grammar.css .g-sheet). */
+.gm__tables { margin: var(--s-2) 0 var(--s-3); }
+.gm__tablesin .paradigm { margin-bottom: var(--s-3); }
+.gm__tablesin .paradigm__summary { font-weight: 700; }
