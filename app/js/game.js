@@ -362,7 +362,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // green"). Skip is the way past a form the first time round; Show is only for a form come back for review.
   const skipBtn = el('button', { type: 'button', class: 'gm__show gm__skip', onclick: () => skip() }, 'Skip');
   const passBtn = (r) => (r.again ? showBtn : skipBtn);
-  const howBtn = how ? el('button', { type: 'button', class: 'gm__how', 'aria-haspopup': 'dialog', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: () => openHow() }, '?') : null;
+  const howBtn = how || tables ? el('button', { type: 'button', class: 'gm__how', 'aria-haspopup': 'dialog', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: () => openHow() }, '?') : null;
   const stage = el('div', { class: 'gm__stage' }, track);
   // The table being built (2026-10-27: "on a computer, in game mode, a growing list of the words on the side so we can
   // see a table being built with each word; colour them green or red whether correct or incorrect / skipped"): every
@@ -782,10 +782,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // `full` (the 📖 button, 2026-10-27: "when hitting this button I want to see a completed table of whatever is being
   // practised; if multiple, show multiple tables"): the complete tables first, then how they are made. Not on the card
   // the game opens with, which would give the answers away before the first one.
+  // The complete tables in every explanation of the game (2026-10-27: "keep this information but add the tables
+  // throughout the program"): the card it opens with, the 📖 panel, and each form's ? (its word's table, the form marked).
   function openRule({ full = false } = {}) {
-    if (!rule && !(full && tables)) return;
+    if (!rule && !tables) return;
     let tbl = null;
-    if (full && tables) { try { tbl = tables(); } catch { tbl = null; } }
+    if (tables) { try { tbl = tables(); } catch { tbl = null; } }
     const fresh = !rows.some(isDone) && !firstMiss.size;
     const goOn = el('button', { type: 'button', class: 'btn btn--primary gm__start', onclick: () => node.resume() }, fresh ? 'Start ▶' : 'Back to the game');
     // What this game plays, and a way to others, before it starts.
@@ -794,8 +796,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const node = el('section', { class: 'gm__end gm__panel gm__rulep', role: 'region', 'aria-labelledby': 'gm-rule-h' },
       el('h2', { id: 'gm-rule-h', class: 'gm__endh', lang: 'la', text: title }),
       playing,
-      tbl ? el('section', { class: 'gm__tables', 'aria-label': 'The complete table' }, el('h3', { class: 'gm__seth', text: 'The complete table' }), tbl) : null,
-      rule ? ruleCard(rule, { open: !tbl }) : null,
+      rule ? ruleCard(rule, { open: true }) : null,
+      tbl ? el('section', { class: 'gm__tables', 'aria-label': 'The complete table' }, el('h3', { class: 'gm__seth', text: (tbl.querySelectorAll?.('.paradigm').length ?? 0) > 1 ? 'The complete tables' : 'The complete table' }), tbl) : null,
       el('div', { class: 'gm__acts' }, goOn, study ? el('button', { type: 'button', class: 'btn gm__studylink', title: study.title ?? '', onclick: studyGo }, `${study.label ?? '📖 Study it'}: ${study.title ?? 'in lesson mode'}`) : null));
     openPanel(node, goOn);
   }
@@ -803,12 +805,15 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   function openHow() {
     const r = rows[at];
     const card = r && how ? how(r.x) : null;
-    if (!card) return;
+    let tbl = null;
+    if (r && tables) { try { tbl = tables(r.x); } catch { tbl = null; } }
+    if (!card && !tbl) return;
     const goOn = el('button', { type: 'button', class: 'btn btn--primary', onclick: () => node.resume() }, 'Back to it');
     const node = el('section', { class: 'gm__end gm__panel gm__howp', role: 'region', 'aria-labelledby': 'gm-how-h' },
       el('h2', { id: 'gm-how-h', class: 'gm__endh', text: 'How it’s made' }),
       el('p', { class: 'gm__howcue' }, el('span', { class: 'gm__label' }, cueNodes(r.x.cue)), r.x.en ? el('span', { class: 'gm__en', text: r.x.en }) : null),
-      ruleCard(card, { open: true, heading: 'For this word' }),
+      card ? ruleCard(card, { open: true, heading: 'For this word' }) : null,
+      tbl ? el('section', { class: 'gm__tables', 'aria-label': 'Its table' }, el('h3', { class: 'gm__seth', text: 'Its table (this form marked)' }), tbl) : null,
       el('div', { class: 'gm__acts' }, goOn));
     node.keep = true;
     openPanel(node, goOn);

@@ -881,3 +881,4 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__tables { margin: var(--s-2) 0 var(--s-3); }
 .gm__tablesin .paradigm { margin-bottom: var(--s-3); }
 .gm__tablesin .paradigm__summary { font-weight: 700; }
+.gm__tablesin.is-one .pt__cell.is-focus { outline: 3px solid var(--rubric); outline-offset: -3px; font-weight: 700; }   /* the ? card: this form */

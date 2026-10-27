@@ -3013,9 +3013,10 @@ export function createUI(ctx) {
    * the word and its type, its parts that the game plays (present indicative …), the forms played marked, in Sheets'
    * colours — the stem quiet, the tense sign or connecting vowel blue, the personal ending red, each case its tint.
    */
-  const completedTables = (cards) => () => {
+  // `one` (a card: the ? of a form): that word's table only, with only that form marked.
+  const completedTables = (cards) => (one = null) => {
     const byWord = new Map();
-    for (const c of cards ?? []) {
+    for (const c of one ? [one] : cards ?? []) {
       if (!c?.entry || !c.form || typeof c.form !== 'object') continue;
       const k = `${c.entry.h}|${c.entry.pos}`;
       if (!byWord.has(k)) byWord.set(k, { e: c.entry, keys: [] });
@@ -3030,7 +3031,7 @@ export function createUI(ctx) {
       verbs ? h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__ending pt__sign', text: 'tense sign / connecting vowel' })) : null,
       h('span', { class: 'g-sheet__keyitem' }, h('span', { class: 'pt__ending pt__person', text: verbs ? 'personal ending' : 'ending' })),
       h('span', { class: 'g-sheet__keyitem', text: '· the forms played are marked' }));
-    const box = h('div', { class: 'g-sheet gm__tablesin' }, key);
+    const box = h('div', { class: `g-sheet gm__tablesin${one ? ' is-one' : ''}` }, key);
     for (const { e, keys } of byWord.values()) {
       let p = null;
       try { p = par.paradigm(e, []); } catch { p = null; }
