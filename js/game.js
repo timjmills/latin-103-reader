@@ -86,6 +86,61 @@ export function setSound(on) { write('sound', !!on); }
 /** The misses kept for a table on this device: the `key`s missed on the first try the last time it was played. */
 export function savedMisses(id) { return id ? read(`misses.${id}`, []) : []; }
 
+/** The order of the cases in a game. */
+export const CASE_ORDER = ['nom', 'gen', 'dat', 'abl', 'acc', 'voc', 'loc'];
+/**
+ * A cue in colours (2026-10-27: "have the word, its declension, the case and its person and number each differentiated
+ * by background / foreground highlighting colour throughout the game"): the word, its type (2nd declension, 3rd
+ * conjugation …), case, person, number, tense, mood, voice and gender each a tag of its own colour (panels.css .gm-k).
+ * Anything else ("cases", "·") stays plain.
+ */
+const CUE_KINDS = [
+  [/^(nominative|genitive|dative|accusative|ablative|vocative|locative)$/i, 'case'],
+  [/^(singular|plural|sg\.?|pl\.?)$/i, 'number'],
+  [/^(present|imperfect|future|perfect|pluperfect)$/i, 'tense'],
+  [/^(indicative|subjunctive|imperative|infinitive|participle|gerund|gerundive|supine)$/i, 'mood'],
+  [/^(active|passive)$/i, 'voice'],
+  [/^(masculine|feminine|neuter|common)$/i, 'gender'],
+];
+const CUE_PERSON = /^(I|we|they|you(\s*\((sg|pl)\.\))?|he\s*\/\s*she\s*\/\s*it|(1st|2nd|3rd) person( (singular|plural))?)$/;
+const CUE_TYPE = /\b((1st|2nd|3rd|4th|5th)\s+(declension|decl\.|conjugation|conj\.)(\s*\([^)]*\))?(\s+(noun|verb|adjective))?|(irregular|deponent|semi-deponent)\s+verb)/gi;
+const cueTag = (kind, text) => el('span', { class: `gm-k gm-k--${kind}`, text });
+function plainWords(text) {
+  return String(text).split(/(\s+)/).filter((w) => w !== '').map((w) => {
+    const kind = CUE_KINDS.find(([re]) => re.test(w))?.[1];
+    return kind ? cueTag(kind, w) : w;
+  });
+}
+/** Free text (a game's subtitle): its types, cases, numbers … tagged, the rest plain. */
+export function cueWords(text) {
+  const t = String(text ?? '');
+  const out = [];
+  let last = 0;
+  for (const m of t.matchAll(CUE_TYPE)) {
+    out.push(...plainWords(t.slice(last, m.index)), cueTag('type', m[0]));
+    last = m.index + m[0].length;
+  }
+  out.push(...plainWords(t.slice(last)));
+  return out;
+}
+/** A card's cue ("factum (2nd decl., neuter) · ablative · cases plural"), each part in its colour. */
+export function cueNodes(cue) {
+  const out = [];
+  String(cue ?? '').split(' · ').forEach((seg, i) => {
+    if (i) out.push(' · ');
+    const s = seg.trim();
+    if (CUE_PERSON.test(s)) { out.push(cueTag('person', s)); return; }
+    // "factum (2nd decl., neuter)": the word, then its type.
+    const m = i === 0 ? s.match(/^([^()]+?)\s+\((.+)\)$/) : null;
+    if (m && !CUE_KINDS.some(([re]) => re.test(m[1]))) { out.push(el('span', { class: 'gm-k gm-k--word', lang: 'la', text: m[1] }), ' ', cueTag('type', `(${m[2]})`)); return; }
+    out.push(...cueWords(seg));
+  });
+  return out;
+}
+/** The colours' key, for the game's menus. */
+export const cueLegend = () => el('p', { class: 'gm-legend', 'aria-label': 'Colour key' },
+  ...[['word', 'word'], ['type', 'declension / conjugation'], ['case', 'case'], ['person', 'person'], ['number', 'number'], ['tense', 'tense'], ['mood', 'mood'], ['voice', 'voice'], ['gender', 'gender']].map(([k, t]) => cueTag(k, t)));
+
 /* ---------------------------------------------------------------- the game */
 export const MODES = [
   ['type', 'Type it', 'Type each form.'],
@@ -103,7 +158,9 @@ export function byGroup(xs) {
   const order = new Map();
   for (const x of xs) if (!order.has(x.group ?? null)) order.set(x.group ?? null, order.size);
   const voice = (x) => (x?.form && typeof x.form === 'object' && x.form.voice === 'pass' ? 1 : 0);
-  return xs.map((x, i) => [x, i]).sort((a, b) => voice(a[0]) - voice(b[0]) || order.get(a[0].group ?? null) - order.get(b[0].group ?? null) || a[1] - b[1]).map(([x]) => x);
+  // Within a column, the cases in the order nominative, genitive, dative, ablative, accusative, vocative (2026-10-27).
+  const caseAt = (x) => { const c = x?.form && typeof x.form === 'object' ? x.form.case : null; const i = CASE_ORDER.indexOf(c); return i < 0 ? CASE_ORDER.length : i; };
+  return xs.map((x, i) => [x, i]).sort((a, b) => voice(a[0]) - voice(b[0]) || order.get(a[0].group ?? null) - order.get(b[0].group ?? null) || caseAt(a[0]) - caseAt(b[0]) || a[1] - b[1]).map(([x]) => x);
 }
 const shuffled = (xs) => { const a = [...xs]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -267,7 +324,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // and active, or to switch what is being practised"). `settings()` is the caller's: a node of choices. A button in it
   // starts something else, and closes this game first, unless it sits in a [data-stay] (a chip that only ticks a box).
   function titlesNode() {
-    const inner = [el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub', text: subtitle }) : null];
+    const inner = [el('p', { class: 'gm__title', lang: 'la', text: title }), subtitle ? el('p', { class: 'gm__sub' }, cueWords(subtitle)) : null];
     if (!settings && !chartList) return el('div', { class: 'gm__titles' }, inner);
     return el('button', { type: 'button', class: 'gm__titles gm__titlesbtn', 'aria-haspopup': 'dialog', title: 'Change what is played', 'aria-label': `${title}${subtitle ? ` — ${subtitle}` : ''}. Change what is played`, onclick: () => openWhat() },
       inner, el('span', { class: 'gm__titlesmore', 'aria-hidden': 'true', text: ' ⚙ change ▾' }));
@@ -283,7 +340,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const node = el('section', { class: 'gm__end gm__panel gm__setsp', role: 'region', 'aria-labelledby': 'gm-set-h' },
       el('div', { class: 'gm__sethead' }, el('h2', { id: 'gm-set-h', class: 'gm__endh', text: 'What you are playing' }),
         el('button', { type: 'button', class: 'btn btn--quiet', 'data-stay': '', onclick: () => node.resume() }, ended ? '← Back' : '← Back to the game')),
-      el('p', { class: 'gm__sub' }, el('span', { lang: 'la', text: title }), subtitle ? ` — ${subtitle}` : ''),
+      el('p', { class: 'gm__sub' }, el('span', { lang: 'la', text: title }), subtitle ? [' — ', cueWords(subtitle)] : ''),
+      cueLegend(),
       picker, more,
       el('div', { class: 'gm__acts' }, back));
     // A choice that starts something else leaves this game first (quietly: no grading of a half-played round).
@@ -306,6 +364,11 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const passBtn = (r) => (r.again ? showBtn : skipBtn);
   const howBtn = how ? el('button', { type: 'button', class: 'gm__how', 'aria-haspopup': 'dialog', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: () => openHow() }, '?') : null;
   const stage = el('div', { class: 'gm__stage' }, track);
+  // The table being built (2026-10-27: "on a computer, in game mode, a growing list of the words on the side so we can
+  // see a table being built with each word; colour them green or red whether correct or incorrect / skipped"): every
+  // form of the round in its column, filled in as it is answered — green right the first time, red missed, skipped or
+  // shown, … still to come. Beside the wheel on a wide screen only (panels.css).
+  const built = el('aside', { class: 'gm__built', 'aria-label': 'The table so far' });
   // A <dialog> shown modal: it stacks above the word popup (itself a modal dialog, in the top layer, where no
   // z-index reaches), keeps the focus inside, and Escape closes it.
   const root = el('dialog', { class: 'gm', 'aria-label': `Game: ${title}` },
@@ -314,7 +377,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock, activeTimer()),
       el('div', { class: 'gm__tools' }, studyBtn, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
       meter),
-    stage, live);
+    stage, built, live);
 
   /* ---- the rows: one per form, in play order; a redo is a row of its own */
   const rows = [];
@@ -322,7 +385,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const makeRow = (x, again = false) => {
     const slot = el('span', { class: 'gm__slot' });
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
-      el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label', text: x.cue }), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
+      el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label' }, cueNodes(x.cue)), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
       slot);
     return { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
   };
@@ -345,7 +408,22 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   const isDone = (r) => r.li.dataset.state === 'right' || r.li.dataset.state === 'shown' || r.li.dataset.state === 'skipped';
   const formNode = (x) => (splits(x) ? [el('span', { class: 'pt__stem', text: x.stem }), el('span', { class: 'pt__ending', text: x.ending })] : [x.answers[0]]);
+  const paintBuilt = () => {
+    const groups = new Map();
+    for (const x of base) { const g = x.group ?? ''; if (!groups.has(g)) groups.set(g, []); groups.get(g).push(x); }
+    const answered = (x) => rows.some((r) => r.x === x && isDone(r) && r.li.dataset.state !== 'skipped');
+    const short = (x) => { const parts = String(x.cue ?? '').split(' · '); return (x.col && parts.length > 1 && parts[parts.length - 1] === x.col ? parts.slice(0, -1) : parts).join(' · '); };
+    built.replaceChildren(el('p', { class: 'gm__builth', text: 'The table so far' }),
+      ...[...groups.values()].map((xs) => el('div', { class: 'gm__builtg' }, xs[0].col ? el('p', { class: 'gm__builtc' }, cueWords(xs[0].col)) : null,
+        el('ol', { class: 'gm__builtl' }, xs.map((x) => {
+          const done = answered(x);
+          const st = firstMiss.has(x.key) ? 'miss' : done ? 'right' : 'todo';
+          return el('li', { class: `gm__builtr is-${st}`, title: st === 'right' ? 'Right the first time' : st === 'miss' ? 'Missed, skipped or shown' : 'Still to come' },
+            el('span', { class: 'gm__builtq' }, cueNodes(short(x))), el('span', { class: 'gm__builtf', lang: 'la', text: done ? x.answers[0] : '…' }));
+        })))));
+  };
   const paintStats = () => {
+    paintBuilt();
     const answered = rows.filter(isDone).length;
     progress.textContent = `${Math.min(at + 1, rows.length)} / ${rows.length}`;
     meterFill.style.width = `${Math.round((answered / rows.length) * 100)}%`;   // how many are answered: the wheel can be turned either way
@@ -696,7 +774,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const node = el('section', { class: 'gm__end gm__panel', role: 'region', 'aria-labelledby': 'gm-rev-h' },
       el('h2', { id: 'gm-rev-h', class: 'gm__endh', text: `The ${misses.length} you missed so far` }),
       el('ul', { class: 'gm__revlist' }, misses.map((x) => el('li', {},
-        el('span', { class: 'gm__cue' }, el('span', { class: 'gm__label', text: x.cue }), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
+        el('span', { class: 'gm__cue' }, el('span', { class: 'gm__label' }, cueNodes(x.cue)), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
         el('span', { class: 'gm__form', lang: 'la' }, formNode(x))))),
       el('div', { class: 'gm__acts' }, goOn, el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Quit the game')));
     openPanel(node, goOn);
@@ -723,7 +801,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const goOn = el('button', { type: 'button', class: 'btn btn--primary', onclick: () => node.resume() }, 'Back to it');
     const node = el('section', { class: 'gm__end gm__panel gm__howp', role: 'region', 'aria-labelledby': 'gm-how-h' },
       el('h2', { id: 'gm-how-h', class: 'gm__endh', text: 'How it’s made' }),
-      el('p', { class: 'gm__howcue' }, el('span', { class: 'gm__label', text: r.x.cue }), r.x.en ? el('span', { class: 'gm__en', text: r.x.en }) : null),
+      el('p', { class: 'gm__howcue' }, el('span', { class: 'gm__label' }, cueNodes(r.x.cue)), r.x.en ? el('span', { class: 'gm__en', text: r.x.en }) : null),
       ruleCard(card, { open: true, heading: 'For this word' }),
       el('div', { class: 'gm__acts' }, goOn));
     node.keep = true;
@@ -838,7 +916,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         el('div', {}, el('dt', { text: 'Longest streak' }), el('dd', { text: String(bestStreak) })),
         el('div', {}, el('dt', { text: 'Time' }), el('dd', { text: mmss(secs) }))),
       misses.length ? el('div', { class: 'gm__misses' }, el('p', { class: 'gm__sub', text: 'Missed on the first try:' }),
-        el('ul', {}, misses.map((x) => el('li', {}, el('span', { class: 'gm__label', text: x.cue }), ' ', el('span', { class: 'gm__form', lang: 'la' }, formNode(x)))))) : null,
+        el('ul', {}, misses.map((x) => el('li', {}, el('span', { class: 'gm__label' }, cueNodes(x.cue)), ' ', el('span', { class: 'gm__form', lang: 'la' }, formNode(x)))))) : null,
       acts,
       // The end of the line (the last word, nothing after it): the skills to go to next — on the path, under it, beside it.
       // …and always the other ways on (2026-10-23: "they can also go to the next skill/part OR the recommendations"):
