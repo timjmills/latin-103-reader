@@ -507,7 +507,9 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
     return playTable({ title: game.title ?? '', subtitle: [game.subtitle, tested].filter(Boolean).join(' · '), items, id: gid, onNext: game.onNext ?? null, nextLabel: game.nextLabel, onClose: paintPlayMiss, rule,
       // The charts: the ones this game plays selected, every other one a choice away (the bar, the start, the end).
       charts: { list: chartList(), on: [...new Set(items.map((g) => g.group))], play: (ids) => play(null, new Set(ids)) },
-      how: game.whole ? (it) => formRule(game.whole, it.form) : null, countKey: game.countKey ?? null, onDone: game.onDone ?? null, suggest: game.suggest ?? null });
+      how: game.whole ? (it) => formRule(game.whole, it.form) : null, countKey: game.countKey ?? null, onDone: game.onDone ?? null, suggest: game.suggest ?? null,
+      tables: gameExtras.tables && game.entry ? (one) => gameExtras.tables((one ? [one] : items).map((x) => ({ ...x, entry: game.entry }))) : null,
+      context: gameExtras.context && game.entry ? (cards) => gameExtras.context(cards, game.entry) : null });
   };
   playBtn.addEventListener('click', () => play());
   playMissBtn.addEventListener('click', () => play(new Set(savedMisses(gameId()))));
@@ -791,8 +793,16 @@ const CASE_ROWS = ['nom', 'gen', 'dat', 'abl', 'acc', 'voc', 'loc'];
 function caseOrdered(p) {
   const rank = (r) => { const c = (r.cells ?? []).find((x) => x?.key?.case)?.key.case; const i = CASE_ROWS.indexOf(c); return i < 0 ? CASE_ROWS.length : i; };
   if (!(p.sections ?? []).some((s) => (s.rows ?? []).some((r) => rank(r) < CASE_ROWS.length))) return p;
-  return { ...p, sections: p.sections.map((s) => ({ ...s, rows: (s.rows ?? []).map((r, i) => [r, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([r]) => r) })) };
+  const out = { ...p, sections: p.sections.map((s) => ({ ...s, rows: (s.rows ?? []).map((r, i) => [r, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([r]) => r) })) };
+  // The table's word is not enumerable (paradigms.js), so the spread drops it: carry it over the same way.
+  if (p.entry) Object.defineProperty(out, 'entry', { value: p.entry, enumerable: false, configurable: true });
+  return out;
 }
+
+// What a table's own game shows beside its forms, given by the Grammar section (ui.js): the complete tables, and a
+// sentence that uses a form just played. `(cards, entry)`; null when the section is not loaded.
+let gameExtras = {};
+export function setParadigmGameExtras(x) { gameExtras = x ?? {}; }
 
 export function renderParadigm(p, opts = {}) {
   if (!p) return null;
@@ -843,7 +853,7 @@ export function renderParadigm(p, opts = {}) {
     : focused;
   if (rule) details.append(ruleCard(rule, { open: !!opts.ruleFor && focused !== whole, heading: !focused ? 'The rule' : focused !== whole ? 'How this type makes it' : 'How it’s made' }));
   if (practise) details.append(...practiseControls(details, { sheet, chapter: opts.chapter, id: p.entry ? `${p.entry.h}|${p.title ?? ''}` : null, preset: typeof opts.preset === 'function' ? opts.preset : null,
-    game: { title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', kind: String(p.title ?? '').split(' · ').slice(1).join(' · '), onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole, countKey: opts.countKey ?? null, onDone: opts.gameDone ?? null, suggest: opts.gameSuggest ?? null } }));
+    game: { entry: p.entry ?? null, title: p.entry?.lemma ?? p.title ?? '', subtitle: opts.gameSubtitle ?? '', kind: String(p.title ?? '').split(' · ').slice(1).join(' · '), onNext: opts.gameNext ?? null, nextLabel: opts.gameNextLabel, rule, whole, countKey: opts.countKey ?? null, onDone: opts.gameDone ?? null, suggest: opts.gameSuggest ?? null } }));
   (p.sections ?? []).forEach((s, si) => {
     if (only && !(s.rows ?? []).some((r) => r.cells.some(asked))) return;
     // Three or more value columns (adjectives: m / f / n): the tighter, one-step-smaller layout (panels.css .pt--wide).

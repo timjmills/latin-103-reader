@@ -882,3 +882,10 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__tablesin .paradigm { margin-bottom: var(--s-3); }
 .gm__tablesin .paradigm__summary { font-weight: 700; }
 .gm__tablesin.is-one .pt__cell.is-focus { outline: 3px solid var(--rubric); outline-offset: -3px; font-weight: 700; }   /* the ? card: this form */
+
+/* A form just played, in a sentence (ui.js inContext). */
+.gm__context { margin: var(--s-2) 0; padding: var(--s-3); border-radius: 0.8rem; background: var(--bg-raised); box-shadow: 0 0 0 2px color-mix(in srgb, var(--gm-a) 25%, transparent); }
+.gm__ctx-la { margin: var(--s-1) 0; font-family: var(--face-reading); font-size: 1.25rem; line-height: 1.5; }
+.gm__ctx-hit { padding: 0 0.15em; border-radius: 0.25em; background: #fef3c7; color: #92400e; font-weight: 700; }
+.gm__ctx-what { margin: var(--s-1) 0; font-size: var(--ui-sm); color: var(--ink-2); }
+.gm__ctx-en { margin: var(--s-1) 0 0; font-style: italic; color: var(--ink-2); }
