@@ -25,7 +25,8 @@ import { appliesTo, exampleOf } from './applies.js';
 import { withPassive } from './voices.js';
 import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
-import { practised, notePractised, timesText, setSyncedCounts, bestOf } from '../practised.js';
+import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday } from '../practised.js';
+import { planToday, DEFAULT_PLAN, isoDay } from './plan.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -4052,6 +4053,82 @@ export function createUI(ctx) {
     return h('div', { class: 'g-find' }, h('label', { class: 'g-find__label', for: 'g-find', text: 'Find a skill or a table' }), input, count, results);
   }
   /** Today (§3.2): what to do now — the plan, what is in progress, this chapter, the next on the path. */
+  /**
+   * **The plan to 15 December** (2026-10-27: "I have until December 15 to master this grammar material only — help me
+   * design a plan and work it into the program"; all 88 skills and their tables, 45–60 minutes a day, six days a week):
+   * learn every skill by 24 November (grammar/plan.js spreads what is left over the days left), then master them all by
+   * the goal. New This Week opens on it: where you stand, whether you are on pace, and today's session as a checklist —
+   * review, today's new skills, the weakest table, a starred one — with one ▶ that starts the next thing not yet done.
+   * The plan is kept in the settings (settings.grammar.plan), so every device follows the same one.
+   */
+  const REST_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const planOf = () => ({ ...DEFAULT_PLAN, ...(ctx.settings?.grammar?.plan ?? {}) });
+  const planOrder = () => thePath().order.filter((id) => skills.has(id) && !skills.get(id).set);
+  const learntSet = (order) => new Set(order.filter((id) => inRotation(stateOf(id))));
+  function ensurePlan() {
+    const p = ctx.settings?.grammar?.plan;
+    if (p?.start) return;
+    const order = planOrder();
+    ctx.savePrefs?.({ plan: { ...DEFAULT_PLAN, ...(p ?? {}), start: isoDay(), startDone: learntSet(order).size } });
+  }
+  const planDay = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); };
+  /** The weakest table of what is learnt so far: the least typed, then the least practised. */
+  function weakestTable(learned) {
+    const p = thePath();
+    const lastAt = Math.max(-1, ...[...learned].map((id) => p.of(id)));
+    const tables = p.steps.filter((st) => st.kind === 'table' && (lastAt < 0 || p.steps.indexOf(st) <= p.steps.findIndex((x) => x.kind === 'skill' && p.of(x.id) === lastAt) + 1)).map((st) => st.id);
+    const pool = tables.length ? tables : p.steps.filter((st) => st.kind === 'table').slice(0, 3).map((st) => st.id);
+    const score = (t) => { const { done, total } = tableTyped(t); return (total ? done / total : 0) * 100 + practised(`table:${t}`); };
+    return pool.sort((a, b) => score(a) - score(b))[0] ?? null;
+  }
+  function planSteps() {
+    const order = planOrder();
+    const learned = learntSet(order);
+    const today = planToday({ order, learned, today: isoDay(), plan: planOf() });
+    const steps = [];
+    const r = reviewItems();
+    if (r.n || today.kind !== 'rest') steps.push({ key: 'review', label: r.n ? `Review what is due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: nothing due', done: !r.n, go: () => openReview() });
+    // Everything the day needs, here (2026-10-27: "have it all there in the day, what I need to practise, so I don't need
+    // to go looking around"): each new skill learnt, then its forms played on the wheel.
+    for (const id of today.newToday) {
+      steps.push({ key: `learn:${id}`, label: `Learn: ${titleOf(id)}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`), go: () => startSkill(id, 'learn') });
+      if (skills.get(id)?.paradigms?.length) steps.push({ key: `play:${id}`, label: `Play its forms: ${titleOf(id)}`, sub: 'on the wheel, Type it', done: practisedToday(`tablepart:${id}`), go: () => openGameSetup(id) });
+    }
+    if (today.kind === 'master') steps.push({ key: 'mixed', label: 'Mixed practice of everything learnt (about 20 min)', done: practisedToday('skill:'), go: () => goView('setup', {}) });
+    const wt = today.kind === 'rest' ? null : weakestTable(learned);
+    if (wt) steps.push({ key: `table:${wt}`, label: `A round of your weakest table: ${tableName(wt)}`, done: practisedToday(`table:${wt}`), go: () => { if (gameKept()) gameDrillOn(); render('catalogue', { table: wt, play: true }); } });
+    const st = starredList().find((k) => !practisedToday(k.startsWith('table:') ? k : `skill:${k.slice(6)}`));
+    if (st && today.kind !== 'rest') { const [kind, id] = st.split(/:(.*)/); steps.push({ key: `star:${st}`, label: `★ A starred one: ${starName(st)}`, done: false, go: () => (kind === 'table' ? render('catalogue', { table: id, play: true }) : goSkill(id)) }); }
+    return { today, steps };
+  }
+  function planCard() {
+    ensurePlan();
+    const { today, steps } = planSteps();
+    const p = today.plan;
+    const pct = today.total ? Math.round((today.done / today.total) * 100) : 0;
+    const statusText = { learnt: 'Every skill learnt — now master them all', ahead: `Ahead of the plan (${today.done} learnt; ${today.expected} due by today)`, behind: `Behind the plan by ${today.expected - today.done} — today has a few more to catch up`, 'on-track': 'On track' }[today.status];
+    const next = steps.find((x) => !x.done);
+    const phase = today.kind === 'learn' ? `Learning: ${today.newToday.length} new skill${today.newToday.length === 1 ? '' : 's'} today · ${today.learnDaysLeft} learning day${today.learnDaysLeft === 1 ? '' : 's'} left (to ${planDay(p.learnBy)})`
+      : today.kind === 'master' ? `Mastering: no new skills${today.newToday.length ? ` (but ${today.newToday.length} still to learn)` : ''} — review, mix, the weakest tables`
+        : today.kind === 'rest' ? `Rest day (${REST_DAYS[p.rest]}). Anything you do today is extra.`
+          : 'The goal date has passed — set a new one below.';
+    const settings = h('details', { class: 'g-plan__set' }, h('summary', { text: 'Change the plan' }),
+      h('label', {}, 'Master everything by ', h('input', { type: 'date', value: p.goal, onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), goal: e.target.value } }); draw(); } })),
+      h('label', {}, ' · learn every skill by ', h('input', { type: 'date', value: p.learnBy, onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), learnBy: e.target.value } }); draw(); } })),
+      h('label', {}, ' · rest day ', h('select', { onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), rest: Number(e.target.value) } }); draw(); } }, REST_DAYS.map((d, i) => h('option', { value: String(i), selected: i === Number(p.rest) ? true : null, text: d })))));
+    return h('section', { class: 'g-plan', 'aria-labelledby': 'g-plan-h' },
+      h('h2', { id: 'g-plan-h', class: 'g-h2', text: `🎯 Master all ${today.total} skills by ${planDay(p.goal)}` }),
+      h('p', { class: 'g-plan__meta' }, `${today.daysLeft} study day${today.daysLeft === 1 ? '' : 's'} left · 45–60 min a day · rest: ${REST_DAYS[p.rest]}`),
+      h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
+      h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · `, h('b', { text: statusText })),
+      h('p', { class: 'g-plan__phase', text: phase }),
+      h('h3', { class: 'g-plan__h3', text: `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}` }),
+      next ? btn(playLabel(`Today's session: ${next.label.replace(/^Learn: /, 'learn ')}`), { onclick: () => next.go() }, 'btn btn--primary g-play g-plan__go') : h('p', { class: 'g-plan__done', text: steps.length ? '✓ Done for today. Anything more is extra.' : '' }),
+      h('ol', { class: 'g-plan__steps' }, steps.map((x) => h('li', { class: x.done ? 'is-done' : '' },
+        h('span', { class: 'g-plan__tick', 'aria-hidden': 'true', text: x.done ? '✓' : '○' }),
+        btn([x.label, x.sub ? h('span', { class: 'g-quiet', text: ` · ${x.sub}` }) : null], { onclick: () => x.go(), 'aria-label': `${x.label}${x.done ? ' (done)' : ''}` }, 'g-plan__step')))),
+      settings);
+  }
   async function renderToday() {
     const titles = await partTitles();
     try { await catalogueItemsOf(); } catch { /* table names fall back to their ids */ }
@@ -4082,6 +4159,7 @@ export function createUI(ctx) {
       h('p', { class: 'g-acts' }, btn('Choose your own practice…', { to: ['setup', {}], onclick: () => render('setup', {}) }, 'btn btn--quiet'), btn('📊 Practice chart', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet')));
     setBody(
       h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'New This Week' })),
+      planCard(),
       findBox(content),
       // ★ Starred first, the ones chosen to come back to (2026-10-27).
       starredList().length ? h('section', { class: 'g-review g-starred', 'aria-labelledby': 'g-starred-h' },

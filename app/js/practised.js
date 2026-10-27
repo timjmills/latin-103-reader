@@ -35,6 +35,24 @@ export function notePractised(keys) {
   for (const k of [].concat(keys ?? [])) { if (typeof k !== 'string' || !k) continue; m[k] = local(k) + 1; changed = true; }
   if (!changed) return;
   try { localStorage.setItem(KEY, JSON.stringify(m)); } catch { /* private mode: the count is kept for this visit only */ }
+  noteToday(keys);
+}
+
+// What was practised today (the plan's checklist, grammar/plan.js): the keys counted since midnight, this device.
+const DAY_KEY = 'l103.today';
+const dayNow = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const readDay = () => { try { const v = JSON.parse(localStorage.getItem(DAY_KEY) ?? 'null'); return v && v.date === dayNow() && Array.isArray(v.keys) ? v : { date: dayNow(), keys: [] }; } catch { return { date: dayNow(), keys: [] }; } };
+let dayMemo = null;
+function noteToday(keys) {
+  const v = readDay();
+  for (const k of [].concat(keys ?? [])) if (typeof k === 'string' && k && !v.keys.includes(k)) v.keys.push(k);
+  dayMemo = v;
+  try { localStorage.setItem(DAY_KEY, JSON.stringify(v)); } catch { /* this visit only */ }
+}
+/** Was `key` practised today? A prefix ending in ':' asks whether any key of that kind was. */
+export function practisedToday(key) {
+  const v = dayMemo && dayMemo.date === dayNow() ? dayMemo : (dayMemo = readDay());
+  return String(key).endsWith(':') ? v.keys.some((k) => k.startsWith(key)) : v.keys.includes(key);
 }
 
 /** "×3", or '' for never. */
