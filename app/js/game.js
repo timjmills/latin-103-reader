@@ -40,7 +40,7 @@
 import { activeTimer } from './activetime.js';
 import { cellRight } from './wordpanel.js';
 import { ruleCard } from './wordrule.js';
-import { notePractised } from './practised.js';
+import { notePractised, noteBest } from './practised.js';
 
 const LS = 'l103.game.';
 const read = (k, d) => { try { const v = localStorage.getItem(LS + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
@@ -883,6 +883,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     notePractised(countKey);   // the table's "×N" (practised.js): a game played to its end
     // Played to its end by typing (Type it, shuffled or not): marked too, so menus can show it green (2026-10-26:
     // "change the colour of a skill to a green background if it's been practised by the typing option").
+    noteBest(countKey, rung(mode, shuffle) + 1);   // the hardest way it was played to the end
     if (mode === 'type') notePractised([].concat(countKey ?? []).filter((k) => typeof k === 'string' && k).map((k) => `typed:${k}`));
     root.classList.add('gm--ended');
     clearInterval(timer);
