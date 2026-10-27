@@ -104,10 +104,18 @@ test('a step\'s check is a written sentence of the skill, never the library; a s
   }
   // The notice's sentences count as shown, so the ten does not lead with them.
   assert.ok(draw.shown.has('dio-01') && draw.shown.has('dio-02'));
-  // purpose-clause step 1 words its own question.
+  // purpose-clause step 1 words its own label question; a skill with a blank to type is asked that instead
+  // (2026-10-27: typed, not labels), so the step's label wording is not printed over the blank.
   const pc = teachFor('purpose-clause');
   const pcDraw = createSkillDraw({ skill: SKILLS.get('purpose-clause'), steps: lessonOf('purpose-clause').teach, teachItems: pc, libraryItem: () => null });
-  assert.equal(pcDraw.stepItem(pcDraw.stepSlots[0]).prompt.question, 'What is lūdat doing here?');
+  const pcItem = pcDraw.stepItem(pcDraw.stepSlots[0]);
+  assert.equal(pcItem.kind, 'blank');
+  assert.equal(pcItem.input, 'type');
+  assert.match(pcItem.prompt.question, /^Fill the blank/);
+  // A skill with nothing typed keeps the step's own wording.
+  const noBlank = { ...SKILLS.get('purpose-clause'), kinds: ['recognise', 'parse'] };
+  const nbDraw = createSkillDraw({ skill: noBlank, steps: lessonOf('purpose-clause').teach, teachItems: pc, libraryItem: () => null });
+  assert.equal(nbDraw.stepItem(nbDraw.stepSlots[0]).prompt.question, 'What is lūdat doing here?');
 });
 
 test('A1: the ten draws unseen written sentences first, then short library sentences, then the rest; nothing repeats until both pools are spent', () => {

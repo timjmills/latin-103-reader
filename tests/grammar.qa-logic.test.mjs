@@ -312,7 +312,7 @@ test('M-4: every option of a blank carries the answer\'s own capital', () => {
   for (const skillId of ['nominative-subject', DIO, 'genitive-possession']) {
     const items = createItems({ units, lookup, paradigm, skills: SKILLS, storage: mem(), rand: () => 0.4 });
     for (let i = 0; i < 6; i++) {
-      const it = items.generate({ skill: skillId, kind: 'blank', stage: 1 });
+      const it = items.generate({ skill: skillId, kind: 'blank', stage: 1, choice: true });
       if (!it?.choices?.length) continue;
       const caps = it.choices.map((c) => /^\p{Lu}/u.test(c.label));
       assert.ok(caps.every(Boolean) || !caps.some(Boolean), `the four options of "${it.prompt.la}" share a shape: ${it.choices.map((c) => c.label).join(' / ')}`);

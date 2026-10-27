@@ -426,6 +426,7 @@ html[data-section="grammar"] #transport { z-index: var(--z-sticky); }
 .g-q:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
 .g-gloss { margin: calc(-1 * var(--s-2)) 0 0; color: var(--ink-2); font-size: var(--ui-md); }
 .g-gloss [lang="la"] { font-family: var(--face-reading); font-size: 1.05em; }
+.g-tags { margin: 0 0 var(--s-2); font-size: var(--ui-md); }
 .g-all-switch { margin-top: calc(-1 * var(--s-1)); min-height: 36px; }
 .g-all-switch .switch__text { font-size: var(--ui-sm); color: var(--ink-2); }
 .g-all { list-style: none; margin: calc(-1 * var(--s-2)) 0 0; padding: var(--s-2) var(--s-3); background: var(--bg-chrome); border-radius: var(--radius); display: grid; gap: 2px; font-size: var(--ui-sm); color: var(--ink-2); column-count: 1; }

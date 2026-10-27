@@ -287,7 +287,7 @@ test('blank: the sentence with the word blanked; macron-optional typed answer; c
   assert.ok(judge(it, it.target.text).correct);
   assert.ok(judge(it, normaliseAnswer(it.target.text)).correct, 'macrons optional');
   assert.ok(!judge(it, 'xyz').correct);
-  const it1 = items.generate({ skill: 'dative-indirect-object', kind: 'blank', stage: 1 });
+  const it1 = items.generate({ skill: 'dative-indirect-object', kind: 'blank', stage: 1, choice: true });
   assert.equal(it1.input, 'choice');
   assert.ok(it1.choices.length >= 2);
   assert.equal(it1.choices.filter((c) => c.correct).length, 1);
