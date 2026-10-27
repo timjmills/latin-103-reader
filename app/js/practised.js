@@ -36,6 +36,19 @@ export function notePractised(keys) {
   if (!changed) return;
   try { localStorage.setItem(KEY, JSON.stringify(m)); } catch { /* private mode: the count is kept for this visit only */ }
   noteToday(keys);
+  noteLast(keys);
+}
+
+// When each was last practised to the end, kept apart from the counts ('l103.practised.last'): a skill's green fades
+// when it has not been practised for weeks (grammar/ui.js masteryOf).
+const LAST_KEY = 'l103.practised.last';
+let lastMemo = null;
+const loadLast = () => { if (lastMemo) return lastMemo; try { const v = JSON.parse(localStorage.getItem(LAST_KEY) ?? '{}'); lastMemo = v && typeof v === 'object' && !Array.isArray(v) ? v : {}; } catch { lastMemo = {}; } return lastMemo; };
+function noteLast(keys) {
+  const m = loadLast();
+  const now = Date.now();
+  for (const k of [].concat(keys ?? [])) if (typeof k === 'string' && k) m[k] = now;
+  try { localStorage.setItem(LAST_KEY, JSON.stringify(m)); } catch { /* this visit only */ }
 }
 
 // What was practised today (the plan's checklist, grammar/plan.js): the keys counted since midnight, this device.
@@ -71,3 +84,6 @@ export function noteBest(keys, level) {
   try { localStorage.setItem(KEY, JSON.stringify(m)); } catch { /* this visit only */ }
 }
 export const bestOf = (key) => Number(load()[`best:${key}`]) || 0;
+
+/** Days since `key` was last practised to the end (Infinity when never, or before this was kept). */
+export const daysSince = (key, now = Date.now()) => { const t = Number(loadLast()[key]); return t > 0 ? (now - t) / 864e5 : Infinity; };

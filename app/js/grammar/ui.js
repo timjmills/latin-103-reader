@@ -25,7 +25,7 @@ import { appliesTo, exampleOf } from './applies.js';
 import { withPassive } from './voices.js';
 import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
-import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday } from '../practised.js';
+import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday, daysSince } from '../practised.js';
 import { planToday, DEFAULT_PLAN, isoDay } from './plan.js';
 import { missedForms, missedDue } from '../misses.js';
 import { practiceLog, needsPractice } from './practicelog.js';
@@ -2860,17 +2860,37 @@ export function createUI(ctx) {
    * typed; a skill or part: played, or typed in full), its strength the hardest way it was played (What is it? and
    * Choose faint, Flash more, Type it strong, shuffled strongest). Nothing when never practised.
    */
+  /**
+   * Green means mastered (2026-10-27, the plan to 15 December): how well each is known, 0–1. A skill: its scheduler
+   * state (learning, practising, mastered — which already decays when not reviewed), and typed in a game. A table: its
+   * parts typed and the hardest way it was played, fading when not practised for two weeks, more after four. A lesson
+   * part: typed, or played. The green fill is as wide as this and as strong as the hardest way played.
+   */
+  const fade = (key) => { const d = daysSince(key); return d > 28 && d !== Infinity ? 0.5 : d > 14 && d !== Infinity ? 0.75 : 1; };
+  function masteryOf(kind, id) {
+    if (kind === 'skill') {
+      const m = { new: 0, learning: 0.25, lapsed: 0.3, practising: 0.6, mastered: 0.9 }[stateOf(id).state] ?? 0;
+      return Math.min(1, m + (typedAttr('skill', id) === 'true' ? 0.1 : 0));
+    }
+    if (kind === 'table') {
+      if (!practised(`table:${id}`) && typedAttr('table', id) == null) return 0;
+      const { done, total } = tableTyped(id);
+      return Math.min(1, ((total ? done / total : 0) * 0.7 + (bestOf(`table:${id}`) / 5) * 0.3) * fade(`table:${id}`)) || 0.1;
+    }
+    const played = practised(`part:${id}`) > 0;
+    return (typedAttr('part', id) === 'true' ? 1 : played ? 0.5 : 0) * fade(`part:${id}`);
+  }
   const doneMark = (kind, id) => {
     const keys = kind === 'table' ? [`table:${id}`] : kind === 'part' ? [`part:${id}`] : [`skill:${id}`, `tablepart:${id}`];
+    const m = masteryOf(kind, id);
     const played = keys.some((k) => practised(k) > 0);
-    const typed = typedAttr(kind, id);
-    if (!played && !typed) return {};
+    if (!m && !played) return {};
     const best = Math.max(0, ...keys.map(bestOf));
-    let frac = typed === 'true' ? 1 : 0.4;
-    if (kind === 'table') { const { done, total } = tableTyped(id); frac = Math.max(played ? 0.25 : 0, total ? done / total : 0); }
+    const typed = typedAttr(kind, id);
     const alpha = [0.14, 0.16, 0.18, 0.24, 0.34, 0.45][best] ?? 0.14;
+    const pct = Math.round(Math.max(m, 0.08) * 100);
     const how = ['practised', 'played: What is it?', 'played: Choose', 'played: Flash', 'played: Type it', 'played: Type it, shuffled'][best];
-    return { 'data-done': '', style: `--done:${Math.round(Math.max(frac, 0.12) * 100)}%;--done-a:${Math.max(alpha, typed ? 0.3 : 0)}`, 'data-done-how': how };
+    return { 'data-done': '', style: `--done:${pct}%;--done-a:${Math.max(alpha, typed ? 0.3 : 0, m >= 0.9 ? 0.4 : 0)}`, 'data-done-how': `${Math.round(m * 100)}% mastered · ${how}`, title: `${Math.round(m * 100)}% mastered · ${how}` };
   };
   /** The cells of a table typed right, each marked. */
   const noteTypedCells = (t, cellIds) => { if (t) notePractised([...new Set(cellIds)].filter(Boolean).map((c) => `typed:cell:${t}:${c}`)); };
@@ -4136,7 +4156,7 @@ export function createUI(ctx) {
       h('h2', { id: 'g-plan-h', class: 'g-h2', text: `🎯 Master all ${today.total} skills by ${planDay(p.goal)}` }),
       h('p', { class: 'g-plan__meta' }, `${today.daysLeft} study day${today.daysLeft === 1 ? '' : 's'} left · 45–60 min a day · rest: ${REST_DAYS[p.rest]}`),
       h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
-      h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · `, h('b', { text: statusText })),
+      h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · ${planOrder().filter((id) => stateOf(id).state === 'mastered').length} mastered · `, h('b', { text: statusText })),
       h('p', { class: 'g-plan__phase', text: phase }),
       h('h3', { class: 'g-plan__h3', text: `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}` }),
       next ? btn(playLabel(`Today's session: ${next.label.replace(/^Learn: /, 'learn ')}`), { onclick: () => next.go() }, 'btn btn--primary g-play g-plan__go') : h('p', { class: 'g-plan__done', text: steps.length ? '✓ Done for today. Anything more is extra.' : '' }),
