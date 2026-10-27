@@ -1738,3 +1738,25 @@ html.g-game-open .g-side { z-index: 70; }
 .g-title .g-star { font-size: 0.8em; }
 @media (pointer: coarse) { .g-star { min-width: var(--tap); min-height: var(--tap); } }
 .g-starred__list { max-width: 40rem; }
+
+/* The plan to the goal date (ui.js planCard), first on New This Week. */
+.g-plan { margin: var(--s-3) 0 var(--s-5); padding: var(--s-4); border-radius: 1rem; background: var(--bg-raised); box-shadow: 0 0 0 2px color-mix(in srgb, #2e9e4f 35%, transparent); }
+.g-plan .g-h2 { margin-top: 0; }
+.g-plan__meta, .g-plan__phase { margin: var(--s-1) 0; color: var(--ink-2); font-size: var(--ui-sm); }
+.g-plan__bar { height: 0.7rem; margin: var(--s-2) 0; border-radius: 999px; background: color-mix(in srgb, var(--ink-3) 18%, transparent); overflow: hidden; }
+.g-plan__bar > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2e9e4f, #8bc34a); }
+.g-plan__status { margin: var(--s-1) 0; }
+.g-plan__status.is-behind b { color: var(--rubric-ink); }
+.g-plan__status.is-ahead b, .g-plan__status.is-learnt b { color: #1f7a3a; }
+.g-plan__h3 { margin: var(--s-3) 0 var(--s-2); font-size: 1rem; }
+.g-plan__go { margin-bottom: var(--s-2); }
+.g-plan__done { color: #1f7a3a; font-weight: 700; }
+.g-plan__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-1); }
+.g-plan__steps li { display: flex; align-items: center; gap: var(--s-2); }
+.g-plan__tick { width: 1.4em; text-align: center; font-weight: 700; color: var(--ink-3); }
+.g-plan__steps li.is-done .g-plan__tick { color: #1f7a3a; }
+.g-plan__step { flex: 1; min-height: var(--tap, 40px); text-align: left; padding: 0.35em 0.7em; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--bg); color: var(--ink); font: inherit; cursor: pointer; }
+.g-plan__steps li.is-done .g-plan__step { background: color-mix(in srgb, #2e9e4f 12%, var(--bg)); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent); }
+.g-plan__set { margin-top: var(--s-3); font-size: var(--ui-sm); }
+.g-plan__set summary { cursor: pointer; color: var(--ink-2); }
+.g-plan__set label { display: inline-block; margin: var(--s-1) var(--s-2) 0 0; }
