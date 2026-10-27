@@ -1943,7 +1943,7 @@ export function createUI(ctx) {
       backButton(from),
       h('header', { class: 'g-head g-skillhead', 'data-area': areaOf(id) },
         h('p', { class: 'g-kicker' }, areaTag(id), `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'}`),
-        h('h1', { class: 'g-title', text: skill.title }),
+        h('h1', { class: 'g-title' }, skill.title, ' ', starBtn(`skill:${skill.id}`)),
         h('p', { class: 'g-lede' }, skill.plain, skill.latin_label ? [' · ', h('i', { lang: 'la', text: skill.latin_label })] : null),
         h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
           stateTipButton(skill.title, st, { shown: dueText(st) }), countBadge(`skill:${skill.id}`), ' ', partsMeter(skill.title, progressOf(skill, !!ctx.items)))),
@@ -1973,7 +1973,7 @@ export function createUI(ctx) {
   }
   const lessonHeader = (skill, st) => h('header', { class: 'g-head' },
     h('p', { class: 'g-kicker', text: `Cap. ${roman(skill.chapter)} · ${skill.course} week ${skill.week ?? '—'} · ${cap(skill.category.replace('-', ' '))}` }),
-    h('h1', { class: 'g-title', text: skill.title }),
+    h('h1', { class: 'g-title' }, skill.title, ' ', starBtn(`skill:${skill.id}`)),
     h('p', { class: 'g-lede' }, skill.plain, skill.latin_label ? [' · ', h('i', { lang: 'la', text: skill.latin_label })] : null),
     h('p', { class: 'g-skill__state' }, h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
       stateTipButton(skill.title, st, { shown: dueText(st) }), countBadge(`skill:${skill.id}`)),
@@ -2859,6 +2859,37 @@ export function createUI(ctx) {
   };
   /** The cells of a table typed right, each marked. */
   const noteTypedCells = (t, cellIds) => { if (t) notePractised([...new Set(cellIds)].filter(Boolean).map((c) => `typed:cell:${t}:${c}`)); };
+  /**
+   * Stars (2026-10-27: "I want to be able to star skills I feel I need to return to"): ☆ / ★ beside a skill's or a
+   * table's name — its page, its Course row, the side bar — and ★ Starred, the ones to come back to, in the side bar
+   * and on New This Week. Kept in the settings (settings.grammar.starred: 'skill:<id>' / 'table:<id>'), so every
+   * device has them; this device's copy stands in until they load.
+   */
+  const STAR_KEY = 'l103.starred';
+  const starredList = () => { const g = ctx.settings?.grammar?.starred; if (Array.isArray(g)) return g; try { const v = JSON.parse(localStorage.getItem(STAR_KEY) ?? '[]'); return Array.isArray(v) ? v : []; } catch { return []; } };
+  const isStarred = (k) => starredList().includes(k);
+  const starName = (k) => { const [kind, id] = String(k).split(/:(.*)/); return kind === 'table' ? tableName(id) : titleOf(id); };
+  function toggleStar(k) {
+    const list = starredList();
+    const next = list.includes(k) ? list.filter((x) => x !== k) : [...list, k];
+    try { localStorage.setItem(STAR_KEY, JSON.stringify(next)); } catch { /* the settings keep it */ }
+    ctx.savePrefs?.({ starred: next });
+    const on = next.includes(k);
+    for (const b of document.querySelectorAll(`.g-star[data-star="${CSS.escape(k)}"]`)) paintStar(b, k, on);
+    ctx.say?.(on ? `Starred: ${starName(k)}. It is in ★ Starred.` : `Unstarred: ${starName(k)}.`);
+    paintSide();
+    if (view.name === 'today') draw();
+  }
+  function paintStar(b, k, on = isStarred(k)) {
+    b.textContent = on ? '★' : '☆';
+    b.setAttribute('aria-pressed', String(on));
+    b.title = on ? `Starred to come back to — tap to unstar ${starName(k)}` : `Star ${starName(k)} to come back to it`;
+    b.setAttribute('aria-label', b.title);
+  }
+  const starBtn = (k) => { const b = h('button', { type: 'button', class: 'g-star', 'data-star': k, onclick: (e) => { e.preventDefault(); e.stopPropagation(); toggleStar(k); } }); paintStar(b, k); return b; };
+  /** The starred ones as rows that open with their options (▶ Play first). */
+  const starredRows = () => starredList().filter((k) => { const [kind, id] = String(k).split(/:(.*)/); return kind === 'table' ? !!catTables?.get?.(id) || true : skills.has(id); })
+    .map((k) => { const [kind, id] = String(k).split(/:(.*)/); return sideRow(kind, id, [`★ ${kind === 'table' ? '▦ ' : ''}${starName(k)} `, sideCount(`${kind}:${id}`)], { class: 'g-side__go', 'data-area': kind === 'table' ? tableArea(id) : areaOf(id), 'data-typed': typedAttr(kind, id), ...doneMark(kind, id) }); });
   /** The side bar's count: ×N, and a faint ×0 where nothing has been practised yet, so every row says (2026-10-26). */
   const sideCount = (key) => countBadge(key) ?? h('span', { class: 'g-count g-count--zero', title: 'Not practised yet', 'aria-label': 'not practised yet', text: '×0' });
   /** The "×N" key of a word's table (practised.js): its catalogue table, decl1, pres-act-1 … */
@@ -3689,7 +3720,8 @@ export function createUI(ctx) {
         chTables.map((st) => sideRow('table', st.id, [`▦ ${tableName(st.id)} `, sideCount(`table:${st.id}`)], { class: 'g-side__go', 'data-area': tableArea(st.id), 'data-typed': typedAttr('table', st.id), ...doneMark('table', st.id) }))),
       h('p', {}, btn('The whole chapter →', { onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))));
     // Where you are first (the lesson's parts, the strand), then this skill's or table's own options, then the rest.
-    const kids = [...progressionSections(sk, table, sec, nextUp), ...parts.slice(0, ctxCount), ...parts.slice(ctxCount)].filter(Boolean);
+    const starRows = starredRows();
+    const kids = [...progressionSections(sk, table, sec, nextUp), starRows.length ? sec(`★ Starred (${starRows.length})`, h('ul', { class: 'g-side__list' }, starRows)) : null, ...parts.slice(0, ctxCount), ...parts.slice(ctxCount)].filter(Boolean);
     if (!kids.length) return;
     const open = sideOpen();
     let at = sideAt();
@@ -3713,7 +3745,7 @@ export function createUI(ctx) {
       toggle.textContent = aside.classList.contains('is-collapsed') ? showText() : hideText();
       const bar = aside.querySelector('.g-side__bar'); if (bar) bar.replaceChildren(...(at === 'left' ? [toggle, move] : [move, toggle]));
     } }, 'g-side__toggle g-side__move');
-    aside.append(h('div', { class: 'g-side__bar' }, at === 'left' ? [toggle, move] : [move, toggle]), h('div', { class: 'g-side__in' }, sideFind(), here ? h('p', { class: 'g-kicker g-side__here', text: here }) : null, kids));
+    aside.append(h('div', { class: 'g-side__bar' }, at === 'left' ? [toggle, move] : [move, toggle]), h('div', { class: 'g-side__in' }, sideFind(), here ? h('p', { class: 'g-kicker g-side__here' }, here, ' ', sk ? starBtn(`skill:${sk.id}`) : table ? starBtn(`table:${table}`) : null) : null, kids));
     (root ?? document.body).append(aside);
     aside.scrollTop = keep.top;
     for (const x of aside.querySelectorAll('[data-keep]')) {
@@ -3921,7 +3953,7 @@ export function createUI(ctx) {
       h('span', { class: 'g-path__n', text: String(n ?? '') }),
       h('div', { class: 'g-path__main' },
         h('p', { class: 'g-path__t' }, areaTag(id), h('span', { class: 'g-dot', 'data-state': st.state, 'aria-hidden': 'true' }),
-          navEl({ class: 'g-link', to: ['lesson', { skill: id }], onclick: () => goView('lesson', { skill: id }) }, sk.title), ' ', capTag(id), ' ', practiceTag(id)),
+          navEl({ class: 'g-link', to: ['lesson', { skill: id }], onclick: () => goView('lesson', { skill: id }) }, sk.title), ' ', starBtn(`skill:${id}`), ' ', capTag(id), ' ', practiceTag(id)),
         h('div', { class: 'g-crow__ways' }, verbLinks(id, { level: false }), partNums(id, titles?.[id])),
         tableLinks(id)),
       h('div', { class: 'g-path__acts' }, mainButton(id, { cls: 'btn btn--primary g-play' })));
@@ -3931,7 +3963,7 @@ export function createUI(ctx) {
     const t = tables?.get?.(st.id) ?? catTables?.get?.(st.id);
     return h('li', { class: 'g-path__s g-path__s--table', id: `g-path-t-${st.id}`, 'data-area': tableArea(st.id), 'data-typed': typedAttr('table', st.id), ...doneMark('table', st.id) },
       h('span', { class: 'g-path__n', 'aria-hidden': 'true', text: '▦' }),
-      h('div', { class: 'g-path__main' }, h('p', { class: 'g-path__t' }, areaTag(st.id, { table: true }), 'The table: ', navEl({ class: 'g-link', to: tableTo(st.id, `t-${st.id}`), onclick: () => goTable(st.id, `t-${st.id}`) }, t?.label ?? st.id), t?.example ? h('span', { class: 'g-quiet', lang: 'la', text: ` · ${t.example}` }) : null, countBadge(`table:${st.id}`))),
+      h('div', { class: 'g-path__main' }, h('p', { class: 'g-path__t' }, areaTag(st.id, { table: true }), 'The table: ', navEl({ class: 'g-link', to: tableTo(st.id, `t-${st.id}`), onclick: () => goTable(st.id, `t-${st.id}`) }, t?.label ?? st.id), ' ', starBtn(`table:${st.id}`), t?.example ? h('span', { class: 'g-quiet', lang: 'la', text: ` · ${t.example}` }) : null, countBadge(`table:${st.id}`))),
       h('div', { class: 'g-path__acts' }, btn(gameKept() ? playLabel('Practise') : 'Practise', { to: tableTo(st.id, `t-${st.id}`), onclick: () => goTable(st.id, `t-${st.id}`) }, 'btn g-play')));
   };
   /**
@@ -4051,6 +4083,10 @@ export function createUI(ctx) {
     setBody(
       h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'New This Week' })),
       findBox(content),
+      // ★ Starred first, the ones chosen to come back to (2026-10-27).
+      starredList().length ? h('section', { class: 'g-review g-starred', 'aria-labelledby': 'g-starred-h' },
+        h('h2', { id: 'g-starred-h', class: 'g-h2', text: `★ Starred to come back to (${starredList().length})` }),
+        h('ul', { class: 'g-side__list g-starred__list' }, starredRows())) : null,
       content);
   }
   /**
@@ -5414,7 +5450,7 @@ export function createUI(ctx) {
       from?.view ? backButton(from) : btn('← Tables', { to: ['catalogue', { from }], onclick: () => render('catalogue', { from }) }, 'btn btn--quiet g-back'),
       h('header', { class: 'g-head' },
         h('p', { class: 'g-kicker', text: `${cap(t.part ?? '')} · ${CATEGORY_LABEL[t.category] ?? t.category}${t.chapter != null ? ` · from chapter ${roman(t.chapter)}` : ''}` }),
-        h('h1', { class: 'g-title' }, t.label, countBadge(`table:${t.id}`)),
+        h('h1', { class: 'g-title' }, t.label, ' ', starBtn(`table:${t.id}`), countBadge(`table:${t.id}`)),
         h('p', { class: 'g-lede' }, 'The model word: ', h('span', { lang: 'la', text: t.example }), lessonsLink(t) ? ['. It is ', lessonsLink(t)] : '.'),
         acts.length ? h('div', { class: 'g-acts' }, acts) : null),
       chooseNode, wordNode, filledNode, oneCellNode, axesNode, wholeNode);

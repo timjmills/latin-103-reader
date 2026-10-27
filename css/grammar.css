@@ -1731,3 +1731,10 @@ html.g-game-open .g-side { z-index: 70; }
 }
 /* How done: a green fill from the left, as wide as what is done, as strong as the hardest way played (ui.js doneMark). */
 .g-side__go[data-done], .g-crow[data-done], .g-path__s--table[data-done] { background-image: linear-gradient(90deg, rgb(46 158 79 / var(--done-a, 0.2)) 0, rgb(46 158 79 / calc(var(--done-a, 0.2) * 0.75)) var(--done, 30%), transparent calc(var(--done, 30%) + 10%)); }
+/* ☆ / ★: a skill or table starred to come back to (ui.js starBtn). */
+.g-star { display: inline-flex; align-items: center; justify-content: center; min-width: 1.6em; min-height: 1.6em; padding: 0 0.15em; border: 0; border-radius: 999px; background: none; color: var(--ink-3); font: inherit; font-size: 1.05em; line-height: 1; cursor: pointer; vertical-align: middle; }
+.g-star:hover { background: var(--bg-chrome); color: #b8860b; }
+.g-star[aria-pressed="true"] { color: #d4a017; }
+.g-title .g-star { font-size: 0.8em; }
+@media (pointer: coarse) { .g-star { min-width: var(--tap); min-height: var(--tap); } }
+.g-starred__list { max-width: 40rem; }
