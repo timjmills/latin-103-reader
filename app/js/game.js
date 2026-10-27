@@ -183,6 +183,8 @@ export function choicesFor(x, pool, text, right) {
 
 /** The ways to play, easiest first (2026-10-23: "typing is harder than flash, flash is harder than multiple choice";
  * "shuffled type is the hardest"). */
+/** The most forms in one round of a game. */
+export const ROUND = 16;
 export const LADDER = [['parse', false], ['choose', false], ['flash', false], ['type', false], ['type', true]];
 const rung = (mode, shuffle) => { const i = LADDER.findIndex(([m, sh]) => m === mode && sh === (mode === 'type' && !!shuffle)); return i < 0 ? LADDER.findIndex(([m]) => m === mode) : i; };
 export const ladderLabel = (mode, shuffle) => `${MODES.find(([k]) => k === mode)?.[1] ?? mode}${mode === 'type' && shuffle ? ', shuffled' : ''}`;
@@ -200,10 +202,30 @@ export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
 export const playWay = () => { const mode = modeOf(read('mode', 'type')); const shuffle = mode === 'type' && !!read('shuffle', false); return { mode, shuffle, label: ladderLabel(mode, shuffle) }; };
 export function setPlayWay({ mode, shuffle = false }) { write('mode', modeOf(mode)); write('shuffle', !!shuffle); }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null, study = null, tables = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null, study = null, tables = null, round = 0 } = {}) {
   // In order, a column at a time (2026-10-23: "unless it's on shuffle have all the active first then all the passive"):
   // each group's forms together, the groups in the order they first come, the forms in each as given.
-  const base = byGroup(items.filter((x) => x && x.answers?.length));
+  // Rounds of at most ROUND forms (2026-10-27: "rounds each with 16 words at most, because practising all these words
+  // would be too much; then you can play another round, or continue with what you practised but harder"): the
+  // columns kept whole where they fit (six persons, six cases), a longer column split; the end offers the next round.
+  const everyForm = byGroup(items.filter((x) => x && x.answers?.length));
+  const rounds = [];
+  {
+    const groups = [];
+    for (const x of everyForm) { const g = groups[groups.length - 1]; if (g && g.key === (x.group ?? null)) g.xs.push(x); else groups.push({ key: x.group ?? null, xs: [x] }); }
+    let cur = [];
+    for (const { xs } of groups) {
+      for (let i = 0; i < xs.length; i += ROUND) {
+        const part = xs.slice(i, i + ROUND);
+        if (cur.length && cur.length + part.length > ROUND) { rounds.push(cur); cur = []; }
+        cur.push(...part);
+      }
+    }
+    if (cur.length) rounds.push(cur);
+  }
+  const roundAt = Math.min(Math.max(0, round), Math.max(0, rounds.length - 1));
+  const base = rounds[roundAt] ?? everyForm;
+  const lastRound = roundAt >= rounds.length - 1;
   if (!base.length) return null;
   const opener = document.activeElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -425,7 +447,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const paintStats = () => {
     paintBuilt();
     const answered = rows.filter(isDone).length;
-    progress.textContent = `${Math.min(at + 1, rows.length)} / ${rows.length}`;
+    progress.textContent = `${rounds.length > 1 ? `Round ${roundAt + 1}/${rounds.length} · ` : ''}${Math.min(at + 1, rows.length)} / ${rows.length}`;
     meterFill.style.width = `${Math.round((answered / rows.length) * 100)}%`;   // how many are answered: the wheel can be turned either way
     streakEl.textContent = streak >= 2 ? `🔥 ${streak}` : '';
     scoreEl.textContent = `⭐ ${score}`;
@@ -879,12 +901,14 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   function finish() {
     ended = true;
     // A caller playing its own boxes (a lesson's chart, ui.js) is told which were missed on the first try.
-    try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown), typed: mode === 'type' }); } catch (e) { console.warn('[game] onDone', e); }
-    notePractised(countKey);   // the table's "×N" (practised.js): a game played to its end
+    try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown), typed: mode === 'type', played: new Set(base.map((x) => x.key)), last: lastRound }); } catch (e) { console.warn('[game] onDone', e); }
+    // `countKey` may be a function of the forms this round played (a round credits only its own words' tables).
+    const roundKeys = typeof countKey === 'function' ? countKey(new Set(base.map((x) => x.key))) : countKey;
+    notePractised(roundKeys);   // the table's "×N" (practised.js): a game played to its end
     // Played to its end by typing (Type it, shuffled or not): marked too, so menus can show it green (2026-10-26:
     // "change the colour of a skill to a green background if it's been practised by the typing option").
-    noteBest(countKey, rung(mode, shuffle) + 1);   // the hardest way it was played to the end
-    if (mode === 'type') notePractised([].concat(countKey ?? []).filter((k) => typeof k === 'string' && k).map((k) => `typed:${k}`));
+    noteBest(roundKeys, rung(mode, shuffle) + 1);   // the hardest way it was played to the end
+    if (mode === 'type') notePractised([].concat(roundKeys ?? []).filter((k) => typeof k === 'string' && k).map((k) => `typed:${k}`));
     root.classList.add('gm--ended');
     clearInterval(timer);
     sounds.done();
@@ -896,7 +920,10 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings, study, tables }); };
+    const again = (its, sub, gid, r = 0) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings, study, tables, round: r }); };
+    // This round, played again: every form handed in, at this round.
+    const thisRound = () => again(items, subtitle, id, roundAt);
+    const nextRound = !lastRound ? el('button', { type: 'button', class: 'btn btn--primary gm__nextround', onclick: again(items, subtitle, id, roundAt + 1) }, `Next round → (${roundAt + 2} of ${rounds.length}: ${rounds[roundAt + 1].length} forms)`) : null;
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
     const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;
@@ -906,19 +933,20 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       more = el('details', { class: 'gm__more' }, el('summary', { class: 'gm__moresum', text: `Choose another ${noun} (${chartList.length})` }), picker, el('div', { class: 'gm__acts' }, go));
     }
     const acts = el('div', { class: 'gm__acts' },
-      misses.length ? el('button', { type: 'button', class: 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
+      nextRound,
+      misses.length ? el('button', { type: 'button', class: nextRound ? 'btn' : 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
       nextChartBtn,
       onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
       // A game played inside something (a lesson's chart): the way back into it is the way on.
       continueLabel && !onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => close() }, continueLabel) : null,
-      el('button', { type: 'button', class: 'btn', onclick: again(base, subtitle, id) }, 'Play again'),
+      el('button', { type: 'button', class: 'btn', onclick: thisRound() }, rounds.length > 1 ? 'This round again' : 'Play again'),
       el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Close'));
     // Nothing goes on by itself (2026-10-23: "in game mode make it so the person must press a button to continue to
     // the next thing"); beside the way on, the same forms again a step harder ("OR that they practise the same thing
     // using a harder setting — typing is harder than flash, flash is harder than multiple choice"; "shuffled type is
     // the hardest"). The ladder: What is it? → Choose → Flash → Type it → Type it, shuffled.
     const up = harderThan(mode, shuffle);
-    if (up) acts.insertBefore(el('button', { type: 'button', class: 'btn gm__harder', onclick: () => { write('mode', up.mode); write('shuffle', up.shuffle); again(base, subtitle, id)(); } }, `Same again, harder: ${up.label} ↑`), acts.querySelector('button:nth-last-child(2)'));
+    if (up) acts.insertBefore(el('button', { type: 'button', class: 'btn gm__harder', onclick: () => { write('mode', up.mode); write('shuffle', up.shuffle); thisRound()(); } }, `${rounds.length > 1 ? 'This round' : 'Same again'}, harder: ${up.label} ↑`), acts.querySelector('button:nth-last-child(2)'));
     const stars = clean === base.length ? 3 : clean >= base.length * 0.7 ? 2 : clean > 0 ? 1 : 0;
     const card = el('section', { class: 'gm__end', 'aria-labelledby': 'gm-end-h' },
       el('p', { class: 'gm__stars', 'aria-label': `${stars} of 3 stars` }, [0, 1, 2].map((i) => el('span', { class: i < stars ? 'is-on' : '', 'aria-hidden': 'true', text: '★' }))),
@@ -947,6 +975,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   }
   function close(silent = false) {
     if (closed) return;
+    // Left before the end (2026-10-27: "credit should be given for anything played"): the forms answered so far are
+    // handed back as played, so their cells count as typed; the round itself is not counted as finished.
+    if (!ended) {
+      const answered = new Set(rows.filter((r) => r.li.dataset.state === 'right').map((r) => r.x.key));
+      if (answered.size) { try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown), typed: mode === 'type', played: answered, last: false, partial: true }); } catch (e) { console.warn('[game] onDone', e); } }
+    }
     closed = true;
     clearInterval(timer);
     window.removeEventListener('resize', place);

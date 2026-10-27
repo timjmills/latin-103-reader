@@ -3129,14 +3129,29 @@ export function createUI(ctx) {
       items: cards, rule: rule.steps?.length ? rule : null, ruleFirst: true,
       how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
       charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids, table }), noun: 'word' } : null,
-      countKey: [`tablepart:${id}`, ...words.map((e) => tableKey(e)).filter(Boolean)],
+      countKey: (played) => [`tablepart:${id}`, ...words.filter((e) => cards.some((c) => c.entry === e && played.has(c.key))).map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
       settings: gameSettings({ table, skill: id, word: words.length === 1 ? words[0].h : null }),
       tables: completedTables(cards),
       study: table ? studyLink('catalogue', { table }, `The ${tableName(table)} table, in lesson mode`) : studyLink('lesson', { skill: id }, 'This skill\'s lesson, in lesson mode'),
-      onDone: ({ firstMiss = new Set(), shown = new Set() } = {}) => {
+      onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
+        const inRound = (key) => !played || played.has(key);
+        // Typed: each form typed right is marked done in its table (credit for anything played, a round left early too).
+        if (typed) {
+          const byTable = new Map();
+          for (const c of cards) {
+            if (!inRound(c.key) || shown.has(c.key) || !c.form || !c.entry) continue;
+            const t = selectRules ? tableIdOf(c.entry, selectRules) : null;
+            const cid = t ? cellId(c.form, tableOf(c.entry)?.kind) : null;
+            if (t && cid) { if (!byTable.has(t)) byTable.set(t, []); byTable.get(t).push(cid); }
+          }
+          for (const [t, ids] of byTable) noteTypedCells(t, ids);
+        }
+        if (partial) return;
+        // A word's table game is graded for the words this round played (rounds of at most 16 forms).
         for (const e of words) {
           const k = `${e.h}|${e.pos}|`;
+          if (played && !cards.some((c) => String(c.key).startsWith(k) && played.has(c.key))) continue;
           const mine = (set) => new Set([...set].filter((x) => String(x).startsWith(k)));
           tableGameDone(sk, e)({ firstMiss: mine(firstMiss), shown: mine(shown) });
         }
@@ -7231,17 +7246,19 @@ export function createUI(ctx) {
         // (A lesson's Learn already counts its part on the part's first item, so only a part practised on its own adds one here;
         // a table session's end skips the table once the game has counted it, so one round is one ×.)
         countKey: [tableIdOfItem(item) ? `table:${tableIdOfItem(item)}` : null, view.name === 'part' && view.params?.skill ? `part:${view.params.skill}:${Number(view.params.step) || 0}` : null].filter(Boolean),
-        onDone: ({ firstMiss, shown = new Set(), typed = false }) => {
+        onDone: ({ firstMiss, shown = new Set(), typed = false, played = null, last = true }) => {
+          const inRound = (key) => !played || played.has(key);
           if (view.name === 'catalogue' && tableIdOfItem(item)) gameCountedTable = tableIdOfItem(item);
           // Typed in Type it: each cell typed (not shown) is marked done, its table's parts by them.
           // Every card typed counts, the whole column the game played (2026-10-27: "you should always be playing through the
           // 6 at least, with the differing persons and numbers"), not only the boxes ticked.
-          if (typed && chart.tableId) noteTypedCells(chart.tableId, [...[...boxOf].filter(([key]) => !shown.has(key)).map(([, i]) => chart.cells[i]?.cellId),
-            ...cards.filter((c) => !shown.has(c.key) && c.form && (!c.entry || !selectRules || (tableIdOf(c.entry, selectRules) ?? chart.tableId) === chart.tableId)).map((c) => cellId(c.form, chart.table?.kind))]);
-          for (const [key, i] of boxOf) { const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
+          if (typed && chart.tableId) noteTypedCells(chart.tableId, [...[...boxOf].filter(([key]) => inRound(key) && !shown.has(key)).map(([, i]) => chart.cells[i]?.cellId),
+            ...cards.filter((c) => inRound(c.key) && !shown.has(c.key) && c.form && (!c.entry || !selectRules || (tableIdOf(c.entry, selectRules) ?? chart.tableId) === chart.tableId)).map((c) => cellId(c.form, chart.table?.kind))]);
+          for (const [key, i] of boxOf) { if (!inRound(key)) continue; const inp = inputs.get(i); if (inp && !inp.disabled && !inp.readOnly) inp.value = firstMiss.has(key) ? '?' : chart.cells[i].answer[0]; }
           syncCheck();
-          // Graded now, not only when the game is closed: leaving by one of its end buttons used to skip this.
-          if (form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check);
+          // Graded now, not only when the game is closed: leaving by one of its end buttons used to skip this. In rounds,
+          // when the last is played: the chart is whole then.
+          if (last && form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check);
         },
         onClose: () => { if (form.isConnected && filledAny() && !check.disabled) form.requestSubmit(check); } });
     };
