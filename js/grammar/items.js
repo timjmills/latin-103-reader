@@ -207,6 +207,24 @@ export function featureLabel(key, value, opts = {}) {
 }
 
 /**
+ * The form a parse names, as the game's cue tags in its order: tense and mood, voice, person, case, number —
+ * `[{ kind, text }]`, `kind` the colour (case, number, person, tense, mood, voice). [] for nothing. Pure.
+ */
+export function parseTags(p) {
+  if (!p || typeof p !== 'object') return [];
+  const out = [];
+  if (p.tense || p.mood) {
+    const tm = p.tense && p.mood ? featureLabel('tense', `${p.tense} ${p.mood}`).name : TENSE_LABEL[p.tense] ?? MOOD_LABEL[p.mood] ?? '';
+    if (tm) out.push({ kind: 'tense', text: tm });
+  }
+  if (p.voice && VOICE_LABEL[p.voice] && p.mood !== 'ptc') out.push({ kind: 'voice', text: VOICE_LABEL[p.voice].name });
+  if (p.person) out.push({ kind: 'person', text: `${PERSON_WORD[p.person] ?? p.person}` });
+  if (p.case && CASE_LABEL[p.case]) out.push({ kind: 'case', text: CASE_LABEL[p.case].name });
+  if (p.number && NUMBER_LABEL[p.number]) out.push({ kind: 'number', text: NUMBER_LABEL[p.number].name });
+  return out;
+}
+
+/**
  * The word indexes of a multi-word focus in a sentence: a contiguous run
  * first (*Cane lātrante*), else each word on its own, in order (*habērem* …
  * *emerem*). Macrons and punctuation are ignored. [] when it is not there.
@@ -1249,8 +1267,9 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const { c, key: itemKey, wrapped, scope } = got;
     const answer = [c.token.text, stripMacrons(c.token.text)];
     const lab = c.value ? labelOf(k, c.value, skill) : { name: skill.title, plain: skill.plain };
-    const item = { ...base(skill, 'blank', stage, c, scope), key: itemKey, input: stage >= 2 ? 'type' : 'choice', repeat: wrapped,
-      prompt: { la: blankOut(c.unit.la, c.token), ...q(['Fill the blank with the right form of ', la(firstWord(c.entry.lemma))]), gloss: lemmaGloss(c.entry), hint: `${lab.name} — ${lab.plain}` },
+    // Always typed (2026-10-27: the multiple choice was the weak part); `tags` name the form wanted, the game's cue.
+    const item = { ...base(skill, 'blank', stage, c, scope), key: itemKey, input: opts.choice ? 'choice' : 'type', repeat: wrapped,
+      prompt: { la: blankOut(c.unit.la, c.token), ...q(['Fill the blank with the right form of ', la(firstWord(c.entry.lemma))]), gloss: lemmaGloss(c.entry), hint: `${lab.name} — ${lab.plain}`, tags: parseTags(c.parse) },
       answer, choices: null, confuse: confuseMap(skill, c, k), feedback: feedbackFor(skill, c, k) };
     if (item.input === 'choice') {
       const table = plainTable(c.entry);
@@ -1379,10 +1398,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
    * kinds are tried — those not in `avoid` (the neighbours' kinds) first — and
    * the item that comes back says which kind it is.
    */
-  function generate({ skill: skillId, kind, stage = 1, currentWeek = false, currentWeekN = null, chapter = null, chapterMode = 'own-first', full = false, tap = undefined, avoid = [], itemKey = null, unit = null, focus = null, maxWords = null, exclude = null } = {}) {
+  function generate({ skill: skillId, kind, stage = 1, choice = false, currentWeek = false, currentWeekN = null, chapter = null, chapterMode = 'own-first', full = false, tap = undefined, avoid = [], itemKey = null, unit = null, focus = null, maxWords = null, exclude = null } = {}) {
     const skill = typeof skillId === 'string' ? skillMap.get(skillId) : skillId;
     if (!skill || !skill.parse_filter) return null;
-    const opts = { currentWeek, currentWeekN, chapter, chapterMode, tap, itemKey, unit, focus, maxWords, exclude };
+    const opts = { currentWeek, currentWeekN, chapter, chapterMode, tap, itemKey, unit, focus, maxWords, exclude, choice };
     const fn = FNS[kind];
     if (!fn) return null;
     // A redo asks for one named item (GRAMMAR-CONTRACT.md "Redo what was wrong"). Neither of the two

@@ -5,7 +5,7 @@
 // and records the confusion pair when the chosen distractor names one.
 
 import { matchesForm, matchesFormExact, matchParse, matchFunction, parseFeatures, normaliseAnswer, featureChoices, workedFeature, la, partsText, SHORT_WORDS } from './items.js';
-import { applyAnswer, learnCriterion, passLearn, startLearning, addToPractice, requeue, buildSession, buildRedoSession, inRotation } from './scheduler.js';
+import { LEARN_KINDS, applyAnswer, learnCriterion, passLearn, startLearning, addToPractice, requeue, buildSession, buildRedoSession, inRotation } from './scheduler.js';
 import { matchQuestion } from './sets.js';
 import { chapterOfWeek } from '../chapters.js';
 import { orderMatches } from './stage3.js';
@@ -404,15 +404,18 @@ export function createSkillDraw({ skill, steps = [], teachItems = null, libraryI
       if (item) for (const b of item.chart?.cells ?? []) stepWords.add(b.word);
     }
     if (!item) {
-      const kind = check?.kind && check.kind !== 'chart' ? check.kind : 'recognise';
+      const asked = check?.kind && check.kind !== 'chart' ? check.kind : 'recognise';
+      const kind = typedKind(skill, asked);
       // The step's own wording decides which shape of `recognise` answers it (N-3): a question
       // that asks which word gets the tap shape, one that asks for a name gets the choices.
       // `normaliseCheck` settles that once, from `check.tap` or from `check.ask`.
-      item = teachItems.sentenceItem({ kind, sentence: check?.sentence ?? null, stage: 1, avoid: shown, tap: check?.tap ?? undefined });
+      // Typed instead of a label question: the step's own wording asked for a label, so it is not kept on a blank.
+      item = teachItems.sentenceItem({ kind, sentence: check?.sentence ?? null, stage: 1, avoid: shown, tap: kind === asked ? check?.tap ?? undefined : undefined });
+      if (!item && kind !== asked) item = teachItems.sentenceItem({ kind: asked, sentence: check?.sentence ?? null, stage: 1, avoid: shown, tap: check?.tap ?? undefined });
     }
     if (item) { noteShown(step.show?.kind === 'sentence' ? step.show.id : null); noteShown(step.worked?.sentence ?? null); noteShown(item.taught); for (const id of step.notice?.sentences ?? []) noteShown(id); }
     // A step may word its own question (`check.ask`): "What is lūdat doing here?" over the generator's stock line.
-    if (item && check?.ask && item.prompt) item = { ...item, prompt: { ...item.prompt, question: check.ask } };
+    if (item && check?.ask && item.prompt && item.kind !== 'blank') item = { ...item, prompt: { ...item.prompt, question: check.ask } };
     return item ? { ...item, step: slot.step } : null;
   };
 
@@ -506,6 +509,11 @@ export function createGeneratedTier({ skill, generated = null, rand = Math.rando
   return { item, get round() { return round; }, get size() { return ids.length; }, shown };
 }
 
+/** The tables before the sentences (2026-10-27: "put the sentences after the charts have been practiced"): stable. Pure. */
+export const chartsFirst = (slots) => [...slots.filter((x) => x.kind === 'chart'), ...slots.filter((x) => x.kind !== 'chart')];
+/** A label question (multiple choice, "what is it") is asked only when the skill has nothing typed to ask instead (2026-10-27). */
+export const typedKind = (skill, kind) => ((kind === 'recognise' || kind === 'parse') && (skill?.kinds ?? []).includes('blank') ? 'blank' : kind);
+
 /** The kinds of a skill in a sequence of `n` slots, no kind twice running. Pure but for `rand`. */
 export function kindSequence(skill, n, stageOf, rand = Math.random) {
   const kinds = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
@@ -517,7 +525,7 @@ export function kindSequence(skill, n, stageOf, rand = Math.random) {
     out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false });
     last = k;
   }
-  return out;
+  return chartsFirst(out);
 }
 
 /**
@@ -554,7 +562,7 @@ export function createStepPractice({ skill, steps = [], at = 0, gstore, teachIte
   const check = step.check ?? null;
   const chart = check?.kind === 'chart';
   const key = check?.key ?? (step.show?.kind === 'paradigm' ? step.show.key : null) ?? skill.paradigms?.[0] ?? null;
-  const kind = check?.kind && !chart ? check.kind : 'recognise';
+  const kind = typedKind(skill, check?.kind && !chart ? check.kind : 'recognise');
   const usedWords = new Set();
   const shown = new Set();
   let n = 0;
@@ -1039,7 +1047,7 @@ export function createLearn({ skill, gstore, items, teach = null, teachItems = n
   let rounds = 0;
   const kinds = skill.kinds?.length ? skill.kinds : ['recognise', 'chart', 'parse', 'blank'];
   // Recognition before recall (plan §3): the blocked ten mix stages 1–2 (typed parse and blank from stage 2).
-  const kindSeq = (n, stageOf) => { const out = []; let last = null; for (let i = 0; i < n; i++) { const pool = kinds.filter((k) => k !== last); const k = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))]; out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false }); last = k; } return out; };
+  const kindSeq = (n, stageOf) => { const out = []; let last = null; for (let i = 0; i < n; i++) { const pool = kinds.filter((k) => k !== last); const k = (pool.length ? pool : kinds)[Math.floor(rand() * (pool.length || kinds.length))]; out.push({ skill: skill.id, kind: k, stage: stageOf(k), currentWeek: false }); last = k; } return chartsFirst(out); };
   const libraryItem = (slot, opts = {}) => items.generate({ skill: skill.id, kind: slot.kind, stage: slot.stage, chapter: ceiling, chapterMode: 'ceiling', currentWeekN, match: isSet && phase === 'guided' ? false : undefined, ...opts });
   // A chapter set's "guided" phase walks the deck in batches, with feedback after each item; the blocked ten follow.
   const total = isSet ? Math.max(1, Number(skill.count) || 0) : LEARN_GUIDED;
@@ -1114,7 +1122,7 @@ export function createLearn({ skill, gstore, items, teach = null, teachItems = n
     /** After the blocked drill: the criterion over its attempts (a set has one kind, so the two-kinds rule does not apply to it). */
     async finishBlocked() {
       phase = 'result';
-      const c = learnCriterion(runner.log, isSet ? { kinds: 1 } : {});
+      const c = learnCriterion(runner.log, isSet ? { kinds: 1 } : { kinds: Math.min(LEARN_KINDS, new Set(kinds).size) });
       if (c.passed) await gstore.setState(passLearn(gstore.getState(skill.id) ?? skill.id));
       const missed = runner.log.filter((a) => !a.correct);
       return { ...c, missed, rounds };

@@ -14,7 +14,7 @@ import { isShelfWeek } from '../sync.js';
 import { tokenize, stripMacrons } from '../tokenize.js';
 import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js';
 import { PARTS, skillProgress } from './progress.js';
-import { decay, isDue, overdueRatio, newState, addToPractice, removeFromPractice, reviewFirst, inRotation, buildPairSession, stepList, normaliseLearnPlace, MAX_STEPS, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
+import { decay, isDue, overdueRatio, newState, addToPractice, applyAnswer, removeFromPractice, reviewFirst, inRotation, buildPairSession, stepList, normaliseLearnPlace, MAX_STEPS, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
 import { createLearn, createStepPractice, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judge, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
 import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, isWrittenKey, la, partsText } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATION_LABEL, mixGrid, normaliseMix, mixIn, mixHolds, filterMix, mixToggle, mixCounts, mixNote, mixTitle } from './sets.js';
@@ -1082,6 +1082,10 @@ export function createUI(ctx) {
   const { root, index, gstore, dict, par } = ctx;
   // The grammar skills and the chapter sets (questions-NN, vocab-NN[-rev], pensum-NN) as one map: the scheduler treats them alike.
   const skills = ctx.skills ?? index.skills;
+  // Typed, not labels (2026-10-27: "most of the multiple choice questions, tell what type of word it is questions …
+  // mostly not very good … the last is the best"): a skill with a table or a blank to type is asked those, and its
+  // multiple choice and "what is it" questions are dropped. A skill with nothing typed (metre, enclitics) keeps them.
+  for (const s of skills.values()) if (!s.set && (s.kinds ?? []).some((k) => k === 'blank' || k === 'chart')) s.kinds = s.kinds.filter((k) => k !== 'recognise' && k !== 'parse');
   const skillsIndex = { skills };
   /**
    * Is every word here one the dictionary can answer for? This is what decides
@@ -2943,13 +2947,39 @@ export function createUI(ctx) {
    * is a hint, as a chart's hinted cells are. Nothing is redrawn here: the game's own end screen is still open over
    * the page, and the next view drawn reads the log.
    */
-  const tableGameDone = (sk, e) => ({ firstMiss = new Set(), shown = new Set() } = {}) => {
+  const tableGameDone = (sk, e) => ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
     if (!sk?.id || !gstore?.addAttempt) return;
+    if (typed && !partial && gameCredit(sk, [e], { firstMiss, shown, played })) return;
     const table = tableKey(e)?.slice('table:'.length) ?? null;
     gstore.addAttempt({ skill: sk.id, kind: 'chart', item_key: '', mode: 'practice', correct: shown.size === 0, hinted: firstMiss.size > 0, self: false, partial: false,
       answer: 'the table, played as a game', expected: '', confused_with: null, ms: 0, at: new Date().toISOString(), meta: { uncounted: true, game: true, ...(table ? { table } : {}) } })
       .catch((err) => console.warn('[grammar] the game was not written down', err?.message || err));
   };
+  /**
+   * A **typed** game round counts towards the skill's mastery (2026-10-27: "I would like the game mode to also count
+   * towards lesson mastery as well if using the typing method"): one practice answer for the skill per round, through
+   * the same scheduler a lesson answer goes through — so a round before the skill is due grows it only a little, and
+   * only a due one is a spaced success towards "mastered". All typed right first time is right; at least half is
+   * right with help; less is wrong. Only a skill already in the rotation (learnt, or lapsed and coming back): Learn
+   * still decides when a skill joins it. Returns true when it was counted (the round is then logged once, counted).
+   */
+  function gameCredit(sk, entries, { firstMiss = new Set(), shown = new Set(), played = null } = {}) {
+    const st = sk?.id ? gstore?.getState?.(sk.id) : null;
+    if (!st || !(inRotation(st) || st.state === 'lapsed') || !gstore?.setState) return false;
+    const keys = played ? [...played] : [...new Set([...firstMiss, ...shown])];
+    if (!keys.length) return false;
+    const wrong = keys.filter((k) => firstMiss.has(k) || shown.has(k)).length;
+    const correct = wrong <= keys.length / 2;
+    const hinted = correct && wrong > 0;
+    const table = entries.map((e) => tableKey(e)?.slice('table:'.length)).find(Boolean) ?? null;
+    const now = Date.now();
+    gstore.addAttempt({ skill: sk.id, kind: 'chart', item_key: '', mode: 'practice', correct, hinted, self: false, partial: false,
+      answer: `the table, typed in the game (${keys.length - wrong} of ${keys.length} first time)`, expected: '', confused_with: null, ms: 0, at: new Date(now).toISOString(),
+      meta: { game: true, typed: true, ...(table ? { table } : {}) } })
+      .then(() => gstore.setState(applyAnswer(gstore.getState(sk.id) ?? st, { correct, hinted, now })))
+      .catch((err) => console.warn('[grammar] the game was not written down', err?.message || err));
+    return true;
+  }
   const tableIdOfItem = (item) => item?.chart?.tableId ?? (selectRules ? tableIdOf(item?.entry, selectRules) : null) ?? item?.entry?.h ?? null;
   /** The cells a skill teaches on a table: those its `paradigm_focus` names — never given (§12). */
   const taughtCellsOf = (item, skill) => {
@@ -3259,6 +3289,8 @@ export function createUI(ctx) {
           for (const [t, ids] of byTable) noteTypedCells(t, ids);
         }
         if (partial) return;
+        // A typed round counts once towards the skill's mastery (gameCredit); then each word is not logged again.
+        if (typed && gameCredit(sk, words, { firstMiss, shown, played })) return;
         // A word's table game is graded for the words this round played (rounds of at most 16 forms).
         for (const e of words) {
           const k = `${e.h}|${e.pos}|`;
@@ -6701,6 +6733,10 @@ export function createUI(ctx) {
         node.append(en);
       }
       node.append(question(item.prompt.questionParts ?? item.prompt.question));
+      // The form wanted, in the game's colours, until the skill reaches stage 3: then the sentence alone must say it.
+      if (item.kind === 'blank' && item.prompt.tags?.length && (Number(stateOf(item.skill)?.stage) || 1) < 3) {
+        node.append(h('p', { class: 'g-tags' }, h('span', { class: 'g-quiet', text: 'Wanted: ' }), ...item.prompt.tags.flatMap((t, i) => [i ? ' ' : '', h('span', { class: `gm-k gm-k--${t.kind}`, text: t.text })])));
+      }
       if (item.prompt.gloss) node.append(glossNode(item));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
       node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
