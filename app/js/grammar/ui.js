@@ -4596,7 +4596,7 @@ export function createUI(ctx) {
         h('ul', { class: 'g-chips' }, rf.map((r) => h('li', { class: 'g-chips__li' }, navEl({ class: 'g-chip', 'data-state': r.state, 'data-area': areaOf(r.skill), to: ['lesson', { skill: r.skill }], onclick: () => goView('lesson', { skill: r.skill }) }, titleOf(r.skill), h('span', { class: 'g-chip__state', text: ` · ${STATE_LABEL[r.state]}` })))))) : null,
       h('p', { class: 'g-acts' }, btn('Choose your own practice…', { to: ['setup', {}], onclick: () => render('setup', {}) }, 'btn btn--quiet'), btn('📊 Practice chart', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet')));
     setBody(
-      h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'New This Week' })),
+      h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'Daily Study Plan' })),
       planCard(),
       findBox(content),
       // ★ Starred first, the ones chosen to come back to (2026-10-27).
