@@ -2728,7 +2728,7 @@ export function createUI(ctx) {
     const g = todayRun();
     if (!g) { paintRunBar(); return; }
     if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
-    setTodayRun({ ...g, at: i });
+    setTodayRun({ ...g, at: i, ra0: activeSeconds().today });
     paintSide();
     const it = g.items[i];
     const next = { fn: () => runToday(i + 1), label: i + 1 < g.items.length ? `Next (${i + 2} of ${g.items.length}): ${g.items[i + 1].label} →` : 'Finish today\'s session ✓' };
@@ -2774,12 +2774,15 @@ export function createUI(ctx) {
       const left = key === 'review' || key === 'forms' || key === 'redo' ? Math.min(total, stepRounds(key)) : st?.done ? 0 : total;
       out.push({ key, at: i, label: key === 'review' ? 'Review the skills due' : key === 'forms' ? 'Forms you got wrong' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
     });
-    // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at.
-    const spent = Math.max(0, (activeSeconds().today - (g.active0 ?? 0)) / 60);
+    // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at. The round
+    // under way is left out of the pace and taken off its own part, so the time left falls as you play (2026-10-28).
+    const nowA = activeSeconds().today;
+    const inRound = g.ra0 != null ? Math.max(0, (nowA - g.ra0) / 60) : 0;
+    const spent = Math.max(0, (nowA - (g.active0 ?? 0)) / 60 - inRound);
     const reckoned = out.reduce((n, p) => n + p.done * roundMin(p.key), 0);
     const pace = reckoned >= 3 && spent >= 1 ? Math.min(3, Math.max(0.4, spent / reckoned)) : savedPace();
     if (reckoned >= 3 && spent >= 1) { try { localStorage.setItem(PACE_KEY, String(pace)); } catch { /* not kept */ } }
-    for (const p of out) p.mins = Math.round(p.left * roundMin(p.key) * pace);
+    for (const p of out) p.mins = p.left ? Math.max(1, Math.round(p.left * roundMin(p.key) * pace - (p.here ? inRound : 0))) : 0;
     return { parts: out, minsLeft: out.reduce((n, p) => n + p.mins, 0), done: out.reduce((n, p) => n + p.done, 0), total: out.reduce((n, p) => n + p.total, 0) };
   }
   /** Confetti once for each part finished (and for the whole plan). */
@@ -2791,6 +2794,22 @@ export function createUI(ctx) {
     setTodayRun({ ...todayRun(), cel: [...cel] });
     try { confetti(); } catch { /* no confetti */ }
   }
+  const partCount = (p) => (p.complete ? '✓ done' : `${p.total > 1 ? `${p.done}/${p.total} rounds` : '1 round'} · ${minsText(p.mins)}`);
+  /**
+   * The times, live (2026-10-28: "a dynamic time estimate"): every 30 seconds while today's plan runs, the minutes left
+   * in the side bar, the foot bar and the plan card are worked out again in place — nothing else is redrawn.
+   */
+  function planTick() {
+    const g = todayRun();
+    if (!g || document.hidden) return;
+    const rp = runParts(g);
+    const total = rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓';
+    document.querySelectorAll('[data-plan-min]').forEach((el) => { el.textContent = total; });
+    document.querySelectorAll('[data-plan-rounds]').forEach((el) => { el.textContent = `${rp.done} of ${rp.total} rounds · `; });
+    for (const p of rp.parts) document.querySelectorAll(`[data-plan-part="${CSS.escape(p.key)}"]`).forEach((el) => { el.textContent = partCount(p); el.closest('li')?.style.setProperty('--p', `${Math.round((p.done / p.total) * 100)}%`); });
+    celebrate(g, rp.parts);
+  }
+  setInterval(planTick, 30000);
   const minsText = (m) => (m <= 0 ? 'done' : m < 60 ? `~${m} min` : `~${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')}`);
   /** Is this view part of today's plan — entered through it? (2026-10-28: "the side bar should stay how it is if the
    *  skill was not entered through the plan for today menu"). The current step's skills, tables and views. */
@@ -2821,7 +2840,8 @@ export function createUI(ctx) {
     const cur = g.items[i];
     const again = cur?.t === 's' && (cur.key === 'redo' || cur.key === 'forms' || cur.key === 'mixed') && stepRounds(cur.key) > (cur.key === 'mixed' ? 99 : 0);
     bar.replaceChildren(...[
-      h('span', { class: 'g-runbar__t' }, h('b', { text: `Today's session (${g.mode === 'game' ? 'game' : 'lesson'} mode) · ${i + 1} of ${g.items.length}: ` }), g.items[i]?.label ?? ''),
+      h('span', { class: 'g-runbar__t' }, h('b', { text: `Today's session (${g.mode === 'game' ? 'game' : 'lesson'} mode) · ${i + 1} of ${g.items.length}: ` }), g.items[i]?.label ?? '',
+        h('span', { class: 'g-quiet' }, ' · ', h('span', { 'data-plan-min': '', text: ((m) => (m > 0 ? `${minsText(m)} left` : 'all done ✓'))(runParts(g).minsLeft) }))),
       again ? btn(`Another round (${stepRounds(cur.key)} left)`, { onclick: () => runToday(i) }, 'btn') : null,
       btn(i + 1 < g.items.length ? `Next: ${g.items[i + 1].label} →` : 'Finish ✓', { onclick: () => runToday(i + 1) }, 'btn btn--primary g-runbar__next'),
       btn('Stop', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet')].filter(Boolean));
@@ -4100,11 +4120,11 @@ export function createUI(ctx) {
       const rp = runParts(run);
       celebrate(run, rp.parts);
       planSec = (sec("Today's plan",
-        h('p', { class: 'g-side__planhead' }, `${rp.done} of ${rp.total} rounds · `, h('b', { text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
+        h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
         h('ol', { class: 'g-side__list g-side__plan' }, rp.parts.map((p) => h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
           h('button', { type: 'button', class: 'g-side__go', 'aria-current': p.here ? 'step' : null, onclick: () => runToday(p.at) },
             h('span', { text: `${p.complete ? '✓ ' : p.here ? '▶ ' : ''}${p.label}` }),
-            h('span', { class: 'g-count', text: p.complete ? '✓ done' : `${p.total > 1 ? `${p.done}/${p.total} rounds` : '1 round'} · ${minsText(p.mins)}` }))))),
+            h('span', { class: 'g-count', 'data-plan-part': p.key, text: partCount(p) }))))),
         btn('Stop the plan', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet g-side__btn')));
     }
     const nextUp = climbFrom(thePath(), null, (x) => !inRotation(stateOf(x)) && !skills.get(x)?.set, 1)[0] ?? null;
@@ -4553,7 +4573,8 @@ export function createUI(ctx) {
       h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
       h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · ${planOrder().filter((id) => stateOf(id).state === 'mastered').length} mastered · `, h('b', { text: statusText })),
       h('p', { class: 'g-plan__phase', text: phase }),
-      h('h3', { class: 'g-plan__h3', text: `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}${((m) => (m > 0 ? ` · ${minsText(m)} left` : ''))(planMinutes(steps))}` }),
+      h('h3', { class: 'g-plan__h3' }, `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}`,
+        ((m) => (m > 0 ? [' · ', h('span', todayRun() ? { 'data-plan-min': '', text: `${minsText(m)} left` } : { text: `${minsText(m)} left` })] : null))(planMinutes(steps))),
       next ? ((run) => h('div', { class: 'g-acts g-plan__gos' },
         run ? btn(playLabel(`Carry on today's session: ${run.at + 1} of ${run.items.length}`), { onclick: () => runToday(run.at) }, 'btn btn--primary g-play g-plan__go') : null,
         btn(playLabel("Play all of today's session (game mode)"), { onclick: () => startTodayRun('game') }, `btn ${run ? '' : 'btn--primary '}g-play g-plan__go`),
