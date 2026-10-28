@@ -2663,13 +2663,28 @@ export function createUI(ctx) {
       ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}),
       onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
         if (!typed || partial) return;
+        coverSkills(parts.map((p) => p.sk.id));
         for (const p of parts) { const pl = played ? mine(p, played) : null; if (pl && !pl.size) continue; gameCredit(p.sk, p.words, { firstMiss: mine(p, firstMiss), shown: mine(p, shown), played: pl }); }
       } });
     return true;
   }
   // Covered already (a round of the other kind, a lesson, a typed game — 2026-10-28: "if you do either one it counts
   // and moves on … if you have done sufficient enough to cover the review"): a skill no longer due is skipped.
-  const stillDue = (x) => (x === '#forms' ? !!reviewItems().forms : (isDue(stateOf(x)) || retestDue(retestList().filter((r) => r.skill === x)).length > 0));
+  const stillDue = (x) => (x === '#forms' ? !!reviewItems().forms : !coveredToday().has(x) && (isDue(stateOf(x)) || retestDue(retestList().filter((r) => r.skill === x)).length > 0));
+  /**
+   * Covered today (2026-10-28: "the rounds did not update when I finished round 1 … I did fully the first round"): a
+   * typed round finished on a skill counts it reviewed for the day, whatever the scheduler then makes of it — and its
+   * short re-test is done with, as a re-test sitting would leave it. A round finished in the plan: confetti.
+   */
+  const COVER_KEY = 'l103.plan.covered';
+  const coveredToday = () => { try { const v = JSON.parse(localStorage.getItem(COVER_KEY) ?? 'null'); return new Set(v?.day === isoDay() ? v.ids : []); } catch { return new Set(); } };
+  function coverSkills(ids) {
+    const set = coveredToday();
+    for (const id of ids) { set.add(id); clearRetest(id); }
+    try { localStorage.setItem(COVER_KEY, JSON.stringify({ day: isoDay(), ids: [...set] })); } catch { /* not kept */ }
+    const g = todayRun();
+    if (g) { setTodayRun({ ...g, lastDone: ids.map((x) => titleOf(x)).join(' + ') }); try { confetti(); } catch { /* no confetti */ } setTimeout(() => { paintSide(); planTick(); }, 300); }
+  }
   /** One review round: false when everything in it is covered already (nothing is played); `skip` when it cannot be. */
   function playReviewItem(raw, { next, round = '', skip }) {
     const id = Array.isArray(raw) ? (raw.filter(stillDue).length === 1 ? raw.filter(stillDue)[0] : raw.filter(stillDue)) : raw;
@@ -2845,7 +2860,7 @@ export function createUI(ctx) {
       // The part under way: done, or still to do and why (2026-10-28: "it should say if that thing just practised was
       // successfully done or if it needed to be still done").
       ((p) => (p ? h('p', { class: `g-planpanel__now ${p.complete ? 'is-done' : 'is-todo'}`, role: 'status' },
-        p.complete ? `✓ Done: ${p.label}` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? 'pass the Learn lesson (6 of the last 10 right)' : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
+        p.complete ? `✓ Done: ${p.label}` : g.lastDone && p.done ? `✓ Done: ${g.lastDone} · ${p.label}: ${p.done} of ${p.total} rounds done, ${p.left} to go` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? 'pass the Learn lesson (6 of the last 10 right)' : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
       h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
       h('div', { class: 'g-planpanel__bar', style: `--p:${rp.total ? Math.round((rp.done / rp.total) * 100) : 0}%`, 'aria-hidden': 'true' }),
       h('ol', { class: 'g-side__list g-side__plan' }, rp.parts.map((p) => h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
@@ -2929,8 +2944,9 @@ export function createUI(ctx) {
   }
   function reviewItems() {
     const now = Date.now();
-    const retests = retestDue(retestList().filter((r) => skills.has(r.skill) && !isVocab(r.skill)), now).map((r) => r.skill);
-    const due = [...skills.keys()].filter((x) => !skills.get(x).set && inRotation(stateOf(x)) && isDue(stateOf(x), now)).sort((a, b) => thePath().of(a) - thePath().of(b));
+    const covered = coveredToday();
+    const retests = retestDue(retestList().filter((r) => skills.has(r.skill) && !isVocab(r.skill) && !covered.has(r.skill)), now).map((r) => r.skill);
+    const due = [...skills.keys()].filter((x) => !skills.get(x).set && !covered.has(x) && inRotation(stateOf(x)) && isDue(stateOf(x), now)).sort((a, b) => thePath().of(a) - thePath().of(b));
     const missed = missedCount();
     // The forms got wrong today and yesterday and those due back — until they have been played today.
     const forms = practisedToday('forms:') ? 0 : missedToReview().length;
@@ -3600,6 +3616,7 @@ export function createUI(ctx) {
       study: table ? studyLink('catalogue', { table }, `The ${tableName(table)} table, in lesson mode`) : studyLink('lesson', { skill: id }, 'This skill\'s lesson, in lesson mode'),
       onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
         const inRound = (key) => !played || played.has(key);
+        if (typed && !partial) coverSkills([id]);
         // Typed: each form typed right is marked done in its table (credit for anything played, a round left early too).
         if (typed) {
           const byTable = new Map();
@@ -6567,6 +6584,8 @@ export function createUI(ctx) {
     // offer for anything already due, and the reading tie-in (§13). After any session: the re-tests now due.
     const drilled = params?.drill && skills.has(params.drill) && !params.retest ? params.drill : null;
     if (drilled) noteRetestFor(drilled);
+    // A round of the plan run as a session (a skill without tables): covered for today, as a typed game round is.
+    if (todayRun() && params?.drill && summary.total && !params.retest) coverSkills([params.drill]);
     // The re-tests behind one Review button here too (2026-10-26: "all of those review chips should not be there").
     const after = h('div', { class: 'g-after' }, reviewGameBar(params?.drill ?? params?.skill ?? null), params?.drill && skills.has(params.drill) ? firstNextNode(params.drill) : null, reviewButton());
     if (params?.drill && skills.has(params.drill)) tieInNode(params.drill).then((n) => { if (n) after.append(n); }).catch(() => {});
