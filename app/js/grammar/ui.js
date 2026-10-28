@@ -6,7 +6,7 @@
 
 import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -2623,7 +2623,7 @@ export function createUI(ctx) {
     if (gameKept()) gameDrillOn();
     playTable({ title: round ? `${round} · Forms you got wrong` : 'Forms you got wrong', subtitle: `${list.length} form${list.length === 1 ? '' : 's'}: today's, yesterday's and those due back. Typed right twice running and they leave the list`, items: list, rule: null, ruleFirst: false,
       countKey: 'forms:',
-      ...(next ? { onNext: next.fn, nextLabel: next.label } : {}) });
+      ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}) });
   }
   /*
    * **The review as a game, in rounds** (2026-10-28: "for today's practice I should be able to complete it all in game
@@ -2660,7 +2660,7 @@ export function createUI(ctx) {
     playTable({ title: `${round ? `${round} · ` : ''}Mixed: ${parts.map((p) => p.sk.title).join(' + ')}`, subtitle: testedLine(cards), items: cards, rule: null, ruleFirst: false,
       tables: completedTables(cards), context: inContext(parts.map((p) => p.sk.id)),
       countKey: (played) => parts.filter((p) => mine(p, played).size).map((p) => `tablepart:${p.sk.id}`),
-      ...(next ? { onNext: next.fn, nextLabel: next.label } : {}),
+      ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}),
       onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
         if (!typed || partial) return;
         for (const p of parts) { const pl = played ? mine(p, played) : null; if (pl && !pl.size) continue; gameCredit(p.sk, p.words, { firstMiss: mine(p, firstMiss), shown: mine(p, shown), played: pl }); }
@@ -2754,7 +2754,9 @@ export function createUI(ctx) {
   }
   const partKey = (it) => (it.t === 'r' ? (it.v === '#forms' ? 'forms' : 'review') : it.key);
   /** Minutes a round of a part takes before your own pace is known. */
-  const roundMin = (key) => (key === 'review' || key === 'forms' ? 3 : key === 'redo' ? 4 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 4);
+  // A round is played in Flash first, then typed (2026-10-28: "I will almost always do something in flash mode first and
+  // then in the type mode"), so a game round is reckoned at both.
+  const roundMin = (key) => (key === 'review' || key === 'forms' ? 5 : key === 'redo' ? 4 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
   const PACE_KEY = 'l103.plan.pace';
   const savedPace = () => { try { const v = Number(localStorage.getItem(PACE_KEY)); return v > 0 ? v : 1; } catch { return 1; } };
   /**
@@ -2794,7 +2796,7 @@ export function createUI(ctx) {
     setTodayRun({ ...todayRun(), cel: [...cel] });
     try { confetti(); } catch { /* no confetti */ }
   }
-  const partCount = (p) => (p.complete ? '✓ done' : `${p.total > 1 ? `${p.done}/${p.total} rounds` : '1 round'} · ${minsText(p.mins)}`);
+  const partCount = (p) => (p.complete ? `✓ ${p.total}/${p.total} round${p.total === 1 ? '' : 's'}` : `${p.done}/${p.total} round${p.total === 1 ? '' : 's'} · ${minsText(p.mins)}`);
   /**
    * The times, live (2026-10-28: "a dynamic time estimate"): every 30 seconds while today's plan runs, the minutes left
    * in the side bar, the foot bar and the plan card are worked out again in place — nothing else is redrawn.
@@ -2829,6 +2831,30 @@ export function createUI(ctx) {
     if (['redo', 'session', 'summary', 'setup'].includes(name) && ['redo', 'mixed', 'review', 'forms'].includes(key)) return true;
     return false;
   }
+  /**
+   * Today's plan as a panel: the rounds done and the time left, then each part — done (green, ✓), partly done (part
+   * green), the one under way — any of them a click away. In the side bar, and on the right of the game window
+   * (`inGame`: a click closes the game first).
+   */
+  function planPanel(g, { inGame = false } = {}) {
+    const rp = runParts(g);
+    celebrate(g, rp.parts);
+    const go = (at) => () => { if (inGame) document.querySelectorAll('dialog.gm[open]').forEach((d) => d.close()); runToday(at); };
+    return h('div', { class: 'g-planpanel' },
+      inGame ? h('p', { class: 'g-planpanel__h', text: `Today's plan · ${g.mode === 'game' ? 'game' : 'lesson'} mode` }) : null,
+      // The part under way: done, or still to do and why (2026-10-28: "it should say if that thing just practised was
+      // successfully done or if it needed to be still done").
+      ((p) => (p ? h('p', { class: `g-planpanel__now ${p.complete ? 'is-done' : 'is-todo'}`, role: 'status' },
+        p.complete ? `✓ Done: ${p.label}` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? 'pass the Learn lesson (6 of the last 10 right)' : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
+      h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
+      h('div', { class: 'g-planpanel__bar', style: `--p:${rp.total ? Math.round((rp.done / rp.total) * 100) : 0}%`, 'aria-hidden': 'true' }),
+      h('ol', { class: 'g-side__list g-side__plan' }, rp.parts.map((p) => h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
+        h('button', { type: 'button', class: 'g-side__go', 'aria-current': p.here ? 'step' : null, onclick: go(p.at) },
+          h('span', { text: `${p.complete ? '✓ ' : p.here ? '▶ ' : ''}${p.label}` }),
+          h('span', { class: 'g-count', 'data-plan-part': p.key, text: partCount(p) }))))),
+      inGame ? null : btn('Stop the plan', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet g-side__btn'));
+  }
+  setGameAside(() => { const g = todayRun(); return g ? planPanel(g, { inGame: true }) : null; });
   /** The foot-of-page bar while today's session runs: where you are, the next step, stop. */
   function paintRunBar() {
     let bar = document.getElementById('g-runbar');
@@ -3561,7 +3587,7 @@ export function createUI(ctx) {
       : { kind: '', parts: '', type: sk.title, steps: [...(appliesTo(sk.paradigms) ? [{ head: 'For', text: `${appliesTo(sk.paradigms)}.` }] : []), ...(how?.steps ?? [])] };
     const list = (table ? ofTable : all).filter((e) => counts.has(`${e.h}|${e.pos}`) || table).map((e) => ({ id: `${e.h}|${e.pos}`, section: table ? `${tableName(table)} · words` : 'Words', col: headOf(e), n: counts.get(`${e.h}|${e.pos}`) ?? 0 }));
     playTable({ title: `${round ? `${round} · ` : ''}${words.length > 1 ? `${sk.title}: ${review ? 'one word of each table' : 'every word'}` : review ? `${sk.title}: ${String(words[0].lemma ?? words[0].h)}` : String(words[0].lemma ?? words[0].h)}`,
-      ...(next ? { onNext: next.fn, nextLabel: next.label } : {}),
+      ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}),
       subtitle: `${sk.title}: ${testedLine(cards)}`,
       items: cards, rule: rule.steps?.length ? rule : null, ruleFirst: true,
       how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
@@ -4117,15 +4143,7 @@ export function createUI(ctx) {
     const run = todayRun();
     let planSec = null;
     if (run && onPlan(name, sid, table)) {
-      const rp = runParts(run);
-      celebrate(run, rp.parts);
-      planSec = (sec("Today's plan",
-        h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
-        h('ol', { class: 'g-side__list g-side__plan' }, rp.parts.map((p) => h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
-          h('button', { type: 'button', class: 'g-side__go', 'aria-current': p.here ? 'step' : null, onclick: () => runToday(p.at) },
-            h('span', { text: `${p.complete ? '✓ ' : p.here ? '▶ ' : ''}${p.label}` }),
-            h('span', { class: 'g-count', 'data-plan-part': p.key, text: partCount(p) }))))),
-        btn('Stop the plan', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet g-side__btn')));
+      planSec = sec("Today's plan", planPanel(run));
     }
     const nextUp = climbFrom(thePath(), null, (x) => !inRotation(stateOf(x)) && !skills.get(x)?.set, 1)[0] ?? null;
     parts.push(sec('Now',
