@@ -27,7 +27,8 @@ import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
 import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday, daysSince } from '../practised.js';
 import { planToday, DEFAULT_PLAN, isoDay } from './plan.js';
-import { missedForms, missedDue } from '../misses.js';
+import { missedForms, missedToReview } from '../misses.js';
+import { activeSeconds, confetti } from '../activetime.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -1199,6 +1200,7 @@ export function createUI(ctx) {
     const url = grammarViewHash(name, state.grammar.params);
     try { if (push) history.pushState(state, '', url); else history.replaceState(state, '', url); } catch { /* file: URLs */ }
     draw();
+    paintRunBar();
     playOnce = false;   // this render's game has been started; a later redraw is just a redraw
     if (setupFor) openGameSetup(setupFor, { chapter: params?.chapter ?? null });
     window.scrollTo({ top: 0 });
@@ -2613,19 +2615,299 @@ export function createUI(ctx) {
    * start, and Practise everything due at the top.
    */
   /** The forms missed that are due, played on the wheel (misses.js schedules them; this game counts like any other). */
-  function playMisses() {
-    const due = missedForms({ due: true });
-    const list = (due.length ? due : missedForms()).slice(0, 16).map((r) => r.card);
+  function playMisses({ next = null, round = '' } = {}) {
+    // Everything got wrong today and yesterday, and all due back (missedToReview); in rounds of 16 when it is more.
+    const recent = missedToReview();
+    const list = (recent.length ? recent : missedForms().slice(0, 16)).map((r) => r.card);
     if (!list.length) { ctx.say('No missed forms to review.'); return; }
     if (gameKept()) gameDrillOn();
-    playTable({ title: 'Forms you missed', subtitle: `${list.length} form${list.length === 1 ? '' : 's'} missed before: right twice running and they leave the list`, items: list, rule: null, ruleFirst: false });
+    playTable({ title: round ? `${round} · Forms you got wrong` : 'Forms you got wrong', subtitle: `${list.length} form${list.length === 1 ? '' : 's'}: today's, yesterday's and those due back. Typed right twice running and they leave the list`, items: list, rule: null, ruleFirst: false,
+      countKey: 'forms:',
+      ...(next ? { onNext: next.fn, nextLabel: next.label } : {}) });
+  }
+  /*
+   * **The review as a game, in rounds** (2026-10-28: "for today's practice I should be able to complete it all in game
+   * mode … a button, and the setup to practise the review in game mode … have it go in rounds … until everything is
+   * practised"). Each skill due is one round: a skill with tables plays one word of each of its tables on the wheel; a
+   * skill without (a construction) runs its ten sentence items in game mode. The forms missed before, when due, are the
+   * first round. The end of each round offers the next; the run is kept for the day, so it can be picked up again.
+   */
+  const RG_KEY = 'l103.reviewGame';
+  const reviewGame = () => { try { const g = JSON.parse(localStorage.getItem(RG_KEY) ?? 'null'); return g && g.day === isoDay() && Array.isArray(g.ids) ? g : null; } catch { return null; } };
+  const setReviewGame = (g) => { try { if (g) localStorage.setItem(RG_KEY, JSON.stringify(g)); else localStorage.removeItem(RG_KEY); } catch { /* not kept */ } };
+  const roundName = (id) => (Array.isArray(id) ? id.map((x) => titleOf(x)).join(' + ') : id === '#forms' ? 'Forms you missed' : titleOf(id));
+  /** `n` of `xs`, spread evenly over it (its tables, its columns), in order. Pure. */
+  const spreadPick = (xs, n) => (xs.length <= n ? xs : Array.from({ length: n }, (_, i) => xs[Math.floor((i * xs.length) / n)]));
+  const RG_MIX = 'l103.reviewGame.mix';
+  const reviewMixed = () => { try { return localStorage.getItem(RG_MIX) === '1'; } catch { return false; } };
+  /** The rounds: missed forms first; then a skill a round (one by one), or two table skills to a round of up to 16 (mixed). */
+  function reviewRounds(ids, mixed) {
+    const forms = ids.filter((x) => x === '#forms');
+    const rest = ids.filter((x) => x !== '#forms');
+    if (!mixed) return [...forms, ...rest];
+    const tabled = rest.filter((x) => skills.get(x)?.paradigms?.length);
+    const pairs = [];
+    for (let i = 0; i < tabled.length; i += 2) pairs.push(tabled.slice(i, i + 2));
+    return [...forms, ...pairs.map((p) => (p.length === 1 ? p[0] : p)), ...rest.filter((x) => !skills.get(x)?.paradigms?.length)];
+  }
+  /** A mixed round: a few forms of each skill (up to 16 in all), each skill credited for its own forms. */
+  async function playMixedRound(ids, { next = null, round = '' } = {}) {
+    const per = Math.max(6, Math.floor(16 / ids.length));
+    const parts = (await Promise.all(ids.map((id) => playSkillTables(id, { review: true, collect: true, cap: per }).catch(() => false)))).filter(Boolean);
+    if (!parts.length) return false;
+    const cards = parts.flatMap((p) => p.cards.map((c) => ({ ...c, key: `${p.sk.id}#${c.key}`, cue: p.words.length === 1 && c.entry ? `${headOf(c.entry)} · ${c.cue}` : c.cue }))).slice(0, 16);
+    const mine = (p, set) => new Set([...(set ?? [])].filter((k) => String(k).startsWith(`${p.sk.id}#`)));
+    playTable({ title: `${round ? `${round} · ` : ''}Mixed: ${parts.map((p) => p.sk.title).join(' + ')}`, subtitle: testedLine(cards), items: cards, rule: null, ruleFirst: false,
+      tables: completedTables(cards), context: inContext(parts.map((p) => p.sk.id)),
+      countKey: (played) => parts.filter((p) => mine(p, played).size).map((p) => `tablepart:${p.sk.id}`),
+      ...(next ? { onNext: next.fn, nextLabel: next.label } : {}),
+      onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
+        if (!typed || partial) return;
+        for (const p of parts) { const pl = played ? mine(p, played) : null; if (pl && !pl.size) continue; gameCredit(p.sk, p.words, { firstMiss: mine(p, firstMiss), shown: mine(p, shown), played: pl }); }
+      } });
+    return true;
+  }
+  // Covered already (a round of the other kind, a lesson, a typed game — 2026-10-28: "if you do either one it counts
+  // and moves on … if you have done sufficient enough to cover the review"): a skill no longer due is skipped.
+  const stillDue = (x) => (x === '#forms' ? !!reviewItems().forms : (isDue(stateOf(x)) || retestDue(retestList().filter((r) => r.skill === x)).length > 0));
+  /** One review round: false when everything in it is covered already (nothing is played); `skip` when it cannot be. */
+  function playReviewItem(raw, { next, round = '', skip }) {
+    const id = Array.isArray(raw) ? (raw.filter(stillDue).length === 1 ? raw.filter(stillDue)[0] : raw.filter(stillDue)) : raw;
+    if (Array.isArray(id) ? !id.length : !stillDue(id)) return false;
+    if (id === '#forms') { playMisses({ next, round }); return true; }
+    if (Array.isArray(id)) { playMixedRound(id, { next, round }).then((ok) => { if (!ok) skip(); }).catch(() => skip()); return true; }
+    if (skills.get(id)?.paradigms?.length) {
+      playSkillTables(id, { review: true, next, round, cap: 10 }).then((ok) => { if (!ok) { gameDrillOn(); goView('blocked', { skill: id }); } }).catch(() => skip());
+      return true;
+    }
+    gameDrillOn();
+    goView('blocked', { skill: id });
+    return true;
+  }
+  function reviewRound(i) {
+    const g = reviewGame();
+    if (!g) return;
+    if (i >= g.ids.length) { setReviewGame(null); notePractised(['review:']); render('today'); ctx.say(`Review done: all ${g.ids.length} rounds played.`); return; }
+    setReviewGame({ ...g, at: i });
+    const round = `Round ${i + 1} of ${g.ids.length}`;
+    const next = { fn: () => reviewRound(i + 1), label: i + 1 < g.ids.length ? `Next round (${i + 2} of ${g.ids.length}): ${roundName(g.ids[i + 1])} →` : 'Finish the review ✓' };
+    if (!playReviewItem(g.ids[i], { next, round, skip: () => reviewRound(i + 1) })) reviewRound(i + 1);
+  }
+  /*
+   * **All of today's session, one step after another** (2026-10-28: "does all this include all things in today's
+   * session in the practice page and in the game mode — it needs to"): in game mode the review's rounds, then each
+   * other step's game (learn as a game, its forms on the wheel, the weakest table, a starred one); in lesson mode each
+   * step's lesson. A bar at the foot of the page names the step and offers the next; a game's own end card does too.
+   * A step done already (a skill learnt, a review covered) is passed over. Kept for the day.
+   */
+  const TR_KEY = 'l103.todayRun';
+  const todayRun = () => { try { const g = JSON.parse(localStorage.getItem(TR_KEY) ?? 'null'); return g && g.day === isoDay() && Array.isArray(g.items) ? g : null; } catch { return null; } };
+  const setTodayRun = (g) => { try { if (g) localStorage.setItem(TR_KEY, JSON.stringify(g)); else localStorage.removeItem(TR_KEY); } catch { /* not kept */ } };
+  function startTodayRun(mode, fromKey = null) {
+    const { steps } = planSteps();
+    const items = [];
+    if (mode === 'game') {
+      const r = reviewItems();
+      const due = [...(r.forms ? ['#forms'] : []), ...new Set([...r.retests, ...r.due])];
+      for (const x of reviewRounds(due, reviewMixed())) items.push({ t: 'r', v: x, label: `Review: ${roundName(x)}` });
+      for (const st of steps) if (st.key !== 'review' && st.key !== 'forms' && st.game && (!st.done || st.key === fromKey)) items.push({ t: 's', key: st.key, label: st.label });
+    } else {
+      for (const st of steps) if ((st.lesson || st.game) && (!st.done || st.key === fromKey)) items.push({ t: 's', key: st.key, label: st.label });
+    }
+    // A step's own button starts the run there and goes on through the rest (2026-10-28: "the button can be for one
+    // at a time but it should lead fully through the daily plan").
+    const at = fromKey ? Math.max(0, items.findIndex((it) => it.key === fromKey || (it.t === 'r' && (fromKey === 'review' || (fromKey === 'forms' && it.v === '#forms'))))) : 0;
+    if (!items.length) { ctx.say('Nothing left in today\'s session.'); return; }
+    keepGame(mode === 'game');
+    const totals = {};
+    for (const it of items) { const k = partKey(it); if (!(k in totals)) totals[k] = Math.max(1, stepRounds(k)); }
+    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: activeSeconds().today, cel: [] });
+    runToday(at);
+  }
+  function runToday(i) {
+    const g = todayRun();
+    if (!g) { paintRunBar(); return; }
+    if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
+    setTodayRun({ ...g, at: i, ra0: activeSeconds().today });
+    paintSide();
+    const it = g.items[i];
+    const next = { fn: () => runToday(i + 1), label: i + 1 < g.items.length ? `Next (${i + 2} of ${g.items.length}): ${g.items[i + 1].label} →` : 'Finish today\'s session ✓' };
+    paintRunBar();
+    if (it.t === 'r') {
+      if (g.mode === 'game') gameDrillOn();
+      if (!playReviewItem(it.v, { next, round: `Today ${i + 1} of ${g.items.length}`, skip: () => runToday(i + 1) })) runToday(i + 1);
+      return;
+    }
+    const st = planSteps().steps.find((x) => x.key === it.key);
+    if (!st || st.done) { runToday(i + 1); return; }
+    const fn = g.mode === 'game' ? st.game ?? st.lesson : st.lesson ?? st.game;
+    fn?.();
+  }
+  /** Rounds a plan step still needs (2026-10-28: "everything should be in rounds … show how many rounds are needed for each"). */
+  function stepRounds(key) {
+    const r = reviewItems();
+    if (key === 'review') { const ids = [...new Set([...r.retests, ...r.due])]; return ids.length ? reviewRounds(ids, reviewMixed()).length : 0; }
+    if (key === 'forms') return r.forms ? Math.ceil(r.forms / 16) : 0;
+    if (key === 'redo') return r.missed ? Math.ceil(r.missed / 10) : 0;
+    if (key === 'mixed') return 2;
+    return 1;
+  }
+  const partKey = (it) => (it.t === 'r' ? (it.v === '#forms' ? 'forms' : 'review') : it.key);
+  /** Minutes a round of a part takes before your own pace is known. */
+  const roundMin = (key) => (key === 'review' || key === 'forms' ? 3 : key === 'redo' ? 4 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 4);
+  const PACE_KEY = 'l103.plan.pace';
+  const savedPace = () => { try { const v = Number(localStorage.getItem(PACE_KEY)); return v > 0 ? v : 1; } catch { return 1; } };
+  /**
+   * Today's run as its parts, each with its rounds done and the minutes left at your pace (2026-10-28: "if only 1/2
+   * rounds are done make it partly green … estimate the time left based on how long it's taking").
+   * `[{ key, label, at, total, done, left, mins, here, complete }]`, and the totals.
+   */
+  function runParts(g) {
+    const out = [];
+    const steps = planSteps().steps;
+    g.items.forEach((it, i) => {
+      const key = partKey(it);
+      const last = out.find((p) => p.key === key);
+      if (last) { if (i === g.at) last.here = true; return; }
+      const st = steps.find((x) => x.key === key);
+      const total = g.totals?.[key] ?? Math.max(1, stepRounds(key));
+      const left = key === 'review' || key === 'forms' || key === 'redo' ? Math.min(total, stepRounds(key)) : st?.done ? 0 : total;
+      out.push({ key, at: i, label: key === 'review' ? 'Review the skills due' : key === 'forms' ? 'Forms you got wrong' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
+    });
+    // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at. The round
+    // under way is left out of the pace and taken off its own part, so the time left falls as you play (2026-10-28).
+    const nowA = activeSeconds().today;
+    const inRound = g.ra0 != null ? Math.max(0, (nowA - g.ra0) / 60) : 0;
+    const spent = Math.max(0, (nowA - (g.active0 ?? 0)) / 60 - inRound);
+    const reckoned = out.reduce((n, p) => n + p.done * roundMin(p.key), 0);
+    const pace = reckoned >= 3 && spent >= 1 ? Math.min(3, Math.max(0.4, spent / reckoned)) : savedPace();
+    if (reckoned >= 3 && spent >= 1) { try { localStorage.setItem(PACE_KEY, String(pace)); } catch { /* not kept */ } }
+    for (const p of out) p.mins = p.left ? Math.max(1, Math.round(p.left * roundMin(p.key) * pace - (p.here ? inRound : 0))) : 0;
+    return { parts: out, minsLeft: out.reduce((n, p) => n + p.mins, 0), done: out.reduce((n, p) => n + p.done, 0), total: out.reduce((n, p) => n + p.total, 0) };
+  }
+  /** Confetti once for each part finished (and for the whole plan). */
+  function celebrate(g, parts) {
+    const cel = new Set(g.cel ?? []);
+    let fresh = false;
+    for (const p of parts) if (p.complete && !cel.has(p.key)) { cel.add(p.key); fresh = true; }
+    if (!fresh) return;
+    setTodayRun({ ...todayRun(), cel: [...cel] });
+    try { confetti(); } catch { /* no confetti */ }
+  }
+  const partCount = (p) => (p.complete ? '✓ done' : `${p.total > 1 ? `${p.done}/${p.total} rounds` : '1 round'} · ${minsText(p.mins)}`);
+  /**
+   * The times, live (2026-10-28: "a dynamic time estimate"): every 30 seconds while today's plan runs, the minutes left
+   * in the side bar, the foot bar and the plan card are worked out again in place — nothing else is redrawn.
+   */
+  function planTick() {
+    const g = todayRun();
+    if (!g || document.hidden) return;
+    const rp = runParts(g);
+    const total = rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓';
+    document.querySelectorAll('[data-plan-min]').forEach((el) => { el.textContent = total; });
+    document.querySelectorAll('[data-plan-rounds]').forEach((el) => { el.textContent = `${rp.done} of ${rp.total} rounds · `; });
+    for (const p of rp.parts) document.querySelectorAll(`[data-plan-part="${CSS.escape(p.key)}"]`).forEach((el) => { el.textContent = partCount(p); el.closest('li')?.style.setProperty('--p', `${Math.round((p.done / p.total) * 100)}%`); });
+    celebrate(g, rp.parts);
+  }
+  setInterval(planTick, 30000);
+  const minsText = (m) => (m <= 0 ? 'done' : m < 60 ? `~${m} min` : `~${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')}`);
+  /** Is this view part of today's plan — entered through it? (2026-10-28: "the side bar should stay how it is if the
+   *  skill was not entered through the plan for today menu"). The current step's skills, tables and views. */
+  function onPlan(name, sid, table) {
+    const g = todayRun();
+    if (!g) return false;
+    if (name === 'today') return true;
+    const it = g.items[g.at];
+    if (!it) return false;
+    const key = partKey(it);
+    const ids = it.t === 'r' ? (Array.isArray(it.v) ? it.v : [it.v]) : [];
+    const m = /^(learn|play):(.+)$/.exec(key) ?? /^star:skill:(.+)$/.exec(key);
+    if (m) ids.push(m[m.length - 1]);
+    const tb = /^table:(.+)$/.exec(key)?.[1] ?? /^star:table:(.+)$/.exec(key)?.[1] ?? null;
+    if (sid && ids.includes(sid)) return true;
+    if (table && (table === tb || ids.some((x) => skills.get(x)?.paradigms?.includes(table)))) return true;
+    if (['redo', 'session', 'summary', 'setup'].includes(name) && ['redo', 'mixed', 'review', 'forms'].includes(key)) return true;
+    return false;
+  }
+  /** The foot-of-page bar while today's session runs: where you are, the next step, stop. */
+  function paintRunBar() {
+    let bar = document.getElementById('g-runbar');
+    const g = todayRun();
+    const show = !!g && document.documentElement.dataset.section === 'grammar';
+    if (!show) { bar?.remove(); return; }
+    if (!bar) { bar = h('div', { id: 'g-runbar', class: 'g-runbar', role: 'region', 'aria-label': "Today's session" }); document.body.append(bar); }
+    const i = g.at;
+    const cur = g.items[i];
+    const again = cur?.t === 's' && (cur.key === 'redo' || cur.key === 'forms' || cur.key === 'mixed') && stepRounds(cur.key) > (cur.key === 'mixed' ? 99 : 0);
+    bar.replaceChildren(...[
+      h('span', { class: 'g-runbar__t' }, h('b', { text: `Today's session (${g.mode === 'game' ? 'game' : 'lesson'} mode) · ${i + 1} of ${g.items.length}: ` }), g.items[i]?.label ?? '',
+        h('span', { class: 'g-quiet' }, ' · ', h('span', { 'data-plan-min': '', text: ((m) => (m > 0 ? `${minsText(m)} left` : 'all done ✓'))(runParts(g).minsLeft) }))),
+      again ? btn(`Another round (${stepRounds(cur.key)} left)`, { onclick: () => runToday(i) }, 'btn') : null,
+      btn(i + 1 < g.items.length ? `Next: ${g.items[i + 1].label} →` : 'Finish ✓', { onclick: () => runToday(i + 1) }, 'btn btn--primary g-runbar__next'),
+      btn('Stop', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet')].filter(Boolean));
+  }
+  /** The bar at the end of a round run as a session (a skill without tables): the next round, or the end. */
+  function reviewGameBar(skillId) {
+    const g = reviewGame();
+    if (!g || g.ids[g.at] !== skillId) return null;
+    const i = g.at;
+    return h('div', { class: 'g-plan__next' }, h('p', { class: 'g-quiet', text: `Review game · round ${i + 1} of ${g.ids.length} done` }),
+      btn(i + 1 < g.ids.length ? `▶ Next round (${i + 2} of ${g.ids.length}): ${roundName(g.ids[i + 1])}` : '✓ Finish the review', { onclick: () => reviewRound(i + 1) }, 'btn btn--primary g-play'));
+  }
+  /** Rounds still to play to finish the review, either way: "11 rounds one by one, or 7 mixed". */
+  function reviewLeft() {
+    const r = reviewItems();
+    const ids = [...(r.forms ? ['#forms'] : []), ...new Set([...r.retests, ...r.due])];
+    if (!ids.length) return 'nothing left';
+    const a = reviewRounds(ids, false).length, b = reviewRounds(ids, true).length;
+    return a === b ? `${a} round${a === 1 ? '' : 's'} to finish` : `${a} rounds one by one, or ${b} mixed, to finish`;
+  }
+  function openReviewGame() {
+    const r = reviewItems();
+    const all = [...(r.forms ? ['#forms'] : []), ...new Set([...r.retests, ...r.due])];
+    const going = reviewGame();
+    if (!all.length && !going) { ctx.say('Nothing is due for review.'); return; }
+    const on = new Set(all);
+    const d = h('dialog', { class: 'g-pmenu g-setupd', 'aria-labelledby': 'g-rg-h' });
+    const body = h('div', { class: 'g-setup' });
+    const chip = (label, pressed, onclick) => btn(label, { 'aria-pressed': String(!!pressed), onclick: () => { onclick(); paint(); } }, 'g-chip');
+    const paint = () => {
+      const way = playWay();
+      const ids = all.filter((x) => on.has(x));
+      body.replaceChildren(...[
+        going ? h('div', { class: 'g-setup__sec' }, h('p', {}, `Under way: round ${going.at + 1} of ${going.ids.length} (${roundName(going.ids[going.at])}).`),
+          h('p', { class: 'g-acts' }, btn(`▶ Carry on: round ${going.at + 1} of ${going.ids.length}`, { onclick: () => { d.close(); reviewRound(going.at); } }, 'btn btn--primary g-play'))) : null,
+        all.length ? h('div', { class: 'g-setup__sec' }, h('h3', { class: 'g-setup__h', text: `What is due (${ids.length} of ${all.length} chosen)` }),
+          h('div', { class: 'g-chips' }, chip('All', ids.length === all.length, () => all.forEach((x) => on.add(x))), chip('None', !ids.length, () => on.clear())),
+          h('ol', { class: 'g-rg__list' }, all.map((x) => h('li', {}, h('label', { class: 'g-rg__row' },
+            h('input', { type: 'checkbox', checked: on.has(x) ? true : null, onchange: (e) => { if (e.target.checked) on.add(x); else on.delete(x); paint(); } }),
+            h('span', { text: ` ${x === '#forms' ? '' : `${capOf(x)} · `}${roundName(x)}${skills.get(x)?.paradigms?.length || x === '#forms' ? ' · ▶ wheel' : ' · sentences'}` })))))) : null,
+        h('div', { class: 'g-setup__sec' }, h('h3', { class: 'g-setup__h', text: 'Rounds' }),
+          h('div', { class: 'g-chips' },
+            chip(`One skill a round (6–10 cards) · ${reviewRounds(ids, false).length} round${reviewRounds(ids, false).length === 1 ? '' : 's'} to finish`, !reviewMixed(), () => { try { localStorage.setItem(RG_MIX, '0'); } catch { /* not kept */ } }),
+            chip(`Mixed (two skills, up to 16 cards) · ${reviewRounds(ids, true).length} round${reviewRounds(ids, true).length === 1 ? '' : 's'} to finish`, reviewMixed(), () => { try { localStorage.setItem(RG_MIX, '1'); } catch { /* not kept */ } }))),
+        h('div', { class: 'g-setup__sec' }, h('h3', { class: 'g-setup__h', text: 'Play the tables in' }),
+          h('div', { class: 'g-chips' }, LADDER.map(([m, sh]) => chip(ladderLabel(m, sh), way.mode === m && way.shuffle === sh, () => setPlayWay({ mode: m, shuffle: sh })))),
+          way.mode === 'type' ? h('p', { class: 'g-quiet', text: 'Type it: each round counts, and a skill covered drops out of the review.' })
+            : h('p', { class: 'g-plan__warn', text: `⚠ ${way.label} is practice only: to count — and finish the review — the rounds must be typed (Type it).` })),
+        all.length ? ((rounds) => h('div', { class: 'g-acts' }, btn(playLabel(ids.length ? `Play ${rounds.length} round${rounds.length === 1 ? '' : 's'} · ${way.label}` : 'Choose a round'),
+          { disabled: ids.length ? null : true, onclick: () => { d.close(); keepGame(true); setReviewGame({ day: isoDay(), ids: rounds, at: 0 }); reviewRound(0); } }, 'btn btn--primary g-play')))(reviewRounds(ids, reviewMixed())) : null].filter(Boolean));
+    };
+    d.append(h('div', { class: 'g-pmenu__top' }, h('p', { class: 'g-kicker', text: 'Review · ▶ set up the game' }), btn('×', { 'aria-label': 'Close', onclick: () => d.close() }, 'g-pop__close g-pmenu__close')),
+      h('h2', { id: 'g-rg-h', class: 'g-pmenu__h', text: 'Play the review' }), body);
+    paint();
+    d.addEventListener('close', () => d.remove());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    document.body.append(d);
+    d.showModal();
   }
   function reviewItems() {
     const now = Date.now();
     const retests = retestDue(retestList().filter((r) => skills.has(r.skill) && !isVocab(r.skill)), now).map((r) => r.skill);
     const due = [...skills.keys()].filter((x) => !skills.get(x).set && inRotation(stateOf(x)) && isDue(stateOf(x), now)).sort((a, b) => thePath().of(a) - thePath().of(b));
     const missed = missedCount();
-    const forms = missedDue();
+    // The forms got wrong today and yesterday and those due back — until they have been played today.
+    const forms = practisedToday('forms:') ? 0 : missedToReview().length;
     return { retests, due, missed, forms, n: retests.length + due.length + (missed ? 1 : 0) + (forms ? 1 : 0) };
   }
   function reviewButton() {
@@ -2642,7 +2924,8 @@ export function createUI(ctx) {
     d.append(...[
       h('div', { class: 'g-pmenu__top' }, h('p', { class: 'g-kicker', text: 'Review · what needs it now' }), btn('×', { 'aria-label': 'Close', onclick: () => d.close() }, 'g-pop__close g-pmenu__close')),
       h('h2', { id: 'g-pmenu-h', class: 'g-pmenu__h', text: 'Review' }),
-      r.due.length ? h('p', { class: 'g-acts' }, btn('▶ Practise everything due', { onclick: go(() => goView('session', {})) }, 'btn btn--primary')) : null,
+      r.n || reviewGame() ? h('p', { class: 'g-acts' }, btn(playLabel(reviewGame() ? 'Carry on the review game' : `Play everything due · ${reviewLeft()}`), { onclick: go(() => openReviewGame()) }, 'btn btn--primary g-play'),
+        r.due.length ? btn('Practise everything due (lesson mode)', { onclick: go(() => { keepGame(false); goView('session', { due: true }); }) }, 'btn') : null) : null,
       r.retests.length ? [h('h3', { class: 'g-pmenu__sh', text: `Short re-tests ready (${r.retests.length}) · three items each` }), h('ol', { class: 'g-pmenu__list' }, r.retests.map((x) => row(x, titleOf(x), () => render('drill', { skill: x, size: RETEST_SIZE, retest: true }))))] : null,
       r.due.length ? [h('h3', { class: 'g-pmenu__sh', text: `Due for review (${r.due.length})` }), h('ol', { class: 'g-pmenu__list' }, r.due.map((x) => row(x, titleOf(x), () => startSkill(x, 'review'))))] : null,
       r.missed ? [h('h3', { class: 'g-pmenu__sh', text: 'Missed before' }), h('p', { class: 'g-acts' }, btn(`Redo the ${r.missed} you missed`, { onclick: go(() => goView('redo', {})) }, 'btn'))] : null,
@@ -3219,7 +3502,7 @@ export function createUI(ctx) {
     const wordOf = (c) => words.get(c.entry ? `${c.entry.h}|${c.entry.pos}` : '');
     return cards.sort((a, b) => cols.get(a.col ?? '') - cols.get(b.col ?? '') || wordOf(a) - wordOf(b) || at.get(a) - at.get(b));
   }
-  async function playSkillTables(id, { chapter = null, only = null, table = null, tables = null } = {}) {
+  async function playSkillTables(id, { chapter = null, only = null, table = null, tables = null, review = false, next = null, round = '', cap = 0, collect = false } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length || sk.set) return false;
     keepEntry('tablepart');
@@ -3241,7 +3524,9 @@ export function createUI(ctx) {
     }
     const ofTable = table ? all.filter((e) => (tableIdOf(e, selectRules) ?? '') === table) : all;
     // One word to start on a single table; the rest wait in the game's Words, to choose or mix.
-    const words = only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : table ? ofTable.slice(0, 1) : ofTable;
+    // A review round: one word of each of its tables, so the round is the whole skill once, not every word.
+    const words = only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : table ? ofTable.slice(0, 1)
+      : review ? ofTable.filter((e, i) => ofTable.findIndex((x) => (tableIdOf(x, selectRules) ?? '') === (tableIdOf(e, selectRules) ?? '')) === i) : ofTable;
     if (!words.length) { ctx.say('No word of that table fits this skill.'); return false; }
     const rules = new Map();
     const ruleOf = (e) => { const k = `${e.h}|${e.pos}`; if (!rules.has(k)) { let r = null; try { r = wordRule(e, tableOf(e)); } catch { r = null; } rules.set(k, r); } return rules.get(k); };
@@ -3266,12 +3551,17 @@ export function createUI(ctx) {
     focusCards(cards);
     if (!cards.length) { ctx.say('No word with a table fits this skill.'); return false; }
     columnsFirst(cards);
+    // A review round holds a few of the skill's forms, spread over its tables and columns (2026-10-28: "each round will
+    // only have 6-10 review cards").
+    if (cap && cards.length > cap) cards.splice(0, cards.length, ...spreadPick(cards, cap));
+    if (collect) return { sk, cards, words };
     const how = howOf(sk);
     const one = words.length === 1 ? ruleOf(words[0]) : null;
     const rule = one ? { ...focusRule(one, sk), steps: [...(how?.steps ?? []), ...(focusRule(one, sk)?.steps ?? [])] }
       : { kind: '', parts: '', type: sk.title, steps: [...(appliesTo(sk.paradigms) ? [{ head: 'For', text: `${appliesTo(sk.paradigms)}.` }] : []), ...(how?.steps ?? [])] };
     const list = (table ? ofTable : all).filter((e) => counts.has(`${e.h}|${e.pos}`) || table).map((e) => ({ id: `${e.h}|${e.pos}`, section: table ? `${tableName(table)} · words` : 'Words', col: headOf(e), n: counts.get(`${e.h}|${e.pos}`) ?? 0 }));
-    playTable({ title: words.length > 1 ? `${sk.title}: every word` : String(words[0].lemma ?? words[0].h),
+    playTable({ title: `${round ? `${round} · ` : ''}${words.length > 1 ? `${sk.title}: ${review ? 'one word of each table' : 'every word'}` : review ? `${sk.title}: ${String(words[0].lemma ?? words[0].h)}` : String(words[0].lemma ?? words[0].h)}`,
+      ...(next ? { onNext: next.fn, nextLabel: next.label } : {}),
       subtitle: `${sk.title}: ${testedLine(cards)}`,
       items: cards, rule: rule.steps?.length ? rule : null, ruleFirst: true,
       how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
@@ -3822,6 +4112,21 @@ export function createUI(ctx) {
     const ctxCount = parts.length;
     // Every page of Study (2026-10-25: "add a side bar to all the study section; the goal is that one does not need to
     // leave the page to get exactly what one wants or needs"): Find, what to do now, and this chapter.
+    // The plan, while it runs (2026-10-28: "on the side bar when in the plan mode … show each part of the plan so that
+    // you can go in between the parts as one would like, and also show how many rounds are needed for each").
+    const run = todayRun();
+    let planSec = null;
+    if (run && onPlan(name, sid, table)) {
+      const rp = runParts(run);
+      celebrate(run, rp.parts);
+      planSec = (sec("Today's plan",
+        h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
+        h('ol', { class: 'g-side__list g-side__plan' }, rp.parts.map((p) => h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
+          h('button', { type: 'button', class: 'g-side__go', 'aria-current': p.here ? 'step' : null, onclick: () => runToday(p.at) },
+            h('span', { text: `${p.complete ? '✓ ' : p.here ? '▶ ' : ''}${p.label}` }),
+            h('span', { class: 'g-count', 'data-plan-part': p.key, text: partCount(p) }))))),
+        btn('Stop the plan', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet g-side__btn')));
+    }
     const nextUp = climbFrom(thePath(), null, (x) => !inRotation(stateOf(x)) && !skills.get(x)?.set, 1)[0] ?? null;
     parts.push(sec('Now',
       nextUp ? btn(playLabel(`Next to learn: ${titleOf(nextUp)}`), { onclick: () => startSkill(nextUp, 'learn') }, 'btn btn--primary g-side__btn') : null,
@@ -3840,7 +4145,7 @@ export function createUI(ctx) {
       h('p', {}, btn('The whole chapter →', { onclick: () => render('chapter', { chapter: n }) }, 'g-vlink'))));
     // Where you are first (the lesson's parts, the strand), then this skill's or table's own options, then the rest.
     const starRows = starredRows();
-    const kids = [...progressionSections(sk, table, sec, nextUp), starRows.length ? sec(`★ Starred (${starRows.length})`, h('ul', { class: 'g-side__list' }, starRows)) : null, ...parts.slice(0, ctxCount), ...parts.slice(ctxCount)].filter(Boolean);
+    const kids = [planSec, ...progressionSections(sk, table, sec, nextUp), starRows.length ? sec(`★ Starred (${starRows.length})`, h('ul', { class: 'g-side__list' }, starRows)) : null, ...parts.slice(0, ctxCount), ...parts.slice(ctxCount)].filter(Boolean);
     if (!kids.length) return;
     const open = sideOpen();
     let at = sideAt();
@@ -4206,20 +4511,46 @@ export function createUI(ctx) {
     const steps = [];
     const r = reviewItems();
     const rn = r.retests.length + r.due.length + (r.missed ? 1 : 0);
-    if (rn || today.kind !== 'rest') steps.push({ key: 'review', label: rn ? `Review the skills due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: no skill due', done: !rn, go: () => openReview() });
-    if (r.forms) steps.push({ key: 'forms', label: `Forms you missed before (${r.forms} due)`, sub: 'right twice and they leave', done: false, go: () => playMisses() });
+    // Every step in either mode (2026-10-28: "all the other skills too should be able to be opened in game mode as
+    // well, or done in the lesson mode"): `game` and `lesson`; the step itself opens in the mode last used.
+    const lessonMode = (fn) => () => { keepGame(false); fn(); };
+    const gameMode = (fn) => () => { gameDrillOn(); fn(); };
+    if (rn || today.kind !== 'rest') steps.push({ key: 'review', label: rn ? `Review the skills due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: no skill due', sub: rn ? reviewLeft() : '', done: !rn,
+      game: () => openReviewGame(), lesson: rn ? lessonMode(() => (r.due.length ? goView('session', { due: true }) : openReview())) : null });
+    // Every day, what was wrong (2026-10-28: "each day reviewing everything that was wrong too … all errors from that
+    // day and the day before"): the forms missed in games, and the questions missed in lessons.
+    if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Forms you got wrong (${r.forms}: today, yesterday, due)` : 'Forms you got wrong', sub: r.forms > 16 ? `${Math.ceil(r.forms / 16)} rounds of 16` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
+    if (r.missed) steps.push({ key: 'redo', label: `Questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / 10)} round${r.missed > 10 ? 's' : ''} of 10`, done: false, game: gameMode(() => goView('redo', { size: 10 })), lesson: lessonMode(() => goView('redo', { size: 10 })) });
     // Everything the day needs, here (2026-10-27: "have it all there in the day, what I need to practise, so I don't need
     // to go looking around"): each new skill learnt, then its forms played on the wheel.
     for (const id of today.newToday) {
-      steps.push({ key: `learn:${id}`, label: `Learn: ${titleOf(id)}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`), go: () => startSkill(id, 'learn') });
-      if (skills.get(id)?.paradigms?.length) steps.push({ key: `play:${id}`, label: `Play its forms: ${titleOf(id)}`, sub: 'on the wheel, Type it', done: practisedToday(`tablepart:${id}`), go: () => openGameSetup(id) });
+      steps.push({ key: `learn:${id}`, label: `Learn: ${titleOf(id)}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`),
+        game: gameMode(() => render('learn', { skill: id })), lesson: lessonMode(() => startSkill(id, 'learn')) });
+      const tb = skills.get(id)?.paradigms?.[0];
+      if (tb) steps.push({ key: `play:${id}`, label: `Its forms: ${titleOf(id)}`, sub: 'Type it to count', done: practisedToday(`tablepart:${id}`), game: () => openGameSetup(id), lesson: lessonMode(() => render('catalogue', { table: tb })) });
     }
-    if (today.kind === 'master') steps.push({ key: 'mixed', label: 'Mixed practice of everything learnt (about 20 min)', done: practisedToday('skill:'), go: () => goView('setup', {}) });
+    if (today.kind === 'master') steps.push({ key: 'mixed', label: 'Mixed practice of everything learnt (about 20 min)', done: practisedToday('skill:'), game: gameMode(() => goView('setup', {})), lesson: lessonMode(() => goView('setup', {})) });
     const wt = today.kind === 'rest' ? null : weakestTable(learned);
-    if (wt) steps.push({ key: `table:${wt}`, label: `A round of your weakest table: ${tableName(wt)}`, done: practisedToday(`table:${wt}`), go: () => { if (gameKept()) gameDrillOn(); render('catalogue', { table: wt, play: true }); } });
+    if (wt) steps.push({ key: `table:${wt}`, label: `A round of your weakest table: ${tableName(wt)}`, done: practisedToday(`table:${wt}`), game: gameMode(() => render('catalogue', { table: wt, play: true })), lesson: lessonMode(() => render('catalogue', { table: wt })) });
     const st = starredList().find((k) => !practisedToday(k.startsWith('table:') ? k : `skill:${k.slice(6)}`));
-    if (st && today.kind !== 'rest') { const [kind, id] = st.split(/:(.*)/); steps.push({ key: `star:${st}`, label: `★ A starred one: ${starName(st)}`, done: false, go: () => (kind === 'table' ? render('catalogue', { table: id, play: true }) : goSkill(id)) }); }
+    if (st && today.kind !== 'rest') { const [kind, id] = st.split(/:(.*)/); steps.push({ key: `star:${st}`, label: `★ A starred one: ${starName(st)}`, done: false,
+      game: kind === 'table' ? gameMode(() => render('catalogue', { table: id, play: true })) : skills.get(id)?.paradigms?.length ? () => openGameSetup(id) : gameMode(() => goView('blocked', { skill: id })),
+      lesson: lessonMode(() => (kind === 'table' ? render('catalogue', { table: id }) : goSkill(id))) }); }
+    for (const x of steps) x.go = (gameKept() ? x.game : x.lesson) ?? x.game ?? x.lesson;
     return { today, steps };
+  }
+  /** The whole day's minutes left: the run's own reckoning while it runs, else each step's rounds at your last pace. */
+  function planMinutes(steps) {
+    const g = todayRun();
+    if (g) return runParts(g).minsLeft;
+    return Math.round(steps.filter((x) => !x.done).reduce((n, x) => n + Math.max(1, stepRounds(x.key)) * roundMin(x.key), 0) * savedPace());
+  }
+  /** How much of a step is done, for its green fill: a run's rounds, else all or nothing. */
+  function stepShare(x) {
+    if (x.done) return 100;
+    const g = todayRun();
+    const p = g ? runParts(g).parts.find((q) => q.key === x.key) : null;
+    return p ? Math.round((p.done / p.total) * 100) : 0;
   }
   function planCard() {
     ensurePlan();
@@ -4242,11 +4573,19 @@ export function createUI(ctx) {
       h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
       h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · ${planOrder().filter((id) => stateOf(id).state === 'mastered').length} mastered · `, h('b', { text: statusText })),
       h('p', { class: 'g-plan__phase', text: phase }),
-      h('h3', { class: 'g-plan__h3', text: `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}` }),
-      next ? btn(playLabel(`Today's session: ${next.label.replace(/^Learn: /, 'learn ')}`), { onclick: () => next.go() }, 'btn btn--primary g-play g-plan__go') : h('p', { class: 'g-plan__done', text: steps.length ? '✓ Done for today. Anything more is extra.' : '' }),
-      h('ol', { class: 'g-plan__steps' }, steps.map((x) => h('li', { class: x.done ? 'is-done' : '' },
+      h('h3', { class: 'g-plan__h3' }, `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}`,
+        ((m) => (m > 0 ? [' · ', h('span', todayRun() ? { 'data-plan-min': '', text: `${minsText(m)} left` } : { text: `${minsText(m)} left` })] : null))(planMinutes(steps))),
+      next ? ((run) => h('div', { class: 'g-acts g-plan__gos' },
+        run ? btn(playLabel(`Carry on today's session: ${run.at + 1} of ${run.items.length}`), { onclick: () => runToday(run.at) }, 'btn btn--primary g-play g-plan__go') : null,
+        btn(playLabel("Play all of today's session (game mode)"), { onclick: () => startTodayRun('game') }, `btn ${run ? '' : 'btn--primary '}g-play g-plan__go`),
+        btn("📖 Do all of today's session (lesson mode)", { onclick: () => startTodayRun('lesson') }, 'btn g-plan__go')))(todayRun())
+        : h('p', { class: 'g-plan__done', text: steps.length ? '✓ Done for today. Anything more is extra.' : '' }),
+      h('ol', { class: 'g-plan__steps' }, steps.map((x) => h('li', { class: x.done ? 'is-done' : '', style: `--p:${stepShare(x)}%` },
         h('span', { class: 'g-plan__tick', 'aria-hidden': 'true', text: x.done ? '✓' : '○' }),
-        btn([x.label, x.sub ? h('span', { class: 'g-quiet', text: ` · ${x.sub}` }) : null], { onclick: () => x.go(), 'aria-label': `${x.label}${x.done ? ' (done)' : ''}` }, 'g-plan__step')))),
+        btn([x.label, x.sub ? h('span', { class: 'g-quiet', text: ` · ${x.sub}` }) : null], { onclick: () => startTodayRun(gameKept() ? 'game' : 'lesson', x.key), 'aria-label': `${x.label}${x.done ? ' (done)' : ''}` }, 'g-plan__step'),
+        h('span', { class: 'g-plan__modes' },
+          x.game ? btn('▶ Game', { onclick: () => startTodayRun('game', x.key), 'aria-label': `${x.label}, in game mode, then on through the plan` }, 'g-chip g-plan__mode') : null,
+          x.lesson ? btn('📖 Lesson', { onclick: () => startTodayRun('lesson', x.key), 'aria-label': `${x.label}, in lesson mode, then on through the plan` }, 'g-chip g-plan__mode') : null)))),
       settings);
   }
   async function renderToday() {
@@ -4278,7 +4617,7 @@ export function createUI(ctx) {
         h('ul', { class: 'g-chips' }, rf.map((r) => h('li', { class: 'g-chips__li' }, navEl({ class: 'g-chip', 'data-state': r.state, 'data-area': areaOf(r.skill), to: ['lesson', { skill: r.skill }], onclick: () => goView('lesson', { skill: r.skill }) }, titleOf(r.skill), h('span', { class: 'g-chip__state', text: ` · ${STATE_LABEL[r.state]}` })))))) : null,
       h('p', { class: 'g-acts' }, btn('Choose your own practice…', { to: ['setup', {}], onclick: () => render('setup', {}) }, 'btn btn--quiet'), btn('📊 Practice chart', { to: ['chart', {}], onclick: () => render('chart', {}) }, 'btn btn--quiet')));
     setBody(
-      h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'New This Week' })),
+      h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Study' }), h('h1', { class: 'g-title', text: 'Daily Study Plan' })),
       planCard(),
       findBox(content),
       // ★ Starred first, the ones chosen to come back to (2026-10-27).
@@ -5908,8 +6247,10 @@ export function createUI(ctx) {
           // form. The old line promised a hint "never spells the answer", which the shipped hint does (M-9).
           h('p', { class: 'g-quiet', text: 'Every answer box has its own hint — a typed field, each cell of a chart, each blank of a pensum, each word of an order or match item. A hint starts as a nudge: what that box is being asked for, and the rule behind it. Its last step, "Show this form", gives that one box its answer and marks the box hinted, which counts as weaker evidence. This choice holds for every session.' }))),
       h('div', { class: 'g-acts' }, playStartBtn, startBtn, btn(from ? backLabel(from).replace('← ', 'Back to ') : 'Back to skills', { onclick: () => leaveTo(from) }, 'btn btn--quiet')));
+    // Today's session at the top of Practice too (2026-10-28: "all things in today's session in the practice page").
+    body.querySelector('.g-head')?.after(planCard());
   }
-  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null, redo = false, skill: redoSkill = null }) {
+  function renderPracticeStart({ preset = 'review-heavy', size = 10, oneSkill = null, pair = null, resume = false, chapter = null, from = null, redo = false, skill: redoSkill = null, due = false }) {
     // "Missed items" is not a mix over skills but a session over named items, so it is its own view. Both routes
     // in: the setup's choice (which is remembered as a preference and could come back from anywhere), and a
     // redo in progress resuming through the Today card, which offers every session by the one Resume button.
@@ -5920,7 +6261,7 @@ export function createUI(ctx) {
     // "Practise this chapter": the same mixed session, with the chapter's own skills and sets as its whole world —
     // so the interleaving, the confusable pairs and the chapter-set window all hold, and the re-queue and the
     // filler can reach nothing outside the chapter either.
-    const params = chapter != null ? { chapter: Number(chapter), size: size ?? 10, from } : { preset, size, oneSkill, from };
+    const params = chapter != null ? { chapter: Number(chapter), size: size ?? 10, from } : { preset, size, oneSkill, from, ...(due ? { due: true } : {}) };
     // A session in progress is kept in localStorage (plan, position, answers) so Back or Reload offers to resume it (G1-08).
     const saved = resume ? readJSON(LS_SESSION, null) : null;
     const usable = saved?.queue?.length && saved.index < saved.queue.length ? saved : null;
@@ -5932,8 +6273,10 @@ export function createUI(ctx) {
     // the chapter's own material by definition and is left alone: the learner asked for that chapter, whole.
     const grid = ch != null ? null : mixGridNow();
     const sel = ch != null ? null : chosenMix(grid);
-    const unstudied = ch != null ? false : unstudiedOn();
-    let world = ch != null ? skillsIndex : { ...skillsIndex, skills: noVocab(filterMix(skillsIndex.skills, sel)) };
+    // "Everything due" (the Review, the plan): every skill due, whatever the setup's saved mix holds (2026-10-28: a mix
+    // kept to one chapter answered "Nothing to practise" over fourteen skills due).
+    const unstudied = ch != null || params.due ? false : unstudiedOn();
+    let world = ch != null ? skillsIndex : { ...skillsIndex, skills: noVocab(params.due ? skillsIndex.skills : filterMix(skillsIndex.skills, sel)) };
     if (ch != null) {
       const material = chapterMaterial(ch, { skills, order: index.order, sets: ctx.sets ?? new Map() });
       const pool = chapterPool(material, { state: stateOf, drillable });
@@ -5952,7 +6295,10 @@ export function createUI(ctx) {
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
     const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])].filter((id) => !isVocab(id)), preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, chapter: ch, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange, unstudied });
     const first = practice.start();
-    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : `Nothing in this mix can produce an item. ${mixNote(sel, grid)}` })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'), btn('Change the mix', { to: ['setup', { from: params.from }], onclick: () => render('setup', { from: params.from }) }, 'btn btn--quiet'))); return; }
+    if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : `Nothing in this mix can produce an item. ${mixNote(sel, grid)}` })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'), btn('Change the mix', { to: ['setup', { from: params.from }], onclick: () => render('setup', { from: params.from }) }, 'btn btn--quiet')),
+      // Never a dead end (2026-10-28: "the screen says there is nothing to practise … I was thinking it should have this
+      // information"): today's session, every step with its game and lesson way in.
+      planCard()); return; }
     if (usable) ctx.say('Session resumed.');
     // The header says what is actually in the set. A mix cut down to one population read "Practice · Review-heavy"
     // over ten vocabulary cards and named neither the narrowing nor the untouched material it had let in.
@@ -6204,7 +6550,7 @@ export function createUI(ctx) {
     const drilled = params?.drill && skills.has(params.drill) && !params.retest ? params.drill : null;
     if (drilled) noteRetestFor(drilled);
     // The re-tests behind one Review button here too (2026-10-26: "all of those review chips should not be there").
-    const after = h('div', { class: 'g-after' }, params?.drill && skills.has(params.drill) ? firstNextNode(params.drill) : null, reviewButton());
+    const after = h('div', { class: 'g-after' }, reviewGameBar(params?.drill ?? params?.skill ?? null), params?.drill && skills.has(params.drill) ? firstNextNode(params.drill) : null, reviewButton());
     if (params?.drill && skills.has(params.drill)) tieInNode(params.drill).then((n) => { if (n) after.append(n); }).catch(() => {});
     const againLabel = params?.unlimited ? 'Keep going' : params?.mixed ? 'Another mixed set' : params?.drill ? (params.retest ? `Drill ${titleOf(params.drill)}` : 'Another ten') : params?.catalogue ? 'Back to the table' : params?.redo ? 'Another redo' : params?.chapter != null ? `Another chapter ${roman(params.chapter)} session` : 'Another session';
     const again = () => (params?.unlimited || params?.mixed ? render(params.unlimited ? 'unlimited' : 'mixed', { skill: params.drill, from: params.from ?? null })

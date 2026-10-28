@@ -23,7 +23,7 @@ export function noteRound(cards, missed, { typed = true, now = Date.now() } = {}
   for (const x of cards ?? []) {
     if (!keepable(x)) continue;
     const had = m[x.key];
-    if (missed.has(x.key)) { m[x.key] = { card: keep(x), step: 0, streak: 0, misses: (had?.misses ?? 0) + 1, due: now + STEPS[0] * DAY }; changed = true; continue; }
+    if (missed.has(x.key)) { m[x.key] = { card: keep(x), step: 0, streak: 0, misses: (had?.misses ?? 0) + 1, due: now + STEPS[0] * DAY, at: now }; changed = true; continue; }
     if (!had || !typed) continue;   // right by choosing or flashing proves less: it stays as it was
     const streak = (had.streak ?? 0) + 1;
     if (streak >= 2) delete m[x.key];
@@ -37,3 +37,14 @@ export function missedForms({ due = false, now = Date.now() } = {}) {
   return Object.values(read()).filter((r) => r?.card && (!due || r.due <= now)).sort((a, b) => (b.misses ?? 0) - (a.misses ?? 0) || a.due - b.due);
 }
 export const missedDue = (now = Date.now()) => missedForms({ due: true, now }).length;
+
+/** Start of yesterday, local time. */
+const yesterday = (now) => { const d = new Date(now); d.setHours(0, 0, 0, 0); return d.getTime() - DAY; };
+/**
+ * The day's forms to put right (2026-10-28: "each day reviewing everything that was wrong too … including all errors
+ * from that day and the day before"): every form missed today or yesterday, and every one due back. Most missed first.
+ */
+export function missedToReview(now = Date.now()) {
+  const since = yesterday(now);
+  return Object.values(read()).filter((r) => r?.card && (r.due <= now || (r.at ?? 0) >= since)).sort((a, b) => (b.misses ?? 0) - (a.misses ?? 0) || a.due - b.due);
+}

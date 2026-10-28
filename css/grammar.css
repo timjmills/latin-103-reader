@@ -1758,8 +1758,28 @@ html.g-game-open .g-side { z-index: 70; }
 .g-plan__steps li.is-done .g-plan__tick { color: #1f7a3a; }
 .g-plan__step { flex: 1; min-height: var(--tap, 40px); text-align: left; padding: 0.35em 0.7em; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--bg); color: var(--ink); font: inherit; cursor: pointer; }
 .g-plan__steps li.is-done .g-plan__step { background: color-mix(in srgb, #2e9e4f 12%, var(--bg)); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent); }
+.g-plan__steps li { flex-wrap: wrap; }
+.g-plan__modes { display: flex; gap: var(--s-1); }
+.g-plan__mode { font-size: var(--ui-sm, 0.85rem); }
+.g-plan__warn { color: #9a3412; font-size: var(--ui-md); margin: var(--s-1) 0 0; }
+.g-rg__list { list-style: none; margin: var(--s-1) 0 0; padding: 0; display: grid; gap: 2px; }
+.g-rg__row { display: flex; gap: var(--s-1); align-items: baseline; cursor: pointer; }
 .g-plan__set { margin-top: var(--s-3); font-size: var(--ui-sm); }
 .g-plan__set summary { cursor: pointer; color: var(--ink-2); }
 .g-plan__set label { display: inline-block; margin: var(--s-1) var(--s-2) 0 0; }
 .g-missed { list-style: none; margin: var(--s-1) 0 0; padding: 0; display: grid; gap: 2px; font-size: var(--ui-sm); }
 .g-missed__cue { color: var(--ink-2); }
+
+/* Today's session run (v162): the step bar at the foot of the page. */
+.g-runbar { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); max-width: min(960px, calc(100vw - 24px)); padding: 0.5em 0.8em; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 0.8rem; box-shadow: 0 6px 24px rgb(0 0 0 / 0.15); font-size: var(--ui-md); }
+.g-runbar__t { flex: 1 1 18em; }
+:root:not([data-section="grammar"]) .g-runbar { display: none; }
+.g-plan__gos { flex-wrap: wrap; }
+.g-side__plan .g-side__go { display: flex; justify-content: space-between; gap: var(--s-1); align-items: baseline; }
+.g-side__plan .is-here .g-side__go { background: color-mix(in srgb, var(--accent, #b5302b) 10%, var(--bg)); font-weight: 600; }
+.g-side__plan .is-done .g-side__go { color: var(--ink-2); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent); }
+/* Rounds done fill a part green, all of them and it is ticked (2026-10-28). */
+.g-side__plan li .g-side__go, .g-plan__steps li .g-plan__step { background: linear-gradient(to right, color-mix(in srgb, #2e9e4f 22%, var(--bg)) var(--p, 0%), var(--bg) var(--p, 0%)); }
+.g-side__plan li.is-done .g-side__go, .g-plan__steps li.is-done .g-plan__step { background: color-mix(in srgb, #2e9e4f 22%, var(--bg)); }
+.g-side__plan li.is-here .g-side__go { outline: 2px solid color-mix(in srgb, var(--accent, #b5302b) 45%, transparent); outline-offset: -2px; }
+.g-side__planhead { margin: var(--s-1) 0; font-size: var(--ui-md); }
