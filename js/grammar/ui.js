@@ -1087,6 +1087,11 @@ export function createUI(ctx) {
   // multiple choice and "what is it" questions are dropped. A skill with nothing typed (metre, enclitics) keeps them.
   for (const s of skills.values()) if (!s.set && (s.kinds ?? []).some((k) => k === 'blank' || k === 'chart')) s.kinds = s.kinds.filter((k) => k !== 'recognise' && k !== 'parse');
   const skillsIndex = { skills };
+  // The vocabulary decks are practised on their own, never in the plan or a mix (2026-10-28: "take out the vocab from
+  // the plans … explicit vocab testing and instruction … it can be practiced on its own in isolation").
+  const isVocab = (id) => !!skills.get(id)?.set && skills.get(id)?.category === 'vocabulary';
+  /** A mix without the vocabulary decks — unless it is nothing but a deck, which is that deck practised alone. */
+  const noVocab = (m) => { const out = new Map([...m].filter(([id]) => !isVocab(id))); return out.size ? out : m; };
   /**
    * Is every word here one the dictionary can answer for? This is what decides
    * whether a **bold** fragment of teaching prose is Latin: the prose bolds a
@@ -1844,8 +1849,10 @@ export function createUI(ctx) {
     if (st.state === 'learning') acts.push(btn('Continue learning', { to: ['learn', { skill: id, from }], onclick: () => render('learn', { skill: id, from }) }, 'btn btn--primary'));
     // The whole lesson as a game (2026-10-23: "the whole lesson progression should be in the game mode, all six parts").
     if (st.state === 'new' || st.state === 'lapsed' || st.state === 'learning') acts.push(learnGameButton(id, { from }));
-    if (st.state === 'new') acts.push(btn('Add to mixed practice', { onclick: async () => { await addSkill(id); render('lesson', { skill: id, from }); } }, 'btn'));
-    if (inRotation(st)) acts.push(btn('Practise this skill', { onclick: () => startBlocked(id, from) }, 'btn btn--primary'));
+    // A vocabulary deck is never in a mix (isVocab): it is practised here, on its own.
+    if (isVocab(id) && !inRotation(st)) acts.push(btn('Practise this deck on its own', { onclick: async () => { await addSkill(id); startBlocked(id, from); } }, 'btn'));
+    else if (st.state === 'new') acts.push(btn('Add to mixed practice', { onclick: async () => { await addSkill(id); render('lesson', { skill: id, from }); } }, 'btn'));
+    if (inRotation(st)) acts.push(btn(isVocab(id) ? 'Practise this deck on its own' : 'Practise this skill', { onclick: () => startBlocked(id, from) }, 'btn btn--primary'));
     // Two taps to a drill (§10): the row opened this; one more starts ten items on the skill alone.
     if (!skill.set && (drillable(id) || skill.paradigms?.length)) acts.push(playButton(id, { from }));
     if (!skill.set && drillable(id)) acts.push(btn('Just drill it', { to: ['drill', { skill: id, from }], onclick: () => render('drill', { skill: id, from }), 'aria-label': `Just drill ${skill.title}: ten items, the rule pinned above each` }, st.state === 'new' ? 'btn' : 'btn btn--quiet'));
@@ -2615,7 +2622,7 @@ export function createUI(ctx) {
   }
   function reviewItems() {
     const now = Date.now();
-    const retests = retestDue(retestList().filter((r) => skills.has(r.skill)), now).map((r) => r.skill);
+    const retests = retestDue(retestList().filter((r) => skills.has(r.skill) && !isVocab(r.skill)), now).map((r) => r.skill);
     const due = [...skills.keys()].filter((x) => !skills.get(x).set && inRotation(stateOf(x)) && isDue(stateOf(x), now)).sort((a, b) => thePath().of(a) - thePath().of(b));
     const missed = missedCount();
     const forms = missedDue();
@@ -5663,7 +5670,8 @@ export function createUI(ctx) {
    * cell with nothing drillable is not offered at all: a control that cannot
    * change anything is worse than no control.
    */
-  const mixGridNow = () => mixGrid({ chapters: ctx.chapters ?? null, skills, order: index.order, sets: ctx.sets ?? new Map(), drillable });
+  // The vocabulary decks are not offered in a mix at all (isVocab): each is practised on its own page.
+  const mixGridNow = () => mixGrid({ chapters: ctx.chapters ?? null, skills: new Map([...skills].filter(([id]) => !isVocab(id))), order: index.order, sets: new Map([...(ctx.sets ?? new Map())].filter(([id]) => !isVocab(id))), drillable });
   /** The learner's ticks, cleaned against what the library offers. Never chosen = everything. */
   const chosenMix = (grid = mixGridNow()) => normaliseMix(ctx.prefs().populations, grid);
   /** True when a skill or set has never been opened at all: no row, or a row still marked new. */
@@ -5689,7 +5697,7 @@ export function createUI(ctx) {
     let unstudied = unstudiedOn();
     const rotation = [...skills.keys()].filter((id) => inRotation(stateOf(id)) && drillable(id));
     let pool = mixPool(sel, unstudied);
-    const cw = [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])];
+    const cw = [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])].filter((id) => !isVocab(id));
     const onShelf = isShelfWeek(ctx.currentWeekN());
     let size = prefs.size;
     let preset = prefs.preset;
@@ -5925,7 +5933,7 @@ export function createUI(ctx) {
     const grid = ch != null ? null : mixGridNow();
     const sel = ch != null ? null : chosenMix(grid);
     const unstudied = ch != null ? false : unstudiedOn();
-    let world = ch != null ? skillsIndex : { ...skillsIndex, skills: filterMix(skillsIndex.skills, sel) };
+    let world = ch != null ? skillsIndex : { ...skillsIndex, skills: noVocab(filterMix(skillsIndex.skills, sel)) };
     if (ch != null) {
       const material = chapterMaterial(ch, { skills, order: index.order, sets: ctx.sets ?? new Map() });
       const pool = chapterPool(material, { state: stateOf, drillable });
@@ -5939,10 +5947,10 @@ export function createUI(ctx) {
           h('div', { class: 'g-acts' }, backButton(params.from ?? { chapter: ch }, 'btn')));
         return;
       }
-      world = { skills: pool.map };
+      world = { skills: noVocab(pool.map) };
     }
     const onChange = (snap) => writeJSON(LS_SESSION, snap.index < snap.queue.length ? { ...snap, params, at: Date.now() } : null);
-    const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])], preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, chapter: ch, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange, unstudied });
+    const practice = createPractice({ gstore, items, skillsIndex: world, currentWeekN: ctx.currentWeekN(), currentWeekSkills: ch != null ? [] : [...ctx.currentWeekSkills(), ...(ctx.currentWeekSets?.() ?? [])].filter((id) => !isVocab(id)), preset: ch != null ? 'review-heavy' : params.preset, size: params.size, oneSkill: ch != null ? null : params.oneSkill, chapter: ch, resume: usable ? { queue: usable.queue, index: usable.index, log: usable.log } : null, onChange, unstudied });
     const first = practice.start();
     if (!first) { writeJSON(LS_SESSION, null); setBody(h('header', { class: 'g-head' }, h('h1', { class: 'g-title', text: 'Nothing to practise' }), h('p', { class: 'g-lede', text: ch != null ? `No sentences in the library fit chapter ${roman(ch)}'s skills yet.` : `Nothing in this mix can produce an item. ${mixNote(sel, grid)}` })), h('div', { class: 'g-acts' }, backButton(params.from, 'btn'), btn('Change the mix', { to: ['setup', { from: params.from }], onclick: () => render('setup', { from: params.from }) }, 'btn btn--quiet'))); return; }
     if (usable) ctx.say('Session resumed.');
@@ -5971,7 +5979,7 @@ export function createUI(ctx) {
    * are offered back from its result screen, once the skill has passed.
    */
   const redoable = (id) => { const st = stateOf(id).state; return (st === 'practising' || st === 'mastered' || st === 'lapsed') && drillable(id); };
-  const redoScope = ({ skill = null, chapter = null } = {}) => new Set((skill != null ? [skill] : chapter != null ? chapterIds(chapter) : [...skills.keys()]).filter(redoable));
+  const redoScope = ({ skill = null, chapter = null } = {}) => new Set((skill != null ? [skill] : (chapter != null ? chapterIds(chapter) : [...skills.keys()]).filter((id) => !isVocab(id))).filter(redoable));
   /** How many items are waiting to be redone here. 0 means the control says so quietly and is not offered. */
   const missedCount = (scope = {}) => (ctx.items ? gstore.countMissed({ skills: redoScope(scope) }) : 0);
   /** Wrong answers here that name no item, so can never be offered back — what the empty state must own up to (M-3). */
