@@ -1783,3 +1783,8 @@ html.g-game-open .g-side { z-index: 70; }
 .g-side__plan li.is-done .g-side__go, .g-plan__steps li.is-done .g-plan__step { background: color-mix(in srgb, #2e9e4f 22%, var(--bg)); }
 .g-side__plan li.is-here .g-side__go { outline: 2px solid color-mix(in srgb, var(--accent, #b5302b) 45%, transparent); outline-offset: -2px; }
 .g-side__planhead { margin: var(--s-1) 0; font-size: var(--ui-md); }
+.g-planpanel__now { margin: 0 0 var(--s-2); padding: 0.35em 0.6em; border-radius: 0.5rem; font-weight: 600; }
+.g-planpanel__now.is-done { background: color-mix(in srgb, #2e9e4f 18%, var(--bg)); color: #1f6b35; }
+.g-planpanel__now.is-todo { background: color-mix(in srgb, #d97706 14%, var(--bg)); color: #8a4b05; }
+.g-side__plan li.is-done .g-count { background: #2e9e4f; color: #fff; }
+.g-side__plan li:not(.is-done) .g-count { background: color-mix(in srgb, #d97706 16%, var(--bg)); color: #8a4b05; }

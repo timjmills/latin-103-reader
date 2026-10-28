@@ -186,6 +186,13 @@ export function choicesFor(x, pool, text, right) {
  * "shuffled type is the hardest"). */
 /** The most forms in one round of a game. */
 export const ROUND = 16;
+/**
+ * What the game window shows on its right (2026-10-28: "in this mode of today's session on the right side I want the
+ * session side bar that walks through what has been done successfully, what still needs to be done, the estimated
+ * timing"): a provider of a node, given by the Grammar section (its Daily Study Plan while one runs), or null.
+ */
+let asideProvider = null;
+export function setGameAside(fn) { asideProvider = typeof fn === 'function' ? fn : null; }
 export const LADDER = [['parse', false], ['choose', false], ['flash', false], ['type', false], ['type', true]];
 const rung = (mode, shuffle) => { const i = LADDER.findIndex(([m, sh]) => m === mode && sh === (mode === 'type' && !!shuffle)); return i < 0 ? LADDER.findIndex(([m]) => m === mode) : i; };
 export const ladderLabel = (mode, shuffle) => `${MODES.find(([k]) => k === mode)?.[1] ?? mode}${mode === 'type' && shuffle ? ', shuffled' : ''}`;
@@ -203,7 +210,7 @@ export const harderThan = (mode, shuffle = false) => stepThan(mode, shuffle, 1);
 export const playWay = () => { const mode = modeOf(read('mode', 'type')); const shuffle = mode === 'type' && !!read('shuffle', false); return { mode, shuffle, label: ladderLabel(mode, shuffle) }; };
 export function setPlayWay({ mode, shuffle = false }) { write('mode', modeOf(mode)); write('shuffle', !!shuffle); }
 
-export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null, study = null, tables = null, round = 0, context = null } = {}) {
+export function playTable({ title = '', subtitle = '', items = [], id = null, onNext = null, nextLabel = 'Next word →', onClose = null, rule = null, ruleFirst = true, charts = null, how = null, onDone = null, countKey = null, continueLabel = null, suggest = null, settings = null, study = null, tables = null, round = 0, context = null, untilRight = false, askMode = false } = {}) {
   // In order, a column at a time (2026-10-23: "unless it's on shuffle have all the active first then all the passive"):
   // each group's forms together, the groups in the order they first come, the forms in each as given.
   // Rounds of at most ROUND forms (2026-10-27: "rounds each with 16 words at most, because practising all these words
@@ -392,6 +399,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // form of the round in its column, filled in as it is answered — green right the first time, red missed, skipped or
   // shown, … still to come. Beside the wheel on a wide screen only (panels.css).
   const built = el('aside', { class: 'gm__built', 'aria-label': 'The table so far' });
+  const planAside = el('aside', { class: 'gm__plan', 'aria-label': "Today's plan", hidden: true });
+  const paintPlan = () => { let n = null; try { n = asideProvider?.() ?? null; } catch { n = null; } planAside.hidden = !n; planAside.replaceChildren(...(n ? [n] : [])); };
   // A <dialog> shown modal: it stacks above the word popup (itself a modal dialog, in the top layer, where no
   // z-index reaches), keeps the focus inside, and Escape closes it.
   const root = el('dialog', { class: 'gm', 'aria-label': `Game: ${title}` },
@@ -400,7 +409,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock, activeTimer()),
       el('div', { class: 'gm__tools' }, studyBtn, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
       meter),
-    stage, built, live);
+    stage, built, planAside, live);
+  paintPlan();
 
   /* ---- the rows: one per form, in play order; a redo is a row of its own */
   const rows = [];
@@ -841,6 +851,20 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     node.keep = true;
     openPanel(node, goOn);
   }
+  /**
+   * Flash first, or straight to Type it? Asked before every round of the Daily Study Plan (2026-10-28: "no round counts
+   * unless it's a typed round, but always ask if you want typed or flash round first"). A Flash round is then played
+   * again typed by itself (`untilRight`); a typed one counts as it is.
+   */
+  function openModeAsk() {
+    const pick = (m) => () => { mode = m; shuffle = false; write('mode', m); write('shuffle', false); paintStats(); node.resume(() => { if (rule && ruleFirst) openRule(); }); };
+    const typeBtn = el('button', { type: 'button', class: 'btn btn--primary', onclick: pick('type') }, '⌨ Type it — this round counts');
+    const node = el('section', { class: 'gm__end gm__panel', role: 'region', 'aria-labelledby': 'gm-ask-h' },
+      el('h2', { id: 'gm-ask-h', class: 'gm__endh', text: 'Flash first, or straight to Type it?' }),
+      el('p', { class: 'gm__sub', text: 'Only a typed round counts. Flash first, and the same round comes round typed straight after.' }),
+      el('div', { class: 'gm__acts' }, el('button', { type: 'button', class: 'btn', onclick: pick('flash') }, '⚡ Flash first'), typeBtn));
+    openPanel(node, typeBtn);
+  }
   /** One step easier (-1) or harder (+1): the form on screen is asked again the new way; a change of shuffle orders the next round. */
   function stepMode(d) {
     const to = stepThan(mode, shuffle, d);
@@ -901,6 +925,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   function finish() {
     ended = true;
+    // The plan beside it moves on once this round is written down (the credit is stored a moment later).
+    setTimeout(paintPlan, 700);
     // A caller playing its own boxes (a lesson's chart, ui.js) is told which were missed on the first try.
     try { onDone?.({ firstMiss: new Set(firstMiss), shown: new Set(shown), typed: mode === 'type', played: new Set(base.map((x) => x.key)), last: lastRound }); } catch (e) { console.warn('[game] onDone', e); }
     // `countKey` may be a function of the forms this round played (a round credits only its own words' tables).
@@ -922,7 +948,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (id && isBest) { best = { score, secs, at: new Date().toISOString() }; write(`best.${id}`, best); }
     if (id) write(`misses.${id}`, misses.map((x) => x.key));
     const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    const again = (its, sub, gid, r = 0) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings, study, tables, context, round: r }); };
+    const again = (its, sub, gid, r = 0) => () => { close(true); playTable({ title, subtitle: sub, items: its, id: gid, onNext, nextLabel, onClose, rule, ruleFirst: false, charts, how, countKey, continueLabel, suggest, onDone, settings, study, tables, context, untilRight, round: r }); };
     // This round, played again: every form handed in, at this round.
     const thisRound = () => again(items, subtitle, id, roundAt);
     const nextRound = !lastRound ? el('button', { type: 'button', class: 'btn btn--primary gm__nextround', onclick: again(items, subtitle, id, roundAt + 1) }, `Next round → (${roundAt + 2} of ${rounds.length}: ${rounds[roundAt + 1].length} forms)`) : null;
@@ -938,7 +964,9 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       nextRound,
       misses.length ? el('button', { type: 'button', class: nextRound ? 'btn' : 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
       nextChartBtn,
-      onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
+      // Until right (the Daily Study Plan, 2026-10-28: "automatically go through any errors until they are done without
+      // error before moving on"): with misses, the way on waits; the missed ones start again by themselves.
+      onNext && !(untilRight && misses.length) ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
       // A game played inside something (a lesson's chart): the way back into it is the way on.
       continueLabel && !onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => close() }, continueLabel) : null,
       el('button', { type: 'button', class: 'btn', onclick: thisRound() }, rounds.length > 1 ? 'This round again' : 'Play again'),
@@ -949,6 +977,27 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // the hardest"). The ladder: What is it? → Choose → Flash → Type it → Type it, shuffled.
     const up = harderThan(mode, shuffle);
     if (up) acts.insertBefore(el('button', { type: 'button', class: 'btn gm__harder', onclick: () => { write('mode', up.mode); write('shuffle', up.shuffle); thisRound()(); } }, `${rounds.length > 1 ? 'This round' : 'Same again'}, harder: ${up.label} ↑`), acts.querySelector('button:nth-last-child(2)'));
+    // The Daily Study Plan goes on by itself (2026-10-28: "automatically go through any errors until they are done
+    // without error before moving on … then it automatically should go to the next round or the next skill … or the
+    // next mode needed to progress"; "I will almost always do something in flash mode first and then in the type
+    // mode"): a round not typed is played again typed (only typed rounds count); then the misses, until none; then
+    // the next round, or the plan's next step. A short count first, and "Stay here".
+    if (untilRight) {
+      const goType = mode !== 'type';
+      const fn = goType ? () => { write('mode', 'type'); write('shuffle', false); thisRound()(); }
+        : misses.length ? again(misses, 'The ones missed — until each is right', null)
+          : nextRound ? () => nextRound.click() : onNext ? () => { close(true); onNext(); } : null;
+      const what = goType ? 'This round again, typed (only typed rounds count)' : misses.length ? `The ${misses.length} you missed, again` : nextRound ? 'The next round' : nextLabel.replace(/\s*→$/, '');
+      if (fn) {
+        let n = 4;
+        const note = el('p', { class: 'gm__autonext', role: 'status' });
+        const paint = () => { note.textContent = `${what} — in ${n}…`; };
+        paint();
+        const t = setInterval(() => { if (!root.open) { clearInterval(t); return; } n -= 1; if (n <= 0) { clearInterval(t); fn(); } else paint(); }, 1000);
+        const stay = el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => { clearInterval(t); note.textContent = 'Staying here: the buttons below go on when you are ready.'; stay.remove(); } }, 'Stay here');
+        acts.prepend(el('div', { class: 'gm__autogo' }, note, stay));
+      }
+    }
     const stars = clean === base.length ? 3 : clean >= base.length * 0.7 ? 2 : clean > 0 ? 1 : 0;
     const card = el('section', { class: 'gm__end', 'aria-labelledby': 'gm-end-h' },
       el('p', { class: 'gm__stars', 'aria-label': `${stars} of 3 stars` }, [0, 1, 2].map((i) => el('span', { class: i < stars ? 'is-on' : '', 'aria-hidden': 'true', text: '★' }))),
@@ -1002,6 +1051,6 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   try { root.showModal(); } catch { root.setAttribute('open', ''); }
   paintStats();
   // The rule first, where there is one (a replay goes straight in); the clock starts with Start.
-  requestAnimationFrame(() => { if (rule && ruleFirst) { place(); openRule(); } else ask(); });
+  requestAnimationFrame(() => { if (askMode) { place(); openModeAsk(); } else if (rule && ruleFirst) { place(); openRule(); } else ask(); });
   return { close };
 }
