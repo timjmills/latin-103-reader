@@ -2790,32 +2790,36 @@ export function createUI(ctx) {
     runToday(at);
   }
   /**
-   * The half hour kept (2026-10-29: "when the time reaches 30, whatever round it's on, when it finishes it should go to
-   * the next thing for that day, and move the remaining rounds to the end if there is time"): the review block — the
-   * mistakes and the first review — is timed from its first round; once it has had its half hour, the review rounds it
-   * has not reached become More review, at the end of the day, and the day goes on to today's learning.
+   * The day in order, each block with its limit (2026-10-30: "some of the corrections (limited to 15 min), 20 minutes
+   * review (at most), all new skills, and only then everything else like more review, extra corrections"): the
+   * corrections are timed from their first round and the review from its; once a block has had its minutes, the
+   * round under way finishes and the block's rounds not reached go to the end of the day, after today's learning.
    */
-  const inBlock = (it) => !!it && ((it.t === 'r' && !it.more) || it.key === 'forms' || it.key === 'redo' || it.key === 'review');
-  function keepHalfHour(g, i) {
+  const FIX_MIN = 15;
+  const isFix = (it) => !!it && ((it.t === 'r' && it.v === '#forms' && !it.more) || (it.t === 's' && (it.key === 'forms' || it.key === 'redo')));
+  const isRev = (it) => !!it && ((it.t === 'r' && !it.more && it.v !== '#forms') || (it.t === 's' && it.key === 'review'));
+  const laterFix = (x) => (x.t === 'r' ? { ...x, more: true, label: 'More corrections: forms you got wrong' } : { ...x, key: x.key === 'forms' ? 'forms2' : 'redo2', label: x.key === 'forms' ? 'More corrections: forms you got wrong' : 'More corrections: questions you got wrong' });
+  const laterRev = (x) => (x.t === 'r' ? { ...x, more: true, label: x.label.replace(/^Review:/, 'More review:') } : { ...x, key: 'review2', label: 'More review' });
+  function keepLimits(g, i) {
     const it = g.items[i];
-    if (!inBlock(it)) return g;
-    if (g.rev0 == null) { const n = { ...g, rev0: ownSecondsToday() }; setTodayRun(n); return n; }
-    if ((ownSecondsToday() - g.rev0) / 60 < REVIEW_MIN) return g;
-    // Time: the block's review rounds still ahead go to the end (the mistakes stay — they are what is wrong now).
-    const ahead = g.items.slice(i).filter((x) => x.t === 'r' && !x.more && x.v !== '#forms' || (x.t === 's' && x.key === 'review'));
+    const block = isFix(it) ? { is: isFix, start: 'fix0', min: FIX_MIN, later: laterFix, what: 'corrections' } : isRev(it) ? { is: isRev, start: 'rev0', min: REVIEW_MIN, later: laterRev, what: 'review' } : null;
+    if (!block) return g;
+    if (g[block.start] == null) { const n = { ...g, [block.start]: ownSecondsToday() }; setTodayRun(n); return n; }
+    if ((ownSecondsToday() - g[block.start]) / 60 < block.min) return g;
+    // Time: this block's rounds from here on go to the end of the day.
+    const ahead = g.items.slice(i).filter(block.is);
     if (!ahead.length) return g;
-    const moved = ahead.map((x) => (x.t === 'r' ? { ...x, more: true, label: x.label.replace(/^Review:/, 'More review:') } : { ...x, key: 'review2', label: 'More review' }));
-    const items = [...g.items.slice(0, i), ...g.items.slice(i).filter((x) => !ahead.includes(x)), ...moved];
+    const items = [...g.items.slice(0, i), ...g.items.slice(i).filter((x) => !ahead.includes(x)), ...ahead.map(block.later)];
     const movedIds = new Set(ahead.filter((x) => x.t === 'r').flatMap((x) => (Array.isArray(x.v) ? x.v : [x.v])));
     const n = { ...g, items, firstIds: (g.firstIds ?? []).filter((x) => !movedIds.has(x)) };
     setTodayRun(n);
-    ctx.say(`Half an hour of review done: ${ahead.length} round${ahead.length === 1 ? '' : 's'} moved to More review, at the end.`);
+    ctx.say(`${block.min} minutes of ${block.what} done: the rest of it moved to the end of the day.`);
     return n;
   }
   function runToday(i) {
     let g = todayRun();
     if (!g) { paintRunBar(); return; }
-    if (i < g.items.length) g = keepHalfHour(g, i);
+    if (i < g.items.length) g = keepLimits(g, i);
     if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
     setTodayRun({ ...g, at: i, ra0: ownSecondsToday(), extra: 0 });
     paintSide();
@@ -2827,7 +2831,8 @@ export function createUI(ctx) {
       if (!playReviewItem(it.v, { next, round: `Today ${i + 1} of ${g.items.length}`, skip: () => runToday(i + 1) })) runToday(i + 1);
       return;
     }
-    const st = planSteps().steps.find((x) => x.key === it.key);
+    const stepKey = it.key === 'redo2' ? 'redo' : it.key === 'forms2' ? 'forms' : it.key;
+    const st = planSteps().steps.find((x) => x.key === stepKey);
     if (!st || st.done) { runToday(i + 1); return; }
     const fn = g.mode === 'game' ? st.game ?? st.lesson : st.lesson ?? st.game;
     fn?.();
@@ -2837,16 +2842,16 @@ export function createUI(ctx) {
     const r = reviewItems();
     if (key === 'review') return reviewSplit().first.length;
     if (key === 'review2') return reviewSplit().rest.length;
-    if (key === 'forms') return r.forms ? Math.ceil(r.forms / 16) : 0;
-    if (key === 'redo') return r.missed ? Math.ceil(r.missed / PLAN_SENTENCES) : 0;
+    if (key === 'forms' || key === 'forms2') return r.forms ? Math.ceil(r.forms / 16) : 0;
+    if (key === 'redo' || key === 'redo2') return r.missed ? Math.ceil(r.missed / PLAN_SENTENCES) : 0;
     if (key === 'mixed') return 2;
     return 1;
   }
-  const partKey = (it) => (it.t === 'r' ? (it.v === '#forms' ? 'forms' : it.more ? 'review2' : 'review') : it.key);
+  const partKey = (it) => (it.t === 'r' ? (it.v === '#forms' ? (it.more ? 'forms2' : 'forms') : it.more ? 'review2' : 'review') : it.key);
   /** Minutes a round of a part takes before your own pace is known. */
   // A round is played in Flash first, then typed (2026-10-28: "I will almost always do something in flash mode first and
   // then in the type mode"), so a game round is reckoned at both.
-  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' ? 5 : key === 'redo' ? 2 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
+  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' || key === 'forms2' ? 5 : key === 'redo' || key === 'redo2' ? 2 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
   const PACE_KEY = 'l103.plan.pace';
   const savedPace = () => { try { const v = Number(localStorage.getItem(PACE_KEY)); return v > 0 ? v : 1; } catch { return 1; } };
   /**
@@ -2862,20 +2867,22 @@ export function createUI(ctx) {
   function syncRun(g) {
     const r = reviewItems();
     const add = [];
-    const has = (pred) => g.items.some(pred);
+    const ahead = g.items.slice(g.at);
+    const has = (pred) => ahead.some(pred);
+    // Whatever comes up during the day goes to the end (2026-10-30: "only then everything else like more review, extra
+    // corrections"), never in front of today's learning.
     if (g.mode === 'game') {
       const present = new Set(g.items.filter((it) => it.t === 'r').flatMap((it) => (Array.isArray(it.v) ? it.v : [it.v])));
-      if (r.forms && !present.has('#forms')) add.push({ t: 'r', v: '#forms', label: 'Review: Forms you got wrong' });
-      const fresh = [...new Set([...r.retests, ...r.due])].filter((x) => !present.has(x));
+      if (r.forms && !has((it) => it.t === 'r' && it.v === '#forms')) add.push({ t: 'r', v: '#forms', more: true, label: 'More corrections: forms you got wrong' });
+      const fresh = [...new Set([...r.retests, ...r.due])].filter((x) => !present.has(x) && !sentenceOnly(x));
       for (const x of reviewRounds(fresh, reviewMixed())) add.push({ t: 'r', v: x, more: true, label: `More review: ${roundName(x)}` });
     } else {
       if (reviewSplit().rest.length && !has((it) => it.key === 'review2')) add.push({ t: 's', key: 'review2', label: 'More review' });
-      if (r.forms && !has((it) => it.key === 'forms')) add.push({ t: 's', key: 'forms', label: 'Forms you got wrong' });
+      if (r.forms && !has((it) => it.key === 'forms' || it.key === 'forms2')) add.push({ t: 's', key: 'forms2', label: 'More corrections: forms you got wrong' });
     }
-    if (r.missed && !has((it) => it.key === 'redo')) add.push({ t: 's', key: 'redo', label: `Questions you got wrong (${r.missed})` });
+    if (r.missed && !has((it) => it.key === 'redo' || it.key === 'redo2')) add.push({ t: 's', key: 'redo2', label: `More corrections: questions you got wrong (${r.missed})` });
     if (!add.length) return g;
-    const items = [...g.items.slice(0, g.at + 1), ...add, ...g.items.slice(g.at + 1)];
-    const next = { ...g, items };
+    const next = { ...g, items: [...g.items, ...add] };
     setTodayRun(next);
     return next;
   }
@@ -2892,11 +2899,13 @@ export function createUI(ctx) {
       const st = steps.find((x) => x.key === key);
       // A part that can grow (the review, the forms, the questions wrong): its rounds left are what is there now, and
       // its rounds done are kept, so new review adds rounds — and time — rather than being lost under a cap.
-      const grows = key === 'review' || key === 'review2' || key === 'forms' || key === 'redo';
+      const grows = ['review', 'review2', 'forms', 'forms2', 'redo', 'redo2'].includes(key);
       let total = totals[key] ?? Math.max(1, stepRounds(key));
-      let left = grows ? stepRounds(key) : st?.done ? 0 : total;
+      // A first-block correction already passed, with its rest at the end: what is left is counted there, not twice.
+      const passed = (key === 'forms' || key === 'redo') && g.items.some((x, j) => j > g.at && partKey(x) === `${key}2`) && !g.items.some((x, j) => j >= g.at && partKey(x) === key);
+      let left = passed ? 0 : grows ? stepRounds(key) : st?.done ? 0 : total;
       if (grows) { total = Math.max(total, (doneRec[key] ?? 0) + left); doneRec[key] = Math.max(doneRec[key] ?? 0, total - left); totals[key] = total; }
-      out.push({ key, at: i, label: key === 'review' ? 'Review (about 30 min)' : key === 'review2' ? 'More review' : key === 'forms' ? 'Mistakes: forms you got wrong' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
+      out.push({ key, later: !!it.later, at: i, label: key === 'review' ? `Review (up to ${REVIEW_MIN} min)` : key === 'review2' ? 'More review' : key === 'forms' ? 'Corrections: forms you got wrong' : key === 'forms2' ? 'More corrections: forms' : key === 'redo2' ? 'More corrections: questions' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
     });
     // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at. The round
     // under way is left out of the pace and taken off its own part, so the time left falls as you play (2026-10-28).
@@ -2953,7 +2962,7 @@ export function createUI(ctx) {
     const tb = /^table:(.+)$/.exec(key)?.[1] ?? /^star:table:(.+)$/.exec(key)?.[1] ?? null;
     if (sid && ids.includes(sid)) return true;
     if (table && (table === tb || ids.some((x) => skills.get(x)?.paradigms?.includes(table)))) return true;
-    if (['redo', 'session', 'summary', 'setup'].includes(name) && ['redo', 'mixed', 'review', 'forms'].includes(key)) return true;
+    if (['redo', 'session', 'summary', 'setup'].includes(name) && ['redo', 'redo2', 'mixed', 'review', 'review2', 'forms', 'forms2'].includes(key)) return true;
     return false;
   }
   /**
@@ -2961,6 +2970,28 @@ export function createUI(ctx) {
    * green), the one under way — any of them a click away. In the side bar, and on the right of the game window
    * (`inGame`: a click closes the game first).
    */
+  /**
+   * The day's three phases, each its colour (2026-10-30: "colour code the three phases: 1. corrections/review 2. lesson
+   * new 3. more review/corrections"). A heading where each begins; `withPhases` threads them into a list of rows.
+   */
+  const PHASES = { 1: '1 · Corrections & review', 2: '2 · New lessons', 3: '3 · More review & corrections' };
+  const phaseOf = (key) => (['forms', 'redo', 'review'].includes(key) ? 1 : /^(learn|play):/.test(key) ? 2 : 3);
+  const withPhases = (rows) => { let last = 0; return rows.flatMap(([ph, li]) => { li.dataset.phase = String(ph); const head = ph !== last ? h('li', { class: 'g-phase', 'data-phase': String(ph), 'aria-hidden': 'true', text: PHASES[ph] }) : null; last = ph; return [head, li].filter(Boolean); }); };
+  /** A part of the day skipped for now: its rounds still to come go to the end, in the last section. */
+  function skipLater(key, inGame = false) {
+    const g = todayRun();
+    if (!g) return;
+    const mine = (x, j) => j >= g.at && partKey(x) === key;
+    const moving = g.items.filter(mine);
+    if (!moving.length) return;
+    const later = (x) => (isFix(x) ? laterFix(x) : isRev(x) ? laterRev(x) : { ...x, later: true });
+    const here = partKey(g.items[g.at] ?? {}) === key;
+    const items = [...g.items.filter((x, j) => !mine(x, j)), ...moving.map(later)];
+    setTodayRun({ ...g, items });
+    ctx.say(`${moving[0].label}: skipped for now — it is at the end of today's plan.`);
+    if (here) { if (inGame) document.querySelectorAll('dialog.gm[open]').forEach((d) => d.close()); runToday(g.at); return; }
+    paintSide(); planTick(); paintRunBar();
+  }
   function planPanel(g, { inGame = false } = {}) {
     const rp = runParts(g);
     celebrate(g, rp.parts);
@@ -2973,10 +3004,12 @@ export function createUI(ctx) {
         p.complete ? `✓ Done: ${p.label}` : g.lastDone && p.done ? `✓ Done: ${g.lastDone} · ${p.label}: ${p.done} of ${p.total} rounds done, ${p.left} to go` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'review2' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? 'pass the Learn lesson (6 of the last 10 right)' : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
       h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
       h('div', { class: 'g-planpanel__bar', style: `--p:${rp.total ? Math.round((rp.done / rp.total) * 100) : 0}%`, 'aria-hidden': 'true' }),
-      h('ol', { class: 'g-side__list g-side__plan' }, rp.parts.map((p) => h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
+      h('ol', { class: 'g-side__list g-side__plan' }, withPhases(rp.parts.map((p) => [p.later ? 3 : phaseOf(p.key), h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
         h('button', { type: 'button', class: 'g-side__go', 'aria-current': p.here ? 'step' : null, onclick: go(p.at) },
           h('span', { text: `${p.complete ? '✓ ' : p.here ? '▶ ' : ''}${p.label}` }),
-          h('span', { class: 'g-count', 'data-plan-part': p.key, text: partCount(p) }))))),
+          h('span', { class: 'g-count', 'data-plan-part': p.key, text: partCount(p) })),
+        // Skip it and come back (2026-10-30: "add a skip / come back option, where it then slots it to the last section").
+        !p.complete && !(p.later && rp.parts[rp.parts.length - 1] === p) ? h('button', { type: 'button', class: 'g-side__later', title: 'Skip it for now: it moves to the last section', 'aria-label': `Skip ${p.label} for now and come back to it at the end`, onclick: () => { skipLater(p.key, inGame); } }, 'Later ↓') : null)]))),
       inGame ? null : btn('Stop the plan', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet g-side__btn'));
   }
   setGameAside(() => { const g = todayRun(); return g ? planPanel(g, { inGame: true }) : null; });
@@ -2997,11 +3030,12 @@ export function createUI(ctx) {
     if (!bar) { bar = h('div', { id: 'g-runbar', class: 'g-runbar', role: 'region', 'aria-label': "Today's session" }); document.body.append(bar); }
     const i = g.at;
     const cur = g.items[i];
-    const again = cur?.t === 's' && (cur.key === 'redo' || cur.key === 'forms' || cur.key === 'mixed') && stepRounds(cur.key) > (cur.key === 'mixed' ? 99 : 0);
+    const again = cur?.t === 's' && ['redo', 'redo2', 'forms', 'forms2', 'mixed'].includes(cur.key) && stepRounds(cur.key) > (cur.key === 'mixed' ? 99 : 0);
     bar.replaceChildren(...[
       h('span', { class: 'g-runbar__t' }, h('b', { text: `Today's session (${g.mode === 'game' ? 'game' : 'lesson'} mode) · ${i + 1} of ${g.items.length}: ` }), g.items[i]?.label ?? '',
         h('span', { class: 'g-quiet' }, ' · ', h('span', { 'data-plan-min': '', text: ((m) => (m > 0 ? `${minsText(m)} left` : 'all done ✓'))(runParts(g).minsLeft) }))),
       again ? btn(`Another round (${stepRounds(cur.key)} left)`, { onclick: () => runToday(i) }, 'btn') : null,
+      i + 1 < g.items.length && !cur?.later ? btn('Skip, come back later ↓', { onclick: () => skipLater(partKey(cur)), title: 'It moves to the last section of today' }, 'btn btn--quiet') : null,
       btn(i + 1 < g.items.length ? `Next: ${g.items[i + 1].label} →` : 'Finish ✓', { onclick: () => runToday(i + 1) }, 'btn btn--primary g-runbar__next'),
       btn('Stop', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet')].filter(Boolean));
   }
@@ -4663,7 +4697,7 @@ export function createUI(ctx) {
    * overdue first (re-tests before them); and the rest. While today's plan runs, the split it began with is kept, and
    * what has fallen due since goes to the rest.
    */
-  const REVIEW_MIN = 30;
+  const REVIEW_MIN = 20;
   function reviewSplit() {
     const r = reviewItems();
     const now = Date.now();
@@ -4675,7 +4709,7 @@ export function createUI(ctx) {
     }
     const pace = savedPace();
     // The half hour is filled most overdue first; each half then plays its tables before its sentences (tablesFirst).
-    let budget = REVIEW_MIN - ((r.forms ? Math.ceil(r.forms / 16) * roundMin('forms') : 0) + (r.missed ? Math.ceil(r.missed / PLAN_SENTENCES) * roundMin('redo') : 0)) * pace;
+    let budget = REVIEW_MIN;   // the review's own twenty minutes; the corrections have their fifteen before it
     const first = [], rest = [];
     for (const x of reviewMixed() ? reviewRounds(ids, true) : ids) {
       const cost = roundMin('review') * pace;
@@ -4701,10 +4735,10 @@ export function createUI(ctx) {
     const split = reviewSplit();
     // Every day, what was wrong (2026-10-28: "each day reviewing everything that was wrong too … all errors from that
     // day and the day before"): the forms missed in games, and the questions missed in lessons.
-    if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Mistakes: forms you got wrong (${r.forms})` : 'Mistakes: forms you got wrong', sub: r.forms > 16 ? `${Math.ceil(r.forms / 16)} rounds of 16` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
-    if (r.missed) steps.push({ key: 'redo', label: `Mistakes: questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / PLAN_SENTENCES)} round${r.missed > PLAN_SENTENCES ? 's' : ''} of ${PLAN_SENTENCES}`, done: false, game: gameMode(() => goView('redo', { size: PLAN_SENTENCES })), lesson: lessonMode(() => goView('redo', { size: PLAN_SENTENCES })) });
+    if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Corrections (up to ${FIX_MIN} min): forms you got wrong (${r.forms})` : 'Corrections: forms you got wrong', sub: r.forms > 16 ? `${Math.ceil(r.forms / 16)} rounds of 16` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
+    if (r.missed) steps.push({ key: 'redo', label: `Corrections: questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / PLAN_SENTENCES)} round${r.missed > PLAN_SENTENCES ? 's' : ''} of ${PLAN_SENTENCES}`, done: false, game: gameMode(() => goView('redo', { size: PLAN_SENTENCES })), lesson: lessonMode(() => goView('redo', { size: PLAN_SENTENCES })) });
     const firstIds = split.first.flat();
-    if (firstIds.length || (rn && !split.rest.length) || (!rn && today.kind !== 'rest')) steps.push({ key: 'review', label: firstIds.length ? `Review (about 30 min): ${firstIds.length} skill${firstIds.length === 1 ? '' : 's'} due` : 'Review: no skill due', sub: firstIds.length ? `${split.first.length} round${split.first.length === 1 ? '' : 's'}, the most overdue first` : '', done: !firstIds.length,
+    if (firstIds.length || (rn && !split.rest.length) || (!rn && today.kind !== 'rest')) steps.push({ key: 'review', label: firstIds.length ? `Review (up to ${REVIEW_MIN} min): ${firstIds.length} skill${firstIds.length === 1 ? '' : 's'} due` : 'Review: no skill due', sub: firstIds.length ? `${split.first.length} round${split.first.length === 1 ? '' : 's'}, the most overdue first` : '', done: !firstIds.length,
       game: () => openReviewGame(), lesson: firstIds.length ? lessonMode(() => goView('session', { due: true, size: Math.min(30, Math.max(6, firstIds.length * 3)) })) : null });
     // Everything the day needs, here (2026-10-27: "have it all there in the day, what I need to practise, so I don't need
     // to go looking around"): each new skill learnt, then its forms played on the wheel.
@@ -4769,12 +4803,12 @@ export function createUI(ctx) {
         btn(playLabel("Play all of today's session (game mode)"), { onclick: () => startTodayRun('game') }, `btn ${run ? '' : 'btn--primary '}g-play g-plan__go`),
         btn("📖 Do all of today's session (lesson mode)", { onclick: () => startTodayRun('lesson') }, 'btn g-plan__go')))(todayRun())
         : h('p', { class: 'g-plan__done', text: steps.length ? '✓ Done for today. Anything more is extra.' : '' }),
-      h('ol', { class: 'g-plan__steps' }, steps.map((x) => h('li', { class: x.done ? 'is-done' : '', style: `--p:${stepShare(x)}%` },
+      h('ol', { class: 'g-plan__steps' }, withPhases(steps.map((x) => [phaseOf(x.key), h('li', { class: x.done ? 'is-done' : '', style: `--p:${stepShare(x)}%` },
         h('span', { class: 'g-plan__tick', 'aria-hidden': 'true', text: x.done ? '✓' : '○' }),
         btn([x.label, x.sub ? h('span', { class: 'g-quiet', text: ` · ${x.sub}` }) : null], { onclick: () => startTodayRun(gameKept() ? 'game' : 'lesson', x.key), 'aria-label': `${x.label}${x.done ? ' (done)' : ''}` }, 'g-plan__step'),
         h('span', { class: 'g-plan__modes' },
           x.game ? btn('▶ Game', { onclick: () => startTodayRun('game', x.key), 'aria-label': `${x.label}, in game mode, then on through the plan` }, 'g-chip g-plan__mode') : null,
-          x.lesson ? btn('📖 Lesson', { onclick: () => startTodayRun('lesson', x.key), 'aria-label': `${x.label}, in lesson mode, then on through the plan` }, 'g-chip g-plan__mode') : null)))),
+          x.lesson ? btn('📖 Lesson', { onclick: () => startTodayRun('lesson', x.key), 'aria-label': `${x.label}, in lesson mode, then on through the plan` }, 'g-chip g-plan__mode') : null))]))),
       settings);
   }
   async function renderToday() {
