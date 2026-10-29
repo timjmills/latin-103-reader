@@ -24,7 +24,7 @@ const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
   "./css/grammar.css": 'a4629efc917f',
-  "./css/panels.css": '2ef86b759d83',
+  "./css/panels.css": '0ac883735946',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
   "./css/reader.css": 'c99be4cec6d6',
