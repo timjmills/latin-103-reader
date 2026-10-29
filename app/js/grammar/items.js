@@ -847,6 +847,10 @@ const shuffle = (arr, rand) => { const a = [...arr]; for (let i = a.length - 1; 
  * almost never be reached, which is the second half of why it was inert.
  */
 export const SHORT_WORDS = 8;
+let TABLES_ONLY = false;
+/** The app's switch: a skill with a table is asked its table only — no sentence item of any kind (2026-10-30). */
+export const setTablesOnly = (on) => { TABLES_ONLY = !!on; };
+export const tablesOnly = () => TABLES_ONLY;
 /** The learner's switch from choosing a sentence blank's form to typing it (localStorage, '1' = typed). */
 export const BLANK_TYPED = 'l103.blank.typed';
 export const blankTyped = (storage) => { try { return storage?.getItem?.(BLANK_TYPED) === '1'; } catch { return false; } };
@@ -1401,7 +1405,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
         return { ...feedbackFor(skill, null, k), short: partsText(parts), parts, table, lemma, sense: headSense(c.entry) }; })() };
   }
 
-  const FNS = { recognise, parse: parseItem, blank, chart: (s, st, o, x) => chart(s, st, o, x) };
+  // Tables only (2026-10-30: "audit all these … and get rid of ALL of them in ALL places"): a skill with a table is
+  // asked its table and nothing built on a sentence; `setTablesOnly` (ui.js) turns it on for the app.
+  const noSentence = (fn) => (skill, ...rest) => (tablesOnly() && skill?.paradigms?.length ? null : fn(skill, ...rest));
+  const FNS = { recognise: noSentence(recognise), parse: noSentence(parseItem), blank: noSentence(blank), chart: (s, st, o, x) => chart(s, st, o, x) };
   /**
    * An item for a session slot. When the asked kind cannot be built the other
    * kinds are tried — those not in `avoid` (the neighbours' kinds) first — and
