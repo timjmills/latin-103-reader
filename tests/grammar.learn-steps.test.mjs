@@ -110,7 +110,7 @@ test('a step\'s check is a written sentence of the skill, never the library; a s
   const pcDraw = createSkillDraw({ skill: SKILLS.get('purpose-clause'), steps: lessonOf('purpose-clause').teach, teachItems: pc, libraryItem: () => null });
   const pcItem = pcDraw.stepItem(pcDraw.stepSlots[0]);
   assert.equal(pcItem.kind, 'blank');
-  assert.equal(pcItem.input, 'type');
+  assert.equal(pcItem.input, 'choice');   // multiple choice by default (2026-10-29)
   assert.match(pcItem.prompt.question, /^Fill the blank/);
   // A skill with nothing typed keeps the step's own wording.
   const noBlank = { ...SKILLS.get('purpose-clause'), kinds: ['recognise', 'parse'] };

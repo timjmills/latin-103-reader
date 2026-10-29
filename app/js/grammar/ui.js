@@ -16,7 +16,7 @@ import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js
 import { PARTS, skillProgress } from './progress.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, applyAnswer, removeFromPractice, reviewFirst, inRotation, buildPairSession, stepList, normaliseLearnPlace, MAX_STEPS, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
 import { createLearn, createStepPractice, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judge, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
-import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, isWrittenKey, la, partsText, SHORT_WORDS } from './items.js';
+import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, isWrittenKey, la, partsText, SHORT_WORDS, BLANK_TYPED, blankTyped } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATION_LABEL, mixGrid, normaliseMix, mixIn, mixHolds, filterMix, mixToggle, mixCounts, mixNote, mixTitle } from './sets.js';
 import { spine, chapterMaterial, chapterProgress, chapterPool, chapterSummary, chapterOfSentence } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
@@ -7303,6 +7303,12 @@ export function createUI(ctx) {
       if (item.prompt.gloss) node.append(glossNode(item));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
       node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
+      // A blank is multiple choice by default (2026-10-29); this switch types it instead, from the next question on.
+      if (item.kind === 'blank') {
+        node.append(h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: blankTyped(localStorage) ? true : null,
+          onchange: (e) => { try { if (e.target.checked) localStorage.setItem(BLANK_TYPED, '1'); else localStorage.removeItem(BLANK_TYPED); } catch { /* not kept */ } ctx.say(e.target.checked ? 'From the next question you type the form.' : 'From the next question you choose the form.'); } }),
+          h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Type the form instead of choosing' })));
+      }
     } else {
       node.append(question(item.input === 'chart' ? chartQuestion(item) : item.prompt.questionParts ?? item.prompt.question));
       if (item.prompt.gloss) node.append(glossNode(item));

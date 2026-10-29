@@ -280,7 +280,11 @@ test('parse prompts name exactly the features they grade (M4): case + number for
 
 test('blank: the sentence with the word blanked; macron-optional typed answer; choices from the paradigm at stage 1; the confusion map knows the other cells', () => {
   const items = mk({ rand: () => 0.9 });
-  const it = items.generate({ skill: 'dative-indirect-object', kind: 'blank', stage: 2 });
+  // Multiple choice by default (2026-10-29); typed when asked, or when the learner switches to typing.
+  assert.equal(mk({ rand: () => 0.9 }).generate({ skill: 'dative-indirect-object', kind: 'blank', stage: 2 }).input, 'choice');
+  const typedStore = mem(); typedStore.setItem('l103.blank.typed', '1');
+  assert.equal(mk({ rand: () => 0.9, storage: typedStore }).generate({ skill: 'dative-indirect-object', kind: 'blank', stage: 2 }).input, 'type');
+  const it = items.generate({ skill: 'dative-indirect-object', kind: 'blank', stage: 2, choice: false });
   assert.equal(it.input, 'type');
   assert.ok(it.prompt.la.includes('___'));
   assert.ok(!it.prompt.la.includes(it.target.text));
