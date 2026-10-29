@@ -6,7 +6,7 @@
 
 import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -2734,6 +2734,7 @@ export function createUI(ctx) {
     const at = fromKey ? Math.max(0, items.findIndex((it) => it.key === fromKey || (it.t === 'r' && (fromKey === 'review' || (fromKey === 'forms' && it.v === '#forms'))))) : 0;
     if (!items.length) { ctx.say('Nothing left in today\'s session.'); return; }
     keepGame(mode === 'game');
+    if (mode !== 'game') playGameOnce = false;
     const totals = {};
     for (const it of items) { const k = partKey(it); if (!(k in totals)) totals[k] = Math.max(1, stepRounds(k)); }
     setTodayRun({ day: isoDay(), mode, items, at, totals, active0: activeSeconds().today, cel: [] });
@@ -2870,11 +2871,19 @@ export function createUI(ctx) {
       inGame ? null : btn('Stop the plan', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet g-side__btn'));
   }
   setGameAside(() => { const g = todayRun(); return g ? planPanel(g, { inGame: true }) : null; });
+  // The day's time left among the game's scores, wherever the panel beside it has no room (a phone, a narrow window).
+  setGameStat(() => {
+    const g = todayRun();
+    if (!g) return null;
+    const m = runParts(g).minsLeft;
+    return h('span', { class: 'gm__plantime', title: "Today's plan: time left at your pace" }, '📅 ', h('span', { 'data-plan-min': '', text: m > 0 ? `${minsText(m)} left` : 'all done ✓' }));
+  });
   /** The foot-of-page bar while today's session runs: where you are, the next step, stop. */
   function paintRunBar() {
     let bar = document.getElementById('g-runbar');
     const g = todayRun();
     const show = !!g && document.documentElement.dataset.section === 'grammar';
+    document.documentElement.classList.toggle('g-run-on', show);   // room under the page for the bar
     if (!show) { bar?.remove(); return; }
     if (!bar) { bar = h('div', { id: 'g-runbar', class: 'g-runbar', role: 'region', 'aria-label': "Today's session" }); document.body.append(bar); }
     const i = g.at;
@@ -4548,7 +4557,8 @@ export function createUI(ctx) {
     const rn = r.retests.length + r.due.length + (r.missed ? 1 : 0);
     // Every step in either mode (2026-10-28: "all the other skills too should be able to be opened in game mode as
     // well, or done in the lesson mode"): `game` and `lesson`; the step itself opens in the mode last used.
-    const lessonMode = (fn) => () => { keepGame(false); fn(); };
+    // Lesson mode wipes a game start left waiting by an earlier game-mode step, or the lesson would open as a game.
+    const lessonMode = (fn) => () => { keepGame(false); playGameOnce = false; fn(); };
     const gameMode = (fn) => () => { gameDrillOn(); fn(); };
     if (rn || today.kind !== 'rest') steps.push({ key: 'review', label: rn ? `Review the skills due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: no skill due', sub: rn ? reviewLeft() : '', done: !rn,
       game: () => openReviewGame(), lesson: rn ? lessonMode(() => (r.due.length ? goView('session', { due: true }) : openReview())) : null });
