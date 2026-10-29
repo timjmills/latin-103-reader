@@ -1,6 +1,6 @@
 // Boot: pick a store, load the dictionary modules, wire header + reader + panel + audio.
 import { createReader, firstUnread, queueReads, playbackRead, weekHasLines } from './reader.js';
-import { activeTimer } from './activetime.js';
+import { activeTimer, setActiveSync } from './activetime.js';
 import { createWordPanel } from './wordpanel.js';
 import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, SHELF_GROUPS, shelfKind, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek, chapterRows, readingRows, menuTab, MENU_TABS } from './settings.js';
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
@@ -80,6 +80,8 @@ async function boot() {
   const remote = { lookups: false, settings: false, alignments: false, weeks: false, progress: false, study: false };
   let onRemoteChange = (kind) => { remote[kind] = true; };   // buffered until the UI exists
   store.onChange?.((kind) => onRemoteChange(kind));
+  // The day's active time from every device (activetime.js): each sends its own, the totals add them up.
+  setActiveSync({ get: () => store.getSettings()?.activeTime ?? {}, put: (device, days) => store.setActiveTime?.(device, days) });
 
   // The dictionary (5 MB of forms) loads beside the reading rather than in front of it (2026-10-23, "would that
   // help with loading times"): the text is drawn as soon as the store is ready, and a word tapped in the second

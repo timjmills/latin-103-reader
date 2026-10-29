@@ -15,14 +15,53 @@ const today = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1)
 function read() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch { return {}; } }
 function write(m) { try { localStorage.setItem(KEY, JSON.stringify(m)); } catch { /* this visit only */ } }
 
+/*
+ * Every device's time, one total (2026-10-29: "when I was playing on the phone my total time did not seem to carry to
+ * the computer … for the day"). Each device counts its own seconds here, as before, and sends its last two weeks to
+ * the learner's settings now and then (`setActiveSync`, main.js: settings.activeTime, { device: { day: seconds } },
+ * merged by sync.js on each device's own counts, so two devices never undo each other). The totals add them up.
+ */
+const DEVICE_KEY = 'l103.device';
+const DEVICE = (() => { try { let d = localStorage.getItem(DEVICE_KEY); if (!d) { d = `d${Math.random().toString(36).slice(2, 10)}`; localStorage.setItem(DEVICE_KEY, d); } return d; } catch { return 'd-local'; } })();
+const SYNC_DAYS = 14;
+let sync = null;
+let sentAt = 0;
+let sentSecs = -1;
+/** `{ get: () => settings.activeTime, put: (device, days) => … }`, from main.js once the store is there. */
+export function setActiveSync(fns) { sync = fns && typeof fns.get === 'function' ? fns : null; }
+/** Each day's seconds, every device together. */
+function allDays() {
+  const out = { ...read() };
+  let others = {};
+  try { others = sync?.get?.() ?? {}; } catch { others = {}; }
+  for (const [dev, days] of Object.entries(others ?? {})) {
+    if (dev === DEVICE || !days || typeof days !== 'object') continue;
+    for (const [k, v] of Object.entries(days)) if (Number(v) > 0) out[k] = (out[k] ?? 0) + Number(v);
+  }
+  return out;
+}
+/** This device's last two weeks to the settings: every two minutes of use, and as the page is left. */
+function send(force = false) {
+  if (!sync?.put) return;
+  const m = read();
+  const secs = m[today()] ?? 0;
+  if (!force && (secs === sentSecs || Date.now() - sentAt < 120_000)) return;
+  const days = {};
+  for (let i = 0; i < SYNC_DAYS; i++) { const d = new Date(); d.setDate(d.getDate() - i); const k = today(d); if (m[k]) days[k] = m[k]; }
+  sentAt = Date.now(); sentSecs = secs;
+  try { Promise.resolve(sync.put(DEVICE, days)).catch(() => {}); } catch { /* next time */ }
+}
+
 /** Seconds active today, and in the last seven days. */
 export function activeSeconds() {
-  const m = read();
+  const m = allDays();
   const now = new Date();
   let week = 0;
   for (let i = 0; i < 7; i++) { const d = new Date(now); d.setDate(now.getDate() - i); week += m[today(d)] ?? 0; }
   return { today: m[today(now)] ?? 0, week };
 }
+/** This device's own seconds today (a pace measured on this device: the Daily Study Plan's). */
+export function ownSecondsToday() { return read()[today()] ?? 0; }
 /** "12:05" under an hour, "1 h 05" over. */
 export function clockText(s) {
   const h = Math.floor(s / 3600), mi = Math.floor((s % 3600) / 60), se = Math.floor(s % 60);
@@ -82,7 +121,7 @@ function paint(v) {
 }
 /** Each day's active time, kept (2026-10-26: "keep track of time as well for each day"): the last `n` days, newest first. */
 export function activeDays(n = 14) {
-  const m = read();
+  const m = allDays();
   const out = [];
   for (let i = 0; i < n; i++) { const d = new Date(); d.setDate(d.getDate() - i); out.push({ date: d, key: today(d), seconds: m[today(d)] ?? 0 }); }
   return out;
@@ -150,6 +189,8 @@ export function startActiveTime() {
   document.addEventListener('scroll', note, { capture: true, passive: true });
   note();
   setInterval(tick, 1000);
+  setInterval(() => send(), 30_000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') send(true); });
 }
 /** The timer for the top of a page: a span kept up to date while it is in the document. */
 export function activeTimer() {

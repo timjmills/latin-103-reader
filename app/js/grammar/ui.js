@@ -28,7 +28,7 @@ import { resolveView, tabOf, STUDY_TABS } from './routes.js';
 import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday, daysSince } from '../practised.js';
 import { planToday, DEFAULT_PLAN, isoDay } from './plan.js';
 import { missedForms, missedToReview } from '../misses.js';
-import { activeSeconds, confetti } from '../activetime.js';
+import { ownSecondsToday, confetti } from '../activetime.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -2746,14 +2746,14 @@ export function createUI(ctx) {
     if (mode !== 'game') playGameOnce = false;
     const totals = {};
     for (const it of items) { const k = partKey(it); if (!(k in totals)) totals[k] = Math.max(1, stepRounds(k)); }
-    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: activeSeconds().today, cel: [] });
+    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [] });
     runToday(at);
   }
   function runToday(i) {
     const g = todayRun();
     if (!g) { paintRunBar(); return; }
     if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
-    setTodayRun({ ...g, at: i, ra0: activeSeconds().today, extra: 0 });
+    setTodayRun({ ...g, at: i, ra0: ownSecondsToday(), extra: 0 });
     paintSide();
     const it = g.items[i];
     const next = { fn: () => runToday(i + 1), label: i + 1 < g.items.length ? `Next (${i + 2} of ${g.items.length}): ${g.items[i + 1].label} →` : 'Finish today\'s session ✓' };
@@ -2835,7 +2835,7 @@ export function createUI(ctx) {
     });
     // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at. The round
     // under way is left out of the pace and taken off its own part, so the time left falls as you play (2026-10-28).
-    const nowA = activeSeconds().today;
+    const nowA = ownSecondsToday();
     const inRound = g.ra0 != null ? Math.max(0, (nowA - g.ra0) / 60) : 0;
     const spent = Math.max(0, (nowA - (g.active0 ?? 0)) / 60 - inRound);
     const reckoned = out.reduce((n, p) => n + p.done * roundMin(p.key), 0);

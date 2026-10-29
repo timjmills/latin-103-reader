@@ -238,3 +238,22 @@ test('outbox: every markRead batch keeps its own entry; a reset after them is se
   assert.deepEqual(out.map((o) => o.seq), [1, 2, 3]);
   assert.deepEqual(dropSeqs, []);
 });
+
+test('active time from every device: each device\'s days merged on the larger count, whichever settings row is newer', async () => {
+  const { mergeActiveTime, patchActiveTime } = await import('../app/js/sync.js');
+  const day = (n = 0) => { const d = new Date(); d.setDate(d.getDate() - n); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+  const phone = { [day()]: 600, [day(1)]: 300 };
+  const merged = mergeActiveTime({ phone, laptop: { [day()]: 120 } }, { phone: { [day()]: 540 }, laptop: { [day()]: 900 } });
+  assert.deepEqual(merged, { phone: { [day()]: 600, [day(1)]: 300 }, laptop: { [day()]: 900 } });
+  assert.deepEqual(mergeActiveTime({ old: { [day(30)]: 500, junk: 5 } }, null), {}, 'old days and bad keys are dropped');
+  // A real setting changed on the other device (a newer row) does not lose this device's time, nor the reverse.
+  const local = { data: { ...DEFAULT_SETTINGS, size: 3, activeTime: { phone: { [day()]: 700 } } }, updated_at: '2026-10-29T10:00:00Z' };
+  const remote = { data: { ...DEFAULT_SETTINGS, size: 5, activeTime: { laptop: { [day()]: 200 } } }, updated_at: '2026-10-29T11:00:00Z' };
+  const { settings } = mergeSettings(local, remote);
+  assert.equal(settings.data.size, 5);
+  assert.deepEqual(settings.data.activeTime, { phone: { [day()]: 700 }, laptop: { [day()]: 200 } });
+  // Writing this device's time leaves the row's clock alone.
+  const p = patchActiveTime(local, 'phone', { [day()]: 760 });
+  assert.equal(p.updated_at, local.updated_at);
+  assert.equal(p.data.activeTime.phone[day()], 760);
+});
