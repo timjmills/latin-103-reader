@@ -488,8 +488,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const REEL = [[1, 0, 1], [0.97, 22, 0.95], [0.9, 42, 0.85], [0.8, 64, 0]];   // the opacities are the CSS's (data-dist)
   function place() {
     if (!rows[at]) return;
-    const stageH = stage.clientHeight || window.innerHeight;
+    // The phone's keyboard up (2026-10-29: "on the phone it covers a bit the active card"): the bar keeps only the
+    // title and the scores while it is, so the card being answered has the room; placed again once the bar has shrunk.
     const vv = window.visualViewport;
+    const kb = !!vv && window.innerHeight - vv.height > 120;
+    if (root.classList.contains('gm--kb') !== kb) { root.classList.toggle('gm--kb', kb); requestAnimationFrame(place); return; }
+    const stageH = stage.clientHeight || window.innerHeight;
     const seen = vv ? Math.min(stageH, vv.offsetTop + vv.height - stage.getBoundingClientRect().top) : stageH;
     const mid = Math.max(seen, 120) / 2;
     const look = (d) => REEL[Math.min(Math.abs(d), 3)];
