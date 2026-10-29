@@ -3,7 +3,7 @@
 // UI's persistence paths are exercised. Chosen by main.js when ?fixture=1 or
 // when app/config.js is missing / has no SUPABASE_URL.
 
-import { DEFAULT_SETTINGS, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs, roman, isShelfWeek, shelfKind, shelfChapter, COLLO_BASE } from './sync.js';
+import { DEFAULT_SETTINGS, mergeActiveTime, normaliseAlignmentRows, normaliseLastPosition, makeProgressRows, normaliseProgressRow, weekOfUnit, isDayKey, cleanMs, roman, isShelfWeek, shelfKind, shelfChapter, COLLO_BASE } from './sync.js';
 import { tokenize } from './tokenize.js';
 
 const LS_LOOKUPS = 'l103.lookups';
@@ -538,6 +538,10 @@ export const store = {
   /** The last position on its own (store.js keeps the settings row's clock out of it; here it is the same write). */
   async setLastPosition(lastPosition) {
     return this.setSettings({ lastPosition });
+  },
+  /** One device's active time by day, merged into settings.activeTime (store.js setActiveTime). */
+  async setActiveTime(device, days) {
+    return this.setSettings({ activeTime: mergeActiveTime(this.getSettings().activeTime, { [device]: days }) });
   },
   // Reading progress (CONTRACT.md "Reading progress"): localStorage-backed like the lookups, and never mixed with them.
   async getProgress() { return new Map([...progressRows()].map(([id, r]) => [id, r.read_at])); },

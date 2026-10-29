@@ -575,6 +575,33 @@ export function patchSettings(current, patch, now = new Date().toISOString()) {
  * mergeSettings) so a device that merely scrolls never outranks one that
  * changed a real setting. Pure.
  */
+/**
+ * Active time from every device (settings.activeTime: { device: { 'YYYY-MM-DD': seconds } }), merged on each
+ * device's own counts: the larger of two for a day (a count only grows), the last 14 days kept. Pure.
+ */
+export function mergeActiveTime(a, b) {
+  const out = {};
+  const cut = new Date(); cut.setDate(cut.getDate() - 14);
+  const cutKey = `${cut.getFullYear()}-${String(cut.getMonth() + 1).padStart(2, '0')}-${String(cut.getDate()).padStart(2, '0')}`;
+  for (const src of [a, b]) {
+    if (!src || typeof src !== 'object') continue;
+    for (const [dev, days] of Object.entries(src)) {
+      if (!days || typeof days !== 'object') continue;
+      for (const [k, v] of Object.entries(days)) {
+        const n = Math.floor(Number(v));
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !(n > 0) || k < cutKey) continue;
+        out[dev] ??= {};
+        out[dev][k] = Math.max(out[dev][k] ?? 0, n);
+      }
+    }
+  }
+  return out;
+}
+/** Settings with one device's days merged into activeTime; `updated_at` is left alone, as for lastPosition. Pure. */
+export function patchActiveTime(current, device, days) {
+  const base = normaliseSettings(current);
+  return { data: { ...base.data, activeTime: mergeActiveTime(base.data.activeTime, { [device]: days }) }, updated_at: base.updated_at };
+}
 export function patchLastPosition(current, lastPosition) {
   const base = normaliseSettings(current);
   return { data: { ...base.data, lastPosition: normaliseLastPosition(lastPosition) }, updated_at: base.updated_at };
@@ -602,7 +629,8 @@ export function mergeSettings(local, remote) {
   const rem = normaliseSettings(remote);
   const lastPosition = newerLastPosition(cur.data.lastPosition, rem.data.lastPosition);
   const base = isNewer(rem, cur) ? rem : cur;
-  const settings = { data: { ...base.data, lastPosition }, updated_at: base.updated_at };
+  const activeTime = mergeActiveTime(cur.data.activeTime, rem.data.activeTime);
+  const settings = { data: { ...base.data, lastPosition, ...(Object.keys(activeTime).length ? { activeTime } : {}) }, updated_at: base.updated_at };
   const changed = settings.updated_at !== cur.updated_at || JSON.stringify(settings.data) !== JSON.stringify(cur.data);
   return { settings, changed };
 }

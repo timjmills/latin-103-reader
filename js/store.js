@@ -14,7 +14,7 @@ import * as db from './db.js';
 import { auth, getClient } from './auth.js';
 import {
   mergeRows, applyRealtime, coalesceOutbox, makeLookup, patchLookup,
-  patchSettings, normaliseSettings, lookupsView, weekTag, staleWeeks,
+  patchSettings, patchActiveTime, normaliseSettings, lookupsView, weekTag, staleWeeks,
   cleanWords, normaliseAlignmentRows, normalisePictureRows, makeProgressRows,
   mergeProgress, normaliseProgressRow, applyProgressRealtime, patchLastPosition, mergeSettings, addStudyMs, mergeStudyDays, studyDaysView, normaliseStudyRow, studyKey, cleanDevice, cleanMs,
 } from './sync.js';
@@ -691,6 +691,16 @@ async function setLastPosition(lastPosition) {
   return { ...state.settings.data };
 }
 
+/** One device's active time by day (settings.activeTime), merged in without bumping updated_at (patchActiveTime). */
+async function setActiveTime(device, days) {
+  state.settings = patchActiveTime(state.settings, device, days);
+  mirrorSettings();
+  if (!state.uid) { await ready(); }
+  await db.put('settings', { key: 'settings', ...state.settings });
+  await enqueue({ table: 'settings', key: 'settings', op: 'upsert', row: state.settings });
+  return { ...state.settings.data };
+}
+
 async function getAlignment(weekN) {
   await ready();
   const n = Number(weekN);
@@ -888,7 +898,7 @@ function sync() {
 export const store = {
   ready, getWeeks, getUnits, getHighlights,
   getLookups, addLookup, markLearned, unlearn, removeLookup,
-  getSettings, setSettings, setLastPosition,
+  getSettings, setSettings, setLastPosition, setActiveTime,
   getAlignment, saveAlignment,
   getAudioUrl, uploadAudio,
   getPictures,
