@@ -7,6 +7,7 @@
 
 import { STAGE3_KINDS } from './stage3.js';
 import { SET_KINDS } from './sets.js';
+import { tablesOnly } from './items.js';
 
 export function createGenerator({ items, stage3 = null, sets = null, skills }) {
   const skillMap = skills;
@@ -16,6 +17,8 @@ export function createGenerator({ items, stage3 = null, sets = null, skills }) {
     if (!skill) return null;
     if (skill.set) return sets ? sets.generate({ ...slot, skill }) : null;
     if (STAGE3_KINDS.includes(kind)) {
+      // Tables only: a skill with a table gets its table instead of a sentence (reorder, transform, translate).
+      if (tablesOnly() && skill.paradigms?.length) return itemKey != null ? null : items.generate({ ...slot, skill, kind: 'chart' });
       const item = stage3?.generate({ ...slot, skill }) ?? null;
       if (item) return item;
       // A redo names one item; another kind would be another item under the same name, so the slot is dropped.

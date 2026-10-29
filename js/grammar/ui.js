@@ -16,7 +16,7 @@ import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js
 import { PARTS, skillProgress } from './progress.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, applyAnswer, removeFromPractice, reviewFirst, inRotation, buildPairSession, stepList, normaliseLearnPlace, MAX_STEPS, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
 import { createLearn, createStepPractice, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judge, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
-import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, isWrittenKey, la, partsText, SHORT_WORDS, BLANK_TYPED, blankTyped } from './items.js';
+import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, isWrittenKey, la, partsText, SHORT_WORDS, BLANK_TYPED, blankTyped, setTablesOnly } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATION_LABEL, mixGrid, normaliseMix, mixIn, mixHolds, filterMix, mixToggle, mixCounts, mixNote, mixTitle } from './sets.js';
 import { spine, chapterMaterial, chapterProgress, chapterPool, chapterSummary, chapterOfSentence } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
@@ -1090,6 +1090,7 @@ export function createUI(ctx) {
   // Tables, not sentences (2026-10-29: "get rid of all of these in the game mode and in the plan — I don't find these
   // types of questions helpful"): a skill with a table is asked its table, and its fill-the-blank sentences go.
   for (const s of skills.values()) if (!s.set && (s.kinds ?? []).includes('chart')) s.kinds = s.kinds.filter((k) => k !== 'blank');
+  setTablesOnly(true);   // …and nothing built on a sentence for it anywhere: lessons, mistakes, re-queues (items.js)
   /** A skill with no table to play: its questions are sentences only, so it stays out of the plan's rounds. */
   const sentenceOnly = (id) => id !== '#forms' && !skills.get(id)?.paradigms?.length;
   const skillsIndex = { skills };
