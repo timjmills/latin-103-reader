@@ -16,7 +16,7 @@ import { attachHoverGloss, cutLatinWords, pointerHovers } from '../hovergloss.js
 import { PARTS, skillProgress } from './progress.js';
 import { decay, isDue, overdueRatio, newState, addToPractice, applyAnswer, removeFromPractice, reviewFirst, inRotation, buildPairSession, stepList, normaliseLearnPlace, MAX_STEPS, DAY_MS, LEARN_NEEDED, LEARN_WINDOW, LEARN_KINDS, MASTERED_DAYS, MASTERED_SUCCESSES } from './scheduler.js';
 import { createLearn, createStepPractice, createPractice, createBlockedFive, createRedo, createDrill, createMixed, mixedMembers, createCatalogueDrill, boxHints, normaliseHintMode, HINT_MODES, HINT_MODE_LABEL, cellResults, judge, judgeCell, maskParadigm, acceptedAnswers, unmetPrereqs, workedPlan, judgeWhy, LEARN_BLOCKED, RETEST_SIZE, RETEST_AFTER_MS, noteRetest, retestDue, retestPending, SCAFFOLD_LEVELS, SCAFFOLD_STEPS, normaliseScaffold, scaffoldPercent, scaffoldStep, scaffoldGiven, chartCellKey } from './session.js';
-import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, isWrittenKey, la, partsText } from './items.js';
+import { featureLabel, createTeachItems, createCatalogueItems, tableIdOf, cellId, isWrittenKey, la, partsText, SHORT_WORDS } from './items.js';
 import { setsOfChapter, setChapters, phraseIndexes, focusIndexes, POPULATION_LABEL, mixGrid, normaliseMix, mixIn, mixHolds, filterMix, mixToggle, mixCounts, mixNote, mixTitle } from './sets.js';
 import { spine, chapterMaterial, chapterProgress, chapterPool, chapterSummary, chapterOfSentence } from './chapter.js';
 import { orderInput, matchInput } from './inputs.js';
@@ -2833,7 +2833,7 @@ export function createUI(ctx) {
     if (key === 'review') return reviewSplit().first.length;
     if (key === 'review2') return reviewSplit().rest.length;
     if (key === 'forms') return r.forms ? Math.ceil(r.forms / 16) : 0;
-    if (key === 'redo') return r.missed ? Math.ceil(r.missed / 10) : 0;
+    if (key === 'redo') return r.missed ? Math.ceil(r.missed / PLAN_SENTENCES) : 0;
     if (key === 'mixed') return 2;
     return 1;
   }
@@ -2841,7 +2841,7 @@ export function createUI(ctx) {
   /** Minutes a round of a part takes before your own pace is known. */
   // A round is played in Flash first, then typed (2026-10-28: "I will almost always do something in flash mode first and
   // then in the type mode"), so a game round is reckoned at both.
-  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' ? 5 : key === 'redo' ? 4 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
+  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' ? 5 : key === 'redo' ? 2 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
   const PACE_KEY = 'l103.plan.pace';
   const savedPace = () => { try { const v = Number(localStorage.getItem(PACE_KEY)); return v > 0 ? v : 1; } catch { return 1; } };
   /**
@@ -4670,7 +4670,7 @@ export function createUI(ctx) {
     }
     const pace = savedPace();
     // The half hour is filled most overdue first; each half then plays its tables before its sentences (tablesFirst).
-    let budget = REVIEW_MIN - ((r.forms ? Math.ceil(r.forms / 16) * roundMin('forms') : 0) + (r.missed ? Math.ceil(r.missed / 10) * roundMin('redo') : 0)) * pace;
+    let budget = REVIEW_MIN - ((r.forms ? Math.ceil(r.forms / 16) * roundMin('forms') : 0) + (r.missed ? Math.ceil(r.missed / PLAN_SENTENCES) * roundMin('redo') : 0)) * pace;
     const first = [], rest = [];
     for (const x of reviewMixed() ? reviewRounds(ids, true) : ids) {
       const cost = roundMin('review') * pace;
@@ -4697,7 +4697,7 @@ export function createUI(ctx) {
     // Every day, what was wrong (2026-10-28: "each day reviewing everything that was wrong too … all errors from that
     // day and the day before"): the forms missed in games, and the questions missed in lessons.
     if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Mistakes: forms you got wrong (${r.forms})` : 'Mistakes: forms you got wrong', sub: r.forms > 16 ? `${Math.ceil(r.forms / 16)} rounds of 16` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
-    if (r.missed) steps.push({ key: 'redo', label: `Mistakes: questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / 10)} round${r.missed > 10 ? 's' : ''} of 10`, done: false, game: gameMode(() => goView('redo', { size: 10 })), lesson: lessonMode(() => goView('redo', { size: 10 })) });
+    if (r.missed) steps.push({ key: 'redo', label: `Mistakes: questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / PLAN_SENTENCES)} round${r.missed > PLAN_SENTENCES ? 's' : ''} of ${PLAN_SENTENCES}`, done: false, game: gameMode(() => goView('redo', { size: PLAN_SENTENCES })), lesson: lessonMode(() => goView('redo', { size: PLAN_SENTENCES })) });
     const firstIds = split.first.flat();
     if (firstIds.length || (rn && !split.rest.length) || (!rn && today.kind !== 'rest')) steps.push({ key: 'review', label: firstIds.length ? `Review (about 30 min): ${firstIds.length} skill${firstIds.length === 1 ? '' : 's'} due` : 'Review: no skill due', sub: firstIds.length ? `${split.first.length} round${split.first.length === 1 ? '' : 's'}, the most overdue first` : '', done: !firstIds.length,
       game: () => openReviewGame(), lesson: firstIds.length ? lessonMode(() => goView('session', { due: true, size: Math.min(30, Math.max(6, firstIds.length * 3)) })) : null });
@@ -6517,7 +6517,21 @@ export function createUI(ctx) {
    * questions were taken out, so their old misses are not asked again either — the skill's typed questions cover it.
    * A session saved before then with such a question in its queue is not resumed.
    */
-  const labelMiss = (m) => (m?.kind === 'recognise' || m?.kind === 'parse') && (skills.get(m.skill)?.kinds ?? []).includes('blank');
+  const parseMiss = (m) => (m?.kind === 'recognise' || m?.kind === 'parse') && (skills.get(m.skill)?.kinds ?? []).includes('blank');
+  /**
+   * A miss on a long line of the reading (2026-10-29: "it's still giving me these types of problems"): the blanks now
+   * use short sentences only, so the long ones missed before are not asked again either. A key is
+   * `kind:unit:form:index`, and a unit id may hold colons of its own.
+   */
+  let unitWords = null;
+  const longMiss = (m) => {
+    const key = String(m?.item_key ?? m?.itemKey ?? '');
+    if (!key || isWrittenKey(key)) return false;
+    if (!unitWords?.size) unitWords = new Map((ctx.units ?? []).map((u) => [u.id, String(u.la).trim().split(/\s+/).length]));
+    const unit = key.split(':').slice(1, -2).join(':');
+    return (unitWords.get(unit) ?? 0) > SHORT_WORDS;
+  };
+  const labelMiss = (m) => parseMiss(m) || longMiss(m);
   const staleQueue = (saved) => (saved?.queue ?? []).slice(saved?.index ?? 0).some(labelMiss);
   const missedCount = (scope = {}) => (ctx.items ? gstore.getMissed({ skills: redoScope(scope) }).filter((m) => !labelMiss(m)).length : 0);
   /** Wrong answers here that name no item, so can never be offered back — what the empty state must own up to (M-3). */
