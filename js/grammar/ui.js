@@ -2642,14 +2642,44 @@ export function createUI(ctx) {
   const RG_MIX = 'l103.reviewGame.mix';
   const reviewMixed = () => { try { return localStorage.getItem(RG_MIX) === '1'; } catch { return false; } };
   /** The rounds: missed forms first; then a skill a round (one by one), or two table skills to a round of up to 16 (mixed). */
+  const tableRound = (x) => x === '#forms' || [].concat(x).some((id) => skills.get(id)?.paradigms?.length);
+  /** The skills with tables a sentence skill stands on, nearest first (its prerequisites, up to two steps back): result clause → the subjunctive. */
+  const tablesUnder = (id) => {
+    const out = new Set();
+    let at = [id];
+    for (let depth = 0; depth < 2; depth++) {
+      at = at.flatMap((x) => skills.get(x)?.prereqs ?? []);
+      for (const x of at) if (skills.get(x)?.paradigms?.length) out.add(x);
+      if (out.size) break;   // the nearest tables only: result clause → the subjunctive, not every ending under it
+    }
+    return out;
+  };
+  /**
+   * Tables first, then sentences (2026-10-29: "these sentences should come at the end of tables … the one I sent is
+   * about subjunctive, these should come after the subjunctive table"): a sentence round goes straight after the last
+   * table round it stands on, else after all the tables. The tables keep their own order.
+   */
+  function tablesFirst(rounds) {
+    const out = rounds.filter(tableRound);
+    for (const x of rounds.filter((r) => !tableRound(r))) {
+      const under = new Set([].concat(x).flatMap((id) => [...tablesUnder(id)]));
+      let at = -1;
+      out.forEach((r, i) => { if (tableRound(r) && [].concat(r).some((id) => under.has(id))) at = i; });
+      if (at < 0) { out.push(x); continue; }
+      let j = at + 1;
+      while (j < out.length && !tableRound(out[j])) j++;
+      out.splice(j, 0, x);
+    }
+    return out;
+  }
   function reviewRounds(ids, mixed) {
     const forms = ids.filter((x) => x === '#forms');
     const rest = ids.filter((x) => x !== '#forms');
-    if (!mixed) return [...forms, ...rest];
+    if (!mixed) return tablesFirst([...forms, ...rest]);
     const tabled = rest.filter((x) => skills.get(x)?.paradigms?.length);
     const pairs = [];
     for (let i = 0; i < tabled.length; i += 2) pairs.push(tabled.slice(i, i + 2));
-    return [...forms, ...pairs.map((p) => (p.length === 1 ? p[0] : p)), ...rest.filter((x) => !skills.get(x)?.paradigms?.length)];
+    return tablesFirst([...forms, ...pairs.map((p) => (p.length === 1 ? p[0] : p)), ...rest.filter((x) => !skills.get(x)?.paradigms?.length)]);
   }
   /** A mixed round: a few forms of each skill (up to 16 in all), each skill credited for its own forms. */
   async function playMixedRound(ids, { next = null, round = '' } = {}) {
@@ -2705,9 +2735,11 @@ export function createUI(ctx) {
       return true;
     }
     gameDrillOn();
-    goView('blocked', { skill: id });
+    // A few sentences to put the tables to work, not a long set (2026-10-29: "only two or three sentences to apply the table").
+    goView('blocked', { skill: id, size: PLAN_SENTENCES });
     return true;
   }
+  const PLAN_SENTENCES = 3;
   function reviewRound(i) {
     const g = reviewGame();
     if (!g) return;
@@ -4637,13 +4669,14 @@ export function createUI(ctx) {
       return { first: reviewRounds(ids.filter((x) => first.has(x)), reviewMixed()), rest: reviewRounds(ids.filter((x) => !first.has(x)), reviewMixed()) };
     }
     const pace = savedPace();
+    // The half hour is filled most overdue first; each half then plays its tables before its sentences (tablesFirst).
     let budget = REVIEW_MIN - ((r.forms ? Math.ceil(r.forms / 16) * roundMin('forms') : 0) + (r.missed ? Math.ceil(r.missed / 10) * roundMin('redo') : 0)) * pace;
     const first = [], rest = [];
-    for (const x of reviewRounds(ids, reviewMixed())) {
+    for (const x of reviewMixed() ? reviewRounds(ids, true) : ids) {
       const cost = roundMin('review') * pace;
       if (budget >= cost / 2) { first.push(x); budget -= cost; } else rest.push(x);
     }
-    return { first, rest };
+    return { first: tablesFirst(first), rest: tablesFirst(rest) };
   }
   function planSteps() {
     const order = planOrder();
@@ -6564,17 +6597,18 @@ export function createUI(ctx) {
 
   /** "Practise this skill": a view of its own, so Back leaves it and a chapter page can open it through `ctx.go`. */
   const startBlocked = (id, from = null) => render('blocked', { skill: id, from });
-  function renderBlocked({ skill: id, from = null }) {
+  function renderBlocked({ skill: id, from = null, size = null }) {
+    const n = Math.min(10, Math.max(1, Number(size) || 5));
     const skill = skills.get(id);
     if (!skill) return renderToday();
     const st = gstore.getState(id);
     // A skill still in Learn keeps learning (m14); a lapsed or new one enters the rotation now, so the answers that follow are not judged "early" (M1).
     if (st?.state === 'learning' && skill.set !== 'pensum') { render('learn', { skill: id, from }); return; }
     if (!inRotation(st) || decay(st).state === 'lapsed') gstore.setState(addToPractice(st ?? id));
-    const practice = createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN() });
+    const practice = createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN: ctx.currentWeekN(), size: n });
     const first = practice.start();
     if (!first) { setBody(h('p', { class: 'g-quiet', text: 'No sentences fit this skill yet.' }), h('div', { class: 'g-acts' }, backButton(from))); return; }
-    runSession({ runner: practice.runner, title: `Practise · ${skill.title}`, mode: 'practice', hintOpen: false, onDone: (summary) => renderSummary(summary, { preset: 'one-skill', size: 5, oneSkill: id, from }) });
+    runSession({ runner: practice.runner, title: `Practise · ${skill.title}`, mode: 'practice', hintOpen: false, onDone: (summary) => renderSummary(summary, { preset: 'one-skill', size: n, oneSkill: id, from }) });
   }
   /**
    * The way back from a view opened elsewhere: the chapter page it came from
