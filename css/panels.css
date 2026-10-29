@@ -692,6 +692,11 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__en { flex-basis: 100%; order: 1; color: color-mix(in srgb, var(--gm-a) 70%, var(--ink)); font-size: 1.05rem; font-weight: 700; }
 .gm__en::before { content: "“"; } .gm__en::after { content: "”"; }
 .gm__againtag { order: -2; flex-basis: 100%; }
+/* The word in play's principal parts, under the buttons (2026-10-29). */
+.gm__side { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 0; max-width: 100%; }
+.gm__pp { margin: 0; padding: 0.15em 0.7em; border-radius: 0.6rem; background: var(--bg-raised); font-family: var(--face-reading); font-style: italic; font-weight: 600; font-size: 1.1rem; color: var(--ink); }
+.gm__pp[hidden] { display: none; }
+@media (max-width: 600px) { .gm__side { align-items: flex-start; width: 100%; } .gm__pp { font-size: 0.95rem; } }
 .gm__row[data-pos="current"] .gm__label { font-size: clamp(1.15rem, 5.4vw, 1.45rem); color: var(--ink-2); }
 .gm__row[data-pos="current"] .gm__en { font-size: clamp(1.15rem, 5.4vw, 1.45rem); }   /* the tag and the English the same size, a little smaller on a small phone */
 .gm__slot { display: flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: 2.6rem; width: 100%; }

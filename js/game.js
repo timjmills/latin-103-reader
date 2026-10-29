@@ -407,11 +407,13 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const paintPlan = () => { let n = null; try { n = asideProvider?.() ?? null; } catch { n = null; } planAside.hidden = !n; planAside.replaceChildren(...(n ? [n] : [])); };
   // A <dialog> shown modal: it stacks above the word popup (itself a modal dialog, in the top layer, where no
   // z-index reaches), keeps the focus inside, and Escape closes it.
+  // The word in play's principal parts, under the buttons (2026-10-29: "put it underneath the buttons"), set by place().
+  const ppBar = el('p', { class: 'gm__pp', lang: 'la' });
   const root = el('dialog', { class: 'gm', 'aria-label': `Game: ${title}` },
     el('header', { class: 'gm__bar' },
       titlesNode(),
       el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock, activeTimer(), (() => { try { return statProvider?.() ?? null; } catch { return null; } })()),
-      el('div', { class: 'gm__tools' }, studyBtn, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
+      el('div', { class: 'gm__side' }, el('div', { class: 'gm__tools' }, studyBtn, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn), ppBar),
       meter),
     stage, built, planAside, live);
   paintPlan();
@@ -419,6 +421,13 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   /* ---- the rows: one per form, in play order; a redo is a row of its own */
   const rows = [];
   const comeBack = new Map();   // key → how many times Redo misses has brought it back
+  // The word's principal parts (2026-10-29: "I am not seeing the principal parts here"); a later part that is the very
+  // form asked for (the perfect "I", the supine) is held back as "…", so the line never gives the answer away.
+  const ppOf = (x) => {
+    const lemma = String(x.entry?.lemma ?? '');
+    if (!lemma.includes(',')) return null;
+    return lemma.split(/,\s*/).map((part, i) => (i && part.split(/\s+/).some((w) => cellRight(w, x.answers)) ? '…' : part)).join(', ');
+  };
   const makeRow = (x, again = false) => {
     const slot = el('span', { class: 'gm__slot' });
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
@@ -502,6 +511,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const REEL = [[1, 0, 1], [0.97, 22, 0.95], [0.9, 42, 0.85], [0.8, 64, 0]];   // the opacities are the CSS's (data-dist)
   function place() {
     if (!rows[at]) return;
+    { const pp = ppOf(rows[at].x) ?? ''; if (ppBar.textContent !== pp) ppBar.textContent = pp; ppBar.hidden = !pp; }
     // The phone's keyboard up (2026-10-29: "on the phone it covers a bit the active card"): the bar keeps only the
     // title and the scores while it is, so the card being answered has the room; placed again once the bar has shrunk.
     const vv = window.visualViewport;
