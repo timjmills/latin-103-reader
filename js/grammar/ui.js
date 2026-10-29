@@ -2752,9 +2752,33 @@ export function createUI(ctx) {
     setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [], firstIds: split.first.flat() });
     runToday(at);
   }
+  /**
+   * The half hour kept (2026-10-29: "when the time reaches 30, whatever round it's on, when it finishes it should go to
+   * the next thing for that day, and move the remaining rounds to the end if there is time"): the review block — the
+   * mistakes and the first review — is timed from its first round; once it has had its half hour, the review rounds it
+   * has not reached become More review, at the end of the day, and the day goes on to today's learning.
+   */
+  const inBlock = (it) => !!it && ((it.t === 'r' && !it.more) || it.key === 'forms' || it.key === 'redo' || it.key === 'review');
+  function keepHalfHour(g, i) {
+    const it = g.items[i];
+    if (!inBlock(it)) return g;
+    if (g.rev0 == null) { const n = { ...g, rev0: ownSecondsToday() }; setTodayRun(n); return n; }
+    if ((ownSecondsToday() - g.rev0) / 60 < REVIEW_MIN) return g;
+    // Time: the block's review rounds still ahead go to the end (the mistakes stay — they are what is wrong now).
+    const ahead = g.items.slice(i).filter((x) => x.t === 'r' && !x.more && x.v !== '#forms' || (x.t === 's' && x.key === 'review'));
+    if (!ahead.length) return g;
+    const moved = ahead.map((x) => (x.t === 'r' ? { ...x, more: true, label: x.label.replace(/^Review:/, 'More review:') } : { ...x, key: 'review2', label: 'More review' }));
+    const items = [...g.items.slice(0, i), ...g.items.slice(i).filter((x) => !ahead.includes(x)), ...moved];
+    const movedIds = new Set(ahead.filter((x) => x.t === 'r').flatMap((x) => (Array.isArray(x.v) ? x.v : [x.v])));
+    const n = { ...g, items, firstIds: (g.firstIds ?? []).filter((x) => !movedIds.has(x)) };
+    setTodayRun(n);
+    ctx.say(`Half an hour of review done: ${ahead.length} round${ahead.length === 1 ? '' : 's'} moved to More review, at the end.`);
+    return n;
+  }
   function runToday(i) {
-    const g = todayRun();
+    let g = todayRun();
     if (!g) { paintRunBar(); return; }
+    if (i < g.items.length) g = keepHalfHour(g, i);
     if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
     setTodayRun({ ...g, at: i, ra0: ownSecondsToday(), extra: 0 });
     paintSide();
