@@ -1087,6 +1087,11 @@ export function createUI(ctx) {
   // mostly not very good … the last is the best"): a skill with a table or a blank to type is asked those, and its
   // multiple choice and "what is it" questions are dropped. A skill with nothing typed (metre, enclitics) keeps them.
   for (const s of skills.values()) if (!s.set && (s.kinds ?? []).some((k) => k === 'blank' || k === 'chart')) s.kinds = s.kinds.filter((k) => k !== 'recognise' && k !== 'parse');
+  // Tables, not sentences (2026-10-29: "get rid of all of these in the game mode and in the plan — I don't find these
+  // types of questions helpful"): a skill with a table is asked its table, and its fill-the-blank sentences go.
+  for (const s of skills.values()) if (!s.set && (s.kinds ?? []).includes('chart')) s.kinds = s.kinds.filter((k) => k !== 'blank');
+  /** A skill with no table to play: its questions are sentences only, so it stays out of the plan's rounds. */
+  const sentenceOnly = (id) => id !== '#forms' && !skills.get(id)?.paradigms?.length;
   const skillsIndex = { skills };
   // The vocabulary decks are practised on their own, never in the plan or a mix (2026-10-28: "take out the vocab from
   // the plans … explicit vocab testing and instruction … it can be practiced on its own in isolation").
@@ -3018,7 +3023,7 @@ export function createUI(ctx) {
   }
   function openReviewGame() {
     const r = reviewItems();
-    const all = [...(r.forms ? ['#forms'] : []), ...new Set([...r.retests, ...r.due])];
+    const all = [...(r.forms ? ['#forms'] : []), ...new Set([...r.retests, ...r.due])].filter((x) => !sentenceOnly(x));
     const going = reviewGame();
     if (!all.length && !going) { ctx.say('Nothing is due for review.'); return; }
     const on = new Set(all);
@@ -4662,7 +4667,7 @@ export function createUI(ctx) {
   function reviewSplit() {
     const r = reviewItems();
     const now = Date.now();
-    const ids = [...new Set([...r.retests, ...[...r.due].sort((a, b) => overdueRatio(stateOf(b), now) - overdueRatio(stateOf(a), now))])];
+    const ids = [...new Set([...r.retests, ...[...r.due].sort((a, b) => overdueRatio(stateOf(b), now) - overdueRatio(stateOf(a), now))])].filter((x) => !sentenceOnly(x));
     const g = todayRun();
     if (g?.firstIds) {
       const first = new Set(g.firstIds);
@@ -6531,7 +6536,8 @@ export function createUI(ctx) {
     const unit = key.split(':').slice(1, -2).join(':');
     return (unitWords.get(unit) ?? 0) > SHORT_WORDS;
   };
-  const labelMiss = (m) => parseMiss(m) || longMiss(m);
+  // …and no sentence blank at all any more (2026-10-29: "get rid of all of these").
+  const labelMiss = (m) => parseMiss(m) || longMiss(m) || m?.kind === 'blank';
   const staleQueue = (saved) => (saved?.queue ?? []).slice(saved?.index ?? 0).some(labelMiss);
   const missedCount = (scope = {}) => (ctx.items ? gstore.getMissed({ skills: redoScope(scope) }).filter((m) => !labelMiss(m)).length : 0);
   /** Wrong answers here that name no item, so can never be offered back — what the empty state must own up to (M-3). */
