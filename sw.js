@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v169';
+const CACHE_VERSION = 'v170';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -345,13 +345,13 @@ const HASHES = {
   "./icons/icon.svg": 'c1f5c8520853',
   "./icons/maskable-512.png": '38654d50c164',
   "./index.html": 'd18a0679353b',
-  "./js/activetime.js": 'e43cac2ed231',
+  "./js/activetime.js": '0bf05a188150',
   "./js/audio.js": '2e1d36c01a62',
   "./js/auth.js": '22086691f460',
   "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": '19c486e49d37',
+  "./js/game.js": 'fe93e58c7cd0',
   "./js/grammar/actions.js": '2a29e9421251',
   "./js/grammar/applies.js": 'c6029e34b6b4',
   "./js/grammar/chapter.js": '3f1a0ef3892d',

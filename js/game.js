@@ -37,7 +37,7 @@
 // items: [{ key, cue, en, answers, stem, ending, group, form }] — `cue` the row and part ("we · imperfect active"),
 // `en` its English, `answers` the forms accepted (wordpanel.js cellAnswers), `group` the column it belongs to.
 
-import { activeTimer } from './activetime.js';
+import { activeTimer, activeNow } from './activetime.js';
 import { cellRight } from './wordpanel.js';
 import { ruleCard } from './wordrule.js';
 import { notePractised, noteBest } from './practised.js';
@@ -477,7 +477,17 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     easierBtn.setAttribute('aria-label', down ? `Easier way to play: ${down.label}` : 'Already the easiest way to play'); easierBtn.title = easierBtn.getAttribute('aria-label');
     harderBtn.setAttribute('aria-label', up ? `Harder way to play: ${up.label}` : 'Already the hardest way to play'); harderBtn.title = harderBtn.getAttribute('aria-label');
   };
-  const tick = () => { const s = Math.floor((Date.now() - started) / 1000); clock.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+  // The round's clock stops when the day's timer does (2026-10-29: "the round timer should change with the normal
+  // timer: if it stops then the round timer should stop"): time with no typing, clicking or scrolling — or with the
+  // page hidden, when the ticks themselves stall — moves the start on, so only the time at work is counted.
+  let lastTick = Date.now();
+  const tick = () => {
+    const now = Date.now();
+    if (!activeNow() || now - lastTick > 2000) started += now - lastTick;
+    lastTick = now;
+    const s = Math.max(0, Math.floor((now - started) / 1000));
+    clock.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  };
   timer = setInterval(tick, 500);
   tick();
 
@@ -800,7 +810,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       node.remove();
       panel = null;
       stage.inert = false; stage.removeAttribute('aria-hidden');
-      if (!ended) { started += Date.now() - pausedAt; timer = setInterval(tick, 500); tick(); }
+      if (!ended) { started += Date.now() - pausedAt; lastTick = Date.now(); timer = setInterval(tick, 500); tick(); }
       after?.();
       if (ended) { stage.querySelector('.gm__acts button')?.focus({ preventScroll: true }); return; }
       const r = rows[at];
