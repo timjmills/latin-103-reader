@@ -628,6 +628,20 @@ html.gm-open, html.g-game-open { overflow: hidden; }
   .gm__title { font-size: 1.1rem; }
   .gm__stats > span { min-height: 1.75rem; padding: 0 0.6em; }
 }
+/* A phone (2026-10-29: the bar "covers a bit the active card"): the title on one line with no subtitle (a tap on it
+   still opens what is played), slimmer pills and buttons, so the reel has the screen. */
+@media (max-width: 600px) {
+  .gm__titles .gm__sub, .gm__titles .gm__titlesmore { display: none; }
+  .gm__stats { gap: var(--s-1); font-size: 0.8rem; }
+  .gm__stats > span { min-height: 1.6rem; padding: 0 0.5em; }
+  .gm__tools { gap: 4px; flex-wrap: nowrap; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .gm__tools > * { flex: none; }
+  .gm__tools .gm__tool { min-width: 2.25rem; min-height: 2.25rem; padding: 0 0.45em; border-radius: 0.7rem; font-size: 0.9rem; }
+}
+/* The keyboard up: the title and the scores only. */
+.gm--kb .gm__titles .gm__sub, .gm--kb .gm__titles .gm__titlesmore, .gm--kb .gm__tools { display: none; }
+.gm--kb .gm__bar { padding-top: var(--s-1); padding-bottom: calc(var(--s-1) + 6px); }
+.gm--kb .gm__title { font-size: 1rem; }
 .gm__tool { min-width: var(--tap); min-height: var(--tap); border: 2px solid var(--line-strong); border-radius: 0.9rem; background: var(--bg-raised); color: var(--ink); font-size: 1.05rem; cursor: pointer; }
 .gm__tool[aria-pressed="false"] { color: var(--ink-3); }
 .gm__tool[aria-pressed="true"].gm__text { border-color: var(--gm-a); background: color-mix(in srgb, var(--gm-a) 14%, var(--bg-raised)); }
