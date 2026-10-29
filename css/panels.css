@@ -916,3 +916,5 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__ctx-en { margin: var(--s-1) 0 0; font-style: italic; color: var(--ink-2); }
 .gm__autogo { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
 .gm__autonext { margin: 0; font-weight: 600; color: var(--gm-a, var(--ink)); }
+/* The day's time left among the scores (ui.js setGameStat). */
+.gm__plantime { color: #1f6b35 !important; box-shadow: inset 0 0 0 2px color-mix(in srgb, #2e9e4f 45%, transparent) !important; }

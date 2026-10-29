@@ -193,6 +193,10 @@ export const ROUND = 16;
  */
 let asideProvider = null;
 export function setGameAside(fn) { asideProvider = typeof fn === 'function' ? fn : null; }
+/** A pill among the scores, from the same section (the day's time left while its plan runs: "on the phone and on the
+ *  computer, in game and lesson modes"), or null. Shown at every width, the keyboard up too. */
+let statProvider = null;
+export function setGameStat(fn) { statProvider = typeof fn === 'function' ? fn : null; }
 export const LADDER = [['parse', false], ['choose', false], ['flash', false], ['type', false], ['type', true]];
 const rung = (mode, shuffle) => { const i = LADDER.findIndex(([m, sh]) => m === mode && sh === (mode === 'type' && !!shuffle)); return i < 0 ? LADDER.findIndex(([m]) => m === mode) : i; };
 export const ladderLabel = (mode, shuffle) => `${MODES.find(([k]) => k === mode)?.[1] ?? mode}${mode === 'type' && shuffle ? ', shuffled' : ''}`;
@@ -406,7 +410,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const root = el('dialog', { class: 'gm', 'aria-label': `Game: ${title}` },
     el('header', { class: 'gm__bar' },
       titlesNode(),
-      el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock, activeTimer()),
+      el('div', { class: 'gm__stats' }, progress, streakEl, scoreEl, clock, activeTimer(), (() => { try { return statProvider?.() ?? null; } catch { return null; } })()),
       el('div', { class: 'gm__tools' }, studyBtn, reviewBtn, chartsBtn, ruleBtn, easierBtn, modeBtn, harderBtn, closeBtn),
       meter),
     stage, built, planAside, live);

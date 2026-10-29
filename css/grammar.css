@@ -1788,3 +1788,12 @@ html.g-game-open .g-side { z-index: 70; }
 .g-planpanel__now.is-todo { background: color-mix(in srgb, #d97706 14%, var(--bg)); color: #8a4b05; }
 .g-side__plan li.is-done .g-count { background: #2e9e4f; color: #fff; }
 .g-side__plan li:not(.is-done) .g-count { background: color-mix(in srgb, #d97706 16%, var(--bg)); color: #8a4b05; }
+/* The plan's foot bar on a phone: one compact line, the time left first. */
+@media (max-width: 600px) {
+  .g-runbar { left: 8px; right: 8px; bottom: 8px; transform: none; max-width: none; padding: 0.35em 0.55em; gap: var(--s-1); font-size: 0.8rem; }
+  .g-runbar__t { flex-basis: 100%; }
+  .g-runbar .btn { min-height: 34px; padding: 0.2em 0.6em; font-size: 0.8rem; }
+}
+/* Room under the page for the plan's foot bar, so nothing (an answer box, Check) stays under it. */
+html.g-run-on .g-body { padding-bottom: 8rem; }
+@media (max-width: 600px) { html.g-run-on .g-body { padding-bottom: 7rem; } }
