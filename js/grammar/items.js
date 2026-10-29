@@ -847,6 +847,9 @@ const shuffle = (arr, rand) => { const a = [...arr]; for (let i = a.length - 1; 
  * almost never be reached, which is the second half of why it was inert.
  */
 export const SHORT_WORDS = 8;
+/** The learner's switch from choosing a sentence blank's form to typing it (localStorage, '1' = typed). */
+export const BLANK_TYPED = 'l103.blank.typed';
+export const blankTyped = (storage) => { try { return storage?.getItem?.(BLANK_TYPED) === '1'; } catch { return false; } };
 const blankOut = (la, t) => `${la.slice(0, t.start)}___${la.slice(t.end)}`;
 const meaningsOf = (la) => tokenize(la).filter((t) => t.isWord).map((t) => ({ text: t.text, form: t.form, start: t.start }));
 const firstWord = (lemma) => String(lemma ?? '').split(/[\s,]/)[0];
@@ -1271,8 +1274,10 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
     const { c, key: itemKey, wrapped, scope } = got;
     const answer = [c.token.text, stripMacrons(c.token.text)];
     const lab = c.value ? labelOf(k, c.value, skill) : { name: skill.title, plain: skill.plain };
-    // Always typed (2026-10-27: the multiple choice was the weak part); `tags` name the form wanted, the game's cue.
-    const item = { ...base(skill, 'blank', stage, c, scope), key: itemKey, input: opts.choice ? 'choice' : 'type', repeat: wrapped,
+    // Multiple choice by default (2026-10-29: "make these types of problems have multiple choice answers, by default");
+    // typed when the learner has switched to typing (BLANK_TYPED) or the caller asks. `tags` name the form wanted.
+    const choose = opts.choice ?? !blankTyped(storage);
+    const item = { ...base(skill, 'blank', stage, c, scope), key: itemKey, input: choose ? 'choice' : 'type', repeat: wrapped,
       prompt: { la: blankOut(c.unit.la, c.token), ...q(['Fill the blank with the right form of ', la(firstWord(c.entry.lemma))]), gloss: lemmaGloss(c.entry), hint: `${lab.name} — ${lab.plain}`, tags: parseTags(c.parse) },
       answer, choices: null, confuse: confuseMap(skill, c, k), feedback: feedbackFor(skill, c, k) };
     if (item.input === 'choice') {
@@ -1281,7 +1286,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       for (const s of table?.sections ?? []) for (const r of s.rows) for (const cell of r.cells) if (cell && !cell.empty && cell.text && cell.text !== '—') forms.add(cell.text.split(' / ')[0]);
       const norm = normaliseAnswer(c.token.text);
       const others = shuffle([...forms].filter((f) => normaliseAnswer(f) !== norm), rand).slice(0, 3);
-      if (!others.length) return null;
+      if (!others.length) { item.input = 'type'; return item; }   // no table to choose from: typed
       // The four options must not differ in anything but the ending. The right one is taken from the sentence,
       // where a sentence-initial word is capitalised (*Mīlite canente…*), while the distractors come from the
       // paradigm, which prints them lower case — so the capital alone answered the item (QA M-4). Every option
@@ -1402,7 +1407,7 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
    * kinds are tried — those not in `avoid` (the neighbours' kinds) first — and
    * the item that comes back says which kind it is.
    */
-  function generate({ skill: skillId, kind, stage = 1, choice = false, currentWeek = false, currentWeekN = null, chapter = null, chapterMode = 'own-first', full = false, tap = undefined, avoid = [], itemKey = null, unit = null, focus = null, maxWords = null, exclude = null } = {}) {
+  function generate({ skill: skillId, kind, stage = 1, choice = null, currentWeek = false, currentWeekN = null, chapter = null, chapterMode = 'own-first', full = false, tap = undefined, avoid = [], itemKey = null, unit = null, focus = null, maxWords = null, exclude = null } = {}) {
     const skill = typeof skillId === 'string' ? skillMap.get(skillId) : skillId;
     if (!skill || !skill.parse_filter) return null;
     const opts = { currentWeek, currentWeekN, chapter, chapterMode, tap, itemKey, unit, focus, maxWords, exclude, choice };
