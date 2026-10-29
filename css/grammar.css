@@ -1801,3 +1801,11 @@ html.g-game-open .g-side { z-index: 70; }
 /* Room under the page for the plan's foot bar, so nothing (an answer box, Check) stays under it. */
 html.g-run-on .g-body { padding-bottom: 8rem; }
 @media (max-width: 600px) { html.g-run-on .g-body { padding-bottom: 7rem; } }
+
+/* The day's three phases, each its colour (2026-10-30): 1 corrections & review, 2 new lessons, 3 more review & corrections. */
+[data-phase="1"] { --phase: #2f6fd6; } [data-phase="2"] { --phase: #8a3fc4; } [data-phase="3"] { --phase: #d9822b; }
+.g-phase { list-style: none; margin: var(--s-2, .5rem) 0 2px; padding: 2px 8px; border-radius: 6px; font-size: .78rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; color: var(--phase); background: color-mix(in srgb, var(--phase) 12%, transparent); }
+.g-side__plan > li[data-phase]:not(.g-phase), .g-plan__steps > li[data-phase]:not(.g-phase) { border-left: 4px solid var(--phase); }
+.g-side__plan > li { position: relative; }
+.g-side__later { margin: 0 0 4px 8px; padding: 1px 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg-raised); color: var(--ink-2); font-size: .75rem; cursor: pointer; }
+.g-side__later:hover { color: var(--ink); border-color: var(--line-strong); }
