@@ -6299,7 +6299,7 @@ export function createUI(ctx) {
     const params = chapter != null ? { chapter: Number(chapter), size: size ?? 10, from } : { preset, size, oneSkill, from, ...(due ? { due: true } : {}) };
     // A session in progress is kept in localStorage (plan, position, answers) so Back or Reload offers to resume it (G1-08).
     const saved = resume ? readJSON(LS_SESSION, null) : null;
-    const usable = saved?.queue?.length && saved.index < saved.queue.length ? saved : null;
+    const usable = saved?.queue?.length && saved.index < saved.queue.length && !staleQueue(saved) ? saved : null;
     if (usable) Object.assign(params, usable.params ?? {});
     const ch = params.chapter ?? null;
     // What this mixed set is allowed to mix, and whether it may reach material never opened — the Practice
@@ -6362,7 +6362,15 @@ export function createUI(ctx) {
   const redoable = (id) => { const st = stateOf(id).state; return (st === 'practising' || st === 'mastered' || st === 'lapsed') && drillable(id); };
   const redoScope = ({ skill = null, chapter = null } = {}) => new Set((skill != null ? [skill] : (chapter != null ? chapterIds(chapter) : [...skills.keys()]).filter((id) => !isVocab(id))).filter(redoable));
   /** How many items are waiting to be redone here. 0 means the control says so quietly and is not offered. */
-  const missedCount = (scope = {}) => (ctx.items ? gstore.countMissed({ skills: redoScope(scope) }) : 0);
+  /**
+   * A miss on a multiple-choice or "what is it" question, on a skill that has a typed blank instead (2026-10-29:
+   * "remember we said we did not want these types of parsing questions in the game mode and in the study plan"): the
+   * questions were taken out, so their old misses are not asked again either — the skill's typed questions cover it.
+   * A session saved before then with such a question in its queue is not resumed.
+   */
+  const labelMiss = (m) => (m?.kind === 'recognise' || m?.kind === 'parse') && (skills.get(m.skill)?.kinds ?? []).includes('blank');
+  const staleQueue = (saved) => (saved?.queue ?? []).slice(saved?.index ?? 0).some(labelMiss);
+  const missedCount = (scope = {}) => (ctx.items ? gstore.getMissed({ skills: redoScope(scope) }).filter((m) => !labelMiss(m)).length : 0);
   /** Wrong answers here that name no item, so can never be offered back — what the empty state must own up to (M-3). */
   const unnamedMissedCount = (scope = {}) => (ctx.items ? gstore.countUnnamedMissed?.({ skills: redoScope(scope) }) ?? 0 : 0);
   /** Whether anything at all has been answered here — "nothing missed yet" is a different thing from "all put right". */
@@ -6388,8 +6396,8 @@ export function createUI(ctx) {
     const params = { skill: skillId, chapter, size, from, redo: true };
     // A redo in progress resumes like any other session (the saved queue carries each slot's item key).
     const saved = resume ? readJSON(LS_SESSION, null) : null;
-    const usable = saved?.redo && saved.queue?.length && saved.index < saved.queue.length ? saved : null;
-    const offered = Array.isArray(misses) && misses.length ? misses.filter((m) => scope.has(m.skill)) : gstore.getMissed({ skills: scope });
+    const usable = saved?.redo && saved.queue?.length && saved.index < saved.queue.length && !staleQueue(saved) ? saved : null;
+    const offered = (Array.isArray(misses) && misses.length ? misses.filter((m) => scope.has(m.skill)) : gstore.getMissed({ skills: scope })).filter((m) => !labelMiss(m));
     const rows = offered;
     if (!usable && !rows.length) { renderNothingToRedo({ skillId, chapter, from }); return; }
     // An item drawn from a skill's **own written sentences** is keyed `w:…` (items.js) and lives in that
