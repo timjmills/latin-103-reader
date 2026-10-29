@@ -6570,8 +6570,10 @@ export function createUI(ctx) {
     const unit = key.split(':').slice(1, -2).join(':');
     return (unitWords.get(unit) ?? 0) > SHORT_WORDS;
   };
-  // …and no sentence blank at all any more (2026-10-29: "get rid of all of these").
-  const labelMiss = (m) => parseMiss(m) || longMiss(m) || m?.kind === 'blank';
+  // …and nothing but a table's own questions any more (2026-10-29: "get rid of all of these"; 2026-10-30: "in the
+  // questions you got wrong section it is still having these types of questions"): a sentence blank, a reorder, a
+  // translation — every miss that is not a table cell — is no longer brought back.
+  const labelMiss = (m) => parseMiss(m) || longMiss(m) || (m?.kind != null && m.kind !== 'chart');
   const staleQueue = (saved) => (saved?.queue ?? []).slice(saved?.index ?? 0).some(labelMiss);
   const missedCount = (scope = {}) => (ctx.items ? gstore.getMissed({ skills: redoScope(scope) }).filter((m) => !labelMiss(m)).length : 0);
   /** Wrong answers here that name no item, so can never be offered back — what the empty state must own up to (M-3). */
