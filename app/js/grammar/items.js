@@ -1262,7 +1262,11 @@ export function createItems({ units = [], lookup, paradigm = null, skills, stora
       const as = [c.token.text, stripMacrons(c.token.text)];
       return !spellsAnswer(lemmaGloss(c.entry), as) && !spellsAnswer(blankOut(c.unit.la, c.token), as);
     };
-    const got = pickCandidate(skill, 'blank', { unambiguous: false, ...opts, where: noGiveaway });
+    // Short sentences only, while the skill has any (2026-10-29: a long line from the reading made a poor
+    // blank). A step's own sentence, a redo's exact item or a caller's own limit is taken as it is.
+    const free = opts.unit == null && opts.itemKey == null && opts.maxWords == null;
+    const got = (free && pickCandidate(skill, 'blank', { unambiguous: false, ...opts, maxWords: SHORT_WORDS, where: noGiveaway }))
+      || pickCandidate(skill, 'blank', { unambiguous: false, ...opts, where: noGiveaway });
     if (!got) return null;
     const { c, key: itemKey, wrapped, scope } = got;
     const answer = [c.token.text, stripMacrons(c.token.text)];

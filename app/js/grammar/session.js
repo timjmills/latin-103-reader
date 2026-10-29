@@ -1278,13 +1278,13 @@ export function createRedo({ misses = [], gstore, items, skillsIndex, size = 10,
 }
 
 /** "Practice this skill": a 5-item blocked set on one skill (practice mode, scheduler updated). */
-export function createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN = null, rand = Math.random }) {
+export function createBlockedFive({ skill, gstore, items, skillsIndex, currentWeekN = null, rand = Math.random, size = 5 }) {
   const st = gstore.getState(skill.id);
   const stage = st?.stage ?? 1;
   // The learner's own chapter is the ceiling here as everywhere (§7.2): "Practise this skill" used to pass
   // no chapter at all, so a five-item set on a chapter-II skill could quote cap. XXXIV at it.
-  const plan = buildSession({ states: new Map([[skill.id, { ...(st ?? { skill: skill.id, state: 'practising', stage }), state: 'practising' }]]), skills: skillsIndex.skills, preset: 'one-skill', oneSkill: skill.id, size: 5, seed: Math.floor(rand() * 1e9), currentWeekChapter: currentWeekN == null ? null : chapterOfWeek(currentWeekN) });
-  return createPractice({ plan, gstore, items, skillsIndex, preset: 'one-skill', size: 5, oneSkill: skill.id, currentWeekN, rand });
+  const plan = buildSession({ states: new Map([[skill.id, { ...(st ?? { skill: skill.id, state: 'practising', stage }), state: 'practising' }]]), skills: skillsIndex.skills, preset: 'one-skill', oneSkill: skill.id, size, seed: Math.floor(rand() * 1e9), currentWeekChapter: currentWeekN == null ? null : chapterOfWeek(currentWeekN) });
+  return createPractice({ plan, gstore, items, skillsIndex, preset: 'one-skill', size, oneSkill: skill.id, currentWeekN, rand });
 }
 
 /* ================================================== hints, per answer box */
