@@ -492,6 +492,11 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // title and the scores while it is, so the card being answered has the room; placed again once the bar has shrunk.
     const vv = window.visualViewport;
     const kb = !!vv && window.innerHeight - vv.height > 120;
+    // …and the window is fitted to the part of the screen still seen (2026-10-29: "now it's going too far up"): a phone
+    // browser pans the page up as the keyboard opens, so a window fixed to the whole screen had its top, and the card
+    // centred in it, carried off the top. Fitted, the bar stays at the top of what is seen and the card under it.
+    const fit = kb ? [`${Math.round(vv.offsetTop)}px`, `${Math.round(vv.height)}px`] : ['', ''];
+    if (root.style.top !== fit[0] || root.style.height !== fit[1]) { root.style.top = fit[0]; root.style.height = fit[1]; root.style.bottom = kb ? 'auto' : ''; }
     if (root.classList.contains('gm--kb') !== kb) { root.classList.toggle('gm--kb', kb); requestAnimationFrame(place); return; }
     const stageH = stage.clientHeight || window.innerHeight;
     const seen = vv ? Math.min(stageH, vv.offsetTop + vv.height - stage.getBoundingClientRect().top) : stageH;
@@ -926,6 +931,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   });
   window.addEventListener('resize', place);
   window.visualViewport?.addEventListener('resize', place);   // the keyboard coming up or going
+  window.visualViewport?.addEventListener('scroll', place);   // the page panned under it
 
   function finish() {
     ended = true;
@@ -1044,6 +1050,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     clearInterval(timer);
     window.removeEventListener('resize', place);
     window.visualViewport?.removeEventListener('resize', place);
+    window.visualViewport?.removeEventListener('scroll', place);
     try { root.close(); } catch { /* already closed */ }
     root.remove();
     document.documentElement.classList.remove('gm-open');
