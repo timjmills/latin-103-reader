@@ -2623,6 +2623,7 @@ export function createUI(ctx) {
     if (gameKept()) gameDrillOn();
     playTable({ title: round ? `${round} · Forms you got wrong` : 'Forms you got wrong', subtitle: `${list.length} form${list.length === 1 ? '' : 's'}: today's, yesterday's and those due back. Typed right twice running and they leave the list`, items: list, rule: null, ruleFirst: false,
       countKey: 'forms:',
+      onDone: (x) => noteReplay(x),
       ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}) });
   }
   /*
@@ -2662,6 +2663,7 @@ export function createUI(ctx) {
       countKey: (played) => parts.filter((p) => mine(p, played).size).map((p) => `tablepart:${p.sk.id}`),
       ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}),
       onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
+        noteReplay({ firstMiss, typed, partial });
         if (!typed || partial) return;
         coverSkills(parts.map((p) => p.sk.id));
         for (const p of parts) { const pl = played ? mine(p, played) : null; if (pl && !pl.size) continue; gameCredit(p.sk, p.words, { firstMiss: mine(p, firstMiss), shown: mine(p, shown), played: pl }); }
@@ -2678,6 +2680,13 @@ export function createUI(ctx) {
    */
   const COVER_KEY = 'l103.plan.covered';
   const coveredToday = () => { try { const v = JSON.parse(localStorage.getItem(COVER_KEY) ?? 'null'); return new Set(v?.day === isoDay() ? v.ids : []); } catch { return new Set(); } };
+  /** A plan round's misses, to be replayed until right: about 20 seconds each, on the time left until the next round. */
+  function noteReplay({ firstMiss = new Set(), typed = false, partial = false } = {}) {
+    const g = todayRun();
+    if (!g || !typed || partial) return;
+    setTodayRun({ ...g, extra: firstMiss.size / 3 });
+    setTimeout(() => planTick(), 200);
+  }
   function coverSkills(ids) {
     const set = coveredToday();
     for (const id of ids) { set.add(id); clearRetest(id); }
@@ -2744,7 +2753,7 @@ export function createUI(ctx) {
     const g = todayRun();
     if (!g) { paintRunBar(); return; }
     if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
-    setTodayRun({ ...g, at: i, ra0: activeSeconds().today });
+    setTodayRun({ ...g, at: i, ra0: activeSeconds().today, extra: 0 });
     paintSide();
     const it = g.items[i];
     const next = { fn: () => runToday(i + 1), label: i + 1 < g.items.length ? `Next (${i + 2} of ${g.items.length}): ${g.items[i + 1].label} →` : 'Finish today\'s session ✓' };
@@ -2780,16 +2789,48 @@ export function createUI(ctx) {
    * rounds are done make it partly green … estimate the time left based on how long it's taking").
    * `[{ key, label, at, total, done, left, mins, here, complete }]`, and the totals.
    */
-  function runParts(g) {
+  /**
+   * More to review during the day (2026-10-29: "does it add time if there needs to be review … please do so"): a
+   * skill falling due, forms missed, questions got wrong after the run began join it — straight after the step under
+   * way — so the plan, and its time, grow with them. Returns the run as it now stands.
+   */
+  function syncRun(g) {
+    const r = reviewItems();
+    const add = [];
+    const has = (pred) => g.items.some(pred);
+    if (g.mode === 'game') {
+      const present = new Set(g.items.filter((it) => it.t === 'r').flatMap((it) => (Array.isArray(it.v) ? it.v : [it.v])));
+      if (r.forms && !present.has('#forms')) add.push({ t: 'r', v: '#forms', label: 'Review: Forms you got wrong' });
+      const fresh = [...new Set([...r.retests, ...r.due])].filter((x) => !present.has(x));
+      for (const x of reviewRounds(fresh, reviewMixed())) add.push({ t: 'r', v: x, label: `Review: ${roundName(x)}` });
+    } else {
+      if ((r.due.length || r.retests.length) && !has((it) => it.key === 'review')) add.push({ t: 's', key: 'review', label: 'Review the skills due' });
+      if (r.forms && !has((it) => it.key === 'forms')) add.push({ t: 's', key: 'forms', label: 'Forms you got wrong' });
+    }
+    if (r.missed && !has((it) => it.key === 'redo')) add.push({ t: 's', key: 'redo', label: `Questions you got wrong (${r.missed})` });
+    if (!add.length) return g;
+    const items = [...g.items.slice(0, g.at + 1), ...add, ...g.items.slice(g.at + 1)];
+    const next = { ...g, items };
+    setTodayRun(next);
+    return next;
+  }
+  function runParts(g0) {
+    let g = syncRun(g0);
     const out = [];
     const steps = planSteps().steps;
+    const totals = { ...(g.totals ?? {}) };
+    const doneRec = { ...(g.doneRec ?? {}) };
     g.items.forEach((it, i) => {
       const key = partKey(it);
       const last = out.find((p) => p.key === key);
       if (last) { if (i === g.at) last.here = true; return; }
       const st = steps.find((x) => x.key === key);
-      const total = g.totals?.[key] ?? Math.max(1, stepRounds(key));
-      const left = key === 'review' || key === 'forms' || key === 'redo' ? Math.min(total, stepRounds(key)) : st?.done ? 0 : total;
+      // A part that can grow (the review, the forms, the questions wrong): its rounds left are what is there now, and
+      // its rounds done are kept, so new review adds rounds — and time — rather than being lost under a cap.
+      const grows = key === 'review' || key === 'forms' || key === 'redo';
+      let total = totals[key] ?? Math.max(1, stepRounds(key));
+      let left = grows ? stepRounds(key) : st?.done ? 0 : total;
+      if (grows) { total = Math.max(total, (doneRec[key] ?? 0) + left); doneRec[key] = Math.max(doneRec[key] ?? 0, total - left); totals[key] = total; }
       out.push({ key, at: i, label: key === 'review' ? 'Review the skills due' : key === 'forms' ? 'Forms you got wrong' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
     });
     // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at. The round
@@ -2800,7 +2841,9 @@ export function createUI(ctx) {
     const reckoned = out.reduce((n, p) => n + p.done * roundMin(p.key), 0);
     const pace = reckoned >= 3 && spent >= 1 ? Math.min(3, Math.max(0.4, spent / reckoned)) : savedPace();
     if (reckoned >= 3 && spent >= 1) { try { localStorage.setItem(PACE_KEY, String(pace)); } catch { /* not kept */ } }
-    for (const p of out) p.mins = p.left ? Math.max(1, Math.round(p.left * roundMin(p.key) * pace - (p.here ? inRound : 0))) : 0;
+    // The misses of the round just played, replayed until right: their time on the part under way (`extra`, minutes).
+    for (const p of out) p.mins = p.left || (p.here && g.extra) ? Math.max(1, Math.round(p.left * roundMin(p.key) * pace - (p.here ? inRound : 0) + (p.here ? (g.extra ?? 0) * pace : 0))) : 0;
+    if (JSON.stringify(totals) !== JSON.stringify(g.totals ?? {}) || JSON.stringify(doneRec) !== JSON.stringify(g.doneRec ?? {})) setTodayRun({ ...todayRun(), totals, doneRec });
     return { parts: out, minsLeft: out.reduce((n, p) => n + p.mins, 0), done: out.reduce((n, p) => n + p.done, 0), total: out.reduce((n, p) => n + p.total, 0) };
   }
   /** Confetti once for each part finished (and for the whole plan). */
@@ -2824,8 +2867,9 @@ export function createUI(ctx) {
     const total = rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓';
     document.querySelectorAll('[data-plan-min]').forEach((el) => { el.textContent = total; });
     document.querySelectorAll('[data-plan-rounds]').forEach((el) => { el.textContent = `${rp.done} of ${rp.total} rounds · `; });
-    for (const p of rp.parts) document.querySelectorAll(`[data-plan-part="${CSS.escape(p.key)}"]`).forEach((el) => { el.textContent = partCount(p); el.closest('li')?.style.setProperty('--p', `${Math.round((p.done / p.total) * 100)}%`); });
-    celebrate(g, rp.parts);
+    // The plan's panels drawn afresh — the ticks, the greens, a part added — the rest only has its numbers changed.
+    document.querySelectorAll('.g-planpanel').forEach((el) => { el.replaceWith(planPanel(todayRun() ?? g, { inGame: !!el.closest('dialog.gm') })); });
+    celebrate(todayRun() ?? g, rp.parts);
   }
   setInterval(planTick, 30000);
   const minsText = (m) => (m <= 0 ? 'done' : m < 60 ? `~${m} min` : `~${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')}`);
@@ -3625,6 +3669,7 @@ export function createUI(ctx) {
       study: table ? studyLink('catalogue', { table }, `The ${tableName(table)} table, in lesson mode`) : studyLink('lesson', { skill: id }, 'This skill\'s lesson, in lesson mode'),
       onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
         const inRound = (key) => !played || played.has(key);
+        noteReplay({ firstMiss: new Set([...firstMiss].filter(inRound)), typed, partial });
         if (typed && !partial) coverSkills([id]);
         // Typed: each form typed right is marked done in its table (credit for anything played, a round left early too).
         if (typed) {
