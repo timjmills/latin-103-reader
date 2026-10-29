@@ -68,6 +68,8 @@ export function clockText(s) {
   return h ? `${h} h ${String(mi).padStart(2, '0')}` : `${mi}:${String(se).padStart(2, '0')}`;
 }
 const isActive = () => document.visibilityState === 'visible' && Date.now() - last < IDLE;
+/** Is the learner at work this moment (the game's round clock pauses with the day's timer)? */
+export const activeNow = () => isActive();
 
 /**
  * A goal (2026-10-26: "a goal timer, where I can set 5–60 minutes; when on, the clock turns green and counts down as
@@ -106,11 +108,12 @@ function paint(v) {
   v.dataset.on = String(on);
   v.dataset.goal = g ? (g.met ? 'met' : 'on') : '';
   if (g && !g.met) {
-    v.textContent = `⏳ ${clockText(g.left)}${on ? '' : ' ⏸'}`;
+    // The day's total stays in view beside a goal (2026-10-29: "I want the total time spent timer to always be visible").
+    v.textContent = `⏳ ${clockText(g.left)}${on ? '' : ' ⏸'} · ⚡ ${clockText(t)}`;
     v.title = `Goal: ${g.total / 60} min of active time — ${clockText(g.left)} to go${on ? '' : ' (paused: type, click or scroll to carry on)'}. Today: ${clockText(t)}.`;
     v.setAttribute('aria-label', `Goal timer, ${clockText(g.left)} to go${on ? '' : ', paused'}. Change the goal`);
   } else if (g) {
-    v.textContent = `✓ ${g.total / 60} min`;
+    v.textContent = `✓ ${g.total / 60} min · ⚡ ${clockText(t)}`;
     v.title = `Goal met: ${g.total / 60} minutes of active time. Today: ${clockText(t)}.`;
     v.setAttribute('aria-label', `Goal of ${g.total / 60} minutes met. Set another`);
   } else {
