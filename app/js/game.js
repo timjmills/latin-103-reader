@@ -421,13 +421,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   /* ---- the rows: one per form, in play order; a redo is a row of its own */
   const rows = [];
   const comeBack = new Map();   // key → how many times Redo misses has brought it back
-  // The word's principal parts (2026-10-29: "I am not seeing the principal parts here"); a later part that is the very
-  // form asked for (the perfect "I", the supine) is held back as "…", so the line never gives the answer away.
-  const ppOf = (x) => {
-    const lemma = String(x.entry?.lemma ?? '');
-    if (!lemma.includes(',')) return null;
-    return lemma.split(/,\s*/).map((part, i) => (i && part.split(/\s+/).some((w) => cellRight(w, x.answers)) ? '…' : part)).join(', ');
-  };
+  // The word's principal parts, all of them (2026-10-29: "why does it not show the third principal part").
+  const ppOf = (x) => { const lemma = String(x.entry?.lemma ?? ''); return lemma.includes(',') ? lemma : null; };
   const makeRow = (x, again = false) => {
     const slot = el('span', { class: 'gm__slot' });
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
