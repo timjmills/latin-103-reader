@@ -1163,7 +1163,7 @@ export function createUI(ctx) {
     const nav = studyNav;
     body = h('div', { class: 'g-body' });
     root.replaceChildren(h('div', { class: 'g' }, ...[].concat(nav).filter(Boolean), body));
-    const fn = { lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwtable: renderWordWorkTable, today: renderToday, course: renderCourse, chapter: renderChapterPage, sheets: renderSheets, stats: renderStats, history: renderHistory, part: renderPart, chart: renderChart, summary: () => renderToday() };
+    const fn = { lesson: renderLessonView, learn: renderLearnStart, setup: renderSetup, session: renderPracticeStart, redo: renderRedo, blocked: renderBlocked, drill: renderDrill, unlimited: renderUnlimited, mixed: renderMixed, catalogue: renderCatalogue, paradigms: renderParadigms, wordwork: renderWordWork, wwtable: renderWordWorkTable, today: renderToday, plansum: renderPlanSummary, course: renderCourse, chapter: renderChapterPage, sheets: renderSheets, stats: renderStats, history: renderHistory, part: renderPart, chart: renderChart, summary: () => renderToday() };
     (fn[view.name] ?? renderToday)(playOnce ? { ...view.params, play: true } : view.params);
     document.title = `${STUDY_TABS.find((t) => t.id === tab)?.label ?? 'Study'} — Latin 103`;
   }
@@ -2822,10 +2822,12 @@ export function createUI(ctx) {
     if (!g) { paintRunBar(); return; }
     if (i < g.items.length) g = keepLimits(g, i);
     if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
-    setTodayRun({ ...g, at: i, ra0: ownSecondsToday(), extra: 0 });
+    setTodayRun({ ...g, at: i, ra0: ownSecondsToday(), extra: 0, lastDone: null });
     paintSide();
     const it = g.items[i];
-    const next = { fn: () => runToday(i + 1), label: i + 1 < g.items.length ? `Next (${i + 2} of ${g.items.length}): ${g.items[i + 1].label} →` : 'Finish today\'s session ✓' };
+    // Between steps, where you are in the plan (2026-10-30: "after each skill is done, before moving on, you should see a
+    // summary page of how you're moving through the plan").
+    const next = { fn: () => render('plansum', { at: i + 1 }), label: i + 1 < g.items.length ? `Next (${i + 2} of ${g.items.length}): ${g.items[i + 1].label} →` : 'Finish today\'s session ✓' };
     paintRunBar();
     if (it.t === 'r') {
       if (g.mode === 'game') gameDrillOn();
@@ -3037,7 +3039,7 @@ export function createUI(ctx) {
         h('span', { class: 'g-quiet' }, ' · ', h('span', { 'data-plan-min': '', text: ((m) => (m > 0 ? `${minsText(m)} left` : 'all done ✓'))(runParts(g).minsLeft) }))),
       again ? btn(`Another round (${stepRounds(cur.key)} left)`, { onclick: () => runToday(i) }, 'btn') : null,
       i + 1 < g.items.length && !cur?.later ? btn('Skip, come back later ↓', { onclick: () => skipLater(partKey(cur)), title: 'It moves to the last section of today' }, 'btn btn--quiet') : null,
-      btn(i + 1 < g.items.length ? `Next: ${g.items[i + 1].label} →` : 'Finish ✓', { onclick: () => runToday(i + 1) }, 'btn btn--primary g-runbar__next'),
+      btn(i + 1 < g.items.length ? `Next: ${g.items[i + 1].label} →` : 'Finish ✓', { onclick: () => render('plansum', { at: i + 1 }) }, 'btn btn--primary g-runbar__next'),
       btn('Stop', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet')].filter(Boolean));
   }
   /** The bar at the end of a round run as a session (a skill without tables): the next round, or the end. */
@@ -4675,7 +4677,8 @@ export function createUI(ctx) {
    */
   const REST_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const planOf = () => ({ ...DEFAULT_PLAN, ...(ctx.settings?.grammar?.plan ?? {}) });
-  const planOrder = () => thePath().order.filter((id) => skills.has(id) && !skills.get(id).set);
+  // Skills with a table only (2026-10-30: "no need to keep them"): a skill with no table to play is not in the plan.
+  const planOrder = () => thePath().order.filter((id) => skills.has(id) && !skills.get(id).set && !sentenceOnly(id));
   const learntSet = (order) => new Set(order.filter((id) => inRotation(stateOf(id))));
   function ensurePlan() {
     const p = ctx.settings?.grammar?.plan;
@@ -4811,6 +4814,34 @@ export function createUI(ctx) {
           x.game ? btn('▶ Game', { onclick: () => startTodayRun('game', x.key), 'aria-label': `${x.label}, in game mode, then on through the plan` }, 'g-chip g-plan__mode') : null,
           x.lesson ? btn('📖 Lesson', { onclick: () => startTodayRun('lesson', x.key), 'aria-label': `${x.label}, in lesson mode, then on through the plan` }, 'g-chip g-plan__mode') : null))]))),
       settings);
+  }
+  /** The page between two steps of today's plan: what was just done, how far through the day, and on to the next. */
+  function renderPlanSummary({ at = 0 } = {}) {
+    const g = todayRun();
+    const i = Number(at) || 0;
+    if (!g || i >= g.items.length) { runToday(i); return; }
+    const rp = runParts(g);
+    const pct = rp.total ? Math.round((rp.done / rp.total) * 100) : 0;
+    const spent = Math.round(ownSecondsToday() / 60);
+    const prev = i > 0 ? g.items[i - 1] : null;
+    const phaseRows = [1, 2, 3].map((ph) => { const ps = rp.parts.filter((p) => (p.later ? 3 : phaseOf(p.key)) === ph); return ps.length ? { ph, done: ps.reduce((n, p) => n + p.done, 0), total: ps.reduce((n, p) => n + p.total, 0), mins: ps.reduce((n, p) => n + p.mins, 0) } : null; }).filter(Boolean);
+    setBody(
+      h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: "Today's plan" }), h('h1', { class: 'g-title', text: 'How the day is going' })),
+      h('section', { class: 'g-plansum' },
+        prev ? (g.lastDone ? h('p', { class: 'g-plansum__done' }, '✓ Just done: ', h('b', { text: g.lastDone })) : h('p', { class: 'g-quiet' }, 'Moved on from: ', h('b', { text: prev.label }))) : null,
+        h('div', { class: 'g-plansum__stats' },
+          h('div', {}, h('b', { text: `${rp.done} of ${rp.total}` }), h('span', { text: 'rounds done' })),
+          h('div', {}, h('b', { text: `${pct}%` }), h('span', { text: 'of today' })),
+          h('div', {}, h('b', { text: `${spent} min` }), h('span', { text: 'studied today' })),
+          h('div', {}, h('b', { text: rp.minsLeft > 0 ? minsText(rp.minsLeft).replace('~', '') : '0' }), h('span', { text: 'still to go' }))),
+        h('div', { class: 'g-planpanel__bar', style: `--p:${pct}%`, 'aria-hidden': 'true' }),
+        h('ul', { class: 'g-plansum__phases' }, phaseRows.map((r) => h('li', { 'data-phase': String(r.ph) },
+          h('span', { class: 'g-plansum__ph', text: PHASES[r.ph] }),
+          h('span', { text: r.done >= r.total ? ' — ✓ done' : ` — ${r.done} of ${r.total} rounds · ${minsText(r.mins)}` })))),
+        h('div', { class: 'g-acts' },
+          btn(`Next: ${g.items[i].label} →`, { onclick: () => runToday(i) }, 'btn btn--primary g-play'),
+          btn('The whole plan', { onclick: () => render('today') }, 'btn btn--quiet')),
+        planPanel(g)));
   }
   async function renderToday() {
     const titles = await partTitles();

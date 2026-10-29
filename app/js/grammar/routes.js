@@ -25,7 +25,7 @@ export function resolveView(name, params = {}) {
 }
 
 const TABS = {
-  today: ['today', 'setup', 'session', 'redo', 'summary'],
+  today: ['today', 'plansum', 'setup', 'session', 'redo', 'summary'],
   course: ['course', 'chapter', 'map', 'lesson', 'learn', 'part', 'drill', 'blocked', 'unlimited', 'mixed', 'wordwork', 'wwdrills', 'wwtable', 'sheets'],
   tables: ['catalogue', 'paradigms'],
   progress: ['chart', 'stats', 'history'],
