@@ -7149,6 +7149,10 @@ export function createUI(ctx) {
     node.append(h('p', { class: 'g-item__meta' }, h('span', { class: 'g-item__title', text: title })));
     if (note) node.append(h('p', { class: 'g-quiet g-item__note', text: note }));
     node.append(h('p', { class: 'g-item__skill', text: `${skill?.title ?? item.skill}${capOf(item.skill) ? ` · ${capOf(item.skill)}` : ''} · ${KIND_LABEL[item.kind] ?? item.kind}${item.pensum ? ` ${item.pensum}` : ''}` }));
+    // The word's principal parts at the top (2026-10-29: "somewhere at the top I want to see the 4 principal parts of
+    // the word I am on"): its dictionary line and meaning; the blank's own line further down is then left out.
+    const topWord = item.entry?.lemma && item.input !== 'chart' ? item.entry : null;
+    if (topWord) node.append(h('p', { class: 'g-pp' }, h('span', { lang: 'la', class: 'g-pp__la', text: topWord.lemma }), item.feedback?.sense ? h('span', { class: 'g-pp__en', text: ` — ${item.feedback.sense}` }) : null));
     // "Just drill it" pins the rule at the top of every item (§10), so the learner can look without leaving.
     if (item.pin) node.append(h('p', { class: 'g-pin' }, h('span', { class: 'g-lesson__tag', text: 'The rule' }), ' ', prose(item.pin)), ...[appliesNode(skills.get(item.skill), null, { diff: false })].filter(Boolean));
     // Above every question about forms, in or out of game mode: which principal part to start from, and what each
@@ -7300,7 +7304,7 @@ export function createUI(ctx) {
       if (item.kind === 'blank' && item.prompt.tags?.length && (Number(stateOf(item.skill)?.stage) || 1) < 3) {
         node.append(h('p', { class: 'g-tags' }, h('span', { class: 'g-quiet', text: 'Wanted: ' }), ...item.prompt.tags.flatMap((t, i) => [i ? ' ' : '', h('span', { class: `gm-k gm-k--${t.kind}`, text: t.text })])));
       }
-      if (item.prompt.gloss) node.append(glossNode(item));
+      if (item.prompt.gloss && !(topWord && item.kind === 'blank')) node.append(glossNode(item));
       const sw = h('label', { class: 'switch g-all-switch' }, h('input', { type: 'checkbox', role: 'switch', checked: allMeanings ? true : null, onchange: (e) => { allMeanings = e.target.checked; const l = node.querySelector('.g-all'); if (l) l.hidden = !allMeanings; } }), h('span', { class: 'switch__ui', 'aria-hidden': 'true' }), h('span', { class: 'switch__text', text: 'Show all meanings' }));
       node.append(sw, Object.assign(glossList(item), { hidden: !allMeanings }));
       // A blank is multiple choice by default (2026-10-29); this switch types it instead, from the next question on.
