@@ -2729,24 +2729,27 @@ export function createUI(ctx) {
   const setTodayRun = (g) => { try { if (g) localStorage.setItem(TR_KEY, JSON.stringify(g)); else localStorage.removeItem(TR_KEY); } catch { /* not kept */ } };
   function startTodayRun(mode, fromKey = null) {
     const { steps } = planSteps();
+    const split = reviewSplit();
     const items = [];
-    if (mode === 'game') {
-      const r = reviewItems();
-      const due = [...(r.forms ? ['#forms'] : []), ...new Set([...r.retests, ...r.due])];
-      for (const x of reviewRounds(due, reviewMixed())) items.push({ t: 'r', v: x, label: `Review: ${roundName(x)}` });
-      for (const st of steps) if (st.key !== 'review' && st.key !== 'forms' && st.game && (!st.done || st.key === fromKey)) items.push({ t: 's', key: st.key, label: st.label });
-    } else {
-      for (const st of steps) if ((st.lesson || st.game) && (!st.done || st.key === fromKey)) items.push({ t: 's', key: st.key, label: st.label });
+    // The plan's own order: the mistakes, the half hour of review, today's learning, the review left, the rest.
+    for (const st of steps) {
+      if (st.done && st.key !== fromKey) continue;
+      if (mode === 'game' && st.key === 'forms') { items.push({ t: 'r', v: '#forms', label: st.label }); continue; }
+      if (mode === 'game' && (st.key === 'review' || st.key === 'review2')) {
+        for (const x of st.key === 'review' ? split.first : split.rest) items.push({ t: 'r', v: x, more: st.key === 'review2', label: `${st.key === 'review' ? 'Review' : 'More review'}: ${roundName(x)}` });
+        continue;
+      }
+      if (st.lesson || st.game) items.push({ t: 's', key: st.key, label: st.label });
     }
     // A step's own button starts the run there and goes on through the rest (2026-10-28: "the button can be for one
     // at a time but it should lead fully through the daily plan").
-    const at = fromKey ? Math.max(0, items.findIndex((it) => it.key === fromKey || (it.t === 'r' && (fromKey === 'review' || (fromKey === 'forms' && it.v === '#forms'))))) : 0;
+    const at = fromKey ? Math.max(0, items.findIndex((it) => it.key === fromKey || (it.t === 'r' && ((fromKey === 'review' && !it.more && it.v !== '#forms') || (fromKey === 'review2' && it.more) || (fromKey === 'forms' && it.v === '#forms'))))) : 0;
     if (!items.length) { ctx.say('Nothing left in today\'s session.'); return; }
     keepGame(mode === 'game');
     if (mode !== 'game') playGameOnce = false;
     const totals = {};
     for (const it of items) { const k = partKey(it); if (!(k in totals)) totals[k] = Math.max(1, stepRounds(k)); }
-    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [] });
+    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [], firstIds: split.first.flat() });
     runToday(at);
   }
   function runToday(i) {
@@ -2771,17 +2774,18 @@ export function createUI(ctx) {
   /** Rounds a plan step still needs (2026-10-28: "everything should be in rounds … show how many rounds are needed for each"). */
   function stepRounds(key) {
     const r = reviewItems();
-    if (key === 'review') { const ids = [...new Set([...r.retests, ...r.due])]; return ids.length ? reviewRounds(ids, reviewMixed()).length : 0; }
+    if (key === 'review') return reviewSplit().first.length;
+    if (key === 'review2') return reviewSplit().rest.length;
     if (key === 'forms') return r.forms ? Math.ceil(r.forms / 16) : 0;
     if (key === 'redo') return r.missed ? Math.ceil(r.missed / 10) : 0;
     if (key === 'mixed') return 2;
     return 1;
   }
-  const partKey = (it) => (it.t === 'r' ? (it.v === '#forms' ? 'forms' : 'review') : it.key);
+  const partKey = (it) => (it.t === 'r' ? (it.v === '#forms' ? 'forms' : it.more ? 'review2' : 'review') : it.key);
   /** Minutes a round of a part takes before your own pace is known. */
   // A round is played in Flash first, then typed (2026-10-28: "I will almost always do something in flash mode first and
   // then in the type mode"), so a game round is reckoned at both.
-  const roundMin = (key) => (key === 'review' || key === 'forms' ? 5 : key === 'redo' ? 4 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
+  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' ? 5 : key === 'redo' ? 4 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
   const PACE_KEY = 'l103.plan.pace';
   const savedPace = () => { try { const v = Number(localStorage.getItem(PACE_KEY)); return v > 0 ? v : 1; } catch { return 1; } };
   /**
@@ -2802,9 +2806,9 @@ export function createUI(ctx) {
       const present = new Set(g.items.filter((it) => it.t === 'r').flatMap((it) => (Array.isArray(it.v) ? it.v : [it.v])));
       if (r.forms && !present.has('#forms')) add.push({ t: 'r', v: '#forms', label: 'Review: Forms you got wrong' });
       const fresh = [...new Set([...r.retests, ...r.due])].filter((x) => !present.has(x));
-      for (const x of reviewRounds(fresh, reviewMixed())) add.push({ t: 'r', v: x, label: `Review: ${roundName(x)}` });
+      for (const x of reviewRounds(fresh, reviewMixed())) add.push({ t: 'r', v: x, more: true, label: `More review: ${roundName(x)}` });
     } else {
-      if ((r.due.length || r.retests.length) && !has((it) => it.key === 'review')) add.push({ t: 's', key: 'review', label: 'Review the skills due' });
+      if (reviewSplit().rest.length && !has((it) => it.key === 'review2')) add.push({ t: 's', key: 'review2', label: 'More review' });
       if (r.forms && !has((it) => it.key === 'forms')) add.push({ t: 's', key: 'forms', label: 'Forms you got wrong' });
     }
     if (r.missed && !has((it) => it.key === 'redo')) add.push({ t: 's', key: 'redo', label: `Questions you got wrong (${r.missed})` });
@@ -2827,11 +2831,11 @@ export function createUI(ctx) {
       const st = steps.find((x) => x.key === key);
       // A part that can grow (the review, the forms, the questions wrong): its rounds left are what is there now, and
       // its rounds done are kept, so new review adds rounds — and time — rather than being lost under a cap.
-      const grows = key === 'review' || key === 'forms' || key === 'redo';
+      const grows = key === 'review' || key === 'review2' || key === 'forms' || key === 'redo';
       let total = totals[key] ?? Math.max(1, stepRounds(key));
       let left = grows ? stepRounds(key) : st?.done ? 0 : total;
       if (grows) { total = Math.max(total, (doneRec[key] ?? 0) + left); doneRec[key] = Math.max(doneRec[key] ?? 0, total - left); totals[key] = total; }
-      out.push({ key, at: i, label: key === 'review' ? 'Review the skills due' : key === 'forms' ? 'Forms you got wrong' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
+      out.push({ key, at: i, label: key === 'review' ? 'Review (about 30 min)' : key === 'review2' ? 'More review' : key === 'forms' ? 'Mistakes: forms you got wrong' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
     });
     // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at. The round
     // under way is left out of the pace and taken off its own part, so the time left falls as you play (2026-10-28).
@@ -2905,7 +2909,7 @@ export function createUI(ctx) {
       // The part under way: done, or still to do and why (2026-10-28: "it should say if that thing just practised was
       // successfully done or if it needed to be still done").
       ((p) => (p ? h('p', { class: `g-planpanel__now ${p.complete ? 'is-done' : 'is-todo'}`, role: 'status' },
-        p.complete ? `✓ Done: ${p.label}` : g.lastDone && p.done ? `✓ Done: ${g.lastDone} · ${p.label}: ${p.done} of ${p.total} rounds done, ${p.left} to go` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? 'pass the Learn lesson (6 of the last 10 right)' : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
+        p.complete ? `✓ Done: ${p.label}` : g.lastDone && p.done ? `✓ Done: ${g.lastDone} · ${p.label}: ${p.done} of ${p.total} rounds done, ${p.left} to go` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'review2' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? 'pass the Learn lesson (6 of the last 10 right)' : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
       h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
       h('div', { class: 'g-planpanel__bar', style: `--p:${rp.total ? Math.round((rp.done / rp.total) * 100) : 0}%`, 'aria-hidden': 'true' }),
       h('ol', { class: 'g-side__list g-side__plan' }, rp.parts.map((p) => h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
@@ -4593,6 +4597,30 @@ export function createUI(ctx) {
     const score = (t) => { const { done, total } = tableTyped(t); return (total ? done / total : 0) * 100 + practised(`table:${t}`); };
     return pool.sort((a, b) => score(a) - score(b))[0] ?? null;
   }
+  /**
+   * The review in two (`first`, `rest`, as rounds): what fits in half an hour after the mistakes, at your pace, the most
+   * overdue first (re-tests before them); and the rest. While today's plan runs, the split it began with is kept, and
+   * what has fallen due since goes to the rest.
+   */
+  const REVIEW_MIN = 30;
+  function reviewSplit() {
+    const r = reviewItems();
+    const now = Date.now();
+    const ids = [...new Set([...r.retests, ...[...r.due].sort((a, b) => overdueRatio(stateOf(b), now) - overdueRatio(stateOf(a), now))])];
+    const g = todayRun();
+    if (g?.firstIds) {
+      const first = new Set(g.firstIds);
+      return { first: reviewRounds(ids.filter((x) => first.has(x)), reviewMixed()), rest: reviewRounds(ids.filter((x) => !first.has(x)), reviewMixed()) };
+    }
+    const pace = savedPace();
+    let budget = REVIEW_MIN - ((r.forms ? Math.ceil(r.forms / 16) * roundMin('forms') : 0) + (r.missed ? Math.ceil(r.missed / 10) * roundMin('redo') : 0)) * pace;
+    const first = [], rest = [];
+    for (const x of reviewRounds(ids, reviewMixed())) {
+      const cost = roundMin('review') * pace;
+      if (budget >= cost / 2) { first.push(x); budget -= cost; } else rest.push(x);
+    }
+    return { first, rest };
+  }
   function planSteps() {
     const order = planOrder();
     const learned = learntSet(order);
@@ -4605,12 +4633,17 @@ export function createUI(ctx) {
     // Lesson mode wipes a game start left waiting by an earlier game-mode step, or the lesson would open as a game.
     const lessonMode = (fn) => () => { keepGame(false); playGameOnce = false; fn(); };
     const gameMode = (fn) => () => { gameDrillOn(); fn(); };
-    if (rn || today.kind !== 'rest') steps.push({ key: 'review', label: rn ? `Review the skills due (${r.retests.length + r.due.length}${r.missed ? ' + misses' : ''})` : 'Review: no skill due', sub: rn ? reviewLeft() : '', done: !rn,
-      game: () => openReviewGame(), lesson: rn ? lessonMode(() => (r.due.length ? goView('session', { due: true }) : openReview())) : null });
+    // The day in three (2026-10-29: "structure the daily review at a half hour limit: what was wrong yesterday, then
+    // today's learning, then after that any more review"): first what was got wrong, then the skills due — the most
+    // overdue first — as far as half an hour goes; then today's learning; then the review that did not fit.
+    const split = reviewSplit();
     // Every day, what was wrong (2026-10-28: "each day reviewing everything that was wrong too … all errors from that
     // day and the day before"): the forms missed in games, and the questions missed in lessons.
-    if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Forms you got wrong (${r.forms}: today, yesterday, due)` : 'Forms you got wrong', sub: r.forms > 16 ? `${Math.ceil(r.forms / 16)} rounds of 16` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
-    if (r.missed) steps.push({ key: 'redo', label: `Questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / 10)} round${r.missed > 10 ? 's' : ''} of 10`, done: false, game: gameMode(() => goView('redo', { size: 10 })), lesson: lessonMode(() => goView('redo', { size: 10 })) });
+    if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Mistakes: forms you got wrong (${r.forms})` : 'Mistakes: forms you got wrong', sub: r.forms > 16 ? `${Math.ceil(r.forms / 16)} rounds of 16` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
+    if (r.missed) steps.push({ key: 'redo', label: `Mistakes: questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / 10)} round${r.missed > 10 ? 's' : ''} of 10`, done: false, game: gameMode(() => goView('redo', { size: 10 })), lesson: lessonMode(() => goView('redo', { size: 10 })) });
+    const firstIds = split.first.flat();
+    if (firstIds.length || (rn && !split.rest.length) || (!rn && today.kind !== 'rest')) steps.push({ key: 'review', label: firstIds.length ? `Review (about 30 min): ${firstIds.length} skill${firstIds.length === 1 ? '' : 's'} due` : 'Review: no skill due', sub: firstIds.length ? `${split.first.length} round${split.first.length === 1 ? '' : 's'}, the most overdue first` : '', done: !firstIds.length,
+      game: () => openReviewGame(), lesson: firstIds.length ? lessonMode(() => goView('session', { due: true, size: Math.min(30, Math.max(6, firstIds.length * 3)) })) : null });
     // Everything the day needs, here (2026-10-27: "have it all there in the day, what I need to practise, so I don't need
     // to go looking around"): each new skill learnt, then its forms played on the wheel.
     for (const id of today.newToday) {
@@ -4619,6 +4652,10 @@ export function createUI(ctx) {
       const tb = skills.get(id)?.paradigms?.[0];
       if (tb) steps.push({ key: `play:${id}`, label: `Its forms: ${titleOf(id)}`, sub: 'Type it to count', done: practisedToday(`tablepart:${id}`), game: () => openGameSetup(id), lesson: lessonMode(() => render('catalogue', { table: tb })) });
     }
+    // The review the half hour did not reach, after today's learning.
+    const restIds = split.rest.flat();
+    if (restIds.length) steps.push({ key: 'review2', label: `More review: ${restIds.length} skill${restIds.length === 1 ? '' : 's'} due`, sub: `${split.rest.length} round${split.rest.length === 1 ? '' : 's'}`, done: false,
+      game: () => openReviewGame(), lesson: lessonMode(() => goView('session', { due: true })) });
     if (today.kind === 'master') steps.push({ key: 'mixed', label: 'Mixed practice of everything learnt (about 20 min)', done: practisedToday('skill:'), game: gameMode(() => goView('setup', {})), lesson: lessonMode(() => goView('setup', {})) });
     const wt = today.kind === 'rest' ? null : weakestTable(learned);
     if (wt) steps.push({ key: `table:${wt}`, label: `A round of your weakest table: ${tableName(wt)}`, done: practisedToday(`table:${wt}`), game: gameMode(() => render('catalogue', { table: wt, play: true })), lesson: lessonMode(() => render('catalogue', { table: wt })) });
