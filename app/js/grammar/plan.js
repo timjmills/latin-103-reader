@@ -9,7 +9,8 @@
  *
  * A day missed spreads its skills over the days left, so the plan is always the remaining work over the remaining days.
  */
-export const DEFAULT_PLAN = Object.freeze({ goal: '2026-12-15', learnBy: '2026-11-24', rest: 0 });
+// `classWeek1`: the day of the first class (Saturday 5 September 2026: week 9, Cap. XXXI, is Saturday 31 October).
+export const DEFAULT_PLAN = Object.freeze({ goal: '2026-12-15', learnBy: '2026-11-24', rest: 0, classWeek1: '2026-09-05' });
 
 /** 'YYYY-MM-DD' of a date, in local time. */
 export const isoDay = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -24,12 +25,25 @@ export function studyDays(from, to, rest = DEFAULT_PLAN.rest) {
   return out;
 }
 
+const COURSE_WEEKS = 14;
+/**
+ * The class this week (2026-10-30: "weave in the week's new learning as well so that I am prepared for class"): the
+ * course week whose class is today or next, counted from the first class, and that class's day. Pure.
+ */
+export function classWeekOf(today = isoDay(), week1 = DEFAULT_PLAN.classWeek1) {
+  const days = Math.round((parse(today) - parse(week1)) / 864e5);
+  const n = Math.min(COURSE_WEEKS, Math.max(1, Math.floor((days + 6) / 7) + 1));
+  const d = parse(week1);
+  d.setDate(d.getDate() + 7 * (n - 1));
+  return { n, classDay: isoDay(d), over: days > 7 * (COURSE_WEEKS - 1) };
+}
+
 /**
  * Today's part of the plan.
  * `order`: every skill in course order; `learned`: a Set of those learnt; `today`: 'YYYY-MM-DD';
  * `plan`: { goal, learnBy, rest, start } (start: the day the plan began, for the pace).
  */
-export function planToday({ order = [], learned = new Set(), today = isoDay(), plan = DEFAULT_PLAN } = {}) {
+export function planToday({ order = [], learned = new Set(), today = isoDay(), plan = DEFAULT_PLAN, classSkills = [] } = {}) {
   const p = { ...DEFAULT_PLAN, ...(plan ?? {}) };
   const total = order.length;
   const remaining = order.filter((id) => !learned.has(id));
@@ -56,5 +70,20 @@ export function planToday({ order = [], learned = new Set(), today = isoDay(), p
     // Past learnBy with skills still to learn: two a day until none are left, beside the mastery work.
     newToday = remaining.slice(0, 2);
   }
-  return { kind, newToday, total, done, remaining: remaining.length, daysLeft, learnDaysLeft, expected, status, plan: p, isRest };
+  // This week's class first: its skills not yet learnt are spread over the days before the class (all of them on the
+  // class day itself), ahead of the course order, and count towards the day's share.
+  const cls = classWeekOf(today, p.classWeek1);
+  const classLeft = classSkills.filter((id) => order.includes(id) && !learned.has(id));
+  let classNew = [];
+  if (classLeft.length && kind !== 'past' && !cls.over) {
+    const before = new Date(parse(cls.classDay).getTime() - 864e5);
+    const daysTo = Math.max(1, today < cls.classDay ? studyDays(today, isoDay(before), p.rest).length : 1);
+    classNew = isRest ? [] : classLeft.slice(0, Math.ceil(classLeft.length / daysTo));
+    if (classNew.length) {
+      if (kind === 'rest') kind = 'learn';
+      const share = newToday.length;
+      newToday = [...classNew, ...newToday.filter((id) => !classNew.includes(id)).slice(0, Math.max(0, share - classNew.length))];
+    }
+  }
+  return { kind, newToday, classNew, classWeek: cls.n, classDay: cls.classDay, classLeft: classLeft.length, total, done, remaining: remaining.length, daysLeft, learnDaysLeft, expected, status, plan: p, isRest };
 }
