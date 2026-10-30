@@ -4,7 +4,7 @@
 // Every Latin word in a drill is tappable for its entry (a small popover built
 // from dictionary.describe); the target's dictionary form sits under the item.
 
-import { chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
+import { weekSkills, chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
 import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
@@ -26,7 +26,7 @@ import { withPassive } from './voices.js';
 import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
 import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday, daysSince } from '../practised.js';
-import { planToday, DEFAULT_PLAN, isoDay } from './plan.js';
+import { planToday, DEFAULT_PLAN, isoDay, classWeekOf } from './plan.js';
 import { missedForms, missedToReview } from '../misses.js';
 import { ownSecondsToday, confetti } from '../activetime.js';
 import { practiceLog, needsPractice } from './practicelog.js';
@@ -2978,7 +2978,7 @@ export function createUI(ctx) {
    * new 3. more review/corrections"). A heading where each begins; `withPhases` threads them into a list of rows.
    */
   const PHASES = { 1: '1 · Corrections & review', 2: '2 · New lessons', 3: '3 · More review & corrections' };
-  const phaseOf = (key) => (['forms', 'redo', 'review'].includes(key) ? 1 : /^(learn|play):/.test(key) ? 2 : 3);
+  const phaseOf = (key) => (['forms', 'redo', 'review'].includes(key) ? 1 : /^(learn|play):/.test(key) || key === 'class-read' ? 2 : 3);
   const withPhases = (rows) => { let last = 0; return rows.flatMap(([ph, li]) => { li.dataset.phase = String(ph); const head = ph !== last ? h('li', { class: 'g-phase', 'data-phase': String(ph), 'aria-hidden': 'true', text: PHASES[ph] }) : null; last = ph; return [head, li].filter(Boolean); }); };
   /** A part of the day skipped for now: its rounds still to come go to the end, in the last section. */
   function skipLater(key, inGame = false) {
@@ -4680,6 +4680,14 @@ export function createUI(ctx) {
   // Skills with a table only (2026-10-30: "no need to keep them"): a skill with no table to play is not in the plan.
   const planOrder = () => thePath().order.filter((id) => skills.has(id) && !skills.get(id).set && !sentenceOnly(id));
   const learntSet = (order) => new Set(order.filter((id) => inRotation(stateOf(id))));
+  /** This week's class: its number, day, chapter, reading and skills (course.json, the plan's first class day). */
+  const classOf = () => {
+    const c = classWeekOf(isoDay(), planOf().classWeek1);
+    const w = (ctx.weeks ?? []).find((x) => x.n === c.n);
+    const ids = weekSkills(index, c.n).filter((id) => skills.has(id) && !sentenceOnly(id));
+    const chapter = ids.map((id) => skills.get(id)?.chapter).find(Boolean) ?? null;
+    return { ...c, skills: ids, chapter, reading: w?.reading ?? (chapter ? `cap. ${roman(chapter)}` : `week ${c.n}`), title: w?.title ?? '' };
+  };
   function ensurePlan() {
     const p = ctx.settings?.grammar?.plan;
     if (p?.start) return;
@@ -4724,7 +4732,8 @@ export function createUI(ctx) {
   function planSteps() {
     const order = planOrder();
     const learned = learntSet(order);
-    const today = planToday({ order, learned, today: isoDay(), plan: planOf() });
+    const cls = classOf();
+    const today = planToday({ order, learned, today: isoDay(), plan: planOf(), classSkills: cls.skills });
     const steps = [];
     const r = reviewItems();
     const rn = r.retests.length + r.due.length + (r.missed ? 1 : 0);
@@ -4746,8 +4755,13 @@ export function createUI(ctx) {
       game: () => openReviewGame(), lesson: firstIds.length ? lessonMode(() => goView('session', { due: true, size: Math.min(30, Math.max(6, firstIds.length * 3)) })) : null });
     // Everything the day needs, here (2026-10-27: "have it all there in the day, what I need to practise, so I don't need
     // to go looking around"): each new skill learnt, then its forms played on the wheel.
+    // For class (2026-10-30): the week's reading first, then its skills, then the rest of today's learning.
+    if (today.kind !== 'rest' && cls.chapter && typeof ctx.openChapter === 'function') {
+      const open = () => { notePractised([`class-read:${cls.n}`]); ctx.openChapter(cls.chapter, 'reading'); };
+      steps.push({ key: 'class-read', label: `For class ${planDay(cls.classDay)}: read ${cls.reading}`, sub: `week ${cls.n}`, done: practisedToday(`class-read:${cls.n}`), game: open, lesson: open });
+    }
     for (const id of today.newToday) {
-      steps.push({ key: `learn:${id}`, label: `Learn: ${titleOf(id)}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`),
+      steps.push({ key: `learn:${id}`, label: `${today.classNew.includes(id) ? 'For class · ' : ''}Learn: ${titleOf(id)}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`),
         game: gameMode(() => render('learn', { skill: id })), lesson: lessonMode(() => startSkill(id, 'learn')) });
       const tb = skills.get(id)?.paradigms?.[0];
       if (tb) steps.push({ key: `play:${id}`, label: `Its forms: ${titleOf(id)}`, sub: 'Type it to count', done: practisedToday(`tablepart:${id}`), game: () => openGameSetup(id), lesson: lessonMode(() => render('catalogue', { table: tb })) });
@@ -4793,6 +4807,7 @@ export function createUI(ctx) {
     const settings = h('details', { class: 'g-plan__set' }, h('summary', { text: 'Change the plan' }),
       h('label', {}, 'Master everything by ', h('input', { type: 'date', value: p.goal, onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), goal: e.target.value } }); draw(); } })),
       h('label', {}, ' · learn every skill by ', h('input', { type: 'date', value: p.learnBy, onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), learnBy: e.target.value } }); draw(); } })),
+      h('label', {}, ' · first class ', h('input', { type: 'date', value: p.classWeek1, onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), classWeek1: e.target.value } }); draw(); } })),
       h('label', {}, ' · rest day ', h('select', { onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), rest: Number(e.target.value) } }); draw(); } }, REST_DAYS.map((d, i) => h('option', { value: String(i), selected: i === Number(p.rest) ? true : null, text: d })))));
     return h('section', { class: 'g-plan', 'aria-labelledby': 'g-plan-h' },
       h('h2', { id: 'g-plan-h', class: 'g-h2', text: `🎯 Master all ${today.total} skills by ${planDay(p.goal)}` }),
@@ -4800,6 +4815,7 @@ export function createUI(ctx) {
       h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
       h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · ${planOrder().filter((id) => stateOf(id).state === 'mastered').length} mastered · `, h('b', { text: statusText })),
       h('p', { class: 'g-plan__phase', text: phase }),
+      ((c) => h('p', { class: 'g-plan__class' }, '🏛 Class this week: ', h('b', { text: `week ${c.n} · ${planDay(c.classDay)}` }), ` — ${c.reading}${c.skills.length ? ` · ${today.classLeft ? `${today.classLeft} of ${c.skills.length} skill${c.skills.length === 1 ? '' : 's'} still to learn first` : `its ${c.skills.length} skill${c.skills.length === 1 ? '' : 's'} learnt ✓`}` : ''}`))(classOf()),
       h('h3', { class: 'g-plan__h3' }, `Today's session${steps.length ? ` · ${steps.filter((x) => x.done).length} of ${steps.length} done` : ''}`,
         ((m) => (m > 0 ? [' · ', h('span', todayRun() ? { 'data-plan-min': '', text: `${minsText(m)} left` } : { text: `${minsText(m)} left` })] : null))(planMinutes(steps))),
       next ? ((run) => h('div', { class: 'g-acts g-plan__gos' },

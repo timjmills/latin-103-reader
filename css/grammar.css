@@ -1820,3 +1820,4 @@ html.g-run-on .g-body { padding-bottom: 8rem; }
 .g-plansum__phases li { padding: .35rem .7rem; border-left: 4px solid var(--phase); border-radius: 6px; background: color-mix(in srgb, var(--phase) 8%, transparent); }
 .g-plansum__ph { font-weight: 800; color: var(--phase); }
 @media (max-width: 600px) { .g-plansum__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.g-plan__class { margin: .25rem 0; padding: .35rem .7rem; border-left: 4px solid #8a3fc4; border-radius: 6px; background: color-mix(in srgb, #8a3fc4 8%, transparent); }
