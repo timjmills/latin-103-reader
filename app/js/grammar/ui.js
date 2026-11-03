@@ -2621,13 +2621,31 @@ export function createUI(ctx) {
    * start, and Practise everything due at the top.
    */
   /** The forms missed that are due, played on the wheel (misses.js schedules them; this game counts like any other). */
+  /** The ? How it's made for any card that carries its word's dictionary entry (2026-11-03: "even on review, or forms you got wrong"). */
+  const cardHowMemo = new Map();
+  function howForCard(c) {
+    const e = c?.entry;
+    if (!e?.h) return null;
+    const k = `${e.h}|${e.pos}`;
+    if (!cardHowMemo.has(k)) { let r = null; try { r = wordRule(e, par.paradigm(e, [])); } catch { r = null; } cardHowMemo.set(k, r); }
+    const r = cardHowMemo.get(k);
+    try { return r && c.form ? formRule(r, c.form) : r; } catch { return r; }
+  }
   function playMisses({ next = null, round = '' } = {}) {
     // Everything got wrong today and yesterday, and all due back (missedToReview); in rounds of 16 when it is more.
     const recent = missedToReview();
-    const list = (recent.length ? recent : missedForms().slice(0, 16)).map((r) => r.card);
+    // Each card with its word's dictionary line, so the game shows the principal parts (2026-11-03): kept with the miss,
+    // or — a miss saved before that — found again from the word at the head of its cue.
+    const fold = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const entryOf = (c) => {
+      const head = String(c.lemma ?? c.cue ?? '').split(c.lemma ? /[\s,]/ : ' · ')[0].trim();
+      const hit = (dict?.lookup?.(head)?.entries ?? []).find((e) => fold(String(e.lemma ?? '').split(/[\s,]/)[0]) === fold(head));
+      return hit ?? (c.lemma ? { lemma: c.lemma } : null);
+    };
+    const list = (recent.length ? recent : missedForms().slice(0, 16)).map((r) => { const e = entryOf(r.card); return e ? { ...r.card, entry: e } : r.card; });
     if (!list.length) { ctx.say('No missed forms to review.'); return; }
     if (gameKept()) gameDrillOn();
-    playTable({ title: round ? `${round} · Forms you got wrong` : 'Forms you got wrong', subtitle: `${list.length} form${list.length === 1 ? '' : 's'}: today's, yesterday's and those due back. Typed right twice running and they leave the list`, items: list, rule: null, ruleFirst: false,
+    playTable({ title: round ? `${round} · Forms you got wrong` : 'Forms you got wrong', how: howForCard, subtitle: `${list.length} form${list.length === 1 ? '' : 's'}: today's, yesterday's and those due back. Typed right twice running and they leave the list`, items: list, rule: null, ruleFirst: false,
       countKey: 'forms:',
       onDone: (x) => noteReplay(x),
       ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}) });
@@ -2694,7 +2712,7 @@ export function createUI(ctx) {
     if (!parts.length) return false;
     const cards = parts.flatMap((p) => p.cards.map((c) => ({ ...c, key: `${p.sk.id}#${c.key}`, cue: p.words.length === 1 && c.entry ? `${headOf(c.entry)} · ${c.cue}` : c.cue }))).slice(0, 16);
     const mine = (p, set) => new Set([...(set ?? [])].filter((k) => String(k).startsWith(`${p.sk.id}#`)));
-    playTable({ title: `${round ? `${round} · ` : ''}Mixed: ${parts.map((p) => p.sk.title).join(' + ')}`, subtitle: testedLine(cards), items: cards, rule: null, ruleFirst: false,
+    playTable({ title: `${round ? `${round} · ` : ''}Mixed: ${parts.map((p) => p.sk.title).join(' + ')}`, how: howForCard, subtitle: testedLine(cards), items: cards, rule: null, ruleFirst: false,
       tables: completedTables(cards), context: inContext(parts.map((p) => p.sk.id)),
       countKey: (played) => parts.filter((p) => mine(p, played).size).map((p) => `tablepart:${p.sk.id}`),
       ...(next ? { onNext: next.fn, nextLabel: next.label, untilRight: !!todayRun(), askMode: !!todayRun() } : {}),

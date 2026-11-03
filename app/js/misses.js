@@ -9,11 +9,11 @@ const DAY = 864e5;
 const STEPS = [1, 3, 7];   // days until it comes back
 const read = () => { try { const v = JSON.parse(localStorage.getItem(KEY) ?? '{}'); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; } catch { return {}; } };
 const write = (m) => { try { localStorage.setItem(KEY, JSON.stringify(m)); } catch { /* this visit only */ } };
-// A card as it can be played again: what the game needs, none of the dictionary entry.
+// A card as it can be played again: what the game needs, and of the dictionary entry only its line (the principal parts).
 // The word goes in front of a cue that does not name it (a one-word game's "nominative · singular").
 const wordOf = (x) => String(x.entry?.lemma ?? x.entry?.h ?? '').split(/[\s,]/)[0];
 const cueOf = (x) => { const w = wordOf(x); return w && !String(x.cue ?? '').includes(w) ? `${w} · ${x.cue}` : x.cue; };
-const keep = (x) => ({ key: x.key, cue: cueOf(x), en: x.en ?? '', answers: x.answers, stem: x.stem ?? null, ending: x.ending ?? null, group: x.group ?? null, col: x.col ?? null, form: x.form && typeof x.form === 'object' ? x.form : null });
+const keep = (x) => ({ key: x.key, cue: cueOf(x), lemma: x.entry?.lemma ?? x.lemma ?? null, en: x.en ?? '', answers: x.answers, stem: x.stem ?? null, ending: x.ending ?? null, group: x.group ?? null, col: x.col ?? null, form: x.form && typeof x.form === 'object' ? x.form : null });
 const keepable = (x) => !!x?.key && !String(x.key).startsWith('box|') && Array.isArray(x.answers) && x.answers.length;
 
 /** After a game (or a round left early): `cards` played, `missed` the keys missed on the first try, `typed` in Type it. */
