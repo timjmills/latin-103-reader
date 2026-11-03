@@ -26,7 +26,7 @@ import { withPassive } from './voices.js';
 import { mainAction, acrossLabel } from './actions.js';
 import { resolveView, tabOf, STUDY_TABS } from './routes.js';
 import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday, daysSince } from '../practised.js';
-import { planToday, DEFAULT_PLAN, isoDay, classWeekOf } from './plan.js';
+import { planToday, DEFAULT_PLAN, isoDay, classWeekOf, learnRounds } from './plan.js';
 import { missedForms, missedToReview } from '../misses.js';
 import { ownSecondsToday, confetti } from '../activetime.js';
 import { practiceLog, needsPractice } from './practicelog.js';
@@ -1187,16 +1187,20 @@ export function createUI(ctx) {
     // opened in game mode is its lesson page with Set up the game over it; a skill with no forms opens in lesson mode,
     // with a note.
     let setupFor = null;
+    let learnFor = null;
     studyFor = null;
     const sk0 = params?.skill ? skills.get(params.skill) : null;
     // (2026-10-26: "for the 73 the lesson parts will be removed and left in the study section, but their skills will be
     // encountered / practised in game mode".) So a lesson, or a part of one, is always in lesson mode; Learn, a drill or
     // ▶ Play of a skill with forms is Set up the game.
     if (sk0 && !sk0.set && !asIs && (GAMED.has(name) || name === 'lesson') && (playGameOnce || gameKept())) {
-      if (sk0.paradigms?.length && name !== 'part' && (name !== 'lesson' || playNow)) { setupFor = sk0.id; name = 'lesson'; params = { skill: sk0.id, ...(params.from ? { from: params.from } : {}) }; playOnce = false; }
+      if (sk0.paradigms?.length && name !== 'part' && (name !== 'lesson' || playNow)) { if (name === 'learn') learnFor = sk0.id; else setupFor = sk0.id; name = 'lesson'; params = { skill: sk0.id, ...(params.from ? { from: params.from } : {}) }; playOnce = false; }
       studyFor = sk0.id;
       playGameOnce = false;
     }
+    // Learn as a game is the skill's learning sequence over the page you are on: no lesson page is drawn under it (its
+    // late arrival would close the game), and nothing is asked first.
+    if (learnFor) { playLearnSequence(learnFor, { chapter: params?.chapter ?? null }); return; }
     view = { name, params };
     // Each entry carries the section mode it was drawn in (Grammar or Word Work), so Back never draws one
     // section's view under the other's tabs; a redraw in place re-marks the entry it is on.
@@ -2866,13 +2870,16 @@ export function createUI(ctx) {
     if (key === 'forms' || key === 'forms2') return r.forms ? Math.ceil(r.forms / 16) : 0;
     if (key === 'redo' || key === 'redo2') return r.missed ? Math.ceil(r.missed / PLAN_SENTENCES) : 0;
     if (key === 'mixed') return 2;
+    // A new skill with tables: its learning sequence, a round a step (plan.js learnRounds).
+    const lm = /^learn:(.+)$/.exec(key);
+    if (lm && skills.get(lm[1])?.paradigms?.length) return learnRounds(skills.get(lm[1]).paradigms).length;
     return 1;
   }
   const partKey = (it) => (it.t === 'r' ? (it.v === '#forms' ? (it.more ? 'forms2' : 'forms') : it.more ? 'review2' : 'review') : it.key);
   /** Minutes a round of a part takes before your own pace is known. */
   // A round is played in Flash first, then typed (2026-10-28: "I will almost always do something in flash mode first and
   // then in the type mode"), so a game round is reckoned at both.
-  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' || key === 'forms2' ? 5 : key === 'redo' || key === 'redo2' ? 2 : key.startsWith('learn:') ? 12 : key === 'mixed' ? 10 : 6);
+  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' || key === 'forms2' ? 5 : key === 'redo' || key === 'redo2' ? 2 : key.startsWith('learn:') ? 4 : key.startsWith('play:') ? 4 : key === 'mixed' ? 10 : 6);
   const PACE_KEY = 'l103.plan.pace';
   const savedPace = () => { try { const v = Number(localStorage.getItem(PACE_KEY)); return v > 0 ? v : 1; } catch { return 1; } };
   /**
@@ -3022,7 +3029,7 @@ export function createUI(ctx) {
       // The part under way: done, or still to do and why (2026-10-28: "it should say if that thing just practised was
       // successfully done or if it needed to be still done").
       ((p) => (p ? h('p', { class: `g-planpanel__now ${p.complete ? 'is-done' : 'is-todo'}`, role: 'status' },
-        p.complete ? `✓ Done: ${p.label}` : g.lastDone && p.done ? `✓ Done: ${g.lastDone} · ${p.label}: ${p.done} of ${p.total} rounds done, ${p.left} to go` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'review2' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? 'pass the Learn lesson (6 of the last 10 right)' : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
+        p.complete ? `✓ Done: ${p.label}` : g.lastDone && p.done ? `✓ Done: ${g.lastDone} · ${p.label}: ${p.done} of ${p.total} rounds done, ${p.left} to go` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'review2' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? (g.mode === 'game' ? 'play each step of its sequence, typed' : 'pass the Learn lesson (6 of the last 10 right)') : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
       h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
       h('div', { class: 'g-planpanel__bar', style: `--p:${rp.total ? Math.round((rp.done / rp.total) * 100) : 0}%`, 'aria-hidden': 'true' }),
       h('ol', { class: 'g-side__list g-side__plan' }, withPhases(rp.parts.map((p) => [p.later ? 3 : phaseOf(p.key), h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
@@ -3590,6 +3597,37 @@ export function createUI(ctx) {
   // session's own "▶ Game mode" switch is a kept choice (l103.game.drill).
   let playGameOnce = false;
   const gameDrillOn = () => { playGameOnce = true; keepGame(true); };
+  /** The step after the one under way in today's plan, when `key` is that step: on to the plan's summary page. */
+  const planNextOf = (key) => {
+    const g = todayRun();
+    const it = g?.items?.[g.at];
+    if (!it || partKey(it) !== key) return null;
+    return { fn: () => render('plansum', { at: g.at + 1 }), label: g.at + 1 < g.items.length ? 'On through today\'s plan →' : 'Finish today\'s session ✓' };
+  };
+  /**
+   * A new skill learnt as a sequence, never a setup to choose from (2026-11-03: "in both the Latin plan and in the step
+   * by step plans … it should not ask … map out a sequence for each skill"): round by round the model word of each step's
+   * tables (plan.js learnRounds — the most regular table first, then what builds on it, the irregular verbs last), each
+   * round asked Flash or Type in the plan. The last round done, the skill is marked learnt for the day and the plan goes on.
+   */
+  async function playLearnSequence(id, { chapter = null, next = null } = {}) {
+    const sk = skills.get(id);
+    if (!sk?.paradigms?.length || sk.set) return false;
+    if (!selectRules) { try { await loadParadigmCatalogue(); } catch { /* the words are found without it */ } }
+    const rounds = learnRounds(sk.paradigms);
+    const after = next ?? planNextOf(`learn:${id}`);
+    const tname = (t) => { try { return tableName(t); } catch { return t; } };
+    const play = async (k) => {
+      const last = k + 1 >= rounds.length;
+      const done = () => { notePractised([`skill:${id}`]); after?.fn?.(); };
+      const step = { fn: last ? done : () => play(k + 1), label: last ? (after?.label ?? 'Done ✓') : `Next: ${rounds[k + 1].map(tname).join(' + ')} →` };
+      keepGame(true);
+      const ok = await playSkillTables(id, { chapter, pick: rounds[k], cap: 12, next: step, round: `${sk.title} · step ${k + 1} of ${rounds.length}: ${rounds[k].map(tname).join(' + ')}` }).catch(() => false);
+      if (!ok) { if (!last) play(k + 1); else done(); }
+    };
+    play(0);
+    return true;
+  }
   function playSkill(id, { chapter = null, from = null, nav = null } = {}) {
     const sk = skills.get(id);
     if (!sk) return;
@@ -3598,7 +3636,7 @@ export function createUI(ctx) {
     // A whole table is Word Work's: from Grammar's list the header moves there with it (a chapter page's
     // router does the same, index.js go). A drill stays where it is, its way back the section it came from.
     // A skill with forms: the setup first (what to play, and how), then the wheel.
-    if (sk.paradigms?.length) { keepGame(true); openGameSetup(id, { chapter: n }); return; }
+    if (sk.paradigms?.length) { keepGame(true); playLearnSequence(id, { chapter: n }); return; }
     gameDrillOn();
     go('drill', { skill: id, from: from ?? (sectionMode() === 'words' ? { wordwork: n } : null) });
   }
@@ -3746,7 +3784,7 @@ export function createUI(ctx) {
     const wordOf = (c) => words.get(c.entry ? `${c.entry.h}|${c.entry.pos}` : '');
     return cards.sort((a, b) => cols.get(a.col ?? '') - cols.get(b.col ?? '') || wordOf(a) - wordOf(b) || at.get(a) - at.get(b));
   }
-  async function playSkillTables(id, { chapter = null, only = null, table = null, tables = null, review = false, next = null, round = '', cap = 0, collect = false } = {}) {
+  async function playSkillTables(id, { chapter = null, only = null, table = null, tables = null, pick = null, review = false, next = null, round = '', cap = 0, collect = false } = {}) {
     const sk = skills.get(id);
     if (!sk?.paradigms?.length || sk.set) return false;
     keepEntry('tablepart');
@@ -3757,7 +3795,7 @@ export function createUI(ctx) {
     // model word of that table (2026-10-26: "give me a word in that conjugation just to practise that part of the
     // chart, and other words in that same conjugation that I could choose or mix"), the game's Words to pick from.
     // `tables` (the game's setup): the model words of each table chosen, so any of them can be played.
-    for (const tid of table ? [table] : tables ?? []) {
+    for (const tid of table ? [table] : pick ?? tables ?? []) {
       try {
         const got = await catalogueItemsOf();
         for (const w of got?.catalogue?.stock?.(tid) ?? []) {
@@ -3769,7 +3807,9 @@ export function createUI(ctx) {
     const ofTable = table ? all.filter((e) => (tableIdOf(e, selectRules) ?? '') === table) : all;
     // One word to start on a single table; the rest wait in the game's Words, to choose or mix.
     // A review round: one word of each of its tables, so the round is the whole skill once, not every word.
-    const words = only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : table ? ofTable.slice(0, 1)
+    // `pick`: a step of a skill's learning sequence — the model word of each of these tables (plan.js learnRounds).
+    const words = pick ? pick.map((t) => ofTable.find((e) => (tableIdOf(e, selectRules) ?? '') === t)).filter(Boolean)
+      : only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : table ? ofTable.slice(0, 1)
       : review ? ofTable.filter((e, i) => ofTable.findIndex((x) => (tableIdOf(x, selectRules) ?? '') === (tableIdOf(e, selectRules) ?? '')) === i) : ofTable;
     if (!words.length) { ctx.say('No word of that table fits this skill.'); return false; }
     const rules = new Map();
@@ -4811,7 +4851,7 @@ export function createUI(ctx) {
       steps.push({ key: `learn:${id}`, label: `${today.classNew.includes(id) ? 'For class · ' : ''}Learn: ${titleOf(id)}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`),
         game: gameMode(() => render('learn', { skill: id })), lesson: lessonMode(() => startSkill(id, 'learn')) });
       const tb = skills.get(id)?.paradigms?.[0];
-      if (tb) steps.push({ key: `play:${id}`, label: `Its forms: ${titleOf(id)}`, sub: 'Type it to count', done: practisedToday(`tablepart:${id}`), game: () => openGameSetup(id), lesson: lessonMode(() => render('catalogue', { table: tb })) });
+      if (tb) steps.push({ key: `play:${id}`, label: `Its forms: ${titleOf(id)}`, sub: 'Type it to count', done: practisedToday(`tablepart:${id}`), game: () => { keepGame(true); playSkillTables(id, { review: true, cap: 12, next: planNextOf(`play:${id}`) }); }, lesson: lessonMode(() => render('catalogue', { table: tb })) });
     }
     // The review the half hour did not reach, after today's learning.
     const restIds = split.rest.flat();
@@ -4822,7 +4862,7 @@ export function createUI(ctx) {
     if (wt) steps.push({ key: `table:${wt}`, label: `A round of your weakest table: ${tableName(wt)}`, done: practisedToday(`table:${wt}`), game: gameMode(() => render('catalogue', { table: wt, play: true })), lesson: lessonMode(() => render('catalogue', { table: wt })) });
     const st = starredList().find((k) => !practisedToday(k.startsWith('table:') ? k : `skill:${k.slice(6)}`));
     if (st && today.kind !== 'rest') { const [kind, id] = st.split(/:(.*)/); steps.push({ key: `star:${st}`, label: `★ A starred one: ${starName(st)}`, done: false,
-      game: kind === 'table' ? gameMode(() => render('catalogue', { table: id, play: true })) : skills.get(id)?.paradigms?.length ? () => openGameSetup(id) : gameMode(() => goView('blocked', { skill: id })),
+      game: kind === 'table' ? gameMode(() => render('catalogue', { table: id, play: true })) : skills.get(id)?.paradigms?.length ? () => { keepGame(true); playSkillTables(id, { review: true, cap: 12, next: planNextOf(`star:${st}`) }); } : gameMode(() => goView('blocked', { skill: id })),
       lesson: lessonMode(() => (kind === 'table' ? render('catalogue', { table: id }) : goSkill(id))) }); }
     for (const x of steps) x.go = (gameKept() ? x.game : x.lesson) ?? x.game ?? x.lesson;
     return { today, steps };

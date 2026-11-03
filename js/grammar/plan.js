@@ -87,3 +87,34 @@ export function planToday({ order = [], learned = new Set(), today = isoDay(), p
   }
   return { kind, newToday, classNew, classWeek: cls.n, classDay: cls.classDay, classLeft: classLeft.length, total, done, remaining: remaining.length, daysLeft, learnDaysLeft, expected, status, plan: p, isRest };
 }
+
+/**
+ * How a new skill is learnt, table by table (2026-11-03: "it should not ask … map out a sequence for each skill that
+ * produces the most efficient and comprehensive learning … realistic within our time constraints … up to 20 minutes
+ * for new learning"). The tables are met in the order that builds each on the last with the least to unlearn:
+ *
+ *   verbs  the 1st conjugation as the model → the 2nd (the same pattern on ē) → the 3rd, 3rd -iō and 4th together,
+ *          which share their endings and differ in the stem vowel → the irregular verbs last, beside the regular ones
+ *   nouns  the 1st declension → the 2nd masculine (-us, -er) → the 2nd neuter (its own nominative = accusative rule)
+ *          → the 3rd masculine/feminine → the 3rd neuter and i-stems → the 4th and 5th
+ *   adjectives 1st/2nd → 3rd → comparison; pronouns is → the demonstratives → the relative/interrogative → personal
+ *
+ * One round per step, at most four (the last ones merged), each a model word of each of its tables; the skill's
+ * "Its forms" round then mixes a word of every table. About four minutes a round: twenty at most. Pure.
+ */
+export const LEARN_STEPS = Object.freeze([
+  ['conj1'], ['conj2'], ['conj3', 'conj3io', 'conj4'], ['sum', 'possum', 'eo', 'fero', 'volo', 'nolo', 'malo', 'fio'],
+  ['decl1'], ['decl2m', 'decl2r'], ['decl2n'], ['decl3'], ['decl3n', 'decl3i', 'decl3in'], ['decl4', 'decl4n', 'domus', 'decl5'],
+  ['adj12'], ['adj3'], ['adjcomp'],
+  ['is'], ['hic', 'ille', 'iste', 'ipse'], ['qui', 'quis'], ['ego', 'tu', 'se'],
+]);
+export const LEARN_ROUNDS_MAX = 4;
+export function learnRounds(paradigms = [], max = LEARN_ROUNDS_MAX) {
+  const own = [...new Set(paradigms ?? [])];
+  const rounds = LEARN_STEPS.map((g) => g.filter((t) => own.includes(t))).filter((g) => g.length);
+  const placed = new Set(rounds.flat());
+  const rest = own.filter((t) => !placed.has(t));
+  if (rest.length) rounds.push(rest);
+  while (rounds.length > Math.max(1, max)) { const last = rounds.pop(); rounds[rounds.length - 1] = [...rounds[rounds.length - 1], ...last]; }
+  return rounds;
+}
