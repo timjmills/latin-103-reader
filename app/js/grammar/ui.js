@@ -6,7 +6,7 @@
 
 import { weekSkills, chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat, setGameSection } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -3034,6 +3034,35 @@ export function createUI(ctx) {
       inGame ? null : btn('Stop the plan', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet g-side__btn'));
   }
   setGameAside(() => { const g = todayRun(); return g ? planPanel(g, { inGame: true }) : null; });
+  /**
+   * A form's whole section, for the game's table so far (2026-11-03: "all the pluperfect forms … with different person
+   * and number, or the nouns … with different case and number"): a verb's tense and mood in the form's voice, a noun's
+   * or adjective's whole declension; the form itself marked.
+   */
+  setGameSection((c) => {
+    const e = c?.entry;
+    if (!e?.h) return null;
+    let t = null;
+    try { t = par.paradigm(e, []); } catch { t = null; }
+    if (!t?.sections?.length) return null;
+    const fold = (v) => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const want = new Set((c.answers ?? []).map(fold));
+    const same = (k) => c.form && k && JSON.stringify(k) === JSON.stringify(c.form);
+    let at = null;
+    for (const sec of t.sections) for (const [ri, r] of (sec.rows ?? []).entries()) for (const [ci, cell] of (r.cells ?? []).entries()) {
+      if (at || !cell || cell.empty) continue;
+      if (same(cell.key) || String(cell.text ?? '').split(' / ').some((f) => want.has(fold(f)))) at = { sec, ri, ci };
+    }
+    if (!at) return null;
+    const { sec } = at;
+    const voices = (sec.headers ?? []).every((x) => /active|passive/.test(x));
+    const cols = voices ? [at.ci] : (sec.headers ?? []).map((_, i) => i);
+    return h('div', { class: 'gm__sec' },
+      h('p', { class: 'gm__sech' }, h('b', { lang: 'la', text: String(e.lemma ?? e.h) }), ` · ${sec.title}${voices ? ` ${sec.headers[at.ci]}` : ''}`),
+      h('table', { class: 'gm__sect' },
+        cols.length > 1 ? h('thead', {}, h('tr', {}, h('th', {}), ...cols.map((i) => h('th', { text: sec.headers[i] })))) : null,
+        h('tbody', {}, (sec.rows ?? []).map((r, ri) => h('tr', {}, h('th', { text: r.label }), ...cols.map((i) => { const cell = r.cells?.[i]; return h('td', { lang: 'la', class: ri === at.ri && i === at.ci ? 'is-this' : '', text: cell && !cell.empty ? cell.text : '—' }); }))))));
+  });
   // The day's time left among the game's scores, wherever the panel beside it has no room (a phone, a narrow window).
   setGameStat(() => {
     const g = todayRun();

@@ -929,3 +929,13 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__rowhow:hover { color: var(--ink); border-color: var(--ink-2); }
 .gm__row:has(.gm__slot .gm__how) .gm__rowhow { display: none; }
 .gm__row[data-pos="far"] .gm__rowhow { display: none; }
+
+/* A form's whole section, over the game (2026-11-03): a click off it closes it. */
+.gm__builtr.is-open { cursor: pointer; } .gm__builtr.is-open:hover { outline: 2px solid var(--gm-a); outline-offset: 1px; }
+.gm__secpop { position: absolute; z-index: 30; max-width: min(26rem, 92vw); max-height: 80vh; overflow: auto; padding: .7rem .9rem; border-radius: .9rem; background: var(--bg); box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 0 0 2px var(--gm-a); }
+.gm__sech { margin: 0 0 .4rem; }
+.gm__sect { border-collapse: collapse; font-size: 1rem; }
+.gm__sect th, .gm__sect td { padding: .2rem .6rem; text-align: left; border-bottom: 1px solid var(--line); }
+.gm__sect th { color: var(--ink-2); font-weight: 600; font-size: .85rem; }
+.gm__sect td { font-family: var(--face-reading); }
+.gm__sect td.is-this { background: color-mix(in srgb, var(--gm-a) 18%, transparent); font-weight: 700; }
