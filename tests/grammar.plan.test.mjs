@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planToday, studyDays, DEFAULT_PLAN, classWeekOf } from '../app/js/grammar/plan.js';
+import { planToday, studyDays, DEFAULT_PLAN, classWeekOf, learnRounds } from '../app/js/grammar/plan.js';
 
 const order = Array.from({ length: 88 }, (_, i) => `s${i}`);
 
@@ -49,4 +49,15 @@ test('class week: counted from the first class (Sat 5 Sep 2026); week 9 is Sat 3
   // Learnt already: nothing extra for class.
   const t2 = planToday({ order, learned: new Set(['gerundive', 'periphrastic']), today: '2026-10-30', classSkills: ['gerundive', 'periphrastic'] });
   assert.deepEqual(t2.classNew, []);
+});
+
+test('a new skill is learnt table by table, model first, at most four rounds', () => {
+  assert.deepEqual(learnRounds(['conj1', 'conj2', 'conj3', 'conj3io', 'conj4', 'sum', 'eo']), [['conj1'], ['conj2'], ['conj3', 'conj3io', 'conj4'], ['sum', 'eo']]);
+  assert.deepEqual(learnRounds(['decl1', 'decl2m', 'decl2n', 'decl2r']), [['decl1'], ['decl2m', 'decl2r'], ['decl2n']]);
+  // Nine noun tables still fit in four rounds: the later steps merged.
+  const all = learnRounds(['decl1', 'decl2m', 'decl2n', 'decl2r', 'decl3', 'decl3n', 'decl3i', 'decl4', 'decl5']);
+  assert.equal(all.length, 4);
+  assert.deepEqual(all.flat().sort(), ['decl1', 'decl2m', 'decl2n', 'decl2r', 'decl3', 'decl3n', 'decl3i', 'decl4', 'decl5'].sort());
+  assert.deepEqual(learnRounds(['volo']), [['volo']]);
+  assert.deepEqual(learnRounds(['xyz', 'conj1']), [['conj1'], ['xyz']]);
 });

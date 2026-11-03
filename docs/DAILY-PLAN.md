@@ -25,6 +25,16 @@ Anything that comes up during the day goes to the end (phase 3), never in front 
 "Later ↓" (or "Skip, come back later") moves a part to phase 3.
 After each step, a "How the day is going" summary page shows the progress before the next step.
 
+## Learning a new skill (no setup questions)
+In the plan and on the course paths, a new skill is learnt as a fixed sequence (`learnRounds`, plan.js). The game never
+asks which forms or words to play. Each round plays the model word of its tables, at most 4 rounds of about 12 cards,
+and "Its forms" then mixes a word of each table. That makes about 20 minutes at most.
+- Verbs: 1st conj. → 2nd → 3rd, 3rd -iō, 4th together → the irregular verbs.
+- Nouns: 1st decl. → 2nd masculine → 2nd neuter → 3rd m/f → 3rd neuter and i-stems → 4th and 5th.
+- Adjectives: 1st/2nd → 3rd → comparison. Pronouns: is → the demonstratives → the relative/interrogative → personal.
+The setup ("Which conjugations / which words") remains only for free practice: the Tables pages and the "Set up the
+game" buttons.
+
 ## Class weeks
 - The first class was **Saturday 5 September 2026**. Week *n*'s class is 7(*n*−1) days later.
   Week 9 (Familia Romana cap. XXXI, the future passive participle) is Saturday 31 October.
