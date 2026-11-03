@@ -425,10 +425,14 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const ppOf = (x) => { const lemma = String(x.entry?.lemma ?? ''); return lemma.includes(',') ? lemma : null; };
   const makeRow = (x, again = false) => {
     const slot = el('span', { class: 'gm__slot' });
+    // A ? on every card, answered or still to come (2026-11-03: "keep the question mark on all cards no matter if it is
+    // already answered"): how that card's own form is made.
+    const rowHow = how || tables ? el('button', { type: 'button', class: 'gm__rowhow', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: (e) => { e.stopPropagation(); openHow(row); } }, '?') : null;
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
       el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label' }, cueNodes(x.cue)), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
-      slot);
-    return { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
+      slot, rowHow);
+    const row = { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
+    return row;
   };
   // A thin rule where one column ends and the next begins (active → passive, singular → plural), and where the
   // redos begin; none in a shuffled round, which has no columns.
@@ -863,8 +867,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     openPanel(node, goOn);
   }
   // ? How this form is made: its own steps for this word, over the column; the clock stops while it is open.
-  function openHow() {
-    const r = rows[at];
+  function openHow(r = rows[at]) {
     const card = r && how ? how(r.x) : null;
     let tbl = null;
     if (r && tables) { try { tbl = tables(r.x); } catch { tbl = null; } }

@@ -923,3 +923,9 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__autonext { margin: 0; font-weight: 600; color: var(--gm-a, var(--ink)); }
 /* The day's time left among the scores (ui.js setGameStat). */
 .gm__plantime { color: #1f6b35 !important; box-shadow: inset 0 0 0 2px color-mix(in srgb, #2e9e4f 45%, transparent) !important; }
+
+/* The ? on every card (2026-11-03); on the card being typed, the one beside the box is enough. */
+.gm__rowhow { position: absolute; top: 6px; right: 8px; width: 1.7rem; height: 1.7rem; border: 2px solid var(--line-strong); border-radius: 50%; background: var(--bg-raised); color: var(--ink-2); font-weight: 800; cursor: pointer; line-height: 1; }
+.gm__rowhow:hover { color: var(--ink); border-color: var(--ink-2); }
+.gm__row:has(.gm__slot .gm__how) .gm__rowhow { display: none; }
+.gm__row[data-pos="far"] .gm__rowhow { display: none; }
