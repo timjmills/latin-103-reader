@@ -197,6 +197,9 @@ export function setGameAside(fn) { asideProvider = typeof fn === 'function' ? fn
  *  computer, in game and lesson modes"), or null. Shown at every width, the keyboard up too. */
 let statProvider = null;
 export function setGameStat(fn) { statProvider = typeof fn === 'function' ? fn : null; }
+/** A form's whole section of its table (ui.js): `fn(card)` → a node, or null. */
+let sectionProvider = null;
+export function setGameSection(fn) { sectionProvider = typeof fn === 'function' ? fn : null; }
 export const LADDER = [['parse', false], ['choose', false], ['flash', false], ['type', false], ['type', true]];
 const rung = (mode, shuffle) => { const i = LADDER.findIndex(([m, sh]) => m === mode && sh === (mode === 'type' && !!shuffle)); return i < 0 ? LADDER.findIndex(([m]) => m === mode) : i; };
 export const ladderLabel = (mode, shuffle) => `${MODES.find(([k]) => k === mode)?.[1] ?? mode}${mode === 'type' && shuffle ? ', shuffled' : ''}`;
@@ -425,10 +428,14 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const ppOf = (x) => { const lemma = String(x.entry?.lemma ?? ''); return lemma.includes(',') ? lemma : null; };
   const makeRow = (x, again = false) => {
     const slot = el('span', { class: 'gm__slot' });
+    // A ? on every card, answered or still to come (2026-11-03: "keep the question mark on all cards no matter if it is
+    // already answered"): how that card's own form is made.
+    const rowHow = how || tables ? el('button', { type: 'button', class: 'gm__rowhow', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: (e) => { e.stopPropagation(); openHow(row); } }, '?') : null;
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
       el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label' }, cueNodes(x.cue)), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
-      slot);
-    return { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
+      slot, rowHow);
+    const row = { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
+    return row;
   };
   // A thin rule where one column ends and the next begins (active → passive, singular → plural), and where the
   // redos begin; none in a shuffled round, which has no columns.
@@ -449,6 +456,22 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   const isDone = (r) => r.li.dataset.state === 'right' || r.li.dataset.state === 'shown' || r.li.dataset.state === 'skipped';
   const formNode = (x) => (splits(x) ? [el('span', { class: 'pt__stem', text: x.stem }), el('span', { class: 'pt__ending', text: x.ending })] : [x.answers[0]]);
+  let sectionPop = null;
+  const closeSection = () => { sectionPop?.remove(); sectionPop = null; };
+  function openSection(x, li) {
+    closeSection();
+    let node = null;
+    try { node = sectionProvider?.(x) ?? null; } catch { node = null; }
+    if (!node) return;
+    sectionPop = el('div', { class: 'gm__secpop', role: 'dialog', 'aria-label': 'All the forms of this section' }, node);
+    root.append(sectionPop);
+    const r = li.getBoundingClientRect();
+    const rr = root.getBoundingClientRect();
+    sectionPop.style.top = `${Math.max(8, Math.min(r.top - rr.top, rr.height - sectionPop.offsetHeight - 8))}px`;
+    sectionPop.style.left = `${Math.min(r.right - rr.left + 8, rr.width - sectionPop.offsetWidth - 8)}px`;
+  }
+  // A click anywhere off the popup closes it.
+  const offSection = (e) => { if (sectionPop && !sectionPop.contains(e.target)) closeSection(); };
   const paintBuilt = () => {
     const groups = new Map();
     for (const x of base) { const g = x.group ?? ''; if (!groups.has(g)) groups.set(g, []); groups.get(g).push(x); }
@@ -459,8 +482,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         el('ol', { class: 'gm__builtl' }, xs.map((x) => {
           const done = answered(x);
           const st = firstMiss.has(x.key) ? 'miss' : done ? 'right' : 'todo';
-          return el('li', { class: `gm__builtr is-${st}`, title: st === 'right' ? 'Right the first time' : st === 'miss' ? 'Missed, skipped or shown' : 'Still to come' },
+          // A form answered opens its whole section (2026-11-03: "if you click on any of these forms I want it to pop up
+          // with all the forms in that section … if you click off the popup it goes away").
+          const li = el('li', { class: `gm__builtr is-${st}${done && sectionProvider ? ' is-open' : ''}`, title: st === 'right' ? 'Right the first time' : st === 'miss' ? 'Missed, skipped or shown' : 'Still to come' },
             el('span', { class: 'gm__builtq' }, cueNodes(short(x))), el('span', { class: 'gm__builtf', lang: 'la', text: done ? x.answers[0] : '…' }));
+          if (done && sectionProvider) { li.tabIndex = 0; li.setAttribute('role', 'button'); li.addEventListener('click', (e) => { e.stopPropagation(); openSection(x, li); }); li.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSection(x, li); } }); }
+          return li;
         })))));
   };
   const paintStats = () => {
@@ -863,8 +890,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     openPanel(node, goOn);
   }
   // ? How this form is made: its own steps for this word, over the column; the clock stops while it is open.
-  function openHow() {
-    const r = rows[at];
+  function openHow(r = rows[at]) {
     const card = r && how ? how(r.x) : null;
     let tbl = null;
     if (r && tables) { try { tbl = tables(r.x); } catch { tbl = null; } }
@@ -934,6 +960,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   root.tabIndex = -1;   // between two forms the dialog itself holds the focus, so no key falls through to the page
   root.addEventListener('cancel', (e) => { e.preventDefault(); if (panel) panel.resume(); else close(); });   // Escape, where the browser sends it
+  root.addEventListener('pointerdown', offSection, true);
   root.addEventListener('close', () => close());   // a close the browser makes on its own (a second Escape, Android back)
   // Every key stays in the game: the reader's letter shortcuts (e, h, m, a …) and its Escape (which closes the word
   // panel) listen on the document, and a learner typing the next form early must not reach them.
