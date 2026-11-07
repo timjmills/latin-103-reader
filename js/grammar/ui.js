@@ -28,7 +28,7 @@ import { resolveView, tabOf, STUDY_TABS } from './routes.js';
 import { practised, notePractised, timesText, setSyncedCounts, bestOf, practisedToday, daysSince } from '../practised.js';
 import { planToday, DEFAULT_PLAN, isoDay, classWeekOf, learnRounds } from './plan.js';
 import { missedForms, missedToReview } from '../misses.js';
-import { ownSecondsToday, confetti } from '../activetime.js';
+import { ownSecondsToday, activeSeconds, confetti } from '../activetime.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -2814,7 +2814,10 @@ export function createUI(ctx) {
     if (mode !== 'game') playGameOnce = false;
     const totals = {};
     for (const it of items) { const k = partKey(it); if (!(k in totals)) totals[k] = Math.max(1, stepRounds(k)); }
-    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [], firstIds: split.first.flat() });
+    // Two hours at most (2026-11-07: "I want to get the whole thing done in 2 hours of effort as a cutoff"): the plan
+    // holds what fits in the time left of today's two hours, in its own order; what does not fit is extra.
+    fitTwoHours(items, at);
+    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [], firstIds: split.first.flat(), fitted: true });
     runToday(at);
   }
   /**
@@ -2824,6 +2827,26 @@ export function createUI(ctx) {
    * round under way finishes and the block's rounds not reached go to the end of the day, after today's learning.
    */
   const FIX_MIN = 15;
+  /**
+   * The day's size (2026-11-07: "what is planned should be able to be done within 2 hours … if more can be done you can
+   * do extra, but the most important for 2 hours should be done first"): the plan is the first two hours of study, in
+   * its own order of importance — corrections, review, the class's new skills, the other new skills, the rest; what
+   * does not fit is extra, there to do after if you want, else on tomorrow's plan. Nothing stops you at two hours.
+   */
+  const DAY_MAX = 120;
+  /** The steps from `from` on that fit in what is left of today's two hours stay the plan; the rest become extra. */
+  function fitTwoHours(items, from = 0) {
+    let budget = DAY_MAX - spentToday();
+    const pace = savedPace();
+    for (const it of items.slice(from)) {
+      const k = partKey(it);
+      if (budget <= 0) it.bonus = true;
+      budget -= (it.t === 'r' ? roundMin(k) : Math.max(1, stepRounds(k)) * roundMin(k)) * pace;
+    }
+    return items;
+  }
+  const spentToday = () => { try { return (activeSeconds().today ?? 0) / 60; } catch { return ownSecondsToday() / 60; } };
+
   const isFix = (it) => !!it && ((it.t === 'r' && it.v === '#forms' && !it.more) || (it.t === 's' && (it.key === 'forms' || it.key === 'redo')));
   const isRev = (it) => !!it && ((it.t === 'r' && !it.more && it.v !== '#forms') || (it.t === 's' && it.key === 'review'));
   const laterFix = (x) => (x.t === 'r' ? { ...x, more: true, label: 'More corrections: forms you got wrong' } : { ...x, key: x.key === 'forms' ? 'forms2' : 'redo2', label: x.key === 'forms' ? 'More corrections: forms you got wrong' : 'More corrections: questions you got wrong' });
@@ -2837,7 +2860,8 @@ export function createUI(ctx) {
     // Time: this block's rounds from here on go to the end of the day.
     const ahead = g.items.slice(i).filter(block.is);
     if (!ahead.length) return g;
-    const items = [...g.items.slice(0, i), ...g.items.slice(i).filter((x) => !ahead.includes(x)), ...ahead.map(block.later)];
+    // Past its minutes the rest of a block is extra: there if there is time, never counted against the day.
+    const items = [...g.items.slice(0, i), ...g.items.slice(i).filter((x) => !ahead.includes(x)), ...ahead.map((x) => ({ ...block.later(x), bonus: true }))];
     const movedIds = new Set(ahead.filter((x) => x.t === 'r').flatMap((x) => (Array.isArray(x.v) ? x.v : [x.v])));
     const n = { ...g, items, firstIds: (g.firstIds ?? []).filter((x) => !movedIds.has(x)) };
     setTodayRun(n);
@@ -2898,6 +2922,13 @@ export function createUI(ctx) {
    * way — so the plan, and its time, grow with them. Returns the run as it now stands.
    */
   function syncRun(g) {
+    // A session started before the day was fitted to two hours (2026-11-07: "can you look at my current day today and
+    // rectify if needed"): what is still ahead is fitted once, now; what is past stays as it was.
+    if (!g.fitted) {
+      const items = fitTwoHours(g.items.map((it) => ({ ...it })), (g.at ?? 0) + 1);
+      g = { ...g, items, fitted: true, totals: {} };
+      setTodayRun(g);
+    }
     const r = reviewItems();
     const add = [];
     const ahead = g.items.slice(g.at);
@@ -2906,14 +2937,14 @@ export function createUI(ctx) {
     // corrections"), never in front of today's learning.
     if (g.mode === 'game') {
       const present = new Set(g.items.filter((it) => it.t === 'r').flatMap((it) => (Array.isArray(it.v) ? it.v : [it.v])));
-      if (r.forms && !has((it) => it.t === 'r' && it.v === '#forms')) add.push({ t: 'r', v: '#forms', more: true, label: 'More corrections: forms you got wrong' });
+      if (r.forms && !has((it) => it.t === 'r' && it.v === '#forms')) add.push({ t: 'r', v: '#forms', more: true, bonus: true, label: 'More corrections: forms you got wrong' });
       const fresh = [...new Set([...r.retests, ...r.due])].filter((x) => !present.has(x) && !sentenceOnly(x));
-      for (const x of reviewRounds(fresh, reviewMixed())) add.push({ t: 'r', v: x, more: true, label: `More review: ${roundName(x)}` });
+      for (const x of reviewRounds(fresh, reviewMixed())) add.push({ t: 'r', v: x, more: true, bonus: true, label: `More review: ${roundName(x)}` });
     } else {
-      if (reviewSplit().rest.length && !has((it) => it.key === 'review2')) add.push({ t: 's', key: 'review2', label: 'More review' });
-      if (r.forms && !has((it) => it.key === 'forms' || it.key === 'forms2')) add.push({ t: 's', key: 'forms2', label: 'More corrections: forms you got wrong' });
+      if (reviewSplit().rest.length && !has((it) => it.key === 'review2')) add.push({ t: 's', key: 'review2', bonus: true, label: 'More review' });
+      if (r.forms && !has((it) => it.key === 'forms' || it.key === 'forms2')) add.push({ t: 's', key: 'forms2', bonus: true, label: 'More corrections: forms you got wrong' });
     }
-    if (r.missed && !has((it) => it.key === 'redo' || it.key === 'redo2')) add.push({ t: 's', key: 'redo2', label: `More corrections: questions you got wrong (${r.missed})` });
+    if (r.missed && !has((it) => it.key === 'redo' || it.key === 'redo2')) add.push({ t: 's', key: 'redo2', bonus: true, label: `More corrections: questions you got wrong (${r.missed})` });
     if (!add.length) return g;
     const next = { ...g, items: [...g.items, ...add] };
     setTodayRun(next);
@@ -2933,12 +2964,18 @@ export function createUI(ctx) {
       // A part that can grow (the review, the forms, the questions wrong): its rounds left are what is there now, and
       // its rounds done are kept, so new review adds rounds — and time — rather than being lost under a cap.
       const grows = ['review', 'review2', 'forms', 'forms2', 'redo', 'redo2'].includes(key);
-      let total = totals[key] ?? Math.max(1, stepRounds(key));
+      // The day's plan is fixed when a part is first counted (2026-11-07: "it said I had 12 sets to do, now it's saying
+      // over 20 … it's quite discouraging"): its rounds never grow. What comes up after — new mistakes, a skill falling
+      // due — is counted beside it as extra (`more`), and parts added during the day are extra altogether (`bonus`).
+      const total = totals[key] ?? Math.max(1, stepRounds(key));
+      totals[key] = total;
       // A first-block correction already passed, with its rest at the end: what is left is counted there, not twice.
       const passed = (key === 'forms' || key === 'redo') && g.items.some((x, j) => j > g.at && partKey(x) === `${key}2`) && !g.items.some((x, j) => j >= g.at && partKey(x) === key);
-      let left = passed ? 0 : grows ? stepRounds(key) : st?.done ? 0 : total;
-      if (grows) { total = Math.max(total, (doneRec[key] ?? 0) + left); doneRec[key] = Math.max(doneRec[key] ?? 0, total - left); totals[key] = total; }
-      out.push({ key, later: !!it.later, at: i, label: key === 'review' ? `Review (up to ${REVIEW_MIN} min)` : key === 'review2' ? 'More review' : key === 'forms' ? 'Corrections: forms you got wrong' : key === 'forms2' ? 'More corrections: forms' : key === 'redo2' ? 'More corrections: questions' : st?.label ?? it.label, total, done: total - left, left, here: i === g.at, complete: left === 0 });
+      const now = passed ? 0 : grows ? stepRounds(key) : st?.done ? 0 : total;
+      const done = grows ? Math.min(total, Math.max(doneRec[key] ?? 0, total - now)) : total - now;
+      if (grows) doneRec[key] = done;
+      const left = total - done;
+      out.push({ key, later: !!it.later, bonus: !!it.bonus, more: Math.max(0, now - left), at: i, label: key === 'review' ? `Review (up to ${REVIEW_MIN} min)` : key === 'review2' ? 'More review' : key === 'forms' ? 'Corrections: forms you got wrong' : key === 'forms2' ? 'More corrections: forms' : key === 'redo2' ? 'More corrections: questions' : st?.label ?? it.label, total, done, left, here: i === g.at, complete: left === 0 });
     });
     // Your pace: active minutes since the run began over the minutes its finished rounds were reckoned at. The round
     // under way is left out of the pace and taken off its own part, so the time left falls as you play (2026-10-28).
@@ -2951,18 +2988,26 @@ export function createUI(ctx) {
     // The misses of the round just played, replayed until right: their time on the part under way (`extra`, minutes).
     for (const p of out) p.mins = p.left || (p.here && g.extra) ? Math.max(1, Math.round(p.left * roundMin(p.key) * pace - (p.here ? inRound : 0) + (p.here ? (g.extra ?? 0) * pace : 0))) : 0;
     if (JSON.stringify(totals) !== JSON.stringify(g.totals ?? {}) || JSON.stringify(doneRec) !== JSON.stringify(g.doneRec ?? {})) setTodayRun({ ...todayRun(), totals, doneRec });
-    return { parts: out, minsLeft: out.reduce((n, p) => n + p.mins, 0), done: out.reduce((n, p) => n + p.done, 0), total: out.reduce((n, p) => n + p.total, 0) };
+    // The headline is the plan only; the extras are told apart, with their own minutes.
+    const plan = out.filter((p) => !p.bonus);
+    const extra = out.filter((p) => p.bonus);
+    const extraRounds = extra.reduce((n, p) => n + p.left + p.more, 0) + plan.reduce((n, p) => n + p.more, 0);
+    const extraMins = Math.round(extra.reduce((n, p) => n + p.mins, 0) + plan.reduce((n, p) => n + p.more * roundMin(p.key) * pace, 0));
+    return { parts: out, minsLeft: plan.reduce((n, p) => n + p.mins, 0), done: plan.reduce((n, p) => n + p.done, 0), total: plan.reduce((n, p) => n + p.total, 0), planDone: plan.length > 0 && plan.every((p) => p.complete), extraRounds, extraMins };
   }
   /** Confetti once for each part finished (and for the whole plan). */
   function celebrate(g, parts) {
     const cel = new Set(g.cel ?? []);
     let fresh = false;
-    for (const p of parts) if (p.complete && !cel.has(p.key)) { cel.add(p.key); fresh = true; }
+    for (const p of parts) if (p.complete && !p.bonus && !cel.has(p.key)) { cel.add(p.key); fresh = true; }
+    if (parts.some((p) => !p.bonus) && parts.filter((p) => !p.bonus).every((p) => p.complete) && !cel.has('#all')) { cel.add('#all'); fresh = true; try { ctx.say("Today's plan is done. Well done! Anything more is extra."); } catch { /* quiet */ } }
     if (!fresh) return;
     setTodayRun({ ...todayRun(), cel: [...cel] });
     try { confetti(); } catch { /* no confetti */ }
   }
-  const partCount = (p) => (p.complete ? `✓ ${p.total}/${p.total} round${p.total === 1 ? '' : 's'}` : `${p.done}/${p.total} round${p.total === 1 ? '' : 's'} · ${minsText(p.mins)}`);
+  /** The extras, kept out of the day's count (2026-11-07): there if there is time, and on to tomorrow's plan if not. */
+  const extraLine = (rp) => (rp.extraRounds > 0 ? h('p', { class: 'g-plan__extra' }, `+ ${rp.extraRounds} extra round${rp.extraRounds === 1 ? '' : 's'} (${minsText(rp.extraMins)}), only if you have time. Not done today, they move to tomorrow's plan.`) : null);
+  const partCount = (p) => `${p.complete ? `✓ ${p.total}/${p.total} round${p.total === 1 ? '' : 's'}` : `${p.done}/${p.total} round${p.total === 1 ? '' : 's'} · ${minsText(p.mins)}`}${p.more ? ` · +${p.more} extra` : ''}`;
   /**
    * The times, live (2026-10-28: "a dynamic time estimate"): every 30 seconds while today's plan runs, the minutes left
    * in the side bar, the foot bar and the plan card are worked out again in place — nothing else is redrawn.
@@ -3007,7 +3052,7 @@ export function createUI(ctx) {
    * The day's three phases, each its colour (2026-10-30: "colour code the three phases: 1. corrections/review 2. lesson
    * new 3. more review/corrections"). A heading where each begins; `withPhases` threads them into a list of rows.
    */
-  const PHASES = { 1: '1 · Corrections & review', 2: '2 · New lessons', 3: '3 · More review & corrections' };
+  const PHASES = { 1: '1 · Corrections & review', 2: '2 · New lessons', 3: '3 · More review & corrections', 4: 'Extra · only if you have time' };
   const phaseOf = (key) => (['forms', 'redo', 'review'].includes(key) ? 1 : /^(learn|play):/.test(key) || key === 'class-read' ? 2 : 3);
   const withPhases = (rows) => { let last = 0; return rows.flatMap(([ph, li]) => { li.dataset.phase = String(ph); const head = ph !== last ? h('li', { class: 'g-phase', 'data-phase': String(ph), 'aria-hidden': 'true', text: PHASES[ph] }) : null; last = ph; return [head, li].filter(Boolean); }); };
   /** A part of the day skipped for now: its rounds still to come go to the end, in the last section. */
@@ -3035,9 +3080,11 @@ export function createUI(ctx) {
       // successfully done or if it needed to be still done").
       ((p) => (p ? h('p', { class: `g-planpanel__now ${p.complete ? 'is-done' : 'is-todo'}`, role: 'status' },
         p.complete ? `✓ Done: ${p.label}` : g.lastDone && p.done ? `✓ Done: ${g.lastDone} · ${p.label}: ${p.done} of ${p.total} rounds done, ${p.left} to go` : `Still to do: ${p.label} — ${p.key === 'review' || p.key === 'review2' || p.key === 'forms' ? 'type every form right (Type it) to cover it' : p.key === 'redo' ? 'answer each one right' : p.key.startsWith('learn:') ? (g.mode === 'game' ? 'play each step of its sequence, typed' : 'pass the Learn lesson (6 of the last 10 right)') : 'a typed round finishes it'}`) : null))(rp.parts.find((x) => x.here)),
+      rp.planDone ? h('p', { class: 'g-plan__alldone', role: 'status', text: "🎉 Today's plan is done. Anything below is extra." }) : null,
       h('p', { class: 'g-side__planhead' }, h('span', { 'data-plan-rounds': '', text: `${rp.done} of ${rp.total} rounds · ` }), h('b', { 'data-plan-min': '', text: rp.minsLeft > 0 ? `${minsText(rp.minsLeft)} left` : 'all done ✓' })),
+      extraLine(rp),
       h('div', { class: 'g-planpanel__bar', style: `--p:${rp.total ? Math.round((rp.done / rp.total) * 100) : 0}%`, 'aria-hidden': 'true' }),
-      h('ol', { class: 'g-side__list g-side__plan' }, withPhases(rp.parts.map((p) => [p.later ? 3 : phaseOf(p.key), h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
+      h('ol', { class: 'g-side__list g-side__plan' }, withPhases([...rp.parts.filter((p) => !p.bonus), ...rp.parts.filter((p) => p.bonus)].map((p) => [p.bonus ? 4 : p.later ? 3 : phaseOf(p.key), h('li', { class: `${p.complete ? 'is-done' : ''}${p.here ? ' is-here' : ''}`, style: `--p:${Math.round((p.done / p.total) * 100)}%` },
         h('button', { type: 'button', class: 'g-side__go', 'aria-current': p.here ? 'step' : null, onclick: go(p.at) },
           h('span', { text: `${p.complete ? '✓ ' : p.here ? '▶ ' : ''}${p.label}` }),
           h('span', { class: 'g-count', 'data-plan-part': p.key, text: partCount(p) })),
@@ -4903,7 +4950,8 @@ export function createUI(ctx) {
       h('label', {}, ' · rest day ', h('select', { onchange: (e) => { ctx.savePrefs?.({ plan: { ...planOf(), rest: Number(e.target.value) } }); draw(); } }, REST_DAYS.map((d, i) => h('option', { value: String(i), selected: i === Number(p.rest) ? true : null, text: d })))));
     return h('section', { class: 'g-plan', 'aria-labelledby': 'g-plan-h' },
       h('h2', { id: 'g-plan-h', class: 'g-h2', text: `🎯 Master all ${today.total} skills by ${planDay(p.goal)}` }),
-      h('p', { class: 'g-plan__meta' }, `${today.daysLeft} study day${today.daysLeft === 1 ? '' : 's'} left · 45–60 min a day · rest: ${REST_DAYS[p.rest]}`),
+      h('p', { class: 'g-plan__meta' }, `${today.daysLeft} study day${today.daysLeft === 1 ? '' : 's'} left · up to 2 hours a day · rest: ${REST_DAYS[p.rest]} · ${Math.round(spentToday())} min today`),
+      spentToday() >= DAY_MAX ? h('p', { class: 'g-plan__alldone', role: 'status', text: '✓ Two hours today. The plan was made for that: anything more is extra, and what is left moves to tomorrow.' }) : null,
       h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
       h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · ${planOrder().filter((id) => stateOf(id).state === 'mastered').length} mastered · `, h('b', { text: statusText })),
       h('p', { class: 'g-plan__phase', text: phase }),
@@ -4932,7 +4980,7 @@ export function createUI(ctx) {
     const pct = rp.total ? Math.round((rp.done / rp.total) * 100) : 0;
     const spent = Math.round(ownSecondsToday() / 60);
     const prev = i > 0 ? g.items[i - 1] : null;
-    const phaseRows = [1, 2, 3].map((ph) => { const ps = rp.parts.filter((p) => (p.later ? 3 : phaseOf(p.key)) === ph); return ps.length ? { ph, done: ps.reduce((n, p) => n + p.done, 0), total: ps.reduce((n, p) => n + p.total, 0), mins: ps.reduce((n, p) => n + p.mins, 0) } : null; }).filter(Boolean);
+    const phaseRows = [1, 2, 3].map((ph) => { const ps = rp.parts.filter((p) => !p.bonus && (p.later ? 3 : phaseOf(p.key)) === ph); return ps.length ? { ph, done: ps.reduce((n, p) => n + p.done, 0), total: ps.reduce((n, p) => n + p.total, 0), mins: ps.reduce((n, p) => n + p.mins, 0) } : null; }).filter(Boolean);
     setBody(
       h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: "Today's plan" }), h('h1', { class: 'g-title', text: 'How the day is going' })),
       h('section', { class: 'g-plansum' },
@@ -4943,11 +4991,14 @@ export function createUI(ctx) {
           h('div', {}, h('b', { text: `${spent} min` }), h('span', { text: 'studied today' })),
           h('div', {}, h('b', { text: rp.minsLeft > 0 ? minsText(rp.minsLeft).replace('~', '') : '0' }), h('span', { text: 'still to go' }))),
         h('div', { class: 'g-planpanel__bar', style: `--p:${pct}%`, 'aria-hidden': 'true' }),
+        rp.planDone ? h('p', { class: 'g-plan__alldone', role: 'status', text: "🎉 Today's plan is done. Anything more is extra." }) : null,
+        extraLine(rp),
         h('ul', { class: 'g-plansum__phases' }, phaseRows.map((r) => h('li', { 'data-phase': String(r.ph) },
           h('span', { class: 'g-plansum__ph', text: PHASES[r.ph] }),
           h('span', { text: r.done >= r.total ? ' — ✓ done' : ` — ${r.done} of ${r.total} rounds · ${minsText(r.mins)}` })))),
         h('div', { class: 'g-acts' },
-          btn(`Next: ${g.items[i].label} →`, { onclick: () => runToday(i) }, 'btn btn--primary g-play'),
+          btn(`${rp.planDone || g.items[i].bonus ? 'Keep going (extra)' : 'Next'}: ${g.items[i].label} →`, { onclick: () => runToday(i) }, `btn ${rp.planDone ? '' : 'btn--primary '}g-play`),
+          rp.planDone ? btn('Stop for today ✓', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); render('today'); } }, 'btn btn--primary') : null,
           btn('The whole plan', { onclick: () => render('today') }, 'btn btn--quiet')),
         planPanel(g)));
   }

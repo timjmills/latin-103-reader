@@ -1821,3 +1821,8 @@ html.g-run-on .g-body { padding-bottom: 8rem; }
 .g-plansum__ph { font-weight: 800; color: var(--phase); }
 @media (max-width: 600px) { .g-plansum__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .g-plan__class { margin: .25rem 0; padding: .35rem .7rem; border-left: 4px solid #8a3fc4; border-radius: 6px; background: color-mix(in srgb, #8a3fc4 8%, transparent); }
+
+/* The day's plan stays as it began; extras apart (2026-11-07). */
+[data-phase="4"] { --phase: #8a8f98; }
+.g-plan__extra { margin: .2rem 0 .4rem; font-size: .85rem; color: var(--ink-2); }
+.g-plan__alldone { margin: .3rem 0; padding: .4rem .7rem; border-radius: 8px; background: color-mix(in srgb, #1d7a3a 14%, transparent); color: #1d7a3a; font-weight: 700; }
