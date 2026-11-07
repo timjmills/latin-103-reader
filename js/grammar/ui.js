@@ -2642,7 +2642,8 @@ export function createUI(ctx) {
     // or — a miss saved before that — found again from the word at the head of its cue.
     const fold = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     const entryOf = (c) => {
-      const head = String(c.lemma ?? c.cue ?? '').split(c.lemma ? /[\s,]/ : ' · ')[0].trim();
+      // The word at the head of the cue, without its type: "perficiō (3rd conj. (-iō))" → perficiō.
+      const head = String(c.lemma ?? c.cue ?? '').split(c.lemma ? /[\s,]/ : ' · ')[0].replace(/\s*\(.*$/, '').trim();
       const hit = (dict?.lookup?.(head)?.entries ?? []).find((e) => fold(String(e.lemma ?? '').split(/[\s,]/)[0]) === fold(head));
       return hit ?? (c.lemma ? { lemma: c.lemma } : null);
     };

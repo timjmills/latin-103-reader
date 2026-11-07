@@ -60,7 +60,7 @@ async function boot() {
   // It is fired here, never awaited, so it still costs the first paint nothing. The fixture harness registers
   // none, deliberately: its responses are the fixture's, and a worker installed from it would serve them to
   // the real app on the same origin.
-  if (!fixture) registerServiceWorker?.()?.catch?.((e) => console.warn('[sw] registration failed', e));
+  if (!fixture) registerServiceWorker?.()?.then?.((reg) => keepCurrent(reg))?.catch?.((e) => console.warn('[sw] registration failed', e));
 
   // Sign-in gate (real store only): E's auth.js shows its own form and resolves once signed in.
   if (!fixture) {
@@ -2001,3 +2001,24 @@ boot().catch((err) => {
 // Active time today, at the top of every page (activetime.js): it counts while something is typed, clicked or scrolled.
 // It shares Aa's place in the bar (one cell of its grid, whatever the layout).
 { const aa = document.getElementById('settings-btn'); if (aa) { const box = document.createElement('div'); box.className = 'bar__aa'; aa.replaceWith(box); box.append(activeTimer(), aa); } }
+
+/**
+ * A tab left open keeps running the version it was opened with (2026-11-07: "I am supposed to see the principal parts
+ * … but I cannot see it" — the tab was days behind). So: look for a new version whenever the tab comes back into view
+ * and every half hour; once a new one has taken over, reload — at once when no game is open, else when the game closes.
+ */
+function keepCurrent(reg) {
+  if (!reg || !('serviceWorker' in navigator)) return;
+  const check = () => { try { reg.update(); } catch { /* offline */ } };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+  setInterval(check, 30 * 60 * 1000);
+  // The first worker of a fresh install is not an update: only a change of controller after one was in charge.
+  if (!navigator.serviceWorker.controller) return;
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading) return;
+    const go = () => { if (reloading) return; reloading = true; location.reload(); };
+    if (!document.querySelector('dialog.gm[open]')) { go(); return; }
+    const wait = setInterval(() => { if (!document.querySelector('dialog.gm[open]')) { clearInterval(wait); go(); } }, 2000);
+  });
+}
