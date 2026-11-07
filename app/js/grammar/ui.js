@@ -2644,7 +2644,11 @@ export function createUI(ctx) {
     const entryOf = (c) => {
       // The word at the head of the cue, without its type: "perficiō (3rd conj. (-iō))" → perficiō.
       const head = String(c.lemma ?? c.cue ?? '').split(c.lemma ? /[\s,]/ : ' · ')[0].replace(/\s*\(.*$/, '').trim();
-      const hit = (dict?.lookup?.(head)?.entries ?? []).find((e) => fold(String(e.lemma ?? '').split(/[\s,]/)[0]) === fold(head));
+      const same = (dict?.lookup?.(head)?.entries ?? []).filter((e) => fold(String(e.lemma ?? '').split(/[\s,]/)[0]) === fold(head) && (!c.lemma || fold(e.lemma) === fold(c.lemma)));
+      // One spelling, several words (eō the verb and eō "there"; volō "want" and volō "fly"): the one whose table holds the answer.
+      const want = new Set((c.answers ?? []).map(fold));
+      const holds = (e) => { try { return (par.paradigm(e, []).sections ?? []).some((sec) => (sec.rows ?? []).some((r) => (r.cells ?? []).some((x) => x && !x.empty && String(x.text ?? '').split(' / ').some((f) => want.has(fold(f)))))); } catch { return false; } };
+      const hit = same.find(holds) ?? same[0];
       return hit ?? (c.lemma ? { lemma: c.lemma } : null);
     };
     const list = (recent.length ? recent : missedForms().slice(0, 16)).map((r) => { const e = entryOf(r.card); return e ? { ...r.card, entry: e } : r.card; });
