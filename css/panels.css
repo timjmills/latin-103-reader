@@ -939,3 +939,6 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__sect th { color: var(--ink-2); font-weight: 600; font-size: .85rem; }
 .gm__sect td { font-family: var(--face-reading); }
 .gm__sect td.is-this { background: color-mix(in srgb, var(--gm-a) 18%, transparent); font-weight: 700; }
+
+/* A round picked up where it was left (2026-11-07). */
+.gm__resumed { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 5; margin: 0; padding: .35rem .9rem; border-radius: 999px; background: var(--bg-raised); box-shadow: inset 0 0 0 2px var(--gm-a); font-weight: 700; color: var(--ink); }
