@@ -6,7 +6,14 @@ Change the plan only in line with these rules, or when the learner asks.
 ## The goal
 - Master every skill **that has a table** by **15 December 2026** (73 skills). Skills with no table
   (result clause, enclitics and the like) are not in the plan.
-- 45–60 minutes a day, six days a week. Sunday is the rest day unless changed.
+- At most **2 hours of study a day** (all devices together), six days a week. Sunday is the rest day unless changed.
+  When today's session starts, it holds only what fits in the 2 hours, in its own order. What does not fit is marked
+  extra. At 2 hours the day ends at the next step's edge, and what is left moves to tomorrow ("Keep going anyway" can
+  override this).
+- **The day's count never grows.** The plan's rounds are fixed when the day starts. New mistakes, skills falling due
+  and rounds past a block's time limit are shown as **extra** ("Extra · only if you have time", grey). They are not
+  counted against the day, and if not done they move to tomorrow's plan. "🎉 Today's plan is done" shows once the
+  planned parts are finished.
 
 ## The order of every day: three colour-coded phases
 1. **Corrections & review** (blue)
