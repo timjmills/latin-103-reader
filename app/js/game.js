@@ -456,6 +456,46 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   const isDone = (r) => r.li.dataset.state === 'right' || r.li.dataset.state === 'shown' || r.li.dataset.state === 'skipped';
   const formNode = (x) => (splits(x) ? [el('span', { class: 'pt__stem', text: x.stem }), el('span', { class: 'pt__ending', text: x.ending })] : [x.answers[0]]);
+  /*
+   * A round left part-way is kept (2026-11-07: "if the round is left, things are saved and don't need to be restarted
+   * from the top"): the forms got right so far, and those missed on the first try, under the round's own forms; the
+   * same round opened again starts at the first form still to do. Kept for two days; a round played to its end is cleared.
+   */
+  const SAVE_KEY = 'l103.game.saved';
+  const sig = base.map((x) => x.key).sort().join('\u0001');
+  const readSaved = () => { try { const v = JSON.parse(localStorage.getItem(SAVE_KEY) ?? '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } };
+  const writeSaved = (m) => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(m)); } catch { /* this visit only */ } };
+  const saveProgress = () => {
+    if (ended) return;
+    const right = rows.filter((r) => !r.again && r.li.dataset.state === 'right').map((r) => r.x.key);
+    const m = readSaved();
+    const now = Date.now();
+    for (const [k, v] of Object.entries(m)) if (!v?.t || now - v.t > 2 * 864e5) delete m[k];
+    if (right.length) m[sig] = { right, miss: [...firstMiss], score, t: now }; else delete m[sig];
+    writeSaved(m);
+  };
+  const clearSaved = () => { const m = readSaved(); if (m[sig]) { delete m[sig]; writeSaved(m); } };
+  {
+    const kept = readSaved()[sig];
+    if (kept?.right?.length && Date.now() - (kept.t ?? 0) <= 2 * 864e5) {
+      const right = new Set(kept.right);
+      for (const k of kept.miss ?? []) firstMiss.add(k);
+      score = Number(kept.score) || 0;
+      for (const r of rows) {
+        if (!right.has(r.x.key)) continue;
+        r.missed = firstMiss.has(r.x.key);
+        r.li.dataset.state = 'right';
+        r.li.toggleAttribute('data-missed', r.missed);
+        r.slot.replaceChildren(el('span', { class: 'gm__form', lang: 'la' }, formNode(r.x)), el('span', { class: 'gm__mark', 'aria-hidden': 'true', text: '✓' }));
+      }
+      const next = rows.findIndex((r) => !isDone(r));
+      at = next < 0 ? Math.max(0, rows.length - 1) : next;
+      live.textContent = `Picked up where you left off: ${right.size} of ${rows.length} done.`;
+      const note = el('p', { class: 'gm__resumed', role: 'status', text: `↻ Picked up where you left off: ${rows.filter(isDone).length} of ${rows.length} done` });
+      stage.append(note);
+      setTimeout(() => note.remove(), 5000);
+    }
+  }
   let sectionPop = null;
   const closeSection = () => { sectionPop?.remove(); sectionPop = null; };
   function openSection(x, li) {
@@ -677,6 +717,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     if (r.slot.contains(document.activeElement)) root.focus({ preventScroll: true });   // the box leaves; the focus stays in the game
     r.li.dataset.state = state;
     r.li.toggleAttribute('data-missed', r.missed);   // answered, it shows green for first time, red for missed
+    saveProgress();
     r.li.classList.remove('is-parse');
     r.slot.replaceChildren(el('span', { class: 'gm__form', lang: 'la' }, formNode(r.x)), el('span', { class: 'gm__mark', 'aria-hidden': 'true', text: state === 'right' ? '✓' : '·' }));
     place();
@@ -981,6 +1022,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
 
   function finish() {
     ended = true;
+    clearSaved();
     // The plan beside it moves on once this round is written down (the credit is stored a moment later).
     setTimeout(paintPlan, 700);
     // A caller playing its own boxes (a lesson's chart, ui.js) is told which were missed on the first try.
