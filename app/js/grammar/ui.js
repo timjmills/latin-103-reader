@@ -2816,15 +2816,8 @@ export function createUI(ctx) {
     for (const it of items) { const k = partKey(it); if (!(k in totals)) totals[k] = Math.max(1, stepRounds(k)); }
     // Two hours at most (2026-11-07: "I want to get the whole thing done in 2 hours of effort as a cutoff"): the plan
     // holds what fits in the time left of today's two hours, in its own order; what does not fit is extra.
-    let budget = DAY_MAX - spentToday();
-    const pace = savedPace();
-    for (const it of items.slice(at)) {
-      const k = partKey(it);
-      const mins = (it.t === 'r' ? roundMin(k) : Math.max(1, stepRounds(k)) * roundMin(k)) * pace;
-      if (budget <= 0) it.bonus = true;
-      budget -= mins;
-    }
-    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [], firstIds: split.first.flat() });
+    fitTwoHours(items, at);
+    setTodayRun({ day: isoDay(), mode, items, at, totals, active0: ownSecondsToday(), cel: [], firstIds: split.first.flat(), fitted: true });
     runToday(at);
   }
   /**
@@ -2834,12 +2827,26 @@ export function createUI(ctx) {
    * round under way finishes and the block's rounds not reached go to the end of the day, after today's learning.
    */
   const FIX_MIN = 15;
-  /** The day's ceiling (2026-11-07): two hours of study, all devices together. */
+  /**
+   * The day's size (2026-11-07: "what is planned should be able to be done within 2 hours … if more can be done you can
+   * do extra, but the most important for 2 hours should be done first"): the plan is the first two hours of study, in
+   * its own order of importance — corrections, review, the class's new skills, the other new skills, the rest; what
+   * does not fit is extra, there to do after if you want, else on tomorrow's plan. Nothing stops you at two hours.
+   */
   const DAY_MAX = 120;
+  /** The steps from `from` on that fit in what is left of today's two hours stay the plan; the rest become extra. */
+  function fitTwoHours(items, from = 0) {
+    let budget = DAY_MAX - spentToday();
+    const pace = savedPace();
+    for (const it of items.slice(from)) {
+      const k = partKey(it);
+      if (budget <= 0) it.bonus = true;
+      budget -= (it.t === 'r' ? roundMin(k) : Math.max(1, stepRounds(k)) * roundMin(k)) * pace;
+    }
+    return items;
+  }
   const spentToday = () => { try { return (activeSeconds().today ?? 0) / 60; } catch { return ownSecondsToday() / 60; } };
-  const DAY_DONE_KEY = 'l103.plan.dayDone';
-  const OVERTIME_KEY = 'l103.plan.overtime';
-  const overtime = () => { try { return localStorage.getItem(OVERTIME_KEY) === isoDay(); } catch { return false; } };
+
   const isFix = (it) => !!it && ((it.t === 'r' && it.v === '#forms' && !it.more) || (it.t === 's' && (it.key === 'forms' || it.key === 'redo')));
   const isRev = (it) => !!it && ((it.t === 'r' && !it.more && it.v !== '#forms') || (it.t === 's' && it.key === 'review'));
   const laterFix = (x) => (x.t === 'r' ? { ...x, more: true, label: 'More corrections: forms you got wrong' } : { ...x, key: x.key === 'forms' ? 'forms2' : 'redo2', label: x.key === 'forms' ? 'More corrections: forms you got wrong' : 'More corrections: questions you got wrong' });
@@ -2864,15 +2871,6 @@ export function createUI(ctx) {
   function runToday(i) {
     let g = todayRun();
     if (!g) { paintRunBar(); return; }
-    // Two hours done: the day ends here, at a step's edge, and what is left goes to tomorrow — unless you chose to go on.
-    if (i < g.items.length && spentToday() >= DAY_MAX && !overtime()) {
-      try { localStorage.setItem(DAY_DONE_KEY, isoDay()); } catch { /* not kept */ }
-      setTodayRun(null); paintRunBar(); paintSide();
-      try { confetti(); } catch { /* none */ }
-      render('today');
-      ctx.say('Two hours today: that is the day. Well done! What is left moves to tomorrow.');
-      return;
-    }
     if (i < g.items.length) g = keepLimits(g, i);
     if (i >= g.items.length) { setTodayRun(null); paintRunBar(); paintSide(); render('today'); ctx.say(`Today's session done: ${g.items.length} steps.`); return; }
     setTodayRun({ ...g, at: i, ra0: ownSecondsToday(), extra: 0, lastDone: null });
@@ -2924,6 +2922,13 @@ export function createUI(ctx) {
    * way — so the plan, and its time, grow with them. Returns the run as it now stands.
    */
   function syncRun(g) {
+    // A session started before the day was fitted to two hours (2026-11-07: "can you look at my current day today and
+    // rectify if needed"): what is still ahead is fitted once, now; what is past stays as it was.
+    if (!g.fitted) {
+      const items = fitTwoHours(g.items.map((it) => ({ ...it })), (g.at ?? 0) + 1);
+      g = { ...g, items, fitted: true, totals: {} };
+      setTodayRun(g);
+    }
     const r = reviewItems();
     const add = [];
     const ahead = g.items.slice(g.at);
@@ -4946,8 +4951,7 @@ export function createUI(ctx) {
     return h('section', { class: 'g-plan', 'aria-labelledby': 'g-plan-h' },
       h('h2', { id: 'g-plan-h', class: 'g-h2', text: `🎯 Master all ${today.total} skills by ${planDay(p.goal)}` }),
       h('p', { class: 'g-plan__meta' }, `${today.daysLeft} study day${today.daysLeft === 1 ? '' : 's'} left · up to 2 hours a day · rest: ${REST_DAYS[p.rest]} · ${Math.round(spentToday())} min today`),
-      ((done) => (done && !overtime() ? h('div', { class: 'g-plan__alldone', role: 'status' }, '✓ Two hours today: that is the day. Well done! What is left moves to tomorrow. ',
-        btn('Keep going anyway', { onclick: () => { try { localStorage.setItem(OVERTIME_KEY, isoDay()); } catch { /* not kept */ } draw(); } }, 'btn btn--quiet')) : null))((() => { try { return localStorage.getItem(DAY_DONE_KEY) === isoDay() || spentToday() >= DAY_MAX; } catch { return false; } })()),
+      spentToday() >= DAY_MAX ? h('p', { class: 'g-plan__alldone', role: 'status', text: '✓ Two hours today. The plan was made for that: anything more is extra, and what is left moves to tomorrow.' }) : null,
       h('div', { class: 'g-plan__bar', role: 'img', 'aria-label': `${today.done} of ${today.total} skills learnt` }, h('span', { style: `width:${pct}%` })),
       h('p', { class: `g-plan__status is-${today.status}` }, `${today.done} of ${today.total} learnt · ${planOrder().filter((id) => stateOf(id).state === 'mastered').length} mastered · `, h('b', { text: statusText })),
       h('p', { class: 'g-plan__phase', text: phase }),
@@ -4993,7 +4997,8 @@ export function createUI(ctx) {
           h('span', { class: 'g-plansum__ph', text: PHASES[r.ph] }),
           h('span', { text: r.done >= r.total ? ' — ✓ done' : ` — ${r.done} of ${r.total} rounds · ${minsText(r.mins)}` })))),
         h('div', { class: 'g-acts' },
-          btn(`Next: ${g.items[i].label} →`, { onclick: () => runToday(i) }, 'btn btn--primary g-play'),
+          btn(`${rp.planDone || g.items[i].bonus ? 'Keep going (extra)' : 'Next'}: ${g.items[i].label} →`, { onclick: () => runToday(i) }, `btn ${rp.planDone ? '' : 'btn--primary '}g-play`),
+          rp.planDone ? btn('Stop for today ✓', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); render('today'); } }, 'btn btn--primary') : null,
           btn('The whole plan', { onclick: () => render('today') }, 'btn btn--quiet')),
         planPanel(g)));
   }

@@ -6,10 +6,11 @@ Change the plan only in line with these rules, or when the learner asks.
 ## The goal
 - Master every skill **that has a table** by **15 December 2026** (73 skills). Skills with no table
   (result clause, enclitics and the like) are not in the plan.
-- At most **2 hours of study a day** (all devices together), six days a week. Sunday is the rest day unless changed.
-  When today's session starts, it holds only what fits in the 2 hours, in its own order. What does not fit is marked
-  extra. At 2 hours the day ends at the next step's edge, and what is left moves to tomorrow ("Keep going anyway" can
-  override this).
+- **The plan is the most important 2 hours of study** (all devices together), six days a week. Sunday is the rest
+  day unless changed. When today's session starts, it holds what fits in the 2 hours, in order of importance:
+  corrections, review, this week's class, the other new skills, the rest. What does not fit is **extra**. Nothing stops
+  at 2 hours: once the plan is done, the extras are there to keep going on ("Keep going (extra)" / "Stop for today"),
+  and what is left moves to tomorrow.
 - **The day's count never grows.** The plan's rounds are fixed when the day starts. New mistakes, skills falling due
   and rounds past a block's time limit are shown as **extra** ("Extra · only if you have time", grey). They are not
   counted against the day, and if not done they move to tomorrow's plan. "🎉 Today's plan is done" shows once the
