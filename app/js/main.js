@@ -2,6 +2,7 @@
 import { createReader, firstUnread, queueReads, playbackRead, weekHasLines } from './reader.js';
 import { activeTimer, setActiveSync } from './activetime.js';
 import { createWordPanel } from './wordpanel.js';
+import { mountTutorSettings } from './tutor.js';
 import { initSettings, applyToDocument, clampPanelWidth, rateMenu, fmtRate, listenStatusText, synthHintText, progressText, studyLog, timeLeftText, activeSlice, groupWeeks, SHELF_GROUPS, shelfKind, weekNumberLabel, weekPhrase, weekTitleLabel, isShelfWeek, chapterRows, readingRows, menuTab, MENU_TABS } from './settings.js';
 import { clampRate, normaliseLastPosition, progressByWeek, localDay, readSettled } from './sync.js';
 // The book's own spine (GRAMMAR-CONTRACT.md "Chapter spine"): the chapter → week
@@ -1841,6 +1842,7 @@ async function boot() {
 
   // Settings dialog (+ the Audio section for the current week)
   const settingsDialog = $('#settings');
+  mountTutorSettings(settingsDialog);
   const settingsBtn = $('#settings-btn');
   settingsUI = initSettings(settingsDialog, {
     get: () => settings,

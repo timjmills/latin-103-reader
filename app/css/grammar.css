@@ -1826,3 +1826,8 @@ html.g-run-on .g-body { padding-bottom: 8rem; }
 [data-phase="4"] { --phase: #8a8f98; }
 .g-plan__extra { margin: .2rem 0 .4rem; font-size: .85rem; color: var(--ink-2); }
 .g-plan__alldone { margin: .3rem 0; padding: .4rem .7rem; border-radius: 8px; background: color-mix(in srgb, #1d7a3a 14%, transparent); color: #1d7a3a; font-weight: 700; }
+
+/* The tutor's tip on a wrong answer (2026-11-08). */
+.g-tip { margin: .5rem 0; padding: .55rem .85rem; border-radius: .7rem; background: color-mix(in srgb, #e0a526 10%, var(--bg-raised)); box-shadow: inset 0 0 0 2px #e0a526; }
+.g-tip__h { margin: 0 0 .2rem; font-weight: 800; color: #9a6a00; }
+.g-tip__text { margin: 0; line-height: 1.45; }
