@@ -982,3 +982,37 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .tutor__x { border: 0; background: transparent; font-size: 1.3rem; line-height: 1; padding: 0 .3rem; cursor: pointer; color: var(--ink-3, #666); }
 .tutor__cost { margin: .35rem 0 0; font-size: .78rem; color: var(--ink-3, #777); text-align: right; }
 .tutor__cost[data-low="1"] { color: #c0392b; font-weight: 700; }
+
+/* The tip's coloured word parts (2026-11-08: "highlights for the stems and the tense markers … as visual as possible"). */
+.tutor__row > span { font-size: 1.05rem; }
+.tutor__row[data-k="you"] > span, .tutor__row[data-k="like"] > span { font-family: var(--face-reading); font-size: 1.25rem; }
+.tutor__row[data-k="you"] b { color: #c0392b; }
+.tutor__row[data-k="why"] b { color: #6b4fbb; }
+.tutor__row[data-k="from"] b { color: #1f6fb2; }
+.tutor__row[data-k="like"] b { color: #1e8449; }
+.tutor__part { padding: 0 .12em; border-radius: .25em; }
+.tutor__part[data-role="stem"] { background: #d6e8fb; color: #0f4c81; }
+.tutor__part[data-role="vowel"] { background: #ece3fb; color: #5b3aa6; }
+.tutor__part[data-role="sign"] { background: #ffe1b8; color: #8a4b00; font-weight: 700; }
+.tutor__part[data-role="end"] { background: #d7f2df; color: #1e6b3a; }
+.tutor__part[data-role="wrong"] { background: #fbd5d1; color: #a52a1f; text-decoration: line-through; text-decoration-thickness: 2px; font-weight: 700; }
+.tutor__key { display: flex; flex-wrap: wrap; gap: .3rem; margin: .4rem 0 0; font-size: .72rem; }
+.tutor__key .tutor__part { padding: .05rem .4rem; text-decoration: none; }
+@media (prefers-color-scheme: dark) {
+  .tutor__part[data-role="stem"] { background: #17324d; color: #9fcbf5; }
+  .tutor__part[data-role="vowel"] { background: #2e2447; color: #c9b5f3; }
+  .tutor__part[data-role="sign"] { background: #4a2f0c; color: #ffc77a; }
+  .tutor__part[data-role="end"] { background: #163a24; color: #9fe0b4; }
+  .tutor__part[data-role="wrong"] { background: #4d1d18; color: #ff9d92; }
+}
+
+/* The tutor's button, in Skip's place in a game and under a wrong answer in a lesson. */
+.gm__tutorbtn { color: #9a6a00; border-color: #e0a526; }
+.tutor__ask { margin-top: .5rem; }
+.tutor__askbtn { border: 1px solid #e0a526; color: #9a6a00; border-radius: 999px; }
+.tutor__row[data-k="remember"] b { color: #b8860b; }
+.tutor__row[data-k="remember"] > span { font-style: italic; }
+.tutor__bold { font-weight: 800; color: var(--ink); }
+.tutor__row { grid-template-columns: 6.2rem 1fr; }
+.tutor__chart { margin-left: 6.7rem; }
+@media (max-width: 480px) { .tutor__chart { margin-left: 0; } }

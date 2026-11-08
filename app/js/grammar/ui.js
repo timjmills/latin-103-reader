@@ -8459,6 +8459,14 @@ export function createUI(ctx) {
     tutorTip(ask).then((t) => { if (t) { text.replaceWith(tutorTipNodes(t, ask)); node.append(tutorMoreButton(ask, t, node)); } else node.remove(); }).catch((e) => { text.textContent = tutorError(e); });
     return node;
   }
+  // The tutor only when asked (2026-11-08: "it does not come up unless pressed").
+  function tutorAskButton(item, result) {
+    if (!tutorOn()) return null;
+    const wrap = h('div', { class: 'tutor__ask' });
+    const b = h('button', { type: 'button', class: 'btn btn--quiet tutor__askbtn', onclick: () => { const n = tutorNode(item, result); if (n) wrap.replaceChildren(n); else b.textContent = 'Nothing typed to look at.'; } }, '💡 Ask the tutor');
+    wrap.append(b);
+    return wrap;
+  }
   function feedbackNode(item, result, { lesson, mode, practiceLink, onNext, onRetry = null, onPractice = null, live = false }) {
     const skill = skills.get(item.skill);
     const fb = item.feedback;
@@ -8533,7 +8541,7 @@ export function createUI(ctx) {
       .catch(() => { /* no sentence to show, and nothing is the right thing to show */ });
     const node = h('div', { class: 'g-fb', 'data-ok': String(ok), 'data-partial': result.partial ? 'true' : null, 'data-retry': result.retry ? 'true' : null },
       h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? (result.partial ? '~' : '✓') : '✗' }), h('span', { class: 'visually-hidden', text: `${verdict} ` }), ' ', partsNodes(line)),
-      !ok ? tutorNode(item, result) : null,
+      !ok ? tutorAskButton(item, result) : null,
       answerBlock,
       vocabCtx,
       isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : details,
