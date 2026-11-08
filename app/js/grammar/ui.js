@@ -8454,10 +8454,8 @@ export function createUI(ctx) {
       ask = { cue: qText, english: item.prompt?.en ?? '', lemma: item.feedback?.lemma ?? '', answer: Array.isArray(item.answer) ? item.answer[0] : result.expected ?? '', given: String(result.given), context: `a lesson question (${skills.get(item.skill)?.title ?? item.skill})` };
     }
     const text = h('p', { class: 'g-tip__text', text: 'Thinking about what went wrong…' });
-    const node = h('aside', { class: 'g-tip', role: 'status', 'aria-live': 'polite' }, h('p', { class: 'g-tip__h' }, '💡 Tutor ', h('span', { class: 'tutor__close', text: 'tap the box to close' })), text);
-    // A click on the box closes it, but not on More or the fuller explanation it opens.
-    node.title = 'Click to close';
-    node.addEventListener('click', (e) => { if (!e.target.closest('.tutor__more, .tutor__moretext')) node.remove(); });
+    const node = h('aside', { class: 'g-tip', role: 'status', 'aria-live': 'polite' }, h('p', { class: 'g-tip__h tutor__head' }, h('span', { text: '💡 Tutor' }), h('button', { type: 'button', class: 'tutor__x', 'aria-label': 'Close the tip', onclick: () => node.remove() }, '×')), text);
+    // It closes only on its ×.
     tutorTip(ask).then((t) => { if (t) { text.replaceWith(tutorTipNodes(t, ask)); node.append(tutorMoreButton(ask, t, node)); } else node.remove(); }).catch((e) => { text.textContent = tutorError(e); });
     return node;
   }

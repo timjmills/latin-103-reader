@@ -1841,8 +1841,6 @@ html.g-run-on .g-body { padding-bottom: 8rem; }
 .tutor__table td { font-family: var(--face-reading); }
 
 /* The tutor's box closes on a click (but not on More or its explanation). */
-.gm__tip, aside.g-tip { cursor: pointer; }
-.gm__tip .tutor__moretext, aside.g-tip .tutor__moretext { cursor: auto; }
 .tutor__close { margin-left: auto; margin-right: .4rem; font-size: .75em; font-weight: 400; color: var(--ink-3, #777); }
 
 /* The tip as three short rows: Mistake, Rule, Try it (2026-11-08: "show the word, the error, the rule … and an example"). */
@@ -1857,3 +1855,9 @@ html.g-run-on .g-body { padding-bottom: 8rem; }
 .tutor__chart { margin: .2rem 0 0 5.1rem; }
 @media (max-width: 480px) { .tutor__chart { margin-left: 0; } }
 .tutor__row[data-k="part"] b { color: #1f6fb2; }
+/* The tutor's card scrolls inside itself and closes only on its ×. */
+.gm__tip { overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+.tutor__head { display: flex; justify-content: space-between; align-items: center; }
+.tutor__x { border: 0; background: transparent; font-size: 1.3rem; line-height: 1; padding: 0 .3rem; cursor: pointer; color: var(--ink-3, #666); }
+.tutor__cost { margin: .35rem 0 0; font-size: .78rem; color: var(--ink-3, #777); text-align: right; }
+.tutor__cost[data-low="1"] { color: #c0392b; font-weight: 700; }

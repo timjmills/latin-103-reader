@@ -16,6 +16,35 @@ const API_KEY = 'l103.tutor.key';
 // Claude Haiku 5.5 only (2026-11-08: "make sure it uses Haiku 5.5 only"): quick and cheap for a three-sentence tip.
 const MODEL = 'claude-haiku-5-5';
 
+// What the tips cost (2026-11-08: "a how much money is left indicator as well as price on each card"). Claude Haiku 5.5
+// is $0.10 per million input tokens and $0.50 per million output tokens (thinking counts as output). The API does not
+// tell a key its balance, so "left" is the credit the learner types in Settings less what this device has spent since.
+const BUDGET_KEY = 'l103.tutor.budget';
+const SPENT_KEY = 'l103.tutor.spent';
+const PRICE_IN = 0.10 / 1e6;
+const PRICE_OUT = 0.50 / 1e6;
+const costOf = (u = {}) => ((u.input_tokens ?? 0) + (u.cache_read_input_tokens ?? 0) * 0.1 + (u.cache_creation_input_tokens ?? 0) * 1.25) * PRICE_IN + (u.output_tokens ?? 0) * PRICE_OUT;
+const costs = new Map();   // reply text -> its price
+function charge(text, usage) {
+  const c = costOf(usage);
+  if (text) costs.set(text, c);
+  write(SPENT_KEY, String((Number(read(SPENT_KEY)) || 0) + c));
+  return c;
+}
+const money = (d) => d < 0.01 ? `${(d * 100).toFixed(d < 0.001 ? 3 : 2)}¢` : `$${d.toFixed(2)}`;
+/** "This answer cost 0.04¢ · about $4.98 left", for under a tip or a More; null when the price is not known. */
+export function tutorCostNode(text, doc = document) {
+  const c = costs.get(text);
+  if (c == null) return null;
+  const p = doc.createElement('p');
+  p.className = 'tutor__cost';
+  const budget = Number(read(BUDGET_KEY));
+  const left = budget > 0 ? budget - (Number(read(SPENT_KEY)) || 0) : null;
+  p.textContent = `This answer cost ${money(c)}` + (left != null ? ` · about ${money(Math.max(0, left))} left` : ' · set your credit in Settings to see what is left');
+  if (left != null && left < 0.5) p.dataset.low = '1';
+  return p;
+}
+
 const read = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const write = (k, v) => { try { if (v == null || v === '') localStorage.removeItem(k); else localStorage.setItem(k, v); } catch { /* this visit only */ } };
 
@@ -77,8 +106,9 @@ export async function tutorTip({ cue = '', english = '', lemma = '', answer = ''
     system: SYSTEM,
     messages: [{ role: 'user', content: ask }],
   }).then((res) => {
-    if (res.stop_reason === 'refusal') return null;   // Haiku has no server-side fallback: no tip this time
+    if (res.stop_reason === 'refusal') { charge('', res.usage); return null; }   // Haiku has no server-side fallback: no tip this time
     const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join(' ').trim();
+    charge(text, res.usage);
     return text || null;
   });
   memo.set(k, p);
@@ -95,6 +125,7 @@ lists, no other Markdown; at most two short paragraphs and one table. Write Lati
 /** The tip's three labelled lines (Mistake, Rule, Try) as rows; any other reply as a plain paragraph. */
 const TIP_LABELS = { mistake: 'Mistake', rule: 'Rule', part: 'Built on', try: 'Try it' };
 export function tutorTipNodes(text, { given = '', lemma = '' } = {}, doc = document) {
+  const priced = tutorCostNode(text, doc);
   const rows = [];
   const chart = [];
   for (const line of String(text ?? '').split('\n')) {
@@ -104,7 +135,7 @@ export function tutorTipNodes(text, { given = '', lemma = '' } = {}, doc = docum
   }
   const box = doc.createElement('div');
   box.className = 'tutor__tip';
-  if (rows.length < 2) { box.append(...tutorNodes(text, doc)); return box; }
+  if (rows.length < 2) { box.append(...tutorNodes(text, doc)); if (priced) box.append(priced); return box; }
   if (given) {
     const w = doc.createElement('p');
     w.className = 'tutor__word';
@@ -128,6 +159,7 @@ export function tutorTipNodes(text, { given = '', lemma = '' } = {}, doc = docum
     c.append(...tutorNodes(chart.join('\n'), doc));
     box.append(c);
   }
+  if (priced) box.append(priced);
   return box;
 }
 
@@ -150,8 +182,10 @@ export async function tutorMore(ask = {}, tip = '') {
       tip ? `Your tip was: ${tip}` : null,
     ].filter(Boolean).join('\n') }],
   });
+  const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
+  charge(text, res.usage);
   if (res.stop_reason === 'refusal') return null;
-  return res.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim() || null;
+  return text || null;
 }
 
 /** A reply as nodes: its paragraphs, and a Markdown table as a small table (the only Markdown it is asked for). */
@@ -198,6 +232,8 @@ export function tutorMoreButton(ask, tip, into, doc = document) {
       const box = doc.createElement('div');
       box.className = 'tutor__moretext';
       box.append(...tutorNodes(t, doc));
+      const cost = tutorCostNode(t, doc);
+      if (cost) box.append(cost);
       into.append(box);
       b.remove();
     }).catch((e) => { b.disabled = false; b.textContent = `${tutorError(e)} Try again ▾`; });
@@ -222,14 +258,24 @@ export function mountTutorSettings(root) {
   const on = box.querySelector('[data-tutor-on]');
   const key = box.querySelector('[data-tutor-key]');
   const msg = box.querySelector('[data-tutor-msg]');
+  const budget = box.querySelector('[data-tutor-budget]');
+  const spent = box.querySelector('[data-tutor-spent]');
   const paint = () => {
     on.checked = read(ON_KEY) === '1';
     key.value = read(API_KEY) ? '••••••••••••' : '';
+    if (budget && document.activeElement !== budget) budget.value = read(BUDGET_KEY) ?? '';
+    if (spent) {
+      const sp = Number(read(SPENT_KEY)) || 0;
+      const b = Number(read(BUDGET_KEY));
+      spent.textContent = `Spent on tips on this device: ${money(sp)}` + (b > 0 ? ` · about ${money(Math.max(0, b - sp))} left` : '') + '. (Anthropic does not let the app read your balance, so "left" counts down from the credit you type here. Type it again after you top up.)';
+    }
     msg.textContent = read(ON_KEY) === '1' && !read(API_KEY) ? 'Add an API key to turn the tips on.' : read(API_KEY) ? 'Key saved on this device only.' : '';
   };
   on.addEventListener('change', () => { write(ON_KEY, on.checked ? '1' : null); paint(); });
   key.addEventListener('focus', () => { if (key.value.startsWith('•')) key.value = ''; });
   key.addEventListener('change', () => { const v = key.value.trim(); if (v && !v.startsWith('•')) { write(API_KEY, v); clientP = null; } else if (!v) write(API_KEY, null); paint(); });
+  // A new credit figure starts the count again from now.
+  budget?.addEventListener('change', () => { const v = Number(budget.value); write(BUDGET_KEY, v > 0 ? String(v) : null); write(SPENT_KEY, null); paint(); });
   box.querySelector('[data-tutor-forget]')?.addEventListener('click', () => { write(API_KEY, null); clientP = null; paint(); });
   paint();
 }

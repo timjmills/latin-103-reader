@@ -370,6 +370,8 @@
           <span class="switch__text">Tips when an answer is wrong <small>A short note from Claude on the likely mistake and how to get it right, in games and lessons</small></span>
         </label>
         <label class="tutor-set__key">Anthropic API key <input type="password" data-tutor-key autocomplete="off" spellcheck="false" placeholder="sk-ant-…"></label>
+        <label class="tutor-set__key">Credit left on the key ($) <input type="number" data-tutor-budget min="0" step="0.01" inputmode="decimal" placeholder="e.g. 5.00"></label>
+        <p class="progress-set__note" data-tutor-spent></p>
         <p class="progress-set__note">Kept in this browser on this device only, never synced. Tips are sent from this device straight to Anthropic; use a key made for this, with a spend limit. <button type="button" class="btn btn--quiet" data-tutor-forget>Forget the key</button></p>
         <p class="audio__msg" data-tutor-msg role="status"></p>
       </section>
