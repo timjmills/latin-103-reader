@@ -39,13 +39,19 @@ const SYSTEM = `You are a Latin tutor beside a learner practising forms (Lingua 
 the subjunctive, participles, gerunds and gerundives, the future perfect, irregular verbs). The learner has just typed \
 a wrong answer. Give them just enough to get it right themselves.
 
-Reply in exactly three lines, in this order and with these labels, and nothing else:
+Reply in exactly four lines, in this order and with these labels, then the chart below, and nothing else:
 Mistake: what is wrong in what they wrote, said to them as "you" (e.g. "You wrote the present, not the imperfect.").
 Rule: the rule or pattern they missed or have mixed up, in one plain sentence (e.g. "The imperfect puts -bā- between the stem and the ending.").
+Part: which principal part (1st, 2nd, 3rd or 4th) this form is built on, and what to take off it to get the stem \
+(e.g. "Built on the 2nd principal part, the infinitive: drop -re to get the stem.").
 Try: one short step or an example on a different word that shows the pattern (e.g. "portā- + -bā- + -t → portābat; do the same with your verb's stem.").
 
+Then always add one small chart of the pattern as a Markdown table: a header row, then two to four rows (for example \
+the endings across persons, or the same form of a model word in two tenses), built on a different model word than the \
+one asked, so the answer stays theirs to find. No title above it.
+
 Each line at most 20 words. Write for a middle- or high-school student: everyday words, any grammar term explained in \
-a few words. Plain text, no markdown, no bold. Never write the correct form, or the ending or stem it needs; the \
+a few words. Apart from the table: plain text, no markdown, no bold. Never write the correct form, or the ending or stem it needs; the \
 example must use a different word. Write Latin with macrons.`;
 
 /** The tip for a wrong answer, or null when the tutor is off or the call fails. `what` describes the question. */
@@ -87,11 +93,13 @@ conjugation — built on a different model word than the one asked, so the answe
 lists, no other Markdown; at most two short paragraphs and one table. Write Latin with macrons.`;
 
 /** The tip's three labelled lines (Mistake, Rule, Try) as rows; any other reply as a plain paragraph. */
-const TIP_LABELS = { mistake: 'Mistake', rule: 'Rule', try: 'Try it' };
+const TIP_LABELS = { mistake: 'Mistake', rule: 'Rule', part: 'Built on', try: 'Try it' };
 export function tutorTipNodes(text, { given = '', lemma = '' } = {}, doc = document) {
   const rows = [];
+  const chart = [];
   for (const line of String(text ?? '').split('\n')) {
-    const m = /^\s*[*_]*\s*(mistake|rule|try)\s*[*_]*\s*:\s*[*_]*\s*(.+)$/i.exec(line);
+    if (line.trim().startsWith('|')) { chart.push(line.trim()); continue; }
+    const m = /^\s*[*_]*\s*(mistake|rule|part|try)\s*[*_]*\s*:\s*[*_]*\s*(.+)$/i.exec(line);
     if (m) rows.push([m[1].toLowerCase(), m[2].replace(/\*\*/g, '').trim()]);
   }
   const box = doc.createElement('div');
@@ -113,6 +121,12 @@ export function tutorTipNodes(text, { given = '', lemma = '' } = {}, doc = docum
     const t = doc.createElement('span'); t.textContent = v;
     r.append(b, t);
     box.append(r);
+  }
+  if (chart.length >= 2) {   // the small chart under the rows (2026-11-08: "always include a small chart")
+    const c = doc.createElement('div');
+    c.className = 'tutor__chart';
+    c.append(...tutorNodes(chart.join('\n'), doc));
+    box.append(c);
   }
   return box;
 }

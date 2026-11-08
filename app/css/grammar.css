@@ -1854,3 +1854,6 @@ html.g-run-on .g-body { padding-bottom: 8rem; }
 .tutor__row[data-k="mistake"] b { color: #c0392b; }
 .tutor__row[data-k="rule"] b { color: #6b4fbb; }
 .tutor__row[data-k="try"] b { color: #1e8449; }
+.tutor__chart { margin: .2rem 0 0 5.1rem; }
+@media (max-width: 480px) { .tutor__chart { margin-left: 0; } }
+.tutor__row[data-k="part"] b { color: #1f6fb2; }
