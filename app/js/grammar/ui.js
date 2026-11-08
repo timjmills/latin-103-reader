@@ -29,7 +29,7 @@ import { practised, notePractised, timesText, setSyncedCounts, bestOf, practised
 import { planToday, DEFAULT_PLAN, isoDay, classWeekOf, learnRounds } from './plan.js';
 import { missedForms, missedToReview } from '../misses.js';
 import { ownSecondsToday, activeSeconds, confetti } from '../activetime.js';
-import { tutorOn, tutorTip, tutorError, tutorMoreButton } from '../tutor.js';
+import { tutorOn, tutorTip, tutorTipNodes, tutorError, tutorMoreButton } from '../tutor.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -8458,7 +8458,7 @@ export function createUI(ctx) {
     // A click on the box closes it, but not on More or the fuller explanation it opens.
     node.title = 'Click to close';
     node.addEventListener('click', (e) => { if (!e.target.closest('.tutor__more, .tutor__moretext')) node.remove(); });
-    tutorTip(ask).then((t) => { if (t) { text.textContent = t; node.append(tutorMoreButton(ask, t, node)); } else node.remove(); }).catch((e) => { text.textContent = tutorError(e); });
+    tutorTip(ask).then((t) => { if (t) { text.replaceWith(tutorTipNodes(t, ask)); node.append(tutorMoreButton(ask, t, node)); } else node.remove(); }).catch((e) => { text.textContent = tutorError(e); });
     return node;
   }
   function feedbackNode(item, result, { lesson, mode, practiceLink, onNext, onRetry = null, onPractice = null, live = false }) {
