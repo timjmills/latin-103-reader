@@ -6,7 +6,7 @@
 
 import { weekSkills, chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat, setGameSection } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat, setGameSection, setGameLesson } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -3098,6 +3098,27 @@ export function createUI(ctx) {
    * and number, or the nouns … with different case and number"): a verb's tense and mood in the form's voice, a noun's
    * or adjective's whole declension; the form itself marked.
    */
+  /**
+   * Where a card's form is taught: the skill, first on the course path, whose table holds that form and which covers
+   * it (paradigm-chapters.js skillCovers) — the imperfect's lesson for ībat. Its lesson opens in lesson mode.
+   */
+  setGameLesson((c) => {
+    const e = c?.entry;
+    if (!e?.h) return null;
+    let key = c.form && typeof c.form === 'object' ? c.form : null;
+    if (!key) {
+      // A card kept without its cell: found again in the word's table by its answer.
+      const fold = (v) => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      const want = new Set((c.answers ?? []).map(fold));
+      try { for (const sec of par.paradigm(e, []).sections ?? []) for (const r of sec.rows ?? []) for (const cell of r.cells ?? []) if (!key && cell?.key && String(cell.text ?? '').split(' / ').some((f) => want.has(fold(f)))) key = cell.key; } catch { /* no table */ }
+    }
+    if (!key) return null;
+    const tid = selectRules ? tableIdOf(e, selectRules) : null;
+    const order = thePath().order;
+    const sk = order.map((id) => skills.get(id)).find((s) => s && !s.set && s.paradigms?.length && (!tid || s.paradigms.includes(tid)) && (() => { try { return skillCovers(s, e, key); } catch { return false; } })());
+    if (!sk) return null;
+    return { label: sk.title, go: () => { keepGame(false); playGameOnce = false; render('lesson', { skill: sk.id, asIs: true }); } };
+  });
   setGameSection((c) => {
     const e = c?.entry;
     if (!e?.h) return null;

@@ -200,6 +200,9 @@ export function setGameStat(fn) { statProvider = typeof fn === 'function' ? fn :
 /** A form's whole section of its table (ui.js): `fn(card)` → a node, or null. */
 let sectionProvider = null;
 export function setGameSection(fn) { sectionProvider = typeof fn === 'function' ? fn : null; }
+/** Where a form is taught (ui.js): `fn(card)` → { label, go } — the lesson of the skill that teaches that form, or null. */
+let lessonProvider = null;
+export function setGameLesson(fn) { lessonProvider = typeof fn === 'function' ? fn : null; }
 export const LADDER = [['parse', false], ['choose', false], ['flash', false], ['type', false], ['type', true]];
 const rung = (mode, shuffle) => { const i = LADDER.findIndex(([m, sh]) => m === mode && sh === (mode === 'type' && !!shuffle)); return i < 0 ? LADDER.findIndex(([m]) => m === mode) : i; };
 export const ladderLabel = (mode, shuffle) => `${MODES.find(([k]) => k === mode)?.[1] ?? mode}${mode === 'type' && shuffle ? ', shuffled' : ''}`;
@@ -498,12 +501,19 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   }
   let sectionPop = null;
   const closeSection = () => { sectionPop?.remove(); sectionPop = null; };
+  // The way to the lesson that teaches a form (2026-11-08: "have a link on the popup … to that specific part of the
+  // lessons … on every help popup as well as the left bar's popup"): the game is left, its round kept (it resumes).
+  const lessonLink = (x) => {
+    let to = null;
+    try { to = lessonProvider?.(x) ?? null; } catch { to = null; }
+    return to ? el('button', { type: 'button', class: 'gm__lessonlink', onclick: () => { close(true); to.go(); } }, `📖 How it's made, in full: ${to.label} →`) : null;
+  };
   function openSection(x, li) {
     closeSection();
     let node = null;
     try { node = sectionProvider?.(x) ?? null; } catch { node = null; }
     if (!node) return;
-    sectionPop = el('div', { class: 'gm__secpop', role: 'dialog', 'aria-label': 'All the forms of this section' }, node);
+    sectionPop = el('div', { class: 'gm__secpop', role: 'dialog', 'aria-label': 'All the forms of this section' }, node, lessonLink(x));
     root.append(sectionPop);
     const r = li.getBoundingClientRect();
     const rr = root.getBoundingClientRect();
@@ -935,14 +945,14 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const card = r && how ? how(r.x) : null;
     let tbl = null;
     if (r && tables) { try { tbl = tables(r.x); } catch { tbl = null; } }
-    if (!card && !tbl) return;
+    if (!card && !tbl && !lessonProvider?.(r.x)) return;
     const goOn = el('button', { type: 'button', class: 'btn btn--primary', onclick: () => node.resume() }, 'Back to it');
     const node = el('section', { class: 'gm__end gm__panel gm__howp', role: 'region', 'aria-labelledby': 'gm-how-h' },
       el('h2', { id: 'gm-how-h', class: 'gm__endh', text: 'How it’s made' }),
       el('p', { class: 'gm__howcue' }, el('span', { class: 'gm__label' }, cueNodes(r.x.cue)), r.x.en ? el('span', { class: 'gm__en', text: r.x.en }) : null),
       card ? ruleCard(card, { open: true, heading: 'For this word' }) : null,
       tbl ? el('section', { class: 'gm__tables', 'aria-label': 'Its table' }, el('h3', { class: 'gm__seth', text: 'Its table (this form marked)' }), tbl) : null,
-      el('div', { class: 'gm__acts' }, goOn));
+      el('div', { class: 'gm__acts' }, goOn, lessonLink(r.x)));
     node.keep = true;
     openPanel(node, goOn);
   }
