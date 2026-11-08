@@ -42,7 +42,7 @@ import { cellRight } from './wordpanel.js';
 import { ruleCard } from './wordrule.js';
 import { notePractised, noteBest } from './practised.js';
 import { noteRound } from './misses.js';
-import { tutorOn, tutorTip, tutorError, tutorMoreButton } from './tutor.js';
+import { tutorOn, tutorTip, tutorTipNodes, tutorError, tutorMoreButton } from './tutor.js';
 
 const LS = 'l103.game.';
 const read = (k, d) => { try { const v = localStorage.getItem(LS + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
@@ -771,7 +771,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const lemma = String(r.x.entry?.lemma ?? '');
     const ask = { cue: r.x.cue, english: r.x.en, lemma, answer: r.x.answers[0], given, context: `a game round (${title})` };
     tutorTip(ask)
-      .then((t) => { if (tip?.node === node) { if (t) { text.textContent = t; node.append(tutorMoreButton(ask, t, node)); } else dropTip(); } })
+      .then((t) => { if (tip?.node === node) { if (t) { text.replaceWith(tutorTipNodes(t, ask)); node.append(tutorMoreButton(ask, t, node)); } else dropTip(); } })
       .catch((e) => { if (tip?.node === node) text.textContent = tutorError(e); });
   }
   function wrong(r) {

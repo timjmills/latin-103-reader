@@ -37,20 +37,22 @@ function client() {
 
 const SYSTEM = `You are a Latin tutor beside a learner practising forms (Lingua Latina per se illustrata, Latin 103: \
 the subjunctive, participles, gerunds and gerundives, the future perfect, irregular verbs). The learner has just typed \
-a wrong answer. Give them just enough to get it right themselves, and no more. Read what they wrote against what was \
-asked and decide which of these it is:
-- a slip in a pattern they mostly know (a wrong ending, a lost or extra vowel, a person or number): point to the \
-pattern so they can see it;
-- a misconception (the 1st/2nd-conjugation future -bō/-bi- used on a 3rd-conjugation verb, the imperfect sign mixed \
-into the future, the wrong principal part for the stem, and the like): name it plainly and set it right;
-- a rule they do not seem to know at all: sum the rule up briefly.
+a wrong answer. Give them just enough to get it right themselves.
 
-Write so a middle- or high-school student follows it at once: everyday words, short sentences, and any grammar \
-term explained in a few words the first time ("the future sign, the bit that marks 'will'"). Reply in plain text, one short paragraph of at most three sentences, no heading, no list, no markdown. Say what went \
-wrong and the step or pattern that gets it right (which principal part, which sign, which ending). Never give the \
-answer away: not the correct form, and not the ending or stem it needs, only the step or pattern that leads to it, so \
-they find it themselves. If a model form is needed to make the pattern clear, show it on a different word; give part of \
-the answer itself only as a last resort. Write Latin with macrons.`;
+Reply in exactly four lines, in this order and with these labels, then the chart below, and nothing else:
+Mistake: what is wrong in what they wrote, said to them as "you" (e.g. "You wrote the present, not the imperfect.").
+Rule: the rule or pattern they missed or have mixed up, in one plain sentence (e.g. "The imperfect puts -bā- between the stem and the ending.").
+Part: which principal part (1st, 2nd, 3rd or 4th) this form is built on, and what to take off it to get the stem \
+(e.g. "Built on the 2nd principal part, the infinitive: drop -re to get the stem.").
+Try: one short step or an example on a different word that shows the pattern (e.g. "portā- + -bā- + -t → portābat; do the same with your verb's stem.").
+
+Then always add one small chart of the pattern as a Markdown table: a header row, then two to four rows (for example \
+the endings across persons, or the same form of a model word in two tenses), built on a different model word than the \
+one asked, so the answer stays theirs to find. No title above it.
+
+Each line at most 20 words. Write for a middle- or high-school student: everyday words, any grammar term explained in \
+a few words. Apart from the table: plain text, no markdown, no bold. Never write the correct form, or the ending or stem it needs; the \
+example must use a different word. Write Latin with macrons.`;
 
 /** The tip for a wrong answer, or null when the tutor is off or the call fails. `what` describes the question. */
 const memo = new Map();
@@ -85,10 +87,49 @@ export async function tutorTip({ cue = '', english = '', lemma = '', answer = ''
 
 const MORE = `You are the same Latin tutor. The learner read your short tip and asked for more. Explain the rule \
 behind this form a little more fully, for a middle- or high-school student: everyday words, short sentences, any \
-grammar term explained the first time. Then, if a chart helps, add one small chart of the pattern as a Markdown table \
+grammar term explained the first time; talk to them as "you". Then, if a chart helps, add one small chart of the pattern as a Markdown table \
 (a header row, then one row per form) — for example the endings across persons and numbers, or the same tense in each \
 conjugation — built on a different model word than the one asked, so the answer stays theirs to find. No headings, no \
 lists, no other Markdown; at most two short paragraphs and one table. Write Latin with macrons.`;
+
+/** The tip's three labelled lines (Mistake, Rule, Try) as rows; any other reply as a plain paragraph. */
+const TIP_LABELS = { mistake: 'Mistake', rule: 'Rule', part: 'Built on', try: 'Try it' };
+export function tutorTipNodes(text, { given = '', lemma = '' } = {}, doc = document) {
+  const rows = [];
+  const chart = [];
+  for (const line of String(text ?? '').split('\n')) {
+    if (line.trim().startsWith('|')) { chart.push(line.trim()); continue; }
+    const m = /^\s*[*_]*\s*(mistake|rule|part|try)\s*[*_]*\s*:\s*[*_]*\s*(.+)$/i.exec(line);
+    if (m) rows.push([m[1].toLowerCase(), m[2].replace(/\*\*/g, '').trim()]);
+  }
+  const box = doc.createElement('div');
+  box.className = 'tutor__tip';
+  if (rows.length < 2) { box.append(...tutorNodes(text, doc)); return box; }
+  if (given) {
+    const w = doc.createElement('p');
+    w.className = 'tutor__word';
+    const lw = doc.createElement('span'); lw.lang = 'la'; lw.textContent = lemma.split(',')[0];
+    const g = doc.createElement('s'); g.lang = 'la'; g.textContent = given;
+    w.append(...(lemma ? [lw, ' · you wrote '] : ['You wrote ']), g);
+    box.append(w);
+  }
+  for (const [k, v] of rows) {
+    const r = doc.createElement('p');
+    r.className = 'tutor__row';
+    r.dataset.k = k;
+    const b = doc.createElement('b'); b.textContent = TIP_LABELS[k];
+    const t = doc.createElement('span'); t.textContent = v;
+    r.append(b, t);
+    box.append(r);
+  }
+  if (chart.length >= 2) {   // the small chart under the rows (2026-11-08: "always include a small chart")
+    const c = doc.createElement('div');
+    c.className = 'tutor__chart';
+    c.append(...tutorNodes(chart.join('\n'), doc));
+    box.append(c);
+  }
+  return box;
+}
 
 /** More than the tip: a fuller explanation, perhaps with a small chart (a Markdown table). */
 export async function tutorMore(ask = {}, tip = '') {
