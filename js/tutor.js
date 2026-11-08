@@ -64,24 +64,31 @@ function client() {
   return clientP;
 }
 
-const SYSTEM = `You are a Latin tutor beside a learner practising forms (Lingua Latina per se illustrata, Latin 103: \
-the subjunctive, participles, gerunds and gerundives, the future perfect, irregular verbs). The learner has just typed \
-a wrong answer. Give them just enough to get it right themselves.
+// Short and visual (2026-11-08: "use the word I put to show how it's wrong, use highlights for the stems and the tense
+// markers … make it as visual as possible, less words the better"): the reply marks word parts as {role|letters}, and
+// the card colours them.
+const SYSTEM = `You are a Latin tutor beside a learner practising forms (Latin 103: the subjunctive, participles, \
+gerunds and gerundives, the future perfect, irregular verbs). The learner just typed a wrong form. Show them, mostly \
+with colour, where it went wrong. Keep the explaining words short: under 40 words in all, not counting Latin forms \
+or the chart (2026-11-08: "a phrase or sentence at most … under 40 words").
 
-Reply in exactly four lines, in this order and with these labels, then the chart below, and nothing else:
-Mistake: what is wrong in what they wrote, said to them as "you" (e.g. "You wrote the present, not the imperfect.").
-Rule: the rule or pattern they missed or have mixed up, in one plain sentence (e.g. "The imperfect puts -bā- between the stem and the ending.").
-Part: which principal part (1st, 2nd, 3rd or 4th) this form is built on, and what to take off it to get the stem \
-(e.g. "Built on the 2nd principal part, the infinitive: drop -re to get the stem.").
-Try: one short step or an example on a different word that shows the pattern (e.g. "portā- + -bā- + -t → portābat; do the same with your verb's stem.").
+Mark the parts of every Latin form you write as {role|letters}. Roles: stem, vowel (a linking vowel), sign (a tense \
+or mood sign such as -bā-, -ēba-, -ē-, -a-, -isse-, -erī-), end (the personal ending), wrong (the letters that are wrong).
 
-Then always add one small chart of the pattern as a Markdown table: a header row, then two to four rows (for example \
-the endings across persons, or the same form of a model word in two tenses), built on a different model word than the \
-one asked, so the answer stays theirs to find. No title above it.
+Reply with exactly these five lines, then the chart, and nothing else:
+You: the learner's own form, split into its parts, with the wrong letters marked wrong. Example: You: {stem|mal}{wrong|i}{end|t}
+Why: one short sentence saying what went wrong and what the form needs. Example: Why: You used the **present** sign \
+-i-; the **imperfect** puts -ēba- between the stem and the ending.
+From: which principal part, and the stem it gives, as a short phrase. Example: From: the 2nd part, mālle: drop -le → {stem|māl}
+Like: the same form of a different model word, split into parts. Example: Like: {stem|reg}{sign|ēba}{end|t} = regēbat
+Remember: a memory trick for this pattern, a phrase or one short sentence: a rhyme, a picture, or a link to English. \
+Example: Remember: "-bā-, -bā-, black sheep": -bā- means 'was doing'.
 
-Each line at most 20 words. Write for a middle- or high-school student: everyday words, any grammar term explained in \
-a few words. Apart from the table: plain text, no markdown, no bold. Never write the correct form, or the ending or stem it needs; the \
-example must use a different word. Write Latin with macrons.`;
+Then a Markdown table: a header row and at most three rows, the model word in two or three persons or tenses, every \
+form split into parts with the same marks.
+
+Put the one or two key words of Why and Remember in **bold**. Never write the learner's full correct form. Latin with \
+macrons. No other words.`;
 
 /** The tip for a wrong answer, or null when the tutor is off or the call fails. `what` describes the question. */
 const memo = new Map();
@@ -116,49 +123,83 @@ export async function tutorTip({ cue = '', english = '', lemma = '', answer = ''
 }
 
 const MORE = `You are the same Latin tutor. The learner read your short tip and asked for more. Explain the rule \
-behind this form a little more fully, for a middle- or high-school student: everyday words, short sentences, any \
-grammar term explained the first time; talk to them as "you". Then, if a chart helps, add one small chart of the pattern as a Markdown table \
-(a header row, then one row per form) — for example the endings across persons and numbers, or the same tense in each \
-conjugation — built on a different model word than the one asked, so the answer stays theirs to find. No headings, no \
-lists, no other Markdown; at most two short paragraphs and one table. Write Latin with macrons.`;
+behind this form a little more fully, in at most four short sentences, for a middle- or high-school student; talk to \
+them as "you". Then one small Markdown table of the pattern (a header row, then one row per form) on a different model \
+word than the one asked. Mark the parts of every Latin form as {role|letters}, with roles stem, vowel, sign (tense or \
+mood sign), end (personal ending). Put key words in **bold**. No headings, no lists, no other Markdown. Write Latin \
+with macrons.`;
 
-/** The tip's three labelled lines (Mistake, Rule, Try) as rows; any other reply as a plain paragraph. */
-const TIP_LABELS = { mistake: 'Mistake', rule: 'Rule', part: 'Built on', try: 'Try it' };
-export function tutorTipNodes(text, { given = '', lemma = '' } = {}, doc = document) {
+/** Text with {role|letters} marks as nodes: each marked part a coloured chip (stem, vowel, sign, end, wrong). */
+const ROLES = new Set(['stem', 'vowel', 'sign', 'end', 'wrong']);
+export function tutorMarked(text, doc = document) {
+  const str0 = String(text ?? '');
+  if (str0.includes('**')) {   // key words in bold (2026-11-08: "use bold as well for key parts or words")
+    const out = [];
+    str0.split(/\*\*/).forEach((bit, i) => {
+      if (!bit) return;
+      if (i % 2) { const b = doc.createElement('strong'); b.className = 'tutor__bold'; b.append(...tutorMarked(bit, doc)); out.push(b); }
+      else out.push(...tutorMarked(bit, doc));
+    });
+    return out;
+  }
+  const out = [];
+  const re = /\{\s*([a-z]+)\s*\|([^{}]*)\}/gi;
+  let at = 0;
+  let m;
+  const str = str0;
+  while ((m = re.exec(str))) {
+    if (m.index > at) out.push(doc.createTextNode(str.slice(at, m.index)));
+    const role = m[1].toLowerCase();
+    const sp = doc.createElement('span');
+    sp.lang = 'la';
+    sp.className = 'tutor__part';
+    sp.dataset.role = ROLES.has(role) ? role : 'stem';
+    sp.textContent = m[2];
+    sp.title = { stem: 'stem', vowel: 'linking vowel', sign: 'tense / mood sign', end: 'ending', wrong: 'this is the wrong bit' }[sp.dataset.role];
+    out.push(sp);
+    at = re.lastIndex;
+  }
+  if (at < str.length) out.push(doc.createTextNode(str.slice(at)));
+  return out;
+}
+
+/** The tip: You wrote / Why / From / Like this as rows of coloured parts, then the small chart. */
+const TIP_LABELS = { you: 'You wrote', why: 'Why', from: 'From', like: 'Like this', remember: 'Remember', mistake: 'Mistake', rule: 'Rule', part: 'Built on', try: 'Try it' };
+export function tutorTipNodes(text, _ask = {}, doc = document) {
   const priced = tutorCostNode(text, doc);
   const rows = [];
   const chart = [];
   for (const line of String(text ?? '').split('\n')) {
     if (line.trim().startsWith('|')) { chart.push(line.trim()); continue; }
-    const m = /^\s*[*_]*\s*(mistake|rule|part|try)\s*[*_]*\s*:\s*[*_]*\s*(.+)$/i.exec(line);
-    if (m) rows.push([m[1].toLowerCase(), m[2].replace(/\*\*/g, '').trim()]);
+    const m = /^\s*[*_]*\s*(you|why|from|like|remember|mistake|rule|part|try)\s*[*_]*\s*:\s*(.+)$/i.exec(line);
+    if (m) { let v = m[2].trim(); if ((v.match(/\*\*/g) ?? []).length % 2) v = v.replace(/^\*\*\s*/, ''); rows.push([m[1].toLowerCase(), v]); }   // a bold label's closing ** is not the value's
   }
   const box = doc.createElement('div');
   box.className = 'tutor__tip';
   if (rows.length < 2) { box.append(...tutorNodes(text, doc)); if (priced) box.append(priced); return box; }
-  if (given) {
-    const w = doc.createElement('p');
-    w.className = 'tutor__word';
-    const lw = doc.createElement('span'); lw.lang = 'la'; lw.textContent = lemma.split(',')[0];
-    const g = doc.createElement('s'); g.lang = 'la'; g.textContent = given;
-    w.append(...(lemma ? [lw, ' · you wrote '] : ['You wrote ']), g);
-    box.append(w);
-  }
   for (const [k, v] of rows) {
     const r = doc.createElement('p');
     r.className = 'tutor__row';
     r.dataset.k = k;
     const b = doc.createElement('b'); b.textContent = TIP_LABELS[k];
-    const t = doc.createElement('span'); t.textContent = v;
+    const t = doc.createElement('span'); t.append(...tutorMarked(v, doc));
     r.append(b, t);
     box.append(r);
   }
-  if (chart.length >= 2) {   // the small chart under the rows (2026-11-08: "always include a small chart")
+  if (chart.length >= 2) {
     const c = doc.createElement('div');
     c.className = 'tutor__chart';
     c.append(...tutorNodes(chart.join('\n'), doc));
     box.append(c);
   }
+  // The colour key, so the chips read at a glance.
+  const key = doc.createElement('p');
+  key.className = 'tutor__key';
+  for (const [role, label] of [['stem', 'stem'], ['vowel', 'vowel'], ['sign', 'tense sign'], ['end', 'ending'], ['wrong', 'wrong']]) {
+    const sp = doc.createElement('span'); sp.className = 'tutor__part'; sp.dataset.role = role; sp.textContent = label;
+    key.append(sp);
+  }
+  box.append(key);
   if (priced) box.append(priced);
   return box;
 }
@@ -193,7 +234,7 @@ export function tutorNodes(text, doc = document) {
   const out = [];
   const lines = String(text ?? '').split('\n');
   let para = [];
-  const flush = () => { if (para.length) { const p = doc.createElement('p'); p.className = 'tutor__p'; p.textContent = para.join(' ').replace(/\*\*/g, ''); out.push(p); para = []; } };
+  const flush = () => { if (para.length) { const p = doc.createElement('p'); p.className = 'tutor__p'; p.append(...tutorMarked(para.join(' '), doc)); out.push(p); para = []; } };
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i].trim();
     if (l.startsWith('|')) {
@@ -201,13 +242,13 @@ export function tutorNodes(text, doc = document) {
       const rows = [];
       while (i < lines.length && lines[i].trim().startsWith('|')) { rows.push(lines[i].trim()); i++; }
       i--;
-      const cells = (r) => r.replace(/^\||\|$/g, '').split('|').map((x) => x.trim().replace(/\*\*/g, ''));
+      const cells = (r) => r.replace(/^\||\|$/g, '').split(/\|(?![^{]*\})/).map((x) => x.trim());   // not the | inside a {role|letters} mark
       const body = rows.filter((r) => !/^[\s|:-]+$/.test(r));   // the |---|---| line under the header
       const table = doc.createElement('table');
       table.className = 'tutor__table';
       body.forEach((r, k) => {
         const tr = doc.createElement('tr');
-        for (const v of cells(r)) { const td = doc.createElement(k === 0 ? 'th' : 'td'); td.textContent = v; td.lang = k === 0 ? '' : 'la'; tr.append(td); }
+        for (const v of cells(r)) { const td = doc.createElement(k === 0 ? 'th' : 'td'); td.append(...tutorMarked(v, doc)); td.lang = k === 0 ? '' : 'la'; tr.append(td); }
         table.append(tr);
       });
       out.push(table);

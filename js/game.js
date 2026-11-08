@@ -402,7 +402,10 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   // to do again unless skip is pressed, then review at the end of that section of table; if gotten correct then turn
   // green"). Skip is the way past a form the first time round; Show is only for a form come back for review.
   const skipBtn = el('button', { type: 'button', class: 'gm__show gm__skip', onclick: () => skip() }, 'Skip');
-  const passBtn = (r) => (r.again ? showBtn : skipBtn);
+  // With the tutor on, its button takes Skip's place, and a tip comes only when it is pressed (2026-11-08: "have the
+  // tutor come up as a button … replace the skip button … then it does not come up unless pressed").
+  const tutorBtn = el('button', { type: 'button', class: 'gm__show gm__tutorbtn', title: 'Ask the tutor about your last answer', onclick: () => askTutor() }, '💡 Tutor');
+  const passBtn = (r) => (r.again ? showBtn : tutorOn() ? tutorBtn : skipBtn);
   const howBtn = how || tables ? el('button', { type: 'button', class: 'gm__how', 'aria-haspopup': 'dialog', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: () => openHow() }, '?') : null;
   const stage = el('div', { class: 'gm__stage' }, track);
   // The table being built (2026-10-27: "on a computer, in game mode, a growing list of the words on the side so we can
@@ -771,6 +774,21 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       .then((t) => { if (tip?.node === node) { if (t) { text.replaceWith(tutorTipNodes(t, ask)); node.append(tutorMoreButton(ask, t, node)); } else dropTip(); } })
       .catch((e) => { if (tip?.node === node) text.textContent = tutorError(e); });
   }
+  function askTutor() {
+    const r = rows[at];
+    if (!r) return;
+    if (tip?.row === r && tip.node.isConnected) return;   // already open for this form
+    if (!r.lastWrong) {
+      dropTip();
+      const node = el('aside', { class: 'gm__tip', role: 'status', 'aria-live': 'polite' },
+        el('p', { class: 'gm__tiph' }, el('span', { text: '💡 Tutor' }), el('button', { type: 'button', class: 'gm__tipx', 'aria-label': 'Close the tip', onclick: dropTip }, '×')),
+        el('p', { class: 'gm__tiptext', text: 'Type your answer first. If it is wrong, press 💡 Tutor and I will show you where it went wrong.' }));
+      tip = { node, row: r };
+      stage.append(node);
+      return;
+    }
+    showTip(r, r.lastWrong);
+  }
   function wrong(r) {
     firstMiss.add(r.x.key);
     r.missed = true;
@@ -789,7 +807,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // In Endings only the box holds the ending; the whole form typed anyway is right too.
     if (isRight(r.x, typed)) { right(r); return; }
     wrong(r);
-    if (tutorOn()) showTip(r, typed);
+    r.lastWrong = typed;   // for the Tutor button
     // The right form flashes in the box for half a second, then the box empties for another try (2026-10-26: "if one
     // gets it wrong in the game mode show the correct answer for .5 a second and clear it") — unless the learner has
     // already moved on, answered, or started again.
