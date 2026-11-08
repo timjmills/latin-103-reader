@@ -942,3 +942,7 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 
 /* A round picked up where it was left (2026-11-07). */
 .gm__resumed { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 5; margin: 0; padding: .35rem .9rem; border-radius: 999px; background: var(--bg-raised); box-shadow: inset 0 0 0 2px var(--gm-a); font-weight: 700; color: var(--ink); }
+
+/* The way to the lesson that teaches a form (2026-11-08). */
+.gm__lessonlink { display: block; margin-top: .6rem; padding: .4rem .8rem; border: 2px solid var(--gm-a); border-radius: .7rem; background: var(--bg-raised); color: var(--ink); font-weight: 700; text-align: left; cursor: pointer; }
+.gm__lessonlink:hover { background: color-mix(in srgb, var(--gm-a) 12%, var(--bg-raised)); }
