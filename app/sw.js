@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v198';
+const CACHE_VERSION = 'v199';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -388,7 +388,7 @@ const HASHES = {
   "./js/store.js": '65722ae093da',
   "./js/sync.js": '348c7a509c3f',
   "./js/tokenize.js": '2581885bc1a3',
-  "./js/tutor.js": 'b86e1a262d76',
+  "./js/tutor.js": '1095d972cf90',
   "./js/wordpanel.js": 'e2e884308a84',
   "./js/wordrule.js": '7189dc8f0a94',
   "./manifest.webmanifest": 'd74be85f6b51',
