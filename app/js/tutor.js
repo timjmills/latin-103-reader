@@ -83,6 +83,87 @@ export async function tutorTip({ cue = '', english = '', lemma = '', answer = ''
   return p.catch((e) => { memo.delete(k); throw e; });
 }
 
+const MORE = `You are the same Latin tutor. The learner read your short tip and asked for more. Explain the rule \
+behind this form a little more fully, for a middle- or high-school student: everyday words, short sentences, any \
+grammar term explained the first time. Then, if a chart helps, add one small chart of the pattern as a Markdown table \
+(a header row, then one row per form) — for example the endings across persons and numbers, or the same tense in each \
+conjugation — built on a different model word than the one asked, so the answer stays theirs to find. No headings, no \
+lists, no other Markdown; at most two short paragraphs and one table. Write Latin with macrons.`;
+
+/** More than the tip: a fuller explanation, perhaps with a small chart (a Markdown table). */
+export async function tutorMore(ask = {}, tip = '') {
+  if (!tutorOn()) return null;
+  const c = await client();
+  if (!c) return null;
+  const res = await c.messages.create({
+    model: MODEL,
+    max_tokens: 4000,
+    output_config: { effort: 'low' },
+    system: MORE,
+    messages: [{ role: 'user', content: [
+      ask.lemma ? `Word: ${ask.lemma}` : null,
+      ask.cue ? `Form asked for: ${ask.cue}` : null,
+      ask.english ? `Meaning of the form: ${ask.english}` : null,
+      `The learner wrote: ${ask.given ?? ''}`,
+      ask.answer ? `The right form (for you only — do not write it out): ${ask.answer}` : null,
+      tip ? `Your tip was: ${tip}` : null,
+    ].filter(Boolean).join('\n') }],
+  });
+  if (res.stop_reason === 'refusal') return null;
+  return res.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim() || null;
+}
+
+/** A reply as nodes: its paragraphs, and a Markdown table as a small table (the only Markdown it is asked for). */
+export function tutorNodes(text, doc = document) {
+  const out = [];
+  const lines = String(text ?? '').split('\n');
+  let para = [];
+  const flush = () => { if (para.length) { const p = doc.createElement('p'); p.className = 'tutor__p'; p.textContent = para.join(' ').replace(/\*\*/g, ''); out.push(p); para = []; } };
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i].trim();
+    if (l.startsWith('|')) {
+      flush();
+      const rows = [];
+      while (i < lines.length && lines[i].trim().startsWith('|')) { rows.push(lines[i].trim()); i++; }
+      i--;
+      const cells = (r) => r.replace(/^\||\|$/g, '').split('|').map((x) => x.trim().replace(/\*\*/g, ''));
+      const body = rows.filter((r) => !/^[\s|:-]+$/.test(r));   // the |---|---| line under the header
+      const table = doc.createElement('table');
+      table.className = 'tutor__table';
+      body.forEach((r, k) => {
+        const tr = doc.createElement('tr');
+        for (const v of cells(r)) { const td = doc.createElement(k === 0 ? 'th' : 'td'); td.textContent = v; td.lang = k === 0 ? '' : 'la'; tr.append(td); }
+        table.append(tr);
+      });
+      out.push(table);
+    } else if (!l) flush();
+    else para.push(l);
+  }
+  flush();
+  return out;
+}
+
+/** The More button under a tip: asks once, then shows the fuller explanation (and its chart) in `into`. */
+export function tutorMoreButton(ask, tip, into, doc = document) {
+  const b = doc.createElement('button');
+  b.type = 'button';
+  b.className = 'tutor__more';
+  b.textContent = 'More ▾  (explain more, with a chart)';
+  b.addEventListener('click', () => {
+    b.disabled = true;
+    b.textContent = 'Thinking…';
+    tutorMore(ask, tip).then((t) => {
+      if (!t) { b.textContent = 'No more to add this time.'; return; }
+      const box = doc.createElement('div');
+      box.className = 'tutor__moretext';
+      box.append(...tutorNodes(t, doc));
+      into.append(box);
+      b.remove();
+    }).catch((e) => { b.disabled = false; b.textContent = `${tutorError(e)} Try again ▾`; });
+  });
+  return b;
+}
+
 /** A short line for a failed call, said in the tip's place. */
 export function tutorError(e) {
   const status = e?.status;
