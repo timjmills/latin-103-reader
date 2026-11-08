@@ -761,12 +761,9 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     dropTip();
     const text = el('p', { class: 'gm__tiptext', text: 'Thinking about what went wrong…' });
     const node = el('aside', { class: 'gm__tip', role: 'status', 'aria-live': 'polite' },
-      el('p', { class: 'gm__tiph' }, el('span', { text: '💡 Tutor' }), el('span', { class: 'tutor__close', text: 'tap the box to close' }), el('button', { type: 'button', class: 'gm__tipx', 'aria-label': 'Close the tip', onclick: dropTip }, '×')), text);
+      el('p', { class: 'gm__tiph' }, el('span', { text: '💡 Tutor' }), el('button', { type: 'button', class: 'gm__tipx', 'aria-label': 'Close the tip', onclick: dropTip }, '×')), text);
     tip = { node, row: r };
-    // A click anywhere on the box closes it (2026-11-08: "have the box clickable to exit"), but not on More or the
-    // fuller explanation it opens, which are there to be read.
-    node.title = 'Click to close';
-    node.addEventListener('click', (e) => { if (!e.target.closest('.tutor__more, .tutor__moretext')) dropTip(); });
+    // It closes only on its × (2026-11-08: "lets have the card only close on pushing the X").
     stage.append(node);
     const lemma = String(r.x.entry?.lemma ?? '');
     const ask = { cue: r.x.cue, english: r.x.en, lemma, answer: r.x.answers[0], given, context: `a game round (${title})` };
@@ -876,8 +873,10 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   let wheelSum = 0;
   let wheelLock = 0;
   // The end card scrolls as a page does: the wheel's own scroll and swipe stop with the round.
+  // The tutor's card scrolls on its own (2026-11-08: "allow scroll on the tutor cards"): the wheel and the swipe leave it be.
+  const inTip = (e) => !!e.target?.closest?.('.gm__tip');
   stage.addEventListener('wheel', (e) => {
-    if (ended) return;
+    if (ended || inTip(e)) return;
     e.preventDefault();
     if (Date.now() < wheelLock) return;
     wheelSum += e.deltaY;
@@ -887,7 +886,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     wheelLock = Date.now() + 220;          // one turn per flick, not one per event
   }, { passive: false });
   let touchY = null;
-  stage.addEventListener('touchstart', (e) => { touchY = !ended && e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
+  stage.addEventListener('touchstart', (e) => { touchY = !ended && !inTip(e) && e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
   stage.addEventListener('touchmove', (e) => { if (touchY != null) e.preventDefault(); }, { passive: false });   // the swipe is the wheel's, not the page's
   stage.addEventListener('touchend', (e) => {
     if (touchY == null) return;
