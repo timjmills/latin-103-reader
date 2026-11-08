@@ -29,6 +29,7 @@ import { practised, notePractised, timesText, setSyncedCounts, bestOf, practised
 import { planToday, DEFAULT_PLAN, isoDay, classWeekOf, learnRounds } from './plan.js';
 import { missedForms, missedToReview } from '../misses.js';
 import { ownSecondsToday, activeSeconds, confetti } from '../activetime.js';
+import { tutorOn, tutorTip, tutorError, tutorMoreButton } from '../tutor.js';
 import { practiceLog, needsPractice } from './practicelog.js';
 import { buildToday, fmtMinutes } from './today.js';
 import * as stats from './stats.js';
@@ -8434,6 +8435,32 @@ export function createUI(ctx) {
       got.en ? h('details', { class: 'g-q-en' }, h('summary', { class: 'g-hint__s', text: 'In English' }), h('p', { class: 'g-hint__rule', text: got.en })) : null);
   }
 
+  /**
+   * The tutor's tip on a wrong answer in a lesson (tutor.js; Settings → AI tutor): what was asked and what was written —
+   * a table's wrong boxes, or the question's one answer — and a short note back on the likely mistake.
+   */
+  function tutorNode(item, result) {
+    if (!tutorOn()) return null;
+    const qText = (() => { try { return partsText(item.prompt?.questionParts ?? item.prompt?.question ?? '') || String(item.prompt?.question ?? ''); } catch { return ''; } })();
+    let ask;
+    if (item.input === 'chart') {
+      const bad = (result.cells ?? []).filter((c) => !c.ok && String(c.given ?? '').trim()).slice(0, 3);
+      if (!bad.length) return null;
+      const cell = (c) => item.chart?.cells?.[c.i] ?? {};
+      ask = { cue: bad.map((c) => cell(c).label ?? '').join('; '), lemma: item.feedback?.lemma ?? cell(bad[0]).word ?? '',
+        answer: bad.map((c) => cell(c).answer?.[0] ?? '').join('; '), given: bad.map((c) => c.given).join('; '), context: `a table in a lesson: ${qText}` };
+    } else {
+      if (!String(result.given ?? '').trim()) return null;
+      ask = { cue: qText, english: item.prompt?.en ?? '', lemma: item.feedback?.lemma ?? '', answer: Array.isArray(item.answer) ? item.answer[0] : result.expected ?? '', given: String(result.given), context: `a lesson question (${skills.get(item.skill)?.title ?? item.skill})` };
+    }
+    const text = h('p', { class: 'g-tip__text', text: 'Thinking about what went wrong…' });
+    const node = h('aside', { class: 'g-tip', role: 'status', 'aria-live': 'polite' }, h('p', { class: 'g-tip__h' }, '💡 Tutor ', h('span', { class: 'tutor__close', text: 'tap the box to close' })), text);
+    // A click on the box closes it, but not on More or the fuller explanation it opens.
+    node.title = 'Click to close';
+    node.addEventListener('click', (e) => { if (!e.target.closest('.tutor__more, .tutor__moretext')) node.remove(); });
+    tutorTip(ask).then((t) => { if (t) { text.textContent = t; node.append(tutorMoreButton(ask, t, node)); } else node.remove(); }).catch((e) => { text.textContent = tutorError(e); });
+    return node;
+  }
   function feedbackNode(item, result, { lesson, mode, practiceLink, onNext, onRetry = null, onPractice = null, live = false }) {
     const skill = skills.get(item.skill);
     const fb = item.feedback;
@@ -8508,6 +8535,7 @@ export function createUI(ctx) {
       .catch(() => { /* no sentence to show, and nothing is the right thing to show */ });
     const node = h('div', { class: 'g-fb', 'data-ok': String(ok), 'data-partial': result.partial ? 'true' : null, 'data-retry': result.retry ? 'true' : null },
       h('p', { class: 'g-fb__line' }, h('span', { class: 'g-fb__mark', 'aria-hidden': 'true', text: ok ? (result.partial ? '~' : '✓') : '✗' }), h('span', { class: 'visually-hidden', text: `${verdict} ` }), ' ', partsNodes(line)),
+      !ok ? tutorNode(item, result) : null,
       answerBlock,
       vocabCtx,
       isSet && item.kind !== 'question' && item.kind !== 'pensum' ? null : details,

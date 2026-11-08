@@ -362,6 +362,18 @@
         </div>
       </section>
 
+      <section class="settings__row tutor-set" data-tutor aria-labelledby="tutor-label">
+        <span id="tutor-label" class="settings__label">AI tutor</span>
+        <label class="switch">
+          <input type="checkbox" role="switch" data-tutor-on>
+          <span class="switch__ui" aria-hidden="true"></span>
+          <span class="switch__text">Tips when an answer is wrong <small>A short note from Claude on the likely mistake and how to get it right, in games and lessons</small></span>
+        </label>
+        <label class="tutor-set__key">Anthropic API key <input type="password" data-tutor-key autocomplete="off" spellcheck="false" placeholder="sk-ant-…"></label>
+        <p class="progress-set__note">Kept in this browser on this device only, never synced. Tips are sent from this device straight to Anthropic; use a key made for this, with a spend limit. <button type="button" class="btn btn--quiet" data-tutor-forget>Forget the key</button></p>
+        <p class="audio__msg" data-tutor-msg role="status"></p>
+      </section>
+
       <div class="settings__tools">
         <p class="settings__keys">Keys: <kbd>j</kbd>/<kbd>k</kbd> next / previous sentence · the letters above switch the reading options</p>
         <button type="button" class="btn btn--quiet" data-action="signout">Sign out</button>

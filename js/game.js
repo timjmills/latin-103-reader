@@ -42,6 +42,7 @@ import { cellRight } from './wordpanel.js';
 import { ruleCard } from './wordrule.js';
 import { notePractised, noteBest } from './practised.js';
 import { noteRound } from './misses.js';
+import { tutorOn, tutorTip, tutorError, tutorMoreButton } from './tutor.js';
 
 const LS = 'l103.game.';
 const read = (k, d) => { try { const v = localStorage.getItem(LS + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
@@ -629,6 +630,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const endOf = (t) => String(t ?? '').trim().replace(/^[-–—]\s*/, '');
   const isRight = (x, t) => cellRight(t, x.answers) || (splits(x) && !!endOf(t) && (cellRight(x.stem + endOf(t), x.answers) || cellRight(endOf(t), [x.ending])));
   function ask() {
+    if (tip && tip.row !== rows[at]) dropTip();
     const r = rows[at];
     if (!r) return;
     const tok = ++seq;
@@ -749,6 +751,29 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     paintStats();
     later(advance, reduced ? 120 : 380);
   }
+  /*
+   * The tutor's tip on a wrong answer (tutor.js; Settings → AI tutor): a short note under the wheel on the likely
+   * mistake and the step that gets it right. It stays while this form is being tried, and goes with the next one.
+   */
+  let tip = null;
+  const dropTip = () => { tip?.node.remove(); tip = null; };
+  function showTip(r, given) {
+    dropTip();
+    const text = el('p', { class: 'gm__tiptext', text: 'Thinking about what went wrong…' });
+    const node = el('aside', { class: 'gm__tip', role: 'status', 'aria-live': 'polite' },
+      el('p', { class: 'gm__tiph' }, el('span', { text: '💡 Tutor' }), el('span', { class: 'tutor__close', text: 'tap the box to close' }), el('button', { type: 'button', class: 'gm__tipx', 'aria-label': 'Close the tip', onclick: dropTip }, '×')), text);
+    tip = { node, row: r };
+    // A click anywhere on the box closes it (2026-11-08: "have the box clickable to exit"), but not on More or the
+    // fuller explanation it opens, which are there to be read.
+    node.title = 'Click to close';
+    node.addEventListener('click', (e) => { if (!e.target.closest('.tutor__more, .tutor__moretext')) dropTip(); });
+    stage.append(node);
+    const lemma = String(r.x.entry?.lemma ?? '');
+    const ask = { cue: r.x.cue, english: r.x.en, lemma, answer: r.x.answers[0], given, context: `a game round (${title})` };
+    tutorTip(ask)
+      .then((t) => { if (tip?.node === node) { if (t) { text.textContent = t; node.append(tutorMoreButton(ask, t, node)); } else dropTip(); } })
+      .catch((e) => { if (tip?.node === node) text.textContent = tutorError(e); });
+  }
   function wrong(r) {
     firstMiss.add(r.x.key);
     r.missed = true;
@@ -767,6 +792,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // In Endings only the box holds the ending; the whole form typed anyway is right too.
     if (isRight(r.x, typed)) { right(r); return; }
     wrong(r);
+    if (tutorOn()) showTip(r, typed);
     // The right form flashes in the box for half a second, then the box empties for another try (2026-10-26: "if one
     // gets it wrong in the game mode show the correct answer for .5 a second and clear it") — unless the learner has
     // already moved on, answered, or started again.

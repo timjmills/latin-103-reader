@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v192';
+const CACHE_VERSION = 'v194';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -23,8 +23,8 @@ const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it
 const HASHES = {
   "./config.js": '5b318cbb2946',
   "./css/chapters.css": '206defce241f',
-  "./css/grammar.css": '074420d613f1',
-  "./css/panels.css": 'b2d271f79e8e',
+  "./css/grammar.css": '4eb9666b68bc',
+  "./css/panels.css": 'e889d266dff8',
   "./css/print.css": '39f46272c8da',
   "./css/progress.css": '1ff841ef71a4',
   "./css/reader.css": 'c99be4cec6d6',
@@ -344,14 +344,14 @@ const HASHES = {
   "./icons/icon-512.png": '30eb3f189cef',
   "./icons/icon.svg": 'c1f5c8520853',
   "./icons/maskable-512.png": '38654d50c164',
-  "./index.html": 'd18a0679353b',
+  "./index.html": 'c326454c0fa3',
   "./js/activetime.js": '0bf05a188150',
   "./js/audio.js": '2e1d36c01a62',
   "./js/auth.js": '22086691f460',
   "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": '504ca1eb6aca',
+  "./js/game.js": '566897c64fb7',
   "./js/grammar/actions.js": '2a29e9421251',
   "./js/grammar/applies.js": 'c6029e34b6b4',
   "./js/grammar/chapter.js": '3f1a0ef3892d',
@@ -373,10 +373,10 @@ const HASHES = {
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": 'e417b2194e9a',
+  "./js/grammar/ui.js": '0f2fa8244299',
   "./js/grammar/voices.js": '79e178e05437',
   "./js/hovergloss.js": 'db78916cb67b',
-  "./js/main.js": '75b5b5c22f85',
+  "./js/main.js": '986f978dcc46',
   "./js/misses.js": 'b3688d015907',
   "./js/paradigm-chapters.js": 'a2ee337ad019',
   "./js/paradigms.js": 'decea54a54e8',
@@ -388,9 +388,11 @@ const HASHES = {
   "./js/store.js": '65722ae093da',
   "./js/sync.js": '348c7a509c3f',
   "./js/tokenize.js": '2581885bc1a3',
+  "./js/tutor.js": 'faab3c78589b',
   "./js/wordpanel.js": 'e2e884308a84',
   "./js/wordrule.js": '7189dc8f0a94',
   "./manifest.webmanifest": 'd74be85f6b51',
+  "./vendor/anthropic.js": 'd34e040fdd4d',
   "./vendor/supabase.js": '700acd9a4322',
 };
 // </hashes>
@@ -417,6 +419,7 @@ const PRECACHE = [
   './js/paradigms.js',
   './js/paradigm-chapters.js',
   './js/game.js',
+  './js/tutor.js',
   './js/practised.js',
   './js/misses.js',
   './js/activetime.js',
@@ -657,6 +660,7 @@ const PRECACHE = [
   './data/grammar/templates/subjunctive-wish-command.json',
   './data/grammar/templates/wishes-utinam.json',
   './vendor/supabase.js',
+  './vendor/anthropic.js',
   './data/glossary.json',
   './data/function-words.json',
   './data/glosses.json',
