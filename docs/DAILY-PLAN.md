@@ -35,7 +35,7 @@ After each step, a "How the day is going" summary page shows the progress before
 
 ## Learning a new skill (no setup questions)
 In the plan and on the course paths, a new skill is learnt as a fixed sequence (`learnRounds`, plan.js). The game never
-asks which forms or words to play. Each round plays the model word of its tables, at most 4 rounds of about 12 cards,
+asks which forms or words to play. Each round plays the model word of its tables, at most 4 rounds of about 12 forms,
 and "Its forms" then mixes a word of each table. That makes about 20 minutes at most.
 - Verbs: 1st conj. → 2nd → 3rd, 3rd -iō, 4th together → the irregular verbs.
 - Nouns: 1st decl. → 2nd masculine → 2nd neuter → 3rd m/f → 3rd neuter and i-stems → 4th and 5th.
@@ -48,6 +48,10 @@ game" buttons.
   Week 9 (Familia Romana cap. XXXI, the future passive participle) is Saturday 31 October.
 - Each course week's chapter, reading and skills are in `app/data/course.json` and `skills.json` (`course: "103"`,
   `week`). The first-class date can be changed in the plan's settings ("first class").
+
+## Round size
+- A game round has **at most 7 cards** (`ROUND`, game.js). A longer table is split into more rounds, and in the
+  plan the next round starts by itself. Corrections run 7 forms a round; a review round holds 7 forms.
 
 ## Kinds of question
 - Skills with a table are asked **their table only**, everywhere: game mode, the plan, lessons and mistakes. There
