@@ -185,8 +185,8 @@ export function choicesFor(x, pool, text, right) {
 
 /** The ways to play, easiest first (2026-10-23: "typing is harder than flash, flash is harder than multiple choice";
  * "shuffled type is the hardest"). */
-/** The most forms in one round of a game. */
-export const ROUND = 16;
+/** The most forms in one round of a game (2026-11-08: "rounds that are 7 cards or less, just make more rounds"; was 16). */
+export const ROUND = 7;
 /**
  * What the game window shows on its right (2026-10-28: "in this mode of today's session on the right side I want the
  * session side bar that walks through what has been done successfully, what still needs to be done, the estimated

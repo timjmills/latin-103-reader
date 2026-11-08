@@ -6,7 +6,7 @@
 
 import { weekSkills, chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat, setGameSection, setGameLesson } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat, setGameSection, setGameLesson, ROUND } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -2652,7 +2652,7 @@ export function createUI(ctx) {
       const hit = same.find(holds) ?? same[0];
       return hit ?? (c.lemma ? { lemma: c.lemma } : null);
     };
-    const list = (recent.length ? recent : missedForms().slice(0, 16)).map((r) => { const e = entryOf(r.card); return e ? { ...r.card, entry: e } : r.card; });
+    const list = (recent.length ? recent : missedForms()).slice(0, ROUND).map((r) => { const e = entryOf(r.card); return e ? { ...r.card, entry: e } : r.card; });
     if (!list.length) { ctx.say('No missed forms to review.'); return; }
     if (gameKept()) gameDrillOn();
     playTable({ title: round ? `${round} · Forms you got wrong` : 'Forms you got wrong', how: howForCard, subtitle: `${list.length} form${list.length === 1 ? '' : 's'}: today's, yesterday's and those due back. Typed right twice running and they leave the list`, items: list, rule: null, ruleFirst: false,
@@ -2717,10 +2717,10 @@ export function createUI(ctx) {
   }
   /** A mixed round: a few forms of each skill (up to 16 in all), each skill credited for its own forms. */
   async function playMixedRound(ids, { next = null, round = '' } = {}) {
-    const per = Math.max(6, Math.floor(16 / ids.length));
+    const per = Math.max(3, Math.floor((2 * ROUND) / ids.length));
     const parts = (await Promise.all(ids.map((id) => playSkillTables(id, { review: true, collect: true, cap: per }).catch(() => false)))).filter(Boolean);
     if (!parts.length) return false;
-    const cards = parts.flatMap((p) => p.cards.map((c) => ({ ...c, key: `${p.sk.id}#${c.key}`, cue: p.words.length === 1 && c.entry ? `${headOf(c.entry)} · ${c.cue}` : c.cue }))).slice(0, 16);
+    const cards = parts.flatMap((p) => p.cards.map((c) => ({ ...c, key: `${p.sk.id}#${c.key}`, cue: p.words.length === 1 && c.entry ? `${headOf(c.entry)} · ${c.cue}` : c.cue }))).slice(0, 2 * ROUND);   // two game rounds of ROUND
     const mine = (p, set) => new Set([...(set ?? [])].filter((k) => String(k).startsWith(`${p.sk.id}#`)));
     playTable({ title: `${round ? `${round} · ` : ''}Mixed: ${parts.map((p) => p.sk.title).join(' + ')}`, how: howForCard, subtitle: testedLine(cards), items: cards, rule: null, ruleFirst: false,
       tables: completedTables(cards), context: inContext(parts.map((p) => p.sk.id)),
@@ -2765,7 +2765,7 @@ export function createUI(ctx) {
     if (id === '#forms') { playMisses({ next, round }); return true; }
     if (Array.isArray(id)) { playMixedRound(id, { next, round }).then((ok) => { if (!ok) skip(); }).catch(() => skip()); return true; }
     if (skills.get(id)?.paradigms?.length) {
-      playSkillTables(id, { review: true, next, round, cap: 10 }).then((ok) => { if (!ok) { gameDrillOn(); goView('blocked', { skill: id }); } }).catch(() => skip());
+      playSkillTables(id, { review: true, next, round, cap: ROUND }).then((ok) => { if (!ok) { gameDrillOn(); goView('blocked', { skill: id }); } }).catch(() => skip());
       return true;
     }
     gameDrillOn();
@@ -2897,7 +2897,7 @@ export function createUI(ctx) {
     const r = reviewItems();
     if (key === 'review') return reviewSplit().first.length;
     if (key === 'review2') return reviewSplit().rest.length;
-    if (key === 'forms' || key === 'forms2') return r.forms ? Math.ceil(r.forms / 16) : 0;
+    if (key === 'forms' || key === 'forms2') return r.forms ? Math.ceil(r.forms / ROUND) : 0;
     if (key === 'redo' || key === 'redo2') return r.missed ? Math.ceil(r.missed / PLAN_SENTENCES) : 0;
     if (key === 'mixed') return 2;
     // A new skill with tables: its learning sequence, a round a step (plan.js learnRounds).
@@ -2909,7 +2909,7 @@ export function createUI(ctx) {
   /** Minutes a round of a part takes before your own pace is known. */
   // A round is played in Flash first, then typed (2026-10-28: "I will almost always do something in flash mode first and
   // then in the type mode"), so a game round is reckoned at both.
-  const roundMin = (key) => (key === 'review' || key === 'review2' || key === 'forms' || key === 'forms2' ? 5 : key === 'redo' || key === 'redo2' ? 2 : key.startsWith('learn:') ? 4 : key.startsWith('play:') ? 4 : key === 'mixed' ? 10 : 6);
+  const roundMin = (key) => (key === 'review' || key === 'review2' ? 4 : key === 'forms' || key === 'forms2' ? 3 : key === 'redo' || key === 'redo2' ? 2 : key.startsWith('learn:') ? 4 : key.startsWith('play:') ? 4 : key === 'mixed' ? 10 : 6);
   const PACE_KEY = 'l103.plan.pace';
   const savedPace = () => { try { const v = Number(localStorage.getItem(PACE_KEY)); return v > 0 ? v : 1; } catch { return 1; } };
   /**
@@ -4909,7 +4909,7 @@ export function createUI(ctx) {
     const split = reviewSplit();
     // Every day, what was wrong (2026-10-28: "each day reviewing everything that was wrong too … all errors from that
     // day and the day before"): the forms missed in games, and the questions missed in lessons.
-    if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Corrections (up to ${FIX_MIN} min): forms you got wrong (${r.forms})` : 'Corrections: forms you got wrong', sub: r.forms > 16 ? `${Math.ceil(r.forms / 16)} rounds of 16` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
+    if (r.forms || practisedToday('forms:')) steps.push({ key: 'forms', label: r.forms ? `Corrections (up to ${FIX_MIN} min): forms you got wrong (${r.forms})` : 'Corrections: forms you got wrong', sub: r.forms > ROUND ? `${Math.ceil(r.forms / ROUND)} rounds of ${ROUND}` : 'typed right twice and they leave', done: !r.forms, game: () => playMisses(), lesson: () => playMisses() });
     if (r.missed) steps.push({ key: 'redo', label: `Corrections: questions you got wrong (${r.missed})`, sub: `${Math.ceil(r.missed / PLAN_SENTENCES)} round${r.missed > PLAN_SENTENCES ? 's' : ''} of ${PLAN_SENTENCES}`, done: false, game: gameMode(() => goView('redo', { size: PLAN_SENTENCES })), lesson: lessonMode(() => goView('redo', { size: PLAN_SENTENCES })) });
     const firstIds = split.first.flat();
     if (firstIds.length || (rn && !split.rest.length) || (!rn && today.kind !== 'rest')) steps.push({ key: 'review', label: firstIds.length ? `Review (up to ${REVIEW_MIN} min): ${firstIds.length} skill${firstIds.length === 1 ? '' : 's'} due` : 'Review: no skill due', sub: firstIds.length ? `${split.first.length} round${split.first.length === 1 ? '' : 's'}, the most overdue first` : '', done: !firstIds.length,
