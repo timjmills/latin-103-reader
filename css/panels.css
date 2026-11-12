@@ -1016,3 +1016,11 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .tutor__row { grid-template-columns: 6.2rem 1fr; }
 .tutor__chart { margin-left: 6.7rem; }
 @media (max-width: 480px) { .tutor__chart { margin-left: 0; } }
+
+/* Coloured by principal part (2026-11-12): the piece from a principal part one colour, what is added another. */
+.tutor__part[data-role="pp"] { background: #d6e8fb; color: #0f4c81; font-weight: 700; }
+.tutor__part[data-role="add"] { background: #ffe1b8; color: #8a4b00; }
+@media (prefers-color-scheme: dark) {
+  .tutor__part[data-role="pp"] { background: #17324d; color: #9fcbf5; }
+  .tutor__part[data-role="add"] { background: #4a2f0c; color: #ffc77a; }
+}

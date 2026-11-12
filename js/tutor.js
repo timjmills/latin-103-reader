@@ -72,20 +72,26 @@ gerunds and gerundives, the future perfect, irregular verbs). The learner just t
 with colour, where it went wrong. Keep the explaining words short: under 40 words in all, not counting Latin forms \
 or the chart (2026-11-08: "a phrase or sentence at most … under 40 words").
 
-Mark the parts of every Latin form you write as {role|letters}. Roles: stem, vowel (a linking vowel), sign (a tense \
-or mood sign such as -bā-, -ēba-, -ē-, -a-, -isse-, -erī-), end (the personal ending), wrong (the letters that are wrong).
+Colour every Latin form you write by its principal part (2026-11-12: "whatever principal part a verb is using and \
+however much of that word is used should be one whole colour and the rest another colour"). Split each form into:
+{ppN|letters}: all the letters taken from a principal part, as one piece; N is which part (1, 2, 3 or 4). For example \
+the present stem portā- comes from the 2nd part portāre, the perfect stem portāv- from the 3rd part portāvī, the \
+participle stem portāt- from the 4th part portātum.
+{add|letters}: everything added after it (signs, vowels and endings together), as one piece.
+{wrong|letters}: letters the learner got wrong, in place of the piece they spoil.
 
 Reply with exactly these five lines, then the chart, and nothing else:
-You: the learner's own form, split into its parts, with the wrong letters marked wrong. Example: You: {stem|mal}{wrong|i}{end|t}
+You: the learner's own form, split this way, with the wrong letters marked wrong. Example: You: {pp2|māl}{wrong|it}
 Why: one short sentence saying what went wrong and what the form needs. Example: Why: You used the **present** sign \
 -i-; the **imperfect** puts -ēba- between the stem and the ending.
-From: which principal part, and the stem it gives, as a short phrase. Example: From: the 2nd part, mālle: drop -le → {stem|māl}
-Like: the same form of a different model word, split into parts. Example: Like: {stem|reg}{sign|ēba}{end|t} = regēbat
+From: which principal part, what you drop from it and what you keep, as a short phrase; the kept piece is the one that \
+starts the right form. Example: From: the 2nd part, mālle: drop -le, keep {pp2|māl}
+Like: the same form of a different model word, split the same way. Example: Like: {pp2|reg}{add|ēbat} = regēbat
 Remember: a memory trick for this pattern, a phrase or one short sentence: a rhyme, a picture, or a link to English. \
 Example: Remember: "-bā-, -bā-, black sheep": -bā- means 'was doing'.
 
 Then a Markdown table: a header row and at most three rows, the model word in two or three persons or tenses, every \
-form split into parts with the same marks.
+form split the same way.
 
 Put the one or two key words of Why and Remember in **bold**. Never write the learner's full correct form. Latin with \
 macrons. No other words.`;
@@ -125,12 +131,17 @@ export async function tutorTip({ cue = '', english = '', lemma = '', answer = ''
 const MORE = `You are the same Latin tutor. The learner read your short tip and asked for more. Explain the rule \
 behind this form a little more fully, in at most four short sentences, for a middle- or high-school student; talk to \
 them as "you". Then one small Markdown table of the pattern (a header row, then one row per form) on a different model \
-word than the one asked. Mark the parts of every Latin form as {role|letters}, with roles stem, vowel, sign (tense or \
-mood sign), end (personal ending). Put key words in **bold**. No headings, no lists, no other Markdown. Write Latin \
+word than the one asked. Split every Latin form into {ppN|letters} (the letters taken from principal part N, 1 to 4, as one \
+piece) and {add|letters} (everything added to them, as one piece). Put key words in **bold**. No headings, no lists, no other Markdown. Write Latin \
 with macrons.`;
 
-/** Text with {role|letters} marks as nodes: each marked part a coloured chip (stem, vowel, sign, end, wrong). */
-const ROLES = new Set(['stem', 'vowel', 'sign', 'end', 'wrong']);
+/**
+ * Text with {role|letters} marks as nodes: the letters from a principal part one colour ({ppN|…}, N the part), what is
+ * added to them another ({add|…}), the wrong letters red ({wrong|…}). Older marks (stem, vowel, sign, end) are read as
+ * the same two colours: a stem is the principal part's piece, the rest is added.
+ */
+const ROLE_OF = { pp: 'pp', stem: 'pp', add: 'add', vowel: 'add', sign: 'add', end: 'add', wrong: 'wrong' };
+const ORD = ['', '1st', '2nd', '3rd', '4th'];
 export function tutorMarked(text, doc = document) {
   const str0 = String(text ?? '');
   if (str0.includes('**')) {   // key words in bold (2026-11-08: "use bold as well for key parts or words")
@@ -143,19 +154,20 @@ export function tutorMarked(text, doc = document) {
     return out;
   }
   const out = [];
-  const re = /\{\s*([a-z]+)\s*\|([^{}]*)\}/gi;
+  const re = /\{\s*([a-z]+)\s*([1-4]?)\s*\|([^{}]*)\}/gi;
   let at = 0;
   let m;
   const str = str0;
   while ((m = re.exec(str))) {
     if (m.index > at) out.push(doc.createTextNode(str.slice(at, m.index)));
-    const role = m[1].toLowerCase();
+    const role = ROLE_OF[m[1].toLowerCase()] ?? 'add';
     const sp = doc.createElement('span');
     sp.lang = 'la';
     sp.className = 'tutor__part';
-    sp.dataset.role = ROLES.has(role) ? role : 'stem';
-    sp.textContent = m[2];
-    sp.title = { stem: 'stem', vowel: 'linking vowel', sign: 'tense / mood sign', end: 'ending', wrong: 'this is the wrong bit' }[sp.dataset.role];
+    sp.dataset.role = role;
+    if (role === 'pp' && m[2]) sp.dataset.part = m[2];
+    sp.textContent = m[3];
+    sp.title = role === 'pp' ? `from the ${ORD[Number(m[2])] || ''} principal part`.replace('the  ', 'the ') : role === 'add' ? 'added to it' : 'this is the wrong bit';
     out.push(sp);
     at = re.lastIndex;
   }
@@ -195,7 +207,7 @@ export function tutorTipNodes(text, _ask = {}, doc = document) {
   // The colour key, so the chips read at a glance.
   const key = doc.createElement('p');
   key.className = 'tutor__key';
-  for (const [role, label] of [['stem', 'stem'], ['vowel', 'vowel'], ['sign', 'tense sign'], ['end', 'ending'], ['wrong', 'wrong']]) {
+  for (const [role, label] of [['pp', 'from a principal part'], ['add', 'added'], ['wrong', 'wrong']]) {
     const sp = doc.createElement('span'); sp.className = 'tutor__part'; sp.dataset.role = role; sp.textContent = label;
     key.append(sp);
   }
