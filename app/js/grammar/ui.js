@@ -2672,7 +2672,14 @@ export function createUI(ctx) {
   const setReviewGame = (g) => { try { if (g) localStorage.setItem(RG_KEY, JSON.stringify(g)); else localStorage.removeItem(RG_KEY); } catch { /* not kept */ } };
   const roundName = (id) => (Array.isArray(id) ? id.map((x) => titleOf(x)).join(' + ') : id === '#forms' ? 'Forms you missed' : titleOf(id));
   /** `n` of `xs`, spread evenly over it (its tables, its columns), in order. Pure. */
-  const spreadPick = (xs, n) => (xs.length <= n ? xs : Array.from({ length: n }, (_, i) => xs[Math.floor((i * xs.length) / n)]));
+  // n of xs, spread over them (each pick from its own stretch, so the tables and columns are all reached) but at a
+  // random place in each stretch (2026-11-12: "I keep getting verbs in the I, he/she/it or you pl. form … is this a
+  // bug?": the pick was the stretch's first form every time, so a round of 7 from 12 persons always took the same ones).
+  const spreadPick = (xs, n) => {
+    if (xs.length <= n) return xs;
+    const step = xs.length / n;
+    return Array.from({ length: n }, (_, i) => xs[Math.min(xs.length - 1, Math.floor(i * step + Math.random() * step))]);
+  };
   const RG_MIX = 'l103.reviewGame.mix';
   const reviewMixed = () => { try { return localStorage.getItem(RG_MIX) === '1'; } catch { return false; } };
   /** The rounds: missed forms first; then a skill a round (one by one), or two table skills to a round of up to 16 (mixed). */
