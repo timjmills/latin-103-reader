@@ -84,7 +84,8 @@ Reply with exactly these five lines, then the chart, and nothing else:
 You: the learner's own form, split this way, with the wrong letters marked wrong. Example: You: {pp2|māl}{wrong|it}
 Why: one short sentence saying what went wrong and what the form needs. Example: Why: You used the **present** sign \
 -i-; the **imperfect** puts -ēba- between the stem and the ending.
-From: which principal part, and how much of it is used, as a short phrase. Example: From: the 2nd part, mālle: keep {pp2|māl}
+From: which principal part, what you drop from it and what you keep, as a short phrase; the kept piece is the one that \
+starts the right form. Example: From: the 2nd part, mālle: drop -le, keep {pp2|māl}
 Like: the same form of a different model word, split the same way. Example: Like: {pp2|reg}{add|ēbat} = regēbat
 Remember: a memory trick for this pattern, a phrase or one short sentence: a rhyme, a picture, or a link to English. \
 Example: Remember: "-bā-, -bā-, black sheep": -bā- means 'was doing'.
