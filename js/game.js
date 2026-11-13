@@ -1105,7 +1105,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const nextRound = !lastRound ? el('button', { type: 'button', class: 'btn btn--primary gm__nextround', onclick: again(items, subtitle, id, roundAt + 1) }, `Next round → (${roundAt + 2} of ${rounds.length}: ${rounds[roundAt + 1].length} forms)`) : null;
     // More of the word: the next chart along, or any of them.
     const nx = nextCharts();
-    const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `Next: ${chartName(nx)} →`) : null;
+    const nextChartBtn = nx ? el('button', { type: 'button', class: misses.length || onNext ? 'btn' : 'btn btn--primary', onclick: () => playCharts(nx) }, `${onNext ? 'Or another word' : 'Next'}: ${chartName(nx)} →`) : null;
     let more = null;
     if (chartList) {
       const { picker, go } = chartChooser(new Set());
@@ -1114,12 +1114,13 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     const acts = el('div', { class: 'gm__acts' },
       nextRound,
       misses.length ? el('button', { type: 'button', class: nextRound ? 'btn' : 'btn btn--primary', onclick: again(misses, 'The ones missed', null) }, `Replay the ${misses.length} I missed`) : null,
-      nextChartBtn,
+      onNext ? null : nextChartBtn,
       // Until right (the Daily Study Plan, 2026-10-28: "automatically go through any errors until they are done without
       // error before moving on"): with misses, the way on waits; the missed ones start again by themselves.
-      onNext && !(untilRight && misses.length) ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
+      onNext && !(untilRight && misses.length) ? el('button', { type: 'button', class: misses.length ? 'btn' : 'btn btn--primary', onclick: () => { close(true); onNext(); } }, nextLabel) : null,
       // A game played inside something (a lesson's chart): the way back into it is the way on.
       continueLabel && !onNext ? el('button', { type: 'button', class: misses.length || nx ? 'btn' : 'btn btn--primary', onclick: () => close() }, continueLabel) : null,
+      onNext ? nextChartBtn : null,
       el('button', { type: 'button', class: 'btn', onclick: thisRound() }, rounds.length > 1 ? 'This round again' : 'Play again'),
       el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => close() }, 'Close'));
     // Nothing goes on by itself (2026-10-23: "in game mode make it so the person must press a button to continue to
