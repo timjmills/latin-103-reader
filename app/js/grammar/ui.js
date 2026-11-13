@@ -3700,7 +3700,7 @@ export function createUI(ctx) {
     const tname = (t) => { try { return tableName(t); } catch { return t; } };
     const play = async (k) => {
       const last = k + 1 >= rounds.length;
-      const done = () => { notePractised([`skill:${id}`]); after?.fn?.(); };
+      const done = () => { notePractised(creditOf(id).map((x) => `skill:${x}`)); after?.fn?.(); };
       const step = { fn: last ? done : () => play(k + 1), label: last ? (after?.label ?? 'Done ✓') : `Next: ${rounds[k + 1].map(tname).join(' + ')} →` };
       keepGame(true);
       const ok = await playSkillTables(id, { chapter, pick: rounds[k], cap: 12, next: step, round: `${sk.title} · step ${k + 1} of ${rounds.length}: ${rounds[k].map(tname).join(' + ')}` }).catch(() => false);
@@ -3769,6 +3769,14 @@ export function createUI(ctx) {
     }
     return wholeMemo.get(sk.id);
   };
+  /**
+   * A case skill (nominative, genitive, accusative … on the noun tables) is played on the whole chart, and counts for
+   * the other case skills of the same tables (2026-11-13: "where it just focused on one part of the chart, nominative
+   * only — couple it and put it together so you can do the whole chart instead, and count those skills together").
+   */
+  const caseSkill = (sk) => !!sk?.paradigms?.length && !sk.set && sk.paradigms.every((pid) => /^decl/.test(pid)) && !wholeTables(sk);
+  const caseSiblings = (sk) => (caseSkill(sk) ? [...skills.values()].filter((x) => x.id !== sk.id && caseSkill(x) && x.paradigms.every((pid) => sk.paradigms.includes(pid))).map((x) => x.id) : []);
+  const creditOf = (id) => [id, ...caseSiblings(skills.get(id))];
   /** The cells of a word's table a skill's game asks: those it names, or every one when it names none. */
   const skillCell = (sk, e, key) => skillCovers(sk, e, key) || (wholeTables(sk) && (key?.degree == null || key.degree === 'pos'));   // the whole: a plain adjective's own forms
   const skillWordFits = (sk, e) => coversAny(sk, e);
@@ -3893,6 +3901,8 @@ export function createUI(ctx) {
       : only ? ofTable.filter((e) => only.includes(`${e.h}|${e.pos}`)) : table ? ofTable.slice(0, 1)
       : review ? ofTable.filter((e, i) => ofTable.findIndex((x) => (tableIdOf(x, selectRules) ?? '') === (tableIdOf(e, selectRules) ?? '')) === i) : ofTable;
     if (!words.length) { ctx.say('No word of that table fits this skill.'); return false; }
+    const wholeChart = caseSkill(sk);
+    const credit = creditOf(id);
     const rules = new Map();
     const ruleOf = (e) => { const k = `${e.h}|${e.pos}`; if (!rules.has(k)) { let r = null; try { r = wordRule(e, tableOf(e)); } catch { r = null; } rules.set(k, r); } return rules.get(k); };
     const cards = [];
@@ -3903,7 +3913,7 @@ export function createUI(ctx) {
       const head = headOf(e);
       const playing = words.includes(e);
       (t.sections ?? []).forEach((sec, si) => (sec.rows ?? []).forEach((r) => (r.cells ?? []).forEach((c, ci) => {
-        if (!c || c.empty || !c.key || !skillCell(sk, e, c.key)) return;
+        if (!c || c.empty || !c.key || !(wholeChart ? (c.key?.degree == null || c.key.degree === 'pos') : skillCell(sk, e, c.key))) return;
         const answers = cellAnswers(c);
         if (!answers.length) return;
         if (!playing) { counts.set(`${e.h}|${e.pos}`, (counts.get(`${e.h}|${e.pos}`) ?? 0) + 1); return; }
@@ -3919,6 +3929,13 @@ export function createUI(ctx) {
     // A review round holds a few of the skill's forms, spread over its tables and columns (2026-10-28: "each round will
     // only have 6-10 review cards").
     if (cap && cards.length > cap) cards.splice(0, cards.length, ...spreadPick(cards, cap));
+    // More than one word: a share of each, mixed up, not every form of every word in turn (2026-11-13: "if it's
+    // multiple words mix the words and don't do everything of all of them, mix them up — it's better practice").
+    if (words.length > 1 && !collect) {
+      if (cards.length > 2 * ROUND) cards.splice(0, cards.length, ...spreadPick(cards, 2 * ROUND));
+      for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
+      for (const c of cards) c.group = null;   // one mixed run, cut into rounds of ROUND
+    }
     if (collect) return { sk, cards, words };
     const how = howOf(sk);
     const one = words.length === 1 ? ruleOf(words[0]) : null;
@@ -3930,8 +3947,9 @@ export function createUI(ctx) {
       subtitle: `${sk.title}: ${testedLine(cards)}`,
       items: cards, rule: rule.steps?.length ? rule : null, ruleFirst: true,
       how: (it) => { const r = ruleOf(it.entry); try { return r && it.form ? formRule(r, it.form) : r; } catch { return r; } },
-      charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids, table }), noun: 'word' } : null,
-      countKey: (played) => [`tablepart:${id}`, ...words.filter((e) => cards.some((c) => c.entry === e && played.has(c.key))).map((e) => tableKey(e)).filter(Boolean)],
+      // Other words keep the plan's way on (2026-11-13: it "does not move to the next word … not progressing").
+      charts: list.length > 1 ? { list, on: words.map((e) => `${e.h}|${e.pos}`), play: (ids) => playSkillTables(id, { chapter: n, only: ids, table, next, round, cap }), noun: 'word' } : null,
+      countKey: (played) => [...credit.map((x) => `tablepart:${x}`), ...words.filter((e) => cards.some((c) => c.entry === e && played.has(c.key))).map((e) => tableKey(e)).filter(Boolean)],
       suggest: gameWays({ skill: id }),
       settings: gameSettings({ table, skill: id, word: words.length === 1 ? words[0].h : null }),
       context: inContext([id]),
@@ -3940,7 +3958,7 @@ export function createUI(ctx) {
       onDone: ({ firstMiss = new Set(), shown = new Set(), typed = false, played = null, partial = false } = {}) => {
         const inRound = (key) => !played || played.has(key);
         noteReplay({ firstMiss: new Set([...firstMiss].filter(inRound)), typed, partial });
-        if (typed && !partial) coverSkills([id]);
+        if (typed && !partial) coverSkills(credit);
         // Typed: each form typed right is marked done in its table (credit for anything played, a round left early too).
         if (typed) {
           const byTable = new Map();
