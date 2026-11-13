@@ -2937,6 +2937,14 @@ export function createUI(ctx) {
       g = { ...g, items, fitted: true, totals: {} };
       setTodayRun(g);
     }
+    if (!g.lean) {
+      const inPlan = new Set(planOrder());
+      const gone = (it) => { const m = /^(learn|play):(.+)$/.exec(it.key ?? ''); return !!m && !inPlan.has(m[2]); };
+      const at = g.at ?? 0;
+      const items = g.items.filter((it, i) => i <= at || !gone(it));
+      g = { ...g, items, lean: true };
+      setTodayRun(g);
+    }
     const r = reviewItems();
     const add = [];
     const ahead = g.items.slice(g.at);
@@ -4884,7 +4892,9 @@ export function createUI(ctx) {
       return (sk.paradigms ?? []).every((pid) => /^(decl|ego$|tu$|se$)/.test(pid)) ? fresh : true;
     });
   };
-  const learntSet = (order) => new Set(order.filter((id) => inRotation(stateOf(id))));
+  const typedCase = (id) => caseSkill(skills.get(id)) && creditOf(id).some((x) => practised(`tablepart:${x}`) > 0 || practised(`skill:${x}`) > 0);
+  const learntOf = (id) => inRotation(stateOf(id)) || typedCase(id);
+  const learntSet = (order) => new Set(order.filter(learntOf));
   /** This week's class: its number, day, chapter, reading and skills (course.json, the plan's first class day). */
   const classOf = () => {
     const c = classWeekOf(isoDay(), planOf().classWeek1);
@@ -4966,7 +4976,7 @@ export function createUI(ctx) {
       steps.push({ key: 'class-read', label: `For class ${planDay(cls.classDay)}: read ${cls.reading}`, sub: `week ${cls.n}`, done: practisedToday(`class-read:${cls.n}`), game: open, lesson: open });
     }
     for (const id of today.newToday) {
-      steps.push({ key: `learn:${id}`, label: `${today.classNew.includes(id) ? 'For class · ' : ''}Learn: ${titleOf(id)}${caseSkill(skills.get(id)) ? ' (the whole chart, all its cases)' : ''}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`),
+      steps.push({ key: `learn:${id}`, label: `${today.classNew.includes(id) ? 'For class · ' : ''}Learn: ${titleOf(id)}${caseSkill(skills.get(id)) ? ' (the whole chart, all its cases)' : ''}`, sub: capOf(id), done: learntOf(id) || practisedToday(`skill:${id}`),
         game: gameMode(() => render('learn', { skill: id })), lesson: lessonMode(() => startSkill(id, 'learn')) });
       const tb = skills.get(id)?.paradigms?.[0];
       if (tb) steps.push({ key: `play:${id}`, label: `Its forms: ${titleOf(id)}`, sub: 'Type it to count', done: practisedToday(`tablepart:${id}`), game: () => { keepGame(true); playSkillTables(id, { review: true, cap: 12, next: planNextOf(`play:${id}`) }); }, lesson: lessonMode(() => render('catalogue', { table: tb })) });
