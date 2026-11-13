@@ -3774,7 +3774,7 @@ export function createUI(ctx) {
    * the other case skills of the same tables (2026-11-13: "where it just focused on one part of the chart, nominative
    * only — couple it and put it together so you can do the whole chart instead, and count those skills together").
    */
-  const caseSkill = (sk) => !!sk?.paradigms?.length && !sk.set && sk.paradigms.every((pid) => /^decl/.test(pid)) && !wholeTables(sk);
+  const caseSkill = (sk) => !!sk?.paradigms?.length && !sk.set && sk.paradigms.every((pid) => /^(decl|ego$|tu$|se$)/.test(pid)) && !wholeTables(sk);
   const caseSiblings = (sk) => (caseSkill(sk) ? [...skills.values()].filter((x) => x.id !== sk.id && caseSkill(x) && x.paradigms.every((pid) => sk.paradigms.includes(pid))).map((x) => x.id) : []);
   const creditOf = (id) => [id, ...caseSiblings(skills.get(id))];
   /** The cells of a word's table a skill's game asks: those it names, or every one when it names none. */
@@ -4864,7 +4864,26 @@ export function createUI(ctx) {
   const REST_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const planOf = () => ({ ...DEFAULT_PLAN, ...(ctx.settings?.grammar?.plan ?? {}) });
   // Skills with a table only (2026-10-30: "no need to keep them"): a skill with no table to play is not in the plan.
-  const planOrder = () => thePath().order.filter((id) => skills.has(id) && !skills.get(id).set && !sentenceOnly(id));
+  /**
+   * The plan's skills (2026-11-13: "take out those individual skills that only practise one specific thing, or one
+   * specific word"): a case skill (nominative, genitive …) is played on the whole chart and counts for the other cases
+   * of its tables, so only the first one that brings a table not already in the plan stays; a skill of one word's
+   * table alone (nōlī + infinitive on nōlō, the indirect question on quis) is left out.
+   */
+  const oneWordSkill = (sk) => (sk.paradigms ?? []).length === 1 && !/^(decl|conj|adj)/.test(sk.paradigms[0]);
+  const planOrder = () => {
+    const seen = new Set();
+    return thePath().order.filter((id) => {
+      const sk = skills.get(id);
+      if (!sk || sk.set || sentenceOnly(id) || oneWordSkill(sk)) return false;
+      const decl = (sk.paradigms ?? []).filter((pid) => /^decl/.test(pid));
+      const fresh = decl.some((pid) => !seen.has(pid));
+      decl.forEach((pid) => seen.add(pid));
+      // A skill on the noun (and personal-pronoun) tables alone stays only while it brings a table not yet in the plan:
+      // a case skill, or one like grammatical gender that is the same chart again.
+      return (sk.paradigms ?? []).every((pid) => /^(decl|ego$|tu$|se$)/.test(pid)) ? fresh : true;
+    });
+  };
   const learntSet = (order) => new Set(order.filter((id) => inRotation(stateOf(id))));
   /** This week's class: its number, day, chapter, reading and skills (course.json, the plan's first class day). */
   const classOf = () => {
@@ -4947,7 +4966,7 @@ export function createUI(ctx) {
       steps.push({ key: 'class-read', label: `For class ${planDay(cls.classDay)}: read ${cls.reading}`, sub: `week ${cls.n}`, done: practisedToday(`class-read:${cls.n}`), game: open, lesson: open });
     }
     for (const id of today.newToday) {
-      steps.push({ key: `learn:${id}`, label: `${today.classNew.includes(id) ? 'For class · ' : ''}Learn: ${titleOf(id)}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`),
+      steps.push({ key: `learn:${id}`, label: `${today.classNew.includes(id) ? 'For class · ' : ''}Learn: ${titleOf(id)}${caseSkill(skills.get(id)) ? ' (the whole chart, all its cases)' : ''}`, sub: capOf(id), done: inRotation(stateOf(id)) || practisedToday(`skill:${id}`),
         game: gameMode(() => render('learn', { skill: id })), lesson: lessonMode(() => startSkill(id, 'learn')) });
       const tb = skills.get(id)?.paradigms?.[0];
       if (tb) steps.push({ key: `play:${id}`, label: `Its forms: ${titleOf(id)}`, sub: 'Type it to count', done: practisedToday(`tablepart:${id}`), game: () => { keepGame(true); playSkillTables(id, { review: true, cap: 12, next: planNextOf(`play:${id}`) }); }, lesson: lessonMode(() => render('catalogue', { table: tb })) });

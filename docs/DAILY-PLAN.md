@@ -49,6 +49,14 @@ game" buttons.
 - Each course week's chapter, reading and skills are in `app/data/course.json` and `skills.json` (`course: "103"`,
   `week`). The first-class date can be changed in the plan's settings ("first class").
 
+## Which skills are in the plan
+- A case skill (nominative, genitive, accusative, ablative … on the noun tables) is played on the **whole chart** and
+  counts for the other case skills of the same tables. So only the first case skill that brings a table not yet in the
+  plan stays in it, labelled "(the whole chart, all its cases)"; the others (and grammatical gender, the same chart
+  again) are left out.
+- A skill of one word's table alone (nōlī + infinitive on nōlō, the indirect question on quis) is left out.
+- A round of more than one word takes a share of each, mixed up, not every form of every word in turn.
+
 ## Round size
 - A game round has **at most 7 cards** (`ROUND`, game.js). A longer table is split into more rounds, and in the
   plan the next round starts by itself. Corrections run 7 forms a round; a review round holds 7 forms.
