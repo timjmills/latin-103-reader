@@ -3725,15 +3725,25 @@ export function createUI(ctx) {
     const rounds = learnRounds(sk.paradigms);
     const after = next ?? planNextOf(`learn:${id}`);
     const tname = (t) => { try { return tableName(t); } catch { return t; } };
+    // Each step finished is kept for the day, so a reload (an update arriving between two steps) or leaving and coming
+    // back goes on from the next step, not from the first (2026-11-14: "I am doing this again — I thought I just got
+    // done with this one earlier today").
+    const SEQ_KEY = 'l103.learnSeq';
+    const seqRead = () => { try { const v = JSON.parse(localStorage.getItem(SEQ_KEY) ?? '{}'); return v?.day === isoDay() ? v : { day: isoDay(), steps: {} }; } catch { return { day: isoDay(), steps: {} }; } };
+    const seqMark = (k) => { const v = seqRead(); v.steps = { ...(v.steps ?? {}), [id]: k }; try { localStorage.setItem(SEQ_KEY, JSON.stringify(v)); } catch { /* this visit only */ } };
     const play = async (k) => {
       const last = k + 1 >= rounds.length;
-      const done = () => { notePractised(creditOf(id).map((x) => `skill:${x}`)); after?.fn?.(); };
-      const step = { fn: last ? done : () => play(k + 1), label: last ? (after?.label ?? 'Done ✓') : `Next: ${rounds[k + 1].map(tname).join(' + ')} →` };
+      const done = () => { seqMark(rounds.length - 1); notePractised(creditOf(id).map((x) => `skill:${x}`)); after?.fn?.(); };
+      const step = { fn: last ? done : () => { seqMark(k); play(k + 1); }, label: last ? (after?.label ?? 'Done ✓') : `Next: ${rounds[k + 1].map(tname).join(' + ')} →` };
       keepGame(true);
       const ok = await playSkillTables(id, { chapter, pick: rounds[k], cap: 12, next: step, round: `${sk.title} · step ${k + 1} of ${rounds.length}: ${rounds[k].map(tname).join(' + ')}` }).catch(() => false);
       if (!ok) { if (!last) play(k + 1); else done(); }
     };
-    play(0);
+    const kept = seqRead().steps?.[id];
+    const from = Number.isInteger(kept) ? kept + 1 : 0;
+    if (from >= rounds.length) { notePractised(creditOf(id).map((x) => `skill:${x}`)); after?.fn?.(); return true; }   // every step done already today
+    if (from > 0) ctx.say(`Going on from step ${from + 1} of ${rounds.length}: the first ${from === 1 ? 'step is' : `${from} steps are`} done today.`);
+    play(from);
     return true;
   }
   function playSkill(id, { chapter = null, from = null, nav = null } = {}) {
@@ -4963,7 +4973,17 @@ export function createUI(ctx) {
     }
     return { first: tablesFirst(first), rest: tablesFirst(rest) };
   }
+  // Once, on 14 November 2026 (the learner: "can you credit everything I did earlier"): a lesson of the plan whose forms
+  // were typed today, but whose last step never counted (an update reloaded the page between two of its steps), is
+  // learnt for today.
+  const CREDIT_KEY = 'l103.credit.2026-11-14';
+  function creditEarlier() {
+    try { if (isoDay() !== '2026-11-14' || localStorage.getItem(CREDIT_KEY)) return; localStorage.setItem(CREDIT_KEY, '1'); } catch { return; }
+    const ids = planOrder().filter((id) => !practisedToday(`skill:${id}`) && practisedToday(`tablepart:${id}`));
+    if (ids.length) notePractised(ids.flatMap((id) => creditOf(id).map((x) => `skill:${x}`)));
+  }
   function planSteps() {
+    creditEarlier();
     const order = planOrder();
     const learned = learntSet(order);
     const cls = classOf();
