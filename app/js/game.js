@@ -1085,8 +1085,25 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       const b = rows[at]?.slot.querySelectorAll('.gm__choice')[Number(e.key) - 1];
       if (b && !b.disabled) { e.preventDefault(); b.click(); }
     }
+    // Enter goes on (2026-11-14: "use the Enter key to move on to the next round or whatever is next"): at the end of a
+    // round, or in a panel (Start, Flash or Type it), Enter presses the main button, unless a button or a box has the
+    // focus and Enter is already its own.
+    else if (e.key === 'Enter' && !e.shiftKey && (ended || panel) && !e.target.closest?.('button, a, input, textarea, select, summary')) {
+      const scope = panel ?? stage;
+      const b = [...scope.querySelectorAll('.btn--primary')].find((x) => !x.disabled && x.offsetParent !== null);
+      if (b) { e.preventDefault(); b.click(); }
+    }
     if (!e.ctrlKey && !e.metaKey && !e.altKey) e.stopPropagation();
   });
+  // Enter with nothing focused (after "Stay here", or a click on the page): the same way on.
+  const onDocEnter = (e) => {
+    if (closed || !root.open || e.key !== 'Enter' || e.shiftKey || !(ended || panel)) return;
+    if (e.target !== document.body && e.target !== document.documentElement) return;
+    const b = [...(panel ?? stage).querySelectorAll('.btn--primary')].find((x) => !x.disabled && x.offsetParent !== null);
+    if (b) { e.preventDefault(); b.click(); }
+  };
+  document.addEventListener('keydown', onDocEnter);
+  root.addEventListener('close', () => document.removeEventListener('keydown', onDocEnter));
   window.addEventListener('resize', place);
   window.visualViewport?.addEventListener('resize', place);   // the keyboard coming up or going
   window.visualViewport?.addEventListener('scroll', place);   // the page panned under it
@@ -1164,7 +1181,7 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
         const paint = () => { note.textContent = `${what} — in ${n}…`; };
         paint();
         const t = setInterval(() => { if (!root.open) { clearInterval(t); return; } n -= 1; if (n <= 0) { clearInterval(t); fn(); } else paint(); }, 1000);
-        const stay = el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => { clearInterval(t); note.textContent = 'Staying here: the buttons below go on when you are ready.'; stay.remove(); } }, 'Stay here');
+        const stay = el('button', { type: 'button', class: 'btn btn--quiet', onclick: () => { clearInterval(t); note.textContent = 'Staying here: the buttons below go on when you are ready (Enter takes the first).'; stay.remove(); acts.querySelector('.btn--primary')?.focus({ preventScroll: true }); } }, 'Stay here');
         acts.prepend(el('div', { class: 'gm__autogo' }, note, stay));
       }
     }
