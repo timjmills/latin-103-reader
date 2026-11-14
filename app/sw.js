@@ -14,7 +14,7 @@
  * every publish, so neither the HTTP cache nor a conditional request can tell what really changed.
  */
 
-const CACHE_VERSION = 'v207';
+const CACHE_VERSION = 'v208';
 const SHELL = `latin103-shell-${CACHE_VERSION}`;
 const RUNTIME = `latin103-runtime-${CACHE_VERSION}`;
 const HASH_KEY = './__sw-hashes.json';   // each cache keeps the fingerprints it was filled under
@@ -351,7 +351,7 @@ const HASHES = {
   "./js/chapters.js": '58df66c43383',
   "./js/db.js": '3d843cf179aa',
   "./js/dictionary.js": '9ca7bae28430',
-  "./js/game.js": 'b4c7fc6f11d6',
+  "./js/game.js": 'b7650a9f1764',
   "./js/grammar/actions.js": '2a29e9421251',
   "./js/grammar/applies.js": 'c6029e34b6b4',
   "./js/grammar/chapter.js": '3f1a0ef3892d',
@@ -373,7 +373,7 @@ const HASHES = {
   "./js/grammar/stats.js": 'd9a79ab7bd5b',
   "./js/grammar/store-grammar.js": '657eef1eb316',
   "./js/grammar/today.js": '88110a22383f',
-  "./js/grammar/ui.js": '210c5897f0fb',
+  "./js/grammar/ui.js": '1a476829530a',
   "./js/grammar/voices.js": '79e178e05437',
   "./js/hovergloss.js": 'db78916cb67b',
   "./js/main.js": '986f978dcc46',
@@ -385,7 +385,7 @@ const HASHES = {
   "./js/reader.js": 'd64cddb4b717',
   "./js/settings.js": '07b902b58a49',
   "./js/store-fixture.js": 'f2e0bebcf368',
-  "./js/store.js": '65722ae093da',
+  "./js/store.js": 'bac7a2c106aa',
   "./js/sync.js": '348c7a509c3f',
   "./js/tokenize.js": '2581885bc1a3',
   "./js/tutor.js": '18ee3fb7bb31',

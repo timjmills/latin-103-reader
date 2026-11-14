@@ -949,6 +949,10 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
       if (!ended) { started += Date.now() - pausedAt; lastTick = Date.now(); timer = setInterval(tick, 500); tick(); }
       after?.();
       if (ended) { stage.querySelector('.gm__acts button')?.focus({ preventScroll: true }); return; }
+      // Every form already answered (a round picked up again after a reload, all of it done before the page went):
+      // the round is over, so it finishes now rather than waiting on a card with nothing left to answer (2026-11-14:
+      // "I ended the game but nothing is happening to move me on").
+      if (rows.length && rows.every(isDone)) { at = rows.length - 1; advance(); return; }
       const r = rows[at];
       // A look aside (the ?) leaves the form as it was: what is typed stays, the choices stay, no second Flash.
       if (node.keep && r?.slot.childNodes.length) { focusIn(r.slot.querySelector('.gm__in, .gm__choice:not(:disabled), .gm__look') ?? root); return; }

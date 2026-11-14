@@ -112,10 +112,17 @@ async function boot() {
   await loadLocal();
   wireEvents();
   if (online() && !user.offline) {
-    try {
-      await syncAll();
-    } catch (e) {
-      console.warn('[store] initial sync failed; serving the cache', e);
+    // With this device's copy already here, the page opens from it and the sync runs behind it (2026-11-14: "it takes
+    // very long to load the words when you press the buttons" — each new tab waited for the whole sync first). What
+    // the sync brings is announced as usual ('weeks', 'progress', the grammar's own handlers). A first visit, with
+    // nothing kept yet, still waits for it.
+    if (state.weeks.length) syncAll().catch((e) => console.warn('[store] background sync failed; serving the cache', e));
+    else {
+      try {
+        await syncAll();
+      } catch (e) {
+        console.warn('[store] initial sync failed; serving the cache', e);
+      }
     }
   }
 }
