@@ -1903,3 +1903,9 @@ html.g-run-on .g-body { padding-bottom: 8rem; }
   .tutor__part[data-role="pp"] { background: #17324d; color: #9fcbf5; }
   .tutor__part[data-role="add"] { background: #4a2f0c; color: #ffc77a; }
 }
+
+/* The All forms menu of the Tables page (2026-11-14). */
+.g-wordmenu { margin: var(--s-3) 0; padding: var(--s-3); border: 1px solid var(--line); border-radius: .8rem; }
+.g-wordmenu__sec { border: 0; margin: var(--s-2) 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem .9rem; }
+.g-wordmenu__sec legend { font-weight: 700; margin-bottom: .2rem; }
+.g-wordmenu__opt { display: inline-flex; align-items: center; gap: .25rem; cursor: pointer; }
