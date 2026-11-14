@@ -1024,3 +1024,11 @@ html.gm-open, html.g-game-open { overflow: hidden; }
   .tutor__part[data-role="pp"] { background: #17324d; color: #9fcbf5; }
   .tutor__part[data-role="add"] { background: #4a2f0c; color: #ffc77a; }
 }
+
+/* The card's word in a new tab: left, its tense (or number); right, all its forms (2026-11-14). */
+.gm__answer { display: flex; align-items: center; justify-content: center; gap: var(--s-2); width: 100%; }
+.gm__answer .gm__slot { width: auto; flex: 1 1 0; min-width: 0; }
+.gm__wordlink { flex: 0 0 auto; font-size: .72rem; font-weight: 700; padding: .15rem .45rem; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--ink-2); background: var(--bg-raised); text-decoration: none; white-space: nowrap; }
+.gm__wordlink:hover { border-color: #6b4fbb; color: #6b4fbb; }
+.gm__row[data-pos="far"] .gm__wordlink { display: none; }
+@media (max-width: 560px) { .gm__wordlink { font-size: .7rem; padding: .15rem .4rem; } }

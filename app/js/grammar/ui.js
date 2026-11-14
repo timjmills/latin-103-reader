@@ -6,7 +6,7 @@
 
 import { weekSkills, chapters, roman, inline, loadLesson, loadPartTitles, loadSentences, loadParadigmCatalogue, loadHeadwords, loadOccurrences, loadGenerated, generatedSkillIds, generatedUnreachable, occurrenceLine, KEY_CLASS, KEY_MODELS, entryOfClass, highlightParses } from './lessons.js';
 import { renderParadigm, fitParadigm, cellAnswers, setParadigmGameExtras } from '../wordpanel.js';
-import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat, setGameSection, setGameLesson, ROUND } from '../game.js';
+import { gameSound, playTable, playWay, setPlayWay, harderThan, LADDER, ladderLabel, CASE_ORDER, setGameAside, setGameStat, setGameSection, setGameLesson, setGameWordLinks, ROUND } from '../game.js';
 import { wordRule, ruleCard, focusRule, formRule, skillHow } from '../wordrule.js';
 import { chapter as bookChapter, chapters as bookChapters, grammarViewHash } from '../chapters.js';
 import { cellChapter, loadFormSkills, skillCovers } from '../paradigm-chapters.js';
@@ -3118,6 +3118,25 @@ export function createUI(ctx) {
    * Where a card's form is taught: the skill, first on the course path, whose table holds that form and which covers
    * it (paradigm-chapters.js skillCovers) — the imperfect's lesson for ībat. Its lesson opens in lesson mode.
    */
+  // The card's word in a new tab: its tense and mood (both voices) or, for a noun, adjective or pronoun, its number
+  // in every case; or every form, with a menu to choose them (2026-11-14).
+  setGameWordLinks((c) => {
+    const e = c?.entry;
+    const k = c?.form;
+    if (!e?.h || !k || typeof k !== 'object') return null;
+    const pick = (o) => Object.fromEntries(Object.entries(o).filter(([, v]) => v != null && v !== ''));
+    const focus = k.kind === 'nominal' || k.case ? pick({ kind: k.kind, number: k.number, gender: k.gender, degree: k.degree })
+      : k.kind === 'finite' ? pick({ kind: k.kind, tense: k.tense, mood: k.mood })
+        : pick({ kind: k.kind, tense: k.tense });
+    const nominal = k.kind === 'nominal' || !!k.case;
+    const num = k.number === 'sg' ? 'singular' : k.number === 'pl' ? 'plural' : '';
+    const href = (params) => `${location.pathname}${location.search}#/grammar/paradigms?${new URLSearchParams(Object.fromEntries(Object.entries({ word: e.h, pos: e.pos ?? '', ...params }).map(([a, v]) => [a, typeof v === 'string' ? v : `j:${JSON.stringify(v)}`])))}`;
+    const head = String(e.lemma ?? e.h).split(',')[0];
+    return {
+      one: { href: href({ focus, play: true }), label: nominal ? `◧ All ${num === 'singular' ? 'sg.' : num === 'plural' ? 'pl.' : 'cases'}` : '◧ Tense', title: nominal ? `Practise ${head} in every case${num ? `, ${num}` : ''} (new tab)` : `Practise ${head} in this tense and mood, active and passive (new tab)` },
+      all: { href: href({ menu: true }), label: 'All ▦', title: `Choose any forms of ${head} to practise (new tab)` },
+    };
+  });
   setGameLesson((c) => {
     const e = c?.entry;
     if (!e?.h) return null;
@@ -5609,7 +5628,7 @@ export function createUI(ctx) {
     return pool.length ? any(pool) : null;
   };
 
-  async function renderParadigms({ word = null, pos = null, type = null, play = false, list: showList = false, at = null } = {}) {
+  async function renderParadigms({ word = null, pos = null, type = null, play = false, list: showList = false, at = null, focus = null, cells = null, menu = false } = {}) {
     const tableBox = h('div', { class: 'g-para__table' });
     const pick = (e, t = type) => render('paradigms', { word: e.h, pos: e.pos, type: t ?? typeOf(e)?.name ?? null });
     const chip = (e, note = shortType(typeOf(e)?.name)) => h('li', {}, btn([h('span', { lang: 'la', text: headOf(e) }), note ? h('span', { class: 'g-chip__state', text: ` · ${note}` }) : null],
@@ -5710,7 +5729,33 @@ export function createUI(ctx) {
       // Another word of the same type: one of the most frequent, never the one on screen.
       const pool = kind ? wordsOfType(kind.name).slice(0, 40).filter((e) => e.h !== chosen.h) : [];
       const nextOfType = pool.length ? () => { const e = pool[Math.floor(Math.random() * pool.length)]; render('paradigms', { word: e.h, pos: e.pos, type: kind.name, play: true }); } : null;
-      const node = t && renderParadigm(t, { english: true, practise: true, countKey: tableKey(t.entry), chapter: () => ctx.currentChapter?.() ?? null, gameNext: nextOfType, gameNextLabel: 'Another word of this type →' });
+      // A focus from a card (its tense and mood, or its number) or a chosen set of cells (the All forms menu).
+      const tkind = t?.kind ?? null;
+      const cellSet = Array.isArray(cells) && cells.length ? new Set(cells.map(String)) : null;
+      const focusOk = focus && typeof focus === 'object' ? (key) => Object.entries(focus).every(([slot, v]) => (key?.[slot] == null ? slot !== 'kind' : String(key[slot]) === String(v))) : null;
+      const onlyFn = cellSet ? (key) => cellSet.has(String(cellId(key, tkind))) : focusOk;
+      const node = t && renderParadigm(t, { english: true, practise: true, countKey: tableKey(t.entry), chapter: () => ctx.currentChapter?.() ?? null, gameNext: nextOfType, gameNextLabel: 'Another word of this type →', ...(onlyFn ? { only: onlyFn } : {}) });
+      // All forms: every chart of the word to tick (all ticked to start), then Practise.
+      const menuNode = menu && t ? (() => {
+        const boxes = [];
+        const secs = (t.sections ?? []).map((sec, si) => {
+          const heads = sec.headers?.length ? sec.headers : [''];
+          const cols = heads.map((hd, ci) => {
+            const ids = (sec.rows ?? []).map((r) => r.cells?.[ci]).filter((c) => c && !c.empty && c.key && cellAnswers(c).length).map((c) => String(cellId(c.key, tkind))).filter((x) => x && x !== 'null');
+            if (!ids.length) return null;
+            const box = h('input', { type: 'checkbox', checked: true });
+            boxes.push({ box, ids });
+            return h('label', { class: 'g-wordmenu__opt' }, box, ' ', [sec.title, hd].filter(Boolean).join(' · ') || 'Forms');
+          }).filter(Boolean);
+          return cols.length ? h('fieldset', { class: 'g-wordmenu__sec' }, h('legend', { text: sec.title || 'Forms' }), cols) : null;
+        }).filter(Boolean);
+        const all = (v) => boxes.forEach((b) => { b.box.checked = v; });
+        const go = btn(playLabel('Practise the ticked forms'), { onclick: () => { const ids = [...new Set(boxes.filter((b) => b.box.checked).flatMap((b) => b.ids))]; if (!ids.length) { ctx.say('Tick at least one set of forms.'); return; } render('paradigms', { word: chosen.h, pos: chosen.pos, cells: ids, play: true }); } }, 'btn btn--primary g-play');
+        return h('section', { class: 'g-wordmenu', 'aria-label': 'Choose the forms to practise' },
+          h('p', { class: 'g-quiet', text: 'Tick the forms of this word to practise, then press Practise.' }),
+          h('div', { class: 'g-acts' }, btn('Tick all', { onclick: () => all(true) }, 'btn'), btn('Untick all', { onclick: () => all(false) }, 'btn')),
+          secs, h('div', { class: 'g-acts' }, go));
+      })() : null;
       const another = pool.length ? btn('Another word of this type →', { onclick: () => pick(pool[Math.floor(Math.random() * pool.length)], kind.name) }, 'btn') : null;
       if (node) {
         node.open = true;
@@ -5718,6 +5763,8 @@ export function createUI(ctx) {
           h('h2', { class: 'g-h2', id: 'g-para-word' }, h('span', { lang: 'la', text: chosen.lemma ?? chosen.h })),
           h('p', { class: 'g-para__type' }, kind ? h('span', { class: 'g-para__typename', text: kind.name }) : null,
             btn(playLabel(), { onclick: () => node?.querySelector('.paradigm__play')?.click(), 'aria-label': `Play ${chosen.lemma ?? chosen.h} as a game` }, 'btn btn--primary g-play'), another),
+          onlyFn ? h('p', { class: 'g-quiet g-para__focus' }, 'Practising some of its forms. ', btn('All forms ▦', { onclick: () => render('paradigms', { word: chosen.h, pos: chosen.pos, menu: true }) }, 'btn')) : null,
+          menuNode,
           h('div', { class: 'g-lesson__pt' }, node));   // the lesson's wrapper: it holds the table to the column, and the table stacks (§26) inside it
       }
     } else if (word) {

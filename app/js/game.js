@@ -204,6 +204,13 @@ export function setGameSection(fn) { sectionProvider = typeof fn === 'function' 
 /** Where a form is taught (ui.js): `fn(card)` → { label, go } — the lesson of the skill that teaches that form, or null. */
 let lessonProvider = null;
 export function setGameLesson(fn) { lessonProvider = typeof fn === 'function' ? fn : null; }
+/**
+ * The two ways to practise a card's word, each in a new tab so the round is not lost (2026-11-14: "on every card two
+ * buttons: practise this word in its tense and mood, or practise this word in all forms … they open a new tab … on the
+ * left and right side"): `fn(card)` → `{ one: { href, label, title }, all: { href, label, title } }`, or null.
+ */
+let wordLinks = null;
+export function setGameWordLinks(fn) { wordLinks = typeof fn === 'function' ? fn : null; }
 export const LADDER = [['parse', false], ['choose', false], ['flash', false], ['type', false], ['type', true]];
 const rung = (mode, shuffle) => { const i = LADDER.findIndex(([m, sh]) => m === mode && sh === (mode === 'type' && !!shuffle)); return i < 0 ? LADDER.findIndex(([m]) => m === mode) : i; };
 export const ladderLabel = (mode, shuffle) => `${MODES.find(([k]) => k === mode)?.[1] ?? mode}${mode === 'type' && shuffle ? ', shuffled' : ''}`;
@@ -438,9 +445,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // A ? on every card, answered or still to come (2026-11-03: "keep the question mark on all cards no matter if it is
     // already answered"): how that card's own form is made.
     const rowHow = how || tables ? el('button', { type: 'button', class: 'gm__rowhow', 'aria-label': 'How this form is made', title: 'How this form is made', onclick: (e) => { e.stopPropagation(); openHow(row); } }, '?') : null;
+    let links = null;
+    try { links = wordLinks?.(x) ?? null; } catch { links = null; }
+    const link = (l, cls) => (l ? el('a', { class: `gm__wordlink ${cls}`, href: l.href, target: '_blank', rel: 'noopener', title: l.title ?? l.label, onclick: (e) => e.stopPropagation() }, l.label) : null);
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
       el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label' }, cueNodes(x.cue)), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
-      slot, rowHow);
+      links ? el('div', { class: 'gm__answer' }, link(links.one, 'gm__wordlink--one'), slot, link(links.all, 'gm__wordlink--all')) : slot, rowHow);
     const row = { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
     return row;
   };
