@@ -1169,14 +1169,16 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     // next mode needed to progress"; "I will almost always do something in flash mode first and then in the type
     // mode"): a round not typed is played again typed (only typed rounds count); then the misses, until none; then
     // the next round, or the plan's next step. A short count first, and "Stay here".
-    if (untilRight) {
+    // A Flash round goes straight on to the same round typed, in any game (2026-11-14: "after I do a round in Flash it
+    // should automatically move that same round to Type and give credit once it's done"): only a typed round counts.
+    if (untilRight || mode === 'flash') {
       const goType = mode !== 'type';
       const fn = goType ? () => { write('mode', 'type'); write('shuffle', false); thisRound()(); }
         : misses.length ? again(misses, 'The ones missed — until each is right', null)
           : nextRound ? () => nextRound.click() : onNext ? () => { close(true); onNext(); } : null;
       const what = goType ? 'This round again, typed (only typed rounds count)' : misses.length ? `The ${misses.length} you missed, again` : nextRound ? 'The next round' : nextLabel.replace(/\s*→$/, '');
       if (fn) {
-        let n = 4;
+        let n = goType ? 2 : 4;
         const note = el('p', { class: 'gm__autonext', role: 'status' });
         const paint = () => { note.textContent = `${what} — in ${n}…`; };
         paint();
