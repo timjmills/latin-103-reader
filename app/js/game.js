@@ -449,8 +449,12 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
     try { links = wordLinks?.(x) ?? null; } catch { links = null; }
     const link = (l, cls) => (l ? el('a', { class: `gm__wordlink ${cls}`, href: l.href, target: '_blank', rel: 'noopener', title: l.title ?? l.label, onclick: (e) => e.stopPropagation() }, l.label) : null);
     const li = el('li', { class: `gm__row${again ? ' gm__row--again' : ''}` },
-      el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null, el('span', { class: 'gm__label' }, cueNodes(x.cue)), x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
-      links ? el('div', { class: 'gm__answer' }, link(links.one, 'gm__wordlink--one'), slot, link(links.all, 'gm__wordlink--all')) : slot, rowHow);
+      // The two word buttons stacked in the grey label, so the answer box has the card's whole width (2026-11-14:
+      // "the word area is now too small, stack the Tense and All and put them in the grey space").
+      el('span', { class: 'gm__cue' }, again ? el('span', { class: 'gm__againtag', text: '↻ again' }) : null,
+        el('span', { class: `gm__label${links ? ' gm__label--links' : ''}` }, links ? el('span', { class: 'gm__wordlinks' }, link(links.one, 'gm__wordlink--one'), link(links.all, 'gm__wordlink--all')) : null, links ? el('span', { class: 'gm__labeltext' }, cueNodes(x.cue)) : cueNodes(x.cue)),
+        x.en ? el('span', { class: 'gm__en', text: x.en }) : null),
+      slot, rowHow);
     const row = { li, slot, x, again, missed: false, requeued: false, sec: null, reviewOf: null };
     return row;
   };
