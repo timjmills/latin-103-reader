@@ -2020,7 +2020,9 @@ function keepCurrent(reg) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (reloading) return;
     const go = () => { if (reloading) return; reloading = true; location.reload(); };
-    if (!document.querySelector('dialog.gm[open]')) { go(); return; }
-    const wait = setInterval(() => { if (!document.querySelector('dialog.gm[open]')) { clearInterval(wait); go(); } }, 2000);
+    // Not in the moment between two rounds or two steps (the game closes while the next one loads): only once no game
+    // has been open for three checks running, six seconds (2026-11-14: a lesson started over after an update).
+    let clear = 0;
+    const wait = setInterval(() => { clear = document.querySelector('dialog.gm[open]') ? 0 : clear + 1; if (clear >= 3) { clearInterval(wait); go(); } }, 2000);
   });
 }
