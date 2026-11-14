@@ -469,7 +469,7 @@ function practiseControls(details, { sheet, chapter, id, preset = null, game = {
   const chartOf = (x) => `${x.si}|${x.ci}`;
   const gameItems = (only = null, groups = null) => cells().filter(groups ? (x) => groups.has(chartOf(x)) : on).filter((x) => !only || only.has(x.label))
     .sort((a, b) => a.si - b.si || a.ci - b.ci || a.ri - b.ri)
-    .map((x) => ({ key: x.label, cue: [x.row, [x.section, x.col].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en: x.en, answers: x.answers, stem: x.stem, ending: x.ending, group: chartOf(x), form: x.key }));
+    .map((x) => ({ key: x.label, cue: [x.row, [x.section, x.col].filter(Boolean).join(' ')].filter(Boolean).join(' · '), en: x.en, answers: x.answers, stem: x.stem, ending: x.ending, group: chartOf(x), form: x.key, entry: game.entry ?? null }));   // the word, for its principal parts on the card (2026-11-14)
   /** Every chart of the table, in its order: a column of one part, with how many forms it asks. */
   const chartList = () => {
     const seen = new Map();
