@@ -5628,6 +5628,7 @@ export function createUI(ctx) {
     return pool.length ? any(pool) : null;
   };
 
+  let paraDraw = 0;   // the latest drawing of the Tables page: an earlier one, still loading, stands down
   async function renderParadigms({ word = null, pos = null, type = null, play = false, list: showList = false, at = null, focus = null, cells = null, menu = false } = {}) {
     const tableBox = h('div', { class: 'g-para__table' });
     const pick = (e, t = type) => render('paradigms', { word: e.h, pos: e.pos, type: t ?? typeOf(e)?.name ?? null });
@@ -5705,8 +5706,10 @@ export function createUI(ctx) {
     const randomBtn = btn('Random word', { onclick: () => { const e = randomWord() ?? randomWord(); if (e) render('paradigms', { word: e.h, pos: e.pos }); else ctx.say('No word could be chosen just now.'); } }, 'btn');
 
     // The learner's own words: the ones underlined while reading (store.getLookups), newest first.
+    const lean = !!(word && (focus || cells || menu));
+    const drawTok = ++paraDraw;
     let mine = [];
-    try {
+    if (!lean) try {
       const looks = await ctx.store?.getLookups?.();
       const rows = looks ? [...looks.entries()].filter(([, v]) => !v?.learned_at).sort((a, b) => String(b[1]?.created_at ?? '').localeCompare(String(a[1]?.created_at ?? ''))) : [];
       const seen = new Set();
@@ -5716,8 +5719,8 @@ export function createUI(ctx) {
         if (mine.length >= 24) break;
       }
     } catch { mine = []; }
-    const models = MODEL_WORDS.map((w) => tableEntries(w).find((e) => stripMacrons(headOf(e)) === stripMacrons(w)) ?? tableEntries(w)[0]).filter(Boolean);
-    const typeWords = type ? wordsOfType(type, [...models, ...mine]) : [];
+    const models = lean ? [] : MODEL_WORDS.map((w) => tableEntries(w).find((e) => stripMacrons(headOf(e)) === stripMacrons(w)) ?? tableEntries(w)[0]).filter(Boolean);
+    const typeWords = type && !lean ? wordsOfType(type, [...models, ...mine]) : [];
 
     let chosen = null;
     if (word) {
@@ -5727,7 +5730,7 @@ export function createUI(ctx) {
       const t = tableOf(chosen);
       const kind = typeOf(chosen);
       // Another word of the same type: one of the most frequent, never the one on screen.
-      const pool = kind ? wordsOfType(kind.name).slice(0, 40).filter((e) => e.h !== chosen.h) : [];
+      const pool = kind && !lean ? wordsOfType(kind.name).slice(0, 40).filter((e) => e.h !== chosen.h) : [];
       const nextOfType = pool.length ? () => { const e = pool[Math.floor(Math.random() * pool.length)]; render('paradigms', { word: e.h, pos: e.pos, type: kind.name, play: true }); } : null;
       // A focus from a card (its tense and mood, or its number) or a chosen set of cells (the All forms menu).
       const tkind = t?.kind ?? null;
@@ -5771,6 +5774,15 @@ export function createUI(ctx) {
       tableBox.append(h('p', { class: 'g-quiet', text: 'That word has no table to practise.' }));
     }
 
+    if (lean) {
+      if (view.name !== 'paradigms' || drawTok !== paraDraw) return;
+      setBody(
+        h('header', { class: 'g-head' }, h('p', { class: 'g-kicker', text: 'Practise a word' }),
+          h('p', { class: 'g-quiet' }, navEl({ class: 'g-link', to: ['paradigms', {}], onclick: () => render('paradigms', {}) }, 'All the tables →'))),
+        chosen ? h('section', { class: 'g-cat__sec g-para', 'aria-labelledby': 'g-para-word' }, tableBox) : tableBox);
+      if (chosen && play) autoPlay(tableBox);
+      return;
+    }
     // Practise by type: every conjugation, declension and kind of adjective, with how many words it has.
     const groups = ['Verbs', 'Nouns', 'Adjectives'].map((g) => ({ g, types: typeIndex().filter((t) => t.group === g) })).filter((x) => x.types.length);
     const typeNode = h('section', { class: 'g-cat__sec', 'aria-labelledby': 'g-para-types' },
@@ -5791,7 +5803,7 @@ export function createUI(ctx) {
 
     let got = null;
     try { got = await catalogueItemsOf(); } catch { got = null; }
-    if (view.name !== 'paradigms') return;
+    if (view.name !== 'paradigms' || drawTok !== paraDraw) return;   // a newer drawing of the page has started
     setBody(
       h('header', { class: 'g-head' },
         h('p', { class: 'g-kicker', text: 'Study' }),
