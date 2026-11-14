@@ -5116,6 +5116,8 @@ export function createUI(ctx) {
           rp.planDone ? btn('Stop for today ✓', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); render('today'); } }, 'btn btn--primary') : null,
           btn('The whole plan', { onclick: () => render('today') }, 'btn btn--quiet')),
         planPanel(g)));
+    // Enter goes on (2026-11-14: "use the Enter key to move on to the next round or whatever is next"): the way on has the focus.
+    setTimeout(() => { const b = body.querySelector('.g-plansum .g-play, .g-acts .g-play'); if (b && !b.closest('[hidden]')) b.focus({ preventScroll: true }); }, 0);
   }
   async function renderToday() {
     const titles = await partTitles();
