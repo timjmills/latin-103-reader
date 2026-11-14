@@ -1040,3 +1040,10 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__wordlinks .gm__wordlink { font-size: .66rem; padding: .1rem .4rem; line-height: 1.2; font-weight: 700; }
 .gm__row[data-pos="current"] .gm__how { width: 2.3rem; min-height: 2.3rem; font-size: .9rem; }
 .gm__row[data-pos="current"] .gm__tutorbtn { min-height: 2.3rem; padding: 0 .55rem; font-size: .8rem; border-radius: .7rem; white-space: nowrap; }
+/* The word buttons either side of the grey label's last line (2026-11-14): Tense at its bottom left, All at its bottom right. */
+.gm__label--links { display: block; position: relative; padding: .25em 4.1rem; text-align: center; }
+.gm__label--links .gm__wordlinks { display: contents; }
+.gm__label--links .gm__wordlink { position: absolute; bottom: .4rem; }
+.gm__label--links .gm__wordlink--one { left: .45rem; }
+.gm__label--links .gm__wordlink--all { right: .45rem; }
+.gm__row:not([data-pos="current"]) .gm__label--links .gm__wordlink { bottom: .2rem; }
