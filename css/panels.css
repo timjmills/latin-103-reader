@@ -1032,3 +1032,11 @@ html.gm-open, html.g-game-open { overflow: hidden; }
 .gm__wordlink:hover { border-color: #6b4fbb; color: #6b4fbb; }
 .gm__row[data-pos="far"] .gm__wordlink { display: none; }
 @media (max-width: 560px) { .gm__wordlink { font-size: .7rem; padding: .15rem .4rem; } }
+
+/* The word buttons stacked at the left of the grey label; the answer box has the whole width; ? and Tutor smaller (2026-11-14). */
+.gm__label--links { display: inline-flex; align-items: center; gap: .5rem; text-align: left; }
+.gm__labeltext { flex: 1 1 auto; text-align: center; }
+.gm__wordlinks { display: flex; flex-direction: column; gap: .2rem; flex: none; }
+.gm__wordlinks .gm__wordlink { font-size: .66rem; padding: .1rem .4rem; line-height: 1.2; font-weight: 700; }
+.gm__row[data-pos="current"] .gm__how { width: 2.3rem; min-height: 2.3rem; font-size: .9rem; }
+.gm__row[data-pos="current"] .gm__tutorbtn { min-height: 2.3rem; padding: 0 .55rem; font-size: .8rem; border-radius: .7rem; white-space: nowrap; }
