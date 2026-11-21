@@ -3186,6 +3186,9 @@ export function createUI(ctx) {
     return h('span', { class: 'gm__plantime', title: "Today's plan: time left at your pace" }, '📅 ', h('span', { 'data-plan-min': '', text: m > 0 ? `${minsText(m)} left` : 'all done ✓' }));
   });
   /** The foot-of-page bar while today's session runs: where you are, the next step, stop. */
+  // The run bar is shown on a chapter's reading page too (the plan's "read cap. …" step): from there the way on leaves
+  // the page and opens the section first, or it draws behind the reading page and seems to freeze (2026-11-21).
+  const goPlan = (name, params) => (document.documentElement.dataset.page === 'chapter' || ctx.section?.() !== 'grammar') && typeof ctx.go === 'function' ? ctx.go(name, params) : render(name, params);
   function paintRunBar() {
     let bar = document.getElementById('g-runbar');
     const g = todayRun();
@@ -3201,7 +3204,7 @@ export function createUI(ctx) {
         h('span', { class: 'g-quiet' }, ' · ', h('span', { 'data-plan-min': '', text: ((m) => (m > 0 ? `${minsText(m)} left` : 'all done ✓'))(runParts(g).minsLeft) }))),
       again ? btn(`Another round (${stepRounds(cur.key)} left)`, { onclick: () => runToday(i) }, 'btn') : null,
       i + 1 < g.items.length && !cur?.later ? btn('Skip, come back later ↓', { onclick: () => skipLater(partKey(cur)), title: 'It moves to the last section of today' }, 'btn btn--quiet') : null,
-      btn(i + 1 < g.items.length ? `Next: ${g.items[i + 1].label} →` : 'Finish ✓', { onclick: () => render('plansum', { at: i + 1 }) }, 'btn btn--primary g-runbar__next'),
+      btn(i + 1 < g.items.length ? `Next: ${g.items[i + 1].label} →` : 'Finish ✓', { onclick: () => goPlan('plansum', { at: i + 1 }) }, 'btn btn--primary g-runbar__next'),
       btn('Stop', { onclick: () => { setTodayRun(null); paintRunBar(); paintSide(); } }, 'btn btn--quiet')].filter(Boolean));
   }
   /** The bar at the end of a round run as a session (a skill without tables): the next round, or the end. */
