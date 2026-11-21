@@ -439,7 +439,8 @@ export function playTable({ title = '', subtitle = '', items = [], id = null, on
   const rows = [];
   const comeBack = new Map();   // key → how many times Redo misses has brought it back
   // The word's principal parts, all of them (2026-10-29: "why does it not show the third principal part").
-  const ppOf = (x) => { const lemma = String(x.entry?.lemma ?? ''); return lemma.includes(',') ? lemma : null; };
+  // Any word's dictionary line, not only a verb's parts (2026-11-21: "it is not showing the word" on an adjective, suus -a -um).
+  const ppOf = (x) => { const lemma = String(x.entry?.lemma ?? x.entry?.h ?? '').trim(); return lemma || null; };
   const makeRow = (x, again = false) => {
     const slot = el('span', { class: 'gm__slot' });
     // A ? on every card, answered or still to come (2026-11-03: "keep the question mark on all cards no matter if it is
